@@ -18,6 +18,7 @@ import codecs
 import csv
 import hashlib
 import json
+import numbers
 import os
 import random
 from dataclasses import dataclass
@@ -26,17 +27,10 @@ from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Seque
 
 from codex_ml.connectors.base import ConnectorError
 from codex_ml.connectors.registry import get_connector
-
-from codex_ml.safety.filters import (
-    SafetyFilters,
-    SafetyResult,
-)
-from codex_ml.safety.filters import (
-    sanitize_output as filter_sanitize_output,
-)
-from codex_ml.safety.filters import (
-    sanitize_prompt as filter_sanitize_prompt,
-)
+from codex_ml.data.loader import load_dataset as _load_text_dataset
+from codex_ml.safety.filters import SafetyFilters, SafetyResult
+from codex_ml.safety.filters import sanitize_output as filter_sanitize_output
+from codex_ml.safety.filters import sanitize_prompt as filter_sanitize_prompt
 from codex_ml.utils.error_log import log_error
 
 __all__ = [
@@ -49,6 +43,7 @@ __all__ = [
     "stream_paths",
     "collect_stats",
     "split_indices",
+    "load_dataset",
 ]
 
 _CONNECTOR_URI_PREFIX = "connector://"
@@ -273,9 +268,24 @@ def split_indices(
     if total == 0:
         return [], [], []
 
+    def _is_fractional(value: float | int) -> bool:
+        return isinstance(value, numbers.Real) and not isinstance(value, (bool, int))
+
+    if _is_fractional(val_split) and _is_fractional(test_split):
+        fraction_total = float(val_split) + float(test_split)
+        if fraction_total > 1.0 + 1e-12:
+            raise ValueError("Validation and test split fractions must sum to 1 or less")
+
     val_size = _resolve_split_size(total, val_split, name="val")
     remaining = total - val_size
-    test_size = _resolve_split_size(remaining, test_split, name="test")
+
+    test_size = _resolve_split_size(total, test_split, name="test")
+    if test_size > remaining:
+        if _is_fractional(test_split):
+            test_size = remaining
+        else:
+            raise ValueError("Validation and test splits exceed dataset size")
+
     if val_size + test_size > total:
         raise ValueError("Validation and test splits exceed dataset size")
 
@@ -289,6 +299,25 @@ def split_indices(
 
     # Sort splits for deterministic iteration while preserving random partition
     return sorted(train_indices), sorted(val_indices), sorted(test_indices)
+
+
+def load_dataset(path: Path | str, *, language: str | None = None) -> List[Dict[str, Any]]:
+    """Load dataset records and optionally filter by language code."""
+
+    resolved = Path(path)
+    suffix = resolved.suffix.lower()
+
+    if suffix in {".jsonl", ".ndjson"}:
+        records, _ = load_jsonl(resolved)
+    elif suffix == ".csv":
+        records, _ = load_csv(resolved)
+    else:
+        records = [{"text": text} for text in _load_text_dataset(resolved)]
+
+    if language is None:
+        return records
+
+    return [row for row in records if str(row.get("language")) == language]
 
 
 def _validate_sample(obj: Dict[str, Any]) -> Sample:

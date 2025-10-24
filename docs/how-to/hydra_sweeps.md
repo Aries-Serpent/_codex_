@@ -17,4 +17,4 @@ python -m codex_ml.cli config sweep \
 ### Notes
 - `_self_` ordering: put it **first** to keep current behavior.
 - Use environment variables or `--overrides` to vary run-time params.
-- See `conf/examples/sweep_offline.yaml` for an offline-friendly template.
+- See `configs/training/sweeps/sweep_offline.yaml` for an offline-friendly template.

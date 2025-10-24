@@ -53,9 +53,7 @@ RESULTS = os.path.join(CODEX_DIR, "results.md")
 
 
 def now_iso() -> str:
-    return (
-        datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    )
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def read_text(p: str) -> str:
@@ -119,9 +117,7 @@ def log_error(step: str, desc: str, err: str, ctx: str) -> None:
     append(ERRORS, json.dumps(entry) + "\n")
 
 
-def add_change(
-    file_path: str, action: str, rationale: str, before: str, after: str
-) -> None:
+def add_change(file_path: str, action: str, rationale: str, before: str, after: str) -> None:
     diff = "\n".join(
         difflib.unified_diff(
             before.splitlines(),
@@ -233,9 +229,7 @@ class Outcome:
 def main() -> int:
     ok, out = run_ok(["git", "status", "--porcelain"])
     if not ok:
-        log_error(
-            "1.1", "Check clean working state", out, "git status --porcelain failed"
-        )
+        log_error("1.1", "Check clean working state", out, "git status --porcelain failed")
     elif out.strip():
         log_error(
             "1.1",
@@ -248,7 +242,7 @@ def main() -> int:
 
     outcome = Outcome()
 
-    for doc in ("README.md", "CONTRIBUTING.md"):
+    for doc in ("README.md", "docs/governance/CONTRIBUTING.md"):
         p = os.path.join(REPO_ROOT, doc)
         if os.path.isfile(p):
             try:
@@ -319,16 +313,10 @@ def main() -> int:
         )
     else:
         results.append(f"- No patch applied to `{TARGET_REL}` (pattern not found).")
-    results.append(
-        "- Ensured `import logging` and `import pytest` presence (idempotent)."
-    )
+    results.append("- Ensured `import logging` and `import pytest` presence (idempotent).")
     results.append("- Recorded diffs in `.codex/change_log.md`.")
-    results.append(
-        "- Captured any errors in `.codex/errors.ndjson` (ChatGPT-5 format)."
-    )
-    results.append(
-        "- Constraint observed: **DO NOT ACTIVATE ANY GitHub Actions files.**"
-    )
+    results.append("- Captured any errors in `.codex/errors.ndjson` (ChatGPT-5 format).")
+    results.append("- Constraint observed: **DO NOT ACTIVATE ANY GitHub Actions files.**")
 
     append(RESULTS, "# Results Summary\n" + "\n".join(results) + "\n")
     append(RESULTS, "\n**DO NOT ACTIVATE ANY GitHub Actions files.**\n")
@@ -338,8 +326,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Codex workflow for session logging test patch."
-    )
+    parser = argparse.ArgumentParser(description="Codex workflow for session logging test patch.")
     _ = parser.parse_args()
     sys.exit(main())

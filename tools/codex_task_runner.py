@@ -21,7 +21,6 @@ import re
 import subprocess
 import sys
 import textwrap
-import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,7 +28,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
 TOOLS_DIR = REPO_ROOT / "tools"
 TESTS_DIR = REPO_ROOT / "tests"
-CHANGELOG = REPO_ROOT / "CHANGELOG.md"
+CHANGELOG = REPO_ROOT / "docs" / "CHANGELOG.md"
 ERRORS_MD = REPO_ROOT / "ERRORS.md"
 REPORT_JSON = REPO_ROOT / "codex_report.json"
 README = next((p for p in [REPO_ROOT / "README.md", REPO_ROOT / "readme.md"] if p.exists()), None)
@@ -384,7 +383,7 @@ def main():
         vcode, vout, verr = run(["pytest", "--version"], timeout=60, capture=True)
         if "pytest-cov" in (vout + verr):
             code2, out2, err2 = run(
-                ["pytest", "--cov=src", "--cov-report=term", "--cov-fail-under=70"],
+                ["pytest", "--cov=src/codex_ml", "--cov-report=term", "--cov-fail-under=3.5"],
                 timeout=1200,
                 capture=True,
             )

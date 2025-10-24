@@ -24,8 +24,8 @@ failures.
 
 ## Hydra integration and configuration
 
-The default Hydra configuration (`configs/config.yaml`) pulls in
-`configs/pipeline_inputs/smoke.yaml`. To run the pipeline step through Hydra use:
+The default Hydra configuration (`configs/base/app.yaml`) pulls in
+`configs/training/pipeline_inputs/smoke.yaml`. To run the pipeline step through Hydra use:
 
 ```bash
 python -m codex_ml.cli.main pipeline.steps=[pipeline] hydra.run.dir=.

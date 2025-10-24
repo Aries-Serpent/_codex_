@@ -6,7 +6,7 @@ reimplements the audit so it can be imported in unit tests or executed as a
 stand-alone CLI.  The audit collects three high-signal checks that routinely
 regressed in Codex automation sessions:
 
-* Whether ``pytest.ini`` still contains the deprecated ``--cov=src/codex_ml``
+* Whether ``configs/development/pytest.ini`` still contains the deprecated ``--cov=src``
   option.
 * The concrete set of Markdown files referenced from ``mkdocs.yml``.
 * Missing Markdown targets or ``tests/`` references that no longer point to
@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import configparser
 import json
+import logging
 import re
 import shlex
 from dataclasses import dataclass
@@ -30,6 +31,87 @@ from typing import Iterable, List, Optional
 
 # Repository root default used for CLI invocations.
 ROOT = Path(__file__).resolve().parents[1]
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+LOGGER = logging.getLogger(__name__)
+
+PATH_MAPPINGS = {
+    "pytest.ini": "configs/development/pytest.ini",
+    "Makefile": "configs/development/Makefile",
+    "tox.ini": "configs/development/tox.ini",
+    "CONTRIBUTING.md": "docs/governance/CONTRIBUTING.md",
+    "CODE_STYLE_GUIDE.md": "docs/guides/CODE_STYLE_GUIDE.md",
+    "CHANGELOG.md": "docs/CHANGELOG.md",
+}
+
+COVERAGE_PATTERN = re.compile(r"--cov-fail-under=3\.5")
+COVERAGE_PATHS = (
+    "README.md",
+    "docs/governance/CONTRIBUTING.md",
+    "configs/development/pytest.ini",
+    "configs/development/Makefile",
+    "configs/development/noxfile.py",
+)
+
+
+def get_file_path(filename: str) -> str:
+    """Return mapped path for migrated files."""
+
+    return PATH_MAPPINGS.get(filename, filename)
+
+
+def _validate_coverage_gate(repo_root: Path) -> dict[str, object]:
+    """Validate that the 3.5% coverage gate appears in required locations."""
+
+    results: list[dict[str, object]] = []
+    failures: list[str] = []
+
+    def _check(path: Path) -> tuple[bool, str | None]:
+        if not path.exists():
+            return False, f"File not found: {path.as_posix()}"
+        text = path.read_text(encoding="utf-8")
+        match = COVERAGE_PATTERN.search(text)
+        if match:
+            return True, match.group(0)
+        return False, None
+
+    for relative in COVERAGE_PATHS:
+        path = repo_root / relative
+        found, snippet = _check(path)
+        if not found:
+            failures.append(relative)
+        results.append(
+            {
+                "file": relative,
+                "found": found,
+                "snippet": snippet,
+            }
+        )
+
+    workflow_dir = repo_root / ".github" / "workflows"
+    workflow_files: list[str] = []
+    if workflow_dir.exists():
+        for candidate in sorted(workflow_dir.glob("*.yml")) + sorted(workflow_dir.glob("*.yaml")):
+            found, snippet = _check(candidate)
+            if not found:
+                failures.append(candidate.relative_to(repo_root).as_posix())
+            workflow_files.append(candidate.relative_to(repo_root).as_posix())
+            results.append(
+                {
+                    "file": candidate.relative_to(repo_root).as_posix(),
+                    "found": found,
+                    "snippet": snippet,
+                }
+            )
+
+    return {
+        "pattern": COVERAGE_PATTERN.pattern,
+        "results": results,
+        "workflows": workflow_files,
+        "failures": failures,
+        "passed": not failures,
+    }
+
 
 try:  # Optional dependency: PyYAML makes nav parsing precise.
     import yaml  # type: ignore
@@ -57,7 +139,7 @@ class BrokenLink:
 # ---------------------------------------------------------------------------
 
 
-def _audit_pytest_ini(pytest_ini: Path) -> Optional[str]:
+def _audit_pytest_ini(pytest_ini: Path, *, repo_root: Optional[Path] = None) -> Optional[str]:
     """Return a remediation hint when deprecated coverage flags are present."""
 
     if not pytest_ini.exists():
@@ -67,8 +149,14 @@ def _audit_pytest_ini(pytest_ini: Path) -> Optional[str]:
     parser.read(pytest_ini, encoding="utf-8")
     addopts = parser.get("pytest", "addopts", fallback="")
     tokens = set(shlex.split(addopts))
-    if "--cov=src/codex_ml" in tokens and "--cov=src/codex" not in tokens:
-        return "replace --cov=src/codex_ml with --cov=src/codex in pytest.ini"
+    if "--cov=src" in tokens and "--cov=src/codex_ml" not in tokens:
+        relative = pytest_ini
+        if repo_root is not None:
+            try:
+                relative = pytest_ini.relative_to(repo_root)
+            except ValueError:  # pragma: no cover - only when outside repo
+                relative = pytest_ini
+        return f"replace --cov=src with --cov=src/codex_ml in {relative.as_posix()}"
     return None
 
 
@@ -222,7 +310,15 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
     repo_root = repo_root.resolve()
     docs_root = (repo_root / docs_dir).resolve()
 
-    pytest_hint = _audit_pytest_ini(repo_root / "pytest.ini")
+    LOGGER.info("Running documentation audit for %s", repo_root)
+
+    pytest_ini_candidates = [repo_root / get_file_path("pytest.ini")]
+    pytest_hint: Optional[str] = None
+    for candidate in pytest_ini_candidates:
+        hint = _audit_pytest_ini(candidate, repo_root=repo_root)
+        if hint is not None or candidate.exists():
+            pytest_hint = hint
+            break
     mkdocs_path = repo_root / "mkdocs.yml"
     nav_items: List[str] = []
     if mkdocs_path.exists():
@@ -244,9 +340,11 @@ def run_audit(repo_root: Path, *, docs_dir: str = "docs") -> dict:
 
     missing_tests = _find_missing_tests(docs_root, repo_root)
 
+    coverage_report = _validate_coverage_gate(repo_root)
+
     payload = {
         "pytest_ini": pytest_hint,
-        "pytest_cov": None,  # Reserved for future expansion.
+        "pytest_cov": coverage_report,
         "mkdocs_nav": nav_paths,
         "broken_links": [item.to_dict() for item in broken_links],
         "missing_tests": missing_tests,

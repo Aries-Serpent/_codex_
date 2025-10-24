@@ -15,7 +15,7 @@ Top-level directories (representative, not exhaustive)
 - schemas, scripts, semgrep_rules, services, src, temp, tests, tokenization, tools, torch, training, typer, yaml
 
 Key files (span)
-- pyproject.toml, noxfile.py, pytest.ini, requirements.lock, uv.lock, Dockerfile, README.md
+- pyproject.toml, noxfile.py, pytest.ini, requirements/lock.txt, uv.lock, Dockerfile, README.md
 - scripts/space_traversal/audit_runner.py (S1–S7 audit pipeline; offline)
 - templates/audit/capability_matrix.md.j2 (matrix renderer)
 - schemas/metrics-ndjson-v0.3.json (metrics schema; JSON Schema 2020-12)

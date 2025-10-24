@@ -1,38 +1,38 @@
-# Security Sweep — Run {{RUN_NUMBER}} ({{DATE}})
-
-> Menu focus: Security (4)
-
-Use this template to document the security review for each audit run. Replace placeholders and remove sections that do not apply. Link supporting evidence where possible.
+# Security Sweep — Run 2025-01 (2025-01-18)
 
 ## Run Metadata
-- Branch: {{BRANCH_NAME}}
-- Snapshot commit: {{SHORT_SHA}}
-- Participants: {{AUDITORS}}
+- Branch: current working tree
+- Snapshot commit: _post-run_ (see git log for final SHA)
+- Participants: automated sweep
 
 ## Secrets & Credentials Review
-- [ ] Scan repositories (e.g., `git secrets`, `detect-secrets`) across touched paths.
-- Findings: {{SECRETS_FINDINGS}}
-- Remediation status: {{SECRETS_STATUS}}
+- [ ] Scan repositories (e.g., `detect-secrets`) across touched paths.
+- Findings: not run in this sweep
+- Remediation status: pending future scan
 
 ## Dependency & Supply-Chain Review
-| Package/Tool | Current Version | Source | Notes |
-| --- | --- | --- | --- |
-| {{PACKAGE}} | {{VERSION}} | {{SOURCE}} | {{NOTES}} |
+- Generate an offline CycloneDX SBOM via `nox -s sbom` (Makefile alias `make sbom`). Artifacts are written to `artifacts/sbom/` (`cyclonedx.json` + `packages.txt`).
+- Inputs: `requirements/lock.txt` and `uv.lock` are parsed locally; no network calls are made.
 
-## Configuration & Policy Review
-- Policies referenced: {{POLICIES}}
-- Deviations detected: {{DEVIATIONS}}
-- Actions required: {{ACTIONS_REQUIRED}}
+## Moderation Controls
+- Training: set `training.safety.moderation.enabled=true` (with optional `rules_path`, `fail_open`, and `audit_log`) inside `TrainingRunConfig` to enable the moderation adapter.
+- CLI: `python -m codex_ml.cli.infer --prompt ... --moderation [--moderation-audit-log artifacts/safety/moderation.ndjson]` enforces the same checks offline.
+- Audit trail: moderation decisions append to the configured NDJSON file with sanitized payloads and digests.
 
 ## Security Testing
 | Check | Command | Result | Follow-Up |
 | --- | --- | --- | --- |
-| {{CHECK}} | `{{COMMAND}}` | {{RESULT}} | {{FOLLOW_UP}} |
+| Bandit SAST | `nox -s sec_scan` | Clean (post-fix) | Weak SHA1 hashing replaced with SHA-256/BLAKE2b in `src/codex/archive/similarity.py`. |
+
+### Bandit high-severity findings (pre-fix)
+- `B324`: `src/codex/archive/similarity.py` used `hashlib.sha1` for AST and SimHash calculations (lines 48, 56).
+
+### Remediation
+- `py_ast_hash` now emits SHA-256 digests and `simhash64` derives bits from an 8-byte BLAKE2b digest, removing the weak hash usage.
 
 ## Outstanding Risks
-- {{RISK_ONE}}
-- {{RISK_TWO}}
+- None introduced in this sweep.
 
 ## Next Steps
-- {{NEXT_STEP_ONE}}
-- {{NEXT_STEP_TWO}}
+- Schedule a secrets scan once new policies are validated.
+- Review moderation audit files during the next quarterly security review.

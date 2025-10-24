@@ -35,12 +35,12 @@ def test_all_yaml_under_configs_parse():
 
 def test_minimal_config_examples_parse_if_present():
     candidates = [
-        pathlib.Path("conf/config.yaml"),
-        pathlib.Path("conf/examples/config_minimal.yaml"),
+        pathlib.Path("configs/base/hydra.yaml"),
+        pathlib.Path("configs/experimental/config_minimal.yaml"),
     ]
     present = [path for path in candidates if path.exists()]
     if not present:
-        pytest.skip("No conf/ example YAMLs present")
+        pytest.skip("No baseline Hydra examples present")
 
     for config_path in present:
         with config_path.open("r", encoding="utf-8") as handle:

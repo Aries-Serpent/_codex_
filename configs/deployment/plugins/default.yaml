@@ -1,0 +1,5 @@
+# Default plugin registry configuration
+plugins:
+  enable: true
+  modules:
+    - "hhg_logistics.plugins.example_plugin"

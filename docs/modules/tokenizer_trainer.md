@@ -14,7 +14,7 @@
 ## CLI
 
 ```bash
-codex tokenizer train --config configs/tokenization/base.yaml
+codex tokenizer train --config configs/training/tokenization/base.yaml
 ```
 It produces a SentencePiece model, a `tokenizer.json`, and HF-compatible
 artifacts that can be loaded with `interfaces.tokenizer.HFTokenizer`. Use

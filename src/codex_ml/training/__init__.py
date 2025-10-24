@@ -5,12 +5,15 @@ from __future__ import annotations
 import warnings
 from typing import Any, Mapping, Sequence
 
-from .legacy_api import (  # noqa: F401 re-exported via __all__
+from .dp_config import DifferentialPrivacyConfig, make_private_model
+from .legacy_api import (
     OptimizerSettings,
     SafetySettings,
     SchedulerSettings,
     TrainingRunConfig,
     build_dataloader,
+)
+from .legacy_api import (  # noqa: F401 re-exported via __all__
     run_functional_training as _legacy_run_functional_training,
 )
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
@@ -29,6 +32,8 @@ __all__ = [
     "OptimizerSettings",
     "SchedulerSettings",
     "build_dataloader",
+    "DifferentialPrivacyConfig",
+    "make_private_model",
 ]
 
 

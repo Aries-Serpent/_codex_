@@ -70,14 +70,14 @@
   - CHANGELOG_SESSION_LOGGING.md
   - CODEBASE_AUDIT_2025-08-26_203612.md
   - CONTRIBUTING.md
-  - Codex_Questions.md
-  - DEFERRED.md
+  - docs/reference/codex_questions.md
+  - docs/deferred_items.md
   - Dockerfile
   - Dockerfile.gpu
-  - ERROR_LOG.md
+  - docs/troubleshooting/error_log.md
   - LFS_POLICY.md
   - Makefile
-  - OPEN_QUESTIONS.md
+  - docs/troubleshooting/open_questions.md
   - README.md
   - _codex_codex-ready-sequence-and-patches-2025-09-27.md
   - _codex_status_update-0C_base_-2025-09-27.md
@@ -99,9 +99,9 @@
   - noxfile.py
   - pyproject.toml
   - pytest.ini
-  - requirements-dev.txt
-  - requirements.lock
-  - requirements.txt
+  - requirements/dev.txt
+  - requirements/lock.txt
+  - requirements/base.txt
   - setup_universal.sh
   - sitecustomize.py
   - tox.ini
@@ -143,7 +143,7 @@
   - CODEBASE_AUDIT_2025-08-26_203612.md:62 [\bTBD\b] | Checkpointing & Resume (weights, optimizer, scheduler, RNG, best-k) | Pending Scan | TBD | RNG capture/restore, best-k by metric, atomic writes | Non-reproducible restarts; partial corruption | Add checkpoint module that stores RNG state and metadata.json; tests for resume parity | Revert module; leave metadata schema intact |
   - CODEBASE_AUDIT_2025-08-26_203612.md:63 [\bTBD\b] | Data Handling (splits, deterministic shuffling, caching) | Pending Scan | TBD | Seeded Split API, cache versioning, hashing | Data leakage across splits; stale caches | Add data module with hash-based cache keys; tests for deterministic shuffling | Revert data module; keep split spec doc |
   - CODEBASE_AUDIT_2025-08-26_203612.md:64 [\bTBD\b] | Security & Safety (dep lock, secrets scanning, prompt safety) | Pending Scan | TBD | lockfile (uv/poetry/pip-tools), pre-commit secrets scan, prompt guardrails | Supply chain, key leaks | Add pip-tools lock, pre-commit with detect-secrets, baseline | Remove pre-commit hooks; keep lock ignored |
-  - CODEBASE_AUDIT_2025-08-26_203612.md:65 [\bTBD\b] | Internal CI/Test (pytest, tox/nox local gates, coverage) | Pending Scan | TBD | Local tox/nox sessions, offline skip for remote SUTs, coverage thresholds | Breakage goes unnoticed | Add tox.ini and noxfile with offline envs; ~70% threshold for core utils | Lower thresholds or skip in constraints |
+  - CODEBASE_AUDIT_2025-08-26_203612.md:65 [\bTBD\b] | Internal CI/Test (pytest, tox/nox local gates, coverage) | Pending Scan | TBD | Local tox/nox sessions, offline skip for remote SUTs, coverage thresholds | Breakage goes unnoticed | Add tox.ini and noxfile with offline envs; ~4% threshold for core utils | Lower thresholds or skip in constraints |
   - CODEBASE_AUDIT_2025-08-26_203612.md:66 [\bTBD\b] | Deployment (packaging, CLI entrypoints, Docker) | Pending Scan | TBD | pyproject metadata, CLI console_scripts, local Docker without network | Hard to distribute/run | Add pyproject + minimal CLI; local Dockerfile with no network | Keep pyproject but remove entrypoints |
   - CODEBASE_AUDIT_2025-08-26_203612.md:67 [\bTBD\b] | Docs & Examples (README, quickstarts, diagrams, notebooks) | Pending Scan | TBD | Quickstart minimal example, architecture diagram, docstring style | Onboarding friction | Add README sections + examples dir; docstring style check | Revert examples; leave README slim |
   - CODEBASE_AUDIT_2025-08-26_203612.md:68 [\bTBD\b] | Experiment Tracking (MLflow local, W&B offline) | Pending Scan | TBD | Local MLflow URI, offline run guard, artifact dir | Loss of provenance | Add mlflow_offline util and artifact path; tests assert no network | Revert util; keep logs on disk only |

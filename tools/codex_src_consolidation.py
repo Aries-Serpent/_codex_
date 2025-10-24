@@ -19,9 +19,7 @@ from typing import Dict, List, Optional, Tuple
 
 def repo_root() -> Path:
     try:
-        p = subprocess.check_output(
-            ["git", "rev-parse", "--show-toplevel"], text=True
-        ).strip()
+        p = subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
         return Path(p)
     except Exception:
         return Path.cwd()
@@ -55,9 +53,7 @@ def log_change(
     if not CHANGE_LOG.exists():
         CHANGE_LOG.write_text("# .codex/change_log.md\n\n", encoding="utf-8")
     entry = (
-        f"## {now_iso()} — {action}\n"
-        f"**File:** {path.as_posix()}\n"
-        f"**Why:** {rationale}\n"
+        f"## {now_iso()} — {action}\n" f"**File:** {path.as_posix()}\n" f"**Why:** {rationale}\n"
     )
     if before or after:
         entry += "```diff\n"
@@ -122,9 +118,7 @@ def build_inventory() -> Dict:
                 if p.suffix in {".py", ".sh", ".js", ".ts", ".sql", ".html", ".css"}
                 else "other"
             )
-            items.append(
-                {"path": str(p.relative_to(R)), "role": role, "size": p.stat().st_size}
-            )
+            items.append({"path": str(p.relative_to(R)), "role": role, "size": p.stat().st_size})
     inv = {"root": str(R), "count": len(items), "items": items}
     INVENTORY.write_text(json.dumps(inv, indent=2), encoding="utf-8")
     return inv
@@ -215,7 +209,8 @@ def rewrite_tree_py_to_src_codex(root: Path) -> int:
 
 def ensure_pytest_src_pythonpath():
     # Prefer pytest.ini if exists; else create minimal file.
-    ini = R / "pytest.ini"
+    ini_candidates = [R / "configs" / "development" / "pytest.ini", R / "pytest.ini"]
+    ini = next((path for path in ini_candidates if path.exists()), ini_candidates[0])
     if ini.exists():
         txt = ini.read_text(encoding="utf-8")
         if "pythonpath = src" not in txt:
@@ -250,9 +245,7 @@ def update_docs_paths():
             continue
         try:
             txt = md.read_text(encoding="utf-8")
-            new = txt.replace(" codex/", " src/codex/").replace(
-                "`codex/`", "`src/codex/`"
-            )
+            new = txt.replace(" codex/", " src/codex/").replace("`codex/`", "`src/codex/`")
             if new != txt:
                 md.write_text(new, encoding="utf-8")
                 log_change(
@@ -294,9 +287,7 @@ def safe_rename_legacy_codex():
     new = R / f"codex_legacy_{ts}"
     try:
         D_TOP.rename(new)
-        log_change(
-            D_TOP, "rename", "Preserve legacy top-level codex directory", after=new.name
-        )
+        log_change(D_TOP, "rename", "Preserve legacy top-level codex directory", after=new.name)
         return new
     except Exception as e:
         log_error("3.2 RENAME", str(e), "Preserving legacy codex before symlink/proxy")
@@ -448,8 +439,7 @@ def main():
         "explicit_warning": "DO NOT ACTIVATE ANY GitHub Actions files.",
         "next_steps": [
             "Run pytest to validate imports/tests: `pytest -q`",
-            "If Windows with no symlink support, use --mode proxy "
-            "(already attempted in auto).",
+            "If Windows with no symlink support, use --mode proxy " "(already attempted in auto).",
             "Review .codex/change_log.md and .codex/errors.ndjson",
         ],
     }

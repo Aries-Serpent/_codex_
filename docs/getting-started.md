@@ -12,7 +12,7 @@
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r docs/requirements.txt
-pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements.lock`
+pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements/lock.txt`
 ```
 Run Docs
 
@@ -39,7 +39,7 @@ Typical ranges:
 - `lora_alpha`: roughly 2×`lora_r`
 - `lora_dropout`: 0.0–0.3 for regularisation
 
-Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+Defaults live in `configs/base/app.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
 
 Typical ranges:
 
@@ -47,7 +47,7 @@ Typical ranges:
 - `lora_alpha`: roughly 2×`lora_r`
 - `lora_dropout`: 0.0–0.3 for regularisation
 
-Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+Defaults live in `configs/base/app.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
 
 Typical ranges:
 
@@ -55,7 +55,7 @@ Typical ranges:
 - `lora_alpha`: roughly 2×`lora_r`
 - `lora_dropout`: 0.0–0.3 for regularisation
 
-Defaults live in `configs/config.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
+Defaults live in `configs/base/app.yaml` under `trainer.lora_r`, `trainer.lora_alpha`, and `trainer.lora_dropout` and can be overridden per run.
 
 ## Checkpointing
 

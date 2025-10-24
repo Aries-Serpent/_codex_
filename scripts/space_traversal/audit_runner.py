@@ -22,15 +22,7 @@ import re
 import sys
 import time
 from pathlib import Path
-from typing import Any, Callable, Dict, List
-
-try:
-    from jinja2 import Environment, FileSystemLoader
-
-    import yaml
-except ImportError:
-    print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
-    sys.exit(1)
+from typing import TYPE_CHECKING, Any, Callable, Dict, List
 
 # Try scoring utilities
 try:
@@ -57,6 +49,31 @@ try:
     from scripts.space_traversal import dup_similarity  # type: ignore
 except Exception:  # pragma: no cover
     dup_similarity = None  # dynamic import guard
+
+if TYPE_CHECKING:  # pragma: no cover - import-time typing hints only
+    from jinja2 import Environment as _JinjaEnvironment
+    from jinja2 import FileSystemLoader as _JinjaFileSystemLoader
+    import yaml as _YamlModule
+
+
+def _require_yaml():
+    try:
+        import yaml  # type: ignore
+    except ImportError as exc:  # pragma: no cover - runtime guard
+        raise RuntimeError(
+            "yaml dependency required for audit runner; install pyyaml"
+        ) from exc
+    return yaml
+
+
+def _load_jinja2():
+    try:
+        from jinja2 import Environment, FileSystemLoader  # type: ignore
+    except ImportError as exc:  # pragma: no cover - runtime guard
+        raise RuntimeError(
+            "jinja2 dependency required for audit runner; install jinja2"
+        ) from exc
+    return Environment, FileSystemLoader
 
 # ---------------------------------------------------------------------------
 # Constants & Paths
@@ -95,6 +112,35 @@ DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
 }
 
 
+def _expand_doc_tokens(domain: str, base_tokens: List[str]) -> set[str]:
+    """Expand a list of domain tokens with known synonyms and simple variants."""
+
+    tokens = {t.lower() for t in base_tokens}
+    for synonym in DOCS_SYNONYMS_MAP.get(domain, []):
+        tokens.add(synonym.lower())
+
+    # naive pluralisation – good enough for the audit heuristics
+    pluralised = {f"{t}s" for t in tokens if not t.endswith("s")}
+    tokens.update(pluralised)
+    return tokens
+
+
+def _docs_score(domain: str, docs_cache: Dict[str, str], base_tokens: List[str]) -> float:
+    """Compute a lightweight documentation coverage score for a domain."""
+
+    if not docs_cache:
+        return 0.0
+
+    expanded_tokens = _expand_doc_tokens(domain, base_tokens)
+    hits = 0
+    for text in docs_cache.values():
+        lowered = text.lower()
+        if any(token in lowered for token in expanded_tokens):
+            hits += 1
+
+    return hits / max(len(docs_cache), 1)
+
+
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -108,6 +154,7 @@ def _sha256_file(p: Path) -> str:
 
 
 def load_config() -> dict:
+    yaml = _require_yaml()
     with open(CFG_PATH, "r", encoding="utf-8") as fh:
         return yaml.safe_load(fh)
 
@@ -497,6 +544,7 @@ def stage_s5_gaps(cfg, scored_caps):
 def render_template(cfg, context):
     tpl_path = cfg["output"]["matrix_template"]
     tpl_dir = Path(tpl_path).parent
+    Environment, FileSystemLoader = _load_jinja2()
     env = Environment(
         loader=FileSystemLoader(str(tpl_dir)),
         autoescape=False,

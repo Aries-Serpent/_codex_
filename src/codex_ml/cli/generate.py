@@ -7,6 +7,13 @@ import sys
 from typing import Any, List, Sequence
 
 from codex_ml import __version__
+from codex_ml.codex_structured_logging import (
+    ArgparseJSONParser,
+    capture_exceptions,
+    init_json_logging,
+    log_event,
+    run_cmd,
+)
 from codex_ml.modeling.codex_model_loader import load_model_with_optional_lora
 from codex_ml.models.generate import generate
 from codex_ml.safety import (
@@ -19,13 +26,6 @@ from codex_ml.safety import (
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
-from codex_ml.codex_structured_logging import (
-    ArgparseJSONParser,
-    capture_exceptions,
-    init_json_logging,
-    log_event,
-    run_cmd,
-)
 
 _ = run_cmd
 
@@ -43,7 +43,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--safety-policy",
         default=None,
-        help="Path to a YAML policy overriding configs/safety/policy.yaml",
+        help="Path to a YAML policy overriding configs/base/safety/policy.yaml",
     )
     parser.add_argument(
         "--safety-bypass",

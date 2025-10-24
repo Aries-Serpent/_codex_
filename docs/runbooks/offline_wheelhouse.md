@@ -12,7 +12,7 @@
 tools/bootstrap_wheelhouse.sh
 
 # Install from wheelhouse completely offline (example)
-python -m pip install --no-index --find-links ./wheelhouse -r requirements.txt
+python -m pip install --no-index --find-links ./wheelhouse -r requirements/base.txt
 ```
 Refs: `pip download` produces a directory suitable for later `pip install --find-links` offline installs; `--no-index` ensures no network usage. :contentReference[oaicite:1]{index=1}
 
@@ -37,7 +37,7 @@ Refs: `pip download` produces a directory suitable for later `pip install --find
 # Detects common requirements files and generates/updates:
 #   ./wheelhouse/  (wheels)
 #   ./constraints.txt  (pins via uv compile or pip freeze)
-tools/make_wheelhouse.sh -r requirements.txt -r requirements-dev.txt
+tools/make_wheelhouse.sh -r requirements/base.txt -r requirements/dev.txt
 ```
 Notes:
 - If `uv` is available, we **compile** requirements into a lock/constraints file (`uv pip compile`); else fallback uses a temp venv + `pip freeze`. :contentReference[oaicite:5]{index=5}
@@ -49,14 +49,14 @@ Notes:
 
 1) Prefer `uv`:
    - `uv pip sync <lock-or-reqs.txt>` (idempotent sync to a file) or
-   - `uv pip install -r requirements.txt`
+   - `uv pip install -r requirements/base.txt`
    :contentReference[oaicite:7]{index=7}
 
 2) Fallback to `pip` with cache:
    - respect `PIP_CACHE_DIR` (e.g., `./.cache/pip`) for warm wheels. :contentReference[oaicite:8]{index=8}
 
 3) Fully offline:
-   - `python -m pip install --no-index --find-links ./wheelhouse -r requirements.txt` (all deps must be present). :contentReference[oaicite:9]{index=9}
+   - `python -m pip install --no-index --find-links ./wheelhouse -r requirements/base.txt` (all deps must be present). :contentReference[oaicite:9]{index=9}
 
 ---
 

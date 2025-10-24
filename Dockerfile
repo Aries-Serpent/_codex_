@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Minimal, reproducible image for FastAPI/CLI runtime
-# Set A: minimal image + CI (fast)
+# Multi-stage build for the Codex runtime (CPU variant)
 
 # Build-time metadata (optional; pass via --build-arg)
 ARG VERSION="0.0.0"
@@ -8,9 +7,8 @@ ARG VCS_REF="unknown"
 ARG BUILD_DATE="unknown"
 ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
 
-FROM python:3.11-slim AS base
+FROM python:3.11-slim AS builder
 
-# Re-declare build metadata args for this stage
 ARG VERSION
 ARG VCS_REF
 ARG BUILD_DATE
@@ -19,6 +17,40 @@ ARG VCS_URL
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Stage dependency manifests first to maximise layer reuse.
+COPY pyproject.toml ./
+COPY MANIFEST.in ./
+COPY requirements/ ./requirements/
+COPY uv.lock ./uv.lock
+
+RUN pip install --upgrade pip setuptools wheel
+RUN mkdir -p /tmp/wheels
+
+# Build wheels for runtime dependencies so the final stage installs offline.
+RUN if [ -f "requirements/docker.txt" ]; then \
+      pip wheel --wheel-dir /tmp/wheels -r requirements/docker.txt; \
+    elif [ -f "requirements/base.txt" ]; then \
+      pip wheel --wheel-dir /tmp/wheels -r requirements/base.txt; \
+    fi
+
+# Copy the full source tree and build a project wheel.
+COPY . .
+RUN pip wheel --no-deps --wheel-dir /tmp/wheels .
+
+FROM python:3.11-slim AS runtime
+
+ARG VERSION
+ARG VCS_REF
+ARG BUILD_DATE
+ARG VCS_URL
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PATH="/opt/venv/bin:${PATH}"
 
 # System deps (keep minimal)
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -42,43 +74,21 @@ RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
 
 WORKDIR /app
 
-# Copy dependency manifests early for better layer caching.
-# BuildKit bind mount lets us conditionally copy only files that exist.
-RUN --mount=type=bind,source=.,target=/tmp/context,ro \
-    for file in requirements.txt requirements.docker.txt pyproject.toml uv.lock requirements.lock; do \
-        if [ -f "/tmp/context/${file}" ]; then \
-            cp "/tmp/context/${file}" "/app/${file}"; \
-        fi; \
-    done
+# Materialise a dedicated virtualenv and install from the cached wheels.
+COPY --from=builder /tmp/wheels /tmp/wheels
+RUN python -m venv /opt/venv \
+ && /opt/venv/bin/pip install --upgrade pip \
+ && /opt/venv/bin/pip install /tmp/wheels/*.whl \
+ && rm -rf /tmp/wheels
 
-# Upgrade pip tooling
-RUN pip install --upgrade pip setuptools wheel
-
-# Prefer container-specific pins; fallback to requirements.txt if present
-RUN if [ -f "requirements.docker.txt" ]; then \
-      pip install -r requirements.docker.txt; \
-    elif [ -f "requirements.txt" ]; then \
-      pip install -r requirements.txt; \
-    fi
-
-# Copy application source
-COPY src/ /app/src/
-# Include configs if present (Hydra/YAML defaults)
-RUN --mount=type=bind,source=.,target=/tmp/context,ro \
-    if [ -d "/tmp/context/configs" ]; then \
-        mkdir -p /app/configs && cp -r /tmp/context/configs/. /app/configs/; \
-    fi
-
-# Install project if no requirements manifests were provided
-RUN if [ ! -f "requirements.docker.txt" ] && [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
-      pip install .; \
-    fi
-
-# Copy container entrypoint script
+# Copy runtime assets (configs, Hydra defaults, source for debugging).
+COPY --from=builder /app/configs /app/configs
+COPY --from=builder /app/hydra /app/hydra
+COPY --from=builder /app/src /app/src
 COPY docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
 
-# Expose default FastAPI port
+# Default FastAPI port
 EXPOSE 8000
 
 # Container healthcheck for readiness (fallback to / if /health is not present)
@@ -89,8 +99,6 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 USER appuser
 
 # Default entrypoint + command:
-# - entrypoint sets up env and then execs the given command
-# - cmd runs uvicorn against the FastAPI app by default
 ENV APP_MODULE="src.codex.api.app:app"
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]

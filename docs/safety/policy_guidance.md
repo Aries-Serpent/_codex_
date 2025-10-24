@@ -1,6 +1,6 @@
 # Safety policy guidance
 
-The `codex_ml` demos ship with a default policy (`configs/safety/policy.yaml`) that implements
+The `codex_ml` demos ship with a default policy (`configs/base/safety/policy.yaml`) that implements
 three layers of defence:
 
 1. **Prompt/output sanitisation** (`sanitize_prompt`, `sanitize_output`) redacts secrets and PII
@@ -55,6 +55,35 @@ Key points:
 * **Custom policy file** – `codex generate --safety-policy path/to/policy.yaml`.
 * **External classifier** – `CODEX_SAFETY_CLASSIFIER=my.module:allow_fn`. The callable should return
   truthy to allow content; falsy values are treated as `block` actions.
+
+### Moderation adapter
+
+In addition to the rule-driven filters above, `TrainingRunConfig.safety.moderation` enables a
+moderation adapter that vets prompts and generated text before they are used. The adapter checks a
+pluggable provider (e.g. `module:function`) and always falls back to the repository’s offline policy
+(`configs/base/safety/policy.yaml`) so the checks succeed without network access. The core options are:
+
+| Field | Description |
+| --- | --- |
+| `enabled` | Toggle moderation for the run. |
+| `provider` | Optional `module:function` for custom classifiers (default `offline`). |
+| `rules_path` | Override path to a policy file for the offline fallback. |
+| `fail_open` | Allow execution to continue when moderation blocks content (event is logged). |
+| `audit_log` | NDJSON file capturing moderation decisions for auditors. |
+| `label` | Free-form tag written to audit records (defaults to `default`). |
+
+Example Hydra override:
+
+```bash
+python -m codex_ml.cli.train training.safety.moderation.enabled=true \
+  training.safety.moderation.audit_log=artifacts/safety/moderation.ndjson
+```
+
+The CLI also exposes the adapter. To moderate prompts and outputs offline:
+
+```bash
+python -m codex_ml.cli.infer --prompt "hello" --moderation --moderation-audit-log artifacts/safety/moderation.ndjson
+```
 
 ## Logging & auditing
 

@@ -235,12 +235,12 @@ def _scan_repo(root: Path) -> Tuple[Snapshot, Dict[str, int]]:
         parts += 1
     if (root / "tox.ini").exists():
         parts += 1
-    if (root / "noxfile.py").exists():
+    if (root / "configs/development/noxfile.py").exists():
         parts += 1
     if (root / ".pre-commit-config.yaml").exists():
         parts += 1
     if (
-        (root / "requirements.lock").exists()
+        (root / "requirements/lock.txt").exists()
         or (root / "uv.lock").exists()
         or (root / "poetry.lock").exists()
     ):

@@ -15,7 +15,7 @@ functions.
 ```bash
 export CODEX_ENABLE_TOKENIZER_CLI=1
 python -m codex_ml.cli.main tokenizer train \
-  --config configs/tokenizer/offline/tiny_vocab.yaml \
+  --config configs/training/tokenizer/offline/tiny_vocab.yaml \
   --output-dir ./artifacts/tokenizer \
   --seed 42 \
   --force

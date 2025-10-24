@@ -2,4 +2,6 @@
 
 from __future__ import annotations
 
-__all__: list[str] = []
+from .chat_model import ChatModel, ChatModelConfig
+
+__all__ = ["ChatModel", "ChatModelConfig"]

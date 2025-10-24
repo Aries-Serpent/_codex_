@@ -302,7 +302,7 @@ def main(argv=None) -> int:
             if not precommit_status.get("available"):
                 print(
                     "[codex_setup] pre-commit is not available; install the pinned version "
-                    "from requirements-dev.txt before running gates.",
+                    "from requirements/dev.txt before running gates.",
                     file=sys.stderr,
                 )
         elif args.cmd == "verify":

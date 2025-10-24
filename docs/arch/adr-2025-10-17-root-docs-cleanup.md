@@ -17,7 +17,7 @@ removal intent alongside deterministic tombstone identifiers for traceability.
 Archive the following files from the repository root effective 2025-10-17, using the plan recorded at
 `.codex/evidence/artifacts/archive_plan_root_cleanup_2025-10-17.json`:
 
-- `Codex_Questions.md` → tombstone `8e3531b9-c839-4a07-9dec-507c36136eb1`
+- `docs/reference/codex_questions.md` → tombstone `8e3531b9-c839-4a07-9dec-507c36136eb1`
 - `_codex_status_update-0C_base_-2025-09-27.md` → tombstone `ff1f4dc7-e9a9-4db1-9730-cd268ed4fd09`
 - `_codex_status_update-2025-10-06.md` → tombstone `1bd4c1f1-6165-4d8e-8a25-5121b511d577`
 - `_codex_status_update-2025-10-16.md` → tombstone `2d4d2f9d-e63f-4e69-8bb6-fe1158435431`
@@ -47,4 +47,4 @@ The archive operations are tracked in `.codex/evidence/archive_ops.jsonl`, inclu
 ## Provenance & Compliance
 - **Provenance**: `.codex/evidence/provenance/root-cleanup/intoto.jsonl`, `.codex/evidence/provenance/root-cleanup/slsa.json`
 - **SBOM impact**: no executable components involved; SBOM unchanged.
-- **Change log**: see `CHANGELOG.md` entry dated 2025-10-17 under the Unreleased section.
+- **Change log**: see `../CHANGELOG.md` entry dated 2025-10-17 under the Unreleased section.

@@ -12,6 +12,7 @@ stdlib-only JSON logging + argparse/subprocess helpers for Codex CLIs.
 from __future__ import annotations
 
 import argparse
+import contextvars
 import functools
 import json
 import logging
@@ -21,9 +22,92 @@ import subprocess
 import sys
 import time
 import traceback
+import uuid
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
+
+from codex_ml.logging.session_logger import DEFAULT_LOG_DIR, SessionLogger
+
+_SESSION_ID_ENV = "CODEX_SESSION_ID"
+_SESSION_LOG_DIR_ENV = "CODEX_SESSION_LOG_DIR"
+
+_session_id_ctx: contextvars.ContextVar[str | None] = contextvars.ContextVar(
+    "codex_session_id", default=None
+)
+_SESSION_LOGGER_DISABLED = object()
+_session_logger_ctx: contextvars.ContextVar[
+    SessionLogger | object | None
+] = contextvars.ContextVar("codex_session_logger", default=None)
+
+
+def _session_log_dir() -> Path:
+    raw = os.getenv(_SESSION_LOG_DIR_ENV)
+    if raw:
+        try:
+            return Path(raw).expanduser()
+        except Exception:  # pragma: no cover - defensive fallback
+            return DEFAULT_LOG_DIR
+    return DEFAULT_LOG_DIR
+
+
+def get_session_id() -> str:
+    session_id = _session_id_ctx.get()
+    if session_id:
+        return session_id
+    env_value = os.getenv(_SESSION_ID_ENV)
+    if env_value:
+        _session_id_ctx.set(env_value)
+        return env_value
+    generated = str(uuid.uuid4())
+    _session_id_ctx.set(generated)
+    return generated
+
+
+def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str:
+    resolved = str(session_id)
+    _session_id_ctx.set(resolved)
+    directory = Path(log_dir).expanduser() if log_dir is not None else _session_log_dir()
+    try:
+        _session_logger_ctx.set(SessionLogger(resolved, directory))
+    except OSError:
+        _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
+    return resolved
+
+
+def get_session_logger() -> SessionLogger:
+    logger = _session_logger_ctx.get()
+    if isinstance(logger, SessionLogger):
+        return logger
+    if logger is _SESSION_LOGGER_DISABLED:
+        raise RuntimeError("Session logging unavailable")
+    session_id = get_session_id()
+    try:
+        logger = SessionLogger(session_id, _session_log_dir())
+    except OSError as exc:
+        _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
+        raise RuntimeError("Session logging unavailable") from exc
+    _session_logger_ctx.set(logger)
+    return logger
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    if isinstance(value, Mapping):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
+        return [_json_safe(v) for v in value]
+    return str(value)
+
+
+def _prepare_session_payload(data: Mapping[str, Any]) -> dict[str, Any]:
+    prepared: dict[str, Any] = {}
+    for key, value in data.items():
+        prepared[str(key)] = _json_safe(value)
+    return prepared
+
 
 # -----------------------
 # JSON logging primitives
@@ -88,12 +172,19 @@ class JsonFormatter(logging.Formatter):
             ):
                 continue
             payload[k] = v
+        payload.setdefault("session.id", get_session_id())
         return json.dumps(payload, ensure_ascii=False)
 
 
 def init_json_logging(
-    level_env: str = "CODEX_LOG_LEVEL", default_level: str = "INFO"
+    level_env: str = "CODEX_LOG_LEVEL",
+    default_level: str = "INFO",
+    *,
+    session_id: str | None = None,
+    session_log_dir: Path | str | None = None,
 ) -> logging.Logger:
+    resolved_session = session_id or os.environ.get(_SESSION_ID_ENV) or get_session_id()
+    set_session_id(str(resolved_session), log_dir=session_log_dir)
     level_name = os.environ.get(level_env, default_level).upper()
     level = getattr(logging, level_name, logging.INFO)
     root = logging.getLogger()
@@ -109,6 +200,16 @@ def init_json_logging(
 def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
     rec = {"event.name": event}
     rec.update(fields)
+    rec.setdefault("session.id", get_session_id())
+    try:
+        session_logger = get_session_logger()
+    except Exception:  # pragma: no cover - defensive
+        session_logger = None
+    else:
+        try:
+            session_logger.log_event(event, _prepare_session_payload(rec))
+        except Exception:  # pragma: no cover - defensive
+            pass
     logger.info(rec)
 
 

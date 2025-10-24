@@ -6,11 +6,45 @@ copy-pasteable and avoid network access by default.
 
 ## 1. Bootstrap the environment
 
+### Prerequisites
+
+* Python 3.10+
+* `pre-commit` and `nox` (installed globally or via the project extras)
+
+### Create a virtual environment
+
 ```bash
 uv sync --extra test --extra cli  # installs optional deps and the hydra.extra pytest plugin
 source .venv/bin/activate
-# or, if you prefer pip: pip install -e '.[test]' to stage the same extras
+# or, if you prefer pip:
+pip install -e '.[test-core]'
 ```
+
+List the consolidated Phase 4 nox sessions:
+
+```bash
+nox --noxfile configs/development/noxfile.py --list
+```
+
+Install additional extras when you require GPU / tracking support:
+
+```bash
+pip install -e '.[test,tracking,ml]'
+```
+
+### Offline-first testing
+
+Use the offline matrix to validate the environment without network access:
+
+```bash
+nox --noxfile configs/development/noxfile.py -s tests
+nox --noxfile configs/development/noxfile.py -s coverage
+nox --noxfile configs/development/noxfile.py -s offline_check
+```
+
+If pytest reports skips such as `Skipped: could not import 'transformers'`,
+install the optional extras documented in
+[`docs/optional_dependencies.md`](optional_dependencies.md).
 ## 1.5 Explore the repository layout
 
 ```bash
@@ -122,7 +156,7 @@ Prefer a saved preset? Compose the offline-friendly sweep stub and layer any
 extra overrides you need:
 
 ```bash
-python -m codex_ml.cli.hydra_main --config-path conf/examples --config-name sweep_offline -m \
+python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline -m \
   training.max_epochs=1
 ```
 
@@ -157,7 +191,7 @@ tail -n +1 .codex/metrics.ndjson
 You can also emit an aggregated evaluation record straight from the CLI:
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
+codex evaluate --config configs/evaluation/base.yaml --log-metrics artifacts/eval_runs.ndjson
 ```
 
 Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits

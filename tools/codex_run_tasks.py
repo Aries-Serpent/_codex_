@@ -2,7 +2,7 @@
 
 This utility is intended for local workflows where tasks correspond to pytest
 selections (e.g. ``tests/cli/test_cli_viewer.py``).  Each task is executed
-sequentially; failing tasks append a question block to ``Codex_Questions.md``
+sequentially; failing tasks append a question block to ``docs/reference/codex_questions.md``
 so maintainers can follow up later.
 
 Features:
@@ -36,7 +36,7 @@ CommitResult = Tuple[bool, str]
 REPO = Path(__file__).resolve().parents[1]
 
 # Output files (relative to project root)
-QUESTION_FILE = "Codex_Questions.md"
+QUESTION_FILE = "docs/reference/codex_questions.md"
 CHANGELOG = "CHANGELOG_Codex.md"
 COMMIT_COMMENT_FILE = "codex_commit_comment.txt"
 
@@ -171,7 +171,7 @@ def gather_codex_questions(project_root: PathLike = REPO) -> str:
     Returns
     -------
     str
-        Contents of the Codex_Questions.md file, or empty string if not found
+        Contents of the docs/reference/codex_questions.md file, or empty string if not found
     """
     project_root = Path(project_root)
     path = project_root / QUESTION_FILE

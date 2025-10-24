@@ -67,4 +67,4 @@ The Oct-05 update also called out structural risks—distributed training, RLHF 
 
 1. Backfill regression tests for system-metrics logging and offline model loading to guard recent changes.
 2. Extend metrics sinks to emit CSV/Parquet alongside NDJSON so the evaluation gap is fully closed.
-3. Document outstanding bandit findings and deferred capabilities in `DEFERRED.md` to keep remediation ownership explicit.
+3. Document outstanding bandit findings and deferred capabilities in `docs/deferred_items.md` to keep remediation ownership explicit.

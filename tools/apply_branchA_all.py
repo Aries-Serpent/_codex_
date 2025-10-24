@@ -628,14 +628,14 @@ def B5():
 
 # -------------------- ΔB6: local nox session for tests with coverage --------------------
 def B6():
-    nox = ROOT / "noxfile.py"
+    nox = ROOT / "configs" / "development" / "noxfile.py"
     base = dedent(
         """\
         import nox
         @nox.session
         def tests(session):
             session.install('-e','.[dev]') if (session.env.get('DEV_DEPS')=='1') else session.install('pytest','pytest-cov')
-            session.run('pytest','-q','--cov=src','--cov-report=term-missing')
+            session.run('pytest','-q','--cov=src/codex_ml','--cov-report=term-missing')
     """
     )
     if not nox.exists():

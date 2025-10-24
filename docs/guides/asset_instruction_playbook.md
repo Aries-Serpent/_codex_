@@ -7,8 +7,8 @@ This playbook codifies how to turn the Repo Map, Fix folder cadence, and Securit
    - Run `tree -a -L 2 > reports/repo_map.md` (or the equivalent scripted task in `codex_workflow.py`) to capture the top-level structure.
    - Skim `reports/repo_map.md` for directories with sparse test/docs coverage and note candidates for quick wins.【F:reports/repo_map.md†L1-L29】
 2. Cross-reference open opportunities:
-   - Read `OPEN_QUESTIONS.md` and highlight unresolved menu items or questions that align with the candidate directories.【F:OPEN_QUESTIONS.md†L1-L28】
-   - Capture the chosen quick wins in your run notes and update `OPEN_QUESTIONS.md` once you ship the improvement.
+   - Read `docs/troubleshooting/open_questions.md` and highlight unresolved menu items or questions that align with the candidate directories.【F:docs/troubleshooting/open_questions.md†L1-L28】
+   - Capture the chosen quick wins in your run notes and update `docs/troubleshooting/open_questions.md` once you ship the improvement.
 3. Summarize the mapping outcome by appending a short bullet list of “next touch” targets to `reports/branch_analysis.md` so the next run inherits the context.
 
 ## 2. Fix Folder Flow
@@ -26,4 +26,4 @@ This playbook codifies how to turn the Repo Map, Fix folder cadence, and Securit
 3. Convert high-risk findings into mitigations:
    - Draft a patch per finding (following the Fix Folder flow above) and note containment steps or compensating controls.
    - Reference the Semgrep rule ID and the corresponding STRIDE threat in the mitigation notes so reviewers can trace the rationale end-to-end.
-4. Close the loop by updating `OPEN_QUESTIONS.md` with any remaining security follow-ups and by appending a summary line to the weekly status update (`reports/_codex_status_update-YYYY-MM-DD.md`).
+4. Close the loop by updating `docs/troubleshooting/open_questions.md` with any remaining security follow-ups and by appending a summary line to the weekly status update (`reports/_codex_status_update-YYYY-MM-DD.md`).

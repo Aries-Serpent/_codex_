@@ -120,9 +120,9 @@ def _resolve_config_dir(config_dir: Path) -> Path:
 
 
 def load_solution_manifest(config_dir: Path | None = None) -> SolutionManifestConfig:
-    """Load the solution manifest definition from ``config/d365``."""
+    """Load the solution manifest definition from ``configs/deployment/d365``."""
 
-    base = _resolve_config_dir(config_dir or Path("config/d365"))
+    base = _resolve_config_dir(config_dir or Path("configs/deployment/d365"))
     config_path = base / "solution_manifest.json"
     if not config_path.exists():
         return SolutionManifestConfig()

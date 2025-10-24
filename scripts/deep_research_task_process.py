@@ -135,7 +135,7 @@ INGESTION_DIR = REPO_ROOT / "src" / "ingestion"
 INGESTOR_PY = INGESTION_DIR / "__init__.py"
 INGESTION_README = INGESTION_DIR / "README.md"
 PRECOMMIT_CFG = REPO_ROOT / ".pre-commit-config.yaml"
-CONTRIBUTING_MD = REPO_ROOT / "CONTRIBUTING.md"
+CONTRIBUTING_MD = REPO_ROOT / "docs" / "governance" / "CONTRIBUTING.md"
 README_MD = REPO_ROOT / "README.md"
 SESSION_LOGGER_PY = REPO_ROOT / "src" / "codex" / "logging" / "session_logger.py"
 VIEWER_PY = REPO_ROOT / "src" / "codex" / "logging" / "viewer.py"
@@ -532,16 +532,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pre-commit==4.0.1 pytest==8.4.1 pytest-cov==7.0.0 click bandit detect-secrets
-          if [ -f requirements.lock ]; then
-            pip install -r requirements.lock
-          elif [ -f requirements.txt ]; then
-            pip install -r requirements.txt
+          if [ -f requirements/lock.txt ]; then
+            pip install -r requirements/lock.txt
+          elif [ -f requirements/base.txt ]; then
+            pip install -r requirements/base.txt
           fi
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f requirements/dev.txt ]; then pip install -r requirements/dev.txt; fi
       - name: Run linters and tests
         run: |
           pre-commit run --all-files
-          pytest -q --cov=src --cov-report=html:htmlcov
+          pytest -q --cov=src/codex_ml --cov-report=html:htmlcov
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v3
@@ -582,7 +582,7 @@ Thank you for considering contributing to this project!
 
 1. Clone the repository
 2. (Optional) Create a virtual environment
-3. Install development dependencies: `pip install -e "[dev]"` (or `pip install -r requirements-dev.txt`)
+3. Install development dependencies: `pip install -e "[dev]"` (or `pip install -r requirements/dev.txt`)
 4. Install pre-commit hooks: `pre-commit install`
 
 ## Development Workflow

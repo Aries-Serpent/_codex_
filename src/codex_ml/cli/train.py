@@ -8,9 +8,6 @@ from pathlib import Path
 from typing import Any, Dict
 
 import hydra
-from codex_ml.train_loop import run_training
-from hydra.utils import to_absolute_path
-from omegaconf import DictConfig, ListConfig, OmegaConf
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -18,6 +15,9 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.train_loop import run_training
+from hydra.utils import to_absolute_path
+from omegaconf import DictConfig, ListConfig, OmegaConf
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -110,6 +110,12 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     telemetry_port = telemetry_cfg.get("port")
     if telemetry_port is not None:
         telemetry_port = int(telemetry_port)
+    metrics_enabled_cfg = telemetry_cfg.get("metrics_enable", telemetry_cfg.get("metrics_enabled"))
+    if isinstance(metrics_enabled_cfg, bool) and metrics_enabled_cfg:
+        os.environ.setdefault("CODEX_METRICS_ENABLED", "1")
+    metrics_port_cfg = telemetry_cfg.get("metrics_port")
+    if metrics_port_cfg is not None:
+        os.environ["CODEX_METRICS_PORT"] = str(metrics_port_cfg)
     json_disable = telemetry_cfg.get("json_disable", telemetry_cfg.get("json_disabled"))
     if isinstance(json_disable, bool) and json_disable:
         os.environ["CODEX_TELEMETRY_JSON_DISABLE"] = "1"
@@ -130,6 +136,15 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         pass
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
+
+    session_id_cfg = cfg.get("session_id") or telemetry_cfg.get("session_id")
+    if session_id_cfg and not os.getenv("CODEX_SESSION_ID"):
+        os.environ["CODEX_SESSION_ID"] = str(session_id_cfg)
+
+    dp_section = cfg.get("differential_privacy")
+    if not dp_section:
+        dp_section = cfg.get("dp")
+    dp_cfg = _cfg_to_dict(dp_section) if dp_section is not None else {}
 
     reproducibility_cfg = _cfg_to_dict(cfg.get("reproducibility"))
     deterministic_cudnn = bool(reproducibility_cfg.get("cudnn_deterministic", False))
@@ -187,6 +202,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         checkpoint_dir=checkpoint_dir,
         resume=bool(resume),
         scheduler_cfg=scheduler_cfg or None,
+        dp_config=dp_cfg or None,
         deterministic_cudnn=deterministic_cudnn,
         retention_policy=retention_policy,
         run_config=OmegaConf.to_container(cfg, resolve=True),
@@ -195,7 +211,9 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     return int(epochs), checkpoint_dir
 
 
-@hydra.main(version_base=None, config_path="../../../configs/train", config_name="default")
+@hydra.main(
+    version_base=None, config_path="../../../configs/training/profiles", config_name="default"
+)
 def main(cfg: DictConfig) -> None:
     logger = init_json_logging()
     arg_list = sys.argv[1:]

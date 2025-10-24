@@ -290,7 +290,7 @@ def main() -> None:
             errors_log,
             "3: Best-Effort Construction — create default.yaml",
             e,
-            "configs/default.yaml",
+            "configs/base/default.yaml",
         )
 
     # 3e: Append packaging metadata
@@ -367,7 +367,7 @@ def main() -> None:
                  to support CPU-only systems.
                - Append `HFTokenizerAdapter` implementation to
                  `src/codex_ml/interfaces/tokenizer.py` if absent.
-               - Create `configs/default.yaml` with safe training defaults and LoRA
+               - Create `configs/base/default.yaml` with safe training defaults and LoRA
                  parameters.
                - Append packaging metadata and CLI entry points to `pyproject.toml`.
 

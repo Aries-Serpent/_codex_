@@ -3,6 +3,7 @@
 Detects documentation across markdown, reStructuredText, and
 documentation generators (MkDocs, Sphinx).
 """
+
 from __future__ import annotations
 
 
@@ -38,9 +39,12 @@ def detect(file_index: dict) -> dict:
             doc_configs.append(path)
 
     # Root-level docs (README, etc.)
-    root_docs = [
-        f["path"] for f in files if f["path"] in ["README.md", "CONTRIBUTING.md", "CHANGELOG.md"]
-    ]
+    root_doc_candidates = {
+        "README.md",
+        "docs/governance/CONTRIBUTING.md",
+        "docs/CHANGELOG.md",
+    }
+    root_docs = [f["path"] for f in files if f["path"] in root_doc_candidates]
 
     # Pattern detection
     found_patterns = []

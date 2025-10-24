@@ -30,14 +30,14 @@ STUB_PATTERNS = [
 ]
 
 SEARCH_PATTERNS = [
-    ("requirements", ["requirements.txt", "pyproject.toml", "Pipfile", "environment.yml"]),
+    ("requirements", ["requirements/base.txt", "pyproject.toml", "Pipfile", "environment.yml"]),
     ("docker", ["Dockerfile"]),
     ("notebooks", ["*.ipynb"]),
     ("tests", ["tests/**", "test_*.py"]),
     ("tokenizer", ["*tokenizer*.py", "tokenization/**", "src/tokenizer/**"]),
     ("model", ["model/**", "src/model/**", "*model*.py"]),
     ("train", ["train*.py", "src/training/**"]),
-    ("ci", [".github/**", "noxfile.py", "tox.ini"]),
+    ("ci", [".github/**", "configs/development/noxfile.py", "tox.ini"]),
     ("checkpoints", ["checkpoint*.py", "src/utils/checkpoint.py"]),
     (
         "logging",

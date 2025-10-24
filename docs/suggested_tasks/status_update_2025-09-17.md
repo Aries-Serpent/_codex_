@@ -26,7 +26,7 @@
 | **Logging & Monitoring** | **Partially Implemented** | Logging is configured via `logging_config.py` and `codex_ml.monitoring.codex_logging` (not fully inspected). `training.py` writes JSON metrics; optional MLflow integration is available via `tracking` extra in pyproject[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.optional,peft%3E%3D0.10.0). | Logging integration for TensorBoard/W&B is optional; default path and retention are unclear. System metrics via `psutil`/NVML are absent. | Without monitoring, long training jobs provide little visibility; missing logs hamper debugging. | Add a `monitoring` module using `psutil` to log CPU/GPU usage and integrate with `codex-ml-cli`. Provide a unified `codex_logger` with structured JSON logging and optional W&B offline mode. | Revert by disabling new monitoring calls; maintain existing logging functionality. |
 | **Checkpointing & Resume** | **Partially Implemented** | `CheckpointManager` (from `codex_ml.utils.checkpointing`) and `save_checkpoint` helper in training module save model/optimizer/scheduler state and write sidecar hashes[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20save_checkpoint,checkpoint%20and%20emit%20hashing%20sidecars). | No `load_checkpoint` counterpart; resuming training requires manual code. Best‑K retention or epoch rotation not supported. | Risk of corrupted checkpoints; inability to resume training after interruption; silent mismatch of model architecture. | Implement `CheckpointManager.load_latest()` with hash verification. Add CLI flag `--resume-from` and tests for resume. Provide retention policy (keep last N checkpoints). | Leave current saving logic; revert by ignoring new resume features. |
 | **Data Handling** | **Implemented** | `ingestion` module uses `ingest` function to read text corpora with auto encoding[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/tokenization/train_tokenizer.py#:~:text=def%20_iter_text%28files%3A%20Sequence%5Bstr%5D%29%20,txt%20else%3A%20yield%20from%20txt). Dataset loaders are defined via registry (`codex_ml.data.registry`) referenced in pyproject entry point; dataset splitting/deterministic shuffling is likely implemented there. | Data caching/shuffling details are hidden; no dataset versioning. No support for streaming large datasets. | Potential nondeterministic shuffling; risk of loading entire dataset into memory. | Add dataset manifest and use `datasets` library with streaming; implement deterministic shuffle seeded by config; support caching in memory/disk. | Revert by disabling caching changes; rely on existing ingestion function. |
-| **Security & Safety** | **Partially Implemented** | `codex_ml.safety` provides `SafetyConfig`, `SafetyFilters` and `SafetyViolation`, used in training to sanitize prompts[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=from%20codex_ml,codex_logging%20import). A `safety` directory exists but is mostly placeholder. `.env.example` shows environment variables (e.g., `HF_ENDPOINT`, `HF_TOKEN`) but sensitive tokens are not checked into repo. `pyproject.toml` defines dependency groups; `requirements.lock` locks versions[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,). | No automated secrets scanning or dependency vulnerability checking. Prompt safety filters may be incomplete. `.env` file exists (should be git‑ignored). | Secrets or API keys could leak; dependency updates may introduce vulnerabilities. | Add `pre-commit` hook with GitGuardian/secrets scanning and Safety DB checks. Harden `SafetyFilters` with robust regex; test injection prompts. Remove `.env` from repo and rely on `.env.example` only. | Roll back by disabling new pre‑commit checks; keep existing safety filters. |
+| **Security & Safety** | **Partially Implemented** | `codex_ml.safety` provides `SafetyConfig`, `SafetyFilters` and `SafetyViolation`, used in training to sanitize prompts[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=from%20codex_ml,codex_logging%20import). A `safety` directory exists but is mostly placeholder. `.env.example` shows environment variables (e.g., `HF_ENDPOINT`, `HF_TOKEN`) but sensitive tokens are not checked into repo. `pyproject.toml` defines dependency groups; `requirements/lock.txt` locks versions[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,). | No automated secrets scanning or dependency vulnerability checking. Prompt safety filters may be incomplete. `.env` file exists (should be git‑ignored). | Secrets or API keys could leak; dependency updates may introduce vulnerabilities. | Add `pre-commit` hook with GitGuardian/secrets scanning and Safety DB checks. Harden `SafetyFilters` with robust regex; test injection prompts. Remove `.env` from repo and rely on `.env.example` only. | Roll back by disabling new pre‑commit checks; keep existing safety filters. |
 | **Internal CI/Test** | **Implemented** | Extensive pytest suite under `tests` directory (4k+ lines) covers introspection, checkpointing, data loaders, etc.[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents/tests#:~:text=%5B%20%7B%20,Serpent%2F_codex_%2Fblob%2Fmain%2Ftests%2F__init__.py%22%20%7D). `pytest.ini` configures markers and environment variables, and `pyproject.toml` defines test extras[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,Serpent%2F_codex_%2Fblob%2Fmain%2Fpytest.ini%22). Coverage and Ruff are configured. | Some directories (e.g., `tests/analysis`) are empty; test coverage for tokenization and training edge cases appears limited. No `tox` or `nox` gating sessions by default. | Gaps may allow breaking changes to slip; tests may rely on optional dependencies. | Add nox sessions for linting (`ruff`), type checking (`mypy`), and unit tests with coverage threshold (e.g., 80%). Write tests for config validation and resume. | Revert by running old `pytest` command without nox. |
 | **Deployment** | **Partially Implemented** | `pyproject.toml` defines console scripts for CLI (`codex-ml-cli`, `codex-train`, `codex-tokenizer`, etc.)[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject.scripts%5D%20codex,config%20%3D%20%22codex_ml.cli.validate%3Amain). There is a `deploy` directory (Docker and Helm charts) but no production infrastructure; packaging uses setuptools with dynamic versioning[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject%5D%20name%20%3D%20,Serpent%22). | No published Docker images; packaging not tested on PyPI; missing `setup.cfg` for data files; no container security scan. | Users cannot easily deploy; risk of misconfigured environment. | Provide a `Dockerfile` with minimal runtime environment; add GitHub CI to build/test images offline (not executed in cost‑incurring runner). Create an `__main__.py` to allow `python -m codex`. | Revert by removing Dockerfile; keep packaging as library only. |
 | **Documentation & Examples** | **Partially Implemented** | `docs` and `documentation` directories exist, as well as `notebooks` and `examples`. README may provide overview. | Many doc pages are empty placeholders; diagrams/outlines absent; missing quickstart for training and tokenizer. | New users may struggle to understand architecture. | Write README sections on architecture, configuration, training workflow; add example notebooks for training a small model; use Sphinx or MkDocs. Generate diagrams with Mermaid. | Keep current docs; revert by discarding new doc files. |
@@ -49,7 +49,7 @@
 12. **Lack of Reproducibility Features:** Seeds are set in some modules, but environment capture, hardware fingerprinting and deterministic settings are inconsistent.
 13. **Undefined Test Gates:** Despite an extensive pytest suite, there is no `nox`/`tox` gating; coverage thresholds are not enforced.
 14. **Potential License Conflicts:** The repository includes multiple `LICENSES` directories; overlapping licenses may complicate packaging and distribution.
-15. **Dependency Pinning vs. Flexibility:** Pyproject pins some packages loosely (e.g., `transformers>=4.41`), but `requirements.lock` pins versions; mixing these could lead to inconsistent environments[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,).
+15. **Dependency Pinning vs. Flexibility:** Pyproject pins some packages loosely (e.g., `transformers>=4.41`), but `requirements/lock.txt` pins versions; mixing these could lead to inconsistent environments[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,).
 16. **Unused Files and Artifacts:** There are numerous artifacts under `artifacts` and `logs` folders that may bloat the repository over time; they should be git‑ignored or relocated.
 17. **Scripts Without Tests:** Several CLI scripts (`codex-import-ndjson`, `codex-generate`, `codex-infer`) appear in entry points but lack dedicated tests.
 18. **No Automatic Release Process:** Without a CI pipeline, packaging and versioning must be done manually; dynamic versioning via `_version.py` may misbehave.
@@ -235,7 +235,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 To enforce quality offline (no external GitHub actions), use **pytest** and **nox**. Example sessions:
 
 ```python
-# file: noxfile.py
+# file: configs/development/noxfile.py
 import nox
 
 @nox.session
@@ -253,15 +253,15 @@ def typecheck(session: nox.Session) -> None:
 def tests(session: nox.Session) -> None:
     session.install("pytest==8.3", "pytest-cov")
     session.install("-r", "requirements/base.txt")
-    session.install("-r", "requirements-dev.txt")
-    session.run("pytest", "--cov=src", "--cov-fail-under=80")
+    session.install("-r", "requirements/dev.txt")
+    session.run("pytest", "--cov=src/codex_ml", "--cov-fail-under=80")
 ```
 Local gating commands:
 
 - `pytest -q` runs unit tests and should pass without hitting any GitHub Action.
 - `nox -s lint typecheck tests` runs linting, type checking and tests offline.
 - `ruff` and `mypy` ensure style and types.
-- Commit `f0a1d82` reinstates the pre-commit/nox gates: versions are pinned in `requirements-dev.txt`, availability checks write to `.codex/session_logs.db`, and coverage JSON reports are archived under `artifacts/coverage/<timestamp>/` with hashes logged for traceability.
+- Commit `f0a1d82` reinstates the pre-commit/nox gates: versions are pinned in `requirements/dev.txt`, availability checks write to `.codex/session_logs.db`, and coverage JSON reports are archived under `artifacts/coverage/<timestamp>/` with hashes logged for traceability.
 
 Mapping to ML Test Score categories:
 
@@ -281,7 +281,7 @@ Mapping to ML Test Score categories:
 | **Environment capture** | *Missing* | No code records Python version, OS, hardware, or library hashes. |
 | **Code versioning** | *Implemented* | `pyproject.toml` sets dynamic versioning from `_version.py`[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/pyproject.toml#:~:text=%5Bproject%5D%20name%20%3D%20,Serpent%22); sidecar hashes are written when saving checkpoints[raw.githubusercontent.com](https://raw.githubusercontent.com/Aries-Serpent/_codex_/main/src/codex/training.py#:~:text=def%20save_checkpoint,checkpoint%20and%20emit%20hashing%20sidecars). |
 | **Data versioning** | *Missing* | Datasets are loaded directly from files without checksums or manifests; ingestion lacks dataset version tags. |
-| **Dependency locking** | *Partial* | `requirements.lock` pins versions[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,), but `pyproject.toml` uses flexible `>=` constraints; there is no `uv` or `pip-tools` integration. |
+| **Dependency locking** | *Partial* | `requirements/lock.txt` pins versions[api.github.com](https://api.github.com/repos/Aries-Serpent/_codex_/contents#:~:text=,), but `pyproject.toml` uses flexible `>=` constraints; there is no `uv` or `pip-tools` integration. |
 | **Hardware determinism** | *Missing* | Mixed precision training and GPU use may introduce nondeterminism; no `torch.use_deterministic_algorithms` call. |
 | **Result determinism** | *Partial* | Seeds exist but evaluation metrics may differ across runs due to data shuffling and dropout. |
 | **RNG capture** | *Missing* | RNG state is not saved with checkpoints; cannot reproduce training exactly. |
@@ -315,14 +315,14 @@ What are the possible causes, and how can this be resolved while preserving inte
      1.1 Open and read the project's `README.md` and `pyproject.toml` to understand package goals and entry points.
      1.2 List the contents of the `src` and `configs` directories and record existing modules, noting any duplicate or stub files (e.g., `training.py01`).
      1.3 Create a `change_log.md` in the project root where every subsequent modification will be logged.
-  
+
   # Phase 2 – Search & Mapping
   2. **Locate target modules**
      2.1 Search for `checkpointing.py` or similar utilities using file globbing; if found, open and inspect for `save_checkpoint` and missing `load` functions.
      2.2 Identify duplicate training implementations (e.g., `training.py` vs. `training.py01`) and map all usages via `grep`/`ripgrep`.
      2.3 Search for data loading functions in `codex_ml/data/registry.py` and note shuffle or manifest behaviour.
      2.4 Inspect monitoring/logging modules to check for psutil integration.
-  
+
   # Phase 3 – Best‑Effort Construction
   3. **Implement missing features**
      3.1 In `src/codex_ml/utils/checkpointing.py`, add a `load_latest` or `load_checkpoint` function to restore model, optimizer and scheduler state.  Include robust error handling and ensure it writes details to `change_log.md`.
@@ -331,22 +331,22 @@ What are the possible causes, and how can this be resolved while preserving inte
      3.4 Modify the dataset loader in `src/codex_ml/data/registry.py` to shuffle deterministically based on a seed and write a simple manifest JSON.  Ensure this behaviour is documented in the loader’s docstring.
      3.5 Update the relevant CLIs (e.g., `codex-train`) to accept `--resume-from` and `--system-metrics` flags, wiring them to the new functions.
      3.6 Run the unit tests locally using `pytest -q` to verify that changes do not break existing functionality.  If any test fails, capture the error in the error capture log and attempt to fix.
-  
+
   # Phase 4 – Controlled Pruning
   4. **Prune unreachable features**
      4.1 If during the search you find modules like `monkeypatch` or `search` that contain only `.gitkeep`, document in `change_log.md` that these are deferred and remove any unused imports or references.  Provide the rationale for pruning.
      4.2 If certain optional integrations (e.g., HuggingFace Trainer) cannot be implemented due to missing dependencies, wrap their usage in clear error messages explaining which extra to install.
-  
+
   # Phase 5 – Error Capture
   5. **Standardize error reporting**
-     5.1 Wrap each file write or code refactor in a `try/except` block.  On exception, append an entry to `error_log.md` following this format:
+     5.1 Wrap each file write or code refactor in a `try/except` block.  On exception, append an entry to `docs/troubleshooting/error_log.md` following this format:
          "Question for ChatGPT-5 {{timestamp}}: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]. Context: [BRIEF_CONTEXT]. What are the possible causes, and how can this be resolved while preserving intended functionality?"
      5.2 Do not halt the entire script on errors; continue executing other tasks to gather maximum information.
-  
+
   # Phase 6 – Finalization
   6. **Wrap up and verify**
      6.1 Run linting (`ruff`) and type checking (`mypy`) to ensure code quality.  Record any issues in `change_log.md` and fix where feasible.
-     6.2 Execute `pytest --cov=src --cov-fail-under=80` and update test snapshots as needed.  Summarize results in `change_log.md`.
+     6.2 Execute `pytest --cov=src/codex_ml --cov-fail-under=80` and update test snapshots as needed.  Summarize results in `change_log.md`.
      6.3 Update the README with a changelog section summarising new features (resume, monitoring, deterministic shuffle) and any pruned modules.
      6.4 Perform a dry run of the CLI (`codex-train`) on a small dataset with the new flags to verify end‑to‑end functionality.
      6.5 Commit all changes locally; do not push or trigger any GitHub Actions.
@@ -565,7 +565,7 @@ def update_docs(readme_path: Path) -> None:
             "\n## Quickstart\n\n"
             "This quickstart demonstrates how to train a tokenizer, train a model and evaluate it using the new configuration files.\n\n"
             "\u0060\u0060\u0060bash\n"
-            "yes \"Hello Codex\" | codex_cli tokenizer train --config configs/tokenization/base.yaml\n"
+            "yes \"Hello Codex\" | codex_cli tokenizer train --config configs/training/tokenization/base.yaml\n"
             "codex_cli train --config configs/training/base.yaml\n"
             "codex_cli evaluate tinyllama-offline path/to/eval.jsonl --metrics accuracy --output_csv results.csv\n"
             "\u0060\u0060\u0060\n"
@@ -621,7 +621,7 @@ def main() -> None:
     create_tests(project_root / "tests")
 
     # Update noxfile
-    nox_path = project_root / "noxfile.py"
+    nox_path = project_root / "configs" / "development" / "noxfile.py"
     if nox_path.exists():
         update_noxfile(nox_path)
 

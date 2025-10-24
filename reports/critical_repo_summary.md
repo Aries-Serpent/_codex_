@@ -9,7 +9,7 @@
 - **Safety & Compliance**: Central safety layer offering prompt/output sanitisation, sandbox execution, and configurable policy enforcement that is invoked by training routines by default.【F:README.md†L146-L194】【F:src/codex_ml/safety/__init__.py†L1-L12】
 - **Internal Tools API**: FastAPI service with enforced API keys, request tracing, dry-run toggles, hygiene scanning, simulated test execution, and pull-request workflows, complete with contract tests for regression coverage.【F:services/ita/app/main.py†L1-L109】【F:services/ita/tests/test_endpoints.py†L1-L64】
 - **Bridge Tooling**: Copilot extension shim, MCP skeleton, and governance guides that codify how Copilot can safely invoke the shared ITA endpoints; emphasises audited interactions and operational policies.【F:docs/bridge/overview.md†L3-L65】【F:copilot/extension/README.md†L1-L28】
-- **Operational Discipline**: Lockfiles, deterministic audit scripts, and documentation about offline-first testing and coverage gating to align with Codex deployment policies.【F:README.md†L95-L143】【F:OPEN_QUESTIONS.md†L1-L29】
+- **Operational Discipline**: Lockfiles, deterministic audit scripts, and documentation about offline-first testing and coverage gating to align with Codex deployment policies.【F:README.md†L95-L143】【F:docs/troubleshooting/open_questions.md†L1-L29】
 
 ## What Works Well
 - Training entry points integrate sanitisation, LoRA, provenance, and evaluation in a single configuration dataclass, enabling reproducible fine-tuning flows out of the box.【F:src/codex_ml/training/__init__.py†L17-L141】
@@ -18,8 +18,8 @@
 - Documentation is exhaustive, covering architecture diagrams, Copilot bridge setup, GitHub CLI integration, and deterministic workflows, which lowers onboarding risk.【F:docs/architecture.md†L1-L40】【F:docs/integrations/github_copilot_cli2.md†L1-L129】
 
 ## Gaps & Limitations
-- Advanced RL agents, full multi-node distributed training, comprehensive secret scanning, and automated notebook generation are explicitly deferred, signalling incomplete support for more sophisticated Codex training regimes.【F:DEFERRED.md†L1-L8】
-- Bridge tooling still lists MCP server and automation questions as outstanding, and requires manual follow-up to wire audit runners and repo maps, so governance automation remains partially manual.【F:OPEN_QUESTIONS.md†L1-L42】
+- Advanced RL agents, full multi-node distributed training, comprehensive secret scanning, and automated notebook generation are explicitly deferred, signalling incomplete support for more sophisticated Codex training regimes.【F:docs/deferred_items.md†L1-L8】
+- Bridge tooling still lists MCP server and automation questions as outstanding, and requires manual follow-up to wire audit runners and repo maps, so governance automation remains partially manual.【F:docs/troubleshooting/open_questions.md†L1-L42】
 - Optional telemetry dependencies (psutil, wandb, mlflow, etc.) are not bundled, and the training package only logs their absence, so out-of-the-box observability depends on local installs.【F:src/codex_ml/training/__init__.py†L102-L123】
 - The ITA service simulates pull requests and test runs rather than performing real integrations; destructive operations demand confirmation flags, highlighting that production wiring is still a stubbed proof of concept.【F:services/ita/app/main.py†L80-L109】
 

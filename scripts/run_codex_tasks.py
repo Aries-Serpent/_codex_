@@ -8,7 +8,7 @@ Codex-ready tasks, including:
 1. Parsing and updating the README.md to fix outdated references.
 2. Scanning the repository for TODOs, stubs, and missing implementations.
 3. Running quality gates via pre‑commit and nox.
-4. Appending a summary entry to the CHANGELOG.md.
+4. Appending a summary entry to the docs/CHANGELOG.md.
 5. Capturing and logging errors in the prescribed format.
 
 Note: This script does not execute GitHub Actions or any external CI services.
@@ -51,7 +51,7 @@ def update_readme() -> None:
         return
     content = readme_path.read_text(encoding="utf-8")
     # Example replacement: adjust config file names and sections
-    updated = re.sub(r"configs/training/base\.yaml", "configs/config.yaml", content)
+    updated = re.sub(r"configs/training/base\.yaml", "configs/base/app.yaml", content)
     if updated != content:
         readme_path.write_text(updated, encoding="utf-8")
 
@@ -80,7 +80,7 @@ def run_quality_gates() -> None:
     # Pre-commit (if installed)
     subprocess.run(["pre-commit", "run", "--all-files"], check=True, cwd=str(ROOT))
     # Nox sessions (if noxfile exists)
-    noxfile = ROOT / "noxfile.py"
+    noxfile = ROOT / "configs" / "development" / "noxfile.py"
     if noxfile.exists():
         for session in ["lint", "type", "tests", "sast", "coverage"]:
             # Only run existing sessions; ignore failures gracefully
@@ -91,8 +91,8 @@ def run_quality_gates() -> None:
 
 
 def append_changelog() -> None:
-    """Append maintenance summary to CHANGELOG.md."""
-    changelog = ROOT / "CHANGELOG.md"
+    """Append maintenance summary to docs/CHANGELOG.md."""
+    changelog = ROOT / "docs" / "CHANGELOG.md"
     timestamp = datetime.utcnow().strftime("%Y-%m-%d")
     entry = (
         f"\n### Unreleased - {timestamp}\n"
@@ -124,7 +124,7 @@ def main() -> None:
     except Exception as e:
         log_error("4.append_changelog", e)
     print(
-        "Codex maintenance tasks complete. See docs/gaps_report.md, logs/error_captures.log, and CHANGELOG.md for details."
+        "Codex maintenance tasks complete. See docs/gaps_report.md, logs/error_captures.log, and docs/CHANGELOG.md for details."
     )
 
 

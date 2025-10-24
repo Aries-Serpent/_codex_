@@ -32,7 +32,7 @@ USAGE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 VENV_DIR="${ROOT}/.venv_validation"
-REQ_DEV="${ROOT}/requirements-dev.txt"
+REQ_DEV="${ROOT}/requirements/dev.txt"
 LOG="${ROOT}/validation.log"
 JUNIT_XML="${ROOT}/validation-junit.xml"
 COVERAGE_XML="${ROOT}/coverage.xml"
@@ -243,7 +243,7 @@ fi
 if [[ "$MODE" == "full" ]]; then
   echo "Generating coverage report" | tee -a "$LOG"
   declare -a COVERAGE_ARGS
-  COVERAGE_ARGS+=("--maxfail=1" "--cov=src" "--cov-report=xml:$COVERAGE_XML")
+  COVERAGE_ARGS+=("--maxfail=1" "--cov=src/codex_ml" "--cov-report=xml:$COVERAGE_XML")
   if [[ -n "$PYTEST_FORWARD" ]]; then
     # shellcheck disable=SC2206
     EXTRA_COV_OPTS=($PYTEST_FORWARD)

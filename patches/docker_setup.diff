@@ -75,17 +75,17 @@ index 5e2c689..0000000 100644
 +WORKDIR /app
 +
 +# Copy dependency manifests early for better layer caching
-+# Supports either requirements.txt or pyproject-based install
-+COPY requirements.txt /app/ 2>/dev/null || true
++# Supports either requirements/base.txt or pyproject-based install
++COPY requirements/base.txt /app/requirements/base.txt 2>/dev/null || true
 +COPY pyproject.toml /app/ 2>/dev/null || true
 +COPY uv.lock /app/ 2>/dev/null || true
-+COPY requirements.lock /app/ 2>/dev/null || true
++COPY requirements/lock.txt /app/requirements/lock.txt 2>/dev/null || true
 +
 +# Upgrade pip tooling
 +RUN pip install --upgrade pip setuptools wheel
 +
 +# Prefer pinned requirements if available; fallback to editable install later
-+RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
++RUN if [ -f "requirements/base.txt" ]; then pip install -r requirements/base.txt; fi
 +
 +# Copy application source
 +COPY src/ /app/src/
@@ -93,7 +93,7 @@ index 5e2c689..0000000 100644
 +COPY configs/ /app/configs/ 2>/dev/null || true
 
 +# Install project in editable mode if no requirements manifest was provided
-+RUN if [ ! -f "requirements.txt" ] && [ -f "pyproject.toml" ]; then \
++RUN if [ ! -f "requirements/base.txt" ] && [ -f "pyproject.toml" ]; then \
 +      pip install .; \
 +    fi
 +
@@ -299,7 +299,7 @@ index 0000000..0000000
 +
 +## Prerequisites
 +- Docker 24+ with Buildx enabled
-+- Python project installable via `requirements.txt` or `pyproject.toml`
++- Python project installable via `requirements/base.txt` or `pyproject.toml`
 +- Optional: FastAPI app at `src/codex/api/app.py` exporting `app`
 +
 +## Local build
@@ -341,7 +341,7 @@ index 0000000..0000000
 +## Troubleshooting
 +- If the app import path differs, edit the Dockerfile CMD.
 +- If the health path differs, update `container_smoke.sh`.
-+- If dependencies are unpinned, add `requirements.txt` / lock to improve reproducibility.
++- If dependencies are unpinned, add `requirements/base.txt` / lock to improve reproducibility.
 +
 +## Next steps (optional hardening)
 +- Add multi-stage build with wheel caching
