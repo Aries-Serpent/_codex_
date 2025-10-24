@@ -30,7 +30,10 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence
 from uuid import uuid4
 
+from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 from codex_ml.logging.ndjson_logger import is_legacy_mode
+from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
+from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 from codex_ml.utils.checksum import sha256sum
 
@@ -871,6 +874,7 @@ def run_training(
     steps_per_epoch: int = 4,
     return_state: bool = False,
     scheduler_cfg: dict | None = None,
+    dp_config: DifferentialPrivacyConfig | dict | None = None,
     dataset_sources: Optional[List[str | Path]] = None,
     dataset_cache_dir: Optional[str | Path] = None,
     callbacks: Optional[List[Callback]] = None,
@@ -929,6 +933,40 @@ def run_training(
 
     model_cfg = dict(model_cfg or {})
 
+    dp_settings: DifferentialPrivacyConfig | None = None
+    if isinstance(dp_config, DifferentialPrivacyConfig):
+        dp_settings = dp_config
+    elif isinstance(dp_config, dict):
+        try:
+            dp_settings = DifferentialPrivacyConfig(**dp_config)
+        except TypeError as exc:  # pragma: no cover - defensive
+            logger.warning("Invalid differential privacy config provided: %s", exc)
+    else:
+        env_flag = os.getenv("CODEX_DP_ENABLED")
+        if env_flag and str(env_flag).strip().lower() in {"1", "true", "yes", "on"}:
+            dp_kwargs: Dict[str, Any] = {"enabled": True}
+            for field_name, env_name in (
+                ("epsilon", "CODEX_DP_EPSILON"),
+                ("delta", "CODEX_DP_DELTA"),
+                ("noise_multiplier", "CODEX_DP_NOISE_MULTIPLIER"),
+                ("max_grad_norm", "CODEX_DP_MAX_GRAD_NORM"),
+            ):
+                raw = os.getenv(env_name)
+                if raw is None:
+                    continue
+                try:
+                    dp_kwargs[field_name] = float(raw)
+                except ValueError:
+                    logger.debug("Unable to parse %s env var %s", field_name, env_name)
+            secure_rng_flag = os.getenv("CODEX_DP_SECURE_RNG")
+            if secure_rng_flag and secure_rng_flag.lower() in {"1", "true", "yes", "on"}:
+                dp_kwargs["secure_rng"] = True
+            try:
+                dp_settings = DifferentialPrivacyConfig(**dp_kwargs)
+            except ImportError as exc:
+                logger.warning("Differential privacy disabled: %s", exc)
+                dp_settings = None
+
     # Dataset ingestion (summaries only)
     dataset_files_count = len(dataset_sources or [])
     dataset_total_records = 0
@@ -944,8 +982,49 @@ def run_training(
             dataset_checksum_map = recorded
             dataset_checksums = list(recorded.values())
 
-    if telemetry_enable:
-        start_metrics_server(port=telemetry_port)
+    session_logger = None
+    session_id = None
+    try:
+        session_logger = get_session_logger()
+        session_id = session_logger.session_id
+    except Exception:  # pragma: no cover - defensive
+        session_logger = None
+        session_id = None
+    if session_logger is not None:
+        try:
+            session_logger.log_event(
+                "training_start",
+                {
+                    "epochs": int(epochs),
+                    "grad_accum": int(grad_accum),
+                    "steps_per_epoch": int(steps_per_epoch),
+                    "telemetry_enabled": bool(telemetry_enable),
+                    "dp": (dp_settings.as_dict() if dp_settings else {"enabled": False}),
+                    "dataset_files": dataset_files_count,
+                },
+            )
+        except Exception:  # pragma: no cover - best effort logging
+            pass
+
+    metrics_registry: CodexMetricsRegistry | None = None
+    metrics_port_value: int | None = None
+    metrics_env_port = os.getenv("CODEX_METRICS_PORT")
+    if metrics_env_port:
+        try:
+            metrics_port_value = int(metrics_env_port)
+        except ValueError:
+            logger.debug("Invalid CODEX_METRICS_PORT value '%s'", metrics_env_port)
+    if metrics_port_value is None and telemetry_port is not None:
+        metrics_port_value = int(telemetry_port)
+    if metrics_enabled() or telemetry_enable:
+        try:
+            metrics_registry = CodexMetricsRegistry()
+            metrics_registry.active_sessions.set(1)
+        except Exception as exc:  # pragma: no cover - optional dependency path
+            logger.debug("Prometheus metrics disabled: %s", exc)
+            metrics_registry = None
+        port_candidate = metrics_port_value or 8000
+        start_metrics_server(port=port_candidate)
 
     if mlflow_enable and _HAS_MLFLOW:
         from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
@@ -1038,6 +1117,7 @@ def run_training(
         vocab_size = 128
 
     dataset = None
+    train_loader = None
     if _HAS_TORCH:
         effective_batch = batch_size or 8
         dataset = ToyDataset(
@@ -1047,7 +1127,12 @@ def run_training(
             seed=resolved_seed,
         )
         collate = _make_casting_collate(dataset_cast_policy, dtype_obj, device_obj, art_dir_path)
-        DataLoader(dataset, batch_size=effective_batch, shuffle=True, collate_fn=collate)
+        train_loader = DataLoader(
+            dataset,
+            batch_size=effective_batch,
+            shuffle=True,
+            collate_fn=collate,
+        )
         _dataset_dtype_gate(dataset, dtype_obj)
         # Optional: apply dataset casting policy (pre-forward) and log telemetry
         if dataset_cast_policy:
@@ -1084,6 +1169,7 @@ def run_training(
             model_params_count = None
 
     optimizer = None
+    privacy_engine = None
     if model is not None and _HAS_TORCH:
         params = _select_parameters_for_optimization(model)
         if params:
@@ -1103,6 +1189,26 @@ def run_training(
                     )
             except Exception:
                 pass
+
+    if (
+        dp_settings is not None
+        and _HAS_TORCH
+        and optimizer is not None
+        and train_loader is not None
+    ):
+        try:
+            model, optimizer, train_loader, privacy_engine = make_private_model(
+                model, optimizer, train_loader, dp_settings
+            )
+        except ImportError as exc:
+            logger.warning("Differential privacy disabled: %s", exc)
+            dp_settings = None
+        except Exception as exc:  # pragma: no cover - optional dependency path
+            logger.warning("Failed to enable differential privacy: %s", exc)
+            dp_settings = None
+    elif dp_settings is not None and not _HAS_TORCH:
+        logger.warning("Differential privacy requested but torch is unavailable; skipping")
+        dp_settings = None
 
     if _HAS_TORCH:
         scheduler = _init_scheduler(scheduler_cfg, optimizer, total_epochs=epochs)
@@ -1134,6 +1240,10 @@ def run_training(
         "grad_accum": int(grad_accum),
         "deterministic_cudnn": bool(deterministic_cudnn),
         "callback_errors": [],
+        "dp": dp_settings.as_dict() if dp_settings else {"enabled": False},
+        "privacy_engine": bool(privacy_engine),
+        "metrics_enabled": bool(metrics_registry),
+        "session_id": session_id or get_session_id(),
     }
 
     for cb in cb_list:
@@ -1265,6 +1375,7 @@ def run_training(
     last_checkpoint_sha = None
 
     for epoch in range(start_epoch, target_epochs + 1):
+        epoch_start = time.perf_counter()
         epoch_checkpoint_sha = None
         for cb in cb_list:
             try:
@@ -1288,12 +1399,26 @@ def run_training(
             model.train()
             optimizer.zero_grad(set_to_none=True)
 
+            loader_iter = iter(train_loader) if train_loader is not None else None
             for step in range(steps_per_epoch):
                 steps_this_epoch += 1
                 total_steps += 1
+                if loader_iter is not None:
+                    load_start = time.perf_counter()
+                    try:
+                        _batch = next(loader_iter)
+                    except StopIteration:
+                        loader_iter = iter(train_loader)
+                        _batch = next(loader_iter)
+                    finally:
+                        load_duration = time.perf_counter() - load_start
+                        if metrics_registry is not None:
+                            metrics_registry.observe_data_loading(load_duration)
                 loss_val = _synthetic_step(model)
                 epoch_loss_accum += loss_val
                 synthetic_losses.append(loss_val)
+                if metrics_registry is not None:
+                    metrics_registry.record_training_step(loss_val)
                 if (step + 1) % grad_accum == 0:
                     try:
                         optimizer.step()
@@ -1330,6 +1455,10 @@ def run_training(
 
         learning_rate_history.append(current_lrs or [])
 
+        epoch_duration = time.perf_counter() - epoch_start
+        if metrics_registry is not None:
+            metrics_registry.observe_training_duration(epoch_duration)
+
         epoch_metrics = TrainingMetrics(
             epoch=epoch,
             synthetic_loss=avg_loss,
@@ -1348,6 +1477,28 @@ def run_training(
             except Exception as e:  # noqa: BLE001
                 cb.record_error("on_epoch_end", e, state)
                 logger.warning("Callback on_epoch_end error: %s", e)
+
+        metric_session_id = session_id or get_session_id()
+        metrics_payload = {
+            "type": "metric",
+            "timestamp": _now_ts(),
+            "metric_name": "training.loss",
+            "value": avg_loss,
+            "epoch": epoch,
+            "optimizer_steps": optimizer_steps_this_epoch,
+            "total_steps": total_steps,
+            "session_id": metric_session_id,
+        }
+        _append_metrics_event(art_dir_path, metrics_payload)
+        duration_payload = {
+            "type": "metric",
+            "timestamp": _now_ts(),
+            "metric_name": "training.epoch_duration_seconds",
+            "value": epoch_duration,
+            "epoch": epoch,
+            "session_id": metric_session_id,
+        }
+        _append_metrics_event(art_dir_path, duration_payload)
 
         if checkpoint_dir:
             epoch_dir = Path(checkpoint_dir) / f"epoch-{epoch:04d}"
@@ -1439,6 +1590,12 @@ def run_training(
             cb.record_error("on_train_end", e, state)
             logger.warning("Callback on_train_end error: %s", e)
 
+    if metrics_registry is not None:
+        try:
+            metrics_registry.active_sessions.set(0)
+        except Exception:  # pragma: no cover - defensive
+            pass
+
     wall = time.time() - t_start
     result = {
         "resumed": bool(resume_meta),
@@ -1463,11 +1620,30 @@ def run_training(
         "artifacts_dir": str(art_dir_path) if art_dir_path else None,
         "deterministic_cudnn": bool(deterministic_cudnn),
         "callback_errors": list(state.get("callback_errors", [])),
+        "dp": dp_settings.as_dict() if dp_settings else {"enabled": False},
+        "metrics_enabled": bool(metrics_registry),
+        "privacy_engine": bool(privacy_engine),
+        "session_id": session_id or get_session_id(),
     }
     if resume_meta:
         result["resume_meta"] = resume_meta
 
     _persist_artifacts(latest_payload, target_epochs)
+
+    if session_logger is not None:
+        try:
+            session_logger.log_event(
+                "training_end",
+                {
+                    "epochs_completed": target_epochs,
+                    "optimizer_steps": total_optimizer_steps,
+                    "wall_time_sec": wall,
+                    "dp": result.get("dp", {"enabled": False}),
+                    "metrics_enabled": bool(metrics_registry),
+                },
+            )
+        except Exception:  # pragma: no cover - best effort logging
+            pass
 
     if return_state:
         result["model"] = model

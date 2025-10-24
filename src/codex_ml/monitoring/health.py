@@ -6,10 +6,21 @@ import json
 import logging
 import os
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, MutableMapping
 
-__all__ = ["record_health_event", "health_log_path", "HEALTH_LOG_ENV", "DEFAULT_HEALTH_DIR"]
+from pydantic import BaseModel
+
+__all__ = [
+    "record_health_event",
+    "health_log_path",
+    "HEALTH_LOG_ENV",
+    "DEFAULT_HEALTH_DIR",
+    "HealthChecker",
+    "HealthReport",
+    "HealthStatus",
+]
 
 HEALTH_LOG_ENV = "CODEX_HEALTH_LOG_DIR"
 DEFAULT_HEALTH_DIR = Path(".codex") / "health"
@@ -81,3 +92,50 @@ def record_health_event(
     except OSError as exc:  # pragma: no cover - exercised in hostile fs envs
         logger.debug("Unable to write health log to %s: %s", destination, exc)
     return destination
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    DEGRADED = "degraded"
+    UNHEALTHY = "unhealthy"
+
+
+class HealthReport(BaseModel):
+    status: HealthStatus
+    timestamp: str
+    checks: dict[str, str]
+    message: str
+
+
+class HealthChecker:
+    """Composite dependency health checker for Codex services."""
+
+    async def check_dependencies(self) -> HealthReport:
+        checks: dict[str, str] = {}
+
+        try:
+            import torch
+
+            checks["pytorch"] = "cuda" if torch.cuda.is_available() else "cpu"
+        except ImportError:
+            checks["pytorch"] = "not_installed"
+
+        data_dir = Path("./data")
+        checks["data_directory"] = "ok" if data_dir.exists() else "missing"
+
+        model_cache = Path(".hf_cache")
+        checks["model_cache"] = "ok" if model_cache.exists() else "not_initialized"
+
+        if all(value in {"ok", "cpu", "cuda"} for value in checks.values()):
+            status = HealthStatus.HEALTHY
+        elif any(value in {"missing", "not_initialized"} for value in checks.values()):
+            status = HealthStatus.DEGRADED
+        else:
+            status = HealthStatus.UNHEALTHY
+
+        return HealthReport(
+            status=status,
+            timestamp=datetime.utcnow().isoformat() + "Z",
+            checks=checks,
+            message=f"System is {status.value}",
+        )

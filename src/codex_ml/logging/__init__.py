@@ -12,6 +12,7 @@ from __future__ import annotations
 from typing import Any
 
 from .file_logger import FileLogger, JsonLogFmt
+from .session_logger import SessionLogger
 
 __all__ = [
     "RunLogger",
@@ -19,6 +20,7 @@ __all__ = [
     "METRICS_SCHEMA_URI",
     "FileLogger",
     "JsonLogFmt",
+    "SessionLogger",
 ]
 
 
