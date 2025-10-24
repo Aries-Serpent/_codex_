@@ -73,6 +73,9 @@ RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
 
 WORKDIR /app
 
+# Copy the Python runtime and virtual environment from the builder stage so
+# the CUDA image has a working interpreter for the installed packages.
+COPY --from=builder /usr/local /usr/local
 COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app/configs /app/configs
 COPY --from=builder /app/hydra /app/hydra
