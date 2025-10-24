@@ -40,7 +40,7 @@ MAPPING_MD = CODEX_DIR / "mapping.md"
 SESSION_DB = CODEX_DIR / "session_logs.db"
 SESSION_ID_FILE = CODEX_DIR / "session_id"
 README = REPO_ROOT / "README.md"
-CONTRIB = REPO_ROOT / "CONTRIBUTING.md"
+CONTRIB = REPO_ROOT / "docs" / "governance" / "CONTRIBUTING.md"
 
 # Guard rails
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
@@ -70,9 +70,7 @@ def ensure_codex_dir():
         ERROR_LOG.write_text("", encoding="utf-8")
 
 
-def append_change(
-    file: Path, action: str, rationale: str, before: str = "", after: str = ""
-):
+def append_change(file: Path, action: str, rationale: str, before: str = "", after: str = ""):
     diff = ""
     if before or after:
         diff = "\n".join(
@@ -150,9 +148,7 @@ def phase1():
             err.strip(),
         )
     elif not clean:
-        record_error(
-            "1.1 Verify clean working state", "Working tree not clean", out.strip()
-        )
+        record_error("1.1 Verify clean working state", "Working tree not clean", out.strip())
 
     # 1.2 Read README/CONTRIBUTING
     readme = safe_read(README)
@@ -180,23 +176,15 @@ def phase1():
         role = (
             "code"
             if ext in {".py", ".sh", ".js", ".ts", ".tsx", ".sql", ".go", ".rs"}
-            else "doc"
-            if ext in {".md", ".rst", ".txt"}
-            else "asset"
+            else "doc" if ext in {".md", ".rst", ".txt"} else "asset"
         )
-        files.append(
-            {"path": p.as_posix(), "ext": ext, "role": role, "size": p.stat().st_size}
-        )
+        files.append({"path": p.as_posix(), "ext": ext, "role": role, "size": p.stat().st_size})
     files_sorted = sorted(files, key=lambda d: d["path"])
     inv_md = ["# Inventory (lightweight)\n"]
     for f in files_sorted[:1000]:
-        inv_md.append(
-            f"- `{f['path']}` ({f['ext'] or '∅'}, {f['role']}, {f['size']} bytes)"
-        )
+        inv_md.append(f"- `{f['path']}` ({f['ext'] or '∅'}, {f['role']}, {f['size']} bytes)")
     safe_write(INVENTORY_MD, "\n".join(inv_md) + "\n", "Initial inventory")
-    safe_write(
-        INVENTORY_JSON, json.dumps(files_sorted, indent=2), "Initial inventory (JSON)"
-    )
+    safe_write(INVENTORY_JSON, json.dumps(files_sorted, indent=2), "Initial inventory (JSON)")
 
     # 1.4 Flags
     flags = {"DO_NOT_ACTIVATE_GITHUB_ACTIONS": DO_NOT_ACTIVATE_GITHUB_ACTIONS}
@@ -392,9 +380,7 @@ def try_instrument_file(p: Path) -> bool:
 
     changed = False
     if "from src.codex.logging.session_logger import log_event" not in src:
-        header = (
-            "from src.codex.logging.session_logger import log_event, get_session_id\n"
-        )
+        header = "from src.codex.logging.session_logger import log_event, get_session_id\n"
         new_src = header + src
         src, changed = new_src, True
 
@@ -461,9 +447,7 @@ def phase4(candidates: List[Candidate], instrumented: List[str]):
 # ----------------------------- Phase 5 & 6: Finalization -----------------------------
 
 
-def phase6(
-    created: Dict[str, str], candidates: List[Candidate], instrumented: List[str]
-):
+def phase6(created: Dict[str, str], candidates: List[Candidate], instrumented: List[str]):
     unresolved = []
     if not (REPO_ROOT / "codex" / "logging" / "session_logger.py").exists():
         unresolved.append("logging module missing")
