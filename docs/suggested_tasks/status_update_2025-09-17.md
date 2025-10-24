@@ -235,7 +235,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 To enforce quality offline (no external GitHub actions), use **pytest** and **nox**. Example sessions:
 
 ```python
-# file: noxfile.py
+# file: config/noxfile.py
 import nox
 
 @nox.session
@@ -621,7 +621,7 @@ def main() -> None:
     create_tests(project_root / "tests")
 
     # Update noxfile
-    nox_path = project_root / "noxfile.py"
+    nox_path = project_root / "config" / "config/noxfile.py"
     if nox_path.exists():
         update_noxfile(nox_path)
 

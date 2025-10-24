@@ -382,7 +382,7 @@ The `nox -s tests` gate now requires `pytest-cov==7.0.0` and emits JSON coverage
 - Nox: `nox -s tests`
 - CI: `.github/workflows/test*.yml` (see `scripts/validate_coverage_gates.py`)
 
-`config/pytest.ini`, `config/Makefile`, and `noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
+`config/pytest.ini`, `config/Makefile`, and `config/noxfile.py` all hardcode the same 3.5% floor. Run `python scripts/validate_coverage_gates.py` to audit documentation and workflow references.
 
 ## Safety policies & prompt sanitisation
 
@@ -756,7 +756,7 @@ make type    # mypy src
   ```
 
   The same threshold is enforced via `config/pytest.ini`, `config/Makefile`,
-  `noxfile.py`, and the CI workflows. Update all surfaces together if the
+  `config/noxfile.py`, and the CI workflows. Update all surfaces together if the
   baseline changes.
 > **Note:** Automated GitHub Actions remain disabled by default; `codex-self-manage` runs only when manually triggered or when a pull request carries the `codex-ci` label.
 
@@ -1415,7 +1415,7 @@ Tools operate externally and do not modify GitHub Actions workflows.
 ## Testing & Coverage (Local-Only)
 
 Run the canonical coverage gate via nox. The shared floor is **3.5%** and is
-enforced by `config/pytest.ini`, `config/Makefile`, `noxfile.py`, and
+enforced by `config/pytest.ini`, `config/Makefile`, `config/noxfile.py`, and
 `.github/workflows/ci.yml.disabled`.
 
 ```bash

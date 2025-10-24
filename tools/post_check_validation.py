@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections import Counter
 import os
 import random
 import sys
 import tempfile
 import types
+from collections import Counter
 from contextlib import contextmanager
 from dataclasses import dataclass
 from importlib import import_module
@@ -341,7 +341,7 @@ def run_post_check_validation() -> ValidationReport:
             "Iteration 1 – automation stubs cleared",
             [
                 REPO_ROOT / "codex_setup.py",
-                REPO_ROOT / "noxfile.py",
+                REPO_ROOT / "config" / "noxfile.py",
                 REPO_ROOT / "codex_update_runner.py",
             ],
         ),

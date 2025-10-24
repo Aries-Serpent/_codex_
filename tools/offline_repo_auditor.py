@@ -329,7 +329,8 @@ class IntuitiveAptitude:
 
         # Internal CI/Test
         if summary.tests or any(
-            f in summary.top_files for f in ["tox.ini", "noxfile.py", ".pre-commit-config.yaml"]
+            f in summary.top_files
+            for f in ["tox.ini", "config/noxfile.py", ".pre-commit-config.yaml"]
         ):
             caps["ci"] = "Implemented"
         else:
