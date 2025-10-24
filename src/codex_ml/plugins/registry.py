@@ -19,11 +19,6 @@ from importlib import metadata
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
-try:  # pragma: no cover - optional fallback
-    import pkg_resources  # type: ignore
-except Exception:  # pragma: no cover
-    pkg_resources = None  # type: ignore
-
 DEFAULT_GROUP = "codex_ml.plugins"
 
 
@@ -60,14 +55,6 @@ def _iter_entry_points(group: str):
         key = (getattr(ep, "name", ""), getattr(ep, "value", ""))
         if key not in unique:
             unique[key] = ep
-    if not unique and pkg_resources is not None:  # pragma: no cover - fallback path
-        try:
-            for ep in pkg_resources.iter_entry_points(group):  # type: ignore[attr-defined]
-                key = (getattr(ep, "name", ""), getattr(ep, "module_name", ""))
-                if key not in unique:
-                    unique[key] = ep
-        except Exception:
-            pass
     return tuple(unique.values())
 
 

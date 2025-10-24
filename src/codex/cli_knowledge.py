@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
 
 import typer
 from codex.knowledge.build import archive_and_manifest, build_kb
@@ -32,11 +31,11 @@ app = typer.Typer(help="Codex Knowledge (ingest → normalize → chunk → buil
 
 @app.command("build-kb")
 def build_kb_cmd(
-    root: Annotated[Path, ROOT_OPTION] = DEFAULT_ROOT,
-    out: Annotated[Path, OUT_OPTION] = DEFAULT_KB_OUT,
-    allow_gpl: Annotated[bool, ALLOW_GPL_OPTION] = False,
-    max_tokens: Annotated[int, MAX_TOKENS_OPTION] = 2048,
-    dedup: Annotated[bool, DEDUP_OPTION] = True,
+    root: Path = ROOT_OPTION,
+    out: Path = OUT_OPTION,
+    allow_gpl: bool = ALLOW_GPL_OPTION,
+    max_tokens: int = MAX_TOKENS_OPTION,
+    dedup: bool = DEDUP_OPTION,
 ) -> None:
     res = build_kb(
         root,
@@ -50,10 +49,10 @@ def build_kb_cmd(
 
 @app.command("archive-and-manifest")
 def archive_and_manifest_cmd(
-    kb: Annotated[Path, KB_ARGUMENT] = DEFAULT_KB_OUT,
-    instructions: Annotated[Path | None, INSTRUCTIONS_OPTION] = None,
-    evl: Annotated[Path | None, EVAL_OPTION] = None,
-    by: Annotated[str, ACTOR_OPTION] = "codex",
+    kb: Path = KB_ARGUMENT,
+    instructions: Path | None = INSTRUCTIONS_OPTION,
+    evl: Path | None = EVAL_OPTION,
+    by: str = ACTOR_OPTION,
 ) -> None:
     res = archive_and_manifest(kb, instructions, evl, actor=by)
     typer.echo(json.dumps(res, indent=2))
@@ -61,9 +60,9 @@ def archive_and_manifest_cmd(
 
 @app.command("pack-release")
 def pack_release_cmd(
-    manifest: Annotated[Path, MANIFEST_ARGUMENT] = DEFAULT_MANIFEST,
-    staging: Annotated[Path, STAGING_OPTION] = DEFAULT_STAGING,
-    out_bundle: Annotated[Path, BUNDLE_OPTION] = DEFAULT_BUNDLE,
+    manifest: Path = MANIFEST_ARGUMENT,
+    staging: Path = STAGING_OPTION,
+    out_bundle: Path = BUNDLE_OPTION,
 ) -> None:
     bundle, locked = pack_release(manifest, staging, out_bundle)
     v = verify_bundle(bundle)
