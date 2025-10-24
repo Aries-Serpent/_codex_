@@ -317,7 +317,7 @@ def log_artifacts(
         files use ``mlflow.log_artifact``.
     enabled:
         Explicit opt-in flag. When ``None`` or ``False`` nothing happens; when
-        ``True`` MLflow must be importable otherwise a :class:`RuntimeError` is
+        ``True`` MLflow must be importable otherwise a :class:`ImportError` is
         raised.
     """
     ml = _mlflow_noop_or_raise(enabled)

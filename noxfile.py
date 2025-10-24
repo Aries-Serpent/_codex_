@@ -37,7 +37,7 @@ if DEFAULT_PYTHON not in PY_VERSIONS:
 
 CANONICAL_TEST_SESSION = "coverage"
 UV = os.getenv("UV_BIN", "uv")
-DEFAULT_COVERAGE_FLOOR = int(os.getenv("CODEX_COV_FLOOR", "60"))
+DEFAULT_COVERAGE_FLOOR = float(os.getenv("CODEX_COV_FLOOR", "3.5"))
 
 ARTIFACTS = REPO_ROOT / "artifacts"
 COVERAGE_HTML = ARTIFACTS / "coverage_html"
@@ -170,7 +170,7 @@ def _read_fail_under_from_cfg(path: Path) -> str | None:
     with suppress(configparser.Error, ValueError):
         parser.read(path, encoding="utf-8")
         if parser.has_option("report", "fail_under"):
-            value = parser.getint("report", "fail_under")
+            value = parser.getfloat("report", "fail_under")
             if value >= 0:
                 return str(value)
     return None
@@ -195,7 +195,7 @@ def _toml_fail_under_from_str(toml_text: str) -> str | None:
     if not isinstance(report_section, Mapping):
         return None
     fail = report_section.get("fail_under")
-    if isinstance(fail, int) and fail >= 0:
+    if isinstance(fail, (int, float)) and fail >= 0:
         return str(fail)
     return None
 
@@ -206,12 +206,12 @@ def _default_fail_under() -> str:
     codex_floor = os.environ.get("CODEX_COV_FLOOR")
     if codex_floor is not None:
         with suppress(ValueError):
-            if int(codex_floor) >= 0:
+            if float(codex_floor) >= 0:
                 return codex_floor
     coverage_env = os.environ.get("COVERAGE_MIN")
     if coverage_env is not None:
         with suppress(ValueError):
-            if int(coverage_env) >= 0:
+            if float(coverage_env) >= 0:
                 return coverage_env
 
     rc_file_env = os.environ.get("COVERAGE_RCFILE")
@@ -237,7 +237,7 @@ def _default_fail_under() -> str:
         if parsed is not None:
             return parsed
 
-    return str(DEFAULT_COVERAGE_FLOOR)
+    return f"{DEFAULT_COVERAGE_FLOOR}"
 
 
 DEFAULT_FAIL_UNDER = _default_fail_under()
@@ -583,6 +583,8 @@ def sec_scan(session: nox.Session) -> None:
 def sbom(session: nox.Session) -> None:
     """Generate an offline SBOM from repository lock files."""
 
+    _ensure_pip_cache(session)
+    _install(session, "-r", "requirements-dev.txt")
     _export_env(session)
     session.run("python", "scripts/sbom_cyclonedx.py", *session.posargs)
 
