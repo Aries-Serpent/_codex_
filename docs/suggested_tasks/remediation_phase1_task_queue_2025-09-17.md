@@ -23,7 +23,7 @@ Key conventions used in this packet:
 ### Task U1 – Restore Gate Tooling for `pre-commit`
 - **Source references**: Phase 1/U1 in remediation plan; outstanding questions table entries dated 2025-09-13 and 2025-09-17 concerning missing `pre-commit` gating.
 - **Objective**: Guarantee that `pre-commit` is installed, discoverable, and enforced in all dev/automation contexts, eliminating false negatives in gate validation.
-- **Preconditions**: Fresh Python environment prepared; access to `requirements/dev.txt`, `scripts/`, `codex_setup.py`, and `.codex/session_logs.db`.
+- **Preconditions**: Fresh Python environment prepared; access to `requirements/dev.txt`, `scripts/`, `cli/setup.py`, and `.codex/session_logs.db`.
 - **Actions**:
   1. Update `requirements/dev.txt` and any bootstrap scripts to declare `pre-commit` explicitly (pin to version compatible with existing hooks).
   2. Modify `configs/development/noxfile.py` so that the `tests` session installs and runs `pre-commit run --all-files` prior to pytest execution, capturing success/failure output.
@@ -38,10 +38,10 @@ Key conventions used in this packet:
 ### Task U2 – Ensure `nox` Availability Across Phases
 - **Source references**: Phase 1/U2; outstanding validation rows citing missing `nox` binary.
 - **Objective**: Make `nox` a guaranteed dependency for developers and automation, ensuring test orchestration consistency.
-- **Preconditions**: Access to `requirements/dev.txt`, `codex_workflow.py`, and logging databases.
+- **Preconditions**: Access to `requirements/dev.txt`, `cli/workflow.py`, and logging databases.
 - **Actions**:
   1. Amend `requirements/dev.txt` (and any setup scripts) to include `nox` with an explicit version guard.
-  2. Extend `codex_workflow.py` or equivalent orchestration script to probe for `nox --version`, logging results to `.codex/session_logs.db` with severity levels.
+  2. Extend `cli/workflow.py` (console script `codex-workflow`) or equivalent orchestration script to probe for `nox --version`, logging results to `.codex/session_logs.db` with severity levels.
   3. Update `docs/suggested_tasks/status_update_2025-09-17.md` Section 5 to reflect the enforced availability and provide offline installation steps.
   4. Run the probe in both a fresh environment and the baseline environment, capturing outputs in the session datablot.
   5. Close out outstanding question entries tied to `nox` availability.

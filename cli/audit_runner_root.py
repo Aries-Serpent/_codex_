@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Sequence
 
 
 def _ensure_repo_root_on_path() -> None:
@@ -16,15 +17,16 @@ def _ensure_repo_root_on_path() -> None:
         sys.path.insert(0, repo_str)
 
 
-def main() -> None:
+def main(argv: Sequence[str] | None = None) -> int:
     _ensure_repo_root_on_path()
     try:
         from scripts.space_traversal.audit_runner import main as _runner_main  # type: ignore
     except Exception as exc:  # pragma: no cover
         print("Failed to load scripts/space_traversal/audit_runner.py:", exc, file=sys.stderr)
-        raise SystemExit(1)
+        return 1
     _runner_main()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

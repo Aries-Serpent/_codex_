@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Codex Workflow Merge: choose authoritative codex_workflow.py, merge/rename duplicates,
+Codex Workflow Merge: choose authoritative cli/workflow.py, merge/rename duplicates,
 update references, and verify that mypy duplicate-module warnings disappear.
 
 Environment: Linux/Ubuntu (Codex), unrestricted network is not required.
@@ -144,10 +144,10 @@ class Choice:
 
 def choose_authoritative(candidates: List[Path]) -> Path:
     """
-    Prefer root ./codex_workflow.py if present; else prefer highest
+    Prefer cli/workflow.py if present; else prefer highest
     reference count; tie-breaker newest mtime.
     """
-    root = REPO / "codex_workflow.py"
+    root = REPO / "cli" / "workflow.py"
     if root in candidates:
         return root
     scored = [
@@ -160,9 +160,9 @@ def choose_authoritative(candidates: List[Path]) -> Path:
 
 def ensure_at_root(authoritative: Path) -> Path:
     """
-    Move authoritative to repo root as codex_workflow.py if needed.
+    Move authoritative to cli/workflow.py if needed.
     """
-    target = REPO / "codex_workflow.py"
+    target = REPO / "cli" / "workflow.py"
     if authoritative == target:
         return target
     target.parent.mkdir(parents=True, exist_ok=True)
