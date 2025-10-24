@@ -124,7 +124,7 @@ def test_base_config_module_loads() -> None:
 
 
 def test_mlflow_optional(monkeypatch) -> None:
-    from codex_task_sequence import setup_mlflow_tracking
+    from cli.task_sequence import setup_mlflow_tracking
 
     monkeypatch.setitem(sys.modules, "mlflow", None)
     assert setup_mlflow_tracking(Path("mlruns"), dry_run=True) is False
@@ -133,7 +133,7 @@ def test_mlflow_optional(monkeypatch) -> None:
 def test_setup_mlflow_tracking_enforces_file_uri(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    from codex_task_sequence import setup_mlflow_tracking
+    from cli.task_sequence import setup_mlflow_tracking
 
     recorded: dict[str, str] = {}
 
