@@ -6,9 +6,7 @@ from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from typing import Any
 
-from codex_ml.utils.optional import optional_dependency_error
-
-LOGGER = logging.getLogger(__name__)
+from codex_ml.utils.optional_dependencies import build_optional_dependency_error
 
 
 class _DummyRun:
@@ -42,6 +40,8 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
             init_kwargs["dir"] = wandb_dir
         run = wandb.init(**init_kwargs)
         yield wandb
+    except ImportError as exc:  # pragma: no cover - missing optional dependency
+        raise build_optional_dependency_error("wandb", "Weights & Biases logging") from exc
     except Exception:  # pragma: no cover - wandb init/import issues
         LOGGER.warning(
             "%s",

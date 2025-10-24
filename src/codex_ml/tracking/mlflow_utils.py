@@ -27,7 +27,10 @@ from pathlib import Path
 from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
 
 from codex_ml.tracking import mlflow_guard
-from codex_ml.utils.optional import optional_dependency_error
+from codex_ml.utils.optional_dependencies import (
+    build_optional_dependency_error,
+    raise_optional_dependency_error,
+)
 
 # Lazy import variables
 _mlf = None  # Actual mlflow module if import succeeds
@@ -101,7 +104,7 @@ def _ensure_mlflow_available() -> None:
     """Ensure mlflow is importable at call time.
 
     Tries a runtime import if the top-level import failed. Raises an
-    ImportError with installation guidance when mlflow cannot be imported.
+    ImportError with installation guidance when MLflow is unavailable.
     """
     global _mlf, _HAS_MLFLOW
     if _HAS_MLFLOW and _mlf is not None:
@@ -115,10 +118,7 @@ def _ensure_mlflow_available() -> None:
     except Exception as exc:
         _mlf = None
         _HAS_MLFLOW = False
-        raise optional_dependency_error(
-            "mlflow",
-            purpose="experiment tracking",
-        ) from exc
+        raise build_optional_dependency_error("mlflow", "experiment tracking") from exc
 
 
 def bootstrap_offline_tracking(force: bool = False, requested_uri: str | None = None) -> str:
@@ -423,10 +423,7 @@ def init_run(
 
     _ensure_mlflow_available()
     if _mlf is None:  # pragma: no cover - defensive guard
-        raise optional_dependency_error(
-            "mlflow",
-            purpose="experiment tracking",
-        )
+        raise_optional_dependency_error("mlflow", "experiment tracking")
 
     run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[call-arg]
 

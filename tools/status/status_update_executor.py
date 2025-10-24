@@ -107,7 +107,8 @@ def build_repo_map() -> Dict[str, Sequence[str]]:
     key_files = [
         "pyproject.toml",
         "requirements-dev.txt",
-        "Makefile",
+        "config/Makefile",
+        "config/pytest.ini",
         "noxfile.py",
         "codex_workflow.py",
     ]
