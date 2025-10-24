@@ -13,16 +13,18 @@ _implementation_module = import_module("cli.task_sequence")
 
 __doc__ = _implementation_module.__doc__
 
-if hasattr(_implementation_module, "__all__"):
-    _export_names = list(_implementation_module.__all__)  # type: ignore[attr-defined]
-else:
-    _export_names = [name for name in dir(_implementation_module) if not name.startswith("_")]
-
 _globals = globals()
-for name in _export_names:
-    _globals[name] = getattr(_implementation_module, name)
+_implementation_attrs = vars(_implementation_module)
 
-__all__ = _export_names
+for _name, _value in _implementation_attrs.items():
+    if _name.startswith("__") and _name.endswith("__"):
+        continue
+    _globals[_name] = _value
+
+if "__all__" in _implementation_attrs:
+    __all__ = list(_implementation_attrs["__all__"])
+else:
+    __all__ = [name for name in _implementation_attrs if not name.startswith("_")]
 implementation_module = "cli.task_sequence"
 
 # Provide access to the underlying module for advanced callers.
