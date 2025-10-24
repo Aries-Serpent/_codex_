@@ -28,7 +28,7 @@ on laptops and in CI. The tooling is made up of four main pieces:
   ```bash
   ./scripts/run_validation.sh --full
   ```
-  Installs `requirements-dev.txt`, optional heavy dependencies, and runs the
+  Installs `requirements/dev.txt`, optional heavy dependencies, and runs the
   entire `tests` target with coverage output.
 
 * Programmatic invocation / JSON summary:
@@ -75,7 +75,7 @@ the main runner.
 
 Common customization points:
 
-* Update `requirements-dev.txt` when new development dependencies are needed.
+* Update `requirements/dev.txt` when new development dependencies are needed.
 * Set `HEAVY_DEPS` in CI or locally to install optional wheels (for example
   `HEAVY_DEPS="torch transformers"`).
 * Use `PYTEST_OPTS` to add `-m`/`-k` filters or parallelism flags.
@@ -112,7 +112,7 @@ locally for parity with CI.
 
 * **Missing optional dependencies** – use `--fast` while iterating locally to
   avoid heavy installs. When full validation is required, set `HEAVY_DEPS` or
-  run `--full` so the runner installs everything from `requirements-dev.txt`.
+  run `--full` so the runner installs everything from `requirements/dev.txt`.
 * **Rerunning failures** – after a failing run check `validation_summary.json`
   or `validation-junit.xml` for failing selectors, then rerun via
   `python tools/validate.py --rerun-failures`.

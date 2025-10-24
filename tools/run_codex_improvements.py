@@ -28,7 +28,7 @@ def run(cmd: list[str], step: str) -> int:
 
 
 def phase_prep() -> int:
-    req = Path("requirements/base.txt")
+    req = Path("requirements/pinned.txt")
     if req.exists():
         return run([sys.executable, "-m", "pip", "install", "-r", str(req)], "prep")
     return 0

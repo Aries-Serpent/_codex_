@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh requirements.lock and validate dependency alignment.
+"""Refresh requirements/lock.txt and validate dependency alignment.
 
 This utility compiles the repository lockfile according to the
 Atomic Diff 5 dependency specification, checks that pinned versions
@@ -36,8 +36,8 @@ from packaging.utils import canonicalize_name
 from packaging.version import InvalidVersion, Version
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCK_PATH = ROOT / "requirements.lock"
-REQ_TXT = ROOT / "requirements.txt"
+LOCK_PATH = ROOT / "requirements/lock.txt"
+REQ_TXT = ROOT / "requirements/base.txt"
 PYPROJECT = ROOT / "pyproject.toml"
 ERROR_DIR = ROOT / "_codex_reports"
 
@@ -47,7 +47,7 @@ COMPILE_COMMAND = [
     "pip",
     "compile",
     "pyproject.toml",
-    "requirements.txt",
+    "requirements/base.txt",
     "--extra",
     "dev",
     "--extra",
@@ -79,7 +79,7 @@ COMPILE_COMMAND = [
     "--python-version",
     PYTHON_TARGET,
     "--output-file",
-    "requirements.lock",
+    "requirements/lock.txt",
 ]
 
 
@@ -141,7 +141,7 @@ def run_step(name: str, func: StepFn) -> bool:
 
 
 def generate_lockfile() -> None:
-    """Compile requirements.lock using uv with all extras."""
+    """Compile requirements/lock.txt using uv with all extras."""
     result = subprocess.run(COMPILE_COMMAND, capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(
@@ -153,7 +153,7 @@ def generate_lockfile() -> None:
 def _inject_provenance_header(cmd: Iterable[str]) -> None:
     """Ensure the lockfile header documents the provenance command."""
     if not LOCK_PATH.exists():
-        raise FileNotFoundError("requirements.lock was not generated")
+        raise FileNotFoundError("requirements/lock.txt was not generated")
     text = LOCK_PATH.read_text(encoding="utf-8")
     lines = text.splitlines()
     provenance = "# Atomic Diff 5 provenance: docs/suggested_tasks/remediation_plan_status_update_2025-09-17.md (dependency locking guidance)"
@@ -186,7 +186,7 @@ def _load_lock_versions() -> dict[str, tuple[Requirement, str | None]]:
     """Parse the lockfile and return requirement -> pinned version."""
     lock_versions: dict[str, tuple[Requirement, str | None]] = {}
     if not LOCK_PATH.exists():
-        raise FileNotFoundError("requirements.lock is missing")
+        raise FileNotFoundError("requirements/lock.txt is missing")
     for raw_line in LOCK_PATH.read_text(encoding="utf-8").splitlines():
         line = raw_line.strip()
         if not line or line.startswith("#"):
@@ -227,7 +227,7 @@ def _collect_requirements_from_pyproject() -> list[Requirement]:
 
 
 def verify_lock_alignment() -> None:
-    """Ensure the lock satisfies requirements.txt and pyproject constraints."""
+    """Ensure the lock satisfies requirements/base.txt and pyproject constraints."""
     lock_versions = _load_lock_versions()
     missing: list[str] = []
     mismatched: list[str] = []
@@ -249,7 +249,7 @@ def verify_lock_alignment() -> None:
             if req.specifier and not req.specifier.contains(ver, prereleases=True):
                 mismatched.append(f"{req.name}=={version} does not satisfy '{req}' from {source}")
 
-    _evaluate(_collect_requirements_from_txt(), "requirements.txt")
+    _evaluate(_collect_requirements_from_txt(), "requirements/base.txt")
     _evaluate(_collect_requirements_from_pyproject(), "pyproject.toml")
 
     problems: list[str] = []
@@ -280,7 +280,7 @@ def validate_pip_install() -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Refresh requirements.lock with validation")
+    parser = argparse.ArgumentParser(description="Refresh requirements/lock.txt with validation")
     parser.add_argument(
         "--skip-compile",
         action="store_true",
@@ -305,7 +305,7 @@ def main() -> None:
     if args.skip_compile:
         steps.append(("Ensure provenance header", ensure_provenance))
     else:
-        steps.append(("Generate requirements.lock", generate_lockfile))
+        steps.append(("Generate requirements/lock.txt", generate_lockfile))
     steps.append(("Verify lock alignment", verify_lock_alignment))
     if not args.skip_validate:
         steps.append(("Validate pip resolver", validate_pip_install))

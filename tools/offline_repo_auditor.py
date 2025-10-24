@@ -29,7 +29,6 @@ import warnings
 from dataclasses import dataclass, field
 from typing import Dict, Iterable, List, Optional
 
-
 warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 # -------------------------
@@ -319,7 +318,7 @@ class IntuitiveAptitude:
 
         # Security
         if (
-            any(f in summary.top_files for f in ["requirements.txt", "pyproject.toml"])
+            any(f in summary.top_files for f in ["requirements/base.txt", "pyproject.toml"])
             or seen_file("poetry.lock")
             or seen_file("uv.lock")
             or seen_file("requirements-lock.txt")

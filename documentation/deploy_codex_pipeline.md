@@ -5,7 +5,7 @@ Run the deterministic symbolic training pipeline and verify reproducibility.
 ## Install
 
 ```bash
-pip install -r requirements.lock
+pip install -r requirements/lock.txt
 ```
 ## Run
 

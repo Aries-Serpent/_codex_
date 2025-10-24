@@ -20,7 +20,7 @@ err()  { echo "::error ::$*"; }
 
 has_py=0
 has_node=0
-if compgen -G "$ROOT/**/pyproject.toml" >/dev/null || compgen -G "$ROOT/**/requirements.txt" >/dev/null; then
+if compgen -G "$ROOT/**/pyproject.toml" >/dev/null || compgen -G "$ROOT/**/requirements/base.txt" >/dev/null; then
   has_py=1
 fi
 if compgen -G "$ROOT/**/package.json" >/dev/null; then
@@ -40,7 +40,7 @@ fi
 if [ "$has_py" = "1" ]; then
   if command -v pip-audit >/dev/null 2>&1; then
     log "running pip-audit"
-    pip-audit -r requirements.txt -f json -o "$OUT_DIR/pip-audit.json" || {
+    pip-audit -r requirements/base.txt -f json -o "$OUT_DIR/pip-audit.json" || {
       warn "pip-audit found issues or failed"
       [ "$STRICT" = "1" ] && fail=1
     }

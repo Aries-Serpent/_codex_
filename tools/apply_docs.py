@@ -6,10 +6,10 @@ Creates/updates:
 - mkdocs.yml
 - docs/{index.md,getting-started.md,concepts.md,api.md,tutorials/*.md,ops/*.md,safety.md,model_cards/template.md}
 - examples/notebooks/{demo_infer.ipynb,demo_train_eval.ipynb}
-- docs/requirements.txt (mkdocs pins)
+- docs/requirements/base.txt (mkdocs pins)
 
 Validation (best-effort):
-- pip install -r docs/requirements.txt
+- pip install -r docs/requirements/base.txt
 - mkdocs build --strict
 - optional notebook execution via nbconvert
 
@@ -115,8 +115,8 @@ GETTING_STARTED = f"""{GS_SENT}
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -r docs/requirements.txt
-pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements.lock`
+pip install -r docs/requirements/base.txt
+pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements/lock.txt`
 ```
 
 Run Docs
@@ -304,7 +304,7 @@ NB2 = minimal_notebook(
 def apply() -> None:
     try:
         upsert(REPO / "mkdocs.yml", MKDOCS, MK_SENT)
-        upsert(REPO / "docs" / "requirements.txt", DOC_REQS, REQS_SENT)
+        upsert(REPO / "docs" / "requirements/base.txt", DOC_REQS, REQS_SENT)
         upsert(REPO / "docs" / "index.md", INDEX_MD, IDX_SENT)
         upsert(REPO / "docs" / "getting-started.md", GETTING_STARTED, GS_SENT)
         upsert(REPO / "docs" / "concepts.md", CONCEPTS, CON_SENT)
@@ -348,13 +348,15 @@ def validate() -> None:
         fh.write(f"\n# Validation {ts()}\n")
 
         fh.write("\n## Install MkDocs deps\n```\n")
-        code, out = _run([sys.executable, "-m", "pip", "install", "-r", "docs/requirements.txt"])
+        code, out = _run(
+            [sys.executable, "-m", "pip", "install", "-r", "docs/requirements/base.txt"]
+        )
         fh.write(out + f"\n(exit={code})\n```\n")
         if code != 0:
             q5(
                 "6: Finalization — install mkdocs deps",
                 f"exit {code}",
-                "pip install -r docs/requirements.txt",
+                "pip install -r docs/requirements/base.txt",
             )
 
         fh.write("\n## mkdocs build --strict\n```\n")

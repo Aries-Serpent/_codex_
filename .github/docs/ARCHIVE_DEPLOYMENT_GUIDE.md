@@ -10,7 +10,7 @@ production).
 ## Prerequisites
 
 * Python environment consistent with the Codex project tooling (see
-  `requirements-dev.txt`).
+  `requirements/dev.txt`).
 * Access to the archive database(s) – SQLite for local/staging, PostgreSQL or
   MariaDB for production deployments.
 * Ability to set environment variables for the deployment target.

@@ -113,7 +113,7 @@
 - Implemented optional LoRA adapter with graceful fallback when `peft` is missing.
 - Added grad accumulation and mixed precision helpers to `functional_training.py`.
 - Introduced deterministic data splitting utility.
-- Generated `requirements.lock` and local test gate script.
+- Generated `requirements/lock.txt` and local test gate script.
 - Sanitized external links in README for offline use.
 
 ## CI policy docs — 2025-08-26T20:17:49Z

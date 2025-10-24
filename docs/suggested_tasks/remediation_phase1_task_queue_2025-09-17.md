@@ -23,9 +23,9 @@ Key conventions used in this packet:
 ### Task U1 – Restore Gate Tooling for `pre-commit`
 - **Source references**: Phase 1/U1 in remediation plan; outstanding questions table entries dated 2025-09-13 and 2025-09-17 concerning missing `pre-commit` gating.
 - **Objective**: Guarantee that `pre-commit` is installed, discoverable, and enforced in all dev/automation contexts, eliminating false negatives in gate validation.
-- **Preconditions**: Fresh Python environment prepared; access to `requirements-dev.txt`, `scripts/`, `codex_setup.py`, and `.codex/session_logs.db`.
+- **Preconditions**: Fresh Python environment prepared; access to `requirements/dev.txt`, `scripts/`, `codex_setup.py`, and `.codex/session_logs.db`.
 - **Actions**:
-  1. Update `requirements-dev.txt` and any bootstrap scripts to declare `pre-commit` explicitly (pin to version compatible with existing hooks).
+  1. Update `requirements/dev.txt` and any bootstrap scripts to declare `pre-commit` explicitly (pin to version compatible with existing hooks).
   2. Modify `noxfile.py` so that the `tests` session installs and runs `pre-commit run --all-files` prior to pytest execution, capturing success/failure output.
   3. Document the enforced gate in `docs/question_handling_reference.md` and the remediation plan (cross-reference Section 5, Local Tests & Gates).
   4. Execute the updated nox session inside a clean environment to verify the gate, storing the command transcript in `.codex/session_logs.db` with a `tool` role entry.
@@ -38,9 +38,9 @@ Key conventions used in this packet:
 ### Task U2 – Ensure `nox` Availability Across Phases
 - **Source references**: Phase 1/U2; outstanding validation rows citing missing `nox` binary.
 - **Objective**: Make `nox` a guaranteed dependency for developers and automation, ensuring test orchestration consistency.
-- **Preconditions**: Access to `requirements-dev.txt`, `codex_workflow.py`, and logging databases.
+- **Preconditions**: Access to `requirements/dev.txt`, `codex_workflow.py`, and logging databases.
 - **Actions**:
-  1. Amend `requirements-dev.txt` (and any setup scripts) to include `nox` with an explicit version guard.
+  1. Amend `requirements/dev.txt` (and any setup scripts) to include `nox` with an explicit version guard.
   2. Extend `codex_workflow.py` or equivalent orchestration script to probe for `nox --version`, logging results to `.codex/session_logs.db` with severity levels.
   3. Update `docs/suggested_tasks/status_update_2025-09-17.md` Section 5 to reflect the enforced availability and provide offline installation steps.
   4. Run the probe in both a fresh environment and the baseline environment, capturing outputs in the session datablot.
@@ -53,7 +53,7 @@ Key conventions used in this packet:
 ### Task U3 – Stabilize Coverage Session (`pytest-cov` / gating)
 - **Source references**: Phase 1/U3; capability audit notes on evaluation and coverage deficits.
 - **Objective**: Reinstate deterministic coverage enforcement via `pytest-cov`, ensuring `nox -s tests` enforces agreed thresholds.
-- **Preconditions**: Access to `noxfile.py`, `requirements-dev.txt`, coverage configuration, and test infrastructure.
+- **Preconditions**: Access to `noxfile.py`, `requirements/dev.txt`, coverage configuration, and test infrastructure.
 - **Actions**:
   1. Verify/install `pytest-cov` and related plugins within the testing environment manifest.
   2. Update the `tests` session in `noxfile.py` to run pytest with `--cov=src/codex_ml --cov-report=term-missing --cov-fail-under=<target>` (align target with remediation plan suggestions).

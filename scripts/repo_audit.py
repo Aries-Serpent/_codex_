@@ -30,7 +30,7 @@ STUB_PATTERNS = [
 ]
 
 SEARCH_PATTERNS = [
-    ("requirements", ["requirements.txt", "pyproject.toml", "Pipfile", "environment.yml"]),
+    ("requirements", ["requirements/base.txt", "pyproject.toml", "Pipfile", "environment.yml"]),
     ("docker", ["Dockerfile"]),
     ("notebooks", ["*.ipynb"]),
     ("tests", ["tests/**", "test_*.py"]),

@@ -6,7 +6,7 @@ deploy scripts, and docs.
 Creates:
 - Dockerfile (multi-stage, Ubuntu base, non-root, EXPOSE 8000)
 - docker-compose.yml (artifacts volume, healthcheck)
-- services/api/{main.py,__init__.py,requirements.txt}
+- services/api/{main.py,__init__.py,requirements/base.txt}
 - scripts/deploy/{build.sh,run.sh,push.sh}
 - docs/ops/deployment.md
 
@@ -66,9 +66,7 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     print(msg, file=sys.stderr)
 
 
@@ -94,8 +92,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 FROM base AS builder
 WORKDIR /app
-COPY services/api/requirements.txt .
-RUN python3 -m pip install --upgrade pip && pip install --prefix=/install -r requirements.txt
+COPY services/api/requirements/base.txt .
+RUN python3 -m pip install --upgrade pip && pip install --prefix=/install -r requirements/base.txt
 
 FROM base AS runtime
 RUN useradd -m -u 10001 appuser && mkdir -p /app /artifacts && chown -R appuser:appuser /app /artifacts
@@ -347,7 +345,7 @@ Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations must ru
 
 def apply() -> None:
     try:
-        upsert(REPO / "services" / "api" / "requirements.txt", API_REQS, API_REQS_SENT)
+        upsert(REPO / "services" / "api" / "requirements/base.txt", API_REQS, API_REQS_SENT)
         upsert(REPO / "services" / "api" / "__init__.py", API_INIT, API_INIT_SENT)
         upsert(REPO / "services" / "api" / "main.py", API_MAIN, API_SENT)
         upsert(REPO / "Dockerfile", DOCKERFILE, DF_SENT)
@@ -415,9 +413,7 @@ def validate() -> None:
                 fh.write(f"ERROR: {e}\n")
                 q5(f"6: Finalization — {name}", str(e), " ".join(cmd))
             fh.write("``\n")
-        subprocess.run(
-            ["bash", "-lc", "docker compose down -v"], capture_output=True, text=True
-        )
+        subprocess.run(["bash", "-lc", "docker compose down -v"], capture_output=True, text=True)
 
 
 def main() -> None:
@@ -429,9 +425,7 @@ def main() -> None:
         action="store_true",
         help="create/augment Dockerfile, compose, API, scripts, docs",
     )
-    ap.add_argument(
-        "--validate", action="store_true", help="run local validations (best-effort)"
-    )
+    ap.add_argument("--validate", action="store_true", help="run local validations (best-effort)")
     args = ap.parse_args()
     if args.apply:
         apply()
