@@ -6,7 +6,10 @@ from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from typing import Any
 
+from codex_ml.utils.optional import optional_dependency_error
 from codex_ml.utils.optional_dependencies import build_optional_dependency_error
+
+LOGGER = logging.getLogger(__name__)
 
 
 class _DummyRun:
