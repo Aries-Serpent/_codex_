@@ -74,17 +74,10 @@ RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
 
 WORKDIR /app
 
-COPY requirements/ ./requirements/
-COPY uv.lock ./uv.lock
-COPY pyproject.toml ./
-
-RUN if [ -f "requirements/docker.txt" ]; then \
-      /opt/venv/bin/pip install -r requirements/docker.txt; \
-    elif [ -f "requirements/base.txt" ]; then \
-      /opt/venv/bin/pip install -r requirements/base.txt; \
-    fi
-
-COPY --from=builder /tmp/dist /tmp/dist
+# Copy the Python runtime and virtual environment from the builder stage so
+# the CUDA image has a working interpreter for the installed packages.
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /opt/venv /opt/venv
 COPY --from=builder /app/configs /app/configs
 COPY --from=builder /app/hydra /app/hydra
 COPY --from=builder /app/src /app/src
