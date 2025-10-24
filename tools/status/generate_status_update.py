@@ -734,7 +734,7 @@ def packaging_summary() -> Dict[str, object]:
     summary["requirement_files"] = sorted(set(requirement_files))
 
     lock_files = []
-    for candidate in ["requirements.lock", "uv.lock", "poetry.lock", "Pipfile.lock"]:
+    for candidate in ["requirements/lock.txt", "uv.lock", "poetry.lock", "Pipfile.lock"]:
         path = REPO_ROOT / candidate
         if path.exists():
             lock_files.append(str(path.relative_to(REPO_ROOT)))

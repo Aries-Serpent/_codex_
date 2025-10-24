@@ -50,7 +50,7 @@ COVERAGE_PATHS = (
     "docs/governance/CONTRIBUTING.md",
     "config/pytest.ini",
     "config/Makefile",
-    "noxfile.py",
+    "config/noxfile.py",
 )
 
 

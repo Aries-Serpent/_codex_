@@ -21,7 +21,18 @@
   "python_version": "3.12.10 (main, Aug 28 2025, 21:54:05) [GCC 13.3.0]",
   "requirements": {
     "pyproject.toml": "present",
-    "requirements-dev.txt": [
+    "requirements/base.txt": [
+      "duckdb>=0.10",
+      "defusedxml",
+      "transformers>=4.3.3",
+      "datasets",
+      "sentencepiece",
+      "accelerate",
+      "peft",
+      "pydantic>=2.11.7",
+      "defusedxml>=0.7.1"
+    ],
+    "requirements/dev.txt": [
       "black",
       "isort",
       "flake8",
@@ -40,17 +51,6 @@
       "pandas",
       "pyarrow",
       "zstandard"
-    ],
-    "requirements.txt": [
-      "duckdb>=0.10",
-      "defusedxml",
-      "transformers>=4.3.3",
-      "datasets",
-      "sentencepiece",
-      "accelerate",
-      "peft",
-      "pydantic>=2.11.7",
-      "defusedxml>=0.7.1"
     ]
   }
 }

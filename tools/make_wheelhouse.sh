@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Build a local wheelhouse for offline/hermetic installs.
 # Usage:
-#   tools/make_wheelhouse.sh [-o WHEEL_DIR] [-c CONSTRAINTS] -r requirements.txt [-r more.txt ...]
+#   tools/make_wheelhouse.sh [-o WHEEL_DIR] [-c CONSTRAINTS] -r requirements/base.txt [-r more.txt ...]
 #
 # Default outputs:
 #   ./wheelhouse/         (downloaded wheels)
@@ -15,7 +15,7 @@ set -euo pipefail
 #      b) fallback to `pip freeze` after a temp install to pin versions.
 #   2) Use `python -m pip download ... -d wheelhouse` for all -r files.
 #   3) Result can be consumed via:
-#        python -m pip install --no-index --find-links ./wheelhouse -r requirements.txt
+#        python -m pip install --no-index --find-links ./wheelhouse -r requirements/base.txt
 #
 # Notes:
 # - uv currently does not implement `pip download`/`pip wheel`; use pip for the wheelhouse step.

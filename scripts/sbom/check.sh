@@ -40,7 +40,7 @@ fi
 if [ "$has_py" = "1" ]; then
   if command -v pip-audit >/dev/null 2>&1; then
     log "running pip-audit"
-    pip-audit -r requirements.txt -f json -o "$OUT_DIR/pip-audit.json" || {
+    pip-audit -r requirements/base.txt -f json -o "$OUT_DIR/pip-audit.json" || {
       warn "pip-audit found issues or failed"
       [ "$STRICT" = "1" ] && fail=1
     }

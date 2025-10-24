@@ -23,7 +23,7 @@ except Exception:  # pragma: no cover - fallback for py310
 
 import nox
 
-REPO_ROOT = Path(__file__).resolve().parent
+REPO_ROOT = Path(__file__).resolve().parent.parent
 _CANDIDATE_PYTHONS = ("3.12", "3.11", "3.10")
 _AVAILABLE = [v for v in _CANDIDATE_PYTHONS if shutil.which(f"python{v}")]
 if _AVAILABLE:
@@ -381,7 +381,7 @@ def tracking_smoke(session: nox.Session) -> None:
     """Run a local MLflow smoke test against the file backend."""
 
     _ensure_pip_cache(session)
-    dev_requirements = REPO_ROOT / "requirements-dev.txt"
+    dev_requirements = REPO_ROOT / "requirements/dev.txt"
     if dev_requirements.exists():
         _install(session, "-r", str(dev_requirements))
     else:
@@ -434,7 +434,7 @@ def bootstrap(session: nox.Session) -> None:
             "requirements.in",
             "--universal",
             "-o",
-            "requirements.txt",
+            "requirements/base.txt",
         )
     else:
         session.run(
@@ -444,9 +444,9 @@ def bootstrap(session: nox.Session) -> None:
             "pyproject.toml",
             "--universal",
             "-o",
-            "requirements.txt",
+            "requirements/base.txt",
         )
-    session.run(UV, "pip", "sync", "requirements.txt")
+    session.run(UV, "pip", "sync", "requirements/base.txt")
 
 
 @nox.session(python=list(PY_VERSIONS))
@@ -559,7 +559,7 @@ def sec(session: nox.Session) -> None:
         session.run("semgrep", "scan", "--config", "semgrep_rules/", "--error", "src/")
     session.run("detect-secrets", "scan")
     if session.env.get("CODEX_AUDIT", "0") == "1":
-        req = REPO_ROOT / "requirements.txt"
+        req = REPO_ROOT / "requirements/base.txt"
         if req.exists():
             session.run("pip-audit", "-r", str(req))
         else:
@@ -584,7 +584,7 @@ def sbom(session: nox.Session) -> None:
     """Generate an offline SBOM from repository lock files."""
 
     _ensure_pip_cache(session)
-    _install(session, "-r", "requirements-dev.txt")
+    _install(session, "-r", "requirements/dev.txt")
     _export_env(session)
     session.run("python", "scripts/sbom_cyclonedx.py", *session.posargs)
 
@@ -741,7 +741,7 @@ def crm_gates(session: nox.Session) -> None:
     """Run CRM-focused regression suites."""
 
     _ensure_pip_cache(session)
-    _install(session, "-r", "requirements.txt")
+    _install(session, "-r", "requirements/base.txt")
     _export_env(session)
     session.run(
         "pytest",
@@ -764,7 +764,7 @@ def diagram_check(session: nox.Session) -> None:
     """Ensure diagram helpers import and render simple flows."""
 
     _ensure_pip_cache(session)
-    _install(session, "-r", "requirements.txt")
+    _install(session, "-r", "requirements/base.txt")
     _export_env(session)
     session.run(
         "python",

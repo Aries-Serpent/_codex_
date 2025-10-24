@@ -116,7 +116,7 @@ GETTING_STARTED = f"""{GS_SENT}
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r docs/requirements.txt
-pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements.lock`
+pip install -e '.[dev]'  # installs the pinned dev/test stack; try `uv pip sync requirements/lock.txt`
 ```
 
 Run Docs
@@ -304,7 +304,7 @@ NB2 = minimal_notebook(
 def apply() -> None:
     try:
         upsert(REPO / "mkdocs.yml", MKDOCS, MK_SENT)
-        upsert(REPO / "docs" / "requirements.txt", DOC_REQS, REQS_SENT)
+        upsert(REPO / "docs" / "requirements/base.txt", DOC_REQS, REQS_SENT)
         upsert(REPO / "docs" / "index.md", INDEX_MD, IDX_SENT)
         upsert(REPO / "docs" / "getting-started.md", GETTING_STARTED, GS_SENT)
         upsert(REPO / "docs" / "concepts.md", CONCEPTS, CON_SENT)

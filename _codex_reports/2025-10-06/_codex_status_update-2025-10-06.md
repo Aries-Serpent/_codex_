@@ -29,7 +29,7 @@
 
 - Seeds detected: True
 - RNG checkpoint capture available: True
-- Environment lock files: requirements.txt, requirements-dev.txt, docs/requirements.txt, codex_digest/requirements.txt, services/api/requirements.txt, pyproject.toml, temp/bridge_codex_copilot_bridge/agents/codex_client/pyproject.toml, temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml, temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml, tests/plugins/_sandbox_pkg/pyproject.toml, agents/codex_client/pyproject.toml, services/ita/pyproject.toml
+- Environment lock files: requirements/base.txt, requirements/dev.txt, docs/requirements.txt, codex_digest/requirements.txt, services/api/requirements.txt, pyproject.toml, temp/bridge_codex_copilot_bridge/agents/codex_client/pyproject.toml, temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml, temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml, tests/plugins/_sandbox_pkg/pyproject.toml, agents/codex_client/pyproject.toml, services/ita/pyproject.toml
 - Recommendations:
   - Ensure CUDA RNG restoration for multi-GPU training
   - Capture git SHA and environment manifest alongside checkpoints

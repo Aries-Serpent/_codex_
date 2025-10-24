@@ -4,11 +4,11 @@ help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
 
 setup:
-	@if [ -f requirements.lock ]; then \\
-		pip install -r requirements.lock && \\
-		pip install -r requirements-dev.txt; \\
+	@if [ -f requirements/lock.txt ]; then \\
+		pip install -r requirements/lock.txt && \\
+		pip install -r requirements/dev.txt; \\
 	else \\
-		pip install -r requirements.txt -r requirements-dev.txt; \\
+		pip install -r requirements/base.txt -r requirements/dev.txt; \\
 	fi
 
 fmt:
@@ -30,20 +30,20 @@ cover:
 sast:
 	bandit -q -r src
 	semgrep scan --config=p/ci src
-	@if [ -f requirements.lock ]; then \
-		pip-audit -r requirements.lock || true; \
+	@if [ -f requirements/lock.txt ]; then \
+		pip-audit -r requirements/lock.txt || true; \
 	else \
-		pip-audit -r requirements.txt || true; \
+		pip-audit -r requirements/base.txt || true; \
 	fi
 
 track:
-	nox -s tracking_smoke
+	nox --noxfile config/noxfile.py -s tracking_smoke
 
 cli:
-	nox -s cli
+	nox --noxfile config/noxfile.py -s cli
 
 sbom:
-	python ../scripts/sbom_cyclonedx.py --lock ../requirements.lock --lock ../uv.lock --output ../dist/sbom.json
+	python ../scripts/sbom_cyclonedx.py --lock ../requirements/lock.txt --lock ../uv.lock --output ../dist/sbom.json
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts

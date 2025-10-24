@@ -532,12 +532,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pre-commit==4.0.1 pytest==8.4.1 pytest-cov==7.0.0 click bandit detect-secrets
-          if [ -f requirements.lock ]; then
-            pip install -r requirements.lock
-          elif [ -f requirements.txt ]; then
-            pip install -r requirements.txt
+          if [ -f requirements/lock.txt ]; then
+            pip install -r requirements/lock.txt
+          elif [ -f requirements/base.txt ]; then
+            pip install -r requirements/base.txt
           fi
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          if [ -f requirements/dev.txt ]; then pip install -r requirements/dev.txt; fi
       - name: Run linters and tests
         run: |
           pre-commit run --all-files
@@ -582,7 +582,7 @@ Thank you for considering contributing to this project!
 
 1. Clone the repository
 2. (Optional) Create a virtual environment
-3. Install development dependencies: `pip install -e "[dev]"` (or `pip install -r requirements-dev.txt`)
+3. Install development dependencies: `pip install -e "[dev]"` (or `pip install -r requirements/dev.txt`)
 4. Install pre-commit hooks: `pre-commit install`
 
 ## Development Workflow

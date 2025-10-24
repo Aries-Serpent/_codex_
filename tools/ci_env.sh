@@ -23,8 +23,8 @@ export NOX_PREFER_UV="${NOX_PREFER_UV:-1}"
 
 # Default sync target if not already set; only used when file exists.
 if [[ -z "${UV_SYNC_FILE:-}" ]]; then
-  if [[ -f "requirements.txt" ]]; then
-    export UV_SYNC_FILE="requirements.txt"
+  if [[ -f "requirements/base.txt" ]]; then
+    export UV_SYNC_FILE="requirements/base.txt"
   fi
 fi
 

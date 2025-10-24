@@ -515,7 +515,7 @@ WORKDIR /app
 COPY . /app
 # Try common requirement files gracefully
 RUN (test -f requirements/base.txt && pip3 install --no-cache-dir -r requirements/base.txt) || true
-RUN (test -f requirements-dev.txt && pip3 install --no-cache-dir -r requirements-dev.txt) || true
+RUN (test -f requirements/dev.txt && pip3 install --no-cache-dir -r requirements/dev.txt) || true
 
 FROM base AS runtime
 RUN useradd -ms /bin/bash coder && chown -R coder:coder /app

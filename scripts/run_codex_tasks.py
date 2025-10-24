@@ -80,7 +80,7 @@ def run_quality_gates() -> None:
     # Pre-commit (if installed)
     subprocess.run(["pre-commit", "run", "--all-files"], check=True, cwd=str(ROOT))
     # Nox sessions (if noxfile exists)
-    noxfile = ROOT / "noxfile.py"
+    noxfile = ROOT / "config" / "noxfile.py"
     if noxfile.exists():
         for session in ["lint", "type", "tests", "sast", "coverage"]:
             # Only run existing sessions; ignore failures gracefully
