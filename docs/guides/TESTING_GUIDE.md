@@ -24,10 +24,25 @@ make -C config test
 nox --noxfile config/noxfile.py -s tests
 ```
 
+**Option 3b: Offline gate**
+```bash
+nox --noxfile config/noxfile.py -s offline_check
+```
+
+The offline gate shells out to `nox -s tests --verbose` and scans the logs for
+network calls. Any occurrence of `http`, `download`, or `fetch` fails the
+session.
+
 **Option 4: Validate enforcement**
 ```bash
 python scripts/validate_coverage_gates.py
 ```
+
+### Hydra plugin guard
+
+The `coverage` session now invokes a helper that checks for the
+`hydra.extra` pytest plugin. If it is missing, the session installs
+`hydra-core[hydra_plugins]>=1.3` automatically and logs an advisory message.
 
 ## Coverage Failures
 
