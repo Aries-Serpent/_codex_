@@ -122,7 +122,7 @@ python your_train.py   # MLflow may auto-enable system metrics per docs
 
 ## 6) Error capture format
 
-On any failure (setup, import/build, tests), append to `Codex_Questions.md` and include in CI/logs:
+On any failure (setup, import/build, tests), append to `docs/reference/codex_questions.md` and include in CI/logs:
 
 ```text
 Question for ChatGPT @codex {{timestamp}}:

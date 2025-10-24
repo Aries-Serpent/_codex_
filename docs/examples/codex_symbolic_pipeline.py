@@ -99,12 +99,7 @@ class RLHFCfg:
     seed: int = 0
 
     def __post_init__(self) -> None:
-        if (
-            self.ppo_clip <= 0
-            or self.kl_penalty < 0
-            or self.lr <= 0
-            or self.epochs <= 0
-        ):
+        if self.ppo_clip <= 0 or self.kl_penalty < 0 or self.lr <= 0 or self.epochs <= 0:
             raise ValueError("invalid RLHFCfg")
 
 

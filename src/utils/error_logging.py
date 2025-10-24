@@ -1,6 +1,6 @@
 """Error logging helpers for Codex tasks.
 
-These utilities append structured entries to ``error_log.md`` whenever
+These utilities append structured entries to ``docs/troubleshooting/error_log.md`` whenever
 file operations or external API calls fail. The format matches the audit
 requirements so downstream tooling can parse remediation steps.
 """
@@ -12,7 +12,7 @@ from pathlib import Path
 
 __all__ = ["append_error"]
 
-_ERROR_LOG_PATH = Path("error_log.md")
+_ERROR_LOG_PATH = Path("docs/troubleshooting/error_log.md")
 
 
 def append_error(step_number: str, description: str, message: str, context: str) -> None:

@@ -122,7 +122,7 @@ Operationally the run is an open system evolving by a Lindblad master equation:
 ṙho = −i [H(t), ρ] + ∑_e γ_e ( J_e ρ J_e† − ½ {J_e† J_e, ρ} ),
 ```
 where each error mode e (lint fail, type fail, flaky test, IO error, etc.) has jump operator J_e.
-Phase-5 logging corresponds to applying a documentation creation operator `D†` that appends a structured entry to `Codex_Questions.md` whenever any J_e fires.
+Phase-5 logging corresponds to applying a documentation creation operator `D†` that appends a structured entry to `docs/reference/codex_questions.md` whenever any J_e fires.
 
 ---
 

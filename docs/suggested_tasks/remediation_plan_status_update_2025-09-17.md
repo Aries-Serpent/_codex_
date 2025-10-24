@@ -13,7 +13,7 @@ Its goal is to provide a self-manageable roadmap that keeps the codebase queryab
 ## Phase 0 – Foundation & Instrumentation
 
 1. **Refresh inventory of automation artefacts**
-   - Export current `.codex/notes`, `ERROR_LOG.md`, `CODEBASE_AUDIT_*`, and session NDJSON files into a dated bundle.
+   - Export current `.codex/notes`, `docs/troubleshooting/error_log.md`, `CODEBASE_AUDIT_*`, and session NDJSON files into a dated bundle.
    - Confirm that `.codex/session_logs.db` has the expected schema; vacuum or migrate if needed.
 2. **Baseline repository introspection**
    - Run `rg`/`find` scans to ensure duplicate or orphaned files (e.g., `training.py01`) are mapped.

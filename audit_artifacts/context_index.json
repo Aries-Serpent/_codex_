@@ -1461,7 +1461,7 @@
     },
     {
       "ext": ".md",
-      "path": "Codex_Questions.md",
+      "path": "docs/reference/codex_questions.md",
       "sha": "8acfcdd8e87d4289b2ca526695d1da4b7ee33f933289371d17edc8e540715166",
       "size": 711
     },
@@ -1485,7 +1485,7 @@
     },
     {
       "ext": ".md",
-      "path": "ERROR_LOG.md",
+      "path": "docs/troubleshooting/error_log.md",
       "sha": "bf2342960b8c96b4dfc8bc742e957138acd20c07ce00d296442598e4d5e4c6de",
       "size": 8138
     },
@@ -1539,7 +1539,7 @@
     },
     {
       "ext": ".md",
-      "path": "OPEN_QUESTIONS.md",
+      "path": "docs/troubleshooting/open_questions.md",
       "sha": "b3a50ac69216ef702b25faa2937ca6216ea6ca184e82755bcf2e6e38f73482ee",
       "size": 2972
     },
@@ -4479,7 +4479,7 @@
     },
     {
       "ext": ".md",
-      "path": "error_log.md",
+      "path": "docs/troubleshooting/error_log.md",
       "sha": "294e84e7c30e3ceb1df6f641c26688ef58ddd366c33c2fad703eb9fe4dbb89b3",
       "size": 1525
     },
