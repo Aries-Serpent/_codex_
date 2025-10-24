@@ -107,9 +107,9 @@ def build_repo_map() -> Dict[str, Sequence[str]]:
     key_files = [
         "pyproject.toml",
         "requirements/dev.txt",
-        "config/Makefile",
-        "config/pytest.ini",
-        "config/noxfile.py",
+        "configs/development/Makefile",
+        "configs/development/pytest.ini",
+        "configs/development/noxfile.py",
         "codex_workflow.py",
     ]
     present_files = [item for item in key_files if (REPO_ROOT / item).exists()]

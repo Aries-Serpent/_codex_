@@ -14,7 +14,7 @@ Two concrete adapters are available:
   and smoke runs.
 
 Tokeniser selection is configured through Hydra.  The base config lives in
-`configs/tokenizer/multilingual.yaml` or `configs/tokenizer/base.yaml` (when
+`configs/training/tokenizer/multilingual.yaml` or `configs/training/tokenizer/base.yaml` (when
 added) and exposes the following keys:
 
 ```yaml
@@ -31,4 +31,4 @@ To add a new tokeniser backend, subclass `TokenizerAdapter` and register it in
 `TokenizerAdapter.from_config`.
 
 Multilingual tokenisation remains available via the Hugging Face
-`bert-base-multilingual-cased` model using `configs/tokenizer/multilingual.yaml`.
+`bert-base-multilingual-cased` model using `configs/training/tokenizer/multilingual.yaml`.

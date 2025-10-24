@@ -88,9 +88,7 @@ def _normalize_for_hash(value: Any) -> Any:
         return [_normalize_for_hash(item) for item in value]
     if isinstance(value, (set, frozenset)):
         normalized_items = [_normalize_for_hash(item) for item in value]
-        normalized_items.sort(
-            key=lambda item: json.dumps(item, sort_keys=True, default=str)
-        )
+        normalized_items.sort(key=lambda item: json.dumps(item, sort_keys=True, default=str))
         return normalized_items
     if isinstance(value, Path):
         return value.as_posix()
@@ -432,7 +430,11 @@ def _start_serve(cfg: DictConfig) -> None:
         ray.shutdown()
 
 
-@hydra.main(config_path="../conf", config_name="config", version_base="1.3")
+@hydra.main(
+    config_path="../../../configs/deployment/hhg_logistics",
+    config_name="config",
+    version_base="1.3",
+)
 def main(cfg: DictConfig) -> None:
     if not bool(getattr(cfg.serve, "enabled", False)):
         logger.info("serve.enabled=false; exit.")

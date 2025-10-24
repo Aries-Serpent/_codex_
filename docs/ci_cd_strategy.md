@@ -22,19 +22,19 @@ restrictions in `AGENTS.md`.
    ```
 2. **Focused linting / type checking**
    ```bash
-   nox --noxfile config/noxfile.py -s lint typecheck
+   nox --noxfile configs/development/noxfile.py -s lint typecheck
    ```
 3. **Full unit tests**
    ```bash
-   nox --noxfile config/noxfile.py -s tests
+   nox --noxfile configs/development/noxfile.py -s tests
    ```
 4. **Coverage audit**
    ```bash
-   nox --noxfile config/noxfile.py -s coverage
+   nox --noxfile configs/development/noxfile.py -s coverage
    ```
 5. **Offline verification**
    ```bash
-   nox --noxfile config/noxfile.py -s offline_check
+   nox --noxfile configs/development/noxfile.py -s offline_check
    ```
 
 ## Offline assumptions

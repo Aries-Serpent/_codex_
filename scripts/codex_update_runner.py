@@ -149,8 +149,8 @@ def phase_search_and_mapping() -> None:
 
     expected_configs = [
         "configs/training/base.yaml",
-        "configs/data/base.yaml",
-        "configs/tokenization/base.yaml",
+        "configs/training/data/base.yaml",
+        "configs/training/tokenization/base.yaml",
     ]
     for rel in expected_configs:
         path = Path(rel)

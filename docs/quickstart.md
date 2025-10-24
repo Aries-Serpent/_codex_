@@ -23,7 +23,7 @@ pip install -e '.[test-core]'
 List the consolidated Phase 4 nox sessions:
 
 ```bash
-nox --noxfile config/noxfile.py --list
+nox --noxfile configs/development/noxfile.py --list
 ```
 
 Install additional extras when you require GPU / tracking support:
@@ -37,9 +37,9 @@ pip install -e '.[test,tracking,ml]'
 Use the offline matrix to validate the environment without network access:
 
 ```bash
-nox --noxfile config/noxfile.py -s tests
-nox --noxfile config/noxfile.py -s coverage
-nox --noxfile config/noxfile.py -s offline_check
+nox --noxfile configs/development/noxfile.py -s tests
+nox --noxfile configs/development/noxfile.py -s coverage
+nox --noxfile configs/development/noxfile.py -s offline_check
 ```
 
 If pytest reports skips such as `Skipped: could not import 'transformers'`,
@@ -156,7 +156,7 @@ Prefer a saved preset? Compose the offline-friendly sweep stub and layer any
 extra overrides you need:
 
 ```bash
-python -m codex_ml.cli.hydra_main --config-path conf/examples --config-name sweep_offline -m \
+python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline -m \
   training.max_epochs=1
 ```
 
@@ -191,7 +191,7 @@ tail -n +1 .codex/metrics.ndjson
 You can also emit an aggregated evaluation record straight from the CLI:
 
 ```bash
-codex evaluate --config configs/eval/base.yaml --log-metrics artifacts/eval_runs.ndjson
+codex evaluate --config configs/evaluation/base.yaml --log-metrics artifacts/eval_runs.ndjson
 ```
 
 Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits

@@ -15,7 +15,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 |------|--------|-----------------|
 | Training Loop | model + LoRA integration hooks, checkpoint saving per-epoch, deterministic default seed (1234), new params | src/codex_ml/train_loop.py |
 | Checkpoint wrapper | Thin wrapper around existing checkpointing + JSON sidecar | src/codex_ml/utils/checkpoint.py |
-| Hydra Config | Training config group (lean, non-conflicting) | configs/train/default.yaml |
+| Hydra Config | Training config group (lean, non-conflicting) | configs/training/profiles/default.yaml |
 | Hydra CLI | Hydra entrypoint that calls run_training | src/codex_ml/cli/train.py |
 | API Inference | Lazy load tokenizer/model, encode→decode flow, secret masking, fallbacks | services/api/main.py |
 | Secret Filtering | Extended regexes: OpenAI, AWS, GCP, GitHub PAT, Slack | services/api/main.py |
@@ -27,7 +27,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 |------|------|----------------------|
 | src/codex_ml/train_loop.py | Modified | run_training signature extended; model instantiation & LoRA apply (guarded); epoch checkpoint save; model param metrics |
 | src/codex_ml/utils/checkpoint.py | Added | save_checkpoint/load_checkpoint wrapper calling repo checkpointing primitives + metadata.json sidecar |
-| configs/train/default.yaml | Added | seed, epochs, lora block, checkpoint block, device/dtype |
+| configs/training/profiles/default.yaml | Added | seed, epochs, lora block, checkpoint block, device/dtype |
 | src/codex_ml/cli/train.py | Added | Hydra entrypoint resolving cfg -> run_training(...) call |
 | services/api/main.py | Modified | SECRET_PATTERNS expanded; helpers: _mask_secrets, _load_tokenizer, _load_model, _encode/_decode; /infer uses tokenizer/model path |
 | tests/test_checkpoint_util.py | Added | Guarded by pytest.importorskip("torch") for save/load roundtrip |
@@ -62,7 +62,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 8) Rollback plan
 - Revert train_loop changes (remove added params & checkpoint code).
 - Delete src/codex_ml/utils/checkpoint.py.
-- Remove configs/train/default.yaml and src/codex_ml/cli/train.py.
+- Remove configs/training/profiles/default.yaml and src/codex_ml/cli/train.py.
 - Replace /infer with prior echo implementation in services/api/main.py.
 
 9) Minimal usage examples
@@ -71,7 +71,7 @@ This document merges the last applied atomic diffs (training CLI, checkpoint uti
 - Legacy raw loop:
   python -m codex_ml.train_loop --epochs 1 --grad-accum 2
 - API call that demonstrates masking:
-  curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIA1234567890EXAMPLE"}'
+  curl -X POST localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"aws key AKIAEXAMPLEKEY"}'
   → completion masks key: "[SECRET]"
 
 10) Follow-ups (prioritized)

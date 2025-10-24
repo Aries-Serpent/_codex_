@@ -23,7 +23,7 @@ configs/
 
 ## Base Config Example
 ```yaml
-# configs/base.yaml
+# configs/base/base.yaml
 trainer:
   seed: 123
   batch_size: 32
@@ -40,7 +40,7 @@ paths:
 
 ## Experiment Overrides
 ```yaml
-# configs/experiment.yaml
+# configs/experimental/experiment.yaml
 trainer:
   batch_size: 64
 
@@ -50,7 +50,7 @@ logging:
 
 ## Environment Overrides (Optional)
 ```yaml
-# configs/env/dev.yaml
+# configs/base/environment/dev.yaml
 paths:
   data_dir: data/dev/
 ```
@@ -106,9 +106,9 @@ def merge(a: dict, b: dict) -> dict:
             out[k] = v
     return out
 
-base = load_yaml(Path("configs/base.yaml"))
-env_cfg = load_yaml(Path("configs/env/dev.yaml"))
-exp = load_yaml(Path("configs/experiment.yaml"))
+base = load_yaml(Path("configs/base/base.yaml"))
+env_cfg = load_yaml(Path("configs/base/environment/dev.yaml"))
+exp = load_yaml(Path("configs/experimental/experiment.yaml"))
 
 cfg = merge(base, merge(env_cfg, exp))
 ```
@@ -136,7 +136,7 @@ python train.py
 - Disallow duplicate keys (yaml loader with SafeLoader).
 
 ### Hydra Defaults Audit CLI
-- Run `python -m codex_ml.cli.config --audit last --path configs/default.yaml` to confirm `_self_` is the trailing entry and no unresolved `${...}` placeholders remain.
+- Run `python -m codex_ml.cli.config --audit last --path configs/base/default.yaml` to confirm `_self_` is the trailing entry and no unresolved `${...}` placeholders remain.
 - CI/tests exercise the same command through `tests/configuration/test_hydra_validation.py::test_configuration_cli_audit_enforces_self_last` so regressions surface immediately.
 - Use `--audit present` for legacy configs that only need `_self_` somewhere in the list.
 

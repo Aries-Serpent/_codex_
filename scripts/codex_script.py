@@ -792,7 +792,11 @@ def validate():
             fh.write("```\n")
 
 
-@hydra_main(config_path="conf", config_name="config", version_base=None)
+@hydra_main(
+    config_path="../configs/deployment/hhg_logistics",
+    config_name="config",
+    version_base=None,
+)
 def main(cfg: DictConfig):
     # Initialize determinism (no-op unless CODEX_DETERMINISM=1)
     _init_determinism_from_env()

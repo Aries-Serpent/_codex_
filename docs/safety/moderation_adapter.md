@@ -12,7 +12,7 @@ needed.
    `output`). Any truthy `approved` response is honoured.
 2. **Offline fallback.** Regardless of the provider outcome, the adapter
    evaluates the text against the repository policy
-   (`configs/safety/policy.yaml` by default). This keeps the guard in place even
+   (`configs/base/safety/policy.yaml` by default). This keeps the guard in place even
    when the provider is unreachable.
 3. **Decision logging.** Blocks raise `ModerationRejection` unless `fail_open`
    is set. When an `audit_log` path is supplied, each decision is appended as an
@@ -25,11 +25,11 @@ Set the adapter through `TrainingRunConfig.safety.moderation`:
 ```yaml
 safety:
   enabled: true
-  policy_path: configs/safety/policy.yaml
+  policy_path: configs/base/safety/policy.yaml
   moderation:
     enabled: true
     provider: offline               # or module:function
-    rules_path: configs/safety/policy.yaml
+    rules_path: configs/base/safety/policy.yaml
     fail_open: false
     audit_log: artifacts/safety/moderation.ndjson
     label: training
@@ -55,7 +55,7 @@ The inference CLI exposes equivalent controls:
 python -m codex_ml.cli.infer \
   --prompt "classify this support ticket" \
   --moderation \
-  --moderation-policy configs/safety/policy.yaml \
+  --moderation-policy configs/base/safety/policy.yaml \
   --moderation-audit-log artifacts/safety/moderation.ndjson
 ```
 

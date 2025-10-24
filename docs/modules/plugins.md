@@ -50,7 +50,7 @@ they expect (relative to the repository root):
 
 Hydra fragments under
 `configs/{model,tokenizer,data,metrics,training}/offline/` and the composite
-`configs/offline/catalogue.yaml` preset bind these defaults automatically. See
+`configs/base/offline/catalogue.yaml` preset bind these defaults automatically. See
 [`docs/guides/offline_catalogue.md`](../guides/offline_catalogue.md) for the
 expected directory tree and CLI examples.
 
@@ -129,4 +129,3 @@ When publishing a third-party plugin:
 
 Following these guidelines keeps the ecosystem consistent and ensures Codex ML
 can safely load community extensions.
-

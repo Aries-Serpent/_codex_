@@ -8,7 +8,7 @@ from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifes
 
 
 def test_emit_solution_xml_uses_config(tmp_path: Path) -> None:
-    manifest = load_solution_manifest(Path("config/d365"))
+    manifest = load_solution_manifest(Path("configs/deployment/d365"))
     manifest = manifest.with_overrides(name="CodexOfflineTest", version="2.0.0.0")
     xml = emit_solution_xml(manifest)
     out = tmp_path / "Solution.xml"

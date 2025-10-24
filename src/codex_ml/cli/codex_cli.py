@@ -23,7 +23,7 @@ from codex_utils.ndjson import NDJSONLogger
 
 _ = (ArgparseJSONParser, run_cmd)
 
-DEFAULT_TOKENIZER_CONFIG = "configs/tokenization/base.yaml"
+DEFAULT_TOKENIZER_CONFIG = "configs/training/tokenization/base.yaml"
 DEFAULT_TOKENIZER_JSON = "artifacts/tokenizers/default/default/tokenizer.json"
 
 
@@ -272,7 +272,7 @@ def repo_map() -> None:
 @codex.command()
 @click.option(
     "--config",
-    default="configs/eval/base.yaml",
+    default="configs/evaluation/base.yaml",
     show_default=True,
     type=click.Path(dir_okay=False, path_type=str),
     help="Path to the evaluation configuration.",
@@ -358,7 +358,7 @@ def evaluate(
 @codex.command("prepare-data")
 @click.option(
     "--config",
-    default="configs/data/base.yaml",
+    default="configs/training/data/base.yaml",
     show_default=True,
     type=click.Path(exists=True, dir_okay=False, path_type=str),
     help="Path to the data preparation configuration.",

@@ -15,7 +15,7 @@
 
 ## Developer checklist
 
-* Run `nox --noxfile config/noxfile.py -s offline_check` before submitting a PR.
+* Run `nox --noxfile configs/development/noxfile.py -s offline_check` before submitting a PR.
 * Install extras as required:
   * `pip install -e '.[test-core]'` — minimal pytest + Hydra stack.
   * `pip install -e '.[test,tracking,ml]'` — full feature set with optional deps.

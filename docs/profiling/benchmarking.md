@@ -35,7 +35,7 @@ runs.
 Create a dedicated `nox` session for repeatable benchmarks:
 
 ```bash
-nox --noxfile config/noxfile.py -s perf -- \
+nox --noxfile configs/development/noxfile.py -s perf -- \
   --model sshleifer/tiny-gpt2 \
   --batch-size 32 \
   --num-iterations 100 \

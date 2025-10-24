@@ -12,7 +12,11 @@ from .pipeline import run_pipeline
 logger = logging.getLogger(__name__)
 
 
-@hydra.main(config_path="conf", config_name="config", version_base="1.3")
+@hydra.main(
+    config_path="../../configs/deployment/hhg_logistics",
+    config_name="config",
+    version_base="1.3",
+)
 def main(cfg: DictConfig) -> Any:
     """Hydra entrypoint for hhg_logistics domain."""
 

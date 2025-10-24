@@ -341,7 +341,7 @@ def run_post_check_validation() -> ValidationReport:
             "Iteration 1 – automation stubs cleared",
             [
                 REPO_ROOT / "codex_setup.py",
-                REPO_ROOT / "config" / "noxfile.py",
+                REPO_ROOT / "configs" / "development" / "noxfile.py",
                 REPO_ROOT / "codex_update_runner.py",
             ],
         ),
