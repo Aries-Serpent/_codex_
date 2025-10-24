@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from codex_ml.utils.optional import optional_dependency_error
+
 
 def init_experiment(exp_name: str = "codex_experiment") -> None:
     """Initialise MLflow in offline (local file store) mode by default."""
@@ -11,7 +13,10 @@ def init_experiment(exp_name: str = "codex_experiment") -> None:
     try:
         import mlflow
     except Exception as exc:  # noqa: BLE001
-        raise RuntimeError("mlflow is required for experiment initialization") from exc
+        raise optional_dependency_error(
+            "mlflow",
+            purpose="experiment initialization",
+        ) from exc
 
     if backend == "file":
         tracking_dir = Path(".mlruns").resolve()

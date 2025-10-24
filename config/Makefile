@@ -43,7 +43,7 @@ cli:
 	nox -s cli
 
 sbom:
-	nox -s sbom
+	python ../scripts/sbom_cyclonedx.py --lock ../requirements.lock --lock ../uv.lock --output ../dist/sbom.json
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
