@@ -37,7 +37,7 @@ class SearchResult:
 
 
 def log_error(step: str, description: str, error: Exception) -> None:
-    """Append a formatted error capture block to error_log.md."""
+    """Append a formatted error capture block to docs/troubleshooting/error_log.md."""
 
     timestamp = datetime.now(timezone.utc).isoformat()
     block = (
@@ -46,7 +46,7 @@ def log_error(step: str, description: str, error: Exception) -> None:
         f"Context: {description}. What are the possible causes, and how can this be "
         f"resolved while preserving intended functionality?\n"
     )
-    target = REPO_ROOT / "error_log.md"
+    target = REPO_ROOT / "docs/troubleshooting/error_log.md"
     with target.open("a", encoding="utf-8") as handle:
         handle.write(block)
         if not block.endswith("\n"):
@@ -84,7 +84,11 @@ def scan_repository(patterns: Sequence[str]) -> list[SearchResult]:
             for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
                 for pattern in patterns:
                     if re.search(pattern, line):
-                        results.append(SearchResult(path=path.relative_to(REPO_ROOT), line_no=line_no, line=line.strip()))
+                        results.append(
+                            SearchResult(
+                                path=path.relative_to(REPO_ROOT), line_no=line_no, line=line.strip()
+                            )
+                        )
                         break
         except UnicodeDecodeError:
             continue

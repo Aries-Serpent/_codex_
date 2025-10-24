@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""
-Install a prepare-commit-msg git hook that appends Codex metadata (questions count
-and report path) into commit messages. The hook is POSIX shell-based and will try
-to use `git interpret-trailers` when available; otherwise it appends plain trailers.
-
-This script is safe to run multiple times and will create the hooks directory if
-missing. It prefers to detect the repository top-level via git; if that fails it
-falls back to the current working directory.
-"""
-
-import os
 import stat
 import subprocess
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
+
+# Install a prepare-commit-msg git hook that appends Codex metadata
+# (questions count and report path) into commit messages. The hook uses
+# git interpret-trailers when available and falls back to appending
+# plain trailers. It is idempotent and creates the hooks directory if
+# missing, preferring the git top-level but falling back to the current
+# working directory.
 
 
 def repo_root() -> Path:
@@ -66,7 +61,7 @@ def main() -> None:
 set -euo pipefail
 MSG_FILE="$1"
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
-QFILE="$ROOT/Codex_Questions.md"
+QFILE="$ROOT/docs/reference/codex_questions.md"
 REPORT="$ROOT/codex_commit_comment.txt"
 COUNT=0
 if [ -f "$QFILE" ]; then
@@ -98,4 +93,3 @@ exit 0
 
 if __name__ == "__main__":
     main()
-    

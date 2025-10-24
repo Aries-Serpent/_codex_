@@ -70,14 +70,14 @@
   - CHANGELOG_SESSION_LOGGING.md
   - CODEBASE_AUDIT_2025-08-26_203612.md
   - CONTRIBUTING.md
-  - Codex_Questions.md
-  - DEFERRED.md
+  - docs/reference/codex_questions.md
+  - docs/deferred_items.md
   - Dockerfile
   - Dockerfile.gpu
-  - ERROR_LOG.md
+  - docs/troubleshooting/error_log.md
   - LFS_POLICY.md
   - Makefile
-  - OPEN_QUESTIONS.md
+  - docs/troubleshooting/open_questions.md
   - README.md
   - _codex_codex-ready-sequence-and-patches-2025-09-27.md
   - _codex_status_update-0C_base_-2025-09-27.md

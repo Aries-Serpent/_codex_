@@ -108,7 +108,7 @@ Use these templates to refresh audit artefacts quickly during each run. Replace 
 ## Unreleased - {{DATE}}
 - {{SUMMARY_OF_CHANGES}}
 ```
-## Open Questions (`OPEN_QUESTIONS.md`)
+## Open Questions (`docs/troubleshooting/open_questions.md`)
 
 ```markdown
 # Open Questions & Next Steps — Run {{RUN_NUMBER}} ({{DATE}})

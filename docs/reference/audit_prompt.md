@@ -15,7 +15,7 @@ Instructions
 - Prefer structural extraction from Python sources (AST/CST/parso) when feasible; otherwise degrade gracefully.
 - Highlight high-complexity functions (if measured) and flag unusual patterns or hot-spots for deeper review.
 - Cross-reference `_codex` status updates—**especially** `reports/_codex_status_update-2025-10-05.md`—to fold prior gap → risk → resolution guidance into the current run. Carry forward any still-open mitigations.
-- **Error capture:** On any failure, append a block to `Codex_Questions.md`:
+- **Error capture:** On any failure, append a block to `docs/reference/codex_questions.md`:
   ```text
   Question for ChatGPT-5 @codex {{TIMESTAMP}}:
   While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
@@ -39,7 +39,7 @@ Notes
 - Operate on the most active local branch; document justification in `reports/branch_analysis.md`.
 - Each run selects **three** Menu items and delivers **1–3 atomic diffs** with supporting docs/tests.
 - Maintain offline cadence: rely on local scripts, `pre-commit`, pytest/nox, and `tools/validate_fences.py`.
-- Update artefacts after each run: `reports/*.md`, `CHANGELOG.md`, `OPEN_QUESTIONS.md`, and `Codex_Questions.md` for any captured failures.
+- Update artefacts after each run: `reports/*.md`, `CHANGELOG.md`, `docs/troubleshooting/open_questions.md`, and `docs/reference/codex_questions.md` for any captured failures.
 - Consult `reports/report_templates.md` for reusable placeholders when updating artefacts.
 
 ### Menu (choose three per run)
@@ -52,21 +52,21 @@ Notes
 7. Docs polish
 8. Self-management
 
-Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
+Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 
 ### Asset-driven Menu Playbooks
 
-#### Repo map & quick wins — use `tree` output + `OPEN_QUESTIONS.md`
+#### Repo map & quick wins — use `tree` output + `docs/troubleshooting/open_questions.md`
 - Run a shallow repository walk to refresh the structural map:
   ```bash
   tree -a -L 3 > reports/repo_tree_snapshot.txt
   ```
   This keeps the snapshot under `reports/` so the map can be diffed between runs.
-- Cross-reference the snapshot with the existing backlog in `OPEN_QUESTIONS.md` to
+- Cross-reference the snapshot with the existing backlog in `docs/troubleshooting/open_questions.md` to
   identify "quick win" candidates. Annotate the relevant bullet(s) directly in
   `reports/repo_map.md`, linking each entry back to the corresponding section in
-  `OPEN_QUESTIONS.md` for traceability.
-- Record any newly discovered gaps in `OPEN_QUESTIONS.md` using the existing
+  `docs/troubleshooting/open_questions.md` for traceability.
+- Record any newly discovered gaps in `docs/troubleshooting/open_questions.md` using the existing
   Gap → Risk → Resolution scaffold so that subsequent runs inherit an updated
   priority list.
 
@@ -96,7 +96,7 @@ Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
   `ops/threat_model/STRIDE.md`. Summaries should note the Semgrep rule ID,
   affected file, STRIDE classification, and recommended mitigation.
 - Convert prioritized mitigations into actionable patches (either immediate
-  diffs under `patches/pending/` or tracked follow-ups in `OPEN_QUESTIONS.md`).
+  diffs under `patches/pending/` or tracked follow-ups in `docs/troubleshooting/open_questions.md`).
   Reference the relevant threat model section in every mitigation note so the
   operational context is explicit.
 
@@ -114,7 +114,7 @@ Document chosen and upcoming items in `OPEN_QUESTIONS.md`.
   - **Risk** – production or reproducibility impact if the gap remains.
   - **Containment/Resolution** – the minimal patch, guardrail, or operational runbook that neutralises the risk.
 - Update `reports/gap_risk_resolution.md` using a stable table ordering (capability, gap, risk, containment, owner/next step).
-- When a containment ships, annotate with commit SHA or artefact link and mirror the closure in `OPEN_QUESTIONS.md`.
+- When a containment ships, annotate with commit SHA or artefact link and mirror the closure in `docs/troubleshooting/open_questions.md`.
 
 #### Gap/Risk/Resolution table scaffold
 ```markdown
@@ -148,7 +148,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 
 ### Deferred work log
 - Summarize deferrals in `reports/deferred.md` with rationale and follow-up Menu targets.
-- Carry unresolved questions into `OPEN_QUESTIONS.md` until resolved.
+- Carry unresolved questions into `docs/troubleshooting/open_questions.md` until resolved.
 
 ---
 
@@ -189,7 +189,7 @@ The following section outlines a robust, phased execution plan for ChatGPT @code
 
 **Phase 5 – Error Capture**
 
-Whenever any step encounters an error or unexpected behaviour, create an error report block using the template below and append it to `error_log.md`. Do **not** silently fail.
+Whenever any step encounters an error or unexpected behaviour, create an error report block using the template below and append it to `docs/troubleshooting/error_log.md`. Do **not** silently fail.
 
 ```text
 Question for ChatGPT @codex {{timestamp}}:
@@ -246,7 +246,7 @@ import subprocess
 from datetime import datetime
 
 WORKDIR = os.environ.get("CODEX_WORKDIR", "codex_workdir")
-ERROR_LOG = os.path.join(WORKDIR, "error_log.md")
+ERROR_LOG = os.path.join(WORKDIR, "docs/troubleshooting/error_log.md")
 
 
 def ensure_workdir():
@@ -311,7 +311,7 @@ def main():
     scan_stubs()
     # Additional construction steps would be invoked here (e.g. call functions
     # to integrate logging, Hydra configs, checkpointing, etc.). Each should
-    # capture errors using run_command or try/except and append to error_log.md.
+    # capture errors using run_command or try/except and append to docs/troubleshooting/error_log.md.
 
 
 if __name__ == "__main__":
