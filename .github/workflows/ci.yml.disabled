@@ -158,12 +158,13 @@ PY
           else
             PYTEST_EXPR=""
           fi
+          COVERAGE_ARGS="--cov=src/codex_ml --cov-fail-under=3.5"
           if [ -n "${PYTEST_EXPR}" ]; then
-            echo "Running: pytest -q -m '${PYTEST_EXPR}'"
-            pytest -q -m "${PYTEST_EXPR}"
+            echo "Running: pytest -q ${COVERAGE_ARGS} -m '${PYTEST_EXPR}'"
+            pytest -q ${COVERAGE_ARGS} -m "${PYTEST_EXPR}"
           else
-            echo "Running: pytest -q"
-            pytest -q
+            echo "Running: pytest -q ${COVERAGE_ARGS}"
+            pytest -q ${COVERAGE_ARGS}
           fi
 
       - name: Upload artifacts on failure
@@ -263,4 +264,4 @@ if any_missing:
 PY
       - name: Run GPU-marked tests
         run: |
-          pytest -q -m gpu
+          pytest -q --cov=src/codex_ml --cov-fail-under=3.5 -m gpu

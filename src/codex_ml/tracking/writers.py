@@ -24,6 +24,7 @@ from codex_ml.logging.ndjson_logger import (
     is_legacy_mode,
 )
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking_decision
+from codex_ml.utils.optional_dependencies import format_optional_dependency_error
 
 DEFAULT_METRIC_SCHEMA_URI = "https://codexml.ai/schemas/run_metrics.schema.json"
 SUMMARY_SCHEMA_URI = "https://codexml.ai/schemas/tracking_component.schema.json"
@@ -522,7 +523,13 @@ class TensorBoardWriter(BaseWriter):
         except Exception as exc:  # pragma: no cover - optional
             logger.debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
-            self._disabled_reason = _exc_reason("tensorboard", exc)
+            if isinstance(exc, ImportError):
+                self._disabled_reason = format_optional_dependency_error(
+                    "tensorboard",
+                    "TensorBoard logging",
+                )
+            else:
+                self._disabled_reason = _exc_reason("tensorboard", exc)
             _emit_summary(
                 self._summary_path,
                 "tensorboard",
@@ -612,7 +619,13 @@ class MLflowWriter(BaseWriter):
             self._mlflow = None
             self._run = None
             logger.debug("MLflow writer disabled", exc_info=exc)
-            self._disabled_reason = _exc_reason("mlflow", exc)
+            if isinstance(exc, ImportError):
+                self._disabled_reason = format_optional_dependency_error(
+                    "mlflow",
+                    "experiment tracking",
+                )
+            else:
+                self._disabled_reason = _exc_reason("mlflow", exc)
             _emit_summary(
                 self._summary_path,
                 "mlflow",
@@ -673,7 +686,13 @@ class WandbWriter(BaseWriter):
         except Exception as exc:  # pragma: no cover - optional
             self._run = None
             logger.debug("Weights & Biases writer disabled", exc_info=exc)
-            self._disabled_reason = _exc_reason("wandb", exc)
+            if isinstance(exc, ImportError):
+                self._disabled_reason = format_optional_dependency_error(
+                    "wandb",
+                    "Weights & Biases logging",
+                )
+            else:
+                self._disabled_reason = _exc_reason("wandb", exc)
             _emit_summary(
                 self._summary_path,
                 "wandb",

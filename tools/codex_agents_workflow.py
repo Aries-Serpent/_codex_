@@ -38,7 +38,7 @@ README = ROOT / "README.md"
 AGENTS = ROOT / "docs" / "guides" / "AGENTS.md"
 CONTRIB = ROOT / "docs" / "governance" / "CONTRIBUTING.md"
 PRECOMMIT = ROOT / ".pre-commit-config.yaml"
-PYTEST_INI = ROOT / "pytest.ini"
+PYTEST_INI = ROOT / "config" / "pytest.ini"
 PYPROJECT = ROOT / "pyproject.toml"
 
 
