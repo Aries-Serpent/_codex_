@@ -30,3 +30,27 @@ git commit -m "chore: normalize line endings via .gitattributes"
     --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
   ```
 - See `.pre-commit-config.yaml` for stages; values now match hook names (`pre-commit`, `pre-push`, …).
+
+## Using Operational Templates
+- **Developers** own the initial implementation. When you copy a template into a new service or workflow, fill in every `[PLACEHOLDER: …]` prompt, add any service-specific safeguards, and write or update the accompanying tests. Keep overall coverage at or above **85%** by expanding the suites that ship with the template—new scenarios should live next to the feature so reviewers can see how expectations evolve.
+- **Maintainers** keep the source templates and shared tests healthy. They reconcile template updates across services, align guidance in `docs/` with the latest operational standards, and enforce the 85% baseline during review by pointing contributors to the most recent regression suites.
+
+### Quick-start: copy and adapt a template
+```bash
+# Copy the operational template into your service
+cp templates/operations/alerting.yaml services/my-new-service/alerting.yaml
+
+# Replace placeholders directly in the new file
+rg "\[PLACEHOLDER:" services/my-new-service/alerting.yaml
+python - <<'PY'
+from pathlib import Path
+path = Path("services/my-new-service/alerting.yaml")
+text = path.read_text()
+text = text.replace("[PLACEHOLDER: TEAM_NAME]", "safety-response")
+text = text.replace("[PLACEHOLDER: ALERT_CHANNEL]", "#prod-alerts")
+path.write_text(text)
+PY
+
+# Run the focused tests that accompany the template (keeps coverage ≥85%)
+pytest tests/services/my-new-service --cov=services.my_new_service
+```
