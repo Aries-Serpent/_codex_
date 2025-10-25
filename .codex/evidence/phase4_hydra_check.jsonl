@@ -1,2 +1,0 @@
-{"timestamp": "2025-10-24T11:59:50Z", "action": "hydra_plugin_hardened", "guard_installed": true, "validation": ["nox -s coverage", "python -c 'from hydra._internal.utils import create_config_search_path'"]}
-{"timestamp": "2025-10-24T12:20:00Z", "action": "hydra_coverage_session_revalidated", "commands": ["CODEX_COV_FLOOR=0 nox --noxfile config/noxfile.py -s coverage -- tests/test_cli_help.py"], "status": "passed"}

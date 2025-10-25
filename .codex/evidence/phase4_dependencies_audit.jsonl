@@ -1,2 +1,0 @@
-{"timestamp": "2025-10-24T11:59:50Z", "action": "optional_dependencies_audited", "docs_created": ["docs/optional_dependencies.md", "docs/offline_testing.md"], "optional_imports_catalogued": 370, "offline_safe_tests": 5}
-{"timestamp": "2025-10-24T12:25:00Z", "action": "optional_dependencies_staged", "commands": ["python -m pip install 'pydantic>=2.4' 'pydantic-settings>=2.2' pytest", "python -m pytest tests/test_data_loaders.py -k load_jsonl -q"], "status": "passed"}

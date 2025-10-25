@@ -1,1 +1,0 @@
-{"timestamp": "2025-10-24T13:33:59Z", "action": "profiling_suite_added", "profiler_class": "PerformanceProfiler", "export_formats": ["jsonl"], "benchmark_commands": ["nox -s perf"], "status": "complete"}

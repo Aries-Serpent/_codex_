@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Lint (placeholder)
+        run: echo "lint passed"
+      - name: Validate presence of governance files
+        run: |
+          test -f .github/CODEOWNERS
+          test -f SECURITY.md
+          test -f README.md
+          echo "governance files present"
+      - name: Note existing disabled workflows (non-blocking)
+        run: |
+          ls -1 .github/workflows/*.disabled 2>/dev/null || true

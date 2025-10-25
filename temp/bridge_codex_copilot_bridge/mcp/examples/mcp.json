@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "bridge-ita": {
-      "command": "python",
-      "args": ["-m", "temp.bridge_codex_copilot_bridge.mcp.server.main"],
-      "env": {}
-    }
-  }
-}

@@ -1,4 +1,0 @@
-# Example preset to run tests/pipelines in a deterministic mode.
-seed: 42
-deterministic: true
-num_threads: 1
