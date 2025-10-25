@@ -11,6 +11,8 @@ The format is based on “Keep a Changelog” and uses an **Unreleased** section
   - Files: `docs/templates/Migration_PythonFileRelocation.md`, `docs/templates/Migration_CLIHardening.md`,
     `docs/templates/Planning_IntentValidation.md`, `docs/templates/README.md`
   - Provide phase-based guidance, placeholder callouts, and cross-linking tips for reuse across services.
+- **Documentation:** Dedicated operational template overview in `docs/README.md` and a role-based workflow with responsibility
+  mapping in `docs/CONTRIBUTING.md` to steer drafting, review, and execution.
 - **Prompt:** Self-Healing Disciplined Engineer — Gap Card Sweep
   File: `docs/prompts/custom_gpt_self_healing_engineer.md`
   - Introduces “Gap Card” sweep on each user request
@@ -18,8 +20,8 @@ The format is based on “Keep a Changelog” and uses an **Unreleased** section
   - Zero-trust retrieval posture; read-only connector usage
 
 ### Changed
-- Refreshed `docs/README.md` and `docs/CONTRIBUTING.md` to index the new operational templates and clarify how contributors
-  adopt them while preserving test coverage expectations.
+- Refreshed `docs/README.md` and `docs/CONTRIBUTING.md` to index the operational templates, highlight prerequisites, and
+  reinforce the 85% coverage expectation during template adoption.
 
 ### Refactored
 - Consolidated eight legacy CLI scripts into the `cli/` package, preserving

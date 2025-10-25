@@ -35,6 +35,17 @@ git commit -m "chore: normalize line endings via .gitattributes"
 - **Developers** own the initial implementation. When you copy a template into a new service or workflow, fill in every `[PLACEHOLDER: …]` prompt, add any service-specific safeguards, and write or update the accompanying tests. Keep overall coverage at or above **85%** by expanding the suites that ship with the template—new scenarios should live next to the feature so reviewers can see how expectations evolve.
 - **Maintainers** keep the source templates and shared tests healthy. They reconcile template updates across services, align guidance in `docs/` with the latest operational standards, and enforce the 85% baseline during review by pointing contributors to the most recent regression suites.
 
+### Role-based template workflow
+1. **Draft (Developer)** — Select the right template from [`docs/templates/README.md`](./templates/README.md), duplicate it into the target service, and replace all placeholders. Capture open questions in the template’s “Risks” block before requesting review.
+2. **Review (Maintainer)** — Validate that coverage gates are met (≥85%), placeholders are resolved, and the rollback section addresses tenant and dependency impacts. Update the source template when repeated adjustments appear across services.
+3. **Execute (Operations/Release owner)** — Run the rollout or migration steps during the agreed window, post status in the ops channel, and confirm the validation checklist. If issues occur, revert using the documented rollback script and file follow-up actions.
+
+| Template Type | Primary Drafter | Required Reviewer | Execution Lead | Notes |
+| --- | --- | --- | --- | --- |
+| Migration — Python File Relocation | Service developer | Template maintainer | Release engineer | Ensure import graphs are re-scanned before deploy. |
+| Migration — CLI Hardening | CLI feature owner | Maintainer with CLI coverage context | Runtime operator | Coordinate feature flag toggles and CLI docs updates. |
+| Planning — Intent Validation | Discovery lead | Maintainer or PM | Product/ops partner | Feed validated risks into downstream implementation plan. |
+
 ### Quick-start: copy and adapt a template
 ```bash
 # Copy the operational template into your service

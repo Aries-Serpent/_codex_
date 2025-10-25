@@ -9,11 +9,15 @@ Welcome to the `_codex_` documentation hub.
 
 ## Operational Templates
 
-Refer to the [Operational Templates index](./templates/README.md) for detailed usage guidance.
+Operational templates capture repeatable delivery patterns (migrations, hardening passes, investigative sprints) so teams can execute with consistent safeguards. Start with the [Operational Templates index](./templates/README.md) to review prerequisites, placeholders, and rollout checklists before copying a template into a service.
 
-- **[Migration — Python File Relocation](./templates/Migration_PythonFileRelocation.md)**: Coordinate module moves while preserving imports and release hygiene.
-- **[Migration — CLI Hardening](./templates/Migration_CLIHardening.md)**: Stage interface tightening, argument validation, and rollout checks.
-- **[Planning — Intent Validation](./templates/Planning_IntentValidation.md)**: Structure discovery work to confirm intent, risks, and validation gates before execution.
+**Template catalog**
+
+- **[Migration — Python File Relocation](./templates/Migration_PythonFileRelocation.md)** — Coordinate module moves while preserving imports, dependency edges, and release hygiene.
+- **[Migration — CLI Hardening](./templates/Migration_CLIHardening.md)** — Stage interface tightening, argument validation, and rollout checks.
+- **[Planning — Intent Validation](./templates/Planning_IntentValidation.md)** — Structure discovery work to confirm intent, risks, and validation gates before execution.
+
+Each template ships with inline `[PLACEHOLDER: …]` prompts and linked regression suites. Follow the role workflow in [`docs/CONTRIBUTING.md`](./CONTRIBUTING.md#role-based-template-workflow) to assign drafting, review, and rollout ownership.
 
 ## Conventions
 
