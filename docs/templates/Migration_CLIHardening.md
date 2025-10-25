@@ -24,7 +24,11 @@ Apply this template when migrating, renaming, or tightening CLI entry points. It
 - **Primary owners:** `{{cli_owners}}`
 - **Affected scripts/jobs:** `{{affected_jobs}}`
 
-Cross-reference the [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) template for module moves that underpin CLI changes, and the [Planning — Intent Validation](./Planning_IntentValidation.md) ritual to ensure stakeholders sign off on tightened contracts.
+## Related templates
+
+- [Migration — Python File Relocation](./Migration_PythonFileRelocation.md)
+- [Planning — Intent Validation](./Planning_IntentValidation.md)
+- [Manual Verification Checklist](./verification.md)
 
 ## Guardrails
 

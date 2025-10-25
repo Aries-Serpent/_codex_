@@ -24,7 +24,11 @@ Use this template when moving Python modules or packages to a new location while
 - **Release window:** `{{release_window}}`
 - **Dependencies touched:** `{{dependencies_list}}`
 
-Cross-reference the [Planning — Intent Validation](./Planning_IntentValidation.md) template to confirm the migration aligns with validated scope, and pair with the [Migration — CLI Hardening](./Migration_CLIHardening.md) checklist if CLI entry points are affected.
+## Related templates
+
+- [Planning — Intent Validation](./Planning_IntentValidation.md)
+- [Migration — CLI Hardening](./Migration_CLIHardening.md)
+- [Manual Verification Checklist](./verification.md)
 
 ## Guardrails
 

@@ -24,7 +24,11 @@ Adopt this template before committing to major migrations, CLI hardening project
 - **Target release / milestone:** `{{target_release}}`
 - **Success metrics:** `{{success_metrics}}`
 
-Cross-reference the [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) and [Migration — CLI Hardening](./Migration_CLIHardening.md) templates once the plan graduates from intent validation into execution.
+## Related templates
+
+- [Migration — Python File Relocation](./Migration_PythonFileRelocation.md)
+- [Migration — CLI Hardening](./Migration_CLIHardening.md)
+- [Manual Verification Checklist](./verification.md)
 
 ## Stakeholder checklist
 
