@@ -1,0 +1,39 @@
+name: diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runner label (ubuntu-latest or self-hosted)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print event context
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "repo=${{ github.repository }}"
+          echo "actor=${{ github.actor }}"
+          echo "workflow=${{ github.workflow }}"
+      - name: Print runner context
+        run: |
+          echo "runner.name=${{ runner.name }}"
+          echo "runner.os=${{ runner.os }}"
+          echo "runner.arch=${{ runner.arch }}"
+          echo "runner.temp=${{ runner.temp }}"
+          echo "runner.workspace=${{ runner.workspace }}"
+          echo "labels=${{ join(runner.labels, ',') }}"
+      - name: Token permission (declared at workflow-level)
+        run: echo "contents: read"
+      - name: List workflows (and any disabled markers)
+        run: |
+          ls -1 .github/workflows || true
+          ls -1 .github/workflows/*.disabled 2>/dev/null || true

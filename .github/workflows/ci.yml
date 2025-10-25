@@ -21,7 +21,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-and-validate:
+  gh_hosted:
+    # Schedule this job unless the manual run explicitly targets self-hosted.
+    if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.runner == 'self-hosted' || vars.DEFAULT_RUNNER == 'self-hosted')) }}
     runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: read
@@ -45,3 +47,24 @@ jobs:
       - name: Note existing disabled workflows (non-blocking)
         run: |
           ls -1 .github/workflows/*.disabled 2>/dev/null || true
+
+  self_hosted:
+    # Only schedule on manual dispatch when runner input or DEFAULT_RUNNER indicate self-hosted.
+    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.runner == 'self-hosted' || vars.DEFAULT_RUNNER == 'self-hosted') }}
+    runs-on: self-hosted
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Debug runner info
+        run: |
+          echo "Runner name: ${{ runner.name }}"
+          echo "Runner os: ${{ runner.os }}"
+          echo "Runner arch: ${{ runner.arch }}"
+          echo "Runner labels: ${{ join(runner.labels, ',') }}"
+      - name: Validate presence of governance files
+        run: |
+          test -f .github/CODEOWNERS
+          test -f SECURITY.md
+          test -f README.md
+          echo "self-hosted path OK"
