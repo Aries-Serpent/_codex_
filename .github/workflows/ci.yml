@@ -2,10 +2,16 @@ name: ci
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "chore/bootstrap-governance-2025-10-24"]
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
   merge_group:
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Runner label (e.g., ubuntu-latest or self-hosted)'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -16,12 +22,18 @@ concurrency:
 
 jobs:
   lint-and-validate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
+      - name: Debug runner info
+        run: |
+          echo "Runner name: ${{ runner.name }}"
+          echo "Runner os: ${{ runner.os }}"
+          echo "Runner arch: ${{ runner.arch }}"
+          echo "Runner labels: ${{ join(runner.labels, ',') }}"
       - name: Lint (placeholder)
         run: echo "lint passed"
       - name: Validate presence of governance files
