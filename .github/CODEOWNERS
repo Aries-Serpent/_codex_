@@ -1,0 +1,26 @@
+# Default owners
+* @Aries-Serpent/owners
+
+# ML core
+src/codex_ml/** @Aries-Serpent/ml-core
+
+# Docs
+docs/** @Aries-Serpent/docs
+
+# Tests
+tests/** @Aries-Serpent/owners
+
+# --- archive & hygiene (appended by starter kit) ---
+.github/**             @Aries-Serpent/owners
+.github/CODEOWNERS     @Aries-Serpent/owners
+docs/policies/**       @Aries-Serpent/docs
+docs/arch/**           @Aries-Serpent/docs
+scripts/**             @Aries-Serpent/owners
+.codex/**              @Aries-Serpent/owners
+# --- end appended ---
+
+# --- governance scaffold (appended by Codex bootstrap) ---
+README.md              @Aries-Serpent/docs
+docs/CHANGELOG/**      @Aries-Serpent/docs
+.github/**/*.md        @Aries-Serpent/owners
+# --- end appended ---
