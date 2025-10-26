@@ -15,7 +15,8 @@ from __future__ import annotations
 import os
 import re
 import sys
-from typing import Iterable, Tuple
+from dataclasses import dataclass
+from typing import Iterable, List, Tuple
 
 MD_EXTS = {".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".patch", ".diff"}
 SKIP_DIRS = {".git", ".codex", "temp", "artifacts", "reports", "site"}
@@ -24,7 +25,20 @@ SKIP_FILES = {
     os.path.join("docs", "FollowUp_Implementation_Plan.md"),
 }
 
-FENCE_RE = re.compile(r"^(?P<fence>(`{3,}|~{3,})).*$")
+FENCE_RE = re.compile(r"^(?P<fence>(`{3,}|~{3,}))(?P<label>.*)$")
+
+
+@dataclass
+class FenceError:
+    """Represents a fence validation problem compatible with legacy callers."""
+
+    path: str
+    line: int
+    message: str
+    severity: str = "error"
+
+    def __str__(self) -> str:  # pragma: no cover - best-effort repr
+        return f"{self.path}:{self.line}: {self.message}"
 
 
 def iter_files(root: str) -> Iterable[str]:
@@ -42,30 +56,115 @@ def iter_files(root: str) -> Iterable[str]:
                 yield os.path.join(dirpath, fn)
 
 
-def validate_file(path: str) -> Tuple[bool, list[str]]:
-    ok = True
-    problems: list[str] = []
+def _scan_file(
+    path: str,
+    *,
+    strict_inner: bool,
+    warn_inner: bool,
+    check_language: bool,
+) -> Tuple[List[FenceError], List[FenceError]]:
+    """Return ``(errors, warnings)`` discovered while scanning ``path``."""
+
+    errors: List[FenceError] = []
+    warnings: List[FenceError] = []
+
+    last_lineno = 0
+
     with open(path, "r", encoding="utf-8", errors="ignore") as f:
         in_block = False
-        current_fence = None
-        for lineno, line in enumerate(f, start=1):
-            m = FENCE_RE.match(line.rstrip("\n"))
-            if m:
-                fence = m.group("fence")[0]  # '`' or '~'
+        current_fence: str | None = None
+        nested_reported = False
+
+        for lineno, raw_line in enumerate(f, start=1):
+            last_lineno = lineno
+            line = raw_line.rstrip("\n")
+            match = FENCE_RE.match(line)
+            if match:
+                fence_token = match.group("fence")
+                fence_char = fence_token[0]
                 if not in_block:
                     in_block = True
-                    current_fence = fence
+                    current_fence = fence_char
+                    nested_reported = False
+
+                    label = match.group("label")
+                    if check_language and label is not None and not label.strip():
+                        errors.append(
+                            FenceError(
+                                path=path,
+                                line=lineno,
+                                message="Missing language tag for fenced block",
+                            )
+                        )
                 else:
-                    # Closing fence must match opening type
-                    if fence != current_fence:
-                        ok = False
-                        problems.append(f"{path}:{lineno}: mixed fence types within one block")
+                    if current_fence and fence_char != current_fence:
+                        errors.append(
+                            FenceError(
+                                path=path,
+                                line=lineno,
+                                message="mixed fence types within one block",
+                            )
+                        )
                     in_block = False
                     current_fence = None
+                    nested_reported = False
+                continue
+
+            if in_block and strict_inner and current_fence and not nested_reported:
+                inner_token = current_fence * 3
+                if inner_token in line:
+                    problem = FenceError(
+                        path=path,
+                        line=lineno,
+                        message="nested code fence detected",
+                        severity="warning" if warn_inner else "error",
+                    )
+                    if warn_inner:
+                        warnings.append(problem)
+                    else:
+                        errors.append(problem)
+                    nested_reported = True
+
         if in_block:
-            ok = False
-            problems.append(f"{path}: EOF while inside a fenced block")
-    return ok, problems
+            errors.append(
+                FenceError(
+                    path=path,
+                    line=last_lineno,
+                    message="EOF while inside a fenced block",
+                )
+            )
+
+    return errors, warnings
+
+
+def validate_file(
+    path: str,
+    strict_inner: bool | None = None,
+    warn_inner: bool | None = None,
+):
+    """Validate fenced blocks in ``path`` with backwards-compatible semantics."""
+
+    if strict_inner is None and warn_inner is None:
+        errors, _warnings = _scan_file(
+            path,
+            strict_inner=False,
+            warn_inner=False,
+            check_language=False,
+        )
+        ok = not errors
+        problems = [str(err) for err in errors]
+        return ok, problems
+
+    strict = bool(strict_inner)
+    warn = bool(warn_inner)
+    errors, _warnings = _scan_file(
+        path,
+        strict_inner=strict,
+        warn_inner=warn,
+        check_language=True,
+    )
+    # Legacy callers expect warnings to be suppressed entirely when warn_inner=True.
+    return errors
 
 
 def main() -> int:
