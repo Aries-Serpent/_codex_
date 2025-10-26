@@ -138,6 +138,31 @@ def tests(session: nox.Session) -> None:
 
 
 @nox.session
+def status(session: nox.Session) -> None:
+    """Render a template-mode STATUS_REPORT.md with verbose output and artifacts."""
+    session.install("-r", "requirements-dev.txt")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.run(
+        "python",
+        "tools/status_report.py",
+        "--summary",
+        "samples/assistant_message_summary.sample.json",
+        "--selected",
+        "3",
+        "--template",
+        "docs/templates/status_update.md",
+        "--branch",
+        "local/nox",
+        "--pr",
+        "local",
+        "--verbose",
+        "--save-logs",
+        "--out",
+        "STATUS_REPORT.md",
+    )
+
+
+@nox.session
 def precommit(session: nox.Session) -> None:
     """Run all pre-commit hooks locally (manual)."""
     session.install("pre-commit")

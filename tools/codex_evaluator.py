@@ -8,12 +8,28 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import re
 import sys
 from dataclasses import dataclass
 from typing import Any, Dict, List
+
+
+def _require_module(name: str) -> None:
+    """Exit with a friendly hint when an optional dependency is unavailable."""
+
+    if importlib.util.find_spec(name) is None:
+        sys.stderr.write(
+            f"[evaluator] Missing optional dependency: '{name}'.\n"
+            f"Install it via: pip install {name}\n"
+        )
+        raise SystemExit(2)
+
+
+for _optional in ("pydantic", "typer"):
+    _require_module(_optional)
 
 
 @dataclass
