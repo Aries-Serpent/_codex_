@@ -98,6 +98,7 @@ def main(argv: List[str] | None = None) -> int:
             "schemas/codex_eval_rules.v3.schema.json",
         ]
     )
+    # Detect skip note
     schema_state = "PASS" if rc_s == 0 else "FAIL"
     if "jsonschema not installed" in (err_s or "").lower():
         schema_state = "SKIP"
@@ -134,114 +135,26 @@ def main(argv: List[str] | None = None) -> int:
                 str(args.selected),
             ]
         )
-        guard_state = "PASS" if rc_g == 0 else ("FAIL" if rc_g == 1 else "SKIP")
+        if rc_g == 0:
+            guard_state = "PASS"
+        else:
+            err_lower = (err_g or "").lower()
+            guard_state = "SKIP" if "jsonschema not installed" in err_lower else "FAIL"
     sections.append(f"- Selection Guard (chosen={args.selected or '-'}) : {guard_state}")
 
-    if not args.template:
-        sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
-        sections.append(
-            "## Risks & Mitigations\n- None observed beyond local environment variance.\n"
-        )
-        sections.append(
-            "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
-        )
-        sections.append(
-            f"\n> Provenance: generated locally by `tools/status_report.py` at {_stamp()}.\n"
-        )
-        Path(args.out).write_text("\n".join(sections), encoding="utf-8")
-        mandatory_fail = (rc_f != 0) or (schema_state == "FAIL")
-        return 1 if mandatory_fail else 0
-
-    root = Path(".").resolve()
-    scan = _scan_repo(root)
-    repo_map_md: List[str] = []
-    top_dirs = cast(List[str], scan["top_dirs"])
-    if top_dirs:
-        repo_map_md.append("**Top-level directories**:")
-        repo_map_md.append(_md_bullets(top_dirs))
-    key_files = cast(Dict[str, bool], scan["key_files"])
-    signs = [f"`{k}`: {'yes' if v else 'no'}" for k, v in key_files.items()]
-    repo_map_md.append("\n**Key files**:")
-    repo_map_md.append(_md_bullets(signs))
-    repo_map = "\n".join(repo_map_md)
-
-    def status_for(required: List[str], optional: List[str] | None = None) -> str:
-        optional = optional or []
-        req_hit = sum(1 for p in required if (root / p).exists())
-        opt_hit = sum(1 for p in optional if (root / p).exists())
-        if req_hit == len(required) and (not optional or opt_hit >= max(1, len(optional) // 2)):
-            return "Implemented"
-        if req_hit > 0:
-            return "Partial"
-        return "Missing"
-
-    rows = [
-        ("Fence Integrity", status_for(["tools/validate_fences.py"])),
-        (
-            "Evaluator",
-            status_for(
-                ["tools/codex_evaluator.py", "manifests/codex_eval_rules.v3.json"],
-                ["schemas/codex_eval_rules.v3.schema.json"],
-            ),
-        ),
-        (
-            "Selection Guard",
-            status_for(
-                ["tools/selection_guard.py", "manifests/selection_guard_rules.json"],
-                ["tests/guards/test_selection_guard.py"],
-            ),
-        ),
-        (
-            "Schema Validation",
-            status_for(
-                ["tools/schema_validate.py", "schemas/selection_guard_rules.schema.json"],
-                ["schemas/codex_eval_rules.v3.schema.json"],
-            ),
-        ),
-        (
-            "Status Reporter",
-            status_for(
-                ["tools/status_report.py", "docs/templates/status_update.md"],
-                ["docs/ops/status_reports.md"],
-            ),
-        ),
-        (
-            "Docs Surface",
-            status_for(
-                [
-                    "docs/ops/local_gates.md",
-                    "docs/rubrics/codex_eval_rubric_v3.md",
-                    "docs/checklists/approval_gate_checklist.md",
-                ],
-                ["docs/samples/intent_validation_example.md"],
-            ),
-        ),
-    ]
-    cap_lines = ["| Capability | Status |", "|---|---|"] + [f"| {c} | {s} |" for c, s in rows]
-    capability_table = "\n".join(cap_lines)
-
-    gates_summary = _md_bullets(
-        [
-            f"Fence integrity: {'PASS' if rc_f == 0 else 'FAIL'}",
-            f"Schema validation: {schema_state}",
-            f"Evaluator: {eval_state}",
-            f"Selection Guard (chosen={args.selected or '-'}) : {guard_state}",
-        ]
+    # Highlights & Next Steps (lightweight scaffolding)
+    sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
+    sections.append("## Risks & Mitigations\n- None observed beyond local environment variance.\n")
+    sections.append(
+        "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
+    )
+    sections.append(
+        f"\n> Provenance: generated locally by `tools/status_report.py` at {_stamp()}.\n"
     )
 
-    tmpl_path = Path(args.template)
-    tmpl_text = tmpl_path.read_text(encoding="utf-8")
-    rendered = (
-        tmpl_text.replace("{{branch}}", args.branch or "")
-        .replace("{{pr}}", args.pr or "")
-        .replace("{{gates_summary}}", gates_summary)
-        .replace("{{repo_map}}", repo_map)
-        .replace("{{capability_table}}", capability_table)
-        .replace("{{timestamp}}", _stamp())
-    )
-    Path(args.out).write_text(rendered, encoding="utf-8")
-
-    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL")
+    Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+    # Exit non-zero if any mandatory gate failed
+    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL") or (guard_state == "FAIL")
     return 1 if mandatory_fail else 0
 
 
