@@ -1,0 +1,12 @@
+# Developer tooling (local-only; no CI activation implied)
+# Keep versions flexible to reduce friction; pin if needed later.
+pre-commit>=3.7
+nox>=2024.4.15
+pytest>=8.2
+jsonschema>=4.22
+
+# Optional: add more linters/typers here later (ruff, mypy, etc.)
+# ruff>=0.6
+# mypy>=1.11
+
+# End
