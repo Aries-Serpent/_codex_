@@ -159,7 +159,7 @@ def validate_file(
             path,
             strict_inner=False,
             warn_inner=False,
-            check_language=False,
+            check_language=True,
         )
         ok = not errors
         problems = [str(err) for err in errors]
