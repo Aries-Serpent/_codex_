@@ -1,9 +1,8 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
-The format follows “Keep a Changelog” and maintains an **Unreleased** section for in-flight work.
-
-## [Unreleased]
+## 2025-10-26
 
 ### Added
 - **Operational templates (v1.0.0):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
@@ -12,8 +11,9 @@ The format follows “Keep a Changelog” and maintains an **Unreleased** sectio
 - **Documentation:** Extended `docs/README.md` with usage triggers and a handoff checklist for the templates, and refreshed `docs/CONTRIBUTING.md` with a role-based workflow plus a task-to-template mapping table.
 - **Tests:** Added `tests/templates/test_template_discovery.py` and `tests/templates/test_template_structure.py` to verify template presence, metadata, and required sections.
 
-### Changed
-- Reinforced coverage expectations (≥85%) across templates and contribution guidance.
+### Notes
+- No GitHub Actions were created or modified.
+- Hooks are **local-only** and optional to run in CI.
 
 ## 2025-10-26 (Self-management)
 
