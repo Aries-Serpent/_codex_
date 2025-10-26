@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codex Evaluator Rules v3 (minimal)",
+  "type": "object",
+  "properties": {
+    "rubric": {
+      "type": "object",
+      "properties": {
+        "dimensions": { "type": "array" },
+        "hard_fail": { "type": "object" },
+        "topic_tool_mandates": { "type": "array" },
+        "env_guard_regex": { "type": "string" },
+        "forbidden_cues": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["dimensions", "hard_fail"]
+    },
+    "signals_extractors": { "type": "object" },
+    "scoring": { "type": "object" }
+  },
+  "required": ["rubric", "scoring"]
+}
