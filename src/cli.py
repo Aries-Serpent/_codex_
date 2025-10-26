@@ -15,7 +15,7 @@ from omegaconf import OmegaConf
 from .data.registry import build as build_registered_dataset
 from .logging_utils import LoggingConfig
 from .metrics import accuracy as metrics_accuracy
-from .training.trainer import Trainer, TrainerConfig
+from .training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 
 def _ensure_real_torch() -> None:
@@ -186,8 +186,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     logging_section = _section_to_dict(cfg_dict.get("logging"))
     logging_cfg = LoggingConfig(**logging_section) if logging_section else LoggingConfig()
     trainer_section.pop("logging", None)
+    checkpoint_section = trainer_section.pop("checkpoint", None)
+    checkpoint_cfg: CheckpointConfig | None = None
+    if checkpoint_section is not None:
+        if isinstance(checkpoint_section, CheckpointConfig):
+            checkpoint_cfg = checkpoint_section
+        elif isinstance(checkpoint_section, Mapping):
+            checkpoint_cfg = CheckpointConfig(**checkpoint_section)
+        else:
+            raise TypeError(
+                "trainer.checkpoint configuration must be a mapping or CheckpointConfig"
+            )
+
     trainer_cfg = TrainerConfig(**trainer_section)
     trainer_cfg.logging = logging_cfg
+    if checkpoint_cfg is not None:
+        trainer_cfg.checkpoint = checkpoint_cfg
 
     device = cfg_dict.get("device")
     trainer = Trainer(
