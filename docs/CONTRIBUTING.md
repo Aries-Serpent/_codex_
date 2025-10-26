@@ -34,9 +34,9 @@ Operational templates live in [`docs/templates/`](./templates/README.md) and fol
 | Discovery and alignment prior to execution | [Planning — Intent Validation](./templates/Planning_IntentValidation.md) | Capture assumptions, risks, and decision gates. |
 
 ### Role-Based Workflow
-1. **Developers** duplicate the template, replace all `[PLACEHOLDER: …]` entries, and attach supporting assets (tests, dashboards, notebooks).
-2. **Maintainers** review the draft, confirm placeholders are resolved, and validate the plan meets the 85% coverage baseline.
-3. **Release/Operations** stakeholders monitor execution, cross-referencing the template instance for rollback and communication details.
+1. **Developers** duplicate the template, replace all `[PLACEHOLDER: …]` entries, and attach supporting assets (tests, dashboards, notebooks). Capture outcomes in the "Execution Notes" section during rollout.
+2. **Maintainers** review the draft, confirm placeholders are resolved, and validate the plan meets the 85% coverage baseline. They also ensure cross-references (dashboards, runbooks) are accessible to the responding team.
+3. **Release/Operations** stakeholders monitor execution, cross-referencing the template instance for rollback and communication details, and update incident response or deployment schedules as needed.
 
 ### Customization Example
 ```markdown
