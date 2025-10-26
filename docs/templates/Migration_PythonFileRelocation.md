@@ -1,73 +1,78 @@
----
-title: "Migration Template — Python File Relocation"
-status: "draft"
-template_version: "v1.0.0"
-owner: "Docs & Enablement"
-last_reviewed: 2025-10-20
-tags:
-  - migration
-  - python
-  - release-management
----
+# [Template]: Python File Relocation with Backward Compatibility
+**Version:** v1.0.0  
+**Last Updated:** 2025-10-25  
+**Role Workflow:** Developers draft → Maintainers execute → Reviewers certify
 
-# Migration Template — Python File Relocation
+> [PLACEHOLDER: MIGRATION_INTENT_SUMMARY]
 
-> {{summary_of_change}}
+Use this template when relocating Python files or packages while maintaining import stability and release automation. It pairs execution phases with validation artifacts so you can adapt the workflow to your service with minimal rework.
 
-Use this template when moving Python modules or packages to a new location while preserving import stability, release automation, and observability hooks.
+## Executive Summary
+- Target module(s): [PLACEHOLDER: MODULE_LIST]
+- Motivation and outcomes: [PLACEHOLDER: MOTIVATION_AND_IMPACT]
+- Success metrics: [PLACEHOLDER: SUCCESS_METRICS]
+- Stakeholders and notification plan: [PLACEHOLDER: STAKEHOLDER_MATRIX]
+- Review cadence: [PLACEHOLDER: REVIEW_SCHEDULE]
 
-## Snapshot metadata
+## Prerequisites
+- Document current import graph with `python -m modulefinder [PLACEHOLDER: ENTRY_POINT]` and capture output.
+- Confirm runtime hooks (e.g., [`sitecustomize.py`](../../sitecustomize.py)) do not hard-code the old paths.
+- Validate tests around the target modules exist; if missing, add smoke coverage in `../../tests/` before proceeding.
+- Align logging updates with observability owners to ensure dashboards continue tracking key signals.
+- Secure maintainer sign-off for the planned rollout window.
 
-- **Current module path:** `{{current_package_path}}`
-- **Target module path:** `{{target_package_path}}`
-- **Owning squad:** `{{owning_team}}`
-- **Release window:** `{{release_window}}`
-- **Dependencies touched:** `{{dependencies_list}}`
+## Phase 1 — Validate Source Layout
+1. Inventory files moving from `[PLACEHOLDER: OLD_PACKAGE_PATH]` to `[PLACEHOLDER: NEW_PACKAGE_PATH]`.
+2. Record git history with `git log --stat -- [PLACEHOLDER: OLD_PACKAGE_PATH]` for future auditing.
+3. Capture baseline metrics (lint, tests, size) before making changes.
 
-Cross-reference the [Planning — Intent Validation](./Planning_IntentValidation.md) template to confirm the migration aligns with validated scope, and pair with the [Migration — CLI Hardening](./Migration_CLIHardening.md) checklist if CLI entry points are affected.
+## Phase 2 — Scaffold Compatibility Shims
+1. Create aliases using `sys.modules` or import forwarding files.
+2. Update [`sitecustomize.py`](../../sitecustomize.py) to register runtime aliases if dynamic imports are involved.
+3. Provide fallback entry points so third-party integrations remain functional.
 
-## Guardrails
+## Phase 3 — Update Dependency Graph
+1. Adjust imports in code and templates to point at `[PLACEHOLDER: NEW_PACKAGE_PATH]`.
+2. Update configuration references (e.g., [`pyproject.toml`](../../pyproject.toml), DAGs, or env vars).
+3. Run targeted pytest suites (`pytest [PLACEHOLDER: TEST_SELECTOR]`) to validate dependency updates.
 
-- Maintain compatibility shims (re-export modules or add import fallbacks) for at least `{{deprecation_window}}`.
-- Capture deterministic before/after import graphs using `python -m codex_ml.cli.module_map` or equivalent tooling.
-- Update release notes and docs in `docs/` plus automation manifests such as `codex_task_sequence.py`.
-- Verify reproducibility via the [Manual Verification Checklist](./verification.md) when data artifacts relocate alongside code.
+## Phase 4 — Migrate Regression Coverage
+1. Move fixtures within [`tests/`](../../tests/) to mirror the new module layout.
+2. Add regression tests for aliases to confirm backward compatibility.
+3. Ensure coverage remains ≥85% by adding tests where gaps exist.
 
-## 🔁 Execution phases
+## Phase 5 — Execute Rollout
+1. Merge compatibility shims and new modules behind feature flags if necessary.
+2. Coordinate releases with stakeholders documented above.
+3. Monitor dashboards and logs during rollout for anomalies.
 
-### Phase 1 — Discovery & Intent
+## Phase 6 — Close-Out & Knowledge Transfer
+1. Remove temporary flags or shims once downstream consumers migrate.
+2. Archive decisions in the service README and link to this template instance.
+3. Update [`docs/CHANGELOG.md`](../CHANGELOG.md) with lessons learned and future follow-ups.
 
-1. Audit the existing module tree under `{{discovery_root}}`, documenting imports that will break without shims.
-2. Confirm business intent and rollback thresholds using the [Planning — Intent Validation](./Planning_IntentValidation.md) template.
-3. Log baseline tests (`pytest`, `ruff`, `mypy`) and record their outputs in `reports/{{report_stub}}`.
+## Success Criteria
+- All imports resolved without deprecation warnings.
+- CI and manual smoke tests green with coverage ≥85% for touched modules.
+- Observability dashboards confirm no error regression post-relocation.
+- Stakeholders acknowledge completion and update runbooks accordingly.
 
-### Phase 2 — Design & Alignment
+## Rollback Procedure
+1. Revert the relocation commit(s) with `git revert [PLACEHOLDER: COMMIT_RANGE]`.
+2. Restore original configuration files (ensure `sitecustomize.py` and alias files match pre-migration state).
+3. Redeploy the previous release artifact and run smoke tests to confirm stability.
+4. Document the rollback in the service change log with cause and follow-up actions.
 
-1. Draft the new package layout and update `pyproject.toml`/`setup.cfg` entry points.
-2. Plan compatibility layers (namespace packages, import forwarding) and document them in `{{design_doc_path}}`.
-3. Circulate proposed changes for sign-off, noting owners in `{{signoff_tracker}}`.
+## Customization Guide
+| Placeholder | Description | Example |
+| --- | --- | --- |
+| `[PLACEHOLDER: MIGRATION_INTENT_SUMMARY]` | One-sentence description of the move. | "Relocate shared tokenizer helpers to `codex.text` to unblock GPU builds." |
+| `[PLACEHOLDER: MODULE_LIST]` | Enumerate files or directories moving. | "`src/codex/foo.py`, `src/codex/bar/`" |
+| `[PLACEHOLDER: OLD_PACKAGE_PATH]` | Current import path. | "`codex.legacy.foo`" |
+| `[PLACEHOLDER: NEW_PACKAGE_PATH]` | Target import path. | "`codex.core.foo`" |
+| `[PLACEHOLDER: TEST_SELECTOR]` | Command for validating affected tests. | "`pytest tests/foo -k relocation`" |
 
-### Phase 3 — Implementation
-
-1. Move files using `git mv` to preserve history and implement shims in `{{shim_module}}`.
-2. Update imports, type checkers, and tooling configuration (e.g., `noxfile.py`, `ruff.toml`).
-3. Refresh documentation: update `docs/`, READMEs, and any CLI help text referencing the old paths.
-4. Run the full validation suite (tests, lint, type checks) and attach logs to `{{artifact_bucket}}`.
-
-### Phase 4 — Verification & Rollout
-
-1. Execute smoke tests in staging or CI mirrors and capture import graphs for regression comparison.
-2. Monitor telemetry dashboards and error capture logs for `{{monitoring_window}}` after deployment.
-3. Remove or schedule removal of compatibility shims after the agreed deprecation period.
-
-## Rollback playbook
-
-- **Trigger:** {{rollback_trigger}}
-- **Action:** Revert to tag `{{rollback_tag}}` or cherry-pick `{{rollback_commits}}`.
-- **Communications:** Notify `{{communication_channels}}` and document in `docs/incident_runbook.md`.
-
-## Evidence collection
-
-- Store before/after module maps in `artifacts/module_maps/{{timestamp_token}}`.
-- Attach test and lint transcripts to `logs/migration/{{timestamp_token}}.md`.
-- Capture a short status update in `docs/status_updates/` referencing this template.
+## References
+- [`sitecustomize.py`](../../sitecustomize.py) for runtime aliases.
+- [`conftest.py`](../../conftest.py) for pytest fixtures impacted by module moves.
+- [`docs/templates/README.md`](./README.md) for workflow overview.

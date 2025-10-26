@@ -1,0 +1,24 @@
+{
+  "$schema": "https://example.com/_codex/selection-guard.schema.json",
+  "optional_signals": [
+    "docs/decision_records/ADR-intent-approval-gate.md",
+    "docs/decision_records/ADR-codex-evaluator-v3.md",
+    ".github/pull_request_template.md"
+  ],
+  "path_hints": [
+    "output_diff.diff",
+    "pr.output_diff.diff",
+    "pr_message",
+    "diff"
+  ],
+  "required_signals": [
+    "docs/rubrics/codex_eval_rubric_v3.md",
+    "docs/ops/local_gates.md",
+    "docs/checklists/approval_gate_checklist.md",
+    "docs/samples/intent_validation_example.md",
+    "samples/broken_fence.sample.md",
+    "tests/evaluators/test_validate_fences_sample.py",
+    "tests/samples/test_samples_exist.py"
+  ],
+  "selection_path_hint": "turn_mapping.task_e_*~*.turn.worklog.messages[*]"
+}
