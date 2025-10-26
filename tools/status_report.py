@@ -27,7 +27,7 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple, cast
+from typing import Dict, Iterable, List, Optional, Tuple, cast
 
 VERSION = "1.2.0"
 
@@ -148,6 +148,7 @@ def main(argv: List[str] | None = None) -> int:
     # 3) Evaluator (optional if summary provided)
     eval_state = "SKIP"
     out_e = err_e = ""
+    rc_e: Optional[int] = None
     if args.summary:
         cmd_e = [
             sys.executable,
@@ -171,6 +172,7 @@ def main(argv: List[str] | None = None) -> int:
     # 4) Selection Guard (optional if summary + selected provided)
     guard_state = "SKIP"
     out_g = err_g = ""
+    rc_g: Optional[int] = None
     if args.summary and args.selected:
         cmd_g = [
             sys.executable,
@@ -183,12 +185,7 @@ def main(argv: List[str] | None = None) -> int:
             str(args.selected),
         ]
         rc_g, out_g, err_g = _run(cmd_g)
-        if rc_g == 0:
-            guard_state = "PASS"
-        elif rc_g == 1:
-            guard_state = "FAIL"
-        else:
-            guard_state = "SKIP"
+        guard_state = "PASS" if rc_g == 0 else "FAIL"
     sections.append(f"- Selection Guard (chosen={args.selected or '-'}) : {guard_state}")
     gate_results.append((f"Selection Guard (chosen={args.selected or '-'})", guard_state))
     if args.summary and args.selected and args.verbose:
@@ -258,7 +255,9 @@ def main(argv: List[str] | None = None) -> int:
         Path(args.out).write_text(template_text + footer, encoding="utf-8")
 
     # Exit non-zero if any mandatory gate failed
-    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL")
+    guard_failed = rc_g is not None and rc_g != 0
+    evaluator_failed = rc_e is not None and rc_e != 0
+    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL") or guard_failed or evaluator_failed
     return 1 if mandatory_fail else 0
 
 
