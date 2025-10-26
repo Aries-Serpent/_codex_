@@ -18,6 +18,13 @@ The format follows “Keep a Changelog” and maintains an **Unreleased** sectio
 ## 2025-10-26 (Self-management)
 
 ### Added
+- Local status reporter:
+  - `tools/status_report.py` to run gates and emit `STATUS_REPORT.md`.
+  - Docs in `docs/ops/status_reports.md` and template in `docs/templates/status_update.md`.
+  - Manual pre-commit hook `codex-status`.
+  - Tests under `tests/status/`.
+
+### Added
 - `requirements-dev.txt` with local dev tools.
 - `noxfile.py` sessions: `gates`, `tests`, `precommit`.
 - Updated `docs/ops/local_gates.md` and added ADR for self-management.

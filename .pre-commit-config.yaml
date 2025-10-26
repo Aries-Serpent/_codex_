@@ -124,6 +124,15 @@ repos:
         language: system
         pass_filenames: false
         stages: [manual]
+      - id: codex-status
+        name: codex-status
+        # Produce a local STATUS_REPORT.md from sample input (adjust --summary/--selected as needed).
+        entry: python tools/status_report.py \
+          --summary samples/assistant_message_summary.sample.json \
+          --selected 3 \
+          --out STATUS_REPORT.md
+        language: system
+        stages: [manual]
       - id: jsonschema-validate-manifests
         name: jsonschema-validate-manifests
         # Validate manifests against local JSON Schemas (graceful if jsonschema not installed).
