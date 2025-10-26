@@ -1,6 +1,4 @@
 import json
-import os
-import tempfile
 
 import tools.codex_evaluator as ce
 
