@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-from typing import Annotated
 
 import typer
 from codex.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
@@ -36,7 +35,7 @@ def env_check() -> None:
 
 
 @app.command("snapshot")
-def snapshot(output: Annotated[Path, SNAPSHOT_OUTPUT_ARGUMENT]) -> None:
+def snapshot(output: Path = SNAPSHOT_OUTPUT_ARGUMENT) -> None:
     """Export local Config-as-Data artifacts for D365."""
 
     base = Path("configs/deployment/d365")
@@ -51,15 +50,12 @@ def snapshot(output: Annotated[Path, SNAPSHOT_OUTPUT_ARGUMENT]) -> None:
 
 @app.command("apply")
 def apply(
-    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
-    dry_run: Annotated[
-        bool,
-        typer.Option(
-            True,
-            "--dry-run/--no-dry-run",
-            help="Simulate apply; --no-dry-run would perform outbound calls when implemented.",
-        ),
-    ] = True,
+    plan_file: Path = PLAN_FILE_ARGUMENT,
+    dry_run: bool = typer.Option(
+        True,
+        "--dry-run/--no-dry-run",
+        help="Simulate apply; --no-dry-run would perform outbound calls when implemented.",
+    ),
 ) -> None:
     """Print plan operations for review and emit routing/SLA evidence."""
 
@@ -93,18 +89,15 @@ def apply(
 
 @app.command("apply-routing")
 def apply_routing(
-    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
-    dry_run: Annotated[
-        bool,
-        typer.Option(
-            True,
-            "--dry-run/--no-dry-run",
-            help=(
-                "Simulate routing apply; --no-dry-run would perform outbound "
-                "calls when implemented."
-            ),
+    plan_file: Path = PLAN_FILE_ARGUMENT,
+    dry_run: bool = typer.Option(
+        True,
+        "--dry-run/--no-dry-run",
+        help=(
+            "Simulate routing apply; --no-dry-run would perform outbound "
+            "calls when implemented."
         ),
-    ] = True,
+    ),
 ) -> None:
     """Apply routing operations (stub) and emit evidence."""
 
@@ -115,17 +108,14 @@ def apply_routing(
 
 @app.command("apply-slas")
 def apply_slas(
-    plan_file: Annotated[Path, PLAN_FILE_ARGUMENT],
-    dry_run: Annotated[
-        bool,
-        typer.Option(
-            True,
-            "--dry-run/--no-dry-run",
-            help=(
-                "Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."
-            ),
+    plan_file: Path = PLAN_FILE_ARGUMENT,
+    dry_run: bool = typer.Option(
+        True,
+        "--dry-run/--no-dry-run",
+        help=(
+            "Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."
         ),
-    ] = True,
+    ),
 ) -> None:
     """Apply SLA operations (stub) and emit evidence."""
 
@@ -136,10 +126,10 @@ def apply_slas(
 
 @app.command("emit-solution-xml")
 def emit_solution_xml_command(
-    out: Annotated[Path, EMIT_OUT_OPTION] = DEFAULT_SOLUTION_XML,
-    name: Annotated[str | None, EMIT_NAME_OPTION] = None,
-    version: Annotated[str | None, EMIT_VERSION_OPTION] = None,
-    config_dir: Annotated[Path, EMIT_CONFIG_DIR_OPTION] = DEFAULT_CONFIG_DIR,
+    out: Path = EMIT_OUT_OPTION,
+    name: str | None = EMIT_NAME_OPTION,
+    version: str | None = EMIT_VERSION_OPTION,
+    config_dir: Path = EMIT_CONFIG_DIR_OPTION,
 ) -> None:
     """Emit the unmanaged Solution XML using config-as-data."""
 

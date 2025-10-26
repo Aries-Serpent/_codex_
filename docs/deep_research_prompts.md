@@ -10,7 +10,7 @@ This document enumerates all current TODO comments in the repository and provide
 
 ## GPU Training Example
 
-- **Locations:** `tools/apply_stack_polish.py:553`, `codex_script.py:516`, `notebooks/gpu_training_example.ipynb:4`
+- **Locations:** `tools/apply_stack_polish.py:553`, `cli/script_polish.py:516`, `notebooks/gpu_training_example.ipynb:4`
 - **TODO:** Fill the GPU training example with an end-to-end demo.
 - **Research Prompt:** "Develop a complete GPU training demonstration notebook. Select a modest dataset, configure training with PyTorch, and show metrics visualization. Ensure the example runs on a single GPU and includes explanatory markdown."
 
@@ -42,6 +42,6 @@ This document enumerates all current TODO comments in the repository and provide
 
 ## PEFT LoRA Integration
 
-- **Location:** `codex_script.py:244`
+- **Location:** `cli/script_polish.py:244`
 - **TODO:** Wire `peft.get_peft_model(model, LoraConfig(**cfg))` into `apply_lora`.
 - **Research Prompt:** "Explain how to integrate PEFT's LoRA adaptation into `apply_lora`. Include necessary imports, configuration schema, and example usage, ensuring graceful fallback when `peft` is unavailable."

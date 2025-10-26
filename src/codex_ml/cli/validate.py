@@ -4,7 +4,6 @@ import difflib
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Annotated
 
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
@@ -134,10 +133,12 @@ if typer is not None:  # pragma: no cover - exercised via Typer CLI tests
 
     @app.command("file")
     def validate_file(
-        config_path: Annotated[
-            Path,
-            typer.Argument(..., exists=True, readable=True, help="YAML config to validate"),
-        ],
+        config_path: Path = typer.Argument(
+            ...,
+            exists=True,
+            readable=True,
+            help="YAML config to validate",
+        ),
     ) -> None:
         """Validate a YAML config file against the schema."""
         _run_validation(config_path, echo=typer.echo, exit_cls=typer.Exit)

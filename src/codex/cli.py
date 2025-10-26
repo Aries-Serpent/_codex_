@@ -620,7 +620,7 @@ def _register_external_cli() -> None:
         "cli",
         help_text="Codex tombstone archive workflow (legacy Click CLI).",
     )
-    _register_typer_app(
+    _register_click_command(
         cli,
         "archive",
         "codex.cli_archive",

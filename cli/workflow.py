@@ -10,6 +10,7 @@ End-to-end scripted workflow for the '_codex_' repo (branch 0B_base_):
 Constraint: DO NOT ACTIVATE ANY GitHub Actions files.
 """
 
+import argparse
 import ast
 import datetime as dt
 import difflib
@@ -20,7 +21,7 @@ import subprocess
 import sys
 import uuid
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Sequence, Tuple
 
 from codex.utils.subprocess import run as safe_run
 
@@ -28,7 +29,7 @@ from codex.utils.subprocess import run as safe_run
 BRANCH = "0B_base_"
 DO_NOT_ACTIVATE_GITHUB_ACTIONS = True
 
-REPO_ROOT = Path.cwd()
+REPO_ROOT = Path(__file__).resolve().parents[1]
 CODEX_DIR = REPO_ROOT / ".codex"
 CHANGE_LOG = CODEX_DIR / "change_log.md"
 ERROR_LOG = CODEX_DIR / "errors.ndjson"
@@ -529,27 +530,31 @@ def phase_6_finalize():
     sys.exit(0)
 
 
-def main():
-    _probe_cli("nox", "--version")
-    # Phase 1
-    phase_1()
-    # Phase 2
-    phase_2_mapping()
-    # Phase 3
-    phase_3_best_effort()
-    # Phase 4
-    phase_4_pruning()
-    # Phase 5
-    phase_5_errors_ack()
-    # Phase 6
-    phase_6_finalize()
+def main(argv: Sequence[str] | None = None) -> int:
+    if argv:
+        parser = argparse.ArgumentParser(description="Run Codex workflow orchestration")
+        parser.parse_args(list(argv))
+    try:
+        _probe_cli("nox", "--version")
+        # Phase 1
+        phase_1()
+        # Phase 2
+        phase_2_mapping()
+        # Phase 3
+        phase_3_best_effort()
+        # Phase 4
+        phase_4_pruning()
+        # Phase 5
+        phase_5_errors_ack()
+        # Phase 6
+        phase_6_finalize()
+    except SystemExit:
+        raise
+    except Exception as e:  # pragma: no cover - defensive automation guard
+        record_error("0.main", "Unhandled exception", str(e), "top-level")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except SystemExit:
-        raise
-    except Exception as e:
-        record_error("0.main", "Unhandled exception", str(e), "top-level")
-        sys.exit(1)
+    raise SystemExit(main())

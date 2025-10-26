@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Selection Guard Rules",
+  "type": "object",
+  "properties": {
+    "required_signals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "optional_signals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "path_hints": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "selection_path_hint": { "type": "string" }
+  },
+  "required": ["required_signals", "path_hints"]
+}

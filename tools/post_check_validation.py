@@ -86,7 +86,7 @@ def _check_codex_setup_bootstrap() -> CheckReport:
     name = "Iteration 1 – codex_setup bootstrap"
     try:
         with _sys_path():
-            module = import_module("codex_setup")
+            module = import_module("cli.setup")
     except Exception as exc:  # pragma: no cover - import failure reported as failure
         return CheckReport(name=name, passed=False, details=[f"import failed: {exc!r}"])
 
@@ -156,7 +156,7 @@ def _check_task_sequence_seed_and_mlflow() -> CheckReport:
     name = "Iteration 2 – task sequence seed & MLflow"
     try:
         with _sys_path():
-            module = import_module("codex_task_sequence")
+            module = import_module("cli.task_sequence")
     except Exception as exc:  # pragma: no cover - import failure reported as failure
         return CheckReport(name=name, passed=False, details=[f"import failed: {exc!r}"])
 
@@ -340,17 +340,17 @@ def run_post_check_validation() -> ValidationReport:
         _no_notimplemented(
             "Iteration 1 – automation stubs cleared",
             [
-                REPO_ROOT / "codex_setup.py",
+                REPO_ROOT / "cli" / "setup.py",
                 REPO_ROOT / "configs" / "development" / "noxfile.py",
-                REPO_ROOT / "codex_update_runner.py",
+                REPO_ROOT / "cli" / "update_runner.py",
             ],
         ),
         _check_codex_setup_bootstrap(),
         _no_notimplemented(
             "Iteration 2 – orchestration stubs cleared",
             [
-                REPO_ROOT / "codex_task_sequence.py",
-                REPO_ROOT / "codex_ast_upgrade.py",
+                REPO_ROOT / "cli" / "task_sequence.py",
+                REPO_ROOT / "cli" / "ast_upgrade.py",
             ],
         ),
         _check_task_sequence_seed_and_mlflow(),

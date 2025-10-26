@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import math
 import sys
 from pathlib import Path
@@ -15,11 +16,37 @@ if str(SRC) not in sys.path:
 
 import pytest  # noqa: E402
 
-import torch  # noqa: E402
 import training.trainer as trainer_mod  # noqa: E402
-from torch.utils.data import DataLoader, TensorDataset  # noqa: E402
 
-torch = pytest.importorskip("torch")
+from src.logging_utils import LoggingConfig  # noqa: E402
+
+
+def _import_real_torch():
+    site_packages = (
+        Path(sys.executable).resolve().parent.parent
+        / f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages"
+    )
+    if site_packages.exists() and str(site_packages) not in sys.path:
+        sys.path.insert(0, str(site_packages))
+    if "torch" in sys.modules:
+        del sys.modules["torch"]
+    return importlib.import_module("torch")
+
+
+torch = _import_real_torch()
+
+if not hasattr(torch, "nn"):
+    pytest.skip("PyTorch runtime not available", allow_module_level=True)
+
+torch_data = getattr(torch, "utils", None)
+if torch_data is None or not hasattr(torch_data, "data"):
+    pytest.skip("torch.utils.data not available", allow_module_level=True)
+
+DataLoader = torch_data.data.DataLoader  # type: ignore[attr-defined]
+TensorDataset = torch_data.data.TensorDataset  # type: ignore[attr-defined]
+
+TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
+skip_if_stub = pytest.mark.skipif(TORCH_STUB, reason="trainer tests require real torch")
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 skip_if_stub = pytest.mark.skipif(TORCH_STUB, reason="trainer tests require real torch")
 
@@ -97,3 +124,67 @@ def test_evaluate_requires_metric(tmp_path: Path) -> None:
 
     with pytest.raises(RuntimeError):
         trainer.evaluate()
+
+
+@skip_if_stub
+def test_trainer_seed_calls_repro(monkeypatch: pytest.MonkeyPatch) -> None:
+    train_loader, _ = _build_loaders()
+    model = torch.nn.Linear(4, 2)
+    optimizer = RecordingOptimizer(model.parameters(), lr=0.01)
+    recorded: dict[str, int] = {}
+
+    def _record_seed(seed: int, *, deterministic: bool | None = None) -> None:  # noqa: ANN001
+        recorded["seed"] = seed
+
+    monkeypatch.setattr(trainer_mod, "_set_seed", _record_seed)
+
+    trainer = trainer_mod.ExtendedTrainer(
+        model,
+        optimizer,
+        train_loader,
+        device="cpu",
+        trainer_config=trainer_mod.TrainerConfig(
+            epochs=1,
+            seed=99,
+            logging=LoggingConfig(
+                enable_tensorboard=False,
+                enable_mlflow=False,
+                enable_fallback_metrics=False,
+            ),
+        ),
+    )
+    trainer.close()
+    assert recorded["seed"] == 99
+
+
+@skip_if_stub
+def test_trainer_writes_metrics_ndjson(tmp_path: Path) -> None:
+    train_loader, _ = _build_loaders()
+    model = torch.nn.Linear(4, 2)
+    optimizer = RecordingOptimizer(model.parameters(), lr=0.05)
+    metrics_path = tmp_path / "metrics.ndjson"
+    trainer = trainer_mod.ExtendedTrainer(
+        model,
+        optimizer,
+        train_loader,
+        device="cpu",
+        val_loader=train_loader,
+        loss_fn=_accuracy,
+        trainer_config=trainer_mod.TrainerConfig(
+            epochs=1,
+            logging=LoggingConfig(
+                enable_tensorboard=False,
+                enable_mlflow=False,
+                enable_fallback_metrics=False,
+            ),
+            metrics_ndjson_path=str(metrics_path),
+        ),
+        metric_fn=_accuracy,
+    )
+
+    trainer.train()
+    trainer.close()
+
+    assert metrics_path.exists()
+    payload = metrics_path.read_text(encoding="utf-8")
+    assert '"epoch": 1' in payload

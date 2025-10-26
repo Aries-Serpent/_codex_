@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
 
 import typer
 from codex.mapping.load import load_all_mappings
@@ -17,7 +16,7 @@ app = typer.Typer(help="Inspect and validate Codex mapping tables.")
 
 @app.command("inspect")
 def inspect(
-    mappings_dir: Annotated[Path, MAPPINGS_DIR_ARGUMENT] = DEFAULT_MAPPINGS_DIR,
+    mappings_dir: Path = MAPPINGS_DIR_ARGUMENT,
 ) -> None:
     """Emit JSON describing the validated mapping tables."""
 
