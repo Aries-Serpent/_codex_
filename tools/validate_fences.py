@@ -226,18 +226,14 @@ def main(argv: list[str] | None = None) -> int:
     all_problems: list[str] = []
 
     default_mode = not args.strict_inner and not args.warn_inner
-    for path in targets:
-        if default_mode:
-            ok, probs = validate_file(path)
-            if not ok:
-                all_ok = False
-                all_problems.extend(probs)
-            continue
+    effective_strict = True if default_mode else bool(args.strict_inner)
+    effective_warn = False if default_mode else bool(args.warn_inner)
 
+    for path in targets:
         errors = validate_file(
             path,
-            strict_inner=args.strict_inner,
-            warn_inner=args.warn_inner,
+            strict_inner=effective_strict,
+            warn_inner=effective_warn,
         )
         if errors:
             all_ok = False
