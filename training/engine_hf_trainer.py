@@ -114,8 +114,10 @@ import importlib.util
 import json
 import math
 import os
+import platform
 import random
 import re
+import sys
 import time
 import warnings
 from dataclasses import dataclass
@@ -267,7 +269,6 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.provenance import snapshot_hydra_config
 from codex_ml.utils.repro import set_reproducible
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
-from codex_utils.repro import log_env_info
 from omegaconf import OmegaConf
 
 # Optional dependencies with graceful fallbacks
@@ -311,6 +312,49 @@ def _maybe_import_mlflow():
     if importlib.util.find_spec("mlflow") is None:
         return None
     return importlib.import_module("mlflow")
+
+
+def log_env_info(destination: PathLike[str] | str) -> None:
+    """Persist a lightweight snapshot of the runtime environment."""
+
+    env_info: Dict[str, Any] = {
+        "timestamp": time.time(),
+        "python": {
+            "version": sys.version,
+            "executable": sys.executable,
+        },
+        "platform": {
+            "system": platform.system(),
+            "release": platform.release(),
+            "machine": platform.machine(),
+            "processor": platform.processor(),
+        },
+        "libraries": {
+            "transformers": _hf_version,
+        },
+    }
+
+    if np is not None:
+        env_info["libraries"]["numpy"] = getattr(np, "__version__", "unknown")
+
+    torch_info: Dict[str, Any] = {}
+    try:
+        torch_info["version"] = getattr(torch, "__version__", "unknown")
+        cuda = getattr(torch, "cuda", None)
+        if cuda is not None:
+            torch_info["cuda_available"] = bool(getattr(cuda, "is_available", lambda: False)())
+            torch_info["device_count"] = int(getattr(cuda, "device_count", lambda: 0)())
+    except Exception as exc:  # pragma: no cover - defensive
+        torch_info["error"] = str(exc)
+
+    if torch_info:
+        env_info["libraries"]["torch"] = torch_info
+
+    path = Path(destination)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(env_info, handle, indent=2, sort_keys=True)
+        handle.write("\n")
 
 
 def _log_mlflow_metrics(
