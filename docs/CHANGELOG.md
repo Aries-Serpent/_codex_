@@ -24,6 +24,18 @@ All notable changes to this project will be documented in this file.
   - Manual pre-commit hook `codex-status`.
   - Tests under `tests/status/`.
 
+### Enhanced
+- **`tools/status_report.py`**
+  - Added `--template` rich rendering, local repo scan heuristics, and capability table support.
+  - Added `--verbose` to embed stdout/stderr and `--save-logs` to persist tool output under `.codex/status/`.
+  - Report footer now notes saved artifacts when applicable.
+- **Documentation**
+  - Expanded `docs/ops/status_reports.md` with verbose/artifact usage details.
+  - README quickstart now calls out offline-first setup and status reporting flags.
+
+### Fix
+- **Evaluator DX:** emit a friendly installation hint when optional dependencies such as `pydantic` or `typer` are missing.
+
 ### Added
 - `requirements-dev.txt` with local dev tools.
 - `noxfile.py` sessions: `gates`, `tests`, `precommit`.

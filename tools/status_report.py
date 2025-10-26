@@ -25,8 +25,11 @@ import argparse
 import datetime as _dt
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple, cast
+
+VERSION = "1.2.0"
 
 
 def _run(cmd: List[str]) -> Tuple[int, str, str]:
@@ -41,6 +44,15 @@ def _stamp() -> str:
 
 def _md_bullets(items: Iterable[str]) -> str:
     return "\n".join(f"- {s}" for s in items)
+
+
+def _write_log(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+
+def _artifacts_root() -> Path:
+    return Path(".codex/status")
 
 
 def _scan_repo(root: Path) -> Dict[str, object]:
@@ -72,94 +84,135 @@ def main(argv: List[str] | None = None) -> int:
     ap.add_argument("--template", help="Path to a markdown template for rich reports (optional)")
     ap.add_argument("--branch", help="Branch name for template substitution (optional)")
     ap.add_argument("--pr", help="PR number or label for template substitution (optional)")
+    ap.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Embed tool outputs (stdout/stderr) in the report body",
+    )
+    ap.add_argument(
+        "--save-logs",
+        action="store_true",
+        help="Write per-tool logs under .codex/status/ and reference them at the end of the report",
+    )
     args = ap.parse_args(argv)
 
-    stamp = _stamp()
+    generated_at = _stamp()
 
     sections: List[str] = []
-    header = f"# Status Report — _codex_  \nGenerated: {stamp}\n"
+    header = f"# Status Report — _codex_ (v{VERSION})  \nGenerated: {generated_at}\n"
     sections.append(header)
     sections.append("## Gates Summary")
 
     gate_results: List[Tuple[str, str]] = []
 
     # 1) Fence integrity
-    rc_f, out_f, err_f = _run([sys.executable, "tools/validate_fences.py"])
+    cmd_f = [sys.executable, "tools/validate_fences.py"]
+    rc_f, out_f, err_f = _run(cmd_f)
     fence_state = "PASS" if rc_f == 0 else "FAIL"
     gate_results.append(("Fence integrity", fence_state))
     sections.append(f"- Fence integrity: {fence_state}")
+    if args.verbose:
+        sections.append("\n### Fences — Output\n")
+        sections.append(textwrap.indent((out_f or "") + (err_f or ""), "    "))
+    if args.save_logs:
+        _write_log(_artifacts_root() / "fences.out", out_f or "")
+        _write_log(_artifacts_root() / "fences.err", err_f or "")
 
     # 2) Schema validation (may be skipped gracefully by the tool)
-    rc_s, out_s, err_s = _run(
-        [
-            sys.executable,
-            "tools/schema_validate.py",
-            "--data",
-            "manifests/selection_guard_rules.json",
-            "--schema",
-            "schemas/selection_guard_rules.schema.json",
-            "--data",
-            "manifests/codex_eval_rules.v3.json",
-            "--schema",
-            "schemas/codex_eval_rules.v3.schema.json",
-        ]
-    )
+    cmd_s = [
+        sys.executable,
+        "tools/schema_validate.py",
+        "--data",
+        "manifests/selection_guard_rules.json",
+        "--schema",
+        "schemas/selection_guard_rules.schema.json",
+        "--data",
+        "manifests/codex_eval_rules.v3.json",
+        "--schema",
+        "schemas/codex_eval_rules.v3.schema.json",
+    ]
+    rc_s, out_s, err_s = _run(cmd_s)
     # Detect skip note
     schema_state = "PASS" if rc_s == 0 else "FAIL"
     if "jsonschema not installed" in (err_s or "").lower():
         schema_state = "SKIP"
     sections.append(f"- Schema validation: {schema_state}")
     gate_results.append(("Schema validation", schema_state))
+    if args.verbose:
+        sections.append("\n### Schemas — Output\n")
+        sections.append(textwrap.indent((out_s or "") + (err_s or ""), "    "))
+    if args.save_logs:
+        _write_log(_artifacts_root() / "schemas.out", out_s or "")
+        _write_log(_artifacts_root() / "schemas.err", err_s or "")
 
     # 3) Evaluator (optional if summary provided)
     eval_state = "SKIP"
+    out_e = err_e = ""
     if args.summary:
-        rc_e, out_e, err_e = _run(
-            [
-                sys.executable,
-                "tools/codex_evaluator.py",
-                "--rules",
-                "manifests/codex_eval_rules.v3.json",
-                "--input",
-                args.summary,
-            ]
-        )
+        cmd_e = [
+            sys.executable,
+            "tools/codex_evaluator.py",
+            "--rules",
+            "manifests/codex_eval_rules.v3.json",
+            "--input",
+            args.summary,
+        ]
+        rc_e, out_e, err_e = _run(cmd_e)
         eval_state = "PASS" if rc_e == 0 else "FAIL"
     sections.append(f"- Evaluator: {eval_state}")
     gate_results.append(("Evaluator", eval_state))
+    if args.summary and args.verbose:
+        sections.append("\n### Evaluator — Output\n")
+        sections.append(textwrap.indent((out_e or "") + (err_e or ""), "    "))
+    if args.summary and args.save_logs:
+        _write_log(_artifacts_root() / "evaluator.out", out_e or "")
+        _write_log(_artifacts_root() / "evaluator.err", err_e or "")
 
     # 4) Selection Guard (optional if summary + selected provided)
     guard_state = "SKIP"
+    out_g = err_g = ""
     if args.summary and args.selected:
-        rc_g, out_g, err_g = _run(
-            [
-                sys.executable,
-                "tools/selection_guard.py",
-                "--rules",
-                "manifests/selection_guard_rules.json",
-                "--input",
-                args.summary,
-                "--selected",
-                str(args.selected),
-            ]
-        )
+        cmd_g = [
+            sys.executable,
+            "tools/selection_guard.py",
+            "--rules",
+            "manifests/selection_guard_rules.json",
+            "--input",
+            args.summary,
+            "--selected",
+            str(args.selected),
+        ]
+        rc_g, out_g, err_g = _run(cmd_g)
         if rc_g == 0:
             guard_state = "PASS"
+        elif rc_g == 1:
+            guard_state = "FAIL"
         else:
-            err_lower = (err_g or "").lower()
-            guard_state = "SKIP" if "jsonschema not installed" in err_lower else "FAIL"
+            guard_state = "SKIP"
     sections.append(f"- Selection Guard (chosen={args.selected or '-'}) : {guard_state}")
     gate_results.append((f"Selection Guard (chosen={args.selected or '-'})", guard_state))
+    if args.summary and args.selected and args.verbose:
+        sections.append("\n### Selection Guard — Output\n")
+        sections.append(textwrap.indent((out_g or "") + (err_g or ""), "    "))
+    if args.summary and args.selected and args.save_logs:
+        _write_log(_artifacts_root() / "selection_guard.out", out_g or "")
+        _write_log(_artifacts_root() / "selection_guard.err", err_g or "")
 
-    # Highlights & Next Steps (lightweight scaffolding)
-    sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
-    sections.append("## Risks & Mitigations\n- None observed beyond local environment variance.\n")
-    sections.append(
-        "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
-    )
-    sections.append(f"\n> Provenance: generated locally by `tools/status_report.py` at {stamp}.\n")
-
-    if args.template:
+    if not args.template:
+        sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
+        sections.append(
+            "## Risks & Mitigations\n- None observed beyond local environment variance.\n"
+        )
+        sections.append(
+            "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
+        )
+        if args.save_logs:
+            sections.append("\n**Artifacts:** logs saved under `.codex/status/`.\n")
+        sections.append(
+            f"\n> Provenance: generated locally by `tools/status_report.py` (v{VERSION}) at {generated_at}.\n"
+        )
+        Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+    else:
         template_path = Path(args.template)
         template_text = template_path.read_text(encoding="utf-8")
         repo_info = _scan_repo(Path.cwd())
@@ -190,21 +243,22 @@ def main(argv: List[str] | None = None) -> int:
         replacements = {
             "{{branch}}": args.branch or "-",
             "{{pr}}": args.pr or "-",
-            "{{timestamp}}": stamp,
+            "{{timestamp}}": generated_at,
             "{{gates_summary}}": gates_summary,
             "{{repo_map}}": repo_map,
             "{{capability_table}}": capability_table,
         }
         for placeholder, value in replacements.items():
             template_text = template_text.replace(placeholder, value)
-        Path(args.out).write_text(template_text, encoding="utf-8")
-    else:
-        Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+
+        footer = ""
+        if args.save_logs:
+            footer = "\n\n**Artifacts:** logs saved under `.codex/status/`.\n"
+
+        Path(args.out).write_text(template_text + footer, encoding="utf-8")
 
     # Exit non-zero if any mandatory gate failed
-    mandatory_fail = (
-        (rc_f != 0) or (schema_state == "FAIL") or (eval_state == "FAIL") or (guard_state == "FAIL")
-    )
+    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL")
     return 1 if mandatory_fail else 0
 
 

@@ -10,6 +10,20 @@ python tools/status_report.py \
   --out STATUS_REPORT.md
 ```
 
+## Verbose & Artifacts
+
+- Add `--verbose` to embed each gate's stdout/stderr directly in the generated markdown.
+- Add `--save-logs` to persist per-tool logs under `.codex/status/` and automatically reference them at the end of the report.
+
+```bash
+python tools/status_report.py \
+  --summary samples/assistant_message_summary.sample.json \
+  --selected 3 \
+  --verbose \
+  --save-logs \
+  --out STATUS_REPORT.md
+```
+
 ## What it includes
 - Fence integrity result
 - Manifest schema validation result
@@ -60,3 +74,7 @@ If a placeholder is missing in the template, it is ignored. If an argument is no
   - *Missing* otherwise.
 
 > Template mode remains **local-only**; no GitHub or network access is performed by the reporter.
+
+## Artifacts
+
+When `--save-logs` is used, gate logs are written to `.codex/status/` (e.g., `fences.out`, `schemas.err`) for deeper debugging, and the report footer links to the directory.
