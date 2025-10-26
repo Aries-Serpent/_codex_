@@ -12,6 +12,7 @@ Exit codes:
 """
 from __future__ import annotations
 
+import argparse
 import os
 import re
 import sys
@@ -172,15 +173,70 @@ def validate_file(
     return errors
 
 
-def main() -> int:
-    root = os.getcwd()
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Validate Markdown fence usage")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--strict-inner",
+        action="store_true",
+        help="Treat inner/nested fences as errors",
+    )
+    mode.add_argument(
+        "--warn-inner",
+        action="store_true",
+        help="Emit warnings (but not errors) for inner fences",
+    )
+    parser.add_argument(
+        "paths",
+        nargs="*",
+        help="Specific files or directories to validate (defaults to the repo)",
+    )
+    return parser.parse_args(argv)
+
+
+def _gather_targets(paths: list[str]) -> list[str]:
+    if not paths:
+        return list(iter_files(os.getcwd()))
+
+    targets: list[str] = []
+    for entry in paths:
+        expanded = os.path.abspath(entry)
+        if os.path.isdir(expanded):
+            targets.extend(iter_files(expanded))
+            continue
+        targets.append(expanded)
+    return targets
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
+
+    targets = _gather_targets(args.paths)
+    if not targets:
+        print("No matching files to validate", file=sys.stderr)
+        return 0
+
     all_ok = True
     all_problems: list[str] = []
-    for p in iter_files(root):
-        ok, probs = validate_file(p)
-        if not ok:
+
+    default_mode = not args.strict_inner and not args.warn_inner
+    for path in targets:
+        if default_mode:
+            ok, probs = validate_file(path)
+            if not ok:
+                all_ok = False
+                all_problems.extend(probs)
+            continue
+
+        errors = validate_file(
+            path,
+            strict_inner=args.strict_inner,
+            warn_inner=args.warn_inner,
+        )
+        if errors:
             all_ok = False
-            all_problems.extend(probs)
+            all_problems.extend(str(err) for err in errors)
+
     if not all_ok:
         print("Fence validation failures:")
         for msg in all_problems:
