@@ -19,6 +19,10 @@ import sys
 from dataclasses import dataclass
 from typing import Iterable, List, Tuple
 
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 MD_EXTS = {".md", ".markdown", ".mdown", ".mkdn", ".mkd", ".patch", ".diff"}
 SKIP_DIRS = {".git", ".codex", "temp", "artifacts", "reports", "site"}
 SKIP_FILES = {
@@ -42,8 +46,9 @@ class FenceError:
         return f"{self.path}:{self.line}: {self.message}"
 
 
-def iter_files(root: str) -> Iterable[str]:
-    for dirpath, _, filenames in os.walk(root):
+def iter_files(root: str | Path) -> Iterable[str]:
+    root_path = Path(root)
+    for dirpath, _, filenames in os.walk(root_path):
         # Skip hidden and vendor-ish dirs
         parts = dirpath.split(os.sep)
         if any(p in SKIP_DIRS for p in parts):
@@ -51,7 +56,7 @@ def iter_files(root: str) -> Iterable[str]:
         for fn in filenames:
             ext = os.path.splitext(fn)[1].lower()
             if ext in MD_EXTS:
-                rel = os.path.relpath(os.path.join(dirpath, fn), root)
+                rel = os.path.relpath(os.path.join(dirpath, fn), root_path)
                 if rel in SKIP_FILES:
                     continue
                 yield os.path.join(dirpath, fn)
@@ -196,15 +201,17 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def _gather_targets(paths: list[str]) -> list[str]:
     if not paths:
-        return list(iter_files(os.getcwd()))
+        return list(iter_files(REPO_ROOT))
 
     targets: list[str] = []
     for entry in paths:
-        expanded = os.path.abspath(entry)
-        if os.path.isdir(expanded):
+        expanded = Path(entry).expanduser()
+        if not expanded.is_absolute():
+            expanded = (Path.cwd() / expanded).resolve()
+        if expanded.is_dir():
             targets.extend(iter_files(expanded))
             continue
-        targets.append(expanded)
+        targets.append(str(expanded))
     return targets
 
 
