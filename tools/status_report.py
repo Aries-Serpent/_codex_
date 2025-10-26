@@ -202,7 +202,9 @@ def main(argv: List[str] | None = None) -> int:
         Path(args.out).write_text("\n".join(sections), encoding="utf-8")
 
     # Exit non-zero if any mandatory gate failed
-    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL") or (guard_state == "FAIL")
+    mandatory_fail = (
+        (rc_f != 0) or (schema_state == "FAIL") or (eval_state == "FAIL") or (guard_state == "FAIL")
+    )
     return 1 if mandatory_fail else 0
 
 
