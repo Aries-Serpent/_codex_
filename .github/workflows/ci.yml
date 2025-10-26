@@ -21,10 +21,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  dispatch_selector:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    outputs:
+      runner_label: ${{ steps.select.outputs.runner_label }}
+      use_self_hosted: ${{ steps.select.outputs.use_self_hosted }}
+    steps:
+      - id: select
+        run: |
+          runner_label='${{ inputs.runner }}'
+          default_runner='${{ vars.DEFAULT_RUNNER }}'
+
+          if [ -z "$runner_label" ]; then
+            runner_label="$default_runner"
+          fi
+          if [ -z "$runner_label" ]; then
+            runner_label="ubuntu-latest"
+          fi
+
+          use_self_hosted=false
+          if [ "$runner_label" = "self-hosted" ]; then
+            use_self_hosted=true
+          fi
+
+          echo "runner_label=$runner_label" >> "$GITHUB_OUTPUT"
+          echo "use_self_hosted=$use_self_hosted" >> "$GITHUB_OUTPUT"
+
   gh_hosted:
+    needs: dispatch_selector
     # Schedule this job unless the manual run explicitly targets self-hosted.
-    if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.runner == 'self-hosted' || vars.DEFAULT_RUNNER == 'self-hosted')) }}
-    runs-on: ${{ inputs.runner || vars.DEFAULT_RUNNER || 'ubuntu-latest' }}
+    if: ${{ needs.dispatch_selector.outputs.use_self_hosted != 'true' }}
+    runs-on: ${{ needs.dispatch_selector.outputs.runner_label || vars.DEFAULT_RUNNER || 'ubuntu-latest' }}
     permissions:
       contents: read
     steps:
@@ -53,8 +81,9 @@ jobs:
           ls -1 .github/workflows/*.disabled 2>/dev/null || true
 
   self_hosted:
+    needs: dispatch_selector
     # Only schedule on manual dispatch when runner input or DEFAULT_RUNNER indicate self-hosted.
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.runner == 'self-hosted' || vars.DEFAULT_RUNNER == 'self-hosted') }}
+    if: ${{ needs.dispatch_selector.outputs.use_self_hosted == 'true' }}
     runs-on: self-hosted
     permissions:
       contents: read
