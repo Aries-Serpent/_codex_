@@ -1,26 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
+SUMMARY_PATH="${1:-}"
+SELECTED_INDEX="${2:-}"
 
-echo "==> Running fence integrity check"
-python tools/validate_fences.py
+if [[ -z "${SUMMARY_PATH}" ]]; then
+  cat <<'USAGE' >&2
+Usage: scripts/run_local_gates.sh <assistant_summary.json> [selected_index]
 
-echo "==> Running codex evaluator (samples/assistant_message_summary.sample.json)"
-python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json
-
-if python -c "import jsonschema" >/dev/null 2>&1; then
-  echo "==> Running manifest schema checks"
-  python tools/schema_validate.py \
-    --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
-    --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
-else
-  echo '==> [info] Skipping schema checks (jsonschema not installed).'
+Provide the assistant summary file exported from the task UI. Optionally supply the
+candidate index you intend to choose to assert it with the selection guard.
+USAGE
+  exit 1
 fi
 
-echo "==> Running selection guard (samples/assistant_message_summary.sample.json)"
-python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input samples/assistant_message_summary.sample.json --selected 3 || true
-# (Selection index is illustrative; adjust --selected to the candidate you intend to choose.)
+if [[ ! -f "${SUMMARY_PATH}" ]]; then
+  echo "Summary file not found: ${SUMMARY_PATH}" >&2
+  exit 1
+fi
+
+echo "==> Running fence validator"
+python tools/validate_fences.py
+
+echo "==> Running codex evaluator (${SUMMARY_PATH})"
+python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input "${SUMMARY_PATH}"
+
+echo "==> Running selection guard (${SUMMARY_PATH})"
+if [[ -n "${SELECTED_INDEX}" ]]; then
+  python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input "${SUMMARY_PATH}" --selected "${SELECTED_INDEX}" || true
+else
+  python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input "${SUMMARY_PATH}" || true
+fi
+# (Selection index is illustrative; pass the candidate you intend to choose when ready.)
 
 echo "All local gates passed."

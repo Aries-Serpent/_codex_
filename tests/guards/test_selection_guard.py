@@ -14,11 +14,38 @@ RULES = {
         "tests/samples/test_samples_exist.py",
     ],
     "path_hints": ["output_diff.diff", "pr_message", "diff"],
+    "selection_path_hint": "turn_mapping.task_e_*~*.turn.worklog.messages[*]",
 }
 
 
 def _cand(payload: str) -> dict:
     return {"turn": {"pr": {"output_diff": {"diff": payload}}, "pr_message": payload}}
+
+
+def test_iter_candidates_uses_selection_hint() -> None:
+    data = {
+        "turn_mapping": {
+            "task_e_001~usertrn_foo": {
+                "turn": {
+                    "worklog": {
+                        "messages": [
+                            {"id": "a1"},
+                            {"id": "a2"},
+                        ]
+                    }
+                }
+            },
+            "a1": _cand("touch README.md"),
+            "a2": _cand(
+                "docs/ops/local_gates.md and docs/checklists/approval_gate_checklist.md and "
+                "docs/rubrics/codex_eval_rubric_v3.md and samples/broken_fence.sample.md and "
+                "tests/samples/test_samples_exist.py and tests/evaluators/test_validate_fences_sample.py and "
+                "docs/samples/intent_validation_example.md"
+            ),
+        }
+    }
+    candidates = sg._iter_candidates(data, RULES)
+    assert [cand.turn_id for cand in candidates] == ["a1", "a2"]
 
 
 def test_ranks_candidate_with_required_signals(tmp_path: Path) -> None:
