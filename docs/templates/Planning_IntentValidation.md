@@ -1,80 +1,65 @@
----
-title: "Planning Template — Intent Validation"
-status: "draft"
-template_version: "v1.0.0"
-owner: "Docs & Enablement"
-last_reviewed: 2025-10-20
-tags:
-  - planning
-  - discovery
-  - risk-management
----
+# [Template]: Intent Validation & Plan of Action Approval Gate
+**Version:** v1.0.0  
+**Last Updated:** 2025-10-25  
+**Role Workflow:** Developers draft → Maintainers review → Stakeholders approve
 
-# Planning Template — Intent Validation
+> [PLACEHOLDER: INTENT_STATEMENT]
 
-> {{intent_summary}}
+Use this planning template before committing to a significant implementation effort. It surfaces assumptions, validation work, and decision gates so the team shares a single source of truth prior to execution.
 
-Adopt this template before committing to major migrations, CLI hardening projects, or other operational shifts. It ensures stakeholders align on scope, risks, and validation artifacts.
+## Template Overview
+- Initiative name: [PLACEHOLDER: INITIATIVE_NAME]
+- Primary owner: [PLACEHOLDER: OWNER]
+- Time horizon: [PLACEHOLDER: TIMELINE]
+- Linked execution templates: [PLACEHOLDER: LINKED_TEMPLATES]
+- Approval deadline: [PLACEHOLDER: APPROVAL_DEADLINE]
 
-## Snapshot metadata
+## Intent Brief
+Summarize the user problem, measurable outcome, and scope boundaries. Reference supporting docs such as [`docs/validation/`](../validation/) or `../../docs/prompts/` where helpful.
 
-- **Initiative name:** `{{initiative_name}}`
-- **Sponsor / decision maker:** `{{sponsor_name}}`
-- **Implementation owner:** `{{implementation_owner}}`
-- **Target release / milestone:** `{{target_release}}`
-- **Success metrics:** `{{success_metrics}}`
+## Discovery Inputs
+- User research, bug reports, or telemetry referenced.
+- Dependencies or services impacted (e.g., [`src/cli/`](../../src/cli/), `codex_ml` pipelines).
+- Feature flags or configuration toggles that gate the rollout.
 
-Cross-reference the [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) and [Migration — CLI Hardening](./Migration_CLIHardening.md) templates once the plan graduates from intent validation into execution.
+## Validation Activities
+List experiments, spikes, or prototypes that validate feasibility. Link to notebooks under `../../notebooks/` or tests added to `../../tests/`.
 
-## Stakeholder checklist
+## Decision Gates
+| Gate | Entry Criteria | Decision Owner |
+| --- | --- | --- |
+| Gate 1 — Intent review | Document circulated and placeholders resolved | Maintainer |
+| Gate 2 — Validation results | Experiments complete, risks documented | Tech lead |
+| Gate 3 — Launch approval | Success criteria met, rollout plan approved | Stakeholder |
 
-- {{stakeholder_alignment}}
-- {{risk_acceptance}}
-- {{comms_alignment}}
-- {{open_questions}}
+## Risk Register
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| [PLACEHOLDER: RISK_DESCRIPTION] | [PLACEHOLDER: RISK_IMPACT] | [PLACEHOLDER: RISK_MITIGATION] |
+| [PLACEHOLDER: SECONDARY_RISK] | [PLACEHOLDER: SECONDARY_IMPACT] | [PLACEHOLDER: SECONDARY_MITIGATION] |
 
-## 🔁 Execution phases
+## Customization Guide
+| Placeholder | Description | Example |
+| --- | --- | --- |
+| `[PLACEHOLDER: INTENT_STATEMENT]` | One-sentence summary of desired outcome. | "Validate GPU fine-tuning pipeline for codex-14b." |
+| `[PLACEHOLDER: INITIATIVE_NAME]` | Internal or customer-facing project name. | "Arcturus CLI refactor" |
+| `[PLACEHOLDER: OWNER]` | Person accountable for delivery. | "@maintainer-handle" |
+| `[PLACEHOLDER: LINKED_TEMPLATES]` | Execution templates paired with this plan. | "Migration — CLI Hardening" |
+| `[PLACEHOLDER: APPROVAL_DEADLINE]` | Deadline for stakeholder sign-off. | "2025-11-07" |
 
-### Phase 0 — Intake
+## Example Instantiations
+1. **CLI stabilization** — Pair with [Migration — CLI Hardening](./Migration_CLIHardening.md) to capture discovery for argument contract updates.
+2. **Module relocation** — Combine with [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) for larger refactors affecting imports.
+3. **New service launch** — Use alongside `docs/PR_PLAN.md` to align milestones and incident response.
 
-1. Capture problem statement, desired outcomes, and non-goals in `{{intake_doc}}`.
-2. Identify required capabilities, impacted systems, and dependencies.
-3. Confirm funding/time allocation and align on decision deadline `{{decision_deadline}}`.
+## Usage Pattern
+1. Draft the template during the planning kickoff and circulate to stakeholders.
+2. Resolve all placeholders prior to Gate 1 review and attach related artifacts (tests, dashboards, notebooks).
+3. Maintain living status by updating the Decision Gates table as approvals arrive.
+4. Once execution begins, link the corresponding migration template and update [`docs/CHANGELOG.md`](../CHANGELOG.md).
 
-### Phase 1 — Discovery
-
-1. Gather existing documentation, metrics, and incident history relevant to the initiative.
-2. Conduct stakeholder interviews or async questionnaires using `{{discovery_form}}`.
-3. Draft preliminary risk register entries in `{{risk_register}}`.
-
-### Phase 2 — Validation Design
-
-1. Define validation experiments or proofs-of-concept, including success/fail criteria.
-2. Enumerate required environments, datasets, or feature flags.
-3. Coordinate with release engineering to schedule dry runs or guardrails.
-
-### Phase 3 — Review & Sign-off
-
-1. Compile findings into `{{review_brief}}` with recommended go/no-go decision.
-2. Present to decision makers, capturing approvals or required follow-ups in `{{signoff_log}}`.
-3. If approved, transition into execution by instantiating the relevant migration template(s) and linking them here.
-
-## Risk register snapshot
-
-| Risk | Impact | Likelihood | Mitigation | Owner |
-| --- | --- | --- | --- | --- |
-| {{risk_1}} | {{risk_1_impact}} | {{risk_1_likelihood}} | {{risk_1_mitigation}} | {{risk_1_owner}} |
-| {{risk_2}} | {{risk_2_impact}} | {{risk_2_likelihood}} | {{risk_2_mitigation}} | {{risk_2_owner}} |
-| {{risk_3}} | {{risk_3_impact}} | {{risk_3_likelihood}} | {{risk_3_mitigation}} | {{risk_3_owner}} |
-
-## Decision log
-
-- `{{date_decision_1}}` — {{decision_1}}
-- `{{date_decision_2}}` — {{decision_2}}
-- `{{date_decision_3}}` — {{decision_3}}
-
-## Evidence collection
-
-- Store interview notes in `docs/planning/{{timestamp_token}}/`.
-- Attach validation experiment outputs to `artifacts/intent_validation/{{timestamp_token}}/`.
-- Publish a summary to `docs/status_updates/` referencing this planning cycle.
+## Key Benefits
+- Establishes shared understanding before execution begins.
+- Provides audit trail for why decisions were made and by whom.
+- Aligns planning with coverage expectations (≥85% for execution templates).
+- Encourages pairing with technical assets (`sitecustomize.py`, `conftest.py`, CLI scripts) for cross-team visibility.
