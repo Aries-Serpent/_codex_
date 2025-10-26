@@ -117,6 +117,13 @@ repos:
         language: system
         pass_filenames: false
         stages: [manual]
+      - id: codex-selection-guard
+        name: codex-selection-guard
+        # Verify the chosen assistant message includes docs surface + guardrails signals.
+        entry: python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input samples/assistant_message_summary.sample.json
+        language: system
+        pass_filenames: false
+        stages: [manual]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
     hooks:
