@@ -1,6 +1,7 @@
 # Local Gates
 
 These checks are **local-only**. They do not create or activate any GitHub Actions workflows.
+For one-command runs, a `nox` session is provided (optional).
 
 ## Prerequisites
 - Python 3.10+ available on PATH.
@@ -31,6 +32,22 @@ python tools/schema_validate.py \
 # uses samples/assistant_message_summary.sample.json by default
 
 # runs schema checks if jsonschema is installed
+```
+
+## Using nox (optional)
+
+Install dev tools:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Run gates and tests:
+
+```bash
+nox -s gates
+nox -s tests
+nox -s precommit
 ```
 
 ## Exit codes

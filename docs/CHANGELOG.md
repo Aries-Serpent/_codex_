@@ -15,5 +15,12 @@ The format follows “Keep a Changelog” and maintains an **Unreleased** sectio
 ### Changed
 - Reinforced coverage expectations (≥85%) across templates and contribution guidance.
 
+## 2025-10-26 (Self-management)
+
+### Added
+- `requirements-dev.txt` with local dev tools.
+- `noxfile.py` sessions: `gates`, `tests`, `precommit`.
+- Updated `docs/ops/local_gates.md` and added ADR for self-management.
+
 ---
 2025-10-25
