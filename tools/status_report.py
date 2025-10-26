@@ -198,6 +198,23 @@ def main(argv: List[str] | None = None) -> int:
         _write_log(_artifacts_root() / "selection_guard.out", out_g or "")
         _write_log(_artifacts_root() / "selection_guard.err", err_g or "")
 
+    # Optional: embed a short selection summary when a summary is provided
+    if args.summary:
+        sections.append("\n## Selection (summary)")
+        rc_sel, sel_out, sel_err = _run(
+            [
+                sys.executable,
+                "tools/selection_report.py",
+                "--summary",
+                args.summary,
+                "--out",
+                str(Path(_artifacts_root(), "SELECTION_REPORT.md")),
+            ]
+        )
+        sections.append(f"- selection_report: {'PASS' if rc_sel == 0 else 'FAIL'}")
+        if args.verbose:
+            sections.append(textwrap.indent((sel_out or "") + (sel_err or ""), "    "))
+
     if not args.template:
         sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
         sections.append(

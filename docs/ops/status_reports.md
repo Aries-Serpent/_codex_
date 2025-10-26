@@ -75,6 +75,14 @@ If a placeholder is missing in the template, it is ignored. If an argument is no
 
 > Template mode remains **local-only**; no GitHub or network access is performed by the reporter.
 
+## Selection summary (optional)
+
+If you provide `--summary`, the status reporter will also invoke `selection_report.py` and:
+- Save a standalone `SELECTION_REPORT.md` to `.codex/status/`.
+- Add a brief “Selection (summary)” section with exit status and (when `--verbose`) inline output.
+
+See `docs/ops/selection_reports.md` for details on selection signals and rationale.
+
 ## Artifacts
 
 When `--save-logs` is used, gate logs are written to `.codex/status/` (e.g., `fences.out`, `schemas.err`) for deeper debugging, and the report footer links to the directory.

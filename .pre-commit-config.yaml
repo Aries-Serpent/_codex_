@@ -32,6 +32,14 @@ repos:
           --out STATUS_REPORT.md
         language: system
         stages: [manual]
+      - id: codex-selection
+        name: codex-selection
+        # Generate a local SELECTION_REPORT.md from a provided summary (adjust --summary/--selected as needed).
+        entry: python tools/selection_report.py \
+          --summary samples/assistant_message_summary.sample.json \
+          --out SELECTION_REPORT.md
+        language: system
+        stages: [manual]
       - id: jsonschema-validate-manifests
         name: jsonschema-validate-manifests
         # Validate manifests against local JSON Schemas (graceful if jsonschema not installed).

@@ -23,18 +23,27 @@ All notable changes to this project will be documented in this file.
   - Docs in `docs/ops/status_reports.md` and template in `docs/templates/status_update.md`.
   - Manual pre-commit hook `codex-status`.
   - Tests under `tests/status/`.
+- **selection_report.py**: local-only candidate scoring & guard enforcement with rationale; produces `SELECTION_REPORT.md`.
+- **pre-commit (manual)**: `codex-selection` hook to run the selection report.
+- **docs**: `docs/ops/selection_reports.md` usage guide; link from README.
+- **tests**: selection smoke test on the sample summary.
+- **nox**: `status` session to render a status report in template mode.
+- **.editorconfig**: unify line endings and indentation.
 
 ### Enhanced
 - **`tools/status_report.py`**
   - Added `--template` rich rendering, local repo scan heuristics, and capability table support.
   - Added `--verbose` to embed stdout/stderr and `--save-logs` to persist tool output under `.codex/status/`.
   - Report footer now notes saved artifacts when applicable.
+- Optional section to embed a condensed selection summary when `--summary` is provided.
 - **Documentation**
   - Expanded `docs/ops/status_reports.md` with verbose/artifact usage details.
   - README quickstart now calls out offline-first setup and status reporting flags.
+  - Cross-links selection and status flows; clarified generated artifacts.
 
 ### Fix
 - **Evaluator DX:** emit a friendly installation hint when optional dependencies such as `pydantic` or `typer` are missing.
+- Minor typos and normalized headings in ops docs.
 
 ### Added
 - `requirements-dev.txt` with local dev tools.
