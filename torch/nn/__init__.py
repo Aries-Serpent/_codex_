@@ -27,7 +27,11 @@ def _load_real_module() -> ModuleType | None:
         return None
     module = importlib.util.module_from_spec(spec)
     sys.modules[__name__] = module
-    spec.loader.exec_module(module)
+    try:
+        spec.loader.exec_module(module)
+    except Exception:  # pragma: no cover - exercised when PyTorch is broken/missing pieces
+        sys.modules.pop(__name__, None)
+        return None
     return module
 
 
