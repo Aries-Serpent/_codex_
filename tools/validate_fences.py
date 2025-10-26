@@ -17,9 +17,8 @@ import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Iterable, List, Tuple
-
 from pathlib import Path
+from typing import Iterable, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -76,11 +75,11 @@ def _scan_file(
 
     last_lineno = 0
 
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        in_block = False
-        current_fence: str | None = None
-        nested_reported = False
+    in_block = False
+    current_fence: str | None = None
+    nested_reported = False
 
+    with open(path, "r", encoding="utf-8", errors="ignore") as f:
         for lineno, raw_line in enumerate(f, start=1):
             last_lineno = lineno
             line = raw_line.rstrip("\n")
@@ -136,14 +135,14 @@ def _scan_file(
                         errors.append(problem)
                     nested_reported = True
 
-        if in_block:
-            errors.append(
-                FenceError(
-                    path=path,
-                    line=last_lineno,
-                    message="EOF while inside a fenced block",
-                )
+    if in_block:
+        errors.append(
+            FenceError(
+                path=path,
+                line=last_lineno,
+                message="EOF while inside a fenced block",
             )
+        )
 
     return errors, warnings
 
