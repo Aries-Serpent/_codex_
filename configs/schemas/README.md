@@ -8,6 +8,8 @@ Structured schema helpers for Codex configurations live here. The package expose
 - `training.schema.yaml` – YAML schema covering core training settings.
 - `data.schema.yaml` – Dataset manifest schema for ingestion utilities.
 - `model.schema.yaml` – Model configuration schema capturing LoRA/precision toggles.
+- `training_profile.schema.json` – JSON schema for the Hydra profile used by `codex_ml.cli.train`.
+- `evaluation.schema.json` – JSON schema for the evaluation CLI defaults.
 
 ## Validating Configurations
 

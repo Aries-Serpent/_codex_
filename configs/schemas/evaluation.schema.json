@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexml.dev/schemas/evaluation.schema.json",
+  "title": "CodexEvaluationConfig",
+  "type": "object",
+  "properties": {
+    "seed": {"type": "integer"},
+    "sanitize_prompts": {"type": "boolean"},
+    "dataset": {
+      "type": "object",
+      "required": ["loader", "path"],
+      "properties": {
+        "loader": {"type": "string"},
+        "path": {"type": ["string", "null"]},
+        "params": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "name": {"type": ["string", "null"]},
+        "cfg": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    },
+    "tokenizer": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "cfg": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    },
+    "metrics": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "output_dir": {"type": "string"},
+    "write_dataset_manifest": {"type": "boolean"},
+    "mlflow": {"type": "object", "additionalProperties": true},
+    "limit": {"type": ["integer", "null"]}
+  },
+  "required": ["dataset", "metrics"],
+  "additionalProperties": true
+}

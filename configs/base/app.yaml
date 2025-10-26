@@ -41,6 +41,18 @@ pipeline:
 symbolic_pipeline:
   enabled: false
 
+plugins:
+  enable_entry_points: false
+  entry_points:
+    groups:
+      tokenizers: codex_ml.tokenizers
+      models: codex_ml.models
+      datasets: codex_ml.datasets
+      metrics: codex_ml.metrics
+      trainers: codex_ml.trainers
+      reward_models: codex_ml.reward_models
+      rl_agents: codex_ml.rl_agents
+
 trainer:
   lora_r: 0
   lora_alpha: 16

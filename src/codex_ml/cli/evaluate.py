@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional, Sequence
@@ -18,6 +19,8 @@ from codex_ml.eval.metrics import accuracy, classification_f1, perplexity, token
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import
+
+LOGGER = logging.getLogger(__name__)
 
 hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
@@ -46,6 +49,89 @@ METRIC_FUNCS = {
 }
 
 _ = run_cmd
+
+
+def _coerce_sequence(value: Any) -> list[Any] | None:
+    if value is None:
+        return None
+    if isinstance(value, (list, tuple, set)):
+        return list(value)
+    if isinstance(value, str):
+        return [value]
+    return None
+
+
+def _sanitize_prompt_list(items: list[Any]) -> tuple[list[Any], bool]:
+    try:
+        from codex_ml.safety import SafetyConfig, sanitize_prompt
+    except Exception:  # pragma: no cover - optional dependency path
+        return list(items), False
+
+    cfg = SafetyConfig()
+    sanitised: list[Any] = []
+    changed = False
+    for entry in items:
+        if isinstance(entry, str):
+            result = sanitize_prompt(entry, cfg)
+            text = result.get("text", entry)
+            sanitised.append(text)
+            if text != entry:
+                changed = True
+            continue
+        if isinstance(entry, dict):
+            updated = dict(entry)
+            mutated = False
+            for key in ("prompt", "input", "text"):
+                raw = updated.get(key)
+                if isinstance(raw, str):
+                    result = sanitize_prompt(raw, cfg)
+                    text = result.get("text", raw)
+                    if text != raw:
+                        updated[key] = text
+                        mutated = True
+            sanitised.append(updated if mutated else entry)
+            if mutated:
+                changed = True
+            continue
+        sanitised.append(entry)
+    return sanitised, changed
+
+
+def _apply_prompt_sanitization(mapping: Dict[str, Any], keys: Sequence[str]) -> int:
+    total = 0
+    for key in keys:
+        sequence = _coerce_sequence(mapping.get(key))
+        if not sequence:
+            continue
+        sanitised, changed = _sanitize_prompt_list(sequence)
+        if changed:
+            mapping[key] = sanitised
+            total += 1
+    return total
+
+
+def _sanitize_eval_config(cfg_map: Dict[str, Any]) -> int:
+    sanitize_flag = cfg_map.get("sanitize_prompts", True)
+    if not isinstance(sanitize_flag, bool):
+        sanitize_flag = True
+    if not sanitize_flag:
+        LOGGER.debug("Prompt sanitisation disabled for evaluation config")
+        return 0
+
+    total = 0
+    dataset_cfg = cfg_map.get("dataset")
+    if isinstance(dataset_cfg, dict):
+        total += _apply_prompt_sanitization(
+            dataset_cfg,
+            ("texts", "prompts", "samples", "records"),
+        )
+    total += _apply_prompt_sanitization(
+        cfg_map,
+        ("prompts", "inputs", "texts"),
+    )
+    if total:
+        LOGGER.info("Sanitised %d prompt field(s) in evaluation configuration", total)
+    return total
 
 
 def _to_path(value: str | Path | None) -> Path | None:
@@ -165,6 +251,8 @@ if _HAS_HYDRA:
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
             cfg_map = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
+            if isinstance(cfg_map, dict):
+                _sanitize_eval_config(cfg_map)
             checkpoint_dir = (
                 cfg_map.get("checkpoint", {}).get("dir")  # type: ignore[assignment]
                 if isinstance(cfg_map, dict)
