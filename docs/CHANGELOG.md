@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Added
+- Safety: training and evaluation CLIs honour new `sanitize_prompts` flags and
+  sanitize inline datasets by default.
+- Checkpointing: PEFT/LoRA adapters are bundled alongside standard model
+  weights, enabling seamless resume when `peft` is available.
+- Tooling: `tools/validate_configs.py` validates Hydra configs against JSON/YAML
+  schemas and is wired into the `nox -s gates` session.
+- Tooling: `tools/ndjson_to_csv.py` converts metrics logs to CSV; sample data
+  lives at `samples/metrics_sample.ndjson`.
+- Plugins: opt-in entry-point discovery via `plugins.enable_entry_points` and
+  config-driven group overrides.
+
 ## 2025-10-26
 
 ### Added
