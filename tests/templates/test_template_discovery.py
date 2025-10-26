@@ -1,5 +1,3 @@
-"""Discovery checks for repository templates."""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -7,109 +5,74 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATES_ROOT = REPO_ROOT / "templates"
-AUDIT_DIR = TEMPLATES_ROOT / "audit"
-GITHUB_DIR = TEMPLATES_ROOT / "github_repo_baseline"
-GITHUB_ISSUE_DIR = GITHUB_DIR / "ISSUE_TEMPLATE"
+DOC_TEMPLATES_DIR = REPO_ROOT / "docs" / "templates"
 
-TEMPLATE_FILES = {
-    "audit_capability": AUDIT_DIR / "capability_matrix.md.j2",
-    "audit_status_update": AUDIT_DIR / "status_update_report.md.j2",
-    "codeowners": GITHUB_DIR / "CODEOWNERS",
-    "pr_template": GITHUB_DIR / "PULL_REQUEST_TEMPLATE.md",
-    "issue_bug": GITHUB_ISSUE_DIR / "bug_report.md",
-    "issue_feature": GITHUB_ISSUE_DIR / "feature_request.md",
-    "issue_config": GITHUB_ISSUE_DIR / "config.yml",
-}
+TEMPLATE_FILES = [
+    "README.md",
+    "Migration_PythonFileRelocation.md",
+    "Migration_CLIHardening.md",
+    "Planning_IntentValidation.md",
+]
 
 
+def read(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+@pytest.mark.templates
+def test_templates_directory_exists() -> None:
+    assert DOC_TEMPLATES_DIR.is_dir(), "docs/templates/ directory is missing"
+
+
+@pytest.mark.templates
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_file_exists(relative_path: str) -> None:
+    path = DOC_TEMPLATES_DIR / relative_path
+    assert path.is_file(), f"Expected template file missing: {relative_path}"
+
+
+@pytest.mark.templates
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_readable(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    assert contents.strip(), f"Template file is empty: {relative_path}"
+
+
+@pytest.mark.templates
 @pytest.mark.parametrize(
-    "path",
+    "relative_path",
     [
-        TEMPLATES_ROOT,
-        AUDIT_DIR,
-        GITHUB_DIR,
-        GITHUB_ISSUE_DIR,
+        "Migration_PythonFileRelocation.md",
+        "Migration_CLIHardening.md",
+        "Planning_IntentValidation.md",
     ],
 )
-def test_template_directories_exist(path: Path) -> None:
-    """Expected template directories must exist in the repository."""
-
-    assert path.is_dir(), f"Missing template directory: {path}"  # pragma: no cover
-
-
-@pytest.mark.parametrize("path", list(TEMPLATE_FILES.values()))
-def test_template_files_are_readable(path: Path) -> None:
-    """Templates should be present and readable as UTF-8 text."""
-
-    assert path.is_file(), f"Template missing: {path}"  # pragma: no cover
-    text = path.read_text(encoding="utf-8")
-    assert text.strip(), f"Template appears empty: {path}"  # pragma: no cover
+def test_template_has_metadata_header(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    first_lines = contents.splitlines()[:4]
+    assert any(line.startswith("# [Template]") for line in first_lines), (
+        f"Metadata header missing in {relative_path}"
+    )
+    assert any("Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]), (
+        f"Version metadata missing in {relative_path}"
+    )
 
 
-def test_audit_templates_have_metadata_headers() -> None:
-    """Audit report templates must include metadata headers."""
-
-    for key in ("audit_capability", "audit_status_update"):
-        text = TEMPLATE_FILES[key].read_text(encoding="utf-8")
-        lines = text.splitlines()
-        assert lines[0].startswith("# [Report]: "), "Missing report heading"
-        assert any("> Generated:" in line for line in lines[:3]), "Missing generated metadata"
-        assert any("Roles:" in line for line in lines[:4]), "Missing roles metadata"
+@pytest.mark.templates
+def test_readme_index_references_all_templates() -> None:
+    contents = read(DOC_TEMPLATES_DIR / "README.md")
+    for relative_path in TEMPLATE_FILES[1:]:
+        assert relative_path in contents, f"README missing link for {relative_path}"
 
 
-def test_issue_templates_have_front_matter() -> None:
-    """GitHub issue templates require YAML front matter for metadata."""
-
-    for key in ("issue_bug", "issue_feature"):
-        text = TEMPLATE_FILES[key].read_text(encoding="utf-8")
-        lines = text.splitlines()
-        assert lines[0] == "---", "Expected YAML front matter fence"
-        assert any(line.startswith("name:") for line in lines[1:5]), "Missing name metadata"
-        assert any(line.startswith("about:") for line in lines[1:5]), "Missing about metadata"
+@pytest.mark.templates
+def test_docs_readme_has_templates_section() -> None:
+    docs_readme = read(REPO_ROOT / "docs" / "README.md")
+    assert "Operational Templates" in docs_readme
+    assert "Migration — Python File Relocation" in docs_readme
 
 
-def test_navigation_references_present() -> None:
-    """Templates should provide consistent navigation cues for consumers."""
-
-    expected_sections = {
-        "audit_capability": [
-            "## 1. Summary",
-            "## 2. Capability Scores",
-            "## 3. Low Maturity Focus",
-            "## 4. Weight Reference",
-            "## 5. Capability Detail Sections",
-            "## 6. Appendix",
-        ],
-        "audit_status_update": [
-            "## 1) Executive Summary",
-            "## 2) Low Maturity Focus (Top {{ low_maturity|length }})",
-            "## 3) Movement Since Baseline (if provided)",
-            "## 4) Weights (Effective)",
-            "## 5) Integrity Chain (Manifest)",
-            "## 6) Next Actions",
-        ],
-        "pr_template": [
-            "## Summary",
-            "## Checklist",
-            "## Risk / Rollout",
-        ],
-        "issue_bug": [
-            "**Describe the bug**",
-            "**Steps to reproduce**",
-            "**Expected behavior**",
-            "**Additional context**",
-        ],
-        "issue_feature": [
-            "**Problem**",
-            "**Proposed solution**",
-            "**Alternatives considered**",
-        ],
-    }
-
-    for key, sections in expected_sections.items():
-        text = TEMPLATE_FILES[key].read_text(encoding="utf-8")
-        for section in sections:
-            assert (
-                section in text
-            ), f"Missing navigation reference {section!r} in {TEMPLATE_FILES[key]}"
+@pytest.mark.templates
+def test_root_readme_links_to_templates() -> None:
+    root_readme = read(REPO_ROOT / "README.md")
+    assert "docs/templates/README.md" in root_readme
