@@ -1,77 +1,68 @@
----
-title: "Migration Template — CLI Hardening"
-status: "draft"
-template_version: "v1.0.0"
-owner: "Docs & Enablement"
-last_reviewed: 2025-10-20
-tags:
-  - migration
-  - cli
-  - quality-gates
----
+# [Template]: CLI Module Hardening & Test Coverage Enhancement
+**Version:** v1.0.0  
+**Last Updated:** 2025-10-25  
+**Role Workflow:** Developers draft → Maintainers approve → Release engineers monitor
 
-# Migration Template — CLI Hardening
+> [PLACEHOLDER: CLI_HARDENING_SUMMARY]
 
-> {{cli_change_summary}}
+Apply this template to harden a CLI module, expand regression coverage, and align operational behaviors with modern standards. The phases below guide discovery, execution, and validation.
 
-Apply this template when migrating, renaming, or tightening CLI entry points. It emphasizes argument contracts, deterministic behaviour, and rollback safety.
+## Executive Summary
+- Target command(s): [PLACEHOLDER: COMMAND_LIST]
+- Drivers (bug reports, feature requests, audits): [PLACEHOLDER: DRIVERS]
+- Desired coverage delta: [PLACEHOLDER: COVERAGE_TARGET]
+- Operational impact (rollout schedule, dependencies): [PLACEHOLDER: OPERATIONAL_IMPACT]
+- Communication plan (who, when, channel): [PLACEHOLDER: COMMS_PLAN]
 
-## Snapshot metadata
+## Baseline Assessment
+1. Capture current CLI help output: `python -m [PLACEHOLDER: CLI_ENTRYPOINT] --help`.
+2. Review [`src/cli/`](../../src/cli/) for deprecated patterns (e.g., click legacy invocations).
+3. Audit coverage reports and identify gaps below 85%.
+4. Inventory tests in [`tests/cli/`](../../tests/cli/) and map them to CLI commands.
+5. Confirm telemetry hooks exist for commands that mutate state.
 
-- **CLI entry point:** `{{cli_entry_point}}`
-- **Current package:** `{{current_cli_package}}`
-- **Target package:** `{{target_cli_package}}`
-- **Primary owners:** `{{cli_owners}}`
-- **Affected scripts/jobs:** `{{affected_jobs}}`
+## Hardening Task 1 — Interface Validation
+- Align argument names and defaults with documentation.
+- Add validation for mutually exclusive options.
+- Ensure error messages reference remediation paths and docs links.
 
-## Related templates
+## Hardening Task 2 — Dependency Upgrades
+- Verify new dependencies are declared in [`pyproject.toml`](../../pyproject.toml).
+- Update optional extras if CLI features rely on them.
+- Run `uv pip compile` or equivalent to refresh lock files.
 
-- [Migration — Python File Relocation](./Migration_PythonFileRelocation.md)
-- [Planning — Intent Validation](./Planning_IntentValidation.md)
-- [Manual Verification Checklist](./verification.md)
+## Hardening Task 3 — Coverage Expansion
+- Create targeted tests under [`tests/cli/`](../../tests/cli/) for uncovered scenarios.
+- Use pytest markers (`@pytest.mark.cli`) to isolate CLI suites.
+- Capture coverage report before/after and confirm ≥85%.
 
-## Guardrails
+## Hardening Task 4 — Observability and Rollout
+- Ensure logs and metrics surface to monitoring dashboards documented in [`monitoring/`](../../monitoring/).
+- Draft rollout checklist and pair with the planning template for approvals.
+- Prepare incident response notes for potential regressions.
 
-- Maintain backwards-compatible aliases for `{{alias_window}}` before enforcing breaking changes.
-- Document `--flag` semantics in `docs/CLI.md` and regenerate shell completions.
-- Ensure deterministic exit codes and structured JSON logging (see `docs/CLI.md` and `docs/reference/audit_prompt.md`).
-- Update automation (nox, Make, CI) to consume the hardened CLI.
+## Commit Strategy
+- Stage changes by task to simplify review (baseline, validation, coverage, rollout).
+- Include coverage report snapshots or CLI output diffs as attachments in review notes.
+- Reference this template instance in the final commit message for traceability.
 
-## 🔁 Execution phases
+## Final Checklist
+- [ ] All placeholders replaced and validated by maintainer.
+- [ ] Coverage report confirms ≥85% for touched modules.
+- [ ] CLI help output reviewed for clarity and accuracy.
+- [ ] Observability signals confirmed in staging/prod dashboards.
+- [ ] Changelog updated with CLI hardening summary.
 
-### Phase 1 — Discovery & Intent
+## Customization Guide
+| Placeholder | Description | Example |
+| --- | --- | --- |
+| `[PLACEHOLDER: CLI_HARDENING_SUMMARY]` | One-sentence overview of improvements. | "Improve `codex-cli sync` reliability and error messaging." |
+| `[PLACEHOLDER: COMMAND_LIST]` | Commands under review. | "`codex-cli sync`, `codex-cli diff`" |
+| `[PLACEHOLDER: DRIVERS]` | Triggers prompting the hardening effort. | "Customer support ticket #4215" |
+| `[PLACEHOLDER: COVERAGE_TARGET]` | Expected coverage after work completes. | "Increase to 90% for `codex.cli.sync`" |
+| `[PLACEHOLDER: COMMS_PLAN]` | Stakeholder communication approach. | "Weekly async updates in #cli-maintainers" |
 
-1. Inventory existing commands with `{{command_inventory_tool}}` and list required/optional arguments.
-2. Capture current behaviour using `{{baseline_script}}`, storing outputs in `artifacts/cli/{{timestamp_token}}/baseline.log`.
-3. Validate business intent, risk tolerance, and success criteria via the [Planning — Intent Validation](./Planning_IntentValidation.md) template.
-
-### Phase 2 — Design & Spec
-
-1. Define the hardened argument schema, exit codes, and output formats in `{{spec_doc}}`.
-2. Map compatibility layers or alias commands needed during the deprecation period.
-3. Align with release engineering on deployment windows and broadcast plan (`{{broadcast_channel}}`).
-
-### Phase 3 — Implementation
-
-1. Update CLI parser (Typer, Click, argparse) in `{{cli_module}}` with new validation and defaults.
-2. Add regression tests under `tests/{{cli_test_path}}` covering parsing, validation, and telemetry.
-3. Update documentation: `docs/CLI.md`, quickstarts, and any runbooks referencing the CLI.
-4. Harden telemetry/logging integration to produce structured JSON or NDJSON outputs where applicable.
-
-### Phase 4 — Verification & Rollout
-
-1. Run full CLI smoke tests (`{{smoke_command}}`) and capture transcripts.
-2. Validate CI workflows and scheduled jobs consuming the CLI; update pinned commands where necessary.
-3. Monitor `{{monitoring_dashboard}}` for error spikes and keep rollback actions ready (see below).
-
-## Rollback playbook
-
-- **Trigger:** {{rollback_trigger}}
-- **Action:** Revert to release `{{rollback_release}}` or restore alias command `{{rollback_alias}}`.
-- **Communications:** Notify `{{communications_contacts}}` and update `docs/incident_runbook.md`.
-
-## Evidence collection
-
-- Archive before/after `--help` outputs in `artifacts/cli/{{timestamp_token}}/`.
-- Store structured logs for phased rollouts in `logs/cli_hardening/{{timestamp_token}}.jsonl`.
-- Produce a status update referencing this template and file it under `docs/status_updates/`.
+## References
+- [`src/cli/`](../../src/cli/) implementation details.
+- [`tests/cli/`](../../tests/cli/) regression suites.
+- [`docs/templates/README.md`](./README.md) for workflow context.
