@@ -1,0 +1,22 @@
+{
+  "message_text": "## Plan\n- Update docs and add local-only evaluator.\n- Tests: Use PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests -q.\n- No GitHub Actions will be added.\n",
+  "candidates": [
+    {
+      "id": "1",
+      "text": "Add docs; run pytest -q; maybe enable a GitHub workflow later."
+    },
+    {
+      "id": "2",
+      "text": "Add template and ADR. Tests via PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q."
+    },
+    {
+      "id": "3",
+      "text": "Add intent gate, evaluator, and fence checks. Avoid CI. Provide rollback steps."
+    }
+  ],
+  "notes": "Sample input for tools/codex_evaluator.py. This file is safe to check in and can be referenced by docs.",
+  "provenance": {
+    "source": "synthetic",
+    "created_at": "2025-10-26"
+  }
+}

@@ -1,55 +1,41 @@
-<!--
-PR Template — Archive & Hygiene Policy
-This template guides PR authors to provide the evidence and governance signals enforced by CI.
--->
+## Intent Validation (2–3 sentences)
+<!-- Restate the intent, primary goal, constraints/scope, success + out-of-scope. -->
 
-## Summary
-Describe what is being archived/modified and why. Link to ADR and any related issues.
+## Plan of Action (phased)
+<!-- For each phase: objective, concrete steps, decision gate, effort/deps. -->
 
-## ADR
-- [ ] ADR added and linked: `docs/arch/adr-YYYYMMDD-<slug>.md`
+### Assumptions (✓ ? ⚠️)
+- ✓
+- ?
+- ⚠️
 
-## Evidence
-- [ ] Evidence lines appended to `.codex/evidence/archive_ops.jsonl` (append-only)
-  - Each new JSON line includes: `id`, `path`, `sha256`, `removed_by`, `when`, `adr`, `reason`, `provenance`
-- [ ] Tombstone stubs added that reference the above `id` and digest(s)
-- [ ] Provenance attestation(s) attached and referenced (SLSA/in-toto): `attestations/<id>.intoto.jsonl`
+### Open Questions (prioritized)
+1.
+2.
+3.
 
-## SBOM / Reverse Dependency
-- [ ] SBOM check executed: `scripts/sbom/check.sh`
-  - Outputs under `.codex/sbom/` (e.g., `sbom.cdx.json`, `pip-audit.json`, `npm-ls.json`)
-  - Notable consumers/risks:
+### Risks and Mitigations
+| Risk | Severity | Mitigation |
+| --- | --- | --- |
+|  |  |  |
 
-## CHANGELOG
-- [ ] Updated `CHANGELOG.md` (Deprecated/Removed sections)
+### Deliverables
+- [ ] 
 
-## CODEOWNERS & Reviews
-- [ ] CODEOWNERS auto-requested (see PR Reviewers panel)
-- [ ] Required approvals present
+### Acceptance Criteria
+- [ ] 
 
-## Commits
-- [ ] Conventional Commits used (e.g., `deprecate:`, `refactor:`)
-- [ ] `BREAKING CHANGE:` trailer provided **if** there are API removals
-
-## Risk & Mitigation
-- Impact summary:
-- Migration plan / deprecation window:
-- Rollout / fallback:
-
-## Testing
-- [ ] Unit/integration tests updated or removed where applicable
-- How to verify:
-
-## Notes
-- Planner/summary artifacts (if generated): `.codex/reports/plan-*.json`, `.codex/reports/summary-*.json`
-- Any exceptions/rescues tracked with owners:
+### Rollback / Fallback
+<!-- Brief steps to revert/recover. -->
 
 ---
 
-### Checklist (CI mirrors)
-- [ ] Evidence JSON lines valid (CI enforces append-only & required keys)
-- [ ] SBOM check script executed (non-blocking unless `STRICT_SBOM=1`)
-- [ ] CHANGELOG updated (warning if omitted)
-- [ ] CODEOWNERS file present (branch protection enforces approvals)
+## Local Gates (must run locally)
+- [ ] Fences: `python tools/validate_fences.py` → **PASS**
+- [ ] Evaluator: `python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json` → **PASS**
 
-<!-- End of template -->
+References:
+- Template: `docs/templates/intent_validation_gate.md`
+- Checklist: `docs/checklists/approval_gate_checklist.md`
+- Ops: `docs/ops/local_gates.md`
+- ADRs: `docs/decision_records/ADR-intent-approval-gate.md`, `docs/decision_records/ADR-codex-evaluator-v3.md`
