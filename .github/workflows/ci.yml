@@ -22,15 +22,15 @@ concurrency:
 
 jobs:
   dispatch_selector:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     outputs:
       runner_label: ${{ steps.select.outputs.runner_label }}
       use_self_hosted: ${{ steps.select.outputs.use_self_hosted }}
     steps:
       - id: select
+        shell: bash
         run: |
-          runner_label='${{ inputs.runner }}'
+          runner_label="$(jq -r '.inputs.runner // ""' "$GITHUB_EVENT_PATH")"
           default_runner='${{ vars.DEFAULT_RUNNER }}'
 
           if [ -z "$runner_label" ]; then
