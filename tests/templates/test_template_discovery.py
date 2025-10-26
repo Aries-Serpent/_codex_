@@ -1,83 +1,78 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATES_DIR = REPO_ROOT / "templates"
+DOC_TEMPLATES_DIR = REPO_ROOT / "docs" / "templates"
+
+TEMPLATE_FILES = [
+    "README.md",
+    "Migration_PythonFileRelocation.md",
+    "Migration_CLIHardening.md",
+    "Planning_IntentValidation.md",
+]
 
 
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_template_directories_exist():
-    expected_dirs = [
-        TEMPLATES_DIR,
-        TEMPLATES_DIR / "audit",
-        TEMPLATES_DIR / "github_repo_baseline",
-        TEMPLATES_DIR / "github_repo_baseline" / "ISSUE_TEMPLATE",
-    ]
-
-    for directory in expected_dirs:
-        assert directory.exists() and directory.is_dir(), f"Missing template directory: {directory}"
+@pytest.mark.templates
+def test_templates_directory_exists() -> None:
+    assert DOC_TEMPLATES_DIR.is_dir(), "docs/templates/ directory is missing"
 
 
-def test_template_files_present():
-    expected_files = {
-        "audit/capability_matrix.md.j2",
-        "audit/status_update_report.md.j2",
-        "github_repo_baseline/CODEOWNERS",
-        "github_repo_baseline/ISSUE_TEMPLATE/config.yml",
-        "github_repo_baseline/ISSUE_TEMPLATE/feature_request.md",
-        "github_repo_baseline/ISSUE_TEMPLATE/bug_report.md",
-        "github_repo_baseline/PULL_REQUEST_TEMPLATE.md",
-    }
-
-    missing = [
-        relative_path
-        for relative_path in expected_files
-        if not (TEMPLATES_DIR / relative_path).is_file()
-    ]
-
-    assert not missing, f"Missing template files: {missing}"
+@pytest.mark.templates
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_file_exists(relative_path: str) -> None:
+    path = DOC_TEMPLATES_DIR / relative_path
+    assert path.is_file(), f"Expected template file missing: {relative_path}"
 
 
+@pytest.mark.templates
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_readable(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    assert contents.strip(), f"Template file is empty: {relative_path}"
+
+
+@pytest.mark.templates
 @pytest.mark.parametrize(
     "relative_path",
     [
-        "audit/capability_matrix.md.j2",
-        "audit/status_update_report.md.j2",
-        "github_repo_baseline/CODEOWNERS",
-        "github_repo_baseline/ISSUE_TEMPLATE/config.yml",
-        "github_repo_baseline/ISSUE_TEMPLATE/feature_request.md",
-        "github_repo_baseline/ISSUE_TEMPLATE/bug_report.md",
-        "github_repo_baseline/PULL_REQUEST_TEMPLATE.md",
+        "Migration_PythonFileRelocation.md",
+        "Migration_CLIHardening.md",
+        "Planning_IntentValidation.md",
     ],
 )
-def test_templates_are_readable(relative_path: str):
-    path = TEMPLATES_DIR / relative_path
-    contents = read(path)
-
-    assert contents.strip(), f"Template appears empty: {relative_path}"
-
-
-def test_audit_templates_have_metadata_headers():
-    audit_templates = {
-        "capability_matrix.md.j2": "# [Report]: Capability Matrix",
-        "status_update_report.md.j2": "# [Report]: Codex Status Update Audit",
-    }
-
-    for filename, expected_header in audit_templates.items():
-        path = TEMPLATES_DIR / "audit" / filename
-        first_line = read(path).splitlines()[0]
-        assert first_line == expected_header, f"Unexpected header in {filename}: {first_line!r}"
+def test_template_has_metadata_header(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    first_lines = contents.splitlines()[:4]
+    assert any(line.startswith("# [Template]") for line in first_lines), (
+        f"Metadata header missing in {relative_path}"
+    )
+    assert any("Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]), (
+        f"Version metadata missing in {relative_path}"
+    )
 
 
-def test_repository_templates_reference_documentation():
-    codeowners = read(TEMPLATES_DIR / "github_repo_baseline" / "CODEOWNERS")
-    pr_template = read(TEMPLATES_DIR / "github_repo_baseline" / "PULL_REQUEST_TEMPLATE.md")
+@pytest.mark.templates
+def test_readme_index_references_all_templates() -> None:
+    contents = read(DOC_TEMPLATES_DIR / "README.md")
+    for relative_path in TEMPLATE_FILES[1:]:
+        assert relative_path in contents, f"README missing link for {relative_path}"
 
-    assert "/docs/" in codeowners, "CODEOWNERS should reference documentation ownership"
-    assert (
-        "Docs updated where helpful" in pr_template
-    ), "PR template should remind about documentation updates"
+
+@pytest.mark.templates
+def test_docs_readme_has_templates_section() -> None:
+    docs_readme = read(REPO_ROOT / "docs" / "README.md")
+    assert "Operational Templates" in docs_readme
+    assert "Migration — Python File Relocation" in docs_readme
+
+
+@pytest.mark.templates
+def test_root_readme_links_to_templates() -> None:
+    root_readme = read(REPO_ROOT / "README.md")
+    assert "docs/templates/README.md" in root_readme
