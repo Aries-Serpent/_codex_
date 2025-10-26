@@ -28,6 +28,11 @@
 ### Rollback / Fallback
 <!-- Brief steps to revert/recover. -->
 
+## Local Gates (must run locally)
+- [ ] Fences: `python tools/validate_fences.py` → **PASS**
+- [ ] Evaluator: `python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json` → **PASS**
+- [ ] Selection Guard: `python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input <your_summary.json> [--selected 1..4]` → **PASS**
+
 ---
 
 ## Local Gates (must run locally)

@@ -16,6 +16,133 @@ repos:
         language: system
         pass_filenames: false
         stages: [manual]
+      - id: codex-selection-guard
+        name: codex-selection-guard
+        # Verify the chosen assistant message includes docs surface + guardrails signals.
+        entry: python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input samples/assistant_message_summary.sample.json
+        language: system
+        pass_filenames: false
+        stages: [manual]
+      - id: codex-status
+        name: codex-status
+        # Produce a local STATUS_REPORT.md from sample input (adjust --summary/--selected as needed).
+        entry: python tools/status_report.py \
+          --summary samples/assistant_message_summary.sample.json \
+          --selected 3 \
+          --out STATUS_REPORT.md
+        language: system
+        stages: [manual]
+      - id: jsonschema-validate-manifests
+        name: jsonschema-validate-manifests
+        # Validate manifests against local JSON Schemas (graceful if jsonschema not installed).
+        entry: python tools/schema_validate.py \
+          --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
+          --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
+        language: system
+        pass_filenames: false
+        stages: [manual]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        args: ["--strict", "--show-error-codes", "--ignore-missing-imports", "-p", "src.security"]
+        pass_filenames: false
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: check-yaml
+      - id: check-toml
+      - id: pretty-format-json
+        args: ["--autofix"]
+      - id: check-added-large-files
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+        language_version: python3
+        stages: [pre-commit]
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (import sorting)
+        args: ["--settings-path", "pyproject.toml"]
+        stages: [pre-commit]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.4
+    hooks:
+      - id: ruff
+        args:
+          [
+            "services/api/main.py",
+            "src/security",
+            "tests/security",
+            "tests/deployment",
+            "tests/code_quality",
+          ]
+        pass_filenames: false
+        stages: [pre-commit]
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        files: ^notebooks/.*\.ipynb$
+  # Heavy security scanning hooks are available manually (or via CI) to
+  # avoid slowing routine local commits; opt in with `pre-commit run --hook-stage manual`.
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        name: Bandit Security Checks
+        args: ["-q", "-ll", "-c", ".bandit.yml", "--exclude", "tests"]
+        files: ^(src/|tools/)
+        stages: [manual]
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.89.0
+    hooks:
+      - id: semgrep
+        name: Semgrep Security Audit (local rules, offline-friendly)
+        # Keep heavy scans off the hot path:
+        stages: [pre-push]
+        args:
+          - "--config"
+          - "semgrep_rules/"
+          - "--metrics=off"
+          - "--disable-version-check"
+          - "--error"
+        files: ^(src/|tools/)
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        stages: [pre-commit]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.9.0
+    hooks:
+      - id: pip-audit
+        args: ["--progress-spinner", "off", "--dry-run"]
+        stages: [manual]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.27.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        args: ["--line-length=100"]
 
 default_install_hook_types:
   - pre-commit
