@@ -131,6 +131,7 @@ repos:
           --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
           --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
         language: system
+        pass_filenames: false
         stages: [manual]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
