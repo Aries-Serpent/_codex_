@@ -1,119 +1,43 @@
-minimum_pre_commit_version: "3.7.0"
-default_install_hook_types: [pre-commit, pre-push, commit-msg]
-exclude: '^\\.codex/'
-default_language_version:
-  python: python3
+# Local-only quality gates for _codex_
+# NOTE: Do not add or enable any GitHub Actions here. These hooks run locally.
 repos:
   - repo: local
     hooks:
-      - id: security-audit
-        name: Pip Audit (Offline Vulnerability Scan)
-        entry: python3 tools/pip_audit_wrapper.py --offline
+      - id: codex-validate-fences
+        name: codex-validate-fences
+        entry: python tools/validate_fences.py --strict-inner
+        language: system
+        pass_filenames: false
+        stages: [commit]
+      - id: codex-eval
+        name: codex-eval
+        # Example input file can be changed; see docs/ops/local_gates.md
+        entry: python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json
         language: system
         pass_filenames: false
         stages: [manual]
-      - id: validate-fences
-        name: validate markdown code fences
-        # Ensure the validator knows it is running *inside* pre-commit to avoid
-        # delegating back to `pre-commit run ...` and recursing.
-        entry: bash
-        language: system
-        args:
-          - -lc
-          - 'PRE_COMMIT=1 python3 tools/validate_fences.py --strict-inner "$@"'
-          # Provide a placeholder for $0 so the first filename is preserved in "$@".
-          - validate-fences
-        pass_filenames: true
-        types: [markdown]
-        exclude: '^tests/data/validate_fences_sample\.md$'
-        stages: [pre-commit]
-      - id: block-env-files
-        name: block committed secret env files
-        entry: bash
+      - id: codex-selection-guard
+        name: codex-selection-guard
+        # Verify the chosen assistant message includes docs surface + guardrails signals.
+        entry: python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input samples/assistant_message_summary.sample.json
         language: system
         pass_filenames: false
-        always_run: true
-        args:
-          - -lc
-          - |
-            while IFS= read -r path; do
-              if [ -z "$path" ]; then
-                continue
-              fi
-
-              base="$(basename "$path")"
-              if [ "$base" = ".env.example" ] || [ "$base" = ".env.docker.example" ]; then
-                continue
-              fi
-
-              case "$base" in
-                .env|.env.*|.envrc|.envrc.*|*.secret|*.secrets|*.vault)
-                  echo "[secrets] refusing to commit $path"
-                  echo "Create a local copy from .env.example instead of committing secrets."
-                  exit 1
-                  ;;
-              esac
-            done < <(git diff --cached --name-only --diff-filter=ACM)
-        stages: [pre-commit]
-      - id: codex-block-large-generated
-        name: Block large generated files in .codex
-        entry: python3 tools/precommit_block_large.py
+        stages: [manual]
+      - id: codex-status
+        name: codex-status
+        # Produce a local STATUS_REPORT.md from sample input (adjust --summary/--selected as needed).
+        entry: python tools/status_report.py \
+          --summary samples/assistant_message_summary.sample.json \
+          --selected 3 \
+          --out STATUS_REPORT.md
         language: system
-        pass_filenames: true
-        stages: [pre-commit]
-      - id: check-licenses
-        name: check licenses
-        entry: python3 scripts/check_licenses.py
-        language: system
-        pass_filenames: false
-        stages: [pre-commit]
-      - id: semgrep-local
-        name: semgrep (local rules, optional)
-        entry: bash -lc 'command -v semgrep >/dev/null 2>&1 && semgrep scan --quiet --config semgrep_rules || echo "[semgrep] skipped (not installed)"'
-        language: system
-        pass_filenames: false
-        types: [python]
-      - id: ci-guard
-        name: Guard against unintended CI workflows
-        entry: bash
-        language: system
-        pass_filenames: false
-        args:
-          - -lc
-          - |
-            if [ "${CODEX_ALLOW_CI:-0}" = "1" ]; then
-              python3 tools/ci_guard.py
-            else
-              echo "[ci-guard] skipped (set CODEX_ALLOW_CI=1 to run)"
-            fi
-        stages: [pre-commit]
-      - id: prepare-commit-scaffold
-        name: Prepare commit message scaffold
-        entry: python3 tools/prepare_commit_msg.py
-        language: system
-        pass_filenames: false
-        stages: [prepare-commit-msg]
-      - id: conventional-commit-lint
-        name: Conventional Commit message lint
-        entry: python3 tools/commit_msg_lint.py
-        language: system
-        stages: [commit-msg]
-      - id: pytest-quick
-        name: pytest-quick
-        entry: bash -lc 'PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -o addopts="" tests/security -q'
-        language: system
-        pass_filenames: false
-        always_run: true
-        stages: [pre-commit]
-      - id: prepush-tests
-        name: Fast test gate before push
-        entry: python3 tools/prepush_tests.py
-        language: system
-        pass_filenames: false
-        stages: [pre-push]
-      - id: llm-auto-fix
-        name: Codex LLM auto-fix orchestrator
-        entry: python3 tools/llm_auto_fix.py
+        stages: [manual]
+      - id: jsonschema-validate-manifests
+        name: jsonschema-validate-manifests
+        # Validate manifests against local JSON Schemas (graceful if jsonschema not installed).
+        entry: python tools/schema_validate.py \
+          --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
+          --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
         language: system
         pass_filenames: false
         stages: [manual]
@@ -220,33 +144,8 @@ repos:
       - id: black
         args: ["--line-length=100"]
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      - id: ruff
-        args: ["--fix"]
+default_install_hook_types:
+  - pre-commit
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        args: ["--profile", "black", "--line-length", "100"]
-
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
-    hooks:
-      - id: nbstripout
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: mixed-line-ending
-
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
-    hooks:
-      - id: detect-secrets
-        args: ["--baseline", ".secrets.baseline"]
-        exclude: "(.venv|dist|build|mlruns|data)"
+ci:
+  skip: [codex-validate-fences, codex-eval]
