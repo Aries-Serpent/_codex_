@@ -77,7 +77,7 @@ def main(argv: List[str] | None = None) -> int:
     stamp = _stamp()
 
     sections: List[str] = []
-    header = f"# Status Report — *codex*  \nGenerated: {stamp}\n"
+    header = f"# Status Report — _codex_  \nGenerated: {stamp}\n"
     sections.append(header)
     sections.append("## Gates Summary")
 

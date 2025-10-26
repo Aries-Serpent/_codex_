@@ -78,7 +78,12 @@ def _scan_file(
         for lineno, raw_line in enumerate(f, start=1):
             last_lineno = lineno
             line = raw_line.rstrip("\n")
-            match = FENCE_RE.match(line)
+            stripped = line.lstrip()
+            if stripped[:1] in {"+", "-"}:
+                candidate = stripped[1:].lstrip()
+                if candidate.startswith(("`", "~")):
+                    stripped = candidate
+            match = FENCE_RE.match(stripped)
             if match:
                 fence_token = match.group("fence")
                 fence_char = fence_token[0]
