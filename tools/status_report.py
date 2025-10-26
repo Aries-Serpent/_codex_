@@ -47,11 +47,20 @@ def main(argv: List[str] | None = None) -> int:
     sections.append(f"- Fence integrity: {'PASS' if rc_f == 0 else 'FAIL'}")
 
     # 2) Schema validation (may be skipped gracefully by the tool)
-    rc_s, out_s, err_s = _run([
-        sys.executable, "tools/schema_validate.py",
-        "--data", "manifests/selection_guard_rules.json", "--schema", "schemas/selection_guard_rules.schema.json",
-        "--data", "manifests/codex_eval_rules.v3.json", "--schema", "schemas/codex_eval_rules.v3.schema.json",
-    ])
+    rc_s, out_s, err_s = _run(
+        [
+            sys.executable,
+            "tools/schema_validate.py",
+            "--data",
+            "manifests/selection_guard_rules.json",
+            "--schema",
+            "schemas/selection_guard_rules.schema.json",
+            "--data",
+            "manifests/codex_eval_rules.v3.json",
+            "--schema",
+            "schemas/codex_eval_rules.v3.schema.json",
+        ]
+    )
     # Detect skip note
     schema_state = "PASS" if rc_s == 0 else "FAIL"
     if "jsonschema not installed" in (err_s or "").lower():
@@ -61,35 +70,54 @@ def main(argv: List[str] | None = None) -> int:
     # 3) Evaluator (optional if summary provided)
     eval_state = "SKIP"
     if args.summary:
-        rc_e, out_e, err_e = _run([
-            sys.executable, "tools/codex_evaluator.py",
-            "--rules", "manifests/codex_eval_rules.v3.json",
-            "--input", args.summary,
-        ])
+        rc_e, out_e, err_e = _run(
+            [
+                sys.executable,
+                "tools/codex_evaluator.py",
+                "--rules",
+                "manifests/codex_eval_rules.v3.json",
+                "--input",
+                args.summary,
+            ]
+        )
         eval_state = "PASS" if rc_e == 0 else "FAIL"
     sections.append(f"- Evaluator: {eval_state}")
 
     # 4) Selection Guard (optional if summary + selected provided)
     guard_state = "SKIP"
     if args.summary and args.selected:
-        rc_g, out_g, err_g = _run([
-            sys.executable, "tools/selection_guard.py",
-            "--rules", "manifests/selection_guard_rules.json",
-            "--input", args.summary,
-            "--selected", str(args.selected),
-        ])
-        guard_state = "PASS" if rc_g == 0 else ("FAIL" if rc_g == 1 else "SKIP")
+        rc_g, out_g, err_g = _run(
+            [
+                sys.executable,
+                "tools/selection_guard.py",
+                "--rules",
+                "manifests/selection_guard_rules.json",
+                "--input",
+                args.summary,
+                "--selected",
+                str(args.selected),
+            ]
+        )
+        if rc_g == 0:
+            guard_state = "PASS"
+        else:
+            err_lower = (err_g or "").lower()
+            guard_state = "SKIP" if "jsonschema not installed" in err_lower else "FAIL"
     sections.append(f"- Selection Guard (chosen={args.selected or '-'}) : {guard_state}")
 
     # Highlights & Next Steps (lightweight scaffolding)
     sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
     sections.append("## Risks & Mitigations\n- None observed beyond local environment variance.\n")
-    sections.append("## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n")
-    sections.append(f"\n> Provenance: generated locally by `tools/status_report.py` at {_stamp()}.\n")
+    sections.append(
+        "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
+    )
+    sections.append(
+        f"\n> Provenance: generated locally by `tools/status_report.py` at {_stamp()}.\n"
+    )
 
     Path(args.out).write_text("\n".join(sections), encoding="utf-8")
     # Exit non-zero if any mandatory gate failed
-    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL")
+    mandatory_fail = (rc_f != 0) or (schema_state == "FAIL") or (guard_state == "FAIL")
     return 1 if mandatory_fail else 0
 
 
