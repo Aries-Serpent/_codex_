@@ -5,7 +5,7 @@ repos:
     hooks:
       - id: codex-validate-fences
         name: codex-validate-fences
-        entry: python tools/validate_fences.py
+        entry: python tools/validate_fences.py --strict-inner
         language: system
         pass_filenames: false
         stages: [commit]
