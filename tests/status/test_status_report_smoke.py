@@ -13,6 +13,7 @@ import pytest
 )
 def test_status_report_template_mode(tmp_path: Path) -> None:
     out = tmp_path / "STATUS_REPORT.md"
+    repo_root = Path(__file__).resolve().parents[2]
     cmd = [
         sys.executable,
         "tools/status_report.py",
@@ -29,7 +30,7 @@ def test_status_report_template_mode(tmp_path: Path) -> None:
         "--out",
         str(out),
     ]
-    rc = subprocess.run(cmd, check=False).returncode
+    rc = subprocess.run(cmd, check=False, cwd=repo_root).returncode
     assert rc in (0, 1), "status_report should exit 0 (all pass) or 1 (some gate failed)"
     assert out.exists(), "STATUS_REPORT.md was not created"
     text = out.read_text(encoding="utf-8")
