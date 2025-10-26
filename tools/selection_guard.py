@@ -22,7 +22,7 @@ import fnmatch
 import json
 import sys
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 
 @dataclass
@@ -48,22 +48,69 @@ def _read_rules(path: str) -> Dict[str, Any]:
     return obj
 
 
+def _path_variants(path: Iterable[str]) -> List[str]:
+    parts = list(path)
+    if not parts:
+        return [""]
+    variants = [".".join(parts)]
+    merged: List[str] = []
+    for component in parts:
+        if component.isdigit() and merged:
+            merged[-1] = f"{merged[-1]}[{component}]"
+        else:
+            merged.append(component)
+    bracketed = ".".join(merged)
+    if bracketed and bracketed not in variants:
+        variants.append(bracketed)
+    return [variant for variant in variants if variant]
+
+
+def _normalize_pattern(pattern: str) -> str:
+    return pattern.replace("[*]", ".*")
+
+
 def _glob_first(d: Dict[str, Any], pattern: str) -> Optional[Tuple[str, Any]]:
     """Depth-first search over nested structures returning first key path matching pattern."""
+    pattern = _normalize_pattern(pattern)
     stack: List[Tuple[List[str], Any]] = [([], d)]
     while stack:
         path, cur = stack.pop()
         if isinstance(cur, dict):
             for key, val in cur.items():
                 new_path = path + [key]
-                joined = ".".join(new_path)
-                if fnmatch.fnmatch(joined, pattern):
-                    return joined, val
+                for candidate in _path_variants(new_path):
+                    if fnmatch.fnmatch(candidate, pattern):
+                        return candidate, val
                 stack.append((new_path, val))
         elif isinstance(cur, list):
             for idx, val in enumerate(cur):
-                stack.append((path + [str(idx)], val))
+                new_path = path + [str(idx)]
+                for candidate in _path_variants(new_path):
+                    if fnmatch.fnmatch(candidate, pattern):
+                        return candidate, val
+                stack.append((new_path, val))
     return None
+
+
+def _glob_all(d: Dict[str, Any], pattern: str) -> List[Tuple[str, Any]]:
+    """Return all key paths matching pattern in traversal order."""
+    pattern = _normalize_pattern(pattern)
+    matches: List[Tuple[str, Any]] = []
+
+    def _visit(path: List[str], cur: Any) -> None:
+        for candidate in _path_variants(path):
+            if candidate and fnmatch.fnmatch(candidate, pattern):
+                matches.append((candidate, cur))
+                break
+        if isinstance(cur, dict):
+            for key, val in cur.items():
+                _visit(path + [key], val)
+        elif isinstance(cur, list):
+            for idx, val in enumerate(cur):
+                _visit(path + [str(idx)], val)
+
+    _visit([], d)
+    return matches
 
 
 def _extract_siblings(tm: Dict[str, Any]) -> List[str]:
@@ -77,6 +124,33 @@ def _extract_siblings(tm: Dict[str, Any]) -> List[str]:
     owner = owners[0]
     children = tm.get(owner, {}).get("children", [])
     return children if isinstance(children, list) else []
+
+
+def _resolve_turn_id(node: Any) -> Optional[str]:
+    if isinstance(node, str):
+        return node
+    if not isinstance(node, dict):
+        return None
+    for key in ("turn_id", "id", "message_id"):
+        value = node.get(key)
+        if isinstance(value, str):
+            return value
+    turn = node.get("turn")
+    if isinstance(turn, dict):
+        for key in ("turn_id", "id"):
+            value = turn.get(key)
+            if isinstance(value, str):
+                return value
+    return None
+
+
+def _extract_turn_obj(entry: Any) -> Dict[str, Any]:
+    if isinstance(entry, dict):
+        turn = entry.get("turn")
+        if isinstance(turn, dict):
+            return turn
+        return entry
+    return {}
 
 
 def _extract_payload(turn_obj: Dict[str, Any], path_hints: List[str]) -> str:
@@ -106,14 +180,41 @@ def _scan_payload(payload: str, required: List[str]) -> Tuple[List[str], List[st
 
 def _iter_candidates(data: Dict[str, Any], rules: Dict[str, Any]) -> List[Candidate]:
     tm = data.get("turn_mapping", {})
-    siblings = _extract_siblings(tm)
+    selection_hint = rules.get("selection_path_hint")
+    candidate_ids: List[str] = []
+    candidate_turns: List[Dict[str, Any]] = []
+
+    if selection_hint:
+        for path, node in _glob_all(data, selection_hint):
+            turn_id = _resolve_turn_id(node)
+            turn_info = tm.get(turn_id, {}) if turn_id else {}
+            turn_obj = _extract_turn_obj(turn_info)
+            if not turn_obj and isinstance(node, dict):
+                turn_obj = _extract_turn_obj(node)
+            if not turn_obj:
+                continue
+            candidate_ids.append(turn_id or path)
+            candidate_turns.append(turn_obj)
+
+    if not candidate_ids:
+        siblings = _extract_siblings(tm)
+        for turn_id in siblings:
+            turn_info = tm.get(turn_id, {})
+            turn_obj = _extract_turn_obj(turn_info)
+            candidate_ids.append(turn_id)
+            candidate_turns.append(turn_obj)
+
     candidates: List[Candidate] = []
-    for idx, turn_id in enumerate(siblings, start=1):
-        turn_info = tm.get(turn_id, {})
-        turn = turn_info.get("turn", {}) if isinstance(turn_info, dict) else {}
-        payload = _extract_payload(turn, rules["path_hints"])
+    seen: set[str] = set()
+    display_idx = 1
+    for turn_id, turn_obj in zip(candidate_ids, candidate_turns):
+        if turn_id in seen:
+            continue
+        seen.add(turn_id)
+        payload = _extract_payload(turn_obj, rules["path_hints"])
         hits, missing = _scan_payload(payload, rules["required_signals"])
-        candidates.append(Candidate(idx, turn_id, payload, hits, missing))
+        candidates.append(Candidate(display_idx, turn_id, payload, hits, missing))
+        display_idx += 1
     return candidates
 
 
