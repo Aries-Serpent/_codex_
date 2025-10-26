@@ -1,82 +1,65 @@
 # [Template]: Intent Validation & Plan of Action Approval Gate
+**Version:** v1.0.0  
+**Last Updated:** 2025-10-25  
+**Role Workflow:** Developers draft → Maintainers review → Stakeholders approve
 
-- **Version:** v1.0.0
-- **Last Updated:** 2025-10-24
-- **Owner Role:** Developer (drafter) → Maintainer (approver)
-- **Intended Audience:** Engineers planning significant changes, reviewers assessing readiness
+> [PLACEHOLDER: INTENT_STATEMENT]
 
----
+Use this planning template before committing to a significant implementation effort. It surfaces assumptions, validation work, and decision gates so the team shares a single source of truth prior to execution.
 
-## Generic Intent Validation Template
+## Template Overview
+- Initiative name: [PLACEHOLDER: INITIATIVE_NAME]
+- Primary owner: [PLACEHOLDER: OWNER]
+- Time horizon: [PLACEHOLDER: TIMELINE]
+- Linked execution templates: [PLACEHOLDER: LINKED_TEMPLATES]
+- Approval deadline: [PLACEHOLDER: APPROVAL_DEADLINE]
 
-1. **Intent Statement**
-   - What outcome are we pursuing?
-   - Link to related issues, RFCs, or ADRs: `[PLACEHOLDER:intent_link]`.
-2. **Current State Summary**
-   - Describe relevant modules (`src/`, `docs/`, external services).
-   - Capture known constraints or debt.
-3. **Assumptions & Unknowns**
-   - List assumptions explicitly.
-   - Add discovery tasks for each unknown.
-4. **Risks & Mitigations**
-   - Include operational risks, customer impact, and testing considerations.
-5. **Validation Gates**
-   - Tests to pass (pytest modules, integration suites, linting).
-   - Documentation updates required (`docs/templates/README.md`, `docs/CHANGELOG.md`).
-6. **Success Metrics**
-   - Define measurable signals (coverage targets, latency budgets, adoption counts).
-7. **Approval Checklist**
-   - Maintainer sign-off, security review, product acknowledgement.
-8. **Timeline & Milestones**
-   - Outline delivery windows and dependencies.
+## Intent Brief
+Summarize the user problem, measurable outcome, and scope boundaries. Reference supporting docs such as [`docs/validation/`](../validation/) or `../../docs/prompts/` where helpful.
+
+## Discovery Inputs
+- User research, bug reports, or telemetry referenced.
+- Dependencies or services impacted (e.g., [`src/cli/`](../../src/cli/), `codex_ml` pipelines).
+- Feature flags or configuration toggles that gate the rollout.
+
+## Validation Activities
+List experiments, spikes, or prototypes that validate feasibility. Link to notebooks under `../../notebooks/` or tests added to `../../tests/`.
+
+## Decision Gates
+| Gate | Entry Criteria | Decision Owner |
+| --- | --- | --- |
+| Gate 1 — Intent review | Document circulated and placeholders resolved | Maintainer |
+| Gate 2 — Validation results | Experiments complete, risks documented | Tech lead |
+| Gate 3 — Launch approval | Success criteria met, rollout plan approved | Stakeholder |
+
+## Risk Register
+| Risk | Impact | Mitigation |
+| --- | --- | --- |
+| [PLACEHOLDER: RISK_DESCRIPTION] | [PLACEHOLDER: RISK_IMPACT] | [PLACEHOLDER: RISK_MITIGATION] |
+| [PLACEHOLDER: SECONDARY_RISK] | [PLACEHOLDER: SECONDARY_IMPACT] | [PLACEHOLDER: SECONDARY_MITIGATION] |
 
 ## Customization Guide
-
 | Placeholder | Description | Example |
 | --- | --- | --- |
-| `[PLACEHOLDER:intent_link]` | Issue, ADR, or doc that triggered the request | `RFC-018` |
-| `[PLACEHOLDER:baseline_metric]` | Existing KPI to track before/after | `p95 latency 450ms` |
-| `[PLACEHOLDER:risk_owner]` | Person accountable for a specific risk | `@maintainer` |
-| `[PLACEHOLDER:review_forum]` | Meeting or channel for approvals | `Architecture Review 2025-10-30` |
-| `[PLACEHOLDER:rollback_signal]` | Metric or alerting rule to watch | `cli.error_rate > 0.5%` |
-| `[PLACEHOLDER:experiment_flag]` | Feature flag controlling rollout | `CODEx_CLI_HARDENING` |
+| `[PLACEHOLDER: INTENT_STATEMENT]` | One-sentence summary of desired outcome. | "Validate GPU fine-tuning pipeline for codex-14b." |
+| `[PLACEHOLDER: INITIATIVE_NAME]` | Internal or customer-facing project name. | "Arcturus CLI refactor" |
+| `[PLACEHOLDER: OWNER]` | Person accountable for delivery. | "@maintainer-handle" |
+| `[PLACEHOLDER: LINKED_TEMPLATES]` | Execution templates paired with this plan. | "Migration — CLI Hardening" |
+| `[PLACEHOLDER: APPROVAL_DEADLINE]` | Deadline for stakeholder sign-off. | "2025-11-07" |
 
 ## Example Instantiations
-
-1. **CLI Token Refresh Improvements**
-   - Intent: Ensure token refresh CLI subcommand handles offline scenarios.
-   - Risks: Regression in telemetry events, stale cache invalidation.
-   - Validation Gates: `pytest tests/cli/test_token_refresh.py`, manual dry-run in staging.
-2. **Model Artifact Relocation**
-   - Intent: Move trained artifacts from `models/legacy/` to `models/managed/`.
-   - Risks: Deployment automation referencing old paths, missing checksums.
-   - Validation Gates: Data pipeline integration tests, DVC repro run.
-3. **Docs Navigation Refresh**
-   - Intent: Align docs navigation with new template catalog.
-   - Risks: Broken relative links, outdated onboarding references.
-   - Validation Gates: `markdown-link-check docs/**/*.md`, content review by Docs lead.
+1. **CLI stabilization** — Pair with [Migration — CLI Hardening](./Migration_CLIHardening.md) to capture discovery for argument contract updates.
+2. **Module relocation** — Combine with [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) for larger refactors affecting imports.
+3. **New service launch** — Use alongside `docs/PR_PLAN.md` to align milestones and incident response.
 
 ## Usage Pattern
-
-1. Start a planning note using the Generic Intent Validation Template.
-2. Replace each `[PLACEHOLDER: ...]` with project-specific information.
-3. Share the draft in `[PLACEHOLDER:review_forum]` and gather feedback.
-4. Once approved, reference this plan in implementation PRs and commits.
-5. Update status weekly until completion or pivot.
+1. Draft the template during the planning kickoff and circulate to stakeholders.
+2. Resolve all placeholders prior to Gate 1 review and attach related artifacts (tests, dashboards, notebooks).
+3. Maintain living status by updating the Decision Gates table as approvals arrive.
+4. Once execution begins, link the corresponding migration template and update [`docs/CHANGELOG.md`](../CHANGELOG.md).
 
 ## Key Benefits
-
-- Establishes a common language for intent, risk, and validation.
-- Reduces time-to-approval by collecting required evidence upfront.
-- Encourages measurable success metrics and rollback signals.
-- Aligns with the role-gated execution model described in `CONTRIBUTING.md`.
-
-## Repository Context
-
-- Validation docs live in [`docs/validation/`](../validation/).
-- Compatibility hooks referenced in [`sitecustomize.py`](../sitecustomize.py).
-- Test infrastructure in [`conftest.py`](../../conftest.py) and [`tests/templates/`](../../tests/templates/).
-- CLI templates complement this planning workflow: see [Migration – CLI Hardening](./Migration_CLIHardening.md).
-
----
-**Review Gate:** Maintainer confirms risks, validation gates, and rollback signals before authorising implementation work.
+- Establishes shared understanding before execution begins.
+- Provides audit trail for why decisions were made and by whom.
+- Aligns planning with coverage expectations (≥85% for execution templates).
+- Encourages pairing with technical assets (`sitecustomize.py`, `conftest.py`, CLI scripts) for cross-team visibility.

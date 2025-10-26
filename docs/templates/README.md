@@ -1,37 +1,44 @@
 # Operational Templates Index
 
-Welcome to the `_codex_` operational template catalog. The templates in this folder capture repeatable flows that contributors can follow end-to-end. Each entry includes a ready-to-run execution blueprint, customization guidance, and explicit validation checkpoints so the maintainer reviewing the work can trust that the same results will be reproduced.
+The `docs/templates/` directory curates reusable runbooks that combine execution guidance with customizable placeholders. Each template follows a role-gated workflow: **developers** draft the plan, **maintainers** execute or approve the rollout, and **reviewers** confirm success criteria using the embedded checklists.
 
-## How to Use the Templates
+## Available Templates
 
-1. **Choose the template** that matches your task category (migration, hardening, or intent planning).
-2. **Duplicate the template** into your working note, replacing each `[PLACEHOLDER: ...]` marker with project-specific details.
-3. **Review the validation gates** section to understand the tests, hooks, and documentation updates you must provide before opening a pull request.
-4. **Share the filled template** with a maintainer for approval. Our execution model is role-gated: developers draft, maintainers validate and execute.
-5. **Archive the completed template** with the implementation artefacts so future contributors can audit decisions and reuse the pattern.
+| Template | Summary | Primary Focus |
+| --- | --- | --- |
+| [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) | Move Python files or packages while preserving import stability and release hygiene. | Codebase topology and backward compatibility |
+| [Migration — CLI Hardening](./Migration_CLIHardening.md) | Strengthen CLI ergonomics, validation, and coverage to meet the 85% testing baseline. | Developer experience and operational resilience |
+| [Planning — Intent Validation](./Planning_IntentValidation.md) | Facilitate structured discovery and approval gates before implementation begins. | Alignment, risk framing, and decision records |
 
-| Template | Primary Use Case | Key Outputs | Linked Resources |
-| --- | --- | --- | --- |
-| [Migration – Python File Relocation](./Migration_PythonFileRelocation.md) | Move Python modules while preserving history and API stability | Execution phases, sys.modules alias recipe, rollback strategy | [`sitecustomize.py`](../sitecustomize.py), [`legacy_root/`](../..), [`tests/conftest.py`](../../tests/conftest.py) |
-| [Migration – CLI Hardening](./Migration_CLIHardening.md) | Harden CLI behaviour, update dependencies, and push coverage above 85% | Coverage roadmap, failure triage, release checklist | [`src/cli/`](../../src/cli/), [`tests/cli/`](../../tests/cli/), [`pyproject.toml`](../../pyproject.toml) |
-| [Planning – Intent Validation](./Planning_IntentValidation.md) | Structure discovery and approval work before implementation begins | Intent worksheet, risk ledger, approval gate | [`docs/validation/`](../validation/), [`conftest.py`](../../conftest.py), [`sitecustomize.py`](../sitecustomize.py) |
+## When to Use Each Template
 
-## When to Reach for Each Template
+### Migration — Python File Relocation
+Use when reorganizing modules, extracting packages, or introducing aliases that must remain compatible across integrations. The template includes compatibility shims, release checklist items, and rollback guidance.
 
-### Migration – Python File Relocation
-Use this template whenever you need to move Python files across packages, split modules, or consolidate duplicated logic while keeping downstream imports working. The plan includes git-history preservation notes and shows how to wire compatibility shims through `sitecustomize.py`.
+### Migration — CLI Hardening
+Use when tightening CLI interfaces, adopting new dependencies, or extending coverage for high-touch commands. The template orchestrates baseline audits, phased hardening tasks, and observability checkpoints.
 
-### Migration – CLI Hardening
-Choose this option when the CLI surface needs behavioural improvements, new validation hooks, or coverage uplift. The template documents the hardening phases, recommended pytest markers, and linters to enable in CI.
+### Planning — Intent Validation
+Use before implementing a substantial change. The template standardizes intent statements, validation evidence, risk logs, and approval criteria so the team agrees on scope and success markers.
 
-### Planning – Intent Validation
-Start here before kicking off complex work. It provides an approval-ready plan with explicit fields for assumptions, questions, risks, and decision gates so maintainers can sign off quickly.
+## How to Use These Templates
 
-## Frequently Asked Questions
+1. Select the appropriate template from this directory and copy it into your workstream docs.
+2. Replace every `[PLACEHOLDER: …]` token with project-specific details; do not remove the metadata header.
+3. Cross-link related templates—for example, pair the planning template with the matching migration template for visibility into execution and rollback plans.
+4. Update linked assets (tests, dashboards, release notes) as you progress through each phase.
+5. On completion, document learnings and version bumps in [`docs/CHANGELOG.md`](../CHANGELOG.md) so future readers understand how the template evolved.
 
-- **Can I mix templates?** Yes. Start with the planning template, then run the relevant migration or hardening blueprint.
-- **How do I update a template?** Increment the version number in the metadata, document the change in `docs/CHANGELOG.md`, and communicate the update in the contributor channel.
-- **Where do I add new templates?** Create a new markdown file in this folder, update this index, and add discovery tests under `tests/templates/`.
+## Cross-References
 
----
-Last updated: 2025-10-24
+| Template | Key References |
+| --- | --- |
+| Python File Relocation | [`sitecustomize.py`](../../sitecustomize.py), [`conftest.py`](../../conftest.py), [`tests/`](../../tests/) |
+| CLI Hardening | [`src/cli/`](../../src/cli/), [`tests/cli/`](../../tests/cli/), [`pyproject.toml`](../../pyproject.toml) |
+| Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](../../tests/conftest.py) |
+
+## Maintenance Notes
+
+- Keep version numbers in sync across all templates (`v1.0.0` for initial release).
+- Retain the role workflow messaging so contributors understand who drafts versus who executes.
+- Add new templates to this index to maintain discoverability and update the cross-reference table accordingly.

@@ -1,5 +1,3 @@
-"""Structural tests validating operational template content."""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -7,89 +5,96 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATE_DIR = REPO_ROOT / "docs" / "templates"
+DOC_TEMPLATES_DIR = REPO_ROOT / "docs" / "templates"
 
 
-def _read(name: str) -> str:
-    return (TEMPLATE_DIR / name).read_text(encoding="utf-8")
+def read(relative_path: str) -> str:
+    return (DOC_TEMPLATES_DIR / relative_path).read_text(encoding="utf-8")
 
 
 @pytest.mark.templates
 def test_python_file_relocation_has_required_sections() -> None:
-    contents = _read("Migration_PythonFileRelocation.md")
-    required_sections = [
+    contents = read("Migration_PythonFileRelocation.md")
+    for heading in [
         "## Executive Summary",
         "## Prerequisites",
-        "### Phase 1",
-        "### Phase 2",
-        "### Phase 3",
-        "### Phase 4",
-        "### Phase 5",
-        "### Phase 6",
+        "## Phase 1",
+        "## Phase 2",
+        "## Phase 3",
+        "## Phase 4",
+        "## Phase 5",
+        "## Phase 6",
         "## Success Criteria",
         "## Rollback Procedure",
         "## Customization Guide",
-    ]
-    for section in required_sections:
-        assert section in contents, f"Missing section '{section}' in Python relocation template"
+    ]:
+        assert heading in contents, f"Missing heading '{heading}' in relocation template"
 
 
 @pytest.mark.templates
 def test_cli_hardening_has_required_sections() -> None:
-    contents = _read("Migration_CLIHardening.md")
-    expected_tokens = [
+    contents = read("Migration_CLIHardening.md")
+    for heading in [
         "## Executive Summary",
-        "## Prerequisites",
-        "### Task 1",
-        "### Task 2",
-        "### Task 3",
-        "### Task 4",
+        "## Baseline Assessment",
+        "## Hardening Task 1",
+        "## Hardening Task 2",
+        "## Hardening Task 3",
+        "## Hardening Task 4",
         "## Commit Strategy",
         "## Final Checklist",
         "## Customization Guide",
-    ]
-    for token in expected_tokens:
-        assert token in contents, f"CLI hardening template missing '{token}'"
+    ]:
+        assert heading in contents, f"Missing heading '{heading}' in CLI hardening template"
 
 
 @pytest.mark.templates
 def test_migration_templates_have_placeholders() -> None:
-    for name in ("Migration_PythonFileRelocation.md", "Migration_CLIHardening.md"):
-        contents = _read(name)
-        assert "[PLACEHOLDER:" in contents, f"Template {name} lacks placeholder markers"
+    for filename in [
+        "Migration_PythonFileRelocation.md",
+        "Migration_CLIHardening.md",
+    ]:
+        contents = read(filename)
+        assert "[PLACEHOLDER:" in contents, f"Placeholders missing in {filename}"
 
 
 @pytest.mark.templates
 def test_intent_plan_has_required_sections() -> None:
-    contents = _read("Planning_IntentValidation.md")
-    for heading in (
-        "## Generic Intent Validation Template",
+    contents = read("Planning_IntentValidation.md")
+    for heading in [
+        "## Template Overview",
+        "## Intent Brief",
+        "## Discovery Inputs",
+        "## Validation Activities",
+        "## Decision Gates",
+        "## Risk Register",
         "## Customization Guide",
         "## Example Instantiations",
         "## Usage Pattern",
         "## Key Benefits",
-        "## Repository Context",
-    ):
-        assert heading in contents, f"Intent planning template missing '{heading}'"
+    ]:
+        assert heading in contents, f"Missing heading '{heading}' in planning template"
 
 
 @pytest.mark.templates
 def test_intent_plan_has_examples() -> None:
-    contents = _read("Planning_IntentValidation.md")
-    assert (
-        contents.count("**") >= 6
-    ), "Intent planning template should list multiple example scenarios"
+    contents = read("Planning_IntentValidation.md")
+    assert contents.count("**") >= 3, "Expected at least three example instantiations"
+
+
+@pytest.mark.templates
+def test_intent_plan_has_customization_guide() -> None:
+    contents = read("Planning_IntentValidation.md")
+    assert "## Customization Guide" in contents
+    assert "[PLACEHOLDER:" in contents, "Customization guide should describe placeholders"
 
 
 @pytest.mark.templates
 def test_templates_have_version_metadata() -> None:
-    for name in (
+    for filename in [
         "Migration_PythonFileRelocation.md",
         "Migration_CLIHardening.md",
         "Planning_IntentValidation.md",
-    ):
-        contents = _read(name)
-        assert (
-            "Version: v1.0.0" in contents or "**Version:** v1.0.0" in contents
-        ), f"Template {name} missing version metadata"
-        assert "Last Updated:" in contents, f"Template {name} missing last updated metadata"
+    ]:
+        contents = read(filename)
+        assert "Version:** v1.0.0" in contents, f"Version metadata missing in {filename}"

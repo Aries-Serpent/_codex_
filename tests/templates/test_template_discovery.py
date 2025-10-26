@@ -1,5 +1,3 @@
-"""Smoke tests ensuring operational templates stay discoverable."""
-
 from __future__ import annotations
 
 from pathlib import Path
@@ -7,77 +5,74 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TEMPLATE_DIR = REPO_ROOT / "docs" / "templates"
-TEMPLATE_FILES = {
+DOC_TEMPLATES_DIR = REPO_ROOT / "docs" / "templates"
+
+TEMPLATE_FILES = [
+    "README.md",
     "Migration_PythonFileRelocation.md",
     "Migration_CLIHardening.md",
     "Planning_IntentValidation.md",
-    "README.md",
-}
-TEMPLATE_DOCS = {
-    "Migration_PythonFileRelocation.md": "Python File Relocation",
-    "Migration_CLIHardening.md": "CLI Hardening",
-    "Planning_IntentValidation.md": "Intent Validation",
-}
+]
+
+
+def read(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
 
 
 @pytest.mark.templates
 def test_templates_directory_exists() -> None:
-    """Ensure the templates folder exists for documentation discovery."""
-    assert TEMPLATE_DIR.exists() and TEMPLATE_DIR.is_dir(), "docs/templates/ directory is missing"
+    assert DOC_TEMPLATES_DIR.is_dir(), "docs/templates/ directory is missing"
 
 
 @pytest.mark.templates
-@pytest.mark.parametrize("filename", sorted(TEMPLATE_FILES))
-def test_template_file_exists(filename: str) -> None:
-    """Every expected template artefact should be present."""
-    file_path = TEMPLATE_DIR / filename
-    assert file_path.exists(), f"{filename} is missing from docs/templates/"
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_file_exists(relative_path: str) -> None:
+    path = DOC_TEMPLATES_DIR / relative_path
+    assert path.is_file(), f"Expected template file missing: {relative_path}"
 
 
 @pytest.mark.templates
-@pytest.mark.parametrize("filename", sorted(TEMPLATE_DOCS))
-def test_template_readable(filename: str) -> None:
-    """All templates should be readable as UTF-8 without crashing."""
-    file_path = TEMPLATE_DIR / filename
-    contents = file_path.read_text(encoding="utf-8")
-    assert contents.strip(), f"{filename} is empty"
+@pytest.mark.parametrize("relative_path", TEMPLATE_FILES)
+def test_template_readable(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    assert contents.strip(), f"Template file is empty: {relative_path}"
 
 
 @pytest.mark.templates
-@pytest.mark.parametrize("filename", sorted(TEMPLATE_DOCS))
-def test_template_has_metadata_header(filename: str) -> None:
-    """Templates must expose metadata headers for versioning."""
-    contents = (TEMPLATE_DIR / filename).read_text(encoding="utf-8")
-    assert contents.splitlines()[0].startswith("# [Template]"), "Missing template title heading"
-    assert (
-        "Version: v1.0.0" in contents or "**Version:** v1.0.0" in contents
-    ), "Template must declare v1.0.0 metadata"
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "Migration_PythonFileRelocation.md",
+        "Migration_CLIHardening.md",
+        "Planning_IntentValidation.md",
+    ],
+)
+def test_template_has_metadata_header(relative_path: str) -> None:
+    contents = read(DOC_TEMPLATES_DIR / relative_path)
+    first_lines = contents.splitlines()[:4]
+    assert any(line.startswith("# [Template]") for line in first_lines), (
+        f"Metadata header missing in {relative_path}"
+    )
+    assert any("Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]), (
+        f"Version metadata missing in {relative_path}"
+    )
 
 
 @pytest.mark.templates
-def test_readme_index_exists() -> None:
-    """Index README should link to every template for navigation."""
-    readme = (TEMPLATE_DIR / "README.md").read_text(encoding="utf-8")
-    for fragment in TEMPLATE_DOCS.values():
-        assert fragment in readme, f"README missing reference to {fragment}"
+def test_readme_index_references_all_templates() -> None:
+    contents = read(DOC_TEMPLATES_DIR / "README.md")
+    for relative_path in TEMPLATE_FILES[1:]:
+        assert relative_path in contents, f"README missing link for {relative_path}"
 
 
 @pytest.mark.templates
 def test_docs_readme_has_templates_section() -> None:
-    """docs/README.md should provide a navigation entry to the templates."""
-    docs_readme = (REPO_ROOT / "docs" / "README.md").read_text(encoding="utf-8")
-    assert (
-        "Operational Templates" in docs_readme
-    ), "docs/README.md missing Operational Templates section"
+    docs_readme = read(REPO_ROOT / "docs" / "README.md")
+    assert "Operational Templates" in docs_readme
+    assert "Migration — Python File Relocation" in docs_readme
 
 
 @pytest.mark.templates
 def test_root_readme_links_to_templates() -> None:
-    """Root README should surface the templates index when present."""
-    root_readme_path = REPO_ROOT / "README.md"
-    if not root_readme_path.exists():  # Repository may omit the root README in some contexts
-        pytest.skip("Root README not present in repository")
-
-    contents = root_readme_path.read_text(encoding="utf-8")
-    assert "docs/templates" in contents, "Root README should link to docs/templates index"
+    root_readme = read(REPO_ROOT / "README.md")
+    assert "docs/templates/README.md" in root_readme

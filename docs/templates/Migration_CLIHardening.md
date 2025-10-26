@@ -1,77 +1,68 @@
 # [Template]: CLI Module Hardening & Test Coverage Enhancement
+**Version:** v1.0.0  
+**Last Updated:** 2025-10-25  
+**Role Workflow:** Developers draft → Maintainers approve → Release engineers monitor
 
-- **Version:** v1.0.0
-- **Last Updated:** 2025-10-24
-- **Owner Role:** Maintainer (executor) with Developer-provided context
-- **Intended Audience:** Engineers improving CLI stability and coverage
+> [PLACEHOLDER: CLI_HARDENING_SUMMARY]
 
----
+Apply this template to harden a CLI module, expand regression coverage, and align operational behaviors with modern standards. The phases below guide discovery, execution, and validation.
 
 ## Executive Summary
+- Target command(s): [PLACEHOLDER: COMMAND_LIST]
+- Drivers (bug reports, feature requests, audits): [PLACEHOLDER: DRIVERS]
+- Desired coverage delta: [PLACEHOLDER: COVERAGE_TARGET]
+- Operational impact (rollout schedule, dependencies): [PLACEHOLDER: OPERATIONAL_IMPACT]
+- Communication plan (who, when, channel): [PLACEHOLDER: COMMS_PLAN]
 
-Use this template to harden CLI behaviour, modernise dependency usage, and raise coverage for interactive entry points. The process introduces structured validation, dependency audits, and a release-ready checklist.
+## Baseline Assessment
+1. Capture current CLI help output: `python -m [PLACEHOLDER: CLI_ENTRYPOINT] --help`.
+2. Review [`src/cli/`](../../src/cli/) for deprecated patterns (e.g., click legacy invocations).
+3. Audit coverage reports and identify gaps below 85%.
+4. Inventory tests in [`tests/cli/`](../../tests/cli/) and map them to CLI commands.
+5. Confirm telemetry hooks exist for commands that mutate state.
 
-## Prerequisites
+## Hardening Task 1 — Interface Validation
+- Align argument names and defaults with documentation.
+- Add validation for mutually exclusive options.
+- Ensure error messages reference remediation paths and docs links.
 
-- Baseline CLI smoke tests documented in [`tests/cli/`](../../tests/cli/).
-- Coverage thresholds configured in [`pyproject.toml`](../../pyproject.toml).
-- Feature flags or environment toggles enumerated in `docs/validation/`.
-- Access to staging telemetry for verifying CLI analytics (if applicable).
+## Hardening Task 2 — Dependency Upgrades
+- Verify new dependencies are declared in [`pyproject.toml`](../../pyproject.toml).
+- Update optional extras if CLI features rely on them.
+- Run `uv pip compile` or equivalent to refresh lock files.
 
-## Hardening Tasks
+## Hardening Task 3 — Coverage Expansion
+- Create targeted tests under [`tests/cli/`](../../tests/cli/) for uncovered scenarios.
+- Use pytest markers (`@pytest.mark.cli`) to isolate CLI suites.
+- Capture coverage report before/after and confirm ≥85%.
 
-### Task 1 — Input Validation Sweep
-- Identify commands lacking validation via `typer` or `argparse` metadata.
-- Add parameter constraints and informative error messages.
-- Update docs under `docs/cli/` or `docs/templates/README.md` if behaviour changes.
-
-### Task 2 — Dependency Audit
-- Pin or upgrade dependencies impacting CLI behaviour (record in `requirements/`).
-- Run `pip-audit` or `uv pip check` to ensure no vulnerable packages remain.
-- Document changes in `docs/CHANGELOG.md` and communicate to stakeholders.
-
-### Task 3 — Coverage Expansion
-- Target coverage of ≥85% for touched CLI modules (verify using `pytest --cov=src/cli`).
-- Add regression tests capturing interactive flows using `CliRunner` fixtures.
-- Ensure failure scenarios are asserted using `pytest.mark.parametrize` cases.
-
-### Task 4 — Error Handling & Telemetry
-- Standardise exception handling using shared utilities in `src/cli/_errors.py`.
-- Emit telemetry via `codex_utils.telemetry` with `[PLACEHOLDER:event_name]` identifier.
-- Update observability dashboards referenced in `monitoring/`.
+## Hardening Task 4 — Observability and Rollout
+- Ensure logs and metrics surface to monitoring dashboards documented in [`monitoring/`](../../monitoring/).
+- Draft rollout checklist and pair with the planning template for approvals.
+- Prepare incident response notes for potential regressions.
 
 ## Commit Strategy
-
-- Group logical steps per task above, resulting in 4–6 commits per migration.
-- Include `[templates-cli-hardening]` tag in commit body for traceability.
-- Reference issues or planning documents generated from [Planning – Intent Validation](./Planning_IntentValidation.md).
+- Stage changes by task to simplify review (baseline, validation, coverage, rollout).
+- Include coverage report snapshots or CLI output diffs as attachments in review notes.
+- Reference this template instance in the final commit message for traceability.
 
 ## Final Checklist
-
-1. Coverage report shows ≥85% for modified modules.
-2. CLI smoke tests (`pytest tests/cli/ -q`) pass without flaky behaviour.
-3. `docs/templates/README.md` reflects any updated workflow guidance.
-4. Changelog entry created under "Added" or "Changed" as appropriate.
-5. Maintainer approval recorded before merge.
+- [ ] All placeholders replaced and validated by maintainer.
+- [ ] Coverage report confirms ≥85% for touched modules.
+- [ ] CLI help output reviewed for clarity and accuracy.
+- [ ] Observability signals confirmed in staging/prod dashboards.
+- [ ] Changelog updated with CLI hardening summary.
 
 ## Customization Guide
-
 | Placeholder | Description | Example |
 | --- | --- | --- |
-| `[PLACEHOLDER:event_name]` | Telemetry identifier attached to new CLI events | `cli.hardening.token-refresh` |
-| `[PLACEHOLDER:command]` | Command being hardened | `codex ingest` |
-| `[PLACEHOLDER:flag_name]` | Flag or option requiring validation | `--config-path` |
-| `[PLACEHOLDER:coverage_target]` | Expected coverage percentage for module | `0.90` |
-| `[PLACEHOLDER:issue_ref]` | Tracking issue or ticket | `OPS-1432` |
-| `[PLACEHOLDER:release_window]` | Planned release window or milestone | `2025-W43` |
+| `[PLACEHOLDER: CLI_HARDENING_SUMMARY]` | One-sentence overview of improvements. | "Improve `codex-cli sync` reliability and error messaging." |
+| `[PLACEHOLDER: COMMAND_LIST]` | Commands under review. | "`codex-cli sync`, `codex-cli diff`" |
+| `[PLACEHOLDER: DRIVERS]` | Triggers prompting the hardening effort. | "Customer support ticket #4215" |
+| `[PLACEHOLDER: COVERAGE_TARGET]` | Expected coverage after work completes. | "Increase to 90% for `codex.cli.sync`" |
+| `[PLACEHOLDER: COMMS_PLAN]` | Stakeholder communication approach. | "Weekly async updates in #cli-maintainers" |
 
-## Reference Material
-
-- [`src/cli/`](../../src/cli/) — CLI source modules.
-- [`tests/cli/`](../../tests/cli/) — Existing CLI tests to extend.
-- [`conftest.py`](../../conftest.py) — Shared pytest fixtures.
-- [`monitoring/`](../../monitoring/) — Dashboards and telemetry references.
-- [`docs/templates/Migration_PythonFileRelocation.md`](./Migration_PythonFileRelocation.md) — Complementary migration steps when CLI modules move packages.
-
----
-**Review Gate:** Maintainer confirms coverage uplift, dependency audit outcomes, and documentation updates.
+## References
+- [`src/cli/`](../../src/cli/) implementation details.
+- [`tests/cli/`](../../tests/cli/) regression suites.
+- [`docs/templates/README.md`](./README.md) for workflow context.

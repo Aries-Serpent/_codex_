@@ -311,7 +311,7 @@ markers = [
     "smoke: quick smoke tests for CLI",
     "integration: integration tests",
     "slow: slow/resource-intensive tests",
-    "templates: documentation template discovery and structure checks",
+    "templates: documentation template validation",
 ]
 
 [tool.coverage.run]

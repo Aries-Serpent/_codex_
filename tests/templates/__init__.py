@@ -1,1 +1,1 @@
-"""Test helpers for template discovery suite."""
+"""Template validation test package."""
