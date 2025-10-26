@@ -1,14 +1,23 @@
 #!/usr/bin/env python
-"""Local status reporter for _codex_.
+"""Local status reporter for *codex*.
 
 Composes existing local gates and emits a markdown status report.
 No CI, no network. All tools are invoked locally.
 
 Example:
-  python tools/status_report.py \
-    --summary samples/assistant_message_summary.sample.json \
-    --selected 3 \
-    --out STATUS_REPORT.md
+python tools/status_report.py \
+  --summary samples/assistant_message_summary.sample.json \
+  --selected 3 \
+  --out STATUS_REPORT.md
+Template mode:
+
+python tools/status_report.py \
+  --summary samples/assistant_message_summary.sample.json \
+  --selected 3 \
+  --template docs/templates/status_update.md \
+  --branch my/feature \
+  --pr 1916 \
+  --out STATUS_REPORT.md
 """
 from __future__ import annotations
 
@@ -17,7 +26,7 @@ import datetime as _dt
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, Iterable, List, Tuple, cast
 
 
 def _run(cmd: List[str]) -> Tuple[int, str, str]:
@@ -30,15 +39,43 @@ def _stamp() -> str:
     return _dt.datetime.now().isoformat(timespec="seconds")
 
 
+def _md_bullets(items: Iterable[str]) -> str:
+    return "\n".join(f"- {s}" for s in items)
+
+
+def _scan_repo(root: Path) -> Dict[str, object]:
+    """Lightweight, local-only repo scan for top-level signals."""
+    entries = sorted([p for p in root.iterdir() if not p.name.startswith(".")])
+    top_dirs = [p.name for p in entries if p.is_dir()]
+    key_files = {
+        "pyproject.toml": (root / "pyproject.toml").exists(),
+        "Dockerfile": (root / "Dockerfile").exists(),
+        ".pre-commit-config.yaml": (root / ".pre-commit-config.yaml").exists(),
+        "tools/validate_fences.py": (root / "tools/validate_fences.py").exists(),
+        "tools/codex_evaluator.py": (root / "tools/codex_evaluator.py").exists(),
+        "tools/selection_guard.py": (root / "tools/selection_guard.py").exists(),
+        "tools/schema_validate.py": (root / "tools/schema_validate.py").exists(),
+        "tools/status_report.py": (root / "tools/status_report.py").exists(),
+        "schemas/": (root / "schemas").exists(),
+        "manifests/": (root / "manifests").exists(),
+        "docs/": (root / "docs").exists(),
+        "tests/": (root / "tests").exists(),
+    }
+    return {"top_dirs": top_dirs, "key_files": key_files}
+
+
 def main(argv: List[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Generate a local STATUS_REPORT.md")
     ap.add_argument("--summary", help="Path to assistant summary JSON (optional)")
     ap.add_argument("--selected", type=int, help="Chosen candidate id 1..4 (optional)")
     ap.add_argument("--out", default="STATUS_REPORT.md", help="Output markdown path")
+    ap.add_argument("--template", help="Path to a markdown template for rich reports (optional)")
+    ap.add_argument("--branch", help="Branch name for template substitution (optional)")
+    ap.add_argument("--pr", help="PR number or label for template substitution (optional)")
     args = ap.parse_args(argv)
 
     sections: List[str] = []
-    header = f"# Status Report — _codex_  \nGenerated: {_stamp()}\n"
+    header = f"# Status Report — *codex*  \nGenerated: {_stamp()}\n"
     sections.append(header)
     sections.append("## Gates Summary")
 

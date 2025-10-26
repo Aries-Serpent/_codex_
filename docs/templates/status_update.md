@@ -1,10 +1,13 @@
-# Status Update — _codex_ (Branch: <branch>, PR: <#>)
+# Status Update — _codex_ (Branch: {{branch}}, PR: {{pr}})
 
 ## Gates Summary
-- Fence integrity: <PASS/FAIL>
-- Schema validation: <PASS/SKIP/FAIL>
-- Evaluator: <pass with score / fail>
-- Selection Guard (chosen=<id>): <PASS/FAIL/SKIP>
+{{gates_summary}}
+
+## Repo Map
+{{repo_map}}
+
+## Capability Audit Table
+{{capability_table}}
 
 ## Highlights
 - <1–3 bullets of meaningful changes or risks>
@@ -15,4 +18,4 @@
 ## Next Steps
 - <actionable, small next steps>
 
-> Provenance: generated locally by `tools/status_report.py` at <timestamp>.
+> Provenance: generated locally by `tools/status_report.py` at {{timestamp}}.
