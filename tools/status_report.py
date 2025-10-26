@@ -74,14 +74,20 @@ def main(argv: List[str] | None = None) -> int:
     ap.add_argument("--pr", help="PR number or label for template substitution (optional)")
     args = ap.parse_args(argv)
 
+    stamp = _stamp()
+
     sections: List[str] = []
-    header = f"# Status Report — *codex*  \nGenerated: {_stamp()}\n"
+    header = f"# Status Report — *codex*  \nGenerated: {stamp}\n"
     sections.append(header)
     sections.append("## Gates Summary")
 
+    gate_results: List[Tuple[str, str]] = []
+
     # 1) Fence integrity
     rc_f, out_f, err_f = _run([sys.executable, "tools/validate_fences.py"])
-    sections.append(f"- Fence integrity: {'PASS' if rc_f == 0 else 'FAIL'}")
+    fence_state = "PASS" if rc_f == 0 else "FAIL"
+    gate_results.append(("Fence integrity", fence_state))
+    sections.append(f"- Fence integrity: {fence_state}")
 
     # 2) Schema validation (may be skipped gracefully by the tool)
     rc_s, out_s, err_s = _run(
@@ -103,6 +109,7 @@ def main(argv: List[str] | None = None) -> int:
     if "jsonschema not installed" in (err_s or "").lower():
         schema_state = "SKIP"
     sections.append(f"- Schema validation: {schema_state}")
+    gate_results.append(("Schema validation", schema_state))
 
     # 3) Evaluator (optional if summary provided)
     eval_state = "SKIP"
@@ -119,6 +126,7 @@ def main(argv: List[str] | None = None) -> int:
         )
         eval_state = "PASS" if rc_e == 0 else "FAIL"
     sections.append(f"- Evaluator: {eval_state}")
+    gate_results.append(("Evaluator", eval_state))
 
     # 4) Selection Guard (optional if summary + selected provided)
     guard_state = "SKIP"
@@ -141,6 +149,7 @@ def main(argv: List[str] | None = None) -> int:
             err_lower = (err_g or "").lower()
             guard_state = "SKIP" if "jsonschema not installed" in err_lower else "FAIL"
     sections.append(f"- Selection Guard (chosen={args.selected or '-'}) : {guard_state}")
+    gate_results.append((f"Selection Guard (chosen={args.selected or '-'})", guard_state))
 
     # Highlights & Next Steps (lightweight scaffolding)
     sections.append("\n## Highlights\n- Local gates executed; see results above.\n")
@@ -148,11 +157,50 @@ def main(argv: List[str] | None = None) -> int:
     sections.append(
         "## Next Steps\n- If any gate is FAIL, inspect tool output and iterate on the change.\n"
     )
-    sections.append(
-        f"\n> Provenance: generated locally by `tools/status_report.py` at {_stamp()}.\n"
-    )
+    sections.append(f"\n> Provenance: generated locally by `tools/status_report.py` at {stamp}.\n")
 
-    Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+    if args.template:
+        template_path = Path(args.template)
+        template_text = template_path.read_text(encoding="utf-8")
+        repo_info = _scan_repo(Path.cwd())
+        top_dirs = cast(List[str], repo_info.get("top_dirs", []))
+        key_files = cast(Dict[str, bool], repo_info.get("key_files", {}))
+        repo_map_lines: List[str] = []
+        if top_dirs:
+            repo_map_lines.append("### Top-level directories")
+            repo_map_lines.append(_md_bullets(top_dirs))
+        if key_files:
+            if repo_map_lines:
+                repo_map_lines.append("")
+            repo_map_lines.append("### Key files")
+            key_items = [
+                f"{name}: {'✅' if present else '❌'}" for name, present in key_files.items()
+            ]
+            repo_map_lines.append(_md_bullets(key_items))
+        if not repo_map_lines:
+            repo_map_lines.append("(no repository signals detected)")
+        repo_map = "\n".join(repo_map_lines)
+
+        gates_summary = _md_bullets([f"{name}: {state}" for name, state in gate_results])
+        capability_rows = "\n".join(f"| {name} | {state} |" for name, state in gate_results)
+        capability_table = "| Capability | Status |\n|---|---|"
+        if capability_rows:
+            capability_table = f"{capability_table}\n{capability_rows}"
+
+        replacements = {
+            "{{branch}}": args.branch or "-",
+            "{{pr}}": args.pr or "-",
+            "{{timestamp}}": stamp,
+            "{{gates_summary}}": gates_summary,
+            "{{repo_map}}": repo_map,
+            "{{capability_table}}": capability_table,
+        }
+        for placeholder, value in replacements.items():
+            template_text = template_text.replace(placeholder, value)
+        Path(args.out).write_text(template_text, encoding="utf-8")
+    else:
+        Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+
     # Exit non-zero if any mandatory gate failed
     mandatory_fail = (rc_f != 0) or (schema_state == "FAIL") or (guard_state == "FAIL")
     return 1 if mandatory_fail else 0
