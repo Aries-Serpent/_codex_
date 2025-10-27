@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, is_dataclass, replace
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Protocol
@@ -269,11 +269,30 @@ class ContinualReplayStrategy:
         continual = extra.get("continual", {}) if isinstance(extra, dict) else {}
         phases = continual.get("phases") if isinstance(continual, dict) else None
         if not phases:
+            continual_cfg = getattr(config, "continual", None)
+            if continual_cfg:
+                if isinstance(continual_cfg, dict):
+                    phases = continual_cfg.get("phases")
+                else:
+                    phases = getattr(continual_cfg, "phases", None)
+        if not phases:
             phases = getattr(config, "continual_schedule", None)
         if not phases:
             message = "missing config.extra['continual']['phases'] schedule for continual replay"
             raise ValueError(message)
-        return [dict(phase) for phase in phases]
+
+        resolved: list[dict[str, Any]] = []
+        for phase in phases:
+            if isinstance(phase, dict):
+                resolved.append(dict(phase))
+            elif is_dataclass(phase):
+                resolved.append(asdict(phase))
+            else:
+                try:
+                    resolved.append(dict(phase))
+                except TypeError:
+                    resolved.append(dict(vars(phase)))
+        return resolved
 
     def run(
         self,
