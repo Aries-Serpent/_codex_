@@ -11,9 +11,11 @@ class _StubStrategy:
 
     def __init__(self) -> None:
         self.calls: list[tuple[str, int]] = []
+        self.configs = []
 
     def run(self, config, callbacks, resume_from=None):
         self.calls.append((config.output_dir, config.epochs))
+        self.configs.append(config)
         return TrainingResult(
             status="ok",
             backend=self.backend_name,
@@ -57,6 +59,55 @@ def test_continual_replay_requires_schedule(tmp_path: Path) -> None:
     try:
         strategy.run(cfg, callbacks=[], resume_from=None)
     except ValueError as exc:
-        assert "continual schedule" in str(exc)
+        message = str(exc)
+        assert "continual" in message
+        assert "schedule" in message
     else:  # pragma: no cover
         raise AssertionError("Expected ValueError for missing continual schedule")
+
+
+def test_continual_dataset_materializes_texts(tmp_path: Path) -> None:
+    warmup_path = tmp_path / "warmup.jsonl"
+    warmup_path.write_text('{"text": "alpha"}\n{"text": "beta"}\n', encoding="utf-8")
+    eval_path = tmp_path / "eval.jsonl"
+    eval_path.write_text('{"text": "gamma"}\n', encoding="utf-8")
+
+    cfg = UnifiedTrainingConfig(output_dir=str(tmp_path))
+    cfg.seed = 7
+    cfg.extra = {
+        "continual": {
+            "phases": [
+                {
+                    "name": "warmup",
+                    "epochs": 1,
+                    "dataset": {
+                        "role": "train",
+                        "path": str(warmup_path),
+                        "format": "jsonl",
+                        "val_fraction": 0.5,
+                    },
+                },
+                {
+                    "name": "evaluation",
+                    "epochs": 1,
+                    "dataset": {
+                        "role": "eval",
+                        "path": str(eval_path),
+                        "format": "jsonl",
+                    },
+                },
+            ]
+        }
+    }
+
+    base = _StubStrategy()
+    strategy = ContinualReplayStrategy(base_strategy=base)
+    strategy.run(cfg, callbacks=[], resume_from=None)
+
+    warmup_functional = base.configs[0].extra.get("functional", {})
+    assert len(warmup_functional.get("train_texts", [])) == 1
+    assert len(warmup_functional.get("val_texts", [])) == 1
+
+    eval_functional = base.configs[1].extra.get("functional", {})
+    assert eval_functional.get("val_texts") == ["gamma"]
+    assert not eval_functional.get("train_texts")
