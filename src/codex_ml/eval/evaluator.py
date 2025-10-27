@@ -51,7 +51,7 @@ def _missing_dependencies(require_transformers: bool = False) -> list[str]:
 
 
 def evaluate_model(model, tokenizer, texts: Iterable[str]) -> dict[str, float]:
-    missing = _missing_dependencies(require_transformers=True)
+    missing = _missing_dependencies()
     if missing:
         raise EvaluationDependencyError(missing)
     ds = Dataset.from_dict({"text": list(texts)})
