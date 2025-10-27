@@ -4,6 +4,12 @@
 
 - Hydra fragments live under `configs/training/continual/`. Combine them with your base config:
   `python -m codex_ml.cli.train training=base training.extra=@configs/training/continual/rehearsal.yaml`
+- Reasoning-ready runs can reuse the same continual preset while layering the structured
+  `ReasoningConfig` schema. For example, chain-of-thought replay with trace logging is enabled via
+  `python -m codex_ml.cli.train training=base training.extra=@configs/training/continual/rehearsal.yaml \
+  training.reasoning=@configs/training/reasoning/chain_of_thought.yaml`
+  which activates the `ReasoningHeadConfig`/`ToolAdapterConfig` dataclasses defined in
+  `codex_ml.config`.
 
 ## Strategy
 
