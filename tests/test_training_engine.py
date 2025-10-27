@@ -22,7 +22,7 @@ class _FakeMLflow:
     def log_metrics(self, metrics: dict[str, float], step: int | None = None) -> None:
         self.calls.append(("log_metrics", (metrics, step)))
 
-    def log_params(self, params: dict[str, str]) -> None:
+    def log_params(self, params: dict[str, object]) -> None:
         self.calls.append(("log_params", dict(params)))
 
     def set_tags(self, tags: dict[str, str]) -> None:
@@ -58,40 +58,31 @@ def test_training_engine_handles_missing_mlflow() -> None:
     assert engine.mlflow_error is not None
 
 
-def test_training_engine_logs_metadata(tmp_path: Path) -> None:
+def test_training_engine_logs_params_tags_and_artifacts(tmp_path: Path) -> None:
     fake = _FakeMLflow()
-    artifact = tmp_path / "artifact.txt"
-    artifact.write_text("payload", encoding="utf-8")
     engine = TrainingEngine(
         enable_mlflow=True,
-        mlflow_dir=str(tmp_path / "runs"),
-        mlflow_experiment="demo",
         _mlflow_module=fake,
+        mlflow_run_name="demo",
+        mlflow_tags={"env": "dev"},
     )
-    engine.start_run(
-        params={"training.lr": 1e-4, "extras": {"warmup": 10}},
-        tags={"phase": "train"},
-        datasets=["data/train.jsonl", Path("data/eval.jsonl")],
-    )
-    engine.log_params({"optimizer": "adamw"})
-    engine.set_tags({"stage": "pretrain"})
-    engine.log_artifact(artifact, artifact_path="checkpoints")
+    engine.log_params({"lr": 0.001, "epochs": 4, "amp": True, "skip": None})
+    engine.set_tags({"stage": "warmup", "empty": None})
+    engine.register_dataset("tiny", version="v1", uri=tmp_path / "train.jsonl")
+    artifact = tmp_path / "metrics.json"
+    artifact.write_text("{}", encoding="utf-8")
+    engine.start_run()
+    engine.log_artifact(artifact)
+    engine.log_metrics({"loss": 0.1}, step=1)
     engine.end_run()
 
-    assert ("log_params", {"optimizer": "adamw"}) in fake.calls
-    assert (
-        "log_params",
-        {"training.lr": "0.0001", "extras": '{"warmup": 10}'},
-    ) in fake.calls
-    assert any(
-        call for call in fake.calls if call[0] == "set_tags" and call[1].get("phase") == "train"
-    )
-    assert any(
-        call
-        for call in fake.calls
-        if call[0] == "set_tags"
-        and "codex.dataset.uris" in call[1]
-        and "data/train.jsonl" in call[1]["codex.dataset.uris"]
-        and "data/eval.jsonl" in call[1]["codex.dataset.uris"]
-    )
-    assert ("log_artifact", (str(artifact), "checkpoints")) in fake.calls
+    log_params_calls = [payload for name, payload in fake.calls if name == "log_params"]
+    assert log_params_calls, fake.calls
+    assert any(call["amp"] == 1 for call in log_params_calls)
+    assert all("skip" not in call for call in log_params_calls)
+
+    tag_calls = [payload for name, payload in fake.calls if name == "set_tags"]
+    assert tag_calls
+    assert any("dataset.0.name" in call for call in tag_calls)
+
+    assert ("log_artifact", (str(artifact), None)) in fake.calls
