@@ -29,7 +29,8 @@ class SyntheticSummary:
 
 
 def _encode_tokens(
-    sequences: Sequence[str], *, vocab: dict[str, int] | None = None
+    sequences: Sequence[str],
+    vocab: dict[str, int] | None = None,
 ) -> tuple[list[list[int]], dict[str, int]]:
     if vocab is None:
         vocab = {}
@@ -70,7 +71,7 @@ def synthetic_alignment(predictions: Iterable[str], references: Iterable[str]) -
     if len(preds) != len(refs):
         raise ValueError("predictions and references must have the same length")
     pred_ids, vocab = _encode_tokens(preds)
-    ref_ids, _ = _encode_tokens(refs, vocab=vocab)
+    ref_ids, _ = _encode_tokens(refs, vocab)
     flat_pred: list[int] = []
     flat_ref: list[int] = []
     total_tokens = 0
