@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 
 def _normalize_params(params: Mapping[str, Any]) -> dict[str, str | float | int]:
@@ -66,13 +67,27 @@ class TrainingEngine:
         self._mlflow_configured = True
 
     # ------------------------------------------------------------------
-    def start_run(self) -> None:
+    def start_run(
+        self,
+        *,
+        params: Mapping[str, Any] | None = None,
+        tags: Mapping[str, Any] | None = None,
+        datasets: Sequence[str | Path] | None = None,
+    ) -> None:
         if not self.enable_mlflow or not self._mlflow_configured:
             return
         mlflow = self._mlflow_module
         if mlflow is None:
             return
         self._active_run = mlflow.start_run(run_name=self.mlflow_run_name)
+        if params:
+            self.log_params(params)
+        if tags:
+            self.set_tags(tags)
+        if datasets:
+            for index, dataset in enumerate(datasets):
+                dataset_name = f"dataset_{index}"
+                self.register_dataset(dataset_name, uri=dataset)
         if self.mlflow_tags:
             self.set_tags(self.mlflow_tags)
         self._flush_tags()

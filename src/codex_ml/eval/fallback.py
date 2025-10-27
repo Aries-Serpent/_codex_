@@ -28,17 +28,12 @@ class SyntheticSummary:
         }
 
 
-def _build_vocab(*sequence_groups: Sequence[str]) -> dict[str, int]:
-    vocab: dict[str, int] = {}
-    for group in sequence_groups:
-        for text in group:
-            for token in str(text).split():
-                if token not in vocab:
-                    vocab[token] = len(vocab)
-    return vocab
-
-
-def _encode_tokens(sequences: Sequence[str], vocab: dict[str, int]) -> list[list[int]]:
+def _encode_tokens(
+    sequences: Sequence[str],
+    vocab: dict[str, int] | None = None,
+) -> tuple[list[list[int]], dict[str, int]]:
+    if vocab is None:
+        vocab = {}
     encoded: list[list[int]] = []
     for text in sequences:
         ids: list[int] = []
@@ -49,7 +44,7 @@ def _encode_tokens(sequences: Sequence[str], vocab: dict[str, int]) -> list[list
                 raise KeyError(f"Token {token!r} not found in vocabulary") from exc
             ids.append(idx)
         encoded.append(ids)
-    return encoded
+    return encoded, vocab
 
 
 def _perplexity_proxy(predicted: Sequence[int], targets: Sequence[int]) -> float:
@@ -78,9 +73,8 @@ def synthetic_alignment(predictions: Iterable[str], references: Iterable[str]) -
     refs = list(references)
     if len(preds) != len(refs):
         raise ValueError("predictions and references must have the same length")
-    vocab = _build_vocab(preds, refs)
-    pred_ids = _encode_tokens(preds, vocab)
-    ref_ids = _encode_tokens(refs, vocab)
+    pred_ids, vocab = _encode_tokens(preds)
+    ref_ids, _ = _encode_tokens(refs, vocab)
     flat_pred: list[int] = []
     flat_ref: list[int] = []
     total_tokens = 0
