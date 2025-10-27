@@ -10,7 +10,8 @@ _MODULE_EXPORTS = {
     "iter_jsonl": ".loaders",
     "iter_txt": ".loaders",
     "stream_paths": ".loaders",
-    "StreamingDataModule": ".streaming",
+    "StreamingDataModule": ".datamodule",
+    "default_example_validator": ".datamodule",
     "iter_jsonl_chunks": ".streaming",
 }
 
@@ -29,5 +30,6 @@ def __getattr__(name: str) -> Any:
 
 
 if TYPE_CHECKING:  # pragma: no cover - import for type checkers only
+    from .datamodule import StreamingDataModule, default_example_validator
     from .loaders import collect_stats, iter_jsonl, iter_txt, stream_paths
-    from .streaming import StreamingDataModule, iter_jsonl_chunks
+    from .streaming import iter_jsonl_chunks

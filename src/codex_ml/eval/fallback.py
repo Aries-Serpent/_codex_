@@ -31,14 +31,25 @@ class SyntheticSummary:
 def _encode_tokens(
     sequences: Sequence[str],
     vocab: dict[str, int] | None = None,
+    *,
+    allow_new_tokens: bool = True,
 ) -> tuple[list[list[int]], dict[str, int]]:
     if vocab is None:
         vocab = {}
+    elif allow_new_tokens is False:
+        # Preserve the caller's vocabulary when new tokens are disallowed so
+        # that we can raise a helpful error without mutating ``vocab``.
+        vocab = dict(vocab)
     encoded: list[list[int]] = []
     for text in sequences:
         ids: list[int] = []
         for token in str(text).split():
-            idx = vocab.setdefault(token, len(vocab))
+            idx = vocab.get(token)
+            if idx is None:
+                if not allow_new_tokens:
+                    raise KeyError(f"Token {token!r} not found in vocabulary")
+                idx = len(vocab)
+                vocab[token] = idx
             ids.append(idx)
         encoded.append(ids)
     return encoded, vocab

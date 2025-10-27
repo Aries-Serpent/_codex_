@@ -25,8 +25,8 @@ import importlib.util
 import json
 import time
 import warnings
-from collections.abc import Iterable
-from dataclasses import dataclass, field
+from collections.abc import Iterable, Mapping
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +40,43 @@ except Exception:  # pragma: no cover
 
 
 # ----------------------------- Config & Validation ----------------------------
+
+
+@dataclass
+class ContinualPhase:
+    name: str
+    epochs: int = 1
+    dataset: dict[str, Any] = field(default_factory=dict)
+    replay_ratio: float | None = None
+    notes: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.epochs < 1:
+            raise ValueError("continual phase epochs must be >= 1")
+        if self.replay_ratio is not None:
+            ratio = float(self.replay_ratio)
+            if not 0.0 <= ratio <= 1.0:
+                raise ValueError("continual replay_ratio must be between 0 and 1")
+
+
+@dataclass
+class ContinualConfig:
+    strategy: str = "replay"
+    buffer_size: int | None = None
+    phases: list[ContinualPhase] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.buffer_size is not None and int(self.buffer_size) < 0:
+            raise ValueError("continual buffer_size must be >= 0")
+        normalised: list[ContinualPhase] = []
+        for phase in self.phases:
+            if isinstance(phase, ContinualPhase):
+                normalised.append(phase)
+            else:
+                normalised.append(ContinualPhase(**phase))
+        if not normalised:
+            raise ValueError("continual phases must not be empty")
+        self.phases = normalised
 
 
 @dataclass
@@ -63,6 +100,7 @@ class UnifiedTrainingConfig:
     keep_last: int = 3
     best_k: int = 0
     best_metric: str = "val_loss"
+    continual: ContinualConfig | dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         errors: list[str] = []
@@ -76,6 +114,11 @@ class UnifiedTrainingConfig:
             errors.append("dtype must be one of {fp32, fp16, bf16}")
         if not (0 <= self.seed < 2**32):
             errors.append("seed must be in [0, 2**32)")
+        if self.continual is not None and not isinstance(self.continual, ContinualConfig):
+            if isinstance(self.continual, Mapping):
+                self.continual = ContinualConfig(**dict(self.continual))
+            else:
+                errors.append("continual must be a ContinualConfig or mapping")
         if errors:
             raise ValueError("; ".join(errors))
 
@@ -218,6 +261,12 @@ def run_unified_training(
         "global_step": 0,
         "resume_from": cfg.resume_from,
     }
+    if isinstance(cfg.continual, ContinualConfig):
+        state["continual"] = {
+            "strategy": cfg.continual.strategy,
+            "buffer_size": cfg.continual.buffer_size,
+            "phases": [asdict(phase) for phase in cfg.continual.phases],
+        }
 
     # Pre-resume load if requested
     if cfg.resume_from:
@@ -370,6 +419,8 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
 
 
 __all__ = [
+    "ContinualConfig",
+    "ContinualPhase",
     "UnifiedTrainingConfig",
     "run_unified_training",
     "train_loop",
