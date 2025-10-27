@@ -23,6 +23,8 @@ from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Protocol
 
+from codex_ml.data.jsonl_loader import load_jsonl
+
 
 class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
@@ -265,6 +267,64 @@ class ContinualReplayStrategy:
     def __init__(self, base_strategy: BackendStrategy | None = None) -> None:
         self._base = base_strategy or FunctionalStrategy()
 
+    def _coerce_text_list(self, value: Any) -> list[str]:
+        if value is None or value is False:
+            return []
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, IterableABC):
+            return [str(item) for item in value if item]
+        return [str(value)]
+
+    def _materialize_dataset_texts(
+        self, dataset: Any, *, seed: int
+    ) -> tuple[list[str], list[str]] | None:
+        if not isinstance(dataset, dict):
+            return None
+
+        if "texts" in dataset:
+            train_items = self._coerce_text_list(dataset.get("texts"))
+            val_items = self._coerce_text_list(dataset.get("val_texts"))
+            return train_items, val_items
+
+        path = dataset.get("path")
+        if not path:
+            return None
+
+        format_hint = str(dataset.get("format", "jsonl") or "").lower()
+        dataset_seed_raw = dataset.get("seed")
+        try:
+            dataset_seed = int(dataset_seed_raw if dataset_seed_raw is not None else seed)
+        except (TypeError, ValueError):
+            dataset_seed = seed
+
+        val_fraction_raw = dataset.get("val_fraction")
+        try:
+            val_fraction = float(val_fraction_raw) if val_fraction_raw is not None else 0.0
+        except (TypeError, ValueError):
+            val_fraction = 0.0
+
+        target_path = Path(str(path))
+
+        if format_hint in {"jsonl", "ndjson"}:
+            train_texts, val_texts = load_jsonl(
+                target_path,
+                seed=dataset_seed,
+                val_fraction=val_fraction,
+            )
+            return train_texts, val_texts
+
+        if format_hint in {"text", "txt"}:
+            try:
+                payload = target_path.read_text(encoding="utf-8")
+            except OSError:
+                return [], []
+            texts = [line.strip() for line in payload.splitlines() if line.strip()]
+            return texts, []
+
+        # Fallback: treat the provided path (or object) as direct training text.
+        return self._coerce_text_list(path), []
+
     def _resolve_schedule(self, config: Any) -> list[dict[str, Any]]:
         extra = getattr(config, "extra", {}) or {}
         continual = extra.get("continual", {}) if isinstance(extra, dict) else {}
@@ -324,6 +384,39 @@ class ContinualReplayStrategy:
                     overrides[key] = merged
                 else:
                     overrides[key] = value
+
+            dataset_spec = phase.get("dataset")
+            if dataset_spec and isinstance(overrides, dict):
+                functional = overrides.setdefault("functional", {})
+                if not isinstance(functional, dict):
+                    functional = {}
+                    overrides["functional"] = functional
+
+                base_seed_raw = getattr(config, "seed", 0)
+                try:
+                    dataset_seed = int(base_seed_raw or 0)
+                except (TypeError, ValueError):
+                    dataset_seed = 0
+                dataset_texts = self._materialize_dataset_texts(
+                    dataset_spec,
+                    seed=dataset_seed,
+                )
+                if dataset_texts:
+                    train_split, val_split = dataset_texts
+                    role = str(dataset_spec.get("role", "train") or "").lower()
+                    eval_roles = {"eval", "validation", "val", "test"}
+
+                    if "train_texts" not in phase and role not in eval_roles and train_split:
+                        functional.setdefault("train_texts", list(train_split))
+
+                    if "val_texts" not in phase and val_split:
+                        functional.setdefault("val_texts", list(val_split))
+
+                    if "val_texts" not in phase and role in eval_roles:
+                        candidate = val_split or train_split
+                        if candidate:
+                            functional.setdefault("val_texts", list(candidate))
+
             if "train_texts" in phase:
                 functional = overrides.setdefault("functional", {})
                 if isinstance(functional, dict):
