@@ -38,7 +38,10 @@ def _encode_tokens(
     for text in sequences:
         ids: list[int] = []
         for token in str(text).split():
-            idx = vocab.setdefault(token, len(vocab))
+            try:
+                idx = vocab[token]
+            except KeyError as exc:
+                raise KeyError(f"Token {token!r} not found in vocabulary") from exc
             ids.append(idx)
         encoded.append(ids)
     return encoded, vocab
