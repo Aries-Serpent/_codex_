@@ -80,6 +80,14 @@ class TrainingEngine:
         if mlflow is None:
             return
         self._active_run = mlflow.start_run(run_name=self.mlflow_run_name)
+        if params:
+            self.log_params(params)
+        if tags:
+            self.set_tags(tags)
+        if datasets:
+            for index, dataset in enumerate(datasets):
+                dataset_name = f"dataset_{index}"
+                self.register_dataset(dataset_name, uri=dataset)
         if self.mlflow_tags:
             self.set_tags(self.mlflow_tags)
         self._flush_tags()
