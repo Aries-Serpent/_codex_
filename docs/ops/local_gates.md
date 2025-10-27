@@ -22,6 +22,9 @@ python tools/codex_evaluator.py \
 python tools/schema_validate.py \
   --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
   --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
+
+# 4) Reasoning probes (proves theorems, checks math, audits tool traces)
+python -m codex_ml.eval.evaluator --config-name local_ci
 ```
 
 ## Convenience wrapper
@@ -32,6 +35,8 @@ python tools/schema_validate.py \
 # uses samples/assistant_message_summary.sample.json by default
 
 # runs schema checks if jsonschema is installed
+
+# includes theorem proving accuracy, math verification, and tool execution audits
 ```
 
 ## Using nox (optional)

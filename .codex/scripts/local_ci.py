@@ -41,6 +41,18 @@ DEFAULT_STEPS: tuple[Step, ...] = (
         description="Structure, schema validation, and evaluator smoke checks.",
         env={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"},
     ),
+    Step(
+        name="reasoning",
+        command=(
+            "python",
+            "-m",
+            "codex_ml.eval.evaluator",
+            "--config-name",
+            "local_ci",
+        ),
+        description="Reasoning probes covering theorem accuracy, math verification, and tool audits.",
+        env={"HYDRA_FULL_ERROR": "1"},
+    ),
 )
 
 OPTIONAL_STEPS: tuple[Step, ...] = (
