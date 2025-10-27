@@ -16,7 +16,7 @@
 
 ## Streaming datasets
 
-- `codex_ml.data.datamodule.StreamingDataModule` streams JSONL chunks with optional record validators, making rehearsal data refreshes straightforward.
+- `codex_ml.data.streaming.StreamingDataModule` streams JSONL chunks with optional record validators, making rehearsal data refreshes straightforward.
 
 ## Tokenizer provenance
 
