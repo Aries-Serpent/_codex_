@@ -18,7 +18,7 @@ from __future__ import annotations
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
 from copy import deepcopy
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, is_dataclass, replace
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Protocol
