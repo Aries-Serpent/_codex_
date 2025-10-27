@@ -27,11 +27,19 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
+from codex_ml.config import (
+    ConfigError,
+    ReasoningConfig,
+    ReasoningHeadConfig,
+    ReasoningObjectiveConfig,
+    ToolAdapterConfig,
+)
 from codex_ml.logging.ndjson_logger import is_legacy_mode
+from codex_ml.models.reasoning import ReasoningHarness, attach_reasoning_adapters
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
 from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
@@ -114,18 +122,22 @@ try:
 except Exception:  # noqa: BLE001
 
     class Callback:  # type: ignore
-        def on_train_start(self, state: Dict[str, Any]) -> None: ...
+        def on_train_start(self, state: Dict[str, Any]) -> None:
+            ...
 
-        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
+        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
+            ...
 
         def on_epoch_end(
             self,
             epoch: int,
             metrics: Dict[str, Any],
             state: Dict[str, Any],
-        ) -> None: ...
+        ) -> None:
+            ...
 
-        def on_train_end(self, state: Dict[str, Any]) -> None: ...
+        def on_train_end(self, state: Dict[str, Any]) -> None:
+            ...
 
     def merge_callback_results(
         base: Dict[str, Any], addon: Dict[str, Any] | None
@@ -191,6 +203,131 @@ else:
 
         def __getitem__(self, index: int):  # pragma: no cover - defensive
             raise RuntimeError("Torch is required to construct ToyDataset")
+
+
+@dataclass
+class ReasoningRuntime:
+    config: ReasoningConfig
+    harness: ReasoningHarness
+    store_path: Path | None
+    per_epoch_limit: int
+    top_k: int
+    threshold: float | None
+    traces_written: int = 0
+
+    def bind_model(self, model: Any) -> None:
+        try:
+            self.harness.attach(model)
+        except Exception as exc:  # pragma: no cover - defensive attachment guard
+            logger.warning("Failed to bind reasoning modules to model: %s", exc)
+
+    def on_new_epoch(self) -> None:
+        self.traces_written = 0
+
+    def should_capture(self) -> bool:
+        if self.per_epoch_limit <= 0:
+            return True
+        return self.traces_written < self.per_epoch_limit
+
+    def record_trace(
+        self,
+        model: Any,
+        *,
+        epoch: int,
+        step: int,
+        art_dir_path: Path | None,
+        session_id: str | None,
+    ) -> None:
+        if not self.should_capture():
+            return
+        try:
+            trace = self.harness.capture_trace(model, epoch=epoch, step=step, top_k=self.top_k)
+        except Exception as exc:  # pragma: no cover - defensive capture guard
+            logger.debug("Skipping reasoning trace capture: %s", exc)
+            return
+        if not trace:
+            return
+        probability = trace.get("top_probability")
+        if self.threshold is not None and probability is not None and probability < self.threshold:
+            return
+        payload = {
+            "type": "reasoning_trace",
+            "timestamp": _now_ts(),
+            "epoch": epoch,
+            "step": step,
+            "mode": self.config.objective.mode,
+            "session_id": session_id or get_session_id(),
+        }
+        payload.update(trace)
+        _append_metrics_event(art_dir_path, payload)
+        if self.store_path is not None:
+            _persist_reasoning_trace(self.store_path, payload)
+        try:
+            self.harness.record(payload)
+        except Exception:  # pragma: no cover - history append best effort
+            pass
+        self.traces_written += 1
+
+
+def _coerce_reasoning_config(payload: Any) -> ReasoningConfig | None:
+    if payload is None:
+        return None
+    if isinstance(payload, ReasoningConfig):
+        payload.validate("training.reasoning")
+        return payload
+    if isinstance(payload, Mapping):
+        cfg = ReasoningConfig.from_mapping(payload)
+        cfg.validate("training.reasoning")
+        return cfg
+    if isinstance(payload, bool):
+        if not payload:
+            cfg = ReasoningConfig(enabled=False)
+            return cfg
+        cfg = ReasoningConfig()
+        cfg.validate("training.reasoning")
+        return cfg
+    raise ConfigError(
+        "training.reasoning",
+        "Reasoning configuration must be a mapping or boolean when provided",
+        payload,
+    )
+
+
+def _initialize_reasoning_runtime(
+    model: Any,
+    raw_cfg: Any,
+    art_dir_path: Path | None,
+) -> tuple[Any, ReasoningRuntime | None]:
+    if raw_cfg and not _HAS_TORCH:
+        raise ImportError(
+            "Reasoning adapters require torch; install the dependency before enabling training.reasoning"
+        )
+    try:
+        reasoning_cfg = _coerce_reasoning_config(raw_cfg)
+    except ConfigError as exc:
+        logger.warning("Invalid reasoning configuration: %s", exc)
+        return model, None
+    if reasoning_cfg is None or not reasoning_cfg.enabled:
+        return model, None
+    try:
+        harness = attach_reasoning_adapters(model, reasoning_cfg)
+    except Exception as exc:  # pragma: no cover - adapter construction best effort
+        logger.warning("Failed to attach reasoning adapters: %s", exc)
+        return model, None
+    store_path = None
+    if art_dir_path is not None:
+        trace_name = reasoning_cfg.objective.trace_store or "reasoning_traces.ndjson"
+        store_path = Path(art_dir_path) / trace_name
+    runtime = ReasoningRuntime(
+        config=reasoning_cfg,
+        harness=harness,
+        store_path=store_path,
+        per_epoch_limit=int(reasoning_cfg.objective.max_traces_per_epoch),
+        top_k=int(reasoning_cfg.objective.log_top_k),
+        threshold=reasoning_cfg.log_probability_threshold,
+    )
+    runtime.bind_model(model)
+    return model, runtime
 
 
 _DEFAULT_SEED = 1234
@@ -557,6 +694,15 @@ def _append_metrics_event(art_dir_path: Path | None, record: Dict[str, Any]) -> 
         logger.debug("Failed to append telemetry event: %s", exc)
 
 
+def _persist_reasoning_trace(path: Path, payload: Dict[str, Any]) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(payload, sort_keys=True) + "\n")
+    except Exception as exc:  # noqa: BLE001 - tracing is best effort
+        logger.debug("Failed to persist reasoning trace: %s", exc)
+
+
 def _telemetry_max_items() -> int:
     try:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_ITEMS", "1000").strip()
@@ -890,6 +1036,7 @@ def run_training(
     retention_policy: Optional[Dict[str, Any]] = None,
     bf16_require_capability: bool = False,
     dataset_cast_policy: str | None = None,
+    reasoning: Mapping[str, Any] | ReasoningConfig | None = None,
     **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
@@ -916,6 +1063,7 @@ def run_training(
         steps_per_epoch = 1
 
     art_dir_path: Path | None = None
+    reasoning_runtime: ReasoningRuntime | None = None
     if art_dir is not None:
         try:
             art_dir_path = Path(art_dir)
@@ -1063,6 +1211,7 @@ def run_training(
         model_kwargs["lora"] = {"enabled": True, **(lora_cfg or {})}
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
+    model, reasoning_runtime = _initialize_reasoning_runtime(model, reasoning, art_dir_path)
 
     if _HAS_TORCH and model is not None:
         try:
@@ -1200,6 +1349,8 @@ def run_training(
             model, optimizer, train_loader, privacy_engine = make_private_model(
                 model, optimizer, train_loader, dp_settings
             )
+            if reasoning_runtime is not None:
+                reasoning_runtime.bind_model(model)
         except ImportError as exc:
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
@@ -1244,6 +1395,11 @@ def run_training(
         "privacy_engine": bool(privacy_engine),
         "metrics_enabled": bool(metrics_registry),
         "session_id": session_id or get_session_id(),
+        "reasoning": {
+            "enabled": bool(reasoning_runtime),
+            "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
+            "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
+        },
     }
 
     for cb in cb_list:
@@ -1324,6 +1480,12 @@ def run_training(
             },
             "telemetry": {"enabled": telemetry_enable, "port": telemetry_port},
         }
+        if reasoning_runtime is not None:
+            env_payload["reasoning"] = {
+                "mode": reasoning_runtime.config.objective.mode,
+                "top_k": reasoning_runtime.top_k,
+                "threshold": reasoning_runtime.threshold,
+            }
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
@@ -1333,6 +1495,19 @@ def run_training(
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write environment.json: %s", exc)
+
+        if reasoning_runtime is not None:
+            try:
+                reasoning_history = reasoning_runtime.harness.history_snapshot()
+            except Exception:  # pragma: no cover - defensive snapshot
+                reasoning_history = []
+            if reasoning_history:
+                try:
+                    (art_dir_path / "reasoning_traces.json").write_text(
+                        json.dumps(reasoning_history, indent=2)
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("Failed to write reasoning_traces.json: %s", exc)
 
         try:
             (art_dir_path / "dataset_checksums.json").write_text(
@@ -1361,6 +1536,11 @@ def run_training(
         }
         if resume_meta:
             result["resume_meta"] = resume_meta
+        if reasoning_runtime is not None:
+            try:
+                result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
+            except Exception:  # pragma: no cover - defensive snapshot
+                result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
         if return_state:
             result["model"] = model
@@ -1388,6 +1568,8 @@ def run_training(
         synthetic_losses: List[float] = []
         steps_this_epoch = 0
         optimizer_steps_this_epoch = 0
+        if reasoning_runtime is not None:
+            reasoning_runtime.on_new_epoch()
 
         if model is not None and optimizer is not None and _HAS_TORCH:
             if dtype_obj is not None:
@@ -1419,6 +1601,14 @@ def run_training(
                 synthetic_losses.append(loss_val)
                 if metrics_registry is not None:
                     metrics_registry.record_training_step(loss_val)
+                if reasoning_runtime is not None:
+                    reasoning_runtime.record_trace(
+                        model,
+                        epoch=epoch,
+                        step=step + 1,
+                        art_dir_path=art_dir_path,
+                        session_id=session_id,
+                    )
                 if (step + 1) % grad_accum == 0:
                     try:
                         optimizer.step()
@@ -1627,6 +1817,13 @@ def run_training(
     }
     if resume_meta:
         result["resume_meta"] = resume_meta
+    if reasoning_runtime is not None:
+        try:
+            result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
+        except Exception:  # pragma: no cover - defensive snapshot
+            result["reasoning_traces"] = []
+        result["reasoning_objective"] = reasoning_runtime.config.objective.mode
+        result["reasoning_top_k"] = reasoning_runtime.top_k
 
     _persist_artifacts(latest_payload, target_epochs)
 
