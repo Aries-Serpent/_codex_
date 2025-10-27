@@ -136,7 +136,11 @@ class ReasoningHarness:
 
     def _vectorise_model(self, model: Any) -> torch.Tensor:
         size = int(self.head.cfg.hidden_size)
-        buffer = torch.zeros(size, dtype=torch.float32)
+        try:
+            head_device = next(self.head.parameters()).device
+        except StopIteration:  # pragma: no cover - Linear modules always have params
+            head_device = torch.device("cpu")
+        buffer = torch.zeros(size, dtype=torch.float32, device=head_device)
         if not isinstance(model, nn.Module):
             return buffer
         first_param = None
@@ -146,7 +150,7 @@ class ReasoningHarness:
                 break
         if first_param is None:
             return buffer
-        data = first_param.cpu()
+        data = first_param.to(device=head_device)
         if data.numel() >= size:
             return data[:size]
         buffer[: data.numel()] = data
