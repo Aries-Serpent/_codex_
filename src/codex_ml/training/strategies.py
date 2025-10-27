@@ -17,7 +17,8 @@ from __future__ import annotations
 
 from collections.abc import Iterable as IterableABC
 from contextlib import suppress
-from dataclasses import asdict, dataclass, is_dataclass, replace
+from copy import deepcopy
+from dataclasses import dataclass, replace
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Protocol
@@ -309,7 +310,8 @@ class ContinualReplayStrategy:
         for index, phase in enumerate(schedule):
             phase_name = phase.get("name") or f"phase-{index}"
             epochs = int(phase.get("epochs", getattr(config, "epochs", 1)))
-            overrides = dict(getattr(config, "extra", {}) or {})
+            base_extra = getattr(config, "extra", {}) or {}
+            overrides = deepcopy(base_extra) if isinstance(base_extra, dict) else {}
             phase_overrides_src = phase.get("overrides", {})
             if isinstance(phase_overrides_src, dict):
                 phase_overrides = dict(phase_overrides_src)
