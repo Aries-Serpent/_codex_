@@ -8,6 +8,7 @@ from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
+from .fallback import synthetic_alignment
 from .metrics import perplexity, token_accuracy
 
 torch, _HAS_TORCH = optional_import("torch")
@@ -23,9 +24,36 @@ AutoTokenizer = (
 )  # type: ignore[attr-defined,assignment]
 
 
+class EvaluationDependencyError(ImportError):
+    """Raised when optional evaluation dependencies are unavailable."""
+
+    def __init__(self, missing: Sequence[str]) -> None:
+        self.missing = tuple(missing)
+        super().__init__("Evaluation requires optional packages: " + ", ".join(self.missing))
+
+    @property
+    def hint(self) -> str:
+        return (
+            "Install the evaluation extras or call "
+            "`codex_ml.eval.fallback.synthetic_alignment` for lightweight metrics."
+        )
+
+
+def _missing_dependencies(require_transformers: bool = False) -> list[str]:
+    missing: list[str] = []
+    if not _HAS_TORCH:
+        missing.append("torch")
+    if not _HAS_DATASETS:
+        missing.append("datasets")
+    if require_transformers and not _HAS_TRANSFORMERS:
+        missing.append("transformers")
+    return missing
+
+
 def evaluate_model(model, tokenizer, texts: Iterable[str]) -> dict[str, float]:
-    if not (_HAS_TORCH and _HAS_DATASETS):
-        raise ImportError("torch and datasets are required for evaluation")
+    missing = _missing_dependencies(require_transformers=True)
+    if missing:
+        raise EvaluationDependencyError(missing)
     ds = Dataset.from_dict({"text": list(texts)})
     column = list(ds["text"])
     toks = tokenizer(column, return_tensors="pt", padding=True)
@@ -207,8 +235,9 @@ def evaluate_dataloader(
         Device specifier passed to ``tensor.to(device)`` where available.
     """
 
-    if not _HAS_TORCH or torch is None:
-        raise ImportError("torch is required for evaluate_dataloader")
+    missing = _missing_dependencies()
+    if missing:
+        raise EvaluationDependencyError(missing)
 
     config: Mapping[str, Any] = cfg or {}
     metric_keys: list[str] = []
@@ -259,8 +288,9 @@ def evaluate_dataloader(
 
 
 def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
-    if not _HAS_TRANSFORMERS:
-        raise ImportError("transformers is required for run_evaluator")
+    missing = _missing_dependencies(require_transformers=True)
+    if missing:
+        raise EvaluationDependencyError(missing)
     tokenizer = load_from_pretrained(
         AutoTokenizer,
         model_name,
@@ -276,8 +306,19 @@ def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     return evaluate_model(model, tokenizer, texts)
 
 
+def lite_sequence_evaluation(
+    predictions: Iterable[str], references: Iterable[str]
+) -> dict[str, float]:
+    """Compute lightweight metrics without importing torch/datasets."""
+
+    summary = synthetic_alignment(predictions, references)
+    return summary.as_dict()
+
+
 __all__ = [
     "evaluate_model",
     "evaluate_dataloader",
     "run_evaluator",
+    "EvaluationDependencyError",
+    "lite_sequence_evaluation",
 ]

@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
   lives at `samples/metrics_sample.ndjson`.
 - Plugins: opt-in entry-point discovery via `plugins.enable_entry_points` and
   config-driven group overrides.
+- Tooling: Documented fence validator architecture and added focused tests
+  covering default returns, skip lists, and warn-mode output.
 
 ## 2025-10-26
 
