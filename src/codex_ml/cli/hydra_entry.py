@@ -25,10 +25,17 @@ def _cfg_to_unified(cfg: Mapping[str, Any]) -> UnifiedTrainingConfig:
     from codex_ml.training.unified_training import UnifiedTrainingConfig
 
     train = cfg.get("train", {}) if isinstance(cfg, Mapping) else {}
+    training_cfg = cfg.get("training", {}) if isinstance(cfg, Mapping) else {}
     run = cfg.get("run", {}) if isinstance(cfg, Mapping) else {}
     model = cfg.get("model", {}) if isinstance(cfg, Mapping) else {}
     data_cfg = cfg.get("data", {}) if isinstance(cfg, Mapping) else {}
     tracking_cfg = cfg.get("tracking", {}) if isinstance(cfg, Mapping) else {}
+    continual_cfg = None
+    if isinstance(training_cfg, Mapping):
+        continual_cfg = training_cfg.get("continual")
+    if continual_cfg is None and isinstance(cfg, Mapping):
+        continual_cfg = cfg.get("continual")
+
     return UnifiedTrainingConfig(
         epochs=int(train.get("epochs", 1) or 1),
         grad_accum=int(train.get("grad_accum", 1) or 1),
@@ -39,6 +46,7 @@ def _cfg_to_unified(cfg: Mapping[str, Any]) -> UnifiedTrainingConfig:
             "data": data_cfg,
             "tracking": tracking_cfg,
         },
+        continual=continual_cfg,
     )
 
 
