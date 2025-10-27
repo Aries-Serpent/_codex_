@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, Iterator, List, Tuple
+from typing import Any, Callable, Iterator, List, Tuple
+
+from .datamodule import StreamingDataModule
+from .datamodule import default_example_validator as _default_example_validator
 
 Validator = Callable[[Any], None]
+
+default_example_validator = _default_example_validator
 
 
 def iter_jsonl_chunks(
@@ -45,51 +49,4 @@ def iter_jsonl_chunks(
         yield tuple(buffer)
 
 
-@dataclass
-class StreamingDataModule:
-    """Batch data from iterables or JSONL files without materialising them in memory."""
-
-    train_source: Iterable[Any] | str | Path
-    val_source: Iterable[Any] | str | Path | None = None
-    test_source: Iterable[Any] | str | Path | None = None
-    batch_size: int = 32
-    ingest_chunk_size: int = 1024
-    validator: Validator | None = None
-
-    def iter_train(self) -> Iterator[Tuple[Any, ...]]:
-        return self._batched(self._iterate(self.train_source))
-
-    def iter_val(self) -> Iterator[Tuple[Any, ...]]:
-        if self.val_source is None:
-            return iter(())
-        return self._batched(self._iterate(self.val_source))
-
-    def iter_test(self) -> Iterator[Tuple[Any, ...]]:
-        if self.test_source is None:
-            return iter(())
-        return self._batched(self._iterate(self.test_source))
-
-    def _iterate(self, source: Iterable[Any] | str | Path) -> Iterator[Any]:
-        if isinstance(source, (str, Path)):
-            for chunk in iter_jsonl_chunks(
-                source,
-                chunk_size=self.ingest_chunk_size,
-                validator=self.validator,
-            ):
-                for record in chunk:
-                    yield record
-            return
-        for item in source:
-            if self.validator is not None:
-                self.validator(item)
-            yield item
-
-    def _batched(self, iterable: Iterable[Any]) -> Iterator[Tuple[Any, ...]]:
-        batch: List[Any] = []
-        for item in iterable:
-            batch.append(item)
-            if len(batch) >= self.batch_size:
-                yield tuple(batch)
-                batch.clear()
-        if batch:
-            yield tuple(batch)
+__all__ = ["StreamingDataModule", "iter_jsonl_chunks", "default_example_validator"]

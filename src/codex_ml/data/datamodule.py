@@ -1,11 +1,20 @@
 from __future__ import annotations
 
+import json
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Iterable, Iterator, List, Sequence, Tuple
-
-from .jsonl_stream import iter_jsonl
+from typing import (
+    Any,
+    Callable,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    MutableSequence,
+    Sequence,
+    Tuple,
+)
 
 
 @dataclass
@@ -32,46 +41,134 @@ class DataModule:
             yield tuple(train_seq[index : index + batch_size])
 
 
-RecordTransform = Callable[[dict[str, Any]], Any]
-RecordValidator = Callable[[dict[str, Any]], None]
+ExampleValidator = Callable[[Mapping[str, Any]], None]
+
+
+def default_example_validator(required_keys: Sequence[str]) -> ExampleValidator:
+    required = tuple(required_keys)
+
+    def _validate(example: Mapping[str, Any]) -> None:
+        missing = [key for key in required if key not in example]
+        if missing:
+            raise ValueError(f"example missing keys: {', '.join(missing)}")
+
+    return _validate
 
 
 @dataclass
 class StreamingDataModule:
-    """JSONL-backed continual-learning helper that yields deterministic batches."""
+    """Streaming JSONL/iterable dataset loader with deterministic replay."""
 
-    train_path: str | Path
-    eval_path: str | Path | None = None
-    test_path: str | Path | None = None
-    batch_size: int = 32
-    transform: RecordTransform | None = None
-    validator: RecordValidator | None = None
+    train_source: str | Path | Iterable[Mapping[str, Any]]
+    val_source: str | Path | Iterable[Mapping[str, Any]] | None = None
+    test_source: str | Path | Iterable[Mapping[str, Any]] | None = None
+    validator: ExampleValidator | None = None
+    shuffle_buffer: int = 0
+    seed: int = 42
+    chunk_size: int = 2048
+    _rng: random.Random = field(init=False, repr=False)
 
-    def _stream(self, path: str | Path) -> Iterator[Any]:
-        for record in iter_jsonl(path):
-            if self.validator:
-                self.validator(record)
-            yield self.transform(record) if self.transform else record
+    def __post_init__(self) -> None:
+        self._rng = random.Random(self.seed)
 
-    def _batched(self, path: str | Path) -> Iterator[tuple[Any, ...]]:
-        batch: list[Any] = []
-        for record in self._stream(path):
-            batch.append(record)
-            if len(batch) == self.batch_size:
+    def iter_train(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+        return self._batched(self._stream_split("train"), batch_size)
+
+    def iter_val(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+        return self._batched(self._stream_split("val"), batch_size)
+
+    def iter_test(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+        return self._batched(self._stream_split("test"), batch_size)
+
+    def snapshot(self, split: str, limit: int | None = None) -> List[Mapping[str, Any]]:
+        examples: List[Mapping[str, Any]] = []
+        for index, example in enumerate(self._stream_split(split)):
+            examples.append(example)
+            if limit is not None and index + 1 >= limit:
+                break
+        return examples
+
+    def _stream_split(self, split: str) -> Iterator[Mapping[str, Any]]:
+        source = {
+            "train": self.train_source,
+            "val": self.val_source,
+            "validation": self.val_source,
+            "test": self.test_source,
+        }.get(split)
+        if source is None:
+            return iter(())
+        offset = {"train": 0, "val": 1, "validation": 1, "test": 2}.get(split, 0)
+        self._rng.seed(self.seed + offset)
+        iterable = self._coerce_iterable(source)
+        return self._shuffle_stream(iterable)
+
+    def _coerce_iterable(
+        self, source: str | Path | Iterable[Mapping[str, Any]]
+    ) -> Iterator[Mapping[str, Any]]:
+        if isinstance(source, (str, Path)):
+            path = Path(source)
+            if path.is_dir():
+                raise ValueError(f"expected file, received directory: {path}")
+            suffix = path.suffix.lower()
+            if suffix in {".jsonl", ".ndjson"}:
+                return self._read_jsonl(path)
+            if suffix == ".json":
+                data = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(data, MutableSequence):
+                    return self._wrap_iter(data)
+                raise ValueError(f"unsupported JSON structure in {path}")
+            raise ValueError(f"unsupported dataset format: {suffix}")
+        return self._wrap_iter(source)
+
+    def _wrap_iter(self, iterable: Iterable[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+        for example in iterable:
+            mapping = dict(example)
+            if self.validator is not None:
+                self.validator(mapping)
+            yield mapping
+
+    def _read_jsonl(self, path: Path) -> Iterator[Mapping[str, Any]]:
+        with path.open("r", encoding="utf-8") as handle:
+            for raw in handle:
+                text = raw.strip()
+                if not text:
+                    continue
+                payload = json.loads(text)
+                if not isinstance(payload, Mapping):
+                    raise ValueError(f"expected mapping entries in {path}")
+                mapping = dict(payload)
+                if self.validator is not None:
+                    self.validator(mapping)
+                yield mapping
+
+    def _shuffle_stream(self, iterable: Iterator[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+        if self.shuffle_buffer <= 1:
+            yield from iterable
+            return
+        buffer: List[Mapping[str, Any]] = []
+        for item in iterable:
+            buffer.append(item)
+            if len(buffer) >= self.shuffle_buffer:
+                index = self._rng.randrange(len(buffer))
+                buffer[index], buffer[-1] = buffer[-1], buffer[index]
+                yield buffer.pop()
+        while buffer:
+            index = self._rng.randrange(len(buffer))
+            yield buffer.pop(index)
+
+    def _batched(
+        self,
+        iterator: Iterator[Mapping[str, Any]],
+        batch_size: int,
+    ) -> Iterator[Tuple[Mapping[str, Any], ...]]:
+        batch: List[Mapping[str, Any]] = []
+        for example in iterator:
+            batch.append(example)
+            if len(batch) == batch_size:
                 yield tuple(batch)
                 batch.clear()
         if batch:
             yield tuple(batch)
 
-    def iter_train(self) -> Iterator[tuple[Any, ...]]:
-        yield from self._batched(self.train_path)
 
-    def iter_eval(self) -> Iterator[tuple[Any, ...]]:
-        if self.eval_path is None:
-            return iter(())
-        yield from self._batched(self.eval_path)
-
-    def iter_test(self) -> Iterator[tuple[Any, ...]]:
-        if self.test_path is None:
-            return iter(())
-        yield from self._batched(self.test_path)
+__all__ = ["DataModule", "StreamingDataModule", "default_example_validator"]
