@@ -1,0 +1,20 @@
+# Continual-learning rehearsal schedule preset for UnifiedTrainingConfig.extra.
+continual:
+  strategy: continual_replay
+  phases:
+    - name: rehearsal-0
+      epochs: 1
+      train_texts:
+        - data/continual/phase0.jsonl
+      replay_ratio: 0.0
+    - name: rehearsal-1
+      epochs: 1
+      train_texts:
+        - data/continual/phase1.jsonl
+      replay_ratio: 0.2
+      overrides:
+        functional:
+          val_texts:
+            - data/continual/validation.jsonl
+metrics:
+  track_forgetting: true
