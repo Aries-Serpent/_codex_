@@ -30,6 +30,8 @@ data/*
 !data/sample/
 !data/sample/reasoning/
 !data/sample/reasoning/*.jsonl
+!data/reasoning/
+!data/reasoning/*.jsonl
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep
