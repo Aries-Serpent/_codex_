@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import (
     Any,
@@ -66,10 +66,6 @@ class StreamingDataModule:
     shuffle_buffer: int = 0
     seed: int = 42
     chunk_size: int = 2048
-    _rng: random.Random = field(init=False, repr=False)
-
-    def __post_init__(self) -> None:
-        self._rng = random.Random(self.seed)
 
     def iter_train(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
         return self._batched(self._stream_split("train"), batch_size)
@@ -98,9 +94,9 @@ class StreamingDataModule:
         if source is None:
             return iter(())
         offset = {"train": 0, "val": 1, "validation": 1, "test": 2}.get(split, 0)
-        self._rng.seed(self.seed + offset)
+        rng = random.Random(self.seed + offset)
         iterable = self._coerce_iterable(source)
-        return self._shuffle_stream(iterable)
+        return self._shuffle_stream(iterable, rng)
 
     def _coerce_iterable(
         self, source: str | Path | Iterable[Mapping[str, Any]]
@@ -141,7 +137,11 @@ class StreamingDataModule:
                     self.validator(mapping)
                 yield mapping
 
-    def _shuffle_stream(self, iterable: Iterator[Mapping[str, Any]]) -> Iterator[Mapping[str, Any]]:
+    def _shuffle_stream(
+        self,
+        iterable: Iterator[Mapping[str, Any]],
+        rng: random.Random,
+    ) -> Iterator[Mapping[str, Any]]:
         if self.shuffle_buffer <= 1:
             yield from iterable
             return
@@ -149,11 +149,11 @@ class StreamingDataModule:
         for item in iterable:
             buffer.append(item)
             if len(buffer) >= self.shuffle_buffer:
-                index = self._rng.randrange(len(buffer))
+                index = rng.randrange(len(buffer))
                 buffer[index], buffer[-1] = buffer[-1], buffer[index]
                 yield buffer.pop()
         while buffer:
-            index = self._rng.randrange(len(buffer))
+            index = rng.randrange(len(buffer))
             yield buffer.pop(index)
 
     def _batched(
