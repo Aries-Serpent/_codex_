@@ -22,6 +22,9 @@ __all__ = [
     "token_accuracy",
     "token_stats",
     "rouge_l",
+    "forward_transfer",
+    "backward_transfer",
+    "average_forgetting",
 ]
 
 
@@ -160,6 +163,41 @@ def token_accuracy(
     """Backward-compatible token accuracy wrapper."""
 
     return token_stats(pred_ids, target_ids, ignore_index=ignore_index)["accuracy"]
+
+
+def forward_transfer(baseline: Sequence[float], adapted: Sequence[float]) -> float:
+    base = [float(x) for x in _materialise(baseline)]
+    new = [float(x) for x in _materialise(adapted)]
+    _ensure_equal_length(base, new, "forward_transfer")
+    improvements = [n - b for b, n in zip(base, new)]
+    return float(sum(improvements) / len(improvements)) if improvements else 0.0
+
+
+def backward_transfer(previous: Sequence[float], current: Sequence[float]) -> float:
+    prev = [float(x) for x in _materialise(previous)]
+    curr = [float(x) for x in _materialise(current)]
+    _ensure_equal_length(prev, curr, "backward_transfer")
+    deltas = [curr_i - prev_i for curr_i, prev_i in zip(curr, prev)]
+    return float(sum(deltas) / len(deltas)) if deltas else 0.0
+
+
+def average_forgetting(history: Sequence[Sequence[float]]) -> float:
+    stages = [list(float(x) for x in _materialise(stage)) for stage in history]
+    if not stages:
+        raise MetricError("average_forgetting", "history must contain at least one stage")
+    length = len(stages[0])
+    for stage in stages[1:]:
+        if len(stage) != length:
+            raise MetricError("average_forgetting", "all stages must share the same length")
+    if len(stages) == 1:
+        return 0.0
+    latest = stages[-1]
+    forgetting = []
+    for task_idx in range(length):
+        best = max(stage[task_idx] for stage in stages[:-1])
+        current = latest[task_idx]
+        forgetting.append(max(0.0, best - current))
+    return float(sum(forgetting) / len(forgetting)) if forgetting else 0.0
 
 
 def exact_match_strict(pred: str, ref: str) -> float:
