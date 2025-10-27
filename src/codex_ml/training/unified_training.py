@@ -25,7 +25,7 @@ import importlib.util
 import json
 import time
 import warnings
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -115,8 +115,8 @@ class UnifiedTrainingConfig:
         if not (0 <= self.seed < 2**32):
             errors.append("seed must be in [0, 2**32)")
         if self.continual is not None and not isinstance(self.continual, ContinualConfig):
-            if isinstance(self.continual, dict):
-                self.continual = ContinualConfig(**self.continual)
+            if isinstance(self.continual, Mapping):
+                self.continual = ContinualConfig(**dict(self.continual))
             else:
                 errors.append("continual must be a ContinualConfig or mapping")
         if errors:
