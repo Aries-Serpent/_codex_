@@ -13,6 +13,10 @@ _MODULE_EXPORTS = {
     "StreamingDataModule": ".datamodule",
     "default_example_validator": ".datamodule",
     "iter_jsonl_chunks": ".streaming",
+    "list_reasoning_corpora": ".reasoning_manifest",
+    "get_reasoning_corpus": ".reasoning_manifest",
+    "build_corpus_selection": ".reasoning_manifest",
+    "iter_corpus_manifests": ".reasoning_manifest",
 }
 
 __all__ = list(_MODULE_EXPORTS)

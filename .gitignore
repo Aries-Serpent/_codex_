@@ -27,6 +27,9 @@ dist/
 data/*
 !data/zendesk_api_index.json
 !data/zendesk_docs_manifest.json
+!data/sample/
+!data/sample/reasoning/
+!data/sample/reasoning/*.jsonl
 !src/hhg_logistics/conf/data/
 !src/hhg_logistics/conf/data/**
 !data/.gitkeep

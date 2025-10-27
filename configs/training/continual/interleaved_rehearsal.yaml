@@ -1,0 +1,49 @@
+defaults:
+  - base
+
+training:
+  continual: ${continual}
+
+continual:
+  strategy: replay
+  buffer_size: 4096
+  rehearsal:
+    strategy: interleaved
+    default_ratio: 0.25
+    mix_every_steps: 32
+  curriculum:
+    difficulty_metric: metadata.difficulty
+    gate: 0.5
+  phases:
+    - name: mixed-rehearsal
+      epochs: 4
+      replay_ratio: ${continual.rehearsal.default_ratio}
+      dataset:
+        role: train
+        path: data/continual/current_task.jsonl
+        format: jsonl
+      rehearsal_streams:
+        - role: replay-proof
+          path: data/continual/proof_replay.jsonl
+          format: jsonl
+        - role: replay-tools
+          path: data/continual/tool_replay.jsonl
+          format: jsonl
+      notes: >-
+        Interleave new tool traces with buffered proof logs to stabilise
+        syntax-heavy behaviours during rapid task switches.
+    - name: consolidation
+      epochs: 2
+      replay_ratio: 0.5
+      dataset:
+        role: train
+        path: data/continual/consolidation.jsonl
+        format: jsonl
+      notes: >-
+        Emphasises rehearsal heavy mixing before evaluation to combat forgetting.
+    - name: evaluation
+      epochs: 1
+      dataset:
+        role: eval
+        path: data/continual/reasoning_eval.jsonl
+        format: jsonl
