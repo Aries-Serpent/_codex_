@@ -34,14 +34,20 @@ def _encode_tokens(
 ) -> tuple[list[list[int]], dict[str, int]]:
     if vocab is None:
         vocab = {}
+        grow_vocab = True
+    else:
+        grow_vocab = False
     encoded: list[list[int]] = []
     for text in sequences:
         ids: list[int] = []
         for token in str(text).split():
             try:
                 idx = vocab[token]
-            except KeyError as exc:
-                raise KeyError(f"Token {token!r} not found in vocabulary") from exc
+            except KeyError:
+                if not grow_vocab:
+                    raise KeyError(f"Token {token!r} not found in vocabulary")
+                idx = len(vocab)
+                vocab[token] = idx
             ids.append(idx)
         encoded.append(ids)
     return encoded, vocab
