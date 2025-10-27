@@ -8,6 +8,13 @@
 
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
+## Continual-learning scaffolding at a glance
+
+- `python .codex/scripts/local_ci.py --full` stitches the documented gates into a single offline-friendly command for ad-hoc CI.
+- Hydra presets under `configs/training/continual/` pair with the new `continual_replay` backend to orchestrate rehearsal or curriculum-style phases.
+- `codex_ml.eval.evaluator.lite_sequence_evaluation` provides a dependency-light evaluation path that works without installing `torch`/`datasets`, complementing the streaming data module in `codex_ml.data.datamodule`.
+- Refresh tokenizer provenance via `python -m codex_ml.tokenization.cli refresh <model> --notes "update"` whenever vocabularies evolve.
+
 ### Evaluation metrics logging (NDJSON)
 
 Run an evaluation and also append a summary record to an NDJSON file:
