@@ -18,14 +18,23 @@ python tools/codex_evaluator.py \
   --rules manifests/codex_eval_rules.v3.json \
   --input samples/assistant_message_summary.sample.json
 
-# 3) Manifest schema checks (optional; local-only)
+# 3) Reasoning regression suite (ensures theorem/math/tool probes stay green)
+python -m codex_ml.eval.evaluator reasoning-suite \
+  --config configs/evaluation/reasoning/proof.yaml \
+  --config configs/evaluation/reasoning/math.yaml \
+  --config configs/evaluation/reasoning/tools.yaml \
+  --threshold reasoning/theorem_accuracy>=1.0 \
+  --threshold reasoning/math_verification>=1.0 \
+  --threshold reasoning/tool_audit>=1.0
+
+# 4) Manifest schema checks (optional; local-only)
 python tools/schema_validate.py \
   --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
   --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
-
-# 4) Reasoning probes (proves theorems, checks math, audits tool traces)
-python -m codex_ml.eval.evaluator --config-name local_ci
 ```
+
+The Hydra-ready configs for these probes live under `configs/evaluation/reasoning/` and
+produce NDJSON metrics alongside JSON summaries in `artifacts/reasoning/`.
 
 ## Convenience wrapper
 
@@ -34,9 +43,9 @@ python -m codex_ml.eval.evaluator --config-name local_ci
 
 # uses samples/assistant_message_summary.sample.json by default
 
-# runs schema checks if jsonschema is installed
+# runs reasoning suite + evaluator + schemas when available
 
-# includes theorem proving accuracy, math verification, and tool execution audits
+# runs schema checks if jsonschema is installed
 ```
 
 ## Using nox (optional)

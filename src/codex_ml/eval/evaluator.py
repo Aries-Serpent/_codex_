@@ -3,27 +3,30 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
+import sys
 import uuid
 from collections.abc import Callable, Iterable, Mapping, MutableMapping, Sequence
 from contextlib import suppress
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
-import os
-import sys
 from typing import Any
 
+from codex_ml.metrics.registry import register as register_metric
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
+from ..tracking.writers import NdjsonWriter
 from .fallback import synthetic_alignment
 from .metrics import perplexity, token_accuracy
-from ..tracking.writers import NdjsonWriter
 
 torch, _HAS_TORCH = optional_import("torch")
 datasets, _HAS_DATASETS = optional_import("datasets")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
+lean_dojo, _HAS_LEAN_DOJO = optional_import("lean_dojo")
 sympy, _HAS_SYMPY = optional_import("sympy")
 jsonschema, _HAS_JSONSCHEMA = optional_import("jsonschema")
 
@@ -54,6 +57,24 @@ if _HAS_JSONSCHEMA:
     Draft7Validator = getattr(jsonschema, "Draft7Validator", None)
 else:  # pragma: no cover - optional dependency absent
     Draft7Validator = None  # type: ignore[assignment]
+
+_TOOL_EVENT_VALIDATOR: Any | None = None
+if _HAS_JSONSCHEMA and Draft7Validator is not None:  # pragma: no cover - optional path
+    try:
+        _TOOL_EVENT_VALIDATOR = Draft7Validator(  # type: ignore[assignment]
+            {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "arguments": {"type": "object"},
+                    "observation": {"type": ["string", "number"]},
+                },
+                "required": ["name"],
+                "additionalProperties": True,
+            }
+        )
+    except Exception:  # pragma: no cover - schema compilation best-effort
+        _TOOL_EVENT_VALIDATOR = None
 
 ReasoningRecord = Mapping[str, Any]
 ReasoningDatasetMap = Mapping[str, Sequence[ReasoningRecord]]
@@ -378,8 +399,12 @@ def _resolve_string_placeholders(text: str) -> str:
         default = match.group(2)
         default_value = default.strip() if default is not None else ""
         replacement = os.environ.get(var, default_value)
-        replacement_str = _resolve_string_placeholders(str(replacement)) if isinstance(replacement, str) else str(replacement)
-        result = result[: match.start()] + replacement_str + result[match.end():]
+        replacement_str = (
+            _resolve_string_placeholders(str(replacement))
+            if isinstance(replacement, str)
+            else str(replacement)
+        )
+        result = result[: match.start()] + replacement_str + result[match.end() :]
     return os.path.expanduser(result)
 
 
@@ -432,9 +457,7 @@ def _load_reasoning_records(path: str | Path, *, limit: int | None = None) -> li
                 f"Unsupported JSON payload type for reasoning dataset: {type(payload)!r}"
             )
     else:
-        raise ValueError(
-            f"Unsupported reasoning dataset format: {file_path.suffix or 'unknown'}"
-        )
+        raise ValueError(f"Unsupported reasoning dataset format: {file_path.suffix or 'unknown'}")
     return records
 
 
@@ -648,9 +671,7 @@ def _theorem_proving_probe(datasets: ReasoningDatasetMap) -> dict[str, float]:
             or "proved"
         )
         predicted_label = _normalise_label(
-            prediction.get("verdict")
-            or prediction.get("status")
-            or prediction.get("result")
+            prediction.get("verdict") or prediction.get("status") or prediction.get("result")
         )
         if predicted_label is None:
             text = prediction.get("text")
@@ -773,7 +794,9 @@ def _tool_audit_probe(datasets: ReasoningDatasetMap) -> dict[str, float]:
     metrics["matched_calls"] = float(matched)
     metrics["argument_matches"] = float(arg_matches)
     metrics["name_match_rate"] = float(matched) / float(expected_total) if expected_total else 0.0
-    metrics["argument_match_rate"] = float(arg_matches) / float(expected_total) if expected_total else 0.0
+    metrics["argument_match_rate"] = (
+        float(arg_matches) / float(expected_total) if expected_total else 0.0
+    )
     metrics["complete_traces"] = float(complete)
     metrics["schema_issues"] = float(schema_failures)
     metrics["extra_calls"] = float(extra_calls)
@@ -803,11 +826,15 @@ def run_reasoning_probes(
     materialised: dict[str, list[ReasoningRecord]] = {
         name: list(records) for name, records in datasets.items()
     }
-    requested = list(probes) if probes is not None else [
-        "theorem_proving",
-        "math_verification",
-        "tool_audit",
-    ]
+    requested = (
+        list(probes)
+        if probes is not None
+        else [
+            "theorem_proving",
+            "math_verification",
+            "tool_audit",
+        ]
+    )
     executed: dict[str, dict[str, float]] = {}
     for probe_name in requested:
         key = probe_name.lower()
@@ -909,7 +936,9 @@ def run_reasoning_from_config(cfg: Mapping[str, Any]) -> dict[str, Any]:
     output_cfg = resolved_cfg.get("output", {}) if isinstance(resolved_cfg, Mapping) else {}
     output_dir = output_cfg.get("dir") if isinstance(output_cfg, Mapping) else None
     summary_raw = output_cfg.get("summary_filename") if isinstance(output_cfg, Mapping) else None
-    summary_filename = str(summary_raw) if isinstance(summary_raw, str) and summary_raw else "summary.json"
+    summary_filename = (
+        str(summary_raw) if isinstance(summary_raw, str) and summary_raw else "summary.json"
+    )
 
     records_filename_raw = (
         output_cfg.get("records_filename") if isinstance(output_cfg, Mapping) else None
@@ -952,6 +981,381 @@ def run_reasoning_from_config(cfg: Mapping[str, Any]) -> dict[str, Any]:
     return result
 
 
+_BOOLEAN_TRUE = {
+    "true",
+    "t",
+    "yes",
+    "y",
+    "1",
+    "pass",
+    "proved",
+    "valid",
+    "success",
+    "ok",
+}
+_BOOLEAN_FALSE = {"false", "f", "no", "n", "0", "fail", "invalid", "error"}
+
+
+def _normalise_text(value: Any) -> str:
+    if value is None:
+        return ""
+    text = str(value)
+    return " ".join(text.split()).strip().lower()
+
+
+def _coerce_bool(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        if value in {0, 1}:
+            return bool(value)
+        return None
+    if isinstance(value, str):
+        token = value.strip().lower()
+        if token in _BOOLEAN_TRUE:
+            return True
+        if token in _BOOLEAN_FALSE:
+            return False
+    return None
+
+
+def _resolve_reasoning_records(
+    predictions: Sequence[Any] | None,
+    targets: Sequence[Any] | None,
+    records: Sequence[Mapping[str, Any]] | None,
+) -> list[Mapping[str, Any]]:
+    if records is not None:
+        resolved: list[Mapping[str, Any]] = []
+        for record in records:
+            if isinstance(record, Mapping):
+                resolved.append(record)
+            else:
+                resolved.append({"prediction": record})
+        return resolved
+
+    pred_list = list(predictions or [])
+    targ_list = list(targets or [])
+    resolved: list[Mapping[str, Any]] = []
+    length = max(len(pred_list), len(targ_list))
+    for idx in range(length):
+        pred_val = pred_list[idx] if idx < len(pred_list) else None
+        targ_val = targ_list[idx] if idx < len(targ_list) else None
+        resolved.append({"prediction": pred_val, "target": targ_val})
+    return resolved
+
+
+def _lean_verify(statement: str, proof: str) -> bool | None:
+    if not statement or not proof:
+        return None
+    if not _HAS_LEAN_DOJO or lean_dojo is None:
+        return None
+    candidates: list[Any] = []
+    for attr in ("verify_proof", "check_proof", "verify", "check", "is_valid_proof"):
+        candidate = getattr(lean_dojo, attr, None)
+        if callable(candidate):
+            candidates.append(candidate)
+    for candidate in candidates:
+        try:
+            result = candidate(statement=statement, proof=proof)
+        except TypeError:
+            try:
+                result = candidate(proof, statement)
+            except Exception:
+                continue
+        except Exception:
+            continue
+        try:
+            return bool(result)
+        except Exception:
+            continue
+    return None
+
+
+def _coerce_decimal(value: Any) -> Decimal | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, Decimal):
+        return value
+    if isinstance(value, (int, float)):
+        return Decimal(str(value))
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return None
+        try:
+            return Decimal(text)
+        except InvalidOperation:
+            return None
+    return None
+
+
+def _parse_numeric_token(value: Any) -> Decimal | None:
+    if value is None:
+        return None
+    matches = _NUMERIC_PATTERN.findall(str(value))
+    if not matches:
+        return None
+    try:
+        return Decimal(matches[-1])
+    except InvalidOperation:
+        return None
+
+
+def _sympy_equivalent(prediction: Any, target: Any) -> bool | None:
+    if not _HAS_SYMPY or sympify is None or simplify is None:
+        return None
+    try:
+        pred_expr = sympify(str(prediction))
+        target_expr = sympify(str(target))
+        diff = simplify(pred_expr - target_expr)
+    except Exception:
+        return None
+    return bool(getattr(diff, "is_zero", False) or diff == 0)
+
+
+def _extract_numeric_from_record(record: Mapping[str, Any]) -> Decimal | None:
+    metadata = record.get("metadata")
+    if isinstance(metadata, Mapping):
+        for key in ("numeric_answer", "answer", "value", "result", "expected"):
+            candidate = _coerce_decimal(metadata.get(key))
+            if candidate is not None:
+                return candidate
+    return None
+
+
+def _iter_tool_events(record: Mapping[str, Any]) -> Iterable[Mapping[str, Any]]:
+    metadata = record.get("metadata")
+    if not isinstance(metadata, Mapping):
+        return []
+    tools = metadata.get("tools") or metadata.get("tool_calls")
+    if not isinstance(tools, Sequence) or isinstance(tools, (str, bytes)):
+        return []
+    return [tool for tool in tools if isinstance(tool, Mapping)]
+
+
+def _validate_tool_event(tool: Mapping[str, Any]) -> bool:
+    if _TOOL_EVENT_VALIDATOR is None:
+        return True
+    try:
+        errors = list(_TOOL_EVENT_VALIDATOR.iter_errors(tool))
+    except Exception:  # pragma: no cover - validation failure fallback
+        return False
+    return not errors
+
+
+def reasoning_theorem_accuracy(
+    predictions: Sequence[Any],
+    targets: Sequence[Any],
+    records: Sequence[Mapping[str, Any]],
+) -> float:
+    resolved = _resolve_reasoning_records(predictions, targets, records)
+    total = 0
+    correct = 0
+    for record in resolved:
+        prediction = record.get("prediction")
+        target = record.get("target")
+        if prediction is None and target is None:
+            continue
+        verdict = _coerce_bool(record.get("verified"))
+        if verdict is None:
+            metadata = record.get("metadata")
+            if isinstance(metadata, Mapping):
+                for key in ("verified", "proof_verified", "proved", "verdict", "status"):
+                    verdict = _coerce_bool(metadata.get(key))
+                    if verdict is not None:
+                        break
+        if verdict is None:
+            statement = record.get("text") or record.get("input") or record.get("prompt")
+            lean_result = _lean_verify(str(statement or ""), str(prediction or ""))
+            if lean_result is not None:
+                verdict = lean_result
+        if verdict is None:
+            verdict = _normalise_text(prediction) == _normalise_text(target)
+        total += 1
+        if verdict:
+            correct += 1
+    return float(correct / total) if total else 0.0
+
+
+def reasoning_math_verification(
+    predictions: Sequence[Any],
+    targets: Sequence[Any],
+    records: Sequence[Mapping[str, Any]],
+) -> float:
+    resolved = _resolve_reasoning_records(predictions, targets, records)
+    total = 0
+    correct = 0
+    for record in resolved:
+        prediction = record.get("prediction")
+        target = record.get("target")
+        if prediction is None and target is None:
+            continue
+        total += 1
+        verdict = False
+        metadata_numeric = _extract_numeric_from_record(record)
+        if metadata_numeric is not None:
+            pred_numeric = _coerce_decimal(prediction) or _parse_numeric_token(prediction)
+            if pred_numeric is not None:
+                verdict = pred_numeric == metadata_numeric
+        if not verdict:
+            sympy_result = _sympy_equivalent(prediction, target)
+            if sympy_result is not None:
+                verdict = sympy_result
+        if not verdict:
+            pred_numeric = _coerce_decimal(prediction) or _parse_numeric_token(prediction)
+            target_numeric = _coerce_decimal(target) or _parse_numeric_token(target)
+            if pred_numeric is not None and target_numeric is not None:
+                verdict = pred_numeric == target_numeric
+        if not verdict:
+            verdict = _normalise_text(prediction) == _normalise_text(target)
+        if verdict:
+            correct += 1
+    return float(correct / total) if total else 0.0
+
+
+def reasoning_tool_audit(
+    predictions: Sequence[Any],
+    targets: Sequence[Any],
+    records: Sequence[Mapping[str, Any]],
+) -> float:
+    resolved = _resolve_reasoning_records(predictions, targets, records)
+    total = 0
+    consistent = 0
+    for record in resolved:
+        events = list(_iter_tool_events(record))
+        if not events:
+            continue
+        prediction_text = str(record.get("prediction") or "")
+        target_text = str(record.get("target") or "")
+        for tool in events:
+            total += 1
+            if not _validate_tool_event(tool):
+                continue
+            observation = tool.get("observation") or tool.get("result")
+            if observation is None:
+                continue
+            obs_text = str(observation)
+            if obs_text and (obs_text in prediction_text or obs_text in target_text):
+                consistent += 1
+                continue
+            arguments = tool.get("arguments") if isinstance(tool, Mapping) else None
+            if isinstance(arguments, Mapping) and any(
+                obs_text in str(value) for value in arguments.values()
+            ):
+                consistent += 1
+    return float(consistent / total) if total else 0.0
+
+
+def run_reasoning_suite(
+    config_paths: Sequence[str],
+    thresholds: Mapping[str, float] | None = None,
+) -> dict[str, float]:
+    if not config_paths:
+        raise ValueError("No evaluation configs provided")
+    from codex_ml.config import load_app_config
+    from codex_ml.eval.runner import run_evaluation
+
+    aggregated: dict[str, float] = {}
+    metric_sources: dict[str, str] = {}
+    for raw_path in config_paths:
+        path = Path(raw_path).expanduser()
+        cfg_obj, _ = load_app_config(path, ())
+        summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
+        metrics = summary.get("metrics")
+        if not isinstance(metrics, Mapping):
+            raise RuntimeError(f"Evaluation did not return metrics for {path}")
+        for name, value in metrics.items():
+            try:
+                numeric = float(value)
+            except (TypeError, ValueError) as exc:
+                raise RuntimeError(
+                    f"Metric '{name}' produced non-numeric value {value!r} in {path}"
+                ) from exc
+            aggregated[name] = numeric
+            metric_sources[name] = str(path)
+
+    failures: dict[str, str] = {}
+    for name, minimum in (thresholds or {}).items():
+        value = aggregated.get(name)
+        if value is None:
+            failures[name] = "missing"
+            continue
+        if value < minimum:
+            failures[name] = f"{value:.4f} < {minimum:.4f}"
+    if failures:
+        detail = ", ".join(
+            f"{metric} ({metric_sources.get(metric, 'unknown')}): {reason}"
+            for metric, reason in sorted(failures.items())
+        )
+        raise RuntimeError(f"Reasoning metrics below threshold: {detail}")
+    return aggregated
+
+
+def _parse_thresholds(values: Sequence[str]) -> dict[str, float]:
+    thresholds: dict[str, float] = {}
+    for raw in values:
+        if not raw:
+            continue
+        if ">=" in raw:
+            metric, value = raw.split(">=", 1)
+        elif "=" in raw:
+            metric, value = raw.split("=", 1)
+        else:
+            raise ValueError(f"Invalid threshold specification: {raw}")
+        metric_name = metric.strip()
+        if not metric_name:
+            raise ValueError(f"Invalid threshold metric name in '{raw}'")
+        try:
+            thresholds[metric_name] = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Invalid threshold value in '{raw}': {exc}") from exc
+    return thresholds
+
+
+def _cli(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Codex evaluation utilities")
+    subparsers = parser.add_subparsers(dest="command")
+
+    suite = subparsers.add_parser(
+        "reasoning-suite",
+        help="Run registered reasoning probes and enforce accuracy thresholds.",
+    )
+    suite.add_argument(
+        "--config",
+        action="append",
+        required=True,
+        help="Path to an evaluation config (repeatable).",
+    )
+    suite.add_argument(
+        "--threshold",
+        action="append",
+        default=[],
+        help="Metric threshold in the form metric>=value (repeatable).",
+    )
+
+    args = parser.parse_args(argv)
+
+    if args.command == "reasoning-suite":
+        try:
+            thresholds = _parse_thresholds(args.threshold)
+            metrics = run_reasoning_suite(args.config, thresholds)
+        except Exception as exc:
+            print(json.dumps({"error": str(exc)}), file=sys.stderr)
+            return 1
+        print(json.dumps(metrics, indent=2, sort_keys=True))
+        return 0
+
+    parser.print_help()
+    return 0
+
+
+register_metric("reasoning/theorem_accuracy", reasoning_theorem_accuracy)
+register_metric("reasoning/math_verification", reasoning_math_verification)
+register_metric("reasoning/tool_audit", reasoning_tool_audit)
+
+
 if hydra is not None and DictConfig is not None:  # pragma: no cover - CLI hook
 
     @hydra.main(
@@ -977,10 +1381,7 @@ else:  # pragma: no cover - fallback when hydra unavailable
             description="Run reasoning evaluation probes without Hydra."
         )
         default_config_path = (
-            Path(__file__).resolve().parents[3]
-            / "configs"
-            / "evaluation"
-            / "reasoning"
+            Path(__file__).resolve().parents[3] / "configs" / "evaluation" / "reasoning"
         )
         parser.add_argument(
             "--config-name",
@@ -1003,21 +1404,28 @@ else:  # pragma: no cover - fallback when hydra unavailable
         if not config_file.exists():
             raise FileNotFoundError(f"Reasoning config not found: {config_file}")
         if OmegaConf is None:
-            raise RuntimeError(
-                "OmegaConf is required to parse reasoning configs without Hydra"
-            )
+            raise RuntimeError("OmegaConf is required to parse reasoning configs without Hydra")
         cfg_obj = OmegaConf.load(str(config_file))  # type: ignore[operator]
         resolved = OmegaConf.to_container(cfg_obj, resolve=True)  # type: ignore[arg-type]
         if not isinstance(resolved, Mapping):
-            raise RuntimeError(
-                f"Reasoning config '{config_file}' did not resolve to a mapping"
-            )
+            raise RuntimeError(f"Reasoning config '{config_file}' did not resolve to a mapping")
         result = run_reasoning_from_config(resolved)
         print(json.dumps(result, indent=2, sort_keys=True))
 
 
+def main(argv: Sequence[str] | None = None) -> int:
+    args = list(argv) if argv is not None else sys.argv[1:]
+    if args and args[0] == "reasoning-suite":
+        return _cli(args)
+    if hydra is not None and DictConfig is not None:
+        reasoning_main()
+        return 0
+    reasoning_main(args if args else None)
+    return 0
+
+
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
-    reasoning_main()
+    raise SystemExit(main())
 
 
 __all__ = [
@@ -1026,7 +1434,12 @@ __all__ = [
     "run_evaluator",
     "EvaluationDependencyError",
     "lite_sequence_evaluation",
+    "reasoning_theorem_accuracy",
+    "reasoning_math_verification",
+    "reasoning_tool_audit",
+    "run_reasoning_suite",
     "run_reasoning_probes",
     "run_reasoning_from_config",
+    "main",
     "reasoning_main",
 ]
