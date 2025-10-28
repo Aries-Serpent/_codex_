@@ -18,11 +18,17 @@ def _load_module():
 
 def test_build_steps_variants():
     mod = _load_module()
-    assert [step.name for step in mod.build_steps()] == ["pre-commit", "tests", "gates"]
+    assert [step.name for step in mod.build_steps()] == [
+        "pre-commit",
+        "tests",
+        "reasoning",
+        "gates",
+    ]
     assert [step.name for step in mod.build_steps(fast=True)] == ["pre-commit", "tests"]
     assert [step.name for step in mod.build_steps(include_optional=True)] == [
         "pre-commit",
         "tests",
+        "reasoning",
         "gates",
         "lint",
         "typecheck",
