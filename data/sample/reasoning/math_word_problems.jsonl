@@ -1,0 +1,2 @@
+{"input": "If 3 apples cost $9, how much do 5 apples cost?", "target": "Each apple costs $3. Therefore 5 apples cost $15.", "metadata": {"source": "toy-math", "difficulty": 0.1, "answer_type": "numeric"}}
+{"input": "A train travels 60 km in 1.5 hours. What is its average speed?", "target": "Speed equals distance divided by time: 60 / 1.5 = 40 km/h.", "metadata": {"source": "toy-math", "difficulty": 0.3, "answer_type": "numeric"}}

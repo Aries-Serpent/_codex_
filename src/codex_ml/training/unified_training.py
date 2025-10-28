@@ -25,7 +25,7 @@ import importlib.util
 import json
 import time
 import warnings
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -42,6 +42,24 @@ except Exception:  # pragma: no cover
 # ----------------------------- Config & Validation ----------------------------
 
 
+def _to_plain_container(value: Any) -> Any:
+    """Best-effort conversion of OmegaConf containers to builtin types."""
+
+    if isinstance(value, Mapping):
+        return {k: _to_plain_container(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_to_plain_container(v) for v in value]
+    return value
+
+
+def _materialise_mapping(value: Mapping[str, Any] | None) -> dict[str, Any]:
+    if value is None:
+        return {}
+    if not isinstance(value, Mapping):
+        raise TypeError("continual sections must be mappings")
+    return {str(k): _to_plain_container(v) for k, v in value.items()}
+
+
 @dataclass
 class ContinualPhase:
     name: str
@@ -51,31 +69,53 @@ class ContinualPhase:
     notes: str | None = None
 
     def __post_init__(self) -> None:
-        if self.epochs < 1:
+        if int(self.epochs) < 1:
             raise ValueError("continual phase epochs must be >= 1")
+        self.epochs = int(self.epochs)
+        if isinstance(self.dataset, Mapping):
+            self.dataset = _materialise_mapping(self.dataset)
         if self.replay_ratio is not None:
             ratio = float(self.replay_ratio)
             if not 0.0 <= ratio <= 1.0:
                 raise ValueError("continual replay_ratio must be between 0 and 1")
+            self.replay_ratio = ratio
 
 
 @dataclass
 class ContinualConfig:
     strategy: str = "replay"
     buffer_size: int | None = None
+    replay_ratio: float | None = None
+    active_corpus: str | None = None
+    corpora: dict[str, Any] = field(default_factory=dict)
+    curriculum: dict[str, Any] = field(default_factory=dict)
+    rehearsal: dict[str, Any] = field(default_factory=dict)
     phases: list[ContinualPhase] = field(default_factory=list)
 
     def __post_init__(self) -> None:
-        if self.buffer_size is not None and int(self.buffer_size) < 0:
-            raise ValueError("continual buffer_size must be >= 0")
+        if self.buffer_size is not None:
+            self.buffer_size = int(self.buffer_size)
+            if self.buffer_size < 0:
+                raise ValueError("continual buffer_size must be >= 0")
+        if self.replay_ratio is not None:
+            ratio = float(self.replay_ratio)
+            if not 0.0 <= ratio <= 1.0:
+                raise ValueError("continual replay_ratio must be between 0 and 1")
+            self.replay_ratio = ratio
+        if self.active_corpus is not None:
+            self.active_corpus = str(self.active_corpus)
+        self.corpora = _materialise_mapping(self.corpora)
+        self.curriculum = _materialise_mapping(self.curriculum)
+        self.rehearsal = _materialise_mapping(self.rehearsal)
+        raw_phases: Sequence[Any] | None = self.phases
         normalised: list[ContinualPhase] = []
-        for phase in self.phases:
+        for phase in raw_phases or []:
             if isinstance(phase, ContinualPhase):
                 normalised.append(phase)
+            elif isinstance(phase, Mapping):
+                normalised.append(ContinualPhase(**_materialise_mapping(phase)))
             else:
-                normalised.append(ContinualPhase(**phase))
-        if not normalised:
-            raise ValueError("continual phases must not be empty")
+                raise TypeError("continual phases must be mappings or ContinualPhase instances")
         self.phases = normalised
 
 
@@ -262,11 +302,7 @@ def run_unified_training(
         "resume_from": cfg.resume_from,
     }
     if isinstance(cfg.continual, ContinualConfig):
-        state["continual"] = {
-            "strategy": cfg.continual.strategy,
-            "buffer_size": cfg.continual.buffer_size,
-            "phases": [asdict(phase) for phase in cfg.continual.phases],
-        }
+        state["continual"] = asdict(cfg.continual)
 
     # Pre-resume load if requested
     if cfg.resume_from:
