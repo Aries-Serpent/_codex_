@@ -1,3 +1,4 @@
+# Template: Tool-augmented reasoning with explicit supervision on tool calls.
 defaults:
   - ../base
 

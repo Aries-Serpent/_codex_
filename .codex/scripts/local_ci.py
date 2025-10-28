@@ -36,6 +36,28 @@ DEFAULT_STEPS: tuple[Step, ...] = (
         env={"PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"},
     ),
     Step(
+        name="reasoning",
+        command=(
+            "python",
+            "-m",
+            "codex_ml.eval.evaluator",
+            "reasoning-suite",
+            "--config",
+            "configs/evaluation/reasoning/proof.yaml",
+            "--config",
+            "configs/evaluation/reasoning/math.yaml",
+            "--config",
+            "configs/evaluation/reasoning/tools.yaml",
+            "--threshold",
+            "reasoning/theorem_accuracy>=1.0",
+            "--threshold",
+            "reasoning/math_verification>=1.0",
+            "--threshold",
+            "reasoning/tool_audit>=1.0",
+        ),
+        description="Curated reasoning probes (proofs, math, and tool audits).",
+    ),
+    Step(
         name="gates",
         command=("nox", "-s", "gates"),
         description="Structure, schema validation, and evaluator smoke checks.",
@@ -45,11 +67,15 @@ DEFAULT_STEPS: tuple[Step, ...] = (
 
 OPTIONAL_STEPS: tuple[Step, ...] = (
     Step(name="lint", command=("nox", "-s", "lint"), description="Ruff + Black + import sorting."),
-    Step(name="typecheck", command=("nox", "-s", "typecheck"), description="Static typing with mypy."),
+    Step(
+        name="typecheck", command=("nox", "-s", "typecheck"), description="Static typing with mypy."
+    ),
 )
 
 
-def build_steps(*, fast: bool = False, include_optional: bool = False, skip: Iterable[str] | None = None) -> list[Step]:
+def build_steps(
+    *, fast: bool = False, include_optional: bool = False, skip: Iterable[str] | None = None
+) -> list[Step]:
     skip_set = {name.strip().lower() for name in (skip or []) if name.strip()}
     steps: list[Step] = []
     base = DEFAULT_STEPS[:2] if fast else DEFAULT_STEPS
@@ -100,11 +126,29 @@ def _render_summary(results: Sequence[tuple[Step, int]]) -> str:
 
 
 def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the standard Codex quality gates in sequence.")
-    parser.add_argument("--fast", action="store_true", help="Skip the structural gates (run pre-commit and tests only).")
-    parser.add_argument("--full", action="store_true", help="Include lint and typecheck nox sessions after the core gates.")
-    parser.add_argument("--skip", action="append", default=[], metavar="STEP", help="Skip a named step (repeatable).")
-    parser.add_argument("--dry-run", action="store_true", help="Print the resolved commands without executing them.")
+    parser = argparse.ArgumentParser(
+        description="Run the standard Codex quality gates in sequence."
+    )
+    parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Skip the structural gates (run pre-commit and tests only).",
+    )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="Include lint and typecheck nox sessions after the core gates.",
+    )
+    parser.add_argument(
+        "--skip",
+        action="append",
+        default=[],
+        metavar="STEP",
+        help="Skip a named step (repeatable).",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Print the resolved commands without executing them."
+    )
     parser.add_argument("--list", action="store_true", help="Show the resolved step list and exit.")
     parser.add_argument(
         "--continue-on-failure",

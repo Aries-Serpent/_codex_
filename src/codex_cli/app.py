@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
+
+REASONING_TEMPLATE_ROOT = Path(__file__).resolve().parents[2] / "configs" / "training" / "reasoning"
+REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"
 
 _USE_TYPER = False
 try:  # pragma: no cover - prefer Typer when available
@@ -88,8 +92,104 @@ if _USE_TYPER:
     app = _typer.Typer(
         name="codex",
         add_completion=False,
-        help="Codex CLI for local/offline runs (tokenize/train/eval/tracking).",
+        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
     )
+
+    def _discover_reasoning_templates() -> Sequence[Tuple[str, str, Path]]:
+        if not REASONING_TEMPLATE_ROOT.exists():
+            return []
+        entries: list[Tuple[str, str, Path]] = []
+        for path in sorted(REASONING_TEMPLATE_ROOT.glob("*.yaml")):
+            description = "Reasoning template"
+            try:
+                with path.open("r", encoding="utf-8") as handle:
+                    for line in handle:
+                        stripped = line.strip()
+                        if stripped.startswith("#"):
+                            text = stripped.lstrip("#").strip()
+                            if text and "Template" in text:
+                                description = text
+                                break
+                        elif stripped:
+                            break
+            except OSError:
+                description = "Reasoning template"
+            entries.append((path.stem, description, path))
+        return entries
+
+    def _load_yaml(path: Path) -> dict:
+        try:
+            import yaml  # type: ignore
+        except Exception as exc:  # pragma: no cover - optional dependency missing
+            echo(f"PyYAML not available: {exc}")
+            raise Exit(code=1)
+        try:
+            with path.open("r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle) or {}
+        except Exception as exc:
+            echo(f"Failed to load {path}: {exc}")
+            raise Exit(code=1)
+        if not isinstance(data, dict):
+            echo(f"Unexpected config structure in {path}")
+            raise Exit(code=1)
+        return data
+
+    reasoning_templates = _typer.Typer(
+        name="reasoning-templates",
+        help="Surface reasoning training presets and curricula metadata.",
+    )
+
+    @reasoning_templates.command("list")
+    def list_reasoning_templates() -> None:
+        entries = _discover_reasoning_templates()
+        if not entries:
+            echo("No reasoning templates found under configs/training/reasoning.")
+            return
+        for name, description, path in entries:
+            try:
+                relative = path.relative_to(Path.cwd())
+            except ValueError:
+                relative = path
+            echo(f"{name}\t{description} ({relative})")
+
+    @reasoning_templates.command("explain")
+    def explain_reasoning_template(name: str) -> None:
+        entries = {entry[0]: entry for entry in _discover_reasoning_templates()}
+        if name not in entries:
+            echo(f"Unknown reasoning template: {name}")
+            available = ", ".join(sorted(entries)) or "<none>"
+            echo(f"Available templates: {available}")
+            raise Exit(code=1)
+        _, description, path = entries[name]
+        echo(description)
+        echo(f"Path: {path}")
+        data = _load_yaml(path)
+        curriculum_name = data.get("curriculum", {}).get("phase_schedule") if isinstance(data.get("curriculum"), dict) else None
+        if curriculum_name:
+            schedule_path = REASONING_CURRICULA_ROOT / f"{curriculum_name}.yaml"
+            if schedule_path.exists():
+                schedule_data = _load_yaml(schedule_path)
+                phases = schedule_data.get("phase_schedule")
+                if isinstance(phases, Iterable):
+                    echo("Phases:")
+                    for phase in phases:
+                        if isinstance(phase, dict):
+                            phase_id = phase.get("id", "<unknown>")
+                            dataset = phase.get("dataset", "<dataset>")
+                            steps = phase.get("steps", "?")
+                            echo(f"  - {phase_id}: {dataset} (steps={steps})")
+        reasoning_block = data.get("training", {}).get("reasoning") if isinstance(data.get("training"), dict) else None
+        if isinstance(reasoning_block, dict):
+            mode = reasoning_block.get("objective", {}).get("mode") if isinstance(reasoning_block.get("objective"), dict) else None
+            if mode:
+                echo(f"Objective: {mode}")
+            if reasoning_block.get("tool_adapter", {}).get("enabled"):
+                tools = reasoning_block.get("tool_adapter", {}).get("tools", [])
+                if isinstance(tools, Iterable):
+                    tool_list = ", ".join(str(tool) for tool in tools)
+                    echo(f"Tools: {tool_list}")
+
+    app.add_typer(reasoning_templates, name="reasoning-templates")
 
     @app.command("version")
     def version() -> None:
@@ -117,9 +217,48 @@ if _USE_TYPER:
 else:  # pragma: no cover - click fallback
     import click as _click
 
-    @_click.group(name="codex", help="Codex CLI for local/offline runs (tokenize/train/eval/tracking).")
+    @_click.group(name="codex", help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).")
     def app() -> None:
         """Codex offline smoke helpers."""
+
+    def _discover_reasoning_templates() -> Sequence[Tuple[str, str, Path]]:
+        if not REASONING_TEMPLATE_ROOT.exists():
+            return []
+        entries: list[Tuple[str, str, Path]] = []
+        for path in sorted(REASONING_TEMPLATE_ROOT.glob("*.yaml")):
+            description = "Reasoning template"
+            try:
+                with path.open("r", encoding="utf-8") as handle:
+                    for line in handle:
+                        stripped = line.strip()
+                        if stripped.startswith("#"):
+                            text = stripped.lstrip("#").strip()
+                            if text and "Template" in text:
+                                description = text
+                                break
+                        elif stripped:
+                            break
+            except OSError:
+                description = "Reasoning template"
+            entries.append((path.stem, description, path))
+        return entries
+
+    def _load_yaml(path: Path) -> dict:
+        try:
+            import yaml  # type: ignore
+        except Exception as exc:  # pragma: no cover - optional dependency missing
+            echo(f"PyYAML not available: {exc}")
+            raise Exit(code=1)
+        try:
+            with path.open("r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle) or {}
+        except Exception as exc:
+            echo(f"Failed to load {path}: {exc}")
+            raise Exit(code=1)
+        if not isinstance(data, dict):
+            echo(f"Unexpected config structure in {path}")
+            raise Exit(code=1)
+        return data
 
     @app.command("version")
     def version() -> None:
@@ -143,6 +282,61 @@ else:  # pragma: no cover - click fallback
     @_click.option("--out", "out_dir", type=_click.Path(path_type=Path), default=Path(".checkpoints"), show_default=True, help="Checkpoint directory")
     def checkpoint_smoke(out_dir: Path) -> None:
         _checkpoint_smoke_impl(out_dir)
+
+    @app.group(name="reasoning-templates", help="Surface reasoning training presets and curricula metadata.")
+    def reasoning_templates() -> None:
+        """Reasoning template helpers."""
+
+    @reasoning_templates.command("list")
+    def list_reasoning_templates() -> None:
+        entries = _discover_reasoning_templates()
+        if not entries:
+            echo("No reasoning templates found under configs/training/reasoning.")
+            return
+        for name, description, path in entries:
+            try:
+                relative = path.relative_to(Path.cwd())
+            except ValueError:
+                relative = path
+            echo(f"{name}\t{description} ({relative})")
+
+    @reasoning_templates.command("explain")
+    @_click.argument("name")
+    def explain_reasoning_template(name: str) -> None:
+        entries = {entry[0]: entry for entry in _discover_reasoning_templates()}
+        if name not in entries:
+            echo(f"Unknown reasoning template: {name}")
+            available = ", ".join(sorted(entries)) or "<none>"
+            echo(f"Available templates: {available}")
+            raise Exit(code=1)
+        _, description, path = entries[name]
+        echo(description)
+        echo(f"Path: {path}")
+        data = _load_yaml(path)
+        curriculum_name = data.get("curriculum", {}).get("phase_schedule") if isinstance(data.get("curriculum"), dict) else None
+        if curriculum_name:
+            schedule_path = REASONING_CURRICULA_ROOT / f"{curriculum_name}.yaml"
+            if schedule_path.exists():
+                schedule_data = _load_yaml(schedule_path)
+                phases = schedule_data.get("phase_schedule")
+                if isinstance(phases, Iterable):
+                    echo("Phases:")
+                    for phase in phases:
+                        if isinstance(phase, dict):
+                            phase_id = phase.get("id", "<unknown>")
+                            dataset = phase.get("dataset", "<dataset>")
+                            steps = phase.get("steps", "?")
+                            echo(f"  - {phase_id}: {dataset} (steps={steps})")
+        reasoning_block = data.get("training", {}).get("reasoning") if isinstance(data.get("training"), dict) else None
+        if isinstance(reasoning_block, dict):
+            mode = reasoning_block.get("objective", {}).get("mode") if isinstance(reasoning_block.get("objective"), dict) else None
+            if mode:
+                echo(f"Objective: {mode}")
+            if reasoning_block.get("tool_adapter", {}).get("enabled"):
+                tools = reasoning_block.get("tool_adapter", {}).get("tools", [])
+                if isinstance(tools, Iterable):
+                    tool_list = ", ".join(str(tool) for tool in tools)
+                    echo(f"Tools: {tool_list}")
 
 
 def main() -> None:  # pragma: no cover - thin wrapper for python -m usage
