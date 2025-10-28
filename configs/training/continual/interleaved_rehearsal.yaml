@@ -1,0 +1,46 @@
+defaults:
+  - base
+
+training:
+  continual: ${continual}
+
+continual:
+  strategy: curriculum
+  active_corpus: math_word_problems
+  corpora:
+    proof_logs:
+      role: rehearsal
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/proof_logs.jsonl
+      format: jsonl
+      checksum: 65a62f2db28fdca5592e72a5e897862ee2dccae48a9d7608ecd1193f94d4b208  # pragma: allowlist secret
+      difficulty: easy
+    math_word_problems:
+      role: primary
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/math_word_problems.jsonl
+      format: jsonl
+      checksum: bd5cd2727849af8b9fd1d78a7c45b90be11b05ba9989121c34708110e52a7afb  # pragma: allowlist secret
+      difficulty: medium
+    tool_traces:
+      role: transfer
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/tool_traces.jsonl
+      format: jsonl
+      checksum: 01aba359a56e1196e08d92f6f019c217b8d03492c702c9393f3f24ed280541d2  # pragma: allowlist secret
+      difficulty: medium
+  curriculum:
+    name: interleaved_rehearsal
+    mix_schedule:
+      - dataset: math_word_problems
+        batches: 4
+      - dataset: proof_logs
+        batches: 2
+      - dataset: tool_traces
+        batches: 1
+    cycle_length: 7
+    difficulty_cap: advanced
+  rehearsal:
+    buffer_size: 6144
+    replay_ratio: 0.35
+    sampling: interleaved
+    interleave_every_n_steps: 2
+    anneal_factor: 0.9
+    seed: 1337

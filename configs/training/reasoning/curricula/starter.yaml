@@ -1,0 +1,18 @@
+phase_schedule:
+  - id: warmup
+    dataset: datasets/reasoning/warmup.jsonl
+    steps: 200
+    metrics:
+      - reasoning.trace_coverage
+  - id: first_principles
+    dataset: datasets/reasoning/first_principles.jsonl
+    steps: 400
+    metrics:
+      - reasoning.win_rate
+      - reasoning.critique_density
+  - id: challenge
+    dataset: datasets/reasoning/challenge.jsonl
+    steps: 300
+    metrics:
+      - reasoning.latency_p95
+      - reasoning.judge_disagreement

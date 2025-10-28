@@ -304,6 +304,17 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     if batch_size is None:
         batch_size = optimizer_cfg.get("batch_size")
 
+    reasoning_cfg_dict: Dict[str, Any] | None = None
+    reasoning_section = cfg.get("reasoning")
+    if isinstance(reasoning_section, (DictConfig, dict)):
+        candidate = _cfg_to_dict(reasoning_section)
+        reasoning_cfg_dict = candidate or None
+    if reasoning_cfg_dict is None and isinstance(training_section, (DictConfig, dict)):
+        training_reasoning = training_section.get("reasoning")
+        if isinstance(training_reasoning, (DictConfig, dict)):
+            candidate = _cfg_to_dict(training_reasoning)
+            reasoning_cfg_dict = candidate or None
+
     device_raw = cfg.get("device")
     device = str(device_raw) if device_raw not in (None, "") else None
 
@@ -347,6 +358,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         retention_policy=retention_policy,
         run_config=OmegaConf.to_container(cfg, resolve=True),
         dataset_cast_policy=dataset_cast_policy,
+        reasoning=reasoning_cfg_dict,
     )
     return int(epochs), checkpoint_dir
 

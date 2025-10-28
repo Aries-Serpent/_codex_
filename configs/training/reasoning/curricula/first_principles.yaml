@@ -1,0 +1,18 @@
+phase_schedule:
+  - id: warmup
+    dataset: datasets/reasoning/warmup.jsonl
+    steps: 100
+    metrics:
+      - reasoning.trace_coverage
+  - id: first_principles
+    dataset: datasets/reasoning/first_principles.jsonl
+    steps: 500
+    metrics:
+      - reasoning.win_rate
+      - reasoning.explanation_depth
+  - id: critique
+    dataset: datasets/reasoning/critique.jsonl
+    steps: 300
+    metrics:
+      - reasoning.critique_density
+      - reasoning.consistency
