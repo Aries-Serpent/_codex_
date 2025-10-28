@@ -1282,6 +1282,9 @@ def run_reasoning_suite(
         if value is None:
             failures[name] = "missing"
             continue
+        if not math.isfinite(value):
+            failures[name] = f"non-finite value {value!r}"
+            continue
         if value < minimum:
             failures[name] = f"{value:.4f} < {minimum:.4f}"
     if failures:
