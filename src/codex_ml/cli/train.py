@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Sequence
 
 import hydra
 from codex_ml.codex_structured_logging import (
@@ -15,11 +16,14 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.plugins import load_entry_point_plugins
 from codex_ml.train_loop import run_training
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
 _ = (ArgparseJSONParser, run_cmd)
+
+LOGGER = logging.getLogger(__name__)
 
 
 def _to_path(value: str | Path | None) -> Path | None:
@@ -49,13 +53,102 @@ def _cfg_to_list(value: Any) -> list[Any]:
     return [value]
 
 
+def _coerce_sequence(value: Any) -> list[Any] | None:
+    """Return ``value`` as a list when it represents a textual sequence."""
+
+    if value is None:
+        return None
+    if isinstance(value, ListConfig):
+        return list(value)
+    if isinstance(value, (list, tuple, set)):
+        return list(value)
+    if isinstance(value, str):
+        return [value]
+    return None
+
+
+def _sanitize_prompt_sequence(values: list[Any]) -> tuple[list[Any], bool]:
+    """Sanitise prompt-like entries using the safety module when available."""
+
+    try:
+        from codex_ml.safety import SafetyConfig, sanitize_prompt
+    except Exception:  # pragma: no cover - safety module optional
+        return list(values), False
+
+    cfg = SafetyConfig()
+    sanitised: list[Any] = []
+    changed = False
+    for entry in values:
+        if isinstance(entry, str):
+            result = sanitize_prompt(entry, cfg)
+            text = result.get("text", entry)
+            sanitised.append(text)
+            if text != entry:
+                changed = True
+            continue
+        if isinstance(entry, dict):
+            updated = dict(entry)
+            mutated = False
+            for key in ("prompt", "input", "text"):
+                raw = updated.get(key)
+                if isinstance(raw, str):
+                    result = sanitize_prompt(raw, cfg)
+                    text = result.get("text", raw)
+                    if text != raw:
+                        updated[key] = text
+                        mutated = True
+            sanitised.append(updated if mutated else entry)
+            if mutated:
+                changed = True
+            continue
+        sanitised.append(entry)
+    return sanitised, changed
+
+
+def _apply_prompt_sanitization(
+    config_obj: Any,
+    keys: Sequence[str],
+    *,
+    update_dict: Dict[str, Any] | None = None,
+) -> int:
+    """Sanitise string sequences stored under ``keys`` inside ``config_obj``."""
+
+    if config_obj is None:
+        return 0
+    total = 0
+    for key in keys:
+        try:
+            raw = config_obj.get(key) if hasattr(config_obj, "get") else getattr(config_obj, key)
+        except Exception:
+            raw = None
+        sequence = _coerce_sequence(raw)
+        if sequence is None or not sequence:
+            continue
+        sanitised, changed = _sanitize_prompt_sequence(sequence)
+        if not changed:
+            continue
+        total += 1
+        if update_dict is not None:
+            update_dict[key] = sanitised
+        try:
+            if isinstance(config_obj, DictConfig):
+                config_obj[key] = sanitised
+            elif isinstance(config_obj, dict):
+                config_obj[key] = sanitised
+        except Exception:
+            pass
+    return total
+
+
 def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     artifacts_cfg = _cfg_to_dict(cfg.get("artifacts"))
     art_dir = _to_path(cfg.get("artifacts_dir") or artifacts_cfg.get("dir"))
 
     dataset_cfg = cfg.get("dataset")
+    dataset_cfg_dict: Dict[str, Any] = {}
     dataset_sources_raw = []
     dataset_cache_dir = None
+    dataset_cast_policy = None
     if isinstance(dataset_cfg, (DictConfig, dict)):
         dataset_cfg_dict = _cfg_to_dict(dataset_cfg)
         dataset_sources_raw = _cfg_to_list(dataset_cfg_dict.get("sources"))
@@ -67,6 +160,53 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         dataset_cast_policy = cfg.get("dataset_cast_policy")
     dataset_sources = [p for p in (_to_path(item) for item in dataset_sources_raw) if p is not None]
     dataset_cache_path = _to_path(dataset_cache_dir)
+
+    sanitize_flag = True
+    raw_flag = cfg.get("sanitize_prompts")
+    if isinstance(raw_flag, bool):
+        sanitize_flag = raw_flag
+    training_section = cfg.get("training")
+    if isinstance(training_section, (DictConfig, dict)):
+        training_dict = _cfg_to_dict(training_section)
+        if "sanitize_prompts" in training_dict:
+            sanitize_flag = bool(training_dict["sanitize_prompts"])
+
+    if sanitize_flag:
+        total_sanitised = 0
+        if dataset_cfg_dict:
+            total_sanitised += _apply_prompt_sanitization(
+                dataset_cfg,
+                ("train_texts", "texts", "val_texts", "eval_texts"),
+                update_dict=dataset_cfg_dict,
+            )
+        total_sanitised += _apply_prompt_sanitization(
+            cfg,
+            ("texts", "train_texts", "val_texts", "eval_texts"),
+        )
+        if total_sanitised:
+            LOGGER.info("Sanitised %d prompt field(s) in training configuration", total_sanitised)
+    else:
+        LOGGER.debug("Prompt sanitisation disabled via configuration")
+
+    plugin_cfg = _cfg_to_dict(cfg.get("plugins"))
+    entry_cfg = _cfg_to_dict(plugin_cfg.get("entry_points"))
+    entry_enable = bool(plugin_cfg.get("enable_entry_points", entry_cfg.get("enable", False)))
+    entry_groups = entry_cfg.get("groups") or plugin_cfg.get("entry_point_groups")
+    groups_spec: dict[str, str] | list[str] | None = None
+    if isinstance(entry_groups, dict):
+        groups_spec = {str(k): str(v) for k, v in entry_groups.items()}
+    elif isinstance(entry_groups, (list, tuple, set)):
+        groups_spec = [str(item) for item in entry_groups]
+    elif isinstance(entry_groups, str):
+        groups_spec = [entry_groups]
+    summary = load_entry_point_plugins(
+        enable=entry_enable,
+        groups=groups_spec,
+        logger=LOGGER,
+    )
+    if entry_enable and any(count for count in summary.values()):
+        loaded_str = ", ".join(f"{name}={count}" for name, count in summary.items())
+        LOGGER.info("Entry-point plugins loaded: %s", loaded_str)
 
     checkpoint_cfg = _cfg_to_dict(cfg.get("checkpoint"))
     checkpoint_dir = _to_path(checkpoint_cfg.get("dir") or checkpoint_cfg.get("path"))
@@ -164,6 +304,17 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     if batch_size is None:
         batch_size = optimizer_cfg.get("batch_size")
 
+    reasoning_cfg_dict: Dict[str, Any] | None = None
+    reasoning_section = cfg.get("reasoning")
+    if isinstance(reasoning_section, (DictConfig, dict)):
+        candidate = _cfg_to_dict(reasoning_section)
+        reasoning_cfg_dict = candidate or None
+    if reasoning_cfg_dict is None and isinstance(training_section, (DictConfig, dict)):
+        training_reasoning = training_section.get("reasoning")
+        if isinstance(training_reasoning, (DictConfig, dict)):
+            candidate = _cfg_to_dict(training_reasoning)
+            reasoning_cfg_dict = candidate or None
+
     device_raw = cfg.get("device")
     device = str(device_raw) if device_raw not in (None, "") else None
 
@@ -207,6 +358,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         retention_policy=retention_policy,
         run_config=OmegaConf.to_container(cfg, resolve=True),
         dataset_cast_policy=dataset_cast_policy,
+        reasoning=reasoning_cfg_dict,
     )
     return int(epochs), checkpoint_dir
 

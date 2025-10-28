@@ -7,6 +7,7 @@ training:
   device: cpu
   dtype: float32
   deterministic: true
+  sanitize_prompts: true
   optimizer:
     name: adamw_torch
     weight_decay: 0.01

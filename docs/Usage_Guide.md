@@ -31,6 +31,10 @@ trainer) and writes checkpoints plus metrics under
 `artifacts/runs/quickstart/`. Override parameters inline to explore different
 presets without editing YAML.
 
+⚠️ **Prompt safety:** the training profile sanitises embedded datasets by
+default. To inspect raw fixtures set `training.sanitize_prompts=false` on the
+command line.
+
 ## 3. Evaluate a saved checkpoint
 
 ```bash
@@ -44,6 +48,8 @@ python -m codex_ml.cli.evaluate \
 Evaluation reuses the cached tokenizer and dataset defaults recorded in the
 Hydra tree. Append `--log-metrics .codex/metrics/eval.ndjson` to persist a
 machine-readable summary.
+Disable prompt redaction with `sanitize_prompts=false` if you need to inspect
+the untouched dataset.
 
 ## 4. Tokenizer CLI essentials
 
@@ -80,7 +86,32 @@ Hydra resolves the defaults list from the lock-file snapshot, so overrides are
 deterministic. The `--info defaults` flag prints the composed order if you need
 to confirm which config group contributes a value.
 
-## 7. Additional references
+## 7. Enable entry-point plugins
+
+Third-party extensions can be loaded via Python entry points. Opt in by setting
+`plugins.enable_entry_points=true` and overriding the groups as needed:
+
+```bash
+python -m codex_ml.cli.train plugins.enable_entry_points=true \
+  plugins.entry_points.groups.tokenizers=my_project.tokenizers
+```
+
+The loader is defensive—failures to import a plugin are logged and do not abort
+the run.
+
+## 8. Convert NDJSON metrics to CSV
+
+Metrics writers emit newline-delimited JSON files under `artifacts/runs/…`.
+Convert them to CSV with the helper in `tools/`:
+
+```bash
+python tools/ndjson_to_csv.py .codex/metrics/training.ndjson artifacts/runs/metrics.csv
+```
+
+The repository ships a sample log at `samples/metrics_sample.ndjson` for quick
+tests.
+
+## 9. Additional references
 
 - [Quickstart walkthrough](../quickstart.md)
 - [CLI reference](../CLI.md)

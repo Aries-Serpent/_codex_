@@ -1,0 +1,3 @@
+{"input": "If 3 apples cost $9, how much do 5 apples cost?", "prediction": "Each apple costs 3 dollars, so five apples cost 15.", "target": "15", "metadata": {"numeric_answer": 15, "source": "toy-math"}}
+{"input": "A train travels 60 km in 1.5 hours. What is its average speed?", "prediction": "Speed = distance / time = 60 / 1.5 = 40 km/h.", "target": "40", "metadata": {"numeric_answer": 40, "source": "toy-math"}}
+{"input": "Compute the value of 12^2.", "prediction": "12 ** 2 = 144", "target": "144", "metadata": {"numeric_answer": 144, "source": "toy-math"}}

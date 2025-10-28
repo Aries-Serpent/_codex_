@@ -25,8 +25,8 @@ import importlib.util
 import json
 import time
 import warnings
-from collections.abc import Iterable
-from dataclasses import dataclass, field
+from collections.abc import Iterable, Mapping, Sequence
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +40,83 @@ except Exception:  # pragma: no cover
 
 
 # ----------------------------- Config & Validation ----------------------------
+
+
+def _to_plain_container(value: Any) -> Any:
+    """Best-effort conversion of OmegaConf containers to builtin types."""
+
+    if isinstance(value, Mapping):
+        return {k: _to_plain_container(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_to_plain_container(v) for v in value]
+    return value
+
+
+def _materialise_mapping(value: Mapping[str, Any] | None) -> dict[str, Any]:
+    if value is None:
+        return {}
+    if not isinstance(value, Mapping):
+        raise TypeError("continual sections must be mappings")
+    return {str(k): _to_plain_container(v) for k, v in value.items()}
+
+
+@dataclass
+class ContinualPhase:
+    name: str
+    epochs: int = 1
+    dataset: dict[str, Any] = field(default_factory=dict)
+    replay_ratio: float | None = None
+    notes: str | None = None
+
+    def __post_init__(self) -> None:
+        if int(self.epochs) < 1:
+            raise ValueError("continual phase epochs must be >= 1")
+        self.epochs = int(self.epochs)
+        if isinstance(self.dataset, Mapping):
+            self.dataset = _materialise_mapping(self.dataset)
+        if self.replay_ratio is not None:
+            ratio = float(self.replay_ratio)
+            if not 0.0 <= ratio <= 1.0:
+                raise ValueError("continual replay_ratio must be between 0 and 1")
+            self.replay_ratio = ratio
+
+
+@dataclass
+class ContinualConfig:
+    strategy: str = "replay"
+    buffer_size: int | None = None
+    replay_ratio: float | None = None
+    active_corpus: str | None = None
+    corpora: dict[str, Any] = field(default_factory=dict)
+    curriculum: dict[str, Any] = field(default_factory=dict)
+    rehearsal: dict[str, Any] = field(default_factory=dict)
+    phases: list[ContinualPhase] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if self.buffer_size is not None:
+            self.buffer_size = int(self.buffer_size)
+            if self.buffer_size < 0:
+                raise ValueError("continual buffer_size must be >= 0")
+        if self.replay_ratio is not None:
+            ratio = float(self.replay_ratio)
+            if not 0.0 <= ratio <= 1.0:
+                raise ValueError("continual replay_ratio must be between 0 and 1")
+            self.replay_ratio = ratio
+        if self.active_corpus is not None:
+            self.active_corpus = str(self.active_corpus)
+        self.corpora = _materialise_mapping(self.corpora)
+        self.curriculum = _materialise_mapping(self.curriculum)
+        self.rehearsal = _materialise_mapping(self.rehearsal)
+        raw_phases: Sequence[Any] | None = self.phases
+        normalised: list[ContinualPhase] = []
+        for phase in raw_phases or []:
+            if isinstance(phase, ContinualPhase):
+                normalised.append(phase)
+            elif isinstance(phase, Mapping):
+                normalised.append(ContinualPhase(**_materialise_mapping(phase)))
+            else:
+                raise TypeError("continual phases must be mappings or ContinualPhase instances")
+        self.phases = normalised
 
 
 @dataclass
@@ -63,6 +140,7 @@ class UnifiedTrainingConfig:
     keep_last: int = 3
     best_k: int = 0
     best_metric: str = "val_loss"
+    continual: ContinualConfig | dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
         errors: list[str] = []
@@ -76,6 +154,11 @@ class UnifiedTrainingConfig:
             errors.append("dtype must be one of {fp32, fp16, bf16}")
         if not (0 <= self.seed < 2**32):
             errors.append("seed must be in [0, 2**32)")
+        if self.continual is not None and not isinstance(self.continual, ContinualConfig):
+            if isinstance(self.continual, Mapping):
+                self.continual = ContinualConfig(**dict(self.continual))
+            else:
+                errors.append("continual must be a ContinualConfig or mapping")
         if errors:
             raise ValueError("; ".join(errors))
 
@@ -218,6 +301,8 @@ def run_unified_training(
         "global_step": 0,
         "resume_from": cfg.resume_from,
     }
+    if isinstance(cfg.continual, ContinualConfig):
+        state["continual"] = asdict(cfg.continual)
 
     # Pre-resume load if requested
     if cfg.resume_from:
@@ -370,6 +455,8 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
 
 
 __all__ = [
+    "ContinualConfig",
+    "ContinualPhase",
     "UnifiedTrainingConfig",
     "run_unified_training",
     "train_loop",

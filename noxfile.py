@@ -20,6 +20,7 @@ _SELECTION_DEFAULT_SAMPLE = Path("samples/assistant_message_summary.sample.json"
 _SCHEMA_VALIDATE = Path("tools/schema_validate.py")
 _SELECTION_SCHEMA = Path("schemas/selection_guard_rules.schema.json")
 _EVALUATOR_SCHEMA = Path("schemas/codex_eval_rules.v3.schema.json")
+_CONFIG_VALIDATOR = Path("tools/validate_configs.py")
 
 
 def _resolve_summary(posargs: Iterable[str]) -> Optional[Path]:
@@ -127,6 +128,10 @@ def gates(session: nox.Session) -> None:
             "3",
             success_codes=[0, 1, 2],
         )
+    if _CONFIG_VALIDATOR.exists():
+        session.run("python", str(_CONFIG_VALIDATOR), "--quiet")
+    else:
+        _log_skip(session, "config schemas", f"missing {_CONFIG_VALIDATOR}")
 
 
 @nox.session

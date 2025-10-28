@@ -5,12 +5,8 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Optional, Type
 
-from codex_ml.plugins.registries import (
-    load_model_entry_points,
-)
-from codex_ml.plugins.registries import (
-    models as _models_registry,
-)
+from codex_ml.plugins.registries import load_model_entry_points
+from codex_ml.plugins.registries import models as _models_registry
 
 __all__ = [
     "MiniLM",
@@ -19,6 +15,10 @@ __all__ = [
     "ModelConfig",
     "register_model",
     "get_model",
+    "ReasoningHead",
+    "ToolUseAdapter",
+    "ReasoningHarness",
+    "attach_reasoning_adapters",
 ]
 
 
@@ -59,6 +59,20 @@ except Exception:  # pragma: no cover - dependency not installed
     DecoderOnlyLM = None  # type: ignore[assignment]
     ModelConfig = None  # type: ignore[assignment]
 
+try:  # pragma: no cover - optional dependency
+    from .reasoning import (
+        ReasoningHarness,
+        ReasoningHead,
+        ToolUseAdapter,
+        attach_reasoning_adapters,
+    )
+except Exception:  # pragma: no cover - dependency not installed
+    ReasoningHarness = None  # type: ignore[assignment]
+    ReasoningHead = None  # type: ignore[assignment]
+    ToolUseAdapter = None  # type: ignore[assignment]
+    attach_reasoning_adapters = None  # type: ignore[assignment]
+
 if TYPE_CHECKING:  # retain type information for type checkers
     from .decoder_only import DecoderOnlyLM, ModelConfig
     from .minilm import MiniLM, MiniLMConfig
+    from .reasoning import ReasoningHarness, ReasoningHead, ToolUseAdapter

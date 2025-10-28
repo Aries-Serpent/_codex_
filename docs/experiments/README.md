@@ -26,7 +26,16 @@ runs/
 
 All files are valid line-delimited JSON and can be consumed with tools such as
 `jq`, `sqlite-utils`, or the helper script
-[`examples/mlflow_offline.py`](../../examples/mlflow_offline.py).
+[`examples/mlflow_offline.py`](../../examples/mlflow_offline.py).  To export a
+CSV summary, run:
+
+```bash
+python tools/ndjson_to_csv.py runs/20240101-120000-toy-train/metrics.ndjson \
+  runs/20240101-120000-toy-train/metrics.csv
+```
+
+The repository includes `samples/metrics_sample.ndjson` for quick tests of the
+converter.
 
 ## Enabling optional trackers
 
