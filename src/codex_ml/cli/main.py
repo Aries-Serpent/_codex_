@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import importlib.resources as importlib_resources
 import importlib.util
 import json
 import os
@@ -131,16 +132,40 @@ if typer is not None:
                 raise typer.BadParameter(
                     "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."
                 )
-            preset_path = (
-                Path(__file__).resolve().parents[3]
-                / "configs"
-                / "training"
-                / "continual"
-                / f"{name}.yaml"
-            )
-            if not preset_path.is_file():
+            preset_text: str | None = None
+
+            try:
+                resource_root = importlib_resources.files("configs").joinpath(
+                    "training", "continual"
+                )
+            except (ModuleNotFoundError, AttributeError):
+                resource_root = None
+
+            if resource_root is not None:
+                resource_candidate = resource_root.joinpath(f"{name}.yaml")
+                if resource_candidate.is_file():
+                    preset_text = resource_candidate.read_text(encoding="utf-8")
+
+            if preset_text is None:
+                cli_path = Path(__file__).resolve()
+                search_roots: list[Path] = []
+                for depth in (2, 3):
+                    try:
+                        root = cli_path.parents[depth]
+                    except IndexError:
+                        continue
+                    search_roots.append(root / "configs" / "training" / "continual")
+
+                for root in search_roots:
+                    candidate_path = root / f"{name}.yaml"
+                    if candidate_path.is_file():
+                        preset_text = candidate_path.read_text(encoding="utf-8")
+                        break
+
+            if preset_text is None:
                 raise typer.BadParameter(f"Unknown continual curriculum preset '{name}'.")
-            loaded = yaml.safe_load(preset_path.read_text(encoding="utf-8")) or {}
+
+            loaded = yaml.safe_load(preset_text) or {}
             if not isinstance(loaded, dict):
                 raise typer.BadParameter(
                     f"Curriculum preset '{name}' must decode to a mapping, received {type(loaded).__name__}."
