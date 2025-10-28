@@ -507,6 +507,14 @@ def _to_number(value: Any) -> float | None:
             return None
         with suppress(ValueError):
             return float(text)
+        if "/" in text:
+            numerator, denominator = text.split("/", 1)
+            num = _to_number(numerator)
+            den = _to_number(denominator)
+            if num is not None and den is not None:
+                if den == 0:
+                    return None
+                return num / den
         if _HAS_SYMPY and sympify is not None:
             with suppress(Exception):
                 expr = sympify(text)
@@ -516,7 +524,10 @@ def _to_number(value: Any) -> float | None:
                         return evaluated
         match = _NUMERIC_PATTERN.search(text)
         if match:
-            return _to_number(match.group(0))
+            matched = match.group(0)
+            if matched == text:
+                return None
+            return _to_number(matched)
     return None
 
 
