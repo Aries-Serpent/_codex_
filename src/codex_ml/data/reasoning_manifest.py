@@ -16,6 +16,7 @@ __all__ = [
     "ReasoningCorpusError",
     "build_corpus_selection",
     "get_reasoning_corpus",
+    "available_corpora",
     "list_reasoning_corpora",
 ]
 
@@ -230,6 +231,12 @@ def list_reasoning_corpora() -> list[str]:
     """Return the canonical identifiers for the available corpora."""
 
     return sorted({corpus.name for corpus in _RECORDED_CORPORA})
+
+
+def available_corpora() -> tuple[str, ...]:
+    """Return the canonical identifiers as a tuple for CLI choices."""
+
+    return tuple(list_reasoning_corpora())
 
 
 def get_reasoning_corpus(name: str) -> ReasoningCorpus:

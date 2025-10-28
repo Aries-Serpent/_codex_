@@ -42,6 +42,10 @@ codex-train experiment=debug training.max_epochs=1 training.batch_size=2 \
   data.train_path=data/train.jsonl data.eval_path=data/eval.jsonl \
   logging.tensorboard=false logging.mlflow_enable=false \
   training.output_dir=artifacts/runs/quickstart
+codex reasoning-templates list
+codex-train +reasoning=baseline curriculum.phase_schedule=starter \
+  logging.reasoning_trace=true training.output_dir=artifacts/runs/reasoning-starter
+codex evaluate --config configs/evaluation/reasoning.yaml --metrics-only
 ```
 
 ### Offline-first environment bootstrap

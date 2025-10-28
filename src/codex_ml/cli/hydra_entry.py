@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -9,6 +10,16 @@ from typing import TYPE_CHECKING, Any, Mapping
 
 if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig
+
+from codex_ml.data.reasoning_manifest import list_reasoning_corpora
+
+_CURRICULUM_PRESETS = {
+    "rehearsal": "rehearsal",
+    "difficulty": "difficulty_curriculum",
+    "interleaved": "interleaved_rehearsal",
+}
+
+_CORPUS_CHOICES = tuple(sorted(list_reasoning_corpora()))
 
 
 def _print_missing(pkg: str) -> int:
@@ -50,6 +61,42 @@ def _cfg_to_unified(cfg: Mapping[str, Any]) -> UnifiedTrainingConfig:
     )
 
 
+def _inject_curriculum_flags(argv: list[str]) -> list[str]:
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--curriculum", choices=tuple(sorted(_CURRICULUM_PRESETS)))
+    parser.add_argument("--difficulty-target", dest="curriculum_target")
+    parser.add_argument("--difficulty-cap", dest="difficulty_cap")
+    parser.add_argument("--rehearsal-ratio", type=float, dest="rehearsal_ratio")
+    parser.add_argument("--rehearsal-buffer", type=int, dest="rehearsal_buffer")
+    parser.add_argument("--interleave-every", type=int, dest="interleave_every")
+    if _CORPUS_CHOICES:
+        parser.add_argument("--reasoning-corpus", choices=_CORPUS_CHOICES)
+    else:  # pragma: no cover - fallback when no corpora registered
+        parser.add_argument("--reasoning-corpus")
+
+    namespace, remaining = parser.parse_known_args(argv)
+    overrides = list(remaining)
+
+    if getattr(namespace, "curriculum", None):
+        overrides.append(f"training/continual={_CURRICULUM_PRESETS[str(namespace.curriculum)]}")
+    if getattr(namespace, "curriculum_target", None):
+        overrides.append(f"continual.curriculum.target={namespace.curriculum_target}")
+    if getattr(namespace, "difficulty_cap", None):
+        overrides.append(f"continual.curriculum.difficulty_cap={namespace.difficulty_cap}")
+    if getattr(namespace, "rehearsal_ratio", None) is not None:
+        overrides.append(f"continual.rehearsal.replay_ratio={namespace.rehearsal_ratio}")
+    if getattr(namespace, "rehearsal_buffer", None) is not None:
+        overrides.append(f"continual.rehearsal.buffer_size={int(namespace.rehearsal_buffer)}")
+    if getattr(namespace, "interleave_every", None) is not None:
+        overrides.append(
+            f"continual.rehearsal.interleave_every_n_steps={int(namespace.interleave_every)}"
+        )
+    if getattr(namespace, "reasoning_corpus", None):
+        overrides.append(f"continual.active_corpus={namespace.reasoning_corpus}")
+
+    return overrides
+
+
 def main(argv=None) -> int:
     try:
         import hydra
@@ -79,10 +126,10 @@ def main(argv=None) -> int:
         print(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
         return 0
 
-    overrides = list(argv or [])
+    overrides = _inject_curriculum_flags(list(argv or sys.argv[1:]))
     original_argv = sys.argv[:]
-    if overrides:
-        sys.argv = [original_argv[0] if original_argv else "codex_ml.hydra"] + overrides
+    prog = original_argv[0] if original_argv else "codex_ml.hydra"
+    sys.argv = [prog, *overrides]
     try:
         return _entry()
     finally:
