@@ -1,0 +1,22 @@
+# Template: Step-by-step chain-of-thought supervision with lightweight head.
+defaults:
+  - ../base
+
+training:
+  reasoning:
+    enabled: true
+    head:
+      hidden_size: 768
+      projection_size: 256
+      trace_vocab_size: 64
+      dropout: 0.05
+    objective:
+      mode: chain_of_thought
+      weight: 1.0
+      max_traces_per_epoch: 8
+      log_top_k: 5
+      trace_store: cot_traces.ndjson
+    tool_adapter:
+      enabled: false
+    trace_history: 128
+    log_probability_threshold: 0.2

@@ -1,0 +1,14 @@
+evaluation:
+  dataset_path: data/sample/reasoning/proof_eval.jsonl
+  dataset_format: jsonl
+  prediction_field: prediction
+  target_field: target
+  text_field: input
+  output_dir: artifacts/reasoning/proof
+  report_filename: reasoning_proof_summary.json
+  ndjson_filename: reasoning_proof_records.ndjson
+  metrics_filename: reasoning_proof_metrics.ndjson
+  dataset_name: reasoning-proof
+  metrics:
+    - reasoning/theorem_accuracy
+  seed: 11
