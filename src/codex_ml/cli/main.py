@@ -132,7 +132,7 @@ if typer is not None:
                     "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."
                 )
             preset_path = (
-                Path(__file__).resolve().parents[2]
+                Path(__file__).resolve().parents[3]
                 / "configs"
                 / "training"
                 / "continual"
