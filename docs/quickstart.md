@@ -88,6 +88,25 @@ Expected output:
   "decoded": "Codex makes registries fun!"
 }
 ```
+## 4a. Reasoning template quickstart
+
+`codex` ships reasoning-first presets so you can exercise the roadmap milestones without building a curriculum from scratch.
+
+```bash
+codex reasoning-templates list
+codex-train +reasoning=baseline \
+  curriculum.phase_schedule=starter \
+  logging.reasoning_trace=true \
+  training.output_dir=artifacts/runs/quickstart-reasoning
+codex evaluate --config configs/evaluation/reasoning.yaml \
+  --log-metrics .codex/metrics/reasoning.ndjson \
+  --run-id quickstart-reasoning
+```
+
+The `+reasoning=baseline` overlay activates trace logging, NDJSON ledgers, and evaluator hooks described in
+[`guides/reasoning_overview.md`](guides/reasoning_overview.md). Pair these commands with the bespoke hosting checklist in
+[`deployment/reasoning_pod.md`](deployment/reasoning_pod.md) when graduating a model.
+
 ## 4. Run a deterministic training session
 
 ### Data handling essentials

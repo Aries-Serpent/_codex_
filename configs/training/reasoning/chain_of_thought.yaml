@@ -1,3 +1,4 @@
+# Template: Step-by-step chain-of-thought supervision with lightweight head.
 defaults:
   - ../base
 
