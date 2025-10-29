@@ -6,8 +6,8 @@ Goals:
   - Wrap [BEGIN CONTENT] ... [END CONTENT] blocks in ```text fences (omit markers).
   - Avoid nested/empty code fences that break rendering.
 """
-import sys
 import re
+import sys
 
 text = sys.stdin.read()
 
@@ -33,9 +33,20 @@ while i < len(lines):
         out.append(lines[i])
     i += 1
 
-rendered = "\n".join(out)
-# Remove accidental empty code blocks like ```\n``` (rare but safe to guard)
-rendered = re.sub(r"```[a-zA-Z]*\n```", "", rendered)
+cleaned = []
+idx = 0
+while idx < len(out):
+    line = out[idx]
+    if line.strip().startswith("```"):
+        # Drop truly empty fences like ```lang\n``` while keeping excerpts that start
+        # with a code block. Only skip when the next line immediately closes fence.
+        next_line = out[idx + 1].strip() if idx + 1 < len(out) else None
+        if next_line == "```":
+            idx += 2
+            continue
+    cleaned.append(line)
+    idx += 1
+
+rendered = "\n".join(cleaned)
 
 sys.stdout.write(rendered)
-
