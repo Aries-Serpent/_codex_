@@ -16,6 +16,7 @@ Notes:
 """
 
 from __future__ import annotations
+
 import argparse
 import datetime as dt
 from pathlib import Path
@@ -42,9 +43,7 @@ This survey collects key code/doc surfaces and deployment promises from the spec
 
 TEMPLATE_BODY = """
 ## 4) Ground Truth Artifacts (Normalized)
-```text
-{raw}
-```
+{fence_open}{raw}{fence_close}
 
 ## 5) Docs Parity (Promises vs Assets)
 - Example: `docs/deployment/reasoning_pod.md` → `<FOUND | MISSING>`
@@ -66,8 +65,28 @@ TEMPLATE_BODY = """
 - `<short plan>`
 """
 
+
 def _slugify(s: str) -> str:
     return "".join(ch if ch.isalnum() or ch in ("-", "_") else "-" for ch in s).strip("-")
+
+
+def _fence_delimiters(raw: str, language: str = "text") -> tuple[str, str]:
+    longest_run = 0
+    current_run = 0
+    for ch in raw:
+        if ch == "`":
+            current_run += 1
+            if current_run > longest_run:
+                longest_run = current_run
+        else:
+            current_run = 0
+
+    fence_length = max(3, longest_run + 1)
+    fence = "`" * fence_length
+    opening = f"{fence}{language}\n"
+    closing = f"{fence}\n"
+    return opening, closing
+
 
 def main() -> None:
     ap = argparse.ArgumentParser()
@@ -95,12 +114,20 @@ def main() -> None:
         owner=args.owner,
         slug=slug,
     )
-    body = TEMPLATE_BODY.format(date=today, slug=slug, raw=raw)
+    fence_open, fence_close = _fence_delimiters(raw)
+    body = TEMPLATE_BODY.format(
+        date=today,
+        slug=slug,
+        raw=raw,
+        fence_open=fence_open,
+        fence_close=fence_close,
+    )
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(header + "\n" + body + "\n", encoding="utf-8")
     print(f"Wrote normalized survey to: {out}")
+
 
 if __name__ == "__main__":
     main()

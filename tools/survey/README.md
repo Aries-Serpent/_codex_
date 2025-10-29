@@ -15,10 +15,10 @@
      --owner  "Marc J"
    ```
 3) Commit the generated Markdown and any attachments under:
-   ```
+   ```text
    docs/status_updates/artifacts/<YYYY-MM-DD>-<slug>/
    ```
 
 ## Why this exists
 - Codex responses can be mixed formatting; this tool ensures **triple-fenced** blocks under section 4 so GitHub renders them cleanly.
-- Mirrors the style validated in `survey-0D_base_-and-1926-<YYYY-MM-DD>.md`. 
+- Mirrors the style validated in `survey-0D_base_-and-1926-<YYYY-MM-DD>.md`.
