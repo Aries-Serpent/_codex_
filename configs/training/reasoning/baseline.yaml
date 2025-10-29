@@ -3,11 +3,35 @@
 defaults:
   - ../base
 
-reasoning:
-  template: baseline
+# === CONTROL SURFACE (local-first) ===
+# The fields below are the documented knobs surfaced via `codex repo-map --reasoning`
+# and the deployment dry-run workflow. Adjusting them does not require code changes.
+
+# trace_mode controls how the reasoning harness captures traces during training.
+# Allowed values are "param-slice" (deterministic fingerprint) and
+# "activation-snapshot" (future richer trace capture).
+trace_mode: "param-slice"
 
 curriculum:
-  phase_schedule: starter
+  # preset is the curriculum name exposed to PM/infra reviewers.
+  preset: starter
+  phase_schedule: ${.preset}
+
+evaluation:
+  # preset defines which evaluation suite must pass before promotion.
+  preset: base
+
+deployment:
+  # preset points at the expected dry-run deployment manifest.
+  preset: reasoning_pod
+
+metadata:
+  # rollout_ring gate enforced by codex deploy --dry-run.
+  rollout_ring: 0D_base_
+  owner: reasoning-foundations
+
+reasoning:
+  template: baseline
 
 training:
   reasoning:
