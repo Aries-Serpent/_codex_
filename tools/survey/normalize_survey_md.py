@@ -41,9 +41,12 @@ This survey collects key code/doc surfaces and deployment promises from the spec
 - **Actions recommended:** `<bullets>`
 """
 
+_RAW_SENTINEL = "__RAW_SURVEY_BODY__"
+
+
 TEMPLATE_BODY = """
 ## 4) Ground Truth Artifacts (Normalized)
-{fence_open}{raw}{fence_close}
+{fence_open}__RAW_SURVEY_BODY__{fence_close}
 
 ## 5) Docs Parity (Promises vs Assets)
 - Example: `docs/deployment/reasoning_pod.md` → `<FOUND | MISSING>`
@@ -118,10 +121,10 @@ def main() -> None:
     body = TEMPLATE_BODY.format(
         date=today,
         slug=slug,
-        raw=raw,
         fence_open=fence_open,
         fence_close=fence_close,
     )
+    body = body.replace(_RAW_SENTINEL, raw)
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
