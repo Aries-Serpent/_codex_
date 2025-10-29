@@ -1,20 +1,44 @@
-# Template: Reasoning pod deployment manifest for bespoke reasoning agents.
-# @package _global_
+# Reasoning pod dry-run deployment preset
+# Consumed by `codex deploy --dry-run` to generate a manifest that
+# describes how a bespoke reasoning agent *would* be hosted.
+#
+# This is NOT a production-ready spec. It exists to force review of:
+# - resource shape (CPU/memory/GPU),
+# - curriculum + trace_mode settings,
+# - telemetry expectations,
+# - rollout ring intent.
+#
+# The `--model` argument to `codex deploy` should point at the
+# artifact bundle you want evaluated (e.g. artifacts/runs/...:last).
 
-# Rollout ring communicates intended maturity for this manifest. Update it as
-# the pod graduates between rings (see docs/README.md for definitions).
-rollout_ring: 0D_base_
+pod:
+  name: reasoning-agent-pod
+  image: "ghcr.io/your-org/codex-reasoning:LOCAL_DEV_TAG"
 
-metadata:
-  service: reasoning-pod
-  owners:
-    - reasoning@codex.example
+  resources:
+    cpu_request: "2"
+    cpu_limit: "4"
+    memory_request: "8Gi"
+    memory_limit: "16Gi"
+    gpu_request: "0"    # set to "1" if GPU inference is required
 
-runtime:
-  replicas: 1
-  traces:
-    capture: selective
+  env:
+    - name: CODEX_CURRICULUM_PHASE
+      value: "starter"
+    - name: CODEX_TRACE_MODE
+      value: "param-slice"     # diagnostic fingerprint mode (see trace_mode)
+    - name: CODEX_EVAL_PRESET
+      value: "configs/evaluation/reasoning/base.yaml"
 
-resources:
-  cpu: "2"
-  memory: "8Gi"
+  mounts:
+    - name: model-checkpoints
+      path: /srv/checkpoints
+    - name: eval-ledgers
+      path: /srv/eval
+
+  telemetry:
+    enabled: true
+    sink: "ndjson-local"
+
+rollout_ring: "0D_base_"  # declares target maturity ring (see docs/README.md)
+dry_run_only: true        # DO NOT treat this manifest as production

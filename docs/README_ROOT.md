@@ -37,9 +37,18 @@ Key flows:
 
 1. **Authoring** — Hydra configuration layers resolve reasoning templates from `configs/training/reasoning/*` before model
    instantiation.
-2. **Training** — `codex_ml.trainer.ReasoningTrainer` feeds curriculum phases into accelerator-aware loops with
-   schedule checkpoints recorded under `.codex/reasoning_runs/`.
-3. **Deployment** — Bespoke models are packaged with manifest digests and signed hooks for downstream registries.
+2. **Training** — Training is orchestrated by:
+   - `src/codex_ml/training/unified_training.py`
+     (deterministic seeding, checkpoint / resume plumbing,
+      continual replay strategy hooks),
+   - `src/codex_ml/train_loop.py`
+     (per-run executor that injects the reasoning harness,
+      logs traces, and rotates checkpoints).
+   These modules together are "the trainer".
+   They replace older references to a standalone
+   `codex_ml.trainer.ReasoningTrainer`.
+3. **Deployment** — Bespoke models are packaged with manifest digests
+   and signed hooks for downstream registries.
 
 When modifying the topology, update both the diagram and [`docs/guides/serving_reproducibility.md`](guides/serving_reproducibility.md).
 
@@ -64,8 +73,12 @@ When modifying the topology, update both the diagram and [`docs/guides/serving_r
      --expect manifest.sha256 --tag reasoning/m0/bespoke
    ```
 
-For service integrations, adopt the PodSpec defined in [`docs/deployment/reasoning_pod.md`](deployment/reasoning_pod.md)
-and link the generated manifest to your rollout plan.
+For service integrations, adopt the PodSpec defined in
+[`docs/deployment/reasoning_pod.md`](deployment/reasoning_pod.md).
+This PodSpec is a **dry-run template**, not production hosting.
+Its job is to make resource shape, telemetry, curriculum phase,
+trace capture mode, and rollout ring explicit before anything moves
+toward `main`. Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
 
@@ -105,6 +118,7 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
   --model artifacts/runs/reasoning-starter:last \
   --dry-run
 ```
+This dry run renders a manifest for review only; it never provisions a live pod.
 
 Dry runs confirm manifest parity, bundler signatures, and runtime allowances required by bespoke hosts. Redeployments
 should always be paired with `codex reasoning-templates explain <name>` to document why a template was chosen.

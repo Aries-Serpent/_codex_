@@ -19,8 +19,19 @@ Milestones build sequentially: do not advance without closing action items or do
 
 1. **Authoring** — Hydra defaults stitch reasoning templates from `configs/training/reasoning/` with classical knobs. Updating a
    template requires bumping the manifest digest and notifying deployment partners.
-2. **Training** — `codex_ml.trainer.ReasoningTrainer` wraps accelerator-aware loops and streams traces to
-   `.codex/reasoning_runs/`. Trace payloads mirror the schema described in [`../reference/reasoning_trace.md`](../reference/reasoning_trace.md).
+2. **Training** — Training and trace capture are coordinated by the
+   unified training stack:
+   - `src/codex_ml/training/unified_training.py`
+     exposes configuration for curriculum phases, continual replay,
+     and resume strategy,
+   - `src/codex_ml/train_loop.py`
+     executes a single run, attaches the reasoning harness,
+     and logs traces / checkpoints.
+   When these docs refer to "the trainer", they mean this pair of
+   modules (plus the Hydra overlays in
+   `configs/training/reasoning/*`), not a class literally named
+   `ReasoningTrainer`.
+   Trace payloads mirror the schema described in [`../reference/reasoning_trace.md`](../reference/reasoning_trace.md).
 3. **Evaluation** — Evaluators register under `codex_ml.eval.registry`. The reasoning profile uses tiered NDJSON ledgers
    (`.codex/metrics/reasoning.ndjson`) that feed status reports.
 4. **Deployment** — Serving pods mount bespoke model bundles and rely on `codex deploy` to enforce manifest parity.
