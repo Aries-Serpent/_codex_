@@ -134,7 +134,38 @@ class ReasoningHarness:
     def history_snapshot(self) -> list[Dict[str, Any]]:
         return [dict(item) for item in self.history]
 
+    # Trace capture semantics are configured via `training.reasoning.trace_mode`
+    # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
+    # with config guidance so downstream surfaces stay honest.
+    #
+    #   "param-slice"  (current / legacy behavior)
+    #       Take a deterministic slice of the first trainable parameter tensor,
+    #       flatten it, and log the numbers. This produces a stable diagnostic
+    #       fingerprint for reproducibility / regression tracking only. It is
+    #       *not* an interpretable chain-of-thought or description of internal
+    #       reasoning.
+    #
+    #   "activation-snapshot"  (target / preferred behavior)
+    #       Pool forward-pass activations (hidden states, curriculum phase,
+    #       tool usage metadata, evaluation preset context, etc.) and store
+    #       that snapshot instead. Product / UI should present this as the
+    #       eventual "reasoning trace" experience once implemented.
+    #
+    #   Until activation snapshots ship, anything emitted via "param-slice"
+    #   must be labeled as a diagnostic fingerprint — never a literal reasoning
+    #   transcript.
     def _vectorise_model(self, model: Any) -> torch.Tensor:
+        """Produce a trace vector for logging without altering behavior.
+
+        CURRENT STATE ("param-slice"):
+            Flatten a deterministic slice of the first trainable parameter
+            tensor. Useful for reproducibility and regression tracking.
+            NOT an interpretable reasoning narrative.
+
+        FUTURE STATE ("activation-snapshot"):
+            Capture pooled forward-pass activations with curriculum/tool
+            metadata for downstream analysis.
+        """
         size = int(self.head.cfg.hidden_size)
         try:
             head_device = next(self.head.parameters()).device

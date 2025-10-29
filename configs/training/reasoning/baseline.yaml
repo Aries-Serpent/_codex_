@@ -12,6 +12,26 @@ curriculum:
 training:
   reasoning:
     enabled: true
+    # trace_mode tells the reasoning harness how to record "traces".
+    #
+    #   - "param-slice"
+    #       CURRENT / LEGACY BEHAVIOR.
+    #       Take a deterministic slice of the first trainable parameter
+    #       tensor, flatten it, and log it. This is ONLY a diagnostic
+    #       fingerprint for reproducibility / regression tracking.
+    #       It is NOT an actual chain-of-thought or internal reasoning
+    #       narrative from the model.
+    #
+    #   - "activation-snapshot"
+    #       TARGET / PREFERRED BEHAVIOR.
+    #       Capture pooled forward-pass activations (e.g. hidden states)
+    #       along with metadata:
+    #         * active curriculum phase
+    #         * tool usage (if any)
+    #         * evaluation preset context
+    #       This is the mode we ultimately want to ship to stakeholders.
+    #
+    trace_mode: "param-slice"  # default until activation snapshots land
     trace_history: 128
     log_probability_threshold: 0.15
     objective:
