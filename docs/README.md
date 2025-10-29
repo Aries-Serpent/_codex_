@@ -51,6 +51,46 @@ See [`docs/CONTRIBUTING.md`](./CONTRIBUTING.md#using-operational-templates) for 
 - Use a single fenced `diff` block for proposed patches in prompts/guides.
 - Prefer citations to live repo files when referencing code or config.
 
+## Deployment and Operational Expectations
+
+To generate and review a deployment manifest for a bespoke reasoning agent,
+run a dry-run deploy. Example:
+
+```bash
+codex deploy \
+  --config configs/deploy/reasoning_pod.yaml \
+  --model artifacts/runs/reasoning-starter:last \
+  --dry-run
+```
+
+This renders the "reasoning pod" manifest for inspection. It does **not**
+create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md)
+for what that pod is expected to look like (resources, telemetry, trace
+capture mode, curriculum phase, etc.).
+
+Always keep `--dry-run` in place; manifests must be reviewed before any
+apply/rollout tooling is engaged.
+
+### Rollout rings
+
+This repository uses staged rollout rings to represent maturity and review
+state:
+
+* `0A_base_` / `0B_base_`: active development, unstable knobs.
+* `0C_base_`: integration of multiple features landing together.
+* `0D_base_`: release candidate. Content here should be explainable
+  to Engineering and Product.
+* `main`: canonical internal "alpha product" surface after approval.
+
+When you generate a deployment manifest (`configs/deploy/reasoning_pod.yaml`),
+it includes a `rollout_ring` field. That field is a declaration of intent
+("this artifact is targeting 0D_base_ next"), not permission to ship.
+
+Nothing targeting `main` should be treated as eligible for hosting without:
+1. offline evaluation gates passing,
+2. trace/curriculum settings documented,
+3. explicit signoff.
+
 ## Related
 - Project audit ritual: see `AUDIT_PROMPT.md`
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
