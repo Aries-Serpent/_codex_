@@ -38,6 +38,11 @@ def run_deploy_dry_run(
     if not pod_ring:
         pod_ring = deploy_cfg.get("rollout_ring") if isinstance(deploy_cfg, dict) else None
 
+    if not pod_ring:
+        raise RuntimeError(
+            "Deployment config missing rollout_ring. Declare pod.rollout_ring or rollout_ring."
+        )
+
     run_meta_path = run_metadata_dir / "run_metadata.json"
     if not run_meta_path.exists():
         raise RuntimeError(
