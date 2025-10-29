@@ -66,8 +66,30 @@ def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> Dict[str, str
     return results
 
 
-def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
+def _collect_reasoning_sections(
+    repo_root: Path,
+) -> tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+    """Collect reasoning control-surface entries.
+
+    Returns a tuple of ``(summary, sections)`` where ``summary`` maps dotted
+    control-surface keys (``trace_mode``, ``curriculum.preset`` and friends) to
+    repository sources, while ``sections`` retains the category groupings used by
+    ``--include`` filters.
+    """
+
+    summary: Dict[str, List[str]] = {}
     sections: Dict[str, List[str]] = {}
+
+    def _add_entry(
+        *,
+        section_key: str,
+        summary_key: str | None,
+        rel_path: str,
+        value: str,
+    ) -> None:
+        sections.setdefault(section_key, []).append(f"{rel_path} -> {value}")
+        if summary_key:
+            summary.setdefault(summary_key, []).append(f"{rel_path} -> {value}")
 
     training_cfg = repo_root / "configs" / "training" / "reasoning" / "baseline.yaml"
     if training_cfg.exists():
@@ -77,23 +99,16 @@ def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
         evaluation = None
         metadata_ring = None
         if data:
-            trace_mode = (
-                data.get("trace_mode")
-                or data.get("training", {})
-                .get("reasoning", {})
-                .get("trace_mode")
-            )
-            curriculum = (
-                data.get("curriculum", {}).get("preset")
-                or data.get("curriculum", {}).get("phase_schedule")
+            trace_mode = data.get("trace_mode") or data.get("training", {}).get(
+                "reasoning", {}
+            ).get("trace_mode")
+            curriculum = data.get("curriculum", {}).get("preset") or data.get("curriculum", {}).get(
+                "phase_schedule"
             )
             evaluation = data.get("evaluation", {}).get("preset")
-            metadata_ring = (
-                data.get("metadata", {}).get("rollout_ring")
-                or data.get("training", {})
-                .get("metadata", {})
-                .get("rollout_ring")
-            )
+            metadata_ring = data.get("metadata", {}).get("rollout_ring") or data.get(
+                "training", {}
+            ).get("metadata", {}).get("rollout_ring")
         else:
             extracted = _extract_scalars_from_text(
                 training_cfg, ["trace_mode", "rollout_ring", "preset"]
@@ -107,14 +122,32 @@ def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
 
         rel_path = str(training_cfg.relative_to(repo_root))
         if trace_mode:
-            sections.setdefault("trace_mode", []).append(f"{rel_path} -> {trace_mode}")
+            _add_entry(
+                section_key="trace_mode",
+                summary_key="trace_mode",
+                rel_path=rel_path,
+                value=str(trace_mode),
+            )
         if curriculum:
-            sections.setdefault("curriculum", []).append(f"{rel_path} -> {curriculum}")
+            _add_entry(
+                section_key="curriculum",
+                summary_key="curriculum.preset",
+                rel_path=rel_path,
+                value=str(curriculum),
+            )
         if evaluation:
-            sections.setdefault("evaluation", []).append(f"{rel_path} -> {evaluation}")
+            _add_entry(
+                section_key="evaluation",
+                summary_key="evaluation.preset",
+                rel_path=rel_path,
+                value=str(evaluation),
+            )
         if metadata_ring:
-            sections.setdefault("rollout_ring", []).append(
-                f"{rel_path} -> {metadata_ring}"
+            _add_entry(
+                section_key="rollout_ring",
+                summary_key="metadata.rollout_ring",
+                rel_path=rel_path,
+                value=str(metadata_ring),
             )
 
     deploy_cfg = repo_root / "configs" / "deploy" / "reasoning_pod.yaml"
@@ -141,7 +174,8 @@ def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
                         eval_preset = value
         else:
             scalars = _extract_scalars_from_text(
-                deploy_cfg, ["rollout_ring", "CODEX_TRACE_MODE", "CODEX_CURRICULUM_PHASE", "CODEX_EVAL_PRESET"]
+                deploy_cfg,
+                ["rollout_ring", "CODEX_TRACE_MODE", "CODEX_CURRICULUM_PHASE", "CODEX_EVAL_PRESET"],
             )
             ring = scalars.get("rollout_ring")
             trace = scalars.get("CODEX_TRACE_MODE")
@@ -150,42 +184,97 @@ def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
 
         rel_path = str(deploy_cfg.relative_to(repo_root))
         if ring:
-            sections.setdefault("rollout_ring", []).append(f"{rel_path} -> {ring}")
+            _add_entry(
+                section_key="rollout_ring",
+                summary_key="deployment.rollout_ring",
+                rel_path=rel_path,
+                value=str(ring),
+            )
         if trace:
-            sections.setdefault("trace_mode", []).append(f"{rel_path} -> {trace}")
+            _add_entry(
+                section_key="trace_mode",
+                summary_key="trace_mode",
+                rel_path=rel_path,
+                value=str(trace),
+            )
         if curriculum_phase:
-            sections.setdefault("curriculum", []).append(
-                f"{rel_path} -> {curriculum_phase}"
+            _add_entry(
+                section_key="curriculum",
+                summary_key="curriculum.phase",
+                rel_path=rel_path,
+                value=str(curriculum_phase),
             )
         if eval_preset:
-            sections.setdefault("evaluation", []).append(
-                f"{rel_path} -> {eval_preset}"
+            _add_entry(
+                section_key="evaluation",
+                summary_key="evaluation.preset",
+                rel_path=rel_path,
+                value=str(eval_preset),
             )
 
-    return sections
+    return summary, sections
 
 
-def render_repo_map(
-    *, reasoning: bool = False, include: Sequence[str] | None = None
-) -> str:
+def _format_reasoning_summary(summary: Mapping[str, Sequence[str]]) -> List[str]:
+    """Format the reasoning summary block for display."""
+
+    ordered_keys = [
+        "trace_mode",
+        "curriculum.preset",
+        "curriculum.phase",
+        "evaluation.preset",
+        "metadata.rollout_ring",
+        "deployment.rollout_ring",
+    ]
+    lines: List[str] = []
+
+    def _append_block(key: str) -> None:
+        values = summary.get(key)
+        if not values:
+            return
+        if not lines:
+            lines.append("reasoning_status:")
+        lines.append(f"  {key}:")
+        for entry in values:
+            lines.append(f"    - {entry}")
+
+    for ordered_key in ordered_keys:
+        _append_block(ordered_key)
+
+    for key in summary:
+        if key in ordered_keys:
+            continue
+        _append_block(key)
+
+    return lines
+
+
+def render_repo_map(*, reasoning: bool = False, include: Sequence[str] | None = None) -> str:
     """Render repository metadata with optional reasoning overlays."""
 
     top_level = _list_top_level(REPO_ROOT)
     extras: Dict[str, List[str]] = {"key_files": _list_key_files(REPO_ROOT)}
+    reasoning_status_block: List[str] = []
 
     if reasoning:
-        extras.update(_collect_reasoning_sections(REPO_ROOT))
+        summary, sections = _collect_reasoning_sections(REPO_ROOT)
+        extras.update(sections)
+        reasoning_status_block = _format_reasoning_summary(summary)
 
     sections: List[tuple[str, List[str]]] = []
     if include:
         for key in include:
             if key == "top_level":
                 sections.append(("top_level", top_level))
+            elif key == "reasoning_status" and reasoning_status_block:
+                sections.append(("reasoning_status", reasoning_status_block))
             elif key in extras:
                 sections.append((key, extras[key]))
     else:
         sections.append(("top_level", top_level))
         if reasoning:
+            if reasoning_status_block:
+                sections.append(("reasoning_status", reasoning_status_block))
             if extras.get("key_files"):
                 sections.append(("key_files", extras["key_files"]))
             for key, values in extras.items():
@@ -203,6 +292,10 @@ def render_repo_map(
         if not values:
             continue
         if first and key == "top_level" and not include and not reasoning:
+            lines.extend(values)
+        elif key == "reasoning_status":
+            if not first:
+                lines.append("")
             lines.extend(values)
         else:
             if not first:
