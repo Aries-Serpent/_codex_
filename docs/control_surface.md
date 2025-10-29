@@ -23,16 +23,10 @@ schedule is active for training or replay.
 
 ---
 
-## 2. Trace Capture Mode (`trace_mode`)
-**What it controls:** How traces are recorded when reasoning is enabled.
-
-Modes:
-- `param-slice`: current / legacy. Deterministic slice of the first
-  trainable parameter tensor. This is a diagnostic fingerprint
-  ("is this run reproducible?"), **not** a semantic explanation of the
-  model’s reasoning.
-- `activation-snapshot`: target / preferred. Pooled forward-pass
-  activations plus metadata (curriculum phase, tool usage, eval preset).
+## 2. Trace Capture Toggle (`logging.reasoning_trace`)
+**What it controls:** Whether the reasoning harness records a
+deterministic parameter slice while running. When disabled the harness
+skips trace capture entirely.
 
 **Where defined now:**
 `logging.reasoning_trace` and the reasoning config block in
@@ -40,8 +34,9 @@ Modes:
 implemented in `src/codex_ml/models/reasoning.py`
 (`ReasoningHarness.capture_trace`).
 
-**Intended UI element:** Radio/select with a warning banner when
-`param-slice` is active.
+**Intended UI element:** Boolean toggle. Include helper text clarifying
+that the captured slice is a reproducibility fingerprint, not a semantic
+explanation of reasoning.
 
 ---
 
@@ -105,7 +100,7 @@ The internal alpha product surface is the set:
 ```text
 AlphaProductSurface = {
   curriculum_phase,
-  trace_mode,
+  trace_capture_enabled,
   eval_preset,
   deploy_preset,
   replay_strategy,
