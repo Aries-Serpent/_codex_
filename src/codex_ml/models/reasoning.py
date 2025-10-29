@@ -105,14 +105,11 @@ class ReasoningHarness:
     """Attach reasoning heads and optional tool adapters to a base model.
 
     Product / UI guidance:
-    - ``trace_mode='disabled'`` is the safe baseline. Nothing beyond standard
-      metrics is captured.
-    - ``trace_mode='param-slice'`` is a diagnostic fingerprint only. It helps
-      answer "is this the same model/config?" but it is **not** a narrative of
-      how the model reasoned.
-    - ``trace_mode='activation-snapshot'`` (future) will pool hidden activations
-      plus metadata (curriculum phase, tool usage, evaluation preset) for richer
-      offline audits. Even then the traces remain review-gated.
+    - ``trace_mode='disabled'`` skips capture entirely.
+    - ``trace_mode='weights'`` logs a deterministic summary of trainable
+      weights for reproducibility audits (safe fallback).
+    - ``trace_mode='activations'`` pools forward activations when provided via
+      the training loop. This remains offline-only and review-gated.
 
     Never market emitted traces as chain-of-thought.
     """
@@ -124,6 +121,12 @@ class ReasoningHarness:
     def __post_init__(self) -> None:
         self.history: deque[Dict[str, Any]] = deque(maxlen=self.config.trace_history)
         self.model: nn.Module | None = None
+        trace_mode = str(getattr(self.config, "trace_mode", "weights")).lower()
+        allowed = {"disabled", "weights", "activations"}
+        if trace_mode not in allowed:
+            logger.warning("Unknown trace mode '%s'; defaulting to 'weights'", trace_mode)
+            trace_mode = "weights"
+        self._trace_mode = trace_mode
 
     def attach(self, model: Any) -> Any:
         if isinstance(model, nn.Module):
@@ -147,34 +150,50 @@ class ReasoningHarness:
     def history_snapshot(self) -> list[Dict[str, Any]]:
         return [dict(item) for item in self.history]
 
+    def _pool_hidden_states(
+        self, hidden_states: Any, device: torch.device, size: int
+    ) -> torch.Tensor:
+        tensor = hidden_states
+        if isinstance(tensor, Mapping):
+            for key in ("hidden_states", "last_hidden_state"):
+                if key in tensor:
+                    tensor = tensor[key]
+                    break
+        if isinstance(tensor, (list, tuple)):
+            tensor = tensor[-1]
+        if not torch.is_tensor(tensor):
+            try:
+                tensor = torch.as_tensor(tensor)
+            except Exception:
+                raise TypeError("hidden_states must be convertible to a tensor")
+        tensor = tensor.to(device=device, dtype=torch.float32)
+        if tensor.ndim >= 2:
+            dims = tuple(range(tensor.ndim - 1))
+            tensor = tensor.mean(dim=dims)
+        if tensor.ndim == 0:
+            tensor = tensor.unsqueeze(0)
+        if tensor.numel() >= size:
+            return tensor[:size]
+        buffer = torch.zeros(size, dtype=torch.float32, device=device)
+        buffer[: tensor.numel()] = tensor
+        return buffer
+
     # Trace capture semantics are configured via `training.reasoning.trace_mode`
     # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
     # with config guidance so downstream surfaces stay honest.
-    #
-    #   "disabled" (current baseline)
-    #       Skip trace capture entirely. Use this for day-to-day iteration.
-    #
-    #   "param-slice" (diagnostic fingerprint)
-    #       Take a deterministic slice of the first trainable parameter tensor
-    #       and log it. Useful for reproducibility / regression audits only.
-    #       Not an interpretable chain-of-thought.
-    #
-    #   "activation-snapshot" (planned offline introspection)
-    #       Pool forward-pass activations plus metadata (curriculum phase,
-    #       tool usage, evaluation preset, etc.) for richer analysis.
-    def _vectorise_model(self, model: Any) -> torch.Tensor:
-        """Produce a trace vector for logging when traces are enabled.
+    def _vectorise_model(self, model: Any, *, hidden_states: Any | None = None) -> torch.Tensor:
+        """Produce a trace vector for logging when traces are enabled."""
 
-        Current implementation (``trace_mode='param-slice'``) flattens a
-        deterministic slice of the first trainable parameter tensor to produce
-        a reproducibility fingerprint. Future "activation-snapshot" work will
-        pool hidden activations together with curriculum/tool metadata.
-        """
         size = int(self.head.cfg.hidden_size)
         try:
             head_device = next(self.head.parameters()).device
         except StopIteration:  # pragma: no cover - Linear modules always have params
             head_device = torch.device("cpu")
+        if self._trace_mode == "activations" and hidden_states is not None:
+            try:
+                return self._pool_hidden_states(hidden_states, head_device, size)
+            except Exception as exc:
+                logger.warning("Activation vectorization failed; falling back to weights: %s", exc)
         buffer = torch.zeros(size, dtype=torch.float32, device=head_device)
         if not isinstance(model, nn.Module):
             return buffer
@@ -198,9 +217,13 @@ class ReasoningHarness:
         epoch: int,
         step: int,
         top_k: int,
+        step_ctx: Mapping[str, Any] | None = None,
     ) -> Dict[str, Any]:
+        hidden_states = None
+        if isinstance(step_ctx, Mapping):
+            hidden_states = step_ctx.get("hidden_states")
         with torch.no_grad():
-            embedding = self._vectorise_model(model)
+            embedding = self._vectorise_model(model, hidden_states=hidden_states)
             logits = self.head(embedding)
             summary = self.head.summarise(logits, top_k)
             payload: Dict[str, Any] = {
@@ -213,6 +236,7 @@ class ReasoningHarness:
                     if embedding.numel()
                     else 0.0
                 ),
+                "trace_mode": self._trace_mode,
             }
             if self.tool_adapter is not None and self.tool_adapter.cfg.enabled:
                 tool_logits, pooled = self.tool_adapter(embedding)

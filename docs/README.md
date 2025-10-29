@@ -12,6 +12,11 @@ hands-on guides that keep bespoke model hosting disciplined.
 - **Bespoke hosting expectations** — Align ops and status updates with [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md)
   and the rollout checklists under [`templates/`](./templates/README.md).
 
+### Reasoning Pod Deployment
+Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and
+[`../configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance.
+These assets are designed for offline validation and do not require hosted services.
+
 ## 🚀 Quick links for reasoning teams
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the
   [`codex_cli` help](../src/codex_cli/app.py) for command details.

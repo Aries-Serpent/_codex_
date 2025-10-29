@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as _dt
+import json
 import subprocess
 import sys
 import textwrap
@@ -53,6 +54,10 @@ def _write_log(path: Path, content: str) -> None:
 
 def _artifacts_root() -> Path:
     return Path(".codex/status")
+
+
+def _ensure_parent(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
 
 
 def _scan_repo(root: Path) -> Dict[str, object]:
@@ -93,6 +98,14 @@ def main(argv: List[str] | None = None) -> int:
         "--save-logs",
         action="store_true",
         help="Write per-tool logs under .codex/status/ and reference them at the end of the report",
+    )
+    ap.add_argument(
+        "--emit-md",
+        help="Optional path to write the Markdown report (in addition to --out)",
+    )
+    ap.add_argument(
+        "--emit-json",
+        help="Optional path to write a JSON ledger with gate statuses",
     )
     args = ap.parse_args(argv)
 
@@ -225,7 +238,7 @@ def main(argv: List[str] | None = None) -> int:
         sections.append(
             f"\n> Provenance: generated locally by `tools/status_report.py` (v{VERSION}) at {generated_at}.\n"
         )
-        Path(args.out).write_text("\n".join(sections), encoding="utf-8")
+        report_text = "\n".join(sections)
     else:
         template_path = Path(args.template)
         template_text = template_path.read_text(encoding="utf-8")
@@ -269,7 +282,49 @@ def main(argv: List[str] | None = None) -> int:
         if args.save_logs:
             footer = "\n\n**Artifacts:** logs saved under `.codex/status/`.\n"
 
-        Path(args.out).write_text(template_text + footer, encoding="utf-8")
+        report_text = template_text + footer
+
+    print(report_text)
+
+    out_path = Path(args.out)
+    _ensure_parent(out_path)
+    out_path.write_text(report_text, encoding="utf-8")
+
+    report_json = {
+        "version": VERSION,
+        "generated": generated_at,
+        "gates": [{"name": name, "status": state} for name, state in gate_results],
+        "artifacts": {
+            "out": str(out_path),
+            "emit_md": args.emit_md,
+            "emit_json": args.emit_json,
+        },
+    }
+    if args.summary:
+        report_json["summary_input"] = args.summary
+    if args.selected is not None:
+        report_json["selected_candidate"] = args.selected
+    if args.branch:
+        report_json["branch"] = args.branch
+    if args.pr:
+        report_json["pr"] = args.pr
+    if args.template:
+        report_json["template"] = str(args.template)
+
+    if args.emit_md:
+        md_path = Path(args.emit_md)
+        _ensure_parent(md_path)
+        md_path.write_text(
+            f"<!-- generated {generated_at} UTC -->\n{report_text}", encoding="utf-8"
+        )
+
+    if args.emit_json:
+        json_path = Path(args.emit_json)
+        _ensure_parent(json_path)
+        json_path.write_text(
+            json.dumps(report_json, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
 
     # Exit non-zero if any mandatory gate failed
     guard_failed = rc_g is not None and rc_g != 0

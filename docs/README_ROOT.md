@@ -16,6 +16,15 @@ architecture references, and the bespoke-model hosting workflow that underpins e
 | Launch a bespoke model | [Hosting bespoke reasoning models](#hosting-bespoke-reasoning-models) |
 | Train/evaluate/deploy | [Guided pipelines](#guided-reasoning-pipelines) |
 
+### Repo Map (Reasoning-Focused)
+You can now surface a reasoning-focused repository map:
+
+```bash
+codex repo-map --reasoning
+```
+
+This highlights reasoning overlays, evaluation presets, and trace-capture knobs.
+
 ## Reasoning roadmap milestones
 
 | Milestone | Focus | Target signal |
@@ -119,7 +128,9 @@ For service integrations, adopt the PodSpec defined in
 This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
-toward `main`. Link the generated manifest to your rollout plan.
+toward `main`. A dry-run configuration is provided at
+[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
+Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
 

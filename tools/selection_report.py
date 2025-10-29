@@ -14,10 +14,15 @@ import json
 import re
 import subprocess
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Any, Dict, Iterable, List, Tuple
 
 VERSION = "0.1.0"
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def _run(cmd: List[str]) -> Tuple[int, str, str]:
@@ -32,6 +37,145 @@ def _bullets(items: Iterable[str]) -> str:
 
 def _read_json(path: Path) -> Dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _ensure_parent(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
+def _timestamp() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+
+
+def _run_config_mode(args: argparse.Namespace) -> int:
+    if not args.dry_run:
+        sys.stderr.write("[selection] --dry-run is required when using --config\n")
+        return 1
+
+    config_path = Path(args.config)
+    if not config_path.exists():
+        sys.stderr.write(f"[selection] config not found: {config_path}\n")
+        return 1
+
+    payload: Dict[str, Any] | None = None
+    parse_errors: List[Exception] = []
+
+    try:
+        from omegaconf import OmegaConf  # type: ignore
+
+        conf = OmegaConf.load(config_path)
+        data = OmegaConf.to_container(conf, resolve=True)
+        if isinstance(data, dict):
+            payload = data
+    except Exception as exc:  # noqa: BLE001
+        parse_errors.append(exc)
+
+    if payload is None:
+        try:
+            import yaml  # type: ignore
+
+            with config_path.open("r", encoding="utf-8") as handle:
+                data = yaml.safe_load(handle)
+            if isinstance(data, dict):
+                payload = data
+        except Exception as exc:  # noqa: BLE001
+            parse_errors.append(exc)
+
+    if payload is None:
+        detail = f": {parse_errors[0]}" if parse_errors else ""
+        sys.stderr.write(f"[selection] failed to parse config{detail}\n")
+        return 1
+
+    kind = str(payload.get("kind") or "unknown")
+    name = str(payload.get("name") or "unnamed")
+    version = payload.get("version")
+    image = payload.get("image") if isinstance(payload.get("image"), dict) else {}
+    image_repo = image.get("repository") if isinstance(image, dict) else None
+    image_tag = image.get("tag") if isinstance(image, dict) else None
+    resources = payload.get("resources") if isinstance(payload.get("resources"), dict) else {}
+    reasoning = payload.get("reasoning") if isinstance(payload.get("reasoning"), dict) else {}
+    trace_capture = (
+        reasoning.get("trace_capture") if isinstance(reasoning.get("trace_capture"), dict) else {}
+    )
+    trace_mode = trace_capture.get("mode") if isinstance(trace_capture, dict) else None
+    evaluation_preset = reasoning.get("evaluation_preset")
+    curriculum_template = reasoning.get("curriculum_template")
+    artifacts = payload.get("artifacts") if isinstance(payload.get("artifacts"), dict) else {}
+    notes = payload.get("notes")
+    if isinstance(notes, list):
+        note_items = [str(item) for item in notes]
+    elif isinstance(notes, str):
+        note_items = [notes]
+    else:
+        note_items = []
+
+    lines: List[str] = []
+    lines.append(f"# Deployment Dry-Run — {name}")
+    lines.append("")
+    lines.append("## Overview")
+    lines.append(f"- Kind: {kind}")
+    lines.append(f"- Version: {version if version is not None else '-'}")
+    image_desc = "-"
+    if image_repo or image_tag:
+        image_desc = f"{image_repo or ''}:{image_tag or ''}".strip(":")
+    lines.append(f"- Image: {image_desc}")
+    lines.append(f"- Config: `{config_path}`")
+    lines.append("")
+    lines.append("## Resources")
+    if resources:
+        for key, value in resources.items():
+            lines.append(f"- {key}: {value}")
+    else:
+        lines.append("- (none declared)")
+    lines.append("")
+    lines.append("## Reasoning Knobs")
+    lines.append(f"- Trace capture mode: {trace_mode or '-'}")
+    lines.append(f"- Evaluation preset: {evaluation_preset or '-'}")
+    lines.append(f"- Curriculum template: {curriculum_template or '-'}")
+    lines.append("")
+    lines.append("## Artifact Targets")
+    lines.append(f"- Markdown: {artifacts.get('emit_markdown', '-')}")
+    lines.append(f"- JSON: {artifacts.get('emit_json', '-')}")
+    if note_items:
+        lines.append("")
+        lines.append("## Notes")
+        lines.extend(_bullets(note_items).splitlines())
+
+    report_text = "\n".join(lines)
+    print(report_text)
+
+    md_targets = {Path(args.out)}
+    if args.emit_md:
+        md_targets.add(Path(args.emit_md))
+    for target in md_targets:
+        _ensure_parent(target)
+        target.write_text(report_text, encoding="utf-8")
+
+    json_payload: Dict[str, Any] = {
+        "mode": "dry-run",
+        "generated": _timestamp(),
+        "config_path": str(config_path),
+        "summary": {
+            "kind": kind,
+            "name": name,
+            "version": version,
+            "image": {"repository": image_repo, "tag": image_tag},
+            "resources": resources,
+            "trace_capture_mode": trace_mode,
+            "evaluation_preset": evaluation_preset,
+            "curriculum_template": curriculum_template,
+            "artifacts": artifacts,
+            "notes": note_items,
+        },
+    }
+    if args.emit_json:
+        json_path = Path(args.emit_json)
+        _ensure_parent(json_path)
+        json_path.write_text(
+            json.dumps(json_payload, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+
+    return 0
 
 
 def _extract_assistant_keys(turn_mapping: Dict[str, object]) -> List[str]:
@@ -118,10 +262,27 @@ def _collect_text(turn: Dict[str, object]) -> str:
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate a local SELECTION_REPORT.md")
-    parser.add_argument("--summary", required=True, help="Path to assistant summary JSON")
-    parser.add_argument("--out", default="SELECTION_REPORT.md", help="Output markdown path")
+    parser = argparse.ArgumentParser(
+        description="Generate a local SELECTION_REPORT.md or deploy dry-run report"
+    )
+    parser.add_argument("--summary", help="Path to assistant summary JSON (status selection mode)")
+    parser.add_argument("--config", help="Path to deployment preset YAML (dry-run mode)")
+    parser.add_argument("--dry-run", action="store_true", help="Required flag when using --config")
+    parser.add_argument("--emit-md", help="Optional path to write Markdown output in dry-run mode")
+    parser.add_argument("--emit-json", help="Optional path to write JSON output in dry-run mode")
+    parser.add_argument(
+        "--out",
+        default="SELECTION_REPORT.md",
+        help="Output markdown path (selection mode or fallback)",
+    )
     args = parser.parse_args(argv)
+
+    if bool(args.summary) == bool(args.config):
+        parser.error("Provide exactly one of --summary or --config")
+    if args.config:
+        return _run_config_mode(args)
+    if not args.summary:
+        parser.error("--summary is required when --config is not provided")
 
     # 0) Validate json structure
     path = Path(args.summary)
