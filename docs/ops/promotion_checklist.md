@@ -84,3 +84,25 @@ Promotion from `0D_base_` toward `main` may proceed ONLY if:
 
 When all of the above boxes are checked, merge to `main` is allowed.
 If any box is unchecked, promotion is blocked.
+
+---
+
+## 7. Control surface / future UI contract
+The future "control surface" (front-end knobs for Product / Infra) is expected to read
+exactly the fields surfaced by:
+
+```bash
+python -m codex_ml.cli.codex_cli status-report \
+  --run-metadata-dir runs/train_loop
+```
+
+Specifically:
+- `rollout_ring`
+- `knobs.trace_mode`
+- `knobs.curriculum_preset`
+- `knobs.evaluation_preset`
+- `knobs.deployment_preset`
+
+These are considered the user-facing adjustable knobs for staged reasoning systems.
+If any of these values are missing or clearly wrong, promotion MUST pause because the
+front-end would not know what it's shipping.
