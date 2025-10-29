@@ -104,11 +104,13 @@ class EvaluationDependencyError(ImportError):
         )
 
 
-def _missing_dependencies(require_transformers: bool = False) -> list[str]:
+def _missing_dependencies(
+    require_transformers: bool = False, *, require_datasets: bool = False
+) -> list[str]:
     missing: list[str] = []
     if not _HAS_TORCH:
         missing.append("torch")
-    if not _HAS_DATASETS:
+    if require_datasets and not _HAS_DATASETS:
         missing.append("datasets")
     if require_transformers and not _HAS_TRANSFORMERS:
         missing.append("transformers")
@@ -116,7 +118,7 @@ def _missing_dependencies(require_transformers: bool = False) -> list[str]:
 
 
 def evaluate_model(model, tokenizer, texts: Iterable[str]) -> dict[str, float]:
-    missing = _missing_dependencies()
+    missing = _missing_dependencies(require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
     ds = Dataset.from_dict({"text": list(texts)})
@@ -353,7 +355,7 @@ def evaluate_dataloader(
 
 
 def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
-    missing = _missing_dependencies(require_transformers=True)
+    missing = _missing_dependencies(require_transformers=True, require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
     tokenizer = load_from_pretrained(
