@@ -27,7 +27,7 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Mapping, Optional, Sequence
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
@@ -39,7 +39,17 @@ from codex_ml.config import (
     ToolAdapterConfig,
 )
 from codex_ml.logging.ndjson_logger import is_legacy_mode
-from codex_ml.models.reasoning import ReasoningHarness, attach_reasoning_adapters
+
+if TYPE_CHECKING:
+    from codex_ml.models.reasoning import ReasoningHarness
+
+try:
+    from codex_ml.models.reasoning import attach_reasoning_adapters
+
+    _HAS_REASONING_ADAPTERS = True
+except Exception:  # noqa: BLE001
+    attach_reasoning_adapters = None  # type: ignore[assignment]
+    _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
 from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
@@ -301,6 +311,10 @@ def _initialize_reasoning_runtime(
     if raw_cfg and not _HAS_TORCH:
         raise ImportError(
             "Reasoning adapters require torch; install the dependency before enabling training.reasoning"
+        )
+    if raw_cfg and not _HAS_REASONING_ADAPTERS:
+        raise ImportError(
+            "Reasoning adapters are unavailable; install optional reasoning dependencies before enabling training.reasoning",
         )
     try:
         reasoning_cfg = _coerce_reasoning_config(raw_cfg)
