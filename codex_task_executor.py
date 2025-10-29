@@ -770,13 +770,19 @@ class CodexTaskExecutor:
             )
             hook = "def tests("
             if hook in nox_text and "_install_with_lock" not in nox_text and not self.dry_run:
-                updated = (
-                    addition
-                    + "\n"
-                    + nox_text.replace(hook, f"{hook}\n    _install_with_lock(session)\n")
-                )
-                nox_path.write_text(updated, encoding="utf-8")
-                results["lockfile_enforced"] = True
+                hook_index = nox_text.find(hook)
+                line_break = nox_text.find("\n", hook_index)
+                if line_break == -1:
+                    results["lockfile_enforced"] = False
+                else:
+                    updated_tests = (
+                        nox_text[: line_break + 1]
+                        + "    _install_with_lock(session)\n"
+                        + nox_text[line_break + 1 :]
+                    )
+                    updated = addition + "\n" + updated_tests
+                    nox_path.write_text(updated, encoding="utf-8")
+                    results["lockfile_enforced"] = True
             else:
                 results["lockfile_enforced"] = False
         else:
