@@ -64,8 +64,12 @@ When modifying the topology, update both the diagram and [`docs/guides/serving_r
      --expect manifest.sha256 --tag reasoning/m0/bespoke
    ```
 
-For service integrations, adopt the PodSpec defined in [`docs/deployment/reasoning_pod.md`](deployment/reasoning_pod.md)
-and link the generated manifest to your rollout plan.
+For service integrations, adopt the PodSpec defined in
+[`docs/deployment/reasoning_pod.md`](deployment/reasoning_pod.md).
+This PodSpec is a **dry-run template**, not production hosting.
+Its job is to make resource shape, telemetry, curriculum phase,
+trace capture mode, and rollout ring explicit before anything moves
+toward `main`. Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
 
@@ -105,6 +109,7 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
   --model artifacts/runs/reasoning-starter:last \
   --dry-run
 ```
+This dry run renders a manifest for review only; it never provisions a live pod.
 
 Dry runs confirm manifest parity, bundler signatures, and runtime allowances required by bespoke hosts. Redeployments
 should always be paired with `codex reasoning-templates explain <name>` to document why a template was chosen.
