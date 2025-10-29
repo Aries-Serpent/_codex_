@@ -28,6 +28,29 @@ architecture references, and the bespoke-model hosting workflow that underpins e
 Track milestone burndown using the `reasoning_status` table exported by `codex repo-map --reasoning`. For backlog triage,
 anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
 
+### Control surface knobs and promotion checklist
+
+`codex repo-map --reasoning` surfaces a shared set of knobs defined in
+[`configs/training/reasoning/baseline.yaml`](../configs/training/reasoning/baseline.yaml):
+
+- `trace_mode`
+- `curriculum.preset`
+- `evaluation.preset`
+- `deployment.preset`
+- `metadata.rollout_ring`
+
+Every smoke run of the training loop writes machine-readable artifacts under `runs/train_loop/`:
+
+- `run_metadata.json` — captures `metadata.*`, the selected presets, and the rollout ring.
+- `reasoning.json` — snapshot of the reasoning harness configuration plus runtime summary.
+- `evaluation.json` — evaluation preset enforced for the run.
+
+Promotion toward `main` requires:
+
+1. The evaluation preset to pass (or carry explicit sign-off in status reports).
+2. `metadata.rollout_ring` declared in the training config and matching the target pod ring.
+3. `codex deploy --dry-run` to succeed, which enforces the ring match between training output and `configs/deploy/reasoning_pod.yaml`.
+
 ## Architecture at a glance
 
 The canonical topology is captured in [`docs/diagrams/architecture.svg`](diagrams/architecture.svg). Pair it with the

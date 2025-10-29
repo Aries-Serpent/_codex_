@@ -56,3 +56,18 @@ def test_repo_map_lists_visible_top_level_entries() -> None:
     for entry in entries:
         name = entry.rstrip("/")
         assert (repo_root / name).exists()
+
+
+def test_repo_map_reasoning_view_includes_control_surface() -> None:
+    _ensure_config_settings_stub()
+
+    from codex_ml.cli.codex_cli import codex
+
+    runner = CliRunner()
+    result = runner.invoke(codex, ["repo-map", "--reasoning"])
+
+    assert result.exit_code == 0
+    output = result.output
+    assert "reasoning_status:" in output
+    assert "trace_mode" in output
+    assert "metadata.rollout_ring" in output
