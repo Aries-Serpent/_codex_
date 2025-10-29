@@ -241,6 +241,7 @@ class ReasoningConfig:
     objective: ReasoningObjectiveConfig = field(default_factory=ReasoningObjectiveConfig)
     trace_history: int = 64
     log_probability_threshold: float | None = None
+    trace_mode: str = "param-slice"
 
     def validate(self, path: str = "training.reasoning") -> None:
         if not self.enabled:
@@ -258,6 +259,13 @@ class ReasoningConfig:
                 f"{path}.log_probability_threshold",
                 "must be within (0, 1] when provided",
                 self.log_probability_threshold,
+            )
+        allowed_trace_modes = {"param-slice", "activation-snapshot"}
+        if self.trace_mode not in allowed_trace_modes:
+            raise ConfigError(
+                f"{path}.trace_mode",
+                f"must be one of {sorted(allowed_trace_modes)}",
+                self.trace_mode,
             )
 
     @classmethod
