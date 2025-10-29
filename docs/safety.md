@@ -48,6 +48,28 @@ Apply the overrides by passing the YAML string to `sanitize_prompt` (or wiring
 them into the `SafetyConfig` used by training/evaluation tooling). Invalid or
 malicious YAML is ignored and the base policy remains in effect.
 
+### CLI defaults
+
+Training and evaluation entrypoints now invoke the sanitiser automatically. The
+Hydra training profile exposes `training.sanitize_prompts` (default: `true`),
+while the evaluation defaults expose a top-level `sanitize_prompts` flag. When
+enabled, datasets embedded in the config (for example
+`dataset.train_texts` or `dataset.prompts`) are rewritten in-memory with their
+redacted counterparts before the run starts. The sanitisation code is wrapped in
+`try/except` blocks so that environments without the optional `codex_ml.safety`
+module still execute successfully.
+
+Disable sanitisation only when working with trusted fixtures:
+
+```bash
+python -m codex_ml.cli.train training.sanitize_prompts=false
+python -m codex_ml.cli.evaluate sanitize_prompts=false
+```
+
+Doing so preserves raw prompts in the training/evaluation loop, so the run log
+will retain sensitive strings. Always review and scrub generated artifacts
+before sharing them externally.
+
 ## Local secret scanning
 
 Use the lightweight scanner to spot obvious secrets before pushing changes:

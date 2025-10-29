@@ -15,3 +15,13 @@ Additional tooling:
 * `nox -s sast` — Bandit, Semgrep (local rules), and `pip-audit`.
 * `CODEX_COV_FLOOR=75 nox -s coverage` — bump the coverage floor for focused sweeps.
 * `pre-commit run --all-files` — formatters and secret detection.
+
+## Batch runner
+
+Instead of invoking each gate manually you can rely on the bundled harness:
+
+```bash
+python .codex/scripts/local_ci.py --full
+```
+
+Use `--fast` to skip the structural checks when iterating quickly, `--list` to inspect the underlying commands, or `--continue-on-failure` to gather all failures in a single pass.

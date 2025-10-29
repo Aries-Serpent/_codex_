@@ -1,0 +1,32 @@
+# Template: Baseline reasoning overlay enabling traces and curriculum hooks.
+# @package _global_
+defaults:
+  - ../base
+
+reasoning:
+  template: baseline
+
+curriculum:
+  phase_schedule: starter
+
+training:
+  reasoning:
+    enabled: true
+    trace_history: 128
+    log_probability_threshold: 0.15
+    objective:
+      mode: chain_of_thought
+      weight: 1.0
+      max_traces_per_epoch: 6
+      log_top_k: 5
+      trace_store: reasoning_traces.ndjson
+    head:
+      hidden_size: 768
+      projection_size: 256
+      trace_vocab_size: 64
+      dropout: 0.05
+    tool_adapter:
+      enabled: false
+
+logging:
+  reasoning_trace: true

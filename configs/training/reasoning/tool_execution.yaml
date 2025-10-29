@@ -1,0 +1,30 @@
+# Template: Tool-augmented reasoning with explicit supervision on tool calls.
+defaults:
+  - ../base
+
+training:
+  reasoning:
+    enabled: true
+    head:
+      hidden_size: 1024
+      projection_size: 512
+      trace_vocab_size: 48
+      dropout: 0.08
+    objective:
+      mode: tool_execution
+      weight: 0.7
+      tool_supervision_weight: 2.5
+      max_traces_per_epoch: 6
+      log_top_k: 3
+      trace_store: tool_traces.ndjson
+    tool_adapter:
+      enabled: true
+      tools:
+        - browser
+        - python_repl
+        - calculator
+      pooling: cls
+      temperature: 0.7
+      hidden_size: 256
+    trace_history: 256
+    log_probability_threshold: 0.1

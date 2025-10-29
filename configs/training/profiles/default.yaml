@@ -8,6 +8,8 @@ device: null
 dtype: null
 amp: false
 
+sanitize_prompts: true
+
 model_name: null
 
 lora:

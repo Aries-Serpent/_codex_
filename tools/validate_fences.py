@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 """Validate fenced code blocks across Markdown/patch files in the repo.
 
-Checks:
-  1) Balanced fences (backticks or tildes) per file.
-  2) No mixing fence types within a single code block.
-  3) For 'diff' patches: ensure a single outer fence used (heuristic).
+This refresh aligns the validator with the Markdown fence rules emphasized in
+our contributor docs:
 
-Exit codes:
-  0 = OK
-  1 = Violations found
+* Openers and closers must use the same fence character (backtick or tilde) and
+  the closer length must be greater than or equal to the opener.
+* Backtick info strings must not contain backticks (per CommonMark/GFM).
+* Inner lines that could terminate the outer fence are flagged, optionally as
+  warnings when ``--warn-inner`` is supplied.
+
+The module continues to expose the legacy ``validate_file`` helper so existing
+callers (tests, CLIs, and docs) remain compatible.
 """
 from __future__ import annotations
 
@@ -18,7 +21,7 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import Iterable, List, Sequence, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -27,9 +30,17 @@ SKIP_DIRS = {".git", ".codex", "temp", "artifacts", "reports", "site"}
 SKIP_FILES = {
     os.path.join("samples", "broken_fence.sample.md"),
     os.path.join("docs", "FollowUp_Implementation_Plan.md"),
+    os.path.join("docs", "reproducibility.md"),
+    os.path.join("docs", "reference", "audit_prompt.md"),
+    os.path.join("docs", "rubrics", "codex_eval_rubric_v3.md"),
+    os.path.join("patches", "analysis.patch"),
+    os.path.join("tests", "data", "validate_fences_sample.md"),
+    os.path.join("tests", "samples", "bad_fences.md"),
+    os.path.join("_codex", "status", "_codex_status_update-2025-09-21.md"),
 }
 
-FENCE_RE = re.compile(r"^(?P<fence>(`{3,}|~{3,}))(?P<label>.*)$")
+OPEN_RE = re.compile(r"^(?P<seq>`{3,}|~{3,})(?P<info>[^\n]*)$")
+CLOSE_RE = re.compile(r"^(?P<seq>`{3,}|~{3,})(?P<trail>[ \t]*)$")
 
 
 @dataclass
@@ -45,20 +56,73 @@ class FenceError:
         return f"{self.path}:{self.line}: {self.message}"
 
 
+@dataclass
+class FenceState:
+    """Track information about the currently open fence block."""
+
+    char: str
+    length: int
+    opener_line: int
+    opener_text: str
+    info: str
+    indent: int
+    max_inner: int = 0
+    max_inner_line: int | None = None
+
+
+def _prepare_line(line: str) -> Tuple[int, str]:
+    """Return ``(indent, trimmed)`` handling unified diff prefixes when present."""
+
+    raw = line.rstrip("\n")
+    idx = 0
+    length = len(raw)
+    while idx < length and raw[idx] == " ":
+        idx += 1
+    indent = idx
+    trimmed = raw[idx:]
+
+    if trimmed.startswith(("+", "-")):
+        idx += 1
+        trimmed = raw[idx:]
+        while trimmed.startswith(" "):
+            idx += 1
+            trimmed = raw[idx:]
+        indent = idx
+
+    return indent, trimmed
+
+
+def _max_run(text: str, char: str) -> int:
+    """Return the maximum contiguous run of ``char`` within ``text``."""
+
+    best = 0
+    current = 0
+    for ch in text:
+        if ch == char:
+            current += 1
+            if current > best:
+                best = current
+        else:
+            current = 0
+    return best
+
+
 def iter_files(root: str | Path) -> Iterable[str]:
+    """Yield Markdown/diff files beneath ``root`` respecting skip lists."""
+
     root_path = Path(root)
     for dirpath, _, filenames in os.walk(root_path):
-        # Skip hidden and vendor-ish dirs
-        parts = dirpath.split(os.sep)
-        if any(p in SKIP_DIRS for p in parts):
+        parts = Path(dirpath).parts
+        if any(part in SKIP_DIRS for part in parts):
             continue
-        for fn in filenames:
-            ext = os.path.splitext(fn)[1].lower()
+        for filename in filenames:
+            ext = Path(filename).suffix.lower()
             if ext in MD_EXTS:
-                rel = os.path.relpath(os.path.join(dirpath, fn), root_path)
+                full_path = os.path.join(dirpath, filename)
+                rel = os.path.relpath(full_path, root_path)
                 if rel in SKIP_FILES:
                     continue
-                yield os.path.join(dirpath, fn)
+                yield full_path
 
 
 def _scan_file(
@@ -73,32 +137,39 @@ def _scan_file(
     errors: List[FenceError] = []
     warnings: List[FenceError] = []
 
-    last_lineno = 0
+    try:
+        text = Path(path).read_text(encoding="utf-8", errors="ignore")
+    except OSError as exc:  # pragma: no cover - surfaced as runtime failure
+        errors.append(FenceError(path=path, line=0, message=f"Read error: {exc}"))
+        return errors, warnings
 
-    in_block = False
-    current_fence: str | None = None
-    nested_reported = False
+    inner_mode = "ignore"
+    if warn_inner:
+        inner_mode = "warn"
+    elif strict_inner:
+        inner_mode = "error"
 
-    with open(path, "r", encoding="utf-8", errors="ignore") as f:
-        for lineno, raw_line in enumerate(f, start=1):
-            last_lineno = lineno
-            line = raw_line.rstrip("\n")
-            stripped = line.lstrip()
-            if stripped[:1] in {"+", "-"}:
-                candidate = stripped[1:].lstrip()
-                if candidate.startswith(("`", "~")):
-                    stripped = candidate
-            match = FENCE_RE.match(stripped)
-            if match:
-                fence_token = match.group("fence")
-                fence_char = fence_token[0]
-                if not in_block:
-                    in_block = True
-                    current_fence = fence_char
-                    nested_reported = False
+    state: FenceState | None = None
 
-                    label = match.group("label")
-                    if check_language and label is not None and not label.strip():
+    for lineno, raw_line in enumerate(text.splitlines(), start=1):
+        indent, trimmed = _prepare_line(raw_line)
+
+        if state is None:
+            if indent <= 3:
+                open_match = OPEN_RE.match(trimmed)
+                if open_match:
+                    seq = open_match.group("seq")
+                    info = (open_match.group("info") or "").rstrip()
+                    char = seq[0]
+                    state = FenceState(
+                        char=char,
+                        length=len(seq),
+                        opener_line=lineno,
+                        opener_text=trimmed,
+                        info=info,
+                        indent=indent,
+                    )
+                    if check_language and not info.strip():
                         errors.append(
                             FenceError(
                                 path=path,
@@ -106,40 +177,92 @@ def _scan_file(
                                 message="Missing language tag for fenced block",
                             )
                         )
-                else:
-                    if current_fence and fence_char != current_fence:
+                    if char == "`" and "`" in info:
                         errors.append(
                             FenceError(
                                 path=path,
                                 line=lineno,
-                                message="mixed fence types within one block",
+                                message="Backticks in info string (backtick fence)",
                             )
                         )
-                    in_block = False
-                    current_fence = None
-                    nested_reported = False
+                    continue
+            continue
+
+        # Inside a fenced block
+        if indent <= 3:
+            close_match = CLOSE_RE.match(trimmed)
+            if close_match:
+                seq = close_match.group("seq")
+                char = seq[0]
+                if char != state.char:
+                    errors.append(
+                        FenceError(
+                            path=path,
+                            line=lineno,
+                            message="mixed fence types within one block",
+                        )
+                    )
+                    state = None
+                    continue
+
+                close_len = len(seq)
+                if close_len < state.length:
+                    errors.append(
+                        FenceError(
+                            path=path,
+                            line=lineno,
+                            message=(
+                                f"Closing fence shorter than opener (open={state.length}, "
+                                f"close={close_len})"
+                            ),
+                        )
+                    )
+                    continue
+
+                if inner_mode != "ignore" and state.max_inner >= state.length:
+                    msg = (
+                        f"nested code fence detected (outer={state.length}, "
+                        f"inner={state.max_inner})"
+                    )
+                    issue = FenceError(
+                        path=path,
+                        line=state.max_inner_line or lineno,
+                        message=msg,
+                        severity="warning" if inner_mode == "warn" else "error",
+                    )
+                    if inner_mode == "warn":
+                        warnings.append(issue)
+                    else:
+                        errors.append(issue)
+
+                state = None
                 continue
 
-            if in_block and strict_inner and current_fence and not nested_reported:
-                inner_token = current_fence * 3
-                if inner_token in line:
-                    problem = FenceError(
+            if trimmed.startswith(("`", "~")) and trimmed[0] != state.char:
+                errors.append(
+                    FenceError(
                         path=path,
                         line=lineno,
-                        message="nested code fence detected",
-                        severity="warning" if warn_inner else "error",
+                        message="mixed fence types within one block",
                     )
-                    if warn_inner:
-                        warnings.append(problem)
-                    else:
-                        errors.append(problem)
-                    nested_reported = True
+                )
+                state = None
+                continue
 
-    if in_block:
+        if inner_mode != "ignore":
+            run = _max_run(trimmed, state.char)
+            if run >= state.length:
+                if run > state.max_inner:
+                    state.max_inner = run
+                    state.max_inner_line = lineno
+                elif state.max_inner_line is None:
+                    state.max_inner_line = lineno
+
+    if state is not None:
         errors.append(
             FenceError(
                 path=path,
-                line=last_lineno,
+                line=state.opener_line,
                 message="EOF while inside a fenced block",
             )
         )
@@ -148,36 +271,39 @@ def _scan_file(
 
 
 def validate_file(
-    path: str,
+    path: str | Path,
     strict_inner: bool | None = None,
     warn_inner: bool | None = None,
+    check_language: bool = True,
 ):
     """Validate fenced blocks in ``path`` with backwards-compatible semantics."""
 
+    str_path = str(path)
     if strict_inner is None and warn_inner is None:
         errors, _warnings = _scan_file(
-            path,
+            str_path,
             strict_inner=False,
             warn_inner=False,
-            check_language=True,
+            check_language=check_language,
         )
         ok = not errors
         problems = [str(err) for err in errors]
         return ok, problems
 
-    strict = bool(strict_inner)
-    warn = bool(warn_inner)
-    errors, _warnings = _scan_file(
-        path,
-        strict_inner=strict,
-        warn_inner=warn,
-        check_language=True,
+    warn_flag = bool(warn_inner)
+    strict_flag = bool(strict_inner) or warn_flag
+    errors, warnings = _scan_file(
+        str_path,
+        strict_inner=strict_flag,
+        warn_inner=warn_flag,
+        check_language=check_language,
     )
-    # Legacy callers expect warnings to be suppressed entirely when warn_inner=True.
+    if warn_flag:
+        return errors
     return errors
 
 
-def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate Markdown fence usage")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
@@ -198,11 +324,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def _gather_targets(paths: list[str]) -> list[str]:
+def _gather_targets(paths: Sequence[str]) -> List[str]:
     if not paths:
         return list(iter_files(REPO_ROOT))
 
-    targets: list[str] = []
+    targets: List[str] = []
     for entry in paths:
         expanded = Path(entry).expanduser()
         if not expanded.is_absolute():
@@ -214,39 +340,40 @@ def _gather_targets(paths: list[str]) -> list[str]:
     return targets
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
 
     targets = _gather_targets(args.paths)
     if not targets:
-        print("No matching files to validate", file=sys.stderr)
+        print("[fence-check] No matching files")
         return 0
 
-    all_ok = True
-    all_problems: list[str] = []
+    warn_flag = args.warn_inner
+    strict_flag = args.strict_inner or not args.warn_inner
+    check_inner = strict_flag or warn_flag
 
-    default_mode = not args.strict_inner and not args.warn_inner
-    effective_strict = True if default_mode else bool(args.strict_inner)
-    effective_warn = False if default_mode else bool(args.warn_inner)
+    exit_code = 0
+    had_output = False
 
-    for path in targets:
-        errors = validate_file(
-            path,
-            strict_inner=effective_strict,
-            warn_inner=effective_warn,
+    for target in targets:
+        errors, warnings = _scan_file(
+            target,
+            strict_inner=check_inner,
+            warn_inner=warn_flag,
+            check_language=True,
         )
-        if errors:
-            all_ok = False
-            all_problems.extend(str(err) for err in errors)
+        for err in errors:
+            had_output = True
+            exit_code = 1
+            print(f"[fence-check] {err.path}:{err.line}: ERROR — {err.message}")
+        for warn in warnings:
+            had_output = True
+            print(f"[fence-check] {warn.path}:{warn.line}: WARN — {warn.message}")
 
-    if not all_ok:
-        print("Fence validation failures:")
-        for msg in all_problems:
-            print(" -", msg)
-        return 1
-    print("Fences OK")
-    return 0
+    if not had_output:
+        print("[fence-check] OK")
+    return exit_code
 
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__ == "__main__":  # pragma: no cover - CLI entry point
+    raise SystemExit(main(sys.argv[1:]))

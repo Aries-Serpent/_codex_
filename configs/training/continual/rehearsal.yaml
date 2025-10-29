@@ -1,0 +1,49 @@
+defaults:
+  - base
+
+training:
+  continual: ${continual}
+
+continual:
+  strategy: replay
+  buffer_size: 2048
+  active_corpus: proof_logs
+  corpora:
+    proof_logs:
+      role: warmup
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/proof_logs.jsonl
+      format: jsonl
+      checksum: 65a62f2db28fdca5592e72a5e897862ee2dccae48a9d7608ecd1193f94d4b208  # pragma: allowlist secret
+    math_word_problems:
+      role: train
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/math_word_problems.jsonl
+      format: jsonl
+      checksum: bd5cd2727849af8b9fd1d78a7c45b90be11b05ba9989121c34708110e52a7afb  # pragma: allowlist secret
+    tool_traces:
+      role: eval
+      path: ${oc.env:CODEX_REASONING_DATA_DIR, data/sample/reasoning}/tool_traces.jsonl
+      format: jsonl
+      checksum: 01aba359a56e1196e08d92f6f019c217b8d03492c702c9393f3f24ed280541d2  # pragma: allowlist secret
+  phases:
+    - name: warmup
+      epochs: 1
+      dataset:
+        role: warmup
+        path: data/continual/warmup.jsonl
+        format: jsonl
+    - name: rehearsal
+      epochs: 1
+      replay_ratio: 0.3
+      dataset:
+        role: train
+        path: data/continual/task1.jsonl
+        format: jsonl
+    - name: evaluation
+      epochs: 1
+      dataset:
+        role: eval
+        path: data/continual/eval.jsonl
+        format: jsonl
+  curriculum:
+    name: static_rehearsal
+    target: proof_logs

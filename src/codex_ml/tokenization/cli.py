@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Sequence
 
@@ -46,6 +47,22 @@ def _stats(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
     size = getattr(adapter.sp, "vocab_size", lambda: 0)()
     print(size)
+
+
+def _refresh(args: argparse.Namespace) -> None:
+    model = Path(args.model)
+    manifest = {
+        "model": str(model),
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+    }
+    if args.notes:
+        manifest["notes"] = args.notes
+    special = model.with_suffix(".special_tokens.json")
+    if special.exists():
+        manifest["special_tokens"] = json.loads(special.read_text(encoding="utf-8"))
+    output = Path(args.output) if args.output else model.with_suffix(".provenance.json")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
 
 def encode(
@@ -99,6 +116,12 @@ def main(argv: list[str] | None = None) -> None:
     p_stats = sub.add_parser("stats", help="print vocabulary size")
     p_stats.add_argument("model", help="path to tokenizer model")
     p_stats.set_defaults(func=_stats)
+
+    p_refresh = sub.add_parser("refresh", help="emit a provenance manifest for a tokenizer model")
+    p_refresh.add_argument("model", help="path to tokenizer model")
+    p_refresh.add_argument("--output", help="optional output manifest path")
+    p_refresh.add_argument("--notes", default="", help="free-form notes recorded in the manifest")
+    p_refresh.set_defaults(func=_refresh)
 
     args = parser.parse_args(argv)
     args.func(args)

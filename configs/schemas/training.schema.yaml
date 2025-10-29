@@ -27,6 +27,8 @@ properties:
         minimum: 1
       deterministic:
         type: boolean
+      sanitize_prompts:
+        type: boolean
       checkpoint:
         type: object
         properties:
