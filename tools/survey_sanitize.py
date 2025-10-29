@@ -1,41 +1,77 @@
 #!/usr/bin/env python3
-"""
-Normalize Codex plaintext survey output into well-formed Markdown.
-Goals:
-  - Collapse any 4+ backtick fences to triple fences.
-  - Wrap [BEGIN CONTENT] ... [END CONTENT] blocks in ```text fences (omit markers).
-  - Avoid nested/empty code fences that break rendering.
-"""
-import sys
+"""Normalize Codex plaintext survey output into well-formed Markdown."""
+from __future__ import annotations
+
 import re
+import sys
+from typing import Iterable, List
 
-text = sys.stdin.read()
+BEGIN_MARKER = "[BEGIN CONTENT]"
+END_MARKER = "[END CONTENT]"
 
-# Normalize any fence of 4+ backticks to classic triple-fence.
-text = re.sub(r"`{4,}", "```", text)
 
-lines = text.splitlines()
-out = []
-i = 0
-while i < len(lines):
-    line = lines[i].strip()
-    if line == "[BEGIN CONTENT]":
-        out.append("```text")
-        i += 1
-        while i < len(lines) and lines[i].strip() != "[END CONTENT]":
-            out.append(lines[i])
-            i += 1
-        out.append("```")
-        # Skip the [END CONTENT] marker if present
-        if i < len(lines) and lines[i].strip() == "[END CONTENT]":
-            pass
-    else:
-        out.append(lines[i])
-    i += 1
+def _collapse_fences(text: str) -> str:
+    """Collapse any sequence of backticks >=3 into classic triple fences."""
+    return re.sub(r"`{3,}", "```", text)
 
-rendered = "\n".join(out)
-# Remove accidental empty code blocks like ```\n``` (rare but safe to guard)
-rendered = re.sub(r"```[a-zA-Z]*\n```", "", rendered)
 
-sys.stdout.write(rendered)
+def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
+    """Replace marker pairs with ```text fenced blocks."""
+    output: List[str] = []
+    buffer: List[str] = []
+    inside = False
 
+    for raw in lines:
+        stripped = raw.strip()
+        if stripped == BEGIN_MARKER:
+            if inside:
+                output.extend(_render_buffer(buffer))
+                buffer.clear()
+            inside = True
+            buffer.clear()
+            continue
+        if stripped == END_MARKER:
+            if inside:
+                output.extend(_render_buffer(buffer))
+                buffer.clear()
+                inside = False
+            continue
+
+        clean = raw.rstrip("\r")
+        if inside:
+            buffer.append(clean)
+        else:
+            output.append(clean)
+
+    if inside:
+        output.extend(_render_buffer(buffer))
+
+    return output
+
+
+def _render_buffer(buffer: List[str]) -> List[str]:
+    block = ["```text"]
+    block.extend(buffer)
+    block.append("```")
+    return block
+
+
+def _strip_empty_fences(text: str) -> str:
+    # Remove accidental empty fences like ```\n``` or ```text\n```.
+    return re.sub(r"```[a-zA-Z0-9_-]*\n```", "", text)
+
+
+def sanitize(text: str) -> str:
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    collapsed = _collapse_fences(text)
+    wrapped = _wrap_content_blocks(collapsed.split("\n"))
+    rendered = "\n".join(wrapped).rstrip()
+    cleaned = _strip_empty_fences(rendered)
+    if cleaned and not cleaned.endswith("\n"):
+        cleaned += "\n"
+    return cleaned
+
+
+if __name__ == "__main__":
+    raw = sys.stdin.read()
+    sys.stdout.write(sanitize(raw))
