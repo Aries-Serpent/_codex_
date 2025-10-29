@@ -1,35 +1,22 @@
-# Status Updates
+# Status Updates: Surveys & Promotion Logs
 
-Use this folder to track repeatable, ring-by-ring progress for reasoning enablement.
+This folder hosts branch-agnostic reports and artifacts created during ring-by-ring promotion (0A → 0D → main).
 
-## Template
-- **Start from**: `docs/status_updates/TEMPLATE_status_update.md`
-- **Save instances as**: `docs/status_updates/<slug>-<YYYY-MM-DD>.md`
-- **Store attachments under**: `docs/status_updates/artifacts/<YYYY-MM-DD>-<slug>/`
+## Quick Flow
+1) **Collect survey plaintext** from Codex (no nested fences; use the template in `templates/SURVEY_TEMPLATE.md`).
+2) **Write the report** with the branch-aware writer:
+   ```bash
+   # from repo root
+   scripts/survey.sh --pr 1926 --stdin << 'EOF'
+   <paste Codex plaintext survey here>
+   EOF
+   ```
+3) **Resulting paths**:
+   - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
+   - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
 
-## Quick Start
-1) Copy the template:
-```bash
-cp docs/status_updates/TEMPLATE_status_update.md \
-   docs/status_updates/m1-curriculum-2025-10-29.md
-```
-2) Fill all `<placeholder>` fields with actual data.
-3) Compute readiness:
-```text
-R = α·E + β·T + γ·D
-```
-…with α+β+γ=1 and E,T,D ∈ [0,1].
-4) Attach artifacts (metrics NDJSON, logs, reports) to:
-```text
-docs/status_updates/artifacts/2025-10-29-m1-curriculum/
-```
+## Notes
+- The writer auto-detects the **current branch** via `git rev-parse --abbrev-ref HEAD`.
+- The sanitizer ensures **triple backtick** fences and wraps `[BEGIN CONTENT]... [END CONTENT]` blocks in ```text fences for readable Markdown.
+- Readiness uses \( R = \alpha E + \beta T + \gamma D \) with \( \alpha+\beta+\gamma=1 \).
 
-## Best Practices
-- Anchor each update to a specific branch/PR/commit
-- Attach NDJSON metrics, logs, and generated reports as artifacts for auditability
-- Keep “Gaps & Remediations” short, specific, and assigned to owners
-- Update the changelog section to reference the previous status update file
-
-## References
-- Survey example: see any `docs/status_updates/survey-*.md` for structure
-- Ring mentions: search for `0A_base_`, `0B_base_`, `0C_base_`, `0D_base_`, `main`
