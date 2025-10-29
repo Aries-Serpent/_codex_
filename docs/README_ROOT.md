@@ -62,6 +62,13 @@ Promotion toward `main` requires:
 2. `metadata.rollout_ring` declared in the training config and matching the target pod ring.
 3. `codex deploy --dry-run` to succeed, which enforces the ring match between training output and `configs/deploy/reasoning_pod.yaml`.
 
+Reviewers preparing a `0D_base_` → `main` merge should walk the dedicated checklist in [`docs/ops/promotion_checklist.md`](ops/promotion_checklist.md).
+It also requires attaching the outputs of:
+
+- `codex_ml.cli.codex_cli status-report`
+- `codex_ml.cli.codex_cli deploy --dry-run`
+- and linking the latest `docs/status_updates/survey-<ring>-and-<PR>-<DATESTAMP>.md`
+
 ## Architecture at a glance
 
 The canonical topology is captured in [`docs/diagrams/architecture.svg`](diagrams/architecture.svg). Pair it with the

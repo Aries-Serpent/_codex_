@@ -131,20 +131,25 @@ try:
         merge_callback_results,
     )
 except Exception:  # noqa: BLE001
-
+    # fmt: off
     class Callback:  # type: ignore
-        def on_train_start(self, state: Dict[str, Any]) -> None: ...
+        def on_train_start(self, state: Dict[str, Any]) -> None:
+            ...
 
-        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
+        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
+            ...
 
         def on_epoch_end(
             self,
             epoch: int,
             metrics: Dict[str, Any],
             state: Dict[str, Any],
-        ) -> None: ...
+        ) -> None:
+            ...
 
-        def on_train_end(self, state: Dict[str, Any]) -> None: ...
+        def on_train_end(self, state: Dict[str, Any]) -> None:
+            ...
+    # fmt: on
 
     def merge_callback_results(
         base: Dict[str, Any], addon: Dict[str, Any] | None
@@ -371,9 +376,7 @@ def _apply_metadata_to_state(
     metadata_dict = dict(metadata) if metadata is not None else {}
     state["metadata"] = metadata_dict
     if "rollout_ring" not in metadata_dict:
-        logger.warning(
-            "rollout_ring not declared; reasoning promotion may be blocked."
-        )
+        logger.warning("rollout_ring not declared; reasoning promotion may be blocked.")
     return metadata_dict
 
 
@@ -1690,6 +1693,21 @@ def run_training(
 
         if control_surface:
             meta_payload["control_surface"] = _json_ready(control_surface)
+
+        knobs_snapshot = {
+            "trace_mode": trace_mode,
+            "curriculum_preset": (
+                curriculum_cfg.get("preset") if isinstance(curriculum_cfg, Mapping) else None
+            ),
+            "evaluation_preset": (
+                evaluation_cfg.get("preset") if isinstance(evaluation_cfg, Mapping) else None
+            ),
+            "deployment_preset": (
+                deployment_cfg.get("preset") if isinstance(deployment_cfg, Mapping) else None
+            ),
+        }
+
+        meta_payload["knobs"] = _json_ready(knobs_snapshot)
 
         try:
             (art_dir_path / "run_metadata.json").write_text(
