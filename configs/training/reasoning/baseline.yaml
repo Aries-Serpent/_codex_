@@ -3,35 +3,59 @@
 defaults:
   - ../base
 
-reasoning:
-  template: baseline
+# === CONTROL SURFACE (local-first) ===
+# The fields below are the documented knobs surfaced via `codex repo-map --reasoning`
+# and the deployment dry-run workflow. Adjusting them does not require code changes.
+
+# trace_mode controls how the reasoning harness captures traces during training.
+# Allowed values are "param-slice" (deterministic fingerprint) and
+# "activation-snapshot" (future richer trace capture).
+trace_mode: "param-slice"
 
 curriculum:
-  phase_schedule: starter
+  # preset is the curriculum name exposed to PM/infra reviewers.
+  preset: starter
+  phase_schedule: ${.preset}
+
+evaluation:
+  # preset defines which evaluation suite must pass before promotion.
+  preset: base
+
+deployment:
+  # preset points at the expected dry-run deployment manifest.
+  preset: reasoning_pod
+
+metadata:
+  # rollout_ring gate enforced by codex deploy --dry-run.
+  rollout_ring: 0D_base_
+  owner: reasoning-foundations
+
+reasoning:
+  template: baseline
 
 training:
   reasoning:
     enabled: true
-    # trace_mode tells the reasoning harness how to record "traces".
+    # trace_mode controls how (or whether) the harness records traces.
     #
-    #   - "param-slice"
-    #       CURRENT / LEGACY BEHAVIOR.
+    #   - "disabled" (current baseline)
+    #       Do not capture traces. Use this while iterating so reviewers
+    #       do not mistake telemetry fingerprints for literal reasoning.
+    #
+    #   - "param-slice" (diagnostic fingerprint)
     #       Take a deterministic slice of the first trainable parameter
-    #       tensor, flatten it, and log it. This is ONLY a diagnostic
-    #       fingerprint for reproducibility / regression tracking.
-    #       It is NOT an actual chain-of-thought or internal reasoning
-    #       narrative from the model.
+    #       tensor, flatten it, and log the numbers. This ONLY supports
+    #       reproducibility / regression audits. It is NOT an explanation
+    #       of how the model reasoned.
     #
-    #   - "activation-snapshot"
-    #       TARGET / PREFERRED BEHAVIOR.
-    #       Capture pooled forward-pass activations (e.g. hidden states)
-    #       along with metadata:
+    #   - "activation-snapshot" (planned offline introspection)
+    #       Capture pooled forward-pass activations plus metadata:
     #         * active curriculum phase
     #         * tool usage (if any)
     #         * evaluation preset context
-    #       This is the mode we ultimately want to ship to stakeholders.
+    #       This remains offline-only and review-gated.
     #
-    trace_mode: "param-slice"  # default until activation snapshots land
+    trace_mode: "disabled"
     trace_history: 128
     log_probability_threshold: 0.15
     objective:
@@ -50,3 +74,10 @@ training:
 
 logging:
   reasoning_trace: true
+
+metadata:
+  # rollout_ring declares intent in the promotion ladder:
+  # 0A_base_ → 0B_base_ → 0C_base_ → 0D_base_ → main.
+  # It is an intent badge, not permission to ship.
+  rollout_ring: 0D_base_
+  owner: reasoning-foundations

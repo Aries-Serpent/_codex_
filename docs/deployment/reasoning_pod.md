@@ -28,13 +28,30 @@ This is explicitly **not** production hosting. It exists for:
 3. Inspect the generated manifest:
    - `image` / tag are correct for the artifact you intend to ship.
    - resource requests/limits make sense.
-   - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`,
-     and `CODEX_EVAL_PRESET` are correct.
+   - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`
+     (usually `disabled`, occasionally `param-slice` when
+     fingerprints are explicitly requested), and
+     `CODEX_EVAL_PRESET` are correct.
    - `rollout_ring` matches the ring you plan to target next
      (for example, "`0D_base_`").
 
 Dry-run means no pod is created anywhere. It only renders the manifest
 and surfaces warnings.
+
+### Ring validation guardrail
+
+`codex deploy --dry-run` reads `runs/train_loop/run_metadata.json` to enforce
+rollout policy:
+
+1. The training config must declare `metadata.rollout_ring`.
+2. The recorded rollout ring must match the pod ring specified in this
+   preset (`rollout_ring` at the root or `pod.ring`).
+3. The command refuses to proceed without `--dry-run` in this maturity ring.
+
+If any of those checks fail, the command exits non-zero with
+`DEPLOYMENT BLOCKED`, preventing accidental promotion of mismatched runs.
+This guardrail ties the training artifacts to deployment intent without
+touching production infrastructure.
 
 ## Readiness gates before merging toward `main`
 - Curriculum phase and trace mode for this model are documented.

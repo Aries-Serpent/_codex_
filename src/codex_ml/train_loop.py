@@ -24,10 +24,11 @@ import os
 import random
 import sys
 import time
-from dataclasses import asdict, dataclass
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
@@ -132,22 +133,18 @@ try:
 except Exception:  # noqa: BLE001
 
     class Callback:  # type: ignore
-        def on_train_start(self, state: Dict[str, Any]) -> None:
-            ...
+        def on_train_start(self, state: Dict[str, Any]) -> None: ...
 
-        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
-            ...
+        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
 
         def on_epoch_end(
             self,
             epoch: int,
             metrics: Dict[str, Any],
             state: Dict[str, Any],
-        ) -> None:
-            ...
+        ) -> None: ...
 
-        def on_train_end(self, state: Dict[str, Any]) -> None:
-            ...
+        def on_train_end(self, state: Dict[str, Any]) -> None: ...
 
     def merge_callback_results(
         base: Dict[str, Any], addon: Dict[str, Any] | None
@@ -235,6 +232,8 @@ class ReasoningRuntime:
         self.traces_written = 0
 
     def should_capture(self) -> bool:
+        if getattr(self.config, "trace_mode", None) == "disabled":
+            return False
         if self.per_epoch_limit <= 0:
             return True
         return self.traces_written < self.per_epoch_limit
@@ -345,6 +344,61 @@ def _initialize_reasoning_runtime(
 
 
 _DEFAULT_SEED = 1234
+
+
+def _normalise_snapshot(value: Any) -> Any:
+    if is_dataclass(value):
+        return _normalise_snapshot(asdict(value))
+    if isinstance(value, Mapping):
+        return {str(key): _normalise_snapshot(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_normalise_snapshot(item) for item in value]
+    return value
+
+
+def _snapshot_payload(payload: Any) -> Dict[str, Any] | None:
+    if payload is None:
+        return None
+    normalised = _normalise_snapshot(payload)
+    if isinstance(normalised, Mapping):
+        return dict(normalised)
+    return None
+
+
+def _apply_metadata_to_state(
+    state: Dict[str, Any], metadata: Mapping[str, Any] | None
+) -> Dict[str, Any]:
+    metadata_dict = dict(metadata) if metadata is not None else {}
+    state["metadata"] = metadata_dict
+    if "rollout_ring" not in metadata_dict:
+        logger.warning(
+            "rollout_ring not declared; reasoning promotion may be blocked."
+        )
+    return metadata_dict
+
+
+def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str, Any]) -> None:
+    if output_dir is None or not payload:
+        return
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / name).write_text(
+            json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception as exc:  # noqa: BLE001 - best-effort report generation
+        logger.warning("Failed to write %s: %s", name, exc)
+
+
+def _render_reasoning_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("reasoning") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "reasoning.json", payload)
+
+
+def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("evaluation") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "evaluation.json", payload)
 
 
 def _set_seed(seed: Optional[int]) -> int:
@@ -1002,6 +1056,16 @@ def _checkpoint_digest(ckpt_dir: Path) -> str | None:
     return None
 
 
+def _json_ready(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {k: _json_ready(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_ready(v) for v in value]
+    if isinstance(value, Path):
+        return str(value)
+    return value
+
+
 @dataclass
 class TrainingMetrics:
     epoch: int
@@ -1051,6 +1115,8 @@ def run_training(
     bf16_require_capability: bool = False,
     dataset_cast_policy: str | None = None,
     reasoning: Mapping[str, Any] | ReasoningConfig | None = None,
+    metadata: Mapping[str, Any] | None = None,
+    evaluation: Mapping[str, Any] | None = None,
     **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
@@ -1076,24 +1142,27 @@ def run_training(
     if steps_per_epoch < 1:
         steps_per_epoch = 1
 
-    art_dir_path: Path | None = None
     reasoning_runtime: ReasoningRuntime | None = None
-    if art_dir is not None:
-        try:
-            art_dir_path = Path(art_dir)
-            art_dir_path.mkdir(parents=True, exist_ok=True)
-            telemetry_file = art_dir_path / "telemetry.ndjson"
-            telemetry_file.touch(exist_ok=True)
-            metrics_ndjson = art_dir_path / "metrics.ndjson"
-            metrics_ndjson.touch(exist_ok=True)
-            metrics_json = art_dir_path / "metrics.json"
-            if not metrics_json.exists():
-                metrics_json.write_text("[]\n", encoding="utf-8")
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
-            art_dir_path = None
+    default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
+    art_dir_path: Path | None = default_art_dir
+    try:
+        art_dir_path.mkdir(parents=True, exist_ok=True)
+        telemetry_file = art_dir_path / "telemetry.ndjson"
+        telemetry_file.touch(exist_ok=True)
+        metrics_ndjson = art_dir_path / "metrics.ndjson"
+        metrics_ndjson.touch(exist_ok=True)
+        metrics_json = art_dir_path / "metrics.json"
+        if not metrics_json.exists():
+            metrics_json.write_text("[]\n", encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)
+        art_dir_path = None
 
     model_cfg = dict(model_cfg or {})
+
+    metadata_snapshot = _snapshot_payload(metadata)
+    evaluation_snapshot = _snapshot_payload(evaluation)
+    reasoning_snapshot = _snapshot_payload(reasoning)
 
     dp_settings: DifferentialPrivacyConfig | None = None
     if isinstance(dp_config, DifferentialPrivacyConfig):
@@ -1226,6 +1295,10 @@ def run_training(
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
     model, reasoning_runtime = _initialize_reasoning_runtime(model, reasoning, art_dir_path)
+    if reasoning_runtime is not None:
+        runtime_snapshot = _snapshot_payload(reasoning_runtime.config)
+        if runtime_snapshot:
+            reasoning_snapshot = runtime_snapshot
 
     if _HAS_TORCH and model is not None:
         try:
@@ -1409,12 +1482,27 @@ def run_training(
         "privacy_engine": bool(privacy_engine),
         "metrics_enabled": bool(metrics_registry),
         "session_id": session_id or get_session_id(),
-        "reasoning": {
-            "enabled": bool(reasoning_runtime),
-            "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
-            "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
-        },
     }
+
+    applied_metadata = _apply_metadata_to_state(state, metadata_snapshot)
+
+    reasoning_state: Dict[str, Any] = {
+        "enabled": bool(reasoning_runtime),
+        "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
+        "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
+        "threshold": reasoning_runtime.threshold if reasoning_runtime else None,
+    }
+    if reasoning_snapshot:
+        reasoning_state["config"] = reasoning_snapshot
+        trace_mode = reasoning_snapshot.get("trace_mode")
+        if trace_mode is not None:
+            reasoning_state.setdefault("trace_mode", trace_mode)
+    if applied_metadata:
+        reasoning_state.setdefault("metadata", applied_metadata)
+    state["reasoning"] = reasoning_state
+
+    if evaluation_snapshot:
+        state["evaluation"] = {"config": evaluation_snapshot}
 
     for cb in cb_list:
         try:
@@ -1500,6 +1588,9 @@ def run_training(
                 "top_k": reasoning_runtime.top_k,
                 "threshold": reasoning_runtime.threshold,
             }
+        metadata_state = state.get("metadata")
+        if isinstance(metadata_state, dict) and metadata_state:
+            env_payload["metadata"] = metadata_state
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
@@ -1530,6 +1621,119 @@ def run_training(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write dataset_checksums.json: %s", exc)
 
+    def _persist_control_surface_artifacts() -> None:
+        if art_dir_path is None:
+            return
+
+        try:
+            art_dir_path.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
+            return
+
+        cfg: Dict[str, Any] = {}
+        if isinstance(run_config, Mapping):
+            cfg = dict(run_config)
+        elif isinstance(run_config, dict):
+            cfg = dict(run_config)
+
+        meta_payload: Dict[str, Any] = {}
+        metadata_section = cfg.get("metadata")
+        if isinstance(metadata_section, Mapping):
+            meta_payload.update(_json_ready(metadata_section))
+
+        session_id_val = state.get("session_id") if isinstance(state, dict) else None
+        if session_id_val:
+            meta_payload.setdefault("session_id", session_id_val)
+        if art_dir_path is not None:
+            meta_payload.setdefault("artifacts_dir", str(art_dir_path))
+
+        control_surface: Dict[str, Any] = {}
+        trace_mode = cfg.get("trace_mode")
+        training_section = cfg.get("training") if isinstance(cfg.get("training"), Mapping) else {}
+        if not trace_mode and isinstance(training_section, Mapping):
+            reasoning_cfg = training_section.get("reasoning")
+            if isinstance(reasoning_cfg, Mapping):
+                trace_mode = reasoning_cfg.get("trace_mode")
+        if trace_mode:
+            control_surface["trace_mode"] = trace_mode
+
+        curriculum_cfg = cfg.get("curriculum")
+        if isinstance(curriculum_cfg, Mapping):
+            preset = curriculum_cfg.get("preset") or curriculum_cfg.get("phase_schedule")
+            if preset:
+                control_surface["curriculum.preset"] = preset
+
+        evaluation_cfg = cfg.get("evaluation")
+        if not isinstance(evaluation_cfg, Mapping) and isinstance(training_section, Mapping):
+            evaluation_cfg = training_section.get("evaluation")
+        if isinstance(evaluation_cfg, Mapping):
+            preset = evaluation_cfg.get("preset")
+            if preset:
+                control_surface["evaluation.preset"] = preset
+
+        deployment_cfg = cfg.get("deployment")
+        if isinstance(deployment_cfg, Mapping):
+            preset = deployment_cfg.get("preset")
+            if preset:
+                control_surface["deployment.preset"] = preset
+
+        ring = meta_payload.get("rollout_ring") if isinstance(meta_payload, dict) else None
+        if not ring:
+            metadata_cfg = cfg.get("metadata")
+            if isinstance(metadata_cfg, Mapping):
+                ring = metadata_cfg.get("rollout_ring")
+            if ring:
+                meta_payload["rollout_ring"] = ring
+        if ring:
+            control_surface.setdefault("rollout_ring", ring)
+
+        if control_surface:
+            meta_payload["control_surface"] = _json_ready(control_surface)
+
+        try:
+            (art_dir_path / "run_metadata.json").write_text(
+                json.dumps(_json_ready(meta_payload), indent=2),
+                encoding="utf-8",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to write run_metadata.json: %s", exc)
+
+        reasoning_payload: Dict[str, Any] = {}
+        reasoning_cfg = cfg.get("reasoning")
+        if not isinstance(reasoning_cfg, Mapping) and isinstance(training_section, Mapping):
+            reasoning_cfg = training_section.get("reasoning")
+        if isinstance(reasoning_cfg, Mapping):
+            reasoning_payload["config"] = _json_ready(reasoning_cfg)
+        if reasoning_runtime is not None:
+            runtime_details = {
+                "mode": getattr(reasoning_runtime.config.objective, "mode", None),
+                "top_k": getattr(reasoning_runtime, "top_k", None),
+                "threshold": getattr(reasoning_runtime, "threshold", None),
+            }
+            reasoning_payload["runtime"] = _json_ready(runtime_details)
+            try:
+                reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
+            except Exception:  # noqa: BLE001
+                pass
+        if reasoning_payload:
+            try:
+                (art_dir_path / "reasoning.json").write_text(
+                    json.dumps(_json_ready(reasoning_payload), indent=2),
+                    encoding="utf-8",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write reasoning.json: %s", exc)
+
+        if isinstance(evaluation_cfg, Mapping):
+            try:
+                (art_dir_path / "evaluation.json").write_text(
+                    json.dumps(_json_ready(evaluation_cfg), indent=2),
+                    encoding="utf-8",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write evaluation.json: %s", exc)
+
     target_epochs = int(epochs)
     if start_epoch > target_epochs:
         result = {
@@ -1556,6 +1760,9 @@ def run_training(
             except Exception:  # pragma: no cover - defensive snapshot
                 result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
+        report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+        _render_reasoning_report(report_dir, state)
+        _render_evaluation_report(report_dir, state)
         if return_state:
             result["model"] = model
             result["optimizer"] = optimizer
@@ -1840,6 +2047,7 @@ def run_training(
         result["reasoning_top_k"] = reasoning_runtime.top_k
 
     _persist_artifacts(latest_payload, target_epochs)
+    _persist_control_surface_artifacts()
 
     if session_logger is not None:
         try:
@@ -1861,6 +2069,10 @@ def run_training(
         result["optimizer"] = optimizer
         result["scheduler"] = scheduler
         result["state"] = state
+
+    report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+    _render_reasoning_report(report_dir, state)
+    _render_evaluation_report(report_dir, state)
 
     return result
 
