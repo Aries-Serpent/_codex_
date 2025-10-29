@@ -37,9 +37,18 @@ Key flows:
 
 1. **Authoring** — Hydra configuration layers resolve reasoning templates from `configs/training/reasoning/*` before model
    instantiation.
-2. **Training** — `codex_ml.trainer.ReasoningTrainer` feeds curriculum phases into accelerator-aware loops with
-   schedule checkpoints recorded under `.codex/reasoning_runs/`.
-3. **Deployment** — Bespoke models are packaged with manifest digests and signed hooks for downstream registries.
+2. **Training** — Training is orchestrated by:
+   - `src/codex_ml/training/unified_training.py`
+     (deterministic seeding, checkpoint / resume plumbing,
+      continual replay strategy hooks),
+   - `src/codex_ml/train_loop.py`
+     (per-run executor that injects the reasoning harness,
+      logs traces, and rotates checkpoints).
+   These modules together are "the trainer".
+   They replace older references to a standalone
+   `codex_ml.trainer.ReasoningTrainer`.
+3. **Deployment** — Bespoke models are packaged with manifest digests
+   and signed hooks for downstream registries.
 
 When modifying the topology, update both the diagram and [`docs/guides/serving_reproducibility.md`](guides/serving_reproducibility.md).
 
