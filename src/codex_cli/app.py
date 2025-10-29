@@ -191,6 +191,20 @@ if _USE_TYPER:
 
     app.add_typer(reasoning_templates, name="reasoning-templates")
 
+    @app.command("repo-map")
+    def repo_map(
+        reasoning: bool = _typer.Option(False, "--reasoning", help="Emit reasoning-specific entries."),
+        include: list[str] | None = _typer.Option(
+            None,
+            "--include",
+            help="Only include specified categories (can be repeated).",
+        ),
+    ) -> None:
+        from codex_ml.cli.repo_map import render_repo_map
+
+        categories = tuple(include or [])
+        echo(render_repo_map(reasoning=reasoning, include=categories))
+
     @app.command("version")
     def version() -> None:
         try:
@@ -337,6 +351,19 @@ else:  # pragma: no cover - click fallback
                 if isinstance(tools, Iterable):
                     tool_list = ", ".join(str(tool) for tool in tools)
                     echo(f"Tools: {tool_list}")
+
+    @app.command("repo-map")
+    @_click.option("--reasoning", is_flag=True, help="Emit reasoning-specific entries.")
+    @_click.option(
+        "--include",
+        "includes",
+        multiple=True,
+        help="Only include specified categories (can be repeated).",
+    )
+    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
+        from codex_ml.cli.repo_map import render_repo_map
+
+        echo(render_repo_map(reasoning=reasoning, include=includes))
 
 
 def main() -> None:  # pragma: no cover - thin wrapper for python -m usage

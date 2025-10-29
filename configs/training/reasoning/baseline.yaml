@@ -36,7 +36,26 @@ reasoning:
 training:
   reasoning:
     enabled: true
-    trace_mode: ${trace_mode}
+    # trace_mode controls how (or whether) the harness records traces.
+    #
+    #   - "disabled" (current baseline)
+    #       Do not capture traces. Use this while iterating so reviewers
+    #       do not mistake telemetry fingerprints for literal reasoning.
+    #
+    #   - "param-slice" (diagnostic fingerprint)
+    #       Take a deterministic slice of the first trainable parameter
+    #       tensor, flatten it, and log the numbers. This ONLY supports
+    #       reproducibility / regression audits. It is NOT an explanation
+    #       of how the model reasoned.
+    #
+    #   - "activation-snapshot" (planned offline introspection)
+    #       Capture pooled forward-pass activations plus metadata:
+    #         * active curriculum phase
+    #         * tool usage (if any)
+    #         * evaluation preset context
+    #       This remains offline-only and review-gated.
+    #
+    trace_mode: "disabled"
     trace_history: 128
     log_probability_threshold: 0.15
     objective:
@@ -55,3 +74,10 @@ training:
 
 logging:
   reasoning_trace: true
+
+metadata:
+  # rollout_ring declares intent in the promotion ladder:
+  # 0A_base_ → 0B_base_ → 0C_base_ → 0D_base_ → main.
+  # It is an intent badge, not permission to ship.
+  rollout_ring: 0D_base_
+  owner: reasoning-foundations

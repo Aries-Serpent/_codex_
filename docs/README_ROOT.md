@@ -25,8 +25,19 @@ architecture references, and the bespoke-model hosting workflow that underpins e
 | **M2: Model hosting hardening** | Promote bespoke models into hermetic serving pods. | Shadow-hosted latency p95 ≤ 700 ms with parity alerts. |
 | **M3: Flywheel automation** | Continuous evaluation + redeploy gates orchestrated via Codex. | Weekly redeploy cadence with zero manual overrides. |
 
-Track milestone burndown using the `reasoning_status` table exported by `codex repo-map --reasoning`. For backlog triage,
-anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
+Track milestone burndown using the `reasoning_status` table exported by:
+
+```bash
+codex repo-map --reasoning
+```
+
+Slice specific categories (for example, rollout rings and curricula) with:
+
+```bash
+codex repo-map --reasoning --include rollout_ring --include curriculum
+```
+
+For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
 
 ### Control surface knobs and promotion checklist
 
@@ -141,10 +152,10 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
   --model artifacts/runs/reasoning-starter:last \
   --dry-run
 ```
-This dry run renders a manifest for review only; it never provisions a live pod.
-
-Dry runs confirm manifest parity, bundler signatures, and runtime allowances required by bespoke hosts. Redeployments
-should always be paired with `codex reasoning-templates explain <name>` to document why a template was chosen.
+Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
+`rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
+and runtime allowances required by bespoke hosts. Redeployments should always be paired with
+`codex reasoning-templates explain <name>` to document why a template was chosen.
 
 ## Offline validation helpers
 

@@ -1,107 +1,219 @@
-"""Utilities for rendering repository maps for the Codex CLI."""
+"""Repository mapping helpers for the Codex CLI."""
 
 from __future__ import annotations
 
+import re
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
+from typing import Any, Dict, List
 
-import yaml
+try:  # pragma: no cover - optional dependency path
+    import yaml  # type: ignore
+except Exception:  # pragma: no cover - PyYAML not installed in minimal envs
+    yaml = None  # type: ignore
 
-
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[3]
-
-
-def _json_sanitize(obj: Any) -> Any:
-    if isinstance(obj, Path):
-        return str(obj)
-    if isinstance(obj, Mapping):
-        return {str(k): _json_sanitize(v) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple, set)):
-        return [_json_sanitize(v) for v in obj]
-    return obj
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
-def _load_reasoning_baseline() -> Dict[str, Any]:
-    cfg_path = _repo_root() / "configs" / "training" / "reasoning" / "baseline.yaml"
-    if not cfg_path.exists():
-        return {}
-    with cfg_path.open("r", encoding="utf-8") as handle:
-        return yaml.safe_load(handle) or {}
-
-
-def _list_repo_entries(root: Path) -> Iterable[str]:
-    for item in sorted(root.iterdir()):
+def _list_top_level(repo_root: Path) -> list[str]:
+    entries: list[str] = []
+    for item in sorted(repo_root.iterdir()):
         name = item.name
         if name.startswith("."):
             continue
-        suffix = "/" if item.is_dir() else ""
-        prefix = "[dir] " if item.is_dir() else " "
-        yield f"{prefix}{name}{suffix}"
+        if item.is_dir():
+            entries.append(f"[dir] {name}/")
+        else:
+            entries.append(f" {name}")
+    return entries
 
 
-def _extract_control_surface(cfg: Mapping[str, Any]) -> Dict[str, Any]:
-    control: Dict[str, Any] = {}
+def _list_key_files(repo_root: Path) -> list[str]:
+    candidates = ["README.md", "docs/README_ROOT.md", "pyproject.toml"]
+    results: list[str] = []
+    for relative in candidates:
+        path = repo_root / relative
+        if path.exists():
+            results.append(relative)
+    return results
 
-    trace_mode = cfg.get("trace_mode")
-    training_section = cfg.get("training") if isinstance(cfg.get("training"), Mapping) else {}
-    if not trace_mode and isinstance(training_section, Mapping):
-        reasoning_section = training_section.get("reasoning")
-        if isinstance(reasoning_section, Mapping):
-            trace_mode = reasoning_section.get("trace_mode")
-    if trace_mode:
-        control["trace_mode"] = trace_mode
 
-    curriculum_cfg = cfg.get("curriculum")
-    if isinstance(curriculum_cfg, Mapping):
-        preset = curriculum_cfg.get("preset") or curriculum_cfg.get("phase_schedule")
-        if preset:
-            control["curriculum.preset"] = preset
+def _load_yaml(path: Path) -> Mapping[str, Any] | None:
+    if yaml is None:
+        return None
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            data = yaml.safe_load(handle)
+    except Exception:  # pragma: no cover - best effort parse
+        return None
+    if isinstance(data, Mapping):
+        return data
+    return None
 
-    evaluation_cfg = cfg.get("evaluation")
-    if not isinstance(evaluation_cfg, Mapping) and isinstance(training_section, Mapping):
-        evaluation_cfg = training_section.get("evaluation")
-    if isinstance(evaluation_cfg, Mapping):
-        preset = evaluation_cfg.get("preset")
-        if preset:
-            control["evaluation.preset"] = preset
 
-    deployment_cfg = cfg.get("deployment")
-    if isinstance(deployment_cfg, Mapping):
-        preset = deployment_cfg.get("preset")
-        if preset:
-            control["deployment.preset"] = preset
+def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> Dict[str, str]:
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return {}
+    results: Dict[str, str] = {}
+    for key in keys:
+        pattern = re.compile(rf"^\s*{re.escape(key)}\s*:\s*(.+)$", re.MULTILINE)
+        match = pattern.search(content)
+        if match:
+            value = match.group(1).strip().strip("'\"")
+            results[key] = value
+    return results
 
-    metadata_cfg = cfg.get("metadata")
-    if isinstance(metadata_cfg, Mapping):
-        ring = metadata_cfg.get("rollout_ring")
+
+def _collect_reasoning_sections(repo_root: Path) -> Dict[str, List[str]]:
+    sections: Dict[str, List[str]] = {}
+
+    training_cfg = repo_root / "configs" / "training" / "reasoning" / "baseline.yaml"
+    if training_cfg.exists():
+        data = _load_yaml(training_cfg)
+        trace_mode = None
+        curriculum = None
+        evaluation = None
+        metadata_ring = None
+        if data:
+            trace_mode = (
+                data.get("trace_mode")
+                or data.get("training", {})
+                .get("reasoning", {})
+                .get("trace_mode")
+            )
+            curriculum = (
+                data.get("curriculum", {}).get("preset")
+                or data.get("curriculum", {}).get("phase_schedule")
+            )
+            evaluation = data.get("evaluation", {}).get("preset")
+            metadata_ring = (
+                data.get("metadata", {}).get("rollout_ring")
+                or data.get("training", {})
+                .get("metadata", {})
+                .get("rollout_ring")
+            )
+        else:
+            extracted = _extract_scalars_from_text(
+                training_cfg, ["trace_mode", "rollout_ring", "preset"]
+            )
+            trace_mode = extracted.get("trace_mode")
+            metadata_ring = extracted.get("rollout_ring")
+            # `preset` may appear multiple times; assume first occurrence is curriculum.
+            preset_value = extracted.get("preset")
+            if preset_value:
+                curriculum = preset_value
+
+        rel_path = str(training_cfg.relative_to(repo_root))
+        if trace_mode:
+            sections.setdefault("trace_mode", []).append(f"{rel_path} -> {trace_mode}")
+        if curriculum:
+            sections.setdefault("curriculum", []).append(f"{rel_path} -> {curriculum}")
+        if evaluation:
+            sections.setdefault("evaluation", []).append(f"{rel_path} -> {evaluation}")
+        if metadata_ring:
+            sections.setdefault("rollout_ring", []).append(
+                f"{rel_path} -> {metadata_ring}"
+            )
+
+    deploy_cfg = repo_root / "configs" / "deploy" / "reasoning_pod.yaml"
+    if deploy_cfg.exists():
+        data = _load_yaml(deploy_cfg)
+        ring = None
+        trace = None
+        curriculum_phase = None
+        eval_preset = None
+        if data:
+            ring = data.get("rollout_ring")
+            env = data.get("pod", {}).get("env", [])
+            if isinstance(env, list):
+                for entry in env:
+                    if not isinstance(entry, Mapping):
+                        continue
+                    name = entry.get("name")
+                    value = entry.get("value")
+                    if name == "CODEX_TRACE_MODE":
+                        trace = value
+                    elif name == "CODEX_CURRICULUM_PHASE":
+                        curriculum_phase = value
+                    elif name == "CODEX_EVAL_PRESET":
+                        eval_preset = value
+        else:
+            scalars = _extract_scalars_from_text(
+                deploy_cfg, ["rollout_ring", "CODEX_TRACE_MODE", "CODEX_CURRICULUM_PHASE", "CODEX_EVAL_PRESET"]
+            )
+            ring = scalars.get("rollout_ring")
+            trace = scalars.get("CODEX_TRACE_MODE")
+            curriculum_phase = scalars.get("CODEX_CURRICULUM_PHASE")
+            eval_preset = scalars.get("CODEX_EVAL_PRESET")
+
+        rel_path = str(deploy_cfg.relative_to(repo_root))
         if ring:
-            control["metadata.rollout_ring"] = ring
-        owner = metadata_cfg.get("owner")
-        if owner:
-            control["metadata.owner"] = owner
+            sections.setdefault("rollout_ring", []).append(f"{rel_path} -> {ring}")
+        if trace:
+            sections.setdefault("trace_mode", []).append(f"{rel_path} -> {trace}")
+        if curriculum_phase:
+            sections.setdefault("curriculum", []).append(
+                f"{rel_path} -> {curriculum_phase}"
+            )
+        if eval_preset:
+            sections.setdefault("evaluation", []).append(
+                f"{rel_path} -> {eval_preset}"
+            )
 
-    return control
+    return sections
 
 
-def render_repo_map(*, reasoning: bool = False) -> str:
-    root = _repo_root()
-    base_entries = list(_list_repo_entries(root))
-    if not reasoning:
-        return "\n".join(base_entries)
+def render_repo_map(
+    *, reasoning: bool = False, include: Sequence[str] | None = None
+) -> str:
+    """Render repository metadata with optional reasoning overlays."""
 
-    cfg = _load_reasoning_baseline()
-    control_surface = _extract_control_surface(cfg) if cfg else {}
+    top_level = _list_top_level(REPO_ROOT)
+    extras: Dict[str, List[str]] = {"key_files": _list_key_files(REPO_ROOT)}
 
-    lines: list[str] = []
-    lines.extend(base_entries)
-    lines.append("")
-    lines.append("reasoning_status:")
-    if not control_surface:
-        lines.append("  <no reasoning control surface detected>")
+    if reasoning:
+        extras.update(_collect_reasoning_sections(REPO_ROOT))
+
+    sections: List[tuple[str, List[str]]] = []
+    if include:
+        for key in include:
+            if key == "top_level":
+                sections.append(("top_level", top_level))
+            elif key in extras:
+                sections.append((key, extras[key]))
     else:
-        for key, value in control_surface.items():
-            value_str = _json_sanitize(value)
-            lines.append(f"  {key}: {value_str}")
+        sections.append(("top_level", top_level))
+        if reasoning:
+            if extras.get("key_files"):
+                sections.append(("key_files", extras["key_files"]))
+            for key, values in extras.items():
+                if key == "key_files":
+                    continue
+                if values:
+                    sections.append((key, values))
+
+    if not sections:
+        return ""
+
+    lines: List[str] = []
+    first = True
+    for key, values in sections:
+        if not values:
+            continue
+        if first and key == "top_level" and not include and not reasoning:
+            lines.extend(values)
+        else:
+            if not first:
+                lines.append("")
+            title = key.replace("_", " ").title()
+            lines.append(f"# {title}")
+            for entry in values:
+                lines.append(entry)
+        first = False
 
     return "\n".join(lines)
+
+
+__all__ = ["render_repo_map"]

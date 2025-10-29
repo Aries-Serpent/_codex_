@@ -24,10 +24,11 @@ import os
 import random
 import sys
 import time
-from dataclasses import asdict, dataclass
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
@@ -231,6 +232,8 @@ class ReasoningRuntime:
         self.traces_written = 0
 
     def should_capture(self) -> bool:
+        if getattr(self.config, "trace_mode", None) == "disabled":
+            return False
         if self.per_epoch_limit <= 0:
             return True
         return self.traces_written < self.per_epoch_limit
@@ -341,6 +344,61 @@ def _initialize_reasoning_runtime(
 
 
 _DEFAULT_SEED = 1234
+
+
+def _normalise_snapshot(value: Any) -> Any:
+    if is_dataclass(value):
+        return _normalise_snapshot(asdict(value))
+    if isinstance(value, Mapping):
+        return {str(key): _normalise_snapshot(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_normalise_snapshot(item) for item in value]
+    return value
+
+
+def _snapshot_payload(payload: Any) -> Dict[str, Any] | None:
+    if payload is None:
+        return None
+    normalised = _normalise_snapshot(payload)
+    if isinstance(normalised, Mapping):
+        return dict(normalised)
+    return None
+
+
+def _apply_metadata_to_state(
+    state: Dict[str, Any], metadata: Mapping[str, Any] | None
+) -> Dict[str, Any]:
+    metadata_dict = dict(metadata) if metadata is not None else {}
+    state["metadata"] = metadata_dict
+    if "rollout_ring" not in metadata_dict:
+        logger.warning(
+            "rollout_ring not declared; reasoning promotion may be blocked."
+        )
+    return metadata_dict
+
+
+def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str, Any]) -> None:
+    if output_dir is None or not payload:
+        return
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / name).write_text(
+            json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception as exc:  # noqa: BLE001 - best-effort report generation
+        logger.warning("Failed to write %s: %s", name, exc)
+
+
+def _render_reasoning_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("reasoning") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "reasoning.json", payload)
+
+
+def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("evaluation") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "evaluation.json", payload)
 
 
 def _set_seed(seed: Optional[int]) -> int:
@@ -1057,6 +1115,8 @@ def run_training(
     bf16_require_capability: bool = False,
     dataset_cast_policy: str | None = None,
     reasoning: Mapping[str, Any] | ReasoningConfig | None = None,
+    metadata: Mapping[str, Any] | None = None,
+    evaluation: Mapping[str, Any] | None = None,
     **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
@@ -1099,6 +1159,10 @@ def run_training(
         art_dir_path = None
 
     model_cfg = dict(model_cfg or {})
+
+    metadata_snapshot = _snapshot_payload(metadata)
+    evaluation_snapshot = _snapshot_payload(evaluation)
+    reasoning_snapshot = _snapshot_payload(reasoning)
 
     dp_settings: DifferentialPrivacyConfig | None = None
     if isinstance(dp_config, DifferentialPrivacyConfig):
@@ -1231,6 +1295,10 @@ def run_training(
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
     model, reasoning_runtime = _initialize_reasoning_runtime(model, reasoning, art_dir_path)
+    if reasoning_runtime is not None:
+        runtime_snapshot = _snapshot_payload(reasoning_runtime.config)
+        if runtime_snapshot:
+            reasoning_snapshot = runtime_snapshot
 
     if _HAS_TORCH and model is not None:
         try:
@@ -1414,12 +1482,27 @@ def run_training(
         "privacy_engine": bool(privacy_engine),
         "metrics_enabled": bool(metrics_registry),
         "session_id": session_id or get_session_id(),
-        "reasoning": {
-            "enabled": bool(reasoning_runtime),
-            "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
-            "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
-        },
     }
+
+    applied_metadata = _apply_metadata_to_state(state, metadata_snapshot)
+
+    reasoning_state: Dict[str, Any] = {
+        "enabled": bool(reasoning_runtime),
+        "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
+        "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
+        "threshold": reasoning_runtime.threshold if reasoning_runtime else None,
+    }
+    if reasoning_snapshot:
+        reasoning_state["config"] = reasoning_snapshot
+        trace_mode = reasoning_snapshot.get("trace_mode")
+        if trace_mode is not None:
+            reasoning_state.setdefault("trace_mode", trace_mode)
+    if applied_metadata:
+        reasoning_state.setdefault("metadata", applied_metadata)
+    state["reasoning"] = reasoning_state
+
+    if evaluation_snapshot:
+        state["evaluation"] = {"config": evaluation_snapshot}
 
     for cb in cb_list:
         try:
@@ -1505,6 +1588,9 @@ def run_training(
                 "top_k": reasoning_runtime.top_k,
                 "threshold": reasoning_runtime.threshold,
             }
+        metadata_state = state.get("metadata")
+        if isinstance(metadata_state, dict) and metadata_state:
+            env_payload["metadata"] = metadata_state
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
@@ -1674,7 +1760,9 @@ def run_training(
             except Exception:  # pragma: no cover - defensive snapshot
                 result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
-        _persist_control_surface_artifacts()
+        report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+        _render_reasoning_report(report_dir, state)
+        _render_evaluation_report(report_dir, state)
         if return_state:
             result["model"] = model
             result["optimizer"] = optimizer
@@ -1981,6 +2069,10 @@ def run_training(
         result["optimizer"] = optimizer
         result["scheduler"] = scheduler
         result["state"] = state
+
+    report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+    _render_reasoning_report(report_dir, state)
+    _render_evaluation_report(report_dir, state)
 
     return result
 

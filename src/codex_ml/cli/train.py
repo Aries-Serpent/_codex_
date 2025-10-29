@@ -315,6 +315,20 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
             candidate = _cfg_to_dict(training_reasoning)
             reasoning_cfg_dict = candidate or None
 
+    evaluation_cfg_dict: Dict[str, Any] | None = None
+    evaluation_section = cfg.get("evaluation")
+    if isinstance(evaluation_section, (DictConfig, dict)):
+        evaluation_cfg_dict = _cfg_to_dict(evaluation_section) or None
+    if evaluation_cfg_dict is None and isinstance(training_section, (DictConfig, dict)):
+        training_evaluation = training_section.get("evaluation")
+        if isinstance(training_evaluation, (DictConfig, dict)):
+            evaluation_cfg_dict = _cfg_to_dict(training_evaluation) or None
+
+    metadata_cfg: Dict[str, Any] | None = None
+    metadata_section = cfg.get("metadata")
+    if isinstance(metadata_section, (DictConfig, dict)):
+        metadata_cfg = _cfg_to_dict(metadata_section) or None
+
     device_raw = cfg.get("device")
     device = str(device_raw) if device_raw not in (None, "") else None
 
@@ -359,6 +373,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         run_config=OmegaConf.to_container(cfg, resolve=True),
         dataset_cast_policy=dataset_cast_policy,
         reasoning=reasoning_cfg_dict,
+        metadata=metadata_cfg,
+        evaluation=evaluation_cfg_dict,
     )
     return int(epochs), checkpoint_dir
 
