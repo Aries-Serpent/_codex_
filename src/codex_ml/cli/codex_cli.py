@@ -254,20 +254,61 @@ def tokenize(text: str) -> None:
 @click.option(
     "--reasoning",
     is_flag=True,
-    help="Emit reasoning-specific entries.",
+    help=(
+        "Emit reasoning-specific control surface entries (curriculum preset, "
+        "trace_mode, rollout ring, evaluation preset, deployment preset)."
+    ),
 )
-@click.option(
-    "--include",
-    "includes",
-    multiple=True,
-    help="Only include specified categories (can be repeated).",
-)
-def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
-    """Print a repository summary with optional reasoning overlays."""
+def repo_map(reasoning: bool) -> None:
+    """Print a repository summary (optionally including reasoning knobs)."""
 
     from codex_ml.cli.repo_map import render_repo_map
 
-    click.echo(render_repo_map(reasoning=reasoning, include=includes))
+    click.echo(render_repo_map(reasoning=reasoning))
+
+
+@codex.command()
+@click.option(
+    "--config",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Path to deployment preset YAML (e.g. configs/deploy/reasoning_pod.yaml).",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Required flag. Perform offline validation only; never touch live infra.",
+)
+@click.option(
+    "--run-metadata-dir",
+    default=Path("runs/train_loop"),
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help="Directory containing run_metadata.json from the latest TrainLoop run.",
+)
+def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
+    """Validate reasoning pod deployment readiness in dry-run mode."""
+
+    from codex_ml.cli.deploy import run_deploy_dry_run
+
+    if not dry_run:
+        click.secho(
+            "DEPLOYMENT BLOCKED: --dry-run is required in this rollout ring.",
+            err=True,
+        )
+        raise SystemExit(1)
+
+    try:
+        summary = run_deploy_dry_run(
+            config_path=config,
+            dry_run=dry_run,
+            run_metadata_dir=run_metadata_dir,
+        )
+    except RuntimeError as exc:
+        click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(json.dumps(summary, indent=2))
 
 
 @codex.command()
