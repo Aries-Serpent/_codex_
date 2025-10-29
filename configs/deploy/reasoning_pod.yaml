@@ -1,0 +1,20 @@
+# Template: Reasoning pod deployment manifest for bespoke reasoning agents.
+# @package _global_
+
+# Rollout ring communicates intended maturity for this manifest. Update it as
+# the pod graduates between rings (see docs/README.md for definitions).
+rollout_ring: 0D_base_
+
+metadata:
+  service: reasoning-pod
+  owners:
+    - reasoning@codex.example
+
+runtime:
+  replicas: 1
+  traces:
+    capture: selective
+
+resources:
+  cpu: "2"
+  memory: "8Gi"
