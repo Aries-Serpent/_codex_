@@ -260,7 +260,7 @@ class ReasoningConfig:
                 "must be within (0, 1] when provided",
                 self.log_probability_threshold,
             )
-        allowed_trace_modes = {"param-slice", "activation-snapshot"}
+        allowed_trace_modes = {"disabled", "param-slice", "activation-snapshot"}
         if self.trace_mode not in allowed_trace_modes:
             raise ConfigError(
                 f"{path}.trace_mode",

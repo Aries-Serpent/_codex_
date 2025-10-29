@@ -28,8 +28,10 @@ This is explicitly **not** production hosting. It exists for:
 3. Inspect the generated manifest:
    - `image` / tag are correct for the artifact you intend to ship.
    - resource requests/limits make sense.
-   - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`,
-     and `CODEX_EVAL_PRESET` are correct.
+   - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`
+     (usually `disabled`, occasionally `param-slice` when
+     fingerprints are explicitly requested), and
+     `CODEX_EVAL_PRESET` are correct.
    - `rollout_ring` matches the ring you plan to target next
      (for example, "`0D_base_`").
 

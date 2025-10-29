@@ -66,7 +66,9 @@ codex deploy \
 This renders the "reasoning pod" manifest for inspection. It does **not**
 create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md)
 for what that pod is expected to look like (resources, telemetry, trace
-capture mode, curriculum phase, etc.).
+capture mode, curriculum phase, etc.). The CLI intentionally supports
+dry-run review only — there is no automatic apply step, and the embedded
+`rollout_ring` is declarative intent, not permission.
 
 Always keep `--dry-run` in place; manifests must be reviewed before any
 apply/rollout tooling is engaged.
