@@ -26,7 +26,7 @@ pod:
     - name: CODEX_CURRICULUM_PHASE
       value: "starter"
     - name: CODEX_TRACE_MODE
-      value: "param-slice"     # diagnostic fingerprint mode (see trace_mode)
+      value: "disabled"        # or "param-slice" once diagnostic traces are enabled
     - name: CODEX_EVAL_PRESET
       value: "configs/evaluation/reasoning/base.yaml"
 

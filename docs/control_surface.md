@@ -100,7 +100,7 @@ The internal alpha product surface is the set:
 ```text
 AlphaProductSurface = {
   curriculum_phase,
-  trace_capture_enabled,
+  trace_mode,
   eval_preset,
   deploy_preset,
   replay_strategy,
@@ -108,8 +108,21 @@ AlphaProductSurface = {
 }
 ```
 
-Product signoff to merge `0D_base_` → `main` should not happen unless
-every knob above is:
-- documented,
-- has a safe offline default,
-- and is reflected in status / rollout notes.
+Each knob is offline-first and review-gated:
+
+- `curriculum_phase` / `replay_strategy` come from the training configs and
+  continual replay logic in
+  `src/codex_ml/training/unified_training.py` / `src/codex_ml/training/strategies.py`.
+- `trace_mode` is documented as "disabled" by default. When enabled it is a
+  diagnostic fingerprint (`param-slice`) and remains offline-only until the
+  planned "activation-snapshot" ships.
+- `eval_preset` is declared in `configs/evaluation/reasoning/*.yaml` and powers
+  offline theorem/tool probes.
+- `deploy_preset` is the dry-run manifest (`configs/deploy/reasoning_pod.yaml`)
+  rendered via `codex deploy --dry-run` for inspection (never auto-deploy).
+- `rollout_ring` is an intent badge in the ladder `0A_base_` → `0B_base_` →
+  `0C_base_` → `0D_base_` → `main`. It is not production approval.
+
+Product signoff to merge `0D_base_` → `main` should not happen unless every
+knob above is documented, has a safe offline default, and is reflected in
+status / rollout notes.

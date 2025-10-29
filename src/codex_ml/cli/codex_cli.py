@@ -251,22 +251,23 @@ def tokenize(text: str) -> None:
 
 
 @codex.command()
-def repo_map() -> None:
-    """Print a simple summary of top-level directories and key files."""
+@click.option(
+    "--reasoning",
+    is_flag=True,
+    help="Emit reasoning-specific entries.",
+)
+@click.option(
+    "--include",
+    "includes",
+    multiple=True,
+    help="Only include specified categories (can be repeated).",
+)
+def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
+    """Print a repository summary with optional reasoning overlays."""
 
-    repo_root = Path(__file__).resolve().parents[3]
-    entries: list[str] = []
-    for item in sorted(repo_root.iterdir()):
-        name = item.name
-        # Skip hidden files and directories (e.g. .git, .cache)
-        if name.startswith("."):
-            continue
-        if item.is_dir():
-            entries.append(f"[dir] {name}/")
-        else:
-            entries.append(f" {name}")
+    from codex_ml.cli.repo_map import render_repo_map
 
-    click.echo("\n".join(entries))
+    click.echo(render_repo_map(reasoning=reasoning, include=includes))
 
 
 @codex.command()
