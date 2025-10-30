@@ -23,6 +23,23 @@ Quick start:
 python tools/status_report.py --summary samples/assistant_message_summary.sample.json --selected 3 --out STATUS_REPORT.md
 ```
 
+### Repository Status Audit
+
+Generate a comprehensive status update audit report for the Codex repository:
+
+```bash
+# Full audit and report
+codex-status-audit
+
+# Quick regeneration with existing artifacts
+codex-status-audit --skip-audit
+
+# Compare against baseline
+codex-status-audit --baseline audit_artifacts/capabilities_scored.json.baseline
+```
+
+See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for detailed usage.
+
 ## Candidate Selection (local-only)
 
 You can generate a local selection recommendation across 1–4 assistant variants:

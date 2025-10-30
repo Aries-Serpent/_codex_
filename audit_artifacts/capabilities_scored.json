@@ -1,5 +1,5 @@
 {
-  "generated": 1761840903.9872456,
+  "generated": 1761853671.3244298,
   "capabilities": [
     {
       "id": "checkpointing",
@@ -143,12 +143,12 @@
       "id": "ci-cd-pipeline",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9052631578947369,
-        "tests": 0.5789473684210527,
+        "consistency": 0.9057591623036649,
+        "tests": 0.5759162303664922,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8758,
+      "score": 0.8751,
       "evidence_files": [
         ".codex/smoke/import_check.py",
         ".github/workflows/archive-gates.yml.disabled",
@@ -164,6 +164,7 @@
         "analysis/audit_pipeline.py",
         "analysis/tests_docs_links_audit.py",
         "cli/audit_runner_root.py",
+        "cli/status_audit.py",
         "codex_ml/data/checksums.py",
         "codex_ml/utils/checkpointing.py",
         "configs/development/noxfile.py",
@@ -352,7 +353,7 @@
         "github_actions": 7,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 178,
+        "validation_scripts": 179,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       },
       "partials": {
@@ -362,14 +363,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.9052631578947369,
+          "component_value": 0.9057591623036649,
           "weight": 0.2,
-          "contribution": 0.18105263157894738
+          "contribution": 0.181151832460733
         },
         "tests": {
-          "component_value": 0.5789473684210527,
+          "component_value": 0.5759162303664922,
           "weight": 0.25,
-          "contribution": 0.14473684210526316
+          "contribution": 0.14397905759162305
         },
         "safeguards": {
           "component_value": 1.0,
@@ -1096,12 +1097,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9371428571428572,
-        "tests": 0.002857142857142857,
+        "consistency": 0.9322033898305084,
+        "tests": 0.002824858757062147,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6756,
+      "score": 0.6746,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -1384,6 +1385,8 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/STATUS.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_report.md",
@@ -1391,6 +1394,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -1460,10 +1465,10 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 348,
+        "markdown_count": 352,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 350
+        "total_docs": 354
       },
       "partials": {
         "functionality": {
@@ -1472,14 +1477,14 @@
           "contribution": 0.1875
         },
         "consistency": {
-          "component_value": 0.9371428571428572,
+          "component_value": 0.9322033898305084,
           "weight": 0.2,
-          "contribution": 0.18742857142857144
+          "contribution": 0.1864406779661017
         },
         "tests": {
-          "component_value": 0.002857142857142857,
+          "component_value": 0.002824858757062147,
           "weight": 0.25,
-          "contribution": 0.0007142857142857143
+          "contribution": 0.0007062146892655367
         },
         "safeguards": {
           "component_value": 1.0,
@@ -1496,13 +1501,13 @@
     {
       "id": "duplication_ratio",
       "components": {
-        "functionality": 1.0,
-        "consistency": 0.765017667844523,
-        "tests": 0.31130742049469967,
+        "functionality": 0.0,
+        "consistency": 0.7626334519572954,
+        "tests": 0.3135231316725979,
         "safeguards": 1.0,
-        "documentation": 0.05736137667304015
+        "documentation": 0.056925996204933584
       },
-      "score": 0.6394,
+      "score": 0.3894,
       "evidence_files": [
         ".bandit.yml",
         ".codex/DO_NOT_ACTIVATE_ACTIONS.txt",
@@ -1517,17 +1522,6 @@
         ".codex/automation_out/coverage_report.json",
         ".codex/automation_out/db_catalog.json",
         ".codex/automation_out/db_inventory.json",
-        ".codex/cache/maint_vendor_hash_post.json",
-        ".codex/cache/maint_vendor_hash_pre_sync.json",
-        ".codex/cache/maintenance.locksum",
-        ".codex/cache/maintenance_summary.json",
-        ".codex/cache/secrets.status.json",
-        ".codex/cache/setup.locksum",
-        ".codex/cache/setup_summary.json",
-        ".codex/cache/uv_sync.log",
-        ".codex/cache/uv_sync_maint.log",
-        ".codex/cache/vendor_hash_post_purge.json",
-        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -1599,10 +1593,6 @@
         ".codex/inventory.tsv",
         ".codex/inventory.txt",
         ".codex/lint-policy.json",
-        ".codex/logs/command_failures.log",
-        ".codex/logs/maintenance_failures.log",
-        ".codex/logs/maintenance_warnings.log",
-        ".codex/logs/setup_warnings.log",
         ".codex/mapping.json",
         ".codex/mapping.md",
         ".codex/mapping_table.json",
@@ -1793,6 +1783,7 @@
         "LICENSES/codex-universal-image-sbom.spdx.json",
         "MANIFEST.in",
         "README.md",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -1892,6 +1883,7 @@
         "cli/patch_runner.py",
         "cli/script_polish.py",
         "cli/setup.py",
+        "cli/status_audit.py",
         "cli/task_sequence.py",
         "cli/train_schema_demo.py",
         "cli/update_runner.py",
@@ -2379,6 +2371,10 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/readiness.validated.json",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/readiness.json",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.json",
@@ -2391,6 +2387,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -2641,18 +2639,6 @@
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/deployment_infrastructure.py",
@@ -4314,7 +4300,6 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
         "training/__init__.py",
         "training/cache.py",
@@ -4335,25 +4320,23 @@
         "validate_fences.py",
         "yaml/__init__.py"
       ],
-      "found_patterns": [
-        "duplicate_stem"
-      ],
+      "found_patterns": [],
       "meta": {},
       "partials": {
         "functionality": {
-          "component_value": 1.0,
+          "component_value": 0.0,
           "weight": 0.25,
-          "contribution": 0.25
+          "contribution": 0.0
         },
         "consistency": {
-          "component_value": 0.765017667844523,
+          "component_value": 0.7626334519572954,
           "weight": 0.2,
-          "contribution": 0.15300353356890461
+          "contribution": 0.15252669039145908
         },
         "tests": {
-          "component_value": 0.31130742049469967,
+          "component_value": 0.3135231316725979,
           "weight": 0.25,
-          "contribution": 0.07782685512367492
+          "contribution": 0.07838078291814947
         },
         "safeguards": {
           "component_value": 1.0,
@@ -4361,9 +4344,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.05736137667304015,
+          "component_value": 0.056925996204933584,
           "weight": 0.15,
-          "contribution": 0.008604206500956023
+          "contribution": 0.008538899430740036
         }
       }
     },
@@ -4505,12 +4488,12 @@
       "id": "experiment-management",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.7631578947368421,
-        "tests": 0.37719298245614036,
+        "consistency": 0.7610619469026548,
+        "tests": 0.3805309734513274,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7969,
+      "score": 0.7973,
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
         ".codex/copilot_bridge/var/manifests/.gitkeep",
@@ -4558,7 +4541,6 @@
         "experiments/2025-01-15_smoke.md",
         "manifests/codex_eval_rules.v3.json",
         "manifests/selection_guard_rules.json",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "src/codex/release/manifest.py",
         "src/codex_ml/cli/manifest.py",
@@ -4637,7 +4619,7 @@
       "meta": {
         "mlflow_integration": 32,
         "wandb_integration": 4,
-        "experiment_utils": 13,
+        "experiment_utils": 12,
         "metadata_files": 67
       },
       "partials": {
@@ -4647,14 +4629,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.7631578947368421,
+          "component_value": 0.7610619469026548,
           "weight": 0.2,
-          "contribution": 0.15263157894736845
+          "contribution": 0.15221238938053097
         },
         "tests": {
-          "component_value": 0.37719298245614036,
+          "component_value": 0.3805309734513274,
           "weight": 0.25,
-          "contribution": 0.09429824561403509
+          "contribution": 0.09513274336283185
         },
         "safeguards": {
           "component_value": 1.0,
@@ -4675,9 +4657,9 @@
         "consistency": 0.8888888888888888,
         "tests": 0.3333333333333333,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.5927342256214149
+        "documentation": 0.5882352941176471
       },
-      "score": 0.575,
+      "score": 0.5743,
       "evidence_files": [
         "src/codex_ml/telemetry/server.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -4717,9 +4699,9 @@
           "contribution": 0.09999999999999999
         },
         "documentation": {
-          "component_value": 0.5927342256214149,
+          "component_value": 0.5882352941176471,
           "weight": 0.15,
-          "contribution": 0.08891013384321222
+          "contribution": 0.08823529411764706
         }
       }
     },
@@ -4727,18 +4709,16 @@
       "id": "logging-tracking",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8192307692307692,
-        "tests": 0.31153846153846154,
+        "consistency": 0.8149606299212598,
+        "tests": 0.3188976377952756,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7917,
+      "score": 0.7927,
       "evidence_files": [
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
         ".codex/automation_out/db_catalog.json",
-        ".codex/cache/uv_sync.log",
-        ".codex/cache/uv_sync_maint.log",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -4746,10 +4726,6 @@
         ".codex/copilot_bridge/var/logs/.gitkeep",
         ".codex/errors_codex.log",
         ".codex/evidence/phase5_structured_logging.jsonl",
-        ".codex/logs/command_failures.log",
-        ".codex/logs/maintenance_failures.log",
-        ".codex/logs/maintenance_warnings.log",
-        ".codex/logs/setup_warnings.log",
         ".codex/pre-commit.log",
         ".codex/pytest.log",
         ".codex/status/apply_log.txt",
@@ -5006,14 +4982,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8192307692307692,
+          "component_value": 0.8149606299212598,
           "weight": 0.2,
-          "contribution": 0.16384615384615386
+          "contribution": 0.16299212598425197
         },
         "tests": {
-          "component_value": 0.31153846153846154,
+          "component_value": 0.3188976377952756,
           "weight": 0.25,
-          "contribution": 0.07788461538461539
+          "contribution": 0.0797244094488189
         },
         "safeguards": {
           "component_value": 1.0,
@@ -5034,7 +5010,7 @@
         "consistency": 0.8673469387755102,
         "tests": 0.4897959183673469,
         "safeguards": 1.0,
-        "documentation": 0.05736137667304015
+        "documentation": 0.056925996204933584
       },
       "score": 0.7045,
       "evidence_files": [
@@ -5167,9 +5143,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.05736137667304015,
+          "component_value": 0.056925996204933584,
           "weight": 0.15,
-          "contribution": 0.008604206500956023
+          "contribution": 0.008538899430740036
         }
       }
     },
@@ -5177,17 +5153,13 @@
       "id": "reproducibility",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8888888888888888,
-        "tests": 0.5972222222222222,
+        "consistency": 0.8805970149253731,
+        "tests": 0.6417910447761194,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8771,
+      "score": 0.8866,
       "evidence_files": [
-        ".codex/cache/maint_vendor_hash_post.json",
-        ".codex/cache/maint_vendor_hash_pre_sync.json",
-        ".codex/cache/vendor_hash_post_purge.json",
-        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/validation/file_integrity_compare.json",
         "_codex_reports/2025-10-06/reproducibility.json",
         "_codex_reports/2025-10-06/seed_scan.json",
@@ -5201,7 +5173,6 @@
         "docs/reproducibility.md",
         "docs/training/reproducibility.md",
         "patches/pending/2025-09-21_deterministic_loader.patch",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
@@ -5266,9 +5237,9 @@
       ],
       "meta": {
         "seed_management": 25,
-        "repro_utils": 16,
+        "repro_utils": 15,
         "determinism_configs": 5,
-        "integrity_validation": 31
+        "integrity_validation": 27
       },
       "partials": {
         "functionality": {
@@ -5277,14 +5248,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8888888888888888,
+          "component_value": 0.8805970149253731,
           "weight": 0.2,
-          "contribution": 0.17777777777777778
+          "contribution": 0.17611940298507464
         },
         "tests": {
-          "component_value": 0.5972222222222222,
+          "component_value": 0.6417910447761194,
           "weight": 0.25,
-          "contribution": 0.14930555555555555
+          "contribution": 0.16044776119402984
         },
         "safeguards": {
           "component_value": 1.0,
@@ -5302,12 +5273,12 @@
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8424479166666666,
-        "tests": 0.2903645833333333,
+        "consistency": 0.8408796895213454,
+        "tests": 0.2884864165588616,
         "safeguards": 1.0,
-        "documentation": 0.01912045889101338
+        "documentation": 0.018975332068311195
       },
-      "score": 0.6439,
+      "score": 0.6431,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -5353,6 +5324,7 @@
         ".github/docs/Implementation_LLMAutoFixHook.md",
         ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
         ".pre-commit-config.yaml",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex_reports/2025-10-06/_codex_status_update-2025-10-06.md",
@@ -5554,12 +5526,16 @@
         "docs/status_update_outstanding_questions.md",
         "docs/status_update_prompt.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_update_{{date}}.md",
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/suggested_tasks/offline_logging_security_updates.md",
         "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
@@ -6094,14 +6070,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8424479166666666,
+          "component_value": 0.8408796895213454,
           "weight": 0.2,
-          "contribution": 0.16848958333333333
+          "contribution": 0.1681759379042691
         },
         "tests": {
-          "component_value": 0.2903645833333333,
+          "component_value": 0.2884864165588616,
           "weight": 0.25,
-          "contribution": 0.07259114583333333
+          "contribution": 0.0721216041397154
         },
         "safeguards": {
           "component_value": 1.0,
@@ -6109,9 +6085,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.01912045889101338,
+          "component_value": 0.018975332068311195,
           "weight": 0.15,
-          "contribution": 0.002868068833652007
+          "contribution": 0.0028462998102466793
         }
       }
     },
@@ -7288,12 +7264,12 @@
       "id": "training-engine",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8656716417910448,
-        "tests": 0.44776119402985076,
+        "consistency": 0.865,
+        "tests": 0.45,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8351,
+      "score": 0.8355,
       "evidence_files": [
         "_codex_reports/2025-10-06/trainer_smoke.json",
         "_codex_reports/2025-10-06/trainer_smoke.log",
@@ -7359,7 +7335,6 @@
         "examples/plugins/toy_trainer/__init__.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
         "src/codex/training.py",
@@ -7508,14 +7483,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8656716417910448,
+          "component_value": 0.865,
           "weight": 0.2,
-          "contribution": 0.17313432835820897
+          "contribution": 0.17300000000000001
         },
         "tests": {
-          "component_value": 0.44776119402985076,
+          "component_value": 0.45,
           "weight": 0.25,
-          "contribution": 0.11194029850746269
+          "contribution": 0.1125
         },
         "safeguards": {
           "component_value": 1.0,
@@ -7536,9 +7511,9 @@
         "consistency": 0.6,
         "tests": 1.0,
         "safeguards": 0.5,
-        "documentation": 0.9177820267686424
+        "documentation": 0.9867172675521821
       },
-      "score": 0.8327,
+      "score": 0.843,
       "evidence_files": [
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
@@ -7575,9 +7550,9 @@
           "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.9177820267686424,
+          "component_value": 0.9867172675521821,
           "weight": 0.15,
-          "contribution": 0.13766730401529637
+          "contribution": 0.14800759013282733
         }
       }
     }

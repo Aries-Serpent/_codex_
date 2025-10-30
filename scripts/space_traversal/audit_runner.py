@@ -774,9 +774,11 @@ def main():
     parser = argparse.ArgumentParser(description="Capability Audit Runner")
     sub = parser.add_subparsers(dest="command")
 
-    sub.add_parser("run", help="Run full pipeline")
+    run_p = sub.add_parser("run", help="Run full pipeline")
+    run_p.add_argument("--artifacts-dir", help="Override artifacts directory path")
     stage_p = sub.add_parser("stage", help="Run a single stage")
     stage_p.add_argument("stage_id", help="Stage code (S1..S7)")
+    stage_p.add_argument("--artifacts-dir", help="Override artifacts directory path")
     diff_p = sub.add_parser("diff", help="Diff two report or score files")
     diff_p.add_argument("--old", required=True, help="Old report/JSON path")
     diff_p.add_argument("--new", required=True, help="New report/JSON path")
@@ -789,6 +791,11 @@ def main():
         sys.exit(1)
 
     cfg = load_config()
+    
+    # Override artifacts_dir if provided via command line
+    if hasattr(args, 'artifacts_dir') and args.artifacts_dir:
+        cfg["output"]["artifacts_dir"] = args.artifacts_dir
+    
     os.makedirs(cfg["output"]["artifacts_dir"], exist_ok=True)
 
     if args.command == "run":
