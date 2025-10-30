@@ -4,6 +4,7 @@
 kind: ReasoningPod
 name: codex-reasoning-pod
 version: 0
+rollout_ring: 0D_base_  # Must match training metadata to pass dry-run validation.
 
 image:
   repository: local/offline/codex
