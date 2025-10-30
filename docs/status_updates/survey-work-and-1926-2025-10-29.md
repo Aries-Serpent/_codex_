@@ -57,57 +57,23 @@ sanitize_slug() {
 ```
 
 **FILE:** tools/survey_sanitize.py@HEAD
-```text
-from __future__ import annotations
-
-import re
-import sys
-from typing import Iterable, List
+```python
+from typing import Iterable
 
 BEGIN_MARKER = "[BEGIN CONTENT]"
 END_MARKER = "[END CONTENT]"
 
-
-def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
-    """Replace marker pairs with ```text fenced blocks."""
-    output: List[str] = []
-    buffer: List[str] = []
-    inside = False
-
-    for raw in lines:
-        stripped = raw.strip()
-        if stripped == BEGIN_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-            inside = True
-            buffer.clear()
-            continue
-        if stripped == END_MARKER:
-            if inside:
-                output.extend(_render_buffer(buffer))
-                buffer.clear()
-                inside = False
-            continue
-
-        clean = raw.rstrip("\r")
-        if inside:
-            buffer.append(clean)
-        else:
-            output.append(clean)
+def _render_buffer(buffer: Iterable[str]) -> list[str]:
+    return [line.rstrip("\r") for line in buffer]
 ```
-
 **FILE:** docs/status_updates/README.md@HEAD
 ```text
 ## Quick Flow
 1) **Collect survey plaintext** from Codex (no nested fences; use the template in `templates/SURVEY_TEMPLATE.md`).
 2) **Write the report** with the branch-aware writer:
-   ```bash
-   # from repo root
    scripts/survey.sh --pr 1926 --stdin <<'EOF'
    <paste Codex plaintext survey here>
    EOF
-   ```
    - Use `--from-file <path>` if the plaintext is saved locally.
 3) **Resulting paths**:
    - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
