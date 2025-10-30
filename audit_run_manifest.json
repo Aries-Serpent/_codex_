@@ -1,36 +1,36 @@
 {
+  "timestamp": 1761840904.1623824,
+  "version": "1.1.0",
+  "repo_root_sha": "77269eda046674439e18e88810e92850bf9912e7c2c5f89c4b75d5bd5e843559",
   "artifacts": [
     {
-      "name": "context_index.json",
-      "sha": "33f1dc327a1432aa94d93ada283bd6653ee8948a34a199a3ba248827a50206ef"
+      "name": "gaps.json",
+      "sha": "eb00ad133c737060a1c11b256d57f1ee93d9036966992831272fb434c3ff38e1"
     },
     {
-      "name": "capabilities_raw.json",
-      "sha": "a530c27bd689702f5bc159b65e88c5bd61478815ace28dd36c1660502ed3e3ff"
+      "name": "context_index.json",
+      "sha": "a3c93c539661eca61827062877cfe395d22facc05487d44e867e473e77b21202"
     },
     {
       "name": "capabilities_scored.json",
-      "sha": "6cdd66683ff5baf8f4ce53c28d9d5438ad1ebbe66cf75f90e03de4057ca3f7ca"
+      "sha": "d5b34b8002d9e3fae127464f6e276a1d1e87fec2d864a0917e42d7f8a721ce7c"
+    },
+    {
+      "name": "capabilities_raw.json",
+      "sha": "b50828394492ef3d77ca12917f439fec157a90a380009943246356094c640046"
     },
     {
       "name": "facets.json",
-      "sha": "aa2bd02b484f4afa17c5bd2edca5929047bdd58445674f6f52afe356a3083a65"
-    },
-    {
-      "name": "gaps.json",
-      "sha": "dc57771ff0f3b04d54f38522dce481dbc7158872d8bf4dd97ba41521a9c9cb20"
+      "sha": "bb49795ba39e7f860ae5cd70c1a323518a9f51ff2ba72ae254a770733e3e926c"
     }
   ],
-  "repo_root_sha": "263052443051a54d0d6a5bf2d49c8014b815fa079ce74aa37d93b009ec81db5b",
-  "template_hash": "7202b060fae306041a38f55fb49bd172b4fd1a57988e590c3a8fe9050dd5d536",
-  "timestamp": 1760933153.138786,
-  "version": "1.1.0",
-  "warnings": [],
   "weights": {
-    "consistency": 0.2,
-    "documentation": 0.15,
     "functionality": 0.25,
+    "consistency": 0.2,
+    "tests": 0.25,
     "safeguards": 0.15,
-    "tests": 0.25
-  }
+    "documentation": 0.15
+  },
+  "warnings": [],
+  "template_hash": "7202b060fae306041a38f55fb49bd172b4fd1a57988e590c3a8fe9050dd5d536"
 }
