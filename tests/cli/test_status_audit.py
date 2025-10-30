@@ -10,7 +10,6 @@ These tests validate the status audit CLI functionality including:
 """
 from __future__ import annotations
 
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -49,10 +48,10 @@ def test_status_audit_skip_mode(status_audit_script, tmp_path, repo_root):
     # Check if artifacts exist, otherwise skip
     artifacts_dir = repo_root / "audit_artifacts"
     scored_file = artifacts_dir / "capabilities_scored.json"
-    
+
     if not scored_file.exists():
         pytest.skip("No existing audit artifacts found")
-    
+
     # Run with skip-audit mode
     output_dir = tmp_path / "test_reports"
     result = subprocess.run(
@@ -66,14 +65,14 @@ def test_status_audit_skip_mode(status_audit_script, tmp_path, repo_root):
         capture_output=True,
         text=True,
     )
-    
+
     assert result.returncode == 0
     assert "SUCCESS" in result.stdout
-    
+
     # Check that a report was generated
     reports = list(output_dir.glob("codex_status_update_*.md"))
     assert len(reports) > 0
-    
+
     # Verify report content structure
     report_content = reports[0].read_text()
     assert "Executive Summary" in report_content
@@ -98,7 +97,7 @@ def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
         capture_output=True,
         text=True,
     )
-    
+
     # Should fail because capabilities_scored.json is missing
     assert result.returncode != 0
 
@@ -107,26 +106,30 @@ def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
 def test_status_audit_full_run(status_audit_script, tmp_path):
     """Test full status audit run (slow test)."""
     output_dir = tmp_path / "test_reports"
-    
+    artifacts_dir = tmp_path / "test_artifacts"
+
     result = subprocess.run(
         [
             sys.executable,
             str(status_audit_script),
             "--output",
             str(output_dir),
+            "--artifacts",
+            str(artifacts_dir),
         ],
         capture_output=True,
         text=True,
         timeout=300,  # 5 minute timeout
     )
-    
+
     # Should complete successfully
     assert result.returncode == 0
     assert "SUCCESS" in result.stdout
-    
-    # Verify artifacts were created
-    # (they'll be in the default location, not tmp_path)
-    
+
+    # Verify artifacts were created in tmp_path
+    assert artifacts_dir.exists()
+    assert (artifacts_dir / "capabilities_scored.json").exists()
+
     # Verify report was created
     reports = list(output_dir.glob("codex_status_update_*.md"))
     assert len(reports) > 0
