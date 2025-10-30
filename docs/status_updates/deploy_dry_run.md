@@ -1,20 +1,24 @@
-# Deploy Dry-Run (2025-10-30, work)
+# Deployment Dry-Run — codex-reasoning-pod
 
-```json
-{
-  "status": "validated",
-  "dry_run_only": true,
-  "rollout_ring": "0D_base_",
-  "pod_ring": "0D_base_",
-  "config": "configs/deploy/reasoning_pod.yaml",
-  "image": {
-    "repository": "local/offline/codex",
-    "tag": "latest"
-  },
-  "resources": {
-    "cpu": "2",
-    "memory": "8Gi"
-  },
-  "notes": "Offline dry-run only; no infrastructure changes were made."
-}
-```
+## Overview
+- Kind: ReasoningPod
+- Version: 0
+- Image: local/offline/codex:latest
+- Config: `configs/deploy/reasoning_pod.yaml`
+
+## Resources
+- cpu: 2
+- memory: 8Gi
+
+## Reasoning Knobs
+- Trace capture mode: weights
+- Evaluation preset: configs/evaluation/reasoning/base.yaml
+- Curriculum template: configs/training/reasoning/baseline.yaml
+
+## Artifact Targets
+- Markdown: docs/status_updates/deploy_dry_run.md
+- JSON: docs/status_updates/deploy_dry_run.json
+
+## Notes
+- This config is safe to commit; it does not perform deployment or network I/O.
+- Use Python local tools to generate review artifacts for promotion gates.
