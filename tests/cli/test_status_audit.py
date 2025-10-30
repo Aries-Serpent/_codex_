@@ -1,0 +1,136 @@
+#!/usr/bin/env python
+"""
+Test suite for codex-status-audit command.
+
+These tests validate the status audit CLI functionality including:
+- Help text output
+- Skip-audit mode
+- Report generation
+- Baseline comparison
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+
+@pytest.fixture
+def repo_root():
+    """Get repository root directory."""
+    return Path(__file__).resolve().parents[2]
+
+
+@pytest.fixture
+def status_audit_script(repo_root):
+    """Get path to status_audit.py script."""
+    return repo_root / "cli" / "status_audit.py"
+
+
+def test_status_audit_help(status_audit_script):
+    """Test that help text is shown correctly."""
+    result = subprocess.run(
+        [sys.executable, str(status_audit_script), "--help"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "Generate a comprehensive Codex status update audit report" in result.stdout
+    assert "--output" in result.stdout
+    assert "--baseline" in result.stdout
+    assert "--skip-audit" in result.stdout
+
+
+def test_status_audit_skip_mode(status_audit_script, tmp_path, repo_root):
+    """Test status audit in skip-audit mode with existing artifacts."""
+    # Check if artifacts exist, otherwise skip
+    artifacts_dir = repo_root / "audit_artifacts"
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    
+    if not scored_file.exists():
+        pytest.skip("No existing audit artifacts found")
+    
+    # Run with skip-audit mode
+    output_dir = tmp_path / "test_reports"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(status_audit_script),
+            "--skip-audit",
+            "--output",
+            str(output_dir),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    
+    assert result.returncode == 0
+    assert "SUCCESS" in result.stdout
+    
+    # Check that a report was generated
+    reports = list(output_dir.glob("codex_status_update_*.md"))
+    assert len(reports) > 0
+    
+    # Verify report content structure
+    report_content = reports[0].read_text()
+    assert "Executive Summary" in report_content
+    assert "Low Maturity Focus" in report_content
+    assert "Weights (Effective)" in report_content
+    assert "Integrity Chain" in report_content
+
+
+def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
+    """Test that status audit validates required artifacts."""
+    # Try to run skip-audit with missing artifacts
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(status_audit_script),
+            "--skip-audit",
+            "--artifacts",
+            str(tmp_path / "nonexistent"),
+            "--output",
+            str(tmp_path / "reports"),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    
+    # Should fail because capabilities_scored.json is missing
+    assert result.returncode != 0
+
+
+@pytest.mark.slow
+def test_status_audit_full_run(status_audit_script, tmp_path):
+    """Test full status audit run (slow test)."""
+    output_dir = tmp_path / "test_reports"
+    
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(status_audit_script),
+            "--output",
+            str(output_dir),
+        ],
+        capture_output=True,
+        text=True,
+        timeout=300,  # 5 minute timeout
+    )
+    
+    # Should complete successfully
+    assert result.returncode == 0
+    assert "SUCCESS" in result.stdout
+    
+    # Verify artifacts were created
+    # (they'll be in the default location, not tmp_path)
+    
+    # Verify report was created
+    reports = list(output_dir.glob("codex_status_update_*.md"))
+    assert len(reports) > 0
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
