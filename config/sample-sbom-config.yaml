@@ -1,0 +1,4 @@
+apiVersion: v1
+sbom:
+  output: sbom.json
+  format: cyclonedx
