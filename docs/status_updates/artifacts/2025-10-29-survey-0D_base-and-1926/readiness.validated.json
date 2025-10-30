@@ -1,0 +1,13 @@
+{
+  "readiness": 0.9,
+  "scores": {
+    "D": 1.0,
+    "E": 0.9,
+    "T": 0.8
+  },
+  "weights": {
+    "alpha": 0.4,
+    "beta": 0.3,
+    "gamma": 0.3
+  }
+}

@@ -1,91 +1,79 @@
-"""
-Unit tests for CLI `repo-map --reasoning` flag propagation.
-
-Goals:
-  * Verify `codex repo-map --reasoning` forwards reasoning=True to implementation.
-  * Verify default (no flag) leaves reasoning False/omitted.
-  * Provide a guarded xfail for legacy fallback (if not yet implemented).
-
-Constraints:
-  - Do not modify production CLI.
-  - Tests must pass in local dev (pytest, typer.testing).
-"""
+"""Unit tests for the Click-based `codex repo-map --reasoning` flag."""
 
 import pytest
-
-from typer.testing import CliRunner
+from click.testing import CliRunner
 
 try:
-    import codex_ml.cli.codex_cli as codex_cli  # expected to export `app` and `_print_repo_map`
-except Exception as e:  # pragma: no cover
-    pytest.skip(f"CLI module not importable: {e}", allow_module_level=True)
+    import codex_ml.cli.codex_cli as codex_cli
+except ImportError as e:  # pragma: no cover - optional surface
+    pytest.skip(f"CLI module not available: {e}", allow_module_level=True)
 
 runner = CliRunner()
 
 
-def _require_cli_bits():
-    """Skip tests if the CLI surface isn't present locally."""
-    if not hasattr(codex_cli, "app"):
-        pytest.skip("codex_cli.app not found")
-    if not hasattr(codex_cli, "_print_repo_map"):
-        pytest.skip("codex_cli._print_repo_map not found")
-
-
 def test_repo_map_reasoning_flag_is_propagated(monkeypatch):
-    """
-    Expectation:
-      `codex repo-map --reasoning` passes reasoning=True to _print_repo_map.
-    """
-    _require_cli_bits()
+    """`--reasoning` flag should result in reasoning=True being forwarded."""
+
     calls = {}
 
-    def fake_print_repo_map(*args, **kwargs):
+    def fake_render_repo_map(*args, **kwargs):
         calls["args"] = args
         calls["kwargs"] = kwargs
-        print("OK: repo-map invoked with reasoning")
+        return "rendered"
 
-    monkeypatch.setattr(codex_cli, "_print_repo_map", fake_print_repo_map, raising=True)
+    monkeypatch.setattr(
+        "codex_ml.cli.repo_map.render_repo_map",
+        fake_render_repo_map,
+        raising=True,
+    )
 
-    result = runner.invoke(codex_cli.app, ["repo-map", "--reasoning"])
-    assert result.exit_code == 0, f"CLI failed: {result.output}\n{result.exception}"
-    assert calls.get("kwargs", {}).get("reasoning") is True, f"Expected reasoning=True; got {calls}"
+    result = runner.invoke(codex_cli.codex, ["repo-map", "--reasoning"])
+    assert result.exit_code == 0, f"CLI failed: {result.output}"
+    assert result.output.strip() == "rendered"
+    assert calls.get("kwargs", {}).get("reasoning") is True
 
 
 def test_repo_map_without_reasoning_flag(monkeypatch):
-    """
-    Expectation:
-      `codex repo-map` (no flag) results in reasoning=False (or omitted→False).
-    """
-    _require_cli_bits()
+    """Omitting `--reasoning` should call render_repo_map with reasoning=False."""
+
     calls = {}
 
-    def fake_print_repo_map(*args, **kwargs):
+    def fake_render_repo_map(*args, **kwargs):
         calls["kwargs"] = kwargs
-        print("OK: repo-map invoked without reasoning")
+        return "rendered"
 
-    monkeypatch.setattr(codex_cli, "_print_repo_map", fake_print_repo_map, raising=True)
-    result = runner.invoke(codex_cli.app, ["repo-map"])
-    assert result.exit_code == 0, f"CLI failed: {result.output}\n{result.exception}"
-    assert calls.get("kwargs", {}).get("reasoning", False) is False, f"Expected False; got {calls}"
+    monkeypatch.setattr(
+        "codex_ml.cli.repo_map.render_repo_map",
+        fake_render_repo_map,
+        raising=True,
+    )
+
+    result = runner.invoke(codex_cli.codex, ["repo-map"])
+    assert result.exit_code == 0, f"CLI failed: {result.output}"
+    assert result.output.strip() == "rendered"
+    assert calls.get("kwargs", {}).get("reasoning", False) is False
 
 
-@pytest.mark.xfail(
-    reason="Legacy fallback may not exist yet; unmark when implemented", strict=False
-)
-def test_repo_map_legacy_fallback_signature(monkeypatch):
-    """
-    Optional legacy guard:
-      If the CLI tries `_print_repo_map(reasoning=True)` but the implementation
-      only accepts no-arg call, a robust CLI would catch TypeError and retry.
-      This test is marked xfail until that behavior lands.
-    """
-    _require_cli_bits()
+def test_repo_map_reasoning_legacy_fallback(monkeypatch):
+    """TypeError from render_repo_map(reasoning=...) should trigger fallback call."""
 
-    def legacy_noarg_impl():
-        print("OK: legacy repo-map (no kwargs)")
+    calls: list[tuple[tuple, dict]] = []
 
-    # Simulate a signature mismatch by swapping in a no-arg impl.
-    monkeypatch.setattr(codex_cli, "_print_repo_map", legacy_noarg_impl, raising=True)
-    result = runner.invoke(codex_cli.app, ["repo-map", "--reasoning"])
-    # A resilient CLI would still succeed.
-    assert result.exit_code == 0, f"Expected legacy fallback; got failure: {result.output}"
+    def fake_render_repo_map(*args, **kwargs):
+        calls.append((args, kwargs))
+        # First invocation with reasoning should raise TypeError to trigger fallback.
+        if len(calls) == 1 and kwargs:
+            raise TypeError("unexpected keyword 'reasoning'")
+        return "fallback-render"
+
+    monkeypatch.setattr(
+        "codex_ml.cli.repo_map.render_repo_map",
+        fake_render_repo_map,
+        raising=True,
+    )
+
+    result = runner.invoke(codex_cli.codex, ["repo-map", "--reasoning"])
+    assert result.exit_code == 0, f"CLI failed: {result.output}"
+    assert result.output.strip() == "fallback-render"
+    assert calls[0][1].get("reasoning") is True
+    assert calls[1][1] == {}
