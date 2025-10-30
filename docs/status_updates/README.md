@@ -1,15 +1,23 @@
-# Status Updates & Surveys
+# Status Updates: Surveys & Promotion Logs
 
-This folder collects status reports and survey artifacts used for promotion readiness.
+This folder hosts branch-agnostic reports and artifacts created during ring-by-ring promotion (0A → 0D → main).
 
-## Artifact Types
-- `*status_report.md|json`: overall repo health (fences, schema checks, evaluation summaries)
-- `*deploy_dry_run.md|json`: outputs from the deployment dry-run tool
-- `repo_map_reasoning.txt`: CLI output from `codex repo-map --reasoning`
+## Quick Flow
+1) **Collect survey plaintext** from Codex (no nested fences; use the template in `templates/SURVEY_TEMPLATE.md`).
+2) **Write the report** with the branch-aware writer:
+   ```bash
+   # from repo root
+   scripts/survey.sh --pr 1926 --stdin <<'EOF'
+   <paste Codex plaintext survey here>
+   EOF
+   ```
+   - Use `--from-file <path>` if the plaintext is saved locally.
+3) **Resulting paths**:
+   - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
+   - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
+   - The artifact folder also mirrors the report at `report.md` for easy packaging.
 
-## Conventions
-- Name files with a date/time suffix (UTC) or reference to the branch/PR.
-- Link these in PRs that promote from ring branches (0A..0D) into `main`.
-
-## Offline-First
-All artifacts are generated locally—no CI or hosted dependencies required.
+## Notes
+- The writer auto-detects the **current branch** via `git rev-parse --abbrev-ref HEAD` and derives safe slugs for filenames.
+- The sanitizer collapses 4+ backtick fences to triples and wraps `[BEGIN CONTENT]... [END CONTENT]` blocks in ```text fences so Markdown renders cleanly.
+- Readiness uses \( R = \alpha E + \beta T + \gamma D \) with \( \alpha+\beta+\gamma=1 \).
