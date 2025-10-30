@@ -1,5 +1,5 @@
 {
-  "generated": 1761840901.2471724,
+  "generated": 1761853670.7142298,
   "capabilities": [
     {
       "id": "checkpointing",
@@ -125,6 +125,7 @@
         "analysis/audit_pipeline.py",
         "analysis/tests_docs_links_audit.py",
         "cli/audit_runner_root.py",
+        "cli/status_audit.py",
         "codex_ml/data/checksums.py",
         "codex_ml/utils/checkpointing.py",
         "configs/development/noxfile.py",
@@ -320,7 +321,7 @@
         "github_actions": 7,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 178,
+        "validation_scripts": 179,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       }
     },
@@ -1199,6 +1200,8 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/STATUS.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_report.md",
@@ -1206,6 +1209,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -1281,10 +1286,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 348,
+        "markdown_count": 352,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 350
+        "total_docs": 354
       }
     },
     {
@@ -1303,17 +1308,6 @@
         ".codex/automation_out/coverage_report.json",
         ".codex/automation_out/db_catalog.json",
         ".codex/automation_out/db_inventory.json",
-        ".codex/cache/maint_vendor_hash_post.json",
-        ".codex/cache/maint_vendor_hash_pre_sync.json",
-        ".codex/cache/maintenance.locksum",
-        ".codex/cache/maintenance_summary.json",
-        ".codex/cache/secrets.status.json",
-        ".codex/cache/setup.locksum",
-        ".codex/cache/setup_summary.json",
-        ".codex/cache/uv_sync.log",
-        ".codex/cache/uv_sync_maint.log",
-        ".codex/cache/vendor_hash_post_purge.json",
-        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -1385,10 +1379,6 @@
         ".codex/inventory.tsv",
         ".codex/inventory.txt",
         ".codex/lint-policy.json",
-        ".codex/logs/command_failures.log",
-        ".codex/logs/maintenance_failures.log",
-        ".codex/logs/maintenance_warnings.log",
-        ".codex/logs/setup_warnings.log",
         ".codex/mapping.json",
         ".codex/mapping.md",
         ".codex/mapping_table.json",
@@ -1579,6 +1569,7 @@
         "LICENSES/codex-universal-image-sbom.spdx.json",
         "MANIFEST.in",
         "README.md",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -1678,6 +1669,7 @@
         "cli/patch_runner.py",
         "cli/script_polish.py",
         "cli/setup.py",
+        "cli/status_audit.py",
         "cli/task_sequence.py",
         "cli/train_schema_demo.py",
         "cli/update_runner.py",
@@ -2165,6 +2157,10 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/readiness.validated.json",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/readiness.json",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.json",
@@ -2177,6 +2173,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -2427,18 +2425,6 @@
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/deployment_infrastructure.py",
@@ -4100,7 +4086,6 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
         "training/__init__.py",
         "training/cache.py",
@@ -4121,9 +4106,7 @@
         "validate_fences.py",
         "yaml/__init__.py"
       ],
-      "found_patterns": [
-        "duplicate_stem"
-      ],
+      "found_patterns": [],
       "required_patterns": [
         "unique_stems"
       ],
@@ -4281,7 +4264,6 @@
         "experiments/2025-01-15_smoke.md",
         "manifests/codex_eval_rules.v3.json",
         "manifests/selection_guard_rules.json",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "src/codex/release/manifest.py",
         "src/codex_ml/cli/manifest.py",
@@ -4367,7 +4349,7 @@
       "meta": {
         "mlflow_integration": 32,
         "wandb_integration": 4,
-        "experiment_utils": 13,
+        "experiment_utils": 12,
         "metadata_files": 67
       }
     },
@@ -4401,8 +4383,6 @@
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
         ".codex/automation_out/db_catalog.json",
-        ".codex/cache/uv_sync.log",
-        ".codex/cache/uv_sync_maint.log",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -4410,10 +4390,6 @@
         ".codex/copilot_bridge/var/logs/.gitkeep",
         ".codex/errors_codex.log",
         ".codex/evidence/phase5_structured_logging.jsonl",
-        ".codex/logs/command_failures.log",
-        ".codex/logs/maintenance_failures.log",
-        ".codex/logs/maintenance_warnings.log",
-        ".codex/logs/setup_warnings.log",
         ".codex/pre-commit.log",
         ".codex/pytest.log",
         ".codex/status/apply_log.txt",
@@ -4789,10 +4765,6 @@
     {
       "id": "reproducibility",
       "evidence_files": [
-        ".codex/cache/maint_vendor_hash_post.json",
-        ".codex/cache/maint_vendor_hash_pre_sync.json",
-        ".codex/cache/vendor_hash_post_purge.json",
-        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/validation/file_integrity_compare.json",
         "_codex_reports/2025-10-06/reproducibility.json",
         "_codex_reports/2025-10-06/seed_scan.json",
@@ -4806,7 +4778,6 @@
         "docs/reproducibility.md",
         "docs/training/reproducibility.md",
         "patches/pending/2025-09-21_deterministic_loader.patch",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
@@ -4878,9 +4849,9 @@
       ],
       "meta": {
         "seed_management": 25,
-        "repro_utils": 16,
+        "repro_utils": 15,
         "determinism_configs": 5,
-        "integrity_validation": 31
+        "integrity_validation": 27
       }
     },
     {
@@ -4930,6 +4901,7 @@
         ".github/docs/Implementation_LLMAutoFixHook.md",
         ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
         ".pre-commit-config.yaml",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex_reports/2025-10-06/_codex_status_update-2025-10-06.md",
@@ -5131,12 +5103,16 @@
         "docs/status_update_outstanding_questions.md",
         "docs/status_update_prompt.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_update_{{date}}.md",
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/suggested_tasks/offline_logging_security_updates.md",
         "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
@@ -6818,7 +6794,6 @@
         "examples/plugins/toy_trainer/__init__.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
         "src/codex/training.py",

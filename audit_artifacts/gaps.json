@@ -1,5 +1,5 @@
 {
-  "generated": 1761840904.0061853,
+  "generated": 1761853671.3276927,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -96,12 +96,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9371428571428572,
-        "tests": 0.002857142857142857,
+        "consistency": 0.9322033898305084,
+        "tests": 0.002824858757062147,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6756,
+      "score": 0.6746,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -384,6 +384,8 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/STATUS.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_report.md",
@@ -391,6 +393,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -460,10 +464,10 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 348,
+        "markdown_count": 352,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 350
+        "total_docs": 354
       },
       "partials": {
         "functionality": {
@@ -472,14 +476,14 @@
           "contribution": 0.1875
         },
         "consistency": {
-          "component_value": 0.9371428571428572,
+          "component_value": 0.9322033898305084,
           "weight": 0.2,
-          "contribution": 0.18742857142857144
+          "contribution": 0.1864406779661017
         },
         "tests": {
-          "component_value": 0.002857142857142857,
+          "component_value": 0.002824858757062147,
           "weight": 0.25,
-          "contribution": 0.0007142857142857143
+          "contribution": 0.0007062146892655367
         },
         "safeguards": {
           "component_value": 1.0,
@@ -497,13 +501,13 @@
     {
       "id": "duplication_ratio",
       "components": {
-        "functionality": 1.0,
-        "consistency": 0.765017667844523,
-        "tests": 0.31130742049469967,
+        "functionality": 0.0,
+        "consistency": 0.7626334519572954,
+        "tests": 0.3135231316725979,
         "safeguards": 1.0,
-        "documentation": 0.05736137667304015
+        "documentation": 0.056925996204933584
       },
-      "score": 0.6394,
+      "score": 0.3894,
       "evidence_files": [
         ".bandit.yml",
         ".codex/DO_NOT_ACTIVATE_ACTIONS.txt",
@@ -518,17 +522,6 @@
         ".codex/automation_out/coverage_report.json",
         ".codex/automation_out/db_catalog.json",
         ".codex/automation_out/db_inventory.json",
-        ".codex/cache/maint_vendor_hash_post.json",
-        ".codex/cache/maint_vendor_hash_pre_sync.json",
-        ".codex/cache/maintenance.locksum",
-        ".codex/cache/maintenance_summary.json",
-        ".codex/cache/secrets.status.json",
-        ".codex/cache/setup.locksum",
-        ".codex/cache/setup_summary.json",
-        ".codex/cache/uv_sync.log",
-        ".codex/cache/uv_sync_maint.log",
-        ".codex/cache/vendor_hash_post_purge.json",
-        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -600,10 +593,6 @@
         ".codex/inventory.tsv",
         ".codex/inventory.txt",
         ".codex/lint-policy.json",
-        ".codex/logs/command_failures.log",
-        ".codex/logs/maintenance_failures.log",
-        ".codex/logs/maintenance_warnings.log",
-        ".codex/logs/setup_warnings.log",
         ".codex/mapping.json",
         ".codex/mapping.md",
         ".codex/mapping_table.json",
@@ -794,6 +783,7 @@
         "LICENSES/codex-universal-image-sbom.spdx.json",
         "MANIFEST.in",
         "README.md",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -893,6 +883,7 @@
         "cli/patch_runner.py",
         "cli/script_polish.py",
         "cli/setup.py",
+        "cli/status_audit.py",
         "cli/task_sequence.py",
         "cli/train_schema_demo.py",
         "cli/update_runner.py",
@@ -1380,6 +1371,10 @@
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/readiness.validated.json",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
         "docs/status_updates/artifacts/2025-10-29-survey-work-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/readiness.json",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/readiness.json",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.json",
@@ -1392,6 +1387,8 @@
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926-2025-10-29.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/status_updates/templates/SURVEY_TEMPLATE.md",
@@ -1642,18 +1639,6 @@
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/deployment_infrastructure.py",
@@ -3315,7 +3300,6 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
         "training/__init__.py",
         "training/cache.py",
@@ -3336,25 +3320,23 @@
         "validate_fences.py",
         "yaml/__init__.py"
       ],
-      "found_patterns": [
-        "duplicate_stem"
-      ],
+      "found_patterns": [],
       "meta": {},
       "partials": {
         "functionality": {
-          "component_value": 1.0,
+          "component_value": 0.0,
           "weight": 0.25,
-          "contribution": 0.25
+          "contribution": 0.0
         },
         "consistency": {
-          "component_value": 0.765017667844523,
+          "component_value": 0.7626334519572954,
           "weight": 0.2,
-          "contribution": 0.15300353356890461
+          "contribution": 0.15252669039145908
         },
         "tests": {
-          "component_value": 0.31130742049469967,
+          "component_value": 0.3135231316725979,
           "weight": 0.25,
-          "contribution": 0.07782685512367492
+          "contribution": 0.07838078291814947
         },
         "safeguards": {
           "component_value": 1.0,
@@ -3362,12 +3344,12 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.05736137667304015,
+          "component_value": 0.056925996204933584,
           "weight": 0.15,
-          "contribution": 0.008604206500956023
+          "contribution": 0.008538899430740036
         }
       },
-      "primary_deficit": "documentation"
+      "primary_deficit": "functionality"
     },
     {
       "id": "inference-serving",
@@ -3376,9 +3358,9 @@
         "consistency": 0.8888888888888888,
         "tests": 0.3333333333333333,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.5927342256214149
+        "documentation": 0.5882352941176471
       },
-      "score": 0.575,
+      "score": 0.5743,
       "evidence_files": [
         "src/codex_ml/telemetry/server.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -3418,9 +3400,9 @@
           "contribution": 0.09999999999999999
         },
         "documentation": {
-          "component_value": 0.5927342256214149,
+          "component_value": 0.5882352941176471,
           "weight": 0.15,
-          "contribution": 0.08891013384321222
+          "contribution": 0.08823529411764706
         }
       },
       "primary_deficit": "tests"
@@ -3429,12 +3411,12 @@
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8424479166666666,
-        "tests": 0.2903645833333333,
+        "consistency": 0.8408796895213454,
+        "tests": 0.2884864165588616,
         "safeguards": 1.0,
-        "documentation": 0.01912045889101338
+        "documentation": 0.018975332068311195
       },
-      "score": 0.6439,
+      "score": 0.6431,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -3480,6 +3462,7 @@
         ".github/docs/Implementation_LLMAutoFixHook.md",
         ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
         ".pre-commit-config.yaml",
+        "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex_reports/2025-10-06/_codex_status_update-2025-10-06.md",
@@ -3681,12 +3664,16 @@
         "docs/status_update_outstanding_questions.md",
         "docs/status_update_prompt.md",
         "docs/status_updates/artifacts/2025-10-29-survey-0D_base-and-1926/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-main-and-0/report.md",
+        "docs/status_updates/artifacts/2025-10-30-survey-work-and-0_/report.md",
         "docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_/report.md",
         "docs/status_updates/deploy_dry_run.md",
         "docs/status_updates/status_update_{{date}}.md",
         "docs/status_updates/survey-0D_base-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md",
         "docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md",
+        "docs/status_updates/survey-main-and-0-2025-10-30.md",
+        "docs/status_updates/survey-work-and-0_-2025-10-30.md",
         "docs/status_updates/survey-work-and-1926_-2025-10-30.md",
         "docs/suggested_tasks/offline_logging_security_updates.md",
         "docs/suggested_tasks/remediation_phase1_task_queue_2025-09-17.md",
@@ -4221,14 +4208,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8424479166666666,
+          "component_value": 0.8408796895213454,
           "weight": 0.2,
-          "contribution": 0.16848958333333333
+          "contribution": 0.1681759379042691
         },
         "tests": {
-          "component_value": 0.2903645833333333,
+          "component_value": 0.2884864165588616,
           "weight": 0.25,
-          "contribution": 0.07259114583333333
+          "contribution": 0.0721216041397154
         },
         "safeguards": {
           "component_value": 1.0,
@@ -4236,9 +4223,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.01912045889101338,
+          "component_value": 0.018975332068311195,
           "weight": 0.15,
-          "contribution": 0.002868068833652007
+          "contribution": 0.0028462998102466793
         }
       },
       "primary_deficit": "documentation"
