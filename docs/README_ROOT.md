@@ -16,6 +16,15 @@ architecture references, and the bespoke-model hosting workflow that underpins e
 | Launch a bespoke model | [Hosting bespoke reasoning models](#hosting-bespoke-reasoning-models) |
 | Train/evaluate/deploy | [Guided pipelines](#guided-reasoning-pipelines) |
 
+### Repo Map (Reasoning-Focused)
+You can now surface a reasoning-focused repository map:
+
+```bash
+codex repo-map --reasoning
+```
+
+This highlights reasoning overlays, evaluation presets, and trace-capture knobs.
+
 ## Reasoning roadmap milestones
 
 | Milestone | Focus | Target signal |
@@ -61,6 +70,13 @@ Promotion toward `main` requires:
 1. The evaluation preset to pass (or carry explicit sign-off in status reports).
 2. `metadata.rollout_ring` declared in the training config and matching the target pod ring.
 3. `codex deploy --dry-run` to succeed, which enforces the ring match between training output and `configs/deploy/reasoning_pod.yaml`.
+
+Reviewers preparing a `0D_base_` → `main` merge should walk the dedicated checklist in [`docs/ops/promotion_checklist.md`](ops/promotion_checklist.md).
+It also requires attaching the outputs of:
+
+- `codex_ml.cli.codex_cli status-report`
+- `codex_ml.cli.codex_cli deploy --dry-run`
+- and linking the latest `docs/status_updates/survey-<ring>-and-<PR>-<DATESTAMP>.md`
 
 ## Architecture at a glance
 
@@ -112,7 +128,9 @@ For service integrations, adopt the PodSpec defined in
 This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
-toward `main`. Link the generated manifest to your rollout plan.
+toward `main`. A dry-run configuration is provided at
+[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
+Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
 

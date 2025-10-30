@@ -1,64 +1,51 @@
-# Reasoning Pod (Dry-Run Deployment Preset)
+# Reasoning Pod: Dry-Run Deployment Guide
 
-## Purpose
-The "reasoning pod" describes how a bespoke reasoning agent *would* be
-packaged and hosted. It defines resource shape, expected inputs, and
-telemetry expectations so that Product, Engineering, and on-call
-stakeholders can reason about rollout impact without touching
-production infrastructure.
+This guide defines the **dry-run** flow for a reasoning pod. All steps are **local-first** and **offline-friendly**.
 
-This is explicitly **not** production hosting. It exists for:
-- reproducibility review,
-- resource sizing review (CPU / memory / GPU),
-- telemetry + trace expectations,
-- rollout ring declaration.
+## Objectives
+- Validate manifests and resource expectations without contacting hosted services.
+- Produce artifacts (MD + JSON) suitable for PR review and promotion gates.
 
-## Dry-run flow
-1. Prepare or select a model bundle:
+## Control Surface (Knobs)
+- **Curriculum phases**: `configs/training/reasoning/curricula/*`
+- **Trace capture mode**: `trace_capture.mode ∈ {weights, activations}` (see `configs/training/reasoning/baseline.yaml`)
+- **Evaluation presets**: `configs/evaluation/reasoning/*`
+- **Deployment preset**: `configs/deploy/reasoning_pod.yaml`
 
-       artifacts/runs/reasoning-starter:last
+> Formalism (signal tracking): let **R** be reasoning-readiness and **A** be artifact completeness.
+> We model readiness heuristic as: **R = α·E + β·T + γ·D**, where E=evaluation pass ratio, T=trace coverage, D=deployment dry-run parity.
+> Choose α,β,γ per your milestone; ensure **R ≥ R_min** before promotion.
 
-2. Execute the dry run:
+## Dry-Run Steps
+1) **Repo Map (Reasoning)**
+   ```bash
+   codex repo-map --reasoning > docs/status_updates/repo_map_reasoning.txt
+   ```
 
-       codex deploy \
-         --config configs/deploy/reasoning_pod.yaml \
-         --model artifacts/runs/reasoning-starter:last \
-         --dry-run
+2) **Status Report (Artifacts)**
+   ```bash
+   python tools/status_report.py \
+     --emit-md docs/status_updates/status_report.md \
+     --emit-json docs/status_updates/status_report.json
+   ```
 
-3. Inspect the generated manifest:
-   - `image` / tag are correct for the artifact you intend to ship.
-   - resource requests/limits make sense.
-   - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`
-     (usually `disabled`, occasionally `param-slice` when
-     fingerprints are explicitly requested), and
-     `CODEX_EVAL_PRESET` are correct.
-   - `rollout_ring` matches the ring you plan to target next
-     (for example, "`0D_base_`").
+3) **Compose Deployment (Dry-Run)**
+   ```bash
+   python tools/selection_report.py --config configs/deploy/reasoning_pod.yaml \
+     --dry-run \
+     --emit-md docs/status_updates/deploy_dry_run.md \
+     --emit-json docs/status_updates/deploy_dry_run.json
+   ```
 
-Dry-run means no pod is created anywhere. It only renders the manifest
-and surfaces warnings.
+4) **Link in PR**
+   Include the above artifacts in your promotion PR.
 
-### Ring validation guardrail
+## Promotion Checklist (excerpt)
+- [ ] Status report (MD+JSON) attached.
+- [ ] Dry-run deploy artifacts (MD+JSON) attached.
+- [ ] Trace capture mode documented (`weights` or `activations`).
+- [ ] Evaluation preset recorded (e.g., `configs/evaluation/reasoning/base.yaml`).
 
-`codex deploy --dry-run` reads `runs/train_loop/run_metadata.json` to enforce
-rollout policy:
-
-1. The training config must declare `metadata.rollout_ring`.
-2. The recorded rollout ring must match the pod ring specified in this
-   preset (`rollout_ring` at the root or `pod.ring`).
-3. The command refuses to proceed without `--dry-run` in this maturity ring.
-
-If any of those checks fail, the command exits non-zero with
-`DEPLOYMENT BLOCKED`, preventing accidental promotion of mismatched runs.
-This guardrail ties the training artifacts to deployment intent without
-touching production infrastructure.
-
-## Readiness gates before merging toward `main`
-- Curriculum phase and trace mode for this model are documented.
-- Offline evaluation gates (math / theorem / tool probes) pass their
-  thresholds.
-- A rollout ring is declared (`0A_base_` → `0B_base_` → `0C_base_`
-  → `0D_base_` → `main`) and signed off.
-
-Until all of those conditions are met and infra explicitly approves,
-this pod configuration MUST NOT be treated as production.
+## Notes
+- This flow intentionally avoids CI and remote deployment to remain offline-first.
+- For actual hosting, adapt these manifests to your environment (k8s, container runtime, etc.), preserving the artifact trail.

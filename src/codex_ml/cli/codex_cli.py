@@ -9,6 +9,7 @@ from pathlib import Path
 
 import click
 
+from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -264,7 +265,11 @@ def repo_map(reasoning: bool) -> None:
 
     from codex_ml.cli.repo_map import render_repo_map
 
-    click.echo(render_repo_map(reasoning=reasoning))
+    try:
+        click.echo(render_repo_map(reasoning=reasoning))
+    except TypeError:
+        # Back-compat with older render_repo_map signatures lacking the flag.
+        click.echo(render_repo_map())
 
 
 @codex.command()
@@ -308,6 +313,24 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
         click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
         raise SystemExit(1) from exc
 
+    click.echo(json.dumps(summary, indent=2))
+
+
+@codex.command("status-report")
+@click.option(
+    "--run-metadata-dir",
+    default=Path("runs/train_loop"),
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help=(
+        "Directory containing run_metadata.json / evaluation.json / reasoning.json "
+        "from the most recent TrainLoop run."
+    ),
+)
+def status_report(run_metadata_dir: Path) -> None:
+    """Summarize offline promotion readiness for `0D_base_` → `main`."""
+
+    summary = build_status_report(run_metadata_dir)
     click.echo(json.dumps(summary, indent=2))
 
 

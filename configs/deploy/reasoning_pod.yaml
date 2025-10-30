@@ -1,44 +1,31 @@
-# Reasoning pod dry-run deployment preset
-# Consumed by `codex deploy --dry-run` to generate a manifest that
-# describes how a bespoke reasoning agent *would* be hosted.
-#
-# This is NOT a production-ready spec. It exists to force review of:
-# - resource shape (CPU/memory/GPU),
-# - curriculum + trace_mode settings,
-# - telemetry expectations,
-# - rollout ring intent.
-#
-# The `--model` argument to `codex deploy` should point at the
-# artifact bundle you want evaluated (e.g. artifacts/runs/...:last).
+# Offline-first dry-run config for a "reasoning pod".
+# This file is used by local tools (e.g., selection_report.py) to validate
+# inputs and render deployment expectations without calling external services.
+kind: ReasoningPod
+name: codex-reasoning-pod
+version: 0
+rollout_ring: 0D_base_  # Must match training metadata to pass dry-run validation.
 
-pod:
-  name: reasoning-agent-pod
-  image: "ghcr.io/your-org/codex-reasoning:LOCAL_DEV_TAG"
+image:
+  repository: local/offline/codex
+  tag: latest
+  # NOTE: This is descriptive-only in dry-run mode. No pulls are executed.
 
-  resources:
-    cpu_request: "2"
-    cpu_limit: "4"
-    memory_request: "8Gi"
-    memory_limit: "16Gi"
-    gpu_request: "0"    # set to "1" if GPU inference is required
+resources:
+  cpu: "2"
+  memory: "8Gi"
+  # Disk, GPU fields may be added later; keep this minimal and deterministic.
 
-  env:
-    - name: CODEX_CURRICULUM_PHASE
-      value: "starter"
-    - name: CODEX_TRACE_MODE
-      value: "disabled"        # or "param-slice" once diagnostic traces are enabled
-    - name: CODEX_EVAL_PRESET
-      value: "configs/evaluation/reasoning/base.yaml"
+reasoning:
+  trace_capture:
+    mode: weights  # {weights, activations}; switch in baseline.yaml as desired
+  evaluation_preset: configs/evaluation/reasoning/base.yaml
+  curriculum_template: configs/training/reasoning/baseline.yaml
 
-  mounts:
-    - name: model-checkpoints
-      path: /srv/checkpoints
-    - name: eval-ledgers
-      path: /srv/eval
+artifacts:
+  emit_markdown: docs/status_updates/deploy_dry_run.md
+  emit_json: docs/status_updates/deploy_dry_run.json
 
-  telemetry:
-    enabled: true
-    sink: "ndjson-local"
-
-rollout_ring: "0D_base_"  # declares target maturity ring (see docs/README.md)
-dry_run_only: true        # DO NOT treat this manifest as production
+notes:
+  - "This config is safe to commit; it does not perform deployment or network I/O."
+  - "Use Python local tools to generate review artifacts for promotion gates."
