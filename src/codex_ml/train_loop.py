@@ -251,11 +251,18 @@ class ReasoningRuntime:
         step: int,
         art_dir_path: Path | None,
         session_id: str | None,
+        step_ctx: Mapping[str, Any] | None = None,
     ) -> None:
         if not self.should_capture():
             return
         try:
-            trace = self.harness.capture_trace(model, epoch=epoch, step=step, top_k=self.top_k)
+            trace = self.harness.capture_trace(
+                model,
+                epoch=epoch,
+                step=step,
+                top_k=self.top_k,
+                step_ctx=step_ctx,
+            )
         except Exception as exc:  # pragma: no cover - defensive capture guard
             logger.debug("Skipping reasoning trace capture: %s", exc)
             return
@@ -1841,12 +1848,21 @@ def run_training(
                 if metrics_registry is not None:
                     metrics_registry.record_training_step(loss_val)
                 if reasoning_runtime is not None:
+                    hidden_states = None
+                    try:
+                        hidden_states = getattr(model, "hidden_states", None)
+                    except Exception:  # noqa: BLE001 - defensive
+                        hidden_states = None
+                    step_ctx = (
+                        {"hidden_states": hidden_states} if hidden_states is not None else None
+                    )
                     reasoning_runtime.record_trace(
                         model,
                         epoch=epoch,
                         step=step + 1,
                         art_dir_path=art_dir_path,
                         session_id=session_id,
+                        step_ctx=step_ctx,
                     )
                 if (step + 1) % grad_accum == 0:
                     try:

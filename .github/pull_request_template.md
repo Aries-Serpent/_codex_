@@ -1,46 +1,18 @@
-## Intent Validation (2–3 sentences)
-<!-- Restate the intent, primary goal, constraints/scope, success + out-of-scope. -->
+## Summary
+Promotion readiness with offline-first artifacts and knobs.
 
-## Plan of Action (phased)
-<!-- For each phase: objective, concrete steps, decision gate, effort/deps. -->
+## Readiness Checklist (attach links or paths)
+- [ ] **Status Report (MD + JSON)**:
+  - MD: `docs/status_updates/status_report.md`
+  - JSON: `docs/status_updates/status_report.json`
+- [ ] **Dry-Run Deploy (MD + JSON)**:
+  - MD: `docs/status_updates/deploy_dry_run.md`
+  - JSON: `docs/status_updates/deploy_dry_run.json`
+- [ ] **Repo Map (Reasoning)**: `docs/status_updates/repo_map_reasoning.txt`
+- [ ] **Trace Capture Mode**: `weights` or `activations` (record rationale)
+- [ ] **Evaluation Preset**: e.g., `configs/evaluation/reasoning/base.yaml`
+- [ ] Docs updated (`docs/README_ROOT.md`, `docs/deployment/reasoning_pod.md`)
 
-### Assumptions (✓ ? ⚠️)
-- ✓
-- ?
-- ⚠️
-
-### Open Questions (prioritized)
-1.
-2.
-3.
-
-### Risks and Mitigations
-| Risk | Severity | Mitigation |
-| --- | --- | --- |
-|  |  |  |
-
-### Deliverables
-- [ ] 
-
-### Acceptance Criteria
-- [ ] 
-
-### Rollback / Fallback
-<!-- Brief steps to revert/recover. -->
-
-## Local Gates (must run locally)
-- [ ] Fences: `python tools/validate_fences.py` → **PASS**
-- [ ] Evaluator: `python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json` → **PASS**
-- [ ] Selection Guard: `python tools/selection_guard.py --rules manifests/selection_guard_rules.json --input <your_summary.json> [--selected 1..4]` → **PASS**
-
----
-
-## Local Gates (must run locally)
-- [ ] Fences: `python tools/validate_fences.py` → **PASS**
-- [ ] Evaluator: `python tools/codex_evaluator.py --rules manifests/codex_eval_rules.v3.json --input samples/assistant_message_summary.sample.json` → **PASS**
-
-References:
-- Template: `docs/templates/intent_validation_gate.md`
-- Checklist: `docs/checklists/approval_gate_checklist.md`
-- Ops: `docs/ops/local_gates.md`
-- ADRs: `docs/decision_records/ADR-intent-approval-gate.md`, `docs/decision_records/ADR-codex-evaluator-v3.md`
+## Notes for Reviewers
+- This PR aligns the repo with a future “control surface” UI: curriculum phases,
+  trace-capture mode, evaluation presets, and deployment presets are documented and togglable.

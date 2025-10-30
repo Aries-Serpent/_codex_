@@ -265,7 +265,11 @@ def repo_map(reasoning: bool) -> None:
 
     from codex_ml.cli.repo_map import render_repo_map
 
-    click.echo(render_repo_map(reasoning=reasoning))
+    try:
+        click.echo(render_repo_map(reasoning=reasoning))
+    except TypeError:
+        # Back-compat with older render_repo_map signatures lacking the flag.
+        click.echo(render_repo_map())
 
 
 @codex.command()
