@@ -1,5 +1,5 @@
 <!-- Use this as a writer's guide when constructing Codex survey prompts/output -->
-# Survey — <branch> & PR <PR> — <YYYY-MM-DD> (UTC)
+# Repo Survey — <branch> & PR <PR> — <YYYY-MM-DD> (UTC)
 
 **Ref:** branch `<branch>`  commit `<short-sha>`  •  **Artifacts:** `docs/status_updates/artifacts/<date>-survey-<branch>-and-<PR>/`
 
@@ -33,11 +33,11 @@
 >
 > **FILE:** `<path>@<ref>`
 >
-> ```text
 > [BEGIN CONTENT]
 > ...excerpt or content...
 > [END CONTENT]
-> ```
+>
+> The sanitizer wraps each `[BEGIN/END CONTENT]` block in ```text fences for readable Markdown.
 
 ### 4.2 CLI/Docs Mismatches
 - `<bullets>`
@@ -66,4 +66,3 @@ with \( \alpha, \beta, \gamma \in [0,1], \alpha+\beta+\gamma=1 \).
 
 ## 9) Next Steps
 - `<bullets>`
-
