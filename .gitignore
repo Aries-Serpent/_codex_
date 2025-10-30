@@ -174,3 +174,4 @@ report.xml
 coverage.xml
 validation_summary.json
 *-validation.json
+config/sbom-config.yaml
