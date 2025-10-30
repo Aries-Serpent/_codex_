@@ -23,6 +23,6 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "evidence_count": int(evidence_count),
         # Provide fields expected by the dynamic detector contract.
         "evidence_files": sorted({f["path"] for f in files}),
-        "found_patterns": ["duplicate_stem"] if dup_ratio > 0 else [],
+        "found_patterns": ["unique_stems"] if dup_ratio == 0 else [],
         "required_patterns": ["unique_stems"],
     }
