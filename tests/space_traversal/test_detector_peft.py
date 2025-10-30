@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import importlib.util
 import types
+from typing import Any, Dict, Iterable
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -16,17 +17,30 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
     return module
 
 
+def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
+    return {
+        "files": [
+            {
+                "path": str(path.resolve()),
+            }
+            for path in paths
+        ],
+    }
+
+
 def test_detector_peft_finds_tokens(tmp_path: Path) -> None:
     content = (
         '\nfrom peft import LoraConfig, get_peft_model\n'
         'def wire(model):\n'
         '    return get_peft_model(model, LoraConfig(r=8, lora_alpha=16))\n'
     )
-    (tmp_path / 'modeling.py').write_text(content, encoding='utf-8')
+    file_path = tmp_path / 'modeling.py'
+    file_path.write_text(content, encoding='utf-8')
 
     detector_path = Path('scripts/space_traversal/detectors/detector_peft.py')
     module = _load_module(detector_path, 'detector_peft')
-    result = module.detect(tmp_path)  # type: ignore[attr-defined]
+    context_index = _context_index_for([file_path])
+    result = module.detect(context_index)  # type: ignore[attr-defined]
 
     assert result['id'] == 'peft_hooks'
     assert result['files_with_peft'] == 1
