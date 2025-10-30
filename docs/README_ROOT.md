@@ -167,8 +167,12 @@ checks when preparing milestone readouts.
 
 ```bash
 codex deploy --config configs/deploy/reasoning_pod.yaml \
-  --model artifacts/runs/reasoning-starter:last \
   --dry-run
+
+# Optional: if your train loop emits run metadata to a non-default path:
+# codex deploy --config configs/deploy/reasoning_pod.yaml \
+#   --run-metadata-dir runs/train_loop \
+#   --dry-run
 ```
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
