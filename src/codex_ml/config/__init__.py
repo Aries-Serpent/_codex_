@@ -241,7 +241,7 @@ class ReasoningConfig:
     objective: ReasoningObjectiveConfig = field(default_factory=ReasoningObjectiveConfig)
     trace_history: int = 64
     log_probability_threshold: float | None = None
-    trace_mode: str = "param-slice"
+    trace_mode: str = "weights"
 
     def validate(self, path: str = "training.reasoning") -> None:
         if not self.enabled:
@@ -260,7 +260,7 @@ class ReasoningConfig:
                 "must be within (0, 1] when provided",
                 self.log_probability_threshold,
             )
-        allowed_trace_modes = {"disabled", "param-slice", "activation-snapshot"}
+        allowed_trace_modes = {"disabled", "weights", "activations"}
         if self.trace_mode not in allowed_trace_modes:
             raise ConfigError(
                 f"{path}.trace_mode",
@@ -271,6 +271,11 @@ class ReasoningConfig:
     @classmethod
     def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningConfig":
         data = dict(payload)
+        trace_capture = data.get("trace_capture")
+        if isinstance(trace_capture, Mapping):
+            mode = trace_capture.get("mode")
+            if isinstance(mode, str):
+                data.setdefault("trace_mode", mode)
         head_cfg = data.get("head")
         if isinstance(head_cfg, Mapping):
             data["head"] = ReasoningHeadConfig.from_mapping(head_cfg)

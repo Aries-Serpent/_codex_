@@ -1,0 +1,112 @@
+# Top Level
+ CONTRIBUTING.md
+ Dockerfile
+ Dockerfile.gpu
+ LICENSE
+[dir] LICENSES/
+ MANIFEST.in
+ README.md
+ STATUS_REPORT.md
+[dir] _codex/
+[dir] _codex_/
+[dir] _codex_reports/
+[dir] agents/
+[dir] analysis/
+[dir] archive/
+[dir] artifacts/
+[dir] audit_artifacts/
+ audit_run_manifest.json
+ bandit.yaml
+[dir] cli/
+[dir] codex_addons/
+[dir] codex_digest/
+[dir] codex_ml/
+ codex_ready_task_sequence.yaml
+ codex_task_executor.py
+ codex_task_report.md
+ codex_task_sequence.py
+ codex_task_sequence_lora_metrics.md
+[dir] codex_utils/
+ commitlint.config.mjs
+ compare_report.json
+[dir] configs/
+ conftest.py
+[dir] copilot/
+[dir] data/
+[dir] db/
+[dir] deploy/
+[dir] docker/
+ docker-compose.override.local.yml
+ docker-compose.override.yml
+ docker-compose.yml
+[dir] docs/
+ dvc.yaml
+[dir] examples/
+[dir] experiments/
+[dir] great_expectations/
+[dir] hydra/
+[dir] interfaces/
+[dir] logs/
+[dir] manifests/
+[dir] mcp/
+ mkdocs.yml
+[dir] models/
+[dir] monitoring/
+[dir] notebooks/
+[dir] nox_sessions/
+ noxfile.py
+[dir] omegaconf/
+[dir] ops/
+[dir] patches/
+ pyproject.toml
+[dir] reports/
+[dir] requirements/
+ requirements-dev.txt
+[dir] samples/
+[dir] schemas/
+[dir] scripts/
+[dir] semgrep_rules/
+[dir] sentencepiece/
+[dir] services/
+ sitecustomize.py
+ space.mk
+[dir] src/
+[dir] temp/
+[dir] templates/
+[dir] tests/
+[dir] tokenization/
+[dir] tools/
+[dir] torch/
+[dir] training/
+[dir] transformers/
+[dir] typer/
+ uv.lock
+ validate_fences.py
+[dir] yaml/
+
+reasoning_status:
+  trace_mode:
+    - configs/training/reasoning/baseline.yaml -> weights
+  curriculum.preset:
+    - configs/training/reasoning/baseline.yaml -> starter
+  evaluation.preset:
+    - configs/training/reasoning/baseline.yaml -> base
+  metadata.rollout_ring:
+    - configs/training/reasoning/baseline.yaml -> 0D_base_
+
+# Key Files
+README.md
+docs/README_ROOT.md
+pyproject.toml
+
+# Trace Mode
+configs/training/reasoning/baseline.yaml -> weights
+
+# Curriculum
+configs/training/reasoning/baseline.yaml -> starter
+
+# Evaluation
+configs/training/reasoning/baseline.yaml -> base
+
+# Rollout Ring
+configs/training/reasoning/baseline.yaml -> 0D_base_
