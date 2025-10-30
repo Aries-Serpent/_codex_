@@ -5,25 +5,11 @@ from pathlib import Path
 from typing import Any, Dict
 
 
-def detect(repo_root: Path) -> Dict[str, Any]:
-    """
-    Compute a duplication ratio over file stems to approximate naming duplication.
+def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
+    """Compute a duplication ratio over file stems using the S1 context index."""
 
-    dup_ratio = (sum_over_stems(max(count-1, 0))) / evidence_count, clamped to [0, 1]
-
-    Output schema:
-    {
-      "id": "duplication_ratio",
-      "dup_ratio": <float>,
-      "counts": { "stem": count, ... },
-      "evidence_count": <int>
-    }
-    """
-    repo_root = Path(repo_root).resolve()
-    stems = []
-    for p in repo_root.rglob('*'):
-        if p.is_file():
-            stems.append(p.stem.lower())
+    files = file_index.get("files", [])
+    stems = [Path(f["path"]).stem.lower() for f in files]
 
     counts = Counter(stems)
     duplicates = sum(max(c - 1, 0) for c in counts.values())
@@ -35,5 +21,8 @@ def detect(repo_root: Path) -> Dict[str, Any]:
         "dup_ratio": float(dup_ratio),
         "counts": dict(sorted(counts.items())),
         "evidence_count": int(evidence_count),
+        # Provide fields expected by the dynamic detector contract.
+        "evidence_files": sorted({f["path"] for f in files}),
+        "found_patterns": ["duplicate_stem"] if dup_ratio > 0 else [],
+        "required_patterns": ["unique_stems"],
     }
-
