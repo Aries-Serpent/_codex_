@@ -1,0 +1,31 @@
+# Offline-first dry-run config for a "reasoning pod".
+# This file is used by local tools (e.g., selection_report.py) to validate
+# inputs and render deployment expectations without calling external services.
+kind: ReasoningPod
+name: codex-reasoning-pod
+version: 0
+rollout_ring: 0D_base_  # Must match training metadata to pass dry-run validation.
+
+image:
+  repository: local/offline/codex
+  tag: latest
+  # NOTE: This is descriptive-only in dry-run mode. No pulls are executed.
+
+resources:
+  cpu: "2"
+  memory: "8Gi"
+  # Disk, GPU fields may be added later; keep this minimal and deterministic.
+
+reasoning:
+  trace_capture:
+    mode: weights  # {weights, activations}; switch in baseline.yaml as desired
+  evaluation_preset: configs/evaluation/reasoning/base.yaml
+  curriculum_template: configs/training/reasoning/baseline.yaml
+
+artifacts:
+  emit_markdown: docs/status_updates/deploy_dry_run.md
+  emit_json: docs/status_updates/deploy_dry_run.json
+
+notes:
+  - "This config is safe to commit; it does not perform deployment or network I/O."
+  - "Use Python local tools to generate review artifacts for promotion gates."

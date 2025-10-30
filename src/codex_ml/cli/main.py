@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+import importlib.resources as importlib_resources
 import importlib.util
 import json
 import os
@@ -10,6 +11,11 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Annotated, Any
+
+try:  # Optional dependency used for loading curriculum presets
+    import yaml  # type: ignore
+except Exception:  # pragma: no cover - PyYAML is optional
+    yaml = None  # type: ignore
 
 
 def _load_typer():
@@ -71,12 +77,105 @@ if typer is not None:
         resume_from: str | None = typer.Option(
             None, "--resume-from", help="Checkpoint path to resume from"
         ),
+        corpora: list[str] | None = typer.Option(
+            None,
+            "--corpus",
+            "-c",
+            help="Reasoning corpus to include (see codex_ml.data.list_reasoning_corpora).",
+        ),
+        corpus_root: str | None = typer.Option(
+            None,
+            "--corpus-root",
+            help="Override root directory used to resolve reasoning corpora.",
+        ),
+        curriculum: str | None = typer.Option(
+            None,
+            "--curriculum",
+            help="Continual curriculum preset from configs/training/continual.",
+        ),
+        difficulty_target: str | None = typer.Option(
+            None,
+            "--difficulty-target",
+            help="Override target difficulty for curriculum schedules (e.g. easy, hard, adaptive).",
+        ),
+        rehearsal_ratio: float | None = typer.Option(
+            None,
+            "--rehearsal-ratio",
+            help="Override replay ratio for interleaved rehearsal phases (0-1).",
+        ),
+        strict_corpus_validation: bool = typer.Option(
+            True,
+            "--strict-corpus-validation/--no-strict-corpus-validation",
+            help="Fail when selected corpora are missing or checksums mismatch.",
+        ),
     ) -> None:
         """Start a training run. Config file values are overridden by CLI options."""
         from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
 
         cfg_data = _load_training_config(config) if config else {}
         train_cfg = cfg_data.get("training", cfg_data) if isinstance(cfg_data, dict) else {}
+        data_cfg = cfg_data.get("data", {}) if isinstance(cfg_data, dict) else {}
+        tracking_cfg = cfg_data.get("tracking", {}) if isinstance(cfg_data, dict) else {}
+
+        continual_cfg: dict[str, Any] | None = None
+        if isinstance(train_cfg, dict):
+            raw_continual = train_cfg.get("continual")
+            if isinstance(raw_continual, dict):
+                continual_cfg = dict(raw_continual)
+        if continual_cfg is None and isinstance(cfg_data, dict):
+            raw_continual = cfg_data.get("continual")
+            if isinstance(raw_continual, dict):
+                continual_cfg = dict(raw_continual)
+
+        def _load_curriculum_preset(name: str) -> dict[str, Any]:
+            if yaml is None:
+                raise typer.BadParameter(
+                    "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."
+                )
+            preset_text: str | None = None
+
+            try:
+                resource_root = importlib_resources.files("configs").joinpath(
+                    "training", "continual"
+                )
+            except (ModuleNotFoundError, AttributeError):
+                resource_root = None
+
+            if resource_root is not None:
+                resource_candidate = resource_root.joinpath(f"{name}.yaml")
+                if resource_candidate.is_file():
+                    preset_text = resource_candidate.read_text(encoding="utf-8")
+
+            if preset_text is None:
+                cli_path = Path(__file__).resolve()
+                search_roots: list[Path] = []
+                for depth in (2, 3):
+                    try:
+                        root = cli_path.parents[depth]
+                    except IndexError:
+                        continue
+                    search_roots.append(root / "configs" / "training" / "continual")
+
+                for root in search_roots:
+                    candidate_path = root / f"{name}.yaml"
+                    if candidate_path.is_file():
+                        preset_text = candidate_path.read_text(encoding="utf-8")
+                        break
+
+            if preset_text is None:
+                raise typer.BadParameter(f"Unknown continual curriculum preset '{name}'.")
+
+            loaded = yaml.safe_load(preset_text) or {}
+            if not isinstance(loaded, dict):
+                raise typer.BadParameter(
+                    f"Curriculum preset '{name}' must decode to a mapping, received {type(loaded).__name__}."
+                )
+            if "continual" in loaded and isinstance(loaded["continual"], dict):
+                return dict(loaded["continual"])
+            return dict(loaded)
+
+        if curriculum:
+            continual_cfg = _load_curriculum_preset(curriculum)
 
         def _int_value(value: Any) -> int | None:
             try:
@@ -110,6 +209,60 @@ if typer is not None:
         actual_dtype = str(_value_from_config(dtype, "fp32", train_cfg, "dtype"))
         actual_resume = resume_from or train_cfg.get("resume_from")
 
+        if continual_cfg is not None:
+            if difficulty_target is not None:
+                curriculum_section = continual_cfg.setdefault("curriculum", {})
+                curriculum_section["target_difficulty"] = str(difficulty_target)
+            if rehearsal_ratio is not None:
+                try:
+                    ratio_value = float(rehearsal_ratio)
+                except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+                    raise typer.BadParameter("rehearsal-ratio must be numeric") from exc
+                if not 0.0 <= ratio_value <= 1.0:
+                    raise typer.BadParameter("rehearsal-ratio must be between 0 and 1")
+                rehearsal_section = continual_cfg.setdefault("rehearsal", {})
+                rehearsal_section["default_ratio"] = ratio_value
+                for phase in continual_cfg.get("phases", []):
+                    if isinstance(phase, dict) and "replay_ratio" in phase:
+                        phase["replay_ratio"] = ratio_value
+
+        reasoning_extra: dict[str, Any] = {}
+        selected_corpora = list(corpora or [])
+        if selected_corpora:
+            from codex_ml.data.reasoning_manifest import (
+                ReasoningCorpusError,
+                build_corpus_selection,
+            )
+
+            try:
+                selection_payload = build_corpus_selection(
+                    selected_corpora,
+                    root=corpus_root,
+                    strict=strict_corpus_validation,
+                )
+            except ReasoningCorpusError as exc:  # pragma: no cover - validation error
+                raise typer.BadParameter(str(exc)) from exc
+
+            reasoning_extra = dict(selection_payload)
+            reasoning_extra["requested"] = selected_corpora
+            reasoning_extra["strict_validation"] = strict_corpus_validation
+            if not strict_corpus_validation:
+                failures = [
+                    corpus
+                    for corpus in reasoning_extra.get("corpora", [])
+                    if corpus.get("status") != "ok"
+                ]
+                if failures:
+                    typer.echo(
+                        json.dumps(
+                            {
+                                "warning": "corpus validation issues",
+                                "corpora": failures,
+                            }
+                        ),
+                        err=True,
+                    )
+
         cfg = UnifiedTrainingConfig(
             model_name=actual_model_name,
             epochs=actual_epochs,
@@ -124,6 +277,16 @@ if typer is not None:
             grad_clip_norm=actual_grad_clip,
             dtype=actual_dtype,
             resume_from=actual_resume,
+            extra={
+                **({"data": data_cfg} if isinstance(data_cfg, dict) and data_cfg else {}),
+                **(
+                    {"tracking": tracking_cfg}
+                    if isinstance(tracking_cfg, dict) and tracking_cfg
+                    else {}
+                ),
+                **({"reasoning": reasoning_extra} if reasoning_extra else {}),
+            },
+            continual=continual_cfg or None,
         )
         result = run_unified_training(cfg)
         typer.echo(json.dumps({"ok": True, "train_result": result}, indent=2))

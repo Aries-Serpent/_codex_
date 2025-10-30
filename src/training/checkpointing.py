@@ -18,6 +18,51 @@ except Exception:  # pragma: no cover - gracefully degrade when torch missing
 LOGGER = logging.getLogger(__name__)
 
 
+def _extract_lora_state(model: Any) -> dict[str, Any] | None:
+    """Return a CPU copy of the LoRA/PEFT state when available."""
+
+    if torch is None:
+        return None
+    try:  # pragma: no cover - optional dependency
+        from peft import get_peft_model_state_dict
+    except Exception:
+        return None
+    try:
+        state = get_peft_model_state_dict(model)
+    except Exception as exc:  # pragma: no cover - defensive
+        LOGGER.debug("Unable to capture LoRA state: %s", exc)
+        return None
+    if not isinstance(state, Mapping) or not state:
+        return None
+    cpu_state: dict[str, Any] = {}
+    for key, value in state.items():
+        tensor = value
+        try:
+            if hasattr(tensor, "detach") and hasattr(tensor, "cpu"):
+                tensor = tensor.detach().cpu()
+        except Exception:  # pragma: no cover - optional conversion failures
+            pass
+        cpu_state[str(key)] = tensor
+    return cpu_state if cpu_state else None
+
+
+def _restore_lora_state(model: Any, payload: Mapping[str, Any]) -> None:
+    if torch is None:
+        return
+    lora_state = payload.get("peft_state")
+    if not isinstance(lora_state, Mapping):
+        return
+    try:  # pragma: no cover - optional dependency
+        from peft import set_peft_model_state_dict
+    except Exception:
+        LOGGER.debug("peft not available; skipping LoRA restore")
+        return
+    try:
+        set_peft_model_state_dict(model, dict(lora_state))
+    except Exception as exc:  # pragma: no cover - defensive
+        LOGGER.debug("Failed to restore LoRA weights: %s", exc)
+
+
 def _torch_supports_weights_only() -> bool:
     if torch is None:
         return False
@@ -194,6 +239,9 @@ def save_checkpoint(
         "rng_cpu": rng_state.cpu,
         "rng_cuda_all": rng_state.cuda_all,
     }
+    lora_state = _extract_lora_state(model)
+    if lora_state:
+        payload["peft_state"] = lora_state
     if extra:
         payload.update(extra)
     torch.save(payload, filename)
@@ -226,6 +274,7 @@ def load_checkpoint(
     )
     payload = _torch_load(str(path), map_location=location)
     model.load_state_dict(payload["model_state"], strict=strict)
+    _restore_lora_state(model, payload)
     if optimizer is not None and "optimizer_state" in payload:
         optimizer.load_state_dict(payload["optimizer_state"])
     if restore_rng:

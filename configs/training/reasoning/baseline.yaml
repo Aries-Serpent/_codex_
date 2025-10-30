@@ -1,0 +1,67 @@
+# Template: Baseline reasoning overlay enabling traces and curriculum hooks.
+# @package _global_
+defaults:
+  - ../base
+
+# === CONTROL SURFACE (local-first) ===
+# The fields below are the documented knobs surfaced via `codex repo-map --reasoning`
+# and the deployment dry-run workflow. Adjusting them does not require code changes.
+
+# Trace capture mode controls what is recorded for reasoning analysis.
+# - weights:     legacy mode; summarize trainable weights (safe fallback)
+# - activations: new mode; capture forward activations when available
+trace_capture:
+  mode: weights
+
+curriculum:
+  # preset is the curriculum name exposed to PM/infra reviewers.
+  preset: starter
+  phase_schedule: ${.preset}
+
+evaluation:
+  # preset defines which evaluation suite must pass before promotion.
+  preset: base
+
+deployment:
+  # preset points at the expected dry-run deployment manifest.
+  preset: reasoning_pod
+
+reasoning:
+  template: baseline
+
+training:
+  reasoning:
+    enabled: true
+    # Trace capture inherits from the top-level `trace_capture.mode` knob.
+    trace_mode: "weights"
+    trace_history: 128
+    log_probability_threshold: 0.15
+    objective:
+      mode: chain_of_thought
+      weight: 1.0
+      max_traces_per_epoch: 6
+      log_top_k: 5
+      trace_store: reasoning_traces.ndjson
+    head:
+      hidden_size: 768
+      projection_size: 256
+      trace_vocab_size: 64
+      dropout: 0.05
+    tool_adapter:
+      enabled: false
+
+logging:
+  reasoning_trace: true
+
+metadata:
+  # rollout_ring declares intent in the promotion ladder and is enforced by
+  # `codex deploy --dry-run` when composing the dry-run manifest.
+  # 0A_base_ → 0B_base_ → 0C_base_ → 0D_base_ → main.
+  # It is an intent badge, not permission to ship.
+  rollout_ring: 0D_base_
+  owner: reasoning-foundations
+
+# Documentation:
+# Switch `trace_capture.mode` to `activations` when the model / loop supports
+# passing hidden states. If unavailable, the system falls back to `weights`.
+# See `src/codex_ml/models/reasoning.py` for details.

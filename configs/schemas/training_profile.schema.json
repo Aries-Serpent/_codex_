@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codexml.dev/schemas/training_profile.schema.json",
+  "title": "CodexTrainingProfile",
+  "type": "object",
+  "properties": {
+    "seed": {"type": "integer"},
+    "epochs": {"type": "integer", "minimum": 1},
+    "grad_accum": {"type": "integer", "minimum": 1},
+    "steps_per_epoch": {"type": "integer", "minimum": 1},
+    "device": {"type": ["string", "null"]},
+    "dtype": {"type": ["string", "null"]},
+    "amp": {"type": ["boolean", "string", "null"]},
+    "sanitize_prompts": {"type": "boolean"},
+    "lora": {
+      "type": "object",
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "enable": {"type": "boolean"},
+        "r": {"type": "integer", "minimum": 1},
+        "alpha": {"type": "integer", "minimum": 0},
+        "dropout": {"type": "number", "minimum": 0.0}
+      },
+      "additionalProperties": true
+    },
+    "checkpoint": {
+      "type": "object",
+      "properties": {
+        "dir": {"type": ["string", "null"]},
+        "resume": {"type": "boolean"},
+        "retention": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": true
+    },
+    "scheduler": {"type": "object", "additionalProperties": true},
+    "reproducibility": {"type": "object", "additionalProperties": true},
+    "telemetry": {"type": "object", "additionalProperties": true},
+    "dataset": {"type": "object", "additionalProperties": true}
+  },
+  "required": ["epochs", "grad_accum", "steps_per_epoch"],
+  "additionalProperties": true
+}

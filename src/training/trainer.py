@@ -153,6 +153,10 @@ class TrainerConfig:
     metrics_ndjson_path: str | None = None
 
 
+# NOTE: Public compatibility alias expected by trainer API consumers and tests.
+TrainerLoggingConfig = LoggingConfig
+
+
 @dataclass(slots=True)
 class TrainingState:
     epoch: int = 0

@@ -9,6 +9,7 @@ from pathlib import Path
 
 import click
 
+from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -251,22 +252,86 @@ def tokenize(text: str) -> None:
 
 
 @codex.command()
-def repo_map() -> None:
-    """Print a simple summary of top-level directories and key files."""
+@click.option(
+    "--reasoning",
+    is_flag=True,
+    help=(
+        "Emit reasoning-specific control surface entries (curriculum preset, "
+        "trace_mode, rollout ring, evaluation preset, deployment preset)."
+    ),
+)
+def repo_map(reasoning: bool) -> None:
+    """Print a repository summary (optionally including reasoning knobs)."""
 
-    repo_root = Path(__file__).resolve().parents[3]
-    entries: list[str] = []
-    for item in sorted(repo_root.iterdir()):
-        name = item.name
-        # Skip hidden files and directories (e.g. .git, .cache)
-        if name.startswith("."):
-            continue
-        if item.is_dir():
-            entries.append(f"[dir] {name}/")
-        else:
-            entries.append(f" {name}")
+    from codex_ml.cli.repo_map import render_repo_map
 
-    click.echo("\n".join(entries))
+    try:
+        click.echo(render_repo_map(reasoning=reasoning))
+    except TypeError:
+        # Back-compat with older render_repo_map signatures lacking the flag.
+        click.echo(render_repo_map())
+
+
+@codex.command()
+@click.option(
+    "--config",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Path to deployment preset YAML (e.g. configs/deploy/reasoning_pod.yaml).",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Required flag. Perform offline validation only; never touch live infra.",
+)
+@click.option(
+    "--run-metadata-dir",
+    default=Path("runs/train_loop"),
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help="Directory containing run_metadata.json from the latest TrainLoop run.",
+)
+def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
+    """Validate reasoning pod deployment readiness in dry-run mode."""
+
+    from codex_ml.cli.deploy import run_deploy_dry_run
+
+    if not dry_run:
+        click.secho(
+            "DEPLOYMENT BLOCKED: --dry-run is required in this rollout ring.",
+            err=True,
+        )
+        raise SystemExit(1)
+
+    try:
+        summary = run_deploy_dry_run(
+            config_path=config,
+            dry_run=dry_run,
+            run_metadata_dir=run_metadata_dir,
+        )
+    except RuntimeError as exc:
+        click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(json.dumps(summary, indent=2))
+
+
+@codex.command("status-report")
+@click.option(
+    "--run-metadata-dir",
+    default=Path("runs/train_loop"),
+    show_default=True,
+    type=click.Path(file_okay=False, path_type=Path),
+    help=(
+        "Directory containing run_metadata.json / evaluation.json / reasoning.json "
+        "from the most recent TrainLoop run."
+    ),
+)
+def status_report(run_metadata_dir: Path) -> None:
+    """Summarize offline promotion readiness for `0D_base_` → `main`."""
+
+    summary = build_status_report(run_metadata_dir)
+    click.echo(json.dumps(summary, indent=2))
 
 
 @codex.command()

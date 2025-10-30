@@ -24,14 +24,33 @@ import os
 import random
 import sys
 import time
-from dataclasses import asdict, dataclass
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
+from codex_ml.config import (
+    ConfigError,
+    ReasoningConfig,
+    ReasoningHeadConfig,
+    ReasoningObjectiveConfig,
+    ToolAdapterConfig,
+)
 from codex_ml.logging.ndjson_logger import is_legacy_mode
+
+if TYPE_CHECKING:
+    from codex_ml.models.reasoning import ReasoningHarness
+
+try:
+    from codex_ml.models.reasoning import attach_reasoning_adapters
+
+    _HAS_REASONING_ADAPTERS = True
+except Exception:  # noqa: BLE001
+    attach_reasoning_adapters = None  # type: ignore[assignment]
+    _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
 from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
@@ -112,20 +131,25 @@ try:
         merge_callback_results,
     )
 except Exception:  # noqa: BLE001
-
+    # fmt: off
     class Callback:  # type: ignore
-        def on_train_start(self, state: Dict[str, Any]) -> None: ...
+        def on_train_start(self, state: Dict[str, Any]) -> None:
+            ...
 
-        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
+        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
+            ...
 
         def on_epoch_end(
             self,
             epoch: int,
             metrics: Dict[str, Any],
             state: Dict[str, Any],
-        ) -> None: ...
+        ) -> None:
+            ...
 
-        def on_train_end(self, state: Dict[str, Any]) -> None: ...
+        def on_train_end(self, state: Dict[str, Any]) -> None:
+            ...
+    # fmt: on
 
     def merge_callback_results(
         base: Dict[str, Any], addon: Dict[str, Any] | None
@@ -193,7 +217,198 @@ else:
             raise RuntimeError("Torch is required to construct ToyDataset")
 
 
+@dataclass
+class ReasoningRuntime:
+    config: ReasoningConfig
+    harness: ReasoningHarness
+    store_path: Path | None
+    per_epoch_limit: int
+    top_k: int
+    threshold: float | None
+    traces_written: int = 0
+
+    def bind_model(self, model: Any) -> None:
+        try:
+            self.harness.attach(model)
+        except Exception as exc:  # pragma: no cover - defensive attachment guard
+            logger.warning("Failed to bind reasoning modules to model: %s", exc)
+
+    def on_new_epoch(self) -> None:
+        self.traces_written = 0
+
+    def should_capture(self) -> bool:
+        if getattr(self.config, "trace_mode", None) == "disabled":
+            return False
+        if self.per_epoch_limit <= 0:
+            return True
+        return self.traces_written < self.per_epoch_limit
+
+    def record_trace(
+        self,
+        model: Any,
+        *,
+        epoch: int,
+        step: int,
+        art_dir_path: Path | None,
+        session_id: str | None,
+        step_ctx: Mapping[str, Any] | None = None,
+    ) -> None:
+        if not self.should_capture():
+            return
+        try:
+            trace = self.harness.capture_trace(
+                model,
+                epoch=epoch,
+                step=step,
+                top_k=self.top_k,
+                step_ctx=step_ctx,
+            )
+        except Exception as exc:  # pragma: no cover - defensive capture guard
+            logger.debug("Skipping reasoning trace capture: %s", exc)
+            return
+        if not trace:
+            return
+        probability = trace.get("top_probability")
+        if self.threshold is not None and probability is not None and probability < self.threshold:
+            return
+        payload = {
+            "type": "reasoning_trace",
+            "timestamp": _now_ts(),
+            "epoch": epoch,
+            "step": step,
+            "mode": self.config.objective.mode,
+            "session_id": session_id or get_session_id(),
+        }
+        payload.update(trace)
+        _append_metrics_event(art_dir_path, payload)
+        if self.store_path is not None:
+            _persist_reasoning_trace(self.store_path, payload)
+        try:
+            self.harness.record(payload)
+        except Exception:  # pragma: no cover - history append best effort
+            pass
+        self.traces_written += 1
+
+
+def _coerce_reasoning_config(payload: Any) -> ReasoningConfig | None:
+    if payload is None:
+        return None
+    if isinstance(payload, ReasoningConfig):
+        payload.validate("training.reasoning")
+        return payload
+    if isinstance(payload, Mapping):
+        cfg = ReasoningConfig.from_mapping(payload)
+        cfg.validate("training.reasoning")
+        return cfg
+    if isinstance(payload, bool):
+        if not payload:
+            cfg = ReasoningConfig(enabled=False)
+            return cfg
+        cfg = ReasoningConfig()
+        cfg.validate("training.reasoning")
+        return cfg
+    raise ConfigError(
+        "training.reasoning",
+        "Reasoning configuration must be a mapping or boolean when provided",
+        payload,
+    )
+
+
+def _initialize_reasoning_runtime(
+    model: Any,
+    raw_cfg: Any,
+    art_dir_path: Path | None,
+) -> tuple[Any, ReasoningRuntime | None]:
+    if raw_cfg and not _HAS_TORCH:
+        raise ImportError(
+            "Reasoning adapters require torch; install the dependency before enabling training.reasoning"
+        )
+    if raw_cfg and not _HAS_REASONING_ADAPTERS:
+        raise ImportError(
+            "Reasoning adapters are unavailable; install optional reasoning dependencies before enabling training.reasoning",
+        )
+    try:
+        reasoning_cfg = _coerce_reasoning_config(raw_cfg)
+    except ConfigError as exc:
+        logger.warning("Invalid reasoning configuration: %s", exc)
+        return model, None
+    if reasoning_cfg is None or not reasoning_cfg.enabled:
+        return model, None
+    try:
+        harness = attach_reasoning_adapters(model, reasoning_cfg)
+    except Exception as exc:  # pragma: no cover - adapter construction best effort
+        logger.warning("Failed to attach reasoning adapters: %s", exc)
+        return model, None
+    store_path = None
+    if art_dir_path is not None:
+        trace_name = reasoning_cfg.objective.trace_store or "reasoning_traces.ndjson"
+        store_path = Path(art_dir_path) / trace_name
+    runtime = ReasoningRuntime(
+        config=reasoning_cfg,
+        harness=harness,
+        store_path=store_path,
+        per_epoch_limit=int(reasoning_cfg.objective.max_traces_per_epoch),
+        top_k=int(reasoning_cfg.objective.log_top_k),
+        threshold=reasoning_cfg.log_probability_threshold,
+    )
+    runtime.bind_model(model)
+    return model, runtime
+
+
 _DEFAULT_SEED = 1234
+
+
+def _normalise_snapshot(value: Any) -> Any:
+    if is_dataclass(value):
+        return _normalise_snapshot(asdict(value))
+    if isinstance(value, Mapping):
+        return {str(key): _normalise_snapshot(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_normalise_snapshot(item) for item in value]
+    return value
+
+
+def _snapshot_payload(payload: Any) -> Dict[str, Any] | None:
+    if payload is None:
+        return None
+    normalised = _normalise_snapshot(payload)
+    if isinstance(normalised, Mapping):
+        return dict(normalised)
+    return None
+
+
+def _apply_metadata_to_state(
+    state: Dict[str, Any], metadata: Mapping[str, Any] | None
+) -> Dict[str, Any]:
+    metadata_dict = dict(metadata) if metadata is not None else {}
+    state["metadata"] = metadata_dict
+    if "rollout_ring" not in metadata_dict:
+        logger.warning("rollout_ring not declared; reasoning promotion may be blocked.")
+    return metadata_dict
+
+
+def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str, Any]) -> None:
+    if output_dir is None or not payload:
+        return
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / name).write_text(
+            json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+        )
+    except Exception as exc:  # noqa: BLE001 - best-effort report generation
+        logger.warning("Failed to write %s: %s", name, exc)
+
+
+def _render_reasoning_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("reasoning") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "reasoning.json", payload)
+
+
+def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
+    payload = state.get("evaluation") if isinstance(state, Mapping) else None
+    if isinstance(payload, Mapping) and payload:
+        _write_json_report(output_dir, "evaluation.json", payload)
 
 
 def _set_seed(seed: Optional[int]) -> int:
@@ -557,6 +772,15 @@ def _append_metrics_event(art_dir_path: Path | None, record: Dict[str, Any]) -> 
         logger.debug("Failed to append telemetry event: %s", exc)
 
 
+def _persist_reasoning_trace(path: Path, payload: Dict[str, Any]) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(payload, sort_keys=True) + "\n")
+    except Exception as exc:  # noqa: BLE001 - tracing is best effort
+        logger.debug("Failed to persist reasoning trace: %s", exc)
+
+
 def _telemetry_max_items() -> int:
     try:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_ITEMS", "1000").strip()
@@ -842,6 +1066,16 @@ def _checkpoint_digest(ckpt_dir: Path) -> str | None:
     return None
 
 
+def _json_ready(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {k: _json_ready(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_ready(v) for v in value]
+    if isinstance(value, Path):
+        return str(value)
+    return value
+
+
 @dataclass
 class TrainingMetrics:
     epoch: int
@@ -890,6 +1124,9 @@ def run_training(
     retention_policy: Optional[Dict[str, Any]] = None,
     bf16_require_capability: bool = False,
     dataset_cast_policy: str | None = None,
+    reasoning: Mapping[str, Any] | ReasoningConfig | None = None,
+    metadata: Mapping[str, Any] | None = None,
+    evaluation: Mapping[str, Any] | None = None,
     **extra_kwargs: Any,
 ) -> Dict[str, Any]:
     """
@@ -915,23 +1152,27 @@ def run_training(
     if steps_per_epoch < 1:
         steps_per_epoch = 1
 
-    art_dir_path: Path | None = None
-    if art_dir is not None:
-        try:
-            art_dir_path = Path(art_dir)
-            art_dir_path.mkdir(parents=True, exist_ok=True)
-            telemetry_file = art_dir_path / "telemetry.ndjson"
-            telemetry_file.touch(exist_ok=True)
-            metrics_ndjson = art_dir_path / "metrics.ndjson"
-            metrics_ndjson.touch(exist_ok=True)
-            metrics_json = art_dir_path / "metrics.json"
-            if not metrics_json.exists():
-                metrics_json.write_text("[]\n", encoding="utf-8")
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
-            art_dir_path = None
+    reasoning_runtime: ReasoningRuntime | None = None
+    default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
+    art_dir_path: Path | None = default_art_dir
+    try:
+        art_dir_path.mkdir(parents=True, exist_ok=True)
+        telemetry_file = art_dir_path / "telemetry.ndjson"
+        telemetry_file.touch(exist_ok=True)
+        metrics_ndjson = art_dir_path / "metrics.ndjson"
+        metrics_ndjson.touch(exist_ok=True)
+        metrics_json = art_dir_path / "metrics.json"
+        if not metrics_json.exists():
+            metrics_json.write_text("[]\n", encoding="utf-8")
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)
+        art_dir_path = None
 
     model_cfg = dict(model_cfg or {})
+
+    metadata_snapshot = _snapshot_payload(metadata)
+    evaluation_snapshot = _snapshot_payload(evaluation)
+    reasoning_snapshot = _snapshot_payload(reasoning)
 
     dp_settings: DifferentialPrivacyConfig | None = None
     if isinstance(dp_config, DifferentialPrivacyConfig):
@@ -1063,6 +1304,11 @@ def run_training(
         model_kwargs["lora"] = {"enabled": True, **(lora_cfg or {})}
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
+    model, reasoning_runtime = _initialize_reasoning_runtime(model, reasoning, art_dir_path)
+    if reasoning_runtime is not None:
+        runtime_snapshot = _snapshot_payload(reasoning_runtime.config)
+        if runtime_snapshot:
+            reasoning_snapshot = runtime_snapshot
 
     if _HAS_TORCH and model is not None:
         try:
@@ -1200,6 +1446,8 @@ def run_training(
             model, optimizer, train_loader, privacy_engine = make_private_model(
                 model, optimizer, train_loader, dp_settings
             )
+            if reasoning_runtime is not None:
+                reasoning_runtime.bind_model(model)
         except ImportError as exc:
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
@@ -1245,6 +1493,26 @@ def run_training(
         "metrics_enabled": bool(metrics_registry),
         "session_id": session_id or get_session_id(),
     }
+
+    applied_metadata = _apply_metadata_to_state(state, metadata_snapshot)
+
+    reasoning_state: Dict[str, Any] = {
+        "enabled": bool(reasoning_runtime),
+        "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
+        "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
+        "threshold": reasoning_runtime.threshold if reasoning_runtime else None,
+    }
+    if reasoning_snapshot:
+        reasoning_state["config"] = reasoning_snapshot
+        trace_mode = reasoning_snapshot.get("trace_mode")
+        if trace_mode is not None:
+            reasoning_state.setdefault("trace_mode", trace_mode)
+    if applied_metadata:
+        reasoning_state.setdefault("metadata", applied_metadata)
+    state["reasoning"] = reasoning_state
+
+    if evaluation_snapshot:
+        state["evaluation"] = {"config": evaluation_snapshot}
 
     for cb in cb_list:
         try:
@@ -1324,6 +1592,15 @@ def run_training(
             },
             "telemetry": {"enabled": telemetry_enable, "port": telemetry_port},
         }
+        if reasoning_runtime is not None:
+            env_payload["reasoning"] = {
+                "mode": reasoning_runtime.config.objective.mode,
+                "top_k": reasoning_runtime.top_k,
+                "threshold": reasoning_runtime.threshold,
+            }
+        metadata_state = state.get("metadata")
+        if isinstance(metadata_state, dict) and metadata_state:
+            env_payload["metadata"] = metadata_state
         if batch_size is not None:
             env_payload["batch_size"] = batch_size
         if _HAS_TORCH and torch is not None:
@@ -1334,12 +1611,153 @@ def run_training(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write environment.json: %s", exc)
 
+        if reasoning_runtime is not None:
+            try:
+                reasoning_history = reasoning_runtime.harness.history_snapshot()
+            except Exception:  # pragma: no cover - defensive snapshot
+                reasoning_history = []
+            if reasoning_history:
+                try:
+                    (art_dir_path / "reasoning_traces.json").write_text(
+                        json.dumps(reasoning_history, indent=2)
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("Failed to write reasoning_traces.json: %s", exc)
+
         try:
             (art_dir_path / "dataset_checksums.json").write_text(
                 json.dumps(dataset_checksum_map, indent=2)
             )
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write dataset_checksums.json: %s", exc)
+
+    def _persist_control_surface_artifacts() -> None:
+        if art_dir_path is None:
+            return
+
+        try:
+            art_dir_path.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
+            return
+
+        cfg: Dict[str, Any] = {}
+        if isinstance(run_config, Mapping):
+            cfg = dict(run_config)
+        elif isinstance(run_config, dict):
+            cfg = dict(run_config)
+
+        meta_payload: Dict[str, Any] = {}
+        metadata_section = cfg.get("metadata")
+        if isinstance(metadata_section, Mapping):
+            meta_payload.update(_json_ready(metadata_section))
+
+        session_id_val = state.get("session_id") if isinstance(state, dict) else None
+        if session_id_val:
+            meta_payload.setdefault("session_id", session_id_val)
+        if art_dir_path is not None:
+            meta_payload.setdefault("artifacts_dir", str(art_dir_path))
+
+        control_surface: Dict[str, Any] = {}
+        trace_mode = cfg.get("trace_mode")
+        training_section = cfg.get("training") if isinstance(cfg.get("training"), Mapping) else {}
+        if not trace_mode and isinstance(training_section, Mapping):
+            reasoning_cfg = training_section.get("reasoning")
+            if isinstance(reasoning_cfg, Mapping):
+                trace_mode = reasoning_cfg.get("trace_mode")
+        if trace_mode:
+            control_surface["trace_mode"] = trace_mode
+
+        curriculum_cfg = cfg.get("curriculum")
+        if isinstance(curriculum_cfg, Mapping):
+            preset = curriculum_cfg.get("preset") or curriculum_cfg.get("phase_schedule")
+            if preset:
+                control_surface["curriculum.preset"] = preset
+
+        evaluation_cfg = cfg.get("evaluation")
+        if not isinstance(evaluation_cfg, Mapping) and isinstance(training_section, Mapping):
+            evaluation_cfg = training_section.get("evaluation")
+        if isinstance(evaluation_cfg, Mapping):
+            preset = evaluation_cfg.get("preset")
+            if preset:
+                control_surface["evaluation.preset"] = preset
+
+        deployment_cfg = cfg.get("deployment")
+        if isinstance(deployment_cfg, Mapping):
+            preset = deployment_cfg.get("preset")
+            if preset:
+                control_surface["deployment.preset"] = preset
+
+        ring = meta_payload.get("rollout_ring") if isinstance(meta_payload, dict) else None
+        if not ring:
+            metadata_cfg = cfg.get("metadata")
+            if isinstance(metadata_cfg, Mapping):
+                ring = metadata_cfg.get("rollout_ring")
+            if ring:
+                meta_payload["rollout_ring"] = ring
+        if ring:
+            control_surface.setdefault("rollout_ring", ring)
+
+        if control_surface:
+            meta_payload["control_surface"] = _json_ready(control_surface)
+
+        knobs_snapshot = {
+            "trace_mode": trace_mode,
+            "curriculum_preset": (
+                curriculum_cfg.get("preset") if isinstance(curriculum_cfg, Mapping) else None
+            ),
+            "evaluation_preset": (
+                evaluation_cfg.get("preset") if isinstance(evaluation_cfg, Mapping) else None
+            ),
+            "deployment_preset": (
+                deployment_cfg.get("preset") if isinstance(deployment_cfg, Mapping) else None
+            ),
+        }
+
+        meta_payload["knobs"] = _json_ready(knobs_snapshot)
+
+        try:
+            (art_dir_path / "run_metadata.json").write_text(
+                json.dumps(_json_ready(meta_payload), indent=2),
+                encoding="utf-8",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Failed to write run_metadata.json: %s", exc)
+
+        reasoning_payload: Dict[str, Any] = {}
+        reasoning_cfg = cfg.get("reasoning")
+        if not isinstance(reasoning_cfg, Mapping) and isinstance(training_section, Mapping):
+            reasoning_cfg = training_section.get("reasoning")
+        if isinstance(reasoning_cfg, Mapping):
+            reasoning_payload["config"] = _json_ready(reasoning_cfg)
+        if reasoning_runtime is not None:
+            runtime_details = {
+                "mode": getattr(reasoning_runtime.config.objective, "mode", None),
+                "top_k": getattr(reasoning_runtime, "top_k", None),
+                "threshold": getattr(reasoning_runtime, "threshold", None),
+            }
+            reasoning_payload["runtime"] = _json_ready(runtime_details)
+            try:
+                reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
+            except Exception:  # noqa: BLE001
+                pass
+        if reasoning_payload:
+            try:
+                (art_dir_path / "reasoning.json").write_text(
+                    json.dumps(_json_ready(reasoning_payload), indent=2),
+                    encoding="utf-8",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write reasoning.json: %s", exc)
+
+        if isinstance(evaluation_cfg, Mapping):
+            try:
+                (art_dir_path / "evaluation.json").write_text(
+                    json.dumps(_json_ready(evaluation_cfg), indent=2),
+                    encoding="utf-8",
+                )
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to write evaluation.json: %s", exc)
 
     target_epochs = int(epochs)
     if start_epoch > target_epochs:
@@ -1361,7 +1779,15 @@ def run_training(
         }
         if resume_meta:
             result["resume_meta"] = resume_meta
+        if reasoning_runtime is not None:
+            try:
+                result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
+            except Exception:  # pragma: no cover - defensive snapshot
+                result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
+        report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+        _render_reasoning_report(report_dir, state)
+        _render_evaluation_report(report_dir, state)
         if return_state:
             result["model"] = model
             result["optimizer"] = optimizer
@@ -1388,6 +1814,8 @@ def run_training(
         synthetic_losses: List[float] = []
         steps_this_epoch = 0
         optimizer_steps_this_epoch = 0
+        if reasoning_runtime is not None:
+            reasoning_runtime.on_new_epoch()
 
         if model is not None and optimizer is not None and _HAS_TORCH:
             if dtype_obj is not None:
@@ -1419,6 +1847,23 @@ def run_training(
                 synthetic_losses.append(loss_val)
                 if metrics_registry is not None:
                     metrics_registry.record_training_step(loss_val)
+                if reasoning_runtime is not None:
+                    hidden_states = None
+                    try:
+                        hidden_states = getattr(model, "hidden_states", None)
+                    except Exception:  # noqa: BLE001 - defensive
+                        hidden_states = None
+                    step_ctx = (
+                        {"hidden_states": hidden_states} if hidden_states is not None else None
+                    )
+                    reasoning_runtime.record_trace(
+                        model,
+                        epoch=epoch,
+                        step=step + 1,
+                        art_dir_path=art_dir_path,
+                        session_id=session_id,
+                        step_ctx=step_ctx,
+                    )
                 if (step + 1) % grad_accum == 0:
                     try:
                         optimizer.step()
@@ -1627,8 +2072,16 @@ def run_training(
     }
     if resume_meta:
         result["resume_meta"] = resume_meta
+    if reasoning_runtime is not None:
+        try:
+            result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
+        except Exception:  # pragma: no cover - defensive snapshot
+            result["reasoning_traces"] = []
+        result["reasoning_objective"] = reasoning_runtime.config.objective.mode
+        result["reasoning_top_k"] = reasoning_runtime.top_k
 
     _persist_artifacts(latest_payload, target_epochs)
+    _persist_control_surface_artifacts()
 
     if session_logger is not None:
         try:
@@ -1650,6 +2103,10 @@ def run_training(
         result["optimizer"] = optimizer
         result["scheduler"] = scheduler
         result["state"] = state
+
+    report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
+    _render_reasoning_report(report_dir, state)
+    _render_evaluation_report(report_dir, state)
 
     return result
 

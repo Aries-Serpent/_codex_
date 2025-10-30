@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from codex_ml.cli.config import AppConfig, register_configs
+from codex_ml.data.reasoning_manifest import list_reasoning_corpora
 from codex_ml.training import run_functional_training
 
 try:
@@ -39,6 +40,14 @@ from codex_ml.codex_structured_logging import (
 )
 
 _ = (ArgparseJSONParser, run_cmd)
+
+_CURRICULUM_PRESETS = {
+    "rehearsal": "rehearsal",
+    "difficulty": "difficulty_curriculum",
+    "interleaved": "interleaved_rehearsal",
+}
+
+_CORPUS_CHOICES = tuple(sorted(list_reasoning_corpora()))
 
 try:  # pragma: no cover - hydra optional at runtime
     import hydra
@@ -175,6 +184,50 @@ def main(argv: Sequence[str] | None = None) -> Any:
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser
     parser = parser_cls(prog="codex-train", add_help=False)
     parser.add_argument("--probe-json", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument(
+        "--curriculum",
+        choices=tuple(sorted(_CURRICULUM_PRESETS)),
+        help="Select a continual-learning preset under configs/training/continual.",
+    )
+    parser.add_argument(
+        "--difficulty-target",
+        dest="curriculum_target",
+        help="Override continual.curriculum.target (e.g. easy/medium/hard).",
+    )
+    parser.add_argument(
+        "--difficulty-cap",
+        dest="difficulty_cap",
+        help="Override continual.curriculum.difficulty_cap for interleaved schedules.",
+    )
+    parser.add_argument(
+        "--rehearsal-ratio",
+        type=float,
+        dest="rehearsal_ratio",
+        help="Override continual.rehearsal.replay_ratio.",
+    )
+    parser.add_argument(
+        "--rehearsal-buffer",
+        type=int,
+        dest="rehearsal_buffer",
+        help="Override continual.rehearsal.buffer_size.",
+    )
+    parser.add_argument(
+        "--interleave-every",
+        type=int,
+        dest="interleave_every",
+        help="Override continual.rehearsal.interleave_every_n_steps.",
+    )
+    if _CORPUS_CHOICES:
+        parser.add_argument(
+            "--reasoning-corpus",
+            choices=_CORPUS_CHOICES,
+            help="Override continual.active_corpus using the reasoning manifest.",
+        )
+    else:  # pragma: no cover - fallback when no corpora registered
+        parser.add_argument(
+            "--reasoning-corpus",
+            help="Override continual.active_corpus using the reasoning manifest.",
+        )
 
     arg_list = list(argv) if argv is not None else sys.argv[1:]
     namespace, remaining = parser.parse_known_args(arg_list)
@@ -194,13 +247,31 @@ def main(argv: Sequence[str] | None = None) -> Any:
             )
             return 0
 
+    overrides = list(remaining)
+    if getattr(namespace, "curriculum", None):
+        overrides.append(f"training/continual={_CURRICULUM_PRESETS[str(namespace.curriculum)]}")
+    if getattr(namespace, "curriculum_target", None):
+        overrides.append(f"continual.curriculum.target={namespace.curriculum_target}")
+    if getattr(namespace, "difficulty_cap", None):
+        overrides.append(f"continual.curriculum.difficulty_cap={namespace.difficulty_cap}")
+    if getattr(namespace, "rehearsal_ratio", None) is not None:
+        overrides.append(f"continual.rehearsal.replay_ratio={namespace.rehearsal_ratio}")
+    if getattr(namespace, "rehearsal_buffer", None) is not None:
+        overrides.append(f"continual.rehearsal.buffer_size={int(namespace.rehearsal_buffer)}")
+    if getattr(namespace, "interleave_every", None) is not None:
+        overrides.append(
+            f"continual.rehearsal.interleave_every_n_steps={int(namespace.interleave_every)}"
+        )
+    if getattr(namespace, "reasoning_corpus", None):
+        overrides.append(f"continual.active_corpus={namespace.reasoning_corpus}")
+
     prog_name = sys.argv[0] if argv is None else parser.prog
     if hydra is None or _hydra_entry is None:
-        return _hydra_missing_main(remaining, prog_name)
+        return _hydra_missing_main(overrides, prog_name)
 
     backup_argv = sys.argv[:]
     try:
-        sys.argv = [prog_name, *remaining]
+        sys.argv = [prog_name, *overrides]
         return _hydra_entry()  # type: ignore[misc]
     finally:
         sys.argv = backup_argv

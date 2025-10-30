@@ -19,6 +19,10 @@ __all__ = [
     "TrainingConfig",
     "OptimizerConfig",
     "SchedulerConfig",
+    "ReasoningHeadConfig",
+    "ToolAdapterConfig",
+    "ReasoningObjectiveConfig",
+    "ReasoningConfig",
     "EvaluationConfig",
     "ShardConfig",
     "DataConfig",
@@ -131,6 +135,160 @@ class SchedulerConfig:
 
 
 @dataclass
+class ReasoningHeadConfig:
+    hidden_size: int = 512
+    projection_size: int = 256
+    trace_vocab_size: int = 32
+    dropout: float = 0.1
+
+    def validate(self, path: str = "training.reasoning.head") -> None:
+        if self.hidden_size <= 0:
+            raise ConfigError(f"{path}.hidden_size", "must be positive", self.hidden_size)
+        if self.projection_size <= 0:
+            raise ConfigError(f"{path}.projection_size", "must be positive", self.projection_size)
+        if self.trace_vocab_size <= 0:
+            raise ConfigError(f"{path}.trace_vocab_size", "must be positive", self.trace_vocab_size)
+        if not 0 <= self.dropout < 1:
+            raise ConfigError(f"{path}.dropout", "must be in [0, 1)", self.dropout)
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningHeadConfig":
+        allowed = {"hidden_size", "projection_size", "trace_vocab_size", "dropout"}
+        filtered = {k: payload[k] for k in allowed if k in payload}
+        return cls(**filtered)
+
+
+@dataclass
+class ToolAdapterConfig:
+    enabled: bool = False
+    tools: tuple[str, ...] = ()
+    temperature: float = 1.0
+    pooling: str = "mean"
+    hidden_size: int | None = None
+
+    def validate(self, path: str = "training.reasoning.tool_adapter") -> None:
+        if self.temperature <= 0:
+            raise ConfigError(f"{path}.temperature", "must be positive", self.temperature)
+        allowed = {"mean", "cls", "last"}
+        if self.pooling not in allowed:
+            raise ConfigError(f"{path}.pooling", f"must be one of {sorted(allowed)}", self.pooling)
+        if self.hidden_size is not None and self.hidden_size <= 0:
+            raise ConfigError(f"{path}.hidden_size", "must be positive", self.hidden_size)
+        if self.enabled and not self.tools:
+            raise ConfigError(f"{path}.tools", "must list at least one tool when enabled")
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> "ToolAdapterConfig":
+        allowed = {"enabled", "tools", "temperature", "pooling", "hidden_size"}
+        filtered = {k: payload[k] for k in allowed if k in payload}
+        tools = filtered.get("tools")
+        if isinstance(tools, list):
+            filtered["tools"] = tuple(str(item) for item in tools)
+        return cls(**filtered)
+
+
+@dataclass
+class ReasoningObjectiveConfig:
+    mode: str = "chain_of_thought"
+    weight: float = 1.0
+    tool_supervision_weight: float = 1.0
+    max_traces_per_epoch: int = 8
+    log_top_k: int = 5
+    trace_store: str | None = None
+
+    def validate(self, path: str = "training.reasoning.objective") -> None:
+        allowed_modes = {"chain_of_thought", "tool_execution"}
+        if self.mode not in allowed_modes:
+            raise ConfigError(f"{path}.mode", f"must be one of {sorted(allowed_modes)}", self.mode)
+        if self.weight <= 0:
+            raise ConfigError(f"{path}.weight", "must be positive", self.weight)
+        if self.tool_supervision_weight <= 0:
+            raise ConfigError(
+                f"{path}.tool_supervision_weight",
+                "must be positive",
+                self.tool_supervision_weight,
+            )
+        if self.max_traces_per_epoch < 0:
+            raise ConfigError(
+                f"{path}.max_traces_per_epoch",
+                "must be non-negative",
+                self.max_traces_per_epoch,
+            )
+        if self.log_top_k <= 0:
+            raise ConfigError(f"{path}.log_top_k", "must be positive", self.log_top_k)
+        if self.trace_store is not None and not str(self.trace_store).strip():
+            raise ConfigError(f"{path}.trace_store", "cannot be empty when provided")
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningObjectiveConfig":
+        allowed = {
+            "mode",
+            "weight",
+            "tool_supervision_weight",
+            "max_traces_per_epoch",
+            "log_top_k",
+            "trace_store",
+        }
+        filtered = {k: payload[k] for k in allowed if k in payload}
+        return cls(**filtered)
+
+
+@dataclass
+class ReasoningConfig:
+    enabled: bool = True
+    head: ReasoningHeadConfig = field(default_factory=ReasoningHeadConfig)
+    tool_adapter: ToolAdapterConfig | None = field(default_factory=ToolAdapterConfig)
+    objective: ReasoningObjectiveConfig = field(default_factory=ReasoningObjectiveConfig)
+    trace_history: int = 64
+    log_probability_threshold: float | None = None
+    trace_mode: str = "weights"
+
+    def validate(self, path: str = "training.reasoning") -> None:
+        if not self.enabled:
+            return
+        self.head.validate(f"{path}.head")
+        if self.tool_adapter is not None:
+            self.tool_adapter.validate(f"{path}.tool_adapter")
+        self.objective.validate(f"{path}.objective")
+        if self.trace_history <= 0:
+            raise ConfigError(f"{path}.trace_history", "must be positive", self.trace_history)
+        if self.log_probability_threshold is not None and not (
+            0 < self.log_probability_threshold <= 1
+        ):
+            raise ConfigError(
+                f"{path}.log_probability_threshold",
+                "must be within (0, 1] when provided",
+                self.log_probability_threshold,
+            )
+        allowed_trace_modes = {"disabled", "weights", "activations"}
+        if self.trace_mode not in allowed_trace_modes:
+            raise ConfigError(
+                f"{path}.trace_mode",
+                f"must be one of {sorted(allowed_trace_modes)}",
+                self.trace_mode,
+            )
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> "ReasoningConfig":
+        data = dict(payload)
+        trace_capture = data.get("trace_capture")
+        if isinstance(trace_capture, Mapping):
+            mode = trace_capture.get("mode")
+            if isinstance(mode, str):
+                data.setdefault("trace_mode", mode)
+        head_cfg = data.get("head")
+        if isinstance(head_cfg, Mapping):
+            data["head"] = ReasoningHeadConfig.from_mapping(head_cfg)
+        tool_cfg = data.get("tool_adapter")
+        if isinstance(tool_cfg, Mapping):
+            data["tool_adapter"] = ToolAdapterConfig.from_mapping(tool_cfg)
+        obj_cfg = data.get("objective")
+        if isinstance(obj_cfg, Mapping):
+            data["objective"] = ReasoningObjectiveConfig.from_mapping(obj_cfg)
+        return cls(**data)
+
+
+@dataclass
 class TrainingConfig:
     seed: int = 42
     deterministic: bool = True
@@ -164,6 +322,7 @@ class TrainingConfig:
     )
     log_dir: str = "logs"
     log_formats: tuple[str, ...] = ("ndjson",)
+    reasoning: ReasoningConfig | None = None
 
     def __post_init__(self) -> None:
         errs: list[str] = []
@@ -231,6 +390,8 @@ class TrainingConfig:
                 "must be iterable",
                 self.dataset.get("train_texts"),
             )
+        if self.reasoning is not None:
+            self.reasoning.validate(f"{path}.reasoning")
 
 
 @dataclass
@@ -593,7 +754,22 @@ class ValidationThresholds:
     perf_ok: float
 
 
-from .settings import AppSettings, EvalRow, eval_row_schema, get_settings  # noqa: E402,F401
+try:  # pragma: no cover - optional dependency
+    from .settings import AppSettings, EvalRow, eval_row_schema, get_settings  # noqa: E402,F401
+except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
+    AppSettings = None  # type: ignore[assignment]
+    EvalRow = None  # type: ignore[assignment]
+
+    def eval_row_schema() -> dict:  # type: ignore[override]
+        raise ModuleNotFoundError(
+            "pydantic is required to generate evaluation schemas; install the optional dependencies"
+        )
+
+    def get_settings():  # type: ignore[override]
+        raise ModuleNotFoundError(
+            "pydantic is required to load AppSettings; install the optional dependencies"
+        )
+
 
 __all__ = sorted(
     set(
