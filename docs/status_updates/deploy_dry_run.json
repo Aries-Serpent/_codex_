@@ -1,16 +1,29 @@
 {
-  "status": "validated",
-  "dry_run_only": true,
-  "rollout_ring": "0D_base_",
-  "pod_ring": "0D_base_",
-  "config": "configs/deploy/reasoning_pod.yaml",
-  "image": {
-    "repository": "local/offline/codex",
-    "tag": "latest"
-  },
-  "resources": {
-    "cpu": "2",
-    "memory": "8Gi"
-  },
-  "notes": "Offline dry-run only; no infrastructure changes were made."
+  "mode": "dry-run",
+  "generated": "2025-10-30T191706Z",
+  "config_path": "configs/deploy/reasoning_pod.yaml",
+  "summary": {
+    "kind": "ReasoningPod",
+    "name": "codex-reasoning-pod",
+    "version": 0,
+    "image": {
+      "repository": "local/offline/codex",
+      "tag": "latest"
+    },
+    "resources": {
+      "cpu": "2",
+      "memory": "8Gi"
+    },
+    "trace_capture_mode": "weights",
+    "evaluation_preset": "configs/evaluation/reasoning/base.yaml",
+    "curriculum_template": "configs/training/reasoning/baseline.yaml",
+    "artifacts": {
+      "emit_markdown": "docs/status_updates/deploy_dry_run.md",
+      "emit_json": "docs/status_updates/deploy_dry_run.json"
+    },
+    "notes": [
+      "This config is safe to commit; it does not perform deployment or network I/O.",
+      "Use Python local tools to generate review artifacts for promotion gates."
+    ]
+  }
 }
