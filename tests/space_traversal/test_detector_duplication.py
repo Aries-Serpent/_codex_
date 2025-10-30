@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import importlib.util
 import types
+from typing import Any, Dict, Iterable
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:
@@ -16,14 +17,31 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
     return module
 
 
+def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
+    return {
+        "files": [
+            {
+                "path": str(path.resolve()),
+            }
+            for path in paths
+        ],
+    }
+
+
 def test_detector_duplication_ratio(tmp_path: Path) -> None:
-    (tmp_path / 'foo.py').write_text("print('x')\n", encoding='utf-8')
-    (tmp_path / 'foo.md').write_text('# doc\n', encoding='utf-8')
-    (tmp_path / 'bar.py').write_text("print('y')\n", encoding='utf-8')
+    files = [
+        tmp_path / 'foo.py',
+        tmp_path / 'foo.md',
+        tmp_path / 'bar.py',
+    ]
+    files[0].write_text("print('x')\n", encoding='utf-8')
+    files[1].write_text('# doc\n', encoding='utf-8')
+    files[2].write_text("print('y')\n", encoding='utf-8')
 
     detector_path = Path('scripts/space_traversal/detectors/detector_duplication.py')
     module = _load_module(detector_path, 'detector_duplication')
-    result = module.detect(tmp_path)  # type: ignore[attr-defined]
+    context_index = _context_index_for(files)
+    result = module.detect(context_index)  # type: ignore[attr-defined]
 
     assert result['id'] == 'duplication_ratio'
     assert 0.0 <= result['dup_ratio'] <= 1.0
