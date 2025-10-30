@@ -75,9 +75,12 @@ fi
 BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo detached)"
 DATE="$(date -u +%F)"
 SHORT_SHA="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
-
-SAN_BRANCH="$(sanitize_slug "${BRANCH}")"
-PR_SLUG="$(sanitize_slug "${PR}")"
+SAN_BRANCH="$(echo "${BRANCH}" | tr '/ ' '_')"
+# Sanitize the PR slug to avoid writing outside the status updates tree.
+PR_SLUG="$(echo "${PR}" | tr -c '[:alnum:]_-' '_')"
+if [[ -z "${PR_SLUG}" ]]; then
+  PR_SLUG="NA"
+fi
 
 OUT_DIR="docs/status_updates"
 ART_DIR="${OUT_DIR}/artifacts/${DATE}-survey-${SAN_BRANCH}-and-${PR_SLUG}"
