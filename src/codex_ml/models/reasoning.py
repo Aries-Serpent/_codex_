@@ -181,34 +181,51 @@ class ReasoningHarness:
     # Trace capture semantics are configured via `training.reasoning.trace_mode`
     # (see configs/training/reasoning/baseline.yaml). Keep this comment aligned
     # with config guidance so downstream surfaces stay honest.
-    def _vectorise_model(self, model: Any, *, hidden_states: Any | None = None) -> torch.Tensor:
-        """Produce a trace vector for logging when traces are enabled."""
+    def _vectorise_model(
+        self, model: Any, *, hidden_states: Any | None = None
+    ) -> tuple[torch.Tensor, str]:
+        """Produce a trace vector and record the effective capture mode."""
 
         size = int(self.head.cfg.hidden_size)
         try:
             head_device = next(self.head.parameters()).device
         except StopIteration:  # pragma: no cover - Linear modules always have params
             head_device = torch.device("cpu")
-        if self._trace_mode == "activations" and hidden_states is not None:
-            try:
-                return self._pool_hidden_states(hidden_states, head_device, size)
-            except Exception as exc:
-                logger.warning("Activation vectorization failed; falling back to weights: %s", exc)
+
+        mode_used = self._trace_mode
+        if self._trace_mode == "activations":
+            if hidden_states is None:
+                logger.info(
+                    "Activation trace requested but hidden states missing; "
+                    "recording weight fingerprint instead",
+                )
+                mode_used = "weights"
+            else:
+                try:
+                    tensor = self._pool_hidden_states(hidden_states, head_device, size)
+                    return tensor, mode_used
+                except Exception as exc:
+                    logger.warning(
+                        "Activation vectorization failed; falling back to weights: %s",
+                        exc,
+                    )
+                    mode_used = "weights"
+
         buffer = torch.zeros(size, dtype=torch.float32, device=head_device)
         if not isinstance(model, nn.Module):
-            return buffer
+            return buffer, mode_used
         first_param = None
         for param in model.parameters():
             if param.requires_grad and param.ndim > 0:
                 first_param = param.detach().float().flatten()
                 break
         if first_param is None:
-            return buffer
+            return buffer, mode_used
         data = first_param.to(device=head_device)
         if data.numel() >= size:
-            return data[:size]
+            return data[:size], mode_used
         buffer[: data.numel()] = data
-        return buffer
+        return buffer, mode_used
 
     def capture_trace(
         self,
@@ -223,7 +240,7 @@ class ReasoningHarness:
         if isinstance(step_ctx, Mapping):
             hidden_states = step_ctx.get("hidden_states")
         with torch.no_grad():
-            embedding = self._vectorise_model(model, hidden_states=hidden_states)
+            embedding, trace_mode = self._vectorise_model(model, hidden_states=hidden_states)
             logits = self.head(embedding)
             summary = self.head.summarise(logits, top_k)
             payload: Dict[str, Any] = {
@@ -236,7 +253,7 @@ class ReasoningHarness:
                     if embedding.numel()
                     else 0.0
                 ),
-                "trace_mode": self._trace_mode,
+                "trace_mode": trace_mode,
             }
             if self.tool_adapter is not None and self.tool_adapter.cfg.enabled:
                 tool_logits, pooled = self.tool_adapter(embedding)
