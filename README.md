@@ -2,10 +2,18 @@
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
-- Start with [`docs/README_ROOT.md`](docs/README_ROOT.md)
-- Contribution guidelines: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
-- Changelog: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
-- Operational templates: [`docs/templates/README.md`](docs/templates/README.md)
+## New to _codex_?
+
+👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
+
+### Quick Links
+
+- **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
+- **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
+- **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
+- **Contribution Guidelines**: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
+- **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
 
 Legacy references should update to the new paths under `docs/`.
 
