@@ -4,7 +4,7 @@
     "description": "Desired ticket fields. Use 'key' as the canonical identifier; Codex resolves IDs by key/name.",
     "owner": "support-ops"
   },
-  "ticket_fields": [
+  "fields": [
     {
       "key": "impact",
       "type": "dropdown",

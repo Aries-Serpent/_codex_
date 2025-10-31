@@ -4,7 +4,7 @@
     "description": "Desired ticket forms. Reference fields by 'key' for readability; Codex hydrates field IDs.",
     "owner": "support-ops"
   },
-  "ticket_forms": [
+  "forms": [
     {
       "name": "Default Support",
       "active": true,
