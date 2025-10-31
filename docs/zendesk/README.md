@@ -15,6 +15,8 @@ This directory contains all documentation related to managing Zendesk Support wi
 | Document | Description | Audience |
 |----------|-------------|----------|
 | **[ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)** | Comprehensive onboarding guide | New Zendesk admins |
+| **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** | Mathematical model of AI Agent App Builder limitations & capabilities | App developers |
+| **[WORKFLOW_DIAGRAMS.md](WORKFLOW_DIAGRAMS.md)** | Visual workflow diagrams and decision trees | All users |
 | **[../runbooks/zendesk_admin_workflow.md](../runbooks/zendesk_admin_workflow.md)** | Core snapshot-diff-plan-apply workflow | All users |
 | **[../runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md)** | End-to-end workflow planning | Support ops leads |
 | **[../checklists/zendesk_first_cycle_verification.md](../checklists/zendesk_first_cycle_verification.md)** | First cycle verification checklist | First-time users |
@@ -23,8 +25,10 @@ This directory contains all documentation related to managing Zendesk Support wi
 
 ### Additional Resources
 
+- **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** - Mathematical model & optimization framework for AI Agent App Builder
+- **[WORKFLOW_DIAGRAMS.md](WORKFLOW_DIAGRAMS.md)** - Visual workflow diagrams and ASCII art decision trees
 - **[../runbooks/zendesk_docs_pipeline.md](../runbooks/zendesk_docs_pipeline.md)** - Documentation pipeline
-- **[../guides/zendesk_ai_app_builder_limitations.md](../guides/zendesk_ai_app_builder_limitations.md)** - AI app builder limitations
+- **[../guides/zendesk_ai_app_builder_limitations.md](../guides/zendesk_ai_app_builder_limitations.md)** - AI app builder limitations (legacy reference)
 - **[../validation/zendesk_ai_builder_readiness_validation.md](../validation/zendesk_ai_builder_readiness_validation.md)** - AI builder readiness
 - **[../crm/admin-runbooks/zendesk.md](../crm/admin-runbooks/zendesk.md)** - CRM integration runbook
 
@@ -48,6 +52,13 @@ This directory contains all documentation related to managing Zendesk Support wi
 3. Set up monitoring and metrics
 4. Explore ML-assisted configuration options
 5. Build custom workflows for your organization
+
+### Path 4: AI Agent App Builder (3-5 days)
+1. Study [AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md) - Mathematical model
+2. Understand location manifold and capacity fields
+3. Calculate feasibility ($\Psi_i$) for your features
+4. Apply optimization framework ($\mathcal{S}$)
+5. Build within constraints (no backend, proxy-only APIs)
 
 ## Common Tasks
 

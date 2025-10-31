@@ -295,6 +295,14 @@ mypy src/
 
 _codex_ provides comprehensive tools for managing Zendesk Support as code. See the dedicated [Zendesk Newcomer Guide](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md) for details.
 
+### Zendesk Resources
+
+- **[Zendesk Configuration-as-Code Guide](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
+- **[AI Agent App Builder Mathematical Model](docs/zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI Agent App Builder (not ZAF)
+- **[Workflow Diagrams](docs/zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
+- **[Quick Start Script](examples/zendesk/quickstart.sh)** - Interactive setup automation
+- **[Examples & Templates](examples/zendesk/README.md)** - Configuration examples and templates
+
 ### Quick Zendesk Workflow
 
 1. **Snapshot current state**:
@@ -326,6 +334,8 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 
 - [Zendesk Admin Workflow](docs/runbooks/zendesk_admin_workflow.md)
 - [End-to-End Support Workflows Plan](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
+- [AI Agent App Builder Guide](docs/zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical optimization framework
+- [Workflow Diagrams](docs/zendesk/WORKFLOW_DIAGRAMS.md) - Visual guides
 - [Zendesk First Cycle Verification](docs/checklists/zendesk_first_cycle_verification.md)
 - [Zendesk API Reference](docs/zendesk_api_reference.md)
 
@@ -420,10 +430,22 @@ See `.github/copilot-instructions.md` for complete list.
 ### For Support/DevOps Engineers
 
 1. Start with [docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
-2. Review [docs/runbooks/zendesk_admin_workflow.md](docs/runbooks/zendesk_admin_workflow.md)
-3. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
-4. Practice with examples in `examples/roles/`
-5. Review [docs/checklists/zendesk_first_cycle_verification.md](docs/checklists/zendesk_first_cycle_verification.md)
+2. Run [examples/zendesk/quickstart.sh](examples/zendesk/quickstart.sh) for interactive setup
+3. Review [docs/zendesk/WORKFLOW_DIAGRAMS.md](docs/zendesk/WORKFLOW_DIAGRAMS.md) for visual guides
+4. Study [docs/runbooks/zendesk_admin_workflow.md](docs/runbooks/zendesk_admin_workflow.md)
+5. Study [docs/runbooks/zendesk_e2e_support_workflows_plan.md](docs/runbooks/zendesk_e2e_support_workflows_plan.md)
+6. Practice with examples in `examples/zendesk/`
+7. Review [docs/checklists/zendesk_first_cycle_verification.md](docs/checklists/zendesk_first_cycle_verification.md)
+
+### For Zendesk App Developers
+
+1. Read [docs/zendesk/AI_AGENT_APP_BUILDER.md](docs/zendesk/AI_AGENT_APP_BUILDER.md) - Mathematical model
+2. Understand location manifold and capacity fields ($\mathcal{L}$, $\mathbf{s}(\ell)$)
+3. Learn capability spectrum ($\phi_d$ for each dimension)
+4. Study security constraints and forbidden operations ($\mathcal{F}$)
+5. Calculate feature feasibility ($\Psi_i$) using the formulas
+6. Apply optimization framework (minimize action $\mathcal{S}$)
+7. Review worked examples (wizard, real-time monitor, bulk export)
 
 ### For Contributors
 
