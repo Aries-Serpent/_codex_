@@ -46,53 +46,7 @@ if ! command -v codex &> /dev/null; then
 fi
 success "_codex_ is installed"
 
-# Check for required environment variables
-MISSING_VARS=false
-
-if [ -z "$ZENDESK_SUBDOMAIN" ]; then
-    warning "ZENDESK_SUBDOMAIN is not set"
-    MISSING_VARS=true
-fi
-
-if [ -z "$ZENDESK_EMAIL" ]; then
-    warning "ZENDESK_EMAIL is not set"
-    MISSING_VARS=true
-fi
-
-if [ -z "$ZENDESK_API_TOKEN" ]; then
-    warning "ZENDESK_API_TOKEN is not set"
-    MISSING_VARS=true
-fi
-
-if [ "$MISSING_VARS" = true ]; then
-    echo ""
-    warning "Required environment variables are missing."
-    echo "  Please set them in your environment or create a .env file:"
-    echo ""
-    echo "  export ZENDESK_SUBDOMAIN=your-subdomain"
-    echo "  export ZENDESK_EMAIL=admin@example.com"
-    echo "  export ZENDESK_API_TOKEN=your-api-token"
-    echo ""
-    read -p "Do you want to configure them now? (y/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        read -p "Zendesk Subdomain: " ZENDESK_SUBDOMAIN
-        read -p "Zendesk Email: " ZENDESK_EMAIL
-        read -sp "Zendesk API Token: " ZENDESK_API_TOKEN
-        echo ""
-        export ZENDESK_SUBDOMAIN
-        export ZENDESK_EMAIL
-        export ZENDESK_API_TOKEN
-        success "Environment variables configured"
-    else
-        error "Cannot proceed without credentials"
-        exit 1
-    fi
-else
-    success "Environment variables are set"
-fi
-
-# Select environment
+# Select environment first, before checking credentials
 echo ""
 info "Select Zendesk environment:"
 echo "  1) dev"
@@ -107,6 +61,57 @@ case $ENV_CHOICE in
 esac
 
 info "Using environment: $ENVIRONMENT"
+
+# Check for environment-scoped credentials
+ENV_UPPER=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
+SUBDOMAIN_VAR="ZENDESK_${ENV_UPPER}_SUBDOMAIN"
+EMAIL_VAR="ZENDESK_${ENV_UPPER}_EMAIL"
+TOKEN_VAR="ZENDESK_${ENV_UPPER}_TOKEN"
+
+MISSING_VARS=false
+
+if [ -z "${!SUBDOMAIN_VAR}" ]; then
+    warning "$SUBDOMAIN_VAR is not set"
+    MISSING_VARS=true
+fi
+
+if [ -z "${!EMAIL_VAR}" ]; then
+    warning "$EMAIL_VAR is not set"
+    MISSING_VARS=true
+fi
+
+if [ -z "${!TOKEN_VAR}" ]; then
+    warning "$TOKEN_VAR is not set"
+    MISSING_VARS=true
+fi
+
+if [ "$MISSING_VARS" = true ]; then
+    echo ""
+    warning "Required environment variables are missing."
+    echo "  Please set them in your environment or create a .env file:"
+    echo ""
+    echo "  export $SUBDOMAIN_VAR=your-subdomain"
+    echo "  export $EMAIL_VAR=admin@example.com"
+    echo "  export $TOKEN_VAR=your-api-token"
+    echo ""
+    read -p "Do you want to configure them now? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        read -p "Zendesk Subdomain: " SUBDOMAIN_VALUE
+        read -p "Zendesk Email: " EMAIL_VALUE
+        read -sp "Zendesk API Token: " TOKEN_VALUE
+        echo ""
+        export "$SUBDOMAIN_VAR=$SUBDOMAIN_VALUE"
+        export "$EMAIL_VAR=$EMAIL_VALUE"
+        export "$TOKEN_VAR=$TOKEN_VALUE"
+        success "Environment variables configured"
+    else
+        error "Cannot proceed without credentials"
+        exit 1
+    fi
+else
+    success "Environment variables are set"
+fi
 
 # Create directory structure
 echo ""
