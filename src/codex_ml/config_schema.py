@@ -5,8 +5,9 @@ Extend/replace with rich Hydra Structured Configs as needed.
 
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Mapping, Optional, Sequence, Union
 
 from pydantic import (
     BaseModel,
@@ -30,6 +31,10 @@ class LoraConfig(BaseModel):
     lora_alpha: PositiveInt = Field(default=16, description="LoRA alpha scaling")
     lora_dropout: float = Field(default=0.05, ge=0.0, le=1.0)
     task_type: str = Field(default="CAUSAL_LM")
+    target_modules: Optional[list[str]] = Field(
+        default=None,
+        description="Optional list of module names to which the adapter should apply.",
+    )
 
 
 class TrainConfig(BaseModel):
@@ -38,6 +43,7 @@ class TrainConfig(BaseModel):
     config_version: int = Field(default=1, ge=1)
     model_name: str = Field(default="tiny", description="Model identifier or profile name.")
     learning_rate: float = Field(default=1e-3, gt=0.0)
+    batch_size: PositiveInt = Field(default=8, description="Training batch size")
     epochs: PositiveInt = Field(default=1)
     max_samples: PositiveInt = Field(default=32)
     data_path: Optional[str] = Field(
@@ -109,6 +115,116 @@ def validate_config_dict(cfg: Mapping[str, Any]) -> TrainConfig:
     return TrainConfig.model_validate(_as_train_config_payload(cfg))
 
 
+@dataclass(slots=True)
+class TokenizerSettings:
+    """Lightweight dataclass for tokenizer defaults used in quickstarts."""
+
+    vocab_size: int
+    model_type: str = "bpe"
+    max_length: int = 1024
+
+
+@dataclass(slots=True)
+class LoraSettings:
+    """Dataclass wrapper mirroring :class:`LoraConfig` for ergonomic consumption."""
+
+    enabled: bool = False
+    rank: int = 8
+    alpha: int = 16
+    dropout: float = 0.05
+    task_type: str = "CAUSAL_LM"
+    target_modules: Optional[Sequence[str]] = None
+
+    def to_payload(self) -> dict[str, Any]:
+        """Return a dictionary compatible with :class:`LoraConfig`."""
+
+        if not self.enabled:
+            return {"enable": False}
+        payload: dict[str, Any] = {
+            "enable": True,
+            "r": int(self.rank),
+            "lora_alpha": int(self.alpha),
+            "lora_dropout": float(self.dropout),
+            "task_type": self.task_type,
+        }
+        if self.target_modules is not None:
+            payload["target_modules"] = [str(item) for item in self.target_modules]
+        return payload
+
+    @classmethod
+    def from_model(cls, cfg: LoraConfig | None) -> "LoraSettings":
+        if cfg is None:
+            return cls()
+        return cls(
+            enabled=bool(cfg.enable),
+            rank=int(cfg.r),
+            alpha=int(cfg.lora_alpha),
+            dropout=float(cfg.lora_dropout),
+            task_type=str(cfg.task_type),
+            target_modules=list(cfg.target_modules) if cfg.target_modules is not None else None,
+        )
+
+
+@dataclass(slots=True)
+class TrainingSettings:
+    """Minimal training configuration for scripts/tests without Hydra."""
+
+    model_name: str
+    epochs: int = 1
+    batch_size: int = 8
+    learning_rate: float = 1e-3
+    use_amp: bool = False
+    seed: int = 42
+    device: str = "cpu"
+    dtype: str = "float32"
+    grad_accum: int = 1
+    lora: LoraSettings = field(default_factory=LoraSettings)
+
+    def to_train_config(self) -> TrainConfig:
+        """Convert the dataclass into a validated :class:`TrainConfig` instance."""
+
+        lora_settings = self.lora
+        payload = asdict(self)
+        payload.pop("lora")
+        payload.pop("use_amp", None)
+        payload["grad_accum"] = int(payload.get("grad_accum", 1))
+        payload["learning_rate"] = float(payload["learning_rate"])
+        if lora_settings.enabled:
+            payload["lora"] = lora_settings.to_payload()
+        else:
+            payload["lora"] = None
+        payload.setdefault("max_samples", TrainConfig.model_fields["max_samples"].default)
+        payload.setdefault("checkpoint_keep", TrainConfig.model_fields["checkpoint_keep"].default)
+        payload.setdefault(
+            "bf16_require_capability",
+            TrainConfig.model_fields["bf16_require_capability"].default,
+        )
+        payload.setdefault(
+            "dataset_cast_policy",
+            TrainConfig.model_fields["dataset_cast_policy"].default,
+        )
+        return TrainConfig.model_validate(payload)
+
+    @classmethod
+    def from_train_config(cls, cfg: TrainConfig) -> "TrainingSettings":
+        data = cfg.model_dump()
+        lora_settings = (
+            LoraSettings.from_model(cfg.lora) if cfg.lora is not None else LoraSettings()
+        )
+        return cls(
+            model_name=str(data["model_name"]),
+            epochs=int(data["epochs"]),
+            batch_size=int(data.get("batch_size", data.get("per_device_train_batch_size", 8))),
+            learning_rate=float(data["learning_rate"]),
+            use_amp=bool(data.get("use_amp", False)),
+            seed=int(data.get("seed", 42)),
+            device=str(data.get("device", "cpu")),
+            dtype=str(data.get("dtype", "float32")),
+            grad_accum=int(data.get("grad_accum", data.get("gradient_accumulation", 1))),
+            lora=lora_settings,
+        )
+
+
 # --- Back-compat shim -------------------------------------------------------
 # Existing callers import `validate_config` and may pass either a mapping or a path.
 
@@ -127,6 +243,9 @@ __all__ = [
     "LoraConfig",
     "TrainConfig",
     "ValidationError",
+    "TokenizerSettings",
+    "LoraSettings",
+    "TrainingSettings",
     "load_yaml",
     "validate_config_file",
     "validate_config_dict",

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from peft import TaskType  # type: ignore
@@ -17,6 +17,7 @@ def apply_lora_if_available(
     alpha: int = 16,
     dropout: float = 0.05,
     task_type: Optional[Union["TaskType", str]] = None,
+    target_modules: Optional[Iterable[str]] = None,
 ) -> Any:
     """Wrap ``model`` with LoRA adapters when ``peft`` is installed.
 
@@ -38,12 +39,19 @@ def apply_lora_if_available(
         except KeyError:
             selected_task_type = TaskType(selected_task_type)
 
+    modules: Optional[Sequence[str]]
+    if target_modules is None:
+        modules = None
+    else:
+        modules = tuple(str(module) for module in target_modules)
+
     cfg = LoraConfig(
         r=r,
         lora_alpha=alpha,
         lora_dropout=dropout,
         bias="none",
         task_type=selected_task_type,
+        target_modules=modules,
     )
     return get_peft_model(model, cfg)
 
