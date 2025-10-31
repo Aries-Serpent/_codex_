@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Skills-based routing attributes. Names are canonical; Codex resolves IDs.",
+    "owner": "support-ops"
+  },
+  "attributes": [
+    { "name": "Language:Spanish", "description": "Spanish proficiency", "type": "skill" },
+    { "name": "Product:Billing", "description": "Billing expertise", "type": "skill" }
+  ],
+  "assignments": [
+    { "agent_email": "agent.tier2@example.com", "attributes": ["Language:Spanish", "Product:Billing"] }
+  ]
+}
