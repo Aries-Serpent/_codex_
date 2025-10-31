@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import warnings
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable, Iterator, List, Sequence
 
@@ -17,6 +17,7 @@ try:  # pragma: no cover - optional dependency
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
+        global _LAST_HF_REVISION
         if args:
             identifier = args[0]
         else:
@@ -29,15 +30,19 @@ try:  # pragma: no cover - optional dependency
                 raise TypeError("dataset name must be provided")
         revision, extra = ensure_pinned_kwargs(identifier, kwargs)
         if revision is None:
-            return _hf_load_dataset(
+            dataset = _hf_load_dataset(
                 *args,
                 **extra,
             )  # nosec B615: local path or offline dataset
-        return _hf_load_dataset(
+            _LAST_HF_REVISION = None
+            return dataset
+        dataset = _hf_load_dataset(
             *args,
             revision=revision,
             **extra,
         )  # nosec B615: revision pinned via ensure_pinned_kwargs
+        _LAST_HF_REVISION = revision
+        return dataset
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
@@ -47,6 +52,9 @@ except Exception:  # pragma: no cover - handled gracefully
         raise RuntimeError("datasets library is required for hf:// URIs")
 
     HAS_DATASETS = False
+
+
+_LAST_HF_REVISION: str | None = None
 
 
 @dataclass
@@ -107,6 +115,7 @@ def load_dataset(
     hf_text_field: str | None = None,
 ) -> List[Example]:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
+    global _LAST_HF_REVISION
     if hf_text_field is not None:
         if hf_input_field is not None or hf_target_field is not None:
             raise ValueError(
@@ -119,6 +128,7 @@ def load_dataset(
         )
         hf_input_field = hf_text_field
         hf_target_field = hf_text_field
+    revision: str | None = None
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
@@ -131,17 +141,21 @@ def load_dataset(
         if len(parts) >= 3:
             ds_name = "/".join(parts[:-1])
             config = parts[-1]
+            _LAST_HF_REVISION = None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         elif len(parts) == 2:
             ds_name, config = parts
             try:
+                _LAST_HF_REVISION = None
                 hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
             except Exception:  # fall back to owner/dataset without config
                 ds_name = "/".join(parts)
                 config = None
+                _LAST_HF_REVISION = None
                 hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         else:
             ds_name, config = parts[0], None
+            _LAST_HF_REVISION = None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         input_field = hf_input_field
         target_field = hf_target_field
@@ -208,6 +222,7 @@ def load_dataset(
             ]
         # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
+            _LAST_HF_REVISION = None
             ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [
                 Example(
@@ -220,6 +235,7 @@ def load_dataset(
             raise ValueError(
                 "Unsupported dataset format or 'datasets' package not available",
             )
+        revision = _LAST_HF_REVISION
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
     bundle = DatasetBundle(
