@@ -16,6 +16,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 |----------|-------------|----------|
 | **[ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)** | Comprehensive onboarding guide | New Zendesk admins |
 | **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** | Mathematical model + extensive visual capability maps for AI Agent App Builder | App developers |
+| **[CANONICAL_CAPABILITY_MAP.md](CANONICAL_CAPABILITY_MAP.md)** | Visual-first symbolic capability map with AI transparency notes | App developers |
 | **[WORKFLOW_DIAGRAMS.md](WORKFLOW_DIAGRAMS.md)** | Visual workflow diagrams and decision trees | All users |
 | **[../runbooks/zendesk_admin_workflow.md](../runbooks/zendesk_admin_workflow.md)** | Core snapshot-diff-plan-apply workflow | All users |
 | **[../runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md)** | End-to-end workflow planning | Support ops leads |
@@ -26,6 +27,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 ### Additional Resources
 
 - **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** - Mathematical model & optimization framework for AI Agent App Builder
+- **[CANONICAL_CAPABILITY_MAP.md](CANONICAL_CAPABILITY_MAP.md)** - Visual symbolic capability map with AI transparency appendix
 - **[WORKFLOW_DIAGRAMS.md](WORKFLOW_DIAGRAMS.md)** - Visual workflow diagrams and ASCII art decision trees
 - **[../runbooks/zendesk_docs_pipeline.md](../runbooks/zendesk_docs_pipeline.md)** - Documentation pipeline
 - **[../guides/zendesk_ai_app_builder_limitations.md](../guides/zendesk_ai_app_builder_limitations.md)** - AI app builder limitations (legacy reference)
@@ -54,11 +56,12 @@ This directory contains all documentation related to managing Zendesk Support wi
 5. Build custom workflows for your organization
 
 ### Path 4: AI Agent App Builder (3-5 days)
-1. Study [AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md) - Mathematical model
-2. Understand location manifold and capacity fields
-3. Calculate feasibility ($\Psi_i$) for your features
-4. Apply optimization framework ($\mathcal{S}$)
-5. Build within constraints (no backend, proxy-only APIs)
+1. Review [CANONICAL_CAPABILITY_MAP.md](CANONICAL_CAPABILITY_MAP.md) - Visual capability overview
+2. Study [AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md) - Mathematical model
+3. Understand location manifold and capacity fields
+4. Calculate feasibility ($\Psi_i$) for your features
+5. Apply optimization framework ($\mathcal{S}$)
+6. Build within constraints (no backend, proxy-only APIs)
 
 ## Common Tasks
 
