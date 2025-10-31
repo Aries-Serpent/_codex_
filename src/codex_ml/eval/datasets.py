@@ -2,22 +2,22 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import warnings
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any, Iterable, Iterator, List, Sequence
 
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (
-        DatasetDict,  # type: ignore
-        load_from_disk,  # type: ignore
-    )
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_from_disk  # type: ignore
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
+        global _LAST_HF_REVISION
         if args:
             identifier = args[0]
         else:
@@ -30,15 +30,19 @@ try:  # pragma: no cover - optional dependency
                 raise TypeError("dataset name must be provided")
         revision, extra = ensure_pinned_kwargs(identifier, kwargs)
         if revision is None:
-            return _hf_load_dataset(
+            dataset = _hf_load_dataset(
                 *args,
                 **extra,
             )  # nosec B615: local path or offline dataset
-        return _hf_load_dataset(
+            _LAST_HF_REVISION = None
+            return dataset
+        dataset = _hf_load_dataset(
             *args,
             revision=revision,
             **extra,
         )  # nosec B615: revision pinned via ensure_pinned_kwargs
+        _LAST_HF_REVISION = revision
+        return dataset
 
     HAS_DATASETS = True
 except Exception:  # pragma: no cover - handled gracefully
@@ -50,10 +54,32 @@ except Exception:  # pragma: no cover - handled gracefully
     HAS_DATASETS = False
 
 
+_LAST_HF_REVISION: str | None = None
+
+
 @dataclass
 class Example:
     input: str
     target: str
+
+
+@dataclass
+class DatasetBundle(Sequence[Example]):
+    """Container bundling examples with a deterministic hash."""
+
+    examples: List[Example]
+    dataset_hash: str
+    source: str
+    metadata: dict[str, Any] | None = None
+
+    def __iter__(self) -> Iterator[Example]:
+        return iter(self.examples)
+
+    def __len__(self) -> int:  # pragma: no cover - trivially exercised elsewhere
+        return len(self.examples)
+
+    def __getitem__(self, index: int) -> Example:
+        return self.examples[index]
 
 
 _PRESETS = {
@@ -70,6 +96,18 @@ _PRESETS = {
 }
 
 
+def _hash_examples(examples: Iterable[Example]) -> str:
+    """Hash examples using JSON serialization to avoid collisions."""
+    examples_list = list(examples)
+    payload = json.dumps(
+        [asdict(example) for example in examples_list],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def load_dataset(
     name_or_path: str,
     max_samples: int | None = None,
@@ -78,8 +116,9 @@ def load_dataset(
     hf_input_field: str | None = None,
     hf_target_field: str | None = None,
     hf_text_field: str | None = None,
-) -> List[Example]:
+) -> DatasetBundle:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
+    global _LAST_HF_REVISION
     if hf_text_field is not None:
         if hf_input_field is not None or hf_target_field is not None:
             raise ValueError(
@@ -92,6 +131,7 @@ def load_dataset(
         )
         hf_input_field = hf_text_field
         hf_target_field = hf_text_field
+    revision: str | None = None
     if name_or_path in _PRESETS:
         data = list(_PRESETS[name_or_path])
     elif name_or_path.startswith("hf://"):
@@ -104,17 +144,21 @@ def load_dataset(
         if len(parts) >= 3:
             ds_name = "/".join(parts[:-1])
             config = parts[-1]
+            _LAST_HF_REVISION = None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         elif len(parts) == 2:
             ds_name, config = parts
             try:
+                _LAST_HF_REVISION = None
                 hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
             except Exception:  # fall back to owner/dataset without config
                 ds_name = "/".join(parts)
                 config = None
+                _LAST_HF_REVISION = None
                 hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         else:
             ds_name, config = parts[0], None
+            _LAST_HF_REVISION = None
             hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
         input_field = hf_input_field
         target_field = hf_target_field
@@ -156,6 +200,7 @@ def load_dataset(
             )
 
         data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
+        revision = _LAST_HF_REVISION
     else:
         path = Path(name_or_path)
         # Plain JSONL/NDJSON file
@@ -181,6 +226,7 @@ def load_dataset(
             ]
         # Remote dataset via datasets.load_dataset
         elif HAS_DATASETS:
+            _LAST_HF_REVISION = None
             ds = hf_load_dataset(name_or_path, split=hf_split)
             data = [
                 Example(
@@ -193,9 +239,27 @@ def load_dataset(
             raise ValueError(
                 "Unsupported dataset format or 'datasets' package not available",
             )
+        revision = _LAST_HF_REVISION
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
-    return data
+
+    metadata: dict[str, Any] = {
+        "source": str(name_or_path),
+        "hf_split": hf_split,
+        "hf_input_field": hf_input_field,
+        "hf_target_field": hf_target_field,
+        "max_samples": max_samples,
+        "hf_revision": revision,
+        "num_examples": len(data),
+    }
+
+    bundle = DatasetBundle(
+        examples=data,
+        dataset_hash=_hash_examples(data),
+        source=name_or_path,
+        metadata={k: v for k, v in metadata.items() if v is not None},
+    )
+    return bundle
 
 
-__all__ = ["Example", "load_dataset"]
+__all__ = ["Example", "DatasetBundle", "load_dataset"]

@@ -51,6 +51,12 @@ repos:
         language: system
         pass_filenames: false
         stages: [manual]
+      - id: gitleaks-manual
+        name: gitleaks (manual secret scan)
+        entry: bash -c 'if command -v gitleaks >/dev/null 2>&1; then gitleaks detect --no-git --redact --verbose; else echo "gitleaks not installed; skipping" >&2; fi'
+        language: system
+        pass_filenames: false
+        stages: [manual]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
     hooks:
@@ -137,6 +143,14 @@ repos:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.17.0
+    hooks:
+      - id: gitleaks
+        name: gitleaks (staged)
+        args: ["protect", "--staged", "--no-banner", "--redact"]
+        stages: [pre-commit]
+        timeout: 120
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0
     hooks:

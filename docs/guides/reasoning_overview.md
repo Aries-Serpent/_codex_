@@ -75,9 +75,12 @@ variant name in `training.output_dir` so trace comparisons remain legible.
 1. Validate manifests:
    ```bash
    codex deploy --config configs/deploy/reasoning_pod.yaml \
-     --model artifacts/runs/reasoning-starter:last \
+     --run-metadata-dir runs/train_loop/latest \
      --dry-run
    ```
+   The deploy command consumes the offline `run_metadata.json` emitted by the
+   training pipeline. Point `--run-metadata-dir` at the directory containing that
+   file (for example, `runs/train_loop/latest`).
 2. Shadow host in the target environment and confirm p95 latency ≤700 ms.
 3. Update [`../deployment/reasoning_pod.md`](../deployment/reasoning_pod.md) with any override notes.
 4. Promote the template via `codex reasoning-templates explain <name>` and store the explanation alongside the rollout PR.

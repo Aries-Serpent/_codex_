@@ -15,7 +15,7 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover
     typer = None  # type: ignore
 
-from codex_ml.eval.datasets import load_dataset
+from codex_ml.eval.datasets import DatasetBundle, load_dataset
 from codex_ml.logging.run_logger import DEFAULT_SCHEMA_VERSION, METRICS_SCHEMA_URI
 from codex_ml.metrics.registry import get_metric
 from codex_ml.tracking.writers import NdjsonWriter
@@ -90,13 +90,26 @@ def evaluate_datasets(
         writer.writeheader()
 
         for name in datasets:
-            examples = load_dataset(name, max_samples=max_samples if max_samples > 0 else None)
+            bundle = load_dataset(name, max_samples=max_samples if max_samples > 0 else None)
+            if isinstance(bundle, DatasetBundle):
+                examples = bundle.examples
+                dataset_hash = bundle.dataset_hash
+                dataset_source = bundle.source
+            else:  # pragma: no cover - backwards compatibility safeguard
+                examples = list(bundle)
+                dataset_hash = ""
+                dataset_source = name
             preds = [ex.input for ex in examples]
             targets = [ex.target for ex in examples]
             for metric_name in metrics:
                 fn = get_metric(metric_name)
                 val, lo, hi = _bootstrap(fn, preds, targets, bootstrap, seed)
                 ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+                tags = {"phase": "eval"}
+                if dataset_hash:
+                    tags["dataset_hash"] = dataset_hash
+                if dataset_source:
+                    tags.setdefault("dataset_source", dataset_source)
                 record = {
                     "timestamp": ts,
                     "run_id": run_id,
@@ -109,7 +122,7 @@ def evaluate_datasets(
                     "notes": "",
                     "ci_low": lo,
                     "ci_high": hi,
-                    "tags": {"phase": "eval"},
+                    "tags": tags,
                 }
                 ndjson_writer.log(record)
                 writer.writerow(

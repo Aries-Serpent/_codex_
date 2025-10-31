@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip("datasets")
 
-from codex_ml.eval.datasets import Example, load_dataset  # noqa: E402
+from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset  # noqa: E402
 
 
 def test_load_dataset_from_datasetdict(tmp_path: Path):
@@ -14,8 +14,10 @@ def test_load_dataset_from_datasetdict(tmp_path: Path):
     ds = datasets.DatasetDict({"train": train, "validation": val})
     ds_path = tmp_path / "ds"
     ds.save_to_disk(ds_path)
-    examples = load_dataset(str(ds_path))
-    assert examples == [Example("x", "y")]
+    bundle = load_dataset(str(ds_path))
+    assert isinstance(bundle, DatasetBundle)
+    assert bundle.examples == [Example("x", "y")]
+    assert len(bundle.dataset_hash) == 64
 
 
 def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
@@ -29,6 +31,10 @@ def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
     ds_path = tmp_path / "dsdd"
     ds.save_to_disk(ds_path)
     train_examples = load_dataset(str(ds_path))
-    assert train_examples == [Example("a", "b")]
+    assert isinstance(train_examples, DatasetBundle)
+    assert train_examples.examples == [Example("a", "b")]
+    assert len(train_examples.dataset_hash) == 64
     test_examples = load_dataset(str(ds_path), hf_split="test")
-    assert test_examples == [Example("c", "d")]
+    assert isinstance(test_examples, DatasetBundle)
+    assert test_examples.examples == [Example("c", "d")]
+    assert len(test_examples.dataset_hash) == 64
