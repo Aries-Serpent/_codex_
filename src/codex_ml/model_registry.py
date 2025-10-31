@@ -53,9 +53,10 @@ class ModelRequest:
     device: Optional[Union[str, torch.device]] = None
     dtype: Optional[Union[str, torch.dtype]] = None
     lora_adapter: Optional[str] = None
-    lora: Optional[LoraSettings] = None
-    config: Mapping[str, Any] | None = None
+    # Use the new immutable LoRA request container
     lora: Optional[LoraRequest] = None
+    # Keep config last to preserve the intended field order
+    config: Mapping[str, Any] | None = None
 
     def as_config(self) -> dict[str, Any]:
         """Return a serialisable dictionary describing the request."""
@@ -258,78 +259,12 @@ def _prepare_config(
     return cfg
 
 
-def _coerce_lora_settings(
-    settings: LoraSettings | _SchemaLoraConfig | Mapping[str, Any] | None
-) -> LoraSettings | None:
-    if settings is None:
-        return None
-    if isinstance(settings, LoraSettings):
-        return settings
-    if isinstance(settings, _SchemaLoraConfig):
-        return LoraSettings.from_model(settings)
-    if isinstance(settings, Mapping):
-        data = {str(k): v for k, v in settings.items()}
-        enabled = bool(
-            data.get("enabled", data.get("enable", data.get("active", False)))
-        )
-        rank = int(data.get("rank", data.get("r", 8)))
-        alpha = int(data.get("alpha", data.get("lora_alpha", 16)))
-        dropout = float(data.get("dropout", data.get("lora_dropout", 0.05)))
-        task_type = str(data.get("task_type", "CAUSAL_LM"))
-        target_modules_value = data.get("target_modules")
-        target_modules: Optional[Sequence[str]]
-        if target_modules_value is None:
-            target_modules = None
-        elif isinstance(target_modules_value, Sequence) and not isinstance(
-            target_modules_value, (str, bytes)
-        ):
-            target_modules = [str(item) for item in target_modules_value]
-        else:
-            target_modules = [str(target_modules_value)]
-        return LoraSettings(
-            enabled=enabled,
-            rank=rank,
-            alpha=alpha,
-            dropout=dropout,
-            task_type=task_type,
-            target_modules=target_modules,
-        )
-    raise TypeError("Unsupported LoRA settings type")
-
-
-def _apply_lora(model: Any, settings: LoraSettings | None) -> Any:
-    if settings is None or not settings.enabled:
-        return model
-    try:
-        import peft  # type: ignore
-    except ImportError as exc:  # pragma: no cover - optional dependency
-        raise RuntimeError("LoRA requested but PEFT is not installed") from exc
-
-    lora_config_cls = getattr(peft, "LoraConfig", None)
-    get_peft_model = getattr(peft, "get_peft_model", None)
-    if lora_config_cls is None or get_peft_model is None:
-        raise RuntimeError("PEFT installation is missing required LoRA helpers")
-
-    config_kwargs = {
-        "r": int(settings.rank),
-        "lora_alpha": int(settings.alpha),
-        "lora_dropout": float(settings.dropout),
-        "task_type": settings.task_type,
-    }
-    if settings.target_modules:
-        config_kwargs["target_modules"] = list(settings.target_modules)
-
-    lora_cfg = lora_config_cls(**config_kwargs)
-    return get_peft_model(model, lora_cfg)
-
-
 def get_model(
     name: str,
     *,
     device: Union[str, torch.device, None] = "cpu",
     dtype: Union[str, torch.dtype, None] = torch.float32,
     lora_adapter: str | None = None,
-    lora: LoraSettings | _SchemaLoraConfig | Mapping[str, Any] | None = None,
     config: Mapping[str, Any] | None = None,
 ) -> Any:
     """Instantiate a model registered under ``name``.
@@ -393,19 +328,20 @@ def get_model(
             model,
             "request_metadata",
             ModelRequest(
-                name,
-                device,
-                dtype,
-                lora_adapter,
-                config,
-                lora_request,
+                name=name,
+                device=device,
+                dtype=dtype,
+                lora_adapter=lora_adapter,
+                lora=lora_request,
+                config=config,
             ),
         )
     except Exception:
         # Attaching metadata is best-effort only.
         pass
-    adapted = _apply_lora(model, lora_settings)
-    return adapted
+
+    # Note: legacy _apply_lora(model, lora_settings) removed; LoRA is applied above.
+    return model
 
 
 def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:
