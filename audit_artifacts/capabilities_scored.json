@@ -1,5 +1,5 @@
 {
-  "generated": 1761853671.3244298,
+  "generated": 1761865313.4526002,
   "capabilities": [
     {
       "id": "checkpointing",
@@ -143,12 +143,12 @@
       "id": "ci-cd-pipeline",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9057591623036649,
-        "tests": 0.5759162303664922,
+        "consistency": 0.90625,
+        "tests": 0.578125,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8751,
+      "score": 0.8758,
       "evidence_files": [
         ".codex/smoke/import_check.py",
         ".github/workflows/archive-gates.yml.disabled",
@@ -257,6 +257,7 @@
         "tests/cli/test_config_audit.py",
         "tests/cli/test_hydra_audit.py",
         "tests/cli/test_metrics_validate_tail_badge.py",
+        "tests/cli/test_status_audit.py",
         "tests/code_quality/test_ruff_linting.py",
         "tests/config/test_validate_config.py",
         "tests/configuration/test_config_audit_helpers.py",
@@ -353,7 +354,7 @@
         "github_actions": 7,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 179,
+        "validation_scripts": 180,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       },
       "partials": {
@@ -363,14 +364,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.9057591623036649,
+          "component_value": 0.90625,
           "weight": 0.2,
-          "contribution": 0.181151832460733
+          "contribution": 0.18125000000000002
         },
         "tests": {
-          "component_value": 0.5759162303664922,
+          "component_value": 0.578125,
           "weight": 0.25,
-          "contribution": 0.14397905759162305
+          "contribution": 0.14453125
         },
         "safeguards": {
           "component_value": 1.0,
@@ -1097,12 +1098,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9322033898305084,
-        "tests": 0.002824858757062147,
+        "consistency": 0.9323943661971831,
+        "tests": 0.0028169014084507044,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6746,
+      "score": 0.6747,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -1155,6 +1156,7 @@
         "docs/ci.md",
         "docs/ci_cd_strategy.md",
         "docs/cli.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/codex/PRE_FLIGHT_CHECKLIST.md",
         "docs/concepts.md",
@@ -1465,10 +1467,10 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 352,
+        "markdown_count": 353,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 354
+        "total_docs": 355
       },
       "partials": {
         "functionality": {
@@ -1477,14 +1479,14 @@
           "contribution": 0.1875
         },
         "consistency": {
-          "component_value": 0.9322033898305084,
+          "component_value": 0.9323943661971831,
           "weight": 0.2,
-          "contribution": 0.1864406779661017
+          "contribution": 0.18647887323943663
         },
         "tests": {
-          "component_value": 0.002824858757062147,
+          "component_value": 0.0028169014084507044,
           "weight": 0.25,
-          "contribution": 0.0007062146892655367
+          "contribution": 0.0007042253521126761
         },
         "safeguards": {
           "component_value": 1.0,
@@ -1502,12 +1504,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7626334519572954,
-        "tests": 0.3135231316725979,
+        "consistency": 0.7621756132243157,
+        "tests": 0.31354425879843584,
         "safeguards": 1.0,
-        "documentation": 0.056925996204933584
+        "documentation": 0.18656716417910446
       },
-      "score": 0.3894,
+      "score": 0.4088,
       "evidence_files": [
         ".bandit.yml",
         ".codex/DO_NOT_ACTIVATE_ACTIONS.txt",
@@ -1743,6 +1745,7 @@
         ".github/_workflows_disabled/nightly.yml.disabled",
         ".github/_workflows_disabled/release-upload.yml",
         ".github/_workflows_disabled/vuln_scan.yml.disabled",
+        ".github/agents/README.md",
         ".github/chatmodes/template.chatmode.md",
         ".github/copilot-instructions.md",
         ".github/docs/ARCHIVE_CONFIG_ADR.md",
@@ -2130,6 +2133,7 @@
         "docs/ci.md",
         "docs/ci_cd_strategy.md",
         "docs/cli.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/codex/PRE_FLIGHT_CHECKLIST.md",
         "docs/concepts.md",
@@ -3346,6 +3350,7 @@
         "tests/cli/test_offline_bootstrap.py",
         "tests/cli/test_plugins_cli.py",
         "tests/cli/test_repo_cli.py",
+        "tests/cli/test_status_audit.py",
         "tests/cli/test_subcommands.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/cli/test_tracking_bootstrap_cli.py",
@@ -4329,14 +4334,14 @@
           "contribution": 0.0
         },
         "consistency": {
-          "component_value": 0.7626334519572954,
+          "component_value": 0.7621756132243157,
           "weight": 0.2,
-          "contribution": 0.15252669039145908
+          "contribution": 0.15243512264486314
         },
         "tests": {
-          "component_value": 0.3135231316725979,
+          "component_value": 0.31354425879843584,
           "weight": 0.25,
-          "contribution": 0.07838078291814947
+          "contribution": 0.07838606469960896
         },
         "safeguards": {
           "component_value": 1.0,
@@ -4344,9 +4349,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.056925996204933584,
+          "component_value": 0.18656716417910446,
           "weight": 0.15,
-          "contribution": 0.008538899430740036
+          "contribution": 0.02798507462686567
         }
       }
     },
@@ -4657,9 +4662,9 @@
         "consistency": 0.8888888888888888,
         "tests": 0.3333333333333333,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.5882352941176471
+        "documentation": 0.708955223880597
       },
-      "score": 0.5743,
+      "score": 0.5925,
       "evidence_files": [
         "src/codex_ml/telemetry/server.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -4699,9 +4704,9 @@
           "contribution": 0.09999999999999999
         },
         "documentation": {
-          "component_value": 0.5882352941176471,
+          "component_value": 0.708955223880597,
           "weight": 0.15,
-          "contribution": 0.08823529411764706
+          "contribution": 0.10634328358208954
         }
       }
     },
@@ -5010,9 +5015,9 @@
         "consistency": 0.8673469387755102,
         "tests": 0.4897959183673469,
         "safeguards": 1.0,
-        "documentation": 0.056925996204933584
+        "documentation": 0.11194029850746269
       },
-      "score": 0.7045,
+      "score": 0.7127,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -5143,9 +5148,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.056925996204933584,
+          "component_value": 0.11194029850746269,
           "weight": 0.15,
-          "contribution": 0.008538899430740036
+          "contribution": 0.016791044776119403
         }
       }
     },
@@ -5273,12 +5278,12 @@
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8408796895213454,
-        "tests": 0.2884864165588616,
+        "consistency": 0.8410852713178294,
+        "tests": 0.28811369509043927,
         "safeguards": 1.0,
-        "documentation": 0.018975332068311195
+        "documentation": 0.14925373134328357
       },
-      "score": 0.6431,
+      "score": 0.6626,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -5432,6 +5437,7 @@
         "docs/architecture/interfaces.md",
         "docs/checkpoint_integrity.md",
         "docs/ci_cd_strategy.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/configuration/HYDRA_GUIDE.md",
         "docs/configuration/hydra_quickstart.md",
@@ -6070,14 +6076,14 @@
           "contribution": 0.25
         },
         "consistency": {
-          "component_value": 0.8408796895213454,
+          "component_value": 0.8410852713178294,
           "weight": 0.2,
-          "contribution": 0.1681759379042691
+          "contribution": 0.1682170542635659
         },
         "tests": {
-          "component_value": 0.2884864165588616,
+          "component_value": 0.28811369509043927,
           "weight": 0.25,
-          "contribution": 0.0721216041397154
+          "contribution": 0.07202842377260982
         },
         "safeguards": {
           "component_value": 1.0,
@@ -6085,9 +6091,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.018975332068311195,
+          "component_value": 0.14925373134328357,
           "weight": 0.15,
-          "contribution": 0.0028462998102466793
+          "contribution": 0.022388059701492536
         }
       }
     },
@@ -6186,8 +6192,8 @@
       "id": "testing-infrastructure",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9002267573696145,
-        "tests": 0.9886621315192744,
+        "consistency": 0.9003397508493771,
+        "tests": 0.9886749716874292,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -6304,6 +6310,7 @@
         "tests/cli/test_offline_bootstrap.py",
         "tests/cli/test_plugins_cli.py",
         "tests/cli/test_repo_cli.py",
+        "tests/cli/test_status_audit.py",
         "tests/cli/test_subcommands.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/cli/test_tracking_bootstrap_cli.py",
@@ -7082,7 +7089,7 @@
         "test_"
       ],
       "meta": {
-        "test_count": 866,
+        "test_count": 867,
         "config_count": 25,
         "fixture_count": 27
       },
@@ -7093,14 +7100,14 @@
           "contribution": 0.1875
         },
         "consistency": {
-          "component_value": 0.9002267573696145,
+          "component_value": 0.9003397508493771,
           "weight": 0.2,
-          "contribution": 0.18004535147392292
+          "contribution": 0.18006795016987542
         },
         "tests": {
-          "component_value": 0.9886621315192744,
+          "component_value": 0.9886749716874292,
           "weight": 0.25,
-          "contribution": 0.2471655328798186
+          "contribution": 0.2471687429218573
         },
         "safeguards": {
           "component_value": 1.0,
@@ -7511,9 +7518,9 @@
         "consistency": 0.6,
         "tests": 1.0,
         "safeguards": 0.5,
-        "documentation": 0.9867172675521821
+        "documentation": 1.0
       },
-      "score": 0.843,
+      "score": 0.845,
       "evidence_files": [
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
@@ -7550,9 +7557,9 @@
           "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.9867172675521821,
+          "component_value": 1.0,
           "weight": 0.15,
-          "contribution": 0.14800759013282733
+          "contribution": 0.15
         }
       }
     }

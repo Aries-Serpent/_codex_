@@ -1,6 +1,6 @@
 {
-  "generated": 1761853670.4369023,
-  "count": 2810,
+  "generated": 1761865312.5652466,
+  "count": 2813,
   "files": [
     {
       "path": ".bandit.yml",
@@ -1407,6 +1407,12 @@
       "sha": "81a87d59b24a733ffcdc39d041fe25aa17ce6d0c3e9cfe072a1aa30b4a1cba6f"
     },
     {
+      "path": ".github/agents/README.md",
+      "ext": ".md",
+      "size": 197,
+      "sha": "2799c81996ac37fcc39d736c66f1ef6fe3ca1a9e65b36caad2ea26b1f013c15b"
+    },
+    {
       "path": ".github/chatmodes/template.chatmode.md",
       "ext": ".md",
       "size": 0,
@@ -1643,8 +1649,8 @@
     {
       "path": "README.md",
       "ext": ".md",
-      "size": 3005,
-      "sha": "dca0374c54ef4b63c3178900504dd3c5232001f81b3cd5b79c3ca886af211a70"
+      "size": 3437,
+      "sha": "bc5497d217cc657a4f3d77ac1f4b7293f9dd2fa579c14f1bbcc89eda16f6f117"
     },
     {
       "path": "SELECTION_REPORT.md",
@@ -2196,7 +2202,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 1050,
-      "sha": "e2296360ba29831deb7153911f334e4d618ce76771ec5efde23e3966de6d033a"
+      "sha": "ad59eea7d36a8f91762d55010f47d7e332ea8cb58350b70b0ae53efcddeae810"
     },
     {
       "path": "bandit.yaml",
@@ -2249,8 +2255,8 @@
     {
       "path": "cli/status_audit.py",
       "ext": ".py",
-      "size": 4901,
-      "sha": "d633fa011a9de192e3fa7432d9be8150faa4dcf1a62ec41951beaafb9500c1dd"
+      "size": 4936,
+      "sha": "b9c889ccb11f147bb1d11db8c0f3134e4b39eb142998d339786cf20e3537602b"
     },
     {
       "path": "cli/task_sequence.py",
@@ -3721,6 +3727,12 @@
       "ext": ".md",
       "size": 1937,
       "sha": "19200b08e5e32456176e8dc9b5ce4f078a6cecab421b2f0d8a1ecaa450c99ff2"
+    },
+    {
+      "path": "docs/cli/status_audit.md",
+      "ext": ".md",
+      "size": 2768,
+      "sha": "f9e9478f4f8fea4abf2dbf347f3021b029bfe6cbca5323ab46bc179fae9feaf8"
     },
     {
       "path": "docs/cli.md",
@@ -6756,13 +6768,13 @@
       "path": "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
       "ext": ".pyc",
       "size": 3246,
-      "sha": "952169225dd7b5223d1e18b2cae64e84b9455bd40cf893ec48036e1056a91ff3"
+      "sha": "f4dcf5a7c4a54927c226052ae339a85ee5e14f190b6432953cd9bf61dc6a7c91"
     },
     {
       "path": "scripts/space_traversal/audit_runner.py",
       "ext": ".py",
-      "size": 28818,
-      "sha": "0dc2903bdb06cc7307129e07c6f53e32b4cb5c1b8fa27690e060815721ed4281"
+      "size": 29186,
+      "sha": "b5904725ad21c625e26cf76a3a3845c9c204a3a394e59bc37f14a5749ed1052a"
     },
     {
       "path": "scripts/space_traversal/capability_scoring.py",
@@ -11023,6 +11035,12 @@
       "ext": ".py",
       "size": 1354,
       "sha": "7031d3a2b640de1e2439b2dc791a8c9dfc851e6307ae717bb81dc028822e3cd4"
+    },
+    {
+      "path": "tests/cli/test_status_audit.py",
+      "ext": ".py",
+      "size": 3909,
+      "sha": "1fa94ba0b69a991625e61729397c5da6034a96525aab4aeadcc35c701d0095bc"
     },
     {
       "path": "tests/cli/test_subcommands.py",

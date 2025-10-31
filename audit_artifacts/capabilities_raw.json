@@ -1,5 +1,5 @@
 {
-  "generated": 1761853670.7142298,
+  "generated": 1761865312.8434217,
   "capabilities": [
     {
       "id": "checkpointing",
@@ -218,6 +218,7 @@
         "tests/cli/test_config_audit.py",
         "tests/cli/test_hydra_audit.py",
         "tests/cli/test_metrics_validate_tail_badge.py",
+        "tests/cli/test_status_audit.py",
         "tests/code_quality/test_ruff_linting.py",
         "tests/config/test_validate_config.py",
         "tests/configuration/test_config_audit_helpers.py",
@@ -321,7 +322,7 @@
         "github_actions": 7,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 179,
+        "validation_scripts": 180,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       }
     },
@@ -970,6 +971,7 @@
         "docs/ci.md",
         "docs/ci_cd_strategy.md",
         "docs/cli.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/codex/PRE_FLIGHT_CHECKLIST.md",
         "docs/concepts.md",
@@ -1286,10 +1288,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 352,
+        "markdown_count": 353,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 354
+        "total_docs": 355
       }
     },
     {
@@ -1529,6 +1531,7 @@
         ".github/_workflows_disabled/nightly.yml.disabled",
         ".github/_workflows_disabled/release-upload.yml",
         ".github/_workflows_disabled/vuln_scan.yml.disabled",
+        ".github/agents/README.md",
         ".github/chatmodes/template.chatmode.md",
         ".github/copilot-instructions.md",
         ".github/docs/ARCHIVE_CONFIG_ADR.md",
@@ -1916,6 +1919,7 @@
         "docs/ci.md",
         "docs/ci_cd_strategy.md",
         "docs/cli.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/codex/PRE_FLIGHT_CHECKLIST.md",
         "docs/concepts.md",
@@ -3132,6 +3136,7 @@
         "tests/cli/test_offline_bootstrap.py",
         "tests/cli/test_plugins_cli.py",
         "tests/cli/test_repo_cli.py",
+        "tests/cli/test_status_audit.py",
         "tests/cli/test_subcommands.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/cli/test_tracking_bootstrap_cli.py",
@@ -5009,6 +5014,7 @@
         "docs/architecture/interfaces.md",
         "docs/checkpoint_integrity.md",
         "docs/ci_cd_strategy.md",
+        "docs/cli/status_audit.md",
         "docs/codex/IMPLEMENTATION_GUIDE.md",
         "docs/configuration/HYDRA_GUIDE.md",
         "docs/configuration/hydra_quickstart.md",
@@ -5823,6 +5829,7 @@
         "tests/cli/test_offline_bootstrap.py",
         "tests/cli/test_plugins_cli.py",
         "tests/cli/test_repo_cli.py",
+        "tests/cli/test_status_audit.py",
         "tests/cli/test_subcommands.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/cli/test_tracking_bootstrap_cli.py",
@@ -6607,7 +6614,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 866,
+        "test_count": 867,
         "config_count": 25,
         "fixture_count": 27
       }
