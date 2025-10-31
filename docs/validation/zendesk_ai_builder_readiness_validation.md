@@ -3,7 +3,6 @@
 
  Roles: [Primary] Educator, [Secondary] Navigator  Energy: 5/5  
 
-
 Use this checklist to validate an AI agent built with Zendesk App Builder before pilot.
 
 ## A) Functional readiness

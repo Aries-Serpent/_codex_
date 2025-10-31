@@ -7,16 +7,16 @@ Note on scope: Some references below were discovered via code search and may be 
 
 ---
 
-## 1) What's the relationship between Codex and Zendesk?
+## 1) What’s the relationship between Codex and Zendesk?
 
-Codex includes an "offline-first" administrative toolkit for Zendesk. It focuses on safe configuration management and documentation curation rather than ticket handling at runtime. The core themes:
+Codex includes an “offline-first” administrative toolkit for Zendesk. It focuses on safe configuration management and documentation curation rather than ticket handling at runtime. The core themes:
 
 - Snapshot → Diff → Plan → Apply: Treat Zendesk configuration (e.g., triggers, fields, forms, views, macros, routing) as versioned infrastructure.
 - Evidence and metrics: Every dry-run/apply writes JSONL evidence and emits metrics to support auditability and operations.
 - Offline docs capture: Curate Zendesk developer docs snapshots locally to support air‑gapped learning, review, or model fine-tuning.
 
 Key surfaces:
-- CLI entrypoints under a "zendesk" subcommand.
+- CLI entrypoints under a “zendesk” subcommand.
 - Metrics registration for observability.
 - Runbooks and reference docs to guide admins.
 
@@ -27,7 +27,7 @@ Key surfaces:
 | Area | Path | What it provides |
 |---|---|---|
 | Zendesk CLI commands | src/codex/cli_zendesk.py | Commands for env checks, docs sync/catalog, exporting snapshots, etc. Uses Typer. |
-| Metrics definitions | src/codex/zendesk/monitoring/zendesk_metrics.py | Prometheus-style counters/histograms for API calls, retries, diff/apply outcomes via Codex's metrics registry. |
+| Metrics definitions | src/codex/zendesk/monitoring/zendesk_metrics.py | Prometheus-style counters/histograms for API calls, retries, diff/apply outcomes via Codex’s metrics registry. |
 | Admin runbook | docs/crm/admin-runbooks/zendesk.md | End-to-end admin workflow with environment setup, dry-run, plan, apply, and metrics. |
 | Admin workflow (step-by-step) | docs/runbooks/zendesk_admin_workflow.md | Snapshot/diff/plan/apply/verify flow with example commands and file layout expectations. |
 | Offline docs pipeline (guide) | docs/runbooks/zendesk_docs_pipeline.md | How to sync and catalog Zendesk docs snapshots locally. |

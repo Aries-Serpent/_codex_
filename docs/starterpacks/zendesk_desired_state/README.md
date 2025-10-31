@@ -1,8 +1,8 @@
 # Starter Pack: Zendesk Desired State (First Cycle)
 > Generated: 2025-10-31 16:17:26 | Author: mbaetiong
 
-This starter pack bootstraps a Zendesk admin "first cycle" using Codex:
-- Define "desired state" JSONs per resource (triggers, ticket fields/forms, views, macros, webhooks, routing, Talk IVR).
+This starter pack bootstraps a Zendesk admin “first cycle” using Codex:
+- Define “desired state” JSONs per resource (triggers, ticket fields/forms, views, macros, webhooks, routing, Talk IVR).
 - Run Snapshot → Diff → Plan → Dry-run → Apply with audit evidence and metrics.
 - Prepare for end-to-end Support workflows development (macros, automation, routing, app surfaces).
 
@@ -70,5 +70,5 @@ Optional: run the bundled sequence
 ## Change governance tips
 
 - Require PR review for any `configs/desired/zendesk/*.desired.json` edits.
-- Store "after" snapshots under versioned artifacts and link to evidence JSONL in PR descriptions.
+- Store “after” snapshots under versioned artifacts and link to evidence JSONL in PR descriptions.
 - Establish a rollback playbook: re-apply last-known-good desired set; maintain dated snapshots.

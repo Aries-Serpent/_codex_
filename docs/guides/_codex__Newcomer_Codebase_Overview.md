@@ -24,7 +24,7 @@ Note: The quick inventory below is based on a partial browse limit from the plat
 
 | Path | Role | Notes / Key Files |
 |---|---|---|
-| [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) | Project packaging | Declares the main "codex-ml" package, dependency groups, console scripts, plugin entry points |
+| [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) | Project packaging | Declares the main “codex-ml” package, dependency groups, console scripts, plugin entry points |
 | [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Top-level overview | High-level project intro and how to get started |
 | [mkdocs.yml](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml) | Docs site config | MkDocs Material-based documentation navigation and theme |
 | src/ | Source root | Contains core packages (e.g., `src/codex_ml`, `src/training`, `src/tokenization`) |
@@ -52,7 +52,7 @@ Note: The quick inventory below is based on a partial browse limit from the plat
 
 ## How the pieces fit together
 
-- Core package: The main distribution "codex-ml" (declared in [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)) exposes:
+- Core package: The main distribution “codex-ml” (declared in [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)) exposes:
   - A CLI toolkit for training, evaluation, generation, validation, and performance testing
   - A plugin/registry mechanism to register tokenizers, models, metrics, data loaders, and trainers
   - Hydra/OmegaConf-based configuration for reproducible runs and environment overrides
@@ -60,7 +60,7 @@ Note: The quick inventory below is based on a partial browse limit from the plat
 - CLI layer: The `cli/` directory consolidates command entry points (e.g., `codex-setup`, `codex-workflow`, `codex-task-sequence`) to offer end-to-end workflows.
 
 - Services and agents:
-  - `services/ita` is a FastAPI-based "Internal Tools API" that brokers operations between Codex and GitHub Copilot clients.
+  - `services/ita` is a FastAPI-based “Internal Tools API” that brokers operations between Codex and GitHub Copilot clients.
   - `agents/codex_client` provides a typed HTTP client to interact with the Internal Tools API.
 
 - Validation and quality:
@@ -69,13 +69,13 @@ Note: The quick inventory below is based on a partial browse limit from the plat
   - Fence validation and file integrity audits for repository hygiene
 
 - Documentation:
-  - MkDocs Material site driven by [mkdocs.yml](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml) with navigation covering "Getting Started", "Guides", "Architecture", "Logging & Troubleshooting", "Reference", and "Tutorials".
+  - MkDocs Material site driven by [mkdocs.yml](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml) with navigation covering “Getting Started”, “Guides”, “Architecture”, “Logging & Troubleshooting”, “Reference”, and “Tutorials”.
 
 ---
 
 ## Key console entry points
 
-From the project's [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml):
+From the project’s [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml):
 
 | Command | Purpose |
 |---|---|
@@ -88,7 +88,7 @@ From the project's [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blo
 | codex-perf | Performance benchmark helpers |
 | codex-ndjson | NDJSON summaries (data/log ingestion) |
 | codex-offline-bootstrap | Prepare/offline bootstrap for runs |
-| fence-check | Repository "fence" and template validation |
+| fence-check | Repository “fence” and template validation |
 | codex-setup | Unified setup/bootstrap runner |
 | codex-patch-runner, codex-update-runner | Patch/update automation runners |
 | codex-script | Script polish utility |
@@ -164,7 +164,7 @@ These enable automation, auditing, and integration with developer workflows.
 
 | Tooling | Where | Purpose |
 |---|---|---|
-| Pre-commit | .pre-commit-config.yaml (+ variants) | Local quality gates (ruff/black/isort/…) |
+| Pre-commit | .pre-commit-config.yaml (+ variants) | Local quality gates (ruff/black/isort/…​) |
 | Coverage | .coveragerc | Coverage gates targeting `src/codex_ml` |
 | Static analysis | .importlinter, bandit.yaml, semgrep_rules/ | Architecture contracts & security scanning |
 | Types | .mypy-baseline.txt | Typed surfaces with gradual strengthening |
@@ -205,7 +205,7 @@ Runbook references are under docs/ops and docs/templates in the MkDocs site.
 ## Learning path for newcomers
 
 1) Orientation
-   - Read [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) and the MkDocs "Getting Started" page
+   - Read [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) and the MkDocs “Getting Started” page
    - Skim [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) to see scripts, extras, and entry points
 
 2) CLI first

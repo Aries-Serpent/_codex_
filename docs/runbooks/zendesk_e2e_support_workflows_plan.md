@@ -43,7 +43,7 @@ This plan explains how to leverage Codex to design, implement, and operate compl
 | Auto-priority | Labeled tickets | Classifier; Hydra configs; evaluation via `codex-eval` | Reduced MTTR for critical issues |
 | Topic clustering | Ticket subjects/descriptions | Tokenization + embeddings; `codex-perf` | Backlog segmentation driving new macros/views |
 
-Governance: Treat any ML-driven automation as "suggest-first," then gated triggers once validated.
+Governance: Treat any ML-driven automation as “suggest-first,” then gated triggers once validated.
 
 ## 5. Operational guardrails
 
