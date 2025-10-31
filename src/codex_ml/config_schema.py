@@ -183,8 +183,10 @@ class TrainingSettings:
     def to_train_config(self) -> TrainConfig:
         """Convert the dataclass into a validated :class:`TrainConfig` instance."""
 
+        lora_settings = self.lora
         payload = asdict(self)
-        lora_settings: LoraSettings = payload.pop("lora")
+        payload.pop("lora")
+        payload.pop("use_amp", None)
         payload["grad_accum"] = int(payload.get("grad_accum", 1))
         payload["learning_rate"] = float(payload["learning_rate"])
         if lora_settings.enabled:
