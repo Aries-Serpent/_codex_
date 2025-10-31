@@ -4,8 +4,8 @@ from unittest.mock import call, patch
 
 import pytest
 
-from codex_ml.eval.datasets import Example, load_dataset
 import codex_ml.eval.datasets as datasets_mod
+from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset
 
 
 def _expected_hash(examples: list[Example]) -> str:
@@ -62,15 +62,19 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
         def __iter__(self):  # pragma: no cover - simple stub
             return iter([{"text": "sample"}])
 
+    def loader(dataset_name: str, config: str | None, *, split: str):
+        datasets_mod._LAST_HF_REVISION = "rev-456"
+        return DummyHFDS()
+
     with (
-        patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
+        patch("codex_ml.eval.datasets.hf_load_dataset", side_effect=loader) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        datasets_mod._LAST_HF_REVISION = "rev-456"
         data = load_dataset("hf://openai/gsm8k/main", max_samples=1)
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
-        assert data == [Example("sample", "sample")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("sample", "sample")]
         assert data.metadata["hf_revision"] == "rev-456"
         assert data.metadata["num_examples"] == 1
 
