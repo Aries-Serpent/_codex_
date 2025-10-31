@@ -18,6 +18,12 @@ steps:
   - name: snapshot
     run: "codex zendesk snapshot --env {env} --output {snapshots_dir}/latest.json"
 
+  # Create empty snapshots for routing and talk (not included in main snapshot)
+  - name: create-routing-snapshot
+    run: "echo '[]' > {snapshots_dir}/routing.json"
+  - name: create-talk-snapshot
+    run: "echo '[]' > {snapshots_dir}/talk.json"
+
   # Diff per resource
   - name: diff-triggers
     run: "codex zendesk diff triggers configs/desired/zendesk/triggers.desired.json {snapshots_dir}/latest.json --output {diffs_dir}/triggers.json"
@@ -32,9 +38,9 @@ steps:
   - name: diff-webhooks
     run: "codex zendesk diff webhooks configs/desired/zendesk/webhooks.desired.json {snapshots_dir}/latest.json --output {diffs_dir}/webhooks.json"
   - name: diff-routing
-    run: "codex zendesk diff routing configs/desired/zendesk/routing.desired.json {snapshots_dir}/latest.json --output {diffs_dir}/routing.json"
+    run: "codex zendesk diff routing configs/desired/zendesk/routing.desired.json {snapshots_dir}/routing.json --output {diffs_dir}/routing.json"
   - name: diff-talk
-    run: "codex zendesk diff talk configs/desired/zendesk/talk_ivr.desired.json {snapshots_dir}/latest.json --output {diffs_dir}/talk.json"
+    run: "codex zendesk diff talk configs/desired/zendesk/talk_ivr.desired.json {snapshots_dir}/talk.json --output {diffs_dir}/talk.json"
 
   # Plan == normalized diff (in current implementation)
   - name: plan-triggers
