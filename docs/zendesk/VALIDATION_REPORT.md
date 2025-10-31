@@ -18,12 +18,34 @@
    - Includes configuration examples, common tasks, troubleshooting, best practices
    - ✅ Validated: Comprehensive, well-structured, examples included
 
-3. **AI_AGENT_APP_BUILDER.md** (21.9 KB)
+3. **AI_AGENT_APP_BUILDER.md** (46 KB - enhanced with extensive visual maps)
    - Mathematical model of Zendesk AI Agent App Builder (distinct from ZAF)
    - Physics-inspired constrained field theory with symbolic equations
+   - **NEW: Comprehensive visual capability maps** (ASCII art diagrams)
+   - Location spectrum visualization (Sidebar vs Topbar vs Navbar)
+   - Capability matrix with 10 dimensions
+   - Architectural boundaries and security layers
+   - Data flow topology with latency breakdown
+   - Security boundary map
+   - Performance profile matrix
+   - Navbar space allocation diagram
+   - **NEW: Extended visual reference** section with:
+     - Integration pattern matrix
+     - Development lifecycle timeline
+     - Feature feasibility scorecard
+     - Anti-patterns and recommended practices
+     - Cost-benefit zones diagram
+     - Optimal use cases summary
+   - **NEW: AI Assistant Context & Limitations** section with:
+     - Knowledge basis and training approach
+     - Confidence calibration by topic area
+     - Capability profile matrix
+     - Effective vs ineffective prompt examples
+     - Transparency notes and validation guidance
+     - Comparison with other tools
    - Covers location manifold, capability spectrum, security constraints
    - Includes optimization framework and worked examples
-   - ✅ Validated: Mathematical notation consistent, formulas complete
+   - ✅ Validated: Mathematical notation consistent, formulas complete, visual aids comprehensive
 
 4. **WORKFLOW_DIAGRAMS.md** (14.9 KB)
    - Visual representations of Zendesk workflows
@@ -61,9 +83,9 @@
 ## Total Documentation Added
 
 - **Total Files Created**: 6 new files
-- **Total Files Updated**: 2 existing files
-- **Total Lines of Documentation**: 2,622+ lines
-- **Total Size**: ~82 KB of new documentation
+- **Total Files Updated**: 3 existing files (including AI_AGENT_APP_BUILDER.md enhancement)
+- **Total Lines of Documentation**: 3,896+ lines (increased from 2,622)
+- **Total Size**: ~128 KB of documentation (increased from ~82 KB)
 
 ## Coverage Analysis
 
@@ -102,6 +124,12 @@
 - ✅ Practical decision rules
 - ✅ Worked examples (4 complete scenarios)
 - ✅ Implementation guidance with code templates
+- ✅ **NEW: Extensive visual capability maps** (location spectrum, capability matrix, architectural boundaries)
+- ✅ **NEW: Performance profiles and Navbar space allocation diagrams**
+- ✅ **NEW: Integration patterns, development lifecycle, feature feasibility scorecard**
+- ✅ **NEW: Anti-patterns, cost-benefit zones, optimal use cases**
+- ✅ **NEW: AI Assistant context, limitations, confidence calibration**
+- ✅ **NEW: Transparency notes and validation guidelines**
 
 #### Visual Aids
 - ✅ Core workflow diagram (snapshot-diff-plan-apply)

@@ -15,7 +15,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 | Document | Description | Audience |
 |----------|-------------|----------|
 | **[ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md)** | Comprehensive onboarding guide | New Zendesk admins |
-| **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** | Mathematical model of AI Agent App Builder limitations & capabilities | App developers |
+| **[AI_AGENT_APP_BUILDER.md](AI_AGENT_APP_BUILDER.md)** | Mathematical model + extensive visual capability maps for AI Agent App Builder | App developers |
 | **[WORKFLOW_DIAGRAMS.md](WORKFLOW_DIAGRAMS.md)** | Visual workflow diagrams and decision trees | All users |
 | **[../runbooks/zendesk_admin_workflow.md](../runbooks/zendesk_admin_workflow.md)** | Core snapshot-diff-plan-apply workflow | All users |
 | **[../runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md)** | End-to-end workflow planning | Support ops leads |

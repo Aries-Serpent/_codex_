@@ -5,17 +5,20 @@ This document provides a formal, physics-inspired mathematical model for underst
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Mathematical Foundation](#mathematical-foundation)
-3. [Location Manifold & Capacity Fields](#location-manifold--capacity-fields)
-4. [Capability Spectrum](#capability-spectrum)
-5. [Security Boundary Constraints](#security-boundary-constraints)
-6. [Data Flow & Latency Model](#data-flow--latency-model)
-7. [Feature Feasibility Classification](#feature-feasibility-classification)
-8. [Location-Capability Coupling](#location-capability-coupling)
-9. [Optimization Framework](#optimization-framework)
-10. [Practical Decision Rules](#practical-decision-rules)
-11. [Worked Examples](#worked-examples)
-12. [Implementation Guidance](#implementation-guidance)
+2. [Visual Capability Maps](#visual-capability-maps)
+3. [Mathematical Foundation](#mathematical-foundation)
+4. [Location Manifold & Capacity Fields](#location-manifold--capacity-fields)
+5. [Capability Spectrum](#capability-spectrum)
+6. [Security Boundary Constraints](#security-boundary-constraints)
+7. [Data Flow & Latency Model](#data-flow--latency-model)
+8. [Feature Feasibility Classification](#feature-feasibility-classification)
+9. [Location-Capability Coupling](#location-capability-coupling)
+10. [Optimization Framework](#optimization-framework)
+11. [Practical Decision Rules](#practical-decision-rules)
+12. [Worked Examples](#worked-examples)
+13. [Implementation Guidance](#implementation-guidance)
+14. [Extended Visual Reference](#extended-visual-reference)
+15. [AI Assistant Context & Limitations](#ai-assistant-context--limitations)
 
 ## Overview
 
@@ -35,6 +38,194 @@ Zendesk AI Agent App Builder operates within a constrained environment with spec
 | **Deployment** | Native Zendesk locations | iFrame-based apps |
 | **Capabilities** | Constrained by mathematical model | More flexible, developer-controlled |
 | **Security Model** | Proxy-based, sandboxed | OAuth, controlled API access |
+
+## Visual Capability Maps
+
+This section provides ASCII-based visual representations of the Zendesk App Builder ecosystem, complementing the mathematical model with intuitive diagrams.
+
+### Location Spectrum
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ ZENDESK APP BUILDER ECOSYSTEM (Navbar Context)                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+Ticket Sidebar            Topbar                   Navbar (App Area)
+▓▓▓                       ▓▓▓▓▓                    ▓▓▓▓▓▓▓▓▓▓
+[|||]                     [=====]                  [═══════════════]
+│                         │                        │
+├─ Context: ████          ├─ Context: ██           ├─ Context: █
+├─ Space:   █             ├─ Space:   ██           ├─ Space:   ██████████
+├─ Persist: ████          ├─ Persist: █            ├─ Persist: █████
+└─ Complex: █             └─ Complex: ██           └─ Complex: ████████
+```
+
+**Interpretation**:
+- **Sidebar**: High contextual awareness (sees current ticket), minimal space
+- **Topbar**: Balanced but limited in all dimensions
+- **Navbar**: Maximum space and complexity support, minimal ticket context
+
+### Capability Matrix
+
+```
+DIMENSION                CAPABILITY [▓]  LIMITATION [▒]  BLOCKED [░]
+────────────────────────────────────────────────────────────────────────
+UI Complexity            [▓▓▓▓▓▓▓▓░░]  Multi-step ✓       Native modal ✗
+Data Rendering           [▓▓▓▓▓▓▓▓▓░]  Tables/Charts ✓     Real-time push ✗
+External APIs            [▓▓▓▓▓▒▒▒░░]  REST via proxy ✓     Direct calls ✗
+Authentication           [▓▓▓▓▓▒▒░░░]  OAuth/API key ✓     Custom SSO ✗
+State Management         [▓▓▓▓▓▓▒░░░]  React state ✓       Redux/Context ≈
+Backend Logic            [░░░░░░░░░░]  Client-side ✓       Custom server ✗
+Real-time Data           [▓▓▒▒░░░░░░]  Polling ✓           WebSockets ✗
+Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects ✓   Custom DB ✗
+Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches ✓     1000s records ✗
+Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓    Chrome override ✗
+```
+
+**Legend**:
+- **▓** = Full or strong support
+- **▒** = Partial support with limitations
+- **░** = Minimal or no support
+
+### Architectural Boundaries
+
+```
+┌───────────────────────────────────┐
+│ BROWSER RUNTIME (Client-Side)     │
+├───────────────────────────────────┤
+│ ┌────────────────────────────────┐ │
+│ │ APPLICATION (JavaScript/React) │ │
+│ │ • Render UI ✓                  │ │
+│ │ • Handle events ✓              │ │
+│ │ • Call APIs via proxy ✓        │ │
+│ │ • Store state (ephemeral) ✓    │ │
+│ └────────────────────────────────┘ │
+│                                     │
+│ ╔═══════════════╩═══════════════╗   │
+│ ║       ZENDESK SECURITY PROXY  ║   │
+│ ║ • API key hiding ✓            ║   │
+│ ║ • Rate limiting ✓             ║   │
+│ ║ • CORS bypass ✓               ║   │
+│ ╚═══════════════╤═══════════════╝   │
+│                 ║                   │
+└─────────────────╫──[External APIs]  │
+                  ║
+                  ╫──[Zendesk Core APIs]
+                  ║
+            ╔═════╩═════╗
+            ║ FORBIDDEN ║
+            ║   ZONE    ║
+            ║ • Custom server ✗
+            ║ • Direct DB ✗
+            ║ • File system ✗
+            ║ • Native code ✗
+            ╚═════════════╝
+```
+
+### Data Flow Topology
+
+```
+Agent Action → App UI → Client Logic → API Proxy → External Service
+      ↓           ↓            ↓             ↓             ↓
+    [FAST]      [FAST]       [MEDIUM]      [SLOW]        [SLOW]
+     <1ms        <10ms        <100ms       200-500ms     500-2000ms
+       ▓           ▓            ▒            ▒              ░
+
+BOTTLENECK POINTS:
+⚠ API Proxy (rate limits, latency)
+⚠ External Service (downtime, throttling)
+⚠ Client Processing (heavy computation freezes UI)
+```
+
+### Security Boundary Map
+
+```
+┌─────────────────┐
+│   PUBLIC WEB    │ (Untrusted)
+└────────┬────────┘
+         │
+╔════════▼════════╗   ← CSP, CORS, Auth
+║   ZENDESK WALL  ║
+╚════════╤════════╝
+         │
+┌────────▼────────┐
+│     APPLICATION │ (Sandboxed)
+└────────┬────────┘
+         │
+┌────────┼──────────────┬──────────────┐
+│   ┌────▼────┐   ┌─────▼────┐   ┌────▼────┐
+│   │ Zendesk │   │  Agent   │   │ External│
+│   │   API   │   │   Data   │   │  APIs   │
+│   │  [✓]    │   │   [✓]    │   │  [≈]    │
+│   └─────────┘   └──────────┘   └─────────┘
+│
+│ ALLOWED:    ✓ Read agent-permitted data
+│             ✓ Write via Zendesk APIs
+│             ✓ Call external APIs (proxied)
+│
+│ FORBIDDEN:  ✗ Access other agents' private data
+│             ✗ Bypass Zendesk permissions
+│             ✗ Store credentials client-side
+│             ✗ Direct external API calls
+```
+
+### Performance Profile
+
+```
+Operation Type         Speed   Reliability   Scalability
+────────────────────────────────────────────────────────
+UI Rendering           ▓▓▓▓▓   ▓▓▓▓▓         ▓▓▓▓▓
+Local State Updates    ▓▓▓▓▓   ▓▓▓▓▓         ▓▓▓░
+Zendesk API (single)   ▓▓▓░░   ▓▓▓▓░         ▓▓▓░░
+Zendesk API (bulk)     ▓▓░░░   ▓▓▓░░         ▓░░░░
+External API (proxied) ▓▓░░░   ▓▓░░░         ▓▓░░░
+Heavy Computation      ▓░░░░   ▓▓▓▓▓         ░░░░░
+Real-time Updates      ▓░░░░   ▓▓░░░         ▓░░░░
+
+LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
+```
+
+### Navbar Space Allocation
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ [Z] Zendesk Global Header         [Agent]  [Settings]  ▼    │ ← FIXED
+├─────────────────────────────────────────────────────────────┤
+│ [☰]                                                         │
+│ Nav                                                         │
+│ bar  ┌───────────────────────────────────────────────────┐  │
+│      │                                                   │  │
+│      │         APP CONTENT AREA                          │  │
+│      │         (Full width ~1200-1800px)                 │  │
+│      │         (Full height = viewport - chrome)         │  │
+│      │                                                   │  │
+│      │   ✓ Multi-column layouts                          │  │
+│      │   ✓ Data tables                                   │  │
+│      │   ✓ Dashboards                                    │  │
+│      │   ✓ Forms & wizards                               │  │
+│      └───────────────────────────────────────────────────┘  │
+└──────┴──────────────────────────────────────────────────────┘
+
+↑ FIXED CONSTRAINTS:
+✗ Cannot hide Zendesk header/sidebar
+✗ Cannot go full-screen
+✓ Can use tabs/routing within the app area
+✓ Can open modals/overlays
+```
+
+### Navbar Capability Signature
+
+```
+CAPABILITY FINGERPRINT:
+Space:       ██████████  10/10
+Complexity:  ████████░░   8/10
+Context:     █░░░░░░░░░   1/10
+Performance: ██████░░░░   6/10
+Integration: ███████░░░   7/10
+Real-time:   ██░░░░░░░░   2/10
+
+OVERALL SCORE: 34/60  (Navbar excels at complex, space-intensive apps)
+```
 
 ## Mathematical Foundation
 
@@ -776,6 +967,307 @@ def should_build_in_navbar(feature):
 4. **Optimize**: Use $\mathcal{S}$ to prioritize roadmap
 5. **Build**: Follow implementation guidance
 6. **Monitor**: Track latency and rate limits
+
+## Extended Visual Reference
+
+This section provides additional visual aids and reference materials for understanding Zendesk App Builder capabilities in practical terms.
+
+### Integration Pattern Matrix
+
+```
+Pattern                Supported   Complexity   Recommended
+──────────────────────────────────────────────────────────
+REST API                 ✓            ✓          ✓  YES
+OAuth 2.0                ✓            ✓          ✓  YES
+API Keys (proxied)       ✓            ✓          ✓  YES
+Basic Auth               ✓            ░          ≈  OK
+Webhooks (inbound)       ✓            ░          ✗  NO (use polling)
+WebSockets               ✗            ✗          ✗  NO
+GraphQL                  ✓            ░          ≈  OK
+SOAP                     ✓            ░          ✗  AVOID
+Server-Sent Events       ✗            ✗          ✗  NO
+```
+
+### Development Lifecycle
+
+```
+Phase          Duration   Complexity   Friction Points
+────────────────────────────────────────────────────────────
+Ideation         ░░░░░      ▒░░░░      Requirements clarity
+Setup            ░░░        ▒▒░░░      OAuth config, proxies
+Development      ░░░░░░░    ▒▒▒▒▒      API limitations, debugging
+Testing          ░░░░░      ▒▒▒▒░      Limited test data
+Private Beta     ░░░        ▒▒░░░      Agent feedback cycles
+Publication      ░░░░░░     ▒▒▒▒▒      Marketplace approval
+Maintenance      ░░░░...    ▒▒▒░░      Platform changes, support
+
+TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
+```
+
+### Feature Feasibility Scorecard (Navbar Context)
+
+```
+Feature Type              Simple   Medium   Complex   Not Possible
+──────────────────────────────────────────────────────────────────
+Read-only dashboards       ████     ▓▓▓       ▒▒          ░
+Single-step actions        ████     ▓▓▓       ▒           ░
+Multi-step wizards         ▓▓▓      ▓▓▓▓      ▒▒▒         ░
+Real-time monitoring       ▓        ▒▒▒       ▒▒▒▒        ░░░
+Data export (small)        ████     ▓▓▓       ▒           ░
+Data export (bulk)         ▓        ▒▒▒       ▒▒▒▒        ░░
+Complex filters/search     ▓▓▓      ▓▓▓▓      ▒▒▒         ░
+User permissions (custom)  ▓        ▒▒        ▒▒▒▒        ░░░
+Offline functionality      ░        ░         ░░          ░░░░
+AI/ML features (external)  ▓▓       ▓▓▓       ▒▒▒▒        ░
+File uploads/processing    ▓▓       ▓▓▓       ▒▒▒         ░
+Custom notifications       ▓        ▒▒▒       ▒▒▒▒        ░░░
+
+LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
+```
+
+### Anti-Patterns to Avoid
+
+```
+🚫 NEVER:
+├─ Store API keys in client code
+├─ Make direct external API calls (bypass proxy)
+├─ Store sensitive data in localStorage
+├─ Implement custom authentication
+├─ Try to hide Zendesk UI chrome
+├─ Perform heavy computation on main thread
+└─ Assume real-time data without polling
+
+⚠️ USE WITH CAUTION:
+├─ Bulk operations (>100 items)
+├─ Nested API calls (waterfall requests)
+├─ Complex state management without clear patterns
+├─ Third-party libraries (bundle size)
+├─ Animations/transitions (performance)
+└─ Multi-language support (maintenance burden)
+
+✓ RECOMMENDED PRACTICES:
+├─ Use Zendesk Garden components
+├─ Implement error boundaries
+├─ Show loading states
+├─ Handle API rate limits gracefully
+├─ Use async/await for API calls
+├─ Keep bundle size minimal
+└─ Test with representative Zendesk data
+```
+
+### Cost-Benefit Zones
+
+```
+               HIGH VALUE ↑
+                  ┌────────────────┐
+                  │  SWEET SPOT    │
+                  │ • Read-only    │
+                  │   dashboards   │
+                  │ • Simple       │
+                  │   integrations │
+                  │ • Visualization│
+                  └────────────────┘
+                           │
+     ┌─────────────────────┐      ┌──────────────────────┐
+     │ POSSIBLE BUT HARD   │      │       LOW VALUE      │
+     │ • Complex workflows │      │ • Trivial displays   │
+     │ • Real-time features│      │ • Over-engineered    │
+     │ • Heavy computation │      │ • Simple tasks       │
+     └─────────────────────┘      └──────────────────────┘
+                           │
+LOW COMPLEXITY ───────────────────────────────────────────→ HIGH COMPLEXITY
+                           │
+                         LOW VALUE
+```
+
+### Optimal Use Cases Summary
+
+```
+OPTIMAL USE CASES:
+✓✓✓ Configuration interfaces
+✓✓✓ Reporting dashboards
+✓✓✓ Data management tools
+✓✓  Multi-step workflows
+✓✓  Search & filter interfaces
+✓   Analytics & insights
+
+AVOID IN NAVBAR:
+✗✗✗ Real-time ticket monitoring (prefer Sidebar)
+✗✗  Quick actions (prefer Topbar)
+✗✗  Context-heavy features (prefer Sidebar)
+✗   Single-purpose simple tools
+```
+
+### Recommended Workflow
+
+```
+Developer Team → AI Assistant (ideation/planning) → Official Docs (validation)
+              → Development Environment (testing) → AI Assistant (refinement)
+              → Production
+```
+
+### Final Recommendations for Navbar App Projects
+
+```
+1) INITIATE:
+   ├─ Define scope and features
+   ├─ Identify integration points
+   ├─ Draft technical architecture
+   └─ Generate initial code structure
+
+2) VALIDATE:
+   ├─ Check Zendesk Developer docs
+   ├─ Review Garden component patterns
+   ├─ Test authentication flows in sandbox
+   └─ Verify current rate limits and quotas
+
+3) ITERATE:
+   ├─ Start with minimum viable feature
+   ├─ Test early in a real environment
+   ├─ Increase complexity incrementally
+   └─ Revisit architecture decisions as needed
+
+4) WHEN BLOCKED:
+   ├─ Review trade-offs and alternatives
+   ├─ Consider fallback patterns (polling vs webhooks)
+   ├─ Refactor for performance/bundle size
+   └─ Escalate platform issues via official support
+```
+
+## AI Assistant Context & Limitations
+
+This documentation was created with assistance from AI language models. Understanding the context and limitations of AI-generated content is important for proper usage.
+
+### Knowledge Basis
+
+**Training Foundation**:
+- Trained on broad technical materials (architecture patterns, API design, web security, developer resources)
+- Knowledge cutoff: April 2024
+- No direct access to live Zendesk documentation or proprietary systems
+
+**Approach for This Output**:
+- Applied constraints for app locations (Navbar, Sidebar, Topbar) and associated UI/UX limits
+- Drew from general patterns in:
+  - Web application architecture
+  - Client-side JavaScript frameworks (e.g., React)
+  - API integration (REST, OAuth, proxies)
+  - Browser security models (CSP, CORS, sandboxing)
+  - Common SaaS marketplace constraints
+
+### Limitations & Validation
+
+**AI Assistant Limitations**:
+- Not authoritative on current Zendesk specifics
+- Patterns are generalized; verify against official documentation
+- Not version-specific; capabilities may have changed post-cutoff
+- ASCII diagrams are illustrative, not a substitute for platform specs
+
+**Recommended Validation Steps**:
+1. Cross-reference with official Zendesk Developer Documentation
+2. Build small prototypes to validate assumptions
+3. Confirm current rate limits, payload sizes, and timeouts
+4. Engage Zendesk Support for edge cases
+
+### Confidence Calibration
+
+```
+HIGH CONFIDENCE (≈90%+):
+• Location constraints (Navbar vs Sidebar)
+• General API patterns (REST, OAuth)
+• React/JavaScript best practices
+• SaaS UX principles
+• Browser security fundamentals
+• Common integration patterns
+
+MEDIUM CONFIDENCE (≈70-90%):
+• Specific Zendesk API endpoints
+• Garden component usage patterns
+• App framework conventions
+• Performance characteristics
+• Rate-limiting strategies
+• Authentication flows
+
+LOW CONFIDENCE (≈50-70%):
+• Exact API parameter names (post-2024)
+• New framework features released after cutoff
+• Specific current rate limits
+• Account-specific configurations
+• Marketplace approval criteria details
+• Latest Garden component updates
+
+SHOULD BE VERIFIED EXTERNALLY:
+• Current Zendesk documentation and deprecations
+• Security best practices (evolving)
+• Browser compatibility (latest versions)
+• Third-party API specifications
+• Pricing and billing details
+```
+
+### AI Assistant Capability Profile
+
+```
+PHASE                  CAPABILITY LEVEL         LIMITATION LEVEL
+────────────────────────────────────────────────────────────────────────
+Ideation               ▓▓▓▓▓▓▓▓▓▓               ░░
+Planning               ▓▓▓▓▓▓▓▓▓░               ░░
+Code Generation        ▓▓▓▓▓▓▓▓░░               ░░░
+Architecture           ▓▓▓▓▓▓▓▓░░               ░░░
+Debugging              ▓▓▓░░░░░░░               ░░░░░░
+Testing                ░░░░░░░░░░               ▓▓▓▓▓▓▓▓▓▓
+Deployment             ░░░░░░░░░░               ▓▓▓▓▓▓▓▓▓▓
+Maintenance            ▓▓▓▓░░░░░░               ░░░░░░░
+
+EXCELS AT: Design, planning, code scaffolding, constraint explanation
+CANNOT: Execute code, test applications, access live systems, update model knowledge
+```
+
+### Effective Usage Guidelines
+
+**Effective Prompts**:
+- "Build a Navbar app to display Jira issues with filters."
+- "Assess feasibility of real-time Slack notifications in Sidebar."
+- "Compare Sidebar vs Navbar for an analytics dashboard."
+- "What are performance implications of polling vs webhooks?"
+
+**Ineffective Prompts**:
+- "Make it better."
+- "Add all the features."
+- "Here is an API key: …"
+- "Why doesn't my code work?" [massive dump without context]
+
+### Transparency Notes
+
+**May Be Inaccurate**:
+- Endpoint URLs and exact rate limits (subject to change)
+- Specific error codes and latest best practices
+- Deprecated or newly released features (post-cutoff)
+
+**Consistent Strengths**:
+- Conceptual architecture and trade-off analysis
+- Starter code templates and rationale
+- Identification of common anti-patterns
+- Structuring technical plans
+
+**Effective Usage**:
+1. Use during DESIGN and PLANNING
+2. Validate against official docs
+3. Test snippets in a sandbox
+4. Treat as informed starting point
+5. Request clarifications for ambiguous areas
+6. Cross-check security-critical details
+
+### Comparison: AI Assistant vs Other Tools
+
+```
+TOOL                TYPE                 STRENGTH                          WHEN TO USE AI ASSISTANT
+────────────────────────────────────────────────────────────────────────────────────────────────────────
+Stack Overflow      Community Q&A        Real user experiences             Initial research synthesis
+Official Docs       Authoritative specs  Precise definitions               Verify suggestions and parameters
+GitHub Copilot      IDE assistant        Inline code completion            After architecture is set
+ChatGPT             Conversational LLM   General ideation/help             Similar planning use cases
+Zendesk Support     Vendor support       Platform-specific help            Critical platform issues
+AI Assistant (LLM)  Planning/analysis    Comprehensive planning            START HERE for architecture
+```
 
 ---
 
