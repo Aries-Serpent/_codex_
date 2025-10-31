@@ -1,0 +1,97 @@
+# Generated: 2025-10-31 16:17:26 | Author: mbaetiong
+# Declarative first-cycle sequence. Execute with:
+# codex-task-sequence --sequence scripts/task_sequences/zendesk_first_cycle.yaml
+version: 1
+env: dev
+outputs:
+  evidence_dir: .codex/evidence
+  diffs_dir: diffs
+  plans_dir: plans
+  snapshots_dir: snapshot/dev
+steps:
+  - name: env-check
+    run: "python -m codex.cli zendesk env-check --env {env}"
+
+  - name: deps-check
+    run: "python -m codex.cli zendesk deps-check"
+
+  - name: snapshot
+    run: "codex zendesk snapshot --env {env}"
+
+  # Diff per resource
+  - name: diff-triggers
+    run: "codex zendesk diff triggers configs/desired/zendesk/triggers.desired.json {snapshots_dir}/latest/triggers.json > {diffs_dir}/triggers.json"
+  - name: diff-ticket-fields
+    run: "codex zendesk diff ticket_fields configs/desired/zendesk/ticket_fields.desired.json {snapshots_dir}/latest/ticket_fields.json > {diffs_dir}/ticket_fields.json"
+  - name: diff-ticket-forms
+    run: "codex zendesk diff ticket_forms configs/desired/zendesk/ticket_forms.desired.json {snapshots_dir}/latest/ticket_forms.json > {diffs_dir}/ticket_forms.json"
+  - name: diff-views
+    run: "codex zendesk diff views configs/desired/zendesk/views.desired.json {snapshots_dir}/latest/views.json > {diffs_dir}/views.json"
+  - name: diff-macros
+    run: "codex zendesk diff macros configs/desired/zendesk/macros.desired.json {snapshots_dir}/latest/macros.json > {diffs_dir}/macros.json"
+  - name: diff-webhooks
+    run: "codex zendesk diff webhooks configs/desired/zendesk/webhooks.desired.json {snapshots_dir}/latest/webhooks.json > {diffs_dir}/webhooks.json"
+  - name: diff-routing
+    run: "codex zendesk diff routing configs/desired/zendesk/routing.desired.json {snapshots_dir}/latest/routing.json > {diffs_dir}/routing.json"
+  - name: diff-talk-ivr
+    run: "codex zendesk diff talk_ivr configs/desired/zendesk/talk_ivr.desired.json {snapshots_dir}/latest/talk_ivr.json > {diffs_dir}/talk_ivr.json"
+
+  # Plan == normalized diff (in current implementation)
+  - name: plan-triggers
+    run: "codex zendesk plan triggers {diffs_dir}/triggers.json > {plans_dir}/triggers.json"
+  - name: plan-ticket-fields
+    run: "codex zendesk plan ticket_fields {diffs_dir}/ticket_fields.json > {plans_dir}/ticket_fields.json"
+  - name: plan-ticket-forms
+    run: "codex zendesk plan ticket_forms {diffs_dir}/ticket_forms.json > {plans_dir}/ticket_forms.json"
+  - name: plan-views
+    run: "codex zendesk plan views {diffs_dir}/views.json > {plans_dir}/views.json"
+  - name: plan-macros
+    run: "codex zendesk plan macros {diffs_dir}/macros.json > {plans_dir}/macros.json"
+  - name: plan-webhooks
+    run: "codex zendesk plan webhooks {diffs_dir}/webhooks.json > {plans_dir}/webhooks.json"
+  - name: plan-routing
+    run: "codex zendesk plan routing {diffs_dir}/routing.json > {plans_dir}/routing.json"
+  - name: plan-talk-ivr
+    run: "codex zendesk plan talk_ivr {diffs_dir}/talk_ivr.json > {plans_dir}/talk_ivr.json"
+
+  # Dry-run apply
+  - name: dryrun-apply-triggers
+    run: "codex zendesk apply triggers {plans_dir}/triggers.json --env {env} --dry-run"
+  - name: dryrun-apply-fields
+    run: "codex zendesk apply ticket_fields {plans_dir}/ticket_fields.json --env {env} --dry-run"
+  - name: dryrun-apply-forms
+    run: "codex zendesk apply ticket_forms {plans_dir}/ticket_forms.json --env {env} --dry-run"
+  - name: dryrun-apply-views
+    run: "codex zendesk apply views {plans_dir}/views.json --env {env} --dry-run"
+  - name: dryrun-apply-macros
+    run: "codex zendesk apply macros {plans_dir}/macros.json --env {env} --dry-run"
+  - name: dryrun-apply-webhooks
+    run: "codex zendesk apply webhooks {plans_dir}/webhooks.json --env {env} --dry-run"
+  - name: dryrun-apply-routing
+    run: "codex zendesk apply routing {plans_dir}/routing.json --env {env} --dry-run"
+  - name: dryrun-apply-talk-ivr
+    run: "codex zendesk apply talk_ivr {plans_dir}/talk_ivr.json --env {env} --dry-run"
+
+  # Apply
+  - name: apply-triggers
+    run: "codex zendesk apply triggers {plans_dir}/triggers.json --env {env}"
+  - name: apply-fields
+    run: "codex zendesk apply ticket_fields {plans_dir}/ticket_fields.json --env {env}"
+  - name: apply-forms
+    run: "codex zendesk apply ticket_forms {plans_dir}/ticket_forms.json --env {env}"
+  - name: apply-views
+    run: "codex zendesk apply views {plans_dir}/views.json --env {env}"
+  - name: apply-macros
+    run: "codex zendesk apply macros {plans_dir}/macros.json --env {env}"
+  - name: apply-webhooks
+    run: "codex zendesk apply webhooks {plans_dir}/webhooks.json --env {env}"
+  - name: apply-routing
+    run: "codex zendesk apply routing {plans_dir}/routing.json --env {env}"
+  - name: apply-talk-ivr
+    run: "codex zendesk apply talk_ivr {plans_dir}/talk_ivr.json --env {env}"
+
+  # Verification
+  - name: metrics
+    run: "codex zendesk metrics"
+  - name: docs-sync-dry
+    run: "codex zendesk docs-sync --dry-run"

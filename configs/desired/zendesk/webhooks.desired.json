@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Outbound webhooks. For secrets/headers, use env-based indirection where possible.",
+    "owner": "platform-eng"
+  },
+  "webhooks": [
+    {
+      "name": "Ops: Incident Bridge",
+      "endpoint": "https://hooks.example.com/zendesk/incident",
+      "http_method": "POST",
+      "request_format": "json",
+      "status": "active",
+      "subtypes": ["trigger"],
+      "authentication": {
+        "type": "bearer",
+        "token_ref": "ENV:OPS_HOOK_TOKEN"
+      },
+      "custom_headers": [
+        { "key": "X-Source", "value": "zendesk" }
+      ]
+    }
+  ]
+}

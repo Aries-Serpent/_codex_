@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Talk IVR configuration: IVRs, menus, and routes expressed declaratively.",
+    "owner": "voice-ops"
+  },
+  "ivrs": [
+    {
+      "name": "Main Line",
+      "active": true,
+      "menus": [
+        {
+          "name": "Root Menu",
+          "prompts": ["Thank you for calling. Press 1 for Support, 2 for Billing."],
+          "entries": [
+            { "dtmf": "1", "action": "route_to_group", "target_ref": "Group:Tier 1" },
+            { "dtmf": "2", "action": "route_to_group", "target_ref": "Group:Billing" },
+            { "dtmf": "0", "action": "voicemail", "target_ref": "Mailbox:General" }
+          ]
+        }
+      ],
+      "routes": [
+        { "name": "After Hours", "schedule_ref": "Schedule:After Hours", "action": "voicemail", "target_ref": "Mailbox:General" }
+      ]
+    }
+  ]
+}
