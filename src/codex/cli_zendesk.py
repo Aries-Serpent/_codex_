@@ -551,6 +551,149 @@ def _collect_objects(client: object, attribute: str) -> list[Any]:
         return []
 
 
+def _collect_first_non_empty(client: object, *attributes: str) -> list[Any]:
+    for attribute in attributes:
+        items = _collect_objects(client, attribute)
+        if items:
+            return items
+    return []
+
+
+def _object_to_mapping(obj: Any) -> dict[str, Any]:
+    if obj is None:
+        return {}
+    if isinstance(obj, Mapping):
+        return dict(obj)
+    to_dict = getattr(obj, "to_dict", None)
+    if callable(to_dict):
+        data = to_dict()
+        if isinstance(data, Mapping):
+            return dict(data)
+    if hasattr(obj, "__dict__"):
+        return {k: v for k, v in vars(obj).items() if not k.startswith("_")}
+    return {}
+
+
+def _normalize_routing_rule(rule: Any) -> dict[str, Any] | None:
+    data = _object_to_mapping(rule)
+    name = data.get("name") or data.get("title") or data.get("id")
+    if not name:
+        return None
+    conditions = (
+        data.get("conditions")
+        or data.get("matching_criteria")
+        or data.get("match")
+        or {}
+    )
+    destination = (
+        data.get("destination")
+        or data.get("target")
+        or data.get("queue")
+        or data.get("queue_id")
+    )
+    payload: dict[str, Any] = {
+        "name": name,
+        "conditions": conditions,
+    }
+    if destination is not None:
+        payload["destination"] = destination
+    return payload
+
+
+def _normalize_talk_menu(menu: Any) -> dict[str, Any] | None:
+    data = _object_to_mapping(menu)
+    name = data.get("name") or data.get("title") or data.get("id")
+    if not name:
+        return None
+    prompts = data.get("prompts") or data.get("messages") or data.get("greetings") or []
+    if isinstance(prompts, (str, bytes)):
+        prompts = [prompts]
+    entries = []
+    raw_entries = (
+        data.get("entries")
+        or data.get("options")
+        or data.get("routes")
+        or []
+    )
+    for entry in raw_entries or []:
+        entry_data = _object_to_mapping(entry)
+        dtmf = (
+            entry_data.get("dtmf")
+            or entry_data.get("keypress")
+            or entry_data.get("digit")
+            or entry_data.get("key")
+        )
+        action = entry_data.get("action") or entry_data.get("type")
+        target = (
+            entry_data.get("target_ref")
+            or entry_data.get("target")
+            or entry_data.get("destination")
+        )
+        schedule = entry_data.get("schedule_ref") or entry_data.get("schedule")
+        if dtmf is None and target is None and action is None:
+            continue
+        entry_payload: dict[str, Any] = {
+            "dtmf": dtmf,
+            "action": action,
+            "target_ref": target,
+        }
+        if schedule is not None:
+            entry_payload["schedule_ref"] = schedule
+        entries.append({k: v for k, v in entry_payload.items() if v is not None})
+    return {
+        "name": name,
+        "prompts": prompts if isinstance(prompts, list) else list(prompts),
+        "entries": entries,
+    }
+
+
+def _normalize_talk_route(route: Any) -> dict[str, Any] | None:
+    data = _object_to_mapping(route)
+    name = data.get("name") or data.get("title") or data.get("id")
+    action = data.get("action") or data.get("type")
+    target = data.get("target_ref") or data.get("target") or data.get("destination")
+    if not any((name, action, target)):
+        return None
+    payload: dict[str, Any] = {}
+    if name is not None:
+        payload["name"] = name
+    if action is not None:
+        payload["action"] = action
+    if target is not None:
+        payload["target_ref"] = target
+    schedule = data.get("schedule_ref") or data.get("schedule") or data.get("schedule_id")
+    if schedule is not None:
+        payload["schedule_ref"] = schedule
+    return payload
+
+
+def _normalize_talk_ivr(ivr: Any) -> dict[str, Any] | None:
+    data = _object_to_mapping(ivr)
+    name = data.get("name") or data.get("title") or data.get("id")
+    if not name:
+        return None
+    menus: list[dict[str, Any]] = []
+    raw_menus = data.get("menus") or data.get("ivr_menus") or []
+    for menu in raw_menus or []:
+        normalized = _normalize_talk_menu(menu)
+        if normalized:
+            menus.append(normalized)
+    routes: list[dict[str, Any]] = []
+    raw_routes = data.get("routes") or data.get("ivr_routes") or []
+    for route in raw_routes or []:
+        normalized_route = _normalize_talk_route(route)
+        if normalized_route:
+            routes.append(normalized_route)
+    payload: dict[str, Any] = {
+        "name": name,
+        "active": data.get("active"),
+        "menus": menus,
+    }
+    if routes:
+        payload["routes"] = routes
+    return payload
+
+
 def _export_zendesk_config(env: str) -> dict[str, Any]:
     client = _get_zendesk_client(env)
     snapshot: dict[str, Any] = {}
@@ -638,6 +781,30 @@ def _export_zendesk_config(env: str) -> dict[str, Any]:
             "status": getattr(webhook, "status", None),
         }
         for webhook in _collect_objects(client, "webhooks")
+    ]
+
+    routing_rules = _collect_first_non_empty(
+        client,
+        "routing_rules",
+        "skills_based_routing_rules",
+        "skills_based_routing",
+    )
+    snapshot["routing"] = [
+        normalized
+        for normalized in (_normalize_routing_rule(rule) for rule in routing_rules)
+        if normalized is not None
+    ]
+
+    talk_ivrs = _collect_first_non_empty(
+        client,
+        "talk_ivrs",
+        "ivr_menus",
+        "talk_ivr_menus",
+    )
+    snapshot["talk"] = [
+        normalized
+        for normalized in (_normalize_talk_ivr(ivr) for ivr in talk_ivrs)
+        if normalized is not None
     ]
 
     return snapshot

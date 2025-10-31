@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Agent views (queues). Filters use field keys; sort/order per Zendesk schema.",
+    "owner": "support-ops"
+  },
+  "views": [
+    {
+      "title": "Tier 1: Unassigned Open",
+      "conditions": {
+        "all": [
+          { "field": "status", "operator": "is", "value": "open" },
+          { "field": "assignee_id", "operator": "is", "value": "null" }
+        ],
+        "any": []
+      },
+      "execution": {
+        "columns": ["id", "subject", "requester", "priority", "updated_at"],
+        "sort_by": "updated_at",
+        "sort_order": "desc"
+      }
+    },
+    {
+      "title": "Tier 2: High Priority",
+      "conditions": {
+        "all": [
+          { "field": "priority", "operator": "is", "value": "high" }
+        ],
+        "any": []
+      },
+      "execution": {
+        "columns": ["id", "subject", "requester", "group", "assignee", "priority"],
+        "sort_by": "priority",
+        "sort_order": "desc"
+      }
+    }
+  ]
+}

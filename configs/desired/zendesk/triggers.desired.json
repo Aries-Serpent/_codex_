@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Desired set of triggers for first cycle. Titles are canonical keys; conditions/actions map to Zendesk schema.",
+    "owner": "support-ops"
+  },
+  "triggers": [
+    {
+      "title": "Auto-assign: High priority to Tier 2",
+      "active": true,
+      "category": "Assignment",
+      "conditions": {
+        "all": [
+          { "field": "ticket.priority", "operator": "is", "value": "high" },
+          { "field": "ticket.status", "operator": "is_not", "value": "solved" }
+        ],
+        "any": []
+      },
+      "actions": [
+        { "field": "group_id", "value_ref": "Group:Tier 2" },
+        { "field": "priority", "value": "high" },
+        { "field": "status", "value": "open" }
+      ],
+      "tags": ["auto-assign", "tier2"]
+    },
+    {
+      "title": "Notify: Customer receipt",
+      "active": true,
+      "category": "Notifications",
+      "conditions": {
+        "all": [
+          { "field": "ticket.status", "operator": "changed_to", "value": "open" },
+          { "field": "ticket.via", "operator": "is", "value": "web" }
+        ],
+        "any": []
+      },
+      "actions": [
+        {
+          "field": "notification_user",
+          "template": {
+            "subject": "We received your ticket {{ticket.id}}",
+            "body": "Hi {{ticket.requester.name}}, we've received your request and will get back to you shortly."
+          },
+          "target": "requester"
+        }
+      ],
+      "tags": ["notify", "receipt"]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Desired ticket fields. Use 'key' as the canonical identifier; Codex resolves IDs by key/name.",
+    "owner": "support-ops"
+  },
+  "fields": [
+    {
+      "key": "impact",
+      "type": "dropdown",
+      "title": "Impact",
+      "required_on_statuses": ["open", "pending"],
+      "custom_field_options": [
+        { "name": "Low", "value": "low" },
+        { "name": "Medium", "value": "medium" },
+        { "name": "High", "value": "high" }
+      ]
+    },
+    {
+      "key": "product_area",
+      "type": "dropdown",
+      "title": "Product Area",
+      "custom_field_options": [
+        { "name": "Billing", "value": "billing" },
+        { "name": "Onboarding", "value": "onboarding" },
+        { "name": "Integrations", "value": "integrations" }
+      ]
+    }
+  ]
+}

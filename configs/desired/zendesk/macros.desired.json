@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Macros for agent productivity. Actions reference fields by key where possible.",
+    "owner": "support-ops"
+  },
+  "macros": [
+    {
+      "title": "Billing: Request Invoice Details",
+      "active": true,
+      "actions": [
+        {
+          "field": "comment_value_html",
+          "value": "<p>Hi {{ticket.requester.first_name}}, could you share your invoice number and billing email?</p>"
+        },
+        { "field": "status", "value": "pending" },
+        { "field": "ticket_fields.product_area", "value": "billing" }
+      ],
+      "tags": ["billing", "triage"]
+    },
+    {
+      "title": "Onboarding: Welcome Pack",
+      "active": true,
+      "actions": [
+        {
+          "field": "comment_value_html",
+          "value": "<p>Welcome! Here are resources to get started: ...</p>"
+        },
+        { "field": "status", "value": "open" },
+        { "field": "priority", "value": "low" }
+      ],
+      "tags": ["onboarding", "welcome"]
+    }
+  ]
+}
