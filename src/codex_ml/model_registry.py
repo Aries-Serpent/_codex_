@@ -196,7 +196,7 @@ def _extract_lora_request(config: Mapping[str, Any] | None) -> LoraRequest | Non
             break
 
     if candidate is not None:
-        enabled = _to_bool(candidate.get("enable"), True)
+        enabled = _to_bool(candidate.get("enable"), False)
         enabled = _to_bool(candidate.get("enabled"), enabled)
         enabled = _to_bool(candidate.get("use"), enabled)
         if not enabled:
