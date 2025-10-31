@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import sys
 import types
+from collections.abc import Sequence
 
 import pytest
 
 import torch
-from codex_ml.model_registry import ModelRequest, get_model
-from codex_ml.config_schema import LoraSettings
+from codex_ml.model_registry import LoraRequest, ModelRequest, get_model
 from codex_ml.models.registry import model_registry
 
 
@@ -42,7 +42,9 @@ def test_get_model_applies_device_and_dtype(dummy_registration: types.SimpleName
     assert model.to_calls[-1][1]["device"] == "cpu"
     dtype_calls = [kwargs["dtype"] for _, kwargs in model.to_calls if "dtype" in kwargs]
     assert dtype_calls and dtype_calls[-1] == torch.float16
-    assert isinstance(getattr(model, "request_metadata"), ModelRequest)
+    metadata = getattr(model, "request_metadata")
+    assert isinstance(metadata, ModelRequest)
+    assert metadata.lora is None
 
 
 def test_get_model_activates_lora_adapter(dummy_registration: types.SimpleNamespace) -> None:
@@ -51,40 +53,58 @@ def test_get_model_activates_lora_adapter(dummy_registration: types.SimpleNamesp
     assert "/tmp/adapter" in model.loaded_adapters
 
 
-def test_get_model_applies_lora_settings(
-    monkeypatch: pytest.MonkeyPatch, dummy_registration: types.SimpleNamespace
+def test_get_model_applies_lora_config(
+    monkeypatch, dummy_registration: types.SimpleNamespace
 ) -> None:
-    class _StubLoraConfig:
-        def __init__(self, **kwargs: object) -> None:
-            self.kwargs = kwargs
-
     captured: dict[str, object] = {}
 
-    def _fake_get_peft_model(model: _TrackableModule, cfg: _StubLoraConfig) -> _TrackableModule:
-        captured.update(cfg.kwargs)
-        setattr(model, "lora_enabled", True)
-        return model
+    def _fake_apply(
+        model: _TrackableModule,
+        *,
+        r: int,
+        alpha: int,
+        dropout: float,
+        task_type: str | None,
+        target_modules: Sequence[str] | None,
+    ) -> _TrackableModule:
+        captured["r"] = r
+        captured["alpha"] = alpha
+        captured["dropout"] = dropout
+        captured["task_type"] = task_type
+        captured["target_modules"] = target_modules
+        captured["model"] = model
+        # Simulate PEFT returning a wrapped module by cloning the original helper.
+        wrapped = _TrackableModule()
+        wrapped.to_calls = list(model.to_calls)
+        return wrapped
 
-    stub_module = types.SimpleNamespace(
-        LoraConfig=_StubLoraConfig,
-        get_peft_model=_fake_get_peft_model,
-    )
-    monkeypatch.setitem(sys.modules, "peft", stub_module)
+    monkeypatch.setattr("codex_ml.model_registry.apply_lora_if_available", _fake_apply)
 
-    model = get_model(
-        dummy_registration.name,
-        lora={
+    cfg = {
+        "lora": {
             "enable": True,
             "r": 4,
-            "lora_alpha": 32,
-            "target_modules": ["linear"],
-        },
-    )
-    assert getattr(model, "lora_enabled", False)
+            "alpha": 12,
+            "dropout": 0.1,
+            "task_type": "CAUSAL_LM",
+            "target_modules": ["q_proj", "v_proj"],
+        }
+    }
+
+    model = get_model(dummy_registration.name, config=cfg)
+
+    assert isinstance(model, _TrackableModule)
     assert captured["r"] == 4
-    assert captured["lora_alpha"] == 32
-    assert captured.get("target_modules") == ["linear"]
+    assert captured["alpha"] == 12
+    assert captured["dropout"] == 0.1
+    assert captured["task_type"] == "CAUSAL_LM"
+    assert captured["target_modules"] == ("q_proj", "v_proj")
+
     metadata = getattr(model, "request_metadata")
-    assert isinstance(metadata, ModelRequest)
-    assert isinstance(metadata.lora, LoraSettings)
-    assert metadata.lora.enabled
+    assert isinstance(metadata.lora, LoraRequest)
+    assert metadata.lora.enabled is True
+    assert metadata.lora.rank == 4
+    assert metadata.lora.alpha == 12
+    assert metadata.lora.dropout == 0.1
+    assert metadata.lora.task_type == "CAUSAL_LM"
+    assert metadata.lora.target_modules == ("q_proj", "v_proj")

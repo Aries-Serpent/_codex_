@@ -7,15 +7,13 @@ import json
 import warnings
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, List, Sequence
+from typing import Any, Iterable, Iterator, List, Sequence
 
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (
-        DatasetDict,  # type: ignore
-        load_from_disk,  # type: ignore
-    )
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_from_disk  # type: ignore
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
@@ -65,23 +63,23 @@ class Example:
     target: str
 
 
-class ExampleList(list[Example]):
-    __slots__ = ("dataset_hash", "metadata")
+@dataclass
+class DatasetBundle(Sequence[Example]):
+    """Container bundling examples with a deterministic hash."""
 
-    def __init__(self, items: Sequence[Example]):
-        super().__init__(items)
-        self.dataset_hash: str | None = None
-        self.metadata: dict[str, Any] = {}
+    examples: List[Example]
+    dataset_hash: str
+    source: str
+    metadata: dict[str, Any] | None = None
 
+    def __iter__(self) -> Iterator[Example]:
+        return iter(self.examples)
 
-def _compute_examples_hash(examples: Sequence[Example]) -> str:
-    payload = json.dumps(
-        [asdict(ex) for ex in examples],
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    )
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    def __len__(self) -> int:  # pragma: no cover - trivially exercised elsewhere
+        return len(self.examples)
+
+    def __getitem__(self, index: int) -> Example:
+        return self.examples[index]
 
 
 _PRESETS = {
@@ -98,6 +96,18 @@ _PRESETS = {
 }
 
 
+def _hash_examples(examples: Iterable[Example]) -> str:
+    """Hash examples using JSON serialization to avoid collisions."""
+    examples_list = list(examples)
+    payload = json.dumps(
+        [asdict(example) for example in examples_list],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def load_dataset(
     name_or_path: str,
     max_samples: int | None = None,
@@ -106,7 +116,7 @@ def load_dataset(
     hf_input_field: str | None = None,
     hf_target_field: str | None = None,
     hf_text_field: str | None = None,
-) -> List[Example]:
+) -> DatasetBundle:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
     global _LAST_HF_REVISION
     if hf_text_field is not None:
@@ -190,6 +200,7 @@ def load_dataset(
             )
 
         data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
+        revision = _LAST_HF_REVISION
     else:
         path = Path(name_or_path)
         # Plain JSONL/NDJSON file
@@ -231,9 +242,7 @@ def load_dataset(
         revision = _LAST_HF_REVISION
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
-    result = ExampleList(data)
-    if result:
-        result.dataset_hash = _compute_examples_hash(result)
+
     metadata: dict[str, Any] = {
         "source": str(name_or_path),
         "hf_split": hf_split,
@@ -241,10 +250,16 @@ def load_dataset(
         "hf_target_field": hf_target_field,
         "max_samples": max_samples,
         "hf_revision": revision,
-        "num_examples": len(result),
+        "num_examples": len(data),
     }
-    result.metadata = {k: v for k, v in metadata.items() if v is not None}
-    return result
+
+    bundle = DatasetBundle(
+        examples=data,
+        dataset_hash=_hash_examples(data),
+        source=name_or_path,
+        metadata={k: v for k, v in metadata.items() if v is not None},
+    )
+    return bundle
 
 
-__all__ = ["Example", "load_dataset"]
+__all__ = ["Example", "DatasetBundle", "load_dataset"]
