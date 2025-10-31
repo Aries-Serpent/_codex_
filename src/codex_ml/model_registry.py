@@ -11,10 +11,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, MutableMapping, Optional, Union
+from typing import Any, Mapping, MutableMapping, Optional, Sequence, Union
 
 import torch
 from codex_ml.models import registry as _registry
+from codex_ml.config_schema import LoraSettings, LoraConfig as _SchemaLoraConfig
 
 __all__ = ["ModelRequest", "get_model", "list_models", "register_model"]
 
@@ -27,6 +28,7 @@ class ModelRequest:
     device: Optional[Union[str, torch.device]] = None
     dtype: Optional[Union[str, torch.dtype]] = None
     lora_adapter: Optional[str] = None
+    lora: Optional[LoraSettings] = None
     config: Mapping[str, Any] | None = None
 
     def as_config(self) -> dict[str, Any]:
@@ -39,6 +41,17 @@ class ModelRequest:
             payload["dtype"] = str(self.dtype)
         if self.lora_adapter is not None:
             payload["lora_adapter"] = self.lora_adapter
+        if self.lora is not None:
+            payload["lora"] = {
+                "enabled": self.lora.enabled,
+                "rank": self.lora.rank,
+                "alpha": self.lora.alpha,
+                "dropout": self.lora.dropout,
+                "task_type": self.lora.task_type,
+                "target_modules": list(self.lora.target_modules)
+                if self.lora.target_modules is not None
+                else None,
+            }
         if self.config:
             payload["config"] = dict(self.config)
         return payload
@@ -121,12 +134,78 @@ def _prepare_config(
     return cfg
 
 
+def _coerce_lora_settings(
+    settings: LoraSettings | _SchemaLoraConfig | Mapping[str, Any] | None
+) -> LoraSettings | None:
+    if settings is None:
+        return None
+    if isinstance(settings, LoraSettings):
+        return settings
+    if isinstance(settings, _SchemaLoraConfig):
+        return LoraSettings.from_model(settings)
+    if isinstance(settings, Mapping):
+        data = {str(k): v for k, v in settings.items()}
+        enabled = bool(
+            data.get("enabled", data.get("enable", data.get("active", False)))
+        )
+        rank = int(data.get("rank", data.get("r", 8)))
+        alpha = int(data.get("alpha", data.get("lora_alpha", 16)))
+        dropout = float(data.get("dropout", data.get("lora_dropout", 0.05)))
+        task_type = str(data.get("task_type", "CAUSAL_LM"))
+        target_modules_value = data.get("target_modules")
+        target_modules: Optional[Sequence[str]]
+        if target_modules_value is None:
+            target_modules = None
+        elif isinstance(target_modules_value, Sequence) and not isinstance(
+            target_modules_value, (str, bytes)
+        ):
+            target_modules = [str(item) for item in target_modules_value]
+        else:
+            target_modules = [str(target_modules_value)]
+        return LoraSettings(
+            enabled=enabled,
+            rank=rank,
+            alpha=alpha,
+            dropout=dropout,
+            task_type=task_type,
+            target_modules=target_modules,
+        )
+    raise TypeError("Unsupported LoRA settings type")
+
+
+def _apply_lora(model: Any, settings: LoraSettings | None) -> Any:
+    if settings is None or not settings.enabled:
+        return model
+    try:
+        import peft  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency
+        raise RuntimeError("LoRA requested but PEFT is not installed") from exc
+
+    lora_config_cls = getattr(peft, "LoraConfig", None)
+    get_peft_model = getattr(peft, "get_peft_model", None)
+    if lora_config_cls is None or get_peft_model is None:
+        raise RuntimeError("PEFT installation is missing required LoRA helpers")
+
+    config_kwargs = {
+        "r": int(settings.rank),
+        "lora_alpha": int(settings.alpha),
+        "lora_dropout": float(settings.dropout),
+        "task_type": settings.task_type,
+    }
+    if settings.target_modules:
+        config_kwargs["target_modules"] = list(settings.target_modules)
+
+    lora_cfg = lora_config_cls(**config_kwargs)
+    return get_peft_model(model, lora_cfg)
+
+
 def get_model(
     name: str,
     *,
     device: Union[str, torch.device, None] = "cpu",
     dtype: Union[str, torch.dtype, None] = torch.float32,
     lora_adapter: str | None = None,
+    lora: LoraSettings | _SchemaLoraConfig | Mapping[str, Any] | None = None,
     config: Mapping[str, Any] | None = None,
 ) -> Any:
     """Instantiate a model registered under ``name``.
@@ -173,12 +252,18 @@ def get_model(
 
     if lora_adapter:
         _activate_lora_adapter(model, lora_adapter)
+    lora_settings = _coerce_lora_settings(lora)
     try:
-        setattr(model, "request_metadata", ModelRequest(name, device, dtype, lora_adapter, config))
+        setattr(
+            model,
+            "request_metadata",
+            ModelRequest(name, device, dtype, lora_adapter, lora_settings, config),
+        )
     except Exception:
         # Attaching metadata is best-effort only.
         pass
-    return model
+    adapted = _apply_lora(model, lora_settings)
+    return adapted
 
 
 def register_model(name: str, obj: Any | None = None, *, override: bool = False) -> Any:

@@ -1,8 +1,21 @@
+import hashlib
+import json
 from unittest.mock import call, patch
 
 import pytest
 
 from codex_ml.eval.datasets import Example, load_dataset
+import codex_ml.eval.datasets as datasets_mod
+
+
+def _expected_hash(examples: list[Example]) -> str:
+    payload = json.dumps(
+        [example.__dict__ for example in examples],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def test_load_hf_dataset() -> None:
@@ -15,12 +28,14 @@ def test_load_hf_dataset() -> None:
     def loader(dataset_name: str, config: str | None, *, split: str):
         if dataset_name == "hf-internal-testing" and config == "tiny-wikitext-2":
             raise FileNotFoundError
+        datasets_mod._LAST_HF_REVISION = "rev-123"
         return DummyHFDS()
 
     with (
         patch("codex_ml.eval.datasets.hf_load_dataset", side_effect=loader) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         data = load_dataset(
             "hf://hf-internal-testing/tiny-wikitext-2",
             max_samples=2,
@@ -33,6 +48,9 @@ def test_load_hf_dataset() -> None:
         assert len(data) == 2
         assert all(isinstance(item, Example) for item in data)
         assert data[0].input == data[0].target
+        assert getattr(data, "dataset_hash") == _expected_hash(list(data))
+        assert data.metadata["hf_revision"] == "rev-123"
+        assert data.metadata["num_examples"] == 2
 
 
 def test_load_hf_dataset_with_owner_and_config() -> None:
@@ -46,9 +64,13 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
+        datasets_mod._LAST_HF_REVISION = "rev-456"
         data = load_dataset("hf://openai/gsm8k/main", max_samples=1)
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
         assert data == [Example("sample", "sample")]
+        assert data.metadata["hf_revision"] == "rev-456"
+        assert data.metadata["num_examples"] == 1
 
 
 def test_load_hf_dataset_with_config_only() -> None:
@@ -62,6 +84,7 @@ def test_load_hf_dataset_with_config_only() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         data = load_dataset("hf://glue/mrpc", max_samples=1)
         mock_load.assert_called_once_with("glue", "mrpc", split="train")
         assert data == [Example("sample", "sample")]
@@ -78,6 +101,7 @@ def test_load_hf_dataset_with_custom_fields() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         data = load_dataset(
             "hf://gsm8k",
             max_samples=1,
@@ -99,6 +123,7 @@ def test_load_hf_dataset_infer_common_target_field() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         data = load_dataset("hf://dummy", max_samples=1)
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert data == [Example("q", "a")]
@@ -115,6 +140,7 @@ def test_load_hf_dataset_missing_target_raises() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         with pytest.raises(ValueError):
             load_dataset("hf://dummy", max_samples=1)
         mock_load.assert_called_once_with("dummy", None, split="train")
@@ -131,6 +157,7 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert data == [Example("x", "x")]
@@ -141,6 +168,7 @@ def test_load_hf_dataset_text_field_conflict() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset") as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         with pytest.raises(ValueError):
             load_dataset(
                 "hf://dummy",
@@ -161,5 +189,6 @@ def test_plain_hf_dataset_respects_split() -> None:
         patch("codex_ml.eval.datasets.hf_load_dataset", return_value=DummyHFDS()) as mock_load,
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
+        datasets_mod._LAST_HF_REVISION = None
         load_dataset("imdb", hf_split="test")
         mock_load.assert_called_once_with("imdb", split="test")

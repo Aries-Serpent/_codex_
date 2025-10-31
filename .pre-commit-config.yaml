@@ -137,6 +137,14 @@ repos:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.17.0
+    hooks:
+      - id: gitleaks
+        name: gitleaks (staged)
+        args: ["protect", "--staged", "--no-banner", "--redact"]
+        stages: [pre-commit]
+        timeout: 120
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0
     hooks:
