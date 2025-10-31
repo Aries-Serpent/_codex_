@@ -70,6 +70,7 @@ class DatasetBundle(Sequence[Example]):
     examples: List[Example]
     dataset_hash: str
     source: str
+    metadata: dict[str, Any] | None = None
 
     def __iter__(self) -> Iterator[Example]:
         return iter(self.examples)
@@ -96,13 +97,15 @@ _PRESETS = {
 
 
 def _hash_examples(examples: Iterable[Example]) -> str:
-    digest = hashlib.sha256()
-    for record in examples:
-        digest.update(record.input.encode("utf-8"))
-        digest.update(b"\0")
-        digest.update(record.target.encode("utf-8"))
-        digest.update(b"\n")
-    return digest.hexdigest()
+    """Hash examples using JSON serialization to avoid collisions."""
+    examples_list = list(examples)
+    payload = json.dumps(
+        [asdict(example) for example in examples_list],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def load_dataset(
@@ -113,7 +116,7 @@ def load_dataset(
     hf_input_field: str | None = None,
     hf_target_field: str | None = None,
     hf_text_field: str | None = None,
-) -> List[Example]:
+) -> DatasetBundle:
     """Load a dataset by preset name, HuggingFace hub name, or JSONL/NDJSON file."""
     global _LAST_HF_REVISION
     if hf_text_field is not None:
@@ -197,6 +200,7 @@ def load_dataset(
             )
 
         data = [Example(str(row[input_field]), str(row[target_field])) for row in hf_ds]
+        revision = _LAST_HF_REVISION
     else:
         path = Path(name_or_path)
         # Plain JSONL/NDJSON file
@@ -238,10 +242,22 @@ def load_dataset(
         revision = _LAST_HF_REVISION
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
+
+    metadata: dict[str, Any] = {
+        "source": str(name_or_path),
+        "hf_split": hf_split,
+        "hf_input_field": hf_input_field,
+        "hf_target_field": hf_target_field,
+        "max_samples": max_samples,
+        "hf_revision": revision,
+        "num_examples": len(data),
+    }
+
     bundle = DatasetBundle(
         examples=data,
         dataset_hash=_hash_examples(data),
         source=name_or_path,
+        metadata={k: v for k, v in metadata.items() if v is not None},
     )
     return bundle
 
