@@ -2,19 +2,18 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any, Iterable, Iterator, List, Sequence
 
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (
-        DatasetDict,  # type: ignore
-        load_from_disk,  # type: ignore
-    )
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_from_disk  # type: ignore
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]
@@ -56,6 +55,24 @@ class Example:
     target: str
 
 
+@dataclass
+class DatasetBundle(Sequence[Example]):
+    """Container bundling examples with a deterministic hash."""
+
+    examples: List[Example]
+    dataset_hash: str
+    source: str
+
+    def __iter__(self) -> Iterator[Example]:
+        return iter(self.examples)
+
+    def __len__(self) -> int:  # pragma: no cover - trivially exercised elsewhere
+        return len(self.examples)
+
+    def __getitem__(self, index: int) -> Example:
+        return self.examples[index]
+
+
 _PRESETS = {
     "toy_copy_task": [
         Example("hello", "hello"),
@@ -68,6 +85,16 @@ _PRESETS = {
         ),
     ],
 }
+
+
+def _hash_examples(examples: Iterable[Example]) -> str:
+    digest = hashlib.sha256()
+    for record in examples:
+        digest.update(record.input.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(record.target.encode("utf-8"))
+        digest.update(b"\n")
+    return digest.hexdigest()
 
 
 def load_dataset(
@@ -195,7 +222,12 @@ def load_dataset(
             )
     if max_samples is not None:
         data = data[: max(0, int(max_samples))]
-    return data
+    bundle = DatasetBundle(
+        examples=data,
+        dataset_hash=_hash_examples(data),
+        source=name_or_path,
+    )
+    return bundle
 
 
-__all__ = ["Example", "load_dataset"]
+__all__ = ["Example", "DatasetBundle", "load_dataset"]

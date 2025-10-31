@@ -2,7 +2,7 @@ from unittest.mock import call, patch
 
 import pytest
 
-from codex_ml.eval.datasets import Example, load_dataset
+from codex_ml.eval.datasets import DatasetBundle, Example, load_dataset
 
 
 def test_load_hf_dataset() -> None:
@@ -30,7 +30,9 @@ def test_load_hf_dataset() -> None:
             call("hf-internal-testing", "tiny-wikitext-2", split="train"),
             call("hf-internal-testing/tiny-wikitext-2", None, split="train"),
         ]
+        assert isinstance(data, DatasetBundle)
         assert len(data) == 2
+        assert len(data.dataset_hash) == 64
         assert all(isinstance(item, Example) for item in data)
         assert data[0].input == data[0].target
 
@@ -48,7 +50,9 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
     ):
         data = load_dataset("hf://openai/gsm8k/main", max_samples=1)
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
-        assert data == [Example("sample", "sample")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("sample", "sample")]
+        assert len(data.dataset_hash) == 64
 
 
 def test_load_hf_dataset_with_config_only() -> None:
@@ -64,7 +68,9 @@ def test_load_hf_dataset_with_config_only() -> None:
     ):
         data = load_dataset("hf://glue/mrpc", max_samples=1)
         mock_load.assert_called_once_with("glue", "mrpc", split="train")
-        assert data == [Example("sample", "sample")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("sample", "sample")]
+        assert len(data.dataset_hash) == 64
 
 
 def test_load_hf_dataset_with_custom_fields() -> None:
@@ -85,7 +91,9 @@ def test_load_hf_dataset_with_custom_fields() -> None:
             hf_target_field="answer",
         )
         mock_load.assert_called_once_with("gsm8k", None, split="train")
-        assert data == [Example("q1", "a1")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("q1", "a1")]
+        assert len(data.dataset_hash) == 64
 
 
 def test_load_hf_dataset_infer_common_target_field() -> None:
@@ -101,7 +109,9 @@ def test_load_hf_dataset_infer_common_target_field() -> None:
     ):
         data = load_dataset("hf://dummy", max_samples=1)
         mock_load.assert_called_once_with("dummy", None, split="train")
-        assert data == [Example("q", "a")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("q", "a")]
+        assert len(data.dataset_hash) == 64
 
 
 def test_load_hf_dataset_missing_target_raises() -> None:
@@ -133,7 +143,9 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
     ):
         data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")
         mock_load.assert_called_once_with("dummy", None, split="train")
-        assert data == [Example("x", "x")]
+        assert isinstance(data, DatasetBundle)
+        assert data.examples == [Example("x", "x")]
+        assert len(data.dataset_hash) == 64
 
 
 def test_load_hf_dataset_text_field_conflict() -> None:
