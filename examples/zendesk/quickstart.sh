@@ -46,7 +46,7 @@ if ! command -v codex &> /dev/null; then
 fi
 success "_codex_ is installed"
 
-# Select environment first, before checking credentials
+# Select environment
 echo ""
 info "Select Zendesk environment:"
 echo "  1) dev"
@@ -60,27 +60,54 @@ case $ENV_CHOICE in
     *) ENVIRONMENT="dev" ;;
 esac
 
+ENVIRONMENT_UPPER=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
+PREFIX="ZENDESK_${ENVIRONMENT_UPPER}_"
+SUBDOMAIN_VAR="${PREFIX}SUBDOMAIN"
+EMAIL_VAR="${PREFIX}EMAIL"
+TOKEN_VAR="${PREFIX}TOKEN"
+
 info "Using environment: $ENVIRONMENT"
 
-# Check for environment-scoped credentials
-ENV_UPPER=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
-SUBDOMAIN_VAR="ZENDESK_${ENV_UPPER}_SUBDOMAIN"
-EMAIL_VAR="ZENDESK_${ENV_UPPER}_EMAIL"
-TOKEN_VAR="ZENDESK_${ENV_UPPER}_TOKEN"
+# Check for required environment variables
+echo ""
+info "Checking credentials for $ENVIRONMENT environment..."
 
 MISSING_VARS=false
 
-if [ -z "${!SUBDOMAIN_VAR}" ]; then
+SUBDOMAIN_VALUE=${!SUBDOMAIN_VAR}
+EMAIL_VALUE=${!EMAIL_VAR}
+TOKEN_VALUE=${!TOKEN_VAR}
+
+# Support legacy unscoped variables by copying them into the environment-specific ones
+if [ -z "$SUBDOMAIN_VALUE" ] && [ -n "$ZENDESK_SUBDOMAIN" ]; then
+    export "$SUBDOMAIN_VAR=$ZENDESK_SUBDOMAIN"
+    SUBDOMAIN_VALUE=${!SUBDOMAIN_VAR}
+    info "Imported $SUBDOMAIN_VAR from ZENDESK_SUBDOMAIN"
+fi
+
+if [ -z "$EMAIL_VALUE" ] && [ -n "$ZENDESK_EMAIL" ]; then
+    export "$EMAIL_VAR=$ZENDESK_EMAIL"
+    EMAIL_VALUE=${!EMAIL_VAR}
+    info "Imported $EMAIL_VAR from ZENDESK_EMAIL"
+fi
+
+if [ -z "$TOKEN_VALUE" ] && [ -n "$ZENDESK_API_TOKEN" ]; then
+    export "$TOKEN_VAR=$ZENDESK_API_TOKEN"
+    TOKEN_VALUE=${!TOKEN_VAR}
+    info "Imported $TOKEN_VAR from ZENDESK_API_TOKEN"
+fi
+
+if [ -z "$SUBDOMAIN_VALUE" ]; then
     warning "$SUBDOMAIN_VAR is not set"
     MISSING_VARS=true
 fi
 
-if [ -z "${!EMAIL_VAR}" ]; then
+if [ -z "$EMAIL_VALUE" ]; then
     warning "$EMAIL_VAR is not set"
     MISSING_VARS=true
 fi
 
-if [ -z "${!TOKEN_VAR}" ]; then
+if [ -z "$TOKEN_VALUE" ]; then
     warning "$TOKEN_VAR is not set"
     MISSING_VARS=true
 fi
@@ -90,27 +117,27 @@ if [ "$MISSING_VARS" = true ]; then
     warning "Required environment variables are missing."
     echo "  Please set them in your environment or create a .env file:"
     echo ""
-    echo "  export $SUBDOMAIN_VAR=your-subdomain"
-    echo "  export $EMAIL_VAR=admin@example.com"
-    echo "  export $TOKEN_VAR=your-api-token"
+    echo "  export ${PREFIX}SUBDOMAIN=your-subdomain"
+    echo "  export ${PREFIX}EMAIL=admin@example.com"
+    echo "  export ${PREFIX}TOKEN=your-api-token"
     echo ""
     read -p "Do you want to configure them now? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        read -p "Zendesk Subdomain: " SUBDOMAIN_VALUE
-        read -p "Zendesk Email: " EMAIL_VALUE
-        read -sp "Zendesk API Token: " TOKEN_VALUE
+        read -p "Zendesk Subdomain (${ENVIRONMENT}): " SUBDOMAIN_VALUE
+        read -p "Zendesk Email (${ENVIRONMENT}): " EMAIL_VALUE
+        read -sp "Zendesk API Token (${ENVIRONMENT}): " TOKEN_VALUE
         echo ""
         export "$SUBDOMAIN_VAR=$SUBDOMAIN_VALUE"
         export "$EMAIL_VAR=$EMAIL_VALUE"
         export "$TOKEN_VAR=$TOKEN_VALUE"
-        success "Environment variables configured"
+        success "Environment variables configured for $ENVIRONMENT"
     else
         error "Cannot proceed without credentials"
         exit 1
     fi
 else
-    success "Environment variables are set"
+    success "Environment variables are set for $ENVIRONMENT"
 fi
 
 # Create directory structure
