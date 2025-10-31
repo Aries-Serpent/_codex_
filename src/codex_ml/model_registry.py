@@ -261,11 +261,11 @@ def _prepare_config(
 
 def get_model(
     name: str,
+    config: Mapping[str, Any] | None = None,
     *,
     device: Union[str, torch.device, None] = "cpu",
     dtype: Union[str, torch.dtype, None] = torch.float32,
     lora_adapter: str | None = None,
-    config: Mapping[str, Any] | None = None,
 ) -> Any:
     """Instantiate a model registered under ``name``.
 
@@ -273,21 +273,24 @@ def get_model(
     ----------
     name:
         Registry identifier for the desired model.
+    config:
+        Additional configuration dictionary forwarded to the registered
+        builder.  Values supplied here take precedence over the helper
+        defaults. May be passed as a positional argument for backward
+        compatibility.
     device:
         Target device for the model.  ``torch.device`` objects are converted to a
         canonical string form that the lower-level registry understands.
+        Keyword-only parameter.
     dtype:
         Desired ``torch.dtype`` or string alias (``"fp16"``, ``torch.float16``).
+        Keyword-only parameter.
     lora_adapter:
         Optional path to a LoRA adapter checkpoint.  When provided the helper
         attempts to call ``load_adapter``/``set_active_adapters`` on the
         underlying model.  Failure to load the adapter is treated as a warning
         rather than an error to keep the helper resilient in partially
-        configured environments.
-    config:
-        Additional configuration dictionary forwarded to the registered
-        builder.  Values supplied here take precedence over the helper
-        defaults.
+        configured environments. Keyword-only parameter.
     """
 
     prepared_cfg = _prepare_config(name, config, device, dtype)
