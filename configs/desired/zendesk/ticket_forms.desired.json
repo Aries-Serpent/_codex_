@@ -1,0 +1,28 @@
+{
+  "_meta": {
+    "version": 1,
+    "description": "Desired ticket forms. Reference fields by 'key' for readability; Codex hydrates field IDs.",
+    "owner": "support-ops"
+  },
+  "forms": [
+    {
+      "name": "Default Support",
+      "active": true,
+      "default": true,
+      "display_name": "Contact Support",
+      "end_user_visible": true,
+      "ticket_field_keys": ["impact", "product_area"]
+    },
+    {
+      "name": "Billing Support",
+      "active": true,
+      "default": false,
+      "display_name": "Billing Help",
+      "end_user_visible": true,
+      "ticket_field_keys": ["impact", "product_area"],
+      "conditions": [
+        { "field_key": "product_area", "operator": "equals", "value": "billing" }
+      ]
+    }
+  ]
+}
