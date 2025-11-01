@@ -1,31 +1,31 @@
 {
-  "timestamp": 1761985386.9521258,
+  "timestamp": 1761986554.5280123,
   "version": "1.2.0",
-  "repo_root_sha": "f1e8aa5440565624ef0f2b817b07b6c69597015020bc8f23f86790bfe3e9bb25",
+  "repo_root_sha": "19542d75b7252b06eb75b1bfc1e6f21066f444cbc048ca697047892d78ada427",
   "artifacts": [
     {
-      "name": "capabilities_scored.json",
-      "sha": "3bdbf2f9366da8100480c3663f0e4e98c8868a19be95e8ffc0e2d311292b3307"
-    },
-    {
-      "name": "component_gaps.json",
-      "sha": "80e11a9c453e14b08fcdb813a692305342124976e1228f25a65e660424edbb58"
-    },
-    {
-      "name": "context_index.json",
-      "sha": "e91cdcd6521aff9757ade2f396748204b827c5952f63a231600f79b429751c8c"
+      "name": "facets.json",
+      "sha": "d85abf5f80cdbdb001b17c83576c29befbb7d5d4cda9687db19b01c2c8212589"
     },
     {
       "name": "capabilities_raw.json",
-      "sha": "35de649fb7fd746ec81e4059d6ff76e7bd5ec41692138238a001207afb8edfcb"
+      "sha": "6f98e05cd02a1314a1eca0232ceb063d2a8e00d09e38b3f56298c37d12ca6913"
     },
     {
-      "name": "facets.json",
-      "sha": "709592a2a814cf1ca1dcd1c96b85812e0f2e1cfe99f6492922d7511461f31764"
+      "name": "capabilities_scored.json",
+      "sha": "c774686c296d4347c8706fc6c0b186edbed2ee8e65c67b12fb3a856f3dd4548d"
+    },
+    {
+      "name": "context_index.json",
+      "sha": "8d61364a51ce777ea33756c9adad6ef9b5bd42060df3b678d3ebf1c2751bada4"
+    },
+    {
+      "name": "component_gaps.json",
+      "sha": "2509bf637b20658fc03644734d6a4ac5a7cbe8a6cfc1883be6af93bbf2581bb7"
     },
     {
       "name": "gaps.json",
-      "sha": "2f0881d6a7f3ab57bdf2030f1b6c33c062456455d9d050e17a45cff801c33079"
+      "sha": "acd8bbe6110dcb5ff98b036b9fc3604db215f08e8a2789eb955ce4b58975432d"
     }
   ],
   "weights": {
@@ -40,6 +40,6 @@
     "medium": 0.85
   },
   "warnings": [],
-  "missing_detectors": [],
-  "template_hash": "2dba6b3a850e97cb21fa75127a11d3aeaa57d5da89a51005d119effb4c0dff4b"
+  "template_hash": "fded686db9b7567754a44227d8bcf9d229f13c397436f26743bc6be99aa6907b",
+  "missing_detectors": []
 }

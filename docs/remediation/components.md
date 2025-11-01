@@ -1,7 +1,7 @@
 # [Playbook]: Component Improvements
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
-| Component | How it’s measured | Common root causes | Remediation checklist |
+| Component | How it's measured | Common root causes | Remediation checklist |
 |-----------|-------------------|--------------------|-----------------------|
 | Functionality | required vs found patterns | Patterns renamed or missing; detector too strict | Align required_patterns with code tokens; add minimal stubs; document anchors |
 | Consistency | 1 - duplication_ratio | Duplicate stems across evidence files | Consolidate modules; introduce facades; delete dead copies |
@@ -11,4 +11,4 @@ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Tips:
 - Keep determinism: stable sort, avoid timestamped outputs in examples.
-- Add “Why” in docs when introducing capability tokens to avoid noise.
+- Add "Why" in docs when introducing capability tokens to avoid noise.

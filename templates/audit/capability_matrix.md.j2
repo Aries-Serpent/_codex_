@@ -4,8 +4,6 @@ Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine] Energy: 5
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
 Low Maturity (< {{ "%.2f"|format(thresholds.low) }}): {{ gaps|length }}
-Missing Detectors (overrides): {{ missing_detectors|length }}
-Zero Components Observed: {{ gap_summary.zero_components_total|default(0) }}
 
 ## 2. Capability Scores
 | ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
@@ -44,15 +42,11 @@ All capabilities meet minimum thresholds.
 Score: {{ "%.4f"|format(cap.score) }}
 
 Components:
-- Functionality: {{ "%.2f"|format(cap.components.functionality) }}{{ " (ZERO)" if cap.components.functionality == 0 else "" }}
-- Consistency: {{ "%.2f"|format(cap.components.consistency) }}{{ " (ZERO)" if cap.components.consistency == 0 else "" }}
-- Tests: {{ "%.2f"|format(cap.components.tests) }}{{ " (ZERO)" if cap.components.tests == 0 else "" }}
-- Safeguards: {{ "%.2f"|format(cap.components.safeguards) }}{{ " (ZERO)" if cap.components.safeguards == 0 else "" }}
-- Documentation: {{ "%.2f"|format(cap.components.documentation) }}{{ " (ZERO)" if cap.components.documentation == 0 else "" }}
-
-Required Patterns: {{ cap.required_patterns|join(", ") if cap.required_patterns else "None" }}
-Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
-Missing Patterns: {{ cap.missing_patterns|join(", ") if cap.missing_patterns else "None" }}
+- Functionality: {{ cap.components.functionality }}{% if cap.components.functionality == 0 %} (ZERO){% endif %}
+- Consistency: {{ cap.components.consistency }}{% if cap.components.consistency == 0 %} (ZERO){% endif %}
+- Tests: {{ cap.components.tests }}{% if cap.components.tests == 0 %} (ZERO){% endif %}
+- Safeguards: {{ cap.components.safeguards }}{% if cap.components.safeguards == 0 %} (ZERO){% endif %}
+- Documentation: {{ cap.components.documentation }}{% if cap.components.documentation == 0 %} (ZERO){% endif %}
 
 {% if cap.meta %}
 Meta:
@@ -61,10 +55,9 @@ Meta:
 {% endfor %}
 {% endif %}
 
-Remediation Links:
-- Components: docs/remediation/components.md
-- Detectors: docs/remediation/detectors.md
-- Policy: docs/remediation/policy.md
+Required Patterns: {{ cap.required_patterns|join(", ") if cap.required_patterns else "None" }}
+Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
+Missing Patterns: {{ cap.missing_patterns|join(", ") if cap.missing_patterns else "None" }}
 
 Evidence Files (first 10):
 ```

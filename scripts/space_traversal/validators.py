@@ -1,52 +1,42 @@
-"""Policy validation helpers for capability audit gates."""
 from __future__ import annotations
-
 import json
-from pathlib import Path
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Dict, List, Tuple
 
 
-def _load_json(path: Path) -> dict:
-    with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+def load_json(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as fh:
+        return json.load(fh)
 
 
-def check_low_threshold(gaps_path: Path) -> Tuple[int, List[dict]]:
-    """Return the count and list of low maturity capabilities."""
-    gaps = _load_json(gaps_path)
-    low_list = gaps.get("low_maturity", [])
-    return len(low_list), low_list
+def check_low_threshold(gaps_path: str) -> Tuple[int, List[dict]]:
+    """
+    Returns (count_low, low_list), where low_list contains entries with:
+    { id, score, components, missing_patterns?, ... } as provided by S5.
+    """
+    gaps = load_json(gaps_path)
+    low = gaps.get("low_maturity", [])
+    return len(low), low
 
 
-def check_missing_detectors(
-    scored_path: Path, overrides: Dict[str, Sequence[str]] | None
-) -> List[str]:
-    """Return canonical IDs from overrides that are missing in scored results."""
-    scored = _load_json(scored_path)
-    have = {cap.get("id") for cap in scored.get("capabilities", [])}
+def check_missing_detectors(scored_path: str, overrides: Dict[str, List[str]]) -> List[str]:
+    """
+    Ensures all override keys (canonical IDs) appear in scored capabilities.
+    Returns the list of missing canonical IDs.
+    """
+    scored = load_json(scored_path)
+    have = {c["id"] for c in scored.get("capabilities", [])}
     expect = set(overrides.keys()) if overrides else set()
-    return sorted(expect - have)
-
-
-def _format_low_table(low_list: Iterable[dict]) -> List[str]:
-    rows = ["| ID | Score | Primary Deficit |", "|----|-------|-----------------|"]
-    for item in low_list:
-        comps = item.get("components") or {}
-        if comps:
-            primary = min(comps, key=lambda key: comps[key])
-        else:
-            primary = "n/a"
-        rows.append(f"| {item.get('id')} | {item.get('score', 0.0):.2f} | {primary} |")
-    return rows
+    missing = sorted(expect - have)
+    return missing
 
 
 def emit_summary(
     low_list: List[dict],
-    missing_detector_ids: Sequence[str],
+    missing_detector_ids: List[str],
     thresholds: Dict[str, float],
 ) -> str:
-    """Produce deterministic markdown summary text for CI logs/step summary."""
-    lines: List[str] = []
+    """Produce a deterministic markdown summary for job logs/step summary."""
+    lines = []
     lines.append("# Capability Audit — Gate Summary")
     lines.append("")
     lines.append(f"- Low threshold: {thresholds.get('low')}")
@@ -54,7 +44,12 @@ def emit_summary(
     lines.append("")
     lines.append(f"## Low Maturity ({len(low_list)})")
     if low_list:
-        lines.extend(_format_low_table(low_list))
+        lines.append("| ID | Score | Primary Deficit |")
+        lines.append("|----|-------|-----------------|")
+        for g in low_list:
+            comps = g.get("components", {})
+            comp = min(comps.items(), key=lambda kv: kv[1])[0] if comps else "n/a"
+            lines.append(f"| {g['id']} | {g['score']:.2f} | {comp} |")
     else:
         lines.append("_None_")
     lines.append("")

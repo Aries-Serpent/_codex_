@@ -1,5 +1,4 @@
 # Copilot Space Audit Workflow Makefile (v1.2.0)
-# Tip: run `make space-validate` to mirror CI gate behavior and capture summary text locally.
 
 SPACE_PY ?= python
 RUNNER ?= scripts/space_traversal/audit_runner.py

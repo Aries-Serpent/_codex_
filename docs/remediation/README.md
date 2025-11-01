@@ -7,10 +7,10 @@ Use these focused guides to raise maturity scores and clear CI gates:
 - policy.md — Tune thresholds, deltas, and gating behavior.
 
 How to use:
-1. From the matrix “Low Maturity Focus,” identify the primary deficit and missing patterns.
-2. Jump to the corresponding section in components.md.
-3. If capability detection looks off, consult detectors.md.
-4. For policy tweaks per engagement, see policy.md.
+1) From the matrix "Low Maturity Focus," identify the primary deficit and missing patterns.
+2) Jump to the corresponding section in components.md.
+3) If capability detection looks off, consult detectors.md.
+4) For policy tweaks per engagement, see policy.md.
 
 Links:
 - Matrix report: reports/capability_matrix_<ts>.md
