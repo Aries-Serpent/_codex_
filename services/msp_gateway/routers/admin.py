@@ -170,13 +170,25 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
         )
-
-    logger.info(
-        "Tenant updated: %s (fields: %s)",
-        tenant_id,
-        ", ".join(update_request.model_dump(exclude_none=True).keys()) or "updated_at",
-    )
-
+    
+    # Update tenant using registry method (persists to database)
+    try:
+        updated_tenant = tenant_registry.update_tenant(
+            tenant_id=tenant_id,
+            name=update_request.name,
+            quota=update_request.quota,
+            policies=update_request.policies,
+            metadata=update_request.metadata,
+            active=update_request.active,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    
+    logger.info(f"Tenant updated: {tenant_id}")
+    
     return TenantResponse(
         tenant_id=updated_tenant["tenant_id"],
         name=updated_tenant["name"],
@@ -207,6 +219,15 @@ async def delete_tenant(tenant_id: str):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
         )
-
+    
+    # Delete (deactivate) tenant using registry method (persists to database and revokes API key)
+    try:
+        tenant_registry.delete_tenant(tenant_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    
     logger.info(f"Tenant deactivated: {tenant_id}")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

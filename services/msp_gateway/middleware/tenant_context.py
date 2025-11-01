@@ -232,6 +232,126 @@ class TenantRegistry:
             return tenants
 
         return list(self.tenants.values())
+    
+    def update_tenant(
+        self,
+        tenant_id: str,
+        name: Optional[str] = None,
+        quota: Optional[Dict[str, int]] = None,
+        policies: Optional[list] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        active: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """Update tenant information
+        
+        Args:
+            tenant_id: Tenant identifier
+            name: New name (optional)
+            quota: New quota (optional)
+            policies: New policies (optional)
+            metadata: New metadata (optional)
+            active: New active status (optional)
+        
+        Returns:
+            Updated tenant data
+        
+        Raises:
+            ValueError: If tenant not found
+        """
+        import json
+        
+        # Get existing tenant
+        tenant_data = self.get_tenant(tenant_id)
+        if not tenant_data:
+            raise ValueError(f"Tenant not found: {tenant_id}")
+        
+        # Update fields
+        if name is not None:
+            tenant_data["name"] = name
+        if quota is not None:
+            tenant_data["quota"] = quota
+        if policies is not None:
+            tenant_data["policies"] = policies
+        if metadata is not None:
+            tenant_data["metadata"] = metadata
+        if active is not None:
+            tenant_data["active"] = active
+        
+        tenant_data["updated_at"] = datetime.utcnow().isoformat()
+        
+        # Update in SQLite
+        if self.backend == "sqlite":
+            conn = sqlite3.connect(settings.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE tenants
+                SET name = ?, quota_json = ?, policies_json = ?,
+                    metadata_json = ?, active = ?, updated_at = ?
+                WHERE tenant_id = ?
+            """, (
+                tenant_data["name"],
+                json.dumps(tenant_data["quota"]),
+                json.dumps(tenant_data["policies"]),
+                json.dumps(tenant_data["metadata"]),
+                1 if tenant_data["active"] else 0,
+                tenant_data["updated_at"],
+                tenant_id
+            ))
+            
+            conn.commit()
+            conn.close()
+        
+        # Update cache
+        self.tenants[tenant_id] = tenant_data
+        
+        logger.info(f"Updated tenant: {tenant_id}")
+        return tenant_data
+    
+    def delete_tenant(self, tenant_id: str) -> None:
+        """Delete (deactivate) a tenant and revoke API key
+        
+        Args:
+            tenant_id: Tenant identifier
+        
+        Raises:
+            ValueError: If tenant not found
+        """
+        import json
+        
+        # Get existing tenant
+        tenant_data = self.get_tenant(tenant_id)
+        if not tenant_data:
+            raise ValueError(f"Tenant not found: {tenant_id}")
+        
+        # Deactivate tenant
+        tenant_data["active"] = False
+        tenant_data["updated_at"] = datetime.utcnow().isoformat()
+        
+        # Update in SQLite
+        if self.backend == "sqlite":
+            conn = sqlite3.connect(settings.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE tenants
+                SET active = 0, updated_at = ?
+                WHERE tenant_id = ?
+            """, (tenant_data["updated_at"], tenant_id))
+            
+            conn.commit()
+            conn.close()
+        
+        # Update cache
+        self.tenants[tenant_id] = tenant_data
+        
+        # Revoke API key
+        api_key = tenant_data.get("api_key")
+        if api_key:
+            auth_manager.revoke_api_key(api_key)
+        
+        logger.info(f"Deleted (deactivated) tenant: {tenant_id}")
+
 
     def update_tenant(
         self,
