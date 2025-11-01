@@ -1,3 +1,8 @@
+# Copilot Space Workflow Spec (v1.2.0)
+# Policy updates:
+# - Enforce low maturity and missing-detector gates during `validate`.
+# - Score regression guard remains; thresholds unchanged.
+
 version: 1.2.0
 
 stages:
@@ -42,8 +47,7 @@ scoring:
     low: 0.70
     medium: 0.85
 
-  # NEW: Optional component caps. Any missing key defaults to 1.0.
-  # The capped value v'_i = min(v_i, cap_i) is used before weighting.
+  # Optional component caps. Any missing key defaults to 1.0.
   component_caps:
     functionality: 1.0
     consistency: 1.0
@@ -51,7 +55,7 @@ scoring:
     safeguards: 1.0
     documentation: 1.0
 
-  # NEW: Optional duplication heuristic switch (experimental).
+  # Optional duplication heuristic switch (experimental).
   # - simple: current file-stem duplication ratio (default)
   # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
   dup:

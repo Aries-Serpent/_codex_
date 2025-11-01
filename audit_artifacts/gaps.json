@@ -85,18 +85,53 @@
       ],
       "missing_patterns": [
         "kubernetes"
-      ]
+      ],
+      "meta": {
+        "docker_configs": 6,
+        "k8s_manifests": 0,
+        "helm_charts": 2,
+        "service_definitions": 46,
+        "deploy_scripts": 3
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 0.8,
+          "weight": 0.25,
+          "contribution": 0.2
+        },
+        "consistency": {
+          "component_value": 0.736842105263158,
+          "weight": 0.2,
+          "contribution": 0.1473684210526316
+        },
+        "tests": {
+          "component_value": 0.08771929824561403,
+          "weight": 0.25,
+          "contribution": 0.021929824561403508
+        },
+        "safeguards": {
+          "component_value": 0.6666666666666666,
+          "weight": 0.15,
+          "contribution": 0.09999999999999999
+        },
+        "documentation": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        }
+      },
+      "primary_deficit": "tests"
     },
     {
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9253333333333333,
-        "tests": 0.0026666666666666666,
+        "consistency": 0.9257294429708223,
+        "tests": 0.002652519893899204,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6732,
+      "score": 0.6733,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -143,6 +178,8 @@
         "docs/bridge/governance.md",
         "docs/bridge/overview.md",
         "docs/bridge/ubuntu_cli.md",
+        "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
+        "docs/changes/MSP_Capability_Audit_File_Map.md",
         "docs/checklists/approval_gate_checklist.md",
         "docs/checklists/zendesk_first_cycle_verification.md",
         "docs/checkpoint_integrity.md",
@@ -334,6 +371,7 @@
         "docs/performance.md",
         "docs/phase4_changes.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
+        "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
         "docs/plugins.md",
         "docs/plugins/Plugin_Registry.md",
         "docs/policies/archive-policy.md",
@@ -487,18 +525,52 @@
       ],
       "missing_patterns": [
         "sphinx"
-      ]
+      ],
+      "meta": {
+        "markdown_count": 375,
+        "rst_count": 0,
+        "config_count": 1,
+        "total_docs": 377
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 0.75,
+          "weight": 0.25,
+          "contribution": 0.1875
+        },
+        "consistency": {
+          "component_value": 0.9257294429708223,
+          "weight": 0.2,
+          "contribution": 0.18514588859416448
+        },
+        "tests": {
+          "component_value": 0.002652519893899204,
+          "weight": 0.25,
+          "contribution": 0.000663129973474801
+        },
+        "safeguards": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        },
+        "documentation": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        }
+      },
+      "primary_deficit": "tests"
     },
     {
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.760539629005059,
-        "tests": 0.2988195615514334,
+        "consistency": 0.7615961800818554,
+        "tests": 0.30218281036834926,
         "safeguards": 1.0,
-        "documentation": 0.14234875444839856
+        "documentation": 0.2439024390243902
       },
-      "score": 0.3982,
+      "score": 0.4145,
       "evidence_files": [
         ".bandit.yml",
         ".codex/DO_NOT_ACTIVATE_ACTIONS.txt",
@@ -513,6 +585,17 @@
         ".codex/automation_out/coverage_report.json",
         ".codex/automation_out/db_catalog.json",
         ".codex/automation_out/db_inventory.json",
+        ".codex/cache/maint_vendor_hash_post.json",
+        ".codex/cache/maint_vendor_hash_pre_sync.json",
+        ".codex/cache/maintenance.locksum",
+        ".codex/cache/maintenance_summary.json",
+        ".codex/cache/secrets.status.json",
+        ".codex/cache/setup.locksum",
+        ".codex/cache/setup_summary.json",
+        ".codex/cache/uv_sync.log",
+        ".codex/cache/uv_sync_maint.log",
+        ".codex/cache/vendor_hash_post_purge.json",
+        ".codex/cache/vendor_hash_pre_sync.json",
         ".codex/change_log-large.md",
         ".codex/change_log.md",
         ".codex/change_log_compare_report.json",
@@ -584,6 +667,10 @@
         ".codex/inventory.tsv",
         ".codex/inventory.txt",
         ".codex/lint-policy.json",
+        ".codex/logs/command_failures.log",
+        ".codex/logs/maintenance_failures.log",
+        ".codex/logs/maintenance_warnings.log",
+        ".codex/logs/setup_warnings.log",
         ".codex/mapping.json",
         ".codex/mapping.md",
         ".codex/mapping_table.json",
@@ -1142,6 +1229,8 @@
         "docs/bridge/governance.md",
         "docs/bridge/overview.md",
         "docs/bridge/ubuntu_cli.md",
+        "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
+        "docs/changes/MSP_Capability_Audit_File_Map.md",
         "docs/checklists/approval_gate_checklist.md",
         "docs/checklists/zendesk_first_cycle_verification.md",
         "docs/checkpoint_integrity.md",
@@ -1340,6 +1429,7 @@
         "docs/performance.md",
         "docs/phase4_changes.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
+        "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
         "docs/plugins.md",
         "docs/plugins/Plugin_Registry.md",
         "docs/policies/archive-policy.md",
@@ -3472,7 +3562,36 @@
       ],
       "missing_patterns": [
         "unique_stems"
-      ]
+      ],
+      "meta": {},
+      "partials": {
+        "functionality": {
+          "component_value": 0.0,
+          "weight": 0.25,
+          "contribution": 0.0
+        },
+        "consistency": {
+          "component_value": 0.7615961800818554,
+          "weight": 0.2,
+          "contribution": 0.1523192360163711
+        },
+        "tests": {
+          "component_value": 0.30218281036834926,
+          "weight": 0.25,
+          "contribution": 0.07554570259208732
+        },
+        "safeguards": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        },
+        "documentation": {
+          "component_value": 0.2439024390243902,
+          "weight": 0.15,
+          "contribution": 0.03658536585365853
+        }
+      },
+      "primary_deficit": "functionality"
     },
     {
       "id": "inference-serving",
@@ -3481,9 +3600,9 @@
         "consistency": 0.8888888888888888,
         "tests": 0.3333333333333333,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.693950177935943
+        "documentation": 0.8013937282229965
       },
-      "score": 0.5902,
+      "score": 0.6063,
       "evidence_files": [
         "src/codex_ml/telemetry/server.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -3504,7 +3623,38 @@
       ],
       "missing_patterns": [
         "fastapi"
-      ]
+      ],
+      "meta": {
+        "layer": "serving"
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 0.5,
+          "weight": 0.25,
+          "contribution": 0.125
+        },
+        "consistency": {
+          "component_value": 0.8888888888888888,
+          "weight": 0.2,
+          "contribution": 0.17777777777777778
+        },
+        "tests": {
+          "component_value": 0.3333333333333333,
+          "weight": 0.25,
+          "contribution": 0.08333333333333333
+        },
+        "safeguards": {
+          "component_value": 0.6666666666666666,
+          "weight": 0.15,
+          "contribution": 0.09999999999999999
+        },
+        "documentation": {
+          "component_value": 0.8013937282229965,
+          "weight": 0.15,
+          "contribution": 0.12020905923344946
+        }
+      },
+      "primary_deficit": "tests"
     },
     {
       "id": "safeguards_keywords",
@@ -3513,9 +3663,9 @@
         "consistency": 0.83875,
         "tests": 0.2825,
         "safeguards": 1.0,
-        "documentation": 0.0889679715302491
+        "documentation": 0.19163763066202089
       },
-      "score": 0.6517,
+      "score": 0.6671,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -4334,13 +4484,47 @@
         "seed",
         "sha256"
       ],
-      "missing_patterns": []
+      "missing_patterns": [],
+      "meta": {},
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.83875,
+          "weight": 0.2,
+          "contribution": 0.16775
+        },
+        "tests": {
+          "component_value": 0.2825,
+          "weight": 0.25,
+          "contribution": 0.070625
+        },
+        "safeguards": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        },
+        "documentation": {
+          "component_value": 0.19163763066202089,
+          "weight": 0.15,
+          "contribution": 0.028745644599303132
+        }
+      },
+      "primary_deficit": "documentation"
     }
   ],
   "missing_detectors": [],
   "summary": {
     "low_count": 5,
-    "zeros_count": 1
+    "missing_detectors_count": 0,
+    "zero_components_total": 1
+  },
+  "thresholds": {
+    "low": 0.7,
+    "medium": 0.85
   },
   "version": "1.2.0"
 }

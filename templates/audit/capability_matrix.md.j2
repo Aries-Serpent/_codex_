@@ -1,6 +1,5 @@
 # [Report]: Capability Matrix
-> Generated: {{ timestamp }} | Author: audit_system
- Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5
+Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine] Energy: 5
 
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
@@ -26,6 +25,10 @@ Low Maturity (< {{ "%.2f"|format(thresholds.low) }}): {{ gaps|length }}
 All capabilities meet minimum thresholds.
 {% endif %}
 
+{% if missing_detectors %}
+> **Action:** Detectors missing for overrides — {{ missing_detectors|join(", ") }}
+{% endif %}
+
 ## 4. Weight Reference
 | Component | Weight |
 |-----------|-------:|
@@ -45,11 +48,10 @@ Components:
 - Safeguards: {{ cap.components.safeguards }}{% if cap.components.safeguards == 0 %} (ZERO){% endif %}
 - Documentation: {{ cap.components.documentation }}{% if cap.components.documentation == 0 %} (ZERO){% endif %}
 
-{# NEW: Optional Meta display; shows key/value pairs if meta dict present #}
 {% if cap.meta %}
 Meta:
-{% for key in cap.meta|dictsort %}
-- {{ key[0] }}: {{ key[1] }}
+{% for key, value in cap.meta|dictsort %}
+- {{ key }}: {{ value }}
 {% endfor %}
 {% endif %}
 
