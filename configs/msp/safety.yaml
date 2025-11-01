@@ -1,0 +1,45 @@
+# Safety and Policy Configuration
+# Security policies for content filtering and redaction
+
+policies:
+  safelist_path: "policies/safelist.yaml"
+  denylist_path: "policies/denylist.yaml"
+  tenant_schema_path: "policies/tenant_policy.schema.json"
+
+redaction:
+  enabled: true
+  apply_to_prompts: true
+  apply_to_outputs: true
+  patterns:
+    - name: "email"
+      enabled: true
+    - name: "phone"
+      enabled: true
+    - name: "ssn"
+      enabled: true
+    - name: "credit_card"
+      enabled: true
+    - name: "api_key"
+      enabled: true
+
+prompt_validation:
+  enabled: true
+  max_length: 10000
+  block_malicious_patterns: true
+  check_injection: true
+
+output_filtering:
+  enabled: true
+  remove_safety_markers: true
+  add_citations: true
+  citation_style: "inline"  # inline, footnote, none
+
+tenant_isolation:
+  enforce_tenant_id: true
+  block_cross_tenant_access: true
+  log_violations: true
+
+offline_enforcement:
+  block_network_calls: true
+  block_external_models: true
+  allow_local_only: true

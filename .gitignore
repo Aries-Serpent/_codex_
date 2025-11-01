@@ -176,3 +176,12 @@ validation_summary.json
 *-validation.json
 config/sbom-config.yaml
 config/artifacts/
+
+# MSP Gateway artifacts
+.codex/msp_gateway.db
+.codex/tenants/
+.codex/faiss/
+.codex/logs/
+artifacts/emb/
+*.faiss
+*.index
