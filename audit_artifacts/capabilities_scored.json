@@ -1,5 +1,5 @@
 {
-  "generated": 1761865313.4526002,
+  "generated": 1761986304.9810238,
   "capabilities": [
     {
       "id": "checkpointing",
@@ -111,47 +111,26 @@
         "load",
         "save_checkpoint"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8723404255319149,
-          "weight": 0.2,
-          "contribution": 0.174468085106383
-        },
-        "tests": {
-          "component_value": 0.7021276595744681,
-          "weight": 0.25,
-          "contribution": 0.17553191489361702
-        },
-        "safeguards": {
-          "component_value": 0.8333333333333334,
-          "weight": 0.15,
-          "contribution": 0.125
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "save_checkpoint",
+        "load"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "ci-cd-pipeline",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.90625,
-        "tests": 0.578125,
+        "consistency": 0.9067357512953368,
+        "tests": 0.5751295336787565,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8758,
+      "score": 0.8751,
       "evidence_files": [
         ".codex/smoke/import_check.py",
         ".github/workflows/archive-gates.yml.disabled",
+        ".github/workflows/capability-audit.yml",
         ".github/workflows/ci.yml.disabled",
         ".github/workflows/docker-build-push.yml",
         ".github/workflows/runner-diagnostics.yml",
@@ -350,51 +329,25 @@
         "validation",
         "workflow"
       ],
-      "meta": {
-        "github_actions": 7,
-        "pre_commit_hooks": 3,
-        "ci_configs": 2,
-        "validation_scripts": 180,
-        "note": "GitHub Actions present but not activated per AGENTS.md"
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.90625,
-          "weight": 0.2,
-          "contribution": 0.18125000000000002
-        },
-        "tests": {
-          "component_value": 0.578125,
-          "weight": 0.25,
-          "contribution": 0.14453125
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "ci",
+        "pre-commit",
+        "workflow",
+        "automation",
+        "validation"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "code-quality-tooling",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8671328671328671,
-        "tests": 0.5804195804195804,
+        "consistency": 0.8551724137931034,
+        "tests": 0.5724137931034483,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.8435,
+      "score": 0.8391,
       "evidence_files": [
         ".bandit.yml",
         ".codex/evidence/phase5_privacy_safety.jsonl",
@@ -407,6 +360,7 @@
         "artifacts/security/safety.txt",
         "bandit.yaml",
         "configs/base/safety/policy.yaml",
+        "configs/msp/safety.yaml",
         "docs/guides/CHECKPOINT_SAFETY.md",
         "docs/modules/safety.md",
         "docs/ops/Security_Artifacts.md",
@@ -444,6 +398,7 @@
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "services/ita/app/security.py",
         "services/ita/pyproject.toml",
+        "services/msp_gateway/security.py",
         "src/codex_ml/safety/__init__.py",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -547,61 +502,39 @@
         "security-scan",
         "type-check"
       ],
-      "meta": {
-        "formatters": 2,
-        "linters": 3,
-        "type_checkers": 7,
-        "security_scanners": 96,
-        "quality_scripts": 38
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8671328671328671,
-          "weight": 0.2,
-          "contribution": 0.17342657342657342
-        },
-        "tests": {
-          "component_value": 0.5804195804195804,
-          "weight": 0.25,
-          "contribution": 0.1451048951048951
-        },
-        "safeguards": {
-          "component_value": 0.8333333333333334,
-          "weight": 0.15,
-          "contribution": 0.125
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "lint",
+        "format",
+        "type-check",
+        "security-scan",
+        "quality"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "configuration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.7628865979381443,
-        "tests": 0.22164948453608246,
+        "consistency": 0.7699530516431925,
+        "tests": 0.20657276995305165,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.758,
+      "score": 0.7556,
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
         ".codex/evidence/phase4_hydra_check.jsonl",
         ".codex/hydra_last/config.yaml",
         ".editorconfig",
         ".github/docs/ARCHIVE_CONFIG_ADR.md",
+        ".github/docs/SBOM_Config_InstructionEnhancement.md",
         ".pre-commit-config.yaml",
         "agents/codex_client/codex_client/config.py",
         "agents/codex_client/tests/test_config.py",
         "commitlint.config.mjs",
+        "config/Makefile",
+        "config/README.md",
+        "config/sample-sbom-config.yaml",
         "configs/README.md",
         "configs/__init__.py",
         "configs/base/app.yaml",
@@ -644,6 +577,14 @@
         "configs/deployment/plugins/default.yaml",
         "configs/deployment/powerautomate/templates/.gitkeep",
         "configs/deployment/zd/.gitkeep",
+        "configs/desired/zendesk/macros.desired.json",
+        "configs/desired/zendesk/routing.desired.json",
+        "configs/desired/zendesk/talk_ivr.desired.json",
+        "configs/desired/zendesk/ticket_fields.desired.json",
+        "configs/desired/zendesk/ticket_forms.desired.json",
+        "configs/desired/zendesk/triggers.desired.json",
+        "configs/desired/zendesk/views.desired.json",
+        "configs/desired/zendesk/webhooks.desired.json",
         "configs/development/Makefile",
         "configs/development/artifacts/sbom/packages.txt",
         "configs/development/codex.mk",
@@ -663,6 +604,9 @@
         "configs/evaluation/reasoning/tools.yaml",
         "configs/experimental/config_minimal.yaml",
         "configs/experimental/experiment.yaml",
+        "configs/msp/gateway.yaml",
+        "configs/msp/retrieval.yaml",
+        "configs/msp/safety.yaml",
         "configs/schemas/README.md",
         "configs/schemas/__init__.py",
         "configs/schemas/data.schema.yaml",
@@ -718,10 +662,13 @@
         "docs/modules/configuration.md",
         "docs/ops/hydra_defaults_audit.md",
         "docs/ops/hydra_distributed_overrides.md",
+        "docs/validation/SBOM_Config_Validation.md",
         "hydra/__init__.py",
         "hydra/errors.py",
         "patches/pending/2025-09-21_hydra_entrypoint.patch",
+        "scripts/generate-config.sh",
         "scripts/runner/configure_repo_vars.sh",
+        "services/msp_gateway/config.py",
         "src/codex/archive/config.py",
         "src/codex/archive/logging_config.py",
         "src/codex/logging/config.py",
@@ -749,6 +696,7 @@
         "tests/codex_ml/test_cli_train_config_bridge.py",
         "tests/config/conftest.py",
         "tests/config/test_config_schema.py",
+        "tests/config/test_config_settings.py",
         "tests/config/test_hydra_defaults.py",
         "tests/config/test_hydra_defaults_tree.py",
         "tests/config/test_override_propagation.py",
@@ -792,33 +740,11 @@
         "config",
         "hydra"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.7628865979381443,
-          "weight": 0.2,
-          "contribution": 0.15257731958762888
-        },
-        "tests": {
-          "component_value": 0.22164948453608246,
-          "weight": 0.25,
-          "contribution": 0.055412371134020616
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "config",
+        "hydra"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "data-pipeline",
@@ -976,44 +902,22 @@
         "loader",
         "split"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8642857142857143,
-          "weight": 0.2,
-          "contribution": 0.17285714285714288
-        },
-        "tests": {
-          "component_value": 0.42857142857142855,
-          "weight": 0.25,
-          "contribution": 0.10714285714285714
-        },
-        "safeguards": {
-          "component_value": 0.8333333333333334,
-          "weight": 0.15,
-          "contribution": 0.125
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "split",
+        "loader"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "deployment-infrastructure",
       "components": {
         "functionality": 0.8,
-        "consistency": 0.8378378378378378,
-        "tests": 0.13513513513513514,
+        "consistency": 0.736842105263158,
+        "tests": 0.08771929824561403,
         "safeguards": 0.6666666666666666,
         "documentation": 1.0
       },
-      "score": 0.6514,
+      "score": 0.6193,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -1024,6 +928,7 @@
         "deploy/setup_universal.sh",
         "docker-compose.yml",
         "docker/entrypoint.sh",
+        "docker/msp-gateway.Dockerfile",
         "scripts/deploy/orchestrate.sh",
         "services/__init__.py",
         "services/api/__init__.py",
@@ -1046,6 +951,25 @@
         "services/ita/tests/__init__.py",
         "services/ita/tests/test_contract.py",
         "services/ita/tests/test_endpoints.py",
+        "services/msp_gateway/README.md",
+        "services/msp_gateway/__init__.py",
+        "services/msp_gateway/app.py",
+        "services/msp_gateway/config.py",
+        "services/msp_gateway/main.py",
+        "services/msp_gateway/middleware/__init__.py",
+        "services/msp_gateway/middleware/rate_limit.py",
+        "services/msp_gateway/middleware/tenant_context.py",
+        "services/msp_gateway/providers/__init__.py",
+        "services/msp_gateway/providers/model_adapter.py",
+        "services/msp_gateway/providers/retrieval_adapter.py",
+        "services/msp_gateway/routers/__init__.py",
+        "services/msp_gateway/routers/admin.py",
+        "services/msp_gateway/routers/infer.py",
+        "services/msp_gateway/routers/kb.py",
+        "services/msp_gateway/schemas/__init__.py",
+        "services/msp_gateway/schemas/requests.py",
+        "services/msp_gateway/schemas/responses.py",
+        "services/msp_gateway/security.py",
         "src/codex/api/__init__.py",
         "src/codex/api/app.py",
         "tests/services/api/test_infer_limits.py",
@@ -1059,51 +983,27 @@
         "helm",
         "service"
       ],
-      "meta": {
-        "docker_configs": 5,
-        "k8s_manifests": 0,
-        "helm_charts": 2,
-        "service_definitions": 27,
-        "deploy_scripts": 3
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 0.8,
-          "weight": 0.25,
-          "contribution": 0.2
-        },
-        "consistency": {
-          "component_value": 0.8378378378378378,
-          "weight": 0.2,
-          "contribution": 0.16756756756756758
-        },
-        "tests": {
-          "component_value": 0.13513513513513514,
-          "weight": 0.25,
-          "contribution": 0.033783783783783786
-        },
-        "safeguards": {
-          "component_value": 0.6666666666666666,
-          "weight": 0.15,
-          "contribution": 0.09999999999999999
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "docker",
+        "kubernetes",
+        "helm",
+        "deploy",
+        "service"
+      ],
+      "missing_patterns": [
+        "kubernetes"
+      ]
     },
     {
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9323943661971831,
-        "tests": 0.0028169014084507044,
+        "consistency": 0.9253333333333333,
+        "tests": 0.0026666666666666666,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6747,
+      "score": 0.6732,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -1151,6 +1051,7 @@
         "docs/bridge/overview.md",
         "docs/bridge/ubuntu_cli.md",
         "docs/checklists/approval_gate_checklist.md",
+        "docs/checklists/zendesk_first_cycle_verification.md",
         "docs/checkpoint_integrity.md",
         "docs/checkpoint_schema_v2.md",
         "docs/ci.md",
@@ -1224,12 +1125,14 @@
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/guides/LOGGING.md",
         "docs/guides/TESTING_GUIDE.md",
+        "docs/guides/_codex__Newcomer_Codebase_Overview.md",
         "docs/guides/asset_instruction_playbook.md",
         "docs/guides/auditing.md",
         "docs/guides/checkpointing.md",
         "docs/guides/code_style_guide.md",
         "docs/guides/codex_archive_runbook.md",
         "docs/guides/codex_setup.md",
+        "docs/guides/codex_zendesk_integration_deep_dive.md",
         "docs/guides/config_overrides.md",
         "docs/guides/continual_learning.md",
         "docs/guides/continual_learning_readiness.md",
@@ -1246,6 +1149,7 @@
         "docs/guides/serving_reproducibility.md",
         "docs/guides/session_hooks.md",
         "docs/guides/tokenization.md",
+        "docs/guides/zendesk_ai_app_builder_limitations.md",
         "docs/how-to/admin_bootstrap.md",
         "docs/how-to/bootstrap_runner.md",
         "docs/how-to/checkpoint_metadata.md",
@@ -1336,6 +1240,7 @@
         "docs/patch-troubleshooting.md",
         "docs/performance.md",
         "docs/phase4_changes.md",
+        "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
         "docs/plugins.md",
         "docs/plugins/Plugin_Registry.md",
         "docs/policies/archive-policy.md",
@@ -1354,6 +1259,10 @@
         "docs/reference/metrics_cli.md",
         "docs/reference/tools.md",
         "docs/releasing.md",
+        "docs/remediation/README.md",
+        "docs/remediation/components.md",
+        "docs/remediation/detectors.md",
+        "docs/remediation/policy.md",
         "docs/repro.md",
         "docs/repro_guidance.md",
         "docs/reproducibility.md",
@@ -1363,6 +1272,7 @@
         "docs/runbooks/offline_wheelhouse.md",
         "docs/runbooks/zendesk_admin_workflow.md",
         "docs/runbooks/zendesk_docs_pipeline.md",
+        "docs/runbooks/zendesk_e2e_support_workflows_plan.md",
         "docs/safety.md",
         "docs/safety/differential_privacy.md",
         "docs/safety/moderation_adapter.md",
@@ -1378,6 +1288,7 @@
         "docs/security/remove-env-file.md",
         "docs/specs/FORMAL_ARTIFACTS.md",
         "docs/sqlite.md",
+        "docs/starterpacks/zendesk_desired_state/README.md",
         "docs/status_update_outstanding_questions.md",
         "docs/status_update_prompt.md",
         "docs/status_updates/README.md",
@@ -1441,6 +1352,7 @@
         "docs/validation/CODEBASE_Status_Audit_2025-10-14.md",
         "docs/validation/Docker_Validation.md",
         "docs/validation/EphemeralRunner_Validation.md",
+        "docs/validation/Gaps_Coverage_Checklist_And_Scripts.md",
         "docs/validation/Offline_Audit_Validation.md",
         "docs/validation/Owner_Approval_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
@@ -1449,6 +1361,7 @@
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
+        "docs/validation/SBOM_Config_Validation.md",
         "docs/validation/SelfHostedRunner_Validation.md",
         "docs/validation/Status_Update_Audit_Prompt.md",
         "docs/validation/Traversal_Workflow.md",
@@ -1457,6 +1370,13 @@
         "docs/validation/fetch_messages_Validation.md",
         "docs/validation/status_update_exhaustiveness.md",
         "docs/validation/tokenization_Validation.md",
+        "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/zendesk/AI_AGENT_APP_BUILDER.md",
+        "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
+        "docs/zendesk/README.md",
+        "docs/zendesk/VALIDATION_REPORT.md",
+        "docs/zendesk/WORKFLOW_DIAGRAMS.md",
+        "docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md",
         "docs/zendesk_api_catalog_generated.md",
         "docs/zendesk_api_reference.md",
         "mkdocs.yml"
@@ -1466,50 +1386,26 @@
         "markdown",
         "mkdocs"
       ],
-      "meta": {
-        "markdown_count": 353,
-        "rst_count": 0,
-        "config_count": 1,
-        "total_docs": 355
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 0.75,
-          "weight": 0.25,
-          "contribution": 0.1875
-        },
-        "consistency": {
-          "component_value": 0.9323943661971831,
-          "weight": 0.2,
-          "contribution": 0.18647887323943663
-        },
-        "tests": {
-          "component_value": 0.0028169014084507044,
-          "weight": 0.25,
-          "contribution": 0.0007042253521126761
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "markdown",
+        "docs",
+        "mkdocs",
+        "sphinx"
+      ],
+      "missing_patterns": [
+        "sphinx"
+      ]
     },
     {
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7621756132243157,
-        "tests": 0.31354425879843584,
+        "consistency": 0.7608098833218944,
+        "tests": 0.3040494166094715,
         "safeguards": 1.0,
-        "documentation": 0.18656716417910446
+        "documentation": 0.2288732394366197
       },
-      "score": 0.4088,
+      "score": 0.4125,
       "evidence_files": [
         ".bandit.yml",
         ".codex/DO_NOT_ACTIVATE_ACTIONS.txt",
@@ -1752,17 +1648,21 @@
         ".github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md",
         ".github/docs/ARCHIVE_IMPROVEMENTS_INDEX.md",
         ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+        ".github/docs/CI_Copilot.md",
+        ".github/docs/Copilot_Audit_InstructionEnhancement.md",
         ".github/docs/CrossRepoPatterns_Analysis.md",
         ".github/docs/DeepResearch_GitHooksAutoFix.md",
         ".github/docs/Implementation_LLMAutoFixHook.md",
         ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
         ".github/docs/PoC_Repo_Layout_Copilot.md",
+        ".github/docs/SBOM_Config_InstructionEnhancement.md",
         ".github/docs/SQLITE_RESTORE_FIX_ADR.md",
         ".github/docs/SelfHostedRunner_InstructionEnhancement.md",
         ".github/docs/Space_TraversalWorkflow_Copilot.md",
         ".github/docs/cli_migration_execution_guide.md",
         ".github/pull_request_template.md",
         ".github/workflows/archive-gates.yml.disabled",
+        ".github/workflows/capability-audit.yml",
         ".github/workflows/ci.yml.disabled",
         ".github/workflows/docker-build-push.yml",
         ".github/workflows/runner-diagnostics.yml",
@@ -1785,6 +1685,10 @@
         "LICENSES/codex-universal-image-sbom.md",
         "LICENSES/codex-universal-image-sbom.spdx.json",
         "MANIFEST.in",
+        "MSP_IMPLEMENTATION_SUMMARY.md",
+        "Makefile",
+        "NEWCOMER_GUIDE.md",
+        "P1_FIX_API_KEY_OPTIONAL.md",
         "README.md",
         "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
@@ -1818,6 +1722,7 @@
         "agents/codex_client/codex_client/models.py",
         "agents/codex_client/pyproject.toml",
         "agents/codex_client/tests/test_config.py",
+        "agents/msp_client.py",
         "analysis/__init__.py",
         "analysis/audit_pipeline.py",
         "analysis/branch_0B_base_overview.md",
@@ -1931,6 +1836,9 @@
         "codex_utils/tracking/guards.py",
         "commitlint.config.mjs",
         "compare_report.json",
+        "config/Makefile",
+        "config/README.md",
+        "config/sample-sbom-config.yaml",
         "configs/README.md",
         "configs/__init__.py",
         "configs/base/app.yaml",
@@ -1973,6 +1881,14 @@
         "configs/deployment/plugins/default.yaml",
         "configs/deployment/powerautomate/templates/.gitkeep",
         "configs/deployment/zd/.gitkeep",
+        "configs/desired/zendesk/macros.desired.json",
+        "configs/desired/zendesk/routing.desired.json",
+        "configs/desired/zendesk/talk_ivr.desired.json",
+        "configs/desired/zendesk/ticket_fields.desired.json",
+        "configs/desired/zendesk/ticket_forms.desired.json",
+        "configs/desired/zendesk/triggers.desired.json",
+        "configs/desired/zendesk/views.desired.json",
+        "configs/desired/zendesk/webhooks.desired.json",
         "configs/development/Makefile",
         "configs/development/artifacts/sbom/packages.txt",
         "configs/development/codex.mk",
@@ -1992,6 +1908,9 @@
         "configs/evaluation/reasoning/tools.yaml",
         "configs/experimental/config_minimal.yaml",
         "configs/experimental/experiment.yaml",
+        "configs/msp/gateway.yaml",
+        "configs/msp/retrieval.yaml",
+        "configs/msp/safety.yaml",
         "configs/schemas/README.md",
         "configs/schemas/__init__.py",
         "configs/schemas/data.schema.yaml",
@@ -2083,6 +2002,7 @@
         "docker-compose.override.yml",
         "docker-compose.yml",
         "docker/entrypoint.sh",
+        "docker/msp-gateway.Dockerfile",
         "docs/ARCHITECTURE.md",
         "docs/CHANGELOG.md",
         "docs/CHANGELOG/change_log.md",
@@ -2128,6 +2048,7 @@
         "docs/bridge/overview.md",
         "docs/bridge/ubuntu_cli.md",
         "docs/checklists/approval_gate_checklist.md",
+        "docs/checklists/zendesk_first_cycle_verification.md",
         "docs/checkpoint_integrity.md",
         "docs/checkpoint_schema_v2.md",
         "docs/ci.md",
@@ -2206,12 +2127,14 @@
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/guides/LOGGING.md",
         "docs/guides/TESTING_GUIDE.md",
+        "docs/guides/_codex__Newcomer_Codebase_Overview.md",
         "docs/guides/asset_instruction_playbook.md",
         "docs/guides/auditing.md",
         "docs/guides/checkpointing.md",
         "docs/guides/code_style_guide.md",
         "docs/guides/codex_archive_runbook.md",
         "docs/guides/codex_setup.md",
+        "docs/guides/codex_zendesk_integration_deep_dive.md",
         "docs/guides/config_overrides.md",
         "docs/guides/continual_learning.md",
         "docs/guides/continual_learning_readiness.md",
@@ -2228,6 +2151,7 @@
         "docs/guides/serving_reproducibility.md",
         "docs/guides/session_hooks.md",
         "docs/guides/tokenization.md",
+        "docs/guides/zendesk_ai_app_builder_limitations.md",
         "docs/how-to/admin_bootstrap.md",
         "docs/how-to/bootstrap_runner.md",
         "docs/how-to/checkpoint_metadata.md",
@@ -2320,6 +2244,7 @@
         "docs/patch-troubleshooting.md",
         "docs/performance.md",
         "docs/phase4_changes.md",
+        "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
         "docs/plugins.md",
         "docs/plugins/Plugin_Registry.md",
         "docs/policies/archive-policy.md",
@@ -2339,6 +2264,10 @@
         "docs/reference/metrics_cli.md",
         "docs/reference/tools.md",
         "docs/releasing.md",
+        "docs/remediation/README.md",
+        "docs/remediation/components.md",
+        "docs/remediation/detectors.md",
+        "docs/remediation/policy.md",
         "docs/repro.md",
         "docs/repro_guidance.md",
         "docs/reproducibility.md",
@@ -2349,6 +2278,7 @@
         "docs/runbooks/offline_wheelhouse.md",
         "docs/runbooks/zendesk_admin_workflow.md",
         "docs/runbooks/zendesk_docs_pipeline.md",
+        "docs/runbooks/zendesk_e2e_support_workflows_plan.md",
         "docs/safety.md",
         "docs/safety/differential_privacy.md",
         "docs/safety/moderation_adapter.md",
@@ -2364,6 +2294,7 @@
         "docs/security/remove-env-file.md",
         "docs/specs/FORMAL_ARTIFACTS.md",
         "docs/sqlite.md",
+        "docs/starterpacks/zendesk_desired_state/README.md",
         "docs/status_update_outstanding_questions.md",
         "docs/status_update_prompt.md",
         "docs/status_updates/README.md",
@@ -2436,6 +2367,7 @@
         "docs/validation/CODEBASE_Status_Audit_2025-10-14.md",
         "docs/validation/Docker_Validation.md",
         "docs/validation/EphemeralRunner_Validation.md",
+        "docs/validation/Gaps_Coverage_Checklist_And_Scripts.md",
         "docs/validation/Offline_Audit_Validation.md",
         "docs/validation/Owner_Approval_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
@@ -2444,6 +2376,7 @@
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
+        "docs/validation/SBOM_Config_Validation.md",
         "docs/validation/SelfHostedRunner_Validation.md",
         "docs/validation/Status_Update_Audit_Prompt.md",
         "docs/validation/Traversal_Workflow.md",
@@ -2452,6 +2385,13 @@
         "docs/validation/fetch_messages_Validation.md",
         "docs/validation/status_update_exhaustiveness.md",
         "docs/validation/tokenization_Validation.md",
+        "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/zendesk/AI_AGENT_APP_BUILDER.md",
+        "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
+        "docs/zendesk/README.md",
+        "docs/zendesk/VALIDATION_REPORT.md",
+        "docs/zendesk/WORKFLOW_DIAGRAMS.md",
+        "docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md",
         "docs/zendesk_api_catalog_generated.md",
         "docs/zendesk_api_reference.md",
         "dvc.yaml",
@@ -2478,6 +2418,8 @@
         "examples/safety/policy_bypass_example.yaml",
         "examples/tokenize.py",
         "examples/train_toy.py",
+        "examples/zendesk/README.md",
+        "examples/zendesk/quickstart.sh",
         "experiments/2025-01-15_smoke.md",
         "great_expectations/checkpoints/clean_checkpoint.yml",
         "great_expectations/expectations/clean_data_suite.json",
@@ -2527,6 +2469,9 @@
         "patches/workflow_codex-self-hosted-ci.yml.patch",
         "patches/workflow_codex-self-manage.yml.patch",
         "patches/workflow_release.yml.patch",
+        "policies/denylist.yaml",
+        "policies/safelist.yaml",
+        "policies/tenant_policy.schema.json",
         "pyproject.toml",
         "requirements-dev.txt",
         "requirements/base.txt",
@@ -2592,12 +2537,16 @@
         "scripts/export_env_info.py-review",
         "scripts/fix_markdown_fences.py",
         "scripts/fix_md_fences.py",
+        "scripts/generate-config.sh",
         "scripts/generate_capability_report.py",
         "scripts/generate_desired_state.py",
         "scripts/generate_preflight.py",
         "scripts/gpu/check_gpu.sh",
         "scripts/init_sample_db.py",
         "scripts/libtorch_policy.sh",
+        "scripts/local/build_faiss.sh",
+        "scripts/local/run_tests.sh",
+        "scripts/local/serve_local.sh",
         "scripts/maintenance.sh",
         "scripts/make_quickstart_notebook.py",
         "scripts/manage_hooks.sh",
@@ -2639,10 +2588,23 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/__init__.py",
         "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/validators.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
+        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/deployment_infrastructure.py",
@@ -2657,8 +2619,10 @@
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/space_traversal/dup_similarity.py",
         "scripts/space_traversal/status_update_report.py",
+        "scripts/space_traversal/validators.py",
         "scripts/survey.sh",
         "scripts/sync_zendesk_docs.py",
+        "scripts/task_sequences/zendesk_first_cycle.yaml",
         "scripts/torch_policy_check.py",
         "scripts/torch_repair_cpu.sh",
         "scripts/train.py",
@@ -2700,6 +2664,25 @@
         "services/ita/tests/__init__.py",
         "services/ita/tests/test_contract.py",
         "services/ita/tests/test_endpoints.py",
+        "services/msp_gateway/README.md",
+        "services/msp_gateway/__init__.py",
+        "services/msp_gateway/app.py",
+        "services/msp_gateway/config.py",
+        "services/msp_gateway/main.py",
+        "services/msp_gateway/middleware/__init__.py",
+        "services/msp_gateway/middleware/rate_limit.py",
+        "services/msp_gateway/middleware/tenant_context.py",
+        "services/msp_gateway/providers/__init__.py",
+        "services/msp_gateway/providers/model_adapter.py",
+        "services/msp_gateway/providers/retrieval_adapter.py",
+        "services/msp_gateway/routers/__init__.py",
+        "services/msp_gateway/routers/admin.py",
+        "services/msp_gateway/routers/infer.py",
+        "services/msp_gateway/routers/kb.py",
+        "services/msp_gateway/schemas/__init__.py",
+        "services/msp_gateway/schemas/requests.py",
+        "services/msp_gateway/schemas/responses.py",
+        "services/msp_gateway/security.py",
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
@@ -2777,9 +2760,19 @@
         "src/codex/monkeypatch/log_adapters.py",
         "src/codex/qa/__init__.py",
         "src/codex/qa/rubric.py",
+        "src/codex/rag/__init__.py",
+        "src/codex/rag/postprocess.py",
+        "src/codex/rag/prompt.py",
         "src/codex/release/__init__.py",
         "src/codex/release/api.py",
         "src/codex/release/manifest.py",
+        "src/codex/retrieval/__init__.py",
+        "src/codex/retrieval/embed.py",
+        "src/codex/retrieval/search.py",
+        "src/codex/retrieval/stores/__init__.py",
+        "src/codex/retrieval/stores/faiss_store.py",
+        "src/codex/retrieval/stores/pgvector_store.py",
+        "src/codex/retrieval/stores/weaviate_store.py",
         "src/codex/search/__init__.py",
         "src/codex/search/providers.py",
         "src/codex/training.py",
@@ -3366,6 +3359,7 @@
         "tests/codex_ml/test_model_factory.py",
         "tests/config/conftest.py",
         "tests/config/test_config_schema.py",
+        "tests/config/test_config_settings.py",
         "tests/config/test_hydra_defaults.py",
         "tests/config/test_hydra_defaults_tree.py",
         "tests/config/test_override_propagation.py",
@@ -3855,6 +3849,7 @@
         "tests/test_monitoring.py",
         "tests/test_monitoring_cli.py",
         "tests/test_monitoring_thread.py",
+        "tests/test_msp_infer_api.py",
         "tests/test_ndjson_db_parity.py",
         "tests/test_ndjson_logger.py",
         "tests/test_ndjson_logging.py",
@@ -3868,6 +3863,7 @@
         "tests/test_pipeline.py",
         "tests/test_plugin_loader.py",
         "tests/test_plugins_cli.py",
+        "tests/test_policy_enforcement.py",
         "tests/test_precommit_config_exists.py",
         "tests/test_pyproject_metadata.py",
         "tests/test_pyproject_scripts_present.py",
@@ -3890,6 +3886,7 @@
         "tests/test_requirements_lock.py",
         "tests/test_resume.py",
         "tests/test_resume_training.py",
+        "tests/test_retrieval_pipeline.py",
         "tests/test_reward_models_rlhf.py",
         "tests/test_run_eval_cli.py",
         "tests/test_run_functional_training_tokenizer.py",
@@ -4326,45 +4323,23 @@
         "yaml/__init__.py"
       ],
       "found_patterns": [],
-      "meta": {},
-      "partials": {
-        "functionality": {
-          "component_value": 0.0,
-          "weight": 0.25,
-          "contribution": 0.0
-        },
-        "consistency": {
-          "component_value": 0.7621756132243157,
-          "weight": 0.2,
-          "contribution": 0.15243512264486314
-        },
-        "tests": {
-          "component_value": 0.31354425879843584,
-          "weight": 0.25,
-          "contribution": 0.07838606469960896
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 0.18656716417910446,
-          "weight": 0.15,
-          "contribution": 0.02798507462686567
-        }
-      }
+      "required_patterns": [
+        "unique_stems"
+      ],
+      "missing_patterns": [
+        "unique_stems"
+      ]
     },
     {
       "id": "evaluation-metrics",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9,
-        "tests": 0.5,
-        "safeguards": 0.6666666666666666,
+        "consistency": 0.89,
+        "tests": 0.46,
+        "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.805,
+      "score": 0.818,
       "evidence_files": [
         "configs/deployment/hhg_logistics/eval/default.yaml",
         "configs/evaluation/base.yaml",
@@ -4377,6 +4352,7 @@
         "configs/evaluation/reasoning/math.yaml",
         "configs/evaluation/reasoning/proof.yaml",
         "configs/evaluation/reasoning/tools.yaml",
+        "configs/msp/retrieval.yaml",
         "configs/schemas/evaluation.schema.json",
         "data/sample/reasoning/math_eval.jsonl",
         "data/sample/reasoning/proof_eval.jsonl",
@@ -4393,6 +4369,14 @@
         "patches/pending/2025-09-21_eval_loop.patch",
         "schemas/codex_eval_rules.v3.schema.json",
         "semgrep_rules/python/insecure_eval.yml",
+        "services/msp_gateway/providers/retrieval_adapter.py",
+        "src/codex/retrieval/__init__.py",
+        "src/codex/retrieval/embed.py",
+        "src/codex/retrieval/search.py",
+        "src/codex/retrieval/stores/__init__.py",
+        "src/codex/retrieval/stores/faiss_store.py",
+        "src/codex/retrieval/stores/pgvector_store.py",
+        "src/codex/retrieval/stores/weaviate_store.py",
         "src/codex_ml/cli/evaluate.py",
         "src/codex_ml/eval/__init__.py",
         "src/codex_ml/eval/datasets.py",
@@ -4447,6 +4431,7 @@
         "tests/test_eval_writers.py",
         "tests/test_evaluate_cli.py",
         "tests/test_evaluation.py",
+        "tests/test_retrieval_pipeline.py",
         "tests/test_run_eval_cli.py",
         "tests/test_training_eval.py",
         "tests/test_training_lr_history_and_eval.py",
@@ -4461,44 +4446,22 @@
         "metric",
         "perplexity"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.9,
-          "weight": 0.2,
-          "contribution": 0.18000000000000002
-        },
-        "tests": {
-          "component_value": 0.5,
-          "weight": 0.25,
-          "contribution": 0.125
-        },
-        "safeguards": {
-          "component_value": 0.6666666666666666,
-          "weight": 0.15,
-          "contribution": 0.09999999999999999
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "metric",
+        "perplexity"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "experiment-management",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.7610619469026548,
-        "tests": 0.3805309734513274,
+        "consistency": 0.7631578947368421,
+        "tests": 0.37719298245614036,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7973,
+      "score": 0.7969,
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
         ".codex/copilot_bridge/var/manifests/.gitkeep",
@@ -4546,6 +4509,7 @@
         "experiments/2025-01-15_smoke.md",
         "manifests/codex_eval_rules.v3.json",
         "manifests/selection_guard_rules.json",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "src/codex/release/manifest.py",
         "src/codex_ml/cli/manifest.py",
@@ -4621,39 +4585,14 @@
         "tracking",
         "wandb"
       ],
-      "meta": {
-        "mlflow_integration": 32,
-        "wandb_integration": 4,
-        "experiment_utils": 12,
-        "metadata_files": 67
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.7610619469026548,
-          "weight": 0.2,
-          "contribution": 0.15221238938053097
-        },
-        "tests": {
-          "component_value": 0.3805309734513274,
-          "weight": 0.25,
-          "contribution": 0.09513274336283185
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "experiment",
+        "tracking",
+        "metadata",
+        "mlflow",
+        "wandb"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "inference-serving",
@@ -4662,9 +4601,9 @@
         "consistency": 0.8888888888888888,
         "tests": 0.3333333333333333,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.708955223880597
+        "documentation": 0.7922535211267605
       },
-      "score": 0.5925,
+      "score": 0.6049,
       "evidence_files": [
         "src/codex_ml/telemetry/server.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -4679,36 +4618,13 @@
       "found_patterns": [
         "server"
       ],
-      "meta": {
-        "layer": "serving"
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 0.5,
-          "weight": 0.25,
-          "contribution": 0.125
-        },
-        "consistency": {
-          "component_value": 0.8888888888888888,
-          "weight": 0.2,
-          "contribution": 0.17777777777777778
-        },
-        "tests": {
-          "component_value": 0.3333333333333333,
-          "weight": 0.25,
-          "contribution": 0.08333333333333333
-        },
-        "safeguards": {
-          "component_value": 0.6666666666666666,
-          "weight": 0.15,
-          "contribution": 0.09999999999999999
-        },
-        "documentation": {
-          "component_value": 0.708955223880597,
-          "weight": 0.15,
-          "contribution": 0.10634328358208954
-        }
-      }
+      "required_patterns": [
+        "server",
+        "fastapi"
+      ],
+      "missing_patterns": [
+        "fastapi"
+      ]
     },
     {
       "id": "logging-tracking",
@@ -4980,44 +4896,22 @@
         "log",
         "mlflow"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8149606299212598,
-          "weight": 0.2,
-          "contribution": 0.16299212598425197
-        },
-        "tests": {
-          "component_value": 0.3188976377952756,
-          "weight": 0.25,
-          "contribution": 0.0797244094488189
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "log",
+        "mlflow"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "peft_hooks",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8673469387755102,
-        "tests": 0.4897959183673469,
+        "consistency": 0.8686868686868687,
+        "tests": 0.494949494949495,
         "safeguards": 1.0,
-        "documentation": 0.11194029850746269
+        "documentation": 0.1408450704225352
       },
-      "score": 0.7127,
+      "score": 0.7186,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -5066,6 +4960,7 @@
         "tests/cli/test_generate_safety.py",
         "tests/cli/test_infer_cli_lora.py",
         "tests/codex_ml/test_model_factory.py",
+        "tests/config/test_config_settings.py",
         "tests/config/test_validate_config.py",
         "tests/conftest.py",
         "tests/helpers/optional_dependencies.py",
@@ -5125,45 +5020,25 @@
         "peft",
         "prepare_model_for_kbit_training"
       ],
-      "meta": {},
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8673469387755102,
-          "weight": 0.2,
-          "contribution": 0.17346938775510204
-        },
-        "tests": {
-          "component_value": 0.4897959183673469,
-          "weight": 0.25,
-          "contribution": 0.12244897959183673
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 0.11194029850746269,
-          "weight": 0.15,
-          "contribution": 0.016791044776119403
-        }
-      }
+      "required_patterns": [
+        "LoraConfig",
+        "get_peft_model",
+        "lora",
+        "peft",
+        "prepare_model_for_kbit_training"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "reproducibility",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8805970149253731,
-        "tests": 0.6417910447761194,
+        "consistency": 0.8823529411764706,
+        "tests": 0.6323529411764706,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8866,
+      "score": 0.8846,
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
         "_codex_reports/2025-10-06/reproducibility.json",
@@ -5178,6 +5053,7 @@
         "docs/reproducibility.md",
         "docs/training/reproducibility.md",
         "patches/pending/2025-09-21_deterministic_loader.patch",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
@@ -5240,50 +5116,25 @@
         "seed",
         "sha256"
       ],
-      "meta": {
-        "seed_management": 25,
-        "repro_utils": 15,
-        "determinism_configs": 5,
-        "integrity_validation": 27
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8805970149253731,
-          "weight": 0.2,
-          "contribution": 0.17611940298507464
-        },
-        "tests": {
-          "component_value": 0.6417910447761194,
-          "weight": 0.25,
-          "contribution": 0.16044776119402984
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "seed",
+        "deterministic",
+        "sha256",
+        "rng_state",
+        "reproducibility"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8410852713178294,
-        "tests": 0.28811369509043927,
+        "consistency": 0.83875,
+        "tests": 0.2825,
         "safeguards": 1.0,
-        "documentation": 0.14925373134328357
+        "documentation": 0.176056338028169
       },
-      "score": 0.6626,
+      "score": 0.6648,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -5326,9 +5177,12 @@
         ".codex/validation/tests_docs_links_audit.md",
         ".github/_workflows_disabled/release-upload.yml",
         ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+        ".github/docs/Copilot_Audit_InstructionEnhancement.md",
         ".github/docs/Implementation_LLMAutoFixHook.md",
         ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
         ".pre-commit-config.yaml",
+        "MSP_IMPLEMENTATION_SUMMARY.md",
+        "NEWCOMER_GUIDE.md",
         "SELECTION_REPORT.md",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
@@ -5385,6 +5239,9 @@
         "configs/evaluation/reasoning/math.yaml",
         "configs/evaluation/reasoning/proof.yaml",
         "configs/evaluation/reasoning/tools.yaml",
+        "configs/msp/gateway.yaml",
+        "configs/msp/retrieval.yaml",
+        "configs/msp/safety.yaml",
         "configs/schemas/README.md",
         "configs/schemas/__init__.py",
         "configs/schemas/data.schema.yaml",
@@ -5463,8 +5320,10 @@
         "docs/governance/CONTRIBUTING.md",
         "docs/guides/AGENTS.md",
         "docs/guides/TESTING_GUIDE.md",
+        "docs/guides/_codex__Newcomer_Codebase_Overview.md",
         "docs/guides/auditing.md",
         "docs/guides/codex_archive_runbook.md",
+        "docs/guides/codex_zendesk_integration_deep_dive.md",
         "docs/guides/config_overrides.md",
         "docs/guides/continual_learning_readiness.md",
         "docs/guides/mlflow_offline.md",
@@ -5473,6 +5332,7 @@
         "docs/guides/pipeline_smoke_test.md",
         "docs/guides/reasoning_overview.md",
         "docs/guides/serving_reproducibility.md",
+        "docs/guides/zendesk_ai_app_builder_limitations.md",
         "docs/how-to/admin_bootstrap.md",
         "docs/how-to/checkpoint_metadata.md",
         "docs/how-to/dataset_manifest.md",
@@ -5520,6 +5380,7 @@
         "docs/quickstart.md",
         "docs/quickstarts/offline_microperf.md",
         "docs/reference/audit_prompt.md",
+        "docs/remediation/components.md",
         "docs/repro.md",
         "docs/repro_guidance.md",
         "docs/reproducibility.md",
@@ -5577,6 +5438,8 @@
         "nox_sessions/audit.py",
         "nox_sessions/fence_tests.py",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
+        "policies/denylist.yaml",
+        "policies/safelist.yaml",
         "scripts/build_wheel.sh",
         "scripts/codex_local_audit.sh",
         "scripts/codex_local_gates.sh",
@@ -5587,6 +5450,7 @@
         "scripts/deep_research_task_process.py",
         "scripts/generate_capability_report.py",
         "scripts/init_sample_db.py",
+        "scripts/local/run_tests.sh",
         "scripts/maintenance.sh",
         "scripts/make_quickstart_notebook.py",
         "scripts/offline_gate.sh",
@@ -5609,6 +5473,13 @@
         "sentencepiece/__init__.py",
         "services/ita/app/security.py",
         "services/ita/app/tests_runner.py",
+        "services/msp_gateway/README.md",
+        "services/msp_gateway/app.py",
+        "services/msp_gateway/config.py",
+        "services/msp_gateway/main.py",
+        "services/msp_gateway/routers/infer.py",
+        "services/msp_gateway/schemas/responses.py",
+        "services/msp_gateway/security.py",
         "sitecustomize.py",
         "src/codex/archive/api.py",
         "src/codex/archive/backend.py",
@@ -5630,7 +5501,10 @@
         "src/codex/knowledge/__init__.py",
         "src/codex/knowledge/build.py",
         "src/codex/qa/__init__.py",
+        "src/codex/rag/prompt.py",
         "src/codex/release/api.py",
+        "src/codex/retrieval/stores/pgvector_store.py",
+        "src/codex/retrieval/stores/weaviate_store.py",
         "src/codex/training.py",
         "src/codex/utils/session_cache.py",
         "src/codex/utils/validators.py",
@@ -5842,6 +5716,7 @@
         "tests/deployment/test_k8s_manifests.py",
         "tests/docs/test_status_update_template.py",
         "tests/eval/test_evaluation_reproducible.py",
+        "tests/eval/test_hf_dataset_loader.py",
         "tests/gates/test_quality_gates.py",
         "tests/helpers/optional_dependencies.py",
         "tests/hhg_logistics/serve/test_app.py",
@@ -5920,7 +5795,9 @@
         "tests/test_mlflow_utils_root.py",
         "tests/test_model_registry.py",
         "tests/test_monitoring_thread.py",
+        "tests/test_msp_infer_api.py",
         "tests/test_offline_repo_auditor.py",
+        "tests/test_policy_enforcement.py",
         "tests/test_repro_cli.py",
         "tests/test_repro_rng_roundtrip.py",
         "tests/test_repro_seed_consistency.py",
@@ -6068,49 +5945,31 @@
         "seed",
         "sha256"
       ],
-      "meta": {},
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8410852713178294,
-          "weight": 0.2,
-          "contribution": 0.1682170542635659
-        },
-        "tests": {
-          "component_value": 0.28811369509043927,
-          "weight": 0.25,
-          "contribution": 0.07202842377260982
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 0.14925373134328357,
-          "weight": 0.15,
-          "contribution": 0.022388059701492536
-        }
-      }
+      "required_patterns": [
+        "WANDB_MODE",
+        "checksum",
+        "offline",
+        "rng",
+        "seed",
+        "sha256"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "safety-security",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8936170212765957,
-        "tests": 0.3617021276595745,
+        "consistency": 0.875,
+        "tests": 0.3541666666666667,
         "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.7441,
+      "score": 0.7385,
       "evidence_files": [
         ".codex/evidence/phase5_privacy_safety.jsonl",
         "artifacts/security/safety.txt",
         "configs/base/safety/policy.yaml",
+        "configs/msp/safety.yaml",
         "docs/guides/CHECKPOINT_SAFETY.md",
         "docs/modules/safety.md",
         "docs/safety.md",
@@ -6160,44 +6019,22 @@
         "sanitize",
         "secret"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8936170212765957,
-          "weight": 0.2,
-          "contribution": 0.17872340425531916
-        },
-        "tests": {
-          "component_value": 0.3617021276595745,
-          "weight": 0.25,
-          "contribution": 0.09042553191489362
-        },
-        "safeguards": {
-          "component_value": 0.5,
-          "weight": 0.15,
-          "contribution": 0.075
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "secret",
+        "sanitize"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "testing-infrastructure",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9003397508493771,
-        "tests": 0.9886749716874292,
+        "consistency": 0.9007891770011274,
+        "tests": 0.9887260428410372,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.9147,
+      "score": 0.9148,
       "evidence_files": [
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
@@ -6326,6 +6163,7 @@
         "tests/codex_ml/test_model_factory.py",
         "tests/config/conftest.py",
         "tests/config/test_config_schema.py",
+        "tests/config/test_config_settings.py",
         "tests/config/test_hydra_defaults.py",
         "tests/config/test_hydra_defaults_tree.py",
         "tests/config/test_override_propagation.py",
@@ -6810,6 +6648,7 @@
         "tests/test_monitoring.py",
         "tests/test_monitoring_cli.py",
         "tests/test_monitoring_thread.py",
+        "tests/test_msp_infer_api.py",
         "tests/test_ndjson_db_parity.py",
         "tests/test_ndjson_logger.py",
         "tests/test_ndjson_logging.py",
@@ -6823,6 +6662,7 @@
         "tests/test_pipeline.py",
         "tests/test_plugin_loader.py",
         "tests/test_plugins_cli.py",
+        "tests/test_policy_enforcement.py",
         "tests/test_precommit_config_exists.py",
         "tests/test_pyproject_metadata.py",
         "tests/test_pyproject_scripts_present.py",
@@ -6845,6 +6685,7 @@
         "tests/test_requirements_lock.py",
         "tests/test_resume.py",
         "tests/test_resume_training.py",
+        "tests/test_retrieval_pipeline.py",
         "tests/test_reward_models_rlhf.py",
         "tests/test_run_eval_cli.py",
         "tests/test_run_functional_training_tokenizer.py",
@@ -7088,38 +6929,15 @@
         "pytest",
         "test_"
       ],
-      "meta": {
-        "test_count": 867,
-        "config_count": 25,
-        "fixture_count": 27
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 0.75,
-          "weight": 0.25,
-          "contribution": 0.1875
-        },
-        "consistency": {
-          "component_value": 0.9003397508493771,
-          "weight": 0.2,
-          "contribution": 0.18006795016987542
-        },
-        "tests": {
-          "component_value": 0.9886749716874292,
-          "weight": 0.25,
-          "contribution": 0.2471687429218573
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "pytest",
+        "test_",
+        "fixture",
+        "marker"
+      ],
+      "missing_patterns": [
+        "marker"
+      ]
     },
     {
       "id": "tokenization",
@@ -7239,44 +7057,22 @@
         "encode",
         "tokenizer"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.8333333333333334,
-          "weight": 0.2,
-          "contribution": 0.16666666666666669
-        },
-        "tests": {
-          "component_value": 0.5196078431372549,
-          "weight": 0.25,
-          "contribution": 0.12990196078431374
-        },
-        "safeguards": {
-          "component_value": 0.6666666666666666,
-          "weight": 0.15,
-          "contribution": 0.09999999999999999
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "tokenizer",
+        "encode"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "training-engine",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.865,
-        "tests": 0.45,
+        "consistency": 0.8656716417910448,
+        "tests": 0.44776119402985076,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8355,
+      "score": 0.8351,
       "evidence_files": [
         "_codex_reports/2025-10-06/trainer_smoke.json",
         "_codex_reports/2025-10-06/trainer_smoke.log",
@@ -7342,6 +7138,7 @@
         "examples/plugins/toy_trainer/__init__.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
         "src/codex/training.py",
@@ -7483,33 +7280,11 @@
         "epoch",
         "train"
       ],
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.865,
-          "weight": 0.2,
-          "contribution": 0.17300000000000001
-        },
-        "tests": {
-          "component_value": 0.45,
-          "weight": 0.25,
-          "contribution": 0.1125
-        },
-        "safeguards": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "train",
+        "epoch"
+      ],
+      "missing_patterns": []
     },
     {
       "id": "unified-training",
@@ -7532,45 +7307,12 @@
         "UnifiedTrainingConfig",
         "run_unified_training"
       ],
-      "meta": {
-        "category": "training"
-      },
-      "partials": {
-        "functionality": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "consistency": {
-          "component_value": 0.6,
-          "weight": 0.2,
-          "contribution": 0.12
-        },
-        "tests": {
-          "component_value": 1.0,
-          "weight": 0.25,
-          "contribution": 0.25
-        },
-        "safeguards": {
-          "component_value": 0.5,
-          "weight": 0.15,
-          "contribution": 0.075
-        },
-        "documentation": {
-          "component_value": 1.0,
-          "weight": 0.15,
-          "contribution": 0.15
-        }
-      }
+      "required_patterns": [
+        "UnifiedTrainingConfig",
+        "run_unified_training"
+      ],
+      "missing_patterns": []
     }
   ],
-  "version": "1.1.0",
-  "weights": {
-    "functionality": 0.25,
-    "consistency": 0.2,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15
-  },
-  "warnings": []
+  "version": "1.2.0"
 }

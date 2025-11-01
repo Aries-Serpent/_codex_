@@ -1,9 +1,4 @@
-# Copilot Space Workflow Spec (v1.1.0)
-# NOTE:
-# - This update adds optional scoring.component_caps and scoring.dup.heuristic.
-# - Both are optional; defaults preserve current behavior when omitted.
-
-version: 1.1.0
+version: 1.2.0
 
 stages:
   - id: index
@@ -73,7 +68,10 @@ output:
   matrix_template: templates/audit/capability_matrix.md.j2
 
 options:
-  # When true, diff command exit code is non-zero if any capability score drops beyond threshold.
+  # diff: non-zero exit if any capability score drops beyond threshold
   fail_on_score_regression: true
-  # Minimum absolute delta to consider a regression (if above flag enabled).
   regression_delta_threshold: 0.02
+  # validate: non-zero exit if any capability is below low threshold
+  fail_on_low_maturity: true
+  # validate: non-zero exit if any capability_map.overrides ID is missing from scored capabilities
+  fail_on_missing_detector: true

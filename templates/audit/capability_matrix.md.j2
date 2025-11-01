@@ -4,22 +4,23 @@
 
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
-Low Maturity (< {{ (weights.functionality + weights.consistency) | round(2) }} heuristic): {{ gaps|length }}
+Low Maturity (< {{ "%.2f"|format(thresholds.low) }}): {{ gaps|length }}
 
 ## 2. Capability Scores
 | ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
 |----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
 {% for cap in capabilities -%}
-| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(cap.components.functionality) }} | {{ "%.2f"|format(cap.components.consistency) }} | {{ "%.2f"|format(cap.components.tests) }} | {{ "%.2f"|format(cap.components.safeguards) }} | {{ "%.2f"|format(cap.components.documentation) }} | {{ cap.evidence_files|length }} |
+{% set f = cap.components.functionality %}{% set c = cap.components.consistency %}{% set t = cap.components.tests %}{% set s = cap.components.safeguards %}{% set d = cap.components.documentation %}
+| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(f) }}{% if f == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(c) }}{% if c == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(t) }}{% if t == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(s) }}{% if s == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(d) }}{% if d == 0 %} (ZERO){% endif %} | {{ cap.evidence_files|length }} |
 {% endfor %}
 
 ## 3. Low Maturity Focus
-{% if gaps %}
-| ID | Score | Primary Deficit |
-|----|-------|-----------------|
+{% if gaps and gaps|length > 0 %}
+| ID | Score | Primary Deficit | Missing Patterns |
+|----|-------|-----------------|------------------|
 {% for g in gaps -%}
-{# Pick smallest numeric component #}
-| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {% set comp = (g.components|dictsort(false, 'value'))[0][0] %}{{ comp }} |
+{% set comp = (g.components|dictsort(false, 'value'))[0][0] %}
+| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ comp }} | {{ g.missing_patterns|join(", ") if g.missing_patterns else "None" }} |
 {% endfor %}
 {% else %}
 All capabilities meet minimum thresholds.
@@ -38,11 +39,11 @@ All capabilities meet minimum thresholds.
 Score: {{ "%.4f"|format(cap.score) }}
 
 Components:
-- Functionality: {{ cap.components.functionality }}
-- Consistency: {{ cap.components.consistency }}
-- Tests: {{ cap.components.tests }}
-- Safeguards: {{ cap.components.safeguards }}
-- Documentation: {{ cap.components.documentation }}
+- Functionality: {{ cap.components.functionality }}{% if cap.components.functionality == 0 %} (ZERO){% endif %}
+- Consistency: {{ cap.components.consistency }}{% if cap.components.consistency == 0 %} (ZERO){% endif %}
+- Tests: {{ cap.components.tests }}{% if cap.components.tests == 0 %} (ZERO){% endif %}
+- Safeguards: {{ cap.components.safeguards }}{% if cap.components.safeguards == 0 %} (ZERO){% endif %}
+- Documentation: {{ cap.components.documentation }}{% if cap.components.documentation == 0 %} (ZERO){% endif %}
 
 {# NEW: Optional Meta display; shows key/value pairs if meta dict present #}
 {% if cap.meta %}
@@ -52,7 +53,9 @@ Meta:
 {% endfor %}
 {% endif %}
 
+Required Patterns: {{ cap.required_patterns|join(", ") if cap.required_patterns else "None" }}
 Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
+Missing Patterns: {{ cap.missing_patterns|join(", ") if cap.missing_patterns else "None" }}
 
 Evidence Files (first 10):
 ```
