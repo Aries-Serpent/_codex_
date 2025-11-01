@@ -265,17 +265,51 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             and isinstance(response, Response)
             and settings.rate_limit_enabled
         ):
+            def rebuild_response(body: bytes) -> Response:
+                new_response = Response(
+                    content=body,
+                    status_code=response.status_code,
+                    media_type=response.media_type,
+                    background=response.background,
+                )
+                for header_key, header_value in response.raw_headers:
+                    header_key_lower = header_key.lower()
+                    if header_key_lower == b"content-length":
+                        continue
+                    if header_key_lower == b"content-type" and response.media_type is not None:
+                        continue
+                    new_response.headers.append(
+                        header_key.decode("latin-1"),
+                        header_value.decode("latin-1"),
+                    )
+                response.background = None
+                return new_response
+
             try:
                 # Read response body
                 response_body = b""
-                async for chunk in response.body_iterator:
-                    response_body += chunk
+                try:
+                    async for chunk in response.body_iterator:
+                        response_body += chunk
+                finally:
+                    await response.aclose()
 
                 # Parse JSON response
-                response_data = json.loads(response_body.decode())
+                response_data = None
+                tokens_used = 0
 
-                # Extract tokens used
-                tokens_used = response_data.get("tokens_used", 0)
+                try:
+                    decoded_body = response_body.decode(response.charset or "utf-8")
+                    response_data = json.loads(decoded_body)
+                except (UnicodeDecodeError, AttributeError, json.JSONDecodeError):
+                    response_data = None
+
+                if isinstance(response_data, dict):
+                    raw_tokens_used = response_data.get("tokens_used", 0)
+                    try:
+                        tokens_used = int(raw_tokens_used)
+                    except (TypeError, ValueError):
+                        tokens_used = 0
 
                 if tokens_used > 0:
                     post_tokens_per_minute = (
@@ -305,17 +339,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         # Note: We already processed the request, so we can't reject it now
                         # Future requests will be blocked if bucket is empty
 
-                # Reconstruct response with the same body
-                from starlette.responses import JSONResponse
-
-                return JSONResponse(
-                    content=response_data,
-                    status_code=response.status_code,
-                    headers=dict(response.headers),
-                )
+                return rebuild_response(response_body)
             except Exception as e:
                 logger.error(f"Error processing token usage: {e}")
-                # Return original response on error
-                return response
+                # Reconstruct original response even when accounting fails
+                return rebuild_response(response_body)
 
         return response
