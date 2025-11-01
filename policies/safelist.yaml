@@ -1,0 +1,35 @@
+# Safelist - Allowed external calls and prompts
+# Local mode: minimal external calls, primarily for offline operation
+
+# Allowed domains (empty in strict offline mode)
+allowed_domains: []
+
+# Allowed prompt patterns (regex)
+allowed_prompt_patterns:
+  - "^[a-zA-Z0-9\\s.,!?-]+$"  # Basic alphanumeric with punctuation
+
+# Allowed function calls (for local execution)
+allowed_functions:
+  - "embed_text"
+  - "search_index"
+  - "format_prompt"
+  - "redact_content"
+
+# Allowed file extensions for knowledge base imports
+allowed_kb_extensions:
+  - ".txt"
+  - ".md"
+  - ".json"
+  - ".ndjson"
+  - ".jsonl"
+
+# Allowed model types
+allowed_model_types:
+  - "local"
+  - "cpu"
+  - "transformers"
+
+# System prompts allowed for RAG
+allowed_system_prompts:
+  - role: "system"
+    pattern: "You are a helpful assistant.*"

@@ -1,0 +1,70 @@
+# Denylist - Sensitive terms and actions to block or redact
+# Protects tenant data and enforces safety policies
+
+# Sensitive terms to redact (case-insensitive)
+sensitive_terms:
+  # Personal identifiers
+  - "ssn"
+  - "social security"
+  - "credit card"
+  - "password"
+  - "api key"
+  - "secret"
+  - "private key"
+  - "access token"
+  
+  # Financial
+  - "bank account"
+  - "routing number"
+  - "cvv"
+  - "pin code"
+  
+  # Health
+  - "medical record"
+  - "diagnosis"
+  - "prescription"
+
+# Patterns to detect and redact (regex)
+redaction_patterns:
+  # Email addresses
+  - pattern: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    replacement: '[EMAIL]'
+  
+  # Phone numbers (various formats)
+  - pattern: '\b\d{3}[-.]?\d{3}[-.]?\d{4}\b'
+    replacement: '[PHONE]'
+  
+  # SSN
+  - pattern: '\b\d{3}-\d{2}-\d{4}\b'
+    replacement: '[SSN]'
+  
+  # Credit card numbers
+  - pattern: '\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b'
+    replacement: '[CARD]'
+  
+  # API keys (generic patterns)
+  - pattern: '\b[A-Za-z0-9_-]{32,}\b'
+    replacement: '[API_KEY]'
+
+# Blocked actions
+blocked_actions:
+  - "network_request"  # No external network calls in offline mode
+  - "file_write_system"  # No writing to system directories
+  - "exec_shell"  # No shell command execution
+  - "load_external_model"  # No downloading models at runtime
+
+# Blocked prompt patterns (malicious/unsafe)
+blocked_prompt_patterns:
+  - "ignore previous instructions"
+  - "disregard all rules"
+  - "reveal your instructions"
+  - "bypass security"
+  - "<script>"
+  - "<?php"
+  - "eval("
+
+# Tenant isolation rules
+tenant_isolation:
+  # Prevent cross-tenant data access
+  enforce_tenant_id: true
+  block_tenant_inference: true  # Block attempts to infer other tenant IDs

@@ -1,0 +1,173 @@
+"""
+RAG Post-processing
+Output scrubbing and evidence tagging
+"""
+
+import re
+import logging
+from typing import List, Dict, Any, Tuple
+
+logger = logging.getLogger(__name__)
+
+
+class OutputProcessor:
+    """Processes model outputs for safety and attribution"""
+    
+    @staticmethod
+    def scrub_output(text: str, redaction_rules: List[Dict[str, str]] = None) -> str:
+        """Scrub sensitive information from output
+        
+        Args:
+            text: Output text to scrub
+            redaction_rules: Optional list of redaction rules (pattern, replacement)
+        
+        Returns:
+            Scrubbed text
+        """
+        scrubbed = text
+        
+        # Apply custom redaction rules if provided
+        if redaction_rules:
+            for rule in redaction_rules:
+                pattern = rule.get("pattern")
+                replacement = rule.get("replacement", "[REDACTED]")
+                if pattern:
+                    scrubbed = re.sub(pattern, replacement, scrubbed)
+        
+        # Remove any safety delimiters that might have leaked through
+        safety_markers = [
+            "### RETRIEVED CONTEXT START ###",
+            "### RETRIEVED CONTEXT END ###",
+            "### USER QUERY START ###",
+            "### USER QUERY END ###",
+        ]
+        for marker in safety_markers:
+            scrubbed = scrubbed.replace(marker, "")
+        
+        return scrubbed.strip()
+    
+    @staticmethod
+    def extract_evidence_tags(
+        output: str,
+        retrieved_docs: List[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """Extract evidence tags from output
+        
+        Args:
+            output: Generated output text
+            retrieved_docs: List of retrieved documents used for generation
+        
+        Returns:
+            List of evidence tags with source attribution
+        """
+        evidence = []
+        
+        # Simple evidence tagging: if doc content appears in output, tag it
+        for doc in retrieved_docs:
+            doc_content = doc.get("content", "")
+            score = doc.get("score", 0.0)
+            metadata = doc.get("metadata", {})
+            
+            # Check for content overlap (simple substring match)
+            # In production, use more sophisticated methods
+            if doc_content and len(doc_content) > 20:
+                # Sample some key phrases from the document
+                phrases = [
+                    phrase.strip()
+                    for phrase in doc_content.split(".")
+                    if len(phrase.strip()) > 10
+                ][:3]
+                
+                overlap = False
+                for phrase in phrases:
+                    if phrase.lower() in output.lower():
+                        overlap = True
+                        break
+                
+                if overlap:
+                    evidence.append({
+                        "source_id": metadata.get("source_id", "unknown"),
+                        "chunk_id": metadata.get("chunk_id"),
+                        "score": score,
+                        "metadata": metadata,
+                    })
+        
+        return evidence
+    
+    @staticmethod
+    def add_citations(
+        output: str,
+        evidence: List[Dict[str, Any]],
+        citation_style: str = "inline",
+    ) -> str:
+        """Add citations to output
+        
+        Args:
+            output: Generated output text
+            evidence: List of evidence tags
+            citation_style: Citation style ('inline', 'footnote', 'none')
+        
+        Returns:
+            Output with citations
+        """
+        if citation_style == "none" or not evidence:
+            return output
+        
+        if citation_style == "inline":
+            # Add simple inline citations
+            sources = [ev["source_id"] for ev in evidence]
+            unique_sources = list(dict.fromkeys(sources))  # Preserve order, remove duplicates
+            
+            if unique_sources:
+                citation = f"\n\n[Sources: {', '.join(unique_sources)}]"
+                return output + citation
+        
+        elif citation_style == "footnote":
+            # Add footnote-style citations
+            citations = []
+            for i, ev in enumerate(evidence, 1):
+                source_id = ev["source_id"]
+                citations.append(f"[{i}] {source_id}")
+            
+            if citations:
+                return output + "\n\nReferences:\n" + "\n".join(citations)
+        
+        return output
+
+
+def postprocess_output(
+    output: str,
+    retrieved_docs: List[Dict[str, Any]] = None,
+    redaction_rules: List[Dict[str, str]] = None,
+    include_citations: bool = True,
+    citation_style: str = "inline",
+) -> Tuple[str, List[Dict[str, Any]]]:
+    """Post-process model output
+    
+    Args:
+        output: Raw model output
+        retrieved_docs: Retrieved documents used for generation
+        redaction_rules: Optional redaction rules
+        include_citations: Whether to include citations
+        citation_style: Citation style
+    
+    Returns:
+        Tuple of (processed_output, evidence_tags)
+    """
+    processor = OutputProcessor()
+    
+    # Scrub output
+    scrubbed = processor.scrub_output(output, redaction_rules)
+    
+    # Extract evidence
+    evidence = []
+    if retrieved_docs:
+        evidence = processor.extract_evidence_tags(scrubbed, retrieved_docs)
+    
+    # Add citations
+    if include_citations and evidence:
+        scrubbed = processor.add_citations(scrubbed, evidence, citation_style)
+    
+    logger.debug(f"Post-processed output with {len(evidence)} evidence tags")
+    
+    return scrubbed, evidence

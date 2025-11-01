@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tenant Policy Schema",
+  "description": "Schema for per-tenant policy configuration in MSP Gateway",
+  "type": "object",
+  "required": ["tenant_id", "version"],
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "description": "Unique tenant identifier",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Policy version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "quota": {
+      "type": "object",
+      "description": "Resource quotas for the tenant",
+      "properties": {
+        "requests_per_minute": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Maximum requests per minute"
+        },
+        "tokens_per_minute": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000,
+          "description": "Maximum tokens per minute"
+        },
+        "max_prompt_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "description": "Maximum prompt length in tokens"
+        },
+        "max_response_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Maximum response length in tokens"
+        }
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "description": "Security settings for the tenant",
+      "properties": {
+        "redaction_enabled": {
+          "type": "boolean",
+          "description": "Enable content redaction"
+        },
+        "allowed_models": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of allowed model identifiers"
+        },
+        "blocked_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional blocked prompt patterns (regex)"
+        },
+        "custom_redaction_terms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional terms to redact"
+        }
+      },
+      "additionalProperties": false
+    },
+    "features": {
+      "type": "object",
+      "description": "Feature flags for the tenant",
+      "properties": {
+        "kb_query_enabled": {
+          "type": "boolean",
+          "description": "Enable knowledge base queries"
+        },
+        "rag_enabled": {
+          "type": "boolean",
+          "description": "Enable RAG (retrieval-augmented generation)"
+        },
+        "streaming_enabled": {
+          "type": "boolean",
+          "description": "Enable streaming responses"
+        }
+      },
+      "additionalProperties": false
+    },
+    "retrieval": {
+      "type": "object",
+      "description": "Retrieval settings for the tenant",
+      "properties": {
+        "index_name": {
+          "type": "string",
+          "description": "Name of the FAISS index to use"
+        },
+        "max_results": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Maximum number of retrieval results"
+        },
+        "min_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum relevance score threshold"
+        }
+      },
+      "additionalProperties": false
+    },
+    "audit": {
+      "type": "object",
+      "description": "Audit and logging settings",
+      "properties": {
+        "log_prompts": {
+          "type": "boolean",
+          "description": "Log input prompts"
+        },
+        "log_responses": {
+          "type": "boolean",
+          "description": "Log generated responses"
+        },
+        "retention_days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365,
+          "description": "Log retention period in days"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional tenant metadata",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
