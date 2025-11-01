@@ -160,4 +160,26 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         
         # Process request
         response = await call_next(request)
+
+        # Enforce token quotas if tokens were consumed during the request
+        tokens_used = getattr(request.state, "tokens_used", None)
+        if tokens_used is not None:
+            try:
+                tokens_to_consume = int(tokens_used)
+            except (TypeError, ValueError):
+                tokens_to_consume = 0
+
+            if tokens_to_consume > 0:
+                if not rate_limiter.check_token_limit(tenant_id, tokens_to_consume, quota):
+                    logger.warning(
+                        "Token quota exceeded for tenant %s (requested %s tokens)",
+                        tenant_id,
+                        tokens_to_consume,
+                    )
+                    raise HTTPException(
+                        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                        detail="Token quota exceeded. Please reduce usage or try again later.",
+                        headers={"Retry-After": "60"},
+                    )
+
         return response

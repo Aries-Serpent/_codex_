@@ -217,6 +217,32 @@ def test_rate_limiting(client, test_tenant):
     assert all(code in [200, 429] for code in responses)
 
 
+def test_token_quota_enforced(client):
+    """Token quota should be enforced when usage exceeds tenant allocation"""
+    tenant_registry.create_tenant(
+        tenant_id="token-tenant",
+        name="Token Limited Tenant",
+        api_key="token-tenant-key",
+        quota={
+            "requests_per_minute": 100,
+            "tokens_per_minute": 5,
+        },
+    )
+
+    response = client.post(
+        "/v1/infer",
+        json={
+            "tenant_id": "token-tenant",
+            "prompt": "Explain rate limiting in simple terms.",
+            "max_tokens": 20,
+        },
+        headers={"Authorization": "Bearer token-tenant-key"},
+    )
+
+    assert response.status_code == 429
+    assert "Token quota" in response.json()["detail"]
+
+
 def test_tenant_id_mismatch(client, test_tenant):
     """Test tenant ID mismatch detection"""
     response = client.post(

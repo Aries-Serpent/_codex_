@@ -141,6 +141,12 @@ async def infer(request: Request, infer_request: InferRequest):
         
         generated_text = generation_result["text"]
         tokens_used = generation_result["tokens_used"]
+        # Make tokens available to downstream middleware for quota enforcement
+        try:
+            request.state.tokens_used = int(tokens_used)
+        except (TypeError, ValueError):
+            # If tokens_used isn't numeric, fall back to 0 to avoid quota drift
+            request.state.tokens_used = 0
         model_name = generation_result["model"]
         
         # Post-process output
