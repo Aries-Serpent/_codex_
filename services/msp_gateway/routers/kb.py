@@ -14,6 +14,9 @@ from ..schemas.requests import KBQueryRequest
 from ..schemas.responses import KBQueryResponse, KBSearchResult, AuditRef
 from ..config import settings
 
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1", tags=["knowledge-base"])
@@ -57,40 +60,36 @@ def get_retrieval_adapter() -> "RetrievalAdapter":
 @router.post("/query_kb", response_model=KBQueryResponse)
 async def query_kb(request: Request, kb_request: KBQueryRequest):
     """Query knowledge base for relevant documents
-    
+
     Args:
         request: FastAPI request object (contains tenant from middleware)
         kb_request: Knowledge base query request
-    
+
     Returns:
         KBQueryResponse with search results
     """
     if not settings.kb_query_enabled:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Knowledge base queries are disabled"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Knowledge base queries are disabled"
         )
-    
+
     # Get tenant from request state (may be None if API key not required)
     tenant = getattr(request.state, "tenant", None)
-    
+
     # Determine tenant_id: use from tenant context or from request
     if tenant:
         tenant_id = tenant["tenant_id"]
         # Verify tenant_id matches if tenant context exists
         if kb_request.tenant_id != tenant_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Tenant ID mismatch"
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant ID mismatch")
     else:
         # No tenant context (API key not required), use tenant_id from request
         tenant_id = kb_request.tenant_id
-    
+
     request_id = str(uuid.uuid4())
-    
+
     logger.info(f"KB query request {request_id} from tenant {tenant_id}")
-    
+
     try:
         # Query the knowledge base
         retrieval_adapter = get_retrieval_adapter()
@@ -100,7 +99,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             top_k=kb_request.top_k or 5,
             filters=kb_request.filters,
         )
-        
+
         # Format results
         search_results = []
         for result in results:
@@ -112,7 +111,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
                     metadata=result["metadata"] if kb_request.include_metadata else {},
                 )
             )
-        
+
         # Create audit reference
         audit = AuditRef(
             request_id=request_id,
@@ -120,7 +119,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             tenant_id=tenant_id,
             endpoint="/v1/query_kb",
         )
-        
+
         response = KBQueryResponse(
             request_id=request_id,
             tenant_id=tenant_id,
@@ -129,7 +128,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
             total_results=len(search_results),
             audit=audit,
         )
-        
+
         logger.info(f"KB query {request_id} returned {len(search_results)} results")
         return response
     
@@ -147,5 +146,5 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
         logger.error(f"Error processing KB query {request_id}: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error querying knowledge base: {str(e)}"
+            detail=f"Error querying knowledge base: {str(e)}",
         )

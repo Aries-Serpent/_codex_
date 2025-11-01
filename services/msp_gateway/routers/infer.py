@@ -19,6 +19,9 @@ from ..security import validate_prompt, redact_content, offline_guard
 from codex.rag.prompt import build_prompt
 from codex.rag.postprocess import postprocess_output
 
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1", tags=["inference"])
@@ -73,11 +76,11 @@ def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
 @router.post("/infer", response_model=InferResponse)
 async def infer(request: Request, infer_request: InferRequest):
     """Generate inference response, optionally using RAG
-    
+
     Args:
         request: FastAPI request object (contains tenant from middleware)
         infer_request: Inference request
-    
+
     Returns:
         InferResponse with generated text
     """
@@ -88,45 +91,41 @@ async def infer(request: Request, infer_request: InferRequest):
         except RuntimeError:
             # Continue with local inference
             pass
-    
+
     # Get tenant from request state (may be None if API key not required)
     tenant = getattr(request.state, "tenant", None)
-    
+
     # Determine tenant_id: use from tenant context or from request
     if tenant:
         tenant_id = tenant["tenant_id"]
         # Verify tenant_id matches if tenant context exists
         if infer_request.tenant_id != tenant_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Tenant ID mismatch"
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant ID mismatch")
     else:
         # No tenant context (API key not required), use tenant_id from request
         tenant_id = infer_request.tenant_id
-    
+
     request_id = str(uuid.uuid4())
-    
+
     logger.info(f"Inference request {request_id} from tenant {tenant_id}")
-    
+
     # Validate prompt
     is_valid, error_msg = validate_prompt(infer_request.prompt, tenant_id)
     if not is_valid:
         logger.warning(f"Invalid prompt for request {request_id}: {error_msg}")
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid prompt: {error_msg}"
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid prompt: {error_msg}"
         )
-    
+
     # Redact sensitive content from prompt
     redacted_prompt, redactions = redact_content(infer_request.prompt, tenant_id)
     if redactions:
         logger.info(f"Applied {len(redactions)} redactions to prompt")
-    
+
     try:
         # Check if RAG is enabled for this tenant
         use_rag = infer_request.options.get("use_rag", True) if infer_request.options else True
-        
+
         retrieved_docs = []
         retrieval_adapter = None
         if use_rag and settings.kb_query_enabled:
@@ -147,28 +146,27 @@ async def infer(request: Request, infer_request: InferRequest):
                     {
                         "content": r["content"],
                         "score": r["score"],
-                        "metadata": {
-                            "source_id": r["document_id"],
-                            **r.get("metadata", {})
-                        }
+                        "metadata": {"source_id": r["document_id"], **r.get("metadata", {})},
                     }
                     for r in results
                 ]
-                
+
                 logger.info(f"Retrieved {len(retrieved_docs)} documents for RAG")
             except Exception as e:
                 logger.warning(f"Error retrieving documents for RAG: {e}")
                 # Continue without RAG
 
         # Build prompt
-        system_prompt = infer_request.options.get("system_prompt") if infer_request.options else None
+        system_prompt = (
+            infer_request.options.get("system_prompt") if infer_request.options else None
+        )
         full_prompt = build_prompt(
             query=redacted_prompt,
             retrieved_docs=retrieved_docs if use_rag else None,
             system_prompt=system_prompt,
             use_rag=use_rag and len(retrieved_docs) > 0,
         )
-        
+
         # Generate response
         generation_result = model_adapter.generate(
             prompt=full_prompt,
@@ -176,7 +174,7 @@ async def infer(request: Request, infer_request: InferRequest):
             temperature=infer_request.temperature or 0.7,
             top_p=infer_request.top_p or 0.9,
         )
-        
+
         generated_text = generation_result["text"]
         tokens_used = generation_result["tokens_used"]
         # Make tokens available to downstream middleware for quota enforcement
@@ -186,19 +184,19 @@ async def infer(request: Request, infer_request: InferRequest):
             # If tokens_used isn't numeric, fall back to 0 to avoid quota drift
             request.state.tokens_used = 0
         model_name = generation_result["model"]
-        
+
         # Post-process output
         processed_text, evidence = postprocess_output(
             output=generated_text,
             retrieved_docs=retrieved_docs if use_rag else None,
             include_citations=True,
         )
-        
+
         # Redact output if needed
         final_text, output_redactions = redact_content(processed_text, tenant_id)
         if output_redactions:
             logger.info(f"Applied {len(output_redactions)} redactions to output")
-        
+
         # Create audit reference
         audit = AuditRef(
             request_id=request_id,
@@ -206,7 +204,7 @@ async def infer(request: Request, infer_request: InferRequest):
             tenant_id=tenant_id,
             endpoint="/v1/infer",
         )
-        
+
         # Convert evidence to EvidenceTag
         evidence_tags = [
             EvidenceTag(
@@ -217,7 +215,7 @@ async def infer(request: Request, infer_request: InferRequest):
             )
             for ev in evidence
         ]
-        
+
         response = InferResponse(
             request_id=request_id,
             tenant_id=tenant_id,
@@ -230,15 +228,15 @@ async def infer(request: Request, infer_request: InferRequest):
                 "rag_enabled": use_rag and len(retrieved_docs) > 0,
                 "retrieved_docs_count": len(retrieved_docs),
                 "redactions_applied": len(redactions) + len(output_redactions),
-            }
+            },
         )
-        
+
         logger.info(f"Inference {request_id} completed, tokens: {tokens_used}")
         return response
-    
+
     except Exception as e:
         logger.error(f"Error processing inference {request_id}: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error generating inference: {str(e)}"
+            detail=f"Error generating inference: {str(e)}",
         )
