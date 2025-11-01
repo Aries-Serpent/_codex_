@@ -1,0 +1,30 @@
+# Retrieval Configuration
+# Settings for vector search and embedding
+
+backend: "faiss"  # Vector store backend: faiss, pgvector (disabled), weaviate (disabled)
+
+faiss:
+  index_dir: ".codex/tenants"  # Base directory for tenant FAISS indexes
+  metric: "l2"  # Distance metric: l2, cosine
+  index_type: "flat"  # Index type: flat, ivf
+
+embedding:
+  model: "sentence-transformers/all-MiniLM-L6-v2"
+  cache_dir: "artifacts/emb"
+  batch_size: 32
+  max_length: 512
+  device: "cpu"
+  
+retrieval:
+  default_top_k: 5
+  max_top_k: 50
+  min_score: 0.0  # Minimum relevance score threshold
+  
+indexing:
+  text_field: "content"  # Default field for document text
+  chunk_size: 512  # Chunk size for large documents (not yet implemented)
+  chunk_overlap: 50  # Overlap between chunks (not yet implemented)
+  
+offline:
+  preload_models: true  # Preload embedding models at startup
+  cache_only: true  # Use cached models only, no downloads

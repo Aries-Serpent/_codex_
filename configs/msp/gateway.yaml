@@ -1,0 +1,32 @@
+# MSP Gateway Configuration
+# Settings for the tenant-aware inference API
+
+server:
+  host: "127.0.0.1"  # Bind to localhost only
+  port: 8080
+  workers: 1
+  reload: false
+
+offline:
+  enabled: true  # Enforce offline-only operation
+  block_network: true  # Block all network calls
+
+security:
+  redaction_enabled: true
+  policy_dir: "policies"
+  api_key_required: true
+
+rate_limiting:
+  enabled: true
+  default_requests_per_minute: 60
+  default_tokens_per_minute: 10000
+  
+logging:
+  level: "INFO"
+  format: "json"
+  directory: ".codex/logs"
+  
+features:
+  admin_api_enabled: true
+  kb_query_enabled: true
+  streaming_enabled: false  # Not yet implemented
