@@ -222,6 +222,24 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 requested_tokens = self._extract_requested_tokens(body_bytes)
                 # Ensure downstream handlers can re-read the body
                 request._body = body_bytes
+                body_consumed = False
+
+                async def receive_with_body():
+                    nonlocal body_consumed
+                    if not body_consumed:
+                        body_consumed = True
+                        return {
+                            "type": "http.request",
+                            "body": body_bytes,
+                            "more_body": False,
+                        }
+                    return {
+                        "type": "http.request",
+                        "body": b"",
+                        "more_body": False,
+                    }
+
+                request._receive = receive_with_body
 
             available_tokens = token_bucket.available_tokens()
 
