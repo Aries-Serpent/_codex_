@@ -104,11 +104,20 @@ Every operation generates evidence:
 
 1. **Configure Zendesk credentials**:
 
-   Create `.env` file (or use environment variables):
+   Create `.env` file (or use environment variables). The CLI expects
+   environment-scoped variables, so set credentials for each environment you
+   plan to manage:
+
    ```bash
-   ZENDESK_SUBDOMAIN=your-subdomain
-   ZENDESK_EMAIL=admin@example.com
-   ZENDESK_API_TOKEN=your-api-token
+   ZENDESK_DEV_SUBDOMAIN=your-dev-subdomain
+   ZENDESK_DEV_EMAIL=admin@example.com
+   ZENDESK_DEV_TOKEN=your-dev-token
+   ZENDESK_STAGING_SUBDOMAIN=your-staging-subdomain
+   ZENDESK_STAGING_EMAIL=admin@example.com
+   ZENDESK_STAGING_TOKEN=your-staging-token
+   ZENDESK_PROD_SUBDOMAIN=your-prod-subdomain
+   ZENDESK_PROD_EMAIL=admin@example.com
+   ZENDESK_PROD_TOKEN=your-prod-token
    ```
 
 2. **Verify connectivity**:

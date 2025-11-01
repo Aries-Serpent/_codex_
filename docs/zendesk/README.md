@@ -67,10 +67,10 @@ This directory contains all documentation related to managing Zendesk Support wi
 
 ### Getting Started
 ```bash
-# 1. Configure credentials
-export ZENDESK_SUBDOMAIN=your-subdomain
-export ZENDESK_EMAIL=admin@example.com
-export ZENDESK_API_TOKEN=your-token
+# 1. Configure credentials (per environment)
+export ZENDESK_DEV_SUBDOMAIN=your-subdomain
+export ZENDESK_DEV_EMAIL=admin@example.com
+export ZENDESK_DEV_TOKEN=your-token
 
 # 2. Take first snapshot
 codex zendesk snapshot --env=dev
@@ -213,10 +213,16 @@ my-zendesk-config/
 
 ### Environment Variables
 ```bash
-# Required
-ZENDESK_SUBDOMAIN=your-subdomain
-ZENDESK_EMAIL=admin@example.com
-ZENDESK_API_TOKEN=your-token
+# Required (per environment; configure for each env you use)
+ZENDESK_DEV_SUBDOMAIN=your-subdomain
+ZENDESK_DEV_EMAIL=admin@example.com
+ZENDESK_DEV_TOKEN=your-token
+ZENDESK_STAGING_SUBDOMAIN=your-staging-subdomain
+ZENDESK_STAGING_EMAIL=admin@example.com
+ZENDESK_STAGING_TOKEN=your-staging-token
+ZENDESK_PROD_SUBDOMAIN=your-prod-subdomain
+ZENDESK_PROD_EMAIL=admin@example.com
+ZENDESK_PROD_TOKEN=your-prod-token
 
 # Optional
 ZENDESK_RATE_LIMIT_DELAY=1.5      # Seconds between requests
