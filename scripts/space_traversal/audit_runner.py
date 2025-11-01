@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.1.0)
+Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.2.0)
 
-This file includes:
-- S3→S4 meta propagation (capability 'meta' carried into scored payload)
-- Optional component caps (cfg.scoring.component_caps) applied before weighting
-- Optional duplication heuristic switch (cfg.scoring.dup.heuristic):
-    - "simple" uses file-stem duplication ratio (default)
-    - "token_similarity" uses dup_similarity.estimate() if present, else fallback
+Enhancements (v1.2.0):
+- Propagate required_patterns into scored payloads for downstream rendering.
+- Compute missing_patterns and write expanded gap metadata (gaps.json).
+- Emit component_gaps.json for zero-value components and deficit hints.
+- Add `validate` command (low-maturity + missing-detector gates).
+- Include missing_detectors and thresholds snapshot in manifest.
 """
 
 from __future__ import annotations
@@ -43,6 +43,23 @@ except Exception:
     except Exception:
         print("Failed to import capability_scoring utilities.", file=sys.stderr)
         sys.exit(1)
+
+# Local validators for gate checks
+try:
+    from scripts.space_traversal.validators import (
+        check_low_threshold,
+        check_missing_detectors,
+        emit_summary,
+    )
+except Exception:  # pragma: no cover - fallback for direct execution
+    try:
+        from validators import check_low_threshold, check_missing_detectors, emit_summary  # type: ignore
+    except Exception:
+        sys.path.append(str(Path(__file__).resolve().parent))
+        try:
+            from validators import check_low_threshold, check_missing_detectors, emit_summary  # type: ignore
+        except Exception:
+            check_low_threshold = check_missing_detectors = emit_summary = None  # type: ignore
 
 # Optional token-similarity duplication heuristic
 try:
@@ -83,7 +100,7 @@ CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 SKIP_DIR_PREFIXES = (
     ".git/",
@@ -439,6 +456,12 @@ def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
     return min(1.0, hits / max(3, len(docs) * 0.1))
 
 
+def _compute_missing_patterns(capability: Dict[str, Any]) -> List[str]:
+    required = set(capability.get("required_patterns", []) or [])
+    found = set(capability.get("found_patterns", []) or [])
+    return sorted(required - found)
+
+
 def stage_s4_scoring(cfg, raw_caps):
     # Normalize weights
     raw_weights = dict(cfg["weights"])
@@ -498,6 +521,8 @@ def stage_s4_scoring(cfg, raw_caps):
             "score": score_val,
             "evidence_files": cap["evidence_files"],
             "found_patterns": cap["found_patterns"],
+            "required_patterns": cap.get("required_patterns", []),
+            "missing_patterns": _compute_missing_patterns(cap),
         }
         # S3→S4 meta propagation (if present)
         if isinstance(cap.get("meta"), dict):
@@ -527,17 +552,62 @@ def stage_s4_scoring(cfg, raw_caps):
 
 def stage_s5_gaps(cfg, scored_caps):
     thresholds = cfg["scoring"]["thresholds"]
-    low = []
-    for c in scored_caps:
-        if c["score"] < thresholds["low"]:
-            comps = c.get("components", {}) or {}
-            c_enriched = dict(c)
-            if comps:
-                c_enriched["primary_deficit"] = min(comps, key=lambda k: comps[k])
-            low.append(c_enriched)
-    payload = {"generated": time.time(), "low_maturity": low, "version": VERSION}
-    out = Path(cfg["output"]["artifacts_dir"]) / "gaps.json"
-    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    overrides = (cfg.get("capability_map", {}) or {}).get("overrides") or {}
+    low: List[Dict[str, Any]] = []
+    component_gaps: List[Dict[str, Any]] = []
+
+    for capability in scored_caps:
+        comps = capability.get("components", {}) or {}
+        enriched = dict(capability)
+        enriched["missing_patterns"] = capability.get("missing_patterns") or _compute_missing_patterns(capability)
+        if comps:
+            primary_component = min(comps, key=lambda key: comps[key])
+            enriched["primary_deficit"] = primary_component
+        else:
+            primary_component = None
+
+        if capability["score"] < thresholds["low"]:
+            low.append(enriched)
+
+        zero_components = sorted([key for key, value in comps.items() if value == 0.0])
+        component_entry: Dict[str, Any] = {
+            "id": capability["id"],
+            "zero_components": zero_components,
+        }
+        if primary_component is not None:
+            component_entry["primary_deficit"] = {
+                "component": primary_component,
+                "value": float(comps.get(primary_component, 0.0)),
+            }
+        component_gaps.append(component_entry)
+
+    present_ids = {cap["id"] for cap in scored_caps}
+    missing_detectors = sorted(set(overrides.keys()) - present_ids)
+
+    payload = {
+        "generated": time.time(),
+        "low_maturity": low,
+        "missing_detectors": missing_detectors,
+        "summary": {
+            "low_count": len(low),
+            "missing_detectors_count": len(missing_detectors),
+            "zero_components_total": sum(len(entry["zero_components"]) for entry in component_gaps),
+        },
+        "thresholds": thresholds,
+        "version": VERSION,
+    }
+
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    (artifacts_dir / "gaps.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    component_payload = {
+        "generated": time.time(),
+        "component_gaps": component_gaps,
+        "version": VERSION,
+    }
+    (artifacts_dir / "component_gaps.json").write_text(
+        json.dumps(component_payload, indent=2),
+        encoding="utf-8",
+    )
     return payload
 
 
@@ -580,7 +650,10 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
         "capabilities": scored_caps,
         "gaps": gaps["low_maturity"],
+        "gap_summary": gaps.get("summary", {}),
+        "missing_detectors": gaps.get("missing_detectors", []),
         "weights": weights,
+        "thresholds": cfg["scoring"]["thresholds"],
     }
     return render_template(cfg, context)
 
@@ -597,7 +670,9 @@ def stage_s7_manifest(cfg):
         ),
         "artifacts": [],
         "weights": cfg["weights"],
+        "thresholds": cfg["scoring"]["thresholds"],
         "warnings": [],
+        "missing_detectors": [],
     }
     for p in artifacts_dir.glob("*.json"):
         if p.name.startswith("_"):
@@ -620,6 +695,16 @@ def stage_s7_manifest(cfg):
                 manifest["weights"] = scored_payload["weights"]
             if isinstance(scored_payload.get("warnings"), list):
                 manifest["warnings"].extend([str(w) for w in scored_payload["warnings"]])
+        except Exception:
+            pass
+
+    gaps_path = artifacts_dir / "gaps.json"
+    if gaps_path.exists():
+        try:
+            gaps_payload = json.loads(gaps_path.read_text(encoding="utf-8"))
+            manifest["missing_detectors"] = gaps_payload.get("missing_detectors", [])
+            if isinstance(gaps_payload.get("thresholds"), dict):
+                manifest["thresholds"] = gaps_payload["thresholds"]
         except Exception:
             pass
 
@@ -721,6 +806,40 @@ def command_explain(args, cfg):
     print(f"  Total score: {float(score_value):.4f}")
 
 
+def command_validate(cfg):
+    if any(func is None for func in (check_low_threshold, check_missing_detectors, emit_summary)):
+        print("Validation helpers unavailable; ensure validators module is accessible.", file=sys.stderr)
+        sys.exit(2)
+
+    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    gaps_path = artifacts_dir / "gaps.json"
+    scored_path = artifacts_dir / "capabilities_scored.json"
+
+    if not gaps_path.exists() or not scored_path.exists():
+        print("Missing artifacts. Run full pipeline before validate.", file=sys.stderr)
+        sys.exit(2)
+
+    low_count, low_list = check_low_threshold(gaps_path)  # type: ignore[arg-type]
+    overrides = (cfg.get("capability_map", {}) or {}).get("overrides") or {}
+    missing = check_missing_detectors(scored_path, overrides)  # type: ignore[arg-type]
+    summary = emit_summary(low_list, missing, cfg["scoring"]["thresholds"])  # type: ignore[arg-type]
+
+    step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if step_summary:
+        with open(step_summary, "a", encoding="utf-8") as handle:
+            handle.write(summary + "\n")
+
+    print(summary)
+
+    failed = False
+    if cfg.get("options", {}).get("fail_on_low_maturity", False) and low_count > 0:
+        failed = True
+    if cfg.get("options", {}).get("fail_on_missing_detector", False) and missing:
+        failed = True
+    if failed:
+        sys.exit(4)
+
+
 def run_full(cfg):
     ctx = stage_s1_index(cfg)
     facets = stage_s2_facets(cfg, ctx)
@@ -784,6 +903,7 @@ def main():
     diff_p.add_argument("--new", required=True, help="New report/JSON path")
     exp_p = sub.add_parser("explain", help="Explain a capability's score")
     exp_p.add_argument("capability", help="Capability ID to explain")
+    sub.add_parser("validate", help="Validate policy gates (low threshold, detectors)")
 
     args = parser.parse_args()
     if args.command is None:
@@ -806,6 +926,8 @@ def main():
         command_diff(args, cfg)
     elif args.command == "explain":
         command_explain(args, cfg)
+    elif args.command == "validate":
+        command_validate(cfg)
     else:
         parser.print_help()
 
