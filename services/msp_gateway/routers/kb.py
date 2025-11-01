@@ -6,24 +6,52 @@ Handles retrieval queries against tenant knowledge bases
 import logging
 import uuid
 from datetime import datetime
+from typing import Optional, TYPE_CHECKING
 
 from fastapi import APIRouter, Request, HTTPException, status
 
 from ..schemas.requests import KBQueryRequest
 from ..schemas.responses import KBQueryResponse, KBSearchResult, AuditRef
-from ..providers.retrieval_adapter import RetrievalAdapter
 from ..config import settings
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1", tags=["knowledge-base"])
 
-# Global retrieval adapter
-retrieval_adapter = RetrievalAdapter(
-    index_base_dir=settings.faiss_index_dir,
-    embedding_model=settings.embedding_model,
-    cache_dir=settings.embedding_cache_dir,
-)
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
+_retrieval_adapter: Optional["RetrievalAdapter"] = None
+_retrieval_adapter_error: Optional[Exception] = None
+
+
+def get_retrieval_adapter() -> "RetrievalAdapter":
+    """Return a retrieval adapter, instantiating it lazily."""
+
+    global _retrieval_adapter, _retrieval_adapter_error
+
+    if _retrieval_adapter is not None:
+        return _retrieval_adapter
+
+    if _retrieval_adapter_error is not None:
+        raise _retrieval_adapter_error
+
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
+    try:
+        _retrieval_adapter = RetrievalAdapter(
+            index_base_dir=settings.faiss_index_dir,
+            embedding_model=settings.embedding_model,
+            cache_dir=settings.embedding_cache_dir,
+        )
+        return _retrieval_adapter
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        _retrieval_adapter_error = exc
+        logger.error(
+            "Failed to initialize retrieval adapter for KB queries: %s",
+            exc,
+        )
+        raise
 
 
 @router.post("/query_kb", response_model=KBQueryResponse)
@@ -65,6 +93,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
     
     try:
         # Query the knowledge base
+        retrieval_adapter = get_retrieval_adapter()
         results = retrieval_adapter.query(
             tenant_id=tenant_id,
             query=kb_request.query,
@@ -104,6 +133,16 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
         logger.info(f"KB query {request_id} returned {len(search_results)} results")
         return response
     
+    except ImportError as exc:
+        logger.error(
+            "KB query %s failed due to missing retrieval dependencies: %s",
+            request_id,
+            exc,
+        )
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Knowledge base retrieval dependencies are not installed",
+        )
     except Exception as e:
         logger.error(f"Error processing KB query {request_id}: {e}", exc_info=True)
         raise HTTPException(

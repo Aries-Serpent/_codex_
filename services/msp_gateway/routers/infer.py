@@ -6,13 +6,13 @@ Handles model inference requests with optional RAG
 import logging
 import uuid
 from datetime import datetime
+from typing import Optional, TYPE_CHECKING
 
 from fastapi import APIRouter, Request, HTTPException, status
 
 from ..schemas.requests import InferRequest
 from ..schemas.responses import InferResponse, AuditRef, EvidenceTag
 from ..providers.model_adapter import create_model_adapter
-from ..providers.retrieval_adapter import RetrievalAdapter
 from ..config import settings
 from ..security import validate_prompt, redact_content, offline_guard
 
@@ -30,11 +30,44 @@ model_adapter = create_model_adapter(
     device=settings.model_device,
 )
 
-retrieval_adapter = RetrievalAdapter(
-    index_base_dir=settings.faiss_index_dir,
-    embedding_model=settings.embedding_model,
-    cache_dir=settings.embedding_cache_dir,
-)
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
+_retrieval_adapter: Optional["RetrievalAdapter"] = None
+_retrieval_adapter_error: Optional[Exception] = None
+
+
+def get_retrieval_adapter() -> Optional["RetrievalAdapter"]:
+    """Lazily instantiate the retrieval adapter.
+
+    Returns None if the adapter cannot be created due to missing optional
+    dependencies. Subsequent calls reuse the cached adapter or error state.
+    """
+
+    global _retrieval_adapter, _retrieval_adapter_error
+
+    if _retrieval_adapter is not None:
+        return _retrieval_adapter
+
+    if _retrieval_adapter_error is not None:
+        return None
+
+    try:
+        from ..providers.retrieval_adapter import RetrievalAdapter
+
+        _retrieval_adapter = RetrievalAdapter(
+            index_base_dir=settings.faiss_index_dir,
+            embedding_model=settings.embedding_model,
+            cache_dir=settings.embedding_cache_dir,
+        )
+        return _retrieval_adapter
+    except Exception as exc:  # pragma: no cover - optional dependency path
+        _retrieval_adapter_error = exc
+        logger.warning(
+            "Failed to initialize retrieval adapter; proceeding without RAG: %s",
+            exc,
+        )
+        return None
 
 
 @router.post("/infer", response_model=InferResponse)
@@ -95,16 +128,21 @@ async def infer(request: Request, infer_request: InferRequest):
         use_rag = infer_request.options.get("use_rag", True) if infer_request.options else True
         
         retrieved_docs = []
+        retrieval_adapter = None
         if use_rag and settings.kb_query_enabled:
             # Retrieve relevant documents
             try:
+                retrieval_adapter = get_retrieval_adapter()
+                if retrieval_adapter is None:
+                    raise RuntimeError("retrieval adapter unavailable")
+
                 top_k = infer_request.options.get("rag_top_k", 3) if infer_request.options else 3
                 results = retrieval_adapter.query(
                     tenant_id=tenant_id,
                     query=redacted_prompt,
                     top_k=top_k,
                 )
-                
+
                 retrieved_docs = [
                     {
                         "content": r["content"],
@@ -121,7 +159,7 @@ async def infer(request: Request, infer_request: InferRequest):
             except Exception as e:
                 logger.warning(f"Error retrieving documents for RAG: {e}")
                 # Continue without RAG
-        
+
         # Build prompt
         system_prompt = infer_request.options.get("system_prompt") if infer_request.options else None
         full_prompt = build_prompt(
