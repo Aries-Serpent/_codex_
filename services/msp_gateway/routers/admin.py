@@ -6,7 +6,7 @@ Admin operations for tenant management and system configuration
 import logging
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from ..schemas.requests import TenantCreateRequest, TenantUpdateRequest
 from ..schemas.responses import TenantResponse
@@ -156,9 +156,16 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
             detail="Admin API is disabled"
         )
     
-    # Get existing tenant
-    tenant_data = tenant_registry.get_tenant(tenant_id)
-    if not tenant_data:
+    updated_tenant = tenant_registry.update_tenant(
+        tenant_id,
+        name=update_request.name,
+        quota=update_request.quota,
+        policies=update_request.policies,
+        metadata=update_request.metadata,
+        active=update_request.active,
+    )
+
+    if not updated_tenant:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
@@ -207,8 +214,7 @@ async def delete_tenant(tenant_id: str):
             detail="Admin API is disabled"
         )
     
-    tenant_data = tenant_registry.get_tenant(tenant_id)
-    if not tenant_data:
+    if not tenant_registry.deactivate_tenant(tenant_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
@@ -224,4 +230,4 @@ async def delete_tenant(tenant_id: str):
         )
     
     logger.info(f"Tenant deactivated: {tenant_id}")
-    return None
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
