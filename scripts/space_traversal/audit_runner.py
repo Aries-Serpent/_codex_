@@ -16,6 +16,23 @@ from pathlib import Path
 from typing import Dict, List, Any, Callable
 
 try:
+    from scripts.space_traversal.capability_scoring import (
+        aggregate_scores,
+        normalize_weights,
+        score_capability,
+    )
+except Exception:
+    try:
+        from capability_scoring import (  # type: ignore
+            aggregate_scores,
+            normalize_weights,
+            score_capability,
+        )
+    except Exception:
+        print("Failed to import capability_scoring utilities.", file=sys.stderr)
+        sys.exit(1)
+
+try:
     import yaml
     from jinja2 import Environment, FileSystemLoader
 except ImportError:
@@ -38,22 +55,6 @@ except Exception:  # pragma: no cover - fallback for direct execution
             from validators import check_low_threshold, check_missing_detectors, emit_summary  # type: ignore
         except Exception:
             check_low_threshold = check_missing_detectors = emit_summary = None  # type: ignore
-
-# Optional token-similarity duplication heuristic
-try:
-    from .validators import (
-        check_low_threshold,
-        check_missing_detectors,
-        emit_summary,
-    )
-except Exception:
-    # fallback for direct execution
-    sys.path.append(str(Path(__file__).resolve().parent))
-    from validators import (
-        check_low_threshold,
-        check_missing_detectors,
-        emit_summary,
-    )
 
 # ---------------------------------------------------------------------------
 # Constants & Paths
@@ -331,12 +332,25 @@ def _compute_missing_patterns(capability: Dict[str, Any]) -> List[str]:
 
 
 def stage_s4_scoring(cfg, raw_caps):
-    weights = cfg["weights"]
-    total_w = sum(weights.values())
-    warnings = []
+    raw_weights = dict(cfg["weights"])
+    total_w = float(sum(raw_weights.values()))
+    warnings: List[str] = []
+    try:
+        w_norm = normalize_weights(raw_weights)
+    except ValueError as exc:
+        raise ValueError("workflow.yaml weights must sum to a positive value") from exc
     if abs(total_w - 1.0) > 1e-9:
         warnings.append(f"weights_normalized_from:{total_w}")
-        weights = {k: v / total_w for k, v in weights.items()}
+
+    caps = (cfg.get("scoring", {}) or {}).get("component_caps", {}) or {}
+    if not isinstance(caps, dict):
+        caps = {}
+
+    def cap_value(key: str) -> float:
+        try:
+            return float(caps.get(key, 1.0))
+        except Exception:
+            return 1.0
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     file_cache: Dict[str, str] = {}
@@ -346,40 +360,38 @@ def stage_s4_scoring(cfg, raw_caps):
                 file_cache[ef] = read_file_text_safe(ROOT / ef)
     for p in sorted(ROOT.rglob("*.md")):
         rel = p.relative_to(ROOT).as_posix()
-        if rel not in file_cache:
-            file_cache[rel] = read_file_text_safe(p)
+        file_cache.setdefault(rel, read_file_text_safe(p))
 
-    scored = []
+    scored: List[Dict[str, Any]] = []
     for cap in raw_caps:
         functionality = len(cap["found_patterns"]) / max(1, len(cap["required_patterns"]))
         consistency = 1.0 - duplication_ratio(cap["evidence_files"])
         tests = estimate_test_depth(cap["id"], cap["evidence_files"])
         safeguards = safeguard_score(cap["evidence_files"], file_cache)
         documentation = docs_score(cap["id"], file_cache)
-        components = {
-            "functionality": functionality,
-            "consistency": consistency,
-            "tests": tests,
-            "safeguards": safeguards,
-            "documentation": documentation,
+        raw_components = {
+            "functionality": max(0.0, min(1.0, functionality)),
+            "consistency": max(0.0, min(1.0, consistency)),
+            "tests": max(0.0, min(1.0, tests)),
+            "safeguards": max(0.0, min(1.0, safeguards)),
+            "documentation": max(0.0, min(1.0, documentation)),
         }
-        score = sum(components[k] * weights[k] for k in weights)
-        missing_patterns = _compute_missing_patterns(cap)
-        scored.append({
+        components = {k: min(v, cap_value(k)) for k, v in raw_components.items()}
+        score_val = round(score_capability(components, w_norm), 4)
+
+        scored_item: Dict[str, Any] = {
             "id": cap["id"],
             "components": components,
-            "score": round(score, 4),
+            "score": score_val,
             "evidence_files": cap["evidence_files"],
             "found_patterns": cap["found_patterns"],
             "required_patterns": cap.get("required_patterns", []),
             "missing_patterns": _compute_missing_patterns(cap),
         }
-        # S3→S4 meta propagation (if present)
         if isinstance(cap.get("meta"), dict):
             scored_item["meta"] = cap["meta"]
         scored.append(scored_item)
 
-    # Attach explanation partials
     explanations = aggregate_scores(scored, w_norm)
     by_id = {e["id"]: e for e in explanations}
     for item in scored:
@@ -388,15 +400,16 @@ def stage_s4_scoring(cfg, raw_caps):
             item["score"] = detail["score"]
             item["partials"] = detail["partials"]
 
+    payload = {
+        "generated": time.time(),
+        "capabilities": scored,
+        "version": VERSION,
+        "weights": w_norm,
+        "warnings": warnings,
+    }
     out = artifacts_dir / "capabilities_scored.json"
-    out.write_text(json.dumps({"generated": time.time(), "capabilities": scored, "version": VERSION}, indent=2), encoding="utf-8")
-    (artifacts_dir / "_scoring_warnings.json").write_text(json.dumps(warnings), encoding="utf-8")
+    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return scored
-
-def _compute_missing_patterns(cap: dict) -> List[str]:
-    req = set(cap.get("required_patterns", []))
-    found = set(cap.get("found_patterns", []))
-    return sorted(req - found)
 
 def stage_s5_gaps(cfg, scored_caps):
     thresholds = cfg["scoring"]["thresholds"]
@@ -458,21 +471,6 @@ def stage_s5_gaps(cfg, scored_caps):
     )
     return payload
 
-    payload = {
-        "generated": time.time(),
-        "low_maturity": low,
-        "missing_detectors": missing_detectors,
-        "summary": {
-            "low_count": len(low),
-            "zeros_count": sum(len(x["zero_components"]) for x in component_gaps),
-        },
-        "version": VERSION,
-    }
-    out_dir = Path(cfg["output"]["artifacts_dir"])
-    (out_dir / "gaps.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    (out_dir / "component_gaps.json").write_text(json.dumps({"component_gaps": component_gaps, "version": VERSION}, indent=2), encoding="utf-8")
-    return payload
-
 def render_template(cfg, context):
     tpl_path = cfg["output"]["matrix_template"]
     tpl_dir = Path(tpl_path).parent
@@ -491,6 +489,16 @@ def render_template(cfg, context):
     return out_file
 
 def stage_s6_render(cfg, scored_caps, gaps):
+    weights = cfg["weights"]
+    scored_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_scored.json"
+    if scored_file.exists():
+        try:
+            saved = json.loads(scored_file.read_text(encoding="utf-8"))
+            if isinstance(saved.get("weights"), dict):
+                weights = saved["weights"]
+        except Exception:
+            pass
+
     context = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
         "capabilities": scored_caps,
@@ -632,28 +640,6 @@ def command_explain(args, cfg):
         w = weights[k]
         print(f"  {k:14s} value={v:.4f} weight={w:.3f} contribution={(v*w):.4f}")
     print(f"  Total score: {target['score']:.4f}")
-
-def command_validate(cfg):
-    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
-    gaps_path = artifacts_dir / "gaps.json"
-    scored_path = artifacts_dir / "capabilities_scored.json"
-
-    if not gaps_path.exists() or not scored_path.exists():
-        print("Missing artifacts. Run full pipeline or required stages first.", file=sys.stderr)
-        sys.exit(2)
-
-    low_count, low_list = check_low_threshold(str(gaps_path))
-    missing = check_missing_detectors(str(scored_path), (cfg.get("capability_map", {}) or {}).get("overrides") or {})
-    summary = emit_summary(low_list, missing, cfg["scoring"]["thresholds"])
-
-    # Always emit job summary text if env is set
-    step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
-    if step_summary:
-        with open(step_summary, "a", encoding="utf-8") as fh:
-            fh.write(summary + "\n")
-
-    # Print to stdout for logs
-    print(summary)
 
 def command_validate(cfg):
     if any(func is None for func in (check_low_threshold, check_missing_detectors, emit_summary)):
