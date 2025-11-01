@@ -230,8 +230,103 @@ class TenantRegistry:
                     "updated_at": row[8],
                 })
             return tenants
-        
+
         return list(self.tenants.values())
+
+    def update_tenant(
+        self,
+        tenant_id: str,
+        *,
+        name: Optional[str] = None,
+        quota: Optional[Dict[str, int]] = None,
+        policies: Optional[list] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        active: Optional[bool] = None,
+    ) -> Optional[Dict[str, Any]]:
+        """Update an existing tenant and persist changes"""
+
+        tenant = self.get_tenant(tenant_id)
+        if not tenant:
+            return None
+
+        updated_fields: Dict[str, Any] = {}
+        if name is not None:
+            updated_fields["name"] = name
+        if quota is not None:
+            updated_fields["quota"] = quota
+        if policies is not None:
+            updated_fields["policies"] = policies
+        if metadata is not None:
+            updated_fields["metadata"] = metadata
+        if active is not None:
+            updated_fields["active"] = bool(active)
+
+        now = datetime.utcnow().isoformat()
+
+        if self.backend == "sqlite":
+            import json
+
+            conn = sqlite3.connect(settings.db_path)
+            cursor = conn.cursor()
+
+            set_clauses = []
+            params: list[Any] = []
+
+            if "name" in updated_fields:
+                set_clauses.append("name = ?")
+                params.append(updated_fields["name"])
+            if "quota" in updated_fields:
+                set_clauses.append("quota_json = ?")
+                params.append(json.dumps(updated_fields["quota"]))
+            if "policies" in updated_fields:
+                set_clauses.append("policies_json = ?")
+                params.append(json.dumps(updated_fields["policies"]))
+            if "metadata" in updated_fields:
+                set_clauses.append("metadata_json = ?")
+                params.append(json.dumps(updated_fields["metadata"]))
+            if "active" in updated_fields:
+                set_clauses.append("active = ?")
+                params.append(1 if updated_fields["active"] else 0)
+
+            set_clauses.append("updated_at = ?")
+            params.append(now)
+            params.append(tenant_id)
+
+            try:
+                cursor.execute(
+                    f"UPDATE tenants SET {', '.join(set_clauses)} WHERE tenant_id = ?",
+                    params,
+                )
+                conn.commit()
+            finally:
+                conn.close()
+
+        # Update in-memory cache
+        for field, value in updated_fields.items():
+            tenant[field] = value
+        tenant["updated_at"] = now
+        self.tenants[tenant_id] = tenant
+
+        # Update API key registry based on tenant status
+        if "active" in updated_fields:
+            if updated_fields["active"]:
+                auth_manager.register_api_key(tenant["api_key"], tenant_id)
+            else:
+                auth_manager.revoke_api_key(tenant["api_key"])
+
+        logger.info(
+            "Tenant %s updated with fields: %s",
+            tenant_id,
+            ", ".join(updated_fields.keys()) if updated_fields else "updated_at",
+        )
+
+        return tenant
+
+    def deactivate_tenant(self, tenant_id: str) -> bool:
+        """Deactivate a tenant and revoke credentials"""
+
+        updated = self.update_tenant(tenant_id, active=False)
+        return updated is not None
 
 
 # Global tenant registry

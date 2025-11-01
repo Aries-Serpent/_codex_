@@ -55,8 +55,11 @@ def create_app() -> FastAPI:
     )
     
     # Add custom middleware
-    app.add_middleware(RateLimitMiddleware)
+    # Starlette executes middleware in reverse order of registration, so we
+    # register the tenant context middleware first to ensure the rate limiter
+    # runs after the tenant has been attached to the request state.
     app.add_middleware(TenantContextMiddleware)
+    app.add_middleware(RateLimitMiddleware)
     
     # Include routers
     app.include_router(kb_router)

@@ -6,7 +6,7 @@ Admin operations for tenant management and system configuration
 import logging
 from typing import List
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from ..schemas.requests import TenantCreateRequest, TenantUpdateRequest
 from ..schemas.responses import TenantResponse
@@ -156,41 +156,36 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
             detail="Admin API is disabled"
         )
     
-    # Get existing tenant
-    tenant_data = tenant_registry.get_tenant(tenant_id)
-    if not tenant_data:
+    updated_tenant = tenant_registry.update_tenant(
+        tenant_id,
+        name=update_request.name,
+        quota=update_request.quota,
+        policies=update_request.policies,
+        metadata=update_request.metadata,
+        active=update_request.active,
+    )
+
+    if not updated_tenant:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
         )
-    
-    # Update tenant data (simple in-memory update for now)
-    # In production, this would update the database
-    if update_request.name is not None:
-        tenant_data["name"] = update_request.name
-    if update_request.quota is not None:
-        tenant_data["quota"] = update_request.quota
-    if update_request.policies is not None:
-        tenant_data["policies"] = update_request.policies
-    if update_request.metadata is not None:
-        tenant_data["metadata"] = update_request.metadata
-    if update_request.active is not None:
-        tenant_data["active"] = update_request.active
-    
-    from datetime import datetime
-    tenant_data["updated_at"] = datetime.utcnow().isoformat()
-    
-    logger.info(f"Tenant updated: {tenant_id}")
-    
+
+    logger.info(
+        "Tenant updated: %s (fields: %s)",
+        tenant_id,
+        ", ".join(update_request.model_dump(exclude_none=True).keys()) or "updated_at",
+    )
+
     return TenantResponse(
-        tenant_id=tenant_data["tenant_id"],
-        name=tenant_data["name"],
-        quota=tenant_data["quota"],
-        policies=tenant_data["policies"],
-        active=tenant_data["active"],
-        created_at=tenant_data["created_at"],
-        updated_at=tenant_data["updated_at"],
-        metadata=tenant_data["metadata"],
+        tenant_id=updated_tenant["tenant_id"],
+        name=updated_tenant["name"],
+        quota=updated_tenant["quota"],
+        policies=updated_tenant["policies"],
+        active=updated_tenant["active"],
+        created_at=updated_tenant["created_at"],
+        updated_at=updated_tenant["updated_at"],
+        metadata=updated_tenant["metadata"],
     )
 
 
@@ -207,15 +202,11 @@ async def delete_tenant(tenant_id: str):
             detail="Admin API is disabled"
         )
     
-    tenant_data = tenant_registry.get_tenant(tenant_id)
-    if not tenant_data:
+    if not tenant_registry.deactivate_tenant(tenant_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Tenant not found: {tenant_id}"
         )
-    
-    # Deactivate tenant (soft delete)
-    tenant_data["active"] = False
-    
+
     logger.info(f"Tenant deactivated: {tenant_id}")
-    return None
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
