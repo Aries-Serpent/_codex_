@@ -33,6 +33,9 @@ model_adapter = create_model_adapter(
     device=settings.model_device,
 )
 
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
 _retrieval_adapter: Optional["RetrievalAdapter"] = None
 _retrieval_adapter_error: Optional[Exception] = None
 

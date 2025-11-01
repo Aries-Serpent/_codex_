@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/v1", tags=["knowledge-base"])
 
+if TYPE_CHECKING:
+    from ..providers.retrieval_adapter import RetrievalAdapter
+
 _retrieval_adapter: Optional["RetrievalAdapter"] = None
 _retrieval_adapter_error: Optional[Exception] = None
 
@@ -89,7 +92,8 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
     try:
         # Query the knowledge base
-        results = get_retrieval_adapter().query(
+        retrieval_adapter = get_retrieval_adapter()
+        results = retrieval_adapter.query(
             tenant_id=tenant_id,
             query=kb_request.query,
             top_k=kb_request.top_k or 5,
@@ -127,7 +131,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
         logger.info(f"KB query {request_id} returned {len(search_results)} results")
         return response
-
+    
     except ImportError as exc:
         logger.error(
             "KB query %s failed due to missing retrieval dependencies: %s",
