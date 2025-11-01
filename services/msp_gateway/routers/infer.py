@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 
 from fastapi import APIRouter, Request, HTTPException, status
+from fastapi.concurrency import run_in_threadpool
 
 from ..schemas.requests import InferRequest
 from ..schemas.responses import InferResponse, AuditRef, EvidenceTag
@@ -168,7 +169,8 @@ async def infer(request: Request, infer_request: InferRequest):
         )
 
         # Generate response
-        generation_result = model_adapter.generate(
+        generation_result = await run_in_threadpool(
+            model_adapter.generate,
             prompt=full_prompt,
             max_tokens=infer_request.max_tokens or 512,
             temperature=infer_request.temperature or 0.7,
