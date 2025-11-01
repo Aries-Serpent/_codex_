@@ -55,8 +55,11 @@ def create_app() -> FastAPI:
     )
     
     # Add custom middleware
-    app.add_middleware(RateLimitMiddleware)
+    # Note: Middleware executes in reverse order of registration
+    # So we register TenantContext first, then RateLimit
+    # This ensures tenant context is set before rate limiting checks it
     app.add_middleware(TenantContextMiddleware)
+    app.add_middleware(RateLimitMiddleware)
     
     # Include routers
     app.include_router(kb_router)
