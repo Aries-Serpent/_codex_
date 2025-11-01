@@ -5,11 +5,13 @@ Per-tenant token bucket rate limiting (in-memory)
 
 import time
 import logging
+import json
 from typing import Dict, Optional
 from dataclasses import dataclass
 
 from fastapi import Request, HTTPException, status
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from ..config import settings
 
@@ -158,6 +160,75 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 headers={"Retry-After": "60"},
             )
         
+        # Pre-flight check: ensure tenant has token quota available
+        # This prevents requests from being processed if no tokens are available
+        if settings.rate_limit_enabled:
+            tokens_per_minute = settings.rate_limit_tokens_per_minute
+            if quota:
+                tokens_per_minute = quota.get("tokens_per_minute", tokens_per_minute)
+            
+            # Get or create token bucket to check availability
+            token_bucket = rate_limiter._get_or_create_bucket(
+                tenant_id,
+                "token",
+                tokens_per_minute,
+                tokens_per_minute / 60.0,
+            )
+            
+            # Refill tokens based on elapsed time (same logic as consume)
+            now = time.time()
+            elapsed = now - token_bucket.last_refill
+            available_tokens = min(
+                token_bucket.capacity,
+                token_bucket.tokens + elapsed * token_bucket.refill_rate
+            )
+            
+            # If no tokens available, reject the request
+            if available_tokens < 1:
+                logger.warning(f"Token quota exhausted for tenant: {tenant_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                    detail="Token quota exceeded. Please try again later.",
+                    headers={"Retry-After": "60"},
+                )
+        
         # Process request
         response = await call_next(request)
+        
+        # Check if this is an inference endpoint and extract token usage
+        if request.url.path == "/v1/infer" and isinstance(response, Response):
+            try:
+                # Read response body
+                response_body = b""
+                async for chunk in response.body_iterator:
+                    response_body += chunk
+                
+                # Parse JSON response
+                response_data = json.loads(response_body.decode())
+                
+                # Extract tokens used
+                tokens_used = response_data.get("tokens_used", 0)
+                
+                if tokens_used > 0:
+                    # Consume tokens from the bucket
+                    if not rate_limiter.check_token_limit(tenant_id, tokens_used, quota):
+                        logger.warning(
+                            f"Token limit exceeded after inference for tenant: {tenant_id}, "
+                            f"tokens used: {tokens_used}"
+                        )
+                        # Note: We already processed the request, so we can't reject it now
+                        # Future requests will be blocked if bucket is empty
+                
+                # Reconstruct response with the same body
+                from starlette.responses import JSONResponse
+                return JSONResponse(
+                    content=response_data,
+                    status_code=response.status_code,
+                    headers=dict(response.headers),
+                )
+            except Exception as e:
+                logger.error(f"Error processing token usage: {e}")
+                # Return original response on error
+                return response
+        
         return response
