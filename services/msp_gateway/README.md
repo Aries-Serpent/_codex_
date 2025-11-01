@@ -169,17 +169,73 @@ print(response["generated_text"])
 
 ### Environment Variables
 
-Set these in `.env` or export them:
+The MSP Gateway is configured via environment variables with the `MSP_` prefix. All settings have sensible defaults for local operation.
 
+#### Core Settings
 ```bash
-MSP_OFFLINE=1                 # Enforce offline mode
-MSP_HOST=127.0.0.1           # Bind address
-MSP_PORT=8080                # Server port
-MSP_LOG_LEVEL=INFO           # Log level
-MSP_MODEL_BACKEND=mock       # Model backend: mock, transformers
-MSP_VECTOR_BACKEND=faiss     # Vector store: faiss
-MSP_RATE_LIMIT_ENABLED=true  # Enable rate limiting
+MSP_HOST=127.0.0.1                     # Bind address (localhost only)
+MSP_PORT=8080                          # Server port
+MSP_OFFLINE=1                          # Enforce offline mode (default: true)
+MSP_BASE_DIR=.codex                    # Base directory for data
 ```
+
+#### Logging
+```bash
+MSP_LOG_DIR=.codex/logs                # Log directory
+MSP_LOG_LEVEL=INFO                     # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+MSP_LOG_FORMAT=json                    # Log format: json or text
+```
+
+#### Model Settings
+```bash
+MSP_MODEL_BACKEND=mock                 # Backend: mock, local, transformers, llama.cpp
+MSP_MODEL_PATH=/path/to/model          # Path to local model weights
+MSP_MODEL_NAME_OR_PATH=gpt2            # HuggingFace model identifier
+MSP_MODEL_DEVICE=cpu                   # Device: cpu or cuda
+```
+
+#### Vector Search & Retrieval
+```bash
+MSP_VECTOR_BACKEND=faiss               # Backend: faiss (others disabled)
+MSP_FAISS_INDEX_DIR=.codex/tenants     # Per-tenant FAISS indexes
+MSP_INDEX_DIR=.codex/faiss             # Alternative generic index path
+MSP_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+MSP_EMBEDDING_CACHE_DIR=artifacts/emb  # Cache for model weights
+MSP_TOP_K=5                            # Default top-k results (1-100)
+```
+
+#### Rate Limiting
+```bash
+MSP_RATE_LIMIT_ENABLED=1                      # Enable rate limiting
+MSP_RATE_LIMIT_REQUESTS_PER_MINUTE=60         # Requests per minute per tenant
+MSP_RATE_LIMIT_TOKENS_PER_MINUTE=10000        # Tokens per minute per tenant
+```
+
+#### Security & Policies
+```bash
+MSP_POLICY_DIR=policies                # Policy files directory
+MSP_REDACTION_ENABLED=1                # Enable PII redaction
+MSP_API_KEY_REQUIRED=1                 # Require API key auth
+```
+
+#### Database & Storage
+```bash
+MSP_DB_PATH=.codex/msp_gateway.db      # SQLite database path
+MSP_TENANT_REGISTRY_BACKEND=sqlite     # Backend: sqlite or memory
+```
+
+#### Feature Flags
+```bash
+MSP_ADMIN_API_ENABLED=1                # Enable /admin endpoints
+MSP_KB_QUERY_ENABLED=1                 # Enable /v1/query_kb
+```
+
+### Configuration Files
+
+YAML configuration files in `configs/msp/`:
+- `gateway.yaml` - Server, security, and feature flags
+- `retrieval.yaml` - Embedding and vector store settings
+- `safety.yaml` - Redaction and validation rules
 
 ### Model Backend
 
