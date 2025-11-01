@@ -1,27 +1,55 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Build FAISS index from NDJSON knowledge base
-# Usage: bash scripts/local/build_faiss.sh <tenant_id> <ndjson_path>
+# Usage:
+#   scripts/local/build_faiss.sh [tenant_id] [ndjson_path]
+#
+# Examples:
+#   scripts/local/build_faiss.sh my-tenant data/my_kb.ndjson
+#   scripts/local/build_faiss.sh   # Uses defaults
 
-set -e
+set -euo pipefail
 
+# Project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "${REPO_ROOT}"
+
+# Arguments with defaults
 TENANT_ID="${1:-default}"
 NDJSON_PATH="${2:-data/kb_sample.ndjson}"
+
+# Load .env if present
+if [[ -f ".env" ]]; then
+  # shellcheck disable=SC2046
+  export $(grep -v '^#' .env | xargs)
+fi
+
+# Set defaults
+: "${MSP_OFFLINE:=1}"
+: "${MSP_EMBEDDING_MODEL:=sentence-transformers/all-MiniLM-L6-v2}"
+: "${MSP_EMBEDDING_CACHE_DIR:=artifacts/emb}"
+: "${MSP_FAISS_INDEX_DIR:=.codex/tenants}"
+
+export MSP_OFFLINE
 
 echo "==================================="
 echo "FAISS Index Builder"
 echo "==================================="
-echo "Tenant ID: ${TENANT_ID}"
-echo "NDJSON Path: ${NDJSON_PATH}"
+echo "Repository:      ${REPO_ROOT}"
+echo "Tenant ID:       ${TENANT_ID}"
+echo "NDJSON Path:     ${NDJSON_PATH}"
+echo "Embedding Model: ${MSP_EMBEDDING_MODEL}"
+echo "Offline Mode:    ${MSP_OFFLINE}"
 echo ""
 
 # Check if input file exists
-if [ ! -f "${NDJSON_PATH}" ]; then
-    echo "Error: NDJSON file not found: ${NDJSON_PATH}"
+if [[ ! -f "${NDJSON_PATH}" ]]; then
+    echo "Warning: NDJSON file not found: ${NDJSON_PATH}"
     echo ""
     echo "Creating sample KB file..."
     
     # Create sample data directory
-    mkdir -p data
+    mkdir -p "$(dirname "${NDJSON_PATH}")"
     
     # Create sample NDJSON file
     cat > "${NDJSON_PATH}" <<'EOF'
@@ -36,48 +64,79 @@ EOF
     echo ""
 fi
 
-# Set environment
-export MSP_OFFLINE=1
+# Verify file is readable
+if [[ ! -r "${NDJSON_PATH}" ]]; then
+    echo "Error: Cannot read file: ${NDJSON_PATH}"
+    exit 1
+fi
 
 # Create output directory
-INDEX_DIR=".codex/tenants/${TENANT_ID}/faiss"
+INDEX_DIR="${MSP_FAISS_INDEX_DIR}/${TENANT_ID}/faiss"
 mkdir -p "${INDEX_DIR}"
+mkdir -p "${MSP_EMBEDDING_CACHE_DIR}"
 
 echo "Building embeddings and FAISS index..."
 echo "Output directory: ${INDEX_DIR}"
 echo ""
 
+# Check for Python and required modules
+if ! command -v python3 &> /dev/null; then
+    echo "Error: python3 not found"
+    exit 1
+fi
+
 # Build index using Python
-python3 -c "
+python3 <<PYEOF
 import sys
 sys.path.insert(0, '.')
 
-from src.codex.retrieval import build_embeddings
-from src.codex.retrieval.stores import FAISSStore
+try:
+    from src.codex.retrieval import build_embeddings
+    from src.codex.retrieval.stores import FAISSStore
+    
+    print('Loading documents from ${NDJSON_PATH}...')
+    embeddings, documents = build_embeddings(
+        ndjson_path='${NDJSON_PATH}',
+        model_name='${MSP_EMBEDDING_MODEL}',
+        cache_dir='${MSP_EMBEDDING_CACHE_DIR}',
+        batch_size=32,
+    )
+    
+    print(f'Creating FAISS index for {len(documents)} documents...')
+    store = FAISSStore(index_dir='${INDEX_DIR}', index_name='default')
+    store.create_index(embeddings, documents)
+    
+    print('Saving index...')
+    store.save()
+    
+    print('')
+    print('✓ FAISS index built successfully!')
+    print(f'  - Tenant:    ${TENANT_ID}')
+    print(f'  - Documents: {len(documents)}')
+    print(f'  - Dimension: {embeddings.shape[1]}')
+    print(f'  - Location:  ${INDEX_DIR}')
+    
+except ImportError as e:
+    print(f'Error: Missing required Python packages: {e}', file=sys.stderr)
+    print('Install with: pip install sentence-transformers faiss-cpu', file=sys.stderr)
+    sys.exit(1)
+except Exception as e:
+    print(f'Error building index: {e}', file=sys.stderr)
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+PYEOF
 
-print('Loading documents from ${NDJSON_PATH}...')
-embeddings, documents = build_embeddings(
-    ndjson_path='${NDJSON_PATH}',
-    model_name='sentence-transformers/all-MiniLM-L6-v2',
-    cache_dir='artifacts/emb',
-    batch_size=32,
-)
-
-print(f'Creating FAISS index for {len(documents)} documents...')
-store = FAISSStore(index_dir='${INDEX_DIR}', index_name='default')
-store.create_index(embeddings, documents)
-
-print('Saving index...')
-store.save()
-
-print('')
-print('✓ FAISS index built successfully!')
-print(f'  - Documents: {len(documents)}')
-print(f'  - Dimension: {embeddings.shape[1]}')
-print(f'  - Location: ${INDEX_DIR}')
-"
+EXIT_CODE=$?
 
 echo ""
-echo "==================================="
-echo "Index build complete!"
-echo "==================================="
+if [[ ${EXIT_CODE} -eq 0 ]]; then
+    echo "==================================="
+    echo "Index build complete!"
+    echo "==================================="
+else
+    echo "==================================="
+    echo "Index build failed!"
+    echo "==================================="
+    exit ${EXIT_CODE}
+fi

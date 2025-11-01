@@ -56,23 +56,23 @@ async def infer(request: Request, infer_request: InferRequest):
             # Continue with local inference
             pass
     
-    # Get tenant from request state
+    # Get tenant from request state (may be None if API key not required)
     tenant = getattr(request.state, "tenant", None)
-    if not tenant:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No tenant context available"
-        )
     
-    tenant_id = tenant["tenant_id"]
+    # Determine tenant_id: use from tenant context or from request
+    if tenant:
+        tenant_id = tenant["tenant_id"]
+        # Verify tenant_id matches if tenant context exists
+        if infer_request.tenant_id != tenant_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Tenant ID mismatch"
+            )
+    else:
+        # No tenant context (API key not required), use tenant_id from request
+        tenant_id = infer_request.tenant_id
+    
     request_id = str(uuid.uuid4())
-    
-    # Verify tenant_id matches
-    if infer_request.tenant_id != tenant_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Tenant ID mismatch"
-        )
     
     logger.info(f"Inference request {request_id} from tenant {tenant_id}")
     

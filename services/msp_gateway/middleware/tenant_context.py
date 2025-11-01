@@ -242,8 +242,20 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
     """Middleware to resolve tenant context from API key"""
     
     async def dispatch(self, request: Request, call_next):
-        # Skip health check and docs endpoints
-        if request.url.path in ["/health", "/docs", "/redoc", "/openapi.json"]:
+        # Skip health check, docs, root endpoint, and optionally admin endpoints
+        public_paths = ["/health", "/docs", "/redoc", "/openapi.json", "/"]
+        
+        # If API key not required, also allow admin endpoints for bootstrapping
+        if not settings.api_key_required:
+            public_paths.append("/admin")
+        
+        # Check if path should skip auth
+        if request.url.path in public_paths or any(request.url.path.startswith(p) for p in public_paths if p != "/"):
+            return await call_next(request)
+        
+        # If API key authentication is disabled, skip the check
+        if not settings.api_key_required:
+            # No tenant context when auth is disabled
             return await call_next(request)
         
         # Extract API key from Authorization header
