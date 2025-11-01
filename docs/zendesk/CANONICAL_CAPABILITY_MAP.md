@@ -355,7 +355,7 @@ This appendix provides comprehensive context about AI-assisted content creation,
 
 ### AI Role in Your Workflow
 
-```
+```text
 PHASE                  CAPABILITY LEVEL         LIMITATION LEVEL
 ────────────────────────────────────────────────────────────────────────
 Ideation               ▓▓▓▓▓▓▓▓▓▓               ░░
@@ -443,7 +443,7 @@ For Zendesk App Builder Advice:
 
 ### Comparison: AI Assistant vs Other Tools
 
-```
+```text
 TOOL                TYPE                 STRENGTH                          WHEN TO USE THE AI ASSISTANT
 ────────────────────────────────────────────────────────────────────────────────────────────────────────
 Stack Overflow      Community Q&A        Real user experiences             Initial research synthesis
@@ -503,7 +503,7 @@ Claude (AI LLM)     Planning/analysis    Comprehensive planning            START
 
 ### Best Workflow
 
-```
+```text
 You ──→ AI (ideation/planning) ──→ Official Docs (validation) 
     ──→ Your Dev Environment (testing) ──→ AI (refinement) ──→ Production
 ```
