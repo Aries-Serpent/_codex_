@@ -1,0 +1,46 @@
+name: Publish Dashboard Tiles to Pages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "45 10 * * 1" # Mondays 10:45 UTC
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-tiles"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure tile HTML exists (rate-limit)
+        run: |
+          if [ -f reports/tiles/ratelimit_tile.json ]; then
+            python scripts/dashboards/render_ratelimit_tile_html.py --tile reports/tiles/ratelimit_tile.json --out reports/tiles/ratelimit_tile.html
+          else
+            echo "[WARN] Missing reports/tiles/ratelimit_tile.json; skipping render"
+          fi
+      - name: Build tiles index
+        run: |
+          python scripts/dashboards/build_tiles_index.py
+      - name: Upload artifact (Pages)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/tiles
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
