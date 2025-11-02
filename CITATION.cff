@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+title: "_codex_: ML Training, Evaluation, and Plugin Framework"
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+authors:
+  - name: "Aries Serpent"
+    email: "aries-serpent@example.org"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"
+repository-code: "https://github.com/Aries-Serpent/_codex_"
+url: "https://github.com/Aries-Serpent/_codex_"
+abstract: >
+  _codex_ is a comprehensive ML training, evaluation, and plugin framework 
+  built with PyTorch, Hugging Face Transformers, Hydra, and MLflow. It provides
+  LoRA/QLoRA fine-tuning, distributed training with Ray, model serving, and 
+  extensive configuration management for reproducible ML experiments.
+keywords:
+  - machine-learning
+  - pytorch
+  - transformers
+  - lora
+  - qlora
+  - mlflow
+  - hydra
+  - training
+  - evaluation
+  - model-serving
+  - python
+license: MIT
+# Uncomment and update when you have a version release
+# version: "0.1.0"
+# date-released: "2024-11-02"
+# doi: "10.5281/zenodo.XXXXXXX"
