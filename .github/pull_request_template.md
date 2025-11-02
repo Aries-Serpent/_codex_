@@ -133,3 +133,28 @@ Reviewer notes / escalation contact:
 - Owner / escalation contact from run_metadata.json: ____________________
 - Additional context:
   ______________________________________________________
+
+---
+
+## Status v1.2 Compliance (if applicable)
+
+**Note:** Fill this section if your PR includes status reports, schemas, or validation tooling changes.
+
+### Validation Checklist
+- [ ] Status example JSON validates against v1.2 schema (run `pytest -q tests/status/test_example_report_schema.py`)
+- [ ] Hydra configs validated or explicitly N/A (run `python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml`)
+- [ ] Security gates executed; artifacts uploaded
+- [ ] CAP-/FIND-/PATCH-/REPRO- IDs consistent and cross-linked
+- [ ] No secrets or sensitive data in diffs/logs
+
+### Validation Commands Run
+```bash
+# Schema validation
+pytest -q tests/status/test_example_report_schema.py
+
+# Config validation  
+python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
+
+# Audit chain
+python scripts/audit/build_integrity_chain.py
+```
