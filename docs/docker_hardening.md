@@ -11,7 +11,7 @@ they support offline builds, multi-stage caching, and GPU runtime hooks.
 
 ## Security & best practices
 
-- [x] Base images pinned (`python:3.11-slim`, `nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04`).
+- [x] Base images pinned (`python:3.11-slim`, `nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04`) with commented digest examples in the Dockerfiles to encourage immutable builds.
 - [x] `pip install --upgrade pip setuptools wheel` performed in builder stage.
 - [x] Healthcheck present for API readiness.
 - [x] `.dockerignore` relied upon to exclude build artefacts.

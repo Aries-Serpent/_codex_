@@ -10,12 +10,12 @@ help:
 	@echo "Targets: setup fmt lint type test cover sast track cli clean"
 
 setup:
-	@if [ -f requirements/lock.txt ]; then \\
-		pip install -r requirements/lock.txt && \\
-		pip install -r requirements/dev.txt; \\
-	else \\
-		pip install -r requirements/base.txt -r requirements/dev.txt; \\
+	@if [ ! -f requirements/lock.txt ]; then \
+		echo "requirements/lock.txt missing; generate the lock before running make setup."; \
+		exit 1; \
 	fi
+	pip install -r requirements/lock.txt
+	pip install -r requirements/dev.txt --no-deps
 
 fmt:
 	black src tests

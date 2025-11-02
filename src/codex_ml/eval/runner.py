@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import json
 import uuid
 from dataclasses import asdict, is_dataclass
@@ -87,6 +88,26 @@ def _safe_operation(
         raise
 
 
+def _normalise_metrics_sink(value: Any) -> List[str]:
+    allowed = {"ndjson", "csv"}
+    if isinstance(value, str):
+        tokens = [token.strip().lower() for token in value.split(",") if token.strip()]
+    elif isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
+        tokens = [str(item).strip().lower() for item in value if str(item).strip()]
+    else:
+        tokens: List[str] = []
+    if not tokens:
+        tokens = ["ndjson"]
+    invalid = [token for token in tokens if token not in allowed]
+    if invalid:
+        raise EvaluationError(f"Unsupported metrics sink(s): {sorted(set(invalid))}")
+    seen: List[str] = []
+    for token in tokens:
+        if token not in seen:
+            seen.append(token)
+    return seen
+
+
 def _load_records(
     dataset_path: Path,
     fmt: str,
@@ -112,8 +133,6 @@ def _load_records(
             rec.update({k: v for k, v in obj.items() if k not in rec})
             records.append(rec)
     elif fmt == "csv":
-        import csv
-
         with dataset_path.open("r", encoding="utf-8", newline="") as fh:
             reader = csv.DictReader(fh)
             for row in reader:
@@ -515,8 +534,21 @@ def run_evaluation(
     summary_path = output_dir / eval_cfg.report_filename
     ndjson_path = output_dir / eval_cfg.ndjson_filename
     metrics_path = output_dir / eval_cfg.metrics_filename
+    metrics_csv_filename = getattr(eval_cfg, "metrics_csv_filename", "metrics.csv")
+    metrics_csv_path = output_dir / metrics_csv_filename
+    metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
 
     run_id = _derive_run_id(eval_cfg, dataset_path)
+    run_int = int(run_id, 16)
+    seconds_range = 3153600000  # ~100 years in seconds
+    seconds = run_int % seconds_range
+    micros = (run_int // seconds_range) % 1_000_000
+    deterministic_timestamp = (
+        datetime.fromtimestamp(seconds, timezone.utc)
+        .replace(microsecond=micros)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
     summary = {
         "dataset_path": str(dataset_path.resolve()),
         "num_records": num_records,
@@ -551,37 +583,98 @@ def run_evaluation(
         context={"path": str(ndjson_path), "num_records": num_records},
     )
 
-    def _write_metrics_log() -> Path:
-        ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
-        for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
-            if isinstance(metric_value, (int, float)):
-                serialised_value: Any = float(metric_value)
-            else:
-                serialised_value = metric_value
-            ndjson_writer.log(
-                {
-                    "step": idx,
-                    "split": split_name,
-                    "metric": metric_name,
-                    "value": serialised_value,
-                    "dataset": str(dataset_path.resolve()),
-                    "dataset_path": str(dataset_path.resolve()),
-                    "num_records": num_records,
-                    "tags": {
-                        "phase": "evaluation",
-                        "source": "run_evaluation",
-                        "num_records": num_records,
-                        "seed": seed_value,
-                    },
-                }
-            )
-        return metrics_path
+    metrics_outputs: Dict[str, Path] = {}
 
-    _safe_operation(
-        "Step: write evaluation metrics log",
-        _write_metrics_log,
-        context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
-    )
+    if "ndjson" in metrics_sinks:
+
+        def _write_metrics_ndjson() -> Path:
+            ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
+            try:
+                for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
+                    if isinstance(metric_value, (int, float)):
+                        serialised_value: Any = float(metric_value)
+                    else:
+                        serialised_value = metric_value
+                    ndjson_writer.log(
+                        {
+                            "step": idx,
+                            "split": split_name,
+                            "metric": metric_name,
+                            "value": serialised_value,
+                            "dataset": str(dataset_path.resolve()),
+                            "dataset_path": str(dataset_path.resolve()),
+                            "num_records": num_records,
+                            "timestamp": deterministic_timestamp,
+                            "tags": {
+                                "phase": "evaluation",
+                                "source": "run_evaluation",
+                                "num_records": num_records,
+                                "seed": seed_value,
+                            },
+                        }
+                    )
+            finally:
+                ndjson_writer.close()
+            return metrics_path
+
+        ndjson_result = _safe_operation(
+            "Step: write evaluation metrics log (ndjson)",
+            _write_metrics_ndjson,
+            context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
+        )
+        if isinstance(ndjson_result, Path):
+            metrics_outputs["ndjson"] = ndjson_result
+        elif metrics_path.exists():
+            metrics_outputs["ndjson"] = metrics_path
+
+    if "csv" in metrics_sinks:
+
+        def _write_metrics_csv() -> Path:
+            fieldnames = [
+                "metric",
+                "value",
+                "step",
+                "split",
+                "dataset",
+                "dataset_path",
+                "num_records",
+                "run_id",
+                "seed",
+                "timestamp",
+            ]
+            with metrics_csv_path.open("w", newline="", encoding="utf-8") as handle:
+                writer = csv.DictWriter(handle, fieldnames=fieldnames)
+                writer.writeheader()
+                for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
+                    if isinstance(metric_value, (int, float)):
+                        serialised_value = float(metric_value)
+                    else:
+                        serialised_value = metric_value
+                    writer.writerow(
+                        {
+                            "metric": metric_name,
+                            "value": serialised_value,
+                            "step": idx,
+                            "split": split_name,
+                            "dataset": str(dataset_path.resolve()),
+                            "dataset_path": str(dataset_path.resolve()),
+                            "num_records": num_records,
+                            "run_id": run_id,
+                            "seed": seed_value,
+                            "timestamp": deterministic_timestamp,
+                        }
+                    )
+            return metrics_csv_path
+
+        csv_result = _safe_operation(
+            "Step: write evaluation metrics log (csv)",
+            _write_metrics_csv,
+            context={"path": str(metrics_csv_path), "num_metrics": len(metrics_result)},
+        )
+        if isinstance(csv_result, Path):
+            metrics_outputs["csv"] = csv_result
+        elif metrics_csv_path.exists():
+            metrics_outputs["csv"] = metrics_csv_path
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
@@ -609,7 +702,16 @@ def run_evaluation(
         "records_path": str(ndjson_path),
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
-        "metrics_path": str(metrics_path),
+        "metrics_path": str(
+            metrics_outputs.get("ndjson")
+            or metrics_outputs.get("csv")
+            or metrics_path
+        ),
+        "metrics_csv_path": (
+            str(metrics_outputs["csv"])
+            if "csv" in metrics_outputs
+            else None
+        ),
         "num_records": num_records,
         "run_id": run_id,
         "dataset_manifest_path": (

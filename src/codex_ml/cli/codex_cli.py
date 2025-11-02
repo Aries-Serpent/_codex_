@@ -349,6 +349,13 @@ def status_report(run_metadata_dir: Path) -> None:
     help="Print only the `metrics` mapping to stdout (machine-readable).",
 )
 @click.option(
+    "--metrics-sink",
+    type=str,
+    default="ndjson",
+    show_default=True,
+    help="Comma-separated metrics sinks to emit (choices: ndjson,csv).",
+)
+@click.option(
     "--seed",
     type=int,
     default=None,
@@ -370,6 +377,7 @@ def evaluate(
     config: str,
     overrides: tuple[str, ...],
     metrics_only: bool,
+    metrics_sink: str,
     seed: int | None,
     log_metrics: str | None,
     run_id: str | None,
@@ -383,6 +391,8 @@ def evaluate(
 
     if seed is not None:
         cfg_obj.evaluation.seed = seed
+    if metrics_sink:
+        cfg_obj.evaluation.metrics_sink = metrics_sink
 
     try:
         summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
