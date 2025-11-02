@@ -21,7 +21,7 @@ __all__ = ["set_deterministic", "set_cudnn_deterministic", "enable_determinism"]
 logger = logging.getLogger(__name__)
 
 
-def set_deterministic(seed: int = 42) -> None:
+def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
     """Configure Python, NumPy, and Torch for deterministic execution."""
 
     os.environ.setdefault("PYTHONHASHSEED", str(seed))
@@ -35,16 +35,17 @@ def set_deterministic(seed: int = 42) -> None:
                 torch.cuda.manual_seed_all(seed)  # type: ignore[call-arg]
             except Exception:  # pragma: no cover - optional CUDA path
                 logger.debug("torch.cuda.manual_seed_all unavailable", exc_info=True)
-        try:
-            torch.use_deterministic_algorithms(True, warn_only=False)
-        except Exception:
-            logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
-        try:
-            torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-            torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
-        except Exception:
-            logger.debug("torch.backends.cudnn unavailable", exc_info=True)
-        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+        if deterministic:
+            try:
+                torch.use_deterministic_algorithms(True, warn_only=False)
+            except Exception:
+                logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
+            try:
+                torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
+                torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+            except Exception:
+                logger.debug("torch.backends.cudnn unavailable", exc_info=True)
+            os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 
 def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
@@ -84,7 +85,7 @@ def enable_determinism(
         set_cudnn_deterministic(bool(deterministic), benchmark=not deterministic)
         return state
 
-    set_deterministic(seed)
+    set_deterministic(seed, deterministic=bool(deterministic))
     state.update(
         {
             "random": seed,
