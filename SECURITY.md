@@ -24,15 +24,16 @@ To report a vulnerability privately:
    - Click **"Report a vulnerability"**
    - Provide detailed information about the vulnerability
 
-2. **Email Security Contact:**
-   - Send details to: **security@aries-serpent.dev** (placeholder - replace with actual contact)
-   - Use subject line: `[SECURITY] _codex_ vulnerability report`
+2. **If GitHub Security Advisories Are Unavailable:**
+   - Email us directly at: **security@aries-serpent.dev**
+   - Clearly label the email subject with `[SECURITY]` 
    - Include:
      - Description of the vulnerability
      - Steps to reproduce
      - Potential impact
      - Affected versions
      - Suggested fix (if available)
+   - The maintainers will promptly create a draft advisory and coordinate the fix with you
 
 ### PGP Encryption (Optional)
 
