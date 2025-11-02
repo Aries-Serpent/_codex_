@@ -5,41 +5,76 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
 ## Files
 
 ### Templates
-- **codex_status_template_v1.1.md** - The main template for daily status reports
-  - Comprehensive structure for repo audits
-  - Includes snapshot, delta tracking, patch diffs, automation hooks
-  - Supports dynamic capability discovery and reproducibility tracking
+- **codex_status_template_v1.2.md** - Enhanced template with schema validation and audit integrity (v1.2) **[RECOMMENDED]**
+  - All v1.1 features plus schema validation, security input validation, and audit integrity chains
+  - Structured tracking for git context, environment, ML Test Scores, Hydra configs
+  - Integrated with validation tooling (`tools/validate_configs.py`, `src/codex_ml/cli/validate.py`)
+  
+- **codex_status_template_v1.1.md** - Original comprehensive template (v1.1)
+  - Full structure for repo audits with snapshot, delta tracking, patch diffs
+  - Dynamic capability discovery and reproducibility tracking
+  - Still supported for backward compatibility
 
 ### Schemas
-- **codex_status_template.schema_v1.2.json** - Enhanced JSON Schema with 40+ new fields (v1.2)
+- **codex_status_template.schema_v1.2.json** - Enhanced JSON Schema with 40+ new fields (v1.2) **[RECOMMENDED]**
+- **codex_status_template.schema_v1.2.yaml** - YAML Schema for v1.2
 - **codex_status_template.schema.json** - JSON Schema for validation (v1.1)
-- **codex_status_template.schema.yaml** - YAML Schema (same structure as JSON, v1.1)
+- **codex_status_template.schema.yaml** - YAML Schema (v1.1)
 - **SCHEMA_ENHANCEMENTS_v1.2.md** - Detailed documentation of v1.2 enhancements
 
 ### Guides
-- **authoring_guide_v1.1.md** - Instructions for creating status reports
-  - Explains cadence, storage, scoring rubric
-  - Details how to use dynamic capabilities and reproducibility registry
+- **authoring_guide_v1.2.md** - Enhanced authoring guide for v1.2 **[RECOMMENDED]**
+  - Includes schema validation, security input validation, and audit integrity guidance
+  - Documents integration with validation tooling
   
-- **diff_style_guide_v1.1.md** - Standards for atomic patch diffs
-  - Mandatory elements per patch
+- **authoring_guide_v1.1.md** - Original authoring guide (v1.1)
+  - Cadence, storage, scoring rubric
+  - Dynamic capabilities and reproducibility registry
+  
+- **diff_style_guide_v1.2.md** - Enhanced diff style guide for v1.2 **[RECOMMENDED]**
+  - Schema validation requirements for patches
+  - Security code handling guidance
+  
+- **diff_style_guide_v1.1.md** - Original diff style guide (v1.1)
+  - Mandatory patch elements
   - Canonical diff fences format
-  - Chunking and sequencing guidance
+  - Chunking and sequencing
 
 ## Usage
 
 ### Creating a Daily Status Report
 
-1. Copy the template:
+#### Using v1.2 (Recommended)
+
+1. Copy the v1.2 template:
+   ```bash
+   cp docs/templates/status/codex_status_template_v1.2.md reports/daily/$(date +%Y-%m-%d).md
+   ```
+
+2. Fill in all sections following `authoring_guide_v1.2.md`
+
+3. Run schema validation:
+   ```bash
+   python tools/validate_configs.py  # Validate Hydra configs
+   python tools/validate_status_report.py reports/daily/$(date +%Y-%m-%d).md  # Validate report structure
+   ```
+
+4. Validate against JSON schema (if using automation):
+   ```bash
+   jsonschema -i your_report.json codex_status_template.schema_v1.2.json
+   ```
+
+#### Using v1.1 (Legacy)
+
+1. Copy the v1.1 template:
    ```bash
    cp docs/templates/status/codex_status_template_v1.1.md reports/daily/$(date +%Y-%m-%d).md
    ```
 
-2. Fill in all sections following the authoring guide
+2. Fill in all sections following `authoring_guide_v1.1.md`
 
 3. Validate against schema (if using automation):
    ```bash
-   # Using a JSON schema validator
    jsonschema -i your_report.json codex_status_template.schema.json
    ```
 
@@ -57,16 +92,15 @@ Previous version: **v1.1** (Still supported)
 
 ### Version History
 - **v1.2** (2025-11-02):
-  - Enhanced with repository-specific context (git, environment)
-  - 40+ new structured fields for automation
-  - Cross-referencing system with structured IDs (CAP-XXX, FIND-XXX, PATCH-XXX, REPRO-XXX, Q-XXX, DEC-XXX, DEFER-XXX)
-  - ML Test Score framework integration
-  - Hydra config snapshot
-  - Enhanced tokenization insights
-  - Nox session tracking
-  - MLflow offline integration
-  - Comprehensive delta tracking
-  - **See `SCHEMA_ENHANCEMENTS_v1.2.md` for full details**
+  - **Enhanced Template**: Schema validation, audit integrity chains, security input validation
+  - **Repository Context**: Git state (branch, commit SHA, dirty flag), environment snapshot
+  - **40+ New Fields**: ML Test Score, Hydra configs, structured automation data
+  - **Cross-Referencing**: 7 structured ID patterns (CAP/FIND/PATCH/REPRO/Q/DEC/DEFER-XXX)
+  - **Validation Integration**: `tools/validate_configs.py`, `src/codex_ml/cli/validate.py`
+  - **Security Patterns**: SQL injection, XSS, path traversal, JSON injection detection
+  - **Audit Integrity**: SHA256 hashing for tamper-evident audit trails
+  - **Enhanced Tracking**: Nox sessions, MLflow offline, per-module coverage, determinism tests
+  - **See `SCHEMA_ENHANCEMENTS_v1.2.md` for complete details**
   
 - **v1.1** (2025-11-02): 
   - Dynamic Capability Audit with Extended Catalog
