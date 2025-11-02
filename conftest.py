@@ -17,7 +17,10 @@ _os.environ.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
 # Make PyTorch 2.6+ behave like pre-2.6 for our test suite:
 # https://pytorch.org/docs/stable/serialization.html#troubleshooting
 
-_SRC_DIR = _Path(__file__).resolve().parent / "src"
+_PROJECT_ROOT = _Path(__file__).resolve().parent
+_SRC_DIR = _PROJECT_ROOT / "src"
+if _os.getcwd() != str(_PROJECT_ROOT):
+    _os.chdir(_PROJECT_ROOT)
 if _SRC_DIR.exists():
     # Ensure in-process imports see ``src`` modules without installing the package.
     _src = str(_SRC_DIR)
@@ -25,13 +28,48 @@ if _SRC_DIR.exists():
         _sys.path.insert(0, _src)
     # Propagate to subprocesses invoked by tests (e.g., ``python -m tokenization.cli``).
     existing = _os.environ.get("PYTHONPATH")
-    if existing:
-        if _src not in existing.split(_os.pathsep):
-            _os.environ["PYTHONPATH"] = _src + _os.pathsep + existing
-    else:
-        _os.environ["PYTHONPATH"] = _src
+    existing_paths = existing.split(_os.pathsep) if existing else []
+    new_paths: list[str] = []
+    for candidate in (_src, str(_PROJECT_ROOT)):
+        if candidate not in existing_paths:
+            new_paths.append(candidate)
+            existing_paths.append(candidate)
+    if new_paths:
+        if existing:
+            _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths + [existing])
+        else:
+            _os.environ["PYTHONPATH"] = _os.pathsep.join(new_paths)
 
 _os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
+
+
+@pytest.fixture(autouse=True)
+def _ensure_project_cwd():
+    """Guarantee each test executes from the repository root."""
+
+    prev = _Path.cwd()
+    if prev != _PROJECT_ROOT:
+        _os.chdir(_PROJECT_ROOT)
+    try:
+        yield
+    finally:
+        if _Path.cwd() != _PROJECT_ROOT:
+            _os.chdir(_PROJECT_ROOT)
+
+
+@pytest.fixture(autouse=True)
+def _default_subprocess_cwd(monkeypatch):
+    """Ensure subprocesses default to running from the project root."""
+
+    import subprocess as _subprocess
+
+    original_popen = _subprocess.Popen
+
+    def _patched_popen(*popenargs, **kwargs):
+        kwargs.setdefault("cwd", str(_PROJECT_ROOT))
+        return original_popen(*popenargs, **kwargs)
+
+    monkeypatch.setattr(_subprocess, "Popen", _patched_popen)
 
 
 _TRAINING_TORCH_ALLOWLIST_FILENAMES: frozenset[str] = frozenset(
