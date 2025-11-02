@@ -634,7 +634,9 @@ def run_evaluation(
     if "ndjson" in metrics_sinks:
 
         def _write_metrics_ndjson() -> Path:
-            ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
+            # Use sink_target_path if ndjson is the primary sink, otherwise use default metrics_path
+            ndjson_target = sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            ndjson_writer = NdjsonWriter(ndjson_target, run_id=run_id)
             try:
                 for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
                     if isinstance(metric_value, (int, float)):
@@ -661,21 +663,25 @@ def run_evaluation(
                     )
             finally:
                 ndjson_writer.close()
-            return metrics_path
+            return ndjson_target
 
         ndjson_result = _safe_operation(
             "Step: write evaluation metrics log (ndjson)",
             _write_metrics_ndjson,
-            context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
+            context={"path": str(sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path), "num_metrics": len(metrics_result)},
         )
         if isinstance(ndjson_result, Path):
             metrics_outputs["ndjson"] = ndjson_result
-        elif metrics_path.exists():
-            metrics_outputs["ndjson"] = metrics_path
+        else:
+            ndjson_target = sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            if ndjson_target.exists():
+                metrics_outputs["ndjson"] = ndjson_target
 
     if "csv" in metrics_sinks:
 
         def _write_metrics_csv() -> Path:
+            # Use sink_target_path if csv is the primary sink, otherwise use default metrics_csv_path
+            csv_target = sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
             fieldnames = [
                 "metric",
                 "value",
@@ -688,7 +694,7 @@ def run_evaluation(
                 "seed",
                 "timestamp",
             ]
-            with metrics_csv_path.open("w", newline="", encoding="utf-8") as handle:
+            with csv_target.open("w", newline="", encoding="utf-8") as handle:
                 writer = csv.DictWriter(handle, fieldnames=fieldnames)
                 writer.writeheader()
                 for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
@@ -710,17 +716,19 @@ def run_evaluation(
                             "timestamp": deterministic_timestamp,
                         }
                     )
-            return metrics_csv_path
+            return csv_target
 
         csv_result = _safe_operation(
             "Step: write evaluation metrics log (csv)",
             _write_metrics_csv,
-            context={"path": str(metrics_csv_path), "num_metrics": len(metrics_result)},
+            context={"path": str(sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path), "num_metrics": len(metrics_result)},
         )
         if isinstance(csv_result, Path):
             metrics_outputs["csv"] = csv_result
-        elif metrics_csv_path.exists():
-            metrics_outputs["csv"] = metrics_csv_path
+        else:
+            csv_target = sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
+            if csv_target.exists():
+                metrics_outputs["csv"] = csv_target
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
