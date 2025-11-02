@@ -25,15 +25,15 @@ To report a vulnerability privately:
    - Provide detailed information about the vulnerability
 
 2. **If GitHub Security Advisories Are Unavailable:**
-   - Use the [private security report template](./.github/ISSUE_TEMPLATE/security.yml) to open a confidential issue
-   - Clearly label the report with `[SECURITY]` in the title
+   - Email us directly at: **security@aries-serpent.dev**
+   - Clearly label the email subject with `[SECURITY]` 
    - Include:
      - Description of the vulnerability
      - Steps to reproduce
      - Potential impact
      - Affected versions
      - Suggested fix (if available)
-   - The maintainers will promptly migrate any sensitive details to a draft advisory if needed
+   - The maintainers will promptly create a draft advisory and coordinate the fix with you
 
 ### PGP Encryption (Optional)
 
