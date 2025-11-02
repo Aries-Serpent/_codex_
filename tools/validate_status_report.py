@@ -115,10 +115,12 @@ def check_title_format(content: str, is_template: bool = False) -> bool:
 def is_supported_template_version(version: str) -> bool:
     """Return True if the template version is recognised by the validator."""
 
-    if version in SUPPORTED_TEMPLATE_VERSIONS:
+    normalised = version.lower()
+
+    if normalised in SUPPORTED_TEMPLATE_VERSIONS:
         return True
 
-    match = VERSION_REGEX.match(version)
+    match = VERSION_REGEX.match(normalised)
     if not match:
         return False
 
@@ -130,15 +132,21 @@ def check_template_version(content: str) -> tuple[str | None, bool]:
     """Extract the template version and indicate whether it is supported."""
 
     version_patterns = [
-        r"Template Version Used:\s*(v\d+(?:\.\d+)*)",
-        r"Template:\s*(v\d+(?:\.\d+)*)",
+        r"^\s*(?:[-*]\s*)?Template Version Used\s*:\s*(v\d+(?:\.\d+)*)",
+        r"^\s*(?:[-*]\s*)?Template\s*:\s*(v\d+(?:\.\d+)*)",
     ]
 
-    for pattern in version_patterns:
-        match = re.search(pattern, content)
-        if match:
-            version = match.group(1)
-            return version, is_supported_template_version(version)
+    # Search both the raw content and a variant with Markdown bold removed so we
+    # correctly match headings such as "**Template Version Used**: v1.2".
+    search_variants = [content, re.sub(r"\*\*(.*?)\*\*", r"\1", content)]
+
+    for variant in search_variants:
+        for pattern in version_patterns:
+            match = re.search(pattern, variant, flags=re.IGNORECASE | re.MULTILINE)
+            if match:
+                version = match.group(1)
+                version = version.strip()
+                return version, is_supported_template_version(version)
 
     return None, False
 
