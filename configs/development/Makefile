@@ -55,8 +55,8 @@ clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
 
 env-snapshot:
-	@mkdir -p artifacts
-	PYTHONPATH=src python scripts/env/export_env_json.py artifacts/env_snapshot.json
+	@mkdir -p $(MAKEFILE_DIR)../../artifacts
+	PYTHONPATH=$(MAKEFILE_DIR)../../src python $(MAKEFILE_DIR)../../scripts/env/export_env_json.py $(MAKEFILE_DIR)../../artifacts/env_snapshot.json
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \
