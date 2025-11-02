@@ -371,7 +371,7 @@ def status_report(run_metadata_dir: Path) -> None:
     type=str,
     default="ndjson",
     show_default=True,
-    help="Comma-separated metrics sinks to emit (choices: ndjson,csv).",
+    help="Comma-separated metrics sinks to emit (choices: none,ndjson,csv).",
 )
 @click.option(
     "--seed",
@@ -392,13 +392,6 @@ def status_report(run_metadata_dir: Path) -> None:
     help="Optional run identifier to attach to NDJSON records.",
 )
 @click.option(
-    "--metrics-sink",
-    type=click.Choice(["none", "csv", "ndjson"]),
-    default="none",
-    show_default=True,
-    help="Optional secondary metrics sink format.",
-)
-@click.option(
     "--metrics-path",
     type=click.Path(dir_okay=False, path_type=str),
     default=None,
@@ -412,7 +405,6 @@ def evaluate(
     seed: int | None,
     log_metrics: str | None,
     run_id: str | None,
-    metrics_sink: str,
     metrics_path: str | None,
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
