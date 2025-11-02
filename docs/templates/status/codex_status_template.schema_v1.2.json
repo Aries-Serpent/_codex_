@@ -38,7 +38,7 @@
         },
         "template_version": {
           "type": "string",
-          "enum": ["v1.1", "v1.2"],
+          "const": "v1.2",
           "description": "Template schema version used to generate this report"
         },
         "authors": { 
