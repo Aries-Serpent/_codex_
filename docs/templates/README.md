@@ -9,6 +9,7 @@ The `docs/templates/` directory curates reusable runbooks that combine execution
 | [Migration — Python File Relocation](./Migration_PythonFileRelocation.md) | Move Python files or packages while preserving import stability and release hygiene. | Codebase topology and backward compatibility |
 | [Migration — CLI Hardening](./Migration_CLIHardening.md) | Strengthen CLI ergonomics, validation, and coverage to meet the 85% testing baseline. | Developer experience and operational resilience |
 | [Planning — Intent Validation](./Planning_IntentValidation.md) | Facilitate structured discovery and approval gates before implementation begins. | Alignment, risk framing, and decision records |
+| [Status Update — Daily Report (v1.1)](./status/README.md) | Comprehensive daily status update with snapshot, delta tracking, and atomic patch diffs. | Repository audits, reproducibility, and automation |
 
 ## When to Use Each Template
 
@@ -20,6 +21,16 @@ Use when tightening CLI interfaces, adopting new dependencies, or extending cove
 
 ### Planning — Intent Validation
 Use before implementing a substantial change. The template standardizes intent statements, validation evidence, risk logs, and approval criteria so the team agrees on scope and success markers.
+
+### Status Update — Daily Report (v1.1)
+Use for comprehensive daily repository audits and status tracking. The template provides:
+- Full snapshot with capability audit and reproducibility tracking
+- Delta tracking from previous reports
+- Atomic patch diffs with validation checklists
+- Automation hooks for issues, PRs, coverage, and security scans
+- Tokenization insights and secret-masking guidance
+
+See [`status/README.md`](./status/README.md) for complete documentation.
 
 ## How to Use These Templates
 
@@ -36,6 +47,7 @@ Use before implementing a substantial change. The template standardizes intent s
 | Python File Relocation | [`sitecustomize.py`](../../sitecustomize.py), [`conftest.py`](../../conftest.py), [`tests/`](../../tests/) |
 | CLI Hardening | [`src/cli/`](../../src/cli/), [`tests/cli/`](../../tests/cli/), [`pyproject.toml`](../../pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](../../tests/conftest.py) |
+| Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), [`reports/daily/`](../../reports/daily/) |
 
 ## Maintenance Notes
 
