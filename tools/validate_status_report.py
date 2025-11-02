@@ -21,30 +21,70 @@ SUPPORTED_TEMPLATE_MAJOR_VERSIONS = {1}
 VERSION_REGEX = re.compile(r"^v(?P<major>\d+)(?:\.(?P<minor>\d+))?(?:\.[0-9]+)*$")
 
 
-def check_required_sections(content: str) -> tuple[list[str], list[str]]:
-    """Check if all required sections are present in the report."""
-    required_sections = [
-        "## Template Version",
-        "## 0. Report Metadata",
-        "## 1. Executive Summary",
-        "## 2. Full Snapshot",
-        "### 2.1 Repo Map",
-        "### 2.2 Capability Audit",
-        "### 2.3 High‑Signal Findings",
-        "### 2.4 Tests & Gates Snapshot",
-        "### 2.5 Reproducibility Checklist",
+COMMON_REQUIRED_SECTIONS = [
+    "## Template Version",
+    "## 0. Report Metadata",
+    "## 1. Executive Summary",
+    "## 2. Full Snapshot",
+    "### 2.1 Repo Map",
+    "### 2.2 Capability Audit",
+    "### 2.3 High‑Signal Findings",
+    "### 2.4 Tests & Gates Snapshot",
+    "### 2.5 Reproducibility Checklist",
+    "## 3. Delta From Last Report",
+    "## 4. Atomic Patch Diffs",
+    "## 5. Automation Data Ingest",
+    "## 6. Concise Tokenization Insights",
+    "## 7. Secret‑Masking Guidance",
+    "## 8. Error Capture Blocks",
+    "## 9. Open Questions & Answers",
+    "## 10. Decision Log",
+    "## 11. Scoring Rubric",
+    "## 12. Appendix",
+]
+
+
+VERSION_REQUIRED_SECTIONS: dict[str, list[str]] = {
+    "v1.1": [
         "### 2.6 Deferred Items",
-        "## 3. Delta From Last Report",
-        "## 4. Atomic Patch Diffs",
-        "## 5. Automation Data Ingest",
-        "## 6. Concise Tokenization Insights",
-        "## 7. Secret‑Masking Guidance",
-        "## 8. Error Capture Blocks",
-        "## 9. Open Questions & Answers",
-        "## 10. Decision Log",
-        "## 11. Scoring Rubric",
-        "## 12. Appendix",
-    ]
+    ],
+    "v1.2": [
+        "### 2.6 Schema Validation Report",
+        "### 2.7 Security Input Validation Summary",
+        "### 2.8 Audit Integrity Chain",
+        "### 2.9 Deferred Items",
+    ],
+}
+
+
+def normalise_version_key(version: str | None) -> str:
+    """Return the version key used for required sections lookup."""
+
+    if not version:
+        return "v1.1"
+
+    lowered = version.lower()
+    if lowered in VERSION_REQUIRED_SECTIONS:
+        return lowered
+
+    match = VERSION_REGEX.match(version)
+    if not match:
+        return "v1.1"
+
+    major = match.group("major")
+    if major == "1":
+        return "v1.2"
+
+    return "v1.1"
+
+
+def check_required_sections(content: str, version: str | None) -> tuple[list[str], list[str]]:
+    """Check if all required sections are present in the report."""
+
+    version_key = normalise_version_key(version)
+    required_sections = COMMON_REQUIRED_SECTIONS + VERSION_REQUIRED_SECTIONS.get(
+        version_key, VERSION_REQUIRED_SECTIONS["v1.1"]
+    )
     
     found = []
     missing = []
@@ -135,7 +175,7 @@ def validate_report(report_path: Path) -> int:
         print("✗ Template version not found or incorrect")
     
     # Check required sections
-    found, missing = check_required_sections(content)
+    found, missing = check_required_sections(content, version)
     print(f"\n✓ Found {len(found)}/{len(found) + len(missing)} required sections")
     
     if missing:
