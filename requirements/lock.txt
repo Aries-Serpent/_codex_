@@ -6,7 +6,7 @@ absl-py==2.3.1
     # via
     #   rouge-score
     #   tensorboard
-accelerate==0.34.2
+accelerate==1.11.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -169,7 +169,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==2.21.0
+datasets==4.3.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1115,7 +1115,7 @@ tomlkit==0.13.3
     # via dvc
 toolz==1.1.0
     # via altair
-torch==2.8.0
+torch==2.9.0
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -1157,7 +1157,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==4.55.4
+transformers==4.57.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
