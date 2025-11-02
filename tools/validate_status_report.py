@@ -67,13 +67,31 @@ def normalise_version_key(version: str | None) -> str:
     if lowered in VERSION_REQUIRED_SECTIONS:
         return lowered
 
-    match = VERSION_REGEX.match(version)
+    match = VERSION_REGEX.match(lowered)
     if not match:
         return "v1.1"
 
     major = match.group("major")
-    if major == "1":
-        return "v1.2"
+    minor = match.group("minor")
+
+    if minor:
+        candidate = f"v{major}.{minor}"
+        if candidate in VERSION_REQUIRED_SECTIONS:
+            return candidate
+
+    major_prefix = f"v{major}."
+    matching_major_versions = [
+        key for key in VERSION_REQUIRED_SECTIONS if key.startswith(major_prefix)
+    ]
+    if matching_major_versions:
+        # Return the version with the highest minor component for the detected major.
+        def minor_sort_key(key: str) -> tuple[int, int]:
+            parts = key.split(".")
+            minor_part = int(parts[1]) if len(parts) > 1 else 0
+            patch_part = int(parts[2]) if len(parts) > 2 else 0
+            return minor_part, patch_part
+
+        return max(matching_major_versions, key=minor_sort_key)
 
     return "v1.1"
 
