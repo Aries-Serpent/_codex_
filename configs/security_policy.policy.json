@@ -1,0 +1,13 @@
+{
+  "$schema": "configs/schemas/security_policy.schema.json",
+  "sast": {
+    "bandit_fail_on": "high"
+  },
+  "secrets": {
+    "baseline_required": true
+  },
+  "dependencies": {
+    "max_critical": 0,
+    "max_high": 0
+  }
+}
