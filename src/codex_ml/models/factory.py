@@ -17,6 +17,7 @@ except Exception:  # pragma: no cover - torch optional in lightweight envs
 logger = logging.getLogger(__name__)
 
 ENV_ENABLE_PEFT = "CODEX_ML_ENABLE_PEFT"
+ENV_ENABLE_PEFT_ALT = "CODEX_ENABLE_PEFT"
 _TRUE_LITERALS = {"1", "true", "yes", "on", "enable", "enabled"}
 
 
@@ -59,7 +60,7 @@ def _resolve_device(value: Any) -> Any:
 def _should_enable_peft(explicit: Optional[bool]) -> bool:
     if explicit is not None:
         return bool(explicit)
-    env_value = os.getenv(ENV_ENABLE_PEFT)
+    env_value = os.getenv(ENV_ENABLE_PEFT) or os.getenv(ENV_ENABLE_PEFT_ALT)
     if not env_value:
         return False
     return env_value.strip().lower() in _TRUE_LITERALS

@@ -6,6 +6,8 @@ Centralized, import-light helpers for reproducible and deterministic runs.
 import os
 import random
 
+from codex_ml.utils.determinism import set_deterministic as _apply_determinism
+
 
 def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
     """
@@ -35,32 +37,19 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
                 torch.cuda.manual_seed_all(seed)  # type: ignore[attr-defined]
             except Exception:
                 pass
-        try:
-            backend = torch.backends.cudnn  # type: ignore[attr-defined]
-            backend.deterministic = deterministic
-            backend.benchmark = not deterministic
-        except Exception:
-            pass
     except Exception:
         pass
 
+    if deterministic:
+        _apply_determinism(seed)
 
-def set_deterministic(enabled: bool = True) -> None:
-    """
-    Re-assert determinism toggles without changing global seed.
-    Safe no-op when frameworks are absent.
-    """
-    try:
-        import torch  # type: ignore
 
-        try:
-            backend = torch.backends.cudnn  # type: ignore[attr-defined]
-            backend.deterministic = enabled
-            backend.benchmark = not enabled
-        except Exception:
-            pass
-    except Exception:
-        pass
+def set_deterministic(enabled: bool = True, *, seed: int | None = None) -> None:
+    """Re-assert deterministic toggles using the shared helper."""
+
+    if not enabled:
+        return
+    _apply_determinism(seed or 0)
 
 
 __all__ = ["set_reproducible", "set_deterministic"]

@@ -13,6 +13,9 @@ __all__ = [
     "load_component",
     "get_component",
     "apply_config",
+    "build_peft_config",
+    "enable_peft",
+    "load_adapter_for_inference",
 ]
 
 
@@ -48,6 +51,16 @@ def __getattr__(name: str):  # pragma: no cover - shim for optional deps
             "load_component": registry.load_component,
             "get_component": registry.get_component,
             "apply_config": registry.apply_config,
+        }
+
+        return mapping[name]
+    if name in {"build_peft_config", "enable_peft", "load_adapter_for_inference"}:
+        from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
+
+        mapping = {
+            "build_peft_config": build_peft_config,
+            "enable_peft": enable_peft,
+            "load_adapter_for_inference": load_adapter_for_inference,
         }
 
         return mapping[name]

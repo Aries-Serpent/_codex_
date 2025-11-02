@@ -1,5 +1,15 @@
 # Open Questions & Next Steps — Run 4 (2025-10-05)
 
+## Offline Hardening Integration Notes
+- Deterministic dataset assignments now flow through `src/codex_ml/data/splits.py` and the JSONL/CSV loaders so every record carries a stable `split` keyed by its hashed identifier.
+- Evaluation runs can fan metrics into local CSV/NDJSON sinks via `codex evaluate --metrics-sink {csv|ndjson} --metrics-path <file>`; see `src/codex_ml/metrics/sinks.py`.
+- LoRA/PEFT hooks remain opt-in: use `codex train --enable-peft` (or `CODEX_ENABLE_PEFT=1`) to exercise `src/codex_ml/interfaces/peft_hooks.py`.
+- Capture reproducibility context with `python tools/env/export_env_json.py` which writes `artifacts/env_snapshot.json`.
+- Generate the per-capability open question digest with `python tools/docs/gen_open_questions.py` (writes `docs/reference/open_questions_by_capability.md`).
+- `Dockerfile.local` is a local-only build aid with a digest-pinned base image; it is intentionally excluded from CI wiring.
+- Asset provenance now lives in `assets/manifest.json`; validate before hand-off with `python tools/assets/verify_manifest.py`.
+- Deterministic mode helper `src/codex_ml/utils/determinism.py` backs the shared seeding path and respects `CUBLAS_WORKSPACE_CONFIG` requirements.
+
 ## Menu Items Covered This Run
 - ✅ **Observability (5)** — Closed the system-metrics telemetry gap by wiring `log_system_metrics` and the collector surfaced in the October status update.【F:reports/gap_risk_resolution.md†L9-L11】【F:src/codex_ml/training/__init__.py†L90-L156】
 - ✅ **Docs polish (7)** — Authored the gap→risk→resolution register so subsequent runs inherit a prioritized mitigation backlog.【F:reports/gap_risk_resolution.md†L1-L15】

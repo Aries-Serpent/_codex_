@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import ExitStack
 import json
 import uuid
 from dataclasses import asdict, is_dataclass
@@ -15,6 +16,7 @@ from codex_ml.eval import metrics
 from codex_ml.metrics.registry import append_error_entry
 from codex_ml.metrics.registry import get as get_registered_metric
 from codex_ml.metrics.registry import list_metrics
+from codex_ml.metrics.sinks import create_sink
 from codex_ml.registry.base import RegistryNotFoundError
 from codex_ml.tracking.writers import NdjsonWriter
 from codex_ml.utils.provenance import export_environment
@@ -516,6 +518,45 @@ def run_evaluation(
     ndjson_path = output_dir / eval_cfg.ndjson_filename
     metrics_path = output_dir / eval_cfg.metrics_filename
 
+    sink_kind = str(getattr(eval_cfg, "metrics_sink", "none") or "none").lower()
+    sink_target_path: Path | None = None
+    sink_stack = ExitStack()
+    sink = create_sink("none")
+    try:
+        if sink_kind not in {"none", "csv", "ndjson"}:
+            raise EvaluationError(f"Unsupported metrics sink: {sink_kind}")
+        if sink_kind != "none":
+            sink_path_value = getattr(eval_cfg, "metrics_sink_path", None)
+            if not sink_path_value:
+                raise EvaluationError(
+                    "metrics_sink_path must be set when metrics_sink is not 'none'"
+                )
+            sink_target_path = Path(sink_path_value)
+            sink_target_path.parent.mkdir(parents=True, exist_ok=True)
+            newline = "" if sink_kind == "csv" else None
+            sink_fp = sink_stack.enter_context(
+                sink_target_path.open("w", encoding="utf-8", newline=newline)
+            )
+            fieldnames = [
+                "run_id",
+                "metric",
+                "value",
+                "split",
+                "dataset",
+                "dataset_path",
+                "num_records",
+                "step",
+                "timestamp",
+            ]
+            sink = create_sink(
+                sink_kind,
+                sink_fp,
+                fieldnames=fieldnames if sink_kind == "csv" else None,
+            )
+    except Exception as exc:
+        sink_stack.close()
+        raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
+
     run_id = _derive_run_id(eval_cfg, dataset_path)
     summary = {
         "dataset_path": str(dataset_path.resolve()),
@@ -553,13 +594,14 @@ def run_evaluation(
 
     def _write_metrics_log() -> Path:
         ndjson_writer = NdjsonWriter(metrics_path, run_id=run_id)
-        for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
-            if isinstance(metric_value, (int, float)):
-                serialised_value: Any = float(metric_value)
-            else:
-                serialised_value = metric_value
-            ndjson_writer.log(
-                {
+        try:
+            for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
+                if isinstance(metric_value, (int, float)):
+                    serialised_value: Any = float(metric_value)
+                else:
+                    serialised_value = metric_value
+                timestamp = datetime.now(timezone.utc).isoformat()
+                payload = {
                     "step": idx,
                     "split": split_name,
                     "metric": metric_name,
@@ -573,15 +615,37 @@ def run_evaluation(
                         "num_records": num_records,
                         "seed": seed_value,
                     },
+                    "timestamp": timestamp,
                 }
-            )
-        return metrics_path
+                ndjson_writer.log(payload)
+                sink.write(
+                    {
+                        "run_id": run_id,
+                        "metric": metric_name,
+                        "value": serialised_value,
+                        "split": split_name,
+                        "dataset": dataset_display_name,
+                        "dataset_path": str(dataset_path.resolve()),
+                        "num_records": num_records,
+                        "step": idx,
+                        "timestamp": timestamp,
+                    }
+                )
+            return metrics_path
+        finally:
+            try:
+                sink.close()
+            finally:
+                ndjson_writer.close()
 
-    _safe_operation(
-        "Step: write evaluation metrics log",
-        _write_metrics_log,
-        context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
-    )
+    try:
+        _safe_operation(
+            "Step: write evaluation metrics log",
+            _write_metrics_log,
+            context={"path": str(metrics_path), "num_metrics": len(metrics_result)},
+        )
+    finally:
+        sink_stack.close()
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
@@ -610,6 +674,8 @@ def run_evaluation(
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
         "metrics_path": str(metrics_path),
+        "metrics_sink": sink_kind,
+        "metrics_sink_path": str(sink_target_path) if sink_target_path else None,
         "num_records": num_records,
         "run_id": run_id,
         "dataset_manifest_path": (

@@ -172,6 +172,16 @@ Audit Scope
 | --- | --- | --- |
 | {{item}} | {{status}} | {{notes}} |
 
+> **Offline-hardening reference points:**
+> - Deterministic split helper lives in `src/codex_ml/data/splits.py` (hash-based `stable_fold`).
+> - Metrics sinks are configurable with `--metrics-sink/--metrics-path` (see `src/codex_ml/metrics/sinks.py`).
+> - PEFT hooks stay disabled unless `codex train --enable-peft`/`CODEX_ENABLE_PEFT=1` activates `src/codex_ml/interfaces/peft_hooks.py`.
+> - Reproduce env snapshots via `python tools/env/export_env_json.py` → `artifacts/env_snapshot.json`.
+> - Refresh capability questions with `python tools/docs/gen_open_questions.py` → `docs/reference/open_questions_by_capability.md`.
+> - Local-only `Dockerfile.local` keeps base images digest pinned but remains out of CI.
+> - Asset provenance tracked in `assets/manifest.json`; verify with `python tools/assets/verify_manifest.py`.
+> - Deterministic guard rails consolidate in `src/codex_ml/utils/determinism.py` (also surfaced through `codex_ml.utils.seeding`).
+
 7. **Deferred Items**
    - {{deferred1}}
    - {{deferred2}}
