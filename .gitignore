@@ -102,6 +102,8 @@ site/
 reports/*
 !/reports/
 !/reports/*.md
+!/reports/daily/
+!/reports/daily/README.md
 artifacts/*
 !artifacts/models/
 !artifacts/models/tiny_tokenizer/
