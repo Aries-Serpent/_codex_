@@ -1,0 +1,1103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "codex_status_update",
+  "description": "Comprehensive daily status update schema for _codex_ ML training and evaluation environment with offline-first design, dynamic capability tracking, and reproducibility controls",
+  "type": "object",
+  "required": [
+    "metadata",
+    "snapshot",
+    "delta",
+    "patches",
+    "automation",
+    "security",
+    "questions",
+    "decisions"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["title", "timestamp_utc", "report_version", "template_version"],
+      "properties": {
+        "title": { 
+          "type": "string", 
+          "pattern": "^📍 `_codex_` : Status Update .+$",
+          "description": "Report title following format: 📍 `_codex_` : Status Update YYYY-MM-DD-HH:mm:z-UTC"
+        },
+        "timestamp_utc": { 
+          "type": "string", 
+          "format": "date-time",
+          "description": "ISO8601 UTC timestamp of report generation"
+        },
+        "report_version": { 
+          "type": "string",
+          "description": "Semantic version of this specific report (optional)"
+        },
+        "template_version": { 
+          "type": "string", 
+          "const": "v1.2",
+          "description": "Template schema version used to generate this report"
+        },
+        "authors": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "List of report authors (GitHub handles or names)"
+        },
+        "reviewers": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "List of report reviewers"
+        },
+        "previous_report_path": { 
+          "type": "string",
+          "description": "Path to previous report for delta computation"
+        },
+        "git_context": {
+          "type": "object",
+          "description": "Git repository context at time of report",
+          "properties": {
+            "branch": { "type": "string" },
+            "commit_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+            "commit_sha_short": { "type": "string", "pattern": "^[a-f0-9]{7,8}$" },
+            "is_dirty": { "type": "boolean" },
+            "tags": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "environment": {
+          "type": "object",
+          "description": "Runtime environment snapshot",
+          "properties": {
+            "python_version": { "type": "string" },
+            "pytorch_version": { "type": "string" },
+            "cuda_version": { "type": "string" },
+            "os": { "type": "string" },
+            "hostname": { "type": "string" }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": "object",
+      "required": ["repo_map", "capabilities", "findings", "tests_gates", "repro", "deferred"],
+      "properties": {
+        "repo_map": { 
+          "type": "string",
+          "description": "High-level directory structure and notable components"
+        },
+        "capabilities": {
+          "description": "Dynamic capability list tracking all aspects of the codebase (tokenization, training, evaluation, security, deployment, etc.)",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "status",
+              "artifacts",
+              "gaps",
+              "risks",
+              "severity",
+              "confidence",
+              "patch_plan",
+              "rollback"
+            ],
+            "properties": {
+              "id": { 
+                "type": "string",
+                "pattern": "^CAP-[0-9]{3,}$",
+                "description": "Unique capability identifier (e.g., CAP-001)"
+              },
+              "name": { 
+                "type": "string",
+                "description": "Human-readable capability name"
+              },
+              "category": { 
+                "type": "string",
+                "enum": [
+                  "Tokenization",
+                  "Modeling",
+                  "Training",
+                  "Evaluation",
+                  "Data",
+                  "Logging",
+                  "Monitoring",
+                  "Checkpointing",
+                  "Configuration",
+                  "Security",
+                  "Testing",
+                  "Deployment",
+                  "Documentation",
+                  "Tracking",
+                  "Extensibility",
+                  "Infrastructure",
+                  "Tooling",
+                  "Safety",
+                  "Offline",
+                  "Other"
+                ],
+                "description": "Capability category for organization and filtering"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["Implemented", "Partially Implemented", "Stubbed", "Missing", "Deprecated"],
+                "description": "Current implementation status"
+              },
+              "artifacts": { 
+                "type": "string",
+                "description": "Paths, modules, files, or references to existing implementation"
+              },
+              "gaps": { 
+                "type": "string",
+                "description": "Missing features, incomplete implementations, or limitations"
+              },
+              "risks": { 
+                "type": "string",
+                "description": "Potential issues, failure modes, or technical debt"
+              },
+              "severity": { 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 5,
+                "description": "Impact severity (1=Trivial, 2=Low, 3=Medium, 4=High, 5=Critical)"
+              },
+              "confidence": { 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 5,
+                "description": "Assessment confidence (1=Very Low, 2=Low, 3=Medium, 4=High, 5=Very High)"
+              },
+              "tags": { 
+                "type": "array", 
+                "items": { 
+                  "type": "string",
+                  "enum": [
+                    "offline",
+                    "gpu",
+                    "cpu",
+                    "cli",
+                    "api",
+                    "docs",
+                    "registry",
+                    "hydra",
+                    "mlflow",
+                    "tensorboard",
+                    "wandb",
+                    "huggingface",
+                    "peft",
+                    "lora",
+                    "nox",
+                    "pytest",
+                    "docker",
+                    "security",
+                    "deterministic",
+                    "reproducible",
+                    "experimental",
+                    "deprecated"
+                  ]
+                },
+                "description": "Searchable tags for filtering and grouping"
+              },
+              "patch_plan": { 
+                "type": "string",
+                "description": "Minimal implementation plan to address gaps"
+              },
+              "rollback": { 
+                "type": "string",
+                "description": "Steps to revert changes if patch fails"
+              },
+              "owner": { 
+                "type": "string",
+                "description": "GitHub handle of owner/maintainer"
+              },
+              "eta": { 
+                "type": "string", 
+                "format": "date-time",
+                "description": "Estimated completion date for gaps"
+              },
+              "last_updated": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Last audit/update timestamp"
+              },
+              "discovery_method": {
+                "type": "string",
+                "enum": ["code_scan", "docs_review", "issue_scan", "pr_scan", "contributor_input", "architecture_review", "manual"],
+                "description": "How this capability was discovered"
+              },
+              "links": {
+                "type": "object",
+                "description": "Related resources and cross-references",
+                "properties": {
+                  "patches": { "type": "array", "items": { "type": "string", "pattern": "^PATCH-[0-9]{3,}$" } },
+                  "issues": { "type": "array", "items": { "type": "string" } },
+                  "prs": { "type": "array", "items": { "type": "string" } },
+                  "docs": { "type": "array", "items": { "type": "string" } },
+                  "tests": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "capability_discovery_log": {
+          "type": "array",
+          "description": "Audit trail of newly discovered capabilities",
+          "items": {
+            "type": "object",
+            "required": ["timestamp_utc", "discovered_by", "capability_id", "name", "evidence"],
+            "properties": {
+              "timestamp_utc": { "type": "string", "format": "date-time" },
+              "discovered_by": { "type": "string" },
+              "capability_id": { "type": "string", "pattern": "^CAP-[0-9]{3,}$" },
+              "name": { "type": "string" },
+              "evidence": { "type": "string" },
+              "rationale": { "type": "string" }
+            }
+          }
+        },
+        "findings": {
+          "type": "array",
+          "description": "High-signal findings requiring attention",
+          "items": {
+            "type": "object",
+            "required": ["title", "severity", "confidence", "impact"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^FIND-[0-9]{3,}$",
+                "description": "Unique finding identifier"
+              },
+              "title": { 
+                "type": "string",
+                "description": "Concise finding title"
+              },
+              "evidence": { 
+                "type": "string",
+                "description": "Supporting evidence, links, or references"
+              },
+              "impact": { 
+                "type": "string",
+                "description": "Potential or actual impact on the system"
+              },
+              "proposed_action": { 
+                "type": "string",
+                "description": "Recommended remediation steps"
+              },
+              "severity": { 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 5,
+                "description": "Impact severity (1=Trivial, 5=Critical)"
+              },
+              "confidence": { 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 5,
+                "description": "Assessment confidence (1=Very Low, 5=Very High)"
+              },
+              "category": {
+                "type": "string",
+                "enum": ["security", "performance", "correctness", "reliability", "usability", "maintainability", "compliance"],
+                "description": "Finding category"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["new", "acknowledged", "in_progress", "resolved", "deferred", "wont_fix"],
+                "description": "Current remediation status"
+              },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "capability_ids": { "type": "array", "items": { "type": "string", "pattern": "^CAP-[0-9]{3,}$" } },
+                  "patch_ids": { "type": "array", "items": { "type": "string", "pattern": "^PATCH-[0-9]{3,}$" } },
+                  "issues": { "type": "array", "items": { "type": "string" } },
+                  "prs": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "tests_gates": {
+          "type": "object",
+          "description": "Test coverage and quality gate status",
+          "properties": {
+            "tests_summary": { 
+              "type": "object",
+              "properties": {
+                "total": { "type": "integer", "minimum": 0 },
+                "passed": { "type": "integer", "minimum": 0 },
+                "failed": { "type": "integer", "minimum": 0 },
+                "skipped": { "type": "integer", "minimum": 0 },
+                "duration_seconds": { "type": "number", "minimum": 0 }
+              }
+            },
+            "coverage_percent": { 
+              "type": "number", 
+              "minimum": 0, 
+              "maximum": 100,
+              "description": "Overall test coverage percentage"
+            },
+            "coverage_threshold": { 
+              "type": "number", 
+              "minimum": 0, 
+              "maximum": 100,
+              "description": "Required coverage threshold (fail-under)"
+            },
+            "coverage_by_module": {
+              "type": "object",
+              "description": "Per-module coverage breakdown",
+              "additionalProperties": { "type": "number", "minimum": 0, "maximum": 100 }
+            },
+            "quality_gates": {
+              "type": "object",
+              "description": "Quality gate pass/fail status",
+              "properties": {
+                "lint": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "typecheck": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "security_sast": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "security_secrets": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "security_deps": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "format": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "docs": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] }
+              }
+            },
+            "nox_sessions": {
+              "type": "object",
+              "description": "Nox session execution results",
+              "properties": {
+                "lint": { "type": "string", "enum": ["pass", "fail", "skip"] },
+                "tests": { "type": "string", "enum": ["pass", "fail", "skip"] },
+                "gates": { "type": "string", "enum": ["pass", "fail", "skip"] },
+                "typecheck": { "type": "string", "enum": ["pass", "fail", "skip"] },
+                "precommit": { "type": "string", "enum": ["pass", "fail", "skip"] }
+              }
+            },
+            "reproducibility": { 
+              "type": "string",
+              "description": "Summary of reproducibility controls status"
+            },
+            "missing_tests": {
+              "type": "array",
+              "description": "Areas lacking test coverage",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": true
+        },
+        "repro": {
+          "type": "object",
+          "required": ["core_controls", "registry"],
+          "description": "Reproducibility controls and registry",
+          "properties": {
+            "core_controls": {
+              "type": "array",
+              "description": "Essential reproducibility controls",
+              "items": {
+                "type": "object",
+                "required": ["control", "status"],
+                "properties": {
+                  "control": { "type": "string" },
+                  "status": { "type": "string", "enum": ["implemented", "partial", "missing", "na"] },
+                  "notes": { "type": "string" },
+                  "evidence": { "type": "string" }
+                }
+              }
+            },
+            "registry": {
+              "description": "Extensible reproducibility registry entries for advanced controls",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "category", "control", "status"],
+                "properties": {
+                  "id": { 
+                    "type": "string",
+                    "pattern": "^REPRO-[0-9]{3,}$",
+                    "description": "Unique reproducibility control identifier"
+                  },
+                  "category": { 
+                    "type": "string",
+                    "enum": ["env", "data", "build", "runtime", "hardware", "randomness", "versioning", "logging"],
+                    "description": "Control category"
+                  },
+                  "control": { 
+                    "type": "string",
+                    "description": "Description of the reproducibility control"
+                  },
+                  "status": { 
+                    "type": "string",
+                    "enum": ["implemented", "partial", "missing", "na", "deprecated"],
+                    "description": "Implementation status"
+                  },
+                  "severity": { 
+                    "type": "integer", 
+                    "minimum": 1, 
+                    "maximum": 5,
+                    "description": "Importance for reproducibility (1=Low, 5=Critical)"
+                  },
+                  "confidence": { 
+                    "type": "integer", 
+                    "minimum": 1, 
+                    "maximum": 5,
+                    "description": "Confidence in status assessment"
+                  },
+                  "evidence": { 
+                    "type": "string",
+                    "description": "File paths, tests, or documentation supporting this control"
+                  },
+                  "owner": { 
+                    "type": "string",
+                    "description": "Owner responsible for maintaining this control"
+                  },
+                  "next_audit_utc": { 
+                    "type": "string", 
+                    "format": "date-time",
+                    "description": "Next scheduled audit/verification"
+                  },
+                  "notes": { 
+                    "type": "string",
+                    "description": "Additional context or implementation details"
+                  },
+                  "links": {
+                    "type": "object",
+                    "properties": {
+                      "capability_ids": { "type": "array", "items": { "type": "string", "pattern": "^CAP-[0-9]{3,}$" } },
+                      "tests": { "type": "array", "items": { "type": "string" } }
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "determinism_tests": {
+              "type": "object",
+              "description": "Results of determinism validation tests",
+              "properties": {
+                "seed_control": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "data_splits": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "training_loop": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] },
+                "checkpointing": { "type": "string", "enum": ["pass", "fail", "warn", "skip"] }
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "deferred": {
+          "type": "array",
+          "description": "Items explicitly deferred with rationale",
+          "items": {
+            "type": "object",
+            "required": ["item", "rationale"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^DEFER-[0-9]{3,}$"
+              },
+              "item": { 
+                "type": "string",
+                "description": "Name/description of deferred item"
+              },
+              "rationale": { 
+                "type": "string",
+                "description": "Reason for deferral"
+              },
+              "risk": { 
+                "type": "integer", 
+                "minimum": 1, 
+                "maximum": 5,
+                "description": "Risk severity if item remains deferred"
+              },
+              "review_date_utc": { 
+                "type": "string", 
+                "format": "date-time",
+                "description": "Next scheduled review date"
+              },
+              "owner": { "type": "string" },
+              "links": {
+                "type": "object",
+                "properties": {
+                  "capability_ids": { "type": "array", "items": { "type": "string" } },
+                  "issues": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "delta": {
+      "type": "object",
+      "description": "Changes since previous report",
+      "properties": {
+        "code_changes": {
+          "type": "object",
+          "properties": {
+            "summary": { "type": "string" },
+            "files_added": { "type": "integer", "minimum": 0 },
+            "files_modified": { "type": "integer", "minimum": 0 },
+            "files_deleted": { "type": "integer", "minimum": 0 },
+            "lines_added": { "type": "integer", "minimum": 0 },
+            "lines_deleted": { "type": "integer", "minimum": 0 },
+            "modules_touched": { "type": "array", "items": { "type": "string" } },
+            "commits": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "tests_coverage_delta": {
+          "type": "object",
+          "properties": {
+            "previous_percent": { "type": "number" },
+            "current_percent": { "type": "number" },
+            "delta_percent": { "type": "number" },
+            "new_tests": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "risks_delta": {
+          "type": "object",
+          "properties": {
+            "new_high_severity": { "type": "array", "items": { "type": "string" } },
+            "resolved": { "type": "array", "items": { "type": "string" } },
+            "severity_changes": { "type": "array", "items": { "type": "object" } }
+          }
+        },
+        "performance_delta": {
+          "type": "object",
+          "properties": {
+            "training_throughput": { "type": "object" },
+            "inference_latency": { "type": "object" },
+            "memory_usage": { "type": "object" }
+          }
+        },
+        "issues_prs_delta": {
+          "type": "object",
+          "properties": {
+            "new_issues": { "type": "integer", "minimum": 0 },
+            "closed_issues": { "type": "integer", "minimum": 0 },
+            "new_prs": { "type": "integer", "minimum": 0 },
+            "merged_prs": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "capabilities_delta": {
+          "type": "object",
+          "description": "Changes to capability tracking",
+          "properties": {
+            "added": { "type": "array", "items": { "type": "string" } },
+            "removed": { "type": "array", "items": { "type": "string" } },
+            "status_changed": { "type": "array", "items": { "type": "object" } }
+          }
+        },
+        "repro_delta": {
+          "type": "object",
+          "description": "Changes to reproducibility controls",
+          "properties": {
+            "new_controls": { "type": "array", "items": { "type": "string" } },
+            "regressions": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "patches": {
+      "type": "array",
+      "description": "Ready-to-implement atomic patch diffs",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "paths", "why", "risk", "confidence", "rollback", "validation", "diff"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^PATCH-[0-9]{3,}$",
+            "description": "Unique patch identifier"
+          },
+          "title": { 
+            "type": "string",
+            "description": "Short descriptive title"
+          },
+          "paths": { 
+            "type": "array", 
+            "items": { "type": "string" },
+            "description": "File paths affected by this patch"
+          },
+          "why": { 
+            "type": "string",
+            "description": "Problem/rationale for this patch"
+          },
+          "risk": { 
+            "type": "integer", 
+            "minimum": 1, 
+            "maximum": 5,
+            "description": "Risk level of applying this patch"
+          },
+          "confidence": { 
+            "type": "integer", 
+            "minimum": 1, 
+            "maximum": 5,
+            "description": "Confidence in patch correctness"
+          },
+          "tests_docs": { 
+            "type": "string",
+            "description": "Required test and documentation updates"
+          },
+          "rollback": { 
+            "type": "string",
+            "description": "Exact rollback procedure"
+          },
+          "validation": { 
+            "type": "array", 
+            "items": { "type": "string" },
+            "description": "Pre-merge validation checklist"
+          },
+          "diff": { 
+            "type": "string",
+            "description": "Unified diff with Begin/End Patch markers"
+          },
+          "capability_ids": { 
+            "type": "array", 
+            "items": { "type": "string", "pattern": "^CAP-[0-9]{3,}$" },
+            "description": "Capabilities addressed by this patch"
+          },
+          "repro_ids": { 
+            "type": "array", 
+            "items": { "type": "string", "pattern": "^REPRO-[0-9]{3,}$" },
+            "description": "Reproducibility controls addressed"
+          },
+          "finding_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^FIND-[0-9]{3,}$" },
+            "description": "Findings addressed by this patch"
+          },
+          "feature_flags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Feature flags for gradual rollout"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^PATCH-[0-9]{3,}$" },
+            "description": "Other patches this depends on"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["draft", "ready", "in_review", "approved", "applied", "rejected"],
+            "description": "Patch lifecycle status"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "automation": {
+      "type": "object",
+      "description": "Daily automated data ingestion",
+      "properties": {
+        "issues": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "number": { "type": "integer" },
+              "title": { "type": "string" },
+              "state": { "type": "string", "enum": ["open", "closed"] },
+              "labels": { "type": "array", "items": { "type": "string" } },
+              "author": { "type": "string" },
+              "created_at": { "type": "string", "format": "date-time" },
+              "updated_at": { "type": "string", "format": "date-time" },
+              "closed_at": { "type": "string", "format": "date-time" }
+            }
+          },
+          "description": "Full list of issues (no truncation)"
+        },
+        "pull_requests": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "number": { "type": "integer" },
+              "title": { "type": "string" },
+              "state": { "type": "string", "enum": ["open", "closed", "merged"] },
+              "labels": { "type": "array", "items": { "type": "string" } },
+              "author": { "type": "string" },
+              "created_at": { "type": "string", "format": "date-time" },
+              "updated_at": { "type": "string", "format": "date-time" },
+              "merged_at": { "type": "string", "format": "date-time" }
+            }
+          },
+          "description": "Full list of PRs (no truncation)"
+        },
+        "coverage": { 
+          "type": "number", 
+          "minimum": 0, 
+          "maximum": 100,
+          "description": "Current test coverage percentage"
+        },
+        "dependency_audit": {
+          "type": "object",
+          "description": "Dependency vulnerability scan results",
+          "properties": {
+            "lockfile": { "type": "string" },
+            "tool": { "type": "string", "enum": ["pip-audit", "safety", "snyk", "other"] },
+            "vulnerabilities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "package": { "type": "string" },
+                  "version": { "type": "string" },
+                  "vuln_id": { "type": "string" },
+                  "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+                  "fix_version": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "security_scan": {
+          "type": "object",
+          "description": "SAST and secret scanning results",
+          "properties": {
+            "tools": { 
+              "type": "array", 
+              "items": { "type": "string", "enum": ["bandit", "detect-secrets", "semgrep", "other"] }
+            },
+            "findings_count": {
+              "type": "object",
+              "properties": {
+                "critical": { "type": "integer", "minimum": 0 },
+                "high": { "type": "integer", "minimum": 0 },
+                "medium": { "type": "integer", "minimum": 0 },
+                "low": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "high_priority": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "performance": {
+          "type": "object",
+          "description": "Performance snapshot and benchmarks",
+          "properties": {
+            "training": {
+              "type": "object",
+              "properties": {
+                "throughput_steps_per_sec": { "type": "number" },
+                "epoch_time_seconds": { "type": "number" },
+                "batch_size": { "type": "integer" }
+              }
+            },
+            "inference": {
+              "type": "object",
+              "properties": {
+                "latency_p50_ms": { "type": "number" },
+                "latency_p95_ms": { "type": "number" },
+                "latency_p99_ms": { "type": "number" },
+                "device": { "type": "string", "enum": ["cpu", "cuda", "mps"] }
+              }
+            },
+            "memory": {
+              "type": "object",
+              "properties": {
+                "peak_ram_gb": { "type": "number" },
+                "peak_vram_gb": { "type": "number" }
+              }
+            }
+          }
+        },
+        "capability_autodiscovery": {
+          "type": "object",
+          "description": "Automated capability discovery results",
+          "properties": {
+            "new_files": { "type": "array", "items": { "type": "string" } },
+            "new_modules": { "type": "array", "items": { "type": "string" } },
+            "suggested_capabilities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "category": { "type": "string" },
+                  "evidence": { "type": "string" },
+                  "confidence": { "type": "integer", "minimum": 1, "maximum": 5 }
+                }
+              }
+            }
+          }
+        },
+        "mlflow_tracking": {
+          "type": "object",
+          "description": "MLflow offline tracking summary",
+          "properties": {
+            "runs_count": { "type": "integer", "minimum": 0 },
+            "experiments_count": { "type": "integer", "minimum": 0 },
+            "artifact_store_path": { "type": "string" },
+            "latest_run_id": { "type": "string" }
+          }
+        },
+        "nox_results": {
+          "type": "object",
+          "description": "Nox session execution results",
+          "properties": {
+            "sessions_run": { "type": "array", "items": { "type": "string" } },
+            "sessions_passed": { "type": "array", "items": { "type": "string" } },
+            "sessions_failed": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "description": "Security and secret-masking status",
+      "properties": {
+        "masking_applied": { 
+          "type": "boolean",
+          "description": "Whether secret masking was applied to this report"
+        },
+        "redactions_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of redactions performed"
+        },
+        "threat_model_version": {
+          "type": "string",
+          "description": "Version of threat model applied"
+        },
+        "notes": { 
+          "type": "string",
+          "description": "Additional security notes or warnings"
+        }
+      },
+      "additionalProperties": true
+    },
+    "questions": {
+      "type": "array",
+      "description": "Open questions and answers tracking",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "priority", "owner", "asked_utc", "status", "question"],
+        "properties": {
+          "id": { 
+            "type": "string",
+            "pattern": "^Q-[0-9]{3,}$",
+            "description": "Unique question identifier"
+          },
+          "category": { 
+            "type": "string",
+            "enum": ["technical", "process", "architecture", "security", "performance", "compliance", "other"],
+            "description": "Question category"
+          },
+          "priority": { 
+            "type": "string", 
+            "enum": ["P0", "P1", "P2", "P3"],
+            "description": "Priority level (P0=Critical, P3=Low)"
+          },
+          "owner": { 
+            "type": "string",
+            "description": "Person responsible for answering"
+          },
+          "asked_utc": { 
+            "type": "string", 
+            "format": "date-time",
+            "description": "When question was raised"
+          },
+          "status": { 
+            "type": "string", 
+            "enum": ["Open", "In Review", "Answered", "Deferred"],
+            "description": "Current status"
+          },
+          "answered_utc": { 
+            "type": "string", 
+            "format": "date-time",
+            "description": "When question was answered"
+          },
+          "question": { 
+            "type": "string",
+            "description": "Full question text"
+          },
+          "answer": { 
+            "type": "string",
+            "description": "Answer or resolution"
+          },
+          "confidence": { 
+            "type": "integer", 
+            "minimum": 1, 
+            "maximum": 5,
+            "description": "Confidence in answer"
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "capability_ids": { "type": "array", "items": { "type": "string" } },
+              "finding_ids": { "type": "array", "items": { "type": "string" } },
+              "patch_ids": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Decision log for traceability",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "context", "chosen", "owner", "date_utc"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^DEC-[0-9]{3,}$",
+            "description": "Unique decision identifier"
+          },
+          "title": { 
+            "type": "string",
+            "description": "Decision title"
+          },
+          "context": { 
+            "type": "string",
+            "description": "Background and motivation"
+          },
+          "options": { 
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "pros": { "type": "array", "items": { "type": "string" } },
+                "cons": { "type": "array", "items": { "type": "string" } }
+              }
+            },
+            "description": "Options considered"
+          },
+          "chosen": { 
+            "type": "string",
+            "description": "Chosen option"
+          },
+          "owner": { 
+            "type": "string",
+            "description": "Decision maker"
+          },
+          "date_utc": { 
+            "type": "string", 
+            "format": "date-time",
+            "description": "When decision was made"
+          },
+          "impact": { 
+            "type": "string",
+            "description": "Expected impact of this decision"
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "capability_ids": { "type": "array", "items": { "type": "string" } },
+              "patch_ids": { "type": "array", "items": { "type": "string" } },
+              "issues": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tokenization": {
+      "type": "object",
+      "description": "Tokenization insights specific to _codex_ implementation",
+      "properties": {
+        "current_tokenizers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string", "enum": ["hf_fast", "hf_slow", "sentencepiece", "whitespace_fallback", "custom"] },
+              "vocab_size": { "type": "integer" },
+              "model_path": { "type": "string" },
+              "offline_available": { "type": "boolean" }
+            }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "padding_strategy": { "type": "string" },
+            "truncation_strategy": { "type": "string" },
+            "max_length": { "type": "integer" },
+            "special_tokens": { "type": "object" }
+          }
+        },
+        "caching_parity": {
+          "type": "object",
+          "properties": {
+            "round_trip_tests": { "type": "string", "enum": ["pass", "fail", "skip"] },
+            "fast_slow_parity": { "type": "string", "enum": ["pass", "fail", "skip", "na"] },
+            "cache_hit_rate": { "type": "number", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "offline_considerations": {
+          "type": "object",
+          "properties": {
+            "local_vocab_paths": { "type": "array", "items": { "type": "string" } },
+            "training_scripts": { "type": "array", "items": { "type": "string" } },
+            "fallback_mode": { "type": "string" }
+          }
+        },
+        "recommendations": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "Actionable tokenization recommendations"
+        }
+      },
+      "additionalProperties": true
+    },
+    "ml_test_score": {
+      "type": "object",
+      "description": "ML Test Score framework coverage",
+      "properties": {
+        "data_tests": {
+          "type": "object",
+          "properties": {
+            "feature_expectations": { "type": "integer", "minimum": 0 },
+            "schema_validation": { "type": "integer", "minimum": 0 },
+            "distribution_checks": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "model_tests": {
+          "type": "object",
+          "properties": {
+            "unit_tests": { "type": "integer", "minimum": 0 },
+            "integration_tests": { "type": "integer", "minimum": 0 },
+            "invariance_tests": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "infrastructure_tests": {
+          "type": "object",
+          "properties": {
+            "reproducibility": { "type": "integer", "minimum": 0 },
+            "training_pipeline": { "type": "integer", "minimum": 0 },
+            "serving_pipeline": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "monitoring": {
+          "type": "object",
+          "properties": {
+            "model_staleness": { "type": "boolean" },
+            "dependency_changes": { "type": "boolean" },
+            "data_invariants": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "hydra_config_snapshot": {
+      "type": "object",
+      "description": "Hydra configuration state",
+      "properties": {
+        "config_groups": { "type": "array", "items": { "type": "string" } },
+        "active_overrides": { "type": "array", "items": { "type": "string" } },
+        "sweep_configs": { "type": "array", "items": { "type": "string" } },
+        "validation_status": { "type": "string", "enum": ["pass", "fail", "warn"] }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -11,8 +11,10 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
   - Supports dynamic capability discovery and reproducibility tracking
 
 ### Schemas
-- **codex_status_template.schema.json** - JSON Schema for validation
-- **codex_status_template.schema.yaml** - YAML Schema (same structure as JSON)
+- **codex_status_template.schema_v1.2.json** - Enhanced JSON Schema with 40+ new fields (v1.2)
+- **codex_status_template.schema.json** - JSON Schema for validation (v1.1)
+- **codex_status_template.schema.yaml** - YAML Schema (same structure as JSON, v1.1)
+- **SCHEMA_ENHANCEMENTS_v1.2.md** - Detailed documentation of v1.2 enhancements
 
 ### Guides
 - **authoring_guide_v1.1.md** - Instructions for creating status reports
@@ -50,9 +52,22 @@ Daily reports are stored in:
 
 ## Template Version
 
-Current version: **v1.1**
+Current version: **v1.2** (Recommended)
+Previous version: **v1.1** (Still supported)
 
 ### Version History
+- **v1.2** (2025-11-02):
+  - Enhanced with repository-specific context (git, environment)
+  - 40+ new structured fields for automation
+  - Cross-referencing system with structured IDs (CAP-XXX, FIND-XXX, PATCH-XXX, REPRO-XXX, Q-XXX, DEC-XXX, DEFER-XXX)
+  - ML Test Score framework integration
+  - Hydra config snapshot
+  - Enhanced tokenization insights
+  - Nox session tracking
+  - MLflow offline integration
+  - Comprehensive delta tracking
+  - **See `SCHEMA_ENHANCEMENTS_v1.2.md` for full details**
+  
 - **v1.1** (2025-11-02): 
   - Dynamic Capability Audit with Extended Catalog
   - Reproducibility Registry for extensible controls
