@@ -164,7 +164,7 @@ def stage_s1_index(cfg):
         if p.is_dir():
             continue
         rel = p.relative_to(ROOT).as_posix()
-        if rel.startswith(".git/") or rel.startswith("audit_artifacts/") or rel.startswith("reports/"):
+        if any(rel.startswith(prefix) for prefix in SKIP_DIR_PREFIXES):
             continue
         ext = p.suffix.lower()
         size = p.stat().st_size
