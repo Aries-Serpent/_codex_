@@ -751,6 +751,9 @@ def run_evaluation(
         context={"path": str(manifest_path), "num_records": num_records},
     )
 
+    # Close the metrics sink file handles to prevent descriptor leaks
+    sink_stack.close()
+
     return {
         "summary_path": str(summary_path),
         "records_path": str(ndjson_path),
