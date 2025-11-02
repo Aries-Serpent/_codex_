@@ -91,7 +91,7 @@ def _safe_operation(
 
 
 def _normalise_metrics_sink(value: Any) -> List[str]:
-    allowed = {"ndjson", "csv"}
+    allowed = {"ndjson", "csv", "none"}
     if isinstance(value, str):
         tokens = [token.strip().lower() for token in value.split(",") if token.strip()]
     elif isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
@@ -540,7 +540,9 @@ def run_evaluation(
     metrics_csv_path = output_dir / metrics_csv_filename
     metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
 
-    sink_kind = str(getattr(eval_cfg, "metrics_sink", "none") or "none").lower()
+    # For the pluggable sink feature, use the first sink if multiple are specified
+    # The remaining sinks will be handled by the dedicated writers later
+    sink_kind = metrics_sinks[0] if metrics_sinks else "none"
     sink_target_path: Path | None = None
     sink_stack = ExitStack()
     sink = create_sink("none")
@@ -550,10 +552,13 @@ def run_evaluation(
         if sink_kind != "none":
             sink_path_value = getattr(eval_cfg, "metrics_sink_path", None)
             if not sink_path_value:
-                raise EvaluationError(
-                    "metrics_sink_path must be set when metrics_sink is not 'none'"
-                )
-            sink_target_path = Path(sink_path_value)
+                # Use default path based on sink kind
+                if sink_kind == "csv":
+                    sink_target_path = metrics_csv_path
+                else:  # ndjson
+                    sink_target_path = metrics_path
+            else:
+                sink_target_path = Path(sink_path_value)
             sink_target_path.parent.mkdir(parents=True, exist_ok=True)
             newline = "" if sink_kind == "csv" else None
             sink_fp = sink_stack.enter_context(
@@ -753,6 +758,8 @@ def run_evaluation(
             if "csv" in metrics_outputs
             else None
         ),
+        "metrics_sink": sink_kind,
+        "metrics_sink_path": str(sink_target_path) if sink_target_path else None,
         "num_records": num_records,
         "run_id": run_id,
         "dataset_manifest_path": (

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import random
 from pathlib import Path
 from typing import Any, Dict, Iterator, List, Mapping, Tuple
 
@@ -55,6 +56,30 @@ def _normalise_record(
     return {"text": text, "input": source, "target": target}
 
 
+def _split_records(
+    records: List[Dict[str, str]], ratios: Tuple[float, float, float], seed: int
+) -> Dict[str, List[Dict[str, str]]]:
+    """Split records using random shuffling with given ratios and seed."""
+    total = sum(ratios)
+    if total <= 0:
+        raise ValueError("Split ratios must be positive")
+    normalised = [r / total for r in ratios]
+    rng = random.Random(seed)
+    indices = list(range(len(records)))
+    rng.shuffle(indices)
+    n = len(records)
+    train_end = int(normalised[0] * n)
+    val_end = train_end + int(normalised[1] * n)
+    train_idx = indices[:train_end]
+    val_idx = indices[train_end:val_end]
+    test_idx = indices[val_end:]
+    return {
+        "train": [records[i] for i in train_idx],
+        "val": [records[i] for i in val_idx],
+        "test": [records[i] for i in test_idx],
+    }
+
+
 def _cache_key(file_sha: str, ratios: Tuple[float, float, float], seed: int, shuffle: bool) -> str:
     payload = json.dumps(
         {"sha": file_sha, "ratios": ratios, "seed": seed, "shuffle": shuffle},
@@ -77,25 +102,21 @@ def load_jsonl_dataset(
     """Load ``path`` and return deterministic train/val/test splits."""
 
     dataset_path = Path(path)
-    dataset: Dict[str, List[Dict[str, str]]] = {"train": [], "val": [], "test": []}
-    for index, payload in enumerate(_iter_jsonl(dataset_path)):
+    records: List[Dict[str, str]] = []
+    for payload in _iter_jsonl(dataset_path):
         normalised = _normalise_record(payload, (text_field, input_field, target_field))
         if normalised is None:
             continue
-        example_id = str(payload.get("id") or payload.get("uuid") or payload.get("guid"))
-        if not example_id or example_id == "None":
-            canonical = json.dumps(payload, sort_keys=True, ensure_ascii=False)
-            example_id = hashlib.sha1(canonical.encode("utf-8")).hexdigest()
-        normalised["id"] = example_id
-        normalised["split"] = assign_split(example_id)
-        dataset.setdefault(normalised["split"], []).append(normalised)
-        if shuffle:
-            # Maintain historical behaviour by preserving deterministic order when requested
-            dataset[normalised["split"]][-1]["index"] = index
+        records.append(normalised)
 
     if shuffle:
-        for split_name in dataset:
-            dataset[split_name].sort(key=lambda row: row.pop("index", 0))
+        dataset = _split_records(records, split, seed)
+    else:
+        dataset = {
+            "train": records,
+            "val": [],
+            "test": [],
+        }
 
     if cache_dir is not None:
         cache_path = Path(cache_dir)

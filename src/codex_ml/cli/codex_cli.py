@@ -371,7 +371,7 @@ def status_report(run_metadata_dir: Path) -> None:
     type=str,
     default="ndjson",
     show_default=True,
-    help="Comma-separated metrics sinks to emit (choices: ndjson,csv).",
+    help="Comma-separated metrics sinks to emit (choices: none,ndjson,csv).",
 )
 @click.option(
     "--seed",
