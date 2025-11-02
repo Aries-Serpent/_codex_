@@ -17,6 +17,8 @@ import sys
 from pathlib import Path
 
 SUPPORTED_TEMPLATE_VERSIONS = {"v1.1", "v1.2"}
+SUPPORTED_TEMPLATE_MAJOR_VERSIONS = {1}
+VERSION_REGEX = re.compile(r"^v(?P<major>\d+)(?:\.(?P<minor>\d+))?(?:\.[0-9]+)*$")
 
 
 def check_required_sections(content: str) -> tuple[list[str], list[str]]:
@@ -70,6 +72,20 @@ def check_title_format(content: str, is_template: bool = False) -> bool:
     return False
 
 
+def is_supported_template_version(version: str) -> bool:
+    """Return True if the template version is recognised by the validator."""
+
+    if version in SUPPORTED_TEMPLATE_VERSIONS:
+        return True
+
+    match = VERSION_REGEX.match(version)
+    if not match:
+        return False
+
+    major = int(match.group("major"))
+    return major in SUPPORTED_TEMPLATE_MAJOR_VERSIONS
+
+
 def check_template_version(content: str) -> tuple[str | None, bool]:
     """Extract the template version and indicate whether it is supported."""
 
@@ -82,7 +98,7 @@ def check_template_version(content: str) -> tuple[str | None, bool]:
         match = re.search(pattern, content)
         if match:
             version = match.group(1)
-            return version, version in SUPPORTED_TEMPLATE_VERSIONS
+            return version, is_supported_template_version(version)
 
     return None, False
 
@@ -111,7 +127,10 @@ def validate_report(report_path: Path) -> int:
     if version and is_supported:
         print(f"✓ Template version: {version}")
     elif version and not is_supported:
-        print(f"⚠ Template version detected but not in supported set: {version}")
+        print(
+            f"⚠ Template version detected but not in supported set: {version}. "
+            "Update the validator or use a supported template version."
+        )
     else:
         print("✗ Template version not found or incorrect")
     
@@ -135,7 +154,7 @@ def validate_report(report_path: Path) -> int:
     
     # Summary
     print("\n" + "=" * 60)
-    if not missing and has_valid_title and version:
+    if not missing and has_valid_title and version and is_supported:
         print("✓ Report validation PASSED")
         return 0
     else:
