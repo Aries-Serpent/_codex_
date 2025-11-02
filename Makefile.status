@@ -1,0 +1,30 @@
+# Convenience targets for v1.2 status workflow
+
+.PHONY: help status-skeleton validate-status validate-configs audit-chain gates nox all
+
+help:
+	@echo "Targets:"
+	@echo "  status-skeleton  Create JSON skeleton for today's report"
+	@echo "  validate-status  Run schema validation tests for status example"
+	@echo "  validate-configs Validate Hydra configs against schema"
+	@echo "  audit-chain      Build audit integrity chain artifacts"
+	@echo "  gates            Run CI-like status/config/security gates"
+	@echo "  nox              Run all nox sessions"
+
+status-skeleton:
+	bash scripts/status/generate_daily_report.sh
+
+validate-status:
+	pytest -q tests/status/test_example_report_schema.py
+
+validate-configs:
+	python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
+
+audit-chain:
+	python scripts/audit/build_integrity_chain.py
+
+gates:
+	bash scripts/status/ci_status_gate.sh
+
+nox:
+	nox -s lint typecheck tests gates
