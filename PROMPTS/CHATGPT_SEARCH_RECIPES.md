@@ -16,102 +16,102 @@ This guide teaches ChatGPT and humans how to effectively traverse and search the
 Use these queries in GitHub's web search or via the GitHub API:
 
 ### Basic Repository Navigation
-```
+```text
 repo:Aries-Serpent/_codex_ path:/ in:path
 ```
 Lists all top-level directories and files.
 
 ### Find All Markdown Documentation
-```
+```text
 repo:Aries-Serpent/_codex_ language:Markdown in:file
 ```
 Returns all Markdown files across the repository.
 
 ### Locate README Files
-```
+```text
 repo:Aries-Serpent/_codex_ filename:README.md
 ```
 Finds all README files in any directory.
 
 ### Search GitHub Workflows & Actions
-```
+```text
 repo:Aries-Serpent/_codex_ path:.github/ in:path
 ```
 Lists all `.github/` directory contents including workflows, templates, and configs.
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:.github/workflows/ extension:yml
 ```
 Specifically finds workflow YAML files.
 
 ### Find Architecture & Design Documents
-```
+```text
 repo:Aries-Serpent/_codex_ (ADR OR "architecture" OR "design") in:file
 ```
 Searches for Architecture Decision Records and design documentation.
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:docs/arch/ OR path:docs/architecture/
 ```
 Targets architecture-specific directories.
 
 ### Find Prompts & Search Guidance
-```
+```text
 repo:Aries-Serpent/_codex_ ("prompt" OR "recipes" OR "search") in:file
 ```
 Locates prompt templates and search documentation.
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:docs/prompts/ OR path:PROMPTS/
 ```
 Searches prompt-specific directories.
 
 ### Security & Policy Files
-```
+```text
 repo:Aries-Serpent/_codex_ (SECURITY OR CODEOWNERS OR "security policy") in:file
 ```
 Finds security documentation and ownership files.
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:docs/security/ OR path:docs/policies/
 ```
 Targets security and policy directories.
 
 ### Python Source Code
-```
+```text
 repo:Aries-Serpent/_codex_ language:Python path:src/
 ```
 Searches Python source in the main `src/` directory.
 
-```
+```text
 repo:Aries-Serpent/_codex_ language:Python path:src/codex_ml/
 ```
 Specifically targets the ML core module.
 
 ### Configuration Files
-```
+```text
 repo:Aries-Serpent/_codex_ filename:pyproject.toml OR filename:noxfile.py
 ```
 Finds project configuration and build files.
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:config/ OR path:configs/
 ```
 Searches configuration directories.
 
 ### Test Files
-```
+```text
 repo:Aries-Serpent/_codex_ path:tests/ language:Python
 ```
 Locates test files.
 
-```
+```text
 repo:Aries-Serpent/_codex_ "def test_" language:Python
 ```
 Finds test functions across the codebase.
 
 ### Scripts & Automation
-```
+```text
 repo:Aries-Serpent/_codex_ path:scripts/ (language:Python OR language:Shell)
 ```
 Searches automation scripts.
@@ -242,50 +242,50 @@ query SearchIssues($query: String!, $after: String) {
 ## Finding Specific Artifact Types
 
 ### Architecture Decision Records (ADRs)
-```
+```text
 repo:Aries-Serpent/_codex_ path:docs/decision_records/ filename:*.md
 ```
 
 ### API Documentation
-```
+```text
 repo:Aries-Serpent/_codex_ path:docs/api/ OR filename:*api*.md
 ```
 
 ### Quickstart Guides
-```
+```text
 repo:Aries-Serpent/_codex_ (quickstart OR "getting started") in:file
 ```
 
 ### Release Documentation
-```
+```text
 repo:Aries-Serpent/_codex_ (CHANGELOG OR RELEASE OR "release checklist") filename:*.md
 ```
 
 ### Docker & Deployment
-```
+```text
 repo:Aries-Serpent/_codex_ filename:Dockerfile OR filename:docker-compose.yml
 ```
 
-```
+```text
 repo:Aries-Serpent/_codex_ path:deploy/ OR path:docker/
 ```
 
 ### CI/CD Workflows
-```
+```text
 repo:Aries-Serpent/_codex_ path:.github/workflows/ filename:*.yml
 ```
 
 ### Logging & Monitoring
-```
+```text
 repo:Aries-Serpent/_codex_ path:src/codex/logging/ OR path:docs/logging/
 ```
 
 ### ML & Training Modules
-```
+```text
 repo:Aries-Serpent/_codex_ path:src/codex_ml/ language:Python
 ```
 
-```
+```text
 repo:Aries-Serpent/_codex_ ("train" OR "model" OR "checkpoint") path:src/
 ```
 
@@ -334,27 +334,27 @@ repo:Aries-Serpent/_codex_ ("train" OR "model" OR "checkpoint") path:src/
 ## Advanced Patterns
 
 ### Find All Configuration Entry Points
-```
+```text
 repo:Aries-Serpent/_codex_ (pyproject.toml OR setup.py OR setup.cfg OR noxfile.py OR Makefile)
 ```
 
 ### Find Deprecation Notices
-```
+```text
 repo:Aries-Serpent/_codex_ ("deprecated" OR "DEPRECATED" OR "TODO: remove") in:file
 ```
 
 ### Find Security-Sensitive Code
-```
+```text
 repo:Aries-Serpent/_codex_ ("password" OR "secret" OR "api_key" OR "token") language:Python
 ```
 
 ### Find Error Handling Patterns
-```
+```text
 repo:Aries-Serpent/_codex_ "try:" language:Python path:src/
 ```
 
 ### Find Logging Patterns
-```
+```text
 repo:Aries-Serpent/_codex_ ("logging.info" OR "logger.error" OR "print(") language:Python
 ```
 
@@ -362,7 +362,7 @@ repo:Aries-Serpent/_codex_ ("logging.info" OR "logger.error" OR "print(") langua
 
 ## Quick Reference Card
 
-```
+```text
 # Structure                  # Documentation              # Code Search
 path:/ in:path              language:Markdown           language:Python path:src/
 path:.github/               filename:README.md          "def class_name"

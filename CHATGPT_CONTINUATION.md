@@ -12,7 +12,7 @@ When generating extensive outputs (repository traversals, large documentation, m
 
 Every chunk begins with a standardized header:
 
-```
+```text
 —8<—[CHUNK {i}/{N} | topic: {section} | tokens≈{t}]
 ```
 
@@ -23,7 +23,7 @@ Every chunk begins with a standardized header:
 - `{t}` - Approximate token count for this chunk
 
 **Example:**
-```
+```text
 —8<—[CHUNK 1/3 | topic: Repository Inventory | tokens≈4500]
 ```
 
@@ -31,7 +31,7 @@ Every chunk begins with a standardized header:
 
 If more content remains, the chunk ends with a continuation footer:
 
-```
+```text
 ⟂ MORE:true | NEXT_CURSOR:{opaque_cursor} | NEXT_STEPS:{bulleted-next}
 ```
 
@@ -41,7 +41,7 @@ If more content remains, the chunk ends with a continuation footer:
 - `{bulleted-next}` - Brief bullet list of what comes next
 
 **Example:**
-```
+```text
 ⟂ MORE:true | NEXT_CURSOR:FILES_SECURITY_MD | NEXT_STEPS:
   - Generate SECURITY.md
   - Generate .github/dependabot.yml
@@ -52,7 +52,7 @@ If more content remains, the chunk ends with a continuation footer:
 
 When all content has been emitted:
 
-```
+```text
 ⟂ MORE:false | STATUS:COMPLETE
 ```
 
@@ -60,12 +60,12 @@ When all content has been emitted:
 
 To resume from a continuation point, use:
 
-```
+```text
 Resume from NEXT_CURSOR:{opaque_cursor} and continue {topic}
 ```
 
 **Example:**
-```
+```text
 Resume from NEXT_CURSOR:FILES_SECURITY_MD and continue generating missing files
 ```
 
@@ -89,17 +89,9 @@ Chunk responses when:
 
 **Example Split Strategy for File Generation:**
 
-Chunk 1:
-- Repository inventory
-- Gap analysis
-- Files A-B (CODEOWNERS, SECURITY.md)
-
-Chunk 2:
-- Files C-D (CHATGPT_SEARCH_RECIPES.md, CHATGPT_CONTINUATION.md)
-
-Chunk 3:
-- Files E-F (ARCHITECTURE.md updates, dependabot.yml)
-- PR plan and checklist
+- Chunk 1: Repository inventory + gap analysis + Files A-B (CODEOWNERS, SECURITY.md)
+- Chunk 2: Files C-D (CHATGPT_SEARCH_RECIPES.md, CHATGPT_CONTINUATION.md)
+- Chunk 3: Files E-F (ARCHITECTURE.md updates, dependabot.yml) + PR plan
 
 ### Cursor Design
 
@@ -110,7 +102,7 @@ Cursors should be:
 - **Stable**: Same cursor always resumes at the same point
 
 **Recommended Pattern:**
-```
+```text
 {SECTION_ID}_{ARTIFACT_ID}
 ```
 
@@ -124,72 +116,28 @@ Examples:
 
 ### Large Tables
 
-**Before:**
-```markdown
-| Path | Purpose | Risk |
-|------|---------|------|
-| ... 200 rows ...
-```
-
-**Chunked:**
-
-Chunk 1:
-```markdown
-—8<—[CHUNK 1/2 | topic: Repository Map | tokens≈4000]
-
-| Path | Purpose | Risk |
-|------|---------|------|
-| ... rows 1-100 ...
-
-⟂ MORE:true | NEXT_CURSOR:TABLE_REPO_MAP_PART2 | NEXT_STEPS:
-  - Continue repository map (rows 101-200)
-```
-
-Chunk 2:
-```markdown
-—8<—[CHUNK 2/2 | topic: Repository Map (continued) | tokens≈4000]
-
-| Path | Purpose | Risk |
-|------|---------|------|
-| ... rows 101-200 ...
-
-⟂ MORE:false | STATUS:COMPLETE
-```
+Split tables at row boundaries, preserving headers in each chunk:
+- Chunk 1: Header + rows 1-100
+- Chunk 2: Header + rows 101-200
+- Include cursor pointing to next row range
 
 ### Directory Trees
 
 Split by directory depth or alphabetical ranges:
-
-Chunk 1: `.github/`, `docs/` (A-M)
-Chunk 2: `docs/` (N-Z), `src/`
-Chunk 3: `tests/`, `scripts/`, `config/`
+- Chunk 1: `.github/`, `docs/` (A-M)
+- Chunk 2: `docs/` (N-Z), `src/`
+- Chunk 3: `tests/`, `scripts/`, `config/`
 
 ### Multi-File Diffs
 
-Split at file boundaries, never mid-file:
-
-Chunk 1:
-```
-File: .github/CODEOWNERS
-[full diff]
-
-File: SECURITY.md
-[full diff]
-```
-
-Chunk 2:
-```
-File: PROMPTS/CHATGPT_SEARCH_RECIPES.md
-[full diff]
-```
+Split at file boundaries, never mid-file. Each chunk should contain complete file diffs.
 
 ### Generated Files
 
 For multiple file generations, group by category:
-
-Chunk 1: Governance files (CODEOWNERS, SECURITY.md)
-Chunk 2: Documentation files (ARCHITECTURE.md, search recipes)
-Chunk 3: Automation files (dependabot.yml, workflows)
+- Chunk 1: Governance files (CODEOWNERS, SECURITY.md)
+- Chunk 2: Documentation files (ARCHITECTURE.md, search recipes)
+- Chunk 3: Automation files (dependabot.yml, workflows)
 
 ## Failure-Safe Rules
 
@@ -202,148 +150,47 @@ When approaching token limits:
 3. **Use references**: Link to existing files instead of repeating content
 4. **Summarize**: Provide abstracts instead of full details
 
-### Example - Token Pressure Adaptation
+### Token-Pressured Mode
 
-**Normal Mode:**
-```markdown
-## Generated File: SECURITY.md
-
-```md
-[Full 2000-line SECURITY.md content]
-```
-```
-
-**Token-Pressured Mode:**
-```markdown
-## Generated File: SECURITY.md
-
-Summary: Complete security policy with vulnerability reporting, SLAs, triage process, disclosure policy, and dependency management.
-
-Key sections: Supported Versions, Reporting (private), Response SLAs, Triage, Disclosure, PGP (optional), Dependencies (Dependabot link)
-
-⟂ MORE:true | NEXT_CURSOR:FILE_SECURITY_MD_FULL | NEXT_STEPS:
-  - Emit full SECURITY.md content
-```
-
-Then in next chunk:
-```markdown
-—8<—[CHUNK 2/3 | topic: SECURITY.md Full Content | tokens≈2000]
-
-```md
-[Full SECURITY.md content]
-```
-```
+Instead of emitting full file content, provide:
+- Summary of file purpose
+- Key sections overview
+- Cursor to emit full content in next chunk
 
 ## Self-Resumption
 
-For automated agents or continuous generation, the assistant can self-resume:
-
-```markdown
-⟂ MORE:true | NEXT_CURSOR:FILES_ARCH_MD | AUTO_RESUME:true
-
-[Agent automatically continues with next chunk header]
-
-—8<—[CHUNK 2/3 | topic: Architecture Documentation | tokens≈5000]
-```
+For automated agents or continuous generation, the assistant can self-resume by including an `AUTO_RESUME:true` flag in the footer.
 
 ## Examples
 
 ### Example 1: Repository Traversal
 
 **Chunk 1:**
-```markdown
-—8<—[CHUNK 1/3 | topic: Repository Structure | tokens≈4200]
+- Emit: `—8<—[CHUNK 1/3 | topic: Repository Structure | tokens≈4200]`
+- Content: Top-level structure inventory for `.github/`, `docs/`, etc.
+- Footer: `⟂ MORE:true | NEXT_CURSOR:INV_SRC_DIRECTORY | NEXT_STEPS: Complete src/ listing`
 
-# Repository Inventory
-
-## Top-Level Structure (depth=2)
-.github/
-  CODEOWNERS
-  workflows/
-  ... 
-
-docs/
-  ARCHITECTURE.md
-  api/
-  ...
-
-⟂ MORE:true | NEXT_CURSOR:INV_SRC_DIRECTORY | NEXT_STEPS:
-  - Complete src/ directory listing
-  - List tests/, scripts/, config/
-  - Generate semantic map
-```
-
-**Resume:**
-```
+**Resume Prompt:**
+```text
 Resume from NEXT_CURSOR:INV_SRC_DIRECTORY and continue repository inventory
 ```
 
 **Chunk 2:**
-```markdown
-—8<—[CHUNK 2/3 | topic: Source Code Inventory | tokens≈4500]
-
-## src/ Directory
-
-src/codex_ml/
-  training/
-    ...
-  evaluation/
-    ...
-
-⟂ MORE:true | NEXT_CURSOR:INV_SEMANTIC_MAP | NEXT_STEPS:
-  - Generate semantic map table
-  - Identify gaps
-```
+- Emit: `—8<—[CHUNK 2/3 | topic: Source Code Inventory | tokens≈4500]`
+- Content: Detailed `src/` directory listing
+- Footer: `⟂ MORE:true | NEXT_CURSOR:INV_SEMANTIC_MAP | NEXT_STEPS: Generate semantic map`
 
 ### Example 2: Multi-File Generation
 
 **Chunk 1:**
-```markdown
-—8<—[CHUNK 1/2 | topic: Governance Files | tokens≈6000]
-
-# Generated Files
-
-## A. .github/CODEOWNERS
-
-```
-# Default owners
-* @Aries-Serpent/owners
-...
-```
-
-## B. SECURITY.md
-
-```md
-# Security Policy
-...
-```
-
-⟂ MORE:true | NEXT_CURSOR:FILES_PROMPTS_AND_DOCS | NEXT_STEPS:
-  - Generate PROMPTS/CHATGPT_SEARCH_RECIPES.md
-  - Generate CHATGPT_CONTINUATION.md
-  - Generate docs/ARCHITECTURE.md updates
-  - Generate .github/dependabot.yml
-  - Emit PR plan
-```
+- Header: `—8<—[CHUNK 1/2 | topic: Governance Files | tokens≈6000]`
+- Content: Generated CODEOWNERS and SECURITY.md files
+- Footer: `⟂ MORE:true | NEXT_CURSOR:FILES_PROMPTS_AND_DOCS | NEXT_STEPS: Remaining files + PR plan`
 
 **Chunk 2:**
-```markdown
-—8<—[CHUNK 2/2 | topic: Documentation & Automation Files | tokens≈8000]
-
-## C. PROMPTS/CHATGPT_SEARCH_RECIPES.md
-
-```md
-# ChatGPT Search Recipes
-...
-```
-
-## D-F. [Additional files...]
-
-# PR Plan
-...
-
-⟂ MORE:false | STATUS:COMPLETE
-```
+- Header: `—8<—[CHUNK 2/2 | topic: Documentation & Automation Files | tokens≈8000]`
+- Content: Remaining files (search recipes, continuation doc, dependabot config) + PR plan
+- Footer: `⟂ MORE:false | STATUS:COMPLETE`
 
 ## Best Practices
 
@@ -367,28 +214,7 @@ Before emitting a continuation footer:
 
 ## Integration with Search Recipes
 
-When combining continuation with search operations:
-
-```markdown
-—8<—[CHUNK 1/? | topic: Search Trace | tokens≈3000]
-
-# Search Trace
-
-## Query 1: Repository Structure
-**Query:** `repo:Aries-Serpent/_codex_ path:/ in:path`
-**Why:** Understand top-level organization
-**Top Hits:**
-  - .github/
-  - docs/
-  - src/
-  ...
-
-⟂ MORE:true | NEXT_CURSOR:SEARCH_DOCUMENTATION | NEXT_STEPS:
-  - Search for documentation files
-  - Search for architecture files
-  - Search for security files
-  - Generate gap list
-```
+When combining continuation with search operations, include search metadata in chunk headers and provide clear resume cursors for incomplete search traversals.
 
 ## Tooling Support
 

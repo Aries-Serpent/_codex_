@@ -38,7 +38,7 @@ To report a vulnerability privately:
 
 For sensitive reports, you may encrypt your message using our PGP key:
 
-```
+```text
 [PGP public key fingerprint - to be added]
 ```
 
