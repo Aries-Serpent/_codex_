@@ -28,10 +28,10 @@ type:
 	mypy src
 
 test:
-        pytest -q --cov=src/codex_ml --cov-fail-under=3.5
+	pytest -q --cov=src/codex_ml --cov-fail-under=3.5
 
 cover:
-        pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
+	pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
 
 sast:
 	bandit -q -r src
@@ -56,7 +56,7 @@ clean:
 
 env-snapshot:
 	@mkdir -p artifacts
-	python scripts/env/export_env_json.py artifacts/env_snapshot.json
+	PYTHONPATH=src python scripts/env/export_env_json.py artifacts/env_snapshot.json
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \
