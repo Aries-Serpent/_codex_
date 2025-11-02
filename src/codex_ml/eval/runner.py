@@ -540,7 +540,9 @@ def run_evaluation(
     metrics_csv_path = output_dir / metrics_csv_filename
     metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
 
-    sink_kind = str(getattr(eval_cfg, "metrics_sink", "none") or "none").lower()
+    # For the pluggable sink feature, use the first sink if multiple are specified
+    # The remaining sinks will be handled by the dedicated writers later
+    sink_kind = metrics_sinks[0] if metrics_sinks else "none"
     sink_target_path: Path | None = None
     sink_stack = ExitStack()
     sink = create_sink("none")
