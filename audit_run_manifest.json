@@ -1,45 +1,42 @@
 {
-  "timestamp": 1762035000.1909423,
-  "version": "1.2.0",
-  "repo_root_sha": "341caba1200110402421e9ecc5b397b5606ed1bee9c2bb577c8213fbdb0bc059",
+  "generated_utc": "2025-11-02T15:00:51.600705+00:00",
+  "repo_root_sha": "0e0dccf1ee70e79f8f2fd8abfbbae717f0100b7b",
   "artifacts": [
     {
-      "name": "facets.json",
-      "sha": "b4e6d127b69687fe2e96b502e3b386fee2e585d6c1b407d4963d6da9c2173f8f"
+      "path": "audit_artifacts/context_index.json",
+      "sha256": "de64f05fb3c54aaa28b0aba770dfde6cfcbf65dcfc3d2f4358db59bb20bdf2f0",
+      "timestamp_utc": "2025-11-02T15:00:51.595025+00:00",
+      "notes": ""
     },
     {
-      "name": "capabilities_raw.json",
-      "sha": "9d1503036b0c725bf449b99b20aee206753b797bacd82668268364ff8f95607d"
+      "path": "audit_artifacts/facets.json",
+      "sha256": "3a71b01430bb6e0f3fc908264d2e7a406e07079967eaec6463b5595c4917d21b",
+      "timestamp_utc": "2025-11-02T15:00:51.595124+00:00",
+      "notes": ""
     },
     {
-      "name": "capabilities_scored.json",
-      "sha": "079059eb4b705c0bc23cd6335731d710d9d1b482d8b378cc538c331508ce26fe"
+      "path": "audit_artifacts/capabilities_raw.json",
+      "sha256": "5567aeaeb67305c8b2298e532aae2d0ace2aa38a77e730d5049b95ed09061bd2",
+      "timestamp_utc": "2025-11-02T15:00:51.595431+00:00",
+      "notes": ""
     },
     {
-      "name": "context_index.json",
-      "sha": "11aa7ed7c11530e67a88c0faa08b409f00cb5dfec610d6c23d28a32e915c7c39"
+      "path": "audit_artifacts/capabilities_scored.json",
+      "sha256": "525f35f9aa1f169d52b84a7c635a45c4182f4e46a9d64d1e558209415b856a16",
+      "timestamp_utc": "2025-11-02T15:00:51.595737+00:00",
+      "notes": ""
     },
     {
-      "name": "component_gaps.json",
-      "sha": "0361fc0b7b3a4f07f56cd7f0a299ea1635afec0aea0f2ca71c9caec01bf15bc3"
+      "path": "audit_artifacts/gaps.json",
+      "sha256": "21221fcee3b70a2bd284b6429f24dc1a23ad5a6e4b44766a9888f924ed70713f",
+      "timestamp_utc": "2025-11-02T15:00:51.595926+00:00",
+      "notes": ""
     },
     {
-      "name": "gaps.json",
-      "sha": "23a377bdbb066971e4a0da7f9ee33c13deb2081a83c61b654cccd146d4b4b20d"
+      "path": "reports/capability_matrix_20251101_082306.md",
+      "sha256": "308aebb1d6b073aba12185baa0b827994cd4fefa95a9c89f9b3240c32f2247fb",
+      "timestamp_utc": "2025-11-02T15:00:51.596257+00:00",
+      "notes": "Capability matrix snapshot"
     }
-  ],
-  "weights": {
-    "functionality": 0.25,
-    "consistency": 0.2,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15
-  },
-  "thresholds": {
-    "low": 0.7,
-    "medium": 0.85
-  },
-  "warnings": [],
-  "missing_detectors": [],
-  "template_hash": "9fa8ed2706e462dae42f04b13d7a8fe61261e25698236eb1d8e7fd7797b015b7"
+  ]
 }
