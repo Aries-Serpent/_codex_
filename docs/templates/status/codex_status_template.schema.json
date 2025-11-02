@@ -15,7 +15,7 @@
   "properties": {
     "metadata": {
       "type": "object",
-      "required": ["title", "timestamp_utc", "report_version", "template_version"],
+      "required": ["title", "timestamp_utc", "template_version"],
       "properties": {
         "title": { "type": "string", "pattern": "^📍 `_codex_` : Status Update .+$" },
         "timestamp_utc": { "type": "string", "format": "date-time" },
