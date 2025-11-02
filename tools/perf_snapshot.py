@@ -71,7 +71,10 @@ def write_snapshot(out_path: Path, snapshot: Mapping[str, Any]) -> None:
 
 def main(argv: Sequence[str] | None = None) -> Mapping[str, Any]:
     args = _parse_args(argv)
-    text = args.log.read_text(encoding="utf-8")
+    try:
+        text = args.log.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        text = ""
     snapshot = parse_perf_log(text)
     write_snapshot(args.out, snapshot)
     print(f"Performance snapshot written to {args.out}")
