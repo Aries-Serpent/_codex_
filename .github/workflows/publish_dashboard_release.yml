@@ -1,0 +1,29 @@
+name: Publish Status Dashboard Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 10 * * 1" # weekly Monday 10:15 UTC
+
+jobs:
+  publish-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Build dashboard
+        run: |
+          bash scripts/status/build_trend_dashboard.sh
+      - name: Prepare assets
+        run: |
+          bash scripts/status/prepare_dashboard_assets.sh
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Status Dashboard $(date -u +'%Y-%m-%d')"
+          tag_name: "status-dashboard-$(date -u +'%Y%m%d')"
+          body: "Automated weekly status dashboard artifact"
+          files: |
+            dist/status_dashboard_*.json
