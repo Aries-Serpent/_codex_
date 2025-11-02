@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 
 SUPPORTED_TEMPLATE_VERSIONS = {"v1.1", "v1.2"}
-SUPPORTED_TEMPLATE_MAJOR_VERSIONS = {1}
 VERSION_REGEX = re.compile(r"^v(?P<major>\d+)(?:\.(?P<minor>\d+))?(?:\.[0-9]+)*$")
 
 
@@ -57,41 +56,38 @@ VERSION_REQUIRED_SECTIONS: dict[str, list[str]] = {
 }
 
 
-def normalise_version_key(version: str | None) -> str:
-    """Return the version key used for required sections lookup."""
+def _canonicalise_version(version: str | None) -> str | None:
+    """Return the canonical ``v<major>.<minor>`` form for supported versions."""
 
     if not version:
-        return "v1.1"
+        return None
 
-    lowered = version.lower()
+    lowered = version.lower().strip()
     if lowered in VERSION_REQUIRED_SECTIONS:
         return lowered
 
     match = VERSION_REGEX.match(lowered)
     if not match:
-        return "v1.1"
+        return None
 
-    major = match.group("major")
+    major = int(match.group("major"))
     minor = match.group("minor")
+    if minor is None:
+        return None
 
-    if minor:
-        candidate = f"v{major}.{minor}"
-        if candidate in VERSION_REQUIRED_SECTIONS:
-            return candidate
+    canonical = f"v{major}.{int(minor)}"
+    if canonical in VERSION_REQUIRED_SECTIONS:
+        return canonical
 
-    major_prefix = f"v{major}."
-    matching_major_versions = [
-        key for key in VERSION_REQUIRED_SECTIONS if key.startswith(major_prefix)
-    ]
-    if matching_major_versions:
-        # Return the version with the highest minor component for the detected major.
-        def minor_sort_key(key: str) -> tuple[int, int]:
-            parts = key.split(".")
-            minor_part = int(parts[1]) if len(parts) > 1 else 0
-            patch_part = int(parts[2]) if len(parts) > 2 else 0
-            return minor_part, patch_part
+    return None
 
-        return max(matching_major_versions, key=minor_sort_key)
+
+def normalise_version_key(version: str | None) -> str:
+    """Return the version key used for required sections lookup."""
+
+    canonical = _canonicalise_version(version)
+    if canonical:
+        return canonical
 
     return "v1.1"
 
@@ -133,17 +129,8 @@ def check_title_format(content: str, is_template: bool = False) -> bool:
 def is_supported_template_version(version: str) -> bool:
     """Return True if the template version is recognised by the validator."""
 
-    normalised = version.lower()
-
-    if normalised in SUPPORTED_TEMPLATE_VERSIONS:
-        return True
-
-    match = VERSION_REGEX.match(normalised)
-    if not match:
-        return False
-
-    major = int(match.group("major"))
-    return major in SUPPORTED_TEMPLATE_MAJOR_VERSIONS
+    canonical = _canonicalise_version(version)
+    return bool(canonical and canonical in SUPPORTED_TEMPLATE_VERSIONS)
 
 
 def check_template_version(content: str) -> tuple[str | None, bool]:
@@ -190,8 +177,9 @@ def validate_report(report_path: Path) -> int:
     
     # Check template version
     version, is_supported = check_template_version(content)
-    if version and is_supported:
-        print(f"✓ Template version: {version}")
+    canonical_version = _canonicalise_version(version) if version else None
+    if canonical_version and is_supported:
+        print(f"✓ Template version: {canonical_version}")
     elif version and not is_supported:
         print(
             f"⚠ Template version detected but not in supported set: {version}. "
@@ -199,9 +187,10 @@ def validate_report(report_path: Path) -> int:
         )
     else:
         print("✗ Template version not found or incorrect")
-    
+
     # Check required sections
-    found, missing = check_required_sections(content, version)
+    sections_version = canonical_version if is_supported else None
+    found, missing = check_required_sections(content, sections_version)
     print(f"\n✓ Found {len(found)}/{len(found) + len(missing)} required sections")
     
     if missing:
@@ -220,7 +209,7 @@ def validate_report(report_path: Path) -> int:
     
     # Summary
     print("\n" + "=" * 60)
-    if not missing and has_valid_title and version and is_supported:
+    if not missing and has_valid_title and canonical_version and is_supported:
         print("✓ Report validation PASSED")
         return 0
     else:
