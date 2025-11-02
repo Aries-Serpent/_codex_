@@ -3,7 +3,11 @@ algorithms and disables cuDNN benchmarking. The custom training loop in
 `training/functional_training.py` asserts that `torch.backends.cudnn.deterministic`
 is set when CUDA is available, helping catch non-deterministic operations
 early. Call `set_reproducible()` or set `torch.backends.cudnn.deterministic = True`
-before training on GPU to satisfy this check.
+before training on GPU to satisfy this check. The Hydra `codex_ml.cli.train`
+entrypoint now applies `codex_ml.utils.repro.set_seed()` as soon as the
+configuration is loaded, preferring the explicit `seed` override, falling back
+to `reproducibility.seed`, and defaulting to `0` when neither is supplied. This
+keeps trainer runs deterministic even when the caller does not supply a seed.
 
 Hydra-based entrypoints register structured (dataclass) configs in code. Every
 run captures the resolved configuration under the Hydra output directory and
@@ -22,6 +26,9 @@ dataset drift is detectable after the fact. Dataset splits cached via
 when the data changes. Use `scripts/export_env_info.py` at run start to record
 environment variables and key library versions when integrating custom flows.
 Install dependencies from the provided lock files to ensure consistent builds.
+`make -f configs/development/Makefile setup` now enforces the presence of
+`requirements/lock.txt` and aborts if the file is missing instead of silently
+falling back to floating requirements.
 
 For user-controlled splits, prefer `codex_ml.data.split_utils.deterministic_split`
 which shuffles indices with a dedicated seed and keeps the remainder in the

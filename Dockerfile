@@ -7,6 +7,8 @@ ARG VCS_REF="unknown"
 ARG BUILD_DATE="unknown"
 ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
 
+# For immutable builds, prefer digest pinning. Example:
+# FROM python:3.11-slim@sha256:<digest-here>
 FROM python:3.11-slim AS builder
 
 ARG VERSION
@@ -40,6 +42,8 @@ RUN if [ -f "requirements/docker.txt" ]; then \
 COPY . .
 RUN pip wheel --no-deps --wheel-dir /tmp/wheels .
 
+# For immutable builds, prefer digest pinning. Example:
+# FROM python:3.11-slim@sha256:<digest-here>
 FROM python:3.11-slim AS runtime
 
 ARG VERSION

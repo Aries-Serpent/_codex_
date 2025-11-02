@@ -1,0 +1,81 @@
+# Dependabot configuration for automated dependency updates
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # GitHub Actions - Monitor workflow dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "Aries-Serpent/owners"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # Python - Monitor pip dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "python"
+    reviewers:
+      - "Aries-Serpent/owners"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Group non-security updates to reduce PR noise
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "pytest*"
+          - "ruff*"
+          - "black*"
+          - "mypy*"
+          - "pre-commit*"
+      ml-dependencies:
+        patterns:
+          - "torch*"
+          - "transformers*"
+          - "peft*"
+          - "accelerate*"
+          - "datasets*"
+      data-dependencies:
+        patterns:
+          - "pandas*"
+          - "numpy*"
+          - "scikit-learn*"
+          - "duckdb*"
+    # Allow both direct and indirect updates
+    versioning-strategy: "increase"
+    open-pull-requests-limit: 10
+    # Security updates always opened immediately
+    # Non-security updates batched per schedule
+
+  # Docker - Monitor base images (if using Dockerfile)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    labels:
+      - "dependencies"
+      - "docker"
+    reviewers:
+      - "Aries-Serpent/owners"
+    commit-message:
+      prefix: "docker"
+    open-pull-requests-limit: 3
