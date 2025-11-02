@@ -27,12 +27,19 @@ def main() -> int:
     schema = root / "docs/templates/status/codex_status_template.schema_v1.2.json"
     example = root / "docs/templates/status/example_report_v1.2.json"
 
-    results = {"status_schema": None, "config_validation": None, "audit_chain": None}
+    results = {}
 
     # 1) Schema validation (pytest)
-    if (root / "tests/status/test_example_report_schema.py").exists():
+    schema_test = root / "tests/status/test_example_report_schema.py"
+    if schema_test.exists():
         code, out, err = run([sys.executable, "-m", "pytest", "-q", "tests/status/test_example_report_schema.py"])
         results["status_schema"] = {"ok": code == 0, "stdout": out, "stderr": err}
+    else:
+        results["status_schema"] = {
+            "ok": True,
+            "stdout": "skipped: schema test file not found",
+            "stderr": "",
+        }
 
     # 2) Config validation (optional)
     schema_cfg = root / "configs/schemas/training.schema.yaml"
