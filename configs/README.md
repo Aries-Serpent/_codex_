@@ -22,7 +22,7 @@ configs/
 - **Training**: `configs/training/base.yaml` defines functional trainer defaults. Data fragments live under `configs/training/data/`, and sweeps under `configs/training/sweeps/`.
 - **Evaluation**: `configs/evaluation/base.yaml` and `configs/evaluation/offline.yaml` provide online and offline runners. Custom metrics belong in `configs/evaluation/metrics/`.
 - **Deployment**: CRM and integration templates (for example Dynamics 365 manifests) live under `configs/deployment/`, including the hhg logistics domain configs in `configs/deployment/hhg_logistics/`.
-- **Development tooling**: Local lint/test harnesses live under `configs/development/` (`noxfile.py`, `pytest.ini`, `Makefile`).
+- **Development tooling**: Local lint/test harnesses live under `configs/development/` (`noxfile.py`, `pytest.ini`, `Makefile`). `make setup` now requires `requirements/lock.txt` and installs dependencies from the lock file plus `requirements/dev.txt --no-deps` to guarantee reproducible toolchains.
 
 ## Usage Examples
 

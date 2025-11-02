@@ -56,6 +56,8 @@ def test_run_evaluation_generates_reports(tmp_path: Path) -> None:
     ndjson_path = Path(result["records_path"])
     manifest_path = Path(result["manifest_path"])
     metrics_path = Path(result["metrics_path"])
+    assert result["metrics_sink"] == "ndjson"
+    assert result["metrics_sink_path"] == str(metrics_path)
     assert summary_path.exists()
     assert ndjson_path.exists()
     assert manifest_path.exists()

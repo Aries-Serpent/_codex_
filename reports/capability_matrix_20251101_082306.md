@@ -1,43 +1,45 @@
 # [Report]: Capability Matrix
-> Generated: 2025-10-30 20:44:04 UTC | Author: audit_system
- Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5
+Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine] Energy: 5
 
 ## 1. Summary
 Total Capabilities: 20
-Low Maturity (< 0.45 heuristic): 5
+Low Maturity (< 0.70): 5
+Missing Detectors (overrides): 0
+Zero Components Observed: 1
 
 ## 2. Capability Scores
 | ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
 |----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
 | checkpointing | 0.88 | 1.00 | 0.87 | 0.70 | 0.83 | 1.00 | 94 |
-| ci-cd-pipeline | 0.88 | 1.00 | 0.91 | 0.58 | 1.00 | 1.00 | 192 |
-| code-quality-tooling | 0.84 | 1.00 | 0.87 | 0.58 | 0.83 | 1.00 | 143 |
-| configuration | 0.76 | 1.00 | 0.76 | 0.22 | 1.00 | 1.00 | 194 |
+| ci-cd-pipeline | 0.88 | 1.00 | 0.91 | 0.58 | 1.00 | 1.00 | 193 |
+| code-quality-tooling | 0.84 | 1.00 | 0.86 | 0.57 | 0.83 | 1.00 | 145 |
+| configuration | 0.76 | 1.00 | 0.77 | 0.21 | 1.00 | 1.00 | 213 |
 | data-pipeline | 0.81 | 1.00 | 0.86 | 0.43 | 0.83 | 1.00 | 140 |
-| deployment-infrastructure | 0.65 | 0.80 | 0.84 | 0.14 | 0.67 | 1.00 | 37 |
-| documentation-system | 0.67 | 0.75 | 0.93 | 0.00 | 1.00 | 1.00 | 355 |
-| duplication_ratio | 0.41 | 0.00 | 0.76 | 0.31 | 1.00 | 0.17 | 2824 |
-| evaluation-metrics | 0.81 | 1.00 | 0.90 | 0.50 | 0.67 | 1.00 | 90 |
+| deployment-infrastructure | 0.62 | 0.80 | 0.74 | 0.09 | 0.67 | 1.00 | 57 |
+| documentation-system | 0.67 | 0.75 | 0.93 | 0.00 | 1.00 | 1.00 | 377 |
+| duplication_ratio | 0.41 | 0.00 (ZERO) | 0.76 | 0.30 | 1.00 | 0.24 | 2932 |
+| evaluation-metrics | 0.82 | 1.00 | 0.89 | 0.46 | 0.83 | 1.00 | 100 |
 | experiment-management | 0.80 | 1.00 | 0.76 | 0.38 | 1.00 | 1.00 | 114 |
-| inference-serving | 0.59 | 0.50 | 0.89 | 0.33 | 0.67 | 0.69 | 9 |
-| logging-tracking | 0.79 | 1.00 | 0.81 | 0.32 | 1.00 | 1.00 | 254 |
-| peft_hooks | 0.71 | 1.00 | 0.87 | 0.49 | 1.00 | 0.09 | 98 |
-| reproducibility | 0.88 | 1.00 | 0.88 | 0.63 | 1.00 | 1.00 | 68 |
-| safeguards_keywords | 0.66 | 1.00 | 0.84 | 0.29 | 1.00 | 0.13 | 774 |
-| safety-security | 0.74 | 1.00 | 0.89 | 0.36 | 0.50 | 1.00 | 47 |
-| testing-infrastructure | 0.91 | 0.75 | 0.90 | 0.99 | 1.00 | 1.00 | 883 |
+| inference-serving | 0.61 | 0.50 | 0.89 | 0.33 | 0.67 | 0.80 | 9 |
+| logging-tracking | 0.79 | 1.00 | 0.82 | 0.31 | 1.00 | 1.00 | 260 |
+| peft_hooks | 0.72 | 1.00 | 0.87 | 0.49 | 1.00 | 0.16 | 99 |
+| reproducibility | 0.88 | 1.00 | 0.89 | 0.60 | 1.00 | 1.00 | 72 |
+| safeguards_keywords | 0.67 | 1.00 | 0.84 | 0.28 | 1.00 | 0.19 | 800 |
+| safety-security | 0.74 | 1.00 | 0.88 | 0.35 | 0.50 | 1.00 | 48 |
+| testing-infrastructure | 0.91 | 0.75 | 0.90 | 0.99 | 1.00 | 1.00 | 887 |
 | tokenization | 0.80 | 1.00 | 0.83 | 0.52 | 0.67 | 1.00 | 102 |
 | training-engine | 0.84 | 1.00 | 0.87 | 0.45 | 1.00 | 1.00 | 201 |
 | unified-training | 0.84 | 1.00 | 0.60 | 1.00 | 0.50 | 1.00 | 5 |
 
 ## 3. Low Maturity Focus
-| ID | Score | Primary Deficit |
-|----|-------|-----------------|
-| deployment-infrastructure | 0.65 | tests |
-| documentation-system | 0.67 | tests |
-| duplication_ratio | 0.41 | functionality |
-| inference-serving | 0.59 | tests |
-| safeguards_keywords | 0.66 | documentation |
+| ID | Score | Primary Deficit | Missing Patterns |
+|----|-------|-----------------|------------------|
+| deployment-infrastructure | 0.62 | tests | kubernetes |
+| documentation-system | 0.67 | tests | sphinx |
+| duplication_ratio | 0.41 | functionality | unique_stems |
+| inference-serving | 0.61 | tests | fastapi |
+| safeguards_keywords | 0.67 | documentation | None |
+
 
 ## 4. Weight Reference
 | Component | Weight |
@@ -53,14 +55,21 @@ Low Maturity (< 0.45 heuristic): 5
 Score: 0.8750
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8723404255319149
-- Tests: 0.7021276595744681
-- Safeguards: 0.8333333333333334
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.87
+- Tests: 0.70
+- Safeguards: 0.83
+- Documentation: 1.00
 
-
+Required Patterns: save_checkpoint, load
 Patterns Found: load, save_checkpoint
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -76,28 +85,36 @@ docs/training/Checkpointing_Surfaces.md
 great_expectations/checkpoints/clean_checkpoint.yml
 ```
 ### ci-cd-pipeline
-Score: 0.8758
+Score: 0.8751
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.90625
-- Tests: 0.578125
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.91
+- Tests: 0.58
+- Safeguards: 1.00
+- Documentation: 1.00
+
+Required Patterns: ci, pre-commit, workflow, automation, validation
+Patterns Found: automation, ci, pre-commit, validation, workflow
+Missing Patterns: None
 
 Meta:
 - ci_configs: 2
-- github_actions: 7
+- github_actions: 8
 - note: GitHub Actions present but not activated per AGENTS.md
 - pre_commit_hooks: 3
 - validation_scripts: 180
 
-Patterns Found: automation, ci, pre-commit, validation, workflow
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
 .codex/smoke/import_check.py
 .github/workflows/archive-gates.yml.disabled
+.github/workflows/capability-audit.yml
 .github/workflows/ci.yml.disabled
 .github/workflows/docker-build-push.yml
 .github/workflows/runner-diagnostics.yml
@@ -105,26 +122,32 @@ Evidence Files (first 10):
 .github/workflows/validate.yml.disabled
 .github/workflows/workflow-expiry-enforcer.yml
 .pre-commit-config.yaml
-.pre-commit-hybrid.yaml
 ```
 ### code-quality-tooling
-Score: 0.8435
+Score: 0.8391
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8671328671328671
-- Tests: 0.5804195804195804
-- Safeguards: 0.8333333333333334
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.86
+- Tests: 0.57
+- Safeguards: 0.83
+- Documentation: 1.00
+
+Required Patterns: lint, format, type-check, security-scan, quality
+Patterns Found: format, lint, quality, security-scan, type-check
+Missing Patterns: None
 
 Meta:
 - formatters: 2
 - linters: 3
 - quality_scripts: 38
-- security_scanners: 96
+- security_scanners: 98
 - type_checkers: 7
 
-Patterns Found: format, lint, quality, security-scan, type-check
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -140,17 +163,24 @@ artifacts/security/safety.txt
 bandit.yaml
 ```
 ### configuration
-Score: 0.7580
+Score: 0.7556
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.7628865979381443
-- Tests: 0.22164948453608246
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.77
+- Tests: 0.21
+- Safeguards: 1.00
+- Documentation: 1.00
 
-
+Required Patterns: config, hydra
 Patterns Found: config, hydra
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -159,24 +189,31 @@ Evidence Files (first 10):
 .codex/hydra_last/config.yaml
 .editorconfig
 .github/docs/ARCHIVE_CONFIG_ADR.md
+.github/docs/SBOM_Config_InstructionEnhancement.md
 .pre-commit-config.yaml
 agents/codex_client/codex_client/config.py
 agents/codex_client/tests/test_config.py
 commitlint.config.mjs
-configs/README.md
 ```
 ### data-pipeline
 Score: 0.8050
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8642857142857143
-- Tests: 0.42857142857142855
-- Safeguards: 0.8333333333333334
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.86
+- Tests: 0.43
+- Safeguards: 0.83
+- Documentation: 1.00
 
-
+Required Patterns: split, loader
 Patterns Found: loader, split
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -192,23 +229,30 @@ data/offline/length_reward.json
 data/offline/tiny_corpus.txt
 ```
 ### deployment-infrastructure
-Score: 0.6514
+Score: 0.6193
 
 Components:
-- Functionality: 0.8
-- Consistency: 0.8378378378378378
-- Tests: 0.13513513513513514
-- Safeguards: 0.6666666666666666
-- Documentation: 1.0
+- Functionality: 0.80
+- Consistency: 0.74
+- Tests: 0.09
+- Safeguards: 0.67
+- Documentation: 1.00
+
+Required Patterns: docker, kubernetes, helm, deploy, service
+Patterns Found: deploy, docker, helm, service
+Missing Patterns: kubernetes
 
 Meta:
 - deploy_scripts: 3
-- docker_configs: 5
+- docker_configs: 6
 - helm_charts: 2
 - k8s_manifests: 0
-- service_definitions: 27
+- service_definitions: 46
 
-Patterns Found: deploy, docker, helm, service
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -221,25 +265,32 @@ deploy/interactive_entrypoint.sh
 deploy/setup_universal.sh
 docker-compose.yml
 docker/entrypoint.sh
-scripts/deploy/orchestrate.sh
+docker/msp-gateway.Dockerfile
 ```
 ### documentation-system
-Score: 0.6747
+Score: 0.6733
 
 Components:
 - Functionality: 0.75
-- Consistency: 0.9323943661971831
-- Tests: 0.0028169014084507044
-- Safeguards: 1.0
-- Documentation: 1.0
+- Consistency: 0.93
+- Tests: 0.00
+- Safeguards: 1.00
+- Documentation: 1.00
+
+Required Patterns: markdown, docs, mkdocs, sphinx
+Patterns Found: docs, markdown, mkdocs
+Missing Patterns: sphinx
 
 Meta:
 - config_count: 1
-- markdown_count: 353
+- markdown_count: 375
 - rst_count: 0
-- total_docs: 355
+- total_docs: 377
 
-Patterns Found: docs, markdown, mkdocs
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -255,17 +306,24 @@ docs/CODEX_STRUCTURE_CONSOLIDATION_PROMPT.md
 docs/CONTRIBUTING.addendum.md
 ```
 ### duplication_ratio
-Score: 0.4061
+Score: 0.4145
 
 Components:
-- Functionality: 0.0
-- Consistency: 0.7634560906515581
-- Tests: 0.3123229461756374
-- Safeguards: 1.0
-- Documentation: 0.16853932584269662
+- Functionality: 0.00 (ZERO)
+- Consistency: 0.76
+- Tests: 0.30
+- Safeguards: 1.00
+- Documentation: 0.24
 
-
+Required Patterns: unique_stems
 Patterns Found: None
+Missing Patterns: unique_stems
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -281,17 +339,24 @@ Evidence Files (first 10):
 .codex/automation_out/change_log.md
 ```
 ### evaluation-metrics
-Score: 0.8050
+Score: 0.8180
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.9
-- Tests: 0.5
-- Safeguards: 0.6666666666666666
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.89
+- Tests: 0.46
+- Safeguards: 0.83
+- Documentation: 1.00
 
-
+Required Patterns: metric, perplexity
 Patterns Found: metric, perplexity
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -310,11 +375,15 @@ configs/evaluation/reasoning/proof.yaml
 Score: 0.7969
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.7631578947368421
-- Tests: 0.37719298245614036
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.76
+- Tests: 0.38
+- Safeguards: 1.00
+- Documentation: 1.00
+
+Required Patterns: experiment, tracking, metadata, mlflow, wandb
+Patterns Found: experiment, metadata, mlflow, tracking, wandb
+Missing Patterns: None
 
 Meta:
 - experiment_utils: 13
@@ -322,7 +391,10 @@ Meta:
 - mlflow_integration: 32
 - wandb_integration: 4
 
-Patterns Found: experiment, metadata, mlflow, tracking, wandb
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -338,19 +410,26 @@ Evidence Files (first 10):
 .codex/validation/20250910T071257Z/pre_manifest.json
 ```
 ### inference-serving
-Score: 0.5900
+Score: 0.6063
 
 Components:
-- Functionality: 0.5
-- Consistency: 0.8888888888888888
-- Tests: 0.3333333333333333
-- Safeguards: 0.6666666666666666
-- Documentation: 0.6928838951310861
+- Functionality: 0.50
+- Consistency: 0.89
+- Tests: 0.33
+- Safeguards: 0.67
+- Documentation: 0.80
+
+Required Patterns: server, fastapi
+Patterns Found: server
+Missing Patterns: fastapi
 
 Meta:
 - layer: serving
 
-Patterns Found: server
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -365,43 +444,57 @@ tests/hhg_logistics/serve/test_app.py
 tests/telemetry/test_metrics_server.py
 ```
 ### logging-tracking
-Score: 0.7927
+Score: 0.7917
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8149606299212598
-- Tests: 0.3188976377952756
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.82
+- Tests: 0.31
+- Safeguards: 1.00
+- Documentation: 1.00
 
-
+Required Patterns: log, mlflow
 Patterns Found: log, mlflow
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
 .codex/action_log.ndjson
 .codex/automation_out/change_log.md
 .codex/automation_out/db_catalog.json
+.codex/cache/uv_sync.log
+.codex/cache/uv_sync_maint.log
 .codex/change_log-large.md
 .codex/change_log.md
 .codex/change_log_compare_report.json
 .codex/codex_run.log
 .codex/copilot_bridge/var/logs/.gitkeep
-.codex/errors_codex.log
-.codex/evidence/phase5_structured_logging.jsonl
 ```
 ### peft_hooks
-Score: 0.7100
+Score: 0.7210
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8673469387755102
-- Tests: 0.4897959183673469
-- Safeguards: 1.0
-- Documentation: 0.09363295880149812
+- Functionality: 1.00
+- Consistency: 0.87
+- Tests: 0.49
+- Safeguards: 1.00
+- Documentation: 0.16
 
-
+Required Patterns: LoraConfig, get_peft_model, lora, peft, prepare_model_for_kbit_training
 Patterns Found: LoraConfig, get_peft_model, lora, peft, prepare_model_for_kbit_training
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -417,48 +510,62 @@ scripts/space_traversal/detectors/detector_peft.py
 scripts/train.py
 ```
 ### reproducibility
-Score: 0.8846
+Score: 0.8771
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8823529411764706
-- Tests: 0.6323529411764706
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.89
+- Tests: 0.60
+- Safeguards: 1.00
+- Documentation: 1.00
+
+Required Patterns: seed, deterministic, sha256, rng_state, reproducibility
+Patterns Found: deterministic, reproducibility, rng_state, seed, sha256
+Missing Patterns: None
 
 Meta:
 - determinism_configs: 5
-- integrity_validation: 27
+- integrity_validation: 31
 - repro_utils: 16
 - seed_management: 25
 
-Patterns Found: deterministic, reproducibility, rng_state, seed, sha256
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
+.codex/cache/maint_vendor_hash_post.json
+.codex/cache/maint_vendor_hash_pre_sync.json
+.codex/cache/vendor_hash_post_purge.json
+.codex/cache/vendor_hash_pre_sync.json
 .codex/validation/file_integrity_compare.json
 _codex_reports/2025-10-06/reproducibility.json
 _codex_reports/2025-10-06/seed_scan.json
 codex_ml/data/checksums.py
 configs/base/deterministic.yaml
 docs/checkpoint_integrity.md
-docs/guides/serving_reproducibility.md
-docs/integrity_and_uris.md
-docs/manifest_integrity.md
-docs/ops/Deterministic_Installs.md
 ```
 ### safeguards_keywords
-Score: 0.6599
+Score: 0.6671
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8410852713178294
-- Tests: 0.28811369509043927
-- Safeguards: 1.0
-- Documentation: 0.13108614232209737
+- Functionality: 1.00
+- Consistency: 0.84
+- Tests: 0.28
+- Safeguards: 1.00
+- Documentation: 0.19
 
-
+Required Patterns: WANDB_MODE, checksum, offline, rng, seed, sha256
 Patterns Found: WANDB_MODE, checksum, offline, rng, seed, sha256
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -474,47 +581,61 @@ Evidence Files (first 10):
 .codex/status/_codex_status_update-2025-08-28.md
 ```
 ### safety-security
-Score: 0.7441
+Score: 0.7385
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8936170212765957
-- Tests: 0.3617021276595745
-- Safeguards: 0.5
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.88
+- Tests: 0.35
+- Safeguards: 0.50
+- Documentation: 1.00
 
-
+Required Patterns: secret, sanitize
 Patterns Found: sanitize, secret
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
 .codex/evidence/phase5_privacy_safety.jsonl
 artifacts/security/safety.txt
 configs/base/safety/policy.yaml
+configs/msp/safety.yaml
 docs/guides/CHECKPOINT_SAFETY.md
 docs/modules/safety.md
 docs/safety.md
 docs/safety/differential_privacy.md
 docs/safety/moderation_adapter.md
 docs/safety/policy_guidance.md
-docs/safety/safety_guide.md
 ```
 ### testing-infrastructure
-Score: 0.9147
+Score: 0.9148
 
 Components:
 - Functionality: 0.75
-- Consistency: 0.9003397508493771
-- Tests: 0.9886749716874292
-- Safeguards: 1.0
-- Documentation: 1.0
+- Consistency: 0.90
+- Tests: 0.99
+- Safeguards: 1.00
+- Documentation: 1.00
+
+Required Patterns: pytest, test_, fixture, marker
+Patterns Found: fixture, pytest, test_
+Missing Patterns: marker
 
 Meta:
 - config_count: 25
 - fixture_count: 27
-- test_count: 867
+- test_count: 871
 
-Patterns Found: fixture, pytest, test_
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -533,14 +654,21 @@ tests/__init__.py
 Score: 0.7966
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8333333333333334
-- Tests: 0.5196078431372549
-- Safeguards: 0.6666666666666666
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.83
+- Tests: 0.52
+- Safeguards: 0.67
+- Documentation: 1.00
 
-
+Required Patterns: tokenizer, encode
 Patterns Found: encode, tokenizer
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -559,14 +687,21 @@ docs/guides/tokenization.md
 Score: 0.8351
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.8656716417910448
-- Tests: 0.44776119402985076
-- Safeguards: 1.0
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.87
+- Tests: 0.45
+- Safeguards: 1.00
+- Documentation: 1.00
 
-
+Required Patterns: train, epoch
 Patterns Found: epoch, train
+Missing Patterns: None
+
+
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -585,16 +720,23 @@ configs/training/base.yaml
 Score: 0.8450
 
 Components:
-- Functionality: 1.0
-- Consistency: 0.6
-- Tests: 1.0
-- Safeguards: 0.5
-- Documentation: 1.0
+- Functionality: 1.00
+- Consistency: 0.60
+- Tests: 1.00
+- Safeguards: 0.50
+- Documentation: 1.00
+
+Required Patterns: UnifiedTrainingConfig, run_unified_training
+Patterns Found: UnifiedTrainingConfig, run_unified_training
+Missing Patterns: None
 
 Meta:
 - category: training
 
-Patterns Found: UnifiedTrainingConfig, run_unified_training
+Remediation Links:
+- Components: docs/remediation/components.md
+- Detectors: docs/remediation/detectors.md
+- Policy: docs/remediation/policy.md
 
 Evidence Files (first 10):
 ```
@@ -612,6 +754,6 @@ tools/bench_unified_training.py
 | generation_strategy | Weighted component aggregation |
 | scoring_components | functionality, consistency, tests, safeguards, documentation |
 
-Embedded Template SHA256: 7202b060fae306041a38f55fb49bd172b4fd1a57988e590c3a8fe9050dd5d536
+Embedded Template SHA256: 2dba6b3a850e97cb21fa75127a11d3aeaa57d5da89a51005d119effb4c0dff4b
 
 *End of Matrix*

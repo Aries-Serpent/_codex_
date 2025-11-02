@@ -1,4 +1,4 @@
-# Copilot Space Audit Workflow Makefile (v1.1.0)
+# Copilot Space Audit Workflow Makefile (v1.2.0)
 
 SPACE_PY ?= python
 RUNNER ?= scripts/space_traversal/audit_runner.py
@@ -23,6 +23,10 @@ space-explain:
 space-diff:
 	@if [ -z "$(old)" ] || [ -z "$(new)" ]; then echo "Usage: make space-diff old=<old> new=<new>"; exit 2; fi
 	$(SPACE_PY) $(RUNNER) diff --old $(old) --new $(new)
+
+.PHONY: space-validate
+space-validate:
+	$(SPACE_PY) $(RUNNER) validate
 
 .PHONY: space-status
 space-status:

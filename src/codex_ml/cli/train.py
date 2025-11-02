@@ -18,6 +18,7 @@ from codex_ml.codex_structured_logging import (
 )
 from codex_ml.plugins import load_entry_point_plugins
 from codex_ml.train_loop import run_training
+from codex_ml.utils import repro
 from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
@@ -289,7 +290,29 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     reproducibility_cfg = _cfg_to_dict(cfg.get("reproducibility"))
     deterministic_cudnn = bool(reproducibility_cfg.get("cudnn_deterministic", False))
 
-    seed = cfg.get("seed", None)
+    seed_override = cfg.get("seed", None)
+    if seed_override is None:
+        seed_override = reproducibility_cfg.get("seed")
+    seed: int | None
+    try:
+        seed = int(seed_override) if seed_override is not None else None
+    except (TypeError, ValueError):
+        LOGGER.warning("Ignoring non-integer seed override: %s", seed_override)
+        seed = None
+    if seed is None:
+        seed = 0
+    try:
+        repro.set_seed(seed)
+    except Exception as exc:  # pragma: no cover - defensive log path
+        LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)
+    if isinstance(cfg, DictConfig):
+        cfg.seed = seed
+        try:
+            cfg.reproducibility["seed"] = seed  # type: ignore[index]
+        except Exception:
+            pass
+    reproducibility_cfg.setdefault("seed", seed)
+
     grad_accum = cfg.get("grad_accum", 1)
     steps_per_epoch = cfg.get("steps_per_epoch", 4)
     epochs = cfg.get("epochs", 1)

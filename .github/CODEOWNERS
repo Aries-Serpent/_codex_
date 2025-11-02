@@ -1,20 +1,233 @@
-# Default owners
+# =============================================================================
+# CODEOWNERS - Route reviews and scale quality gates
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# =============================================================================
+
+# Default owners for everything not explicitly covered
 * @Aries-Serpent/owners
 
-# ML core
-src/codex_ml/** @Aries-Serpent/ml-core
+# =============================================================================
+# Core Source Code
+# =============================================================================
 
-# Docs
-docs/** @Aries-Serpent/docs
+# ML training, evaluation, and plugin framework
+/src/codex_ml/** @Aries-Serpent/ml-core
 
+# Core codex modules and utilities
+/src/codex/** @Aries-Serpent/owners
+
+# CLI and command-line tools
+/src/codex/cli.py @Aries-Serpent/owners
+/cli/** @Aries-Serpent/owners
+
+# Logging and telemetry infrastructure
+/src/codex/logging/** @Aries-Serpent/owners @Aries-Serpent/ops-team
+
+# =============================================================================
+# Services & APIs
+# =============================================================================
+
+# Microservices and API endpoints
+/services/** @Aries-Serpent/owners @Aries-Serpent/ops-team
+
+# Interfaces and protocols
+/interfaces/** @Aries-Serpent/owners
+
+# MCP (Model Context Protocol) integration
+/mcp/** @Aries-Serpent/owners
+
+# =============================================================================
+# Configuration & Schemas
+# =============================================================================
+
+# Hydra configuration management
+/config/** @Aries-Serpent/owners
+/configs/** @Aries-Serpent/owners
+/hydra/** @Aries-Serpent/owners
+/omegaconf/** @Aries-Serpent/owners
+
+# Data schemas and validation
+/schemas/** @Aries-Serpent/owners
+
+# Great Expectations data quality configs
+/great_expectations/** @Aries-Serpent/ml-core
+
+# =============================================================================
+# Documentation
+# =============================================================================
+
+# All documentation
+/docs/** @Aries-Serpent/docs-team
+
+# Architecture documentation and ADRs
+/docs/ARCHITECTURE.md @Aries-Serpent/arch-team @Aries-Serpent/docs-team
+/docs/arch/** @Aries-Serpent/arch-team @Aries-Serpent/docs-team
+/docs/architecture/** @Aries-Serpent/arch-team @Aries-Serpent/docs-team
+/docs/decision_records/** @Aries-Serpent/arch-team @Aries-Serpent/docs-team
+
+# Security and policy documentation
+/docs/security/** @Aries-Serpent/owners @Aries-Serpent/docs-team
+/docs/policies/** @Aries-Serpent/owners @Aries-Serpent/docs-team
+
+# API documentation
+/docs/api/** @Aries-Serpent/docs-team
+
+# Prompts and LLM guidance
+/docs/prompts/** @Aries-Serpent/docs-team
+/PROMPTS/** @Aries-Serpent/docs-team
+
+# =============================================================================
+# Scripts & Automation
+# =============================================================================
+
+# Build and deployment scripts
+/scripts/** @Aries-Serpent/ops-team
+
+# Operational scripts
+/ops/** @Aries-Serpent/ops-team
+
+# Tools and utilities
+/tools/** @Aries-Serpent/owners
+
+# =============================================================================
 # Tests
-tests/** @Aries-Serpent/owners
+# =============================================================================
 
-# --- archive & hygiene (appended by starter kit) ---
-.github/**             @Aries-Serpent/owners
-.github/CODEOWNERS     @Aries-Serpent/owners
-docs/policies/**       @Aries-Serpent/docs
-docs/arch/**           @Aries-Serpent/docs
-scripts/**             @Aries-Serpent/owners
-.codex/**              @Aries-Serpent/owners
-# --- end appended ---
+# All test files
+/tests/** @Aries-Serpent/owners
+
+# Test configuration
+/conftest.py @Aries-Serpent/owners
+/.coveragerc @Aries-Serpent/owners
+/pytest.ini @Aries-Serpent/owners
+
+# =============================================================================
+# CI/CD & GitHub Configuration
+# =============================================================================
+
+# GitHub configuration and workflows
+/.github/** @Aries-Serpent/ops-team
+
+# This file itself
+/.github/CODEOWNERS @Aries-Serpent/owners
+
+# GitHub Actions workflows
+/.github/workflows/** @Aries-Serpent/ops-team
+
+# Issue and PR templates
+/.github/ISSUE_TEMPLATE/** @Aries-Serpent/owners
+/.github/PULL_REQUEST_TEMPLATE/** @Aries-Serpent/owners
+/.github/pull_request_template.md @Aries-Serpent/owners
+
+# Dependabot configuration
+/.github/dependabot.yml @Aries-Serpent/ops-team
+
+# Copilot and agent instructions
+/.github/copilot-instructions.md @Aries-Serpent/owners
+/.github/agents/** @Aries-Serpent/owners
+
+# =============================================================================
+# Docker & Deployment
+# =============================================================================
+
+# Docker configurations
+/Dockerfile* @Aries-Serpent/ops-team
+/docker-compose*.yml @Aries-Serpent/ops-team
+/docker/** @Aries-Serpent/ops-team
+/.dockerignore @Aries-Serpent/ops-team
+
+# Deployment manifests
+/deploy/** @Aries-Serpent/ops-team
+/manifests/** @Aries-Serpent/ops-team
+
+# =============================================================================
+# Project Configuration
+# =============================================================================
+
+# Python project configuration
+/pyproject.toml @Aries-Serpent/owners
+/setup.py @Aries-Serpent/owners
+/setup.cfg @Aries-Serpent/owners
+/MANIFEST.in @Aries-Serpent/owners
+
+# Requirements files
+/requirements*.txt @Aries-Serpent/owners
+/uv.lock @Aries-Serpent/owners
+
+# Build system
+/noxfile.py @Aries-Serpent/owners
+/Makefile @Aries-Serpent/ops-team
+/space.mk @Aries-Serpent/ops-team
+
+# =============================================================================
+# Linting & Code Quality
+# =============================================================================
+
+# Pre-commit configuration
+/.pre-commit-config.yaml @Aries-Serpent/owners
+/.pre-commit-*.yaml @Aries-Serpent/owners
+
+# Linter configurations
+/.ruff.toml @Aries-Serpent/owners
+/.bandit.yml @Aries-Serpent/owners
+/bandit.yaml @Aries-Serpent/owners
+/.mypy-baseline.txt @Aries-Serpent/owners
+/.importlinter @Aries-Serpent/owners
+
+# Commit linting
+/commitlint.config.mjs @Aries-Serpent/owners
+
+# Security baselines
+/.secrets.baseline @Aries-Serpent/owners
+
+# =============================================================================
+# Data & Models
+# =============================================================================
+
+# Data directories
+/data/** @Aries-Serpent/ml-core
+/datasets/** @Aries-Serpent/ml-core
+
+# Model artifacts
+/models/** @Aries-Serpent/ml-core
+/checkpoints/** @Aries-Serpent/ml-core
+
+# Training configurations
+/training/** @Aries-Serpent/ml-core
+/experiments/** @Aries-Serpent/ml-core
+
+# =============================================================================
+# Community Health Files
+# =============================================================================
+
+# Security policy
+/SECURITY.md @Aries-Serpent/owners
+
+# Contribution guidelines
+/CONTRIBUTING.md @Aries-Serpent/owners @Aries-Serpent/docs-team
+/NEWCOMER_GUIDE.md @Aries-Serpent/docs-team
+
+# License files
+/LICENSE @Aries-Serpent/owners
+/LICENSES/** @Aries-Serpent/owners
+
+# Root documentation
+/README.md @Aries-Serpent/docs-team
+/CHANGELOG.md @Aries-Serpent/docs-team
+
+# ChatGPT/Copilot guidance
+/CHATGPT_CONTINUATION.md @Aries-Serpent/docs-team
+/PROMPTS/CHATGPT_SEARCH_RECIPES.md @Aries-Serpent/docs-team
+
+# =============================================================================
+# Internal Codex Metadata
+# =============================================================================
+
+# Codex session and runtime metadata
+/.codex/** @Aries-Serpent/owners
+
+# Database files
+/db/** @Aries-Serpent/owners
+
+# Logs
+/logs/** @Aries-Serpent/owners

@@ -27,6 +27,7 @@ def _file_sha256(path: Path) -> str:
 def _split_records(
     records: List[Dict[str, str]], ratios: Tuple[float, float, float], seed: int
 ) -> Dict[str, List[Dict[str, str]]]:
+    """Split records using random shuffling with given ratios and seed."""
     total = sum(ratios)
     if total <= 0:
         raise ValueError("Split ratios must be positive")

@@ -185,3 +185,9 @@ config/artifacts/
 artifacts/emb/
 *.faiss
 *.index
+
+# Capability audit runtime artifacts (uploaded by CI)
+audit_artifacts/*.json
+!audit_artifacts/README.md
+reports/capability_matrix_*.md
+audit_run_manifest.json
