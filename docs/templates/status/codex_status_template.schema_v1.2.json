@@ -16,7 +16,11 @@
   "properties": {
     "metadata": {
       "type": "object",
-      "required": ["title", "timestamp_utc", "template_version"],
+      "required": [
+        "title",
+        "timestamp_utc",
+        "template_version"
+      ],
       "properties": {
         "title": { 
           "type": "string", 
@@ -32,9 +36,9 @@
           "type": "string",
           "description": "Semantic version of this specific report (optional)"
         },
-        "template_version": { 
-          "type": "string", 
-          "const": "v1.2",
+        "template_version": {
+          "type": "string",
+          "enum": ["v1.1", "v1.2"],
           "description": "Template schema version used to generate this report"
         },
         "authors": { 

@@ -15,11 +15,18 @@
   "properties": {
     "metadata": {
       "type": "object",
-      "required": ["title", "timestamp_utc", "template_version"],
+      "required": [
+        "title",
+        "timestamp_utc",
+        "template_version"
+      ],
       "properties": {
         "title": { "type": "string", "pattern": "^📍 `_codex_` : Status Update .+$" },
         "timestamp_utc": { "type": "string", "format": "date-time" },
-        "report_version": { "type": "string" },
+        "report_version": {
+          "type": "string",
+          "description": "Semantic version of the individual report (optional)"
+        },
         "template_version": { "type": "string", "const": "v1.1" },
         "authors": { "type": "array", "items": { "type": "string" } },
         "reviewers": { "type": "array", "items": { "type": "string" } },

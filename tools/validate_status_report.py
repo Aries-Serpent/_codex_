@@ -16,6 +16,8 @@ import re
 import sys
 from pathlib import Path
 
+SUPPORTED_TEMPLATE_VERSIONS = {"v1.1", "v1.2"}
+
 
 def check_required_sections(content: str) -> tuple[list[str], list[str]]:
     """Check if all required sections are present in the report."""
@@ -68,8 +70,8 @@ def check_title_format(content: str, is_template: bool = False) -> bool:
     return False
 
 
-def check_template_version(content: str) -> str | None:
-    """Extract and validate template version."""
+def check_template_version(content: str) -> tuple[str | None, bool]:
+    """Extract the template version and indicate whether it is supported."""
 
     version_patterns = [
         r"Template Version Used:\s*(v\d+(?:\.\d+)*)",
@@ -79,9 +81,10 @@ def check_template_version(content: str) -> str | None:
     for pattern in version_patterns:
         match = re.search(pattern, content)
         if match:
-            return match.group(1)
+            version = match.group(1)
+            return version, version in SUPPORTED_TEMPLATE_VERSIONS
 
-    return None
+    return None, False
 
 
 def validate_report(report_path: Path) -> int:
@@ -104,9 +107,11 @@ def validate_report(report_path: Path) -> int:
         print("✗ Title format incorrect (expected: 📍 `_codex_` : Status Update <date>)")
     
     # Check template version
-    version = check_template_version(content)
-    if version:
+    version, is_supported = check_template_version(content)
+    if version and is_supported:
         print(f"✓ Template version: {version}")
+    elif version and not is_supported:
+        print(f"⚠ Template version detected but not in supported set: {version}")
     else:
         print("✗ Template version not found or incorrect")
     
