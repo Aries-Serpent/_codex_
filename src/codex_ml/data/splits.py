@@ -64,10 +64,22 @@ class SplitDistribution(dict):
         return {split: self[split] / total for split in SPLITS}
 
 
-def train_val_test_split(*args, **kwargs):
+def train_val_test_split(
+    dataset,
+    val_frac: float = 0.1,
+    test_frac: float = 0.1,
+    seed: int = 0,
+    **kwargs,
+):
     """Backward-compatible shim for legacy callers."""
 
-    return _train_val_test_split(*args, **kwargs)
+    return _train_val_test_split(
+        dataset,
+        val_frac=val_frac,
+        test_frac=test_frac,
+        seed=seed,
+        **kwargs,
+    )
 
 
 __docformat__ = "restructuredtext"
