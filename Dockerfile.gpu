@@ -30,7 +30,7 @@ COPY . .
 
 RUN python -m build --wheel --no-isolation --outdir /tmp/dist
 
-FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04 AS runtime
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 AS runtime
 
 ARG VERSION
 ARG VCS_REF
