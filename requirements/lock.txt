@@ -793,7 +793,7 @@ protobuf==6.32.1
     #   ray
     #   tensorboard
     #   wandb
-psutil==7.0.0
+psutil==7.1.2
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
