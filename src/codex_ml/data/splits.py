@@ -59,7 +59,7 @@ class SplitDistribution(dict):
     def total(self) -> int:
         return sum(self.values())
 
-def proportions(self) -> dict[str, float]:
+    def proportions(self) -> dict[str, float]:
         total = self.total() or 1
         return {split: self[split] / total for split in SPLITS}
 
