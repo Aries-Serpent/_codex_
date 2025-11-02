@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 from contextlib import ExitStack
+import hashlib
 import json
 import uuid
 from dataclasses import asdict, is_dataclass
@@ -585,7 +586,12 @@ def run_evaluation(
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
     run_id = _derive_run_id(eval_cfg, dataset_path)
-    run_int = int(run_id, 16)
+    # Convert run_id to integer using hash for arbitrary strings
+    try:
+        run_int = int(run_id, 16)
+    except ValueError:
+        # Fall back to hashing for non-hexadecimal run_ids
+        run_int = int(hashlib.sha256(run_id.encode("utf-8")).hexdigest()[:16], 16)
     seconds_range = 3153600000  # ~100 years in seconds
     seconds = run_int % seconds_range
     micros = (run_int // seconds_range) % 1_000_000
