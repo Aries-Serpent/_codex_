@@ -1,13 +1,13 @@
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 NOXFILE := $(MAKEFILE_DIR)noxfile.py
 
-.PHONY: help setup fmt lint type test cover sast track cli clean sbom
+.PHONY: help setup fmt lint type test cover sast track cli clean sbom env-snapshot
 
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 NOX := nox --noxfile $(MAKEFILE_DIR)noxfile.py
 
 help:
-	@echo "Targets: setup fmt lint type test cover sast track cli clean"
+	@echo "Targets: setup fmt lint type test cover sast track cli clean env-snapshot"
 
 setup:
 	@if [ ! -f requirements/lock.txt ]; then \
@@ -53,6 +53,10 @@ sbom:
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
+
+env-snapshot:
+	@mkdir -p artifacts
+	python scripts/env/export_env_json.py artifacts/env_snapshot.json
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \
