@@ -12,6 +12,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -69,10 +70,17 @@ def check_title_format(content: str, is_template: bool = False) -> bool:
 
 def check_template_version(content: str) -> str | None:
     """Extract and validate template version."""
-    if "Template: v1.1" in content:
-        return "v1.1"
-    elif "Template Version Used: v1.1" in content:
-        return "v1.1"
+
+    version_patterns = [
+        r"Template Version Used:\s*(v\d+(?:\.\d+)*)",
+        r"Template:\s*(v\d+(?:\.\d+)*)",
+    ]
+
+    for pattern in version_patterns:
+        match = re.search(pattern, content)
+        if match:
+            return match.group(1)
+
     return None
 
 
