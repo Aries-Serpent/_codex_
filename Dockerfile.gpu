@@ -7,7 +7,7 @@ ARG VCS_REF="unknown"
 ARG BUILD_DATE="unknown"
 ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
 
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 
 ARG VERSION
 ARG VCS_REF
