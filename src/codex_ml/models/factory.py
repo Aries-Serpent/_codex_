@@ -137,4 +137,45 @@ def create_model(
     return model
 
 
-__all__ = ["create_model", "ENV_ENABLE_PEFT", "LoraBuildCfg"]
+class _MockModel:
+    """Minimal model stub for smoke testing dtype/device resolution."""
+    
+    def __init__(self, dtype: Any, device: Any) -> None:
+        self.dtype = dtype
+        self.device = device
+
+
+def load_model(config: Optional[Mapping[str, Any]] = None) -> _MockModel:
+    """Simplified model loader for smoke testing (validates dtype/device handling).
+    
+    This is a minimal stub that validates dtype and device resolution without
+    requiring an actual model builder. Used primarily for CI/smoke tests.
+    
+    Parameters
+    ----------
+    config : Optional[Mapping[str, Any]]
+        Configuration mapping that may contain 'dtype' and 'device' keys.
+        - 'dtype': string like 'float32', 'fp16', 'bfloat16' or torch.dtype
+        - 'device': string like 'cpu', 'cuda', 'auto' or torch.device
+    
+    Returns
+    -------
+    _MockModel
+        A mock model object with resolved dtype and device attributes.
+    """
+    if config is None:
+        config = {}
+    
+    resolved_dtype = _resolve_dtype(config.get("dtype"))
+    resolved_device = _resolve_device(config.get("device"))
+    
+    logger.debug(
+        "load_model smoke test: dtype=%s, device=%s", 
+        resolved_dtype, 
+        resolved_device
+    )
+    
+    return _MockModel(resolved_dtype, resolved_device)
+
+
+__all__ = ["create_model", "load_model", "_MockModel", "ENV_ENABLE_PEFT", "LoraBuildCfg"]
