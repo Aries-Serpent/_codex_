@@ -1176,7 +1176,7 @@ typer==0.16.1
     #   codex-ml (pyproject.toml)
     #   evidently
     #   fastapi-cli
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   aiosignal
     #   alembic
