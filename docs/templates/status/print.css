@@ -1,0 +1,37 @@
+/* Print-specific styles for status HTML reports */
+@media print {
+  body {
+    margin: 0;
+    padding: 1cm;
+    background: white;
+    color: black;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  table {
+    page-break-inside: avoid;
+  }
+  
+  .card {
+    border: 1px solid #ccc;
+    background: white;
+  }
+  
+  a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dataset_manifest",
+  "type": "object",
+  "required": ["name", "version", "splits", "checksums", "features"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Dataset name"
+    },
+    "version": {
+      "type": "string",
+      "description": "Dataset version (semver)"
+    },
+    "splits": {
+      "type": "object",
+      "description": "Split sizes",
+      "properties": {
+        "train": { "type": "integer", "minimum": 0 },
+        "val": { "type": "integer", "minimum": 0 },
+        "test": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "checksums": {
+      "type": "array",
+      "description": "File checksums for integrity",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "description": "Feature schema",
+      "items": {
+        "type": "object",
+        "required": ["name", "dtype"],
+        "properties": {
+          "name": { "type": "string" },
+          "dtype": { "type": "string", "enum": ["string", "int", "float", "bool"] },
+          "nullable": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

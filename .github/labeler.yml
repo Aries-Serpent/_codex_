@@ -1,0 +1,17 @@
+status:
+- changed-files:
+  - any-glob-to-any-file:
+    - "docs/templates/status/**"
+    - "docs/validation/**"
+    - "tools/**"
+    - "scripts/**"
+security:
+- changed-files:
+  - any-glob-to-any-file:
+    - "src/security/**"
+    - "tests/security/**"
+data:
+- changed-files:
+  - any-glob-to-any-file:
+    - "data/**"
+    - "configs/schemas/dataset_manifest.schema.json"
