@@ -7,6 +7,7 @@ useful sessions are:
 nox -s lint typecheck tests_min        # fast checks
 nox -s tests                           # full unit suite with coverage
 nox -s perf_smoke                      # quick performance sentinel
+nox -s model-smoke                     # instantiate a CPU model for dtype/device coverage
 ```
 > **Important:** Run `pip install -e '.[test]'` (or `uv sync --extra test`) before invoking
 > `nox -s tests` so the Hydra `hydra.extra` pytest plugin is available in offline

@@ -11,11 +11,14 @@ Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 - JSON/text outputs: stdout only for machine-readable output.
 - stderr: reserved for warnings/errors; must remain empty in JSON mode.
 - --dry-run: validates configuration without executing heavy workloads.
+- --metrics-sink: comma-separated sinks (choices: ndjson,csv). Defaults to `ndjson`.
 - Environment override: CODEX_EVAL_ENTRY to switch dispatcher target.
 
 ## Artifacts
-- NDJSON: .codex/metrics.ndjson
-- CSV summary: outputs/<run>/summary.csv
+- NDJSON metrics log: `<output>/metrics.ndjson` (default sink)
+- CSV metrics log: `<output>/metrics.csv` (when `--metrics-sink` includes `csv`)
+- Summary JSON: `<output>/summary.json`
+- NDJSON records: `<output>/records.ndjson`
 - Errors: .codex/errors.ndjson (on failure with reason codes)
 
 ## Quick Checks

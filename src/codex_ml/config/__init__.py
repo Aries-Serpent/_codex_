@@ -409,7 +409,8 @@ class EvaluationConfig:
     report_filename: str = "summary.json"
     ndjson_filename: str = "records.ndjson"
     metrics_filename: str = "metrics.ndjson"
-    metrics_sink: str = "none"
+    metrics_csv_filename: str = "metrics.csv"
+    metrics_sink: str = "ndjson"
     metrics_sink_path: str | None = None
     model_name: str | None = None
     dataset_name: str | None = None
@@ -454,6 +455,45 @@ class EvaluationConfig:
                 "must end with .ndjson",
                 self.metrics_filename,
             )
+        if not self.metrics_csv_filename.endswith(".csv"):
+            raise ConfigError(
+                f"{path}.metrics_csv_filename",
+                "must end with .csv",
+                self.metrics_csv_filename,
+            )
+        allowed_sinks = {"ndjson", "csv"}
+        if isinstance(self.metrics_sink, str):
+            tokens = [
+                token.strip().lower()
+                for token in self.metrics_sink.split(",")
+                if token.strip()
+            ]
+        elif isinstance(self.metrics_sink, Sequence):
+            tokens = [
+                str(token).strip().lower()
+                for token in self.metrics_sink
+                if str(token).strip()
+            ]
+        else:
+            raise ConfigError(
+                f"{path}.metrics_sink",
+                "must be a comma-separated string or sequence",
+                self.metrics_sink,
+            )
+        if not tokens:
+            tokens = ["ndjson"]
+        invalid = [token for token in tokens if token not in allowed_sinks]
+        if invalid:
+            raise ConfigError(
+                f"{path}.metrics_sink",
+                f"unsupported sink(s): {sorted(set(invalid))}",
+                self.metrics_sink,
+            )
+        seen: list[str] = []
+        for token in tokens:
+            if token not in seen:
+                seen.append(token)
+        self.metrics_sink = ",".join(seen)
         sink_normalised = (self.metrics_sink or "none").lower()
         allowed_sinks = {"none", "csv", "ndjson"}
         if sink_normalised not in allowed_sinks:

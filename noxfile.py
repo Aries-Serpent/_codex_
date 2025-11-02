@@ -172,3 +172,17 @@ def precommit(session: nox.Session) -> None:
     """Run all pre-commit hooks locally (manual)."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(name="model-smoke")
+def model_smoke(session: nox.Session) -> None:
+    """Instantiate the default model on CPU to catch dtype/device regressions."""
+    session.install("-r", "requirements-dev.txt")
+    session.run(
+        "python",
+        "-c",
+        (
+            "from codex_ml.models.factory import load_model; "
+            "load_model({'device': 'cpu', 'dtype': 'float32'})"
+        ),
+    )
