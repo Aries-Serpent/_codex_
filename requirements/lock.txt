@@ -62,7 +62,7 @@ asyncssh==2.21.1
     # via scmrepo
 atpublic==6.0.2
     # via flufl-lock
-attrs==25.3.0
+attrs==25.4.0
     # via
     #   aiohttp
     #   dvc-data
