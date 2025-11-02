@@ -1,44 +1,48 @@
-#!/usr/bin/env python3
-"""
-Capture environment snapshot for status reports.
-
-Output:
-  env_snapshot.json with python, os, pip_freeze, etc.
-
-Usage:
-  python tools/env_snapshot.py
-"""
+"""Environment snapshot CLI used by status automation and tests."""
 from __future__ import annotations
 
+import argparse
 import json
-import platform
-import subprocess
-import sys
-from datetime import datetime, timezone
+import os
 from pathlib import Path
+from typing import Any, Sequence
+
+from codex_ml.utils import environment_summary
+
+DEFAULT_OUTPUT = Path("env_snapshot.json")
 
 
-def main(argv=None) -> int:
-    snapshot = {
-        "captured_utc": datetime.now(timezone.utc).isoformat(),
-        "python": sys.version.split()[0],
-        "os": platform.platform(),
-        "hostname": platform.node(),
-        "pip_freeze": [],
-    }
-
-    try:
-        result = subprocess.run([sys.executable, "-m", "pip", "freeze"], capture_output=True, text=True, timeout=10)
-        if result.returncode == 0:
-            snapshot["pip_freeze"] = [line.strip() for line in result.stdout.splitlines() if line.strip()]
-    except Exception:
-        pass
-
-    out = Path("env_snapshot.json")
-    out.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
-    print(f"[OK] Wrote {out}")
-    return 0
+def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Capture a reproducible environment snapshot.")
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=DEFAULT_OUTPUT,
+        help="File path to write the JSON snapshot (default: env_snapshot.json).",
+    )
+    return parser.parse_args(list(argv) if argv is not None else None)
 
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+def capture_environment() -> dict[str, Any]:
+    """Collect environment details, including variables, for serialization."""
+
+    info = environment_summary()
+    info["env"] = dict(os.environ)
+    return info
+
+
+def write_snapshot(out_path: Path, data: dict[str, Any]) -> None:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(data, indent=2, sort_keys=True))
+
+
+def main(argv: Sequence[str] | None = None) -> Path:
+    args = _parse_args(argv)
+    snapshot = capture_environment()
+    write_snapshot(args.out, snapshot)
+    print(f"Environment snapshot written to {args.out}")
+    return args.out
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI entry point
+    main()
