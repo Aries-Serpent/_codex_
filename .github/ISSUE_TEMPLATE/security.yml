@@ -1,0 +1,84 @@
+name: 🔒 Security Vulnerability
+description: Report a security vulnerability (PRIVATE - do not use for non-security issues)
+title: "[Security]: "
+labels: ["security", "needs-triage"]
+assignees:
+  - Aries-Serpent/owners
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠️ Security Vulnerability Report
+
+        **IMPORTANT**: If this is a sensitive security vulnerability, please **DO NOT** open a public issue.
+        Instead, please report it privately via:
+        - GitHub Security Advisories (preferred): Navigate to Security tab → Report a vulnerability
+        - Email: security@aries-serpent.dev
+
+        Only use this template for security-related feature requests or non-sensitive security improvements.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirm This is Not a Sensitive Vulnerability
+      description: Please confirm before proceeding
+      options:
+        - label: This is NOT a sensitive security vulnerability (e.g., RCE, data breach, auth bypass)
+          required: true
+        - label: This is a security improvement suggestion or low-risk security issue
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Security Issue Type
+      options:
+        - Security Enhancement Request
+        - Dependency Vulnerability (non-critical)
+        - Security Documentation Gap
+        - Security Testing Improvement
+        - Other Security-Related
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the security concern or improvement
+      placeholder: Describe the security issue or enhancement...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential Impact
+      description: What is the potential security impact?
+      placeholder: If exploited, this could lead to...
+
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected Components
+      description: Which parts of _codex_ are affected?
+      placeholder: List affected files, modules, or components...
+
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended Action
+      description: What should be done to address this?
+      placeholder: Suggested fixes or improvements...
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ### For Sensitive Vulnerabilities
+
+        Please use our private reporting channels:
+        - **GitHub Security Advisories**: Repository → Security → Report a vulnerability
+        - **Email**: security@aries-serpent.dev
+        - See [SECURITY.md](../SECURITY.md) for full details
