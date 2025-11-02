@@ -1,0 +1,16 @@
+# Local development Dockerfile with digest-pinned base image.
+# Update <PINNED_DIGEST> with the desired digest after running
+# `docker pull python:3.11-slim` locally and copying the reported SHA256.
+FROM python@sha256:<PINNED_DIGEST>
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /workspace
+COPY ./ /workspace
+
+RUN python -m pip install --upgrade pip \
+    && python -m pip install -r requirements.txt
+
+CMD ["python", "-c", "print('codex-local-ok')"]
