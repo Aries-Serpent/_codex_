@@ -102,7 +102,6 @@ def enable_determinism(
         except Exception:  # pragma: no cover - depends on build
             logger.debug("torch.set_num_threads unavailable", exc_info=True)
 
-    if deterministic:
-        set_cudnn_deterministic(True, benchmark=False)
+    set_cudnn_deterministic(bool(deterministic), benchmark=not deterministic)
 
     return state
