@@ -28,7 +28,7 @@ Title format for each report (must use exactly):
 ## 0. Report Metadata
 - **Report Title**: 📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>
 - **Report Timestamp (UTC)**: <ISO8601>
-- **Report Version**: v1.0 (report's own semver, optional)
+- **Report Version**: v1.0 (report’s own semver, optional)
 - **Template Version Used**: v1.2
 - **Authors/Reviewers**:
   - **Author**: <name/handle>
@@ -332,11 +332,11 @@ data:
   - **Training throughput/epoch time**: <values>
   - **Inference latency (p50/p95)**: <values>
   - **Memory/VRAM usage**: <values>
-  - **Notes**: <tuning or regressions>
+  - **Notes**: <tuning or regressions)
 
 - **Capability Auto‑Discovery (optional automation)**:
   - **New files/dirs/modules detected**: <list>
-  - **Suggested CAP‑IDs to add**: <list with rationale>
+  - **Suggested CAP‑IDs to add**: <list with rationale)
 
 - **Schema Validation Automation (optional)**:
   - **Configs auto-validated**: <list of paths>
