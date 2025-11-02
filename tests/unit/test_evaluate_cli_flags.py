@@ -103,3 +103,50 @@ def test_metrics_only_and_run_id(tmp_path, monkeypatch) -> None:
     assert rec["run_id"] == "explicit-123"
     assert rec["metrics"]["acc"] == 0.88
     assert "timestamp" in rec
+
+
+def test_metrics_sink_flags(tmp_path, monkeypatch) -> None:
+    _stub_settings()
+    _stub_runner()
+
+    import codex_ml.cli.codex_cli as cli
+    from codex_ml.cli.codex_cli import codex
+
+    class _EvalCfg:
+        def __init__(self) -> None:
+            self.dataset_path = "data/val.jsonl"
+            self.output_dir = ".codex/eval"
+            self.metrics_sink = "none"
+            self.metrics_sink_path: str | None = None
+
+    class _DataCfg:
+        pass
+
+    eval_cfg = _EvalCfg()
+
+    class _Cfg:
+        evaluation = eval_cfg
+        data = _DataCfg()
+
+    def fake_load(config, overrides):
+        return _Cfg(), {"ok": True}
+
+    monkeypatch.setattr(cli, "load_app_config", fake_load, raising=True)
+
+    metrics_path = tmp_path / "secondary.csv"
+    runner = CliRunner()
+    res = runner.invoke(
+        codex,
+        [
+            "evaluate",
+            "--config",
+            "x.yaml",
+            "--metrics-sink",
+            "csv",
+            "--metrics-path",
+            str(metrics_path),
+        ],
+    )
+    assert res.exit_code == 0, res.output
+    assert eval_cfg.metrics_sink == "csv"
+    assert eval_cfg.metrics_sink_path == str(metrics_path)

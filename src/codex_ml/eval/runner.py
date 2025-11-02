@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+from contextlib import ExitStack
 import json
 import uuid
 from dataclasses import asdict, is_dataclass
@@ -16,6 +17,7 @@ from codex_ml.eval import metrics
 from codex_ml.metrics.registry import append_error_entry
 from codex_ml.metrics.registry import get as get_registered_metric
 from codex_ml.metrics.registry import list_metrics
+from codex_ml.metrics.sinks import create_sink
 from codex_ml.registry.base import RegistryNotFoundError
 from codex_ml.tracking.writers import NdjsonWriter
 from codex_ml.utils.provenance import export_environment
@@ -537,6 +539,45 @@ def run_evaluation(
     metrics_csv_filename = getattr(eval_cfg, "metrics_csv_filename", "metrics.csv")
     metrics_csv_path = output_dir / metrics_csv_filename
     metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
+
+    sink_kind = str(getattr(eval_cfg, "metrics_sink", "none") or "none").lower()
+    sink_target_path: Path | None = None
+    sink_stack = ExitStack()
+    sink = create_sink("none")
+    try:
+        if sink_kind not in {"none", "csv", "ndjson"}:
+            raise EvaluationError(f"Unsupported metrics sink: {sink_kind}")
+        if sink_kind != "none":
+            sink_path_value = getattr(eval_cfg, "metrics_sink_path", None)
+            if not sink_path_value:
+                raise EvaluationError(
+                    "metrics_sink_path must be set when metrics_sink is not 'none'"
+                )
+            sink_target_path = Path(sink_path_value)
+            sink_target_path.parent.mkdir(parents=True, exist_ok=True)
+            newline = "" if sink_kind == "csv" else None
+            sink_fp = sink_stack.enter_context(
+                sink_target_path.open("w", encoding="utf-8", newline=newline)
+            )
+            fieldnames = [
+                "run_id",
+                "metric",
+                "value",
+                "split",
+                "dataset",
+                "dataset_path",
+                "num_records",
+                "step",
+                "timestamp",
+            ]
+            sink = create_sink(
+                sink_kind,
+                sink_fp,
+                fieldnames=fieldnames if sink_kind == "csv" else None,
+            )
+    except Exception as exc:
+        sink_stack.close()
+        raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
     run_id = _derive_run_id(eval_cfg, dataset_path)
     run_int = int(run_id, 16)

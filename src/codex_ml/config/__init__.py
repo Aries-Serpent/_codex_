@@ -411,6 +411,7 @@ class EvaluationConfig:
     metrics_filename: str = "metrics.ndjson"
     metrics_csv_filename: str = "metrics.csv"
     metrics_sink: str = "ndjson"
+    metrics_sink_path: str | None = None
     model_name: str | None = None
     dataset_name: str | None = None
     seed: int | None = None
@@ -493,6 +494,21 @@ class EvaluationConfig:
             if token not in seen:
                 seen.append(token)
         self.metrics_sink = ",".join(seen)
+        sink_normalised = (self.metrics_sink or "none").lower()
+        allowed_sinks = {"none", "csv", "ndjson"}
+        if sink_normalised not in allowed_sinks:
+            raise ConfigError(
+                f"{path}.metrics_sink",
+                f"must be one of {sorted(allowed_sinks)}",
+                self.metrics_sink,
+            )
+        self.metrics_sink = sink_normalised
+        if sink_normalised != "none" and not self.metrics_sink_path:
+            raise ConfigError(
+                f"{path}.metrics_sink_path",
+                "required when metrics_sink is enabled",
+                self.metrics_sink_path,
+            )
         if not isinstance(self.split, str) or not self.split:
             raise ConfigError(f"{path}.split", "must be a non-empty string", self.split)
         if not isinstance(self.write_dataset_manifest, bool):

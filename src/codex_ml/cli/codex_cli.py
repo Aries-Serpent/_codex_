@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from collections.abc import Sequence
 from datetime import datetime, timezone
@@ -187,12 +188,18 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     default=None,
     help="Optional checkpoint directory or file to resume from.",
 )
+@click.option(
+    "--enable-peft",
+    is_flag=True,
+    help="Enable PEFT/LoRA hooks (requires CODEX_ENABLE_PEFT).",
+)
 def train(
     config: str,
     overrides: tuple[str, ...],
     resume: bool,
     seed: int | None,
     resume_from: str | None,
+    enable_peft: bool,
 ) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
@@ -209,6 +216,17 @@ def train(
         else:
             raw_cfg.seed = seed
         cfg_obj.training.seed = seed
+
+    if enable_peft:
+        os.environ["CODEX_ENABLE_PEFT"] = "1"
+        os.environ["CODEX_ML_ENABLE_PEFT"] = "1"
+        if hasattr(cfg_obj.training, "enable_peft"):
+            cfg_obj.training.enable_peft = True
+        if hasattr(raw_cfg, "training") and hasattr(raw_cfg.training, "enable_peft"):
+            raw_cfg.training.enable_peft = True
+    else:
+        os.environ.pop("CODEX_ENABLE_PEFT", None)
+        os.environ.pop("CODEX_ML_ENABLE_PEFT", None)
 
     training_cfg = getattr(raw_cfg, "training", raw_cfg)
 
@@ -373,6 +391,19 @@ def status_report(run_metadata_dir: Path) -> None:
     default=None,
     help="Optional run identifier to attach to NDJSON records.",
 )
+@click.option(
+    "--metrics-sink",
+    type=click.Choice(["none", "csv", "ndjson"]),
+    default="none",
+    show_default=True,
+    help="Optional secondary metrics sink format.",
+)
+@click.option(
+    "--metrics-path",
+    type=click.Path(dir_okay=False, path_type=str),
+    default=None,
+    help="Path for the secondary metrics sink when enabled.",
+)
 def evaluate(
     config: str,
     overrides: tuple[str, ...],
@@ -381,6 +412,8 @@ def evaluate(
     seed: int | None,
     log_metrics: str | None,
     run_id: str | None,
+    metrics_sink: str,
+    metrics_path: str | None,
 ) -> None:
     from codex_ml.eval.runner import EvaluationError, run_evaluation
 
@@ -393,6 +426,11 @@ def evaluate(
         cfg_obj.evaluation.seed = seed
     if metrics_sink:
         cfg_obj.evaluation.metrics_sink = metrics_sink
+
+    if hasattr(cfg_obj.evaluation, "metrics_sink"):
+        cfg_obj.evaluation.metrics_sink = metrics_sink
+    if metrics_path and hasattr(cfg_obj.evaluation, "metrics_sink_path"):
+        cfg_obj.evaluation.metrics_sink_path = metrics_path
 
     try:
         summary = run_evaluation(cfg_obj.evaluation, data_cfg=cfg_obj.data)
