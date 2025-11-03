@@ -13,6 +13,9 @@ from __future__ import annotations
 import argparse, datetime, os, pathlib, sys
 from typing import List
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
+
 from src.codex_bridge.github_client import list_branches, get_text, code_search
 
 DEFAULT_OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")

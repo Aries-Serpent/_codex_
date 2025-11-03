@@ -20,7 +20,7 @@ config:
 	fi
 	@echo ">> config target completed"
 
-.PHONY: status quick test lint env perf scan deps
+.PHONY: status quick test lint env perf scan deps actions-serve actions-health actions-branches actions-search actions-cli-branches actions-cli-search actions-cli-cite
 
 status:
 python tools/status/codex_status_cli.py
@@ -46,3 +46,28 @@ python tools/security/scan_repo.py
 deps:
 python tools/security/license_audit.py || true
 python tools/security/dep_snapshot.py || true
+
+actions-serve:
+	@echo "[+] Starting local Actions server on :8010"
+	@python tools/actions_server.py
+
+actions-health:
+	@curl -s http://localhost:8010/healthz | jq .
+
+actions-branches:
+	@curl -s "http://localhost:8010/repo/branches?owner=$${CODEX_GH_OWNER:-Aries-Serpent}&repo=$${CODEX_GH_REPO:-_codex_}" | jq .
+
+actions-search:
+	@if [ -z "$$Q" ]; then echo "Usage: make actions-search Q=tokenization"; exit 1; fi
+	@curl -s "http://localhost:8010/repo/search?owner=$${CODEX_GH_OWNER:-Aries-Serpent}&repo=$${CODEX_GH_REPO:-_codex_}&q=$$Q&ref=$${REF:-main}" | jq .
+
+actions-cli-branches:
+	@python tools/actions_cli.py branches
+
+actions-cli-search:
+	@if [ -z "$$Q" ]; then echo "Usage: make actions-cli-search Q=tokenization REF=0D_base_"; exit 1; fi
+	@python tools/actions_cli.py search --q "$$Q" --ref "$${REF:-main}"
+
+actions-cli-cite:
+	@if [ -z "$$PATH" ] || [ -z "$$REF" ] || [ -z "$$NOTE" ]; then echo "Usage: make actions-cli-cite PATH=... REF=... NOTE=..."; exit 1; fi
+	@python tools/actions_cli.py cite --path "$$PATH" --ref "$$REF" --note "$$NOTE"

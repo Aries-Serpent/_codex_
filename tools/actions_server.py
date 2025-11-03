@@ -10,6 +10,12 @@ from urllib.parse import quote
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
 
+try:
+    # Optional: reuse shared client utilities if importable
+    from src.codex_bridge.github_client import most_recent_branch as gh_most_recent_branch
+except Exception:  # pragma: no cover - fallback
+    gh_most_recent_branch = None
+
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 REPO  = os.getenv("CODEX_GH_REPO", "_codex_")
 TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
@@ -106,6 +112,14 @@ class App(BaseHTTPRequestHandler):
             owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
             ref = qs.get("ref", ["main"])[0]; q = qs.get("q", [""])[0]
             return self._ok(code_search(owner, repo, q, ref))
+        if u.path == "/repo/most_recent_branch":
+            owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
+            if gh_most_recent_branch is not None:
+                name = gh_most_recent_branch(owner, repo)
+            else:
+                # Fallback: return default branch only
+                name = "main"
+            return self._ok({"owner": owner, "repo": repo, "branch": name})
         return self._ok({"error": "not found"}, 404)
 
 if __name__ == "__main__":
