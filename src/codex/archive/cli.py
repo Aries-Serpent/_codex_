@@ -487,3 +487,209 @@ def health_check(debug: bool) -> None:
         logging_config=app_config.logging,
         performance_config=app_config.performance,
     )
+
+
+@cli.command("show-standardization-status")
+def show_standardization_status() -> None:
+    """Display archive standardization compliance status."""
+    try:
+        from .standardization import StandardizationManager
+        
+        manager = StandardizationManager(enable_signing=False)
+        report = manager.get_standardization_report()
+        
+        click.echo("\n" + "=" * 60)
+        click.echo("📋 Archive Standardization Status")
+        click.echo("=" * 60)
+        click.echo(f"Standard Version: {report['standard_version']}")
+        click.echo(f"SLSA Level: {report['slsa_level']}")
+        click.echo(f"Signing Enabled: {'✅ Yes' if report['signing_enabled'] else '❌ No'}")
+        click.echo(f"Schema Versions Supported: {', '.join(report['schema_versions_supported'])}")
+        click.echo("\nCompliance:")
+        for standard, status in report['compliance'].items():
+            status_icon = "✅" if status else "❌"
+            click.echo(f"  {status_icon} {standard.upper()}")
+        click.echo()
+    except ImportError:
+        click.echo("❌ Standardization module not available", err=True)
+        sys.exit(1)
+
+
+@cli.command("validate-standardization")
+@click.option(
+    "--check-signatures",
+    is_flag=True,
+    help="Verify all signatures in evidence log",
+)
+@click.option(
+    "--check-schema-version",
+    is_flag=True,
+    help="Verify schema version compliance",
+)
+@click.option(
+    "--repair",
+    is_flag=True,
+    help="Attempt to repair schema issues (v1→v2 migration)",
+)
+def validate_standardization(
+    check_signatures: bool,
+    check_schema_version: bool,
+    repair: bool,
+) -> None:
+    """Validate standardization compliance of archive evidence log."""
+    try:
+        from .standardization import StandardizationManager
+        from .evidence_schema import EvidenceSchemaValidator
+    except ImportError:
+        click.echo("❌ Standardization module not available", err=True)
+        sys.exit(1)
+    
+    manager = StandardizationManager(enable_signing=False)
+    validator = EvidenceSchemaValidator()
+    
+    evidence_file = Path(".codex/evidence/archive_ops.jsonl")
+    if not evidence_file.exists():
+        click.echo("❌ Evidence log not found: .codex/evidence/archive_ops.jsonl", err=True)
+        sys.exit(1)
+    
+    click.echo(f"📋 Validating: {evidence_file}")
+    click.echo(f"   Checks: schema={check_schema_version}, signatures={check_signatures}")
+    
+    issues = []
+    warnings = []
+    total_records = 0
+    valid_records = 0
+    repaired_records = 0
+    
+    # Read evidence log
+    lines = evidence_file.read_text().splitlines()
+    total_records = len(lines)
+    
+    for line_no, line in enumerate(lines, 1):
+        if not line.strip():
+            continue
+            
+        # Parse JSON
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as e:
+            issues.append(f"Line {line_no}: Invalid JSON: {e}")
+            continue
+        
+        # Detect schema version
+        version = validator.auto_detect_version(record)
+        
+        # Validate schema
+        if check_schema_version:
+            try:
+                validator.validate(record, version=version)
+                valid_records += 1
+            except Exception as e:
+                if repair and version == "1.0":
+                    try:
+                        migrated = validator.migrate_to_v2(record)
+                        valid_records += 1
+                        repaired_records += 1
+                    except Exception as repair_err:
+                        issues.append(f"Line {line_no}: Schema error: {e} (repair failed: {repair_err})")
+                else:
+                    issues.append(f"Line {line_no}: Schema error: {e}")
+        
+        # Verify signatures
+        if check_signatures and version == "2.0":
+            metadata = record.get("standardizationMetadata", {})
+            if metadata.get("signature"):
+                try:
+                    sig_valid = manager.verify_standardization(record)
+                    if not sig_valid["valid"]:
+                        warnings.append(f"Line {line_no}: Signature verification failed")
+                except Exception as e:
+                    warnings.append(f"Line {line_no}: Could not verify signature: {e}")
+    
+    # Report results
+    click.echo("\n" + "=" * 60)
+    click.echo(f"📊 Validation Results: {total_records} records scanned")
+    click.echo(f"   ✅ Valid: {valid_records}")
+    click.echo(f"   ⚠️  Warnings: {len(warnings)}")
+    click.echo(f"   ❌ Errors: {len(issues)}")
+    if repair:
+        click.echo(f"   🔧 Repaired: {repaired_records}")
+    
+    if warnings:
+        click.echo("\n⚠️  Warnings:")
+        for w in warnings[:10]:  # Show first 10
+            click.echo(f"   {w}")
+    
+    if issues:
+        click.echo("\n❌ Errors:")
+        for issue in issues[:10]:  # Show first 10
+            click.echo(f"   {issue}")
+        if len(issues) > 10:
+            click.echo(f"   ... and {len(issues) - 10} more")
+        sys.exit(1)
+    else:
+        click.echo("\n✅ All checks passed!")
+
+
+@cli.command("migrate-evidence-to-v2")
+@click.confirmation_option(
+    prompt="⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue?",
+)
+def migrate_evidence_to_v2() -> None:
+    """Migrate evidence log from v1 to v2 schema (optional, non-breaking)."""
+    try:
+        from .evidence_schema import EvidenceSchemaValidator
+    except ImportError:
+        click.echo("❌ Standardization module not available", err=True)
+        sys.exit(1)
+    
+    validator = EvidenceSchemaValidator()
+    evidence_file = Path(".codex/evidence/archive_ops.jsonl")
+    
+    if not evidence_file.exists():
+        click.echo("❌ Evidence log not found", err=True)
+        sys.exit(1)
+    
+    click.echo("🔄 Starting migration v1 → v2...")
+    
+    migrated_records = []
+    errors = []
+    
+    for line_no, line in enumerate(evidence_file.read_text().splitlines(), 1):
+        if not line.strip():
+            continue
+            
+        try:
+            record = json.loads(line)
+            version = validator.auto_detect_version(record)
+            
+            if version == "1.0":
+                migrated = validator.migrate_to_v2(record)
+                migrated_records.append(migrated)
+            else:
+                migrated_records.append(record)  # Already v2
+        except Exception as e:
+            errors.append(f"Line {line_no}: {e}")
+    
+    if errors:
+        click.echo(f"❌ Errors during migration:")
+        for err in errors:
+            click.echo(f"   {err}")
+        sys.exit(1)
+    
+    # Backup original
+    backup_file = evidence_file.with_suffix(".jsonl.backup")
+    evidence_file.rename(backup_file)
+    click.echo(f"📦 Backed up original to: {backup_file}")
+    
+    # Write migrated log
+    with evidence_file.open("w") as f:
+        for record in migrated_records:
+            f.write(json.dumps(record, sort_keys=True) + "\n")
+    
+    v1_count = sum(1 for r in migrated_records if validator.auto_detect_version(r) == "1.0")
+    v2_count = sum(1 for r in migrated_records if validator.auto_detect_version(r) == "2.0")
+    
+    click.echo(f"✅ Migration complete: {len(migrated_records)} records converted")
+    click.echo(f"   v1 records: {v1_count}")
+    click.echo(f"   v2 records: {v2_count}")
