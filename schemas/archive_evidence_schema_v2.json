@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Archive Evidence Record (v2 - Standardized)",
+  "description": "Enhanced evidence record with SLSA L3 standardization metadata",
+  "type": "object",
+  "required": [
+    "ts",
+    "action",
+    "actor",
+    "tombstone",
+    "sha256",
+    "schemaVersion"
+  ],
+  "properties": {
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp (ISO8601 format)"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "ARCHIVE",
+        "RESTORE",
+        "REFERENCE",
+        "PURGE"
+      ],
+      "description": "Archive operation type"
+    },
+    "actor": {
+      "type": "string",
+      "description": "Actor identity (OIDC-bound in v2)"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Repository identifier"
+    },
+    "path": {
+      "type": "string",
+      "description": "File path being archived"
+    },
+    "tombstone": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique tombstone identifier"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Content SHA256 digest"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Uncompressed byte count"
+    },
+    "commit": {
+      "type": "string",
+      "description": "Git commit SHA"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "enum": [
+        "1.0",
+        "2.0"
+      ],
+      "description": "Evidence schema version"
+    },
+    "standardizationMetadata": {
+      "type": "object",
+      "description": "Standardization and compliance metadata (v2+)",
+      "required": [],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "enum": [
+            "2.0"
+          ],
+          "description": "Standardization layer version"
+        },
+        "slsa_level": {
+          "type": "string",
+          "enum": [
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+          ],
+          "description": "SLSA compliance level achieved"
+        },
+        "signature": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Sigstore keyless signature (base64)"
+        },
+        "certificate_chain": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Fulcio certificate chain (PEM format)"
+        },
+        "issuer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "OIDC issuer (e.g., https://token.actions.githubusercontent.com)"
+        },
+        "signed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "When signature was generated"
+        },
+        "in_toto_attestation_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Reference to in-toto link metadata (Phase 2+)"
+        },
+        "merkle_proof": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Merkle tree inclusion proof (Phase 3+)",
+          "properties": {
+            "leaf_index": {
+              "type": "integer"
+            },
+            "tree_root_hash": {
+              "type": "string"
+            },
+            "proof_path": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    },
+    "ref_type": {
+      "type": "string",
+      "description": "Reference type (for REFERENCE actions)"
+    },
+    "ref_value": {
+      "type": "string",
+      "description": "Reference value/target"
+    }
+  },
+  "additionalProperties": true
+}
