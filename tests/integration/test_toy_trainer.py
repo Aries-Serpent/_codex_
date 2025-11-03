@@ -1,6 +1,5 @@
 import subprocess
 import sys
-from pathlib import Path
 
 
 def test_toy_trainer_runs(tmp_path):

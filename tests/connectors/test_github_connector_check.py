@@ -1,7 +1,5 @@
-import os
 import subprocess
 import sys
-from pathlib import Path
 
 
 def test_connector_offline_ok(tmp_path, monkeypatch):

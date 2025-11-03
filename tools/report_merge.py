@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
 def deep_set(root: Dict[str, Any], dotted: str, value: Any) -> None:

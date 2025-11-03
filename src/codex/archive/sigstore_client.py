@@ -104,9 +104,6 @@ class SignstoreClient:
             return True  # No signature required when disabled
 
         try:
-            record_json = json.dumps(record, sort_keys=True)
-            record_bytes = record_json.encode("utf-8")
-
             # In production, this would verify via cosign/Rekor
             # For now, basic validation
             return len(signature) > 0 and signature.startswith("MOCK_SIG_")

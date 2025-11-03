@@ -587,7 +587,7 @@ def validate_standardization(
             except Exception as e:
                 if repair and version == "1.0":
                     try:
-                        migrated = validator.migrate_to_v2(record)
+                        validator.migrate_to_v2(record)
                         valid_records += 1
                         repaired_records += 1
                     except Exception as repair_err:
