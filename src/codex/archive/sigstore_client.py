@@ -14,7 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 
@@ -65,7 +65,7 @@ class SignstoreClient:
                 "cert_chain": None,
                 "issuer": None,
                 "actor": actor,
-                "signed_at": datetime.utcnow().isoformat() + "Z",
+                "signed_at": datetime.now(timezone.utc).isoformat() + "Z",
             }
 
         record_json = json.dumps(record, sort_keys=True)
@@ -80,7 +80,7 @@ class SignstoreClient:
             "cert_chain": [self._mock_certificate(actor)],
             "issuer": "https://token.actions.githubusercontent.com",
             "actor": actor,
-            "signed_at": datetime.utcnow().isoformat() + "Z",
+            "signed_at": datetime.now(timezone.utc).isoformat() + "Z",
         }
 
     def verify_signature(

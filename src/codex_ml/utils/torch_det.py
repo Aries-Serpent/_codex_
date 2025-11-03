@@ -1,0 +1,8 @@
+def seed_worker(worker_id):
+    try:
+        import torch, numpy as np, random
+        worker_seed = torch.initial_seed() % 2**32
+        np.random.seed(worker_seed)
+        random.seed(worker_seed)
+    except Exception:
+        pass
