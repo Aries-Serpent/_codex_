@@ -8,11 +8,9 @@ cryptographic metadata, and compliance tracking.
 
 from __future__ import annotations
 
-import json
 import os
 from dataclasses import dataclass, asdict
-from datetime import datetime
-from pathlib import Path
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from .sigstore_client import SignstoreClient
@@ -76,7 +74,7 @@ class StandardizationManager:
         standardization_meta = StandardizationMetadata(
             schema_version="2.0",
             slsa_level=SLSA_LEVEL,
-            signed_at=datetime.utcnow().isoformat() + "Z",
+            signed_at=datetime.now(timezone.utc).isoformat(),
         )
 
         # Add cryptographic signature if enabled

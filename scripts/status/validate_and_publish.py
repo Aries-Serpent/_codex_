@@ -11,7 +11,6 @@ Actions:
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -24,8 +23,6 @@ def run(cmd: list[str]) -> tuple[int, str, str]:
 
 def main() -> int:
     root = Path(__file__).resolve().parents[2]
-    schema = root / "docs/templates/status/codex_status_template.schema_v1.2.json"
-    example = root / "docs/templates/status/example_report_v1.2.json"
 
     results = {}
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import re
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 RE_THEME = re.compile(r'href=["\'][^"\']*theme\.css["\']', re.IGNORECASE)
 RE_PRINT = re.compile(r'href=["\'][^"\']*print\.css["\']', re.IGNORECASE)
