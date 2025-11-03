@@ -1,12 +1,30 @@
-# Documentation Moved
+# `_codex_`
+> Offline‑first ML repo with reproducible training, schema‑validated configs, and daily status reporting (v1.2).
+
+## Status & CI Badges
+
+- Status Validation: ![Status Validation](https://github.com/Aries-Serpent/_codex_/actions/workflows/status_validation.yml/badge.svg)
+- Security Gates: ![Security Gates](https://github.com/Aries-Serpent/_codex_/actions/workflows/security_gates.yml/badge.svg)
+- Nox Quality Gates: ![Nox Gates](https://github.com/Aries-Serpent/_codex_/actions/workflows/nox_gates.yml/badge.svg)
+- Semgrep SAST: ![Semgrep](https://github.com/Aries-Serpent/_codex_/actions/workflows/semgrep.yml/badge.svg)
+
+## Documentation
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
-## New to _codex_?
+### New to _codex_?
 
 👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
 
-### Quick Links
+### Quick Links - Status & Validation
+
+- **Status Template**: [codex_status_template_v1.2.md](docs/templates/status/codex_status_template_v1.2.md)
+- **Status Schema (JSON)**: [codex_status_template.schema_v1.2.json](docs/templates/status/codex_status_template.schema_v1.2.json)
+- **Authoring (Quickstart)**: [authoring_quickstart_v1.2.md](docs/templates/status/authoring_quickstart_v1.2.md)
+- **Validation Guides**: [docs/validation](docs/validation)
+- **Ops Workflow**: [status_reports.md](docs/ops/status_reports.md)
+
+### Quick Links - General
 
 - **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
@@ -15,9 +33,18 @@ All primary documentation now lives in the [`docs/`](docs/) directory.
 - **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 - **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
 
-Legacy references should update to the new paths under `docs/`.
+### Local DoD (short)
 
-> This repo is designed for **local-only** workflows. No CI is enabled by default.
+```bash
+# Run all quality gates
+nox -s lint typecheck tests gates
+
+# Validate status schema
+pytest -q tests/status/test_example_report_schema.py
+
+# Validate configs
+python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
+```
 
 ## Local Gates & Status Reports
 

@@ -541,6 +541,17 @@ def run_evaluation(
     metrics_csv_path = output_dir / metrics_csv_filename
     metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
 
+    # Optional MLflow (offline) init - only when explicitly enabled
+    import os
+    if os.getenv("CODEX_ENABLE_MLFLOW") == "1":
+        try:
+            import mlflow
+            mlflow.set_tracking_uri("file:artifacts/mlruns")
+            mlflow.set_experiment("codex_offline")
+            mlflow.start_run()
+        except Exception:
+            pass  # Silently ignore MLflow errors
+
     # For the pluggable sink feature, use the first sink if multiple are specified
     # The remaining sinks will be handled by the dedicated writers later
     sink_kind = metrics_sinks[0] if metrics_sinks else "none"
@@ -584,6 +595,29 @@ def run_evaluation(
     except Exception as exc:
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
+
+    # Optional determinism hint (no-op if libs missing)
+    try:
+        from codex_ml.utils.determinism import set_global_determinism
+        set_global_determinism(1337)
+    except Exception:
+        pass
+
+    # Structured log (append-only)
+    try:
+        from tools.logging.structured_logger import JsonLogger
+        _jl = JsonLogger("artifacts/logs/eval.ndjson")
+        _jl.write(event="eval_start", metrics_sink=sink_kind)
+    except Exception:
+        pass
+
+    # Optional perf sampling
+    if os.getenv("CODEX_ENABLE_PERF_SAMPLER") == "1":
+        try:
+            from tools.perf.sampler import PerfSampler
+            PerfSampler().run(steps=3)
+        except Exception:
+            pass
 
     run_id = _derive_run_id(eval_cfg, dataset_path)
     # Convert run_id to integer using hash for arbitrary strings

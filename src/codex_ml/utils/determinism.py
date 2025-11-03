@@ -16,9 +16,15 @@ try:  # pragma: no cover - optional dependency guards
 except Exception:  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
-__all__ = ["set_deterministic", "set_cudnn_deterministic", "enable_determinism"]
+__all__ = ["set_deterministic", "set_cudnn_deterministic", "enable_determinism", "set_global_determinism"]
 
 logger = logging.getLogger(__name__)
+
+
+# Alias for patchset compatibility
+def set_global_determinism(seed: int = 1337) -> None:
+    """Alias for set_deterministic with default seed 1337."""
+    set_deterministic(seed, deterministic=True)
 
 
 def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:

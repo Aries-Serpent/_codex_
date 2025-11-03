@@ -1,0 +1,135 @@
+{
+  "metadata": {
+    "title": "📍 `_codex_` : Status Update 2025-11-02-15:10:UTC",
+    "timestamp_utc": "2025-11-02T15:10:07Z",
+    "report_version": "v1.0",
+    "template_version": "v1.2",
+    "authors": ["mbaetiong"],
+    "reviewers": [],
+    "previous_report_path": "reports/daily/2025-11-01.json",
+    "git_context": {
+      "branch": "0D_base_",
+      "commit_sha": "0000000000000000000000000000000000000000",
+      "commit_sha_short": "00000000",
+      "is_dirty": false,
+      "tags": []
+    },
+    "environment": {
+      "python_version": "3.10.0",
+      "pytorch_version": "",
+      "cuda_version": "",
+      "os": "linux-5.15",
+      "hostname": "local"
+    }
+  },
+  "snapshot": {
+    "repo_map": "docs/, tools/, configs/, src/, tests/, .github/",
+    "capabilities": [
+      {
+        "id": "CAP-001",
+        "name": "Tokenization",
+        "category": "Tokenization",
+        "status": "Partially Implemented",
+        "artifacts": "src/codex_ml/tokenization, tests/tokenization, docs/templates/status/Tokenization_Insights_v1.2.md",
+        "gaps": "Fast vs slow parity not enforced in CI",
+        "risks": "Subtle decoding drift on rare tokens",
+        "severity": 3,
+        "confidence": 3,
+        "tags": ["huggingface", "offline", "pytest"],
+        "patch_plan": "Add parity/round-trip tests and gate in CI",
+        "rollback": "Remove tests; skip parity gate",
+        "owner": "mbaetiong",
+        "eta": "2025-11-05T00:00:00Z",
+        "last_updated": "2025-11-02T15:10:07Z",
+        "discovery_method": "docs_review",
+        "links": {
+          "patches": ["PATCH-022"],
+          "docs": ["docs/templates/status/Tokenization_Insights_v1.2.md"],
+          "tests": ["tests/tokenization/test_tokenizer_parity.py"]
+        }
+      }
+    ],
+    "capability_discovery_log": [],
+    "findings": [
+      {
+        "id": "FIND-001",
+        "title": "Tokenizer parity test missing in CI",
+        "evidence": "No nox gate enforcing parity; tests just added",
+        "impact": "Potential regression goes unnoticed",
+        "proposed_action": "Add parity test and CI gate",
+        "severity": 3,
+        "confidence": 4,
+        "category": "maintainability",
+        "status": "acknowledged",
+        "links": {
+          "capability_ids": ["CAP-001"],
+          "patch_ids": ["PATCH-022"],
+          "issues": [],
+          "prs": []
+        }
+      }
+    ],
+    "tests_gates": {
+      "tests_summary": {
+        "total": 12,
+        "passed": 12,
+        "failed": 0,
+        "skipped": 2,
+        "duration_seconds": 9.8
+      },
+      "coverage_percent": 41.2,
+      "coverage_threshold": 35.0,
+      "coverage_by_module": {
+        "src/security": 62.5
+      },
+      "quality_gates": {
+        "lint": "pass",
+        "typecheck": "warn",
+        "security_sast": "pass",
+        "security_secrets": "warn",
+        "security_deps": "pass"
+      },
+      "nox_sessions": {
+        "lint": "pass",
+        "tests": "pass",
+        "gates": "pass"
+      },
+      "reproducibility": "Seeds captured",
+      "missing_tests": []
+    },
+    "repro": {
+      "core_controls": [],
+      "registry": [],
+      "determinism_tests": {
+        "seed_control": "pass"
+      }
+    },
+    "deferred": []
+  },
+  "delta": {},
+  "patches": [
+    {
+      "id": "PATCH-022",
+      "title": "Add tokenizer parity tests",
+      "paths": ["tests/tokenization/test_tokenizer_parity.py"],
+      "why": "Detect drift between fast/slow tokenizers",
+      "risk": 2,
+      "confidence": 4,
+      "tests_docs": "New tests added",
+      "rollback": "Delete tests",
+      "validation": [],
+      "diff": "*** Begin Patch\n*** End Patch",
+      "capability_ids": ["CAP-001"],
+      "repro_ids": [],
+      "finding_ids": ["FIND-001"],
+      "status": "ready"
+    }
+  ],
+  "automation": {},
+  "security": {
+    "masking_applied": true,
+    "redactions_count": 0
+  },
+  "questions": [],
+  "decisions": []
+}

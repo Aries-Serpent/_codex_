@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Archive Evidence Record (v1 - Legacy Format)",
+  "description": "Original evidence record format (backward compatible)",
+  "type": "object",
+  "required": [
+    "ts",
+    "action",
+    "actor",
+    "tombstone",
+    "sha256"
+  ],
+  "properties": {
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp (ISO8601 format)"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "ARCHIVE",
+        "RESTORE",
+        "REFERENCE",
+        "PURGE"
+      ],
+      "description": "Archive operation type"
+    },
+    "actor": {
+      "type": "string",
+      "description": "User/actor performing operation"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Repository identifier"
+    },
+    "path": {
+      "type": "string",
+      "description": "File path being archived"
+    },
+    "tombstone": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique tombstone identifier"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Content SHA256 digest (hexadecimal)"
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Uncompressed byte count"
+    },
+    "commit": {
+      "type": "string",
+      "description": "Git commit SHA at archival time"
+    },
+    "ref_type": {
+      "type": "string",
+      "description": "Reference type (for REFERENCE actions)"
+    },
+    "ref_value": {
+      "type": "string",
+      "description": "Reference value/target"
+    }
+  },
+  "additionalProperties": true
+}

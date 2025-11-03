@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aries-serpent.github.io/_codex_/schemas/ratelimit_tile.schema.json",
+  "title": "Rate-Limit Tile (7d)",
+  "type": "object",
+  "required": ["generated_utc", "title", "series", "summary"],
+  "properties": {
+    "generated_utc": { "type": "string" },
+    "title": { "type": "string" },
+    "series": {
+      "type": "object",
+      "properties": {
+        "core": { "type": "array", "items": { "type": "array", "minItems": 2, "maxItems": 2 } },
+        "search": { "type": "array", "items": { "type": "array", "minItems": 2, "maxItems": 2 } },
+        "graphql": { "type": "array", "items": { "type": "array", "minItems": 2, "maxItems": 2 } }
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "core": { "type": "object", "properties": { "min": { "type": "number" }, "avg": { "type": "number" }, "max": { "type": "number" } }, "required": ["min", "avg", "max"] },
+        "search": { "type": "object", "properties": { "min": { "type": "number" }, "avg": { "type": "number" }, "max": { "type": "number" } }, "required": ["min", "avg", "max"] },
+        "graphql": { "type": "object", "properties": { "min": { "type": "number" }, "avg": { "type": "number" }, "max": { "type": "number" } }, "required": ["min", "avg", "max"] }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
