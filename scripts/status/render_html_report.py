@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
@@ -156,7 +157,17 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     data = load_json(Path(args.json))
-    tpl = Path(args.template).read_text(encoding="utf-8") if args.template and Path(args.template).exists() else default_template()
+    
+    # Validate template path to prevent reading arbitrary files
+    if args.template:
+        template_path = Path(args.template).resolve()
+        repo_root = Path.cwd().resolve()
+        if not template_path.is_relative_to(repo_root):
+            print("Error: Template path must be within the repository root", file=sys.stderr)
+            return 1
+        tpl = template_path.read_text(encoding="utf-8") if template_path.exists() else default_template()
+    else:
+        tpl = default_template()
 
     meta = data.get("metadata", {})
     gc = meta.get("git_context", {}) or {}

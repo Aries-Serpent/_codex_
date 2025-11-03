@@ -58,6 +58,15 @@ class SignstoreClient:
 
         Returns:
             Signature, certificate chain, and issuer
+            
+        NOTE: This implementation uses mock signing for development/testing.
+        TODO: Migrate to production Sigstore signing using the sigstore-python SDK
+        or cosign CLI integration. See https://docs.sigstore.dev for details.
+        Production implementation should:
+        - Use actual OIDC tokens from GitHub Actions or other IdP
+        - Sign via Fulcio certificate authority
+        - Store transparency log entries in Rekor
+        - Verify signatures against the public transparency log
         """
         if not self.enabled:
             return {

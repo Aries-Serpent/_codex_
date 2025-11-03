@@ -29,14 +29,24 @@ def apply_patch_block(lines: list[str]) -> None:
     m_add = ADD.match(header)
     m_upd = UPDATE.match(header)
     m_del = DELETE.match(header)
+    
+    # Validate path to prevent directory traversal
+    repo_root = Path.cwd().resolve()
+    
     if m_add:
-        path = Path(m_add.group(1))
+        path = Path(m_add.group(1)).resolve()
+        if not path.is_relative_to(repo_root):
+            print(f"[ERROR] Path outside repository root: {m_add.group(1)}")
+            return
         content = "\n".join(lines[1:])
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         print(f"[ADD] {path}")
     elif m_upd:
-        path = Path(m_upd.group(1))
+        path = Path(m_upd.group(1)).resolve()
+        if not path.is_relative_to(repo_root):
+            print(f"[ERROR] Path outside repository root: {m_upd.group(1)}")
+            return
         # naive update: replace file with provided content
         content = "\n".join(lines[1:])
         if not path.exists():
@@ -45,7 +55,10 @@ def apply_patch_block(lines: list[str]) -> None:
         path.write_text(content, encoding="utf-8")
         print(f"[UPDATE] {path}")
     elif m_del:
-        path = Path(m_del.group(1))
+        path = Path(m_del.group(1)).resolve()
+        if not path.is_relative_to(repo_root):
+            print(f"[ERROR] Path outside repository root: {m_del.group(1)}")
+            return
         if path.exists():
             path.unlink()
             print(f"[DELETE] {path}")

@@ -5,4 +5,5 @@ def seed_worker(worker_id):
         np.random.seed(worker_seed)
         random.seed(worker_seed)
     except Exception:
+        # Torch/NumPy not available or seeding failed
         pass

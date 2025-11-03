@@ -32,6 +32,15 @@ def main(argv=None) -> int:
     ap.add_argument("--threshold", type=float, help="Override threshold")
     args = ap.parse_args(argv)
 
+    # Validate paths to prevent path traversal attacks
+    baseline_path = Path(args.baseline).resolve()
+    candidate_path = Path(args.candidate).resolve()
+    repo_root = Path.cwd().resolve()
+    
+    if not (baseline_path.is_relative_to(repo_root) and candidate_path.is_relative_to(repo_root)):
+        print("Error: File paths must be within the repository root", file=sys.stderr)
+        return 1
+
     cfg = load_config(Path(args.config))
     metric, threshold = resolve_threshold(cfg, args.template)
     if args.metric:
