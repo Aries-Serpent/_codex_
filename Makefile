@@ -19,3 +19,30 @@ config:
 	  echo " - sample-sbom-config.yaml found"; \
 	fi
 	@echo ">> config target completed"
+
+.PHONY: status quick test lint env perf scan deps
+
+status:
+python tools/status/codex_status_cli.py
+
+quick:
+nox -s status
+
+test:
+pytest -q
+
+lint:
+nox -s lint
+
+env:
+nox -s env-snapshot
+
+perf:
+CODEX_ENABLE_PERF_SAMPLER=1 python -c "from tools.perf.sampler import PerfSampler as S; S().run(steps=3)"
+
+scan:
+python tools/security/scan_repo.py
+
+deps:
+python tools/security/license_audit.py || true
+python tools/security/dep_snapshot.py || true

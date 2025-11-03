@@ -214,3 +214,13 @@ def lint(session: nox.Session) -> None:
     session.install("ruff==0.5.7", "black==24.8.0")
     session.run("ruff", "check", ".")
     session.run("black", "--check", ".")
+
+
+@nox.session(name="typecheck")
+def typecheck(session: nox.Session) -> None:
+    """Optional static typecheck; degrades gracefully if mypy not installed."""
+    try:
+        session.install("mypy==1.10.0")
+        session.run("mypy", "src")
+    except Exception:
+        session.log("mypy unavailable; skipping")

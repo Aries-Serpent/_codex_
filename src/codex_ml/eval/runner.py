@@ -596,6 +596,13 @@ def run_evaluation(
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
+    # Optional determinism hint (no-op if libs missing)
+    try:
+        from codex_ml.utils.determinism import set_global_determinism
+        set_global_determinism(1337)
+    except Exception:
+        pass
+
     # Structured log (append-only)
     try:
         from tools.logging.structured_logger import JsonLogger

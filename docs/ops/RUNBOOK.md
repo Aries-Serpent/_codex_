@@ -169,4 +169,5 @@ python tools/assets/build_manifest.py && python tools/assets/verify_manifest.py
 # Status and capability discovery
 python tools/status/capability_autodiscovery.py
 nox -s status-validate
+python tools/docs/harvest_open_questions.py
 ```

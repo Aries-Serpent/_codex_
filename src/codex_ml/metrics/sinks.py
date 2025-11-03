@@ -72,3 +72,21 @@ def create_sink(kind: str, fp: TextIO | None = None, *, fieldnames: list[str] | 
             raise ValueError("NdjsonSink requires a file-like object")
         return NdjsonSink(fp=fp)
     return NullSink()
+
+
+def get_sink(kind: str | None, path: str | None = None) -> MetricsSink | None:
+    """Factory for path-based sinks (alternate to create_sink with file handles)."""
+    from pathlib import Path
+    if not kind or kind == "none":
+        return None
+    if kind == "csv":
+        p = Path(path or "artifacts/metrics/metrics.csv")
+        p.parent.mkdir(parents=True, exist_ok=True)
+        fp = p.open("a", newline="", encoding="utf-8")
+        return CsvSink(fp=fp, fieldnames=["metric", "value", "step"])
+    if kind == "ndjson":
+        p = Path(path or "artifacts/metrics/metrics.ndjson")
+        p.parent.mkdir(parents=True, exist_ok=True)
+        fp = p.open("a", encoding="utf-8")
+        return NdjsonSink(fp=fp)
+    return NullSink()
