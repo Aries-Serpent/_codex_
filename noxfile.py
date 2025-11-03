@@ -165,6 +165,8 @@ def status(session: nox.Session) -> None:
         "--out",
         "STATUS_REPORT.md",
     )
+    # Also emit capability scores
+    session.run("python", "tools/status/capability_autodiscovery.py")
 
 
 @nox.session
@@ -186,3 +188,21 @@ def model_smoke(session: nox.Session) -> None:
             "load_model({'device': 'cpu', 'dtype': 'float32'})"
         ),
     )
+
+
+@nox.session(name="status-validate")
+def status_validate(session: nox.Session) -> None:
+    """Validate the latest generated status JSON against the v1.1 schema (offline)."""
+    session.install("-r", "requirements-dev.txt")
+    # Validate today's artifact if present
+    from datetime import datetime, timezone
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    path = f"reports/daily/_codex_status_update-{today}.json"
+    session.run("python", "tools/status/validate_status_update.py", path)
+
+
+@nox.session(name="env-snapshot")
+def env_snapshot(session: nox.Session) -> None:
+    """Emit artifacts/env_snapshot.json for reproducibility evidence."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/env/export_env_json.py")
