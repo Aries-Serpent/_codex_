@@ -32,6 +32,7 @@ def _validate_pair(data_path: str, schema_path: str) -> bool:
     schema = _load_json(schema_path)
     try:
         jsonschema.validate(instance=data, schema=schema)  # type: ignore
+        print(f"[PASS] {data_path} OK {schema_path}")
         return True
     except Exception as e:
         print(f"[fail] {data_path} ! {schema_path}: {e}", file=sys.stderr)

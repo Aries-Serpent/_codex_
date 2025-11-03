@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "fail_under_coverage": 35,
+  "lint_required": true,
+  "typecheck_required": false,
+  "security": {
+    "allow_high_vulns": 0,
+    "allow_critical_vulns": 0
+  },
+  "status_template_version": "v1.2",
+  "report_storage": "reports/daily"
+}

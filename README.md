@@ -1,12 +1,30 @@
-# Documentation Moved
+# `_codex_`
+> Offline‑first ML repo with reproducible training, schema‑validated configs, and daily status reporting (v1.2).
+
+## Status & CI Badges
+
+- Status Validation: ![Status Validation](https://github.com/Aries-Serpent/_codex_/actions/workflows/status_validation.yml/badge.svg)
+- Security Gates: ![Security Gates](https://github.com/Aries-Serpent/_codex_/actions/workflows/security_gates.yml/badge.svg)
+- Nox Quality Gates: ![Nox Gates](https://github.com/Aries-Serpent/_codex_/actions/workflows/nox_gates.yml/badge.svg)
+- Semgrep SAST: ![Semgrep](https://github.com/Aries-Serpent/_codex_/actions/workflows/semgrep.yml/badge.svg)
+
+## Documentation
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
-## New to _codex_?
+### New to _codex_?
 
 👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
 
-### Quick Links
+### Quick Links - Status & Validation
+
+- **Status Template**: [codex_status_template_v1.2.md](docs/templates/status/codex_status_template_v1.2.md)
+- **Status Schema (JSON)**: [codex_status_template.schema_v1.2.json](docs/templates/status/codex_status_template.schema_v1.2.json)
+- **Authoring (Quickstart)**: [authoring_quickstart_v1.2.md](docs/templates/status/authoring_quickstart_v1.2.md)
+- **Validation Guides**: [docs/validation](docs/validation)
+- **Ops Workflow**: [status_reports.md](docs/ops/status_reports.md)
+
+### Quick Links - General
 
 - **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
@@ -15,9 +33,18 @@ All primary documentation now lives in the [`docs/`](docs/) directory.
 - **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 - **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
 
-Legacy references should update to the new paths under `docs/`.
+### Local DoD (short)
 
-> This repo is designed for **local-only** workflows. No CI is enabled by default.
+```bash
+# Run all quality gates
+nox -s lint typecheck tests gates
+
+# Validate status schema
+pytest -q tests/status/test_example_report_schema.py
+
+# Validate configs
+python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
+```
 
 ## Local Gates & Status Reports
 
@@ -99,3 +126,102 @@ python tools/status_report.py    --summary samples/assistant_message_summary.sam
                                  --template docs/templates/status_update.md \
                                  --branch my/branch --pr 1234 --verbose --save-logs --out STATUS_REPORT.md
 ```
+
+---
+
+## 🔍 Search Index
+
+Quick access to key repository areas via GitHub search. Click any link or use the search patterns with ChatGPT/Copilot.
+
+### Core Components
+
+| Component | Search Query | Description |
+|-----------|--------------|-------------|
+| **ML Training Core** | [`path:src/codex_ml/ language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Asrc%2Fcodex_ml%2F+language%3APython) | Training engine, LoRA/QLoRA, model initialization |
+| **CLI Commands** | [`path:src/codex/cli.py OR path:cli/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Asrc%2Fcodex%2Fcli.py+OR+path%3Acli%2F) | Command-line interface and entry points |
+| **Logging & Telemetry** | [`path:src/codex/logging/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Asrc%2Fcodex%2Flogging%2F) | Session tracking, SQLite backend, query engine |
+| **Services & APIs** | [`path:services/ language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Aservices%2F+language%3APython) | Microservices, adapters, API endpoints |
+| **Interfaces & Contracts** | [`path:interfaces/ (Protocol OR pydantic)`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Ainterfaces%2F+%28Protocol+OR+pydantic%29) | Type definitions, protocols, schemas |
+
+### Configuration & Data
+
+| Area | Search Query | Description |
+|------|--------------|-------------|
+| **Hydra Configs** | [`path:config/ OR path:configs/ extension:yaml`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Aconfig%2F+OR+path%3Aconfigs%2F+extension%3Ayaml) | Hydra configuration files |
+| **Schemas** | [`path:schemas/ (extension:json OR extension:yaml)`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Aschemas%2F+%28extension%3Ajson+OR+extension%3Ayaml%29) | Data validation schemas |
+| **Data Quality** | [`path:great_expectations/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Agreat_expectations%2F) | Great Expectations configurations |
+| **Project Config** | [`filename:pyproject.toml OR filename:noxfile.py`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3Apyproject.toml+OR+filename%3Anoxfile.py) | Project dependencies and build config |
+
+### Documentation & Governance
+
+| Document Type | Search Query | Description |
+|---------------|--------------|-------------|
+| **Architecture** | [`path:docs/ARCHITECTURE.md OR path:docs/arch/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Adocs%2FARCHITECTURE.md+OR+path%3Adocs%2Farch%2F) | System architecture, C4 diagrams |
+| **ADRs** | [`path:docs/decision_records/ filename:*.md`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Adocs%2Fdecision_records%2F+filename%3A*.md) | Architecture Decision Records |
+| **Security & Policy** | [`filename:SECURITY.md OR path:docs/security/`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3ASECURITY.md+OR+path%3Adocs%2Fsecurity%2F) | Security policy, vulnerability reporting |
+| **Code Owners** | [`filename:CODEOWNERS`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3ACODEOWNERS) | Repository ownership mapping |
+| **API Documentation** | [`path:docs/api/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Adocs%2Fapi%2F) | API references and guides |
+| **Prompts & Recipes** | [`path:PROMPTS/ OR path:docs/prompts/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3APROMPTS%2F+OR+path%3Adocs%2Fprompts%2F) | ChatGPT search recipes, prompt templates |
+
+### CI/CD & Workflows
+
+| Area | Search Query | Description |
+|------|--------------|-------------|
+| **GitHub Workflows** | [`path:.github/workflows/ extension:yml`](https://github.com/Aries-Serpent/_codex_/search?q=path%3A.github%2Fworkflows%2F+extension%3Ayml) | CI/CD workflow definitions |
+| **Issue Templates** | [`path:.github/ISSUE_TEMPLATE/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3A.github%2FISSUE_TEMPLATE%2F) | Bug reports, feature requests |
+| **Dependabot** | [`filename:dependabot.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3Adependabot.yml) | Dependency update configuration |
+| **Pre-commit Hooks** | [`filename:.pre-commit-config.yaml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3A.pre-commit-config.yaml) | Linting and formatting hooks |
+
+### Testing & Quality
+
+| Category | Search Query | Description |
+|----------|--------------|-------------|
+| **Test Files** | [`path:tests/ language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Atests%2F+language%3APython) | All test modules |
+| **Test Functions** | [`"def test_" language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=%22def+test_%22+language%3APython) | Individual test functions |
+| **Fixtures** | [`"@pytest.fixture" OR "conftest.py"`](https://github.com/Aries-Serpent/_codex_/search?q=%22%40pytest.fixture%22+OR+%22conftest.py%22) | Test fixtures and configuration |
+| **Linter Configs** | [`filename:.ruff.toml OR filename:.bandit.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3A.ruff.toml+OR+filename%3A.bandit.yml) | Code quality configuration |
+
+### Deployment & Docker
+
+| Resource | Search Query | Description |
+|----------|--------------|-------------|
+| **Dockerfiles** | [`filename:Dockerfile OR filename:docker-compose.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3ADockerfile+OR+filename%3Adocker-compose.yml) | Container definitions |
+| **Deployment** | [`path:deploy/ OR path:manifests/`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Adeploy%2F+OR+path%3Amanifests%2F) | Deployment configurations |
+| **Scripts** | [`path:scripts/ (language:Python OR language:Shell)`](https://github.com/Aries-Serpent/_codex_/search?q=path%3Ascripts%2F+%28language%3APython+OR+language%3AShell%29) | Automation and utility scripts |
+
+### Advanced Search Patterns
+
+```text
+# Find all configuration entry points
+filename:pyproject.toml OR filename:setup.py OR filename:noxfile.py
+
+# Locate error handling patterns
+path:src/ "try:" language:Python
+
+# Find logging usage
+path:src/ ("logging.info" OR "logger.error") language:Python
+
+# Search for security-sensitive code
+("password" OR "secret" OR "api_key" OR "token") language:Python
+
+# Find deprecation notices
+("deprecated" OR "DEPRECATED" OR "TODO: remove") in:file
+
+# Locate all README files
+filename:README.md
+
+# Find Mermaid diagrams
+path:docs/ "mermaid" in:file
+```
+
+### Quick Navigation
+
+- **Getting Started**: Start with [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
+- **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
+- **Architecture**: Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- **Security**: Report vulnerabilities via [SECURITY.md](SECURITY.md)
+- **Search Help**: Full guide in [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md)
+
+---
+
+**For more search patterns and ChatGPT/Copilot guidance**, see [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md).

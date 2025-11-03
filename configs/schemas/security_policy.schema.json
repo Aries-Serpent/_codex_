@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "security_policy",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "sast": {
+      "type": "object",
+      "properties": {
+        "bandit_fail_on": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high"],
+          "description": "Minimum severity to fail CI"
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "baseline_required": {
+          "type": "boolean",
+          "description": "Require .secrets.baseline to be present"
+        }
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "max_critical": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum allowed critical vulnerabilities"
+        },
+        "max_high": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum allowed high vulnerabilities"
+        }
+      }
+    }
+  }
+}

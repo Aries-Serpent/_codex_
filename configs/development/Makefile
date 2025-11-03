@@ -1,21 +1,21 @@
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 NOXFILE := $(MAKEFILE_DIR)noxfile.py
 
-.PHONY: help setup fmt lint type test cover sast track cli clean sbom
+.PHONY: help setup fmt lint type test cover sast track cli clean sbom env-snapshot
 
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 NOX := nox --noxfile $(MAKEFILE_DIR)noxfile.py
 
 help:
-	@echo "Targets: setup fmt lint type test cover sast track cli clean"
+	@echo "Targets: setup fmt lint type test cover sast track cli clean env-snapshot"
 
 setup:
-	@if [ -f requirements/lock.txt ]; then \\
-		pip install -r requirements/lock.txt && \\
-		pip install -r requirements/dev.txt; \\
-	else \\
-		pip install -r requirements/base.txt -r requirements/dev.txt; \\
+	@if [ ! -f requirements/lock.txt ]; then \
+		echo "requirements/lock.txt missing; generate the lock before running make setup."; \
+		exit 1; \
 	fi
+	pip install -r requirements/lock.txt
+	pip install -r requirements/dev.txt --no-deps
 
 fmt:
 	black src tests
@@ -28,10 +28,10 @@ type:
 	mypy src
 
 test:
-        pytest -q --cov=src/codex_ml --cov-fail-under=3.5
+	pytest -q --cov=src/codex_ml --cov-fail-under=3.5
 
 cover:
-        pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
+	pytest -q --cov=src/codex_ml --cov-report=term-missing --cov-fail-under=3.5
 
 sast:
 	bandit -q -r src
@@ -53,6 +53,10 @@ sbom:
 
 clean:
 	rm -rf .pytest_cache .mypy_cache .nox .coverage coverage.xml mlruns .checkpoints artifacts
+
+env-snapshot:
+	@mkdir -p $(MAKEFILE_DIR)../../artifacts
+	PYTHONPATH=$(MAKEFILE_DIR)../../src python $(MAKEFILE_DIR)../../scripts/env/export_env_json.py $(MAKEFILE_DIR)../../artifacts/env_snapshot.json
 
 # --- Docker convenience targets (local-only; CI remains gated) ---
 .PHONY: docker-build docker-run docker-smoke docker-health docker-sbom docker-scan docker-push \

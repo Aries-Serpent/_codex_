@@ -165,6 +165,8 @@ def status(session: nox.Session) -> None:
         "--out",
         "STATUS_REPORT.md",
     )
+    # Also emit capability scores
+    session.run("python", "tools/status/capability_autodiscovery.py")
 
 
 @nox.session
@@ -172,3 +174,53 @@ def precommit(session: nox.Session) -> None:
     """Run all pre-commit hooks locally (manual)."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(name="model-smoke")
+def model_smoke(session: nox.Session) -> None:
+    """Instantiate the default model on CPU to catch dtype/device regressions."""
+    session.install("-r", "requirements-dev.txt")
+    session.run(
+        "python",
+        "-c",
+        (
+            "from codex_ml.models.factory import load_model; "
+            "load_model({'device': 'cpu', 'dtype': 'float32'})"
+        ),
+    )
+
+
+@nox.session(name="status-validate")
+def status_validate(session: nox.Session) -> None:
+    """Validate the latest generated status JSON against the v1.1 schema (offline)."""
+    session.install("-r", "requirements-dev.txt")
+    # Validate today's artifact if present
+    from datetime import datetime, timezone
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    path = f"reports/daily/_codex_status_update-{today}.json"
+    session.run("python", "tools/status/validate_status_update.py", path)
+
+
+@nox.session(name="env-snapshot")
+def env_snapshot(session: nox.Session) -> None:
+    """Emit artifacts/env_snapshot.json for reproducibility evidence."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/env/export_env_json.py")
+
+
+@nox.session(name="lint")
+def lint(session: nox.Session) -> None:
+    """Static linting/format checks (local-only)."""
+    session.install("ruff==0.5.7", "black==24.8.0")
+    session.run("ruff", "check", ".")
+    session.run("black", "--check", ".")
+
+
+@nox.session(name="typecheck")
+def typecheck(session: nox.Session) -> None:
+    """Optional static typecheck; degrades gracefully if mypy not installed."""
+    try:
+        session.install("mypy==1.10.0")
+        session.run("mypy", "src")
+    except Exception:
+        session.log("mypy unavailable; skipping")

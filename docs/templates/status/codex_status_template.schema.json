@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "codex_status_update",
+  "type": "object",
+  "required": [
+    "metadata",
+    "snapshot",
+    "delta",
+    "patches",
+    "automation",
+    "security",
+    "questions",
+    "decisions"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "timestamp_utc",
+        "template_version"
+      ],
+      "properties": {
+        "title": { "type": "string", "pattern": "^📍 `_codex_` : Status Update .+$" },
+        "timestamp_utc": { "type": "string", "format": "date-time" },
+        "report_version": {
+          "type": "string",
+          "description": "Semantic version of the individual report (optional)"
+        },
+        "template_version": { "type": "string", "const": "v1.1" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "reviewers": { "type": "array", "items": { "type": "string" } },
+        "previous_report_path": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": "object",
+      "required": ["repo_map", "capabilities", "findings", "tests_gates", "repro", "deferred"],
+      "properties": {
+        "repo_map": { "type": "string" },
+        "capabilities": {
+          "description": "Dynamic capability list; not limited to a fixed set.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "status",
+              "artifacts",
+              "gaps",
+              "risks",
+              "severity",
+              "confidence",
+              "patch_plan",
+              "rollback"
+            ],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "category": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": ["Implemented", "Partially Implemented", "Stubbed", "Missing"]
+              },
+              "artifacts": { "type": "string" },
+              "gaps": { "type": "string" },
+              "risks": { "type": "string" },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "patch_plan": { "type": "string" },
+              "rollback": { "type": "string" },
+              "owner": { "type": "string" },
+              "eta": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "severity", "confidence", "impact"],
+            "properties": {
+              "title": { "type": "string" },
+              "evidence": { "type": "string" },
+              "impact": { "type": "string" },
+              "proposed_action": { "type": "string" },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "confidence": { "type": "integer", "minimum": 1, "maximum": 5 }
+            },
+            "additionalProperties": true
+          }
+        },
+        "tests_gates": {
+          "type": "object",
+          "properties": {
+            "tests_summary": { "type": "string" },
+            "coverage_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+            "coverage_threshold": { "type": "number", "minimum": 0, "maximum": 100 },
+            "quality_gates": { "type": "string" },
+            "reproducibility": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "repro": {
+          "type": "object",
+          "required": ["core_controls", "registry"],
+          "properties": {
+            "core_controls": { "type": "string" },
+            "registry": {
+              "description": "Extensible reproducibility registry entries.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "category", "control", "status"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "category": { "type": "string" },
+                  "control": { "type": "string" },
+                  "status": { "type": "string" },
+                  "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "evidence": { "type": "string" },
+                  "owner": { "type": "string" },
+                  "next_audit_utc": { "type": "string", "format": "date-time" },
+                  "notes": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["item", "rationale"],
+            "properties": {
+              "item": { "type": "string" },
+              "rationale": { "type": "string" },
+              "risk": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "review_date_utc": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "delta": {
+      "type": "object",
+      "properties": {
+        "code_changes": { "type": "string" },
+        "tests_coverage_delta": { "type": "string" },
+        "risks_delta": { "type": "string" },
+        "performance_delta": { "type": "string" },
+        "issues_prs_delta": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "paths", "why", "risk", "confidence", "rollback", "validation", "diff"],
+        "properties": {
+          "title": { "type": "string" },
+          "paths": { "type": "array", "items": { "type": "string" } },
+          "why": { "type": "string" },
+          "risk": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "tests_docs": { "type": "string" },
+          "rollback": { "type": "string" },
+          "validation": { "type": "array", "items": { "type": "string" } },
+          "diff": { "type": "string" },
+          "capability_ids": { "type": "array", "items": { "type": "string" } },
+          "repro_ids": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "automation": {
+      "type": "object",
+      "properties": {
+        "issues": { "type": "array", "items": { "type": "object" } },
+        "pull_requests": { "type": "array", "items": { "type": "object" } },
+        "coverage": { "type": "number", "minimum": 0, "maximum": 100 },
+        "dependency_audit": { "type": "string" },
+        "security_scan": { "type": "string" },
+        "performance": { "type": "string" },
+        "capability_autodiscovery": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "masking_applied": { "type": "boolean" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "priority", "owner", "asked_utc", "status", "question"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+          "owner": { "type": "string" },
+          "asked_utc": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["Open", "In Review", "Answered", "Deferred"] },
+          "answered_utc": { "type": "string", "format": "date-time" },
+          "answer": { "type": "string" },
+          "confidence": { "type": "integer", "minimum": 1, "maximum": 5 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "context", "chosen", "owner", "date_utc"],
+        "properties": {
+          "title": { "type": "string" },
+          "context": { "type": "string" },
+          "options": { "type": "string" },
+          "chosen": { "type": "string" },
+          "owner": { "type": "string" },
+          "date_utc": { "type": "string", "format": "date-time" },
+          "impact": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tokenization": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "settings": { "type": "string" },
+        "caching_parity": { "type": "string" },
+        "offline_considerations": { "type": "string" },
+        "recommendations": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,72 @@
+name: Capability Audit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: capability-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt || true
+          pip install -e .
+
+      - name: Run capability audit (S1–S7)
+        run: |
+          python scripts/space_traversal/audit_runner.py run
+
+      - name: Download baseline (optional)
+        uses: actions/download-artifact@v4
+        with:
+          name: audit-baseline
+          path: baseline
+        continue-on-error: true
+
+      - name: Regression gate (scores diff)
+        run: |
+          if [ -f baseline/capabilities_scored.json ]; then
+            python scripts/space_traversal/audit_runner.py diff --old baseline/capabilities_scored.json --new audit_artifacts/capabilities_scored.json
+          else
+            echo "No baseline found; skipping diff (first run or baseline not configured)."
+          fi
+
+      - name: Validate gates (low threshold, missing detectors)
+        run: |
+          python scripts/space_traversal/audit_runner.py validate
+
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-artifacts
+          path: |
+            audit_artifacts/**
+            audit_run_manifest.json
+            reports/capability_matrix_*.md
+          retention-days: 90
+
+      - name: Upload baseline for next run
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-baseline
+          path: audit_artifacts/capabilities_scored.json
+          retention-days: 90

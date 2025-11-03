@@ -1,0 +1,15 @@
+name: Template Lint (HTML includes)
+
+on:
+  pull_request:
+    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  template-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint templates
+        run: |
+          python tools/template_lint.py --dir docs/templates/status

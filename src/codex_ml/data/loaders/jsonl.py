@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, List, Mapping, Tuple
 
 from codex_ml.utils.repro import record_dataset_checksums
+from codex_ml.data.splits import assign_split
 
 CacheKey = Tuple[str, Tuple[float, float, float], int, bool]
 DEFAULT_CACHE_DIR = Path("artifacts/data_cache")
@@ -58,6 +59,7 @@ def _normalise_record(
 def _split_records(
     records: List[Dict[str, str]], ratios: Tuple[float, float, float], seed: int
 ) -> Dict[str, List[Dict[str, str]]]:
+    """Split records using random shuffling with given ratios and seed."""
     total = sum(ratios)
     if total <= 0:
         raise ValueError("Split ratios must be positive")

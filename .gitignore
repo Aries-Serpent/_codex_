@@ -79,6 +79,8 @@ Thumbs.db
 !.codex/policies/**
 !.codex/schemas/
 !.codex/schemas/*.json
+!.codex/scripts/
+!.codex/scripts/**
 !.codex/copilot_bridge/
 !.codex/copilot_bridge/**
 !.codex/evidence/
@@ -102,6 +104,8 @@ site/
 reports/*
 !/reports/
 !/reports/*.md
+!/reports/daily/
+!/reports/daily/README.md
 artifacts/*
 !artifacts/models/
 !artifacts/models/tiny_tokenizer/
@@ -176,3 +180,18 @@ validation_summary.json
 *-validation.json
 config/sbom-config.yaml
 config/artifacts/
+
+# MSP Gateway artifacts
+.codex/msp_gateway.db
+.codex/tenants/
+.codex/faiss/
+.codex/logs/
+artifacts/emb/
+*.faiss
+*.index
+
+# Capability audit runtime artifacts (uploaded by CI)
+audit_artifacts/*.json
+!audit_artifacts/README.md
+reports/capability_matrix_*.md
+audit_run_manifest.json
