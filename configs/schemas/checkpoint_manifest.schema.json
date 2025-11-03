@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "checkpoint_manifest",
+  "type": "object",
+  "required": ["run_id", "checkpoint_path", "sha256", "created_utc"],
+  "additionalProperties": true,
+  "properties": {
+    "run_id": { "type": "string" },
+    "checkpoint_path": { "type": "string" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "created_utc": { "type": "string", "format": "date-time" },
+    "rng_state": {
+      "type": "object",
+      "properties": {
+        "python": { "type": "integer" },
+        "numpy": { "type": "integer" },
+        "torch": { "type": "integer" }
+      }
+    }
+  }
+}

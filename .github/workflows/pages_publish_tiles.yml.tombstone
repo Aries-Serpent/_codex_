@@ -1,0 +1,15 @@
+# TOMBSTONE ARCHIVE STUB — DO NOT DELETE
+# File: .github/workflows/pages_publish_tiles.yml
+# ArchivedBy: copilot
+# Reason: legacy
+# Tombstone: 7b799ac3-9da9-4d47-9d51-9e052c74a9d1
+# SHA256: f9abea9ee43487a639343027cf399d6fb36e3ab36a38afd4f60d69d01bc1fd68
+# ArchivedAt: 2025-11-02T23:29:34Z
+# Commit: 295acc84fccd6b8d35780695e7b37f159be7b747
+#
+# To restore:
+#   python -m codex.cli archive restore 7b799ac3-9da9-4d47-9d51-9e052c74a9d1 --out .github/workflows/pages_publish_tiles.yml
+#
+# NOTE: This stub intentionally contains no functional code.
+# This workflow file violated repository policy prohibiting GitHub Actions workflows.
+# Functionality has been relocated to .codex/scripts/publish_dashboard_tiles.sh

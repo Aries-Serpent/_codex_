@@ -79,6 +79,8 @@ Thumbs.db
 !.codex/policies/**
 !.codex/schemas/
 !.codex/schemas/*.json
+!.codex/scripts/
+!.codex/scripts/**
 !.codex/copilot_bridge/
 !.codex/copilot_bridge/**
 !.codex/evidence/
