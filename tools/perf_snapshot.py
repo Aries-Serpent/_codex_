@@ -82,4 +82,4 @@ def main(argv: Sequence[str] | None = None) -> Mapping[str, Any]:
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
-    main()
+    raise SystemExit(main())

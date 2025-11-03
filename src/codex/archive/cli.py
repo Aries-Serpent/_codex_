@@ -544,7 +544,7 @@ def validate_standardization(
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
     
-    manager = StandardizationManager(enable_signing=False)
+    manager = StandardizationManager(enable_signing=check_signatures, verify_only=check_signatures)
     validator = EvidenceSchemaValidator()
     
     evidence_file = Path(".codex/evidence/archive_ops.jsonl")

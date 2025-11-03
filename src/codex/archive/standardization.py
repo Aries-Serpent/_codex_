@@ -41,8 +41,13 @@ class StandardizationMetadata:
 class StandardizationManager:
     """Manages archive standardization across SLSA, in-toto, and SAA requirements."""
 
-    def __init__(self, enable_signing: bool = True):
-        self.enable_signing = enable_signing and os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
+    def __init__(self, enable_signing: bool = True, verify_only: bool = False):
+        # For verification, we always enable the client
+        # For signing, we require both the flag and environment variable
+        if verify_only:
+            self.enable_signing = True
+        else:
+            self.enable_signing = enable_signing and os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
         self.sigstore_client = SignstoreClient() if self.enable_signing else None
         self.schema_validator = EvidenceSchemaValidator()
 
