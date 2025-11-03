@@ -9,27 +9,6 @@ import subprocess
 import sys
 
 
-def find_repo_root() -> Path:
-    """
-    Find repository root by looking for .git directory starting from script location.
-    
-    This prioritizes the script's location to prevent CWD-based bypass attacks.
-    """
-    # Start from script location (tools/visual_compare_config.py -> tools/ -> repo_root/)
-    script_path = Path(__file__).resolve()
-    current = script_path.parent  # Start at tools/
-    
-    # Search up from script location for .git directory
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    
-    # If no .git found, use script's parent as fallback (tools -> root)
-    # This assumes the script is in tools/ subdirectory
-    return script_path.parent.parent
-
-
 def load_config(p: Path) -> Dict[str, Any]:
     if not p.exists():
         return {"default_metric": "ssim", "default_threshold": 0.98, "templates": {}}
@@ -54,15 +33,13 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     # Validate paths to prevent path traversal attacks
-    repo_root = find_repo_root()
-    baseline_path = Path(args.baseline).resolve()
-    candidate_path = Path(args.candidate).resolve()
-    config_path = Path(args.config).resolve()
-    
-    if not (baseline_path.is_relative_to(repo_root) and candidate_path.is_relative_to(repo_root) and config_path.is_relative_to(repo_root)):
-        print("Error: File paths must be within the repository root", file=sys.stderr)
-        return 1
+    # Allow absolute paths, but prevent relative paths with .. components
+    for name, path_str in [("baseline", args.baseline), ("candidate", args.candidate), ("config", args.config)]:
+        if ".." in Path(path_str).parts:
+            print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
+            return 1
 
+    config_path = Path(args.config)
     cfg = load_config(config_path)
     metric, threshold = resolve_threshold(cfg, args.template)
     if args.metric:

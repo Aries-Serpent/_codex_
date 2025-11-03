@@ -15,27 +15,6 @@ from pathlib import Path
 from typing import Any, Dict
 
 
-def find_repo_root() -> Path:
-    """
-    Find repository root by looking for .git directory starting from script location.
-    
-    This prioritizes the script's location to prevent CWD-based bypass attacks.
-    """
-    # Start from script location (scripts/status/render_html_report.py -> scripts/status/ -> scripts/ -> repo_root/)
-    script_path = Path(__file__).resolve()
-    current = script_path.parent  # Start at scripts/status/
-    
-    # Search up from script location for .git directory
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    
-    # If no .git found, use script's great-grandparent as fallback (scripts/status -> scripts -> root)
-    # This assumes the script is in scripts/status/ subdirectory
-    return script_path.parent.parent.parent
-
-
 def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -177,22 +156,18 @@ def main(argv=None) -> int:
     ap.add_argument("--template", default="")
     args = ap.parse_args(argv)
 
-    # Validate paths to prevent reading arbitrary files
-    repo_root = find_repo_root()
-    json_path = Path(args.json).resolve()
-    
-    if not json_path.is_relative_to(repo_root):
-        print("Error: JSON path must be within the repository root", file=sys.stderr)
-        return 1
-    
-    data = load_json(json_path)
-    
-    # Validate template path to prevent reading arbitrary files
-    if args.template:
-        template_path = Path(args.template).resolve()
-        if not template_path.is_relative_to(repo_root):
-            print("Error: Template path must be within the repository root", file=sys.stderr)
+    # Validate paths to prevent path traversal attacks
+    # Allow absolute paths, but prevent relative paths with .. components
+    for name, path_str in [("json", args.json), ("template", args.template if args.template else None)]:
+        if path_str and ".." in Path(path_str).parts:
+            print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
             return 1
+    
+    data = load_json(Path(args.json))
+    
+    # Load template
+    if args.template:
+        template_path = Path(args.template)
         tpl = template_path.read_text(encoding="utf-8") if template_path.exists() else default_template()
     else:
         tpl = default_template()

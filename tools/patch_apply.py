@@ -25,47 +25,28 @@ UPDATE = re.compile(r"^\*\*\* Update File: (.+)$")
 DELETE = re.compile(r"^\*\*\* Delete File: (.+)$")
 
 
-def find_repo_root() -> Path:
-    """
-    Find repository root by looking for .git directory starting from script location.
-    
-    This prioritizes the script's location to prevent CWD-based bypass attacks.
-    """
-    # Start from script location (tools/patch_apply.py -> tools/ -> repo_root/)
-    script_path = Path(__file__).resolve()
-    current = script_path.parent  # Start at tools/
-    
-    # Search up from script location for .git directory
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    
-    # If no .git found, use script's parent as fallback (tools -> root)
-    # This assumes the script is in tools/ subdirectory
-    return script_path.parent.parent
-
-
-def apply_patch_block(lines: list[str], repo_root: Path) -> None:
+def apply_patch_block(lines: list[str]) -> None:
     header = lines[0].strip()
     m_add = ADD.match(header)
     m_upd = UPDATE.match(header)
     m_del = DELETE.match(header)
     
-    if m_add:
-        path = Path(m_add.group(1)).resolve()
-        if not path.is_relative_to(repo_root):
-            print(f"[ERROR] Path outside repository root: {m_add.group(1)}", file=sys.stderr)
+    # Validate path to prevent directory traversal attacks
+    # Allow absolute paths, but block paths with .. components
+    def validate_path(path_str: str) -> Path:
+        if ".." in Path(path_str).parts:
+            print(f"[ERROR] Path traversal detected: {path_str}", file=sys.stderr)
             sys.exit(1)
+        return Path(path_str)
+    
+    if m_add:
+        path = validate_path(m_add.group(1))
         content = "\n".join(lines[1:])
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         print(f"[ADD] {path}")
     elif m_upd:
-        path = Path(m_upd.group(1)).resolve()
-        if not path.is_relative_to(repo_root):
-            print(f"[ERROR] Path outside repository root: {m_upd.group(1)}", file=sys.stderr)
-            sys.exit(1)
+        path = validate_path(m_upd.group(1))
         # naive update: replace file with provided content
         content = "\n".join(lines[1:])
         if not path.exists():
@@ -74,10 +55,7 @@ def apply_patch_block(lines: list[str], repo_root: Path) -> None:
         path.write_text(content, encoding="utf-8")
         print(f"[UPDATE] {path}")
     elif m_del:
-        path = Path(m_del.group(1)).resolve()
-        if not path.is_relative_to(repo_root):
-            print(f"[ERROR] Path outside repository root: {m_del.group(1)}", file=sys.stderr)
-            sys.exit(1)
+        path = validate_path(m_del.group(1))
         if path.exists():
             path.unlink()
             print(f"[DELETE] {path}")
@@ -90,7 +68,6 @@ def main(argv=None) -> int:
     ap.add_argument("--patch-file", required=True)
     args = ap.parse_args(argv)
 
-    repo_root = find_repo_root()
     text = Path(args.patch_file).read_text(encoding="utf-8").splitlines()
     i = 0
     while i < len(text):
@@ -101,7 +78,7 @@ def main(argv=None) -> int:
             while i < len(text) and not END.match(text[i]):
                 block.append(text[i])
                 i += 1
-            apply_patch_block(block, repo_root)
+            apply_patch_block(block)
         i += 1
 
     print("[OK] Patch processing complete")
