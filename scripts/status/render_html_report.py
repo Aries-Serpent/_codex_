@@ -101,47 +101,50 @@ def default_template() -> str:
 def render_rows_caps(data: Dict[str, Any]) -> str:
     rows = []
     for c in data.get("snapshot", {}).get("capabilities", []):
-        rows.append(
-            "<tr>"
-            f"<td>{html.escape(str(c.get('id','')))}</td>"
-            f"<td>{html.escape(str(c.get('name','')))}</td>"
-            f"<td>{html.escape(str(c.get('status','')))}</td>"
-            f"<td>{html.escape(str(c.get('severity','')))}</td>"
-            f"<td>{html.escape(str(c.get('confidence','')))}</td>"
-            f"<td><code>{html.escape(str(c.get('artifacts','')))}</code></td>"
-            "</tr>"
-        )
+        parts = [
+            "<tr>",
+            f"<td>{html.escape(str(c.get('id', '')))}</td>",
+            f"<td>{html.escape(str(c.get('name', '')))}</td>",
+            f"<td>{html.escape(str(c.get('status', '')))}</td>",
+            f"<td>{html.escape(str(c.get('severity', '')))}</td>",
+            f"<td>{html.escape(str(c.get('confidence', '')))}</td>",
+            f"<td><code>{html.escape(str(c.get('artifacts', '')))}</code></td>",
+            "</tr>",
+        ]
+        rows.append("".join(parts))
     return "\n".join(rows) or '<tr><td colspan="6" class="small">N/A</td></tr>'
 
 
 def render_rows_findings(data: Dict[str, Any]) -> str:
     rows = []
     for f in data.get("snapshot", {}).get("findings", []):
-        rows.append(
-            "<tr>"
-            f"<td>{html.escape(str(f.get('id','')))}</td>"
-            f"<td>{html.escape(str(f.get('title','')))}</td>"
-            f"<td>{html.escape(str(f.get('severity','')))}</td>"
-            f"<td>{html.escape(str(f.get('confidence','')))}</td>"
-            f"<td>{html.escape(str(f.get('status','')))}</td>"
-            f"<td>{html.escape(str(f.get('proposed_action','')))}</td>"
-            "</tr>"
-        )
+        parts = [
+            "<tr>",
+            f"<td>{html.escape(str(f.get('id', '')))}</td>",
+            f"<td>{html.escape(str(f.get('title', '')))}</td>",
+            f"<td>{html.escape(str(f.get('severity', '')))}</td>",
+            f"<td>{html.escape(str(f.get('confidence', '')))}</td>",
+            f"<td>{html.escape(str(f.get('status', '')))}</td>",
+            f"<td>{html.escape(str(f.get('proposed_action', '')))}</td>",
+            "</tr>",
+        ]
+        rows.append("".join(parts))
     return "\n".join(rows) or '<tr><td colspan="6" class="small">N/A</td></tr>'
 
 
 def render_rows_patches(data: Dict[str, Any]) -> str:
     rows = []
     for p in data.get("patches", []):
-        rows.append(
-            "<tr>"
-            f"<td>{html.escape(str(p.get('id','')))}</td>"
-            f"<td>{html.escape(str(p.get('title','')))}</td>"
-            f"<td>{html.escape(str(p.get('risk','')))}</td>"
-            f"<td>{html.escape(str(p.get('confidence','')))}</td>"
-            f"<td>{html.escape(str(p.get('status','')))}</td>"
-            "</tr>"
-        )
+        parts = [
+            "<tr>",
+            f"<td>{html.escape(str(p.get('id', '')))}</td>",
+            f"<td>{html.escape(str(p.get('title', '')))}</td>",
+            f"<td>{html.escape(str(p.get('risk', '')))}</td>",
+            f"<td>{html.escape(str(p.get('confidence', '')))}</td>",
+            f"<td>{html.escape(str(p.get('status', '')))}</td>",
+            "</tr>",
+        ]
+        rows.append("".join(parts))
     return "\n".join(rows) or '<tr><td colspan="5" class="small">N/A</td></tr>'
 
 
