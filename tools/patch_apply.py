@@ -26,24 +26,24 @@ DELETE = re.compile(r"^\*\*\* Delete File: (.+)$")
 
 
 def find_repo_root() -> Path:
-    """Find repository root by looking for .git directory or using script location."""
-    # Try from current directory
-    current = Path.cwd().resolve()
+    """
+    Find repository root by looking for .git directory starting from script location.
+    
+    This prioritizes the script's location to prevent CWD-based bypass attacks.
+    """
+    # Start from script location (tools/patch_apply.py -> tools/ -> repo_root/)
+    script_path = Path(__file__).resolve()
+    current = script_path.parent  # Start at tools/
+    
+    # Search up from script location for .git directory
     while current != current.parent:
         if (current / ".git").exists():
             return current
         current = current.parent
     
-    # Fallback to script's parent directories
-    script_dir = Path(__file__).resolve().parent
-    current = script_dir
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    
-    # Last resort: use script's grandparent (tools -> root)
-    return script_dir.parent
+    # If no .git found, use script's parent as fallback (tools -> root)
+    # This assumes the script is in tools/ subdirectory
+    return script_path.parent.parent
 
 
 def apply_patch_block(lines: list[str], repo_root: Path) -> None:

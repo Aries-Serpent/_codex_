@@ -16,24 +16,24 @@ from typing import Any, Dict
 
 
 def find_repo_root() -> Path:
-    """Find repository root by looking for .git directory or using script location."""
-    # Try from current directory
-    current = Path.cwd().resolve()
+    """
+    Find repository root by looking for .git directory starting from script location.
+    
+    This prioritizes the script's location to prevent CWD-based bypass attacks.
+    """
+    # Start from script location (scripts/status/render_html_report.py -> scripts/status/ -> scripts/ -> repo_root/)
+    script_path = Path(__file__).resolve()
+    current = script_path.parent  # Start at scripts/status/
+    
+    # Search up from script location for .git directory
     while current != current.parent:
         if (current / ".git").exists():
             return current
         current = current.parent
     
-    # Fallback to script's parent directories
-    script_dir = Path(__file__).resolve().parent
-    current = script_dir
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    
-    # Last resort: use script's great-grandparent (scripts/status -> root)
-    return script_dir.parent.parent
+    # If no .git found, use script's great-grandparent as fallback (scripts/status -> scripts -> root)
+    # This assumes the script is in scripts/status/ subdirectory
+    return script_path.parent.parent.parent
 
 
 def load_json(path: Path) -> Dict[str, Any]:
