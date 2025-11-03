@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
@@ -155,8 +156,21 @@ def main(argv=None) -> int:
     ap.add_argument("--template", default="")
     args = ap.parse_args(argv)
 
+    # Validate paths to prevent path traversal attacks
+    # Allow absolute paths, but prevent relative paths with .. components
+    for name, path_str in [("json", args.json), ("template", args.template if args.template else None)]:
+        if path_str and ".." in Path(path_str).parts:
+            print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
+            return 1
+    
     data = load_json(Path(args.json))
-    tpl = Path(args.template).read_text(encoding="utf-8") if args.template and Path(args.template).exists() else default_template()
+    
+    # Load template
+    if args.template:
+        template_path = Path(args.template)
+        tpl = template_path.read_text(encoding="utf-8") if template_path.exists() else default_template()
+    else:
+        tpl = default_template()
 
     meta = data.get("metadata", {})
     gc = meta.get("git_context", {}) or {}

@@ -8,6 +8,9 @@ PATTERNS = {
     "gh_token": re.compile(r"gh[pousr]_[A-Za-z0-9]{30,}"),
 }
 
+# Directories and files to exclude from scanning
+EXCLUDE_DIRS = [".git", "artifacts", "audit_artifacts", "node_modules", "venv", "env"]
+
 def mask(s: str) -> str:
     return s[:4] + "…" + s[-4:] if len(s) > 8 else "[REDACTED]"
 
@@ -16,7 +19,7 @@ def scan(root: Path):
     for p in root.rglob("*"):
         if p.is_dir(): 
             continue
-        if any(x in p.parts for x in [".git","artifacts","audit_artifacts","node_modules","venv","env"]):
+        if any(x in p.parts for x in EXCLUDE_DIRS):
             continue
         try:
             text = p.read_text(encoding="utf-8", errors="ignore")

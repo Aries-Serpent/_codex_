@@ -25,6 +25,7 @@ def main():
                 try:
                     files[str(p)] = sha256_of(p)
                 except Exception:
+                    # Skip files that cannot be read (permissions, binary issues, etc.)
                     pass
     from datetime import datetime, timezone
     out = {"generated_utc": datetime.now(timezone.utc).isoformat()+"Z", "files": files}

@@ -601,6 +601,7 @@ def run_evaluation(
         from codex_ml.utils.determinism import set_global_determinism
         set_global_determinism(1337)
     except Exception:
+        # Determinism module not available or failed to initialize
         pass
 
     # Structured log (append-only)
@@ -609,6 +610,7 @@ def run_evaluation(
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
     except Exception:
+        # Logging module not available or failed to initialize
         pass
 
     # Optional perf sampling
@@ -617,6 +619,7 @@ def run_evaluation(
             from tools.perf.sampler import PerfSampler
             PerfSampler().run(steps=3)
         except Exception:
+            # Performance sampler not available or failed
             pass
 
     run_id = _derive_run_id(eval_cfg, dataset_path)

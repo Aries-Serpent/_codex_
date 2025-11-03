@@ -1,4 +1,4 @@
-import os, importlib
+import importlib
 
 def test_peft_disabled_by_default(monkeypatch):
     monkeypatch.delenv("CODEX_ENABLE_PEFT", raising=False)

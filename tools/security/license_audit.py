@@ -14,6 +14,7 @@ def main():
     out = Path("audit_artifacts"); out.mkdir(parents=True, exist_ok=True)
     (out/"license_audit.json").write_text(json.dumps(rows, indent=2))
     print("audit_artifacts/license_audit.json")
+    return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
