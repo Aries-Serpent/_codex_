@@ -9,6 +9,27 @@ import subprocess
 import sys
 
 
+def find_repo_root() -> Path:
+    """Find repository root by looking for .git directory or using script location."""
+    # Try from current directory
+    current = Path.cwd().resolve()
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    
+    # Fallback to script's parent directories
+    script_dir = Path(__file__).resolve().parent
+    current = script_dir
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    
+    # Last resort: use script's grandparent (tools -> root)
+    return script_dir.parent
+
+
 def load_config(p: Path) -> Dict[str, Any]:
     if not p.exists():
         return {"default_metric": "ssim", "default_threshold": 0.98, "templates": {}}
@@ -33,10 +54,10 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     # Validate paths to prevent path traversal attacks
+    repo_root = find_repo_root()
     baseline_path = Path(args.baseline).resolve()
     candidate_path = Path(args.candidate).resolve()
     config_path = Path(args.config).resolve()
-    repo_root = Path.cwd().resolve()
     
     if not (baseline_path.is_relative_to(repo_root) and candidate_path.is_relative_to(repo_root) and config_path.is_relative_to(repo_root)):
         print("Error: File paths must be within the repository root", file=sys.stderr)

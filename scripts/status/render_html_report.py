@@ -15,6 +15,27 @@ from pathlib import Path
 from typing import Any, Dict
 
 
+def find_repo_root() -> Path:
+    """Find repository root by looking for .git directory or using script location."""
+    # Try from current directory
+    current = Path.cwd().resolve()
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    
+    # Fallback to script's parent directories
+    script_dir = Path(__file__).resolve().parent
+    current = script_dir
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    
+    # Last resort: use script's great-grandparent (scripts/status -> root)
+    return script_dir.parent.parent
+
+
 def load_json(path: Path) -> Dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -156,12 +177,19 @@ def main(argv=None) -> int:
     ap.add_argument("--template", default="")
     args = ap.parse_args(argv)
 
-    data = load_json(Path(args.json))
+    # Validate paths to prevent reading arbitrary files
+    repo_root = find_repo_root()
+    json_path = Path(args.json).resolve()
+    
+    if not json_path.is_relative_to(repo_root):
+        print("Error: JSON path must be within the repository root", file=sys.stderr)
+        return 1
+    
+    data = load_json(json_path)
     
     # Validate template path to prevent reading arbitrary files
     if args.template:
         template_path = Path(args.template).resolve()
-        repo_root = Path.cwd().resolve()
         if not template_path.is_relative_to(repo_root):
             print("Error: Template path must be within the repository root", file=sys.stderr)
             return 1
