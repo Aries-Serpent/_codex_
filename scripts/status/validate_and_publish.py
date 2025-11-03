@@ -55,7 +55,7 @@ def main() -> int:
     results["audit_chain"] = {"ok": code == 0, "stdout": out, "stderr": err}
 
     print(json.dumps(results, indent=2))
-    return 0 if all(v and v.get("ok", False) for v in results.values()) else 1
+    return 0 if all(step.get("ok", False) for step in results.values()) else 1
 
 
 if __name__ == "__main__":
