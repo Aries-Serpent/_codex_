@@ -206,3 +206,11 @@ def env_snapshot(session: nox.Session) -> None:
     """Emit artifacts/env_snapshot.json for reproducibility evidence."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/env/export_env_json.py")
+
+
+@nox.session(name="lint")
+def lint(session: nox.Session) -> None:
+    """Static linting/format checks (local-only)."""
+    session.install("ruff==0.5.7", "black==24.8.0")
+    session.run("ruff", "check", ".")
+    session.run("black", "--check", ".")

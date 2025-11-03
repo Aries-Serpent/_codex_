@@ -363,6 +363,17 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         or reproducibility_cfg.get("bf16_require_capability", False)
     )
 
+    # Minimal verification context (non-breaking error capture hook)
+    try:
+        # NOTE: When constructing DataLoader, pass worker_init_fn=seed_worker from utils.torch_det
+        pass  # Placeholder for model verification if needed
+    except Exception as e:
+        try:
+            from codex_ml.utils.errors import record_error
+            record_error("T00", "pre_training_check", str(e), "cli.train")
+        except Exception:
+            pass
+
     run_training(
         epochs=int(epochs),
         grad_accum=int(grad_accum),

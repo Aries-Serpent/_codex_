@@ -596,6 +596,22 @@ def run_evaluation(
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
+    # Structured log (append-only)
+    try:
+        from tools.logging.structured_logger import JsonLogger
+        _jl = JsonLogger("artifacts/logs/eval.ndjson")
+        _jl.write(event="eval_start", metrics_sink=sink_kind)
+    except Exception:
+        pass
+
+    # Optional perf sampling
+    if os.getenv("CODEX_ENABLE_PERF_SAMPLER") == "1":
+        try:
+            from tools.perf.sampler import PerfSampler
+            PerfSampler().run(steps=3)
+        except Exception:
+            pass
+
     run_id = _derive_run_id(eval_cfg, dataset_path)
     # Convert run_id to integer using hash for arbitrary strings
     try:

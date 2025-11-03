@@ -155,3 +155,18 @@ What are the possible causes, and how can this be resolved while preserving inte
 ---
 
 > Keep patches tiny, gates clear, and references close. If you need, I can also drop this file into a `docs/` folder and add a `make runbook` target that prints the gate status after each run.
+
+---
+
+## Extended Offline Tooling (Wave 3)
+
+```bash
+# Security and asset management
+python tools/security/scan_repo.py
+python tools/security/license_audit.py
+python tools/assets/build_manifest.py && python tools/assets/verify_manifest.py
+
+# Status and capability discovery
+python tools/status/capability_autodiscovery.py
+nox -s status-validate
+```
