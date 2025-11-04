@@ -100,12 +100,14 @@ def create_error_file(report_path: Path, errors: List[str]) -> Path:
     ]
     
     if errors:
-        for idx, error in enumerate(errors, 1):
-            # Check if this is a sub-item (starts with spaces)
+        error_num = 1
+        for error in errors:
+            # Check if this is a sub-item (starts with spaces and dash)
             if error.strip().startswith('-'):
                 content_lines.append(error)
             else:
-                content_lines.append(f"{idx}. {error}")
+                content_lines.append(f"{error_num}. {error}")
+                error_num += 1
     else:
         content_lines.append("_No errors found._")
     

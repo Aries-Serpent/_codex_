@@ -25,7 +25,7 @@ This file contains validation errors and incomplete aspects detected in the stat
   - ## 11. Scoring Rubric
   - ## 12. Appendix
   - ### 2.9 Deferred Items
-16. Scoring rubric elements incomplete - Missing severity or confidence markers
+3. Scoring rubric elements incomplete - Missing severity or confidence markers
 
 ---
 
