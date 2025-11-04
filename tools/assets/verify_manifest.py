@@ -24,15 +24,23 @@ def main() -> int:
         print(f"Manifest not found: {MANIFEST_PATH}")
         return 1
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    files = manifest.get("files", {})
+    if not files:
+        print("ERROR: Manifest contains no files to verify")
+        return 1
     ok = True
-    for entry in manifest.get("items", []):
-        path = Path(entry.get("path", ""))
-        expected = entry.get("sha256")
+    for path_str, expected in files.items():
+        path = Path(path_str)
         if not path.exists():
             print(f"MISSING: {path}")
             ok = False
             continue
-        actual = sha256(path)
+        try:
+            actual = sha256(path)
+        except Exception as e:
+            print(f"ERROR reading {path}: {e}")
+            ok = False
+            continue
         if actual != expected:
             print(f"MISMATCH: {path} expected={expected} actual={actual}")
             ok = False
