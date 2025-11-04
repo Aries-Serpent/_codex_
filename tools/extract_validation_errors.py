@@ -15,9 +15,7 @@ from validate_status_report import (
     check_required_sections,
     check_template_version,
     check_title_format,
-    normalise_version_key,
     _canonicalise_version,
-    is_supported_template_version,
 )
 
 
