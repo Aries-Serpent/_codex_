@@ -1,0 +1,42 @@
+{
+  "report_id": "2025-11-04-22:25Z-UTC",
+  "schema_version": "v1.2",
+  "source_branch": "main",
+  "generated_branch": "gpt/audit-2025-11-04-2225Z",
+  "hiccups": [
+    {
+      "hiccup_id": "HCP-001",
+      "type": "schema_mismatch",
+      "expected": "CAP-013 Experiment Tracking",
+      "found": "stub only",
+      "cause": "MLflow hooks absent",
+      "suggested_fix": "add placeholder hooks for offline MLflow tracking"
+    },
+    {
+      "hiccup_id": "HCP-002",
+      "type": "data_gap",
+      "expected": "validation_errors[] integration",
+      "found": "partial",
+      "cause": "recent tool addition (extract_validation_errors.py)",
+      "suggested_fix": "extend schema v1.3 to include validation_errors node"
+    },
+    {
+      "hiccup_id": "HCP-003",
+      "type": "utf8_edge_case",
+      "expected": "emoji encoding 🔤",
+      "found": "resolved",
+      "cause": "bad NFC glyph combination in markdown renderer",
+      "suggested_fix": "keep verify_utf8 gate active"
+    },
+    {
+      "hiccup_id": "HCP-004",
+      "type": "schema_drift",
+      "expected": "atomic_diffs[] section",
+      "found": "absent",
+      "cause": "markdown generator omits JSON block in final report",
+      "suggested_fix": "embed atomic_diffs in future schema extension"
+    }
+  ],
+  "validation_outcome": "PASS_WITH_DEBUG",
+  "next_audit": "2025-11-05T22:25:00Z"
+}
