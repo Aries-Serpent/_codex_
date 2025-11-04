@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 import re
+import sys
 
 
 BEGIN = re.compile(r"^\*\*\* Begin Patch")
@@ -29,14 +30,23 @@ def apply_patch_block(lines: list[str]) -> None:
     m_add = ADD.match(header)
     m_upd = UPDATE.match(header)
     m_del = DELETE.match(header)
+    
+    # Validate path to prevent directory traversal attacks
+    # Allow absolute paths, but block paths with .. components
+    def validate_path(path_str: str) -> Path:
+        if ".." in Path(path_str).parts:
+            print(f"[ERROR] Path traversal detected: {path_str}", file=sys.stderr)
+            sys.exit(1)
+        return Path(path_str)
+    
     if m_add:
-        path = Path(m_add.group(1))
+        path = validate_path(m_add.group(1))
         content = "\n".join(lines[1:])
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         print(f"[ADD] {path}")
     elif m_upd:
-        path = Path(m_upd.group(1))
+        path = validate_path(m_upd.group(1))
         # naive update: replace file with provided content
         content = "\n".join(lines[1:])
         if not path.exists():
@@ -45,7 +55,7 @@ def apply_patch_block(lines: list[str]) -> None:
         path.write_text(content, encoding="utf-8")
         print(f"[UPDATE] {path}")
     elif m_del:
-        path = Path(m_del.group(1))
+        path = validate_path(m_del.group(1))
         if path.exists():
             path.unlink()
             print(f"[DELETE] {path}")

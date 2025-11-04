@@ -1,4 +1,3 @@
-from pathlib import Path
 import json
 
 def test_perf_summary(tmp_path, monkeypatch):

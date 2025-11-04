@@ -32,7 +32,15 @@ def main(argv=None) -> int:
     ap.add_argument("--threshold", type=float, help="Override threshold")
     args = ap.parse_args(argv)
 
-    cfg = load_config(Path(args.config))
+    # Validate paths to prevent path traversal attacks
+    # Allow absolute paths, but prevent relative paths with .. components
+    for name, path_str in [("baseline", args.baseline), ("candidate", args.candidate), ("config", args.config)]:
+        if ".." in Path(path_str).parts:
+            print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
+            return 1
+
+    config_path = Path(args.config)
+    cfg = load_config(config_path)
     metric, threshold = resolve_threshold(cfg, args.template)
     if args.metric:
         metric = args.metric

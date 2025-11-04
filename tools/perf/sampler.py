@@ -1,4 +1,4 @@
-import os, time, json
+import time, json
 from pathlib import Path
 try:
     import psutil
@@ -14,8 +14,11 @@ class PerfSampler:
         self.out = Path(out); self.out.parent.mkdir(parents=True, exist_ok=True)
         self.interval = interval
         if nvml:
-            try: nvml.nvmlInit()
-            except Exception: pass
+            try:
+                nvml.nvmlInit()
+            except Exception:
+                # GPU not available or NVML initialization failed
+                pass
     def sample_once(self):
         row = {"ts": time.time()}
         if psutil:
@@ -27,7 +30,9 @@ class PerfSampler:
                     "util": nvml.nvmlDeviceGetUtilizationRates(dev).gpu,
                     "mem_used": nvml.nvmlDeviceGetMemoryInfo(dev).used
                 }
-            except Exception: pass
+            except Exception:
+                # GPU metrics not available or device error
+                pass
         with self.out.open("a", encoding="utf-8") as f:
             f.write(json.dumps(row) + "\n")
     def run(self, steps=5):
