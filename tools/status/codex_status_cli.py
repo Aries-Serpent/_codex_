@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import subprocess, sys, json
+import subprocess, sys
 from datetime import datetime, timezone
-from pathlib import Path
 
 def run(*args):
     try: subprocess.check_call(list(args))
@@ -23,6 +22,7 @@ def main():
     # render nicer MD
     run("python","tools/status/render_md.py", json_path, f"{prefix}-{today}.tables.md")
     print(f"OK -> {json_path}")
+    return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())
