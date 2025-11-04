@@ -9,7 +9,7 @@ ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
 
 # For immutable builds, prefer digest pinning. Example:
 # FROM python:3.11-slim@sha256:<digest-here>
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 
 ARG VERSION
 ARG VCS_REF
@@ -44,7 +44,7 @@ RUN pip wheel --no-deps --wheel-dir /tmp/wheels .
 
 # For immutable builds, prefer digest pinning. Example:
 # FROM python:3.11-slim@sha256:<digest-here>
-FROM python:3.11-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 ARG VERSION
 ARG VCS_REF
