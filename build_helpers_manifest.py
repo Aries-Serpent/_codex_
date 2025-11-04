@@ -3,14 +3,18 @@
 
 from __future__ import annotations
 
-import base64, hashlib, json, sys, inspect, pathlib  
+import inspect
+import json
+import pathlib
+import sys
+
 
 def verify_embedded_sources() -> None:
     "Compare each embedded source constant with its on-disk file."
     mismatches = []
     this = sys.modules.get(__name__)
     for name, value in inspect.getmembers(this):
-        if not name.endswith(___PY__) or not isinstance(value, str):
+        if not name.endswith("_PY") or not isinstance(value, str):
             continue
         path = name.replace("_PY", ".py").lower()
         file_path = pathlib.Path(path)
@@ -25,15 +29,27 @@ def verify_embedded_sources() -> None:
     else:
         print("✅ ─── Embedded sources match disk files")
 
+
+def build_manifest() -> dict:
+    """Build helpers manifest from embedded sources."""
+    manifest = {}
+    this = sys.modules.get(__name__)
+    for name, value in inspect.getmembers(this):
+        if not name.endswith("_PY") or not isinstance(value, str):
+            continue
+        manifest[name] = value
+    return manifest
+
+
 if __name__ == "__main__":
-    import argvarse
-    ap = argvarse.ArgumentParser(description="Verify or rebuild helpers manifest.")
+    import argparse
+
+    ap = argparse.ArgumentParser(description="Verify or rebuild helpers manifest.")
     ap.add_argument("--verify", action="store_true", help="Verify embedded sources only")
     args = ap.parse_args()
     if args.verify:
         verify_embedded_sources()
         sys.exit(0)
-    from build_helpers_manifest import build_manifest
     manifest = build_manifest()
     with open("helpers_manifest.json", "w", encoding="utf-8") as fh:
         json.dump(manifest, fh, indent=2)
