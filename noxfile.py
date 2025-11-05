@@ -266,3 +266,20 @@ def config_index(session: nox.Session) -> None:
     """List Hydra config groups and options (offline discovery)."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/configs/list_groups.py")
+
+
+@nox.session(name="config_schema")
+def config_schema(session: nox.Session) -> None:
+    """Validate config schemas (offline)."""
+    session.install("-r", "requirements-dev.txt")
+    # Example: validate a sample config
+    session.run("python", "tools/configs/schema_guard.py", "--path", "configs/base/hydra.yaml")
+
+
+@nox.session(name="perf_smoke")
+def perf_smoke(session: nox.Session) -> None:
+    """Run performance smoke tests (opt-in, guarded by CODEX_PERF_SMOKE)."""
+    session.install("-r", "requirements-dev.txt")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.env["CODEX_PERF_SMOKE"] = "1"
+    session.run("pytest", "-q", "tests/perf/test_smoke.py")
