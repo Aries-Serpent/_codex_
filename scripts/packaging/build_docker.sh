@@ -29,7 +29,7 @@ BUILD_CMD="docker build -f Dockerfile.gpu -t ${IMAGE_TAG}"
 BUILD_CMD="${BUILD_CMD} --build-arg INSTALL_TORCH_GPU=${INSTALL_TORCH_GPU}"
 
 if [ -n "${TORCH_WHEEL}" ]; then
-    BUILD_CMD="${BUILD_CMD} --build-arg TORCH_WHEEL=\"${TORCH_WHEEL}\""
+    BUILD_CMD="${BUILD_CMD} --build-arg TORCH_WHEEL=${TORCH_WHEEL}"
 fi
 
 # Add metadata build args
