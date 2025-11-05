@@ -5,8 +5,6 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-import pytest
-
 from codex_ml.data.cache import cache_records, derive_key, load_cached_records
 
 

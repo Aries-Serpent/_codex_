@@ -137,7 +137,10 @@ def main() -> int:
     
     print(json.dumps(report, indent=2))
     
-    # Always exit 0 (non-blocking)
+    # Always exit 0 (non-blocking) to support iterative development.
+    # This tool is designed to be informative rather than a hard gate.
+    # Validation failures are reported in the JSON output but don't block workflows.
+    # This allows developers to see issues without breaking their local iteration cycle.
     return 0
 
 

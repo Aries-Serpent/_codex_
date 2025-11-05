@@ -84,6 +84,9 @@ def get_tb_writer(
             try:
                 writer.close()
             except Exception:
+                # Silently ignore close errors to ensure cleanup doesn't fail
+                # the entire context. Common errors include already-closed writers
+                # or filesystem issues during flush.
                 pass
 
 

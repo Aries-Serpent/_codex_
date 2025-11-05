@@ -22,32 +22,32 @@ echo "Custom torch wheel: ${TORCH_WHEEL:-<none>}"
 
 cd "${REPO_ROOT}"
 
-# Build command
-BUILD_CMD="docker build -f Dockerfile.gpu -t ${IMAGE_TAG}"
+# Build command as array to preserve argument structure
+BUILD_CMD=(docker build -f Dockerfile.gpu -t "${IMAGE_TAG}")
 
 # Add build args
-BUILD_CMD="${BUILD_CMD} --build-arg INSTALL_TORCH_GPU=${INSTALL_TORCH_GPU}"
+BUILD_CMD+=(--build-arg "INSTALL_TORCH_GPU=${INSTALL_TORCH_GPU}")
 
 if [ -n "${TORCH_WHEEL}" ]; then
-    BUILD_CMD="${BUILD_CMD} --build-arg TORCH_WHEEL=${TORCH_WHEEL}"
+    BUILD_CMD+=(--build-arg "TORCH_WHEEL=${TORCH_WHEEL}")
 fi
 
 # Add metadata build args
 if command -v git &> /dev/null; then
     VERSION="$(git describe --tags --always --dirty=+ 2>/dev/null || echo 'unknown')"
     VCS_REF="$(git rev-parse --short=12 HEAD 2>/dev/null || echo 'unknown')"
-    BUILD_CMD="${BUILD_CMD} --build-arg VERSION=${VERSION}"
-    BUILD_CMD="${BUILD_CMD} --build-arg VCS_REF=${VCS_REF}"
+    BUILD_CMD+=(--build-arg "VERSION=${VERSION}")
+    BUILD_CMD+=(--build-arg "VCS_REF=${VCS_REF}")
 fi
 
 BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-BUILD_CMD="${BUILD_CMD} --build-arg BUILD_DATE=${BUILD_DATE}"
+BUILD_CMD+=(--build-arg "BUILD_DATE=${BUILD_DATE}")
 
 # Add repo root context
-BUILD_CMD="${BUILD_CMD} ."
+BUILD_CMD+=(.)
 
-echo "==> Running: ${BUILD_CMD}"
-eval "${BUILD_CMD}"
+echo "==> Running: ${BUILD_CMD[*]}"
+"${BUILD_CMD[@]}"
 
 echo ""
 echo "==> Build complete: ${IMAGE_TAG}"

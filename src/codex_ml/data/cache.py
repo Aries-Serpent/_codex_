@@ -93,6 +93,15 @@ def derive_key(*parts: str) -> str:
     >>> key = derive_key("imdb", "train", "42")
     >>> len(key)
     16
+    
+    Notes
+    -----
+    The hash is truncated to 16 hex characters (64 bits) for readability and
+    filesystem compatibility. While this reduces collision resistance compared
+    to the full 256-bit SHA256, it provides adequate protection for typical
+    dataset caching scenarios (up to ~billions of entries before significant
+    collision probability). For applications requiring stronger guarantees,
+    consider using the full hash or adding version prefixes.
     """
     combined = ":".join(str(p) for p in parts)
     full_hash = _sha256_text(combined)
