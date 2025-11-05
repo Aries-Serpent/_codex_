@@ -236,6 +236,8 @@ def repro_smoke(session: nox.Session) -> None:
     - Generative metrics optional behavior
     """
     session.install("-r", "requirements-dev.txt")
+    # Disable pytest plugin autoload to ensure deterministic test execution and avoid
+    # interference from globally installed pytest plugins, which could affect results.
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.run(
         "pytest",
