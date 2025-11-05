@@ -371,7 +371,24 @@ def _compute_metrics(
             rouge_score = metrics.rouge_l(predictions, targets)
             if rouge_score is None:
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
-            results[metric_name] = rouge_score["rougeL_f"]
+            # Handle both float and dict returns for compatibility
+            if isinstance(rouge_score, dict):
+                # Different ROUGE implementations may return the F1 score under different keys.
+                # The order below reflects the most common conventions:
+                #   - "rougeL_f": used by the `rouge-score` package (F1 score for ROUGE-L)
+                #   - "rougeL": sometimes used for the F1 score (legacy or alternate APIs)
+                #   - "f": generic F1 key (some custom or older implementations)
+                #   - "fmeasure": another possible F1 key (rare)
+                # We check in this order to prefer the most standard/precise keys first.
+                for key_candidate in ["rougeL_f", "rougeL", "f", "fmeasure"]:
+                    if key_candidate in rouge_score:
+                        results[metric_name] = rouge_score[key_candidate]
+                        break
+                else:
+                    raise EvaluationError(f"ROUGE-L returned dict without expected keys: {list(rouge_score.keys())}")
+            else:
+                # Direct float/numeric return
+                results[metric_name] = rouge_score
         else:
             if key in registry_metrics:
                 _, metric_fn = registry_metrics[key]
@@ -549,6 +566,26 @@ def run_evaluation(
             mlflow.set_tracking_uri("file:artifacts/mlruns")
             mlflow.set_experiment("codex_offline")
             mlflow.start_run()
+            
+            # Best-effort: log enriched run metadata (guarded)
+            try:
+                # Git commit
+                git_commit = os.getenv("CODEX_GIT_COMMIT", "")
+                if git_commit:
+                    mlflow.log_param("codex_git_commit", git_commit)
+                
+                # Conda environment
+                conda_env = os.getenv("CONDA_DEFAULT_ENV", "")
+                if conda_env:
+                    mlflow.log_param("conda_env", conda_env)
+                
+                # Seed
+                mlflow.log_param("seed", seed_value)
+                
+                # Dataset path (absolute)
+                mlflow.log_param("dataset_path", str(dataset_path.resolve()))
+            except Exception:
+                pass  # Silently ignore param logging errors
         except Exception:
             pass  # Silently ignore MLflow errors
 

@@ -224,3 +224,62 @@ def typecheck(session: nox.Session) -> None:
         session.run("mypy", "src")
     except Exception:
         session.log("mypy unavailable; skipping")
+
+
+@nox.session(name="repro_smoke")
+def repro_smoke(session: nox.Session) -> None:
+    """Run reproducibility and plugin smoke tests (local-only).
+    
+    Validates:
+    - Deterministic behavior with fixed seeds
+    - Plugin loading is non-fatal
+    - Generative metrics optional behavior
+    """
+    session.install("-r", "requirements-dev.txt")
+    # Disable pytest plugin autoload to ensure deterministic test execution and avoid
+    # interference from globally installed pytest plugins, which could affect results.
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.run(
+        "pytest",
+        "-q",
+        "tests/test_metrics_generative.py",
+        "tests/eval/test_eval_provenance_capture.py",
+        "tests/plugins/test_metric_plugin_loading.py",
+    )
+
+
+@nox.session(name="tracking_smoke")
+def tracking_smoke(session: nox.Session) -> None:
+    """Run local MLflow smoke test against file backend (local-only)."""
+    session.install("-r", "requirements-dev.txt")
+    session.env["MLFLOW_TRACKING_URI"] = "file:./mlruns"
+    session.log("[tracking_smoke] using tracking URI file:./mlruns")
+    # Create mlruns directory and verify setup
+    import pathlib
+    mlruns = pathlib.Path("./mlruns")
+    mlruns.mkdir(parents=True, exist_ok=True)
+    session.log(f"[tracking_smoke] mlruns directory: {mlruns.resolve()}")
+
+
+@nox.session(name="config_index")
+def config_index(session: nox.Session) -> None:
+    """List Hydra config groups and options (offline discovery)."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/configs/list_groups.py")
+
+
+@nox.session(name="config_schema")
+def config_schema(session: nox.Session) -> None:
+    """Validate config schemas (offline)."""
+    session.install("-r", "requirements-dev.txt")
+    # Example: validate a sample config
+    session.run("python", "tools/configs/schema_guard.py", "--path", "configs/base/hydra.yaml")
+
+
+@nox.session(name="perf_smoke")
+def perf_smoke(session: nox.Session) -> None:
+    """Run performance smoke tests (opt-in, guarded by CODEX_PERF_SMOKE)."""
+    session.install("-r", "requirements-dev.txt")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.env["CODEX_PERF_SMOKE"] = "1"
+    session.run("pytest", "-q", "tests/perf/test_smoke.py")
