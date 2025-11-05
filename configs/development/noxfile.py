@@ -873,3 +873,37 @@ def diagram_check(session: nox.Session) -> None:
             "print(flow_to_mermaid('intake', ['Create','Triage']))"
         ),
     )
+
+
+@nox.session(name="repro_smoke", python=DEFAULT_PYTHON)
+def repro_smoke(session: nox.Session) -> None:
+    """Run reproducibility and plugin smoke tests (local-only).
+    
+    Validates:
+    - Deterministic behavior with fixed seeds
+    - Plugin loading is non-fatal
+    - Generative metrics optional behavior
+    """
+    _ensure_pip_cache(session)
+    _install(session, *TEST_BOOTSTRAP_PKGS)
+    _install(session, "--no-deps", "-e", ".")
+    _install(session, "pytest", "pytest-randomly")
+    _export_env(session)
+    session.run(
+        "pytest",
+        "-p",
+        "pytest_randomly",
+        "-q",
+        "tests/test_metrics_generative.py",
+        "tests/eval/test_eval_provenance_capture.py",
+        "tests/plugins/test_metric_plugin_loading.py",
+    )
+
+
+@nox.session(name="config_index", python=DEFAULT_PYTHON)
+def config_index(session: nox.Session) -> None:
+    """List Hydra config groups and options (offline discovery)."""
+    _ensure_pip_cache(session)
+    _install(session, "hydra-core[hydra_plugins]>=1.3", "omegaconf>=2.3")
+    _export_env(session)
+    session.run("python", "tools/configs/list_groups.py")

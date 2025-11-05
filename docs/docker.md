@@ -89,14 +89,38 @@ Convenience targets:
 - make owner-approve-24h | make owner-approve-status | make owner-approve-extend-24h | make owner-approve-clear
 
 ## GPU image (optional)
+The GPU image (`Dockerfile.gpu`) is based on `nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04` and includes CUDA-enabled PyTorch.
+
+**Important**: The GPU image explicitly installs PyTorch with CUDA 12.1 support (compatible with CUDA 12.2 runtime) before processing requirements files. This ensures GPU training capabilities are available.
+
 - Build locally:
 ```bash
 make docker-gpu-build
+# Or manually:
+docker build -t codex:gpu -f Dockerfile.gpu .
 ```
+
+- Verify GPU support:
+```bash
+docker run --rm --gpus all codex:gpu python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
+```
+
 - Run (requires NVIDIA Container Toolkit):
 ```bash
 make docker-gpu-run HOST_PORT=8000
+# Or manually:
+docker run --rm --gpus all -p 8000:8000 codex:gpu
 ```
+
+**Prerequisites for GPU containers**:
+- NVIDIA GPU with CUDA support
+- NVIDIA Container Toolkit installed on the host
+- Docker configured to use the NVIDIA runtime
+
+**Known limitations**:
+- PyTorch version is pinned to ensure CUDA compatibility
+- Base requirements may list CPU-only torch; the Dockerfile explicitly overrides this
+- Image size is significantly larger due to CUDA libraries
 
 ## Multi-arch builds
 - For local buildx (no `--load`), specify platforms:
