@@ -371,7 +371,18 @@ def _compute_metrics(
             rouge_score = metrics.rouge_l(predictions, targets)
             if rouge_score is None:
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
-            results[metric_name] = rouge_score["rougeL_f"]
+            # Handle both float and dict returns for compatibility
+            if isinstance(rouge_score, dict):
+                # Try multiple possible dict keys
+                for key_candidate in ["rougeL_f", "rougeL", "f", "fmeasure"]:
+                    if key_candidate in rouge_score:
+                        results[metric_name] = rouge_score[key_candidate]
+                        break
+                else:
+                    raise EvaluationError(f"ROUGE-L returned dict without expected keys: {rouge_score.keys()}")
+            else:
+                # Direct float/numeric return
+                results[metric_name] = rouge_score
         else:
             if key in registry_metrics:
                 _, metric_fn = registry_metrics[key]
