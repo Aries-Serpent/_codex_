@@ -50,7 +50,7 @@ def test_evaluation_captures_git_commit_in_provenance(
         text_field="text",
     )
 
-    result = run_evaluation(cfg)
+    run_evaluation(cfg)
 
     # Check that provenance was exported
     provenance_dir = output_dir / "provenance"

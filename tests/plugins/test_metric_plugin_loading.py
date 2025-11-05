@@ -3,8 +3,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from codex_ml.metrics.registry import init_metric_plugins, list_metrics
 
 

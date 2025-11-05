@@ -49,10 +49,17 @@ def discover_config_roots() -> dict[str, list[str] | str]:
         try:
             search_path = create_config_search_path("codex")
             roots = []
-            for provider in search_path.provider:
-                path = provider.path
-                if path:
-                    roots.append(str(path))
+            # Defensive: check if provider attribute exists and is iterable
+            if hasattr(search_path, "provider"):
+                try:
+                    for provider in search_path.provider:
+                        if hasattr(provider, "path"):
+                            path = provider.path
+                            if path:
+                                roots.append(str(path))
+                except (TypeError, AttributeError) as e:
+                    # Handle case where provider is not iterable or lacks expected attributes
+                    result["error"] = f"Hydra API structure mismatch: {e}"
             result["roots"] = roots
         except Exception as e:
             result["roots"] = []

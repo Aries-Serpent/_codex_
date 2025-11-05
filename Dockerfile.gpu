@@ -9,6 +9,8 @@ ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
 # GPU-specific build args
 ARG INSTALL_TORCH_GPU="0"
 ARG TORCH_WHEEL=""
+ARG TORCH_VERSION="2.4.0"
+ARG TORCHVISION_VERSION="0.19.0"
 
 FROM python:3.14-slim AS builder
 
@@ -41,6 +43,8 @@ ARG BUILD_DATE
 ARG VCS_URL
 ARG INSTALL_TORCH_GPU
 ARG TORCH_WHEEL
+ARG TORCH_VERSION
+ARG TORCHVISION_VERSION
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -92,11 +96,11 @@ RUN if [ "$INSTALL_TORCH_GPU" = "1" ]; then \
         echo "Installing custom PyTorch: $TORCH_WHEEL"; \
         /opt/venv/bin/pip install --no-cache-dir $TORCH_WHEEL; \
       else \
-        echo "Installing default CUDA 12.1 PyTorch"; \
+        echo "Installing default CUDA 12.1 PyTorch ${TORCH_VERSION}"; \
         /opt/venv/bin/pip install --no-cache-dir \
-          torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121 \
+          torch==${TORCH_VERSION} --index-url https://download.pytorch.org/whl/cu121 \
        && /opt/venv/bin/pip install --no-cache-dir \
-          torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu121; \
+          torchvision==${TORCHVISION_VERSION} --index-url https://download.pytorch.org/whl/cu121; \
       fi; \
     else \
       echo "Skipping GPU PyTorch install (INSTALL_TORCH_GPU not set to 1)"; \
