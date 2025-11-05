@@ -116,6 +116,8 @@ artifacts/*
 !artifacts/rl/scripted_agent/
 !artifacts/rl/scripted_agent/policy.json
 !artifacts/guardrails/
+# Ignore generated API docs (local build artifacts)
+artifacts/docs/api/
 logs/*
 validation.log
 report.xml

@@ -1,14 +1,36 @@
 # Documentation Index
 
+## API Reference
+
+- **[API Documentation](api/README.md)** — Comprehensive API reference auto-generated from source code
+  - Build locally: `nox -s docs` or `python tools/build_api_docs.py`
+  - View at: `artifacts/docs/api/index.html`
+
+## Architecture & Design
+
 - [Architecture](architecture.md)
 - [Formal Artifacts](specs/FORMAL_ARTIFACTS.md) — Specs, prompts, acceptance guides
+
+## Guides & How-Tos
+
 - [How-to: Offline Tracking Guards](how-to/offline_tracking.md)
 - [How-to: Checkpoint Metadata](how-to/checkpoint_metadata.md)
 - [How-to: Dataset Manifest](how-to/dataset_manifest.md)
 - [How-to: CODEOWNERS Validation](how-to/codeowners_validation.md)
 - [How-to: Admin Bootstrap](how-to/admin_bootstrap.md)
 - [How-to: Bootstrap Self‑Hosted Runner](how-to/bootstrap_runner.md)
+
+## Operations
+
 - [Ops: Rulesets vs Protection](ops/repo_rulesets_vs_protection.md)
 - [How-to: Run Audit on 0D_base_](how-to/run_audit_0D_base_.md)
   - [Traversal Workflow](Traversal_Workflow.md)
   - [Usage Guide](Usage_Guide.md)
+
+## Plugins & Extensibility
+
+- [Plugin API (Broader Factory System)](plugins/Plugin_API_Broader.md)
+
+## Training & Deployment
+
+- [Distributed Training Troubleshooting](training/distributed_troubleshooting.md)
