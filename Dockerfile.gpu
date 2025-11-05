@@ -109,7 +109,11 @@ RUN if [ -f "requirements/docker.txt" ]; then \
     elif [ -f "requirements/base.txt" ]; then \
       # Skip torch from base.txt if GPU version was installed above
       if [ "$INSTALL_TORCH_GPU" = "1" ]; then \
-        grep -v "^torch==" requirements/base.txt > /tmp/base_no_torch.txt || cp requirements/base.txt /tmp/base_no_torch.txt; \
+        python3 -c "import re; \
+with open('requirements/base.txt') as f, open('/tmp/base_no_torch.txt', 'w') as out: \
+    for line in f: \
+        if not re.match(r'^\s*torch(\W|$)', line): \
+            out.write(line)" || cp requirements/base.txt /tmp/base_no_torch.txt; \
         /opt/venv/bin/pip install -r /tmp/base_no_torch.txt; \
       else \
         /opt/venv/bin/pip install -r requirements/base.txt; \
