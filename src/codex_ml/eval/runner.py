@@ -385,7 +385,7 @@ def _compute_metrics(
                         results[metric_name] = rouge_score[key_candidate]
                         break
                 else:
-                    raise EvaluationError(f"ROUGE-L returned dict without expected keys: {rouge_score.keys()}")
+                    raise EvaluationError(f"ROUGE-L returned dict without expected keys: {list(rouge_score.keys())}")
             else:
                 # Direct float/numeric return
                 results[metric_name] = rouge_score
