@@ -373,7 +373,13 @@ def _compute_metrics(
                 raise EvaluationError("rouge_score package is required for ROUGE-L")
             # Handle both float and dict returns for compatibility
             if isinstance(rouge_score, dict):
-                # Try multiple possible dict keys
+                # Different ROUGE implementations may return the F1 score under different keys.
+                # The order below reflects the most common conventions:
+                #   - "rougeL_f": used by the `rouge-score` package (F1 score for ROUGE-L)
+                #   - "rougeL": sometimes used for the F1 score (legacy or alternate APIs)
+                #   - "f": generic F1 key (some custom or older implementations)
+                #   - "fmeasure": another possible F1 key (rare)
+                # We check in this order to prefer the most standard/precise keys first.
                 for key_candidate in ["rougeL_f", "rougeL", "f", "fmeasure"]:
                     if key_candidate in rouge_score:
                         results[metric_name] = rouge_score[key_candidate]
