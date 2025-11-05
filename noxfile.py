@@ -224,3 +224,23 @@ def typecheck(session: nox.Session) -> None:
         session.run("mypy", "src")
     except Exception:
         session.log("mypy unavailable; skipping")
+
+
+@nox.session(name="repro_smoke")
+def repro_smoke(session: nox.Session) -> None:
+    """Run reproducibility and plugin smoke tests (local-only).
+    
+    Validates:
+    - Deterministic behavior with fixed seeds
+    - Plugin loading is non-fatal
+    - Generative metrics optional behavior
+    """
+    session.install("-r", "requirements-dev.txt")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    session.run(
+        "pytest",
+        "-q",
+        "tests/test_metrics_generative.py",
+        "tests/eval/test_eval_provenance_capture.py",
+        "tests/plugins/test_metric_plugin_loading.py",
+    )
