@@ -560,6 +560,26 @@ def run_evaluation(
             mlflow.set_tracking_uri("file:artifacts/mlruns")
             mlflow.set_experiment("codex_offline")
             mlflow.start_run()
+            
+            # Best-effort: log enriched run metadata (guarded)
+            try:
+                # Git commit
+                git_commit = os.getenv("CODEX_GIT_COMMIT", "")
+                if git_commit:
+                    mlflow.log_param("codex_git_commit", git_commit)
+                
+                # Conda environment
+                conda_env = os.getenv("CONDA_DEFAULT_ENV", "")
+                if conda_env:
+                    mlflow.log_param("conda_env", conda_env)
+                
+                # Seed
+                mlflow.log_param("seed", seed_value)
+                
+                # Dataset path (absolute)
+                mlflow.log_param("dataset_path", str(dataset_path.resolve()))
+            except Exception:
+                pass  # Silently ignore param logging errors
         except Exception:
             pass  # Silently ignore MLflow errors
 

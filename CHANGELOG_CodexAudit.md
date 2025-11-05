@@ -373,9 +373,95 @@ git checkout 70508f4~1 -- \
 
 ---
 
+## Batch 5: Experiment Tracking & Config Discovery
+
+**RC Items**: RC-11, RC-12, RC-13  
+**Date**: 2025-11-05  
+**Commits**: Current
+
+### Changes
+
+#### MLflow Offline Metadata Enrichment
+
+**File**: `src/codex_ml/eval/runner.py`
+
+**Change**: Added best-effort MLflow parameter logging when `CODEX_ENABLE_MLFLOW=1`
+
+**Parameters Logged**:
+```python
+# When CODEX_ENABLE_MLFLOW=1 is set
+mlflow.log_param("codex_git_commit", os.getenv("CODEX_GIT_COMMIT", ""))
+mlflow.log_param("conda_env", os.getenv("CONDA_DEFAULT_ENV", ""))
+mlflow.log_param("seed", seed_value)
+mlflow.log_param("dataset_path", str(dataset_path.resolve()))
+```
+
+**Error Handling**: All logging wrapped in try-except; failures silently ignored
+
+**Enablement**:
+```bash
+export CODEX_ENABLE_MLFLOW=1
+export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)  # optional
+```
+
+#### MLflow Local UI Viewer
+
+**File**: `scripts/tracking/mlflow_ui.sh` (new)
+
+**Purpose**: Launch MLflow UI against local file store
+
+**Usage**:
+```bash
+scripts/tracking/mlflow_ui.sh
+# Access at: http://localhost:5000
+```
+
+**File**: `docs/tracking/Offline_MLflow.md` (new) - Complete offline MLflow guide
+
+#### Config Groups Discovery Tool
+
+**File**: `tools/configs/list_groups.py` (new)
+
+**Purpose**: Discover and list Hydra config groups (offline)
+
+**Usage**:
+```bash
+python tools/configs/list_groups.py
+# Or via nox
+nox -s config_index
+```
+
+#### Nox Sessions
+
+**File**: `noxfile.py` (updated)
+
+**Sessions Added**:
+- `tracking_smoke` - MLflow file backend smoke test
+- `config_index` - List Hydra config groups
+
+**File**: `configs/development/noxfile.py` (updated)
+
+**Session Added**: `config_index`
+
+### Rollback
+
+```bash
+git checkout <batch5_commit>~1 -- \
+  src/codex_ml/eval/runner.py \
+  scripts/tracking/mlflow_ui.sh \
+  docs/tracking/Offline_MLflow.md \
+  tools/configs/list_groups.py \
+  noxfile.py \
+  configs/development/noxfile.py
+```
+
+**Impact**: None. MLflow logging is opt-in; config discovery is informative only.
+
+---
+
 ## Summary Statistics
 
-### Batches Completed: 4
+### Batches Completed: 5
 
 | Batch | RC Items | Files Modified | Files Added | Tests Added |
 |-------|----------|----------------|-------------|-------------|
@@ -383,7 +469,8 @@ git checkout 70508f4~1 -- \
 | 2 | RC-04, RC-07 | 1 | 3 | 8 |
 | 3 | RC-06 | 2 | 3 | 0 |
 | 4 | RC-05, RC-08, RC-09 | 2 | 5 | 3 |
-| **Total** | **8** | **5** | **11** | **11** |
+| 5 | RC-11, RC-12, RC-13 | 3 | 3 | 0 |
+| **Total** | **11** | **8** | **14** | **11** |
 
 ### Test Coverage
 
@@ -404,8 +491,11 @@ git checkout 70508f4~1 -- \
 | RC-06 | GPU Docker | ✅ Complete | 3 |
 | RC-07 | Metrics extras | ✅ Complete | 2 |
 | RC-08 | Nox smoke sessions | ✅ Complete | 4 |
-| RC-09 | Documentation | ✅ Complete | 2, 3, 4 |
+| RC-09 | Documentation | ✅ Complete | 2, 3, 4, 5 |
 | RC-10 | Patchset packaging | ✅ Complete | All |
+| RC-11 | MLflow metadata | ✅ Complete | 5 |
+| RC-12 | MLflow UI viewer | ✅ Complete | 5 |
+| RC-13 | Config groups index | ✅ Complete | 5 |
 
 ### Documentation Added
 
@@ -414,6 +504,7 @@ git checkout 70508f4~1 -- \
 3. `docs/deployment/docker_gpu.md` - GPU Docker guide
 4. `docs/validation/Repro_Validation.md` - Reproducibility validation
 5. `docs/validation/Metrics_Validation.md` - Metrics validation
+6. `docs/tracking/Offline_MLflow.md` - Offline MLflow tracking guide
 
 ### Backward Compatibility
 

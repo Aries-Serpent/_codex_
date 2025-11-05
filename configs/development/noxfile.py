@@ -898,3 +898,12 @@ def repro_smoke(session: nox.Session) -> None:
         "tests/eval/test_eval_provenance_capture.py",
         "tests/plugins/test_metric_plugin_loading.py",
     )
+
+
+@nox.session(name="config_index", python=DEFAULT_PYTHON)
+def config_index(session: nox.Session) -> None:
+    """List Hydra config groups and options (offline discovery)."""
+    _ensure_pip_cache(session)
+    _install(session, "hydra-core[hydra_plugins]>=1.3", "omegaconf>=2.3")
+    _export_env(session)
+    session.run("python", "tools/configs/list_groups.py")
