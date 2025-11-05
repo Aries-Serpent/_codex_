@@ -23,6 +23,11 @@ mkdir -p "${OUTPUT_DIR}"
 
 # Build wheel
 echo "==> Building wheel"
+# Check if 'build' module is installed
+if ! python -m build --version &> /dev/null; then
+  echo "Error: 'build' module not found. Install it with: pip install build"
+  exit 1
+fi
 python -m build --wheel --outdir "${OUTPUT_DIR}"
 
 echo "==> Build complete"
