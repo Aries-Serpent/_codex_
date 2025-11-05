@@ -19,6 +19,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Add src to Python path for imports
+_REPO_ROOT = Path(__file__).parent.parent.resolve()
+_SRC_DIR = _REPO_ROOT / "src"
+if str(_SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(_SRC_DIR))
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -30,14 +36,15 @@ logger = logging.getLogger(__name__)
 DEFAULT_OUTPUT_DIR = Path("artifacts/docs/api")
 
 # Modules to document (public API surface)
+# Start with core modules that are most likely to be importable
 MODULES_TO_DOCUMENT = [
-    "codex_ml",
     "codex.cli",
     "codex.logging",
 ]
 
 # Modules that require optional dependencies (gracefully skip if unavailable)
 OPTIONAL_MODULES = [
+    "codex_ml",  # May require torch and other heavy dependencies
     "codex_ml.peft",
     "codex_ml.distributed",
 ]
@@ -70,16 +77,22 @@ def filter_modules(modules: list[str], skip_optional: bool) -> list[str]:
     """Filter modules based on availability and skip_optional flag."""
     if skip_optional:
         # Remove optional modules
-        return [m for m in modules if m not in OPTIONAL_MODULES]
+        modules = [m for m in modules if m not in OPTIONAL_MODULES]
     
     # Try importing each module and skip those that fail
     available_modules = []
     for module in modules:
+        module_name = module.split(".")[0]
         try:
-            __import__(module.split(".")[0])
+            # Try to import the top-level module
+            __import__(module_name)
             available_modules.append(module)
+            logger.info(f"✓ Module {module} is importable")
         except ImportError as e:
             logger.warning(f"Skipping {module}: {e}")
+        except Exception as e:
+            # Catch any other exceptions during import
+            logger.warning(f"Skipping {module} due to error: {e}")
     
     return available_modules
 
@@ -115,12 +128,25 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
     ]
     cmd.extend(modules)
     
+    # Set PYTHONPATH to include src directory
+    env = os.environ.copy()
+    pythonpath = env.get("PYTHONPATH", "")
+    src_path = str(_SRC_DIR)
+    if pythonpath:
+        env["PYTHONPATH"] = f"{src_path}:{pythonpath}"
+    else:
+        env["PYTHONPATH"] = src_path
+    
+    logger.debug(f"Running: {' '.join(cmd)}")
+    logger.debug(f"PYTHONPATH: {env['PYTHONPATH']}")
+    
     try:
         result = subprocess.run(
             cmd,
             check=True,
             capture_output=True,
             text=True,
+            env=env,
         )
         logger.info("API documentation built successfully")
         

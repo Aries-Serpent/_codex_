@@ -116,7 +116,9 @@ artifacts/*
 !artifacts/rl/scripted_agent/
 !artifacts/rl/scripted_agent/policy.json
 !artifacts/guardrails/
-# Ignore generated API docs (local build artifacts)
+# Allow docs README but ignore generated API docs
+!artifacts/docs/
+!artifacts/docs/README.md
 artifacts/docs/api/
 logs/*
 validation.log
