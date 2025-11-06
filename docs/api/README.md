@@ -33,6 +33,53 @@ python tools/build_api_docs.py --skip-optional
 
 # Enable verbose logging
 python tools/build_api_docs.py --verbose
+
+# Strict mode: fail if any requested modules are missing (CI use)
+python tools/build_api_docs.py --fail-on-missing
+```
+
+### Strict Mode (--fail-on-missing)
+
+The `--fail-on-missing` flag enables strict checking for module availability, primarily for CI/CD workflows:
+
+**Behavior:**
+- Exit code 0: All requested modules successfully documented
+- Exit code 2: No modules found to document
+- Exit code 3: One or more requested modules missing (strict failure)
+
+**Use Cases:**
+- **CI/CD**: Ensure all dependencies are installed before documenting
+- **Release validation**: Verify complete API coverage before publishing
+- **Environment verification**: Confirm all expected modules are importable
+
+**Examples:**
+
+```bash
+# Local development (graceful skip of missing modules)
+python tools/build_api_docs.py
+
+# CI with full ML dependencies (fail if any missing)
+pip install -e .[ml]
+python tools/build_api_docs.py --fail-on-missing
+
+# CI with core modules only (strict check, but no optional modules requested)
+python tools/build_api_docs.py --skip-optional --fail-on-missing
+```
+
+**CI Workflow Integration:**
+
+See `.github/workflows/docs.yml` for a matrix-based CI workflow that:
+- Tests core modules (non-strict, graceful skip)
+- Tests ML modules with full dependencies (strict mode)
+
+```yaml
+# Example CI job
+- name: Build API documentation
+  run: |
+    python tools/build_api_docs.py \
+      --output-dir artifacts/docs/api \
+      --verbose \
+      --fail-on-missing  # Fail CI if modules missing
 ```
 
 ### Environment Variables

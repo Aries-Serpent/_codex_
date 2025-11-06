@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+- **API docs generator**: `--fail-on-missing` flag for strict module checking in CI/CD workflows. When enabled, the build exits with code 3 if any requested modules are missing, allowing CI to enforce complete dependency installation. Default behavior remains graceful (non-strict) for local development. Return codes: 0=success, 2=no modules found, 3=strict failure. Includes matrix-based CI workflow (`.github/workflows/docs.yml`) testing both core-only and ML extras builds. (PR #2118)
+
 ### Fixed
 - **API docs generator**: Include optional packages (`codex_ml`, `codex_ml.peft`, `codex_ml.distributed`) in generated API documentation when optional dependencies are installed. Previously the script documented only `codex.cli` and `codex.logging` even when `codex_ml` was available, preventing the main ML API from appearing in generated docs. The script now dynamically includes optional modules by default and logs the final module list for visibility. (PR #2118)
 
-### Added
+### Changed
+- **API docs generator**: `filter_modules()` now returns a tuple `(available_modules, missing_modules)` instead of just a list, enabling better tracking of module availability for strict mode checks.
+
+### Added (continued)
 - Safety: training and evaluation CLIs honor new `sanitize_prompts` flags and
   sanitize inline datasets by default.
 - Checkpointing: PEFT/LoRA adapters are bundled alongside standard model
