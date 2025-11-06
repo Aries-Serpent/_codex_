@@ -7,7 +7,7 @@ across the codex_addons plugin system.
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
