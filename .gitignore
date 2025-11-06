@@ -41,6 +41,18 @@ runs/
 mlruns/
 .checkpoints/
 
+# Generated artifacts (build outputs)
+artifacts/
+artifacts/**
+
+# Audit outputs (keep baselines committed)
+audit_artifacts/
+!audit_artifacts/baselines/
+!audit_artifacts/baselines/**
+
+# Reports (optional commit)
+reports/
+
 # DVC internals (allow .dvc top-level but ignore local caches)
 .dvc/tmp/
 .dvc/cache/

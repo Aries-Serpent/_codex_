@@ -71,3 +71,21 @@ actions-cli-search:
 actions-cli-cite:
 	@if [ -z "$$PATH" ] || [ -z "$$REF" ] || [ -z "$$NOTE" ]; then echo "Usage: make actions-cli-cite PATH=... REF=... NOTE=..."; exit 1; fi
 	@python tools/actions_cli.py cite --path "$$PATH" --ref "$$REF" --note "$$NOTE"
+
+# Include Space audit targets
+-include space.mk
+
+.PHONY: docs-build
+docs-build:
+	@SKIP_OPTIONAL?=1 ; \
+	FAIL_ON_MISSING?=0 ; \
+	SKIP_OPTIONAL=$$SKIP_OPTIONAL FAIL_ON_MISSING=$$FAIL_ON_MISSING bash scripts/docs_build.sh
+
+.PHONY: capture-baseline
+capture-baseline:
+	bash scripts/baseline/capture_baseline.sh
+
+.PHONY: rotate-baselines
+rotate-baselines:
+	python scripts/baseline/rotate_baselines.py 5
+

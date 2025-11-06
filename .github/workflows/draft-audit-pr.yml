@@ -1,0 +1,56 @@
+name: draft-audit-pr
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Draft PR title"
+        required: true
+        default: "Audit artifacts & diffs (auto)"
+      base:
+        description: "Base branch"
+        required: false
+        default: "main"
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Prepare artifacts (if not present)
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jinja2
+          python scripts/space_traversal/audit_runner.py run || true
+          python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_manifest.json || true
+      
+      - name: Summarize diffs
+        id: diffs
+        run: |
+          echo "## Audit Diffs" > .audit_pr_body.md
+          if [ -f reports/capability_matrix_*.md ]; then
+            echo "" >> .audit_pr_body.md
+          fi
+          echo "Artifacts:" >> .audit_pr_body.md
+          ls -la audit_artifacts || true >> .audit_pr_body.md
+      
+      - name: Create draft PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: ${{ github.event.inputs.title }}
+          body-path: .audit_pr_body.md
+          draft: true
+          base: ${{ github.event.inputs.base }}
+          branch: chore/auto-audit-artifacts
+          commit-message: "chore(audit): add/update artifacts & diffs"
+          add-paths: |
+            audit_artifacts/**
+            reports/**
+            audit_run_manifest.json
