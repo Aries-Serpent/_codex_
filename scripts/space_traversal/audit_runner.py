@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.3.0)
+Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.4.0)
+
+Enhancements (v1.4.0 P5 Integration):
+ - Scoring consumes token similarity (token_similarity.json) and coverage stats (coverage_stats.json)
+   • consistency := (1 - duplication_ratio) * similarity_index (if available per capability)
+   • tests := max(existing_tests_ratio, coverage_percent) (if available per capability)
+ - Manifest auto-runs prefix validation (validate_prefixes.py --warn-only) and aggregates its warnings
+ - Manifest aggregates security severity classification from security_severity.json (if present)
+ - Knobs snapshot preserved (when SUMMARY_ENABLE=1)
+ - Safeguards influenced by severity factor (additive/penalty/none modes)
 
 Enhancements (v1.3.0 P3):
  - Aggregate warnings from content_filter_report.json and bundle pointer JSONs
@@ -15,7 +24,7 @@ Enhancements (v1.3.0 P3):
  - Include missing_detectors and thresholds snapshot in manifest (S7)
  - Pass thresholds into render context; template shows true low threshold
 
-Note: Network calls remain disabled; all operations are offline.
+Note: Offline only, no network calls. Determinism preserved via sorted traversal and stable merges.
 """
 from __future__ import annotations
 import argparse, json, os, re, sys, hashlib, time, importlib.util, inspect
@@ -86,7 +95,7 @@ CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
-VERSION = "1.3.0"
+VERSION = "1.4.0"
 EVIDENCE_TRUNCATION_LIMIT = 50  # applied when depth < 4
 
 SKIP_DIR_PREFIXES = (
@@ -398,6 +407,64 @@ def _compute_missing_patterns(capability: Dict[str, Any]) -> List[str]:
     return sorted(required - found)
 
 
+# ---------------------- P5: External Metrics Loaders ------------------------
+def _load_similarity_map(artifacts_dir: Path) -> Dict[str, float]:
+    if os.getenv("TOKEN_SIMILARITY_ENABLE","0") not in {"1","true","TRUE"}:
+        return {}
+    f = artifacts_dir / "token_similarity.json"
+    if not f.exists():
+        return {}
+    try:
+        data = json.loads(f.read_text())
+        return {e["id"]: float(e.get("similarity_index", 1.0)) for e in data.get("capabilities", [])}
+    except Exception as e:
+        warn(f"Failed to load token_similarity.json: {e}")
+        return {}
+
+def _load_coverage_map(artifacts_dir: Path) -> Dict[str, float]:
+    if os.getenv("COVERAGE_ENABLE","0") not in {"1","true","TRUE"}:
+        return {}
+    f = artifacts_dir / "coverage_stats.json"
+    if not f.exists():
+        return {}
+    try:
+        data = json.loads(f.read_text())
+        return {e["id"]: float(e.get("coverage_percent", 0.0)) for e in data.get("capabilities", [])}
+    except Exception as e:
+        warn(f"Failed to load coverage_stats.json: {e}")
+        return {}
+
+def _load_severity_info(artifacts_dir: Path) -> Dict[str, Any]:
+    if os.getenv("SECURITY_SEVERITY_ENABLE","0") not in {"1","true","TRUE","on","ON"}:
+        return {}
+    f = artifacts_dir / "security_severity.json"
+    if not f.exists():
+        return {}
+    try:
+        return json.loads(f.read_text())
+    except Exception as e:
+        warn(f"Failed to load security_severity.json: {e}")
+        return {}
+
+def _severity_multiplier(sev_info: Dict[str,Any]) -> float:
+    mode = os.getenv("SEVERITY_MULTIPLIER_MODE","additive")
+    if not sev_info:
+        return 1.0
+    counts = sev_info.get("counts",{})
+    weights = sev_info.get("weights",{})
+    high = counts.get("high",0)*weights.get("high",0.05)
+    med  = counts.get("medium",0)*weights.get("medium",0.02)
+    low  = counts.get("low",0)*weights.get("low",0.01)
+    if mode == "penalty":
+        factor = 1 - (high + med*0.5 + low*0.25)
+        return max(0.75, factor)
+    if mode == "none":
+        return 1.0
+    # additive default
+    factor = 1 + (high + med + low)
+    return min(1.25, factor)
+
+
 def stage_s4_scoring(cfg, raw_caps):
     raw_weights = dict(cfg["weights"])
     total_w = float(sum(raw_weights.values()))
@@ -420,6 +487,13 @@ def stage_s4_scoring(cfg, raw_caps):
             return 1.0
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    
+    # Load external metrics (optional; per-capability id maps)
+    similarity_map = _load_similarity_map(artifacts_dir)
+    coverage_map = _load_coverage_map(artifacts_dir)
+    severity_info = _load_severity_info(artifacts_dir)
+    sev_factor = _severity_multiplier(severity_info)
+    
     file_cache: Dict[str, str] = {}
     for cap in raw_caps:
         for ef in cap["evidence_files"]:
@@ -431,11 +505,24 @@ def stage_s4_scoring(cfg, raw_caps):
 
     scored: List[Dict[str, Any]] = []
     for cap in raw_caps:
+        cap_id = cap["id"]
         functionality = len(cap["found_patterns"]) / max(1, len(cap["required_patterns"]))
-        consistency = 1.0 - duplication_ratio(cap["evidence_files"])
-        tests = estimate_test_depth(cap["id"], cap["evidence_files"])
+        
+        # P5: Consistency with similarity
+        base_consistency = 1.0 - duplication_ratio(cap["evidence_files"])
+        similarity_index = similarity_map.get(cap_id, 1.0)
+        consistency = max(0.0, min(1.0, base_consistency * similarity_index))
+        
+        # P5: Tests with coverage
+        base_tests = estimate_test_depth(cap_id, cap["evidence_files"])
+        coverage_percent = coverage_map.get(cap_id, 0.0)
+        tests = max(base_tests, coverage_percent)
+        
+        # P5: Safeguards with severity influence
         safeguards = safeguard_score(cap["evidence_files"], file_cache)
-        documentation = docs_score(cap["id"], file_cache)
+        safeguards = min(1.0, safeguards * sev_factor)
+        
+        documentation = docs_score(cap_id, file_cache)
         raw_components = {
             "functionality": max(0.0, min(1.0, functionality)),
             "consistency": max(0.0, min(1.0, consistency)),
@@ -578,7 +665,7 @@ def stage_s6_render(cfg, scored_caps, gaps):
     return render_template(cfg, context)
 
 def _aggregate_external_warnings(artifacts_dir: Path) -> List[str]:
-    """Aggregate warnings from external sources (filter, pointers, prefix validation)."""
+    """Aggregate warnings from external sources (filter, pointers, prefix validation, severity)."""
     warnings: List[str] = []
     # Content filter report
     cfr = artifacts_dir / "content_filter_report.json"
@@ -609,7 +696,41 @@ def _aggregate_external_warnings(artifacts_dir: Path) -> List[str]:
                 warnings.append(f"prefix_violations:{len(vdata['violations'])}")
         except Exception as e:
             warnings.append(f"prefix_report_parse_fail:{e}")
+    # P5: Secret severity classification note (counts only as warning if high)
+    sev = artifacts_dir / "security_severity.json"
+    if sev.exists():
+        try:
+            sdata = json.loads(sev.read_text())
+            hi = sdata.get("counts", {}).get("high", 0)
+            if hi:
+                warnings.append(f"secrets_high:{hi}")
+        except Exception as e:
+            warnings.append(f"security_severity_parse_fail:{e}")
     return warnings
+
+def _auto_prefix_validate(artifacts_dir: Path, warnings: List[str]):
+    """
+    P5: Auto-run prefix validator in warn-only mode; embeds a report for manifest.
+    """
+    if os.getenv("BUNDLE_PREFIX_MODE","0") not in {"1","true","TRUE"}:
+        return
+    if os.getenv("PREFIX_VALIDATE_AUTO","1") not in {"1","true","TRUE"}:
+        return
+    script = ROOT / "scripts" / "archive" / "validate_prefixes.py"
+    if not script.exists():
+        return
+    try:
+        # Prefer importing to capture report deterministically
+        import sys
+        sys.path.insert(0, str(ROOT / "scripts" / "archive"))
+        from validate_prefixes import validate_prefixes
+        report = validate_prefixes(Path("audit_artifacts"))
+        (artifacts_dir / "prefix_validation_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        if report.get("violations"):
+            warnings.append(f"prefix_violations:{len(report['violations'])}")
+    except Exception as e:
+        warnings.append(f"prefix_validator_failed:{e}")
+
 
 def stage_s7_manifest(cfg):
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
@@ -642,6 +763,9 @@ def stage_s7_manifest(cfg):
             except Exception:
                 pass
     
+    # P5: Auto prefix validation
+    _auto_prefix_validate(artifacts_dir, manifest["warnings"])
+    
     # Collect external warnings
     manifest["warnings"].extend(_aggregate_external_warnings(artifacts_dir))
     
@@ -654,10 +778,14 @@ def stage_s7_manifest(cfg):
             manifest["warnings"].extend(warns)
     except Exception:
         pass
-
-    out = ROOT / "audit_run_manifest.json"
-    out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    return manifest
+    
+    # P5: Knobs summary sidecar
+    if os.getenv("SUMMARY_ENABLE","1") in {"1","true","TRUE"}:
+        env_knobs = {k:v for k,v in os.environ.items() if any(k.startswith(prefix) for prefix in [
+            "TOKEN_SIMILARITY","COVERAGE","SECURITY_SEVERITY","SEVERITY_",
+            "BUNDLE_PREFIX_MODE","PREFIX_VALIDATE_AUTO","SUMMARY_ENABLE"
+        ])}
+        (artifacts_dir / "knobs_effective.json").write_text(json.dumps(env_knobs, indent=2), encoding="utf-8")
 
     out = ROOT / "audit_run_manifest.json"
     out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
