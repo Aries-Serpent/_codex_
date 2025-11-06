@@ -95,13 +95,13 @@ class TestBuildAPIDocsIntegration:
                 "codex_ml" not in final_list_line or "codex.cli, codex.logging" in final_list_line
             )
 
-    def test_script_handles_missing_modules_gracefully(self):
+    def test_script_handles_missing_modules_gracefully(self, tmp_path):
         """Test that script doesn't crash when optional modules are missing."""
         script = REPO_ROOT / "tools" / "build_api_docs.py"
 
         # Run without any special PYTHONPATH - optional modules may not be available
         result = subprocess.run(
-            [sys.executable, str(script), "--verbose", "--output-dir", "/tmp/test_api_docs"],
+            [sys.executable, str(script), "--verbose", "--output-dir", str(tmp_path / "test_api_docs")],
             capture_output=True,
             text=True,
             timeout=30,
