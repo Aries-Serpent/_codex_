@@ -89,7 +89,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 
 ## Troubleshooting (common fixes)
 
-### ImportError on optional deps
+### ImportError on optional dependencies
 
 **Symptom**:
 ```
