@@ -211,6 +211,33 @@ def custom_bleu(preds, targets):
         return None
 ```
 
+### Using patch_registry for Optional Metrics
+
+The `_optional_bleu_rouge` module provides a `patch_registry()` function to add BLEU/ROUGE metrics to a custom registry only if dependencies are available:
+
+```python
+from codex_ml.metrics._optional_bleu_rouge import patch_registry
+
+# Create your custom registry
+CUSTOM_METRICS = {}
+
+# Patch it with optional metrics (only if nltk/rouge-score installed)
+patch_registry(CUSTOM_METRICS)
+
+# Use the metrics
+if "bleu" in CUSTOM_METRICS:
+    bleu_fn = CUSTOM_METRICS["bleu"]
+    score = bleu_fn(["prediction"], ["reference"])
+    print(f"BLEU: {score}")
+else:
+    print("BLEU not available (missing nltk)")
+```
+
+**Benefits:**
+- Graceful degradation: No errors if dependencies missing
+- Idempotent: Safe to call multiple times
+- Returns the same registry object (modified in place)
+
 ## Metric Registry API
 
 ### get_metric(name)
