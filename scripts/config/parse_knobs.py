@@ -142,8 +142,20 @@ DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
     "ARCHIVE_FORMAT":      {"type": "enum", "allowed": ["tar.gz","zip"], "default": "tar.gz"},
     "AUTO_ARCHIVE_DISABLE":{"type": "bool", "default": False},
     "ARCHIVE_POINTER_STYLE":{"type":"enum","allowed": ["embedded","sidecar","both"], "default":"both"},
-    # Optional future naming policy
+    # Prefix naming policy
     "BUNDLE_PREFIX_MODE":  {"type": "bool", "default": False},
+    # P6 Advanced Features
+    "AST_SIMILARITY_ENABLE": {"type": "bool", "default": False},
+    "AST_SIMILARITY_MAX_FILES": {"type": "int", "min": 1, "max": 100, "default": 30},
+    "AST_SIMILARITY_MIN_NODES": {"type": "int", "min": 1, "max": 1000, "default": 10},
+    "AST_CONSISTENCY_BLEND_MODE": {"type": "enum", "allowed": ["multiply","average","max"], "default": "multiply"},
+    "SYNONYM_MAP_PATH": {"type": "str", "default": "configs/synonyms/synonyms.json"},
+    "SECRET_CONTEXT_ENABLE": {"type": "bool", "default": False},
+    "SECRET_CONTEXT_WINDOW": {"type": "int", "min": 1, "max": 100, "default": 10},
+    "SECRET_CONTEXT_KEYWORDS": {"type": "csv", "default": ""},
+    "FEDERATION_ENABLE": {"type": "bool", "default": False},
+    "FEDERATION_REPO_PATHS": {"type": "csv", "default": ""},
+    "MANIFEST_EXTENDED_ENABLE": {"type": "bool", "default": True},
 }
 
 
@@ -175,6 +187,8 @@ def normalize_from_env(schema: Dict[str, Dict[str, Any]] = DEFAULT_SCHEMA) -> Tu
         elif typ == "csv":
             lst, w = normalize_csv_list(raw)
             val = lst if lst else (default if default != "" else [])
+        elif typ == "str":
+            val, w = raw if raw is not None else default, None
         else:
             val, w = raw if raw is not None else default, None
         

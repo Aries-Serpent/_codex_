@@ -1,0 +1,10 @@
+{
+  "train": ["training", "epoch", "fit", "optimizer", "learn"],
+  "checkpoint": ["save_checkpoint", "restore", "load_checkpoint", "snapshot"],
+  "tokenizer": ["tokenize", "encode", "decode", "vocab"],
+  "eval": ["evaluate", "validation", "test", "metric"],
+  "data": ["dataset", "loader", "batch", "preprocessing"],
+  "safety": ["sanitize", "validate", "secure", "filter"],
+  "log": ["logging", "tracking", "monitor", "telemetry"],
+  "config": ["configuration", "settings", "params", "hydra"]
+}
