@@ -3,7 +3,9 @@
 ## API Reference
 
 - **[API Documentation](api/README.md)** — Comprehensive API reference auto-generated from source code
-  - Build locally: `nox -s docs` or `python tools/build_api_docs.py`
+  - Build locally: `nox -s docs_build` or `bash scripts/docs_build.sh`
+  - Skip optional modules: `SKIP_OPTIONAL=1 nox -s docs_build`
+  - Strict mode (CI): `FAIL_ON_MISSING=1 bash scripts/docs_build.sh`
   - View at: `artifacts/docs/api/index.html`
 
 ## Architecture & Design

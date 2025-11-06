@@ -18,12 +18,23 @@ All primary documentation now lives in the [`docs/`](docs/) directory.
 
 To build API docs locally:
 ```bash
-# Using nox (recommended)
-nox -s docs
+# Using nox (recommended - deterministic offline build)
+nox -s docs_build
 
-# Or directly
-python tools/build_api_docs.py
+# Or using the build script directly
+bash scripts/docs_build.sh
+
+# Skip optional modules (faster, no ML dependencies required)
+SKIP_OPTIONAL=1 nox -s docs_build
+
+# Strict mode (fail if any modules missing - for CI)
+FAIL_ON_MISSING=1 bash scripts/docs_build.sh
 ```
+
+**Build Modes:**
+- **Default**: Includes all available modules (core + optional ML when installed)
+- **Skip Optional** (`SKIP_OPTIONAL=1`): Only core modules, no ML dependencies needed
+- **Strict** (`FAIL_ON_MISSING=1`): Fail build if any requested modules are unavailable
 
 **Note:** The API documentation script automatically includes optional packages like `codex_ml` when their dependencies are installed. For complete API documentation including the ML framework:
 
@@ -32,12 +43,7 @@ python tools/build_api_docs.py
 pip install -e .[ml]
 
 # Build full documentation
-python tools/build_api_docs.py --verbose
-```
-
-To build only core modules (excluding `codex_ml`), use:
-```bash
-python tools/build_api_docs.py --skip-optional
+nox -s docs_build
 ```
 
 View the generated docs at `artifacts/docs/api/index.html` or serve locally:
