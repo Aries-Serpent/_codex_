@@ -306,6 +306,120 @@ watch -n 1 nvidia-smi
 nvtop
 ```
 
+## Safe Accelerate Initialization
+
+The repository includes a safe initialization guard that handles CPU-only environments and missing dependencies gracefully.
+
+### Using the Accelerate Init Guard
+
+```python
+from training.accelerate_init_guard import safe_accelerate_init
+
+# Try to initialize accelerate with graceful fallback
+result = safe_accelerate_init(cpu_fallback=True)
+
+if result.success:
+    print(f"✓ Accelerate initialized with {result.backend}")
+    print(f"  World size: {result.world_size}, Rank: {result.rank}")
+elif result.skip_reason:
+    print(f"⊘ Skipped: {result.skip_reason}")
+    # Continue with CPU-only training
+else:
+    print(f"✗ Error: {result.error}")
+    # Handle error or fall back to CPU
+```
+
+### Diagnostic Mode
+
+Run the guard in diagnostic mode to check your environment:
+
+```bash
+python training/accelerate_init_guard.py
+```
+
+**Output example:**
+```
+============================================================
+Accelerate Init Guard - Diagnostic Mode
+============================================================
+
+Distributed Environment Variables:
+  MASTER_ADDR: <not set>
+  MASTER_PORT: <not set>
+  WORLD_SIZE: <not set>
+  RANK: <not set>
+  LOCAL_RANK: <not set>
+  ACCELERATE_TEST: <not set>
+  CUDA_VISIBLE_DEVICES: <not set>
+
+Availability Checks:
+  Accelerate available: True
+  GPU available: False
+
+Initialization Test:
+  Result: AccelerateInitResult(skipped, reason=cpu_only)
+```
+
+### Skip-Safe Integration Tests
+
+The integration tests use pytest markers to skip on CPU-only runners:
+
+```bash
+# Run all tests (skips distributed on CPU-only)
+pytest tests/integration/test_distributed_init.py
+
+# Run with GPU and ACCELERATE_TEST flag
+ACCELERATE_TEST=1 pytest tests/integration/test_distributed_init.py
+
+# Skip integration tests entirely
+pytest -m "not integration"
+```
+
+### Environment Variable Reference for Safe Init
+
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `ACCELERATE_TEST` | Enable GPU-gated distributed tests | `ACCELERATE_TEST=1` |
+| `CUDA_VISIBLE_DEVICES` | Control GPU visibility | `CUDA_VISIBLE_DEVICES=0,1` |
+| `WORLD_SIZE` | Number of processes | `WORLD_SIZE=4` |
+| `RANK` | Process rank | `RANK=0` |
+| `MASTER_ADDR` | Master node address | `MASTER_ADDR=localhost` |
+| `MASTER_PORT` | Master node port | `MASTER_PORT=29500` |
+
+### Common Init Guard Results
+
+**CPU-Only Environment:**
+```python
+AccelerateInitResult(
+    success=False,
+    skip_reason='cpu_only',
+    gpu_available=False,
+    ...
+)
+```
+
+**Accelerate Not Installed:**
+```python
+AccelerateInitResult(
+    success=False,
+    skip_reason='no_accelerate',
+    accelerate_available=False,
+    ...
+)
+```
+
+**Successful Initialization:**
+```python
+AccelerateInitResult(
+    success=True,
+    backend='nccl',
+    world_size=2,
+    rank=0,
+    gpu_available=True,
+    ...
+)
+```
+
 ## Performance Optimization
 
 ### 1. Choose the Right Backend
