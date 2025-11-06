@@ -10,7 +10,7 @@ import pytest
 tools_dir = Path(__file__).parent.parent.parent / "tools"
 sys.path.insert(0, str(tools_dir))
 
-import build_api_docs
+import build_api_docs  # noqa: E402
 
 
 class TestFilterModules:
@@ -49,10 +49,13 @@ class TestFilterModules:
         assert "Skipping" in caplog.text
 
     def test_filter_modules_rejects_missing_submodules(self, tmp_path, monkeypatch):
-        """Test P1 regression: submodules without deps are not falsely marked available.
+        """Test Priority 1 regression: submodules without dependencies are not
+        falsely marked available.
 
-        This test ensures that when a base package exists but a submodule is missing
-        (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules correctly
+        This test was added to prevent a Priority 1 regression (see PR #2118)
+        where, if a base package exists but a submodule is missing
+        (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules incorrectly
+        marked the submodule as importable. This test ensures filter_modules correctly
         rejects the submodule instead of marking it as importable.
         """
         # Create a fake base package WITHOUT the submodule

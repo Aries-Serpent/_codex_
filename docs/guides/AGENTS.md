@@ -36,6 +36,10 @@ pre-commit run --files <changed_files>
 nox -s tests
 ```
 - Optional deps (e.g., `hydra-core`, `mlflow`): install in a dedicated env or provide mocks.
+- **Integration tests**: Use `-m "not integration"` to exclude integration tests for faster local test runs:
+  ```bash
+  pytest -m "not integration"
+  ```
 
 ## Prohibited actions
 

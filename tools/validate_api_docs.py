@@ -8,10 +8,12 @@ Features:
 - JSON summary printed to stdout for manual/local gating.
 
 Exit code:
-- Always 0 (non-blocking). Use 'ok' and arrays in the JSON output to gate manually or in local scripts.
+- Always 0 (non-blocking). Use 'ok' and arrays in the JSON output to gate
+  manually or in local scripts.
 
 Usage:
-  python tools/validate_api_docs.py --package codex_ml --out artifacts/docs/api --allow-optional wandb tensorboard --summary
+  python tools/validate_api_docs.py --package codex_ml --out artifacts/docs/api
+    --allow-optional wandb tensorboard --summary
 """
 from __future__ import annotations
 
@@ -57,9 +59,7 @@ def _scan_imports(root_pkg: str, allow_optional: List[str]) -> Dict[str, Any]:
         except Exception as exc:
             # If the missing module is an allowlisted optional dependency, record as optional_miss
             lowered = str(exc).lower()
-            if any(
-                opt.lower() in lowered or modname.startswith(opt) for opt in allow_optional
-            ):
+            if any(opt.lower() in lowered or opt in modname for opt in allow_optional):
                 optional_misses.append(modname)
             else:
                 errors.append(f"{modname}: {type(exc).__name__}: {exc}")
@@ -88,14 +88,14 @@ def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
         env = os.environ.copy()
         repo_root = Path(__file__).parent.parent.resolve()
         src_dir = repo_root / "src"
-        
+
         if src_dir.exists():
             pythonpath = env.get("PYTHONPATH", "")
             if pythonpath:
                 env["PYTHONPATH"] = f"{src_dir}:{pythonpath}"
             else:
                 env["PYTHONPATH"] = str(src_dir)
-        
+
         cmd = [
             sys.executable,
             "-m",
@@ -106,7 +106,7 @@ def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
             "--force",
             root_pkg,
         ]
-        
+
         result_proc = subprocess.run(
             cmd,
             capture_output=True,
@@ -114,7 +114,7 @@ def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
             check=False,
             env=env,
         )
-        
+
         if result_proc.returncode == 0:
             # Count HTML outputs
             html_files = list(out_dir.rglob("*.html"))
@@ -122,7 +122,7 @@ def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
             result["file_count"] = len(html_files)
         else:
             result["notes"] = f"pdoc CLI failed: {result_proc.stderr or result_proc.stdout}"
-            
+
         return result
     except Exception as exc:
         result["notes"] = f"pdoc build failed: {type(exc).__name__}: {exc}"
@@ -143,9 +143,7 @@ def main() -> None:
         default=["wandb", "tensorboard"],
         help="Optional deps to allow",
     )
-    ap.add_argument(
-        "--summary", action="store_true", help="Print a human-readable summary as well"
-    )
+    ap.add_argument("--summary", action="store_true", help="Print a human-readable summary as well")
     ns = ap.parse_args()
 
     out_dir = Path(ns.out).expanduser().resolve()

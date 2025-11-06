@@ -82,21 +82,17 @@ def filter_modules(modules: list[str]) -> list[str]:
     Returns:
         List of modules that are successfully importable
     """
-    import importlib
+    import importlib.util
 
-    # Try importing each module and skip those that fail
+    # Check if each module can be imported (without actually importing)
     available_modules = []
     for module in modules:
-        try:
-            # Import the full module path to verify it and its dependencies exist
-            importlib.import_module(module)
+        spec = importlib.util.find_spec(module)
+        if spec is not None:
             available_modules.append(module)
             logger.info(f"✓ Module {module} is importable")
-        except ImportError as e:
-            logger.warning(f"Skipping {module}: {e}")
-        except Exception as e:
-            # Catch any other exceptions during import
-            logger.warning(f"Skipping {module} due to error: {e}")
+        else:
+            logger.warning(f"Skipping {module}: module not found or not importable")
 
     return available_modules
 
@@ -191,7 +187,8 @@ def create_index(output_dir: Path, modules: list[str]) -> None:
     <title>Codex API Documentation</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+                Arial, sans-serif;
             max-width: 800px;
             margin: 40px auto;
             padding: 0 20px;

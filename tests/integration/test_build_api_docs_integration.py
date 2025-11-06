@@ -91,9 +91,7 @@ class TestBuildAPIDocsIntegration:
                 line for line in output.split("\n") if "Final module list to document" in line
             ][0]
             # codex_ml should not be in the final list
-            assert (
-                "codex_ml" not in final_list_line or "codex.cli, codex.logging" in final_list_line
-            )
+            assert "codex_ml" not in final_list_line
 
     def test_script_handles_missing_modules_gracefully(self, tmp_path):
         """Test that script doesn't crash when optional modules are missing."""
@@ -101,7 +99,13 @@ class TestBuildAPIDocsIntegration:
 
         # Run without any special PYTHONPATH - optional modules may not be available
         result = subprocess.run(
-            [sys.executable, str(script), "--verbose", "--output-dir", str(tmp_path / "test_api_docs")],
+            [
+                sys.executable,
+                str(script),
+                "--verbose",
+                "--output-dir",
+                str(tmp_path / "test_api_docs"),
+            ],
             capture_output=True,
             text=True,
             timeout=30,
