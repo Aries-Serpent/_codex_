@@ -6,6 +6,8 @@ nav:
   - Home: index.md
   - README: README_ROOT.md
   - Getting Started: getting-started.md
+  - API Reference:
+      - Overview: api/README.md
   - Guides:
       - Contributing: CONTRIBUTING.md
       - Code Style: guides/code_style_guide.md
@@ -21,6 +23,7 @@ nav:
       - Codex Pipeline: architecture/codex_pipeline.md
   - Training:
       - Symbolic Training: training/symbolic_training.md
+      - Distributed Troubleshooting: training/distributed_troubleshooting.md
   - Deployment:
       - Deploy Pipeline: deployment/deploy_pipeline.md
   - Logging & Troubleshooting:
@@ -29,6 +32,8 @@ nav:
       - Log Rotation: logging/log_rotation.md
       - Error Log: troubleshooting/error_log.md
       - Open Questions: troubleshooting/open_questions.md
+  - Plugins:
+      - Plugin API (Broader): plugins/Plugin_API_Broader.md
   - Reference:
       - Changelog: CHANGELOG.md
       - Changelog Archive:

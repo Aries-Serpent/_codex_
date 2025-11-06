@@ -283,3 +283,10 @@ def perf_smoke(session: nox.Session) -> None:
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.env["CODEX_PERF_SMOKE"] = "1"
     session.run("pytest", "-q", "tests/perf/test_smoke.py")
+
+
+@nox.session(name="docs")
+def docs(session: nox.Session) -> None:
+    """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/build_api_docs.py", *session.posargs)

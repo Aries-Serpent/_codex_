@@ -12,6 +12,24 @@
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
+### API Reference
+
+📚 **[API Documentation](docs/api/README.md)** - Comprehensive API reference auto-generated from source code docstrings
+
+To build API docs locally:
+```bash
+# Using nox (recommended)
+nox -s docs
+
+# Or directly
+python tools/build_api_docs.py
+```
+
+View the generated docs at `artifacts/docs/api/index.html` or serve locally:
+```bash
+python -m http.server -d artifacts/docs/api 8000
+```
+
 ### New to _codex_?
 
 👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers
