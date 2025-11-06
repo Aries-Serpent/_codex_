@@ -13,10 +13,17 @@ Schemas:
 - See DEFAULT_SCHEMA below for supported keys and semantics.
 """
 from __future__ import annotations
-from typing import Iterable, Tuple, Optional, Dict, Any
+import os
+from typing import Iterable, Tuple, Optional, Dict, Any, List
 
-_TRUTHY = {"1","true","TRUE","True","yes","YES","on","ON"}
-_FALSY  = {"0","false","FALSE","False","no","NO","off","OFF",""}
+_TRUTHY = {"1","true","TRUE","True","yes","YES","on","ON","y","Y"}
+_FALSY  = {"0","false","FALSE","False","no","NO","off","OFF","","n","N"}
+
+_WARNINGS: List[str] = []
+
+
+def _warn(msg: str) -> None:
+    _WARNINGS.append(msg)
 
 
 def normalize_truthy(raw: Optional[str], default: bool=False) -> Tuple[bool, Optional[str]]:
@@ -29,6 +36,16 @@ def normalize_truthy(raw: Optional[str], default: bool=False) -> Tuple[bool, Opt
     return default, f"ambiguous_boolean:{raw}"
 
 
+def parse_truthy(raw: Optional[str], default: bool=False) -> bool:
+    if raw is None:
+        return default
+    if raw in _TRUTHY:
+        return True
+    if raw in _FALSY:
+        return False
+    return default
+
+
 def normalize_enum(raw: Optional[str], allowed: Iterable[str], default: str) -> Tuple[str, Optional[str]]:
     allowed_set = set(allowed)
     if raw is None:
@@ -36,6 +53,16 @@ def normalize_enum(raw: Optional[str], allowed: Iterable[str], default: str) -> 
     if raw in allowed_set:
         return raw, None
     return default, f"invalid_enum:{raw}"
+
+
+def parse_enum(raw: Optional[str], allowed: Iterable[str], default: str, var_name: str) -> str:
+    if raw is None or raw == "":
+        _warn(f"required_selection_missing:{var_name}")
+        return default
+    if raw in allowed:
+        return raw
+    _warn(f"invalid_value:{var_name}")
+    return default
 
 
 def normalize_int(raw: Optional[str], default: int, min_val: Optional[int]=None, max_val: Optional[int]=None) -> Tuple[int, Optional[str]]:
@@ -50,6 +77,20 @@ def normalize_int(raw: Optional[str], default: int, min_val: Optional[int]=None,
     if max_val is not None and val > max_val:
         return default, f"int_above_max:{raw}"
     return val, None
+
+
+def parse_int(raw: Optional[str], default: int, min_val: Optional[int]=None, max_val: Optional[int]=None) -> int:
+    if raw is None or raw == "":
+        return default
+    try:
+        val = int(raw)
+    except (TypeError, ValueError):
+        return default
+    if min_val is not None and val < min_val:
+        return default
+    if max_val is not None and val > max_val:
+        return default
+    return val
 
 
 def normalize_float(raw: Optional[str], default: float, min_val: Optional[float]=None, max_val: Optional[float]=None) -> Tuple[float, Optional[str]]:
@@ -74,6 +115,12 @@ def normalize_csv_list(raw: Optional[str]) -> Tuple[list[str], Optional[str]]:
     if long_items:
         return parts, "suspicious_long_entries"
     return parts, None
+
+
+def parse_csv_list(raw: Optional[str]) -> list[str]:
+    if not raw:
+        return []
+    return [part.strip() for part in raw.split(",") if part.strip()]
 
 
 # --- Batch normalization ---
@@ -101,7 +148,6 @@ DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
 
 
 def _get_env_map() -> Dict[str, str]:
-    import os
     return dict(os.environ)  # shallow copy
 
 
@@ -150,6 +196,107 @@ def summarize_effective(knobs: Dict[str, Any]) -> Dict[str, Any]:
             continue
         out[k] = v
     return out
+
+
+def get_warnings() -> List[str]:
+    return list(_WARNINGS)
+
+
+def clear_warnings() -> None:
+    _WARNINGS.clear()
+
+
+def _get_env(name: str) -> Optional[str]:
+    return os.environ.get(name)
+
+
+def get_depth() -> Tuple[int, bool]:
+    raw_depth = _get_env("AUDIT_DEPTH")
+    raw_default = _get_env("AUDIT_DEPTH_DEFAULT")
+
+    default_depth = parse_int(raw_default, 3, min_val=1, max_val=4)
+    default_source = "env" if raw_default not in (None, "") else "hardcoded"
+
+    depth_warning = False
+
+    if raw_depth not in (None, ""):
+        depth = parse_int(raw_depth, default_depth, min_val=1, max_val=4)
+        if depth < 4:
+            depth_warning = True
+            _warn("depth_restriction_active")
+        return depth, depth_warning
+
+    _warn(f"depth_default_used:{default_source}")
+    if default_depth < 4:
+        depth_warning = True
+        _warn("depth_restriction_active")
+    return default_depth, depth_warning
+
+
+def get_pii_mode() -> str:
+    raw = _get_env("PII_MODE")
+    return parse_enum(raw, ["replace", "union-minimal", "union-extended"], "union-minimal", "PII_MODE")
+
+
+def get_pii_pattern_set() -> str:
+    raw = _get_env("PII_PATTERN_SET")
+    return parse_enum(raw, ["minimal", "extended", "custom"], "minimal", "PII_PATTERN_SET")
+
+
+def get_pii_custom_list() -> list[str]:
+    raw = _get_env("PII_CUSTOM_LIST")
+    return parse_csv_list(raw)
+
+
+def get_pii_regex_strategy() -> str:
+    raw = _get_env("PII_REGEX_STRATEGY")
+    return parse_enum(raw, ["abort", "skip-warn", "skip-manifest"], "skip-manifest", "PII_REGEX_STRATEGY")
+
+
+def get_content_filter_mode() -> str:
+    raw = _get_env("CONTENT_FILTER_MODE")
+    return parse_enum(raw, ["allowlist", "pii", "combined"], "allowlist", "CONTENT_FILTER_MODE")
+
+
+def get_allowlist_profile() -> str:
+    raw = _get_env("ALLOWLIST_PROFILE")
+    value = parse_enum(raw, ["A", "B", "C", "A+B", "A+C", "B+C", "A+B+C"], "A", "ALLOWLIST_PROFILE")
+    if raw in (None, ""):
+        _warn("allowlist_default_used")
+    return value
+
+
+def get_allowlist_extensions() -> list[str]:
+    raw = _get_env("ALLOWLIST_EXT")
+    return parse_csv_list(raw)
+
+
+def get_max_bundle_mb() -> int:
+    raw = _get_env("MAX_BUNDLE_MB")
+    return parse_int(raw, 25, min_val=1)
+
+
+def get_auto_archive_enabled() -> bool:
+    raw = _get_env("AUTO_ARCHIVE_DISABLE")
+    disabled = parse_truthy(raw, default=False)
+    if disabled:
+        _warn("auto_archive_disabled")
+    return not disabled
+
+
+def get_archive_format() -> str:
+    raw = _get_env("ARCHIVE_FORMAT")
+    return parse_enum(raw, ["tar.gz", "zip"], "tar.gz", "ARCHIVE_FORMAT")
+
+
+def get_archive_pointer_style() -> str:
+    raw = _get_env("ARCHIVE_POINTER_STYLE")
+    return parse_enum(raw, ["embedded", "sidecar", "both"], "both", "ARCHIVE_POINTER_STYLE")
+
+
+def get_bundle_prefix_mode() -> bool:
+    raw = _get_env("BUNDLE_PREFIX_MODE")
+    return parse_truthy(raw, default=False)
 
 
 if __name__ == "__main__":

@@ -113,7 +113,13 @@ def process_allowlist(exts: List[str]) -> Tuple[List[str], List[str]]:
     for path in sorted(ARTIFACTS_DIR.rglob("*")):
         if path.is_dir():
             continue
-        rel = path.relative_to(Path.cwd()).as_posix()
+        if path.is_absolute():
+            try:
+                rel = path.relative_to(Path.cwd()).as_posix()
+            except ValueError:
+                rel = path.as_posix()
+        else:
+            rel = path.as_posix()
         if path.suffix.lower() in exts:
             kept.append(rel)
         else:
