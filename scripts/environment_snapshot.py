@@ -81,11 +81,13 @@ def get_conda_env() -> dict[str, Any] | None:
             # Store first 10 packages as sample
             info["packages_sample"] = packages[:10]
         except Exception:
+            # Non-critical if we can't get conda packages; ignore and continue.
             pass
         
         return info if info else None
         
     except Exception:
+        # If conda environment detection fails entirely, return None.
         return None
 
 
@@ -120,6 +122,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["commit"] = commit
         except Exception:
+            # Non-critical if git commit lookup fails; ignore and continue.
             pass
         
         # Get short commit
@@ -133,6 +136,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["commit_short"] = short_commit
         except Exception:
+            # Non-critical if short commit lookup fails; ignore and continue.
             pass
         
         # Get branch name
@@ -146,6 +150,7 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["branch"] = branch
         except Exception:
+            # Non-critical if branch name lookup fails; ignore and continue.
             pass
         
         # Check for uncommitted changes
@@ -159,11 +164,13 @@ def get_git_info() -> dict[str, Any] | None:
             ).strip()
             info["dirty"] = bool(status)
         except Exception:
+            # Non-critical if git status check fails; ignore and continue.
             pass
         
         return info if info else None
         
     except Exception:
+        # If git info detection fails entirely, return None.
         return None
 
 

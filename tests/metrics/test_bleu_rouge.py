@@ -19,13 +19,13 @@ if str(_SRC_DIR) not in sys.path:
 
 # Check if optional dependencies are available
 try:
-    import nltk
+    import nltk  # noqa: F401
     NLTK_AVAILABLE = True
 except ImportError:
     NLTK_AVAILABLE = False
 
 try:
-    import rouge_score
+    import rouge_score  # noqa: F401
     ROUGE_AVAILABLE = True
 except ImportError:
     ROUGE_AVAILABLE = False
