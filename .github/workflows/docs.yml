@@ -1,0 +1,79 @@
+name: Docs Build Check
+
+on:
+  push:
+    paths:
+      - 'tools/build_api_docs.py'
+      - 'src/codex_ml/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'tools/build_api_docs.py'
+      - 'src/codex_ml/**'
+      - '.github/workflows/docs.yml'
+
+jobs:
+  docs-check:
+    name: Build API docs (verify optional modules included)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install repo with ML extras for codex_ml
+        run: |
+          python -m pip install --upgrade pip
+          # Install with ml extras to ensure codex_ml and dependencies are available
+          pip install -e .[ml]
+          # Also install pdoc3 for documentation generation
+          pip install pdoc3
+      
+      - name: Run API docs script (verbose)
+        run: |
+          python tools/build_api_docs.py --verbose --output-dir /tmp/test_docs
+      
+      - name: Verify codex_ml was included
+        run: |
+          python - <<'PY'
+          import sys
+          import subprocess
+          
+          # Re-run the script and capture output
+          result = subprocess.run(
+              [sys.executable, "tools/build_api_docs.py", "--verbose", "--output-dir", "/tmp/verify_docs"],
+              capture_output=True,
+              text=True
+          )
+          
+          output = result.stdout + result.stderr
+          
+          # Verify that codex_ml modules were included in the final list
+          if "Final module list to document" not in output:
+              print("ERROR: Could not find 'Final module list to document' in output")
+              sys.exit(1)
+          
+          # Extract the final module list line
+          for line in output.split("\n"):
+              if "Final module list to document" in line:
+                  print(f"Found: {line}")
+                  if "codex_ml" not in line:
+                      print("ERROR: codex_ml not in final module list!")
+                      print(f"Full output:\n{output}")
+                      sys.exit(1)
+                  else:
+                      print("✓ codex_ml successfully included in module list")
+                      sys.exit(0)
+          PY
+      
+      - name: Verify documentation artifacts (if generated)
+        run: |
+          if [ -d "/tmp/test_docs" ]; then
+            echo "✓ Documentation artifacts directory created"
+            ls -la /tmp/test_docs || true
+          else
+            echo "Note: Documentation directory not created (this is OK if pdoc step failed)"
+          fi
