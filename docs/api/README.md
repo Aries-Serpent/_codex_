@@ -66,13 +66,11 @@ python tools/build_api_docs.py --fail-on-missing
 python tools/build_api_docs.py --skip-optional --fail-on-missing
 ```
 
-**CI Workflow Integration:**
+**CI Integration:**
 
-See `.github/workflows/docs.yml` for a matrix-based CI workflow that:
-- Tests core modules (non-strict, graceful skip)
-- Tests ML modules with full dependencies (strict mode)
+For CI/CD workflows, use `--fail-on-missing` to enforce complete dependency installation:
 
-```yaml
+```bash
 # Example CI job
 - name: Build API documentation
   run: |
@@ -81,6 +79,8 @@ See `.github/workflows/docs.yml` for a matrix-based CI workflow that:
       --verbose \
       --fail-on-missing  # Fail CI if modules missing
 ```
+
+**Note:** Per repository guidelines (AGENTS.md), GitHub Actions workflows should not be committed. The above example shows command-line usage for local CI runners or external CI systems.
 
 ### Environment Variables
 

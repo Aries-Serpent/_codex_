@@ -83,6 +83,9 @@ def filter_modules(
 ) -> tuple[list[str], list[str]]:
     """Filter modules based on availability.
 
+    Uses import-based probing to verify module availability, ensuring
+    modules can actually be imported (not just that their spec exists).
+
     Args:
         modules: List of module names to check for importability
         fail_on_missing: If True, track missing modules for strict checking
@@ -90,19 +93,24 @@ def filter_modules(
     Returns:
         Tuple of (available_modules, missing_modules)
     """
-    import importlib.util
+    import importlib
 
-    # Check if each module can be imported (without actually importing)
+    # Try importing each module to verify it's actually available
     available_modules = []
     missing_modules = []
     for module in modules:
-        spec = importlib.util.find_spec(module)
-        if spec is not None:
+        try:
+            # Attempt to import the full module path
+            importlib.import_module(module)
             available_modules.append(module)
             logger.info(f"✓ Module {module} is importable")
-        else:
+        except ImportError as e:
             missing_modules.append(module)
-            logger.warning(f"Skipping {module}: module not found or not importable")
+            logger.warning(f"Skipping {module}: {e}")
+        except Exception as e:
+            # Catch other exceptions (e.g., AttributeError during import)
+            missing_modules.append(module)
+            logger.warning(f"Skipping {module} due to error: {e}")
 
     return available_modules, missing_modules
 
