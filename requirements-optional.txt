@@ -1,0 +1,31 @@
+# Optional dependencies for Codex ML framework
+# 
+# These dependencies are not required for core functionality but enable
+# additional features like advanced metrics, LoRA adapters, and distributed training.
+#
+# Install with: pip install -r requirements-optional.txt
+# Or selectively: pip install nltk rouge-score sacrebleu
+
+# Generative metrics (BLEU, ROUGE)
+nltk>=3.8
+rouge-score>=0.1.2
+sacrebleu>=2.3.0
+
+# LoRA/PEFT adapters
+peft>=0.7.0
+accelerate>=0.20.0
+
+# Distributed training
+torch-distributed>=2.0.0  # Usually bundled with pytorch
+
+# Advanced model features
+transformers>=4.30.0
+sentencepiece>=0.1.99
+
+# Vector stores (stubbed - see docs/data/VectorStores.md)
+# pgvector  # Uncomment if using PostgreSQL vector store
+# weaviate-client  # Uncomment if using Weaviate
+
+# Monitoring and tracking
+tensorboard>=2.13.0
+wandb>=0.15.0
