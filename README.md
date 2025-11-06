@@ -12,6 +12,45 @@
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
+### API Reference
+
+📚 **[API Documentation](docs/api/README.md)** - Comprehensive API reference auto-generated from source code docstrings
+
+To build API docs locally:
+```bash
+# Using nox (recommended - deterministic offline build)
+nox -s docs_build
+
+# Or using the build script directly
+bash scripts/docs_build.sh
+
+# Skip optional modules (faster, no ML dependencies required)
+SKIP_OPTIONAL=1 nox -s docs_build
+
+# Strict mode (fail if any modules missing - for CI)
+FAIL_ON_MISSING=1 bash scripts/docs_build.sh
+```
+
+**Build Modes:**
+- **Default**: Includes all available modules (core + optional ML when installed)
+- **Skip Optional** (`SKIP_OPTIONAL=1`): Only core modules, no ML dependencies needed
+- **Strict** (`FAIL_ON_MISSING=1`): Fail build if any requested modules are unavailable
+
+**Note:** The API documentation script automatically includes optional packages like `codex_ml` when their dependencies are installed. For complete API documentation including the ML framework:
+
+```bash
+# Install optional ML dependencies
+pip install -e .[ml]
+
+# Build full documentation
+nox -s docs_build
+```
+
+View the generated docs at `artifacts/docs/api/index.html` or serve locally:
+```bash
+python -m http.server -d artifacts/docs/api 8000
+```
+
 ### New to _codex_?
 
 👉 **Start here**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md) - Comprehensive onboarding guide for all newcomers

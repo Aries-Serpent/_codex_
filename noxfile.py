@@ -248,6 +248,39 @@ def repro_smoke(session: nox.Session) -> None:
     )
 
 
+@nox.session(name="docs_build")
+def docs_build(session: nox.Session) -> None:
+    """Build offline API documentation with optional module gating.
+    
+    Environment variables:
+        SKIP_OPTIONAL   - Skip optional modules (codex_ml extras)
+        FAIL_ON_MISSING - Strict mode (fail if any requested modules missing)
+    
+    Usage:
+        nox -s docs_build
+        SKIP_OPTIONAL=1 nox -s docs_build
+        FAIL_ON_MISSING=1 nox -s docs_build
+    """
+    session.install("-r", "requirements-dev.txt")
+    
+    # Use the docs_build.sh script for consistent behavior
+    import os
+    env = os.environ.copy()
+    
+    # Pass through environment variables
+    skip_optional = env.get("SKIP_OPTIONAL", "0")
+    fail_on_missing = env.get("FAIL_ON_MISSING", "0")
+    
+    session.log(f"Building API docs (SKIP_OPTIONAL={skip_optional}, FAIL_ON_MISSING={fail_on_missing})")
+    
+    session.run(
+        "bash",
+        "scripts/docs_build.sh",
+        env=env,
+        external=True,
+    )
+
+
 @nox.session(name="tracking_smoke")
 def tracking_smoke(session: nox.Session) -> None:
     """Run local MLflow smoke test against file backend (local-only)."""
@@ -283,3 +316,10 @@ def perf_smoke(session: nox.Session) -> None:
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
     session.env["CODEX_PERF_SMOKE"] = "1"
     session.run("pytest", "-q", "tests/perf/test_smoke.py")
+
+
+@nox.session(name="docs")
+def docs(session: nox.Session) -> None:
+    """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/build_api_docs.py", *session.posargs)
