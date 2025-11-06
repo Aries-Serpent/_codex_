@@ -78,37 +78,37 @@ def install_pdoc() -> None:
     logger.info("pdoc3 installed successfully")
 
 
-def filter_modules(
-    modules: list[str], fail_on_missing: bool = False
-) -> tuple[list[str], list[str]]:
+def filter_modules(modules: list[str]) -> tuple[list[str], list[str]]:
     """Filter modules based on availability.
 
-    Uses import-based probing to verify module availability, ensuring
-    modules can actually be imported (not just that their spec exists).
+    Uses importlib.util.find_spec() to check module availability without
+    loading modules into memory, which is more efficient for large packages.
 
     Args:
         modules: List of module names to check for importability
-        fail_on_missing: If True, track missing modules for strict checking
 
     Returns:
         Tuple of (available_modules, missing_modules)
     """
-    import importlib
+    import importlib.util
 
-    # Try importing each module to verify it's actually available
+    # Check if each module can be imported without actually importing
     available_modules = []
     missing_modules = []
     for module in modules:
         try:
-            # Attempt to import the full module path
-            importlib.import_module(module)
-            available_modules.append(module)
-            logger.info(f"✓ Module {module} is importable")
-        except ImportError as e:
+            spec = importlib.util.find_spec(module)
+            if spec is not None:
+                available_modules.append(module)
+                logger.info(f"✓ Module {module} is importable")
+            else:
+                missing_modules.append(module)
+                logger.warning(f"Skipping {module}: module not found")
+        except (ImportError, ModuleNotFoundError, ValueError) as e:
             missing_modules.append(module)
             logger.warning(f"Skipping {module}: {e}")
         except Exception as e:
-            # Catch other exceptions (e.g., AttributeError during import)
+            # Catch other exceptions (e.g., AttributeError during spec lookup)
             missing_modules.append(module)
             logger.warning(f"Skipping {module} due to error: {e}")
 
@@ -317,7 +317,7 @@ def main() -> None:
     if not skip_optional:
         all_modules.extend(OPTIONAL_MODULES)
 
-    modules, missing = filter_modules(all_modules, args.fail_on_missing)
+    modules, missing = filter_modules(all_modules)
 
     if not modules:
         logger.error("No modules available to document")
