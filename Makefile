@@ -75,11 +75,12 @@ actions-cli-cite:
 # Include Space audit targets
 -include space.mk
 
+SKIP_OPTIONAL ?= 1
+FAIL_ON_MISSING ?= 0
+
 .PHONY: docs-build
 docs-build:
-	@SKIP_OPTIONAL?=1 ; \
-	FAIL_ON_MISSING?=0 ; \
-	SKIP_OPTIONAL=$$SKIP_OPTIONAL FAIL_ON_MISSING=$$FAIL_ON_MISSING bash scripts/docs_build.sh
+	@SKIP_OPTIONAL="$(SKIP_OPTIONAL)" FAIL_ON_MISSING="$(FAIL_ON_MISSING)" bash scripts/docs_build.sh
 
 .PHONY: capture-baseline
 capture-baseline:
