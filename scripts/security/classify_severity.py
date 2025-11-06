@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+"""
+Security Severity Classification (P5)
+
+Reads secret_entropy_report.json and classifies each finding into Low / Medium / High
+based on entropy and token length ranges.
+
+Environmental Knobs:
+  SECURITY_SEVERITY_ENABLE=1    -> perform classification
+  SEVERITY_HIGH_WEIGHT=0.05     -> weighting influence (used by audit_runner scoring)
+  SEVERITY_MEDIUM_WEIGHT=0.02
+  SEVERITY_LOW_WEIGHT=0.01
+
+Output:
+  audit_artifacts/security_severity.json
+{
+  "counts":{"high":X,"medium":Y,"low":Z,"total":N},
+  "weights":{"high":0.05,"medium":0.02,"low":0.01},
+  "findings":[{"file":..., "entropy":..., "length":..., "severity":"high"}]
+}
+
+Classification (default thresholds):
+  High: entropy >= 4.0 and length in [20,48]
+  Medium: entropy >= 3.8 and length in [16,48]
+  Low: entropy >= 3.5 and length in [16,48]
+Order: evaluate high first, then medium, then low.
+"""
+from __future__ import annotations
+import os, json, sys
+from pathlib import Path
+from typing import Dict, Any
+
+ART_DIR = Path("audit_artifacts")
+IN_REPORT = ART_DIR / "secret_entropy_report.json"
+OUT_REPORT = ART_DIR / "security_severity.json"
+
+def classify(entropy: float, length: int) -> str | None:
+    if entropy >= 4.0 and 20 <= length <= 48:
+        return "high"
+    if entropy >= 3.8 and 16 <= length <= 48:
+        return "medium"
+    if entropy >= 3.5 and 16 <= length <= 48:
+        return "low"
+    return None
+
+def main():
+    enable = os.getenv("SECURITY_SEVERITY_ENABLE","0") in {"1","true","TRUE","on","yes","YES"}
+    if not enable:
+        print("[INFO] Security severity classification disabled.")
+        return 0
+    if not IN_REPORT.exists():
+        print("[WARN] secret_entropy_report.json missing; run entropy scan first.", file=sys.stderr)
+        return 2
+
+    try:
+        data = json.loads(IN_REPORT.read_text())
+    except Exception as e:
+        print(f"[ERR] Failed to parse entropy report: {e}", file=sys.stderr)
+        return 2
+
+    findings = data.get("findings", [])
+    classified = []
+    counts = {"high":0,"medium":0,"low":0}
+    for f in findings:
+        token = f.get("span","")
+        entropy = float(f.get("entropy",0.0))
+        sev = classify(entropy, len(token))
+        if sev:
+            counts[sev] += 1
+            classified.append({
+                "file": f.get("file"),
+                "span": token[:80],
+                "entropy": entropy,
+                "length": len(token),
+                "severity": sev
+            })
+
+    total = sum(counts.values())
+    weights = {
+        "high": float(os.getenv("SEVERITY_HIGH_WEIGHT","0.05")),
+        "medium": float(os.getenv("SEVERITY_MEDIUM_WEIGHT","0.02")),
+        "low": float(os.getenv("SEVERITY_LOW_WEIGHT","0.01")),
+    }
+    payload: Dict[str, Any] = {
+        "counts": counts | {"total": total},
+        "weights": weights,
+        "findings": classified
+    }
+    ART_DIR.mkdir(parents=True, exist_ok=True)
+    OUT_REPORT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    print(f"[INFO] Security severity report written: {OUT_REPORT}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
