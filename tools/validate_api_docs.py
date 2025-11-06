@@ -59,7 +59,12 @@ def _scan_imports(root_pkg: str, allow_optional: List[str]) -> Dict[str, Any]:
         except Exception as exc:
             # If the missing module is an allowlisted optional dependency, record as optional_miss
             lowered = str(exc).lower()
-            if any(opt.lower() in lowered or opt in modname for opt in allow_optional):
+            if any(
+                opt.lower() in lowered or
+                modname == opt or
+                modname.startswith(opt + ".")
+                for opt in allow_optional
+            ):
                 optional_misses.append(modname)
             else:
                 errors.append(f"{modname}: {type(exc).__name__}: {exc}")
