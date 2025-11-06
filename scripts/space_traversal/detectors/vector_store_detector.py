@@ -16,7 +16,7 @@ def detect(file_index: dict) -> dict:
         file_index: Dictionary containing file information
         
     Returns:
-        Detection result with evidence files and patterns
+        Detection result with evidence files
     """
     files: List[str] = [
         f["path"] 
@@ -24,14 +24,11 @@ def detect(file_index: dict) -> dict:
         if f["path"].startswith(TARGET_DIR)
     ]
     
-    found = []
-    required = ["connect", "upsert", "query"]
-    
     # Evidence is path-based; patterns will be validated by static scans in the future.
     return {
         "id": "vector-stores",
         "evidence_files": sorted(files),
-        "found_patterns": found,
-        "required_patterns": required,
+        "found_patterns": [],
+        "required_patterns": [],
         "meta": {"mode": "stub-or-mock"}
     }

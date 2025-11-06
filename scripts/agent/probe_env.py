@@ -37,12 +37,15 @@ def main():
     except Exception:
         pass
     
-    # ulimit
-    try:
-        out = subprocess.check_output(["bash","-lc","ulimit -a"], text=True, timeout=5)
-        info["limits"]["ulimit"] = out.strip()
-    except Exception:
-        pass
+    # ulimit (platform-aware)
+    if platform.system() != "Windows" and which("bash"):
+        try:
+            out = subprocess.check_output(["bash","-lc","ulimit -a"], text=True, timeout=5)
+            info["limits"]["ulimit"] = out.strip()
+        except Exception as e:
+            print(f"[WARN] ulimit probe failed: {e}", file=sys.stderr)
+    else:
+        print("[INFO] Skipping ulimit on non-Unix platform", file=sys.stderr)
     
     # write
     out_path = os.path.join("audit_artifacts", "agent_env.json")

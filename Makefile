@@ -82,6 +82,10 @@ FAIL_ON_MISSING ?= 0
 docs-build:
 	@SKIP_OPTIONAL="$(SKIP_OPTIONAL)" FAIL_ON_MISSING="$(FAIL_ON_MISSING)" bash scripts/docs_build.sh
 
+.PHONY: docs-build-strict
+docs-build-strict:
+	@SKIP_OPTIONAL=0 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
+
 .PHONY: capture-baseline
 capture-baseline:
 	bash scripts/baseline/capture_baseline.sh

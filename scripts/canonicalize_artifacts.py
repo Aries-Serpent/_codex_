@@ -8,7 +8,12 @@ def sha256_b(s: bytes) -> str:
     return hashlib.sha256(s).hexdigest()
 
 def canonicalize_json(p: Path) -> dict:
-    data = json.loads(p.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        print(f"[ERR] Failed to parse {p}: {e}", file=sys.stderr)
+        raise
+    
     def scrub(obj):
         if isinstance(obj, dict):
             return {k: scrub(v) for k, v in sorted(obj.items()) if k not in CANON_KEYS_DROP}
@@ -35,7 +40,9 @@ def main():
         items.append(canonicalize_json(p))
     
     out = {"artifacts": items}
-    Path(args.out).write_text(json.dumps(out, indent=2), encoding="utf-8")
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(out, indent=2), encoding="utf-8")
     print(json.dumps(out, indent=2))
 
 if __name__ == "__main__":
