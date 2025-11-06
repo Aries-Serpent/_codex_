@@ -29,9 +29,6 @@ _SRC_DIR = _REPO_ROOT / "src"
 if str(_SRC_DIR) not in sys.path:
     sys.path.insert(0, str(_SRC_DIR))
 
-from codex_ml.utils.provenance import export_environment
-
-
 def get_conda_env() -> dict[str, Any] | None:
     """Get conda environment information if available.
     
