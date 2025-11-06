@@ -54,8 +54,7 @@ class TestFilterModules:
         """Test Priority 1 regression: submodules without dependencies are not
         falsely marked available.
 
-        This test was added to prevent a Priority 1 regression (see PR #2118)
-        where, if a base package exists but a submodule is missing
+        This test prevents a regression where, if a base package exists but a submodule is missing
         (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules incorrectly
         marked the submodule as importable. This test ensures filter_modules correctly
         rejects the submodule instead of marking it as importable.
