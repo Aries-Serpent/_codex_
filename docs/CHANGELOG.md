@@ -9,11 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - **API docs generator**: Include optional packages (`codex_ml`, `codex_ml.peft`, `codex_ml.distributed`) in generated API documentation when optional dependencies are installed. Previously the script documented only `codex.cli` and `codex.logging` even when `codex_ml` was available, preventing the main ML API from appearing in generated docs. The script now dynamically includes optional modules by default and logs the final module list for visibility. (PR #2118)
-- **API docs generator**: Module availability checks now use actual import attempts (not `find_spec`) to ensure modules can be fully imported, preventing false positives where a module spec exists but the module has import errors.
+- **API docs generator**: Module availability checks continue to use `importlib.util.find_spec()` to determine module presence. Note: This may not catch all import errors, as a module spec can exist even if the module fails to import.
 
 ### Changed
 - **API docs generator**: `filter_modules()` now returns a tuple `(available_modules, missing_modules)` instead of just a list, enabling better tracking of module availability for strict mode checks.
-- **API docs generator**: Restored import-based availability checks using `importlib.import_module()` in try/except blocks for accurate module availability detection.
+- **API docs generator**: Availability checks in `filter_modules()` still use `find_spec` rather than import-based probing. The planned switch to `importlib.import_module()` for stricter checks is not yet implemented.
 
 ### Added (continued)
 - Safety: training and evaluation CLIs honor new `sanitize_prompts` flags and
