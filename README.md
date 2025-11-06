@@ -25,6 +25,21 @@ nox -s docs
 python tools/build_api_docs.py
 ```
 
+**Note:** The API documentation script automatically includes optional packages like `codex_ml` when their dependencies are installed. For complete API documentation including the ML framework:
+
+```bash
+# Install optional ML dependencies
+pip install -e .[ml]
+
+# Build full documentation
+python tools/build_api_docs.py --verbose
+```
+
+To build only core modules (excluding `codex_ml`), use:
+```bash
+python tools/build_api_docs.py --skip-optional
+```
+
 View the generated docs at `artifacts/docs/api/index.html` or serve locally:
 ```bash
 python -m http.server -d artifacts/docs/api 8000

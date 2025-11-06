@@ -73,19 +73,23 @@ def install_pdoc() -> None:
     logger.info("pdoc3 installed successfully")
 
 
-def filter_modules(modules: list[str], skip_optional: bool) -> list[str]:
-    """Filter modules based on availability and skip_optional flag."""
-    if skip_optional:
-        # Remove optional modules
-        modules = [m for m in modules if m not in OPTIONAL_MODULES]
-    
+def filter_modules(modules: list[str]) -> list[str]:
+    """Filter modules based on availability.
+
+    Args:
+        modules: List of module names to check for importability
+
+    Returns:
+        List of modules that are successfully importable
+    """
+    import importlib
+
     # Try importing each module and skip those that fail
     available_modules = []
     for module in modules:
-        module_name = module.split(".")[0]
         try:
-            # Try to import the top-level module
-            __import__(module_name)
+            # Import the full module path to verify it and its dependencies exist
+            importlib.import_module(module)
             available_modules.append(module)
             logger.info(f"✓ Module {module} is importable")
         except ImportError as e:
@@ -93,20 +97,20 @@ def filter_modules(modules: list[str], skip_optional: bool) -> list[str]:
         except Exception as e:
             # Catch any other exceptions during import
             logger.warning(f"Skipping {module} due to error: {e}")
-    
+
     return available_modules
 
 
 def build_docs(output_dir: Path, modules: list[str]) -> None:
     """Build API documentation using pdoc3.
-    
+
     Args:
         output_dir: Directory to write documentation
         modules: List of module names to document
     """
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Clean existing docs
     if output_dir.exists() and any(output_dir.iterdir()):
         logger.info(f"Cleaning existing docs in {output_dir}")
@@ -115,19 +119,20 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
                 shutil.rmtree(item)
             else:
                 item.unlink()
-    
+
     logger.info(f"Building API docs for modules: {', '.join(modules)}")
     logger.info(f"Output directory: {output_dir.resolve()}")
-    
+
     # Build documentation with pdoc3
     cmd = [
         "pdoc",
         "--html",
-        "--output-dir", str(output_dir),
+        "--output-dir",
+        str(output_dir),
         "--force",
     ]
     cmd.extend(modules)
-    
+
     # Set PYTHONPATH to include src directory
     env = os.environ.copy()
     pythonpath = env.get("PYTHONPATH", "")
@@ -136,10 +141,10 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
         env["PYTHONPATH"] = f"{src_path}:{pythonpath}"
     else:
         env["PYTHONPATH"] = src_path
-    
+
     logger.debug(f"Running: {' '.join(cmd)}")
     logger.debug(f"PYTHONPATH: {env['PYTHONPATH']}")
-    
+
     try:
         result = subprocess.run(
             cmd,
@@ -149,13 +154,13 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
             env=env,
         )
         logger.info("API documentation built successfully")
-        
+
         # Log output for debugging
         if result.stdout:
             logger.debug(f"pdoc stdout: {result.stdout}")
         if result.stderr:
             logger.debug(f"pdoc stderr: {result.stderr}")
-            
+
     except subprocess.CalledProcessError as e:
         logger.error(f"Failed to build API docs: {e}")
         if e.stdout:
@@ -163,22 +168,22 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
         if e.stderr:
             logger.error(f"stderr: {e.stderr}")
         sys.exit(1)
-    
+
     # Create index file
     create_index(output_dir, modules)
-    
+
     logger.info(f"Documentation written to: {output_dir.resolve()}")
 
 
 def create_index(output_dir: Path, modules: list[str]) -> None:
     """Create an index.html that links to all module documentation.
-    
+
     Args:
         output_dir: Documentation output directory
         modules: List of documented modules
     """
     index_path = output_dir / "index.html"
-    
+
     html_content = """<!DOCTYPE html>
 <html>
 <head>
@@ -229,12 +234,14 @@ def create_index(output_dir: Path, modules: list[str]) -> None:
     <h2>Modules</h2>
     <ul>
 """
-    
+
     for module in sorted(modules):
         # pdoc3 creates a directory for each top-level module
         module_dir = module.split(".")[0]
-        html_content += f'        <li><a class="module-link" href="{module_dir}/index.html">{module}</a></li>\n'
-    
+        html_content += (
+            f'        <li><a class="module-link" href="{module_dir}/index.html">{module}</a></li>\n'
+        )
+
     html_content += """    </ul>
     <hr>
     <p class="description">
@@ -244,7 +251,7 @@ def create_index(output_dir: Path, modules: list[str]) -> None:
 </body>
 </html>
 """
-    
+
     index_path.write_text(html_content, encoding="utf-8")
     logger.info(f"Created index: {index_path}")
 
@@ -271,28 +278,36 @@ def main() -> None:
         action="store_true",
         help="Enable verbose logging",
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    
+
     # Check/install pdoc
     if not check_pdoc_installed():
         logger.info("pdoc3 not found, installing...")
         install_pdoc()
-    
+
     # Determine which modules to document
     skip_optional = args.skip_optional or os.getenv("CODEX_SKIP_OPTIONAL_IMPORTS") == "1"
-    modules = filter_modules(MODULES_TO_DOCUMENT, skip_optional)
-    
+
+    # Combine core modules with optional modules
+    all_modules = MODULES_TO_DOCUMENT.copy()
+    if not skip_optional:
+        all_modules.extend(OPTIONAL_MODULES)
+
+    modules = filter_modules(all_modules)
+
     if not modules:
         logger.error("No modules available to document")
         sys.exit(1)
-    
+
+    logger.info(f"Final module list to document: {', '.join(modules)}")
+
     # Build documentation
     build_docs(args.output_dir, modules)
-    
+
     logger.info("✓ API documentation build complete")
 
 

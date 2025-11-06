@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Fixed
+- **API docs generator**: Include optional packages (`codex_ml`, `codex_ml.peft`, `codex_ml.distributed`) in generated API documentation when optional dependencies are installed. Previously the script documented only `codex.cli` and `codex.logging` even when `codex_ml` was available, preventing the main ML API from appearing in generated docs. The script now dynamically includes optional modules by default and logs the final module list for visibility. (PR #2118)
+
 ### Added
 - Safety: training and evaluation CLIs honour new `sanitize_prompts` flags and
   sanitize inline datasets by default.
