@@ -82,7 +82,7 @@ def _build_pdoc(root_pkg: str, out_dir: Path) -> Dict[str, Any]:
 
     try:
         out_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Use subprocess to call pdoc CLI (most reliable method)
         # Ensure PYTHONPATH includes src directory
         env = os.environ.copy()

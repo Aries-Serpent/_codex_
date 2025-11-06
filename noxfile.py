@@ -287,14 +287,6 @@ def perf_smoke(session: nox.Session) -> None:
 
 @nox.session(name="docs")
 def docs(session: nox.Session) -> None:
-    """Build API documentation with pdoc3 (offline, local-only).
-    
-    Generates comprehensive API reference documentation from source code
-    docstrings. Output is written to artifacts/docs/api/ (git-ignored).
-    
-    Usage:
-        nox -s docs              # Build with default settings
-        nox -s docs -- --verbose # Build with verbose output
-    """
+    """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/build_api_docs.py", *session.posargs)
