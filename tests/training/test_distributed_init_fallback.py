@@ -16,7 +16,6 @@ def test_distributed_init_skip_when_unavailable():
             init_distributed_if_needed,
             is_distributed_available,
         )
-        
         # Should not raise even if distributed not available
         available = is_distributed_available()
         
