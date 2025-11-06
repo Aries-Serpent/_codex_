@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ACCELERATE_TEST="${ACCELERATE_TEST:-0}"
+RUN_LORA_TESTS="${RUN_LORA_TESTS:-0}"
+RUN_PERF_SMOKE="${RUN_PERF_SMOKE:-0}"
+
+echo "[INFO] pytest with gates: ACCELERATE_TEST=${ACCELERATE_TEST} RUN_LORA_TESTS=${RUN_LORA_TESTS} RUN_PERF_SMOKE=${RUN_PERF_SMOKE}"
+
+pytest -q
