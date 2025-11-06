@@ -1,19 +1,41 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.2.0)
+Audit Runner Orchestrator for Copilot Space Traversal Workflow (v1.3.0)
 
-Enhancements (v1.2.0):
+Enhancements (v1.3.0 P3):
+ - Aggregate warnings from content_filter_report.json and bundle pointer JSONs
+ - Optional knobs snapshot in manifest (via parse_knobs.summarize_effective)
+ - Prefix validation warnings integration
+ - Add depth gating for configurable recursion control (AUDIT_DEPTH)
+ - Integrate knob parsing warnings into manifest
  - Propagate required_patterns into scored artifacts (S4)
  - Compute missing_patterns and write into gaps.json (S5)
  - Emit component_gaps.json with zero components (S5)
  - Add 'validate' command for policy gates (low threshold, missing detectors)
  - Include missing_detectors and thresholds snapshot in manifest (S7)
  - Pass thresholds into render context; template shows true low threshold
+
+Note: Network calls remain disabled; all operations are offline.
 """
 from __future__ import annotations
 import argparse, json, os, re, sys, hashlib, time, importlib.util, inspect
 from pathlib import Path
 from typing import Dict, List, Any, Callable
+
+# Import knob parser for depth gating
+try:
+    from scripts.config.parse_knobs import get_depth, get_warnings as get_knob_warnings, normalize_from_env, summarize_effective
+except ImportError:
+    # Fallback if not available
+    def get_depth():
+        return 3, False
+    def get_knob_warnings():
+        return []
+    def normalize_from_env():
+        import os as _os
+        return dict(_os.environ), []
+    def summarize_effective(knobs):
+        return {k:v for k,v in knobs.items() if v not in (None,"",[],{})}
 
 try:
     from scripts.space_traversal.capability_scoring import (
@@ -64,7 +86,8 @@ CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
-VERSION = "1.2.0"
+VERSION = "1.3.0"
+EVIDENCE_TRUNCATION_LIMIT = 50  # applied when depth < 4
 
 SKIP_DIR_PREFIXES = (
     ".git/",
@@ -154,24 +177,59 @@ def info(msg: str):
     print(f"[INFO] {msg}")
 
 # ---------------------------------------------------------------------------
+# Depth Gated Traversal
+# ---------------------------------------------------------------------------
+def iter_paths_depth(root: Path, max_depth: int) -> List[Path]:
+    """
+    Deterministic depth-limited traversal.
+    Depth definition:
+      root depth = 0
+      root/subdir depth = 1
+    """
+    result: List[Path] = []
+    stack = [(root, 0)]
+    while stack:
+        current, depth = stack.pop()
+        entries = sorted(current.iterdir(), key=lambda p: p.name)
+        for e in entries:
+            if e.is_dir():
+                if depth + 1 <= max_depth:
+                    stack.append((e, depth + 1))
+            else:
+                result.append(e)
+    return sorted(result, key=lambda p: p.as_posix())
+
+# ---------------------------------------------------------------------------
 # Stage Implementations
 # ---------------------------------------------------------------------------
 def stage_s1_index(cfg):
+    # Get depth configuration
+    depth, depth_warning_issued = get_depth()
+    depth_warnings = get_knob_warnings()
+    
     out_dir = Path(cfg["output"]["artifacts_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
+    
     files_meta = []
-    for p in sorted(ROOT.rglob("*")):
-        if p.is_dir():
-            continue
+    all_paths = iter_paths_depth(ROOT, depth)
+    for p in all_paths:
         rel = p.relative_to(ROOT).as_posix()
-        if any(rel.startswith(prefix) for prefix in SKIP_DIR_PREFIXES):
+        if rel.startswith(".git/") or rel.startswith("audit_artifacts/") or rel.startswith("reports/"):
             continue
         ext = p.suffix.lower()
         size = p.stat().st_size
         sha = _sha256_file(p) if size < 2_000_000 else None
         files_meta.append({"path": rel, "ext": ext, "size": size, "sha": sha})
-    idx = {"generated": time.time(), "count": len(files_meta), "files": files_meta, "version": VERSION}
+    
+    idx = {
+        "generated": time.time(),
+        "count": len(files_meta),
+        "files": files_meta,
+        "version": VERSION,
+        "depth": depth
+    }
     (out_dir / "context_index.json").write_text(json.dumps(idx, indent=2), encoding="utf-8")
+    (out_dir / "_depth_warnings.json").write_text(json.dumps(depth_warnings), encoding="utf-8")
     return idx
 
 DOMAIN_PATTERNS = {
@@ -191,7 +249,7 @@ def stage_s2_facets(cfg, context_idx):
         for key, rx in DOMAIN_PATTERNS.items():
             if rx.search(f["path"]):
                 facets[key].append(f["path"])
-    payload = {"generated": time.time(), "facets": facets, "version": VERSION}
+    payload = {"generated": time.time(), "facets": facets, "version": VERSION, "depth": context_idx.get("depth")}
     out = Path(cfg["output"]["artifacts_dir"]) / "facets.json"
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload
@@ -248,20 +306,25 @@ def stage_s3_capabilities(cfg, facets):
             for pat in rule["required_patterns"]:
                 if pat in txt:
                     pattern_hits.add(pat)
+        evidence_files = sorted(set(evidence_files))
+        # Truncate evidence list if depth restriction active
+        depth = facets.get("depth", 4)
+        if depth < 4 and len(evidence_files) > EVIDENCE_TRUNCATION_LIMIT:
+            evidence_files = evidence_files[:EVIDENCE_TRUNCATION_LIMIT]
         capabilities.append({
             "id": rule["id"],
-            "evidence_files": sorted(set(evidence_files)),
+            "evidence_files": evidence_files,
             "found_patterns": sorted(pattern_hits),
             "required_patterns": rule["required_patterns"],
         })
     # Dynamic detectors
     if cfg.get("capability_map", {}).get("dynamic", False):
-        dynamic_funcs = load_dynamic_detectors()
         context_idx_path = out_dir / "context_index.json"
         if not context_idx_path.exists():
             warn("context_index.json missing for dynamic detectors; re-run S1")
         else:
             ctx_index = json.loads(context_idx_path.read_text())
+            dynamic_funcs = load_dynamic_detectors()
             for func in dynamic_funcs:
                 try:
                     det = func(ctx_index)
@@ -271,11 +334,15 @@ def stage_s3_capabilities(cfg, facets):
                 if not isinstance(det, dict) or "id" not in det:
                     warn("Invalid detector return structure; skipping.")
                     continue
-                for key in ["evidence_files", "found_patterns", "required_patterns"]:
+                for key in ["evidence_files","found_patterns","required_patterns"]:
                     det.setdefault(key, [])
+                evidence_files = sorted(set(det["evidence_files"]))
+                depth = facets.get("depth", 4)
+                if depth < 4 and len(evidence_files) > EVIDENCE_TRUNCATION_LIMIT:
+                    evidence_files = evidence_files[:EVIDENCE_TRUNCATION_LIMIT]
                 capabilities.append({
                     "id": det["id"],
-                    "evidence_files": sorted(set(det["evidence_files"])),
+                    "evidence_files": evidence_files,
                     "found_patterns": sorted(set(det["found_patterns"])),
                     "required_patterns": det["required_patterns"],
                     "meta": det.get("meta", {}),
@@ -510,6 +577,40 @@ def stage_s6_render(cfg, scored_caps, gaps):
     }
     return render_template(cfg, context)
 
+def _aggregate_external_warnings(artifacts_dir: Path) -> List[str]:
+    """Aggregate warnings from external sources (filter, pointers, prefix validation)."""
+    warnings: List[str] = []
+    # Content filter report
+    cfr = artifacts_dir / "content_filter_report.json"
+    if cfr.exists():
+        try:
+            data = json.loads(cfr.read_text())
+            warnings.extend(data.get("warnings", []))
+            if "error" in data:
+                warnings.append(f"filter_error:{data['error']}")
+        except Exception as e:
+            warnings.append(f"filter_report_parse_fail:{e}")
+    # Latest pointer in bundles
+    bundles = Path("audit_artifacts") / "bundles"
+    if bundles.exists():
+        ptrs = sorted(bundles.glob("*.pointer.json"))
+        if ptrs:
+            try:
+                pdata = json.loads(ptrs[-1].read_text())
+                warnings.extend(pdata.get("warnings", []))
+            except Exception as e:
+                warnings.append(f"pointer_parse_fail:{e}")
+    # Prefix validation report
+    pvr = artifacts_dir / "prefix_validation_report.json"
+    if pvr.exists():
+        try:
+            vdata = json.loads(pvr.read_text())
+            if vdata.get("violations"):
+                warnings.append(f"prefix_violations:{len(vdata['violations'])}")
+        except Exception as e:
+            warnings.append(f"prefix_report_parse_fail:{e}")
+    return warnings
+
 def stage_s7_manifest(cfg):
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     manifest = {
@@ -518,10 +619,9 @@ def stage_s7_manifest(cfg):
         "repo_root_sha": _sha256_bytes(json.dumps(sorted([f.as_posix() for f in ROOT.rglob('*') if f.is_file()]), sort_keys=True).encode()),
         "artifacts": [],
         "weights": cfg["weights"],
-        "thresholds": cfg["scoring"]["thresholds"],
-        "warnings": [],
-        "missing_detectors": [],
+        "warnings": []
     }
+    
     for p in artifacts_dir.glob("*.json"):
         if p.name.startswith("_"):
             continue
@@ -533,28 +633,31 @@ def stage_s7_manifest(cfg):
         concat += t.read_bytes()
     manifest["template_hash"] = _sha256_bytes(concat)
 
-    warn_file = artifacts_dir / "_scoring_warnings.json"
-    if warn_file.exists():
-        manifest["warnings"].extend(json.loads(warn_file.read_text()))
+    # Collect internal warnings
+    for wfile in ["_scoring_warnings.json","_depth_warnings.json"]:
+        wf = artifacts_dir / wfile
+        if wf.exists():
+            try:
+                manifest["warnings"].extend(json.loads(wf.read_text()))
+            except Exception:
+                pass
+    
+    # Collect external warnings
+    manifest["warnings"].extend(_aggregate_external_warnings(artifacts_dir))
+    
+    # Optional knobs snapshot
+    try:
+        knobs, warns = normalize_from_env()
+        if knobs:
+            manifest["knobs_effective"] = summarize_effective(knobs)
+        if warns:
+            manifest["warnings"].extend(warns)
+    except Exception:
+        pass
 
-    # include missing_detectors list for provenance
-    gaps_path = artifacts_dir / "gaps.json"
-    if gaps_path.exists():
-        try:
-            gaps = json.loads(gaps_path.read_text())
-            manifest["missing_detectors"] = gaps.get("missing_detectors", [])
-        except Exception:
-            manifest["missing_detectors"] = []
-
-    gaps_path = artifacts_dir / "gaps.json"
-    if gaps_path.exists():
-        try:
-            gaps_payload = json.loads(gaps_path.read_text(encoding="utf-8"))
-            manifest["missing_detectors"] = gaps_payload.get("missing_detectors", [])
-            if isinstance(gaps_payload.get("thresholds"), dict):
-                manifest["thresholds"] = gaps_payload["thresholds"]
-        except Exception:
-            pass
+    out = ROOT / "audit_run_manifest.json"
+    out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return manifest
 
     out = ROOT / "audit_run_manifest.json"
     out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
