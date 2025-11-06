@@ -95,9 +95,8 @@ class TestModuleListBuilding:
         # Mock filter_modules to track what it receives
         called_with = {}
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             called_with["modules"] = list(modules)
-            called_with["fail_on_missing"] = fail_on_missing
             return modules, []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
@@ -119,7 +118,7 @@ class TestModuleListBuilding:
         """Test that optional modules are excluded with --skip-optional."""
         called_with = {}
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             called_with["modules"] = list(modules)
             return modules, []
 
@@ -142,7 +141,7 @@ class TestModuleListBuilding:
         """Test that CODEX_SKIP_OPTIONAL_IMPORTS environment variable works."""
         called_with = {}
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             called_with["modules"] = list(modules)
             return modules, []
 
@@ -177,7 +176,7 @@ class TestFailOnMissing:
     def test_fail_on_missing_exits_with_code_3(self, monkeypatch):
         """Test that --fail-on-missing exits with code 3 when modules are missing."""
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             # Simulate some modules missing
             return (["codex.cli"], ["codex_ml", "codex_ml.peft"])
 
@@ -193,7 +192,7 @@ class TestFailOnMissing:
     def test_fail_on_missing_succeeds_when_all_available(self, monkeypatch):
         """Test that --fail-on-missing succeeds when all modules are available."""
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             # All modules available
             return (modules, [])
 
@@ -207,7 +206,7 @@ class TestFailOnMissing:
     def test_non_strict_mode_allows_missing_modules(self, monkeypatch):
         """Test that without --fail-on-missing, missing modules are gracefully skipped."""
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             # Some modules missing but that's OK in non-strict mode
             return (["codex.cli", "codex.logging"], ["codex_ml"])
 
@@ -240,7 +239,7 @@ class TestLogging:
     def test_final_module_list_is_logged(self, monkeypatch, caplog):
         """Test that final module list is logged for visibility."""
 
-        def mock_filter(modules, fail_on_missing=False):
+        def mock_filter(modules):
             return ["codex.cli", "codex_ml"], []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
