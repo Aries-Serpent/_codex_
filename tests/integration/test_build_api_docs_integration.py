@@ -98,18 +98,20 @@ class TestBuildAPIDocsIntegration:
         script = REPO_ROOT / "tools" / "build_api_docs.py"
 
         # Run without any special PYTHONPATH - optional modules may not be available
-        result = subprocess.run(
-            [
+        run_kwargs = {
+            "args": [
                 sys.executable,
                 str(script),
                 "--verbose",
                 "--output-dir",
                 str(tmp_path / "test_api_docs"),
             ],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
+            "capture_output": True,
+            "text": True,
+        }
+        if sys.version_info >= (3, 5):
+            run_kwargs["timeout"] = 30
+        result = subprocess.run(**run_kwargs)
 
         output = result.stdout + result.stderr
 
