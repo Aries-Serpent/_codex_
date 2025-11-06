@@ -73,12 +73,15 @@ def install_pdoc() -> None:
     logger.info("pdoc3 installed successfully")
 
 
-def filter_modules(modules: list[str], skip_optional: bool) -> list[str]:
-    """Filter modules based on availability and skip_optional flag."""
-    if skip_optional:
-        # Remove optional modules
-        modules = [m for m in modules if m not in OPTIONAL_MODULES]
+def filter_modules(modules: list[str]) -> list[str]:
+    """Filter modules based on availability.
     
+    Args:
+        modules: List of module names to check for importability
+        
+    Returns:
+        List of modules that are successfully importable
+    """
     # Try importing each module and skip those that fail
     available_modules = []
     for module in modules:
@@ -284,11 +287,19 @@ def main() -> None:
     
     # Determine which modules to document
     skip_optional = args.skip_optional or os.getenv("CODEX_SKIP_OPTIONAL_IMPORTS") == "1"
-    modules = filter_modules(MODULES_TO_DOCUMENT, skip_optional)
+    
+    # Combine core modules with optional modules
+    all_modules = MODULES_TO_DOCUMENT.copy()
+    if not skip_optional:
+        all_modules.extend(OPTIONAL_MODULES)
+    
+    modules = filter_modules(all_modules)
     
     if not modules:
         logger.error("No modules available to document")
         sys.exit(1)
+    
+    logger.info(f"Final module list to document: {', '.join(modules)}")
     
     # Build documentation
     build_docs(args.output_dir, modules)
