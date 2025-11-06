@@ -1,4 +1,38 @@
-# API Documentation
+# [Guide]: API Docs Build & View
+> Generated: 2025-11-06 10:40:00 | Author: mbaetiong  
+> Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+
+## Modes
+
+| Flag | Default | Effect |
+|------|---------|--------|
+| SKIP_OPTIONAL | 1 | Hint code to skip optional ML deps |
+| FAIL_ON_MISSING | 0 | Strict import gate for doc build |
+
+## Commands
+
+```bash
+# Safe local build
+SKIP_OPTIONAL=1 bash scripts/docs_build.sh
+
+# Strict build (use on main merges)
+FAIL_ON_MISSING=1 SKIP_OPTIONAL=0 bash scripts/docs_build.sh
+```
+
+## Outputs
+
+| Path | Description |
+|------|-------------|
+| artifacts/docs/ | Generated docs (pdoc if available) |
+| artifacts/docs_manifest.sha | SHA256 list for determinism |
+
+## Determinism
+
+Run twice without code changes; compare `artifacts/docs_manifest.sha`.
+
+---
+
+# API Documentation (Extended Reference)
 
 > Comprehensive API reference for the Codex ML framework
 

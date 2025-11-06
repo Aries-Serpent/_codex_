@@ -54,7 +54,7 @@ class TestRegistry:
             pass
         
         @registry.register("func3")
-            def func3():
+        def func3():
             pass
         
         assert len(registry) == 3
