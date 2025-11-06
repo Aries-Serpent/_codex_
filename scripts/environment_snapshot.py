@@ -64,6 +64,7 @@ def get_conda_env() -> dict[str, Any] | None:
             ).strip()
             info["version"] = conda_version
         except Exception:
+            # It's non-critical if we can't get the conda version; ignore and continue.
             pass
         
         # Try to get package list
