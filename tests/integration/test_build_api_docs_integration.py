@@ -91,9 +91,7 @@ class TestBuildAPIDocsIntegration:
                 line for line in output.split("\n") if "Final module list to document" in line
             ][0]
             # codex_ml should not be in the final list
-            assert (
-                "codex_ml" not in final_list_line or "codex.cli, codex.logging" in final_list_line
-            )
+            assert "codex_ml" not in final_list_line
 
     def test_script_handles_missing_modules_gracefully(self, tmp_path):
         """Test that script doesn't crash when optional modules are missing."""
@@ -101,7 +99,13 @@ class TestBuildAPIDocsIntegration:
 
         # Run without any special PYTHONPATH - optional modules may not be available
         result = subprocess.run(
-            [sys.executable, str(script), "--verbose", "--output-dir", str(tmp_path / "test_api_docs")],
+            [
+                sys.executable,
+                str(script),
+                "--verbose",
+                "--output-dir",
+                str(tmp_path / "test_api_docs"),
+            ],
             capture_output=True,
             text=True,
             timeout=30,
@@ -155,3 +159,28 @@ class TestBuildAPIDocsIntegration:
             # Should only have core modules, not codex_ml
             assert "codex.cli" in final_list_line
             assert "codex.logging" in final_list_line
+
+    def test_fail_on_missing_with_skip_optional_succeeds(self, tmp_path):
+        """Test --fail-on-missing combined with --skip-optional succeeds."""
+        script = REPO_ROOT / "tools" / "build_api_docs.py"
+
+        # Use --skip-optional to not request codex_ml at all
+        # This should succeed even with --fail-on-missing because we're
+        # only requesting core modules which are available
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "--fail-on-missing",
+                "--skip-optional",
+                "--output-dir",
+                str(tmp_path / "test_docs"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+
+        # Should succeed because we're not requesting optional modules
+        assert (
+            result.returncode == 0
+        ), f"Expected success, got {result.returncode}. Output: {result.stdout + result.stderr}"

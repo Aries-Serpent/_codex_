@@ -10,7 +10,7 @@ import pytest
 tools_dir = Path(__file__).parent.parent.parent / "tools"
 sys.path.insert(0, str(tools_dir))
 
-import build_api_docs
+import build_api_docs  # noqa: E402
 
 
 class TestFilterModules:
@@ -32,27 +32,32 @@ class TestFilterModules:
 
         # Test with mix of importable and non-importable modules
         modules = ["test_package", "test_package.submodule", "nonexistent_module"]
-        available = build_api_docs.filter_modules(modules)
+        available, missing = build_api_docs.filter_modules(modules)
 
         assert "test_package" in available
         assert "test_package.submodule" in available
         assert "nonexistent_module" not in available
+        assert "nonexistent_module" in missing
 
     def test_filter_modules_handles_import_errors(self, caplog):
         """Test that filter_modules gracefully handles import errors."""
         modules = ["definitely_does_not_exist_module_12345"]
 
         with caplog.at_level("WARNING"):
-            available = build_api_docs.filter_modules(modules)
+            available, missing = build_api_docs.filter_modules(modules)
 
         assert len(available) == 0
+        assert len(missing) == 1
         assert "Skipping" in caplog.text
 
     def test_filter_modules_rejects_missing_submodules(self, tmp_path, monkeypatch):
-        """Test P1 regression: submodules without deps are not falsely marked available.
+        """Test Priority 1 regression: submodules without dependencies are not
+        falsely marked available.
 
-        This test ensures that when a base package exists but a submodule is missing
-        (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules correctly
+        This test was added to prevent a Priority 1 regression (see PR #2118)
+        where, if a base package exists but a submodule is missing
+        (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules incorrectly
+        marked the submodule as importable. This test ensures filter_modules correctly
         rejects the submodule instead of marking it as importable.
         """
         # Create a fake base package WITHOUT the submodule
@@ -65,18 +70,22 @@ class TestFilterModules:
 
         # Try to filter modules including a non-existent submodule
         modules = ["fake_codex_ml", "fake_codex_ml.peft", "fake_codex_ml.distributed"]
-        available = build_api_docs.filter_modules(modules)
+        available, missing = build_api_docs.filter_modules(modules)
 
         # Only the base package should be available
         assert "fake_codex_ml" in available
         # Submodules should NOT be marked as available
         assert "fake_codex_ml.peft" not in available
         assert "fake_codex_ml.distributed" not in available
+        # Missing submodules should be tracked
+        assert "fake_codex_ml.peft" in missing
+        assert "fake_codex_ml.distributed" in missing
 
     def test_filter_modules_empty_input(self):
         """Test filter_modules with empty input."""
-        result = build_api_docs.filter_modules([])
-        assert result == []
+        available, missing = build_api_docs.filter_modules([])
+        assert available == []
+        assert missing == []
 
 
 class TestModuleListBuilding:
@@ -87,9 +96,10 @@ class TestModuleListBuilding:
         # Mock filter_modules to track what it receives
         called_with = {}
 
-        def mock_filter(modules):
+        def mock_filter(modules, fail_on_missing=False):
             called_with["modules"] = list(modules)
-            return modules
+            called_with["fail_on_missing"] = fail_on_missing
+            return modules, []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
@@ -110,9 +120,9 @@ class TestModuleListBuilding:
         """Test that optional modules are excluded with --skip-optional."""
         called_with = {}
 
-        def mock_filter(modules):
+        def mock_filter(modules, fail_on_missing=False):
             called_with["modules"] = list(modules)
-            return modules
+            return modules, []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
@@ -133,9 +143,9 @@ class TestModuleListBuilding:
         """Test that CODEX_SKIP_OPTIONAL_IMPORTS environment variable works."""
         called_with = {}
 
-        def mock_filter(modules):
+        def mock_filter(modules, fail_on_missing=False):
             called_with["modules"] = list(modules)
-            return modules
+            return modules, []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
@@ -149,15 +159,65 @@ class TestModuleListBuilding:
         assert "codex_ml" not in called_with["modules"]
 
     def test_main_exits_when_no_modules_available(self, monkeypatch):
-        """Test that main exits with error when no modules are importable."""
-        monkeypatch.setattr(build_api_docs, "filter_modules", lambda m: [])
+        """Test that main exits with code 2 when no modules are importable."""
+        monkeypatch.setattr(
+            build_api_docs, "filter_modules", lambda m, fail_on_missing=False: ([], m)
+        )
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
 
         with patch("sys.argv", ["build_api_docs.py"]):
             with pytest.raises(SystemExit) as exc_info:
                 build_api_docs.main()
 
-            assert exc_info.value.code == 1
+            assert exc_info.value.code == 2
+
+
+class TestFailOnMissing:
+    """Test --fail-on-missing flag behavior."""
+
+    def test_fail_on_missing_exits_with_code_3(self, monkeypatch):
+        """Test that --fail-on-missing exits with code 3 when modules are missing."""
+
+        def mock_filter(modules, fail_on_missing=False):
+            # Simulate some modules missing
+            return (["codex.cli"], ["codex_ml", "codex_ml.peft"])
+
+        monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
+        monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
+
+        with patch("sys.argv", ["build_api_docs.py", "--fail-on-missing"]):
+            with pytest.raises(SystemExit) as exc_info:
+                build_api_docs.main()
+
+            assert exc_info.value.code == 3
+
+    def test_fail_on_missing_succeeds_when_all_available(self, monkeypatch):
+        """Test that --fail-on-missing succeeds when all modules are available."""
+
+        def mock_filter(modules, fail_on_missing=False):
+            # All modules available
+            return (modules, [])
+
+        monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
+        monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
+        monkeypatch.setattr(build_api_docs, "build_docs", lambda *args: None)
+
+        with patch("sys.argv", ["build_api_docs.py", "--fail-on-missing"]):
+            build_api_docs.main()  # Should not raise
+
+    def test_non_strict_mode_allows_missing_modules(self, monkeypatch):
+        """Test that without --fail-on-missing, missing modules are gracefully skipped."""
+
+        def mock_filter(modules, fail_on_missing=False):
+            # Some modules missing but that's OK in non-strict mode
+            return (["codex.cli", "codex.logging"], ["codex_ml"])
+
+        monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
+        monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
+        monkeypatch.setattr(build_api_docs, "build_docs", lambda *args: None)
+
+        with patch("sys.argv", ["build_api_docs.py"]):
+            build_api_docs.main()  # Should not raise
 
 
 class TestLogging:
@@ -166,7 +226,9 @@ class TestLogging:
     def test_verbose_flag_enables_debug_logging(self, monkeypatch, caplog):
         """Test that --verbose enables debug-level logging."""
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
-        monkeypatch.setattr(build_api_docs, "filter_modules", lambda m: m)
+        monkeypatch.setattr(
+            build_api_docs, "filter_modules", lambda m, fail_on_missing=False: (m, [])
+        )
         monkeypatch.setattr(build_api_docs, "build_docs", lambda *args: None)
 
         with patch("sys.argv", ["build_api_docs.py", "--verbose"]):
@@ -179,8 +241,8 @@ class TestLogging:
     def test_final_module_list_is_logged(self, monkeypatch, caplog):
         """Test that final module list is logged for visibility."""
 
-        def mock_filter(modules):
-            return ["codex.cli", "codex_ml"]
+        def mock_filter(modules, fail_on_missing=False):
+            return ["codex.cli", "codex_ml"], []
 
         monkeypatch.setattr(build_api_docs, "filter_modules", mock_filter)
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
