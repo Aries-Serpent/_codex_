@@ -1,0 +1,27 @@
+name: Archival Compliance
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  archival-compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Archival Compliance Check
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.sha }}"
+          if [ -f "scripts/archival/check_archival_compliance.py" ]; then
+            python scripts/archival/check_archival_compliance.py --base "$BASE" --head "$HEAD"
+          else
+            echo "Compliance checker not present; skipping."
+          fi
