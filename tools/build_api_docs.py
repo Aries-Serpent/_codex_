@@ -82,13 +82,14 @@ def filter_modules(modules: list[str]) -> list[str]:
     Returns:
         List of modules that are successfully importable
     """
+    import importlib
+
     # Try importing each module and skip those that fail
     available_modules = []
     for module in modules:
-        module_name = module.split(".")[0]
         try:
-            # Try to import the top-level module
-            __import__(module_name)
+            # Import the full module path to verify it and its dependencies exist
+            importlib.import_module(module)
             available_modules.append(module)
             logger.info(f"✓ Module {module} is importable")
         except ImportError as e:

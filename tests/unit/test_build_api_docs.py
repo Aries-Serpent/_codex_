@@ -2,7 +2,7 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -47,6 +47,31 @@ class TestFilterModules:
 
         assert len(available) == 0
         assert "Skipping" in caplog.text
+
+    def test_filter_modules_rejects_missing_submodules(self, tmp_path, monkeypatch):
+        """Test P1 regression: submodules without deps are not falsely marked available.
+
+        This test ensures that when a base package exists but a submodule is missing
+        (e.g., codex_ml exists but codex_ml.peft doesn't), filter_modules correctly
+        rejects the submodule instead of marking it as importable.
+        """
+        # Create a fake base package WITHOUT the submodule
+        package_dir = tmp_path / "fake_codex_ml"
+        package_dir.mkdir()
+        (package_dir / "__init__.py").write_text("# base package only")
+
+        # Add tmp_path to sys.path
+        monkeypatch.syspath_prepend(str(tmp_path))
+
+        # Try to filter modules including a non-existent submodule
+        modules = ["fake_codex_ml", "fake_codex_ml.peft", "fake_codex_ml.distributed"]
+        available = build_api_docs.filter_modules(modules)
+
+        # Only the base package should be available
+        assert "fake_codex_ml" in available
+        # Submodules should NOT be marked as available
+        assert "fake_codex_ml.peft" not in available
+        assert "fake_codex_ml.distributed" not in available
 
     def test_filter_modules_empty_input(self):
         """Test filter_modules with empty input."""
