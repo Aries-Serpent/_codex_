@@ -6,7 +6,12 @@ This script generates HTML API reference documentation for the codex_ml package
 and its public modules. Output is written to artifacts/docs/api/ (local only).
 
 Usage:
-    python tools/build_api_docs.py [--output-dir DIRECTORY]
+    python tools/build_api_docs.py [--output-dir DIRECTORY] [--fail-on-missing]
+
+Return codes:
+    0: Success - pdoc generated for available modules
+    2: No importable modules found (nothing to document)
+    3: Strict failure - missing modules with --fail-on-missing
 
 Environment variables:
     CODEX_SKIP_OPTIONAL_IMPORTS - Skip modules requiring optional dependencies
@@ -73,28 +78,33 @@ def install_pdoc() -> None:
     logger.info("pdoc3 installed successfully")
 
 
-def filter_modules(modules: list[str]) -> list[str]:
+def filter_modules(
+    modules: list[str], fail_on_missing: bool = False
+) -> tuple[list[str], list[str]]:
     """Filter modules based on availability.
 
     Args:
         modules: List of module names to check for importability
+        fail_on_missing: If True, track missing modules for strict checking
 
     Returns:
-        List of modules that are successfully importable
+        Tuple of (available_modules, missing_modules)
     """
     import importlib.util
 
     # Check if each module can be imported (without actually importing)
     available_modules = []
+    missing_modules = []
     for module in modules:
         spec = importlib.util.find_spec(module)
         if spec is not None:
             available_modules.append(module)
             logger.info(f"✓ Module {module} is importable")
         else:
+            missing_modules.append(module)
             logger.warning(f"Skipping {module}: module not found or not importable")
 
-    return available_modules
+    return available_modules, missing_modules
 
 
 def build_docs(output_dir: Path, modules: list[str]) -> None:
@@ -275,6 +285,11 @@ def main() -> None:
         action="store_true",
         help="Enable verbose logging",
     )
+    parser.add_argument(
+        "--fail-on-missing",
+        action="store_true",
+        help="Exit with code 3 if any requested modules are missing (CI use)",
+    )
 
     args = parser.parse_args()
 
@@ -294,11 +309,18 @@ def main() -> None:
     if not skip_optional:
         all_modules.extend(OPTIONAL_MODULES)
 
-    modules = filter_modules(all_modules)
+    modules, missing = filter_modules(all_modules, args.fail_on_missing)
 
     if not modules:
         logger.error("No modules available to document")
-        sys.exit(1)
+        sys.exit(2)
+
+    if missing and args.fail_on_missing:
+        logger.error(
+            f"Strict mode: missing modules {missing}. "
+            "Install required dependencies or remove --fail-on-missing."
+        )
+        sys.exit(3)
 
     logger.info(f"Final module list to document: {', '.join(modules)}")
 
