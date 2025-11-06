@@ -13,16 +13,53 @@ This directory contains tooling and documentation for generating comprehensive A
 Build API documentation locally:
 
 ```bash
-# Using the build script directly
-python tools/build_api_docs.py
+# Using nox (recommended - deterministic offline build)
+nox -s docs_build
 
-# Using nox
-nox -s docs
+# Or using the build script directly  
+bash scripts/docs_build.sh
+
+# Or using the Python tool directly
+python tools/build_api_docs.py
 ```
 
 The generated documentation will be written to `artifacts/docs/api/` (local only, git-ignored).
 
 ### Build Options
+
+**Using the shell script (recommended):**
+
+```bash
+# Default build (includes all available modules)
+bash scripts/docs_build.sh
+
+# Skip modules requiring optional dependencies
+SKIP_OPTIONAL=1 bash scripts/docs_build.sh
+
+# Strict mode: fail if any requested modules are missing (CI use)
+FAIL_ON_MISSING=1 bash scripts/docs_build.sh
+
+# Combine options
+SKIP_OPTIONAL=1 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
+
+# Custom output directory
+OUTPUT_DIR=/path/to/output bash scripts/docs_build.sh
+```
+
+**Using nox:**
+
+```bash
+# Default build
+nox -s docs_build
+
+# Skip optional modules
+SKIP_OPTIONAL=1 nox -s docs_build
+
+# Strict mode
+FAIL_ON_MISSING=1 nox -s docs_build
+```
+
+**Using Python tool directly:**
 
 ```bash
 # Specify custom output directory
@@ -37,6 +74,25 @@ python tools/build_api_docs.py --verbose
 # Strict mode: fail if any requested modules are missing (CI use)
 python tools/build_api_docs.py --fail-on-missing
 ```
+
+### Build Modes
+
+#### Default Mode
+- Includes all importable modules (core + optional ML when installed)
+- Gracefully skips unavailable optional modules
+- Exit code 0 on success
+
+#### Skip Optional Mode (`SKIP_OPTIONAL=1`)
+- Only builds documentation for core modules
+- Excludes `codex_ml` and other optional packages
+- Faster build, no ML dependencies required
+- Ideal for minimal environments
+
+#### Strict Mode (`FAIL_ON_MISSING=1`)
+- Fails build if any requested modules are unavailable
+- Exit code 3 on missing modules
+- Ideal for CI/CD validation
+- Ensures complete dependency installation
 
 ### Strict Mode (--fail-on-missing)
 
@@ -56,28 +112,30 @@ The `--fail-on-missing` flag enables strict checking for module availability, pr
 
 ```bash
 # Local development (graceful skip of missing modules)
-python tools/build_api_docs.py
+bash scripts/docs_build.sh
 
 # CI with full ML dependencies (fail if any missing)
 pip install -e .[ml]
-python tools/build_api_docs.py --fail-on-missing
+FAIL_ON_MISSING=1 bash scripts/docs_build.sh
 
 # CI with core modules only (strict check, but no optional modules requested)
-python tools/build_api_docs.py --skip-optional --fail-on-missing
+SKIP_OPTIONAL=1 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
 ```
 
 **CI Integration:**
 
-For CI/CD workflows, use `--fail-on-missing` to enforce complete dependency installation:
+For CI/CD workflows, use `FAIL_ON_MISSING=1` to enforce complete dependency installation:
 
 ```bash
-# Example CI job
+# Example CI job using shell script
 - name: Build API documentation
   run: |
-    python tools/build_api_docs.py \
-      --output-dir artifacts/docs/api \
-      --verbose \
-      --fail-on-missing  # Fail CI if modules missing
+    FAIL_ON_MISSING=1 bash scripts/docs_build.sh
+
+# Or using nox
+- name: Build API documentation  
+  run: |
+    FAIL_ON_MISSING=1 nox -s docs_build
 ```
 
 **Note:** Per repository guidelines (AGENTS.md), GitHub Actions workflows should not be committed. The above example shows command-line usage for local CI runners or external CI systems.

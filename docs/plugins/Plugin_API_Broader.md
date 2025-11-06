@@ -12,6 +12,42 @@ The Codex plugin system provides extensibility through:
 
 ## Stable Registry Names
 
+The Codex plugin system uses frozen, stable registry names defined in `codex_addons/registry_names.py`. These names form part of the public API and follow a strict stability guarantee.
+
+### Canonical Registry Names
+
+| Registry Kind | Stable Names | Description |
+|---------------|--------------|-------------|
+| `metrics` | `token_accuracy`, `ppl`, `exact_match`, `f1`, `bleu`, `rouge` | Evaluation metrics |
+| `models` | `minilm`, `bert_base_uncased`, `gpt2` | Model factories |
+| `data_loaders` | `lines`, `jsonl`, `csv`, `parquet` | Data loading functions |
+| `tokenizers` | `hf`, `sentencepiece` | Tokenizer factories |
+| `trainers` | `functional`, `hf_trainer` | Training loop implementations |
+
+**Stability guarantee:** Names in these registries will not be removed or changed without a deprecation cycle spanning at least two minor releases.
+
+### Querying Stable Names
+
+```python
+from codex_addons.registry_names import (
+    ALL_REGISTRY_NAMES,
+    get_all_stable_names,
+    is_stable_name,
+    get_description,
+)
+
+# Get all stable names across all registries
+all_names = get_all_stable_names()
+
+# Check if a name is stable
+if is_stable_name("metrics", "token_accuracy"):
+    print("✓ Stable metric name")
+
+# Get description for a stable name
+desc = get_description("metrics", "f1")
+print(f"F1 score: {desc}")
+```
+
 ### Entry Point Groups
 
 The following entry point groups are **stable** and part of the public API:
@@ -27,27 +63,61 @@ The following entry point groups are **stable** and part of the public API:
 
 ### Registry Classes
 
-All registries follow a consistent API pattern:
+All registries follow a consistent API pattern with **stable ordering** and **idempotent registration**:
 
 ```python
-from codex_ml.plugins.registry import Registry
+from codex_addons.registry import Registry
 
 # Create a registry
 registry = Registry(kind="my_components")
 
-# Register items
-@registry.register("my_component", category="custom")
+# Register items (idempotent - can call multiple times safely)
+@registry.register("my_component")
 class MyComponent:
     pass
 
-# List registered names
-names = registry.names()
+# List registered names (stable sorted order)
+names = registry.list()  # Always returns same order
+assert names == sorted(names)  # Always sorted
 
 # Get a registered item
 item = registry.get("my_component")
 
-# Instantiate from registry
-instance = registry.resolve_and_instantiate("my_component", arg1="value")
+# Check membership
+if "my_component" in registry:
+    print("✓ Component registered")
+```
+
+**Key guarantees:**
+- `list()` and `names()` always return names in **sorted order** (deterministic across runs)
+- `register()` is **idempotent** - registering the same object twice is a no-op
+- Registry names are **case-sensitive**
+
+### Registration Lifecycle
+
+```python
+from codex_addons.registry import Registry
+
+registry = Registry(kind="metrics")
+
+# 1. Initial registration
+@registry.register("accuracy")
+def my_accuracy(preds, labels):
+    return sum(p == l for p, l in zip(preds, labels)) / len(labels)
+
+# 2. Idempotent re-registration (no-op)
+registry.register("accuracy", my_accuracy)  # Silent no-op
+
+# 3. Re-registration with different object (warns)
+@registry.register("accuracy")  # Warns about re-registration
+def new_accuracy(preds, labels):
+    # New implementation
+    return calculate_accuracy_v2(preds, labels)
+
+# 4. Query registration
+assert "accuracy" in registry
+assert len(registry) == 1
+assert registry.list() == ["accuracy"]
 ```
 
 ## Plugin Development
