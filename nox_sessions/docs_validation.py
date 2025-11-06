@@ -8,8 +8,12 @@ API documentation offline.
 import nox
 from pathlib import Path
 
+# Supported Python versions for documentation builds
+# Aligned with repository testing matrix
+SUPPORTED_PYTHON_VERSIONS = ["3.10", "3.11", "3.12"]
 
-@nox.session(name="docs_validate", python=["3.10", "3.11", "3.12"])
+
+@nox.session(name="docs_validate", python=SUPPORTED_PYTHON_VERSIONS)
 def docs_validate(session: nox.Session) -> None:
     """
     Build and validate API docs offline using pdoc and the validator script.
@@ -42,7 +46,7 @@ def docs_validate(session: nox.Session) -> None:
     )
 
 
-@nox.session(name="docs_validate_full", python=["3.10", "3.11", "3.12"])
+@nox.session(name="docs_validate_full", python=SUPPORTED_PYTHON_VERSIONS)
 def docs_validate_full(session: nox.Session) -> None:
     """
     Build and validate API docs for full codex_ml package.
