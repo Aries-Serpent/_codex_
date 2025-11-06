@@ -5,6 +5,13 @@ Light mock for doc-generation. Does not connect to external service.
 """
 
 
+_STUB_HINT = "Install extras (e.g., codex[vector]) to use the real implementation."
+
+
+def _stub_error() -> ImportError:
+    return ImportError("Weaviate backend not installed/enabled. " + _STUB_HINT)
+
+
 class WeaviateStore:
     """
     Light mock for doc-generation. Does not connect to external service.
@@ -18,13 +25,10 @@ class WeaviateStore:
         self.api_key = api_key
     
     def connect(self):
-        raise ImportError(
-            "Weaviate backend not installed/enabled. "
-            "Install extras (e.g., codex[vector]) and use real implementation."
-        )
-    
+        raise _stub_error()
+
     def upsert(self, items):
-        raise ImportError("Weaviate backend unavailable in stub mode.")
-    
+        raise _stub_error()
+
     def query(self, vector, top_k=5):
-        raise ImportError("Weaviate backend unavailable in stub mode.")
+        raise _stub_error()

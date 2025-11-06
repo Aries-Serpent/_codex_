@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 import json, os, platform, shutil, subprocess, sys, time
 
+
+def log_warn(message: str) -> None:
+    print(f"[WARN] {message}", file=sys.stderr)
+
 def which(cmd):
     return shutil.which(cmd) or ""
 
@@ -26,24 +30,26 @@ def main():
     }
     try:
         import pkgutil
+
         info["top_level_modules"] = sorted({m.name for m in pkgutil.iter_modules()})[:50]
-    except Exception:
+    except Exception as exc:
+        log_warn(f"Failed to enumerate top-level modules: {exc}")
         info["top_level_modules"] = []
-    
+
     # pip freeze head
     try:
         out = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True, timeout=20)
         info["pkgs_head"] = out.strip().splitlines()[:50]
-    except Exception:
-        pass
-    
+    except Exception as exc:
+        log_warn(f"pip freeze snapshot failed: {exc}")
+
     # ulimit (platform-aware)
     if platform.system() != "Windows" and which("bash"):
         try:
             out = subprocess.check_output(["bash","-lc","ulimit -a"], text=True, timeout=5)
             info["limits"]["ulimit"] = out.strip()
         except Exception as e:
-            print(f"[WARN] ulimit probe failed: {e}", file=sys.stderr)
+            log_warn(f"ulimit probe failed: {e}")
     else:
         print("[INFO] Skipping ulimit on non-Unix platform", file=sys.stderr)
     
