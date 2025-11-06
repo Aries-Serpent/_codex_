@@ -1,21 +1,91 @@
-## Pull Request Summary
+# [Template]: PR Opt‑In Heavy Jobs & Baseline Flow
+> Generated: 2025-11-06 10:40:00 | Author: mbaetiong  
+> Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+
+## Intent
+Use checkboxes to opt-in Agent-run heavy jobs and docs build modes. Produce deterministic artifacts, canonical SHAs, and draft PR with diffs.
+
+---
+
+## Opt‑In Checkboxes
+
+### Agent‑Run Heavy Jobs
+- [ ] **Agent‑Run: Distributed** (`ACCELERATE_TEST=1`) - Triggers Agent harness; collects `agent_env.json`
+- [ ] **Agent‑Run: LoRA** (`RUN_LORA_TESTS=1`) - Agent harness executes LoRA minimal tests
+- [ ] **Agent‑Run: Perf Smoke** (`RUN_PERF_SMOKE=1`) - Optional local performance gate
+
+### Docs Build
+- [ ] **Build Docs** (`SKIP_OPTIONAL=1`) - Produces `artifacts/docs` + `docs_manifest.sha`
+- [ ] **Strict Docs** (`FAIL_ON_MISSING=1`) - Strict import gate (merge-to-main only)
+
+### Baseline & Reporting
+- [ ] **Capture Baseline** - Commits to `audit_artifacts/baselines/` (with rotation/archival)
+- [ ] **Create Draft PR with Artifacts + Diffs** - Opens draft PR with matrix and manifest diffs
+
+---
+
+## Scope
+
+| Field | Value |
+|-------|-------|
+| **S‑IDs** | <!-- e.g., S‑17, S‑14, S‑15 --> |
+| **Areas** | <!-- e.g., docs, tests, CI, detectors --> |
 
 ### Description
 <!-- Provide a clear and concise description of the changes -->
 
 
 
-### Type of Change
-<!-- Check all that apply -->
-- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 📝 Documentation update
-- [ ] 🔧 Configuration change
-- [ ] 🎨 Code style/refactoring (no functional changes)
-- [ ] ⚡ Performance improvement
-- [ ] 🔒 Security fix
-- [ ] 🚀 Deployment/promotion (see checklist below)
+---
+
+## Verification Commands
+<!-- Paste the commands you ran locally to validate changes -->
+
+```bash
+# Example verification commands:
+# SKIP_OPTIONAL=1 bash scripts/docs_build.sh
+# python scripts/space_traversal/audit_runner.py run
+# python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_manifest.json
+```
+
+---
+
+## Artifacts (attach or paste SHAs)
+
+```text
+# Example:
+# artifacts/docs_manifest.sha: <sha256>
+# audit_run_manifest.json: <sha256>
+# audit_artifacts/canonical_manifest.json: <sha256>
+```
+
+---
+
+## Determinism Proof
+
+```text
+# Paste canonical SHA equality proof from two runs:
+# canonical[runA].sha == canonical[runB].sha ✅
+```
+
+---
+
+## Agent Environment (if Agent‑run)
+
+```text
+# If Agent-run jobs selected, attach: audit_artifacts/agent_env.json
+# Or paste content here
+```
+
+---
+
+## Notes
+
+<!-- Additional context, rotation notes, or baseline archival info -->
+
+**Baseline Storage:** Baselines are stored under `audit_artifacts/baselines/` and will be rotated/archived if repository size grows.
+
+---
 
 ### Related Issues
 <!-- Link related issues using keywords: Fixes #123, Closes #456, Relates to #789 -->

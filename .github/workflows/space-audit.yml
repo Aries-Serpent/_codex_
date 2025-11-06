@@ -1,0 +1,42 @@
+name: space-audit
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Run audit pipeline & upload artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jinja2
+
+      - name: Run full audit (S1→S7)
+        env:
+          SKIP_OPTIONAL: "1"
+          FAIL_ON_MISSING: "0"
+        run: |
+          python scripts/space_traversal/audit_runner.py run
+
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-artifacts
+          path: |
+            audit_artifacts/**
+            reports/**
+            audit_run_manifest.json
