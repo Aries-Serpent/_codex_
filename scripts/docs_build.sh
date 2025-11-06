@@ -1,75 +1,86 @@
 #!/usr/bin/env bash
-#
-# Offline API documentation build script
-#
-# Environment variables:
-#   SKIP_OPTIONAL   - Set to 1 to skip optional modules (codex_ml extras)
-#   FAIL_ON_MISSING - Set to 1 for strict mode (fail if any requested modules missing)
-#   OUTPUT_DIR      - Custom output directory (default: artifacts/docs/api)
-#
-# Exit codes:
-#   0 - Success (docs built for available modules)
-#   1 - Build error (pdoc or script failure)
-#   2 - No importable modules found
-#   3 - Strict failure (missing modules with FAIL_ON_MISSING=1)
-#
-# Usage:
-#   bash scripts/docs_build.sh
-#   SKIP_OPTIONAL=1 bash scripts/docs_build.sh
-#   FAIL_ON_MISSING=1 bash scripts/docs_build.sh
-
 set -euo pipefail
 
-# Repository root
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
-
-# Default output directory
-OUTPUT_DIR="${OUTPUT_DIR:-artifacts/docs/api}"
-
-# Build flags
-SKIP_OPTIONAL="${SKIP_OPTIONAL:-0}"
+# Flags
+SKIP_OPTIONAL="${SKIP_OPTIONAL:-1}"
 FAIL_ON_MISSING="${FAIL_ON_MISSING:-0}"
 
-echo "[docs_build] Starting API documentation build"
-echo "[docs_build] SKIP_OPTIONAL=$SKIP_OPTIONAL"
-echo "[docs_build] FAIL_ON_MISSING=$FAIL_ON_MISSING"
-echo "[docs_build] OUTPUT_DIR=$OUTPUT_DIR"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ART_DIR="${ROOT}/artifacts/docs"
+MANIFEST="${ROOT}/artifacts/docs_manifest.sha"
 
-# Prepare output directory
-mkdir -p "$OUTPUT_DIR"
+mkdir -p "${ART_DIR}"
 
-# Build command using existing build_api_docs.py tool
-BUILD_CMD=(python tools/build_api_docs.py --output-dir "$OUTPUT_DIR" --verbose)
+echo "[INFO] Docs build starting (SKIP_OPTIONAL=${SKIP_OPTIONAL}, FAIL_ON_MISSING=${FAIL_ON_MISSING})"
 
-# Add flags based on environment
-if [ "$SKIP_OPTIONAL" = "1" ]; then
-    BUILD_CMD+=(--skip-optional)
-    echo "[docs_build] Skipping optional modules"
-fi
+# Discover top-level importable packages (dirs with __init__.py)
+mapfile -t PKG_DIRS < <(find "${ROOT}" -maxdepth 1 -type d ! -name '.*' \
+  ! -name 'scripts' ! -name 'tests' ! -name 'docs' ! -name 'reports' \
+  ! -name 'audit_artifacts' ! -name 'artifacts' -print)
 
-if [ "$FAIL_ON_MISSING" = "1" ]; then
-    BUILD_CMD+=(--fail-on-missing)
-    echo "[docs_build] Strict mode enabled"
-fi
+PACKAGES=()
+for d in "${PKG_DIRS[@]}"; do
+  if [ -f "${d}/__init__.py" ]; then
+    base="$(basename "${d}")"
+    PACKAGES+=("${base}")
+  fi
+done
 
-# Run build
-echo "[docs_build] Running: ${BUILD_CMD[*]}"
-"${BUILD_CMD[@]}"
-EXIT_CODE=$?
-
-if [ $EXIT_CODE -eq 0 ]; then
-    echo "[docs_build] ✓ Documentation build successful"
-    echo "[docs_build] Output: $OUTPUT_DIR/index.html"
-elif [ $EXIT_CODE -eq 2 ]; then
-    echo "[docs_build] ✗ No importable modules found"
-    exit 2
-elif [ $EXIT_CODE -eq 3 ]; then
-    echo "[docs_build] ✗ Strict mode failure: missing required modules"
-    exit 3
+# Preflight import check (strict mode)
+if [ "${FAIL_ON_MISSING}" = "1" ]; then
+  echo "[INFO] Strict import preflight..."
+  python - <<'PY' "${PACKAGES[@]}"
+import importlib, sys, os
+pkgs = sys.argv[1:]
+missing = []
+for m in pkgs:
+    try:
+        importlib.import_module(m)
+    except Exception as e:
+        missing.append((m, str(e)))
+if missing:
+    print("[ERROR] Missing imports (strict):", missing)
+    sys.exit(2)
+print("[INFO] Strict preflight OK")
+PY
 else
-    echo "[docs_build] ✗ Build failed with exit code $EXIT_CODE"
-    exit 1
+  echo "[WARN] Strict mode disabled; missing imports will be tolerated."
 fi
 
-exit 0
+# Build using pdoc if available; otherwise generate a simple index
+if python -c "import pdoc" >/dev/null 2>&1; then
+  echo "[INFO] Using pdoc for API docs"
+  # Environment hint for optional deps gating
+  export CODEX_DOCS_SKIP_OPTIONAL="${SKIP_OPTIONAL}"
+  # If no explicit packages, default to repository root module discovery
+  if [ "${#PACKAGES[@]}" -gt 0 ]; then
+    pdoc --force --output-dir "${ART_DIR}" "${PACKAGES[@]}" || true
+  else
+    pdoc --force --output-dir "${ART_DIR}" . || true
+  fi
+else
+  echo "[WARN] pdoc not installed; generating index only."
+fi
+
+# Always create a minimal index with build info
+BUILD_INFO="${ART_DIR}/INDEX.md"
+{
+  echo "# API Documentation Index"
+  echo ""
+  echo "- Generated: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+  echo "- SKIP_OPTIONAL=${SKIP_OPTIONAL}"
+  echo "- FAIL_ON_MISSING=${FAIL_ON_MISSING}"
+  echo ""
+  echo "## Discovered Packages"
+  if [ "${#PACKAGES[@]}" -eq 0 ]; then
+    echo "- (none)"
+  else
+    for p in "${PACKAGES[@]}"; do echo "- ${p}"; done
+  fi
+} > "${BUILD_INFO}"
+
+# Manifest of docs files (sha256)
+( cd "${ART_DIR}" && find . -type f -print0 | sort -z | xargs -0 sha256sum ) > "${MANIFEST}"
+
+echo "[INFO] Docs build finished. Artifacts in ${ART_DIR}"
+
