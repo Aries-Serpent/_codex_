@@ -2,7 +2,6 @@
 import sys
 from pathlib import Path
 
-import pytest
 
 # Add codex_addons to path
 _REPO_ROOT = Path(__file__).parent.parent
