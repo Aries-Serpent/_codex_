@@ -45,9 +45,9 @@ def git_deleted_between(base: str, head: str) -> list[str]:
 
 def tombstone_exists(path: str) -> bool:
     p = Path(path)
-    stub = p.with_name(p.name)  # tombstone is expected at original path
-    if stub.exists():
-        text = stub.read_text(encoding="utf-8", errors="ignore")
+    # Tombstone is expected at original path
+    if p.exists():
+        text = p.read_text(encoding="utf-8", errors="ignore")
         return "TOMBSTONE" in text or "tombstone" in text.lower() or "adr_ref" in text
     return False
 

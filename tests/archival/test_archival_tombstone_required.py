@@ -43,6 +43,7 @@ def setup_removed_list(paths, test_id):
 
 
 def test_missing_tombstone_fails():
+    # Use UUID to avoid conflicts with parallel test execution or pytest-randomly
     test_id = str(uuid.uuid4())[:8]
     # create fake removed path with unique name
     removed = [f"some/removed_file_{test_id}.py"]
@@ -75,6 +76,7 @@ def test_missing_tombstone_fails():
 
 
 def test_tombstone_and_evidence_pass():
+    # Use UUID to avoid conflicts with parallel test execution or pytest-randomly
     test_id = str(uuid.uuid4())[:8]
     removed = [f"some/removed_file_{test_id}.py"]
     rf = setup_removed_list(removed, test_id)
