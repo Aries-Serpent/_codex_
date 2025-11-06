@@ -323,3 +323,18 @@ def docs(session: nox.Session) -> None:
     """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/build_api_docs.py", *session.posargs)
+
+
+@nox.session(name="docs_build")
+def docs_build(session: nox.Session) -> None:
+    """
+    Build API docs offline using scripts/docs_build.sh.
+    Honors env vars:
+      SKIP_OPTIONAL (default 1) and FAIL_ON_MISSING (default 0)
+    """
+    import os
+    
+    session.env["SKIP_OPTIONAL"] = os.environ.get("SKIP_OPTIONAL", "1")
+    session.env["FAIL_ON_MISSING"] = os.environ.get("FAIL_ON_MISSING", "0")
+    session.install("pdoc", "jinja2", "pyyaml")
+    session.run("bash", "scripts/docs_build.sh", external=True)
