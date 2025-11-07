@@ -30,8 +30,42 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
     ".venv",
 )
 
-# Filenames to exclude regardless of location
-EXCLUDED_FILES: Tuple[str, ...] = ("_codex_repo_map.json",)
+OUTPUT_FILE_NAME = "_codex_repo_map.json"
+
+
+def iter_repo_files(root_dir: Path) -> Iterable[Path]:
+    """Yield repository files respecting .gitignore rules."""
+
+    try:
+        completed = subprocess.run(
+            [
+                "git",
+                "ls-files",
+                "--cached",
+                "--others",
+                "--exclude-standard",
+            ],
+            cwd=root_dir,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        yield from (
+            path
+            for path in root_dir.rglob("*")
+            if path.is_file() and not should_skip(path)
+        )
+        return
+
+    for line in completed.stdout.splitlines():
+        rel_path = line.strip()
+        if not rel_path:
+            continue
+
+        path = root_dir / rel_path
+        if path.is_file() and not should_skip(path):
+            yield path
 
 
 def should_skip(path: Path) -> bool:
@@ -77,25 +111,14 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
                 yield path
             return
 
-    for path in root_dir.rglob("*"):
-        if not path.is_file():
-            continue
-        if should_skip(path):
-            continue
-        yield path
-
-
-def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
-    """Walk the repository and build a mapping of extensions to file info."""
-    results: Dict[str, List[Dict[str, int]]] = {}
-
     for path in iter_repo_files(root_dir):
-
         ext = path.suffix.lower()
         if ext not in EXTENSIONS:
             continue
 
         rel_path = path.relative_to(root_dir).as_posix()
+        if rel_path == OUTPUT_FILE_NAME:
+            continue
         size = path.stat().st_size
         results.setdefault(ext, []).append({"path": rel_path, "size": size})
 
@@ -108,7 +131,7 @@ def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
 
 def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
-    output_path = root_dir / "_codex_repo_map.json"
+    output_path = root_dir / OUTPUT_FILE_NAME
     output_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
     return output_path
 
