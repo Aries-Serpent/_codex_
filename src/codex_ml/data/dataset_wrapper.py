@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import random
-from typing import Iterable, Tuple
+from typing import Iterable
+from typing import Iterable
 
 try:  # pragma: no cover - optional dependency
     from datasets import Dataset
@@ -23,7 +24,7 @@ def _require_datasets() -> None:
         )
 
 
-def _validate_splits(splits: Iterable[float]) -> Tuple[float, float, float]:
+def _validate_splits(splits: Iterable[float]) -> tuple[float, float, float]:
     values = tuple(float(s) for s in splits)
     if len(values) != 3:
         raise ValueError("splits must contain exactly three fractions")
@@ -39,8 +40,8 @@ def train_val_test_split(
     dataset: "Dataset",
     *,
     seed: int = 42,
-    splits: Tuple[float, float, float] = (0.8, 0.1, 0.1),
-) -> Tuple["Dataset", "Dataset", "Dataset"]:
+    splits: tuple[float, float, float] = (0.8, 0.1, 0.1),
+) -> tuple["Dataset", "Dataset", "Dataset"]:
     """Split a Hugging Face dataset deterministically."""
 
     _require_datasets()

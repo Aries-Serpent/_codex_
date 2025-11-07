@@ -94,3 +94,13 @@ capture-baseline:
 rotate-baselines:
 	python scripts/baseline/rotate_baselines.py 5
 
+.PHONY: filter-run
+filter-run:
+	@echo "[INFO] Running content filter (mode=$${CONTENT_FILTER_MODE:-allowlist})"
+	python scripts/content_filter/apply_filter.py
+
+.PHONY: archive-run
+archive-run:
+	@echo "[INFO] Running archival & pointer (fmt=$${ARCHIVE_FORMAT:-tar.gz}, style=$${ARCHIVE_POINTER_STYLE:-both})"
+	python scripts/archive/select_and_compress.py --root $${RAW_ROOT:-audit_artifacts/raw}
+

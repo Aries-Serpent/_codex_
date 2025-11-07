@@ -4,7 +4,7 @@ This document provides visual representations of the Zendesk administration work
 
 ## Core Workflow: Snapshot-Diff-Plan-Apply
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Zendesk Configuration Lifecycle                   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -62,10 +62,9 @@ This document provides visual representations of the Zendesk administration work
 │  Metrics       │     Command: codex zendesk metrics
 └────────────────┘     Monitor success rates, errors
 ```
-
 ## Multi-Environment Promotion Flow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │              Development → Staging → Production Flow                 │
 └─────────────────────────────────────────────────────────────────────┘
@@ -128,12 +127,11 @@ This document provides visual representations of the Zendesk administration work
          • Update documentation
          • Track metrics
 ```
-
 ## Object Type Workflows
 
 ### Triggers Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Trigger Management Workflow                       │
 └─────────────────────────────────────────────────────────────────────┘
@@ -171,10 +169,9 @@ New Ticket (Priority: High)
     └─> Trigger: "Tag high priority tickets"
         └─> Action: Add tag "priority_escalation"
 ```
-
 ### Views Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     View Management Workflow                         │
 └─────────────────────────────────────────────────────────────────────┘
@@ -212,10 +209,9 @@ Common View Patterns:
    • Updated: > 48 hours ago
    Sort: updated_at (oldest first)
 ```
-
 ### Macros Workflow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Macro Management Workflow                         │
 └─────────────────────────────────────────────────────────────────────┘
@@ -254,10 +250,9 @@ Macro Design Process:
    └─> Track macro application rates
        └─> Archive unused macros
 ```
-
 ## Error Handling & Recovery
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Error Handling Flow Chart                         │
 └─────────────────────────────────────────────────────────────────────┘
@@ -305,10 +300,9 @@ Rollback Decision Tree:
         └─> Critical ──> Emergency Rollback
             └─> Manual intervention + snapshot restore
 ```
-
 ## Automation & Task Sequences
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Task Sequence Automation                          │
 └─────────────────────────────────────────────────────────────────────┘
@@ -375,10 +369,9 @@ Task Sequence Types:
    │ Generate Reports │ ──> Metrics & trends
    └──────────────────┘
 ```
-
 ## Monitoring & Metrics Flow
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    Metrics & Monitoring Flow                         │
 └─────────────────────────────────────────────────────────────────────┘
@@ -433,10 +426,9 @@ Dashboard Metrics:
 └─> Configuration Drift
     Target: Monitor trends
 ```
-
 ## Integration Points
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    System Integration Map                            │
 └─────────────────────────────────────────────────────────────────────┘
@@ -475,7 +467,6 @@ Git → _codex_ → Zendesk → Webhooks → External Systems
  └────────────────┘
    Snapshots & Evidence
 ```
-
 ## Quick Reference Commands
 
 ```bash
@@ -494,7 +485,7 @@ codex zendesk metrics                                               # 7. Monitor
 
 ## Troubleshooting Decision Tree
 
-```
+```text
 Issue Encountered
         │
         ▼
@@ -522,10 +513,9 @@ Issue Encountered
                                        Monitor metrics
                                        Optimize batch size
 ```
-
 ## Best Practices Checklist
 
-```
+```text
 Before Making Changes:
 □ Snapshot current state
 □ Review existing configuration
@@ -552,7 +542,6 @@ Regular Maintenance:
 □ Monthly: Audit configurations
 □ Quarterly: Clean up unused objects
 ```
-
 ## Additional Resources
 
 - [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) - Complete guide

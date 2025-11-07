@@ -1,26 +1,69 @@
-# [Template]: PR Opt‑In Heavy Jobs & Baseline Flow
-> Generated: 2025-11-06 10:40:00 | Author: mbaetiong  
-> Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
+# Pull Request Template
 
-## Intent
-Use checkboxes to opt-in Agent-run heavy jobs and docs build modes. Produce deterministic artifacts, canonical SHAs, and draft PR with diffs.
+> **Version:** 1.2.0  
+> **Generated:** 2025-11-06  
+> **Purpose:** Standardized PR workflow with required safety checks and optional capability controls
 
 ---
 
-## Opt‑In Checkboxes
+## ⚠️ REQUIRED Safety Confirmations
 
-### Agent‑Run Heavy Jobs
-- [ ] **Agent‑Run: Distributed** (`ACCELERATE_TEST=1`) - Triggers Agent harness; collects `agent_env.json`
-- [ ] **Agent‑Run: LoRA** (`RUN_LORA_TESTS=1`) - Agent harness executes LoRA minimal tests
-- [ ] **Agent‑Run: Perf Smoke** (`RUN_PERF_SMOKE=1`) - Optional local performance gate
+**These checkboxes MUST be confirmed before merge:**
 
-### Docs Build
+- [ ] **Network Safety Acknowledgment** (`NETWORK_SAFETY_ACK`) - I confirm NO network operations (web scraping, API calls, external fetches) are performed by this PR
+- [ ] **Offline Mode Confirmation** (`OFFLINE_MODE_CONFIRM`) - I confirm all audit and test operations run in strict offline mode
+
+---
+
+## 📋 RECOMMENDED Configuration (Opt-In)
+
+### Audit Depth & Evidence Control
+
+- [ ] **Full Depth Audit** (`AUDIT_DEPTH=4`) - Use recommended depth for complete evidence capture (default: 3)
+- [ ] **Depth Restriction Acknowledged** - I acknowledge that `AUDIT_DEPTH < 4` may truncate evidence
+
+### PII & Content Filtering
+
+- [ ] **PII Filtering Enabled** (`CONTENT_FILTER_MODE=pii` or `combined`) - Apply PII redaction to artifacts
+- [ ] **Extended PII Patterns** (`PII_PATTERN_SET=extended`) - Use extended pattern set (emails, phones, IPs, postal codes)
+- [ ] **Custom PII Patterns** (`PII_CUSTOM_LIST=<patterns>`) - Additional custom regex patterns specified
+- [ ] **Allowlist Profile Selected** (`ALLOWLIST_PROFILE=A|B|C`) - File type filtering applied (Profile: _____)
+
+### Archival & Compression
+
+- [ ] **Auto-Archive Large Bundles** (`MAX_BUNDLE_MB` threshold configured) - Compress artifacts > _____ MB
+- [ ] **Archive Format** (`ARCHIVE_FORMAT=tar.gz|zip`) - Format: _____
+- [ ] **Dual Pointer Style** (`ARCHIVE_POINTER_STYLE=both`) - Generate both JSON pointer + SHA256 sidecar
+
+### Agent-Run Heavy Jobs (Optional)
+
+- [ ] **Agent-Run: Distributed** (`ACCELERATE_TEST=1`) - Triggers agent harness; collects `agent_env.json`
+- [ ] **Agent-Run: LoRA** (`RUN_LORA_TESTS=1`) - Agent harness executes LoRA minimal tests
+- [ ] **Agent-Run: Perf Smoke** (`RUN_PERF_SMOKE=1`) - Optional performance gate
+
+### Documentation Build
+
 - [ ] **Build Docs** (`SKIP_OPTIONAL=1`) - Produces `artifacts/docs` + `docs_manifest.sha`
 - [ ] **Strict Docs** (`FAIL_ON_MISSING=1`) - Strict import gate (merge-to-main only)
 
 ### Baseline & Reporting
+
 - [ ] **Capture Baseline** - Commits to `audit_artifacts/baselines/` (with rotation/archival)
 - [ ] **Create Draft PR with Artifacts + Diffs** - Opens draft PR with matrix and manifest diffs
+
+---
+
+## ARCHIVAL OPERATIONS (if this PR removes or renames files)
+
+**Required if any files are deleted or moved:**
+
+- [ ] **ADR drafted and linked** (`docs/arch/ADR-YYYYMMDD-brief-title.md`) - Architecture Decision Record created
+- [ ] **Tombstone stubs added** - Use `docs/arch/tombstone_template.md` for every removed file
+- [ ] **Evidence appended** - `.codex/evidence/archive_ops.jsonl` updated via archival API or manual entry
+- [ ] **Pointer bundle generated** - For large removal sets (see `scripts/archival/select_and_compress.py`)
+- [ ] **CHANGELOG updated** - Deprecations section includes removal details
+
+**If any of the above cannot be satisfied, explain why and propose a remediation plan.**
 
 ---
 

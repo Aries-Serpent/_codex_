@@ -42,7 +42,8 @@ except Exception:
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 try:  # pragma: no cover - optional rich dependency
     from rich.console import Console
@@ -83,7 +84,7 @@ def _resolve_db_path(path: str) -> str:
 
 def build_query(
     table: str,
-    mapcol: Dict[str, Optional[str]],
+    mapcol: dict[str, Optional[str]],
     session_id: Optional[str],
     role: Optional[str],
     after: Optional[str],
@@ -91,7 +92,7 @@ def build_query(
     order: str,
     limit: Optional[int],
     offset: Optional[int],
-) -> Tuple[str, List[Any]]:
+) -> tuple[str, list[Any]]:
     ts = mapcol["timestamp"]
     role_col = mapcol["role"]
     message_col = mapcol["message"]
@@ -107,8 +108,8 @@ def build_query(
     ]
     select = ", ".join(cols)
     sql = f"SELECT {select} FROM {table}"
-    where: List[str] = []
-    params: List[Any] = []
+    where: list[str] = []
+    params: list[Any] = []
     if session_id and "session_id" in mapcol:
         where.append(f"{mapcol['session_id']} = ?")
         params.append(session_id)
@@ -135,7 +136,7 @@ def build_query(
     return sql, params
 
 
-def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool) -> None:
+def _print_rich(rows: list[sqlite3.Row], mapcol: dict[str, Optional[str]], show_meta: bool) -> None:
     ts = mapcol["timestamp"]
     role = mapcol["role"]
     message = mapcol["message"]
@@ -165,7 +166,7 @@ def _print_rich(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_
     Console().print(table)
 
 
-def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_meta: bool) -> str:
+def format_text(rows: list[sqlite3.Row], mapcol: dict[str, Optional[str]], show_meta: bool) -> str:
     """Plain-text fallback used by legacy scripts/tests."""
     ts = mapcol["timestamp"]
     role = mapcol["role"]
@@ -193,7 +194,7 @@ def format_text(rows: List[sqlite3.Row], mapcol: Dict[str, Optional[str]], show_
     return "\n".join(lines)
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Query transcripts from session_events.")
     parser.add_argument(
         "--db",

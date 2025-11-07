@@ -6,14 +6,15 @@ import csv
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, Literal, Mapping, Optional, Tuple, cast
+from typing import Iterable, Iterator, Literal, Mapping, Optional, cast
+from typing import Iterable, Iterator, Literal, Mapping, Optional, cast
 
 JsonLogFmt = Literal["ndjson", "csv"]
 
-_VALID_FORMATS: Tuple[str, ...] = ("ndjson", "csv")
+_VALID_FORMATS: tuple[str, ...] = ("ndjson", "csv")
 
 
-def _normalize_formats(formats: Iterable[JsonLogFmt | str]) -> Tuple[JsonLogFmt, ...]:
+def _normalize_formats(formats: Iterable[JsonLogFmt | str]) -> tuple[JsonLogFmt, ...]:
     seen: list[str] = []
     for raw in formats:
         fmt = str(raw).lower()
@@ -91,7 +92,7 @@ class FileLogger:
                 writer.writeheader()
             writer.writerow({k: row.get(k) for k in self._csv_fieldnames})
 
-    def paths(self) -> Dict[str, Optional[Path]]:
+    def paths(self) -> dict[str, Optional[Path]]:
         """Return the resolved NDJSON and CSV paths (may be ``None``)."""
 
         return {"ndjson": self._ndjson_path, "csv": self._csv_path}

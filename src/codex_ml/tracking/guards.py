@@ -23,13 +23,14 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Tuple
+from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional
 from urllib.parse import urlparse
 
 REMOTE_SCHEMES = ("http://", "https://", "databricks://")
 LOCAL_SCHEMES = ("file://", "sqlite://", "postgresql+sqlite://")
 _LOCAL_SCHEME_NAMES = {scheme.split("://", 1)[0] for scheme in LOCAL_SCHEMES if "://" in scheme}
-_FILE_PREFIXES: Tuple[str, ...] = ("file://", "file:/")
+_FILE_PREFIXES: tuple[str, ...] = ("file://", "file:/")
 LEGACY_ALLOW_REMOTE_ENVIRONMENTS = ("MLFLOW_ALLOW_REMOTE", "CODEX_MLFLOW_ALLOW_REMOTE")
 
 
@@ -77,7 +78,7 @@ class TrackingDecision:
     uri: Optional[str]
     blocked: bool
     reason: str
-    details: Dict[str, Any]
+    details: dict[str, Any]
 
 
 def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
@@ -108,7 +109,7 @@ def normalize_mlflow_uri(uri: Optional[str]) -> Optional[str]:
 
 
 def decide_mlflow_tracking_uri(
-    env: Optional[Dict[str, str]] = None,
+    env: Optional[dict[str, str]] = None,
     allow_remote_env: str = "CODEX_ALLOW_REMOTE_TRACKING",
     additional_allow_remote_envs: tuple[str, ...] = LEGACY_ALLOW_REMOTE_ENVIRONMENTS,
 ) -> TrackingDecision:
@@ -134,7 +135,7 @@ def decide_mlflow_tracking_uri(
 
     allow_remote = False
     allow_remote_source: Optional[str] = None
-    allow_remote_values: Dict[str, str] = {}
+    allow_remote_values: dict[str, str] = {}
     for env_name in allow_remote_env_names:
         raw_value = e.get(env_name)
         if raw_value is not None:
@@ -221,10 +222,10 @@ def enforce_offline_posture(
     mlflow_dir: str | None = None,
     *,
     wandb_disable: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Normalize MLflow/W&B env vars for offline-first usage."""
 
-    decision: Dict[str, Any] = {"mlflow": {}, "wandb": {}}
+    decision: dict[str, Any] = {"mlflow": {}, "wandb": {}}
     ml_dir = Path(mlflow_dir or os.environ.get("CODEX_MLFLOW_DIR") or "mlruns")
     ml_dir.mkdir(parents=True, exist_ok=True)
     ml_uri = ml_dir.resolve().as_uri()

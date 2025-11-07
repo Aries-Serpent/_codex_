@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 
 @dataclass
@@ -37,7 +38,7 @@ class TinySequenceModel:
             candidate = candidate / "model.json"
         if not candidate.exists():
             raise FileNotFoundError(f"Model fixture not found at {candidate}")
-        payload: Dict[str, Any] = json.loads(candidate.read_text(encoding="utf-8"))
+        payload: dict[str, Any] = json.loads(candidate.read_text(encoding="utf-8"))
         return cls.from_payload(payload)
 
     def generate(self, prompt: str) -> str:

@@ -65,16 +65,14 @@ If baseline storage impacts repository performance:
 
 ## Baseline Naming Convention
 
-```
+```text
 baseline_<branch>_<timestamp>_<short-sha>.json
 ```
-
 Example:
-```
+```text
 baseline_main_20251106_3a59994.json
 baseline_pr2123_20251106_91fe32d.json
 ```
-
 ## Notes
 
 - Baselines are deterministic and should produce identical SHAs when regenerated

@@ -5,7 +5,8 @@ Local CPU-based FAISS index for vector similarity search
 
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -19,7 +20,7 @@ class FAISSStore:
         self.index_dir = Path(index_dir) if index_dir else Path(".codex/faiss")
         self.index_name = index_name
         self.index = None
-        self.documents: List[Dict[str, Any]] = []
+        self.documents: list[dict[str, Any]] = []
         self.dimension: Optional[int] = None
         
         try:
@@ -29,7 +30,7 @@ class FAISSStore:
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
     
-    def create_index(self, embeddings: np.ndarray, documents: List[Dict[str, Any]]):
+    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
         """Create a new FAISS index
         
         Args:
@@ -113,7 +114,7 @@ class FAISSStore:
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Search for similar vectors
         
         Args:

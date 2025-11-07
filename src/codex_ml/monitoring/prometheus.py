@@ -5,7 +5,8 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
@@ -21,7 +22,7 @@ class _FallbackSink:
             self.path = destination / "prometheus.ndjson"
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
-    def write(self, payload: Dict[str, Any]) -> None:
+    def write(self, payload: dict[str, Any]) -> None:
         record = dict(payload)
         record.setdefault("ts", datetime.now(timezone.utc).isoformat())
         with self.path.open("a", encoding="utf-8") as fh:
@@ -101,7 +102,7 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
     return counters, gauges
 
 
-def fallback_status() -> Tuple[bool, Optional[Path], Optional[str]]:
+def fallback_status() -> tuple[bool, Optional[Path], Optional[str]]:
     """Expose the state of the Prometheus fallback sink."""
 
     return _FALLBACK_ACTIVE, _FALLBACK_PATH, _FALLBACK_REASON

@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Iterable, List, Mapping
+from typing import Iterable, Mapping
+from typing import Iterable, Mapping
 
 from .adapter import TokenizerAdapter
 
@@ -33,13 +34,13 @@ class TinyVocabTokenizer(TokenizerAdapter):
         vocab = {str(token): int(index) for token, index in data.items()}
         return cls(vocab)
 
-    def encode(self, text: str, **kwargs: object) -> List[int]:  # noqa: D401
+    def encode(self, text: str, **kwargs: object) -> list[int]:  # noqa: D401
         return [self.vocab.get(token, self.unk_id) for token in text.split()]
 
     def decode(self, tokens: Iterable[int], **kwargs: object) -> str:  # noqa: D401
         return " ".join(self.reverse_vocab.get(int(token), self.unk_token) for token in tokens)
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> List[List[int]]:  # noqa: D401
+    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:  # noqa: D401
         return [self.encode(text) for text in texts]
 
     def save_pretrained(self, output_dir: str) -> None:  # noqa: D401 - trivial persistence

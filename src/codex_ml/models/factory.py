@@ -5,7 +5,8 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import fields
-from typing import Any, Callable, Dict, Mapping, MutableMapping, Optional
+from typing import Any, Callable, Mapping, MutableMapping, Optional
+from typing import Any, Callable, Mapping, MutableMapping, Optional
 
 from .peft_hooks import LoraBuildCfg, build_lora
 
@@ -73,7 +74,7 @@ def _coerce_lora_cfg(cfg: Any) -> Optional[LoraBuildCfg]:
         return cfg
     if isinstance(cfg, Mapping):
         allowed = {field.name for field in fields(LoraBuildCfg)}
-        filtered: Dict[str, Any] = {
+        filtered: dict[str, Any] = {
             key: value for key, value in cfg.items() if key in allowed
         }
         return LoraBuildCfg(**filtered)
@@ -106,7 +107,7 @@ def create_model(
 ) -> Any:
     """Instantiate a model and optionally apply dtype/device and PEFT adapters."""
 
-    options: Dict[str, Any] = dict(config or {})
+    options: dict[str, Any] = dict(config or {})
     resolved_dtype = _resolve_dtype(dtype if dtype is not None else options.pop("dtype", None))
     resolved_device = _resolve_device(
         device if device is not None else options.pop("device", None)

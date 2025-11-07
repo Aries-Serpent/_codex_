@@ -1,44 +1,42 @@
 """
-Example dynamic detector: inference-serving
+Dynamic Detector: Inference Serving (P4)
 
-Contract:
-  detect(file_index: dict) -> dict with fields:
-    - id (str)
-    - evidence_files (list[str])
-    - found_patterns (list[str])
-    - required_patterns (list[str])
-    - meta (dict, optional)
+Identifies serving layer components (FastAPI / Flask, server modules).
+
+Heuristic:
+- Evidence: files containing 'fastapi' or 'flask' tokens OR paths with 'serve'
+- required_patterns includes server framework indicators
 """
-
 from __future__ import annotations
+from pathlib import Path
+from typing import Dict, List
 
-from typing import Any, Dict, List
 
-
-def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
-    files: List[Dict[str, Any]] = file_index.get("files", [])
-    py_paths = [
-        f["path"] for f in files if isinstance(f, dict) and str(f.get("path", "")).endswith(".py")
-    ]
-    evidence = [
-        p
-        for p in py_paths
-        if any(tok in p.lower() for tok in ("serve", "server", "fastapi", "uvicorn"))
-    ]
-    found = []
-    req = ["server", "fastapi"]
-    # naive path-level pattern mapping (content scanning is outside this minimal example)
-    for p in evidence:
-        lp = p.lower()
-        if "server" in lp:
-            found.append("server")
-        if "fastapi" in lp:
-            found.append("fastapi")
-
+def detect(file_index: dict) -> dict:
+    files = file_index.get("files", [])
+    evidence = []
+    found = set()
+    required = ["fastapi","flask","serve"]
+    
+    for meta in files:
+        p = meta["path"]
+        lower = p.lower()
+        if "serve" in lower or lower.endswith("_server.py"):
+            evidence.append(p)
+            found.add("serve")
+        # lightweight content hint (only ext)
+        ext = meta.get("ext",".")
+        if ext in {".py",".md"}:
+            # Just path-based hints; deeper content scan in future
+            if "fastapi" in lower:
+                evidence.append(p); found.add("fastapi")
+            if "flask" in lower:
+                evidence.append(p); found.add("flask")
+    
     return {
         "id": "inference-serving",
         "evidence_files": sorted(set(evidence)),
-        "found_patterns": sorted(set(found)),
-        "required_patterns": req,
-        "meta": {"layer": "serving"},
+        "found_patterns": sorted(found),
+        "required_patterns": required,
+        "meta": {"layer":"serving","interface":"http"}
     }

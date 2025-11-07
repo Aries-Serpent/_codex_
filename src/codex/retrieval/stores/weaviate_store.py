@@ -4,7 +4,8 @@ Disabled by default in local mode
 """
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -22,7 +23,7 @@ class WeaviateStore:
             "Use FAISSStore for local vector search."
         )
     
-    def create_index(self, embeddings: np.ndarray, documents: List[Dict[str, Any]]):
+    def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
         """Stub: Create index"""
         raise NotImplementedError(
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."
@@ -40,7 +41,7 @@ class WeaviateStore:
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."
         )
     
-    def search(self, query_vector: np.ndarray, top_k: int = 5) -> List[Dict[str, Any]]:
+    def search(self, query_vector: np.ndarray, top_k: int = 5) -> list[dict[str, Any]]:
         """Stub: Search"""
         raise NotImplementedError(
             "WeaviateStore is not available in offline mode. Use FAISSStore instead."

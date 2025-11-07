@@ -21,40 +21,41 @@ from copy import deepcopy
 from dataclasses import asdict, dataclass, is_dataclass, replace
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Protocol
+from typing import Any, Iterable, Optional, Protocol
+from typing import Any, Iterable, Optional, Protocol
 
 from codex_ml.data.jsonl_loader import load_jsonl
 
 
 class TrainingCallback(Protocol):
-    def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
+    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
 
     def on_epoch_end(
-        self, epoch: int, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
 
     def on_step(
-        self, batch_index: int, global_step: int, loss: float, state: Dict[str, Any]
+        self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None: ...
 
     def on_checkpoint(
-        self, epoch: int, path: str, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
 
 
 class NoOpCallback:
-    def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None: ...
+    def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...
 
     def on_epoch_end(
-        self, epoch: int, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
 
     def on_step(
-        self, batch_index: int, global_step: int, loss: float, state: Dict[str, Any]
+        self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
     ) -> None: ...
 
     def on_checkpoint(
-        self, epoch: int, path: str, metrics: Dict[str, float], state: Dict[str, Any]
+        self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
     ) -> None: ...
 
 
@@ -64,7 +65,7 @@ class TrainingResult:
     backend: str
     final_epoch: int
     output_dir: str
-    extra: Dict[str, Any]
+    extra: dict[str, Any]
 
 
 class BackendStrategy(Protocol):
@@ -78,7 +79,7 @@ class BackendStrategy(Protocol):
     ) -> TrainingResult: ...
 
 
-def _safe_callbacks(callbacks: Iterable[TrainingCallback]) -> List[TrainingCallback]:
+def _safe_callbacks(callbacks: Iterable[TrainingCallback]) -> list[TrainingCallback]:
     return list(callbacks) if callbacks else [NoOpCallback()]
 
 
@@ -100,7 +101,7 @@ class FunctionalStrategy:
         TrainConfig = getattr(ft_module, "TrainConfig")
         train_fn = getattr(ft_module, "train")
 
-        extra_payload: Dict[str, Any] = {}
+        extra_payload: dict[str, Any] = {}
 
         # Minimal shim; functional loop currently handles internal logging.
         for cb in callbacks:
@@ -109,7 +110,7 @@ class FunctionalStrategy:
             except Exception:
                 pass
 
-        functional_overrides: Dict[str, Any] = {}
+        functional_overrides: dict[str, Any] = {}
         if isinstance(getattr(config, "extra", None), dict):
             functional_overrides.update(config.extra)
             nested = config.extra.get("functional")
@@ -135,7 +136,7 @@ class FunctionalStrategy:
         )
         model_override = functional_overrides.pop("model", None)
 
-        cfg_payload: Dict[str, Any] = {
+        cfg_payload: dict[str, Any] = {
             "model_name": config.model_name,
             "epochs": config.epochs,
             "batch_size": config.batch_size,
@@ -154,7 +155,7 @@ class FunctionalStrategy:
         train_config = TrainConfig(**cfg_payload)
 
         status = "ok"
-        metrics: Dict[str, Any] = {}
+        metrics: dict[str, Any] = {}
 
         try:
             val_arg: Any

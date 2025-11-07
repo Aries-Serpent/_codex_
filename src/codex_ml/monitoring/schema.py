@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 LOG_VERSION = 1
 _SECRET_RE = re.compile(r"(api[-_]?key|token|secret)", re.I)
@@ -20,12 +21,12 @@ class LogRecord:
     value: float
     split: str = "train"
     dataset: Optional[str] = None
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
     def redacted(self) -> "LogRecord":
         """Return a copy with secrets redacted and string sizes capped."""
 
-        new_meta: Dict[str, Any] = {}
+        new_meta: dict[str, Any] = {}
         for k, v in self.meta.items():
             if isinstance(v, str) and _SECRET_RE.search(v):
                 new_meta[k] = "<redacted>"
@@ -45,7 +46,7 @@ class LogRecord:
             new_meta,
         )
 
-    def dict(self) -> Dict[str, Any]:
+    def dict(self) -> dict[str, Any]:
         """Convert the record to a dictionary with explicit column order."""
 
         return {

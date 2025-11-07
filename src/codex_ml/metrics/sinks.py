@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Protocol, TextIO
+from typing import Protocol, TextIO
+from typing import Protocol, TextIO
 import csv
 import json
 

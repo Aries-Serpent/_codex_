@@ -7,7 +7,8 @@ import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Mapping, Sequence
+from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 _REQUIRED_FIELDS = ("metric", "value", "step")
 
@@ -25,9 +26,9 @@ class MetricsRecord:
     step: int
     split: str = "train"
     ts: str = field(default_factory=_timestamp)
-    extra: Dict[str, Any] = field(default_factory=dict)
+    extra: dict[str, Any] = field(default_factory=dict)
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         payload = {
             "metric": self.metric,
             "value": float(self.value),
@@ -46,7 +47,7 @@ class BaseMetricsWriter:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
-    def _normalise(self, record: Mapping[str, Any] | MetricsRecord) -> Dict[str, Any]:
+    def _normalise(self, record: Mapping[str, Any] | MetricsRecord) -> dict[str, Any]:
         if isinstance(record, MetricsRecord):
             payload = record.as_dict()
         else:

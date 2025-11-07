@@ -11,7 +11,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 from .sigstore_client import SignstoreClient
 from .evidence_schema import EvidenceSchemaValidator
@@ -31,9 +32,9 @@ class StandardizationMetadata:
     issuer: Optional[str] = None
     signed_at: Optional[str] = None
     in_toto_attestation_id: Optional[str] = None
-    merkle_proof: Optional[Dict[str, Any]] = None
+    merkle_proof: Optional[dict[str, Any]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary, omitting None values."""
         return {k: v for k, v in asdict(self).items() if v is not None}
 
@@ -53,10 +54,10 @@ class StandardizationManager:
 
     def enhance_evidence_record(
         self,
-        record: Dict[str, Any],
+        record: dict[str, Any],
         actor: str,
         sign_now: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Enhance evidence record with standardization metadata.
 
@@ -108,7 +109,7 @@ class StandardizationManager:
 
         return enhanced_record
 
-    def verify_standardization(self, record: Dict[str, Any]) -> Dict[str, Any]:
+    def verify_standardization(self, record: dict[str, Any]) -> dict[str, Any]:
         """
         Verify standardization metadata and signatures.
 
@@ -154,7 +155,7 @@ class StandardizationManager:
 
         return result
 
-    def get_standardization_report(self) -> Dict[str, Any]:
+    def get_standardization_report(self) -> dict[str, Any]:
         """Generate standardization compliance report."""
         return {
             "standard_version": STANDARDIZATION_VERSION,

@@ -5,7 +5,8 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
+from typing import Optional
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency
@@ -30,7 +31,7 @@ class Tracker:
         self.wandb_active = False
 
     def start(
-        self, run_name: Optional[str] = None, params: Optional[Dict[str, object]] = None
+        self, run_name: Optional[str] = None, params: Optional[dict[str, object]] = None
     ) -> None:
         if os.getenv("MLFLOW_ENABLE", "0") == "1" and mlflow is not None:
             from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
@@ -76,7 +77,7 @@ class Tracker:
                 wandb.config.update(params, allow_val_change=True)
             self.wandb_active = True
 
-    def log_metrics(self, metrics: Dict[str, float], step: Optional[int] = None) -> None:
+    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None) -> None:
         if self.mlflow_active and mlflow is not None:
             mlflow.log_metrics(metrics, step=step)
         if self.wandb_active and wandb is not None:

@@ -23,12 +23,13 @@ import hashlib
 import logging
 import subprocess
 from pathlib import Path
-from typing import Dict, Tuple, Optional
+from typing import Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 
-def validate_file_structure(file_path: str) -> Dict[str, bool]:
+def validate_file_structure(file_path: str) -> dict[str, bool]:
     """
     Validate file structure: shebangs, balanced braces, syntax.
 
@@ -107,7 +108,7 @@ def validate_file_structure(file_path: str) -> Dict[str, bool]:
     return issues
 
 
-def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None) -> Tuple[bool, str]:
+def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None) -> tuple[bool, str]:
     """
     Validate file via SHA256 checksum.
 
@@ -142,7 +143,7 @@ def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None
         return False, ""
 
 
-def validate_with_diff(original_file: str, modified_file: str, context_lines: int = 3) -> Tuple[bool, str]:
+def validate_with_diff(original_file: str, modified_file: str, context_lines: int = 3) -> tuple[bool, str]:
     """
     Validate files by comparing them with diff.
 
@@ -174,7 +175,7 @@ def validate_with_diff(original_file: str, modified_file: str, context_lines: in
         return False, ""
 
 
-def validate_code_quality(file_path: str) -> Dict[str, bool]:
+def validate_code_quality(file_path: str) -> dict[str, bool]:
     """
     Validate code quality via linting and syntax checks.
 

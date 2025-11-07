@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from typing import Iterable, Sequence
+from typing import Iterable, Sequence
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer
@@ -26,10 +27,10 @@ class FastTokenizerWrapper:
 
     def encode_batch(
         self, texts: Sequence[str], pad_to_length: int | None = None
-    ) -> List[List[int]]:
+    ) -> list[list[int]]:
         encodings = [enc.ids for enc in self.tokenizer.encode_batch(list(texts))]
         if pad_to_length is not None:
-            padded: List[List[int]] = []
+            padded: list[list[int]] = []
             for seq in encodings:
                 if len(seq) < pad_to_length:
                     padded.append(seq + [0] * (pad_to_length - len(seq)))
@@ -47,7 +48,7 @@ class FastTokenizerWrapper:
 
         return int(self.tokenizer.get_vocab_size())
 
-    def convert_ids_to_tokens(self, token_ids: Iterable[int] | int) -> List[str] | str:
+    def convert_ids_to_tokens(self, token_ids: Iterable[int] | int) -> list[str] | str:
         """Convert ids to tokens mimicking Hugging Face API."""
 
         if isinstance(token_ids, int):
@@ -59,7 +60,7 @@ class FastTokenizerWrapper:
         text: str,
         padding: str | bool = False,
         max_length: int | None = None,
-    ) -> dict[str, List[int]]:
+    ) -> dict[str, list[int]]:
         """Provide a minimal call interface returning input ids."""
 
         encoding = self.tokenizer.encode(text)

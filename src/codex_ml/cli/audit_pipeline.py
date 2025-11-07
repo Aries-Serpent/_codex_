@@ -5,7 +5,8 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence
+from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Sequence
 
 from codex_ml.analysis.extractors import (
     extract_ast,
@@ -37,10 +38,10 @@ def _to_serializable(obj: Any) -> Any:
         return str(obj)
 
 
-def audit_file(path: Path) -> Dict[str, Any]:
+def audit_file(path: Path) -> dict[str, Any]:
     code = path.read_text(encoding="utf-8", errors="ignore")
     pr = parse_tiered(code)
-    res: Dict[str, Any] = {"file": str(path), "mode": pr.mode, "degraded": pr.degraded}
+    res: dict[str, Any] = {"file": str(path), "mode": pr.mode, "degraded": pr.degraded}
 
     if pr.mode == "ast" and pr.ast_tree is not None:
         out = extract_ast(pr.ast_tree)
@@ -95,7 +96,7 @@ def audit_repo(
     use_external_search: bool | None = None,
     external_search_endpoint: str | None = None,
     external_search_timeout: float | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     results = []
     for path in _iter_py_files(root):
         try:
@@ -117,7 +118,7 @@ def audit_repo(
 
     providers = [InternalRepoSearch(root)]
 
-    external_kwargs: Dict[str, Any] = {}
+    external_kwargs: dict[str, Any] = {}
     if external_search_endpoint is not None:
         external_kwargs["endpoint"] = external_search_endpoint
     if external_search_timeout is not None:
@@ -208,7 +209,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Override the HTTP timeout in seconds for the external provider.",
     )
     ap.add_argument("--out", type=str, default="analysis_report.json")
-    arg_list: List[str] = list(argv) if argv is not None else sys.argv[1:]
+    arg_list: list[str] = list(argv) if argv is not None else sys.argv[1:]
 
     with capture_exceptions(logger):
         args = ap.parse_args(arg_list)

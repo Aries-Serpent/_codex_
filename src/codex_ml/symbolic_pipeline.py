@@ -28,7 +28,8 @@ import math
 import random
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 from .tokenization import TokenizerAdapter
 
@@ -61,7 +62,7 @@ EPS = 1e-8  # numerical stability for logs
 DANGEROUS_TOKENS = {"rm", "drop", "delete"}
 
 
-def tokenize(text: str, tokenizer: Optional[TokenizerAdapter] = None) -> List[str]:
+def tokenize(text: str, tokenizer: Optional[TokenizerAdapter] = None) -> list[str]:
     """Tokenize ``text`` using ``tokenizer`` if provided, else regex fallback."""
 
     if tokenizer is None:
@@ -70,19 +71,19 @@ def tokenize(text: str, tokenizer: Optional[TokenizerAdapter] = None) -> List[st
     return [str(i) for i in ids]
 
 
-def _normalize(probs: Dict[str, float]) -> Dict[str, float]:
+def _normalize(probs: dict[str, float]) -> dict[str, float]:
     total = sum(probs.values())
     if total <= 0:
         raise ValueError("probabilities must sum to a positive value")
     return {t: p / total for t, p in probs.items()}
 
 
-def safety_penalty(token_probs: Dict[str, float]) -> float:
+def safety_penalty(token_probs: dict[str, float]) -> float:
     """Return total probability mass of tokens flagged as dangerous."""
     return sum(token_probs.get(tok, 0.0) for tok in DANGEROUS_TOKENS)
 
 
-def kl_divergence(p: Dict[str, float], q: Dict[str, float]) -> float:
+def kl_divergence(p: dict[str, float], q: dict[str, float]) -> float:
     """KL(p || q) for discrete distributions (natural log)."""
     return sum(p[t] * math.log(p[t] / (q.get(t, EPS))) for t in p)
 
@@ -159,14 +160,14 @@ class RLHFCfg:
 class ModelHandle:
     name: str
     stage: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class RewardModelHandle:
     name: str
     base_model: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -175,7 +176,7 @@ class RewardModelHandle:
 
 
 def pretrain(
-    corpus: List[str], cfg: PretrainCfg, tokenizer: Optional[TokenizerAdapter] = None
+    corpus: list[str], cfg: PretrainCfg, tokenizer: Optional[TokenizerAdapter] = None
 ) -> ModelHandle:
     """
     Build a unigram model over the corpus and return a ModelHandle for M0.
@@ -185,14 +186,14 @@ def pretrain(
         raise ValueError("corpus must not be empty")
     # SECURITY(B311): PRNG used for deterministic data sampling only; not cryptographic.
     rng = random.Random(cfg.seed)  # nosec B311
-    vocab: Dict[str, int] = {}
+    vocab: dict[str, int] = {}
     for text in corpus:
         toks = tokenize(text, tokenizer)[: cfg.context_len]
         for t in toks:
             vocab[t] = vocab.get(t, 0) + 1
     total = sum(vocab.values())
     if total == 0:
-        token_probs: Dict[str, float] = {}
+        token_probs: dict[str, float] = {}
     else:
         token_probs = {t: c / total for t, c in vocab.items()}
     meta = {
@@ -217,7 +218,7 @@ def pretrain(
 
 def sft(
     model: ModelHandle,
-    demos: List[Dict[str, Any]],
+    demos: list[dict[str, Any]],
     cfg: SFTCfg,
     tokenizer: Optional[TokenizerAdapter] = None,
 ) -> ModelHandle:
@@ -229,15 +230,15 @@ def sft(
         raise ValueError("demos must not be empty")
     # SECURITY(B311): as above; deterministic sampling for supervised fine-tuning.
     rng = random.Random(cfg.seed)  # nosec B311
-    token_probs: Dict[str, float] = model.meta.get("token_probs", {}).copy()
-    vocab: Dict[str, int] = model.meta.get("vocab", {}).copy()
-    losses: List[float] = []
+    token_probs: dict[str, float] = model.meta.get("token_probs", {}).copy()
+    vocab: dict[str, int] = model.meta.get("vocab", {}).copy()
+    losses: list[float] = []
     tokens_seen = 0
     for _ in range(cfg.epochs):
         rng.shuffle(demos)
         for i in range(0, len(demos), cfg.batch_size):
             batch = demos[i : i + cfg.batch_size]
-            tokens: List[str] = []
+            tokens: list[str] = []
             for ex in batch:
                 tokens.extend(tokenize(ex.get("completion", ""), tokenizer))
             if not tokens:
@@ -268,7 +269,7 @@ def sft(
 
 
 def train_reward_model(
-    prefs: List[Tuple[str, str, str, int]],
+    prefs: list[tuple[str, str, str, int]],
     base: ModelHandle,
     cfg: RewardModelCfg = RewardModelCfg(),
     tokenizer: Optional[TokenizerAdapter] = None,
@@ -287,7 +288,7 @@ def train_reward_model(
     # SECURITY(B311): as above; preference shuffling is non-cryptographic.
     rng = random.Random(cfg.seed)  # nosec B311
 
-    def featurise(text: str) -> List[float]:
+    def featurise(text: str) -> list[float]:
         vec = [0.0] * len(token_index)
         for tok in tokenize(text, tokenizer):
             idx = token_index.get(tok)
@@ -341,14 +342,14 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
     # SECURITY(B311): as above; PPO sampling relies on deterministic RNG.
     rng = random.Random(cfg.seed)  # nosec B311
 
-    def sample_completion(length: int = 4) -> List[str]:
+    def sample_completion(length: int = 4) -> list[str]:
         tokens = list(token_probs.keys())
         probs = list(token_probs.values())
         if not tokens:
             return []
         return rng.choices(tokens, weights=probs, k=length)
 
-    def reward_of(tokens: List[str]) -> float:
+    def reward_of(tokens: list[str]) -> float:
         idx = rm.meta["token_index"]
         weights = rm.meta["weights"]
         score = 0.0
@@ -359,7 +360,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
 
     avg_reward = 0.0
     for _ in range(cfg.epochs):
-        rewards: List[float] = []
+        rewards: list[float] = []
         for prompt, _, _, _ in prefs:
             completion = sample_completion()
             if not completion:
@@ -401,12 +402,12 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
 
 def loss_sft(
     model: ModelHandle,
-    demos: List[Dict[str, Any]],
+    demos: list[dict[str, Any]],
     tokenizer: Optional[TokenizerAdapter] = None,
 ) -> float:
     """Cross-entropy loss on demo completions under the model's unigram distribution."""
     token_probs = model.meta.get("token_probs", {})
-    tokens: List[str] = []
+    tokens: list[str] = []
     for ex in demos:
         tokens.extend(tokenize(ex.get("completion", ""), tokenizer))
     if not tokens:
@@ -448,16 +449,16 @@ def objective_U(
 
 def run_codex_symbolic_pipeline(
     *,
-    corpus: List[str],
-    demos: List[Dict[str, Any]],
-    prefs: List[Tuple[str, str, str, int]],
+    corpus: list[str],
+    demos: list[dict[str, Any]],
+    prefs: list[tuple[str, str, str, int]],
     w: Weights = Weights(),
     pre_cfg: PretrainCfg = PretrainCfg(),
     sft_cfg: SFTCfg = SFTCfg(),
     rm_cfg: RewardModelCfg = RewardModelCfg(),
     rlhf_cfg: RLHFCfg = RLHFCfg(),
     tokenizer: Optional[TokenizerAdapter] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Run the end-to-end pipeline and return a summary dict with handles and metrics."""
     if not corpus:
         raise ValueError("corpus must be non-empty")

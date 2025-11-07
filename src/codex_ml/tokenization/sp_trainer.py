@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from typing import Iterable, Optional, Sequence
+from typing import Iterable, Optional, Sequence
 
 from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol
 
@@ -51,7 +52,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         padding: bool | str = False,
         truncation: bool | str = False,
         **_: object,
-    ) -> List[int]:
+    ) -> list[int]:
         add_bos = add_special_tokens
         add_eos = add_special_tokens
         ids = list(
@@ -70,7 +71,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
                 ids.extend([pad_id] * (max_length - len(ids)))
         return ids
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> List[List[int]]:
+    def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:
         return [self.encode(text, **kwargs) for text in texts]
 
     def decode(
@@ -95,7 +96,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         self,
         batch_ids: Iterable[Iterable[int]],
         **kwargs: object,
-    ) -> List[str]:
+    ) -> list[str]:
         return [self.decode(ids, **kwargs) for ids in batch_ids]
 
     # ------------------------------------------------------------------

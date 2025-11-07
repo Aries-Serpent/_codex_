@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 from codex_ml.monitoring.health import record_health_event
 
@@ -30,11 +31,11 @@ def provision_stack(
     project: str | None = None,
     output_dir: str | Path | None = None,
     dry_run: bool = True,
-    metadata: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    metadata: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Return a structured status block describing offline provisioning results."""
 
-    details: Dict[str, Any] = {
+    details: dict[str, Any] = {
         "status": _STATUS_DEFERRED,
         "reason": "Cloud deployment is disabled for offline Codex runs.",
         "project": project or _DEFAULT_PROJECT,

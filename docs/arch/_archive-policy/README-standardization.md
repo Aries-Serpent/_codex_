@@ -46,7 +46,7 @@ python -m codex.cli archive migrate-evidence-to-v2
 
 ## File Structure
 
-```
+```text
 src/codex/archive/
 ├── standardization.py      # Core standardization manager
 ├── sigstore_client.py      # Keyless signing integration
@@ -70,7 +70,6 @@ docs/arch/
 └── _archive-policy/
     └── standardization-framework.md
 ```
-
 ## Example: Enhanced Evidence Record
 
 ### Before (v1)

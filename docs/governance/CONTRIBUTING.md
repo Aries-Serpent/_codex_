@@ -143,7 +143,7 @@ If the secret scan (detect-secrets) fails due to a false positive (and no actual
 
 ``` text
 $ detect-secrets scan --baseline .secrets.baseline
-```
+```text
 Secret scanning runs as part of ``pre-commit``. To scan specific files prior to
 committing, run:
 
@@ -154,7 +154,7 @@ To verify third-party dependency licenses, run:
 
 ``` text
 python scripts/check_licenses.py
-```
+```text
 Only MIT, Apache-2.0, BSD, and ISC licenses are currently allowed. The script
 exits with a non-zero status if disallowed licenses are detected.
 
@@ -221,7 +221,6 @@ Install every optional dependency with:
 ```bash
 pip install -r requirements/dev.txt
 ```
-
 Offline/minimal environments can skip these extras. When optional features are invoked without the dependency installed, the CLI raises a descriptive `ImportError` including the `pip install …` command.
 
 ### Testing without optional dependencies
@@ -273,7 +272,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 `tools/install_codex_hooks.py` installs a `prepare-commit-msg` hook that appends trailers
 (`Codex-Questions-Count`, `Codex-Report-Path`) using `git interpret-trailers`.
 

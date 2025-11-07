@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import importlib
-from typing import Any, Callable, Dict
+from typing import Any, Callable
+from typing import Any, Callable
 
 try:  # pragma: no cover - torch is optional
     import torch
@@ -14,7 +15,7 @@ except Exception:  # pragma: no cover - fallback stubs when torch is absent
     TensorDataset = None  # type: ignore[assignment]
     random_split = None  # type: ignore[assignment]
 
-_REGISTRY: Dict[str, Callable[..., Any]] = {}
+_REGISTRY: dict[str, Callable[..., Any]] = {}
 
 
 class DatasetRegistryError(RuntimeError):

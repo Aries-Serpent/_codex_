@@ -6,10 +6,11 @@ import hashlib
 import json
 import random
 from pathlib import Path
-from typing import Iterable, Sequence, Tuple
+from typing import Iterable, Sequence
+from typing import Iterable, Sequence
 
 
-def _validate_ratios(ratios: Tuple[float, float, float]) -> None:
+def _validate_ratios(ratios: tuple[float, float, float]) -> None:
     if len(ratios) != 3:
         raise ValueError("ratios must contain exactly three values")
     if not abs(sum(ratios) - 1.0) < 1e-6:
@@ -21,7 +22,7 @@ def write_splits(
     out_dir: Path | str,
     *,
     seed: int = 42,
-    ratios: Tuple[float, float, float] = (0.9, 0.05, 0.05),
+    ratios: tuple[float, float, float] = (0.9, 0.05, 0.05),
     overwrite: bool = False,
 ) -> None:
     """Shuffle *items* deterministically and write train/val/test splits."""

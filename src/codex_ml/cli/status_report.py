@@ -18,17 +18,18 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Any
 
 
-def _load_json_if_exists(p: Path) -> Dict[str, Any] | None:
+def _load_json_if_exists(p: Path) -> dict[str, Any] | None:
     if not p.exists():
         return None
     with p.open("r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def build_status_report(run_metadata_dir: Path) -> Dict[str, Any]:
+def build_status_report(run_metadata_dir: Path) -> dict[str, Any]:
     """
     Collate readiness data for reviewers.
 

@@ -7,7 +7,8 @@ import json
 import warnings
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Iterator, List, Sequence
+from typing import Any, Iterable, Iterator, Sequence
+from typing import Any, Iterable, Iterator, Sequence
 
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
@@ -67,7 +68,7 @@ class Example:
 class DatasetBundle(Sequence[Example]):
     """Container bundling examples with a deterministic hash."""
 
-    examples: List[Example]
+    examples: list[Example]
     dataset_hash: str
     source: str
     metadata: dict[str, Any] | None = None

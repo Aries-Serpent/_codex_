@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, cast
+from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import torch
 from codex_ml.peft.peft_adapter import apply_lora
@@ -32,7 +33,7 @@ model_registry = Registry("model", entry_point_group="codex_ml.models")
 
 
 @model_registry.register("MiniLM")
-def _build_minilm(cfg: Dict[str, Any]) -> Any:
+def _build_minilm(cfg: dict[str, Any]) -> Any:
     from codex_ml.models.minilm import MiniLM, MiniLMConfig
 
     return MiniLM(MiniLMConfig(vocab_size=int(cfg.get("vocab_size", 128))))
@@ -48,7 +49,7 @@ def _repo_root() -> Path:
     return current.parents[fallback_index]
 
 
-def _resolve_pretrained_identifier(cfg: Dict[str, Any], default: str) -> str:
+def _resolve_pretrained_identifier(cfg: dict[str, Any], default: str) -> str:
     for key in (
         "local_path",
         "path",
@@ -64,7 +65,7 @@ def _resolve_pretrained_identifier(cfg: Dict[str, Any], default: str) -> str:
 
 def _resolve_offline_checkpoint(
     alias: str,
-    cfg: Dict[str, Any],
+    cfg: dict[str, Any],
     *,
     default_remote: str,
     default_subdir: str,
@@ -132,7 +133,7 @@ def _resolve_offline_checkpoint(
     return default_remote
 
 
-def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> HF_PreTrainedModel:
+def _load_hf_model(task: str, cfg: dict[str, Any], default: str) -> HF_PreTrainedModel:
     """Load a transformers model with offline-first semantics."""
 
     model_id = _resolve_pretrained_identifier(cfg, default)
@@ -149,7 +150,7 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> HF_PreTraine
     if not TRANSFORMERS_AVAILABLE or loader is None:
         raise ImportError("transformers is required to load registry models")
 
-    kwargs: Dict[str, Any] = {"local_files_only": local_only}
+    kwargs: dict[str, Any] = {"local_files_only": local_only}
     if trust_remote_code is not None:
         kwargs["trust_remote_code"] = bool(trust_remote_code)
 
@@ -163,12 +164,12 @@ def _load_hf_model(task: str, cfg: Dict[str, Any], default: str) -> HF_PreTraine
 
 
 @model_registry.register("bert-base-uncased")
-def _build_default_bert(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
+def _build_default_bert(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     return _load_hf_model("mlm", cfg, "bert-base-uncased")
 
 
 @model_registry.register("gpt2-offline")
-def _build_offline_gpt2(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
+def _build_offline_gpt2(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "gpt2-offline",
         cfg,
@@ -183,7 +184,7 @@ def _build_offline_gpt2(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
 
 
 @model_registry.register("tinyllama-offline")
-def _build_offline_tinyllama(cfg: Dict[str, Any]) -> HF_PreTrainedModel:
+def _build_offline_tinyllama(cfg: dict[str, Any]) -> HF_PreTrainedModel:
     resolved = _resolve_offline_checkpoint(
         "tinyllama-offline",
         cfg,
@@ -250,7 +251,7 @@ def _resolve_torch_dtype(value: Any | None) -> torch.dtype | None:
 
 def get_model(
     name: str,
-    cfg: Dict[str, Any] | None = None,
+    cfg: dict[str, Any] | None = None,
     *,
     device: Any | None = None,
     dtype: Any | None = None,

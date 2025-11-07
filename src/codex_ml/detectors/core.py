@@ -1,13 +1,14 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Callable, Dict, Any
+from typing import Callable, Any
+from typing import Callable, Any
 
 
 @dataclass
 class DetectorResult:
     name: str
     score: float  # bounded [0,1]
-    details: Dict[str, Any]
+    details: dict[str, Any]
 
 
 Detector = Callable[[], DetectorResult]

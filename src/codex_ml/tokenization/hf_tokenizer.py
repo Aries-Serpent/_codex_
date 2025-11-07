@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Mapping, Optional, Sequence, cast
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence, cast
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence, cast
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -52,11 +53,11 @@ class _WhitespaceFallbackTokenizer:
         self.pad_token_id = 0
         self.eos_token_id = 1
         self.vocab_size = 2
-        self._token_to_id: Dict[str, int] = {
+        self._token_to_id: dict[str, int] = {
             self.pad_token: self.pad_token_id,
             self.eos_token: self.eos_token_id,
         }
-        self._id_to_token: Dict[int, str] = {v: k for k, v in self._token_to_id.items()}
+        self._id_to_token: dict[int, str] = {v: k for k, v in self._token_to_id.items()}
 
     # ---- Internal helpers -------------------------------------------------
     def _ensure_token(self, token: str) -> int:
@@ -75,15 +76,15 @@ class _WhitespaceFallbackTokenizer:
             return True
         return padding == "max_length"
 
-    def _pad(self, ids: List[int], max_length: int) -> List[int]:
+    def _pad(self, ids: list[int], max_length: int) -> list[int]:
         trimmed = ids[:max_length]
         if len(trimmed) >= max_length:
             return trimmed
         return trimmed + [self.pad_token_id] * (max_length - len(trimmed))
 
     def _maybe_truncate(
-        self, ids: List[int], truncation: bool | str, max_length: Optional[int]
-    ) -> List[int]:
+        self, ids: list[int], truncation: bool | str, max_length: Optional[int]
+    ) -> list[int]:
         if not max_length:
             return ids
         if not truncation:
@@ -100,7 +101,7 @@ class _WhitespaceFallbackTokenizer:
         truncation: bool | str = False,
         max_length: Optional[int] = None,
         **_: Any,
-    ) -> List[int]:
+    ) -> list[int]:
         tokens = [tok for tok in text.split() if tok]
         ids = [self._ensure_token(tok) for tok in tokens]
         if add_special_tokens:
@@ -113,7 +114,7 @@ class _WhitespaceFallbackTokenizer:
     def decode(
         self, ids: Sequence[int], *, clean_up_tokenization_spaces: bool = False, **_: Any
     ) -> str:
-        tokens: List[str] = []
+        tokens: list[str] = []
         for idx in ids:
             token = self._id_to_token.get(int(idx), "")
             if token in {self.pad_token, self.eos_token}:
@@ -158,7 +159,7 @@ class _WhitespaceFallbackTokenizer:
         return_tensors: Optional[str] = None,
         add_special_tokens: bool = False,
         **_: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         sequences = [
             self.encode(
                 text,
@@ -232,7 +233,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         *,
         pad_to_max: bool = False,
         max_length: Optional[int] = None,
-    ) -> List[int]:
+    ) -> list[int]:
         """Encode ``text`` into token ids with optional padding and truncation.
 
         Parameters
@@ -259,7 +260,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def decode(self, ids: Sequence[int]) -> str:
         return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
+    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:
         """Register additional special tokens with the underlying tokenizer."""
         self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
         return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}

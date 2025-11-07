@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import warnings
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, List, Optional, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Optional, Protocol, Sequence, cast
+from typing import TYPE_CHECKING, Optional, Protocol, Sequence, cast
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
 from .adapter import WhitespaceTokenizer
@@ -18,13 +19,13 @@ UNK_TOKEN = "<UNK>"
 class TokenizerAdapter(Protocol):
     """Minimal tokenizer interface for the symbolic pipeline."""
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         """Return token ids for text without adding special tokens."""
 
     def decode(self, ids: Sequence[int]) -> str:
         """Convert token ids back to a string."""
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> Dict[str, int]:
+    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:
         """Register additional special tokens and return their id mapping."""
 
     def save(self, path: Path) -> None:

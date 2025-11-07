@@ -30,7 +30,8 @@ import re
 import sqlite3
 import sys
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -97,7 +98,7 @@ def resolve_db_path(cli_db: Optional[str]) -> str:
     )
 
 
-def detect_schema(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
+def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
     """Infer table and column names for timestamp/session/role/message."""
     cur = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
     tables = [r[0] for r in cur.fetchall()]
@@ -108,7 +109,7 @@ def detect_schema(conn: sqlite3.Connection) -> Tuple[str, Dict[str, str]]:
             continue
         cur = conn.execute(f"PRAGMA table_info({safe})")
         cols = [row[1] for row in cur.fetchall()]
-        mapping: Dict[str, str] = {}
+        mapping: dict[str, str] = {}
         for want, candidates in {
             "timestamp": TS_CANDIDATES,
             "session_id": SID_CANDIDATES,
@@ -129,7 +130,7 @@ def fetch_rows(
     session_id: Optional[str],
     last_n: Optional[int],
     desc: bool,
-) -> Tuple[List[sqlite3.Row], Dict[str, str]]:
+) -> tuple[list[sqlite3.Row], dict[str, str]]:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     try:
@@ -145,7 +146,7 @@ def fetch_rows(
         select_cols.append(cols["message"])
         select_list = ", ".join(select_cols)
         sql = f"SELECT {select_list} FROM {table}"
-        params: List[object] = []
+        params: list[object] = []
         where_clause = ""
         if session_id:
             if not sid_col:
@@ -171,7 +172,7 @@ def fetch_rows(
         conn.close()
 
 
-def print_rows(rows: List[sqlite3.Row], cols: Dict[str, str]) -> None:
+def print_rows(rows: list[sqlite3.Row], cols: dict[str, str]) -> None:
     if not rows:
         print("(no rows)", file=sys.stderr)
         return

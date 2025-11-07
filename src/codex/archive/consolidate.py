@@ -6,7 +6,8 @@ import time
 from dataclasses import dataclass
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Dict, Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 from .detect import FileMeta, stat_file
 from .similarity import Similarity, compute_similarity
@@ -133,8 +134,8 @@ def build_consolidation_plan(
         [p for p in root.rglob("*") if p.is_file() and not _in_excludes(p, excludes)],
         key=lambda p: p.as_posix(),
     )
-    metadata: Dict[str, FileMeta] = {}
-    path_lookup: Dict[str, Path] = {}
+    metadata: dict[str, FileMeta] = {}
+    path_lookup: dict[str, Path] = {}
     for p in files:
         serial = _serialise_path(p, root)
         meta = stat_file(p)
@@ -142,7 +143,7 @@ def build_consolidation_plan(
         metadata[serial] = meta
         path_lookup[serial] = p
     visited: set[str] = set()
-    clusters: List[dict[str, object]] = []
+    clusters: list[dict[str, object]] = []
 
     for idx, path in enumerate(files):
         serial = _serialise_path(path, root)
@@ -163,7 +164,7 @@ def build_consolidation_plan(
         candidates = [_candidate_from_meta(metadata[g], now=now) for g in group]
         candidates.sort(key=lambda c: (-c.score, c.path))
         canonical = candidates[0]
-        duplicates: List[dict[str, object]] = []
+        duplicates: list[dict[str, object]] = []
         canonical_path = path_lookup[canonical.path]
         for dup in candidates[1:]:
             dup_path = path_lookup[dup.path]

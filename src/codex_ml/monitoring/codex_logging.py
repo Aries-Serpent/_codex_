@@ -13,7 +13,8 @@ import subprocess  # used with validated executable path
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse
 
 from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentStatus
@@ -175,7 +176,7 @@ _SENSITIVE_LOG_KEYS = (
     "output_text",
 )
 
-_SECRET_PATTERNS: Tuple[re.Pattern[str], ...] = (
+_SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
@@ -313,7 +314,7 @@ def _maybe_rotate_log(path: Path) -> None:
     logger.info("Log file rotated: %s -> %s", path, rotated)
 
 
-def _redact_sensitive_fields(record: Dict[str, Any]) -> None:
+def _redact_sensitive_fields(record: dict[str, Any]) -> None:
     """Redact sensitive text fields before persisting NDJSON payloads."""
 
     cfg = _get_safety_cfg()
@@ -328,7 +329,7 @@ def _redact_sensitive_fields(record: Dict[str, Any]) -> None:
         if not isinstance(value, str) or not value:
             continue
         updated = value
-        field_meta: Dict[str, Any] = {}
+        field_meta: dict[str, Any] = {}
         if filters is not None:
             try:
                 result = filters.sanitize(value, stage=f"log.{key}")
@@ -644,10 +645,10 @@ def _git_commit() -> Optional[str]:
     return None if _GIT_COMMIT == "unknown" else _GIT_COMMIT
 
 
-def _codex_sample_system() -> Dict[str, Any]:
+def _codex_sample_system() -> dict[str, Any]:
     """Gather CPU/GPU metrics and basic environment details."""
 
-    metrics: Dict[str, Any] = {
+    metrics: dict[str, Any] = {
         "python": sys.version.split()[0],
         "platform": platform.platform(),
     }
@@ -744,8 +745,8 @@ def _codex_sample_system() -> Dict[str, Any]:
 # Logging
 
 
-def _filter_scalars(values: Dict[str, Any]) -> Dict[str, float]:
-    out: Dict[str, float] = {}
+def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
+    out: dict[str, float] = {}
     for k, v in values.items():
         try:
             out[k] = float(v)  # type: ignore[arg-type]
@@ -754,7 +755,7 @@ def _filter_scalars(values: Dict[str, Any]) -> Dict[str, float]:
     return out
 
 
-def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) -> None:
+def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) -> None:
     """Log ``scalars`` at ``step`` to all enabled sinks."""
 
     values = _filter_scalars(scalars)
@@ -779,7 +780,7 @@ def _codex_log_all(step: int, scalars: Dict[str, Any], loggers: CodexLoggers) ->
             logger.debug("mlflow log_metrics failed", exc_info=exc)
 
 
-def write_ndjson(path: str | os.PathLike[str], record: Dict[str, Any]) -> None:
+def write_ndjson(path: str | os.PathLike[str], record: dict[str, Any]) -> None:
     """Append ``record`` to ``path`` as NDJSON with rotation and redaction."""
 
     if not isinstance(record, dict):

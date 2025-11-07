@@ -27,7 +27,8 @@ import random  # non-cryptographic; used for deterministic shuffles
 import subprocess  # nosec B404 - subprocess is needed for VCS metadata; controlled call
 from pathlib import Path
 from shutil import which
-from typing import List, Sequence, Tuple, TypeVar, Union
+from typing import Sequence, TypeVar, Union
+from typing import Sequence, TypeVar, Union
 
 from codex_ml.data.cache import SimpleCache
 
@@ -137,7 +138,7 @@ def _detect_encoding(path: Union[str, Path]) -> str:
     return _fallback_detect_encoding(p)
 
 
-def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
+def deterministic_shuffle(seq: Sequence[T], seed: int) -> list[T]:
     """Return a shuffled list using ``seed`` for determinism.
 
     This is the canonical implementation; use this for reproducible shuffles.
@@ -149,7 +150,7 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> List[T]:
 
 
 # Backward compatibility: ensure seeded_shuffle is available (some callers expect this name)
-def seeded_shuffle(seq: Sequence[T], seed: int) -> List[T]:
+def seeded_shuffle(seq: Sequence[T], seed: int) -> list[T]:
     """Alias for deterministic_shuffle for backward compatibility."""
     return deterministic_shuffle(seq, seed)
 
@@ -164,7 +165,7 @@ def split_dataset(
     test_frac: float = 0.1,
     seed: int = 42,
     cache: SimpleCache | None = None,
-) -> Tuple[List[T], List[T], List[T]]:
+) -> tuple[list[T], list[T], list[T]]:
     """Split ``seq`` into train/val/test sets with optional caching.
 
     The sequence is deterministically shuffled using ``seed`` before being
@@ -232,7 +233,7 @@ def write_manifest(
 
 def _manual_read_text(
     path: Union[str, Path], encoding: str = "utf-8", errors: str = "strict"
-) -> Tuple[str, str]:
+) -> tuple[str, str]:
     """Read bytes and decode using provided encoding (or detect when 'auto').
 
     Returns (text, used_encoding)

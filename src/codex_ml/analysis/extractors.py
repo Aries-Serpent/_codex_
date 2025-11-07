@@ -1,7 +1,8 @@
 # src/codex_ml/analysis/extractors.py
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any
+from typing import Any
 import ast
 
 try:
@@ -12,15 +13,15 @@ except Exception:  # pragma: no cover - optional dependency
 
 @dataclass
 class Extraction:
-    imports: List[Dict[str, Any]] = field(default_factory=list)
-    functions: List[Dict[str, Any]] = field(default_factory=list)
-    classes: List[Dict[str, Any]] = field(default_factory=list)
-    patterns: List[Dict[str, Any]] = field(default_factory=list)
+    imports: list[dict[str, Any]] = field(default_factory=list)
+    functions: list[dict[str, Any]] = field(default_factory=list)
+    classes: list[dict[str, Any]] = field(default_factory=list)
+    patterns: list[dict[str, Any]] = field(default_factory=list)
 
 
 class _ImportVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
-        self.items: List[Dict[str, Any]] = []
+        self.items: list[dict[str, Any]] = []
 
     def visit_Import(self, node: ast.Import) -> None:  # pragma: no cover - simple
         for n in node.names:
@@ -41,7 +42,7 @@ class _ImportVisitor(ast.NodeVisitor):
 
 class _FuncVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
-        self.items: List[Dict[str, Any]] = []
+        self.items: list[dict[str, Any]] = []
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # pragma: no cover - simple
         self.items.append(
@@ -59,7 +60,7 @@ class _FuncVisitor(ast.NodeVisitor):
 
 class _ClassVisitor(ast.NodeVisitor):
     def __init__(self) -> None:
-        self.items: List[Dict[str, Any]] = []
+        self.items: list[dict[str, Any]] = []
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # pragma: no cover - simple
         bases = [

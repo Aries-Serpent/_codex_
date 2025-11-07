@@ -3,7 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Dict, Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 
 def _sha256_file(path: str | Path, chunk: int = 1 << 20) -> str:
@@ -22,7 +23,7 @@ def _sha256_file(path: str | Path, chunk: int = 1 << 20) -> str:
 def manifest_for_paths(
     paths: Iterable[str | Path],
     destination: str | Path | None = None,
-) -> List[Dict[str, object]]:
+) -> list[dict[str, object]]:
     """Build (and optionally persist) manifest rows for ``paths``.
 
     Args:
@@ -35,7 +36,7 @@ def manifest_for_paths(
         ``bytes`` entries.
     """
 
-    rows: List[Dict[str, object]] = []
+    rows: list[dict[str, object]] = []
     for raw in paths:
         p = Path(raw)
         rows.append(

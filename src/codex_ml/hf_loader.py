@@ -1,7 +1,8 @@
 import logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
 from urllib.parse import unquote, urlparse
 
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -62,7 +63,7 @@ except Exception:  # pragma: no cover - torch is optional at import time
     torch = None  # type: ignore[assignment]
 
 
-_CAUSAL_LM_REGISTRY: Dict[str, Callable[..., Any]] = {}
+_CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}
 
 
 def register_causal_lm(name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
@@ -212,7 +213,7 @@ def load_causal_lm(
     trust_remote_code: bool = False,
     device: Optional[str] = None,
     dtype: Optional[str] = None,
-    peft_cfg: Optional[Dict[str, Any]] = None,
+    peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[Union[str, os.PathLike[str]]] = None,
 ) -> PreTrainedModel:
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
@@ -220,7 +221,7 @@ def load_causal_lm(
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
         if ctor is not None:
-            kwargs: Dict[str, Any] = {}
+            kwargs: dict[str, Any] = {}
             if device is not None:
                 kwargs["device"] = device
             if dtype is not None:
@@ -231,7 +232,7 @@ def load_causal_lm(
 
     rev = _required_revision(repo_id, revision)
     torch_dtype = _map_amp_dtype(dtype)
-    loader_kwargs: Dict[str, Any] = {
+    loader_kwargs: dict[str, Any] = {
         "revision": rev,
         "trust_remote_code": trust_remote_code,
     }

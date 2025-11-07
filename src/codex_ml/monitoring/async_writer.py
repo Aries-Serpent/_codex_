@@ -7,7 +7,8 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Any
 
 
 @dataclass
@@ -15,7 +16,7 @@ class LogLine:
     """Container for an enqueued log line."""
 
     ts: float
-    data: Dict[str, Any]
+    data: dict[str, Any]
 
 
 class AsyncLogFile:
@@ -66,7 +67,7 @@ class AsyncLogFile:
         return self._dropped
 
     # ------------------------------------------------------------------
-    def write(self, data: Dict[str, Any]) -> None:
+    def write(self, data: dict[str, Any]) -> None:
         """Enqueue ``data`` for asynchronous persistence."""
 
         line = LogLine(time.time(), dict(data))

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 from omegaconf import DictConfig, OmegaConf
 
 
-def _flatten_training_section(cfg: Mapping[str, Any]) -> Dict[str, Any]:
+def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
     """Return a shallow copy of the training section if present, otherwise the whole mapping."""
     if "training" in cfg and isinstance(cfg["training"], Mapping):
         return dict(cfg["training"])
@@ -55,7 +56,7 @@ _CFG_DIR = _find_cfg_dir()
 _PRIMARY = "base"
 
 
-def _normalize_training_payload(payload: Mapping[str, Any]) -> Dict[str, Any]:
+def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
     """Normalize common training aliases and expose convenient top-level fields."""
     data = dict(payload)
     training = data.get("training")
@@ -166,7 +167,7 @@ def _to_config_object(mapping: Mapping[str, Any]) -> DictConfig:
     return _AttrDictConfig(normalized)
 
 
-def _read_yaml_mapping(path: Path) -> Dict[str, Any]:
+def _read_yaml_mapping(path: Path) -> dict[str, Any]:
     """Read YAML file and return a plain Python mapping."""
     with path.open("r", encoding="utf-8") as fh:
         try:
@@ -181,7 +182,7 @@ def _read_yaml_mapping(path: Path) -> Dict[str, Any]:
     return dict(data)
 
 
-def _apply_overrides_to_mapping(mapping: Dict[str, Any], overrides: Sequence[str]) -> Dict[str, Any]:
+def _apply_overrides_to_mapping(mapping: dict[str, Any], overrides: Sequence[str]) -> dict[str, Any]:
     """Apply dotlist overrides directly to a plain mapping (without OmegaConf dependency)."""
     for item in overrides:
         if "=" not in item:
@@ -194,7 +195,7 @@ def _apply_overrides_to_mapping(mapping: Dict[str, Any], overrides: Sequence[str
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
                 "before specifying overrides."
             ) from exc
-        target: Dict[str, Any] = mapping
+        target: dict[str, Any] = mapping
         parts = [part for part in key.split(".") if part]
         if not parts:
             continue
@@ -217,9 +218,9 @@ class TrainingDefaults:
     lr: float = 1e-3
     batch_size: int = 32
     epochs: int = 3
-    logging: Dict[str, Any] | None = None
+    logging: dict[str, Any] | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "training": {
                 "seed": self.seed,

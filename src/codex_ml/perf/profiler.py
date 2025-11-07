@@ -6,14 +6,15 @@ import json
 import time
 from contextlib import contextmanager
 from statistics import mean, median
-from typing import Dict, Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 
 class PerformanceProfiler:
     """Collect execution timings for named sections."""
 
     def __init__(self) -> None:
-        self.timings: Dict[str, List[float]] = {}
+        self.timings: dict[str, list[float]] = {}
 
     @contextmanager
     def profile(self, name: str) -> Iterable[None]:
@@ -25,8 +26,8 @@ class PerformanceProfiler:
             bucket = self.timings.setdefault(name, [])
             bucket.append(elapsed)
 
-    def summary(self) -> Dict[str, Dict[str, float]]:
-        report: Dict[str, Dict[str, float]] = {}
+    def summary(self) -> dict[str, dict[str, float]]:
+        report: dict[str, dict[str, float]] = {}
         for name, samples in self.timings.items():
             if not samples:
                 continue

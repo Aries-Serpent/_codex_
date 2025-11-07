@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, Mapping
+from typing import Any, Mapping
+from typing import Any, Mapping
 
 
 class SecretRedactor:
@@ -28,7 +29,7 @@ class SecretRedactor:
     }
 
     def __init__(self, patterns: Mapping[str, str] | None = None) -> None:
-        compiled: Dict[str, re.Pattern[str]] = {}
+        compiled: dict[str, re.Pattern[str]] = {}
         for name, pattern in (patterns or self.DEFAULT_PATTERNS).items():
             compiled[name] = re.compile(pattern, flags=re.IGNORECASE)
         self._patterns = compiled
@@ -42,10 +43,10 @@ class SecretRedactor:
             result = pattern.sub(replacement, result)
         return result
 
-    def redact_dict(self, data: Mapping[str, Any]) -> Dict[str, Any]:
+    def redact_dict(self, data: Mapping[str, Any]) -> dict[str, Any]:
         """Recursively redact secrets within nested mappings."""
 
-        redacted: Dict[str, Any] = {}
+        redacted: dict[str, Any] = {}
         for key, value in data.items():
             redacted[key] = self._redact_value(value, key_hint=str(key))
         return redacted

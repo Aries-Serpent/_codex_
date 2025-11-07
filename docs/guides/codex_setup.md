@@ -86,7 +86,7 @@ Add under verify job after Install dependencies:
 ``` text
 - name: Type check
   run: mypy src
-```
+```text
 ## Risk Considerations
 
 | Area | Risk | Mitigation |

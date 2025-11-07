@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Iterator, Mapping, MutableMapping
+from typing import Iterator, Mapping, MutableMapping
+from typing import Iterator, Mapping, MutableMapping
 
 __all__ = ["iter_jsonl"]
 
 
-def iter_jsonl(path: str | Path, *, strict: bool = True) -> Iterator[Dict[str, object]]:
+def iter_jsonl(path: str | Path, *, strict: bool = True) -> Iterator[dict[str, object]]:
     """Yield JSON objects from *path* line by line without loading the file.
 
     Parameters

@@ -9,7 +9,8 @@ import types
 from dataclasses import dataclass, field
 from pathlib import Path
 from time import perf_counter
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
@@ -79,7 +80,7 @@ class SafetySettings:
 class OptimizerSettings:
     name: str = "adamw_torch"
     weight_decay: float = 0.01
-    betas: Tuple[float, float] = (0.9, 0.999)
+    betas: tuple[float, float] = (0.9, 0.999)
     eps: float = 1e-8
 
 
@@ -118,12 +119,12 @@ class TrainingRunConfig:
     resume_from: Optional[str] = None
     metrics_out: str = ".codex/metrics.ndjson"
     log_dir: str = "logs"
-    log_formats: Tuple[str, ...] = ("ndjson",)
+    log_formats: tuple[str, ...] = ("ndjson",)
     log_system_metrics: bool = False
     system_metrics_interval: float = 60.0
     system_metrics_path: Optional[str] = None
     optimizer: OptimizerSettings = field(default_factory=OptimizerSettings)
-    dataset: Dict[str, Any] = field(
+    dataset: dict[str, Any] = field(
         default_factory=lambda: {
             "train_path": "data/train_samples.jsonl",
             "eval_path": None,
@@ -157,7 +158,7 @@ def _log_optional_dependencies() -> list[str]:
     return missing
 
 
-def _listify_texts(value: Any) -> List[str]:
+def _listify_texts(value: Any) -> list[str]:
     if value is None:
         return []
     if isinstance(value, str):
@@ -168,14 +169,14 @@ def _listify_texts(value: Any) -> List[str]:
         return [str(value)]
 
 
-def _load_texts(path: str | None, fmt: str = "text") -> List[str]:
+def _load_texts(path: str | None, fmt: str = "text") -> list[str]:
     if not path:
         return []
     target = Path(path)
     if not target.exists():
         return []
     fmt_lower = fmt.lower()
-    texts: List[str] = []
+    texts: list[str] = []
     if fmt_lower == "jsonl":
         for line in target.read_text(encoding="utf-8").splitlines():
             line = line.strip()
@@ -264,7 +265,7 @@ def _coerce_safety(raw: Any, default: Optional[SafetySettings] = None) -> Safety
     )
 
 
-def _normalize_config(raw: Mapping[str, Any]) -> Dict[str, Any]:
+def _normalize_config(raw: Mapping[str, Any]) -> dict[str, Any]:
     if DictConfig is not None and isinstance(raw, DictConfig):  # type: ignore[arg-type]
         container = OmegaConf.to_container(raw, resolve=True)  # type: ignore[union-attr]
         if isinstance(container, dict):
@@ -275,7 +276,7 @@ def _normalize_config(raw: Mapping[str, Any]) -> Dict[str, Any]:
     raise TypeError("config must be a mapping or DictConfig")
 
 
-def _merge_dataset_config(dataset: Dict[str, Any], mapping: Mapping[str, Any]) -> None:
+def _merge_dataset_config(dataset: dict[str, Any], mapping: Mapping[str, Any]) -> None:
     dataset.update({k: v for k, v in mapping.items() if v is not None})
     if "texts" in mapping:
         dataset["train_texts"] = _listify_texts(mapping["texts"])
@@ -368,7 +369,7 @@ def _model_name_from_value(value: Any, default: str = "MiniLM") -> str:
     return default
 
 
-def _normalize_model_config(value: Any, fallback_name: str = "MiniLM") -> Dict[str, Any]:
+def _normalize_model_config(value: Any, fallback_name: str = "MiniLM") -> dict[str, Any]:
     entry = _maybe_resolve_container(value)
     if isinstance(entry, Mapping):
         cfg = dict(entry)
@@ -709,11 +710,11 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
 
 def run_functional_training(
     config: Mapping[str, Any] | TrainingRunConfig, *, resume: bool = False
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Run the Codex functional training loop with optional resume support."""
 
     missing_optional = _log_optional_dependencies()
-    normalized_mapping: Dict[str, Any] | None = None
+    normalized_mapping: dict[str, Any] | None = None
     training_mapping: Mapping[str, Any] | None = None
     if isinstance(config, TrainingRunConfig):
         cfg = config
@@ -817,11 +818,11 @@ def run_functional_training(
             default_policy=safety_cfg.policy_path,
         )
 
-    def _apply_safety(texts: List[str], stage: str) -> List[str]:
+    def _apply_safety(texts: list[str], stage: str) -> list[str]:
         nonlocal safety_filters
         if not texts:
             return []
-        sanitized_items: List[str] = []
+        sanitized_items: list[str] = []
         for raw_text in texts:
             prompt_entry = sanitize_prompt(raw_text, prompt_safety)
             sanitized_text = prompt_entry.get("text", raw_text)
@@ -913,14 +914,14 @@ def run_functional_training(
         unk_token = "<unk>"
 
         def _encode_texts(
-            texts: List[str], vocab: Dict[str, int], *, update: bool
-        ) -> List[List[int]]:
-            encoded: List[List[int]] = []
+            texts: list[str], vocab: dict[str, int], *, update: bool
+        ) -> list[list[int]]:
+            encoded: list[list[int]] = []
             for text in texts:
                 pieces = [piece for piece in text.split() if piece]
                 if not pieces:
                     pieces = [unk_token]
-                indices: List[int] = []
+                indices: list[int] = []
                 for piece in pieces:
                     if update:
                         if piece not in vocab:
@@ -931,13 +932,13 @@ def run_functional_training(
                 encoded.append(indices if indices else [vocab[unk_token]])
             return encoded
 
-        vocab: Dict[str, int] = {pad_token: 0, unk_token: 1}
+        vocab: dict[str, int] = {pad_token: 0, unk_token: 1}
         train_sequences = _encode_texts(train_texts, vocab, update=True)
-        val_sequences: List[List[int]] = []
+        val_sequences: list[list[int]] = []
         if val_texts:
             val_sequences = _encode_texts(val_texts, vocab, update=False)
 
-        def _prepare_dataset(sequences: List[List[int]]) -> Dict[str, Any]:
+        def _prepare_dataset(sequences: list[list[int]]) -> dict[str, Any]:
             if not sequences:
                 return {
                     "input_ids": torch.empty((0, 0), dtype=torch.long),
@@ -945,9 +946,9 @@ def run_functional_training(
                     "labels": torch.empty((0, 0), dtype=torch.long),
                 }
             max_len = max(len(seq) for seq in sequences)
-            input_ids: List[List[int]] = []
-            attention: List[List[int]] = []
-            labels: List[List[int]] = []
+            input_ids: list[list[int]] = []
+            attention: list[list[int]] = []
+            labels: list[list[int]] = []
             for seq in sequences:
                 padded = seq + [vocab[pad_token]] * (max_len - len(seq))
                 mask = [1] * len(seq) + [0] * (max_len - len(seq))
@@ -987,7 +988,7 @@ def run_functional_training(
         val_data = _prepare_dataset(val_sequences) if val_sequences else None
 
         class _DictDataset(torch.utils.data.Dataset):
-            def __init__(self, mapping: Dict[str, torch.Tensor]) -> None:
+            def __init__(self, mapping: dict[str, torch.Tensor]) -> None:
                 self._mapping = mapping
 
             def __len__(self) -> int:
@@ -996,7 +997,7 @@ def run_functional_training(
                 first = next(iter(self._mapping.values()))
                 return int(first.shape[0]) if hasattr(first, "shape") else 0
 
-            def __getitem__(self, index: int) -> Dict[str, torch.Tensor]:
+            def __getitem__(self, index: int) -> dict[str, torch.Tensor]:
                 return {key: value[index] for key, value in self._mapping.items()}
 
         train_dataset = _DictDataset(train_data)
@@ -1010,7 +1011,7 @@ def run_functional_training(
         model = _TinyLanguageModel(len(vocab)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
-        metrics: List[Dict[str, Any]] = []
+        metrics: list[dict[str, Any]] = []
         grad_accum = max(int(cfg.gradient_accumulation), 1)
         eval_every = max(int(cfg.eval_every_epochs), 1)
 
@@ -1167,7 +1168,7 @@ def run_functional_training(
         padded.extend([pad_value] * (target - len(items)))
         return padded
 
-    def _collect_encodings(texts: List[str]) -> tuple[list[dict[str, list[int]]], int]:
+    def _collect_encodings(texts: list[str]) -> tuple[list[dict[str, list[int]]], int]:
         encodings: list[dict[str, list[int]]] = []
         longest = 0
         for raw in texts:
@@ -1189,7 +1190,7 @@ def run_functional_training(
             encodings.append(features)
         return encodings, longest
 
-    def _build_dataset(texts: List[str]) -> Dataset | None:
+    def _build_dataset(texts: list[str]) -> Dataset | None:
         if not texts:
             empty = {
                 "input_ids": np.zeros((0, 0), dtype=np.int64),
@@ -1253,7 +1254,7 @@ def run_functional_training(
 
     model = get_model(model_cfg.get("name", fallback_name), model_cfg)
 
-    train_kwargs: Dict[str, Any] = {}
+    train_kwargs: dict[str, Any] = {}
     for field_name in TrainCfg.__dataclass_fields__:
         value = _lookup(field_name)
         if value is not None:
@@ -1430,7 +1431,7 @@ def _evaluate_model(
     *,
     batch_size: int = 8,
     cfg: Optional[TrainingRunConfig] = None,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """Evaluate ``model`` on ``dataset`` returning validation loss/perplexity."""
 
     try:
@@ -1508,7 +1509,7 @@ def _evaluate_model(
     if not metrics:
         return {}
 
-    result: Dict[str, float] = {}
+    result: dict[str, float] = {}
     if "eval_loss" in metrics:
         result["val_loss"] = float(metrics["eval_loss"])
     if "perplexity" in metrics:

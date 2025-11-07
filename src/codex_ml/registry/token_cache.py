@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import os
 from collections import OrderedDict
-from typing import Any, Hashable, Tuple
+from typing import Any, Hashable
+from typing import Any, Hashable
 
 __all__ = ["TokenLRU", "GLOBAL_TOKEN_LRU", "cache_key", "is_cache_disabled"]
 
@@ -42,7 +43,7 @@ def cache_key(
     truncation: bool | None,
     max_length: int | None,
     add_special_tokens: bool | None,
-) -> Tuple[Any, ...]:
+) -> tuple[Any, ...]:
     return (text, padding, truncation, max_length, add_special_tokens)
 
 

@@ -4,7 +4,8 @@ import json
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
+from typing import Optional
 
 __all__ = ["RetainSpec", "retain"]
 
@@ -18,7 +19,7 @@ class RetainSpec:
     best_metric: str = "val_loss"
 
 
-def _epoch_sort_key(path: Path) -> Tuple[int, str]:
+def _epoch_sort_key(path: Path) -> tuple[int, str]:
     name = path.name
     try:
         suffix = name.rsplit("-", 1)[-1]
@@ -68,11 +69,11 @@ def retain(checkpoints_root: Path, spec: RetainSpec) -> None:
     if not checkpoints_root.exists():
         return
 
-    dirs: List[Path] = [p for p in checkpoints_root.iterdir() if p.is_dir()]
+    dirs: list[Path] = [p for p in checkpoints_root.iterdir() if p.is_dir()]
     if not dirs:
         return
-    epoch_dirs: List[Path] = []
-    auxiliary_dirs: List[Path] = []
+    epoch_dirs: list[Path] = []
+    auxiliary_dirs: list[Path] = []
     for path in dirs:
         if _is_epoch_dir(path):
             epoch_dirs.append(path)
@@ -97,7 +98,7 @@ def retain(checkpoints_root: Path, spec: RetainSpec) -> None:
         keep.update(recent_epoch_dirs)
 
     if spec.best_k > 0:
-        scored: List[Tuple[float, Path]] = []
+        scored: list[tuple[float, Path]] = []
         for entry in epoch_dirs:
             metric_val = _load_metric(entry, spec.best_metric)
             if metric_val is None:

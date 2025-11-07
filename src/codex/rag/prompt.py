@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Callable, List, Dict, Any, Optional, Sequence
+from typing import Callable, Any, Optional, Sequence
+from typing import Callable, Any, Optional, Sequence
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ QUERY_END = "### USER QUERY END ###"
 # ----------------------------
 # Helpers
 # ----------------------------
-TokenizerFn = Callable[[str], List[int]]
+TokenizerFn = Callable[[str], list[int]]
 
 
 def _count_tokens(text: str, tokenizer: Optional[TokenizerFn]) -> int:
@@ -163,7 +164,7 @@ class PromptTemplate:
     
     def _format_context_snippet(
         self,
-        doc: Dict[str, Any],
+        doc: dict[str, Any],
         index: int
     ) -> str:
         """
@@ -196,7 +197,7 @@ class PromptTemplate:
     
     def _build_context_section(
         self,
-        retrieved_docs: Sequence[Dict[str, Any]]
+        retrieved_docs: Sequence[dict[str, Any]]
     ) -> str:
         """
         Build the context section with token budget management.
@@ -244,7 +245,7 @@ class PromptTemplate:
     def assemble_rag_prompt(
         self,
         query: str,
-        retrieved_docs: Sequence[Dict[str, Any]],
+        retrieved_docs: Sequence[dict[str, Any]],
         system_prompt: Optional[str] = None,
         instructions: Optional[str] = None,
     ) -> str:
@@ -331,7 +332,7 @@ class PromptTemplate:
 
 def build_prompt(
     query: str,
-    retrieved_docs: Optional[List[Dict[str, Any]]] = None,
+    retrieved_docs: Optional[list[dict[str, Any]]] = None,
     system_prompt: Optional[str] = None,
     use_rag: bool = True,
     config: Optional[PromptConfig] = None,

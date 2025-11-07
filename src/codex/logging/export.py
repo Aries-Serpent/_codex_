@@ -34,7 +34,8 @@ try:
 except Exception:
     pass
 import sys
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 from .config import DEFAULT_LOG_DB
 from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
@@ -59,7 +60,7 @@ def _db_path(override: str | None = None) -> str:
     return str(resolve_db_path(DEFAULT_LOG_DB))
 
 
-def _fetch_events(db_path: str, session_id: str) -> List[Dict[str, Any]]:
+def _fetch_events(db_path: str, session_id: str) -> list[dict[str, Any]]:
     conn = open_db(db_path)
     conn.row_factory = sqlite3.Row
     try:
@@ -92,7 +93,7 @@ def export_session(session_id: str, fmt: str = "json", db: str | None = None) ->
     events = _fetch_events(db_path, session_id)
     if fmt == "json":
         return json.dumps(events, indent=2)
-    lines: List[str] = []
+    lines: list[str] = []
     for e in events:
         ts = e.get("timestamp", "")
         role = e.get("role", "")

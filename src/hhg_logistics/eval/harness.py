@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+from typing import Any
 
 import hydra
 from omegaconf import DictConfig
@@ -17,7 +18,7 @@ except Exception:  # pragma: no cover
 
 
 def _default_model_args(cfg: DictConfig) -> str:
-    args: List[str] = [f"pretrained={cfg.model.pretrained}"]
+    args: list[str] = [f"pretrained={cfg.model.pretrained}"]
     model_args_cfg = cfg.eval.model_args
     if bool(getattr(model_args_cfg, "use_accelerate", False)):
         args.append("use_accelerate=True")
@@ -31,7 +32,7 @@ def _ensure_output_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def _write_json(payload: Dict[str, Any], destination: Path) -> None:
+def _write_json(payload: dict[str, Any], destination: Path) -> None:
     _ensure_output_dir(destination)
     with destination.open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, indent=2, sort_keys=True)

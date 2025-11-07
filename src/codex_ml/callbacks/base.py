@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 __all__ = [
     "Callback",
@@ -19,23 +20,23 @@ class Callback:
     def __init__(self, name: str | None = None) -> None:
         self.name = name or self.__class__.__name__
 
-    def on_train_start(self, state: Dict[str, Any]) -> None:  # pragma: no cover - default no-op
+    def on_train_start(self, state: dict[str, Any]) -> None:  # pragma: no cover - default no-op
         return None
 
     def on_epoch_start(
-        self, epoch: int, state: Dict[str, Any]
+        self, epoch: int, state: dict[str, Any]
     ) -> None:  # pragma: no cover - default no-op
         return None
 
     def on_epoch_end(
-        self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:  # pragma: no cover - default no-op
+        self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]
+    ) -> Optional[dict[str, Any]]:  # pragma: no cover - default no-op
         return None
 
-    def on_train_end(self, state: Dict[str, Any]) -> None:  # pragma: no cover - default no-op
+    def on_train_end(self, state: dict[str, Any]) -> None:  # pragma: no cover - default no-op
         return None
 
-    def record_error(self, stage: str, error: Exception | str, state: Dict[str, Any]) -> None:
+    def record_error(self, stage: str, error: Exception | str, state: dict[str, Any]) -> None:
         """Persist a structured error entry on ``state`` for diagnostics."""
 
         bucket = state.setdefault("callback_errors", [])
@@ -56,7 +57,7 @@ class EvaluationCallback(Callback):
     """
     Run a user-provided evaluation function after each epoch.
 
-    The ``eval_fn`` signature must be ``eval_fn(epoch: int, state: Dict[str, Any])``.
+    The ``eval_fn`` signature must be ``eval_fn(epoch: int, state: dict[str, Any])``.
     Returned dictionaries are merged under ``metrics["eval"]``.
     """
 
@@ -64,7 +65,7 @@ class EvaluationCallback(Callback):
         super().__init__(name="EvaluationCallback")
         self.eval_fn = eval_fn
 
-    def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]):
+    def on_epoch_end(self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]):
         if self.eval_fn is None:
             return None
         try:
@@ -81,10 +82,10 @@ class LoggingCallback(Callback):
     def __init__(self) -> None:
         super().__init__(name="LoggingCallback")
 
-    def on_train_start(self, state: Dict[str, Any]) -> None:
+    def on_train_start(self, state: dict[str, Any]) -> None:
         state.setdefault("epoch_history", [])
 
-    def on_epoch_end(self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]):
+    def on_epoch_end(self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]):
         history = state.get("epoch_history")
         if isinstance(history, list):
             entry = {"epoch": epoch}
@@ -92,7 +93,7 @@ class LoggingCallback(Callback):
             history.append(entry)
 
 
-def merge_callback_results(base: Dict[str, Any], addon: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+def merge_callback_results(base: dict[str, Any], addon: Optional[dict[str, Any]]) -> dict[str, Any]:
     """Merge callback-returned dicts into ``base`` with minimal structure."""
 
     if not addon:

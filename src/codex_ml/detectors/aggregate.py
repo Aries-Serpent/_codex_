@@ -1,11 +1,12 @@
 from __future__ import annotations
 from .core import Detector, DetectorResult, clamp01
-from typing import Iterable, Dict, Any
+from typing import Iterable, Any
+from typing import Iterable, Any
 
 
 def scorecard(
-    detectors: Iterable[Detector], weights: Dict[str, float] | None = None
-) -> Dict[str, Any]:
+    detectors: Iterable[Detector], weights: dict[str, float] | None = None
+) -> dict[str, Any]:
     results: list[DetectorResult] = []
     weights = dict(weights or {})
     total_w = 0.0

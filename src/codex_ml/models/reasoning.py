@@ -5,7 +5,8 @@ from __future__ import annotations
 import logging
 from collections import deque
 from dataclasses import dataclass
-from typing import Any, Dict, Mapping
+from typing import Any, Mapping
+from typing import Any, Mapping
 
 import torch
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
@@ -33,7 +34,7 @@ class ReasoningHead(nn.Module):
             hidden_state = hidden_state.unsqueeze(0)
         return self.decoder(self.dropout(self.activation(self.projection(hidden_state))))
 
-    def summarise(self, logits: torch.Tensor, top_k: int) -> Dict[str, Any]:
+    def summarise(self, logits: torch.Tensor, top_k: int) -> dict[str, Any]:
         if logits.ndim == 1:
             logits = logits.unsqueeze(0)
         probs = torch.softmax(logits, dim=-1)
@@ -119,7 +120,7 @@ class ReasoningHarness:
     tool_adapter: ToolUseAdapter | None
 
     def __post_init__(self) -> None:
-        self.history: deque[Dict[str, Any]] = deque(maxlen=self.config.trace_history)
+        self.history: deque[dict[str, Any]] = deque(maxlen=self.config.trace_history)
         self.model: nn.Module | None = None
         trace_mode = str(getattr(self.config, "trace_mode", "weights")).lower()
         allowed = {"disabled", "weights", "activations"}
@@ -147,7 +148,7 @@ class ReasoningHarness:
     def record(self, payload: Mapping[str, Any]) -> None:
         self.history.append(dict(payload))
 
-    def history_snapshot(self) -> list[Dict[str, Any]]:
+    def history_snapshot(self) -> list[dict[str, Any]]:
         return [dict(item) for item in self.history]
 
     def _pool_hidden_states(
@@ -235,7 +236,7 @@ class ReasoningHarness:
         step: int,
         top_k: int,
         step_ctx: Mapping[str, Any] | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         hidden_states = None
         if isinstance(step_ctx, Mapping):
             hidden_states = step_ctx.get("hidden_states")
@@ -243,7 +244,7 @@ class ReasoningHarness:
             embedding, trace_mode = self._vectorise_model(model, hidden_states=hidden_states)
             logits = self.head(embedding)
             summary = self.head.summarise(logits, top_k)
-            payload: Dict[str, Any] = {
+            payload: dict[str, Any] = {
                 "epoch": epoch,
                 "step": step,
                 "top_tokens": summary["top_tokens"],

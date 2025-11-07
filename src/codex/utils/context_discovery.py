@@ -21,7 +21,8 @@ import logging
 import os
 import re
 import subprocess
-from typing import Optional, Dict, Any
+from typing import Optional, Any
+from typing import Optional, Any
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +94,7 @@ def get_pr_number(interactive: bool = True) -> str:
         return "N/A"
 
 
-def discover_git_context() -> Dict[str, Optional[str]]:
+def discover_git_context() -> dict[str, Optional[str]]:
     """Discover git context: branch, commit hash, short hash, commit author."""
     return {
         'branch': run_git_command("git rev-parse --abbrev-ref HEAD"),
@@ -104,7 +105,7 @@ def discover_git_context() -> Dict[str, Optional[str]]:
     }
 
 
-def get_session_info(interactive: bool = True) -> Dict[str, Any]:
+def get_session_info(interactive: bool = True) -> dict[str, Any]:
     """
     Gather comprehensive session context upfront.
 

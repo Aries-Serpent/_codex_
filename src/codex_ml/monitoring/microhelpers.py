@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import datetime as _dt
-from typing import Any, Dict, List
+from typing import Any
+from typing import Any
 
 __all__ = ["sample", "get_proc_stats", "get_sys_stats", "get_gpu_stats"]
 
@@ -60,7 +61,7 @@ def _shutdown_nvml() -> None:
             _NVML_READY = False
 
 
-def get_proc_stats() -> Dict[str, Any]:
+def get_proc_stats() -> dict[str, Any]:
     """Returns process CPU% and RSS (MB). Missing psutil -> {}."""
     if _psutil is None:
         return {}
@@ -73,7 +74,7 @@ def get_proc_stats() -> Dict[str, Any]:
         return {}
 
 
-def get_sys_stats() -> Dict[str, Any]:
+def get_sys_stats() -> dict[str, Any]:
     """Returns system CPU% and memory%. Missing psutil -> {}."""
     if _psutil is None:
         return {}
@@ -85,13 +86,13 @@ def get_sys_stats() -> Dict[str, Any]:
         return {}
 
 
-def get_gpu_stats() -> List[Dict[str, Any]]:
+def get_gpu_stats() -> list[dict[str, Any]]:
     """Per-GPU: name, util%, mem_used_mb, mem_total_mb, temp_c. Missing NVML -> []."""
     if not _ensure_nvml():
         return []
     try:
         count = nvmlDeviceGetCount()  # type: ignore
-        out: List[Dict[str, Any]] = []
+        out: list[dict[str, Any]] = []
         for i in range(int(count)):
             h = nvmlDeviceGetHandleByIndex(i)  # type: ignore
             name = nvmlDeviceGetName(h)  # type: ignore
@@ -127,7 +128,7 @@ def get_gpu_stats() -> List[Dict[str, Any]]:
         pass
 
 
-def sample() -> Dict[str, Any]:
+def sample() -> dict[str, Any]:
     """One-shot snapshot; never raises."""
     ts = _dt.datetime.now().astimezone().isoformat(timespec="seconds")
     return {"ts": ts, "proc": get_proc_stats(), "sys": get_sys_stats(), "gpu": get_gpu_stats()}

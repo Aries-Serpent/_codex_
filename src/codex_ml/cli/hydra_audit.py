@@ -31,7 +31,8 @@ import re
 import sys
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Iterable, Optional, Sequence
+from typing import Any, Iterable, Optional, Sequence
 
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml  # type: ignore
@@ -69,13 +70,13 @@ class FileAudit:
     has_defaults: bool
     has_self: bool
     self_position: Optional[str]  # "first"|"last"|"middle"|None
-    unresolved_keys: List[str]
-    missing_required: List[str]
-    missing_optional: List[str]
-    issues: List[DefaultsIssue]
+    unresolved_keys: list[str]
+    missing_required: list[str]
+    missing_optional: list[str]
+    issues: list[DefaultsIssue]
 
 
-def _scan_yaml_files(root: Path) -> List[Path]:
+def _scan_yaml_files(root: Path) -> list[Path]:
     yaml_files = list(root.rglob("*.yaml"))
     yaml_files.extend(root.rglob("*.yml"))
     return sorted(set(yaml_files))
@@ -92,7 +93,7 @@ def _self_position(defaults: Sequence[Any]) -> Optional[str]:
     return "middle"
 
 
-def _load_yaml(path: Path) -> Dict[str, Any]:
+def _load_yaml(path: Path) -> dict[str, Any]:
     if yaml is None:
         return {}
     try:
@@ -106,8 +107,8 @@ def _load_yaml(path: Path) -> Dict[str, Any]:
     return data or {}
 
 
-def _find_unresolved(node: Any, prefix: str = "") -> List[str]:
-    hits: List[str] = []
+def _find_unresolved(node: Any, prefix: str = "") -> list[str]:
+    hits: list[str] = []
     if isinstance(node, dict):
         for key, value in node.items():
             key_path = f"{prefix}.{key}" if prefix else str(key)
@@ -132,14 +133,14 @@ def _normalize_path(base: Path, parts: Iterable[str]) -> Path:
     return path
 
 
-def _candidate_files(root: Path, ref: DefaultRef) -> List[Path]:
+def _candidate_files(root: Path, ref: DefaultRef) -> list[Path]:
     if not ref.group or not ref.name:
         return []
 
     group = ref.group.replace(".", "/")
     name = ref.name
 
-    extra_packages: List[str] = []
+    extra_packages: list[str] = []
     package = ref.package
 
     if "@" in name:
@@ -151,7 +152,7 @@ def _candidate_files(root: Path, ref: DefaultRef) -> List[Path]:
         if pkg:
             extra_packages.append(pkg)
 
-    bases: List[Path] = []
+    bases: list[Path] = []
     if package:
         bases.append(_normalize_path(root, package.split("/")))
     for pkg in extra_packages:
@@ -161,7 +162,7 @@ def _candidate_files(root: Path, ref: DefaultRef) -> List[Path]:
     group_parts = group.split("/")
     name_path = Path(name.replace(".", "/"))
 
-    candidates: List[Path] = []
+    candidates: list[Path] = []
     for base in bases:
         group_path = _normalize_path(base, group_parts)
         target = group_path / name_path
@@ -172,7 +173,7 @@ def _candidate_files(root: Path, ref: DefaultRef) -> List[Path]:
             candidates.append(target.with_suffix(".yml"))
     # Deduplicate while preserving order
     seen: set[Path] = set()
-    unique: List[Path] = []
+    unique: list[Path] = []
     for candidate in candidates:
         if candidate in seen:
             continue
@@ -257,9 +258,9 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
     has_defaults = isinstance(defaults, list)
     has_self = False
     self_pos: Optional[str] = None
-    issues: List[DefaultsIssue] = []
-    missing_required: List[str] = []
-    missing_optional: List[str] = []
+    issues: list[DefaultsIssue] = []
+    missing_required: list[str] = []
+    missing_optional: list[str] = []
 
     if has_defaults:
         has_self = "_self_" in defaults
@@ -333,7 +334,7 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
 
 def _write_markdown(out_path: Path, audits: Sequence[FileAudit]) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    lines: List[str] = []
+    lines: list[str] = []
     lines.append("# Hydra Defaults Audit")
     lines.append("")
     header = (
@@ -372,7 +373,7 @@ def cmd_defaults_audit(args: argparse.Namespace) -> int:
     files = _scan_yaml_files(root)
     audits = [_audit_file(path, root) for path in files]
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "ok": True,
         "files": len(files),
         "issues": sum(len(audit.issues) for audit in audits),

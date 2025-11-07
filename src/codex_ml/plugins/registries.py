@@ -6,14 +6,15 @@ import json
 import os
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
+from typing import Any
 
 from .registry import Registry
 
 
 def _load(
     reg: Registry, group: str, flag: bool, require_api: str = "v1"
-) -> Tuple[int, dict[str, str]]:
+) -> tuple[int, dict[str, str]]:
     if flag:
         return reg.load_from_entry_points(group, require_api=require_api)
     return 0, {}

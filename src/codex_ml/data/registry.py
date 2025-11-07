@@ -10,7 +10,8 @@ import random
 import sys
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Sequence, Tuple
+from typing import Any, Callable, Sequence
+from typing import Any, Callable, Sequence
 
 def _load_loader_attr(module: str, attr: str) -> Any:
     """Load a dataset loader attribute without colliding with ``loaders.py``."""
@@ -37,9 +38,9 @@ class _DatasetRegistry:
     _ENTRY_POINT_GROUP = "codex_ml.data_loaders"
 
     def __init__(self) -> None:
-        self._items: Dict[str, Any] = {}
+        self._items: dict[str, Any] = {}
         self._entry_points_loaded = False
-        self._failed_entry_points: Dict[str, Exception] = {}
+        self._failed_entry_points: dict[str, Exception] = {}
 
     def register(
         self, name: str, obj: Any | None = None, *, override: bool = False
@@ -124,10 +125,10 @@ def list_datasets() -> list[str]:
 
 def split_dataset(
     records: Sequence[Any],
-    ratios: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    ratios: tuple[float, float, float] = (0.8, 0.1, 0.1),
     *,
     seed: int = 1234,
-) -> Dict[str, List[Any]]:
+) -> dict[str, list[Any]]:
     """Split ``records`` deterministically into train/val/test subsets."""
 
     total = sum(ratios)
@@ -308,11 +309,11 @@ def load_jsonl(
     text_field: str = "text",
     input_field: str = "input",
     target_field: str = "target",
-    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    split: tuple[float, float, float] = (0.8, 0.1, 0.1),
     seed: int = 1234,
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
-) -> Dict[str, List[Dict[str, str]]]:
+) -> dict[str, list[dict[str, str]]]:
     load_jsonl_dataset = _load_loader_attr("jsonl", "load_jsonl_dataset")
     return load_jsonl_dataset(
         path,
@@ -334,11 +335,11 @@ def load_csv(
     input_column: str = "input",
     target_column: str = "target",
     delimiter: str | None = None,
-    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    split: tuple[float, float, float] = (0.8, 0.1, 0.1),
     seed: int = 1234,
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
-) -> Dict[str, List[Dict[str, str]]]:
+) -> dict[str, list[dict[str, str]]]:
     load_csv_dataset = _load_loader_attr("csv", "load_csv_dataset")
     return load_csv_dataset(
         path,

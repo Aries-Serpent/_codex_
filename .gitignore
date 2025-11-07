@@ -211,3 +211,5 @@ audit_artifacts/*.json
 !audit_artifacts/README.md
 reports/capability_matrix_*.md
 audit_run_manifest.json
+.codex/test_artifacts/
+.stubs/

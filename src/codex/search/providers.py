@@ -14,7 +14,8 @@ import json
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 from tools.security import net
 
@@ -23,7 +24,7 @@ class SearchProvider(abc.ABC):
     """Abstract base class for search providers."""
 
     @abc.abstractmethod
-    def search(self, query: str) -> List[Dict[str, Any]]:
+    def search(self, query: str) -> list[dict[str, Any]]:
         """Search for *query* and return a list of results."""
 
 
@@ -39,7 +40,7 @@ class InternalRepoSearch(SearchProvider):
 
     root: Path = Path.cwd()
 
-    def search(self, query: str) -> List[Dict[str, Any]]:
+    def search(self, query: str) -> list[dict[str, Any]]:
         try:
             completed = subprocess.run(
                 ["rg", "--json", query, str(self.root)],
@@ -50,7 +51,7 @@ class InternalRepoSearch(SearchProvider):
         except Exception:
             return []
 
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         for line in completed.stdout.splitlines():
             try:
                 event = json.loads(line)
@@ -73,7 +74,7 @@ class ExternalWebSearch(SearchProvider):
     the rest of the system to continue operating.
     """
 
-    def search(self, query: str) -> List[Dict[str, Any]]:
+    def search(self, query: str) -> list[dict[str, Any]]:
         import urllib.error
         import urllib.parse
 
@@ -88,7 +89,7 @@ class ExternalWebSearch(SearchProvider):
         except (urllib.error.URLError, ValueError, OSError):
             return []
 
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         for topic in data.get("RelatedTopics", []):
             if isinstance(topic, dict) and "Text" in topic and "FirstURL" in topic:
                 results.append({"text": topic["Text"], "url": topic["FirstURL"]})
@@ -99,14 +100,14 @@ class SearchRegistry:
     """Registry aggregating search providers."""
 
     def __init__(self, enable_external: bool = False, root: Optional[Path] = None):
-        self.providers: List[SearchProvider] = [InternalRepoSearch(root=root or Path.cwd())]
+        self.providers: list[SearchProvider] = [InternalRepoSearch(root=root or Path.cwd())]
         if enable_external:
             self.providers.append(ExternalWebSearch())
 
-    def search(self, query: str) -> List[Dict[str, Any]]:
+    def search(self, query: str) -> list[dict[str, Any]]:
         """Search all providers and concatenate their results."""
 
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         for provider in self.providers:
             try:
                 results.extend(provider.search(query))

@@ -46,7 +46,7 @@ python -m codex.cli archive show-standardization-status
 ```
 
 **Expected Output**:
-```
+```text
 ============================================================
 📋 Archive Standardization Status
 ============================================================
@@ -60,7 +60,6 @@ Compliance:
   ✅ IN_TOTO_READY
   ✅ SAA_COMPLIANT
 ```
-
 ### 2. Enable Standardization
 
 **Local Development** (no signing):
@@ -139,14 +138,13 @@ version = validator.auto_detect_version(record)
 
 Both v1 and v2 records can exist in the same evidence log:
 
-```
+```text
 .codex/evidence/archive_ops.jsonl:
   Line 1: {"ts": "...", ...}                                    [v1]
   Line 2: {"ts": "...", "schemaVersion": "2.0", ...}            [v2]
   Line 3: {"ts": "...", ...}                                    [v1]
   Line N: {"ts": "...", "schemaVersion": "2.0", ...}            [v2]
 ```
-
 ---
 
 ## Cryptographic Signing
@@ -200,7 +198,7 @@ jobs:
 ```
 
 **Signing Flow**:
-```
+```text
 GitHub Actions Job
   ↓ (OIDC token via id-token permission)
 Sigstore Fulcio
@@ -211,7 +209,6 @@ Rekor Transparency Log
   ↓ (public verification)
 Evidence Log (.codex/evidence/archive_ops.jsonl)
 ```
-
 ---
 
 ## Validation & Verification
@@ -261,7 +258,7 @@ print(f"Details: {result['verification_details']}")
 ### Expected Outputs
 
 **Success**:
-```
+```text
 📊 Validation Results: 1234 records scanned
    ✅ Valid: 1234
    ⚠️  Warnings: 0
@@ -269,9 +266,8 @@ print(f"Details: {result['verification_details']}")
 
 ✅ All checks passed!
 ```
-
 **With Issues**:
-```
+```text
 📊 Validation Results: 1234 records scanned
    ✅ Valid: 1230
    ⚠️  Warnings: 2
@@ -284,7 +280,6 @@ print(f"Details: {result['verification_details']}")
    Line 50: Schema error: 'schemaVersion' is required
    Line 75: Invalid JSON: Expecting ',' delimiter
 ```
-
 ---
 
 ## Migration Guide
@@ -312,7 +307,7 @@ python -m codex.cli archive migrate-evidence-to-v2
 ```
 
 **Interactive Prompt**:
-```
+```text
 ⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
 🔄 Starting migration v1 → v2...
 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
@@ -320,7 +315,6 @@ python -m codex.cli archive migrate-evidence-to-v2
    v1 records: 0
    v2 records: 1234
 ```
-
 **3. Verify Migration**:
 ```bash
 python -m codex.cli archive validate-standardization --check-schema-version
@@ -351,10 +345,9 @@ python -m codex.cli archive validate-standardization --check-schema-version
 ### Issue: Schema validation fails
 
 **Symptom**:
-```
+```text
 ❌ Line 50: Schema error: 'sha256' is a required property
 ```
-
 **Solution**:
 1. Check record has all required fields: `ts`, `action`, `actor`, `tombstone`, `sha256`
 2. For v2 records, ensure `schemaVersion` field present
@@ -366,10 +359,9 @@ python -m codex.cli archive validate-standardization --check-schema-version
 ### Issue: Module not found
 
 **Symptom**:
-```
+```text
 ❌ Standardization module not available
 ```
-
 **Solution**:
 ```bash
 # Ensure standardization modules exist
@@ -383,10 +375,9 @@ pip install -e .
 ### Issue: Signing fails in GitHub Actions
 
 **Symptom**:
-```
+```text
 RuntimeError: Cannot obtain OIDC token
 ```
-
 **Solution**:
 1. Check workflow has correct permissions:
    ```yaml
@@ -561,14 +552,13 @@ SIGSTORE_ID_TOKEN=$(gh auth token)   # OIDC token (GitHub Actions)
 
 ### File Locations
 
-```
+```text
 .codex/evidence/archive_ops.jsonl              # Evidence log
 schemas/archive_evidence_schema_v1.json        # v1 schema
 schemas/archive_evidence_schema_v2.json        # v2 schema
 src/codex/archive/standardization.py           # Standardization manager
 src/codex/archive/evidence_schema.py           # Schema validator
 ```
-
 ---
 
 ## Additional Resources

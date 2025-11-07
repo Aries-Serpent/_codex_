@@ -90,10 +90,9 @@ When not set or set to any other value, TensorBoard logging is disabled.
 
 ### Default Location
 
-```
+```text
 artifacts/tb_runs/
 ```
-
 ### Custom Location
 
 ```python
