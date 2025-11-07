@@ -57,7 +57,7 @@ def adr_linked_in_stub(path: str) -> bool:
     if not p.exists():
         return False
     txt = p.read_text(encoding="utf-8", errors="ignore")
-    return "adr_ref" in txt or "ADR-" in txt or "adr" in txt.lower()
+    return "adr_ref" in txt or "ADR-" in txt
 
 
 def evidence_has_entry(original_path: str) -> bool:
@@ -71,8 +71,12 @@ def evidence_has_entry(original_path: str) -> bool:
                 continue
             if rec.get("path") == original_path or rec.get("original_path") == original_path:
                 return True
-    except Exception:
-        pass
+    except Exception as e:
+        # Best-effort: ignore errors reading/parsing evidence file (e.g., file corruption, permission issues)
+        print(
+            f"[WARN] Could not read or parse evidence file {EVIDENCE} for path '{original_path}': {e}",
+            file=sys.stderr,
+        )
     return False
 
 

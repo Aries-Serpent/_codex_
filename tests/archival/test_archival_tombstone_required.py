@@ -30,6 +30,7 @@ REPO_ROOT = find_repo_root()
 CHECK = REPO_ROOT / "scripts/archival/check_archival_compliance.py"
 EVIDENCE_DIR = REPO_ROOT / ".codex/evidence"
 EVIDENCE_FILE = EVIDENCE_DIR / "archive_ops.jsonl"
+TEST_ARTIFACTS_DIR = REPO_ROOT / ".codex/test_artifacts/archival"
 
 
 def setup_removed_list(paths, test_id):
@@ -45,8 +46,8 @@ def setup_removed_list(paths, test_id):
 def test_missing_tombstone_fails():
     # Use UUID to avoid conflicts with parallel test execution or pytest-randomly
     test_id = str(uuid.uuid4())[:8]
-    # create fake removed path with unique name
-    removed = [f"some/removed_file_{test_id}.py"]
+    # Use test-specific directory to avoid polluting repository root
+    removed = [f".codex/test_artifacts/archival/removed_file_{test_id}.py"]
     rf = setup_removed_list(removed, test_id)
 
     # ensure no tombstone present
@@ -60,25 +61,26 @@ def test_missing_tombstone_fails():
     else:
         backup = None
 
-    r = subprocess.run(
-        [sys.executable, str(CHECK), "--removed-file", str(rf)],
-        capture_output=True,
-        text=True,
-        cwd=str(REPO_ROOT),
-    )
-
-    # cleanup
-    rf.unlink()
-    if backup:
-        EVIDENCE_FILE.write_text(backup)
-
-    assert r.returncode != 0, f"Expected failure but got {r.returncode}"
+    try:
+        r = subprocess.run(
+            [sys.executable, str(CHECK), "--removed-file", str(rf)],
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_ROOT),
+        )
+        assert r.returncode != 0, f"Expected failure but got {r.returncode}"
+    finally:
+        # cleanup
+        rf.unlink()
+        if backup:
+            EVIDENCE_FILE.write_text(backup)
 
 
 def test_tombstone_and_evidence_pass():
     # Use UUID to avoid conflicts with parallel test execution or pytest-randomly
     test_id = str(uuid.uuid4())[:8]
-    removed = [f"some/removed_file_{test_id}.py"]
+    # Use test-specific directory to avoid polluting repository root
+    removed = [f".codex/test_artifacts/archival/removed_file_{test_id}.py"]
     rf = setup_removed_list(removed, test_id)
 
     # Create tombstone stub at the expected path (relative to repo root)
@@ -99,28 +101,29 @@ def test_tombstone_and_evidence_pass():
     with EVIDENCE_FILE.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry) + "\n")
 
-    # Run the check from the repository root
-    r = subprocess.run(
-        [sys.executable, str(CHECK), "--removed-file", str(rf)],
-        capture_output=True,
-        text=True,
-        cwd=str(REPO_ROOT),
-    )
+    try:
+        # Run the check from the repository root
+        r = subprocess.run(
+            [sys.executable, str(CHECK), "--removed-file", str(rf)],
+            capture_output=True,
+            text=True,
+            cwd=str(REPO_ROOT),
+        )
+        assert r.returncode == 0, f"Expected success but got {r.returncode}. stderr: {r.stderr}"
+    finally:
+        # cleanup
+        if stub.exists():
+            stub.unlink()
+        if stub.parent.exists():
+            try:
+                stub.parent.rmdir()
+            except OSError:
+                pass  # directory not empty
+        rf.unlink()
 
-    # cleanup
-    stub.unlink()
-    if stub.parent.exists():
-        try:
-            stub.parent.rmdir()
-        except OSError:
-            pass  # directory not empty
-    rf.unlink()
-
-    # restore evidence
-    if backup:
-        EVIDENCE_FILE.write_text(backup)
-    else:
-        if EVIDENCE_FILE.exists():
-            EVIDENCE_FILE.unlink()
-
-    assert r.returncode == 0, f"Expected success but got {r.returncode}. stderr: {r.stderr}"
+        # restore evidence
+        if backup:
+            EVIDENCE_FILE.write_text(backup)
+        else:
+            if EVIDENCE_FILE.exists():
+                EVIDENCE_FILE.unlink()

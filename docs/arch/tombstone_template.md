@@ -2,10 +2,10 @@
 
 This tombstone replaces the removed artifact `<original_path>`.
 
-- removed_on: 2025-11-06T00:00:00Z
+- removed_on: <YYYY-MM-DDTHH:MM:SSZ>
 - removed_by: <actor>
 - reason: <obsolete|superseded|reorg|policy>
-- adr_ref: docs/arch/ADR-YYYYMMDD-brief-title.md
+- adr_ref: docs/arch/ADR-YYYY-MM-DD-brief-title.md
 - commit_sha: <commit-sha>
 - replacement: <new/path or "none">
 - pointer_bundle: <audit_artifacts/bundles/bundle_<ts>.pointer.json (optional)>
