@@ -18,7 +18,7 @@ Environment Knobs (optional):
 from __future__ import annotations
 import os, json, math, re, sys
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"
