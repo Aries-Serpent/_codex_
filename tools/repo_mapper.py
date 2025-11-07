@@ -33,41 +33,6 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
 OUTPUT_FILE_NAME = "_codex_repo_map.json"
 
 
-def iter_repo_files(root_dir: Path) -> Iterable[Path]:
-    """Yield repository files respecting .gitignore rules."""
-
-    try:
-        completed = subprocess.run(
-            [
-                "git",
-                "ls-files",
-                "--cached",
-                "--others",
-                "--exclude-standard",
-            ],
-            cwd=root_dir,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        yield from (
-            path
-            for path in root_dir.rglob("*")
-            if path.is_file() and not should_skip(path)
-        )
-        return
-
-    for line in completed.stdout.splitlines():
-        rel_path = line.strip()
-        if not rel_path:
-            continue
-
-        path = root_dir / rel_path
-        if path.is_file() and not should_skip(path):
-            yield path
-
-
 def should_skip(path: Path) -> bool:
     """Return True if the path should be excluded from the map."""
 
