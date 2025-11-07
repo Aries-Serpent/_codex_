@@ -116,7 +116,7 @@ Examples:
   python -m codex.logging.export  S123 --format json
 """.lstrip()
 
-AGENTS_BLOCK = """
+AGENTS_BLOCK = r"""
 ### Log Directory Layout & Retention
 
 Structure:

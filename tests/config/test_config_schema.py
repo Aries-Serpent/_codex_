@@ -36,7 +36,10 @@ def test_structured_config_merge_ok() -> None:
     base = _make_base_cfg()                    # type-checked schema when real OmegaConf present
     override = OmegaConf.create({"epochs": 2}) # valid override
     merged = OmegaConf.merge(base, override)
-    assert OmegaConf.to_object(merged)["epochs"] == 2
+    result = OmegaConf.to_object(merged)
+    # Handle both dict and dataclass results
+    epochs = result["epochs"] if isinstance(result, dict) else getattr(result, "epochs")
+    assert epochs == 2
 
 
 def test_structured_config_rejects_wrong_type() -> None:

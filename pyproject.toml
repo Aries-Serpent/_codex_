@@ -253,7 +253,7 @@ include = [
   "tools*",
   "configs*",
 ]
-exclude = ["tests*", "torch*"]
+exclude = ["tests*", "torch_stub*", ".stubs*"]
 [tool.setuptools.package-data]
 # Ensure runtime resources remain available in installed wheels
 codex_ml = [
@@ -278,7 +278,7 @@ codex_crm = ["cdm/data/**/*.csv"]
 common = []
 
 [tool.setuptools.exclude-package-data]
-codex_ml = ["**/tests/*", "torch/*"]
+codex_ml = ["**/tests/*", "torch_stub/*", ".stubs/*"]
 
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
