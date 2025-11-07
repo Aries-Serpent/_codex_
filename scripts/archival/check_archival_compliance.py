@@ -147,9 +147,6 @@ def main(argv=None):
                 continue
         elif entry.status.startswith("D"):
             pass  # No additional check needed; stub existence already handled
-            if not tombstone_exists(stub_path.as_posix()):
-                missing_stub.append(original_path)
-                continue
         else:
             continue
         if not adr_linked_in_stub(stub_path.as_posix()):
