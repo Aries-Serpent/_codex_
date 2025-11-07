@@ -53,6 +53,20 @@
 
 ---
 
+## ARCHIVAL OPERATIONS (if this PR removes or renames files)
+
+**Required if any files are deleted or moved:**
+
+- [ ] **ADR drafted and linked** (`docs/arch/ADR-YYYYMMDD-brief-title.md`) - Architecture Decision Record created
+- [ ] **Tombstone stubs added** - Use `docs/arch/tombstone_template.md` for every removed file
+- [ ] **Evidence appended** - `.codex/evidence/archive_ops.jsonl` updated via archival API or manual entry
+- [ ] **Pointer bundle generated** - For large removal sets (see `scripts/archival/select_and_compress.py`)
+- [ ] **CHANGELOG updated** - Deprecations section includes removal details
+
+**If any of the above cannot be satisfied, explain why and propose a remediation plan.**
+
+---
+
 ## Scope
 
 | Field | Value |
