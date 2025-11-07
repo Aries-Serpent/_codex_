@@ -13,7 +13,7 @@ Knobs:
   TREND_SPARKLINE=1 -> include sparkline text
 """
 from __future__ import annotations
-import os, json, sys, glob, statistics
+import os, json, sys, glob
 from pathlib import Path
 from typing import Dict, List
 
