@@ -1,0 +1,61 @@
+# Fence Fixer Configuration
+# Configuration for tools/fence_fixer_v2.py
+
+# Override rules for specific file patterns
+overrides:
+  # Force SQL language for files in SQL documentation
+  - match: "docs/**/*.sql.md"
+    lang: sql
+    only_when_missing: true
+  
+  # Force YAML for Zendesk workflow diagrams
+  - match: "docs/zendesk/**/*.md"
+    lang: yaml
+    only_when_missing: true
+  
+  # Ignore snippet files (already validated)
+  - match: "docs/snippets/**"
+    action: ignore
+  
+  # GitHub Actions workflows should default to YAML
+  - match: ".github/**/*.md"
+    lang: yaml
+    only_when_missing: true
+
+# Detection and application thresholds
+thresholds:
+  # Minimum confidence to auto-apply language tag
+  auto_apply: 0.60
+  
+  # Languages that require extra validation
+  risky_langs:
+    - bash
+    - powershell
+    - yaml
+  
+  # Languages that must successfully parse to be applied
+  require_parse_for:
+    - bash
+    - powershell
+  
+  # Maximum blocks in review queue before failing CI
+  max_review_queue: 100
+
+# Scoring weights for hybrid detection
+# score = alpha*H + beta*M + gamma*S
+# H = heuristic score, M = ML score, S = structural (parse) score
+weights:
+  alpha: 0.5  # Heuristics
+  beta: 0.3   # ML (when enabled)
+  gamma: 0.2  # Structural validation
+
+# Report output paths
+report:
+  out_json: ".reports/fencefix_run.json"
+  pr_summary_md: ".reports/fencefix_summary.md"
+  
+# ML classifier settings (optional, disabled by default)
+ml:
+  enabled: false
+  model_path: ".models/fence_classifier.pkl"
+  min_confidence: 0.50
