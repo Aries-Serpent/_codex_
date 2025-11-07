@@ -4,8 +4,9 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, Iterator, List, Tuple
 
 # Extensions to include in the repository map
 EXTENSIONS: Tuple[str, ...] = (
@@ -26,23 +27,69 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
     "__pycache__",
     "build",
     "dist",
+    ".venv",
 )
+
+# Filenames to exclude regardless of location
+EXCLUDED_FILES: Tuple[str, ...] = ("_codex_repo_map.json",)
 
 
 def should_skip(path: Path) -> bool:
-    """Return True if the path is inside an excluded directory."""
+    """Return True if the path should be excluded from the map."""
+
+    if path.name in EXCLUDED_FILES:
+        return True
+
     return any(part in EXCLUDED_DIRS for part in path.parts)
 
 
-def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
-    """Walk the repository and build a mapping of extensions to file info."""
-    results: Dict[str, List[Dict[str, int]]] = {}
+def iter_repo_files(root_dir: Path) -> Iterator[Path]:
+    """Yield repository files, respecting .gitignore when possible."""
+
+    git_dir = root_dir / ".git"
+    if git_dir.exists():
+        try:
+            completed = subprocess.run(
+                [
+                    "git",
+                    "ls-files",
+                    "--cached",
+                    "--others",
+                    "--exclude-standard",
+                    "-z",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=root_dir,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            pass
+        else:
+            for relative_path in completed.stdout.decode("utf-8").split("\0"):
+                if not relative_path:
+                    continue
+                path = root_dir / relative_path
+                if not path.is_file():
+                    continue
+                if should_skip(path):
+                    continue
+                yield path
+            return
 
     for path in root_dir.rglob("*"):
         if not path.is_file():
             continue
         if should_skip(path):
             continue
+        yield path
+
+
+def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
+    """Walk the repository and build a mapping of extensions to file info."""
+    results: Dict[str, List[Dict[str, int]]] = {}
+
+    for path in iter_repo_files(root_dir):
 
         ext = path.suffix.lower()
         if ext not in EXTENSIONS:
