@@ -13,6 +13,7 @@ Tests attempt to remove empty directories after cleanup to minimize artifact acc
 """
 
 import json
+import os
 import subprocess
 import sys
 import uuid
@@ -142,3 +143,49 @@ def test_tombstone_and_evidence_pass():
         else:
             if EVIDENCE_FILE.exists():
                 EVIDENCE_FILE.unlink()
+
+
+def test_rename_without_adr_is_flagged():
+    """Ensure rename entries require ADR/evidence like deletions."""
+
+    # Import inside test to allow monkeypatching the evidence path safely.
+    from scripts.archival import check_archival_compliance as compliance
+
+    test_id = str(uuid.uuid4())[:8]
+    original_relative = f".codex/test_artifacts/archival/renamed_original_{test_id}.py"
+    destination_relative = f".codex/test_artifacts/archival/renamed_destination_{test_id}.py"
+
+    stub_path = REPO_ROOT / original_relative
+    stub_path.parent.mkdir(parents=True, exist_ok=True)
+    stub_path.write_text("# TOMBSTONE\n", encoding="utf-8")
+
+    # Point compliance checker to an isolated evidence file for this test.
+    previous_evidence = compliance.EVIDENCE
+    compliance.EVIDENCE = REPO_ROOT / f".codex/test_artifacts/archival/evidence_{test_id}.jsonl"
+    if compliance.EVIDENCE.exists():
+        compliance.EVIDENCE.unlink()
+
+    entry = compliance.DiffEntry(status="R100", path=destination_relative, original_path=original_relative)
+
+    try:
+        previous_cwd = Path.cwd()
+        os.chdir(REPO_ROOT)
+        try:
+            result = compliance.evaluate_entries([entry])
+        finally:
+            os.chdir(previous_cwd)
+        assert original_relative in result.missing_adr, "Rename without ADR should be flagged"
+        assert original_relative in result.missing_evidence, "Rename without evidence should be flagged"
+        assert result.return_code == 2, "Missing ADR should cause failure return code"
+    finally:
+        compliance.EVIDENCE = previous_evidence
+        if stub_path.exists():
+            stub_path.unlink()
+        current = stub_path.parent
+        test_artifacts_root = REPO_ROOT / ".codex/test_artifacts"
+        while current != test_artifacts_root and current.exists():
+            try:
+                current.rmdir()
+                current = current.parent
+            except OSError:
+                break
