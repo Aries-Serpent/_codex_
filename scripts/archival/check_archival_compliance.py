@@ -71,7 +71,8 @@ def tombstone_exists(path: str) -> bool:
     # Tombstone is expected at original path
     if p.exists():
         text = p.read_text(encoding="utf-8", errors="ignore")
-        return "TOMBSTONE" in text or "tombstone" in text.lower() or "adr_ref" in text
+        text_lower = text.lower()
+        return "tombstone" in text_lower or "adr_ref" in text_lower
     return False
 
 
