@@ -113,6 +113,25 @@ SKIP_DIR_PREFIXES = (
     "reports/",
 )
 
+
+def _should_skip_path(rel_path: str) -> bool:
+    """Return True when the relative path matches a vendor/cache prefix."""
+
+    if not rel_path:
+        return False
+
+    for prefix in SKIP_DIR_PREFIXES:
+        base = prefix.rstrip("/")
+        if rel_path == base:
+            return True
+        if rel_path.startswith(prefix):
+            return True
+        if base and rel_path.startswith(f"{base}/"):
+            return True
+        if base and base in rel_path.split("/"):
+            return True
+    return False
+
 DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
     "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
     "tokenization": ["tokenizer", "tokenize", "bpe", "sentencepiece"],
@@ -201,6 +220,9 @@ def iter_paths_depth(root: Path, max_depth: int) -> List[Path]:
         current, depth = stack.pop()
         entries = sorted(current.iterdir(), key=lambda p: p.name)
         for e in entries:
+            rel = e.relative_to(root).as_posix()
+            if _should_skip_path(rel):
+                continue
             if e.is_dir():
                 if depth + 1 <= max_depth:
                     stack.append((e, depth + 1))
@@ -223,7 +245,7 @@ def stage_s1_index(cfg):
     all_paths = iter_paths_depth(ROOT, depth)
     for p in all_paths:
         rel = p.relative_to(ROOT).as_posix()
-        if rel.startswith(".git/") or rel.startswith("audit_artifacts/") or rel.startswith("reports/"):
+        if _should_skip_path(rel):
             continue
         ext = p.suffix.lower()
         size = p.stat().st_size
