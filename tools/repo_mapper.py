@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Tuple
+from typing import Dict, Iterable, Iterator, List, Tuple
 
 # Extensions to include in the repository map
 EXTENSIONS: Tuple[str, ...] = (
@@ -88,6 +88,33 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
         if should_skip(path):
             continue
         yield path
+
+
+def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, int]]]:
+    """Return a mapping of file extensions to metadata for repository files."""
+
+    files_by_extension: Dict[str, List[Dict[str, int]]] = {}
+
+    for path in iter_repo_files(root_dir):
+        extension = path.suffix
+        if extension not in EXTENSIONS:
+            continue
+
+        relative_path = path.relative_to(root_dir).as_posix()
+        file_info = {"path": relative_path, "size": path.stat().st_size}
+
+        files_by_extension.setdefault(extension, []).append(file_info)
+
+    # Ensure deterministic ordering for easier diffing and readability
+    ordered_map: Dict[str, List[Dict[str, int]]] = {}
+    for extension in sorted(files_by_extension):
+        ordered_map[extension] = sorted(
+            files_by_extension[extension], key=lambda entry: entry["path"]
+        )
+
+    return ordered_map
+
+
 def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
     output_path = root_dir / OUTPUT_FILE_NAME
