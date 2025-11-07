@@ -23,24 +23,41 @@ import argparse
 import json
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 EVIDENCE = Path(".codex/evidence/archive_ops.jsonl")
 
 
-def git_deleted_between(base: str, head: str) -> list[str]:
+@dataclass
+class DiffEntry:
+    status: str
+    path: str
+    original_path: str | None = None
+
+
+def git_relevant_changes(base: str, head: str) -> list[DiffEntry]:
     cmd = ["git", "diff", "--name-status", f"{base}..{head}"]
     out = subprocess.run(cmd, capture_output=True, text=True)
     if out.returncode != 0:
         print(f"[ERR] git diff failed: {out.stderr}", file=sys.stderr)
-        return []
-    deleted = []
+        raise RuntimeError("git diff failed")
+    entries: list[DiffEntry] = []
     for ln in out.stdout.splitlines():
-        parts = ln.strip().split("\t", 1)
-        if parts and parts[0].startswith("D"):  # format: D\tpath
-            if len(parts) == 2:
-                deleted.append(parts[1])
-    return deleted
+        parts = ln.strip().split("\t")
+        if not parts:
+            continue
+        status = parts[0]
+        if status.startswith("D"):
+            if len(parts) >= 2:
+                entries.append(DiffEntry(status=status, path=parts[1], original_path=parts[1]))
+        elif status.startswith("M"):
+            if len(parts) >= 2:
+                entries.append(DiffEntry(status=status, path=parts[1], original_path=parts[1]))
+        elif status.startswith("R") or status.startswith("C"):
+            if len(parts) >= 3:
+                entries.append(DiffEntry(status=status, path=parts[2], original_path=parts[1]))
+    return entries
 
 
 def tombstone_exists(path: str) -> bool:
@@ -91,30 +108,51 @@ def main(argv=None):
     )
     args = ap.parse_args(argv)
 
-    removed = []
+    diff_entries: list[DiffEntry] = []
     if args.removed_file:
-        removed = [l.strip() for l in Path(args.removed_file).read_text().splitlines() if l.strip()]
+        diff_entries = []
+        for raw_line in Path(args.removed_file).read_text().splitlines():
+            line = raw_line.strip()
+            if not line:
+                continue
+            diff_entries.append(DiffEntry(status="D", path=line, original_path=line))
     else:
-        removed = git_deleted_between(args.base, args.head)
+        try:
+            diff_entries = git_relevant_changes(args.base, args.head)
+        except RuntimeError:
+            return 3
 
     missing_stub = []
     missing_adr = []
     missing_evidence = []
 
-    for r in removed:
-        # expected tombstone stub at same path
-        # For simplicity assume tombstone is a same-path replacement file (commit shows deletion then tombstone added)
-        stub_path = Path(r)
-        if not stub_path.exists():
-            missing_stub.append(r)
+    for entry in diff_entries:
+        stub_path = Path(entry.path)
+        original_path = entry.original_path or entry.path
+
+        if entry.status.startswith(("M", "R", "C")):
+            if not stub_path.exists():
+                missing_stub.append(original_path)
+                continue
+            if not tombstone_exists(stub_path.as_posix()):
+                # Not a tombstone conversion; skip compliance enforcement for standard modifications
+                continue
+        elif entry.status.startswith("D"):
+            if not stub_path.exists():
+                missing_stub.append(original_path)
+                continue
+        else:
+            continue
+
+        if not tombstone_exists(stub_path.as_posix()):
+            missing_stub.append(original_path)
             continue
 
         if not adr_linked_in_stub(stub_path.as_posix()):
-            missing_adr.append(r)
+            missing_adr.append(original_path)
 
-        # evidence check (best-effort)
-        if not evidence_has_entry(r):
-            missing_evidence.append(r)
+        if not evidence_has_entry(original_path):
+            missing_evidence.append(original_path)
 
     # Summarize results
     rc = 0
