@@ -6,6 +6,10 @@ Test: Archival Tombstone Required (P6 Atomic Patchset)
   present and an evidence entry exists.
 
 This test is lightweight and uses local file system operations; it avoids modifying git history.
+
+Test artifacts are stored in `.codex/test_artifacts/archival/` and cleaned up in finally blocks.
+Per repository policy (AGENTS.md), `.codex/` directory contents follow 30-day retention.
+Tests attempt to remove empty directories after cleanup to minimize artifact accumulation.
 """
 
 import json
@@ -70,8 +74,14 @@ def test_missing_tombstone_fails():
         )
         assert r.returncode != 0, f"Expected failure but got {r.returncode}"
     finally:
-        # cleanup
+        # cleanup: remove test file list
         rf.unlink()
+        # cleanup: remove test artifacts directory if empty
+        if stub_path.parent.exists():
+            try:
+                stub_path.parent.rmdir()  # Only succeeds if directory is empty
+            except OSError:
+                pass  # directory not empty or doesn't exist
         if backup:
             EVIDENCE_FILE.write_text(backup)
 
@@ -111,14 +121,19 @@ def test_tombstone_and_evidence_pass():
         )
         assert r.returncode == 0, f"Expected success but got {r.returncode}. stderr: {r.stderr}"
     finally:
-        # cleanup
+        # cleanup: remove tombstone stub
         if stub.exists():
             stub.unlink()
-        if stub.parent.exists():
+        # cleanup: remove test artifacts directory if empty (try parent directories up to test_artifacts)
+        current = stub.parent
+        test_artifacts_root = REPO_ROOT / ".codex/test_artifacts"
+        while current != test_artifacts_root and current.exists():
             try:
-                stub.parent.rmdir()
+                current.rmdir()  # Only succeeds if directory is empty
+                current = current.parent
             except OSError:
-                pass  # directory not empty
+                break  # directory not empty, stop trying
+        # cleanup: remove test file list
         rf.unlink()
 
         # restore evidence
