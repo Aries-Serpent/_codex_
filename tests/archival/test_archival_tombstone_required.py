@@ -189,3 +189,56 @@ def test_rename_without_adr_is_flagged():
                 current = current.parent
             except OSError:
                 break
+
+
+def test_copy_does_not_require_tombstone():
+    """
+    Ensure copy entries (C status) do not require tombstone/ADR/evidence.
+    
+    A git copy leaves the original file intact and creates a new file at the destination.
+    This is not a removal operation and should not trigger archival compliance checks.
+    """
+    from scripts.archival import check_archival_compliance as compliance
+
+    test_id = str(uuid.uuid4())[:8]
+    original_relative = f".codex/test_artifacts/archival/copied_original_{test_id}.py"
+    destination_relative = f".codex/test_artifacts/archival/copied_destination_{test_id}.py"
+
+    # Create the original file (it stays intact in a copy)
+    original_path = REPO_ROOT / original_relative
+    original_path.parent.mkdir(parents=True, exist_ok=True)
+    original_path.write_text("# Original file content\n", encoding="utf-8")
+
+    # Point compliance checker to an isolated evidence file for this test
+    previous_evidence = compliance.EVIDENCE
+    compliance.EVIDENCE = REPO_ROOT / f".codex/test_artifacts/archival/evidence_{test_id}.jsonl"
+    if compliance.EVIDENCE.exists():
+        compliance.EVIDENCE.unlink()
+
+    entry = compliance.DiffEntry(status="C100", path=destination_relative, original_path=original_relative)
+
+    try:
+        previous_cwd = Path.cwd()
+        os.chdir(REPO_ROOT)
+        try:
+            result = compliance.evaluate_entries([entry])
+        finally:
+            os.chdir(previous_cwd)
+        
+        # Copy operations should NOT be flagged for missing tombstone, ADR, or evidence
+        assert original_relative not in result.missing_stub, "Copy should not require tombstone stub"
+        assert original_relative not in result.missing_adr, "Copy should not require ADR"
+        assert original_relative not in result.missing_evidence, "Copy should not require evidence"
+        assert result.return_code == 0, "Copy operations should pass compliance check"
+    finally:
+        compliance.EVIDENCE = previous_evidence
+        if original_path.exists():
+            original_path.unlink()
+        current = original_path.parent
+        test_artifacts_root = REPO_ROOT / ".codex/test_artifacts"
+        while current != test_artifacts_root and current.exists():
+            try:
+                current.rmdir()
+                current = current.parent
+            except OSError:
+                break

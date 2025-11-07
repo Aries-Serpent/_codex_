@@ -35,9 +35,10 @@ from pathlib import Path
 EVIDENCE = Path(os.getenv("ARCHIVAL_EVIDENCE_PATH", ".codex/evidence/archive_ops.jsonl"))
 
 # Git diff status prefixes that represent removal-style operations where the original path
-# must satisfy tombstone + ADR + evidence requirements.  Git reports renames and copies as
-# "R100"/"C100" (optionally with other scores), so we only look at the first character.
-REMOVAL_STATUS_PREFIXES = {"D", "R", "C"}
+# must satisfy tombstone + ADR + evidence requirements.  Git reports renames as "R100"
+# (optionally with other scores), so we only look at the first character.
+# Note: "C" (copy) is NOT included because copies leave the original file intact.
+REMOVAL_STATUS_PREFIXES = {"D", "R"}
 
 
 @dataclass
@@ -78,7 +79,13 @@ def git_relevant_changes(base: str, head: str) -> list[DiffEntry]:
         elif status.startswith("M"):
             if len(parts) >= 2:
                 entries.append(DiffEntry(status=status, path=parts[1], original_path=parts[1]))
-        elif status.startswith("R") or status.startswith("C"):
+        elif status.startswith("R"):
+            # Rename: original file removed, new file created
+            if len(parts) >= 3:
+                entries.append(DiffEntry(status=status, path=parts[2], original_path=parts[1]))
+        elif status.startswith("C"):
+            # Copy: original file remains, new file created (not a removal operation)
+            # We track it but won't enforce tombstone requirements
             if len(parts) >= 3:
                 entries.append(DiffEntry(status=status, path=parts[2], original_path=parts[1]))
     return entries
