@@ -134,7 +134,7 @@ python -c "from src.codex.utils.session_cache import FileCache; print(FileCache(
 
 ### Session Efficiency Gains
 
-```
+```text
 Before Optimization:
 ├── Planning: 4% (12 ops) → Many rework cycles
 ├── Execution: 50% (143 ops) → Frequent failures
@@ -151,7 +151,6 @@ After Optimization:
 └── Overhead: 10% (12 ops) → Pre-configured timeouts
 Total: 120 operations (58% reduction)
 ```
-
 ### Time-to-Value Improvement
 
 | Metric | Before | After | Improvement |

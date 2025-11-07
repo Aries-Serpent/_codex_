@@ -11,12 +11,11 @@ This guide addresses common issues encountered when building API documentation w
 ### 1. ImportError on optional dependencies
 
 **Symptom**:
-```
+```text
 ImportError: No module named 'wandb'
 ImportError: No module named 'tensorboard'
 ImportError: cannot import name 'functional' from 'torch.nn'
 ```
-
 **Cause**: The module being documented imports optional dependencies that aren't installed.
 
 **Solutions**:
@@ -82,11 +81,10 @@ python tools/build_api_docs.py
 ### 3. Missing package on PYTHONPATH
 
 **Symptom**:
-```
+```text
 ModuleNotFoundError: No module named 'codex'
 ModuleNotFoundError: No module named 'codex_ml'
 ```
-
 **Cause**: Python can't find the package modules.
 
 **Solutions**:
@@ -161,10 +159,9 @@ python tools/build_api_docs.py
 ### 6. Local `torch` directory conflicts
 
 **Symptom**:
-```
+```text
 ImportError: cannot import name 'functional' from 'torch.nn' (/path/to/torch/nn/__init__.py)
 ```
-
 **Cause**: A local `torch/` directory shadows the real PyTorch package.
 
 **Solution**:
@@ -180,10 +177,9 @@ mv torch torch_local
 ### 7. Deprecation warnings in docs
 
 **Symptom**:
-```
+```text
 DeprecationWarning: codex_ml.interfaces.tokenizer_hf is deprecated
 ```
-
 **Fix**: These are informational and don't block the build. To suppress:
 
 ```bash
@@ -195,10 +191,9 @@ python -W ignore::DeprecationWarning tools/build_api_docs.py
 ### 8. Permission denied writing to output directory
 
 **Symptom**:
-```
+```text
 PermissionError: [Errno 13] Permission denied: 'artifacts/docs/api'
 ```
-
 **Solution**:
 ```bash
 # Ensure directory is writable

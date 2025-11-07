@@ -11,7 +11,7 @@
    (or call `actions_cli.py cite` out-of-band in human workflows).
 
 ## Example Instruction (paste into CustomGPT system message)
-```
+```text
 Always read the Actions schema first, pick the newest branch via /repo/most_recent_branch, then:
 - search with narrow terms
 - fetch and quote exact lines

@@ -8,7 +8,7 @@
 
 **Copy this section and fill out for each operation:**
 
-```
+```text
 ## Operation: [DESCRIBE YOUR TASK IN ONE SENTENCE]
 
 **Date (UTC)**: [YYYY-MM-DD HH:MM:SS]  
@@ -64,10 +64,9 @@
 
 **Owner Approval**: Signed: _____________ Date: _________
 ```
-
 ## Example: Applying a Patch
 
-```
+```text
 ## Operation: Apply security fix patch from PR #1234 to src/auth/handler.py
 
 **Date (UTC)**: 2025-10-30 02:43:05  
@@ -123,7 +122,6 @@
 
 **Owner Approval**: Signed: mbaetiong Date: 2025-10-30
 ```
-
 ---
 
 **Last Updated**: 2025-10-30  

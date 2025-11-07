@@ -80,13 +80,12 @@ Implement **explicit schema versioning** with:
 ### Coexistence Strategy
 
 **Unified Evidence Log**:
-```
+```text
 Line 1: {"ts": "...", "action": "ARCHIVE", ...}                    [v1 record]
 Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"}  [v1]
 Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}}  [v2]
 Line N: ...
 ```
-
 **Version Detection**:
 ```python
 version = record.get("schemaVersion", auto_detect(record))
@@ -159,13 +158,12 @@ All existing v1 records:
 
 Store schema definitions in `schemas/` directory:
 
-```
+```text
 schemas/
 ├── archive_evidence_schema_v1.json   [v1 definition]
 ├── archive_evidence_schema_v2.json   [v2 definition]
 └── archive_evidence_schema_v3.json   [future]
 ```
-
 Each schema is:
 - ✅ JSON Schema (draft-07) compliant
 - ✅ Self-documenting (includes descriptions)

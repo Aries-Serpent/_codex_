@@ -12,7 +12,7 @@ You are building the base Codex model.
 2. Tokenize and batch the data.
 3. Train a transformer model with next-token prediction.
 Provide Python functions for data loading and training loops.
-```
+```text
 **Pseudocode**
 
 ```python
@@ -35,7 +35,7 @@ You are fine-tuning the pretrained model on curated examples.
 2. Optimize the model with teacher-forcing.
 3. Save the fine-tuned weights as M1.
 Implement the fine-tuning loop and evaluation hooks.
-```
+```text
 **Pseudocode**
 
 ```python
@@ -59,7 +59,7 @@ You are aligning model behavior with human preferences.
 2. Train a reward model R from the preferences.
 3. Optimize the policy model M1 using PPO to maximize R.
 Return the improved model M2.
-```
+```text
 **Pseudocode**
 
 ```python

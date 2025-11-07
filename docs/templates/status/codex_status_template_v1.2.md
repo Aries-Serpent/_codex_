@@ -305,14 +305,13 @@ Patch (canonical unified diff; use "Begin/End Patch" markers; chunk for large ch
 ```list type="issue"
 data:
 # populated by automation; include all entries returned (no truncation)
-```
+```yaml
 
 - **Pull Requests (full list; do not truncate)**:
 ```list type="pr"
 data:
 # populated by automation; include all entries returned (no truncation)
 ```
-
 - **Coverage Report**:
   - **Coverage %**: <value>
   - **Fail-under threshold**: <value>

@@ -123,7 +123,7 @@ codex-task-sequence --sequence my_workflow.yaml
 ## Configuration Examples
 
 ### Directory Structure
-```
+```text
 configs/desired/zendesk/
 ├── triggers.json          # Automated actions
 ├── views.json             # Agent queues
@@ -132,7 +132,6 @@ configs/desired/zendesk/
 ├── ticket_forms.json      # Submission forms
 └── webhooks.json          # External integrations
 ```
-
 ### Example Files
 See detailed examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md):
 
@@ -198,7 +197,7 @@ Legend: ✅ Full support | ⚠️ Partial support | ❌ Not yet supported
 ## Environment Setup
 
 ### Recommended Structure
-```
+```text
 my-zendesk-config/
 ├── .env                           # Credentials (gitignored)
 ├── configs/desired/zendesk/       # Desired state
@@ -210,7 +209,6 @@ my-zendesk-config/
 ├── plans/                         # Generated plans
 └── scripts/task_sequences/        # Automation workflows
 ```
-
 ### Environment Variables
 ```bash
 # Required (per environment; configure for each env you use)

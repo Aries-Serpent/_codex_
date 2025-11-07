@@ -35,12 +35,11 @@ EOF
 ```
 
 Output:
-```
+```text
 Hello Codex!
 Today is 2025-10-30.
 The result of 2+2 is 4.
 ```
-
 **Backslashes retain special meaning**:
 
 ```bash
@@ -51,11 +50,10 @@ EOF
 ```
 
 Produces:
-```
+```text
 Path: C:\Temp\file.txt
 Literal dollar: $HOME
 ```
-
 ### Single-Quoted Delimiter (`<<'EOF'`)
 
 Content is treated literally—no expansion, no escape interpretation.
@@ -69,12 +67,11 @@ EOF
 ```
 
 Output (exact match):
-```
+```text
 Path: C:\\Temp\\file.txt
 Literal dollar: $HOME
 Command: $(uname -s)
 ```
-
 Use this form for scripts, JSON, YAML, and any text where substitutions would be harmful.
 
 ### Double-Quoted Delimiter (`<<"EOF"`)
@@ -100,11 +97,10 @@ EOF
 ```
 
 Output:
-```
+```text
 Line 1
 Line 2
 ```
-
 Combine with quoting rules for literal vs. expanded content: `<<-'EOF'` or `<<-EOF`.
 
 ## Escape Sequence Rules

@@ -225,14 +225,13 @@ For multi-file patches, sequence multiple blocks. Use feature flags for risky pa
 ```list type="issue"
 data:
 # populated by automation; include all entries returned (no truncation)
-```
+```yaml
 
 - Pull Requests (full list; do not truncate):
 ```list type="pr"
 data:
 # populated by automation; include all entries returned (no truncation)
 ```
-
 - Coverage Report:
   - Coverage %: <value>
   - Fail-under threshold: <value>

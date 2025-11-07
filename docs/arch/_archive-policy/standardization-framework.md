@@ -52,7 +52,7 @@ The standardization framework elevates the _codex_ archive system from baseline 
 | **cosign** | Signing/verification tool | CLI interface for operations |
 
 **Identity Flow**:
-```
+```text
 GitHub Actions Job
   ↓ (id-token permission)
 GitHub OIDC Provider
@@ -65,7 +65,6 @@ Signature + Certificate
   ↓ (uploaded to Rekor)
 Transparency Log Entry
 ```
-
 ### 3. Schema Validation
 
 **Objective**: Ensure all records conform to their declared schema version

@@ -235,7 +235,7 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ### Expected Audit Outputs
 
 **Clean Run**:
-```
+```text
 📊 Validation Results: 1234 records scanned
    ✅ Valid: 1234
    ⚠️  Warnings: 0
@@ -243,9 +243,8 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 
 ✅ All checks passed!
 ```
-
 **Standardization Status**:
-```
+```text
 ============================================================
 📋 Archive Standardization Status
 ============================================================
@@ -259,7 +258,6 @@ Compliance:
   ✅ IN_TOTO_READY
   ✅ SAA_COMPLIANT
 ```
-
 ---
 
 ## References

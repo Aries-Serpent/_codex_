@@ -90,13 +90,12 @@ Metadata keys: path, format, num_records, checksum, size_bytes
 4. Introduce learning rate history metric (list per epoch) for debugging.
 
 ## Usage Snippet
-```
+```text
 python -m codex_ml.cli.train epochs=3 steps_per_epoch=5 grad_accum=2 \
   checkpoint.dir=artifacts/ckpts checkpoint.resume=true \
   scheduler.type=linear scheduler.final_lr_scale=0.2 \
   dataset.sources='[data/train.jsonl]'
 ```
-
 ## Validation Checklist (Current Increment)
 | Check | Status |
 |-------|--------|

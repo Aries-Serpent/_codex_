@@ -77,7 +77,7 @@ text
 * Otherwise surfaces align with repo_map/status-report.
 
 ## Readiness
-```
+```javascript
 Let R = α·E + β·T + γ·D with α=0.2, β=0.2, γ=0.6.
 
 * E: 0.0 (no online eval required in this ring; treat as 0.0 unless artifacts exist)
@@ -85,6 +85,5 @@ Let R = α·E + β·T + γ·D with α=0.2, β=0.2, γ=0.6.
 * D: 0.9 (docs + dry-run parity strong)
   => R = 0.54  → Recommendation: Proceed
 ```
-
 ---
 _Generated with `scripts/survey.sh` • R = α·E + β·T + γ·D (α+β+γ=1)_
