@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, List, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Tuple
 
 # Extensions to include in the repository map
 EXTENSIONS: Tuple[str, ...] = (
@@ -21,6 +21,8 @@ EXTENSIONS: Tuple[str, ...] = (
     ".ipynb",
 )
 
+OUTPUT_FILE_NAME = "_codex_repo_map.json"
+
 # Directory names to exclude anywhere in the path
 EXCLUDED_DIRS: Tuple[str, ...] = (
     ".git",
@@ -30,13 +32,16 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
     ".venv",
 )
 
-OUTPUT_FILE_NAME = "_codex_repo_map.json"
+# Specific filenames to exclude
+EXCLUDED_FILENAMES: Tuple[str, ...] = (
+    OUTPUT_FILE_NAME,
+)
 
 
 def should_skip(path: Path) -> bool:
     """Return True if the path should be excluded from the map."""
 
-    if path.name in EXCLUDED_FILES:
+    if path.name in EXCLUDED_FILENAMES:
         return True
 
     return any(part in EXCLUDED_DIRS for part in path.parts)
