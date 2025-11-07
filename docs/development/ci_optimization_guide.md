@@ -63,7 +63,7 @@ strategy:
 ### 3. Workflow Jobs Optimization
 
 **Job Dependencies**:
-```
+```text
 validate-imports (2min)
   ├─> test-core (parallel, 3min)
   ├─> test-smoke (parallel, 1min)
