@@ -721,10 +721,11 @@ def _auto_prefix_validate(artifacts_dir: Path, warnings: List[str]):
         return
     try:
         # Prefer importing to capture report deterministically
-        import sys
-        sys.path.insert(0, str(ROOT / "scripts" / "archive"))
-        from validate_prefixes import validate_prefixes
-        report = validate_prefixes(Path("audit_artifacts"))
+        module_path = str(ROOT / "scripts" / "archive" / "validate_prefixes.py")
+        spec = importlib.util.spec_from_file_location("validate_prefixes", module_path)
+        validate_prefixes_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validate_prefixes_mod)
+        report = validate_prefixes_mod.validate_prefixes(Path("audit_artifacts"))
         (artifacts_dir / "prefix_validation_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
         if report.get("violations"):
             warnings.append(f"prefix_violations:{len(report['violations'])}")
