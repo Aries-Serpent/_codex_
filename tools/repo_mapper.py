@@ -76,24 +76,13 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
                 yield path
             return
 
-    for path in iter_repo_files(root_dir):
-        ext = path.suffix.lower()
-        if ext not in EXTENSIONS:
+    # Fallback: walk the directory tree if git is unavailable
+    for path in root_dir.rglob("*"):
+        if not path.is_file():
             continue
-
-        rel_path = path.relative_to(root_dir).as_posix()
-        if rel_path == OUTPUT_FILE_NAME:
+        if should_skip(path):
             continue
-        size = path.stat().st_size
-        results.setdefault(ext, []).append({"path": rel_path, "size": size})
-
-    for file_list in results.values():
-        file_list.sort(key=lambda entry: entry["path"])
-
-    sorted_results = {ext: results[ext] for ext in sorted(results)}
-    return sorted_results
-
-
+        yield path
 def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
     output_path = root_dir / OUTPUT_FILE_NAME
