@@ -95,15 +95,13 @@ def redact_text_lines(lines: List[str], compiled_patterns: List[re.Pattern]) -> 
     out = []
     for line in lines:
         for rx in compiled_patterns:
-            while True:
-                m = rx.search(line)
-                if not m:
-                    break
+            def repl_fn(match):
+                nonlocal mask_counter, redactions
                 mask = f"<REDACT:{mask_counter}>"
-                s, e = m.span()
-                line = line[:s] + mask + line[e:]
                 mask_counter += 1
                 redactions += 1
+                return mask
+            line = rx.sub(repl_fn, line)
         out.append(line)
     return out, redactions
 
