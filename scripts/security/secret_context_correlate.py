@@ -13,6 +13,8 @@ Environment Knobs:
   SECRET_CONTEXT_ENABLE=1         -> perform correlation
   SECRET_CONTEXT_WINDOW=10        -> line window for keyword proximity
   SECRET_CONTEXT_KEYWORDS=csv     -> additional keywords
+  SECRET_CONTEXT_ARTIFACT_DIR=dir -> override artifact directory (default ./audit_artifacts)
+  SECRET_CONTEXT_WORKSPACE_DIR=dir -> base directory for file paths in entropy report
 
 Outputs:
   audit_artifacts/secret_context_report.json
@@ -21,11 +23,12 @@ Integration:
   Severity classification can use elevated context for higher weights.
 """
 from __future__ import annotations
-import os, json, sys, re
+import os, json, sys
 from pathlib import Path
-from typing import List, Dict, Set
+from bisect import bisect_right
+from typing import Dict, List, Optional, Set, Tuple
 
-ART_DIR = Path("audit_artifacts")
+ART_DIR = Path(os.getenv("SECRET_CONTEXT_ARTIFACT_DIR", "audit_artifacts"))
 ENTROPY_REPORT = ART_DIR / "secret_entropy_report.json"
 OUT = ART_DIR / "secret_context_report.json"
 
@@ -37,48 +40,107 @@ def is_context_path(file_path: str) -> bool:
     lower = file_path.lower()
     return any(ctx in lower for ctx in CONTEXT_PATHS)
 
-def has_nearby_keywords(file_path: Path, line_hint: int, keywords: Set[str], window: int) -> List[str]:
+FileContent = Tuple[List[str], str, List[int]]
+
+
+def has_nearby_keywords(lines: Optional[List[str]], line_hint: int, keywords: Set[str], window: int) -> List[str]:
     """Check for keywords within window lines of the finding."""
-    if not file_path.exists():
+    if not lines:
         return []
-    
-    try:
-        lines = file_path.read_text(encoding="utf-8", errors="ignore").splitlines()
-    except Exception:
-        return []
-    
+
+    # Clamp to valid index range before slicing context lines.
+    line_hint = max(0, min(line_hint, len(lines) - 1)) if lines else 0
     start = max(0, line_hint - window)
-    end = min(len(lines), line_hint + window)
+    end = min(len(lines), line_hint + window + 1)
     context_lines = lines[start:end]
-    
+
     found_keywords = []
     for kw in keywords:
         if any(kw in ln.lower() for ln in context_lines):
             found_keywords.append(kw)
-    
+
     return found_keywords
 
-def correlate_findings(findings: List[Dict], keywords: Set[str], window: int) -> List[Dict]:
+
+def load_file_content(file_path: Path) -> Optional[FileContent]:
+    """Read a file once and cache its text, lines, and newline offsets."""
+    if not file_path.exists():
+        return None
+
+    try:
+        text = file_path.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return None
+
+    lines = text.splitlines()
+    newline_positions = [idx for idx, ch in enumerate(text) if ch == "\n"]
+    return lines, text, newline_positions
+
+
+def compute_line_hints(span: str, text: str, newline_positions: List[int], total_lines: int) -> List[int]:
+    """Return all candidate line indices where the span appears."""
+    if not span:
+        return []
+
+    hints: List[int] = []
+    step = max(1, len(span))
+    start = 0
+    while True:
+        idx = text.find(span, start)
+        if idx == -1:
+            break
+        line_no = bisect_right(newline_positions, idx)
+        if 0 <= line_no < max(total_lines, 1):
+            hints.append(line_no)
+        start = idx + step
+    return hints
+
+def correlate_findings(
+    findings: List[Dict],
+    keywords: Set[str],
+    window: int,
+    workspace_root: Path,
+) -> List[Dict]:
     """Correlate findings with context indicators."""
     elevated = []
     
+    file_cache: Dict[Path, Optional[FileContent]] = {}
+
     for finding in findings:
         file_path_str = finding.get("file", "")
-        file_path = Path(file_path_str)
-        
+        raw_path = Path(file_path_str)
+        file_path = raw_path if raw_path.is_absolute() else (workspace_root / raw_path)
+
         context_indicators = []
-        
+
         # Path context
         if is_context_path(file_path_str):
             context_indicators.append("sensitive_path")
-        
-        # Keyword proximity (estimate line from span position)
-        # Simple heuristic: assume finding at middle of file
-        line_hint = 0  # Would need actual line numbers from entropy scan
-        nearby = has_nearby_keywords(file_path, line_hint, keywords, window)
+
+        # Keyword proximity based on actual span location if available
+        if file_path not in file_cache:
+            file_cache[file_path] = load_file_content(file_path)
+
+        cached = file_cache[file_path]
+        nearby: List[str] = []
+        if cached:
+            lines, text, newline_positions = cached
+            total_lines = len(lines)
+            hints = compute_line_hints(finding.get("span", ""), text, newline_positions, total_lines)
+            if not hints:
+                # Fall back to middle of file if span not located.
+                fallback = total_lines // 2 if total_lines else 0
+                hints = [fallback]
+
+            found: Set[str] = set()
+            for hint in hints:
+                for kw in has_nearby_keywords(lines, hint, keywords, window):
+                    found.add(kw)
+            nearby = sorted(found)
+
         if nearby:
             context_indicators.extend(f"keyword:{kw}" for kw in nearby)
-        
+
         if context_indicators:
             elevated.append({
                 **finding,
@@ -93,9 +155,10 @@ def main():
     if not enable:
         print("[INFO] Secret context correlation disabled (SECRET_CONTEXT_ENABLE).")
         return 0
-    
+
     window = int(os.getenv("SECRET_CONTEXT_WINDOW", "10"))
     custom_keywords_str = os.getenv("SECRET_CONTEXT_KEYWORDS", "")
+    workspace_root = Path(os.getenv("SECRET_CONTEXT_WORKSPACE_DIR", ".")).resolve()
     
     keywords = DEFAULT_KEYWORDS.copy()
     if custom_keywords_str:
@@ -108,7 +171,7 @@ def main():
     entropy_data = json.loads(ENTROPY_REPORT.read_text())
     findings = entropy_data.get("findings", [])
     
-    elevated = correlate_findings(findings, keywords, window)
+    elevated = correlate_findings(findings, keywords, window, workspace_root)
     
     report = {
         "total_findings": len(findings),
