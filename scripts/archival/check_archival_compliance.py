@@ -137,17 +137,16 @@ def main(argv=None):
         stub_path = Path(entry.path)
         original_path = entry.original_path or entry.path
 
+        if not stub_path.exists():
+            missing_stub.append(original_path)
+            continue
+
         if entry.status.startswith(("M", "R", "C")):
-            if not stub_path.exists():
-                missing_stub.append(original_path)
-                continue
             if not tombstone_exists(stub_path.as_posix()):
                 # Not a tombstone conversion; skip compliance enforcement for standard modifications
                 continue
         elif entry.status.startswith("D"):
-            if not stub_path.exists():
-                missing_stub.append(original_path)
-                continue
+            pass  # No additional check needed; stub existence already handled
         else:
             continue
 
