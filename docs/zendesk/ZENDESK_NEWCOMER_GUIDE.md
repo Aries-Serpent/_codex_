@@ -64,14 +64,13 @@ Instead of making changes in the Zendesk Admin UI:
 
 ### The Snapshot-Diff-Plan-Apply Cycle
 
-```
+```text
 Current State (Zendesk) ──┐
                           │
                           ├──► Diff ──► Plan ──► Apply ──► New State
                           │
 Desired State (JSON) ─────┘
 ```
-
 ### Environments
 
 Manage multiple Zendesk environments:

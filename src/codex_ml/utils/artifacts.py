@@ -10,7 +10,8 @@ import json
 import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
+from typing import Optional
 
 
 def compute_sha256(path: os.PathLike | str) -> str:
@@ -40,10 +41,10 @@ class ArtifactMeta:
     path: str
     sha256: str
     size: int
-    extra: Optional[Dict[str, object]] = None
+    extra: Optional[dict[str, object]] = None
 
 
-def write_metadata(path: os.PathLike | str, extra: Optional[Dict[str, object]] = None) -> Path:
+def write_metadata(path: os.PathLike | str, extra: Optional[dict[str, object]] = None) -> Path:
     """
     Write `<path>.meta.json` including sha256 and size, with optional extra fields.
     """

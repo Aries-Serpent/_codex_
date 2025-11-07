@@ -22,7 +22,8 @@ try:
     _codex_sqlite_auto()
 except Exception:
     pass
-from typing import Dict, List, Optional, Union
+from typing import Optional, Union
+from typing import Optional, Union
 
 # Common column name variants seen in repo/README and typical SQLite logs.
 LIKELY_MAP = {
@@ -98,17 +99,17 @@ def _sanitize_table(name: str) -> str:
     return name
 
 
-def list_tables(con: sqlite3.Connection) -> List[str]:
+def list_tables(con: sqlite3.Connection) -> list[str]:
     cur = con.execute("SELECT name FROM sqlite_master WHERE type='table'")
     return [r[0] for r in cur.fetchall()]
 
 
-def get_columns(con: sqlite3.Connection, table: str) -> List[str]:
+def get_columns(con: sqlite3.Connection, table: str) -> list[str]:
     cur = con.execute(f"PRAGMA table_info({_sanitize_table(table)})")
     return [r[1] for r in cur.fetchall()]
 
 
-def _first_match(columns: List[str], candidates: List[str]) -> Optional[str]:
+def _first_match(columns: list[str], candidates: list[str]) -> Optional[str]:
     cols_lower = [c.lower() for c in columns]
     for cand in candidates:
         if cand.lower() in cols_lower:
@@ -142,7 +143,7 @@ def infer_probable_table(
     return best
 
 
-def infer_columns(con: sqlite3.Connection, table: str) -> Dict[str, Optional[str]]:
+def infer_columns(con: sqlite3.Connection, table: str) -> dict[str, Optional[str]]:
     cols = get_columns(con, table) if table else []
     mapping = {}
     for logical, cands in LIKELY_MAP.items():

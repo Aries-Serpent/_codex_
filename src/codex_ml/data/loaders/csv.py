@@ -7,7 +7,6 @@ import hashlib
 import json
 import random
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 from codex_ml.utils.repro import record_dataset_checksums
 
@@ -25,8 +24,8 @@ def _file_sha256(path: Path) -> str:
 
 
 def _split_records(
-    records: List[Dict[str, str]], ratios: Tuple[float, float, float], seed: int
-) -> Dict[str, List[Dict[str, str]]]:
+    records: list[dict[str, str]], ratios: tuple[float, float, float], seed: int
+) -> dict[str, list[dict[str, str]]]:
     """Split records using random shuffling with given ratios and seed."""
     total = sum(ratios)
     if total <= 0:
@@ -45,7 +44,7 @@ def _split_records(
     }
 
 
-def _cache_key(file_sha: str, ratios: Tuple[float, float, float], seed: int, shuffle: bool) -> str:
+def _cache_key(file_sha: str, ratios: tuple[float, float, float], seed: int, shuffle: bool) -> str:
     payload = json.dumps(
         {"sha": file_sha, "ratios": ratios, "seed": seed, "shuffle": shuffle},
         sort_keys=True,
@@ -60,17 +59,17 @@ def load_csv_dataset(
     input_column: str = "input",
     target_column: str = "target",
     delimiter: str | None = None,
-    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    split: tuple[float, float, float] = (0.8, 0.1, 0.1),
     seed: int = 1234,
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
-) -> Dict[str, List[Dict[str, str]]]:
+) -> dict[str, list[dict[str, str]]]:
     """Load a CSV/TSV dataset and return train/val/test splits."""
 
     dataset_path = Path(path)
     if delimiter is None:
         delimiter = "\t" if dataset_path.suffix.lower() == ".tsv" else ","
-    records: List[Dict[str, str]] = []
+    records: list[dict[str, str]] = []
     with dataset_path.open("r", encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh, delimiter=delimiter)
         for row in reader:

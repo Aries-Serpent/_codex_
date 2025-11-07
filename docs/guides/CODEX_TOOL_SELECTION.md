@@ -5,7 +5,7 @@
 
 ## Quick Decision Tree
 
-```
+```text
 START: "I need to create/modify a file"
   │
   ├─→ "Is it a NEW file?" 
@@ -30,7 +30,6 @@ START: "I need to create/modify a file"
   │
   └─→ END: Execute with validation
 ```
-
 ## Tool Comparison Matrix
 
 | Operation | Tool | When to Use | Pros | Cons | Success Rate |

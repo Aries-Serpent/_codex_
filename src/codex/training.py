@@ -14,7 +14,8 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional, Sequence, Union
 
 try:
     import torch
@@ -64,11 +65,11 @@ def _build_safe_ckpt_payload(
     optimizer,
     scheduler=None,
     epoch: int = 0,
-    extra: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    extra: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Build a pickle-safe checkpoint dictionary."""
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "epoch": int(epoch),
         "meta": {
             "saved_at": datetime.utcnow().isoformat() + "Z",
@@ -103,7 +104,7 @@ def save_checkpoint(
     optimizer,
     scheduler=None,
     epoch: int = 0,
-    extra: Optional[Dict[str, Any]] = None,
+    extra: Optional[dict[str, Any]] = None,
 ) -> str:
     """Save a checkpoint and emit hashing sidecars."""
 
@@ -157,13 +158,13 @@ except Exception:  # pragma: no cover - optional dep
 
 
 # ---- Codex validation metrics helpers ----
-def _codex_config_hash(d: Dict[str, Any]) -> str:
+def _codex_config_hash(d: dict[str, Any]) -> str:
     """Return a stable SHA256 hash for a config dictionary."""
     blob = json.dumps(d, sort_keys=True, ensure_ascii=False).encode("utf-8")
     return hashlib.sha256(blob).hexdigest()
 
 
-def emit_validation_metric_record(path: str, payload: Dict[str, Any]) -> None:
+def emit_validation_metric_record(path: str, payload: dict[str, Any]) -> None:
     """Append a single validation metric record to ``path`` as NDJSON."""
     payload = dict(payload)
     payload.setdefault("ts", datetime.utcnow().isoformat() + "Z")
@@ -214,9 +215,9 @@ except Exception:  # pragma: no cover - fallback if metrics module missing
 
 
 def run_functional_training(
-    corpus: List[str],
-    demos: List[Dict[str, Any]],
-    prefs: List[tuple[str, str, str, int]],
+    corpus: list[str],
+    demos: list[dict[str, Any]],
+    prefs: list[tuple[str, str, str, int]],
     *,
     tokenizer_name: Optional[str] = None,
     tokenizer_path: Optional[str] = None,
@@ -252,7 +253,7 @@ def run_functional_training(
     lora_alpha: int = 16,
     lora_dropout: float = 0.05,
     lora_bias: str = "none",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Run training pipeline, optionally using a tiny Torch model.
 
     When use_deeplearning is False, this routes to the symbolic pipeline.
@@ -291,7 +292,7 @@ def run_functional_training(
     if corpus:
         prompt_cfg = SafetyConfig()
         filters = SafetyFilters.from_defaults()
-        sanitized_corpus: List[str] = []
+        sanitized_corpus: list[str] = []
         for text in corpus:
             prompt_result = sanitize_prompt(text, prompt_cfg)
             sanitized_text = prompt_result.get("text", text)
@@ -424,7 +425,7 @@ def run_functional_training(
 
 
 def _run_minilm_training(
-    corpus: List[str],
+    corpus: list[str],
     tokenizer: Optional[TokenizerAdapter],
     *,
     device: Optional[str] = None,
@@ -445,7 +446,7 @@ def _run_minilm_training(
     monitoring_args: Optional[argparse.Namespace] = None,
     art_dir: Optional[str | Path] = None,
     model_override: Optional[torch.nn.Module] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Train a tiny MiniLM model on the provided corpus.
 
     When ``tensorboard`` is ``True`` and the optional SummaryWriter is
@@ -494,13 +495,13 @@ def _run_minilm_training(
         stoi = {ch: i for i, ch in enumerate(vocab)}
         vocab_size = len(vocab)
 
-        def encode(s: str) -> List[int]:
+        def encode(s: str) -> list[int]:
             return [stoi[c] for c in s]
 
     else:
         vocab_size = tokenizer.vocab_size
 
-        def encode(s: str) -> List[int]:
+        def encode(s: str) -> list[int]:
             return tokenizer.encode(s)
 
     tokens = [tid for text in corpus for tid in encode(text)]
@@ -565,7 +566,7 @@ def _run_minilm_training(
         if resume_from:
             try:
                 resume_path = Path(resume_from)
-                load_info: Optional[Dict[str, Any]] = None
+                load_info: Optional[dict[str, Any]] = None
                 if resume_path.is_file() and resume_path.name in {"state.pt", "state.pkl"}:
                     load_info = mgr.resume_from(
                         resume_path.parent, model=model, optimizer=opt, scheduler=sched
@@ -598,7 +599,7 @@ def _run_minilm_training(
         val_targets = val_tensor[:, 1:].to(dev)
     else:
         val_inputs = val_targets = None
-    losses: List[float] = []
+    losses: list[float] = []
 
     # Hash the config for traceability (used by checkpoints)
     cfg_payload = dict(vars(cfg))

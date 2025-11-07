@@ -18,7 +18,8 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
-from typing import Iterator, Optional, Tuple, Union
+from typing import Iterator, Optional, Union
+from typing import Iterator, Optional, Union
 
 # Local utility imports (optional modules handled gracefully)
 try:
@@ -62,7 +63,8 @@ __all__ = [
 # Expose deterministic_shuffle when available, otherwise provide a local fallback.
 if _deterministic_shuffle is None:
     import random
-    from typing import List, Sequence, TypeVar
+    from typing import Sequence, TypeVar
+    from typing import Sequence, TypeVar
 
     T = TypeVar("T")
 
@@ -125,7 +127,7 @@ def detect_encoding(path: Union[str, Path]) -> str:
 
 
 # Internal helper to normalise various historical read_text signatures.
-def _call_repo_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> Tuple[str, Optional[str]]:
+def _call_repo_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> tuple[str, Optional[str]]:
     """Call repository io_text.read_text in a way that handles multiple historical signatures.
 
     Returns:
@@ -163,7 +165,7 @@ def _call_repo_read_text(path: Path, encoding: str = "utf-8", errors: str = "str
     return str(result), None
 
 
-def _manual_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> Tuple[str, str]:
+def _manual_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> tuple[str, str]:
     """Manual robust reader used as a last-resort fallback.
 
     Returns (text, used_encoding)

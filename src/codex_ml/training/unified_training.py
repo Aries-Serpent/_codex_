@@ -140,7 +140,7 @@ class UnifiedTrainingConfig:
     keep_last: int = 3
     best_k: int = 0
     best_metric: str = "val_loss"
-    continual: ContinualConfig | dict[str, Any] | None = None
+    continual: Any = None  # ContinualConfig | dict[str, Any] | None - validated in __post_init__
 
     def __post_init__(self) -> None:
         errors: list[str] = []

@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Callable, Dict, Mapping
+from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping
 
 _ModelFactory = Callable[..., Any]
 
-_MODELS: Dict[str, _ModelFactory] = {}
+_MODELS: dict[str, _ModelFactory] = {}
 
 
 def register_model(name: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:

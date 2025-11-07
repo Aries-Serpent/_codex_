@@ -203,7 +203,7 @@ ANALYSIS_PARSERS = _template(
 
 
 ANALYSIS_EXTRACTORS = _template(
-    '''
+    r'''
     # src/codex_ml/analysis/extractors.py
     from __future__ import annotations
 

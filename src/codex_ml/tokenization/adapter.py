@@ -9,7 +9,8 @@ import shutil
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -43,7 +44,7 @@ class TokenizerAdapter(abc.ABC):
     """Abstract base class for tokenizers used in training/eval."""
 
     @abc.abstractmethod
-    def encode(self, text: str, **kwargs: Any) -> List[int]:
+    def encode(self, text: str, **kwargs: Any) -> list[int]:
         """Encode ``text`` into token ids."""
 
     @abc.abstractmethod
@@ -51,7 +52,7 @@ class TokenizerAdapter(abc.ABC):
         """Decode token ids back to string."""
 
     @abc.abstractmethod
-    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> List[List[int]]:
+    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
         """Vectorised encoding for multiple strings."""
 
     @abc.abstractmethod
@@ -59,7 +60,7 @@ class TokenizerAdapter(abc.ABC):
         """Persist tokenizer to ``output_dir``."""
 
     @staticmethod
-    def from_config(cfg: Dict[str, Any]) -> "TokenizerAdapter":
+    def from_config(cfg: dict[str, Any]) -> "TokenizerAdapter":
         """Instantiate a tokenizer adapter from configuration mapping.
 
         Expected keys include ``type`` (``"hf"`` or ``"whitespace"``) and
@@ -93,7 +94,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     """Wrap a HuggingFace ``PreTrainedTokenizer`` object."""
 
     name_or_path: str
-    special_tokens: Optional[Dict[str, str]] = None
+    special_tokens: Optional[dict[str, str]] = None
 
     def __post_init__(self) -> None:  # pragma: no cover - simple delegation
         try:
@@ -119,13 +120,13 @@ class HFTokenizerAdapter(TokenizerAdapter):
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.add_special_tokens({"pad_token": "<pad>"})
 
-    def encode(self, text: str, **kwargs: Any) -> List[int]:
+    def encode(self, text: str, **kwargs: Any) -> list[int]:
         return self.tokenizer.encode(text, **kwargs)
 
     def decode(self, tokens: Iterable[int], **kwargs: Any) -> str:
         return self.tokenizer.decode(tokens, **kwargs)
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> List[List[int]]:
+    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
         return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]
 
     def save_pretrained(self, output_dir: str) -> None:
@@ -135,9 +136,9 @@ class HFTokenizerAdapter(TokenizerAdapter):
 class WhitespaceTokenizer(TokenizerAdapter):
     """Simple whitespace tokenizer primarily used for tests."""
 
-    def encode(self, text: str, **kwargs: Any) -> List[int]:
+    def encode(self, text: str, **kwargs: Any) -> list[int]:
         tokens = text.split()
-        stable_ids: List[int] = []
+        stable_ids: list[int] = []
         for tok in tokens:
             digest = hashlib.blake2b(tok.encode("utf-8"), digest_size=8).digest()
             stable_ids.append(int.from_bytes(digest, "big") % (2**31))
@@ -148,7 +149,7 @@ class WhitespaceTokenizer(TokenizerAdapter):
     ) -> str:  # pragma: no cover - lossy decode
         return " ".join(str(t) for t in tokens)
 
-    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> List[List[int]]:
+    def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
         return [self.encode(t) for t in texts]
 
     def save_pretrained(self, output_dir: str) -> None:  # pragma: no cover - trivial
@@ -174,8 +175,8 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
         tokens_to_add, provided_map = self._normalise_special_tokens(special_tokens)
 
-        self.special_tokens: List[str] = []
-        self.special_tokens_map: Dict[str, int] = {}
+        self.special_tokens: list[str] = []
+        self.special_tokens_map: dict[str, int] = {}
         self._adapter: Optional[SentencePieceAdapter] = None
         self._processor: "spm.SentencePieceProcessor"
         self.model_path: Optional[Path] = None
@@ -233,9 +234,9 @@ class SentencePieceTokenizer(TokenizerAdapter):
     @staticmethod
     def _normalise_special_tokens(
         special_tokens: Optional[Sequence[str] | Mapping[str, int]],
-    ) -> tuple[List[str], Optional[Dict[str, int]]]:
-        tokens: List[str] = []
-        provided: Optional[Dict[str, int]] = None
+    ) -> tuple[list[str], Optional[dict[str, int]]]:
+        tokens: list[str] = []
+        provided: Optional[dict[str, int]] = None
         if special_tokens is None:
             return tokens, provided
         if isinstance(special_tokens, Mapping):
@@ -250,9 +251,9 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return tokens, provided
 
     @staticmethod
-    def _combine_schedules(*sequences: Sequence[str]) -> List[str]:
+    def _combine_schedules(*sequences: Sequence[str]) -> list[str]:
         seen: set[str] = set()
-        ordered: List[str] = []
+        ordered: list[str] = []
         for seq in sequences:
             for token in seq:
                 if token in seen:
@@ -263,10 +264,10 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def _prepare_special_tokens_state(
         self, adapter: "_SentencePieceAdapter"
-    ) -> tuple[Dict[str, int], List[str], Path]:
+    ) -> tuple[dict[str, int], list[str], Path]:
         default_path = adapter.model_prefix.with_suffix(".special_tokens.json")
-        existing_map: Dict[str, int] = {}
-        legacy_tokens: List[str] = []
+        existing_map: dict[str, int] = {}
+        legacy_tokens: list[str] = []
 
         chosen_path = default_path
         if default_path.exists():
@@ -290,14 +291,14 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return existing_map, legacy_tokens, chosen_path
 
     @staticmethod
-    def _read_special_tokens_file(path: Path) -> tuple[Dict[str, int], List[str]]:
+    def _read_special_tokens_file(path: Path) -> tuple[dict[str, int], list[str]]:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:  # pragma: no cover - defensive
             raise ValueError(f"Invalid JSON in {path}") from exc
 
         if isinstance(data, dict):
-            mapping: Dict[str, int] = {}
+            mapping: dict[str, int] = {}
             for key, value in data.items():
                 if not isinstance(key, str):
                     raise ValueError("special token keys must be strings")
@@ -311,7 +312,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 mapping[key] = int(value)
             return mapping, []
         if isinstance(data, list):
-            tokens: List[str] = []
+            tokens: list[str] = []
             for item in data:
                 if not isinstance(item, str):
                     raise ValueError("special tokens must be strings")
@@ -323,13 +324,13 @@ class SentencePieceTokenizer(TokenizerAdapter):
         self,
         processor: "spm.SentencePieceProcessor",
         tokens_to_add: Sequence[str],
-        provided_map: Optional[Dict[str, int]],
+        provided_map: Optional[dict[str, int]],
     ) -> None:
         self._processor = processor
         self._adapter = None
         self.model_path = None
         self._special_tokens_path = None
-        mapping: Dict[str, int] = dict(provided_map or {})
+        mapping: dict[str, int] = dict(provided_map or {})
         next_id = self._processor_vocab_size(processor)
         used_ids = set(mapping.values())
         for token in tokens_to_add:
@@ -347,7 +348,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             self.special_tokens = list(tokens_to_add)
 
     @staticmethod
-    def _ordered_special_tokens(mapping: Dict[str, int]) -> List[str]:
+    def _ordered_special_tokens(mapping: dict[str, int]) -> list[str]:
         return [token for token, _ in sorted(mapping.items(), key=lambda item: item[1])]
 
     @staticmethod
@@ -388,7 +389,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         truncation: Optional[str] = None,
         max_length: Optional[int] = None,
         padding: Optional[str] = None,
-    ) -> List[int]:
+    ) -> list[int]:
         encode_fn = getattr(self._processor, "encode", None)
         if callable(encode_fn):
             ids = list(encode_fn(text, out_type=int))
@@ -432,7 +433,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         truncation: Optional[str] = None,
         max_length: Optional[int] = None,
         padding: Optional[str] = None,
-    ) -> List[List[int]]:
+    ) -> list[list[int]]:
         return [
             self.encode(text, truncation=truncation, max_length=max_length, padding=padding)
             for text in texts

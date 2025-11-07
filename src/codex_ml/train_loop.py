@@ -28,7 +28,8 @@ from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
@@ -133,27 +134,27 @@ try:
 except Exception:  # noqa: BLE001
     # fmt: off
     class Callback:  # type: ignore
-        def on_train_start(self, state: Dict[str, Any]) -> None:
+        def on_train_start(self, state: dict[str, Any]) -> None:
             ...
 
-        def on_epoch_start(self, epoch: int, state: Dict[str, Any]) -> None:
+        def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
             ...
 
         def on_epoch_end(
             self,
             epoch: int,
-            metrics: Dict[str, Any],
-            state: Dict[str, Any],
+            metrics: dict[str, Any],
+            state: dict[str, Any],
         ) -> None:
             ...
 
-        def on_train_end(self, state: Dict[str, Any]) -> None:
+        def on_train_end(self, state: dict[str, Any]) -> None:
             ...
     # fmt: on
 
     def merge_callback_results(
-        base: Dict[str, Any], addon: Dict[str, Any] | None
-    ) -> Dict[str, Any]:
+        base: dict[str, Any], addon: dict[str, Any] | None
+    ) -> dict[str, Any]:
         if addon:
             base.update(addon)
         return base
@@ -368,7 +369,7 @@ def _normalise_snapshot(value: Any) -> Any:
     return value
 
 
-def _snapshot_payload(payload: Any) -> Dict[str, Any] | None:
+def _snapshot_payload(payload: Any) -> dict[str, Any] | None:
     if payload is None:
         return None
     normalised = _normalise_snapshot(payload)
@@ -378,8 +379,8 @@ def _snapshot_payload(payload: Any) -> Dict[str, Any] | None:
 
 
 def _apply_metadata_to_state(
-    state: Dict[str, Any], metadata: Mapping[str, Any] | None
-) -> Dict[str, Any]:
+    state: dict[str, Any], metadata: Mapping[str, Any] | None
+) -> dict[str, Any]:
     metadata_dict = dict(metadata) if metadata is not None else {}
     state["metadata"] = metadata_dict
     if "rollout_ring" not in metadata_dict:
@@ -437,7 +438,7 @@ _LEGACY_NDJSON = is_legacy_mode()
 _TRAIN_RUN_ID = os.environ.get("CODEX_RUN_ID") or uuid4().hex
 
 
-def _coerce_telemetry_event(record: Dict[str, Any]) -> Dict[str, Any]:
+def _coerce_telemetry_event(record: dict[str, Any]) -> dict[str, Any]:
     """Ensure a telemetry record has required keys: type, event, timestamp.
 
     Any missing keys are populated with defaults; additional keys are preserved.
@@ -449,7 +450,7 @@ def _coerce_telemetry_event(record: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
-def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
+def demo_epoch(epoch: int, *, grad_accum: int = 1) -> dict[str, Any]:
     """Return deterministic demo metrics for documentation and tests."""
 
     return {
@@ -462,7 +463,7 @@ def demo_epoch(epoch: int, *, grad_accum: int = 1) -> Dict[str, Any]:
 def record_metrics(
     prefix: str | None = None,
     epoch: int | None = None,
-    metrics: Dict[str, Any] | None = None,
+    metrics: dict[str, Any] | None = None,
     config_id: str | None = None,
     **kwargs: Any,
 ) -> Path:
@@ -488,7 +489,7 @@ def record_metrics(
 
     ART_DIR.mkdir(parents=True, exist_ok=True)
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "phase": resolved_prefix,
         "prefix": resolved_prefix,
         "epoch": int(epoch),
@@ -509,7 +510,7 @@ def record_metrics(
         handle.write(serialized + "\n")
 
     json_path = ART_DIR / "metrics.json"
-    history: list[Dict[str, Any]] = []
+    history: list[dict[str, Any]] = []
     if json_path.exists():
         try:
             loaded = json.loads(json_path.read_text(encoding="utf-8"))
@@ -552,7 +553,7 @@ def _resolve_device(device: Optional[str]):
 
 
 def _load_or_create_model(
-    model: Any | None, model_name: str | None, model_kwargs: Dict[str, Any]
+    model: Any | None, model_name: str | None, model_kwargs: dict[str, Any]
 ) -> tuple[Any, bool]:
     if model is not None:
         return model, False
@@ -754,7 +755,7 @@ def _dataset_dtype_gate(dataset, desired: Any) -> None:
         )
 
 
-def _append_metrics_event(art_dir_path: Path | None, record: Dict[str, Any]) -> None:
+def _append_metrics_event(art_dir_path: Path | None, record: dict[str, Any]) -> None:
     """Append a single JSON line to artifacts/metrics.ndjson (best-effort)."""
     try:
         base = Path(art_dir_path) if art_dir_path is not None else ART_DIR
@@ -772,7 +773,7 @@ def _append_metrics_event(art_dir_path: Path | None, record: Dict[str, Any]) -> 
         logger.debug("Failed to append telemetry event: %s", exc)
 
 
-def _persist_reasoning_trace(path: Path, payload: Dict[str, Any]) -> None:
+def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
@@ -790,13 +791,13 @@ def _telemetry_max_items() -> int:
         return 1000
 
 
-def _append_telemetry_json_rollover(base_dir: Path, record: Dict[str, Any]) -> None:
+def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> None:
     """Append record to artifacts/telemetry.json with simple rollover (best-effort)."""
     try:
         if not _telemetry_json_enabled():
             return
         path = base_dir / "telemetry.json"
-        history: list[Dict[str, Any]] = []
+        history: list[dict[str, Any]] = []
         if path.exists():
             try:
                 loaded = json.loads(path.read_text(encoding="utf-8"))
@@ -854,7 +855,7 @@ def _telemetry_max_bytes() -> int:
         return 0
 
 
-def _append_telemetry_ndjson(base_dir: Path, record: Dict[str, Any]) -> None:
+def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
     """Append record to artifacts/telemetry.ndjson (best-effort)."""
     if not _telemetry_ndjson_enabled():
         return
@@ -879,7 +880,7 @@ def _telemetry_sample_rate() -> float:
         return 1.0
 
 
-def _telemetry_should_sample(record: Dict[str, Any]) -> bool:
+def _telemetry_should_sample(record: dict[str, Any]) -> bool:
     # Lightweight random sampling based on sample_rate; could be extended per-event.
     try:
         rate = _telemetry_sample_rate()
@@ -911,7 +912,7 @@ def _cast_batch_for_policy(
     if policy is None:
         return sample
     policy_norm = str(policy).lower()
-    event_payload: Dict[str, Any] = {
+    event_payload: dict[str, Any] = {
         "type": "telemetry",
         "event": "dataset_cast",
         "policy": policy_norm,
@@ -1094,7 +1095,7 @@ def run_training(
     art_dir: str | Path | None = None,
     model: Optional[Any] = None,
     model_name: str | None = None,
-    model_cfg: Optional[Dict[str, Any]] = None,
+    model_cfg: Optional[dict[str, Any]] = None,
     lora: bool = False,
     lora_cfg: dict | None = None,
     device: str | None = None,
@@ -1109,10 +1110,10 @@ def run_training(
     return_state: bool = False,
     scheduler_cfg: dict | None = None,
     dp_config: DifferentialPrivacyConfig | dict | None = None,
-    dataset_sources: Optional[List[str | Path]] = None,
+    dataset_sources: Optional[list[str | Path]] = None,
     dataset_cache_dir: Optional[str | Path] = None,
-    callbacks: Optional[List[Callback]] = None,
-    eval_fn: Optional[Callable[[int, Dict[str, Any]], Dict[str, Any]]] = None,
+    callbacks: Optional[list[Callback]] = None,
+    eval_fn: Optional[Callable[[int, dict[str, Any]], dict[str, Any]]] = None,
     mlflow_enable: bool = False,
     mlflow_uri: str | None = None,
     mlflow_experiment: str | None = None,
@@ -1120,15 +1121,15 @@ def run_training(
     telemetry_port: int | None = None,
     # NEW:
     deterministic_cudnn: bool = False,
-    run_config: Optional[Dict[str, Any]] = None,
-    retention_policy: Optional[Dict[str, Any]] = None,
+    run_config: Optional[dict[str, Any]] = None,
+    retention_policy: Optional[dict[str, Any]] = None,
     bf16_require_capability: bool = False,
     dataset_cast_policy: str | None = None,
     reasoning: Mapping[str, Any] | ReasoningConfig | None = None,
     metadata: Mapping[str, Any] | None = None,
     evaluation: Mapping[str, Any] | None = None,
     **extra_kwargs: Any,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Training loop (extended):
       - CUDNN determinism (opt-in)
@@ -1185,7 +1186,7 @@ def run_training(
     else:
         env_flag = os.getenv("CODEX_DP_ENABLED")
         if env_flag and str(env_flag).strip().lower() in {"1", "true", "yes", "on"}:
-            dp_kwargs: Dict[str, Any] = {"enabled": True}
+            dp_kwargs: dict[str, Any] = {"enabled": True}
             for field_name, env_name in (
                 ("epsilon", "CODEX_DP_EPSILON"),
                 ("delta", "CODEX_DP_DELTA"),
@@ -1211,8 +1212,8 @@ def run_training(
     # Dataset ingestion (summaries only)
     dataset_files_count = len(dataset_sources or [])
     dataset_total_records = 0
-    dataset_checksums: List[str] = []
-    dataset_checksum_map: Dict[str, str] = {}
+    dataset_checksums: list[str] = []
+    dataset_checksum_map: dict[str, str] = {}
     if dataset_sources:
         paths = [Path(p) for p in dataset_sources]
         checksum_target = (
@@ -1296,7 +1297,7 @@ def run_training(
     dtype_obj = _resolve_dtype(dtype)
     _assert_bf16_capability(dtype, dtype_obj, bf16_require_capability, device_obj)
 
-    model_kwargs: Dict[str, Any] = dict(model_cfg or {})
+    model_kwargs: dict[str, Any] = dict(model_cfg or {})
     model_kwargs.setdefault("device", str(device_obj))
     if dtype_obj is not None:
         model_kwargs.setdefault("dtype", dtype_obj)
@@ -1463,14 +1464,14 @@ def run_training(
     else:
         scheduler = None
 
-    cb_list: List[Callback] = []
+    cb_list: list[Callback] = []
     if callbacks:
         cb_list.extend(callbacks)
     if eval_fn:
         cb_list.append(EvaluationCallback(eval_fn))
     cb_list.append(LoggingCallback())
 
-    state: Dict[str, Any] = {
+    state: dict[str, Any] = {
         "start_time": _now_ts(),
         "model": model,
         "optimizer": optimizer,
@@ -1496,7 +1497,7 @@ def run_training(
 
     applied_metadata = _apply_metadata_to_state(state, metadata_snapshot)
 
-    reasoning_state: Dict[str, Any] = {
+    reasoning_state: dict[str, Any] = {
         "enabled": bool(reasoning_runtime),
         "mode": reasoning_runtime.config.objective.mode if reasoning_runtime else None,
         "top_k": reasoning_runtime.top_k if reasoning_runtime else None,
@@ -1542,7 +1543,7 @@ def run_training(
             checkpoint_dir,
         )
 
-    latest_payload: Dict[str, Any] | None = None
+    latest_payload: dict[str, Any] | None = None
     best_k_index: Optional[int] = None
     if retention_policy:
         for key in ("keep_best_k", "keep_best"):
@@ -1555,20 +1556,20 @@ def run_training(
                     best_k_index = candidate
                     break
 
-    def _persist_artifacts(best_checkpoint: Dict[str, Any] | None, completed_epochs: int) -> None:
+    def _persist_artifacts(best_checkpoint: dict[str, Any] | None, completed_epochs: int) -> None:
         if art_dir_path is None:
             return
 
-        metrics_entries: List[Dict[str, Any]] = []
+        metrics_entries: list[dict[str, Any]] = []
         history = state.get("epoch_history")
         if isinstance(history, list):
             for entry in history:
-                metrics_entry: Dict[str, Any] = {"phase": "epoch_end"}
+                metrics_entry: dict[str, Any] = {"phase": "epoch_end"}
                 if isinstance(entry, dict):
                     metrics_entry.update(entry)
                 metrics_entries.append(metrics_entry)
 
-        best_entry: Dict[str, Any] = {"phase": "best_checkpoint"}
+        best_entry: dict[str, Any] = {"phase": "best_checkpoint"}
         if best_checkpoint:
             best_entry.update(best_checkpoint)
         else:
@@ -1580,7 +1581,7 @@ def run_training(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write metrics.json: %s", exc)
 
-        env_payload: Dict[str, Any] = {
+        env_payload: dict[str, Any] = {
             "python": sys.version,
             "seed": seed if seed not in (None, 0) else _DEFAULT_SEED,
             "deterministic_cudnn": deterministic_cudnn,
@@ -1641,13 +1642,13 @@ def run_training(
             logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
             return
 
-        cfg: Dict[str, Any] = {}
+        cfg: dict[str, Any] = {}
         if isinstance(run_config, Mapping):
             cfg = dict(run_config)
         elif isinstance(run_config, dict):
             cfg = dict(run_config)
 
-        meta_payload: Dict[str, Any] = {}
+        meta_payload: dict[str, Any] = {}
         metadata_section = cfg.get("metadata")
         if isinstance(metadata_section, Mapping):
             meta_payload.update(_json_ready(metadata_section))
@@ -1658,7 +1659,7 @@ def run_training(
         if art_dir_path is not None:
             meta_payload.setdefault("artifacts_dir", str(art_dir_path))
 
-        control_surface: Dict[str, Any] = {}
+        control_surface: dict[str, Any] = {}
         trace_mode = cfg.get("trace_mode")
         training_section = cfg.get("training") if isinstance(cfg.get("training"), Mapping) else {}
         if not trace_mode and isinstance(training_section, Mapping):
@@ -1724,7 +1725,7 @@ def run_training(
         except Exception as exc:  # noqa: BLE001
             logger.warning("Failed to write run_metadata.json: %s", exc)
 
-        reasoning_payload: Dict[str, Any] = {}
+        reasoning_payload: dict[str, Any] = {}
         reasoning_cfg = cfg.get("reasoning")
         if not isinstance(reasoning_cfg, Mapping) and isinstance(training_section, Mapping):
             reasoning_cfg = training_section.get("reasoning")
@@ -1797,7 +1798,7 @@ def run_training(
 
     total_optimizer_steps = 0
     total_steps = 0
-    learning_rate_history: List[List[float]] = []
+    learning_rate_history: list[list[float]] = []
     last_checkpoint_sha = None
 
     for epoch in range(start_epoch, target_epochs + 1):
@@ -1811,7 +1812,7 @@ def run_training(
                 logger.warning("Callback on_epoch_start error: %s", e)
 
         epoch_loss_accum = 0.0
-        synthetic_losses: List[float] = []
+        synthetic_losses: list[float] = []
         steps_this_epoch = 0
         optimizer_steps_this_epoch = 0
         if reasoning_runtime is not None:

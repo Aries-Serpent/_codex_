@@ -15,7 +15,8 @@ import hashlib
 import json
 import os
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 
 class SignstoreClient:
@@ -46,9 +47,9 @@ class SignstoreClient:
 
     def sign_record(
         self,
-        record: Dict[str, Any],
+        record: dict[str, Any],
         actor: str,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Sign evidence record using Sigstore keyless signing.
 
@@ -94,7 +95,7 @@ class SignstoreClient:
 
     def verify_signature(
         self,
-        record: Dict[str, Any],
+        record: dict[str, Any],
         signature: str,
         cert_chain: Optional[list[str]] = None,
     ) -> bool:

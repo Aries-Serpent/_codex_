@@ -10,7 +10,8 @@ from collections.abc import Sequence as SequenceABC
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
@@ -38,7 +39,7 @@ class ExperimentContext:
 
     run_id: str
     experiment_name: str
-    tags: Dict[str, Any]
+    tags: dict[str, Any]
     run_logger: "RunLogger"
     writer: CompositeWriter
     run_dir: Path
@@ -259,7 +260,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     else:
         cli_payload = argv
 
-    config_snapshot: Dict[str, Any] = {}
+    config_snapshot: dict[str, Any] = {}
     for attr in ("config_snapshot", "config_dict", "config"):
         maybe = getattr(cfg, attr, None)
         if isinstance(maybe, MappingABC):
@@ -275,7 +276,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
                 config_snapshot = {str(k): converted[k] for k in converted}
                 break
 
-    derived: Dict[str, Any] = {}
+    derived: dict[str, Any] = {}
     provided = getattr(cfg, "derived_params", None)
     if isinstance(provided, MappingABC):
         derived.update({str(k): provided[k] for k in provided})

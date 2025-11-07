@@ -22,21 +22,20 @@ import logging
 import os
 import sqlite3
 import threading
-from typing import Dict, Tuple
 
 _ORIG_CONNECT = sqlite3.connect
 _POOL_ENABLED_ENV = "CODEX_SQLITE_POOL"  # "1" enables pooling
 _SESSION_ENV = "CODEX_SESSION_ID"  # optional logical session id
 
 # Key: (db_path, pid, tid, session_id)
-_CONN_POOL: Dict[Tuple[str, int, int, str], sqlite3.Connection] = {}
+_CONN_POOL: dict[tuple[str, int, int, str], sqlite3.Connection] = {}
 _POOL_LOCK = threading.RLock()
 
 
 class PooledConnectionProxy:
     """Thin proxy that removes itself from the pool on ``close``."""
 
-    def __init__(self, conn: sqlite3.Connection, key: Tuple[str, int, int, str]):
+    def __init__(self, conn: sqlite3.Connection, key: tuple[str, int, int, str]):
         super().__setattr__("_conn", conn)
         super().__setattr__("_key", key)
 
@@ -97,7 +96,7 @@ class PooledConnectionProxy:
         return self._conn.close()
 
 
-def _key(database: str) -> Tuple[str, int, int, str]:
+def _key(database: str) -> tuple[str, int, int, str]:
     """Return a key uniquely identifying a connection slot.
 
     The key combines database path, process id, thread id, and optional session

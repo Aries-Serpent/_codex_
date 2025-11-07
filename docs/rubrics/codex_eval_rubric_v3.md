@@ -28,10 +28,9 @@ This page summarizes the evaluator rules captured in `manifests/codex_eval_rules
 
 ## Pytest Environment Guard
 When `pytest` appears, guard with:
-```
+```text
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
-
 ## Penalties (Examples)
 - Missing required tool: -3
 - Fence broken: -5

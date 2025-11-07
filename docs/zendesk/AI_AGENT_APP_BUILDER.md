@@ -47,7 +47,7 @@ This section provides ASCII-based visual representations of the Zendesk App Buil
 
 ### Location Spectrum
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │ ZENDESK APP BUILDER ECOSYSTEM (Navbar Context)                     │
 └─────────────────────────────────────────────────────────────────────┘
@@ -61,7 +61,6 @@ Ticket Sidebar            Topbar                   Navbar (App Area)
 ├─ Persist: ████          ├─ Persist: █            ├─ Persist: █████
 └─ Complex: █             └─ Complex: ██           └─ Complex: ████████
 ```
-
 **Interpretation**:
 - **Sidebar**: High contextual awareness (sees current ticket), minimal space
 - **Topbar**: Balanced but limited in all dimensions
@@ -69,7 +68,7 @@ Ticket Sidebar            Topbar                   Navbar (App Area)
 
 ### Capability Matrix
 
-```
+```text
 DIMENSION                CAPABILITY [▓]  LIMITATION [▒]  BLOCKED [░]
 ────────────────────────────────────────────────────────────────────────
 UI Complexity            [▓▓▓▓▓▓▓▓░░]  Multi-step ✓       Native modal ✗
@@ -83,7 +82,6 @@ Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects ✓  
 Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches ✓     1000s records ✗
 Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓    Chrome override ✗
 ```
-
 **Legend**:
 - **▓** = Full or strong support
 - **▒** = Partial support with limitations
@@ -91,7 +89,7 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓   
 
 ### Architectural Boundaries
 
-```
+```text
 ┌───────────────────────────────────┐
 │ BROWSER RUNTIME (Client-Side)     │
 ├───────────────────────────────────┤
@@ -123,10 +121,9 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓   
             ║ • Native code ✗
             ╚═════════════╝
 ```
-
 ### Data Flow Topology
 
-```
+```json
 Agent Action → App UI → Client Logic → API Proxy → External Service
       ↓           ↓            ↓             ↓             ↓
     [FAST]      [FAST]       [MEDIUM]      [SLOW]        [SLOW]
@@ -138,10 +135,9 @@ BOTTLENECK POINTS:
 ⚠ External Service (downtime, throttling)
 ⚠ Client Processing (heavy computation freezes UI)
 ```
-
 ### Security Boundary Map
 
-```
+```text
 ┌─────────────────┐
 │   PUBLIC WEB    │ (Untrusted)
 └────────┬────────┘
@@ -170,10 +166,9 @@ BOTTLENECK POINTS:
 │             ✗ Store credentials client-side
 │             ✗ Direct external API calls
 ```
-
 ### Performance Profile
 
-```
+```text
 Operation Type         Speed   Reliability   Scalability
 ────────────────────────────────────────────────────────
 UI Rendering           ▓▓▓▓▓   ▓▓▓▓▓         ▓▓▓▓▓
@@ -186,10 +181,9 @@ Real-time Updates      ▓░░░░   ▓▓░░░         ▓░░░░
 
 LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
 ```
-
 ### Navbar Space Allocation
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ [Z] Zendesk Global Header         [Agent]  [Settings]  ▼    │ ← FIXED
 ├─────────────────────────────────────────────────────────────┤
@@ -214,10 +208,9 @@ LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
 ✓ Can use tabs/routing within the app area
 ✓ Can open modals/overlays
 ```
-
 ### Navbar Capability Signature
 
-```
+```text
 CAPABILITY FINGERPRINT:
 Space:       ██████████  10/10
 Complexity:  ████████░░   8/10
@@ -228,7 +221,6 @@ Real-time:   ██░░░░░░░░   2/10
 
 OVERALL SCORE: 34/60  (Navbar excels at complex, space-intensive apps)
 ```
-
 ## Mathematical Foundation
 
 ### Notation & Conventions
@@ -473,14 +465,13 @@ Use **exponential backoff** policies to maintain $\rho$ subcritical.
 
 ### 5. Visual Data Flow
 
-```
+```text
 Agent → UI → Client → Proxy → External API
  ↓      ↓      ↓        ↓          ↓
 0.5ms  5ms   50ms    350ms     1200ms
 
 Total Expected Latency: ~1.6s
 ```
-
 ## Feature Feasibility Classification
 
 ### 1. Feature Feasibility Amplitude
@@ -585,7 +576,7 @@ This yields the "sweet spot" region: **high value, moderate complexity**.
 
 ### 3. Sweet Spot Region
 
-```
+```text
 Value (v)
     ↑
     │          ┌─────────────┐
@@ -601,7 +592,6 @@ Value (v)
     │  └──────────────────────────────┘
     └─────────────────────────────────→ Complexity (c)
 ```
-
 ## Practical Decision Rules
 
 ### 1. Closed-Form Heuristic
@@ -628,7 +618,7 @@ where $\tau$ is a calibrated threshold.
 
 ### 3. Location Decision Tree
 
-```
+```text
 Feature Needs Space + Complexity?
     │
     ├─ YES → Navbar ✓
@@ -643,7 +633,6 @@ Feature Needs Space + Complexity?
                     │
                     └─ NO → Topbar or Navbar
 ```
-
 ## Worked Examples
 
 ### Example A: Multi-Step Configuration Wizard
@@ -976,7 +965,7 @@ This section provides additional visual aids and reference materials for underst
 
 ### Integration Pattern Matrix
 
-```
+```text
 Pattern                Supported   Complexity   Recommended
 ──────────────────────────────────────────────────────────
 REST API                 ✓            ✓          ✓  YES
@@ -989,10 +978,9 @@ GraphQL                  ✓            ░          ≈  OK
 SOAP                     ✓            ░          ✗  AVOID
 Server-Sent Events       ✗            ✗          ✗  NO
 ```
-
 ### Development Lifecycle
 
-```
+```text
 Phase          Duration   Complexity   Friction Points
 ────────────────────────────────────────────────────────────
 Ideation         ░░░░░      ▒░░░░      Requirements clarity
@@ -1005,10 +993,9 @@ Maintenance      ░░░░...    ▒▒▒░░      Platform changes, suppo
 
 TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
 ```
-
 ### Feature Feasibility Scorecard (Navbar Context)
 
-```
+```text
 Feature Type              Simple   Medium   Complex   Not Possible
 ──────────────────────────────────────────────────────────────────
 Read-only dashboards       ████     ▓▓▓       ▒▒          ░
@@ -1026,10 +1013,9 @@ Custom notifications       ▓        ▒▒▒       ▒▒▒▒        ░░
 
 LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 ```
-
 ### Anti-Patterns to Avoid
 
-```
+```text
 🚫 NEVER:
 ├─ Store API keys in client code
 ├─ Make direct external API calls (bypass proxy)
@@ -1056,10 +1042,9 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 ├─ Keep bundle size minimal
 └─ Test with representative Zendesk data
 ```
-
 ### Cost-Benefit Zones
 
-```
+```text
                HIGH VALUE ↑
                   ┌────────────────┐
                   │  SWEET SPOT    │
@@ -1081,10 +1066,9 @@ LOW COMPLEXITY ─────────────────────�
                            │
                          LOW VALUE
 ```
-
 ### Optimal Use Cases Summary
 
-```
+```text
 OPTIMAL USE CASES:
 ✓✓✓ Configuration interfaces
 ✓✓✓ Reporting dashboards
@@ -1099,18 +1083,16 @@ AVOID IN NAVBAR:
 ✗✗  Context-heavy features (prefer Sidebar)
 ✗   Single-purpose simple tools
 ```
-
 ### Recommended Workflow
 
-```
+```text
 Developer Team → AI Assistant (ideation/planning) → Official Docs (validation)
               → Development Environment (testing) → AI Assistant (refinement)
               → Production
 ```
-
 ### Final Recommendations for Navbar App Projects
 
-```
+```text
 1) INITIATE:
    ├─ Define scope and features
    ├─ Identify integration points
@@ -1135,7 +1117,6 @@ Developer Team → AI Assistant (ideation/planning) → Official Docs (validatio
    ├─ Refactor for performance/bundle size
    └─ Escalate platform issues via official support
 ```
-
 ## AI Assistant Context & Limitations
 
 This documentation was created with assistance from AI language models. Understanding the context and limitations of AI-generated content is important for proper usage.
@@ -1172,7 +1153,7 @@ This documentation was created with assistance from AI language models. Understa
 
 ### Confidence Calibration
 
-```
+```text
 HIGH CONFIDENCE (≈90%+):
 • Location constraints (Navbar vs Sidebar)
 • General API patterns (REST, OAuth)
@@ -1204,10 +1185,9 @@ SHOULD BE VERIFIED EXTERNALLY:
 • Third-party API specifications
 • Pricing and billing details
 ```
-
 ### AI Assistant Capability Profile
 
-```
+```text
 PHASE                  CAPABILITY LEVEL         LIMITATION LEVEL
 ────────────────────────────────────────────────────────────────────────
 Ideation               ▓▓▓▓▓▓▓▓▓▓               ░░
@@ -1222,7 +1202,6 @@ Maintenance            ▓▓▓▓░░░░░░               ░░░░
 EXCELS AT: Design, planning, code scaffolding, constraint explanation
 CANNOT: Execute code, test applications, access live systems, update model knowledge
 ```
-
 ### Effective Usage Guidelines
 
 **Effective Prompts**:
@@ -1260,7 +1239,7 @@ CANNOT: Execute code, test applications, access live systems, update model knowl
 
 ### Comparison: AI Assistant vs Other Tools
 
-```
+```text
 TOOL                TYPE                 STRENGTH                          WHEN TO USE AI ASSISTANT
 ────────────────────────────────────────────────────────────────────────────────────────────────────────
 Stack Overflow      Community Q&A        Real user experiences             Initial research synthesis
@@ -1270,7 +1249,6 @@ ChatGPT             Conversational LLM   General ideation/help             Simil
 Zendesk Support     Vendor support       Platform-specific help            Critical platform issues
 AI Assistant (LLM)  Planning/analysis    Comprehensive planning            START HERE for architecture
 ```
-
 ---
 
 **This mathematical framework enables data-driven decisions about what to build in Zendesk AI Agent App Builder and how to optimize for success within its constraints.**

@@ -4,7 +4,8 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
+from typing import Optional
 
 REASONING_TEMPLATE_ROOT = Path(__file__).resolve().parents[2] / "configs" / "training" / "reasoning"
 REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"
@@ -95,10 +96,10 @@ if _USE_TYPER:
         help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
     )
 
-    def _discover_reasoning_templates() -> Sequence[Tuple[str, str, Path]]:
+    def _discover_reasoning_templates() -> Sequence[tuple[str, str, Path]]:
         if not REASONING_TEMPLATE_ROOT.exists():
             return []
-        entries: list[Tuple[str, str, Path]] = []
+        entries: list[tuple[str, str, Path]] = []
         for path in sorted(REASONING_TEMPLATE_ROOT.glob("*.yaml")):
             description = "Reasoning template"
             try:
@@ -235,10 +236,10 @@ else:  # pragma: no cover - click fallback
     def app() -> None:
         """Codex offline smoke helpers."""
 
-    def _discover_reasoning_templates() -> Sequence[Tuple[str, str, Path]]:
+    def _discover_reasoning_templates() -> Sequence[tuple[str, str, Path]]:
         if not REASONING_TEMPLATE_ROOT.exists():
             return []
-        entries: list[Tuple[str, str, Path]] = []
+        entries: list[tuple[str, str, Path]] = []
         for path in sorted(REASONING_TEMPLATE_ROOT.glob("*.yaml")):
             description = "Reasoning template"
             try:

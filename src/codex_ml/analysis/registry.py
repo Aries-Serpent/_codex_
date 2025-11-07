@@ -1,13 +1,14 @@
 # src/codex_ml/analysis/registry.py
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Callable, Dict
+from typing import Callable
+from typing import Callable
 
 
 @dataclass
 class Registry:
-    parsers: Dict[str, Callable] | None = None
-    extractors: Dict[str, Callable] | None = None
+    parsers: dict[str, Callable] | None = None
+    extractors: dict[str, Callable] | None = None
 
 
 REG = Registry(parsers={}, extractors={})

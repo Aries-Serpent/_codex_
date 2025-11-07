@@ -13,11 +13,12 @@ import warnings
 from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Callable, Dict
+from typing import Any, Callable
+from typing import Any, Callable
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
 
-_REGISTRY: Dict[str, Callable[..., Any]] = {}
+_REGISTRY: dict[str, Callable[..., Any]] = {}
 ERRORS_PATH = Path(".codex/errors.ndjson")
 
 

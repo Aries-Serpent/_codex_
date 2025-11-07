@@ -4,7 +4,8 @@ from __future__ import annotations
 import logging
 import os
 import random
-from typing import Dict, Optional
+from typing import Optional
+from typing import Optional
 
 try:  # pragma: no cover - optional dependency guards
     import numpy as np
@@ -80,10 +81,10 @@ def enable_determinism(
     seed: Optional[int] = None,
     deterministic: bool = True,
     num_threads: Optional[int] = None,
-) -> Dict[str, object]:
+) -> dict[str, object]:
     """Best-effort determinism shim retained for backward compatibility."""
 
-    state: Dict[str, object] = {"seed": seed, "deterministic": bool(deterministic)}
+    state: dict[str, object] = {"seed": seed, "deterministic": bool(deterministic)}
     if num_threads is not None:
         state["num_threads"] = num_threads
 

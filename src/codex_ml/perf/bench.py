@@ -8,7 +8,8 @@ import os
 import statistics as stats
 import time
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
+from typing import Any, Callable
 
 
 def _maybe_cuda_sync() -> None:
@@ -51,7 +52,7 @@ def _resolve_callable(path: str) -> Callable[[], Any]:
 
 @dataclass
 class BenchResult:
-    samples_ms: List[float]
+    samples_ms: list[float]
 
     @property
     def median_ms(self) -> float:
@@ -64,7 +65,7 @@ class BenchResult:
         k = max(0, int(round(0.95 * (len(self.samples_ms) - 1))))
         return float(sorted(self.samples_ms)[k])
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "median_ms": self.median_ms,
             "p95_ms": self.p95_ms,
@@ -80,7 +81,7 @@ def run_bench(
         fn()
         if cuda_sync:
             _maybe_cuda_sync()
-    samples: List[float] = []
+    samples: list[float] = []
     for _ in range(max(1, iters)):
         if cuda_sync:
             _maybe_cuda_sync()
@@ -93,7 +94,7 @@ def run_bench(
     return BenchResult(samples)
 
 
-def main(argv: List[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="codex-perf", description="Tiny offline micro-bench harness.")
     tg = p.add_mutually_exclusive_group(required=False)
     tg.add_argument("--torch-matmul", action="store_true", help="Benchmark a torch matmul.")

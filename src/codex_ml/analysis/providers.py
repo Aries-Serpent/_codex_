@@ -5,7 +5,8 @@ import json
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency
@@ -16,7 +17,7 @@ except Exception:  # pragma: no cover - requests missing or broken
 
 class SearchProvider(ABC):
     @abstractmethod
-    def search(self, query: str) -> Dict[str, Any]:  # pragma: no cover - interface
+    def search(self, query: str) -> dict[str, Any]:  # pragma: no cover - interface
         ...
 
 
@@ -24,11 +25,11 @@ class InternalRepoSearch(SearchProvider):
     def __init__(self, root: Path) -> None:
         self.root = root
 
-    def search(self, query: str) -> Dict[str, Any]:
+    def search(self, query: str) -> dict[str, Any]:
         import glob
         import re
 
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         pattern = re.compile(re.escape(query), re.I)
         for path in glob.glob(str(self.root / "**/*.py"), recursive=True):
             try:
@@ -75,7 +76,7 @@ class ExternalWebSearch(SearchProvider):
     """Configurable external search provider with offline-safe defaults."""
 
     DEFAULT_ENDPOINT = "https://api.duckduckgo.com/"
-    _DEFAULT_PARAMS: Dict[str, Any] = {
+    _DEFAULT_PARAMS: dict[str, Any] = {
         "format": "json",
         "no_html": 1,
         "no_redirect": 1,
@@ -106,8 +107,8 @@ class ExternalWebSearch(SearchProvider):
         self.timeout = base_timeout if base_timeout > 0 else 5.0
         self._http_get = http_get
 
-    def search(self, query: str) -> Dict[str, Any]:
-        result: Dict[str, Any] = {
+    def search(self, query: str) -> dict[str, Any]:
+        result: dict[str, Any] = {
             "provider": "external_web",
             "query": query,
             "results": [],
@@ -176,7 +177,7 @@ class ExternalWebSearch(SearchProvider):
         candidate = Path(self.endpoint).expanduser()
         return "file", candidate
 
-    def _perform_http(self, query: str, result: Dict[str, Any]) -> Dict[str, Any]:
+    def _perform_http(self, query: str, result: dict[str, Any]) -> dict[str, Any]:
         http_get = self._http_get
         if http_get is None and requests is not None:
             http_get = requests.get  # type: ignore[assignment]
@@ -230,7 +231,7 @@ class ExternalWebSearch(SearchProvider):
         result["status"] = "ok"
         return result
 
-    def _load_offline_index(self, path: Path, query: str, result: Dict[str, Any]) -> Dict[str, Any]:
+    def _load_offline_index(self, path: Path, query: str, result: dict[str, Any]) -> dict[str, Any]:
         try:
             raw_text = path.read_text(encoding="utf-8")
         except FileNotFoundError:
@@ -263,8 +264,8 @@ class ExternalWebSearch(SearchProvider):
         result["status"] = "ok"
         return result
 
-    def _normalise_payload(self, payload: Any) -> List[Dict[str, Any]]:
-        def extract(obj: Any) -> Iterable[Dict[str, Any]]:
+    def _normalise_payload(self, payload: Any) -> list[dict[str, Any]]:
+        def extract(obj: Any) -> Iterable[dict[str, Any]]:
             if isinstance(obj, dict):
                 yield obj
                 for key in ("RelatedTopics", "results", "items", "data", "Topics"):
@@ -276,7 +277,7 @@ class ExternalWebSearch(SearchProvider):
                 for child in obj:
                     yield from extract(child)
 
-        normalised: List[Dict[str, Any]] = []
+        normalised: list[dict[str, Any]] = []
         for item in extract(payload):
             title = item.get("Text") or item.get("title") or item.get("heading") or ""
             url = item.get("FirstURL") or item.get("url") or item.get("link") or ""

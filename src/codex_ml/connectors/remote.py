@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 from codex_ml.monitoring.health import record_health_event
 
@@ -50,7 +51,7 @@ class RemoteConnector(Connector):
 
         return self._local.root
 
-    async def list_files(self, path: str) -> List[str]:  # type: ignore[override]
+    async def list_files(self, path: str) -> list[str]:  # type: ignore[override]
         try:
             entries = await self._local.list_files(path)
         except ConnectorError as exc:

@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Dict, Mapping
+from typing import Mapping
+from typing import Mapping
 
 try:  # pragma: no cover - torch optional in tests
     import torch
@@ -28,10 +29,10 @@ def _perplexity(avg_loss: float) -> float:
         return float("inf")
 
 
-def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> Dict[str, float]:
+def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict[str, float]:
     """Derive common scalar metrics from a batch forward pass."""
 
-    record: Dict[str, float] = {}
+    record: dict[str, float] = {}
 
     loss = getattr(outputs, "loss", None)
     if loss is not None:

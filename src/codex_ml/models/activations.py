@@ -1,14 +1,15 @@
 # BEGIN: CODEX_ACTIVATIONS
 from __future__ import annotations
 
-from typing import Callable, Dict
+from typing import Callable
+from typing import Callable
 
 try:
     import torch
     import torch.nn as nn
 except Exception:
     torch, nn = None, None  # type: ignore
-_REGISTRY: Dict[str, Callable] = {}
+_REGISTRY: dict[str, Callable] = {}
 
 
 def _register(name: str):

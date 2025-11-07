@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
-from typing import List
 
 from .base import Connector
 
 
 class LocalConnector(Connector):
-    async def list_files(self, path: str) -> List[str]:
+    async def list_files(self, path: str) -> list[str]:
         return await asyncio.to_thread(lambda: [p.name for p in Path(path).iterdir()])
 
     async def read_file(self, path: str) -> bytes:

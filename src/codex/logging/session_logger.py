@@ -30,7 +30,8 @@ import uuid
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -69,11 +70,11 @@ _DB_LOCK = _shared_DB_LOCK or threading.RLock()
 
 # Module-level tracker for initialized database paths
 INITIALIZED_PATHS: set[str] = set()
-_INITIALIZING_PATHS: Dict[str, threading.Event] = {}
+_INITIALIZING_PATHS: dict[str, threading.Event] = {}
 
 # Optional SQLite connection pool keyed by database path
 USE_POOL = os.getenv("CODEX_SQLITE_POOL") == "1"
-CONN_POOL: Dict[str, sqlite3.Connection] = {}
+CONN_POOL: dict[str, sqlite3.Connection] = {}
 
 
 def _configure_connection(conn: sqlite3.Connection) -> None:
@@ -182,7 +183,7 @@ def _fallback_log_event(
     role: str,
     message: str,
     db_path: Optional[Path] = None,
-    meta: Optional[Dict[str, Any]] = None,
+    meta: Optional[dict[str, Any]] = None,
 ):
     p = init_db(db_path)
     key = str(p)
@@ -233,13 +234,13 @@ def log_event(
     role: str,
     message: str,
     db_path: Optional[Path] = None,
-    meta: Optional[Dict[str, Any]] = None,
+    meta: Optional[dict[str, Any]] = None,
 ):
     """Delegate to shared log_event if available, otherwise fallback."""
     if _shared_log_event is not None:
         if getattr(_shared_log_event, "__module__", "") == "codex.monkeypatch.log_adapters":
             _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
-            adapter_meta: Dict[str, Any] = {"session_id": session_id}
+            adapter_meta: dict[str, Any] = {"session_id": session_id}
             if meta is not None:
                 adapter_meta["meta"] = meta
             adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
@@ -295,7 +296,7 @@ def get_session_id() -> str:
     return sid
 
 
-def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+def fetch_messages(session_id: str, db_path: Optional[Path] = None) -> list[dict[str, Any]]:
     path = Path(db_path or _default_db_path())
     return _fetch_messages_mod.fetch_messages(session_id, db_path=path)
 
@@ -305,7 +306,7 @@ def log_message(
     role: str,
     message,
     db_path: Optional[Path] = None,
-    meta: Optional[Dict[str, Any]] = None,
+    meta: Optional[dict[str, Any]] = None,
 ):
     """Validate role, normalize message to string, ensure DB init, and write.
 

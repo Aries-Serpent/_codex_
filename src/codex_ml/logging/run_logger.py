@@ -8,7 +8,8 @@ from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import is_legacy_mode
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter
@@ -37,13 +38,13 @@ def _jsonify(value: Any) -> Any:
     return str(value)
 
 
-def _normalize_mapping(value: Mapping[str, Any] | None) -> Dict[str, Any]:
+def _normalize_mapping(value: Mapping[str, Any] | None) -> dict[str, Any]:
     if value is None:
         return {}
     return {str(k): _jsonify(v) for k, v in value.items()}
 
 
-def _normalize_cli(cli: Any) -> Dict[str, Any]:
+def _normalize_cli(cli: Any) -> dict[str, Any]:
     if cli is None:
         return {"argv": []}
     if isinstance(cli, SequenceABC) and not isinstance(cli, (str, bytes, bytearray)):
@@ -56,7 +57,7 @@ def _normalize_cli(cli: Any) -> Dict[str, Any]:
             argv_list = []
         else:
             argv_list = [str(argv)]
-        payload: Dict[str, Any] = {"argv": argv_list}
+        payload: dict[str, Any] = {"argv": argv_list}
         options = cli.get("options")  # type: ignore[arg-type]
         if isinstance(options, MappingABC):
             payload["options"] = _normalize_mapping(options)
@@ -68,8 +69,8 @@ def _normalize_cli(cli: Any) -> Dict[str, Any]:
     return {"argv": [str(cli)]}
 
 
-def _rotation_kwargs() -> Dict[str, Any]:
-    options: Dict[str, Any] = {}
+def _rotation_kwargs() -> dict[str, Any]:
+    options: dict[str, Any] = {}
     for env, (key, caster) in _ROTATION_ENV.items():
         raw = os.getenv(env)
         if raw is None:
@@ -145,10 +146,10 @@ class RunLogger:
         config: Mapping[str, Any] | None = None,
         derived: Mapping[str, Any] | None = None,
         metadata: Mapping[str, Any] | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Append a normalised parameter record to ``params.ndjson``."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
-        record: Dict[str, Any] = {
+        record: dict[str, Any] = {
             "$schema": PARAMS_SCHEMA_URI,
             "schema_version": self.schema_version,
             "timestamp": timestamp,
@@ -173,16 +174,16 @@ class RunLogger:
         value: Any,
         dataset: Optional[str] = None,
         tags: Mapping[str, Any] | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Persist a single metric event and return the structured payload."""
         timestamp = self._timestamp() if not self._legacy else self._legacy_timestamp()
-        raw_tags: Dict[str, Any]
+        raw_tags: dict[str, Any]
         if isinstance(tags, MappingABC):
             raw_tags = {str(k): tags[k] for k in tags}
         else:
             raw_tags = {}
 
-        record: Dict[str, Any] = {
+        record: dict[str, Any] = {
             "step": int(step),
             "split": str(split),
             "metric": str(metric),

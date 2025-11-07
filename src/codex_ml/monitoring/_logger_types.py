@@ -11,7 +11,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 from codex_ml.monitoring.system_metrics import SamplerStatus
 
@@ -33,9 +34,9 @@ class CodexLoggers:
     wb: Any = None
     mlflow_active: bool = False
     gpu: bool = False
-    degradations: Tuple[TelemetryComponentStatus, ...] = ()
+    degradations: tuple[TelemetryComponentStatus, ...] = ()
     system_status: "SamplerStatus | None" = None
-    prometheus: Tuple[bool, Optional[Path], Optional[str]] | None = None
+    prometheus: tuple[bool, Optional[Path], Optional[str]] | None = None
 
     # Back-compat convenience: allow dict-like access for common keys.
     def __getitem__(self, key: str) -> Any:  # pragma: no cover - convenience

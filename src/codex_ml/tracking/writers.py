@@ -12,7 +12,8 @@ from collections.abc import Mapping as MappingABC
 from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Tuple
+from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -77,7 +78,7 @@ def _exc_reason(component: str, exc: Exception) -> str:
     return f"{component}:{detail}"
 
 
-def _parse_reason(reason: str) -> Tuple[str, str]:
+def _parse_reason(reason: str) -> tuple[str, str]:
     head, _, tail = reason.partition(":")
     return head or "unknown", tail or ""
 
@@ -440,7 +441,7 @@ class NdjsonWriter(BaseWriter):
 
     def _prepare_manifest(
         self, record: dict[str, Any]
-    ) -> Tuple[dict[str, Any], Optional[dict[str, Any]]]:
+    ) -> tuple[dict[str, Any], Optional[dict[str, Any]]]:
         value = record.get("value")
         scalar_value = self._coerce_scalar(value)
         tags_dict = dict(record.get("tags") or {})
@@ -727,8 +728,8 @@ class CompositeWriter(BaseWriter):
     """Dispatch to multiple writers, swallowing individual errors."""
 
     def __init__(self, writers: Iterable[BaseWriter]) -> None:
-        self._writers: List[BaseWriter] = list(writers)
-        components: list[Tuple[str, str]] = []
+        self._writers: list[BaseWriter] = list(writers)
+        components: list[tuple[str, str]] = []
         for writer in self._writers:
             reason: Optional[str]
             status_getter = getattr(writer, "status", None)
@@ -741,7 +742,7 @@ class CompositeWriter(BaseWriter):
                 reason = getattr(writer, "_disabled_reason", None)
             if reason:
                 components.append(_parse_reason(reason))
-        self._disabled_components: Tuple[Tuple[str, str], ...] = tuple(components)
+        self._disabled_components: tuple[tuple[str, str], ...] = tuple(components)
         if self._disabled_components:
             summary = "; ".join(
                 f"{name} ({detail})" if detail else name
@@ -764,7 +765,7 @@ class CompositeWriter(BaseWriter):
                 logger.debug("Writer close error", exc_info=exc)
 
     @property
-    def disabled_components(self) -> Tuple[Tuple[str, str], ...]:
+    def disabled_components(self) -> tuple[tuple[str, str], ...]:
         return self._disabled_components
 
 

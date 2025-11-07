@@ -6,7 +6,8 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import IO, Dict, Optional
+from typing import IO, Optional
+from typing import IO, Optional
 
 _ENV_FLAG = "CODEX_EMIT_CHECKPOINT_JSON"
 
@@ -33,7 +34,7 @@ def maybe_emit_checkpoint_saved_event(
     *,
     sha256: Optional[str] = None,
     num_bytes: Optional[int] = None,
-    extra: Optional[Dict[str, object]] = None,
+    extra: Optional[dict[str, object]] = None,
     stream: Optional[IO[str]] = None,
 ) -> bool:
     """If enabled, emit one JSON line describing a saved checkpoint."""
@@ -44,7 +45,7 @@ def maybe_emit_checkpoint_saved_event(
         p = Path(path)
         nb = num_bytes if num_bytes is not None else (p.stat().st_size if p.exists() else None)
         digest = sha256 if sha256 is not None else (_sha256(p) if p.exists() else None)
-        payload: Dict[str, object] = {
+        payload: dict[str, object] = {
             "event": "checkpoint_saved",
             "path": str(p),
             "bytes": nb,

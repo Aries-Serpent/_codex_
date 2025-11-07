@@ -4,7 +4,8 @@ Per-tenant vector search using FAISS
 """
 
 import logging
-from typing import List, Dict, Any, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 from pathlib import Path
 
 import numpy as np
@@ -28,7 +29,7 @@ class RetrievalEngine:
         self.embedding_model_name = embedding_model
         self.cache_dir = cache_dir
         self.embedding_model = EmbeddingModel(embedding_model, cache_dir)
-        self.tenant_stores: Dict[str, FAISSStore] = {}
+        self.tenant_stores: dict[str, FAISSStore] = {}
     
     def get_store(self, tenant_id: str, index_name: str = "default") -> FAISSStore:
         """Get or load the vector store for a tenant
@@ -64,8 +65,8 @@ class RetrievalEngine:
         query: str,
         top_k: int = 5,
         index_name: str = "default",
-        filters: Optional[Dict[str, Any]] = None,
-    ) -> List[Dict[str, Any]]:
+        filters: Optional[dict[str, Any]] = None,
+    ) -> list[dict[str, Any]]:
         """Search for relevant documents
         
         Args:
@@ -108,7 +109,7 @@ class RetrievalEngine:
     def build_index(
         self,
         tenant_id: str,
-        documents: List[Dict[str, Any]],
+        documents: list[dict[str, Any]],
         index_name: str = "default",
         text_field: str = "content",
     ):
@@ -151,7 +152,7 @@ def search_knowledge_base(
     top_k: int = 5,
     index_base_dir: str = ".codex/tenants",
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Convenience function for searching knowledge base
     
     Args:

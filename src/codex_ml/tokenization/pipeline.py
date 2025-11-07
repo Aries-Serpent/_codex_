@@ -6,7 +6,8 @@ import json
 from dataclasses import asdict, fields
 from glob import glob
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Iterable, Optional, Sequence
+from typing import Any, Iterable, Optional, Sequence
 
 from tokenizers import Tokenizer
 
@@ -20,7 +21,7 @@ class TokenizerPipelineError(RuntimeError):
     """Raised when tokenizer CLI pipeline operations fail."""
 
 
-def _load_yaml_config(path: Path) -> Dict[str, Any]:
+def _load_yaml_config(path: Path) -> dict[str, Any]:
     try:
         data = safe_load(path.read_text(encoding="utf-8")) or {}
     except FileNotFoundError as exc:  # pragma: no cover - Click handles presentation
@@ -53,14 +54,14 @@ def load_train_config(config_path: str) -> TrainTokenizerConfig:
         raise TokenizerPipelineError(f"invalid tokenizer config: {exc}") from exc
 
 
-def _resolve_corpus_files(cfg: TrainTokenizerConfig) -> List[str]:
+def _resolve_corpus_files(cfg: TrainTokenizerConfig) -> list[str]:
     values = cfg.corpus_glob
     patterns: Iterable[str]
     if isinstance(values, str):
         patterns = (values,)
     else:
         patterns = values
-    files: List[str] = []
+    files: list[str] = []
     for pattern in patterns:
         files.extend(sorted(glob(pattern, recursive=True)))
     return files
@@ -88,7 +89,7 @@ def run_train(
         raise TokenizerPipelineError(str(exc)) from exc
 
 
-def run_validate(config_path: str) -> Dict[str, Any]:
+def run_validate(config_path: str) -> dict[str, Any]:
     """Validate configuration and corpus files referenced by ``config_path``."""
 
     cfg = load_train_config(config_path)
@@ -100,7 +101,7 @@ def run_validate(config_path: str) -> Dict[str, Any]:
     tokenizer_path = _normalise_tokenizer_path(out_dir / "tokenizer.json")
     manifest_path = out_dir / "manifest.json"
     provenance_dir = out_dir / "provenance"
-    manifest: Optional[Dict[str, Any]] = None
+    manifest: Optional[dict[str, Any]] = None
     manifest_error: Optional[str] = None
     if manifest_path.exists():
         try:
@@ -169,7 +170,7 @@ def _load_sentencepiece_tokenizer(path: Path) -> SentencePieceAdapter:
     return adapter.load()
 
 
-def _load_tokenizer(path: str) -> Tuple[str, object]:
+def _load_tokenizer(path: str) -> tuple[str, object]:
     tokenizer_path = _normalise_tokenizer_path(Path(path))
     if not tokenizer_path.exists():
         raise TokenizerPipelineError(f"tokenizer file not found: {tokenizer_path}")
@@ -190,7 +191,7 @@ def _load_tokenizer(path: str) -> Tuple[str, object]:
     )
 
 
-def run_encode(tokenizer_path: str, text: str) -> List[int]:
+def run_encode(tokenizer_path: str, text: str) -> list[int]:
     """Encode ``text`` using the tokenizer at ``tokenizer_path``."""
 
     kind, tokenizer = _load_tokenizer(tokenizer_path)

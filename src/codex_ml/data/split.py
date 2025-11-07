@@ -13,7 +13,8 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Iterable, Mapping, Optional, Sequence
 
 DEFAULT_MANIFEST_NAME = "split_manifest.json"
 DEFAULT_CHECKSUMS_NAME = "split_checksums.json"
@@ -53,10 +54,10 @@ class SplitMetadata:
     """Metadata describing a split for the JSON manifest."""
 
     split: str
-    indices: List[int]
+    indices: list[int]
     checksum: str
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "split": self.split,
             "indices": list(self.indices),
@@ -75,7 +76,7 @@ def _build_manifest(
     val: SplitMetadata,
     test: SplitMetadata,
     fractions: Mapping[str, float],
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Assemble the manifest payload."""
 
     manifest = {
@@ -117,7 +118,7 @@ def train_val_test_split(
     dataset_id: Optional[str] = None,
     manifest_path: Optional[str | Path] = None,
     artifact_dir: Optional[str | Path] = None,
-) -> Tuple[List[Any], List[Any], List[Any]]:
+) -> tuple[list[Any], list[Any], list[Any]]:
     """Split ``dataset`` into train/val/test subsets.
 
     Parameters
@@ -144,7 +145,7 @@ def train_val_test_split(
 
     Returns
     -------
-    Tuple[List[Any], List[Any], List[Any]]
+    tuple[list[Any], list[Any], list[Any]]
         Train, validation and test subsets in that order.
     """
 
@@ -166,7 +167,7 @@ def train_val_test_split(
     val_idx = indices[n_test : n_test + n_val]
     train_idx = indices[n_test + n_val :]
 
-    def _subset(idxs: Sequence[int]) -> List[Any]:
+    def _subset(idxs: Sequence[int]) -> list[Any]:
         return [dataset[i] for i in idxs]
 
     dataset_name = getattr(dataset, "name", None)

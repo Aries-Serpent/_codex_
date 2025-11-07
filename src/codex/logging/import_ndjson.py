@@ -36,7 +36,8 @@ import sqlite3
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 try:  # pragma: no cover - platform dependent
     import fcntl
@@ -230,11 +231,11 @@ def import_session(
 
 def import_all(
     log_dir: Path | None = None, db_path: Path | str | None = None
-) -> Dict[str, int]:
+) -> dict[str, int]:
     """Import all ``*.ndjson`` files found under ``log_dir``."""
 
     log_dir = (log_dir or _default_log_dir()).expanduser().resolve()
-    results: Dict[str, int] = {}
+    results: dict[str, int] = {}
     for p in sorted(log_dir.glob("*.ndjson")):
         sid = p.stem
         results[sid] = import_session(sid, log_dir=log_dir, db_path=db_path)

@@ -17,7 +17,8 @@ import json
 import numbers
 import os
 from pathlib import Path
-from typing import Dict, Optional, Sequence
+from typing import Optional, Sequence
+from typing import Optional, Sequence
 
 spm = None  # type: ignore[assignment]
 
@@ -104,8 +105,8 @@ class SentencePieceAdapter:
         return self.sp.decode(ids)
 
     def add_special_tokens(
-        self, tokens: Sequence[str], existing: Optional[Dict[str, int]] = None
-    ) -> Dict[str, int]:
+        self, tokens: Sequence[str], existing: Optional[dict[str, int]] = None
+    ) -> dict[str, int]:
         if isinstance(tokens, (str, bytes)):
             raise ValueError("tokens must be a sequence of strings")
 
@@ -158,7 +159,7 @@ class SentencePieceAdapter:
                 legacy_seen.add(token)
                 legacy_tokens.append(token)
 
-        on_disk: Dict[str, int] = {}
+        on_disk: dict[str, int] = {}
         if special_path.exists():
             try:
                 raw = json.loads(special_path.read_text(encoding="utf-8"))
@@ -177,7 +178,7 @@ class SentencePieceAdapter:
                     continue
                 raise ValueError("special token ids must be integers")
 
-        provided: Dict[str, int] = {}
+        provided: dict[str, int] = {}
         if existing:
             for key, value in existing.items():
                 if not isinstance(key, str):
@@ -190,10 +191,10 @@ class SentencePieceAdapter:
                     continue
                 raise ValueError("special token ids must be integers")
 
-        merged: Dict[str, int] = dict(on_disk)
+        merged: dict[str, int] = dict(on_disk)
         merged.update(provided)
 
-        id_to_token: Dict[int, str] = {}
+        id_to_token: dict[int, str] = {}
         for token, idx in merged.items():
             if idx in id_to_token and id_to_token[idx] != token:
                 raise ValueError(

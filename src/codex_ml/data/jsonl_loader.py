@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import random
 from pathlib import Path
-from typing import Iterable, List, Sequence, Tuple
+from typing import Iterable, Sequence
+from typing import Iterable, Sequence
 
 __all__ = ["load_jsonl"]
 
@@ -37,7 +38,7 @@ def _extract_texts_from_line(line: str) -> Iterable[str]:
 
 def load_jsonl(
     path: str | Path, *, seed: int = 42, val_fraction: float = 0.0
-) -> Tuple[List[str], List[str]]:
+) -> tuple[list[str], list[str]]:
     """Load a JSONL file, returning (train_texts, val_texts).
 
     Parameters
@@ -54,7 +55,7 @@ def load_jsonl(
     if not target.exists():
         return [], []
 
-    texts: List[str] = []
+    texts: list[str] = []
     for line in target.read_text(encoding="utf-8").splitlines():
         for item in _extract_texts_from_line(line):
             texts.append(str(item).strip())

@@ -5,7 +5,8 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+from typing import Any
 
 try:  # pragma: no cover - optional dependency path
     import yaml  # type: ignore
@@ -51,12 +52,12 @@ def _load_yaml(path: Path) -> Mapping[str, Any] | None:
     return None
 
 
-def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> Dict[str, str]:
+def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> dict[str, str]:
     try:
         content = path.read_text(encoding="utf-8")
     except OSError:
         return {}
-    results: Dict[str, str] = {}
+    results: dict[str, str] = {}
     for key in keys:
         pattern = re.compile(rf"^\s*{re.escape(key)}\s*:\s*(.+)$", re.MULTILINE)
         match = pattern.search(content)
@@ -68,7 +69,7 @@ def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> Dict[str, str
 
 def _collect_reasoning_sections(
     repo_root: Path,
-) -> tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
     """Collect reasoning control-surface entries.
 
     Returns a tuple of ``(summary, sections)`` where ``summary`` maps dotted
@@ -77,8 +78,8 @@ def _collect_reasoning_sections(
     ``--include`` filters.
     """
 
-    summary: Dict[str, List[str]] = {}
-    sections: Dict[str, List[str]] = {}
+    summary: dict[str, list[str]] = {}
+    sections: dict[str, list[str]] = {}
 
     def _add_entry(
         *,
@@ -215,7 +216,7 @@ def _collect_reasoning_sections(
     return summary, sections
 
 
-def _format_reasoning_summary(summary: Mapping[str, Sequence[str]]) -> List[str]:
+def _format_reasoning_summary(summary: Mapping[str, Sequence[str]]) -> list[str]:
     """Format the reasoning summary block for display."""
 
     ordered_keys = [
@@ -226,7 +227,7 @@ def _format_reasoning_summary(summary: Mapping[str, Sequence[str]]) -> List[str]
         "metadata.rollout_ring",
         "deployment.rollout_ring",
     ]
-    lines: List[str] = []
+    lines: list[str] = []
 
     def _append_block(key: str) -> None:
         values = summary.get(key)
@@ -253,15 +254,15 @@ def render_repo_map(*, reasoning: bool = False, include: Sequence[str] | None = 
     """Render repository metadata with optional reasoning overlays."""
 
     top_level = _list_top_level(REPO_ROOT)
-    extras: Dict[str, List[str]] = {"key_files": _list_key_files(REPO_ROOT)}
-    reasoning_status_block: List[str] = []
+    extras: dict[str, list[str]] = {"key_files": _list_key_files(REPO_ROOT)}
+    reasoning_status_block: list[str] = []
 
     if reasoning:
         summary, sections = _collect_reasoning_sections(REPO_ROOT)
         extras.update(sections)
         reasoning_status_block = _format_reasoning_summary(summary)
 
-    sections: List[tuple[str, List[str]]] = []
+    sections: list[tuple[str, list[str]]] = []
     if include:
         for key in include:
             if key == "top_level":
@@ -286,7 +287,7 @@ def render_repo_map(*, reasoning: bool = False, include: Sequence[str] | None = 
     if not sections:
         return ""
 
-    lines: List[str] = []
+    lines: list[str] = []
     first = True
     for key, values in sections:
         if not values:

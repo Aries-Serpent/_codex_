@@ -11,7 +11,7 @@ Note: This tree lists all files to create/update/refactor to close identified ga
 - CI workflow with 90-day artifact retention and baseline bootstrap
 
 Legend: [NEW] create | [UPDATE] modify | [REFACTOR] structural/logic change
-```
+```text
 Repository-root
 ├─ .copilot-space/
 │  └─ [UPDATE] workflow.yaml

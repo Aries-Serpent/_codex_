@@ -13,10 +13,8 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
-    Dict,
     Iterable,
     Iterator,
-    List,
     Mapping,
     Optional,
     Sequence,
@@ -59,10 +57,10 @@ class CacheManifest:
     shard_index: int = 0
     shard_total: int = 1
     created_at: float = field(default_factory=lambda: time.time())
-    params: Dict[str, Any] = field(default_factory=dict)
-    splits: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
+    splits: dict[str, dict[str, Any]] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "version": self.version,
             "source": self.source,
@@ -193,12 +191,12 @@ def stream_texts(
             yield text
 
 
-def take_n(iterable: Iterable[T], n: int, *, strict: bool = False) -> List[T]:
+def take_n(iterable: Iterable[T], n: int, *, strict: bool = False) -> list[T]:
     """Take ``n`` items from ``iterable`` deterministically."""
 
     if n < 0:
         raise ValueError("n must be non-negative")
-    result: List[T] = []
+    result: list[T] = []
     for item in iterable:
         result.append(item)
         if len(result) >= n:
@@ -208,7 +206,7 @@ def take_n(iterable: Iterable[T], n: int, *, strict: bool = False) -> List[T]:
     return result
 
 
-def seeded_shuffle(items: Sequence[T], seed: int) -> List[T]:
+def seeded_shuffle(items: Sequence[T], seed: int) -> list[T]:
     """Return a deterministically shuffled copy of ``items`` using ``seed``."""
 
     from random import Random
@@ -250,7 +248,7 @@ def _detect_dataset_format(path: Path) -> str:
     return "text"
 
 
-def _extract_text_from_mapping(mapping: Dict[str, Any]) -> str:
+def _extract_text_from_mapping(mapping: dict[str, Any]) -> str:
     for key in _TEXT_FIELD_CANDIDATES:
         if key in mapping and mapping[key] is not None:
             return str(mapping[key])
@@ -260,8 +258,8 @@ def _extract_text_from_mapping(mapping: Dict[str, Any]) -> str:
     raise ValueError("Could not determine text field in mapping record")
 
 
-def _coerce_jsonl_records(lines: Iterable[str]) -> List[str]:
-    texts: List[str] = []
+def _coerce_jsonl_records(lines: Iterable[str]) -> list[str]:
+    texts: list[str] = []
     for idx, line in enumerate(lines, start=1):
         try:
             record = json.loads(line)
@@ -278,7 +276,7 @@ def _coerce_jsonl_records(lines: Iterable[str]) -> List[str]:
     return texts
 
 
-def _coerce_csv_records(lines: Iterable[str], *, skip_empty: bool) -> List[str]:
+def _coerce_csv_records(lines: Iterable[str], *, skip_empty: bool) -> list[str]:
     # ``csv`` expects newline-terminated rows; rehydrate in-memory buffer.
     buffer = io.StringIO()
     for line in lines:
@@ -299,7 +297,7 @@ def _coerce_csv_records(lines: Iterable[str], *, skip_empty: bool) -> List[str]:
     if text_field is None:
         text_field = fieldnames[0]
 
-    texts: List[str] = []
+    texts: list[str] = []
     for row in reader:
         if not row:
             continue
@@ -314,8 +312,8 @@ def _coerce_csv_records(lines: Iterable[str], *, skip_empty: bool) -> List[str]:
 
 
 def _normalise_loaded_texts(
-    path: Path, lines: List[str], *, skip_empty: bool, fmt: str | None = None
-) -> List[str]:
+    path: Path, lines: list[str], *, skip_empty: bool, fmt: str | None = None
+) -> list[str]:
     fmt = fmt or _detect_dataset_format(path)
     if fmt == "jsonl":
         return _coerce_jsonl_records(lines)
@@ -324,7 +322,7 @@ def _normalise_loaded_texts(
     return lines
 
 
-def load_texts(path: Path, encoding: str = "utf-8") -> List[str]:
+def load_texts(path: Path, encoding: str = "utf-8") -> list[str]:
     """Load text records from ``path`` eager into memory."""
 
     return list(stream_texts(path, encoding=encoding))
@@ -343,7 +341,7 @@ def load_dataset(
     shard_total: int = 1,
     max_items: Optional[int] = None,
     skip_empty: bool = True,
-) -> List[str]:
+) -> list[str]:
     """Load dataset from ``path`` with optional caching and manifest tracking."""
 
     if cache_dir is None:
@@ -418,7 +416,7 @@ def apply_safety_filter(
     texts: Sequence[str],
     filter_enabled: bool,
     safety_fn: Optional[Callable[[str], str]] = None,
-) -> List[str]:
+) -> list[str]:
     """Optionally apply ``safety_fn`` to each text when ``filter_enabled``."""
 
     if not filter_enabled or safety_fn is None:
@@ -426,7 +424,7 @@ def apply_safety_filter(
     return [safety_fn(t) for t in texts]
 
 
-def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
+def prepare_data_from_config(data_cfg: DataConfig) -> dict[str, Any]:
     """Prepare datasets according to ``data_cfg`` and write cache artefacts."""
 
     source_path = Path(data_cfg.source_path)
@@ -467,7 +465,7 @@ def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
     total_remaining_ratio = sum(r for _, r in other_ratios)
     remainder_shuffled = seeded_shuffle(remainder, seed + 1)
 
-    split_map: Dict[str, List[str]] = {"train": train_texts}
+    split_map: dict[str, list[str]] = {"train": train_texts}
     offset = 0
     remaining = len(remainder_shuffled)
     for idx, (name, ratio) in enumerate(other_ratios):
@@ -503,7 +501,7 @@ def prepare_data_from_config(data_cfg: DataConfig) -> Dict[str, Any]:
         else cache_dir / data_cfg.cache_manifest_name
     )
 
-    split_metadata: Dict[str, Dict[str, Any]] = {}
+    split_metadata: dict[str, dict[str, Any]] = {}
     for name, values in split_map.items():
         target = cache_dir / f"{name}.txt"
         target.write_text("\n".join(values) + ("\n" if values else ""), encoding=data_cfg.encoding)

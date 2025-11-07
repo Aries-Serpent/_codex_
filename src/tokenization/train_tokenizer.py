@@ -8,7 +8,8 @@ import warnings
 from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
-from typing import Callable, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
+from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 from ingestion import ingest
 
@@ -64,15 +65,15 @@ class TrainTokenizerConfig:
     stream_chunk_size: int | None = None
 
 
-def _expand_files(patterns: Sequence[str] | str) -> List[str]:
+def _expand_files(patterns: Sequence[str] | str) -> list[str]:
     pats = [patterns] if isinstance(patterns, str) else list(patterns)
-    files: List[str] = []
+    files: list[str] = []
     for pat in pats:
         files.extend(sorted(glob(pat, recursive=True)))
     return files
 
 
-def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> Tuple[bool, Optional[int]]:
+def _resolve_streaming_options(cfg: TrainTokenizerConfig) -> tuple[bool, Optional[int]]:
     streaming = bool(cfg.streaming or cfg.stream_chunk_size is not None)
     chunk_size = cfg.stream_chunk_size
     if chunk_size is not None and chunk_size <= 0:

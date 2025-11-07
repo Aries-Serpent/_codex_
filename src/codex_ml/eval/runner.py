@@ -10,7 +10,8 @@ import uuid
 from dataclasses import asdict, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Optional, Sequence, TypeVar
+from typing import Any, Callable, Optional, Sequence, TypeVar
 
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
@@ -37,7 +38,7 @@ _T = TypeVar("_T")
 def _append_error_report(
     step_name: str,
     message: str,
-    context: Optional[Dict[str, Any]] = None,
+    context: Optional[dict[str, Any]] = None,
 ) -> None:
     """Append an error entry to the daily Codex report."""
 
@@ -79,7 +80,7 @@ def _safe_operation(
     step_name: str,
     operation: Callable[[], _T],
     *,
-    context: Optional[Dict[str, Any]] = None,
+    context: Optional[dict[str, Any]] = None,
 ) -> Optional[_T]:
     """Execute ``operation`` while capturing and reporting errors."""
 
@@ -91,20 +92,20 @@ def _safe_operation(
         raise
 
 
-def _normalise_metrics_sink(value: Any) -> List[str]:
+def _normalise_metrics_sink(value: Any) -> list[str]:
     allowed = {"ndjson", "csv", "none"}
     if isinstance(value, str):
         tokens = [token.strip().lower() for token in value.split(",") if token.strip()]
     elif isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
         tokens = [str(item).strip().lower() for item in value if str(item).strip()]
     else:
-        tokens: List[str] = []
+        tokens: list[str] = []
     if not tokens:
         tokens = ["ndjson"]
     invalid = [token for token in tokens if token not in allowed]
     if invalid:
         raise EvaluationError(f"Unsupported metrics sink(s): {sorted(set(invalid))}")
-    seen: List[str] = []
+    seen: list[str] = []
     for token in tokens:
         if token not in seen:
             seen.append(token)
@@ -118,9 +119,9 @@ def _load_records(
     prediction_field: str,
     target_field: str,
     text_field: str,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     fmt = fmt.lower()
-    records: List[Dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
     if fmt in {"jsonl", "ndjson"}:
         for line in dataset_path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
@@ -156,10 +157,10 @@ def _load_records(
 
 
 def _encode_labels(
-    values: Sequence[Any], metric_name: str, *, fallback: Optional[Dict[Any, int]] = None
-) -> Tuple[List[int], Dict[Any, int]]:
-    ints: List[int] = []
-    mapping: Dict[Any, int]
+    values: Sequence[Any], metric_name: str, *, fallback: Optional[dict[Any, int]] = None
+) -> tuple[list[int], dict[Any, int]]:
+    ints: list[int] = []
+    mapping: dict[Any, int]
     if fallback is None:
         mapping = {}
     else:
@@ -184,7 +185,7 @@ def _encode_labels(
     return ints, mapping
 
 
-def _coerce_token_sequence(record: Dict[str, Any], key: str, index: int) -> List[int]:
+def _coerce_token_sequence(record: dict[str, Any], key: str, index: int) -> list[int]:
     tokens = record.get(key)
     if tokens is None:
         raise EvaluationError(f"Record {index} missing '{key}' field")
@@ -196,11 +197,11 @@ def _coerce_token_sequence(record: Dict[str, Any], key: str, index: int) -> List
 
 
 def _collect_perplexity_inputs(
-    records: Sequence[Dict[str, Any]],
-) -> Tuple[List[Any], List[int], bool]:
-    logits: List[Any] = []
-    nll: List[float] = []
-    targets: List[int] = []
+    records: Sequence[dict[str, Any]],
+) -> tuple[list[Any], list[int], bool]:
+    logits: list[Any] = []
+    nll: list[float] = []
+    targets: list[int] = []
     representation: Optional[str] = None
     for idx, rec in enumerate(records):
         target_tokens = rec.get("target_tokens")
@@ -255,7 +256,7 @@ def _invoke_registry_metric(
     metric_fn: Callable[..., Any],
     predictions: Sequence[Any],
     targets: Sequence[Any],
-    records: Sequence[Dict[str, Any]],
+    records: Sequence[dict[str, Any]],
 ) -> Any:
     """Execute a registry metric supporting multiple calling conventions."""
 
@@ -292,13 +293,13 @@ def _invoke_registry_metric(
 
 
 def _compute_metrics(
-    records: Sequence[Dict[str, Any]], metric_names: Sequence[str]
-) -> Dict[str, Any]:
-    results: Dict[str, Any] = {}
+    records: Sequence[dict[str, Any]], metric_names: Sequence[str]
+) -> dict[str, Any]:
+    results: dict[str, Any] = {}
     predictions = [rec.get("prediction") for rec in records]
     targets = [rec.get("target") for rec in records]
 
-    registry_metrics: Dict[str, Tuple[str, Callable[..., Any]]] = {}
+    registry_metrics: dict[str, tuple[str, Callable[..., Any]]] = {}
     try:
         for registered_name in list_metrics():
             key = registered_name.lower()
@@ -335,8 +336,8 @@ def _compute_metrics(
                 raise EvaluationError("accuracy requires prediction and target fields")
             results[metric_name] = metrics.accuracy(predictions, targets)
         elif key in {"token_accuracy", "accuracy@token"}:
-            pred_tokens: List[int] = []
-            target_tokens: List[int] = []
+            pred_tokens: list[int] = []
+            target_tokens: list[int] = []
             for idx, rec in enumerate(records):
                 pred_seq = _coerce_token_sequence(rec, "prediction_tokens", idx)
                 target_seq = _coerce_token_sequence(rec, "target_tokens", idx)
@@ -478,8 +479,8 @@ def run_evaluation(
     eval_cfg: EvaluationConfig,
     *,
     data_cfg: Optional[DataConfig] = None,
-    predictor: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None,
-) -> Dict[str, Any]:
+    predictor: Optional[Callable[[dict[str, Any]], dict[str, Any]]] = None,
+) -> dict[str, Any]:
     """Run evaluation as described by ``eval_cfg``.
 
     Parameters
@@ -709,7 +710,7 @@ def run_evaluation(
         context={"path": str(ndjson_path), "num_records": num_records},
     )
 
-    metrics_outputs: Dict[str, Path] = {}
+    metrics_outputs: dict[str, Path] = {}
 
     if "ndjson" in metrics_sinks:
 

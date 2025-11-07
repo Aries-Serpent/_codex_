@@ -92,10 +92,9 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 ### ImportError on optional dependencies
 
 **Symptom**:
-```
+```text
 "errors": ["codex_ml.peft: ImportError: No module named 'peft'"]
 ```
-
 **Fix**:
 - Add to `--allow-optional` list: `--allow-optional "wandb" "tensorboard" "peft"`
 - Or gate imports in code path via `try/except` + documentation
@@ -103,11 +102,10 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 ### Missing PYTHONPATH
 
 **Symptom**:
-```
+```text
 "root_import_ok": false,
 "root_error": "ModuleNotFoundError: No module named 'codex'"
 ```
-
 **Fix**:
 ```bash
 # Option 1: Install in editable mode

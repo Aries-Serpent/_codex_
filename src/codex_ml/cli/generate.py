@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import Any, List, Sequence
+from typing import Any, Sequence
+from typing import Any, Sequence
 
 from codex_ml import __version__
 from codex_ml.codex_structured_logging import (
@@ -59,7 +60,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--lora-dropout", type=float, default=0.05, help="LoRA dropout probability")
     parser.add_argument("--safety", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--version", action="version", version=f"codex-generate {__version__}")
-    arg_list: List[str] = list(argv) if argv is not None else sys.argv[1:]
+    arg_list: list[str] = list(argv) if argv is not None else sys.argv[1:]
 
     with capture_exceptions(logger):
         args = parser.parse_args(arg_list)

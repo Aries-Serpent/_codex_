@@ -5,7 +5,8 @@ import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Optional
+from typing import Optional
 from urllib.parse import urlparse
 
 
@@ -146,7 +147,7 @@ class NDJSONLogger:
                 except Exception:
                     pass
 
-    def write(self, record: Dict[str, object]) -> None:
+    def write(self, record: dict[str, object]) -> None:
         line = json.dumps(record, ensure_ascii=False)
         try:
             if (

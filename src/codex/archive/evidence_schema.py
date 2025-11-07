@@ -10,7 +10,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 try:
     import jsonschema
@@ -45,7 +46,7 @@ class EvidenceSchemaValidator:
                 with open(path) as f:
                     self.schemas[version] = json.load(f)
 
-    def validate(self, record: Dict[str, Any], version: str = "2.0") -> bool:
+    def validate(self, record: dict[str, Any], version: str = "2.0") -> bool:
         """
         Validate evidence record against schema version.
 
@@ -71,7 +72,7 @@ class EvidenceSchemaValidator:
         jsonschema.validate(instance=record, schema=schema)
         return True
 
-    def auto_detect_version(self, record: Dict[str, Any]) -> str:
+    def auto_detect_version(self, record: dict[str, Any]) -> str:
         """Auto-detect schema version of a record."""
         if "schemaVersion" in record:
             return record["schemaVersion"]
@@ -79,7 +80,7 @@ class EvidenceSchemaValidator:
             return "2.0"
         return "1.0"
 
-    def migrate_to_v2(self, v1_record: Dict[str, Any]) -> Dict[str, Any]:
+    def migrate_to_v2(self, v1_record: dict[str, Any]) -> dict[str, Any]:
         """
         Migrate v1 record to v2 format.
 
@@ -106,10 +107,10 @@ class EvidenceSchemaValidator:
 
     def migrate_record(
         self,
-        record: Dict[str, Any],
+        record: dict[str, Any],
         from_version: Optional[str] = None,
         to_version: str = "2.0",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Migrate record between schema versions.
 

@@ -27,7 +27,8 @@ import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 __all__ = ["Connector", "LocalConnector", "ConnectorError"]
 
@@ -44,7 +45,7 @@ class Connector(ABC):
     """Abstract asynchronous storage connector."""
 
     @abstractmethod
-    async def list_files(self, path: str) -> List[str]:
+    async def list_files(self, path: str) -> list[str]:
         """Return a sorted list of files under ``path``.
 
         Implementations MUST return paths relative to the connector root to
@@ -101,13 +102,13 @@ class LocalConnector(Connector):
             raise ConnectorError(f"refusing to access path outside root: {relative_path}")
         return candidate
 
-    async def list_files(self, path: str) -> List[str]:
+    async def list_files(self, path: str) -> list[str]:
         target = self._resolve(path)
         if not target.exists():
             return []
 
-        def _scan() -> List[str]:
-            items: List[str] = []
+        def _scan() -> list[str]:
+            items: list[str] = []
             if target.is_file():
                 rel = target.relative_to(self.root)
                 items.append(str(rel))

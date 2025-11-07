@@ -38,10 +38,9 @@ print(f"CUDA devices: {torch.cuda.device_count()}")
 ### 1. ImportError: No module named 'accelerate'
 
 **Symptom:**
-```
+```text
 ImportError: No module named 'accelerate'
 ```
-
 **Solution:**
 Install accelerate with the appropriate extras:
 
@@ -59,10 +58,9 @@ pip install -e ".[train]"
 ### 2. Accelerate Version Compatibility
 
 **Symptom:**
-```
+```text
 TypeError: Accelerator.__init__() got an unexpected keyword argument 'dataloader_config'
 ```
-
 **Cause:**
 Mixing accelerate API versions (pre-0.30 vs 0.30+).
 
@@ -76,10 +74,9 @@ pip install "accelerate>=0.20,<1.0"
 ### 3. NCCL Backend Errors on CPU
 
 **Symptom:**
-```
+```text
 RuntimeError: NCCL is not available on CPU-only builds
 ```
-
 **Solution:**
 Use the `gloo` backend for CPU-only distributed training:
 
@@ -98,10 +95,9 @@ training:
 ### 4. Distributed Initialization Timeout
 
 **Symptom:**
-```
+```text
 RuntimeError: Timed out initializing process group
 ```
-
 **Solutions:**
 
 1. **Check network connectivity** between nodes
@@ -120,10 +116,9 @@ RuntimeError: Timed out initializing process group
 ### 5. Mixed Precision Errors
 
 **Symptom:**
-```
+```text
 RuntimeError: expected scalar type Float but found Half
 ```
-
 **Solution:**
 Ensure consistent dtype usage. Disable mixed precision if needed:
 
@@ -338,7 +333,7 @@ python training/accelerate_init_guard.py
 ```
 
 **Output example:**
-```
+```text
 ============================================================
 Accelerate Init Guard - Diagnostic Mode
 ============================================================
@@ -359,7 +354,6 @@ Availability Checks:
 Initialization Test:
   Result: AccelerateInitResult(skipped, reason=cpu_only)
 ```
-
 ### Skip-Safe Integration Tests
 
 The integration tests use pytest markers to skip on CPU-only runners:

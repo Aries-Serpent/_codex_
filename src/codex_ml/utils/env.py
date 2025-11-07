@@ -4,7 +4,8 @@ import os
 import platform
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -21,9 +22,9 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
         return None
 
 
-def environment_summary() -> Dict[str, Any]:
+def environment_summary() -> dict[str, Any]:
     """Collect basic environment information for reproducibility."""
-    info: Dict[str, Any] = {
+    info: dict[str, Any] = {
         "os": platform.platform(),
         "python": platform.python_version(),
         "processor": platform.processor() or None,
