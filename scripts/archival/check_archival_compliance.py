@@ -134,24 +134,26 @@ def main(argv=None):
     missing_evidence = []
 
     for entry in diff_entries:
-        stub_path = Path(entry.path)
         original_path = entry.original_path or entry.path
+        stub_path = Path(original_path)
+        status = entry.status.upper()
 
         if not stub_path.exists():
+            # For deletes and renames we expect a tombstone stub at the original path.
             missing_stub.append(original_path)
             continue
 
-        if entry.status.startswith(("M", "R", "C")):
+        if status.startswith("M"):
             if not tombstone_exists(stub_path.as_posix()):
-                # Not a tombstone conversion; skip compliance enforcement for standard modifications
+                # Standard modification; not a tombstone conversion.
                 continue
-        elif entry.status.startswith("D"):
-            pass  # No additional check needed; stub existence already handled
+        elif status.startswith(("R", "C", "D")):
             if not tombstone_exists(stub_path.as_posix()):
                 missing_stub.append(original_path)
                 continue
         else:
             continue
+
         if not adr_linked_in_stub(stub_path.as_posix()):
             missing_adr.append(original_path)
 

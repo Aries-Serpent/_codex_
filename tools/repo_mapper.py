@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, Iterable, Iterator, List, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Tuple
 
 # Extensions to include in the repository map
 EXTENSIONS: Tuple[str, ...] = (
@@ -21,6 +21,8 @@ EXTENSIONS: Tuple[str, ...] = (
     ".ipynb",
 )
 
+OUTPUT_FILE_NAME = "_codex_repo_map.json"
+
 # Directory names to exclude anywhere in the path
 EXCLUDED_DIRS: Tuple[str, ...] = (
     ".git",
@@ -30,13 +32,16 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
     ".venv",
 )
 
-OUTPUT_FILE_NAME = "_codex_repo_map.json"
+# Specific filenames to exclude
+EXCLUDED_FILENAMES: Tuple[str, ...] = (
+    OUTPUT_FILE_NAME,
+)
 
 
 def should_skip(path: Path) -> bool:
     """Return True if the path should be excluded from the map."""
 
-    if path.name in EXCLUDED_FILES:
+    if path.name in EXCLUDED_FILENAMES:
         return True
 
     return any(part in EXCLUDED_DIRS for part in path.parts)
@@ -76,6 +81,19 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
                 yield path
             return
 
+    for path in root_dir.rglob("*"):
+        if not path.is_file():
+            continue
+        if should_skip(path):
+            continue
+        yield path
+
+
+def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, Any]]]:
+    """Create a mapping from extension to file metadata for the repository."""
+
+    results: Dict[str, List[Dict[str, Any]]] = {}
+
     for path in iter_repo_files(root_dir):
         ext = path.suffix.lower()
         if ext not in EXTENSIONS:
@@ -84,17 +102,17 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
         rel_path = path.relative_to(root_dir).as_posix()
         if rel_path == OUTPUT_FILE_NAME:
             continue
+
         size = path.stat().st_size
         results.setdefault(ext, []).append({"path": rel_path, "size": size})
 
     for file_list in results.values():
         file_list.sort(key=lambda entry: entry["path"])
 
-    sorted_results = {ext: results[ext] for ext in sorted(results)}
-    return sorted_results
+    return {ext: results[ext] for ext in sorted(results)}
 
 
-def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
+def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, Any]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
     output_path = root_dir / OUTPUT_FILE_NAME
     output_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
