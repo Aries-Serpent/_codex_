@@ -5,7 +5,8 @@ from __future__ import annotations
 import os
 import pickle
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Any
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -16,7 +17,7 @@ __all__ = ["save_checkpoint", "load_checkpoint"]
 
 
 def save_checkpoint(
-    state: Dict[str, Any], path: str | os.PathLike[str], *, keep_last_k: int = 3
+    state: dict[str, Any], path: str | os.PathLike[str], *, keep_last_k: int = 3
 ) -> Path:
     """Persist ``state`` to ``path`` and prune older checkpoints."""
 
@@ -44,7 +45,7 @@ def save_checkpoint(
     return target
 
 
-def load_checkpoint(path: str | os.PathLike[str]) -> Dict[str, Any]:
+def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
     """Load a checkpoint previously written by :func:`save_checkpoint`."""
 
     target = Path(path)

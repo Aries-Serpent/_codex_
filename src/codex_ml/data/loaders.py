@@ -23,7 +23,8 @@ import os
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Iterable, Iterator, Mapping, Optional, Sequence
+from typing import Any, Iterable, Iterator, Mapping, Optional, Sequence
 
 from codex_ml.connectors.base import ConnectorError
 from codex_ml.connectors.registry import get_connector
@@ -83,7 +84,7 @@ def _run_connector_coro(coro):
     return loop.run_until_complete(coro)
 
 
-def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> List[Path]:
+def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> list[Path]:
     body = uri[len(_CONNECTOR_URI_PREFIX) :]
     if not body:
         raise ValueError("connector URI must include a connector name and path")
@@ -115,7 +116,7 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> L
     if not remote_files:
         raise FileNotFoundError(f"connector path produced no files: {uri}")
 
-    materialized: List[Path] = []
+    materialized: list[Path] = []
     for remote_file in remote_files:
         relative = remote_file.lstrip("/")
         if not relative:
@@ -140,11 +141,11 @@ def compute_file_checksum(path: Path) -> str:
     return h.hexdigest()
 
 
-def load_jsonl(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"JSONL file not found: {p}")
-    records: List[Dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
     skipped = 0
     with p.open("r", encoding="utf-8-sig") as f:  # utf-8-sig handles BOM
         for line_number, raw in enumerate(f, start=1):
@@ -191,11 +192,11 @@ def _normalize_csv_value(value: Any) -> Any:
     return value
 
 
-def load_csv(path: str | Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+def load_csv(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"CSV file not found: {p}")
-    records: List[Dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
     skipped_empty = 0
     with p.open("r", encoding="utf-8-sig", newline="") as f:  # utf-8-sig covers BOM
         reader = csv.DictReader(f, escapechar="\\")
@@ -247,7 +248,7 @@ def split_indices(
     val_split: float | int = 0.1,
     test_split: float | int = 0.1,
     seed: int | None = None,
-) -> Tuple[List[int], List[int], List[int]]:
+) -> tuple[list[int], list[int], list[int]]:
     """Split ``range(total_size)`` into deterministic train/val/test indices.
 
     Parameters
@@ -301,7 +302,7 @@ def split_indices(
     return sorted(train_indices), sorted(val_indices), sorted(test_indices)
 
 
-def load_dataset(path: Path | str, *, language: str | None = None) -> List[Dict[str, Any]]:
+def load_dataset(path: Path | str, *, language: str | None = None) -> list[dict[str, Any]]:
     """Load dataset records and optionally filter by language code."""
 
     resolved = Path(path)
@@ -320,7 +321,7 @@ def load_dataset(path: Path | str, *, language: str | None = None) -> List[Dict[
     return [row for row in records if str(row.get("language")) == language]
 
 
-def _validate_sample(obj: Dict[str, Any]) -> Sample:
+def _validate_sample(obj: dict[str, Any]) -> Sample:
     if not isinstance(obj, dict):
         raise ValueError("Expected JSON object with prompt/completion fields")
 
@@ -569,7 +570,7 @@ def stream_paths(
     generate_manifest = _should_generate_manifest(cfg)
     active_filters = _resolve_safety_filters(cfg, safety_filters)
 
-    expanded_paths: List[Path] = []
+    expanded_paths: list[Path] = []
     for entry in paths:
         if isinstance(entry, (str, Path)):
             raw = os.fspath(entry)
@@ -610,7 +611,7 @@ def stream_paths(
 
 def collect_stats(
     samples: Iterable[Sample], *, sample_limit: int | None = None
-) -> Dict[str, float]:
+) -> dict[str, float]:
     total = 0
     total_prompt_len = 0
     total_completion_len = 0

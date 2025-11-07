@@ -4,24 +4,25 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Any
 
 import yaml
 
 
-def _load_yaml_file(path: Path) -> Dict[str, Any]:
+def _load_yaml_file(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return yaml.safe_load(handle) or {}
 
 
-def _load_json_file(path: Path) -> Dict[str, Any]:
+def _load_json_file(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
 def run_deploy_dry_run(
     *, config_path: Path, dry_run: bool, run_metadata_dir: Path
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Validate rollout ring compatibility without touching live infrastructure."""
 
     if not dry_run:
@@ -68,7 +69,7 @@ def run_deploy_dry_run(
     if pod_ring and rollout_ring != pod_ring:
         raise RuntimeError(f"rollout ring mismatch: training={rollout_ring} deploy={pod_ring}")
 
-    summary: Dict[str, Any] = {
+    summary: dict[str, Any] = {
         "status": "validated",
         "dry_run_only": True,
         "rollout_ring": rollout_ring,

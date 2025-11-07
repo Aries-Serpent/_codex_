@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 from .base import Callback
 
@@ -18,8 +19,8 @@ class NDJSONLogger(Callback):
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def on_epoch_end(
-        self, epoch: int, metrics: Dict[str, Any], state: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+        self, epoch: int, metrics: dict[str, Any], state: dict[str, Any]
+    ) -> Optional[dict[str, Any]]:
         rec = {"epoch": epoch, **(metrics or {})}
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(rec) + "\n")

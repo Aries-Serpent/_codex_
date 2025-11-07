@@ -5,7 +5,8 @@ import json
 import math
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 from codex_ml.io.atomic import atomic_write_text, canonical_json_dumps
 
@@ -47,26 +48,26 @@ class CheckpointMetaV2:
     epoch: int
     created_utc: float
     notes: Optional[str] = None
-    extra: Optional[Dict[str, Any]] = None
+    extra: Optional[dict[str, Any]] = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         # drop None to keep canonical bytes stable across envs
         return {k: v for k, v in d.items() if v is not None}
 
 
-def compute_manifest_digest(manifest: Dict[str, Any]) -> str:
+def compute_manifest_digest(manifest: dict[str, Any]) -> str:
     return sha256_hexdigest(to_canonical_bytes(manifest))
 
 
-def load_json(path: Path) -> Dict[str, Any]:
+def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as f:
         # Note: stdlib json doesn't expose duplicate-key hooks;
         # we assume upstream generation respects no-dup rule (I-JSON).
         return json.load(f)
 
 
-def validate_manifest(m: Dict[str, Any]) -> list[str]:
+def validate_manifest(m: dict[str, Any]) -> list[str]:
     """Return list of problems; empty if valid enough for hashing."""
 
     problems: list[str] = []
@@ -84,7 +85,7 @@ def validate_manifest(m: Dict[str, Any]) -> list[str]:
     return problems
 
 
-def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -> Dict[str, Any]:
+def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -> dict[str, Any]:
     meta = CheckpointMetaV2(
         run_id=run_id,
         step=step,
@@ -97,7 +98,7 @@ def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -
     return m
 
 
-def write_manifest_json(path: Path, manifest: Dict[str, Any]) -> Path:
+def write_manifest_json(path: Path, manifest: dict[str, Any]) -> Path:
     """Write the manifest JSON atomically (canonical, fsync'd)."""
 
     atomic_write_text(path, canonical_json_dumps(manifest))

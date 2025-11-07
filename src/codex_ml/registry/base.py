@@ -19,7 +19,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from importlib import metadata
-from typing import Any, Dict, Iterator, Mapping, Optional
+from typing import Any, Iterator, Mapping, Optional
+from typing import Any, Iterator, Mapping, Optional
 
 
 class RegistryError(RuntimeError):
@@ -60,9 +61,9 @@ class Registry:
         self._component = component
         self._entry_point_group = entry_point_group
         self._allow_entrypoint_overrides = allow_entrypoint_overrides
-        self._items: Dict[str, _RegistryEntry] = {}
+        self._items: dict[str, _RegistryEntry] = {}
         self._entry_points_loaded = False
-        self._failed_entry_points: Dict[str, Exception] = {}
+        self._failed_entry_points: dict[str, Exception] = {}
 
     # ------------------------------------------------------------------
     # Registration API

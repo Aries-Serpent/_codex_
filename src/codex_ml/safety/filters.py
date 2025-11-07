@@ -37,10 +37,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import (
     Any,
-    Dict,
     Iterable,
     Iterator,
-    List,
     Mapping,
     Optional,
     Sequence,
@@ -121,7 +119,7 @@ def _fragments_overlap(a: str, b: str) -> bool:
     return a_l in b_l or b_l in a_l
 
 
-def _spans_overlap(span_a: Tuple[int, int], span_b: Tuple[int, int]) -> bool:
+def _spans_overlap(span_a: tuple[int, int], span_b: tuple[int, int]) -> bool:
     start = max(span_a[0], span_b[0])
     end = min(span_a[1], span_b[1])
     return start < end
@@ -191,8 +189,8 @@ def _minimal_yaml_load(text: str) -> Any:
     return value
 
 
-def _tokenize_yaml(text: str) -> List[Tuple[int, str]]:
-    tokens: List[Tuple[int, str]] = []
+def _tokenize_yaml(text: str) -> list[tuple[int, str]]:
+    tokens: list[tuple[int, str]] = []
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].rstrip()
         if not line:
@@ -202,16 +200,16 @@ def _tokenize_yaml(text: str) -> List[Tuple[int, str]]:
     return tokens
 
 
-def _parse_yaml_block(tokens: List[Tuple[int, str]], index: int, indent: int) -> Tuple[Any, int]:
+def _parse_yaml_block(tokens: list[tuple[int, str]], index: int, indent: int) -> tuple[Any, int]:
     if index < len(tokens) and tokens[index][1].startswith("- "):
         return _parse_yaml_list(tokens, index, indent)
     return _parse_yaml_dict(tokens, index, indent)
 
 
 def _parse_yaml_dict(
-    tokens: List[Tuple[int, str]], index: int, indent: int
-) -> Tuple[Dict[str, Any], int]:
-    result: Dict[str, Any] = {}
+    tokens: list[tuple[int, str]], index: int, indent: int
+) -> tuple[dict[str, Any], int]:
+    result: dict[str, Any] = {}
     while index < len(tokens):
         current_indent, content = tokens[index]
         if current_indent < indent:
@@ -236,9 +234,9 @@ def _parse_yaml_dict(
 
 
 def _parse_yaml_list(
-    tokens: List[Tuple[int, str]], index: int, indent: int
-) -> Tuple[List[Any], int]:
-    items: List[Any] = []
+    tokens: list[tuple[int, str]], index: int, indent: int
+) -> tuple[list[Any], int]:
+    items: list[Any] = []
     while index < len(tokens):
         current_indent, content = tokens[index]
         if current_indent < indent:
@@ -260,7 +258,7 @@ def _parse_yaml_list(
         if key is None:
             items.append(_parse_scalar(item_content))
             continue
-        item_dict: Dict[str, Any] = {}
+        item_dict: dict[str, Any] = {}
         if value_str is not None:
             item_dict[key] = _parse_scalar(value_str)
         else:
@@ -289,7 +287,7 @@ def _parse_yaml_list(
     return items, index
 
 
-def _split_key_value(content: str) -> Tuple[Optional[str], Optional[str]]:
+def _split_key_value(content: str) -> tuple[Optional[str], Optional[str]]:
     if ":" in content:
         key, rest = content.split(":", 1)
         key = key.strip()
@@ -335,9 +333,9 @@ class RuleMatch:
     action: str
     fragment: str
     description: Optional[str] = None
-    span: Optional[Tuple[int, int]] = None
+    span: Optional[tuple[int, int]] = None
     severity: Optional[str] = None
-    metadata: Tuple[Tuple[str, Any], ...] = field(default_factory=tuple)
+    metadata: tuple[tuple[str, Any], ...] = field(default_factory=tuple)
 
     @property
     def is_block(self) -> bool:
@@ -376,9 +374,9 @@ class PolicyRule:
     flags: int = 0
     description: Optional[str] = None
     severity: Optional[str] = None
-    applies_to: Tuple[str, ...] = ("prompt", "output")
+    applies_to: tuple[str, ...] = ("prompt", "output")
     replacement: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     _compiled: Optional[re.Pattern[str]] = field(default=None, init=False, repr=False)
     _literal_regex: Optional[re.Pattern[str]] = field(default=None, init=False, repr=False)
@@ -418,7 +416,7 @@ class PolicyRule:
                 metadata_tuple,
             )
 
-    def redact(self, text: str, default_token: str) -> Tuple[str, int]:
+    def redact(self, text: str, default_token: str) -> tuple[str, int]:
         if self.action not in {"redact", "block"}:
             return text, 0
         regex = self._get_pattern()
@@ -436,14 +434,14 @@ class SafetyPolicy:
     enabled: bool = True
     bypass: bool = False
     redaction_token: str = REDACT_TOKEN
-    rules: Tuple[PolicyRule, ...] = field(default_factory=tuple)
+    rules: tuple[PolicyRule, ...] = field(default_factory=tuple)
     log_path: Optional[Path] = None
     version: Optional[int] = None
     source_path: Optional[Path] = field(default=None, repr=False, compare=False)
 
     @classmethod
     def load(cls, path: Optional[Path | str] = None) -> "SafetyPolicy":
-        candidates: List[Path] = []
+        candidates: list[Path] = []
         if path:
             candidates.append(Path(path))
         env_path = os.getenv(POLICY_ENV_VAR)
@@ -475,7 +473,7 @@ class SafetyPolicy:
         return fallback
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "SafetyPolicy":
+    def from_dict(cls, data: dict[str, Any]) -> "SafetyPolicy":
         enabled = bool(data.get("enabled", True))
         bypass = bool(data.get("bypass", False))
         redaction_token = str(data.get("redaction_token", REDACT_TOKEN))
@@ -483,7 +481,7 @@ class SafetyPolicy:
         log_path = Path(log_path_val) if isinstance(log_path_val, str) and log_path_val else None
         version = data.get("version")
 
-        rules: List[PolicyRule] = []
+        rules: list[PolicyRule] = []
         # "allow" shortcut block
         rules.extend(_build_allow_rules(data.get("allow")))
 
@@ -496,7 +494,7 @@ class SafetyPolicy:
                 if action not in {"block", "allow", "redact", "flag"}:
                     continue
                 match_spec = item.get("match") or {}
-                metadata: Dict[str, Any] = {}
+                metadata: dict[str, Any] = {}
                 if "reason" in item:
                     metadata["reason"] = item["reason"]
                 applies_to = _parse_applies_to(item.get("applies_to"))
@@ -536,13 +534,13 @@ class SafetyResult:
     stage: str
     allowed: bool
     sanitized_text: str
-    matches: Tuple[RuleMatch, ...] = field(default_factory=tuple)
-    raw_matches: Tuple[RuleMatch, ...] = field(default_factory=tuple)
-    blocking_matches: Tuple[RuleMatch, ...] = field(default_factory=tuple)
+    matches: tuple[RuleMatch, ...] = field(default_factory=tuple)
+    raw_matches: tuple[RuleMatch, ...] = field(default_factory=tuple)
+    blocking_matches: tuple[RuleMatch, ...] = field(default_factory=tuple)
     bypassed: bool = False
 
     @property
-    def blocked_rules(self) -> Tuple[str, ...]:
+    def blocked_rules(self) -> tuple[str, ...]:
         return tuple(m.rule_id for m in self.blocking_matches if m.rule_id)
 
 
@@ -565,7 +563,7 @@ class SafetyViolation(RuntimeError):
 # ---------------------------------------------------------------------------
 
 
-def _iter_match_specs(match_spec: Any) -> Iterator[Tuple[str, str, int]]:
+def _iter_match_specs(match_spec: Any) -> Iterator[tuple[str, str, int]]:
     """Yield (kind, pattern, flags) for each match pattern inside a rule spec."""
     if isinstance(match_spec, str):
         yield "literal", match_spec, 0
@@ -594,8 +592,8 @@ def _iter_match_specs(match_spec: Any) -> Iterator[Tuple[str, str, int]]:
                 yield "regex", str(item), 0
 
 
-def _build_allow_rules(spec: Any) -> List[PolicyRule]:
-    rules: List[PolicyRule] = []
+def _build_allow_rules(spec: Any) -> list[PolicyRule]:
+    rules: list[PolicyRule] = []
     if not isinstance(spec, dict):
         return rules
     for idx, (kind, pattern, flags) in enumerate(_iter_match_specs(spec)):
@@ -611,10 +609,10 @@ def _build_allow_rules(spec: Any) -> List[PolicyRule]:
     return rules
 
 
-def _parse_applies_to(value: Any) -> Tuple[str, ...]:
+def _parse_applies_to(value: Any) -> tuple[str, ...]:
     if value is None:
         return ("prompt", "output")
-    stages: List[str] = []
+    stages: list[str] = []
     items: Iterable[Any]
     if isinstance(value, str):
         items = [value]
@@ -756,7 +754,7 @@ class SafetyFilters:
     def sanitize(self, text: str, *, stage: str) -> SafetyResult:
         return self.evaluate(text, stage=stage)
 
-    def is_allowed(self, text: str, *, stage: str = "unspecified") -> Tuple[bool, List[str]]:
+    def is_allowed(self, text: str, *, stage: str = "unspecified") -> tuple[bool, list[str]]:
         result = self.evaluate(text, stage=stage)
         return result.allowed, sorted(result.blocked_rules)
 
@@ -798,8 +796,8 @@ class SafetyFilters:
 
     # --- Internal helpers --------------------------------------------------
 
-    def _scan(self, text: str, stage: str) -> Tuple[List[RuleMatch], str, str]:
-        matches: List[RuleMatch] = []
+    def _scan(self, text: str, stage: str) -> tuple[list[RuleMatch], str, str]:
+        matches: list[RuleMatch] = []
         sanitized_block = text
         sanitized_allow = text
         for rule in self.policy.rules:
@@ -816,7 +814,7 @@ class SafetyFilters:
         return matches, sanitized_block, sanitized_allow
 
     @staticmethod
-    def _allow_overrides_block(block_match: RuleMatch, allow_matches: List[RuleMatch]) -> bool:
+    def _allow_overrides_block(block_match: RuleMatch, allow_matches: list[RuleMatch]) -> bool:
         if not allow_matches:
             return False
         block_span = block_match.span
@@ -885,7 +883,7 @@ class SafetyFilters:
                         else:
                             # Overridden block -> treated as allow
                             action = "allow"
-                    entry: Dict[str, Any] = {
+                    entry: dict[str, Any] = {
                         "event": "safety.decision",
                         "timestamp": timestamp,
                         "stage": stage,
@@ -931,7 +929,7 @@ def _cached_default_policy() -> SafetyPolicy:
 # Default embedded policy
 # ---------------------------------------------------------------------------
 
-DEFAULT_POLICY_DATA: Dict[str, Any] = {
+DEFAULT_POLICY_DATA: dict[str, Any] = {
     "version": 1,
     "enabled": True,
     "bypass": False,

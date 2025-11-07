@@ -1,6 +1,7 @@
-from typing import Callable, Dict
+from typing import Callable
+from typing import Callable
 
-_REG: Dict[str, Callable] = {}
+_REG: dict[str, Callable] = {}
 
 
 def register(name: str):

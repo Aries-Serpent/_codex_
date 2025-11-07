@@ -9,7 +9,6 @@ the ``[0.0, 1.0]`` range.
 from __future__ import annotations
 
 from math import exp
-from typing import Dict
 
 try:  # optional dependency for a real classifier
     from transformers import pipeline  # type: ignore
@@ -20,7 +19,7 @@ MODEL_NAME = "philschmid/tiny-bert-sst2-distilled"
 _classifier = None
 
 # keyword weights used by the fallback logistic model
-WEIGHTS: Dict[str, float] = {
+WEIGHTS: dict[str, float] = {
     "password": 1.0,
     "api_key": 1.0,
     "ssn": 1.0,

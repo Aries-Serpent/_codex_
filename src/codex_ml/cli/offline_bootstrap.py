@@ -17,10 +17,11 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, Mapping, Sequence
+from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 
-def _mlflow_env(root: Path) -> Dict[str, str]:
+def _mlflow_env(root: Path) -> dict[str, str]:
     mlruns = root.joinpath("mlruns")
     mlruns.mkdir(parents=True, exist_ok=True)
     uri = f"file:{mlruns.resolve().as_posix()}"
@@ -30,10 +31,10 @@ def _mlflow_env(root: Path) -> Dict[str, str]:
     }
 
 
-def _wandb_env(root: Path, mode: str) -> Dict[str, str]:
+def _wandb_env(root: Path, mode: str) -> dict[str, str]:
     wandb_root = root.joinpath("wandb")
     wandb_root.mkdir(parents=True, exist_ok=True)
-    env: Dict[str, str] = {"WANDB_DIR": wandb_root.resolve().as_posix()}
+    env: dict[str, str] = {"WANDB_DIR": wandb_root.resolve().as_posix()}
     if mode == "offline":
         env["WANDB_MODE"] = "offline"
     else:
@@ -64,7 +65,7 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
         print(f"[track-bootstrap] invalid mode: {args.mode}")
         return 2
 
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "ok": True,
         "root": root.as_posix(),
         "mlflow": {"enabled": False, "uri": None, "env": None},
@@ -72,7 +73,7 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
         "env": {},
     }
 
-    exports: Dict[str, str] = {}
+    exports: dict[str, str] = {}
     if args.backend in {"mlflow", "both"}:
         mlflow_env = _mlflow_env(root)
         payload["mlflow"].update(

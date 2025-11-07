@@ -6,7 +6,8 @@ Builds embeddings from NDJSON knowledge base
 import json
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -40,7 +41,7 @@ class EmbeddingModel:
             logger.error(f"Error loading embedding model: {e}")
             raise
     
-    def encode(self, texts: List[str], batch_size: int = 32, show_progress: bool = False) -> np.ndarray:
+    def encode(self, texts: list[str], batch_size: int = 32, show_progress: bool = False) -> np.ndarray:
         """Encode texts to embeddings
         
         Args:
@@ -68,7 +69,7 @@ class KnowledgeBaseLoader:
     """Loads knowledge base from NDJSON format"""
     
     @staticmethod
-    def load_ndjson(file_path: str) -> List[Dict[str, Any]]:
+    def load_ndjson(file_path: str) -> list[dict[str, Any]]:
         """Load documents from NDJSON file
         
         Args:
@@ -95,7 +96,7 @@ class KnowledgeBaseLoader:
         return documents
     
     @staticmethod
-    def extract_text(documents: List[Dict[str, Any]], text_field: str = "content") -> List[str]:
+    def extract_text(documents: list[dict[str, Any]], text_field: str = "content") -> list[str]:
         """Extract text from documents
         
         Args:
@@ -123,7 +124,7 @@ def build_embeddings(
     cache_dir: Optional[str] = None,
     text_field: str = "content",
     batch_size: int = 32,
-) -> tuple[np.ndarray, List[Dict[str, Any]]]:
+) -> tuple[np.ndarray, list[dict[str, Any]]]:
     """Build embeddings from NDJSON knowledge base
     
     Args:

@@ -6,7 +6,8 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -97,7 +98,7 @@ def _sanitize_prompt_list(items: list[Any]) -> tuple[list[Any], bool]:
     return sanitised, changed
 
 
-def _apply_prompt_sanitization(mapping: Dict[str, Any], keys: Sequence[str]) -> int:
+def _apply_prompt_sanitization(mapping: dict[str, Any], keys: Sequence[str]) -> int:
     total = 0
     for key in keys:
         sequence = _coerce_sequence(mapping.get(key))
@@ -110,7 +111,7 @@ def _apply_prompt_sanitization(mapping: Dict[str, Any], keys: Sequence[str]) -> 
     return total
 
 
-def _sanitize_eval_config(cfg_map: Dict[str, Any]) -> int:
+def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     sanitize_flag = cfg_map.get("sanitize_prompts", True)
     if not isinstance(sanitize_flag, bool):
         sanitize_flag = True
@@ -199,7 +200,7 @@ def evaluate(
     checkpoint_dir: str | Path | None,
     model_name: Optional[str] = None,
     device: Optional[str] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     epoch_dir = _load_latest_checkpoint_dir(checkpoint_dir)
     if epoch_dir is None:
         return {

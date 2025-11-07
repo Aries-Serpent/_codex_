@@ -9,7 +9,6 @@ from typing import (
     Callable,
     Iterable,
     Iterator,
-    List,
     Mapping,
     MutableSequence,
     Sequence,
@@ -21,9 +20,9 @@ from typing import (
 class DataModule:
     """Lightweight container for deterministic dataset iteration in tests."""
 
-    train: List[Any]
-    val: List[Any]
-    test: List[Any]
+    train: list[Any]
+    val: list[Any]
+    test: list[Any]
     seed: int = 42
 
     def __post_init__(self) -> None:
@@ -35,7 +34,7 @@ class DataModule:
         random.shuffle(self.val)
         random.shuffle(self.test)
 
-    def iter_train(self, batch_size: int) -> Iterable[Tuple[Any, ...]]:
+    def iter_train(self, batch_size: int) -> Iterable[tuple[Any, ...]]:
         train_seq: Sequence[Any] = self.train
         for index in range(0, len(train_seq), batch_size):
             yield tuple(train_seq[index : index + batch_size])
@@ -67,17 +66,17 @@ class StreamingDataModule:
     seed: int = 42
     chunk_size: int = 2048
 
-    def iter_train(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+    def iter_train(self, batch_size: int) -> Iterable[tuple[Mapping[str, Any], ...]]:
         return self._batched(self._stream_split("train"), batch_size)
 
-    def iter_val(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+    def iter_val(self, batch_size: int) -> Iterable[tuple[Mapping[str, Any], ...]]:
         return self._batched(self._stream_split("val"), batch_size)
 
-    def iter_test(self, batch_size: int) -> Iterable[Tuple[Mapping[str, Any], ...]]:
+    def iter_test(self, batch_size: int) -> Iterable[tuple[Mapping[str, Any], ...]]:
         return self._batched(self._stream_split("test"), batch_size)
 
-    def snapshot(self, split: str, limit: int | None = None) -> List[Mapping[str, Any]]:
-        examples: List[Mapping[str, Any]] = []
+    def snapshot(self, split: str, limit: int | None = None) -> list[Mapping[str, Any]]:
+        examples: list[Mapping[str, Any]] = []
         for index, example in enumerate(self._stream_split(split)):
             examples.append(example)
             if limit is not None and index + 1 >= limit:
@@ -145,7 +144,7 @@ class StreamingDataModule:
         if self.shuffle_buffer <= 1:
             yield from iterable
             return
-        buffer: List[Mapping[str, Any]] = []
+        buffer: list[Mapping[str, Any]] = []
         for item in iterable:
             buffer.append(item)
             if len(buffer) >= self.shuffle_buffer:
@@ -160,8 +159,8 @@ class StreamingDataModule:
         self,
         iterator: Iterator[Mapping[str, Any]],
         batch_size: int,
-    ) -> Iterator[Tuple[Mapping[str, Any], ...]]:
-        batch: List[Mapping[str, Any]] = []
+    ) -> Iterator[tuple[Mapping[str, Any], ...]]:
+        batch: list[Mapping[str, Any]] = []
         for example in iterator:
             batch.append(example)
             if len(batch) == batch_size:

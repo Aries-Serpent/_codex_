@@ -1,0 +1,2943 @@
+{
+  "total_issues": 366,
+  "by_severity": {
+    "suggestion": 136,
+    "warning": 230
+  },
+  "by_category": {
+    "typing-union": 117,
+    "typing-builtin": 230,
+    "dataclass-candidate": 8,
+    "string-format": 11
+  },
+  "issues": [
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/utils/logging_factory.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/utils/training_callbacks.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/utils/checkpointing.py",
+      "line": 10,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_cli/app.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_cli/app.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_bridge/github_client.py",
+      "line": 3,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_bridge/github_client.py",
+      "line": 3,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tools/codeowners_validate.py",
+      "line": 6,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tools/codeowners_validate.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tools/codeowners_validate.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/hydra_extra/__init__.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tokenizer/fast_tokenizer.py",
+      "line": 4,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/data/registry.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/chat.py",
+      "line": 22,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/training.py",
+      "line": 17,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/training.py",
+      "line": 17,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/training.py",
+      "line": 17,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tokenization/train_tokenizer.py",
+      "line": 11,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tokenization/train_tokenizer.py",
+      "line": 11,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/tokenization/train_tokenizer.py",
+      "line": 11,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/csv_ingestor.py",
+      "line": 5,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/utils.py",
+      "line": 30,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/utils.py",
+      "line": 30,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/io_text.py",
+      "line": 16,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/encoding_detect.py",
+      "line": 20,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/__init__.py",
+      "line": 21,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/__init__.py",
+      "line": 21,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/ingestion/__init__.py",
+      "line": 65,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/hf_loader.py",
+      "line": 4,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/hf_loader.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/config_schema.py",
+      "line": 10,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/model_registry.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/codex_structured_logging.py",
+      "line": 338,
+      "message": "Class '_CaptureExceptionsContext' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/ingest.py",
+      "line": 17,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/ingest.py",
+      "line": 17,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/ingest.py",
+      "line": 17,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/symbolic_pipeline.py",
+      "line": 31,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/symbolic_pipeline.py",
+      "line": 31,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/symbolic_pipeline.py",
+      "line": 31,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/symbolic_pipeline.py",
+      "line": 31,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/pipeline.py",
+      "line": 21,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/pipeline.py",
+      "line": 21,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/pipeline.py",
+      "line": 21,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/train_loop.py",
+      "line": 31,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/train_loop.py",
+      "line": 31,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/train_loop.py",
+      "line": 31,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/registry.py",
+      "line": 1,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/__init__.py",
+      "line": 26,
+      "message": "Class '_MissingConfig' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/__init__.py",
+      "line": 69,
+      "message": "Class '_MissingSymbolic' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/evaluation/metrics.py",
+      "line": 62,
+      "message": "Class 'MetricsAggregator' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/db/sqlite_patch.py",
+      "line": 25,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/db/sqlite_patch.py",
+      "line": 25,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/evidence_schema.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/evidence_schema.py",
+      "line": 13,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/standardization.py",
+      "line": 14,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/standardization.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/sigstore_client.py",
+      "line": 18,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/sigstore_client.py",
+      "line": 18,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/consolidate.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/archive/consolidate.py",
+      "line": 9,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/context_discovery.py",
+      "line": 24,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/context_discovery.py",
+      "line": 24,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/validators.py",
+      "line": 26,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/validators.py",
+      "line": 26,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/validators.py",
+      "line": 26,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/session_cache.py",
+      "line": 23,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/utils/session_cache.py",
+      "line": 23,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/search/providers.py",
+      "line": 17,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/search/providers.py",
+      "line": 17,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/search/providers.py",
+      "line": 17,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/prompt.py",
+      "line": 19,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/prompt.py",
+      "line": 19,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/prompt.py",
+      "line": 19,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/postprocess.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/postprocess.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/rag/postprocess.py",
+      "line": 8,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/export.py",
+      "line": 37,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/export.py",
+      "line": 37,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/export.py",
+      "line": 37,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/viewer.py",
+      "line": 46,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/viewer.py",
+      "line": 46,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/viewer.py",
+      "line": 46,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/viewer.py",
+      "line": 46,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/fetch_messages.py",
+      "line": 16,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/db_utils.py",
+      "line": 25,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/db_utils.py",
+      "line": 25,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/db_utils.py",
+      "line": 25,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_logger.py",
+      "line": 33,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_logger.py",
+      "line": 33,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_logger.py",
+      "line": 33,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_hooks.py",
+      "line": 33,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_hooks.py",
+      "line": 144,
+      "message": "Class 'session' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/import_ndjson.py",
+      "line": 39,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/import_ndjson.py",
+      "line": 39,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/conversation_logger.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/query_logs.py",
+      "line": 45,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/query_logs.py",
+      "line": 45,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/query_logs.py",
+      "line": 45,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/query_logs.py",
+      "line": 45,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_query.py",
+      "line": 33,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_query.py",
+      "line": 33,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_query.py",
+      "line": 33,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/session_query.py",
+      "line": 33,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/logging/__init__.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/embed.py",
+      "line": 9,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/embed.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/embed.py",
+      "line": 9,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/search.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/search.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/search.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/weaviate_store.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/weaviate_store.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/weaviate_store.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/faiss_store.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/faiss_store.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/faiss_store.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/faiss_store.py",
+      "line": 8,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/pgvector_store.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/pgvector_store.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex/retrieval/stores/pgvector_store.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/hhg_logistics/eval/harness.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/hhg_logistics/eval/harness.py",
+      "line": 6,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/metrics.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/metrics.py",
+      "line": 6,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/metrics.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/datasets.py",
+      "line": 10,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/runner.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/runner.py",
+      "line": 13,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/runner.py",
+      "line": 13,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/runner.py",
+      "line": 13,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/eval/run_eval.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/peft/peft_adapter.py",
+      "line": 29,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/peft/peft_adapter.py",
+      "line": 29,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/sinks.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/_optional_bleu_rouge.py",
+      "line": 14,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/_optional_bleu_rouge.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/_optional_bleu_rouge.py",
+      "line": 14,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/registry.py",
+      "line": 21,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/evaluator.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/curves.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/curves.py",
+      "line": 6,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/metrics/writers.py",
+      "line": 10,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/minilm.py",
+      "line": 10,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/peft_hooks.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/factory.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/factory.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/factory.py",
+      "line": 140,
+      "message": "Class '_MockModel' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/decoder_only.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/decoder_only.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/decoder_only.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/reasoning.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/generate.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/loader_registry.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/registry.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/offline_tiny.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/activations.py",
+      "line": 4,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/__init__.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/reward_models/simple.py",
+      "line": 3,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/reward_models/rlhf.py",
+      "line": 16,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/config_loader.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/config_loader.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/tracking_bootstrap.py",
+      "line": 4,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/tracking_bootstrap.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_retention.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_retention.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_retention.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/yaml_support.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/hf_revision.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/determinism.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/determinism.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/env.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/env.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_manager.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/hf_pinning.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/hf_pinning.py",
+      "line": 8,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/hf_pinning.py",
+      "line": 81,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/artifacts.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/artifacts.py",
+      "line": 13,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_event.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/checkpoint_event.py",
+      "line": 9,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/system_metrics.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/logging_mlflow.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/retention.py",
+      "line": 34,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/retention.py",
+      "line": 34,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/retention.py",
+      "line": 34,
+      "message": "Use built-in set instead of typing.Set",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Set` with `set`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/utils/train_helpers.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/legacy_api.py",
+      "line": 12,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/legacy_api.py",
+      "line": 12,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/legacy_api.py",
+      "line": 12,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/legacy_api.py",
+      "line": 12,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/legacy_api.py",
+      "line": 989,
+      "message": "Class '_DictDataset' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/strategies.py",
+      "line": 24,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/strategies.py",
+      "line": 24,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/strategies.py",
+      "line": 24,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/dp_config.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/dp_config.py",
+      "line": 6,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/engine.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/training/dataloader_utils.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/perf/bench.py",
+      "line": 11,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/perf/bench.py",
+      "line": 11,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/perf/profiler.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/perf/profiler.py",
+      "line": 9,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/microhelpers.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/microhelpers.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/mlflow_utils.py",
+      "line": 11,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/tracking.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/tracking.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/_logger_types.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/_logger_types.py",
+      "line": 14,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/tb_writer.py",
+      "line": 3,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/codex_logging.py",
+      "line": 16,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/codex_logging.py",
+      "line": 16,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/codex_logging.py",
+      "line": 16,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/async_writer.py",
+      "line": 10,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/prometheus.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/prometheus.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/prometheus.py",
+      "line": 8,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/schema.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/schema.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/system_metrics.py",
+      "line": 14,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/system_metrics.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/system_metrics.py",
+      "line": 14,
+      "message": "Use built-in set instead of typing.Set",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Set` with `set`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/monitoring/system_metrics.py",
+      "line": 14,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/interfaces/reward_model.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/interfaces/registry.py",
+      "line": 16,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/telemetry/server.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/manifest.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/status_report.py",
+      "line": 21,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/train.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/metrics_cli.py",
+      "line": 370,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/deploy.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/generate.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/evaluate.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/evaluate.py",
+      "line": 9,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/main.py",
+      "line": 389,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/main.py",
+      "line": 390,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/tokenizer.py",
+      "line": 16,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/hydra_audit.py",
+      "line": 34,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/hydra_audit.py",
+      "line": 34,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/hydra_audit.py",
+      "line": 34,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/hydra_audit.py",
+      "line": 348,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/repo_map.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/repo_map.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/offline_bootstrap.py",
+      "line": 20,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/infer.py",
+      "line": 11,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/audit_pipeline.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/audit_pipeline.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/config.py",
+      "line": 11,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/cli/config.py",
+      "line": 11,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/registry/token_cache.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/registry/base.py",
+      "line": 22,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/registry/base.py",
+      "line": 22,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/deployment/cloud.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/deployment/cloud.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/sanitizers.py",
+      "line": 5,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/sanitizers.py",
+      "line": 5,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/filters.py",
+      "line": 38,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/filters.py",
+      "line": 38,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/filters.py",
+      "line": 38,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/filters.py",
+      "line": 38,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/sandbox.py",
+      "line": 12,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/risk_score.py",
+      "line": 12,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/safety/redaction.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/detectors/aggregate.py",
+      "line": 3,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/detectors/core.py",
+      "line": 3,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/checkpointing/schema_v2.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/checkpointing/schema_v2.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loader.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loader.py",
+      "line": 13,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loader.py",
+      "line": 13,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/dataset_wrapper.py",
+      "line": 6,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/split.py",
+      "line": 16,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/split.py",
+      "line": 16,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/split.py",
+      "line": 16,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/split.py",
+      "line": 16,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/datamodule.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/datamodule.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/jsonl_stream.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders.py",
+      "line": 26,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders.py",
+      "line": 26,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders.py",
+      "line": 26,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders.py",
+      "line": 26,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/checksums.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/checksums.py",
+      "line": 6,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/registry.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/registry.py",
+      "line": 13,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/registry.py",
+      "line": 13,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/make_splits.py",
+      "line": 9,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/jsonl_loader.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/jsonl_loader.py",
+      "line": 8,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/streaming.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/streaming.py",
+      "line": 7,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/loader.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 9,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 118,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 155,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 362,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 527,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 700,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registries.py",
+      "line": 721,
+      "message": "Consider using f-string instead of .format()",
+      "category": "string-format",
+      "severity": "suggestion",
+      "suggestion": "Replace 'string'.format() with f'string'"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registry.py",
+      "line": 20,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registry.py",
+      "line": 20,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/plugins/registry.py",
+      "line": 20,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/offline.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/offline.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/mlflow_guard.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/mlflow_utils.py",
+      "line": 27,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/mlflow_utils.py",
+      "line": 27,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/init_offline.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/init_experiment.py",
+      "line": 13,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/init_experiment.py",
+      "line": 13,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/guards.py",
+      "line": 26,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/guards.py",
+      "line": 26,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/guards.py",
+      "line": 26,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/writers.py",
+      "line": 15,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/writers.py",
+      "line": 15,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tracking/writers.py",
+      "line": 15,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/logging/run_logger.py",
+      "line": 11,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/logging/run_logger.py",
+      "line": 11,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/logging/file_logger.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/logging/file_logger.py",
+      "line": 9,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/logging/file_logger.py",
+      "line": 9,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/modeling/factory.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/modeling/codex_model_loader.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/modeling/__init__.py",
+      "line": 4,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/modeling/__init__.py",
+      "line": 4,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/modeling/__init__.py",
+      "line": 26,
+      "message": "Class '_DummyModel' could be converted to a dataclass",
+      "category": "dataclass-candidate",
+      "severity": "suggestion",
+      "suggestion": "Consider using @dataclass decorator for simpler syntax"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/providers.py",
+      "line": 8,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/providers.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/providers.py",
+      "line": 8,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/registry.py",
+      "line": 4,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/extractors.py",
+      "line": 4,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/analysis/extractors.py",
+      "line": 4,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/offline_vocab.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/sentencepiece_adapter.py",
+      "line": 20,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/sentencepiece_adapter.py",
+      "line": 20,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/sp_trainer.py",
+      "line": 14,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/sp_trainer.py",
+      "line": 14,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/adapter.py",
+      "line": 12,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/adapter.py",
+      "line": 12,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/adapter.py",
+      "line": 12,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/pipeline.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/pipeline.py",
+      "line": 9,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/pipeline.py",
+      "line": 9,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/pipeline.py",
+      "line": 9,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/api.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/api.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/api.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/hf_tokenizer.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/hf_tokenizer.py",
+      "line": 7,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/tokenization/hf_tokenizer.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/callbacks/ndjson_logger.py",
+      "line": 7,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/callbacks/ndjson_logger.py",
+      "line": 7,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/callbacks/base.py",
+      "line": 6,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/callbacks/base.py",
+      "line": 6,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/connectors/remote.py",
+      "line": 8,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/connectors/local.py",
+      "line": 5,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/connectors/registry.py",
+      "line": 3,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/connectors/base.py",
+      "line": 30,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/models/utils/peft.py",
+      "line": 5,
+      "message": "Consider using | None syntax instead of typing.Optional",
+      "category": "typing-union",
+      "severity": "suggestion",
+      "suggestion": "Replace `Optional[T]` with `T | None` (Python 3.10+)"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/jsonl.py",
+      "line": 9,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/jsonl.py",
+      "line": 9,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/jsonl.py",
+      "line": 9,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/csv.py",
+      "line": 10,
+      "message": "Use built-in dict instead of typing.Dict",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Dict` with `dict`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/csv.py",
+      "line": 10,
+      "message": "Use built-in list instead of typing.List",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.List` with `list`"
+    },
+    {
+      "file": "/home/runner/work/_codex_/_codex_/src/codex_ml/data/loaders/csv.py",
+      "line": 10,
+      "message": "Use built-in tuple instead of typing.Tuple",
+      "category": "typing-builtin",
+      "severity": "warning",
+      "suggestion": "Replace `typing.Tuple` with `tuple`"
+    }
+  ]
+}

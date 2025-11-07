@@ -3,7 +3,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 
 OWNER_RX = re.compile(r"^@([A-Za-z0-9_.-]+)(/[A-Za-z0-9_.-]+)?$")
@@ -12,7 +13,7 @@ OWNER_RX = re.compile(r"^@([A-Za-z0-9_.-]+)(/[A-Za-z0-9_.-]+)?$")
 @dataclass
 class CodeownersRule:
     pattern: str
-    owners: List[str]
+    owners: list[str]
     line_no: int
 
 
@@ -21,14 +22,14 @@ class CodeownersReport:
     exists: bool
     default_rule: bool
     owners_ok: bool
-    coverage: Dict[str, bool]
-    errors: List[str]
-    warnings: List[str]
-    rules: List[Dict[str, Any]]
+    coverage: dict[str, bool]
+    errors: list[str]
+    warnings: list[str]
+    rules: list[dict[str, Any]]
 
 
-def parse_codeowners(text: str) -> List[CodeownersRule]:
-    rules: List[CodeownersRule] = []
+def parse_codeowners(text: str) -> list[CodeownersRule]:
+    rules: list[CodeownersRule] = []
     for i, raw in enumerate(text.splitlines(), start=1):
         line = raw.strip()
         if not line or line.startswith("#"):
@@ -43,7 +44,7 @@ def parse_codeowners(text: str) -> List[CodeownersRule]:
     return rules
 
 
-def validate_owners(rules: List[CodeownersRule]) -> bool:
+def validate_owners(rules: list[CodeownersRule]) -> bool:
     ok = True
     for r in rules:
         for o in r.owners:
@@ -52,14 +53,14 @@ def validate_owners(rules: List[CodeownersRule]) -> bool:
     return ok
 
 
-def has_default_rule(rules: List[CodeownersRule]) -> bool:
+def has_default_rule(rules: list[CodeownersRule]) -> bool:
     for r in rules:
         if r.pattern == "*":
             return True
     return False
 
 
-def heuristic_coverage(rules: List[CodeownersRule]) -> Dict[str, bool]:
+def heuristic_coverage(rules: list[CodeownersRule]) -> dict[str, bool]:
     pats = {r.pattern for r in rules}
     return {
         "src": any(p.startswith("src") or p.startswith("/src") for p in pats),
@@ -70,8 +71,8 @@ def heuristic_coverage(rules: List[CodeownersRule]) -> Dict[str, bool]:
 
 def validate_codeowners_text(text: str) -> CodeownersReport:
     rules = parse_codeowners(text)
-    errs: List[str] = []
-    warns: List[str] = []
+    errs: list[str] = []
+    warns: list[str] = []
     if not rules:
         errs.append("No parsable CODEOWNERS rules found.")
     any_missing_owners = [r for r in rules if not r.owners]

@@ -5,7 +5,8 @@ Output scrubbing and evidence tagging
 
 import re
 import logging
-from typing import List, Dict, Any, Tuple
+from typing import Any
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +15,7 @@ class OutputProcessor:
     """Processes model outputs for safety and attribution"""
     
     @staticmethod
-    def scrub_output(text: str, redaction_rules: List[Dict[str, str]] = None) -> str:
+    def scrub_output(text: str, redaction_rules: list[dict[str, str]] = None) -> str:
         """Scrub sensitive information from output
         
         Args:
@@ -49,8 +50,8 @@ class OutputProcessor:
     @staticmethod
     def extract_evidence_tags(
         output: str,
-        retrieved_docs: List[Dict[str, Any]],
-    ) -> List[Dict[str, Any]]:
+        retrieved_docs: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
         """Extract evidence tags from output
         
         Args:
@@ -97,7 +98,7 @@ class OutputProcessor:
     @staticmethod
     def add_citations(
         output: str,
-        evidence: List[Dict[str, Any]],
+        evidence: list[dict[str, Any]],
         citation_style: str = "inline",
     ) -> str:
         """Add citations to output
@@ -137,11 +138,11 @@ class OutputProcessor:
 
 def postprocess_output(
     output: str,
-    retrieved_docs: List[Dict[str, Any]] = None,
-    redaction_rules: List[Dict[str, str]] = None,
+    retrieved_docs: list[dict[str, Any]] = None,
+    redaction_rules: list[dict[str, str]] = None,
     include_citations: bool = True,
     citation_style: str = "inline",
-) -> Tuple[str, List[Dict[str, Any]]]:
+) -> tuple[str, list[dict[str, Any]]]:
     """Post-process model output
     
     Args:

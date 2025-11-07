@@ -20,7 +20,8 @@ import hashlib
 import logging
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +38,9 @@ class FileCache:
 
     def __init__(self):
         """Initialize file cache."""
-        self._file_contents: Dict[str, str] = {}
-        self._file_mtimes: Dict[str, float] = {}
-        self._file_shas: Dict[str, str] = {}
+        self._file_contents: dict[str, str] = {}
+        self._file_mtimes: dict[str, float] = {}
+        self._file_shas: dict[str, str] = {}
         logger.info("FileCache initialized")
 
     def add(self, file_path: str) -> bool:
@@ -115,7 +116,7 @@ class FileCache:
         self._file_shas.clear()
         logger.info("Cache cleared (all files)")
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         """Return cache statistics."""
         return {
             'cached_files': len(self._file_contents),
@@ -140,7 +141,7 @@ class SearchCache:
 
     def __init__(self):
         """Initialize search cache."""
-        self._cache: Dict[str, Any] = {}
+        self._cache: dict[str, Any] = {}
         logger.info("SearchCache initialized")
 
     def memoize(self, func: Callable) -> Callable:

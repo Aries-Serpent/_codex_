@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Iterator, List, Tuple
+from typing import Any, Callable, Iterator
+from typing import Any, Callable, Iterator
 
 from .datamodule import StreamingDataModule
 from .datamodule import default_example_validator as _default_example_validator
@@ -19,13 +20,13 @@ def iter_jsonl_chunks(
     *,
     chunk_size: int = 1024,
     validator: Validator | None = None,
-) -> Iterator[Tuple[dict[str, Any], ...]]:
+) -> Iterator[tuple[dict[str, Any], ...]]:
     """Yield tuples of records from a JSONL file without loading the entire file."""
 
     if chunk_size <= 0:
         raise ValueError("chunk_size must be positive")
     p = Path(path)
-    buffer: List[dict[str, Any]] = []
+    buffer: list[dict[str, Any]] = []
     with p.open("r", encoding="utf-8") as handle:
         for line_number, raw in enumerate(handle, start=1):
             line = raw.strip()

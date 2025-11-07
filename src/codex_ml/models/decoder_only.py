@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import Optional
+from typing import Optional
 
 import torch
 from torch import nn
@@ -31,7 +32,7 @@ class ModelConfig:
 
 def _build_rope_cache(
     max_seq: int, head_dim: int, base: float, device: torch.device
-) -> Tuple[torch.Tensor, torch.Tensor]:
+) -> tuple[torch.Tensor, torch.Tensor]:
     """Precompute rotary position embedding frequencies."""
 
     inv_freq = 1.0 / (base ** (torch.arange(0, head_dim, 2, device=device).float() / head_dim))
@@ -61,12 +62,12 @@ class MultiHeadAttention(nn.Module):
         self,
         x: torch.Tensor,
         mask: torch.Tensor,
-        past: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+        past: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
         *,
         use_cache: bool = True,
         sin: Optional[torch.Tensor] = None,
         cos: Optional[torch.Tensor] = None,
-    ) -> Tuple[torch.Tensor, Optional[Tuple[torch.Tensor, torch.Tensor]]]:
+    ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
         bsz, seq, _ = x.shape
         h = self.cfg.n_heads
         head_dim = self.cfg.d_model // h
@@ -121,12 +122,12 @@ class Block(nn.Module):
         self,
         x: torch.Tensor,
         mask: torch.Tensor,
-        past: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
+        past: Optional[tuple[torch.Tensor, torch.Tensor]] = None,
         *,
         use_cache: bool = True,
         sin: Optional[torch.Tensor] = None,
         cos: Optional[torch.Tensor] = None,
-    ) -> Tuple[torch.Tensor, Optional[Tuple[torch.Tensor, torch.Tensor]]]:
+    ) -> tuple[torch.Tensor, Optional[tuple[torch.Tensor, torch.Tensor]]]:
         offset = past[0].size(2) if past is not None else 0
         sin_slice = sin[:, :, offset : offset + x.size(1), :] if sin is not None else None
         cos_slice = cos[:, :, offset : offset + x.size(1), :] if cos is not None else None
@@ -189,7 +190,7 @@ class DecoderOnlyLM(nn.Module):
         self,
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
-        past_key_values: Optional[List[Tuple[torch.Tensor, torch.Tensor]]] = None,
+        past_key_values: Optional[list[tuple[torch.Tensor, torch.Tensor]]] = None,
         *,
         use_cache: bool = True,
         labels: Optional[torch.Tensor] = None,

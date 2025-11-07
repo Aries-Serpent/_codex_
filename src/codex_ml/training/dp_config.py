@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Tuple
+from typing import Any
+from typing import Any
 
 
 @dataclass(slots=True)
@@ -33,7 +34,7 @@ class DifferentialPrivacyConfig:
             ) from exc
         self._dependency_checked = True
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "enabled": self.enabled,
             "epsilon": float(self.epsilon),
@@ -49,7 +50,7 @@ def make_private_model(
     optimizer: Any,
     data_loader: Any,
     dp_config: DifferentialPrivacyConfig,
-) -> Tuple[Any, Any, Any, Any]:
+) -> tuple[Any, Any, Any, Any]:
     """Wrap the training components with Opacus privacy engine when enabled."""
 
     if not dp_config.enabled:

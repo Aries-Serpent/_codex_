@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Pattern
+from typing import Iterable, Pattern
+from typing import Iterable, Pattern
 
 try:  # pragma: no cover - optional dependency
     import yaml
@@ -37,18 +38,18 @@ class SafetyConfig:
 
     strict: bool = False
     max_output_chars: int = 8000
-    secret_patterns: List[Pattern[str]] = field(default_factory=lambda: DEFAULT_SECRET_PATTERNS)
-    pii_patterns: List[Pattern[str]] = field(default_factory=lambda: DEFAULT_PII_PATTERNS)
-    jailbreak_patterns: List[Pattern[str]] = field(
+    secret_patterns: list[Pattern[str]] = field(default_factory=lambda: DEFAULT_SECRET_PATTERNS)
+    pii_patterns: list[Pattern[str]] = field(default_factory=lambda: DEFAULT_PII_PATTERNS)
+    jailbreak_patterns: list[Pattern[str]] = field(
         default_factory=lambda: DEFAULT_JAILBREAK_PATTERNS
     )
 
 
-def _flag(text: str, patterns: List[Pattern[str]]) -> bool:
+def _flag(text: str, patterns: list[Pattern[str]]) -> bool:
     return any(p.search(text) for p in patterns)
 
 
-def _redact(text: str, patterns: List[Pattern[str]], label: str) -> tuple[str, int]:
+def _redact(text: str, patterns: list[Pattern[str]], label: str) -> tuple[str, int]:
     count = 0
     for p in patterns:
         text, n = p.subn(f"«REDACTED:{label}»", text)
@@ -66,7 +67,7 @@ def _safe_load_yaml(policy_yaml: str) -> Dict:
     return data if isinstance(data, dict) else {}
 
 
-def _extend_patterns(base: List[Pattern[str]], patterns: Iterable[str] | None) -> None:
+def _extend_patterns(base: list[Pattern[str]], patterns: Iterable[str] | None) -> None:
     if not patterns:
         return
     for pattern in patterns:

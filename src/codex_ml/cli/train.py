@@ -6,7 +6,8 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, Sequence
+from typing import Any, Sequence
+from typing import Any, Sequence
 
 import hydra
 from codex_ml.codex_structured_logging import (
@@ -33,7 +34,7 @@ def _to_path(value: str | Path | None) -> Path | None:
     return Path(to_absolute_path(str(value)))
 
 
-def _cfg_to_dict(value: Any) -> Dict[str, Any]:
+def _cfg_to_dict(value: Any) -> dict[str, Any]:
     if isinstance(value, DictConfig):
         container = OmegaConf.to_container(value, resolve=True)
         if isinstance(container, dict):
@@ -110,7 +111,7 @@ def _apply_prompt_sanitization(
     config_obj: Any,
     keys: Sequence[str],
     *,
-    update_dict: Dict[str, Any] | None = None,
+    update_dict: dict[str, Any] | None = None,
 ) -> int:
     """Sanitise string sequences stored under ``keys`` inside ``config_obj``."""
 
@@ -146,7 +147,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     art_dir = _to_path(cfg.get("artifacts_dir") or artifacts_cfg.get("dir"))
 
     dataset_cfg = cfg.get("dataset")
-    dataset_cfg_dict: Dict[str, Any] = {}
+    dataset_cfg_dict: dict[str, Any] = {}
     dataset_sources_raw = []
     dataset_cache_dir = None
     dataset_cast_policy = None
@@ -215,7 +216,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     retention_policy = _cfg_to_dict(checkpoint_cfg.get("retention")) or None
 
     model_cfg_container = cfg.get("model")
-    model_cfg_dict: Dict[str, Any] = {}
+    model_cfg_dict: dict[str, Any] = {}
     model_name = cfg.get("model_name")
     if isinstance(model_cfg_container, (DictConfig, dict)):
         model_container_dict = _cfg_to_dict(model_cfg_container)
@@ -327,7 +328,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     if batch_size is None:
         batch_size = optimizer_cfg.get("batch_size")
 
-    reasoning_cfg_dict: Dict[str, Any] | None = None
+    reasoning_cfg_dict: dict[str, Any] | None = None
     reasoning_section = cfg.get("reasoning")
     if isinstance(reasoning_section, (DictConfig, dict)):
         candidate = _cfg_to_dict(reasoning_section)
@@ -338,7 +339,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
             candidate = _cfg_to_dict(training_reasoning)
             reasoning_cfg_dict = candidate or None
 
-    evaluation_cfg_dict: Dict[str, Any] | None = None
+    evaluation_cfg_dict: dict[str, Any] | None = None
     evaluation_section = cfg.get("evaluation")
     if isinstance(evaluation_section, (DictConfig, dict)):
         evaluation_cfg_dict = _cfg_to_dict(evaluation_section) or None
@@ -347,7 +348,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
         if isinstance(training_evaluation, (DictConfig, dict)):
             evaluation_cfg_dict = _cfg_to_dict(training_evaluation) or None
 
-    metadata_cfg: Dict[str, Any] | None = None
+    metadata_cfg: dict[str, Any] | None = None
     metadata_section = cfg.get("metadata")
     if isinstance(metadata_section, (DictConfig, dict)):
         metadata_cfg = _cfg_to_dict(metadata_section) or None

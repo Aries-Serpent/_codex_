@@ -8,7 +8,8 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 
 @dataclass
@@ -57,7 +58,7 @@ class TrainCfg:
     eval_every_epochs: int = 1
     metrics_out: str = ".codex/metrics.ndjson"
     log_dir: str = "logs"
-    log_formats: Tuple[str, ...] = ("ndjson",)
+    log_formats: tuple[str, ...] = ("ndjson",)
     log_system_metrics: bool = False
     system_metrics_interval: float = 60.0
     system_metrics_path: Optional[str] = None

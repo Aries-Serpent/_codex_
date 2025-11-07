@@ -7,7 +7,8 @@ Prefer codex_ml.utils.checkpointing.CheckpointManager for new code.
 from __future__ import annotations
 
 import random as _random
-from typing import Any, Dict
+from typing import Any
+from typing import Any
 
 import warnings as _warnings
 
@@ -59,13 +60,13 @@ def verify_ckpt_integrity(*args, **kwargs):  # pragma: no cover - passthrough
     return _verify(*args, **kwargs)
 
 
-def dump_rng_state() -> Dict[str, Any]:  # pragma: no cover - passthrough
+def dump_rng_state() -> dict[str, Any]:  # pragma: no cover - passthrough
     """Capture RNG state while preserving legacy structure."""
 
     if _canonical_dump_rng_state is not None:
         return _canonical_dump_rng_state()
 
-    state: Dict[str, Any] = {"python": _random.getstate()}
+    state: dict[str, Any] = {"python": _random.getstate()}
     if _np is not None:
         state["numpy"] = _np.random.get_state()
     if _torch is not None:
@@ -77,7 +78,7 @@ def dump_rng_state() -> Dict[str, Any]:  # pragma: no cover - passthrough
     return state
 
 
-def load_rng_state(state: Dict[str, Any]) -> None:  # pragma: no cover - passthrough
+def load_rng_state(state: dict[str, Any]) -> None:  # pragma: no cover - passthrough
     """Restore RNG state captured by :func:`dump_rng_state`."""
 
     if _canonical_load_rng_state is not None:

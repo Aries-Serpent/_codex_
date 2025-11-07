@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Dict
 
 import logging
 
@@ -25,7 +24,7 @@ else:  # pragma: no cover - NVML initialisation best effort
         pynvml = None  # type: ignore[assignment]
 
 
-def collect_metrics() -> Dict[str, float]:
+def collect_metrics() -> dict[str, float]:
     """Collect CPU, memory and GPU utilisation metrics.
 
     Missing optional dependencies are handled gracefully by returning an
@@ -33,7 +32,7 @@ def collect_metrics() -> Dict[str, float]:
     avoid collisions with training metrics.
     """
 
-    metrics: Dict[str, float] = {}
+    metrics: dict[str, float] = {}
 
     if psutil is not None:
         try:

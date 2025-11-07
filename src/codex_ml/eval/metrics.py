@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import math
-from typing import Dict, Iterable, List, Optional, Sequence
+from typing import Iterable, Optional, Sequence
+from typing import Iterable, Optional, Sequence
 
 try:  # Optional dependency for efficiency
     import numpy as _np
@@ -133,7 +134,7 @@ def token_stats(
     target_tokens: Iterable[int],
     *,
     ignore_index: int = -100,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """Return token-level statistics including accuracy."""
 
     preds = [int(p) for p in _materialise(pred_tokens)]
@@ -243,7 +244,7 @@ def classification_f1(
     label_set = sorted(set(labels) if labels is not None else set(preds) | set(targs))
     if not label_set:
         raise MetricError("f1", "no labels present")
-    counts: Dict[int, Dict[str, int]] = {label: {"tp": 0, "fp": 0, "fn": 0} for label in label_set}
+    counts: dict[int, dict[str, int]] = {label: {"tp": 0, "fp": 0, "fn": 0} for label in label_set}
     for p, t in zip(preds, targs):
         if p == t:
             if p in counts:
@@ -258,8 +259,8 @@ def classification_f1(
         fp = sum(c["fp"] for c in counts.values())
         fn = sum(c["fn"] for c in counts.values())
         return _precision_recall_f(tp, fp, fn, beta)
-    scores: List[float] = []
-    weights: List[int] = []
+    scores: list[float] = []
+    weights: list[int] = []
     for label in label_set:
         c = counts[label]
         score = _precision_recall_f(c["tp"], c["fp"], c["fn"], beta)
@@ -320,7 +321,7 @@ def rouge_l(
     references: Sequence[str],
     *,
     lowercase: bool = True,
-) -> Optional[Dict[str, float]]:
+) -> Optional[dict[str, float]]:
     """Compute ROUGE-L F1 if ``rouge_score`` is installed."""
 
     if len(candidates) != len(references):
@@ -330,7 +331,7 @@ def rouge_l(
     except Exception:
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
-    scores: List[float] = []
+    scores: list[float] = []
     for cand, ref in zip(candidates, references):
         c = cand.lower() if lowercase else cand
         r = ref.lower() if lowercase else ref
@@ -341,7 +342,7 @@ def rouge_l(
     return {"rougeL_f": float(sum(scores) / len(scores))}
 
 
-def run_unit_tests(code_str: str, tests_dir: str) -> Dict[str, int]:  # pragma: no cover - legacy
+def run_unit_tests(code_str: str, tests_dir: str) -> dict[str, int]:  # pragma: no cover - legacy
     import re
     import subprocess
     import tempfile

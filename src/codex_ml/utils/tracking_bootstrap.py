@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import os
-from typing import Dict, Optional
+from typing import Optional
+from typing import Optional
 
 
-def init_mlflow_offline(tracking_uri: Optional[str] = None) -> Dict[str, str]:
+def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     """
     Initialize MLflow in offline/local mode.
     If no tracking_uri is provided, defaults to a local file store ('file:./mlruns').
     Returns resolved environment settings.
     """
-    resolved: Dict[str, str] = {}
+    resolved: dict[str, str] = {}
     try:
         import mlflow  # type: ignore
     except Exception:
@@ -26,12 +27,12 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> Dict[str, str]:
     return resolved
 
 
-def init_wandb_offline(project: Optional[str] = None) -> Dict[str, str]:
+def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
     """
     Initialize Weights & Biases in offline mode (no network).
     Use `wandb sync <run_dir>` later to upload if desired.
     """
-    resolved: Dict[str, str] = {}
+    resolved: dict[str, str] = {}
     try:
         import wandb  # type: ignore
     except Exception:

@@ -8,7 +8,8 @@ import sys
 from datetime import datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, List, Sequence
+from typing import Any, Sequence
+from typing import Any, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -79,7 +80,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=None,
         help="Optional NDJSON file to capture moderation decisions for auditing.",
     )
-    arg_list: List[str] = list(argv) if argv is not None else sys.argv[1:]
+    arg_list: list[str] = list(argv) if argv is not None else sys.argv[1:]
 
     with capture_exceptions(logger):
         args = parser.parse_args(arg_list)

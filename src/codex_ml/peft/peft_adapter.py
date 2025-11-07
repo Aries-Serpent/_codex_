@@ -26,7 +26,8 @@ after attaching the merged configuration for inspection.
 from __future__ import annotations
 
 import inspect
-from typing import Any, Dict, Optional
+from typing import Any, Optional
+from typing import Any, Optional
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -38,7 +39,7 @@ except Exception:  # pragma: no cover - `peft` not installed
 __all__ = ["apply_lora", "LoraConfig", "get_peft_model", "DEFAULT_CFG"]
 
 # Baseline defaults; can be overridden via cfg or kwargs
-DEFAULT_CFG: Dict[str, Any] = {
+DEFAULT_CFG: dict[str, Any] = {
     "r": 8,
     "lora_alpha": 16,
     "lora_dropout": 0.05,
@@ -47,14 +48,14 @@ DEFAULT_CFG: Dict[str, Any] = {
 }
 
 
-def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides: Any) -> Any:
+def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides: Any) -> Any:
     """Attach LoRA adapters via `peft` when available.
 
     Parameters
     ----------
     model : Any
         The base model to wrap with LoRA adapters.
-    cfg : Optional[Dict[str, Any]], default=None
+    cfg : Optional[dict[str, Any]], default=None
         Optional configuration mapping. Supported keys mirror those of
         `peft.LoraConfig`, such as:
           - r, lora_alpha, lora_dropout, bias
@@ -96,7 +97,7 @@ def apply_lora(model: Any, cfg: Optional[Dict[str, Any]] = None, /, **overrides:
     >>> print(adapted.peft_config)
     """
     # Merge defaults + provided config + explicit overrides
-    merged: Dict[str, Any] = dict(DEFAULT_CFG)
+    merged: dict[str, Any] = dict(DEFAULT_CFG)
     if cfg:
         merged.update(cfg)
     if overrides:

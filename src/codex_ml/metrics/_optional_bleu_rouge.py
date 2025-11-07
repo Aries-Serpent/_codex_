@@ -11,7 +11,8 @@ Usage:
     BUILTIN = {}
     patch_registry(BUILTIN)  # adds 'bleu','rouge_l' if deps present
 """
-from typing import Dict, Optional, List
+from typing import Optional
+from typing import Optional
 
 
 def _import_bleu_rouge():
@@ -29,7 +30,7 @@ def _import_bleu_rouge():
         return None, None, None
 
 
-def bleu(predictions: List[str], targets: List[str]) -> Optional[float]:
+def bleu(predictions: list[str], targets: list[str]) -> Optional[float]:
     """
     Compute BLEU score for predictions vs targets.
     
@@ -62,7 +63,7 @@ def bleu(predictions: List[str], targets: List[str]) -> Optional[float]:
     return float(sum(scores) / len(scores)) if scores else 0.0
 
 
-def rouge_l(predictions: List[str], targets: List[str]) -> Optional[float]:
+def rouge_l(predictions: list[str], targets: list[str]) -> Optional[float]:
     """
     Compute ROUGE-L F1 score for predictions vs targets.
     
@@ -91,7 +92,7 @@ def rouge_l(predictions: List[str], targets: List[str]) -> Optional[float]:
     return float(sum(scores) / len(scores)) if scores else 0.0
 
 
-def patch_registry(reg: Dict[str, object]) -> Dict[str, object]:
+def patch_registry(reg: dict[str, object]) -> dict[str, object]:
     """
     Patch a registry dictionary with BLEU/ROUGE metrics if dependencies are available.
     

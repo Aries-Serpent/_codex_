@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 from .codex_model import CodexModel, LoraOptions
 from .factory import ENV_ENABLE_PEFT, ModelFactoryConfig, PeftAdapterConfig, build_model
@@ -41,7 +42,7 @@ def load_model_and_tokenizer(
     lora_rank: Optional[int] = None,
     dtype: str = "float32",
     device: str = "cpu",
-) -> Tuple[Any, Optional[Any]]:
+) -> tuple[Any, Optional[Any]]:
     """Load a minimal model/tokenizer pair with optional LoRA toggles."""
 
     model = _load_base_model(model_name_or_path, dtype=dtype, device=device)

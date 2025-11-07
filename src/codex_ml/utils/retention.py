@@ -31,14 +31,15 @@ import logging
 import re
 import shutil
 from pathlib import Path
-from typing import List, Optional, Set
+from typing import Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 EPOCH_DIR_RE = re.compile(r"^epoch-(\d{4,})$")
 
 
-def _discover_epoch_dirs(root: Path) -> List[Path]:
+def _discover_epoch_dirs(root: Path) -> list[Path]:
     out = []
     for p in root.iterdir():
         if not p.is_dir():
@@ -107,7 +108,7 @@ def prune_checkpoints(
         epochs.append(int(m.group(1)))
 
     protected_latest = _read_latest_epoch(root)
-    keep: Set[int] = set()
+    keep: set[int] = set()
 
     if keep_last and keep_last > 0:
         keep.update(epochs[-keep_last:])
@@ -144,8 +145,8 @@ def prune_checkpoints(
                 trimmed_list = sorted(set(trimmed_list), reverse=True)[:target_count]
             keep = set(trimmed_list)
 
-    pruned: List[int] = []
-    kept: List[int] = []
+    pruned: list[int] = []
+    kept: list[int] = []
     epoch_to_path = {
         int(EPOCH_DIR_RE.match(p.name).group(1)): p
         for p in epoch_dirs

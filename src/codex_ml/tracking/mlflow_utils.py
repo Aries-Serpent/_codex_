@@ -24,7 +24,8 @@ import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, ContextManager, Dict, Iterable, Mapping, Optional, Union
+from typing import Any, ContextManager, Iterable, Mapping, Optional, Union
+from typing import Any, ContextManager, Iterable, Mapping, Optional, Union
 
 from codex_ml.tracking import mlflow_guard
 from codex_ml.utils.optional_dependencies import (
@@ -81,7 +82,7 @@ class MlflowConfig:
     enable: bool = False
     tracking_uri: Optional[str] = field(default_factory=_resolve_tracking_uri_default)
     experiment: Optional[str] = None
-    run_tags: Optional[Dict[str, str]] = None
+    run_tags: Optional[dict[str, str]] = None
     enable_system_metrics: Optional[bool] = None
 
 
@@ -133,7 +134,7 @@ def _coerce_config(
     *,
     tracking_uri: Optional[str] = None,
     experiment: Optional[str] = None,
-    run_tags: Optional[Dict[str, str]] = None,
+    run_tags: Optional[dict[str, str]] = None,
     enable_system_metrics: Optional[bool] = None,
 ) -> MlflowConfig:
     """Normalize inputs into an MlflowConfig.
@@ -182,7 +183,7 @@ def start_run(
     *,
     tracking_uri: Optional[str] = None,
     experiment: Optional[str] = None,
-    run_tags: Optional[Dict[str, str]] = None,
+    run_tags: Optional[dict[str, str]] = None,
     enable_system_metrics: Optional[bool] = None,
 ) -> ContextManager[Any]:
     """Start (or no-op) an MLflow run as a context manager.
@@ -371,7 +372,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = Fa
 
 def ensure_local_artifacts(
     run_dir: Path,
-    summary: Dict[str, Any],
+    summary: dict[str, Any],
     seeds: Mapping[str, Any],
     *,
     enabled: bool = False,

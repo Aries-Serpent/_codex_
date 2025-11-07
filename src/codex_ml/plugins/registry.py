@@ -17,7 +17,8 @@ import warnings
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 DEFAULT_GROUP = "codex_ml.plugins"
 
@@ -98,7 +99,7 @@ def _activate_editable_distribution(ep: Any) -> None:
 class _Item:
     name: str
     obj: Any
-    meta: Dict[str, Any]
+    meta: dict[str, Any]
 
 
 class Registry:
@@ -106,7 +107,7 @@ class Registry:
 
     def __init__(self, kind: str = "plugins") -> None:
         self.kind = kind
-        self._items: Dict[str, _Item] = {}
+        self._items: dict[str, _Item] = {}
 
     def register(self, name: str, **meta: Any):
         """Register `obj` under `name`. Usable as a decorator."""
@@ -146,7 +147,7 @@ class Registry:
     # Entry point discovery -------------------------------------------------
     def load_from_entry_points(
         self, group: str, require_api: str = "v1"
-    ) -> Tuple[int, Dict[str, str]]:
+    ) -> tuple[int, dict[str, str]]:
         """Load entry points into the registry.
 
         Returns a tuple of (loaded_count, errors).
@@ -156,7 +157,7 @@ class Registry:
         """
 
         count = 0
-        errors: Dict[str, str] = {}
+        errors: dict[str, str] = {}
         items = _iter_entry_points(group)
         if not items:
             return count, errors
@@ -193,10 +194,10 @@ class Registry:
 # Entry point helpers (stateless)
 
 
-def discover(group: str = DEFAULT_GROUP) -> Dict[str, object]:
+def discover(group: str = DEFAULT_GROUP) -> dict[str, object]:
     """Return mapping of {name: object} for the entry point group."""
 
-    results: Dict[str, object] = {}
+    results: dict[str, object] = {}
     items = _iter_entry_points(group)
     if not items:
         return {}

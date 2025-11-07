@@ -43,7 +43,8 @@ else:
         print(f"SQLite patch disabled: {exc}", file=sys.stderr)
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
+from typing import Any, Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
@@ -70,7 +71,7 @@ def _validate_table_name(value: str | None) -> str | None:
     raise argparse.ArgumentTypeError(msg)
 
 
-def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Session Logging (SQLite) viewer")
     parser.add_argument(
         "--session-id", required=True, help="Session identifier to filter"
@@ -137,14 +138,14 @@ def connect_db(db_path: Path) -> sqlite3.Connection:
 
 def infer_schema(
     conn: sqlite3.Connection, explicit_table: Optional[str] = None
-) -> Dict[str, Optional[str]]:
+) -> dict[str, Optional[str]]:
     candidates = [explicit_table] if explicit_table else list_tables(conn)
     for table in candidates:
         if not table:
             continue
         columns = [col.lower() for col in get_columns(conn, table)]
 
-        def pick(options: List[str]) -> Optional[str]:
+        def pick(options: list[str]) -> Optional[str]:
             for option in options:
                 if option in columns:
                     return option
@@ -172,13 +173,13 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
 
 
 def build_query(
-    schema: Dict[str, Optional[str]],
-    level: Optional[List[str]],
+    schema: dict[str, Optional[str]],
+    level: Optional[list[str]],
     contains: Optional[str],
     since: Optional[str],
     until: Optional[str],
     limit: Optional[int],
-) -> Tuple[str, List[Any]]:
+) -> tuple[str, list[Any]]:
     table = schema["table"]
     sid_col = schema["sid"]
     ts_col = schema["ts"]
@@ -190,7 +191,7 @@ def build_query(
     if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):
         raise ValueError("Invalid characters in schema identifiers")
     where = [f"{sid_col} = ?"]
-    args: List[Any] = []
+    args: list[Any] = []
     if level and lvl_col:
         placeholders = ",".join("?" for _ in level)
         where.append(f"{lvl_col} IN ({placeholders})")
@@ -215,7 +216,7 @@ def build_query(
     return query, args
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     ns = parse_args(argv)
     if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
         msg = (

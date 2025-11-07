@@ -4,12 +4,13 @@ import argparse
 import csv
 import json
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable
+from typing import Iterable
 
 from .evaluator import run_evaluator
 
 
-def _load_texts(path: str) -> List[str]:
+def _load_texts(path: str) -> list[str]:
     """Load text records from ``path``.
 
     Supports plain text files (one example per line), NDJSON/JSONL with a
@@ -41,7 +42,7 @@ def _summarise_log(path: str) -> None:
             records = list(reader)
     else:
         raise ValueError(f"Unsupported log format: {p.suffix}")
-    summary: dict[int, List[float]] = {}
+    summary: dict[int, list[float]] = {}
     for rec in records:
         epoch = int(rec.get("epoch", 0))
         # Pick first numeric metric value in record

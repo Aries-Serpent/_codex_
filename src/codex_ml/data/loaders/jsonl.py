@@ -6,12 +6,13 @@ import hashlib
 import json
 import random
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Mapping, Tuple
+from typing import Any, Iterator, Mapping
+from typing import Any, Iterator, Mapping
 
 from codex_ml.utils.repro import record_dataset_checksums
 from codex_ml.data.splits import assign_split
 
-CacheKey = Tuple[str, Tuple[float, float, float], int, bool]
+CacheKey = tuple[str, tuple[float, float, float], int, bool]
 DEFAULT_CACHE_DIR = Path("artifacts/data_cache")
 
 
@@ -40,8 +41,8 @@ def _iter_jsonl(path: Path) -> Iterator[Mapping[str, Any]]:
 
 
 def _normalise_record(
-    payload: Mapping[str, Any], fields: Tuple[str, str, str]
-) -> Dict[str, str] | None:
+    payload: Mapping[str, Any], fields: tuple[str, str, str]
+) -> dict[str, str] | None:
     text_field, input_field, target_field = fields
     if text_field in payload:
         text = str(payload[text_field])
@@ -57,8 +58,8 @@ def _normalise_record(
 
 
 def _split_records(
-    records: List[Dict[str, str]], ratios: Tuple[float, float, float], seed: int
-) -> Dict[str, List[Dict[str, str]]]:
+    records: list[dict[str, str]], ratios: tuple[float, float, float], seed: int
+) -> dict[str, list[dict[str, str]]]:
     """Split records using random shuffling with given ratios and seed."""
     total = sum(ratios)
     if total <= 0:
@@ -80,7 +81,7 @@ def _split_records(
     }
 
 
-def _cache_key(file_sha: str, ratios: Tuple[float, float, float], seed: int, shuffle: bool) -> str:
+def _cache_key(file_sha: str, ratios: tuple[float, float, float], seed: int, shuffle: bool) -> str:
     payload = json.dumps(
         {"sha": file_sha, "ratios": ratios, "seed": seed, "shuffle": shuffle},
         sort_keys=True,
@@ -94,15 +95,15 @@ def load_jsonl_dataset(
     text_field: str = "text",
     input_field: str = "input",
     target_field: str = "target",
-    split: Tuple[float, float, float] = (0.8, 0.1, 0.1),
+    split: tuple[float, float, float] = (0.8, 0.1, 0.1),
     seed: int = 1234,
     shuffle: bool = True,
     cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
-) -> Dict[str, List[Dict[str, str]]]:
+) -> dict[str, list[dict[str, str]]]:
     """Load ``path`` and return deterministic train/val/test splits."""
 
     dataset_path = Path(path)
-    records: List[Dict[str, str]] = []
+    records: list[dict[str, str]] = []
     for payload in _iter_jsonl(dataset_path):
         normalised = _normalise_record(payload, (text_field, input_field, target_field))
         if normalised is None:

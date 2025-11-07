@@ -18,7 +18,8 @@ from collections import Counter
 from contextlib import contextmanager
 from pathlib import Path
 from statistics import fmean
-from typing import Any, Dict, Iterable, Mapping, Optional, Sequence, Tuple
+from typing import Any, Iterable, Mapping, Optional, Sequence
+from typing import Any, Iterable, Mapping, Optional, Sequence
 
 from .config import PretrainingConfig, RLHFConfig, SFTConfig, TrainingWeights, ValidationThresholds
 from .interfaces.registry import get_component
@@ -36,7 +37,7 @@ DEFAULT_RL_PATH = "codex_ml.interfaces.rl:BanditRLAgent"
 def _temporary_env(overrides: Mapping[str, Optional[str]]):
     """Temporarily apply environment variable overrides."""
 
-    previous: Dict[str, Optional[str]] = {}
+    previous: dict[str, Optional[str]] = {}
     try:
         for key, value in overrides.items():
             previous[key] = os.environ.get(key)
@@ -56,7 +57,7 @@ def _temporary_env(overrides: Mapping[str, Optional[str]]):
 def _resolve_tokenizer() -> TokenizerAdapter:
     name = os.getenv("CODEX_TOKENIZER_NAME", "whitespace")
     kwargs_env = os.getenv("CODEX_TOKENIZER_KWARGS")
-    kwargs: Dict[str, Any] = {}
+    kwargs: dict[str, Any] = {}
     if kwargs_env:
         try:
             import json
@@ -130,9 +131,9 @@ def _prepare_demos(demos: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _prepare_pairwise(
-    prefs: Sequence[Tuple[str, str, str, int]],
-) -> list[Tuple[str, str, str, int]]:
-    prepared: list[Tuple[str, str, str, int]] = []
+    prefs: Sequence[tuple[str, str, str, int]],
+) -> list[tuple[str, str, str, int]]:
+    prepared: list[tuple[str, str, str, int]] = []
     for idx, entry in enumerate(prefs):
         if len(entry) != 4:
             raise ValueError("pairwise preferences must contain four elements")
@@ -211,7 +212,7 @@ def _run_sft_stage(
 
 
 def _run_rlhf_stage(
-    pairs: Sequence[Tuple[str, str, str, int]],
+    pairs: Sequence[tuple[str, str, str, int]],
     reward_model: RewardModel,
     agent: RLAgent,
     cfg: RLHFConfig,
@@ -346,12 +347,12 @@ def _coerce_demo_list(value: Any) -> list[Mapping[str, Any]]:
     return demos
 
 
-def _coerce_pairwise_list(value: Any) -> list[Tuple[str, str, str, int]]:
+def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
     if value is None:
         raise ValueError("pairwise comparisons must be provided")
     if not isinstance(value, Sequence):
         raise ValueError("pairwise comparisons must be a sequence")
-    pairs: list[Tuple[str, str, str, int]] = []
+    pairs: list[tuple[str, str, str, int]] = []
     for idx, item in enumerate(value):
         if isinstance(item, Mapping):
             try:
@@ -494,12 +495,12 @@ def _parse_validation(data: Any) -> ValidationThresholds:
     )
 
 
-def _build_component_env(mapping: Any) -> Dict[str, Optional[str]]:
+def _build_component_env(mapping: Any) -> dict[str, Optional[str]]:
     if not mapping:
         return {}
     if not isinstance(mapping, Mapping):
         raise ValueError("components must be a mapping")
-    overrides: Dict[str, Optional[str]] = {}
+    overrides: dict[str, Optional[str]] = {}
     spec = {
         "tokenizer": ("CODEX_TOKENIZER_PATH", "CODEX_TOKENIZER_KWARGS"),
         "reward_model": ("CODEX_REWARD_PATH", "CODEX_REWARD_KWARGS"),
@@ -528,8 +529,8 @@ def _build_component_env(mapping: Any) -> Dict[str, Optional[str]]:
 def run_codex_pipeline(
     *,
     corpus: Sequence[str],
-    demos: Sequence[Dict[str, str]],
-    pairwise_prefs: Sequence[Tuple[str, str, str, int]],
+    demos: Sequence[dict[str, str]],
+    pairwise_prefs: Sequence[tuple[str, str, str, int]],
     weights: TrainingWeights,
     pre_cfg: PretrainingConfig,
     sft_cfg: SFTConfig,
@@ -539,7 +540,7 @@ def run_codex_pipeline(
     seed: Optional[int] = None,
     summary_path: Optional[str] = None,
     log_summary: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Execute the Codex training pipeline with deterministic heuristics.
 
     The function performs lightweight preprocessing and evaluation of the
@@ -563,7 +564,7 @@ def run_codex_pipeline(
     rng = random.Random(seed) if seed is not None else None
     synthetic = _augment_prompts(synth_prompts or [], rng) if synth_prompts else []
 
-    summary: Dict[str, Any] = {
+    summary: dict[str, Any] = {
         "stages": {
             "pretraining": pre_summary,
             "sft": sft_summary,
@@ -637,7 +638,7 @@ def run_codex_pipeline_from_config(
     seed: Optional[int] = None,
     summary_path: Optional[str] = None,
     log_summary: Optional[bool] = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Execute the pipeline using a dictionary-style configuration.
 
     Parameters

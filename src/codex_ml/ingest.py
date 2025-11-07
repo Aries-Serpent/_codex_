@@ -14,7 +14,8 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List, Mapping, MutableMapping, Optional
+from typing import Any, Iterable, Iterator, Mapping, MutableMapping, Optional
+from typing import Any, Iterable, Iterator, Mapping, MutableMapping, Optional
 
 from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 
@@ -135,20 +136,20 @@ def _iter_dataset_files(path: Path) -> Iterator[Path]:
                 yield candidate
 
 
-def _read_csv(path: Path) -> List[Dict[str, Any]]:
+def _read_csv(path: Path) -> list[dict[str, Any]]:
     with path.open("r", encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
         return [dict(row) for row in reader]
 
 
-def _normalize_json_item(item: Any) -> Dict[str, Any]:
+def _normalize_json_item(item: Any) -> dict[str, Any]:
     if isinstance(item, Mapping):
         return dict(item)
     return {"text": item}
 
 
-def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
-    rows: List[Dict[str, Any]] = []
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     with path.open("r", encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
@@ -163,7 +164,7 @@ def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
     return rows
 
 
-def _read_json(path: Path) -> List[Dict[str, Any]]:
+def _read_json(path: Path) -> list[dict[str, Any]]:
     try:
         with path.open("r", encoding="utf-8") as fh:
             payload = json.load(fh)
@@ -177,13 +178,13 @@ def _read_json(path: Path) -> List[Dict[str, Any]]:
     return [_normalize_json_item(payload)]
 
 
-def _read_text(path: Path) -> List[Dict[str, Any]]:
+def _read_text(path: Path) -> list[dict[str, Any]]:
     text = path.read_text(encoding="utf-8")
     return [{"text": line.strip()} for line in text.splitlines() if line.strip()]
 
 
-def _load_records(path: Path) -> List[Dict[str, Any]]:
-    records: List[Dict[str, Any]] = []
+def _load_records(path: Path) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
     for file_path in _iter_dataset_files(path):
         suffix = file_path.suffix.lower()
         if suffix in _CSV_EXTENSIONS:
@@ -219,8 +220,8 @@ def _transform_value(value: Any, *, lowercase: bool, max_length: Optional[int]) 
     return value
 
 
-def _apply_preprocess(records: Iterable[Dict[str, Any]], cfg: _DataConfig) -> List[Dict[str, Any]]:
-    processed: List[Dict[str, Any]] = []
+def _apply_preprocess(records: Iterable[dict[str, Any]], cfg: _DataConfig) -> list[dict[str, Any]]:
+    processed: list[dict[str, Any]] = []
     for record in records:
         processed.append(
             {
@@ -233,7 +234,7 @@ def _apply_preprocess(records: Iterable[Dict[str, Any]], cfg: _DataConfig) -> Li
     return processed
 
 
-def _limit_records(records: List[Dict[str, Any]], cfg: _DataConfig) -> List[Dict[str, Any]]:
+def _limit_records(records: list[dict[str, Any]], cfg: _DataConfig) -> list[dict[str, Any]]:
     if not records:
         return []
     items = list(records)
@@ -259,7 +260,7 @@ def ingest(
     sample_size: Optional[int] = None,
     seed: Optional[int] = None,
     config_path: str | Path | None = None,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Load a small dataset according to the data defaults.
 
     Parameters are intentionally aligned with the defaults exposed in
@@ -293,13 +294,13 @@ def ingest(
     return {"records": limited, "metadata": metadata}
 
 
-def load_dataset(**kwargs: Any) -> Dict[str, Any]:
+def load_dataset(**kwargs: Any) -> dict[str, Any]:
     """Alias for :func:`ingest` to match historical naming."""
 
     return ingest(**kwargs)
 
 
-def ingest_sample(sample_size: int = 8) -> Dict[str, Any]:
+def ingest_sample(sample_size: int = 8) -> dict[str, Any]:
     """Convenience helper returning a small sample regardless of config."""
 
     return ingest(sample_mode=True, sample_size=sample_size)

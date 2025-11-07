@@ -11,7 +11,8 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Mapping, Optional, Set, Tuple
+from typing import Any, Callable, Mapping, Optional
+from typing import Any, Callable, Mapping, Optional
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")
@@ -148,16 +149,16 @@ _FALLBACK_CPU_COUNT = os.cpu_count() or 1
 _FALLBACK_PROCESS_CPU_TIME: Optional[float] = None
 _FALLBACK_PROCESS_TS: Optional[float] = None
 _NVML_DISABLED = not _CONFIG.use_nvml
-_PSUTIL_WARNING_CONTEXTS: Set[str] = set()
-_NVML_WARNING_CONTEXTS: Set[str] = set()
-_LOGGER_WARNING_CONTEXTS: Set[str] = set()
+_PSUTIL_WARNING_CONTEXTS: set[str] = set()
+_NVML_WARNING_CONTEXTS: set[str] = set()
+_LOGGER_WARNING_CONTEXTS: set[str] = set()
 
 
 def _now() -> float:
     return time.time()
 
 
-def _minimal_process_sample(ts: float) -> Optional[Dict[str, Any]]:
+def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
     """Return a lightweight snapshot of process metrics without psutil."""
 
     global _FALLBACK_PROCESS_CPU_TIME, _FALLBACK_PROCESS_TS
@@ -175,7 +176,7 @@ def _minimal_process_sample(ts: float) -> Optional[Dict[str, Any]]:
     _FALLBACK_PROCESS_CPU_TIME = proc_time
     _FALLBACK_PROCESS_TS = ts
 
-    payload: Dict[str, Any] = {}
+    payload: dict[str, Any] = {}
     if cpu_percent is not None:
         payload["cpu_percent"] = cpu_percent
     if resource is not None:
@@ -192,8 +193,8 @@ def _minimal_process_sample(ts: float) -> Optional[Dict[str, Any]]:
     return payload or None
 
 
-def _sample_cpu_minimal(ts: float) -> Dict[str, Any]:
-    payload: Dict[str, Any] = {
+def _sample_cpu_minimal(ts: float) -> dict[str, Any]:
+    payload: dict[str, Any] = {
         "ts": ts,
         "cpu_count": _FALLBACK_CPU_COUNT,
         "memory": None,
@@ -214,11 +215,11 @@ def _sample_cpu_minimal(ts: float) -> Dict[str, Any]:
     return payload
 
 
-def _sample_cpu_psutil(ts: float) -> Dict[str, Any]:
+def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
     if psutil is None:
         raise RuntimeError("psutil is required for _sample_cpu_psutil")
 
-    payload: Dict[str, Any] = {"ts": ts}
+    payload: dict[str, Any] = {"ts": ts}
 
     try:
         payload["cpu_percent"] = psutil.cpu_percent(interval=None)
@@ -257,7 +258,7 @@ def _sample_cpu_psutil(ts: float) -> Dict[str, Any]:
     return payload
 
 
-def _sample_gpu_metrics() -> Optional[Dict[str, Any]]:
+def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
     global _NVML_DISABLED
 
     if _NVML_DISABLED or not _CONFIG.poll_gpu:
@@ -289,7 +290,7 @@ def _sample_gpu_metrics() -> Optional[Dict[str, Any]]:
             handle = pynvml.nvmlDeviceGetHandleByIndex(idx)
             util = pynvml.nvmlDeviceGetUtilizationRates(handle)
             memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-            entry: Dict[str, Any] = {
+            entry: dict[str, Any] = {
                 "index": idx,
                 "util": float(util.gpu),
                 "mem_used": float(memory.used),
@@ -333,7 +334,7 @@ def _sample_gpu_metrics() -> Optional[Dict[str, Any]]:
             pass
 
 
-def sample_system_metrics() -> Dict[str, Any]:
+def sample_system_metrics() -> dict[str, Any]:
     """Return a snapshot of system utilisation.
 
     When :mod:`psutil` or NVML are unavailable the function falls back to a
@@ -356,11 +357,11 @@ def sample_system_metrics() -> Dict[str, Any]:
     return payload
 
 
-def system_snapshot() -> Dict[str, Any]:
+def system_snapshot() -> dict[str, Any]:
     """Return a best-effort system snapshot resilient to optional deps."""
 
     ts = _now()
-    errors: list[Dict[str, str]] = []
+    errors: list[dict[str, str]] = []
     try:
         if _CONFIG.use_psutil and HAS_PSUTIL and "psutil" in globals() and psutil is not None:
             cpu_payload = _sample_cpu_psutil(ts)
@@ -380,10 +381,10 @@ def system_snapshot() -> Dict[str, Any]:
     return snapshot
 
 
-def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
+def system_metrics_scalars(payload: Mapping[str, Any]) -> dict[str, float]:
     """Extract a flattened scalar view from ``payload`` for dashboards."""
 
-    scalars: Dict[str, float] = {}
+    scalars: dict[str, float] = {}
 
     cpu_percent = payload.get("cpu_percent")
     if isinstance(cpu_percent, (int, float)):
@@ -429,8 +430,8 @@ def system_metrics_scalars(payload: Mapping[str, Any]) -> Dict[str, float]:
 def start_metrics_logger(
     *,
     interval_s: float,
-    write_fn: Callable[[Dict[str, Any]], None],
-    scalar_sink: Optional[Callable[[Dict[str, float]], None]] = None,
+    write_fn: Callable[[dict[str, Any]], None],
+    scalar_sink: Optional[Callable[[dict[str, float]], None]] = None,
     stop_event: Optional[threading.Event] = None,
 ) -> threading.Thread:
     """Start a daemon thread that samples metrics and forwards them to sinks."""
@@ -459,7 +460,7 @@ def start_metrics_logger(
     return thread
 
 
-def _write_record(path: Path, record: Dict[str, Any]) -> None:
+def _write_record(path: Path, record: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(record) + "\n")
@@ -588,8 +589,8 @@ class SamplerStatus:
     cpu_enabled: bool
     degraded: bool
     gpu_enabled: bool
-    missing_dependencies: Tuple[str, ...] = ()
-    notes: Tuple[str, ...] = ()
+    missing_dependencies: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
 
     @property
     def enabled(self) -> bool:
@@ -649,7 +650,7 @@ def _ensure_psutil_sampler(
     if key in _PSUTIL_WARNING_CONTEXTS:
         return False
 
-    extra: Dict[str, Any] = {
+    extra: dict[str, Any] = {
         "event": "system_metrics.psutil_missing",
         "dependency": "psutil",
         "sampler": "minimal",
@@ -688,7 +689,7 @@ def _ensure_nvml_sampler(
     if not requested:
         _NVML_DISABLED = True
         if _CONFIG.poll_gpu and _NVML_FEATURE_DISABLED and key not in _NVML_WARNING_CONTEXTS:
-            extra: Dict[str, Any] = {
+            extra: dict[str, Any] = {
                 "event": "system_metrics.nvml_disabled",
                 "dependency": "pynvml",
                 "component": context,
@@ -779,7 +780,7 @@ def _log_logger_disabled(
     context: str,
     *,
     warn_key: Optional[str] = None,
-    missing: Tuple[str, ...] = (),
+    missing: tuple[str, ...] = (),
     **metadata: Any,
 ) -> None:
     """Emit a structured warning when the logger becomes a no-op."""
@@ -788,7 +789,7 @@ def _log_logger_disabled(
     if key in _LOGGER_WARNING_CONTEXTS:
         return
 
-    extra: Dict[str, Any] = {
+    extra: dict[str, Any] = {
         "event": "system_metrics.logger_disabled",
         "component": context,
         "mode": "noop",
