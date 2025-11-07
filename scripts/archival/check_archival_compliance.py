@@ -10,7 +10,7 @@ Purpose:
 Usage:
   # Run in CI after PR commits are present
   python scripts/archival/check_archival_compliance.py --base <base-ref> --head <head-ref>
-  
+
   # Use custom evidence path (defaults to .codex/evidence/archive_ops.jsonl)
   ARCHIVAL_EVIDENCE_PATH=/custom/path.jsonl python scripts/archival/check_archival_compliance.py ...
 
@@ -143,11 +143,11 @@ def main(argv=None):
             missing_stub.append(original_path)
             continue
 
-        if status.startswith("M"):
+        if status.startswith(("M", "R")):
             if not tombstone_exists(stub_path.as_posix()):
-                # Standard modification; not a tombstone conversion.
+                # Standard modification or rename; not a tombstone conversion.
                 continue
-        elif entry.status.startswith("D"):
+        elif status.startswith("D"):
             pass  # No additional check needed; stub existence already handled
         else:
             continue
