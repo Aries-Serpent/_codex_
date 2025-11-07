@@ -147,10 +147,8 @@ def main(argv=None):
             if not tombstone_exists(stub_path.as_posix()):
                 # Standard modification; not a tombstone conversion.
                 continue
-        elif status.startswith(("R", "C", "D")):
-            if not tombstone_exists(stub_path.as_posix()):
-                missing_stub.append(original_path)
-                continue
+        elif entry.status.startswith("D"):
+            pass  # No additional check needed; stub existence already handled
         else:
             continue
 

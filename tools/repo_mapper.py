@@ -81,38 +81,14 @@ def iter_repo_files(root_dir: Path) -> Iterator[Path]:
                 yield path
             return
 
+    # Fallback: walk the directory tree if git is unavailable
     for path in root_dir.rglob("*"):
         if not path.is_file():
             continue
         if should_skip(path):
             continue
         yield path
-
-
-def map_repo(root_dir: Path) -> Dict[str, List[Dict[str, Any]]]:
-    """Create a mapping from extension to file metadata for the repository."""
-
-    results: Dict[str, List[Dict[str, Any]]] = {}
-
-    for path in iter_repo_files(root_dir):
-        ext = path.suffix.lower()
-        if ext not in EXTENSIONS:
-            continue
-
-        rel_path = path.relative_to(root_dir).as_posix()
-        if rel_path == OUTPUT_FILE_NAME:
-            continue
-
-        size = path.stat().st_size
-        results.setdefault(ext, []).append({"path": rel_path, "size": size})
-
-    for file_list in results.values():
-        file_list.sort(key=lambda entry: entry["path"])
-
-    return {ext: results[ext] for ext in sorted(results)}
-
-
-def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, Any]]]) -> Path:
+def write_repo_map(root_dir: Path, data: Dict[str, List[Dict[str, int]]]) -> Path:
     """Write the repository map JSON file to the root directory."""
     output_path = root_dir / OUTPUT_FILE_NAME
     output_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
