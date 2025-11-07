@@ -34,6 +34,11 @@ from pathlib import Path
 # Evidence path: configurable via env var, defaults to relative path from repo root
 EVIDENCE = Path(os.getenv("ARCHIVAL_EVIDENCE_PATH", ".codex/evidence/archive_ops.jsonl"))
 
+# Git diff status prefixes that represent removal-style operations where the original path
+# must satisfy tombstone + ADR + evidence requirements.  Git reports renames and copies as
+# "R100"/"C100" (optionally with other scores), so we only look at the first character.
+REMOVAL_STATUS_PREFIXES = {"D", "R", "C"}
+
 
 @dataclass
 class DiffEntry:
@@ -126,18 +131,22 @@ def evaluate_entries(diff_entries: list[DiffEntry]) -> CheckResult:
         original_path = entry.original_path or entry.path
         stub_path = Path(original_path)
         status = entry.status.upper()
+        status_prefix = status[:1]
 
-        if not stub_path.exists():
-            # For deletes and renames we expect a tombstone stub at the original path.
+        if status_prefix in REMOVAL_STATUS_PREFIXES and not stub_path.exists():
+            # For deletes, renames, and copies we expect a tombstone stub at the original path.
             missing_stub.append(original_path)
             continue
 
-        if status.startswith("M"):
+        if status_prefix == "M":
             if not tombstone_exists(stub_path.as_posix()):
                 # Standard modification; not a tombstone conversion.
                 continue
-        elif status.startswith("D") or status.startswith("R") or status.startswith("C"):
-            pass  # Stub existence already validated above.
+        elif status_prefix in REMOVAL_STATUS_PREFIXES:
+            if not stub_path.exists():
+                # Defensive: if the stub disappeared between checks treat it as missing.
+                missing_stub.append(original_path)
+                continue
         else:
             continue
 
