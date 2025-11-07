@@ -66,6 +66,15 @@ def git_relevant_changes(base: str, head: str) -> list[DiffEntry]:
     return entries
 
 
+def tombstone_exists(path: str) -> bool:
+    p = Path(path)
+    # Tombstone is expected at original path
+    if p.exists():
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        return "TOMBSTONE" in text or "tombstone" in text.lower() or "adr_ref" in text
+    return False
+
+
 def adr_linked_in_stub(path: str) -> bool:
     p = Path(path)
     if not p.exists():
