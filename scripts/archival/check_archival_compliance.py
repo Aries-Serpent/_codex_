@@ -10,7 +10,7 @@ Purpose:
 Usage:
   # Run in CI after PR commits are present
   python scripts/archival/check_archival_compliance.py --base <base-ref> --head <head-ref>
-  
+
   # Use custom evidence path (defaults to .codex/evidence/archive_ops.jsonl)
   ARCHIVAL_EVIDENCE_PATH=/custom/path.jsonl python scripts/archival/check_archival_compliance.py ...
 
@@ -179,7 +179,34 @@ def main(argv=None):
         except RuntimeError:
             return 3
 
-    result = evaluate_entries(diff_entries)
+    missing_stub = []
+    missing_adr = []
+    missing_evidence = []
+
+    for entry in diff_entries:
+        original_path = entry.original_path or entry.path
+        stub_path = Path(original_path)
+        status = entry.status.upper()
+
+        if not stub_path.exists():
+            # For deletes and renames we expect a tombstone stub at the original path.
+            missing_stub.append(original_path)
+            continue
+
+        if status.startswith(("M", "R")):
+            if not tombstone_exists(stub_path.as_posix()):
+                # Standard modification or rename; not a tombstone conversion.
+                continue
+        elif status.startswith("D"):
+            pass  # No additional check needed; stub existence already handled
+        else:
+            continue
+
+        if not adr_linked_in_stub(stub_path.as_posix()):
+            missing_adr.append(original_path)
+
+        if not evidence_has_entry(original_path):
+            missing_evidence.append(original_path)
 
     if result.missing_stub:
         print("[FAIL] Missing tombstone stub for removed paths:", file=sys.stderr)
