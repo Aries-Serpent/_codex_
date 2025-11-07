@@ -10,23 +10,29 @@ Purpose:
 Usage:
   # Run in CI after PR commits are present
   python scripts/archival/check_archival_compliance.py --base <base-ref> --head <head-ref>
+  
+  # Use custom evidence path (defaults to .codex/evidence/archive_ops.jsonl)
+  ARCHIVAL_EVIDENCE_PATH=/custom/path.jsonl python scripts/archival/check_archival_compliance.py ...
 
 Notes / Limitations:
 - Uses git to compute diff (local repo required).
 - For complex flows (squashed merges, mirrored CI), pass explicit list of removed paths
   via --removed-file <file>.
+- Evidence path is configurable via ARCHIVAL_EVIDENCE_PATH environment variable.
 - Non-exhaustive: intended as a CI gate to surface missing ADR/tombstone/evidence.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-EVIDENCE = Path(".codex/evidence/archive_ops.jsonl")
+# Evidence path: configurable via env var, defaults to relative path from repo root
+EVIDENCE = Path(os.getenv("ARCHIVAL_EVIDENCE_PATH", ".codex/evidence/archive_ops.jsonl"))
 
 
 @dataclass
