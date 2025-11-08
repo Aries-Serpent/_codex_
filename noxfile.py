@@ -13,7 +13,10 @@ from typing import Iterable, Optional
 try:
     import tomllib
 except ModuleNotFoundError:
-    import tomli as tomllib  # type: ignore[import-not-found,no-redef]
+    try:
+        import tomli as tomllib  # type: ignore[import-not-found,no-redef]
+    except ModuleNotFoundError:
+        tomllib = None  # type: ignore[assignment]
 
 import nox
 
@@ -33,12 +36,20 @@ def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
     Extract fail_under value from [tool.coverage.report] section in TOML text.
     Returns the value as a string if it's a valid integer, None otherwise.
     """
+    if tomllib is None:
+        # TOML library not available, cannot parse
+        return None
+    
     try:
         parsed = tomllib.loads(toml_text)
         fail_under = parsed.get("tool", {}).get("coverage", {}).get("report", {}).get("fail_under")
         if fail_under is not None and isinstance(fail_under, int):
             return str(fail_under)
+    except (AttributeError, TypeError, KeyError):
+        # Missing keys or wrong type for fail_under
+        pass
     except Exception:
+        # Invalid TOML syntax or other parsing errors
         pass
     return None
 

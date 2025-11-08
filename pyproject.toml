@@ -84,6 +84,7 @@ dev = [
   "nox>=2024.4.15",
   "nbstripout>=0.6",
   "pytest-mock>=3.14",
+  "tomli>=2.0; python_version < '3.11'",
 ]
 dist = ["torch>=2.1; platform_system != 'Windows'"]
 gpu = ["nvidia-ml-py3>=7.352.0"]
