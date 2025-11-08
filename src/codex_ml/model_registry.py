@@ -13,11 +13,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, MutableMapping, Optional, Sequence, Union
 
-from src.common.torch_support import ensure_torch_install
+import torch
 from codex_ml.models import registry as _registry
 from codex_ml.models.utils.peft import apply_lora_if_available
-
-torch = ensure_torch_install()
 
 __all__ = ["LoraRequest", "ModelRequest", "get_model", "list_models", "register_model"]
 

@@ -5,14 +5,13 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
-from src.common.torch_support import ensure_torch_install
+import torch
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
-
-torch = ensure_torch_install()
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel  # type: ignore

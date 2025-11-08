@@ -5,12 +5,11 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from typing import Optional
+from typing import Optional
 
-from src.common.torch_support import ensure_torch_install
-
-torch = ensure_torch_install()
-nn = torch.nn
-F = torch.nn.functional
+import torch
+from torch import nn
+from torch.nn import functional as F
 
 
 @dataclass(frozen=True)
