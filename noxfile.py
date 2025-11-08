@@ -7,10 +7,13 @@ Local task runner for _codex_ (no CI usage). Provides one-command sessions:
 """
 from __future__ import annotations
 
-import re
-import sys
 from pathlib import Path
 from typing import Iterable, Optional
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib  # type: ignore[import-not-found,no-redef]
 
 import nox
 
@@ -30,11 +33,13 @@ def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
     Extract fail_under value from [tool.coverage.report] section in TOML text.
     Returns the value as a string if it's a valid integer, None otherwise.
     """
-    # Match fail_under = <number> in [tool.coverage.report] section
-    pattern = r'\[tool\.coverage\.report\][^\[]*fail_under\s*=\s*(\d+)'
-    match = re.search(pattern, toml_text, re.DOTALL)
-    if match:
-        return match.group(1)
+    try:
+        parsed = tomllib.loads(toml_text)
+        fail_under = parsed.get("tool", {}).get("coverage", {}).get("report", {}).get("fail_under")
+        if fail_under is not None and isinstance(fail_under, int):
+            return str(fail_under)
+    except Exception:
+        pass
     return None
 
 

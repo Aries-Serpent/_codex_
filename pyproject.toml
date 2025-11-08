@@ -119,6 +119,7 @@ symbolic = ["sentencepiece>=0.1.99", "tokenizers>=0.14"]
   "pytest-cov>=4.0",
   "pytest-randomly>=3.10",
   "hypothesis>=6.100",
+  "tomli>=2.0; python_version < '3.11'",
 ]
 test = [
   "hydra-core[hydra_plugins]>=1.3",
@@ -178,6 +179,7 @@ all = [
   "sentencepiece>=0.1.99",
   "tensorboard>=2.14",
   "tokenizers>=0.15",
+  "tomli>=2.0; python_version < '3.11'",
   "torch>=2.1",
   "transformers>=4.41,<5",
   "wandb>=0.16",

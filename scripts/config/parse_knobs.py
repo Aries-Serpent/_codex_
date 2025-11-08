@@ -241,10 +241,10 @@ def get_depth() -> Tuple[int, bool]:
         return depth, depth_warning
 
     # Only warn if the default source is env (overridden), or if the default is restrictive
-    # Warn when using env-based default (may be overridden externally, leading to unexpected behavior)
-    # or hardcoded default (may be overly restrictive and limit flexibility)
-    if default_source in ("env", "hardcoded"):
-        _warn(f"depth_default_used:{default_source}")
+    if default_source == "env":
+        _warn("depth_default_used:env (may be overridden externally, leading to unexpected behavior)")
+    elif default_source == "hardcoded":
+        _warn("depth_default_used:hardcoded (may be overly restrictive and limit flexibility)")
     if default_depth < 4:
         depth_warning = True
         _warn("depth_restriction_active")
