@@ -10,7 +10,6 @@ CONF_DIR = Path(__file__).resolve().parents[2] / "configs" / "deployment" / "hhg
 
 
 def test_compose_overrides():
-    # Use initialize_config_dir with absolute path
     with initialize_config_dir(version_base="1.3", config_dir=str(CONF_DIR)):
         cfg = compose(config_name="config", overrides=["train.epochs=2"])
     # Don't resolve interpolations to avoid missing key errors in test environment
