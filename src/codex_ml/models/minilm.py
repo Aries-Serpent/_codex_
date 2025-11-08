@@ -9,8 +9,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional
 
-import torch
-from torch import nn
+from src.common.torch_support import ensure_torch_install
+
+torch = ensure_torch_install()
+nn = torch.nn
 
 from codex_ml.utils.checkpointing import load_checkpoint
 
