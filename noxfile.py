@@ -28,7 +28,6 @@ _CONFIG_VALIDATOR = Path("tools/validate_configs.py")
 def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
     """
     Extract fail_under value from [tool.coverage.report] section in TOML text.
-    
     Returns the value as a string if it's a valid integer, None otherwise.
     """
     # Match fail_under = <number> in [tool.coverage.report] section
