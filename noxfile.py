@@ -12,6 +12,28 @@ from typing import Iterable, Optional
 
 import nox
 
+import re
+
+
+def _toml_fail_under_from_str(text: str) -> str | None:
+    """Extract fail_under value from TOML text.
+    
+    Parses [tool.coverage.report] section and returns the fail_under value
+    as a string if it's a valid integer, otherwise returns None.
+    
+    Args:
+        text: TOML text content
+        
+    Returns:
+        String representation of the fail_under integer value, or None if not found/invalid
+    """
+    # Match fail_under = <value> in [tool.coverage.report] section
+    match = re.search(r'\[tool\.coverage\.report\].*?fail_under\s*=\s*(\d+)', text, re.DOTALL)
+    if match:
+        return match.group(1)
+    return None
+
+
 _EVALUATOR = Path("tools/codex_evaluator.py")
 _EVALUATOR_RULES = Path("manifests/codex_eval_rules.v3.json")
 _SELECTION_GUARD = Path("tools/selection_guard.py")
