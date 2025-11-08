@@ -1,12 +1,12 @@
 {
-  "generated": 1761985386.8756452,
+  "generated": 1762579569.2346594,
   "component_gaps": [
     {
       "id": "checkpointing",
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.7021276595744681
+        "value": 0.66
       }
     },
     {
@@ -14,7 +14,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.5751295336787565
+        "value": 0.4817813765182186
       }
     },
     {
@@ -22,7 +22,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.5724137931034483
+        "value": 0.4690721649484536
       }
     },
     {
@@ -30,7 +30,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.20657276995305165
+        "value": 0.21705426356589147
       }
     },
     {
@@ -38,7 +38,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.42857142857142855
+        "value": 0.3885350318471338
       }
     },
     {
@@ -46,7 +46,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.08771929824561403
+        "value": 0.0847457627118644
       }
     },
     {
@@ -54,7 +54,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.002652519893899204
+        "value": 0.0019569471624266144
       }
     },
     {
@@ -72,7 +72,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.46
+        "value": 0.42727272727272725
       }
     },
     {
@@ -80,7 +80,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.37719298245614036
+        "value": 0.3458646616541353
       }
     },
     {
@@ -88,7 +88,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.3333333333333333
+        "value": 0.21052631578947367
       }
     },
     {
@@ -96,7 +96,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.31153846153846154
+        "value": 0.2949640287769784
       }
     },
     {
@@ -104,7 +104,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "documentation",
-        "value": 0.156794425087108
+        "value": 0.11857707509881422
       }
     },
     {
@@ -112,7 +112,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.5972222222222222
+        "value": 0.5844155844155844
       }
     },
     {
@@ -120,7 +120,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "documentation",
-        "value": 0.19163763066202089
+        "value": 0.07905138339920947
       }
     },
     {
@@ -128,7 +128,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.3541666666666667
+        "value": 0.32727272727272727
       }
     },
     {
@@ -144,7 +144,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.5196078431372549
+        "value": 0.4782608695652174
       }
     },
     {
@@ -152,7 +152,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.44776119402985076
+        "value": 0.4292237442922374
       }
     },
     {
@@ -162,7 +162,18 @@
         "component": "safeguards",
         "value": 0.5
       }
+    },
+    {
+      "id": "vector-stores",
+      "zero_components": [
+        "functionality",
+        "safeguards"
+      ],
+      "primary_deficit": {
+        "component": "functionality",
+        "value": 0.0
+      }
     }
   ],
-  "version": "1.2.0"
+  "version": "1.4.0"
 }
