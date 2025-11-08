@@ -10,9 +10,15 @@ CONF_DIR = Path(__file__).resolve().parents[2] / "configs" / "deployment" / "hhg
 
 
 def test_compose_overrides():
+    """Test that Hydra compose works with overrides.
+    
+    Uses resolve=False because the config contains interpolations (e.g., ${oc.env:DATA_DIR})
+    that reference environment variables not available in the test environment.
+    This test validates the override mechanism and config structure without requiring
+    a fully resolved configuration.
+    """
     with initialize_config_dir(version_base="1.3", config_dir=str(CONF_DIR)):
         cfg = compose(config_name="config", overrides=["train.epochs=2"])
-    # Don't resolve interpolations to avoid missing key errors in test environment
     container = cfg if isinstance(cfg, dict) else OmegaConf.to_container(cfg, resolve=False)
 
     assert container["train"]["epochs"] == 2
