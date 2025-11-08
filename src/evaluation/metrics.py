@@ -3,10 +3,8 @@ from __future__ import annotations
 import math
 from collections.abc import Callable, Mapping, Sequence
 
-from src.common.torch_support import ensure_torch_install
-
-torch = ensure_torch_install()
-F = torch.nn.functional
+import torch
+import torch.nn.functional as F
 
 
 def accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:

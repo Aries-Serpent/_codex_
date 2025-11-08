@@ -11,9 +11,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 import numpy as np
 import numpy.typing as npt
 
-from src.common.torch_support import ensure_torch_install
-
-torch = ensure_torch_install()
+import torch
 
 try:  # pragma: no cover - fcntl unavailable on Windows
     import fcntl  # type: ignore[attr-defined]
