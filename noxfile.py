@@ -32,7 +32,7 @@ def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
     Returns the value as a string if it's a valid integer, None otherwise.
     """
     # Match fail_under = <number> in [tool.coverage.report] section
-    pattern = r'\[tool\.coverage\.report\].*?fail_under\s*=\s*(\d+)'
+    pattern = r'\[tool\.coverage\.report\][^\[]*fail_under\s*=\s*(\d+)'
     match = re.search(pattern, toml_text, re.DOTALL)
     if match:
         return match.group(1)
