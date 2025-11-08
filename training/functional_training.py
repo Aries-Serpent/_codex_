@@ -14,9 +14,11 @@ from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 
 import numpy as np
 
-import torch
-from torch.nn.utils import clip_grad_norm_
-from torch.utils.data import DataLoader
+from src.common.torch_support import ensure_torch_install
+
+torch = ensure_torch_install()
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+DataLoader = torch.utils.data.DataLoader
 
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata

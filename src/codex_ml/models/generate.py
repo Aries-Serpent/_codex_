@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Optional
 
-import torch
+from src.common.torch_support import ensure_torch_install
+
+torch = ensure_torch_install()
 
 
 def _sample(logits: torch.Tensor, temperature: float, top_k: int, top_p: float) -> torch.Tensor:
