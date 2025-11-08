@@ -6,13 +6,11 @@ import logging
 from collections import deque
 from dataclasses import dataclass
 from typing import Any, Mapping
+from typing import Any, Mapping
 
-from src.common.torch_support import ensure_torch_install
-
+import torch
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
-
-torch = ensure_torch_install()
-nn = torch.nn
+from torch import nn
 
 logger = logging.getLogger(__name__)
 

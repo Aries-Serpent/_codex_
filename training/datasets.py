@@ -3,10 +3,7 @@ from __future__ import annotations
 from typing import Dict, Iterable, Iterator, Sequence
 
 import numpy as np
-
-from src.common.torch_support import ensure_torch_install
-
-torch = ensure_torch_install()
+import torch
 
 try:  # optional dependency
     from datasets import Dataset  # type: ignore
