@@ -5,6 +5,10 @@ defaults:
   - _self_
   - override hydra/job_logging: disabled
 
+# Store defaults for introspection
+_defaults_:
+  - _self_: true
+
 experiment:
   name: "phase0-baseline"
 

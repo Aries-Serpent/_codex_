@@ -31,7 +31,8 @@ def test_hydra_compose_smoke():
         pytest.skip("Hydra stub active")
 
     cfg_dir = _config_root().resolve()
-    with initialize_config_dir(config_dir=str(cfg_dir)):
+    with initialize_config_dir(version_base="1.3", config_dir=str(cfg_dir)):
         cfg = compose(config_name="defaults")
-        s = OmegaConf.to_container(cfg, resolve=True)
+        # Don't resolve to avoid circular dependency issues in config files
+        s = OmegaConf.to_container(cfg, resolve=False)
         assert {"data", "model", "train", "tracking"}.issubset(s.keys())

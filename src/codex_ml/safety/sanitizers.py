@@ -14,6 +14,7 @@ DEFAULT_SECRET_PATTERNS = [
     re.compile(r"ghp_[A-Za-z0-9]{36}"),
     re.compile(r"AKIA[0-9A-Z]{16}"),
     re.compile(r"AIza[0-9A-Za-z\-_]{35}"),
+    re.compile(r"sk-[A-Za-z0-9\-]{10,}"),  # OpenAI API keys
     re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,}"),
     re.compile(r"-----BEGIN (?:RSA|EC|DSA) PRIVATE KEY-----"),
     re.compile(r"(?i)password\s*[:=]\s*\S+"),
