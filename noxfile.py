@@ -7,6 +7,8 @@ Local task runner for _codex_ (no CI usage). Provides one-command sessions:
 """
 from __future__ import annotations
 
+import re
+import sys
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -21,6 +23,20 @@ _SCHEMA_VALIDATE = Path("tools/schema_validate.py")
 _SELECTION_SCHEMA = Path("schemas/selection_guard_rules.schema.json")
 _EVALUATOR_SCHEMA = Path("schemas/codex_eval_rules.v3.schema.json")
 _CONFIG_VALIDATOR = Path("tools/validate_configs.py")
+
+
+def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
+    """
+    Extract fail_under value from [tool.coverage.report] section in TOML text.
+    
+    Returns the value as a string if it's a valid integer, None otherwise.
+    """
+    # Match fail_under = <number> in [tool.coverage.report] section
+    pattern = r'\[tool\.coverage\.report\].*?fail_under\s*=\s*(\d+)'
+    match = re.search(pattern, toml_text, re.DOTALL)
+    if match:
+        return match.group(1)
+    return None
 
 
 def _resolve_summary(posargs: Iterable[str]) -> Optional[Path]:
