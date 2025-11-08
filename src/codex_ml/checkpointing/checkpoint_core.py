@@ -2,6 +2,7 @@
 
 WHY:
 - Prior draft only implemented save(); feature parity requires load() for resume tests.
+- Explicit schema versioning ensures forward/backward compatibility tracking.
 """
 
 from __future__ import annotations
@@ -9,7 +10,9 @@ from __future__ import annotations
 import inspect
 import json
 import os
+import warnings
 from contextlib import suppress
+from datetime import datetime
 from typing import Any
 
 try:
@@ -17,7 +20,7 @@ try:
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
 
-SCHEMA_VERSION = "1"
+SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
 
 
 def _ensure_dir(p: str) -> None:
@@ -32,10 +35,22 @@ def save_checkpoint(
         raise RuntimeError("PyTorch required to save checkpoints")
     weights = os.path.join(out_dir, "weights.pt")
     metadata = os.path.join(out_dir, "metadata.json")
-    payload = {"schema_version": SCHEMA_VERSION, "state": state}
+    
+    # Add explicit schema version and creation timestamp
+    payload = {
+        "_schema_version": SCHEMA_VERSION,
+        "_created_at": datetime.utcnow().isoformat(),
+        "state": state
+    }
     torch.save(payload, weights)
+    
+    # Include schema version in metadata for validation
     with open(metadata, "w", encoding="utf-8") as f:
-        json.dump({**meta, "schema_version": SCHEMA_VERSION}, f, indent=2, sort_keys=True)
+        json.dump({
+            **meta,
+            "_schema_version": SCHEMA_VERSION,
+            "_created_at": datetime.utcnow().isoformat()
+        }, f, indent=2, sort_keys=True)
     # Retention (best-effort): keep only the last K sibling epoch dirs
     with suppress(Exception):
         parent = os.path.dirname(out_dir)
@@ -83,6 +98,17 @@ def load_checkpoint(
                 meta = json.load(f)
         except Exception:
             meta = {}
+    # Validate schema version for compatibility
+    checkpoint_version = payload.get("_schema_version") or payload.get("schema_version", "1.0")
+    if checkpoint_version != SCHEMA_VERSION:
+        warnings.warn(
+            f"Loading checkpoint with schema v{checkpoint_version}, "
+            f"current schema is v{SCHEMA_VERSION}. "
+            f"This may indicate compatibility issues.",
+            UserWarning,
+            stacklevel=2
+        )
+    
     state = payload.get("state", payload)
     return state, meta
 
