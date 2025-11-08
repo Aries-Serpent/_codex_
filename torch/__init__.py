@@ -1,10 +1,9 @@
 """Lightweight stub for optional dependency ``torch``.
 
-Runtime shim to provide a minimal PyTorch surface when the real wheel is
-missing. The real PyTorch wheel is large and not always available in minimal
-CI environments. This shim mirrors the behaviour of the ``transformers`` stub:
-it delegates to the actual library when installed and otherwise exposes the
-handful of symbols used in the offline smoke tests.
+Runtime shim used in environments where the real PyTorch wheel is unavailable.
+When PyTorch is installed we delegate to the actual library. Otherwise we
+surface a clear ``ImportError`` so downstream modules can fall back to their
+existing "PyTorch required" guardrails.
 """
 
 from __future__ import annotations
@@ -33,50 +32,13 @@ def _load_real_module() -> ModuleType | None:
     return module
 
 
-class _StubDType:
-    def __init__(self, name: str) -> None:
-        self._name = name
-
-    def __repr__(self) -> str:  # pragma: no cover - debugging helper
-        return f"<missing dtype {self._name}>"
-
-
 _real = _load_real_module()
 
 if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    float32 = _StubDType("torch.float32")
-    float16 = _StubDType("torch.float16")
-    bfloat16 = _StubDType("torch.bfloat16")
-    utils = ModuleType("torch.utils")
-    data = ModuleType("torch.utils.data")
-
-    class Dataset:  # pragma: no cover - minimal stub
-        pass
-
-    data.Dataset = Dataset
-    utils.data = data
-    sys.modules.setdefault("torch.utils", utils)
-    sys.modules.setdefault("torch.utils.data", data)
-
-    __version__ = "0.0.0-stub"
-
-    def manual_seed(seed: int) -> int:  # pragma: no cover - deterministic stub
-        return seed
-
-    class _CudaModule:
-        @staticmethod
-        def is_available() -> bool:
-            return False
-
-        @staticmethod
-        def manual_seed_all(seed: int) -> None:
-            return None
-
-    cuda = _CudaModule()
-
-    __all__ = ["bfloat16", "float16", "float32", "utils"]
-    package = sys.modules.setdefault(__name__, sys.modules[__name__])
-    package.__path__ = [str(Path(__file__).resolve().parent)]
+    sys.modules.pop(__name__, None)
+    raise ImportError(
+        "The lightweight torch shim could not locate an installed PyTorch distribution."
+    )
