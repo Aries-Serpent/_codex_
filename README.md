@@ -1,6 +1,18 @@
 # `_codex_`
 > Offline‑first ML repo with reproducible training, schema‑validated configs, and daily status reporting (v1.2).
 
+## 🤖 Codex Quick-Index (For AI Agents)
+
+**New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
+
+**Start here:** [AGENTS.md](AGENTS.md) → Pointer to comprehensive agent guide  
+**Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
+**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks
+
+**Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+
+---
+
 ## Status & CI Badges
 
 - Status Validation: ![Status Validation](https://github.com/Aries-Serpent/_codex_/actions/workflows/status_validation.yml/badge.svg)

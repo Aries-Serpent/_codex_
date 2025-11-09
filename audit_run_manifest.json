@@ -1,42 +1,64 @@
 {
-  "generated_utc": "2025-11-02T15:00:51.600705+00:00",
-  "repo_root_sha": "0e0dccf1ee70e79f8f2fd8abfbbae717f0100b7b",
+  "timestamp": 1762579569.2532208,
+  "version": "1.4.0",
+  "repo_root_sha": "2dc20154d7e4a70323c1271d73936dd61c1efbda7545e01da6b18715327bc81d",
   "artifacts": [
     {
-      "path": "audit_artifacts/context_index.json",
-      "sha256": "de64f05fb3c54aaa28b0aba770dfde6cfcbf65dcfc3d2f4358db59bb20bdf2f0",
-      "timestamp_utc": "2025-11-02T15:00:51.595025+00:00",
-      "notes": ""
+      "name": "facets.json",
+      "sha": "97555bb014e401d3bc3f7b0ba690de0149f874637454caf6d7d53fd5cbeaf21d"
     },
     {
-      "path": "audit_artifacts/facets.json",
-      "sha256": "3a71b01430bb6e0f3fc908264d2e7a406e07079967eaec6463b5595c4917d21b",
-      "timestamp_utc": "2025-11-02T15:00:51.595124+00:00",
-      "notes": ""
+      "name": "capabilities_raw.json",
+      "sha": "15554cb795ac210dfa8fe2d3f45487ae677a44fcc79996817f66294acd93e0fc"
     },
     {
-      "path": "audit_artifacts/capabilities_raw.json",
-      "sha256": "5567aeaeb67305c8b2298e532aae2d0ace2aa38a77e730d5049b95ed09061bd2",
-      "timestamp_utc": "2025-11-02T15:00:51.595431+00:00",
-      "notes": ""
+      "name": "capabilities_scored.json",
+      "sha": "ab355c40fea8dc324b1ed04b8492796ba944f64acfc3f57fd7000431183a38f2"
     },
     {
-      "path": "audit_artifacts/capabilities_scored.json",
-      "sha256": "525f35f9aa1f169d52b84a7c635a45c4182f4e46a9d64d1e558209415b856a16",
-      "timestamp_utc": "2025-11-02T15:00:51.595737+00:00",
-      "notes": ""
+      "name": "context_index.json",
+      "sha": "a84b8cdbae0f157c94852799c681a06ac64c54fd87a5a90354634dfee7265bd8"
     },
     {
-      "path": "audit_artifacts/gaps.json",
-      "sha256": "21221fcee3b70a2bd284b6429f24dc1a23ad5a6e4b44766a9888f924ed70713f",
-      "timestamp_utc": "2025-11-02T15:00:51.595926+00:00",
-      "notes": ""
+      "name": "component_gaps.json",
+      "sha": "9dafceb355e4612026dc2cc34237e66b8dc2b77e6aab15e22491d9da870eba4d"
     },
     {
-      "path": "reports/capability_matrix_20251101_082306.md",
-      "sha256": "308aebb1d6b073aba12185baa0b827994cd4fefa95a9c89f9b3240c32f2247fb",
-      "timestamp_utc": "2025-11-02T15:00:51.596257+00:00",
-      "notes": "Capability matrix snapshot"
+      "name": "gaps.json",
+      "sha": "caa4297787daa0f61fd99277c234d38f64032b2158e004ca2f9fd904d80d0ffd"
     }
-  ]
+  ],
+  "weights": {
+    "functionality": 0.25,
+    "consistency": 0.2,
+    "tests": 0.25,
+    "safeguards": 0.15,
+    "documentation": 0.15
+  },
+  "warnings": [
+    "depth_default_used:env"
+  ],
+  "template_hash": "9fa8ed2706e462dae42f04b13d7a8fe61261e25698236eb1d8e7fd7797b015b7",
+  "knobs_effective": {
+    "CONTENT_FILTER_MODE": "allowlist",
+    "ALLOWLIST_PROFILE": "A",
+    "PII_PATTERN_SET": "minimal",
+    "PII_MODE": "union-minimal",
+    "PII_REGEX_STRATEGY": "skip-manifest",
+    "AUDIT_DEPTH_DEFAULT": 4,
+    "MAX_BUNDLE_MB": 25.0,
+    "ARCHIVE_FORMAT": "tar.gz",
+    "AUTO_ARCHIVE_DISABLE": false,
+    "ARCHIVE_POINTER_STYLE": "both",
+    "BUNDLE_PREFIX_MODE": false,
+    "AST_SIMILARITY_ENABLE": false,
+    "AST_SIMILARITY_MAX_FILES": 30,
+    "AST_SIMILARITY_MIN_NODES": 10,
+    "AST_CONSISTENCY_BLEND_MODE": "multiply",
+    "SYNONYM_MAP_PATH": "configs/synonyms/synonyms.json",
+    "SECRET_CONTEXT_ENABLE": false,
+    "SECRET_CONTEXT_WINDOW": 10,
+    "FEDERATION_ENABLE": false,
+    "MANIFEST_EXTENDED_ENABLE": true
+  }
 }

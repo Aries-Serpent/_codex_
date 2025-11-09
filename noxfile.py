@@ -7,7 +7,9 @@ Local task runner for _codex_ (no CI usage). Provides one-command sessions:
 """
 from __future__ import annotations
 
+import importlib
 from pathlib import Path
+from types import ModuleType
 from typing import Iterable, Optional
 
 import nox
@@ -21,6 +23,53 @@ _SCHEMA_VALIDATE = Path("tools/schema_validate.py")
 _SELECTION_SCHEMA = Path("schemas/selection_guard_rules.schema.json")
 _EVALUATOR_SCHEMA = Path("schemas/codex_eval_rules.v3.schema.json")
 _CONFIG_VALIDATOR = Path("tools/validate_configs.py")
+
+
+_TOML_MODULE: Optional[ModuleType] = None
+
+
+def _get_toml_module() -> Optional[ModuleType]:
+    """Best-effort loader for tomllib/tomli without hard dependency."""
+
+    global _TOML_MODULE
+    if _TOML_MODULE is not None:
+        return _TOML_MODULE
+
+    for name in ("tomllib", "tomli"):
+        try:
+            module = importlib.import_module(name)
+        except ModuleNotFoundError:
+            continue
+        else:
+            _TOML_MODULE = module
+            return module
+
+    _TOML_MODULE = None
+    return None
+
+
+def _toml_fail_under_from_str(toml_text: str) -> Optional[str]:
+    """
+    Extract fail_under value from [tool.coverage.report] section in TOML text.
+    Returns the value as a string if it's a valid integer, None otherwise.
+    """
+    toml_module = _get_toml_module()
+    if toml_module is None:
+        # TOML library not available, cannot parse
+        return None
+
+    try:
+        parsed = toml_module.loads(toml_text)
+        fail_under = parsed.get("tool", {}).get("coverage", {}).get("report", {}).get("fail_under")
+        if fail_under is not None and isinstance(fail_under, int):
+            return str(fail_under)
+    except (AttributeError, TypeError, KeyError):
+        # Missing keys or wrong type for fail_under
+        pass
+    except Exception:
+        # Invalid TOML syntax or other parsing errors
+        pass
+    return None
 
 
 def _resolve_summary(posargs: Iterable[str]) -> Optional[Path]:

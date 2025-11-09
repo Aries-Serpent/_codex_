@@ -1,0 +1,322 @@
+# Codex Index Manifest
+# Machine-friendly repository navigation guide for agents
+# Version: 1.0.0
+# Last Updated: 2025-11-09
+
+version: "1.0.0"
+repository: "Aries-Serpent/_codex_"
+description: "Offline-first ML repository with reproducible training and schema-validated configs"
+
+# Primary files - high priority, read first
+primary:
+  - path: "AGENTS.md"
+    priority: "critical"
+    read_depth: "full"
+    
+  - path: "docs/guides/AGENTS.md"
+    priority: "critical"
+    read_depth: "full"
+    
+  - path: "AGENT_CONTINUATION_PROMPT.md"
+    priority: "high"
+    read_depth: "full"
+    
+  - path: "codex_ready_task_sequence.yaml"
+    priority: "high"
+    read_depth: "full"
+    
+  - path: "codex_task_executor.py"
+    priority: "high"
+    read_depth: "headings"
+    
+  - path: "_codex_repo_map.json"
+    priority: "high"
+    read_depth: "header-only"
+    
+  - path: "README.md"
+    priority: "high"
+    read_depth: "header-only"
+    
+  - path: "CHATGPT_CONTINUATION.md"
+    priority: "medium"
+    read_depth: "full"
+
+# Summaries - one-line descriptions for quick reference
+summaries:
+  "AGENTS.md": "Super-agent entrypoint with quick-start guide and wavepoints"
+  "docs/guides/AGENTS.md": "Canonical agent guidelines for contributors and Codex automation"
+  "AGENT_CONTINUATION_PROMPT.md": "Continuation protocol for S-14, S-15, S-02 implementation tasks"
+  "CHATGPT_CONTINUATION.md": "Pagination and resume contract for handling long responses"
+  "_codex_repo_map.json": "Complete repository file mapping with sizes and categories (253KB)"
+  "codex_ready_task_sequence.yaml": "Offline-first remediation pipeline with deterministic phases"
+  "codex_task_executor.py": "Sequential task block executor implementing phase management"
+  "README.md": "Repository overview - offline-first ML with reproducible training"
+  "CODE_OF_CONDUCT.md": "Contributor Covenant Code of Conduct v2.1"
+  "SECURITY.md": "Security policies, vulnerability reporting, and disclosure process"
+  "CONTRIBUTING.md": "Contribution guidelines and development workflow"
+  "inventory.md": "Complete file catalog with priorities and read-depth recommendations"
+
+# Orchestration - task execution and pipeline files
+orchestration:
+  entrypoints:
+    - path: "codex_task_executor.py"
+      class: "CodexTaskExecutor"
+      command: "python codex_task_executor.py"
+      description: "Main orchestration engine for sequential task execution"
+      
+    - path: "codex_task_sequence.py"
+      description: "Task sequence helper utilities"
+      
+    - path: "scripts/codex_ready_task_runner.py"
+      command: "python scripts/codex_ready_task_runner.py"
+      description: "CLI runner for codex task execution"
+      
+    - path: "tools/codex_task_runner.py"
+      description: "Alternative task runner CLI"
+
+  pipelines:
+    - path: "codex_ready_task_sequence.yaml"
+      format: "yaml"
+      phases:
+        - "Preparation (P1)"
+        - "Search & Mapping (P2)"
+        - "Best-Effort Construction (P3)"
+        - "Validation (P4)"
+        - "Finalization (P5)"
+
+# Prompts - template files with variables
+prompts:
+  - path: "PROMPTS/CHATGPT_SEARCH_RECIPES.md"
+    role: "examples"
+    size_kb: 10
+    variables: []
+    description: "ChatGPT search recipe examples and patterns"
+    
+  - path: "AGENT_CONTINUATION_PROMPT.md"
+    role: "system"
+    size_kb: 10
+    variables: []
+    description: "Agent continuation protocol for multi-step tasks"
+    
+  - path: "CHATGPT_CONTINUATION.md"
+    role: "system"
+    size_kb: 8
+    variables:
+      - "{i}"
+      - "{N}"
+      - "{section}"
+      - "{t}"
+      - "{opaque_cursor}"
+      - "{bulleted-next}"
+    description: "Chunk pagination protocol with continuation cursors"
+
+# Examples - runnable code samples
+examples:
+  - path: "examples/chat_finetune.py"
+    command: "python examples/chat_finetune.py"
+    dependencies: ["torch", "transformers"]
+    size_lines: 40
+    description: "Chat finetuning example with HuggingFace"
+    
+  - path: "examples/train_toy.py"
+    command: "python examples/train_toy.py"
+    dependencies: ["torch"]
+    size_lines: 30
+    description: "Toy training script for quick testing"
+    
+  - path: "examples/evaluate_toy.py"
+    command: "python examples/evaluate_toy.py"
+    dependencies: ["torch"]
+    size_lines: 20
+    description: "Toy evaluation script"
+    
+  - path: "examples/tokenize.py"
+    command: "python examples/tokenize.py"
+    dependencies: ["transformers"]
+    size_lines: 25
+    description: "Tokenization example"
+    
+  - path: "examples/mlflow_offline.py"
+    command: "python examples/mlflow_offline.py"
+    dependencies: ["mlflow"]
+    size_lines: 120
+    description: "MLflow offline tracking example"
+
+# Governance - policies and safety
+governance:
+  - path: "CODE_OF_CONDUCT.md"
+    type: "policy"
+    summary: "Community standards and expected behavior"
+    
+  - path: "SECURITY.md"
+    type: "security"
+    summary: "Vulnerability reporting and security disclosure process"
+    
+  - path: "CONTRIBUTING.md"
+    type: "guidelines"
+    summary: "Development workflow and contribution process"
+    
+  - path: ".secrets.baseline"
+    type: "security"
+    size_kb: 719
+    summary: "Detect-secrets baseline - DO NOT commit secrets"
+    
+  - path: ".gitignore"
+    type: "config"
+    summary: "Git ignore patterns for artifacts and dependencies"
+
+# Configuration - build, test, and development setup
+configuration:
+  - path: "pyproject.toml"
+    type: "python-project"
+    summary: "Python project metadata, dependencies, and tool configs"
+    
+  - path: "noxfile.py"
+    type: "automation"
+    sessions:
+      - "tests"
+      - "docs_build"
+      - "lint"
+      - "format"
+    summary: "Nox automation sessions for testing and building"
+    
+  - path: "pytest.ini"
+    type: "test-config"
+    summary: "Pytest configuration and test discovery settings"
+    
+  - path: "Makefile"
+    type: "build-automation"
+    summary: "Make targets for common development tasks"
+
+# Environment Variables - runtime configuration
+environment:
+  critical:
+    - name: "CODEX_SESSION_ID"
+      default: "UUID"
+      description: "Logical session identifier for logging"
+      
+    - name: "CODEX_SESSION_LOG_DIR"
+      default: ".codex/sessions"
+      description: "Session logs directory"
+      
+    - name: "CODEX_LOG_DB_PATH"
+      default: ".codex/session_logs.db"
+      description: "SQLite database path for session logs"
+      
+  optional:
+    - name: "ACCELERATE_TEST"
+      default: "0"
+      description: "Enable distributed training tests (set to 1)"
+      
+    - name: "SKIP_OPTIONAL"
+      default: "0"
+      description: "Skip optional ML dependencies in docs build"
+      
+    - name: "FAIL_ON_MISSING"
+      default: "0"
+      description: "Fail build if modules are missing (strict mode)"
+      
+    - name: "PYTEST_DISABLE_PLUGIN_AUTOLOAD"
+      default: "0"
+      description: "Disable pytest plugin auto-loading for deterministic runs"
+
+# Safety Rules - critical constraints for agents
+safety_rules:
+  prohibited:
+    - "Creating or enabling GitHub Actions workflows"
+    - "Making network calls (repository is offline-first)"
+    - "Committing secrets or credentials"
+    - "Modifying .github/workflows/ directory"
+    
+  required:
+    - "Check .secrets.baseline before committing"
+    - "Keep automation artifacts in .codex/ directory"
+    - "Use deterministic seeds (default: 42)"
+    - "Run pre-commit hooks before committing"
+    - "Validate with 'nox -s tests' before PRs"
+
+# Validation Checklist - pre-commit requirements
+validation:
+  format:
+    - command: "black src/ tests/"
+      description: "Format Python code with Black"
+      
+    - command: "isort src/ tests/"
+      description: "Sort imports with isort"
+      
+  lint:
+    - command: "ruff check src/ tests/"
+      description: "Lint with Ruff"
+      
+    - command: "mypy src/"
+      description: "Type check with mypy"
+      
+  test:
+    - command: "pytest -m 'not integration'"
+      description: "Run unit tests (exclude integration)"
+      
+    - command: "nox -s tests"
+      description: "Run full test suite with nox"
+      
+  pre_commit:
+    - command: "pre-commit run --all-files"
+      description: "Run all pre-commit hooks"
+
+# Manifest Update Instructions
+manifest_maintenance:
+  update_trigger:
+    - "New primary files added"
+    - "Orchestration entrypoints changed"
+    - "New prompt templates created"
+    - "Example scripts added/removed"
+    - "Environment variables added"
+    
+  update_process:
+    - "Edit _codex_/codex_index.yaml"
+    - "Update inventory.md if needed"
+    - "Validate with: python scripts/validate_codex_index.py (if exists)"
+    - "Commit with message: 'chore(manifest): update codex_index.yaml'"
+    
+  validation_script: ".github/workflows/validate-codex-index.yml (optional)"
+
+# Particle Physics-Inspired Symbolic Notation
+# Mathematical framework for repository traversal complexity
+symbolic_notation:
+  traversal_equation: "τ = Σ(wi × di × ci) / √n"
+  legend:
+    τ: "Total traversal complexity (time units)"
+    wi: "Weight/priority of file i (1-10 scale)"
+    di: "Depth required to read file i (header=0.1, headings=0.3, full=1.0)"
+    ci: "Cognitive load coefficient (1.0 for code, 0.5 for docs, 0.3 for configs)"
+    n: "Total number of files in repository"
+    Σ: "Sum across all files"
+    
+  priority_weights:
+    critical: 10
+    high: 7
+    medium: 4
+    low: 2
+    
+  read_depth_multipliers:
+    header-only: 0.1
+    headings: 0.3
+    full: 1.0
+    
+  cognitive_load:
+    code: 1.0
+    documentation: 0.5
+    configuration: 0.3
+    manifest: 0.2
+    
+  optimal_path: "Minimize τ by reading high-weight, low-depth files first"
+  
+  example_calculation: |
+    For this repository:
+    τ_optimal = (10 × 1.0 × 0.5) + (10 × 1.0 × 0.5) + (7 × 1.0 × 0.5) + (7 × 0.3 × 1.0) + ... / √40
+    τ_optimal ≈ 3.2 time units (vs ~8.5 for random traversal)
+    
+  optimization_strategy: "Follow wavepoint order in AGENTS.md to achieve near-optimal τ"
+
+---
+# End of codex_index.yaml
+# For updates or questions, see docs/guides/AGENTS.md
