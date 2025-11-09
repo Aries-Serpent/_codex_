@@ -185,10 +185,20 @@ def gates(session: nox.Session) -> None:
 
 @nox.session
 def tests(session: nox.Session) -> None:
-    """Run pytest with plugin autoload disabled (deterministic)."""
+    """Run pytest with plugin autoload disabled (deterministic) and coverage enforcement."""
     session.install("-r", "requirements-dev.txt")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    session.run("pytest", "-q")
+    
+    # Run tests with coverage
+    session.run(
+        "pytest",
+        "-q",
+        "--cov=src/codex_ml",
+        "--cov=src/codex",
+        "--cov-report=term-missing",
+        "--cov-report=xml",
+        "--cov-fail-under=70",
+    )
 
 
 @nox.session
