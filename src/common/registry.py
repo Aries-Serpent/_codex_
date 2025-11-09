@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable
-from functools import partial
 from typing import Any
 
 try:  # pragma: no cover - optional import path when codex_ml unavailable
@@ -59,7 +58,7 @@ DATASETS = Registry("datasets")
 METRICS = Registry("metrics")
 
 if F1Score is not None:  # pragma: no branch - guard optional dependency
-    METRICS.add("f1_score", lambda **kwargs: F1Score(**kwargs))
-    METRICS.add("recall_score", lambda **kwargs: RecallScore(**kwargs))
-    METRICS.add("token_accuracy", lambda **kwargs: TokenAccuracy(**kwargs))
-    METRICS.add("bleu_score", lambda **kwargs: BLEUScore(**kwargs))
+    METRICS.add("f1_score", F1Score)
+    METRICS.add("recall_score", RecallScore)
+    METRICS.add("token_accuracy", TokenAccuracy)
+    METRICS.add("bleu_score", BLEUScore)

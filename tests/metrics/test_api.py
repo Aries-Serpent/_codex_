@@ -4,14 +4,12 @@ from __future__ import annotations
 
 import json
 import sqlite3
-import tempfile
-from pathlib import Path
 
 import pytest
 
 from codex_ml.metrics.api import (
-    f1,
     exact_match,
+    f1,
     get_metric,
     init_metric_plugins,
     list_metrics,

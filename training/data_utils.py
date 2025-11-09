@@ -29,7 +29,10 @@ except ImportError:  # pragma: no cover - platform-specific fallback
     fcntl = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from torch import Tensor  # type: ignore[attr-defined]
+    if torch is not None:
+        from torch import Tensor  # type: ignore[attr-defined]
+    else:
+        Tensor = Any  # type: ignore[misc]
 else:  # pragma: no cover - runtime alias
     if torch is not None:
         Tensor = torch.Tensor  # type: ignore[attr-defined]

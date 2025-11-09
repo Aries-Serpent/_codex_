@@ -52,17 +52,18 @@ except Exception:  # pragma: no cover - degrade gracefully when configs missing
 
 
 try:  # pragma: no cover - optional metrics dependency
+    from .metrics.api import (
+        get_metric,
+        list_metrics,
+        register_metric,
+        summarize_ndjson_logs,
+    )
     from .metrics.metric_implementations import (
         BLEUScore,
         F1Score,
         MetricRegistry,
         RecallScore,
         TokenAccuracy,
-    )
-    from .metrics.api import (
-        get_metric,
-        list_metrics,
-        register_metric,
     )
 except Exception:  # pragma: no cover - degrade gracefully when metrics extras missing
 
@@ -74,7 +75,8 @@ except Exception:  # pragma: no cover - degrade gracefully when metrics extras m
             raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
 
         def __getattr__(self, _item: str):  # pragma: no cover - defensive
-            raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
+            msg = f"Metrics module unavailable; {self._name} requires optional extras"
+            raise AttributeError(msg)
 
     MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[assignment]
     F1Score = _MissingMetric("F1Score")  # type: ignore[assignment]
