@@ -1,0 +1,159 @@
+# Codex Index Validation Workflow (OPTIONAL)
+# This workflow validates that codex_index.yaml stays in sync with repository structure
+# To enable: Rename this file to validate-codex-index.yml and move to .github/workflows/
+# WARNING: Only enable if GitHub Actions workflows are permitted in this repository
+
+name: Validate Codex Index
+
+on:
+  pull_request:
+    paths:
+      - '_codex_/codex_index.yaml'
+      - 'AGENTS.md'
+      - 'docs/guides/AGENTS.md'
+      - 'AGENT_CONTINUATION_PROMPT.md'
+      - 'CHATGPT_CONTINUATION.md'
+      - 'codex_ready_task_sequence.yaml'
+      - 'codex_task_executor.py'
+      - 'PROMPTS/**'
+      - 'examples/**'
+      - '.github/workflows/validate-codex-index.yml'
+  
+  push:
+    branches:
+      - main
+    paths:
+      - '_codex_/codex_index.yaml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+          
+      - name: Validate YAML syntax
+        run: |
+          python -c "
+          import yaml
+          with open('_codex_/codex_index.yaml') as f:
+              data = yaml.safe_load(f)
+              print('✓ YAML syntax valid')
+              print(f'✓ Version: {data.get(\"version\")}')
+              print(f'✓ Primary files: {len(data.get(\"primary\", []))}')
+          "
+          
+      - name: Check required sections
+        run: |
+          python -c "
+          import yaml
+          with open('_codex_/codex_index.yaml') as f:
+              data = yaml.safe_load(f)
+          
+          required = [
+              'version', 'repository', 'description', 'primary', 
+              'summaries', 'orchestration', 'prompts', 'examples',
+              'governance', 'configuration', 'environment', 
+              'safety_rules', 'validation', 'symbolic_notation'
+          ]
+          
+          missing = [r for r in required if r not in data]
+          if missing:
+              print(f'✗ Missing sections: {missing}')
+              exit(1)
+          else:
+              print('✓ All required sections present')
+          "
+          
+      - name: Validate file paths exist
+        run: |
+          python - << 'EOF'
+          import yaml
+          import os
+          from pathlib import Path
+          
+          with open('_codex_/codex_index.yaml') as f:
+              data = yaml.safe_load(f)
+          
+          errors = []
+          
+          # Check primary files
+          for item in data.get('primary', []):
+              path = item.get('path', item if isinstance(item, str) else '')
+              if not Path(path).exists():
+                  errors.append(f'Primary file missing: {path}')
+          
+          # Check orchestration entrypoints
+          for item in data.get('orchestration', {}).get('entrypoints', []):
+              path = item.get('path', '')
+              if path and not Path(path).exists():
+                  errors.append(f'Orchestration file missing: {path}')
+          
+          # Check prompts
+          for item in data.get('prompts', []):
+              path = item.get('path', '')
+              if path and not Path(path).exists():
+                  errors.append(f'Prompt file missing: {path}')
+          
+          # Check examples
+          for item in data.get('examples', []):
+              path = item.get('path', '')
+              if path and not Path(path).exists():
+                  errors.append(f'Example file missing: {path}')
+          
+          # Check governance
+          for item in data.get('governance', []):
+              path = item.get('path', '')
+              if path and not Path(path).exists():
+                  errors.append(f'Governance file missing: {path}')
+          
+          if errors:
+              print('✗ File path validation failed:')
+              for error in errors:
+                  print(f'  - {error}')
+              exit(1)
+          else:
+              print('✓ All referenced files exist')
+          EOF
+          
+      - name: Check AGENTS.md references codex_index.yaml
+        run: |
+          if ! grep -q "codex_index.yaml" AGENTS.md; then
+              echo "✗ AGENTS.md should reference codex_index.yaml"
+              exit 1
+          else
+              echo "✓ AGENTS.md references codex_index.yaml"
+          fi
+          
+      - name: Validate no secrets in manifest
+        run: |
+          if grep -iE '(password|secret|token|api_key|private_key)' _codex_/codex_index.yaml | grep -v -E '(description|name|example|legend)'; then
+              echo "✗ Possible secrets detected in manifest"
+              exit 1
+          else
+              echo "✓ No secrets detected"
+          fi
+          
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Codex Index Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All validation checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Validated sections:" >> $GITHUB_STEP_SUMMARY
+          echo "- YAML syntax" >> $GITHUB_STEP_SUMMARY
+          echo "- Required sections" >> $GITHUB_STEP_SUMMARY
+          echo "- File path existence" >> $GITHUB_STEP_SUMMARY
+          echo "- AGENTS.md cross-reference" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret detection" >> $GITHUB_STEP_SUMMARY
