@@ -133,7 +133,8 @@ def gates(session: nox.Session) -> None:
             _log_skip(
                 session,
                 "schema validation",
-                f"missing selection guard manifest or schema ({_SELECTION_RULES}, {_SELECTION_SCHEMA})",
+                f"missing selection guard manifest or schema "
+                f"({_SELECTION_RULES}, {_SELECTION_SCHEMA})",
             )
         if _EVALUATOR_RULES.exists() and _EVALUATOR_SCHEMA.exists():
             schema_args.extend(
@@ -188,11 +189,11 @@ def tests(session: nox.Session) -> None:
     """Run pytest with plugin autoload disabled (deterministic) and coverage enforcement."""
     session.install("-r", "requirements-dev.txt")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    
+
     # Run tests with coverage
     session.run(
         "pytest",
-        "--cov=src",
+        "--cov=src/codex_ml",
         "--cov-report=xml",
         "--cov-report=term-missing",
         "--cov-fail-under=70",
@@ -280,6 +281,7 @@ def status_validate(session: nox.Session) -> None:
     session.install("-r", "requirements-dev.txt")
     # Validate today's artifact if present
     from datetime import datetime, timezone
+
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     path = f"reports/daily/_codex_status_update-{today}.json"
     session.run("python", "tools/status/validate_status_update.py", path)
@@ -313,7 +315,7 @@ def typecheck(session: nox.Session) -> None:
 @nox.session(name="repro_smoke")
 def repro_smoke(session: nox.Session) -> None:
     """Run reproducibility and plugin smoke tests (local-only).
-    
+
     Validates:
     - Deterministic behavior with fixed seeds
     - Plugin loading is non-fatal
@@ -335,28 +337,31 @@ def repro_smoke(session: nox.Session) -> None:
 @nox.session(name="docs_build")
 def docs_build(session: nox.Session) -> None:
     """Build offline API documentation with optional module gating.
-    
+
     Environment variables:
         SKIP_OPTIONAL   - Skip optional modules (codex_ml extras)
         FAIL_ON_MISSING - Strict mode (fail if any requested modules missing)
-    
+
     Usage:
         nox -s docs_build
         SKIP_OPTIONAL=1 nox -s docs_build
         FAIL_ON_MISSING=1 nox -s docs_build
     """
     session.install("-r", "requirements-dev.txt")
-    
+
     # Use the docs_build.sh script for consistent behavior
     import os
+
     env = os.environ.copy()
-    
+
     # Pass through environment variables
     skip_optional = env.get("SKIP_OPTIONAL", "0")
     fail_on_missing = env.get("FAIL_ON_MISSING", "0")
-    
-    session.log(f"Building API docs (SKIP_OPTIONAL={skip_optional}, FAIL_ON_MISSING={fail_on_missing})")
-    
+
+    session.log(
+        f"Building API docs (SKIP_OPTIONAL={skip_optional}, " f"FAIL_ON_MISSING={fail_on_missing})"
+    )
+
     session.run(
         "bash",
         "scripts/docs_build.sh",
@@ -373,6 +378,7 @@ def tracking_smoke(session: nox.Session) -> None:
     session.log("[tracking_smoke] using tracking URI file:./mlruns")
     # Create mlruns directory and verify setup
     import pathlib
+
     mlruns = pathlib.Path("./mlruns")
     mlruns.mkdir(parents=True, exist_ok=True)
     session.log(f"[tracking_smoke] mlruns directory: {mlruns.resolve()}")

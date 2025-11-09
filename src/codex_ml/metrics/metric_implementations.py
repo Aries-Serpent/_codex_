@@ -229,8 +229,11 @@ class TokenAccuracy(MetricBase):
         self._total += total
 
     def compute(self) -> Dict[str, float]:
-        total = max(self._total, 1)
-        return {self.name: self._correct / total}
+        # If no samples have been processed, return 0.0 accuracy.
+        # This is intentional and confirmed by test_token_accuracy_handles_empty().
+        if self._total == 0:
+            return {self.name: 0.0}
+        return {self.name: self._correct / self._total}
 
 
 class BLEUScore(MetricBase):
@@ -329,9 +332,7 @@ class MetricRegistry:
         key = name.strip().lower()
         if not key:
             raise ValueError("metric name must be non-empty")
-        spec = MetricSpec(
-            name=key, factory=metric_cls, default_kwargs=default_kwargs or None
-        )
+        spec = MetricSpec(name=key, factory=metric_cls, default_kwargs=default_kwargs or None)
         self._registry[key] = spec
 
     def create(self, name: str, **overrides: Any) -> MetricBase:
