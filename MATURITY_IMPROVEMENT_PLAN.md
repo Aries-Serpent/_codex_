@@ -10,10 +10,10 @@
 
 ## Executive Summary
 
-This plan addresses 11 low-maturity capabilities identified in `audit_artifacts/gaps.json`. The primary deficit across most capabilities is **test coverage**, ranging from 0.00 to 0.31. The plan includes:
+This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-maturity capability (0.70-0.84) identified in `audit_artifacts/gaps.json` and `audit_artifacts/capabilities_scored.json`. The primary deficit across most capabilities is **test coverage**, ranging from 0.00 to 0.31. The plan includes:
 
 - **Integration tests** for archival-bundling (test coverage: 0.04 → target: 0.70+)
-- **Unit tests** for status-reporting modules (test coverage: 0.18 → target: 0.70+)
+- **Unit tests** for status-reporting modules (score: 0.7585, test coverage: 0.18 → target: 0.70+)
 - **AST-level consistency improvements** (v1.6.x)
 - **Real pytest-cov integration** (v1.7.x)
 - **Addressing zero-component capabilities** through targeted testing
@@ -38,8 +38,11 @@ This plan addresses 11 low-maturity capabilities identified in `audit_artifacts/
 | documentation-system | 0.680 | tests | **0.02** | 0.75 | 1.00 |
 | experiment-management | 0.687 | tests | **0.02** | 1.00 | 1.00 |
 | tokenization | 0.691 | tests | 0.24 | 1.00 | 1.00 |
+| **status-reporting** | **0.759** | **tests** | **0.18** | **1.00** | **1.00** |
 
 **Threshold**: Low Maturity < 0.70, Good Maturity: 0.70-0.84, High Maturity: ≥0.85
+
+**Note**: status-reporting is in "Good Maturity" range but requires test coverage improvement
 
 ---
 
@@ -344,6 +347,46 @@ This plan addresses 11 low-maturity capabilities identified in `audit_artifacts/
 ```
 
 **Target**: Test coverage 0.24 → 0.70+
+
+---
+
+### 2.5 Status Reporting (Score: 0.759, Priority: MEDIUM)
+
+**Current State**:
+- Test coverage: 0.18 (low, below threshold)
+- Functionality: 1.00 (complete)
+- Documentation: 1.00 (excellent)
+- Consistency: 0.88 (good)
+- Located in: scripts/space_traversal/status_update_report.py, scripts/space_traversal/detectors/status_reporting.py
+
+**Recommendation**: Add unit tests for reporting modules
+
+**Action Items**:
+```markdown
+- [ ] Create `tests/status/test_status_reporting.py`
+  - Test status report generation
+  - Test capability scoring logic
+  - Test maturity calculations
+  - Test gap detection
+  
+- [ ] Create `tests/status/test_status_update_report.py`
+  - Test status update report creation
+  - Test low-maturity item identification
+  - Test integrity chain validation
+  - Test summary generation
+  
+- [ ] Create `tests/status/test_status_detector.py`
+  - Test status reporting detector
+  - Test capability detection patterns
+  - Test evidence file collection
+  
+- [ ] Expand existing status tests
+  - Add edge cases to test_status_report.py
+  - Add verbose mode tests to test_status_report_verbose.py
+  - Add CLI tests to test_status_audit.py
+```
+
+**Target**: Test coverage 0.18 → 0.70+, Score 0.759 → 0.85+
 
 ---
 
