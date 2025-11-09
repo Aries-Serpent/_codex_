@@ -1,5 +1,5 @@
 {
-  "generated": 1762683213.4002929,
+  "generated": 1762683397.7714603,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1403,6 +1403,7 @@
       "CODEX_STATUS_IMPLEMENTATION_SUMMARY.md",
       "FINAL_STATUS_100_PERCENT.md",
       "FINAL_STATUS_98_PERCENT.md",
+      "IMPLEMENTATION_AUDIT_V1.4.0.md",
       "Makefile.status",
       "PROGRESS_REPORT_100_PERCENT.md",
       "SELECTION_REPORT.md",
@@ -1573,6 +1574,7 @@
       "scripts/repo_audit.py",
       "scripts/run_space_audit_fast.sh",
       "scripts/runner/runner_status.sh",
+      "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
       "scripts/space_traversal/audit_runner.py",
       "scripts/space_traversal/detectors/status_reporting.py",
       "scripts/space_traversal/status_update_report.py",

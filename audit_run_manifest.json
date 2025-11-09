@@ -1,15 +1,15 @@
 {
-  "timestamp": 1762683214.5205204,
+  "timestamp": 1762683398.9224665,
   "version": "1.4.0",
-  "repo_root_sha": "8e89b452f8a8e70c1f3d4d1fb48e9cf49e248b8c623ea355149339ff0d21e6cf",
+  "repo_root_sha": "f806534badb054efcc93e39677e22a726082be5228a804b075c5796c9be24861",
   "artifacts": [
     {
       "name": "facets.json",
-      "sha": "2a210028abade67e350fb7aaa9a155d1336bd4ac9f16deffa10e111f25fdbd06"
+      "sha": "c8420bc175d35401b6cff8c73e3d49cda5a67986e8256e1f10073f93caa63af5"
     },
     {
       "name": "capabilities_raw.json",
-      "sha": "6a4fe71389342ad0b930b560dfa634b126ec4c6183c32407b569cd4b2f7d2213"
+      "sha": "20a751c4ef51ac2e981a657f66c9e603e91a235471e4bb4bcd148823dc06891c"
     },
     {
       "name": "knobs_effective.json",
@@ -17,19 +17,19 @@
     },
     {
       "name": "capabilities_scored.json",
-      "sha": "4b41c3ba753fc5b1662d5aeb250a831c5c1e39405d9e4bc560140d1af61e3812"
+      "sha": "db25bb69538f91a53c9fc2a82243befee11711f2c828bd01258268a3b6443b7c"
     },
     {
       "name": "context_index.json",
-      "sha": "ce0de43d65668f690658e25a70640dad50c60d4491cef86c570645624955f6d4"
+      "sha": "47247023e2fa171d7721bdc6d1aa049930a4da0a849efcac222b353e4776348d"
     },
     {
       "name": "component_gaps.json",
-      "sha": "aca04f82bcd27d73a71e99678e277d271150980b5324a35aa63249f344d28d0f"
+      "sha": "ec9a4694465d9502c4cbaaf7c9709fb73c3bbe74be5ef4c5b07fc50d626d8bca"
     },
     {
       "name": "gaps.json",
-      "sha": "6e657cc1fedb36257be3f72f25df6f92339a544c59b222ce985b18833aecc22a"
+      "sha": "5ef0f2f700825c05ec7d60df241ec642bd74c3a0305ea547a5c42e5fe251fe7e"
     }
   ],
   "weights": {
@@ -75,16 +75,16 @@
     "HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS": "3650",
     "ANDROID_NDK": "/usr/local/lib/android/sdk/ndk/27.3.13750724",
     "BOOTSTRAP_HASKELL_NONINTERACTIVE": "1",
-    "PWD": "/home/runner/work/_codex_/_codex_",
     "PIPX_BIN_DIR": "/opt/pipx_bin",
+    "PWD": "/home/runner/work/_codex_/_codex_",
     "LOGNAME": "runner",
     "XDG_SESSION_TYPE": "unspecified",
     "GITHUB_REPOSITORY_ID": "1040037790",
     "GITHUB_ACTIONS": "true",
     "COPILOT_EXPERIMENTS": "ghpad_aa:false",
     "COPILOT_JOB_EVENT_TYPE": "agents_panel",
-    "ANDROID_NDK_LATEST_HOME": "/usr/local/lib/android/sdk/ndk/28.2.13676358",
     "COPILOT_AGENT_FIREWALL_ENABLE_RULESET_ALLOW_LIST": "true",
+    "ANDROID_NDK_LATEST_HOME": "/usr/local/lib/android/sdk/ndk/28.2.13676358",
     "SYSTEMD_EXEC_PID": "1881",
     "GITHUB_SHA": "34a1b7e8a3fb39f9aee2b56d5c249250716bbb83",
     "GITHUB_WORKFLOW_REF": "Aries-Serpent/_codex_/dynamic/copilot-swe-agent/copilot@refs/heads/copilot/analyze-capability-audit",
@@ -113,8 +113,8 @@
     "JAVA_HOME_21_X64": "/usr/lib/jvm/temurin-21-jdk-amd64",
     "COPILOT_AGENT_ACTION": "fix",
     "GITHUB_ENV": "/home/runner/work/_temp/_runner_file_commands/set_env_9b3f1e5b-063b-471c-81b6-0aa247673ceb",
-    "GITHUB_EVENT_PATH": "/home/runner/work/_temp/_github_workflow/event.json",
     "INVOCATION_ID": "e979a16ad06a444987ef0dfc47c1aa79",
+    "GITHUB_EVENT_PATH": "/home/runner/work/_temp/_github_workflow/event.json",
     "GITHUB_EVENT_NAME": "dynamic",
     "GITHUB_RUN_ID": "19206862124",
     "JAVA_HOME_17_X64": "/usr/lib/jvm/temurin-17-jdk-amd64",
@@ -126,8 +126,8 @@
     "COPILOT_AGENT_FIREWALL_LOG_FILE": "/home/runner/work/_temp/runtime-logs/fw.jsonl",
     "COPILOT_USE_SESSIONS": "true",
     "NVM_DIR": "/home/runner/.nvm",
-    "FIREWALL_RULESET_CONTENT": "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",
     "SGX_AESM_ADDR": "1",
+    "FIREWALL_RULESET_CONTENT": "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",
     "GITHUB_RUN_ATTEMPT": "1",
     "COPILOT_AGENT_ONLINE_EVALUATION_DISABLED": "false",
     "COPILOT_AGENT_START_TIME_SEC": "1762682577",
@@ -144,7 +144,7 @@
     "CAROOT": "/home/runner/work/_temp/runtime-logs/mkcert",
     "DOTNET_SYSTEM_NET_DISABLEIPV6": "1",
     "CHROMEWEBDRIVER": "/usr/local/share/chromedriver-linux64",
-    "SHLVL": "3",
+    "SHLVL": "4",
     "COPILOT_AGENT_CONTENT_FILTER_MODE": "hidden_characters",
     "GITHUB_DOWNLOADS_URL": "https://api.github.com/internal/user-attachments/assets",
     "ANDROID_SDK_ROOT": "/usr/local/lib/android/sdk",
@@ -170,9 +170,9 @@
     "REQUESTS_CA_BUNDLE": "/etc/ssl/certs/ca-certificates.crt",
     "COPILOT_EXPERIMENT_ASSIGNMENT_CONTEXT": "copilot_t_ci:31333650;ghpad_aa_c:31385606;3f24b373:31384753;ff8f5884:31411053;",
     "GITHUB_REPOSITORY": "Aries-Serpent/_codex_",
-    "GOROOT_1_22_X64": "/opt/hostedtoolcache/go/1.22.12/x64",
-    "ANDROID_NDK_ROOT": "/usr/local/lib/android/sdk/ndk/27.3.13750724",
     "CHROME_BIN": "/usr/bin/google-chrome",
+    "ANDROID_NDK_ROOT": "/usr/local/lib/android/sdk/ndk/27.3.13750724",
+    "GOROOT_1_22_X64": "/opt/hostedtoolcache/go/1.22.12/x64",
     "COPILOT_AGENT_COMMIT_LOGIN": "copilot-swe-agent[bot]",
     "GITHUB_RETENTION_DAYS": "90",
     "JOURNAL_STREAM": "9:9974",
