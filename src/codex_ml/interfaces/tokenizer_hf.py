@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import Any
 
 from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter as _HFTokenizerAdapter
 
@@ -25,8 +26,12 @@ warnings.warn(
 
 HFTokenizerAdapter = _HFTokenizerAdapter
 
+
 def align_tensor_to_device(
-    tensor: "torch.Tensor", device_config: "DeviceConfig | None", *, fallback_dtype: "torch.dtype | None" = None
+    tensor: "torch.Tensor",
+    device_config: "DeviceConfig | None",
+    *,
+    fallback_dtype: "torch.dtype | None" = None,
 ) -> Any:
     """Ensure tokenizer tensors respect the configured dtype/device."""
 

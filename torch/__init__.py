@@ -40,7 +40,7 @@ if _real is not None:
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
     _MISSING_MSG = (
-        "PyTorch is not installed in this environment. " "Install torch to enable these features."
+        "PyTorch is not installed in this environment. Install torch to enable these features."
     )
     __all__: list[str] = []
     IS_CODEX_STUB = True
