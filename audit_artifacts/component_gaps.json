@@ -1,6 +1,14 @@
 {
-  "generated": 1762682725.6657958,
+  "generated": 1762683015.9644825,
   "component_gaps": [
+    {
+      "id": "archival-bundling",
+      "zero_components": [],
+      "primary_deficit": {
+        "component": "tests",
+        "value": 0.02
+      }
+    },
     {
       "id": "checkpointing",
       "zero_components": [],
@@ -39,8 +47,8 @@
       "id": "data-pipeline",
       "zero_components": [],
       "primary_deficit": {
-        "component": "tests",
-        "value": 0.82
+        "component": "safeguards",
+        "value": 0.5833333333333334
       }
     },
     {
@@ -103,6 +111,14 @@
       }
     },
     {
+      "id": "ml-serving",
+      "zero_components": [],
+      "primary_deficit": {
+        "component": "safeguards",
+        "value": 0.75
+      }
+    },
+    {
       "id": "peft_hooks",
       "zero_components": [],
       "primary_deficit": {
@@ -137,11 +153,19 @@
       }
     },
     {
+      "id": "status-reporting",
+      "zero_components": [],
+      "primary_deficit": {
+        "component": "tests",
+        "value": 0.16
+      }
+    },
+    {
       "id": "testing-infrastructure",
       "zero_components": [],
       "primary_deficit": {
         "component": "safeguards",
-        "value": 0.6666666666666666
+        "value": 0.5
       }
     },
     {
@@ -165,7 +189,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "safeguards",
-        "value": 0.5
+        "value": 0.25
       }
     },
     {

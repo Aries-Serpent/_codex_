@@ -1,16 +1,123 @@
 {
-  "generated": 1762682725.6650274,
+  "generated": 1762683015.9636188,
   "low_maturity": [
+    {
+      "id": "archival-bundling",
+      "components": {
+        "functionality": 1.0,
+        "consistency": 0.72,
+        "tests": 0.02,
+        "safeguards": 0.8333333333333334,
+        "documentation": 0.24128686327077745
+      },
+      "score": 0.5602,
+      "evidence_files": [
+        ".codex/archive/README_UPDATED.md",
+        ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
+        ".codex/evidence/archive_ops.jsonl",
+        ".codex/evidence/artifacts/archive_plan_root_cleanup_2025-10-17.json",
+        ".codex/status/manifest-2025-09-22T02-15-21Z.json",
+        ".codex/validation/20250910T052842Z/post_manifest.json",
+        ".codex/validation/20250910T052842Z/pre_manifest.json",
+        ".codex/validation/20250910T071257Z/post_manifest.json",
+        ".codex/validation/20250910T071257Z/pre_manifest.json",
+        ".codex/validation/20250910T080054Z/post_manifest.json",
+        ".codex/validation/20250910T080054Z/pre_manifest.json",
+        ".codex/validation/20250910T113918Z/post_manifest.json",
+        ".codex/validation/20250910T113918Z/pre_manifest.json",
+        ".codex/validation/20250910T135035Z/post_manifest.json",
+        ".codex/validation/20250910T135035Z/pre_manifest.json",
+        ".codex/validation/20250910T151757Z/post_manifest.json",
+        ".codex/validation/20250910T151757Z/pre_manifest.json",
+        ".codex/validation/20250910T210555Z/post_manifest.json",
+        ".codex/validation/20250910T210555Z/pre_manifest.json",
+        ".codex/validation/post_manifest.json",
+        ".codex/validation/pre_manifest.json",
+        ".github/docs/ARCHIVE_CONFIG_ADR.md",
+        ".github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_INDEX.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+        ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
+        ".github/workflows/archive-gates.yml.disabled",
+        "MANIFEST.in",
+        "_codex/status/manifest-20250922T013307Z.json",
+        "_codex/status/manifest-20250922T013826Z.json",
+        "_codex_reports/2025-10-06/artifacts_manifest.json",
+        "archive/removed/CODEBASE_AUDIT_2025-08-26_203612.md",
+        "archive/removed/CODEBASE_AUDIT_2025-09-27_ITERATION3.md",
+        "archive/removed/Codex_Questions.md",
+        "archive/removed/_codex_codex-ready-sequence-and-patches-2025-09-27.md",
+        "archive/removed/_codex_status_update-0C_base_-2025-09-27.md",
+        "archive/removed/_codex_status_update-2025-10-06.md",
+        "archive/removed/_codex_status_update-2025-10-16.md",
+        "archive/removed/ci.yml",
+        "archive/removed/codex-ci.yml",
+        "archive/removed/codex-self-hosted-ci.yml",
+        "archive/removed/codex-self-manage.yml",
+        "archive/removed/codex_ready_sequence-2025-10-16.md",
+        "archive/removed/done_resolution_plans_10-6_to_10-7.md",
+        "archive/removed/release.yml",
+        "archive/removed/todo_resolution_plans_10-6_to_10-7.txt",
+        "artifacts/archive_plan_root.json",
+        "assets/manifest.json",
+        "audit_run_manifest.json",
+        "build_helpers_manifest.py"
+      ],
+      "found_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "required_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "missing_patterns": [],
+      "meta": {
+        "layer": "storage",
+        "priority": "high",
+        "category": "reproducibility"
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.72,
+          "weight": 0.2,
+          "contribution": 0.144
+        },
+        "tests": {
+          "component_value": 0.02,
+          "weight": 0.25,
+          "contribution": 0.005
+        },
+        "safeguards": {
+          "component_value": 0.8333333333333334,
+          "weight": 0.15,
+          "contribution": 0.125
+        },
+        "documentation": {
+          "component_value": 0.24128686327077745,
+          "weight": 0.15,
+          "contribution": 0.03619302949061662
+        }
+      },
+      "primary_deficit": "tests"
+    },
     {
       "id": "configuration",
       "components": {
         "functionality": 1.0,
         "consistency": 0.8200000000000001,
         "tests": 0.0,
-        "safeguards": 0.3333333333333333,
+        "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.614,
+      "score": 0.639,
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
         ".codex/evidence/phase4_hydra_check.jsonl",
@@ -89,9 +196,9 @@
           "contribution": 0.0
         },
         "safeguards": {
-          "component_value": 0.3333333333333333,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.049999999999999996
+          "contribution": 0.075
         },
         "documentation": {
           "component_value": 1.0,
@@ -107,10 +214,10 @@
         "functionality": 0.8,
         "consistency": 0.72,
         "tests": 0.02,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.75,
         "documentation": 1.0
       },
-      "score": 0.599,
+      "score": 0.6115,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -203,9 +310,9 @@
           "contribution": 0.005
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.75,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.11249999999999999
         },
         "documentation": {
           "component_value": 1.0,
@@ -252,6 +359,7 @@
         "docs/SEARCH_NOTES.md",
         "docs/SECURITY.md",
         "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/SPACE_TRAVERSAL_GUIDE.md",
         "docs/Traversal_Workflow.md",
         "docs/Usage_Guide.md",
         "docs/agents.md",
@@ -274,8 +382,7 @@
         "docs/archive/pages_publish_tiles_yml_archive.md",
         "docs/bridge/README.md",
         "docs/bridge/governance.md",
-        "docs/bridge/overview.md",
-        "docs/bridge/ubuntu_cli.md"
+        "docs/bridge/overview.md"
       ],
       "found_patterns": [
         "docs",
@@ -292,10 +399,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 500,
+        "markdown_count": 501,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 502
+        "total_docs": 503
       },
       "partials": {
         "functionality": {
@@ -333,9 +440,9 @@
         "consistency": 0.94,
         "tests": 0.0,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1480484522207268
+        "documentation": 0.17426273458445038
       },
-      "score": 0.3352,
+      "score": 0.3391,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -418,9 +525,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.1480484522207268,
+          "component_value": 0.17426273458445038,
           "weight": 0.15,
-          "contribution": 0.02220726783310902
+          "contribution": 0.026139410187667557
         }
       },
       "primary_deficit": "functionality"
@@ -543,10 +650,10 @@
         "functionality": 0.3333333333333333,
         "consistency": 0.9230769230769231,
         "tests": 0.3076923076923077,
-        "safeguards": 0.6666666666666666,
-        "documentation": 0.6998654104979812
+        "safeguards": 0.5,
+        "documentation": 0.7372654155495978
       },
-      "score": 0.5499,
+      "score": 0.5305,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "copilot/extension/server/index.js",
@@ -595,14 +702,14 @@
           "contribution": 0.07692307692307693
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.6998654104979812,
+          "component_value": 0.7372654155495978,
           "weight": 0.15,
-          "contribution": 0.10497981157469718
+          "contribution": 0.11058981233243967
         }
       },
       "primary_deficit": "tests"
@@ -613,10 +720,10 @@
         "functionality": 1.0,
         "consistency": 0.84,
         "tests": 0.1,
-        "safeguards": 1.0,
-        "documentation": 0.12113055181695828
+        "safeguards": 0.9166666666666666,
+        "documentation": 0.14745308310991956
       },
-      "score": 0.6112,
+      "score": 0.6026,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -702,14 +809,14 @@
           "contribution": 0.025
         },
         "safeguards": {
-          "component_value": 1.0,
+          "component_value": 0.9166666666666666,
           "weight": 0.15,
-          "contribution": 0.15
+          "contribution": 0.13749999999999998
         },
         "documentation": {
-          "component_value": 0.12113055181695828,
+          "component_value": 0.14745308310991956,
           "weight": 0.15,
-          "contribution": 0.01816958277254374
+          "contribution": 0.022117962466487933
         }
       },
       "primary_deficit": "tests"
@@ -721,9 +828,9 @@
         "consistency": 0.76,
         "tests": 0.0,
         "safeguards": 1.0,
-        "documentation": 0.08075370121130553
+        "documentation": 0.10723860589812331
       },
-      "score": 0.5641,
+      "score": 0.5681,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -816,9 +923,109 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.08075370121130553,
+          "component_value": 0.10723860589812331,
           "weight": 0.15,
-          "contribution": 0.012113055181695828
+          "contribution": 0.016085790884718495
+        }
+      },
+      "primary_deficit": "tests"
+    },
+    {
+      "id": "tokenization",
+      "components": {
+        "functionality": 1.0,
+        "consistency": 0.78,
+        "tests": 0.24,
+        "safeguards": 0.5,
+        "documentation": 1.0
+      },
+      "score": 0.691,
+      "evidence_files": [
+        "_codex_reports/2025-10-06/tokenizer_check.json",
+        "artifacts/models/tiny_tokenizer/vocab.json",
+        "codex_digest/tokenizer.py",
+        "configs/training/tokenization/base.yaml",
+        "configs/training/tokenizer/multilingual.yaml",
+        "configs/training/tokenizer/train_tokenizer.yaml",
+        "docs/guides/tokenization.md",
+        "docs/how-to/tokenizer_migration.md",
+        "docs/modules/tokenizer_trainer.md",
+        "docs/templates/status/Tokenization_Insights_v1.2.md",
+        "docs/tokenization/Adapter_Consolidation.md",
+        "docs/tokenization_api.md",
+        "docs/tokenization_cache.md",
+        "docs/tokenizer_invariants.md",
+        "docs/validation/Tokenization_Validation.md",
+        "docs/validation/tokenization_Validation.md",
+        "examples/notebooks/tokenizer_quickstart.ipynb",
+        "examples/plugins/toy_tokenizer/__init__.py",
+        "examples/tokenize.py",
+        "interfaces/tokenizer.py",
+        "src/codex_ml/cli/tokenizer.py",
+        "src/codex_ml/interfaces/tokenizer.py",
+        "src/codex_ml/interfaces/tokenizer_hf.py",
+        "src/codex_ml/registry/tokenizers.py",
+        "src/codex_ml/tokenization/__init__.py",
+        "src/codex_ml/tokenization/adapter.py",
+        "src/codex_ml/tokenization/api.py",
+        "src/codex_ml/tokenization/cache.py",
+        "src/codex_ml/tokenization/cli.py",
+        "src/codex_ml/tokenization/compat.py",
+        "src/codex_ml/tokenization/hf_adapter.py",
+        "src/codex_ml/tokenization/hf_tokenizer.py",
+        "src/codex_ml/tokenization/offline_vocab.py",
+        "src/codex_ml/tokenization/pipeline.py",
+        "src/codex_ml/tokenization/sentencepiece_adapter.py",
+        "src/codex_ml/tokenization/sp_trainer.py",
+        "src/codex_ml/tokenization/train_tokenizer.py",
+        "src/tokenization/.gitkeep",
+        "src/tokenization/__init__.py",
+        "src/tokenization/api.py",
+        "src/tokenization/cli.py",
+        "src/tokenization/sentencepiece_adapter.py",
+        "src/tokenization/train_tokenizer.py",
+        "src/tokenizer/__init__.py",
+        "src/tokenizer/fast_tokenizer.py",
+        "tests/cli/test_tokenizer_cli.py",
+        "tests/interfaces/test_env_tokenizer_component.py",
+        "tests/interfaces/test_loader_tokenizer_env.py",
+        "tests/interfaces/test_tokenizer_hf.py",
+        "tests/interfaces/test_tokenizer_loader_env.py"
+      ],
+      "found_patterns": [
+        "encode",
+        "tokenizer"
+      ],
+      "required_patterns": [
+        "tokenizer",
+        "encode"
+      ],
+      "missing_patterns": [],
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.78,
+          "weight": 0.2,
+          "contribution": 0.15600000000000003
+        },
+        "tests": {
+          "component_value": 0.24,
+          "weight": 0.25,
+          "contribution": 0.06
+        },
+        "safeguards": {
+          "component_value": 0.5,
+          "weight": 0.15,
+          "contribution": 0.075
+        },
+        "documentation": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
         }
       },
       "primary_deficit": "tests"
@@ -830,9 +1037,9 @@
         "consistency": 1.0,
         "tests": 0.3333333333333333,
         "safeguards": 0.0,
-        "documentation": 0.2557200538358008
+        "documentation": 0.2815013404825737
       },
-      "score": 0.3217,
+      "score": 0.3256,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
@@ -866,9 +1073,9 @@
           "contribution": 0.0
         },
         "documentation": {
-          "component_value": 0.2557200538358008,
+          "component_value": 0.2815013404825737,
           "weight": 0.15,
-          "contribution": 0.03835800807537012
+          "contribution": 0.04222520107238605
         }
       },
       "primary_deficit": "functionality"
@@ -876,7 +1083,7 @@
   ],
   "missing_detectors": [],
   "summary": {
-    "low_count": 9,
+    "low_count": 11,
     "missing_detectors_count": 0,
     "zero_components_total": 6
   },

@@ -1,6 +1,6 @@
 {
-  "generated": 1762682724.613915,
-  "count": 3326,
+  "generated": 1762683023.4555802,
+  "count": 3330,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -1229,8 +1229,8 @@
     {
       "path": ".copilot-space/workflow.yaml",
       "ext": ".yaml",
-      "size": 1978,
-      "sha": "3be36b81efdbf996e02e06d306ade6fd617d72a0e1d00418399cb2352348fd11"
+      "size": 2462,
+      "sha": "9beae6132413e5863d54eed65cb9fb09e1e975f4181762d703f6d54f7197c013"
     },
     {
       "path": ".coveragerc",
@@ -2807,8 +2807,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1964,
-      "sha": "f5e8219d10c9c55efa3596898251938057c35c69551da5175c1ba27334aecd2b"
+      "size": 15698,
+      "sha": "ec081ace558eff6c70d7804e8ee532cf2c6c0463e1a6e3f8d4c624efcc8e8d32"
     },
     {
       "path": "bandit.yaml",
@@ -4339,6 +4339,12 @@
       "ext": ".md",
       "size": 814,
       "sha": "0585d2c92b21b8c45ae1ee39d89f9c09bab5043163124379ad65535a3cd1c026"
+    },
+    {
+      "path": "docs/SPACE_TRAVERSAL_GUIDE.md",
+      "ext": ".md",
+      "size": 17952,
+      "sha": "3223bb694f617bb42d805a95c7a24ce467abbac196543a9ff4e6a055f8d1565e"
     },
     {
       "path": "docs/Traversal_Workflow.md",
@@ -8801,8 +8807,8 @@
     {
       "path": "scripts/space_traversal/audit_runner.py",
       "ext": ".py",
-      "size": 40733,
-      "sha": "a0e5aacdcbdfc1cbaacd582c331460d4c375fbf06c6b84d474ce97405c03b740"
+      "size": 41465,
+      "sha": "700b211c32ec2a1ee01e155eea2e7dd19c3a89537e370c51be6a851ac22873e9"
     },
     {
       "path": "scripts/space_traversal/capability_scoring.py",
@@ -8827,6 +8833,12 @@
       "ext": ".md",
       "size": 748,
       "sha": "f02c770e89becd0bdf6c084065354d99099b36c7c2b839f58c09bfb502bff237"
+    },
+    {
+      "path": "scripts/space_traversal/detectors/archival_bundling.py",
+      "ext": ".py",
+      "size": 2283,
+      "sha": "78c20a7ba36e0da4ab1c5094257761497262200583be055f6e3ee64657240002"
     },
     {
       "path": "scripts/space_traversal/detectors/ci_cd_pipeline.py",
@@ -8883,10 +8895,22 @@
       "sha": "ab36682138cf215f52e318fe228fab1597ca6024b5386ea943554ccc132ec71e"
     },
     {
+      "path": "scripts/space_traversal/detectors/ml_serving.py",
+      "ext": ".py",
+      "size": 2078,
+      "sha": "2fa5707674924cc13102dce8dc314bb996ab15dff5ef84d0ae1364770181f6f6"
+    },
+    {
       "path": "scripts/space_traversal/detectors/reproducibility.py",
       "ext": ".py",
       "size": 2597,
       "sha": "16ee85e398b70b1df2d7e2608fd739150a2edcba07a6bb1177ed5ed0195c6c5c"
+    },
+    {
+      "path": "scripts/space_traversal/detectors/status_reporting.py",
+      "ext": ".py",
+      "size": 1973,
+      "sha": "c3bd332f482797b3cc33dcb194e7230f18ad084aaf9c4def4c88cefdb26ba39f"
     },
     {
       "path": "scripts/space_traversal/detectors/testing_infrastructure.py",

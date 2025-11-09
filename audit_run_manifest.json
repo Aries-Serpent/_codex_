@@ -1,31 +1,35 @@
 {
-  "timestamp": 1762682725.683417,
+  "timestamp": 1762683015.9818544,
   "version": "1.4.0",
-  "repo_root_sha": "945c8cfea7cfd32e2c67a5ba7b71cf6e626a837456149c48e77936326127292c",
+  "repo_root_sha": "b9aaa828036091a2084594a6952bec9641da30388ba8d6aec3016769f788b492",
   "artifacts": [
     {
       "name": "facets.json",
-      "sha": "ccd20844b9c649c80437a08bde45aace744a31c2514449cae2b88ed7d8df0ba7"
+      "sha": "193cebd3a1fc9bdd4b7f51907d42d56e0cadb9ddad4fdff8b170a1c1feaf216e"
     },
     {
       "name": "capabilities_raw.json",
-      "sha": "d8b79c4f02e109e8b2e3adcb7139b0971509ed9d98e85d1efb5240569c78c73b"
+      "sha": "98d4d1fb6c5881072bfa59267917c7a45029c353d0b76a79f3678b6e880a8026"
+    },
+    {
+      "name": "knobs_effective.json",
+      "sha": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
     },
     {
       "name": "capabilities_scored.json",
-      "sha": "d981cfa7b791d2fdf81a1f7361d8621e28d8412e188de76f4274d726150cf988"
+      "sha": "3eb4036999904fd058ce5aa3c099331373d369f6996d45b571804843e06b3f29"
     },
     {
       "name": "context_index.json",
-      "sha": "791d4a03f6fdf9889a907ec99e1da4a597fd6f24f133e9738a24c1eeefab08d2"
+      "sha": "5c0bd602202829d40f0f9eacf5b182eb296a43a3b678322ebb6d96b8a09c0f5e"
     },
     {
       "name": "component_gaps.json",
-      "sha": "d5d06180e2108099f979876af0ef3f7e7536fd0b44359f22262c0f2440894503"
+      "sha": "eb1b4552c6b81a99a2d771448d0e85e648eec8030e40736accf5545863a541f3"
     },
     {
       "name": "gaps.json",
-      "sha": "d6bc845a080f5743d7c57e3eee462c84bd50f903f033ee7ecda30c255042c350"
+      "sha": "af19306867e11a9bf19f2e2a686062f83c09736f8a80b476c8df84b59538de3f"
     }
   ],
   "weights": {

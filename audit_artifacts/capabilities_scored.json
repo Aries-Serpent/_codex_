@@ -1,16 +1,122 @@
 {
-  "generated": 1762682725.663265,
+  "generated": 1762683015.9617708,
   "capabilities": [
+    {
+      "id": "archival-bundling",
+      "components": {
+        "functionality": 1.0,
+        "consistency": 0.72,
+        "tests": 0.02,
+        "safeguards": 0.8333333333333334,
+        "documentation": 0.24128686327077745
+      },
+      "score": 0.5602,
+      "evidence_files": [
+        ".codex/archive/README_UPDATED.md",
+        ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
+        ".codex/evidence/archive_ops.jsonl",
+        ".codex/evidence/artifacts/archive_plan_root_cleanup_2025-10-17.json",
+        ".codex/status/manifest-2025-09-22T02-15-21Z.json",
+        ".codex/validation/20250910T052842Z/post_manifest.json",
+        ".codex/validation/20250910T052842Z/pre_manifest.json",
+        ".codex/validation/20250910T071257Z/post_manifest.json",
+        ".codex/validation/20250910T071257Z/pre_manifest.json",
+        ".codex/validation/20250910T080054Z/post_manifest.json",
+        ".codex/validation/20250910T080054Z/pre_manifest.json",
+        ".codex/validation/20250910T113918Z/post_manifest.json",
+        ".codex/validation/20250910T113918Z/pre_manifest.json",
+        ".codex/validation/20250910T135035Z/post_manifest.json",
+        ".codex/validation/20250910T135035Z/pre_manifest.json",
+        ".codex/validation/20250910T151757Z/post_manifest.json",
+        ".codex/validation/20250910T151757Z/pre_manifest.json",
+        ".codex/validation/20250910T210555Z/post_manifest.json",
+        ".codex/validation/20250910T210555Z/pre_manifest.json",
+        ".codex/validation/post_manifest.json",
+        ".codex/validation/pre_manifest.json",
+        ".github/docs/ARCHIVE_CONFIG_ADR.md",
+        ".github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_INDEX.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+        ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
+        ".github/workflows/archive-gates.yml.disabled",
+        "MANIFEST.in",
+        "_codex/status/manifest-20250922T013307Z.json",
+        "_codex/status/manifest-20250922T013826Z.json",
+        "_codex_reports/2025-10-06/artifacts_manifest.json",
+        "archive/removed/CODEBASE_AUDIT_2025-08-26_203612.md",
+        "archive/removed/CODEBASE_AUDIT_2025-09-27_ITERATION3.md",
+        "archive/removed/Codex_Questions.md",
+        "archive/removed/_codex_codex-ready-sequence-and-patches-2025-09-27.md",
+        "archive/removed/_codex_status_update-0C_base_-2025-09-27.md",
+        "archive/removed/_codex_status_update-2025-10-06.md",
+        "archive/removed/_codex_status_update-2025-10-16.md",
+        "archive/removed/ci.yml",
+        "archive/removed/codex-ci.yml",
+        "archive/removed/codex-self-hosted-ci.yml",
+        "archive/removed/codex-self-manage.yml",
+        "archive/removed/codex_ready_sequence-2025-10-16.md",
+        "archive/removed/done_resolution_plans_10-6_to_10-7.md",
+        "archive/removed/release.yml",
+        "archive/removed/todo_resolution_plans_10-6_to_10-7.txt",
+        "artifacts/archive_plan_root.json",
+        "assets/manifest.json",
+        "audit_run_manifest.json",
+        "build_helpers_manifest.py"
+      ],
+      "found_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "required_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "missing_patterns": [],
+      "meta": {
+        "layer": "storage",
+        "priority": "high",
+        "category": "reproducibility"
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.72,
+          "weight": 0.2,
+          "contribution": 0.144
+        },
+        "tests": {
+          "component_value": 0.02,
+          "weight": 0.25,
+          "contribution": 0.005
+        },
+        "safeguards": {
+          "component_value": 0.8333333333333334,
+          "weight": 0.15,
+          "contribution": 0.125
+        },
+        "documentation": {
+          "component_value": 0.24128686327077745,
+          "weight": 0.15,
+          "contribution": 0.03619302949061662
+        }
+      }
+    },
     {
       "id": "checkpointing",
       "components": {
         "functionality": 1.0,
         "consistency": 0.8200000000000001,
         "tests": 0.54,
-        "safeguards": 0.8333333333333334,
+        "safeguards": 0.5833333333333334,
         "documentation": 1.0
       },
-      "score": 0.824,
+      "score": 0.7865,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "configs/schemas/checkpoint_manifest.schema.json",
@@ -89,9 +195,9 @@
           "contribution": 0.135
         },
         "safeguards": {
-          "component_value": 0.8333333333333334,
+          "component_value": 0.5833333333333334,
           "weight": 0.15,
-          "contribution": 0.125
+          "contribution": 0.08750000000000001
         },
         "documentation": {
           "component_value": 1.0,
@@ -218,10 +324,10 @@
         "functionality": 1.0,
         "consistency": 0.8200000000000001,
         "tests": 0.66,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.829,
+      "score": 0.854,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -313,9 +419,9 @@
           "contribution": 0.165
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.8333333333333334,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.125
         },
         "documentation": {
           "component_value": 1.0,
@@ -330,10 +436,10 @@
         "functionality": 1.0,
         "consistency": 0.8200000000000001,
         "tests": 0.0,
-        "safeguards": 0.3333333333333333,
+        "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.614,
+      "score": 0.639,
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
         ".codex/evidence/phase4_hydra_check.jsonl",
@@ -412,9 +518,9 @@
           "contribution": 0.0
         },
         "safeguards": {
-          "component_value": 0.3333333333333333,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.049999999999999996
+          "contribution": 0.075
         },
         "documentation": {
           "component_value": 1.0,
@@ -429,10 +535,10 @@
         "functionality": 1.0,
         "consistency": 0.84,
         "tests": 0.82,
-        "safeguards": 0.8333333333333334,
+        "safeguards": 0.5833333333333334,
         "documentation": 1.0
       },
-      "score": 0.898,
+      "score": 0.8605,
       "evidence_files": [
         ".github/workflows/data_validation.yml",
         "codex_ml/data/checksums.py",
@@ -511,9 +617,9 @@
           "contribution": 0.205
         },
         "safeguards": {
-          "component_value": 0.8333333333333334,
+          "component_value": 0.5833333333333334,
           "weight": 0.15,
-          "contribution": 0.125
+          "contribution": 0.08750000000000001
         },
         "documentation": {
           "component_value": 1.0,
@@ -528,10 +634,10 @@
         "functionality": 0.8,
         "consistency": 0.72,
         "tests": 0.02,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.75,
         "documentation": 1.0
       },
-      "score": 0.599,
+      "score": 0.6115,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -624,9 +730,9 @@
           "contribution": 0.005
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.75,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.11249999999999999
         },
         "documentation": {
           "component_value": 1.0,
@@ -672,6 +778,7 @@
         "docs/SEARCH_NOTES.md",
         "docs/SECURITY.md",
         "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/SPACE_TRAVERSAL_GUIDE.md",
         "docs/Traversal_Workflow.md",
         "docs/Usage_Guide.md",
         "docs/agents.md",
@@ -694,8 +801,7 @@
         "docs/archive/pages_publish_tiles_yml_archive.md",
         "docs/bridge/README.md",
         "docs/bridge/governance.md",
-        "docs/bridge/overview.md",
-        "docs/bridge/ubuntu_cli.md"
+        "docs/bridge/overview.md"
       ],
       "found_patterns": [
         "docs",
@@ -712,10 +818,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 500,
+        "markdown_count": 501,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 502
+        "total_docs": 503
       },
       "partials": {
         "functionality": {
@@ -752,9 +858,9 @@
         "consistency": 0.94,
         "tests": 0.0,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1480484522207268
+        "documentation": 0.17426273458445038
       },
-      "score": 0.3352,
+      "score": 0.3391,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -837,9 +943,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.1480484522207268,
+          "component_value": 0.17426273458445038,
           "weight": 0.15,
-          "contribution": 0.02220726783310902
+          "contribution": 0.026139410187667557
         }
       }
     },
@@ -849,10 +955,10 @@
         "functionality": 1.0,
         "consistency": 0.86,
         "tests": 0.14,
-        "safeguards": 0.8333333333333334,
+        "safeguards": 0.75,
         "documentation": 1.0
       },
-      "score": 0.732,
+      "score": 0.7195,
       "evidence_files": [
         "configs/evaluation/base.yaml",
         "configs/evaluation/default.yaml",
@@ -931,9 +1037,9 @@
           "contribution": 0.035
         },
         "safeguards": {
-          "component_value": 0.8333333333333334,
+          "component_value": 0.75,
           "weight": 0.15,
-          "contribution": 0.125
+          "contribution": 0.11249999999999999
         },
         "documentation": {
           "component_value": 1.0,
@@ -1059,10 +1165,10 @@
         "functionality": 0.3333333333333333,
         "consistency": 0.9230769230769231,
         "tests": 0.3076923076923077,
-        "safeguards": 0.6666666666666666,
-        "documentation": 0.6998654104979812
+        "safeguards": 0.5,
+        "documentation": 0.7372654155495978
       },
-      "score": 0.5499,
+      "score": 0.5305,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "copilot/extension/server/index.js",
@@ -1111,14 +1217,14 @@
           "contribution": 0.07692307692307693
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.6998654104979812,
+          "component_value": 0.7372654155495978,
           "weight": 0.15,
-          "contribution": 0.10497981157469718
+          "contribution": 0.11058981233243967
         }
       }
     },
@@ -1128,10 +1234,10 @@
         "functionality": 1.0,
         "consistency": 0.76,
         "tests": 0.52,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.75,
         "documentation": 1.0
       },
-      "score": 0.782,
+      "score": 0.7945,
       "evidence_files": [
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
@@ -1210,9 +1316,115 @@
           "contribution": 0.13
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.75,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.11249999999999999
+        },
+        "documentation": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        }
+      }
+    },
+    {
+      "id": "ml-serving",
+      "components": {
+        "functionality": 1.0,
+        "consistency": 0.76,
+        "tests": 0.82,
+        "safeguards": 0.75,
+        "documentation": 1.0
+      },
+      "score": 0.8695,
+      "evidence_files": [
+        ".codex/copilot_bridge/bridge/server.js",
+        "P1_FIX_API_KEY_OPTIONAL.md",
+        "actions/openapi.yaml",
+        "copilot/extension/server/index.js",
+        "data/zendesk_api_index.json",
+        "docs/api.md",
+        "docs/api/README.md",
+        "docs/api_catalog.md",
+        "docs/guides/serving_reproducibility.md",
+        "docs/plugins/Plugin_API_Broader.md",
+        "docs/safety_api.md",
+        "docs/templates/status/serving_readiness_checklist_v1.2.md",
+        "docs/tokenization_api.md",
+        "docs/troubleshooting/API_Docs_Troubleshooting.md",
+        "docs/validation/API_Docs_Build_Validation.md",
+        "docs/zendesk_api_catalog_generated.md",
+        "docs/zendesk_api_reference.md",
+        "examples/notebooks/demo_infer.ipynb",
+        "mcp/server/README.md",
+        "schemas/cli/gh_api_envelope.schema.json",
+        "scripts/local/serve_local.sh",
+        "scripts/space_traversal/detectors/inference_serving.py",
+        "scripts/space_traversal/detectors/ml_serving.py",
+        "services/api/__init__.py",
+        "services/api/main.py",
+        "services/api/requirements.txt",
+        "services/ita/openapi.yaml",
+        "services/ita/scripts/issue_api_key.py",
+        "services/msp_gateway/routers/infer.py",
+        "src/codex/api/__init__.py",
+        "src/codex/api/app.py",
+        "src/codex/archive/api.py",
+        "src/codex/release/api.py",
+        "src/codex_ml/cli/infer.py",
+        "src/codex_ml/metrics/api.py",
+        "src/codex_ml/telemetry/server.py",
+        "src/codex_ml/tokenization/api.py",
+        "src/codex_ml/training/legacy_api.py",
+        "src/hhg_logistics/monitor/serve_report.py",
+        "src/hhg_logistics/serve/__init__.py",
+        "src/hhg_logistics/serve/app.py",
+        "src/hhg_logistics/serve/smoke.py",
+        "src/tokenization/api.py",
+        "tests/cli/test_infer_cli_lora.py",
+        "tests/deployment/test_api_integration.py",
+        "tests/docs/test_api_docs_build.py",
+        "tests/github/test_gh_api_pagination_cache.py",
+        "tests/github/test_gh_api_wrapper.py",
+        "tests/hhg_logistics/serve/test_app.py",
+        "tests/inference/test_ita_openapi_exists.py"
+      ],
+      "found_patterns": [
+        "api",
+        "predict",
+        "serve"
+      ],
+      "required_patterns": [
+        "serve",
+        "predict",
+        "api"
+      ],
+      "missing_patterns": [],
+      "meta": {
+        "layer": "inference",
+        "priority": "high",
+        "category": "deployment"
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.76,
+          "weight": 0.2,
+          "contribution": 0.15200000000000002
+        },
+        "tests": {
+          "component_value": 0.82,
+          "weight": 0.25,
+          "contribution": 0.205
+        },
+        "safeguards": {
+          "component_value": 0.75,
+          "weight": 0.15,
+          "contribution": 0.11249999999999999
         },
         "documentation": {
           "component_value": 1.0,
@@ -1227,10 +1439,10 @@
         "functionality": 1.0,
         "consistency": 0.84,
         "tests": 0.1,
-        "safeguards": 1.0,
-        "documentation": 0.12113055181695828
+        "safeguards": 0.9166666666666666,
+        "documentation": 0.14745308310991956
       },
-      "score": 0.6112,
+      "score": 0.6026,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -1316,14 +1528,14 @@
           "contribution": 0.025
         },
         "safeguards": {
-          "component_value": 1.0,
+          "component_value": 0.9166666666666666,
           "weight": 0.15,
-          "contribution": 0.15
+          "contribution": 0.13749999999999998
         },
         "documentation": {
-          "component_value": 0.12113055181695828,
+          "component_value": 0.14745308310991956,
           "weight": 0.15,
-          "contribution": 0.01816958277254374
+          "contribution": 0.022117962466487933
         }
       }
     },
@@ -1333,10 +1545,10 @@
         "functionality": 1.0,
         "consistency": 0.88,
         "tests": 0.52,
-        "safeguards": 1.0,
+        "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.856,
+      "score": 0.831,
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
         "_codex_reports/2025-10-06/reproducibility.json",
@@ -1427,9 +1639,9 @@
           "contribution": 0.13
         },
         "safeguards": {
-          "component_value": 1.0,
+          "component_value": 0.8333333333333334,
           "weight": 0.15,
-          "contribution": 0.15
+          "contribution": 0.125
         },
         "documentation": {
           "component_value": 1.0,
@@ -1445,9 +1657,9 @@
         "consistency": 0.76,
         "tests": 0.0,
         "safeguards": 1.0,
-        "documentation": 0.08075370121130553
+        "documentation": 0.10723860589812331
       },
-      "score": 0.5641,
+      "score": 0.5681,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -1540,9 +1752,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.08075370121130553,
+          "component_value": 0.10723860589812331,
           "weight": 0.15,
-          "contribution": 0.012113055181695828
+          "contribution": 0.016085790884718495
         }
       }
     },
@@ -1552,10 +1764,10 @@
         "functionality": 1.0,
         "consistency": 0.9130434782608696,
         "tests": 0.3695652173913043,
-        "safeguards": 0.5,
+        "safeguards": 0.5833333333333334,
         "documentation": 1.0
       },
-      "score": 0.75,
+      "score": 0.7625,
       "evidence_files": [
         ".codex/evidence/phase5_privacy_safety.jsonl",
         "artifacts/security/safety.txt",
@@ -1630,9 +1842,115 @@
           "contribution": 0.09239130434782608
         },
         "safeguards": {
-          "component_value": 0.5,
+          "component_value": 0.5833333333333334,
           "weight": 0.15,
-          "contribution": 0.075
+          "contribution": 0.08750000000000001
+        },
+        "documentation": {
+          "component_value": 1.0,
+          "weight": 0.15,
+          "contribution": 0.15
+        }
+      }
+    },
+    {
+      "id": "status-reporting",
+      "components": {
+        "functionality": 1.0,
+        "consistency": 0.88,
+        "tests": 0.16,
+        "safeguards": 0.9166666666666666,
+        "documentation": 1.0
+      },
+      "score": 0.7535,
+      "evidence_files": [
+        ".codex/GATES_REPORT.txt",
+        ".codex/automation_out/coverage_report.json",
+        ".codex/change_log_compare_report.json",
+        ".codex/evidence/audit_fixes_phase1.jsonl",
+        ".codex/evidence/phase1_audit_fixes.jsonl",
+        ".codex/evidence/phase2_requirements_audit.jsonl",
+        ".codex/evidence/phase3_summary.md",
+        ".codex/evidence/phase4_dependencies_audit.jsonl",
+        ".codex/notes/CODEBASE_AUDIT.md",
+        ".codex/status.post.txt",
+        ".codex/status.pre.txt",
+        ".codex/status/_codex_status_update-2025-08-28.md",
+        ".codex/status/_codex_status_update-2025-08-29.md",
+        ".codex/status/_codex_status_update-2025-08-30.md",
+        ".codex/status/_codex_status_update-2025-08-31.md",
+        ".codex/status/_codex_status_update-2025-09-02.md",
+        ".codex/status/_codex_status_update-2025-09-03.md",
+        ".codex/status/_codex_status_update-2025-09-04.md",
+        ".codex/status/_codex_status_update-2025-09-05.md",
+        ".codex/status/_codex_status_update-2025-09-07.md",
+        ".codex/status/_codex_status_update-2025-09-14.md",
+        ".codex/status/_codex_status_update-2025-09-15.md",
+        ".codex/status/_codex_status_update-2025-09-16.md",
+        ".codex/status/_codex_status_update-2025-09-18.md",
+        ".codex/status/_codex_status_update-2025-09-20.md",
+        ".codex/status/_codex_status_update-2025-09-21.md",
+        ".codex/status/_codex_status_update-2025-09-22.md",
+        ".codex/status/_codex_status_update-2025-09-23.md",
+        ".codex/status/apply_log.txt",
+        ".codex/status/diff-S0_to_S1.txt",
+        ".codex/status/env.json",
+        ".codex/status/errors.ndjson",
+        ".codex/status/log-S0_to_S1.txt",
+        ".codex/status/manifest-2025-09-22T02-15-21Z.json",
+        ".codex/status/metrics-20250922T013252Z.ndjson",
+        ".codex/status/metrics-20250922T013804Z.ndjson",
+        ".codex/status/provenance.json",
+        ".codex/status/results.json",
+        ".codex/status/status_update_change_log.md",
+        ".codex/status/status_update_scan.json",
+        ".codex/status/test_min.log",
+        ".codex/status_scan.json",
+        ".codex/validation/20250910T052842Z/compare_report.json",
+        ".codex/validation/20250910T071257Z/compare_report.json",
+        ".codex/validation/20250910T071257Z/test_status_compare.txt",
+        ".codex/validation/20250910T080054Z/compare_report.json",
+        ".codex/validation/20250910T113918Z/compare_report.json",
+        ".codex/validation/20250910T135035Z/compare_report.json",
+        ".codex/validation/20250910T151757Z/compare_report.json",
+        ".codex/validation/20250910T210555Z/compare_report.json"
+      ],
+      "found_patterns": [
+        "audit",
+        "report",
+        "status"
+      ],
+      "required_patterns": [
+        "status",
+        "report",
+        "audit"
+      ],
+      "missing_patterns": [],
+      "meta": {
+        "layer": "operations",
+        "priority": "medium",
+        "category": "monitoring"
+      },
+      "partials": {
+        "functionality": {
+          "component_value": 1.0,
+          "weight": 0.25,
+          "contribution": 0.25
+        },
+        "consistency": {
+          "component_value": 0.88,
+          "weight": 0.2,
+          "contribution": 0.17600000000000002
+        },
+        "tests": {
+          "component_value": 0.16,
+          "weight": 0.25,
+          "contribution": 0.04
+        },
+        "safeguards": {
+          "component_value": 0.9166666666666666,
+          "weight": 0.15,
+          "contribution": 0.13749999999999998
         },
         "documentation": {
           "component_value": 1.0,
@@ -1647,10 +1965,10 @@
         "functionality": 0.75,
         "consistency": 0.9,
         "tests": 0.86,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.8325,
+      "score": 0.8075,
       "evidence_files": [
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
@@ -1739,9 +2057,9 @@
           "contribution": 0.215
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.075
         },
         "documentation": {
           "component_value": 1.0,
@@ -1756,10 +2074,10 @@
         "functionality": 1.0,
         "consistency": 0.78,
         "tests": 0.24,
-        "safeguards": 0.6666666666666666,
+        "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.716,
+      "score": 0.691,
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
         "artifacts/models/tiny_tokenizer/vocab.json",
@@ -1838,9 +2156,9 @@
           "contribution": 0.06
         },
         "safeguards": {
-          "component_value": 0.6666666666666666,
+          "component_value": 0.5,
           "weight": 0.15,
-          "contribution": 0.09999999999999999
+          "contribution": 0.075
         },
         "documentation": {
           "component_value": 1.0,
@@ -1855,10 +2173,10 @@
         "functionality": 1.0,
         "consistency": 0.8,
         "tests": 0.54,
-        "safeguards": 1.0,
+        "safeguards": 0.9166666666666666,
         "documentation": 1.0
       },
-      "score": 0.845,
+      "score": 0.8325,
       "evidence_files": [
         "_codex_reports/2025-10-06/trainer_smoke.json",
         "_codex_reports/2025-10-06/trainer_smoke.log",
@@ -1937,9 +2255,9 @@
           "contribution": 0.135
         },
         "safeguards": {
-          "component_value": 1.0,
+          "component_value": 0.9166666666666666,
           "weight": 0.15,
-          "contribution": 0.15
+          "contribution": 0.13749999999999998
         },
         "documentation": {
           "component_value": 1.0,
@@ -1954,10 +2272,10 @@
         "functionality": 1.0,
         "consistency": 0.6,
         "tests": 1.0,
-        "safeguards": 0.5,
-        "documentation": 0.9690444145356663
+        "safeguards": 0.25,
+        "documentation": 0.9919571045576406
       },
-      "score": 0.8404,
+      "score": 0.8063,
       "evidence_files": [
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
@@ -1994,14 +2312,14 @@
           "contribution": 0.25
         },
         "safeguards": {
-          "component_value": 0.5,
+          "component_value": 0.25,
           "weight": 0.15,
-          "contribution": 0.075
+          "contribution": 0.0375
         },
         "documentation": {
-          "component_value": 0.9690444145356663,
+          "component_value": 0.9919571045576406,
           "weight": 0.15,
-          "contribution": 0.14535666218034993
+          "contribution": 0.1487935656836461
         }
       }
     },
@@ -2012,9 +2330,9 @@
         "consistency": 1.0,
         "tests": 0.3333333333333333,
         "safeguards": 0.0,
-        "documentation": 0.2557200538358008
+        "documentation": 0.2815013404825737
       },
-      "score": 0.3217,
+      "score": 0.3256,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
@@ -2048,9 +2366,9 @@
           "contribution": 0.0
         },
         "documentation": {
-          "component_value": 0.2557200538358008,
+          "component_value": 0.2815013404825737,
           "weight": 0.15,
-          "contribution": 0.03835800807537012
+          "contribution": 0.04222520107238605
         }
       }
     }

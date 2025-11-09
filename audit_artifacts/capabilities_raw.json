@@ -1,6 +1,76 @@
 {
-  "generated": 1762682724.9465697,
+  "generated": 1762683015.1583407,
   "capabilities": [
+    {
+      "id": "archival-bundling",
+      "evidence_files": [
+        ".codex/archive/README_UPDATED.md",
+        ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
+        ".codex/evidence/archive_ops.jsonl",
+        ".codex/evidence/artifacts/archive_plan_root_cleanup_2025-10-17.json",
+        ".codex/status/manifest-2025-09-22T02-15-21Z.json",
+        ".codex/validation/20250910T052842Z/post_manifest.json",
+        ".codex/validation/20250910T052842Z/pre_manifest.json",
+        ".codex/validation/20250910T071257Z/post_manifest.json",
+        ".codex/validation/20250910T071257Z/pre_manifest.json",
+        ".codex/validation/20250910T080054Z/post_manifest.json",
+        ".codex/validation/20250910T080054Z/pre_manifest.json",
+        ".codex/validation/20250910T113918Z/post_manifest.json",
+        ".codex/validation/20250910T113918Z/pre_manifest.json",
+        ".codex/validation/20250910T135035Z/post_manifest.json",
+        ".codex/validation/20250910T135035Z/pre_manifest.json",
+        ".codex/validation/20250910T151757Z/post_manifest.json",
+        ".codex/validation/20250910T151757Z/pre_manifest.json",
+        ".codex/validation/20250910T210555Z/post_manifest.json",
+        ".codex/validation/20250910T210555Z/pre_manifest.json",
+        ".codex/validation/post_manifest.json",
+        ".codex/validation/pre_manifest.json",
+        ".github/docs/ARCHIVE_CONFIG_ADR.md",
+        ".github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_INDEX.md",
+        ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md",
+        ".github/docs/OpenQuestions-UPDATED-ArchiveConsolidation.md",
+        ".github/workflows/archive-gates.yml.disabled",
+        "MANIFEST.in",
+        "_codex/status/manifest-20250922T013307Z.json",
+        "_codex/status/manifest-20250922T013826Z.json",
+        "_codex_reports/2025-10-06/artifacts_manifest.json",
+        "archive/removed/CODEBASE_AUDIT_2025-08-26_203612.md",
+        "archive/removed/CODEBASE_AUDIT_2025-09-27_ITERATION3.md",
+        "archive/removed/Codex_Questions.md",
+        "archive/removed/_codex_codex-ready-sequence-and-patches-2025-09-27.md",
+        "archive/removed/_codex_status_update-0C_base_-2025-09-27.md",
+        "archive/removed/_codex_status_update-2025-10-06.md",
+        "archive/removed/_codex_status_update-2025-10-16.md",
+        "archive/removed/ci.yml",
+        "archive/removed/codex-ci.yml",
+        "archive/removed/codex-self-hosted-ci.yml",
+        "archive/removed/codex-self-manage.yml",
+        "archive/removed/codex_ready_sequence-2025-10-16.md",
+        "archive/removed/done_resolution_plans_10-6_to_10-7.md",
+        "archive/removed/release.yml",
+        "archive/removed/todo_resolution_plans_10-6_to_10-7.txt",
+        "artifacts/archive_plan_root.json",
+        "assets/manifest.json",
+        "audit_run_manifest.json",
+        "build_helpers_manifest.py"
+      ],
+      "found_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "required_patterns": [
+        "archive",
+        "bundle",
+        "manifest"
+      ],
+      "meta": {
+        "layer": "storage",
+        "priority": "high",
+        "category": "reproducibility"
+      }
+    },
     {
       "id": "checkpointing",
       "evidence_files": [
@@ -446,6 +516,7 @@
         "docs/SEARCH_NOTES.md",
         "docs/SECURITY.md",
         "docs/SOP_CHATGPT_CODEX_PRS_LOCAL.md",
+        "docs/SPACE_TRAVERSAL_GUIDE.md",
         "docs/Traversal_Workflow.md",
         "docs/Usage_Guide.md",
         "docs/agents.md",
@@ -468,8 +539,7 @@
         "docs/archive/pages_publish_tiles_yml_archive.md",
         "docs/bridge/README.md",
         "docs/bridge/governance.md",
-        "docs/bridge/overview.md",
-        "docs/bridge/ubuntu_cli.md"
+        "docs/bridge/overview.md"
       ],
       "found_patterns": [
         "docs",
@@ -483,10 +553,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 500,
+        "markdown_count": 501,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 502
+        "total_docs": 503
       }
     },
     {
@@ -781,6 +851,76 @@
       ]
     },
     {
+      "id": "ml-serving",
+      "evidence_files": [
+        ".codex/copilot_bridge/bridge/server.js",
+        "P1_FIX_API_KEY_OPTIONAL.md",
+        "actions/openapi.yaml",
+        "copilot/extension/server/index.js",
+        "data/zendesk_api_index.json",
+        "docs/api.md",
+        "docs/api/README.md",
+        "docs/api_catalog.md",
+        "docs/guides/serving_reproducibility.md",
+        "docs/plugins/Plugin_API_Broader.md",
+        "docs/safety_api.md",
+        "docs/templates/status/serving_readiness_checklist_v1.2.md",
+        "docs/tokenization_api.md",
+        "docs/troubleshooting/API_Docs_Troubleshooting.md",
+        "docs/validation/API_Docs_Build_Validation.md",
+        "docs/zendesk_api_catalog_generated.md",
+        "docs/zendesk_api_reference.md",
+        "examples/notebooks/demo_infer.ipynb",
+        "mcp/server/README.md",
+        "schemas/cli/gh_api_envelope.schema.json",
+        "scripts/local/serve_local.sh",
+        "scripts/space_traversal/detectors/inference_serving.py",
+        "scripts/space_traversal/detectors/ml_serving.py",
+        "services/api/__init__.py",
+        "services/api/main.py",
+        "services/api/requirements.txt",
+        "services/ita/openapi.yaml",
+        "services/ita/scripts/issue_api_key.py",
+        "services/msp_gateway/routers/infer.py",
+        "src/codex/api/__init__.py",
+        "src/codex/api/app.py",
+        "src/codex/archive/api.py",
+        "src/codex/release/api.py",
+        "src/codex_ml/cli/infer.py",
+        "src/codex_ml/metrics/api.py",
+        "src/codex_ml/telemetry/server.py",
+        "src/codex_ml/tokenization/api.py",
+        "src/codex_ml/training/legacy_api.py",
+        "src/hhg_logistics/monitor/serve_report.py",
+        "src/hhg_logistics/serve/__init__.py",
+        "src/hhg_logistics/serve/app.py",
+        "src/hhg_logistics/serve/smoke.py",
+        "src/tokenization/api.py",
+        "tests/cli/test_infer_cli_lora.py",
+        "tests/deployment/test_api_integration.py",
+        "tests/docs/test_api_docs_build.py",
+        "tests/github/test_gh_api_pagination_cache.py",
+        "tests/github/test_gh_api_wrapper.py",
+        "tests/hhg_logistics/serve/test_app.py",
+        "tests/inference/test_ita_openapi_exists.py"
+      ],
+      "found_patterns": [
+        "api",
+        "predict",
+        "serve"
+      ],
+      "required_patterns": [
+        "serve",
+        "predict",
+        "api"
+      ],
+      "meta": {
+        "layer": "inference",
+        "priority": "high",
+        "category": "deployment"
+      }
+    },
+    {
       "id": "peft_hooks",
       "evidence_files": [
         "cli/script_polish.py",
@@ -1055,6 +1195,76 @@
         "secret",
         "sanitize"
       ]
+    },
+    {
+      "id": "status-reporting",
+      "evidence_files": [
+        ".codex/GATES_REPORT.txt",
+        ".codex/automation_out/coverage_report.json",
+        ".codex/change_log_compare_report.json",
+        ".codex/evidence/audit_fixes_phase1.jsonl",
+        ".codex/evidence/phase1_audit_fixes.jsonl",
+        ".codex/evidence/phase2_requirements_audit.jsonl",
+        ".codex/evidence/phase3_summary.md",
+        ".codex/evidence/phase4_dependencies_audit.jsonl",
+        ".codex/notes/CODEBASE_AUDIT.md",
+        ".codex/status.post.txt",
+        ".codex/status.pre.txt",
+        ".codex/status/_codex_status_update-2025-08-28.md",
+        ".codex/status/_codex_status_update-2025-08-29.md",
+        ".codex/status/_codex_status_update-2025-08-30.md",
+        ".codex/status/_codex_status_update-2025-08-31.md",
+        ".codex/status/_codex_status_update-2025-09-02.md",
+        ".codex/status/_codex_status_update-2025-09-03.md",
+        ".codex/status/_codex_status_update-2025-09-04.md",
+        ".codex/status/_codex_status_update-2025-09-05.md",
+        ".codex/status/_codex_status_update-2025-09-07.md",
+        ".codex/status/_codex_status_update-2025-09-14.md",
+        ".codex/status/_codex_status_update-2025-09-15.md",
+        ".codex/status/_codex_status_update-2025-09-16.md",
+        ".codex/status/_codex_status_update-2025-09-18.md",
+        ".codex/status/_codex_status_update-2025-09-20.md",
+        ".codex/status/_codex_status_update-2025-09-21.md",
+        ".codex/status/_codex_status_update-2025-09-22.md",
+        ".codex/status/_codex_status_update-2025-09-23.md",
+        ".codex/status/apply_log.txt",
+        ".codex/status/diff-S0_to_S1.txt",
+        ".codex/status/env.json",
+        ".codex/status/errors.ndjson",
+        ".codex/status/log-S0_to_S1.txt",
+        ".codex/status/manifest-2025-09-22T02-15-21Z.json",
+        ".codex/status/metrics-20250922T013252Z.ndjson",
+        ".codex/status/metrics-20250922T013804Z.ndjson",
+        ".codex/status/provenance.json",
+        ".codex/status/results.json",
+        ".codex/status/status_update_change_log.md",
+        ".codex/status/status_update_scan.json",
+        ".codex/status/test_min.log",
+        ".codex/status_scan.json",
+        ".codex/validation/20250910T052842Z/compare_report.json",
+        ".codex/validation/20250910T071257Z/compare_report.json",
+        ".codex/validation/20250910T071257Z/test_status_compare.txt",
+        ".codex/validation/20250910T080054Z/compare_report.json",
+        ".codex/validation/20250910T113918Z/compare_report.json",
+        ".codex/validation/20250910T135035Z/compare_report.json",
+        ".codex/validation/20250910T151757Z/compare_report.json",
+        ".codex/validation/20250910T210555Z/compare_report.json"
+      ],
+      "found_patterns": [
+        "audit",
+        "report",
+        "status"
+      ],
+      "required_patterns": [
+        "status",
+        "report",
+        "audit"
+      ],
+      "meta": {
+        "layer": "operations",
+        "priority": "medium",
+        "category": "monitoring"
+      }
     },
     {
       "id": "testing-infrastructure",
