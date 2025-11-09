@@ -294,7 +294,7 @@ class TextDataset:
         return {k: v.clone() for k, v in ex.items()}
 
 
-def _to_numpy(value: Any) -> "npt.NDArray[np.generic]":
+def _to_numpy(value: Any) -> npt.NDArray[np.generic]:
     """Convert tensors/arrays to a CPU NumPy array in a type-aware manner."""
 
     if np is None:

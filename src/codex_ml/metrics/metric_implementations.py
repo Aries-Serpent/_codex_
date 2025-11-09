@@ -230,7 +230,7 @@ class TokenAccuracy(MetricBase):
 
     def compute(self) -> Dict[str, float]:
         # If no samples have been processed, return 0.0 accuracy.
-        # This is intentional and confirmed by test_token_accuracy_handles_empty().
+        # This behavior is tested in the empty input test case.
         if self._total == 0:
             return {self.name: 0.0}
         return {self.name: self._correct / self._total}

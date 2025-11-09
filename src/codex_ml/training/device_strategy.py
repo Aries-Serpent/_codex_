@@ -65,7 +65,7 @@ def _device_available(name: str) -> bool:
 @dataclass
 class DeviceConfig:
     """Configuration bundle describing target device and dtype.
-    
+
     Attributes:
         device: Target device ("cpu", "cuda", "mps", "cuda:0", etc.)
         dtype: Model dtype (torch.float32, torch.float16, torch.bfloat16)
@@ -83,16 +83,16 @@ class DeviceConfig:
         cls, *, prefer_mps: bool = True, allow_mixed_precision: bool = True
     ) -> "DeviceConfig":
         """Infer an appropriate DeviceConfig for the current host.
-        
+
         Detection logic:
         - CUDA available → use cuda with float16/bfloat16 based on capability
         - MPS available (Apple Silicon) → use mps with float32
         - CPU only → use cpu with float32
-        
+
         Args:
             prefer_mps: Whether to prefer MPS over CPU if available
             allow_mixed_precision: Whether to enable mixed precision when supported
-        
+
         Returns:
             DeviceConfig with auto-detected settings
         """
