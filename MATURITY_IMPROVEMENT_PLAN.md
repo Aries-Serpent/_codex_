@@ -11,15 +11,20 @@
 
 ## 📊 Implementation Progress
 
-### ✅ Completed (Phase 1.1)
-- **Archival-bundling tests**: Created 15 passing integration tests
+### ✅ Completed (Phases 1.1 & 1.2)
+- **Archival-bundling tests**: Created 15 passing integration tests ✅
   - Test file: `tests/archival/test_archive_integration.py`
   - Coverage areas: manifests, evidence logging, utilities, tombstone compliance
   - Status: All 15 tests passing ✅
+  
+- **Configuration tests**: Created 21 passing unit tests ✅
+  - Test file: `tests/configuration/test_config_basics.py`
+  - Coverage areas: file operations, env vars, validation, merging, offline mode, schemas, paths
+  - Status: All 21 tests passing ✅
 
 ### 🚧 In Progress
-- Configuration tests (Phase 1.2)
 - Deployment infrastructure tests (Phase 1.3)
+- Safeguards keywords tests (Phase 1.4)
 
 ### 📋 Upcoming
 - Safeguards keywords tests (Phase 1.4)
