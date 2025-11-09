@@ -432,6 +432,52 @@ def _minimal_env_summary() -> dict[str, str | None]:
     return info
 
 
+def _compute_file_checksum(path: Path) -> str | None:
+    """Compute SHA-256 checksum of a file.
+    
+    Args:
+        path: Path to file
+        
+    Returns:
+        Hex digest of SHA-256 checksum, or None if file doesn't exist or error
+    """
+    try:
+        if not path.exists():
+            return None
+        h = hashlib.sha256()
+        with path.open("rb") as fh:
+            for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except Exception as exc:
+        logger.debug("Failed to compute checksum for %s: %s", path, exc)
+        return None
+
+
+def _capture_dataset_checksums(
+    dataset_paths: list[str | Path] | None = None,
+) -> dict[str, str]:
+    """Capture checksums of dataset files for reproducibility.
+    
+    Args:
+        dataset_paths: Optional list of dataset file paths
+        
+    Returns:
+        Dictionary mapping dataset path to SHA-256 checksum
+    """
+    if not dataset_paths:
+        return {}
+    
+    checksums: dict[str, str] = {}
+    for path_str in dataset_paths:
+        path = Path(path_str)
+        checksum = _compute_file_checksum(path)
+        if checksum:
+            checksums[str(path)] = checksum
+    
+    return checksums
+
+
 def _safe_environment_summary() -> dict[str, Any]:
     """Attempt to collect rich environment summary; fallback to minimal if needed."""
     try:
@@ -462,8 +508,20 @@ def save_checkpoint(
     extra: Mapping[str, Any] | None = None,
     *,
     format: str | None = None,
+    dataset_paths: list[str | Path] | None = None,
 ) -> None:
-    """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise."""
+    """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise.
+    
+    Args:
+        path: Path to save checkpoint
+        model: Model state dict provider
+        optimizer: Optimizer state
+        scheduler: Scheduler state
+        epoch: Current epoch number
+        extra: Extra metadata to include
+        format: Checkpoint format ("auto", "torch", "pickle")
+        dataset_paths: Optional list of dataset file paths for checksum tracking
+    """
 
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -473,6 +531,12 @@ def save_checkpoint(
     payload_extra.setdefault("system", env)
     if env.get("git_commit"):
         payload_extra.setdefault("git_commit", env["git_commit"])
+    
+    # Capture dataset checksums for reproducibility
+    if dataset_paths:
+        dataset_checksums = _capture_dataset_checksums(dataset_paths)
+        if dataset_checksums:
+            payload_extra.setdefault("dataset_checksums", dataset_checksums)
 
     state: dict[str, Any] = {
         "model_state_dict": _snapshot_state(model),
@@ -497,7 +561,17 @@ def save_checkpoint(
     _write_checksum_manifest(p)
 
     try:
-        sidecar = {"epoch": epoch, "git_commit": env.get("git_commit"), "system": env}
+        sidecar = {
+            "epoch": epoch,
+            "git_commit": env.get("git_commit"),
+            "system": env,
+        }
+        # Include dataset checksums in sidecar if available
+        if dataset_paths:
+            dataset_checksums = _capture_dataset_checksums(dataset_paths)
+            if dataset_checksums:
+                sidecar["dataset_checksums"] = dataset_checksums
+        
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )

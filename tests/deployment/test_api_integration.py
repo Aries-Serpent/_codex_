@@ -1,3 +1,7 @@
+import pytest
+
+pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+
 from fastapi.testclient import TestClient
 
 from services.api.main import app

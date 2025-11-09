@@ -51,6 +51,54 @@ except Exception:  # pragma: no cover - degrade gracefully when configs missing
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
 
 
+try:  # pragma: no cover - optional metrics dependency
+    from .metrics.api import (
+        BLEUScore,
+        F1Score,
+        MetricRegistry,
+        RecallScore,
+        TokenAccuracy,
+        get_metric,
+        list_metrics,
+        register_metric,
+        summarize_ndjson_logs,
+    )
+except Exception:  # pragma: no cover - degrade gracefully when metrics extras missing
+
+    class _MissingMetric:
+        def __init__(self, name: str):
+            self._name = name
+
+        def __call__(self, *_args, **_kwargs):  # pragma: no cover - defensive
+            raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
+
+        def __getattr__(self, _item: str):  # pragma: no cover - defensive
+            raise RuntimeError(f"Metrics module unavailable; {self._name} requires optional extras")
+
+    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[assignment]
+    F1Score = _MissingMetric("F1Score")  # type: ignore[assignment]
+    RecallScore = _MissingMetric("RecallScore")  # type: ignore[assignment]
+    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[assignment]
+    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[assignment]
+    get_metric = _MissingMetric("get_metric")  # type: ignore[assignment]
+    register_metric = _MissingMetric("register_metric")  # type: ignore[assignment]
+    list_metrics = _MissingMetric("list_metrics")  # type: ignore[assignment]
+    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")  # type: ignore[assignment]
+
+if MetricRegistry.__class__.__name__ != "_MissingMetric":
+    __all__ += [
+        "MetricRegistry",
+        "F1Score",
+        "RecallScore",
+        "BLEUScore",
+        "TokenAccuracy",
+        "get_metric",
+        "register_metric",
+        "list_metrics",
+        "summarize_ndjson_logs",
+    ]
+
+
 # Optional imports: symbolic pipeline requires tokenizer/transformers; guard for environments
 # without heavy ML deps.
 try:  # pragma: no cover - optional path

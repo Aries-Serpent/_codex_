@@ -38,7 +38,12 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    sys.modules.pop(__name__, None)
-    raise ImportError(
-        "The lightweight torch shim could not locate an installed PyTorch distribution."
-    )
+    _MISSING_MSG = "PyTorch is not installed in this environment. Install torch to enable these features."
+    __all__: list[str] = []
+    IS_CODEX_STUB = True
+
+    def __getattr__(name: str) -> ModuleType:  # type: ignore[override]
+        raise AttributeError(_MISSING_MSG)
+
+    def __dir__() -> list[str]:  # pragma: no cover - simple stub helper
+        return []

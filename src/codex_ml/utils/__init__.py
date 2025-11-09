@@ -5,7 +5,10 @@ from __future__ import annotations
 from . import checkpoint_core  # noqa: F401
 from . import checkpointing  # noqa: F401
 from . import error_log  # noqa: F401
-from . import modeling  # noqa: F401
+try:  # pragma: no cover - optional torch dependency
+    from . import modeling  # noqa: F401
+except Exception:  # pragma: no cover - allow utilities without torch
+    modeling = None  # type: ignore[assignment]
 from . import provenance  # noqa: F401
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: F401
 from .checkpointing import CheckpointManager  # noqa: F401

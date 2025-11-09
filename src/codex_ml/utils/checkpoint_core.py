@@ -6,6 +6,7 @@ import json
 import pickle
 import platform
 import random
+import re
 import time
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
@@ -61,10 +62,20 @@ from .runmeta import collect_run_meta
 
 # NOTE: _atomic_write is an internal primitive. Do not call it outside this module.
 # All callers must use save_checkpoint(), which enriches metadata integrity and rewrites safely.
-__all__ = ["save_checkpoint"]  # explicitly export only the public API
+__all__ = ["save_checkpoint", "_epoch_dir_sort_key"]  # explicitly export key helpers
 
 
 SCHEMA_VERSION = "1.0"
+
+
+def _epoch_dir_sort_key(path: Path | str) -> tuple[int, int | str, str]:
+    """Return a sort key ordering numeric epoch directories before ad-hoc entries."""
+
+    name = Path(path).name
+    match = re.search(r"(\d+)", name)
+    if match:
+        return (0, int(match.group(1)), name)
+    return (1, name, name)
 
 
 class CheckpointIntegrityError(RuntimeError):

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.training.unified_training import (
     UnifiedTrainingConfig,
     _emit_checkpoint_epoch,
@@ -57,6 +58,7 @@ def test_emit_checkpoint_respects_retention(monkeypatch, tmp_path: Path) -> None
         epoch=0,
         state={"backend_name": "dummy", "global_step": 10},
         metrics={"acc": 0.42},
+        rng_state=RNGState(),
     )
 
     assert Path(emitted).name == "epoch-0"
@@ -88,7 +90,7 @@ class _DummyStrategy:
 def test_run_unified_training_resume_flow(monkeypatch, tmp_path: Path) -> None:
     seen: dict[str, object] = {}
 
-    def fake_load_checkpoint(path: str):
+    def fake_load_checkpoint(path: str, *, restore_rng: bool = False):
         seen["resume_path"] = path
         return {"model_state": {}}, CheckpointMeta(
             schema_version="2",

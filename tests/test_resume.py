@@ -3,11 +3,11 @@ from pathlib import Path
 import pytest
 
 from codex_ml.utils.checkpointing import CheckpointManager
+from tests.helpers.optional_dependencies import import_optional_dependency
 
-torch = pytest.importorskip(
-    "torch", reason="PyTorch not installed; skipping checkpoint resume tests"
-)
-pytest.importorskip("torch.nn", reason="torch.nn not available; skipping checkpoint resume tests")
+torch = import_optional_dependency("torch", allow_stub=False)
+if not hasattr(torch, "nn"):
+    pytest.skip("torch.nn not available; skipping checkpoint resume tests", allow_module_level=True)
 
 
 class Tiny(torch.nn.Module):

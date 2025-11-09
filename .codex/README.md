@@ -15,6 +15,11 @@ This folder contains versioned scripts and config used by ChatGPT Codex.
 - **pip/uv fallback:** ensures `pre-commit` can be installed even if `pip` isn’t seeded in the venv.
 - **HF pre-warm fix:** avoids `importlib.util` shadowing.
 - **Unified lock hashing:** setup and maintenance use the same set of inputs.
+- **Device orchestration:** `codex_ml.training.device_strategy.DeviceConfig` exposes deterministic dtype/device placement.
+- **Reproducible RNG:** `codex_ml.training.rng_checkpoint.RNGState` captures/restores seeds alongside checkpoints.
+- **Metrics API:** `codex_ml.metrics.api` provides class-based metrics and NDJSON summarisation helpers.
+- **Dataset validator:** `scripts/validate_dataset.py` validates manifests and split references before training.
+- **codex_exec CLI:** `codex_ml.exec.codex_exec` offers a single entry point for validation, training and audits.
 
 ## How to enable in Codex
 - **Container Caching:** On

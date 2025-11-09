@@ -24,6 +24,15 @@ python -m codex_ml.cli.hydra_main --multirun \
   batch_size=2,4
 ```
 
+- Use the dedicated sweep template (`configs/base/hydra_sweep.yaml` and
+  `configs/experiments/sweep_template.yaml`) to keep sweep output structured:
+```bash
+python -m codex_ml.cli.hydra_main --multirun \
+  --config-path configs --config-name experiments/sweep_template \
+  lr=1e-3,1e-4,1e-5 \
+  batch_size=16,32,64
+```
+
 - Sweep LoRA flags (if PEFT available; otherwise ignored gracefully):
 ```bash
 python -m codex_ml.cli.hydra_main --multirun \

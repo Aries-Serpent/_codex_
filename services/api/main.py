@@ -9,12 +9,16 @@ import time
 from collections.abc import MutableMapping
 from pathlib import Path
 from typing import Any
+from types import SimpleNamespace
 
 from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-import torch
+try:  # Optional dependency: allow API to run in environments without torch
+    import torch
+except ImportError:  # pragma: no cover - executed in lightweight environments
+    torch = SimpleNamespace()  # type: ignore[assignment]
 
 if not hasattr(torch, "tensor") or not hasattr(torch, "as_tensor"):
 
