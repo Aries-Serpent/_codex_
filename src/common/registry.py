@@ -3,6 +3,16 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable
 from typing import Any
 
+try:  # pragma: no cover - optional import path when codex_ml unavailable
+    from codex_ml.metrics.metric_implementations import (
+        BLEUScore,
+        F1Score,
+        RecallScore,
+        TokenAccuracy,
+    )
+except Exception:  # pragma: no cover - allow registry to exist without metrics module
+    BLEUScore = F1Score = RecallScore = TokenAccuracy = None  # type: ignore[assignment]
+
 
 class Registry:
     """Simple string-to-callable registry with decorator support."""
@@ -46,3 +56,9 @@ class Registry:
 MODELS = Registry("models")
 DATASETS = Registry("datasets")
 METRICS = Registry("metrics")
+
+if F1Score is not None:  # pragma: no branch - guard optional dependency
+    METRICS.add("f1_score", F1Score)
+    METRICS.add("recall_score", RecallScore)
+    METRICS.add("token_accuracy", TokenAccuracy)
+    METRICS.add("bleu_score", BLEUScore)

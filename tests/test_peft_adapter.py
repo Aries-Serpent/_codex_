@@ -3,8 +3,9 @@ from typing import Any
 import pytest
 
 from codex_ml.peft.peft_adapter import apply_lora
+from tests.helpers.optional_dependencies import import_optional_dependency
 
-torch = pytest.importorskip("torch")
+torch = import_optional_dependency("torch", allow_stub=False)
 nn = torch.nn
 
 

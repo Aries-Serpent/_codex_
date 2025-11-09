@@ -1,0 +1,12 @@
+defaults:
+  - override hydra/launcher: basic
+  - override hydra/sweeper: basic
+
+hydra:
+  sweep:
+    dir: outputs/${now:%Y-%m-%d}
+    subdir: ${hydra.job.num}
+  launcher:
+    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper

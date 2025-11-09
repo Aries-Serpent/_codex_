@@ -1,0 +1,7 @@
+# Template for experiment sweeps
+defaults:
+  - /base/hydra_sweep
+
+lr: 1e-4
+batch_size: 32
+num_epochs: 10

@@ -118,7 +118,7 @@ repos:
     hooks:
       - id: bandit
         name: Bandit Security Checks
-        args: ["-q", "-ll", "-c", ".bandit.yml", "--exclude", "tests"]
+        args: ["-q", "-ll", "-c", ".bandit.yaml", "--exclude", "tests"]
         files: ^(src/|tools/)
         timeout: 300
         stages: [manual]
@@ -144,7 +144,7 @@ repos:
         args: ["--baseline", ".secrets.baseline"]
         stages: [pre-commit]
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.17.0
+    rev: v8.18.0
     hooks:
       - id: gitleaks
         name: gitleaks (staged)

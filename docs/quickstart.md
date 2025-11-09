@@ -45,6 +45,36 @@ nox --noxfile configs/development/noxfile.py -s offline_check
 If pytest reports skips such as `Skipped: could not import 'transformers'`,
 install the optional extras documented in
 [`docs/optional_dependencies.md`](optional_dependencies.md).
+
+### Guarded experiment tracking
+
+Set `CODEX_OFFLINE_MODE=1` to prevent Codex from touching MLflow even when the
+package is installed.  When unset the new `codex_ml.logging.mlflow_guard`
+module initialises a local `file:` tracking URI automatically:
+
+```bash
+export CODEX_OFFLINE_MODE=1  # fully disable MLflow
+python -m codex_ml.training.unified_training
+```
+
+### Validate dataset manifests
+
+Before training, validate dataset descriptors against the bundled JSON schema
+and check that all referenced files exist:
+
+```bash
+python scripts/validate_dataset.py data/dataset_manifest.json --check-splits
+```
+
+### Unified executor
+
+Use the lightweight `codex_exec` CLI for one-off tasks such as validation or a
+quick training smoke test:
+
+```bash
+python -m codex_ml.exec.codex_exec validate-dataset --manifest data/manifest.json
+python -m codex_ml.exec.codex_exec train --config base
+```
 ## 1.5 Explore the repository layout
 
 ```bash

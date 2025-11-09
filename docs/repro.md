@@ -53,6 +53,13 @@ random draws match the original run. The helper continues to maintain the tiny
 `index.json` manifest that tracks the best *k* checkpoints (lower metrics are
 preferred) and prunes older snapshots automatically.
 
+The new `codex_ml.training.rng_checkpoint.RNGState` wrapper exposes
+`capture()`, `restore()` and `save_to_file()` helpers which the unified trainer
+uses to persist RNG snapshots alongside every emitted checkpoint
+(`checkpoint.pt.rng.json`). When resuming from a checkpoint the orchestrator
+loads this sidecar and restores Python/NumPy/Torch seeds before the first batch,
+ensuring resumed runs follow the exact same random sequence.
+
 To resume deterministically, point `load_checkpoint` at the epoch directory and
 handle any `ValueError` raised when the checksum mismatches.
 
