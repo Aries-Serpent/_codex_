@@ -5,13 +5,17 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
-from typing import TYPE_CHECKING, Any, cast
 
-import torch
 from codex_ml.peft.peft_adapter import apply_lora
 from codex_ml.registry.base import Registry
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.optional import optional_import
+
+_torch_module, _HAS_TORCH = optional_import("torch")
+if _HAS_TORCH:
+    torch = cast(Any, _torch_module)
+else:
+    torch = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel  # type: ignore
@@ -205,6 +209,10 @@ def register_model(name: str, obj: Any | None = None, *, override: bool = False)
 
 
 def _normalise_device(device: Any | None) -> Any | None:
+    if not _HAS_TORCH:
+        if device in {None, "auto", "cuda"}:
+            return "cpu"
+        return device
     if device in {None, "cpu", "cuda"}:
         if device is None:
             return "cuda" if torch.cuda.is_available() else "cpu"
@@ -231,9 +239,11 @@ _DTYPE_ALIASES = {
 }
 
 
-def _resolve_torch_dtype(value: Any | None) -> torch.dtype | None:
+def _resolve_torch_dtype(value: Any | None):
     """Best-effort conversion of ``value`` to a ``torch.dtype``."""
 
+    if not _HAS_TORCH:
+        return None
     if value is None:
         return None
     if isinstance(value, torch.dtype):
@@ -274,7 +284,7 @@ def get_model(
         except Exception:  # pragma: no cover - adapter failure should not crash load
             pass
     dtype_value = _resolve_torch_dtype(config.get("dtype"))
-    if dtype_value is not None:
+    if dtype_value is not None and hasattr(model, "to"):
         try:
             model = model.to(dtype_value)
         except Exception:  # pragma: no cover - invalid dtype/device combination

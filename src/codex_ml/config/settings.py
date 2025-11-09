@@ -3,9 +3,19 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Any
 
-from pydantic import BaseModel, Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+try:  # pragma: no cover - optional dependency shim
+    from pydantic_settings import BaseSettings, SettingsConfigDict
+except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
+    BaseSettings = BaseModel  # type: ignore[misc]
+
+    def SettingsConfigDict(**config: Any) -> ConfigDict:  # type: ignore[misc]
+        """Return a ``ConfigDict`` compatible with Pydantic's configuration API."""
+
+        return ConfigDict(**config)
 
 __all__ = ["AppSettings", "EvalRow", "eval_row_schema", "get_settings"]
 

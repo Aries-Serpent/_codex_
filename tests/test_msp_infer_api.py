@@ -6,6 +6,10 @@ End-to-end tests for the inference endpoint
 import uuid
 
 import pytest
+
+pytest.importorskip("numpy", reason="NumPy required for MSP gateway tests")
+pytest.importorskip("torch", reason="PyTorch required for MSP gateway tests")
+
 from fastapi.testclient import TestClient
 
 from services.msp_gateway.app import create_app

@@ -8,10 +8,20 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
-import numpy as np
-import numpy.typing as npt
+try:  # Optional dependency handling
+    import numpy as np
+    import numpy.typing as npt
+except ModuleNotFoundError:  # pragma: no cover - lightweight environments
+    np = None  # type: ignore[assignment]
+    npt = Any  # type: ignore[assignment]
 
-import torch
+try:
+    import torch
+except ImportError:  # pragma: no cover - torch optional
+    torch = None  # type: ignore[assignment]
+else:
+    if not hasattr(torch, "Tensor"):
+        torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - fcntl unavailable on Windows
     import fcntl  # type: ignore[attr-defined]
@@ -19,11 +29,19 @@ except ImportError:  # pragma: no cover - platform-specific fallback
     fcntl = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from torch import Tensor
+    from torch import Tensor  # type: ignore[attr-defined]
 else:  # pragma: no cover - runtime alias
-    Tensor = torch.Tensor
+    if torch is not None:
+        Tensor = torch.Tensor  # type: ignore[attr-defined]
+    else:
+        Tensor = Any  # type: ignore[assignment]
 
 T = TypeVar("T")
+
+
+def _require_torch() -> None:
+    if torch is None:
+        raise ModuleNotFoundError("torch is required for this operation")
 
 # Optional deterministic shuffler import with robust fallback
 try:  # pragma: no cover - optional import from ingestion utilities
@@ -232,6 +250,7 @@ class TextDataset:
     block_size: int = 128
 
     def __post_init__(self) -> None:
+        _require_torch()
         # Prepare tensor examples eagerly
         self.examples: list[dict[str, Tensor]] = []
         for txt in self.texts:
@@ -271,10 +290,13 @@ class TextDataset:
         return {k: v.clone() for k, v in ex.items()}
 
 
-def _to_numpy(value: Any) -> npt.NDArray[np.generic]:
+def _to_numpy(value: Any) -> "npt.NDArray[np.generic]":
     """Convert tensors/arrays to a CPU NumPy array in a type-aware manner."""
 
-    if isinstance(value, torch.Tensor):
+    if np is None:
+        raise ModuleNotFoundError("numpy is required for dataset caching utilities")
+
+    if torch is not None and isinstance(value, torch.Tensor):
         tensor_any = cast(Any, value)
         array = tensor_any.detach().cpu().numpy()
     else:
@@ -291,13 +313,16 @@ def cache_dataset(
     Each sample in ds is expected to be a mapping from string keys to
     torch.Tensor, numpy.ndarray or array-like entries.
     """
+    if np is None:
+        raise ModuleNotFoundError("numpy is required to cache tokenised datasets")
+
     path = Path(cache_dir)
     path.mkdir(parents=True, exist_ok=True)
     for i, sample in enumerate(ds):
         try:
             arrs: dict[str, npt.NDArray[Any]] = {}
             for key, value in sample.items():
-                if isinstance(value, torch.Tensor):
+                if torch is not None and isinstance(value, torch.Tensor):
                     arrs[key] = cast(npt.NDArray[Any], value.detach().cpu().numpy())
                 else:
                     arrs[key] = np.asarray(value)
@@ -331,10 +356,14 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
     Loads .npz files from cache_dir and yields tensors keyed by their original names.
     Corrupted files are skipped gracefully.
     """
+    if np is None:
+        raise ModuleNotFoundError("numpy is required to load cached datasets")
+
     path = Path(cache_dir)
     for npz in sorted(path.glob("*.npz")):
         try:
             data = np.load(npz)
+            _require_torch()
             yield {k: torch.tensor(data[k]) for k in data.files}
         except Exception:
             # Skip unreadable/corrupted shards

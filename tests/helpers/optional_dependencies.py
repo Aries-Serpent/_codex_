@@ -31,5 +31,5 @@ def import_optional_dependency(name: str, *, allow_stub: bool = False) -> Any:
     reason = OPTIONAL_DEPENDENCY_REASONS.get(name, f"{name} is required for this test")
     module = pytest.importorskip(name, reason=reason)
     if not allow_stub and getattr(module, "IS_CODEX_STUB", False):
-        pytest.skip(f"{name} stub installed: {reason}")
+        pytest.skip(f"{name} stub installed: {reason}", allow_module_level=True)
     return module
