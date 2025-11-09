@@ -94,7 +94,11 @@ ROOT = Path(__file__).resolve().parents[2]
 CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
-SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
+SAFEGUARD_KEYWORDS = [
+    "sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE",
+    # Codex-specific additions (v1.4.0)
+    "deterministic", "reproduce", "manifest", "baseline", "secret", "sanitize"
+]
 VERSION = "1.4.0"
 EVIDENCE_TRUNCATION_LIMIT = 50  # applied when depth < 4
 
@@ -135,12 +139,17 @@ def _should_skip_path(rel_path: str) -> bool:
 DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
     "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
     "tokenization": ["tokenizer", "tokenize", "bpe", "sentencepiece"],
-    "training-engine": ["trainer", "training"],
+    "training-engine": ["trainer", "training", "train"],
     "evaluation-metrics": ["metrics", "eval", "perplexity", "accuracy", "loss"],
     "data-pipeline": ["dataset", "dataloader", "loader", "ingest", "preprocess"],
-    "safety-security": ["sanitize", "redact", "secret", "security"],
+    "safety-security": ["sanitize", "redact", "secret", "security", "baseline"],
     "logging-tracking": ["tracking", "mlflow", "wandb", "tensorboard", "log"],
     "configuration": ["config", "hydra", "omegaconf", "yaml"],
+    # Codex-specific additions (v1.4.0)
+    "ml-serving": ["serve", "api", "inference", "predict", "fastapi"],
+    "inference-serving": ["serve", "api", "inference", "predict", "fastapi"],
+    "status-reporting": ["status", "audit", "report", "codex_status"],
+    "archival": ["archive", "bundle", "manifest", "pointer"],
 }
 
 
@@ -272,6 +281,11 @@ DOMAIN_PATTERNS = {
     "safety": re.compile(r"safety|saniti", re.I),
     "logging": re.compile(r"log|tracking", re.I),
     "config": re.compile(r"config|hydra", re.I),
+    # Codex Extensions (v1.4.0)
+    "serve": re.compile(r"serve|inference|api", re.I),
+    "secret": re.compile(r"secret|baseline|redact", re.I),
+    "status": re.compile(r"status|audit|report", re.I),
+    "archive": re.compile(r"archive|bundle|manifest", re.I),
 }
 
 def stage_s2_facets(cfg, context_idx):

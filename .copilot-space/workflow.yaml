@@ -1,9 +1,14 @@
-# Copilot Space Workflow Spec (v1.2.0)
-# Policy updates:
+# Copilot Space Workflow Spec (v1.4.0)
+# Codex-Specific Enhancements:
+# - Extended domain patterns for ML serving, security, status, archival
+# - P5 features: token similarity, coverage stats, security severity
+# - Auto-prefix validation in manifest stage
+# - Enhanced safeguard keywords and documentation synonyms
+# - Dynamic detector loading for new capabilities
 # - Enforce low maturity and missing-detector gates during `validate`.
 # - Score regression guard remains; thresholds unchanged.
 
-version: 1.2.0
+version: 1.4.0
 
 stages:
   - id: index
@@ -64,6 +69,10 @@ scoring:
 capability_map:
   overrides:
     training-engine: ["train_loop", "functional_training"]
+    # v1.4.0 additions
+    ml-serving: ["serve", "predict", "api"]
+    status-reporting: ["status", "audit", "report"]
+    archival-bundling: ["archive", "bundle", "manifest"]
   dynamic: true
 
 output:
