@@ -41,11 +41,13 @@ class DatasetValidator:
             validate(instance=manifest, schema=schema)
             LOGGER.info("✓ Manifest valid: %s", manifest_path)
             return True
-        except ValidationError as exc:
-            LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, exc.message)
-            return False
         except ImportError:
             raise
+        except ValidationError as exc:
+            # ValidationError has a 'message' attribute when jsonschema is available
+            error_msg = getattr(exc, "message", str(exc))
+            LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, error_msg)
+            return False
         except Exception as exc:  # pragma: no cover - defensive
             LOGGER.error("✗ Manifest validation failed: %s", exc)
             return False

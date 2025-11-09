@@ -152,9 +152,11 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
                 # Convert lists back to tensors for CUDA RNG state restoration
+                # Create tensors on the appropriate CUDA device to maintain determinism
                 cuda_states_list = snap["torch_cuda"]
                 cuda_states = [
-                    torch.tensor(state, dtype=torch.uint8) for state in cuda_states_list
+                    torch.tensor(state, dtype=torch.uint8, device=f"cuda:{i}")
+                    for i, state in enumerate(cuda_states_list)
                 ]
                 torch.cuda.set_rng_state_all(cuda_states)
         except Exception:
