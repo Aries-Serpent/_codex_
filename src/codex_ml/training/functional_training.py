@@ -30,7 +30,7 @@ from codex_ml.logging.mlflow_guard import (
     log_params_safe,
 )
 from codex_ml.logging.run_metadata import build_run_metadata
-from codex_ml.metrics.api import get_metric
+from codex_ml.metrics.metric_implementations import DEFAULT_METRICS
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.monitoring.system_metrics import start_metrics_logger
 from codex_ml.monitoring.tb_writer import TBWriter
@@ -404,15 +404,15 @@ def train(
                 logits = model(train_tensor).logits
             preds = logits.argmax(dim=-1)
             mask = train_tensor != tokenizer.pad_token_id
-            token_metric = get_metric("token_accuracy")
+            token_metric = DEFAULT_METRICS.create("token_accuracy")
             token_metric.update(preds[mask].cpu(), train_tensor[mask].cpu())
             metrics.update(token_metric.compute())
 
-            recall_metric = get_metric("recall_micro")
+            recall_metric = DEFAULT_METRICS.create("recall", average="micro")
             recall_metric.update(preds[mask].cpu(), train_tensor[mask].cpu())
             metrics.update({"recall_score": recall_metric.compute().get("recall_score", 0.0)})
 
-            bleu_metric = get_metric("bleu")
+            bleu_metric = DEFAULT_METRICS.create("bleu")
             bleu_metric.update(preds.cpu().tolist(), train_tensor.cpu().tolist())
             bleu_values = bleu_metric.compute()
             metrics.update({f"train_{k}": v for k, v in bleu_values.items()})
@@ -431,15 +431,15 @@ def train(
                     val_logits = model(val_tensor).logits
                 val_preds = val_logits.argmax(dim=-1)
                 val_mask = val_tensor != tokenizer.pad_token_id
-                val_token_metric = get_metric("token_accuracy")
+                val_token_metric = DEFAULT_METRICS.create("token_accuracy")
                 val_token_metric.update(val_preds[val_mask].cpu(), val_tensor[val_mask].cpu())
                 metrics["val_token_accuracy"] = val_token_metric.compute()["token_accuracy"]
 
-                val_recall_metric = get_metric("recall_micro")
+                val_recall_metric = DEFAULT_METRICS.create("recall", average="micro")
                 val_recall_metric.update(val_preds[val_mask].cpu(), val_tensor[val_mask].cpu())
                 metrics["val_recall_score"] = val_recall_metric.compute().get("recall_score", 0.0)
 
-                val_bleu_metric = get_metric("bleu")
+                val_bleu_metric = DEFAULT_METRICS.create("bleu")
                 val_bleu_metric.update(val_preds.cpu().tolist(), val_tensor.cpu().tolist())
                 val_bleu_values = val_bleu_metric.compute()
                 for key, value in val_bleu_values.items():

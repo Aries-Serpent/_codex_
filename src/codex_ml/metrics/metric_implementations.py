@@ -87,7 +87,12 @@ class _ClassificationStats:
         return self.tp[label] / denom
 
     def labels(self) -> List[int]:
-        observed = set(self.support.keys()) | set(self.tp.keys()) | set(self.fp.keys()) | set(self.fn.keys())
+        observed = (
+            set(self.support.keys())
+            | set(self.tp.keys())
+            | set(self.fp.keys())
+            | set(self.fn.keys())
+        )
         if not observed:
             return [1]
         return sorted(observed)
@@ -236,10 +241,6 @@ class BLEUScore(MetricBase):
             raise ValueError("n_gram must be >= 1")
         self.n_gram = n_gram
         self.smoothing = smoothing
-        self._matches = [0] * n_gram
-        self._totals = [0] * n_gram
-        self._pred_length = 0
-        self._ref_length = 0
         super().__init__("bleu_score")
 
     def reset(self) -> None:
@@ -264,7 +265,9 @@ class BLEUScore(MetricBase):
             for n in range(1, self.n_gram + 1):
                 pred_counts = self._ngrams(pred_tokens, n)
                 target_counts = self._ngrams(target_tokens, n)
-                matches = sum(min(count, target_counts[gram]) for gram, count in pred_counts.items())
+                matches = sum(
+                    min(count, target_counts[gram]) for gram, count in pred_counts.items()
+                )
                 total = sum(pred_counts.values())
                 self._matches[n - 1] += matches
                 self._totals[n - 1] += total
@@ -326,7 +329,10 @@ class MetricRegistry:
         key = name.strip().lower()
         if not key:
             raise ValueError("metric name must be non-empty")
-        self._registry[key] = MetricSpec(name=key, factory=metric_cls, default_kwargs=default_kwargs or None)
+        spec = MetricSpec(
+            name=key, factory=metric_cls, default_kwargs=default_kwargs or None
+        )
+        self._registry[key] = spec
 
     def create(self, name: str, **overrides: Any) -> MetricBase:
         key = name.strip().lower()

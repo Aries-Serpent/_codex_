@@ -23,6 +23,7 @@ __all__ = [
     "list_metrics",
     "init_metric_plugins",
     # NDJSON utilities
+    "summarize_ndjson_logs",
     "summarize_ndjson_to_csv",
     "summarize_ndjson_to_sqlite",
     "load_ndjson_logs",
@@ -193,6 +194,66 @@ def load_ndjson_logs(path: str | Path) -> list[dict[str, Any]]:
     return logs
 
 
+def summarize_ndjson_logs(path: str | Path) -> dict[str, float]:
+    """Summarize NDJSON logs by computing mean of numeric fields.
+    
+    Flattens nested dictionaries using dot notation and computes the mean
+    for all numeric fields across all log entries.
+    
+    Args:
+        path: Path to NDJSON file
+        
+    Returns:
+        Dictionary mapping field names to their mean values
+        
+    Raises:
+        ValueError: If the file contains invalid JSON
+    """
+    logs = []
+    path_obj = Path(path)
+    
+    if not path_obj.exists():
+        return {}
+    
+    with path_obj.open("r", encoding="utf-8") as f:
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                logs.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid JSON on line {line_num}: {e}") from e
+    
+    if not logs:
+        return {}
+    
+    # Flatten nested dictionaries and collect numeric values
+    def flatten_dict(d: dict[str, Any], prefix: str = "") -> dict[str, Any]:
+        """Flatten nested dictionary with dot notation."""
+        result = {}
+        for key, value in d.items():
+            full_key = f"{prefix}.{key}" if prefix else key
+            if isinstance(value, dict):
+                result.update(flatten_dict(value, full_key))
+            else:
+                result[full_key] = value
+        return result
+    
+    # Collect all values for each field
+    field_values: dict[str, list[float]] = {}
+    for log in logs:
+        flat_log = flatten_dict(log)
+        for key, value in flat_log.items():
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                if key not in field_values:
+                    field_values[key] = []
+                field_values[key].append(float(value))
+    
+    # Compute means
+    return {key: sum(values) / len(values) for key, values in field_values.items()}
+
+
 def summarize_ndjson_to_csv(
     ndjson_path: str | Path,
     csv_path: str | Path,
@@ -288,7 +349,12 @@ def summarize_ndjson_to_sqlite(
         
         for log in logs:
             # Convert values to strings for TEXT columns
-            values = [json.dumps(log.get(col)) if isinstance(log.get(col), (dict, list)) else str(log.get(col, "")) for col in columns]
+            values = [
+                json.dumps(log.get(col))
+                if isinstance(log.get(col), (dict, list))
+                else str(log.get(col, ""))
+                for col in columns
+            ]
             conn.execute(insert_sql, values)
         
         conn.commit()
