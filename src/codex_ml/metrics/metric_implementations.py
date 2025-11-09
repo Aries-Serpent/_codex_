@@ -42,7 +42,9 @@ class MetricBase(ABC):
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.reset()
+        # Note: reset() is not called here to avoid calling overridden methods
+        # before subclass initialization is complete. Subclasses should initialize
+        # their state in their own __init__ methods.
 
     @abstractmethod
     def update(self, predictions: Any, targets: Any) -> None:

@@ -10,6 +10,7 @@ LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
+
     _HAS_TORCH = True
 except Exception:  # pragma: no cover - defensive import guard
     torch = None  # type: ignore[assignment]
@@ -131,13 +132,13 @@ class DeviceConfig:
 
     def apply_to_model(self, model: Any) -> Any:
         """Move model to the configured device/dtype with graceful fallback.
-        
+
         Args:
             model: Model to move
-            
+
         Returns:
             Model on target device/dtype
-            
+
         Raises:
             ValueError: If device specification is invalid
         """
@@ -167,10 +168,10 @@ class DeviceConfig:
 
     def apply_to_tensor(self, tensor: Any) -> Any:
         """Return tensor on the configured device and dtype.
-        
+
         Args:
             tensor: Tensor to move
-            
+
         Returns:
             Tensor on target device/dtype
         """
@@ -196,7 +197,7 @@ class DeviceMapper:
     @classmethod
     def register_strategy(cls, name: str, config: DeviceConfig) -> None:
         """Register a named device strategy.
-        
+
         Args:
             name: Strategy name
             config: Device configuration
@@ -209,13 +210,13 @@ class DeviceMapper:
     @classmethod
     def get_strategy(cls, name: str) -> DeviceConfig:
         """Get a registered device strategy.
-        
+
         Args:
             name: Strategy name
-            
+
         Returns:
             Device configuration
-            
+
         Raises:
             KeyError: If strategy not found
         """
@@ -228,7 +229,7 @@ class DeviceMapper:
     @classmethod
     def list_strategies(cls) -> list[str]:
         """List all registered strategy names.
-        
+
         Returns:
             List of strategy names
         """
@@ -242,35 +243,33 @@ def get_device_config(
     mixed_precision: Optional[bool] = None,
 ) -> DeviceConfig:
     """Get or create a DeviceConfig.
-    
+
     If device is None, auto-detects optimal configuration.
-    
+
     Args:
         device: Target device string or None for auto-detection
         dtype: Target dtype or None for auto-selection
         mixed_precision: Whether to use mixed precision or None for auto
-        
+
     Returns:
         DeviceConfig instance
     """
     if device is None:
         return DeviceConfig.auto_detect()
-    
+
     if dtype is None and _HAS_TORCH:
         dtype = torch.float32
     elif dtype is None:
         dtype = "float32"
-    
+
     if mixed_precision is None:
         mixed_precision = False
-    
-    return DeviceConfig(
-        device=device, dtype=dtype, mixed_precision=mixed_precision
-    )
+
+    return DeviceConfig(device=device, dtype=dtype, mixed_precision=mixed_precision)
 
 
 # Pre-register a default auto strategy at import time when torch is available.
-if _HAS_TORCH and torch is not None:  # pragma: no branch - simple guard
+if _HAS_TORCH:  # pragma: no branch - simple guard
     try:
         DeviceMapper.register_strategy("auto", DeviceConfig.auto_detect())
     except RuntimeError:  # pragma: no cover - guard when torch import works but usage fails
