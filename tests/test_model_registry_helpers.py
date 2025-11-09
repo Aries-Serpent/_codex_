@@ -6,7 +6,9 @@ from collections.abc import Sequence
 
 import pytest
 
-import torch
+from tests.helpers.optional_dependencies import import_optional_dependency
+
+torch = import_optional_dependency("torch", allow_stub=False)
 from codex_ml.model_registry import LoraRequest, ModelRequest, get_model
 from codex_ml.models.registry import model_registry
 

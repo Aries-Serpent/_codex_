@@ -4,6 +4,7 @@ import pytest
 
 from tests.helpers.optional_dependencies import import_optional_dependency
 
+import_optional_dependency("torch", allow_stub=False)
 transformers = import_optional_dependency("transformers")
 
 from codex_ml.models.registry import get_model  # noqa: E402

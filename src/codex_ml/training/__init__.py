@@ -5,7 +5,9 @@ from __future__ import annotations
 import warnings
 from typing import Any, Mapping, Sequence
 
+from .device_strategy import DeviceConfig, DeviceMapper
 from .dp_config import DifferentialPrivacyConfig, make_private_model
+from .rng_checkpoint import RNGState, set_seed
 from .legacy_api import (
     OptimizerSettings,
     SafetySettings,
@@ -34,6 +36,10 @@ __all__ = [
     "build_dataloader",
     "DifferentialPrivacyConfig",
     "make_private_model",
+    "DeviceConfig",
+    "DeviceMapper",
+    "RNGState",
+    "set_seed",
 ]
 
 

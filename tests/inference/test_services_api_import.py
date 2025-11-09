@@ -4,6 +4,8 @@ import importlib
 
 import pytest
 
+pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+
 
 def test_services_api_module_import_smoke():
     """Import smoke test for services.api.main."""

@@ -5,6 +5,10 @@ import math
 import tempfile
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("hypothesis", reason="Hypothesis required for NDJSON property tests")
+
 from hypothesis import given, strategies as st
 
 from codex_ml.cli.ndjson_summary import NdjsonSummarizer

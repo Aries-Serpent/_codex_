@@ -24,7 +24,13 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from codex_ml.logging.mlflow_guard import (
+    log_artifact_safe,
+    log_metric_safe,
+    log_params_safe,
+)
 from codex_ml.logging.run_metadata import build_run_metadata
+from codex_ml.metrics.api import get_metric
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.monitoring.system_metrics import start_metrics_logger
 from codex_ml.monitoring.tb_writer import TBWriter
@@ -301,7 +307,7 @@ def train(
             enable=bool(config.mlflow_enable),
             run_name=run_name,
             tracking_uri=config.mlflow_tracking_uri,
-        ) as mlf,
+        ) as _mlf,
     ):
         if config.mlflow_enable:
             try:
@@ -314,7 +320,7 @@ def train(
                     "training.amp": config.amp_enable,
                     "training.lora": config.lora_enable,
                 }
-                mlf.log_params(_as_flat_params(params))
+                log_params_safe(_as_flat_params(params))
             except Exception:
                 pass
 
@@ -367,7 +373,7 @@ def train(
                                 pass
                         if config.mlflow_enable:
                             try:
-                                mlf.log_metrics({"train/loss": loss_value}, step=global_step)
+                                log_metric_safe("train/loss", float(loss_value), step=global_step)
                             except Exception:
                                 pass
                             _append_metric(
@@ -398,7 +404,18 @@ def train(
                 logits = model(train_tensor).logits
             preds = logits.argmax(dim=-1)
             mask = train_tensor != tokenizer.pad_token_id
-            acc = (preds[mask] == train_tensor[mask]).float().mean().item()
+            token_metric = get_metric("token_accuracy")
+            token_metric.update(preds[mask].cpu(), train_tensor[mask].cpu())
+            metrics.update(token_metric.compute())
+
+            recall_metric = get_metric("recall_micro")
+            recall_metric.update(preds[mask].cpu(), train_tensor[mask].cpu())
+            metrics.update({"recall_score": recall_metric.compute().get("recall_score", 0.0)})
+
+            bleu_metric = get_metric("bleu")
+            bleu_metric.update(preds.cpu().tolist(), train_tensor.cpu().tolist())
+            bleu_values = bleu_metric.compute()
+            metrics.update({f"train_{k}": v for k, v in bleu_values.items()})
             loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
             with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
                 train_loss_tensor = loss_fn(
@@ -407,16 +424,26 @@ def train(
                 )
             loss_val = float(train_loss_tensor.detach().cpu().item())
             ppl = math.exp(loss_val) if loss_val > 0 else float("inf")
-            metrics = {"token_accuracy": acc, "perplexity": ppl}
+            metrics["perplexity"] = ppl
             if val_ids is not None:
                 val_tensor = val_ids.to(device)
                 with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
                     val_logits = model(val_tensor).logits
                 val_preds = val_logits.argmax(dim=-1)
                 val_mask = val_tensor != tokenizer.pad_token_id
-                metrics["val_token_accuracy"] = (
-                    (val_preds[val_mask] == val_tensor[val_mask]).float().mean().item()
-                )
+                val_token_metric = get_metric("token_accuracy")
+                val_token_metric.update(val_preds[val_mask].cpu(), val_tensor[val_mask].cpu())
+                metrics["val_token_accuracy"] = val_token_metric.compute()["token_accuracy"]
+
+                val_recall_metric = get_metric("recall_micro")
+                val_recall_metric.update(val_preds[val_mask].cpu(), val_tensor[val_mask].cpu())
+                metrics["val_recall_score"] = val_recall_metric.compute().get("recall_score", 0.0)
+
+                val_bleu_metric = get_metric("bleu")
+                val_bleu_metric.update(val_preds.cpu().tolist(), val_tensor.cpu().tolist())
+                val_bleu_values = val_bleu_metric.compute()
+                for key, value in val_bleu_values.items():
+                    metrics[f"val_{key}"] = value
                 with maybe_autocast(enabled=config.amp_enable, dtype=config.amp_dtype):
                     val_loss_tensor = loss_fn(
                         val_logits.view(-1, model.config.vocab_size),
@@ -433,11 +460,14 @@ def train(
                         pass
                 if config.mlflow_enable:
                     try:
-                        mlf.log_metrics(
-                            {
-                                "eval/perplexity": float(metrics["val_perplexity"]),
-                                "eval/token_accuracy": float(metrics["val_token_accuracy"]),
-                            },
+                        log_metric_safe(
+                            "eval/perplexity",
+                            float(metrics["val_perplexity"]),
+                            step=global_step,
+                        )
+                        log_metric_safe(
+                            "eval/token_accuracy",
+                            float(metrics["val_token_accuracy"]),
                             step=global_step,
                         )
                     except Exception:
@@ -471,8 +501,8 @@ def train(
                     if isinstance(v, (int, float))
                 }
                 if final_payload:
-                    mlf.log_metrics(final_payload, step=global_step)
                     for key, value in final_payload.items():
+                        log_metric_safe(key, value, step=global_step)
                         _append_metric(
                             {
                                 "phase": "final",
@@ -489,10 +519,7 @@ def train(
                 if env_dir and env_dir.exists():
                     artifacts.append(env_dir)
                 for artifact in artifacts:
-                    try:
-                        mlf.log_artifact(str(artifact))
-                    except Exception:
-                        continue
+                    log_artifact_safe(str(artifact))
             except Exception:
                 pass
         if config.wandb_enable:

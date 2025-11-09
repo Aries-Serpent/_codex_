@@ -16,14 +16,14 @@ Core metrics are included with the base installation and require no additional d
 | Metric | Description | Use Case |
 |--------|-------------|----------|
 | `token_accuracy` | Token-level accuracy | Token classification |
-| `exact_match` | Exact string match ratio | QA, generation |
-| `f1` | F1 score | Classification |
-| `ppl` | Perplexity | Language modeling |
+| `f1_score` | Micro/macro/binary F1 | Classification |
+| `recall_score` | Micro/macro/binary recall | Classification |
+| `perplexity` | Perplexity | Language modeling |
 
 ### Usage
 
 ```python
-from codex_ml.metrics.registry import get_metric
+from codex_ml.metrics.api import get_metric
 
 # Get a metric
 accuracy = get_metric("token_accuracy")
@@ -31,6 +31,34 @@ accuracy = get_metric("token_accuracy")
 # Compute score
 score = accuracy(predictions, labels)
 print(f"Accuracy: {score:.4f}")
+```
+
+### Class-based metrics
+
+The `codex_ml.metrics.metric_implementations` module provides stateful metric
+classes used by the unified training loop. They accumulate batches and expose a
+`compute()` method returning a dictionary of metric values:
+
+```python
+from codex_ml.metrics.metric_implementations import F1Score
+
+metric = F1Score(average="micro")
+metric.update([1, 0, 1], [1, 0, 0])
+print(metric.compute()["f1_score"])
+```
+
+### NDJSON summariser
+
+Metrics emitted to NDJSON logs can be summarised via
+`codex_ml.metrics.api.summarize_ndjson_logs(path)`, which validates every line
+and returns the mean for each numeric field. Use the helper to produce quick
+report cards or to sanity check offline runs:
+
+```python
+from codex_ml.metrics.api import summarize_ndjson_logs
+
+summary = summarize_ndjson_logs("runs/train/metrics.ndjson")
+print(summary["loss"])
 ```
 
 ## Optional Metrics

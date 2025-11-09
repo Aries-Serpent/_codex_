@@ -1,5 +1,6 @@
 import os
 import pytest
+pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 
 fastapi = pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa

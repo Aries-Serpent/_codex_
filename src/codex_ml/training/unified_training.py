@@ -30,6 +30,9 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from codex_ml.logging.mlflow_guard import init_mlflow_safe, log_metric_safe, log_params_safe
+from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
+from codex_ml.training.rng_checkpoint import RNGState, set_seed
 from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
 from codex_ml.utils.checkpoint_core import CheckpointMeta, load_checkpoint, save_checkpoint
 
@@ -167,22 +170,7 @@ class UnifiedTrainingConfig:
 
 
 def _seed_all(seed: int) -> None:
-    import random
-
-    random.seed(seed)
-    try:
-        import numpy as np  # type: ignore
-    except Exception:  # pragma: no cover
-        np = None  # type: ignore
-    if np is not None:
-        np.random.seed(seed)
-    if torch is not None:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            with contextlib.suppress(Exception):
-                torch.manual_seed(seed)
-                if torch.cuda.is_available():
-                    torch.cuda.manual_seed_all(seed)
+    set_seed(seed)
 
 
 def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
@@ -204,7 +192,12 @@ def _coerce_metric_value(raw: Any) -> float | None:
 
 
 def _emit_checkpoint_epoch(
-    cfg: UnifiedTrainingConfig, epoch: int, state: dict[str, Any], metrics: dict[str, float]
+    cfg: UnifiedTrainingConfig,
+    epoch: int,
+    state: dict[str, Any],
+    metrics: dict[str, float],
+    *,
+    rng_state: RNGState | None = None,
 ) -> str:
     ckpt_dir = Path(cfg.output_dir) / f"epoch-{epoch}"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
@@ -243,6 +236,19 @@ def _emit_checkpoint_epoch(
         state=state,
         metrics=metrics,
     )
+
+    if rng_state is not None:
+        try:
+            rng_state.capture()
+            rng_path = RNGState.path_for_checkpoint(checkpoint_path)
+            rng_state.save_to_file(rng_path)
+            state.setdefault("rng_state_paths", []).append(str(rng_path))
+        except Exception as exc:  # pragma: no cover - defensive
+            state.setdefault("rng_state_error", repr(exc))
+
+    for key, value in metrics.items():
+        if isinstance(value, (int, float)):
+            log_metric_safe(f"checkpoint/{key}", float(value), step=epoch)
 
     return str(ckpt_dir)
 
@@ -291,6 +297,9 @@ def run_unified_training(
     """Execute training under unified orchestrator."""
     start = time.time()
     _seed_all(cfg.seed)
+    rng_state = RNGState()
+
+    mlflow_active = bool(cfg.mlflow_enable and init_mlflow_safe())
 
     backend_name = _auto_backend(cfg)
     strategy = resolve_strategy(backend_name)
@@ -300,18 +309,69 @@ def run_unified_training(
         "backend_name": backend_name,
         "global_step": 0,
         "resume_from": cfg.resume_from,
+        "mlflow_active": mlflow_active,
     }
     if isinstance(cfg.continual, ContinualConfig):
         state["continual"] = asdict(cfg.continual)
 
+    device_config: DeviceConfig | None = None
+    strategy_name = None
+    if isinstance(cfg.extra, Mapping):
+        strategy_name = cfg.extra.get("device_strategy")
+    try:
+        if strategy_name:
+            device_config = DeviceMapper.get_strategy(str(strategy_name))
+        else:
+            device_config = DeviceConfig.auto_detect()
+        if device_config is not None and torch is not None:
+            dtype_overrides = {
+                "fp32": torch.float32,
+                "fp16": torch.float16,
+                "bf16": getattr(torch, "bfloat16", torch.float16),
+            }
+            if cfg.dtype in dtype_overrides:
+                desired_dtype = dtype_overrides[cfg.dtype]
+                device_config = DeviceConfig(
+                    device=device_config.device,
+                    dtype=desired_dtype,
+                    mixed_precision=device_config.mixed_precision and cfg.dtype != "fp32",
+                )
+    except Exception as exc:  # pragma: no cover - defensive fallback
+        state["device_detect_error"] = repr(exc)
+    else:
+        if device_config is not None:
+            state["device"] = device_config.device
+            state["dtype_effective"] = str(device_config.dtype)
+            state["mixed_precision"] = bool(device_config.mixed_precision)
+
+    if mlflow_active:
+        log_params_safe(
+            {
+                "training.model": cfg.model_name,
+                "training.epochs": cfg.epochs,
+                "training.batch_size": cfg.batch_size,
+                "training.grad_accum": cfg.grad_accum,
+                "training.backend": backend_name,
+            }
+        )
+
     # Pre-resume load if requested
     if cfg.resume_from:
         try:
-            loaded_state, _ = load_checkpoint(cfg.resume_from)
+            loaded_state, _ = load_checkpoint(cfg.resume_from, restore_rng=True)
             payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
         except Exception as exc:  # pragma: no cover
             state.update({"resume_error": repr(exc)})
+        else:
+            rng_candidate = RNGState.path_for_checkpoint(Path(cfg.resume_from))
+            if rng_candidate.exists():
+                try:
+                    loaded_rng = RNGState.load_from_file(rng_candidate)
+                    loaded_rng.restore()
+                    state["rng_resumed_from"] = str(rng_candidate)
+                except Exception as exc:  # pragma: no cover - defensive
+                    state["rng_resume_error"] = repr(exc)
 
     class _StateRelay:
         __slots__ = ("_callback", "_shared_state")
@@ -404,7 +464,15 @@ def run_unified_training(
     # Emit final synthetic checkpoint (epoch = cfg.epochs)
     final_status = 1.0 if result.status == "ok" else 0.0
     with contextlib.suppress(Exception):
-        ckpt_path = _emit_checkpoint_epoch(cfg, cfg.epochs, state, {"final_status": final_status})
+        ckpt_path = _emit_checkpoint_epoch(
+            cfg,
+            cfg.epochs,
+            state,
+            {"final_status": final_status},
+            rng_state=rng_state,
+        )
+        state["final_checkpoint_dir"] = ckpt_path
+        log_metric_safe("training/final_status", final_status, step=result.final_epoch)
         for cb in wrapped_callbacks:
             with contextlib.suppress(Exception):
                 cb.on_checkpoint(cfg.epochs, ckpt_path, {"final_status": final_status}, state)
@@ -416,6 +484,7 @@ def run_unified_training(
         "output_dir": result.output_dir,
         "elapsed_s": round(time.time() - start, 4),
         "resume_from": cfg.resume_from,
+        "mlflow_active": mlflow_active,
     }
 
 

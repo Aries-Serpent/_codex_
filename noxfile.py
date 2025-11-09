@@ -188,7 +188,39 @@ def tests(session: nox.Session) -> None:
     """Run pytest with plugin autoload disabled (deterministic)."""
     session.install("-r", "requirements-dev.txt")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
-    session.run("pytest", "-q")
+    session.run(
+        "pytest",
+        "--cov=src",
+        "--cov-report=xml",
+        "--cov-report=term-missing",
+        "--cov-fail-under=70",
+        "-v",
+    )
+    session.run(
+        "python",
+        "-c",
+        (
+            "from pathlib import Path; import shutil; src=Path('coverage.xml'); "
+            "dest=Path('.codex/coverage'); dest.mkdir(parents=True, exist_ok=True); "
+            "shutil.copy2(src, dest / 'coverage.xml') if src.exists() else None"
+        ),
+    )
+
+
+@nox.session
+def security(session: nox.Session) -> None:
+    """Run lightweight security scans (bandit + gitleaks)."""
+    session.install("-r", "requirements-dev.txt")
+    import shutil
+
+    if shutil.which("bandit"):
+        session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
+    else:  # pragma: no cover - environment without bandit
+        session.log("bandit not available; skipping security scan")
+    if shutil.which("gitleaks"):
+        session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
+    else:  # pragma: no cover - environment without gitleaks
+        session.log("gitleaks not available; skipping secret scan")
 
 
 @nox.session
