@@ -192,13 +192,38 @@ def tests(session: nox.Session) -> None:
     # Run tests with coverage
     session.run(
         "pytest",
-        "-q",
-        "--cov=src/codex_ml",
-        "--cov=src/codex",
-        "--cov-report=term-missing",
+        "--cov=src",
         "--cov-report=xml",
+        "--cov-report=term-missing",
         "--cov-fail-under=70",
+        "-v",
     )
+    # Archive coverage report to .codex/coverage
+    session.run(
+        "python",
+        "-c",
+        (
+            "from pathlib import Path; import shutil; src=Path('coverage.xml'); "
+            "dest=Path('.codex/coverage'); dest.mkdir(parents=True, exist_ok=True); "
+            "shutil.copy2(src, dest / 'coverage.xml') if src.exists() else None"
+        ),
+    )
+
+
+@nox.session
+def security(session: nox.Session) -> None:
+    """Run lightweight security scans (bandit + gitleaks)."""
+    session.install("-r", "requirements-dev.txt")
+    import shutil
+
+    if shutil.which("bandit"):
+        session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
+    else:  # pragma: no cover - environment without bandit
+        session.log("bandit not available; skipping security scan")
+    if shutil.which("gitleaks"):
+        session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
+    else:  # pragma: no cover - environment without gitleaks
+        session.log("gitleaks not available; skipping secret scan")
 
 
 @nox.session

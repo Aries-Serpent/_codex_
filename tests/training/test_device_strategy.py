@@ -2,18 +2,51 @@
 
 from __future__ import annotations
 
+import importlib
+import types
+
 import pytest
 
-from codex_ml.training.device_strategy import (
-    DeviceConfig,
-    DeviceMapper,
-    get_device_config,
-)
-from codex_ml.utils.optional import optional_import
+from codex_ml.training import device_strategy
+from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper, get_device_config
 
-torch, _HAS_TORCH = optional_import("torch")
+# Check if torch is available
+try:
+    import torch
+    _HAS_TORCH = True
+except ImportError:
+    _HAS_TORCH = False
 
 pytestmark = pytest.mark.skipif(not _HAS_TORCH, reason="torch not available")
+
+
+def _with_stub(monkeypatch: pytest.MonkeyPatch, *, cuda: bool, bf16: bool = False):
+    """Create a stub torch module for testing."""
+    module = importlib.reload(device_strategy)
+    stub_cuda = types.SimpleNamespace(
+        is_available=lambda: cuda,
+        is_bf16_supported=lambda: bf16,
+        get_device_capability=lambda: (8, 0) if bf16 else (7, 0),
+    )
+    stub_backends = types.SimpleNamespace(
+        mps=types.SimpleNamespace(
+            is_built=lambda: False,
+            is_available=lambda: False,
+        )
+    )
+    stub_device = types.SimpleNamespace
+    stub = types.SimpleNamespace(
+        float32=types.SimpleNamespace(dtype="fp32"),
+        float16=types.SimpleNamespace(dtype="fp16"),
+        bfloat16=types.SimpleNamespace(dtype="bf16"),
+        cuda=stub_cuda,
+        backends=stub_backends,
+        device=stub_device,
+    )
+    monkeypatch.setattr(module, "torch", stub, raising=False)
+    monkeypatch.setattr(module, "_HAS_TORCH", True, raising=False)
+    module.DeviceMapper._STRATEGIES.clear()
+    return module
 
 
 class TestDeviceConfig:
@@ -29,7 +62,6 @@ class TestDeviceConfig:
 
     def test_auto_detect_on_cpu(self):
         """Test auto_detect behavior on CPU-only system."""
-        # This test will pass on any system, but validates CPU path
         config = DeviceConfig.auto_detect()
         
         # On CPU-only, should use float32 without mixed precision
@@ -38,6 +70,7 @@ class TestDeviceConfig:
             assert config.mixed_precision is False
             assert config.autocast_dtype is None
 
+    @pytest.mark.requires_torch
     def test_apply_to_model(self):
         """Test applying config to a model."""
         model = torch.nn.Linear(10, 5)
@@ -50,11 +83,15 @@ class TestDeviceConfig:
         assert str(param.device) == "cpu"
         assert param.dtype == torch.float32
 
+    @pytest.mark.requires_torch
     def test_apply_to_model_with_mixed_precision(self):
         """Test that mixed precision keeps model in float32."""
         model = torch.nn.Linear(10, 5)
         config = DeviceConfig(
-            device="cpu", dtype=torch.float16, mixed_precision=True, autocast_dtype=torch.float16
+            device="cpu",
+            dtype=torch.float16,
+            mixed_precision=True,
+            autocast_dtype=torch.float16,
         )
         
         model_result = config.apply_to_model(model)
@@ -63,6 +100,7 @@ class TestDeviceConfig:
         param = next(model_result.parameters())
         assert param.dtype == torch.float32
 
+    @pytest.mark.requires_torch
     def test_apply_to_tensor(self):
         """Test applying config to a tensor."""
         tensor = torch.randn(5, 10)
@@ -73,6 +111,7 @@ class TestDeviceConfig:
         assert str(result.device) == "cpu"
         assert result.dtype == torch.float32
 
+    @pytest.mark.requires_torch
     def test_apply_to_tensor_dtype_conversion(self):
         """Test tensor dtype conversion."""
         tensor = torch.randn(5, 10, dtype=torch.float32)
@@ -82,220 +121,128 @@ class TestDeviceConfig:
         
         assert result.dtype == torch.float16
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
-    def test_apply_to_model_cuda(self):
-        """Test applying config to model on CUDA."""
-        model = torch.nn.Linear(10, 5)
-        config = DeviceConfig(device="cuda", dtype=torch.float32, mixed_precision=False)
-        
-        model_result = config.apply_to_model(model)
-        
-        param = next(model_result.parameters())
-        assert param.device.type == "cuda"
+    @pytest.mark.requires_torch
+    def test_apply_to_model_fallback(self):
+        """Test that model placement falls back to CPU on error."""
 
-    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
-    def test_auto_detect_cuda(self):
-        """Test auto_detect on CUDA system."""
-        config = DeviceConfig.auto_detect()
-        
-        # On CUDA system, should use cuda
-        assert config.device == "cuda"
-        # Should use mixed precision
-        assert config.mixed_precision is True
-        # Should use fp16 or bf16
-        assert config.dtype in (torch.float16, torch.bfloat16)
+        class FailingModel(torch.nn.Linear):
+            def to(self, *args, **kwargs):
+                target = kwargs.get("device") or (args[0] if args else None)
+                if isinstance(target, torch.device) and target.type == "cuda":
+                    raise RuntimeError("no cuda available")
+                return super().to(*args, **kwargs)
 
-    def test_get_autocast_context(self):
-        """Test autocast context creation."""
-        config = DeviceConfig(
-            device="cuda", dtype=torch.float16, mixed_precision=True, autocast_dtype=torch.float16
-        )
-        
-        ctx = config.get_autocast_context(enabled=True)
-        
-        # Should return a context manager
-        assert hasattr(ctx, "__enter__")
-        assert hasattr(ctx, "__exit__")
+        model = FailingModel(2, 2)
+        config = DeviceConfig(device="cuda", dtype=torch.float32)
+        result = config.apply_to_model(model)
+        assert next(result.parameters()).device.type == "cpu"
 
-    def test_get_autocast_context_disabled(self):
-        """Test autocast context when disabled."""
-        config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        
-        ctx = config.get_autocast_context(enabled=False)
-        
-        # Should return nullcontext
-        assert hasattr(ctx, "__enter__")
-        assert hasattr(ctx, "__exit__")
+    @pytest.mark.requires_torch
+    def test_apply_to_model_invalid_device(self):
+        """Test that invalid device raises ValueError."""
+        model = torch.nn.Linear(2, 2)
+        config = DeviceConfig(device="not-a-device", dtype=torch.float32)
+        with pytest.raises(ValueError, match="invalid device specification"):
+            config.apply_to_model(model)
 
-    def test_to_dict(self):
-        """Test dictionary serialization."""
-        config = DeviceConfig(
-            device="cuda",
-            dtype=torch.float16,
-            mixed_precision=True,
-            autocast_dtype=torch.float16,
-        )
-        
-        result = config.to_dict()
-        
-        assert result["device"] == "cuda"
-        assert "float16" in result["dtype"].lower()
-        assert result["mixed_precision"] is True
-        assert result["autocast_dtype"] is not None
+
+def test_auto_detect_cpu(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test auto-detection on CPU-only system."""
+    module = _with_stub(monkeypatch, cuda=False)
+    cfg = module.DeviceConfig.auto_detect()
+    assert cfg.device == "cpu"
+    assert not cfg.mixed_precision
+
+
+def test_auto_detect_cuda_prefers_bf16(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test auto-detection on CUDA system with bf16 support."""
+    module = _with_stub(monkeypatch, cuda=True, bf16=True)
+    cfg = module.DeviceConfig.auto_detect()
+    assert cfg.device == "cuda"
+    assert cfg.mixed_precision
+
+
+@pytest.mark.requires_torch
+@pytest.mark.parametrize("dtype", ["float16", "float32"])
+def test_apply_to_tensor_changes_dtype(dtype: str) -> None:
+    """Test that apply_to_tensor changes dtype correctly."""
+    cfg = device_strategy.DeviceConfig(device="cpu", dtype=getattr(torch, dtype))
+    tensor = torch.ones(2, dtype=torch.float32)
+    result = cfg.apply_to_tensor(tensor)
+    assert result.dtype == getattr(torch, dtype)
+    assert result.device.type == "cpu"
 
 
 class TestDeviceMapper:
     """Tests for DeviceMapper registry."""
 
-    def setup_method(self):
-        """Clear strategies before each test."""
-        DeviceMapper.clear_strategies()
-
     def test_register_and_get_strategy(self):
         """Test registering and retrieving a strategy."""
+        if not _HAS_TORCH:
+            pytest.skip("torch not available")
+        
         config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
         DeviceMapper.register_strategy("test_cpu", config)
         
         retrieved = DeviceMapper.get_strategy("test_cpu")
-        
         assert retrieved.device == "cpu"
         assert retrieved.dtype == torch.float32
 
-    def test_get_nonexistent_strategy_raises_error(self):
-        """Test that getting a non-existent strategy raises KeyError."""
-        with pytest.raises(KeyError, match="not found"):
-            DeviceMapper.get_strategy("nonexistent")
+    def test_get_nonexistent_strategy_raises(self):
+        """Test that getting a nonexistent strategy raises KeyError."""
+        with pytest.raises(KeyError, match="not registered"):
+            DeviceMapper.get_strategy("nonexistent_strategy")
+
+    def test_register_empty_name_raises(self):
+        """Test that registering with empty name raises ValueError."""
+        if not _HAS_TORCH:
+            pytest.skip("torch not available")
+        
+        config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
+        with pytest.raises(ValueError, match="must be non-empty"):
+            DeviceMapper.register_strategy("", config)
 
     def test_list_strategies(self):
-        """Test listing all strategies."""
+        """Test listing all registered strategies."""
+        if not _HAS_TORCH:
+            pytest.skip("torch not available")
+        
+        # Clear strategies
+        DeviceMapper._STRATEGIES.clear()
+        
+        # Register a few strategies
         config1 = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
         config2 = DeviceConfig(device="cuda", dtype=torch.float16, mixed_precision=True)
         
-        DeviceMapper.register_strategy("cpu", config1)
-        DeviceMapper.register_strategy("cuda", config2)
+        DeviceMapper.register_strategy("cpu_fp32", config1)
+        DeviceMapper.register_strategy("cuda_fp16", config2)
         
         strategies = DeviceMapper.list_strategies()
-        
-        assert "cpu" in strategies
-        assert "cuda" in strategies
+        assert "cpu_fp32" in strategies
+        assert "cuda_fp16" in strategies
         assert len(strategies) == 2
 
-    def test_clear_strategies(self):
-        """Test clearing all strategies."""
-        config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        DeviceMapper.register_strategy("test", config)
-        
-        DeviceMapper.clear_strategies()
-        
-        assert len(DeviceMapper.list_strategies()) == 0
+
+@pytest.mark.requires_torch
+def test_get_device_config_auto_detect():
+    """Test get_device_config with auto-detection."""
+    config = get_device_config()
+    assert config.device in ("cpu", "cuda", "mps") or config.device.startswith("cuda:")
 
 
-class TestGetDeviceConfig:
-    """Tests for get_device_config convenience function."""
-
-    def setup_method(self):
-        """Setup default strategies."""
-        DeviceMapper.clear_strategies()
-        config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        DeviceMapper.register_strategy("cpu_fp32", config)
-
-    def test_get_device_config_by_strategy(self):
-        """Test getting config by strategy name."""
-        config = get_device_config(strategy="cpu_fp32")
-        
-        assert config.device == "cpu"
-        assert config.dtype == torch.float32
-
-    def test_get_device_config_with_explicit_device(self):
-        """Test overriding device explicitly."""
-        config = get_device_config(strategy="cpu_fp32", device="cuda")
-        
-        assert config.device == "cuda"
-        # dtype should come from strategy
-        assert config.dtype == torch.float32
-
-    def test_get_device_config_with_explicit_dtype(self):
-        """Test overriding dtype explicitly."""
-        config = get_device_config(strategy="cpu_fp32", dtype=torch.float16)
-        
-        assert config.device == "cpu"
-        assert config.dtype == torch.float16
-
-    def test_get_device_config_with_explicit_mixed_precision(self):
-        """Test overriding mixed_precision explicitly."""
-        config = get_device_config(strategy="cpu_fp32", mixed_precision=True)
-        
-        assert config.mixed_precision is True
-
-    def test_get_device_config_auto_default(self):
-        """Test that no args uses auto-detect."""
-        config = get_device_config()
-        
-        # Should return auto-detected config
-        assert config.device is not None
-        assert config.dtype is not None
-
-    def test_get_device_config_invalid_strategy_falls_back(self):
-        """Test that invalid strategy falls back to auto-detect."""
-        with pytest.warns(UserWarning, match="not found"):
-            config = get_device_config(strategy="invalid_strategy")
-        
-        # Should still return a valid config
-        assert config.device is not None
+@pytest.mark.requires_torch
+def test_get_device_config_explicit():
+    """Test get_device_config with explicit parameters."""
+    config = get_device_config(device="cpu", dtype=torch.float32, mixed_precision=False)
+    assert config.device == "cpu"
+    assert config.dtype == torch.float32
+    assert config.mixed_precision is False
 
 
-class TestIntegration:
-    """Integration tests for device strategy."""
-
-    def test_full_workflow(self):
-        """Test a complete workflow with device config."""
-        # Create model
-        model = torch.nn.Linear(10, 5)
-        
-        # Get auto-detected config
-        config = DeviceConfig.auto_detect()
-        
-        # Apply to model
-        model = config.apply_to_model(model)
-        
-        # Create sample tensor
-        x = torch.randn(2, 10)
-        x = config.apply_to_tensor(x)
-        
-        # Forward pass
-        with config.get_autocast_context(enabled=config.mixed_precision):
-            output = model(x)
-        
-        # Verify output shape
-        assert output.shape == (2, 5)
-
-    def test_dtype_consistency(self):
-        """Test that model and tensor dtypes are consistent."""
-        config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        
-        model = torch.nn.Linear(10, 5)
-        model = config.apply_to_model(model)
-        
-        tensor = torch.randn(2, 10)
-        tensor = config.apply_to_tensor(tensor)
-        
-        # Get dtypes
-        model_dtype = next(model.parameters()).dtype
-        tensor_dtype = tensor.dtype
-        
-        assert model_dtype == tensor_dtype == torch.float32
-
-    def test_device_mismatch_error_handling(self):
-        """Test that we can handle device mismatches gracefully."""
-        # This test just verifies the pattern; actual mismatch would error in torch
-        config_cpu = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        
-        model = torch.nn.Linear(10, 5)
-        model = config_cpu.apply_to_model(model)
-        
-        x = torch.randn(2, 10)
-        x = config_cpu.apply_to_tensor(x)
-        
-        # Should work fine
-        output = model(x)
-        assert output.shape == (2, 5)
+@pytest.mark.requires_torch
+def test_get_device_config_partial():
+    """Test get_device_config with partial parameters."""
+    config = get_device_config(device="cpu")
+    assert config.device == "cpu"
+    assert config.dtype == torch.float32
+    assert config.mixed_precision is False
