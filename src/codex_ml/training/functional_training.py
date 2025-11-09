@@ -307,7 +307,7 @@ def train(
             enable=bool(config.mlflow_enable),
             run_name=run_name,
             tracking_uri=config.mlflow_tracking_uri,
-        ) as _mlf,
+        ) as _,
     ):
         if config.mlflow_enable:
             try:

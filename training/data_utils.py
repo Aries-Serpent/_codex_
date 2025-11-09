@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover - lightweight environments
 
 try:
     import torch
-except ImportError:  # pragma: no cover - torch optional
+except ModuleNotFoundError:  # pragma: no cover - torch optional
     torch = None  # type: ignore[assignment]
 else:
     if not hasattr(torch, "Tensor"):
@@ -45,6 +45,7 @@ T = TypeVar("T")
 def _require_torch() -> None:
     if torch is None:
         raise ModuleNotFoundError("torch is required for this operation")
+
 
 # Optional deterministic shuffler import with robust fallback
 try:  # pragma: no cover - optional import from ingestion utilities

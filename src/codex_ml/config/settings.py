@@ -13,9 +13,12 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
     BaseSettings = BaseModel  # type: ignore[misc]
 
     def SettingsConfigDict(**config: Any) -> ConfigDict:  # type: ignore[misc]
-        """Return a ``ConfigDict`` compatible with Pydantic's configuration API."""
-
+        """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
+        Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
+        """
+        config.pop("env_file", None)  # Remove unsupported key if present
         return ConfigDict(**config)
+
 
 __all__ = ["AppSettings", "EvalRow", "eval_row_schema", "get_settings"]
 
