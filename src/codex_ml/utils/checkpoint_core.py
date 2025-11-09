@@ -120,7 +120,9 @@ def _rng_snapshot() -> dict[str, Any]:
             pass
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
-                snap["torch_cuda"] = torch.cuda.get_rng_state_all()
+                # Convert CUDA RNG state tensors to lists for JSON serialization
+                cuda_states = torch.cuda.get_rng_state_all()
+                snap["torch_cuda"] = [state.tolist() for state in cuda_states]
         except Exception:
             pass
     return snap
@@ -149,7 +151,12 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
             pass
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
-                torch.cuda.set_rng_state_all(snap["torch_cuda"])
+                # Convert lists back to tensors for CUDA RNG state restoration
+                cuda_states_list = snap["torch_cuda"]
+                cuda_states = [
+                    torch.tensor(state, dtype=torch.uint8) for state in cuda_states_list
+                ]
+                torch.cuda.set_rng_state_all(cuda_states)
         except Exception:
             pass
 
