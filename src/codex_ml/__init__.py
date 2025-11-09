@@ -52,16 +52,17 @@ except Exception:  # pragma: no cover - degrade gracefully when configs missing
 
 
 try:  # pragma: no cover - optional metrics dependency
-    from .metrics.api import (
+    from .metrics.metric_implementations import (
         BLEUScore,
         F1Score,
-        MetricRegistry,
         RecallScore,
         TokenAccuracy,
+    )
+    from .metrics.api import (
+        MetricRegistry,
         get_metric,
         list_metrics,
         register_metric,
-        summarize_ndjson_logs,
     )
 except Exception:  # pragma: no cover - degrade gracefully when metrics extras missing
 
