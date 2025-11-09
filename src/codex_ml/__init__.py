@@ -55,11 +55,11 @@ try:  # pragma: no cover - optional metrics dependency
     from .metrics.metric_implementations import (
         BLEUScore,
         F1Score,
+        MetricRegistry,
         RecallScore,
         TokenAccuracy,
     )
     from .metrics.api import (
-        MetricRegistry,
         get_metric,
         list_metrics,
         register_metric,
