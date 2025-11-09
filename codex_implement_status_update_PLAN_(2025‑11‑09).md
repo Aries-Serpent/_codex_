@@ -1,4 +1,4 @@
-@codex implement this comprehensive feature and capability completion plan for the **_codex_** repository. Address all **20 high-signal findings** and **15 capability gaps** systematically, with explicit error handling, test gates, and rollback procedures.
+@copilot implement this comprehensive feature and capability completion plan for the **_codex_** repository. Address all **20 high-signal findings** and **15 capability gaps** systematically, with explicit error handling, test gates, and rollback procedures.
 
 **Key Constraints:**
 - ✅ Reproducible: Deterministic RNG, checksummed datasets
