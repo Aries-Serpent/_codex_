@@ -1,16 +1,16 @@
 {
-  "generated": 1762683015.9636188,
+  "generated": 1762683214.5027688,
   "low_maturity": [
     {
       "id": "archival-bundling",
       "components": {
         "functionality": 1.0,
         "consistency": 0.72,
-        "tests": 0.02,
+        "tests": 0.04,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.24128686327077745
+        "documentation": 0.2807486631016043
       },
-      "score": 0.5602,
+      "score": 0.5711,
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -91,9 +91,9 @@
           "contribution": 0.144
         },
         "tests": {
-          "component_value": 0.02,
+          "component_value": 0.04,
           "weight": 0.25,
-          "contribution": 0.005
+          "contribution": 0.01
         },
         "safeguards": {
           "component_value": 0.8333333333333334,
@@ -101,9 +101,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.24128686327077745,
+          "component_value": 0.2807486631016043,
           "weight": 0.15,
-          "contribution": 0.03619302949061662
+          "contribution": 0.042112299465240643
         }
       },
       "primary_deficit": "tests"
@@ -440,9 +440,9 @@
         "consistency": 0.94,
         "tests": 0.0,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.17426273458445038
+        "documentation": 0.20053475935828877
       },
-      "score": 0.3391,
+      "score": 0.3431,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -525,9 +525,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.17426273458445038,
+          "component_value": 0.20053475935828877,
           "weight": 0.15,
-          "contribution": 0.026139410187667557
+          "contribution": 0.030080213903743314
         }
       },
       "primary_deficit": "functionality"
@@ -651,9 +651,9 @@
         "consistency": 0.9230769230769231,
         "tests": 0.3076923076923077,
         "safeguards": 0.5,
-        "documentation": 0.7372654155495978
+        "documentation": 0.7754010695187166
       },
-      "score": 0.5305,
+      "score": 0.5362,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "copilot/extension/server/index.js",
@@ -707,9 +707,9 @@
           "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.7372654155495978,
+          "component_value": 0.7754010695187166,
           "weight": 0.15,
-          "contribution": 0.11058981233243967
+          "contribution": 0.11631016042780748
         }
       },
       "primary_deficit": "tests"
@@ -721,9 +721,9 @@
         "consistency": 0.84,
         "tests": 0.1,
         "safeguards": 0.9166666666666666,
-        "documentation": 0.14745308310991956
+        "documentation": 0.17379679144385027
       },
-      "score": 0.6026,
+      "score": 0.6066,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -814,9 +814,9 @@
           "contribution": 0.13749999999999998
         },
         "documentation": {
-          "component_value": 0.14745308310991956,
+          "component_value": 0.17379679144385027,
           "weight": 0.15,
-          "contribution": 0.022117962466487933
+          "contribution": 0.02606951871657754
         }
       },
       "primary_deficit": "tests"
@@ -828,9 +828,9 @@
         "consistency": 0.76,
         "tests": 0.0,
         "safeguards": 1.0,
-        "documentation": 0.10723860589812331
+        "documentation": 0.13368983957219252
       },
-      "score": 0.5681,
+      "score": 0.5721,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -923,9 +923,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.10723860589812331,
+          "component_value": 0.13368983957219252,
           "weight": 0.15,
-          "contribution": 0.016085790884718495
+          "contribution": 0.020053475935828877
         }
       },
       "primary_deficit": "tests"
@@ -1037,9 +1037,9 @@
         "consistency": 1.0,
         "tests": 0.3333333333333333,
         "safeguards": 0.0,
-        "documentation": 0.2815013404825737
+        "documentation": 0.32085561497326204
       },
-      "score": 0.3256,
+      "score": 0.3315,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
@@ -1073,9 +1073,9 @@
           "contribution": 0.0
         },
         "documentation": {
-          "component_value": 0.2815013404825737,
+          "component_value": 0.32085561497326204,
           "weight": 0.15,
-          "contribution": 0.04222520107238605
+          "contribution": 0.0481283422459893
         }
       },
       "primary_deficit": "functionality"

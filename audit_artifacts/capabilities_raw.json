@@ -1,5 +1,5 @@
 {
-  "generated": 1762683015.1583407,
+  "generated": 1762683213.7002606,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -1332,7 +1332,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 977,
+        "test_count": 980,
         "config_count": 23,
         "fixture_count": 27
       }

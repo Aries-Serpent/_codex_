@@ -1,5 +1,5 @@
 {
-  "generated": 1762683014.8573816,
+  "generated": 1762683213.4002929,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1622,6 +1622,7 @@
       "tests/integration/test_monitor_report.py",
       "tests/security/test_audit_logging.py",
       "tests/selection/test_selection_report_smoke.py",
+      "tests/space_traversal/test_status_reporting_detector.py",
       "tests/specs/test_audit_diff_cli.py",
       "tests/specs/test_audit_explain_cli.py",
       "tests/specs/test_audit_manifest_fields.py",

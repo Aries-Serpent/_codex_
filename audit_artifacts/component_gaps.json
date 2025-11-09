@@ -1,12 +1,12 @@
 {
-  "generated": 1762683015.9644825,
+  "generated": 1762683214.5035882,
   "component_gaps": [
     {
       "id": "archival-bundling",
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.02
+        "value": 0.04
       }
     },
     {
@@ -157,7 +157,7 @@
       "zero_components": [],
       "primary_deficit": {
         "component": "tests",
-        "value": 0.16
+        "value": 0.18
       }
     },
     {
