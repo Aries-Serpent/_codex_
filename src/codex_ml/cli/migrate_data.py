@@ -40,7 +40,9 @@ def migrate(
     if from_version == "auto":
         with open(input_path, encoding="utf-8") as f:
             data = json.load(f)
-            from_version = data.get("version", "1.0")
+            detected_version = data.get("version", "1.0")
+            # Ensure comparisons are reliable even if the version was encoded as a number
+            from_version = str(detected_version)
         typer.echo(f"Auto-detected source version: {from_version}")
 
     # Perform migration
