@@ -1,11 +1,18 @@
 # AGENTS — Super-Agent Entrypoint
-> Quick-start guide for GitHub Copilot and ChatGPT agents working in the _codex_ repository.
+> Quick-start pointer to canonical AGENTS guide for GitHub Copilot and ChatGPT agents.
 > **Last Updated:** 2025-11-09
 
-## 📍 Quick Start
+---
 
-**For the full canonical AGENTS guide, see:**  
-👉 **[docs/guides/AGENTS.md](docs/guides/AGENTS.md)**
+## 📖 Canonical Documentation
+
+**👉 For the complete Super-Agent guide, see:**  
+**[_codex_/AGENTS.md](_codex_/AGENTS.md)** ← Comprehensive wavepoints, use rules, orchestration map
+
+**📋 For the machine-readable manifest, see:**  
+**[_codex_/codex_index.yaml](_codex_/codex_index.yaml)** ← Primary files, summaries, priorities
+
+---
 
 ## ⚡ Priority Files (Read First)
 

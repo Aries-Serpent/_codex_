@@ -116,12 +116,16 @@ Required sections:
 **Status:** All internal references validated
 
 Checked references:
-- ✅ AGENTS.md → docs/guides/AGENTS.md (exists)
+- ✅ AGENTS.md → _codex_/AGENTS.md (exists, canonical)
 - ✅ AGENTS.md → _codex_/codex_index.yaml (exists)
 - ✅ AGENTS.md → inventory.md (exists)
-- ✅ codex_index.yaml → AGENTS.md (exists)
-- ✅ codex_index.yaml → all listed paths (validated above)
+- ✅ _codex_/AGENTS.md → _codex_/codex_index.yaml (exists)
+- ✅ _codex_/AGENTS.md → all example files (validated)
+- ✅ _codex_/codex_index.yaml → AGENTS.md (exists)
+- ✅ _codex_/codex_index.yaml → all listed paths (validated above)
 - ✅ inventory.md → all listed paths (validated above)
+- ✅ README.md → AGENTS.md (exists)
+- ✅ README.md → _codex_/codex_index.yaml (exists)
 
 **Result:** PASS ✅
 
