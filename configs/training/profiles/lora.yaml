@@ -1,0 +1,115 @@
+# LoRA (Low-Rank Adaptation) Training Configuration
+# This config group enables parameter-efficient fine-tuning using LoRA/PEFT
+# 
+# Usage:
+#   codex-train train=lora model=<your_model> data=<your_data>
+#
+# References:
+#   - LoRA: https://arxiv.org/abs/2106.09685
+#   - PEFT library: https://github.com/huggingface/peft
+
+# LoRA-specific parameters
+lora:
+  enabled: true
+  
+  # LoRA rank (r): dimension of the low-rank decomposition
+  # Lower values = fewer parameters, faster training, but may reduce quality
+  # Typical range: 4-64
+  # Default: 8 (good balance for most tasks)
+  r: 8
+  
+  # LoRA alpha: scaling factor for the low-rank matrices
+  # Rule of thumb: alpha = 2 * r is often a good starting point
+  # Default: 16
+  alpha: 16
+  lora_alpha: ${.alpha}  # Alias for compatibility
+  
+  # LoRA dropout: dropout probability for LoRA layers
+  # Helps prevent overfitting, especially with smaller datasets
+  # Default: 0.05 (5%)
+  dropout: 0.05
+  lora_dropout: ${.dropout}  # Alias for compatibility
+  
+  # Target modules: which transformer layers to apply LoRA to
+  # null = auto-detect (applies to attention q, v projections)
+  # Examples: ["q_proj", "v_proj"], ["q_proj", "k_proj", "v_proj", "o_proj"]
+  target_modules: null
+  
+  # Task type for PEFT
+  # Options: CAUSAL_LM, SEQ_2_SEQ_LM, SEQ_CLS, TOKEN_CLS, QUESTION_ANS
+  # Default: CAUSAL_LM (for GPT-style models)
+  task_type: CAUSAL_LM
+  
+  # Bias handling
+  # Options: none, all, lora_only
+  # Default: none (don't train bias parameters)
+  bias: none
+  
+  # Fan-in-fan-out: whether to use fan-in-fan-out for LoRA matrices
+  # Set to true for GPT-2 and similar architectures
+  # Default: false
+  fan_in_fan_out: false
+
+# Training overrides optimized for LoRA
+training:
+  # Higher learning rate often works better with LoRA
+  learning_rate: 1.0e-4
+  
+  # Can use larger batch sizes since fewer parameters are trained
+  batch_size: 16
+  
+  # Fewer epochs often needed with LoRA
+  epochs: 5
+  max_epochs: ${.epochs}
+  
+  # LoRA inherits lora config above
+  lora: ${lora}
+  
+  # Optimizer settings for LoRA
+  optimizer:
+    name: adamw_torch
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1.0e-08
+  
+  # Scheduler settings
+  scheduler:
+    name: linear
+    warmup_steps: 100
+    num_cycles: 1.0
+  
+  # Checkpointing
+  checkpoint:
+    dir: runs/lora/checkpoints
+    every_n_steps: 100
+    keep_best_k: 3
+
+# Device and precision
+device: null  # Auto-detect
+dtype: null   # Auto-detect
+mixed_precision: true  # LoRA benefits from mixed precision
+
+# Enable telemetry
+tensorboard: true
+mlflow_enable: false
+
+# Output directory
+output_dir: runs/lora
+
+# Reproducibility
+seed: 42
+deterministic: true
+
+# Common LoRA configurations by use case:
+#
+# 1. Minimal LoRA (fastest, smallest memory):
+#    r: 4, alpha: 8, target_modules: ["q_proj", "v_proj"]
+#
+# 2. Standard LoRA (recommended starting point):
+#    r: 8, alpha: 16, target_modules: null (auto)
+#
+# 3. High-quality LoRA (better results, more memory):
+#    r: 16, alpha: 32, target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+#
+# 4. Full LoRA (best quality, most memory):
+#    r: 64, alpha: 128, target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
