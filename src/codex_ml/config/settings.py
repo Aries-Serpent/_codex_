@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from functools import lru_cache
 from typing import Any
 
@@ -16,7 +17,12 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
         """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """
-        config.pop("env_file", None)  # Remove unsupported key if present
+        if config.pop("env_file", None) is not None:
+            warnings.warn(
+                "env_file not supported when pydantic_settings unavailable",
+                UserWarning,
+                stacklevel=2,
+            )
         return ConfigDict(**config)
 
 

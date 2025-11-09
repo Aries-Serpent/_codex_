@@ -1,5 +1,5 @@
 # RLHF (Reinforcement Learning from Human Feedback) Training Configuration
-# ⚠️ STATUS: STUB - Full RLHF implementation is deferred
+# WARNING: STATUS: STUB - Full RLHF implementation is deferred
 #
 # This configuration group is a placeholder for future RLHF capabilities.
 # RLHF training requires additional infrastructure including:

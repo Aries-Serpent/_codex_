@@ -121,8 +121,12 @@ def _rng_snapshot() -> dict[str, Any]:
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
                 # Convert CUDA RNG state tensors to lists for JSON serialization
+                # Store both data and dtype to ensure exact restoration
                 cuda_states = torch.cuda.get_rng_state_all()
-                snap["torch_cuda"] = [state.tolist() for state in cuda_states]
+                snap["torch_cuda"] = [
+                    {"data": state.tolist(), "dtype": str(state.dtype)}
+                    for state in cuda_states
+                ]
         except Exception:
             pass
     return snap
@@ -154,10 +158,20 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 # Convert lists back to tensors for CUDA RNG state restoration
                 # Create tensors on the appropriate CUDA device to maintain determinism
                 cuda_states_list = snap["torch_cuda"]
-                cuda_states = [
-                    torch.tensor(state, dtype=torch.uint8, device=f"cuda:{i}")
-                    for i, state in enumerate(cuda_states_list)
-                ]
+                cuda_states = []
+                for i, state_info in enumerate(cuda_states_list):
+                    # Support both old format (list) and new format (dict with dtype)
+                    if isinstance(state_info, dict):
+                        data = state_info["data"]
+                        dtype_str = state_info.get("dtype", "torch.uint8")
+                        # Parse dtype string like "torch.uint8" to actual dtype
+                        dtype = getattr(torch, dtype_str.split(".")[-1], torch.uint8)
+                    else:
+                        # Legacy format: plain list, assume uint8
+                        data = state_info
+                        dtype = torch.uint8
+                    tensor = torch.tensor(data, dtype=dtype, device=f"cuda:{i}")
+                    cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
         except Exception:
             pass

@@ -27,7 +27,7 @@ HFTokenizerAdapter = _HFTokenizerAdapter
 
 def align_tensor_to_device(
     tensor: "torch.Tensor", device_config: "DeviceConfig | None", *, fallback_dtype: "torch.dtype | None" = None
-):
+) -> Any:
     """Ensure tokenizer tensors respect the configured dtype/device."""
 
     if torch is None or device_config is None:
