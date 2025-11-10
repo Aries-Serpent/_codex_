@@ -1,6 +1,5 @@
 """Tests for AST node module."""
 
-import pytest
 from pathlib import Path
 from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
 

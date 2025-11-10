@@ -1,6 +1,5 @@
 """Integration tests for AST module."""
 
-import pytest
 from pathlib import Path
 from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
 from codex.ast.graph import DependencyGraph
@@ -117,15 +116,6 @@ def test_cycle_detection_with_nodes():
     graph = DependencyGraph()
     
     # Create cyclic dependency: A -> B -> C -> A
-    nodes = {
-        "A": StandardizedASTNode("A", NodeType.FUNCTION, "func_a",
-                                 SourceLocation(Path("a.py"), 1, 0, 5, 0)),
-        "B": StandardizedASTNode("B", NodeType.FUNCTION, "func_b",
-                                 SourceLocation(Path("b.py"), 1, 0, 5, 0)),
-        "C": StandardizedASTNode("C", NodeType.FUNCTION, "func_c",
-                                 SourceLocation(Path("c.py"), 1, 0, 5, 0)),
-    }
-    
     graph.add_edge("A", "B")
     graph.add_edge("B", "C")
     graph.add_edge("C", "A")

@@ -1,6 +1,5 @@
 """Tests for metrics aggregation module."""
 
-import pytest
 from codex.ast.metrics import CodeMetrics, MetricsAggregator
 
 

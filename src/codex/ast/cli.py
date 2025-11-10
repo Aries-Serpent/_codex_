@@ -4,10 +4,6 @@ import click
 from pathlib import Path
 from typing import Optional
 
-from .graph import DependencyGraph
-from .metrics import MetricsAggregator
-from .node import StandardizedASTNode
-
 
 @click.group()
 def cli():

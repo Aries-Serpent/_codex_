@@ -4,7 +4,7 @@ import pytest
 from pathlib import Path
 from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
 from codex.ast.graph import DependencyGraph
-from codex.ast.metrics import CodeMetrics, MetricsAggregator
+from codex.ast.metrics import CodeMetrics
 
 
 @pytest.fixture
