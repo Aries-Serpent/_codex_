@@ -1,5 +1,6 @@
 """Experiment management comprehensive tests."""
 from __future__ import annotations
+import os
 
 class TestMLflowTracking:
     """Test MLflow tracking patterns."""
