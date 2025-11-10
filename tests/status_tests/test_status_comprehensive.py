@@ -1,6 +1,5 @@
 """Status reporting comprehensive tests."""
 from __future__ import annotations
-from pathlib import Path
 
 
 class TestStatusReporting:
