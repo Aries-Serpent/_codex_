@@ -1,6 +1,5 @@
 """Inference serving comprehensive tests."""
 from __future__ import annotations
-import pytest
 
 class TestFastAPIEndpoints:
     """Test FastAPI endpoint patterns."""

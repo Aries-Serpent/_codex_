@@ -7,7 +7,6 @@ without requiring actual Docker/Kubernetes runtimes.
 
 from __future__ import annotations
 
-import json
 import tempfile
 from pathlib import Path
 

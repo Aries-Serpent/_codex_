@@ -257,15 +257,6 @@ class TestConfigSchema:
 
     def test_schema_validation_basic(self):
         """Test basic schema validation."""
-        schema = {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "age": {"type": "integer"},
-            },
-            "required": ["name"],
-        }
-
         valid_config = {"name": "test", "age": 25}
 
         # Manual validation
