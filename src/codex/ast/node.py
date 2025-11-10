@@ -6,8 +6,10 @@ Design patterns from:
 - Roslyn SyntaxNode
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+from typing import Optional, Any
 from pathlib import Path
 from enum import Enum
 
@@ -62,19 +64,19 @@ class StandardizedASTNode:
     name: str
     source_location: SourceLocation
     
-    children: List['StandardizedASTNode'] = field(default_factory=list)
-    parent: Optional['StandardizedASTNode'] = None
+    children: list[StandardizedASTNode] = field(default_factory=list)
+    parent: Optional[StandardizedASTNode] = None
     docstring: Optional[str] = None
-    decorators: List[str] = field(default_factory=list)
-    type_hints: Dict[str, str] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    decorators: list[str] = field(default_factory=list)
+    type_hints: dict[str, str] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     
-    def add_child(self, child: 'StandardizedASTNode') -> None:
+    def add_child(self, child: StandardizedASTNode) -> None:
         """Add child node and set parent reference."""
         child.parent = self
         self.children.append(child)
     
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary (JSON-compatible)."""
         return {
             'node_id': self.node_id,

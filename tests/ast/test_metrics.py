@@ -123,4 +123,4 @@ def test_correlation_valid_inputs():
     coverage = [90.0, 80.0, 70.0, 60.0]
     corr = agg.correlate_complexity_coverage(complexity, coverage)
     assert corr < 0  # Negative correlation
-    assert corr >= -1.0 and corr <= 1.0  # Within valid range
+    assert -1.0 <= corr <= 1.0  # Within valid range

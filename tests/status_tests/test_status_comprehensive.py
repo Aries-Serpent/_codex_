@@ -1,7 +1,7 @@
 """Status reporting comprehensive tests."""
 from __future__ import annotations
-import tempfile
 from pathlib import Path
+
 
 class TestStatusReporting:
     """Test status reporting functionality."""
@@ -41,10 +41,8 @@ class TestStatusUpdateReport:
 class TestStatusDetector:
     """Test status detector patterns."""
     
-    def test_evidence_collection(self):
+    def test_evidence_collection(self, tmp_path):
         """Test evidence file collection."""
-        test_dir = Path(tempfile.mkdtemp())
-        evidence = test_dir / "evidence.jsonl"
+        evidence = tmp_path / "evidence.jsonl"
         evidence.write_text('{"test": "data"}\n')
         assert evidence.exists()
-        import shutil; shutil.rmtree(test_dir)
