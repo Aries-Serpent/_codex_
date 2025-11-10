@@ -79,7 +79,7 @@ billiard==4.2.2
     # via celery
 black==25.9.0
     # via codex-ml (pyproject.toml)
-bleach==6.2.0
+bleach==6.3.0
     # via nbconvert
 blinker==1.9.0
     # via flask
