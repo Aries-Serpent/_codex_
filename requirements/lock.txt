@@ -169,7 +169,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==4.3.0
+datasets==4.4.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -252,7 +252,7 @@ fastapi-cli==0.0.8
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.19.1
+filelock==3.20.0
     # via
     #   datasets
     #   huggingface-hub
@@ -299,7 +299,7 @@ gitpython==3.1.45
     #   mlflow-skinny
     #   scmrepo
     #   wandb
-google-api-core==2.26.0
+google-api-core==2.28.1
     # via opencensus
 google-auth==2.40.3
     # via
@@ -382,7 +382,7 @@ ipython==9.6.0
     #   ipywidgets
 ipython-pygments-lexers==1.1.1
     # via ipython
-ipywidgets==8.1.7
+ipywidgets==8.1.8
     # via great-expectations
 isoduration==20.11.0
     # via jsonschema
@@ -743,7 +743,7 @@ peft==0.17.1
     #   lm-eval
 pexpect==4.9.0
     # via ipython
-pillow==11.3.0
+pillow==12.0.0
     # via
     #   matplotlib
     #   tensorboard
