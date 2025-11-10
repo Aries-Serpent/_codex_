@@ -10,10 +10,11 @@ Purpose:
 
 Usage:
     codex-status-audit [--output OUTPUT] [--baseline BASELINE]
+    codex-status-audit --generate  # Generate JSON status update
 
 This command orchestrates:
 1. Repository capability audit (via audit_runner.py)
-2. Status update report generation (via status_update_report.py)
+2. Status update report generation (via generate_status_update.py)
 3. Optional baseline comparison for delta tracking
 """
 from __future__ import annotations
@@ -49,6 +50,12 @@ def main(argv: List[str] | None = None) -> int:
         default="reports",
     )
     parser.add_argument(
+        "--generate",
+        "-g",
+        action="store_true",
+        help="Generate JSON status update report using the new schema-based tool",
+    )
+    parser.add_argument(
         "--baseline",
         "-b",
         help="Path to baseline capabilities_scored.json for delta comparison",
@@ -73,6 +80,25 @@ def main(argv: List[str] | None = None) -> int:
     args = parser.parse_args(argv)
     
     repo_root = Path(__file__).resolve().parents[1]
+    
+    # If --generate flag is set, use the new JSON-based tool
+    if args.generate:
+        print("=" * 70)
+        print("Generating JSON Status Update Report (Schema-based)")
+        print("=" * 70)
+        print()
+        
+        status_generator = repo_root / "tools" / "generate_status_update.py"
+        if not status_generator.exists():
+            print(f"[ERROR] Status generator not found: {status_generator}", file=sys.stderr)
+            return 1
+        
+        return _run_command(
+            [sys.executable, str(status_generator)],
+            "Generate JSON status update"
+        )
+    
+    # Original audit pipeline workflow
     audit_runner = repo_root / "scripts" / "space_traversal" / "audit_runner.py"
     status_reporter = repo_root / "scripts" / "space_traversal" / "status_update_report.py"
     

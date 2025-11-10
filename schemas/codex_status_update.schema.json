@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "codex_status_update",
+  "type": "object",
+  "required": [
+    "metadata",
+    "snapshot",
+    "delta",
+    "patches",
+    "automation",
+    "security",
+    "questions",
+    "decisions"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "timestamp_utc",
+        "report_version",
+        "template_version"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "pattern": "^📍 `_codex_` : Status Update .+$"
+        },
+        "timestamp_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "report_version": {
+          "type": "string"
+        },
+        "template_version": {
+          "type": "string",
+          "const": "v1.2"
+        },
+        "authors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reviewers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "previous_report_path": { "type": "string" },
+        "git_context": {
+          "type": "object",
+          "properties": {
+            "branch": { "type": "string" },
+            "commit_sha": { "type": "string" },
+            "commit_sha_short": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "python_version": { "type": "string" },
+            "os": { "type": "string" },
+            "runtime_hash": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": "object",
+      "required": [
+        "repo_map",
+        "capabilities",
+        "findings",
+        "tests_gates",
+        "repro",
+        "deferred"
+      ],
+      "properties": {
+        "repo_map": { "type": "string" },
+        "capabilities": {
+          "description": "Dynamic capability list; not limited to a fixed set.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "status",
+              "artifacts",
+              "gaps",
+              "risks",
+              "severity",
+              "confidence",
+              "patch_plan",
+              "rollback"
+            ],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "category": { "type": "string" },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "Implemented",
+                  "Partially Implemented",
+                  "Stubbed",
+                  "Missing"
+                ]
+              },
+              "artifacts": { "type": "string" },
+              "gaps": { "type": "string" },
+              "risks": { "type": "string" },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "patch_plan": { "type": "string" },
+              "rollback": { "type": "string" },
+              "owner": { "type": "string" },
+              "eta": { "type": "string", "format": "date-time" },
+              "score": { "type": "number" },
+              "maturity": { "type": "number" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["title", "severity", "confidence", "impact"],
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "evidence": { "type": "string" },
+              "impact": { "type": "string" },
+              "proposed_action": { "type": "string" },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "owner": { "type": "string" },
+              "reported_utc": { "type": "string", "format": "date-time" },
+              "status": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "tests_gates": {
+          "type": "object",
+          "properties": {
+            "tests_summary": {
+              "type": "object",
+              "properties": {
+                "total": { "type": "integer", "minimum": 0 },
+                "passed": { "type": "integer", "minimum": 0 },
+                "failed": { "type": "integer", "minimum": 0 },
+                "skipped": { "type": "integer", "minimum": 0 },
+                "duration_seconds": { "type": "number", "minimum": 0 }
+              },
+              "additionalProperties": true
+            },
+            "coverage_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+            "coverage_threshold": { "type": "number", "minimum": 0, "maximum": 100 },
+            "coverage_by_module": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "module": { "type": "string" },
+                  "percent": { "type": "number", "minimum": 0, "maximum": 100 }
+                },
+                "required": ["module", "percent"],
+                "additionalProperties": true
+              }
+            },
+            "quality_gates": { "type": "object" },
+            "reproducibility": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "repro": {
+          "type": "object",
+          "required": ["core_controls", "registry"],
+          "properties": {
+            "core_controls": { "type": "string" },
+            "registry": {
+              "description": "Extensible reproducibility registry entries.",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "category", "control", "status"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "category": { "type": "string" },
+                  "control": { "type": "string" },
+                  "status": { "type": "string" },
+                  "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+                  "evidence": { "type": "string" },
+                  "owner": { "type": "string" },
+                  "next_audit_utc": { "type": "string", "format": "date-time" },
+                  "notes": { "type": "string" }
+                },
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["item", "rationale"],
+            "properties": {
+              "item": { "type": "string" },
+              "rationale": { "type": "string" },
+              "risk": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "review_date_utc": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "audit_integrity": {
+          "type": "object",
+          "properties": {
+            "manifest_path": { "type": "string" },
+            "manifest_sha256": { "type": "string" },
+            "artifacts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "path": { "type": "string" },
+                  "sha256": { "type": "string" }
+                },
+                "required": ["path", "sha256"],
+                "additionalProperties": true
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "schema_validation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data_path": { "type": "string" },
+              "schema_path": { "type": "string" },
+              "status": { "type": "string", "enum": ["PASS", "FAIL"] },
+              "errors_count": { "type": "integer", "minimum": 0 },
+              "notes": { "type": "string" }
+            },
+            "required": ["data_path", "schema_path", "status"],
+            "additionalProperties": true
+          }
+        },
+        "performance": {
+          "type": "object",
+          "properties": {
+            "training_steps_per_sec": { "type": "number" },
+            "epoch_time_sec": { "type": "number" },
+            "latency_ms_p50": { "type": "number" },
+            "latency_ms_p95": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "connectors": {
+          "type": "object",
+          "properties": {
+            "github": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string" },
+                "core_remaining": { "type": "integer", "minimum": 0 },
+                "search_remaining": { "type": "integer", "minimum": 0 },
+                "graphql_remaining": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "delta": {
+      "type": "object",
+      "properties": {
+        "code_changes": { "type": "string" },
+        "tests_coverage_delta": {
+          "type": "object",
+          "properties": {
+            "previous_percent": { "type": "number" },
+            "current_percent": { "type": "number" },
+            "delta_percent": { "type": "number" }
+          },
+          "additionalProperties": true
+        },
+        "risks_delta": { "type": "string" },
+        "performance_delta": { "type": "string" },
+        "issues_prs_delta": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "paths",
+          "why",
+          "risk",
+          "confidence",
+          "rollback",
+          "validation",
+          "diff"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "paths": { "type": "array", "items": { "type": "string" } },
+          "why": { "type": "string" },
+          "risk": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "confidence": { "type": "integer", "minimum": 1, "maximum": 5 },
+          "tests_docs": { "type": "string" },
+          "rollback": { "type": "string" },
+          "validation": { "type": "array", "items": { "type": "string" } },
+          "diff": { "type": "string" },
+          "capability_ids": { "type": "array", "items": { "type": "string" } },
+          "repro_ids": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": true
+      }
+    },
+    "automation": {
+      "type": "object",
+      "properties": {
+        "issues": { "type": "array", "items": { "type": "object" } },
+        "pull_requests": { "type": "array", "items": { "type": "object" } },
+        "coverage": { "type": "number", "minimum": 0, "maximum": 100 },
+        "coverage_modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "module": { "type": "string" },
+              "percent": { "type": "number", "minimum": 0, "maximum": 100 }
+            },
+            "required": ["module", "percent"],
+            "additionalProperties": true
+          }
+        },
+        "dependency_audit": { "type": "string" },
+        "security_scan": { "type": "string" },
+        "performance": { "type": "string" },
+        "capability_autodiscovery": { "type": "string" },
+        "schema_validation": { "type": "array", "items": { "type": "object" } },
+        "connectors": {
+          "type": "object",
+          "properties": {
+            "github": {
+              "type": "object",
+              "properties": {
+                "captured_utc": { "type": "string", "format": "date-time" },
+                "status": {
+                  "type": "string",
+                  "enum": ["OK", "ERROR", "OFFLINE"]
+                },
+                "endpoint": { "type": "string", "format": "uri" },
+                "resources": { "type": "object" }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "tiles": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "audit": {
+      "type": "object",
+      "properties": {
+        "audit_run_manifest": {
+          "type": "object",
+          "properties": {
+            "path": { "type": "string" },
+            "sha256": { "type": "string" },
+            "timestamp_utc": { "type": "string", "format": "date-time" }
+          },
+          "additionalProperties": true
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": { "type": "string" },
+              "sha256": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "capabilities_raw": { "type": "string" },
+        "capabilities_scored": { "type": "string" },
+        "gaps_analysis": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "masking_applied": { "type": "boolean" },
+        "redactions_count": { "type": "integer", "minimum": 0 },
+        "patterns_detected": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "priority",
+          "owner",
+          "asked_utc",
+          "status",
+          "question"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "priority": {
+            "type": "string",
+            "enum": ["P0", "P1", "P2", "P3"]
+          },
+          "owner": { "type": "string" },
+          "asked_utc": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["Open", "In Review", "Answered", "Deferred"]
+          },
+          "answered_utc": { "type": "string", "format": "date-time" },
+          "question": { "type": "string" },
+          "answer": { "type": "string" },
+          "confidence": { "type": "integer", "minimum": 1, "maximum": 5 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "context",
+          "chosen",
+          "owner",
+          "date_utc"
+        ],
+        "properties": {
+          "title": { "type": "string" },
+          "context": { "type": "string" },
+          "options": { "type": "string" },
+          "chosen": { "type": "string" },
+          "owner": { "type": "string" },
+          "date_utc": { "type": "string", "format": "date-time" },
+          "impact": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "tokenization": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "settings": { "type": "string" },
+        "caching_parity": { "type": "string" },
+        "offline_considerations": { "type": "string" },
+        "recommendations": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "visual": {
+      "type": "object",
+      "properties": {
+        "html_templates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "template": { "type": "string" },
+              "baseline_path": { "type": "string" },
+              "candidate_path": { "type": "string" },
+              "similarity": { "type": "number", "minimum": 0, "maximum": 1 },
+              "threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+              "status": { "type": "string", "enum": ["PASS", "FAIL"] }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "dashboard_tiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "generated_utc": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
