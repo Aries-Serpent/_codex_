@@ -88,17 +88,16 @@ class MetricsAggregator:
         Raises:
             ValueError: If lists have different lengths or fewer than 2 items
         """
+        if len(complexity_metrics) < 2 or len(coverage_metrics) < 2:
+            raise ValueError(
+                f"At least 2 data points required for correlation, got {len(complexity_metrics)} and {len(coverage_metrics)}"
+            )
+
         if len(complexity_metrics) != len(coverage_metrics):
             raise ValueError(
                 f"complexity_metrics and coverage_metrics must have the same length: "
                 f"got {len(complexity_metrics)} and {len(coverage_metrics)}"
             )
-
-        if len(complexity_metrics) < 2:
-            raise ValueError(
-                f"At least 2 data points required for correlation, got {len(complexity_metrics)}"
-            )
-
         mean_cc = statistics.mean(complexity_metrics)
         mean_cov = statistics.mean(coverage_metrics)
 
