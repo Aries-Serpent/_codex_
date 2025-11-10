@@ -1,0 +1,120 @@
+"""Code metrics aggregation and analysis."""
+
+from dataclasses import dataclass
+from typing import Dict, List
+import statistics
+
+
+@dataclass
+class CodeMetrics:
+    """Aggregated code quality metrics for a code entity."""
+    
+    cyclomatic_complexity: int
+    cognitive_complexity: float
+    lines_of_code: int
+    comment_lines: int
+    maintainability_index: float
+    
+    @property
+    def quality_tier(self) -> str:
+        """Compute quality grade (A-F) from maintainability index."""
+        if self.maintainability_index >= 85:
+            return "A"
+        elif self.maintainability_index >= 70:
+            return "B"
+        elif self.maintainability_index >= 55:
+            return "C"
+        elif self.maintainability_index >= 40:
+            return "D"
+        else:
+            return "F"
+    
+    def to_dict(self) -> Dict:
+        """Serialize to dictionary."""
+        return {
+            "cyclomatic_complexity": self.cyclomatic_complexity,
+            "cognitive_complexity": self.cognitive_complexity,
+            "lines_of_code": self.lines_of_code,
+            "comment_lines": self.comment_lines,
+            "maintainability_index": self.maintainability_index,
+            "quality_tier": self.quality_tier,
+        }
+
+
+class MetricsAggregator:
+    """Aggregate and correlate metrics from multiple sources."""
+    
+    def __init__(self):
+        self.metrics: Dict[str, CodeMetrics] = {}
+    
+    def store_metrics(self, entity_id: str, metrics: CodeMetrics) -> None:
+        """Store metrics for an entity."""
+        self.metrics[entity_id] = metrics
+    
+    def aggregate(self, metrics_list: List[CodeMetrics]) -> CodeMetrics:
+        """Aggregate multiple metrics into summary.
+        
+        Args:
+            metrics_list: List of CodeMetrics objects
+        
+        Returns:
+            Aggregated CodeMetrics
+        """
+        if not metrics_list:
+            return CodeMetrics(0, 0.0, 0, 0, 100.0)
+        
+        return CodeMetrics(
+            cyclomatic_complexity=sum(m.cyclomatic_complexity for m in metrics_list),
+            cognitive_complexity=sum(m.cognitive_complexity for m in metrics_list),
+            lines_of_code=sum(m.lines_of_code for m in metrics_list),
+            comment_lines=sum(m.comment_lines for m in metrics_list),
+            maintainability_index=statistics.mean(
+                m.maintainability_index for m in metrics_list
+            ),
+        )
+    
+    def correlate_complexity_coverage(
+        self,
+        complexity_metrics: List[float],
+        coverage_metrics: List[float],
+    ) -> float:
+        """Compute correlation between complexity and test coverage.
+        
+        Returns:
+            Pearson correlation coefficient (-1.0 to 1.0)
+        """
+        if len(complexity_metrics) < 2:
+            return 0.0
+        
+        mean_cc = statistics.mean(complexity_metrics)
+        mean_cov = statistics.mean(coverage_metrics)
+        
+        numerator = sum(
+            (c - mean_cc) * (v - mean_cov)
+            for c, v in zip(complexity_metrics, coverage_metrics)
+        )
+        
+        denom_cc = (sum((c - mean_cc) ** 2 for c in complexity_metrics)) ** 0.5
+        denom_cov = (sum((c - mean_cov) ** 2 for c in coverage_metrics)) ** 0.5
+        
+        if denom_cc * denom_cov == 0:
+            return 0.0
+        
+        return numerator / (denom_cc * denom_cov)
+    
+    def summary(self) -> Dict:
+        """Get summary statistics of all metrics."""
+        if not self.metrics:
+            return {}
+        
+        ccs = [m.cyclomatic_complexity for m in self.metrics.values()]
+        locs = [m.lines_of_code for m in self.metrics.values()]
+        mis = [m.maintainability_index for m in self.metrics.values()]
+        
+        return {
+            "total_entities": len(self.metrics),
+            "total_lines_of_code": sum(locs),
+            "average_cyclomatic_complexity": statistics.mean(ccs),
+            "max_cyclomatic_complexity": max(ccs),
+            "average_maintainability_index": statistics.mean(mis),
+        }
