@@ -7,7 +7,6 @@ without requiring actual Docker/Kubernetes runtimes.
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -50,10 +49,9 @@ class TestDockerConfiguration:
             # Should ignore common patterns
             assert len(content.strip()) > 0
 
-    def test_docker_entrypoint_pattern(self):
+    def test_docker_entrypoint_pattern(self, tmp_path):
         """Test Docker entrypoint script patterns."""
-        test_dir = Path(tempfile.mkdtemp())
-        entrypoint = test_dir / "entrypoint.sh"
+        entrypoint = tmp_path / "entrypoint.sh"
         
         # Create sample entrypoint
         entrypoint.write_text("#!/bin/bash\nset -e\nexec \"$@\"\n")
@@ -61,10 +59,6 @@ class TestDockerConfiguration:
         content = entrypoint.read_text()
         assert "#!/bin/bash" in content or "#!/bin/sh" in content
         assert "exec" in content or "python" in content
-        
-        # Cleanup
-        import shutil
-        shutil.rmtree(test_dir)
 
     def test_docker_build_args_pattern(self):
         """Test Docker build args configuration."""
