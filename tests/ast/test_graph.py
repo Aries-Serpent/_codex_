@@ -80,3 +80,65 @@ def test_add_node():
     assert "A" in graph.nodes
     assert "B" in graph.nodes
     assert len(graph.edges) == 0
+
+
+def test_self_loop_detected():
+    """Test that self-loops are detected as cycles."""
+    graph = DependencyGraph()
+    graph.add_edge("A", "A")
+    
+    cycles = graph.detect_cycles()
+    assert len(cycles) == 1
+    assert cycles[0] == ["A"]
+
+
+def test_self_loop_topological_sort_fails():
+    """Test that topological sort fails with self-loops."""
+    graph = DependencyGraph()
+    graph.add_edge("A", "A")
+    
+    with pytest.raises(ValueError, match="Graph has cycles"):
+        graph.topological_sort()
+
+
+def test_multiple_self_loops():
+    """Test detection of multiple independent self-loops."""
+    graph = DependencyGraph()
+    graph.add_edge("A", "A")
+    graph.add_edge("B", "B")
+    
+    cycles = graph.detect_cycles()
+    assert len(cycles) == 2
+    cycle_nodes = {tuple(cycle) for cycle in cycles}
+    assert ("A",) in cycle_nodes
+    assert ("B",) in cycle_nodes
+
+
+def test_mixed_cycles_and_self_loops():
+    """Test detection of both multi-node cycles and self-loops."""
+    graph = DependencyGraph()
+    # Multi-node cycle
+    graph.add_edge("A", "B")
+    graph.add_edge("B", "A")
+    # Self-loop
+    graph.add_edge("C", "C")
+    # Acyclic part
+    graph.add_edge("D", "E")
+    
+    cycles = graph.detect_cycles()
+    assert len(cycles) == 2
+    
+    # Check we have one 2-node cycle and one 1-node cycle
+    cycle_sizes = sorted([len(cycle) for cycle in cycles])
+    assert cycle_sizes == [1, 2]
+
+
+def test_no_false_positives_for_isolated_nodes():
+    """Test that isolated nodes without self-edges are not reported as cycles."""
+    graph = DependencyGraph()
+    graph.add_node("A")
+    graph.add_node("B")
+    graph.add_edge("C", "D")
+    
+    cycles = graph.detect_cycles()
+    assert len(cycles) == 0

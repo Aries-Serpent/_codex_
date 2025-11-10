@@ -70,8 +70,11 @@ class DependencyGraph:
                     if w == node_id:
                         break
                 
-                # Only record actual cycles (SCC size > 1)
+                # Record cycles: multi-node SCCs or single-node self-loops
                 if len(scc) > 1:
+                    sccs.append(scc)
+                elif len(scc) == 1 and node_id in self.edges.get(node_id, set()):
+                    # Single-node SCC with self-edge is a cycle
                     sccs.append(scc)
         
         # Find SCCs for all nodes
