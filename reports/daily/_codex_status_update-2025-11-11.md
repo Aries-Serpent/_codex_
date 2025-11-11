@@ -196,38 +196,206 @@ Below consolidates status_update_2025.md with audit workflow context.
 ```diff
 +++ tests/codex_ml/test_tokenization_adapters.py
 @@
++import pytest
++
++from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
++from codex_ml.tokenization.sp_trainer import SentencePieceTrainer
++
++
 +@pytest.mark.requires_transformers
-+def test_hf_tokenizer_roundtrip(): ...
++def test_hf_tokenizer_roundtrip() -> None:
++ adapter = HFTokenizerAdapter("gpt2")
++ text = "hello codex"
++ encoded = adapter.encode(text)
++ decoded = adapter.decode(encoded)
++ assert isinstance(encoded, list)
++ assert decoded.startswith("hello")
++
++
 +@pytest.mark.requires_sentencepiece
-+def test_sentencepiece_trainer_vocab(tmp_path): ...
++def test_sentencepiece_trainer_vocab(tmp_path) -> None:
++ corpus = tmp_path / "corpus.txt"
++ corpus.write_text("hello codex\nhello world\n", encoding="utf-8")
++
++ out_dir = tmp_path / "spm"
++ trainer = SentencePieceTrainer(
++ input_path=str(corpus),
++ model_prefix="codex_test",
++ vocab_size=128,
++ output_dir=str(out_dir),
++ )
++ trainer.train()
++
++ assert any(p.suffix == ".model" for p in out_dir.iterdir())
 ```
 ```diff
 +++ tests/codex_ml/test_checkpoint_core.py
 @@
-+def test_save_and_load_roundtrip(tmp_path): ...
++from pathlib import Path
++
++import pytest
++
++from codex_ml.checkpointing.checkpoint_core import (
++ SCHEMA_VERSION,
++ load_checkpoint,
++ save_checkpoint,
++)
++
++
++@pytest.mark.requires_torch
++def test_save_and_load_roundtrip(tmp_path: Path) -> None:
++ out_dir = tmp_path / "epoch_0001"
++ state = {"step": 10, "loss": 0.123}
++ meta = {"run_id": "test"}
++
++ save_checkpoint(str(out_dir), state=state, meta=meta, keep_last_k=3)
++ loaded_state, loaded_meta = load_checkpoint(str(out_dir))
++
++ assert loaded_state["step"] == 10
++ assert loaded_meta["run_id"] == "test"
++ assert loaded_meta["_schema_version"] == SCHEMA_VERSION
 ```
 ```diff
 +++ src/codex_ml/training/loop.py
 @@
-+def train_epoch(...): ...
-+def save_epoch_checkpoint(...): ...
++from __future__ import annotations
++
++from collections.abc import Iterable
++from typing import Any, Mapping, Sequence
++
++from codex_ml.callbacks.base import Callback, LoggingCallback, merge_callback_results
++from codex_ml.checkpointing import save_checkpoint
++
++
++def train_epoch(
++ *,
++ model,
++ dataloader: Iterable[Sequence[Mapping[str, Any]]],
++ callbacks: list[Callback] | None = None,
++ state: dict[str, Any] | None = None,
++) -> dict[str, Any]:
++ """Minimal reference training loop for one epoch.
++
++ This is intentionally simplified and leaves optimizer / scheduler wiring to
++ the caller. It exists primarily to provide a stable contract for tests and
++ Codex‑generated workflows.
++ """
++
++ callbacks = list(callbacks or [LoggingCallback()])
++ state = state or {}
++ metrics: dict[str, Any] = {}
++
++ for cb in callbacks:
++ cb.on_train_start(state)
++
++ for batch in dataloader:
++ # Caller is responsible for implementing `model.step(batch, state)`
++ batch_metrics = model.step(batch, state)
++ metrics = merge_callback_results(metrics, batch_metrics or {})
++
++ for cb in callbacks:
++ cb.on_train_end(state)
++
++ return metrics
++
++
++def save_epoch_checkpoint(out_dir: str, state: dict[str, Any], meta: dict[str, Any]) -> str:
++ """Thin wrapper over :func:`save_checkpoint` for consistency."""
++
++ return save_checkpoint(out_dir, state=state, meta=meta)
 ```
 ```diff
 +++ src/codex_ml/logging/registry.py
 @@
++from __future__ import annotations
++
++from dataclasses import dataclass
++from pathlib import Path
++from typing import Any, Protocol
++
++from codex_ml.callbacks.ndjson_logger import NDJSONLogger
++from codex_ml.config.settings import AppSettings
++
++
++class LoggerFactory(Protocol):
++ def __call__(self, settings: AppSettings) -> Any: # pragma: no cover - protocol
++ ...
++
++
 +@dataclass
-+class LoggingConfig: ...
-+def build_loggers(settings, cfg=None) -> list[Any]: ...
++class LoggingConfig:
++ enable_ndjson: bool = True
++ enable_mlflow: bool = False
++
++
++def build_loggers(settings: AppSettings, cfg: LoggingConfig | None = None) -> list[Any]:
++ cfg = cfg or LoggingConfig()
++ loggers: list[Any] = []
++
++ if cfg.enable_ndjson:
++ out = Path(settings.mlflow_dir) / "metrics.ndjson"
++ loggers.append(NDJSONLogger(str(out)))
++
++ # MLflow hooks can be added here in the future, guarded by cfg.enable_mlflow
++
++ return loggers
 ```
 ```diff
 +++ tools/env_snapshot.py
 @@
-+def main(out_path="artifacts/env_snapshot.json"): ...
++from __future__ import annotations
++
++import json
++import os
++import platform
++import sys
++from pathlib import Path
++
++
++def main(out_path: str = "artifacts/env_snapshot.json") -> None:
++ info = {
++ "python": sys.version,
++ "platform": platform.platform(),
++ "executable": sys.executable,
++ "env": {k: v for k, v in os.environ.items() if k.startswith("CODEX_")},
++ }
++
++ path = Path(out_path)
++ path.parent.mkdir(parents=True, exist_ok=True)
++ path.write_text(json.dumps(info, indent=2), encoding="utf-8")
++
++
++if __name__ == "__main__": # pragma: no cover - script entrypoint
++ main()
 ```
 
 ---
 
 ## 9. Local Tests & Gates (Offline)
+```
+# Core unit tests
+nox -s tests
+
+
+# Structural + config gates (already present)
+nox -s gates
+
+
+# Reproducibility + tracking evidence
+nox -s env-snapshot
+nox -s repro_smoke
+nox -s tracking_smoke
+
+
+# Linting and type checks
+nox -s lint
+nox -s typecheck
+
+
+# Docs
+nox -s docs_build
+```
+
 | Task | Command |
 | --- | --- |
 | Full run | python scripts/space_traversal/audit_runner.py run |
