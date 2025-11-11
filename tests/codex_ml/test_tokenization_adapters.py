@@ -13,7 +13,7 @@ transformers = pytest.importorskip("transformers", reason="transformers not inst
 
 # Try to import tokenizers package - skip tests if not available
 try:
-    import tokenizers
+    import tokenizers  # noqa: F401
     HAS_TOKENIZERS = True
 except ImportError:
     HAS_TOKENIZERS = False
@@ -29,12 +29,13 @@ except ImportError:
 @pytest.mark.skipif(not HAS_TOKENIZERS, reason="requires tokenizers package")
 def test_hf_tokenizer_adapter_basic(tmp_path):
     """Test basic HuggingFace tokenizer adapter functionality."""
-    from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter
-    
-    # Create a simple tokenizer JSON file for testing
     from tokenizers import Tokenizer
     from tokenizers.models import WordLevel
     from tokenizers.pre_tokenizers import Whitespace
+    
+    from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter
+    
+    # Create a simple tokenizer JSON file for testing
     
     # Build a minimal tokenizer
     tokenizer = Tokenizer(WordLevel(unk_token="<unk>"))
