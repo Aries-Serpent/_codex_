@@ -37,6 +37,14 @@ nox -s docs_build
 SKIP_OPTIONAL=1 nox -s docs_build
 ```
 
+### Generate Status Update
+```bash
+# Generate comprehensive JSON status report
+codex-status-audit --generate
+# Or directly:
+python tools/generate_status_update.py
+```
+
 ### Format & Lint
 ```bash
 pre-commit run --all-files
@@ -78,6 +86,8 @@ _codex_/
 - **[_codex_repo_map.json](_codex_repo_map.json)** — Complete file mapping
 - **[manifests/codex_eval_rules.v3.json](manifests/codex_eval_rules.v3.json)** — Evaluation rules
 - **[inventory.md](inventory.md)** — File catalog with priorities
+- **[schemas/codex_status_update.schema.json](schemas/codex_status_update.schema.json)** — Status update schema (v1.2)
+- **[.codex/status/](.codex/status/)** — Generated status update reports
 
 ## 🧭 Navigation Wavepoints
 

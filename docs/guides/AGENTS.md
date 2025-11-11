@@ -59,6 +59,17 @@ pre-commit run --all-files
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 ```
 
+Generate status update report:
+```bash
+# Generate comprehensive JSON status report
+codex-status-audit --generate
+
+# Or directly:
+python tools/generate_status_update.py
+
+# Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
+```
+
 > Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments. ([Happy Test][2])
 
 

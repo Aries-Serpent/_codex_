@@ -69,6 +69,9 @@ python -m http.server -d artifacts/docs/api 8000
 
 ### Quick Links - Status & Validation
 
+- **Status Update Generator**: [tools/generate_status_update.py](tools/generate_status_update.py) - Automated JSON status report generator
+- **Status Update Schema**: [schemas/codex_status_update.schema.json](schemas/codex_status_update.schema.json) - JSON Schema v1.2
+- **Status Update Guide**: [tools/README_status_update.md](tools/README_status_update.md) - Usage and integration guide
 - **Status Template**: [codex_status_template_v1.2.md](docs/templates/status/codex_status_template_v1.2.md)
 - **Status Schema (JSON)**: [codex_status_template.schema_v1.2.json](docs/templates/status/codex_status_template.schema_v1.2.json)
 - **Authoring (Quickstart)**: [authoring_quickstart_v1.2.md](docs/templates/status/authoring_quickstart_v1.2.md)
@@ -114,7 +117,14 @@ python tools/status_report.py --summary samples/assistant_message_summary.sample
 Generate a comprehensive status update audit report for the Codex repository:
 
 ```bash
-# Full audit and report
+# Generate JSON status update (new schema-based generator)
+codex-status-audit --generate
+# Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
+
+# Or use the direct script
+python tools/generate_status_update.py
+
+# Full audit and report (legacy)
 codex-status-audit
 
 # Quick regeneration with existing artifacts
@@ -124,7 +134,16 @@ codex-status-audit --skip-audit
 codex-status-audit --baseline audit_artifacts/capabilities_scored.json.baseline
 ```
 
-See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for detailed usage.
+The new JSON-based status update generator provides:
+- Automated repository analysis
+- 8 capability checks with gap analysis
+- Reproducibility controls audit
+- Test infrastructure status
+- Security assessment
+- Schema validation (v1.2)
+
+See **[tools/README_status_update.md](tools/README_status_update.md)** for the new generator documentation.  
+See **[docs/cli/status_audit.md](docs/cli/status_audit.md)** for legacy audit tool usage.
 
 ## Candidate Selection (local-only)
 

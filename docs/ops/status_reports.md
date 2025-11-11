@@ -1,8 +1,42 @@
 # Local Status Reports
 
+*Generate status reports for the repository using various tools and formats.*
+
+## New: JSON-Based Status Update Generator (v1.2)
+
+The repository now includes a comprehensive, schema-driven status update generator that provides automated analysis and JSON-formatted reports.
+
+### Quick Start
+```bash
+# Generate JSON status update
+codex-status-audit --generate
+
+# Or directly
+python tools/generate_status_update.py
+
+# Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
+```
+
+### What it includes
+- **Metadata**: Git context, environment info, timestamps
+- **Snapshot**: Repository map, 8 capability checks, findings, test status
+- **Reproducibility**: 4 core controls (dependencies, lockfiles, seeds, provenance)
+- **Automation**: Dependency audit, security status
+- **Security**: Security assessment and findings
+- **Questions & Decisions**: Tracking open questions and architectural decisions
+
+### See also
+- **[tools/README_status_update.md](../../tools/README_status_update.md)** - Complete usage guide
+- **[schemas/codex_status_update.schema.json](../../schemas/codex_status_update.schema.json)** - JSON Schema v1.2
+- **[tests/test_status_update_generator.py](../../tests/test_status_update_generator.py)** - Test suite
+
+---
+
+## Legacy: Markdown Status Reports
+
 *Generate a self-contained `STATUS_REPORT.md` that summarizes repository gates and (optionally) evaluates assistant candidates from a JSON summary.*
 
-## Quick Start
+### Quick Start
 ```bash
 python tools/status_report.py \
   --summary samples/assistant_message_summary.sample.json \
