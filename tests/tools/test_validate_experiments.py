@@ -29,6 +29,30 @@ INVALID_CFG = {
     "training": {"epochs": 1, "batch_size": 2}
 }
 
+VALID_TOML_CONTENT = """
+[model]
+name = "demo"
+
+[data]
+dataset = "synthetic"
+
+[training]
+epochs = 1
+batch_size = 2
+"""
+
+INVALID_TOML_CONTENT = """
+[model]
+name = "demo"
+
+[data]
+# missing dataset
+
+[training]
+epochs = 1
+batch_size = 2
+"""
+
 
 def test_validator_success():
     with tempfile.TemporaryDirectory() as td:
@@ -52,6 +76,40 @@ def test_validator_failure():
         schema.write_text(json.dumps(SCHEMA_CONTENT))
         cfg = td / "exp.json"
         cfg.write_text(json.dumps(INVALID_CFG))
+
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(td)],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 3
+        assert "dataset" in result.stderr
+
+def test_validator_toml_success():
+    """Test TOML config validation works (P1 fix)"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        cfg = td / "exp.toml"
+        cfg.write_text(VALID_TOML_CONTENT)
+
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(td)],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "Validated 1 config file(s) successfully" in result.stdout
+
+def test_validator_toml_failure():
+    """Test TOML config validation detects errors (P1 fix)"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        cfg = td / "exp.toml"
+        cfg.write_text(INVALID_TOML_CONTENT)
 
         result = subprocess.run(
             [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(td)],

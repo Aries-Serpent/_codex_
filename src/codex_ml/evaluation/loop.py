@@ -17,6 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List
 import time
+import inspect
 
 try:
     import torch
@@ -60,6 +61,24 @@ def _safe_item(x) -> float:
     return float(x)
 
 
+def _check_needs_predictions(func: Callable) -> bool:
+    """
+    Check if a metric callable needs prediction/target arguments.
+    Uses inspect.signature to handle functions, partials, methods, and callable objects.
+    """
+    try:
+        sig = inspect.signature(func)
+        # Count parameters (excluding self/cls and var-positional/keyword)
+        params = [
+            p for p in sig.parameters.values()
+            if p.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+        ]
+        return len(params) >= 2
+    except (ValueError, TypeError):
+        # If we can't inspect, assume it needs predictions
+        return True
+
+
 def evaluate_epoch(
     model,
     dataloader: Iterable,
@@ -81,7 +100,7 @@ def evaluate_epoch(
 
     # Collect predictions/targets if metrics need them
     collect_preds = metrics is not None and any(
-        func.__code.co_argcount >= 2 for func in metrics.values()
+        _check_needs_predictions(func) for func in metrics.values()
     )
     all_preds: List[Any] = []
     all_targets: List[Any] = []
