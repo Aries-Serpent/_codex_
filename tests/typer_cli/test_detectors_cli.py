@@ -1,6 +1,7 @@
 from __future__ import annotations
-import json
+
 import importlib
+import json
 
 
 def test_cli_detectors_run_integration(capsys):

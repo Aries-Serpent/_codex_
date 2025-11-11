@@ -18,8 +18,8 @@ def test_cli_runs_with_simple_config(tmp_path: Path) -> None:
     overrides = [
         f"trainer.metrics_ndjson_path={metrics_path}",
         f"logging.fallback_metrics_path={tmp_path / 'fallback.ndjson'}",
-        f"data.params.num_samples=8",
-        f"data.params.batch_size=4",
+        "data.params.num_samples=8",
+        "data.params.batch_size=4",
     ]
 
     exit_code = cli.main(

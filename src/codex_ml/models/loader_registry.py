@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 from typing import Any, Callable, Mapping
-from typing import Any, Callable, Mapping
 
 _ModelFactory = Callable[..., Any]
 

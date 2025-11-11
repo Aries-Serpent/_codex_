@@ -1,5 +1,6 @@
 from __future__ import annotations
-from codex_ml.detectors.core import clamp01, DetectorResult
+
+from codex_ml.detectors.core import DetectorResult, clamp01
 
 
 def test_clamp01_bounds():

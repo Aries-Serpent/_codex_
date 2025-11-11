@@ -12,10 +12,10 @@ from typing import List, Tuple
 
 # Import validation functions from the existing script
 from validate_status_report import (
+    _canonicalise_version,
     check_required_sections,
     check_template_version,
     check_title_format,
-    _canonicalise_version,
 )
 
 
@@ -88,8 +88,8 @@ def create_error_file(report_path: Path, errors: List[str]) -> Path:
         "This file contains validation errors and incomplete aspects detected in the status report.",
         "",
         f"**Report Path:** `{rel_path}`",
-        f"**Schema:** `docs/templates/status/codex_status_template.schema_v1.2.yaml`",
-        f"**Validator:** `tools/validate_status_report.py`",
+        "**Schema:** `docs/templates/status/codex_status_template.schema_v1.2.yaml`",
+        "**Validator:** `tools/validate_status_report.py`",
         "",
         "---",
         "",
@@ -196,7 +196,7 @@ def main() -> int:
     error_file = create_error_file(args.report_file, errors)
     
     print(f"\n📄 Error file created: {error_file}")
-    print(f"\nReview the error file for details on missing/incorrect aspects.")
+    print("\nReview the error file for details on missing/incorrect aspects.")
     
     return 1
 

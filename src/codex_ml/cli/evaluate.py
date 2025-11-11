@@ -7,7 +7,6 @@ import logging
 import sys
 from pathlib import Path
 from typing import Any, Optional, Sequence
-from typing import Any, Optional, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -26,6 +25,7 @@ LOGGER = logging.getLogger(__name__)
 hydra, _HAS_HYDRA = optional_import("hydra")
 if _HAS_HYDRA:  # pragma: no cover - optional dependency
     from hydra.utils import to_absolute_path as _hydra_to_absolute_path
+
     from omegaconf import DictConfig, OmegaConf
 else:  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore

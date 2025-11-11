@@ -4,8 +4,8 @@ pytest.importorskip("numpy")
 pytest.importorskip("torch")
 
 import numpy as np
-import torch
 
+import torch
 from codex_ml.utils.repro import set_reproducible
 
 

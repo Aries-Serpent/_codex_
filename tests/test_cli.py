@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
+
 from typer.testing import CliRunner as TyperCliRunner
 
 cli_module = importlib.import_module("codex.cli")

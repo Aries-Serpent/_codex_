@@ -1,11 +1,10 @@
-from pathlib import Path
 import json
-import pytest
+from pathlib import Path
 
+import pytest
 
 jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
 from jsonschema import Draft7Validator  # type: ignore
-
 
 METRICS_SCHEMA = {
     "type": "object",

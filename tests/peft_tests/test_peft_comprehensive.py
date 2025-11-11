@@ -1,6 +1,7 @@
 """PEFT hooks comprehensive tests."""
 from __future__ import annotations
 
+
 class TestLoraConfig:
     """Test LoRA configuration."""
     

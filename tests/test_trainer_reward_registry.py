@@ -26,9 +26,8 @@ def test_offline_heuristic_reward_model_scores():
 
 def test_plugins_cli_lists_trainer_and_reward_entries():
     pytest.importorskip("typer")
-    from typer.testing import CliRunner
-
     from codex_ml.cli import plugins_cli
+    from typer.testing import CliRunner
 
     runner = CliRunner()
     trainers_result = runner.invoke(plugins_cli.app, ["list", "trainers"])

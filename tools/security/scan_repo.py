@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import re, json
+import json
+import re
 from pathlib import Path
 
 PATTERNS = {

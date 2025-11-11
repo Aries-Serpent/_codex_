@@ -7,7 +7,7 @@ import pytest
 
 def _has_tokenizers() -> bool:
     try:
-        import tokenizers  # type: ignore
+        pass  # type: ignore
     except Exception:
         return False
     return True

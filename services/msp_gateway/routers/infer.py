@@ -6,19 +6,19 @@ Handles model inference requests with optional RAG
 import logging
 import uuid
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from fastapi import APIRouter, Request, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.concurrency import run_in_threadpool
 
-from ..schemas.requests import InferRequest
-from ..schemas.responses import InferResponse, AuditRef, EvidenceTag
-from ..providers.model_adapter import create_model_adapter
-from ..config import settings
-from ..security import validate_prompt, redact_content, offline_guard
-
-from codex.rag.prompt import build_prompt
 from codex.rag.postprocess import postprocess_output
+from codex.rag.prompt import build_prompt
+
+from ..config import settings
+from ..providers.model_adapter import create_model_adapter
+from ..schemas.requests import InferRequest
+from ..schemas.responses import AuditRef, EvidenceTag, InferResponse
+from ..security import offline_guard, redact_content, validate_prompt
 
 if TYPE_CHECKING:
     from ..providers.retrieval_adapter import RetrievalAdapter

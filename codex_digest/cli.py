@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 import argparse
 import json
 import sys
 from pathlib import Path
-from .pipeline import run_pipeline
+
 from .error_capture import make_error_block
+from .pipeline import run_pipeline
 
 
 def main(argv=None) -> int:

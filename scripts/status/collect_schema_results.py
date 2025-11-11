@@ -11,7 +11,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 
 def validate_pair(data: str, schema: str, tool: str) -> Dict:

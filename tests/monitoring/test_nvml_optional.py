@@ -5,7 +5,6 @@ from numbers import Number
 import pytest
 
 try:
-    import pynvml as _pynvml  # type: ignore
     _HAS_NVML = True
 except Exception:
     _HAS_NVML = False

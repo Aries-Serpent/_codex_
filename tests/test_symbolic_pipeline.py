@@ -6,7 +6,6 @@ py = pytest
 
 try:
     import transformers
-
     from codex_ml.symbolic_pipeline import (
         ModelHandle,
         PretrainCfg,

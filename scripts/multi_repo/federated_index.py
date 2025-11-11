@@ -29,9 +29,13 @@ Structure:
 }
 """
 from __future__ import annotations
-import os, json, sys, re
+
+import json
+import os
+import re
+import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict
 
 ART_DIR = Path("audit_artifacts")
 OUT = ART_DIR / "federated_index.json"

@@ -3,14 +3,14 @@ Test Policy Enforcement
 Tests for security policies, redaction, and validation
 """
 
+
 import pytest
-from pathlib import Path
 
 from services.msp_gateway.security import (
-    PolicyEnforcer,
-    validate_prompt,
-    redact_content,
     OfflineGuard,
+    PolicyEnforcer,
+    redact_content,
+    validate_prompt,
 )
 
 

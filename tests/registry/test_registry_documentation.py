@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from codex_ml.registry import Registry
 import codex_ml.registry as registry_facade
+from codex_ml.registry import Registry
 
 
 def test_registry_docstring_contains_table():

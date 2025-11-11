@@ -8,9 +8,8 @@ typer = pytest.importorskip("typer", reason="typer not installed")
 click = pytest.importorskip("click", reason="click not installed")
 if not hasattr(typer, "Typer"):
     pytest.skip("typer missing Typer attribute", allow_module_level=True)
-from typer.testing import CliRunner  # type: ignore  # noqa: E402
-
 from codex_ml.cli import manifest as cli  # noqa: E402
+from typer.testing import CliRunner  # type: ignore  # noqa: E402
 
 
 def test_init_writes_valid_manifest(tmp_path):

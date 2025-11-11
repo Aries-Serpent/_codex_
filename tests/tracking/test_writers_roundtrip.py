@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import csv
-import json
-from pathlib import Path
 import importlib.util
+import json
 import types
+from pathlib import Path
 
 
 def _load_module(path: Path, name: str) -> types.ModuleType:

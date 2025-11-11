@@ -5,7 +5,6 @@ import platform
 import subprocess
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 try:  # pragma: no cover - optional torch dependency
     import torch

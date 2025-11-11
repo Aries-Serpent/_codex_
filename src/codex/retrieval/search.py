@@ -4,11 +4,8 @@ Per-tenant vector search using FAISS
 """
 
 import logging
-from typing import Any, Optional
-from typing import Any, Optional
 from pathlib import Path
-
-import numpy as np
+from typing import Any, Optional
 
 from .embed import EmbeddingModel
 from .stores import FAISSStore

@@ -1,7 +1,9 @@
 """Documentation system comprehensive tests."""
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
+
 
 class TestMarkdownLinting:
     """Test markdown validation and linting."""

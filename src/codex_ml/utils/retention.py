@@ -32,7 +32,6 @@ import re
 import shutil
 from pathlib import Path
 from typing import Optional
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 

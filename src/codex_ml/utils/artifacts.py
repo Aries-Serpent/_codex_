@@ -11,7 +11,6 @@ import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Optional
-from typing import Optional
 
 
 def compute_sha256(path: os.PathLike | str) -> str:

@@ -1,7 +1,11 @@
 
 from __future__ import annotations
-import os, asyncio, random
-from typing import AsyncIterator, Dict, Any, Optional
+
+import asyncio
+import os
+import random
+from typing import Any, AsyncIterator, Dict, Optional
+
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))

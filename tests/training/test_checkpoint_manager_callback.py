@@ -5,11 +5,11 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("transformers")
 
-import torch
 from torch.optim import SGD
-from transformers import TrainerControl, TrainerState
 
+import torch
 from training.checkpoint_manager import CheckpointManager
+from transformers import TrainerControl, TrainerState
 
 
 def test_callback_saves_and_prunes(tmp_path):

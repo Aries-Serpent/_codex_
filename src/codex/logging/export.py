@@ -35,7 +35,6 @@ except Exception:
     pass
 import sys
 from typing import Any, Iterable, Optional
-from typing import Any, Iterable, Optional
 
 from .config import DEFAULT_LOG_DB
 from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path

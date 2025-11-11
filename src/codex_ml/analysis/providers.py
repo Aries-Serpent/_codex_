@@ -6,7 +6,6 @@ import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Callable, Iterable, Optional
-from typing import Any, Callable, Iterable, Optional
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency

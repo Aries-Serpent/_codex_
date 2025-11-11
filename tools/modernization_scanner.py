@@ -101,13 +101,13 @@ def main(root: str = ".", verbose: bool = False):
                     print(f"  Line {lineno}: [{category}] {message}")
     
     # Summary
-    print(f"\nModernization Scan Summary:")
+    print("\nModernization Scan Summary:")
     print(f"  Files scanned: {total_files}")
     print(f"  Files with suggestions: {files_with_issues}")
     print(f"  Total suggestions: {total_issues}")
     
     if total_issues > 0:
-        print(f"\nRun with --verbose to see detailed suggestions")
+        print("\nRun with --verbose to see detailed suggestions")
     
     return 0
 

@@ -10,7 +10,6 @@ Scans all markdown files and:
 import re
 import sys
 from pathlib import Path
-from typing import Dict
 
 # Language detection patterns (ordered by specificity)
 LANG_HINT = {

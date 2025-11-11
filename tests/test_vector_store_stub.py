@@ -4,6 +4,7 @@ Test: Vector Store Stubs (S-vector)
 Validates that vector store stubs raise informative errors.
 """
 import pytest
+
 from codex_addons.vector_stores import PGVectorStore, WeaviateStore
 
 

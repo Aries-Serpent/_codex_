@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Type
-from typing import Type
 
 from .base import Connector, LocalConnector
 from .remote import RemoteConnector

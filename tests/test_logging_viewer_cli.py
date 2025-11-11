@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
+import os
 import sqlite3
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 import pytest

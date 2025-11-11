@@ -1,6 +1,7 @@
 from __future__ import annotations
-import random
+
 import hashlib
+import random
 from pathlib import Path
 
 from codex_ml.data.loader import load_dataset

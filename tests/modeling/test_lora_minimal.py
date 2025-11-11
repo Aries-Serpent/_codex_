@@ -12,7 +12,6 @@ import os
 
 import pytest
 
-
 # Skip all tests unless RUN_LORA_TESTS=1
 pytestmark = pytest.mark.skipif(
     os.getenv("RUN_LORA_TESTS") != "1",

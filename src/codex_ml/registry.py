@@ -1,5 +1,4 @@
 from typing import Callable
-from typing import Callable
 
 _REG: dict[str, Callable] = {}
 

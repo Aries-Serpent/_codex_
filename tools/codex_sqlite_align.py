@@ -326,9 +326,13 @@ def _validate_identifier(name: str) -> str:
 
 def _quote_identifier(name: str) -> str:
     """Return a SQLite-quoted identifier after validation."""
-
     safe = _validate_identifier(name)
-    return ".".join(f'"{part.replace('"', '""')}"' for part in safe.split("."))
+    # Avoid nested quotes in f-string for Python 3.10 compatibility
+    parts = []
+    for part in safe.split("."):
+        escaped = part.replace('"', '""')
+        parts.append(f'"{escaped}"')
+    return ".".join(parts)
 
 
 def _validate_table(name: str) -> str:

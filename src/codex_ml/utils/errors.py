@@ -1,5 +1,7 @@
+import json
+import time
 from pathlib import Path
-import json, time
+
 
 def record_error(step_number: str, step_desc: str, error_msg: str, context: str = ""):
     p = Path(".codex/status"); p.mkdir(parents=True, exist_ok=True)

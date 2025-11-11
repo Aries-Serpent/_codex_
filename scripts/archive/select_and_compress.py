@@ -8,7 +8,13 @@ Archive & Pointer (P2) with Knob Normalization
 - Uses scripts.config.parse_knobs for normalization
 """
 from __future__ import annotations
-import json, os, sys, hashlib, tarfile, zipfile, time
+
+import hashlib
+import json
+import sys
+import tarfile
+import time
+import zipfile
 from pathlib import Path
 from typing import List
 

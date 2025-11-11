@@ -34,7 +34,7 @@ def main(argv=None) -> int:
 
     print(f"Drift score: {score:.4f} (threshold: {args.threshold})")
     if score > args.threshold:
-        print(f"[WARN] Drift exceeds threshold")
+        print("[WARN] Drift exceeds threshold")
         return 1
     print("[OK] Drift within acceptable range")
     return 0

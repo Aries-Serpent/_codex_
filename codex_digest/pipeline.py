@@ -1,11 +1,13 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Dict, Any, List
-from .tokenizer import DefaultTokenizer
-from .semparser import SemParser
+from typing import Any, Dict, List
+
 from .mapper import map_intents
+from .semparser import SemParser
+from .tokenizer import DefaultTokenizer
+from .utils import five_whys, pick_best, redact
 from .workflow import compose_workflow, execute_step
-from .utils import redact, five_whys, pick_best
 
 
 @dataclass
@@ -23,7 +25,7 @@ class CodexPipeline:
 
     def run(self, context: str, description: str, dry_run: bool = True) -> PipelineOutput:
         x0 = self.tk.normalize(context + " " + description)
-        tokens = self.tk.tokenize(x0)
+        _ = self.tk.tokenize(x0)  # Tokenize for side effects
 
         pr = self.sp.parse(x0)
         if not pr.intents:

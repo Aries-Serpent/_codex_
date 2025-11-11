@@ -1,9 +1,9 @@
 # src/codex_ml/analysis/extractors.py
 from __future__ import annotations
+
+import ast
 from dataclasses import dataclass, field
 from typing import Any
-from typing import Any
-import ast
 
 try:
     import libcst as cst  # optional

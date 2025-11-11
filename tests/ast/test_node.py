@@ -1,7 +1,8 @@
 """Tests for AST node module."""
 
 from pathlib import Path
-from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
+
+from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
 
 def test_node_creation():

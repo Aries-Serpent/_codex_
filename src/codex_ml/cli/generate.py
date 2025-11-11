@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import sys
 from typing import Any, Sequence
-from typing import Any, Sequence
 
 from codex_ml import __version__
 from codex_ml.codex_structured_logging import (

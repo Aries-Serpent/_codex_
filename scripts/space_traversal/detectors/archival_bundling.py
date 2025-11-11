@@ -10,8 +10,8 @@ Identifies archival and bundling capabilities including:
 Codex-specific archival infrastructure for reproducibility.
 """
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, List, Set
+
+from typing import Set
 
 
 def detect(file_index: dict) -> dict:

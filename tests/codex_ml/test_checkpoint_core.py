@@ -14,7 +14,7 @@ import pytest
 # Import torch with graceful skip if not available
 torch = pytest.importorskip("torch", reason="torch not installed")
 
-from codex_ml.checkpointing.checkpoint_core import load_checkpoint, save_checkpoint
+from codex_ml.checkpointing.checkpoint_core import load_checkpoint, save_checkpoint  # noqa: E402
 
 
 def test_checkpoint_roundtrip_simple_state(tmp_path):

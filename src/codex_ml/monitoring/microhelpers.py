@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import datetime as _dt
 from typing import Any
-from typing import Any
 
 __all__ = ["sample", "get_proc_stats", "get_sys_stats", "get_gpu_stats"]
 

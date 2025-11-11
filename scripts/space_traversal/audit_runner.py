@@ -27,13 +27,23 @@ Enhancements (v1.3.0 P3):
 Note: Offline only, no network calls. Determinism preserved via sorted traversal and stable merges.
 """
 from __future__ import annotations
-import argparse, json, os, re, sys, hashlib, time, importlib.util, inspect
+
+import argparse
+import hashlib
+import importlib.util
+import inspect
+import json
+import os
+import re
+import sys
+import time
 from pathlib import Path
-from typing import Dict, List, Any, Callable
+from typing import Any, Callable, Dict, List
 
 # Import knob parser for depth gating
 try:
-    from scripts.config.parse_knobs import get_depth, get_warnings as get_knob_warnings, normalize_from_env, summarize_effective
+    from scripts.config.parse_knobs import get_depth, normalize_from_env, summarize_effective
+    from scripts.config.parse_knobs import get_warnings as get_knob_warnings
 except ImportError:
     # Fallback if not available
     def get_depth():
@@ -64,8 +74,9 @@ except Exception:
         sys.exit(1)
 
 try:
-    import yaml
     from jinja2 import Environment, FileSystemLoader
+
+    import yaml
 except ImportError:
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
     sys.exit(1)
@@ -79,11 +90,19 @@ try:
     )
 except Exception:  # pragma: no cover - fallback for direct execution
     try:
-        from validators import check_low_threshold, check_missing_detectors, emit_summary  # type: ignore
+        from validators import (  # type: ignore
+            check_low_threshold,
+            check_missing_detectors,
+            emit_summary,
+        )
     except Exception:
         sys.path.append(str(Path(__file__).resolve().parent))
         try:
-            from validators import check_low_threshold, check_missing_detectors, emit_summary  # type: ignore
+            from validators import (  # type: ignore
+                check_low_threshold,
+                check_missing_detectors,
+                emit_summary,
+            )
         except Exception:
             check_low_threshold = check_missing_detectors = emit_summary = None  # type: ignore
 

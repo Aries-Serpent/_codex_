@@ -9,8 +9,8 @@ Identifies status reporting and audit capabilities including:
 Codex-specific status reporting infrastructure.
 """
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, List, Set
+
+from typing import Set
 
 
 def detect(file_index: dict) -> dict:

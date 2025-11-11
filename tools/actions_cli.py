@@ -10,12 +10,17 @@ Usage examples:
   python tools/actions_cli.py cite --path docs/prompts/custom_gpt_self_healing_engineer.md --ref 0D_base_ --note "Prompt used by CustomGPT"
 """
 from __future__ import annotations
-import argparse, datetime, os, pathlib, sys
+
+import argparse
+import datetime
+import os
+import pathlib
+import sys
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 
-from src.codex_bridge.github_client import list_branches, get_text, code_search
+from src.codex_bridge.github_client import code_search, get_text, list_branches
 
 DEFAULT_OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 DEFAULT_REPO = os.getenv("CODEX_GH_REPO", "_codex_")

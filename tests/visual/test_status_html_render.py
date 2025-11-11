@@ -1,7 +1,9 @@
 import json
 import subprocess
 import sys
+
 import pytest
+
 
 @pytest.mark.skipif(subprocess.call([sys.executable, "-c", "import importlib; importlib.import_module('playwright')"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0, reason="playwright not installed")
 def test_render_and_screenshot(tmp_path):

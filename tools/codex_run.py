@@ -11,7 +11,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Tuple, List
+from typing import List, Tuple
 
 OK, WARN, FAIL = 0, 1, 2
 

@@ -3,22 +3,20 @@
 from __future__ import annotations
 
 import csv
-from contextlib import ExitStack
 import hashlib
 import json
 import uuid
+from contextlib import ExitStack
 from dataclasses import asdict, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Optional, Sequence, TypeVar
 from typing import Any, Callable, Optional, Sequence, TypeVar
 
 from codex_ml.config import DataConfig, EvaluationConfig
 from codex_ml.data.loader import CacheManifest
 from codex_ml.eval import metrics
-from codex_ml.metrics.registry import append_error_entry
+from codex_ml.metrics.registry import append_error_entry, list_metrics
 from codex_ml.metrics.registry import get as get_registered_metric
-from codex_ml.metrics.registry import list_metrics
 from codex_ml.metrics.sinks import create_sink
 from codex_ml.registry.base import RegistryNotFoundError
 from codex_ml.tracking.writers import NdjsonWriter

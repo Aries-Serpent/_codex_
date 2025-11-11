@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 from typing import Iterable, Sequence
 
-
 STAGES = ("M0", "M1", "RM", "M2")
 
 

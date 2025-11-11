@@ -7,7 +7,6 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable, Iterator, Literal, Mapping, Optional, cast
-from typing import Iterable, Iterator, Literal, Mapping, Optional, cast
 
 JsonLogFmt = Literal["ndjson", "csv"]
 

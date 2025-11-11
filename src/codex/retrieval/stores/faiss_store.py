@@ -6,7 +6,6 @@ Local CPU-based FAISS index for vector similarity search
 import logging
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 import numpy as np
 

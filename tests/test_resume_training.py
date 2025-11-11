@@ -1,5 +1,5 @@
 import json
-from pathlib import Path
+
 import pytest
 
 torch = pytest.importorskip("torch", reason="Torch required for resume / optimizer tests")

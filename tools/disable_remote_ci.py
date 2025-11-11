@@ -9,7 +9,11 @@ Notes:
 - This does NOT block analysts from using web search.
 """
 from __future__ import annotations
-import sys, re, json, datetime as dt
+
+import datetime as dt
+import json
+import re
+import sys
 from pathlib import Path
 
 try:

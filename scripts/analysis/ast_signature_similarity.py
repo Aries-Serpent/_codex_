@@ -23,10 +23,15 @@ Integration:
   S4 scoring uses ast_uniqueness to refine consistency via blend modes.
 """
 from __future__ import annotations
-import os, json, sys, ast, math
-from pathlib import Path
-from typing import Dict, List
+
+import ast
+import json
+import math
+import os
+import sys
 from collections import Counter
+from pathlib import Path
+from typing import List
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"

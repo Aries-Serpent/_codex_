@@ -3,7 +3,11 @@ Entropy Scan Test (P4)
 - Creates artificial high-entropy string
 - Confirms detection
 """
-import os, json, subprocess, sys, shutil
+import json
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 ART = Path("audit_artifacts")

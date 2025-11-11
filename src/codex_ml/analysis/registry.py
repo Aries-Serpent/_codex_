@@ -1,7 +1,7 @@
 # src/codex_ml/analysis/registry.py
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Callable
 from typing import Callable
 
 
@@ -23,8 +23,8 @@ def register_extractor(name: str, fn: Callable) -> None:
 
 # Default registrations bind to core implementations
 try:  # pragma: no cover - import side effects only
+    from .extractors import extract_ast, extract_cst, extract_degraded, extract_parso
     from .parsers import parse_tiered
-    from .extractors import extract_ast, extract_cst, extract_parso, extract_degraded
 
     register_parser("tiered", parse_tiered)
     register_extractor("ast", extract_ast)

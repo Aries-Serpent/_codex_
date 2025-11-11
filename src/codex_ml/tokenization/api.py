@@ -5,9 +5,9 @@ from __future__ import annotations
 import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Protocol, Sequence, cast
-from typing import TYPE_CHECKING, Optional, Protocol, Sequence, cast
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
+
 from .adapter import WhitespaceTokenizer
 
 BOS_TOKEN = "<BOS>"

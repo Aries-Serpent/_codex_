@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import sys
 import types
 from collections.abc import Sequence
 

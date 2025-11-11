@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import json, sys
+import json
+import sys
+
 
 def badge(n): 
     try: n=int(n)

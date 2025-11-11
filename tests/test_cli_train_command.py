@@ -4,9 +4,9 @@ pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
 pytest.importorskip("torch")
 
-import yaml
 from click.testing import CliRunner
 
+import yaml
 from codex_ml.cli.codex_cli import codex
 
 

@@ -1,6 +1,7 @@
 
 from fastapi import HTTPException, status
 
+
 def enforce_confirmation(confirm: bool | None, dry_run: bool | None):
     # All destructive operations require confirm==True unless dry_run==True
     if dry_run:

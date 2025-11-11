@@ -1,5 +1,6 @@
 import json
 
+
 def test_perf_summary(tmp_path, monkeypatch):
     d = tmp_path / "artifacts" / "logs"; d.mkdir(parents=True, exist_ok=True)
     (d/"perf.ndjson").write_text('{"cpu":10,"mem":{"percent":30}}\n{"cpu":20,"mem":{"percent":40}}\n')

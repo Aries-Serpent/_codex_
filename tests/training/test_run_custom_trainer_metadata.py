@@ -8,7 +8,6 @@ import pytest
 
 from codex.training import TrainCfg, run_custom_trainer
 
-
 torch = pytest.importorskip("torch")
 
 

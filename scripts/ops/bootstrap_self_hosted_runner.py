@@ -8,7 +8,11 @@ import shlex
 import subprocess
 from pathlib import Path
 
-from src.integrations.github_app_auth import mint_app_jwt, exchange_installation_token, create_runner_registration_token
+from src.integrations.github_app_auth import (
+    create_runner_registration_token,
+    exchange_installation_token,
+    mint_app_jwt,
+)
 
 
 def _assert_online_allowed():

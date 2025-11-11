@@ -2,6 +2,7 @@
 
 import pytest
 
+
 def test_mlflow_utils_tolerant_when_missing():
     try:
         from codex_ml.tracking import mlflow_utils as MU

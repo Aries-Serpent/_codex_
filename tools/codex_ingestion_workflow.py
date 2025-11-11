@@ -53,10 +53,12 @@ def log_change(
             n=3,
         )
         diff = "".join(ud)
+    # Prepare diff section outside f-string to avoid Python 3.10 syntax limitations
+    diff_section = f"```diff\n{diff}\n```" if diff else ""
     entry = textwrap.dedent(f"""\
     ## {ts()} — {action}: `{path.as_posix()}`
     **Rationale:** {rationale}
-    {"```diff\n" + diff + "\n```" if diff else ""}
+    {diff_section}
     """)
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")

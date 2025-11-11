@@ -1,6 +1,6 @@
-import random
 import hashlib
 import itertools
+import random
 
 import pytest
 

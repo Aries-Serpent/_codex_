@@ -15,7 +15,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, Sequence, Union
-from typing import Any, Optional, Sequence, Union
 
 try:
     import torch

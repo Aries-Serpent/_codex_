@@ -36,7 +36,10 @@ class CodexExecutor:
     def train(self, config_name: str | None = None, **kwargs: Any) -> bool:
         LOGGER.info("[codex] starting training (config=%s)", config_name or "default")
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+            from codex_ml.training.unified_training import (
+                UnifiedTrainingConfig,
+                run_unified_training,
+            )
 
             cfg = UnifiedTrainingConfig()
             if config_name:

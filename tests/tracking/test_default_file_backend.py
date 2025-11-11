@@ -13,6 +13,7 @@ def test_default_file_backend(tmp_path, monkeypatch):
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     # sitecustomize should set the default upon import
     import importlib
+
     import sitecustomize
 
     importlib.reload(sitecustomize)

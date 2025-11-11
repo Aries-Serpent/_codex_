@@ -6,7 +6,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 _REPO_ROOT = Path(__file__).parent.parent.parent
 _SCRIPTS_DIR = _REPO_ROOT / "scripts"
 

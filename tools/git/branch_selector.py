@@ -1,6 +1,7 @@
 import subprocess
 from typing import Optional
 
+
 def most_recent_branch() -> Optional[str]:
     """
     Return the most recently updated local branch name using `git for-each-ref`.

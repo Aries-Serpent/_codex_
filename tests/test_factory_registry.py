@@ -2,7 +2,6 @@
 import sys
 from pathlib import Path
 
-
 # Add codex_addons to path
 _REPO_ROOT = Path(__file__).parent.parent
 _ADDONS_DIR = _REPO_ROOT / "codex_addons"

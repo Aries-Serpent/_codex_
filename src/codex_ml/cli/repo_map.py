@@ -6,7 +6,6 @@ import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
-from typing import Any
 
 try:  # pragma: no cover - optional dependency path
     import yaml  # type: ignore

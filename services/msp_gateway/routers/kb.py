@@ -6,13 +6,13 @@ Handles retrieval queries against tenant knowledge bases
 import logging
 import uuid
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from fastapi import APIRouter, Request, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 
-from ..schemas.requests import KBQueryRequest
-from ..schemas.responses import KBQueryResponse, KBSearchResult, AuditRef
 from ..config import settings
+from ..schemas.requests import KBQueryRequest
+from ..schemas.responses import AuditRef, KBQueryResponse, KBSearchResult
 
 if TYPE_CHECKING:
     from ..providers.retrieval_adapter import RetrievalAdapter
