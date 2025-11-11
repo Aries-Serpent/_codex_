@@ -1,58 +1,71 @@
 """
-CPU-safe evaluation loop with pluggable metrics and logging.
+Evaluation loop module (Iteration 1)
 
-Follows the specification from reports/specs/_codex__EvalLoop_and_CLI_Spec.md
+CPU-safe, deterministic reference implementation.
+
+Public API:
+    evaluate_epoch(model, dataloader, criterion, device="cpu", metrics=None,
+                   logger=None, max_batches=None, seed=None) -> Dict[str, Any]
+
+Notes:
+    - Lazy torch import to avoid heavy import cost if only metadata is
+      inspected.
+    - Determinism: optional seed applied to DataLoader generator (caller
+      must construct with generator).
+    - Logging: Pass iterable of logger objects implementing .log(dict) and
+      .close().
+    - Metrics: mapping name -> callable(outputs, targets) returning float.
 """
+
 from __future__ import annotations
 
-import logging
-from dataclasses import dataclass, field
-from typing import Any, Dict, Iterable, Optional, Protocol
+import time
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol
 
-__all__ = ["Criterion", "Logger", "EvaluationConfig", "EvaluationResult", "evaluate_epoch", "run_evaluation"]
+try:
+    import torch
+except ImportError:  # pragma: no cover
+    torch = None  # type: ignore
 
-LOGGER = logging.getLogger(__name__)
+__all__ = ["Criterion", "Logger", "EvalResult", "evaluate_epoch", "_safe_item"]
 
 
 class Criterion(Protocol):
-    """Protocol for loss computation."""
-    
-    def __call__(self, outputs, targets) -> "torch.Tensor":
-        """Compute loss given outputs and targets."""
-        ...
+    def __call__(self, outputs, targets) -> "torch.Tensor": ...
 
 
 class Logger(Protocol):
-    """Protocol for metrics logging."""
-    
-    def log(self, record: Dict[str, Any]) -> None:
-        """Log a metrics record."""
-        ...
-    
-    def close(self) -> None:
-        """Close logger and flush buffers."""
-        ...
+    def log(self, record: Dict[str, Any]) -> None: ...
+
+    def close(self) -> None: ...
 
 
 @dataclass
-class EvaluationConfig:
-    """Configuration for evaluation run."""
-    
-    device: str = "cpu"
-    max_batches: Optional[int] = None
-    seed: Optional[int] = None
-    metrics: Optional[Dict[str, Any]] = None
-    system_metrics: bool = False
-
-
-@dataclass
-class EvaluationResult:
-    """Result of evaluation run."""
-    
+class EvalResult:
     loss: float
     count: int
-    metrics: Dict[str, float] = field(default_factory=dict)
-    batches_processed: int = 0
+    metrics: Dict[str, float]
+    batches: int
+    duration_sec: float
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "loss": self.loss,
+            "count": self.count,
+            "metrics": self.metrics,
+            "batches": self.batches,
+            "duration_sec": round(self.duration_sec, 6),
+        }
+
+
+def _safe_item(x) -> float:
+    if hasattr(x, "item"):
+        try:
+            return float(x.item())
+        except Exception:
+            return float(x)
+    return float(x)
 
 
 def evaluate_epoch(
@@ -60,14 +73,14 @@ def evaluate_epoch(
     dataloader: Iterable,
     criterion: Criterion,
     device: str = "cpu",
-    metrics: Optional[Dict[str, Any]] = None,
+    metrics: Optional[Dict[str, Callable]] = None,
     logger: Optional[Iterable[Logger]] = None,
     max_batches: Optional[int] = None,
     seed: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
     Run evaluation over dataloader with torch.no_grad, model.eval().
-    
+
     Args:
         model: PyTorch model to evaluate
         dataloader: Iterable of (inputs, targets) batches
@@ -77,188 +90,116 @@ def evaluate_epoch(
         logger: Optional iterable of Logger protocol objects
         max_batches: Optional limit on number of batches to process
         seed: Optional seed for dataloader generator (determinism)
-    
+
     Returns:
-        Summary dict with keys: "loss", "count", "metrics"
-    
+        Summary dict with keys: "loss", "count", "metrics", "batches", "duration_sec"
+
     Notes:
         - Sets model.eval() and wraps in torch.no_grad()
         - Lazy imports torch to avoid heavy dependency at module load
         - CPU-safe by default; no CUDA assumptions
         - Deterministic when seed is provided
     """
-    # Lazy import torch (heavy dependency)
-    try:
-        import torch
-    except ImportError as e:
-        raise ImportError(
-            "PyTorch is required for evaluation. "
-            "Install with: pip install torch"
-        ) from e
-    
-    # Set up determinism if seed provided
-    if seed is not None:
-        torch.manual_seed(seed)
-        if hasattr(dataloader, "generator"):
-            dataloader.generator = torch.Generator().manual_seed(seed)
-    
-    # Initialize loggers list
-    loggers = list(logger) if logger else []
-    
-    # Set model to eval mode
+    if torch is None:
+        raise RuntimeError("Torch not available for evaluation.")
+
+    started = time.time()
     model.eval()
-    model = model.to(device)
-    
-    # Initialize accumulators
+
     running_loss = 0.0
-    total_count = 0
-    batches_processed = 0
-    
-    # Metric accumulators
-    metric_accumulators: Dict[str, list] = {}
-    if metrics:
-        for metric_name in metrics.keys():
-            metric_accumulators[metric_name] = []
-    
-    try:
-        with torch.no_grad():
-            for batch_idx, batch in enumerate(dataloader):
-                # Check max_batches limit
-                if max_batches is not None and batch_idx >= max_batches:
-                    LOGGER.info(f"Reached max_batches limit: {max_batches}")
-                    break
-                
-                # Unpack batch
-                if isinstance(batch, (tuple, list)) and len(batch) >= 2:
-                    inputs, targets = batch[0], batch[1]
+    total = 0
+    batches = 0
+
+    # Collect predictions/targets if metrics need them
+    collect_preds = metrics is not None and any(
+        func.__code__.co_argcount >= 2 for func in metrics.values()
+    )
+    all_preds: List[Any] = []
+    all_targets: List[Any] = []
+
+    with torch.no_grad():
+        for batch_idx, batch in enumerate(dataloader):
+            if max_batches is not None and batch_idx >= max_batches:
+                break
+
+            batches += 1
+
+            if isinstance(batch, (list, tuple)) and len(batch) >= 2:
+                inputs, targets = batch[0], batch[1]
+            else:
+                raise ValueError("Dataloader must yield (inputs, targets) pairs.")
+
+            inputs = inputs.to(device)
+            targets = targets.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+
+            loss_value = _safe_item(loss)
+            running_loss += loss_value * targets.size(0)
+            total += targets.size(0)
+
+            if collect_preds:
+                # Use argmax classification assumption; adapt later for regression
+                if hasattr(outputs, "argmax"):
+                    preds = outputs.argmax(dim=-1)
                 else:
-                    raise ValueError(f"Expected batch to be (inputs, targets), got {type(batch)}")
-                
-                # Move to device
-                inputs = inputs.to(device)
-                targets = targets.to(device)
-                
-                # Forward pass
-                outputs = model(inputs)
-                
-                # Compute loss
-                loss = criterion(outputs, targets)
-                
-                # Update accumulators
-                batch_size = inputs.size(0)
-                running_loss += loss.item() * batch_size
-                total_count += batch_size
-                batches_processed += 1
-                
-                # Compute batch metrics
-                batch_metrics = {}
-                if metrics:
-                    # Get predictions (argmax for classification, direct for regression)
-                    if outputs.dim() > 1 and outputs.size(-1) > 1:
-                        _, predicted = outputs.max(-1)
-                    else:
-                        predicted = outputs
-                    
-                    for metric_name, metric_fn in metrics.items():
-                        try:
-                            metric_value = metric_fn(predicted, targets)
-                            if isinstance(metric_value, torch.Tensor):
-                                metric_value = metric_value.item()
-                            batch_metrics[metric_name] = metric_value
-                            metric_accumulators[metric_name].append(metric_value)
-                        except Exception as e:
-                            LOGGER.warning(f"Metric {metric_name} failed: {e}")
-                
-                # Log batch-level metrics (optional)
-                if loggers:
-                    batch_record = {
-                        "batch": batch_idx,
-                        "loss": loss.item(),
-                        "batch_size": batch_size,
-                        **batch_metrics,
-                    }
-                    for log in loggers:
-                        try:
-                            log.log(batch_record)
-                        except Exception as e:
-                            LOGGER.warning(f"Logger failed: {e}")
-        
-        # Compute epoch-level aggregates
-        avg_loss = running_loss / total_count if total_count > 0 else 0.0
-        
-        aggregated_metrics = {}
-        for metric_name, values in metric_accumulators.items():
-            if values:
-                aggregated_metrics[metric_name] = sum(values) / len(values)
-        
-        # Epoch summary
-        summary = {
-            "loss": avg_loss,
-            "count": total_count,
-            "metrics": aggregated_metrics,
-            "batches_processed": batches_processed,
-        }
-        
-        # Log epoch summary
-        if loggers:
-            epoch_record = {
-                "epoch_summary": True,
-                **summary,
-            }
-            for log in loggers:
-                try:
-                    log.log(epoch_record)
-                except Exception as e:
-                    LOGGER.warning(f"Logger failed on epoch summary: {e}")
-        
-        return summary
-        
-    finally:
-        # Close all loggers
-        for log in loggers:
+                    preds = outputs
+                all_preds.append(preds.detach().cpu())
+                all_targets.append(targets.detach().cpu())
+
+            if logger:
+                record = {
+                    "type": "batch",
+                    "batch_index": batch_idx,
+                    "loss": loss_value,
+                    "count": int(targets.size(0)),
+                    "cumulative_loss": running_loss,
+                    "cumulative_count": total,
+                    "wall_time": time.time(),
+                }
+                for lg in logger:
+                    try:
+                        lg.log(record)
+                    except Exception:  # pragma: no cover (rare)
+                        # Gracefully continue; avoid breaking evaluation on logger failure
+                        pass
+
+    avg_loss = running_loss / max(total, 1)
+
+    metric_results: Dict[str, float] = {}
+    if metrics:
+        preds_cat = torch.cat(all_preds) if all_preds else None
+        targets_cat = torch.cat(all_targets) if all_targets else None
+
+        for name, fn in metrics.items():
             try:
-                log.close()
-            except Exception as e:
-                LOGGER.warning(f"Logger close failed: {e}")
+                if preds_cat is not None and targets_cat is not None:
+                    metric_results[name] = _safe_item(fn(preds_cat, targets_cat))
+                else:
+                    metric_results[name] = float("nan")
+            except Exception:
+                metric_results[name] = float("nan")
 
+    result = EvalResult(
+        loss=avg_loss,
+        count=total,
+        metrics=metric_results,
+        batches=batches,
+        duration_sec=time.time() - started,
+    ).to_dict()
 
-def run_evaluation(
-    model,
-    dataloader: Iterable,
-    criterion: Criterion,
-    config: Optional[EvaluationConfig] = None,
-    logger: Optional[Iterable[Logger]] = None,
-) -> EvaluationResult:
-    """
-    High-level evaluation runner with config object.
-    
-    Args:
-        model: PyTorch model to evaluate
-        dataloader: Iterable of (inputs, targets) batches
-        criterion: Loss function
-        config: Optional EvaluationConfig (uses defaults if None)
-        logger: Optional iterable of Logger objects
-    
-    Returns:
-        EvaluationResult with loss, count, metrics, batches_processed
-    """
-    if config is None:
-        config = EvaluationConfig()
-    
-    summary = evaluate_epoch(
-        model=model,
-        dataloader=dataloader,
-        criterion=criterion,
-        device=config.device,
-        metrics=config.metrics,
-        logger=logger,
-        max_batches=config.max_batches,
-        seed=config.seed,
-    )
-    
-    return EvaluationResult(
-        loss=summary["loss"],
-        count=summary["count"],
-        metrics=summary.get("metrics", {}),
-        batches_processed=summary.get("batches_processed", 0),
-    )
+    if logger:
+        epoch_record = {
+            "type": "epoch",
+            **result,
+            "wall_time": time.time(),
+        }
+        for lg in logger:
+            try:
+                lg.log(epoch_record)
+                lg.close()
+            except Exception:  # pragma: no cover
+                pass
+
+    return result

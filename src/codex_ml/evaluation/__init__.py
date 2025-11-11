@@ -4,6 +4,6 @@ Provides robust evaluation loops with metrics logging and checkpoint integration
 """
 from __future__ import annotations
 
-__all__ = ["run_evaluation", "evaluate_epoch", "EvaluationConfig", "EvaluationResult", "Criterion", "Logger"]
+__all__ = ["evaluate_epoch", "EvalResult", "Criterion", "Logger", "_safe_item"]
 
-from .loop import Criterion, EvaluationConfig, EvaluationResult, Logger, evaluate_epoch, run_evaluation
+from .loop import Criterion, EvalResult, Logger, evaluate_epoch, _safe_item
