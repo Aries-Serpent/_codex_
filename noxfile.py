@@ -8,6 +8,7 @@ Local task runner for _codex_ (no CI usage). Provides one-command sessions:
 from __future__ import annotations
 
 import importlib
+import json
 from pathlib import Path
 from types import ModuleType
 from typing import Iterable, Optional
@@ -236,117 +237,175 @@ def coverage(session: nox.Session) -> None:
 
 @nox.session
 def security(session: nox.Session) -> None:
-    """Run security scans: pip-audit (with allowlist), bandit, gitleaks."""
+    """
+    Security scanning with:
+      - pip-audit (JSON) → artifacts/security_report.json
+      - bandit → artifacts/bandit_report.txt
+      - gitleaks → artifacts/gitleaks_report.json
+      - Aggregated summary → artifacts/security_summary.json
+
+    Policy:
+      - Fail on HIGH/CRITICAL unless present in allowlist (by id) with valid (non-expired) expiry_date.
+    """
     session.install("-r", "requirements-dev.txt")
-    session.install("pip-audit", "jsonschema")
+    # Ensure tool availability (pin compatible versions)
+    session.install("pip-audit>=2.7.0")
+    session.install("bandit>=1.7.5")
+    
     import json
     import shutil
     import datetime
     import subprocess
     from pathlib import Path
 
-    # 1) pip-audit with JSON output, severity filtering, and allowlist support
+    # Ensure artifacts directory exists
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    audit_output = artifacts_dir / "security_report.json"
-    
-    session.log("Running pip-audit...")
-    try:
-        result = session.run(
-            "pip-audit",
-            "--format=json",
-            "--output", str(audit_output),
-            "--desc",
-            "on",
-            success_codes=[0, 1],  # 0=no vulns, 1=vulns found
-            silent=True,
-        )
-        
-        # Load and apply security allowlist (expires after specified date)
-        allowlist_path = Path("security_allowlist.json")
-        allowlist = []
-        if allowlist_path.exists():
-            allowlist = json.loads(allowlist_path.read_text()).get("allowlisted_vulnerabilities", [])
-        
-        # Parse JSON and check for High/Critical vulnerabilities
-        if audit_output.exists():
-            with open(audit_output) as f:
-                audit_data = json.load(f)
-            
-            # Get active allowlist IDs (not expired)
-            now = datetime.datetime.utcnow().date()
-            allow_ids_active = {
-                v["id"]
-                for v in allowlist
-                if datetime.date.fromisoformat(v["expiry_date"]) >= now
-            }
-            
-            high_or_critical = []
-            for pkg in audit_data.get("dependencies", []):
-                for vuln in pkg.get("vulns", []):
-                    severity = vuln.get("severity", "").upper()
-                    vid = vuln.get("id")
-                    # Skip if in active allowlist
-                    if vid in allow_ids_active:
-                        continue
-                    if severity in ("HIGH", "CRITICAL"):
-                        high_or_critical.append({
-                            "package": pkg.get("name"),
-                            "version": pkg.get("version"),
-                            "severity": severity,
-                            "id": vid,
-                            "description": vuln.get("description", "")[:100],
-                        })
-            
-            if high_or_critical:
-                details = ", ".join(
-                    f"{v['package']}:{v['id']}:{v['severity']}"
-                    for v in high_or_critical
-                )
-                session.error(
-                    f"Found {len(high_or_critical)} HIGH/CRITICAL vulnerabilities "
-                    f"(not allowlisted). See {audit_output} for details. {details}"
-                )
-            else:
-                session.log(f"✓ pip-audit passed (report: {audit_output})")
-    except Exception as e:
-        session.log(f"Warning: pip-audit failed with error: {e}")
-        # Continue with other security checks
 
-    # 2) bandit
-    bandit_output = artifacts_dir / "bandit_report.txt"
-    if shutil.which("bandit"):
-        session.log("Running bandit...")
-        bandit_result = subprocess.run(
-            ["bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src"],
-            capture_output=True,
-            text=True,
-        )
-        bandit_output.write_text(
-            (bandit_result.stdout or "") + "\n" + (bandit_result.stderr or ""),
-            encoding="utf-8",
-        )
-        session.log(f"✓ bandit report written to {bandit_output}")
-    else:  # pragma: no cover - environment without bandit
-        session.log("bandit not available; skipping security scan")
-        bandit_output.write_text("bandit not available", encoding="utf-8")
+    # 1) pip-audit (dependency vulnerabilities)
+    audit_output = artifacts_dir / "security_report.json"
+    session.log("Running pip-audit...")
     
-    # 3) gitleaks
+    pip_audit_result = subprocess.run(
+        ["pip-audit", "-f", "json"],
+        capture_output=True,
+        text=True,
+    )
+    
+    # pip-audit returns 1 when vulns found; still parseable
+    if pip_audit_result.returncode not in (0, 1):
+        session.error(f"pip-audit failed: {pip_audit_result.stderr}")
+
+    try:
+        pip_audit_json = json.loads(pip_audit_result.stdout or "[]")
+    except Exception as e:
+        session.error(f"Failed to parse pip-audit JSON: {e}")
+
+    # 1a) Allowlist handling for pip-audit
+    allowlist_path = Path("security_allowlist.json")
+    active_allow = set()
+    if allowlist_path.exists():
+        try:
+            allowlist = json.loads(allowlist_path.read_text(encoding="utf-8"))
+            today = datetime.date.today()
+            for entry in allowlist.get("allowlisted_vulnerabilities", []):
+                eid = entry.get("id")
+                try:
+                    exp = datetime.date.fromisoformat(entry.get("expiry_date", "1970-01-01"))
+                except Exception:
+                    exp = datetime.date(1970, 1, 1)
+                if eid and exp >= today:
+                    active_allow.add(eid)
+        except Exception:
+            # Ignore malformed allowlist; treat as empty
+            pass
+
+    high_crit = []
+    # pip-audit may return list or object; handle both
+    deps = pip_audit_json if isinstance(pip_audit_json, list) else pip_audit_json.get("dependencies", [])
+    for dep in deps:
+        name = dep.get("name") or dep.get("package", {}).get("name")
+        vulns = dep.get("vulns") or dep.get("vulnerabilities") or []
+        for v in vulns:
+            vid = v.get("id") or v.get("vuln_id")
+            sev = (v.get("severity") or "").upper()
+            if vid in active_allow:
+                continue
+            if sev in {"HIGH", "CRITICAL"}:
+                high_crit.append({"pkg": name, "id": vid, "severity": sev})
+
+    audit_output.write_text(
+        json.dumps(pip_audit_json, indent=2),
+        encoding="utf-8",
+    )
+    session.log(f"✓ pip-audit report written to {audit_output}")
+
+    # 2) Bandit (static analysis)
+    bandit_output = artifacts_dir / "bandit_report.txt"
+    bandit_cfg = ".bandit.yaml"
+    bandit_cmd = ["bandit", "-q", "-r", "src"]
+    if Path(bandit_cfg).exists():
+        bandit_cmd.extend(["-c", bandit_cfg])
+    
+    session.log("Running bandit...")
+    bandit_result = subprocess.run(
+        bandit_cmd,
+        capture_output=True,
+        text=True,
+    )
+    bandit_output.write_text(
+        (bandit_result.stdout or "") + ("\n" + bandit_result.stderr if bandit_result.stderr else ""),
+        encoding="utf-8",
+    )
+    session.log(f"✓ bandit report written to {bandit_output}")
+
+    # 3) gitleaks (secret scanning) — repo workspace, no git history
     gitleaks_output = artifacts_dir / "gitleaks_report.json"
     if shutil.which("gitleaks"):
+        gitleaks_cfg = ".gitleaks.toml"
+        gitleaks_cmd = ["gitleaks", "detect", "--no-git", "-r", ".", "--report-format", "json", "--report-path", str(gitleaks_output)]
+        if Path(gitleaks_cfg).exists():
+            gitleaks_cmd.extend(["--config", gitleaks_cfg])
+        
         session.log("Running gitleaks...")
         gitleaks_result = subprocess.run(
-            ["gitleaks", "detect", "--no-git", "--redact", "--report-format", "json", "--report-path", str(gitleaks_output)],
+            gitleaks_cmd,
             capture_output=True,
             text=True,
         )
-        # gitleaks exits 1 if secrets found, 0 if none found
-        if gitleaks_result.returncode not in [0, 1]:
-            session.log(f"Warning: gitleaks exited with code {gitleaks_result.returncode}")
         session.log(f"✓ gitleaks report written to {gitleaks_output}")
-    else:  # pragma: no cover - environment without gitleaks
-        session.log("gitleaks not available; skipping secret scan")
+    else:
+        # gitleaks not available; create empty report
+        session.log("gitleaks not available; creating empty report")
         gitleaks_output.write_text("[]", encoding="utf-8")
+
+    # 4) Aggregate summary for quick PR consumption
+    gitleaks_json = gitleaks_output.read_text(encoding="utf-8") if gitleaks_output.exists() else "[]"
+    gitleaks_count = _count_gitleaks(gitleaks_json)
+    
+    summary = {
+        "pip_audit": {
+            "high_critical": len(high_crit),
+            "high_critical_list": high_crit,
+        },
+        "bandit": {
+            "exit_code": bandit_result.returncode,
+        },
+        "gitleaks": {
+            "exit_code": gitleaks_result.returncode if shutil.which("gitleaks") else 0,
+            "findings_count": gitleaks_count,
+        },
+        "policy": {
+            "fail_on_high_critical": True,
+            "allowlist_ids_active": sorted(list(active_allow)),
+        },
+    }
+    (artifacts_dir / "security_summary.json").write_text(
+        json.dumps(summary, indent=2),
+        encoding="utf-8",
+    )
+    session.log(f"✓ security summary written to {artifacts_dir / 'security_summary.json'}")
+
+    if high_crit:
+        session.error(
+            "High/Critical dependency vulnerabilities present (not allowlisted). "
+            "See artifacts/security_summary.json and security_report.json"
+        )
+    session.log("Security artifacts written to artifacts/ directory.")
+
+
+def _count_gitleaks(raw: str) -> int:
+    """Count gitleaks findings from JSON string."""
+    try:
+        data = json.loads(raw or "[]")
+        if isinstance(data, dict) and "findings" in data:
+            return len(data.get("findings") or [])
+        if isinstance(data, list):
+            return len(data)
+    except Exception:
+        return 0
+    return 0
+
 
 
 
