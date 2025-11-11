@@ -214,7 +214,14 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def coverage(session: nox.Session) -> None:
-    """Run pytest with coverage and generate artifacts for CI."""
+    """
+    Run pytest with coverage and generate artifacts for CI.
+    
+    Optional env filters:
+      - PYTEST_MARK_EXPR="expr" to pass -m "expr"
+      - PYTEST_K_EXPR="expr"    to pass -k "expr"
+    """
+    import os
     session.install("-r", "requirements-dev.txt")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
@@ -223,8 +230,10 @@ def coverage(session: nox.Session) -> None:
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
-    # Run tests with coverage
-    session.run(
+    mark_expr = os.environ.get("PYTEST_MARK_EXPR", "").strip()
+    k_expr = os.environ.get("PYTEST_K_EXPR", "").strip()
+
+    args = [
         "pytest",
         "--cov=src/codex_ml",
         "--cov-report=xml:artifacts/coverage.xml",
@@ -232,7 +241,14 @@ def coverage(session: nox.Session) -> None:
         "--cov-report=term-missing",
         "--cov-fail-under=70",
         "-v",
-    )
+    ]
+    
+    if mark_expr:
+        args += ["-m", mark_expr]
+    if k_expr:
+        args += ["-k", k_expr]
+    
+    session.run(*args)
 
 
 @nox.session
@@ -242,15 +258,21 @@ def security(session: nox.Session) -> None:
       - pip-audit (JSON) → artifacts/security_report.json
       - bandit → artifacts/bandit_report.txt
       - gitleaks → artifacts/gitleaks_report.json
-      - Aggregated summary → artifacts/security_summary.json
+      - summary → artifacts/security_summary.json
 
     Policy:
       - Fail on HIGH/CRITICAL unless present in allowlist (by id) with valid (non-expired) expiry_date.
+      - Validate security_allowlist.json against configs/schemas/security_allowlist.schema.json if present.
     """
     session.install("-r", "requirements-dev.txt")
     # Ensure tool availability (pin compatible versions)
     session.install("pip-audit>=2.7.0")
     session.install("bandit>=1.7.5")
+    # Try to install jsonschema for allowlist validation if available
+    try:
+        session.install("jsonschema>=4.22.0")
+    except Exception:
+        pass
     
     import json
     import shutil
@@ -261,6 +283,39 @@ def security(session: nox.Session) -> None:
     # Ensure artifacts directory exists
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    allow_file = Path("security_allowlist.json")
+    schema_file = Path("configs/schemas/security_allowlist.schema.json")
+    active_allow = set()
+
+    # Validate allowlist against schema (if both present and jsonschema installed)
+    if allow_file.exists() and schema_file.exists():
+        try:
+            import jsonschema  # type: ignore
+            allowlist_obj = json.loads(allow_file.read_text(encoding="utf-8"))
+            schema_obj = json.loads(schema_file.read_text(encoding="utf-8"))
+            jsonschema.Draft202012Validator.check_schema(schema_obj)
+            jsonschema.validate(instance=allowlist_obj, schema=schema_obj)
+            session.log("✓ security_allowlist.json validated against schema")
+        except Exception as e:
+            session.error(f"security_allowlist.json schema validation failed: {e}")
+
+    # Build set of active allowlisted IDs
+    if allow_file.exists():
+        try:
+            allowlist = json.loads(allow_file.read_text(encoding="utf-8"))
+            today = datetime.date.today()
+            for entry in allowlist.get("allowlisted_vulnerabilities", []):
+                eid = entry.get("id")
+                try:
+                    exp = datetime.date.fromisoformat(entry.get("expiry_date", "1970-01-01"))
+                except Exception:
+                    exp = datetime.date(1970, 1, 1)
+                if eid and exp >= today:
+                    active_allow.add(eid)
+        except Exception:
+            # Ignore malformed allowlist; treat as empty
+            pass
 
     # 1) pip-audit (dependency vulnerabilities)
     audit_output = artifacts_dir / "security_report.json"
@@ -280,25 +335,6 @@ def security(session: nox.Session) -> None:
         pip_audit_json = json.loads(pip_audit_result.stdout or "[]")
     except Exception as e:
         session.error(f"Failed to parse pip-audit JSON: {e}")
-
-    # 1a) Allowlist handling for pip-audit
-    allowlist_path = Path("security_allowlist.json")
-    active_allow = set()
-    if allowlist_path.exists():
-        try:
-            allowlist = json.loads(allowlist_path.read_text(encoding="utf-8"))
-            today = datetime.date.today()
-            for entry in allowlist.get("allowlisted_vulnerabilities", []):
-                eid = entry.get("id")
-                try:
-                    exp = datetime.date.fromisoformat(entry.get("expiry_date", "1970-01-01"))
-                except Exception:
-                    exp = datetime.date(1970, 1, 1)
-                if eid and exp >= today:
-                    active_allow.add(eid)
-        except Exception:
-            # Ignore malformed allowlist; treat as empty
-            pass
 
     high_crit = []
     # pip-audit may return list or object; handle both
