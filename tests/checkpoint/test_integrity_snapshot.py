@@ -49,10 +49,10 @@ def test_snapshot_config_prunes_reserved_keys() -> None:
 
 def _has_omegaconf() -> bool:
     try:
-        pass  # type: ignore
+        import omegaconf  # type: ignore # noqa: F401
+        return True
     except Exception:
         return False
-    return True
 
 
 @pytest.mark.skipif(not _has_omegaconf(), reason="OmegaConf not available")

@@ -6,10 +6,9 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping
 
 try:
-    from codex_ml.logging.ndjson_logger import (  # re-exported for backwards compat
-        NDJSONLogger as _CoreNDJSONLogger,
-    )
+    # re-exported for backwards compat
     from codex_ml.logging.ndjson_logger import (
+        NDJSONLogger as _CoreNDJSONLogger,
         is_legacy_mode,
         timestamped_record,
     )
