@@ -1,155 +1,185 @@
 """
-Typer CLI for codex-eval command.
+Typer-based CLI for evaluation operations.
 
-Provides run and report subcommands following the spec.
+Console script entry point suggestion: codex-eval
+
+Commands:
+    codex-eval run --config path [--json]
+    codex-eval report --input metrics.ndjson [--json]
+
+Exit codes:
+    0 success
+    2 invalid arguments/config
+    3 runtime error
+    4 determinism mismatch (report comparison)
 """
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 
-try:
-    import typer
-except ImportError:
-    typer = None  # type: ignore
+import typer
 
-__all__ = ["app", "main"]
-
-# Create Typer app
-if typer is not None:
-    app = typer.Typer(
-        name="codex-eval",
-        help="Evaluation CLI for codex_ml",
-        add_completion=False,
-    )
-else:
-    app = None  # Fallback when typer not installed
+app = typer.Typer(help="Evaluation loop commands (reference).")
 
 
-def _ensure_typer():
-    """Ensure Typer is available."""
-    if typer is None:
-        print("Error: typer is required for CLI. Install with: pip install typer", file=sys.stderr)
-        sys.exit(2)
+def _load_config(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        typer.echo(f"Config not found: {path}", err=True)
+        raise typer.Exit(code=2)
+    text = path.read_text()
+    if path.suffix == ".json":
+        return json.loads(text)
+    if path.suffix == ".toml":
+        try:
+            import tomllib
+        except ImportError:
+            try:
+                import tomli as tomllib  # type: ignore
+            except ImportError:
+                typer.echo("TOML support requires tomli or Python 3.11+", err=True)
+                raise typer.Exit(code=2)
+        return tomllib.loads(text)
+    typer.echo("Unsupported config format (use .json or .toml)", err=True)
+    raise typer.Exit(code=2)
 
 
+@app.command("run")
 def run_command(
-    config: Optional[Path] = typer.Option(None, "--config", help="Path to experiment config (JSON/TOML)"),
-    device: str = typer.Option("cpu", "--device", help="Device to use (cpu/cuda)"),
-    max_batches: Optional[int] = typer.Option(None, "--max-batches", help="Limit number of batches"),
-    json_output: bool = typer.Option(False, "--json", help="Output in JSON format"),
-    sys_metrics: bool = typer.Option(False, "--sys-metrics/--no-sys-metrics", help="Enable system metrics"),
-    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output file path"),
+    config: Path = typer.Option(..., "--config", help="Experiment config (.json/.toml)"),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON summary to stdout"),
+    device: str = typer.Option("cpu", "--device", help="Device (cpu|cuda)"),
+    max_batches: Optional[int] = typer.Option(
+        None, "--max-batches", help="Limit number of batches for quick tests"
+    ),
+    sys_metrics: bool = typer.Option(
+        False, "--sys-metrics", help="Enable system metrics collection (future)"
+    ),
 ):
     """
-    Run evaluation with specified configuration.
-    
-    Exit codes:
-      0 - Success
-      2 - Invalid configuration
-      3 - Runtime error
-      4 - Determinism mismatch (if validation enabled)
+    Run evaluation with provided config.
+    Produces NDJSON logs + optional JSON summary.
     """
-    try:
-        # Validate inputs
-        if config and not config.exists():
-            typer.echo(f"Error: Config file not found: {config}", err=True)
-            raise typer.Exit(code=2)
-        
-        # Placeholder implementation
-        result = {
-            "status": "success",
-            "config": str(config) if config else None,
-            "device": device,
-            "max_batches": max_batches,
+    cfg = _load_config(config)
+
+    # Lazy import evaluation loop
+    from codex_ml.evaluation.loop import evaluate_epoch
+    from codex_ml.logging.registry import build_loggers  # type: ignore
+
+    # Minimal synthetic components derived from config (placeholder)
+    model = cfg.get("_model_obj")
+    dataloader = cfg.get("_eval_dataloader")
+    criterion = cfg.get("_criterion")
+
+    if model is None or dataloader is None or criterion is None:
+        typer.echo(
+            "Config must inject _model_obj, _eval_dataloader, _criterion for reference CLI.",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
+    log_dir = Path("runs/eval")
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    loggers = build_loggers(
+        {
+            "output_dir": str(log_dir),
+            "use_mlflow": cfg.get("logging", {}).get("mlflow", False),
             "sys_metrics": sys_metrics,
         }
-        
-        # Output
-        if json_output:
-            output_str = json.dumps(result, indent=2)
-        else:
-            output_str = f"Evaluation completed successfully\nDevice: {device}"
-        
-        if output:
-            output.write_text(output_str)
-            typer.echo(f"Results written to {output}")
-        else:
-            typer.echo(output_str)
-        
-        raise typer.Exit(code=0)
-        
-    except FileNotFoundError as e:
-        typer.echo(f"Error: {e}", err=True)
-        raise typer.Exit(code=2)
-    except Exception as e:
-        typer.echo(f"Runtime error: {e}", err=True)
-        raise typer.Exit(code=3)
+    )
+
+    summary = evaluate_epoch(
+        model=model,
+        dataloader=dataloader,
+        criterion=criterion,
+        device=device,
+        metrics=cfg.get("evaluation", {}).get("metrics"),
+        logger=loggers,
+        max_batches=max_batches,
+        seed=cfg.get("seed"),
+    )
+
+    if json_output:
+        typer.echo(json.dumps(summary, indent=2))
+    else:
+        typer.echo(
+            f"Eval complete | loss={summary['loss']:.4f} | count={summary['count']} | metrics={summary['metrics']}"
+        )
 
 
+@app.command("report")
 def report_command(
-    input_path: Path = typer.Argument(..., help="Path to NDJSON metrics log"),
-    json_output: bool = typer.Option(False, "--json", help="Output in JSON format"),
-    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output file path"),
+    input: Path = typer.Option(..., "--input", help="Path to metrics.ndjson"),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON aggregated summary"),
+    compare: Optional[Path] = typer.Option(
+        None, "--compare", help="Optional second metrics.ndjson to compare determinism"
+    ),
 ):
     """
-    Generate summary report from NDJSON metrics log.
-    
-    Exit codes:
-      0 - Success
-      2 - Invalid input
-      3 - Runtime error
+    Aggregate NDJSON evaluation metrics; optional determinism comparison against second run.
     """
-    try:
-        if not input_path.exists():
-            typer.echo(f"Error: Input file not found: {input_path}", err=True)
-            raise typer.Exit(code=2)
-        
-        # Placeholder implementation
-        summary = {
-            "status": "success",
-            "input": str(input_path),
-            "records_processed": 0,
-        }
-        
-        # Output
-        if json_output:
-            output_str = json.dumps(summary, indent=2)
-        else:
-            output_str = f"Report generated from {input_path}"
-        
-        if output:
-            output.write_text(output_str)
-            typer.echo(f"Report written to {output}")
-        else:
-            typer.echo(output_str)
-        
-        raise typer.Exit(code=0)
-        
-    except FileNotFoundError as e:
-        typer.echo(f"Error: {e}", err=True)
+    if not input.exists():
+        typer.echo(f"Input log not found: {input}", err=True)
         raise typer.Exit(code=2)
-    except Exception as e:
-        typer.echo(f"Runtime error: {e}", err=True)
+
+    lines = [json.loads(l) for l in input.read_text().splitlines() if l.strip()]
+    epoch_records = [r for r in lines if r.get("type") == "epoch"]
+
+    if not epoch_records:
+        typer.echo("No epoch records found.", err=True)
         raise typer.Exit(code=3)
 
+    # Use last epoch record for summary
+    summary = epoch_records[-1]
 
-if app is not None:
-    app.command(name="run")(run_command)
-    app.command(name="report")(report_command)
+    out = {
+        "loss": summary.get("loss"),
+        "count": summary.get("count"),
+        "metrics": summary.get("metrics", {}),
+        "batches": summary.get("batches"),
+        "duration_sec": summary.get("duration_sec"),
+    }
 
+    if compare:
+        if not compare.exists():
+            typer.echo(f"Compare file not found: {compare}", err=True)
+            raise typer.Exit(code=2)
 
-def main():
-    """Main entry point for CLI."""
-    _ensure_typer()
-    if app is not None:
-        app()
+        cmp_lines = [json.loads(l) for l in compare.read_text().splitlines() if l.strip()]
+        cmp_epochs = [r for r in cmp_lines if r.get("type") == "epoch"]
+
+        if not cmp_epochs:
+            typer.echo("Compare file has no epoch records.", err=True)
+            raise typer.Exit(code=3)
+
+        other = cmp_epochs[-1]
+
+        deterministic = json.dumps(out, sort_keys=True) == json.dumps(
+            {
+                "loss": other.get("loss"),
+                "count": other.get("count"),
+                "metrics": other.get("metrics", {}),
+                "batches": other.get("batches"),
+                "duration_sec": other.get("duration_sec"),
+            },
+            sort_keys=True,
+        )
+
+        out["determinism_match"] = deterministic
+        if not deterministic:
+            typer.echo("Determinism mismatch detected.", err=True)
+            raise typer.Exit(code=4)
+
+    if json_output:
+        typer.echo(json.dumps(out, indent=2))
     else:
-        print("Error: Typer not available", file=sys.stderr)
-        sys.exit(2)
+        typer.echo(
+            f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}"
+        )
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # pragma: no cover
+    app()

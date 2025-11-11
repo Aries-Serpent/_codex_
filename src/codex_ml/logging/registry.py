@@ -1,225 +1,101 @@
-"""Logging registry builder for training and evaluation flows.
-
-This module provides a factory function `build_loggers` that returns a list
-of logger objects based on configuration settings. By default, it returns
-an NDJSON logger. MLflow logging can be optionally enabled but will not
-attempt network connections unless explicitly configured.
-
-Example usage::
-
-    from codex_ml.logging.registry import build_loggers
-    
-    # Build default loggers (NDJSON only)
-    loggers = build_loggers(settings={"output_dir": "runs/exp1"})
-    
-    # Build with MLflow enabled (offline mode)
-    loggers = build_loggers(
-        settings={
-            "output_dir": "runs/exp2",
-            "enable_mlflow": True,
-            "mlflow_tracking_uri": "file:///tmp/mlruns",
-        }
-    )
-    
-    # Log events
-    for logger in loggers:
-        logger.log({"step": 1, "loss": 0.5})
-    
-    # When using MLflow logger, call close() when done
-    for logger in loggers:
-        if hasattr(logger, 'close'):
-            logger.close()
-
-The registry avoids importing heavy dependencies at module level and only
-imports MLflow when explicitly requested.
 """
+Logging registry integration draft.
 
+build_loggers(opts) creates list of logger instances.
+
+Supported sinks:
+- NDJSONLogger (default)
+- MLflowLogger (optional; offline-only; lazy import; disabled by default)
+
+System metrics optional via psutil (flag use_sys_metrics).
+"""
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Dict, Any, List, Optional
+import json
+import time
+import os
+
+try:
+    import psutil  # optional
+except ImportError:  # pragma: no cover
+    psutil = None
 
 
-def build_loggers(
-    settings: dict[str, Any],
-    cfg: dict[str, Any] | None = None,
-) -> list[Any]:
-    """Build and return a list of logger instances based on settings.
-    
-    By default, returns an NDJSON logger that writes to the output directory.
-    If `enable_mlflow` is set in settings, also includes an MLflow logger
-    configured for offline/file-based tracking.
-    
-    Args:
-        settings: Configuration dictionary with keys:
-            - output_dir (str): Directory for log files (required)
-            - enable_mlflow (bool): Whether to include MLflow logger (default: False)
-            - mlflow_tracking_uri (str): MLflow tracking URI (default: file-based)
-            - run_name (str): Optional run name for logging context
-        cfg: Optional additional configuration (reserved for future use)
-    
-    Returns:
-        List of logger objects. Each logger implements a `.log(record)` method
-        that accepts a dictionary of metrics/metadata.
-    
-    Raises:
-        ValueError: If required settings are missing
-        
-    Example::
-    
-        # Minimal NDJSON logging
-        loggers = build_loggers({"output_dir": "outputs"})
-        
-        # With MLflow (offline)
-        loggers = build_loggers({
-            "output_dir": "outputs",
-            "enable_mlflow": True,
-            "mlflow_tracking_uri": "file:///tmp/mlruns",
-        })
-        
-        # Log training metrics
-        for logger in loggers:
-            logger.log({
-                "epoch": 1,
-                "step": 100,
-                "loss": 0.45,
-                "accuracy": 0.89,
-            })
-    """
-    output_dir = settings.get("output_dir")
-    if not output_dir:
-        raise ValueError("settings['output_dir'] is required for building loggers")
-    
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
-    
-    loggers: list[Any] = []
-    
-    # Always include NDJSON logger as the default
-    ndjson_logger = _build_ndjson_logger(output_dir, settings)
-    loggers.append(ndjson_logger)
-    
-    # Optionally include MLflow logger
-    enable_mlflow = settings.get("enable_mlflow", False)
-    if enable_mlflow:
-        mlflow_logger = _build_mlflow_logger(output_dir, settings)
-        if mlflow_logger is not None:
-            loggers.append(mlflow_logger)
-    
-    return loggers
+class NDJSONLogger:
+    def __init__(self, path: Path, sys_metrics: bool = False):
+        self.path = path
+        self.sys_metrics = sys_metrics
+        self._fh = open(self.path, "a", encoding="utf-8")
+
+    def _sys_metrics(self) -> Dict[str, Any]:
+        if not self.sys_metrics or psutil is None:
+            return {}
+        p = psutil.Process()
+        return {
+            "mem_rss_mb": round(p.memory_info().rss / (1024 * 1024), 2),
+            "cpu_percent": psutil.cpu_percent(interval=None),
+        }
+
+    def log(self, record: Dict[str, Any]) -> None:
+        rec = dict(record)
+        rec["ts"] = time.time()
+        rec.update(self._sys_metrics())
+        self._fh.write(json.dumps(rec) + "\n")
+        self._fh.flush()
+
+    def close(self) -> None:
+        try:
+            self._fh.close()
+        except Exception:  # pragma: no cover
+            pass
 
 
-def _build_ndjson_logger(output_dir: str, settings: dict[str, Any]) -> Any:
-    """Build an NDJSON logger instance.
-    
-    Args:
-        output_dir: Directory for log files
-        settings: Configuration settings
-    
-    Returns:
-        NDJSONLogger instance
-    """
-    # Import here to avoid module-level heavy imports
-    from codex_ml.logging.ndjson_logger import NDJSONLogger
-    
-    log_file = Path(output_dir) / "training.ndjson"
-    run_name = settings.get("run_name")
-    
-    return NDJSONLogger(
-        path=log_file,
-        run_id=run_name,
-        max_bytes=64 * 1024 * 1024,  # 64MB rotation
-        backup_count=5,
-    )
+class MLflowLogger:  # minimal stub, optional
+    def __init__(self, sys_metrics: bool = False):  # pragma: no cover (requires mlflow)
+        self.sys_metrics = sys_metrics
+        try:
+            import mlflow
 
+            mlflow.set_tracking_uri("file:" + str(Path("mlruns").absolute()))
+            mlflow.start_run()
+            self.mlflow = mlflow
+        except Exception:
+            self.mlflow = None
 
-def _build_mlflow_logger(output_dir: str, settings: dict[str, Any]) -> Any | None:
-    """Build an MLflow logger instance if mlflow is available.
-    
-    This function does NOT attempt network connections. It configures MLflow
-    for file-based tracking (offline mode) using the tracking_uri setting.
-    
-    Args:
-        output_dir: Directory for log files
-        settings: Configuration settings with mlflow_tracking_uri
-    
-    Returns:
-        MLflow logger wrapper or None if mlflow is not available
-    """
-    try:
-        import mlflow
-    except ImportError:
-        # MLflow not installed - skip silently
-        return None
-    
-    # Configure MLflow for offline/file-based tracking
-    tracking_uri = settings.get("mlflow_tracking_uri")
-    if not tracking_uri:
-        # Default to file-based tracking in the output directory
-        tracking_uri = f"file://{Path(output_dir).absolute()}/mlruns"
-    
-    mlflow.set_tracking_uri(tracking_uri)
-    
-    # Create a simple wrapper that implements .log() interface
-    class MLflowLoggerAdapter:
-        """Adapter to provide .log() interface for MLflow.
-        
-        Can be used as a context manager to ensure MLflow run is properly closed.
-        
-        Example::
-            with MLflowLoggerAdapter("my_experiment") as logger:
-                logger.log({"step": 1, "loss": 0.5})
-        """
-        
-        def __init__(self, experiment_name: str):
-            self.experiment_name = experiment_name
-            self._run = None
-        
-        def __enter__(self):
-            """Enter context manager."""
-            return self
-        
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            """Exit context manager and close run."""
-            self.close()
-            return False
-        
-        def log(self, record: dict[str, Any]) -> None:
-            """Log a record to MLflow."""
-            # Extract metrics from record
-            step = record.get("step", record.get("global_step", 0))
-            
-            # Start run if needed (lazy initialization)
-            if self._run is None:
-                mlflow.set_experiment(self.experiment_name)
-                self._run = mlflow.start_run()
-            
-            # Log metrics (filter out non-numeric values)
-            for key, value in record.items():
-                if key in ("step", "global_step", "epoch"):
-                    continue
-                if isinstance(value, (int, float)):
-                    mlflow.log_metric(key, value, step=step)
-        
-        def close(self) -> None:
-            """End the MLflow run.
-            
-            NOTE: Callers must explicitly call close() when done logging,
-            or use this adapter as a context manager.
-            """
-            if self._run is not None:
-                mlflow.end_run()
-                self._run = None
-        def __del__(self):
-            """Ensure MLflow run is closed on object deletion."""
+    def log(self, record: Dict[str, Any]) -> None:  # pragma: no cover
+        if self.mlflow is None:
+            return
+        for k, v in record.items():
+            if isinstance(v, (int, float)):
+                self.mlflow.log_metric(k, v)
+        if self.sys_metrics:
+            pass
+
+    def close(self) -> None:  # pragma: no cover
+        if self.mlflow:
             try:
-                self.close()
+                self.mlflow.end_run()
             except Exception:
                 pass
-        
-    
-    experiment_name = settings.get("run_name", "default")
-    return MLflowLoggerAdapter(experiment_name)
 
 
-__all__ = ["build_loggers"]
+def build_loggers(opts: Dict[str, Any]) -> List:
+    output_dir = Path(opts.get("output_dir", "runs/logs"))
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    sys_metrics = bool(opts.get("sys_metrics", False))
+    use_mlflow = bool(opts.get("use_mlflow", False))
+
+    ndjson_path = output_dir / "metrics.ndjson"
+
+    loggers: List = [NDJSONLogger(ndjson_path, sys_metrics=sys_metrics)]
+
+    if use_mlflow:
+        try:
+            loggers.append(MLflowLogger(sys_metrics=sys_metrics))
+        except Exception:  # pragma: no cover
+            pass
+
+    return loggers
