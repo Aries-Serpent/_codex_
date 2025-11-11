@@ -217,12 +217,24 @@ def coverage(session: nox.Session) -> None:
     """
     Run pytest with coverage and generate artifacts for CI.
     
+    Generates:
+      - artifacts/coverage.xml
+      - artifacts/htmlcov/
+    
+    Enforces:
+      - repo coverage fail-under: 95%
+      - per-target line coverage ≥96%
+    
     Optional env filters:
       - PYTEST_MARK_EXPR="expr" to pass -m "expr"
       - PYTEST_K_EXPR="expr"    to pass -k "expr"
     """
     import os
+    from typing import List, Set, Tuple
+    
     session.install("-r", "requirements-dev.txt")
+    # Ensure pytest-cov is always installed (CI safety)
+    session.install("pytest", "pytest-cov")
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
     # Ensure artifacts directory exists
@@ -233,13 +245,14 @@ def coverage(session: nox.Session) -> None:
     mark_expr = os.environ.get("PYTEST_MARK_EXPR", "").strip()
     k_expr = os.environ.get("PYTEST_K_EXPR", "").strip()
 
-    args = [
+    args: List[str] = [
         "pytest",
         "--cov=src/codex_ml",
-        "--cov-report=xml:artifacts/coverage.xml",
-        "--cov-report=html:artifacts/htmlcov",
+        "--cov=src/codex",
         "--cov-report=term-missing",
-        "--cov-fail-under=70",
+        f"--cov-report=xml:{artifacts_dir}/coverage.xml",
+        f"--cov-report=html:{artifacts_dir}/htmlcov",
+        "--cov-fail-under=95",
         "-v",
     ]
     
@@ -249,6 +262,41 @@ def coverage(session: nox.Session) -> None:
         args += ["-k", k_expr]
     
     session.run(*args)
+
+    # Per-target thresholds (≥ 96% lines)
+    targets: Set[str] = {
+        "src/codex_ml/evaluation/loop.py",
+        "src/codex_ml/evaluation/cli.py",
+        "src/codex_ml/checkpointing/bestk.py",
+        "src/codex_ml/logging/registry.py",
+        "src/codex/ast/cli.py",
+        "tools/validate_experiments.py",
+    }
+
+    xml_path = artifacts_dir / "coverage.xml"
+    if not xml_path.exists():
+        session.error(f"Coverage XML not found at {xml_path}")
+
+    try:
+        from xml.etree import ElementTree as ET
+        tree = ET.parse(xml_path)
+        failures: List[Tuple[str, float]] = []
+        for cls in tree.findall(".//class"):
+            filename = cls.get("filename")
+            if filename in targets:
+                line_rate = cls.get("line-rate")
+                if line_rate is None:
+                    continue
+                rate = float(line_rate)
+                if rate < 0.96:
+                    failures.append((filename, rate))
+        if failures:
+            lines = [f"- {fn}: {rate*100:.2f}% < 96%" for fn, rate in failures]
+            session.error("Per-target coverage thresholds failed:\n" + "\n".join(lines))
+        session.log("Per-target coverage thresholds met (≥96%).")
+    except Exception as e:  # pragma: no cover
+        session.error(f"Failed to validate per-target coverage thresholds: {e}")
+
 
 
 @nox.session
