@@ -11,5 +11,6 @@ def coverage():
     found = 0
     root = Path(".")
     for p in EXPECTED:
-        if (root/p).exists(): found += 1
+        if (root/p).exists():
+            found += 1
     return found, len(EXPECTED)

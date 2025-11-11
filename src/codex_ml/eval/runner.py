@@ -593,7 +593,7 @@ def run_evaluation(
     sink_kind = metrics_sinks[0] if metrics_sinks else "none"
     sink_target_path: Path | None = None
     sink_stack = ExitStack()
-    sink = create_sink("none")
+    _sink = create_sink("none")
     try:
         if sink_kind not in {"none", "csv", "ndjson"}:
             raise EvaluationError(f"Unsupported metrics sink: {sink_kind}")
@@ -623,7 +623,7 @@ def run_evaluation(
                 "step",
                 "timestamp",
             ]
-            sink = create_sink(
+            _sink = create_sink(
                 sink_kind,
                 sink_fp,
                 fieldnames=fieldnames if sink_kind == "csv" else None,
