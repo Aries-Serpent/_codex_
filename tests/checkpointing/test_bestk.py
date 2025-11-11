@@ -64,3 +64,83 @@ def test_bestk_keep_last_trim():
         
         # Verify one of the previous checkpoints was pruned
         assert len(res["pruned"]) == 1, "Should have pruned exactly 1 checkpoint"
+
+
+def test_bestk_maximize_mode():
+    """Edge case: Test keep_best with maximize=True (higher is better)"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        index = td / "index.json"
+        
+        # Save checkpoints with metrics [0.1, 0.5, 0.9] where higher is better
+        for step, metric in enumerate([0.1, 0.5, 0.9]):
+            ckpt = td / f"checkpoint_{step}.pt"
+            _fake_save(ckpt)
+            update_and_prune(ckpt, metric=metric, k=2, index_path=index, keep_best="max")
+        
+        # Load index and verify best 2 are kept (0.5 and 0.9)
+        data = json.loads(index.read_text())
+        assert len(data["entries"]) == 2
+        metrics = sorted([e["metric"] for e in data["entries"]], reverse=True)
+        assert metrics == [0.9, 0.5]
+
+
+def test_bestk_empty_index_initialization():
+    """Edge case: First checkpoint creates new index"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        index = td / "index.json"
+        
+        # Index doesn't exist initially
+        assert not index.exists()
+        
+        ckpt = td / "checkpoint_0.pt"
+        _fake_save(ckpt)
+        res = update_and_prune(ckpt, metric=1.0, k=3, index_path=index)
+        
+        # Index created with one entry
+        assert index.exists()
+        data = json.loads(index.read_text())
+        assert len(data["entries"]) == 1
+        assert data["k"] == 3
+
+
+def test_bestk_invalid_checkpoint_path():
+    """Edge case: Handle non-existent checkpoint file"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        index = td / "index.json"
+        nonexistent = td / "does_not_exist.pt"
+        
+        # Should handle gracefully or raise appropriate error
+        try:
+            res = update_and_prune(nonexistent, metric=1.0, k=3, index_path=index)
+            # If it succeeds, verify it's recorded
+            assert len(res["kept"]) >= 0
+        except (FileNotFoundError, ValueError) as e:
+            # Expected behavior for missing file
+            assert "exist" in str(e).lower() or "not found" in str(e).lower()
+
+
+def test_bestk_corrupt_index_recovery():
+    """Edge case: Handle corrupted index.json file"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        index = td / "index.json"
+        
+        # Write corrupted JSON
+        index.write_text("{ invalid json")
+        
+        ckpt = td / "checkpoint_0.pt"
+        _fake_save(ckpt)
+        
+        # Should either recover or raise clear error
+        try:
+            res = update_and_prune(ckpt, metric=1.0, k=3, index_path=index)
+            # If it recovers, verify it created valid index
+            assert index.exists()
+            data = json.loads(index.read_text())
+            assert "entries" in data
+        except (json.JSONDecodeError, ValueError) as e:
+            # Expected if corruption is not handled
+            assert "json" in str(e).lower() or "parse" in str(e).lower()

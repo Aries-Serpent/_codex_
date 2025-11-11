@@ -151,3 +151,108 @@ def test_validator_excludes_schema_files():
         assert result.returncode == 0, result.stderr
         # Should report only 1 file validated (exp.json), not 2 or 3
         assert "Validated 1 config file(s) successfully" in result.stdout
+
+
+def test_validator_missing_schema_file():
+    """Edge case: Validator handles missing schema file"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        nonexistent_schema = td / "nonexistent.schema.json"
+        cfg = td / "exp.json"
+        cfg.write_text(json.dumps(VALID_CFG))
+        
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(nonexistent_schema), "--paths", str(td)],
+            capture_output=True,
+            text=True,
+        )
+        # Should fail with appropriate error
+        assert result.returncode != 0
+        assert "schema" in result.stderr.lower() or "not found" in result.stderr.lower()
+
+
+def test_validator_malformed_config_json():
+    """Edge case: Validator handles malformed JSON config"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        
+        bad_cfg = td / "bad.json"
+        bad_cfg.write_text("{ invalid json content")
+        
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(td)],
+            capture_output=True,
+            text=True,
+        )
+        # Should fail with JSON parse error
+        assert result.returncode != 0
+        assert "json" in result.stderr.lower() or "parse" in result.stderr.lower()
+
+
+def test_validator_malformed_config_toml():
+    """Edge case: Validator handles malformed TOML config"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        
+        bad_toml = td / "bad.toml"
+        bad_toml.write_text("[model\nbroken toml")
+        
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(td)],
+            capture_output=True,
+            text=True,
+        )
+        # Should fail with TOML parse error
+        assert result.returncode != 0
+        assert "toml" in result.stderr.lower() or "parse" in result.stderr.lower()
+
+
+def test_validator_empty_directory():
+    """Edge case: Validator handles empty directory (no configs found)"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        empty_dir = td / "empty"
+        empty_dir.mkdir()
+        
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(empty_dir)],
+            capture_output=True,
+            text=True,
+        )
+        # Should succeed with 0 files validated
+        assert result.returncode == 0
+        assert "0 config file(s)" in result.stdout or "No config files found" in result.stdout
+
+
+def test_validator_multiple_paths():
+    """Test validator can handle multiple input paths"""
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        schema = td / "schema.json"
+        schema.write_text(json.dumps(SCHEMA_CONTENT))
+        
+        # Create two separate directories with configs
+        dir1 = td / "configs1"
+        dir1.mkdir()
+        cfg1 = dir1 / "exp1.json"
+        cfg1.write_text(json.dumps(VALID_CFG))
+        
+        dir2 = td / "configs2"
+        dir2.mkdir()
+        cfg2 = dir2 / "exp2.json"
+        cfg2.write_text(json.dumps(VALID_CFG))
+        
+        result = subprocess.run(
+            [sys.executable, "tools/validate_experiments.py", "--schema", str(schema), "--paths", str(dir1), str(dir2)],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "Validated 2 config file(s) successfully" in result.stdout

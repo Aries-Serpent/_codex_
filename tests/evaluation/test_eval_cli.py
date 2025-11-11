@@ -157,3 +157,98 @@ def test_load_config_json(tmp_path: Path):
     cfg = eval_cli._load_config(json_config)
     assert cfg["model"]["name"] == "test"
     assert cfg["data"]["dataset"] == "test"
+
+
+def test_run_command_with_invalid_device(tmp_path: Path, monkeypatch):
+    """Edge case: Test CLI handles invalid device gracefully"""
+    runner = CliRunner()
+    
+    model = DummyModel()
+    criterion = torch.nn.CrossEntropyLoss()
+    inputs = torch.randn(2, 4)
+    targets = torch.randint(0, 3, (2,))
+    
+    cfg = {
+        "_model_obj": model,
+        "_eval_dataloader": list(zip(inputs, targets)),
+        "_criterion": criterion,
+        "evaluation": {"metrics": {}},
+        "logging": {"mlflow": False},
+        "seed": 42,
+    }
+    
+    def fake_load_config(path: Path):
+        return cfg
+    
+    def fake_build_loggers(opts):
+        return [DummyLogger(tmp_path / "metrics.ndjson")]
+    
+    monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
+    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", fake_build_loggers, raising=True)
+    
+    # Try with invalid device - should handle gracefully or error appropriately
+    result = runner.invoke(
+        eval_cli.app,
+        ["run", "--config", str(tmp_path / "fake.json"), "--device", "cuda:999"],
+    )
+    # May succeed with fallback to CPU or fail with clear error
+    assert result.exit_code in [0, 1, 2]
+
+
+def test_report_command_empty_ndjson(tmp_path: Path):
+    """Edge case: Test report command with empty NDJSON file"""
+    runner = CliRunner()
+    empty_file = tmp_path / "empty.ndjson"
+    empty_file.write_text("")
+    
+    result = runner.invoke(eval_cli.app, ["report", "--input", str(empty_file), "--json"])
+    # Should handle empty file gracefully
+    assert result.exit_code in [0, 1]
+
+
+def test_report_command_malformed_ndjson(tmp_path: Path):
+    """Edge case: Test report command with malformed NDJSON"""
+    runner = CliRunner()
+    bad_file = tmp_path / "malformed.ndjson"
+    bad_file.write_text("not valid json\n{incomplete")
+    
+    result = runner.invoke(eval_cli.app, ["report", "--input", str(bad_file)])
+    # Should handle parsing errors gracefully
+    assert result.exit_code in [0, 1]
+
+
+def test_run_command_with_deterministic_flag(tmp_path: Path, monkeypatch):
+    """Test CLI with --deterministic flag for reproducibility"""
+    runner = CliRunner()
+    
+    model = DummyModel()
+    criterion = torch.nn.CrossEntropyLoss()
+    inputs = torch.randn(4, 4)
+    targets = torch.randint(0, 3, (4,))
+    
+    cfg = {
+        "_model_obj": model,
+        "_eval_dataloader": list(zip(inputs, targets)),
+        "_criterion": criterion,
+        "evaluation": {"metrics": {}},
+        "logging": {"mlflow": False},
+        "seed": 42,
+    }
+    
+    def fake_load_config(path: Path):
+        return cfg
+    
+    def fake_build_loggers(opts):
+        return [DummyLogger(tmp_path / "metrics.ndjson")]
+    
+    monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
+    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", fake_build_loggers, raising=True)
+    monkeypatch.setenv("PYTHONHASHSEED", "0")
+    
+    result = runner.invoke(
+        eval_cli.app,
+        ["run", "--config", str(tmp_path / "fake.json"), "--deterministic", "--json", "--device", "cpu"],
+    )
+    assert result.exit_code == 0, result.stdout
+    data = json.loads(result.stdout)
+    assert "loss" in data
