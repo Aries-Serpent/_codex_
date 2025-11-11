@@ -13,8 +13,9 @@ def main():
     for line in p.read_text(encoding="utf-8").splitlines():
         try:
             row = json.loads(line)
-            if "cpu" in row: cpu.append(float(row["cpu"]))
-            if "mem" in row and isinstance(row["mem"], dict): 
+            if "cpu" in row:
+                cpu.append(float(row["cpu"]))
+            if "mem" in row and isinstance(row["mem"], dict):
                 mem.append(float(row["mem"]["percent"]))
         except Exception:
             pass  # Skip malformed lines
