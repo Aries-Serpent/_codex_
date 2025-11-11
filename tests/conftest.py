@@ -9,6 +9,9 @@ import sys
 
 import pytest
 
+# Ensure pytest-cov plugin is loaded even if autoload is disabled by environment
+pytest_plugins = ["pytest_cov"]
+
 from codex_ml.utils.torch_checks import REINSTALL_COMMAND, inspect_torch
 from tests.helpers.optional_dependencies import OPTIONAL_DEPENDENCY_REASONS
 

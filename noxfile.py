@@ -235,7 +235,6 @@ def coverage(session: nox.Session) -> None:
     session.install("-r", "requirements-dev.txt")
     # Ensure pytest-cov is always installed (CI safety)
     session.install("pytest", "pytest-cov")
-    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
     # Ensure artifacts directory exists
     from pathlib import Path
@@ -245,8 +244,10 @@ def coverage(session: nox.Session) -> None:
     mark_expr = os.environ.get("PYTEST_MARK_EXPR", "").strip()
     k_expr = os.environ.get("PYTEST_K_EXPR", "").strip()
 
+    # Explicitly enable pytest-cov plugin to avoid autoload issues
     args: List[str] = [
         "pytest",
+        "-p", "pytest_cov",  # Explicitly load the plugin
         "--cov=src/codex_ml",
         "--cov=src/codex",
         "--cov-report=term-missing",
