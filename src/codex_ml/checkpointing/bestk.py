@@ -52,8 +52,10 @@ def update_and_prune(
     kept = entries_sorted[:k]
 
     if keep_last and str(checkpoint_path) not in {e["path"] for e in kept}:
-        # Ensure last added retained
+        # Ensure last added retained, then trim back to k by dropping worst
         kept.append(new_entry)
+        # Re-sort and trim to at most k entries
+        kept = sorted(kept, key=lambda e: (e["metric"], e["created_at"]))[:k]
 
     final_paths = {e["path"] for e in kept}
     prune_candidates = [e for e in entries_before if e["path"] not in final_paths]
