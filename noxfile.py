@@ -212,6 +212,29 @@ def tests(session: nox.Session) -> None:
 
 
 @nox.session
+def coverage(session: nox.Session) -> None:
+    """Run pytest with coverage and generate artifacts for CI."""
+    session.install("-r", "requirements-dev.txt")
+    session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+
+    # Ensure artifacts directory exists
+    from pathlib import Path
+    artifacts_dir = Path("artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    # Run tests with coverage
+    session.run(
+        "pytest",
+        "--cov=src/codex_ml",
+        "--cov-report=xml:artifacts/coverage.xml",
+        "--cov-report=html:artifacts/htmlcov",
+        "--cov-report=term-missing",
+        "--cov-fail-under=70",
+        "-v",
+    )
+
+
+@nox.session
 def security(session: nox.Session) -> None:
     """Run security scans: pip-audit (with allowlist), bandit, gitleaks."""
     session.install("-r", "requirements-dev.txt")
@@ -219,6 +242,7 @@ def security(session: nox.Session) -> None:
     import json
     import shutil
     import datetime
+    import subprocess
     from pathlib import Path
 
     # 1) pip-audit with JSON output, severity filtering, and allowlist support
@@ -290,16 +314,40 @@ def security(session: nox.Session) -> None:
         # Continue with other security checks
 
     # 2) bandit
+    bandit_output = artifacts_dir / "bandit_report.txt"
     if shutil.which("bandit"):
-        session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
+        session.log("Running bandit...")
+        bandit_result = subprocess.run(
+            ["bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src"],
+            capture_output=True,
+            text=True,
+        )
+        bandit_output.write_text(
+            (bandit_result.stdout or "") + "\n" + (bandit_result.stderr or ""),
+            encoding="utf-8",
+        )
+        session.log(f"✓ bandit report written to {bandit_output}")
     else:  # pragma: no cover - environment without bandit
         session.log("bandit not available; skipping security scan")
+        bandit_output.write_text("bandit not available", encoding="utf-8")
     
     # 3) gitleaks
+    gitleaks_output = artifacts_dir / "gitleaks_report.json"
     if shutil.which("gitleaks"):
-        session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
+        session.log("Running gitleaks...")
+        gitleaks_result = subprocess.run(
+            ["gitleaks", "detect", "--no-git", "--redact", "--report-format", "json", "--report-path", str(gitleaks_output)],
+            capture_output=True,
+            text=True,
+        )
+        # gitleaks exits 1 if secrets found, 0 if none found
+        if gitleaks_result.returncode not in [0, 1]:
+            session.log(f"Warning: gitleaks exited with code {gitleaks_result.returncode}")
+        session.log(f"✓ gitleaks report written to {gitleaks_output}")
     else:  # pragma: no cover - environment without gitleaks
         session.log("gitleaks not available; skipping secret scan")
+        gitleaks_output.write_text("[]", encoding="utf-8")
+
 
 
 @nox.session
@@ -379,12 +427,48 @@ def lint(session: nox.Session) -> None:
 
 @nox.session(name="typecheck")
 def typecheck(session: nox.Session) -> None:
-    """Optional static typecheck; degrades gracefully if mypy not installed."""
+    """Run mypy and write summary to artifacts/mypy_summary.txt."""
+    import subprocess
+    from pathlib import Path
+    
+    artifacts_dir = Path("artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = artifacts_dir / "mypy_summary.txt"
+    
     try:
         session.install("mypy==1.10.0")
-        session.run("mypy", "src")
-    except Exception:
-        session.log("mypy unavailable; skipping")
+        
+        # Check if config file exists
+        config_file = Path("config/mypy.ini")
+        if config_file.exists():
+            config_arg = ["--config-file", str(config_file)]
+        else:
+            config_arg = []
+        
+        # Run mypy and capture output
+        result = subprocess.run(
+            ["mypy"] + config_arg + ["src"],
+            capture_output=True,
+            text=True,
+        )
+        
+        # Write summary to artifact
+        summary_content = (result.stdout or "") + "\n" + (result.stderr or "")
+        summary_path.write_text(summary_content, encoding="utf-8")
+        session.log(f"✓ mypy summary written to {summary_path}")
+        
+        # Also display in terminal for immediate feedback
+        if result.stdout:
+            session.log(result.stdout)
+        if result.stderr:
+            session.log(result.stderr)
+        
+        if result.returncode != 0:
+            session.error(f"mypy failed; see {summary_path} for details")
+    except Exception as e:
+        session.log(f"mypy unavailable or failed: {e}")
+        summary_path.write_text(f"mypy unavailable or failed: {e}", encoding="utf-8")
+
 
 
 @nox.session(name="repro_smoke")

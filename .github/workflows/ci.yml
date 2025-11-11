@@ -1,267 +1,200 @@
-# DISABLED for offline-only execution
-name: CI
+name: PR & CI Gates
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch: {}
+    branches:
+      - "0D_base_"
+      - "main"
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "noxfile.py"
+      - "requirements*.txt"
+      - "config/mypy.ini"
+      - ".github/workflows/ci.yml"
+  push:
+    branches:
+      - "0D_base_"
+      - "main"
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "noxfile.py"
+      - "requirements*.txt"
+      - "config/mypy.ini"
+      - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Offline-first defaults for runtime libraries that might attempt network calls.
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  CODEX_DETERMINISM: "1"
+  CODEX_SEED: "42"
+  CODEX_NUM_THREADS: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
 
 jobs:
-  tests:
-    if: ${{ matrix.profile != 'net' || secrets.NET_ALLOWED != '' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - profile: smoke
-            os: ubuntu-latest
-            python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
-            run_net: "0"
-            run_gpu: "0"
-          - profile: full
-            os: ubuntu-latest
-            python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
-            run_net: "0"
-            run_gpu: "0"
-          - profile: net
-            os: ubuntu-latest
-            python: "3.12"
-            codex_groups: "base,dev,cpu,cli,test"
-            run_net: "1"
-            run_gpu: "0"
-    name: "${{ matrix.profile }} / py${{ matrix.python }} / ${{ matrix.os }}"
-    runs-on: ${{ matrix.os }}
-    env:
-      RUN_NET_TESTS: ${{ matrix.run_net }}
-      RUN_GPU_TESTS: ${{ matrix.run_gpu }}
-      CODEX_SYNC_GROUPS: ${{ matrix.codex_groups }}
-      HF_HUB_OFFLINE: ${{ matrix.run_net == '0' && '1' || '' }}
-      TRANSFORMERS_OFFLINE: ${{ matrix.run_net == '0' && '1' || '' }}
-      CODEX_DETERMINISM: "1"
-      CODEX_SEED: "42"
-      CODEX_NUM_THREADS: "1"
+  security:
+    name: Security Scan (pip-audit + bandit + gitleaks)
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Install uv
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install "uv>=0.7"
-          uv --version
-
-      - name: Bootstrap env (groups=${{ matrix.codex_groups }})
-        run: |
-          set -euxo pipefail
-          bash .codex/scripts/setup.sh
-
-      - name: Report installed extras and fail if drift is detected
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-import json, os, sys
-from importlib import metadata
-from pathlib import Path
-from packaging.requirements import Requirement
-
-try:
-    import tomllib
-except ImportError:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        print("Neither tomllib nor tomli available; install tomli for Python < 3.11", file=sys.stderr)
-        sys.exit(1)
-
-def norm(name: str) -> str:
-    return name.lower().replace("_","-")
-
-try:
-    with open("pyproject.toml", "rb") as f:
-        pyproject = tomllib.load(f)
-except Exception as e:
-    print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
-    sys.exit(1)
-
-opt = pyproject.get("project", {}).get("optional-dependencies", {})
-requested_tokens = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
-expected_extras = []
-for t in requested_tokens:
-    if t in ("base", "+extras", "all"):
-        continue
-    if t in opt:
-        expected_extras.append(t)
-installed = {norm(d.metadata["Name"]) for d in metadata.distributions()}
-
-missing = {}
-print("== uv extras parity report ==")
-print("CODEX_SYNC_GROUPS:", requested_tokens)
-print("expected extras:", expected_extras)
-for extra in expected_extras:
-    pkgs = [norm(Requirement(p).name) for p in opt.get(extra, [])]
-    miss = [p for p in pkgs if p not in installed]
-    status = "OK" if not miss else f"MISSING({len(miss)})"
-    print(f" - extra '{extra}': {status}")
-    print(f"   packages: {', '.join(pkgs) or '(none)'}")
-    if miss:
-        print(f"   missing : {', '.join(miss)}")
-        missing[extra] = miss
-
-if missing:
-    print("EXTRAS DRIFT DETECTED -> failing job", file=sys.stderr)
-    print(json.dumps({"missing": missing}, indent=2), file=sys.stderr)
-    sys.exit(1)
-else:
-    print("All requested extras resolved.")
-PY
-
-      - name: Show environment
-        run: |
-          . .venv/bin/activate || true
-          python -V
-          python - <<'PY'
-import platform, torch
-print("torch", torch.__version__, "cuda?", torch.cuda.is_available(), "on", platform.platform())
-PY
-
-      - name: Derive pytest expression from PR labels
-        id: labels
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          python - <<'PY'
-import json, os
-labels = [l["name"].lower() for l in ${{ toJson(github.event.pull_request.labels) }}]
-allowed = {"smoke","tokenizer","training","eval"}
-selected = [l for l in labels if l in allowed]
-expr = " or ".join(selected) if selected else "smoke"
-print("labels:", labels)
-print("pytest -m:", expr)
-with open(os.environ["GITHUB_OUTPUT"],"a") as f:
-    f.write(f"expr={expr}\n")
-PY
-
-      - name: Run tests
-        run: |
-          . .venv/bin/activate
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            PYTEST_EXPR="${{ steps.labels.outputs.expr }}"
-          else
-            PYTEST_EXPR=""
-          fi
-          COVERAGE_ARGS="--cov=src/codex_ml --cov-fail-under=3.5"
-          if [ -n "${PYTEST_EXPR}" ]; then
-            echo "Running: pytest -q ${COVERAGE_ARGS} -m '${PYTEST_EXPR}'"
-            pytest -q ${COVERAGE_ARGS} -m "${PYTEST_EXPR}"
-          else
-            echo "Running: pytest -q ${COVERAGE_ARGS}"
-            pytest -q ${COVERAGE_ARGS}
-          fi
-
-      - name: Upload artifacts on failure
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ci-artifacts-${{ matrix.profile }}
-          path: |
-            artifacts/**
-            .reports/**
-
-  tests-gpu:
-    if: ${{ secrets.ENABLE_GPU_TESTS != '' }}
-    name: "gpu / py3.12 / self-hosted"
-    runs-on: [self-hosted, linux, gpu]
-    env:
-      RUN_GPU_TESTS: "1"
-      RUN_NET_TESTS: "0"
-      CODEX_SYNC_GROUPS: "base,dev,gpu,cli,test"
-      TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD: "1"
-      HF_HUB_DISABLE_TELEMETRY: "1"
-      CODEX_DETERMINISM: "1"
-      CODEX_SEED: "42"
-      CODEX_NUM_THREADS: "1"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install uv
+          cache: "pip"
+
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install "uv>=0.7"
-          uv --version
-      - name: Bootstrap env (gpu)
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          pip install nox
+
+      - name: Run security session
         run: |
-          set -euxo pipefail
-          bash .codex/scripts/setup.sh
-          # Optional: CUDA wheel index:
-          # if [ -n "${TORCH_CUDA_INDEX:-}" ]; then
-          #   uv pip install --index-url "${TORCH_CUDA_INDEX}" torch
-          # fi
-      - name: Verify CUDA and torch
+          nox -s security
+
+      - name: Upload security artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-artifacts
+          path: |
+            artifacts/security_report.json
+            artifacts/bandit_report.txt
+            artifacts/gitleaks_report.json
+
+  coverage:
+    name: Tests & Coverage
+    runs-on: ubuntu-latest
+    needs: security
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
         run: |
-          python - <<'PY'
-import torch
-print("torch:", torch.__version__, "cuda available:", torch.cuda.is_available())
-assert torch.cuda.is_available(), "CUDA not available on this runner"
-PY
-      - name: Report installed uv extras (drift check, fail on missing)
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          pip install nox
+
+      - name: Run coverage session (pytest + per-target thresholds)
         run: |
-          . .venv/bin/activate
-          python - <<'PY'
-import os, re, json, sys
-import importlib.metadata as im
-try:
-    import tomllib  # py311+
-except ImportError:
-    try:
-        import tomli as tomllib
-    except ImportError:
-        print("tomllib/tomli not available; cannot check extras", file=sys.stderr)
-        sys.exit(0)
-try:
-    with open("pyproject.toml", "rb") as f:
-        data = tomllib.load(f)
-except Exception as e:
-    print(f"Error reading pyproject.toml: {e}", file=sys.stderr)
-    sys.exit(1)
-wanted = [t.strip() for t in os.environ.get("CODEX_SYNC_GROUPS","").split(",") if t.strip()]
-extras = (data.get("project", {}) or {}).get("optional-dependencies", {}) or {}
-def norm(req: str) -> str:
-    return re.split(r"[<>=!;\[\] ]", req, 1)[0].strip().lower()
-tokens = [t for t in wanted if t not in ("base","cpu","gpu","+extras","all")]
-report = {}
-any_missing = False
-for token in tokens:
-    reqs = extras.get(token, []) or []
-    present, missing = [], []
-    for req in reqs:
-        pkg = norm(req)
-        try: present.append(f"{pkg}=={im.version(pkg)}")
-        except im.PackageNotFoundError: missing.append(pkg)
-    if missing: any_missing = True
-    report[token] = {"present": sorted(present), "missing": sorted(missing)}
-print("UV extras requested via CODEX_SYNC_GROUPS:", tokens)
-print("Extras install report (present/missing):")
-for k, v in report.items():
-    print(f"- {k}: +{len(v['present'])} present, -{len(v['missing'])} missing")
-    if v["missing"]: print("  missing:", ", ".join(v["missing"]))
-print("::group::uv-extras-report-json"); print(json.dumps(report, indent=2)); print("::endgroup::")
-if any_missing:
-    print("One or more extras have missing packages; failing job.", file=sys.stderr)
-    sys.exit(1)
-PY
-      - name: Run GPU-marked tests
+          nox -s coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-artifacts
+          path: |
+            artifacts/coverage.xml
+            artifacts/htmlcov
+
+  typing:
+    name: Type Checking (mypy)
+    runs-on: ubuntu-latest
+    needs: coverage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
         run: |
-          pytest -q --cov=src/codex_ml --cov-fail-under=3.5 -m gpu
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+          pip install nox
+
+      - name: Run mypy session and write summary
+        run: |
+          nox -s typecheck
+
+      - name: Upload typing artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: typing-artifacts
+          path: artifacts/mypy_summary.txt
+
+  env_and_docs:
+    name: Env Snapshot & Docs Manifest
+    runs-on: ubuntu-latest
+    needs: typing
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Generate environment snapshot
+        run: |
+          python tools/env_snapshot.py
+
+      - name: Generate docs manifest
+        run: |
+          python scripts/generate_docs_manifest.py
+
+      - name: Upload env/docs artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-docs-artifacts
+          path: |
+            artifacts/env_snapshot.json
+            artifacts/docs_manifest.sha
+
+  summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs:
+      - security
+      - coverage
+      - typing
+      - env_and_docs
+    steps:
+      - name: Generate summary
+        run: |
+          {
+            echo "CI Gates executed."
+            echo "- Security: see security-artifacts"
+            echo "- Coverage: see coverage-artifacts"
+            echo "- Typing: see typing-artifacts"
+            echo "- Env/Docs: see env-docs-artifacts"
+          } > ci_summary.txt
+
+      - name: Upload summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-summary
+          path: ci_summary.txt
