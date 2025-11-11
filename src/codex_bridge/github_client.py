@@ -18,7 +18,8 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 
 def _auth_headers() -> dict[str, str]:
     h = {"Accept": "application/vnd.github+json"}
-    if TOKEN: h["Authorization"] = f"Bearer {TOKEN}"
+    if TOKEN:
+        h["Authorization"] = f"Bearer {TOKEN}"
     return h
 
 def _cache_path(key: str) -> str:
@@ -26,7 +27,8 @@ def _cache_path(key: str) -> str:
 
 def cache_get(key: str, ttl: int) -> Any | None:
     p = _cache_path(key)
-    if not os.path.exists(p): return None
+    if not os.path.exists(p):
+        return None
     with open(p, "r", encoding="utf-8") as f:
         obj = json.load(f)
     if time.time() - obj.get("ts", 0) <= ttl:
@@ -46,14 +48,17 @@ def gh_get(url: str) -> Any:
 def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
     key = f"branches:{owner}/{repo}"
     c = cache_get(key, ttl=60)
-    if c is not None: return c
+    if c is not None:
+        return c
     data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
-    cache_set(key, data); return data
+    cache_set(key, data)
+    return data
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
     r = requests.get(raw, timeout=30)
-    if r.status_code == 200 and r.text: return r.text
+    if r.status_code == 200 and r.text:
+        return r.text
     meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{path}?ref={ref}")
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")

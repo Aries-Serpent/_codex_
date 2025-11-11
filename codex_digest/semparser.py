@@ -32,7 +32,7 @@ class SemParser:
     ]
 
     def parse(self, text: str) -> ParseResult:
-        signals = Counter()
+        _ = Counter()  # Reserved for future signal tracking
         intents: List[Intent] = []
         entities: List[str] = []
 

@@ -18,7 +18,7 @@ class Plan:
 
 
 def compose_workflow(actions) -> Plan:
-    idx = {a.kind: i for i, a in enumerate(actions)}
+    _ = {a.kind: i for i, a in enumerate(actions)}  # Index reserved for future dependency resolution
     steps: List[PlanStep] = []
     for a in actions:
         reqs: List[str] = []

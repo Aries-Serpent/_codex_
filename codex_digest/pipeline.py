@@ -25,7 +25,7 @@ class CodexPipeline:
 
     def run(self, context: str, description: str, dry_run: bool = True) -> PipelineOutput:
         x0 = self.tk.normalize(context + " " + description)
-        tokens = self.tk.tokenize(x0)
+        _ = self.tk.tokenize(x0)  # Tokenize for side effects
 
         pr = self.sp.parse(x0)
         if not pr.intents:

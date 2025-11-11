@@ -11,4 +11,7 @@ def main():
         print(out[0].split()[0] if out else "main")
     except Exception:
         print("main")
-if __name__ == "__main__": main()
+
+
+if __name__ == "__main__":
+    main()
