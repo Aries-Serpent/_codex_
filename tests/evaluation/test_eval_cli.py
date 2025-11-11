@@ -60,10 +60,9 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
     monkeypatch.setenv("PYTHONHASHSEED", "0")
-    # Lazy import location for build_loggers in the function body, patch target module
-    import codex_ml.evaluation.loop as loop_mod
-    import codex_ml.logging.registry as reg_mod  # for type lint
-    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", fake_build_loggers, raising=True)
+    # Patch the actual module where build_loggers is defined
+    import codex_ml.logging.registry as reg_mod
+    monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
 
     result = runner.invoke(
         eval_cli.app,
@@ -184,7 +183,8 @@ def test_run_command_with_invalid_device(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
     
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", fake_build_loggers, raising=True)
+    import codex_ml.logging.registry as reg_mod
+    monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
     
     # Try with invalid device - should handle gracefully or error appropriately
     result = runner.invoke(
@@ -242,7 +242,8 @@ def test_run_command_with_deterministic_flag(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
     
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", fake_build_loggers, raising=True)
+    import codex_ml.logging.registry as reg_mod
+    monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
     monkeypatch.setenv("PYTHONHASHSEED", "0")
     
     result = runner.invoke(

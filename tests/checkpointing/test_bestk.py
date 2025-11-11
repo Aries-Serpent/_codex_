@@ -51,6 +51,19 @@ def test_bestk_keep_last_trim():
         _fake_save(ckpt_worst)
         res = update_and_prune(ckpt_worst, metric=10.0, k=3, index_path=index, keep_last=True)
         
+        # Critical: kept list must be exactly k=3 entries
+        assert len(res["kept"]) == 3, f"Expected exactly 3 kept, got {len(res['kept'])}"
+        
+        # Critical: worst checkpoint must be in kept (because keep_last=True)
+        kept_paths = {e["path"] for e in res["kept"]}
+        assert str(ckpt_worst) in kept_paths, "keep_last=True must protect newest checkpoint"
+        
+        # Verify index on disk also has exactly k entries
+        data = json.loads(index.read_text())
+        assert len(data["entries"]) == 3
+        _fake_save(ckpt_worst)
+        res = update_and_prune(ckpt_worst, metric=10.0, k=3, index_path=index, keep_last=True)
+        
         # Verify kept list has exactly k=3 entries, not k+1
         assert len(res["kept"]) == 3, f"Expected 3 kept checkpoints, got {len(res['kept'])}"
         
