@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from hydra.core.global_hydra import GlobalHydra
+
 import hydra
 from configs.schemas import AppCfg, register_schema
-from hydra.core.global_hydra import GlobalHydra
 from omegaconf import OmegaConf
 from training.offline_wandb import force_offline
 from training.seed_utils import set_all_seeds

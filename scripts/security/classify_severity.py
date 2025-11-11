@@ -26,9 +26,12 @@ Classification (default thresholds):
 Order: evaluate high first, then medium, then low.
 """
 from __future__ import annotations
-import os, json, sys
+
+import json
+import os
+import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 ART_DIR = Path("audit_artifacts")
 IN_REPORT = ART_DIR / "secret_entropy_report.json"

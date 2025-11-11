@@ -9,8 +9,8 @@ Identifies ML serving and inference capabilities including:
 Enhanced patterns for Codex ML platform.
 """
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, List, Set
+
+from typing import Set
 
 
 def detect(file_index: dict) -> dict:

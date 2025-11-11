@@ -1,5 +1,7 @@
-import time, json
+import json
+import time
 from pathlib import Path
+
 try:
     import psutil
 except Exception:
@@ -11,7 +13,8 @@ except Exception:
 
 class PerfSampler:
     def __init__(self, out="artifacts/logs/perf.ndjson", interval=2.0):
-        self.out = Path(out); self.out.parent.mkdir(parents=True, exist_ok=True)
+        self.out = Path(out)
+        self.out.parent.mkdir(parents=True, exist_ok=True)
         self.interval = interval
         if nvml:
             try:
@@ -19,6 +22,7 @@ class PerfSampler:
             except Exception:
                 # GPU not available or NVML initialization failed
                 pass
+    
     def sample_once(self):
         row = {"ts": time.time()}
         if psutil:
@@ -35,6 +39,8 @@ class PerfSampler:
                 pass
         with self.out.open("a", encoding="utf-8") as f:
             f.write(json.dumps(row) + "\n")
+    
     def run(self, steps=5):
         for _ in range(steps):
-            self.sample_once(); time.sleep(self.interval)
+            self.sample_once()
+            time.sleep(self.interval)

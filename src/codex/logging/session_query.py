@@ -31,7 +31,6 @@ import sqlite3
 import sys
 from pathlib import Path
 from typing import Any, Iterable, Optional
-from typing import Any, Iterable, Optional
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto

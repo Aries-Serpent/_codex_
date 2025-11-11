@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 class _DummyTok:
     def set_special_tokens(self, _): pass
     def encode_batch(self, xs, **kw): return {"input_ids":[list(range(kw.get("max_length",8))) for _ in xs]}

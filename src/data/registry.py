@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import importlib
 from typing import Any, Callable
-from typing import Any, Callable
 
 try:  # pragma: no cover - torch is optional
-    import torch
     from torch.utils.data import DataLoader, TensorDataset, random_split
+
+    import torch
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
     torch = None  # type: ignore[assignment]
     DataLoader = None  # type: ignore[assignment]

@@ -4,8 +4,8 @@ Uses Tarjan's strongly connected components algorithm to detect cycles.
 Reference: https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 """
 
-from typing import Dict, List, Set
 from collections import defaultdict
+from typing import Dict, List, Set
 
 
 class DependencyGraph:

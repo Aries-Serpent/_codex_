@@ -128,10 +128,10 @@ def safe_accelerate_init(
     
     # Try to initialize accelerate
     try:
-        from accelerate import Accelerator
-        
         # Check for distributed environment variables
         import os
+
+        from accelerate import Accelerator
         world_size = int(os.getenv("WORLD_SIZE", "1"))
         rank = int(os.getenv("RANK", "0"))
         

@@ -9,7 +9,8 @@ def _load_adapter():
     )
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader
-    import types, sys
+    import sys
+    import types
 
     sys.modules.setdefault(
         "sentencepiece",

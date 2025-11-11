@@ -9,13 +9,12 @@ cryptographic metadata, and compliance tracking.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Any, Optional
-from typing import Any, Optional
 
-from .sigstore_client import SignstoreClient
 from .evidence_schema import EvidenceSchemaValidator
+from .sigstore_client import SignstoreClient
 
 STANDARDIZATION_VERSION = "2.0"
 SLSA_LEVEL = "L3"

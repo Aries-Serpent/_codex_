@@ -23,7 +23,6 @@ try:
 except Exception:
     pass
 from typing import Optional, Union
-from typing import Optional, Union
 
 # Common column name variants seen in repo/README and typical SQLite logs.
 LIKELY_MAP = {

@@ -8,7 +8,10 @@ Cases:
 
 Uses small threshold to force compression.
 """
-import os, json, subprocess, sys, shutil
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 RAW_ROOT = Path("audit_artifacts/raw")

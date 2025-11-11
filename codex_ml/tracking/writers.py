@@ -28,7 +28,6 @@ class _CsvWriter:
     def write(self, row: Dict[str, Any]) -> None:
         if self._field_order is None:
             self._field_order = sorted(row.keys())
-        full_row = {key: row.get(key) for key in self._field_order}
 
         new_fields = sorted(set(row.keys()) - set(self._field_order))
         if new_fields:

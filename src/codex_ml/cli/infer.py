@@ -9,7 +9,6 @@ from datetime import datetime
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Sequence
-from typing import Any, Sequence
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,

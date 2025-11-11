@@ -22,7 +22,6 @@ from dataclasses import asdict, dataclass, is_dataclass, replace
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Iterable, Optional, Protocol
-from typing import Any, Iterable, Optional, Protocol
 
 from codex_ml.data.jsonl_loader import load_jsonl
 

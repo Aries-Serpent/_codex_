@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from omegaconf import OmegaConf
 import pytest
+
+from omegaconf import OmegaConf
 
 
 def test_eval_guard(tmp_path, monkeypatch):

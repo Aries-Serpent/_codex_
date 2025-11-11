@@ -1,7 +1,11 @@
 
 from __future__ import annotations
-import os, asyncio, random
-from typing import AsyncIterator, Dict, Any, Optional
+
+import asyncio
+import os
+import random
+from typing import Any, AsyncIterator, Dict, Optional
+
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -39,4 +43,5 @@ async def stream(messages: list[dict], extra: Optional[Dict[str, Any]] = None) -
         except Exception:
             if attempt >= MAX_RETRIES:
                 raise
-            await asyncio.sleep(_jitter_delay(attempt)); attempt += 1
+            await asyncio.sleep(_jitter_delay(attempt))
+            attempt += 1

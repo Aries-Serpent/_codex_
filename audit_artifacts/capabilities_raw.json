@@ -1,5 +1,5 @@
 {
-  "generated": 1762683398.0735753,
+  "generated": 1762829748.8343806,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -206,7 +206,7 @@
         "github_actions": 37,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 208,
+        "validation_scripts": 209,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       }
     },
@@ -537,9 +537,9 @@
         "docs/architecture/codex_pipeline.md",
         "docs/architecture/interfaces.md",
         "docs/archive/pages_publish_tiles_yml_archive.md",
+        "docs/ast/README.md",
         "docs/bridge/README.md",
-        "docs/bridge/governance.md",
-        "docs/bridge/overview.md"
+        "docs/bridge/governance.md"
       ],
       "found_patterns": [
         "docs",
@@ -553,10 +553,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 501,
+        "markdown_count": 518,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 503
+        "total_docs": 520
       }
     },
     {
@@ -1286,6 +1286,7 @@
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
         "tests/archival/test_archival_tombstone_required.py",
+        "tests/archival/test_archive_integration.py",
         "tests/archive/test_archive_hygiene.py",
         "tests/archive/test_archive_plan_apply.py",
         "tests/archive/test_auto_compress.py",
@@ -1309,16 +1310,15 @@
         "tests/archive/test_standardization.py",
         "tests/archive/test_stub_text.py",
         "tests/archive/test_trend_aggregate.py",
+        "tests/ast/conftest.py",
+        "tests/ast/test_graph.py",
+        "tests/ast/test_integration.py",
+        "tests/ast/test_metrics.py",
+        "tests/ast/test_node.py",
         "tests/audit/__init__.py",
         "tests/audit/test_context_and_facets.py",
         "tests/audit/test_gaps_analyze.py",
-        "tests/breadcrumbs/test_bundle_and_integrity.py",
-        "tests/breadcrumbs/test_catalog_db.py",
-        "tests/breadcrumbs/test_compaction.py",
-        "tests/breadcrumbs/test_ledger.py",
-        "tests/callbacks/test_default_callbacks.py",
-        "tests/callbacks/test_ndjson_logger.py",
-        "tests/capabilities/__init__.py"
+        "tests/breadcrumbs/test_bundle_and_integrity.py"
       ],
       "found_patterns": [
         "fixture",
@@ -1332,9 +1332,9 @@
         "marker"
       ],
       "meta": {
-        "test_count": 980,
-        "config_count": 23,
-        "fixture_count": 27
+        "test_count": 998,
+        "config_count": 24,
+        "fixture_count": 28
       }
     },
     {

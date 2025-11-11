@@ -14,7 +14,6 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
-from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse
 
 from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentStatus

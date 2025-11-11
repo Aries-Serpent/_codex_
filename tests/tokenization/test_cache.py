@@ -4,8 +4,6 @@ from __future__ import annotations
 import time
 from datetime import datetime, timedelta
 
-import pytest
-
 from codex_ml.tokenization.cache import (
     TokenizationCache,
     get_global_cache,

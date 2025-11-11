@@ -1,7 +1,7 @@
 import json
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_render_tile_html(tmp_path):

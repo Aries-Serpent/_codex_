@@ -10,7 +10,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from time import perf_counter
 from typing import Any, Mapping, Optional
-from typing import Any, Mapping, Optional
 
 from codex_ml.data.jsonl_loader import load_jsonl
 from codex_ml.data.split_utils import split_dataset
@@ -897,11 +896,13 @@ def run_functional_training(
 
     try:
         from datasets import Dataset  # type: ignore
+
         from transformers import AutoTokenizer  # type: ignore
     except Exception:  # pragma: no cover - optional dependencies
         try:
-            import torch
             from torch.utils.data import DataLoader
+
+            import torch
         except Exception:
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [

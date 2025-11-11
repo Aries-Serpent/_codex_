@@ -1,7 +1,7 @@
 import json
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 
 def test_ratelimit_tile_validates(tmp_path):

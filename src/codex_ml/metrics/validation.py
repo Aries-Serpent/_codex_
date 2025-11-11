@@ -1,7 +1,7 @@
 """Metric registry validation utilities."""
 from __future__ import annotations
 
-from typing import Callable, List
+from typing import List
 
 
 class MetricValidationError(Exception):

@@ -5,7 +5,6 @@ import csv
 import json
 from pathlib import Path
 from typing import Iterable
-from typing import Iterable
 
 from .evaluator import run_evaluator
 

@@ -213,14 +213,66 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def security(session: nox.Session) -> None:
-    """Run lightweight security scans (bandit + gitleaks)."""
+    """Run security scans: pip-audit (fail on High/Critical), bandit, gitleaks."""
     session.install("-r", "requirements-dev.txt")
+    session.install("pip-audit")
+    import json
     import shutil
+    from pathlib import Path
 
+    # 1) pip-audit with JSON output and severity filtering
+    artifacts_dir = Path("artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    audit_output = artifacts_dir / "security_report.json"
+    
+    session.log("Running pip-audit...")
+    try:
+        result = session.run(
+            "pip-audit",
+            "--format=json",
+            "--output", str(audit_output),
+            "--desc",
+            "on",
+            success_codes=[0, 1],  # 0=no vulns, 1=vulns found
+            silent=True,
+        )
+        
+        # Parse JSON and check for High/Critical vulnerabilities
+        if audit_output.exists():
+            with open(audit_output) as f:
+                audit_data = json.load(f)
+            
+            high_or_critical = []
+            for pkg in audit_data.get("dependencies", []):
+                for vuln in pkg.get("vulns", []):
+                    severity = vuln.get("severity", "").upper()
+                    if severity in ("HIGH", "CRITICAL"):
+                        high_or_critical.append({
+                            "package": pkg.get("name"),
+                            "version": pkg.get("version"),
+                            "severity": severity,
+                            "id": vuln.get("id"),
+                            "description": vuln.get("description", "")[:100],
+                        })
+            
+            if high_or_critical:
+                session.error(
+                    f"Found {len(high_or_critical)} HIGH/CRITICAL vulnerabilities. "
+                    f"See {audit_output} for details."
+                )
+            else:
+                session.log(f"✓ pip-audit passed (report: {audit_output})")
+    except Exception as e:
+        session.log(f"Warning: pip-audit failed with error: {e}")
+        # Continue with other security checks
+
+    # 2) bandit
     if shutil.which("bandit"):
         session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
     else:  # pragma: no cover - environment without bandit
         session.log("bandit not available; skipping security scan")
+    
+    # 3) gitleaks
     if shutil.which("gitleaks"):
         session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
     else:  # pragma: no cover - environment without gitleaks
@@ -413,3 +465,57 @@ def docs(session: nox.Session) -> None:
     """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/build_api_docs.py", *session.posargs)
+
+
+@nox.session(name="security")
+def security(session: nox.Session) -> None:
+    """Run security vulnerability scan with pip-audit and check against allowlist."""
+    session.install("pip-audit", "jsonschema")
+
+    import json
+    import subprocess
+    import pathlib
+    import datetime
+
+    allowlist_path = pathlib.Path("security_allowlist.json")
+    allowlist = {}
+    if allowlist_path.exists():
+        allowlist = json.loads(allowlist_path.read_text()).get("allowlisted_vulnerabilities", [])
+
+    cmd = ["pip-audit", "-f", "json"]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+
+    if proc.returncode != 0:
+        session.error(f"pip-audit execution failed: {proc.stderr}")
+
+    try:
+        vulns = json.loads(proc.stdout)
+    except Exception as e:
+        session.error(f"Failed to parse pip-audit JSON: {e}")
+
+    now = datetime.datetime.utcnow().date()
+    allow_ids_active = {
+        v["id"]
+        for v in allowlist
+        if datetime.date.fromisoformat(v["expiry_date"]) >= now
+    }
+
+    high_or_critical = []
+    for pkg in vulns:
+        for vuln in pkg.get("vulns", []):
+            sev = vuln.get("severity", "").upper()
+            vid = vuln.get("id")
+            if vid in allow_ids_active:
+                continue
+            if sev in {"HIGH", "CRITICAL"}:
+                high_or_critical.append((pkg.get("name"), vid, sev))
+
+    artifacts_dir = pathlib.Path("artifacts")
+    artifacts_dir.mkdir(exist_ok=True)
+    (artifacts_dir / "security_report.json").write_text(json.dumps(vulns, indent=2))
+
+    if high_or_critical:
+        details = ", ".join(f"{name}:{vid}:{sev}" for name, vid, sev in high_or_critical)
+        session.error(f"High/Critical vulnerabilities found (not allowlisted): {details}")
+
+    session.log("Security scan complete: no high/critical vulnerabilities.")

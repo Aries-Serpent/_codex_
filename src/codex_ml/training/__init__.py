@@ -7,7 +7,6 @@ from typing import Any, Mapping, Sequence
 
 from .device_strategy import DeviceConfig, DeviceMapper
 from .dp_config import DifferentialPrivacyConfig, make_private_model
-from .rng_checkpoint import RNGState, set_seed
 from .legacy_api import (
     OptimizerSettings,
     SafetySettings,
@@ -18,6 +17,7 @@ from .legacy_api import (
 from .legacy_api import (  # noqa: F401 re-exported via __all__
     run_functional_training as _legacy_run_functional_training,
 )
+from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 
 __all__ = [

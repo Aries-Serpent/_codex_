@@ -1,4 +1,5 @@
 import pytest
+
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
 
 pytest.importorskip("fastapi")

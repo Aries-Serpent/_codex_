@@ -18,7 +18,6 @@ import numbers
 import os
 from pathlib import Path
 from typing import Optional, Sequence
-from typing import Optional, Sequence
 
 spm = None  # type: ignore[assignment]
 

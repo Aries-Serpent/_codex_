@@ -14,10 +14,10 @@ from pathlib import Path
 import pytest
 
 from src.codex.utils.validators import (
+    validate_code_quality,
     validate_file_structure,
     validate_with_checksum,
     validate_with_diff,
-    validate_code_quality,
 )
 
 

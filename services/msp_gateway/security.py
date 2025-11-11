@@ -3,11 +3,12 @@ Security module for MSP Gateway
 Handles authentication, authorization, policy enforcement, and redaction
 """
 
-import re
-import yaml
 import logging
-from typing import Dict, List, Optional, Any
+import re
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import yaml
 
 from .config import settings
 

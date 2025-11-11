@@ -12,7 +12,11 @@ Environment:
   COVERAGE_XML_PATH=coverage.xml (default)
 """
 from __future__ import annotations
-import os, json, sys, xml.etree.ElementTree as ET
+
+import json
+import os
+import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 COVERAGE_XML = Path(os.getenv("COVERAGE_XML_PATH","coverage.xml"))

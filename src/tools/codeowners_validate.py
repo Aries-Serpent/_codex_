@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
-from typing import Any, Optional
-
+from typing import Any
 
 OWNER_RX = re.compile(r"^@([A-Za-z0-9_.-]+)(/[A-Za-z0-9_.-]+)?$")
 

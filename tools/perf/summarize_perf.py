@@ -3,7 +3,10 @@
 Read NDJSON from artifacts/logs/perf.ndjson and produce audit_artifacts/perf_summary.json
 Only if CODEX_ENABLE_PERF_SAMPLER=1 or file exists. Safe no-op if missing.
 """
-import json, pathlib, statistics
+import json
+import pathlib
+import statistics
+
 
 def main():
     nd = pathlib.Path("artifacts/logs/perf.ndjson")

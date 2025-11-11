@@ -393,7 +393,7 @@ class FenceFixer:
                         f.write(f"|{e['file']}|{e['predicted_lang']}|{conf:.2f}|{reason}|\n")
         
         if self.verbose:
-            print(f"\nReports generated:")
+            print("\nReports generated:")
             print(f"  JSON: {json_path}")
             print(f"  Markdown: {md_path}")
 

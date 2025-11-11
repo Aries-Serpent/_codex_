@@ -3,10 +3,10 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
-from typing import Any, Dict, Tuple
 import subprocess
 import sys
+from pathlib import Path
+from typing import Any, Dict, Tuple
 
 
 def load_config(p: Path) -> Dict[str, Any]:

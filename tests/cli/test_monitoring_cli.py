@@ -10,9 +10,8 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("typer")
-from typer.testing import CliRunner
-
 from codex_ml.monitoring import cli as monitoring_cli
+from typer.testing import CliRunner
 
 
 @pytest.fixture()

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Sequence
 
@@ -24,10 +25,27 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def capture_environment() -> dict[str, Any]:
-    """Collect environment details, including variables, for serialization."""
-
+    """Collect environment details, including variables, for serialization.
+    
+    Captures:
+    - Python version and platform information (from environment_summary)
+    - Python interpreter path
+    - All environment variables
+    - CODEX_* environment variables (highlighted separately)
+    """
     info = environment_summary()
+    
+    # Add interpreter path explicitly
+    info["python_executable"] = sys.executable
+    
+    # Capture all environment variables
     info["env"] = dict(os.environ)
+    
+    # Highlight CODEX_* environment variables for easy access
+    codex_vars = {k: v for k, v in os.environ.items() if k.startswith("CODEX_")}
+    if codex_vars:
+        info["codex_env_vars"] = codex_vars
+    
     return info
 
 

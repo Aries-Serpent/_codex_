@@ -45,9 +45,8 @@ def test_codexml_cli_skips_eval(monkeypatch):
 
 
 def test_run_training_invokes_functional_entry(monkeypatch):
-    from omegaconf import OmegaConf
-
     from codex_ml.cli import main as cli_main
+    from omegaconf import OmegaConf
 
     captured: dict[str, list[str]] = {}
 

@@ -3,8 +3,6 @@ import json
 import tempfile
 from pathlib import Path
 
-import pytest
-
 
 def test_check_low_threshold():
     """Test check_low_threshold function."""

@@ -22,6 +22,7 @@
 #   unexpected subprocess outputs (optional).
 
 import subprocess
+
 import pytest
 
 

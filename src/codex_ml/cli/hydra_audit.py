@@ -29,9 +29,8 @@ import argparse
 import json
 import re
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence
 from typing import Any, Iterable, Optional, Sequence
 
 try:  # pragma: no cover - handled in tests via importorskip

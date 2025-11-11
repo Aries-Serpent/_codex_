@@ -10,7 +10,6 @@ import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
-from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
 
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision

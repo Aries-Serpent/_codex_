@@ -2,13 +2,6 @@
 
 from codex_ml.metrics_base import accuracy, f1_score, precision, recall
 
-from .metric_implementations import (
-    BLEUScore,
-    F1Score,
-    MetricRegistry,
-    RecallScore,
-    TokenAccuracy,
-)
 from .api import (
     get_metric,
     list_metrics,
@@ -17,6 +10,13 @@ from .api import (
     summarize_ndjson_to_sqlite,
 )
 from .evaluator import batch_metrics
+from .metric_implementations import (
+    BLEUScore,
+    F1Score,
+    MetricRegistry,
+    RecallScore,
+    TokenAccuracy,
+)
 from .text import perplexity, token_accuracy
 
 __all__ = [

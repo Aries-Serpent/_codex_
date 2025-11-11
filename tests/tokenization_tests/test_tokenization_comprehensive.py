@@ -1,6 +1,7 @@
 """Tokenization comprehensive tests."""
 from __future__ import annotations
 
+
 class TestEdgeCases:
     """Test tokenization edge cases."""
     

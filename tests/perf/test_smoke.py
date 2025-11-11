@@ -10,7 +10,6 @@ import os
 
 import pytest
 
-
 # Skip all tests in this module unless CODEX_PERF_SMOKE=1
 pytestmark = pytest.mark.skipif(
     os.getenv("CODEX_PERF_SMOKE") != "1",
@@ -32,7 +31,6 @@ def test_perf_smoke_marker():
     start = time.time()
     
     # Import a core module
-    import codex_ml
     
     elapsed = time.time() - start
     

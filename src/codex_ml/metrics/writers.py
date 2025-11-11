@@ -8,7 +8,6 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
-from typing import Any, Mapping, Sequence
 
 _REQUIRED_FIELDS = ("metric", "value", "step")
 

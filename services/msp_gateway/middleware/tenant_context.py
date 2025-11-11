@@ -5,12 +5,12 @@ Resolves API keys to tenant IDs and enforces quotas
 
 import logging
 import sqlite3
-from typing import Optional, Dict, Any
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Request, status
+from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..config import settings
@@ -233,81 +233,6 @@ class TenantRegistry:
 
         return list(self.tenants.values())
     
-    def update_tenant(
-        self,
-        tenant_id: str,
-        name: Optional[str] = None,
-        quota: Optional[Dict[str, int]] = None,
-        policies: Optional[list] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        active: Optional[bool] = None,
-    ) -> Dict[str, Any]:
-        """Update tenant information
-        
-        Args:
-            tenant_id: Tenant identifier
-            name: New name (optional)
-            quota: New quota (optional)
-            policies: New policies (optional)
-            metadata: New metadata (optional)
-            active: New active status (optional)
-        
-        Returns:
-            Updated tenant data
-        
-        Raises:
-            ValueError: If tenant not found
-        """
-        import json
-        
-        # Get existing tenant
-        tenant_data = self.get_tenant(tenant_id)
-        if not tenant_data:
-            raise ValueError(f"Tenant not found: {tenant_id}")
-        
-        # Update fields
-        if name is not None:
-            tenant_data["name"] = name
-        if quota is not None:
-            tenant_data["quota"] = quota
-        if policies is not None:
-            tenant_data["policies"] = policies
-        if metadata is not None:
-            tenant_data["metadata"] = metadata
-        if active is not None:
-            tenant_data["active"] = active
-        
-        tenant_data["updated_at"] = datetime.utcnow().isoformat()
-        
-        # Update in SQLite
-        if self.backend == "sqlite":
-            conn = sqlite3.connect(settings.db_path)
-            cursor = conn.cursor()
-            
-            cursor.execute("""
-                UPDATE tenants
-                SET name = ?, quota_json = ?, policies_json = ?,
-                    metadata_json = ?, active = ?, updated_at = ?
-                WHERE tenant_id = ?
-            """, (
-                tenant_data["name"],
-                json.dumps(tenant_data["quota"]),
-                json.dumps(tenant_data["policies"]),
-                json.dumps(tenant_data["metadata"]),
-                1 if tenant_data["active"] else 0,
-                tenant_data["updated_at"],
-                tenant_id
-            ))
-            
-            conn.commit()
-            conn.close()
-        
-        # Update cache
-        self.tenants[tenant_id] = tenant_data
-        
-        logger.info(f"Updated tenant: {tenant_id}")
-        return tenant_data
-    
     def delete_tenant(self, tenant_id: str) -> None:
         """Delete (deactivate) a tenant and revoke API key
         
@@ -317,7 +242,6 @@ class TenantRegistry:
         Raises:
             ValueError: If tenant not found
         """
-        import json
         
         # Get existing tenant
         tenant_data = self.get_tenant(tenant_id)

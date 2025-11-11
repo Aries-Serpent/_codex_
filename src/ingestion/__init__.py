@@ -16,9 +16,7 @@ Public API:
 
 from __future__ import annotations
 
-import io
 from pathlib import Path
-from typing import Iterator, Optional, Union
 from typing import Iterator, Optional, Union
 
 # Local utility imports (optional modules handled gracefully)
@@ -63,7 +61,6 @@ __all__ = [
 # Expose deterministic_shuffle when available, otherwise provide a local fallback.
 if _deterministic_shuffle is None:
     import random
-    from typing import Sequence, TypeVar
     from typing import Sequence, TypeVar
 
     T = TypeVar("T")

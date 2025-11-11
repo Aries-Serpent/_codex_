@@ -4,8 +4,8 @@ Provides abstraction for local model inference
 """
 
 import logging
-from typing import Dict, Any, Optional, List
 from abc import ABC, abstractmethod
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

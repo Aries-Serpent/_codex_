@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
+
 from ..auth import require_api_key, require_request_id
 
 router = APIRouter(prefix="/kb", tags=["kb"])

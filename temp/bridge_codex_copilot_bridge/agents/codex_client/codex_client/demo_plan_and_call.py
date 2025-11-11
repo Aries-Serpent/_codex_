@@ -1,5 +1,10 @@
 
-import os, json, asyncio, httpx
+import asyncio
+import json
+import os
+
+import httpx
+
 from .openai_wrapper import stream
 
 ITA_URL = os.getenv("ITA_URL", "http://localhost:8080")

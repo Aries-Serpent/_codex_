@@ -7,10 +7,8 @@ Prefer codex_ml.utils.checkpointing.CheckpointManager for new code.
 from __future__ import annotations
 
 import random as _random
-from typing import Any
-from typing import Any
-
 import warnings as _warnings
+from typing import Any
 
 _warnings.warn(
     "src.utils.checkpointing is legacy; use codex_ml.utils.checkpointing for new code.",
@@ -28,7 +26,11 @@ except Exception:  # pragma: no cover - defensive
 try:  # pragma: no cover - prefer canonical RNG helpers
     from codex_ml.utils.checkpoint_core import (  # type: ignore
         dump_rng_state as _canonical_dump_rng_state,
+    )
+    from codex_ml.utils.checkpoint_core import (
         load_rng_state as _canonical_load_rng_state,
+    )
+    from codex_ml.utils.checkpoint_core import (
         set_seed as _canonical_set_seed,
     )
 except Exception:  # pragma: no cover - canonical RNG helpers unavailable

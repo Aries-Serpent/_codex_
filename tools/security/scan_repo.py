@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import re, json
+import json
+import re
 from pathlib import Path
 
 PATTERNS = {
@@ -33,7 +34,8 @@ def scan(root: Path):
 def main():
     root = Path(".")
     rows = scan(root)
-    outdir = Path("audit_artifacts"); outdir.mkdir(parents=True, exist_ok=True)
+    outdir = Path("audit_artifacts")
+    outdir.mkdir(parents=True, exist_ok=True)
     (outdir/"secret_scan.json").write_text(json.dumps({"count": len(rows), "findings": rows}, indent=2))
     print("audit_artifacts/secret_scan.json")
     return 0

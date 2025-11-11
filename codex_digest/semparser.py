@@ -1,8 +1,8 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import List, Dict
-from collections import Counter
+
 import re
+from dataclasses import dataclass
+from typing import Dict, List
 
 
 @dataclass
@@ -31,7 +31,6 @@ class SemParser:
     ]
 
     def parse(self, text: str) -> ParseResult:
-        signals = Counter()
         intents: List[Intent] = []
         entities: List[str] = []
 

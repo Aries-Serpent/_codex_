@@ -1,5 +1,5 @@
-from pathlib import Path
 import json
+from pathlib import Path
 
 
 def test_record_metrics_writes_json_and_ndjson(tmp_path: Path, monkeypatch):

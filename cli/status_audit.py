@@ -122,7 +122,7 @@ def main(argv: List[str] | None = None) -> int:
     
     # Step 1: Run audit pipeline (unless skipped)
     if not args.skip_audit:
-        print(f"[STEP 1/2] Running capability audit pipeline")
+        print("[STEP 1/2] Running capability audit pipeline")
         print(f"           Artifacts will be saved to: {args.artifacts}/")
         print()
         
@@ -133,11 +133,11 @@ def main(argv: List[str] | None = None) -> int:
             print(f"[WARN] Audit pipeline returned exit code {rc}", file=sys.stderr)
             # Continue anyway as artifacts may still be usable
     else:
-        print(f"[STEP 1/2] Skipping audit pipeline (using existing artifacts)")
+        print("[STEP 1/2] Skipping audit pipeline (using existing artifacts)")
         print()
     
     # Step 2: Generate status update report
-    print(f"[STEP 2/2] Generating status update report")
+    print("[STEP 2/2] Generating status update report")
     print(f"           Report will be saved to: {args.output}/")
     print()
     

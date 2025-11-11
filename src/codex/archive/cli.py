@@ -538,8 +538,8 @@ def validate_standardization(
 ) -> None:
     """Validate standardization compliance of archive evidence log."""
     try:
-        from .standardization import StandardizationManager
         from .evidence_schema import EvidenceSchemaValidator
+        from .standardization import StandardizationManager
     except ImportError:
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
@@ -672,7 +672,7 @@ def migrate_evidence_to_v2() -> None:
             errors.append(f"Line {line_no}: {e}")
     
     if errors:
-        click.echo(f"❌ Errors during migration:")
+        click.echo("❌ Errors during migration:")
         for err in errors:
             click.echo(f"   {err}")
         sys.exit(1)

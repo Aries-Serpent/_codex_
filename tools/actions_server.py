@@ -4,10 +4,15 @@ Minimal offline-first HTTP server to back CustomGPT Actions for _codex_.
 Uses GitHub REST (token optional) and local cache. No CI, no secrets committed.
 """
 from __future__ import annotations
-import os, json, time, hashlib
-from typing import Dict, Any
-from urllib.parse import quote
+
+import hashlib
+import json
+import os
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Any, Dict
+from urllib.parse import quote
+
 import requests
 
 try:
@@ -90,30 +95,38 @@ def code_search(owner: str, repo: str, q: str, ref: str = "main"):
 class App(BaseHTTPRequestHandler):
     def _ok(self, body: Any, code=200):
         b = body if isinstance(body, (str, bytes)) else json.dumps(body, ensure_ascii=False)
-        if isinstance(b, str): b = b.encode("utf-8")
+        if isinstance(b, str):
+            b = b.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.end_headers()
         self.wfile.write(b)
 
     def do_GET(self):
-        from urllib.parse import urlparse, parse_qs
-        u = urlparse(self.path); qs = parse_qs(u.query)
+        from urllib.parse import parse_qs, urlparse
+        u = urlparse(self.path)
+        qs = parse_qs(u.query)
         if u.path == "/healthz":
             return self._ok({"ok": True, "ts": int(time.time())})
         if u.path == "/repo/branches":
-            owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
+            owner = qs.get("owner", [OWNER])[0]
+            repo = qs.get("repo", [REPO])[0]
             return self._ok(list_branches(owner, repo))
         if u.path == "/repo/files":
-            owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
-            ref = qs.get("ref", ["main"])[0]; path = qs.get("path", ["README.md"])[0]
+            owner = qs.get("owner", [OWNER])[0]
+            repo = qs.get("repo", [REPO])[0]
+            ref = qs.get("ref", ["main"])[0]
+            path = qs.get("path", ["README.md"])[0]
             return self._ok({"path": path, "ref": ref, "content": get_file_text(owner, repo, ref, path)})
         if u.path == "/repo/search":
-            owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
-            ref = qs.get("ref", ["main"])[0]; q = qs.get("q", [""])[0]
+            owner = qs.get("owner", [OWNER])[0]
+            repo = qs.get("repo", [REPO])[0]
+            ref = qs.get("ref", ["main"])[0]
+            q = qs.get("q", [""])[0]
             return self._ok(code_search(owner, repo, q, ref))
         if u.path == "/repo/most_recent_branch":
-            owner = qs.get("owner", [OWNER])[0]; repo = qs.get("repo", [REPO])[0]
+            owner = qs.get("owner", [OWNER])[0]
+            repo = qs.get("repo", [REPO])[0]
             if gh_most_recent_branch is not None:
                 name = gh_most_recent_branch(owner, repo)
             else:

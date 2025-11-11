@@ -4,6 +4,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from hydra.utils import to_absolute_path
+
 import hydra
 from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import ensure_local_tracking, log_artifacts_safe, start_run_with_tags
@@ -15,15 +17,15 @@ from hhg_logistics.model.peft_utils import (
     tokenize_for_causal_lm,
 )
 from hhg_logistics.plugins import load_plugins
-from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
-    import torch
     from torch.optim import AdamW
     from torch.utils.data import DataLoader, Dataset
+
+    import torch
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
     AdamW = None  # type: ignore

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-import yaml, pathlib, re
+import pathlib
+import re
+
+import yaml
+
 root = pathlib.Path('.')
 mk = root/'mkdocs.yml'
 if not mk.exists():
@@ -33,9 +37,11 @@ present = set()
 
 def collect(x):
     if isinstance(x, list):
-        for i in x: collect(i)
+        for i in x:
+            collect(i)
     elif isinstance(x, dict):
-        for k,v in x.items(): collect(v)
+        for k,v in x.items():
+            collect(v)
     elif isinstance(x, str):
         present.add(x)
 
