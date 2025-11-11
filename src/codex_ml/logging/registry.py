@@ -210,6 +210,12 @@ def _build_mlflow_logger(output_dir: str, settings: dict[str, Any]) -> Any | Non
             if self._run is not None:
                 mlflow.end_run()
                 self._run = None
+        def __del__(self):
+            """Ensure MLflow run is closed on object deletion."""
+            try:
+                self.close()
+            except Exception:
+                pass
         
         def __del__(self):
             """Ensure MLflow run is closed on object deletion."""
