@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+import datetime
+import re
 from pathlib import Path
-import re, textwrap, datetime
+
 qf = Path('.codex/notes/Codex_Questions.md')
 af = Path('.codex/notes/Codex_Answers.md')
 now = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')

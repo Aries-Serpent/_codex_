@@ -1,34 +1,19 @@
-# VCS and CI
+.venv
+__pycache__
 .git
-.gitattributes
+.gitignore
 .github
-
-# Python cache / build
-__pycache__/
-*.py[cod]
-*.pyo
-*.egg-info/
-dist/
-build/
-
-# Local environments
-.venv/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+dist
+build
+*.egg-info
+artifacts
+mlruns
+.coverage
+.pytest_cache
 .env
 .env.*
-
-# Project heavy artifacts / not needed at runtime
-.codex/
-artifacts/
-logs/
-reports/
-temp/
-.temp/
-.cache/
-notebooks/
-docs/
-tests/
-examples/
-
-# OS/editor noise
 .DS_Store
 Thumbs.db

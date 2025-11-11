@@ -13,7 +13,7 @@ import sys
 import textwrap
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 RUN_TIMESTAMP = _dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 
@@ -578,9 +578,11 @@ class CodexTaskExecutor:
             ).strip("\n")
             anchor = '    session.run("python", str(_CONFIG_VALIDATOR), "--quiet")'
             if anchor in nox_text and not self.dry_run:
+                # Prepare the injection with proper indentation
+                indented_injection = injection.replace('\n', '\n    ')
                 updated = nox_text.replace(
                     anchor,
-                    f"{anchor}\n    # Secret scanning\n    {injection.replace('\n', '\n    ')}",
+                    f"{anchor}\n    # Secret scanning\n    {indented_injection}",
                 )
                 nox_path.write_text(updated, encoding="utf-8")
                 results["nox_updated"] = True

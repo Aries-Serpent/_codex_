@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import json
 import sys
 from typing import Iterable
+
 from ..detectors.aggregate import scorecard
 from ..detectors.unified_training import detector_unified_training
 

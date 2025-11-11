@@ -1,4 +1,9 @@
-import os, json, subprocess, time, urllib.request
+import json
+import os
+import subprocess
+import time
+import urllib.request
+
 
 def _get(url: str):
     with urllib.request.urlopen(url, timeout=5) as r:

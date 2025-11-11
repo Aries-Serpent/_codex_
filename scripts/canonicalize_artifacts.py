@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, os, sys
+import argparse
+import hashlib
+import json
+import sys
 from pathlib import Path
 
 CANON_KEYS_DROP = {"generated", "timestamp"}
@@ -33,10 +36,12 @@ def main():
     adir = Path(args.artifacts_dir)
     items = []
     if not adir.exists():
-        print(f"[ERR] {adir} not found", file=sys.stderr); sys.exit(2)
+        print(f"[ERR] {adir} not found", file=sys.stderr)
+        sys.exit(2)
     
     for p in sorted(adir.glob("*.json")):
-        if p.name.startswith("_"): continue
+        if p.name.startswith("_"):
+            continue
         items.append(canonicalize_json(p))
     
     out = {"artifacts": items}

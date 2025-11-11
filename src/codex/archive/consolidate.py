@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Iterable
-from typing import Iterable
 
 from .detect import FileMeta, stat_file
 from .similarity import Similarity, compute_similarity

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+
 try:  # Python >=3.9
     from importlib.resources import files
 except Exception:  # pragma: no cover - Python<3.9

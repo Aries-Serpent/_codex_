@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 from collections import OrderedDict
 from typing import Any, Hashable
-from typing import Any, Hashable
 
 __all__ = ["TokenLRU", "GLOBAL_TOKEN_LRU", "cache_key", "is_cache_disabled"]
 

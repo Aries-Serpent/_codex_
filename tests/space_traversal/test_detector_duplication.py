@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 import importlib.util
 import types
+from pathlib import Path
 from typing import Any, Dict, Iterable
 
 

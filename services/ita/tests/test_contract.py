@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import Iterable
 
 import pytest
-import yaml
 from app.main import app
 from fastapi.testclient import TestClient
+
+import yaml
 
 pytestmark = pytest.mark.filterwarnings("ignore:The 'app' shortcut is now deprecated.*")
 

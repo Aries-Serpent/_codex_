@@ -3,16 +3,17 @@ Test Retrieval Pipeline
 Tests for embedding, FAISS store, and search functionality
 """
 
-import pytest
-import tempfile
 import json
+import tempfile
 from pathlib import Path
+
+import pytest
 
 # Skip if dependencies not available
 pytest.importorskip("sentence_transformers")
 pytest.importorskip("faiss")
 
-from src.codex.retrieval import build_embeddings, FAISSStore, RetrievalEngine
+from src.codex.retrieval import FAISSStore, RetrievalEngine, build_embeddings
 
 
 @pytest.fixture

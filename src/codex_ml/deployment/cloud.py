@@ -6,7 +6,6 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 from codex_ml.monitoring.health import record_health_event
 

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-import json, subprocess
+import json
+import subprocess
 from pathlib import Path
 
+
 def main():
-    outdir = Path("audit_artifacts"); outdir.mkdir(parents=True, exist_ok=True)
+    outdir = Path("audit_artifacts")
+    outdir.mkdir(parents=True, exist_ok=True)
     try:
         txt = subprocess.check_output(["pipdeptree","-j"], text=True)
         (outdir/"dep_graph.json").write_text(txt)

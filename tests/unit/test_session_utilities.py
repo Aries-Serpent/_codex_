@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
+from src.codex.utils.context_discovery import discover_git_context, get_pr_number
 from src.codex.utils.session_cache import FileCache, SearchCache
-from src.codex.utils.context_discovery import get_pr_number, discover_git_context
 
 
 class TestFileCache:

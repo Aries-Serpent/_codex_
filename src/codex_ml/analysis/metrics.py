@@ -1,7 +1,8 @@
 # src/codex_ml/analysis/metrics.py
 from __future__ import annotations
-import math
+
 import ast
+import math
 
 
 def mccabe_minimal(ast_tree: ast.AST) -> int:

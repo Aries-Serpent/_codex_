@@ -2,27 +2,29 @@
 Tests for knob parsing utility (scripts/config/parse_knobs.py).
 """
 import os
+
 import pytest
+
 from scripts.config.parse_knobs import (
-    parse_truthy,
-    parse_enum,
-    parse_csv_list,
-    parse_int,
-    get_depth,
-    get_pii_mode,
-    get_pii_pattern_set,
-    get_pii_custom_list,
-    get_pii_regex_strategy,
-    get_content_filter_mode,
-    get_allowlist_profile,
+    clear_warnings,
     get_allowlist_extensions,
-    get_max_bundle_mb,
-    get_auto_archive_enabled,
+    get_allowlist_profile,
     get_archive_format,
     get_archive_pointer_style,
+    get_auto_archive_enabled,
     get_bundle_prefix_mode,
+    get_content_filter_mode,
+    get_depth,
+    get_max_bundle_mb,
+    get_pii_custom_list,
+    get_pii_mode,
+    get_pii_pattern_set,
+    get_pii_regex_strategy,
     get_warnings,
-    clear_warnings,
+    parse_csv_list,
+    parse_enum,
+    parse_int,
+    parse_truthy,
 )
 
 

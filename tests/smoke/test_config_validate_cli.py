@@ -1,9 +1,9 @@
 from pathlib import Path
 
 import pytest
-from typer.testing import CliRunner
 
 from codex_ml.cli.validate import app
+from typer.testing import CliRunner
 
 pytestmark = pytest.mark.smoke
 

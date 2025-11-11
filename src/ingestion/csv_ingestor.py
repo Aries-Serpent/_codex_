@@ -3,7 +3,6 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 from typing import Union
-from typing import Union
 
 from .io_text import detect_encoding
 

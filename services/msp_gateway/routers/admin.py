@@ -8,10 +8,10 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Response, status
 
+from ..config import settings
+from ..middleware.tenant_context import tenant_registry
 from ..schemas.requests import TenantCreateRequest, TenantUpdateRequest
 from ..schemas.responses import TenantResponse
-from ..middleware.tenant_context import tenant_registry
-from ..config import settings
 
 logger = logging.getLogger(__name__)
 

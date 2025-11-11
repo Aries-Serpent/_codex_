@@ -7,7 +7,6 @@ pytest.importorskip("torch")
 
 import torch
 import torch.nn as nn
-
 from codex_ml.utils.checkpointing import save_checkpoint
 
 

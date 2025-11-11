@@ -1,5 +1,6 @@
-from pathlib import Path
 import json
+from pathlib import Path
+
 import pytest
 
 CTX = Path("audit_artifacts/context_index.json")

@@ -3,7 +3,11 @@ Prefix Auto-Validation Test (P5)
 Ensures:
 - When BUNDLE_PREFIX_MODE=1 and PREFIX_VALIDATE_AUTO=1, prefix violations add manifest warning.
 """
-import os, json, subprocess, sys, shutil
+import json
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 ART = Path("audit_artifacts")

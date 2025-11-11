@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 from typing import Optional
-from typing import Optional
 
 
 def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:

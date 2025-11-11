@@ -25,7 +25,8 @@ def iter_questions():
                 yield (src, i, s)
             else:
                 m = qpat.search(s)
-                if m: yield (src, i, m.group(1))
+                if m:
+                    yield (src, i, m.group(1))
 
 def main():
     rows = list(iter_questions())

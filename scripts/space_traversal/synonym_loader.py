@@ -24,7 +24,11 @@ Integration:
 - S3 can optionally use expanded version for richer pattern matching
 """
 from __future__ import annotations
-import os, json, sys, hashlib
+
+import hashlib
+import json
+import os
+import sys
 from pathlib import Path
 from typing import Dict, Set
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import Iterable, Tuple, Dict, List
-import re
 
+import re
+from typing import List, Tuple
 
 REDACT_ENV_KEYS = ("API_KEY", "TOKEN", "SECRET", "PASS", "PASSWORD", "CREDENTIAL")
 

@@ -16,13 +16,9 @@ Usage:
 
 import argparse
 import datetime as dt
-import json
-import os
 import re
-import sys
 import textwrap
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src" / "codex_ml"

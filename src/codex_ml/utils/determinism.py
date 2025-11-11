@@ -5,7 +5,6 @@ import logging
 import os
 import random
 from typing import Optional
-from typing import Optional
 
 try:  # pragma: no cover - optional dependency guards
     import numpy as np

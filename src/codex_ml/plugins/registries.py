@@ -7,7 +7,6 @@ import os
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
-from typing import Any
 
 from .registry import Registry
 

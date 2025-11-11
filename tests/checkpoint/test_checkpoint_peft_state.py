@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import json
 import importlib.util
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -23,8 +22,9 @@ load_checkpoint = checkpointing.load_checkpoint
 pytest.importorskip("torch")
 pytest.importorskip("peft")
 
-import torch  # noqa: E402  (import after skip checks)
 from peft import LoraConfig, TaskType, get_peft_model, get_peft_model_state_dict  # noqa: E402
+
+import torch  # noqa: E402  (import after skip checks)
 
 
 def _make_model() -> torch.nn.Module:

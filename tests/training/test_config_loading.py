@@ -2,9 +2,9 @@ import shutil
 from pathlib import Path
 
 import pytest
-from omegaconf import DictConfig
 
 from codex_ml.utils.config_loader import load_training_cfg
+from omegaconf import DictConfig
 
 CFG_DIR = Path("configs/training")
 BASE = CFG_DIR / "base.yaml"

@@ -20,9 +20,12 @@ Outputs:
 """
 
 from __future__ import annotations
-import os, sys, json
+
+import json
+import os
+import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 ALLOWED_PREFIXES = ("patchset_", "bundle_", "har_")
 REPORT_PATH = Path("audit_artifacts/prefix_validation_report.json")

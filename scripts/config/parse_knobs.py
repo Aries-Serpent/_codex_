@@ -13,8 +13,9 @@ Schemas:
 - See DEFAULT_SCHEMA below for supported keys and semantics.
 """
 from __future__ import annotations
+
 import os
-from typing import Iterable, Tuple, Optional, Dict, Any, List
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 _TRUTHY = {"1","true","TRUE","True","yes","YES","on","ON","y","Y"}
 _FALSY  = {"0","false","FALSE","False","no","NO","off","OFF","","n","N"}

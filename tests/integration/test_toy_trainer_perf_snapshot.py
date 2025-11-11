@@ -1,7 +1,9 @@
+import json
 import subprocess
 import sys
-import json
+
 import pytest
+
 
 @pytest.mark.timeout(30)
 def test_toy_trainer_generates_perf_and_parse(tmp_path, monkeypatch):

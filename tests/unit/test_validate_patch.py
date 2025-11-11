@@ -13,7 +13,6 @@ from pathlib import Path
 
 import pytest
 
-
 VALID_PATCH_CONTENT = """--- /dev/null
 +++ b/tmp_test_file.txt
 @@ -0,0 +1,3 @@

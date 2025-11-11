@@ -213,14 +213,89 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def security(session: nox.Session) -> None:
-    """Run lightweight security scans (bandit + gitleaks)."""
+    """Run security scans: pip-audit (with allowlist), bandit, gitleaks."""
     session.install("-r", "requirements-dev.txt")
+    session.install("pip-audit", "jsonschema")
+    import json
     import shutil
+    import datetime
+    from pathlib import Path
 
+    # 1) pip-audit with JSON output, severity filtering, and allowlist support
+    artifacts_dir = Path("artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    audit_output = artifacts_dir / "security_report.json"
+    
+    session.log("Running pip-audit...")
+    try:
+        result = session.run(
+            "pip-audit",
+            "--format=json",
+            "--output", str(audit_output),
+            "--desc",
+            "on",
+            success_codes=[0, 1],  # 0=no vulns, 1=vulns found
+            silent=True,
+        )
+        
+        # Load and apply security allowlist (expires after specified date)
+        allowlist_path = Path("security_allowlist.json")
+        allowlist = []
+        if allowlist_path.exists():
+            allowlist = json.loads(allowlist_path.read_text()).get("allowlisted_vulnerabilities", [])
+        
+        # Parse JSON and check for High/Critical vulnerabilities
+        if audit_output.exists():
+            with open(audit_output) as f:
+                audit_data = json.load(f)
+            
+            # Get active allowlist IDs (not expired)
+            now = datetime.datetime.utcnow().date()
+            allow_ids_active = {
+                v["id"]
+                for v in allowlist
+                if datetime.date.fromisoformat(v["expiry_date"]) >= now
+            }
+            
+            high_or_critical = []
+            for pkg in audit_data.get("dependencies", []):
+                for vuln in pkg.get("vulns", []):
+                    severity = vuln.get("severity", "").upper()
+                    vid = vuln.get("id")
+                    # Skip if in active allowlist
+                    if vid in allow_ids_active:
+                        continue
+                    if severity in ("HIGH", "CRITICAL"):
+                        high_or_critical.append({
+                            "package": pkg.get("name"),
+                            "version": pkg.get("version"),
+                            "severity": severity,
+                            "id": vid,
+                            "description": vuln.get("description", "")[:100],
+                        })
+            
+            if high_or_critical:
+                details = ", ".join(
+                    f"{v['package']}:{v['id']}:{v['severity']}"
+                    for v in high_or_critical
+                )
+                session.error(
+                    f"Found {len(high_or_critical)} HIGH/CRITICAL vulnerabilities "
+                    f"(not allowlisted). See {audit_output} for details. {details}"
+                )
+            else:
+                session.log(f"✓ pip-audit passed (report: {audit_output})")
+    except Exception as e:
+        session.log(f"Warning: pip-audit failed with error: {e}")
+        # Continue with other security checks
+
+    # 2) bandit
     if shutil.which("bandit"):
         session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
     else:  # pragma: no cover - environment without bandit
         session.log("bandit not available; skipping security scan")
+    
+    # 3) gitleaks
     if shutil.which("gitleaks"):
         session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
     else:  # pragma: no cover - environment without gitleaks
@@ -399,6 +474,13 @@ def config_schema(session: nox.Session) -> None:
     session.run("python", "tools/configs/schema_guard.py", "--path", "configs/base/hydra.yaml")
 
 
+@nox.session(name="validate-configs")
+def validate_configs(session: nox.Session) -> None:
+    """Validate experiment configs (JSON/TOML) against schema."""
+    session.install("-r", "requirements-dev.txt")
+    session.run("python", "tools/validate_experiments.py")
+
+
 @nox.session(name="perf_smoke")
 def perf_smoke(session: nox.Session) -> None:
     """Run performance smoke tests (opt-in, guarded by CODEX_PERF_SMOKE)."""
@@ -413,3 +495,6 @@ def docs(session: nox.Session) -> None:
     """Build API documentation with pdoc3 (offline, local-only). Output to artifacts/docs/api/."""
     session.install("-r", "requirements-dev.txt")
     session.run("python", "tools/build_api_docs.py", *session.posargs)
+
+
+

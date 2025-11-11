@@ -7,10 +7,8 @@ import json
 import random
 from pathlib import Path
 from typing import Any, Iterator, Mapping
-from typing import Any, Iterator, Mapping
 
 from codex_ml.utils.repro import record_dataset_checksums
-from codex_ml.data.splits import assign_split
 
 CacheKey = tuple[str, tuple[float, float, float], int, bool]
 DEFAULT_CACHE_DIR = Path("artifacts/data_cache")

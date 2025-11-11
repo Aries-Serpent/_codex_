@@ -1,8 +1,9 @@
 # src/codex_ml/analysis/parsers.py
 # Tiered parsing: ast -> libcst -> parso -> degraded metrics-only
 from __future__ import annotations
-from dataclasses import dataclass
+
 import ast
+from dataclasses import dataclass
 
 try:
     import libcst as cst  # optional

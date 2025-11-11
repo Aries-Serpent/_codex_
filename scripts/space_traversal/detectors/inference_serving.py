@@ -8,8 +8,6 @@ Heuristic:
 - required_patterns includes server framework indicators
 """
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, List
 
 
 def detect(file_index: dict) -> dict:
@@ -29,9 +27,11 @@ def detect(file_index: dict) -> dict:
         if ext in {".py",".md"}:
             # Just path-based hints; deeper content scan in future
             if "fastapi" in lower:
-                evidence.append(p); found.add("fastapi")
+                evidence.append(p)
+                found.add("fastapi")
             if "flask" in lower:
-                evidence.append(p); found.add("flask")
+                evidence.append(p)
+                found.add("flask")
     
     return {
         "id": "inference-serving",

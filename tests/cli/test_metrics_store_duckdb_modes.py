@@ -9,7 +9,6 @@ from pathlib import Path
 
 import pytest
 
-
 duckdb = pytest.importorskip("duckdb")  # noqa: F841  # skip if dependency missing
 
 

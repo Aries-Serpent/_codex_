@@ -1,5 +1,5 @@
 {
-  "generated": 1762683398.902869,
+  "generated": 1762829749.8837693,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -8,9 +8,9 @@
         "consistency": 0.72,
         "tests": 0.04,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.30666666666666664
+        "documentation": 0.3120936280884265
       },
-      "score": 0.575,
+      "score": 0.5758,
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -101,9 +101,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.30666666666666664,
+          "component_value": 0.3120936280884265,
           "weight": 0.15,
-          "contribution": 0.04599999999999999
+          "contribution": 0.046814044213263975
         }
       }
     },
@@ -287,7 +287,7 @@
         "github_actions": 37,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 208,
+        "validation_scripts": 209,
         "note": "GitHub Actions present but not activated per AGENTS.md"
       },
       "partials": {
@@ -633,11 +633,11 @@
       "components": {
         "functionality": 0.8,
         "consistency": 0.72,
-        "tests": 0.02,
+        "tests": 0.04,
         "safeguards": 0.75,
         "documentation": 1.0
       },
-      "score": 0.6115,
+      "score": 0.6165,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -725,9 +725,9 @@
           "contribution": 0.144
         },
         "tests": {
-          "component_value": 0.02,
+          "component_value": 0.04,
           "weight": 0.25,
-          "contribution": 0.005
+          "contribution": 0.01
         },
         "safeguards": {
           "component_value": 0.75,
@@ -745,12 +745,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.94,
-        "tests": 0.02,
+        "consistency": 0.92,
+        "tests": 0.04,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6805,
+      "score": 0.6815,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -799,9 +799,9 @@
         "docs/architecture/codex_pipeline.md",
         "docs/architecture/interfaces.md",
         "docs/archive/pages_publish_tiles_yml_archive.md",
+        "docs/ast/README.md",
         "docs/bridge/README.md",
-        "docs/bridge/governance.md",
-        "docs/bridge/overview.md"
+        "docs/bridge/governance.md"
       ],
       "found_patterns": [
         "docs",
@@ -818,10 +818,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 501,
+        "markdown_count": 518,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 503
+        "total_docs": 520
       },
       "partials": {
         "functionality": {
@@ -830,14 +830,14 @@
           "contribution": 0.1875
         },
         "consistency": {
-          "component_value": 0.94,
+          "component_value": 0.92,
           "weight": 0.2,
-          "contribution": 0.188
+          "contribution": 0.18400000000000002
         },
         "tests": {
-          "component_value": 0.02,
+          "component_value": 0.04,
           "weight": 0.25,
-          "contribution": 0.005
+          "contribution": 0.01
         },
         "safeguards": {
           "component_value": 1.0,
@@ -858,9 +858,9 @@
         "consistency": 0.94,
         "tests": 0.0,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.22666666666666666
+        "documentation": 0.2340702210663199
       },
-      "score": 0.347,
+      "score": 0.3481,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -943,9 +943,9 @@
           "contribution": 0.125
         },
         "documentation": {
-          "component_value": 0.22666666666666666,
+          "component_value": 0.2340702210663199,
           "weight": 0.15,
-          "contribution": 0.033999999999999996
+          "contribution": 0.035110533159947985
         }
       }
     },
@@ -1053,11 +1053,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.6599999999999999,
-        "tests": 0.02,
+        "tests": 0.04,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.687,
+      "score": 0.692,
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
         ".codex/status/manifest-2025-09-22T02-15-21Z.json",
@@ -1143,9 +1143,9 @@
           "contribution": 0.13199999999999998
         },
         "tests": {
-          "component_value": 0.02,
+          "component_value": 0.04,
           "weight": 0.25,
-          "contribution": 0.005
+          "contribution": 0.01
         },
         "safeguards": {
           "component_value": 1.0,
@@ -1164,11 +1164,11 @@
       "components": {
         "functionality": 0.3333333333333333,
         "consistency": 0.9230769230769231,
-        "tests": 0.3076923076923077,
+        "tests": 0.38461538461538464,
         "safeguards": 0.5,
-        "documentation": 0.8
+        "documentation": 0.8452535760728218
       },
-      "score": 0.5399,
+      "score": 0.5659,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "copilot/extension/server/index.js",
@@ -1212,9 +1212,9 @@
           "contribution": 0.18461538461538463
         },
         "tests": {
-          "component_value": 0.3076923076923077,
+          "component_value": 0.38461538461538464,
           "weight": 0.25,
-          "contribution": 0.07692307692307693
+          "contribution": 0.09615384615384616
         },
         "safeguards": {
           "component_value": 0.5,
@@ -1222,9 +1222,9 @@
           "contribution": 0.075
         },
         "documentation": {
-          "component_value": 0.8,
+          "component_value": 0.8452535760728218,
           "weight": 0.15,
-          "contribution": 0.12
+          "contribution": 0.12678803641092326
         }
       }
     },
@@ -1440,9 +1440,9 @@
         "consistency": 0.84,
         "tests": 0.1,
         "safeguards": 0.9166666666666666,
-        "documentation": 0.2
+        "documentation": 0.18205461638491546
       },
-      "score": 0.6105,
+      "score": 0.6078,
       "evidence_files": [
         "cli/script_polish.py",
         "cli/update_runner.py",
@@ -1533,9 +1533,9 @@
           "contribution": 0.13749999999999998
         },
         "documentation": {
-          "component_value": 0.2,
+          "component_value": 0.18205461638491546,
           "weight": 0.15,
-          "contribution": 0.03
+          "contribution": 0.02730819245773732
         }
       }
     },
@@ -1657,9 +1657,9 @@
         "consistency": 0.76,
         "tests": 0.0,
         "safeguards": 1.0,
-        "documentation": 0.16
+        "documentation": 0.14304291287386214
       },
-      "score": 0.576,
+      "score": 0.5735,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -1752,9 +1752,9 @@
           "contribution": 0.15
         },
         "documentation": {
-          "component_value": 0.16,
+          "component_value": 0.14304291287386214,
           "weight": 0.15,
-          "contribution": 0.024
+          "contribution": 0.02145643693107932
         }
       }
     },
@@ -1858,11 +1858,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.88,
-        "tests": 0.18,
+        "tests": 0.22,
         "safeguards": 0.9166666666666666,
         "documentation": 1.0
       },
-      "score": 0.7585,
+      "score": 0.7685,
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
         ".codex/automation_out/coverage_report.json",
@@ -1943,9 +1943,9 @@
           "contribution": 0.17600000000000002
         },
         "tests": {
-          "component_value": 0.18,
+          "component_value": 0.22,
           "weight": 0.25,
-          "contribution": 0.045
+          "contribution": 0.055
         },
         "safeguards": {
           "component_value": 0.9166666666666666,
@@ -1965,10 +1965,10 @@
         "functionality": 0.75,
         "consistency": 0.9,
         "tests": 0.86,
-        "safeguards": 0.5,
+        "safeguards": 0.5833333333333334,
         "documentation": 1.0
       },
-      "score": 0.8075,
+      "score": 0.82,
       "evidence_files": [
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
@@ -1987,6 +1987,7 @@
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
         "tests/archival/test_archival_tombstone_required.py",
+        "tests/archival/test_archive_integration.py",
         "tests/archive/test_archive_hygiene.py",
         "tests/archive/test_archive_plan_apply.py",
         "tests/archive/test_auto_compress.py",
@@ -2010,16 +2011,15 @@
         "tests/archive/test_standardization.py",
         "tests/archive/test_stub_text.py",
         "tests/archive/test_trend_aggregate.py",
+        "tests/ast/conftest.py",
+        "tests/ast/test_graph.py",
+        "tests/ast/test_integration.py",
+        "tests/ast/test_metrics.py",
+        "tests/ast/test_node.py",
         "tests/audit/__init__.py",
         "tests/audit/test_context_and_facets.py",
         "tests/audit/test_gaps_analyze.py",
-        "tests/breadcrumbs/test_bundle_and_integrity.py",
-        "tests/breadcrumbs/test_catalog_db.py",
-        "tests/breadcrumbs/test_compaction.py",
-        "tests/breadcrumbs/test_ledger.py",
-        "tests/callbacks/test_default_callbacks.py",
-        "tests/callbacks/test_ndjson_logger.py",
-        "tests/capabilities/__init__.py"
+        "tests/breadcrumbs/test_bundle_and_integrity.py"
       ],
       "found_patterns": [
         "fixture",
@@ -2036,9 +2036,9 @@
         "marker"
       ],
       "meta": {
-        "test_count": 980,
-        "config_count": 23,
-        "fixture_count": 27
+        "test_count": 998,
+        "config_count": 24,
+        "fixture_count": 28
       },
       "partials": {
         "functionality": {
@@ -2057,9 +2057,9 @@
           "contribution": 0.215
         },
         "safeguards": {
-          "component_value": 0.5,
+          "component_value": 0.5833333333333334,
           "weight": 0.15,
-          "contribution": 0.075
+          "contribution": 0.08750000000000001
         },
         "documentation": {
           "component_value": 1.0,
@@ -2073,11 +2073,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.78,
-        "tests": 0.24,
+        "tests": 0.28,
         "safeguards": 0.5,
         "documentation": 1.0
       },
-      "score": 0.691,
+      "score": 0.701,
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
         "artifacts/models/tiny_tokenizer/vocab.json",
@@ -2151,9 +2151,9 @@
           "contribution": 0.15600000000000003
         },
         "tests": {
-          "component_value": 0.24,
+          "component_value": 0.28,
           "weight": 0.25,
-          "contribution": 0.06
+          "contribution": 0.07
         },
         "safeguards": {
           "component_value": 0.5,
@@ -2330,9 +2330,9 @@
         "consistency": 1.0,
         "tests": 0.3333333333333333,
         "safeguards": 0.0,
-        "documentation": 0.3466666666666667
+        "documentation": 0.3250975292587776
       },
-      "score": 0.3353,
+      "score": 0.3321,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
@@ -2366,9 +2366,9 @@
           "contribution": 0.0
         },
         "documentation": {
-          "component_value": 0.3466666666666667,
+          "component_value": 0.3250975292587776,
           "weight": 0.15,
-          "contribution": 0.052
+          "contribution": 0.04876462938881664
         }
       }
     }

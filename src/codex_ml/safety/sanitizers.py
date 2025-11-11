@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Iterable, Pattern
-from typing import Iterable, Pattern
+from typing import Dict, Iterable, Pattern
 
 try:  # pragma: no cover - optional dependency
     import yaml

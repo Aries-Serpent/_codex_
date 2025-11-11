@@ -14,8 +14,11 @@ Exit Codes:
  2 structural issues
 """
 from __future__ import annotations
-import sys, json, os
+
+import json
+import sys
 from pathlib import Path
+
 import yaml
 
 WORKFLOW = Path(".copilot-space/workflow.yaml")

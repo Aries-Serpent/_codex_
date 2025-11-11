@@ -1,6 +1,7 @@
 """Compatibility shims for tokenization imports."""
 
 from __future__ import annotations
+
 import importlib
 import warnings
 from typing import Any

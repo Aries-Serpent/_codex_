@@ -3,7 +3,7 @@ Detector: Vector Stores Presence (stub/mocks) (S-vector)
 
 Detects vector store stub implementations for audit pipeline.
 """
-from typing import Dict, List
+from typing import List
 
 TARGET_DIR = "codex_addons/vector_stores/"
 

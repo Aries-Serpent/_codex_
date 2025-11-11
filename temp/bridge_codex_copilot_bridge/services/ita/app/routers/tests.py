@@ -1,7 +1,10 @@
 
+import random
+import time
+
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-import random, time
+
 from ..auth import require_api_key, require_request_id
 
 router = APIRouter(prefix="/tests", tags=["tests"])

@@ -198,8 +198,9 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 def _gpu_available() -> bool:
     try:
-        import torch
         import torch.cuda as _cuda
+
+        import torch
 
         if not hasattr(torch, "cuda"):
             return False

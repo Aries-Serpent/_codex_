@@ -1,7 +1,9 @@
 """Documentation system comprehensive tests."""
 from __future__ import annotations
+
 import tempfile
 from pathlib import Path
+
 
 class TestMarkdownLinting:
     """Test markdown validation and linting."""
@@ -14,7 +16,8 @@ class TestMarkdownLinting:
         content = md_file.read_text()
         assert content.startswith("#")
         assert "\n\n" in content
-        import shutil; shutil.rmtree(test_dir)
+        import shutil
+        shutil.rmtree(test_dir)
 
     def test_markdown_headers(self):
         """Test markdown headers are properly formatted."""

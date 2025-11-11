@@ -10,9 +10,13 @@ Heuristic:
 - Writes secret_entropy_report.json with findings; does NOT mutate originals (non-destructive).
 """
 from __future__ import annotations
-import os, json, math, sys
+
+import json
+import math
+import os
+import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 ART_DIR = Path("audit_artifacts")
 REPORT = ART_DIR / "secret_entropy_report.json"

@@ -2,6 +2,7 @@ import json
 import subprocess
 import sys
 
+
 def test_report_merge(tmp_path):
     report = tmp_path / "r.json"
     report.write_text(json.dumps({"metadata": {"title":"t","timestamp_utc":"x","report_version":"v1","template_version":"v1.2"}, "snapshot": {}, "delta": {}, "patches": [], "automation": {}, "security": {}, "questions": [], "decisions": []}), encoding="utf-8")

@@ -18,7 +18,6 @@ from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 DEFAULT_GROUP = "codex_ml.plugins"
 

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Experiment Configuration",
+  "type": "object",
+  "required": ["model", "data", "training"],
+  "properties": {
+    "seed": { "type": "integer" },
+    "model": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "params": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": true
+    },
+    "tokenizer": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "data": {
+      "type": "object",
+      "required": ["dataset"],
+      "properties": {
+        "dataset": { "type": "string" },
+        "split": { "type": "string" },
+        "num_workers": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "training": {
+      "type": "object",
+      "required": ["epochs", "batch_size"],
+      "properties": {
+        "epochs": { "type": "integer", "minimum": 1 },
+        "batch_size": { "type": "integer", "minimum": 1 },
+        "learning_rate": { "type": "number", "minimum": 0 },
+        "optimizer": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "evaluation": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "mlflow": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "checkpointing": {
+      "type": "object",
+      "properties": {
+        "best_k": { "type": "integer", "minimum": 1 },
+        "keep_last": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

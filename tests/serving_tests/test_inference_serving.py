@@ -1,6 +1,7 @@
 """Inference serving comprehensive tests."""
 from __future__ import annotations
 
+
 class TestFastAPIEndpoints:
     """Test FastAPI endpoint patterns."""
     

@@ -6,7 +6,6 @@ import json
 import random
 from pathlib import Path
 from typing import Iterable, Sequence
-from typing import Iterable, Sequence
 
 __all__ = ["load_jsonl"]
 

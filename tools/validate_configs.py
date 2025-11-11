@@ -15,7 +15,7 @@ except Exception:  # pragma: no cover - fallback when PyYAML missing
     yaml = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency guard
-    from jsonschema import Draft202012Validator, Draft7Validator
+    from jsonschema import Draft7Validator, Draft202012Validator
 except Exception:  # pragma: no cover
     Draft202012Validator = None  # type: ignore[assignment]
     Draft7Validator = None  # type: ignore[assignment]

@@ -1,11 +1,11 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+
 import hashlib
 import json
 import math
 import time
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Optional
 from typing import Any, Optional
 
 from codex_ml.io.atomic import atomic_write_text, canonical_json_dumps

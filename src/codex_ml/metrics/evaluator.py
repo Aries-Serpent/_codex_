@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import Mapping
-from typing import Mapping
 
 try:  # pragma: no cover - torch optional in tests
     import torch

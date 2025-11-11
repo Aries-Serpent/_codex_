@@ -1,6 +1,11 @@
 """Providers package for MSP Gateway"""
 
-from .model_adapter import ModelAdapter, create_model_adapter, MockModelAdapter, LocalTransformersAdapter
+from .model_adapter import (
+    LocalTransformersAdapter,
+    MockModelAdapter,
+    ModelAdapter,
+    create_model_adapter,
+)
 from .retrieval_adapter import RetrievalAdapter
 
 __all__ = [

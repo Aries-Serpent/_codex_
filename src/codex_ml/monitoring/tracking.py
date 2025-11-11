@@ -6,7 +6,6 @@ import logging
 import os
 from pathlib import Path
 from typing import Optional
-from typing import Optional
 from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency

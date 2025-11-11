@@ -12,7 +12,6 @@ Usage:
     patch_registry(BUILTIN)  # adds 'bleu','rouge_l' if deps present
 """
 from typing import Optional
-from typing import Optional
 
 
 def _import_bleu_rouge():
@@ -23,7 +22,7 @@ def _import_bleu_rouge():
         Tuple of (sentence_bleu, SmoothingFunction, rouge_scorer) or (None, None, None)
     """
     try:
-        from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction  # type: ignore
+        from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu  # type: ignore
         from rouge_score import rouge_scorer  # type: ignore
         return sentence_bleu, SmoothingFunction, rouge_scorer
     except Exception:

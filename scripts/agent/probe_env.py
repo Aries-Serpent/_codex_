@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-import json, os, platform, shutil, subprocess, sys, time
+import json
+import os
+import platform
+import shutil
+import subprocess
+import sys
+import time
 
 
 def log_warn(message: str) -> None:

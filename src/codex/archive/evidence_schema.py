@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 try:
     import jsonschema
@@ -26,7 +25,6 @@ class EvidenceSchemaValidator:
     def __init__(self, schema_dir: Optional[str] = None):
         if schema_dir is None:
             # Default to schemas dir relative to project root
-            import os
             project_root = Path(__file__).parent.parent.parent.parent
             schema_dir = str(project_root / "schemas")
         self.schema_dir = Path(schema_dir)

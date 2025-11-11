@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
-
-import re
-
 
 # Canonical key groups extracted from the specification.
 SUMMARY_KEYS = {

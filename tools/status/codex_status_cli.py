@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-import subprocess, sys
+import subprocess
+import sys
 from datetime import datetime, timezone
 
+
 def run(*args):
-    try: subprocess.check_call(list(args))
+    try:
+        subprocess.check_call(list(args))
     except Exception as e:
         print(f"[warn] {e}", file=sys.stderr)
 

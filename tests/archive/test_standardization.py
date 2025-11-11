@@ -3,13 +3,13 @@
 
 import pytest
 
+from src.codex.archive.evidence_schema import EvidenceSchemaValidator
 from src.codex.archive.standardization import (
+    SLSA_LEVEL,
+    STANDARDIZATION_VERSION,
     StandardizationManager,
     StandardizationMetadata,
-    STANDARDIZATION_VERSION,
-    SLSA_LEVEL,
 )
-from src.codex.archive.evidence_schema import EvidenceSchemaValidator
 
 
 class TestStandardizationMetadata:

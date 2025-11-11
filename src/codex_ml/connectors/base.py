@@ -28,7 +28,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
-from typing import Iterable
 
 __all__ = ["Connector", "LocalConnector", "ConnectorError"]
 

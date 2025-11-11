@@ -10,9 +10,8 @@ from pathlib import Path
 from typing import Optional
 
 import torch
-from torch import nn
-
 from codex_ml.utils.checkpointing import load_checkpoint
+from torch import nn
 
 
 @dataclass

@@ -7,7 +7,6 @@ import sys
 import time
 from pathlib import Path
 from typing import IO, Optional
-from typing import IO, Optional
 
 _ENV_FLAG = "CODEX_EMIT_CHECKPOINT_JSON"
 

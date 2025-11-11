@@ -3,7 +3,12 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from src.codex_utils.tracking.guards import ensure_mlflow_offline, ensure_wandb_offline, _is_remote_uri, _is_allowlisted
+from src.codex_utils.tracking.guards import (
+    _is_allowlisted,
+    _is_remote_uri,
+    ensure_mlflow_offline,
+    ensure_wandb_offline,
+)
 
 
 def test_is_remote_uri_heuristics():

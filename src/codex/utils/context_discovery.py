@@ -21,8 +21,7 @@ import logging
 import os
 import re
 import subprocess
-from typing import Optional, Any
-from typing import Optional, Any
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 

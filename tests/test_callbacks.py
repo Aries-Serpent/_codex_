@@ -1,5 +1,6 @@
-import pytest
 from typing import Any
+
+import pytest
 
 
 def _make_early_stopping(patience: int, min_delta: float, mode: str):

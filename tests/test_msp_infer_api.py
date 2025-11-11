@@ -14,7 +14,6 @@ from fastapi.testclient import TestClient
 
 from services.msp_gateway.app import create_app
 from services.msp_gateway.middleware.tenant_context import tenant_registry
-from services.msp_gateway.providers.model_adapter import create_model_adapter
 
 
 @pytest.fixture
