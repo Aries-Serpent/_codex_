@@ -8,14 +8,10 @@ import click
 
 from codex.archive.api import (
     db_check as archive_db_check,
-)
-from codex.archive.api import (
     insert_referent,
     recent_tombstones,
     restore,
     store,
-)
-from codex.archive.api import (
     summarize as archive_summarize,
 )
 from codex.archive.consolidate import build_consolidation_plan

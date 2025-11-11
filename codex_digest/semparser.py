@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from collections import Counter
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -32,7 +31,6 @@ class SemParser:
     ]
 
     def parse(self, text: str) -> ParseResult:
-        _ = Counter()  # Reserved for future signal tracking
         intents: List[Intent] = []
         entities: List[str] = []
 

@@ -10,17 +10,9 @@ from codex_ml.utils.optional import optional_import
 if TYPE_CHECKING:  # pragma: no cover - import for typing only
     from transformers import (  # type: ignore
         AutoModel as HF_AutoModel,
-    )
-    from transformers import (
         AutoModelForCausalLM as HF_AutoModelForCausalLM,
-    )
-    from transformers import (
         AutoTokenizer as HF_AutoTokenizer,
-    )
-    from transformers import (
         PreTrainedModel as HF_PreTrainedModel,
-    )
-    from transformers import (
         PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
