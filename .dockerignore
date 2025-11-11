@@ -8,3 +8,5 @@ build
 *.egg-info
 artifacts
 mlruns
+.coverage
+.pytest_cache

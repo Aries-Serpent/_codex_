@@ -49,6 +49,9 @@ def run_command(
     max_batches: Optional[int] = typer.Option(
         None, "--max-batches", help="Limit number of batches for quick tests"
     ),
+    deterministic: bool = typer.Option(
+        False, "--deterministic", help="Enable deterministic mode for reproducibility"
+    ),
     sys_metrics: bool = typer.Option(
         False, "--sys-metrics", help="Enable system metrics collection (future)"
     ),
@@ -90,6 +93,7 @@ def run_command(
         logger=loggers,
         max_batches=max_batches,
         seed=cfg.get("seed"),
+        deterministic=deterministic,
     )
 
     if json_output:

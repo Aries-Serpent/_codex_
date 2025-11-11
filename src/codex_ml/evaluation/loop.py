@@ -1,14 +1,16 @@
 """
 Evaluation loop module (Iteration 1)
-CPU-safe, deterministic reference implementation.
+CPU-safe, deterministic-ready reference implementation.
 
 Public API:
     evaluate_epoch(model, dataloader, criterion, device="cpu",
-                   metrics=None, logger=None, max_batches=None, seed=None) -> Dict[str, Any]
+                   metrics=None, logger=None, max_batches=None, seed=None,
+                   deterministic=False) -> Dict[str, Any]
 
 Notes:
 - Lazy torch import to avoid heavy import cost if only metadata is inspected.
-- Determinism: optional seed applied to DataLoader generator (caller must construct with generator).
+- Determinism: when deterministic=True, configures PyTorch deterministic algorithms;
+  caller is responsible for seeded DataLoader/generator.
 - Logging: Pass iterable of logger objects implementing .log(dict) and .close().
 - Metrics: mapping name -> callable(outputs, targets) returning float.
 """
@@ -88,9 +90,16 @@ def evaluate_epoch(
     logger: Optional[Iterable[Logger]] = None,
     max_batches: Optional[int] = None,
     seed: Optional[int] = None,
+    deterministic: bool = False,
 ) -> Dict[str, Any]:
     if torch is None:
         raise RuntimeError("Torch not available for evaluation.")
+
+    # Enable deterministic mode if requested
+    if deterministic:
+        torch.use_deterministic_algorithms(True)
+        if seed is not None:
+            torch.manual_seed(seed)
 
     started = time.time()
     model.eval()

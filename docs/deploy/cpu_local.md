@@ -8,7 +8,12 @@
 docker build -f docker/Dockerfile.cpu -t codex-cpu:latest .
 ```
 
-## Run Tests
+## Smoke Test (Quick)
+```bash
+docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q -k "determinism or ast_cli_schema"
+```
+
+## Full Tests (optional)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q
 ```
@@ -19,7 +24,7 @@ docker run --rm -v "$PWD":/app -w /app codex-cpu:latest nox -s tests
 ```
 
 ## Tips
-- Use `.dockerignore` to reduce context (`.git`, `.venv`, `__pycache__`).
+- Use `.dockerignore` to reduce context (`.git`, `.venv`, `__pycache__`, `artifacts`, `mlruns`).
 - For local dev parity, mount the workspace with `-v "$PWD":/app` and run nox/pytest.
 
 — End —
