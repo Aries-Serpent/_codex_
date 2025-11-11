@@ -11,7 +11,7 @@ pytest.importorskip("omegaconf")
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 
 try:  # pragma: no cover - hydra stub may omit utils
-    import hydra.utils  # type: ignore[attr-defined]
+    import hydra  # type: ignore[attr-defined]
 except ModuleNotFoundError:
     pytest.skip("Hydra utilities unavailable", allow_module_level=True)
 

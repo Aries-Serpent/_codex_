@@ -16,7 +16,6 @@ Public API:
 
 from __future__ import annotations
 
-import io
 from pathlib import Path
 from typing import Iterator, Optional, Union
 
