@@ -1,20 +1,12 @@
 # API: Evaluation Loop & CLI
-
-> Generated: 2025-11-11 07:38:40 UTC | Author: mbaetiong
-> 🧠 Roles: [Primary: Doc Author], [Secondary: Verifier]
-> ⚡ Energy: 5/5
-> ⚛️ Physics: Path🛤️ [Model → Dataloader → Loss → Metrics → Logger]
-> Fields🔄 [CPU-safe, Deterministic]
-> Patterns👁️ [Lazy imports, batch+epoch logging]
-> Redundancy🔀 [Unit+Integration tests]
-> Balance⚖️ [Minimal default, extensible hooks]
+> Generated: 2025-11-11 07:38:40 UTC | Author: mbaetiong  
+🧠 Roles: [Primary: Doc Author], [Secondary: Verifier] ⚡ Energy: 5/5  
+⚛️ Physics: Path🛤️ [Model → Dataloader → Loss → Metrics → Logger] Fields🔄 [CPU-safe, Deterministic] Patterns👁️ [Lazy imports, batch+epoch logging] Redundancy🔀 [Unit+Integration tests] Balance⚖️ [Minimal default, extensible hooks]
 
 ## Purpose
-
 Provide a minimal, deterministic evaluation loop with pluggable metrics and logging sinks for reference CPU workflows.
 
 ## Public Function
-
 `evaluate_epoch(model, dataloader, criterion, device="cpu", metrics=None, logger=None, max_batches=None, seed=None) -> Dict[str, Any]`
 
 | Field | Description |
@@ -29,7 +21,6 @@ Provide a minimal, deterministic evaluation loop with pluggable metrics and logg
 | seed | Optional reproducibility parameter (dataloader generator responsibility) |
 
 ## Returned Summary
-
 ```json
 {
   "loss": <float>,
@@ -41,20 +32,13 @@ Provide a minimal, deterministic evaluation loop with pluggable metrics and logg
 ```
 
 ## Logging
-
 - Per batch (optional) + epoch summary NDJSON at `runs/eval/<timestamp>/metrics.ndjson`.
 - Optional MLflow offline sink behind flag.
 - Optional system metrics (RSS, CPU%) behind `--sys-metrics`.
 
 ## CLI
-
-```bash
-# Run evaluation
-python -m codex_ml.evaluation.cli run --config config.json --json
-
-# Generate report
-python -m codex_ml.evaluation.cli report --input metrics.ndjson --compare other.ndjson --json
-```
+`codex-eval run --config config.json --json`
+`codex-eval report --input metrics.ndjson --compare other.ndjson --json`
 
 | Exit Code | Meaning |
 |-----------|---------|
@@ -64,19 +48,12 @@ python -m codex_ml.evaluation.cli report --input metrics.ndjson --compare other.
 | 4 | Determinism mismatch (report comparison) |
 
 ## Determinism
-
 Use `seed` and seeded DataLoader generators; compare JSON summaries for equality (report command).
 
 ## Tests
-
 - Unit coverage: empty, single, multi batch; metrics; invalid batch shape.
 - Integration coverage: CLI run & report.
-- Coverage Target: ≥95%.
 
-## Implementation Notes
+Coverage Target: ≥95%.
 
-**Location**: `src/codex_ml/evaluation/loop.py`, `src/codex_ml/evaluation/cli.py`
-
-**Tests**: `tests/evaluation/test_evaluate_epoch.py`
-
-All tests passing (4/4). Fully linted with Black and Ruff.
+— End —

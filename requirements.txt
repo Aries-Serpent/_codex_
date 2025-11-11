@@ -1,0 +1,8 @@
+typer>=0.12
+jsonschema>=4.23
+psutil>=5.9; platform_system != "Windows"  # optional sys-metrics
+tomli>=2.0; python_version < "3.11"
+pytest
+pytest-cov
+nox
+torch>=2.2

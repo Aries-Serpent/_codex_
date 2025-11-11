@@ -2,7 +2,6 @@
 Typer-based CLI for evaluation operations.
 
 Console script entry point suggestion: codex-eval
-
 Commands:
     codex-eval run --config path [--json]
     codex-eval report --input metrics.ndjson [--json]
@@ -13,12 +12,11 @@ Exit codes:
     3 runtime error
     4 determinism mismatch (report comparison)
 """
-
 from __future__ import annotations
-
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional, Dict, Any
 
 import typer
 
@@ -33,14 +31,8 @@ def _load_config(path: Path) -> Dict[str, Any]:
     if path.suffix == ".json":
         return json.loads(text)
     if path.suffix == ".toml":
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli as tomllib  # type: ignore
-            except ImportError:
-                typer.echo("TOML support requires tomli or Python 3.11+", err=True)
-                raise typer.Exit(code=2)
+        import tomllib
+
         return tomllib.loads(text)
     typer.echo("Unsupported config format (use .json or .toml)", err=True)
     raise typer.Exit(code=2)
@@ -59,11 +51,9 @@ def run_command(
     ),
 ):
     """
-    Run evaluation with provided config.
-    Produces NDJSON logs + optional JSON summary.
+    Run evaluation with provided config. Produces NDJSON logs + optional JSON summary.
     """
     cfg = _load_config(config)
-
     # Lazy import evaluation loop
     from codex_ml.evaluation.loop import evaluate_epoch
     from codex_ml.logging.registry import build_loggers  # type: ignore
@@ -74,10 +64,7 @@ def run_command(
     criterion = cfg.get("_criterion")
 
     if model is None or dataloader is None or criterion is None:
-        typer.echo(
-            "Config must inject _model_obj, _eval_dataloader, _criterion for reference CLI.",
-            err=True,
-        )
+        typer.echo("Config must inject _model_obj, _eval_dataloader, _criterion for reference CLI.", err=True)
         raise typer.Exit(code=2)
 
     log_dir = Path("runs/eval")
@@ -105,10 +92,9 @@ def run_command(
     if json_output:
         typer.echo(json.dumps(summary, indent=2))
     else:
-        loss_str = f"loss={summary['loss']:.4f}"
-        count_str = f"count={summary['count']}"
-        metrics_str = f"metrics={summary['metrics']}"
-        typer.echo(f"Eval complete | {loss_str} | {count_str} | {metrics_str}")
+        typer.echo(
+            f"Eval complete | loss={summary['loss']:.4f} | count={summary['count']} | metrics={summary['metrics']}"
+        )
 
 
 @app.command("report")
@@ -125,19 +111,13 @@ def report_command(
     if not input.exists():
         typer.echo(f"Input log not found: {input}", err=True)
         raise typer.Exit(code=2)
-
-    lines = [
-        json.loads(line) for line in input.read_text().splitlines() if line.strip()
-    ]
+    lines = [json.loads(l) for l in input.read_text().splitlines() if l.strip()]
     epoch_records = [r for r in lines if r.get("type") == "epoch"]
-
     if not epoch_records:
         typer.echo("No epoch records found.", err=True)
         raise typer.Exit(code=3)
-
     # Use last epoch record for summary
     summary = epoch_records[-1]
-
     out = {
         "loss": summary.get("loss"),
         "count": summary.get("count"),
@@ -145,21 +125,16 @@ def report_command(
         "batches": summary.get("batches"),
         "duration_sec": summary.get("duration_sec"),
     }
-
     if compare:
         if not compare.exists():
             typer.echo(f"Compare file not found: {compare}", err=True)
             raise typer.Exit(code=2)
-
-        cmp_lines = [json.loads(line) for line in compare.read_text().splitlines() if line.strip()]
+        cmp_lines = [json.loads(l) for l in compare.read_text().splitlines() if l.strip()]
         cmp_epochs = [r for r in cmp_lines if r.get("type") == "epoch"]
-
         if not cmp_epochs:
             typer.echo("Compare file has no epoch records.", err=True)
             raise typer.Exit(code=3)
-
         other = cmp_epochs[-1]
-
         deterministic = json.dumps(out, sort_keys=True) == json.dumps(
             {
                 "loss": other.get("loss"),
@@ -170,7 +145,6 @@ def report_command(
             },
             sort_keys=True,
         )
-
         out["determinism_match"] = deterministic
         if not deterministic:
             typer.echo("Determinism mismatch detected.", err=True)

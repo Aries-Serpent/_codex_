@@ -1,0 +1,13 @@
+{
+  "seed": 42,
+  "model": { "name": "dummy-linear" },
+  "data": { "dataset": "synthetic", "split": "val", "num_workers": 0 },
+  "training": { "epochs": 1, "batch_size": 8, "learning_rate": 0.001, "optimizer": "sgd" },
+  "evaluation": {
+    "metrics": {
+      "acc": "codex_ml.metrics:accuracy" 
+    }
+  },
+  "logging": { "mlflow": false },
+  "checkpointing": { "best_k": 3, "keep_last": false }
+}
