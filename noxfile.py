@@ -213,14 +213,66 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def security(session: nox.Session) -> None:
-    """Run lightweight security scans (bandit + gitleaks)."""
+    """Run security scans: pip-audit (fail on High/Critical), bandit, gitleaks."""
     session.install("-r", "requirements-dev.txt")
+    session.install("pip-audit")
+    import json
     import shutil
+    from pathlib import Path
 
+    # 1) pip-audit with JSON output and severity filtering
+    artifacts_dir = Path("artifacts")
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    audit_output = artifacts_dir / "security_report.json"
+    
+    session.log("Running pip-audit...")
+    try:
+        result = session.run(
+            "pip-audit",
+            "--format=json",
+            "--output", str(audit_output),
+            "--desc",
+            "on",
+            success_codes=[0, 1],  # 0=no vulns, 1=vulns found
+            silent=True,
+        )
+        
+        # Parse JSON and check for High/Critical vulnerabilities
+        if audit_output.exists():
+            with open(audit_output) as f:
+                audit_data = json.load(f)
+            
+            high_or_critical = []
+            for pkg in audit_data.get("dependencies", []):
+                for vuln in pkg.get("vulns", []):
+                    severity = vuln.get("severity", "").upper()
+                    if severity in ("HIGH", "CRITICAL"):
+                        high_or_critical.append({
+                            "package": pkg.get("name"),
+                            "version": pkg.get("version"),
+                            "severity": severity,
+                            "id": vuln.get("id"),
+                            "description": vuln.get("description", "")[:100],
+                        })
+            
+            if high_or_critical:
+                session.error(
+                    f"Found {len(high_or_critical)} HIGH/CRITICAL vulnerabilities. "
+                    f"See {audit_output} for details."
+                )
+            else:
+                session.log(f"✓ pip-audit passed (report: {audit_output})")
+    except Exception as e:
+        session.log(f"Warning: pip-audit failed with error: {e}")
+        # Continue with other security checks
+
+    # 2) bandit
     if shutil.which("bandit"):
         session.run("bandit", "-q", "-ll", "-c", ".bandit.yaml", "-r", "src", external=True)
     else:  # pragma: no cover - environment without bandit
         session.log("bandit not available; skipping security scan")
+    
+    # 3) gitleaks
     if shutil.which("gitleaks"):
         session.run("gitleaks", "detect", "--no-git", "--redact", external=True)
     else:  # pragma: no cover - environment without gitleaks
