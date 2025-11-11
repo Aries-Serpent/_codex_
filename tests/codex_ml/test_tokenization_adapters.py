@@ -13,14 +13,14 @@ transformers = pytest.importorskip("transformers", reason="transformers not inst
 
 # Try to import tokenizers package - skip tests if not available
 try:
-    from tokenizers import Tokenizer as _TestTokenizer
+    import tokenizers
     HAS_TOKENIZERS = True
 except ImportError:
     HAS_TOKENIZERS = False
 
 # Try to import sentencepiece - skip tests if not available  
 try:
-    import sentencepiece
+    import sentencepiece  # noqa: F401
     HAS_SENTENCEPIECE = True
 except ImportError:
     HAS_SENTENCEPIECE = False
@@ -88,15 +88,13 @@ def test_sentencepiece_adapter_basic(tmp_path):
     # Verify model was created
     assert model_path.exists()
     
-    # Test encode/decode
+    # Test encode/decode - API contract requires these methods
     text = "hello world"
-    if hasattr(adapter, 'encode'):
-        ids = adapter.encode(text)
-        assert isinstance(ids, (list, tuple))
-        
-        if hasattr(adapter, 'decode'):
-            decoded = adapter.decode(ids)
-            assert isinstance(decoded, str)
+    ids = adapter.encode(text)
+    assert isinstance(ids, (list, tuple))
+
+    decoded = adapter.decode(ids)
+    assert isinstance(decoded, str)
 
 
 @pytest.mark.skipif(not HAS_SENTENCEPIECE, reason="requires sentencepiece")  
