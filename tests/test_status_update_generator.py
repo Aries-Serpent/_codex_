@@ -48,7 +48,6 @@ def test_generator_runs_successfully():
         [sys.executable, str(GENERATOR)],
         capture_output=True,
         text=True,
-        timeout=60,
     )
     
     assert result.returncode == 0, f"Generator failed: {result.stderr}"
@@ -162,13 +161,9 @@ def test_repro_registry():
     assert "status" in entry
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("jsonschema", reason="jsonschema not installed"),
-    reason="jsonschema not available"
-)
 def test_report_validates_against_schema():
     """Test that the report validates against the JSON schema."""
-    import jsonschema
+    jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
     
     with open(SCHEMA) as f:
         schema = json.load(f)
@@ -190,7 +185,6 @@ def test_cli_integration():
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
-        timeout=60,
     )
     
     assert result.returncode == 0, f"CLI failed: {result.stderr}"

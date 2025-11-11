@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import platform
 import subprocess
 import sys
@@ -32,7 +31,6 @@ def run_command(cmd: list[str], cwd: Path | None = None) -> tuple[int, str, str]
             cwd=cwd or REPO_ROOT,
             capture_output=True,
             text=True,
-            timeout=30,
         )
         return result.returncode, result.stdout, result.stderr
     except Exception as e:
@@ -152,7 +150,6 @@ def analyze_capabilities() -> list[dict[str, Any]]:
     
     # Configuration Management
     configs_path = REPO_ROOT / "configs"
-    hydra_in_src = REPO_ROOT / "src" / "codex_ml" / "cli"
     
     capabilities.append({
         "id": "cap-003",
@@ -251,7 +248,6 @@ def analyze_capabilities() -> list[dict[str, Any]]:
     
     # Documentation
     docs_path = REPO_ROOT / "docs"
-    readme = REPO_ROOT / "README.md"
     
     capabilities.append({
         "id": "cap-008",
