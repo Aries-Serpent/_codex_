@@ -43,4 +43,5 @@ async def stream(messages: list[dict], extra: Optional[Dict[str, Any]] = None) -
         except Exception:
             if attempt >= MAX_RETRIES:
                 raise
-            await asyncio.sleep(_jitter_delay(attempt)); attempt += 1
+            await asyncio.sleep(_jitter_delay(attempt))
+            attempt += 1

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Iterable, Optional, Sequence
+from typing import Iterable, List, Optional, Sequence
 
 try:  # Optional dependency for efficiency
     import numpy as _np

@@ -4,7 +4,7 @@ from __future__ import annotations
 import csv
 import json
 from dataclasses import dataclass
-from typing import Protocol, TextIO
+from typing import Dict, Protocol, TextIO
 
 __all__ = ["MetricsSink", "CsvSink", "NdjsonSink", "NullSink", "create_sink"]
 

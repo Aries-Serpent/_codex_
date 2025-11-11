@@ -13,7 +13,7 @@ except Exception:  # pragma: no cover
     ValidationError = Exception  # type: ignore[assignment]
 
     def validate(*_args: Any, **_kwargs: Any) -> None:
-        raise ImportError("jsonschema is required for dataset validation") from exc
+        raise ImportError("jsonschema is required for dataset validation")
 
 LOGGER = logging.getLogger(__name__)
 

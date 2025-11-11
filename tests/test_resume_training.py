@@ -105,7 +105,7 @@ def test_optimizer_resume_state(tmp_path):
     ckpt_dir.mkdir()
 
     # First run to epoch 1
-    res1 = run_training(
+    _res1 = run_training(
         epochs=1,
         steps_per_epoch=4,
         grad_accum=2,

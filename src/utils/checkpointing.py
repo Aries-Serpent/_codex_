@@ -26,7 +26,11 @@ except Exception:  # pragma: no cover - defensive
 try:  # pragma: no cover - prefer canonical RNG helpers
     from codex_ml.utils.checkpoint_core import (  # type: ignore
         dump_rng_state as _canonical_dump_rng_state,
+    )
+    from codex_ml.utils.checkpoint_core import (
         load_rng_state as _canonical_load_rng_state,
+    )
+    from codex_ml.utils.checkpoint_core import (
         set_seed as _canonical_set_seed,
     )
 except Exception:  # pragma: no cover - canonical RNG helpers unavailable

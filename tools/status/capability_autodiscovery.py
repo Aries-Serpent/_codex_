@@ -29,7 +29,8 @@ def main():
           "patch_plan": "create minimal scaffold" if not p.exists() else "n/a",
           "rollback": "delete scaffold" if not p.exists() else "n/a"
         })
-    outdir = root/"audit_artifacts"; outdir.mkdir(parents=True, exist_ok=True)
+    outdir = root/"audit_artifacts"
+    outdir.mkdir(parents=True, exist_ok=True)
     (outdir/"capabilities_scored.json").write_text(json.dumps(caps, indent=2))
     print("audit_artifacts/capabilities_scored.json")
     return 0

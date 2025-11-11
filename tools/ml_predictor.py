@@ -88,7 +88,6 @@ def train_classifier(training_data: list, output_path: str):
     try:
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.linear_model import LogisticRegression
-        from sklearn.pipeline import Pipeline
     except ImportError:
         raise ImportError("sklearn required for training. Install: pip install scikit-learn")
     

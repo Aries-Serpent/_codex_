@@ -3,10 +3,12 @@ import json
 import sys
 
 
-def badge(n): 
-    try: n=int(n)
-    except Exception: return f"`{n}`"
-    return f"`{n}`" if 1<=n<=5 else f"`{n}`"
+def badge(n):
+    try:
+        n = int(n)
+    except Exception:
+        return f"`{n}`"
+    return f"`{n}`" if 1 <= n <= 5 else f"`{n}`"
 
 def main():
     if len(sys.argv)<3:

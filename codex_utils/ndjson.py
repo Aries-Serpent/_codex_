@@ -9,6 +9,8 @@ try:
     # re-exported for backwards compat
     from codex_ml.logging.ndjson_logger import (
         NDJSONLogger as _CoreNDJSONLogger,
+    )
+    from codex_ml.logging.ndjson_logger import (
         is_legacy_mode,
         timestamped_record,
     )
