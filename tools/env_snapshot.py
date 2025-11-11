@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-from codex_ml.utils import environment_summary
+from codex_ml.utils.env import environment_summary
 
 DEFAULT_OUTPUT = Path("artifacts/env_snapshot.json")
 
