@@ -63,12 +63,12 @@ def discover(paths: List[Path]) -> List[Path]:
                     # Skip schema files by name pattern or directory
                     if "schema" in candidate.name.lower():
                         continue
-                    if "schemas" in [part.lower() for part in candidate.parts]:
+                    if any(part.lower() == "schemas" for part in candidate.parts):
                         continue
                     result.append(candidate)
         elif p.is_file():
             # Only add file if it's not a schema file
-            if "schema" not in p.name.lower() and "schemas" not in [part.lower() for part in p.parts]:
+            if "schema" not in p.name.lower() and not any(part.lower() == "schemas" for part in p.parts):
                 result.append(p)
     return result
 

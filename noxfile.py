@@ -238,7 +238,7 @@ def security(session: nox.Session) -> None:
             silent=True,
         )
         
-        # Load allowlist if it exists
+        # Load and apply security allowlist (expires after specified date)
         allowlist_path = Path("security_allowlist.json")
         allowlist = []
         if allowlist_path.exists():

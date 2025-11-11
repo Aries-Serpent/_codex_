@@ -156,7 +156,7 @@ def evaluate_epoch(
                 for lg in logger:
                     try:
                         lg.log(record)
-                    except Exception as e:  # pragma: no cover (rare)
+                    except Exception:  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
                         pass
 

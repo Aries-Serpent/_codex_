@@ -2,7 +2,10 @@
 __pycache__
 .git
 .gitignore
+.github
 **/*.pyc
+**/*.pyo
+**/*.pyd
 dist
 build
 *.egg-info
@@ -10,3 +13,7 @@ artifacts
 mlruns
 .coverage
 .pytest_cache
+.env
+.env.*
+.DS_Store
+Thumbs.db

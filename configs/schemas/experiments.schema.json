@@ -36,7 +36,7 @@
       "required": ["epochs", "batch_size"],
       "properties": {
         "epochs": { "type": "integer", "minimum": 1 },
-            "batch_size": { "type": "integer", "minimum": 1 },
+        "batch_size": { "type": "integer", "minimum": 1 },
         "learning_rate": { "type": "number", "minimum": 0 },
         "optimizer": { "type": "string" }
       },

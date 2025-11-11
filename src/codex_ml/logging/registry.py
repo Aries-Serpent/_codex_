@@ -9,8 +9,9 @@ System metrics optional via psutil (flag use_sys_metrics).
 """
 from __future__ import annotations
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import json, time, os
+from typing import Dict, Any, List
+import json
+import time
 
 try:
     import psutil  # optional
