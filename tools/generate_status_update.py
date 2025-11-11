@@ -528,7 +528,7 @@ def generate_status_update() -> dict[str, Any]:
     # Find previous report
     previous_report = None
     if STATUS_DIR.exists():
-        status_files = sorted(STATUS_DIR.glob("_codex_status_update-*.md"))
+        status_files = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
         if status_files:
             previous_report = str(status_files[-1].relative_to(REPO_ROOT))
     
