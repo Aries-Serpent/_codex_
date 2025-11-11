@@ -1,10 +1,9 @@
-"""Evaluation module for codex_ml - Phase 1 Implementation.
+"""Evaluation module for codex_ml.
 
-Provides robust, CPU-safe evaluation loops with metrics logging.
+Provides robust evaluation loops with metrics logging and checkpoint integration.
 """
 from __future__ import annotations
 
-__all__ = ["EvaluationConfig", "EvaluationResult", "run_evaluation"]
+__all__ = ["run_evaluation", "evaluate_epoch", "EvaluationConfig", "EvaluationResult", "Criterion", "Logger"]
 
-# Placeholder for loop.py implementation
-# TODO: Complete implementation per plan specs
+from .loop import Criterion, EvaluationConfig, EvaluationResult, Logger, evaluate_epoch, run_evaluation
