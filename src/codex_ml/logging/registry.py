@@ -24,6 +24,11 @@ Example usage::
     # Log events
     for logger in loggers:
         logger.log({"step": 1, "loss": 0.5})
+    
+    # When using MLflow logger, call close() when done
+    for logger in loggers:
+        if hasattr(logger, 'close'):
+            logger.close()
 
 The registry avoids importing heavy dependencies at module level and only
 imports MLflow when explicitly requested.
@@ -31,7 +36,6 @@ imports MLflow when explicitly requested.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -161,11 +165,27 @@ def _build_mlflow_logger(output_dir: str, settings: dict[str, Any]) -> Any | Non
     
     # Create a simple wrapper that implements .log() interface
     class MLflowLoggerAdapter:
-        """Adapter to provide .log() interface for MLflow."""
+        """Adapter to provide .log() interface for MLflow.
+        
+        Can be used as a context manager to ensure MLflow run is properly closed.
+        
+        Example::
+            with MLflowLoggerAdapter("my_experiment") as logger:
+                logger.log({"step": 1, "loss": 0.5})
+        """
         
         def __init__(self, experiment_name: str):
             self.experiment_name = experiment_name
             self._run = None
+        
+        def __enter__(self):
+            """Enter context manager."""
+            return self
+        
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            """Exit context manager and close run."""
+            self.close()
+            return False
         
         def log(self, record: dict[str, Any]) -> None:
             """Log a record to MLflow."""
@@ -185,7 +205,11 @@ def _build_mlflow_logger(output_dir: str, settings: dict[str, Any]) -> Any | Non
                     mlflow.log_metric(key, value, step=step)
         
         def close(self) -> None:
-            """End the MLflow run."""
+            """End the MLflow run.
+            
+            NOTE: Callers must explicitly call close() when done logging,
+            or use this adapter as a context manager.
+            """
             if self._run is not None:
                 mlflow.end_run()
                 self._run = None

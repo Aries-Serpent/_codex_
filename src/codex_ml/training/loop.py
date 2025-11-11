@@ -115,7 +115,7 @@ def train_epoch(
             aggregated[f"{key}_mean"] = sum(values) / len(values)
             aggregated[f"{key}_last"] = values[-1]
     
-    aggregated["num_steps"] = len(list(metrics_accumulator.values())[0]) if metrics_accumulator else 0
+    aggregated["num_steps"] = len(next(iter(metrics_accumulator.values()), []))
     aggregated["state"] = state
     
     return aggregated

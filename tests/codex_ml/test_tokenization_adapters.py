@@ -8,19 +8,25 @@ from __future__ import annotations
 
 import pytest
 
-# Try to import transformers/tokenizers - skip tests if not available
+# Try to import transformers - skip tests if not available
 transformers = pytest.importorskip("transformers", reason="transformers not installed")
+
+# Try to import tokenizers package - skip tests if not available
+try:
+    from tokenizers import Tokenizer as _TestTokenizer
+    HAS_TOKENIZERS = True
+except ImportError:
+    HAS_TOKENIZERS = False
 
 # Try to import sentencepiece - skip tests if not available  
 try:
-    import sentencepiece as spm_module
+    import sentencepiece
     HAS_SENTENCEPIECE = True
 except ImportError:
     HAS_SENTENCEPIECE = False
-    spm_module = None
 
 
-@pytest.mark.skipif(not transformers, reason="requires transformers")
+@pytest.mark.skipif(not HAS_TOKENIZERS, reason="requires tokenizers package")
 def test_hf_tokenizer_adapter_basic(tmp_path):
     """Test basic HuggingFace tokenizer adapter functionality."""
     from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter
