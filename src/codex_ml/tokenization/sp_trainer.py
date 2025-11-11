@@ -12,7 +12,6 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 from typing import Iterable, Optional, Sequence
-from typing import Iterable, Optional, Sequence
 
 from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol
 

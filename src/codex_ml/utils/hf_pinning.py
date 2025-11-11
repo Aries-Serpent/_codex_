@@ -6,7 +6,6 @@ import os
 import re
 from pathlib import Path
 from typing import Any, Mapping
-from typing import Any, Mapping
 from urllib.parse import urlparse
 
 # Hexadecimal commit hashes with at least 7 characters are considered immutable.

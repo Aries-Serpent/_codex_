@@ -1,7 +1,8 @@
 from __future__ import annotations
+
+from typing import Any, Iterable
+
 from .core import Detector, DetectorResult, clamp01
-from typing import Iterable, Any
-from typing import Iterable, Any
 
 
 def scorecard(

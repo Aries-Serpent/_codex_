@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 import importlib
+import json
 import pkgutil
 import sys
-import json
 
 
 def iter_modules(pkg_name: str):

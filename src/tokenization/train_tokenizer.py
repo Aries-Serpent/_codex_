@@ -9,7 +9,6 @@ from dataclasses import asdict, dataclass
 from glob import glob
 from pathlib import Path
 from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
-from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 
 from ingestion import ingest
 

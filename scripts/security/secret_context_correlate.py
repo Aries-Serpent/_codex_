@@ -23,9 +23,12 @@ Integration:
   Severity classification can use elevated context for higher weights.
 """
 from __future__ import annotations
-import os, json, sys
-from pathlib import Path
+
+import json
+import os
+import sys
 from bisect import bisect_right
+from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 ART_DIR = Path(os.getenv("SECRET_CONTEXT_ARTIFACT_DIR", "audit_artifacts"))

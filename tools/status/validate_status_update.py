@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import sys, json
+import json
+import sys
 from pathlib import Path
+
 try:
     import yaml  # optional
 except Exception:

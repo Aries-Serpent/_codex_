@@ -13,7 +13,7 @@ import sys
 import textwrap
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 RUN_TIMESTAMP = _dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
 

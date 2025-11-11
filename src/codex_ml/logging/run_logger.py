@@ -9,7 +9,6 @@ from collections.abc import Sequence as SequenceABC
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional
-from typing import Any, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import is_legacy_mode
 from codex_ml.tracking.writers import BaseWriter, NdjsonWriter

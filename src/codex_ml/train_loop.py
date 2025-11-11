@@ -29,16 +29,12 @@ from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional
-from typing import TYPE_CHECKING, Any, Callable, Optional
 from uuid import uuid4
 
 from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 from codex_ml.config import (
     ConfigError,
     ReasoningConfig,
-    ReasoningHeadConfig,
-    ReasoningObjectiveConfig,
-    ToolAdapterConfig,
 )
 from codex_ml.logging.ndjson_logger import is_legacy_mode
 
@@ -94,10 +90,11 @@ ART_DIR = Path("artifacts")
 _TELEMETRY_JSON_ENABLED = True
 
 try:
-    import torch
-    from torch import nn, optim
     from torch.optim.lr_scheduler import StepLR
     from torch.utils.data import DataLoader, Dataset
+
+    import torch
+    from torch import nn, optim
 
     _HAS_TORCH = True
 except Exception:  # noqa: BLE001

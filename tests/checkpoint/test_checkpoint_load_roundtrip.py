@@ -1,5 +1,6 @@
-from codex_ml.utils.checkpoint_core import save_checkpoint, load_checkpoint
 from pathlib import Path
+
+from codex_ml.utils.checkpoint_core import load_checkpoint, save_checkpoint
 
 
 def test_load_roundtrip(tmp_path: Path):

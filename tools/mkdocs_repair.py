@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-import yaml, pathlib, re
+import pathlib
+import re
+
+import yaml
+
 root = pathlib.Path('.')
 mk = root/'mkdocs.yml'
 if not mk.exists():

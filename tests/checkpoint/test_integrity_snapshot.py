@@ -49,7 +49,7 @@ def test_snapshot_config_prunes_reserved_keys() -> None:
 
 def _has_omegaconf() -> bool:
     try:
-        from omegaconf import OmegaConf  # type: ignore
+        pass  # type: ignore
     except Exception:
         return False
     return True

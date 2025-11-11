@@ -16,9 +16,14 @@ Environment Knobs (optional):
   TOKEN_SIMILARITY_MIN_LEN=5   -> skip tokens shorter than threshold
 """
 from __future__ import annotations
-import os, json, math, re, sys
+
+import json
+import math
+import os
+import re
+import sys
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 ART_DIR = Path("audit_artifacts")
 RAW = ART_DIR / "capabilities_raw.json"

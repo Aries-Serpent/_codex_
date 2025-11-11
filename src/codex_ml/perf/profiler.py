@@ -7,7 +7,6 @@ import time
 from contextlib import contextmanager
 from statistics import mean, median
 from typing import Iterable
-from typing import Iterable
 
 
 class PerformanceProfiler:

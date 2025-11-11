@@ -12,7 +12,6 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
-from typing import Any, Callable, Mapping, Optional
 
 logger = logging.getLogger(__name__)
 _IS_DARWIN = sys.platform.startswith("darwin")

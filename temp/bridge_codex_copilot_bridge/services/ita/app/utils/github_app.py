@@ -1,6 +1,10 @@
 
 # Minimal helpers for GitHub App auth; replace with full implementation.
-import os, time, jwt, httpx
+import os
+import time
+
+import httpx
+import jwt
 
 GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")
 GITHUB_INSTALLATION_ID = os.getenv("GITHUB_INSTALLATION_ID")

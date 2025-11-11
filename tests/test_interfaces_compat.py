@@ -3,7 +3,7 @@ import importlib
 import json
 import os
 from collections.abc import Mapping
-from typing import Any, Optional
+from typing import Any
 
 import pytest
 
@@ -12,6 +12,8 @@ from codex_ml.interfaces import (
     RLAgent,
     TokenizerAdapter,
     apply_config,
+)
+from codex_ml.interfaces import (
     tokenizer as tokenizer_mod,
 )
 

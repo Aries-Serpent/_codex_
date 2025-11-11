@@ -1,6 +1,4 @@
 import json
-from pathlib import Path
-import pytest
 
 from codex_ml.data import loaders
 

@@ -8,8 +8,8 @@ import re
 import time
 from collections.abc import MutableMapping
 from pathlib import Path
-from typing import Any
 from types import SimpleNamespace
+from typing import Any
 
 from fastapi import Body, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse

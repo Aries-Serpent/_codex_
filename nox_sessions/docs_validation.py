@@ -5,8 +5,9 @@ Nox sessions for API documentation validation.
 This module provides isolated sessions for building and validating
 API documentation offline.
 """
-import nox
 from pathlib import Path
+
+import nox
 
 # Supported Python versions for documentation builds
 # Aligned with repository testing matrix

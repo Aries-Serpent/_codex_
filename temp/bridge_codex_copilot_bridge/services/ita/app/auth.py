@@ -1,6 +1,7 @@
 
-from fastapi import Header, HTTPException, status
 import os
+
+from fastapi import Header, HTTPException, status
 
 API_KEY_ENV = "ITA_API_KEY"
 

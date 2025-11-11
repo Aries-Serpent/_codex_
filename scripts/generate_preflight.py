@@ -9,8 +9,8 @@ Usage: python scripts/generate_preflight.py --task "Apply security patch" --file
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
 

@@ -8,9 +8,8 @@ from typing import Callable
 import pytest
 
 pytest.importorskip("typer")
-from typer.testing import CliRunner
-
 from codex_ml.cli import plugins_cli
+from typer.testing import CliRunner
 
 pytestmark = pytest.mark.not_slow
 

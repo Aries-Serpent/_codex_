@@ -7,7 +7,8 @@ import os
 import sys
 from pathlib import Path
 from typing import Any, Sequence
-from typing import Any, Sequence
+
+from hydra.utils import to_absolute_path
 
 import hydra
 from codex_ml.codex_structured_logging import (
@@ -20,7 +21,6 @@ from codex_ml.codex_structured_logging import (
 from codex_ml.plugins import load_entry_point_plugins
 from codex_ml.train_loop import run_training
 from codex_ml.utils import repro
-from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, ListConfig, OmegaConf
 
 _ = (ArgparseJSONParser, run_cmd)

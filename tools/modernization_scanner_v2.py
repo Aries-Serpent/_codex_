@@ -15,7 +15,7 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
+from typing import Dict, List
 
 
 class Severity(Enum):
@@ -301,7 +301,7 @@ def main():
         )
     
     # Summary
-    print(f"\nModernization Scanner v2 Summary:")
+    print("\nModernization Scanner v2 Summary:")
     print(f"  Files scanned: {total_files}")
     print(f"  Total issues: {len(all_issues)}")
     
@@ -316,7 +316,7 @@ def main():
             print(f"  {severity.value}: {count}")
     
     if not args.verbose and len(all_issues) > 0:
-        print(f"\nRun with --verbose to see detailed suggestions")
+        print("\nRun with --verbose to see detailed suggestions")
     
     # Fail on error if requested
     if args.fail_on_error and by_severity.get(Severity.ERROR, 0) > 0:

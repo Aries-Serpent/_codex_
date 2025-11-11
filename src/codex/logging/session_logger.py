@@ -31,7 +31,6 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Literal, Optional
-from typing import Any, Literal, Optional
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto

@@ -1,4 +1,3 @@
-from pathlib import Path
 
 OFFLINE_BLOCK_TITLE = "## Offline CI & Local Parity"
 

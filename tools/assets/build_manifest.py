@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 
+
 def sha256_of(p: Path) -> str:
     import hashlib
     h = hashlib.sha256()

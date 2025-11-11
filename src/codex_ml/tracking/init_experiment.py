@@ -11,7 +11,6 @@ from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Mapping, Optional
-from typing import TYPE_CHECKING, Any, Mapping, Optional
 
 from codex_ml.logging.ndjson_logger import NDJSONLogger, timestamped_record
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking

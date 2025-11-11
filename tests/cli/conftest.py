@@ -13,8 +13,7 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
         pytest.skip("torch not installed", allow_module_level=True)
 
     try:
-        import torch  # ensure torch import succeeds
-        from torch.utils.data import Dataset
+        pass
     except Exception:  # pragma: no cover - incomplete builds
         pytest.skip(
             "incomplete torch build (missing torch.utils dependencies)",

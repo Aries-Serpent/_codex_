@@ -1,11 +1,12 @@
 from __future__ import annotations
+
 import json
 import re
 import sys
 from pathlib import Path
 from typing import Optional
 
-from ..checkpointing.schema_v2 import to_canonical_bytes, sha256_hexdigest
+from ..checkpointing.schema_v2 import sha256_hexdigest, to_canonical_bytes
 
 HELP = """\
 Usage:

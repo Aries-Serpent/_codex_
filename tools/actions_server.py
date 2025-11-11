@@ -4,10 +4,15 @@ Minimal offline-first HTTP server to back CustomGPT Actions for _codex_.
 Uses GitHub REST (token optional) and local cache. No CI, no secrets committed.
 """
 from __future__ import annotations
-import os, json, time, hashlib
-from typing import Dict, Any
-from urllib.parse import quote
+
+import hashlib
+import json
+import os
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Any, Dict
+from urllib.parse import quote
+
 import requests
 
 try:
@@ -97,7 +102,7 @@ class App(BaseHTTPRequestHandler):
         self.wfile.write(b)
 
     def do_GET(self):
-        from urllib.parse import urlparse, parse_qs
+        from urllib.parse import parse_qs, urlparse
         u = urlparse(self.path); qs = parse_qs(u.query)
         if u.path == "/healthz":
             return self._ok({"ok": True, "ts": int(time.time())})

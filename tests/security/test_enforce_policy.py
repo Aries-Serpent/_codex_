@@ -1,7 +1,8 @@
+import json
 import subprocess
 import sys
 from pathlib import Path
-import json
+
 import pytest
 
 TOOL = Path("scripts/security/enforce_policy.py")

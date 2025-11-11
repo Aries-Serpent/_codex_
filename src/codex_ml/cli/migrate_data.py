@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-
 from codex_ml.data.migration import AssignmentMappingMigration
 
 app = typer.Typer(help="Migrate assignment mapping files between versions")

@@ -5,12 +5,12 @@ Resolves API keys to tenant IDs and enforces quotas
 
 import logging
 import sqlite3
-from typing import Optional, Dict, Any
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException, Request, status
+from fastapi.security import HTTPBearer
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from ..config import settings
@@ -317,7 +317,6 @@ class TenantRegistry:
         Raises:
             ValueError: If tenant not found
         """
-        import json
         
         # Get existing tenant
         tenant_data = self.get_tenant(tenant_id)

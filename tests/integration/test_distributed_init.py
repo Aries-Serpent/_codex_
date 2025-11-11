@@ -162,7 +162,6 @@ class TestAccelerateInitGuardCLI:
     def test_cli_mode_runs_without_error(self, tmp_path, monkeypatch, capsys):
         """Test that the guard can run in CLI diagnostic mode."""
         # Import the module
-        import accelerate_init_guard
         
         # The module has a __main__ block - we can't easily test it without
         # running as subprocess, so just verify the functions work

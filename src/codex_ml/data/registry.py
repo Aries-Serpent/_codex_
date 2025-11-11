@@ -11,7 +11,7 @@ import sys
 from importlib import metadata
 from pathlib import Path
 from typing import Any, Callable, Sequence
-from typing import Any, Callable, Sequence
+
 
 def _load_loader_attr(module: str, attr: str) -> Any:
     """Load a dataset loader attribute without colliding with ``loaders.py``."""

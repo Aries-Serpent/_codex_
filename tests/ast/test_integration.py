@@ -1,9 +1,10 @@
 """Integration tests for AST module."""
 
 from pathlib import Path
-from codex.ast.node import StandardizedASTNode, NodeType, SourceLocation
+
 from codex.ast.graph import DependencyGraph
 from codex.ast.metrics import CodeMetrics, MetricsAggregator
+from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
 
 def test_complete_workflow():

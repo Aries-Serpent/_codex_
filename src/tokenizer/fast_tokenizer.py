@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Iterable, Sequence
-from typing import Iterable, Sequence
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer

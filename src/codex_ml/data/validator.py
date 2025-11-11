@@ -9,7 +9,7 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
-except Exception as exc:  # pragma: no cover
+except Exception:  # pragma: no cover
     ValidationError = Exception  # type: ignore[assignment]
 
     def validate(*_args: Any, **_kwargs: Any) -> None:

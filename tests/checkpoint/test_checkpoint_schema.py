@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from codex_ml.utils.checkpoint_core import save_checkpoint, SCHEMA_VERSION
+
+from codex_ml.utils.checkpoint_core import SCHEMA_VERSION, save_checkpoint
 
 
 def test_checkpoint_schema_v2(tmp_path: Path):

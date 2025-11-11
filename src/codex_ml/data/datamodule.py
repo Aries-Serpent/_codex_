@@ -12,7 +12,6 @@ from typing import (
     Mapping,
     MutableSequence,
     Sequence,
-    Tuple,
 )
 
 

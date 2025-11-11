@@ -44,7 +44,6 @@ else:
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB

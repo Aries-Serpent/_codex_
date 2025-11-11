@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import os, sys, shutil
+import shutil
+import sys
 from pathlib import Path
+
 
 def main(retain: int = 5):
     # Validate positive integer

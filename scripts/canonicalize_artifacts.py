@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-import argparse, hashlib, json, os, sys
+import argparse
+import hashlib
+import json
+import sys
 from pathlib import Path
 
 CANON_KEYS_DROP = {"generated", "timestamp"}

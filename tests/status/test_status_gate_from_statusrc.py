@@ -2,6 +2,7 @@ import json
 import subprocess
 import sys
 
+
 def test_status_gate_with_coverage(tmp_path, monkeypatch):
     # Write .statusrc.json
     (tmp_path / ".statusrc.json").write_text(json.dumps({"fail_under_coverage": 35}), encoding="utf-8")

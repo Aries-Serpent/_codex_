@@ -42,7 +42,6 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Tuple,
 )
 
 try:  # pragma: no cover - optional dependency

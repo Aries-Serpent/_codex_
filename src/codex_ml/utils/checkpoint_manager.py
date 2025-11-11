@@ -6,7 +6,6 @@ import os
 import pickle
 from pathlib import Path
 from typing import Any
-from typing import Any
 
 try:  # pragma: no cover - optional torch dependency
     import torch

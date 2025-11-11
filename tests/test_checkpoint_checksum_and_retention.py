@@ -1,5 +1,5 @@
 import json
-from pathlib import Path
+
 import pytest
 
 torch = pytest.importorskip("torch", reason="Requires torch for checkpoint hashing test")

@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
-from typing import Any, Optional
 
 LOG_VERSION = 1
 _SECRET_RE = re.compile(r"(api[-_]?key|token|secret)", re.I)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-import json, statistics as stats
+import json
+import statistics as stats
 from pathlib import Path
+
 
 def main():
     p = Path("artifacts/logs/perf.ndjson")

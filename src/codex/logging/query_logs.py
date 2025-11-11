@@ -43,7 +43,6 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
-from typing import Any, Optional
 
 try:  # pragma: no cover - optional rich dependency
     from rich.console import Console

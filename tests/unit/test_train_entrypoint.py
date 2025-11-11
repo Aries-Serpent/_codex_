@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from omegaconf import OmegaConf
 import pytest
+
+from omegaconf import OmegaConf
 
 
 def test_train_guard_noop(tmp_path):

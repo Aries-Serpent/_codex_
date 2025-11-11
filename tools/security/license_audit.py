@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 from pathlib import Path
+
 try:
     from importlib.metadata import distributions
 except Exception:

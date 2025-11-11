@@ -6,7 +6,12 @@ Validates:
 - Capability detection
 - Error handling for missing paths
 """
-import os, json, subprocess, sys, shutil, tempfile
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 ART = Path("audit_artifacts")

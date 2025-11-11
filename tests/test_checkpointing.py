@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 
-
 torch = pytest.importorskip("torch", reason="torch required")
 
 pytestmark = pytest.mark.requires_torch

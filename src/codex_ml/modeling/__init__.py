@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from typing import Any, Optional
-from typing import Any, Optional
 
 from .codex_model import CodexModel, LoraOptions
 from .factory import ENV_ENABLE_PEFT, ModelFactoryConfig, PeftAdapterConfig, build_model

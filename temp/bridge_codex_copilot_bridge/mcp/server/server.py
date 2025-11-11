@@ -1,7 +1,9 @@
 
 #!/usr/bin/env python3
 # Minimal MCP-like shape (placeholder). Implement JSON-RPC/stdio per MCP spec and map to ITA.
-import os, sys, json
+import json
+import sys
+
 
 def main():
     # Placeholder: echo requests; implement MCP "tools" to proxy ITA endpoints.

@@ -14,7 +14,6 @@ import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional, Sequence
-from typing import Any, Iterable, Mapping, Optional, Sequence
 
 DEFAULT_MANIFEST_NAME = "split_manifest.json"
 DEFAULT_CHECKSUMS_NAME = "split_checksums.json"

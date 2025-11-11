@@ -1,8 +1,9 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import List, Dict
-from collections import Counter
+
 import re
+from collections import Counter
+from dataclasses import dataclass
+from typing import Dict, List
 
 
 @dataclass

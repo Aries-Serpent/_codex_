@@ -5,7 +5,6 @@ Disabled by default in local mode
 
 import logging
 from typing import Any, Optional
-from typing import Any, Optional
 
 import numpy as np
 

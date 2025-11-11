@@ -9,7 +9,6 @@ import statistics as stats
 import time
 from dataclasses import dataclass
 from typing import Any, Callable
-from typing import Any, Callable
 
 
 def _maybe_cuda_sync() -> None:

@@ -1,5 +1,7 @@
+import json
+import time
 from pathlib import Path
-import json, time
+
 
 class JsonLogger:
     def __init__(self, path: str):

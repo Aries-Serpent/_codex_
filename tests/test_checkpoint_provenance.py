@@ -4,10 +4,9 @@ import pytest
 
 pytest.importorskip("torch")
 
-from torch import nn, optim
-
 from codex_ml.utils.provenance import environment_summary
 from src.codex_ml.utils.checkpointing import save_checkpoint
+from torch import nn, optim
 
 
 def test_checkpoint_includes_commit_and_system(tmp_path):

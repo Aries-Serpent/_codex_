@@ -28,7 +28,6 @@ import subprocess  # nosec B404 - subprocess is needed for VCS metadata; control
 from pathlib import Path
 from shutil import which
 from typing import Sequence, TypeVar, Union
-from typing import Sequence, TypeVar, Union
 
 from codex_ml.data.cache import SimpleCache
 

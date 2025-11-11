@@ -1,8 +1,9 @@
 """Command-line interface for AST analysis."""
 
-import click
 from pathlib import Path
 from typing import Optional
+
+import click
 
 
 @click.group()

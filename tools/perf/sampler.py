@@ -1,5 +1,7 @@
-import time, json
+import json
+import time
 from pathlib import Path
+
 try:
     import psutil
 except Exception:

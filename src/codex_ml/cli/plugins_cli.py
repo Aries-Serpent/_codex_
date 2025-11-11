@@ -6,7 +6,6 @@ import inspect
 import sys
 from typing import Sequence
 
-from codex_ml.plugins import registries
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -14,6 +13,7 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
+from codex_ml.plugins import registries
 
 _ = (ArgparseJSONParser, run_cmd)
 

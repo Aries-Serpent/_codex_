@@ -37,7 +37,6 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Optional
-from typing import Any, Iterable, Optional
 
 try:  # pragma: no cover - platform dependent
     import fcntl

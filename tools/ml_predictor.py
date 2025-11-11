@@ -9,9 +9,9 @@ When enabled, uses character n-gram features with a linear classifier.
 """
 
 import pickle
+import warnings
 from pathlib import Path
 from typing import Optional, Tuple
-import warnings
 
 
 class LanguageClassifier:

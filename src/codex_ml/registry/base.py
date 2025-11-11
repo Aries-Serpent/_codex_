@@ -20,7 +20,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from importlib import metadata
 from typing import Any, Iterator, Mapping, Optional
-from typing import Any, Iterator, Mapping, Optional
 
 
 class RegistryError(RuntimeError):

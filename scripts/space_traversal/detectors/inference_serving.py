@@ -8,8 +8,6 @@ Heuristic:
 - required_patterns includes server framework indicators
 """
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, List
 
 
 def detect(file_index: dict) -> dict:

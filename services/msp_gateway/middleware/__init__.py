@@ -1,7 +1,7 @@
 """Middleware package for MSP Gateway"""
 
-from .tenant_context import TenantContextMiddleware, tenant_registry
 from .rate_limit import RateLimitMiddleware, rate_limiter
+from .tenant_context import TenantContextMiddleware, tenant_registry
 
 __all__ = [
     "TenantContextMiddleware",

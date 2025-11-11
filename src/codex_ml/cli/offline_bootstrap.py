@@ -18,7 +18,6 @@ import argparse
 import json
 from pathlib import Path
 from typing import Any, Mapping, Sequence
-from typing import Any, Mapping, Sequence
 
 
 def _mlflow_env(root: Path) -> dict[str, str]:

@@ -2,6 +2,7 @@ import json
 import subprocess
 import sys
 
+
 def test_env_snapshot_writes_file(tmp_path, monkeypatch):
     # Write in temp dir
     cwd = tmp_path

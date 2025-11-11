@@ -7,7 +7,6 @@ from dataclasses import asdict, fields
 from glob import glob
 from pathlib import Path
 from typing import Any, Iterable, Optional, Sequence
-from typing import Any, Iterable, Optional, Sequence
 
 from tokenizers import Tokenizer
 

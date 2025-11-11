@@ -1,5 +1,6 @@
 import subprocess
 
+
 def git_out(args):
     try:
         return subprocess.check_output(["git"]+args, text=True).strip()
