@@ -352,10 +352,18 @@ def analyze_tests() -> dict[str, Any]:
     )
     
     # Parse collected test count from output
+    # Look for the summary line like "X tests collected" or similar
     test_count = 0
     if code == 0:
         for line in stdout.split("\n"):
-            if "test" in line.lower():
+            # Look for pytest's collection summary (e.g., "123 tests collected")
+            if "test" in line and "collected" in line:
+                parts = line.split()
+                if len(parts) > 0 and parts[0].isdigit():
+                    test_count = int(parts[0])
+                    break
+            # Fallback: count lines that start with test file paths
+            elif line.strip().startswith("test") and "::" in line:
                 test_count += 1
     
     return {
@@ -714,12 +722,23 @@ def main():
     is_valid, errors = validate_report(report)
     if not is_valid:
         print(f"⚠️  Validation errors: {errors}")
-    else:
-        print("✅ Report validated successfully")
+        # Save invalid report to separate location for debugging
+        STATUS_DIR.mkdir(parents=True, exist_ok=True)
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
+        invalid_file = STATUS_DIR / f"_codex_status_update-{timestamp}.invalid.json"
+        
+        with open(invalid_file, "w") as f:
+            json.dump(report, f, indent=2, sort_keys=False)
+        
+        print(f"\n❌ Invalid report saved to: {invalid_file.relative_to(REPO_ROOT)}")
+        print("   Schema validation failed. Please review and fix the errors above.")
+        return 1
+    
+    print("✅ Report validated successfully")
     
     # Save to file
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
     output_file = STATUS_DIR / f"_codex_status_update-{timestamp}.json"
     
     with open(output_file, "w") as f:
