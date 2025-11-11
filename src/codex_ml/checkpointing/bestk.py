@@ -12,13 +12,14 @@ Index schema:
         ]
     }
 """
+
 from __future__ import annotations
 
-from pathlib import Path
 import json
-import time
 import os
-from typing import List, Dict, Any
+import time
+from pathlib import Path
+from typing import Any, Dict
 
 
 def _read_index(index_path: Path) -> Dict[str, Any]:

@@ -9,13 +9,13 @@ Supported sinks:
 
 System metrics optional via psutil (flag use_sys_metrics).
 """
+
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 import json
 import time
-import os
+from pathlib import Path
+from typing import Any, Dict, List
 
 try:
     import psutil  # optional

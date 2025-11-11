@@ -2,13 +2,15 @@
 Validate experiment configs (JSON or TOML) against JSONSchema.
 
 Usage:
-    python tools/validate_experiments.py --schema configs/schemas/experiments.schema.json --paths configs/experiments
+    python tools/validate_experiments.py --schema
+      configs/schemas/experiments.schema.json --paths configs/experiments
 
 Exit codes:
     0 success
     2 schema invalid
     3 IO or validation error
 """
+
 from __future__ import annotations
 
 import argparse
@@ -65,7 +67,11 @@ def discover(paths: List[Path]) -> List[Path]:
     for p in paths:
         if p.is_dir():
             for ext in (".json", ".toml"):
-                result.extend(p.rglob(f"*{ext}"))
+                # Find all matching files but exclude schema files
+                for f in p.rglob(f"*{ext}"):
+                    # Exclude schema files (typically in schemas/ dir or named *.schema.json)
+                    if "schema" not in f.name.lower() and "schemas" not in str(f.parent):
+                        result.append(f)
         elif p.is_file():
             result.append(p)
     return result

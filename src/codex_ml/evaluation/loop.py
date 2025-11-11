@@ -8,16 +8,20 @@ Public API:
                    logger=None, max_batches=None, seed=None) -> Dict[str, Any]
 
 Notes:
-    - Lazy torch import to avoid heavy import cost if only metadata is inspected.
-    - Determinism: optional seed applied to DataLoader generator (caller must construct with generator).
-    - Logging: Pass iterable of logger objects implementing .log(dict) and .close().
+    - Lazy torch import to avoid heavy import cost if only metadata is
+      inspected.
+    - Determinism: optional seed applied to DataLoader generator (caller
+      must construct with generator).
+    - Logging: Pass iterable of logger objects implementing .log(dict) and
+      .close().
     - Metrics: mapping name -> callable(outputs, targets) returning float.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List
 import time
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol
 
 try:
     import torch
@@ -28,16 +32,13 @@ __all__ = ["Criterion", "Logger", "EvalResult", "evaluate_epoch", "_safe_item"]
 
 
 class Criterion(Protocol):
-    def __call__(self, outputs, targets) -> "torch.Tensor":
-        ...
+    def __call__(self, outputs, targets) -> "torch.Tensor": ...
 
 
 class Logger(Protocol):
-    def log(self, record: Dict[str, Any]) -> None:
-        ...
+    def log(self, record: Dict[str, Any]) -> None: ...
 
-    def close(self) -> None:
-        ...
+    def close(self) -> None: ...
 
 
 @dataclass
@@ -56,7 +57,6 @@ class EvalResult:
             "batches": self.batches,
             "duration_sec": round(self.duration_sec, 6),
         }
-
 
 
 def _safe_item(x) -> float:
@@ -161,7 +161,7 @@ def evaluate_epoch(
                 for lg in logger:
                     try:
                         lg.log(record)
-                    except Exception as e:  # pragma: no cover (rare)
+                    except Exception:  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
                         pass
 
@@ -203,4 +203,3 @@ def evaluate_epoch(
                 pass
 
     return result
-

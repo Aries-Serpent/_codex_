@@ -16,24 +16,29 @@ def test_evaluate_basic():
     model = DummyModel()
     criterion = torch.nn.CrossEntropyLoss()
 
-    # Build simple synthetic dataloader
-    inputs = torch.randn(8, 4)
-    targets = torch.randint(0, 3, (8,))
-    data = list(zip(inputs, targets))
+    # Build simple synthetic dataloader - each batch is (batch_inputs, batch_targets)
+    batch_inputs = torch.randn(8, 4)
+    batch_targets = torch.randint(0, 3, (8,))
+    data = [(batch_inputs, batch_targets)]
 
     summary = evaluate_epoch(model, data, criterion, device="cpu")
 
     assert "loss" in summary and "count" in summary
     assert summary["count"] == 8
+    assert "batches" in summary
+    assert summary["batches"] == 1
 
 
 def test_evaluate_max_batches():
     model = DummyModel()
     criterion = torch.nn.CrossEntropyLoss()
 
-    inputs = torch.randn(10, 4)
-    targets = torch.randint(0, 3, (10,))
-    data = list(zip(inputs, targets))
+    # Create multiple batches
+    data = [
+        (torch.randn(5, 4), torch.randint(0, 3, (5,))),
+        (torch.randn(5, 4), torch.randint(0, 3, (5,))),
+        (torch.randn(5, 4), torch.randint(0, 3, (5,))),
+    ]
 
     summary = evaluate_epoch(model, data, criterion, device="cpu", max_batches=2)
 
@@ -44,12 +49,12 @@ def test_evaluate_metrics():
     model = DummyModel()
     criterion = torch.nn.CrossEntropyLoss()
 
-    inputs = torch.randn(6, 4)
-    targets = torch.randint(0, 3, (6,))
-    data = list(zip(inputs, targets))
+    batch_inputs = torch.randn(6, 4)
+    batch_targets = torch.randint(0, 3, (6,))
+    data = [(batch_inputs, batch_targets)]
 
     def accuracy(preds, t):
-        return (preds.argmax(dim=-1) == t).float().mean()
+        return (preds == t).float().mean()
 
     summary = evaluate_epoch(model, data, criterion, metrics={"acc": accuracy})
 

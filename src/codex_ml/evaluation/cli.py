@@ -13,12 +13,12 @@ Exit codes:
     3 runtime error
     4 determinism mismatch (report comparison)
 """
+
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 import typer
 
@@ -105,9 +105,10 @@ def run_command(
     if json_output:
         typer.echo(json.dumps(summary, indent=2))
     else:
-        typer.echo(
-            f"Eval complete | loss={summary['loss']:.4f} | count={summary['count']} | metrics={summary['metrics']}"
-        )
+        loss_str = f"loss={summary['loss']:.4f}"
+        count_str = f"count={summary['count']}"
+        metrics_str = f"metrics={summary['metrics']}"
+        typer.echo(f"Eval complete | {loss_str} | {count_str} | {metrics_str}")
 
 
 @app.command("report")
@@ -125,7 +126,9 @@ def report_command(
         typer.echo(f"Input log not found: {input}", err=True)
         raise typer.Exit(code=2)
 
-    lines = [json.loads(l) for l in input.read_text().splitlines() if l.strip()]
+    lines = [
+        json.loads(line) for line in input.read_text().splitlines() if line.strip()
+    ]
     epoch_records = [r for r in lines if r.get("type") == "epoch"]
 
     if not epoch_records:
@@ -148,7 +151,7 @@ def report_command(
             typer.echo(f"Compare file not found: {compare}", err=True)
             raise typer.Exit(code=2)
 
-        cmp_lines = [json.loads(l) for l in compare.read_text().splitlines() if l.strip()]
+        cmp_lines = [json.loads(line) for line in compare.read_text().splitlines() if line.strip()]
         cmp_epochs = [r for r in cmp_lines if r.get("type") == "epoch"]
 
         if not cmp_epochs:
@@ -176,9 +179,7 @@ def report_command(
     if json_output:
         typer.echo(json.dumps(out, indent=2))
     else:
-        typer.echo(
-            f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}"
-        )
+        typer.echo(f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}")
 
 
 if __name__ == "__main__":  # pragma: no cover
