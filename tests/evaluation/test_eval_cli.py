@@ -130,3 +130,30 @@ def test_run_command_invalid_config(tmp_path: Path, monkeypatch):
     res = runner.invoke(eval_cli.app, ["run", "--config", str(tmp_path / "fake.json")])
     assert res.exit_code == 2
     assert "Config must inject" in res.stdout
+
+
+def test_load_config_toml(tmp_path: Path):
+    """Test that _load_config handles TOML files with proper tomllib/tomli fallback (P1 fix)"""
+    toml_config = tmp_path / "test.toml"
+    toml_config.write_text("""
+[model]
+name = "test_model"
+
+[data]
+dataset = "test_data"
+""")
+    
+    # Should not raise ModuleNotFoundError on Python <3.11
+    cfg = eval_cli._load_config(toml_config)
+    assert cfg["model"]["name"] == "test_model"
+    assert cfg["data"]["dataset"] == "test_data"
+
+
+def test_load_config_json(tmp_path: Path):
+    """Test that _load_config handles JSON files correctly"""
+    json_config = tmp_path / "test.json"
+    json_config.write_text('{"model": {"name": "test"}, "data": {"dataset": "test"}}')
+    
+    cfg = eval_cli._load_config(json_config)
+    assert cfg["model"]["name"] == "test"
+    assert cfg["data"]["dataset"] == "test"

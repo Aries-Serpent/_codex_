@@ -31,8 +31,11 @@ def _load_config(path: Path) -> Dict[str, Any]:
     if path.suffix == ".json":
         return json.loads(text)
     if path.suffix == ".toml":
-        import tomllib
-
+        # Proper fallback for tomllib (Python 3.11+) vs tomli (Python <3.11)
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib  # type: ignore
         return tomllib.loads(text)
     typer.echo("Unsupported config format (use .json or .toml)", err=True)
     raise typer.Exit(code=2)

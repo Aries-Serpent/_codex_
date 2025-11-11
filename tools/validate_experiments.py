@@ -51,13 +51,25 @@ def validate(schema, config, path: Path):
         return False, f"{path}: {e}"
 
 def discover(paths: List[Path]) -> List[Path]:
+    """
+    Discover config files, excluding schema files.
+    Skips files named like 'schema*.json', '*.schema.json', or in 'schemas/' directories.
+    """
     result = []
     for p in paths:
         if p.is_dir():
             for ext in (".json", ".toml"):
-                result.extend(p.rglob(f"*{ext}"))
+                for candidate in p.rglob(f"*{ext}"):
+                    # Skip schema files by name pattern or directory
+                    if "schema" in candidate.name.lower():
+                        continue
+                    if "schemas" in [part.lower() for part in candidate.parts]:
+                        continue
+                    result.append(candidate)
         elif p.is_file():
-            result.append(p)
+            # Only add file if it's not a schema file
+            if "schema" not in p.name.lower() and "schemas" not in [part.lower() for part in p.parts]:
+                result.append(p)
     return result
 
 def main():
