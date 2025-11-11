@@ -321,18 +321,31 @@ def security(session: nox.Session) -> None:
     audit_output = artifacts_dir / "security_report.json"
     session.log("Running pip-audit...")
     
-    pip_audit_result = subprocess.run(
-        ["pip-audit", "-f", "json"],
-        capture_output=True,
-        text=True,
-    )
+    # Use session.run with silent=True and success_codes to capture output
+    import tempfile
+    import os
     
-    # pip-audit returns 1 when vulns found; still parseable
-    if pip_audit_result.returncode not in (0, 1):
-        session.error(f"pip-audit failed: {pip_audit_result.stderr}")
-
+    # Create a temporary file to capture pip-audit output
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.json', delete=False) as tmp:
+        tmp_path = tmp.name
+    
     try:
-        pip_audit_json = json.loads(pip_audit_result.stdout or "[]")
+        session.run(
+            "pip-audit", "-f", "json", "-o", tmp_path,
+            success_codes=[0, 1],  # 0=no vulns, 1=vulns found
+            silent=True,
+        )
+        
+        # Read the output
+        with open(tmp_path, 'r') as f:
+            pip_audit_stdout = f.read()
+    finally:
+        # Clean up temp file
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+    
+    try:
+        pip_audit_json = json.loads(pip_audit_stdout or "[]")
     except Exception as e:
         session.error(f"Failed to parse pip-audit JSON: {e}")
 
@@ -359,36 +372,59 @@ def security(session: nox.Session) -> None:
     # 2) Bandit (static analysis)
     bandit_output = artifacts_dir / "bandit_report.txt"
     bandit_cfg = ".bandit.yaml"
-    bandit_cmd = ["bandit", "-q", "-r", "src"]
-    if Path(bandit_cfg).exists():
-        bandit_cmd.extend(["-c", bandit_cfg])
     
     session.log("Running bandit...")
-    bandit_result = subprocess.run(
-        bandit_cmd,
-        capture_output=True,
-        text=True,
-    )
-    bandit_output.write_text(
-        (bandit_result.stdout or "") + ("\n" + bandit_result.stderr if bandit_result.stderr else ""),
-        encoding="utf-8",
-    )
+    # Create temp file for bandit output
+    with tempfile.NamedTemporaryFile(mode='w+', suffix='.txt', delete=False) as tmp:
+        bandit_tmp_path = tmp.name
+    
+    try:
+        bandit_args = ["-q", "-r", "src"]
+        if Path(bandit_cfg).exists():
+            bandit_args.extend(["-c", bandit_cfg])
+        bandit_args.extend(["-o", bandit_tmp_path])
+        
+        session.run(
+            "bandit", *bandit_args,
+            success_codes=[0, 1],  # bandit may exit 1 if issues found
+            silent=True,
+        )
+        
+        # Read the output
+        with open(bandit_tmp_path, 'r') as f:
+            bandit_content = f.read()
+        bandit_output.write_text(bandit_content, encoding="utf-8")
+    except Exception as e:
+        # If bandit fails completely, write error
+        bandit_output.write_text(f"Bandit error: {e}", encoding="utf-8")
+    finally:
+        if os.path.exists(bandit_tmp_path):
+            os.unlink(bandit_tmp_path)
+    
     session.log(f"✓ bandit report written to {bandit_output}")
+    bandit_exit_code = 0  # Track for summary
 
     # 3) gitleaks (secret scanning) — repo workspace, no git history
     gitleaks_output = artifacts_dir / "gitleaks_report.json"
+    gitleaks_exit_code = 0
+    
     if shutil.which("gitleaks"):
         gitleaks_cfg = ".gitleaks.toml"
-        gitleaks_cmd = ["gitleaks", "detect", "--no-git", "-r", ".", "--report-format", "json", "--report-path", str(gitleaks_output)]
+        gitleaks_args = ["detect", "--no-git", "-r", ".", "--report-format", "json", "--report-path", str(gitleaks_output)]
         if Path(gitleaks_cfg).exists():
-            gitleaks_cmd.extend(["--config", gitleaks_cfg])
+            gitleaks_args.extend(["--config", gitleaks_cfg])
         
         session.log("Running gitleaks...")
-        gitleaks_result = subprocess.run(
-            gitleaks_cmd,
-            capture_output=True,
-            text=True,
-        )
+        try:
+            session.run(
+                "gitleaks", *gitleaks_args,
+                success_codes=[0, 1],  # 0=no secrets, 1=secrets found
+                external=True,
+                silent=True,
+            )
+        except Exception as e:
+            session.log(f"gitleaks exited with error: {e}")
+            gitleaks_exit_code = 1
         session.log(f"✓ gitleaks report written to {gitleaks_output}")
     else:
         # gitleaks not available; create empty report
@@ -405,10 +441,10 @@ def security(session: nox.Session) -> None:
             "high_critical_list": high_crit,
         },
         "bandit": {
-            "exit_code": bandit_result.returncode,
+            "exit_code": bandit_exit_code,
         },
         "gitleaks": {
-            "exit_code": gitleaks_result.returncode if shutil.which("gitleaks") else 0,
+            "exit_code": gitleaks_exit_code,
             "findings_count": gitleaks_count,
         },
         "policy": {
