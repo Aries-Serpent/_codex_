@@ -28,15 +28,14 @@ from typing import List
 
 
 def _run_command(cmd: List[str], description: str) -> int:
-    """Run a command and return its exit code."""
+    """Run a command and return its exit code.
+    
+    Output streams in real-time (not buffered) for better user experience
+    and to avoid memory issues with large outputs.
+    """
     print(f"[INFO] {description}...")
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        # Print captured output so it's visible
-        if result.stdout:
-            print(result.stdout, end='')
-        if result.stderr:
-            print(result.stderr, end='', file=sys.stderr)
+        result = subprocess.run(cmd, text=True)
         return result.returncode
     except Exception as e:
         print(f"[ERROR] Failed to run {description}: {e}", file=sys.stderr)
