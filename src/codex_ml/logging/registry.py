@@ -2,26 +2,21 @@
 Logging registry integration draft.
 
 build_loggers(opts) creates list of logger instances.
-
 Supported sinks:
-- NDJSONLogger (default)
-- MLflowLogger (optional; offline-only; lazy import; disabled by default)
-
+    - NDJSONLogger (default)
+    - MLflowLogger (optional; offline-only; lazy import; disabled by default)
 System metrics optional via psutil (flag use_sys_metrics).
 """
-
 from __future__ import annotations
-
+from pathlib import Path
+from typing import Dict, Any, List
 import json
 import time
-from pathlib import Path
-from typing import Any, Dict, List
 
 try:
     import psutil  # optional
 except ImportError:  # pragma: no cover
     psutil = None
-
 
 class NDJSONLogger:
     def __init__(self, path: Path, sys_metrics: bool = False):
@@ -57,7 +52,6 @@ class MLflowLogger:  # minimal stub, optional
         self.sys_metrics = sys_metrics
         try:
             import mlflow
-
             mlflow.set_tracking_uri("file:" + str(Path("mlruns").absolute()))
             mlflow.start_run()
             self.mlflow = mlflow
@@ -84,18 +78,13 @@ class MLflowLogger:  # minimal stub, optional
 def build_loggers(opts: Dict[str, Any]) -> List:
     output_dir = Path(opts.get("output_dir", "runs/logs"))
     output_dir.mkdir(parents=True, exist_ok=True)
-
     sys_metrics = bool(opts.get("sys_metrics", False))
     use_mlflow = bool(opts.get("use_mlflow", False))
-
     ndjson_path = output_dir / "metrics.ndjson"
-
     loggers: List = [NDJSONLogger(ndjson_path, sys_metrics=sys_metrics)]
-
     if use_mlflow:
         try:
             loggers.append(MLflowLogger(sys_metrics=sys_metrics))
         except Exception:  # pragma: no cover
             pass
-
     return loggers

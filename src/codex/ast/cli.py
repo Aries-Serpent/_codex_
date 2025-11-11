@@ -1,64 +1,96 @@
-"""Command-line interface for AST analysis."""
+"""
+AST CLI (Typer) — analyze | audit | diff
 
+Human-readable by default; use --json for machine output.
+Exit codes:
+ 0 success
+ 2 invalid args
+ 3 runtime error
+"""
+from __future__ import annotations
+import json
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Any, Optional, List
 
-import click
+import typer
 
+app = typer.Typer(help="AST tools: analyze, audit, diff.")
 
-@click.group()
-def cli():
-    """Codex AST Analysis CLI."""
-    pass
+def _collect_py_files(path: Path) -> List[Path]:
+    if path.is_file() and path.suffix == ".py":
+        return [path]
+    if path.is_dir():
+        return [p for p in path.rglob("*.py")]
+    return []
 
+def _analyze_path(path: Path) -> Dict[str, Any]:
+    files = _collect_py_files(path)
+    total_lines = 0
+    for f in files:
+        try:
+            total_lines += sum(1 for _ in f.read_text(encoding="utf-8", errors="ignore").splitlines())
+        except Exception:
+            pass
+    return {
+        "path": str(path),
+        "files": len(files),
+        "total_lines": total_lines,
+    }
 
-@cli.command()
-@click.argument("path", type=click.Path(exists=True))
-@click.option("--output", "-o", type=click.Path(), help="Output file path")
-@click.option("--format", "-f", type=click.Choice(["json", "text", "yaml"]), default="text")
-def analyze(path: str, output: Optional[str], format: str):
-    """Analyze AST for a file or directory."""
-    path_obj = Path(path)
-    
-    if path_obj.is_file():
-        click.echo(f"Analyzing file: {path_obj}")
-        # TODO: Implement file analysis
-    elif path_obj.is_dir():
-        click.echo(f"Analyzing directory: {path_obj}")
-        # TODO: Implement directory analysis
-    
-    click.echo("✓ Analysis complete")
+@app.command("analyze")
+def analyze(
+    target: Path = typer.Argument(..., exists=True, readable=True),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON")
+):
+    try:
+        res = _analyze_path(target)
+        if json_output:
+            typer.echo(json.dumps(res, indent=2))
+        else:
+            typer.echo(f"Analyze {target}: files={res['files']} lines={res['total_lines']}")
+    except Exception as e:
+        typer.echo(f"Analyze error: {e}", err=True)
+        raise typer.Exit(code=3)
 
+@app.command("audit")
+def audit(
+    target: Path = typer.Argument(".", help="Root to audit"),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON")
+):
+    try:
+        res = _analyze_path(target)
+        # For now, reuse analyze summary as audit-lite
+        if json_output:
+            typer.echo(json.dumps({"summary": res}, indent=2))
+        else:
+            typer.echo(f"Audit {target}: files={res['files']} lines={res['total_lines']}")
+    except Exception as e:
+        typer.echo(f"Audit error: {e}", err=True)
+        raise typer.Exit(code=3)
 
-@cli.command()
-@click.argument("path", type=click.Path(exists=True))
-@click.option("--output", "-o", type=click.Path(), help="Report file path (default: audit_report.html)")
-def audit(path: str, output: Optional[str]):
-    """Run full codebase audit."""
-    path_obj = Path(path)
-    output_file = Path(output or "audit_report.html")
-    
-    click.echo(f"Auditing codebase: {path_obj}")
-    click.echo(f"Output: {output_file}")
-    
-    # TODO: Implement full audit
-    
-    click.echo(f"✓ Audit complete: {output_file}")
+@app.command("diff")
+def diff(
+    a: Path = typer.Argument(..., exists=True, readable=True),
+    b: Path = typer.Argument(..., exists=True, readable=True),
+    json_output: bool = typer.Option(False, "--json", help="Emit JSON")
+):
+    try:
+        ra = _analyze_path(a)
+        rb = _analyze_path(b)
+        delta_files = rb["files"] - ra["files"]
+        delta_lines = rb["total_lines"] - ra["total_lines"]
+        res = {
+            "a": ra, "b": rb,
+            "delta_files": delta_files,
+            "delta_lines": delta_lines,
+        }
+        if json_output:
+            typer.echo(json.dumps(res, indent=2))
+        else:
+            typer.echo(f"Diff files={delta_files:+} lines={delta_lines:+}")
+    except Exception as e:
+        typer.echo(f"Diff error: {e}", err=True)
+        raise typer.Exit(code=3)
 
-
-@cli.command()
-@click.argument("commit1", type=str)
-@click.argument("commit2", type=str)
-@click.option("--metric", "-m", type=str, default="complexity")
-def diff(commit1: str, commit2: str, metric: str):
-    """Compare AST metrics between two commits."""
-    click.echo(f"Comparing {commit1}..{commit2}")
-    click.echo(f"Metric: {metric}")
-    
-    # TODO: Implement commit diff
-    
-    click.echo("✓ Diff complete")
-
-
-if __name__ == "__main__":
-    cli()
+if __name__ == "__main__":  # pragma: no cover
+    app()

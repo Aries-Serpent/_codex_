@@ -1,22 +1,14 @@
 # Security & Safeguards: Dependency Vulnerability Gate
-
-> Generated: 2025-11-11 07:38:40 UTC | Author: mbaetiong
-> 🧠 Roles: [Primary: Security Gate Owner], [Secondary: Implementer]
-> ⚡ Energy: 5/5
-> ⚛️ Physics: Path🛤️ [Scan → Parse → Decide → Artifact]
-> Fields🔄 [pip-audit, JSON]
-> Patterns👁️ [Fail High/Critical, Allowlist Expiry]
-> Redundancy🔀 [Artifact + Index]
-> Balance⚖️ [Strict vs. Developer Velocity]
+> Generated: 2025-11-11 07:38:40 UTC | Author: mbaetiong  
+🧠 Roles: [Primary: Security Gate Owner], [Secondary: Implementer] ⚡ Energy: 5/5  
+⚛️ Physics: Path🛤️ [Scan → Parse → Decide → Artifact] Fields🔄 [pip-audit, JSON] Patterns👁️ [Fail High/Critical, Allowlist Expiry] Redundancy🔀 [Artifact + Index] Balance⚖️ [Strict vs. Developer Velocity]
 
 ## Policy
-
 - Fail build (nox session) on any HIGH or CRITICAL vulnerability not explicitly allowlisted with future expiry.
 - WARN (non-failing) for LOW/MEDIUM vulnerabilities; remediation tracked separately.
 - Allowlist entries must include: id, package, version, rationale, expiry_date (ISO).
 
 ## Workflow
-
 1. Developer runs `nox -s security`.
 2. `pip-audit -f json` executed; JSON parsed.
 3. Allowlist filtered (non-expired only).
@@ -25,7 +17,6 @@
 6. Update allowlist with rationale + timeboxed expiry for accepted false positives.
 
 ## Allowlist Example
-
 ```json
 {
   "allowlisted_vulnerabilities": [
@@ -42,11 +33,9 @@
 ```
 
 ## Failure Message
-
 `High/Critical vulnerabilities found (not allowlisted): <package:id:severity>`
 
 ## Remediation Checklist
-
 | Step | Action | Owner |
 |------|--------|-------|
 | 1 | Pin or upgrade package | Developer |
@@ -54,12 +43,7 @@
 | 3 | If still present & false positive → allowlist with expiry | Security Gate Owner |
 
 ## References
-
-- [pip-audit docs](https://pypi.org/project/pip-audit/)
+- pip-audit docs
 - Nox session spec
 
-## Implementation Notes
-
-**Location**: `noxfile.py` (security session), `security_allowlist.json`
-
-The security session is fully implemented and operational. It integrates pip-audit scanning with automated allowlist filtering based on expiry dates.
+— End —

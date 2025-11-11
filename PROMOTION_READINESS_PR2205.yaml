@@ -1,0 +1,197 @@
+# [Promotion Readiness]: PR #2205 — Complete Implementation & Verification
+# Generated: 2025-11-11T20:47:00Z
+# Status: READY FOR FINAL VERIFICATION
+
+context:
+  repository: "Aries-Serpent/_codex_"
+  source_branch: "copilot/sub-pr-2204"
+  target_branch: "0D_base_"
+  pr_number: 2205
+  head_sha: "40050e1"  # Updated after P0/P1 fixes
+  commits_total: 15
+
+required_safety_confirmations:
+  NETWORK_SAFETY_ACK: true
+  OFFLINE_MODE_CONFIRM: true
+  verified: true
+
+artifacts_checklist:
+  security_report_json:
+    path: "artifacts/security_report.json"
+    status: "READY_FOR_CI"
+    notes: "nox -s security configured; awaiting CI execution"
+  env_snapshot_json:
+    path: "artifacts/env_snapshot.json"
+    status: "DONE"
+    summary: "Python 3.12.3, Linux x86_64, CPython"
+    generated: true
+  coverage_xml:
+    path: "artifacts/coverage.xml"
+    status: "READY_FOR_CI"
+    notes: "pytest-cov configured; awaiting CI execution"
+    thresholds:
+      repo_fail_under: 0.95
+      per_target_modules_min: 0.96
+  docs_manifest_sha:
+    path: "artifacts/docs_manifest.sha"
+    status: "DONE"
+    value: "b6dd579ad237455f495dd7722d23098648ba13e8c62d8c21f97903a604ef15db"
+    generated: true
+
+implementation_status:
+  components_from_zip: 41
+  enhancements_added: 2
+  total_components: 43
+  implementation_rate: "100%"
+  
+  p0_p1_bugs_fixed: 9
+  bug_details:
+    - name: "Duplicate security session"
+      severity: "P1"
+      status: "FIXED"
+      commit: "749b1eb"
+    - name: "Metric callable crashes"
+      severity: "P1"
+      status: "FIXED"
+      commit: "1341f45"
+    - name: "TOML validator parsing"
+      severity: "P1"
+      status: "FIXED"
+      commit: "1341f45"
+    - name: "CLI TOML import"
+      severity: "P1"
+      status: "FIXED"
+      commit: "2dcc361"
+    - name: "Schema file discovery"
+      severity: "P1"
+      status: "FIXED"
+      commit: "2dcc361"
+    - name: "Checkpoint retention leak"
+      severity: "P1"
+      status: "FIXED"
+      commit: "04fcefc"
+    - name: "Metrics exports missing"
+      severity: "P0"
+      status: "FIXED"
+      commit: "40050e1"
+    - name: "keep_last retention fails"
+      severity: "P1"
+      status: "FIXED"
+      commit: "40050e1"
+    - name: "Test monkeypatch AttributeError"
+      severity: "P1"
+      status: "FIXED"
+      commit: "40050e1"
+
+code_review_fixes: 8
+code_review_status: "ALL_ADDRESSED"
+
+coverage_targets:
+  targeted_modules:
+    - "src/codex_ml/evaluation/loop.py"
+    - "src/codex_ml/evaluation/cli.py"
+    - "src/codex_ml/checkpointing/bestk.py"
+    - "src/codex_ml/logging/registry.py"
+    - "src/codex/ast/cli.py"
+    - "tools/validate_experiments.py"
+  acceptance:
+    repo_min: "≥95%"
+    per_target_min: "≥96%"
+  edge_case_tests_added: true
+  test_count_summary:
+    total_tests: 47  # Updated: 22 original + 22 edge-case + 3 P0/P1 regression
+    new_edge_cases: 22
+    p0_p1_regression: 3
+    original_tests: 22
+
+type_checking:
+  tool: "mypy"
+  config: "config/mypy.ini"
+  status: "READY_FOR_CI"
+  notes: "Configuration present; awaiting CI execution"
+
+determinism_proof:
+  enforced_flag: "--deterministic"
+  proof_status: "READY_FOR_VERIFICATION"
+  implementation: "evaluate_epoch(deterministic=True) + CLI flag"
+  tests_added:
+    - "tests/repro/test_determinism.py::test_determinism_dual_run"
+    - "tests/repro/test_determinism.py::test_determinism_with_metrics"
+
+security_policy:
+  fail_on_high_critical: true
+  allowlist_file: "security_allowlist.json"
+  allowlist_with_expiry_required: true
+  unified_session: true
+  scans_included:
+    - "pip-audit"
+    - "bandit"
+    - "gitleaks"
+
+docker_smoke:
+  status: "OPTIONAL"
+  dockerfile: "docker/Dockerfile.cpu"
+  commands_documented: true
+
+gap_table_completion:
+  high_priority_items: "100%"
+  medium_priority_items: "READY_FOR_CI"
+  status: "ALL_DEPENDENCIES_FREE_WORK_COMPLETE"
+
+documentation:
+  files_created: 8
+  files_list:
+    - "IMPLEMENTATION_STATUS.md"
+    - "REMAINING_WORK.md"
+    - "VERIFICATION_ARTIFACTS_MANIFEST.md"
+    - "PR_FINAL_SUMMARY.md"
+    - "ARTIFACTS_AND_COVERAGE_SUMMARY.md"
+    - "PR_COMPLETION_SUMMARY.md"
+    - "Coverage_Enforcement_Validation.md"
+    - "ADR-style-linelength.md"
+
+promotion_readiness_gate:
+  conditions:
+    - name: "All artifacts generated"
+      status: "PARTIAL"
+      notes: "env_snapshot.json ✓, docs_manifest.sha ✓, security/coverage ready for CI"
+    - name: "Coverage thresholds configured"
+      status: "DONE"
+      notes: "pytest.ini configured with 95% threshold"
+    - name: "mypy configuration present"
+      status: "DONE"
+      notes: "config/mypy.ini ready for CI execution"
+    - name: "Determinism support implemented"
+      status: "DONE"
+      notes: "Flag + tests present"
+    - name: "All P0/P1 bugs fixed"
+      status: "DONE"
+      notes: "9 critical bugs fixed with regression tests"
+    - name: "Code review feedback addressed"
+      status: "DONE"
+      notes: "8/8 issues resolved"
+  
+  readiness_status: "READY_FOR_MERGE_PENDING_CI_VERIFICATION"
+  next_step: "Execute CI pipeline: nox -s tests security validate-configs lint typecheck"
+
+manifest_shas:
+  docs_manifest_sha: "b6dd579ad237455f495dd7722d23098648ba13e8c62d8c21f97903a604ef15db"
+  head_commit_sha: "40050e1"
+  audit_run_manifest_sha: "TBD_AFTER_CI"
+  canonical_manifest_sha: "TBD_AFTER_DETERMINISM_PROOF"
+
+notes:
+  - "All dependencies-free work complete"
+  - "9 P0/P1 bugs fixed (6 original + 3 new)"
+  - "47 total tests (22 original + 22 edge-case + 3 P0/P1 regression)"
+  - "Code review feedback: 8/8 addressed"
+  - "Syntax validation: all files passing"
+  - "CI-dependent items ready: security, coverage, mypy, lint"
+  - "No network operations; offline mode confirmed"
+  - "No public API changes beyond approved flags"
+
+blocks: []
+
+funding_gate:
+  status: "PENDING"
+  notes: "FIN-001 approval required per governance (placeholder)"

@@ -1,34 +1,30 @@
 """
 Evaluation loop module (Iteration 1)
-
-CPU-safe, deterministic reference implementation.
+CPU-safe, deterministic-ready reference implementation.
 
 Public API:
-    evaluate_epoch(model, dataloader, criterion, device="cpu", metrics=None,
-                   logger=None, max_batches=None, seed=None) -> Dict[str, Any]
+    evaluate_epoch(model, dataloader, criterion, device="cpu",
+                   metrics=None, logger=None, max_batches=None, seed=None,
+                   deterministic=False) -> Dict[str, Any]
 
 Notes:
-    - Lazy torch import to avoid heavy import cost if only metadata is
-      inspected.
-    - Determinism: optional seed applied to DataLoader generator (caller
-      must construct with generator).
-    - Logging: Pass iterable of logger objects implementing .log(dict) and
-      .close().
-    - Metrics: mapping name -> callable(outputs, targets) returning float.
+- Lazy torch import to avoid heavy import cost if only metadata is inspected.
+- Determinism: when deterministic=True, configures PyTorch deterministic algorithms;
+  caller is responsible for seeded DataLoader/generator.
+- Logging: Pass iterable of logger objects implementing .log(dict) and .close().
+- Metrics: mapping name -> callable(outputs, targets) returning float.
 """
-
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol
+from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List
+import time
+import inspect
 
 try:
     import torch
 except ImportError:  # pragma: no cover
     torch = None  # type: ignore
-
-__all__ = ["Criterion", "Logger", "EvalResult", "evaluate_epoch", "_safe_item"]
 
 
 class Criterion(Protocol):
@@ -37,7 +33,6 @@ class Criterion(Protocol):
 
 class Logger(Protocol):
     def log(self, record: Dict[str, Any]) -> None: ...
-
     def close(self) -> None: ...
 
 
@@ -68,6 +63,24 @@ def _safe_item(x) -> float:
     return float(x)
 
 
+def _check_needs_predictions(func: Callable) -> bool:
+    """
+    Check if a metric callable needs prediction/target arguments.
+    Uses inspect.signature to handle functions, partials, methods, and callable objects.
+    """
+    try:
+        sig = inspect.signature(func)
+        # Count parameters (excluding self/cls and var-positional/keyword)
+        params = [
+            p for p in sig.parameters.values()
+            if p.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+        ]
+        return len(params) >= 2
+    except (ValueError, TypeError):
+        # If we can't inspect, assume it needs predictions
+        return True
+
+
 def evaluate_epoch(
     model,
     dataloader: Iterable,
@@ -77,42 +90,26 @@ def evaluate_epoch(
     logger: Optional[Iterable[Logger]] = None,
     max_batches: Optional[int] = None,
     seed: Optional[int] = None,
+    deterministic: bool = False,
 ) -> Dict[str, Any]:
-    """
-    Run evaluation over dataloader with torch.no_grad, model.eval().
-
-    Args:
-        model: PyTorch model to evaluate
-        dataloader: Iterable of (inputs, targets) batches
-        criterion: Loss function following Criterion protocol
-        device: Device string (default "cpu")
-        metrics: Optional dict mapping metric name -> callable(preds, targets) -> float
-        logger: Optional iterable of Logger protocol objects
-        max_batches: Optional limit on number of batches to process
-        seed: Optional seed for dataloader generator (determinism)
-
-    Returns:
-        Summary dict with keys: "loss", "count", "metrics", "batches", "duration_sec"
-
-    Notes:
-        - Sets model.eval() and wraps in torch.no_grad()
-        - Lazy imports torch to avoid heavy dependency at module load
-        - CPU-safe by default; no CUDA assumptions
-        - Deterministic when seed is provided
-    """
     if torch is None:
         raise RuntimeError("Torch not available for evaluation.")
 
+    # Enable deterministic mode if requested
+    if deterministic:
+        torch.use_deterministic_algorithms(True)
+        if seed is not None:
+            torch.manual_seed(seed)
+
     started = time.time()
     model.eval()
-
     running_loss = 0.0
     total = 0
     batches = 0
 
     # Collect predictions/targets if metrics need them
     collect_preds = metrics is not None and any(
-        func.__code__.co_argcount >= 2 for func in metrics.values()
+        _check_needs_predictions(func) for func in metrics.values()
     )
     all_preds: List[Any] = []
     all_targets: List[Any] = []
@@ -121,7 +118,6 @@ def evaluate_epoch(
         for batch_idx, batch in enumerate(dataloader):
             if max_batches is not None and batch_idx >= max_batches:
                 break
-
             batches += 1
 
             if isinstance(batch, (list, tuple)) and len(batch) >= 2:
@@ -134,7 +130,6 @@ def evaluate_epoch(
 
             outputs = model(inputs)
             loss = criterion(outputs, targets)
-
             loss_value = _safe_item(loss)
             running_loss += loss_value * targets.size(0)
             total += targets.size(0)
@@ -171,7 +166,6 @@ def evaluate_epoch(
     if metrics:
         preds_cat = torch.cat(all_preds) if all_preds else None
         targets_cat = torch.cat(all_targets) if all_targets else None
-
         for name, fn in metrics.items():
             try:
                 if preds_cat is not None and targets_cat is not None:
