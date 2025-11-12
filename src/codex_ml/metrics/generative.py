@@ -110,7 +110,7 @@ def _lcs_length(a: list[str], b: list[str]) -> int:
     return dp[-1][-1]
 
 
-@register_metric("rouge_l", override=True)
+@register_metric("rougeL", override=True)
 def rouge_l(predictions: Sequence[object], targets: Sequence[object]) -> float:
     """Compute the ROUGE-L F1 score using longest common subsequence."""
 
