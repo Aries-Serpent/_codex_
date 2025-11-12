@@ -91,20 +91,21 @@ def register_configs() -> None:
 
     try:
         from hydra.core.config_store import ConfigStore
+        from codex_ml.utils.hydra_cs import safe_exists
     except Exception:  # pragma: no cover - hydra optional dependency
         return
 
     cs = ConfigStore.instance()
 
-    if not cs.exists(name="app"):
+    if not safe_exists(cs, "app"):
         cs.store(name="app", node=AppConfig)
-    if not cs.exists(group="experiment", name="debug"):
+    if not safe_exists(cs, "experiment/debug"):
         cs.store(
             group="experiment",
             name="debug",
             node=AppConfig(training=TrainCfg(max_epochs=1, batch_size=2)),
         )
-    if not cs.exists(group="experiment", name="fast"):
+    if not safe_exists(cs, "experiment/fast"):
         cs.store(
             group="experiment",
             name="fast",

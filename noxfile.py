@@ -233,8 +233,36 @@ def coverage(session: nox.Session) -> None:
     from typing import List, Set, Tuple
     
     session.install("-r", "requirements-dev.txt")
+    
+    # Explicitly install typer and click to avoid collection errors
+    session.install("typer>=0.12.5", "click>=8.1.7")
+    
+    # Install CPU-only torch trio with explicit index-url to prevent CUDA variant
+    session.install(
+        "--index-url", "https://download.pytorch.org/whl/cpu",
+        "torch==2.3.1+cpu",
+        "torchvision==0.18.1+cpu", 
+        "torchaudio==2.3.1+cpu"
+    )
+    
     # Ensure pytest-cov is always installed (CI safety)
-    session.install("pytest", "pytest-cov")
+    session.install("pytest>=9.0.0", "pytest-cov>=4.1.0")
+
+    # Clean pycache inline (if workflow doesn't handle it)
+    session.run(
+        "bash", "-c",
+        "find . -name '*.pyc' -delete && find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true",
+        external=True,
+    )
+
+    # Run preflight sanity check before pytest
+    preflight_script = ".github/scripts/ci_dependency_sanity.py"
+    from pathlib import Path
+    if Path(preflight_script).exists():
+        session.log("Running preflight dependency sanity check...")
+        session.run("python", preflight_script)
+    else:
+        session.log(f"Preflight script {preflight_script} not found, skipping...")
 
     # Ensure artifacts directory exists
     from pathlib import Path
