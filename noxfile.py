@@ -48,10 +48,9 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import subprocess
 from pathlib import Path
-from typing import Iterable, List
+from typing import List
 
 import nox
 
@@ -95,7 +94,6 @@ def _show_vendor_scan(session: nox.Session) -> None:
     Run a quick vendor module scan similar to scripts/vendor_guard.py logic.
     Non-failing; prints JSON summary. CPU guard failures handled externally.
     """
-    allow_triton = os.getenv("CODEX_ALLOW_TRITON_CPU", "1") == "1"
     code = (
         "import pkgutil,json,os,time;"
         "allow_triton=os.getenv('CODEX_ALLOW_TRITON_CPU','1')=='1';"

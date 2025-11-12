@@ -10,7 +10,6 @@ GPU telemetry when :mod:`pynvml` is available.
 
 from __future__ import annotations
 
-import json
 import time
 from contextlib import suppress
 from pathlib import Path
@@ -67,7 +66,7 @@ class NDJSONLogger:
     def _gpu_metrics(self) -> Dict[str, float]:
         if pynvml is None or not self._nvml_initialised:
             return {}
-        with suppress(Exception):
+        try:
             handle = pynvml.nvmlDeviceGetHandleByIndex(0)  # type: ignore[attr-defined]
             mem = pynvml.nvmlDeviceGetMemoryInfo(handle)  # type: ignore[attr-defined]
             util = pynvml.nvmlDeviceGetUtilizationRates(handle)  # type: ignore[attr-defined]
@@ -75,7 +74,8 @@ class NDJSONLogger:
                 "gpu_mem_mb": round(mem.used / (1024 * 1024), 2),
                 "gpu_util_percent": float(util.gpu),
             }
-        return {}
+        except Exception:
+            return {}
 
     def _sys_metrics(self) -> Dict[str, float]:
         if not self.sys_metrics:
