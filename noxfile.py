@@ -25,6 +25,12 @@ _SELECTION_SCHEMA = Path("schemas/selection_guard_rules.schema.json")
 _EVALUATOR_SCHEMA = Path("schemas/codex_eval_rules.v3.schema.json")
 _CONFIG_VALIDATOR = Path("tools/validate_configs.py")
 
+# Pin CPU wheel versions here to keep test sessions deterministic and runnable
+# without requiring developers to manually install heavy binaries.
+CPU_TORCH_VERSION = "2.3.1"
+CPU_TORCHVISION_VERSION = "0.18.1"
+CPU_TORCHAUDIO_VERSION = "2.3.1"
+CPU_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 
 _TOML_MODULE: Optional[ModuleType] = None
 
@@ -187,8 +193,30 @@ def gates(session: nox.Session) -> None:
 
 @nox.session
 def tests(session: nox.Session) -> None:
-    """Run pytest with plugin autoload disabled (deterministic) and coverage enforcement."""
+    """
+    Prepare a runnable test environment and run pytest.
+    
+    Behavior:
+      - Install a small set of CPU-only torch wheels from the PyTorch CPU index first
+        (so tests that import torch succeed).
+      - Then install requirements-dev.txt (which intentionally omits torch).
+      - Finally run pytest.
+    
+    This preserves the repo's desire to keep heavy binaries out of requirements-dev.txt
+    while ensuring the standard `nox -s tests` developer entrypoint remains functional.
+    """
+    # Install CPU-only torch wheels first (deterministic CPU builds)
+    session.install(
+        "--index-url", CPU_INDEX_URL,
+        f"torch=={CPU_TORCH_VERSION}+cpu",
+        f"torchvision=={CPU_TORCHVISION_VERSION}+cpu", 
+        f"torchaudio=={CPU_TORCHAUDIO_VERSION}+cpu"
+    )
+    
+    # Install the rest of the development dependencies (requirements-dev.txt no longer
+    # contains torch/tv/ta)
     session.install("-r", "requirements-dev.txt")
+    
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
     # Run tests with coverage
@@ -233,11 +261,38 @@ def coverage(session: nox.Session) -> None:
     from typing import List, Set, Tuple
     
     session.install("-r", "requirements-dev.txt")
+    
+    # Explicitly install typer and click to avoid collection errors
+    session.install("typer>=0.12.5", "click>=8.1.7")
+    
+    # Install CPU-only torch trio with explicit index-url to prevent CUDA variant
+    session.install(
+        "--index-url", CPU_INDEX_URL,
+        f"torch=={CPU_TORCH_VERSION}+cpu",
+        f"torchvision=={CPU_TORCHVISION_VERSION}+cpu", 
+        f"torchaudio=={CPU_TORCHAUDIO_VERSION}+cpu"
+    )
+    
     # Ensure pytest-cov is always installed (CI safety)
-    session.install("pytest", "pytest-cov")
+    session.install("pytest>=9.0.0", "pytest-cov>=4.1.0")
+
+    # Clean pycache inline (if workflow doesn't handle it)
+    session.run(
+        "bash", "-c",
+        "find . -name '*.pyc' -delete && find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true",
+        external=True,
+    )
+
+    # Run preflight sanity check before pytest
+    from pathlib import Path
+    preflight_script = ".github/scripts/ci_dependency_sanity.py"
+    if Path(preflight_script).exists():
+        session.log("Running preflight dependency sanity check...")
+        session.run("python", preflight_script)
+    else:
+        session.log(f"Preflight script {preflight_script} not found, skipping...")
 
     # Ensure artifacts directory exists
-    from pathlib import Path
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
