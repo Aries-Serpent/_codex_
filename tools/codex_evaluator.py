@@ -4,32 +4,68 @@
 - Loads rubric & rules from JSON (manifests/codex_eval_rules.v3.json).
 - Accepts a raw text file or a JSON summary; if JSON, tries 'message_text' then falls back to raw text.
 - Emits a brief score breakdown and returns non-zero on *hard-fail* cues (e.g., CI activation patterns).
+
+Optional Dependencies Soft-Fail:
+- CODEX_OPTIONAL_SOFTFAIL=1 (default): Missing optionals produce warnings + skip support
+- CODEX_OPTIONAL_SOFTFAIL=0: Missing optionals raise ImportError
+
+Exports:
+    MISSING_OPTIONALS: list[tuple[str, str]]  # (package, error_message)
+    OPTIONAL_STATUS: dict[str, bool]          # package -> availability
+    has_all_optional() -> bool
 """
 from __future__ import annotations
 
 import argparse
 import importlib.util
 import json
+import logging
 import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
+
+log = logging.getLogger(__name__)
+
+_OPTIONAL_PACKAGES = ["pydantic", "typer"]
+
+MISSING_OPTIONALS: List[Tuple[str, str]] = []
+OPTIONAL_STATUS: Dict[str, bool] = {}
+SOFT_FAIL = os.getenv("CODEX_OPTIONAL_SOFTFAIL", "1") == "1"
 
 
-def _require_module(name: str) -> None:
-    """Exit with a friendly hint when an optional dependency is unavailable."""
-
+def _try_import(name: str) -> None:
+    """Try to import an optional package and track its status."""
     if importlib.util.find_spec(name) is None:
+        OPTIONAL_STATUS[name] = False
+        msg = f"Module '{name}' not found"
+        MISSING_OPTIONALS.append((name, msg))
+    else:
+        OPTIONAL_STATUS[name] = True
+
+
+for _pkg in _OPTIONAL_PACKAGES:
+    _try_import(_pkg)
+
+if MISSING_OPTIONALS:
+    msg = ", ".join(f"{p} ({err})" for p, err in MISSING_OPTIONALS)
+    if SOFT_FAIL:
         sys.stderr.write(
-            f"[evaluator] Missing optional dependency: '{name}'.\n"
-            f"Install it via: pip install {name}\n"
+            f"[evaluator] Optional dependencies missing (soft-fail mode): {msg}\n"
+            f"Install via: pip install {' '.join(p for p, _ in MISSING_OPTIONALS)}\n"
+        )
+    else:  # pragma: no cover
+        sys.stderr.write(
+            f"[evaluator] Required optional dependencies missing: {msg}\n"
+            f"Install via: pip install {' '.join(p for p, _ in MISSING_OPTIONALS)}\n"
         )
         raise SystemExit(2)
 
 
-for _optional in ("pydantic", "typer"):
-    _require_module(_optional)
+def has_all_optional() -> bool:
+    """Check if all optional dependencies are available."""
+    return not MISSING_OPTIONALS
 
 
 @dataclass
