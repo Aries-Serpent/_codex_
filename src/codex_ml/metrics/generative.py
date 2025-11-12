@@ -134,4 +134,10 @@ def rouge_l(predictions: Sequence[object], targets: Sequence[object]) -> float:
     return float(sum(scores) / len(scores))
 
 
+# Create an alias so both "rougeL" and "rouge_l" resolve to the same implementation
+from .registry import alias_metric  # noqa: E402
+
+alias_metric("rouge_l", "rougeL", override=True)
+
+
 __all__ = ["bleu", "rouge_l"]

@@ -15,6 +15,7 @@ import json
 import math
 import os
 import re
+import threading
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +25,7 @@ from codex_ml.registry.base import Registry, RegistryConflictError
 
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
+_METRIC_PLUGINS_LOCK = threading.Lock()
 
 # Ensure built-in generative metrics are registered on import.
 from . import generative as _generative  # noqa: F401  (imported for side effects)
@@ -56,13 +58,125 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
         pass
 
 
+def _repo_root() -> Path:
+    """Find the repository root by looking for pyproject.toml."""
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        if (parent / "pyproject.toml").is_file():
+            return parent
+    # Fallback
+    fallback_index = min(3, len(current.parents) - 1)
+    return current.parents[fallback_index]
+
+
+def _policy_config_path() -> Path:
+    """Return path to metrics plugin policy config file."""
+    return _repo_root() / "configs" / "metrics_plugin_policy.toml"
+
+
+def _load_policy_from_file() -> Optional[str]:
+    """Load policy from config file if it exists."""
+    path = _policy_config_path()
+    if not path.is_file():
+        return None
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except Exception:
+        return None
+    # Minimal TOML parse: look for 'policy = "<value>"'
+    for line in raw.splitlines():
+        line = line.strip()
+        if line.lower().startswith("policy"):
+            parts = line.split("=", 1)
+            if len(parts) == 2:
+                return parts[1].strip().strip('"\'')
+    return None
+
+
+def _get_plugin_policy() -> str:
+    """Get the active plugin conflict resolution policy.
+    
+    Sources (in order of precedence):
+    1. CODEX_METRIC_PLUGIN_POLICY environment variable
+    2. configs/metrics_plugin_policy.toml file
+    3. Default: prefer_local
+    
+    Valid policies: prefer_local, prefer_plugin, alias_plugin, shadow_warn, error
+    """
+    env_val = os.getenv("CODEX_METRIC_PLUGIN_POLICY", "").strip().lower()
+    if not env_val:
+        file_val = _load_policy_from_file()
+        env_val = (file_val or "").strip().lower()
+    
+    valid = {"prefer_local", "prefer_plugin", "alias_plugin", "shadow_warn", "error"}
+    return env_val if env_val in valid else "prefer_local"
+
+
+def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
+    """Resolve a plugin metric conflict according to the active policy.
+    
+    Parameters
+    ----------
+    name:
+        The metric name that has a conflict.
+    fn:
+        The plugin-provided callable.
+    """
+    policy = _get_plugin_policy()
+    
+    if policy == "prefer_plugin":
+        # Override existing with plugin
+        metric_registry.register(name, fn, override=True, source="entry_point")
+        append_error_entry(
+            "metric-plugin.conflict-resolution",
+            f"Plugin metric '{name}' overrode existing local implementation.",
+            f"name={name}; policy={policy}; retained=plugin",
+            "Override applied per policy."
+        )
+    elif policy == "alias_plugin":
+        # Keep both: local under original name, plugin under alias
+        alias_name = f"plugin:{name}"
+        metric_registry.register(alias_name, fn, override=True, source="entry_point")
+        append_error_entry(
+            "metric-plugin.conflict-resolution",
+            f"Plugin metric '{name}' registered as alias '{alias_name}'.",
+            f"name={name}; policy={policy}; retained=local+alias",
+            "Both implementations retained under separate names."
+        )
+    elif policy == "shadow_warn":
+        # Keep local, just log the shadow
+        append_error_entry(
+            "metric-plugin.conflict-resolution",
+            f"Plugin metric '{name}' ignored (local retained).",
+            f"name={name}; policy={policy}; retained=local",
+            "Shadow recorded; no override performed."
+        )
+    elif policy == "error":
+        # Re-raise original conflict (strict legacy mode)
+        raise RegistryConflictError(
+            f"Duplicate registration for 'metric' '{name}'. "
+            f"Existing source: local, new source: entry_point."
+        )
+    else:  # prefer_local (default)
+        # Keep local, suppress plugin
+        append_error_entry(
+            "metric-plugin.conflict-resolution",
+            f"Plugin metric '{name}' suppressed (local retained).",
+            f"name={name}; policy={policy}; retained=local",
+            "No override per default policy."
+        )
+
+
 def _register_metric_from_plugin(
     name: str,
     fn: Callable[..., object] | None = None,
     *,
     override: bool = False,
 ) -> Callable[..., object]:
-    """Register a plugin-provided metric marking the source as entry point."""
+    """Register a plugin-provided metric marking the source as entry point.
+    
+    Applies conflict resolution policy when duplicate registration detected.
+    """
     try:
         return metric_registry.register(
             name,
@@ -70,45 +184,53 @@ def _register_metric_from_plugin(
             override=override,
             source="entry_point",
         )
-    except RegistryConflictError as exc:
-        append_error_entry(
-            "metric-plugin.register",
-            str(exc),
-            f"name={name}",
-            "Should this plugin metric override the existing registration?",
-        )
-        raise
+    except RegistryConflictError:
+        if fn is None:
+            append_error_entry(
+                "metric-plugin.register",
+                f"Conflict without callable for '{name}'",
+                f"name={name}",
+                "Plugin provided no callable; cannot resolve conflict."
+            )
+            raise
+        # Apply policy-based conflict resolution
+        _resolve_plugin_conflict(name, fn)
+        # Return the metric (may be original or overridden depending on policy)
+        return metric_registry.get(name)
     except Exception as exc:  # pragma: no cover - defensive logging
         append_error_entry(
             "metric-plugin.register",
             str(exc),
             f"name={name}",
-            "Can the plugin metric be validated or renamed?",
+            "Can the plugin metric be validated or renamed?"
         )
         raise
 
 
 def init_metric_plugins(*, force: bool = False) -> int:
-    """Best-effort discovery of external metrics via entry points."""
-
+    """Best-effort discovery of external metrics via entry points (idempotent).
+    
+    Uses a lock to ensure thread-safe initialization and sets the loaded flag
+    early to prevent recursive discovery during plugin loading.
+    """
     global _METRIC_PLUGINS_LOADED
-
-    if force:
-        _METRIC_PLUGINS_LOADED = False
-
-    if _METRIC_PLUGINS_LOADED:
-        return 0
+    
+    with _METRIC_PLUGINS_LOCK:
+        if force:
+            _METRIC_PLUGINS_LOADED = False
+        
+        if _METRIC_PLUGINS_LOADED:
+            return 0
+        
+        # Set early to prevent recursive reload triggering duplicates
+        _METRIC_PLUGINS_LOADED = True
 
     try:
         from codex_ml.plugins import load_plugins
     except Exception:
-        _METRIC_PLUGINS_LOADED = True
         return 0
 
-    try:
-        return load_plugins("codex_ml.metrics", register=_register_metric_from_plugin)
-    finally:
-        _METRIC_PLUGINS_LOADED = True
+    return load_plugins("codex_ml.metrics", register=_register_metric_from_plugin)
 
 
 def _ensure_metric_plugins_loaded() -> None:
@@ -179,14 +301,28 @@ def list_metrics() -> list[str]:
     return metric_registry.list()
 
 
-def _repo_root() -> Path:
-    current = Path(__file__).resolve()
-    for parent in current.parents:
-        if (parent / "pyproject.toml").is_file():
-            return parent
-
-    fallback_index = min(3, len(current.parents) - 1)
-    return current.parents[fallback_index]
+def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
+    """Create an alias for an existing metric.
+    
+    Parameters
+    ----------
+    alias:
+        The new alias name to register.
+    target:
+        The existing metric name to alias.
+    override:
+        Allow replacing an existing registration. Defaults to True.
+    
+    Notes
+    -----
+    This creates a thin wrapper that defers lookup to the target metric
+    at call time, ensuring both names always resolve to the same implementation.
+    """
+    def _alias_wrapper(*args, **kwargs):
+        fn = metric_registry.get(target)
+        return fn(*args, **kwargs)
+    
+    metric_registry.register(alias, _alias_wrapper, override=override)
 
 
 def _resolve_metric_resource(
@@ -458,6 +594,7 @@ __all__ = [
     "get",
     "get_metric",
     "list_metrics",
+    "alias_metric",
     "init_metric_plugins",
     "append_error_entry",
 ]
