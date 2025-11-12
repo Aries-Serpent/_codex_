@@ -1,168 +1,129 @@
-name: CI
+name: CI — Segmented Sessions (CPU-Only)
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - 0D_base_
+      - 0C_base_
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    branches:
+      - main
+      - 0D_base_
+      - 0C_base_
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref || 'none' }}
+  cancel-in-progress: true
+
+env:
+  # Global CPU posture and evidence logging defaults
+  CODEX_FORCE_CPU: "1"
+  CODEX_VENDOR_PURGE: "1"
+  CODEX_DEPENDENCY_EVIDENCE_ENABLE: "1"
+  CODEX_VENDOR_LOG_AGG: "pre-sync"
+  CODEX_ALLOW_TRITON_CPU: "1"
 
 jobs:
-  test:
+  tests-matrix:
+    name: "${{ matrix.session.name }}"
     runs-on: ubuntu-latest
-    env:
-      COVERAGE_XML_PATH: artifacts/coverage.xml
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        session:
+          - name: baseline (tests)
+            nox: tests
+            cpu_minimal: "0"
+          - name: ml (ml_tests)
+            nox: ml_tests
+            cpu_minimal: "1"
+          - name: eval (eval_tests)
+            nox: eval_tests
+            cpu_minimal: "0"
+          - name: hygiene (verify_hygiene)
+            nox: verify_hygiene
+            cpu_minimal: "0"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-          cache: "pip"
+          python-version: "3.12"
 
-      - name: Purge pycache
-        run: |
-          find . -name "*.pyc" -delete || true
-          find . -name "__pycache__" -type d -exec rm -rf {} + || true
-
-      - name: Install dependencies
+      - name: Upgrade pip and install nox
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-          pip install nox pytest pytest-cov coverage
+          pip install nox
 
-      - name: Run dependency sanity check
+      - name: Show Python and OS
         run: |
-          if [ -f .github/scripts/ci_dependency_sanity.py ]; then
-            python .github/scripts/ci_dependency_sanity.py || true
-          fi
+          python --version
+          uname -a
+          df -h
 
-      - name: Run coverage session (pytest -> coverage XML)
+      - name: Ensure vendor guard available
         run: |
-          mkdir -p artifacts
-          if command -v nox >/dev/null 2>&1; then
-            nox -s coverage || true
+          if [ ! -f scripts/vendor_guard.py ]; then
+            echo "::warning ::scripts/vendor_guard.py not found (continuing)"
           else
-            pytest --cov=. --cov-report=xml:${COVERAGE_XML_PATH} || true
+            chmod +x scripts/vendor_guard.py
           fi
 
-      - name: Upload coverage artifact
+      - name: Vendor guard (pre-install quick probe)
+        run: |
+          python scripts/vendor_guard.py || (echo "::warning ::Vendor guard pre-install reported vendors; proceeding due to empty env" && true)
+
+      # Environment bootstrap and evidence logging
+      - name: Environment setup (CPU posture + evidence)
+        env:
+          CODEX_CPU_MINIMAL: "${{ matrix.session.cpu_minimal }}"
+          CODEX_ABORT_ON_GPU_PULL: "0"
+          CODEX_RELOCK_AFTER_VENDOR_PURGE: "1"
+          CODEX_VENDOR_ENFORCE_LOCK_PRUNE: "0"
+          CODEX_VENDOR_ENFORCE_LOCK_PRUNE_DRYRUN: "1"
+          CODEX_SESSION_ID: "ci-${{ github.run_id }}-${{ github.job }}-${{ matrix.session.nox }}"
+        run: |
+          chmod +x scripts/setup.sh || true
+          bash scripts/setup.sh
+
+      - name: Run session — nox -s ${{ matrix.session.nox }}
+        env:
+          CODEX_CPU_MINIMAL: "${{ matrix.session.cpu_minimal }}"
+          CODEX_SESSION_ID: "ci-${{ github.run_id }}-${{ github.job }}-${{ matrix.session.nox }}"
+        run: |
+          nox -s ${{ matrix.session.nox }} -q || (echo "::error ::nox session failed" && exit 1)
+
+      - name: Vendor guard (post-session)
+        if: always()
+        run: |
+          python scripts/vendor_guard.py || (echo "::error ::Vendor guard detected vendor packages post-session" && exit 1)
+
+      - name: Disk snapshot
+        if: always()
+        run: |
+          chmod +x scripts/disk_snapshot.sh || true
+          ./scripts/disk_snapshot.sh || true
+
+      - name: Evidence schema check
+        if: always()
+        run: |
+          python scripts/check_dependency_evidence.py || true
+
+      - name: Upload evidence and artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-xml
-          path: ${{ env.COVERAGE_XML_PATH }}
-
-      - name: Show coverage.xml (debug)
-        if: always()
-        run: |
-          echo "===== coverage.xml contents (up to 500 lines) ====="
-          if [ -f $COVERAGE_XML_PATH ]; then
-            sed -n '1,500p' $COVERAGE_XML_PATH || true
-          else
-            echo "No coverage.xml at $COVERAGE_XML_PATH"
-          fi
-          echo "================================="
-
-      - name: Parse coverage percent
-        id: parse_coverage
-        run: |
-          set -euo pipefail
-          if [ -f "${COVERAGE_XML_PATH}" ]; then
-            python .github/scripts/ci_parse_coverage.py "${COVERAGE_XML_PATH}" > coverage_value.txt || true
-          else
-            echo "ERROR: coverage xml missing" >/dev/stderr || true
-          fi
-          if [ -s coverage_value.txt ]; then
-            COVERAGE=$(cat coverage_value.txt)
-            echo "Parsed coverage percent: $COVERAGE"
-            echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-          else
-            echo "coverage=0" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Enforce or adjust threshold
-        id: enforce_threshold
-        run: |
-          set -euo pipefail
-          COVERAGE="${{ steps.parse_coverage.outputs.coverage }}"
-          echo "DEBUG: computed coverage = $COVERAGE"
-          if [ -f .github/coverage_threshold.txt ]; then
-            CURRENT_THRESHOLD=$(cat .github/coverage_threshold.txt | tr -d '[:space:]')
-          else
-            CURRENT_THRESHOLD=96
-          fi
-          echo "DEBUG: current target threshold = $CURRENT_THRESHOLD"
-
-          # Normalize; allow decimals but use integer rounding for the threshold change
-          COVERAGE_FLOAT=$(python3 -c "import sys; print(float('${COVERAGE}') if '${COVERAGE}' else 0.0)" 2>/dev/null || echo "0.0")
-
-          COVERAGE_INT=$(printf "%.0f" "$COVERAGE_FLOAT")
-          THRESHOLD_INT=$(printf "%.0f" "$CURRENT_THRESHOLD")
-          echo "DEBUG: rounded coverage=$COVERAGE_INT threshold=$THRESHOLD_INT"
-
-          if [ -z "$COVERAGE" ] || [ "$COVERAGE" = "0" ] || [ "$COVERAGE_FLOAT" = "0.0" ]; then
-            echo "ERROR: Coverage could not be parsed or is 0. Failing CI."
-            exit 1
-          fi
-
-          if [ "$COVERAGE_INT" -lt 70 ]; then
-            echo "ERROR: Coverage ($COVERAGE%) is below minimum allowed 70%."
-            echo "To fix: run tests locally, inspect artifacts/coverage.xml, add tests or adjust exclusions."
-            exit 1
-          fi
-
-          if [ "$COVERAGE_INT" -ge "$THRESHOLD_INT" ]; then
-            echo "OK: Coverage $COVERAGE% >= threshold $CURRENT_THRESHOLD. No change needed."
-            echo "pr_branch=" >> $GITHUB_OUTPUT
-            echo "new_threshold=" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          NEW_THRESHOLD=$(printf "%.0f" "$COVERAGE_FLOAT")
-          echo "INFO: Coverage ($COVERAGE%) is lower than threshold ($CURRENT_THRESHOLD) but >=70."
-          echo "INFO: Will update .github/coverage_threshold.txt -> $NEW_THRESHOLD and open a PR."
-
-          BRANCH="auto/adjust-coverage-to-${NEW_THRESHOLD}-$(date +%s)"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
-          echo "${NEW_THRESHOLD}" > .github/coverage_threshold.txt
-          git add .github/coverage_threshold.txt
-          git commit -m "ci: lower coverage threshold to ${NEW_THRESHOLD}% (auto-generated by CI)" || true
-          git push --set-upstream origin "$BRANCH"
-
-          echo "pr_branch=${BRANCH}" >> $GITHUB_OUTPUT
-          echo "new_threshold=${NEW_THRESHOLD}" >> $GITHUB_OUTPUT
-
-      - name: Create Pull Request to lower threshold
-        if: steps.enforce_threshold.outputs.pr_branch != ''
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "ci: lower coverage threshold to ${{ steps.enforce_threshold.outputs.new_threshold }}% (auto)"
-          branch: ${{ steps.enforce_threshold.outputs.pr_branch }}
-          title: "chore(ci): lower coverage threshold to ${{ steps.enforce_threshold.outputs.new_threshold }}% (auto)"
-          body: |
-            Automated PR: detected runtime coverage at ${{ steps.parse_coverage.outputs.coverage }}%.
-            Lowering the enforced threshold to the current highest achievable coverage so long as it's ≥ 70%.
-            This ensures CI doesn't fail while preserving a minimum safety floor.
-
-      - name: Final debug summary
-        if: always()
-        run: |
-          echo "FINAL DEBUG SUMMARY"
-          echo "Parsed coverage: ${{ steps.parse_coverage.outputs.coverage }}"
-          if [ -f .github/coverage_threshold.txt ]; then
-            echo "Repo threshold file content:"
-            cat .github/coverage_threshold.txt
-          else
-            echo "No threshold file found."
-          fi
+          name: evidence-${{ matrix.session.nox }}
+          path: |
+            .codex/evidence/dependency_ops.jsonl
+            .codex/cache/setup_summary.json
+            .codex/cache/maintenance_summary.json
+            artifacts/**
+          if-no-files-found: ignore
