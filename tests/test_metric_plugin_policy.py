@@ -128,3 +128,36 @@ def test_alias_plugin_creates_separate_entry(monkeypatch):
     
     assert result_local == 0.3
     assert result_plugin == 0.7
+
+
+def test_conflict_logging_dedup(monkeypatch, tmp_path):
+    """Test that duplicate conflicts are only logged once per metric."""
+    from codex_ml.metrics import registry
+    
+    # Set up a temporary error log directory
+    monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
+    monkeypatch.setenv("CODEX_METRIC_PLUGIN_POLICY", "prefer_local")
+    
+    test_metric_name = "test_metric_dedup"
+    registry.register_metric(test_metric_name, _dummy_metric)
+    
+    # Register the same plugin metric multiple times
+    registry._register_metric_from_plugin(test_metric_name, _dummy_metric)
+    registry._register_metric_from_plugin(test_metric_name, _dummy_metric)
+    registry._register_metric_from_plugin(test_metric_name, _dummy_metric)
+    
+    # Check error log
+    from datetime import datetime, timezone
+    date_str = datetime.now(timezone.utc).date().isoformat()
+    log_file = tmp_path / f"errors_{date_str}.md"
+    
+    if log_file.exists():
+        content = log_file.read_text()
+        # Count how many times this metric appears in conflict-resolution entries
+        conflict_entries = content.count(f"### metric-plugin.conflict-resolution")
+        metric_mentions = content.count(f"name={test_metric_name}")
+        
+        # Should only be logged once despite 3 registration attempts
+        assert conflict_entries == 1, f"Expected 1 conflict-resolution entry, got {conflict_entries}"
+        assert metric_mentions == 1, f"Expected 1 metric mention, got {metric_mentions}"
+

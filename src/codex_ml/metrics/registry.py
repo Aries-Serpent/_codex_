@@ -26,6 +26,7 @@ from codex_ml.registry.base import Registry, RegistryConflictError
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
+_PLUGIN_CONFLICT_LOGGED: set[str] = set()
 
 # Ensure built-in generative metrics are registered on import.
 from . import generative as _generative  # noqa: F401  (imported for side effects)
@@ -124,33 +125,41 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
     """
     policy = _get_plugin_policy()
     
+    # Check if we've already logged this conflict to avoid spam
+    should_log = name not in _PLUGIN_CONFLICT_LOGGED
+    if should_log:
+        _PLUGIN_CONFLICT_LOGGED.add(name)
+    
     if policy == "prefer_plugin":
         # Override existing with plugin
         metric_registry.register(name, fn, override=True, source="entry_point")
-        append_error_entry(
-            "metric-plugin.conflict-resolution",
-            f"Plugin metric '{name}' overrode existing local implementation.",
-            f"name={name}; policy={policy}; retained=plugin",
-            "Override applied per policy."
-        )
+        if should_log:
+            append_error_entry(
+                "metric-plugin.conflict-resolution",
+                f"Plugin metric '{name}' overrode existing local implementation.",
+                f"name={name}; policy={policy}; retained=plugin",
+                "Override applied per policy."
+            )
     elif policy == "alias_plugin":
         # Keep both: local under original name, plugin under alias
         alias_name = f"plugin:{name}"
         metric_registry.register(alias_name, fn, override=True, source="entry_point")
-        append_error_entry(
-            "metric-plugin.conflict-resolution",
-            f"Plugin metric '{name}' registered as alias '{alias_name}'.",
-            f"name={name}; policy={policy}; retained=local+alias",
-            "Both implementations retained under separate names."
-        )
+        if should_log:
+            append_error_entry(
+                "metric-plugin.conflict-resolution",
+                f"Plugin metric '{name}' registered as alias '{alias_name}'.",
+                f"name={name}; policy={policy}; retained=local+alias",
+                "Both implementations retained under separate names."
+            )
     elif policy == "shadow_warn":
         # Keep local, just log the shadow
-        append_error_entry(
-            "metric-plugin.conflict-resolution",
-            f"Plugin metric '{name}' ignored (local retained).",
-            f"name={name}; policy={policy}; retained=local",
-            "Shadow recorded; no override performed."
-        )
+        if should_log:
+            append_error_entry(
+                "metric-plugin.conflict-resolution",
+                f"Plugin metric '{name}' ignored (local retained).",
+                f"name={name}; policy={policy}; retained=local",
+                "Shadow recorded; no override performed."
+            )
     elif policy == "error":
         # Re-raise original conflict (strict legacy mode)
         raise RegistryConflictError(
@@ -159,12 +168,13 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
         )
     else:  # prefer_local (default)
         # Keep local, suppress plugin
-        append_error_entry(
-            "metric-plugin.conflict-resolution",
-            f"Plugin metric '{name}' suppressed (local retained).",
-            f"name={name}; policy={policy}; retained=local",
-            "No override per default policy."
-        )
+        if should_log:
+            append_error_entry(
+                "metric-plugin.conflict-resolution",
+                f"Plugin metric '{name}' suppressed (local retained).",
+                f"name={name}; policy={policy}; retained=local",
+                "No override per default policy."
+            )
 
 
 def _register_metric_from_plugin(
