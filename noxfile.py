@@ -673,6 +673,20 @@ def repro_smoke(session: nox.Session) -> None:
     )
 
 
+@nox.session(name="sweeps_smoke")
+def sweeps_smoke(session: nox.Session) -> None:
+    """Compose minimal Hydra sweeps to ensure config wiring stays healthy."""
+
+    session.install("-r", "requirements-dev.txt")
+    session.install("hydra-core>=1.3", "omegaconf>=2.3", "pyyaml>=6.0")
+    session.run(
+        "python",
+        "tools/hydra_sweep_smoke.py",
+        "--config",
+        "configs/sweeps/minimal.yaml",
+    )
+
+
 @nox.session(name="docs_build")
 def docs_build(session: nox.Session) -> None:
     """Build offline API documentation with optional module gating.
