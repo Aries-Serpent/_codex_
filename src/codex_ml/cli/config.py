@@ -97,15 +97,15 @@ def register_configs() -> None:
 
     cs = ConfigStore.instance()
 
-    if not safe_exists(cs, "app"):
+    if not safe_exists(cs, name="app"):
         cs.store(name="app", node=AppConfig)
-    if not safe_exists(cs, "experiment/debug"):
+    if not safe_exists(cs, group="experiment", name="debug"):
         cs.store(
             group="experiment",
             name="debug",
             node=AppConfig(training=TrainCfg(max_epochs=1, batch_size=2)),
         )
-    if not safe_exists(cs, "experiment/fast"):
+    if not safe_exists(cs, group="experiment", name="fast"):
         cs.store(
             group="experiment",
             name="fast",
