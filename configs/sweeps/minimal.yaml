@@ -1,0 +1,15 @@
+# Minimal learning-rate sweep used by tools/hydra_sweep_smoke.py
+defaults:
+  - _self_
+
+base:
+  config_name: training/offline/tiny_functional
+  overrides:
+    - training.dry_run=true
+    - training.max_steps=1
+
+sweep:
+  overrides:
+    - training.optimizer.learning_rate=1e-4
+    - training.optimizer.learning_rate=5e-4
+

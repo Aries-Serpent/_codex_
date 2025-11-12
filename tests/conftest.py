@@ -121,6 +121,7 @@ OPTIONAL_MARKERS: dict[str, str] = {
     "requires_transformers": "transformers",
     "requires_torch": "torch",
     "requires_sentencepiece": "sentencepiece",
+    "requires_fsspec": "fsspec",
 }
 
 
