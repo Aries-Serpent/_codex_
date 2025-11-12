@@ -2,38 +2,18 @@
 # =============================================================================
 # maintenance.sh
 # Unified Environment Maintenance (CPU-Constrained) with Enhanced Observability
-# Version: 5.5.1-rc4-hotfix2
-# Date: 2025-09-17
+# Version: 5.5.2-rc5
+# Date: 2025-11-12
 #
 # CHANGELOG:
-#   rc4-hotfix2:
-#     - ADD: CODEX_VENDOR_LOG_AGG (pre-sync|always|never; default pre-sync) to gate
-#       vendor name aggregation from sync logs. With FIRST_SYNC_DONE=1 in maintenance,
-#       logs are ignored by default to prevent false positives.
-#     - FIX: Post-uninstall residue checks force FIRST_SYNC_DONE=1 to ignore log-only signals.
-#     - FIX: Corrected typo in compute_recurrence redirection (2>/dev/null).
-#   rc4-hotfix1:
-#     - CRITICAL FIX: Replaced pipe + heredoc JSON parsing (printf | python <<'PY')
-#       with env-var-based parsing to avoid SIGPIPE/ERR trap noise under set -e -o pipefail.
-#     - FIX: Robust pre/post vendor hash/list extraction now immune to pipefail.
-# Patch 4B (2025-09-17):
-#  - Reintroduces fallback detection logic from Patch 3 (vendor download scan) atop Patch 4 metrics.
-#  - Skips primary purge if fallback purge occurred (FALLBACK_VENDOR_PURGED=1).
-#  - Adds pyproject '+cpu' sanitize step (parity with setup) prior to sync.
-#  - Uses consolidated purge_and_measure with non-interactive uninstall (uv_uninstall_noninteractive).
-#  - Accurate uninstall counting (grep -c '^- ') with CR normalization.
-#  - Initial relock event counting (RELOCK_EVENTS increments on missing/stale lock).
-#  - env_digest included (toggle CODEX_ENV_DIGEST).
-#  - Vendor helper preflight self-check.
-#
-# Warning Scope (unchanged):
-#   * vendor_residue, torch_verify anomaly (no prior purge), lfs, optional escalations.
-#
-# EXIT CODES:
-#   0  Success (warnings may be present)
-#   7  Residual vendor packages remain (strict residue mode)
-#   12 Vendor recurrence escalation under fail policy
-#   *  Other non-graceful failures / strict gates
+#   rc5:
+#     - ADD: Dependency evidence logging stream (.codex/evidence/dependency_ops.jsonl)
+#       controlled by CODEX_DEPENDENCY_EVIDENCE_ENABLE (default=1).
+#       Logs: vendor scan, vendor detection, purge (mode, counts, before/after),
+#       lock prune actions, torch (reinstall), and minimal augmentation.
+#     - ADD: Explicit evidence actor via CODEX_EVIDENCE_ACTOR (defaults to $GITHUB_ACTOR or "local").
+#     - KEEP: FIRST_SYNC_DONE=1 residue/hash checks to avoid false positives (from rc4).
+#   rc4-hotfix2 / rc4-hotfix1 / Patch 4B: see previous notes preserved in repo history.
 # =============================================================================
 
 set -Eeuo pipefail
@@ -97,6 +77,11 @@ export CODEX_SYNC_RETRY_MAX="${CODEX_SYNC_RETRY_MAX:-3}"
 # Log aggregation control
 export CODEX_VENDOR_LOG_AGG="${CODEX_VENDOR_LOG_AGG:-pre-sync}"
 
+# Dependency evidence logging (Archival alignment)
+export CODEX_DEPENDENCY_EVIDENCE_ENABLE="${CODEX_DEPENDENCY_EVIDENCE_ENABLE:-1}"
+export CODEX_DEPENDENCY_EVIDENCE_PATH="${CODEX_DEPENDENCY_EVIDENCE_PATH:-.codex/evidence/dependency_ops.jsonl}"
+export CODEX_EVIDENCE_ACTOR="${CODEX_EVIDENCE_ACTOR:-${GITHUB_ACTOR:-local}}"
+
 # Vendor audit integration controls
 export CODEX_VENDOR_AUDIT_CAPTURE="${CODEX_VENDOR_AUDIT_CAPTURE:-0}"
 export CODEX_VENDOR_AUDIT_OFFLINE="${CODEX_VENDOR_AUDIT_OFFLINE:-${CODEX_OFFLINE:-0}}"
@@ -115,7 +100,7 @@ fi
 [[ "$CODEX_DEBUG" == "1" ]] && set -x
 
 # 1) Logging / State
-mkdir -p .codex/logs .codex/cache artifacts data
+mkdir -p .codex/logs .codex/cache .codex/evidence artifacts data
 WARN_FILE=".codex/logs/maintenance_warnings.log"
 FAIL_FILE=".codex/logs/maintenance_failures.log"
 SYNC_LOG=".codex/cache/uv_sync_maint.log"
@@ -126,6 +111,41 @@ log(){ printf "[maint] %s %s\n" "$(date -Iseconds)" "$*"; }
 log_info(){ log "INFO: $*"; }
 _raw_warn(){ log "WARN: $*"; printf '%s\n' "$*" >>"$WARN_FILE"; }
 die(){ printf "[maint][ERROR] %s\n" "$*" >&2; exit 1; }
+
+# Evidence writer (append JSONL; tolerant)
+append_dep_evidence(){
+  [[ "$CODEX_DEPENDENCY_EVIDENCE_ENABLE" != "1" ]] && return 0
+  EV_ACTION="${EV_ACTION:-}"; EV_TOOL="${EV_TOOL:-maintenance}"
+  python - <<'PY'
+import os, json, time, pathlib
+def _int(v):
+    try: return int(v)
+    except Exception: return 0
+rec = {
+ "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+ "action": os.getenv("EV_ACTION",""),
+ "tool": os.getenv("EV_TOOL","maintenance"),
+ "mode": os.getenv("EV_MODE",""),
+ "vendors": (os.getenv("EV_VENDORS","").split() or []),
+ "purged_count": _int(os.getenv("EV_PURGED_COUNT","0")),
+ "vendor_hash_before": os.getenv("EV_VENDOR_HASH_BEFORE",""),
+ "vendor_hash_after": os.getenv("EV_VENDOR_HASH_AFTER",""),
+ "vendor_list_before": os.getenv("EV_VENDOR_LIST_BEFORE",""),
+ "vendor_list_after": os.getenv("EV_VENDOR_LIST_AFTER",""),
+ "lock_prune_action": os.getenv("EV_LOCK_PRUNE_ACTION",""),
+ "lock_prune_lines_removed": _int(os.getenv("EV_LOCK_PRUNE_LINES","0")),
+ "torch_version": os.getenv("EV_TORCH_VERSION",""),
+ "note": os.getenv("EV_NOTE",""),
+ "actor": os.getenv("CODEX_EVIDENCE_ACTOR","local"),
+ "session_id": os.getenv("CODEX_SESSION_ID",""),
+}
+path = os.getenv("CODEX_DEPENDENCY_EVIDENCE_PATH",".codex/evidence/dependency_ops.jsonl")
+pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
+with open(path,"a",encoding="utf-8") as f:
+    f.write(json.dumps(rec, ensure_ascii=False)+"\n")
+print(f"[evidence] {rec['action']} -> {path}")
+PY
+}
 
 WARN_EVENTS=()
 WARN_EVENT_CATS=()
@@ -228,6 +248,8 @@ else
 fi
 export UV_PYTHON; UV_PYTHON="$(command -v python)"
 
+# Evidence helper exists (created earlier)
+
 # 4) Vendor Helper + Preflight (gated log aggregation; FIRST_SYNC_DONE=1 in maintenance)
 FIRST_SYNC_DONE=1; export FIRST_SYNC_DONE
 VENDOR_HELPER_PY="$(cat <<'PY'
@@ -306,6 +328,7 @@ if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   export PIP_INDEX_URL="https://download.pytorch.org/whl/cpu"
   export PIP_EXTRA_INDEX_URL="https://pypi.org/simple"
   run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu \"torch==${CODEX_TORCH_VERSION_BASE}\""
+  EV_ACTION="TORCH_PREINSTALL" EV_TOOL="maintenance" EV_TORCH_VERSION="${CODEX_TORCH_VERSION_BASE}+cpu" append_dep_evidence || true
   unset PIP_INDEX_URL PIP_EXTRA_INDEX_URL || true
 fi
 
@@ -397,6 +420,8 @@ attempt_lock_prune(){
       diff -u uv.lock "$tmpfile" > "$LOCK_PRUNE_DIFF_FILE" || true
       LOCK_PRUNE_ACTION="dryrun"; LOCK_PRUNE_REMOVED=$lines_removed
       record_warn "lock_prune_dryrun" "Dry-run lock prune delta=$lines_removed diff=$LOCK_PRUNE_DIFF_FILE"
+      # Evidence: lock prune dryrun
+      EV_ACTION="LOCK_PRUNE" EV_TOOL="maintenance" EV_LOCK_PRUNE_ACTION="$LOCK_PRUNE_ACTION" EV_LOCK_PRUNE_LINES="$LOCK_PRUNE_REMOVED" append_dep_evidence || true
       rm -f "$tmpfile"
     else
       diff -u uv.lock "$tmpfile" > "$LOCK_PRUNE_DIFF_FILE" || true
@@ -404,10 +429,13 @@ attempt_lock_prune(){
       post_hash=$(sha256sum uv.lock | awk '{print $1}')
       LOCK_PRUNE_ACTION="applied"; LOCK_PRUNE_REMOVED=$lines_removed
       log_info "Lock prune applied (delta=$lines_removed pre=$pre_hash post=$post_hash)"
+      # Evidence: lock prune applied
+      EV_ACTION="LOCK_PRUNE" EV_TOOL="maintenance" EV_LOCK_PRUNE_ACTION="$LOCK_PRUNE_ACTION" EV_LOCK_PRUNE_LINES="$LOCK_PRUNE_REMOVED" append_dep_evidence || true
       if [[ "$CODEX_VENDOR_RELOCK_AFTER_LOCK_PRUNE" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
         log_info "Relocking after prune."
-        cpu_constrained_lock || maybe_fail "Lock regen after prune failed"
-        RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 )); export RELOCK_EVENTS
+        cpu_constrained_lock && RELOCK_EVENTS=$(( RELOCK_EVENTS + 1 )) && export RELOCK_EVENTS
+        cpu_constrained_sync || maybe_fail "Sync after fallback relock failed"
+        [[ "$CODEX_VENDOR_LOCK_SCAN_ENABLE" == "1" ]] && lock_scan_report_phase "after"
       fi
     fi
   else
@@ -508,8 +536,19 @@ purge_and_measure(){
     log_info "$mode purge successful (no residue)."
   fi
 
+  # Evidence: vendor purge
+  EV_ACTION="DEPENDENCY_VENDOR_PURGE" \
+  EV_TOOL="maintenance" \
+  EV_MODE="$mode" \
+  EV_VENDORS="$vendor_list" \
+  EV_PURGED_COUNT="$purged_count" \
+  EV_VENDOR_LIST_BEFORE="$pre_before" \
+  EV_VENDOR_LIST_AFTER="$post_after" \
+  append_dep_evidence || true
+
   if (( purged_count > 0 )) && [[ "$CODEX_VENDOR_REINSTALL_TORCH_ON_PURGE" == "1" ]] && [[ "$CODEX_OFFLINE" != "1" ]]; then
     run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
+    EV_ACTION="TORCH_REINSTALL" EV_TOOL="maintenance" EV_TORCH_VERSION="${CODEX_TORCH_VERSION_BASE}+cpu" append_dep_evidence || true
   fi
 
   if [[ "$CODEX_DEBUG" == "1" ]]; then
@@ -546,6 +585,15 @@ PY
 )"
 if [[ -n "$VENDOR_SET_LIST_BEFORE" ]]; then VENDOR_SET_CLASS_BEFORE="contaminated"; else VENDOR_SET_CLASS_BEFORE="clean"; fi
 export VENDOR_SET_HASH_BEFORE VENDOR_SET_LIST_BEFORE VENDOR_SET_CLASS_BEFORE
+
+# Evidence: vendor scan (pre-sync)
+EV_ACTION="DEPENDENCY_VENDOR_SCAN" \
+EV_TOOL="maintenance" \
+EV_MODE="pre_sync" \
+EV_VENDOR_HASH_BEFORE="$VENDOR_SET_HASH_BEFORE" \
+EV_VENDORS="$VENDOR_SET_LIST_BEFORE" \
+EV_VENDOR_LIST_BEFORE="$VENDOR_SET_LIST_BEFORE" \
+append_dep_evidence || true
 
 # 9) Sync Phase
 PH_SYNC_START=$(_ts || echo 0)
@@ -604,6 +652,8 @@ else
           if [[ "$CODEX_ABORT_ON_GPU_PULL" == "1" ]]; then die "Aborting (GPU wheel observed)."; fi
           if [[ "$CODEX_LIGHTWEIGHT_CPU_FALLBACK" == "1" ]]; then
             local_vendors="$(vendor_collect)"
+            # Evidence: detection
+            EV_ACTION="VENDOR_DETECTED_IN_SYNC_LOG" EV_TOOL="maintenance" EV_MODE="sync" EV_VENDORS="$local_vendors" append_dep_evidence || true
             if [[ -n "$local_vendors" ]]; then
               [[ -z "$FALLBACK_REASON" ]] && FALLBACK_REASON="sync_log_vendor"
               purge_and_measure "fallback" "$local_vendors"
@@ -628,6 +678,7 @@ PHASE_MARK PHASE_SYNC "$PH_SYNC_START"
 # 10) Minimal Augmentation
 if [[ "$CODEX_FORCE_CPU" == "1" && "$CODEX_CPU_MINIMAL" == "1" && "$CODEX_OFFLINE" != "1" ]]; then
   run "uv pip install --python \"$UV_PYTHON\" --no-deps transformers tokenizers safetensors accelerate || true"
+  EV_ACTION="MINIMAL_AUGMENT" EV_TOOL="maintenance" EV_NOTE="installed transformers tokenizers safetensors accelerate (no-deps)" append_dep_evidence || true
 fi
 
 # 11) Primary Vendor Purge
@@ -670,6 +721,16 @@ if [[ -z "$VENDOR_SET_HASH_AFTER" && -n "$VENDOR_SET_LIST_AFTER" ]]; then
   VENDOR_SET_HASH_AFTER="$(printf "%s" "$VENDOR_SET_LIST_AFTER" | tr ' ' '\n' | LC_ALL=C sort | tr '\n' ';' | sha256sum | awk '{print $1}')"
 fi
 export VENDOR_SET_HASH_AFTER VENDOR_SET_LIST_AFTER
+
+# Evidence: vendor scan (post-purge)
+EV_ACTION="DEPENDENCY_VENDOR_SCAN" \
+EV_TOOL="maintenance" \
+EV_MODE="post_purge" \
+EV_VENDOR_HASH_BEFORE="$VENDOR_SET_HASH_BEFORE" \
+EV_VENDOR_HASH_AFTER="$VENDOR_SET_HASH_AFTER" \
+EV_VENDOR_LIST_BEFORE="$VENDOR_SET_LIST_BEFORE" \
+EV_VENDOR_LIST_AFTER="$VENDOR_SET_LIST_AFTER" \
+append_dep_evidence || true
 
 compute_recurrence(){
   local h="$1" file="$CODEX_VENDOR_RECUR_HASH_FILE"
@@ -762,6 +823,7 @@ if [[ "$torch_ok" != "True" || "$torch_cpu_tag" != "True" ]]; then
   if (( VENDOR_UNINSTALL_COUNT > 0 )); then
     log_info "Torch anomaly (ok=${torch_ok} cpu_tag=${torch_cpu_tag}); reinstalling."
     run "uv pip install --python \"$UV_PYTHON\" --index-url https://download.pytorch.org/whl/cpu --force-reinstall \"torch==${CODEX_TORCH_VERSION_BASE}\""
+    EV_ACTION="TORCH_REINSTALL" EV_TOOL="maintenance" EV_TORCH_VERSION="${CODEX_TORCH_VERSION_BASE}+cpu" append_dep_evidence || true
   else
     record_warn "torch_verify" "Torch anomaly without preceding vendor purge."
   fi
@@ -935,7 +997,7 @@ summary={
    "vendor_set_hash_after": os.getenv("VENDOR_SET_HASH_AFTER",""),
    "vendor_set_list_after": os.getenv("VENDOR_SET_LIST_AFTER",""),
    "vendor_recurrence": os.getenv("VENDOR_RECURRENCE","0"),
-   "vendor_recurrence_count": os.getenv("VENDOR_RECURRENCE_COUNT","0"),
+   "vendor_recurrence_count": int(os.getenv("VENDOR_RECURRENCE_COUNT","0")),
    "vendor_set_class_before": os.getenv("VENDOR_SET_CLASS_BEFORE",""),
    "triton_allowed": os.getenv("CODEX_ALLOW_TRITON_CPU","1"),
    "lock_prune_action": os.getenv("LOCK_PRUNE_ACTION","none"),
