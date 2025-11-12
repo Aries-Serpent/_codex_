@@ -25,6 +25,12 @@ _SELECTION_SCHEMA = Path("schemas/selection_guard_rules.schema.json")
 _EVALUATOR_SCHEMA = Path("schemas/codex_eval_rules.v3.schema.json")
 _CONFIG_VALIDATOR = Path("tools/validate_configs.py")
 
+# Pin CPU wheel versions here to keep test sessions deterministic and runnable
+# without requiring developers to manually install heavy binaries.
+CPU_TORCH_VERSION = "2.3.1"
+CPU_TORCHVISION_VERSION = "0.18.1"
+CPU_TORCHAUDIO_VERSION = "2.3.1"
+CPU_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 
 _TOML_MODULE: Optional[ModuleType] = None
 
@@ -187,16 +193,29 @@ def gates(session: nox.Session) -> None:
 
 @nox.session
 def tests(session: nox.Session) -> None:
-    """Run pytest with plugin autoload disabled (deterministic) and coverage enforcement."""
-    session.install("-r", "requirements-dev.txt")
+    """
+    Prepare a runnable test environment and run pytest.
     
-    # Install CPU-only torch trio with explicit index-url to prevent CUDA variant
+    Behavior:
+      - Install a small set of CPU-only torch wheels from the PyTorch CPU index first
+        (so tests that import torch succeed).
+      - Then install requirements-dev.txt (which intentionally omits torch).
+      - Finally run pytest.
+    
+    This preserves the repo's desire to keep heavy binaries out of requirements-dev.txt
+    while ensuring the standard `nox -s tests` developer entrypoint remains functional.
+    """
+    # Install CPU-only torch wheels first (deterministic CPU builds)
     session.install(
-        "--index-url", "https://download.pytorch.org/whl/cpu",
-        "torch==2.3.1+cpu",
-        "torchvision==0.18.1+cpu", 
-        "torchaudio==2.3.1+cpu"
+        "--index-url", CPU_INDEX_URL,
+        f"torch=={CPU_TORCH_VERSION}+cpu",
+        f"torchvision=={CPU_TORCHVISION_VERSION}+cpu", 
+        f"torchaudio=={CPU_TORCHAUDIO_VERSION}+cpu"
     )
+    
+    # Install the rest of the development dependencies (requirements-dev.txt no longer
+    # contains torch/tv/ta)
+    session.install("-r", "requirements-dev.txt")
     
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
@@ -248,10 +267,10 @@ def coverage(session: nox.Session) -> None:
     
     # Install CPU-only torch trio with explicit index-url to prevent CUDA variant
     session.install(
-        "--index-url", "https://download.pytorch.org/whl/cpu",
-        "torch==2.3.1+cpu",
-        "torchvision==0.18.1+cpu", 
-        "torchaudio==2.3.1+cpu"
+        "--index-url", CPU_INDEX_URL,
+        f"torch=={CPU_TORCH_VERSION}+cpu",
+        f"torchvision=={CPU_TORCHVISION_VERSION}+cpu", 
+        f"torchaudio=={CPU_TORCHAUDIO_VERSION}+cpu"
     )
     
     # Ensure pytest-cov is always installed (CI safety)
