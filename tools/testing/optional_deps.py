@@ -21,6 +21,7 @@ _PROBE = [
     "defusedxml",
     "requests",
     "pydantic",
+    "transformers",
 ]
 
 OPTIONALS: dict[str, bool] = {}
