@@ -97,3 +97,23 @@ rules:
     match:
       patterns:
         - pattern: "(?i)test(_|-)?password"
+  - id: deny.prompt.injection_ignore_instructions
+    action: block
+    description: Guard against prompt-injection attempts that try to bypass safety instructions.
+    match:
+      patterns:
+        - pattern: "(?i)ignore (?:all|previous|prior) instructions"
+        - pattern: "(?i)you (?:must|should) now act contrary"
+  - id: deny.prompt.malicious_role_swap
+    action: block
+    description: Prevent role-redefinition attempts aimed at unsafe behaviour.
+    match:
+      patterns:
+        - pattern: "(?i)from now on you are (?:an?|the) (?:malicious|unfiltered)"
+  - id: redact.prompt.embed_secrets
+    action: redact
+    description: Redact attempts to embed credentials inside prompts.
+    replacement: "{REDACTED}"
+    match:
+      patterns:
+        - pattern: "(?i)(?:api|secret|token)[_-]?key\\s*[:=]\\s*[\"']?[A-Za-z0-9]{12,}[\"']?"
