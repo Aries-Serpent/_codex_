@@ -27,11 +27,7 @@ jsonschema>=4.22.0
 requests>=2.31.0
 sentencepiece>=0.1.99
 
-# ML stack (CPU-only) — pin coherent versions with explicit index
---index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1+cpu
-torchvision==0.18.1+cpu
-torchaudio==2.3.1+cpu
---index-url https://pypi.org/simple
+# ML stack (CPU-only) — NOTE: Install via noxfile with index-url for deterministic CPU wheels
+# DO NOT install torch/torchvision/torchaudio here directly - use nox session
 transformers>=4.38.0
 accelerate>=0.29.0
