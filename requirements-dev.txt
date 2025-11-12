@@ -12,7 +12,7 @@ bandit>=1.7.5
 # gitleaks is a standalone binary; do NOT list here (installed in CI job)
 
 # Types
-types-tomli
+# types-tomli not needed for Python 3.12+ (tomllib is in stdlib)
 types-jsonschema
 
 # Runtime/test deps commonly required by tests
