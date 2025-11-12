@@ -56,16 +56,24 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
           pip install nox
 
-      - name: Run security session
+      - name: Install gitleaks (binary)
         run: |
-          nox -s security
+          set -euxo pipefail
+          ver="8.18.0"
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${ver}/gitleaks_${ver}_linux_x64.tar.gz" \
+            | tar -xz
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Run security session
+        run: nox -s security
 
       - name: Upload security artifacts
         uses: actions/upload-artifact@v4
@@ -75,6 +83,7 @@ jobs:
             artifacts/security_report.json
             artifacts/bandit_report.txt
             artifacts/gitleaks_report.json
+            artifacts/security_summary.json
 
   coverage:
     name: Tests & Coverage
