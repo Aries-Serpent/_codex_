@@ -66,7 +66,7 @@
 - Added 'interfaces' marker to suppress warnings
 
 ### H. .github/workflows/ci.yml (coverage job)
-- Set python-version: "3.11" (downgrade from 3.12 for torch CPU stability)
+- Set Python version: "3.11" (downgrade from 3.12 for torch CPU stability)
 - Added pycache purge step before installing dependencies
 - Run dependency sanity check before nox -s coverage
 

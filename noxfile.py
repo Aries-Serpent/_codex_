@@ -189,6 +189,15 @@ def gates(session: nox.Session) -> None:
 def tests(session: nox.Session) -> None:
     """Run pytest with plugin autoload disabled (deterministic) and coverage enforcement."""
     session.install("-r", "requirements-dev.txt")
+    
+    # Install CPU-only torch trio with explicit index-url to prevent CUDA variant
+    session.install(
+        "--index-url", "https://download.pytorch.org/whl/cpu",
+        "torch==2.3.1+cpu",
+        "torchvision==0.18.1+cpu", 
+        "torchaudio==2.3.1+cpu"
+    )
+    
     session.env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
     # Run tests with coverage
@@ -256,8 +265,8 @@ def coverage(session: nox.Session) -> None:
     )
 
     # Run preflight sanity check before pytest
-    preflight_script = ".github/scripts/ci_dependency_sanity.py"
     from pathlib import Path
+    preflight_script = ".github/scripts/ci_dependency_sanity.py"
     if Path(preflight_script).exists():
         session.log("Running preflight dependency sanity check...")
         session.run("python", preflight_script)
@@ -265,7 +274,6 @@ def coverage(session: nox.Session) -> None:
         session.log(f"Preflight script {preflight_script} not found, skipping...")
 
     # Ensure artifacts directory exists
-    from pathlib import Path
     artifacts_dir = Path("artifacts")
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
