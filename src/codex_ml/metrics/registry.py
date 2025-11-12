@@ -25,6 +25,9 @@ from codex_ml.registry.base import Registry, RegistryConflictError
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 
+# Ensure built-in generative metrics are registered on import.
+from . import generative as _generative  # noqa: F401  (imported for side effects)
+
 
 def _error_log_path() -> Path:
     base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))

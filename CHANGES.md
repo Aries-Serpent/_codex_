@@ -1,3 +1,21 @@
+## [Unreleased]
+
+### Added
+- Offline-friendly BLEU/ROUGE-L generative metrics with registry integration and
+  unit tests.
+- Evaluation CLI options for selecting metrics and providing prediction/target
+  transforms.
+
+### Changed
+- Evaluation loop now supports text post-processing hooks to unlock generative
+  metrics.
+- NDJSON logger registry reuses the core logger with rotation, GPU telemetry and
+  configurable size limits.
+
+### Documentation
+- Updated metrics guide and logging guide to reflect generative metrics and
+  NDJSON rotation controls.
+
 ## [2025-11-09] Feature Batch 1: Metrics & MLflow Guard
 
 ### Added

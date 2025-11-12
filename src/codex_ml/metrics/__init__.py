@@ -10,13 +10,8 @@ from .api import (
     summarize_ndjson_to_sqlite,
 )
 from .evaluator import batch_metrics
-from .metric_implementations import (
-    BLEUScore,
-    F1Score,
-    MetricRegistry,
-    RecallScore,
-    TokenAccuracy,
-)
+from .generative import bleu, rouge_l
+from .metric_implementations import BLEUScore, F1Score, MetricRegistry, RecallScore, TokenAccuracy
 from .text import perplexity, token_accuracy
 
 __all__ = [
@@ -37,4 +32,6 @@ __all__ = [
     "list_metrics",
     "summarize_ndjson_to_csv",
     "summarize_ndjson_to_sqlite",
+    "bleu",
+    "rouge_l",
 ]

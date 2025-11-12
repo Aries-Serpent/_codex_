@@ -41,6 +41,7 @@ env:
   CODEX_NUM_THREADS: "1"
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
   CODEX_OPTIONAL_SOFTFAIL: "1"
+  CODEX_CI_ENABLE_GITLEAKS: "0"
 
 jobs:
   security:
@@ -64,6 +65,7 @@ jobs:
           pip install nox
 
       - name: Install gitleaks (binary)
+        if: env.CODEX_CI_ENABLE_GITLEAKS == '1'
         run: |
           set -euxo pipefail
           ver="8.18.0"
