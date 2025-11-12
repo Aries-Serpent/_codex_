@@ -98,7 +98,7 @@ jobs:
           CODEX_CPU_MINIMAL: "${{ matrix.session.cpu_minimal }}"
           CODEX_SESSION_ID: "ci-${{ github.run_id }}-${{ github.job }}-${{ matrix.session.nox }}"
         run: |
-          nox -s ${{ matrix.session.nox }} -q || (echo "::error ::nox session failed" && exit 1)
+          nox -s ${{ matrix.session.nox }} || (echo "::error ::nox session failed" && exit 1)
 
       - name: Vendor guard (post-session)
         if: always()
