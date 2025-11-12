@@ -10,4 +10,8 @@ jsonschema>=4.22
 pre-commit>=3.7
 nox>=2024.4.15
 
+# Optional dependencies for evaluator tests (soft-fail if missing)
+pydantic>=2.0.0
+typer>=0.9.0
+
 # End
