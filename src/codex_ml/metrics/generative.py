@@ -110,7 +110,7 @@ def _lcs_length(a: list[str], b: list[str]) -> int:
     return dp[-1][-1]
 
 
-@register_metric("rouge_l", override=True)
+@register_metric("rougeL", override=True)
 def rouge_l(predictions: Sequence[object], targets: Sequence[object]) -> float:
     """Compute the ROUGE-L F1 score using longest common subsequence."""
 
@@ -132,6 +132,12 @@ def rouge_l(predictions: Sequence[object], targets: Sequence[object]) -> float:
             scores.append((2 * precision * recall) / (precision + recall))
 
     return float(sum(scores) / len(scores))
+
+
+# Create an alias so both "rougeL" and "rouge_l" resolve to the same implementation
+from .registry import alias_metric  # noqa: E402
+
+alias_metric("rouge_l", "rougeL", override=True)
 
 
 __all__ = ["bleu", "rouge_l"]
