@@ -88,15 +88,18 @@ def test_idempotent_plugin_loading(monkeypatch):
     # Set a safe policy
     monkeypatch.setenv("CODEX_METRIC_PLUGIN_POLICY", "prefer_local")
 
-    # First load (count not used, just checking side effects)
-    registry.init_metric_plugins()
+    # First load
+    count1 = registry.init_metric_plugins()
+    assert count1 >= 0  # First load should return non-negative count
 
     # Second load should return 0 (already loaded)
     count2 = registry.init_metric_plugins()
     assert count2 == 0
 
-    # Force reload (may return a count or 0 depending on whether plugins exist)
-    registry.init_metric_plugins(force=True)
+    # Force reload
+    count3 = registry.init_metric_plugins(force=True)
+    # May return a count or 0 depending on whether plugins exist
+    assert count3 >= 0  # Force reload should return non-negative count
 
 
 def test_alias_plugin_creates_separate_entry(monkeypatch):

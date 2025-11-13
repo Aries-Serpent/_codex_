@@ -215,3 +215,4 @@ reports/capability_matrix_*.md
 audit_run_manifest.json
 .codex/test_artifacts/
 .stubs/
+_codex_reports/

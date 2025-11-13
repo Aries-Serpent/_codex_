@@ -33,6 +33,12 @@ _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
 
+# Ensure built-in generative metrics are registered on import.
+from . import generative as _generative  # noqa: F401, E402
+
+# Mark as explicitly used for side effects (metric registration)
+_ = _generative
+
 
 def _error_log_path() -> Path:
     base_dir = Path(os.environ.get("CODEX_ERROR_REPORTS_DIR", "_codex_reports"))
