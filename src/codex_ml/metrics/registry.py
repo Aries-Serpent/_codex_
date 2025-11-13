@@ -23,13 +23,21 @@ from typing import Callable, Optional, Sequence
 
 from codex_ml.registry.base import Registry, RegistryConflictError
 
+# Ensure built-in generative metrics are registered on import.
+from . import generative as _generative
+
+_ = _generative  # Imported for side effects (metric registration)
+
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
 
 # Ensure built-in generative metrics are registered on import.
-from . import generative as _generative  # noqa: F401  (imported for side effects)
+from . import generative as _generative  # noqa: F401, E402
+
+# Mark as explicitly used for side effects (metric registration)
+_ = _generative
 
 
 def _error_log_path() -> Path:
@@ -96,26 +104,26 @@ def _load_policy_from_file() -> Optional[str]:
 
 def _get_plugin_policy() -> str:
     """Get the active plugin conflict resolution policy.
-    
+
     Sources (in order of precedence):
     1. CODEX_METRIC_PLUGIN_POLICY environment variable
     2. configs/metrics_plugin_policy.toml file
     3. Default: prefer_local
-    
+
     Valid policies: prefer_local, prefer_plugin, alias_plugin, shadow_warn, error
     """
     env_val = os.getenv("CODEX_METRIC_PLUGIN_POLICY", "").strip().lower()
     if not env_val:
         file_val = _load_policy_from_file()
         env_val = (file_val or "").strip().lower()
-    
+
     valid = {"prefer_local", "prefer_plugin", "alias_plugin", "shadow_warn", "error"}
     return env_val if env_val in valid else "prefer_local"
 
 
 def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
     """Resolve a plugin metric conflict according to the active policy.
-    
+
     Parameters
     ----------
     name:
@@ -124,12 +132,12 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
         The plugin-provided callable.
     """
     policy = _get_plugin_policy()
-    
+
     # Check if we've already logged this conflict to avoid spam
     should_log = name not in _PLUGIN_CONFLICT_LOGGED
     if should_log:
         _PLUGIN_CONFLICT_LOGGED.add(name)
-    
+
     if policy == "prefer_plugin":
         # Override existing with plugin
         metric_registry.register(name, fn, override=True, source="entry_point")
@@ -184,7 +192,7 @@ def _register_metric_from_plugin(
     override: bool = False,
 ) -> Callable[..., object]:
     """Register a plugin-provided metric marking the source as entry point.
-    
+
     Applies conflict resolution policy when duplicate registration detected.
     """
     try:
@@ -219,19 +227,19 @@ def _register_metric_from_plugin(
 
 def init_metric_plugins(*, force: bool = False) -> int:
     """Best-effort discovery of external metrics via entry points (idempotent).
-    
+
     Uses a lock to ensure thread-safe initialization and sets the loaded flag
     early to prevent recursive discovery during plugin loading.
     """
     global _METRIC_PLUGINS_LOADED
-    
+
     with _METRIC_PLUGINS_LOCK:
         if force:
             _METRIC_PLUGINS_LOADED = False
-        
+
         if _METRIC_PLUGINS_LOADED:
             return 0
-        
+
         # Set early to prevent recursive reload triggering duplicates
         _METRIC_PLUGINS_LOADED = True
 
@@ -313,7 +321,7 @@ def list_metrics() -> list[str]:
 
 def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
     """Create an alias for an existing metric.
-    
+
     Parameters
     ----------
     alias:
@@ -322,7 +330,7 @@ def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
         The existing metric name to alias.
     override:
         Allow replacing an existing registration. Defaults to True.
-    
+
     Notes
     -----
     This creates a thin wrapper that defers lookup to the target metric
@@ -331,7 +339,7 @@ def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
     def _alias_wrapper(*args, **kwargs):
         fn = metric_registry.get(target)
         return fn(*args, **kwargs)
-    
+
     metric_registry.register(alias, _alias_wrapper, override=override)
 
 

@@ -55,7 +55,8 @@ def test_both_aliases_resolve_to_offline_implementation():
 
     # Check that the function is from the generative module (offline implementation)
     assert fn_camel.__module__ in ("codex_ml.metrics.generative", "codex_ml.metrics.registry")
-    
+    assert fn_snake.__module__ in ("codex_ml.metrics.generative", "codex_ml.metrics.registry")
+
     # Both should work without rouge_score dependency
     result = fn_camel(["test"], ["test"])
     assert result is not None
