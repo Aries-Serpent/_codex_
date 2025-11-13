@@ -23,6 +23,11 @@ from typing import Callable, Optional, Sequence
 
 from codex_ml.registry.base import Registry, RegistryConflictError
 
+# Ensure built-in generative metrics are registered on import.
+from . import generative as _generative
+
+_ = _generative  # Imported for side effects (metric registration)
+
 metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()

@@ -1,3 +1,31 @@
+## [Unreleased]
+
+### Added
+- Offline-friendly BLEU/ROUGE-L generative metrics with registry integration and
+  unit tests.
+- Evaluation CLI options for selecting metrics and providing prediction/target
+  transforms.
+
+### Changed
+- Evaluation loop now supports text post-processing hooks to unlock generative
+  metrics.
+- NDJSON logger registry reuses the core logger with rotation, GPU telemetry and
+  configurable size limits.
+
+### Documentation
+- Updated metrics guide and logging guide to reflect generative metrics and
+  NDJSON rotation controls.
+- Optional BitsAndBytes quantization hints in `codex_ml.models.factory.create_model` with regression tests.
+- Remote checkpoint synchronisation via `codex_ml.utils.storage.FSSpecStorage` and smoke tests.
+- Offline CI runner script mirroring `.github/workflows/ci.yml` and documentation under `docs/development/offline_ci.md`.
+- Minimal Hydra sweep definition (`configs/sweeps/minimal.yaml`) plus `nox -s sweeps_smoke` session and helper script.
+- Prompt-injection and credential redaction rules in `configs/base/safety/policy.yaml`.
+- Plugin development guide summarising dataset/metric/logger registries.
+
+### Changed
+- Dataset manifest guide updated to highlight deterministic JSONL/CSV loaders.
+- Checkpointing documentation expanded with remote storage workflow and test guidance.
+
 ## [2025-11-09] Feature Batch 1: Metrics & MLflow Guard
 
 ### Added

@@ -42,8 +42,7 @@ mlruns/
 .checkpoints/
 
 # Generated artifacts (build outputs)
-artifacts/
-artifacts/**
+# (see detailed artifacts rules below around line 121)
 
 # Audit outputs (keep baselines committed)
 audit_artifacts/
@@ -131,6 +130,9 @@ artifacts/*
 # Allow docs README but ignore generated API docs
 !artifacts/docs/
 !artifacts/docs/README.md
+# Allow migration summaries
+!artifacts/MIGRATION_SUMMARY.md
+!artifacts/*.md
 artifacts/docs/api/
 logs/*
 validation.log

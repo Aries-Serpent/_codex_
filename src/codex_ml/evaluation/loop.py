@@ -17,7 +17,7 @@ Notes:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List
+from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List, Sequence
 import time
 import inspect
 
@@ -81,6 +81,34 @@ def _check_needs_predictions(func: Callable) -> bool:
         return True
 
 
+def _coerce_batch(batch: Any) -> List[Any]:
+    if batch is None:
+        return []
+    if torch is not None and hasattr(batch, "detach"):
+        data = batch.detach().cpu()
+        if data.ndim == 0:
+            return [data.item()]
+        return data.reshape(-1).tolist()
+    if isinstance(batch, (list, tuple)):
+        result: List[Any] = []
+        for item in batch:
+            result.extend(_coerce_batch(item))
+        return result
+    if isinstance(batch, str):
+        return [batch]
+    return [batch]
+
+
+def _batch_size(batch: Any) -> int:
+    if torch is not None and hasattr(batch, "dim"):
+        if batch.dim() == 0:
+            return 1
+        return int(batch.size(0))
+    if isinstance(batch, (list, tuple)):
+        return len(batch)
+    return 1
+
+
 def evaluate_epoch(
     model,
     dataloader: Iterable,
@@ -91,6 +119,9 @@ def evaluate_epoch(
     max_batches: Optional[int] = None,
     seed: Optional[int] = None,
     deterministic: bool = False,
+    *,
+    prediction_transform: Optional[Callable[[Any], Sequence[object]]] = None,
+    target_transform: Optional[Callable[[Any], Sequence[object]]] = None,
 ) -> Dict[str, Any]:
     if torch is None:
         raise RuntimeError("Torch not available for evaluation.")
@@ -111,6 +142,7 @@ def evaluate_epoch(
     collect_preds = metrics is not None and any(
         _check_needs_predictions(func) for func in metrics.values()
     )
+    text_mode = collect_preds and (prediction_transform is not None or target_transform is not None)
     all_preds: List[Any] = []
     all_targets: List[Any] = []
 
@@ -131,24 +163,55 @@ def evaluate_epoch(
             outputs = model(inputs)
             loss = criterion(outputs, targets)
             loss_value = _safe_item(loss)
-            running_loss += loss_value * targets.size(0)
-            total += targets.size(0)
+            batch_count = _batch_size(targets)
+            running_loss += loss_value * batch_count
+            total += batch_count
 
             if collect_preds:
-                # Use argmax classification assumption; adapt later for regression
-                if hasattr(outputs, "argmax"):
-                    preds = outputs.argmax(dim=-1)
+                if text_mode:
+                    outputs_for_transform = outputs
+                    targets_for_transform = targets
+                    if torch is not None and hasattr(outputs_for_transform, "dim") and outputs_for_transform.dim() == 1:
+                        outputs_for_transform = outputs_for_transform.unsqueeze(0)
+                    if torch is not None and hasattr(targets_for_transform, "dim") and targets_for_transform.dim() == 0:
+                        targets_for_transform = targets_for_transform.unsqueeze(0)
+                    batch_preds = (
+                        prediction_transform(outputs_for_transform)
+                        if prediction_transform
+                        else outputs_for_transform
+                    )
+                    batch_targets = (
+                        target_transform(targets_for_transform)
+                        if target_transform
+                        else targets_for_transform
+                    )
+                    all_preds.extend(_coerce_batch(batch_preds))
+                    all_targets.extend(_coerce_batch(batch_targets))
                 else:
-                    preds = outputs
-                all_preds.append(preds.detach().cpu())
-                all_targets.append(targets.detach().cpu())
+                    # Use argmax classification assumption; adapt later for regression
+                    if hasattr(outputs, "argmax"):
+                        preds = outputs.argmax(dim=-1)
+                    else:
+                        preds = outputs
+                    pred_tensor = preds.detach().cpu()
+                    if pred_tensor.ndim == 0:
+                        pred_tensor = pred_tensor.reshape(1)
+                    else:
+                        pred_tensor = pred_tensor.reshape(-1)
+                    target_tensor = targets.detach().cpu()
+                    if target_tensor.ndim == 0:
+                        target_tensor = target_tensor.reshape(1)
+                    else:
+                        target_tensor = target_tensor.reshape(-1)
+                    all_preds.append(pred_tensor)
+                    all_targets.append(target_tensor)
 
             if logger:
                 record = {
                     "type": "batch",
                     "batch_index": batch_idx,
                     "loss": loss_value,
-                    "count": int(targets.size(0)),
+                    "count": _batch_size(targets),
                     "cumulative_loss": running_loss,
                     "cumulative_count": total,
                     "wall_time": time.time(),
@@ -164,16 +227,25 @@ def evaluate_epoch(
 
     metric_results: Dict[str, float] = {}
     if metrics:
-        preds_cat = torch.cat(all_preds) if all_preds else None
-        targets_cat = torch.cat(all_targets) if all_targets else None
-        for name, fn in metrics.items():
-            try:
-                if preds_cat is not None and targets_cat is not None:
-                    metric_results[name] = _safe_item(fn(preds_cat, targets_cat))
-                else:
+        if text_mode:
+            preds_payload: Sequence[object] = list(all_preds)
+            targets_payload: Sequence[object] = list(all_targets)
+            for name, fn in metrics.items():
+                try:
+                    metric_results[name] = _safe_item(fn(preds_payload, targets_payload))
+                except Exception:
                     metric_results[name] = float("nan")
-            except Exception:
-                metric_results[name] = float("nan")
+        else:
+            preds_cat = torch.cat(all_preds) if all_preds else None
+            targets_cat = torch.cat(all_targets) if all_targets else None
+            for name, fn in metrics.items():
+                try:
+                    if preds_cat is not None and targets_cat is not None:
+                        metric_results[name] = _safe_item(fn(preds_cat, targets_cat))
+                    else:
+                        metric_results[name] = float("nan")
+                except Exception:
+                    metric_results[name] = float("nan")
 
     result = EvalResult(
         loss=avg_loss,
