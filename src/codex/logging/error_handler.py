@@ -45,13 +45,15 @@ class CodexErrorHandler:
         self.logger = logging.getLogger("codex.errors")
         self.logger.setLevel(logging.ERROR)
 
-        # Add handler if not already present
-        if not self.logger.handlers:
-            handler = logging.FileHandler(self.error_log)
-            handler.setFormatter(
-                logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-            )
-            self.logger.addHandler(handler)
+        # Clear existing handlers and add our file handler
+        # This ensures each instance uses its own log file
+        self.logger.handlers.clear()
+        
+        handler = logging.FileHandler(self.error_log)
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+        )
+        self.logger.addHandler(handler)
 
     def log_error(
         self,
@@ -78,6 +80,10 @@ class CodexErrorHandler:
             f"Context: {error_details['context']}\n"
             f"Traceback:\n{error_details['traceback']}"
         )
+
+        # Flush the handler to ensure log is written
+        for handler in self.logger.handlers:
+            handler.flush()
 
         if fatal:
             print(f"❌ Fatal error: {error}", file=sys.stderr)
