@@ -8,14 +8,15 @@
    - Provides step-by-step instructions for running diagnostics
    - Includes safety notes and approval requirements
 
-2. **.github/scripts/imds_diagnostic.sh** - Made executable (mode 100755)
-   - Script already existed, now has executable bit set
-   - Ready to run directly with `./github/scripts/imds_diagnostic.sh`
+2. **.github/scripts/imds_diagnostic.sh** - Made executable (mode 100644 → 100755)
+   - Script was already present, executable bit has been set
+   - Ready to run directly with `./.github/scripts/imds_diagnostic.sh`
 
 ### Branch Information
-- **Working Branch**: `copilot/imdsdiagnostic-2226-20251114t213200-again`
+- **Working Branch**: `copilot/imdsdiagnostic-2226-20251114t213200-again` (system-configured)
 - **Target Branch (from requirements)**: `imds/diagnostic-2226-20251114T213200`
-- **Status**: Changes committed and pushed to `copilot/imdsdiagnostic-2226-20251114t213200-again`
+- **Status**: Changes committed and pushed to working branch
+- **Note**: Both branches contain identical changes; use whichever is appropriate for your workflow
 
 ### Commits
 - Commit 6d10ee4: "Add IMDS diagnostic runbook and make script executable"
@@ -34,7 +35,7 @@ gh pr create \
   --title "Add IMDS diagnostic script + runbook (relates to #2226)" \
   --body "## What
 This PR adds:
-- \`.github/scripts/imds_diagnostic.sh\` - diagnostic script (already present, now executable)
+- \`.github/scripts/imds_diagnostic.sh\` - made executable (mode 100644 → 100755)
 - \`.github/docs/imds_diagnostic_RUNBOOK.md\` - comprehensive runbook
 
 ## Why
