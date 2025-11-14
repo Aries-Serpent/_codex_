@@ -275,6 +275,30 @@ class TestDBManager:
             assert result.exit_code == 0
             assert "initialized successfully" in result.output.lower()
 
+    def test_close_all_pools_integration(self, tmp_path):
+        """Integration test for pool cleanup (existing test suite)."""
+        from codex.logging.db_manager import DBManager
+
+        # Verify cleanup works in isolation
+        DBManager._CONNECTION_POOL.clear()
+
+        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
+            db = DBManager(db_path=tmp_path / "integration.db")
+            db.init_schema()
+
+            # Use connection pool
+            conn1 = db.get_connection()
+            db.close_connection(conn1)
+
+            # Verify pool exists
+            assert len(DBManager._CONNECTION_POOL) > 0
+
+            # Cleanup
+            DBManager.close_all_pools()
+
+            # Verify cleared
+            assert len(DBManager._CONNECTION_POOL) == 0
+
 
 class TestCLIEndToEnd:
     """End-to-end CLI workflow tests."""
