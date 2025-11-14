@@ -683,3 +683,100 @@ class TestFullSessionLifecycle:
             search_count = cursor.fetchone()[0]
             assert search_count == 1, "Search should find 'Hello, world'"
 
+
+class TestViewerCLIWrapper:
+    """Test viewer CLI wrapper passes correct arguments (regression test for P1 bug)."""
+
+    def test_viewer_wrapper_passes_list_not_namespace(self, tmp_path):
+        """Ensure LogViewer.view() passes argv list to main(), not Namespace.
+
+        This is a regression test for the P1 bug where the wrapper called
+        main(parse_args(args)) instead of main(args), causing TypeError.
+        """
+        from codex.logging.viewer import LogViewer
+        from codex.logging.db_manager import DBManager
+        from unittest.mock import patch
+        import time
+
+        # Set up test database
+        db_path = tmp_path / "viewer_test.db"
+        manager = DBManager(db_path=db_path)
+        manager.init_schema()
+
+        # Add a test session
+        session_id = "test-viewer-123"
+        with manager.connection() as conn:
+            conn.execute(
+                "INSERT INTO session_events (ts, session_id, role, message) "
+                "VALUES (?, ?, ?, ?)",
+                (time.time(), session_id, "user", "Test message")
+            )
+            conn.commit()
+
+        # Mock main() to verify it receives a list, not Namespace
+        with patch('codex.logging.viewer.main') as mock_main:
+            mock_main.return_value = 0
+
+            viewer = LogViewer()
+            viewer.view(session_id=session_id, output_format="text")
+
+            # Verify main was called once
+            assert mock_main.call_count == 1
+
+            # Verify first argument is a list of strings (argv), not Namespace
+            call_args = mock_main.call_args[0]
+            assert len(call_args) == 1, "main() should be called with one argument"
+            argv = call_args[0]
+            assert isinstance(argv, list), f"Expected list, got {type(argv)}"
+            assert all(isinstance(arg, str) for arg in argv), \
+                "All argv elements should be strings"
+
+            # Verify correct arguments
+            assert "--session-id" in argv
+            assert session_id in argv
+            assert "--format" in argv
+            assert "text" in argv
+
+    def test_viewer_wrapper_with_actual_main(self, tmp_path):
+        """Test that viewer wrapper works end-to-end with actual main()."""
+        from codex.logging.viewer import LogViewer
+        from codex.logging.db_manager import DBManager
+        from unittest.mock import patch
+        import time
+        import os
+
+        # Set up test database
+        db_path = tmp_path / "viewer_e2e.db"
+        manager = DBManager(db_path=db_path)
+        manager.init_schema()
+
+        # Add test session
+        session_id = "test-e2e-456"
+        with manager.connection() as conn:
+            conn.execute(
+                "INSERT INTO session_events (ts, session_id, role, message) "
+                "VALUES (?, ?, ?, ?)",
+                (time.time(), session_id, "user", "E2E test message")
+            )
+            conn.commit()
+
+        # Set DB path in environment so viewer can find it
+        with patch.dict(os.environ, {'CODEX_LOG_DB_PATH': str(db_path)}):
+            # Capture stdout to verify output
+            from io import StringIO
+            import sys
+
+            old_stdout = sys.stdout
+            sys.stdout = captured_output = StringIO()
+
+            try:
+                viewer = LogViewer()
+                viewer.view(session_id=session_id, output_format="text")
+
+                output = captured_output.getvalue()
+                # Should contain the test message
+                assert "E2E test message" in output, \
+                    f"Expected message in output, got: {output}"
+            finally:
+                sys.stdout = old_stdout
+

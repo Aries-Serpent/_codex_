@@ -89,14 +89,14 @@ class LogViewer:
                     print("No sessions found in database", file=sys.stderr)
                     return
 
-        # Build args and call main - parse args before passing to main
+        # Build args and call main
         args = [
             "--session-id",
             session_id,
             "--format",
             output_format,
         ]
-        main(parse_args(args))
+        main(args)
 
 
 def _validate_table_name(value: str | None) -> str | None:
