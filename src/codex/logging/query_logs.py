@@ -77,19 +77,10 @@ class LogQueryEngine:
         conn = sqlite3.connect(str(db_path))
         conn.row_factory = sqlite3.Row
 
-        # Find the logs table
-        tables = [row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")]
-        log_table = None
-        for t in tables:
-            if "log" in t.lower():
-                log_table = t
-                break
-        
-        if not log_table:
-            conn.close()
-            return []
+        # Use session_events table (existing schema)
+        log_table = "session_events"
 
-        # Build query
+        # Build query - use 'ts' instead of 'timestamp'
         sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
         params: list[Any] = [f"%{query}%"]
 
@@ -97,16 +88,20 @@ class LogQueryEngine:
             sql += "AND role = ? "
             params.append(role)
 
-        sql += "ORDER BY timestamp DESC LIMIT 100"
+        sql += "ORDER BY ts DESC LIMIT 100"
 
         cursor = conn.execute(sql, params)
         rows = cursor.fetchall()
         conn.close()
 
-        # Convert to dicts
+        # Convert to dicts and map 'ts' to 'timestamp' for compatibility
         results = []
         for row in rows:
-            results.append(dict(row))
+            result = dict(row)
+            # Map ts to timestamp for consistency
+            if 'ts' in result:
+                result['timestamp'] = result['ts']
+            results.append(result)
 
         return results
 

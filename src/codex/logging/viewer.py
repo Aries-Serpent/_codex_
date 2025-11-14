@@ -74,7 +74,8 @@ class LogViewer:
         if not session_id:
             db_path = resolve_db_path(Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB))))
             conn = sqlite3.connect(str(db_path))
-            cursor = conn.execute("SELECT DISTINCT session_id FROM logs ORDER BY timestamp DESC LIMIT 1")
+            # Use session_events table (existing schema)
+            cursor = conn.execute("SELECT DISTINCT session_id FROM session_events ORDER BY ts DESC LIMIT 1")
             row = cursor.fetchone()
             conn.close()
             if row:
@@ -83,15 +84,14 @@ class LogViewer:
                 print("No sessions found in database", file=sys.stderr)
                 return
 
-        # Build args and call main
+        # Build args and call main - pass as list not namespace
         args = [
             "--session-id",
             session_id,
             "--format",
             output_format,
         ]
-        namespace = parse_args(args)
-        main(namespace)
+        main(args)
 
 
 def _validate_table_name(value: str | None) -> str | None:
