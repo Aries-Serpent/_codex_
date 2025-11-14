@@ -1,233 +1,266 @@
 #!/usr/bin/env bash
-# imds_diagnostic.sh
-# Safe IMDS diagnostic and optional remediation script
+#
+# IMDS Diagnostic Script
+# Purpose: Detect and optionally remediate issues blocking access to Azure Instance Metadata Service
+# Issue: #2226
+# Author: mbaetiong
+# Generated: 2025-11-14 21:33:15 UTC
 #
 # Usage:
-#   ./imds_diagnostic.sh           # read-only diagnostics (default)
-#   ./imds_diagnostic.sh --dry-run # diagnostics + simulate remediation
-#   sudo ./imds_diagnostic.sh --apply  # perform remediation (requires root)
-#   ./imds_diagnostic.sh --help    # show help
+#   ./imds_diagnostic.sh              # Read-only diagnostic mode
+#   ./imds_diagnostic.sh --dry-run    # Simulate remediation (no changes)
+#   ./imds_diagnostic.sh --apply      # Apply remediation (requires root)
 #
 # Exit codes:
-#   0 = diagnostics ran; no remediation required
+#   0 = diagnostics ran, no remediation required
+#   1 = error occurred
 #   2 = remediation recommended but not applied
 #   3 = remediation applied successfully
-#   1 = error / unexpected failure
 #
+
 set -euo pipefail
 
-SCRIPT_NAME="$(basename \"$0\")"
-OUT="diagnostic_results.txt"
-IMDS_URL='http://169.254.169.254/metadata/instance?api-version=2021-02-01'
-IMDS_HEADER='Metadata: true'
-TIMESTAMP="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+readonly IMDS_ENDPOINT="169.254.169.254"
+readonly IMDS_URL="http://169.254.169.254/metadata/instance?api-version=2021-02-01"
+readonly OUTPUT_FILE="diagnostic_results.txt"
+readonly TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
-DRY_RUN=false
-APPLY=false
-SHOW_HELP=false
+# Parse command-line arguments
+MODE="diagnostic"  # diagnostic, dry-run, or apply
 
-# Helper
-log() { printf '%s %s\n' "[$(date -u +'%Y-%m-%dT%H:%M:%SZ')]" "$*"; }
-sep() { printf '\n%s\n\n' "------------------------------------------------------------"; }
-
-usage() {
-  cat <<EOF
-Usage: $SCRIPT_NAME [--dry-run] [--apply] [--help]
-
-Default: read-only diagnostics (no changes).
---dry-run: show remediation steps that would be applied (no changes).
---apply: apply safe remediation (requires root).
---help: show this message.
-
-Exit codes:
- 0 = diagnostics ran; no remediation required
- 2 = remediation recommended but not applied
- 3 = remediation applied successfully
- 1 = error / unexpected failure
-EOF
-}
-
-# Parse args
-while (( "$#" )); do
-  case "$1" in
-    --dry-run) DRY_RUN=true; shift ;; 
-    --apply) APPLY=true; shift ;;
-    -h|--help) SHOW_HELP=true; shift ;;  
-    *) echo "Unknown argument: $1"; usage; exit 1 ;;
-  esac
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run)
+            MODE="dry-run"
+            ;;
+        --apply)
+            MODE="apply"
+            ;;
+        --help|-h)
+            echo "IMDS Diagnostic Script"
+            echo ""
+            echo "Usage:"
+            echo "  $0              # Read-only diagnostic mode"
+            echo "  $0 --dry-run    # Simulate remediation (no changes)"
+            echo "  $0 --apply      # Apply remediation (requires root)"
+            echo ""
+            echo "Output: $OUTPUT_FILE"
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $arg" >&2
+            echo "Use --help for usage information" >&2
+            exit 1
+            ;;
+    esac
 done
 
-if [ "$SHOW_HELP" = true ]; then
-  usage
-  exit 0
-fi
+# Logging functions
+log() {
+    echo "[$(date -u '+%Y-%m-%d %H:%M:%S UTC')] $*" | tee -a "$OUTPUT_FILE"
+}
 
-# Prepare output file
-echo "IMDS Diagnostic Results - $TIMESTAMP" > "$OUT"
-echo "Branch/Script run by: $(whoami)@$(hostname) on $(date -u)" >> "$OUT"
-echo "Args: APPLY=$APPLY DRY_RUN=$DRY_RUN" >> "$OUT"
-echo >> "$OUT"
+log_header() {
+    echo "" | tee -a "$OUTPUT_FILE"
+    echo "========================================" | tee -a "$OUTPUT_FILE"
+    echo "$*" | tee -a "$OUTPUT_FILE"
+    echo "========================================" | tee -a "$OUTPUT_FILE"
+}
 
-# Diagnostics counters / flags
-remediation_needed=false
-remediation_actions=()
+log_check() {
+    echo "[CHECK] $*" | tee -a "$OUTPUT_FILE"
+}
 
-sep | tee -a "$OUT"
-log "1) Checking IMDS connectivity (read-only)..."
+log_ok() {
+    echo "[OK] $*" | tee -a "$OUTPUT_FILE"
+}
+
+log_warn() {
+    echo "[WARNING] $*" | tee -a "$OUTPUT_FILE"
+}
+
+log_error() {
+    echo "[ERROR] $*" | tee -a "$OUTPUT_FILE"
+}
+
+log_fix() {
+    echo "[FIX] $*" | tee -a "$OUTPUT_FILE"
+}
+
+# Initialize output file
 {
-  if curl -sS -H "$IMDS_HEADER" "$IMDS_URL" >/dev/null 2>&1; then
-    log "IMDS: reachable"
-    echo "IMDS: reachable" >> "$OUT"
-  else
-    log "IMDS: unreachable (curl failed)"
-    echo "IMDS: unreachable (curl failed)" >> "$OUT"
-    remediation_needed=true
-    remediation_actions+=("IMDS unreachable (check firewall/NSG/hosts/proxy)")
-  fi
-} 2>&1 | tee -a "$OUT"
+    echo "IMDS Diagnostic Report"
+    echo "Generated: $TIMESTAMP"
+    echo "Mode: $MODE"
+    echo "Host: $(hostname)"
+    echo "User: $(whoami)"
+    echo ""
+} > "$OUTPUT_FILE"
 
-sep | tee -a "$OUT"
-log "2) Checking /etc/hosts for mappings to 169.254.169.254"
-if grep -Hn "169\.254\.169\.254" /etc/hosts >/dev/null 2>&1; then
-  log "/etc/hosts contains mapping(s) to 169.254.169.254"
-  grep -n "169\.254\.169\.254" /etc/hosts || true | tee -a "$OUT"
-  remediation_needed=true
-  remediation_actions+=("Remove /etc/hosts lines mapping 169.254.169.254")
+NEEDS_REMEDIATION=0
+REMEDIATION_APPLIED=0
+
+# Check 1: Basic network connectivity
+log_header "Check 1: Basic Network Connectivity"
+
+log_check "Testing if IMDS endpoint $IMDS_ENDPOINT is reachable via ping"
+if ping -c 1 -W 2 "$IMDS_ENDPOINT" &>/dev/null; then
+    log_ok "IMDS endpoint is reachable via ping"
 else
-  log "No /etc/hosts mapping for IMDS"
-  echo "No /etc/hosts mapping for IMDS" >> "$OUT"
+    log_warn "IMDS endpoint is NOT reachable via ping (this may be normal if ICMP is blocked)"
 fi
 
-sep | tee -a "$OUT"
-log "3) Inspecting iptables OUTPUT chain for IMDS rules"
+log_check "Testing TCP connectivity to IMDS on port 80"
+if timeout 5 bash -c "cat < /dev/null > /dev/tcp/$IMDS_ENDPOINT/80" 2>/dev/null; then
+    log_ok "TCP connection to IMDS port 80 successful"
+else
+    log_error "Cannot establish TCP connection to IMDS port 80"
+    NEEDS_REMEDIATION=1
+fi
+
+# Check 2: HTTP request to IMDS
+log_header "Check 2: HTTP Request to IMDS"
+
+log_check "Attempting HTTP GET request to IMDS metadata endpoint"
+CURL_OUTPUT=$(mktemp)
+CURL_EXIT=0
+if curl -f -s -H "Metadata:true" --max-time 5 "$IMDS_URL" > "$CURL_OUTPUT" 2>&1; then
+    log_ok "Successfully retrieved IMDS metadata"
+    log "Response size: $(wc -c < "$CURL_OUTPUT") bytes"
+else
+    CURL_EXIT=$?
+    log_error "Failed to retrieve IMDS metadata (curl exit code: $CURL_EXIT)"
+    log "Error output: $(cat "$CURL_OUTPUT")"
+    NEEDS_REMEDIATION=1
+fi
+rm -f "$CURL_OUTPUT"
+
+# Check 3: Firewall rules
+log_header "Check 3: Firewall Configuration"
+
+log_check "Checking iptables rules that might block IMDS"
 if command -v iptables >/dev/null 2>&1; then
-  if sudo iptables -L OUTPUT -n -v 2>/dev/null | grep -E "169\.254\.169\.254" >/dev/null 2>&1; then
-    log "iptables has rules referencing 169.254.169.254"
-    sudo iptables -L OUTPUT -n -v | sed -n '1,200p' | grep -E "169\.254\.169\.254" | tee -a "$OUT" || true
-    remediation_needed=true
-    remediation_actions+=("Ensure iptables OUTPUT allows 169.254.169.254 (insert ACCEPT if needed)")
-  else
-    log "No specific iptables OUTPUT rule found for IMDS"
-    echo "No specific iptables OUTPUT rule found for IMDS" >> "$OUT"
-  fi
-else
-  log "iptables not available"
-  echo "iptables not available" >> "$OUT"
-fi
-
-sep | tee -a "$OUT"
-log "4) Inspecting nftables ruleset for IMDS (if nft exists)"
-if command -v nft >/dev/null 2>&1; then
-  if sudo nft list ruleset 2>/dev/null | grep -E "169\.254\.169\.254" >/dev/null 2>&1; then
-    log "nftables contains references to 169.254.169.254"
-    sudo nft list ruleset | sed -n '1,200p' | grep -n "169.254.169.254" | tee -a "$OUT" || true
-    remediation_needed=true
-    remediation_actions+=("Ensure nftables doesn't block 169.254.169.254 (adjust rules)")
-  else
-    log "No nftables rules referencing IMDS"
-    echo "No nftables rules referencing IMDS" >> "$OUT"
-  fi
-else
-  log "nft binary not found"
-  echo "nft not present" >> "$OUT"
-fi
-
-sep | tee -a "$OUT"
-log "5) Checking WALinuxAgent status and logs"
-if systemctl status walinuxagent >/dev/null 2>&1; then
-  sudo systemctl status walinuxagent --no-pager | sed -n '1,200p' | tee -a "$OUT" || true
-  echo >> "$OUT"
-  echo "Recent WALinuxAgent journal entries (last 200 lines):" >> "$OUT"
-  sudo journalctl -u walinuxagent -n 200 --no-pager | tail -n 200 | tee -a "$OUT" || true
-else
-  log "walinuxagent service not present or not running"
-  echo "walinuxagent service not present or not running" >> "$OUT"
-fi
-
-sep | tee -a "$OUT"
-log "6) Detecting redirection signatures in provided blocked logs (optional check)"
-# Look for local indications (this is a safe check only if blocked.jsonl available)
-if [ -f blocked.jsonl ]; then
-  if grep -E '"originalIp":"169\.254\.169\.254".*"ip":"127\.0\.0.1"' blocked.jsonl >/dev/null 2>&1; then
-    log "Blocked logs show redirection of 169.254.169.254 -> 127.0.0.1"
-    echo "Blocked logs show redirection of 169.254.169.254 -> 127.0.0.1" >> "$OUT"
-    remediation_needed=true
-    remediation_actions+=("Investigate host-level proxy/redirect mapping 169.254.169.254 -> 127.0.0.1")
-  else
-    log "No direct redirection signatures found in blocked.jsonl (or file absent)"
-    echo "No direct redirection signatures found in blocked.jsonl (or file absent)" >> "$OUT"
-  fi
-else
-  echo "blocked.jsonl not present locally; skipped redirection signature check" >> "$OUT"
-f  
-sep | tee -a "$OUT"
-log "Summary of remediation recommendations:"
-if [ "$remediation_needed" = true ]; then
-  echo "REMEDIATION RECOMMENDED" | tee -a "$OUT"
-  for a in "${remediation_actions[@]}"; do
-    echo "- $a" | tee -a "$OUT"
-  done
-else
-  echo "No remediation required based on checks." | tee -a "$OUT"
-fi
-
-# If APPLY requested, perform safe remediation
-if [ "$APPLY" = true ]; then
-  # Must be run as root for remediation
-  if [ "$(id -u)" -ne 0 ]; then
-    log "Remediation requested but not running as root. Exiting with error."
-    echo "ERROR: remediation requires root. Re-run with sudo or as root." | tee -a "$OUT"
-    exit 1
-  fi
-
-  applied_any=false
-
-  # Remove /etc/hosts mappings (backup)
-  if grep -q "169\.254\.169\.254" /etc/hosts 2>/dev/null; then
-    cp /etc/hosts /etc/hosts.bak."$TIMESTAMP" || true
-    sed -i '/169\.254\.169\.254/d' /etc/hosts || true
-    log "Removed /etc/hosts mapping(s) for 169.254.169.254 (backup created)"
-    echo "/etc/hosts mapping removed (backup: /etc/hosts.bak.$TIMESTAMP)" >> "$OUT"
-    applied_any=true
-  fi
-
-  # Add iptables rule if iptables exists
-  if command -v iptables >/dev/null 2>&1; then
-    if ! iptables -C OUTPUT -d 169.254.169.254 -j ACCEPT >/dev/null 2>&1; then
-      iptables -I OUTPUT -d 169.254.169.254 -j ACCEPT || true
-      log "Inserted iptables OUTPUT ACCEPT for 169.254.169.254"
-      echo "Inserted iptables OUTPUT ACCEPT for 169.254.169.254" >> "$OUT"
-      applied_any=true
+    if iptables -L -n 2>/dev/null | grep -q "$IMDS_ENDPOINT"; then
+        log_warn "Found iptables rules mentioning IMDS endpoint"
+        iptables -L -n | grep "$IMDS_ENDPOINT" | tee -a "$OUTPUT_FILE"
+        NEEDS_REMEDIATION=1
     else
-      log "iptables ACCEPT rule already present"
-      echo "iptables ACCEPT rule already present" >> "$OUT"
+        log_ok "No iptables rules blocking IMDS found"
     fi
-  fi
-
-  # Restart WALinuxAgent
-  if systemctl status walinuxagent >/dev/null 2>&1; then
-    systemctl restart walinuxagent || true
-    log "walinuxagent restarted"
-    echo "walinuxagent restarted" >> "$OUT"
-    applied_any=true
-  fi
-
-  if [ "$applied_any" = true ]; then
-    log "Remediation actions applied"
-    echo "Remediation actions applied" >> "$OUT"
-    exit 3
-  else
-    log "No remediation actions were necessary or applicable"
-    echo "No remediation actions were necessary or applicable" >> "$OUT"
-    exit 0
-  fi
 else
-  # Not applying remediation: exit with code 2 if remediation recommended
-  if [ "$remediation_needed" = true ]; then
-    log "Remediation recommended but not applied (exit code 2)"
-    exit 2
-  else
-    log "Diagnostics complete; no remediation required (exit code 0)"
+    log "iptables command not available"
+fi
+
+# Check 4: /etc/hosts file
+log_header "Check 4: /etc/hosts Configuration"
+
+log_check "Checking /etc/hosts for IMDS endpoint overrides"
+if grep -q "$IMDS_ENDPOINT" /etc/hosts 2>/dev/null; then
+    log_warn "Found IMDS endpoint in /etc/hosts - this may cause issues"
+    grep "$IMDS_ENDPOINT" /etc/hosts | tee -a "$OUTPUT_FILE"
+    NEEDS_REMEDIATION=1
+else
+    log_ok "/etc/hosts does not contain IMDS endpoint overrides"
+fi
+
+# Check 5: Routing
+log_header "Check 5: Routing Table"
+
+log_check "Checking routing table for IMDS endpoint"
+if command -v ip >/dev/null 2>&1; then
+    ROUTE_OUTPUT=$(ip route get "$IMDS_ENDPOINT" 2>&1 || true)
+    log "Route to IMDS: $ROUTE_OUTPUT"
+    
+    if echo "$ROUTE_OUTPUT" | grep -q "Network is unreachable"; then
+        log_error "IMDS endpoint is unreachable according to routing table"
+        NEEDS_REMEDIATION=1
+    else
+        log_ok "Route to IMDS appears to be configured"
+    fi
+else
+    log "ip command not available"
+fi
+
+# Check 6: DNS resolution (should NOT resolve IMDS)
+log_header "Check 6: DNS Resolution"
+
+log_check "Verifying that IMDS IP is not being resolved via DNS"
+if command -v nslookup >/dev/null 2>&1; then
+    if nslookup "$IMDS_ENDPOINT" 2>&1 | grep -q "can't find"; then
+        log_ok "IMDS IP is not in DNS (expected)"
+    else
+        log_warn "Unexpected DNS response for IMDS IP"
+    fi
+else
+    log "nslookup command not available"
+fi
+
+# Remediation section
+if [ "$NEEDS_REMEDIATION" -eq 1 ]; then
+    log_header "Remediation Required"
+    
+    if [ "$MODE" = "diagnostic" ]; then
+        log "Remediation is needed but not requested."
+        log "Run with --dry-run to see what would be done."
+        log "Run with --apply to apply fixes (requires root)."
+        exit 2
+        
+    elif [ "$MODE" = "dry-run" ]; then
+        log_header "Remediation Steps (DRY RUN - no changes will be made)"
+        
+        log_fix "[DRY RUN] Would backup /etc/hosts to /etc/hosts.backup.$(date +%Y%m%d_%H%M%S)"
+        
+        if grep -q "$IMDS_ENDPOINT" /etc/hosts 2>/dev/null; then
+            log_fix "[DRY RUN] Would remove IMDS entries from /etc/hosts"
+        fi
+        
+        if command -v iptables >/dev/null 2>&1; then
+            if iptables -L -n 2>/dev/null | grep -q "$IMDS_ENDPOINT"; then
+                log_fix "[DRY RUN] Would review and potentially remove blocking iptables rules"
+                log_fix "[DRY RUN] Note: iptables rules require manual review for safety"
+            fi
+        fi
+        
+        log "Dry run complete. No changes were made."
+        log "Run with --apply to perform these changes (requires root)."
+        exit 2
+        
+    elif [ "$MODE" = "apply" ]; then
+        log_header "Applying Remediation"
+        
+        # Check for root privileges
+        if [ "$(id -u)" -ne 0 ]; then
+            log_error "Remediation requires root privileges. Please run with sudo."
+            exit 1
+        fi
+        
+        # Backup /etc/hosts
+        BACKUP_FILE="/etc/hosts.backup.$(date +%Y%m%d_%H%M%S)"
+        log_fix "Backing up /etc/hosts to $BACKUP_FILE"
+        cp /etc/hosts "$BACKUP_FILE"
+        
+        # Remove IMDS entries from /etc/hosts
+        if grep -q "$IMDS_ENDPOINT" /etc/hosts 2>/dev/null; then
+            log_fix "Removing IMDS entries from /etc/hosts"
+            sed -i.bak "/$IMDS_ENDPOINT/d" /etc/hosts
+            REMEDIATION_APPLIED=1
+        fi
+        
+        # Note about iptables
+        if command -v iptables >/dev/null 2>&1; then
+            if iptables -L -n 2>/dev/null | grep -q "$IMDS_ENDPOINT"; then
+                log_warn "iptables rules blocking IMDS detected but not automatically removed"
+                log_warn "Please review iptables rules manually and remove if appropriate"
+                log_warn "Suggested: iptables -D <chain> <rule-number>"
+            fi
+        fi
+        
+        log "Remediation applied. Please re-run diagnostics to verify."
+        exit 3
+    fi
+else
+    log_header "Summary"
+    log_ok "All checks passed. IMDS appears to be accessible."
+    log "No remediation required."
     exit 0
-  fi
 fi
