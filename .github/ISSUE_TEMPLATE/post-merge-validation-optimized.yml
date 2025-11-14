@@ -1,195 +1,76 @@
-name: Post-Merge Validation (Optimized)
+name: "Post-merge validation report"
+description: "Use this form when the Post-Merge Validation (Optimized) workflow fails or needs manual attention."
+title: "🚨 Post-merge validation: <short summary>"
+labels:
+  - post-merge
+  - bug
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a post-merge validation event. Please complete the required fields below.
 
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  - type: input
+    id: workflow_run_url
+    attributes:
+      label: "Workflow run URL"
+      description: "Link to the GitHub Actions run for Post-Merge Validation (Optimized)."
+      placeholder: "https://github.com/Aries-Serpent/_codex_/actions/runs/##########"
+    validations:
+      required: true
 
-# Optimized with caching and parallelization
-# Target runtime: ≤ 10 minutes
+  - type: input
+    id: commit_sha
+    attributes:
+      label: "Merge commit SHA"
+      description: "The merge commit hash on main that triggered the workflow."
+      placeholder: "943a927fc26a355afae94d7f683c6b8985d2534a"
+    validations:
+      required: true
 
-jobs:
-  validate-imports:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-      
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            .venv
-          key: ${{ runner.os }}-python-3.12-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-python-3.12-
-      
-      - name: Install package
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .
-      
-      - name: Verify torch import
-        run: |
-          python -c "import torch; print(f'✓ Torch imported from: {torch.__file__}'); print(f'✓ Torch version: {torch.__version__}')"
-          python -c "import torch, os; assert 'site-packages' in torch.__file__, f'Torch imported from wrong location: {torch.__file__}'"
-      
-      - name: Verify core imports
-        run: |
-          python -c "from src.codex_ml.training.unified_training import UnifiedTrainingConfig; print('✓ UnifiedTrainingConfig imports')"
-          python -c "from omegaconf import OmegaConf; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; OmegaConf.structured(UnifiedTrainingConfig()); print('✓ OmegaConf compatibility verified')"
+  - type: dropdown
+    id: failing_job
+    attributes:
+      label: "Failing job"
+      description: "Select the job that failed in the Post-Merge Validation (Optimized) workflow."
+      options:
+        - validate-imports
+        - test-core
+        - test-smoke
+        - lint-check
+        - modernization-scan
+        - summary
+    validations:
+      required: true
 
-  test-core:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [validate-imports]
-    strategy:
-      fail-fast: false
-      matrix:
-        test-group: [config, unit]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-      
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            .pytest_cache
-          key: ${{ runner.os }}-pytest-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-      
-      - name: Install dependencies
-        run: |
-          pip install -e .
-          pip install -r requirements-dev.txt
-      
-      - name: Run ${{ matrix.test-group }} tests
-        run: |
-          pytest tests/${{ matrix.test-group }}/ -v --tb=short --maxfail=5
-        timeout-minutes: 3
+  - type: textarea
+    id: failure_summary
+    attributes:
+      label: "Failure summary"
+      description: "Briefly describe what went wrong."
+      placeholder: "Example: validate-imports failed to import torch due to missing CPU-only build."
+    validations:
+      required: true
 
-  test-smoke:
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    needs: [validate-imports]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-      
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-smoke-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-smoke-
-      
-      - name: Install dependencies
-        run: |
-          pip install -e .
-          pip install -r requirements-dev.txt
-      
-      - name: Run smoke tests
-        run: |
-          pytest -m smoke -v --tb=short
-        continue-on-error: true
+  - type: textarea
+    id: logs_snippet
+    attributes:
+      label: "Relevant logs"
+      description: "Paste key log excerpts (avoid secrets). Use backticks for code blocks."
+      render: shell
 
-  lint-check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 3
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-      
-      - name: Check syntax warnings
-        run: |
-          python -W error::SyntaxWarning -m py_compile cli/ast_upgrade.py tools/codex_supplied_task_runner.py
-          echo "✓ No syntax warnings"
-  
-  modernization-scan:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      
-      - name: Run modernization scanner
-        run: |
-          python tools/modernization_scanner_v2.py src/ --json .reports/modernization.json --md .reports/modernization_summary.md
-        continue-on-error: true
-      
-      - name: Upload modernization report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: modernization-report
-          path: |
-            .reports/modernization.json
-            .reports/modernization_summary.md
-          retention-days: 30
+  - type: checkboxes
+    id: quick_actions
+    attributes:
+      label: "Quick actions performed"
+      options:
+        - label: "Re-ran the failing job"
+        - label: "Opened a PR with a fix"
+        - label: "Notified on-call in #deployments"
 
-  summary:
-    runs-on: ubuntu-latest
-    needs: [validate-imports, test-core, test-smoke, lint-check, modernization-scan]
-    if: always()
-    steps:
-      - name: Check status
-        run: |
-          echo "Post-merge validation complete"
-          echo "Import validation: ${{ needs.validate-imports.result }}"
-          echo "Core tests: ${{ needs.test-core.result }}"
-          echo "Smoke tests: ${{ needs.test-smoke.result }}"
-          echo "Lint check: ${{ needs.lint-check.result }}"
-          echo "Modernization scan: ${{ needs.modernization-scan.result }}"
-      
-      - name: Calculate total duration
-        run: |
-          echo "Workflow completed"
-          # GitHub Actions provides workflow duration metrics in UI
-      
-      - name: Create issue on critical failure
-        if: needs.validate-imports.result == 'failure' || needs.lint-check.result == 'failure'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Post-merge validation failed on main',
-              body: `Post-merge validation detected critical issues on main branch.\n\nCommit: ${context.sha}\n\nPlease investigate and fix immediately.`,
-              labels: ['bug', 'urgent', 'post-merge']
-            })
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional context"
+      description: "Add any extra details, links to PRs, or screenshots."
