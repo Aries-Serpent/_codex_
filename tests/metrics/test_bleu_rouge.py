@@ -103,16 +103,17 @@ class TestBLEUMetric:
         assert isinstance(score, float)
         assert score > 0.9  # Perfect matches
 
-    @pytest.mark.skipif(NLTK_AVAILABLE, reason="Test requires nltk NOT installed")
-    def test_bleu_missing_dependency_returns_none(self):
-        """Test that BLEU returns None when nltk is not available."""
+    def test_bleu_works_offline(self):
+        """Test that BLEU works without nltk (using offline implementation)."""
         from codex_ml.metrics.registry import get_metric
         
         bleu = get_metric("bleu")
         
-        # Should return None gracefully
+        # Offline implementation always returns a score
         result = bleu(["test"], ["test"])
-        assert result is None
+        assert result is not None
+        assert isinstance(result, float)
+        assert result > 0.0  # Perfect match should score well
 
 
 class TestROUGEMetric:
@@ -187,16 +188,17 @@ class TestROUGEMetric:
         assert isinstance(score, float)
         assert score > 0.9  # Perfect matches
 
-    @pytest.mark.skipif(ROUGE_AVAILABLE, reason="Test requires rouge-score NOT installed")
-    def test_rouge_missing_dependency_returns_none(self):
-        """Test that ROUGE returns None when rouge-score is not available."""
+    def test_rouge_works_offline(self):
+        """Test that ROUGE works without rouge-score (using offline implementation)."""
         from codex_ml.metrics.registry import get_metric
         
         rouge = get_metric("rougeL")
         
-        # Should return None gracefully
+        # Offline implementation always returns a score
         result = rouge(["test"], ["test"])
-        assert result is None
+        assert result is not None
+        assert isinstance(result, float)
+        assert result > 0.0  # Perfect match should score well
 
 
 class TestMetricRegistryIntegration:
@@ -204,11 +206,13 @@ class TestMetricRegistryIntegration:
 
     def test_metrics_registered(self):
         """Test that BLEU and ROUGE are registered in the metric registry."""
-        from codex_ml.metrics.registry import metric_registry
+        from codex_ml.metrics.registry import list_metrics
         
         # Both should be registered regardless of dependency availability
-        assert "bleu" in metric_registry
-        assert "rougeL" in metric_registry
+        # Note: registry normalizes names to lowercase
+        registered = list_metrics()
+        assert "bleu" in registered
+        assert "rougel" in registered  # Normalized to lowercase
 
     def test_get_metric_returns_callable(self):
         """Test that get_metric returns callable for BLEU and ROUGE."""

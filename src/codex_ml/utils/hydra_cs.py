@@ -3,25 +3,45 @@ Hydra ConfigStore compatibility utilities.
 
 Hydra versions <1.3 do not provide ConfigStore.exists(); this shim
 offers a unified interface:
-    safe_exists(cs, name) -> bool
+    safe_exists(cs, name, group=None) -> bool
 """
 from __future__ import annotations
-from typing import Any
+from typing import Any, Optional
 
-def safe_exists(config_store: Any, name: str) -> bool:
+def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bool:
     """
     Check if a config name exists in the ConfigStore.
     Compatible with both old and new Hydra versions.
+    
+    Args:
+        config_store: ConfigStore instance
+        name: Name of the config (without .yaml extension)
+        group: Optional group name (e.g., "experiment")
+    
+    Returns:
+        True if config exists, False otherwise
     """
-    # Modern Hydra (>=1.3)
+    # Modern Hydra (>=1.3) with exists method
     if hasattr(config_store, "exists"):
         try:
-            return bool(config_store.exists(name=name))
+            if group:
+                return bool(config_store.exists(group=group, name=name))
+            else:
+                return bool(config_store.exists(name=name))
         except Exception:
             return False
-    # Fallback: enumerate names
+    
+    # Fallback: use list() method
     try:
-        listed = [item.name for item in config_store.list()]
-        return name in listed
+        if group:
+            # List items in the group
+            items = config_store.list(group)
+            # Check if name.yaml is in the list
+            return f"{name}.yaml" in items
+        else:
+            # List items at root
+            items = config_store.list("")
+            # Check if name.yaml is in the list
+            return f"{name}.yaml" in items
     except Exception:
         return False
