@@ -58,6 +58,47 @@ CANDIDATE_MSG = ["message", "msg", "text", "detail"]
 CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
 
 
+class LogViewer:
+    """Wrapper class for viewing session logs."""
+
+    def view(
+        self, session_id: str | None = None, output_format: str = "text"
+    ) -> None:
+        """View session logs.
+
+        Args:
+            session_id: Session ID to view (latest if None)
+            output_format: Output format (text or json)
+        """
+        from codex.logging.db_manager import db_manager
+
+        # Ensure database is initialized
+        db_manager.init_schema()
+
+        # If no session_id, get the latest session
+        if not session_id:
+            with db_manager.connection() as conn:
+                # Use session_events table (existing schema)
+                cursor = conn.execute(
+                    "SELECT DISTINCT session_id FROM session_events ORDER BY ts DESC LIMIT 1"
+                )
+                row = cursor.fetchone()
+                if row:
+                    session_id = row[0]
+                else:
+                    print("No sessions found in database", file=sys.stderr)
+                    return
+
+        # Build args and call main
+        args = [
+            "--session-id",
+            session_id,
+            "--format",
+            output_format,
+        ]
+        main(args)
+
+
 def _validate_table_name(value: str | None) -> str | None:
     if value is None:
         return value

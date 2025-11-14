@@ -7,6 +7,11 @@ import os
 from dataclasses import fields
 from typing import Any, Callable, Mapping, MutableMapping, Optional
 
+try:  # pragma: no cover - optional transformers dependency
+    from transformers import BitsAndBytesConfig
+except Exception:  # pragma: no cover - transformers/quantization optional
+    BitsAndBytesConfig = None  # type: ignore[assignment]
+
 from .peft_hooks import LoraBuildCfg, build_lora
 
 try:  # pragma: no cover - optional dependency
@@ -95,6 +100,85 @@ def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any])
             raise exc
 
 
+def _apply_quantization_options(
+    options: MutableMapping[str, Any], quantization: Any
+) -> None:
+    """Normalize quantization hints into builder kwargs.
+
+    Parameters
+    ----------
+    options:
+        Mutable mapping of keyword arguments that will be forwarded to the
+        builder.  The mapping is mutated in-place.
+    quantization:
+        Quantization specification supplied via ``config["quantization"]`` or
+        the explicit ``quantization`` keyword argument.  Supports the
+        following shapes:
+
+        - ``"8bit"``/``"int8"``/``True`` → set ``load_in_8bit=True``
+        - ``"4bit"``/``"int4"`` → set ``load_in_4bit=True``
+        - Mapping with optional ``mode``/``variant`` keys in addition to the
+          standard ``BitsAndBytesConfig`` parameters.  When the mapping
+          contains keys beyond ``load_in_8bit``/``load_in_4bit`` the
+          ``transformers`` ``BitsAndBytesConfig`` class is required; an
+          informative ``RuntimeError`` is raised otherwise.
+    """
+
+    if quantization is None:
+        return
+
+    payload = quantization
+    if payload is True:
+        payload = "8bit"
+
+    bool_flags: dict[str, bool] = {}
+    config_payload: dict[str, Any] = {}
+
+    if isinstance(payload, str):
+        token = payload.strip().lower()
+        if token in {"8bit", "int8"}:
+            bool_flags["load_in_8bit"] = True
+        elif token in {"4bit", "int4"}:
+            bool_flags["load_in_4bit"] = True
+        else:
+            raise ValueError(f"Unsupported quantization mode: {payload!r}")
+    elif isinstance(payload, Mapping):
+        data = dict(payload)
+        mode = data.pop("mode", None) or data.pop("variant", None)
+        if mode is not None:
+            _apply_quantization_options(options, str(mode))
+        for key in ("load_in_8bit", "load_in_4bit"):
+            if key in data:
+                bool_flags[key] = bool(data.pop(key))
+        config_payload = data
+    else:
+        raise TypeError(
+            "quantization must be a string, mapping, or boolean flag; "
+            f"received {type(payload)!r}"
+        )
+
+    for key, value in bool_flags.items():
+        options.setdefault(key, value)
+
+    if config_payload:
+        if BitsAndBytesConfig is None:
+            raise RuntimeError(
+                "Quantization parameters require transformers.BitsAndBytesConfig; "
+                "install the 'bitsandbytes' extras to enable quantization."
+            )
+        # Avoid overriding a user-specified config; merge instead when possible
+        if "quantization_config" in options and isinstance(
+            options["quantization_config"], BitsAndBytesConfig
+        ):
+            existing = options["quantization_config"]
+            for key, value in config_payload.items():
+                setattr(existing, key, value)
+        else:
+            options.setdefault(
+                "quantization_config", BitsAndBytesConfig(**config_payload)
+            )
+
+
 def create_model(
     builder: Callable[..., Any],
     *,
@@ -103,10 +187,16 @@ def create_model(
     device: Any = None,
     enable_peft: Optional[bool] = None,
     lora_cfg: Any = None,
+    quantization: Any = None,
 ) -> Any:
     """Instantiate a model and optionally apply dtype/device and PEFT adapters."""
 
     options: dict[str, Any] = dict(config or {})
+    quantization_payload = (
+        quantization if quantization is not None else options.pop("quantization", None)
+    )
+    if quantization_payload is not None:
+        _apply_quantization_options(options, quantization_payload)
     resolved_dtype = _resolve_dtype(dtype if dtype is not None else options.pop("dtype", None))
     resolved_device = _resolve_device(
         device if device is not None else options.pop("device", None)

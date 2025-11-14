@@ -55,6 +55,56 @@ from .config import DEFAULT_LOG_DB
 from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
+class LogQueryEngine:
+    """Wrapper class for querying session logs."""
+
+    def search(self, query: str, role: str | None = None) -> list[dict[str, Any]]:
+        """Search through conversation transcripts.
+
+        Args:
+            query: Search query text
+            role: Optional role filter
+
+        Returns:
+            List of matching log entries as dicts
+        """
+        from codex.logging.db_manager import db_manager
+
+        # Ensure database is initialized
+        db_manager.init_schema()
+
+        # Use DBManager to get connection
+        with db_manager.connection() as conn:
+            conn.row_factory = sqlite3.Row
+
+            # Use session_events table (existing schema)
+            log_table = "session_events"
+
+            # Build query - use 'ts' instead of 'timestamp'
+            sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
+            params: list[Any] = [f"%{query}%"]
+
+            if role:
+                sql += "AND role = ? "
+                params.append(role)
+
+            sql += "ORDER BY ts DESC LIMIT 100"
+
+            cursor = conn.execute(sql, params)
+            rows = cursor.fetchall()
+
+            # Convert to dicts and map 'ts' to 'timestamp' for compatibility
+            results = []
+            for row in rows:
+                result = dict(row)
+                # Map ts to timestamp for consistency
+                if "ts" in result:
+                    result["timestamp"] = result["ts"]
+                results.append(result)
+
+            return results
+
+
 def parse_when(s: str) -> datetime:
     """Parse ISO-8601 timestamps supporting Z/offset/naive."""
     if not isinstance(s, str):
