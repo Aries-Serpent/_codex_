@@ -785,24 +785,16 @@ Production readiness: 92% → 98% (+6%)
 BREAKING CHANGE: EnvironmentManager now uses lazy validation by default.
 Set validate_on_init=True for old behavior.
 
-Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
-```
-
----
-
-### For Maintainer (@mbaetiong)
-
 **Pre-Merge Checklist**:
 
 1. ✅ Run `final_validation_phase1_enhanced.sh`
 2. ✅ Verify all 9 new tests pass
 3. ✅ Check coverage report shows ≥ 95%
-4. ✅ Test export-env command manually
+4. ✅ Test export-env command
 5. ✅ Review log rotation behavior (create test logs)
 6. ✅ Verify lazy validation doesn't break existing code
-7. ✅ Merge PR #2223
 
-**Post-Merge**:
+**Pre-Merge Optional Mandatory Aspects**:
 
 1. ⚠️ Update AGENTS.md with new commands
 2. ⚠️ Create Phase 2 issue for remaining 3 CLI commands:
@@ -812,6 +804,9 @@ Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
 3. ✅ Update project roadmap
 4. ✅ Announce completion to team
 
+
+Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
+```
 ---
 
 ## 🎉 Expected Outcomes
@@ -860,7 +855,7 @@ Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
 
 🎯 **Objective**: Maximize production readiness (92% → 98%)  
 ⚡ **Energy**: 5/5  
-📋 **Tasks**: 4 critical tasks
+📋 **Tasks**: 4 critical tasks (2h 15min total)  
 ✅ **Success**: All validation checks pass + coverage ≥ 95%  
 🚀 **Impact**: Production-ready AGENTS.md infrastructure with minimal technical debt
 
@@ -872,5 +867,4 @@ Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
 **Status**: Ready for Final Phase 1 Implementation  
 **Next Action**: Implement Tasks 1-4, validate, commit, merge PR #2223
 
-
-The plan maximizes production readiness while keeping scope manageable before merge.
+The plan maximizes production readiness while keeping scope manageable (~2 hours additional work) before merge.
