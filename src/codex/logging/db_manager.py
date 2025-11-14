@@ -32,20 +32,31 @@ class DBManager:
 
     Features:
     - Automatic schema initialization
-    - Connection pooling support
+    - Connection pooling support (opt-in via CODEX_SQLITE_POOL=1)
     - Thread-safe operations
     - WAL mode for better concurrency
+    - Graceful connection cleanup via close_all_pools()
 
     Usage:
+        # Basic usage
         db_manager = DBManager()
         conn = db_manager.get_connection()
         # Use connection
         db_manager.close_connection(conn)
 
-        # Or use context manager
+        # Context manager (recommended)
         with db_manager.connection() as conn:
             # Use connection
             pass
+
+        # Application shutdown
+        import atexit
+        atexit.register(DBManager.close_all_pools)
+
+    Attributes:
+        _logger: Class-level logger (shared across instances)
+        _POOL_ENABLED: Connection pooling enabled flag
+        _CONNECTION_POOL: Shared connection pool dictionary
     """
 
     # Class-level lock for initialization
@@ -57,6 +68,9 @@ class DBManager:
     _CONNECTION_POOL: dict[str, list[sqlite3.Connection]] = {}
     _POOL_ENABLED = os.getenv("CODEX_SQLITE_POOL") == "1"
 
+    # Class-level logger
+    _logger = logging.getLogger(__name__)
+
     def __init__(self, db_path: Optional[Path] = None) -> None:
         """Initialize database manager.
 
@@ -64,7 +78,6 @@ class DBManager:
             db_path: Path to SQLite database (default: from env or .codex/session_logs.db)
         """
         self.db_path = self._resolve_db_path(db_path)
-        self.logger = logging.getLogger(__name__)
 
     def _resolve_db_path(self, db_path: Optional[Path] = None) -> Path:
         """Resolve database path from args, env, or defaults."""
@@ -137,7 +150,7 @@ class DBManager:
 
                 conn.commit()
                 self._INITIALIZED_DBS.add(db_key)
-                self.logger.info(f"Database schema initialized: {self.db_path}")
+                self._logger.info(f"Database schema initialized: {self.db_path}")
 
             finally:
                 conn.close()
@@ -204,7 +217,7 @@ class DBManager:
         try:
             conn.close()
         except sqlite3.Error as exc:
-            self.logger.debug(f"Error closing connection: {exc}")
+            self._logger.debug(f"Error closing connection: {exc}")
 
     @contextmanager
     def connection(self, auto_init: bool = True):
@@ -229,14 +242,37 @@ class DBManager:
 
     @classmethod
     def close_all_pools(cls) -> None:
-        """Close all pooled connections (for cleanup/shutdown)."""
+        """Close all pooled connections (for cleanup/shutdown).
+
+        This method is typically called during application shutdown to ensure
+        all database connections are properly closed and resources are released.
+
+        Handles errors gracefully:
+        - Logs errors at DEBUG level if individual connections fail to close
+        - Continues closing remaining connections even if errors occur
+        - Clears the connection pool dictionary after all close attempts
+
+        Thread-safe: Uses _POOL_LOCK to prevent concurrent access.
+
+        Example:
+            # During application shutdown
+            import atexit
+            atexit.register(DBManager.close_all_pools)
+
+            # Or manually
+            DBManager.close_all_pools()
+
+        Note:
+            This is a classmethod that operates on the shared connection pool
+            across all DBManager instances. It does not require an instance.
+        """
         with cls._POOL_LOCK:
             for pool in cls._CONNECTION_POOL.values():
                 for conn in pool:
                     try:
                         conn.close()
                     except sqlite3.Error as exc:
-                        cls.logger.debug(f"Error closing pooled connection: {exc}")
+                        cls._logger.debug(f"Error closing pooled connection: {exc}")
             cls._CONNECTION_POOL.clear()
 
 
