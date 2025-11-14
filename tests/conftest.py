@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import builtins
+import importlib
 import importlib.util
 import os
 import pathlib
@@ -377,7 +378,7 @@ def enable_pooling(isolated_db_manager, clean_connection_pool):
     Example:
         def test_pool_behavior(enable_pooling):
             from codex.logging.db_manager import DBManager
-            assert DBManager._POOL_ENABLED == True
+            assert DBManager._POOL_ENABLED is True
             # Test pooling behavior
     
     Notes:
@@ -456,7 +457,7 @@ def pooling_db_manager(enable_pooling, tmp_path):
     manager.init_schema()
     
     # Validate pooling is enabled
-    assert DBManager._POOL_ENABLED == True, \
+    assert DBManager._POOL_ENABLED is True, \
         "pooling_db_manager fixture requires pooling to be enabled"
     
     yield manager
@@ -522,7 +523,7 @@ def verify_pooling_enabled():
         """Check that pooling is actually enabled."""
         from codex.logging.db_manager import DBManager
         
-        assert DBManager._POOL_ENABLED == True, \
+        assert DBManager._POOL_ENABLED is True, \
             "Test claims to use pooling but DBManager._POOL_ENABLED is False. " \
             "This indicates the test is not actually exercising pooling code paths."
     

@@ -5,12 +5,7 @@ Tests for P1 defect: close_all_pools() AttributeError causing resource leaks.
 
 import os
 import pytest
-import sqlite3
-import tempfile
-import threading
-import time
-from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestDBManagerPoolCleanup:
@@ -161,8 +156,8 @@ class TestDBManagerPoolCleanup:
         import logging
         with patch.object(DBManager._logger, 'info') as mock_info:
             db.init_schema()
-            # Should have logged initialization
-            assert mock_info.called or True  # Schema may already exist
+            # Schema may already exist, logging is optional
+            # Test passes if no exception raised
 
     def test_close_all_pools_logs_errors(self, tmp_path, caplog):
         """Test that errors during close are logged at DEBUG level."""

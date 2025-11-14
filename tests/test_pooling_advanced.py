@@ -7,8 +7,6 @@ Tests advanced pooling scenarios:
 - Stale connection handling
 """
 
-import pytest
-import time
 import threading
 
 
@@ -67,15 +65,16 @@ class TestPoolingBehavior:
     def test_concurrent_pool_access(self, pooling_db_manager):
         """Test concurrent access to connection pool."""
         from codex.logging.db_manager import DBManager
+        from queue import Queue
         
         errors = []
-        connections_used = []
+        connections_used = Queue()  # Thread-safe queue
         
         def worker(thread_id):
             try:
                 for i in range(5):
                     conn = pooling_db_manager.get_connection()
-                    connections_used.append(id(conn))
+                    connections_used.put(id(conn))  # Thread-safe put
                     
                     # Use connection
                     cursor = conn.execute("SELECT ?", (thread_id,))
@@ -98,8 +97,12 @@ class TestPoolingBehavior:
         assert len(errors) == 0, f"Concurrent access errors: {errors}"
         
         # Verify connections were reused
-        unique_connections = len(set(connections_used))
-        total_uses = len(connections_used)
+        connection_ids = []
+        while not connections_used.empty():
+            connection_ids.append(connections_used.get())
+        
+        unique_connections = len(set(connection_ids))
+        total_uses = len(connection_ids)
         
         # Should have reused connections (fewer unique than total uses)
         assert unique_connections < total_uses, \
@@ -118,7 +121,7 @@ class TestPoolingDisabled:
         from codex.logging.db_manager import DBManager
         
         # Verify pooling is disabled
-        assert DBManager._POOL_ENABLED == False, \
+        assert DBManager._POOL_ENABLED is False, \
             "Pooling should be disabled by default"
         
         db = DBManager(db_path=tmp_path / "no_pool.db")
