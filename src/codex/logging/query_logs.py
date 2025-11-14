@@ -55,6 +55,62 @@ from .config import DEFAULT_LOG_DB
 from .db_utils import infer_columns, infer_probable_table, open_db, resolve_db_path
 
 
+class LogQueryEngine:
+    """Wrapper class for querying session logs."""
+
+    def search(self, query: str, role: str | None = None) -> list[dict[str, Any]]:
+        """Search through conversation transcripts.
+
+        Args:
+            query: Search query text
+            role: Optional role filter
+
+        Returns:
+            List of matching log entries as dicts
+        """
+        db_path_str = os.getenv("CODEX_LOG_DB_PATH") or os.getenv("CODEX_DB_PATH") or str(DEFAULT_LOG_DB)
+        db_path = Path(_resolve_db_path(db_path_str))
+
+        if not db_path.exists():
+            return []
+
+        conn = sqlite3.connect(str(db_path))
+        conn.row_factory = sqlite3.Row
+
+        # Find the logs table
+        tables = [row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")]
+        log_table = None
+        for t in tables:
+            if "log" in t.lower():
+                log_table = t
+                break
+        
+        if not log_table:
+            conn.close()
+            return []
+
+        # Build query
+        sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
+        params: list[Any] = [f"%{query}%"]
+
+        if role:
+            sql += "AND role = ? "
+            params.append(role)
+
+        sql += "ORDER BY timestamp DESC LIMIT 100"
+
+        cursor = conn.execute(sql, params)
+        rows = cursor.fetchall()
+        conn.close()
+
+        # Convert to dicts
+        results = []
+        for row in rows:
+            results.append(dict(row))
+
+        return results
+
+
 def parse_when(s: str) -> datetime:
     """Parse ISO-8601 timestamps supporting Z/offset/naive."""
     if not isinstance(s, str):

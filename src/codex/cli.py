@@ -665,6 +665,142 @@ def _register_external_cli() -> None:
     _register_tokenizer_pipeline_commands()
 
 
+# ==============================================================================
+# AGENTS.md Infrastructure Commands
+# ==============================================================================
+
+
+@cli.command("session-logger")
+@click.option("--session-id", help="Session ID (default: auto-generate)")
+@click.option(
+    "--role",
+    type=click.Choice(["system", "user", "assistant", "tool"]),
+    required=True,
+    help="Log message role",
+)
+@click.option("--message", required=True, help="Log message")
+def session_logger_cmd(session_id: str | None, role: str, message: str) -> None:
+    """Record session events to the database.
+
+    Examples:
+        codex session-logger --role=user --message="Starting analysis"
+        codex session-logger --session-id=abc --role=assistant --message="Done"
+    """
+    try:
+        from codex.logging.error_handler import error_handler
+        from codex.logging.session_logger import SessionLogger, get_session_id
+
+        @error_handler.log_errors
+        def _log() -> None:
+            # Use provided session_id or auto-generate
+            sid = session_id or get_session_id()
+            logger = SessionLogger(session_id=sid)
+            logger.log(role=role, message=message)
+            click.echo(f"✅ Logged {role} message to session {logger.session_id}")
+
+        _log()
+    except Exception as exc:
+        click.echo(f"❌ Failed to log message: {exc}", err=True)
+        sys.exit(1)
+
+
+@cli.command("viewer")
+@click.option("--session-id", help="Session ID to view (default: latest)")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    help="Output format",
+)
+def viewer_cmd(session_id: str | None, output_format: str) -> None:
+    """View session logs in various formats.
+
+    Examples:
+        codex viewer
+        codex viewer --session-id=abc123
+        codex viewer --format=json
+    """
+    try:
+        from codex.logging.error_handler import error_handler
+        from codex.logging.viewer import LogViewer
+
+        @error_handler.log_errors
+        def _view() -> None:
+            viewer = LogViewer()
+            viewer.view(session_id=session_id, output_format=output_format)
+
+        _view()
+    except Exception as exc:
+        click.echo(f"❌ Failed to view logs: {exc}", err=True)
+        sys.exit(1)
+
+
+@cli.command("query-logs")
+@click.option("--search", required=True, help="Search query")
+@click.option("--role", help="Filter by role")
+def query_logs_cmd(search: str, role: str | None) -> None:
+    """Search through conversation transcripts.
+
+    Examples:
+        codex query-logs --search="error"
+        codex query-logs --search="test" --role=tool
+    """
+    try:
+        from codex.logging.error_handler import error_handler
+        from codex.logging.query_logs import LogQueryEngine
+
+        @error_handler.log_errors
+        def _query() -> None:
+            engine = LogQueryEngine()
+            results = engine.search(query=search, role=role)
+
+            if not results:
+                click.echo("No results found")
+                return
+
+            for result in results:
+                timestamp = result.get("timestamp", "unknown")
+                msg_role = result.get("role", "unknown")
+                msg = result.get("message", "")
+                click.echo(f"\n[{timestamp}] {msg_role}: {msg}")
+
+        _query()
+    except Exception as exc:
+        click.echo(f"❌ Failed to query logs: {exc}", err=True)
+        sys.exit(1)
+
+
+@cli.command("validate-env")
+def validate_env_cmd() -> None:
+    """Validate and display current environment configuration.
+
+    Displays all CODEX_* environment variables and their values.
+
+    Examples:
+        codex validate-env
+    """
+    try:
+        from codex.config.env_vars import env_manager
+        from codex.logging.error_handler import error_handler
+
+        @error_handler.log_errors
+        def _validate() -> None:
+            config = env_manager.dump_config()
+
+            click.echo("📊 Current Environment Configuration:\n")
+            for var, value in config.items():
+                display_value = value if value else "<not set>"
+                click.echo(f"  {var}: {display_value}")
+
+            click.echo("\n✅ Environment validation passed")
+
+        _validate()
+    except Exception as exc:
+        click.echo(f"❌ Environment validation failed: {exc}", err=True)
+        sys.exit(1)
+
+
 _register_external_cli()
 
 

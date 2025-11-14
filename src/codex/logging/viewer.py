@@ -58,6 +58,42 @@ CANDIDATE_MSG = ["message", "msg", "text", "detail"]
 CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
 
 
+class LogViewer:
+    """Wrapper class for viewing session logs."""
+
+    def view(
+        self, session_id: str | None = None, output_format: str = "text"
+    ) -> None:
+        """View session logs.
+
+        Args:
+            session_id: Session ID to view (latest if None)
+            output_format: Output format (text or json)
+        """
+        # If no session_id, get the latest session
+        if not session_id:
+            db_path = resolve_db_path(Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB))))
+            conn = sqlite3.connect(str(db_path))
+            cursor = conn.execute("SELECT DISTINCT session_id FROM logs ORDER BY timestamp DESC LIMIT 1")
+            row = cursor.fetchone()
+            conn.close()
+            if row:
+                session_id = row[0]
+            else:
+                print("No sessions found in database", file=sys.stderr)
+                return
+
+        # Build args and call main
+        args = [
+            "--session-id",
+            session_id,
+            "--format",
+            output_format,
+        ]
+        namespace = parse_args(args)
+        main(namespace)
+
+
 def _validate_table_name(value: str | None) -> str | None:
     if value is None:
         return value
