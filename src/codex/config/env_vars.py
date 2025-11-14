@@ -148,6 +148,22 @@ class EnvironmentManager:
             self._validate_environment()
             self._validated = True
 
+    def validate(self) -> None:
+        """Explicitly validate environment variables.
+
+        Can be called multiple times safely (idempotent).
+        Useful for explicit validation in scripts or applications.
+
+        Raises:
+            EnvironmentError: If validation fails
+
+        Example:
+            env = EnvironmentManager(lazy_validation=True)
+            # ... later
+            env.validate()  # Explicit validation
+        """
+        self._ensure_validated()
+
     def _validate_environment(self) -> None:
         """Validate required environment variables."""
         errors = []

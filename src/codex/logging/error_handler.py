@@ -67,6 +67,27 @@ class CodexErrorHandler:
         )
         self.logger.addHandler(handler)
 
+    def set_log_level(self, level: str) -> None:
+        """Set logging level dynamically.
+
+        Args:
+            level: One of DEBUG, INFO, WARNING, ERROR, CRITICAL (case-insensitive)
+
+        Raises:
+            ValueError: If invalid level provided
+
+        Example:
+            handler.set_log_level('DEBUG')
+            handler.set_log_level('warning')  # case-insensitive
+        """
+        level_upper = level.upper()
+        if not hasattr(logging, level_upper):
+            raise ValueError(
+                f"Invalid log level '{level}'. "
+                f"Must be one of: DEBUG, INFO, WARNING, ERROR, CRITICAL"
+            )
+        self.logger.setLevel(getattr(logging, level_upper))
+
     def log_error(
         self,
         error: Exception,

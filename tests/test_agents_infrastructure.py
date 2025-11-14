@@ -404,3 +404,282 @@ class TestNewCLICommands:
         # Should succeed (may find nothing to clean)
         assert result.exit_code == 0
 
+
+class TestMissingMethods:
+    """Test methods added in F1 - method completeness."""
+
+    def test_set_log_level(self, tmp_path):
+        """Test dynamic log level setting."""
+        from codex.logging.error_handler import CodexErrorHandler
+        import logging
+
+        handler = CodexErrorHandler(log_dir=tmp_path)
+
+        # Default should be ERROR
+        assert handler.logger.level == logging.ERROR
+
+        # Test valid levels
+        handler.set_log_level('DEBUG')
+        assert handler.logger.level == logging.DEBUG
+
+        handler.set_log_level('warning')  # case-insensitive
+        assert handler.logger.level == logging.WARNING
+
+        handler.set_log_level('INFO')
+        assert handler.logger.level == logging.INFO
+
+        # Test invalid level
+        import pytest
+        with pytest.raises(ValueError, match="Invalid log level"):
+            handler.set_log_level('INVALID')
+
+    def test_public_validate_method(self):
+        """Test public validate() method."""
+        from codex.config.env_vars import EnvironmentManager
+        import os
+        from unittest.mock import patch
+
+        # Lazy validation mode
+        with patch.dict(os.environ, {}, clear=True):
+            env = EnvironmentManager(lazy_validation=True)
+
+            # Should not crash on init
+            assert not env._validated
+
+            # Explicit validation
+            env.validate()
+            assert env._validated
+
+            # Idempotent - second call should be safe
+            env.validate()
+            assert env._validated
+
+    def test_validate_with_invalid_env(self):
+        """Test validate() detects invalid environment."""
+        from codex.config.env_vars import EnvironmentManager
+        import os
+        from unittest.mock import patch
+        import pytest
+
+        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '999'}, clear=True):
+            env = EnvironmentManager(lazy_validation=True)
+
+            # Should fail on explicit validation
+            with pytest.raises(EnvironmentError, match="Invalid value"):
+                env.validate()
+
+
+class TestEdgeCases:
+    """Test edge cases and error paths for coverage (F3)."""
+
+    def test_error_handler_with_empty_log_dir(self):
+        """Test ErrorHandler with non-existent log directory."""
+        from codex.logging.error_handler import CodexErrorHandler
+        from pathlib import Path
+        import time
+
+        # Non-existent path should be created
+        fake_path = Path("/tmp/codex_test_nonexistent_" + str(time.time()))
+        handler = CodexErrorHandler(log_dir=fake_path)
+
+        assert fake_path.exists()
+
+        # Cleanup
+        import shutil
+        shutil.rmtree(fake_path)
+
+    def test_db_manager_invalid_path(self):
+        """Test DBManager with invalid/read-only path."""
+        from codex.logging.db_manager import DBManager
+        from pathlib import Path
+        import pytest
+
+        # Invalid path should raise error on init_schema
+        db = DBManager(db_path=Path("/invalid/readonly/path.db"))
+
+        with pytest.raises(Exception):  # Could be OSError or sqlite3.Error
+            db.init_schema()
+
+    def test_environment_manager_missing_optional_vars(self):
+        """Test EnvironmentManager with missing optional variables."""
+        from codex.config.env_vars import EnvironmentManager
+        import os
+        from unittest.mock import patch
+
+        with patch.dict(os.environ, {}, clear=True):
+            env = EnvironmentManager()
+
+            # Should use defaults for optional vars
+            assert env.get('CODEX_ENV_PYTHON_VERSION') == '3.12'
+            assert env.get('CODEX_SESSION_LOG_DIR') == '.codex/sessions'
+
+    def test_db_manager_empty_database(self, tmp_path):
+        """Test querying empty database."""
+        from codex.logging.db_manager import DBManager
+
+        db = DBManager(db_path=tmp_path / "empty.db")
+        db.init_schema()
+
+        # Query empty database
+        with db.connection() as conn:
+            cursor = conn.execute("SELECT COUNT(*) FROM session_events")
+            count = cursor.fetchone()[0]
+            assert count == 0
+
+    def test_export_env_with_empty_config(self):
+        """Test export-env with minimal environment."""
+        from click.testing import CliRunner
+        from codex.cli import export_env_cmd
+        import os
+        from unittest.mock import patch
+
+        runner = CliRunner()
+
+        with patch.dict(os.environ, {}, clear=True):
+            result = runner.invoke(export_env_cmd, ["--format=json"])
+            assert result.exit_code == 0
+
+            # Should have at least defaults
+            import json
+            config = json.loads(result.output)
+            assert 'CODEX_ENV_PYTHON_VERSION' in config
+
+    def test_clean_logs_with_no_old_logs(self):
+        """Test clean-logs when no old logs exist."""
+        from click.testing import CliRunner
+        from codex.cli import clean_logs_cmd
+
+        runner = CliRunner()
+        result = runner.invoke(clean_logs_cmd, ["--older-than=30", "--dry-run"])
+        assert result.exit_code == 0
+        assert "0" in result.output or "No" in result.output or "no" in result.output.lower()
+
+
+class TestConcurrentAccess:
+    """Test concurrent database access (F2)."""
+
+    def test_db_manager_concurrent_access(self, tmp_path):
+        """Test DBManager handles concurrent writes correctly (WAL mode)."""
+        from codex.logging.db_manager import DBManager
+        import threading
+        import time
+
+        db_path = tmp_path / "concurrent_test.db"
+        manager = DBManager(db_path=db_path)
+        manager.init_schema()
+
+        errors = []
+        write_count = [0]  # Mutable to track across threads
+
+        def write_logs(thread_id: int, iterations: int):
+            """Write logs from a single thread."""
+            try:
+                for i in range(iterations):
+                    with manager.connection() as conn:
+                        conn.execute(
+                            "INSERT INTO session_events (ts, session_id, role, message) "
+                            "VALUES (?, ?, ?, ?)",
+                            (time.time(), f"thread-{thread_id}", "user",
+                             f"Message {i} from thread {thread_id}")
+                        )
+                        conn.commit()
+                    write_count[0] += 1
+            except Exception as e:
+                errors.append((thread_id, str(e)))
+
+        # Spawn 5 threads writing 10 messages each
+        threads = []
+        for i in range(5):
+            t = threading.Thread(target=write_logs, args=(i, 10))
+            threads.append(t)
+            t.start()
+
+        # Wait for all threads
+        for t in threads:
+            t.join()
+
+        # Verify no errors (WAL mode should handle concurrency)
+        assert len(errors) == 0, f"Concurrent writes should not error: {errors}"
+
+        # Verify all 50 writes succeeded
+        with manager.connection() as conn:
+            cursor = conn.execute("SELECT COUNT(*) FROM session_events")
+            count = cursor.fetchone()[0]
+
+        assert count == 50, f"Expected 50 rows (5 threads × 10 writes), got {count}"
+        assert write_count[0] == 50, f"Write count mismatch: {write_count[0]}"
+
+
+class TestFullSessionLifecycle:
+    """Test complete session lifecycle (F2)."""
+
+    def test_cli_full_session_lifecycle(self, tmp_path):
+        """Test complete session lifecycle workflow.
+
+        Flow: init-db → log messages → query database → verify results
+        """
+        from click.testing import CliRunner
+        from codex.cli import init_db_cmd
+        from codex.logging.db_manager import DBManager
+        import time
+
+        runner = CliRunner()
+        db_path = tmp_path / "lifecycle_test.db"
+
+        # Step 1: Initialize database via CLI
+        result = runner.invoke(init_db_cmd, ["--db-path", str(db_path)])
+        assert result.exit_code == 0, f"init-db failed: {result.output}"
+        assert db_path.exists()
+
+        # Step 2: Log test messages via DBManager (direct API)
+        manager = DBManager(db_path=db_path)
+        session_id = "test-session-123"
+
+        test_messages = [
+            ("system", "Session initialized"),
+            ("user", "Hello, world"),
+            ("assistant", "Hi there!"),
+            ("user", "How are you?"),
+            ("assistant", "I'm doing well"),
+        ]
+
+        for role, message in test_messages:
+            with manager.connection() as conn:
+                conn.execute(
+                    "INSERT INTO session_events (ts, session_id, role, message) "
+                    "VALUES (?, ?, ?, ?)",
+                    (time.time(), session_id, role, message)
+                )
+                conn.commit()
+
+        # Step 3: Query database and verify
+        with manager.connection() as conn:
+            # Count total messages
+            cursor = conn.execute(
+                "SELECT COUNT(*) FROM session_events WHERE session_id = ?",
+                (session_id,)
+            )
+            count = cursor.fetchone()[0]
+            assert count == 5, f"Expected 5 messages, got {count}"
+
+            # Verify message content
+            cursor = conn.execute(
+                "SELECT role, message FROM session_events WHERE session_id = ? ORDER BY ts",
+                (session_id,)
+            )
+            rows = cursor.fetchall()
+
+            for i, (expected_role, expected_msg) in enumerate(test_messages):
+                actual_role, actual_msg = rows[i]
+                assert actual_role == expected_role, f"Role mismatch at index {i}"
+                assert actual_msg == expected_msg, f"Message mismatch at index {i}"
+
+        # Step 4: Test query functionality (simulates query-logs)
+        with manager.connection() as conn:
+            cursor = conn.execute(
+                "SELECT COUNT(*) FROM session_events WHERE message LIKE ?",
+                ("%world%",)
+            )
+            search_count = cursor.fetchone()[0]
+            assert search_count == 1, "Search should find 'Hello, world'"
+
