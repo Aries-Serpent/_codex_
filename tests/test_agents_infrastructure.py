@@ -480,7 +480,7 @@ class TestEdgeCases:
 
         # Non-existent path should be created
         fake_path = Path("/tmp/codex_test_nonexistent_" + str(time.time()))
-        handler = CodexErrorHandler(log_dir=fake_path)
+        CodexErrorHandler(log_dir=fake_path)
 
         assert fake_path.exists()
 
