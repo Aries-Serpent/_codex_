@@ -11,22 +11,9 @@ Tests:
 from __future__ import annotations
 
 import os
-import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-
-# Mock optional dependencies if not available
-try:
-    import mlflow  # noqa: F401
-except ImportError:
-    mlflow = MagicMock()  # type: ignore
-
-try:
-    import hydra  # noqa: F401
-except ImportError:
-    hydra = MagicMock()  # type: ignore
 
 
 class TestEnvironmentManager:
@@ -211,27 +198,3 @@ class TestCLI:
             # Should handle gracefully
             assert result.exit_code in (0, 1)
 
-
-# Fixtures for mocking optional dependencies
-@pytest.fixture(autouse=True)
-def mock_optional_deps():
-    """Mock optional dependencies if not installed."""
-    mocks = {}
-
-    # Mock mlflow if not available
-    try:
-        import mlflow  # noqa: F401
-    except ImportError:
-        mocks["mlflow"] = MagicMock()
-
-    # Mock hydra if not available
-    try:
-        import hydra  # noqa: F401
-    except ImportError:
-        mocks["hydra"] = MagicMock()
-
-    if mocks:
-        with patch.dict("sys.modules", mocks):
-            yield
-    else:
-        yield

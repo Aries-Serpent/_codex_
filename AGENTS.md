@@ -2,11 +2,17 @@
 
 Guidelines for contributors and Codex automation. Keep this file updated as conventions change.
 
+> **Version**: 2.1.0 (Merged operational + dependency documentation)  
+> **Generated**: 2025-11-14  
+> **Authors**: mbaetiong, GitHub Copilot
+
 ## Table of Contents
 
 - [Repository Overview](#repository-overview)
 - [Environment Variables](#environment-variables)
+- [Logging & Evidence Surfaces](#logging--evidence-surfaces)
 - [Logging Roles](#logging-roles)
+- [Dependency Retention & Segmentation](#dependency-retention--segmentation)
 - [Tooling, Testing & Checks](#tooling-testing--checks)
 - [CLI & Tool Usage](#cli--tool-usage)
 - [Optional Dependencies & Mocking](#optional-dependencies--mocking)
@@ -118,6 +124,62 @@ log_message(session_id="my-session", role="tool", message="Executed: pytest")
 # Log a system event
 log_message(session_id="my-session", role="system", message="Session initialized")
 ```
+
+## Logging & Evidence Surfaces
+
+The repository maintains structured evidence logs for audit and compliance purposes.
+
+| Path | Purpose | Rotation | Notes |
+|------|---------|----------|-------|
+| `.codex/evidence/archive_ops.jsonl` | Archive & restore operations (tombstones) | Append-only; rotate quarterly | Dual-control purge approvals preserved |
+| `.codex/evidence/dependency_ops.jsonl` | Dependency segmentation & vendor purge evidence | Append-only; rotate weekly if >1MB | Actions: TORCH_PREINSTALL, DEPENDENCY_VENDOR_SCAN, DEPENDENCY_VENDOR_PURGE, LOCK_PRUNE, MINIMAL_AUGMENT, TORCH_REINSTALL |
+| `.codex/logs/*` | Script-level warnings/errors | Ad-hoc | Do not manually edit evidence JSONL lines |
+| `.codex/cache/*` | Transient metrics (timings, hashes) | Recreatable | Safe to prune |
+
+### Evidence JSON Schema (Dependency)
+
+Each line is a JSON object (example):
+```json
+{
+  "ts": "2025-11-12T16:25:09Z",
+  "action": "DEPENDENCY_VENDOR_PURGE",
+  "tool": "setup",
+  "mode": "primary",
+  "vendors": [],
+  "purged_count": 6,
+  "vendor_hash_before": "7e9f...",
+  "vendor_hash_after": "",
+  "vendor_list_before": "nvidia-cublas-cu12 nvidia-nvtx-cu12",
+  "vendor_list_after": "",
+  "lock_prune_action": "dryrun",
+  "lock_prune_lines_removed": 14,
+  "torch_version": "2.8.0+cpu",
+  "note": "",
+  "actor": "github-actions[bot]",
+  "session_id": "S123-456"
+}
+```
+
+Required keys: `ts`, `action`, `tool` (schema validation session: `nox -s evidence_check`).
+
+## Dependency Retention & Segmentation
+
+Guidelines for managing dependencies across test sessions.
+
+| Family | Session | Removal Requires ADR | Evidence Source |
+|--------|---------|----------------------|-----------------|
+| torch | ml_tests | Yes | dependency_ops.jsonl |
+| transformers/tokenizers/safetensors | ml_tests | No (if kept segmented) | dependency_ops.jsonl |
+| accelerate / peft | ml_tests | No | dependency_ops.jsonl |
+| eval metrics (lm-eval, rouge-score, sacrebleu, nltk) | eval_tests | No (CHANGELOG note if bulk removal) | dependency_ops.jsonl |
+| scientific (scipy, scikit-learn, statsmodels, pandas) | eval_tests | Yes if baseline removal | dependency_ops.jsonl |
+| jupyterlab / notebook / nbconvert / matplotlib | notebook_env | Yes if baseline integration proposed | dependency_ops.jsonl |
+| nvidia-* / triton / torchtriton | purge automation | No (purge logs suffice) | dependency_ops.jsonl |
+| mlflow / ray | dedicated feature session | Yes if dropped entirely | ADR + dependency_ops.jsonl |
+
+**Policy**: Baseline `tests` session MUST NOT install heavy ML/eval stacks unless explicitly justified and documented.
+
+For detailed dependency management procedures, see the backup documentation in `AGENTS.md.backup_20251114_035816`.
 
 ## Tooling, Testing & Checks
 

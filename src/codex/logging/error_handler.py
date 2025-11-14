@@ -41,13 +41,11 @@ class CodexErrorHandler:
             self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
         )
 
-        # Configure logger
-        self.logger = logging.getLogger("codex.errors")
-        self.logger.setLevel(logging.ERROR)
-
-        # Clear existing handlers and add our file handler
+        # Configure logger - use unique name per instance to avoid conflicts
         # This ensures each instance uses its own log file
-        self.logger.handlers.clear()
+        self.logger = logging.getLogger(f"codex.errors.{id(self)}")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.propagate = False  # Don't propagate to parent loggers
         
         handler = logging.FileHandler(self.error_log)
         handler.setFormatter(

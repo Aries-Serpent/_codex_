@@ -163,7 +163,9 @@ class EnvironmentManager:
         fallback = (
             default if default is not None else (config.default if config else None)
         )
-        return os.getenv(var_name, fallback) or ""
+        value = os.getenv(var_name, fallback)
+        # Return None as-is to preserve type distinction for optional variables
+        return value if value is not None else ""
 
     def get_session_id(self) -> str:
         """Get or generate session ID.
