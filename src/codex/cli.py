@@ -801,6 +801,43 @@ def validate_env_cmd() -> None:
         sys.exit(1)
 
 
+@cli.command("init-db")
+@click.option(
+    "--db-path",
+    help="Database path (default: from env or .codex/session_logs.db)",
+)
+def init_db_cmd(db_path: str | None) -> None:
+    """Initialize the session logging database.
+
+    Creates the database schema and tables if they don't exist.
+
+    Examples:
+        codex init-db
+        codex init-db --db-path=.codex/custom.db
+    """
+    try:
+        from pathlib import Path
+
+        from codex.logging.db_manager import DBManager
+        from codex.logging.error_handler import error_handler
+
+        @error_handler.log_errors
+        def _init() -> None:
+            db_path_obj = Path(db_path) if db_path else None
+            manager = DBManager(db_path=db_path_obj)
+
+            click.echo(f"Initializing database: {manager.db_path}")
+            manager.init_schema()
+            click.echo(f"✅ Database initialized successfully")
+            click.echo(f"   Schema: session_events table created")
+            click.echo(f"   Location: {manager.db_path}")
+
+        _init()
+    except Exception as exc:
+        click.echo(f"❌ Failed to initialize database: {exc}", err=True)
+        sys.exit(1)
+
+
 _register_external_cli()
 
 

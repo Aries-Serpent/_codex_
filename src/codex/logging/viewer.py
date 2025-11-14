@@ -70,19 +70,24 @@ class LogViewer:
             session_id: Session ID to view (latest if None)
             output_format: Output format (text or json)
         """
+        from codex.logging.db_manager import db_manager
+
+        # Ensure database is initialized
+        db_manager.init_schema()
+
         # If no session_id, get the latest session
         if not session_id:
-            db_path = resolve_db_path(Path(os.getenv("CODEX_LOG_DB_PATH", str(DEFAULT_LOG_DB))))
-            conn = sqlite3.connect(str(db_path))
-            # Use session_events table (existing schema)
-            cursor = conn.execute("SELECT DISTINCT session_id FROM session_events ORDER BY ts DESC LIMIT 1")
-            row = cursor.fetchone()
-            conn.close()
-            if row:
-                session_id = row[0]
-            else:
-                print("No sessions found in database", file=sys.stderr)
-                return
+            with db_manager.connection() as conn:
+                # Use session_events table (existing schema)
+                cursor = conn.execute(
+                    "SELECT DISTINCT session_id FROM session_events ORDER BY ts DESC LIMIT 1"
+                )
+                row = cursor.fetchone()
+                if row:
+                    session_id = row[0]
+                else:
+                    print("No sessions found in database", file=sys.stderr)
+                    return
 
         # Build args and call main - pass as list not namespace
         args = [

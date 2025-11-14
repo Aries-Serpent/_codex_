@@ -68,42 +68,41 @@ class LogQueryEngine:
         Returns:
             List of matching log entries as dicts
         """
-        db_path_str = os.getenv("CODEX_LOG_DB_PATH") or os.getenv("CODEX_DB_PATH") or str(DEFAULT_LOG_DB)
-        db_path = Path(_resolve_db_path(db_path_str))
+        from codex.logging.db_manager import db_manager
 
-        if not db_path.exists():
-            return []
+        # Ensure database is initialized
+        db_manager.init_schema()
 
-        conn = sqlite3.connect(str(db_path))
-        conn.row_factory = sqlite3.Row
+        # Use DBManager to get connection
+        with db_manager.connection() as conn:
+            conn.row_factory = sqlite3.Row
 
-        # Use session_events table (existing schema)
-        log_table = "session_events"
+            # Use session_events table (existing schema)
+            log_table = "session_events"
 
-        # Build query - use 'ts' instead of 'timestamp'
-        sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
-        params: list[Any] = [f"%{query}%"]
+            # Build query - use 'ts' instead of 'timestamp'
+            sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
+            params: list[Any] = [f"%{query}%"]
 
-        if role:
-            sql += "AND role = ? "
-            params.append(role)
+            if role:
+                sql += "AND role = ? "
+                params.append(role)
 
-        sql += "ORDER BY ts DESC LIMIT 100"
+            sql += "ORDER BY ts DESC LIMIT 100"
 
-        cursor = conn.execute(sql, params)
-        rows = cursor.fetchall()
-        conn.close()
+            cursor = conn.execute(sql, params)
+            rows = cursor.fetchall()
 
-        # Convert to dicts and map 'ts' to 'timestamp' for compatibility
-        results = []
-        for row in rows:
-            result = dict(row)
-            # Map ts to timestamp for consistency
-            if 'ts' in result:
-                result['timestamp'] = result['ts']
-            results.append(result)
+            # Convert to dicts and map 'ts' to 'timestamp' for compatibility
+            results = []
+            for row in rows:
+                result = dict(row)
+                # Map ts to timestamp for consistency
+                if "ts" in result:
+                    result["timestamp"] = result["ts"]
+                results.append(result)
 
-        return results
+            return results
 
 
 def parse_when(s: str) -> datetime:
