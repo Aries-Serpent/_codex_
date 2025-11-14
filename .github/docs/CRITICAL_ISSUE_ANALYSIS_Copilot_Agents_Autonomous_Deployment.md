@@ -273,8 +273,8 @@ Execute complete deployment of PR #2207 ("0D to main") using autonomous orchestr
 ## References
 - PR #2207: https://github.com/Aries-Serpent/_codex_/pull/2207
 - Main branch: https://github.com/Aries-Serpent/_codex_/tree/main
-- Post-merge workflow: [.github/workflows/post-merge-validation-optimized.yml](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/workflows/post-merge-validation-optimized.yml)
-- Sign-off checklist: [PR_2207_FINAL_SIGN_OFF_CHECKLIST.md](https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md)
+- Post-merge workflow: https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/workflows/post-merge-validation-optimized.yml
+- Sign-off checklist: https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md
 
 ---
 
