@@ -129,10 +129,24 @@ class EnvironmentManager:
         ),
     }
 
-    def __init__(self) -> None:
-        """Initialize environment manager and validate critical variables."""
+    def __init__(self, lazy_validation: bool = False) -> None:
+        """Initialize environment manager and optionally validate.
+
+        Args:
+            lazy_validation: If True, skip validation until first use (default: False)
+        """
         self._session_id: Optional[str] = None
-        self._validate_environment()
+        self._validated: bool = False
+        self._lazy_validation: bool = lazy_validation
+
+        if not lazy_validation:
+            self._validate_environment()
+
+    def _ensure_validated(self) -> None:
+        """Ensure environment has been validated (for lazy validation mode)."""
+        if not self._validated:
+            self._validate_environment()
+            self._validated = True
 
     def _validate_environment(self) -> None:
         """Validate required environment variables."""
@@ -159,6 +173,7 @@ class EnvironmentManager:
         Returns:
             Environment variable value or default
         """
+        self._ensure_validated()
         config = self.ENV_VARS.get(var_name)
         fallback = (
             default if default is not None else (config.default if config else None)

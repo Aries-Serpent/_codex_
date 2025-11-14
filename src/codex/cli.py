@@ -838,6 +838,225 @@ def init_db_cmd(db_path: str | None) -> None:
         sys.exit(1)
 
 
+@cli.command("export-env")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json", "shell"]),
+    default="text",
+    help="Output format",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(),
+    help="Output file (default: stdout)",
+)
+def export_env_cmd(output_format: str, output: str | None) -> None:
+    """Export environment configuration.
+
+    Examples:
+        codex export-env
+        codex export-env --format=json
+        codex export-env --format=shell -o .env
+    """
+    try:
+        import json as json_lib
+
+        from codex.config.env_vars import env_manager
+        from codex.logging.error_handler import error_handler
+
+        @error_handler.log_errors
+        def _export() -> None:
+            config = env_manager.dump_config()
+
+            if output_format == "json":
+                content = json_lib.dumps(config, indent=2)
+            elif output_format == "shell":
+                lines = []
+                for var, value in config.items():
+                    if value:
+                        lines.append(f'export {var}="{value}"')
+                content = "\n".join(lines)
+            else:  # text
+                lines = []
+                for var, value in config.items():
+                    display_value = value if value else "<not set>"
+                    lines.append(f"{var}={display_value}")
+                content = "\n".join(lines)
+
+            if output:
+                Path(output).write_text(content)
+                click.echo(f"✅ Environment exported to {output}")
+            else:
+                click.echo(content)
+
+        _export()
+    except Exception as exc:
+        click.echo(f"❌ Failed to export environment: {exc}", err=True)
+        sys.exit(1)
+
+
+@cli.command("list-sessions")
+@click.option(
+    "--limit",
+    type=int,
+    default=10,
+    help="Maximum number of sessions to list",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["text", "json"]),
+    default="text",
+    help="Output format",
+)
+def list_sessions_cmd(limit: int, output_format: str) -> None:
+    """List recent session IDs.
+
+    Examples:
+        codex list-sessions
+        codex list-sessions --limit=20
+        codex list-sessions --format=json
+    """
+    try:
+        import json as json_lib
+
+        from codex.logging.db_manager import db_manager
+        from codex.logging.error_handler import error_handler
+
+        @error_handler.log_errors
+        def _list() -> None:
+            db_manager.init_schema()
+
+            with db_manager.connection() as conn:
+                cursor = conn.execute(
+                    """
+                    SELECT DISTINCT session_id, MIN(ts) as first_seen, MAX(ts) as last_seen,
+                           COUNT(*) as message_count
+                    FROM session_events
+                    GROUP BY session_id
+                    ORDER BY last_seen DESC
+                    LIMIT ?
+                    """,
+                    (limit,),
+                )
+                rows = cursor.fetchall()
+
+            if not rows:
+                click.echo("No sessions found")
+                return
+
+            if output_format == "json":
+                sessions = []
+                for row in rows:
+                    sessions.append({
+                        "session_id": row[0],
+                        "first_seen": row[1],
+                        "last_seen": row[2],
+                        "message_count": row[3],
+                    })
+                click.echo(json_lib.dumps(sessions, indent=2))
+            else:
+                click.echo(f"{'Session ID':<40} {'Messages':<10} {'Last Activity'}")
+                click.echo("-" * 70)
+                for row in rows:
+                    from datetime import datetime
+                    last_seen = datetime.fromtimestamp(row[2]).strftime("%Y-%m-%d %H:%M:%S")
+                    click.echo(f"{row[0]:<40} {row[3]:<10} {last_seen}")
+
+        _list()
+    except Exception as exc:
+        click.echo(f"❌ Failed to list sessions: {exc}", err=True)
+        sys.exit(1)
+
+
+@cli.command("clean-logs")
+@click.option(
+    "--older-than",
+    type=int,
+    default=30,
+    help="Remove logs older than N days",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be deleted without deleting",
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation prompt",
+)
+def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
+    """Clean old log files and sessions.
+
+    Examples:
+        codex clean-logs --dry-run
+        codex clean-logs --older-than=7 -y
+        codex clean-logs --older-than=14
+    """
+    try:
+        import time
+        from pathlib import Path
+
+        from codex.logging.error_handler import error_handler
+
+        @error_handler.log_errors
+        def _clean() -> None:
+            # Calculate cutoff timestamp
+            cutoff = time.time() - (older_than * 24 * 60 * 60)
+
+            # Find old log files
+            log_dir = Path(".codex/logs")
+            session_dir = Path(".codex/sessions")
+            
+            files_to_delete = []
+            
+            if log_dir.exists():
+                for log_file in log_dir.glob("*.log*"):
+                    if log_file.stat().st_mtime < cutoff:
+                        files_to_delete.append(log_file)
+            
+            if session_dir.exists():
+                for log_file in session_dir.glob("*.log"):
+                    if log_file.stat().st_mtime < cutoff:
+                        files_to_delete.append(log_file)
+
+            if not files_to_delete:
+                click.echo(f"No log files older than {older_than} days found")
+                return
+
+            click.echo(f"Found {len(files_to_delete)} files older than {older_than} days:")
+            for f in files_to_delete:
+                click.echo(f"  {f}")
+
+            if dry_run:
+                click.echo("\n🔍 Dry run mode - no files deleted")
+                return
+
+            if not yes:
+                if not click.confirm(f"\nDelete {len(files_to_delete)} files?"):
+                    click.echo("Cancelled")
+                    return
+
+            deleted = 0
+            for f in files_to_delete:
+                try:
+                    f.unlink()
+                    deleted += 1
+                except Exception as e:
+                    click.echo(f"⚠️  Failed to delete {f}: {e}", err=True)
+
+            click.echo(f"✅ Deleted {deleted} files")
+
+        _clean()
+    except Exception as exc:
+        click.echo(f"❌ Failed to clean logs: {exc}", err=True)
+        sys.exit(1)
+
+
 _register_external_cli()
 
 

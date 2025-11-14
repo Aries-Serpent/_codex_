@@ -5,6 +5,7 @@ Provides:
 - Decorator for automatic error logging
 - Fatal error handling with proper exit codes
 - Integration with .codex/logs/ directory structure
+- Log rotation to prevent unbounded growth
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import logging
 import sys
 import traceback
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -28,11 +30,18 @@ class CodexErrorHandler:
             ...
     """
 
-    def __init__(self, log_dir: Optional[Path] = None) -> None:
+    def __init__(
+        self,
+        log_dir: Optional[Path] = None,
+        max_bytes: int = 10 * 1024 * 1024,  # 10MB default
+        backup_count: int = 5,
+    ) -> None:
         """Initialize error handler.
 
         Args:
             log_dir: Directory for error logs (default: .codex/logs)
+            max_bytes: Maximum size of log file before rotation (default: 10MB)
+            backup_count: Number of backup files to keep (default: 5)
         """
         self.log_dir = log_dir or Path(".codex/logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -47,7 +56,12 @@ class CodexErrorHandler:
         self.logger.setLevel(logging.ERROR)
         self.logger.propagate = False  # Don't propagate to parent loggers
         
-        handler = logging.FileHandler(self.error_log)
+        # Use RotatingFileHandler for automatic log rotation
+        handler = RotatingFileHandler(
+            self.error_log,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+        )
         handler.setFormatter(
             logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
         )
