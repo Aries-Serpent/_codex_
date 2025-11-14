@@ -235,8 +235,8 @@ class DBManager:
                 for conn in pool:
                     try:
                         conn.close()
-                    except sqlite3.Error:
-                        pass
+                    except sqlite3.Error as exc:
+                        cls.logger.debug(f"Error closing pooled connection: {exc}")
             cls._CONNECTION_POOL.clear()
 
 
