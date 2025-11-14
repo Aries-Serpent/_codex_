@@ -10,7 +10,6 @@ Tests advanced pooling scenarios:
 import pytest
 import time
 import threading
-from pathlib import Path
 
 
 class TestPoolingBehavior:
