@@ -1,6 +1,14 @@
 import json
 
+import pytest
+
 import tools.codex_evaluator as ce
+
+# Skip all tests if optional dependencies are missing
+pytestmark = pytest.mark.skipif(
+    bool(ce.MISSING_OPTIONALS),
+    reason=f"Optional dependencies missing: {ce.MISSING_OPTIONALS}"
+)
 
 RULES = {
     "rubric": {
@@ -10,6 +18,13 @@ RULES = {
     },
     "scoring": {"penalties": {"no_env_guard_when_pytest_present": 2}},
 }
+
+
+def test_optional_dependencies_available():
+    """Verify optional dependencies are loaded when tests run."""
+    assert ce.has_all_optional() is True
+    assert "pydantic" in ce.OPTIONAL_STATUS
+    assert "typer" in ce.OPTIONAL_STATUS
 
 
 def test_hard_fail_on_ci_activation():

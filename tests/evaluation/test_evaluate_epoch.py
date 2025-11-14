@@ -1,6 +1,8 @@
 import pytest, torch
 from functools import partial
+
 from codex_ml.evaluation.loop import evaluate_epoch
+from codex_ml.metrics.generative import bleu
 
 class DummyModel(torch.nn.Module):
     def __init__(self):
@@ -84,3 +86,30 @@ def test_evaluate_invalid_batch():
     bad_data = [torch.randn(4, 4)]  # missing targets
     with pytest.raises(ValueError):
         evaluate_epoch(model, bad_data, criterion)
+
+
+def test_evaluate_with_text_metric():
+    model = DummyModel()
+    criterion = torch.nn.CrossEntropyLoss()
+    inputs = torch.randn(4, 4)
+    targets = torch.randint(0, 3, (4,))
+    data = list(zip(inputs, targets))
+
+    def prediction_transform(outputs):
+        batch = outputs.shape[0]
+        return ["hello world" for _ in range(batch)]
+
+    def target_transform(batch_targets):
+        batch = batch_targets.shape[0]
+        return ["hello world" for _ in range(batch)]
+
+    summary = evaluate_epoch(
+        model,
+        data,
+        criterion,
+        metrics={"bleu": bleu},
+        prediction_transform=prediction_transform,
+        target_transform=target_transform,
+    )
+
+    assert pytest.approx(1.0, rel=1e-6) == summary["metrics"]["bleu"]

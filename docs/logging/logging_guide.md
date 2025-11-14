@@ -28,6 +28,9 @@ Reference: PyTorch TensorBoard utilities. ([docs.pytorch.org][2])
 ## NDJSON & CSV outputs
 
 - **NDJSON**: one JSON object per line; prefer the `.ndjson` extension. ([GitHub][3])
+- The evaluation logger now reuses the training NDJSON sink, supporting file
+  rotation (`ndjson_max_bytes`, `ndjson_backup_count`) and optional GPU
+  telemetry when `pynvml` is installed.
 - **CSV**: use Python’s `csv.DictWriter` for tabular outputs. ([docs.python.org][4])
 
 [1]: https://mlflow.org/docs/latest/ml/tracking/backend-stores?utm_source=chatgpt.com "Backend Stores | MLflow"
