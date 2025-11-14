@@ -1,0 +1,8 @@
+# Metrics Plugin Conflict Policy
+# Possible values:
+#   prefer_local   - Keep local implementation; suppress plugin
+#   prefer_plugin  - Override local implementation with plugin
+#   alias_plugin   - Keep local; register plugin under 'plugin:<name>'
+#   shadow_warn    - Keep local; log a shadow warning
+#   error          - Raise duplicate conflict (legacy strict behavior)
+policy = "prefer_local"

@@ -60,10 +60,14 @@ score = metric(
 
 ### Generative Metrics
 
-#### `bleu`
-Computes corpus-level BLEU score using NLTK's implementation with smoothing.
+> ℹ️ When running via the Typer evaluation CLI, provide
+> `--prediction-transform` / `--target-transform` (or configure
+> `evaluation.prediction_transform`) so that raw model outputs are decoded to
+> text before these metrics are computed.
 
-**Optional dependency**: `nltk`
+#### `bleu`
+Computes corpus-level BLEU using a built-in, offline implementation with
+uniform n-gram weighting and exponential brevity penalty.
 
 **Usage**:
 ```python
@@ -72,33 +76,30 @@ score = metric(
     preds=["the cat sat on the mat", "hello world"],
     targets=["a cat sat on a mat", "hello there"]
 )
-# Returns: BLEU score (0.0-1.0), or None if nltk unavailable
+# Returns: BLEU score (0.0-1.0)
 ```
 
 **Notes**:
-- Uses NLTK's `SmoothingFunction().method3` for corpus BLEU
-- Automatically normalizes and tokenizes text
-- Returns `None` if nltk is not installed (graceful degradation)
+- No external dependencies required.
+- Suitable for deterministic offline evaluation.
 
-#### `rougeL`
-Computes ROUGE-L F-measure using the `rouge_score` library.
-
-**Optional dependency**: `rouge_score`
+#### `rouge_l`
+Computes ROUGE-L F-measure using an internal longest-common-subsequence
+implementation.
 
 **Usage**:
 ```python
-metric = get_metric("rougeL")
+metric = get_metric("rouge_l")
 score = metric(
     preds=["the quick brown fox jumps"],
     targets=["the quick brown fox jumped"]
 )
-# Returns: ROUGE-L F-measure (0.0-1.0), or None if rouge_score unavailable
+# Returns: ROUGE-L F-measure (0.0-1.0)
 ```
 
 **Notes**:
-- Uses stemming for better matching
-- Measures longest common subsequence
-- Returns `None` if rouge_score is not installed
+- Offline and dependency-free.
+- Captures fluency-sensitive overlap via LCS.
 
 #### `chrf`
 Character-level F-score metric.

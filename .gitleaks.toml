@@ -1,0 +1,20 @@
+# gitleaks configuration tuned for workspace scan (no git history)
+title = "codex gitleaks config"
+
+[allowlist]
+# Glob patterns to ignore in scanning (noise-heavy areas)
+paths = [
+  '''^tests/''',
+  '''^docs/''',
+  '''^artifacts/''',
+  '''^.venv/''',
+  '''^.git/''',
+  '''^.pytest_cache/''',
+  '''^mlruns/''',
+]
+
+# Add custom allow rules here if needed, e.g., test keys or fixtures with known values.
+# [[allowlist.rules]]
+# description = "Allow test RSA private key fixture"
+# regex = '''-----BEGIN RSA PRIVATE KEY-----'''
+# tags = ["test-fixture"]

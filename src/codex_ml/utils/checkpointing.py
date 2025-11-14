@@ -45,6 +45,7 @@ except Exception:  # pragma: no cover - provenance optional
 from codex_ml.utils.seeding import set_reproducible
 
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
+from .storage import StorageProvider
 
 logger = logging.getLogger(__name__)
 
@@ -938,11 +939,21 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
 class CheckpointManager:
     """Manage training checkpoints with retention and resume support."""
 
-    def __init__(self, root: Path, keep_last: int = 5, keep_best: int = 1) -> None:
+    def __init__(
+        self,
+        root: Path,
+        keep_last: int = 5,
+        keep_best: int = 1,
+        *,
+        storage: StorageProvider | None = None,
+        remote_prefix: str | None = None,
+    ) -> None:
         self.root = Path(root)
         self.keep_last = int(keep_last)
         self.keep_best = int(keep_best)
         self.root.mkdir(parents=True, exist_ok=True)
+        self.storage = storage
+        self.remote_prefix = remote_prefix.strip("/") if remote_prefix else None
 
     # ------------------------------------------------------------------
     # Save
@@ -1039,6 +1050,11 @@ class CheckpointManager:
             )
 
         self.apply_retention()
+
+        if self.storage is not None and self.remote_prefix is not None:
+            remote_path = f"{self.remote_prefix}/{ep_dir.name}" if self.remote_prefix else ep_dir.name
+            with contextlib.suppress(Exception):  # pragma: no cover - remote sync best effort
+                self.storage.upload_directory(ep_dir, remote_path)
         return ep_dir
 
     # ------------------------------------------------------------------
@@ -1186,6 +1202,9 @@ class CheckpointManager:
         ):
             _register(candidate)
 
+        if not candidates and self.storage is not None and self.remote_prefix is not None:
+            candidates.extend(self._sync_remote_candidates())
+
         if not candidates:
             if strict:
                 raise FileNotFoundError(f"no checkpoints found under: {root}")
@@ -1199,8 +1218,30 @@ class CheckpointManager:
                     optimizer=optimizer,
                     scheduler=scheduler,
                 )
-                info["path"] = str(candidate)
+                info["path"] = candidate
                 return info
+
+    def _sync_remote_candidates(self) -> list[Path]:
+        if self.storage is None or self.remote_prefix is None:
+            return []
+
+        discovered: list[Path] = []
+        for remote in self.storage.iter_checkpoints(self.remote_prefix):
+            name = Path(remote).name
+            target = self.root / name
+            if target.exists():
+                discovered.append(target)
+                continue
+            try:
+                self.storage.download_directory(remote, target)
+            except FileNotFoundError:
+                continue
+            discovered.append(target)
+        discovered.sort(
+            key=lambda path: int(path.name.split("-")[-1]) if "-" in path.name else -1,
+            reverse=True,
+        )
+        return discovered
 
         if strict:
             raise FileNotFoundError(f"no checkpoint state files found under: {root}")
