@@ -8,7 +8,7 @@ This runbook describes the IMDS diagnostic script added to the repository to det
 - .github/scripts/imds_diagnostic.sh — main script (read-only by default; remediation behind `--apply`)
 - .github/docs/imds_diagnostic_RUNBOOK.md — this runbook
 
-## Safety &amp; Operational Notes
+## Safety & Operational Notes
 - Default behavior is read-only diagnostics; the script will not change system configuration unless `--apply` is provided.
 - Use `--dry-run` to simulate remediation steps without applying them.
 - Remediation requires root privileges and should be run only after approval from the CODEOWNER or on maintenance windows.
@@ -47,7 +47,7 @@ This runbook describes the IMDS diagnostic script added to the repository to det
   - `3` = remediation applied successfully
   - `1` = error occurred
 
-## Example PR &amp; Issue update text (for maintainers / agents)
+## Example PR & Issue update text (for maintainers / agents)
 - PR title: `Add IMDS diagnostic script + runbook (relates to #2226)`
 - PR body:
   - What: Adds `.github/scripts/imds_diagnostic.sh` and runbook.
@@ -68,3 +68,5 @@ This runbook describes the IMDS diagnostic script added to the repository to det
 ## Contacts
 - Primary contact for approval: @mbaetiong
 - Reviewer: @Copilot
+
+If successful, return PR URL, issue comment URL, branch name used, and any follow-up tasks or limitations.
