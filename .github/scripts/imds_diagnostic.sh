@@ -62,7 +62,7 @@ HTML_FILE="imds_report.html"
 AUDIT_DIR=".codex/audit"
 AUDIT_FILE="${AUDIT_DIR}/imds_remediations.jsonl"
 CONFIG_FILE=".github/imds_config.yml"
-ISSUE_REF="#2226"   # Can be overridden by config (issue_id)
+ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
 
 APPLY=false
 DRY_RUN=false
@@ -349,24 +349,73 @@ check_hosts() {
 ###############################################################################
 check_iptables() {
   section "iptables OUTPUT Chain Inspection"
-  if command -v iptables >/dev/null 2>&1; then
-    local out; out="$(sudo iptables -L OUTPUT -n -v 2>/dev/null || true)"
-    if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
-      log "Rules referencing $IMDS_IP:"
-      grep -E "$IMDS_IP" <<<"$out" | tee -a "$OUT_FILE" || true
+  
+  # Check if iptables command exists
+  if ! command -v iptables >/dev/null 2>&1; then
+    log "iptables not available on this system"
+    set_metric "iptables_drop_detected" 0
+    return 0
+  fi
+  
+  # Detect sudo availability and privilege level
+  local sudo_cmd=""
+  if [ "$EUID" -eq 0 ]; then
+    # Running as root, no sudo needed
+    sudo_cmd=""
+    log "Running as root, direct iptables access available"
+  elif command -v sudo >/dev/null 2>&1; then
+    # sudo exists, check if passwordless
+    if sudo -n true 2>/dev/null; then
+      # Passwordless sudo available
+      sudo_cmd="sudo -n"
+      log "Passwordless sudo available for iptables"
     else
-      log "No explicit OUTPUT rule referencing $IMDS_IP."
-    fi
-    if sudo iptables -S OUTPUT 2>/dev/null | grep -E "DROP" | grep -E "$IMDS_IP" >/dev/null 2>&1; then
-      log "$(c_red "DROP rule detected affecting $IMDS_IP")"
-      set_metric "iptables_drop_detected" 1
-      record_error "iptables_drop_rule"
-      recommend "Adjust iptables to allow $IMDS_IP."
-    else
+      # sudo requires password - skip check
+      log "$(c_yellow "Skipping iptables inspection: requires passwordless sudo or root")"
+      log "To enable iptables checks, configure passwordless sudo or run as root"
+      set_metric "iptables_check_skipped" 1
+      set_metric "iptables_skip_reason" "no_passwordless_sudo"
       set_metric "iptables_drop_detected" 0
+      return 0
     fi
   else
-    log "iptables not installed."
+    # No sudo command
+    log "$(c_yellow "Skipping iptables inspection: sudo not available")"
+    set_metric "iptables_check_skipped" 1
+    set_metric "iptables_skip_reason" "no_sudo_command"
+    set_metric "iptables_drop_detected" 0
+    return 0
+  fi
+  
+  # Execute iptables inspection with detected privilege method
+  local out
+  out="$($sudo_cmd iptables -L OUTPUT -n -v 2>/dev/null || true)"
+  
+  if [ -z "$out" ]; then
+    log "Failed to retrieve iptables OUTPUT chain"
+    set_metric "iptables_retrieval_failed" 1
+    set_metric "iptables_drop_detected" 0
+    return 0
+  fi
+  
+  # Check for IMDS-specific rules
+  if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
+    log "Rules referencing $IMDS_IP:"
+    grep -E "$IMDS_IP" <<<"$out" | tee -a "$OUT_FILE" || true
+  else
+    log "No explicit OUTPUT rule referencing $IMDS_IP."
+  fi
+  
+  # Check for DROP rules affecting IMDS
+  local drop_check
+  drop_check="$($sudo_cmd iptables -S OUTPUT 2>/dev/null || true)"
+  
+  if grep -E "DROP" <<<"$drop_check" | grep -E "$IMDS_IP" >/dev/null 2>&1; then
+    log "$(c_red "DROP rule detected affecting $IMDS_IP")"
+    set_metric "iptables_drop_detected" 1
+    record_error "iptables_drop_rule"
+    recommend "Adjust iptables to allow $IMDS_IP."
+  else
     set_metric "iptables_drop_detected" 0
   fi
 }
@@ -376,15 +425,52 @@ check_iptables() {
 ###############################################################################
 check_nftables() {
   section "nftables Ruleset Inspection"
-  if command -v nft >/dev/null 2>&1; then
-    if sudo nft list ruleset 2>/dev/null | grep -E "$IMDS_IP" >/dev/null 2>&1; then
-      log "nftables entries referencing $IMDS_IP:"
-      sudo nft list ruleset | grep -n "$IMDS_IP" | tee -a "$OUT_FILE" || true
+  
+  # Check if nft command exists
+  if ! command -v nft >/dev/null 2>&1; then
+    log "nftables not available on this system"
+    return 0
+  fi
+  
+  # Detect sudo availability (same pattern as iptables)
+  local sudo_cmd=""
+  if [ "$EUID" -eq 0 ]; then
+    sudo_cmd=""
+    log "Running as root, direct nftables access available"
+  elif command -v sudo >/dev/null 2>&1; then
+    if sudo -n true 2>/dev/null; then
+      sudo_cmd="sudo -n"
+      log "Passwordless sudo available for nftables"
     else
-      log "No nftables references to $IMDS_IP."
+      log "$(c_yellow "Skipping nftables inspection: requires passwordless sudo or root")"
+      log "To enable nftables checks, configure passwordless sudo or run as root"
+      set_metric "nftables_check_skipped" 1
+      set_metric "nftables_skip_reason" "no_passwordless_sudo"
+      return 0
     fi
   else
-    log "nft not installed."
+    log "$(c_yellow "Skipping nftables inspection: sudo not available")"
+    set_metric "nftables_check_skipped" 1
+    set_metric "nftables_skip_reason" "no_sudo_command"
+    return 0
+  fi
+  
+  # Execute nftables inspection
+  local out
+  out="$($sudo_cmd nft list ruleset 2>/dev/null || true)"
+  
+  if [ -z "$out" ]; then
+    log "Failed to retrieve nftables ruleset"
+    set_metric "nftables_retrieval_failed" 1
+    return 0
+  fi
+  
+  # Check for IMDS-specific rules
+  if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
+    log "nftables rules referencing $IMDS_IP:"
+    grep -E "$IMDS_IP" <<<"$out" | tee -a "$OUT_FILE" || true
+  else
+    log "No nftables rules referencing $IMDS_IP."
   fi
 }
 
