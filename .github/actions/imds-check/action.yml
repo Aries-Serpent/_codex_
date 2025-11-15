@@ -30,7 +30,7 @@ runs:
         STATUS=$(jq -r '.status' diagnostic_results.json)
         echo "Status: $STATUS"
         if [ "$STATUS" != "ok" ]; then
-          echo "IMDS status not ok. Failing."
+          echo "IMDS status not ok (status: $STATUS). Failing."
           exit 1
         fi
         echo "IMDS check passed."

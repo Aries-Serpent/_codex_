@@ -28,11 +28,19 @@ jobs:
         run: |
           STATUS=$(jq -r '.status' diagnostic_results.json)
           echo "Status: $STATUS"
-          if [ "$STATUS" != "ok" ]; then
-            echo "IMDS status not ok (STATUS=$STATUS). Remediation recommended."
+          if [ "$STATUS" = "ok" ]; then
+            echo "IMDS pre-flight passed."
+            exit 0
+          elif [ "$STATUS" = "remediation-recommended" ]; then
+            echo "IMDS status indicates remediation is recommended (STATUS=$STATUS). Please review and remediate as needed."
+            exit 1
+          elif [ "$STATUS" = "remediation-failed" ]; then
+            echo "IMDS remediation attempt failed (STATUS=$STATUS). Immediate attention required!"
+            exit 1
+          else
+            echo "IMDS status unknown or error (STATUS=$STATUS). Please investigate."
             exit 1
           fi
-          echo "IMDS pre-flight passed."
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
