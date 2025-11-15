@@ -208,10 +208,16 @@ set_metric() { METRIC["$1"]="$2"; }
 ###############################################################################
 classify_env() {
   local has_wala=0 has_route=0 gh=0 container=0
-  systemctl list-unit-files 2>/dev/null | grep -q walinuxagent.service && has_wala=1 || true
-  ip route get "$IMDS_IP" >/dev/null 2>&1 && has_route=1 || true
+  if systemctl list-unit-files 2>/dev/null | grep -q walinuxagent.service; then
+    has_wala=1
+  fi
+  if ip route get "$IMDS_IP" >/dev/null 2>&1; then
+    has_route=1
+  fi
   [[ -n "${GITHUB_ACTIONS:-}" ]] && gh=1
-  grep -E '(docker|container)' /proc/1/cgroup 2>/dev/null >/dev/null && container=1 || true
+  if grep -E '(docker|container)' /proc/1/cgroup 2>/dev/null >/dev/null; then
+    container=1
+  fi
 
   if (( has_wala==1 && has_route==1 )); then
     ENV_CLASS="azure_vm"
