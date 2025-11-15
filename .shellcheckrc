@@ -1,0 +1,23 @@
+# shellcheck configuration for IMDS scripts
+# See: https://github.com/koalaman/shellcheck/wiki/Directive
+
+# Use bash as the shell
+shell=bash
+
+# Severity level: error, warning, info, style
+severity=warning
+
+# Enable all optional checks
+enable=all
+
+# Excluded checks (add SC codes as needed)
+# Example: disable=SC2034,SC2154
+
+# Source path for sourced files
+source-path=SCRIPTDIR
+
+# Follow sourced files
+external-sources=true
+
+# Check sourced files
+check-sourced=true

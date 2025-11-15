@@ -1,0 +1,196 @@
+name: 'IMDS Diagnostic Check'
+description: 'Run comprehensive Azure IMDS diagnostics and output structured results'
+author: 'IMDS Diagnostic Team'
+
+branding:
+  icon: 'activity'
+  color: 'blue'
+
+inputs:
+  verbose:
+    description: 'Enable verbose output'
+    required: false
+    default: 'false'
+  
+  timeout:
+    description: 'Timeout for IMDS requests in seconds'
+    required: false
+    default: '5'
+  
+  skip-firewall:
+    description: 'Skip firewall detection tests'
+    required: false
+    default: 'false'
+  
+  skip-dns:
+    description: 'Skip DNS resolution tests'
+    required: false
+    default: 'false'
+  
+  output-file:
+    description: 'Path to output JSON file'
+    required: false
+    default: 'imds_results.json'
+  
+  output-artifact:
+    description: 'Upload results as workflow artifact'
+    required: false
+    default: 'true'
+  
+  fail-on-inaccessible:
+    description: 'Fail the action if IMDS is inaccessible'
+    required: false
+    default: 'false'
+
+outputs:
+  imds-accessible:
+    description: 'Whether IMDS is accessible (true/false)'
+    value: ${{ steps.diagnostic.outputs.accessible }}
+  
+  vm-id:
+    description: 'Azure VM ID if IMDS is accessible'
+    value: ${{ steps.diagnostic.outputs.vm_id }}
+  
+  azure-location:
+    description: 'Azure region/location if IMDS is accessible'
+    value: ${{ steps.diagnostic.outputs.location }}
+  
+  exit-code:
+    description: 'Exit code from diagnostic script'
+    value: ${{ steps.diagnostic.outputs.exit_code }}
+  
+  results-file:
+    description: 'Path to the results JSON file'
+    value: ${{ inputs.output-file }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        echo "::group::Validating inputs"
+        echo "Verbose: ${{ inputs.verbose }}"
+        echo "Timeout: ${{ inputs.timeout }}"
+        echo "Skip Firewall: ${{ inputs.skip-firewall }}"
+        echo "Skip DNS: ${{ inputs.skip-dns }}"
+        echo "Output File: ${{ inputs.output-file }}"
+        echo "Output Artifact: ${{ inputs.output-artifact }}"
+        echo "Fail on Inaccessible: ${{ inputs.fail-on-inaccessible }}"
+        echo "::endgroup::"
+    
+    - name: Install dependencies
+      shell: bash
+      run: |
+        echo "::group::Installing dependencies"
+        if ! command -v curl &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y curl
+        fi
+        if ! command -v jq &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y jq
+        fi
+        if ! command -v ping &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y iputils-ping
+        fi
+        echo "Dependencies installed successfully"
+        echo "::endgroup::"
+    
+    - name: Run IMDS diagnostic
+      id: diagnostic
+      shell: bash
+      run: |
+        echo "::group::Running IMDS diagnostic"
+        
+        # Build command with options
+        cmd=("${{ github.action_path }}/../../scripts/imds_diagnostic.sh")
+        cmd+=("--output" "${{ inputs.output-file }}")
+        cmd+=("--timeout" "${{ inputs.timeout }}")
+        
+        if [ "${{ inputs.verbose }}" = "true" ]; then
+          cmd+=("--verbose")
+        fi
+        
+        if [ "${{ inputs.skip-firewall }}" = "true" ]; then
+          cmd+=("--skip-firewall")
+        fi
+        
+        if [ "${{ inputs.skip-dns }}" = "true" ]; then
+          cmd+=("--skip-dns")
+        fi
+        
+        # Make script executable
+        chmod +x "${{ github.action_path }}/../../scripts/imds_diagnostic.sh"
+        
+        # Run diagnostic
+        set +e
+        "${cmd[@]}"
+        exit_code=$?
+        set -e
+        
+        echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+        
+        # Parse results if file exists
+        if [ -f "${{ inputs.output-file }}" ]; then
+          accessible=$(jq -r '.imds_accessible // "unknown"' "${{ inputs.output-file }}")
+          vm_id=$(jq -r '.vm_id // "N/A"' "${{ inputs.output-file }}")
+          location=$(jq -r '.azure_location // "N/A"' "${{ inputs.output-file }}")
+          
+          echo "accessible=$accessible" >> $GITHUB_OUTPUT
+          echo "vm_id=$vm_id" >> $GITHUB_OUTPUT
+          echo "location=$location" >> $GITHUB_OUTPUT
+          
+          echo "IMDS Accessible: $accessible"
+          echo "VM ID: $vm_id"
+          echo "Location: $location"
+        else
+          echo "::warning::Results file not found: ${{ inputs.output-file }}"
+          echo "accessible=unknown" >> $GITHUB_OUTPUT
+          echo "vm_id=N/A" >> $GITHUB_OUTPUT
+          echo "location=N/A" >> $GITHUB_OUTPUT
+        fi
+        
+        echo "::endgroup::"
+    
+    - name: Display summary
+      shell: bash
+      run: |
+        echo "::group::IMDS Diagnostic Summary"
+        if [ -f "${{ inputs.output-file }}" ]; then
+          echo "Results:"
+          cat "${{ inputs.output-file }}" | jq '.'
+          
+          # Create job summary
+          echo "## IMDS Diagnostic Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          accessible=$(jq -r '.imds_accessible // "unknown"' "${{ inputs.output-file }}")
+          if [ "$accessible" = "true" ]; then
+            echo "✅ **IMDS is accessible**" >> $GITHUB_STEP_SUMMARY
+          elif [ "$accessible" = "false" ]; then
+            echo "❌ **IMDS is NOT accessible**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **IMDS accessibility unknown**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Summary Statistics" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests Passed: $(jq -r '.summary_passed // "0"' "${{ inputs.output-file }}")" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests Failed: $(jq -r '.summary_failed // "0"' "${{ inputs.output-file }}")" >> $GITHUB_STEP_SUMMARY
+          echo "- Warnings: $(jq -r '.summary_warnings // "0"' "${{ inputs.output-file }}")" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "::warning::No results file generated"
+        fi
+        echo "::endgroup::"
+    
+    - name: Check failure condition
+      shell: bash
+      run: |
+        if [ "${{ inputs.fail-on-inaccessible }}" = "true" ]; then
+          if [ -f "${{ inputs.output-file }}" ]; then
+            accessible=$(jq -r '.imds_accessible // "unknown"' "${{ inputs.output-file }}")
+            if [ "$accessible" = "false" ]; then
+              echo "::error::IMDS is not accessible and fail-on-inaccessible is enabled"
+              exit 1
+            fi
+          fi
+        fi

@@ -1,0 +1,79 @@
+# IMDS Configuration
+# ===================
+# 
+# This file contains the default configuration for IMDS diagnostic tools
+# and workflows. Override these settings in CI/CD environments as needed.
+
+# IMDS Endpoint Configuration
+imds:
+  endpoint: "169.254.169.254"
+  api_version: "2021-02-01"
+  timeout: 5
+  retry_attempts: 3
+  retry_delay: 2
+
+# Diagnostic Test Configuration
+diagnostic:
+  skip_firewall_check: false
+  skip_dns_check: false
+  verbose_output: false
+  output_format: "json"
+
+# CI/CD Integration
+ci:
+  enabled: true
+  fail_on_inaccessible: true
+  upload_artifacts: true
+  artifact_retention_days: 30
+
+# Workflow Settings
+workflow:
+  preflight:
+    enabled: true
+    run_on_pr: true
+    run_on_push: false
+    required_status: true
+  
+  comment_on_issue:
+    enabled: true
+    auto_comment: true
+    include_summary: true
+    include_detailed_results: false
+
+# Shellcheck Configuration
+shellcheck:
+  severity: "warning"
+  shell: "bash"
+  enable_all_checks: true
+  excluded_rules: []
+
+# Notifications
+notifications:
+  slack:
+    enabled: false
+    webhook_url: ""
+  
+  email:
+    enabled: false
+    recipients: []
+
+# Firewall Detection
+firewall:
+  check_iptables: true
+  check_nftables: true
+  check_ufw: false
+  require_sudo: false
+
+# Metrics and Monitoring
+metrics:
+  enabled: false
+  export_format: "prometheus"
+  export_path: "/metrics"
+  collection_interval: 300
+
+# Advanced Settings
+advanced:
+  parallel_execution: false
+  max_parallel_jobs: 5
+  debug_mode: false
+  log_level: "info"
