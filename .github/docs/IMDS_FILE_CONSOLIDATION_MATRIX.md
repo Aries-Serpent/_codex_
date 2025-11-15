@@ -1,126 +1,63 @@
 # IMDS File Consolidation Matrix
+> Generated: 2025-11-14 23:00:10 UTC | Author: mbaetiong
 
-## Overview
+## Purpose
+Provide an authoritative consolidation table mapping all overlapping IMDS-related PR artifacts to the single canonical implementation merged toward `0D_base_`.
 
-This matrix documents all IMDS-related files consolidated in this repository, their purpose, and relationships.
+## Source Mapping
+| PR # | Branch | Artifact(s) | Unique Value | Canonical Action |
+|------|--------|-------------|--------------|------------------|
+| 2233 | imds/diagnostic-2226-20251114T213200 | Script | Strong base authored by maintainer | Merge (script source) |
+| 2228 | copilot/add-imds-diagnostic-runbook | Script + Runbook | Detailed runbook baseline | Integrate runbook content |
+| 2230 | copilot/imdsdiagnostic-2226-20251114t213200-again | Script + Runbook + Summary | Implementation summary doc | Cherry-pick summary only |
+| 2231 | copilot/add-runbook-and-make-script-executable | Script + Runbook | Duplicate improvements | Close after consolidation |
+| 2232 | copilot/add-imds-diagnostic-runbook-again | Script + Typo fix claim | Redundant iteration | Close |
+| 2229 | copilot/imdsdiagnostic-2226-20251114t213200 | Script + Runbook (dirty) | Conflicted state | Close |
+| 2225 | copilot/sub-pr-2207 | Audit docs (deployment) | Independent domain | Separate merge path |
+| 2227 | copilot/autonomous-deployment-orchestration | Orchestration logic | Independent domain | Separate merge path |
 
-## Core Scripts
+## Consolidated Artifact Decisions
+| Artifact | Chosen Source | Notes |
+|----------|---------------|-------|
+| `.github/scripts/imds_diagnostic.sh` | 2233 + enhancements | Extended checks + JSON |
+| `.github/docs/imds_diagnostic_RUNBOOK.md` | 2228 baseline + v1.3 revision | Unified formatting & safety model |
+| `IMDS_IMPLEMENTATION_SUMMARY.md` | 2230 | Optional maintainers’ context |
+| Redundant runbooks/scripts | 2231, 2232, 2229 | Decommission post-merge |
 
-| File | Type | Purpose | Dependencies |
-|------|------|---------|--------------|
-| `.github/scripts/imds_diagnostic.sh` | Script | Main diagnostic tool | bash, curl, jq, ping |
-| `.github/scripts/imds_aggregate_json.sh` | Script | Aggregate multiple results | bash, jq |
+## Avoiding Conflicts
+| Risk | Resolution |
+|------|------------|
+| Divergent permission bits | Set final mode 755 |
+| Multiple runbook versions | Single canonical file with version table |
+| Unapplied typo fixes | Verified & integrated in final script |
+| Dirty merge state (2229) | Close after canonical merge |
 
-## Workflows
+## Validation Before Merge
+| Check | Command | Expected |
+|-------|---------|----------|
+| Syntax | `bash -n .github/scripts/imds_diagnostic.sh` | No output |
+| Executable bit | `ls -l .github/scripts/imds_diagnostic.sh` | `-rwxr-xr-x` |
+| Dry-run preview | `bash .github/scripts/imds_diagnostic.sh --dry-run` | Recommendation section |
+| JSON output | `bash .github/scripts/imds_diagnostic.sh --json` | `diagnostic_results.json` |
+| Apply safety | `sudo bash .github/scripts/imds_diagnostic.sh --apply` | Backups and rule insertion only |
 
-| File | Type | Trigger | Purpose |
-|------|------|---------|---------|
-| `.github/workflows/imds_preflight.yml` | Workflow | PR, manual | Run diagnostics on PRs |
-| `.github/workflows/imds_comment_on_issue.yml` | Workflow | Issue label, comment | Comment diagnostic results on issues |
-| `.github/workflows/shellcheck.yml` | Workflow | PR, push | Lint shell scripts |
+## Decommission Log (Populate After Merge)
+| PR Closed | Final SHA | Reason | Replacement |
+|-----------|-----------|--------|------------|
+| 2228 | TBD | Runbook integrated | Canonical runbook |
+| 2230 | TBD | Summary cherry-picked | Consolidated docs |
+| 2231 | TBD | Duplicate | Canonical script/runbook |
+| 2232 | TBD | Redundant iteration | Canonical script |
+| 2229 | TBD | Conflicted | Canonical script |
+| 2225 | N/A | Independent | Kept separate |
+| 2227 | N/A | Independent | Kept separate |
 
-## Actions
+## Next Enhancements
+| Enhancement | Description | Priority |
+|-------------|-------------|----------|
+| ShellCheck Workflow | Lint future script changes | Medium |
+| Pre-flight IMDS Action | Gating step before deployment | High |
+| Prometheus Export | Optional metrics for fleet | Low |
+| Automated Approval Gate | Signed token for remediation | Medium |
 
-| File | Type | Purpose | Used By |
-|------|------|---------|---------|
-| `.github/actions/imds-check/action.yml` | Composite Action | Reusable IMDS check | All workflows |
-| `.github/actions/imds-check/README.md` | Documentation | Action usage guide | Developers |
-
-## Configuration
-
-| File | Type | Purpose | Format |
-|------|------|---------|--------|
-| `.github/imds_config.yml` | Config | Default settings | YAML |
-| `.shellcheckrc` | Config | ShellCheck settings | INI-style |
-
-## Documentation
-
-| File | Category | Audience |
-|------|----------|----------|
-| `.github/docs/imds_diagnostic_RUNBOOK.md` | Operations | Operators, SREs |
-| `.github/docs/imds_config_GUIDE.md` | Configuration | DevOps, Developers |
-| `.github/docs/imds_firewall_DETECTORS.md` | Technical | Security, Network |
-| `.github/docs/IMDS_CHANGELOG.md` | Release | All users |
-| `.github/docs/imds_error_REASON_CODES.md` | Reference | Operators, Developers |
-| `.github/docs/imds_ci_INTEGRATION_GUIDE.md` | Integration | DevOps, CI/CD |
-| `.github/docs/IMDS_JSON_SCHEMA.md` | Reference | Developers |
-| `.github/docs/imds_metrics_EXPORTER.md` | Monitoring | SREs, Operations |
-| `.github/docs/imds_future_ENHANCEMENTS.md` | Planning | Contributors |
-| `.github/docs/imds_host_ENV_MATRIX.md` | Compatibility | All users |
-| `.github/docs/imds_shellcheck_GUIDE.md` | Development | Contributors |
-| `.github/docs/IMDS_FILE_CONSOLIDATION_MATRIX.md` | Reference | Maintainers |
-| `.github/docs/IMDS_IMPLEMENTATION_MERGE_PLAN.md` | Planning | Maintainers |
-| `.github/docs/IMDS_MANIFEST.md` | Reference | All users |
-| `.github/docs/IMDS_IMPLEMENTATION_SUMMARY.md` | Overview | Stakeholders |
-
-## File Relationships
-
-```
-imds_diagnostic.sh
-├── Called by: imds-check/action.yml
-├── Configured by: imds_config.yml
-├── Documented in: imds_diagnostic_RUNBOOK.md
-└── Linted by: shellcheck.yml
-
-imds-check/action.yml
-├── Uses: imds_diagnostic.sh
-├── Called by: imds_preflight.yml
-├── Called by: imds_comment_on_issue.yml
-└── Documented in: imds-check/README.md
-
-imds_config.yml
-├── Read by: imds_diagnostic.sh (future)
-└── Documented in: imds_config_GUIDE.md
-```
-
-## Version Control
-
-| Component | Version | Status |
-|-----------|---------|--------|
-| Scripts | 1.6.0 | Stable |
-| Workflows | 1.0.0 | Stable |
-| Actions | 1.0.0 | Stable |
-| Documentation | 1.0.0 | Complete |
-
-## File Sizes
-
-| File | Approx. Size | Lines |
-|------|--------------|-------|
-| `imds_diagnostic.sh` | ~14KB | ~450 |
-| `imds_aggregate_json.sh` | ~8KB | ~260 |
-| `imds_preflight.yml` | ~5KB | ~150 |
-| `imds_comment_on_issue.yml` | ~6KB | ~180 |
-| `shellcheck.yml` | ~5KB | ~160 |
-
-## Integration Points
-
-### With GitHub Features
-- **Actions**: Composite action for reusability
-- **Workflows**: Automated testing and commenting
-- **Issues**: Auto-commenting on IMDS issues
-- **PRs**: Preflight checks on pull requests
-
-### With External Tools
-- **ShellCheck**: Code quality
-- **jq**: JSON processing
-- **curl**: HTTP requests
-- **Prometheus**: Metrics (planned)
-
-## Maintenance
-
-### Update Frequency
-- **Scripts**: As needed for bugs/features
-- **Workflows**: Quarterly review
-- **Documentation**: With each release
-- **Configuration**: Rarely
-
-### Deprecation Policy
-- Scripts: 6-month notice
-- Workflows: 3-month notice
-- Documentation: Archive only
-
----
-
-**Version:** 1.0.0  
-**Last Updated:** 2024-01-15  
-**Maintainer:** IMDS Diagnostic Team
+Relates to issue: #2226

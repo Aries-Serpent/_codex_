@@ -1,91 +1,28 @@
-# IMDS Future Enhancements
+# IMDS Future Enhancements Backlog (Updated)
+> Generated: 2025-11-14 23:06:24 UTC | Author: mbaetiong
 
-## Planned Features
+## New Items
+| ID | Title | Description | Effort | Priority | Target |
+|----|-------|-------------|--------|----------|--------|
+| FE-11 | Approval Token Signature | Verify token with public key signature | M | High | 1.5 |
+| FE-12 | Audit Rotation | Rotate JSONL after N records | M | Medium | 1.5 |
+| FE-13 | Host Classifier | Auto tag environment (Azure vs GitHub runner) | L | Medium | 1.4 |
+| FE-14 | SLA Dashboard | Aggregate daily IMDS success metrics | H | Medium | 1.6 |
 
-### Version 1.7.0 (Q2 2024)
+(Existing items retained below.)
 
-#### Prometheus Metrics Export
-- Export diagnostic results in Prometheus format
-- Support for node_exporter textfile collector
-- Custom metric labels
-- Automated collection intervals
+## Existing Backlog
+| ID | Title | Description | Effort | Priority | Target Version |
+|----|-------|-------------|--------|----------|----------------|
+| FE-01 | Composite Action Packaging | Publish diagnostics as reusable action | M | High | 1.4 |
+| FE-02 | Signed Approval Token | Cryptographic signature verification | M | High | 1.5 |
+| FE-03 | Prometheus Exporter Daemon | Continuous IMDS polling | H | Medium | 1.6 |
+| FE-04 | Dashboard Aggregator | Multi-host visualization | H | Medium | 1.6 |
+| FE-05 | Automated Host Route Repair | Intelligent route insertion | H | Low | 1.7 |
+| FE-06 | Extended Firewall Parsers | UFW/firewalld detection | M | Medium | 1.5 |
+| FE-07 | Non-Linux Support | macOS/Windows partial checks | H | Low | 1.8 |
+| FE-08 | Structured Remediation Log | JSONL ledger (implemented) | - | Done | 1.4 |
+| FE-09 | Notification Hook | Slack/Teams integration | M | Medium | 1.4 |
+| FE-10 | HTML Report Generator | Styled summary conversion | L | Low | 1.5 |
 
-#### Advanced Retry Strategies
-- Exponential backoff with jitter
-- Circuit breaker pattern
-- Retry budgets
-- Smart retry based on error type
-
-#### Proxy Support
-- HTTP/HTTPS proxy configuration
-- SOCKS5 proxy support
-- Proxy authentication
-- Bypass lists
-
-### Version 1.8.0 (Q3 2024)
-
-#### Machine Learning Integration
-- Anomaly detection for response times
-- Predictive failure analysis
-- Pattern recognition for intermittent issues
-- Automated root cause analysis
-
-#### Historical Trend Analysis
-- Time-series data collection
-- Trend visualization
-- Capacity planning insights
-- SLA tracking
-
-#### Auto-Remediation
-- Automated firewall rule fixes
-- Self-healing capabilities
-- Rollback mechanisms
-- Safety checks
-
-### Version 2.0.0 (Q4 2024)
-
-#### Multi-Cloud Support
-- AWS EC2 Instance Metadata Service
-- GCP Compute Metadata Server
-- Unified diagnostic interface
-- Cloud-agnostic abstractions
-
-#### GUI Dashboard
-- Real-time monitoring
-- Historical data visualization
-- Alert management
-- Multi-tenant support
-
-## Feature Requests
-
-### High Priority
-1. Windows PowerShell version
-2. Docker health check integration
-3. Kubernetes operator
-4. Terraform provider
-
-### Medium Priority
-1. SNS/SQS notification support
-2. Custom webhook endpoints
-3. OpenTelemetry integration
-4. Datadog integration
-
-### Low Priority
-1. Mobile app for monitoring
-2. Browser extension
-3. VS Code extension
-4. Slack bot
-
-## Community Contributions Welcome
-
-We welcome contributions for:
-- Additional cloud provider support
-- New firewall detection methods
-- Performance improvements
-- Documentation enhancements
-- Bug fixes
-
----
-
-**Version:** 1.0.0  
-**Last Updated:** 2024-01-15
+Relates to issue: #2226

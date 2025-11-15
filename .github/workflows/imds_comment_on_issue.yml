@@ -1,163 +1,120 @@
-name: IMDS Issue Comment
+name: IMDS Diagnostics Commenter
 
 on:
-  issues:
-    types: [opened, labeled]
-  issue_comment:
-    types: [created]
   workflow_dispatch:
     inputs:
-      issue_number:
-        description: 'Issue number to comment on'
-        required: true
-        type: number
-
-permissions:
-  issues: write
-  contents: read
+      apply:
+        description: "Attempt remediation (requires IMDS_APPROVAL_TOKEN secret)"
+        required: false
+        default: "false"
+      json:
+        description: "Emit JSON summary"
+        required: false
+        default: "true"
+      metrics:
+        description: "Emit metrics"
+        required: false
+        default: "true"
+      html:
+        description: "Emit HTML report"
+        required: false
+        default: "true"
+  push:
+    branches: [ 0D_base_, main ]
+    paths:
+      - ".github/scripts/imds_diagnostic.sh"
+      - ".github/imds_config.yml"
 
 jobs:
-  comment-on-issue:
-    name: Add IMDS Diagnostic Comment
+  run-and-comment:
     runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'imds')) ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/imds-check')) ||
-      github.event_name == 'workflow_dispatch'
-    
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Install dependencies
+
+      - name: Load config (issue_id)
+        id: cfg
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl jq iputils-ping coreutils
-      
-      - name: Run IMDS diagnostic
-        id: diagnostic
-        run: |
-          chmod +x .github/scripts/imds_diagnostic.sh
-          .github/scripts/imds_diagnostic.sh --output imds_results.json --verbose || true
-      
-      - name: Generate comment
-        id: generate-comment
-        run: |
-          if [ ! -f imds_results.json ]; then
-            echo "No results file found"
-            exit 1
+          ISSUE_ID=2226
+          if [ -f .github/imds_config.yml ]; then
+            ID=$(grep -E '^[[:space:]]*issue_id:' .github/imds_config.yml | awk -F: '{gsub(/[[:space:]]/, "", $2); print $2}')
+            if [ -n "$ID" ]; then ISSUE_ID="$ID"; fi
           fi
-          
-          # Read results
-          results=$(cat imds_results.json)
-          accessible=$(echo "$results" | jq -r '.imds_accessible // "unknown"')
-          
-          # Build comment
-          cat > comment.md << 'EOF'
-          ## 🔍 IMDS Diagnostic Results
-          
-          **Requested by:** @${{ github.actor }}
-          **Timestamp:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          
-          EOF
-          
-          if [ "$accessible" = "true" ]; then
-            cat >> comment.md << 'EOF'
-          ### ✅ IMDS is Accessible
-          
-          The Azure Instance Metadata Service is accessible from this runner.
-          
-          **VM Details:**
-          EOF
-            echo "- **VM ID:** $(echo "$results" | jq -r '.vm_id // "N/A"')" >> comment.md
-            echo "- **Location:** $(echo "$results" | jq -r '.azure_location // "N/A"')" >> comment.md
-            echo "- **HTTP Status:** $(echo "$results" | jq -r '.imds_http_code // "N/A"')" >> comment.md
-          elif [ "$accessible" = "false" ]; then
-            cat >> comment.md << 'EOF'
-          ### ❌ IMDS is NOT Accessible
-          
-          The Azure Instance Metadata Service could not be reached from this runner.
-          
-          **Diagnostics:**
-          EOF
-            echo "- **Error Reason:** $(echo "$results" | jq -r '.error_reason // "Unknown"')" >> comment.md
-            echo "- **HTTP Code:** $(echo "$results" | jq -r '.imds_http_code // "N/A"')" >> comment.md
-            echo "- **Curl Exit Code:** $(echo "$results" | jq -r '.imds_curl_exit // "N/A"')" >> comment.md
-            
-            cat >> comment.md << 'EOF'
-          
-          **Possible Causes:**
-          1. This runner is not an Azure VM
-          2. Firewall rules are blocking access to 169.254.169.254
-          3. Network configuration issues
-          4. IMDS service is disabled on the VM
-          
-          **Recommended Actions:**
-          - Verify this is running on an Azure VM
-          - Check firewall rules with `/github-scripts/imds_diagnostic.sh --verbose`
-          - Review Azure VM configuration
-          EOF
+          echo "issue_id=$ISSUE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Run diagnostics
+        shell: bash
+        env:
+          IMDS_APPROVAL_TOKEN: ${{ secrets.IMDS_APPROVAL_TOKEN }}
+        run: |
+          FLAGS=""
+          [ "${{ inputs.json }}" = "true" ] && FLAGS="$FLAGS --json"
+          [ "${{ inputs.metrics }}" = "true" ] && FLAGS="$FLAGS --metrics"
+          [ "${{ inputs.html }}" = "true" ] && FLAGS="$FLAGS --html"
+          if [ "${{ inputs.apply }}" = "true" ]; then
+            sudo -E bash .github/scripts/imds_diagnostic.sh --apply $FLAGS || true
           else
-            cat >> comment.md << 'EOF'
-          ### ⚠️ Unable to Determine IMDS Status
-          
-          The diagnostic completed but IMDS accessibility could not be determined.
-          EOF
+            bash .github/scripts/imds_diagnostic.sh $FLAGS || true
           fi
-          
-          cat >> comment.md << 'EOF'
-          
-          **Test Summary:**
-          EOF
-          echo "- **Tests Passed:** $(echo "$results" | jq -r '.summary_passed // "0"')" >> comment.md
-          echo "- **Tests Failed:** $(echo "$results" | jq -r '.summary_failed // "0"')" >> comment.md
-          echo "- **Warnings:** $(echo "$results" | jq -r '.summary_warnings // "0"')" >> comment.md
-          
-          cat >> comment.md << 'EOF'
-          
-          <details>
-          <summary>View Full Results (JSON)</summary>
-          
-          ```json
-          EOF
-          cat imds_results.json | jq '.' >> comment.md
-          cat >> comment.md << 'EOF'
-          ```
-          
-          </details>
-          
-          ---
-          *For more information, see the [IMDS Diagnostic Runbook](.github/docs/imds_diagnostic_RUNBOOK.md)*
-          EOF
-      
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: imds-evidence
+          path: |
+            diagnostic_results.txt
+            diagnostic_results.json
+            imds_metrics.prom
+            imds_report.html
+
+      - name: Compose comment body
+        id: body
+        shell: bash
+        run: |
+          STATUS="unknown"
+          ENV_CLASS="unknown"
+          RUNTIME="n/a"
+          if [ -f diagnostic_results.json ]; then
+            STATUS=$(jq -r '.status' diagnostic_results.json 2>/dev/null || echo "unknown")
+            ENV_CLASS=$(jq -r '.env_class' diagnostic_results.json 2>/dev/null || echo "unknown")
+            RUNTIME=$(jq -r '.runtime_ms' diagnostic_results.json 2>/dev/null || echo "n/a")
+          fi
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "env=$ENV_CLASS" >> "$GITHUB_OUTPUT"
+          echo "runtime=$RUNTIME" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+
       - name: Post comment to issue
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const comment = fs.readFileSync('comment.md', 'utf8');
-            
-            const issueNumber = context.payload.issue?.number || 
-                                context.payload.inputs?.issue_number;
-            
-            if (!issueNumber) {
-              core.setFailed('Could not determine issue number');
-              return;
-            }
-            
+            const issue_number = parseInt("${{ steps.cfg.outputs.issue_id }}", 10);
+            const status = "${{ steps.body.outputs.status }}";
+            const env = "${{ steps.body.outputs.env }}";
+            const runtime = "${{ steps.body.outputs.runtime }}";
+            const date = "${{ steps.body.outputs.date }}";
+            const body = [
+              `IMDS diagnostics run (${date})`,
+              ``,
+              `- Status: ${status}`,
+              `- Env class: ${env}`,
+              `- Runtime: ${runtime} ms`,
+              ``,
+              `Artifacts:`,
+              `- diagnostic_results.txt`,
+              `- diagnostic_results.json`,
+              `- imds_metrics.prom`,
+              `- imds_report.html`
+            ].join("\\n");
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issueNumber,
-              body: comment
+              issue_number,
+              body
             });
-            
-            core.info(`Comment posted to issue #${issueNumber}`);
-      
-      - name: Upload results artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: imds-issue-diagnostic
-          path: imds_results.json
-          retention-days: 30

@@ -1,137 +1,43 @@
-name: IMDS Preflight Check
+name: IMDS Pre-Flight Check
 
 on:
-  pull_request:
-    branches:
-      - main
-      - develop
-      - '0D_base_'
-    paths:
-      - '.github/scripts/imds_*.sh'
-      - '.github/workflows/imds_*.yml'
-      - '.github/actions/imds-check/**'
-      - '.github/imds_config.yml'
   workflow_dispatch:
-    inputs:
-      verbose:
-        description: 'Enable verbose output'
-        required: false
-        type: boolean
-        default: false
-
-permissions:
-  contents: read
-  pull-requests: write
-  checks: write
+  pull_request:
+    branches: [ 0D_base_, main ]
+    paths:
+      - ".github/scripts/imds_diagnostic.sh"
+      - ".github/workflows/imds_preflight.yml"
 
 jobs:
-  imds-diagnostic:
-    name: Run IMDS Diagnostic
+  imds-preflight:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      
-      - name: Install dependencies
+
+      - name: Run IMDS diagnostics (JSON)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl jq iputils-ping coreutils
-      
-      - name: Run IMDS diagnostic
-        id: imds-check
-        uses: ./.github/actions/imds-check
-        with:
-          verbose: ${{ inputs.verbose || 'false' }}
-          timeout: 10
-          output-artifact: true
-        continue-on-error: true
-      
-      - name: Display results
-        if: always()
-        run: |
-          echo "## IMDS Diagnostic Results"
-          echo ""
-          if [ -f imds_results.json ]; then
-            cat imds_results.json | jq '.'
-            
-            # Check if IMDS is accessible
-            accessible=$(cat imds_results.json | jq -r '.imds_accessible // "unknown"')
-            if [ "$accessible" = "true" ]; then
-              echo "✅ IMDS is accessible"
-            elif [ "$accessible" = "false" ]; then
-              echo "❌ IMDS is NOT accessible"
-              exit 1
-            else
-              echo "⚠️  IMDS accessibility is unknown"
-            fi
-          else
-            echo "⚠️  No results file generated"
+          bash .github/scripts/imds_diagnostic.sh --json || true
+          if [ ! -f diagnostic_results.json ]; then
+            echo "JSON summary missing; failing pre-flight."
+            exit 1
           fi
-      
-      - name: Upload diagnostic results
-        if: always()
+          cat diagnostic_results.json
+
+      - name: Gate on status == ok
+        run: |
+          STATUS=$(jq -r '.status' diagnostic_results.json)
+          echo "Status: $STATUS"
+          if [ "$STATUS" != "ok" ]; then
+            echo "IMDS status not ok (STATUS=$STATUS). Remediation recommended."
+            exit 1
+          fi
+          echo "IMDS pre-flight passed."
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: imds-diagnostic-results
-          path: imds_results.json
-          retention-days: 30
-          if-no-files-found: warn
-      
-      - name: Comment on PR
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let comment = '## 🔍 IMDS Preflight Check\n\n';
-            
-            try {
-              if (fs.existsSync('imds_results.json')) {
-                const results = JSON.parse(fs.readFileSync('imds_results.json', 'utf8'));
-                const accessible = results.imds_accessible === 'true';
-                
-                if (accessible) {
-                  comment += '✅ **Status:** IMDS is accessible\n\n';
-                  comment += `- **VM ID:** ${results.vm_id || 'N/A'}\n`;
-                  comment += `- **Location:** ${results.azure_location || 'N/A'}\n`;
-                } else {
-                  comment += '❌ **Status:** IMDS is NOT accessible\n\n';
-                  comment += `- **Error Reason:** ${results.error_reason || 'Unknown'}\n`;
-                  comment += `- **HTTP Code:** ${results.imds_http_code || 'N/A'}\n`;
-                }
-                
-                comment += `\n**Summary:**\n`;
-                comment += `- Tests Passed: ${results.summary_passed || 0}\n`;
-                comment += `- Tests Failed: ${results.summary_failed || 0}\n`;
-                comment += `- Warnings: ${results.summary_warnings || 0}\n`;
-              } else {
-                comment += '⚠️ **Status:** Unable to run diagnostics\n\n';
-                comment += 'No results file was generated. This may indicate the diagnostic script failed to run.\n';
-              }
-            } catch (error) {
-              comment += '⚠️ **Status:** Error processing results\n\n';
-              comment += `Error: ${error.message}\n`;
-            }
-            
-            comment += '\n---\n';
-            comment += `*Diagnostic run: ${new Date().toISOString()}*`;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
-      
-      - name: Set check status
-        if: always()
-        run: |
-          if [ -f imds_results.json ]; then
-            accessible=$(cat imds_results.json | jq -r '.imds_accessible // "unknown"')
-            if [ "$accessible" != "true" ]; then
-              echo "::warning::IMDS is not accessible on this runner"
-            fi
-          fi
+          name: imds-diagnostics
+          path: |
+            diagnostic_results.txt
+            diagnostic_results.json
