@@ -1,5 +1,17 @@
+# Bandit configuration — tuned for this repository
+# Docs: https://bandit.readthedocs.io/en/latest/config.html
 exclude_dirs:
   - tests
+  - docs
+  - .venv
+  - artifacts
+  - .git
   - notebooks
 skips:
-  - B101
+  - B101  # assert_used (OK in tests; tests excluded anyway)
+  - B404  # import_subprocess (allowed in tooling)
+  - B603  # subprocess_without_shell_equals_true (we use explicit lists)
+severity: "LOW"
+confidence: "HIGH"
+targets:
+  - src

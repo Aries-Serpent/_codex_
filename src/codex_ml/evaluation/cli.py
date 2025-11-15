@@ -13,10 +13,11 @@ Exit codes:
     4 determinism mismatch (report comparison)
 """
 from __future__ import annotations
+import importlib
 import json
 import sys
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Callable, Sequence, Iterable, List
 
 import typer
 
@@ -41,6 +42,57 @@ def _load_config(path: Path) -> Dict[str, Any]:
     raise typer.Exit(code=2)
 
 
+def _import_string(spec: str) -> Callable[..., Iterable[object]]:
+    if ":" in spec:
+        module_name, attr = spec.split(":", 1)
+    else:
+        module_name, attr = spec.rsplit(".", 1)
+    module = importlib.import_module(module_name)
+    target = getattr(module, attr)
+    if not callable(target):
+        raise TypeError(f"Resolved object '{spec}' is not callable")
+    return target
+
+
+def _resolve_metrics(cfg: Dict[str, Any], names: Sequence[str] | None) -> Dict[str, Callable]:
+    from codex_ml.metrics.registry import get as get_metric
+
+    evaluation_cfg = cfg.get("evaluation", {})
+    configured = evaluation_cfg.get("metrics")
+
+    candidates: Iterable[str] | Dict[str, Any]
+    if names:
+        candidates = list(names)
+    else:
+        candidates = configured or []
+
+    resolved: Dict[str, Callable] = {}
+    if isinstance(candidates, dict):
+        for alias, value in candidates.items():
+            if callable(value):
+                resolved[alias] = value
+            elif isinstance(value, str):
+                resolved[alias] = get_metric(value)
+            else:
+                resolved[alias] = get_metric(alias)
+    else:
+        for name in candidates:
+            resolved[str(name)] = get_metric(str(name))
+    return resolved
+
+
+def _resolve_transform(cfg: Dict[str, Any], override: Optional[str], key: str) -> Optional[Callable]:
+    evaluation_cfg = cfg.get("evaluation", {})
+    spec = override or evaluation_cfg.get(key)
+    if spec is None:
+        return None
+    if callable(spec):
+        return spec
+    if isinstance(spec, str):
+        return _import_string(spec)
+    raise TypeError(f"Unsupported transform specification for {key}: {spec!r}")
+
+
 @app.command("run")
 def run_command(
     config: Path = typer.Option(..., "--config", help="Experiment config (.json/.toml)"),
@@ -54,6 +106,21 @@ def run_command(
     ),
     sys_metrics: bool = typer.Option(
         False, "--sys-metrics", help="Enable system metrics collection (future)"
+    ),
+    metric: Optional[List[str]] = typer.Option(
+        None,
+        "--metric",
+        help="Metric name (repeat for multiple). Defaults to config-defined metrics.",
+    ),
+    prediction_transform: Optional[str] = typer.Option(
+        None,
+        "--prediction-transform",
+        help="Optional dotted path for prediction post-processing callable.",
+    ),
+    target_transform: Optional[str] = typer.Option(
+        None,
+        "--target-transform",
+        help="Optional dotted path for target post-processing callable.",
     ),
 ):
     """
@@ -84,16 +151,22 @@ def run_command(
         }
     )
 
+    metrics_mapping = _resolve_metrics(cfg, metric)
+    prediction_transform_fn = _resolve_transform(cfg, prediction_transform, "prediction_transform")
+    target_transform_fn = _resolve_transform(cfg, target_transform, "target_transform")
+
     summary = evaluate_epoch(
         model=model,
         dataloader=dataloader,
         criterion=criterion,
         device=device,
-        metrics=cfg.get("evaluation", {}).get("metrics"),
+        metrics=metrics_mapping or None,
         logger=loggers,
         max_batches=max_batches,
         seed=cfg.get("seed"),
         deterministic=deterministic,
+        prediction_transform=prediction_transform_fn,
+        target_transform=target_transform_fn,
     )
 
     if json_output:
