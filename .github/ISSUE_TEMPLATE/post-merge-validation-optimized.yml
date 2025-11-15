@@ -1,0 +1,76 @@
+name: "Post-merge validation report"
+description: "Use this form when the Post-Merge Validation (Optimized) workflow fails or needs manual attention."
+title: "🚨 Post-merge validation: <short summary>"
+labels:
+  - post-merge
+  - bug
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a post-merge validation event. Please complete the required fields below.
+
+  - type: input
+    id: workflow_run_url
+    attributes:
+      label: "Workflow run URL"
+      description: "Link to the GitHub Actions run for Post-Merge Validation (Optimized)."
+      placeholder: "https://github.com/Aries-Serpent/_codex_/actions/runs/##########"
+    validations:
+      required: true
+
+  - type: input
+    id: commit_sha
+    attributes:
+      label: "Merge commit SHA"
+      description: "The merge commit hash on main that triggered the workflow."
+      placeholder: "943a927fc26a355afae94d7f683c6b8985d2534a"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: failing_job
+    attributes:
+      label: "Failing job"
+      description: "Select the job that failed in the Post-Merge Validation (Optimized) workflow."
+      options:
+        - validate-imports
+        - test-core
+        - test-smoke
+        - lint-check
+        - modernization-scan
+        - summary
+    validations:
+      required: true
+
+  - type: textarea
+    id: failure_summary
+    attributes:
+      label: "Failure summary"
+      description: "Briefly describe what went wrong."
+      placeholder: "Example: validate-imports failed to import torch due to missing CPU-only build."
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs_snippet
+    attributes:
+      label: "Relevant logs"
+      description: "Paste key log excerpts (avoid secrets). Use backticks for code blocks."
+      render: shell
+
+  - type: checkboxes
+    id: quick_actions
+    attributes:
+      label: "Quick actions performed"
+      options:
+        - label: "Re-ran the failing job"
+        - label: "Opened a PR with a fix"
+        - label: "Notified on-call in #deployments"
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional context"
+      description: "Add any extra details, links to PRs, or screenshots."

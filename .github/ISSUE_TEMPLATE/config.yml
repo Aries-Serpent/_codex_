@@ -12,3 +12,6 @@ contact_links:
   - name: 🔒 Security Vulnerability (Private)
     url: https://github.com/Aries-Serpent/_codex_/security/advisories/new
     about: Report security vulnerabilities privately via GitHub Security Advisories
+  - name: ⛓️‍💥 Deployment incidents
+    url: https://github.com/Aries-Serpent/_codex_/issues/new?labels=post-merge,bug&template=post-merge-validation-optimized.yml
+    about: Use the Post-merge Validation form to report main-branch validation failures.
