@@ -453,14 +453,41 @@ class DeploymentOrchestrator:
                         runs = json.loads(stdout)
                         if runs:
                             run_id = runs[0]["databaseId"]
+                            status = runs[0].get("status")
+                            conclusion = runs[0].get("conclusion")
+                            
                             self.manifest.workflow_run_id = str(run_id)
                             result.details["workflow_run_id"] = run_id
-                            result.details["workflow_status"] = runs[0]["status"]
-                            self.logger.info(f"✓ Workflow run ID: {run_id}")
+                            result.details["workflow_status"] = status
+                            result.details["workflow_conclusion"] = conclusion
+                            self.logger.info(f"✓ Workflow run ID: {run_id}, status: {status}, conclusion: {conclusion}")
                             
-                            # Monitor workflow (simplified - would need real-time monitoring)
-                            result.details["monitoring"] = "Workflow triggered, monitoring required"
-                            result.status = PhaseStatus.SUCCESS
+                            # CRITICAL FIX: Verify workflow completion and conclusion
+                            if status != "completed":
+                                # Workflow is still running
+                                result.status = PhaseStatus.IN_PROGRESS
+                                result.details["monitoring"] = f"Workflow {status}, monitoring required"
+                                self.logger.warning(f"⚠ Workflow is {status}, not completed. Phase marked as IN_PROGRESS.")
+                                self.logger.warning("⚠ Production deployment should wait for workflow completion.")
+                            elif conclusion == "success":
+                                # Workflow completed successfully
+                                result.status = PhaseStatus.SUCCESS
+                                self.logger.info("✓ Post-merge validation workflow completed successfully")
+                            elif conclusion in ["failure", "timed_out", "action_required"]:
+                                # Workflow failed
+                                result.status = PhaseStatus.FAILED
+                                result.errors.append(f"Workflow conclusion: {conclusion}")
+                                self.logger.error(f"✗ Post-merge validation workflow failed: {conclusion}")
+                            elif conclusion in ["cancelled", "skipped"]:
+                                # Workflow was cancelled or skipped
+                                result.status = PhaseStatus.FAILED
+                                result.errors.append(f"Workflow {conclusion}")
+                                self.logger.warning(f"⚠ Post-merge validation workflow {conclusion}")
+                            else:
+                                # Unknown or null conclusion (workflow completed but no conclusion yet)
+                                result.status = PhaseStatus.FAILED
+                                result.errors.append(f"Unknown workflow conclusion: {conclusion}")
+                                self.logger.error(f"✗ Unknown workflow conclusion: {conclusion}")
                         else:
                             result.errors.append("No workflow run found")
                             result.status = PhaseStatus.FAILED

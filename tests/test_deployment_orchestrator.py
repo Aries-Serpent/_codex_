@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -167,7 +167,7 @@ class TestDeploymentOrchestrator:
     
     def test_phase_1_generates_report(self, orchestrator, temp_output_dir):
         """Test that Phase 1 generates a pre-check report."""
-        result = orchestrator.phase_1_pre_deployment_verification()
+        orchestrator.phase_1_pre_deployment_verification()
         
         # Check report file was created
         report_file = temp_output_dir / "pre_check_report_2207.json"
@@ -195,6 +195,178 @@ class TestDeploymentOrchestrator:
         assert result.phase == DeploymentPhase.PHASE_3_POST_MERGE
         assert result.status == PhaseStatus.SKIPPED
         assert "Dry run" in result.details.get("reason", "")
+    
+    @patch('subprocess.run')
+    def test_phase_3_workflow_completed_success(self, mock_run, temp_output_dir):
+        """Test Phase 3 correctly reports success when workflow completes successfully."""
+        orchestrator = DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
+        
+        # Mock gh auth status (authenticated)
+        mock_auth = Mock()
+        mock_auth.returncode = 0
+        mock_auth.stdout = ""
+        mock_auth.stderr = ""
+        
+        # Mock gh run list (workflow completed successfully)
+        mock_workflow = Mock()
+        mock_workflow.returncode = 0
+        mock_workflow.stdout = json.dumps([{
+            "databaseId": 12345,
+            "status": "completed",
+            "conclusion": "success"
+        }])
+        mock_workflow.stderr = ""
+        
+        mock_run.side_effect = [mock_auth, mock_workflow]
+        
+        result = orchestrator.phase_3_post_merge_validation()
+        
+        assert result.status == PhaseStatus.SUCCESS
+        assert result.details["workflow_conclusion"] == "success"
+        assert result.details["workflow_status"] == "completed"
+        assert len(result.errors) == 0
+    
+    @patch('subprocess.run')
+    def test_phase_3_workflow_completed_failure(self, mock_run, temp_output_dir):
+        """Test Phase 3 correctly reports failure when workflow fails."""
+        orchestrator = DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
+        
+        # Mock gh auth status (authenticated)
+        mock_auth = Mock()
+        mock_auth.returncode = 0
+        mock_auth.stdout = ""
+        mock_auth.stderr = ""
+        
+        # Mock gh run list (workflow completed with failure)
+        mock_workflow = Mock()
+        mock_workflow.returncode = 0
+        mock_workflow.stdout = json.dumps([{
+            "databaseId": 12345,
+            "status": "completed",
+            "conclusion": "failure"
+        }])
+        mock_workflow.stderr = ""
+        
+        mock_run.side_effect = [mock_auth, mock_workflow]
+        
+        result = orchestrator.phase_3_post_merge_validation()
+        
+        # CRITICAL: Must report FAILED, not SUCCESS
+        assert result.status == PhaseStatus.FAILED
+        assert result.details["workflow_conclusion"] == "failure"
+        assert len(result.errors) > 0
+        assert "failure" in result.errors[0]
+    
+    @patch('subprocess.run')
+    def test_phase_3_workflow_in_progress(self, mock_run, temp_output_dir):
+        """Test Phase 3 reports IN_PROGRESS when workflow is still running."""
+        orchestrator = DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
+        
+        # Mock gh auth status (authenticated)
+        mock_auth = Mock()
+        mock_auth.returncode = 0
+        mock_auth.stdout = ""
+        mock_auth.stderr = ""
+        
+        # Mock gh run list (workflow still in progress)
+        mock_workflow = Mock()
+        mock_workflow.returncode = 0
+        mock_workflow.stdout = json.dumps([{
+            "databaseId": 12345,
+            "status": "in_progress",
+            "conclusion": None
+        }])
+        mock_workflow.stderr = ""
+        
+        mock_run.side_effect = [mock_auth, mock_workflow]
+        
+        result = orchestrator.phase_3_post_merge_validation()
+        
+        # CRITICAL: Must report IN_PROGRESS, not SUCCESS
+        assert result.status == PhaseStatus.IN_PROGRESS
+        assert result.details["workflow_status"] == "in_progress"
+        assert "monitoring required" in result.details.get("monitoring", "").lower()
+    
+    @patch('subprocess.run')
+    def test_phase_3_workflow_timed_out(self, mock_run, temp_output_dir):
+        """Test Phase 3 reports failure when workflow times out."""
+        orchestrator = DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
+        
+        # Mock gh auth status (authenticated)
+        mock_auth = Mock()
+        mock_auth.returncode = 0
+        mock_auth.stdout = ""
+        mock_auth.stderr = ""
+        
+        # Mock gh run list (workflow timed out)
+        mock_workflow = Mock()
+        mock_workflow.returncode = 0
+        mock_workflow.stdout = json.dumps([{
+            "databaseId": 12345,
+            "status": "completed",
+            "conclusion": "timed_out"
+        }])
+        mock_workflow.stderr = ""
+        
+        mock_run.side_effect = [mock_auth, mock_workflow]
+        
+        result = orchestrator.phase_3_post_merge_validation()
+        
+        # CRITICAL: Must report FAILED, not SUCCESS
+        assert result.status == PhaseStatus.FAILED
+        assert result.details["workflow_conclusion"] == "timed_out"
+        assert len(result.errors) > 0
+    
+    @patch('subprocess.run')
+    def test_phase_3_workflow_cancelled(self, mock_run, temp_output_dir):
+        """Test Phase 3 reports failure when workflow is cancelled."""
+        orchestrator = DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
+        
+        # Mock gh auth status (authenticated)
+        mock_auth = Mock()
+        mock_auth.returncode = 0
+        mock_auth.stdout = ""
+        mock_auth.stderr = ""
+        
+        # Mock gh run list (workflow cancelled)
+        mock_workflow = Mock()
+        mock_workflow.returncode = 0
+        mock_workflow.stdout = json.dumps([{
+            "databaseId": 12345,
+            "status": "completed",
+            "conclusion": "cancelled"
+        }])
+        mock_workflow.stderr = ""
+        
+        mock_run.side_effect = [mock_auth, mock_workflow]
+        
+        result = orchestrator.phase_3_post_merge_validation()
+        
+        # CRITICAL: Must report FAILED, not SUCCESS
+        assert result.status == PhaseStatus.FAILED
+        assert result.details["workflow_conclusion"] == "cancelled"
+        assert len(result.errors) > 0
+    
     
     def test_phase_4_health_check(self, orchestrator, temp_output_dir):
         """Test Phase 4: Health Check & Validation."""
