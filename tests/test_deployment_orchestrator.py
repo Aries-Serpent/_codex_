@@ -595,19 +595,69 @@ class TestDeploymentOrchestrator:
     def test_execute_creates_artifacts(self, orchestrator, temp_output_dir):
         """Test that execution creates all expected artifacts."""
         orchestrator.execute()
-        
+
         # Check for log file
         log_files = list(temp_output_dir.glob("deployment_2207_*.log"))
         assert len(log_files) > 0
-        
+
         # Check for manifest
         manifest_file = temp_output_dir / "deployment_manifest_2207.json"
         assert manifest_file.exists()
-        
+
         # Check for summary
         summary_file = temp_output_dir / "deployment_summary_2207.md"
         assert summary_file.exists()
-    
+
+    def test_execute_halts_when_phase_in_progress(self, live_orchestrator):
+        """Ensure orchestrator pauses when a phase reports IN_PROGRESS."""
+
+        def successful_phase(phase: DeploymentPhase) -> PhaseResult:
+            return PhaseResult(
+                phase=phase,
+                status=PhaseStatus.SUCCESS,
+                start_time=datetime.now(timezone.utc),
+                end_time=datetime.now(timezone.utc),
+            )
+
+        def phase1():
+            return successful_phase(DeploymentPhase.PHASE_1_PRE_DEPLOYMENT)
+
+        def phase2():
+            return successful_phase(DeploymentPhase.PHASE_2_MERGE)
+
+        def phase3():
+            return PhaseResult(
+                phase=DeploymentPhase.PHASE_3_POST_MERGE,
+                status=PhaseStatus.IN_PROGRESS,
+                start_time=datetime.now(timezone.utc),
+                end_time=datetime.now(timezone.utc),
+                details={"reason": "Workflow monitoring still running"},
+            )
+
+        def fail_phase4():
+            pytest.fail("Phase 4 should not execute while validation is in progress")
+
+        def fail_phase5():
+            pytest.fail("Phase 5 should not execute while validation is in progress")
+
+        live_orchestrator.phase_1_pre_deployment_verification = phase1
+        live_orchestrator.phase_2_merge_execution = phase2
+        live_orchestrator.phase_3_post_merge_validation = phase3
+        live_orchestrator.phase_4_health_check = fail_phase4  # type: ignore[assignment]
+        live_orchestrator.phase_5_notification = fail_phase5  # type: ignore[assignment]
+
+        success = live_orchestrator.execute()
+
+        assert success is False
+        assert live_orchestrator.manifest.status == PhaseStatus.IN_PROGRESS
+
+        executed_phases = [result.phase for result in live_orchestrator.manifest.phase_results]
+        assert executed_phases == [
+            DeploymentPhase.PHASE_1_PRE_DEPLOYMENT,
+            DeploymentPhase.PHASE_2_MERGE,
+            DeploymentPhase.PHASE_3_POST_MERGE,
+        ]
+
     def test_error_handling_in_phase(self, orchestrator):
         """Test error handling when a phase encounters an exception."""
         # Mock a method to raise an exception
