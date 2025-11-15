@@ -1,0 +1,5 @@
+# .shellcheckrc - Configuration for ShellCheck linting (ENERGY 5/5)
+# Disable rules that are acceptable within controlled diagnostics context:
+disable=SC2181,SC1090
+# Allow variable-based command substitution pattern
+# Additional rules can be appended as needed.

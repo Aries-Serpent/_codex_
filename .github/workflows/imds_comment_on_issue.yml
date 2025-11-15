@@ -1,0 +1,120 @@
+name: IMDS Diagnostics Commenter
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Attempt remediation (requires IMDS_APPROVAL_TOKEN secret)"
+        required: false
+        default: "false"
+      json:
+        description: "Emit JSON summary"
+        required: false
+        default: "true"
+      metrics:
+        description: "Emit metrics"
+        required: false
+        default: "true"
+      html:
+        description: "Emit HTML report"
+        required: false
+        default: "true"
+  push:
+    branches: [ 0D_base_, main ]
+    paths:
+      - ".github/scripts/imds_diagnostic.sh"
+      - ".github/imds_config.yml"
+
+jobs:
+  run-and-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Load config (issue_id)
+        id: cfg
+        shell: bash
+        run: |
+          ISSUE_ID=2226
+          if [ -f .github/imds_config.yml ]; then
+            ID=$(grep -E '^[[:space:]]*issue_id:' .github/imds_config.yml | awk -F: '{gsub(/[[:space:]]/, "", $2); print $2}')
+            if [ -n "$ID" ]; then ISSUE_ID="$ID"; fi
+          fi
+          echo "issue_id=$ISSUE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Run diagnostics
+        shell: bash
+        env:
+          IMDS_APPROVAL_TOKEN: ${{ secrets.IMDS_APPROVAL_TOKEN }}
+        run: |
+          FLAGS=""
+          [ "${{ inputs.json }}" = "true" ] && FLAGS="$FLAGS --json"
+          [ "${{ inputs.metrics }}" = "true" ] && FLAGS="$FLAGS --metrics"
+          [ "${{ inputs.html }}" = "true" ] && FLAGS="$FLAGS --html"
+          if [ "${{ inputs.apply }}" = "true" ]; then
+            sudo -E bash .github/scripts/imds_diagnostic.sh --apply $FLAGS || true
+          else
+            bash .github/scripts/imds_diagnostic.sh $FLAGS || true
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: imds-evidence
+          path: |
+            diagnostic_results.txt
+            diagnostic_results.json
+            imds_metrics.prom
+            imds_report.html
+
+      - name: Compose comment body
+        id: body
+        shell: bash
+        run: |
+          STATUS="unknown"
+          ENV_CLASS="unknown"
+          RUNTIME="n/a"
+          if [ -f diagnostic_results.json ]; then
+            STATUS=$(jq -r '.status' diagnostic_results.json 2>/dev/null || echo "unknown")
+            ENV_CLASS=$(jq -r '.env_class' diagnostic_results.json 2>/dev/null || echo "unknown")
+            RUNTIME=$(jq -r '.runtime_ms' diagnostic_results.json 2>/dev/null || echo "n/a")
+          fi
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "env=$ENV_CLASS" >> "$GITHUB_OUTPUT"
+          echo "runtime=$RUNTIME" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+
+      - name: Post comment to issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = parseInt("${{ steps.cfg.outputs.issue_id }}", 10);
+            const status = "${{ steps.body.outputs.status }}";
+            const env = "${{ steps.body.outputs.env }}";
+            const runtime = "${{ steps.body.outputs.runtime }}";
+            const date = "${{ steps.body.outputs.date }}";
+            const body = [
+              `IMDS diagnostics run (${date})`,
+              ``,
+              `- Status: ${status}`,
+              `- Env class: ${env}`,
+              `- Runtime: ${runtime} ms`,
+              ``,
+              `Artifacts:`,
+              `- diagnostic_results.txt`,
+              `- diagnostic_results.json`,
+              `- imds_metrics.prom`,
+              `- imds_report.html`
+            ].join("\\n");
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body
+            });

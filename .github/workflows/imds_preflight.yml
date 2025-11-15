@@ -1,0 +1,43 @@
+name: IMDS Pre-Flight Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ 0D_base_, main ]
+    paths:
+      - ".github/scripts/imds_diagnostic.sh"
+      - ".github/workflows/imds_preflight.yml"
+
+jobs:
+  imds-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run IMDS diagnostics (JSON)
+        run: |
+          bash .github/scripts/imds_diagnostic.sh --json || true
+          if [ ! -f diagnostic_results.json ]; then
+            echo "JSON summary missing; failing pre-flight."
+            exit 1
+          fi
+          cat diagnostic_results.json
+
+      - name: Gate on status == ok
+        run: |
+          STATUS=$(jq -r '.status' diagnostic_results.json)
+          echo "Status: $STATUS"
+          if [ "$STATUS" != "ok" ]; then
+            echo "IMDS status not ok (STATUS=$STATUS). Remediation recommended."
+            exit 1
+          fi
+          echo "IMDS pre-flight passed."
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: imds-diagnostics
+          path: |
+            diagnostic_results.txt
+            diagnostic_results.json

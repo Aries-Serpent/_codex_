@@ -1,0 +1,8 @@
+# IMDS Diagnostics Default Configuration (ENERGY 5/5)
+strict_approval: true
+default_api_version: "2021-02-01"
+default_modes:
+  json: true
+  metrics: true
+  html: false
+issue_id: 2226

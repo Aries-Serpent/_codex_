@@ -1,0 +1,36 @@
+name: "IMDS Check Composite Action"
+description: "Run IMDS diagnostics and fail if remediation is recommended."
+inputs:
+  json:
+    description: "Produce JSON summary"
+    required: false
+    default: "true"
+  metrics:
+    description: "Produce metrics file"
+    required: false
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: Run diagnostics
+      shell: bash
+      run: |
+        FLAGS=""
+        [ "${{ inputs.json }}" = "true" ] && FLAGS="$FLAGS --json"
+        [ "${{ inputs.metrics }}" = "true" ] && FLAGS="$FLAGS --metrics"
+        bash .github/scripts/imds_diagnostic.sh $FLAGS || true
+    - name: Gate on status
+      if: inputs.json == 'true'
+      shell: bash
+      run: |
+        if [ ! -f diagnostic_results.json ]; then
+          echo "Missing JSON summary."
+          exit 1
+        fi
+        STATUS=$(jq -r '.status' diagnostic_results.json)
+        echo "Status: $STATUS"
+        if [ "$STATUS" != "ok" ]; then
+          echo "IMDS status not ok. Failing."
+          exit 1
+        fi
+        echo "IMDS check passed."
