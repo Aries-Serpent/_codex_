@@ -24,7 +24,7 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -414,7 +414,7 @@ class DeploymentOrchestrator:
     def phase_3_post_merge_validation(self) -> PhaseResult:
         """
         Phase 3: Post-Merge Validation
-        
+
         Tasks:
         1. Trigger post-merge validation workflow
         2. Monitor all jobs in real-time
@@ -438,7 +438,7 @@ class DeploymentOrchestrator:
                 # Monitor for workflow run
                 self.logger.info("Waiting for post-merge workflow to trigger...")
                 time.sleep(10)  # Give GitHub time to trigger workflow
-                
+
                 # Get latest workflow run
                 exit_code, stdout, stderr = self.run_command([
                     "gh", "run", "list",
@@ -447,20 +447,79 @@ class DeploymentOrchestrator:
                     "--limit=1",
                     "--json", "databaseId,status,conclusion"
                 ], check=False)
-                
+
                 if exit_code == 0:
                     try:
                         runs = json.loads(stdout)
                         if runs:
-                            run_id = runs[0]["databaseId"]
+                            workflow_summary = runs[0]
+                            run_id = workflow_summary.get("databaseId")
+                            if run_id is None:
+                                raise RuntimeError("Workflow run missing databaseId")
                             self.manifest.workflow_run_id = str(run_id)
                             result.details["workflow_run_id"] = run_id
-                            result.details["workflow_status"] = runs[0]["status"]
+                            result.details["workflow_status"] = workflow_summary.get("status")
+                            result.details["workflow_conclusion"] = workflow_summary.get("conclusion")
                             self.logger.info(f"✓ Workflow run ID: {run_id}")
-                            
-                            # Monitor workflow (simplified - would need real-time monitoring)
-                            result.details["monitoring"] = "Workflow triggered, monitoring required"
-                            result.status = PhaseStatus.SUCCESS
+
+                            try:
+                                workflow_details = self._ensure_workflow_completion(
+                                    run_id=run_id,
+                                    initial_status=workflow_summary.get("status"),
+                                    initial_conclusion=workflow_summary.get("conclusion"),
+                                )
+                            except TimeoutError as timeout_err:
+                                result.status = PhaseStatus.FAILED
+                                timeout_message = str(timeout_err)
+                                result.errors.append(timeout_message)
+                                result.details["timeout"] = True
+                                self.logger.error(timeout_message)
+                            except Exception as monitor_err:  # pylint: disable=broad-except
+                                result.status = PhaseStatus.FAILED
+                                error_message = f"Failed to monitor workflow run {run_id}: {monitor_err}"
+                                result.errors.append(error_message)
+                                self.logger.error(error_message)
+                            else:
+                                result.details.update({
+                                    "workflow_status": workflow_details.get("status"),
+                                    "workflow_conclusion": workflow_details.get("conclusion"),
+                                })
+                                result.details["monitoring"] = "Workflow monitored until completion"
+
+                                jobs = workflow_details.get("jobs") or []
+                                if jobs:
+                                    result.details["jobs"] = [
+                                        {
+                                            "name": job.get("name"),
+                                            "status": job.get("status"),
+                                            "conclusion": job.get("conclusion"),
+                                        }
+                                        for job in jobs
+                                    ]
+
+                                if (
+                                    workflow_details.get("status") == "completed"
+                                    and workflow_details.get("conclusion") == "success"
+                                ):
+                                    result.status = PhaseStatus.SUCCESS
+                                    self.logger.info("✓ Post-merge validation workflow completed successfully")
+                                else:
+                                    result.status = PhaseStatus.FAILED
+                                    conclusion = workflow_details.get("conclusion") or "unknown"
+                                    result.errors.append(
+                                        f"Workflow concluded with status={workflow_details.get('status')} conclusion={conclusion}"
+                                    )
+
+                                    failed_jobs = [
+                                        job for job in (result.details.get("jobs") or [])
+                                        if job.get("conclusion") not in (None, "success")
+                                    ]
+                                    if failed_jobs:
+                                        result.details["failed_jobs"] = failed_jobs
+                                    self.logger.error(
+                                        "Post-merge validation workflow did not succeed; conclusion=%s",
+                                        conclusion,
+                                    )
                         else:
                             result.errors.append("No workflow run found")
                             result.status = PhaseStatus.FAILED
@@ -478,6 +537,68 @@ class DeploymentOrchestrator:
         
         result.end_time = datetime.now(timezone.utc)
         return result
+
+    def _ensure_workflow_completion(
+        self,
+        run_id: int,
+        initial_status: Optional[str] = None,
+        initial_conclusion: Optional[str] = None,
+        timeout_seconds: int = 1800,
+        poll_interval_seconds: int = 30,
+    ) -> Dict[str, Optional[object]]:
+        """Poll the GitHub workflow run until completion or timeout."""
+
+        if initial_status == "completed" and initial_conclusion is not None:
+            return {
+                "status": initial_status,
+                "conclusion": initial_conclusion,
+                "jobs": [],
+            }
+
+        deadline = datetime.now(timezone.utc) + timedelta(seconds=timeout_seconds)
+        last_status: Optional[str] = initial_status
+
+        while datetime.now(timezone.utc) < deadline:
+            exit_code, stdout, stderr = self.run_command([
+                "gh",
+                "run",
+                "view",
+                str(run_id),
+                "--json",
+                "status,conclusion,jobs",
+            ], check=False)
+
+            if exit_code != 0:
+                raise RuntimeError(f"Failed to view workflow run {run_id}: {stderr}")
+
+            try:
+                run_data = json.loads(stdout)
+            except json.JSONDecodeError as decode_error:
+                raise RuntimeError("Failed to parse workflow run details") from decode_error
+
+            status = run_data.get("status")
+            conclusion = run_data.get("conclusion")
+
+            if status == "completed":
+                return {
+                    "status": status,
+                    "conclusion": conclusion,
+                    "jobs": run_data.get("jobs") or [],
+                }
+
+            if status != last_status:
+                self.logger.info(
+                    "Workflow run %s status changed to %s; waiting for completion...",
+                    run_id,
+                    status,
+                )
+                last_status = status
+
+            time.sleep(poll_interval_seconds)
+
+        raise TimeoutError(
+            f"Workflow run {run_id} did not complete within {timeout_seconds} seconds"
+        )
     
     def phase_4_health_check(self) -> PhaseResult:
         """
