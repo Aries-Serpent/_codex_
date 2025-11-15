@@ -114,6 +114,15 @@ class TestDeploymentOrchestrator:
             dry_run=True,
             output_dir=temp_output_dir,
         )
+
+    @pytest.fixture
+    def live_orchestrator(self, temp_output_dir):
+        """Create a non-dry-run orchestrator instance for workflow monitoring tests."""
+        return DeploymentOrchestrator(
+            pr_number=2207,
+            dry_run=False,
+            output_dir=temp_output_dir,
+        )
     
     def test_orchestrator_initialization(self, orchestrator, temp_output_dir):
         """Test orchestrator initialization."""
@@ -191,10 +200,136 @@ class TestDeploymentOrchestrator:
     def test_phase_3_post_merge_validation_dry_run(self, orchestrator):
         """Test Phase 3: Post-Merge Validation in dry-run mode."""
         result = orchestrator.phase_3_post_merge_validation()
-        
+
         assert result.phase == DeploymentPhase.PHASE_3_POST_MERGE
         assert result.status == PhaseStatus.SKIPPED
         assert "Dry run" in result.details.get("reason", "")
+
+    @patch("scripts.deployment_orchestrator.time.sleep", return_value=None)
+    def test_phase_3_post_merge_validation_success(
+        self,
+        mock_sleep,
+        live_orchestrator,
+    ):
+        """Phase 3 should report success when workflow completes successfully."""
+
+        del mock_sleep  # Unused but required by patch
+
+        with patch.object(live_orchestrator, "_check_gh_auth", return_value=True), \
+            patch.object(live_orchestrator, "run_command") as mock_run_cmd, \
+            patch.object(
+                live_orchestrator,
+                "_ensure_workflow_completion",
+                return_value={
+                    "status": "completed",
+                    "conclusion": "success",
+                    "jobs": [
+                        {"name": "tests", "status": "completed", "conclusion": "success"},
+                    ],
+                },
+            ) as mock_wait:
+
+            mock_run_cmd.return_value = (
+                0,
+                json.dumps([
+                    {
+                        "databaseId": 12345,
+                        "status": "in_progress",
+                        "conclusion": None,
+                    }
+                ]),
+                "",
+            )
+
+            result = live_orchestrator.phase_3_post_merge_validation()
+
+        assert result.status == PhaseStatus.SUCCESS
+        assert result.details["workflow_run_id"] == 12345
+        assert result.details["workflow_conclusion"] == "success"
+        assert "failed_jobs" not in result.details
+        mock_wait.assert_called_once()
+        mock_run_cmd.assert_called_once()
+
+    @patch("scripts.deployment_orchestrator.time.sleep", return_value=None)
+    def test_phase_3_post_merge_validation_failure(
+        self,
+        mock_sleep,
+        live_orchestrator,
+    ):
+        """Phase 3 should record failure when workflow concludes unsuccessfully."""
+
+        del mock_sleep
+
+        with patch.object(live_orchestrator, "_check_gh_auth", return_value=True), \
+            patch.object(live_orchestrator, "run_command") as mock_run_cmd, \
+            patch.object(
+                live_orchestrator,
+                "_ensure_workflow_completion",
+                return_value={
+                    "status": "completed",
+                    "conclusion": "failure",
+                    "jobs": [
+                        {"name": "tests", "status": "completed", "conclusion": "failure"},
+                        {"name": "lint", "status": "completed", "conclusion": "success"},
+                    ],
+                },
+            ):
+
+            mock_run_cmd.return_value = (
+                0,
+                json.dumps([
+                    {
+                        "databaseId": 999,
+                        "status": "in_progress",
+                        "conclusion": None,
+                    }
+                ]),
+                "",
+            )
+
+            result = live_orchestrator.phase_3_post_merge_validation()
+
+        assert result.status == PhaseStatus.FAILED
+        assert result.details["workflow_run_id"] == 999
+        assert result.details["workflow_conclusion"] == "failure"
+        assert any(job["name"] == "tests" for job in result.details["failed_jobs"])
+        assert result.errors
+
+    @patch("scripts.deployment_orchestrator.time.sleep", return_value=None)
+    def test_phase_3_post_merge_validation_timeout(
+        self,
+        mock_sleep,
+        live_orchestrator,
+    ):
+        """Phase 3 should fail with timeout details when monitoring exceeds deadline."""
+
+        del mock_sleep
+
+        with patch.object(live_orchestrator, "_check_gh_auth", return_value=True), \
+            patch.object(live_orchestrator, "run_command") as mock_run_cmd, \
+            patch.object(
+                live_orchestrator,
+                "_ensure_workflow_completion",
+                side_effect=TimeoutError("Workflow run 111 timed out"),
+            ):
+
+            mock_run_cmd.return_value = (
+                0,
+                json.dumps([
+                    {
+                        "databaseId": 111,
+                        "status": "in_progress",
+                        "conclusion": None,
+                    }
+                ]),
+                "",
+            )
+
+            result = live_orchestrator.phase_3_post_merge_validation()
+
+        assert result.status == PhaseStatus.FAILED
+        assert result.details.get("timeout") is True
+        assert any("timed out" in error for error in result.errors)
     
     @patch('subprocess.run')
     def test_phase_3_workflow_completed_success(self, mock_run, temp_output_dir):
