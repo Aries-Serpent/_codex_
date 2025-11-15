@@ -122,3 +122,75 @@ locally for parity with CI.
 
 With these components in place, developers get a consistent validation command
 while CI can surface actionable feedback and structured artifacts.
+
+---
+
+# CI/CD and Dependency Management Guidelines (Added 2025-11-12)
+
+## GitHub Copilot Agent Constraints
+
+### Artifacts Directory
+
+**DO NOT commit files under `artifacts/`**
+
+- The `artifacts/` directory is gitignored
+- Artifacts are generated at **runtime in CI jobs only**
+- Migration summaries, coverage reports, and test outputs belong in `artifacts/`
+- CI workflows upload artifacts using `actions/upload-artifact@v4`
+
+### uv.lock Maintenance
+
+**DO NOT regenerate uv.lock automatically in CI**
+
+When uv.lock is invalid:
+1. Detect the issue in CI via validation step
+2. Fail the build with clear error message
+3. Provide manual regeneration instructions to maintainers
+4. Maintainer follows instructions, regenerates locally, opens PR
+5. CI validates the regenerated lock file
+
+See `.github/docs/CI_Coverage_Implementation_Copilot.md` for full instructions.
+
+## Manual uv.lock Regeneration
+
+When CI fails with "uv.lock TOML invalid", regenerate locally:
+
+```bash
+git checkout -b fix/regen-uv-lock
+python -m pip install --upgrade uv
+rm -f uv.lock
+uv lock
+uv sync --locked
+git add uv.lock
+git commit -m "chore: regenerate uv.lock to fix malformed TOML"
+git push --set-upstream origin fix/regen-uv-lock
+# Open PR and merge after CI green
+```
+
+## Definition of Done (DoD) - CI Infrastructure Changes
+
+Before marking work complete:
+
+- [ ] All nox invocations use valid flags (no `-q`)
+- [ ] uv.lock validation present in workflows
+- [ ] Artifacts directory initialized in workflows
+- [ ] Coverage parser tested and working
+- [ ] Coverage threshold file exists
+- [ ] Documentation updated
+- [ ] Manual instructions provided for uv.lock regen
+- [ ] `.gitignore` prevents committing `artifacts/`
+- [ ] All CI jobs pass with green status
+
+## Key Files
+
+| File | Purpose | Committed? |
+|------|---------|------------|
+| `.github/workflows/ci.yml` | Main CI workflow | Yes |
+| `.github/scripts/ci_parse_coverage.py` | Coverage parser | Yes |
+| `.github/coverage_threshold.txt` | Coverage threshold (96%) | Yes |
+| `.github/docs/CI_Coverage_Implementation_Copilot.md` | CI docs | Yes |
+| `uv.lock` | Dependency lock | Yes |
+| `artifacts/` | Runtime artifacts | **No** |
+
+For complete documentation, see: `.github/docs/CI_Coverage_Implementation_Copilot.md`
+
