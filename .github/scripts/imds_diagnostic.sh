@@ -634,11 +634,27 @@ emit_json() {
 
   local status
   if $REM_NEEDED && ! $APPLY; then
+    # Recommendation mode: issues detected but --apply not used
     status="remediation-recommended"
+    log "Status determination: remediation-recommended (REM_NEEDED=true, APPLY=false, recommendations=${#RECOMMENDATIONS[@]})"
   elif $APPLY && ((${#ACTIONS_APPLIED[@]} > 0)); then
+    # Apply mode: actions successfully applied
     status="remediation-applied"
+    log "Status determination: remediation-applied (APPLY=true, actions_applied=${#ACTIONS_APPLIED[@]})"
+    
+    # Check if issues persist after remediation (partial remediation)
+    if $REM_NEEDED; then
+      log "$(c_yellow "WARNING: Remediation applied but issues may persist (REM_NEEDED still true)")"
+    fi
+  elif $APPLY && $REM_NEEDED; then
+    # Apply mode: remediation attempted but failed
+    # (no actions applied AND remediation still needed)
+    status="remediation-failed"
+    log "$(c_red "Status determination: remediation-failed (APPLY=true, REM_NEEDED=true, actions_applied=0)")"
   else
+    # No remediation needed
     status="ok"
+    log "Status determination: ok (REM_NEEDED=false)"
   fi
 
   if ! command -v jq >/dev/null 2>&1; then

@@ -1,5 +1,28 @@
 # IMDS Tooling CHANGELOG
-> Generated: 2025-11-14 23:14:07 UTC | Author: mbaetiong
+> Generated: 2025-11-14 23:14:07 UTC | Updated: 2025-11-15 02:56:00 UTC | Author: mbaetiong
+
+## [1.6.1] - 2025-11-15 🔴 CRITICAL BUG FIX
+### Fixed
+- **CRITICAL P1**: Fixed status reporting bug where failed remediations were incorrectly reported as `status:"ok"` in JSON output while script exited with code 2
+  - Added new status value: `"remediation-failed"` for scenarios where `--apply` is used but no remediation actions could be applied
+  - Added enhanced logging to status determination logic for better diagnostics
+  - Added warning when partial remediation occurs (actions applied but issues persist)
+  - **Impact**: Workflows gating on JSON status now correctly fail when remediation fails
+  - **Root Cause**: Missing branch in status determination logic (lines 635-649)
+  - **Test Coverage**: All 4 status scenarios validated (ok, recommended, applied, failed)
+
+### Changed
+- Enhanced JSON schema documentation with complete field descriptions and examples
+- Updated status field to include all 4 values: `"ok"`, `"remediation-recommended"`, `"remediation-applied"`, `"remediation-failed"`
+- Added CI/CD workflow gating examples to schema documentation
+
+### Security
+- No security impact; fix improves CI/CD safety gates
+
+### Backward Compatibility
+- ✅ **FULLY COMPATIBLE**: New `"remediation-failed"` status is treated as failure by existing workflows
+- Workflows checking `status != "ok"` continue to work correctly
+- No breaking changes to existing status values
 
 ## [1.6] - 2025-11-14
 ### Added
