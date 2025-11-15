@@ -462,11 +462,28 @@ class DeploymentOrchestrator:
                             result.details["workflow_conclusion"] = workflow_summary.get("conclusion")
                             self.logger.info(f"✓ Workflow run ID: {run_id}")
 
+                            summary_status = workflow_summary.get("status")
+                            summary_conclusion = workflow_summary.get("conclusion")
+                            result.details["workflow_status"] = summary_status
+                            result.details["workflow_conclusion"] = summary_conclusion
+
+                            should_monitor = summary_status != "completed" or summary_conclusion is None
+                            if should_monitor:
+                                result.status = PhaseStatus.IN_PROGRESS
+                                result.details["monitoring"] = (
+                                    "Workflow monitoring required - run still in progress"
+                                )
+                                self.logger.info(
+                                    "Workflow run %s is still in progress (status=%s); awaiting completion",
+                                    run_id,
+                                    summary_status,
+                                )
+
                             try:
                                 workflow_details = self._ensure_workflow_completion(
                                     run_id=run_id,
-                                    initial_status=workflow_summary.get("status"),
-                                    initial_conclusion=workflow_summary.get("conclusion"),
+                                    initial_status=summary_status,
+                                    initial_conclusion=summary_conclusion,
                                 )
                             except TimeoutError as timeout_err:
                                 result.status = PhaseStatus.FAILED
@@ -475,10 +492,22 @@ class DeploymentOrchestrator:
                                 result.details["timeout"] = True
                                 self.logger.error(timeout_message)
                             except Exception as monitor_err:  # pylint: disable=broad-except
-                                result.status = PhaseStatus.FAILED
-                                error_message = f"Failed to monitor workflow run {run_id}: {monitor_err}"
-                                result.errors.append(error_message)
-                                self.logger.error(error_message)
+                                if should_monitor:
+                                    result.status = PhaseStatus.IN_PROGRESS
+                                    result.details.setdefault(
+                                        "monitoring_error",
+                                        str(monitor_err),
+                                    )
+                                    self.logger.info(
+                                        "Workflow run %s monitoring deferred: %s",
+                                        run_id,
+                                        monitor_err,
+                                    )
+                                else:
+                                    result.status = PhaseStatus.FAILED
+                                    error_message = f"Failed to monitor workflow run {run_id}: {monitor_err}"
+                                    result.errors.append(error_message)
+                                    self.logger.error(error_message)
                             else:
                                 result.details.update({
                                     "workflow_status": workflow_details.get("status"),
@@ -688,7 +717,7 @@ class DeploymentOrchestrator:
     def phase_5_notification(self) -> PhaseResult:
         """
         Phase 5: Notification & Documentation
-        
+
         Tasks:
         1. Create comprehensive deployment summary
         2. Generate release notes
@@ -720,21 +749,24 @@ class DeploymentOrchestrator:
             self.manifest.completed_at = datetime.now(timezone.utc)
             
             # Determine overall deployment status
-            failed_phases = [r for r in self.manifest.phase_results if r.status == PhaseStatus.FAILED]
-            if failed_phases:
-                self.manifest.status = PhaseStatus.FAILED
-            else:
-                self.manifest.status = PhaseStatus.SUCCESS
-            
+            self.manifest.status = self._determine_overall_status()
+
             with open(manifest_file, "w") as f:
                 json.dump(self.manifest.to_dict(), f, indent=2)
-            
+
             result.details["manifest_file"] = str(manifest_file)
             self.logger.info(f"✓ Deployment manifest archived: {manifest_file}")
-            
+
             result.status = PhaseStatus.SUCCESS
-            self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
-        
+            if self.manifest.status == PhaseStatus.SUCCESS:
+                self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
+            else:
+                self.logger.info(
+                    "✓ %s COMPLETED WITH OVERALL STATUS: %s",
+                    phase.value,
+                    self.manifest.status.value.upper(),
+                )
+
         except Exception as e:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
@@ -749,6 +781,24 @@ class DeploymentOrchestrator:
             ["gh", "auth", "status"], check=False
         )
         return exit_code == 0
+
+    def _determine_overall_status(self) -> PhaseStatus:
+        """Aggregate phase results to determine overall deployment status."""
+        statuses = [result.status for result in self.manifest.phase_results]
+
+        if not statuses:
+            return PhaseStatus.PENDING
+
+        if any(status == PhaseStatus.FAILED for status in statuses):
+            return PhaseStatus.FAILED
+
+        if any(status == PhaseStatus.IN_PROGRESS for status in statuses):
+            return PhaseStatus.IN_PROGRESS
+
+        if any(status == PhaseStatus.SKIPPED for status in statuses):
+            return PhaseStatus.SKIPPED
+
+        return PhaseStatus.SUCCESS
     
     def _generate_deployment_summary(self) -> str:
         """Generate markdown deployment summary."""
@@ -815,23 +865,69 @@ class DeploymentOrchestrator:
             for phase_func in phases:
                 result = phase_func()
                 self.manifest.phase_results.append(result)
-                
+
                 # Check if we should halt on failure
                 if result.status == PhaseStatus.FAILED:
                     self.logger.error(f"Phase failed: {result.phase.value}")
                     self.logger.error("DEPLOYMENT HALTED DUE TO PHASE FAILURE")
-                    
+
                     # Still run notification phase to document failure
                     if phase_func != self.phase_5_notification:
                         notification_result = self.phase_5_notification()
                         self.manifest.phase_results.append(notification_result)
-                    
+
+                    self.manifest.status = self._determine_overall_status()
                     return False
-            
+
+                # Halt orchestration when a phase is still running
+                if result.status == PhaseStatus.IN_PROGRESS:
+                    self.logger.warning(
+                        "%s still in progress; halting orchestration until completion",
+                        result.phase.value,
+                    )
+                    self.manifest.status = self._determine_overall_status()
+                    self.logger.info("=" * 80)
+                    self.logger.info(
+                        "DEPLOYMENT ORCHESTRATION PAUSED - AWAITING %s",
+                        result.phase.value,
+                    )
+                    self.logger.info("=" * 80)
+                    return False
+
+                # Halt non-dry-run executions when a phase is skipped unexpectedly
+                if result.status == PhaseStatus.SKIPPED and not self.dry_run:
+                    self.logger.warning(
+                        "%s reported SKIPPED; manual intervention required before continuing",
+                        result.phase.value,
+                    )
+                    self.manifest.status = self._determine_overall_status()
+                    self.logger.info("=" * 80)
+                    self.logger.info(
+                        "DEPLOYMENT ORCHESTRATION HALTED DUE TO SKIPPED PHASE",
+                    )
+                    self.logger.info("=" * 80)
+                    return False
+
+            overall_status = self._determine_overall_status()
+            self.manifest.status = overall_status
+
             self.logger.info("=" * 80)
-            self.logger.info("DEPLOYMENT ORCHESTRATION COMPLETED SUCCESSFULLY")
+            if overall_status == PhaseStatus.SUCCESS:
+                self.logger.info("DEPLOYMENT ORCHESTRATION COMPLETED SUCCESSFULLY")
+                self.logger.info("=" * 80)
+                return True
+
+            if overall_status == PhaseStatus.SKIPPED and self.dry_run:
+                self.logger.info("DEPLOYMENT ORCHESTRATION DRY RUN COMPLETED (PHASES SKIPPED)")
+                self.logger.info("=" * 80)
+                return True
+
+            self.logger.warning(
+                "DEPLOYMENT ORCHESTRATION COMPLETED WITH STATUS: %s",
+                overall_status.value.upper(),
+            )
             self.logger.info("=" * 80)
-            return True
+            return False
         
         except Exception as e:
             self.logger.exception("DEPLOYMENT ORCHESTRATION FAILED WITH EXCEPTION")
