@@ -4,13 +4,25 @@ Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine] Energy: 5
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
 Low Maturity (< {{ "%.2f"|format(thresholds.low) }}): {{ gaps|length }}
+{% if thresholds.medium -%}
+Medium Maturity ({{ "%.2f"|format(thresholds.low) }} - {{ "%.2f"|format(thresholds.medium) }}): {{ capabilities|selectattr('score', 'ge', thresholds.low)|selectattr('score', 'lt', thresholds.medium)|list|length }}
+High Maturity (>= {{ "%.2f"|format(thresholds.medium) }}): {{ capabilities|selectattr('score', 'ge', thresholds.medium)|list|length }}
+{% endif %}
 
 ## 2. Capability Scores
-| ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
-|----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
+| ID | Score | Level | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
+|----|-------|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
+{% set low = thresholds.low %}
+{% set med = thresholds.get('medium', 0.85) %}
 {% for cap in capabilities -%}
+{% set lvl = "High" %}
+{% if cap.score < low %}
+  {% set lvl = "Low" %}
+{% elif cap.score < med %}
+  {% set lvl = "Medium" %}
+{% endif %}
 {% set f = cap.components.functionality %}{% set c = cap.components.consistency %}{% set t = cap.components.tests %}{% set s = cap.components.safeguards %}{% set d = cap.components.documentation %}
-| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(f) }}{% if f == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(c) }}{% if c == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(t) }}{% if t == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(s) }}{% if s == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(d) }}{% if d == 0 %} (ZERO){% endif %} | {{ cap.evidence_files|length }} |
+| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ lvl }} | {{ "%.2f"|format(f) }}{% if f == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(c) }}{% if c == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(t) }}{% if t == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(s) }}{% if s == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(d) }}{% if d == 0 %} (ZERO){% endif %} | {{ cap.evidence_files|length }} |
 {% endfor %}
 
 ## 3. Low Maturity Focus
