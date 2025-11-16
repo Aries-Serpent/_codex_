@@ -393,6 +393,25 @@ def cmd_defaults_audit(args: argparse.Namespace) -> int:
     return 0 if payload["issues"] == 0 else 3
 
 
+def _collect_missing_nodes(node: Any, prefix: str = "") -> list[str]:
+    from omegaconf import DictConfig, ListConfig, OmegaConf
+
+    if OmegaConf.is_missing(node):
+        return [prefix or "<root>"]
+
+    results: list[str] = []
+    if isinstance(node, DictConfig):
+        for key in node.keys():
+            child = node[key]
+            child_prefix = f"{prefix}.{key}" if prefix else str(key)
+            results.extend(_collect_missing_nodes(child, child_prefix))
+    elif isinstance(node, ListConfig):
+        for idx, child in enumerate(node):
+            child_prefix = f"{prefix}[{idx}]" if prefix else f"[{idx}]"
+            results.extend(_collect_missing_nodes(child, child_prefix))
+    return results
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="codex hydra", description="Hydra defaults utilities")
     sub = parser.add_subparsers(dest="subcommand", required=True)
@@ -415,6 +434,63 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return int(args.func(args))
+
+
+def audit_config(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="codex-hydra-audit",
+        description="Compose Hydra configs and report unresolved ??? placeholders.",
+    )
+    parser.add_argument("--config-root", default="configs", help="Hydra config directory")
+    parser.add_argument("--config-name", default="default", help="Config name to compose")
+    parser.add_argument("--out-json", help="Optional path to write JSON report")
+    args = parser.parse_args(argv)
+
+    try:
+        from hydra import compose, initialize_config_dir
+        from hydra.core.global_hydra import GlobalHydra
+    except (ImportError, ModuleNotFoundError):  # pragma: no cover - dependency missing
+        print("[hydra-audit] hydra-core is required", file=sys.stderr)
+        return 4
+
+    config_root = Path(args.config_root).expanduser().resolve()
+    if not config_root.exists():
+        print(f"[hydra-audit] config root not found: {config_root}", file=sys.stderr)
+        return 2
+
+    try:
+        GlobalHydra.instance().clear()
+    except Exception:  # pragma: no cover - safe to ignore
+        pass
+
+    try:
+        with initialize_config_dir(config_dir=str(config_root), job_name="codex_hydra_audit"):
+            cfg = compose(config_name=args.config_name)
+    except Exception as exc:
+        payload = {
+            "ok": False,
+            "config_root": str(config_root),
+            "config_name": args.config_name,
+            "error": str(exc),
+            "missing": [],
+        }
+        print(json.dumps(payload))
+        return 5
+
+    missing = _collect_missing_nodes(cfg)
+    payload = {
+        "ok": not missing,
+        "config_root": str(config_root),
+        "config_name": args.config_name,
+        "missing": missing,
+    }
+    if args.out_json:
+        out_path = Path(args.out_json).expanduser().resolve()
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    print(json.dumps(payload))
+    return 0 if not missing else 3
 
 
 if __name__ == "__main__":  # pragma: no cover
