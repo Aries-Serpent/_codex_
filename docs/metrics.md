@@ -15,9 +15,11 @@ Core metrics are included with the base installation and require no additional d
 
 | Metric | Description | Use Case |
 |--------|-------------|----------|
+| `accuracy` | Overall classification accuracy | Classification |
+| `precision` | Macro precision averaged across all labels | Classification |
+| `recall` | Macro recall averaged across all labels | Classification |
+| `f1_macro` | Macro-averaged F1 score | Classification |
 | `token_accuracy` | Token-level accuracy | Token classification |
-| `f1_score` | Micro/macro/binary F1 | Classification |
-| `recall_score` | Micro/macro/binary recall | Classification |
 | `perplexity` | Perplexity | Language modeling |
 
 ### Usage
@@ -26,7 +28,7 @@ Core metrics are included with the base installation and require no additional d
 from codex_ml.metrics.api import get_metric
 
 # Get a metric
-accuracy = get_metric("token_accuracy")
+accuracy = get_metric("accuracy")
 
 # Compute score
 score = accuracy(predictions, labels)
