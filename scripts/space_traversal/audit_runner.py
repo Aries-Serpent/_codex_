@@ -60,9 +60,18 @@ except ImportError:
 
     def normalize_from_env():
         import os as _os
-
-        return dict(_os.environ), []
-
+        allowed_prefixes = [
+            "CODEX_", "AUDIT_", "CONTENT_FILTER_", "ALLOWLIST_", "PII_",
+            "MAX_BUNDLE_", "ARCHIVE_", "BUNDLE_PREFIX_", "AST_", 
+            "TOKEN_SIMILARITY", "COVERAGE", "SECURITY_SEVERITY", "SEVERITY_",
+            "PREFIX_VALIDATE_", "SUMMARY_", "SYNONYM_", "SECRET_CONTEXT_",
+            "FEDERATION_", "MANIFEST_EXTENDED_"
+        ]
+        filtered = {
+            k: v for k, v in _os.environ.items()
+            if any(k.startswith(prefix) for prefix in allowed_prefixes)
+        }
+        return filtered, []
     def summarize_effective(knobs):
         return {k: v for k, v in knobs.items() if v not in (None, "", [], {})}
 
