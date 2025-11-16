@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import json
-import time
+import logging
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,10 +12,12 @@ from typing import Any, Mapping
 
 from codex_ml.safety.redaction import SecretRedactor
 
-try:  # pragma: no cover - codex logging module may be unavailable in slim envs
+try:  # pragma: no cover - optional logging backend
     from codex.logging.db_manager import DBManager
-except Exception:  # pragma: no cover
-    DBManager = None  # type: ignore[assignment]
+except Exception:  # pragma: no cover - fallback if logging package unavailable
+    DBManager = None
+
+_LOGGER = logging.getLogger(__name__)
 
 DEFAULT_LOG_DIR = Path(".codex") / "logs"
 
@@ -32,21 +35,59 @@ class SessionLogger:
         log_dir: Path | None = None,
         *,
         redactor: SecretRedactor | None = None,
-        metrics_db_path: Path | None = None,
-        mirror_metrics: bool = True,
+        sqlite_db_path: Path | None = None,
+        enable_sqlite_metrics: bool | None = None,
     ) -> None:
         self.session_id = session_id or str(uuid.uuid4())
         self.log_dir = (log_dir or DEFAULT_LOG_DIR).expanduser()
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.session_file = self.log_dir / f"session_{self.session_id}.jsonl"
         self._redactor = redactor or SecretRedactor()
-        self._metrics_db: DBManager | None = None
-        if mirror_metrics and DBManager is not None:
+        self._db_manager: DBManager | None = None
+        self._enable_sqlite_metrics = self._should_persist_metrics(enable_sqlite_metrics)
+        if self._enable_sqlite_metrics and DBManager is not None:
             try:
-                self._metrics_db = DBManager(metrics_db_path)
-                self._metrics_db.init_schema()
-            except Exception:  # pragma: no cover - SQLite optional
-                self._metrics_db = None
+                self._db_manager = DBManager(sqlite_db_path)
+            except Exception as exc:  # pragma: no cover - optional backend failure
+                _LOGGER.debug("SQLite metric logging unavailable: %s", exc)
+                self._enable_sqlite_metrics = False
+
+    def _should_persist_metrics(self, flag: bool | None) -> bool:
+        if DBManager is None:
+            return False
+        if flag is not None:
+            return bool(flag)
+        env_value = os.getenv("CODEX_LOG_SQLITE_METRICS", "1").strip().lower()
+        return env_value not in {"0", "false", "off"}
+
+    def _maybe_store_metrics(self, event_type: str, data: Mapping[str, Any] | None) -> None:
+        if not self._enable_sqlite_metrics or self._db_manager is None:
+            return
+        if event_type != "epoch" or not data:
+            return
+        metrics = data.get("metrics")
+        if not isinstance(metrics, Mapping):
+            return
+        epoch_value = data.get("epoch")
+        try:
+            epoch_idx = int(epoch_value)
+        except (TypeError, ValueError):
+            return
+        rows: list[tuple[str, int, str, float]] = []
+        for key, value in metrics.items():
+            if isinstance(value, (int, float)):
+                rows.append((self.session_id, epoch_idx, str(key), float(value)))
+        if not rows:
+            return
+        try:
+            with self._db_manager.connection() as conn:
+                conn.executemany(
+                    "INSERT INTO metric_records (session_id, epoch, metric, value) VALUES (?, ?, ?, ?)",
+                    rows,
+                )
+                conn.commit()
+        except Exception as exc:  # pragma: no cover - avoid failing training loops
+            _LOGGER.debug("Skipping metric persistence: %s", exc)
 
     def log_event(
         self,
@@ -65,7 +106,7 @@ class SessionLogger:
             payload["data"] = self._redactor.redact_dict(dict(data))
         with self.session_file.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
-        self._mirror_metric_payload(event_type, data)
+        self._maybe_store_metrics(event_type, data)
         return self.session_file
 
     def _mirror_metric_payload(
