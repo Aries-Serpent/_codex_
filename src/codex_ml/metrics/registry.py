@@ -24,10 +24,10 @@ from typing import Callable, Optional, Sequence
 from codex_ml.registry.base import Registry, RegistryConflictError
 
 from .classification import (
-    classification_accuracy,
-    f1_macro,
-    precision_macro,
-    recall_macro,
+    classification_accuracy as _classification_accuracy,
+    f1_macro as _classification_f1_macro,
+    precision_macro as _classification_precision,
+    recall_macro as _classification_recall,
 )
 
 # Ensure built-in generative metrics are registered on import.
@@ -439,11 +439,6 @@ def token_accuracy(
 register_metric("token_accuracy")(token_accuracy)
 
 # Classification helpers ----------------------------------------------------
-
-register_metric("accuracy", classification_accuracy)
-register_metric("precision", precision_macro)
-register_metric("recall", recall_macro)
-register_metric("f1_macro", f1_macro)
 
 
 @register_metric("ppl")
