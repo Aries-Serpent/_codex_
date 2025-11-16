@@ -138,27 +138,6 @@ class DBManager:
                 if "meta" not in cols:
                     conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
 
-                # Metrics table mirrors NDJSON epoch metrics into SQLite for analysis
-                conn.execute(
-                    """CREATE TABLE IF NOT EXISTS metric_records(
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        ts REAL NOT NULL,
-                        session_id TEXT NOT NULL,
-                        event_type TEXT NOT NULL,
-                        epoch INTEGER,
-                        metric TEXT NOT NULL,
-                        value REAL NOT NULL
-                    )"""
-                )
-                conn.execute(
-                    "CREATE INDEX IF NOT EXISTS metric_records_session_idx "
-                    "ON metric_records(session_id, epoch)"
-                )
-                conn.execute(
-                    "CREATE INDEX IF NOT EXISTS metric_records_metric_idx "
-                    "ON metric_records(metric)"
-                )
-
                 # Create indexes
                 conn.execute(
                     "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "

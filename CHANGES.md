@@ -5,22 +5,12 @@
   unit tests.
 - Evaluation CLI options for selecting metrics and providing prediction/target
   transforms.
-- Registry exposure for `accuracy`, `precision`, `recall`, and `f1_macro` plus
-  tests and documentation.
-- SQLite-backed mirroring of NDJSON epoch metrics via
-  `codex_ml.logging.session_logger`.
-- `codex-hydra-audit` console entry point and docs so config validation can be
-  scripted.
-- Slim `docker/Dockerfile.gpu` helper for teams that keep runtime Dockerfiles in
-  the `docker/` directory.
 
 ### Changed
 - Evaluation loop now supports text post-processing hooks to unlock generative
   metrics.
 - NDJSON logger registry reuses the core logger with rotation, GPU telemetry and
   configurable size limits.
-- Removed the `tokenization/loader.py` stub in favour of re-exporting the real
-  `codex_ml.tokenization` implementation.
 
 ### Documentation
 - Updated metrics guide and logging guide to reflect generative metrics and
@@ -31,8 +21,6 @@
 - Minimal Hydra sweep definition (`configs/sweeps/minimal.yaml`) plus `nox -s sweeps_smoke` session and helper script.
 - Prompt-injection and credential redaction rules in `configs/base/safety/policy.yaml`.
 - Plugin development guide summarising dataset/metric/logger registries.
-- Documented the SQLite metrics mirror, new Hydra audit CLI, refreshed metrics
-  table, and the additional GPU Dockerfile variant.
 
 ### Changed
 - Dataset manifest guide updated to highlight deterministic JSONL/CSV loaders.
