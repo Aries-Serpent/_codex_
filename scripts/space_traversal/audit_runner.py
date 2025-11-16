@@ -42,23 +42,35 @@ from typing import Any, Callable, Dict, List
 
 # Import knob parser for depth gating
 try:
-    from scripts.config.parse_knobs import get_depth, normalize_from_env, summarize_effective
+    from scripts.config.parse_knobs import (
+        get_depth,
+    )
     from scripts.config.parse_knobs import get_warnings as get_knob_warnings
+    from scripts.config.parse_knobs import (
+        normalize_from_env,
+        summarize_effective,
+    )
 except ImportError:
     # Fallback if not available
     def get_depth():
         return 3, False
+
     def get_knob_warnings():
         return []
+
     def normalize_from_env():
         import os as _os
+
         return dict(_os.environ), []
+
     def summarize_effective(knobs):
-        return {k:v for k,v in knobs.items() if v not in (None,"",[],{})}
+        return {k: v for k, v in knobs.items() if v not in (None, "", [], {})}
+
 
 try:
     from scripts.space_traversal.capability_scoring import (
         aggregate_scores,
+        explain_score,
         normalize_weights,
         score_capability,
     )
@@ -66,6 +78,7 @@ except Exception:
     try:
         from capability_scoring import (  # type: ignore
             aggregate_scores,
+            explain_score,
             normalize_weights,
             score_capability,
         )
@@ -114,9 +127,19 @@ CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = [
-    "sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE",
+    "sha256",
+    "checksum",
+    "rng",
+    "seed",
+    "offline",
+    "WANDB_MODE",
     # Codex-specific additions (v1.4.0)
-    "deterministic", "reproduce", "manifest", "baseline", "secret", "sanitize"
+    "deterministic",
+    "reproduce",
+    "manifest",
+    "baseline",
+    "secret",
+    "sanitize",
 ]
 VERSION = "1.4.0"
 EVIDENCE_TRUNCATION_LIMIT = 50  # applied when depth < 4
@@ -154,6 +177,7 @@ def _should_skip_path(rel_path: str) -> bool:
         if base and base in rel_path.split("/"):
             return True
     return False
+
 
 DOCS_SYNONYMS_MAP: Dict[str, List[str]] = {
     "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
@@ -207,6 +231,7 @@ def _docs_score(domain: str, docs_cache: Dict[str, str], base_tokens: List[str])
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
+
 def _sha256_file(p: Path) -> str:
     h = hashlib.sha256()
     with open(p, "rb") as f:
@@ -214,9 +239,11 @@ def _sha256_file(p: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
+
 def load_config() -> dict:
     with open(CFG_PATH, "r", encoding="utf-8") as fh:
         return yaml.safe_load(fh)
+
 
 def read_file_text_safe(p: Path) -> str:
     if p.suffix.lower() not in SAFE_TEXT_EXT:
@@ -226,11 +253,14 @@ def read_file_text_safe(p: Path) -> str:
     except Exception:
         return ""
 
+
 def warn(msg: str):
     print(f"[WARN] {msg}", file=sys.stderr)
 
+
 def info(msg: str):
     print(f"[INFO] {msg}")
+
 
 # ---------------------------------------------------------------------------
 # Depth Gated Traversal
@@ -258,6 +288,7 @@ def iter_paths_depth(root: Path, max_depth: int) -> List[Path]:
                 result.append(e)
     return sorted(result, key=lambda p: p.as_posix())
 
+
 # ---------------------------------------------------------------------------
 # Stage Implementations
 # ---------------------------------------------------------------------------
@@ -265,10 +296,10 @@ def stage_s1_index(cfg):
     # Get depth configuration
     depth, depth_warning_issued = get_depth()
     depth_warnings = get_knob_warnings()
-    
+
     out_dir = Path(cfg["output"]["artifacts_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)
-    
+
     files_meta = []
     all_paths = iter_paths_depth(ROOT, depth)
     for p in all_paths:
@@ -279,17 +310,18 @@ def stage_s1_index(cfg):
         size = p.stat().st_size
         sha = _sha256_file(p) if size < 2_000_000 else None
         files_meta.append({"path": rel, "ext": ext, "size": size, "sha": sha})
-    
+
     idx = {
         "generated": time.time(),
         "count": len(files_meta),
         "files": files_meta,
         "version": VERSION,
-        "depth": depth
+        "depth": depth,
     }
     (out_dir / "context_index.json").write_text(json.dumps(idx, indent=2), encoding="utf-8")
     (out_dir / "_depth_warnings.json").write_text(json.dumps(depth_warnings), encoding="utf-8")
     return idx
+
 
 DOMAIN_PATTERNS = {
     "checkpoint": re.compile(r"checkpoint", re.I),
@@ -307,28 +339,76 @@ DOMAIN_PATTERNS = {
     "archive": re.compile(r"archive|bundle|manifest", re.I),
 }
 
+
 def stage_s2_facets(cfg, context_idx):
     facets = {k: [] for k in DOMAIN_PATTERNS}
     for f in context_idx["files"]:
         for key, rx in DOMAIN_PATTERNS.items():
             if rx.search(f["path"]):
                 facets[key].append(f["path"])
-    payload = {"generated": time.time(), "facets": facets, "version": VERSION, "depth": context_idx.get("depth")}
+    payload = {
+        "generated": time.time(),
+        "facets": facets,
+        "version": VERSION,
+        "depth": context_idx.get("depth"),
+    }
     out = Path(cfg["output"]["artifacts_dir"]) / "facets.json"
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload
 
+
 # Static baseline capability inference rules
 BASE_CAPABILITY_RULES = [
-    {"id": "checkpointing", "facet_keys": ["checkpoint"], "required_patterns": ["save_checkpoint", "load"], "docs_keywords": ["checkpoint"]},
-    {"id": "tokenization", "facet_keys": ["token"], "required_patterns": ["tokenizer", "encode"], "docs_keywords": ["token"]},
-    {"id": "training-engine", "facet_keys": ["train"], "required_patterns": ["train", "epoch"], "docs_keywords": ["train"]},
-    {"id": "evaluation-metrics", "facet_keys": ["eval"], "required_patterns": ["metric", "perplexity"], "docs_keywords": ["metric"]},
-    {"id": "data-pipeline", "facet_keys": ["data"], "required_patterns": ["split", "loader"], "docs_keywords": ["data"]},
-    {"id": "safety-security", "facet_keys": ["safety"], "required_patterns": ["secret", "sanitize"], "docs_keywords": ["safety"]},
-    {"id": "logging-tracking", "facet_keys": ["logging"], "required_patterns": ["log", "mlflow"], "docs_keywords": ["log"]},
-    {"id": "configuration", "facet_keys": ["config"], "required_patterns": ["config", "hydra"], "docs_keywords": ["config"]},
+    {
+        "id": "checkpointing",
+        "facet_keys": ["checkpoint"],
+        "required_patterns": ["save_checkpoint", "load"],
+        "docs_keywords": ["checkpoint"],
+    },
+    {
+        "id": "tokenization",
+        "facet_keys": ["token"],
+        "required_patterns": ["tokenizer", "encode"],
+        "docs_keywords": ["token"],
+    },
+    {
+        "id": "training-engine",
+        "facet_keys": ["train"],
+        "required_patterns": ["train", "epoch"],
+        "docs_keywords": ["train"],
+    },
+    {
+        "id": "evaluation-metrics",
+        "facet_keys": ["eval"],
+        "required_patterns": ["metric", "perplexity"],
+        "docs_keywords": ["metric"],
+    },
+    {
+        "id": "data-pipeline",
+        "facet_keys": ["data"],
+        "required_patterns": ["split", "loader"],
+        "docs_keywords": ["data"],
+    },
+    {
+        "id": "safety-security",
+        "facet_keys": ["safety"],
+        "required_patterns": ["secret", "sanitize"],
+        "docs_keywords": ["safety"],
+    },
+    {
+        "id": "logging-tracking",
+        "facet_keys": ["logging"],
+        "required_patterns": ["log", "mlflow"],
+        "docs_keywords": ["log"],
+    },
+    {
+        "id": "configuration",
+        "facet_keys": ["config"],
+        "required_patterns": ["config", "hydra"],
+        "docs_keywords": ["config"],
+    },
 ]
+
 
 def load_dynamic_detectors() -> List[Callable]:
     detectors_dir = ROOT / "scripts" / "space_traversal" / "detectors"
@@ -351,6 +431,68 @@ def load_dynamic_detectors() -> List[Callable]:
                 else:
                     warn(f"Detector {py.name} has invalid signature; skipping.")
     return funcs
+
+
+REQUIRED_DET_FIELDS = {"id", "evidence_files", "found_patterns", "required_patterns"}
+
+
+def validate_detector_output(det: dict, src: str) -> bool:
+    """Validate detector output structure with detailed error messages."""
+    missing = REQUIRED_DET_FIELDS - det.keys()
+    if missing:
+        warn(f"Detector {src} missing fields {sorted(missing)}; skipping.")
+        return False
+    if not isinstance(det.get("evidence_files", []), list):
+        warn(f"Detector {src} evidence_files must be a list; skipping.")
+        return False
+    if not isinstance(det.get("found_patterns", []), list):
+        warn(f"Detector {src} found_patterns must be a list; skipping.")
+        return False
+    if not isinstance(det.get("required_patterns", []), list):
+        warn(f"Detector {src} required_patterns must be a list; skipping.")
+        return False
+    return True
+
+
+def apply_overrides(capabilities: List[dict], cfg: dict) -> List[dict]:
+    """Apply capability_map.overrides to merge alias IDs into canonical ones."""
+    overrides = cfg.get("capability_map", {}).get("overrides", {})
+    if not overrides:
+        return capabilities
+
+    # Build reverse alias map: alias -> canonical
+    alias_to_canon = {}
+    for canon, aliases in overrides.items():
+        for a in aliases:
+            alias_to_canon[a] = canon
+
+    merged: Dict[str, dict] = {}
+    for cap in capabilities:
+        cid = cap["id"]
+        canon = alias_to_canon.get(cid, cid)
+        target = merged.setdefault(
+            canon,
+            {
+                "id": canon,
+                "evidence_files": [],
+                "found_patterns": [],
+                "required_patterns": [],
+                "meta": {},
+            },
+        )
+        target["evidence_files"].extend(cap.get("evidence_files", []))
+        target["found_patterns"].extend(cap.get("found_patterns", []))
+        target["required_patterns"].extend(cap.get("required_patterns", []))
+        # shallow-merge meta
+        target["meta"].update(cap.get("meta", {}))
+
+    # Deduplicate & sort lists
+    for cap in merged.values():
+        cap["evidence_files"] = sorted(set(cap["evidence_files"]))
+        cap["found_patterns"] = sorted(set(cap["found_patterns"]))
+        cap["required_patterns"] = sorted(set(cap["required_patterns"]))
+    return sorted(merged.values(), key=lambda c: c["id"])
+
 
 def stage_s3_capabilities(cfg, facets):
     out_dir = Path(cfg["output"]["artifacts_dir"])
@@ -375,12 +517,14 @@ def stage_s3_capabilities(cfg, facets):
         depth = facets.get("depth", 4)
         if depth < 4 and len(evidence_files) > EVIDENCE_TRUNCATION_LIMIT:
             evidence_files = evidence_files[:EVIDENCE_TRUNCATION_LIMIT]
-        capabilities.append({
-            "id": rule["id"],
-            "evidence_files": evidence_files,
-            "found_patterns": sorted(pattern_hits),
-            "required_patterns": rule["required_patterns"],
-        })
+        capabilities.append(
+            {
+                "id": rule["id"],
+                "evidence_files": evidence_files,
+                "found_patterns": sorted(pattern_hits),
+                "required_patterns": rule["required_patterns"],
+            }
+        )
     # Dynamic detectors
     if cfg.get("capability_map", {}).get("dynamic", False):
         context_idx_path = out_dir / "context_index.json"
@@ -396,25 +540,40 @@ def stage_s3_capabilities(cfg, facets):
                     warn(f"Detector {func} raised: {e}")
                     continue
                 if not isinstance(det, dict) or "id" not in det:
-                    warn("Invalid detector return structure; skipping.")
+                    warn(
+                        f"Invalid detector return structure from {getattr(func, '__name__', 'unknown')}; skipping."
+                    )
                     continue
-                for key in ["evidence_files","found_patterns","required_patterns"]:
+                if not validate_detector_output(det, getattr(func, "__name__", "unknown")):
+                    continue
+                for key in ["evidence_files", "found_patterns", "required_patterns"]:
                     det.setdefault(key, [])
                 evidence_files = sorted(set(det["evidence_files"]))
                 depth = facets.get("depth", 4)
                 if depth < 4 and len(evidence_files) > EVIDENCE_TRUNCATION_LIMIT:
                     evidence_files = evidence_files[:EVIDENCE_TRUNCATION_LIMIT]
-                capabilities.append({
-                    "id": det["id"],
-                    "evidence_files": evidence_files,
-                    "found_patterns": sorted(set(det["found_patterns"])),
-                    "required_patterns": det["required_patterns"],
-                    "meta": det.get("meta", {}),
-                })
+                capabilities.append(
+                    {
+                        "id": det["id"],
+                        "evidence_files": evidence_files,
+                        "found_patterns": sorted(set(det["found_patterns"])),
+                        "required_patterns": det["required_patterns"],
+                        "meta": det.get("meta", {}),
+                    }
+                )
     capabilities = sorted(capabilities, key=lambda c: c["id"])
+
+    # Apply capability overrides to merge aliases
+    capabilities = apply_overrides(capabilities, cfg)
     out_file = out_dir / "capabilities_raw.json"
-    out_file.write_text(json.dumps({"generated": time.time(), "capabilities": capabilities, "version": VERSION}, indent=2), encoding="utf-8")
+    out_file.write_text(
+        json.dumps(
+            {"generated": time.time(), "capabilities": capabilities, "version": VERSION}, indent=2
+        ),
+        encoding="utf-8",
+    )
     return capabilities
+
 
 def duplication_ratio(evidence_files: List[str]) -> float:
     stems = [Path(f).stem for f in evidence_files]
@@ -425,6 +584,7 @@ def duplication_ratio(evidence_files: List[str]) -> float:
         counts[s] = counts.get(s, 0) + 1
     dup = sum(c - 1 for c in counts.values() if c > 1)
     return min(1.0, dup / max(1, len(stems)))
+
 
 def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     test_files = [f for f in evidence_files if f.startswith("tests/")]
@@ -440,12 +600,14 @@ def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     ratio = len(uniq) / len(set(evidence_files))
     return min(1.0, ratio)
 
+
 def safeguard_score(evidence_files: List[str], file_cache: Dict[str, str]) -> float:
     hits = 0
     for kw in SAFEGUARD_KEYWORDS:
         if any(kw in file_cache.get(f, "") for f in evidence_files):
             hits += 1
     return hits / len(SAFEGUARD_KEYWORDS) if SAFEGUARD_KEYWORDS else 0.0
+
 
 def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
     docs = [p for p in file_cache if p.startswith("docs/") or p.endswith(".md")]
@@ -464,33 +626,39 @@ def _compute_missing_patterns(capability: Dict[str, Any]) -> List[str]:
 
 # ---------------------- P5: External Metrics Loaders ------------------------
 def _load_similarity_map(artifacts_dir: Path) -> Dict[str, float]:
-    if os.getenv("TOKEN_SIMILARITY_ENABLE","0") not in {"1","true","TRUE"}:
+    if os.getenv("TOKEN_SIMILARITY_ENABLE", "0") not in {"1", "true", "TRUE"}:
         return {}
     f = artifacts_dir / "token_similarity.json"
     if not f.exists():
         return {}
     try:
         data = json.loads(f.read_text())
-        return {e["id"]: float(e.get("similarity_index", 1.0)) for e in data.get("capabilities", [])}
+        return {
+            e["id"]: float(e.get("similarity_index", 1.0)) for e in data.get("capabilities", [])
+        }
     except Exception as e:
         warn(f"Failed to load token_similarity.json: {e}")
         return {}
 
+
 def _load_coverage_map(artifacts_dir: Path) -> Dict[str, float]:
-    if os.getenv("COVERAGE_ENABLE","0") not in {"1","true","TRUE"}:
+    if os.getenv("COVERAGE_ENABLE", "0") not in {"1", "true", "TRUE"}:
         return {}
     f = artifacts_dir / "coverage_stats.json"
     if not f.exists():
         return {}
     try:
         data = json.loads(f.read_text())
-        return {e["id"]: float(e.get("coverage_percent", 0.0)) for e in data.get("capabilities", [])}
+        return {
+            e["id"]: float(e.get("coverage_percent", 0.0)) for e in data.get("capabilities", [])
+        }
     except Exception as e:
         warn(f"Failed to load coverage_stats.json: {e}")
         return {}
 
+
 def _load_severity_info(artifacts_dir: Path) -> Dict[str, Any]:
-    if os.getenv("SECURITY_SEVERITY_ENABLE","0") not in {"1","true","TRUE","on","ON"}:
+    if os.getenv("SECURITY_SEVERITY_ENABLE", "0") not in {"1", "true", "TRUE", "on", "ON"}:
         return {}
     f = artifacts_dir / "security_severity.json"
     if not f.exists():
@@ -501,17 +669,18 @@ def _load_severity_info(artifacts_dir: Path) -> Dict[str, Any]:
         warn(f"Failed to load security_severity.json: {e}")
         return {}
 
-def _severity_multiplier(sev_info: Dict[str,Any]) -> float:
-    mode = os.getenv("SEVERITY_MULTIPLIER_MODE","additive")
+
+def _severity_multiplier(sev_info: Dict[str, Any]) -> float:
+    mode = os.getenv("SEVERITY_MULTIPLIER_MODE", "additive")
     if not sev_info:
         return 1.0
-    counts = sev_info.get("counts",{})
-    weights = sev_info.get("weights",{})
-    high = counts.get("high",0)*weights.get("high",0.05)
-    med  = counts.get("medium",0)*weights.get("medium",0.02)
-    low  = counts.get("low",0)*weights.get("low",0.01)
+    counts = sev_info.get("counts", {})
+    weights = sev_info.get("weights", {})
+    high = counts.get("high", 0) * weights.get("high", 0.05)
+    med = counts.get("medium", 0) * weights.get("medium", 0.02)
+    low = counts.get("low", 0) * weights.get("low", 0.01)
     if mode == "penalty":
-        factor = 1 - (high + med*0.5 + low*0.25)
+        factor = 1 - (high + med * 0.5 + low * 0.25)
         return max(0.75, factor)
     if mode == "none":
         return 1.0
@@ -542,13 +711,13 @@ def stage_s4_scoring(cfg, raw_caps):
             return 1.0
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
-    
+
     # Load external metrics (optional; per-capability id maps)
     similarity_map = _load_similarity_map(artifacts_dir)
     coverage_map = _load_coverage_map(artifacts_dir)
     severity_info = _load_severity_info(artifacts_dir)
     sev_factor = _severity_multiplier(severity_info)
-    
+
     file_cache: Dict[str, str] = {}
     for cap in raw_caps:
         for ef in cap["evidence_files"]:
@@ -562,21 +731,21 @@ def stage_s4_scoring(cfg, raw_caps):
     for cap in raw_caps:
         cap_id = cap["id"]
         functionality = len(cap["found_patterns"]) / max(1, len(cap["required_patterns"]))
-        
+
         # P5: Consistency with similarity
         base_consistency = 1.0 - duplication_ratio(cap["evidence_files"])
         similarity_index = similarity_map.get(cap_id, 1.0)
         consistency = max(0.0, min(1.0, base_consistency * similarity_index))
-        
+
         # P5: Tests with coverage
         base_tests = estimate_test_depth(cap_id, cap["evidence_files"])
         coverage_percent = coverage_map.get(cap_id, 0.0)
         tests = max(base_tests, coverage_percent)
-        
+
         # P5: Safeguards with severity influence
         safeguards = safeguard_score(cap["evidence_files"], file_cache)
         safeguards = min(1.0, safeguards * sev_factor)
-        
+
         documentation = docs_score(cap_id, file_cache)
         raw_components = {
             "functionality": max(0.0, min(1.0, functionality)),
@@ -620,6 +789,7 @@ def stage_s4_scoring(cfg, raw_caps):
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return scored
 
+
 def stage_s5_gaps(cfg, scored_caps):
     thresholds = cfg["scoring"]["thresholds"]
     overrides = (cfg.get("capability_map", {}) or {}).get("overrides") or {}
@@ -629,7 +799,9 @@ def stage_s5_gaps(cfg, scored_caps):
     for capability in scored_caps:
         comps = capability.get("components", {}) or {}
         enriched = dict(capability)
-        enriched["missing_patterns"] = capability.get("missing_patterns") or _compute_missing_patterns(capability)
+        enriched["missing_patterns"] = capability.get(
+            "missing_patterns"
+        ) or _compute_missing_patterns(capability)
         if comps:
             primary_component = min(comps, key=lambda key: comps[key])
             enriched["primary_deficit"] = primary_component
@@ -680,10 +852,16 @@ def stage_s5_gaps(cfg, scored_caps):
     )
     return payload
 
+
 def render_template(cfg, context):
     tpl_path = cfg["output"]["matrix_template"]
     tpl_dir = Path(tpl_path).parent
-    env = Environment(loader=FileSystemLoader(str(tpl_dir)), autoescape=False, trim_blocks=True, lstrip_blocks=True)
+    env = Environment(
+        loader=FileSystemLoader(str(tpl_dir)),
+        autoescape=False,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
     template = env.get_template(Path(tpl_path).name)
     concatenated = b""
     for t in sorted(tpl_dir.glob("*.j2")):
@@ -696,6 +874,7 @@ def render_template(cfg, context):
     out_file = reports_dir / f"capability_matrix_{stamp}.md"
     out_file.write_text(output, encoding="utf-8")
     return out_file
+
 
 def stage_s6_render(cfg, scored_caps, gaps):
     weights = cfg["weights"]
@@ -718,6 +897,7 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "thresholds": cfg["scoring"]["thresholds"],
     }
     return render_template(cfg, context)
+
 
 def _aggregate_external_warnings(artifacts_dir: Path) -> List[str]:
     """Aggregate warnings from external sources (filter, pointers, prefix validation, severity)."""
@@ -763,13 +943,14 @@ def _aggregate_external_warnings(artifacts_dir: Path) -> List[str]:
             warnings.append(f"security_severity_parse_fail:{e}")
     return warnings
 
+
 def _auto_prefix_validate(artifacts_dir: Path, warnings: List[str]):
     """
     P5: Auto-run prefix validator in warn-only mode; embeds a report for manifest.
     """
-    if os.getenv("BUNDLE_PREFIX_MODE","0") not in {"1","true","TRUE"}:
+    if os.getenv("BUNDLE_PREFIX_MODE", "0") not in {"1", "true", "TRUE"}:
         return
-    if os.getenv("PREFIX_VALIDATE_AUTO","1") not in {"1","true","TRUE"}:
+    if os.getenv("PREFIX_VALIDATE_AUTO", "1") not in {"1", "true", "TRUE"}:
         return
     script = ROOT / "scripts" / "archive" / "validate_prefixes.py"
     if not script.exists():
@@ -781,7 +962,9 @@ def _auto_prefix_validate(artifacts_dir: Path, warnings: List[str]):
         validate_prefixes_mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(validate_prefixes_mod)
         report = validate_prefixes_mod.validate_prefixes(Path("audit_artifacts"))
-        (artifacts_dir / "prefix_validation_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        (artifacts_dir / "prefix_validation_report.json").write_text(
+            json.dumps(report, indent=2), encoding="utf-8"
+        )
         if report.get("violations"):
             warnings.append(f"prefix_violations:{len(report['violations'])}")
     except Exception as e:
@@ -793,12 +976,16 @@ def stage_s7_manifest(cfg):
     manifest = {
         "timestamp": time.time(),
         "version": VERSION,
-        "repo_root_sha": _sha256_bytes(json.dumps(sorted([f.as_posix() for f in ROOT.rglob('*') if f.is_file()]), sort_keys=True).encode()),
+        "repo_root_sha": _sha256_bytes(
+            json.dumps(
+                sorted([f.as_posix() for f in ROOT.rglob("*") if f.is_file()]), sort_keys=True
+            ).encode()
+        ),
         "artifacts": [],
         "weights": cfg["weights"],
-        "warnings": []
+        "warnings": [],
     }
-    
+
     for p in artifacts_dir.glob("*.json"):
         if p.name.startswith("_"):
             continue
@@ -811,20 +998,20 @@ def stage_s7_manifest(cfg):
     manifest["template_hash"] = _sha256_bytes(concat)
 
     # Collect internal warnings
-    for wfile in ["_scoring_warnings.json","_depth_warnings.json"]:
+    for wfile in ["_scoring_warnings.json", "_depth_warnings.json"]:
         wf = artifacts_dir / wfile
         if wf.exists():
             try:
                 manifest["warnings"].extend(json.loads(wf.read_text()))
             except Exception:
                 pass
-    
+
     # P5: Auto prefix validation
     _auto_prefix_validate(artifacts_dir, manifest["warnings"])
-    
+
     # Collect external warnings
     manifest["warnings"].extend(_aggregate_external_warnings(artifacts_dir))
-    
+
     # Optional knobs snapshot
     try:
         knobs, warns = normalize_from_env()
@@ -834,18 +1021,33 @@ def stage_s7_manifest(cfg):
             manifest["warnings"].extend(warns)
     except Exception:
         pass
-    
+
     # P5: Knobs summary sidecar
-    if os.getenv("SUMMARY_ENABLE","1") in {"1","true","TRUE"}:
-        env_knobs = {k:v for k,v in os.environ.items() if any(k.startswith(prefix) for prefix in [
-            "TOKEN_SIMILARITY","COVERAGE","SECURITY_SEVERITY","SEVERITY_",
-            "BUNDLE_PREFIX_MODE","PREFIX_VALIDATE_AUTO","SUMMARY_ENABLE"
-        ])}
-        (artifacts_dir / "knobs_effective.json").write_text(json.dumps(env_knobs, indent=2), encoding="utf-8")
+    if os.getenv("SUMMARY_ENABLE", "1") in {"1", "true", "TRUE"}:
+        env_knobs = {
+            k: v
+            for k, v in os.environ.items()
+            if any(
+                k.startswith(prefix)
+                for prefix in [
+                    "TOKEN_SIMILARITY",
+                    "COVERAGE",
+                    "SECURITY_SEVERITY",
+                    "SEVERITY_",
+                    "BUNDLE_PREFIX_MODE",
+                    "PREFIX_VALIDATE_AUTO",
+                    "SUMMARY_ENABLE",
+                ]
+            )
+        }
+        (artifacts_dir / "knobs_effective.json").write_text(
+            json.dumps(env_knobs, indent=2), encoding="utf-8"
+        )
 
     out = ROOT / "audit_run_manifest.json"
     out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
+
 
 # ---------------------------------------------------------------------------
 # Ancillary Commands: diff, explain, validate
@@ -877,6 +1079,7 @@ def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
     mapping = {c["id"]: c.get("score") for c in data.get("capabilities", [])}
     return mapping
 
+
 def command_diff(args, cfg):
     old_path = Path(args.old)
     new_path = Path(args.new)
@@ -905,6 +1108,7 @@ def command_diff(args, cfg):
         warn(f"Score regressions detected: {regressions}")
         sys.exit(3)
 
+
 def command_explain(args, cfg):
     scored_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_scored.json"
     if not scored_file.exists():
@@ -916,21 +1120,27 @@ def command_explain(args, cfg):
     if not target:
         print(f"Capability {cap_id} not found.", file=sys.stderr)
         sys.exit(2)
-    weights = cfg["weights"]
-    total_w = sum(weights.values())
-    if abs(total_w - 1.0) > 1e-9:
-        weights = {k: v / total_w for k, v in weights.items()}
-        warn(f"Weights normalized in explain view from {total_w}")
-    components = target["components"]
+
+    weights = normalize_weights(cfg["weights"])
+    explanation = explain_score(target, weights)
+
     print(f"Explain: {cap_id}")
-    for k, v in components.items():
-        w = weights[k]
-        print(f"  {k:14s} value={v:.4f} weight={w:.3f} contribution={(v*w):.4f}")
-    print(f"  Total score: {target['score']:.4f}")
+    for k, part in explanation["partials"].items():
+        print(
+            f"  {k:14s} "
+            f"value={part['component_value']:.4f} "
+            f"weight={part['weight']:.3f} "
+            f"contribution={part['contribution']:.4f}"
+        )
+    print(f"  Total score: {explanation['score']:.4f}")
+
 
 def command_validate(cfg):
     if any(func is None for func in (check_low_threshold, check_missing_detectors, emit_summary)):
-        print("Validation helpers unavailable; ensure validators module is accessible.", file=sys.stderr)
+        print(
+            "Validation helpers unavailable; ensure validators module is accessible.",
+            file=sys.stderr,
+        )
         sys.exit(2)
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
@@ -961,6 +1171,7 @@ def command_validate(cfg):
     if failed:
         sys.exit(4)
 
+
 def run_full(cfg):
     ctx = stage_s1_index(cfg)
     facets = stage_s2_facets(cfg, ctx)
@@ -971,11 +1182,12 @@ def run_full(cfg):
     stage_s7_manifest(cfg)
     info("Audit complete.")
 
+
 def run_stage(cfg, stage_id: str):
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    context_idx = (artifacts_dir / "context_index.json")
-    facets_file = (artifacts_dir / "facets.json")
+    context_idx = artifacts_dir / "context_index.json"
+    facets_file = artifacts_dir / "facets.json"
     if stage_id == "S1":
         stage_s1_index(cfg)
     elif stage_id == "S2":
@@ -983,16 +1195,24 @@ def run_stage(cfg, stage_id: str):
         stage_s2_facets(cfg, idx)
     elif stage_id == "S3":
         idx = json.loads(context_idx.read_text()) if context_idx.exists() else stage_s1_index(cfg)
-        facets = json.loads(facets_file.read_text()) if facets_file.exists() else stage_s2_facets(cfg, idx)
+        facets = (
+            json.loads(facets_file.read_text())
+            if facets_file.exists()
+            else stage_s2_facets(cfg, idx)
+        )
         stage_s3_capabilities(cfg, facets)
     elif stage_id == "S4":
         raw = json.loads((artifacts_dir / "capabilities_raw.json").read_text())["capabilities"]
         stage_s4_scoring(cfg, raw)
     elif stage_id == "S5":
-        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())["capabilities"]
+        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())[
+            "capabilities"
+        ]
         stage_s5_gaps(cfg, scored)
     elif stage_id == "S6":
-        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())["capabilities"]
+        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())[
+            "capabilities"
+        ]
         gaps = json.loads((artifacts_dir / "gaps.json").read_text())
         stage_s6_render(cfg, scored, gaps)
     elif stage_id == "S7":
@@ -1000,6 +1220,7 @@ def run_stage(cfg, stage_id: str):
     else:
         print("Unknown stage ID", file=sys.stderr)
         sys.exit(2)
+
 
 # ---------------------------------------------------------------------------
 # CLI
@@ -1049,6 +1270,7 @@ def main():
         command_validate(cfg)
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()
