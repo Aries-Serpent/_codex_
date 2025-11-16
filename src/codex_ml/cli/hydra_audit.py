@@ -449,7 +449,7 @@ def audit_config(argv: Optional[Sequence[str]] = None) -> int:
     try:
         from hydra import compose, initialize_config_dir
         from hydra.core.global_hydra import GlobalHydra
-    except Exception:  # pragma: no cover - dependency missing
+    except (ImportError, ModuleNotFoundError):  # pragma: no cover - dependency missing
         print("[hydra-audit] hydra-core is required", file=sys.stderr)
         return 4
 

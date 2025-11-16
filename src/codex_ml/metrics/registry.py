@@ -24,10 +24,10 @@ from typing import Callable, Optional, Sequence
 from codex_ml.registry.base import Registry, RegistryConflictError
 
 from .classification import (
-    classification_accuracy,
-    f1_macro,
-    precision_macro,
-    recall_macro,
+    classification_accuracy as _classification_accuracy,
+    f1_macro as _classification_f1_macro,
+    precision_macro as _classification_precision,
+    recall_macro as _classification_recall,
 )
 
 # Ensure built-in generative metrics are registered on import.
@@ -440,11 +440,6 @@ register_metric("token_accuracy")(token_accuracy)
 
 # Classification helpers ----------------------------------------------------
 
-register_metric("accuracy", classification_accuracy)
-register_metric("precision", precision_macro)
-register_metric("recall", recall_macro)
-register_metric("f1_macro", f1_macro)
-
 
 @register_metric("ppl")
 def perplexity(nll_or_sum, n_tokens: Optional[int] = None) -> float:
@@ -593,32 +588,7 @@ def weighted_accuracy(
     return float(correct / total) if total else 0.0
 
 
-@register_metric("accuracy")
-def classification_accuracy(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Overall accuracy for arbitrary labels."""
 
-    return float(_classification_accuracy(preds, targets))
-
-
-@register_metric("precision")
-def classification_precision(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged precision across all observed classes."""
-
-    return float(_classification_precision(preds, targets))
-
-
-@register_metric("recall")
-def classification_recall(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged recall across all observed classes."""
-
-    return float(_classification_recall(preds, targets))
-
-
-@register_metric("f1_macro")
-def classification_f1_macro(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged F1 score."""
-
-    return float(_classification_f1_macro(preds, targets))
 
 
 @register_metric("chrf")

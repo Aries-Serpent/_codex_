@@ -150,6 +150,11 @@ class DBManager:
                         value REAL NOT NULL
                     )"""
                 )
+                metric_cols = [r[1] for r in conn.execute("PRAGMA table_info(metric_records)")]
+                if "ts" not in metric_cols:
+                    conn.execute("ALTER TABLE metric_records ADD COLUMN ts REAL")
+                if "event_type" not in metric_cols:
+                    conn.execute("ALTER TABLE metric_records ADD COLUMN event_type TEXT")
                 conn.execute(
                     "CREATE INDEX IF NOT EXISTS metric_records_session_idx "
                     "ON metric_records(session_id, epoch)"
@@ -167,24 +172,6 @@ class DBManager:
                 conn.execute(
                     "CREATE UNIQUE INDEX IF NOT EXISTS session_events_session_seq_idx "
                     "ON session_events(session_id, seq)"
-                )
-
-                conn.execute(
-                    """CREATE TABLE IF NOT EXISTS metric_records(
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        session_id TEXT NOT NULL,
-                        epoch INTEGER NOT NULL,
-                        metric TEXT NOT NULL,
-                        value REAL NOT NULL
-                    )"""
-                )
-                conn.execute(
-                    "CREATE INDEX IF NOT EXISTS metric_records_session_idx "
-                    "ON metric_records(session_id)"
-                )
-                conn.execute(
-                    "CREATE INDEX IF NOT EXISTS metric_records_session_epoch_idx "
-                    "ON metric_records(session_id, epoch)"
                 )
 
                 conn.commit()
