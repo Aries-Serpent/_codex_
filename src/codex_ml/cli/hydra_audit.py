@@ -447,8 +447,14 @@ def audit_config(argv: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(argv)
 
     try:
-        from hydra import compose, initialize_config_dir
         from hydra.core.global_hydra import GlobalHydra
+
+        from hydra import compose, initialize_config_dir
+        from hydra.errors import (
+            ConfigCompositionException,
+            HydraException,
+            MissingConfigException,
+        )
     except (ImportError, ModuleNotFoundError):  # pragma: no cover - dependency missing
         print("[hydra-audit] hydra-core is required", file=sys.stderr)
         return 4
@@ -466,7 +472,16 @@ def audit_config(argv: Optional[Sequence[str]] = None) -> int:
     try:
         with initialize_config_dir(config_dir=str(config_root), job_name="codex_hydra_audit"):
             cfg = compose(config_name=args.config_name)
-    except (ImportError, ModuleNotFoundError, RuntimeError, ValueError, KeyError) as exc:
+    except (
+        HydraException,
+        ConfigCompositionException,
+        MissingConfigException,
+        ImportError,
+        ModuleNotFoundError,
+        RuntimeError,
+        ValueError,
+        KeyError,
+    ) as exc:
         payload = {
             "ok": False,
             "config_root": str(config_root),
