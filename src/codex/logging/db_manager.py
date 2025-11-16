@@ -150,11 +150,6 @@ class DBManager:
                         value REAL NOT NULL
                     )"""
                 )
-                metric_cols = [r[1] for r in conn.execute("PRAGMA table_info(metric_records)")]
-                if "ts" not in metric_cols:
-                    conn.execute("ALTER TABLE metric_records ADD COLUMN ts REAL")
-                if "event_type" not in metric_cols:
-                    conn.execute("ALTER TABLE metric_records ADD COLUMN event_type TEXT")
                 conn.execute(
                     "CREATE INDEX IF NOT EXISTS metric_records_session_idx "
                     "ON metric_records(session_id, epoch)"
