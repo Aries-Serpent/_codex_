@@ -52,7 +52,7 @@ For each capability, the table summarises the implementation status, artefacts, 
 
 ## 3. High-Signal Findings
 
-1. **Main branch is most recent** – `main` carries the most recent commit and is effectively the trunk. Branches like `0D_base_` are close but slightly behind.
+1. **Main branch is most recent** – `main` carries the most recent commit and is effectively the trunk. Branches like `0c_base` are close but slightly behind.
 2. **Strong offline posture** – all tooling emphasises offline operation: dataset loaders fallback gracefully, metrics and logging store NDJSON/SQLite locally, CLI tools avoid network calls, Docker images build dependencies from pinned wheels.
 3. **Modular registries** – datasets, metrics, callbacks and plugins use registries and entry points; new extensions can be added without modifying core code.
 4. **Comprehensive training engine** – unified training orchestrator supports seeding, device/dtype management, LoRA/PEFT, MLflow/W&B integration, checkpointing and best-k retention; HF Trainer wrapper includes accelerate compatibility and LoRA injection, enabling rapid prototyping.
@@ -147,7 +147,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +    preds = np.array(preds)
 +    labels = np.array(labels)
 +    tp = np.sum((preds == labels) & (labels == 1))
-+    fn = np.sum((preds != labels) & (preds == 0))
++    fn = np.sum((preds != labels) & (labels == 1))
 +    return tp / (tp + fn + 1e-8)
 +
 +
@@ -185,12 +185,30 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +
 +def audit_config(config_name: str = "app", config_path: str = "configs") -> int:
 +    """Validate Hydra config and report unresolved fields."""
++    import os
 +
 +    register_configs()
-+    with initialize_config_dir(config_dir=config_path):
++    abs_config_path = os.path.abspath(config_path)
++    with initialize_config_dir(config_dir=abs_config_path):
 +        cfg = compose(config_name=config_name)
 +        flat = OmegaConf.to_container(cfg, resolve=False)
-+        unresolved = [k for k, v in flat.items() if v == "???"]
++
++        def find_unresolved(obj, path=None):
++            if path is None:
++                path = []
++            unresolved = []
++            if isinstance(obj, dict):
++                for k, v in obj.items():
++                    unresolved.extend(find_unresolved(v, path + [str(k)]))
++            elif isinstance(obj, list):
++                for idx, v in enumerate(obj):
++                    unresolved.extend(find_unresolved(v, path + [str(idx)]))
++            else:
++                if obj == "???":
++                    unresolved.append(".".join(path))
++            return unresolved
++
++        unresolved = find_unresolved(flat)
 +        if unresolved:
 +            print(json.dumps({"status": "error", "unresolved": unresolved}))
 +            return 1
@@ -378,7 +396,7 @@ Missing items / flags:
 When conducting future analysis or extending the system, use the following block to record unexpected failures:
 
 ```text
-Question for ChatGPT @codex {{timestamp}}:
+Question for ChatGPT @codex [TIMESTAMP]:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
