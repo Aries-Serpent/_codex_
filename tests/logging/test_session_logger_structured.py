@@ -36,8 +36,8 @@ def test_session_logger_mirrors_metrics_to_sqlite(tmp_path):
     logger = SessionLogger(
         session_id="mirror-test",
         log_dir=tmp_path,
-        metrics_db_path=db_path,
-        mirror_metrics=True,
+        sqlite_db_path=db_path,
+        enable_sqlite_metrics=True,
     )
 
     logger.log_event("epoch", {"epoch": 5, "metrics": {"loss": 0.25, "acc": 0.9}})
