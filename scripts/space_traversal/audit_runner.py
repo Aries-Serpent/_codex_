@@ -20,7 +20,7 @@ Stages:
  S7 Manifest            -> audit_run_manifest.json
 """
 from __future__ import annotations
-import argparse, json, os, re, sys, hashlib, time, importlib.util, inspect, difflib
+import argparse, json, os, re, sys, hashlib, time, importlib.util, inspect
 from pathlib import Path
 from typing import Dict, List, Any, Callable
 
