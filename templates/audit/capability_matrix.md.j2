@@ -12,13 +12,13 @@ High Maturity (>= {{ "%.2f"|format(thresholds.medium) }}): {{ capabilities|selec
 ## 2. Capability Scores
 | ID | Score | Level | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
 |----|-------|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
-{% set low = thresholds.low %}
-{% set med = thresholds.get('medium', 0.85) %}
+{% set medium_min = thresholds.low %}
+{% set high_min = thresholds.get('medium', 0.85) %}
 {% for cap in capabilities -%}
 {% set lvl = "High" %}
-{% if cap.score < low %}
+{% if cap.score < medium_min %}
   {% set lvl = "Low" %}
-{% elif cap.score < med %}
+{% elif cap.score < high_min %}
   {% set lvl = "Medium" %}
 {% endif %}
 {% set f = cap.components.functionality %}{% set c = cap.components.consistency %}{% set t = cap.components.tests %}{% set s = cap.components.safeguards %}{% set d = cap.components.documentation %}
