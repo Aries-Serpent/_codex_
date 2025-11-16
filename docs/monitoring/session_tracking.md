@@ -47,26 +47,6 @@ jq '.session_id == "550e8400-e29b-41d4-a716-446655440000"' .codex/logs/session_*
 jq -s 'sort_by(.timestamp)' .codex/logs/session_550e8400-e29b-41d4-a716-446655440000.jsonl
 ```
 
-## SQLite metrics mirroring
-
-When the NDJSON `SessionLogger` records events that include a `metrics` payload
-and an `epoch` counter, the values are mirrored into `.codex/session_logs.db`
-(`metric_records` table). Each row captures the session id, event type, epoch,
-metric name, and scalar value, making it trivial to aggregate training runs with
-SQL queries:
-
-```sql
-SELECT epoch, metric, AVG(value) AS avg_value
-FROM metric_records
-WHERE metric IN ('loss', 'acc')
-GROUP BY epoch, metric
-ORDER BY epoch;
-```
-
-The database schema is managed by `codex.logging.db_manager.DBManager` and is
-initialized automatically when `codex_ml.logging.session_logger.SessionLogger`
-is constructed (mirroring is best effort and never blocks training).
-
 ## Integrating with other systems
 
 * Forward the NDJSON files to log aggregation pipelines (e.g. Loki, Elastic) for centralised dashboards.
