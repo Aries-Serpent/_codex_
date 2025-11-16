@@ -23,6 +23,13 @@ from typing import Callable, Optional, Sequence
 
 from codex_ml.registry.base import Registry, RegistryConflictError
 
+from .classification import (
+    classification_accuracy as _classification_accuracy,
+    f1_macro as _classification_f1_macro,
+    precision_macro as _classification_precision,
+    recall_macro as _classification_recall,
+)
+
 # Ensure built-in generative metrics are registered on import.
 from . import generative as _generative
 
@@ -32,12 +39,6 @@ metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
-
-# Ensure built-in generative metrics are registered on import.
-from . import generative as _generative  # noqa: F401, E402
-
-# Mark as explicitly used for side effects (metric registration)
-_ = _generative
 
 
 def _error_log_path() -> Path:
@@ -603,6 +604,13 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return float(corpus_chrf(targets, preds))
     except Exception:  # pragma: no cover
         return None
+
+
+# Register classification metrics at module load time.
+register_metric("accuracy")(_classification_accuracy)
+register_metric("precision")(_classification_precision)
+register_metric("recall")(_classification_recall)
+register_metric("f1_macro")(_classification_f1_macro)
 
 
 __all__ = [
