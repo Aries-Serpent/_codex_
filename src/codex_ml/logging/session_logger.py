@@ -73,16 +73,27 @@ class SessionLogger:
             epoch_idx = int(epoch_value)
         except (TypeError, ValueError):
             return
-        rows: list[tuple[str, int, str, float]] = []
+        timestamp = datetime.now(timezone.utc).timestamp()
+        rows: list[tuple[float, str, str, int, str, float]] = []
         for key, value in metrics.items():
             if isinstance(value, (int, float)):
-                rows.append((self.session_id, epoch_idx, str(key), float(value)))
+                rows.append(
+                    (
+                        timestamp,
+                        self.session_id,
+                        event_type,
+                        epoch_idx,
+                        str(key),
+                        float(value),
+                    )
+                )
         if not rows:
             return
         try:
             with self._db_manager.connection() as conn:
                 conn.executemany(
-                    "INSERT INTO metric_records (session_id, epoch, metric, value) VALUES (?, ?, ?, ?)",
+                    "INSERT INTO metric_records (ts, session_id, event_type, epoch, metric, value) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
                     rows,
                 )
                 conn.commit()
