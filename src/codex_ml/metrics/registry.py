@@ -593,32 +593,7 @@ def weighted_accuracy(
     return float(correct / total) if total else 0.0
 
 
-@register_metric("accuracy")
-def classification_accuracy(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Overall accuracy for arbitrary labels."""
 
-    return float(_classification_accuracy(preds, targets))
-
-
-@register_metric("precision")
-def classification_precision(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged precision across all observed classes."""
-
-    return float(_classification_precision(preds, targets))
-
-
-@register_metric("recall")
-def classification_recall(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged recall across all observed classes."""
-
-    return float(_classification_recall(preds, targets))
-
-
-@register_metric("f1_macro")
-def classification_f1_macro(preds: Sequence[object], targets: Sequence[object]) -> float:
-    """Macro-averaged F1 score."""
-
-    return float(_classification_f1_macro(preds, targets))
 
 
 @register_metric("chrf")
