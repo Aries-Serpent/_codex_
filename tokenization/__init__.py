@@ -41,4 +41,4 @@ def __getattr__(name: str) -> Any:  # pragma: no cover - shim for optional impor
         if name not in __all__:
             __all__.append(name)
         return module
-    raise AttributeError(name)
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
