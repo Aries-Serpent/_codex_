@@ -37,7 +37,16 @@ class SessionLogger:
         redactor: SecretRedactor | None = None,
         sqlite_db_path: Path | None = None,
         enable_sqlite_metrics: bool | None = None,
+        # Backward compatibility aliases
+        metrics_db_path: Path | None = None,
+        mirror_metrics: bool | None = None,
     ) -> None:
+        # Handle backward-compatible parameter names
+        if metrics_db_path is not None:
+            sqlite_db_path = metrics_db_path
+        if mirror_metrics is not None:
+            enable_sqlite_metrics = mirror_metrics
+        
         self.session_id = session_id or str(uuid.uuid4())
         self.log_dir = (log_dir or DEFAULT_LOG_DIR).expanduser()
         self.log_dir.mkdir(parents=True, exist_ok=True)
