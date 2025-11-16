@@ -43,8 +43,20 @@ class SessionLogger:
     ) -> None:
         # Handle backward-compatible parameter names
         if metrics_db_path is not None:
+            if sqlite_db_path is not None and sqlite_db_path != metrics_db_path:
+                _LOGGER.warning(
+                    "Both 'sqlite_db_path' (%s) and legacy 'metrics_db_path' (%s) are provided and differ. "
+                    "Using 'metrics_db_path' for backward compatibility.",
+                    sqlite_db_path, metrics_db_path
+                )
             sqlite_db_path = metrics_db_path
         if mirror_metrics is not None:
+            if enable_sqlite_metrics is not None and enable_sqlite_metrics != mirror_metrics:
+                _LOGGER.warning(
+                    "Both 'enable_sqlite_metrics' (%s) and legacy 'mirror_metrics' (%s) are provided and differ. "
+                    "Using 'mirror_metrics' for backward compatibility.",
+                    enable_sqlite_metrics, mirror_metrics
+                )
             enable_sqlite_metrics = mirror_metrics
         self.session_id = session_id or str(uuid.uuid4())
         self.log_dir = (log_dir or DEFAULT_LOG_DIR).expanduser()
