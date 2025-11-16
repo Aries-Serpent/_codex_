@@ -438,8 +438,6 @@ def token_accuracy(
 # Provide a shorter alias for minimal metric registries/tests.
 register_metric("token_accuracy")(token_accuracy)
 
-# Classification helpers ----------------------------------------------------
-
 
 @register_metric("ppl")
 def perplexity(nll_or_sum, n_tokens: Optional[int] = None) -> float:

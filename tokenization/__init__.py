@@ -22,14 +22,14 @@ if _pkg_src.exists():
         pkg_path.append(pkg_src_str)
 
 try:
-    from codex_ml.tokenization import TokenizerAdapter, load_tokenizer, register_tokenizer
-except Exception as exc:  # pragma: no cover - only when codex_ml is unavailable
+    from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+except ImportError as exc:  # pragma: no cover - only when codex_ml is unavailable
     raise ImportError(
         "codex_ml.tokenization is unavailable; install the codex-ml package or "
         "run from the repository root so 'src' is on sys.path."
     ) from exc
 
-__all__ = ["TokenizerAdapter", "load_tokenizer", "register_tokenizer"]
+__all__ = ["TokenizerAdapter", "load_tokenizer"]
 
 _OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer", "cli", "api")
 
