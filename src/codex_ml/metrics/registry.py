@@ -588,9 +588,6 @@ def weighted_accuracy(
     return float(correct / total) if total else 0.0
 
 
-
-
-
 @register_metric("chrf")
 def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
     """chrF metric via sacrebleu (preferred) or NLTK; None on failure."""
