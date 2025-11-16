@@ -394,9 +394,11 @@ def cmd_defaults_audit(args: argparse.Namespace) -> int:
 
 
 def _collect_missing_nodes(node: Any, prefix: str = "") -> list[str]:
-    from omegaconf import DictConfig, ListConfig, OmegaConf
+    from omegaconf import DictConfig, MISSING
 
-    if OmegaConf.is_missing(node):
+    # Check if the current node is a missing value
+    # In OmegaConf 2.3, missing values can be either the MISSING sentinel or the string "???"
+    if node == MISSING or node == "???":
         return [prefix or "<root>"]
 
     results: list[str] = []
@@ -405,7 +407,7 @@ def _collect_missing_nodes(node: Any, prefix: str = "") -> list[str]:
             child = node[key]
             child_prefix = f"{prefix}.{key}" if prefix else str(key)
             results.extend(_collect_missing_nodes(child, child_prefix))
-    elif isinstance(node, ListConfig):
+    elif isinstance(node, list):
         for idx, child in enumerate(node):
             child_prefix = f"{prefix}[{idx}]" if prefix else f"[{idx}]"
             results.extend(_collect_missing_nodes(child, child_prefix))
