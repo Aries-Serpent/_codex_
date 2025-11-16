@@ -65,7 +65,7 @@ except ImportError:
             "MAX_BUNDLE_", "ARCHIVE_", "BUNDLE_PREFIX_", "AST_", 
             "TOKEN_SIMILARITY", "COVERAGE", "SECURITY_SEVERITY", "SEVERITY_",
             "PREFIX_VALIDATE_", "SUMMARY_", "SYNONYM_", "SECRET_CONTEXT_",
-            "FEDERATION_", "MANIFEST_EXTENDED_"
+            "FEDERATION_", "MANIFEST_EXTENDED_", "COPILOT_", "GITHUB_"
         ]
         filtered = {
             k: v for k, v in _os.environ.items()
