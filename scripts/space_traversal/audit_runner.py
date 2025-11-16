@@ -44,9 +44,7 @@ from typing import Any, Callable, Dict, List
 try:
     from scripts.config.parse_knobs import (
         get_depth,
-    )
-    from scripts.config.parse_knobs import get_warnings as get_knob_warnings
-    from scripts.config.parse_knobs import (
+        get_warnings as get_knob_warnings,
         normalize_from_env,
         summarize_effective,
     )
