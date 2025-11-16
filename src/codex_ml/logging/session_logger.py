@@ -46,7 +46,6 @@ class SessionLogger:
             sqlite_db_path = metrics_db_path
         if mirror_metrics is not None:
             enable_sqlite_metrics = mirror_metrics
-        
         self.session_id = session_id or str(uuid.uuid4())
         self.log_dir = (log_dir or DEFAULT_LOG_DIR).expanduser()
         self.log_dir.mkdir(parents=True, exist_ok=True)
