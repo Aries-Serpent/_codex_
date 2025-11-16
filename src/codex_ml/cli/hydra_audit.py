@@ -466,7 +466,7 @@ def audit_config(argv: Optional[Sequence[str]] = None) -> int:
     try:
         with initialize_config_dir(config_dir=str(config_root), job_name="codex_hydra_audit"):
             cfg = compose(config_name=args.config_name)
-    except Exception as exc:
+    except (ImportError, ModuleNotFoundError, RuntimeError, ValueError, KeyError) as exc:
         payload = {
             "ok": False,
             "config_root": str(config_root),
