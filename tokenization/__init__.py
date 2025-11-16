@@ -1,10 +1,11 @@
-"""Shims to make the tokenization package importable without installation."""
+"""Tokenization API re-exported from :mod:`codex_ml.tokenization`."""
 
 from __future__ import annotations
 
 import importlib
 import sys
 from pathlib import Path
+from typing import Any
 
 _pkg_dir = Path(__file__).resolve().parent
 _root_src = _pkg_dir.parent / "src"
@@ -16,23 +17,28 @@ if _root_src.exists():
 _pkg_src = _root_src / "tokenization"
 if _pkg_src.exists():
     pkg_src_str = str(_pkg_src)
-    if pkg_src_str not in __path__:
-        __path__.append(pkg_src_str)
+    pkg_path = globals().get("__path__")
+    if pkg_path is not None and pkg_src_str not in pkg_path:
+        pkg_path.append(pkg_src_str)
 
-__all__: list[str] = []
-_OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer")
+try:
+    from codex_ml.tokenization import TokenizerAdapter, load_tokenizer
+except ImportError as exc:  # pragma: no cover - only when codex_ml is unavailable
+    raise ImportError(
+        "codex_ml.tokenization is unavailable; install the codex-ml package or "
+        "run from the repository root so 'src' is on sys.path."
+    ) from exc
+
+__all__ = ["TokenizerAdapter", "load_tokenizer"]
+
+_OPTIONAL_SUBMODULES = ("sentencepiece_adapter", "train_tokenizer", "cli", "api")
 
 
-def __getattr__(name: str):  # pragma: no cover - shim for optional imports
+def __getattr__(name: str) -> Any:  # pragma: no cover - shim for optional imports
     if name in _OPTIONAL_SUBMODULES:
-        try:
-            module = importlib.import_module(f"{__name__}.{name}")
-        except ModuleNotFoundError:
-            globals()[name] = None
-            return None
-        else:
-            globals()[name] = module
-            if name not in __all__:
-                __all__.append(name)
-            return module
-    raise AttributeError(name)
+        module = importlib.import_module(f"{__name__}.{name}")
+        globals()[name] = module
+        if name not in __all__:
+            __all__.append(name)
+        return module
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

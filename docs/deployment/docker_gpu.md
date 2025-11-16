@@ -4,7 +4,7 @@ This guide explains how to build and run the GPU-enabled Docker image for codex-
 
 ## Overview
 
-The `Dockerfile.gpu` provides an optional mechanism to install CUDA-enabled PyTorch in the container. By default, the image does NOT install GPU-specific PyTorch wheels to keep the image flexible for different deployment scenarios.
+The `Dockerfile.gpu` provides an optional mechanism to install CUDA-enabled PyTorch in the container. By default, the image does NOT install GPU-specific PyTorch wheels to keep the image flexible for different deployment scenarios. A slim variant that mirrors the same build arguments lives under `docker/Dockerfile.gpu` for teams that keep Docker assets inside the `docker/` directory.
 
 **Base Image**: `nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04`
 
