@@ -611,6 +611,13 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return None
 
 
+# Register classification metrics at module load time.
+register_metric("accuracy")(_classification_accuracy)
+register_metric("precision")(_classification_precision)
+register_metric("recall")(_classification_recall)
+register_metric("f1_macro")(_classification_f1_macro)
+
+
 __all__ = [
     "metric_registry",
     "register",
