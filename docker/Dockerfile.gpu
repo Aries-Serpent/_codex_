@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY pyproject.toml MANIFEST.in requirements/ uv.lock ./
+COPY pyproject.toml MANIFEST.in requirements/ ./
 RUN python3 -m pip install --upgrade pip \
     && python3 -m pip install -r requirements/docker.txt
 
