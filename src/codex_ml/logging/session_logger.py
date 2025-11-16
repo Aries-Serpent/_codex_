@@ -109,5 +109,45 @@ class SessionLogger:
         self._maybe_store_metrics(event_type, data)
         return self.session_file
 
+    def _mirror_metric_payload(
+        self, event_type: str, data: Mapping[str, Any] | None
+    ) -> None:
+        if not data or self._metrics_db is None:
+            return
+        metrics = data.get("metrics")
+        if not isinstance(metrics, Mapping):
+            return
+        epoch_value = data.get("epoch")
+        try:
+            epoch_int = int(epoch_value) if epoch_value is not None else None
+        except (TypeError, ValueError):  # pragma: no cover - metadata mismatch
+            epoch_int = None
+        timestamp = time.time()
+        rows: list[tuple[float, str, str, int | None, str, float]] = []
+        for key, value in metrics.items():
+            if isinstance(value, (int, float)):
+                rows.append(
+                    (
+                        timestamp,
+                        self.session_id,
+                        event_type,
+                        epoch_int,
+                        str(key),
+                        float(value),
+                    )
+                )
+        if not rows:
+            return
+        try:
+            with self._metrics_db.connection() as conn:
+                conn.executemany(
+                    "INSERT INTO metric_records (ts, session_id, event_type, epoch, metric, value) "
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    rows,
+                )
+                conn.commit()
+        except Exception:  # pragma: no cover - metrics mirroring is best effort
+            return
+
 
 __all__ = ["SessionLogger", "DEFAULT_LOG_DIR"]
