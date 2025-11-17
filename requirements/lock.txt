@@ -207,7 +207,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.4.1
+duckdb==1.4.2
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
