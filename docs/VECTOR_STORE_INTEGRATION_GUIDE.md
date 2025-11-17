@@ -480,8 +480,233 @@ Solution:
 3. **Experiment with different k values** for search
 4. **Integrate with Inference Server** for embedding generation
 5. **Save and load indices** to persist your work
+6. **Use metadata filtering** to narrow search results
 
 For questions or issues, refer to the test suite in `tests/retrieval/test_vector_store_interface.py` for working examples.
+
+## Metadata Filtering
+
+### Overview
+
+Metadata filtering allows you to filter search results based on metadata fields using MongoDB-style query syntax. This is useful for narrowing search results to specific categories, score ranges, or other criteria.
+
+### Supported Operators
+
+#### Equality
+```python
+# Simple equality
+filters = {"category": "tech"}
+
+# Not equal
+filters = {"category": {"$ne": "spam"}}
+```
+
+#### Range Operators
+```python
+# Greater than
+filters = {"score": {"$gt": 0.7}}
+
+# Greater than or equal
+filters = {"score": {"$gte": 0.7}}
+
+# Less than
+filters = {"score": {"$lt": 0.9}}
+
+# Less than or equal
+filters = {"score": {"$lte": 0.9}}
+
+# Combined range
+filters = {"score": {"$gte": 0.5, "$lte": 1.0}}
+```
+
+#### List Operators
+```python
+# In list
+filters = {"category": {"$in": ["tech", "news", "sports"]}}
+
+# Not in list
+filters = {"category": {"$nin": ["spam", "ads"]}}
+```
+
+#### Field Existence
+```python
+# Field exists
+filters = {"author": {"$exists": True}}
+
+# Field does not exist
+filters = {"optional_field": {"$exists": False}}
+```
+
+#### Logical Operators
+```python
+# AND (all conditions must match)
+filters = {
+    "$and": [
+        {"category": "tech"},
+        {"score": {"$gte": 0.8}},
+        {"author": "alice"}
+    ]
+}
+
+# OR (at least one condition must match)
+filters = {
+    "$or": [
+        {"category": "tech"},
+        {"category": "news"}
+    ]
+}
+
+# Complex nested logic
+filters = {
+    "$and": [
+        {
+            "$or": [
+                {"category": "tech"},
+                {"category": "news"}
+            ]
+        },
+        {"score": {"$gte": 0.8}}
+    ]
+}
+```
+
+### Usage Examples
+
+#### Basic Filtering
+```python
+from src.codex.retrieval.stores.faiss_store import FAISSStore
+import numpy as np
+
+# Create store with data
+store = FAISSStore(index_name="filtered-search")
+store.create_index(dimension=384)
+
+# Add vectors with metadata
+vectors = np.random.randn(1000, 384).astype(np.float32)
+metadata = [
+    {
+        "text": f"document-{i}",
+        "category": "tech" if i % 3 == 0 else "news",
+        "score": 0.5 + (i % 50) / 100.0,
+        "author": ["alice", "bob", "charlie"][i % 3]
+    }
+    for i in range(1000)
+]
+store.add(vectors, metadata=metadata)
+
+# Search with category filter
+query = np.random.randn(384).astype(np.float32)
+results = store.search(
+    query,
+    top_k=10,
+    filters={"category": "tech"}
+)
+
+print(f"Found {len(results)} tech articles")
+```
+
+#### Range Filtering
+```python
+# Find high-quality results
+results = store.search(
+    query,
+    top_k=20,
+    filters={"score": {"$gte": 0.8}}
+)
+
+# Find results in score range
+results = store.search(
+    query,
+    top_k=20,
+    filters={
+        "score": {
+            "$gte": 0.6,
+            "$lte": 0.9
+        }
+    }
+)
+```
+
+#### Multi-Criteria Filtering
+```python
+# Tech articles with high scores by specific authors
+results = store.search(
+    query,
+    top_k=10,
+    filters={
+        "$and": [
+            {"category": "tech"},
+            {"score": {"$gte": 0.75}},
+            {"author": {"$in": ["alice", "bob"]}}
+        ]
+    }
+)
+
+# Either high-scoring tech or any news
+results = store.search(
+    query,
+    top_k=10,
+    filters={
+        "$or": [
+            {
+                "$and": [
+                    {"category": "tech"},
+                    {"score": {"$gte": 0.8}}
+                ]
+            },
+            {"category": "news"}
+        ]
+    }
+)
+```
+
+### Performance Considerations
+
+**Post-Filtering Strategy:**
+The current implementation uses post-filtering, which means:
+
+1. FAISS returns the top-k results by similarity
+2. Results are filtered based on metadata
+3. If fewer than k results match the filter, you may get fewer results
+
+**Fetch Multiplier:**
+To increase the chance of getting k filtered results, the system automatically fetches more results when filters are present:
+- Single condition: fetches 3x
+- Two conditions: fetches 5x
+- Complex filters: fetches 10x
+
+**Example:**
+```python
+# Requesting 10 results with a filter
+results = store.search(
+    query,
+    top_k=10,
+    filters={"category": "tech"}  # Single condition
+)
+# Internally fetches top-30, then filters to return up to 10
+```
+
+**Tips for Best Performance:**
+1. Use filters with high selectivity (match many documents)
+2. Consider using multiple smaller indices for distinct categories
+3. For very selective filters, increase `top_k` to get more results
+4. Monitor the ratio of filtered to total results
+
+### Limitations
+
+- **No Pre-Filtering**: FAISS doesn't natively support metadata filtering, so all filtering happens after similarity search
+- **Result Count**: May return fewer than `top_k` results if few vectors match the filter
+- **Performance**: Complex filters on large indices may be slower than simple equality filters
+
+### Future Enhancements
+
+Planned improvements for metadata filtering:
+- Auxiliary metadata indices for faster pre-filtering
+- Support for text search in metadata fields
+- Integration with hybrid search (dense + sparse vectors)
+- Custom similarity thresholds per filter
+
+---
 
 ## API Reference
 

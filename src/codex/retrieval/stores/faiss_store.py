@@ -26,6 +26,7 @@ from .base import (
     VectorNotFoundError,
     IndexNotLoadedError,
 )
+from ..filtering import apply_filters, calculate_fetch_multiplier
 
 logger = logging.getLogger(__name__)
 
@@ -298,12 +299,14 @@ class FAISSStore(VectorStore):
         self,
         query_vector: np.ndarray,
         top_k: int = 5,
+        filters: Optional[Dict[str, Any]] = None,
     ) -> list[dict[str, Any]]:
-        """Search for similar vectors with validation
+        """Search for similar vectors with validation and optional filtering
         
         Args:
             query_vector: Query embedding vector (shape: [dim] or [1, dim])
             top_k: Number of results to return
+            filters: Optional metadata filters (MongoDB-style)
         
         Returns:
             List of results with document, score, and index
@@ -349,8 +352,12 @@ class FAISSStore(VectorStore):
         norm = np.maximum(norm, 1e-12)
         query_normalized = query_normalized / norm
         
+        # Calculate fetch multiplier if filtering
+        fetch_multiplier = calculate_fetch_multiplier(filters) if filters else 1
+        fetch_k = min(top_k * fetch_multiplier, self.index.ntotal, MAX_QUERY_BATCH)
+        
         # Search
-        k = min(top_k, self.index.ntotal)
+        k = min(fetch_k, self.index.ntotal)
         distances, indices = self.index.search(query_normalized, k)
         
         # Build results
@@ -368,12 +375,23 @@ class FAISSStore(VectorStore):
             # So: cosine_similarity ~ 1 - L2_distance/2
             cosine_similarity = max(0.0, 1.0 - float(dist) / 2.0)
             
+            # Get metadata and ID
+            doc = self.documents[idx]
+            vid = self.vector_ids[idx] if idx < len(self.vector_ids) else str(uuid.uuid4())
+            
             results.append({
-                "document": self.documents[idx],
+                "id": vid,
                 "score": cosine_similarity,
-                "index": int(idx),
+                "metadata": doc,
                 "distance": float(dist),
             })
+        
+        # Apply filters if provided
+        if filters:
+            results = apply_filters(results, filters, max_results=top_k)
+            logger.debug(f"Filtered to {len(results)} results")
+        else:
+            results = results[:top_k]
         
         logger.debug(f"Found {len(results)} results for query")
         return results
