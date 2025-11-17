@@ -4,7 +4,6 @@ Tests documentation generation, link validation, and build processes
 """
 import pytest
 from pathlib import Path
-import tempfile
 
 
 class TestDocumentationSystemDetector:

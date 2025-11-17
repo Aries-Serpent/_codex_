@@ -4,7 +4,6 @@ Tests archival processes, bundle creation, and manifest validation
 """
 import pytest
 from pathlib import Path
-import tempfile
 import json
 import hashlib
 

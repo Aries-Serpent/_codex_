@@ -4,7 +4,6 @@ Provides centralized management and creation of vector stores
 """
 from typing import Dict, Type, Optional, Any
 from enum import Enum
-from pathlib import Path
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,7 +54,7 @@ class VectorStoreFactory:
     def create(
         store_type: str,
         index_name: str,
-        dimension: int,
+        dimension: Optional[int] = None,
         **kwargs
     ) -> Any:
         """
@@ -64,7 +63,7 @@ class VectorStoreFactory:
         Args:
             store_type: Type of vector store ("faiss", "chromadb", etc.)
             index_name: Name for the index
-            dimension: Embedding dimension
+            dimension: Embedding dimension (optional, store-specific)
             **kwargs: Additional store-specific parameters
             
         Returns:
@@ -85,12 +84,23 @@ class VectorStoreFactory:
         logger.info(f"Creating {store_type} vector store: {index_name}")
         
         # Create instance with validation
+        # For FAISS: only pass index_name and kwargs (dimension not in constructor)
+        # For other stores: may need dimension in constructor
         try:
-            instance = store_class(
-                index_name=index_name,
-                dimension=dimension,
-                **kwargs
-            )
+            if store_type == "faiss":
+                # FAISSStore constructor: (index_dir, index_name, max_vectors, validate_checksums)
+                # Dimension is set when create_index() is called
+                instance = store_class(
+                    index_name=index_name,
+                    **kwargs
+                )
+            else:
+                # Other stores may require dimension
+                instance = store_class(
+                    index_name=index_name,
+                    dimension=dimension,
+                    **kwargs
+                )
             logger.info(f"Successfully created {store_type} store")
             return instance
         except Exception as e:
@@ -138,8 +148,8 @@ class VectorStoreFactory:
 
 # Auto-register FAISS store
 try:
-    from codex.retrieval.stores.faiss_store import FAISSVectorStore
-    VectorStoreRegistry.register("faiss", FAISSVectorStore)
+    from codex.retrieval.stores.faiss_store import FAISSStore
+    VectorStoreRegistry.register("faiss", FAISSStore)
 except ImportError:
     logger.warning("FAISS store not available for registration")
 

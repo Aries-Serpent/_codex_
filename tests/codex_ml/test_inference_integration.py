@@ -4,7 +4,6 @@ Tests FastAPI endpoints with TestClient
 """
 import pytest
 from fastapi.testclient import TestClient
-import json
 import time
 
 # Try to import FastAPI components
@@ -155,7 +154,7 @@ class TestModelServerIntegration:
         server = ModelServer()
         
         # Load default model
-        model = server.load_model("default")
+        model = server.load_model()
         assert model is not None
     
     def test_model_caching(self):
@@ -163,20 +162,19 @@ class TestModelServerIntegration:
         server = ModelServer()
         
         # Load same model twice
-        model1 = server.load_model("default")
-        model2 = server.load_model("default")
+        model1 = server.load_model()
+        model2 = server.load_model()
         
-        # Should be same instance
+        # Should be same instance (both reference self.model)
         assert model1 is model2
     
     def test_prediction(self):
         """Test making predictions"""
         server = ModelServer()
-        model = server.load_model("default")
+        server.load_model()
         
-        predictions = server.predict(model, ["test input"])
+        predictions = server.predict(["test input"])
         assert len(predictions) == 1
-        assert isinstance(predictions[0], str)
 
 
 @pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not available")  

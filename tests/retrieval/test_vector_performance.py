@@ -5,13 +5,11 @@ Tests vector store performance under various load conditions
 import pytest
 import numpy as np
 import time
-from pathlib import Path
-import tempfile
 
 # Skip if FAISS not available
 pytest.importorskip("faiss")
 
-from src.codex.retrieval.stores.faiss_store import FAISSVectorStore
+from src.codex.retrieval.stores.faiss_store import FAISSStore
 
 
 class TestVectorStorePerformance:
@@ -22,7 +20,7 @@ class TestVectorStorePerformance:
         dimension = 128
         num_vectors = 10000
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="perf_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -48,7 +46,7 @@ class TestVectorStorePerformance:
         num_vectors = 10000
         batch_size = 100
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="batch_perf_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -73,7 +71,7 @@ class TestVectorStorePerformance:
         num_queries = 100
         k = 10
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="search_perf_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -104,7 +102,7 @@ class TestVectorStorePerformance:
         dimension = 128
         num_vectors = 5000
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="persist_perf_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -121,7 +119,7 @@ class TestVectorStorePerformance:
         save_time = time.time() - start_time
         
         # Measure load time
-        new_store = FAISSVectorStore(
+        new_store = FAISSStore(
             index_name="persist_perf_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -139,7 +137,7 @@ class TestVectorStorePerformance:
         dimension = 128
         num_vectors = 1000
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="memory_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -161,7 +159,7 @@ class TestVectorStorePerformance:
         dimension = 256
         num_vectors = 100000
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="large_scale_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -197,7 +195,7 @@ class TestVectorStoreLoadConditions:
         dimension = 128
         num_vectors = 1000
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="concurrent_test",
             dimension=dimension,
             index_dir=str(tmp_path)
@@ -225,7 +223,7 @@ class TestVectorStoreLoadConditions:
         """Test mixed read/write operations"""
         dimension = 128
         
-        store = FAISSVectorStore(
+        store = FAISSStore(
             index_name="mixed_ops_test",
             dimension=dimension,
             index_dir=str(tmp_path)

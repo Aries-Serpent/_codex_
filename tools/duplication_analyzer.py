@@ -9,7 +9,7 @@ import hashlib
 import json
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 # Duplication thresholds
 ACCEPTABLE_DUP_RATIO = 0.10  # 10% duplication is acceptable

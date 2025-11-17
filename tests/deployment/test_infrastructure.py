@@ -4,7 +4,6 @@ Tests deployment configuration, validation, and infrastructure setup
 """
 import pytest
 from pathlib import Path
-import tempfile
 
 
 class TestDeploymentInfrastructureDetector:

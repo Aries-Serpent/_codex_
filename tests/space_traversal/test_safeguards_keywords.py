@@ -3,8 +3,6 @@ Comprehensive tests for Safeguards Keywords Detection
 Tests the safeguards keyword detector and validation
 """
 import pytest
-import tempfile
-from pathlib import Path
 from scripts.space_traversal.detectors.detector_safeguards import (
     detect,
     SAFEGUARD_KEYWORDS,
@@ -20,12 +18,6 @@ class TestSafeguardsKeywordDetector:
         # Create test file with keywords
         test_file = tmp_path / "test.py"
         test_file.write_text("import hashlib\nsha256_hash = hashlib.sha256()")
-        
-        file_index = {
-            "files": [
-                {"path": str(test_file.relative_to(tmp_path.parent.parent.parent))}
-            ]
-        }
         
         # Note: This test depends on REPO_ROOT, so we test the structure
         result = detect({"files": []})

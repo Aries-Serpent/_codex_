@@ -8,7 +8,6 @@ Provides ML model serving capabilities with safeguards:
 - Metrics collection
 - Error handling
 """
-import hashlib
 import logging
 import time
 from collections import defaultdict
@@ -131,12 +130,18 @@ class ModelServer:
         self.rate_limiter = RateLimiter()
         logger.info(f"Initialized ModelServer for: {model_name}")
     
-    def load_model(self):
-        """Load the model (stub implementation)"""
-        logger.info(f"Loading model: {self.model_name}")
+    def load_model(self, model_name: Optional[str] = None):
+        """Load the model (stub implementation)
+        
+        Args:
+            model_name: Optional model name to load (defaults to self.model_name)
+        """
+        model_to_load = model_name if model_name else self.model_name
+        logger.info(f"Loading model: {model_to_load}")
         # Stub: In real implementation, load actual model here
-        self.model = {"type": "stub", "name": self.model_name}
+        self.model = {"type": "stub", "name": model_to_load}
         logger.info("Model loaded successfully")
+        return self.model
     
     def predict(self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None) -> List[Any]:
         """

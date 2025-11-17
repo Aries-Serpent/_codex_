@@ -4,9 +4,8 @@ Comprehensive tests for FAISS Vector Store with safeguards
 import numpy as np
 import pytest
 import tempfile
-from pathlib import Path
 
-from src.codex.retrieval.stores.faiss_store import FAISSStore, MAX_DIMENSION, MAX_VECTORS
+from src.codex.retrieval.stores.faiss_store import FAISSStore, MAX_VECTORS
 
 
 @pytest.fixture
