@@ -564,7 +564,7 @@ nbformat==5.10.4
     #   nbclient
     #   nbconvert
     #   nbstripout
-nbstripout==0.8.1
+nbstripout==0.8.2
     # via codex-ml (pyproject.toml)
 nest-asyncio==1.6.0
     # via ipykernel
