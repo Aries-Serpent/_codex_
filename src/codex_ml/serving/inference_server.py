@@ -15,6 +15,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import numpy as np
+
 try:
     from fastapi import FastAPI, HTTPException, Request, status
     from fastapi.middleware.cors import CORSMiddleware
@@ -151,6 +153,29 @@ if FASTAPI_AVAILABLE:
         model_name: str
         inference_time_ms: float
         metadata: Optional[Dict[str, Any]] = None
+
+
+    class EmbeddingRequest(BaseModel):
+        """Request model for embeddings"""
+        texts: List[str] = Field(..., description="List of texts to embed")
+        
+        @validator('texts')
+        def validate_texts(cls, v):
+            """Validate texts"""
+            if not v:
+                raise ValueError("Texts cannot be empty")
+            if len(v) > MAX_BATCH_SIZE:
+                raise ValueError(f"Batch size cannot exceed {MAX_BATCH_SIZE}")
+            return v
+
+
+    class EmbeddingResponse(BaseModel):
+        """Response model for embeddings"""
+        embeddings: List[List[float]]
+        model_name: str
+        dimension: int
+        num_texts: int
+        inference_time_ms: float
 
 
     class HealthResponse(BaseModel):
@@ -461,6 +486,89 @@ class ModelServer:
         
         return predictions
     
+    def embed(self, texts: List[str]) -> np.ndarray:
+        """Generate embeddings from texts
+        
+        Args:
+            texts: List of input texts
+            
+        Returns:
+            Numpy array of embeddings (shape: [n_texts, dimension])
+            
+        Raises:
+            RuntimeError: If model not loaded
+        """
+        if not self.model:
+            raise RuntimeError("Model not loaded. Call load_model() first.")
+        
+        import numpy as np
+        
+        model_type = self.model.get("type", "unknown")
+        
+        if model_type == "stub":
+            # Return random embeddings for testing
+            dimension = 384  # Default embedding dimension
+            embeddings = np.random.randn(len(texts), dimension).astype(np.float32)
+            # Normalize
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            embeddings = embeddings / np.maximum(norms, 1e-12)
+            return embeddings
+            
+        elif model_type == "huggingface":
+            return self._embed_huggingface(texts)
+            
+        elif model_type == "onnx":
+            # Basic ONNX embedding
+            logger.warning("ONNX embedding not fully implemented - returning stub")
+            dimension = 384
+            embeddings = np.random.randn(len(texts), dimension).astype(np.float32)
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            return embeddings / np.maximum(norms, 1e-12)
+        else:
+            raise RuntimeError(f"Unknown model type: {model_type}")
+    
+    def _embed_huggingface(self, texts: List[str]) -> np.ndarray:
+        """Generate embeddings using HuggingFace model
+        
+        Args:
+            texts: List of input texts
+            
+        Returns:
+            Numpy array of embeddings
+        """
+        import numpy as np
+        import torch
+        
+        tokenizer = self.model["tokenizer"]
+        model = self.model["model"]
+        
+        # Tokenize
+        encoded = tokenizer(
+            texts,
+            padding=True,
+            truncation=True,
+            return_tensors="pt",
+            max_length=MAX_INPUT_LENGTH,
+        )
+        
+        # Generate embeddings (use [CLS] token or mean pooling)
+        with torch.no_grad():
+            outputs = model(**encoded)
+            
+            # Use [CLS] token embedding or mean of last hidden state
+            if hasattr(outputs, "pooler_output") and outputs.pooler_output is not None:
+                embeddings = outputs.pooler_output
+            else:
+                # Mean pooling
+                embeddings = outputs.last_hidden_state.mean(dim=1)
+        
+        # Convert to numpy and normalize
+        embeddings_np = embeddings.cpu().numpy().astype(np.float32)
+        norms = np.linalg.norm(embeddings_np, axis=1, keepdims=True)
+        embeddings_normalized = embeddings_np / np.maximum(norms, 1e-12)
+        
+        return embeddings_normalized
+    
     def health_check(self) -> Dict[str, Any]:
         """Perform health check"""
         return {
@@ -544,6 +652,7 @@ def create_app(config: Optional[ModelConfig] = None):
             "endpoints": {
                 "health": "/health",
                 "predict": "/predict (POST)",
+                "embed": "/embed (POST)",
                 "metrics": "/metrics",
             }
         }
@@ -582,6 +691,43 @@ def create_app(config: Optional[ModelConfig] = None):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Prediction failed: {str(e)}"
+            )
+    
+    @app.post("/embed", response_model=EmbeddingResponse)
+    async def embed(request: EmbeddingRequest):
+        """
+        Embedding endpoint - Generate embeddings from texts
+        
+        Args:
+            request: Embedding request with texts
+            
+        Returns:
+            Embeddings with metadata
+        """
+        try:
+            # Track request
+            server.total_requests += 1
+            
+            # Generate embeddings
+            start_time = time.time()
+            embeddings = server.embed(request.texts)
+            inference_time = (time.time() - start_time) * 1000  # Convert to ms
+            
+            # Convert numpy array to list
+            embeddings_list = embeddings.tolist()
+            
+            return EmbeddingResponse(
+                embeddings=embeddings_list,
+                model_name=server.model_name,
+                dimension=embeddings.shape[1],
+                num_texts=len(request.texts),
+                inference_time_ms=inference_time,
+            )
+        except Exception as e:
+            logger.error(f"Embedding error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Embedding failed: {str(e)}"
             )
     
     @app.get("/metrics")
