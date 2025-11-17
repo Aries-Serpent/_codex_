@@ -37,7 +37,7 @@ class TestCorruptionDetection:
         with zipfile.ZipFile(archive_path, "r") as zf:
             # testzip() returns name of first bad file or None if OK
             # Note: Corruption at byte 10-20 may not always be detected by ZIP's CRC
-            result = zf.testzip()
+            _ = zf.testzip()
             # We can't reliably assert corruption is detected since it depends on
             # which part of the ZIP structure was corrupted
 
