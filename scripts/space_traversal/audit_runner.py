@@ -200,11 +200,11 @@ def stage_s3_capabilities(cfg, facets):
         })
     # Dynamic detectors
     if cfg.get("capability_map", {}).get("dynamic", False):
-        dynamic_funcs = load_dynamic_detectors()
         context_idx_path = out_dir / "context_index.json"
         if not context_idx_path.exists():
             warn("context_index.json missing for dynamic detectors; re-run S1")
         else:
+            dynamic_funcs = load_dynamic_detectors()
             ctx_index = json.loads(context_idx_path.read_text())
             for func in dynamic_funcs:
                 try:
