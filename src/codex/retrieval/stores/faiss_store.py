@@ -167,6 +167,21 @@ class FAISSStore(VectorStore):
         # Add vectors
         self.index.add(embeddings_normalized)
         
+        # Generate IDs if not provided in documents
+        self.vector_ids = []
+        for i, doc in enumerate(self.documents):
+            if isinstance(doc, dict) and "id" in doc:
+                self.vector_ids.append(doc["id"])
+            else:
+                # Generate UUID for documents without IDs
+                vid = str(uuid.uuid4())
+                self.vector_ids.append(vid)
+                if isinstance(doc, dict):
+                    doc["id"] = vid
+        
+        # Build ID to index mapping
+        self.id_to_index = {vid: idx for idx, vid in enumerate(self.vector_ids)}
+        
         logger.info(f"Successfully added {self.index.ntotal} vectors to index")
         
         # Compute checksum
@@ -520,24 +535,29 @@ class FAISSStore(VectorStore):
         
         # Rebuild index with remaining vectors
         if len(indices_to_keep) > 0 and self.index is not None:
-            # Extract remaining vectors
-            remaining_vectors = np.zeros((len(indices_to_keep), self.dimension), dtype=np.float32)
-            for new_idx, old_idx in enumerate(indices_to_keep):
-                # FAISS doesn't provide direct vector access, so we reconstruct
-                # For now, we'll keep the simplified approach
-                pass
-            
-            # Update tracking
+            # Update tracking first
             self.vector_ids = [self.vector_ids[i] for i in indices_to_keep]
             self.documents = [self.documents[i] for i in indices_to_keep]
             
             # Rebuild ID to index mapping
             self.id_to_index = {vid: idx for idx, vid in enumerate(self.vector_ids)}
             
-            logger.info(f"Deleted {deleted_count} vectors (total: {len(self.vector_ids)})")
+            # Extract remaining vectors from index
+            remaining_vectors = np.zeros((len(indices_to_keep), self.dimension), dtype=np.float32)
+            for new_idx, old_idx in enumerate(indices_to_keep):
+                # Reconstruct vector from index
+                vec = self.index.reconstruct(int(old_idx))
+                remaining_vectors[new_idx] = vec
+            
+            # Rebuild the index with remaining vectors
+            self.index = self.faiss.IndexFlatL2(self.dimension)
+            self.index.add(remaining_vectors)
+            
+            logger.info(f"Deleted {deleted_count} vectors, rebuilt index with {self.index.ntotal} vectors")
         else:
             # Clear everything
             self.clear()
+            logger.info(f"Deleted all {deleted_count} vectors, index cleared")
         
         return deleted_count
     

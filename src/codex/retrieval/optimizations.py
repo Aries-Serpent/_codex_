@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 import numpy as np
 
-from .caching import ResponseCache
+from codex_ml.serving.caching import ResponseCache
 
 logger = logging.getLogger(__name__)
 
