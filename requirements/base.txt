@@ -1,5 +1,5 @@
 duckdb==1.4.2
-torch==2.9.0
+torch==2.9.1
 transformers==4.57.1
 peft==0.18.0
 accelerate>=0.27.0

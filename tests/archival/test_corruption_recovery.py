@@ -257,12 +257,9 @@ class TestCorruptionRecovery:
             # Some files might still be extracted
             pass
         
-        # Check what was extracted
-        extracted_files = list(extract_dir.glob("*.txt"))
         # Files with no data (size=10, fileobj=None) may not extract properly,
         # but the test verifies the extraction attempt completes without crashing
-        # In practice, some extraction should occur
-        pass  # Test passes if extraction attempt completes
+        # Test passes if extraction attempt completes
 
 
 class TestChecksumValidation:

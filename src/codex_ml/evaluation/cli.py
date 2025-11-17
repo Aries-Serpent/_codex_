@@ -240,7 +240,7 @@ def report_command(
         typer.echo(f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}")
     
     # Check determinism after output so JSON is still returned
-    if compare is not None and not out["determinism_match"]:
+    if compare and not out["determinism_match"]:
         typer.echo("Determinism mismatch detected.", err=True)
         raise typer.Exit(code=4)
 
