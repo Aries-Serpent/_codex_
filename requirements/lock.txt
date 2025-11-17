@@ -221,7 +221,7 @@ dvc-data==1.11.0
     # via dvc
 dvc-http==2.32.0
     # via dvc
-dvc-objects==0.25.0
+dvc-objects==5.1.2
     # via dvc-data
 dvc-render==0.7.0
     # via dvc
