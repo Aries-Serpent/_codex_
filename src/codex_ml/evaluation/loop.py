@@ -14,12 +14,13 @@ Notes:
 - Logging: Pass iterable of logger objects implementing .log(dict) and .close().
 - Metrics: mapping name -> callable(outputs, targets) returning float.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Iterable, Dict, Any, Optional, Protocol, Callable, List, Sequence
-import time
 import inspect
+import time
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Sequence
 
 try:
     import torch
@@ -72,7 +73,8 @@ def _check_needs_predictions(func: Callable) -> bool:
         sig = inspect.signature(func)
         # Count parameters (excluding self/cls and var-positional/keyword)
         params = [
-            p for p in sig.parameters.values()
+            p
+            for p in sig.parameters.values()
             if p.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
         ]
         return len(params) >= 2
@@ -171,9 +173,17 @@ def evaluate_epoch(
                 if text_mode:
                     outputs_for_transform = outputs
                     targets_for_transform = targets
-                    if torch is not None and hasattr(outputs_for_transform, "dim") and outputs_for_transform.dim() == 1:
+                    if (
+                        torch is not None
+                        and hasattr(outputs_for_transform, "dim")
+                        and outputs_for_transform.dim() == 1
+                    ):
                         outputs_for_transform = outputs_for_transform.unsqueeze(0)
-                    if torch is not None and hasattr(targets_for_transform, "dim") and targets_for_transform.dim() == 0:
+                    if (
+                        torch is not None
+                        and hasattr(targets_for_transform, "dim")
+                        and targets_for_transform.dim() == 0
+                    ):
                         targets_for_transform = targets_for_transform.unsqueeze(0)
                     batch_preds = (
                         prediction_transform(outputs_for_transform)

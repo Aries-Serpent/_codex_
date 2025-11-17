@@ -5,11 +5,11 @@ Provides code quality metrics including duplication detection and ratio calculat
 """
 
 from .duplication import (
+    DuplicateBlock,
     DuplicationDetector,
     DuplicationRatio,
-    DuplicateBlock,
-    detect_duplicates,
     calculate_duplication_ratio,
+    detect_duplicates,
 )
 from .storage import MetricStorage
 

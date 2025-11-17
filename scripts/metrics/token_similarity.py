@@ -37,19 +37,19 @@ def tokenize(text: str, min_len: int) -> List[str]:
 
 
 def build_tf(tokens: List[str]) -> Dict[str, int]:
-    tf: Dict[str,int] = {}
+    tf: Dict[str, int] = {}
     for t in tokens:
         tf[t] = tf.get(t, 0) + 1
     return tf
 
 
-def cosine(a: Dict[str,int], b: Dict[str,int]) -> float:
+def cosine(a: Dict[str, int], b: Dict[str, int]) -> float:
     if not a or not b:
         return 0.0
     keys = set(a) | set(b)
-    dot = sum(a.get(k,0)*b.get(k,0) for k in keys)
-    mag_a = math.sqrt(sum(v*v for v in a.values()))
-    mag_b = math.sqrt(sum(v*v for v in b.values()))
+    dot = sum(a.get(k, 0) * b.get(k, 0) for k in keys)
+    mag_a = math.sqrt(sum(v * v for v in a.values()))
+    mag_b = math.sqrt(sum(v * v for v in b.values()))
     if mag_a == 0 or mag_b == 0:
         return 0.0
     return dot / (mag_a * mag_b)
@@ -67,36 +67,38 @@ def similarity_for_files(paths: List[Path], min_len: int) -> float:
         tfs.append(build_tf(tokenize(txt, min_len)))
     sims = []
     for i in range(len(tfs)):
-        for j in range(i+1, len(tfs)):
+        for j in range(i + 1, len(tfs)):
             sims.append(cosine(tfs[i], tfs[j]))
     if not sims:
         return 1.0
-    avg = sum(sims)/len(sims)
+    avg = sum(sims) / len(sims)
     return 1 - avg  # invert: high = more unique
 
 
 def main():
-    enable = os.getenv("TOKEN_SIMILARITY_ENABLE","0") in {"1","true","TRUE"}
+    enable = os.getenv("TOKEN_SIMILARITY_ENABLE", "0") in {"1", "true", "TRUE"}
     if not enable:
         print("[INFO] Token similarity disabled (TOKEN_SIMILARITY_ENABLE).")
         return 0
-    
-    max_files = int(os.getenv("TOKEN_SIMILARITY_MAX_FILES","50"))
-    min_len = int(os.getenv("TOKEN_SIMILARITY_MIN_LEN","5"))
-    
+
+    max_files = int(os.getenv("TOKEN_SIMILARITY_MAX_FILES", "50"))
+    min_len = int(os.getenv("TOKEN_SIMILARITY_MIN_LEN", "5"))
+
     if not RAW.exists():
         print("[WARN] capabilities_raw.json missing; run earlier stages.", file=sys.stderr)
         return 2
-    
+
     data = json.loads(RAW.read_text())
     results = []
-    
+
     for cap in data["capabilities"]:
         ev = cap.get("evidence_files", [])[:max_files]
         paths = [Path(p) for p in ev if Path(p).exists()]
         score = similarity_for_files(paths, min_len)
-        results.append({"id": cap["id"], "similarity_index": round(score, 4), "files_considered": len(paths)})
-    
+        results.append(
+            {"id": cap["id"], "similarity_index": round(score, 4), "files_considered": len(paths)}
+        )
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"capabilities": results}, indent=2), encoding="utf-8")
     print(f"[INFO] Token similarity written: {OUT}")

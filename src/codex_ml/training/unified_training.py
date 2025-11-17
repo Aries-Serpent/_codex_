@@ -30,11 +30,23 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from codex_ml.logging.mlflow_guard import init_mlflow_safe, log_metric_safe, log_params_safe
+from codex_ml.logging.mlflow_guard import (
+    init_mlflow_safe,
+    log_metric_safe,
+    log_params_safe,
+)
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
 from codex_ml.training.rng_checkpoint import RNGState, set_seed
-from codex_ml.training.strategies import TrainingCallback, TrainingResult, resolve_strategy
-from codex_ml.utils.checkpoint_core import CheckpointMeta, load_checkpoint, save_checkpoint
+from codex_ml.training.strategies import (
+    TrainingCallback,
+    TrainingResult,
+    resolve_strategy,
+)
+from codex_ml.utils.checkpoint_core import (
+    CheckpointMeta,
+    load_checkpoint,
+    save_checkpoint,
+)
 
 try:  # optional torch
     import torch
@@ -518,7 +530,9 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
         "functional_training",
         "codex_ml.training.legacy_api.run_functional_training or run_unified_training",
     )
-    from codex_ml.training.legacy_api import run_functional_training as _legacy_functional
+    from codex_ml.training.legacy_api import (
+        run_functional_training as _legacy_functional,
+    )
 
     return _legacy_functional(*args, **kwargs)
 

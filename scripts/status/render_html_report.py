@@ -158,17 +158,24 @@ def main(argv=None) -> int:
 
     # Validate paths to prevent path traversal attacks
     # Allow absolute paths, but prevent relative paths with .. components
-    for name, path_str in [("json", args.json), ("template", args.template if args.template else None)]:
+    for name, path_str in [
+        ("json", args.json),
+        ("template", args.template if args.template else None),
+    ]:
         if path_str and ".." in Path(path_str).parts:
             print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
             return 1
-    
+
     data = load_json(Path(args.json))
-    
+
     # Load template
     if args.template:
         template_path = Path(args.template)
-        tpl = template_path.read_text(encoding="utf-8") if template_path.exists() else default_template()
+        tpl = (
+            template_path.read_text(encoding="utf-8")
+            if template_path.exists()
+            else default_template()
+        )
     else:
         tpl = default_template()
 
@@ -186,7 +193,9 @@ def main(argv=None) -> int:
         .replace("{{sha}}", html.escape(gc.get("commit_sha_short", "")))
         .replace("{{python_version}}", html.escape(env.get("python_version", "")))
         .replace("{{os}}", html.escape(env.get("os", "")))
-        .replace("{{capabilities_count}}", str(len(data.get("snapshot", {}).get("capabilities", []))))
+        .replace(
+            "{{capabilities_count}}", str(len(data.get("snapshot", {}).get("capabilities", [])))
+        )
         .replace("{{findings_count}}", str(len(data.get("snapshot", {}).get("findings", []))))
         .replace("{{coverage_percent}}", str(tests.get("coverage_percent", "")))
         .replace("{{coverage_threshold}}", str(tests.get("coverage_threshold", "")))

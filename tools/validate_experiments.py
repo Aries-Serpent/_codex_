@@ -9,14 +9,20 @@ Exit codes:
     2 schema invalid
     3 IO or validation error
 """
+
 from __future__ import annotations
-import argparse, json, sys
+
+import argparse
+import json
+import sys
 from pathlib import Path
 from typing import List
+
 try:
     import jsonschema
 except ImportError:  # pragma: no cover
     jsonschema = None
+
 
 def load_schema(path: Path):
     try:
@@ -24,6 +30,7 @@ def load_schema(path: Path):
     except Exception as e:
         print(f"Failed to read schema: {e}", file=sys.stderr)
         sys.exit(2)
+
 
 def load_config(path: Path):
     try:
@@ -41,6 +48,7 @@ def load_config(path: Path):
     except Exception as e:
         raise RuntimeError(f"Failed to load {path}: {e}")
 
+
 def validate(schema, config, path: Path):
     try:
         jsonschema.validate(config, schema)
@@ -49,6 +57,7 @@ def validate(schema, config, path: Path):
         return False, f"{path}: {ve.message} at {list(ve.path)}"
     except Exception as e:
         return False, f"{path}: {e}"
+
 
 def discover(paths: List[Path]) -> List[Path]:
     """
@@ -68,9 +77,12 @@ def discover(paths: List[Path]) -> List[Path]:
                     result.append(candidate)
         elif p.is_file():
             # Only add file if it's not a schema file
-            if "schema" not in p.name.lower() and not any(part.lower() == "schemas" for part in p.parts):
+            if "schema" not in p.name.lower() and not any(
+                part.lower() == "schemas" for part in p.parts
+            ):
                 result.append(p)
     return result
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -107,6 +119,7 @@ def main():
 
     print(f"Validated {len(files)} config file(s) successfully.")
     sys.exit(0)
+
 
 if __name__ == "__main__":  # pragma: no cover
     main()

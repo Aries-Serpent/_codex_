@@ -40,20 +40,13 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
 
     # append new event and re-import
     with ndjson_file.open("a", encoding="utf-8") as f:
-        f.write(
-            json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"})
-            + "\n"
-        )
+        f.write(json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"}) + "\n")
     inserted = import_ndjson.import_session(session_id)
     assert inserted == 1
 
     con = sqlite3.connect(str(db_path))
     try:
-        rows = list(
-            con.execute(
-                "SELECT session_id, seq, message FROM session_events ORDER BY seq"
-            )
-        )
+        rows = list(con.execute("SELECT session_id, seq, message FROM session_events ORDER BY seq"))
         assert rows == [
             (session_id, 1, "session_start"),
             (session_id, 2, "session_end"),

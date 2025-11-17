@@ -878,7 +878,7 @@ def diagram_check(session: nox.Session) -> None:
 @nox.session(name="repro_smoke", python=DEFAULT_PYTHON)
 def repro_smoke(session: nox.Session) -> None:
     """Run reproducibility and plugin smoke tests (local-only).
-    
+
     Validates:
     - Deterministic behavior with fixed seeds
     - Plugin loading is non-fatal

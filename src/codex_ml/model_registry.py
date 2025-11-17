@@ -75,9 +75,9 @@ class ModelRequest:
                 "alpha": self.lora.alpha,
                 "dropout": self.lora.dropout,
                 "task_type": self.lora.task_type,
-                "target_modules": list(self.lora.target_modules)
-                if self.lora.target_modules is not None
-                else None,
+                "target_modules": (
+                    list(self.lora.target_modules) if self.lora.target_modules is not None else None
+                ),
             }
         if self.config:
             payload["config"] = dict(self.config)

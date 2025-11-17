@@ -8,6 +8,7 @@ Cases:
 
 Uses small threshold to force compression.
 """
+
 import os
 import shutil
 import subprocess
@@ -22,13 +23,17 @@ def setup_files():
         shutil.rmtree(RAW_ROOT)
     RAW_ROOT.mkdir(parents=True)
     # create ~1MB total
-    (RAW_ROOT / "a.txt").write_text("x"*400_000)
-    (RAW_ROOT / "b.txt").write_text("y"*400_000)
-    (RAW_ROOT / "c.txt").write_text("z"*400_000)
+    (RAW_ROOT / "a.txt").write_text("x" * 400_000)
+    (RAW_ROOT / "b.txt").write_text("y" * 400_000)
+    (RAW_ROOT / "c.txt").write_text("z" * 400_000)
 
 
 def run_env(env):
-    subprocess.run([sys.executable, "scripts/archive/select_and_compress.py", "--root", str(RAW_ROOT)], check=True, env=env)
+    subprocess.run(
+        [sys.executable, "scripts/archive/select_and_compress.py", "--root", str(RAW_ROOT)],
+        check=True,
+        env=env,
+    )
 
 
 def pointer_files():

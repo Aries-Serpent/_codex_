@@ -5,19 +5,22 @@ Hydra versions <1.3 do not provide ConfigStore.exists(); this shim
 offers a unified interface:
     safe_exists(cs, name, group=None) -> bool
 """
+
 from __future__ import annotations
+
 from typing import Any, Optional
+
 
 def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bool:
     """
     Check if a config name exists in the ConfigStore.
     Compatible with both old and new Hydra versions.
-    
+
     Args:
         config_store: ConfigStore instance
         name: Name of the config (without .yaml extension)
         group: Optional group name (e.g., "experiment")
-    
+
     Returns:
         True if config exists, False otherwise
     """
@@ -30,7 +33,7 @@ def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bo
                 return bool(config_store.exists(name=name))
         except Exception:
             return False
-    
+
     # Fallback: use list() method
     try:
         if group:

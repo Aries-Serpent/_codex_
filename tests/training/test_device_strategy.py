@@ -8,11 +8,16 @@ import types
 import pytest
 
 from codex_ml.training import device_strategy
-from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper, get_device_config
+from codex_ml.training.device_strategy import (
+    DeviceConfig,
+    DeviceMapper,
+    get_device_config,
+)
 
 # Check if torch is available
 try:
     import torch
+
     _HAS_TORCH = True
 except ImportError:
     _HAS_TORCH = False
@@ -55,7 +60,7 @@ class TestDeviceConfig:
     def test_auto_detect_creates_valid_config(self):
         """Test that auto_detect returns a valid DeviceConfig."""
         config = DeviceConfig.auto_detect()
-        
+
         assert config.device in ("cpu", "cuda", "mps") or config.device.startswith("cuda:")
         assert config.dtype is not None
         assert isinstance(config.mixed_precision, bool)
@@ -63,7 +68,7 @@ class TestDeviceConfig:
     def test_auto_detect_on_cpu(self):
         """Test auto_detect behavior on CPU-only system."""
         config = DeviceConfig.auto_detect()
-        
+
         # On CPU-only, should use float32 without mixed precision
         if config.device == "cpu":
             assert config.dtype == torch.float32
@@ -75,9 +80,9 @@ class TestDeviceConfig:
         """Test applying config to a model."""
         model = torch.nn.Linear(10, 5)
         config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        
+
         model_result = config.apply_to_model(model)
-        
+
         # Check device
         param = next(model_result.parameters())
         assert str(param.device) == "cpu"
@@ -93,9 +98,9 @@ class TestDeviceConfig:
             mixed_precision=True,
             autocast_dtype=torch.float16,
         )
-        
+
         model_result = config.apply_to_model(model)
-        
+
         # With mixed precision, model should stay in float32
         param = next(model_result.parameters())
         assert param.dtype == torch.float32
@@ -105,9 +110,9 @@ class TestDeviceConfig:
         """Test applying config to a tensor."""
         tensor = torch.randn(5, 10)
         config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
-        
+
         result = config.apply_to_tensor(tensor)
-        
+
         assert str(result.device) == "cpu"
         assert result.dtype == torch.float32
 
@@ -116,9 +121,9 @@ class TestDeviceConfig:
         """Test tensor dtype conversion."""
         tensor = torch.randn(5, 10, dtype=torch.float32)
         config = DeviceConfig(device="cpu", dtype=torch.float16, mixed_precision=False)
-        
+
         result = config.apply_to_tensor(tensor)
-        
+
         assert result.dtype == torch.float16
 
     @pytest.mark.requires_torch
@@ -180,10 +185,10 @@ class TestDeviceMapper:
         """Test registering and retrieving a strategy."""
         if not _HAS_TORCH:
             pytest.skip("torch not available")
-        
+
         config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
         DeviceMapper.register_strategy("test_cpu", config)
-        
+
         retrieved = DeviceMapper.get_strategy("test_cpu")
         assert retrieved.device == "cpu"
         assert retrieved.dtype == torch.float32
@@ -197,7 +202,7 @@ class TestDeviceMapper:
         """Test that registering with empty name raises ValueError."""
         if not _HAS_TORCH:
             pytest.skip("torch not available")
-        
+
         config = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
         with pytest.raises(ValueError, match="must be non-empty"):
             DeviceMapper.register_strategy("", config)
@@ -206,17 +211,17 @@ class TestDeviceMapper:
         """Test listing all registered strategies."""
         if not _HAS_TORCH:
             pytest.skip("torch not available")
-        
+
         # Clear strategies
         DeviceMapper._STRATEGIES.clear()
-        
+
         # Register a few strategies
         config1 = DeviceConfig(device="cpu", dtype=torch.float32, mixed_precision=False)
         config2 = DeviceConfig(device="cuda", dtype=torch.float16, mixed_precision=True)
-        
+
         DeviceMapper.register_strategy("cpu_fp32", config1)
         DeviceMapper.register_strategy("cuda_fp16", config2)
-        
+
         strategies = DeviceMapper.list_strategies()
         assert "cpu_fp32" in strategies
         assert "cuda_fp16" in strategies

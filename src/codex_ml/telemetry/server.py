@@ -5,6 +5,7 @@ from typing import Optional
 
 try:  # optional dependency
     from prometheus_client import start_http_server  # type: ignore
+
     _HAS_PROM = True
 except Exception:  # pragma: no cover - optional
     start_http_server = None  # type: ignore

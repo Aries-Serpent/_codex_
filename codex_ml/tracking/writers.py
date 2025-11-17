@@ -13,9 +13,9 @@ class _NdjsonWriter:
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def write(self, row: Dict[str, Any]) -> None:
-        with self.path.open('a', encoding='utf-8') as handle:
+        with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True))
-            handle.write('\n')
+            handle.write("\n")
 
 
 class _CsvWriter:
@@ -34,8 +34,8 @@ class _CsvWriter:
             self._field_order.extend(new_fields)
             self._header_written = False
 
-        with self.path.open('a', newline='', encoding='utf-8') as handle:
-            writer = csv.DictWriter(handle, fieldnames=self._field_order, extrasaction='ignore')
+        with self.path.open("a", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=self._field_order, extrasaction="ignore")
             if not self._header_written:
                 writer.writeheader()
                 self._header_written = True
@@ -51,21 +51,21 @@ def set_output_dir(output_dir: Path | str) -> None:
     global _ndjson, _csv, _output_dir
     _output_dir = Path(output_dir).resolve()
     _output_dir.mkdir(parents=True, exist_ok=True)
-    _ndjson = _NdjsonWriter(_output_dir / 'telemetry.ndjson')
-    _csv = _CsvWriter(_output_dir / 'telemetry.csv')
+    _ndjson = _NdjsonWriter(_output_dir / "telemetry.ndjson")
+    _csv = _CsvWriter(_output_dir / "telemetry.csv")
 
 
 def _ensure_default_output_dir() -> None:
     if _ndjson is None or _csv is None:
-        set_output_dir(Path('artifacts/telemetry'))
+        set_output_dir(Path("artifacts/telemetry"))
 
 
 def log_metrics(step: int, metrics: Dict[str, Any], run_id: str) -> None:
     _ensure_default_output_dir()
     payload = dict(metrics)
-    payload['_ts'] = float(time.time())
-    payload['_run_id'] = str(run_id)
-    payload['_step'] = int(step)
+    payload["_ts"] = float(time.time())
+    payload["_run_id"] = str(run_id)
+    payload["_step"] = int(step)
     assert _ndjson is not None and _csv is not None
     _ndjson.write(payload)
     _csv.write(payload)
@@ -75,8 +75,7 @@ def get_paths() -> Dict[str, str]:
     _ensure_default_output_dir()
     assert _output_dir is not None
     return {
-        'output_dir': str(_output_dir),
-        'ndjson': str(_output_dir / 'telemetry.ndjson'),
-        'csv': str(_output_dir / 'telemetry.csv'),
+        "output_dir": str(_output_dir),
+        "ndjson": str(_output_dir / "telemetry.ndjson"),
+        "csv": str(_output_dir / "telemetry.csv"),
     }
-

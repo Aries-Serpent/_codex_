@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+from codex_ml.training.unified_training import (
+    UnifiedTrainingConfig,
+    run_unified_training,
+)
 
 
 @pytest.mark.parametrize("backend", ["functional"])

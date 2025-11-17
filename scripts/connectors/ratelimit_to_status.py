@@ -13,8 +13,12 @@ def read_json(path: Path) -> Dict[str, Any]:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Merge rate-limit snapshot into today's status report under automation.connectors")
-    ap.add_argument("--report", default=f"reports/daily/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json")
+    ap = argparse.ArgumentParser(
+        description="Merge rate-limit snapshot into today's status report under automation.connectors"
+    )
+    ap.add_argument(
+        "--report", default=f"reports/daily/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
+    )
     ap.add_argument("--snapshot", default="connectors/ratelimit_snapshot.json")
     args = ap.parse_args(argv)
 

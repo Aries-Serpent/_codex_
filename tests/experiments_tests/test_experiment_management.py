@@ -1,4 +1,5 @@
 """Experiment management comprehensive tests."""
+
 from __future__ import annotations
 
 import os
@@ -6,7 +7,7 @@ import os
 
 class TestMLflowTracking:
     """Test MLflow tracking patterns."""
-    
+
     def test_mlflow_config_structure(self):
         """Test MLflow configuration structure."""
         config = {
@@ -23,9 +24,10 @@ class TestMLflowTracking:
         params = {"learning_rate": 0.001, "batch_size": 32}
         assert all(isinstance(v, (int, float)) for v in params.values())
 
+
 class TestWandbIntegration:
     """Test W&B integration patterns."""
-    
+
     def test_wandb_config(self, monkeypatch):
         """Test W&B configuration."""
         monkeypatch.setenv("WANDB_MODE", "offline")
@@ -41,9 +43,10 @@ class TestWandbIntegration:
         }
         assert "project" in config
 
+
 class TestMetadataIntegrity:
     """Test metadata integrity."""
-    
+
     def test_experiment_metadata_structure(self):
         """Test experiment metadata structure."""
         metadata = {
@@ -55,9 +58,10 @@ class TestMetadataIntegrity:
         assert "experiment_id" in metadata
         assert "timestamp" in metadata
 
+
 class TestReproducibility:
     """Test experiment reproducibility."""
-    
+
     def test_seed_tracking(self):
         """Test seed is tracked in metadata."""
         metadata = {"seed": 42, "model": "test"}

@@ -56,7 +56,7 @@ class DummyTokenizer:
         if add_special_tokens:
             tokens = [self.eos_token_id] + tokens + [self.eos_token_id]
         if truncation and max_length is not None:
-            tokens = tokens[: max_length]
+            tokens = tokens[:max_length]
         if padding == "max_length" and max_length is not None:
             padding_needed = max(0, max_length - len(tokens))
             tokens = tokens + [self.pad_token_id] * padding_needed

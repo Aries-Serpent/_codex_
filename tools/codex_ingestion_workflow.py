@@ -55,11 +55,13 @@ def log_change(
         diff = "".join(ud)
     # Prepare diff section outside f-string to avoid Python 3.10 syntax limitations
     diff_section = f"```diff\n{diff}\n```" if diff else ""
-    entry = textwrap.dedent(f"""\
+    entry = textwrap.dedent(
+        f"""\
     ## {ts()} — {action}: `{path.as_posix()}`
     **Rationale:** {rationale}
     {diff_section}
-    """)
+    """
+    )
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
 
@@ -71,13 +73,15 @@ def log_error(step: str, message: str, context: str, files: list[str] | None = N
         "error": message,
         "context": context,
         "files": files or [],
-        "question_for_chatgpt_5": textwrap.dedent(f"""\
+        "question_for_chatgpt_5": textwrap.dedent(
+            f"""\
             Question for ChatGPT-5:
             While performing [{step}], encountered the following error:
             {message}
             Context: {context}
             What are the possible causes, and how can this be resolved while preserving intended functionality?
-        """).strip(),
+        """
+        ).strip(),
     }
     with ERRORS_LOG.open("a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -115,9 +119,7 @@ def write_if_changed(path: Path, content: str, dry_run: bool, rationale: str):
     if not dry_run:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
-    log_change(
-        path, "create" if before is None else "update", rationale, before, content
-    )
+    log_change(path, "create" if before is None else "update", rationale, before, content)
 
 
 def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
@@ -128,9 +130,7 @@ def patch_file_transform(path: Path, transform, dry_run: bool, rationale: str):
     if not dry_run:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(after, encoding="utf-8")
-    log_change(
-        path, "update" if before is not None else "create", rationale, before, after
-    )
+    log_change(path, "update" if before is not None else "create", rationale, before, after)
 
 
 # ---------- Phase 1: prep ----------
@@ -239,8 +239,7 @@ def patch_ingestion_module(dry_run: bool):
         base = before or ""
         add_header = (
             INGESTION_HEADER
-            if "from pathlib import Path" not in base
-            and "Ingestion utilities." not in base
+            if "from pathlib import Path" not in base and "Ingestion utilities." not in base
             else ""
         )
         new = base
@@ -255,14 +254,7 @@ def patch_ingestion_module(dry_run: bool):
             new = add_header + "\n"
         elif add_header:
             new = add_header + "\n" + new
-        new = (
-            new.rstrip()
-            + "\n"
-            + INGEST_FUNCTION.strip()
-            + "\n"
-            + INGESTOR_SHIM.strip()
-            + "\n"
-        )
+        new = new.rstrip() + "\n" + INGEST_FUNCTION.strip() + "\n" + INGESTOR_SHIM.strip() + "\n"
         return new
 
     rationale = "Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent."
@@ -272,7 +264,8 @@ def patch_ingestion_module(dry_run: bool):
 def patch_ingestion_readme(dry_run: bool):
     target = REPO_ROOT / "src" / "ingestion" / "README.md"
     before = read(target) or ""
-    section = textwrap.dedent("""\
+    section = textwrap.dedent(
+        """\
         # Ingestion
 
         ## Parameters
@@ -293,7 +286,8 @@ def patch_ingestion_readme(dry_run: bool):
         for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
             process(chunk)
         ```
-    """)
+    """
+    )
     after = section if not before.strip() else before.rstrip() + "\n\n" + section
     write_if_changed(
         target,
@@ -305,7 +299,8 @@ def patch_ingestion_readme(dry_run: bool):
 
 def ensure_tests(dry_run: bool):
     target = REPO_ROOT / "tests" / "test_ingestion_io.py"
-    content = textwrap.dedent("""\
+    content = textwrap.dedent(
+        """\
         import io
         from pathlib import Path
         import pytest
@@ -346,7 +341,8 @@ def ensure_tests(dry_run: bool):
             d.mkdir()
             with pytest.raises(FileNotFoundError):
                 _call_ingest(d)
-    """)
+    """
+    )
     write_if_changed(
         target,
         content,
@@ -359,9 +355,7 @@ def patch_deep_research_script(dry_run: bool):
     target = REPO_ROOT / "scripts" / "deep_research_task_process.py"
     if not target.exists():
         with RESULTS_MD.open("a", encoding="utf-8") as f:
-            f.write(
-                "- Note: scripts/deep_research_task_process.py not found; skipped.\n"
-            )
+            f.write("- Note: scripts/deep_research_task_process.py not found; skipped.\n")
         return
 
     def transform(before: Optional[str]) -> Optional[str]:
@@ -382,7 +376,8 @@ def patch_deep_research_script(dry_run: bool):
         if "from ingestion import ingest" not in new:
             new = "from ingestion import ingest\n" + new
         if removed:
-            helper = textwrap.dedent('''
+            helper = textwrap.dedent(
+                '''
 
                 # Replaced placeholder ingestion tasks with actual calls:
                 def run_ingestion_example(path: str):
@@ -391,7 +386,8 @@ def patch_deep_research_script(dry_run: bool):
                     """
                     data = ingest(path)
                     return data
-            ''')
+            '''
+            )
             new = new.rstrip() + "\n" + helper
         return new
 
@@ -411,7 +407,8 @@ def record_prune(
     evidence: str,
     decision: str,
 ):
-    entry = textwrap.dedent(f"""\
+    entry = textwrap.dedent(
+        f"""\
     ### Pruning
     - Item: {item}
     - Purpose: {purpose}
@@ -419,7 +416,8 @@ def record_prune(
     - Failure modes: {failures}
     - Evidence: {evidence}
     - Decision: {decision}
-    """)
+    """
+    )
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(entry + "\n")
 
@@ -443,9 +441,7 @@ def finalize():
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Apply ingestion updates with logs and tests."
-    )
+    parser = argparse.ArgumentParser(description="Apply ingestion updates with logs and tests.")
     g = parser.add_mutually_exclusive_group()
     g.add_argument("--write", action="store_true", help="Apply changes to disk.")
     g.add_argument(

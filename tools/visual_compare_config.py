@@ -23,9 +23,17 @@ def resolve_threshold(cfg: Dict[str, Any], template_name: str) -> Tuple[str, flo
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Compare images using per-template thresholds from a JSON config")
-    ap.add_argument("--config", default="visual_baseline/thresholds.json", help="Path to thresholds config JSON")
-    ap.add_argument("--template", required=True, help="Template filename key to lookup threshold (e.g., report_template_themed.html)")
+    ap = argparse.ArgumentParser(
+        description="Compare images using per-template thresholds from a JSON config"
+    )
+    ap.add_argument(
+        "--config", default="visual_baseline/thresholds.json", help="Path to thresholds config JSON"
+    )
+    ap.add_argument(
+        "--template",
+        required=True,
+        help="Template filename key to lookup threshold (e.g., report_template_themed.html)",
+    )
     ap.add_argument("--baseline", required=True, help="Path to baseline PNG")
     ap.add_argument("--candidate", required=True, help="Path to candidate PNG")
     ap.add_argument("--metric", help="Override metric (ssim or mse)")
@@ -34,7 +42,11 @@ def main(argv=None) -> int:
 
     # Validate paths to prevent path traversal attacks
     # Allow absolute paths, but prevent relative paths with .. components
-    for name, path_str in [("baseline", args.baseline), ("candidate", args.candidate), ("config", args.config)]:
+    for name, path_str in [
+        ("baseline", args.baseline),
+        ("candidate", args.candidate),
+        ("config", args.config),
+    ]:
         if ".." in Path(path_str).parts:
             print(f"Error: Path traversal detected in {name} path", file=sys.stderr)
             return 1
@@ -49,7 +61,18 @@ def main(argv=None) -> int:
 
     # Delegate to visual_compare.py
     code = subprocess.call(
-        [sys.executable, "tools/visual_compare.py", "--baseline", args.baseline, "--candidate", args.candidate, "--metric", metric, "--threshold", str(threshold)]
+        [
+            sys.executable,
+            "tools/visual_compare.py",
+            "--baseline",
+            args.baseline,
+            "--candidate",
+            args.candidate,
+            "--metric",
+            metric,
+            "--threshold",
+            str(threshold),
+        ]
     )
     return code
 

@@ -6,14 +6,22 @@ from pathlib import Path
 import pytest
 
 pytestmark = pytest.mark.skipif(
-    subprocess.call([sys.executable, "-c", "import importlib; importlib.import_module('PIL'); import numpy"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0,
+    subprocess.call(
+        [sys.executable, "-c", "import importlib; importlib.import_module('PIL'); import numpy"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    != 0,
     reason="pillow or numpy not installed",
 )
 
+
 def write_img(p: Path, gray: int):
     from PIL import Image  # type: ignore
+
     img = Image.new("L", (100, 60), color=gray)
     img.save(p)
+
 
 def test_visual_compare_config_uses_template_threshold(tmp_path):
     # Config

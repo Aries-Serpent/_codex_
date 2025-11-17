@@ -1,4 +1,5 @@
 """Tests for validators module in space_traversal."""
+
 import json
 import tempfile
 from pathlib import Path

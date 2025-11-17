@@ -3,6 +3,7 @@
 Detects linters (Ruff, Flake8), formatters (Black), type checkers
 (mypy), security scanners (Semgrep), and related configurations.
 """
+
 from __future__ import annotations
 
 

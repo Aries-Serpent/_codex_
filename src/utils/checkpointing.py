@@ -24,15 +24,13 @@ except Exception:  # pragma: no cover - defensive
 
 
 try:  # pragma: no cover - prefer canonical RNG helpers
-    from codex_ml.utils.checkpoint_core import (  # type: ignore
-        dump_rng_state as _canonical_dump_rng_state,
+    from codex_ml.utils.checkpoint_core import (
+        dump_rng_state as _canonical_dump_rng_state,  # type: ignore
     )
     from codex_ml.utils.checkpoint_core import (
         load_rng_state as _canonical_load_rng_state,
     )
-    from codex_ml.utils.checkpoint_core import (
-        set_seed as _canonical_set_seed,
-    )
+    from codex_ml.utils.checkpoint_core import set_seed as _canonical_set_seed
 except Exception:  # pragma: no cover - canonical RNG helpers unavailable
     _canonical_dump_rng_state = None  # type: ignore[assignment]
     _canonical_load_rng_state = None  # type: ignore[assignment]
@@ -57,7 +55,9 @@ def save_ckpt(*args, **kwargs):  # pragma: no cover - passthrough
 
 
 def verify_ckpt_integrity(*args, **kwargs):  # pragma: no cover - passthrough
-    from codex_ml.utils.checkpoint_core import verify_checkpoint as _verify  # type: ignore
+    from codex_ml.utils.checkpoint_core import (
+        verify_checkpoint as _verify,  # type: ignore
+    )
 
     return _verify(*args, **kwargs)
 
@@ -74,8 +74,14 @@ def dump_rng_state() -> dict[str, Any]:  # pragma: no cover - passthrough
     if _torch is not None:
         torch_state = {"cpu": _torch.random.get_rng_state().tolist()}
         cuda_mod = getattr(_torch, "cuda", None)
-        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
-            torch_state["cuda"] = [s.tolist() for s in cuda_mod.get_rng_state_all()]  # pragma: no cover - cuda optional
+        if (
+            cuda_mod is not None
+            and callable(getattr(cuda_mod, "is_available", None))
+            and cuda_mod.is_available()
+        ):
+            torch_state["cuda"] = [
+                s.tolist() for s in cuda_mod.get_rng_state_all()
+            ]  # pragma: no cover - cuda optional
         state["torch"] = torch_state
     return state
 
@@ -104,8 +110,7 @@ def load_rng_state(state: dict[str, Any]) -> None:  # pragma: no cover - passthr
             and "cuda" in torch_state
         ):
             cuda_states = [
-                _torch.tensor(entry, dtype=_torch.uint8)
-                for entry in torch_state.get("cuda", [])
+                _torch.tensor(entry, dtype=_torch.uint8) for entry in torch_state.get("cuda", [])
             ]
             cuda_mod.set_rng_state_all(cuda_states)
 
@@ -123,7 +128,11 @@ def set_seed(seed: int) -> None:  # pragma: no cover - passthrough
     if _torch is not None:
         _torch.manual_seed(seed)
         cuda_mod = getattr(_torch, "cuda", None)
-        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
+        if (
+            cuda_mod is not None
+            and callable(getattr(cuda_mod, "is_available", None))
+            and cuda_mod.is_available()
+        ):
             cuda_mod.manual_seed_all(seed)
 
 

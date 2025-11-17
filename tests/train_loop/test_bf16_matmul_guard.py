@@ -29,4 +29,3 @@ def test_bf16_matmul_guard_raises_on_runtime_error(monkeypatch):
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     with pytest.raises(RuntimeError):
         guard("bf16", fake_torch.bfloat16, True, device=None)
-

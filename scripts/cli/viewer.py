@@ -1,4 +1,5 @@
 """Minimal CLI viewer using importlib.resources for path resolution."""
+
 from __future__ import annotations
 
 import argparse

@@ -265,6 +265,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             and isinstance(response, Response)
             and settings.rate_limit_enabled
         ):
+
             def rebuild_response(body: bytes) -> Response:
                 new_response = Response(
                     content=body,

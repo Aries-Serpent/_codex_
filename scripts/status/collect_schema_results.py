@@ -31,10 +31,26 @@ def validate_pair(data: str, schema: str, tool: str) -> Dict:
 def main(argv=None) -> int:
     results: List[Dict] = []
     pairs = [
-        ("configs/training/base.yaml", "configs/schemas/training.schema.yaml", "tools/schema_validate.py"),
-        ("configs/training/profiles/default.yaml", "configs/schemas/training_profile.schema.json", "tools/schema_validate.py"),
-        ("runs/examples/evaluation.json", "configs/schemas/evaluation.schema.json", "tools/schema_validate.py"),
-        ("runs/examples/checkpoint_manifest.json", "configs/schemas/checkpoint_manifest.schema.json", "tools/schema_validate.py"),
+        (
+            "configs/training/base.yaml",
+            "configs/schemas/training.schema.yaml",
+            "tools/schema_validate.py",
+        ),
+        (
+            "configs/training/profiles/default.yaml",
+            "configs/schemas/training_profile.schema.json",
+            "tools/schema_validate.py",
+        ),
+        (
+            "runs/examples/evaluation.json",
+            "configs/schemas/evaluation.schema.json",
+            "tools/schema_validate.py",
+        ),
+        (
+            "runs/examples/checkpoint_manifest.json",
+            "configs/schemas/checkpoint_manifest.schema.json",
+            "tools/schema_validate.py",
+        ),
     ]
     for data, schema, tool in pairs:
         if Path(data).exists() and Path(schema).exists():

@@ -1,4 +1,5 @@
 """Performance snapshot CLI to normalize simple metric logs."""
+
 from __future__ import annotations
 
 import argparse

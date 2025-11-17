@@ -18,14 +18,16 @@ except Exception:
 
 def test_infer_on_session_events_minimal():
     con = sqlite3.connect(":memory:")
-    con.executescript("""
+    con.executescript(
+        """
         CREATE TABLE session_events(
             id INTEGER PRIMARY KEY,
             session_id TEXT,
             created_at TEXT,
             content TEXT
         );
-    """)
+    """
+    )
     try:
         assert "session_events" in list_tables(con)
         t = infer_probable_table(con, candidates=("session_events", "logs"))
@@ -40,11 +42,13 @@ def test_infer_on_session_events_minimal():
 
 def test_infer_on_logs_variants():
     con = sqlite3.connect(":memory:")
-    con.executescript("""
+    con.executescript(
+        """
         CREATE TABLE logs(
             ts REAL, sid TEXT, message TEXT, level TEXT
         );
-    """)
+    """
+    )
     try:
         t = infer_probable_table(con, candidates=("session_events", "logs"))
         assert t == "logs"

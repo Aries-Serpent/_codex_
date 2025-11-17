@@ -10,12 +10,8 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 from utils.error_logging import append_error
 
 if TYPE_CHECKING:  # pragma: no cover - imported for typing only
-    from torch.utils.data import (
-        DataLoader as TorchDataLoaderType,
-    )
-    from torch.utils.data import (
-        Dataset as TorchDatasetType,
-    )
+    from torch.utils.data import DataLoader as TorchDataLoaderType
+    from torch.utils.data import Dataset as TorchDatasetType
     from torch.utils.data import (
         Subset,
     )
@@ -46,18 +42,10 @@ else:
     torch = _torch_mod
 
 try:  # pragma: no cover - guard for environments without torch data utilities
-    from torch.utils.data import (
-        DataLoader as TorchDataLoader,
-    )
-    from torch.utils.data import (
-        Dataset as TorchDataset,
-    )
-    from torch.utils.data import (
-        TensorDataset as TorchTensorDataset,
-    )
-    from torch.utils.data import (
-        random_split as torch_random_split,
-    )
+    from torch.utils.data import DataLoader as TorchDataLoader
+    from torch.utils.data import Dataset as TorchDataset
+    from torch.utils.data import TensorDataset as TorchTensorDataset
+    from torch.utils.data import random_split as torch_random_split
 except Exception:  # pragma: no cover - provide graceful degradation
     TorchDataLoader = cast(Any, None)
     TorchDataset = cast(Any, None)

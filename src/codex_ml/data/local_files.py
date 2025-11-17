@@ -13,17 +13,17 @@ from typing import Any
 
 def load_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """Load JSONL file line-by-line.
-    
+
     Parameters
     ----------
     path : str | Path
         Path to JSONL file
-        
+
     Returns
     -------
     list[dict]
         List of JSON objects, one per line
-        
+
     Examples
     --------
     >>> records = load_jsonl("data/train.jsonl")
@@ -33,47 +33,44 @@ def load_jsonl(path: str | Path) -> list[dict[str, Any]]:
     'example text'
     """
     records = []
-    
-    with open(path, 'r', encoding='utf-8') as f:
+
+    with open(path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:  # Skip empty lines
                 records.append(json.loads(line))
-    
+
     return records
 
 
 def load_json(path: str | Path) -> dict[str, Any] | list[Any]:
     """Load single JSON object or array.
-    
+
     Parameters
     ----------
     path : str | Path
         Path to JSON file
-        
+
     Returns
     -------
     dict | list
         Parsed JSON content
-        
+
     Examples
     --------
     >>> config = load_json("config.json")
     >>> config["model_name"]
     'gpt2'
     """
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def load_csv(
-    path: str | Path,
-    *,
-    delimiter: str = ',',
-    encoding: str = 'utf-8'
+    path: str | Path, *, delimiter: str = ",", encoding: str = "utf-8"
 ) -> list[dict[str, str]]:
     """Load CSV as list of row dicts.
-    
+
     Parameters
     ----------
     path : str | Path
@@ -82,12 +79,12 @@ def load_csv(
         Column delimiter (default: ',')
     encoding : str
         File encoding (default: 'utf-8')
-        
+
     Returns
     -------
     list[dict[str, str]]
         List of row dictionaries with column names as keys
-        
+
     Examples
     --------
     >>> rows = load_csv("data/dataset.csv")
@@ -97,28 +94,25 @@ def load_csv(
     '1'
     """
     records = []
-    
-    with open(path, 'r', encoding=encoding, newline='') as f:
+
+    with open(path, "r", encoding=encoding, newline="") as f:
         reader = csv.DictReader(f, delimiter=delimiter)
         for row in reader:
             records.append(dict(row))
-    
+
     return records
 
 
-def save_jsonl(
-    records: list[dict[str, Any]],
-    path: str | Path
-) -> None:
+def save_jsonl(records: list[dict[str, Any]], path: str | Path) -> None:
     """Save records to JSONL file.
-    
+
     Parameters
     ----------
     records : list[dict]
         Records to save
     path : str | Path
         Output path
-        
+
     Examples
     --------
     >>> records = [{"text": "hello"}, {"text": "world"}]
@@ -126,20 +120,15 @@ def save_jsonl(
     """
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    with output_path.open('w', encoding='utf-8') as f:
+
+    with output_path.open("w", encoding="utf-8") as f:
         for record in records:
-            f.write(json.dumps(record, ensure_ascii=False) + '\n')
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def save_json(
-    data: dict[str, Any] | list[Any],
-    path: str | Path,
-    *,
-    indent: int = 2
-) -> None:
+def save_json(data: dict[str, Any] | list[Any], path: str | Path, *, indent: int = 2) -> None:
     """Save data to JSON file.
-    
+
     Parameters
     ----------
     data : dict | list
@@ -148,7 +137,7 @@ def save_json(
         Output path
     indent : int
         JSON indentation (default: 2)
-        
+
     Examples
     --------
     >>> config = {"model": "gpt2", "lr": 0.001}
@@ -156,8 +145,8 @@ def save_json(
     """
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    with output_path.open('w', encoding='utf-8') as f:
+
+    with output_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=indent, ensure_ascii=False)
 
 
@@ -166,10 +155,10 @@ def save_csv(
     path: str | Path,
     *,
     fieldnames: list[str] | None = None,
-    delimiter: str = ','
+    delimiter: str = ",",
 ) -> None:
     """Save records to CSV file.
-    
+
     Parameters
     ----------
     records : list[dict]
@@ -180,7 +169,7 @@ def save_csv(
         Column names (default: keys from first record)
     delimiter : str
         Column delimiter (default: ',')
-        
+
     Examples
     --------
     >>> records = [{"text": "hello", "label": "1"}, {"text": "world", "label": "0"}]
@@ -188,14 +177,14 @@ def save_csv(
     """
     if not records:
         return
-    
+
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     if fieldnames is None:
         fieldnames = list(records[0].keys())
-    
-    with output_path.open('w', encoding='utf-8', newline='') as f:
+
+    with output_path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=delimiter)
         writer.writeheader()
         writer.writerows(records)

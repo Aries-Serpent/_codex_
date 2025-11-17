@@ -7,7 +7,9 @@ from pathlib import Path
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Merge schema_validation_results.json into status report JSON under automation.schema_validation")
+    ap = argparse.ArgumentParser(
+        description="Merge schema_validation_results.json into status report JSON under automation.schema_validation"
+    )
     ap.add_argument("--report", required=True)
     ap.add_argument("--results", default="schema_validation_results.json")
     args = ap.parse_args(argv)

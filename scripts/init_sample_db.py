@@ -58,9 +58,7 @@ def seed_rows(now: float) -> Iterable[Tuple[float, str, str, str, str]]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db-path", help="Path to SQLite DB")
-    parser.add_argument(
-        "--reset", action="store_true", help="Drop and recreate the table"
-    )
+    parser.add_argument("--reset", action="store_true", help="Drop and recreate the table")
     parser.add_argument("--seed", action="store_true", help="Insert sample rows")
     args = parser.parse_args()
 

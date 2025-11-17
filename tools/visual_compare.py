@@ -74,7 +74,9 @@ def compare(baseline: Path, candidate: Path, metric: str = "ssim") -> float:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Compare two images and output similarity score (SSIM or MSE-based).")
+    ap = argparse.ArgumentParser(
+        description="Compare two images and output similarity score (SSIM or MSE-based)."
+    )
     ap.add_argument("--baseline", required=True, help="Path to baseline image (PNG)")
     ap.add_argument("--candidate", required=True, help="Path to candidate image (PNG)")
     ap.add_argument("--metric", default="ssim", choices=["ssim", "mse"])

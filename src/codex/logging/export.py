@@ -104,9 +104,7 @@ def export_session(session_id: str, fmt: str = "json", db: str | None = None) ->
 def main(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Export session events from SQLite")
     parser.add_argument("session_id", help="Session identifier to export")
-    parser.add_argument(
-        "--format", choices=["json", "text"], default="json", help="Output format"
-    )
+    parser.add_argument("--format", choices=["json", "text"], default="json", help="Output format")
     parser.add_argument("--db", help="Path to SQLite DB", default=None)
     args = parser.parse_args(list(argv) if argv is not None else None)
     print(export_session(args.session_id, args.format, args.db))

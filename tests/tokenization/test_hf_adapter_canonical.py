@@ -2,11 +2,11 @@ from __future__ import annotations
 
 
 def test_hf_adapter_import_paths_match():
-    from codex_ml.interfaces.tokenizer_hf import (  # Deprecated shim path
-        HFTokenizerAdapter as ShimAdapter,
+    from codex_ml.interfaces.tokenizer_hf import (
+        HFTokenizerAdapter as ShimAdapter,  # Deprecated shim path
     )
-    from codex_ml.tokenization.hf_adapter import (  # Canonical path
-        HFTokenizerAdapter as CanonicalAdapter,
+    from codex_ml.tokenization.hf_adapter import (
+        HFTokenizerAdapter as CanonicalAdapter,  # Canonical path
     )
 
     assert CanonicalAdapter is ShimAdapter

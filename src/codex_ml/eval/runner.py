@@ -384,7 +384,9 @@ def _compute_metrics(
                         results[metric_name] = rouge_score[key_candidate]
                         break
                 else:
-                    raise EvaluationError(f"ROUGE-L returned dict without expected keys: {list(rouge_score.keys())}")
+                    raise EvaluationError(
+                        f"ROUGE-L returned dict without expected keys: {list(rouge_score.keys())}"
+                    )
             else:
                 # Direct float/numeric return
                 results[metric_name] = rouge_score
@@ -559,28 +561,30 @@ def run_evaluation(
 
     # Optional MLflow (offline) init - only when explicitly enabled
     import os
+
     if os.getenv("CODEX_ENABLE_MLFLOW") == "1":
         try:
             import mlflow
+
             mlflow.set_tracking_uri("file:artifacts/mlruns")
             mlflow.set_experiment("codex_offline")
             mlflow.start_run()
-            
+
             # Best-effort: log enriched run metadata (guarded)
             try:
                 # Git commit
                 git_commit = os.getenv("CODEX_GIT_COMMIT", "")
                 if git_commit:
                     mlflow.log_param("codex_git_commit", git_commit)
-                
+
                 # Conda environment
                 conda_env = os.getenv("CONDA_DEFAULT_ENV", "")
                 if conda_env:
                     mlflow.log_param("conda_env", conda_env)
-                
+
                 # Seed
                 mlflow.log_param("seed", seed_value)
-                
+
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
             except Exception:
@@ -635,6 +639,7 @@ def run_evaluation(
     # Optional determinism hint (no-op if libs missing)
     try:
         from codex_ml.utils.determinism import set_global_determinism
+
         set_global_determinism(1337)
     except Exception:
         # Determinism module not available or failed to initialize
@@ -643,6 +648,7 @@ def run_evaluation(
     # Structured log (append-only)
     try:
         from tools.logging.structured_logger import JsonLogger
+
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
     except Exception:
@@ -653,6 +659,7 @@ def run_evaluation(
     if os.getenv("CODEX_ENABLE_PERF_SAMPLER") == "1":
         try:
             from tools.perf.sampler import PerfSampler
+
             PerfSampler().run(steps=3)
         except Exception:
             # Performance sampler not available or failed
@@ -714,7 +721,9 @@ def run_evaluation(
 
         def _write_metrics_ndjson() -> Path:
             # Use sink_target_path if ndjson is the primary sink, otherwise use default metrics_path
-            ndjson_target = sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            ndjson_target = (
+                sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            )
             ndjson_writer = NdjsonWriter(ndjson_target, run_id=run_id)
             try:
                 for idx, (metric_name, metric_value) in enumerate(metrics_result.items()):
@@ -747,12 +756,19 @@ def run_evaluation(
         ndjson_result = _safe_operation(
             "Step: write evaluation metrics log (ndjson)",
             _write_metrics_ndjson,
-            context={"path": str(sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path), "num_metrics": len(metrics_result)},
+            context={
+                "path": str(
+                    sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+                ),
+                "num_metrics": len(metrics_result),
+            },
         )
         if isinstance(ndjson_result, Path):
             metrics_outputs["ndjson"] = ndjson_result
         else:
-            ndjson_target = sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            ndjson_target = (
+                sink_target_path if sink_kind == "ndjson" and sink_target_path else metrics_path
+            )
             if ndjson_target.exists():
                 metrics_outputs["ndjson"] = ndjson_target
 
@@ -760,7 +776,9 @@ def run_evaluation(
 
         def _write_metrics_csv() -> Path:
             # Use sink_target_path if csv is the primary sink, otherwise use default metrics_csv_path
-            csv_target = sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
+            csv_target = (
+                sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
+            )
             fieldnames = [
                 "metric",
                 "value",
@@ -800,12 +818,21 @@ def run_evaluation(
         csv_result = _safe_operation(
             "Step: write evaluation metrics log (csv)",
             _write_metrics_csv,
-            context={"path": str(sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path), "num_metrics": len(metrics_result)},
+            context={
+                "path": str(
+                    sink_target_path
+                    if sink_kind == "csv" and sink_target_path
+                    else metrics_csv_path
+                ),
+                "num_metrics": len(metrics_result),
+            },
         )
         if isinstance(csv_result, Path):
             metrics_outputs["csv"] = csv_result
         else:
-            csv_target = sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
+            csv_target = (
+                sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
+            )
             if csv_target.exists():
                 metrics_outputs["csv"] = csv_target
 
@@ -839,15 +866,9 @@ def run_evaluation(
         "manifest_path": str(manifest_path),
         "metrics": metrics_result,
         "metrics_path": str(
-            metrics_outputs.get("ndjson")
-            or metrics_outputs.get("csv")
-            or metrics_path
+            metrics_outputs.get("ndjson") or metrics_outputs.get("csv") or metrics_path
         ),
-        "metrics_csv_path": (
-            str(metrics_outputs["csv"])
-            if "csv" in metrics_outputs
-            else None
-        ),
+        "metrics_csv_path": (str(metrics_outputs["csv"]) if "csv" in metrics_outputs else None),
         "metrics_sink": sink_kind,
         "metrics_sink_path": str(sink_target_path) if sink_target_path else None,
         "num_records": num_records,

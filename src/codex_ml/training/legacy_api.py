@@ -222,7 +222,9 @@ def _coerce_moderation(
     provider_raw = raw.get("provider", base.provider)
     provider = str(provider_raw or base.provider)
     rules_path_raw = raw.get("rules_path") or raw.get("policy_path") or base.rules_path
-    rules_path = str(rules_path_raw).strip() if rules_path_raw not in (None, "") else base.rules_path
+    rules_path = (
+        str(rules_path_raw).strip() if rules_path_raw not in (None, "") else base.rules_path
+    )
     audit_raw = raw.get("audit_log", base.audit_log)
     audit_log = str(audit_raw).strip() if audit_raw not in (None, "") else base.audit_log
     label_raw = raw.get("label", base.label)
@@ -853,9 +855,7 @@ def run_functional_training(
                     raise
             if moderation_adapter:
                 try:
-                    moderation_decision = moderation_adapter.enforce(
-                        sanitized_text, stage=stage
-                    )
+                    moderation_decision = moderation_adapter.enforce(sanitized_text, stage=stage)
                 except ModerationRejection as exc:
                     context = json.dumps(
                         {

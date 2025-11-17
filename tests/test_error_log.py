@@ -10,4 +10,3 @@ def test_rotation(tmp_path, monkeypatch):
     monkeypatch.setattr(time, "time", lambda: 10**9)
     error_log.log("y", path=p)
     assert p.exists()
-

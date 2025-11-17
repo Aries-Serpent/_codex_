@@ -13,6 +13,7 @@ class Registry:
 
 REG = Registry(parsers={}, extractors={})
 
+
 def register_parser(name: str, fn: Callable) -> None:
     REG.parsers[name] = fn
 

@@ -828,8 +828,8 @@ def init_db_cmd(db_path: str | None) -> None:
 
             click.echo(f"Initializing database: {manager.db_path}")
             manager.init_schema()
-            click.echo(f"✅ Database initialized successfully")
-            click.echo(f"   Schema: session_events table created")
+            click.echo("✅ Database initialized successfully")
+            click.echo("   Schema: session_events table created")
             click.echo(f"   Location: {manager.db_path}")
 
         _init()
@@ -950,18 +950,21 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
             if output_format == "json":
                 sessions = []
                 for row in rows:
-                    sessions.append({
-                        "session_id": row[0],
-                        "first_seen": row[1],
-                        "last_seen": row[2],
-                        "message_count": row[3],
-                    })
+                    sessions.append(
+                        {
+                            "session_id": row[0],
+                            "first_seen": row[1],
+                            "last_seen": row[2],
+                            "message_count": row[3],
+                        }
+                    )
                 click.echo(json_lib.dumps(sessions, indent=2))
             else:
                 click.echo(f"{'Session ID':<40} {'Messages':<10} {'Last Activity'}")
                 click.echo("-" * 70)
                 for row in rows:
                     from datetime import datetime
+
                     last_seen = datetime.fromtimestamp(row[2]).strftime("%Y-%m-%d %H:%M:%S")
                     click.echo(f"{row[0]:<40} {row[3]:<10} {last_seen}")
 
@@ -1011,14 +1014,14 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
             # Find old log files
             log_dir = Path(".codex/logs")
             session_dir = Path(".codex/sessions")
-            
+
             files_to_delete = []
-            
+
             if log_dir.exists():
                 for log_file in log_dir.glob("*.log*"):
                     if log_file.stat().st_mtime < cutoff:
                         files_to_delete.append(log_file)
-            
+
             if session_dir.exists():
                 for log_file in session_dir.glob("*.log"):
                     if log_file.stat().st_mtime < cutoff:
@@ -1084,7 +1087,7 @@ def duplication_group():
 )
 def duplication_check(path: str, min_lines: int, threshold: float, output: str | None):
     """Check code for duplicates and calculate ratio.
-    
+
     Examples:
         codex duplication check
         codex duplication check src/
@@ -1093,19 +1096,22 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
     """
     try:
         from pathlib import Path as PathLib
-        from codex.metrics.duplication import detect_duplicates, calculate_duplication_ratio
-        from codex.metrics.storage import MetricStorage
-        
+
+        from codex.metrics.duplication import (
+            calculate_duplication_ratio,
+            detect_duplicates,
+        )
+
         path_obj = PathLib(path).resolve()
         click.echo(f"🔍 Scanning {path_obj} for duplicates...")
-        
+
         # Detect duplicates
         duplicates = detect_duplicates(
             path_obj,
             min_lines=min_lines,
             ignore_trivial=True,
         )
-        
+
         # Count total lines (rough estimate for now)
         total_lines = 0
         for py_file in path_obj.rglob("*.py"):
@@ -1114,42 +1120,48 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
             except (OSError, UnicodeDecodeError) as e:
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
                 pass
-        
+
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
         ratio.files_scanned = len(list(path_obj.rglob("*.py")))
-        
+
         # Display results
-        click.echo(f"\n📊 Duplication Report:")
+        click.echo("\n📊 Duplication Report:")
         click.echo(f"  Total lines: {ratio.total_lines:,}")
         click.echo(f"  Duplicate lines: {ratio.duplicate_lines:,}")
         click.echo(f"  Duplication ratio: {ratio.ratio:.2%}")
         click.echo(f"  Files scanned: {ratio.files_scanned}")
         click.echo(f"  Files with duplicates: {ratio.files_with_duplicates}")
         click.echo(f"  Duplicate blocks: {len(ratio.duplicate_blocks)}")
-        
+
         # Save to file if requested
         if output:
             output_path = PathLib(output)
             data = ratio.to_dict()
             data["path"] = str(path_obj)
             data["min_lines"] = min_lines
-            
-            with open(output_path, 'w') as f:
+
+            with open(output_path, "w") as f:
                 json.dump(data, f, indent=2)
-            
+
             click.echo(f"\n💾 Saved results to {output_path}")
-        
+
         # Check threshold
         if ratio.ratio > threshold:
-            click.echo(f"\n❌ Duplication ratio {ratio.ratio:.2%} exceeds threshold {threshold:.2%}", err=True)
+            click.echo(
+                f"\n❌ Duplication ratio {ratio.ratio:.2%} exceeds threshold {threshold:.2%}",
+                err=True,
+            )
             sys.exit(1)
         else:
-            click.echo(f"\n✅ Duplication ratio {ratio.ratio:.2%} is within threshold {threshold:.2%}")
-        
+            click.echo(
+                f"\n✅ Duplication ratio {ratio.ratio:.2%} is within threshold {threshold:.2%}"
+            )
+
     except Exception as exc:
         click.echo(f"❌ Failed to check duplicates: {exc}", err=True)
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
@@ -1181,7 +1193,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
 )
 def duplication_report(path: str, min_lines: int, format: str, output: str, save_db: bool):
     """Generate detailed duplication report.
-    
+
     Examples:
         codex duplication report --output=report.json
         codex duplication report --format=text --output=report.txt
@@ -1189,15 +1201,19 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
     """
     try:
         from pathlib import Path as PathLib
-        from codex.metrics.duplication import detect_duplicates, calculate_duplication_ratio
+
+        from codex.metrics.duplication import (
+            calculate_duplication_ratio,
+            detect_duplicates,
+        )
         from codex.metrics.storage import MetricStorage
-        
+
         path_obj = PathLib(path).resolve()
         click.echo(f"🔍 Generating duplication report for {path_obj}...")
-        
+
         # Detect duplicates
         duplicates = detect_duplicates(path_obj, min_lines=min_lines)
-        
+
         # Count total lines
         total_lines = 0
         files_scanned = 0
@@ -1207,20 +1223,20 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 files_scanned += 1
             except:
                 pass
-        
+
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
         ratio.files_scanned = files_scanned
-        
+
         output_path = PathLib(output)
-        
+
         if format == "json":
             # JSON format
             data = ratio.to_dict()
             data["scan_path"] = str(path_obj)
             data["min_lines"] = min_lines
-            
-            with open(output_path, 'w') as f:
+
+            with open(output_path, "w") as f:
                 json.dump(data, f, indent=2)
         else:
             # Text format
@@ -1241,7 +1257,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 f"Duplicate blocks: {len(ratio.duplicate_blocks)}",
                 "",
             ]
-            
+
             if ratio.duplicate_blocks:
                 lines.append("DUPLICATE BLOCKS")
                 lines.append("-" * 60)
@@ -1251,24 +1267,25 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                     lines.append(f"  Occurrences: {len(block.occurrences)}")
                     for occ in block.occurrences[:5]:
                         lines.append(f"    - {occ['file']}:{occ['start']}")
-                
+
                 if len(ratio.duplicate_blocks) > 10:
                     lines.append(f"\n... and {len(ratio.duplicate_blocks) - 10} more blocks")
-            
-            with open(output_path, 'w') as f:
-                f.write('\n'.join(lines))
-        
+
+            with open(output_path, "w") as f:
+                f.write("\n".join(lines))
+
         click.echo(f"✅ Report saved to {output_path}")
-        
+
         # Save to database if requested
         if save_db:
             storage = MetricStorage()
             result = storage.save(ratio)
             click.echo(f"💾 Saved to database (ID: {result.get('sqlite_id', 'N/A')})")
-        
+
     except Exception as exc:
         click.echo(f"❌ Failed to generate report: {exc}", err=True)
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 
@@ -1288,46 +1305,51 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
 )
 def duplication_compare(current: str, baseline: str | None, threshold_increase: float):
     """Compare duplication metrics against baseline.
-    
+
     Examples:
         codex duplication compare report.json --baseline=baseline.json
         codex duplication compare report.json --baseline=baseline.json --threshold-increase=0.10
     """
     try:
         from pathlib import Path as PathLib
-        
+
         current_path = PathLib(current)
-        
+
         # Load current metrics
         with open(current_path) as f:
             current_data = json.load(f)
-        
+
         current_ratio = current_data.get("ratio", 0.0)
-        
+
         if baseline:
             # Load baseline
             baseline_path = PathLib(baseline)
             with open(baseline_path) as f:
                 baseline_data = json.load(f)
-            
+
             baseline_ratio = baseline_data.get("ratio", 0.0)
-            
+
             # Compare
             difference = current_ratio - baseline_ratio
             percent_change = (difference / baseline_ratio * 100) if baseline_ratio > 0 else 0
-            
+
             click.echo("📊 Duplication Comparison")
             click.echo(f"  Baseline: {baseline_ratio:.2%}")
             click.echo(f"  Current:  {current_ratio:.2%}")
             click.echo(f"  Change:   {difference:+.2%} ({percent_change:+.1f}%)")
-            
+
             if difference > threshold_increase:
-                click.echo(f"\n❌ Duplication increased by {difference:.2%}, exceeds threshold {threshold_increase:.2%}", err=True)
+                click.echo(
+                    f"\n❌ Duplication increased by {difference:.2%}, exceeds threshold {threshold_increase:.2%}",
+                    err=True,
+                )
                 sys.exit(1)
             elif difference > 0:
-                click.echo(f"\n⚠️  Duplication increased by {difference:.2%}, within threshold {threshold_increase:.2%}")
+                click.echo(
+                    f"\n⚠️  Duplication increased by {difference:.2%}, within threshold {threshold_increase:.2%}"
+                )
             else:
-                click.echo(f"\n✅ Duplication decreased or stayed the same")
+                click.echo("\n✅ Duplication decreased or stayed the same")
         else:
             # No baseline - just show current
             click.echo("📊 Current Duplication Metrics")
@@ -1335,10 +1357,11 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
             click.echo(f"  Total lines: {current_data.get('total_lines', 0):,}")
             click.echo(f"  Duplicate lines: {current_data.get('duplicate_lines', 0):,}")
             click.echo("\n💡 Use --baseline to compare against a previous report")
-        
+
     except Exception as exc:
         click.echo(f"❌ Failed to compare metrics: {exc}", err=True)
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

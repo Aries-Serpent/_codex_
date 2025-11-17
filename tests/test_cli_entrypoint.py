@@ -22,9 +22,7 @@ def test_cli_runs_with_simple_config(tmp_path: Path) -> None:
         "data.params.batch_size=4",
     ]
 
-    exit_code = cli.main(
-        ["--config-path", str(config_dir), "--config-name", "train", *overrides]
-    )
+    exit_code = cli.main(["--config-path", str(config_dir), "--config-name", "train", *overrides])
     assert exit_code == 0
     assert metrics_path.exists()
     payload = metrics_path.read_text(encoding="utf-8")

@@ -50,16 +50,16 @@ class FileCache:
             return False
 
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             stat = path.stat()
             sha = hashlib.sha256(content.encode()).hexdigest()
-            
+
             self._file_contents[file_path] = content
             self._file_mtimes[file_path] = stat.st_mtime
             self._file_shas[file_path] = sha
-            
+
             logger.debug(f"Cached file ({len(content)} bytes): {file_path}")
             return True
         except Exception as e:
@@ -70,11 +70,11 @@ class FileCache:
         """Retrieve cached content. If auto_refresh, validates mtime first."""
         if auto_refresh:
             self.invalidate_if_modified(file_path)
-        
+
         if file_path not in self._file_contents:
             logger.warning(f"Cache miss: {file_path} (not cached)")
             return None
-        
+
         logger.debug(f"Cache hit: {file_path}")
         return self._file_contents[file_path]
 
@@ -118,9 +118,9 @@ class FileCache:
     def stats(self) -> dict[str, Any]:
         """Return cache statistics."""
         return {
-            'cached_files': len(self._file_contents),
-            'total_size_bytes': sum(len(c) for c in self._file_contents.values()),
-            'files': list(self._file_contents.keys()),
+            "cached_files": len(self._file_contents),
+            "total_size_bytes": sum(len(c) for c in self._file_contents.values()),
+            "files": list(self._file_contents.keys()),
         }
 
 
@@ -129,11 +129,11 @@ class SearchCache:
 
     Usage:
         cache = SearchCache()
-        
+
         @cache.memoize
         def find_files(pattern, scope):
             return subprocess.run(['find', scope, '-name', pattern]).stdout
-        
+
         result1 = find_files('*.py', '/src')  # Executes search
         result2 = find_files('*.py', '/src')  # Returns cached result
     """
@@ -145,18 +145,19 @@ class SearchCache:
 
     def memoize(self, func: Callable) -> Callable:
         """Decorator to memoize function results."""
+
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
             key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
             if key in self._cache:
                 logger.debug(f"Search cache hit: {func.__name__}")
                 return self._cache[key]
-            
+
             result = func(*args, **kwargs)
             self._cache[key] = result
             logger.debug(f"Search cached: {func.__name__}")
             return result
-        
+
         return wrapper
 
     def clear(self) -> None:

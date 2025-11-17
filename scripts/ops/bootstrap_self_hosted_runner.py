@@ -18,8 +18,12 @@ from src.integrations.github_app_auth import (
 def _assert_online_allowed():
     mode = os.getenv("CODEX_NET_MODE", "offline")
     allow = os.getenv("CODEX_ALLOWLIST_HOSTS", "")
-    if mode != "online_allowlist" or "api.github.com" not in {h.strip() for h in allow.split(",") if h.strip()}:
-        raise SystemExit("Online mode denied. Set CODEX_NET_MODE=online_allowlist and include api.github.com in CODEX_ALLOWLIST_HOSTS.")
+    if mode != "online_allowlist" or "api.github.com" not in {
+        h.strip() for h in allow.split(",") if h.strip()
+    }:
+        raise SystemExit(
+            "Online mode denied. Set CODEX_NET_MODE=online_allowlist and include api.github.com in CODEX_ALLOWLIST_HOSTS."
+        )
 
 
 def _download_url(version: str) -> str:
@@ -36,16 +40,26 @@ def _exec(cmd: str, dry_run: bool) -> int:
 
 
 def main():
-    p = argparse.ArgumentParser(description="Bootstrap a self-hosted GitHub Actions runner on this host.")
+    p = argparse.ArgumentParser(
+        description="Bootstrap a self-hosted GitHub Actions runner on this host."
+    )
     scope = p.add_mutually_exclusive_group(required=True)
     scope.add_argument("--repo", help="Repository name (requires --owner)")
     scope.add_argument("--org", help="Organization for org-level runner")
     p.add_argument("--owner", help="Repository owner (when using --repo)")
-    p.add_argument("--labels", default="codex,linux,x64", help="Comma-separated labels for this runner")
-    p.add_argument("--workdir", default=str(Path.home() / "actions-runner"), help="Runner home directory")
+    p.add_argument(
+        "--labels", default="codex,linux,x64", help="Comma-separated labels for this runner"
+    )
+    p.add_argument(
+        "--workdir", default=str(Path.home() / "actions-runner"), help="Runner home directory"
+    )
     p.add_argument("--runner-version", default=os.getenv("GITHUB_RUNNER_VERSION", "2.317.0"))
     p.add_argument("--dry-run", action="store_true", help="Print commands and plan; do not execute")
-    p.add_argument("--no-service", action="store_true", help="Do not install/start the runner as a system service")
+    p.add_argument(
+        "--no-service",
+        action="store_true",
+        help="Do not install/start the runner as a system service",
+    )
     args = p.parse_args()
 
     _assert_online_allowed()

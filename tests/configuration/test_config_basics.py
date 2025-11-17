@@ -44,6 +44,7 @@ class TestConfigFileOperations:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_load_json_config(self):
@@ -68,6 +69,7 @@ class TestConfigFileOperations:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_config_file_not_found_handling(self):
@@ -79,6 +81,7 @@ class TestConfigFileOperations:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
 
@@ -323,6 +326,7 @@ class TestConfigPaths:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_config_file_existence_check(self):
@@ -339,4 +343,5 @@ class TestConfigPaths:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)

@@ -11,7 +11,7 @@ def test_log_error_records(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "ERROR_PATH", tmp_path / "err.ndjson")
     mod.log_error("s", "e", "c")
     data = (tmp_path / "err.ndjson").read_text(encoding="utf-8").strip()
-    assert "\"s\"" in data
+    assert '"s"' in data
 
 
 def test_log_rotation_and_concurrency(tmp_path, monkeypatch):

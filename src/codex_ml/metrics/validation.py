@@ -1,4 +1,5 @@
 """Metric registry validation utilities."""
+
 from __future__ import annotations
 
 from typing import List
@@ -6,6 +7,7 @@ from typing import List
 
 class MetricValidationError(Exception):
     """Exception raised when metric validation fails."""
+
     pass
 
 
@@ -26,17 +28,13 @@ def validate_metric_registry() -> List[str]:
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY, get_metric
     except ImportError as e:
-        raise MetricValidationError(
-            f"Failed to import metric registry: {e}"
-        ) from e
+        raise MetricValidationError(f"Failed to import metric registry: {e}") from e
 
     for metric_name in METRIC_REGISTRY.keys():
         try:
             metric_fn = get_metric(metric_name)
             if not callable(metric_fn):
-                raise MetricValidationError(
-                    f"Metric '{metric_name}' is not callable"
-                )
+                raise MetricValidationError(f"Metric '{metric_name}' is not callable")
         except (ImportError, AttributeError) as e:
             raise MetricValidationError(
                 f"Metric '{metric_name}' registered but not implemented: {e}"
@@ -76,6 +74,7 @@ def get_all_registered_metrics() -> List[str]:
     """
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY
+
         return list(METRIC_REGISTRY.keys())
     except ImportError:
         return []

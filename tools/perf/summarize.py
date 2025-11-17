@@ -21,12 +21,13 @@ def main():
             pass  # Skip malformed lines
     out = {
         "cpu_mean": round(stats.mean(cpu), 3) if cpu else None,
-        "mem_mean": round(stats.mean(mem), 3) if mem else None
+        "mem_mean": round(stats.mean(mem), 3) if mem else None,
     }
     Path("audit_artifacts").mkdir(parents=True, exist_ok=True)
     Path("audit_artifacts/perf_summary.json").write_text(json.dumps(out, indent=2))
     print("audit_artifacts/perf_summary.json")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

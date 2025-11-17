@@ -44,8 +44,6 @@ def test_build_ratelimit_tile_from_history(tmp_path):
     )
     assert code == 0
 
-    tile = json.loads(
-        (tmp_path / "reports/tiles/ratelimit_tile.json").read_text(encoding="utf-8")
-    )
+    tile = json.loads((tmp_path / "reports/tiles/ratelimit_tile.json").read_text(encoding="utf-8"))
     assert "series" in tile and "core" in tile["series"]
     assert len(tile["series"]["core"]) >= 1

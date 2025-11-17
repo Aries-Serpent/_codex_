@@ -8,6 +8,7 @@ Provides ML model serving capabilities with safeguards:
 - Metrics collection
 - Error handling
 """
+
 import logging
 import os
 import time
@@ -22,14 +23,18 @@ try:
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import JSONResponse
     from pydantic import BaseModel, Field, validator
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
+
     # Provide stub classes for when FastAPI is not installed
     class BaseModel:
         pass
+
     class FastAPI:
         pass
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +51,13 @@ DEFAULT_MODEL_TYPE = os.environ.get("CODEX_MODEL_TYPE", "stub")  # stub, hugging
 
 class ModelLoadError(Exception):
     """Raised when model loading fails"""
+
     pass
 
 
 class ModelConfig:
     """Configuration for model loading
-    
+
     Attributes:
         model_name: Name of the model
         model_type: Type of model (stub, huggingface, onnx)
@@ -59,7 +65,7 @@ class ModelConfig:
         device: Device to load model on (cpu, cuda)
         config_file: Optional config file path
     """
-    
+
     def __init__(
         self,
         model_name: str = DEFAULT_MODEL_NAME,
@@ -73,7 +79,7 @@ class ModelConfig:
         self.model_path = model_path or os.path.join(DEFAULT_MODEL_DIR, model_name)
         self.device = device
         self.config_file = config_file
-        
+
     @classmethod
     def from_env(cls) -> "ModelConfig":
         """Create config from environment variables"""
@@ -84,7 +90,7 @@ class ModelConfig:
             device=os.environ.get("CODEX_MODEL_DEVICE", "cpu"),
             config_file=os.environ.get("CODEX_MODEL_CONFIG"),
         )
-    
+
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> "ModelConfig":
         """Create config from dictionary"""
@@ -95,28 +101,28 @@ class ModelConfig:
             device=config.get("device", "cpu"),
             config_file=config.get("config_file"),
         )
-    
+
     def validate(self) -> None:
         """Validate configuration
-        
+
         Raises:
             ValueError: If configuration is invalid
         """
         if not self.model_name:
             raise ValueError("model_name cannot be empty")
-        
+
         if self.model_type not in ["stub", "huggingface", "onnx"]:
             raise ValueError(f"Unsupported model_type: {self.model_type}")
-        
+
         if self.device not in ["cpu", "cuda"]:
             raise ValueError(f"Unsupported device: {self.device}")
-        
+
         # For non-stub models, path should exist or be valid
         if self.model_type != "stub" and self.model_path:
             path = Path(self.model_path)
             if not path.exists() and not path.parent.exists():
                 logger.warning(f"Model path does not exist: {self.model_path}")
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -129,12 +135,14 @@ class ModelConfig:
 
 
 if FASTAPI_AVAILABLE:
+
     class PredictionRequest(BaseModel):
         """Request model for predictions"""
+
         inputs: List[str] = Field(..., description="List of input texts")
         parameters: Optional[Dict[str, Any]] = Field(default=None, description="Model parameters")
-        
-        @validator('inputs')
+
+        @validator("inputs")
         def validate_inputs(cls, v):
             """Validate inputs"""
             if not v:
@@ -146,20 +154,20 @@ if FASTAPI_AVAILABLE:
                     raise ValueError(f"Input length cannot exceed {MAX_INPUT_LENGTH}")
             return v
 
-
     class PredictionResponse(BaseModel):
         """Response model for predictions"""
+
         predictions: List[Any]
         model_name: str
         inference_time_ms: float
         metadata: Optional[Dict[str, Any]] = None
 
-
     class EmbeddingRequest(BaseModel):
         """Request model for embeddings"""
+
         texts: List[str] = Field(..., description="List of texts to embed")
-        
-        @validator('texts')
+
+        @validator("texts")
         def validate_texts(cls, v):
             """Validate texts"""
             if not v:
@@ -168,18 +176,18 @@ if FASTAPI_AVAILABLE:
                 raise ValueError(f"Batch size cannot exceed {MAX_BATCH_SIZE}")
             return v
 
-
     class EmbeddingResponse(BaseModel):
         """Response model for embeddings"""
+
         embeddings: List[List[float]]
         model_name: str
         dimension: int
         num_texts: int
         inference_time_ms: float
 
-
     class HealthResponse(BaseModel):
         """Health check response"""
+
         status: str
         model_loaded: bool
         uptime_seconds: float
@@ -188,11 +196,11 @@ if FASTAPI_AVAILABLE:
 
 class RateLimiter:
     """Simple in-memory rate limiter"""
-    
+
     def __init__(self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60):
         """
         Initialize rate limiter
-        
+
         Args:
             max_requests: Maximum requests allowed in window
             window_seconds: Time window in seconds
@@ -200,30 +208,29 @@ class RateLimiter:
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.requests: Dict[str, List[float]] = defaultdict(list)
-    
+
     def is_allowed(self, client_id: str) -> bool:
         """
         Check if request is allowed
-        
+
         Args:
             client_id: Client identifier (e.g., IP address)
-            
+
         Returns:
             True if request is allowed, False otherwise
         """
         now = time.time()
         cutoff = now - self.window_seconds
-        
+
         # Remove old requests
         self.requests[client_id] = [
-            req_time for req_time in self.requests[client_id]
-            if req_time > cutoff
+            req_time for req_time in self.requests[client_id] if req_time > cutoff
         ]
-        
+
         # Check limit
         if len(self.requests[client_id]) >= self.max_requests:
             return False
-        
+
         # Add current request
         self.requests[client_id].append(now)
         return True
@@ -231,27 +238,27 @@ class RateLimiter:
 
 class ModelServer:
     """Base model server with safeguards and real model loading"""
-    
+
     def __init__(self, config: Optional[ModelConfig] = None):
         """
         Initialize model server
-        
+
         Args:
             config: Model configuration (defaults to environment-based config)
         """
         self.config = config or ModelConfig.from_env()
         self.config.validate()
-        
+
         self.model_name = self.config.model_name
         self.model = None
         self.start_time = time.time()
         self.total_requests = 0
         self.rate_limiter = RateLimiter()
         self.load_errors: List[str] = []
-        
+
         logger.info(f"Initialized ModelServer for: {self.model_name}")
         logger.info(f"Model config: {self.config.to_dict()}")
-    
+
     def _load_stub_model(self) -> Dict[str, Any]:
         """Load a stub model for testing"""
         logger.info("Loading stub model")
@@ -260,13 +267,13 @@ class ModelServer:
             "name": self.config.model_name,
             "device": self.config.device,
         }
-    
+
     def _load_huggingface_model(self) -> Any:
         """Load a HuggingFace model
-        
+
         Returns:
             Loaded model object
-            
+
         Raises:
             ModelLoadError: If loading fails
         """
@@ -276,21 +283,21 @@ class ModelServer:
             raise ModelLoadError(
                 "transformers not installed. Install with: pip install transformers"
             )
-        
+
         try:
             logger.info(f"Loading HuggingFace model from: {self.config.model_path}")
-            
+
             # Check if path exists
             model_path = Path(self.config.model_path)
             if not model_path.exists():
                 raise ModelLoadError(f"Model path does not exist: {self.config.model_path}")
-            
+
             # Load tokenizer and model
             tokenizer = AutoTokenizer.from_pretrained(str(model_path))
             model = AutoModel.from_pretrained(str(model_path))
-            
+
             logger.info(f"Successfully loaded HuggingFace model: {self.config.model_name}")
-            
+
             return {
                 "type": "huggingface",
                 "name": self.config.model_name,
@@ -302,36 +309,34 @@ class ModelServer:
             error_msg = f"Failed to load HuggingFace model: {str(e)}"
             logger.error(error_msg)
             raise ModelLoadError(error_msg) from e
-    
+
     def _load_onnx_model(self) -> Any:
         """Load an ONNX model
-        
+
         Returns:
             Loaded model object
-            
+
         Raises:
             ModelLoadError: If loading fails
         """
         try:
             import onnxruntime as ort
         except ImportError:
-            raise ModelLoadError(
-                "onnxruntime not installed. Install with: pip install onnxruntime"
-            )
-        
+            raise ModelLoadError("onnxruntime not installed. Install with: pip install onnxruntime")
+
         try:
             logger.info(f"Loading ONNX model from: {self.config.model_path}")
-            
+
             # Check if path exists
             model_path = Path(self.config.model_path)
             if not model_path.exists():
                 raise ModelLoadError(f"Model path does not exist: {self.config.model_path}")
-            
+
             # Create inference session
             session = ort.InferenceSession(str(model_path))
-            
+
             logger.info(f"Successfully loaded ONNX model: {self.config.model_name}")
-            
+
             return {
                 "type": "onnx",
                 "name": self.config.model_name,
@@ -342,13 +347,13 @@ class ModelServer:
             error_msg = f"Failed to load ONNX model: {str(e)}"
             logger.error(error_msg)
             raise ModelLoadError(error_msg) from e
-    
+
     def load_model(self) -> Any:
         """Load the model based on configuration
-        
+
         Returns:
             Loaded model object
-            
+
         Raises:
             ModelLoadError: If loading fails
         """
@@ -361,10 +366,10 @@ class ModelServer:
                 self.model = self._load_onnx_model()
             else:
                 raise ModelLoadError(f"Unsupported model type: {self.config.model_type}")
-            
+
             logger.info("Model loaded successfully")
             return self.model
-            
+
         except ModelLoadError:
             raise
         except Exception as e:
@@ -372,26 +377,26 @@ class ModelServer:
             logger.error(error_msg)
             self.load_errors.append(error_msg)
             raise ModelLoadError(error_msg) from e
-    
+
     def predict(self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None) -> List[Any]:
         """
         Make predictions
-        
+
         Args:
             inputs: List of input texts
             parameters: Optional model parameters
-            
+
         Returns:
             List of predictions with standardized structure
-            
+
         Raises:
             RuntimeError: If model not loaded
         """
         if not self.model:
             raise RuntimeError("Model not loaded. Call load_model() first.")
-        
+
         model_type = self.model.get("type", "unknown")
-        
+
         if model_type == "stub":
             # Stub implementation: return dummy predictions
             predictions = [
@@ -411,25 +416,25 @@ class ModelServer:
             predictions = self._predict_onnx(inputs, parameters)
         else:
             raise RuntimeError(f"Unknown model type: {model_type}")
-        
+
         return predictions
-    
+
     def _predict_huggingface(
         self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None
     ) -> List[Any]:
         """Run inference with HuggingFace model
-        
+
         Args:
             inputs: List of input texts
             parameters: Optional inference parameters
-            
+
         Returns:
             List of predictions
         """
         # Basic implementation - can be extended for specific model types
         tokenizer = self.model["tokenizer"]
         model = self.model["model"]
-        
+
         # Tokenize inputs
         encoded = tokenizer(
             inputs,
@@ -438,12 +443,13 @@ class ModelServer:
             return_tensors="pt",
             max_length=MAX_INPUT_LENGTH,
         )
-        
+
         # Run inference
         import torch
+
         with torch.no_grad():
             outputs = model(**encoded)
-        
+
         # Format predictions (basic structure)
         predictions = [
             {
@@ -453,24 +459,24 @@ class ModelServer:
             }
             for i, inp in enumerate(inputs)
         ]
-        
+
         return predictions
-    
+
     def _predict_onnx(
         self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None
     ) -> List[Any]:
         """Run inference with ONNX model
-        
+
         Args:
             inputs: List of input texts
             parameters: Optional inference parameters
-            
+
         Returns:
             List of predictions
         """
         # Basic ONNX inference - needs tokenization
-        session = self.model["session"]
-        
+        self.model["session"]
+
         # For now, return stub predictions
         # Real implementation would need proper tokenization
         logger.warning("ONNX inference not fully implemented - returning stub predictions")
@@ -483,28 +489,28 @@ class ModelServer:
             }
             for inp in inputs
         ]
-        
+
         return predictions
-    
+
     def embed(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings from texts
-        
+
         Args:
             texts: List of input texts
-            
+
         Returns:
             Numpy array of embeddings (shape: [n_texts, dimension])
-            
+
         Raises:
             RuntimeError: If model not loaded
         """
         if not self.model:
             raise RuntimeError("Model not loaded. Call load_model() first.")
-        
+
         import numpy as np
-        
+
         model_type = self.model.get("type", "unknown")
-        
+
         if model_type == "stub":
             # Return random embeddings for testing
             dimension = 384  # Default embedding dimension
@@ -513,10 +519,10 @@ class ModelServer:
             norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
             embeddings = embeddings / np.maximum(norms, 1e-12)
             return embeddings
-            
+
         elif model_type == "huggingface":
             return self._embed_huggingface(texts)
-            
+
         elif model_type == "onnx":
             # Basic ONNX embedding
             logger.warning("ONNX embedding not fully implemented - returning stub")
@@ -526,22 +532,23 @@ class ModelServer:
             return embeddings / np.maximum(norms, 1e-12)
         else:
             raise RuntimeError(f"Unknown model type: {model_type}")
-    
+
     def _embed_huggingface(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings using HuggingFace model
-        
+
         Args:
             texts: List of input texts
-            
+
         Returns:
             Numpy array of embeddings
         """
         import numpy as np
+
         import torch
-        
+
         tokenizer = self.model["tokenizer"]
         model = self.model["model"]
-        
+
         # Tokenize
         encoded = tokenizer(
             texts,
@@ -550,25 +557,25 @@ class ModelServer:
             return_tensors="pt",
             max_length=MAX_INPUT_LENGTH,
         )
-        
+
         # Generate embeddings (use [CLS] token or mean pooling)
         with torch.no_grad():
             outputs = model(**encoded)
-            
+
             # Use [CLS] token embedding or mean of last hidden state
             if hasattr(outputs, "pooler_output") and outputs.pooler_output is not None:
                 embeddings = outputs.pooler_output
             else:
                 # Mean pooling
                 embeddings = outputs.last_hidden_state.mean(dim=1)
-        
+
         # Convert to numpy and normalize
         embeddings_np = embeddings.cpu().numpy().astype(np.float32)
         norms = np.linalg.norm(embeddings_np, axis=1, keepdims=True)
         embeddings_normalized = embeddings_np / np.maximum(norms, 1e-12)
-        
+
         return embeddings_normalized
-    
+
     def health_check(self) -> Dict[str, Any]:
         """Perform health check"""
         return {
@@ -586,24 +593,22 @@ class ModelServer:
 def create_app(config: Optional[ModelConfig] = None):
     """
     Create FastAPI application with safeguards
-    
+
     Args:
         config: Model configuration (defaults to environment-based config)
-        
+
     Returns:
         Configured FastAPI application or None if FastAPI not available
     """
     if not FASTAPI_AVAILABLE:
-        raise ImportError(
-            "FastAPI is not installed. Install with: pip install fastapi uvicorn"
-        )
-    
+        raise ImportError("FastAPI is not installed. Install with: pip install fastapi uvicorn")
+
     app = FastAPI(
         title="Codex ML Inference Server",
         description="ML model serving with safeguards and rate limiting",
         version="1.0.0",
     )
-    
+
     # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
@@ -612,37 +617,37 @@ def create_app(config: Optional[ModelConfig] = None):
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # Initialize model server
     server = ModelServer(config=config)
-    
+
     # Try to load model on startup
     try:
         server.load_model()
     except ModelLoadError as e:
         logger.warning(f"Failed to load model on startup: {e}")
         logger.warning("Server will start but predictions will fail until model is loaded")
-    
+
     @app.middleware("http")
     async def rate_limit_middleware(request: Request, call_next):
         """Rate limiting middleware"""
         client_ip = request.client.host if request.client else "unknown"
-        
+
         if not server.rate_limiter.is_allowed(client_ip):
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"detail": "Rate limit exceeded. Try again later."},
             )
-        
+
         response = await call_next(request)
         return response
-    
+
     @app.get("/health", response_model=HealthResponse)
     async def health():
         """Health check endpoint"""
         health_status = server.health_check()
         return HealthResponse(**health_status)
-    
+
     @app.get("/")
     async def root():
         """Root endpoint"""
@@ -654,29 +659,29 @@ def create_app(config: Optional[ModelConfig] = None):
                 "predict": "/predict (POST)",
                 "embed": "/embed (POST)",
                 "metrics": "/metrics",
-            }
+            },
         }
-    
+
     @app.post("/predict", response_model=PredictionResponse)
     async def predict(request: PredictionRequest):
         """
         Prediction endpoint
-        
+
         Args:
             request: Prediction request with inputs and parameters
-            
+
         Returns:
             Predictions with metadata
         """
         try:
             # Track request
             server.total_requests += 1
-            
+
             # Perform inference
             start_time = time.time()
             predictions = server.predict(request.inputs, request.parameters)
             inference_time = (time.time() - start_time) * 1000  # Convert to ms
-            
+
             return PredictionResponse(
                 predictions=predictions,
                 model_name=server.model_name,
@@ -684,38 +689,38 @@ def create_app(config: Optional[ModelConfig] = None):
                 metadata={
                     "batch_size": len(request.inputs),
                     "total_requests": server.total_requests,
-                }
+                },
             )
         except Exception as e:
             logger.error(f"Prediction error: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Prediction failed: {str(e)}"
+                detail=f"Prediction failed: {str(e)}",
             )
-    
+
     @app.post("/embed", response_model=EmbeddingResponse)
     async def embed(request: EmbeddingRequest):
         """
         Embedding endpoint - Generate embeddings from texts
-        
+
         Args:
             request: Embedding request with texts
-            
+
         Returns:
             Embeddings with metadata
         """
         try:
             # Track request
             server.total_requests += 1
-            
+
             # Generate embeddings
             start_time = time.time()
             embeddings = server.embed(request.texts)
             inference_time = (time.time() - start_time) * 1000  # Convert to ms
-            
+
             # Convert numpy array to list
             embeddings_list = embeddings.tolist()
-            
+
             return EmbeddingResponse(
                 embeddings=embeddings_list,
                 model_name=server.model_name,
@@ -727,9 +732,9 @@ def create_app(config: Optional[ModelConfig] = None):
             logger.error(f"Embedding error: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Embedding failed: {str(e)}"
+                detail=f"Embedding failed: {str(e)}",
             )
-    
+
     @app.get("/metrics")
     async def metrics():
         """Metrics endpoint"""
@@ -739,7 +744,7 @@ def create_app(config: Optional[ModelConfig] = None):
             "model_name": server.model_name,
             "model_loaded": server.model is not None,
         }
-    
+
     return app
 
 
@@ -748,25 +753,26 @@ def main():
     if not FASTAPI_AVAILABLE:
         print("Error: FastAPI is not installed. Install with: pip install fastapi uvicorn")
         return 1
-    
+
     import uvicorn
-    
+
     # Create config from environment
     config = ModelConfig.from_env()
     logger.info(f"Starting server with config: {config.to_dict()}")
-    
+
     app = create_app(config=config)
-    
+
     uvicorn.run(
         app,
         host="0.0.0.0",
         port=8000,
         log_level="info",
     )
-    
+
     return 0
 
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())

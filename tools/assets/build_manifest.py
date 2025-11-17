@@ -5,6 +5,7 @@ from pathlib import Path
 
 def sha256_of(p: Path) -> str:
     import hashlib
+
     h = hashlib.sha256()
     with p.open("rb") as fh:
         for chunk in iter(lambda: fh.read(1 << 20), b""):
@@ -13,7 +14,9 @@ def sha256_of(p: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
-INCLUDE_DIRS = ["docs","reports","src","tools","tokenization"]
+
+INCLUDE_DIRS = ["docs", "reports", "src", "tools", "tokenization"]
+
 
 def main():
     files = {}
@@ -29,10 +32,12 @@ def main():
                     # Skip files that cannot be read (permissions, binary issues, etc.)
                     pass
     from datetime import datetime, timezone
-    out = {"generated_utc": datetime.now(timezone.utc).isoformat()+"Z", "files": files}
+
+    out = {"generated_utc": datetime.now(timezone.utc).isoformat() + "Z", "files": files}
     Path("assets").mkdir(exist_ok=True)
     Path("assets/manifest.json").write_text(json.dumps(out, indent=2))
     print("assets/manifest.json")
+
 
 if __name__ == "__main__":
     main()

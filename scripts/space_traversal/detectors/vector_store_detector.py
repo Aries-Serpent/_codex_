@@ -3,6 +3,7 @@ Detector: Vector Stores Presence (stub/mocks) (S-vector)
 
 Detects vector store stub implementations for audit pipeline.
 """
+
 from typing import List
 
 TARGET_DIR = "codex_addons/vector_stores/"
@@ -11,24 +12,22 @@ TARGET_DIR = "codex_addons/vector_stores/"
 def detect(file_index: dict) -> dict:
     """
     Detect vector store stub files in the codebase.
-    
+
     Args:
         file_index: Dictionary containing file information
-        
+
     Returns:
         Detection result with evidence files
     """
     files: List[str] = [
-        f["path"] 
-        for f in file_index.get("files", []) 
-        if f["path"].startswith(TARGET_DIR)
+        f["path"] for f in file_index.get("files", []) if f["path"].startswith(TARGET_DIR)
     ]
-    
+
     # Evidence is path-based; patterns will be validated by static scans in the future.
     return {
         "id": "vector-stores",
         "evidence_files": sorted(files),
         "found_patterns": [],
         "required_patterns": [],
-        "meta": {"mode": "stub-or-mock"}
+        "meta": {"mode": "stub-or-mock"},
     }

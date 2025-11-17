@@ -1,5 +1,5 @@
-
 OFFLINE_BLOCK_TITLE = "## Offline CI & Local Parity"
+
 
 def ensure_offline_block(md: str) -> str:
     if OFFLINE_BLOCK_TITLE in md:

@@ -16,6 +16,7 @@ from typing import Any, Optional
 
 class NodeType(Enum):
     """Supported AST node types."""
+
     MODULE = "module"
     FUNCTION = "function"
     ASYNC_FUNCTION = "async_function"
@@ -32,6 +33,7 @@ class NodeType(Enum):
 @dataclass
 class SourceLocation:
     """Pinpoint source code location."""
+
     file_path: Path
     line_start: int
     column_start: int
@@ -45,7 +47,7 @@ class SourceLocation:
 @dataclass
 class StandardizedASTNode:
     """Language-agnostic AST node representation.
-    
+
     Attributes:
         node_id: Unique identifier within codebase
         type: Node type (NodeType enum)
@@ -58,50 +60,50 @@ class StandardizedASTNode:
         type_hints: Type annotations (param → type mappings)
         metadata: Language-specific metadata
     """
-    
+
     node_id: str
     type: NodeType
     name: str
     source_location: SourceLocation
-    
+
     children: list[StandardizedASTNode] = field(default_factory=list)
     parent: Optional[StandardizedASTNode] = None
     docstring: Optional[str] = None
     decorators: list[str] = field(default_factory=list)
     type_hints: dict[str, str] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     def add_child(self, child: StandardizedASTNode) -> None:
         """Add child node and set parent reference."""
         child.parent = self
         self.children.append(child)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Serialize to dictionary (JSON-compatible)."""
         return {
-            'node_id': self.node_id,
-            'type': self.type.value,
-            'name': self.name,
-            'source_location': {
-                'file': str(self.source_location.file_path),
-                'line_start': self.source_location.line_start,
-                'line_end': self.source_location.line_end,
-                'column_start': self.source_location.column_start,
-                'column_end': self.source_location.column_end,
+            "node_id": self.node_id,
+            "type": self.type.value,
+            "name": self.name,
+            "source_location": {
+                "file": str(self.source_location.file_path),
+                "line_start": self.source_location.line_start,
+                "line_end": self.source_location.line_end,
+                "column_start": self.source_location.column_start,
+                "column_end": self.source_location.column_end,
             },
-            'children': [c.node_id for c in self.children],
-            'docstring': self.docstring,
-            'decorators': self.decorators,
-            'type_hints': self.type_hints,
-            'metadata': self.metadata,
+            "children": [c.node_id for c in self.children],
+            "docstring": self.docstring,
+            "decorators": self.decorators,
+            "type_hints": self.type_hints,
+            "metadata": self.metadata,
         }
-    
+
     def walk(self):
         """Depth-first tree traversal."""
         yield self
         for child in self.children:
             yield from child.walk()
-    
+
     def get_depth(self) -> int:
         """Get node depth in tree."""
         if self.parent is None:

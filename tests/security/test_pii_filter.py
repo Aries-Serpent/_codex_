@@ -10,6 +10,7 @@ Scenarios:
 
 NOTE: Creates temporary artifacts in audit_artifacts/; does not modify originals (redacted sidecars).
 """
+
 import json
 import os
 import shutil
@@ -24,8 +25,13 @@ def setup_artifacts():
     if ART_DIR.exists():
         shutil.rmtree(ART_DIR)
     ART_DIR.mkdir()
-    (ART_DIR / "sample.md").write_text("Contact: test@example.com UUID: 123e4567-e89b-12d3-a456-426614174000 KEY: AKIAABCDEFGHIJKLMNOP", encoding="utf-8")
-    (ART_DIR / "code.py").write_text("token = 'ABCDEF1234567890ABCD' # seed usage seed", encoding="utf-8")
+    (ART_DIR / "sample.md").write_text(
+        "Contact: test@example.com UUID: 123e4567-e89b-12d3-a456-426614174000 KEY: AKIAABCDEFGHIJKLMNOP",
+        encoding="utf-8",
+    )
+    (ART_DIR / "code.py").write_text(
+        "token = 'ABCDEF1234567890ABCD' # seed usage seed", encoding="utf-8"
+    )
     (ART_DIR / "ignore.bin").write_bytes(b"\x00\x01\x02")
 
 
@@ -41,7 +47,7 @@ def load_report():
 
 def test_allowlist_baseline():
     setup_artifacts()
-    run_env({"CONTENT_FILTER_MODE":"allowlist","ALLOWLIST_PROFILE":"A"})
+    run_env({"CONTENT_FILTER_MODE": "allowlist", "ALLOWLIST_PROFILE": "A"})
     rep = load_report()
     assert rep["mode"] == "allowlist"
     assert rep["pii_redactions"] == 0
@@ -49,7 +55,9 @@ def test_allowlist_baseline():
 
 def test_minimal_pii_redaction():
     setup_artifacts()
-    run_env({"CONTENT_FILTER_MODE":"pii","PII_PATTERN_SET":"minimal","PII_MODE":"union-minimal"})
+    run_env(
+        {"CONTENT_FILTER_MODE": "pii", "PII_PATTERN_SET": "minimal", "PII_MODE": "union-minimal"}
+    )
     rep = load_report()
     assert rep["mode"] == "pii"
     assert rep["pii_redactions"] >= 1
@@ -61,7 +69,9 @@ def test_minimal_pii_redaction():
 
 def test_extended_union():
     setup_artifacts()
-    run_env({"CONTENT_FILTER_MODE":"pii","PII_PATTERN_SET":"extended","PII_MODE":"union-extended"})
+    run_env(
+        {"CONTENT_FILTER_MODE": "pii", "PII_PATTERN_SET": "extended", "PII_MODE": "union-extended"}
+    )
     rep = load_report()
     assert rep["pii_redactions"] >= 3  # email + UUID + AWS key expected
     patterns_applied = rep["pii_patterns_applied"]
@@ -70,7 +80,14 @@ def test_extended_union():
 
 def test_custom_replace():
     setup_artifacts()
-    run_env({"CONTENT_FILTER_MODE":"pii","PII_PATTERN_SET":"minimal","PII_MODE":"replace","PII_CUSTOM_LIST":r"\bseed\b"})
+    run_env(
+        {
+            "CONTENT_FILTER_MODE": "pii",
+            "PII_PATTERN_SET": "minimal",
+            "PII_MODE": "replace",
+            "PII_CUSTOM_LIST": r"\bseed\b",
+        }
+    )
     rep = load_report()
     assert rep["pii_redactions"] >= 1
     assert any(p == r"\bseed\b" for p in rep["pii_patterns_applied"])
@@ -78,7 +95,14 @@ def test_custom_replace():
 
 def test_invalid_regex_skip_manifest():
     setup_artifacts()
-    run_env({"CONTENT_FILTER_MODE":"pii","PII_CUSTOM_LIST":"(unclosed","PII_MODE":"union-minimal","PII_REGEX_STRATEGY":"skip-manifest"})
+    run_env(
+        {
+            "CONTENT_FILTER_MODE": "pii",
+            "PII_CUSTOM_LIST": "(unclosed",
+            "PII_MODE": "union-minimal",
+            "PII_REGEX_STRATEGY": "skip-manifest",
+        }
+    )
     rep = load_report()
     assert rep["invalid_patterns"]
     assert any(w.startswith("invalid_regex") for w in rep["warnings"])

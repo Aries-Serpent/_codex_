@@ -10,11 +10,12 @@ from typing import Any
 import requests
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
-REPO  = os.getenv("CODEX_GH_REPO", "_codex_")
+REPO = os.getenv("CODEX_GH_REPO", "_codex_")
 TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
-BASE  = "https://api.github.com"
+BASE = "https://api.github.com"
 CACHE_DIR = os.getenv("CODEX_CACHE_DIR", ".codex/cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
 
 def _auth_headers() -> dict[str, str]:
     h = {"Accept": "application/vnd.github+json"}
@@ -22,8 +23,10 @@ def _auth_headers() -> dict[str, str]:
         h["Authorization"] = f"Bearer {TOKEN}"
     return h
 
+
 def _cache_path(key: str) -> str:
-    return os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest()+".json")
+    return os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
+
 
 def cache_get(key: str, ttl: int) -> Any | None:
     p = _cache_path(key)
@@ -35,15 +38,18 @@ def cache_get(key: str, ttl: int) -> Any | None:
         return obj.get("data")
     return None
 
+
 def cache_set(key: str, data: Any) -> None:
     p = _cache_path(key)
     with open(p, "w", encoding="utf-8") as f:
         json.dump({"ts": time.time(), "data": data}, f, ensure_ascii=False)
 
+
 def gh_get(url: str) -> Any:
     r = requests.get(url, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
+
 
 def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
     key = f"branches:{owner}/{repo}"
@@ -53,6 +59,7 @@ def list_branches(owner: str = OWNER, repo: str = REPO) -> list[dict[str, Any]]:
     data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
     cache_set(key, data)
     return data
+
 
 def get_text(owner: str, repo: str, ref: str, path: str) -> str:
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}"
@@ -64,8 +71,10 @@ def get_text(owner: str, repo: str, ref: str, path: str) -> str:
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)
 
+
 def code_search(owner: str, repo: str, q: str, ref: str = "main") -> dict[str, Any]:
     from urllib.parse import quote
+
     query = quote(f"{q} repo:{owner}/{repo} ref:{ref}")
     url = f"{BASE}/search/code?q={query}&per_page=10"
     return gh_get(url)
@@ -77,6 +86,7 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
     Intended for low-frequency, human-in-the-loop usage.
     """
     import datetime
+
     branches = list_branches(owner, repo)
     best_name = "main"
     best_ts: datetime.datetime | None = None

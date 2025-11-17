@@ -202,9 +202,7 @@ def guard_no_ci() -> None:
 
 def inject_docstring(path: Path, doc: str, apply: bool, changed: list[str]) -> None:
     if not path.exists():
-        record_error(
-            "3.1 DOCSTRINGS", f"Missing target file: {path}", "Will skip insertion"
-        )
+        record_error("3.1 DOCSTRINGS", f"Missing target file: {path}", "Will skip insertion")
         return
     text = path.read_text(encoding="utf-8")
     orig = text
@@ -226,9 +224,7 @@ def inject_docstring(path: Path, doc: str, apply: bool, changed: list[str]) -> N
             + "\n```\n",
         )
     else:
-        log_change(
-            f"Docstring unchanged: {path}", "Existing top-level docstring detected."
-        )
+        log_change(f"Docstring unchanged: {path}", "Existing top-level docstring detected.")
 
 
 def patch_readme(apply: bool, changed: list[str]) -> None:
@@ -251,9 +247,7 @@ def patch_readme(apply: bool, changed: list[str]) -> None:
     if apply:
         README.write_text(new_text, encoding="utf-8")
     changed.append(str(README))
-    log_change(
-        "README.md", "Inserted `SQLite Connection Pooling` subsection with examples."
-    )
+    log_change("README.md", "Inserted `SQLite Connection Pooling` subsection with examples.")
 
 
 def patch_agents_or_readme(apply: bool, changed: list[str]) -> None:
@@ -344,9 +338,7 @@ def build_inventory() -> None:
                 )
         except Exception:
             continue
-    (CODEX_DIR / "inventory.json").write_text(
-        json.dumps(items, indent=2), encoding="utf-8"
-    )
+    (CODEX_DIR / "inventory.json").write_text(json.dumps(items, indent=2), encoding="utf-8")
     log_change("Inventory", f"{len(items)} files indexed.")
 
 
@@ -363,9 +355,7 @@ def main() -> None:
     build_inventory()
 
     if not is_clean_repo():
-        record_error(
-            "1.1 CLEAN", "Uncommitted changes detected", "Proceeding anyway (non-fatal)"
-        )
+        record_error("1.1 CLEAN", "Uncommitted changes detected", "Proceeding anyway (non-fatal)")
 
     changed: list[str] = []
 
@@ -373,9 +363,7 @@ def main() -> None:
         p = ROOT / rel
         doc = DOCSTRINGS.get(rel)
         if doc:
-            inject_docstring(
-                p, doc, apply=(args.apply and not args.dry_run), changed=changed
-            )
+            inject_docstring(p, doc, apply=(args.apply and not args.dry_run), changed=changed)
 
     patch_readme(apply=(args.apply and not args.dry_run), changed=changed)
     patch_agents_or_readme(apply=(args.apply and not args.dry_run), changed=changed)

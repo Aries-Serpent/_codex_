@@ -7,7 +7,6 @@ from fastapi.testclient import TestClient  # noqa
 
 from services.api.main import app  # noqa
 
-
 client = TestClient(app)
 
 

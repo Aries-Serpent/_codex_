@@ -13,12 +13,8 @@ from codex_ml.utils.optional import optional_import
 from .api import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN, TokenizerAdapter
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from transformers import (  # type: ignore
-        AutoTokenizer as HF_AutoTokenizer,
-    )
-    from transformers import (
-        PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase,
-    )
+    from transformers import AutoTokenizer as HF_AutoTokenizer  # type: ignore
+    from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - runtime fallback when dependency missing
     HF_AutoTokenizer = HF_PreTrainedTokenizerBase = object  # type: ignore
 

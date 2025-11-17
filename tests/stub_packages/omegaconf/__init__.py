@@ -1,5 +1,6 @@
 """Stub OmegaConf module for optional dependency gating."""
 
+
 class DictConfig(dict):
     pass
 

@@ -10,8 +10,11 @@ from omegaconf import OmegaConf
 # Prefer the project unified config if present; otherwise use a tiny fallback.
 try:
     # Existing project config (if available)
-    from codex_ml.training.unified_training import UnifiedTrainingConfig as _Cfg  # type: ignore
+    from codex_ml.training.unified_training import (
+        UnifiedTrainingConfig as _Cfg,  # type: ignore
+    )
 except Exception:
+
     @dataclasses.dataclass
     class _Cfg:
         seed: int = 42
@@ -34,8 +37,8 @@ def _make_base_cfg() -> Any:
 
 
 def test_structured_config_merge_ok() -> None:
-    base = _make_base_cfg()                    # type-checked schema when real OmegaConf present
-    override = OmegaConf.create({"epochs": 2}) # valid override
+    base = _make_base_cfg()  # type-checked schema when real OmegaConf present
+    override = OmegaConf.create({"epochs": 2})  # valid override
     merged = OmegaConf.merge(base, override)
     result = OmegaConf.to_object(merged)
     # Handle both dict and dataclass results

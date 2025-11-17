@@ -7,7 +7,9 @@ import sys
 from pathlib import Path
 
 # Reuse the subprocess helper from status_report to avoid duplication.
-from tools.status_report import _run  # type: ignore  # circular import for runtime reuse
+from tools.status_report import (
+    _run,  # type: ignore  # circular import for runtime reuse
+)
 
 
 def _gate_state(rc: int) -> str:

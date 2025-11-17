@@ -45,9 +45,7 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(msg + "\n")
 
 
@@ -57,11 +55,7 @@ def upsert(path: Path, content: str, sentinel: str) -> None:
         existing = path.read_text(encoding="utf-8")
         if sentinel in existing:
             return
-        new = (
-            existing
-            + ("\n\n" if existing and not existing.endswith("\n") else "")
-            + content
-        )
+        new = existing + ("\n\n" if existing and not existing.endswith("\n") else "") + content
         path.write_text(new, encoding="utf-8")
         log_change("edit", path, f"insert guarded by {sentinel}", content[:4000])
     else:
@@ -111,12 +105,8 @@ def main() -> None:
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--apply", action="store_true", help="create/augment loaders, cli, tests"
-    )
-    ap.add_argument(
-        "--validate", action="store_true", help="run local validations (pytest subset)"
-    )
+    ap.add_argument("--apply", action="store_true", help="create/augment loaders, cli, tests")
+    ap.add_argument("--validate", action="store_true", help="run local validations (pytest subset)")
     args = ap.parse_args()
     if args.apply:
         apply()

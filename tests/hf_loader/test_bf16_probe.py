@@ -3,7 +3,9 @@ import importlib
 import pytest
 
 
-@pytest.mark.skipif(pytest.importorskip("torch", reason="torch not installed") is None, reason="torch missing")
+@pytest.mark.skipif(
+    pytest.importorskip("torch", reason="torch not installed") is None, reason="torch missing"
+)
 def test_bf16_capability_probe():
     import torch  # type: ignore
 
@@ -19,4 +21,3 @@ def test_bf16_capability_probe():
     hf = importlib.import_module("src.codex_ml.hf_loader")
     map_amp = getattr(hf, "_map_amp_dtype")
     assert map_amp("bf16") == torch.bfloat16
-

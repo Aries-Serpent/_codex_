@@ -110,7 +110,10 @@ if typer is not None:
         ),
     ) -> None:
         """Start a training run. Config file values are overridden by CLI options."""
-        from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+        from codex_ml.training.unified_training import (
+            UnifiedTrainingConfig,
+            run_unified_training,
+        )
 
         cfg_data = _load_training_config(config) if config else {}
         train_cfg = cfg_data.get("training", cfg_data) if isinstance(cfg_data, dict) else {}
@@ -314,7 +317,10 @@ if typer is not None:
         ] = None,
     ) -> None:
         """Resume training from a checkpoint."""
-        from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
+        from codex_ml.training.unified_training import (
+            UnifiedTrainingConfig,
+            run_unified_training,
+        )
 
         _ = other_args or []  # Placeholder for future override handling
         cfg = UnifiedTrainingConfig(resume_from=checkpoint, epochs=epochs)

@@ -35,9 +35,7 @@ def build_manifest(apis_dir: Path) -> dict:
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Generate the DeepResearch context manifest"
-    )
+    parser = argparse.ArgumentParser(description="Generate the DeepResearch context manifest")
     parser.add_argument(
         "--apis-dir",
         default="docs/deepresearch/apis",

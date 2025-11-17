@@ -30,6 +30,7 @@ from typing import Dict, List
 ALLOWED_PREFIXES = ("patchset_", "bundle_", "har_")
 REPORT_PATH = Path("audit_artifacts/prefix_validation_report.json")
 
+
 def validate_prefixes(root: Path) -> Dict[str, List[str]]:
     violations: List[str] = []
     if not root.exists():
@@ -45,25 +46,41 @@ def validate_prefixes(root: Path) -> Dict[str, List[str]]:
             violations.append(rel)
     return {"checked": candidates, "violations": violations, "allowed": list(ALLOWED_PREFIXES)}
 
+
 def main(argv=None):
     warn_only = False
     if argv is None:
         argv = sys.argv[1:]
     if "--warn-only" in argv:
         warn_only = True
-    enforce = os.getenv("BUNDLE_PREFIX_MODE", "0") in {"1", "true", "TRUE", "on", "ON", "yes", "YES"}
+    enforce = os.getenv("BUNDLE_PREFIX_MODE", "0") in {
+        "1",
+        "true",
+        "TRUE",
+        "on",
+        "ON",
+        "yes",
+        "YES",
+    }
     root = Path("audit_artifacts")
     report = validate_prefixes(root)
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
     if enforce and report["violations"] and not warn_only:
-        print(f"[ERR] Prefix violations found: {len(report['violations'])}. See {REPORT_PATH}", file=sys.stderr)
+        print(
+            f"[ERR] Prefix violations found: {len(report['violations'])}. See {REPORT_PATH}",
+            file=sys.stderr,
+        )
         return 3
     if report["violations"]:
-        print(f"[WARN] Prefix violations: {len(report['violations'])}. See {REPORT_PATH}", file=sys.stderr)
+        print(
+            f"[WARN] Prefix violations: {len(report['violations'])}. See {REPORT_PATH}",
+            file=sys.stderr,
+        )
     else:
         print("[INFO] No prefix violations detected.")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

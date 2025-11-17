@@ -15,7 +15,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, MutableMapping, Optional, Sequence, Tuple
 from urllib.parse import quote as _url_quote
 
-from src.integrations.github_app_auth import assert_online_allowlisted, build_auth_header_from_env
+from src.integrations.github_app_auth import (
+    assert_online_allowlisted,
+    build_auth_header_from_env,
+)
 
 _requests_spec = importlib.util.find_spec("requests")
 if _requests_spec is None:

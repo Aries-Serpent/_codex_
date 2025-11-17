@@ -13,7 +13,9 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
-from . import backend as backend_module, config as config_module, retry as retry_module
+from . import backend as backend_module
+from . import config as config_module
+from . import retry as retry_module
 from .logging_config import log_restore, setup_logging
 from .perf import timer
 from .util import (

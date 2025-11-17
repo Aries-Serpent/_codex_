@@ -36,10 +36,7 @@ if DO_NOT_ACTIVATE_GITHUB_ACTIONS:
 
 CANONICAL_DIR = REPO_ROOT / "src" / "codex" / "logging"
 LEGACY_WRAPPERS = {
-    REPO_ROOT
-    / "codex"
-    / "logging"
-    / "session_logger.py": "src.codex.logging.session_logger",
+    REPO_ROOT / "codex" / "logging" / "session_logger.py": "src.codex.logging.session_logger",
     REPO_ROOT
     / "codex"
     / "logging"
@@ -144,9 +141,7 @@ def ensure_clean_worktree() -> None:
         )
         sys.exit(1)
     if out.strip():
-        append_error(
-            "1.1", "Verify clean worktree", "Working tree is not clean", out.strip()
-        )
+        append_error("1.1", "Verify clean worktree", "Working tree is not clean", out.strip())
         sys.exit(1)
 
 

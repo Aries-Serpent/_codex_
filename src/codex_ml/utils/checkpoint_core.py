@@ -124,8 +124,7 @@ def _rng_snapshot() -> dict[str, Any]:
                 # Store both data and dtype to ensure exact restoration
                 cuda_states = torch.cuda.get_rng_state_all()
                 snap["torch_cuda"] = [
-                    {"data": state.tolist(), "dtype": str(state.dtype)}
-                    for state in cuda_states
+                    {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
         except Exception:
             pass

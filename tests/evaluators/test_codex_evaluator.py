@@ -6,8 +6,7 @@ import tools.codex_evaluator as ce
 
 # Skip all tests if optional dependencies are missing
 pytestmark = pytest.mark.skipif(
-    bool(ce.MISSING_OPTIONALS),
-    reason=f"Optional dependencies missing: {ce.MISSING_OPTIONALS}"
+    bool(ce.MISSING_OPTIONALS), reason=f"Optional dependencies missing: {ce.MISSING_OPTIONALS}"
 )
 
 RULES = {

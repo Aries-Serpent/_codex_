@@ -1,4 +1,5 @@
 """Test suite for data migration utilities."""
+
 from __future__ import annotations
 
 import json
@@ -26,9 +27,9 @@ class TestAssignmentMappingMigration:
                     "name": "Test Mapping",
                     "type": "test",
                     "timestamp": "2025-01-01T00:00:00Z",
-                    "extra": {"key": "value"}
+                    "extra": {"key": "value"},
                 }
-            ]
+            ],
         }
         v1_file.write_text(json.dumps(v1_data), encoding="utf-8")
 
@@ -57,9 +58,9 @@ class TestAssignmentMappingMigration:
                     "name": "Test V2",
                     "type": "example",
                     "created_at": "2025-02-01T00:00:00Z",
-                    "metadata": {"foo": "bar"}
+                    "metadata": {"foo": "bar"},
                 }
-            ]
+            ],
         }
         v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
 
@@ -80,11 +81,7 @@ class TestAssignmentMappingMigration:
     def test_migrate_v1_with_defaults(self, tmp_path):
         """Test v1 migration handles missing optional fields."""
         v1_file = tmp_path / "minimal_v1.json"
-        v1_data = {
-            "assignments": [
-                {"id": "789"}  # Minimal entry
-            ]
-        }
+        v1_data = {"assignments": [{"id": "789"}]}  # Minimal entry
         v1_file.write_text(json.dumps(v1_data), encoding="utf-8")
 
         v2_data = AssignmentMappingMigration.migrate_v1_to_v2(v1_file)
@@ -100,12 +97,7 @@ class TestAssignmentMappingMigration:
     def test_migrate_v2_with_defaults(self, tmp_path):
         """Test v2 migration handles missing optional fields."""
         v2_file = tmp_path / "minimal_v2.json"
-        v2_data = {
-            "version": "2.0",
-            "mappings": [
-                {"id": "abc"}  # Minimal entry
-            ]
-        }
+        v2_data = {"version": "2.0", "mappings": [{"id": "abc"}]}  # Minimal entry
         v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
 
         v3_data = AssignmentMappingMigration.migrate_v2_to_v3(v2_file)
@@ -125,11 +117,7 @@ class TestLoadAssignmentMappings:
     def test_load_v3_no_migration(self, tmp_path):
         """Test loading v3 format requires no migration."""
         v3_file = tmp_path / "v3.json"
-        v3_data = {
-            "version": "3.0",
-            "schema": "assignment_mapping_v3",
-            "items": [{"uuid": "test"}]
-        }
+        v3_data = {"version": "3.0", "schema": "assignment_mapping_v3", "items": [{"uuid": "test"}]}
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         result = load_assignment_mappings(v3_file)
@@ -138,12 +126,7 @@ class TestLoadAssignmentMappings:
     def test_load_v1_with_auto_migration(self, tmp_path):
         """Test loading v1 with auto-migration to v3."""
         v1_file = tmp_path / "v1.json"
-        v1_data = {
-            "version": "1.0",
-            "assignments": [
-                {"id": "test-id", "name": "Test"}
-            ]
-        }
+        v1_data = {"version": "1.0", "assignments": [{"id": "test-id", "name": "Test"}]}
         v1_file.write_text(json.dumps(v1_data), encoding="utf-8")
 
         with pytest.warns(DeprecationWarning, match="v1 assignment mappings"):
@@ -157,12 +140,7 @@ class TestLoadAssignmentMappings:
     def test_load_v2_with_auto_migration(self, tmp_path):
         """Test loading v2 with auto-migration to v3."""
         v2_file = tmp_path / "v2.json"
-        v2_data = {
-            "version": "2.0",
-            "mappings": [
-                {"id": "test-id-2", "name": "Test 2"}
-            ]
-        }
+        v2_data = {"version": "2.0", "mappings": [{"id": "test-id-2", "name": "Test 2"}]}
         v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
 
         with pytest.warns(PendingDeprecationWarning, match="v2 assignment mappings"):
@@ -176,10 +154,7 @@ class TestLoadAssignmentMappings:
     def test_load_v1_without_auto_migration(self, tmp_path):
         """Test loading v1 without auto-migration returns original."""
         v1_file = tmp_path / "v1_no_migrate.json"
-        v1_data = {
-            "version": "1.0",
-            "assignments": [{"id": "no-migrate"}]
-        }
+        v1_data = {"version": "1.0", "assignments": [{"id": "no-migrate"}]}
         v1_file.write_text(json.dumps(v1_data), encoding="utf-8")
 
         with pytest.warns(DeprecationWarning):
@@ -192,10 +167,7 @@ class TestLoadAssignmentMappings:
     def test_load_unknown_version(self, tmp_path):
         """Test loading file with unknown version raises error."""
         unknown_file = tmp_path / "unknown.json"
-        unknown_data = {
-            "version": "99.0",
-            "data": []
-        }
+        unknown_data = {"version": "99.0", "data": []}
         unknown_file.write_text(json.dumps(unknown_data), encoding="utf-8")
 
         with pytest.raises(ValueError, match="Unknown assignment mapping version"):
@@ -219,9 +191,7 @@ class TestLoadAssignmentMappings:
     def test_load_missing_version_defaults_to_v1(self, tmp_path):
         """Test file without version field defaults to v1.0."""
         no_version_file = tmp_path / "no_version.json"
-        no_version_data = {
-            "assignments": [{"id": "test"}]
-        }
+        no_version_data = {"assignments": [{"id": "test"}]}
         no_version_file.write_text(json.dumps(no_version_data), encoding="utf-8")
 
         with pytest.warns(DeprecationWarning):

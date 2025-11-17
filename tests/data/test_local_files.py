@@ -17,16 +17,16 @@ from codex_ml.data.local_files import (
 
 def test_load_jsonl():
     """Test loading JSONL file."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
         f.write('{"text": "hello", "label": 0}\n')
         f.write('{"text": "world", "label": 1}\n')
-        f.write('\n')  # Empty line should be skipped
+        f.write("\n")  # Empty line should be skipped
         f.write('{"text": "test", "label": 2}\n')
         path = f.name
-    
+
     try:
         records = load_jsonl(path)
-        
+
         assert len(records) == 3
         assert records[0]["text"] == "hello"
         assert records[0]["label"] == 0
@@ -38,13 +38,13 @@ def test_load_jsonl():
 
 def test_load_json():
     """Test loading JSON file."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         f.write('{"model": "gpt2", "lr": 0.001, "epochs": 10}')
         path = f.name
-    
+
     try:
         data = load_json(path)
-        
+
         assert isinstance(data, dict)
         assert data["model"] == "gpt2"
         assert data["lr"] == 0.001
@@ -55,13 +55,13 @@ def test_load_json():
 
 def test_load_json_array():
     """Test loading JSON array."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         f.write('[{"id": 1}, {"id": 2}, {"id": 3}]')
         path = f.name
-    
+
     try:
         data = load_json(path)
-        
+
         assert isinstance(data, list)
         assert len(data) == 3
         assert data[0]["id"] == 1
@@ -71,15 +71,15 @@ def test_load_json_array():
 
 def test_load_csv():
     """Test loading CSV file."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
-        f.write('text,label\n')
-        f.write('hello,0\n')
-        f.write('world,1\n')
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+        f.write("text,label\n")
+        f.write("hello,0\n")
+        f.write("world,1\n")
         path = f.name
-    
+
     try:
         records = load_csv(path)
-        
+
         assert len(records) == 2
         assert records[0]["text"] == "hello"
         assert records[0]["label"] == "0"  # CSV values are strings
@@ -90,15 +90,15 @@ def test_load_csv():
 
 def test_load_csv_custom_delimiter():
     """Test loading CSV with custom delimiter."""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.tsv', delete=False) as f:
-        f.write('text\tlabel\n')
-        f.write('hello\t0\n')
-        f.write('world\t1\n')
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".tsv", delete=False) as f:
+        f.write("text\tlabel\n")
+        f.write("hello\t0\n")
+        f.write("world\t1\n")
         path = f.name
-    
+
     try:
-        records = load_csv(path, delimiter='\t')
-        
+        records = load_csv(path, delimiter="\t")
+
         assert len(records) == 2
         assert records[0]["text"] == "hello"
         assert records[0]["label"] == "0"
@@ -112,26 +112,26 @@ def test_save_and_load_jsonl():
         {"text": "hello", "label": 0},
         {"text": "world", "label": 1},
     ]
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "test.jsonl"
-        
+
         save_jsonl(records, path)
         loaded = load_jsonl(path)
-        
+
         assert loaded == records
 
 
 def test_save_and_load_json():
     """Test saving and loading JSON roundtrip."""
     data = {"model": "gpt2", "lr": 0.001}
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "test.json"
-        
+
         save_json(data, path)
         loaded = load_json(path)
-        
+
         assert loaded == data
 
 
@@ -141,13 +141,13 @@ def test_save_and_load_csv():
         {"text": "hello", "label": "0"},
         {"text": "world", "label": "1"},
     ]
-    
+
     with tempfile.TemporaryDirectory() as tmpdir:
         path = Path(tmpdir) / "test.csv"
-        
+
         save_csv(records, path)
         loaded = load_csv(path)
-        
+
         assert loaded == records
 
 
@@ -155,10 +155,10 @@ def test_save_creates_parent_directory():
     """Test that save functions create parent directories."""
     with tempfile.TemporaryDirectory() as tmpdir:
         nested_path = Path(tmpdir) / "nested" / "dir" / "file.jsonl"
-        
+
         assert not nested_path.parent.exists()
-        
+
         save_jsonl([{"test": "data"}], nested_path)
-        
+
         assert nested_path.exists()
         assert nested_path.parent.exists()

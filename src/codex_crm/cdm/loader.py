@@ -28,6 +28,8 @@ def _iter_csv(resource: Traversable) -> Iterable[dict[str, str]]:
     with resource.open("r", encoding="utf-8") as handle:
         text_handle = cast(TextIO, handle)
         yield from csv.DictReader(text_handle)
+
+
 def _iter_csv_directory(subdir: str) -> Iterable[Traversable]:
     """Yield CSV resources bundled under ``cdm/data/<subdir>``."""
 

@@ -9,7 +9,12 @@ from typing import Any
 import pytest
 
 from codex_ml.logging.run_logger import RunLogger
-from codex_ml.tracking.writers import MLflowWriter, NdjsonWriter, TensorBoardWriter, WandbWriter
+from codex_ml.tracking.writers import (
+    MLflowWriter,
+    NdjsonWriter,
+    TensorBoardWriter,
+    WandbWriter,
+)
 
 
 @pytest.fixture

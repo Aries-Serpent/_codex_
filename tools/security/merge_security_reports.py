@@ -8,6 +8,7 @@ Inputs (if present):
 Output:
   - artifacts/security_summary.json
 """
+
 from __future__ import annotations
 
 import json
@@ -56,7 +57,9 @@ def main() -> None:
     if bandit_path.exists():
         summary["bandit"] = {"present": True}
     if gitleaks_path.exists():
-        summary["gitleaks"] = {"findings_count": count_gitleaks(gitleaks_path.read_text(encoding="utf-8"))}
+        summary["gitleaks"] = {
+            "findings_count": count_gitleaks(gitleaks_path.read_text(encoding="utf-8"))
+        }
 
     (ART / "security_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print("Wrote artifacts/security_summary.json")

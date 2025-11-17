@@ -43,9 +43,20 @@ While performing [{step}:{desc}], encountered the following error:
 Context: {ctx}
 What are the possible causes, and how can this be resolved while preserving intended functionality?
 """
-    ERRORS_MD.write_text((ERRORS_MD.read_text() if ERRORS_MD.exists() else "") + "\n\n" + msg, encoding="utf-8")
+    ERRORS_MD.write_text(
+        (ERRORS_MD.read_text() if ERRORS_MD.exists() else "") + "\n\n" + msg, encoding="utf-8"
+    )
     with ERRORS_ND.open("a", encoding="utf-8") as f:
-        json.dump({"ts": utcnow(), "step": step, "desc": desc, "error": f"{type(err).__name__}: {err}", "ctx": ctx}, f)
+        json.dump(
+            {
+                "ts": utcnow(),
+                "step": step,
+                "desc": desc,
+                "error": f"{type(err).__name__}: {err}",
+                "ctx": ctx,
+            },
+            f,
+        )
         f.write("\n")
 
 
@@ -99,6 +110,7 @@ def patch_yaml(path: Path) -> tuple[bool, int]:
     if new != text:
         any_change = True
         text = new
+
     # For each job under jobs:, inject if line when missing (best-effort)
     def guard_jobs(txt: str) -> tuple[str, int]:
         jobs_guarded = 0
@@ -113,10 +125,11 @@ def patch_yaml(path: Path) -> tuple[bool, int]:
                 block.insert(1, f"{indent}if: ${{ false }}")
                 jobs_guarded += 1
                 block = "\n".join(block) + "\n"
-            out += txt[pos:m.start()] + block
+            out += txt[pos : m.start()] + block
             pos = m.end()
         out += txt[pos:]
         return out, jobs_guarded
+
     text, guarded = guard_jobs(text)
     if any_change or guarded:
         path.write_text(text, encoding="utf-8")
@@ -161,10 +174,13 @@ def main():
         except Exception as e:
             record_error("STEP_06", "Patch workflow triggers/guards", e, ctx=str(wf))
     write_ci_doc()
-    append_changelog("Disable remote CI", [
-        f"Patched {changed_files} workflow file(s) to `workflow_dispatch` and guarded jobs.",
-        f"Total jobs guarded: {total_jobs_guarded}",
-    ])
+    append_changelog(
+        "Disable remote CI",
+        [
+            f"Patched {changed_files} workflow file(s) to `workflow_dispatch` and guarded jobs.",
+            f"Total jobs guarded: {total_jobs_guarded}",
+        ],
+    )
     print(f"[Summary] Patched files: {changed_files} | Jobs guarded: {total_jobs_guarded}")
     print(f"[Docs]    Wrote: {DOCS / 'ci.md'}")
     if ERRORS_MD.exists():

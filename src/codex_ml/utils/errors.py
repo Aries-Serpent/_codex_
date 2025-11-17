@@ -6,8 +6,19 @@ from pathlib import Path
 def record_error(step_number: str, step_desc: str, error_msg: str, context: str = ""):
     p = Path(".codex/status")
     p.mkdir(parents=True, exist_ok=True)
-    with (p/"errors.ndjson").open("a", encoding="utf-8") as f:
-        f.write(json.dumps({"ts": time.time(), "step": step_number, "desc": step_desc, "error": error_msg, "context": context})+"\n")
+    with (p / "errors.ndjson").open("a", encoding="utf-8") as f:
+        f.write(
+            json.dumps(
+                {
+                    "ts": time.time(),
+                    "step": step_number,
+                    "desc": step_desc,
+                    "error": error_msg,
+                    "context": context,
+                }
+            )
+            + "\n"
+        )
     blk = (
         ":::\n"
         f"Question for ChatGPT @codex {int(time.time())}:\n"
@@ -16,5 +27,5 @@ def record_error(step_number: str, step_desc: str, error_msg: str, context: str 
         "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
         ":::\n"
     )
-    with (p/"ERROR_CAPTURE_BLOCKS.md").open("a", encoding="utf-8") as f:
+    with (p / "ERROR_CAPTURE_BLOCKS.md").open("a", encoding="utf-8") as f:
         f.write(blk + "\n")

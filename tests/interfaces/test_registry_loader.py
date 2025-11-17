@@ -8,9 +8,7 @@ from codex_ml.interfaces import get_component, load_component
 
 def test_load_and_get_component(tmp_path):
     module_path = tmp_path / "tmp_mod.py"
-    module_path.write_text(
-        "class Dummy:\n    def __init__(self):\n        self.flag = True\n"
-    )
+    module_path.write_text("class Dummy:\n    def __init__(self):\n        self.flag = True\n")
     sys.path.insert(0, str(tmp_path))
     try:
         cls = load_component("tmp_mod:Dummy")

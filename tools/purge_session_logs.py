@@ -42,8 +42,7 @@ def purge(
 
     # Purge SQLite rows
     db_path = db_path or Path(
-        os.getenv("CODEX_LOG_DB_PATH")
-        or os.getenv("CODEX_DB_PATH", ".codex/session_logs.db")
+        os.getenv("CODEX_LOG_DB_PATH") or os.getenv("CODEX_DB_PATH", ".codex/session_logs.db")
     )
     rows_deleted = 0
     if db_path.exists():
@@ -54,16 +53,12 @@ def purge(
             )
             if cur.fetchone():
                 cutoff_ts = cutoff_dt.timestamp()
-                cur = conn.execute(
-                    "SELECT COUNT(*) FROM session_events WHERE ts < ?", (cutoff_ts,)
-                )
+                cur = conn.execute("SELECT COUNT(*) FROM session_events WHERE ts < ?", (cutoff_ts,))
                 rows_deleted = cur.fetchone()[0]
                 if dry_run:
                     print(f"Would delete {rows_deleted} rows from {db_path}")
                 else:
-                    conn.execute(
-                        "DELETE FROM session_events WHERE ts < ?", (cutoff_ts,)
-                    )
+                    conn.execute("DELETE FROM session_events WHERE ts < ?", (cutoff_ts,))
                     conn.commit()
                     conn.execute("VACUUM")
             else:

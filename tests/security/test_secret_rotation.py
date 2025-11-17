@@ -1,6 +1,11 @@
 import pytest
 
-from src.security import SecretRotationPolicy, SecretRotationState, SecurityError, rotate_secret
+from src.security import (
+    SecretRotationPolicy,
+    SecretRotationState,
+    SecurityError,
+    rotate_secret,
+)
 
 
 def test_secret_rotation_policy_enforced() -> None:

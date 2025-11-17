@@ -3,6 +3,7 @@
 Validates input sanitization against common attack vectors per
 AGENTS.md security policy.
 """
+
 from __future__ import annotations
 
 import html

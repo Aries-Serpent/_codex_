@@ -1,4 +1,5 @@
 """Pluggable metrics sinks for offline logging."""
+
 from __future__ import annotations
 
 import csv
@@ -10,11 +11,9 @@ __all__ = ["MetricsSink", "CsvSink", "NdjsonSink", "NullSink", "create_sink"]
 
 
 class MetricsSink(Protocol):
-    def write(self, row: Dict) -> None:
-        ...
+    def write(self, row: Dict) -> None: ...
 
-    def close(self) -> None:
-        ...
+    def close(self) -> None: ...
 
 
 class NullSink:
@@ -59,7 +58,9 @@ class NdjsonSink:
         self.fp.flush()
 
 
-def create_sink(kind: str, fp: TextIO | None = None, *, fieldnames: list[str] | None = None) -> MetricsSink:
+def create_sink(
+    kind: str, fp: TextIO | None = None, *, fieldnames: list[str] | None = None
+) -> MetricsSink:
     kind = (kind or "").lower()
     if kind == "csv":
         if fp is None:
@@ -77,6 +78,7 @@ def create_sink(kind: str, fp: TextIO | None = None, *, fieldnames: list[str] | 
 def get_sink(kind: str | None, path: str | None = None) -> MetricsSink | None:
     """Factory for path-based sinks (alternate to create_sink with file handles)."""
     from pathlib import Path
+
     if not kind or kind == "none":
         return None
     if kind == "csv":

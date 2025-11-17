@@ -15,9 +15,7 @@ def test_importer_deduplicates_start_end(tmp_path, monkeypatch):
         sid = s.sid
     # reimport should not duplicate start/end
     count_before = (
-        sqlite3.connect(db_path)
-        .execute("SELECT COUNT(*) FROM session_events")
-        .fetchone()[0]
+        sqlite3.connect(db_path).execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
     )
     import_ndjson.import_session(sid, log_dir=log_dir, db_path=db_path)
     with sqlite3.connect(db_path) as con:
@@ -29,9 +27,5 @@ def test_importer_deduplicates_start_end(tmp_path, monkeypatch):
     assert pairs.get("session_start") == 1
     assert pairs.get("session_end") == 1
     # ensure no extra rows created beyond original two
-    total = (
-        sqlite3.connect(db_path)
-        .execute("SELECT COUNT(*) FROM session_events")
-        .fetchone()[0]
-    )
+    total = sqlite3.connect(db_path).execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
     assert total == count_before

@@ -1,4 +1,5 @@
 """Test suite for data drift detection."""
+
 from __future__ import annotations
 
 import json
@@ -117,7 +118,14 @@ class TestDataDriftCheck:
     def test_main_nonexistent_file(self, tmp_path):
         """Test main function with non-existent file."""
         with pytest.raises(FileNotFoundError):
-            main(["--ref", str(tmp_path / "nonexistent.json"), "--cur", str(tmp_path / "also_nonexistent.json")])
+            main(
+                [
+                    "--ref",
+                    str(tmp_path / "nonexistent.json"),
+                    "--cur",
+                    str(tmp_path / "also_nonexistent.json"),
+                ]
+            )
 
     def test_main_invalid_json(self, tmp_path):
         """Test main function with invalid JSON."""

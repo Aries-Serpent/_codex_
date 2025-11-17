@@ -1,7 +1,9 @@
 """
 Compute SHA256 over docs/ and emit artifacts/docs_manifest.sha
 """
+
 from __future__ import annotations
+
 import hashlib
 import os
 from pathlib import Path
@@ -23,7 +25,7 @@ def main():
     root = Path("docs")
     out = Path("artifacts")
     out.mkdir(exist_ok=True)
-    
+
     digest = sha_dir(root)
     output_path = out / "docs_manifest.sha"
     output_path.write_text(digest, encoding="utf-8")

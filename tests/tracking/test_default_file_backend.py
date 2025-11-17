@@ -22,4 +22,3 @@ def test_default_file_backend(tmp_path, monkeypatch):
     with mlflow.start_run():
         mlflow.log_param("p", 1)
     assert (tmp_path / "artifacts" / "mlruns").exists()
-

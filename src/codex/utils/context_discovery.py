@@ -53,7 +53,7 @@ def get_pr_number(interactive: bool = True) -> str:
     Returns: PR number as string, or "N/A" if not found
     """
     # 1. Check environment variables
-    for env_var in ['CODEX_PR', 'CI_MERGE_REQUEST_IID', 'GITHUB_PR_NUMBER']:
+    for env_var in ["CODEX_PR", "CI_MERGE_REQUEST_IID", "GITHUB_PR_NUMBER"]:
         value = os.getenv(env_var)
         if value:
             logger.info(f"PR number discovered from env: {env_var}={value}")
@@ -63,7 +63,7 @@ def get_pr_number(interactive: bool = True) -> str:
     branch = run_git_command("git rev-parse --abbrev-ref HEAD")
     if branch:
         # Match patterns: pr-1926, feature/PR-1926, feature/1926, etc.
-        match = re.search(r'[/-]?(?:pr|PR)?-?(\d+)', branch)
+        match = re.search(r"[/-]?(?:pr|PR)?-?(\d+)", branch)
         if match:
             pr_num = match.group(1)
             logger.info(f"PR number extracted from branch: {branch} → {pr_num}")
@@ -72,7 +72,7 @@ def get_pr_number(interactive: bool = True) -> str:
     # 3. Parse recent commit message
     commit_msg = run_git_command("git log -1 --pretty=%B")
     if commit_msg:
-        match = re.search(r'#(\d{4,})', commit_msg)  # Look for #1926 pattern
+        match = re.search(r"#(\d{4,})", commit_msg)  # Look for #1926 pattern
         if match:
             pr_num = match.group(1)
             logger.info(f"PR number extracted from commit: {pr_num}")
@@ -96,11 +96,11 @@ def get_pr_number(interactive: bool = True) -> str:
 def discover_git_context() -> dict[str, Optional[str]]:
     """Discover git context: branch, commit hash, short hash, commit author."""
     return {
-        'branch': run_git_command("git rev-parse --abbrev-ref HEAD"),
-        'commit': run_git_command("git rev-parse HEAD"),
-        'short_commit': run_git_command("git rev-parse --short HEAD"),
-        'author': run_git_command("git config user.name"),
-        'email': run_git_command("git config user.email"),
+        "branch": run_git_command("git rev-parse --abbrev-ref HEAD"),
+        "commit": run_git_command("git rev-parse HEAD"),
+        "short_commit": run_git_command("git rev-parse --short HEAD"),
+        "author": run_git_command("git config user.name"),
+        "email": run_git_command("git config user.email"),
     }
 
 
@@ -119,20 +119,20 @@ def get_session_info(interactive: bool = True) -> dict[str, Any]:
           - timestamp: Session timestamp (ISO format)
     """
     import datetime
-    
+
     git_context = discover_git_context()
     pr_number = get_pr_number(interactive=interactive)
-    
+
     session_info = {
-        'pr_number': pr_number,
-        'branch': git_context['branch'] or 'unknown',
-        'commit': git_context['commit'] or 'unknown',
-        'short_commit': git_context['short_commit'] or 'unknown',
-        'author': git_context['author'] or 'unknown',
-        'email': git_context['email'] or 'unknown',
-        'timestamp': datetime.datetime.utcnow().isoformat() + 'Z',
+        "pr_number": pr_number,
+        "branch": git_context["branch"] or "unknown",
+        "commit": git_context["commit"] or "unknown",
+        "short_commit": git_context["short_commit"] or "unknown",
+        "author": git_context["author"] or "unknown",
+        "email": git_context["email"] or "unknown",
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
     }
-    
+
     logger.info(f"Session context discovered: {session_info}")
     return session_info
 
@@ -140,6 +140,6 @@ def get_session_info(interactive: bool = True) -> dict[str, Any]:
 if __name__ == "__main__":
     # Demo usage
     import json
-    
+
     info = get_session_info()
     print(json.dumps(info, indent=2))

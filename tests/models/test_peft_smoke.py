@@ -34,4 +34,3 @@ def test_lora_applies_and_forwards():
     out = wrapped(input_ids=input_ids, attention_mask=attention_mask)
     assert hasattr(out, "logits")
     assert out.logits.shape[0] == 2
-

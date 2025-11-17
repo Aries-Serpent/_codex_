@@ -26,5 +26,7 @@ def test_ratelimit_tile_validates(tmp_path):
     schema_src = repo_root / "configs" / "schemas" / "ratelimit_tile.schema.json"
     schema_p.write_text(schema_src.read_text(encoding="utf-8"), encoding="utf-8")
     validator = repo_root / "tools" / "schema_validate.py"
-    code = subprocess.call([sys.executable, str(validator), "--data", str(data_p), "--schema", str(schema_p)])
+    code = subprocess.call(
+        [sys.executable, str(validator), "--data", str(data_p), "--schema", str(schema_p)]
+    )
     assert code == 0

@@ -1,4 +1,5 @@
 """Documentation system comprehensive tests."""
+
 from __future__ import annotations
 
 import tempfile
@@ -7,7 +8,7 @@ from pathlib import Path
 
 class TestMarkdownLinting:
     """Test markdown validation and linting."""
-    
+
     def test_markdown_file_structure(self):
         """Test markdown file has valid structure."""
         test_dir = Path(tempfile.mkdtemp())
@@ -17,6 +18,7 @@ class TestMarkdownLinting:
         assert content.startswith("#")
         assert "\n\n" in content
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_markdown_headers(self):
@@ -33,9 +35,10 @@ class TestMarkdownLinting:
             assert f.startswith("```")
             assert len(f) > 3
 
+
 class TestDocumentationCoverage:
     """Test documentation coverage."""
-    
+
     def test_readme_exists(self):
         """Test README exists."""
         repo_root = Path(__file__).parents[2]
@@ -52,9 +55,10 @@ class TestDocumentationCoverage:
         assert len(doc_structure["modules"]) > 0
         assert len(doc_structure["examples"]) > 0
 
+
 class TestMkdocsBuild:
     """Test mkdocs build process."""
-    
+
     def test_mkdocs_config_exists(self):
         """Test mkdocs.yml exists."""
         repo_root = Path(__file__).parents[2]

@@ -7,6 +7,7 @@ Verifies that the detector:
 3. Detects mcp/ and tools/ paths correctly
 4. Appears in capabilities_raw.json after S3 execution
 """
+
 from __future__ import annotations
 
 import pytest
@@ -15,7 +16,7 @@ import pytest
 def test_mcp_tools_integration_detector_basic():
     """Test basic MCP tools integration detector functionality."""
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     file_index = {
         "files": [
             {"path": "mcp/server.py", "ext": ".py"},
@@ -23,9 +24,9 @@ def test_mcp_tools_integration_detector_basic():
             {"path": "src/utils.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "mcp-tools-integration"
     assert "mcp/server.py" in result["evidence_files"]
     assert "tools/cli.py" in result["evidence_files"]
@@ -37,16 +38,16 @@ def test_mcp_tools_integration_detector_basic():
 def test_mcp_tools_integration_detector_patterns():
     """Test that detector finds patterns correctly."""
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     file_index = {
         "files": [
             {"path": "lib/mcp_client.py", "ext": ".py"},
             {"path": "utils/tool_helper.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert "mcp" in result["found_patterns"]
     assert "tool" in result["found_patterns"]
     assert len(result["evidence_files"]) == 2
@@ -55,16 +56,16 @@ def test_mcp_tools_integration_detector_patterns():
 def test_mcp_tools_integration_detector_no_evidence():
     """Test detector with no matching files."""
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     file_index = {
         "files": [
             {"path": "src/main.py", "ext": ".py"},
             {"path": "docs/README.md", "ext": ".md"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "mcp-tools-integration"
     assert len(result["evidence_files"]) == 0
     assert len(result["found_patterns"]) == 0
@@ -73,7 +74,7 @@ def test_mcp_tools_integration_detector_no_evidence():
 def test_mcp_tools_integration_detector_sorted():
     """Test that detector returns sorted results."""
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     file_index = {
         "files": [
             {"path": "z_tools/last.py", "ext": ".py"},
@@ -81,9 +82,9 @@ def test_mcp_tools_integration_detector_sorted():
             {"path": "m_tools/middle.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["evidence_files"] == sorted(result["evidence_files"])
     assert result["found_patterns"] == sorted(result["found_patterns"])
 
@@ -91,7 +92,7 @@ def test_mcp_tools_integration_detector_sorted():
 def test_mcp_tools_integration_in_s3_output(tmp_path):
     """
     Integration test: Run S1-S3 and verify mcp-tools-integration appears in capabilities_raw.json
-    
+
     This test creates a minimal test repository structure and runs the audit pipeline
     through S3 to ensure the detector is properly loaded and executed.
     """
@@ -99,7 +100,7 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
     pytest.importorskip("scripts.space_traversal.audit_runner")
     pytest.importorskip("yaml")
     pytest.importorskip("jinja2")
-    
+
     # This test would ideally set up a full test environment, but that's complex.
     # For now, we'll just verify the detector can be imported and called.
     # A real integration test would:
@@ -107,10 +108,10 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
     # 2. Create minimal workflow.yaml
     # 3. Run stage S1, S2, S3
     # 4. Verify capabilities_raw.json contains mcp-tools-integration
-    
+
     # Simplified version: just verify detector works end-to-end
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     # Simulate a context_index structure
     file_index = {
         "generated": 1234567890,
@@ -122,19 +123,19 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
         ],
         "version": "1.1.0",
     }
-    
+
     result = detect(file_index)
-    
+
     # Verify structure matches what S3 expects
     assert "id" in result
     assert "evidence_files" in result
     assert "found_patterns" in result
     assert "required_patterns" in result
     assert "meta" in result
-    
+
     # Verify the ID is correct
     assert result["id"] == "mcp-tools-integration"
-    
+
     # Verify evidence was found
     assert len(result["evidence_files"]) >= 2
     assert "mcp/core.py" in result["evidence_files"]
@@ -144,16 +145,16 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
 def test_mcp_tools_integration_case_insensitive():
     """Test that detector is case-insensitive for pattern matching."""
     from scripts.space_traversal.detectors.mcp_tools_integration import detect
-    
+
     file_index = {
         "files": [
             {"path": "lib/MCP_Server.py", "ext": ".py"},
             {"path": "utils/TOOL_Helper.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     # Should find files even with mixed case
     assert len(result["evidence_files"]) == 2
     # Patterns should be found

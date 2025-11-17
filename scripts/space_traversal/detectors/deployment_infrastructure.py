@@ -3,6 +3,7 @@
 Detects Docker configurations, Kubernetes/Helm charts, deployment
 scripts, and service definitions.
 """
+
 from __future__ import annotations
 
 

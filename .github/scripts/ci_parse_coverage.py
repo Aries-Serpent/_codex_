@@ -24,10 +24,11 @@ Outputs:
   On failure prints an ERROR message to stderr and exits with non-zero.
 """
 from __future__ import annotations
+
+import math
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
-import math
 
 
 def _as_float(s: str) -> float | None:
@@ -82,7 +83,11 @@ def parse_coverage_xml(path: Path) -> float:
     # 3) Search elements for lines-covered / lines-valid (integer counts)
     for elem in root.iter():
         lc = elem.attrib.get("lines-covered") or elem.attrib.get("lines_covered")
-        lv = elem.attrib.get("lines-valid") or elem.attrib.get("lines_valid") or elem.attrib.get("lines")
+        lv = (
+            elem.attrib.get("lines-valid")
+            or elem.attrib.get("lines_valid")
+            or elem.attrib.get("lines")
+        )
         if lc and lv:
             try:
                 lc_f = float(lc)

@@ -9,17 +9,17 @@ def main(retain: int = 5):
     if retain <= 0:
         print(f"[ERR] retain must be positive integer, got {retain}", file=sys.stderr)
         sys.exit(1)
-    
+
     base = Path("audit_artifacts/baselines")
     if not base.exists():
         print("[INFO] no baselines to rotate")
         return
-    
+
     entries = sorted([p for p in base.iterdir() if p.is_dir()])
     if len(entries) <= retain:
         print(f"[INFO] within retain window ({len(entries)}/{retain})")
         return
-    
+
     to_delete = entries[:-retain]
     for d in to_delete:
         try:
@@ -27,6 +27,7 @@ def main(retain: int = 5):
             print(f"[INFO] removed baseline: {d}")
         except OSError as e:
             print(f"[WARN] failed to remove {d}: {e}", file=sys.stderr)
+
 
 if __name__ == "__main__":
     try:

@@ -20,6 +20,8 @@ def test_checkpoint_records_git_commit(tmp_path):
     ckpt = torch.load(str(path), weights_only=False)
     extra = ckpt["extra"]
     repo_root = Path(__file__).resolve().parent.parent
-    commit = subprocess.check_output(["git", "-C", str(repo_root), "rev-parse", "HEAD"], text=True).strip()
+    commit = subprocess.check_output(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"], text=True
+    ).strip()
     assert extra["git_commit"] == commit
     assert "system" in extra

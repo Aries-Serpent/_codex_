@@ -2,7 +2,11 @@ import json
 import random
 from pathlib import Path
 
-from codex_ml.utils.checkpointing import CheckpointManager, dump_rng_state, load_rng_state
+from codex_ml.utils.checkpointing import (
+    CheckpointManager,
+    dump_rng_state,
+    load_rng_state,
+)
 
 
 def test_dump_load_rng_state():

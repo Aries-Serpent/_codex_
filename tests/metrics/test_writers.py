@@ -3,7 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from codex_ml.metrics.writers import CSVMetricsWriter, MetricsRecord, NDJSONMetricsWriter
+from codex_ml.metrics.writers import (
+    CSVMetricsWriter,
+    MetricsRecord,
+    NDJSONMetricsWriter,
+)
 
 
 def test_ndjson_writer_roundtrip(tmp_path: Path) -> None:

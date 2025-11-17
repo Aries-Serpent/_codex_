@@ -38,4 +38,3 @@ def test_metrics_history_matches_schema(tmp_path: Path, monkeypatch):
     validator = Draft7Validator(METRICS_SCHEMA)
     for entry in history:
         validator.validate(entry)
-

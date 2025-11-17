@@ -32,4 +32,3 @@ def test_resolve_dtype_and_device_no_crash():
         assert isinstance(dev, torch.device) or str(dev) == "cpu"
     except Exception:
         assert dev == "cpu"
-

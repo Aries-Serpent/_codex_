@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -11,8 +12,12 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
     files = [f.get("path") for f in file_index.get("files", []) if f.get("path")]
     evidence = [
-        p for p in files
-        if p.startswith("mcp/") or p.startswith("tools/") or "mcp" in p.lower() or "tool" in p.lower()
+        p
+        for p in files
+        if p.startswith("mcp/")
+        or p.startswith("tools/")
+        or "mcp" in p.lower()
+        or "tool" in p.lower()
     ]
     found = []
     required = ["mcp", "tool"]

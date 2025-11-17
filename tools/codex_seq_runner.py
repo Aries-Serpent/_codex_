@@ -30,20 +30,25 @@ RQ = ROOT / "RESEARCH_QUESTIONS.md"
 
 SUPPLIED_TASK_BASENAME = "supplied_task.md"
 
+
 def ts() -> str:
     return datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
 
 def ensure_dirs():
     for p in [SESSION_DIR, LOGS, PATCHES, ARTIFACTS]:
         p.mkdir(parents=True, exist_ok=True)
 
+
 def write_file(p: Path, content: str):
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(content, encoding="utf-8")
 
+
 def append_file(p: Path, content: str):
     with p.open("a", encoding="utf-8") as f:
         f.write(content)
+
 
 def sh(cmd: List[str], log_name: str, allow_fail=True) -> Tuple[int, str]:
     try:
@@ -58,16 +63,20 @@ def sh(cmd: List[str], log_name: str, allow_fail=True) -> Tuple[int, str]:
         write_file(LOGS / f"{log_name}.log", msg)
         return 1, msg
 
+
 def hash_text(s: str) -> str:
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
+
 
 def snapshot_git():
     code, out = sh(["git", "rev-parse", "--short", "HEAD"], "git_rev", allow_fail=True)
     if code == 0:
         write_file(ARTIFACTS / "commit.txt", out.strip())
 
+
 def save_supplied_task_text(text: str):
     write_file(ARTIFACTS / SUPPLIED_TASK_BASENAME, text)
+
 
 def record_rq(step_number: str, step_desc: str, error_message: str, ctx: str):
     block = (
@@ -79,9 +88,11 @@ def record_rq(step_number: str, step_desc: str, error_message: str, ctx: str):
     )
     append_file(RQ, block)
 
+
 def record_changelog(entry: str):
     header = f"## {ts()} — Codex Run\n"
     append_file(CHANGELOG, header + entry.strip() + "\n\n")
+
 
 def safe_load(path: Path) -> Optional[str]:
     try:
@@ -90,6 +101,7 @@ def safe_load(path: Path) -> Optional[str]:
         record_rq("PH1", f"Read {path}", str(e), "File read failure")
         return None
 
+
 def replace_readme_refs(readme: Path) -> Tuple[bool, str]:
     s = safe_load(readme)
     if s is None:
@@ -97,12 +109,15 @@ def replace_readme_refs(readme: Path) -> Tuple[bool, str]:
     orig = s
     s = re.sub(r"!\[[^\]]*\]\(https?://.*?github.*?/actions.*?\)", "", s, flags=re.I)
     s = re.sub(r"\[!\[[^\]]*\]\(.*?\)\]\(.*?\)", "", s)
-    s = re.sub(r"(?i)github actions[^\n]*", "Local CI only: run `pre-commit` and `pytest` locally.", s)
+    s = re.sub(
+        r"(?i)github actions[^\n]*", "Local CI only: run `pre-commit` and `pytest` locally.", s
+    )
     changed = s != orig
     if changed:
         write_file(readme, s)
         record_changelog("- README: removed online badges and normalized CI to offline/local.")
     return changed, "OK"
+
 
 def apply_unified_patch(file_path: Path, patch_blocks: List[Tuple[str, str]]) -> Tuple[bool, str]:
     s = safe_load(file_path)
@@ -120,6 +135,7 @@ def apply_unified_patch(file_path: Path, patch_blocks: List[Tuple[str, str]]) ->
         write_file(file_path, s)
     return changed, "OK" if changed else "No matching context; file left unchanged"
 
+
 def patch_tokenizer_ids(path: Path):
     s = safe_load(path)
     if s is None:
@@ -127,32 +143,30 @@ def patch_tokenizer_ids(path: Path):
     if "def pad_id" in s:
         record_changelog("- Tokenizer: skip/no change (already has pad_id/eos_id).")
         return False, "already"
-    insert_after = (
-        r"(class\s+[A-Za-z0-9_]+\([^)]+\):.*?\n)    @property\n    def vocab_size.*?\n        return int\(self.tokenizer.vocab_size\)\n"
-    )
-    replacement = (
-        "\1    @property\n    def vocab_size(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.vocab_size)\n\n    @property\n    def pad_id(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.pad_token_id or 0)\n\n    @property\n    def eos_id(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.eos_token_id or 0)\n"
-    )
+    insert_after = r"(class\s+[A-Za-z0-9_]+\([^)]+\):.*?\n)    @property\n    def vocab_size.*?\n        return int\(self.tokenizer.vocab_size\)\n"
+    replacement = "\1    @property\n    def vocab_size(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.vocab_size)\n\n    @property\n    def pad_id(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.pad_token_id or 0)\n\n    @property\n    def eos_id(self) -> int:  # type: ignore[override]\n        return int(self.tokenizer.eos_token_id or 0)\n"
     changed, msg = apply_unified_patch(path, [(insert_after, replacement)])
     if changed:
         record_changelog("- Tokenizer: added pad_id/eos_id accessors.")
     return changed, msg
 
+
 def patch_functional_training(path: Path):
     pattern = r"except Exception:\n\s*pass"
     replacement = (
-        "except Exception as exc:\n            print(f\"[monitoring-error] {exc}\", file=sys.stderr)"
+        'except Exception as exc:\n            print(f"[monitoring-error] {exc}", file=sys.stderr)'
     )
     changed, msg = apply_unified_patch(path, [(pattern, replacement)])
     if changed:
         record_changelog("- functional_training: surfaced monitoring exceptions to stderr.")
     return changed, msg
 
+
 def patch_train_loop_grad_accum(path: Path):
     patches = [
         (
             r'(ap.add_argument\("--epochs",.*?\)\))',
-            "\\1\n    ap.add_argument(\"--grad-accum\", type=int, default=1, help=\"accumulate gradients over N steps\")",
+            '\\1\n    ap.add_argument("--grad-accum", type=int, default=1, help="accumulate gradients over N steps")',
         ),
         (
             r"(def demo_epoch\(epoch: int\) -> Dict\[str, float\]:)",
@@ -160,7 +174,7 @@ def patch_train_loop_grad_accum(path: Path):
         ),
         (
             r"ppl = perplexity\(logits, targets, from_logits=True\)\n    return {\"acc\": acc, \"ppl\": ppl}\n",
-            "ppl = perplexity(logits, targets, from_logits=True)\n    return {\"acc\": acc, \"ppl\": ppl, \"grad_accum\": grad_accum}\n",
+            'ppl = perplexity(logits, targets, from_logits=True)\n    return {"acc": acc, "ppl": ppl, "grad_accum": grad_accum}\n',
         ),
         (
             r"for ep in range\(args.epochs\):\n        m = demo_epoch\(ep\)\n",
@@ -172,15 +186,15 @@ def patch_train_loop_grad_accum(path: Path):
         record_changelog("- train_loop: added --grad-accum and metric logging.")
     return changed, msg
 
+
 def patch_checkpoint_system_meta(path: Path):
     pattern = r"_write_json\(ep_dir / \"rng.json\", _rng_dump\(\)\)"
-    replacement = (
-        "_write_json(ep_dir / \"rng.json\", _rng_dump())\n        _write_json(ep_dir / \"system.json\", _codex_sample_system())"
-    )
+    replacement = '_write_json(ep_dir / "rng.json", _rng_dump())\n        _write_json(ep_dir / "system.json", _codex_sample_system())'
     changed, msg = apply_unified_patch(path, [(pattern, replacement)])
     if changed:
         record_changelog("- checkpointing: now writes system.json for reproducibility.")
     return changed, msg
+
 
 def patch_pyproject_cli(path: Path):
     s = safe_load(path)
@@ -192,15 +206,16 @@ def patch_pyproject_cli(path: Path):
     if "[project.scripts]" in s:
         s2 = re.sub(
             r"(\[project.scripts\]\n)",
-            "\\1codex-ml-cli = \"codex_ml.cli.main:main\"\n",
+            '\\1codex-ml-cli = "codex_ml.cli.main:main"\n',
             s,
             count=1,
         )
     else:
-        s2 = s + "\n[project.scripts]\ncodex-ml-cli = \"codex_ml.cli.main:main\"\n"
+        s2 = s + '\n[project.scripts]\ncodex-ml-cli = "codex_ml.cli.main:main"\n'
     write_file(path, s2)
     record_changelog("- pyproject: added codex-ml-cli entry point.")
     return True, "added"
+
 
 def add_tests_if_possible():
     tests_dir = ROOT / "tests"
@@ -230,11 +245,17 @@ def add_tests_if_possible():
     )
     record_changelog("- tests: added tokenizer, grad accum, system meta tests.")
 
+
 def try_local_gates():
     if (ROOT / ".pre-commit-config.yaml").exists():
         code, _ = sh(["bash", "-lc", "pre-commit run --all-files"], "precommit", allow_fail=True)
         if code != 0:
-            record_rq("PH6", "Run pre-commit", "Pre-commit exited non-zero", "Local offline gate; see logs/precommit.log")
+            record_rq(
+                "PH6",
+                "Run pre-commit",
+                "Pre-commit exited non-zero",
+                "Local offline gate; see logs/precommit.log",
+            )
             record_changelog("- pre-commit: ran with non-zero exit; see logs.")
         else:
             record_changelog("- pre-commit: passed.")
@@ -246,6 +267,7 @@ def try_local_gates():
         record_changelog("- pytest: ran with non-zero exit; see logs.")
     else:
         record_changelog("- pytest: passed.")
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -275,9 +297,17 @@ def main():
     }
 
     patch_tokenizer_ids(targets["tokenizer"]) if targets["tokenizer"].exists() else None
-    patch_functional_training(targets["functional_training"]) if targets["functional_training"].exists() else None
+    (
+        patch_functional_training(targets["functional_training"])
+        if targets["functional_training"].exists()
+        else None
+    )
     patch_train_loop_grad_accum(targets["train_loop"]) if targets["train_loop"].exists() else None
-    patch_checkpoint_system_meta(targets["checkpointing"]) if targets["checkpointing"].exists() else None
+    (
+        patch_checkpoint_system_meta(targets["checkpointing"])
+        if targets["checkpointing"].exists()
+        else None
+    )
     patch_pyproject_cli(targets["pyproject"]) if targets["pyproject"].exists() else None
 
     add_tests_if_possible()

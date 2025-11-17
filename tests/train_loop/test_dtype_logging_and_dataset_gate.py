@@ -7,6 +7,7 @@ def test_logging_mismatch_and_dataset_gate_smoke(monkeypatch, capsys):
 
     # Force artifacts under a tmp dir to avoid repo pollution
     from pathlib import Path
+
     tmp = Path.cwd() / "_tmp_artifacts"
     if tmp.exists():
         # best-effort cleanup

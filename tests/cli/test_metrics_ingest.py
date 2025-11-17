@@ -66,7 +66,9 @@ def test_ingest_with_optional_schema(tmp_path: Path) -> None:
     ndjson_path = tmp_path / "metrics.ndjson"
     _write_ndjson(ndjson_path)
     schema_path = tmp_path / "schema.json"
-    schema_path.write_text('{"type": "object", "required": ["epoch", "loss", "acc"]}', encoding="utf-8")
+    schema_path.write_text(
+        '{"type": "object", "required": ["epoch", "loss", "acc"]}', encoding="utf-8"
+    )
 
     csv_path = tmp_path / "metrics.csv"
     proc = subprocess.run(

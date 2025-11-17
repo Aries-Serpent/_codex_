@@ -89,9 +89,7 @@ def group_errors(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Summarize errors from .codex/errors.ndjson"
-    )
+    parser = argparse.ArgumentParser(description="Summarize errors from .codex/errors.ndjson")
     parser.add_argument(
         "path",
         nargs="?",
@@ -111,9 +109,7 @@ def main() -> None:
 
     since_dt = parse_ts(args.since) if args.since else None
     entries = load_entries(Path(args.path))
-    summaries = group_errors(
-        entries, since=since_dt, unanswered_only=args.unanswered_only
-    )
+    summaries = group_errors(entries, since=since_dt, unanswered_only=args.unanswered_only)
     for rec in summaries:
         print(f"{rec['id']}\t{rec['count']}\t{rec['message']}")
 

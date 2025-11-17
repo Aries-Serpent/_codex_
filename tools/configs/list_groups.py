@@ -14,7 +14,7 @@ from pathlib import Path
 
 def discover_config_roots() -> dict[str, list[str] | str]:
     """Discover Hydra config search paths.
-    
+
     Returns
     -------
     dict
@@ -22,29 +22,27 @@ def discover_config_roots() -> dict[str, list[str] | str]:
     """
     result: dict[str, list[str] | str] = {
         "roots": [],
-        "note": "For fuller group listing, use Hydra's compose API with a live config"
+        "note": "For fuller group listing, use Hydra's compose API with a live config",
     }
-    
+
     try:
         # Try to import Hydra
         from hydra._internal.utils import create_config_search_path
         from hydra.core.global_hydra import GlobalHydra
-        
+
         # Initialize if needed
         if not GlobalHydra.instance().is_initialized():
             try:
                 from hydra import initialize_config_dir
+
                 # Try to find config directory
                 repo_root = Path(__file__).resolve().parent.parent.parent
                 config_dir = repo_root / "configs"
                 if config_dir.exists():
-                    initialize_config_dir(
-                        version_base=None,
-                        config_dir=str(config_dir.resolve())
-                    )
+                    initialize_config_dir(version_base=None, config_dir=str(config_dir.resolve()))
             except Exception:
                 pass  # Continue with uninitialized state
-        
+
         # Get search path
         try:
             search_path = create_config_search_path("codex")
@@ -64,12 +62,12 @@ def discover_config_roots() -> dict[str, list[str] | str]:
         except Exception as e:
             result["roots"] = []
             result["error"] = f"Failed to get search path: {e}"
-    
+
     except ImportError:
         result["error"] = "Hydra not available (install with: pip install hydra-core)"
     except Exception as e:
         result["error"] = f"Discovery failed: {e}"
-    
+
     return result
 
 
@@ -80,10 +78,7 @@ def main() -> int:
         print(json.dumps(result, indent=2))
         return 0
     except Exception as e:
-        error_result = {
-            "roots": [],
-            "error": str(e)
-        }
+        error_result = {"roots": [], "error": str(e)}
         print(json.dumps(error_result, indent=2))
         return 1
 

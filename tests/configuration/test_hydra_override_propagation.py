@@ -27,7 +27,7 @@ def hydra_components() -> tuple[Callable[..., object], Callable[..., object], ty
 
 @pytest.fixture(autouse=True)
 def reset_hydra_state(
-    hydra_components: tuple[Callable[..., object], Callable[..., object], type]
+    hydra_components: tuple[Callable[..., object], Callable[..., object], type],
 ) -> None:
     """Ensure each test composes configs from a clean Hydra singleton."""
 

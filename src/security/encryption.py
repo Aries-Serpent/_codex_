@@ -11,6 +11,7 @@ Notes:
 - Offline & deterministic (random nonces per message).
 - Avoids adding new hard runtime deps; optional import pattern.
 """
+
 from __future__ import annotations
 
 import base64
