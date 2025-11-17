@@ -8,9 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import tarfile
-import tempfile
 import zipfile
-from pathlib import Path
 
 import pytest
 

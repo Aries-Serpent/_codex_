@@ -7,11 +7,9 @@ change detection, and backup chain management.
 from __future__ import annotations
 
 import hashlib
-import json
 import tarfile
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import pytest
 

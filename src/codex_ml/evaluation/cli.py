@@ -215,14 +215,21 @@ def report_command(
             typer.echo("Compare file has no epoch records.", err=True)
             raise typer.Exit(code=3)
         other = cmp_epochs[-1]
-        deterministic = json.dumps(out, sort_keys=True) == json.dumps(
-            {
-                "loss": other.get("loss"),
-                "count": other.get("count"),
-                "metrics": other.get("metrics", {}),
-                "batches": other.get("batches"),
-                "duration_sec": other.get("duration_sec"),
-            },
+        # Compare only deterministic fields (exclude duration_sec which varies by runtime)
+        current_deterministic = {
+            "loss": out.get("loss"),
+            "count": out.get("count"),
+            "metrics": out.get("metrics", {}),
+            "batches": out.get("batches"),
+        }
+        other_deterministic = {
+            "loss": other.get("loss"),
+            "count": other.get("count"),
+            "metrics": other.get("metrics", {}),
+            "batches": other.get("batches"),
+        }
+        deterministic = json.dumps(current_deterministic, sort_keys=True) == json.dumps(
+            other_deterministic,
             sort_keys=True,
         )
         out["determinism_match"] = deterministic
@@ -233,7 +240,7 @@ def report_command(
         typer.echo(f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}")
     
     # Check determinism after output so JSON is still returned
-    if compare and not out.get("determinism_match", True):
+    if compare is not None and not out["determinism_match"]:
         typer.echo("Determinism mismatch detected.", err=True)
         raise typer.Exit(code=4)
 

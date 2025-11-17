@@ -10,7 +10,6 @@ import hashlib
 import json
 import tarfile
 import zipfile
-from pathlib import Path
 
 import pytest
 
@@ -34,12 +33,13 @@ class TestCorruptionDetection:
             corrupted = bytes([b ^ 0xFF for b in data])
             f.write(corrupted)
         
-        # Test should detect corruption
+        # Test should detect corruption (though corruption detection depends on location)
         with zipfile.ZipFile(archive_path, "r") as zf:
             # testzip() returns name of first bad file or None if OK
+            # Note: Corruption at byte 10-20 may not always be detected by ZIP's CRC
             result = zf.testzip()
-            # Corruption might be detected
-            assert result is not None or result is None  # Either outcome is valid
+            # We can't reliably assert corruption is detected since it depends on
+            # which part of the ZIP structure was corrupted
 
     def test_checksum_mismatch_detection(self, tmp_path):
         """Test detecting checksum mismatches"""
@@ -127,7 +127,6 @@ class TestCorruptionDetection:
         with tarfile.open(archive_path, "w:gz") as tar:
             info = tarfile.TarInfo(name="file.txt")
             info.size = 100
-            data = b"X" * 100
             tar.addfile(info, fileobj=None)
         
         original_size = archive_path.stat().st_size
@@ -260,8 +259,10 @@ class TestCorruptionRecovery:
         
         # Check what was extracted
         extracted_files = list(extract_dir.glob("*.txt"))
-        # At least some files should be extractable
-        assert len(extracted_files) >= 0
+        # Files with no data (size=10, fileobj=None) may not extract properly,
+        # but the test verifies the extraction attempt completes without crashing
+        # In practice, some extraction should occur
+        pass  # Test passes if extraction attempt completes
 
 
 class TestChecksumValidation:

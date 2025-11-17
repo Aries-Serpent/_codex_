@@ -6,11 +6,8 @@ file types and sizes to ensure proper bundling and extraction.
 """
 from __future__ import annotations
 
-import gzip
-import hashlib
 import tarfile
 import zipfile
-from pathlib import Path
 
 import pytest
 

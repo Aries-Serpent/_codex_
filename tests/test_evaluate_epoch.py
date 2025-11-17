@@ -149,7 +149,7 @@ def test_evaluate_epoch_with_logger(tmp_path):
             pass
     
     logger = _TestLogger()
-    result = evaluate_epoch(
+    evaluate_epoch(
         model, data, criterion, device="cpu", logger=[logger]
     )
     
