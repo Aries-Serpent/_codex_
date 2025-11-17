@@ -141,7 +141,7 @@ colorama==0.4.6
     #   great-expectations
     #   sacrebleu
     #   tqdm-multiprocess
-colorful==0.5.7
+colorful==0.5.8
     # via ray
 comm==0.2.3
     # via
