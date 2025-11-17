@@ -527,7 +527,7 @@ Coverage HTML written to dir artifacts/coverage
 Coverage XML written to file artifacts/coverage/coverage.xml
 FAIL Required test coverage of 80.0% not reached. Total coverage: 0.32%
 
-```
+```text
 
 ## Reproducibility Checklist
 - Seeds: random, numpy, torch via codex_utils/repro.set_seed()

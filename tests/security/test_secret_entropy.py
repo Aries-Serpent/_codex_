@@ -3,6 +3,7 @@
 Ensures credentials meet minimum security standards per AGENTS.md
 security policy.
 """
+
 from __future__ import annotations
 
 from src.security import check_secret_entropy

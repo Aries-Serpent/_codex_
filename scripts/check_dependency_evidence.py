@@ -13,8 +13,8 @@ Exit codes:
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
 REQUIRED = {"ts", "action", "tool"}
 EVIDENCE = Path(".codex/evidence/dependency_ops.jsonl")

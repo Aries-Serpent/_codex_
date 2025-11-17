@@ -170,7 +170,7 @@ def evaluate(model, data_loader, criterion, device):
     val_loss = running_loss / total
     val_acc = correct / total
     return val_loss, val_acc, all_targets, all_preds
-```
+```text
 This pattern can be extended to log additional metrics[5](https://www.codegenes.net/blog/pytorch-validation-loop/)[[1]](https://www.compilenrun.com/docs/library/pytorch/pytorch-training-loop/pytorch-validation-loop/)[[4]](https://www.slingacademy.com/article/analyzing-model-performance-with-pytorch-testing-loops/).
 
 ---
@@ -259,7 +259,7 @@ def audit(session):
     )
     if high_or_critical_found:
         session.error("High or critical vulnerabilities found! Failing session.")
-```
+```text
 
 ### Notes:
 
@@ -350,7 +350,7 @@ def save_checkpoint(state_dict, metric, checkpoint_dir, metadata_file, k=5):
     # Delete old checkpoints not in top k
     valid_paths = set(item["path"] for item in metadata)
     # ... compute obsolete list from previous index if needed and delete safely
-```
+```text
 
 ### Framework Examples
 
@@ -412,7 +412,7 @@ app.add_typer(create_app, name="create")
 
 if __name__ == "__main__":
     app()
-```
+```text
 This enables hierarchical and nested commands, e.g., python main.py create user John[1](https://pytutorial.com/python-typer-subcommands-and-modular-cli/)[[2]](https://typer.tiangolo.com/tutorial/subcommands/nested-subcommands/).
 
 ## 2. Use Groups and Nested Subcommands for Scalability
@@ -421,7 +421,7 @@ Typer supports deeply nested command groups, allowing you to separate concerns a
 
 ```python
 app.add_typer(sub_app, name="subgroup")
-```
+```text
 This way, each part of your app is easy to maintain and expand[3](https://typer.tiangolo.com/tutorial/subcommands/)[[2]](https://typer.tiangolo.com/tutorial/subcommands/nested-subcommands/).
 
 ## 3. Only Use Explicit Command Names for Larger Interfaces
@@ -437,7 +437,7 @@ Typer auto-generates help, but you should use the help argument in add_typer and
 def user(name: str):
     """Create a user by name."""
     ...
-```
+```text
 This keeps your CLI discoverable and friendly[1](https://pytutorial.com/python-typer-subcommands-and-modular-cli/)[[6]](https://coderivers.org/blog/typer-python/).
 
 ## 5. Leverage Type Hints Throughout
@@ -513,7 +513,7 @@ Schemas are typically stored in files, e.g. schema.json:
 ```python
 with open("schema.json") as f:
     schema = json.load(f)
-```
+```text
 
 ---
 
@@ -648,7 +648,7 @@ torch.use_deterministic_algorithms(True)
 # When creating DataLoader
 generator = torch.Generator().manual_seed(SEED)
 loader = DataLoader(dataset, shuffle=True, generator=generator)
-```
+```text
 ---
 
 Key Takeaways:  
@@ -778,7 +778,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Default: run tests (for CI), or override as needed
 CMD ["pytest"]
-```
+```text
 
 References & Deep Dive:
 - Multi-stage builds, caching, security, and layer ordering:[5](https://testdriven.io/blog/docker-best-practices/)[[6]](https://support.tools/dockerfile-best-practices-guide/)[[3]](https://darekdari.com/how-to-optimize-dockerfile-for-python/)[[4]](https://dev.to/rajeshgheware/dockerfile-best-practices-the-ultimate-guide-to-optimizing-your-container-builds-2d0p)

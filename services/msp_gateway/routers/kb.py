@@ -131,7 +131,7 @@ async def query_kb(request: Request, kb_request: KBQueryRequest):
 
         logger.info(f"KB query {request_id} returned {len(search_results)} results")
         return response
-    
+
     except ImportError as exc:
         logger.error(
             "KB query %s failed due to missing retrieval dependencies: %s",

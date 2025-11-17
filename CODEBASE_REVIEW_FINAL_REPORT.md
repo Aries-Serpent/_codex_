@@ -35,10 +35,10 @@
 **Impact**: 38+ test failures resolved  
 
 **Problem**: Local `torch/` stub directory conflicted with installed PyTorch library, causing:
-```
+```text
 RuntimeError: Only a single TORCH_LIBRARY can be used to register 
 the namespace triton
-```
+```text
 
 **Solution**: 
 - Moved `torch/` stub directory to `.stubs/_torch_shim/`
@@ -50,7 +50,7 @@ the namespace triton
 ✓ pytest tests/unit/test_data_cache_locking.py - PASSED
 ✓ pytest tests/config/test_config_schema.py - PASSED
 ✓ No more RuntimeError: triton library conflicts
-```
+```text
 
 **Points**: 20/20 ✅
 
@@ -64,7 +64,7 @@ the namespace triton
 ```python
 continual: ContinualConfig | dict[str, Any] | None = None
 # Error: Unions of containers are not supported
-```
+```text
 
 **Solution**:
 - Changed `continual` field type to `Any` with documented comment
@@ -80,7 +80,7 @@ continual: ContinualConfig | dict[str, Any] | None = None
 ✓ Configuration imports successfully
 ✓ OmegaConf.structured() works without errors
 ✓ Test suite passes: 2/2 tests in test_config_schema.py
-```
+```text
 
 **Points**: 20/20 ✅
 
@@ -116,7 +116,7 @@ continual: ContinualConfig | dict[str, Any] | None = None
 AGENTS_BLOCK = """...\."""
 # After  
 AGENTS_BLOCK = r"""...\."""
-```
+```text
 
 **Points**: 2/2 ✅
 
@@ -170,7 +170,7 @@ tests/config/test_config_schema.py ............. PASSED (2/2)
 tests/unit/test_data_cache_locking.py ......... PASSED (1/1)
 tests/test_model_registry_helpers.py .......... PASSED
 tests/test_parse_when.py ...................... PASSED
-```
+```text
 
 **Points**: 24/25 ✅
 
@@ -284,7 +284,7 @@ tests/test_parse_when.py ...................... PASSED
 
 ## 📊 FINAL METRICS SUMMARY
 
-```
+```text
 Repository Health Score: 82/100 ✅
 
 Critical Issues:    0/2 remaining (100% fixed)
@@ -299,7 +299,7 @@ Standards:         80% (Good)
 Merge Status:      ✅ APPROVED
 Confidence Level:  HIGH
 Risk Assessment:   LOW
-```
+```text
 
 ---
 

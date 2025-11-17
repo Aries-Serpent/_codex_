@@ -10,7 +10,7 @@ The offline secret scanner uses regex patterns to detect potential secrets:
 
 ```bash
 python tools/security/scan_repo.py
-```
+```text
 
 Outputs to: `audit_artifacts/secret_scan.json`
 

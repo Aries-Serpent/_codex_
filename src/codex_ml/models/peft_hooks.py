@@ -37,4 +37,3 @@ def build_lora(model: Any, cfg: Optional[LoraBuildCfg] = None) -> Any:
         task_type=cfg.task_type,
     )
     return get_peft_model(model, lcfg)
-

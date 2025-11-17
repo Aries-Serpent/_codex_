@@ -11,7 +11,7 @@ Environment-gated tests for LoRA configuration validation without requiring full
 
 ```bash
 RUN_LORA_TESTS=1 pytest -q tests/modeling/test_lora_minimal.py
-```
+```text
 
 ## Implementation
 

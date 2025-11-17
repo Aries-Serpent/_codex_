@@ -25,7 +25,9 @@ logger = logging.getLogger(__name__)
 # --- Codex patch: enable sqlite pragmas from environment (best-effort)
 try:
     # use fully-qualified package import
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
+    from codex.db.sqlite_patch import (
+        auto_enable_from_env as _codex_auto_enable_from_env,
+    )
 except Exception:  # pragma: no cover - best-effort fallback
 
     def _codex_auto_enable_from_env() -> None:

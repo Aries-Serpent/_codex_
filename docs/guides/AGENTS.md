@@ -34,7 +34,7 @@ Keep this document updated as conventions evolve.
 ```bash
 pre-commit run --files <changed_files>
 nox -s tests
-```
+```text
 - Optional deps (e.g., `hydra-core`, `mlflow`): install in a dedicated env or provide mocks.
 - **Integration tests**: Use `-m "not integration"` to exclude integration tests for faster local test runs:
   ```bash
@@ -52,12 +52,12 @@ nox -s tests
 # example: minimal agent
 def run_agent(task: str) -> str:
     return f"ok: {task}"
-```
+```text
 Local checks before commit:
 ```bash
 pre-commit run --all-files
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
-```
+```text
 
 Generate status update report:
 ```bash
@@ -68,7 +68,7 @@ codex-status-audit --generate
 python tools/generate_status_update.py
 
 # Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
-```
+```text
 
 > Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments. ([Happy Test][2])
 
@@ -116,7 +116,7 @@ pre-commit run --all-files
 # 5. Commit
 git add -A
 git commit -m "Apply patch: <description>"
-```
+```text
 
 ## Tool Selection Guidelines
 
@@ -170,13 +170,13 @@ printf "Line 1\nLine 2\n"
 
 # ❌ WRONG (no newline at end)
 printf "Line 1\nLine 2"
-```
+```text
 
 **Use `%b` for escape interpretation**:
 ```bash
 # Enables escape sequences in arguments
 printf "%b\n" "Line 1\nLine 2"
-```
+```text
 
 See `docs/guides/BASH_HEREDOC_REFERENCE.md` for comprehensive reference.
 
@@ -223,7 +223,7 @@ content = cache.get("scripts/survey.sh")
 
 # Cache will auto-invalidate on file modification
 cache.invalidate_if_modified("scripts/survey.sh")
-```
+```text
 
 Reference: `src/codex/utils/session_cache.py`
 
@@ -252,12 +252,12 @@ git commit -m "Quick fix"
 
 # Re-enable when done
 bash scripts/manage_hooks.sh enable
-```
+```text
 
 Or skip for one commit:
 ```bash
 git commit -n -m "Skip hooks this time"
-```
+```text
 
 Reference: `scripts/manage_hooks.sh`
 
@@ -283,7 +283,7 @@ valid, sha = validate_with_checksum("script.py")
 
 # Diff comparison
 identical, diff_output = validate_with_diff("original.py", "modified.py")
-```
+```text
 
 Reference: `src/codex/utils/validators.py`
 
@@ -299,7 +299,7 @@ from src.codex.utils.context_discovery import get_session_info
 # Discover at session start
 info = get_session_info()
 # Returns: PR number, branch, commit, author, timestamp
-```
+```text
 
 Reference: `src/codex/utils/context_discovery.py`
 
@@ -310,7 +310,7 @@ You can inspect the composed defaults and override at the CLI:
 ```bash
 python -m codex_ml.cli.config --info defaults   # show defaults list
 python -m codex_ml.cli.config trainer.seed=123 trainer.deterministic=true logging.format=ndjson
-```
+```text
 
 See Hydra's docs for background on defaults lists and composition order.
 

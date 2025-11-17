@@ -77,7 +77,7 @@
 +
 +    def encode(self, text: str) -> list[int]:
 +        return self.tk.encode(text, padding=self.padding, truncation=self.truncation)
-```
+```text
 *Why*: provide concrete tokenizer with padding/truncation options.
 *Risk*: adds transformers dependency.
 *Rollback*: delete `HFTokenizer` class.
@@ -99,7 +99,7 @@
 +        return None
 +    mlflow.set_experiment(experiment)
 +    return mlflow.start_run()
-```
+```text
 *Why*: enable optional offline MLflow tracking.
 *Risk*: silent failure if mlflow absent.
 *Rollback*: revert file.
@@ -121,7 +121,7 @@
 +        if not path.exists():
 +            raise FileNotFoundError(f"resume path not found: {path}")
 +        write_checksum(path)
-```
+```text
 *Why*: ensure integrity before loading.
 *Risk*: added checksum may slow resume.
 *Rollback*: remove call to `write_checksum`.
@@ -149,12 +149,12 @@
 
 ## 8. Error Capture Blocks
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:45Z:
 While performing STEP 1: run `chatgpt-codex --prompt-file AUDIT_PROMPT.md`, encountered the following error:
 `bash: command not found: chatgpt-codex`
 Context: generating audit file. What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 **Causes (from web)**
 
@@ -167,12 +167,12 @@ Context: generating audit file. What are the possible causes, and how can this b
 
 ---
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:50Z:
 While performing STEP 2: `pre-commit run --all-files`, encountered the following issue:
 `command hung without producing output after >100s`
 Context: executing repository hooks. What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 **Causes (from web)**
 
@@ -186,12 +186,12 @@ Context: executing repository hooks. What are the possible causes, and how can t
 
 ---
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:55Z:
 While performing STEP 3: `pytest`, encountered the following error:
 `pytest: error: unrecognized arguments: --cov=src/codex_ml --cov-report=term --cov-fail-under=70`
 Context: running unit tests; pytest-cov plugin missing. What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 **Causes (from web)**
 
@@ -336,7 +336,7 @@ fi
 echo "== FINALIZATION =="
 # No GitHub Actions; all checks are local/offline by design.
 echo "Run complete. Errors (if any) recorded in $ERRLOG"
-```
+```text
 
 ---
 

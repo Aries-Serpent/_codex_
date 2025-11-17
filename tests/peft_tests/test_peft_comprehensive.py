@@ -1,10 +1,11 @@
 """PEFT hooks comprehensive tests."""
+
 from __future__ import annotations
 
 
 class TestLoraConfig:
     """Test LoRA configuration."""
-    
+
     def test_lora_config_structure(self):
         """Test LoRA config structure."""
         config = {
@@ -22,9 +23,10 @@ class TestLoraConfig:
         r, alpha = 8, 16
         assert r > 0 and alpha >= r
 
+
 class TestPEFTAdapter:
     """Test PEFT adapter patterns."""
-    
+
     def test_adapter_config(self):
         """Test adapter configuration."""
         adapter = {
@@ -35,9 +37,10 @@ class TestPEFTAdapter:
         assert "adapter_name" in adapter
         assert adapter["trainable_params"] > 0
 
+
 class TestPEFTTraining:
     """Test PEFT training patterns."""
-    
+
     def test_training_config(self):
         """Test PEFT training configuration."""
         config = {

@@ -49,20 +49,20 @@
 ```bash
 git checkout HEAD~1 -- src/codex_ml/metrics/
 git checkout HEAD~1 -- tests/metrics/
-```
+```text
 
 #### Rollback MLflow Guard
 ```bash
 rm src/codex_ml/logging/mlflow_guard.py
 git checkout HEAD~1 -- src/codex_ml/training/unified_training.py
 unset CODEX_OFFLINE_MODE
-```
+```text
 
 #### Rollback RNG Checkpoint
 ```bash
 rm src/codex_ml/training/rng_checkpoint.py
 git checkout HEAD~1 -- src/codex_ml/training/unified_training.py
-```
+```text
 
 ### Test Results
 - Coverage: not run (optional dependencies missing in CI-free environment)

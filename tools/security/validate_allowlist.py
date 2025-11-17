@@ -7,11 +7,12 @@ Exit codes:
     0 - valid or file absent
     2 - schema or allowlist invalid
 """
+
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
 SCHEMA = Path("configs/schemas/security_allowlist.schema.json")
 ALLOW = Path("security_allowlist.json")

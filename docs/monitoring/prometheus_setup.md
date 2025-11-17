@@ -11,7 +11,7 @@ Set the environment variables before launching the trainer or API runtime:
 export CODEX_METRICS_ENABLED=1
 export CODEX_METRICS_PORT=8000   # optional, defaults to 8000 when unset
 python -m codex_ml.cli.train --config-name default
-```
+```text
 
 When enabled the training loop instantiates a `CodexMetricsRegistry`, increments counters for each training step,
 updates gauges with the most recent loss, and records epoch durations. Metrics are also appended to
@@ -29,7 +29,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-```
+```text
 
 The accompanying `prometheus.yml` instructs Prometheus to scrape the Codex FastAPI or CLI exporter:
 
@@ -40,7 +40,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:8000']
     metrics_path: /metrics
-```
+```text
 
 ## 3. Inspect metrics
 
@@ -64,7 +64,7 @@ app = FastAPI()
 @app.get("/metrics")
 async def metrics() -> Response:
     return await metrics_endpoint_fastapi()
-```
+```text
 
 The helper uses the global Prometheus registry by default, so any metrics recorded through
 `CodexMetricsRegistry` are automatically exposed without additional wiring.

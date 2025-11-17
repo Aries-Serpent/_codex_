@@ -105,7 +105,7 @@ warmup_steps: 0
 gradient_accumulation: 1
 tensorboard: true
 mlflow_enable: false
-```
+```text
 
 **Risk:** If hyper-parameters mismatch existing defaults, performance may change. YAML loading errors could break training.
 
@@ -141,7 +141,7 @@ def train(config: str, resume: bool, seed: Optional[int]):
 
         log_error("train", str(e))
         raise
-```
+```text
 
 **Risk:** Introduces CLI dependencies (click) and may break for missing config files. Changing function signatures could require refactoring tests.
 
@@ -167,7 +167,7 @@ sanitized, redactions = sanitize_output(result, safety_cfg)
 print(sanitized)
 if redactions > 0:
     click.echo(f"[warning] {redactions} redaction(s) applied")
-```
+```text
 
 **Risk:** Sanitisation may remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
 
@@ -201,7 +201,7 @@ def run_functional_training(config: DictConfig, use_deeplearning: bool = False, 
         else:
             print("No checkpoint found; starting fresh.")
     # existing body continues
-```
+```text
 
 **Risk:** If checkpoint loading fails or mismatched hyper-parameters, training may crash. Resume may inadvertently load stale checkpoints.
 
@@ -227,7 +227,7 @@ except FileNotFoundError:
         "batch_size": 32,
         "max_epochs": 1,
     })
-```
+```text
 
 **Risk:** Warnings may clutter output; some users may treat warnings as errors.
 
@@ -250,13 +250,13 @@ To enforce quality before merging changes, define local offline CI using **pytes
 
 ```nginx
 nox -s tests
-```
+```text
 
 If `nox` is not used, a simple fallback is:
 
 ```css
 pytest -q --disable-warnings
-```
+```text
 
 6. Reproducibility checklist
 ----------------------------
@@ -301,7 +301,7 @@ When developing or running this project, if any step fails, log a research quest
 Question for ChatGPT @codex {timestamp}: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 For example, if running the training CLI fails due to a missing config file, write:
 
@@ -309,7 +309,7 @@ For example, if running the training CLI fails due to a missing config file, wri
 Question for ChatGPT @codex 2025-09-15T14:00:00Z: While performing Step 3: Loading Hydra config, encountered the following error: FileNotFoundError: configs/training/base.yaml not found
 Context: calling run_functional_training via codex-cli
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 These blocks should be captured in `.codex/errors.ndjson` via the existing error logger[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/utils/error_log.py#L15-L51). Recording detailed error context and timestamp will aid in debugging and automated support.
 
@@ -411,7 +411,7 @@ Below are example unified diffs that implement some of the high-impact fixes. Ea
 
 **Patch:**
 
-```yaml
+````yaml
 # In a new file `configs/training/base.yaml`:
 # Default training configuration for Codex ML
 # This file defines hyper-parameters used by the training engine. It avoids hard-coded defaults.
@@ -425,7 +425,7 @@ warmup_steps: 0
 gradient_accumulation: 1
 tensorboard: true
 mlflow_enable: false
-```
+```text
 
 **Risk:** If hyper-parameters mismatch existing defaults, performance may change. YAML loading errors could break training.
 
@@ -460,7 +460,7 @@ def train(config: str, resume: bool, seed: Optional[int]):
         from codex_ml.utils.error_log import log_error
         log_error("train", str(e))
         raise
-```
+```text
 
 **Risk:** Introduces CLI dependencies (click) and may break for missing config files. Changing function signatures could require refactoring tests.
 
@@ -485,7 +485,7 @@ sanitized, redactions = sanitize_output(result, safety_cfg)
 print(sanitized)
 if redactions > 0:
     click.echo(f"[warning] {redactions} redaction(s) applied")
-```
+```text
 
 **Risk:** Sanitisation may remove legitimate content; performance overhead from regex checks. Users expecting raw output may be surprised.
 
@@ -520,7 +520,7 @@ def run_functional_training(config: DictConfig, use_deeplearning: bool = False, 
             print("No checkpoint found; starting fresh.")
 
     # existing body continues
-```
+```text
 
 **Risk:** If checkpoint loading fails or mismatched hyper-parameters, training may crash. Resume may inadvertently load stale checkpoints.
 
@@ -545,7 +545,7 @@ except FileNotFoundError:
         "batch_size": 32,
         "max_epochs": 1,
     })
-```
+```text
 
 **Risk:** Warnings may clutter output; some users may treat warnings as errors.
 
@@ -568,13 +568,13 @@ To enforce quality before merging changes, define local offline CI using **pytes
 
 ```nginx
 nox -s tests
-```
+```text
 
 If `nox` is not used, a simple fallback is:
 
 ```css
 pytest -q --disable-warnings
-```
+```text
 
 6. Reproducibility checklist
 -----------------------------
@@ -619,7 +619,7 @@ When developing or running this project, if any step fails, log a research quest
 Question for ChatGPT @codex {timestamp}: While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error: [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 For example, if running the training CLI fails due to a missing config file, write:
 
@@ -627,7 +627,7 @@ For example, if running the training CLI fails due to a missing config file, wri
 Question for ChatGPT @codex 2025-09-15T14:00:00Z: While performing Step 3: Loading Hydra config, encountered the following error: FileNotFoundError: configs/training/base.yaml not found
 Context: calling run_functional_training via codex-cli
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 These blocks should be captured in `.codex/errors.ndjson` via the existing error logger[GitHub](https://github.com/Aries-Serpent/_codex_/blob/9c76af46886b0aa06944992086a904384f63e304/src/codex_ml/utils/error_log.py#L15-L51). Recording detailed error context and timestamp will aid in debugging and automated support.
 ````

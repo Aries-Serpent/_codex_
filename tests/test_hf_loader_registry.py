@@ -25,7 +25,9 @@ def test_register_causal_lm_decorator_roundtrip():
             def __init__(self) -> None:
                 self.moves = []
 
-            def to(self, target):  # pragma: no cover - user supplied constructors may handle devices
+            def to(
+                self, target
+            ):  # pragma: no cover - user supplied constructors may handle devices
                 self.moves.append(target)
                 return self
 

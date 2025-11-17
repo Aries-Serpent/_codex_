@@ -11,7 +11,7 @@ from codex_ml.registry import list_models, get_tokenizer
 
 print("Models:", list_models())
 tokenizer = get_tokenizer("hf", name_or_path="sshleifer/tiny-gpt2")
-```
+```text
 ## Creating a plugin package
 
 1. Add entry points to your package:
@@ -19,7 +19,7 @@ tokenizer = get_tokenizer("hf", name_or_path="sshleifer/tiny-gpt2")
 ```toml
 [project.entry-points."codex_ml.models"]
 awesome = "my_pkg.models:build_model"
-```
+```text
 2. Ensure `build_model(cfg: dict) -> nn.Module` returns an instantiated model.
 3. Distribute the package (wheel, editable install, etc.).
 4. Codex will discover it on demand: `codex_ml.registry.get_model("awesome", cfg)`.
@@ -34,7 +34,7 @@ Duplicate registrations raise `RegistryConflictError`.  Override intentionally:
 from codex_ml.registry import register_trainer
 
 register_trainer("custom", my_trainer, override=True)
-```
+```text
 ## Debugging
 
 * List available entries with `python -m codex_ml.registry` (future work).

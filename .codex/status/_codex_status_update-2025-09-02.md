@@ -50,7 +50,7 @@
 +            padding="max_length" if pad_to_max else False,
 +            truncation=True,
 +        )
-```
+```text
 - *Why*: Enable consistent sequence lengths.
 - *Risk*: Incorrect max length may truncate useful context.
 - *Rollback*: Revert `hf_tokenizer.py`.
@@ -62,7 +62,7 @@
 -            # TODO: load model/optimizer state when supported
 +            model.load_state_dict(torch.load(os.path.join(ckpt, "model.pt")))
 +            optim.load_state_dict(torch.load(os.path.join(ckpt, "optim.pt")))
-```
+```text
 - *Why*: Enable resume from checkpoints.
 - *Risk*: Shape mismatch if model changed.
 - *Rollback*: Revert training file.
@@ -90,7 +90,7 @@
 +            mlflow_active = True
 +        except Exception:
 +            mlflow_active = False
-```
+```text
 - *Why*: Default to local file-based tracking.
 - *Risk*: MLflow version incompatibility.
 - *Rollback*: Revert `codex_logging.py`.
@@ -114,13 +114,13 @@
 - Docker deployment entrypoint: awaiting infra requirements.
 
 ## 8. Error Capture Blocks
-```
+```text
 Question for ChatGPT @codex 2025-09-02:
 While performing step "nox -s tests", encountered the following error:
 RuntimeError: The starlette.testclient module requires the httpx package to be installed.
 Context: Running test suite without optional dependency httpx.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 ## Outstanding Codex Automation Questions
 

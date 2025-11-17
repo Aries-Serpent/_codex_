@@ -89,7 +89,7 @@
 # SKIP_OPTIONAL=1 bash scripts/docs_build.sh
 # python scripts/space_traversal/audit_runner.py run
 # python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_manifest.json
-```
+```text
 
 ---
 
@@ -100,7 +100,7 @@
 # artifacts/docs_manifest.sha: <sha256>
 # audit_run_manifest.json: <sha256>
 # audit_artifacts/canonical_manifest.json: <sha256>
-```
+```text
 
 ---
 
@@ -109,7 +109,7 @@
 ```text
 # Paste canonical SHA equality proof from two runs:
 # canonical[runA].sha == canonical[runB].sha ✅
-```
+```text
 
 ---
 
@@ -118,7 +118,7 @@
 ```text
 # If Agent-run jobs selected, attach: audit_artifacts/agent_env.json
 # Or paste content here
-```
+```text
 
 ---
 
@@ -196,13 +196,13 @@ Attach the output of:
 ```bash
 python -m codex_ml.cli.codex_cli status-report \
   --run-metadata-dir runs/train_loop
-```
+```text
 
 Paste JSON here (trim secrets if any):
 
 ```text
 <status-report JSON here>
-```
+```text
 
 This MUST include:
 - `rollout_ring`
@@ -219,7 +219,7 @@ python -m codex_ml.cli.codex_cli deploy \
   --config configs/deploy/reasoning_pod.yaml \
   --dry-run \
   --run-metadata-dir runs/train_loop
-```
+```text
 
 `codex_ml.cli.codex_cli deploy` MUST report success with `--dry-run`. If it printed `DEPLOYMENT BLOCKED`, stop and explain why.
 
@@ -227,7 +227,7 @@ Paste result / summary here:
 
 ```text
 <deploy dry-run result>
-```
+```text
 
 ### 5. Evaluation preset sign-off
 Check ONE:
@@ -270,4 +270,4 @@ python tools/validate_configs.py --root configs/training --schema configs/schema
 
 # Audit chain
 python scripts/audit/build_integrity_chain.py
-```
+```text

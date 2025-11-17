@@ -14,6 +14,7 @@ from typing import Any, Optional
 
 try:
     import jsonschema
+
     HAS_JSONSCHEMA = True
 except ImportError:
     HAS_JSONSCHEMA = False
@@ -62,7 +63,7 @@ class EvidenceSchemaValidator:
         if not HAS_JSONSCHEMA:
             # Skip validation if jsonschema not available
             return True
-            
+
         if version not in self.schemas:
             raise ValueError(f"Unsupported schema version: {version}")
 
@@ -129,6 +130,4 @@ class EvidenceSchemaValidator:
         if from_version == to_version:
             return record
 
-        raise ValueError(
-            f"Migration from {from_version} to {to_version} not supported"
-        )
+        raise ValueError(f"Migration from {from_version} to {to_version} not supported")

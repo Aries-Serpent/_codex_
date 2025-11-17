@@ -20,7 +20,8 @@ class TestSessionHooks(unittest.TestCase):
             logdir = pathlib.Path(td)
             sid = "test-sess-1234"
             runner = logdir / "runner.sh"
-            runner.write_text(f"""#!/usr/bin/env bash
+            runner.write_text(
+                f"""#!/usr/bin/env bash
 set -euo pipefail
 export CODEX_SESSION_LOG_DIR=\"{logdir.as_posix()}\"
 export CODEX_SESSION_ID=\"{sid}\"
@@ -28,29 +29,27 @@ export CODEX_SESSION_ID=\"{sid}\"
 codex_session_start \"unit\"
 trap 'codex_session_end $?' EXIT
 true
-""")
+"""
+            )
             runner.chmod(0o755)
             env = os.environ.copy()
             env["PYTHONPATH"] = str(ROOT / "src")
             subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson log not found")
-            lines = [
-                json.loads(line) for line in ndjson.read_text().strip().splitlines()
-            ]
+            lines = [json.loads(line) for line in ndjson.read_text().strip().splitlines()]
             types = [line.get("type") for line in lines]
             self.assertIn("session_start", types)
             self.assertIn("session_end", types)
-            self.assertEqual(
-                len([t for t in types if t in ("session_start", "session_end")]), 2
-            )
+            self.assertEqual(len([t for t in types if t in ("session_start", "session_end")]), 2)
 
     def test_shell_helper_recovers_missing_dir(self):
         with tempfile.TemporaryDirectory() as td:
             logdir = pathlib.Path(td)
             sid = "lost-dir-123"
             runner = logdir / "runner.sh"
-            runner.write_text(f"""#!/usr/bin/env bash
+            runner.write_text(
+                f"""#!/usr/bin/env bash
 set -euo pipefail
 export CODEX_SESSION_LOG_DIR=\"{logdir.as_posix()}\"
 export CODEX_SESSION_ID=\"{sid}\"
@@ -58,16 +57,15 @@ export CODEX_SESSION_ID=\"{sid}\"
 codex_session_start
 rm -rf \"{logdir.as_posix()}\"
 codex_session_end 0
-""")
+"""
+            )
             runner.chmod(0o755)
             env = os.environ.copy()
             env["PYTHONPATH"] = str(ROOT / "src")
             subprocess.run([runner.as_posix()], check=True, env=env)
             ndjson = logdir / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson not recreated")
-            lines = [
-                json.loads(line) for line in ndjson.read_text().strip().splitlines()
-            ]
+            lines = [json.loads(line) for line in ndjson.read_text().strip().splitlines()]
             types = [line.get("type") for line in lines]
             self.assertIn("session_end", types)
 
@@ -94,9 +92,7 @@ true
             subprocess.run([runner.as_posix()], cwd=root, check=True, env=env)
             ndjson = root / "logs" / f"{sid}.ndjson"
             self.assertTrue(ndjson.exists(), "ndjson log not found in resolved logdir")
-            self.assertFalse(
-                (root / "sub" / "logs").exists(), "logdir should not depend on cwd"
-            )
+            self.assertFalse((root / "sub" / "logs").exists(), "logdir should not depend on cwd")
 
 
 class TestPythonSessionHooks(unittest.TestCase):
@@ -118,12 +114,8 @@ class TestPythonSessionHooks(unittest.TestCase):
             )
             subprocess.run([sys.executable, script.name], cwd=root, check=True, env=env)
             logdir = root / "logs"
-            self.assertTrue(
-                any(logdir.glob("*.ndjson")), "log not created in resolved dir"
-            )
-            self.assertFalse(
-                (root / "sub" / "logs").exists(), "logdir should not depend on cwd"
-            )
+            self.assertTrue(any(logdir.glob("*.ndjson")), "log not created in resolved dir")
+            self.assertFalse((root / "sub" / "logs").exists(), "logdir should not depend on cwd")
 
     def test_now_returns_zulu_timestamp(self):
         ts = session_hooks._now()

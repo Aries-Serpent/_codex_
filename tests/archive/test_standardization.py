@@ -83,7 +83,7 @@ class TestStandardizationManager:
     def test_get_standardization_report(self, manager):
         """Test generating standardization report."""
         report = manager.get_standardization_report()
-        
+
         assert report["standard_version"] == STANDARDIZATION_VERSION
         assert report["slsa_level"] == SLSA_LEVEL
         assert "1.0" in report["schema_versions_supported"]
@@ -122,9 +122,9 @@ class TestEvidenceSchemaValidator:
             "tombstone": "d3e8729-1234-5678-abcd-ef0123456789",
             "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         }
-        
+
         v2_record = validator.migrate_to_v2(v1_record)
-        
+
         assert v2_record["schemaVersion"] == "2.0"
         assert "standardizationMetadata" in v2_record
         assert v2_record["standardizationMetadata"]["slsa_level"] == "L3"

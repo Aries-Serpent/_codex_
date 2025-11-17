@@ -10,7 +10,7 @@ Specify a session explicitly or allow Codex to generate one automatically:
 ```bash
 export CODEX_SESSION_ID=$(uuidgen)
 python -m codex_ml.cli.train --config-name default
-```
+```text
 
 When unset, `codex_ml.codex_structured_logging` creates a UUIDv4 and stores it in `.codex/logs/session_<ID>.jsonl`.
 The `SessionLogger` applies secret redaction before persisting events so API keys and tokens never reach disk.
@@ -29,7 +29,7 @@ Each line in `.codex/logs/session_<SESSION_ID>.jsonl` contains a JSON record wit
     "key": "value"
   }
 }
-```
+```text
 
 The training loop logs `training_start` and `training_end` events automatically, including epoch counts,
 optimizer steps, and wall-clock durations. Calls to `codex_structured_logging.log_event` propagate to the
@@ -45,7 +45,7 @@ jq '.session_id == "550e8400-e29b-41d4-a716-446655440000"' .codex/logs/session_*
 
 # Sort the session timeline by timestamp
 jq -s 'sort_by(.timestamp)' .codex/logs/session_550e8400-e29b-41d4-a716-446655440000.jsonl
-```
+```text
 
 ## Integrating with other systems
 

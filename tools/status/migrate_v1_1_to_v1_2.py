@@ -22,6 +22,7 @@ def migrate(obj: dict) -> dict:
     tok.setdefault("recommendations", "")
     return out
 
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("input_json", type=pathlib.Path)
@@ -35,6 +36,7 @@ def main():
         return 0
     args.output_json.write_text(json.dumps(migrated, indent=2), encoding="utf-8")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

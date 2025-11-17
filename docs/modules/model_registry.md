@@ -33,12 +33,12 @@ model:
     target_modules:
       - q_proj
       - v_proj
-```
+```text
 ## Offline GPT-2
 
 ```bash
 python -m codex_ml.cli train -cn config model=offline/gpt2
-```
+```text
 `configs/model/offline/gpt2.yaml` binds `model.name` to `gpt2-offline` and
 populates `model.local_path` with
 `${CODEX_ML_GPT2_PATH}` → `${CODEX_ML_OFFLINE_MODELS_DIR}/gpt2` →
@@ -48,7 +48,7 @@ populates `model.local_path` with
 
 ```bash
 python -m codex_ml.cli train -cn config model=offline/tinyllama
-```
+```text
 `configs/model/offline/tinyllama.yaml` mirrors the GPT-2 fragment while checking
 `CODEX_ML_TINYLLAMA_PATH` and the shared offline model directory.
 
@@ -58,7 +58,7 @@ Enable LoRA adapters via command line overrides:
 
 ```bash
 python -m codex_ml.cli train model.lora.enabled=true model.lora.r=4
-```
+```text
 When LoRA is active the HF training engine emits a warning and forces
 `gradient_accumulation_steps` to `1` to ensure adapter parameters receive full
 updates.

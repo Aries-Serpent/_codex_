@@ -70,4 +70,3 @@ def test_quantization_mapping_requires_bitsandbytes(monkeypatch: pytest.MonkeyPa
             _dummy_builder(recorded),
             config={"quantization": {"bnb_4bit_compute_dtype": "float16"}},
         )
-

@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import os
@@ -12,6 +11,7 @@ REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"
 _USE_TYPER = False
 try:  # pragma: no cover - prefer Typer when available
     import typer as _typer  # type: ignore
+
     if hasattr(_typer, "Typer"):
         _USE_TYPER = True
 except Exception:  # pragma: no cover - Typer shadowed/unavailable
@@ -50,6 +50,7 @@ def _split_smoke_impl(seed: int) -> None:
     total = 20
     try:
         import torch
+
         generator = getattr(torch, "Generator", None)
         if generator is None:
             raise AttributeError
@@ -72,6 +73,7 @@ def _checkpoint_smoke_impl(out_dir: Path) -> None:
     try:
         import torch
         from src.training.checkpointing import save_checkpoint
+
         if not hasattr(torch, "nn"):
             raise AttributeError("torch.nn unavailable")
     except Exception as exc:  # pragma: no cover - optional dependency missing
@@ -84,7 +86,9 @@ def _checkpoint_smoke_impl(out_dir: Path) -> None:
     model = torch.nn.Sequential(torch.nn.Linear(8, 3))
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = save_checkpoint(model, optimizer, epoch=1, val_metric=0.50, out_dir=out_dir, keep_best_k=2)
+    path = save_checkpoint(
+        model, optimizer, epoch=1, val_metric=0.50, out_dir=out_dir, keep_best_k=2
+    )
     echo(f"Saved {path}")
 
 
@@ -164,7 +168,11 @@ if _USE_TYPER:
         echo(description)
         echo(f"Path: {path}")
         data = _load_yaml(path)
-        curriculum_name = data.get("curriculum", {}).get("phase_schedule") if isinstance(data.get("curriculum"), dict) else None
+        curriculum_name = (
+            data.get("curriculum", {}).get("phase_schedule")
+            if isinstance(data.get("curriculum"), dict)
+            else None
+        )
         if curriculum_name:
             schedule_path = REASONING_CURRICULA_ROOT / f"{curriculum_name}.yaml"
             if schedule_path.exists():
@@ -178,9 +186,17 @@ if _USE_TYPER:
                             dataset = phase.get("dataset", "<dataset>")
                             steps = phase.get("steps", "?")
                             echo(f"  - {phase_id}: {dataset} (steps={steps})")
-        reasoning_block = data.get("training", {}).get("reasoning") if isinstance(data.get("training"), dict) else None
+        reasoning_block = (
+            data.get("training", {}).get("reasoning")
+            if isinstance(data.get("training"), dict)
+            else None
+        )
         if isinstance(reasoning_block, dict):
-            mode = reasoning_block.get("objective", {}).get("mode") if isinstance(reasoning_block.get("objective"), dict) else None
+            mode = (
+                reasoning_block.get("objective", {}).get("mode")
+                if isinstance(reasoning_block.get("objective"), dict)
+                else None
+            )
             if mode:
                 echo(f"Objective: {mode}")
             if reasoning_block.get("tool_adapter", {}).get("enabled"):
@@ -193,7 +209,9 @@ if _USE_TYPER:
 
     @app.command("repo-map")
     def repo_map(
-        reasoning: bool = _typer.Option(False, "--reasoning", help="Emit reasoning-specific entries."),
+        reasoning: bool = _typer.Option(
+            False, "--reasoning", help="Emit reasoning-specific entries."
+        ),
         include: list[str] | None = _typer.Option(
             None,
             "--include",
@@ -228,10 +246,14 @@ if _USE_TYPER:
         out_dir: Path = _typer.Option(Path(".checkpoints"), "--out", help="Checkpoint directory"),
     ) -> None:
         _checkpoint_smoke_impl(out_dir)
+
 else:  # pragma: no cover - click fallback
     import click as _click
 
-    @_click.group(name="codex", help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).")
+    @_click.group(
+        name="codex",
+        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
+    )
     def app() -> None:
         """Codex offline smoke helpers."""
 
@@ -283,21 +305,35 @@ else:  # pragma: no cover - click fallback
         echo(__version__)
 
     @app.command("track-smoke")
-    @_click.option("--dir", "dir_", type=_click.Path(path_type=Path), default=None, help="Local mlruns dir")
+    @_click.option(
+        "--dir", "dir_", type=_click.Path(path_type=Path), default=None, help="Local mlruns dir"
+    )
     def track_smoke(dir_: Optional[Path]) -> None:
         _track_smoke_impl(dir_)
 
     @app.command("split-smoke")
-    @_click.option("--seed", type=int, default=1337, show_default=True, help="Seed for deterministic split")
+    @_click.option(
+        "--seed", type=int, default=1337, show_default=True, help="Seed for deterministic split"
+    )
     def split_smoke(seed: int) -> None:
         _split_smoke_impl(seed)
 
     @app.command("checkpoint-smoke")
-    @_click.option("--out", "out_dir", type=_click.Path(path_type=Path), default=Path(".checkpoints"), show_default=True, help="Checkpoint directory")
+    @_click.option(
+        "--out",
+        "out_dir",
+        type=_click.Path(path_type=Path),
+        default=Path(".checkpoints"),
+        show_default=True,
+        help="Checkpoint directory",
+    )
     def checkpoint_smoke(out_dir: Path) -> None:
         _checkpoint_smoke_impl(out_dir)
 
-    @app.group(name="reasoning-templates", help="Surface reasoning training presets and curricula metadata.")
+    @app.group(
+        name="reasoning-templates",
+        help="Surface reasoning training presets and curricula metadata.",
+    )
     def reasoning_templates() -> None:
         """Reasoning template helpers."""
 
@@ -327,7 +363,11 @@ else:  # pragma: no cover - click fallback
         echo(description)
         echo(f"Path: {path}")
         data = _load_yaml(path)
-        curriculum_name = data.get("curriculum", {}).get("phase_schedule") if isinstance(data.get("curriculum"), dict) else None
+        curriculum_name = (
+            data.get("curriculum", {}).get("phase_schedule")
+            if isinstance(data.get("curriculum"), dict)
+            else None
+        )
         if curriculum_name:
             schedule_path = REASONING_CURRICULA_ROOT / f"{curriculum_name}.yaml"
             if schedule_path.exists():
@@ -341,9 +381,17 @@ else:  # pragma: no cover - click fallback
                             dataset = phase.get("dataset", "<dataset>")
                             steps = phase.get("steps", "?")
                             echo(f"  - {phase_id}: {dataset} (steps={steps})")
-        reasoning_block = data.get("training", {}).get("reasoning") if isinstance(data.get("training"), dict) else None
+        reasoning_block = (
+            data.get("training", {}).get("reasoning")
+            if isinstance(data.get("training"), dict)
+            else None
+        )
         if isinstance(reasoning_block, dict):
-            mode = reasoning_block.get("objective", {}).get("mode") if isinstance(reasoning_block.get("objective"), dict) else None
+            mode = (
+                reasoning_block.get("objective", {}).get("mode")
+                if isinstance(reasoning_block.get("objective"), dict)
+                else None
+            )
             if mode:
                 echo(f"Objective: {mode}")
             if reasoning_block.get("tool_adapter", {}).get("enabled"):

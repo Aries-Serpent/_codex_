@@ -300,7 +300,7 @@ Integration: ███████░░░   7/10
 Real-time:   ██░░░░░░░░   2/10
 
 OVERALL SCORE: 34/60  (Navbar excels at complex, space-intensive apps)
-```
+```text
 
 ---
 
@@ -369,7 +369,7 @@ Maintenance            ▓▓▓▓░░░░░░               ░░░░
 
 I EXCEL AT: Design, planning, code generation, explaining constraints
 I CANNOT: Execute code, test applications, access live systems, update knowledge
-```
+```text
 
 ### Confidence Calibration
 
@@ -452,7 +452,7 @@ GitHub Copilot      IDE assistant        Inline code completion            After
 ChatGPT             Conversational LLM   General ideation/help             Similar planning use cases
 Zendesk Support     Vendor support       Platform-specific help            Critical platform issues
 Claude (AI LLM)     Planning/analysis    Comprehensive planning            START HERE for architecture
-```
+```text
 
 ### Final Recommendations
 
@@ -506,7 +506,7 @@ Claude (AI LLM)     Planning/analysis    Comprehensive planning            START
 ```text
 You ──→ AI (ideation/planning) ──→ Official Docs (validation) 
     ──→ Your Dev Environment (testing) ──→ AI (refinement) ──→ Production
-```
+```text
 
 ---
 

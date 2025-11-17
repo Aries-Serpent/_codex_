@@ -40,7 +40,7 @@ def set_log_level(self, level: str) -> None:
             f"Must be one of: DEBUG, INFO, WARNING, ERROR, CRITICAL"
         )
     self.logger.setLevel(getattr(logging, level_upper))
-```
+```text
 
 **Test Coverage**:
 - `test_set_log_level()` - Tests valid levels (DEBUG, WARNING, INFO)
@@ -63,7 +63,7 @@ def validate(self) -> None:
         EnvironmentError: If validation fails
     """
     self._ensure_validated()
-```
+```text
 
 **Test Coverage**:
 - `test_public_validate_method()` - Tests lazy validation + explicit validate()
@@ -100,7 +100,7 @@ def test_db_manager_concurrent_access(self, tmp_path):
     assert len(errors) == 0
     # Verify all 50 writes succeeded
     assert count == 50
-```
+```text
 
 #### 2. Full Session Lifecycle Test
 
@@ -128,7 +128,7 @@ def test_cli_full_session_lifecycle(self, tmp_path):
     # Step 3: Query and verify
     assert count == 5
     # Verify content matches
-```
+```text
 
 **Results**: +2 E2E tests, validates complete workflows
 
@@ -164,10 +164,10 @@ def test_cli_full_session_lifecycle(self, tmp_path):
 **Before**: ~88% (claimed)  
 **After**: 90.24% (measured)
 
-```
+```text
 src/codex/config/env_vars.py      90.24%
 TOTAL                             90.24%
-```
+```text
 
 **Lines Covered**: 60/66 statements, 14/16 branches
 
@@ -193,7 +193,7 @@ TOTAL                             90.24%
 5. **Infrastructure Component Verification** - Validates all features
 
 **Example Output**:
-```
+```text
 🔍 AGENTS Infrastructure Validation
 ====================================
 
@@ -227,12 +227,12 @@ Summary:
   - Coverage: 90%+ (exceeds 85% target)
   - CLI commands: 8 functional
   - Production readiness: 98%
-```
+```text
 
 **Usage**:
 ```bash
 bash .github/scripts/validate_agents_infrastructure.sh
-```
+```text
 
 **Results**: Comprehensive validation script with full component verification
 
@@ -288,7 +288,7 @@ PYTHONPATH=src python3 -m pytest tests/test_agents_infrastructure.py \
 
 # Run validation script
 bash .github/scripts/validate_agents_infrastructure.sh
-```
+```text
 
 ## Conclusion
 

@@ -218,7 +218,7 @@ pytest tests/test_agents_infrastructure.py::[TEST_NAME] -v --tb=short
 
 # After ALL tasks complete:
 bash .github/prompts/final_validation_phase1_enhanced.sh
-```
+```text
 
 **Quality gates** (must pass before commit):
 - ✅ All tests pass: `pytest tests/test_agents_infrastructure.py -v`

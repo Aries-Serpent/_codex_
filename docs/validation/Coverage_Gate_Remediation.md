@@ -13,7 +13,7 @@
 ## Commands
 ```bash
 nox -s coverage
-```
+```text
 
 ## Troubleshooting
 | Symptom | Likely Cause | Action |

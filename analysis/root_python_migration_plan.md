@@ -101,7 +101,7 @@ Because this is a dry run, no commands were executed. When ready to proceed:
 ```bash
 git mv codex_task_sequence.py src/legacy_root/codex_task_sequence.py
 # Apply the sitecustomize alias diff shown above
-```
+```text
 
 Update documentation references via targeted edits (examples):
 

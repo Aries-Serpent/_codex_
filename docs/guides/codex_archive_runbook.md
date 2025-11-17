@@ -25,13 +25,13 @@ per backend:
 
 ```bash
 python -m codex.cli archive init
-```
+```text
 
 To inspect the SQL before applying:
 
 ```bash
 python -m codex.cli archive schema --dialect postgres > /tmp/archive-postgres.sql
-```
+```text
 
 ## 3. Archive content
 
@@ -67,7 +67,7 @@ Restoring is symmetric and deterministic:
 
 ```bash
 python -m codex.cli archive restore <TOMBSTONE_ID> restored/path.py --by "marc"
-```
+```text
 
 The command verifies dual-control approvals and writes the restored bytes locally. Inspect
 and reintroduce via a pull request; do **not** push directly to production branches.

@@ -44,7 +44,9 @@ def _stream_process(cmd: list[str], log_file: Path) -> int:
         return proc.returncode
 
 
-def run_steps(steps: Iterable[Step], *, output_dir: Path, dry_run: bool = False) -> list[dict[str, str]]:
+def run_steps(
+    steps: Iterable[Step], *, output_dir: Path, dry_run: bool = False
+) -> list[dict[str, str]]:
     summary: list[dict[str, str]] = []
     output_dir.mkdir(parents=True, exist_ok=True)
     for step in steps:
@@ -65,9 +67,15 @@ def run_steps(steps: Iterable[Step], *, output_dir: Path, dry_run: bool = False)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run offline CI gates sequentially")
-    parser.add_argument("--output", type=Path, default=Path("artifacts/offline_ci"), help="Directory for step logs")
-    parser.add_argument("--dry-run", action="store_true", help="Print commands without executing them")
-    parser.add_argument("--skip", action="append", default=[], help="Step name to skip (can be repeated)")
+    parser.add_argument(
+        "--output", type=Path, default=Path("artifacts/offline_ci"), help="Directory for step logs"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Print commands without executing them"
+    )
+    parser.add_argument(
+        "--skip", action="append", default=[], help="Step name to skip (can be repeated)"
+    )
     parser.add_argument(
         "--steps",
         nargs="*",
@@ -91,4 +99,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -76,8 +76,7 @@ def log_change(path: Path, action: str, rationale: str, before: str, after: str)
         diff = "\n".join(diff_lines[:200])  # avoid overlong logs
     with CHANGE_LOG.open("a", encoding="utf-8") as f:
         f.write(
-            f"\n### {ts}\n- **File**: {path}\n- **Action**: {action}\n- "
-            f"**Why**: {rationale}\n"
+            f"\n### {ts}\n- **File**: {path}\n- **Action**: {action}\n- " f"**Why**: {rationale}\n"
         )
         f.write("```diff\n" + (diff or "(no textual diff)") + "\n```\n")
 
@@ -85,11 +84,7 @@ def log_change(path: Path, action: str, rationale: str, before: str, after: str)
 def log_error(step_num_desc: str, error_message: str, context: str):
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     entry = {
-        "ts": (
-            datetime.now(timezone.utc)
-            .isoformat(timespec="seconds")
-            .replace("+00:00", "Z")
-        ),
+        "ts": (datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")),
         "step": step_num_desc,
         "error": error_message,
         "context": context,
@@ -118,9 +113,7 @@ def safe_write(path: Path, content: str, rationale: str):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
     after = path.read_text(encoding="utf-8")
-    log_change(
-        path, "write" if before is not None else "create", rationale, before, after
-    )
+    log_change(path, "write" if before is not None else "create", rationale, before, after)
 
 
 def ensure_repo_clean(force: bool):
@@ -156,7 +149,8 @@ def inventory() -> str:
 
 def render_precommit_yaml(existing: str | None) -> str:
     base = (
-        textwrap.dedent(f"""
+        textwrap.dedent(
+            f"""
     repos:
       - repo: https://github.com/astral-sh/ruff-pre-commit
         rev: {R_RUFF_PRECOMMIT_REV}
@@ -178,7 +172,8 @@ def render_precommit_yaml(existing: str | None) -> str:
           - id: end-of-file-fixer
           - id: check-yaml
           - id: mixed-line-ending
-    """).strip()
+    """
+        ).strip()
         + "\n"
     )
     if not existing:
@@ -187,8 +182,7 @@ def render_precommit_yaml(existing: str | None) -> str:
     if "astral-sh/ruff-pre-commit" not in existing:
         needed.append(
             re.findall(
-                r"(?s)- repo: https://github.com/astral-sh/ruff-pre-commit.*?"
-                r"(?=\n\n- repo:|$)",
+                r"(?s)- repo: https://github.com/astral-sh/ruff-pre-commit.*?" r"(?=\n\n- repo:|$)",
                 base,
             )[0]
         )
@@ -216,7 +210,8 @@ def upsert_readme_section():
     section_title = "## Pre-commit (Ruff + Black)"
     if section_title in txt:
         return txt
-    guide = textwrap.dedent(f"""
+    guide = textwrap.dedent(
+        f"""
     {section_title}
 
     This repository uses [pre-commit](https://pre-commit.com) to run
@@ -244,7 +239,8 @@ def upsert_readme_section():
     ```bash
     pre-commit run --hook-stage manual black --all-files
     ```
-    """).strip()
+    """
+    ).strip()
     return txt.rstrip() + "\n\n" + guide + "\n"
 
 
@@ -258,22 +254,26 @@ def upsert_pyproject():
 
     if not has_ruff:
         parts.append(
-            textwrap.dedent("""
+            textwrap.dedent(
+                """
         [tool.ruff]
         line-length = 88
         target-version = "py312"
 
         [tool.ruff.lint]
         select = ["E", "F", "I"]
-        """).strip()
+        """
+            ).strip()
         )
     if not has_black:
         parts.append(
-            textwrap.dedent("""
+            textwrap.dedent(
+                """
         [tool.black]
         line-length = 88
         target-version = ["py312"]
-        """).strip()
+        """
+            ).strip()
         )
 
     if not parts:
@@ -326,11 +326,7 @@ def main():
     print("Repository inventory (top-level):\n" + inv)
 
     try:
-        existing = (
-            PRECOMMIT_YAML.read_text(encoding="utf-8")
-            if PRECOMMIT_YAML.exists()
-            else None
-        )
+        existing = PRECOMMIT_YAML.read_text(encoding="utf-8") if PRECOMMIT_YAML.exists() else None
         rendered = render_precommit_yaml(existing)
         if not dry:
             safe_write(
@@ -370,9 +366,7 @@ def main():
                 "Add smoke test for .pre-commit-config.yaml presence",
             )
     except Exception as e:
-        log_error(
-            "3.4: create smoke test", repr(e), "tests/test_precommit_config_exists.py"
-        )
+        log_error("3.4: create smoke test", repr(e), "tests/test_precommit_config_exists.py")
 
     try:
         results = (
@@ -413,9 +407,7 @@ def main():
 
     unresolved = ERRORS_NDJSON.exists() and ERRORS_NDJSON.stat().st_size > 0
     if unresolved:
-        print(
-            "Unresolved errors were captured in .codex/errors.ndjson", file=sys.stderr
-        )
+        print("Unresolved errors were captured in .codex/errors.ndjson", file=sys.stderr)
         sys.exit(1)
     print("Success. Pre-commit configuration bootstrapped.")
     sys.exit(0)

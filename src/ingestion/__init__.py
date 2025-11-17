@@ -22,7 +22,9 @@ from typing import Iterator, Optional, Union
 # Local utility imports (optional modules handled gracefully)
 try:
     # Prefer a dedicated encoding detector if present in repo
-    from .encoding_detect import detect_encoding as _repo_detect_encoding  # type: ignore
+    from .encoding_detect import (
+        detect_encoding as _repo_detect_encoding,  # type: ignore
+    )
 except Exception:
     _repo_detect_encoding = None  # type: ignore
 
@@ -71,8 +73,10 @@ if _deterministic_shuffle is None:
         rng = random.Random(seed)
         rng.shuffle(items)
         return items
+
 else:
     deterministic_shuffle = _deterministic_shuffle  # type: ignore
+
 
 # Provide a detect_encoding wrapper that uses repo detector, io_text helper, or a conservative fallback.
 def detect_encoding(path: Union[str, Path]) -> str:
@@ -124,7 +128,9 @@ def detect_encoding(path: Union[str, Path]) -> str:
 
 
 # Internal helper to normalise various historical read_text signatures.
-def _call_repo_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> tuple[str, Optional[str]]:
+def _call_repo_read_text(
+    path: Path, encoding: str = "utf-8", errors: str = "strict"
+) -> tuple[str, Optional[str]]:
     """Call repository io_text.read_text in a way that handles multiple historical signatures.
 
     Returns:
@@ -162,7 +168,9 @@ def _call_repo_read_text(path: Path, encoding: str = "utf-8", errors: str = "str
     return str(result), None
 
 
-def _manual_read_text(path: Path, encoding: str = "utf-8", errors: str = "strict") -> tuple[str, str]:
+def _manual_read_text(
+    path: Path, encoding: str = "utf-8", errors: str = "strict"
+) -> tuple[str, str]:
     """Manual robust reader used as a last-resort fallback.
 
     Returns (text, used_encoding)
@@ -280,7 +288,11 @@ def ingest(
         raise ValueError("chunk_size must be a positive integer when provided")
 
     def _iter() -> Iterator[str]:
-        enc = detect_encoding(file_path) if isinstance(encoding, str) and encoding.lower() == "auto" else encoding
+        enc = (
+            detect_encoding(file_path)
+            if isinstance(encoding, str) and encoding.lower() == "auto"
+            else encoding
+        )
         # Use built-in open with detected encoding to stream text
         try:
             with file_path.open("r", encoding=enc, errors="replace") as fh:

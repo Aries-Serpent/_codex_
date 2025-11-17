@@ -22,14 +22,25 @@ load_checkpoint = checkpointing.load_checkpoint
 pytest.importorskip("torch")
 pytest.importorskip("peft")
 
-from peft import LoraConfig, TaskType, get_peft_model, get_peft_model_state_dict  # noqa: E402
+from peft import (  # noqa: E402
+    LoraConfig,
+    TaskType,
+    get_peft_model,
+    get_peft_model_state_dict,
+)
 
 import torch  # noqa: E402  (import after skip checks)
 
 
 def _make_model() -> torch.nn.Module:
     base = torch.nn.Linear(4, 4)
-    cfg = LoraConfig(r=2, lora_alpha=4, lora_dropout=0.0, target_modules=["weight"], task_type=TaskType.FEATURE_EXTRACTION)
+    cfg = LoraConfig(
+        r=2,
+        lora_alpha=4,
+        lora_dropout=0.0,
+        target_modules=["weight"],
+        task_type=TaskType.FEATURE_EXTRACTION,
+    )
     return get_peft_model(base, cfg)
 
 

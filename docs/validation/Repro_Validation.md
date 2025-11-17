@@ -19,7 +19,7 @@ Validate deterministic behavior, environment snapshot emission, and checkpoint m
 **Command**:
 ```bash
 nox -s repro_smoke
-```
+```text
 
 **Expected Outcome**:
 - `tests/test_metrics_generative.py` passes
@@ -42,7 +42,7 @@ nox -s repro_smoke
 ```bash
 # Run a sample evaluation
 python -m pytest tests/eval/test_eval_provenance_capture.py::test_evaluation_captures_git_commit_in_provenance -v
-```
+```text
 
 **Expected Outcome**:
 - Test creates `output_dir/provenance/environment.json`
@@ -56,7 +56,7 @@ python -m pytest tests/eval/test_eval_provenance_capture.py::test_evaluation_cap
 ```bash
 # After test run, check the generated file
 cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/provenance/environment.json
-```
+```text
 
 **Expected Structure**:
 ```json
@@ -67,7 +67,7 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
   "pip_freeze": ["package==1.0.0", ...],
   "hardware": {...}
 }
-```
+```text
 
 ### 3. Checkpoint Metadata Version
 
@@ -89,7 +89,7 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
   "created_at": "2025-11-05T...",
   "model_config": {...}
 }
-```
+```text
 
 ## Acceptance Criteria
 
@@ -136,7 +136,7 @@ pip install -r requirements-dev.txt
 
 # Or install package with extras
 pip install -e ".[metrics,test]"
-```
+```text
 
 **Issue**: Git commit not captured
 

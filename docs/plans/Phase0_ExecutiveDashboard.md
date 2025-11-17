@@ -16,7 +16,7 @@
 
 ## ⏱️ TIMELINE AT A GLANCE
 
-```
+```text
 NOW: 2025-11-09 23:28:47 UTC
 ├─ Days 1-3:   DEPENDENCY RESOLUTION (BLOCK-DEP-001 to 005)
 ├─ Days 4-10:  ARCHITECTURE FOUNDATION (BLOCK-ARCH-001 to 005)
@@ -27,13 +27,13 @@ NOW: 2025-11-09 23:28:47 UTC
 └─ GATE: 2025-11-23 14:00 UTC [GO/NO-GO DECISION]
 
 Target: 14 calendar days | Effort: 4-6 person-weeks
-```
+```text
 
 ---
 
 ## 📋 CRITICAL PATH DEPENDENCY GRAPH
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │ DEPENDENCIES (Days 1-3)                             │
 │ BLOCK-DEP-001 → libcst                              │
@@ -87,7 +87,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │ Decision: PROCEED TO SPRINT 1 or DEFER              │
 │ Required Sign-offs: Tech Lead, QA Lead, PM, SecOps  │
 └─────────────────────────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -159,7 +159,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 ## ✅ SUCCESS CRITERIA BY DAY
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    PHASE 0 COMPLETION CHART                 │
 ├─────────────────────────────────────────────────────────────┤
@@ -177,7 +177,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 │ Status: ON TRACK (dependencies critical path)             │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -204,7 +204,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 - Timeline: [0-100]%
 - Resource allocation: [0-100]%
 - Technical feasibility: [0-100]%
-```
+```text
 
 ---
 
@@ -220,7 +220,7 @@ Target: 14 calendar days | Effort: 4-6 person-weeks
 
 **Escalation Process:**
 
-```
+```text
 Day 1 (Expected resolution) → Not resolved
        ↓
 Notify Task Owner & Tech Lead (same day)
@@ -234,7 +234,7 @@ Day 2: Evaluate options:
   • Defer to Sprint 1?
        ↓
 Day 3: Execute chosen option
-```
+```text
 
 **Escalation Contacts:**
 - Tech Lead: escalate architectural/technical blockers
@@ -295,52 +295,52 @@ Day 3: Execute chosen option
 ## 🎁 DELIVERABLES BY PHASE
 
 ### Phase 0.1: Dependencies (Day 3)
-```
+```text
 ✅ pyproject.toml updated with all AST deps
 ✅ pip install -e ".[ast]" succeeds
 ✅ No dependency conflicts (pip check clean)
 ✅ No critical security vulns (pip audit clean)
-```
+```text
 
 ### Phase 0.2: Architecture (Day 10)
-```
+```text
 ✅ StandardizedASTNode.py (200 LOC)
 ✅ DependencyGraph.py (300 LOC)
 ✅ MetricsAggregator.py (200 LOC)
 ✅ All designs approved & documented
-```
+```text
 
 ### Phase 0.3: Performance (Day 14)
-```
+```text
 ✅ Baseline benchmarks recorded
 ✅ Memory profile completed
 ✅ Optimization roadmap created
 ✅ Performance targets achievable confirmed
-```
+```text
 
 ### Phase 0.4: Testing (Day 21)
-```
+```text
 ✅ Fixture library (tests/ast/fixtures.py)
 ✅ Benchmark suite operational
 ✅ Edge case tests defined
 ✅ Golden file tests created
-```
+```text
 
 ### Phase 0.5: Documentation (Day 28)
-```
+```text
 ✅ Architecture decision records (3-5 ADRs)
 ✅ API documentation framework
 ✅ Migration guide
 ✅ Usage examples notebook
-```
+```text
 
 ### Phase 0.6: Risk Mitigation (Day 35)
-```
+```text
 ✅ Offline bundle created & tested
 ✅ Python 3.8-3.12 compat verified
 ✅ Performance optimization roadmap approved
 ✅ Scope freeze agreement signed
-```
+```text
 
 ---
 
@@ -376,7 +376,7 @@ Day 3: Execute chosen option
 
 ## 📈 SUCCESS PROBABILITY CALCULATOR
 
-```
+```text
 Probability of Phase 0 SUCCESS:
 
 Dependencies:    90% (high confidence, standard work)
@@ -392,7 +392,7 @@ Overall P(Success) = ∏ = 90% × 75% × 65% × 85% × 95% × 70%
 ≈ 27% SUCCESS RATE (VERY HIGH RISK)
 
 Recommendation: Increase architecture confidence → add planning buffer
-```
+```text
 
 ---
 
@@ -412,7 +412,7 @@ Recommendation: Increase architecture confidence → add planning buffer
 
 ## 🚀 NEXT IMMEDIATE ACTIONS (First 24 Hours)
 
-```
+```text
 BY 2025-11-10 09:00 UTC:
 
 ☐ 1. Notify all team members of Phase 0 kickoff
@@ -423,7 +423,7 @@ BY 2025-11-10 09:00 UTC:
 ☐ 6. Begin architecture design sessions
 ☐ 7. Create baseline measurement plan
 ☐ 8. Schedule Go/No-Go meeting for 2025-11-23
-```
+```text
 
 ---
 
@@ -433,7 +433,7 @@ BY 2025-11-10 09:00 UTC:
 **Success Probability:** ~27% (RISK⚠️ - contingency needed)  
 **Next Review:** 2025-11-10 09:00 UTC (Daily Standup #1)
 
-```
+```text
 </markdown>
 
 Now creating the comprehensive risk mitigation and contingency planning document:
@@ -456,7 +456,7 @@ Now creating the comprehensive risk mitigation and contingency planning document
 **Medium (BLUE):** 5
 
 **Risk Dashboard:**
-```
+```text
 ┌─────────────────────────────────────────┐
 │ RISK SEVERITY DISTRIBUTION              │
 ├─────────────────────────────────────────┤
@@ -464,7 +464,7 @@ Now creating the comprehensive risk mitigation and contingency planning document
 │ 🟡 HIGH      ███████░░░░░░░░░░░░ 47%   │
 │ 🔵 MEDIUM    █████░░░░░░░░░░░░░░ 33%   │
 └─────────────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -496,7 +496,7 @@ Dependency conflicts between libcst, radon, tree-sitter, and existing torch/tran
 
 **Contingency Plan (If Realized):**
 
-```
+```text
 DECISION TREE:
 
 Is it a direct dependency conflict?
@@ -510,7 +510,7 @@ Action:
 2. Identify conflicting packages
 3. Try alternative version(s)
 4. If no solution: De-scope optional dependencies to later phase
-```
+```text
 
 **Escalation Trigger:** If any `pip check` fails after dependency addition  
 **Escalation To:** Tech Lead (same day)
@@ -545,7 +545,7 @@ Proposed architecture (StandardizedAST, DependencyGraph, MetricsAggregator, Plug
 
 **Contingency Plan (If Realized):**
 
-```
+```text
 ESCALATION DECISION POINT (Day 6):
 
 Is architecture approved by tech lead?
@@ -557,7 +557,7 @@ CONTINGENCY OPTIONS:
 2. EXTEND TIMELINE: Add 1 week for design iteration
 3. BRING IN EXPERT: Hire external architect (cost trade-off)
 4. DEFER ARCHITECTURE: Proceed with simpler initial design
-```
+```text
 
 **Decision Authority:** Tech Lead + Architecture Lead  
 **Escalation Trigger:** Design review fails at Day 6  
@@ -593,7 +593,7 @@ Performance targets (<1ms per 100 tokens, <5s per 1000 LOC, <500MB memory) may b
 
 **Contingency Plan (If Realized):**
 
-```
+```text
 PERFORMANCE BASELINE RESULTS (Day 14):
 
 Actual vs. Target:
@@ -611,7 +611,7 @@ CONTINGENCY OPTIONS:
 2. RELAX TARGETS: Adjust NFR thresholds (may impact user satisfaction)
 3. HYBRID APPROACH: Fast mode (less analysis) + full mode
 4. INCREMENTAL ROLLOUT: Ship basic features first, optimize later
-```
+```text
 
 **Decision Authority:** Perf Engineer + Project Manager  
 **Escalation Trigger:** If optimization appears impossible  
@@ -733,7 +733,7 @@ CONTINGENCY OPTIONS:
 
 ## 📊 RISK HEAT MAP
 
-```
+```text
         Low        Medium      High       Critical
         ↓          ↓           ↓          ↓
 Low  [····]      [····]      [····]     [RISK-9]
@@ -747,7 +747,7 @@ MED  [····]      [R-11 ]     [R-4  ]    [R-2  ]
      [····]      [····]      [····]
 
 HIGH [····]      [····]      [····]     [····]
-```
+```text
 
 ---
 
@@ -782,13 +782,13 @@ HIGH [····]      [····]      [····]     [····]
 
 ## Action Items
 - [ ] [Action] - Owner: [Person] - Due: [Date]
-```
+```text
 
 ---
 
 ## 🎯 RISK RESPONSE MATRIX
 
-```
+```text
 ┌────────────┬──────────────────┬──────────────────────┐
 │ Severity   │ Response         │ Escalation           │
 ├────────────┼──────────────────┼──────────────────────┤
@@ -815,7 +815,7 @@ HIGH [····]      [····]      [····]     [····]
 │            │ • No action      │                      │
 │            │   unless P ↑     │                      │
 └────────────┴──────────────────┴──────────────────────┘
-```
+```text
 
 ---
 
@@ -842,7 +842,7 @@ HIGH [····]      [····]      [····]     [····]
 
 ## 🚨 DECISION ESCALATION MATRIX
 
-```
+```text
 Risk Decision Tree:
 
 Is risk CRITICAL?
@@ -863,7 +863,7 @@ Is risk CRITICAL?
 │     ├─ Log in risk register
 │     ├─ Review: Monday standup
 │     └─ Decision: Track or close
-```
+```text
 
 ---
 
@@ -894,7 +894,7 @@ risks:
     status: OPEN
     created: 2025-11-09
     next_review: 2025-11-10
-```
+```text
 
 ---
 
@@ -916,7 +916,7 @@ risks:
 **Last Updated:** 2025-11-09 23:28:47 UTC  
 **Next Review:** 2025-11-10 09:00 UTC (Daily Standup)  
 **Risk Escalation Contact:** Tech Lead + Project Manager
-```
+```text
 
 ---
 
@@ -942,3 +942,5 @@ All documents include:
 **Next Action:** Schedule Phase 0 kickoff and assign team owners
 
 Copilot is powered by AI, so mistakes are possible. Leave a comment via the 👍 👎 to share your feedback and help improve the experience.
+
+```

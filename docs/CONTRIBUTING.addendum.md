@@ -13,19 +13,19 @@ These gates are **local** and do not enable or require GitHub Actions.
 **Fence integrity**
 ```bash
 python tools/validate_fences.py
-```
+```text
 
 **Message/summary evaluator**
 ```bash
 python tools/codex_evaluator.py \
   --rules manifests/codex_eval_rules.v3.json \
   --input samples/assistant_message_summary.sample.json
-```
+```text
 
 **One-shot wrapper**
 ```bash
 ./scripts/run_local_gates.sh
-```
+```text
 
 ## 3) Pre-commit Integration
 Hooks are defined in `.pre-commit-config.yaml`:
@@ -36,7 +36,7 @@ Install:
 ```bash
 pre-commit install
 pre-commit run --all-files
-```
+```text
 
 ## 4) Where to Start
 - Read: `docs/templates/intent_validation_gate.md`

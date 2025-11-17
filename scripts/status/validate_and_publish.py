@@ -29,7 +29,9 @@ def main() -> int:
     # 1) Schema validation (pytest)
     schema_test = root / "tests/status/test_example_report_schema.py"
     if schema_test.exists():
-        code, out, err = run([sys.executable, "-m", "pytest", "-q", "tests/status/test_example_report_schema.py"])
+        code, out, err = run(
+            [sys.executable, "-m", "pytest", "-q", "tests/status/test_example_report_schema.py"]
+        )
         results["status_schema"] = {"ok": code == 0, "stdout": out, "stderr": err}
     else:
         results["status_schema"] = {
@@ -42,7 +44,16 @@ def main() -> int:
     schema_cfg = root / "configs/schemas/training.schema.yaml"
     cfg_root = root / "configs/training"
     if schema_cfg.exists() and cfg_root.exists():
-        code, out, err = run([sys.executable, str(root / "tools/validate_configs.py"), "--root", str(cfg_root), "--schema", str(schema_cfg)])
+        code, out, err = run(
+            [
+                sys.executable,
+                str(root / "tools/validate_configs.py"),
+                "--root",
+                str(cfg_root),
+                "--schema",
+                str(schema_cfg),
+            ]
+        )
         results["config_validation"] = {"ok": code == 0, "stdout": out, "stderr": err}
     else:
         results["config_validation"] = {"ok": True, "stdout": "skipped", "stderr": ""}

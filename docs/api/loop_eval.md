@@ -29,7 +29,7 @@ Provide a minimal, deterministic evaluation loop with pluggable metrics and logg
   "batches": <int>,
   "duration_sec": <float>
 }
-```
+```text
 
 ## Logging
 - Per batch (optional) + epoch summary NDJSON at `runs/eval/<timestamp>/metrics.ndjson`.

@@ -3,9 +3,9 @@
 
 ## Objective
 Prevent the CI failure:
-```
+```text
 make: *** config: No such file or directory.  Stop.
-```
+```text
 by ensuring `make config` succeeds and the SBOM workflow is resilient.
 
 ## References
@@ -23,7 +23,7 @@ by ensuring `make config` succeeds and the SBOM workflow is resilient.
 | Add | config/README.md | Documents config directory contents and usage | Developer aid |
 
 ### Expected repo tree (relevant paths)
-```
+```text
 .
 ├── Makefile
 ├── config/
@@ -34,7 +34,7 @@ by ensuring `make config` succeeds and the SBOM workflow is resilient.
 └── .github/
     └── workflows/
         └── sbom.yml
-```
+```text
 
 ## Resolution summary
 - `make config` is now safe to run even if the repo lacks config files.

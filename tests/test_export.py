@@ -17,8 +17,7 @@ def test_export_session(tmp_path, monkeypatch):
             "message TEXT, seq INTEGER, meta TEXT)"
         )
         c.executemany(
-            "INSERT INTO session_events(session_id, timestamp, role, message) "
-            "VALUES (?,?,?,?)",
+            "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
             [
                 ("s1", "2024-01-01T00:00:00", "user", "hi"),
                 ("s1", "2024-01-01T00:01:00", "assistant", "hello"),

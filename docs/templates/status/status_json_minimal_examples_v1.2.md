@@ -63,7 +63,7 @@ Minimal Skeleton (valid against v1.2)
   "ml_test_score": {},
   "hydra_config_snapshot": {}
 }
-```
+```text
 
 Minimal Finding (add to snapshot.findings)
 ```json
@@ -79,7 +79,7 @@ Minimal Finding (add to snapshot.findings)
   "status": "acknowledged",
   "links": { "capability_ids": ["CAP-002"], "patch_ids": ["PATCH-010"], "issues": [], "prs": [] }
 }
-```
+```text
 
 Minimal Capability (add to snapshot.capabilities)
 ```json
@@ -98,4 +98,4 @@ Minimal Capability (add to snapshot.capabilities)
   "rollback": "Revert new files",
   "owner": "mbaetiong"
 }
-```
+```text

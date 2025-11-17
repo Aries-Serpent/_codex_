@@ -1,4 +1,5 @@
 """Generate "Open Questions" documentation grouped by capability."""
+
 from __future__ import annotations
 
 import json
@@ -24,7 +25,9 @@ def generate() -> Path:
     TARGET.parent.mkdir(parents=True, exist_ok=True)
     with TARGET.open("w", encoding="utf-8") as fh:
         if not by_capability:
-            fh.write("_No open questions fell below the 0.95 threshold or carried an explicit open flag._\n")
+            fh.write(
+                "_No open questions fell below the 0.95 threshold or carried an explicit open flag._\n"
+            )
         for capability, questions in sorted(by_capability.items()):
             fh.write(f"## {capability}\n")
             for question in questions:

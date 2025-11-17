@@ -19,4 +19,3 @@ def test_telemetry_json_disable_env(tmp_path: Path, monkeypatch):
     assert not (outdir / "telemetry.json").exists()
     # NDJSON still present by default
     assert (outdir / "telemetry.ndjson").exists()
-

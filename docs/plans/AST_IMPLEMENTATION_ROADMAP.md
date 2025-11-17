@@ -107,7 +107,7 @@ ast_extended = [
     "tree-sitter>=0.20.0",
     "tree-sitter-python>=0.20.0",
 ]
-```
+```text
 
 **OSS References**:
 - [libcst (Instagram)](https://github.com/Instagram/LibCST) - Universal Python parser
@@ -118,7 +118,7 @@ ast_extended = [
 ```bash
 pip install -e .
 python -c "import libcst; import radon; import parso; print('✓ Dependencies OK')"
-```
+```text
 
 **Risk Mitigation**:
 - All licenses are MIT (permissive)
@@ -189,7 +189,7 @@ class StandardizedASTNode:
         yield self
         for child in self.children:
             yield from child.walk()
-```
+```text
 
 **OSS References**:
 - [libcst MetadataWrapper](https://libcst.readthedocs.io/en/latest/metadata.html)
@@ -218,7 +218,7 @@ def test_node_serialization():
     data = node.to_dict()
     assert data["id"] == "n1"
     assert data["type"] == "function"
-```
+```text
 
 ---
 
@@ -319,7 +319,7 @@ class DependencyGraph:
                 dfs(node_id)
         
         return stack[::-1]
-```
+```text
 
 **OSS References**:
 - [NetworkX Tarjan's SCC](https://github.com/networkx/networkx/blob/main/networkx/algorithms/components/strongly_connected.py)
@@ -348,7 +348,7 @@ def test_topological_sort_dag():
     order = graph.topological_sort()
     assert order.index("A") < order.index("B")
     assert order.index("B") < order.index("C")
-```
+```text
 
 ---
 
@@ -395,7 +395,7 @@ class MetricsAggregator:
             comment_lines=sum(m.comment_lines for m in metrics_list),
             maintainability_index=sum(m.maintainability_index for m in metrics_list) / len(metrics_list),
         )
-```
+```text
 
 **Tests**:
 ```python
@@ -411,7 +411,7 @@ def test_metrics_aggregation():
     assert result.cyclomatic_complexity == 8
     assert result.lines_of_code == 150
     assert result.maintainability_index == 85.0
-```
+```text
 
 ---
 

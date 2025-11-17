@@ -78,7 +78,7 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest \
   tests/connectors/test_remote_connector.py \
   tests/deployment/test_cloud.py \
   tests/training/test_overfit_smoke.py -q
-```
+```text
 
 ## Follow-up Recommendations
 

@@ -24,19 +24,19 @@ Environment variable overrides file configuration.
 ```bash
 export CODEX_METRIC_PLUGIN_POLICY=prefer_plugin
 python -m codex_ml.eval.run ...
-```
+```text
 
 ## Example (Config File)
 ```toml
 # configs/metrics_plugin_policy.toml
 policy = "alias_plugin"
-```
+```text
 
 ## Alias Naming
 When `alias_plugin` is active, plugin metrics register under:
-```
+```text
 plugin:<original_name>
-```
+```text
 Lookup of the original name returns the local implementation; alias invokes plugin version.
 
 ## Logging
@@ -48,7 +48,7 @@ Resolutions are appended to daily error report as structured entries:
 Run policy tests:
 ```bash
 pytest -k plugin_policy
-```
+```text
 
 ## Best Practices
 | Scenario | Recommended Policy |
@@ -63,7 +63,7 @@ pytest -k plugin_policy
 To restore strict behavior:
 ```bash
 export CODEX_METRIC_PLUGIN_POLICY=error
-```
+```text
 Or remove config file and unset environment variable.
 
 — End

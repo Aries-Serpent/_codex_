@@ -1,0 +1,43 @@
+{
+  "timestamp": 1763352382.922646,
+  "version": "1.1.0",
+  "repo_root_sha": "a084005db5ba301aa4b1b1f91b3c6566d4da7e79649e558b463b434cf74e7567",
+  "artifacts": [
+    {
+      "name": "facets.json",
+      "sha": "799a17bfb9a659aafaa47685268512c8d81c7f6ecbabe894fde6d9ad813ffb9b"
+    },
+    {
+      "name": "capabilities_raw.json",
+      "sha": "308ab07f6a64bd45a1a08fa980a2a696cc55771501f77827510dca526278f981"
+    },
+    {
+      "name": "capabilities_scored.json",
+      "sha": "283c4273b6f4955a339e624aaba16183bd685192695d9784e364a434fd193236"
+    },
+    {
+      "name": "context_index.json",
+      "sha": "73b0a4b4d95df209035e88b206aacabf6c41aa815dd732203203b0c769a9d68d"
+    },
+    {
+      "name": "gaps.json",
+      "sha": "66cd0f400d3ddc17db126459c53ebaa173ad15a851c661a2724af0bae797b448"
+    }
+  ],
+  "weights": {
+    "functionality": 0.25,
+    "consistency": 0.2,
+    "tests": 0.25,
+    "safeguards": 0.15,
+    "documentation": 0.15
+  },
+  "warnings": [],
+  "normalized_weights": {
+    "functionality": 0.25,
+    "consistency": 0.2,
+    "tests": 0.25,
+    "safeguards": 0.15,
+    "documentation": 0.15
+  },
+  "template_hash": "aab8f6f3f24738ab6e544a887cbe459a6dea9a4e569b92954048fa8404361035"
+}

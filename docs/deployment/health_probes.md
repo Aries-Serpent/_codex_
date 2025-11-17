@@ -29,7 +29,7 @@ async def health():
 async def ready():
     report = await checker.check_dependencies()
     return {"ready": report.status == HealthStatus.HEALTHY}
-```
+```text
 
 > **Tip:** Keep the liveness probe inexpensive—avoid GPU initialisation or large file I/O. Readiness checks can be
 > more thorough because they run less frequently.
@@ -68,7 +68,7 @@ spec:
               port: 8000
             initialDelaySeconds: 30
             periodSeconds: 10
-```
+```text
 
 ## Dashboards and alerting
 

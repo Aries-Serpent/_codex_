@@ -12,13 +12,14 @@ Note:
 Schemas:
 - See DEFAULT_SCHEMA below for supported keys and semantics.
 """
+
 from __future__ import annotations
 
 import os
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-_TRUTHY = {"1","true","TRUE","True","yes","YES","on","ON","y","Y"}
-_FALSY  = {"0","false","FALSE","False","no","NO","off","OFF","","n","N"}
+_TRUTHY = {"1", "true", "TRUE", "True", "yes", "YES", "on", "ON", "y", "Y"}
+_FALSY = {"0", "false", "FALSE", "False", "no", "NO", "off", "OFF", "", "n", "N"}
 
 _WARNINGS: List[str] = []
 
@@ -27,7 +28,7 @@ def _warn(msg: str) -> None:
     _WARNINGS.append(msg)
 
 
-def normalize_truthy(raw: Optional[str], default: bool=False) -> Tuple[bool, Optional[str]]:
+def normalize_truthy(raw: Optional[str], default: bool = False) -> Tuple[bool, Optional[str]]:
     if raw is None:
         return default, None
     if raw in _TRUTHY:
@@ -37,7 +38,7 @@ def normalize_truthy(raw: Optional[str], default: bool=False) -> Tuple[bool, Opt
     return default, f"ambiguous_boolean:{raw}"
 
 
-def parse_truthy(raw: Optional[str], default: bool=False) -> bool:
+def parse_truthy(raw: Optional[str], default: bool = False) -> bool:
     if raw is None:
         return default
     if raw in _TRUTHY:
@@ -47,7 +48,9 @@ def parse_truthy(raw: Optional[str], default: bool=False) -> bool:
     return default
 
 
-def normalize_enum(raw: Optional[str], allowed: Iterable[str], default: str) -> Tuple[str, Optional[str]]:
+def normalize_enum(
+    raw: Optional[str], allowed: Iterable[str], default: str
+) -> Tuple[str, Optional[str]]:
     allowed_set = set(allowed)
     if raw is None:
         return default, None
@@ -66,7 +69,9 @@ def parse_enum(raw: Optional[str], allowed: Iterable[str], default: str, var_nam
     return default
 
 
-def normalize_int(raw: Optional[str], default: int, min_val: Optional[int]=None, max_val: Optional[int]=None) -> Tuple[int, Optional[str]]:
+def normalize_int(
+    raw: Optional[str], default: int, min_val: Optional[int] = None, max_val: Optional[int] = None
+) -> Tuple[int, Optional[str]]:
     if raw is None:
         return default, None
     try:
@@ -80,7 +85,9 @@ def normalize_int(raw: Optional[str], default: int, min_val: Optional[int]=None,
     return val, None
 
 
-def parse_int(raw: Optional[str], default: int, min_val: Optional[int]=None, max_val: Optional[int]=None) -> int:
+def parse_int(
+    raw: Optional[str], default: int, min_val: Optional[int] = None, max_val: Optional[int] = None
+) -> int:
     if raw is None or raw == "":
         return default
     try:
@@ -94,7 +101,12 @@ def parse_int(raw: Optional[str], default: int, min_val: Optional[int]=None, max
     return val
 
 
-def normalize_float(raw: Optional[str], default: float, min_val: Optional[float]=None, max_val: Optional[float]=None) -> Tuple[float, Optional[str]]:
+def normalize_float(
+    raw: Optional[str],
+    default: float,
+    min_val: Optional[float] = None,
+    max_val: Optional[float] = None,
+) -> Tuple[float, Optional[str]]:
     if raw is None:
         return default, None
     try:
@@ -128,28 +140,56 @@ def parse_csv_list(raw: Optional[str]) -> list[str]:
 
 DEFAULT_SCHEMA: Dict[str, Dict[str, Any]] = {
     # Content filtering
-    "CONTENT_FILTER_MODE": {"type": "enum", "allowed": ["allowlist","pii","combined"], "default": "allowlist"},
-    "ALLOWLIST_PROFILE":   {"type": "enum", "allowed": ["A","B","C","A+B","A+C","B+C","A+B+C"], "default": "A"},
-    "ALLOWLIST_EXT":       {"type": "csv",  "default": ""},
-    "PII_PATTERN_SET":     {"type": "enum", "allowed": ["minimal","extended","custom"], "default": "minimal"},
-    "PII_CUSTOM_LIST":     {"type": "csv",  "default": ""},
-    "PII_MODE":            {"type": "enum", "allowed": ["replace","union-minimal","union-extended"], "default": "union-minimal"},
-    "PII_REGEX_STRATEGY":  {"type": "enum", "allowed": ["abort","skip-warn","skip-manifest"], "default": "skip-manifest"},
+    "CONTENT_FILTER_MODE": {
+        "type": "enum",
+        "allowed": ["allowlist", "pii", "combined"],
+        "default": "allowlist",
+    },
+    "ALLOWLIST_PROFILE": {
+        "type": "enum",
+        "allowed": ["A", "B", "C", "A+B", "A+C", "B+C", "A+B+C"],
+        "default": "A",
+    },
+    "ALLOWLIST_EXT": {"type": "csv", "default": ""},
+    "PII_PATTERN_SET": {
+        "type": "enum",
+        "allowed": ["minimal", "extended", "custom"],
+        "default": "minimal",
+    },
+    "PII_CUSTOM_LIST": {"type": "csv", "default": ""},
+    "PII_MODE": {
+        "type": "enum",
+        "allowed": ["replace", "union-minimal", "union-extended"],
+        "default": "union-minimal",
+    },
+    "PII_REGEX_STRATEGY": {
+        "type": "enum",
+        "allowed": ["abort", "skip-warn", "skip-manifest"],
+        "default": "skip-manifest",
+    },
     # Depth
-    "AUDIT_DEPTH_DEFAULT": {"type": "int",  "min": 1, "max": 4, "default": 3},
-    "AUDIT_DEPTH":         {"type": "int",  "min": 1, "max": 4, "default": None},  # None means: use default
+    "AUDIT_DEPTH_DEFAULT": {"type": "int", "min": 1, "max": 4, "default": 3},
+    "AUDIT_DEPTH": {"type": "int", "min": 1, "max": 4, "default": None},  # None means: use default
     # Archival
-    "MAX_BUNDLE_MB":       {"type": "float","min": 0.1, "max": 4096.0, "default": 25.0},
-    "ARCHIVE_FORMAT":      {"type": "enum", "allowed": ["tar.gz","zip"], "default": "tar.gz"},
-    "AUTO_ARCHIVE_DISABLE":{"type": "bool", "default": False},
-    "ARCHIVE_POINTER_STYLE":{"type":"enum","allowed": ["embedded","sidecar","both"], "default":"both"},
+    "MAX_BUNDLE_MB": {"type": "float", "min": 0.1, "max": 4096.0, "default": 25.0},
+    "ARCHIVE_FORMAT": {"type": "enum", "allowed": ["tar.gz", "zip"], "default": "tar.gz"},
+    "AUTO_ARCHIVE_DISABLE": {"type": "bool", "default": False},
+    "ARCHIVE_POINTER_STYLE": {
+        "type": "enum",
+        "allowed": ["embedded", "sidecar", "both"],
+        "default": "both",
+    },
     # Prefix naming policy
-    "BUNDLE_PREFIX_MODE":  {"type": "bool", "default": False},
+    "BUNDLE_PREFIX_MODE": {"type": "bool", "default": False},
     # P6 Advanced Features
     "AST_SIMILARITY_ENABLE": {"type": "bool", "default": False},
     "AST_SIMILARITY_MAX_FILES": {"type": "int", "min": 1, "max": 100, "default": 30},
     "AST_SIMILARITY_MIN_NODES": {"type": "int", "min": 1, "max": 1000, "default": 10},
-    "AST_CONSISTENCY_BLEND_MODE": {"type": "enum", "allowed": ["multiply","average","max"], "default": "multiply"},
+    "AST_CONSISTENCY_BLEND_MODE": {
+        "type": "enum",
+        "allowed": ["multiply", "average", "max"],
+        "default": "multiply",
+    },
     "SYNONYM_MAP_PATH": {"type": "str", "default": "configs/synonyms/synonyms.json"},
     "SECRET_CONTEXT_ENABLE": {"type": "bool", "default": False},
     "SECRET_CONTEXT_WINDOW": {"type": "int", "min": 1, "max": 100, "default": 10},
@@ -164,22 +204,26 @@ def _get_env_map() -> Dict[str, str]:
     return dict(os.environ)  # shallow copy
 
 
-def normalize_from_env(schema: Dict[str, Dict[str, Any]] = DEFAULT_SCHEMA) -> Tuple[Dict[str, Any], list[str]]:
+def normalize_from_env(
+    schema: Dict[str, Dict[str, Any]] = DEFAULT_SCHEMA,
+) -> Tuple[Dict[str, Any], list[str]]:
     env = _get_env_map()
     normalized: Dict[str, Any] = {}
     warnings: list[str] = []
-    
+
     for key, spec in schema.items():
         typ = spec["type"]
         default = spec.get("default")
         raw = env.get(key)
-        
+
         if typ == "enum":
             val, w = normalize_enum(raw, spec["allowed"], default)
         elif typ == "bool":
             val, w = normalize_truthy(raw, bool(default))
         elif typ == "int":
-            val, w = normalize_int(raw, int(default) if default is not None else 0, spec.get("min"), spec.get("max"))
+            val, w = normalize_int(
+                raw, int(default) if default is not None else 0, spec.get("min"), spec.get("max")
+            )
             if raw is None and default is None:
                 # propagate sentinel to indicate "use depth default"
                 val, w = None, None
@@ -192,11 +236,11 @@ def normalize_from_env(schema: Dict[str, Dict[str, Any]] = DEFAULT_SCHEMA) -> Tu
             val, w = raw if raw is not None else default, None
         else:
             val, w = raw if raw is not None else default, None
-        
+
         normalized[key] = val
         if w:
             warnings.append(w)
-    
+
     return normalized, warnings
 
 
@@ -243,7 +287,9 @@ def get_depth() -> Tuple[int, bool]:
 
     # Only warn if the default source is env (overridden), or if the default is restrictive
     if default_source == "env":
-        _warn("depth_default_used:env (may be overridden externally, leading to unexpected behavior)")
+        _warn(
+            "depth_default_used:env (may be overridden externally, leading to unexpected behavior)"
+        )
     elif default_source == "hardcoded":
         _warn("depth_default_used:hardcoded (may be overly restrictive and limit flexibility)")
     if default_depth < 4:
@@ -254,7 +300,9 @@ def get_depth() -> Tuple[int, bool]:
 
 def get_pii_mode() -> str:
     raw = _get_env("PII_MODE")
-    return parse_enum(raw, ["replace", "union-minimal", "union-extended"], "union-minimal", "PII_MODE")
+    return parse_enum(
+        raw, ["replace", "union-minimal", "union-extended"], "union-minimal", "PII_MODE"
+    )
 
 
 def get_pii_pattern_set() -> str:
@@ -269,7 +317,9 @@ def get_pii_custom_list() -> list[str]:
 
 def get_pii_regex_strategy() -> str:
     raw = _get_env("PII_REGEX_STRATEGY")
-    return parse_enum(raw, ["abort", "skip-warn", "skip-manifest"], "skip-manifest", "PII_REGEX_STRATEGY")
+    return parse_enum(
+        raw, ["abort", "skip-warn", "skip-manifest"], "skip-manifest", "PII_REGEX_STRATEGY"
+    )
 
 
 def get_content_filter_mode() -> str:

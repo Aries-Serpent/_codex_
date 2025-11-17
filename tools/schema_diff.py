@@ -29,7 +29,7 @@ def load_any(p: Path) -> Any:
 
 def classify_changes(old: Dict, new: Dict) -> Dict[str, Any]:
     changes = {"added_keys": [], "removed_keys": [], "type_changes": []}
-    
+
     def walk(o: Any, n: Any, path: str = ""):
         if isinstance(o, dict) and isinstance(n, dict):
             o_keys = set(o.keys())
@@ -42,8 +42,10 @@ def classify_changes(old: Dict, new: Dict) -> Dict[str, Any]:
                 walk(o[k], n[k], f"{path}.{k}".strip("."))
         else:
             if type(o) is not type(n):
-                changes["type_changes"].append({"path": path, "old": type(o).__name__, "new": type(n).__name__})
-    
+                changes["type_changes"].append(
+                    {"path": path, "old": type(o).__name__, "new": type(n).__name__}
+                )
+
     walk(old, new)
     return changes
 
@@ -53,7 +55,7 @@ def main(argv=None) -> int:
     ap.add_argument("--old", required=True)
     ap.add_argument("--new", required=True)
     args = ap.parse_args(argv)
-    
+
     old = load_any(Path(args.old))
     new = load_any(Path(args.new))
     diff = classify_changes(old, new)

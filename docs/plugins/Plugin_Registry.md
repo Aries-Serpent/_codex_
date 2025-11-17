@@ -19,6 +19,6 @@ This document captures the canonical programmatic registry surfaces and JSON con
 ```python
 from codex_ml.plugins.programmatic import list_plugins
 print(list_plugins())  # ["plugin_a", "plugin_b"]
-```
+```text
 
 *End of doc*

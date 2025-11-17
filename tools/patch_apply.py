@@ -29,7 +29,7 @@ def apply_patch_block(lines: list[str]) -> None:
     m_add = ADD.match(header)
     m_upd = UPDATE.match(header)
     m_del = DELETE.match(header)
-    
+
     # Validate path to prevent directory traversal attacks
     # Allow absolute paths, but block paths with .. components
     def validate_path(path_str: str) -> Path:
@@ -37,7 +37,7 @@ def apply_patch_block(lines: list[str]) -> None:
             print(f"[ERROR] Path traversal detected: {path_str}", file=sys.stderr)
             sys.exit(1)
         return Path(path_str)
-    
+
     if m_add:
         path = validate_path(m_add.group(1))
         content = "\n".join(lines[1:])

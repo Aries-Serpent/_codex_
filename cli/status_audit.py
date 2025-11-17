@@ -29,7 +29,7 @@ from typing import List
 
 def _run_command(cmd: List[str], description: str) -> int:
     """Run a command and return its exit code.
-    
+
     Output streams in real-time (not buffered) for better user experience
     and to avoid memory issues with large outputs.
     """
@@ -80,67 +80,64 @@ def main(argv: List[str] | None = None) -> int:
         action="store_true",
         help="Quick mode: only run essential stages",
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     repo_root = Path(__file__).resolve().parents[1]
-    
+
     # If --generate flag is set, use the new JSON-based tool
     if args.generate:
         print("=" * 70)
         print("Generating JSON Status Update Report (Schema-based)")
         print("=" * 70)
         print()
-        
+
         status_generator = repo_root / "tools" / "generate_status_update.py"
         if not status_generator.exists():
             print(f"[ERROR] Status generator not found: {status_generator}", file=sys.stderr)
             return 1
-        
-        return _run_command(
-            [sys.executable, str(status_generator)],
-            "Generate JSON status update"
-        )
-    
+
+        return _run_command([sys.executable, str(status_generator)], "Generate JSON status update")
+
     # Original audit pipeline workflow
     audit_runner = repo_root / "scripts" / "space_traversal" / "audit_runner.py"
     status_reporter = repo_root / "scripts" / "space_traversal" / "status_update_report.py"
-    
+
     # Ensure scripts exist
     if not audit_runner.exists():
         print(f"[ERROR] Audit runner not found: {audit_runner}", file=sys.stderr)
         return 1
-    
+
     if not status_reporter.exists():
         print(f"[ERROR] Status reporter not found: {status_reporter}", file=sys.stderr)
         return 1
-    
+
     print("=" * 70)
     print("Codex Status Update Audit Report Generator")
     print("=" * 70)
     print()
-    
+
     # Step 1: Run audit pipeline (unless skipped)
     if not args.skip_audit:
         print("[STEP 1/2] Running capability audit pipeline")
         print(f"           Artifacts will be saved to: {args.artifacts}/")
         print()
-        
+
         audit_cmd = [sys.executable, str(audit_runner), "run", "--artifacts-dir", args.artifacts]
         rc = _run_command(audit_cmd, "Capability audit")
-        
+
         if rc != 0:
             print(f"[WARN] Audit pipeline returned exit code {rc}", file=sys.stderr)
             # Continue anyway as artifacts may still be usable
     else:
         print("[STEP 1/2] Skipping audit pipeline (using existing artifacts)")
         print()
-    
+
     # Step 2: Generate status update report
     print("[STEP 2/2] Generating status update report")
     print(f"           Report will be saved to: {args.output}/")
     print()
-    
+
     status_cmd = [
         sys.executable,
         str(status_reporter),
@@ -149,18 +146,18 @@ def main(argv: List[str] | None = None) -> int:
         "--reports",
         args.output,
     ]
-    
+
     if args.baseline:
         status_cmd.extend(["--base", args.baseline])
         print(f"           Using baseline: {args.baseline}")
         print()
-    
+
     rc = _run_command(status_cmd, "Status update report")
-    
+
     if rc != 0:
         print(f"[ERROR] Status report generation failed with exit code {rc}", file=sys.stderr)
         return rc
-    
+
     print()
     print("=" * 70)
     print("[SUCCESS] Status audit complete!")
@@ -169,7 +166,7 @@ def main(argv: List[str] | None = None) -> int:
     print(f"Artifacts directory: {args.artifacts}/")
     print(f"Reports directory:   {args.output}/")
     print()
-    
+
     # List recent reports
     reports_dir = Path(args.output)
     if reports_dir.exists():
@@ -181,7 +178,7 @@ def main(argv: List[str] | None = None) -> int:
                 timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime))
                 print(f"  - {report.name} ({timestamp})")
             print()
-    
+
     return 0
 
 

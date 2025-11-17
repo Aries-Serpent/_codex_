@@ -8,11 +8,11 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 ## Examples
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:45Z:
 While performing STEP 1: run `chatgpt-codex --prompt-file AUDIT_PROMPT.md`, encountered the following error:
 `bash: command not found: chatgpt-codex`
@@ -28,9 +28,9 @@ A) Prefer a portable, offline fallback: replace the CLI with an internal Python 
    - `python tools/audit_builder.py --prompt-file AUDIT_PROMPT.md`
 B) If the CLI is required, install it into the active venv and verify PATH.
 C) Keep the fallback as the default to ensure determinism; retain CLI only as optional.
-```
+```text
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:50Z:
 While performing STEP 2: `pre-commit run --all-files`, encountered the following issue:
 `command hung without producing output after >100s`
@@ -47,9 +47,9 @@ B) Clean and rehydrate: `pre-commit clean` then re-run.
 C) Temporarily skip a known-slow hook to unblock: `SKIP=<hook_id> pre-commit run --all-files`.
 D) Scope heavy hooks to pre-push or changed files only; keep pre-commit fast/offline.
 E) Add a local timeout wrapper in your script; print which hook exceeded the threshold.
-```
+```text
 
-```
+```text
 Question for ChatGPT-5 2025-08-28T04:55Z:
 While performing STEP 3: `pytest`, encountered the following error:
 `pytest: error: unrecognized arguments: --cov=src/codex_ml --cov-report=term --cov-fail-under=70`
@@ -64,12 +64,12 @@ A) Install plugin in the active venv: `pip install pytest-cov`.
 B) Verify plugin availability: `pytest --version` (plugins listed).
 C) Re-run coverage: `pytest --cov=src/codex_ml --cov-report=term --cov-fail-under=70`.
 D) If coverage is temporarily blocking, run tests without coverage, then re-enable after adding the plugin.
-```
+```text
 
-```
+```text
 Question for ChatGPT @codex 2025-09-02T03:08Z:
 While performing step "nox -s tests", encountered the following error:
 RuntimeError: Failed to import transformers.trainer because it cannot import name 'clear_device_cache' from 'accelerate.utils.memory'.
 Context: running test suite in isolated nox environment after installing dependencies.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text

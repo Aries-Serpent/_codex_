@@ -71,7 +71,7 @@ class UnifiedTrainingConfig:
     best_k: int = 0
     best_metric: str = "val_loss"
     continual: ContinualConfig | dict[str, Any] | None = None
-```
+```text
 
 **FILE:** src/codex_ml/train_loop.py@0D_base_
 ```text
@@ -101,7 +101,7 @@ class UnifiedTrainingConfig:
     )
     runtime.bind_model(model)
     return model, runtime
-```
+```text
 
 **FILE:** src/codex_ml/models/reasoning.py@0D_base_
 ```text
@@ -136,7 +136,7 @@ class UnifiedTrainingConfig:
             return data[:size]
         buffer[: data.numel()] = data
         return buffer
-```
+```text
 
 **FILE:** configs/training/reasoning/baseline.yaml@0D_base_
 ```text
@@ -199,7 +199,7 @@ metadata:
   # It is an intent badge, not permission to ship.
   rollout_ring: 0D_base_
   owner: reasoning-foundations
-```
+```text
 
 **FILE:** configs/evaluation/reasoning/base.yaml@0D_base_
 ```text
@@ -238,7 +238,7 @@ logging:
   tags:
     gate: reasoning
     severity: info
-```
+```text
 
 **FILE:** src/codex_cli/app.py@0D_base_
 ```text
@@ -254,7 +254,7 @@ logging:
         from codex_ml.cli.repo_map import render_repo_map
 
         echo(render_repo_map(reasoning=reasoning, include=includes))
-```
+```text
 
 **FILE:** src/codex_ml/cli/codex_cli.py@0D_base_
 ```text
@@ -320,7 +320,7 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
         raise SystemExit(1) from exc
 
     click.echo(json.dumps(summary, indent=2))
-```
+```text
 
 **FILE:** docs/deployment/reasoning_pod.md@0D_base_
 ```text
@@ -341,7 +341,7 @@ This guide defines the **dry-run** flow for a reasoning pod. All steps are **loc
 > Formalism (signal tracking): let **R** be reasoning-readiness and **A** be artifact completeness.
 > We model readiness heuristic as: **R = α·E + β·T + γ·D**, where E=evaluation pass ratio, T=trace coverage, D=deployment dry-run parity.
 > Choose α,β,γ per your milestone; ensure **R ≥ R_min** before promotion.
-```
+```text
 
 **FILE:** configs/deploy/reasoning_pod.yaml@0D_base_
 ```text
@@ -375,7 +375,7 @@ artifacts:
 notes:
   - "This config is safe to commit; it does not perform deployment or network I/O."
   - "Use Python local tools to generate review artifacts for promotion gates."
-```
+```text
 
 **FILE:** docs/README_ROOT.md@0D_base_
 ```text
@@ -386,7 +386,7 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
 and runtime allowances required by bespoke hosts.
-```
+```text
 
 **FILE:** docs/guides/reasoning_overview.md@0D_base_
 ```text
@@ -402,17 +402,17 @@ and runtime allowances required by bespoke hosts.
    modules (plus the Hydra overlays in
    `configs/training/reasoning/*`), not a class literally named
    `ReasoningTrainer`.
-```
+```text
 
 ### >>> RESULT: reasoning_pod asset check@0D_base_
 ```text
 Docs reference `docs/deployment/reasoning_pod.md` and matching preset `configs/deploy/reasoning_pod.yaml`; both exist locally.
-```
+```text
 
 ### >>> RESULT: PR #1926 diff availability@PR#1926
 ```text
 No local checkout or diff artifacts for PR #1926 were found. Unable to surface file changes.
-```
+```text
 
 ### 4.2 CLI/Docs Mismatches
 - `docs/README_ROOT.md` documents `codex deploy --config ... --model ... --dry-run`, but `src/codex_ml/cli/codex_cli.py` deploy command only accepts `--config`, `--dry-run`, and `--run-metadata-dir`.

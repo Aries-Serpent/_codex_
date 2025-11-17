@@ -137,7 +137,7 @@ python -c "import torch; assert 'site-packages' in torch.__file__"
 # Config compatibility
 python -c "from src.codex_ml.training.unified_training import UnifiedTrainingConfig; from omegaconf import OmegaConf; OmegaConf.structured(UnifiedTrainingConfig())"
 # ✅ Passes - OmegaConf works correctly
-```
+```text
 
 ---
 

@@ -7,6 +7,7 @@ Heuristic:
 - Evidence: files containing 'fastapi' or 'flask' tokens OR paths with 'serve'
 - required_patterns includes server framework indicators
 """
+
 from __future__ import annotations
 
 
@@ -14,8 +15,8 @@ def detect(file_index: dict) -> dict:
     files = file_index.get("files", [])
     evidence = []
     found = set()
-    required = ["fastapi","flask","serve"]
-    
+    required = ["fastapi", "flask", "serve"]
+
     for meta in files:
         p = meta["path"]
         lower = p.lower()
@@ -23,8 +24,8 @@ def detect(file_index: dict) -> dict:
             evidence.append(p)
             found.add("serve")
         # lightweight content hint (only ext)
-        ext = meta.get("ext",".")
-        if ext in {".py",".md"}:
+        ext = meta.get("ext", ".")
+        if ext in {".py", ".md"}:
             # Just path-based hints; deeper content scan in future
             if "fastapi" in lower:
                 evidence.append(p)
@@ -32,11 +33,11 @@ def detect(file_index: dict) -> dict:
             if "flask" in lower:
                 evidence.append(p)
                 found.add("flask")
-    
+
     return {
         "id": "inference-serving",
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(found),
         "required_patterns": required,
-        "meta": {"layer":"serving","interface":"http"}
+        "meta": {"layer": "serving", "interface": "http"},
     }

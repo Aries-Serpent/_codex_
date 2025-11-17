@@ -195,7 +195,7 @@ def collect_metrics() -> Dict[str, float]:
 +            for key, value in sys_metrics.items():
 +                metrics[f"sys_{key}"] = value
 *** End Patch
-```
+```text
 
 ### Diff 2 – Enable YAML configuration defaults with Hydra
 
@@ -255,7 +255,7 @@ logging:
 +    cfg = OmegaConf.merge(dataclass_cfg, *overrides)
 +    run_functional_training(OmegaConf.to_container(cfg, resolve=True))
 *** End Patch
-```
+```text
 
 ### Diff 3 – Add checkpoint pruning and compression
 
@@ -307,7 +307,7 @@ logging:
 +    # New: how many checkpoints to keep (None disables pruning)
 +    keep_last_n: Optional[int] = 5
 *** End Patch
-```
+```text
 
 ## 5. Local Tests & Gates
 
@@ -321,7 +321,7 @@ def coverage_session(session: nox.Session) -> None:
     session.install("-e", ".[ml,logging,test]")
     session.run("pytest", "--cov=src/codex_ml", "--cov-report=term-missing")
     # After running, parse coverage report and assert threshold
-```
+```text
 
 Recommended commands to run locally:
 
@@ -366,7 +366,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 For example, if applying the system metrics patch results in a `ModuleNotFoundError: No module named 'pynvml'`, capture the error and ask how to conditionally handle missing dependencies. The resolution might be to wrap the import in a `try/except` and disable GPU metrics when NVML is unavailable.
 

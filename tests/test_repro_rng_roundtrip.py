@@ -46,4 +46,3 @@ def test_rng_roundtrip(tmp_path: Path):
         np_seq2 = None
     if np_seq1 is not None and np_seq2 is not None:
         assert np_seq1 == np_seq2, "NumPy RNG did not restore deterministically"
-

@@ -39,7 +39,7 @@ manager.save(1, model=model, metrics={"val_loss": 0.42})
 
 # load_latest() rehydrates from the remote prefix if the local directory is empty
 resume_info = manager.load_latest(strict=False)
-```
+```text
 
 Remote synchronisation is a best-effort operation—failures are logged but do
 not interrupt the local checkpoint write. This keeps offline workflows
@@ -59,12 +59,12 @@ meta = save_checkpoint(
     keep_last_k=3,
 )
 state = load_checkpoint(meta["path"], weights_only=True)
-```
+```text
 
 CLI (if exposed via runners):
 ```bash
 python -m codex_ml.cli.checkpoint --info latest
-```
+```text
 
 ## Deprecation Mapping
 | Legacy Import | Use Instead |

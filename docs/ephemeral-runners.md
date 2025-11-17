@@ -8,7 +8,7 @@ To track experiments with MLflow, point the tracking URI at a local directory or
 
 ```bash
 export MLFLOW_TRACKING_URI="$PWD/mlruns"
-```
+```text
 ## Secrets
 
 Provide a GitHub PAT via one of these secrets (highest priority first):
@@ -21,21 +21,21 @@ Expose the chosen value to the shell as `GH_PAT`:
 
 ```bash
 export GH_PAT="${CODEX_ENVIRONMENT_RUNNER:-${_CODEX_BOT_RUNNER:-${_CODEX_ACTION_RUNNER:-}}}"
-```
+```text
 ## Label policy
 
 `tools/label_policy.json` defines allowed labels and required base labels. Lint workflows locally:
 
 ```bash
 pre-commit run label-policy-lint -a
-```
+```text
 ## Pre-flight minimal labels
 
 Compute a minimal label set for queued jobs on branch `0B_base_`:
 
 ```bash
 GH_PAT=... python3 tools/preflight_minimal_labels.py --branch 0B_base_
-```
+```text
 If no queued jobs are found, the script falls back to `linux,x64,codex`.
 
 ### Additional environment secrets
@@ -55,7 +55,7 @@ GH_PAT=... tools/ephem_runner.sh --auto-labels --branch 0B_base_
 
 # Explicit labels
 GH_PAT=... tools/ephem_runner.sh --labels linux,x64,codex
-```
+```text
 ### Flags
 
 - `--owner`, `--repo`, `--branch` – override defaults `Aries-Serpent`, `_codex_`, `0B_base_`
@@ -90,7 +90,7 @@ Provision up to `N` ephemeral workers while queued jobs exist:
 GH_PAT=... tools/ephem_autoscaler.sh --branch 0B_base_ --max 2 --poll 10
 # derive max from queue length, capped at 4
 GH_PAT=... tools/ephem_autoscaler.sh --branch 0B_base_ --scale-from-queue --cap 4
-```
+```text
 - Jobs select runners by `runs-on` **labels**; preflight resolves the minimal set.
 - Ephemeral runners de-register automatically after exactly one job.
 
@@ -100,16 +100,16 @@ List and prune offline registrations; remove stale local directories (dry-run by
 
 ```bash
 GH_PAT=... python3 tools/runner_doctor.py --cleanup-offline --cleanup-dirs --min-age-mins 60
-```
+```text
 Security hardening for self-hosted runners (ephemeral/JIT, isolation, cleanup) follows GitHub guidance.
 
 ### Quick self-hosted health check
 
 ```bash
 bash tools/doctor.sh
-```
+```text
 Example cron (hourly):
 
 ```bash
 0 * * * * cd /srv/_codex_ && /bin/bash -lc 'bash tools/doctor.sh' >/var/log/codex-doctor.log 2>&1
-```
+```text

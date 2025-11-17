@@ -58,7 +58,7 @@ This report provides a comprehensive pre-merge verification audit for PR #2207, 
 **Required Action:** Verify manually via GitHub UI or with credentials:
 ```bash
 gh pr view 2207 --json mergeable,mergeStateStatus
-```
+```text
 **Expected:** `mergeable: true`, `mergeStateStatus: CLEAN`
 
 #### ⚠️ 1.4 Status Check Review
@@ -66,7 +66,7 @@ gh pr view 2207 --json mergeable,mergeStateStatus
 **Required Action:** Verify manually:
 ```bash
 gh pr checks 2207
-```
+```text
 **Expected:** All required checks PASS
 
 ---
@@ -85,7 +85,7 @@ gh pr checks 2207
 ✅ severity: LOW (comprehensive)
 ✅ confidence: HIGH (reduces false positives)
 ✅ targets: src (correct scope)
-```
+```text
 **Configuration Status:** ✅ **VALID AND APPROPRIATE**
 
 #### ⚠️ 2.2 Secrets Detection
@@ -93,14 +93,14 @@ gh pr checks 2207
 **Required Action:** Run in environment with detect-secrets:
 ```bash
 detect-secrets scan --baseline .secrets.baseline
-```
+```text
 
 #### ⚠️ 2.3 Dependency Vulnerability Check
 **Status:** ⚠️ **TOOL NOT AVAILABLE** (pip-audit not installed)  
 **Required Action:** Run with pip-audit:
 ```bash
 pip-audit --cache-dir /tmp/pip-audit-cache
-```
+```text
 
 #### ✅ 2.4 GPU Package Verification
 **Command:** `grep -E "(torch|cuda|tensorflow|nvidia)" uv.lock`  
@@ -134,7 +134,7 @@ pip-audit --cache-dir /tmp/pip-audit-cache
 **Required Command:**
 ```bash
 pytest --cov=src --cov-report=term-missing --cov-report=html
-```
+```text
 **Expected:** Coverage >= 96%, all tests pass
 
 #### ✅ 3.2 Verify Coverage Threshold File
@@ -163,7 +163,7 @@ pytest --cov=src --cov-report=term-missing --cov-report=html
 ```bash
 uv sync --check
 pip install --dry-run -r requirements.txt
-```
+```text
 **Expected:** All dependencies resolve without conflict
 
 #### ✅ 4.2 Audit Log Verification
@@ -188,7 +188,7 @@ pip install --dry-run -r requirements.txt
 python -m venv .venv_test
 source .venv_test/bin/activate
 pip install -r requirements.txt
-```
+```text
 
 ---
 
@@ -233,7 +233,7 @@ skips: [B101, B404, B603]
 severity: "LOW"
 confidence: "HIGH"
 targets: [src]
-```
+```text
 **Conclusion:** Configuration is syntactically valid and appropriately scoped
 
 ---
@@ -255,7 +255,7 @@ targets: [src]
 git diff HEAD~102..HEAD --name-only | while read file; do
   grep -q "^$file" .github/CODEOWNERS || echo "ORPHANED: $file"
 done
-```
+```text
 
 **Critical Files Ownership Verification:**
 - `.github/Copilot.md` - Needs owner verification

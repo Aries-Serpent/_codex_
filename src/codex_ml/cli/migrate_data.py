@@ -1,4 +1,5 @@
 """CLI tool for migrating assignment mapping files between versions."""
+
 from __future__ import annotations
 
 import json
@@ -58,10 +59,7 @@ def migrate(
 
             # Save v2 to temp file
             with tempfile.NamedTemporaryFile(
-                mode='w',
-                suffix='.json',
-                delete=False,
-                encoding="utf-8"
+                mode="w", suffix=".json", delete=False, encoding="utf-8"
             ) as tf:
                 json.dump(v2_data, tf)
                 temp_path = Path(tf.name)
@@ -73,8 +71,7 @@ def migrate(
 
         else:
             typer.echo(
-                f"Error: Migration from {from_version} to {to_version} not supported",
-                err=True
+                f"Error: Migration from {from_version} to {to_version} not supported", err=True
             )
             raise typer.Exit(1)
 
@@ -83,10 +80,10 @@ def migrate(
         raise typer.Exit(1)
 
     # Determine output path
-    output = output_path or input_path.with_suffix('.migrated.json')
+    output = output_path or input_path.with_suffix(".migrated.json")
 
     # Write result
-    with open(output, 'w', encoding="utf-8") as f:
+    with open(output, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
 
     typer.echo(f"✓ Successfully migrated {input_path} → {output}")

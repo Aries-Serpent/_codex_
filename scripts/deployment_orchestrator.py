@@ -32,6 +32,7 @@ from typing import Dict, List, Optional, Tuple
 
 class PhaseStatus(Enum):
     """Deployment phase status enumeration."""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     SUCCESS = "success"
@@ -41,6 +42,7 @@ class PhaseStatus(Enum):
 
 class DeploymentPhase(Enum):
     """Deployment phases enumeration."""
+
     PHASE_1_PRE_DEPLOYMENT = "Phase 1: Pre-Deployment Verification"
     PHASE_2_MERGE = "Phase 2: Merge Execution"
     PHASE_3_POST_MERGE = "Phase 3: Post-Merge Validation"
@@ -51,13 +53,14 @@ class DeploymentPhase(Enum):
 @dataclass
 class PhaseResult:
     """Result of a deployment phase."""
+
     phase: DeploymentPhase
     status: PhaseStatus
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     details: Dict = field(default_factory=dict)
     errors: List[str] = field(default_factory=list)
-    
+
     @property
     def duration_seconds(self) -> Optional[float]:
         """Calculate phase duration in seconds."""
@@ -69,6 +72,7 @@ class PhaseResult:
 @dataclass
 class DeploymentManifest:
     """Deployment execution manifest."""
+
     pr_number: int
     source_branch: str
     target_branch: str
@@ -79,7 +83,7 @@ class DeploymentManifest:
     merge_commit_sha: Optional[str] = None
     workflow_run_id: Optional[str] = None
     coverage_percentage: Optional[float] = None
-    
+
     def to_dict(self) -> Dict:
         """Convert manifest to dictionary."""
         return {
@@ -109,11 +113,11 @@ class DeploymentManifest:
 
 class DeploymentOrchestrator:
     """Main orchestrator for autonomous deployment."""
-    
+
     def __init__(self, pr_number: int, dry_run: bool = False, output_dir: Optional[Path] = None):
         """
         Initialize deployment orchestrator.
-        
+
         Args:
             pr_number: Pull request number to deploy
             dry_run: If True, simulate without executing actual deployment
@@ -123,10 +127,10 @@ class DeploymentOrchestrator:
         self.dry_run = dry_run
         self.output_dir = output_dir or Path(".codex/deployments")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Set up logging
         self.logger = self._setup_logging()
-        
+
         # Initialize manifest
         self.manifest = DeploymentManifest(
             pr_number=pr_number,
@@ -134,51 +138,48 @@ class DeploymentOrchestrator:
             target_branch="main",
             started_at=datetime.now(timezone.utc),
         )
-        
+
     def _setup_logging(self) -> logging.Logger:
         """Set up logging configuration."""
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.INFO)
-        
+
         # Console handler
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         console_formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
         )
         console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)
-        
+
         # File handler
         log_file = self.output_dir / f"deployment_{self.pr_number}_{int(time.time())}.log"
         file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(logging.DEBUG)
-        file_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
+        file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
-        
+
         return logger
-    
+
     def run_command(self, cmd: List[str], check: bool = True) -> Tuple[int, str, str]:
         """
         Run shell command and return results.
-        
+
         Args:
             cmd: Command to run as list of strings
             check: If True, raise exception on non-zero exit code
-            
+
         Returns:
             Tuple of (exit_code, stdout, stderr)
         """
         self.logger.debug(f"Running command: {' '.join(cmd)}")
-        
+
         if self.dry_run:
             self.logger.info(f"[DRY RUN] Would execute: {' '.join(cmd)}")
             return (0, f"[DRY RUN] Command: {' '.join(cmd)}", "")
-        
+
         try:
             result = subprocess.run(
                 cmd,
@@ -190,11 +191,11 @@ class DeploymentOrchestrator:
         except subprocess.CalledProcessError as e:
             self.logger.error(f"Command failed: {e}")
             return (e.returncode, e.stdout, e.stderr)
-    
+
     def phase_1_pre_deployment_verification(self) -> PhaseResult:
         """
         Phase 1: Pre-Deployment Verification
-        
+
         Tasks:
         1. Validate workflow YAML syntax
         2. Run security pre-flight check
@@ -205,19 +206,19 @@ class DeploymentOrchestrator:
         phase = DeploymentPhase.PHASE_1_PRE_DEPLOYMENT
         result = PhaseResult(phase=phase, status=PhaseStatus.IN_PROGRESS)
         result.start_time = datetime.now(timezone.utc)
-        
+
         self.logger.info(f"Starting {phase.value}")
-        
+
         try:
             # Task 1: Validate workflow YAML syntax
             self.logger.info("Task 1.1: Validating workflow YAML syntax")
             workflow_file = Path(".github/workflows/post-merge-validation-optimized.yml")
-            
+
             if workflow_file.exists():
-                exit_code, stdout, stderr = self.run_command([
-                    "yamllint", "-c", ".yamllint.yml", str(workflow_file)
-                ], check=False)
-                
+                exit_code, stdout, stderr = self.run_command(
+                    ["yamllint", "-c", ".yamllint.yml", str(workflow_file)], check=False
+                )
+
                 if exit_code == 0:
                     result.details["yaml_validation"] = "PASS"
                     self.logger.info("✓ YAML validation passed")
@@ -228,13 +229,13 @@ class DeploymentOrchestrator:
             else:
                 result.details["yaml_validation"] = "SKIPPED"
                 self.logger.warning(f"Workflow file not found: {workflow_file}")
-            
+
             # Task 2: Run security pre-flight check
             self.logger.info("Task 1.2: Running security pre-flight check")
-            exit_code, stdout, stderr = self.run_command([
-                "bandit", "-r", "src/", "--severity-level=HIGH", "-f", "json"
-            ], check=False)
-            
+            exit_code, stdout, stderr = self.run_command(
+                ["bandit", "-r", "src/", "--severity-level=HIGH", "-f", "json"], check=False
+            )
+
             if exit_code == 0 or "No issues identified" in stdout:
                 result.details["security_scan"] = "PASS"
                 result.details["security_issues"] = 0
@@ -251,7 +252,7 @@ class DeploymentOrchestrator:
                 except json.JSONDecodeError:
                     result.details["security_scan"] = "ERROR"
                     self.logger.error("Failed to parse bandit output")
-            
+
             # Task 3: Verify merge state (requires gh CLI with auth)
             self.logger.info("Task 1.3: Verifying PR merge state")
             # Note: This would require GH_TOKEN to be set in environment
@@ -260,18 +261,25 @@ class DeploymentOrchestrator:
                 result.details["merge_state"] = "SKIPPED"
                 self.logger.info("PR merge state check skipped (requires GH_TOKEN)")
             else:
-                exit_code, stdout, stderr = self.run_command([
-                    "gh", "pr", "view", str(self.pr_number),
-                    "--json", "mergeable,mergeStateStatus,state"
-                ], check=False)
-                
+                exit_code, stdout, stderr = self.run_command(
+                    [
+                        "gh",
+                        "pr",
+                        "view",
+                        str(self.pr_number),
+                        "--json",
+                        "mergeable,mergeStateStatus,state",
+                    ],
+                    check=False,
+                )
+
                 if exit_code == 0:
                     try:
                         pr_data = json.loads(stdout)
                         result.details["pr_state"] = pr_data.get("state")
                         result.details["mergeable"] = pr_data.get("mergeable")
                         result.details["merge_state_status"] = pr_data.get("mergeStateStatus")
-                        
+
                         if pr_data.get("mergeable") == "MERGEABLE":
                             result.details["merge_state"] = "PASS"
                             self.logger.info("✓ PR is mergeable")
@@ -285,30 +293,31 @@ class DeploymentOrchestrator:
                 else:
                     result.details["merge_state"] = "ERROR"
                     result.errors.append(f"Failed to get PR info: {stderr}")
-            
+
             # Task 4: Confirm status checks (also requires gh CLI)
             self.logger.info("Task 1.4: Confirming status checks")
             if self.dry_run or not self._check_gh_auth():
                 result.details["status_checks"] = "SKIPPED"
                 self.logger.info("Status checks verification skipped (requires GH_TOKEN)")
             else:
-                exit_code, stdout, stderr = self.run_command([
-                    "gh", "pr", "view", str(self.pr_number),
-                    "--json", "statusCheckRollup"
-                ], check=False)
-                
+                exit_code, stdout, stderr = self.run_command(
+                    ["gh", "pr", "view", str(self.pr_number), "--json", "statusCheckRollup"],
+                    check=False,
+                )
+
                 if exit_code == 0:
                     try:
                         pr_data = json.loads(stdout)
                         checks = pr_data.get("statusCheckRollup", [])
                         failed_checks = [
-                            c for c in checks 
+                            c
+                            for c in checks
                             if c.get("conclusion") not in ["SUCCESS", "NEUTRAL", "SKIPPED", None]
                         ]
-                        
+
                         result.details["total_checks"] = len(checks)
                         result.details["failed_checks"] = len(failed_checks)
-                        
+
                         if len(failed_checks) == 0:
                             result.details["status_checks"] = "PASS"
                             self.logger.info(f"✓ All {len(checks)} status checks passed")
@@ -322,7 +331,7 @@ class DeploymentOrchestrator:
                 else:
                     result.details["status_checks"] = "ERROR"
                     result.errors.append(f"Failed to get status checks: {stderr}")
-            
+
             # Task 5: Generate pre-check report
             self.logger.info("Task 1.5: Generating pre-check report")
             report_file = self.output_dir / f"pre_check_report_{self.pr_number}.json"
@@ -330,7 +339,7 @@ class DeploymentOrchestrator:
                 json.dump(result.details, f, indent=2)
             result.details["report_file"] = str(report_file)
             self.logger.info(f"✓ Pre-check report generated: {report_file}")
-            
+
             # Determine overall phase status
             if result.errors:
                 result.status = PhaseStatus.FAILED
@@ -338,19 +347,19 @@ class DeploymentOrchestrator:
             else:
                 result.status = PhaseStatus.SUCCESS
                 self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
-            
+
         except Exception as e:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
-        
+
         result.end_time = datetime.now(timezone.utc)
         return result
-    
+
     def phase_2_merge_execution(self) -> PhaseResult:
         """
         Phase 2: Merge Execution
-        
+
         Tasks:
         1. Execute merge
         2. Log merge commit SHA
@@ -360,9 +369,9 @@ class DeploymentOrchestrator:
         phase = DeploymentPhase.PHASE_2_MERGE
         result = PhaseResult(phase=phase, status=PhaseStatus.IN_PROGRESS)
         result.start_time = datetime.now(timezone.utc)
-        
+
         self.logger.info(f"Starting {phase.value}")
-        
+
         try:
             if self.dry_run or not self._check_gh_auth():
                 result.status = PhaseStatus.SKIPPED
@@ -371,21 +380,21 @@ class DeploymentOrchestrator:
             else:
                 # Task 1: Execute merge
                 self.logger.info("Task 2.1: Executing PR merge")
-                exit_code, stdout, stderr = self.run_command([
-                    "gh", "pr", "merge", str(self.pr_number), "--merge"
-                ], check=False)
-                
+                exit_code, stdout, stderr = self.run_command(
+                    ["gh", "pr", "merge", str(self.pr_number), "--merge"], check=False
+                )
+
                 if exit_code == 0:
                     result.details["merge_executed"] = "SUCCESS"
                     self.logger.info("✓ PR merge executed successfully")
-                    
+
                     # Task 2: Log merge commit SHA
                     time.sleep(2)  # Give GitHub time to update
-                    exit_code, stdout, stderr = self.run_command([
-                        "gh", "pr", "view", str(self.pr_number),
-                        "--json", "mergeCommit"
-                    ], check=False)
-                    
+                    exit_code, stdout, stderr = self.run_command(
+                        ["gh", "pr", "view", str(self.pr_number), "--json", "mergeCommit"],
+                        check=False,
+                    )
+
                     if exit_code == 0:
                         try:
                             pr_data = json.loads(stdout)
@@ -395,22 +404,22 @@ class DeploymentOrchestrator:
                             self.logger.info(f"✓ Merge commit SHA: {merge_sha}")
                         except json.JSONDecodeError:
                             result.errors.append("Failed to get merge commit SHA")
-                    
+
                     result.status = PhaseStatus.SUCCESS
                     self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
                 else:
                     result.status = PhaseStatus.FAILED
                     result.errors.append(f"Merge failed: {stderr}")
                     self.logger.error(f"Merge failed: {stderr}")
-        
+
         except Exception as e:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
-        
+
         result.end_time = datetime.now(timezone.utc)
         return result
-    
+
     def phase_3_post_merge_validation(self) -> PhaseResult:
         """
         Phase 3: Post-Merge Validation
@@ -425,9 +434,9 @@ class DeploymentOrchestrator:
         phase = DeploymentPhase.PHASE_3_POST_MERGE
         result = PhaseResult(phase=phase, status=PhaseStatus.IN_PROGRESS)
         result.start_time = datetime.now(timezone.utc)
-        
+
         self.logger.info(f"Starting {phase.value}")
-        
+
         try:
             if self.dry_run or not self._check_gh_auth():
                 result.status = PhaseStatus.SKIPPED
@@ -440,13 +449,19 @@ class DeploymentOrchestrator:
                 time.sleep(10)  # Give GitHub time to trigger workflow
 
                 # Get latest workflow run
-                exit_code, stdout, stderr = self.run_command([
-                    "gh", "run", "list",
-                    "--workflow=post-merge-validation-optimized.yml",
-                    "--branch=main",
-                    "--limit=1",
-                    "--json", "databaseId,status,conclusion"
-                ], check=False)
+                exit_code, stdout, stderr = self.run_command(
+                    [
+                        "gh",
+                        "run",
+                        "list",
+                        "--workflow=post-merge-validation-optimized.yml",
+                        "--branch=main",
+                        "--limit=1",
+                        "--json",
+                        "databaseId,status,conclusion",
+                    ],
+                    check=False,
+                )
 
                 if exit_code == 0:
                     try:
@@ -459,7 +474,9 @@ class DeploymentOrchestrator:
                             self.manifest.workflow_run_id = str(run_id)
                             result.details["workflow_run_id"] = run_id
                             result.details["workflow_status"] = workflow_summary.get("status")
-                            result.details["workflow_conclusion"] = workflow_summary.get("conclusion")
+                            result.details["workflow_conclusion"] = workflow_summary.get(
+                                "conclusion"
+                            )
                             self.logger.info(f"✓ Workflow run ID: {run_id}")
 
                             summary_status = workflow_summary.get("status")
@@ -467,7 +484,9 @@ class DeploymentOrchestrator:
                             result.details["workflow_status"] = summary_status
                             result.details["workflow_conclusion"] = summary_conclusion
 
-                            should_monitor = summary_status != "completed" or summary_conclusion is None
+                            should_monitor = (
+                                summary_status != "completed" or summary_conclusion is None
+                            )
                             if should_monitor:
                                 result.status = PhaseStatus.IN_PROGRESS
                                 result.details["monitoring"] = (
@@ -505,14 +524,18 @@ class DeploymentOrchestrator:
                                     )
                                 else:
                                     result.status = PhaseStatus.FAILED
-                                    error_message = f"Failed to monitor workflow run {run_id}: {monitor_err}"
+                                    error_message = (
+                                        f"Failed to monitor workflow run {run_id}: {monitor_err}"
+                                    )
                                     result.errors.append(error_message)
                                     self.logger.error(error_message)
                             else:
-                                result.details.update({
-                                    "workflow_status": workflow_details.get("status"),
-                                    "workflow_conclusion": workflow_details.get("conclusion"),
-                                })
+                                result.details.update(
+                                    {
+                                        "workflow_status": workflow_details.get("status"),
+                                        "workflow_conclusion": workflow_details.get("conclusion"),
+                                    }
+                                )
                                 result.details["monitoring"] = "Workflow monitored until completion"
 
                                 jobs = workflow_details.get("jobs") or []
@@ -531,7 +554,9 @@ class DeploymentOrchestrator:
                                     and workflow_details.get("conclusion") == "success"
                                 ):
                                     result.status = PhaseStatus.SUCCESS
-                                    self.logger.info("✓ Post-merge validation workflow completed successfully")
+                                    self.logger.info(
+                                        "✓ Post-merge validation workflow completed successfully"
+                                    )
                                 else:
                                     result.status = PhaseStatus.FAILED
                                     conclusion = workflow_details.get("conclusion") or "unknown"
@@ -540,7 +565,8 @@ class DeploymentOrchestrator:
                                     )
 
                                     failed_jobs = [
-                                        job for job in (result.details.get("jobs") or [])
+                                        job
+                                        for job in (result.details.get("jobs") or [])
                                         if job.get("conclusion") not in (None, "success")
                                     ]
                                     if failed_jobs:
@@ -558,12 +584,12 @@ class DeploymentOrchestrator:
                 else:
                     result.errors.append(f"Failed to get workflow runs: {stderr}")
                     result.status = PhaseStatus.FAILED
-        
+
         except Exception as e:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
-        
+
         result.end_time = datetime.now(timezone.utc)
         return result
 
@@ -588,14 +614,17 @@ class DeploymentOrchestrator:
         last_status: Optional[str] = initial_status
 
         while datetime.now(timezone.utc) < deadline:
-            exit_code, stdout, stderr = self.run_command([
-                "gh",
-                "run",
-                "view",
-                str(run_id),
-                "--json",
-                "status,conclusion,jobs",
-            ], check=False)
+            exit_code, stdout, stderr = self.run_command(
+                [
+                    "gh",
+                    "run",
+                    "view",
+                    str(run_id),
+                    "--json",
+                    "status,conclusion,jobs",
+                ],
+                check=False,
+            )
 
             if exit_code != 0:
                 raise RuntimeError(f"Failed to view workflow run {run_id}: {stderr}")
@@ -628,11 +657,11 @@ class DeploymentOrchestrator:
         raise TimeoutError(
             f"Workflow run {run_id} did not complete within {timeout_seconds} seconds"
         )
-    
+
     def phase_4_health_check(self) -> PhaseResult:
         """
         Phase 4: Health Check & Validation
-        
+
         Tasks:
         1. Verify main branch state
         2. Confirm all workflow artifacts present
@@ -643,21 +672,19 @@ class DeploymentOrchestrator:
         phase = DeploymentPhase.PHASE_4_HEALTH_CHECK
         result = PhaseResult(phase=phase, status=PhaseStatus.IN_PROGRESS)
         result.start_time = datetime.now(timezone.utc)
-        
+
         self.logger.info(f"Starting {phase.value}")
-        
+
         try:
             # Task 1: Verify main branch state
             self.logger.info("Task 4.1: Verifying main branch state")
-            exit_code, stdout, stderr = self.run_command([
-                "git", "rev-parse", "HEAD"
-            ], check=False)
-            
+            exit_code, stdout, stderr = self.run_command(["git", "rev-parse", "HEAD"], check=False)
+
             if exit_code == 0:
                 current_sha = stdout.strip()
                 result.details["current_sha"] = current_sha
                 self.logger.info(f"✓ Current HEAD: {current_sha}")
-            
+
             # Task 2: Check for critical files
             self.logger.info("Task 4.2: Checking critical files")
             critical_files = [
@@ -665,23 +692,23 @@ class DeploymentOrchestrator:
                 ".github/workflows/post-merge-validation-optimized.yml",
                 ".bandit.yaml",
             ]
-            
+
             missing_files = []
             for file_path in critical_files:
                 if not Path(file_path).exists():
                     missing_files.append(file_path)
-            
+
             result.details["critical_files_check"] = {
                 "total": len(critical_files),
                 "missing": missing_files,
             }
-            
+
             if missing_files:
                 result.errors.append(f"Missing critical files: {missing_files}")
                 self.logger.warning(f"Missing files: {missing_files}")
             else:
                 self.logger.info("✓ All critical files present")
-            
+
             # Task 3: Generate health check report
             self.logger.info("Task 4.3: Generating health check report")
             health_report = {
@@ -691,29 +718,29 @@ class DeploymentOrchestrator:
                 "critical_files": result.details["critical_files_check"],
                 "status": "HEALTHY" if not result.errors else "ISSUES_FOUND",
             }
-            
+
             report_file = self.output_dir / f"health_check_report_{self.pr_number}.json"
             with open(report_file, "w") as f:
                 json.dump(health_report, f, indent=2)
-            
+
             result.details["health_report_file"] = str(report_file)
             self.logger.info(f"✓ Health check report generated: {report_file}")
-            
+
             # Determine phase status
             if result.errors:
                 result.status = PhaseStatus.FAILED
             else:
                 result.status = PhaseStatus.SUCCESS
                 self.logger.info(f"✓ {phase.value} COMPLETED SUCCESSFULLY")
-        
+
         except Exception as e:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
-        
+
         result.end_time = datetime.now(timezone.utc)
         return result
-    
+
     def phase_5_notification(self) -> PhaseResult:
         """
         Phase 5: Notification & Documentation
@@ -727,27 +754,27 @@ class DeploymentOrchestrator:
         phase = DeploymentPhase.PHASE_5_NOTIFICATION
         result = PhaseResult(phase=phase, status=PhaseStatus.IN_PROGRESS)
         result.start_time = datetime.now(timezone.utc)
-        
+
         self.logger.info(f"Starting {phase.value}")
-        
+
         try:
             # Task 1: Create deployment summary
             self.logger.info("Task 5.1: Creating deployment summary")
             summary = self._generate_deployment_summary()
-            
+
             summary_file = self.output_dir / f"deployment_summary_{self.pr_number}.md"
             with open(summary_file, "w") as f:
                 f.write(summary)
-            
+
             result.details["summary_file"] = str(summary_file)
             self.logger.info(f"✓ Deployment summary created: {summary_file}")
-            
+
             # Task 2: Archive deployment manifest
             self.logger.info("Task 5.2: Archiving deployment manifest")
             manifest_file = self.output_dir / f"deployment_manifest_{self.pr_number}.json"
-            
+
             self.manifest.completed_at = datetime.now(timezone.utc)
-            
+
             # Determine overall deployment status
             self.manifest.status = self._determine_overall_status()
 
@@ -771,15 +798,13 @@ class DeploymentOrchestrator:
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {str(e)}")
             self.logger.exception(f"{phase.value} failed with exception")
-        
+
         result.end_time = datetime.now(timezone.utc)
         return result
-    
+
     def _check_gh_auth(self) -> bool:
         """Check if GitHub CLI is authenticated."""
-        exit_code, stdout, stderr = self.run_command(
-            ["gh", "auth", "status"], check=False
-        )
+        exit_code, stdout, stderr = self.run_command(["gh", "auth", "status"], check=False)
         return exit_code == 0
 
     def _determine_overall_status(self) -> PhaseStatus:
@@ -799,7 +824,7 @@ class DeploymentOrchestrator:
             return PhaseStatus.SKIPPED
 
         return PhaseStatus.SUCCESS
-    
+
     def _generate_deployment_summary(self) -> str:
         """Generate markdown deployment summary."""
         lines = [
@@ -812,38 +837,40 @@ class DeploymentOrchestrator:
             "## Phase Results",
             "",
         ]
-        
+
         for phase_result in self.manifest.phase_results:
             status_icon = "✓" if phase_result.status == PhaseStatus.SUCCESS else "✗"
-            duration = f"{phase_result.duration_seconds:.1f}s" if phase_result.duration_seconds else "N/A"
-            
+            duration = (
+                f"{phase_result.duration_seconds:.1f}s" if phase_result.duration_seconds else "N/A"
+            )
+
             lines.append(f"### {status_icon} {phase_result.phase.value}")
             lines.append(f"- **Status**: {phase_result.status.value}")
             lines.append(f"- **Duration**: {duration}")
-            
+
             if phase_result.errors:
                 lines.append("- **Errors**:")
                 for error in phase_result.errors:
                     lines.append(f"  - {error}")
-            
+
             if phase_result.details:
                 lines.append("- **Details**:")
                 for key, value in phase_result.details.items():
                     lines.append(f"  - {key}: {value}")
-            
+
             lines.append("")
-        
+
         if self.manifest.merge_commit_sha:
-            lines.append(f"## Merge Information")
+            lines.append("## Merge Information")
             lines.append(f"- **Merge Commit SHA**: `{self.manifest.merge_commit_sha}`")
             lines.append("")
-        
+
         return "\n".join(lines)
-    
+
     def execute(self) -> bool:
         """
         Execute full deployment orchestration.
-        
+
         Returns:
             True if deployment successful, False otherwise
         """
@@ -851,7 +878,7 @@ class DeploymentOrchestrator:
         self.logger.info(f"DEPLOYMENT ORCHESTRATION STARTED FOR PR #{self.pr_number}")
         self.logger.info(f"Dry Run: {self.dry_run}")
         self.logger.info("=" * 80)
-        
+
         try:
             # Execute each phase in sequence
             phases = [
@@ -861,7 +888,7 @@ class DeploymentOrchestrator:
                 self.phase_4_health_check,
                 self.phase_5_notification,
             ]
-            
+
             for phase_func in phases:
                 result = phase_func()
                 self.manifest.phase_results.append(result)
@@ -928,51 +955,46 @@ class DeploymentOrchestrator:
             )
             self.logger.info("=" * 80)
             return False
-        
-        except Exception as e:
+
+        except Exception:
             self.logger.exception("DEPLOYMENT ORCHESTRATION FAILED WITH EXCEPTION")
-            
+
             # Try to run notification phase
             try:
                 notification_result = self.phase_5_notification()
                 self.manifest.phase_results.append(notification_result)
             except Exception:
                 self.logger.exception("Failed to run notification phase")
-            
+
             return False
 
 
 def main():
     """Main entry point for deployment orchestrator."""
-    parser = argparse.ArgumentParser(
-        description="Autonomous Deployment Orchestration for PR #2207"
-    )
+    parser = argparse.ArgumentParser(description="Autonomous Deployment Orchestration for PR #2207")
     parser.add_argument(
-        "--pr-number",
-        type=int,
-        required=True,
-        help="Pull request number to deploy"
+        "--pr-number", type=int, required=True, help="Pull request number to deploy"
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Simulate deployment without executing actual operations"
+        help="Simulate deployment without executing actual operations",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help="Directory for deployment artifacts (default: .codex/deployments)"
+        help="Directory for deployment artifacts (default: .codex/deployments)",
     )
-    
+
     args = parser.parse_args()
-    
+
     orchestrator = DeploymentOrchestrator(
         pr_number=args.pr_number,
         dry_run=args.dry_run,
         output_dir=args.output_dir,
     )
-    
+
     success = orchestrator.execute()
     sys.exit(0 if success else 1)
 

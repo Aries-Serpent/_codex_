@@ -58,7 +58,7 @@ class SignstoreClient:
 
         Returns:
             Signature, certificate chain, and issuer
-            
+
         NOTE: This implementation uses mock signing for development/testing.
         TODO: Migrate to production Sigstore signing using the sigstore-python SDK
         or cosign CLI integration. See https://docs.sigstore.dev for details.

@@ -29,7 +29,7 @@ The post-merge validation workflow (`.github/workflows/post-merge-validation.yml
 Check the Actions tab:
 ```text
 https://github.com/Aries-Serpent/_codex_/actions/workflows/post-merge-validation.yml
-```
+```text
 
 ## Manual Post-Merge Verification
 
@@ -46,7 +46,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 pip install -r requirements-dev.txt
-```
+```text
 
 ### Step 2: Import Verification
 
@@ -58,7 +58,7 @@ python -c "import torch; print(torch.__file__)"
 # Verify core imports
 python -c "from src.codex_ml.training.unified_training import UnifiedTrainingConfig"
 python -c "from omegaconf import OmegaConf; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; OmegaConf.structured(UnifiedTrainingConfig())"
-```
+```text
 
 ### Step 3: Run Critical Tests
 
@@ -71,7 +71,7 @@ pytest tests/unit/test_data_cache_locking.py -v
 
 # Smoke tests
 pytest -m smoke -v
-```
+```text
 
 ### Step 4: Quality Gates
 
@@ -83,7 +83,7 @@ nox -s gates
 nox -s lint
 nox -s typecheck
 nox -s tests
-```
+```text
 
 ### Step 5: Documentation Check
 
@@ -92,7 +92,7 @@ nox -s tests
 python tools/fence_fixer.py . --dry-run --verbose
 
 # Should report low or zero fence issues
-```
+```text
 
 ## Regression Detection
 
@@ -103,7 +103,7 @@ If tests are taking significantly longer:
 ```bash
 # Run performance benchmarks
 pytest -m perf_smoke --durations=10
-```
+```text
 
 ### Test Failure Regression
 
@@ -132,7 +132,7 @@ python -c "import sys; import torch; assert 'site-packages' in torch.__file__, f
 
 # Verify package installation
 pip list | grep -E "torch|omegaconf|hydra"
-```
+```text
 
 ## Issue Creation on Failure
 
@@ -198,7 +198,7 @@ Before cutting a release from main:
 python -c "import torch; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; print('✓ Imports OK')"
 pytest -m smoke --tb=no -q && echo "✓ Smoke tests OK"
 python tools/fence_fixer.py . --dry-run | grep "Files changed: 0" && echo "✓ Fences OK"
-```
+```text
 
 ### Monitoring
 
@@ -219,7 +219,7 @@ git revert <bad-commit-hash>
 git checkout -b revert/<bad-commit-hash>
 git push origin revert/<bad-commit-hash>
 # Create PR with explanation
-```
+```text
 
 ## Documentation
 

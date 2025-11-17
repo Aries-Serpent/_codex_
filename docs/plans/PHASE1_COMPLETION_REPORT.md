@@ -42,7 +42,7 @@ Phase 1 (Quick Wins) has been successfully completed, delivering foundational AS
 "tree-sitter-python>=0.20.0",
 "tree-sitter-yaml>=0.20.0",
 "sqlparse>=0.5.0",   # Security-patched version
-```
+```text
 
 **Security Check:** ✅ PASSED
 - Updated sqlparse from 0.4.0 to 0.5.0 (fixes CVE issues)
@@ -130,7 +130,7 @@ Phase 1 (Quick Wins) has been successfully completed, delivering foundational AS
 - `tests/ast/test_integration.py` (5,552 bytes) - 7 integration tests
 
 **Test Results:**
-```
+```text
 ========================== test session starts ==========================
 tests/ast/test_graph.py .......                           [ 28%]
 tests/ast/test_integration.py .......                     [ 56%]
@@ -138,10 +138,10 @@ tests/ast/test_metrics.py ......                          [ 80%]
 tests/ast/test_node.py .....                              [100%]
 
 ========================== 25 passed in 0.21s ==========================
-```
+```text
 
 **Coverage Report:**
-```
+```text
 Name                       Stmts   Miss Branch BrPart   Cover
 ---------------------------------------------------------------
 src/codex/ast/__init__.py     10      0      0      0 100.00%
@@ -150,7 +150,7 @@ src/codex/ast/metrics.py      50      3     16      3  90.91%
 src/codex/ast/node.py         40      0      8      0 100.00%
 ---------------------------------------------------------------
 TOTAL                        171      4     54      4  96.38%
-```
+```text
 
 **Quality Gate:** ✅ PASSED (exceeds 80% target)
 

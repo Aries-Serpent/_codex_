@@ -15,7 +15,7 @@ python -m codex_ml.cli.train \
   training=base \
   training.reasoning=@configs/training/reasoning/chain_of_thought.yaml \
   artifacts.dir=artifacts/cot_run
-```
+```text
 
 This preset activates the `ReasoningHeadConfig` defaults for a 768-d projection head, stores traces in
 `artifacts/cot_run/cot_traces.ndjson`, and logs per-step reasoning summaries to
@@ -28,7 +28,7 @@ python -m codex_ml.cli.train \
   training=base \
   training.reasoning=@configs/training/reasoning/tool_execution.yaml \
   artifacts.dir=artifacts/tool_run
-```
+```text
 
 The tool-execution preset enables the `ToolAdapterConfig` so each optimisation step records the
 highest-probability tool, temperature-scaled confidence, and the full probability distribution. These

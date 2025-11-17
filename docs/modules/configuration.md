@@ -10,7 +10,7 @@ configs/
 ├── training/base.yaml       # Functional trainer defaults
 ├── eval/base.yaml           # Evaluation runner defaults
 └── data/base.yaml           # Data preparation defaults
-```
+```text
 Each YAML file maps directly onto a dataclass (`TokenizationConfig`,
 `TrainingConfig`, `EvaluationConfig`, and `DataConfig`). When a file omits a
 section the dataclass provides sane defaults, so lightweight configs are easy to
@@ -37,7 +37,7 @@ tokenization:
   truncation: true
   max_length: null
   dry_run: false
-```
+```text
 Validation happens inside the dataclasses. Invalid inputs (for example,
 negative batch sizes or mismatched split ratios) raise `ConfigError` with a
 fully-qualified path to the offending field (such as
@@ -53,7 +53,7 @@ from codex_ml.config import load_app_config
 
 cfg, raw = load_app_config("configs/training/base.yaml")
 print(cfg.training.batch_size)  # 32 (default)
-```
+```text
 Hydra-style overrides can be supplied via the `overrides` parameter. Dotlist
 entries take precedence over file values:
 
@@ -62,7 +62,7 @@ cfg, _ = load_app_config(
     "configs/training/base.yaml", overrides=("training.learning_rate=0.0005",)
 )
 assert cfg.training.learning_rate == 5e-4
-```
+```text
 Any configuration error raised during parsing (including missing files and
 unrecognised overrides) bubbles up as `ConfigError` so CLI consumers can present
 clear feedback.
@@ -85,7 +85,7 @@ codex prepare-data --config configs/training/data/base.yaml data.shuffle_seed=12
 
 # Override tokenizer corpus glob for an ad-hoc build
 codex train --config configs/training/tokenization/base.yaml tokenization.corpus_glob=data/*.txt
-```
+```text
 Overrides apply after the YAML file is parsed, so command line values always win
 over on-disk defaults. All commands forward the resolved `DictConfig` to legacy
 code paths while also using the strongly-typed dataclasses for validation.

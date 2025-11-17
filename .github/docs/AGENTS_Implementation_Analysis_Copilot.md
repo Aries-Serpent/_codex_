@@ -513,7 +513,7 @@ class DBManager:
                 )
             
             return [dict(row) for row in cursor.fetchall()]
-```
+```text
 
 **Production Readiness**: **0%** (missing)
 
@@ -677,7 +677,7 @@ Based on the implementation, here are **optional configurations** users should c
 ```bash
 # Enable pooling
 export CODEX_SQLITE_POOL=1
-```
+```text
 
 **Trade-off**:
 - ✅ Faster (reuses connections)
@@ -701,7 +701,7 @@ handler = RotatingFileHandler(
     maxBytes=10_000_000,  # 10MB
     backupCount=5
 )
-```
+```text
 
 **Recommendation**: **Enable by default** in next commit
 
@@ -718,7 +718,7 @@ def __init__(self, ...):
     # Auto-init on first connection
     if not self.db_path.exists():
         self.init_schema()
-```
+```text
 
 **Recommendation**: **Enable by default**
 
@@ -734,7 +734,7 @@ def __init__(self, validate_on_init: bool = False):
     
     if validate_on_init:
         self._validate_environment()
-```
+```text
 
 **Recommendation**: **Make optional**, validate explicitly in `main()`
 
@@ -865,7 +865,7 @@ def test_schema_initialization(...):
 pytest tests/test_agents_infrastructure.py -v
 python -m codex_ml.cli init-db
 python -m codex_ml.cli session-logger --role=user --message="Test"
-```
+```text
 
 **Estimated Time**: **3-4 hours**
 
@@ -899,7 +899,7 @@ def test_connection_pooling(...):
 
 # 5. Validate
 pytest tests/test_agents_infrastructure.py -v --cov=src/codex_ml --cov-report=term
-```
+```text
 
 **Estimated Time**: **2-3 hours**
 
@@ -927,7 +927,7 @@ def __init__(self, validate_on_init: bool = False):
 
 # 4. Final validation
 bash .github/prompts/final_validation.sh
-```
+```text
 
 **Estimated Time**: **1-2 hours**
 

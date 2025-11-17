@@ -91,7 +91,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 
 ## Codex-ready Task Sequence
 
-```
+```text
 Codex-ready Task Sequence: 
   1. Preparation: ...
   2. Search & Mapping: ...
@@ -112,7 +112,7 @@ After the sequential plan, include a runnable script (Python preferred, shell ac
 - Emit error capture prompts when failures occur.
 - Finalize by writing updated artefacts to disk.
 - Do **not** emit or enable any GitHub Actions workflows. All validation must remain local to Codex.
-```
+```text
 ## Template: Daily Status Update (Rendered Example Skeleton)
 Use the scaffold below as a starting point when drafting the markdown file. Replace the `{{ }}` placeholders with the latest findings. The `Check for must recent active branch` and `Branches` fetch directives must remain at the top of every report.
 
@@ -157,7 +157,7 @@ Audit Scope
 - **Risk:** {{risk1}}
 - **Rollback:** {{rollback1}}
 - **Tests/docs:** {{tests1}}
-```
+```text
 {{diff1}}
 ```text
 5. **Local Tests & Gates**
@@ -192,12 +192,12 @@ Audit Scope
 ---
 
 ## Codex-ready Task Sequence
-```
+```text
 {{codex_task_sequence}}
 ```text
 **Additional Deliverable — Executable Script**
-```
+```text
 {{codex_script}}
 ```text
-```
+```text
 > **Reminder:** Outstanding automation questions remain tracked in `docs/status_update_outstanding_questions.md`. Reference that ledger when relevant, but embedding the entire table in the daily status update is no longer required under the 2025-09-22 template.

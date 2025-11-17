@@ -8,21 +8,11 @@ from codex_ml.utils.hf_revision import get_hf_revision
 from codex_ml.utils.optional import optional_import
 
 if TYPE_CHECKING:  # pragma: no cover - import for typing only
-    from transformers import (  # type: ignore
-        AutoModel as HF_AutoModel,
-    )
-    from transformers import (
-        AutoModelForCausalLM as HF_AutoModelForCausalLM,
-    )
-    from transformers import (
-        AutoTokenizer as HF_AutoTokenizer,
-    )
-    from transformers import (
-        PreTrainedModel as HF_PreTrainedModel,
-    )
-    from transformers import (
-        PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase,
-    )
+    from transformers import AutoModel as HF_AutoModel  # type: ignore
+    from transformers import AutoModelForCausalLM as HF_AutoModelForCausalLM
+    from transformers import AutoTokenizer as HF_AutoTokenizer
+    from transformers import PreTrainedModel as HF_PreTrainedModel
+    from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
     HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore
     HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore

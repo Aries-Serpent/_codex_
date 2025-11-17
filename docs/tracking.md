@@ -8,6 +8,6 @@ experiments can be tracked offline without additional setup:
 
 ```bash
 export CODEX_MLFLOW_URI="file:mlruns"
-```
+```text
 Setting the variable to an HTTP(S) URI will forward logs to a remote MLflow
 server instead.

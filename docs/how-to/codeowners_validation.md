@@ -20,7 +20,7 @@ Python API
 from src.tools.codeowners_validate import validate_repo_codeowners
 rep = validate_repo_codeowners(".")
 print(rep.errors, rep.warnings, rep.coverage)
-```
+```text
 
 Acceptance
 - Non-empty file; all owners valid; default '*' rule exists; coverage true for src/tests/docs.

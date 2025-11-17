@@ -13,7 +13,7 @@ configs/
 ├── development/         # Local tooling configs (nox, pytest, Makefile, examples)
 ├── schemas/             # Structured config schema helpers and documentation
 └── experimental/        # Legacy or exploratory configuration samples
-```
+```text
 
 ## Common Entry Points
 
@@ -35,13 +35,13 @@ python -m codex_ml.cli.train --config configs/training/base.yaml \
 python -m codex_ml.cli.evaluate --config configs/evaluation/base.yaml
 
 python -m codex_ml.cli.config --audit last --path configs/base/hydra.yaml
-```
+```text
 
 Tokenizer training:
 
 ```bash
 codex tokenizer train --config configs/training/tokenization/base.yaml
-```
+```text
 
 ## Adding New Configurations
 

@@ -64,7 +64,11 @@ class _ClassVisitor(ast.NodeVisitor):
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:  # pragma: no cover - simple
         bases = [
-            ast.unparse(b) if hasattr(ast, "unparse") else getattr(getattr(b, "id", None), "id", None)
+            (
+                ast.unparse(b)
+                if hasattr(ast, "unparse")
+                else getattr(getattr(b, "id", None), "id", None)
+            )
             for b in node.bases
         ]
         methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
@@ -89,7 +93,8 @@ def extract_ast(tree: ast.AST) -> Extraction:
     out.patterns.append(
         {
             "comprehensions": any(
-                isinstance(n, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)) for n in ast.walk(tree)
+                isinstance(n, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp))
+                for n in ast.walk(tree)
             )
         }
     )

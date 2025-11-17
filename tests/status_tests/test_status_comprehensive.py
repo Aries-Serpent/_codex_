@@ -1,10 +1,11 @@
 """Status reporting comprehensive tests."""
+
 from __future__ import annotations
 
 
 class TestStatusReporting:
     """Test status reporting functionality."""
-    
+
     def test_status_report_structure(self):
         """Test status report structure."""
         report = {
@@ -25,9 +26,10 @@ class TestStatusReporting:
         score = sum(components.values()) / len(components)
         assert 0.0 <= score <= 1.0
 
+
 class TestStatusUpdateReport:
     """Test status update report generation."""
-    
+
     def test_gap_detection(self):
         """Test low-maturity item identification."""
         capabilities = [
@@ -37,9 +39,10 @@ class TestStatusUpdateReport:
         low_maturity = [c for c in capabilities if c["score"] < 0.7]
         assert len(low_maturity) == 1
 
+
 class TestStatusDetector:
     """Test status detector patterns."""
-    
+
     def test_evidence_collection(self, tmp_path):
         """Test evidence file collection."""
         evidence = tmp_path / "evidence.jsonl"

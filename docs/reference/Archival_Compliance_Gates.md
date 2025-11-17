@@ -24,7 +24,7 @@ Enforce the Archival Inventory Process for any terminating action (remove, delet
 ## 4) Local Run
 ```bash
 python scripts/archival/check_archival_compliance.py --base HEAD~1 --head HEAD
-```
+```text
 
 ## 5) Manifest Visibility (P6)
 When MANIFEST_EXTENDED_ENABLE=1, manifest includes: archival_events_count and related provenance fields.

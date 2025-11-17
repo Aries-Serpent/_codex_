@@ -66,9 +66,7 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     print(msg, file=sys.stderr)
 
 
@@ -415,9 +413,7 @@ def validate() -> None:
                 fh.write(f"ERROR: {e}\n")
                 q5(f"6: Finalization — {name}", str(e), " ".join(cmd))
             fh.write("``\n")
-        subprocess.run(
-            ["bash", "-lc", "docker compose down -v"], capture_output=True, text=True
-        )
+        subprocess.run(["bash", "-lc", "docker compose down -v"], capture_output=True, text=True)
 
 
 def main() -> None:
@@ -429,9 +425,7 @@ def main() -> None:
         action="store_true",
         help="create/augment Dockerfile, compose, API, scripts, docs",
     )
-    ap.add_argument(
-        "--validate", action="store_true", help="run local validations (best-effort)"
-    )
+    ap.add_argument("--validate", action="store_true", help="run local validations (best-effort)")
     args = ap.parse_args()
     if args.apply:
         apply()

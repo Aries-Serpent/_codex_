@@ -11,8 +11,11 @@ TOOL = ROOT / "tools/validate_configs.py"
 
 pytestmark = pytest.mark.skipif(not TOOL.exists(), reason="validation tool missing")
 
+
 def test_example_configs_validate():
     if not SCHEMA.exists() or not CFG_ROOT.exists():
         pytest.skip("config schema or config root missing")
-    code = subprocess.call([sys.executable, str(TOOL), "--root", str(CFG_ROOT), "--schema", str(SCHEMA)])
+    code = subprocess.call(
+        [sys.executable, str(TOOL), "--root", str(CFG_ROOT), "--schema", str(SCHEMA)]
+    )
     assert code == 0

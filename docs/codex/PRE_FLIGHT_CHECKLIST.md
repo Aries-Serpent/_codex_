@@ -63,7 +63,7 @@
 **Estimated Duration**: [Time estimate]
 
 **Owner Approval**: Signed: _____________ Date: _________
-```
+```text
 ## Example: Applying a Patch
 
 ```text
@@ -121,7 +121,7 @@
 **Estimated Duration**: 15 minutes
 
 **Owner Approval**: Signed: mbaetiong Date: 2025-10-30
-```
+```text
 ---
 
 **Last Updated**: 2025-10-30  

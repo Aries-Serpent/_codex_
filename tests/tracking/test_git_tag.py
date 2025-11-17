@@ -12,7 +12,9 @@ def test_current_commit(monkeypatch):
 
 def test_current_commit_failure(monkeypatch):
     mod = importlib.import_module("codex_ml.tracking.git_tag")
+
     def boom(*a, **k):
         raise OSError("fail")
+
     monkeypatch.setattr(subprocess, "check_output", boom)
     assert mod.current_commit() is None

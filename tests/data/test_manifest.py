@@ -26,4 +26,3 @@ def test_manifest_stable_and_changes_on_tamper(tmp_path: Path):
     manifest_for_paths([a], out)  # overwrite with just 'a'
     tampered = json.loads(out.read_text().strip())
     assert tampered["sha256"] == _sha256_file(a)
-

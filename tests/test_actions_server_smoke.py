@@ -9,6 +9,7 @@ def _get(url: str):
     with urllib.request.urlopen(url, timeout=5) as r:
         return json.loads(r.read().decode("utf-8"))
 
+
 def test_server_health_and_branches_smoke(tmp_path):
     env = os.environ.copy()
     env.setdefault("CODEX_GH_OWNER", "Aries-Serpent")

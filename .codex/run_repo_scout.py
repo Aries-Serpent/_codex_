@@ -51,9 +51,7 @@ def write_jsonl(path: Path, obj: dict):
     write_append(path, line)
 
 
-def echo_chatgpt5_question(
-    step_number: str, step_desc: str, error_message: str, context: str
-):
+def echo_chatgpt5_question(step_number: str, step_desc: str, error_message: str, context: str):
     block = f"""Question for ChatGPT-5:
 While performing [{step_number}: {step_desc}], encountered the following error:
 {error_message}
@@ -117,9 +115,7 @@ def run_cmd(cmd, cwd, desc, timeout=120):
 
 
 def git_clean_state(repo: Path):
-    rc, out, _ = run_cmd(
-        ["git", "status", "--porcelain"], repo, "Check working tree clean"
-    )
+    rc, out, _ = run_cmd(["git", "status", "--porcelain"], repo, "Check working tree clean")
     return rc == 0 and out.strip() == ""
 
 
@@ -142,9 +138,7 @@ def lang_guess(path: Path):
 
 # Resolve repository root
 try:
-    rc, out, _ = run_cmd(
-        ["git", "rev-parse", "--show-toplevel"], Path.cwd(), "Locate git toplevel"
-    )
+    rc, out, _ = run_cmd(["git", "rev-parse", "--show-toplevel"], Path.cwd(), "Locate git toplevel")
     REPO_ROOT = Path(out.strip()) if rc == 0 and out.strip() else Path.cwd()
 except Exception:
     REPO_ROOT = Path.cwd()
@@ -218,13 +212,10 @@ for root, dirs, files in os.walk(REPO_ROOT):
         rel = path.relative_to(REPO_ROOT)
         role_hint = (
             "code"
-            if lang_guess(path)
-            in {"python", "javascript", "typescript", "bash", "sql", "html"}
+            if lang_guess(path) in {"python", "javascript", "typescript", "bash", "sql", "html"}
             else "other"
         )
-        write_jsonl(
-            INVENTORY, {"path": str(rel), "lang": lang_guess(path), "role": role_hint}
-        )
+        write_jsonl(INVENTORY, {"path": str(rel), "lang": lang_guess(path), "role": role_hint})
 
 write_append(CHANGELOG, "- Created `.codex/inventory.ndjson` (repo walk, safe mode).")
 
@@ -347,9 +338,7 @@ ensure_dir(SMOKE_DIR)
 IMPORT_CHECK = SMOKE_DIR / "import_check.py"
 
 # Create minimal, non-intrusive Python import smoke (guarded)
-py_targets = [
-    x["path"] for x in inventory if x["lang"] == "python" and x["path"].endswith(".py")
-]
+py_targets = [x["path"] for x in inventory if x["lang"] == "python" and x["path"].endswith(".py")]
 if py_targets:
     body = [
         "# Auto-generated SAFE import smoke; avoids side effects by try/except.\n",
@@ -429,9 +418,7 @@ if tests_exist and has_tool("pytest"):
         tool_failures += 1
 
 # Bash: shellcheck
-bash_files = [
-    x["path"] for x in inventory if x["lang"] == "bash" and x["path"].endswith(".sh")
-]
+bash_files = [x["path"] for x in inventory if x["lang"] == "bash" and x["path"].endswith(".sh")]
 if bash_files and has_tool("shellcheck"):
     for bf in bash_files:
         rc, out, err = run_cmd(["shellcheck", bf], REPO_ROOT, f"Shellcheck {bf}")
@@ -439,9 +426,7 @@ if bash_files and has_tool("shellcheck"):
             tool_failures += 1
 
 # SQL: sqlfluff
-sql_files = [
-    x["path"] for x in inventory if x["lang"] == "sql" and x["path"].endswith(".sql")
-]
+sql_files = [x["path"] for x in inventory if x["lang"] == "sql" and x["path"].endswith(".sql")]
 if sql_files and has_tool("sqlfluff"):
     rc, out, err = run_cmd(
         ["sqlfluff", "lint", "."],
@@ -520,9 +505,7 @@ write_append(RESULTS, f"- Files with signals: **{len(file_signal)}**")
 write_append(RESULTS, f"- Total markers detected: **{unfinished_count}**")
 write_append(RESULTS, f"- KLoC (approx): **{kloc_total:.2f}**")
 write_append(RESULTS, f"- Unfinishedness Index U: **{U:.2f}**")
-write_append(
-    RESULTS, f"- Completeness Score K: **{K:.2f}** (K = 1 − min(1, U·{kappa}))\n"
-)
+write_append(RESULTS, f"- Completeness Score K: **{K:.2f}** (K = 1 − min(1, U·{kappa}))\n")
 
 if unfinished_hits:
     write_append(RESULTS, "### Sample Findings (first 50)\n")

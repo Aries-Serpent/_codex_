@@ -89,8 +89,7 @@ def _init_db(conn: sqlite3.Connection) -> None:
     # Create the `(session_id, ts)` index for efficient backfilling of legacy
     # databases and faster retention queries.
     conn.execute(
-        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
-        "ON session_events(session_id, ts)"
+        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx " "ON session_events(session_id, ts)"
     )
     conn.execute(
         """
@@ -228,9 +227,7 @@ def import_session(
         conn.close()
 
 
-def import_all(
-    log_dir: Path | None = None, db_path: Path | str | None = None
-) -> dict[str, int]:
+def import_all(log_dir: Path | None = None, db_path: Path | str | None = None) -> dict[str, int]:
     """Import all ``*.ndjson`` files found under ``log_dir``."""
 
     log_dir = (log_dir or _default_log_dir()).expanduser().resolve()

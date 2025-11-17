@@ -30,7 +30,7 @@ gh extension install github/gh-copilot
 # 4) Try it
 gh copilot explain "sudo apt-get"
 gh copilot suggest "find the 10 largest files under /var/log, human-readable"
-```
+```text
 References: “Install Copilot in the CLI” and usage docs. ([GitHub Docs][5])
 `gh` is packaged for Ubuntu 24 (“Noble”) and can also be installed from GitHub’s official sources. ([Launchpad][7])
 
@@ -42,18 +42,18 @@ echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc && source ~/.bashrc
 
 # Zsh
 echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc && source ~/.zshrc
-```
+```text
 Now you can use:
 
 ```bash
 ghce "what does 'iptables -L' do?"   # explain
 ghcs "archive current dir to tar.gz excluding .git"  # suggest → choose Execute
-```
+```text
 You can also change the default execution confirmation or analytics via:
 
 ```bash
 gh copilot config
-```
+```text
 (covers execution confirmation and optional usage analytics). ([GitHub Docs][2])
 
 ## Troubleshooting quick hits

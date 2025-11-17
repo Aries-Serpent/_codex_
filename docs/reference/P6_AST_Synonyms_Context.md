@@ -27,7 +27,7 @@ ast.parse(source) → {FunctionDef: 5, ClassDef: 2, Call: 12, ...}
 
 # Compute pairwise cosine similarity
 ast_uniqueness = 1 - avg_pairwise_similarity
-```
+```text
 
 ### 2.3 Integration (S4 Scoring)
 Consistency blend modes:
@@ -55,7 +55,7 @@ Consistency blend modes:
   ],
   "warnings": ["read_fail:src/broken.py"]
 }
-```
+```text
 
 ---
 
@@ -71,14 +71,14 @@ Expand pattern matching via semantic equivalents. Maps domain terms to their syn
   "checkpoint": ["save_checkpoint", "restore", "snapshot"],
   "tokenizer": ["tokenize", "encode", "decode", "vocab"]
 }
-```
+```text
 
 ### 3.3 Expansion Logic
 ```python
 found_patterns = ["train", "checkpoint"]
 # After expansion:
 found_patterns = ["train", "training", "epoch", "fit", "checkpoint", "save_checkpoint", ...]
-```
+```text
 
 ### 3.4 Knobs
 | Knob | Default | Description |
@@ -153,7 +153,7 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
   "total_scanned": 2,
   "total_capabilities": 5
 }
-```
+```text
 
 ---
 
@@ -171,7 +171,7 @@ Local multi-repo capability discovery. Scans specified repositories for capabili
     {"action": "bundle", "timestamp": "...", "adr": "ADR-042"}
   ]
 }
-```
+```text
 
 ### 6.2 Knob
 | Knob | Default | Description |
@@ -218,7 +218,7 @@ AST_SIMILARITY_ENABLE=1 python scripts/analysis/ast_signature_similarity.py
 python scripts/space_traversal/synonym_loader.py
 SECRET_CONTEXT_ENABLE=1 python scripts/security/secret_context_correlate.py
 FEDERATION_ENABLE=1 FEDERATION_REPO_PATHS="." python scripts/multi_repo/federated_index.py
-```
+```text
 
 ---
 

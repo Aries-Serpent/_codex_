@@ -15,7 +15,7 @@ def detect(file_index: dict) -> dict:
       "required_patterns":[...],
       "meta":{}
     }
-```
+```text
 
 ## Notes
 - Autoloaded at S3 when `capability_map.dynamic: true` in .copilot-space/workflow.yaml
@@ -69,6 +69,6 @@ def detect(file_index: dict) -> dict:
         "required_patterns": ["pattern1", "pattern2", "pattern3"],
         "meta": {"layer": "infrastructure", "priority": "medium"}
     }
-```
+```text
 
 *End*

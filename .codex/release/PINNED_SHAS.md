@@ -18,6 +18,6 @@ curl -fsSL https://api.github.com/repos/actions/checkout/git/refs/tags/v4 | jq -
 curl -fsSL https://api.github.com/repos/actions/setup-python/git/refs/tags/v5 | jq -r '.object.sha'
 curl -fsSL https://api.github.com/repos/actions/cache/git/refs/tags/v4 | jq -r '.object.sha'
 curl -fsSL https://api.github.com/repos/pre-commit/action/git/refs/tags/v3.0.1 | jq -r '.object.sha'
-```
+```text
 
 Review and update these pins quarterly or when security advisories are published.

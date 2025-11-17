@@ -37,7 +37,7 @@
 
 ## Directory Structure
 
-```
+```text
 _codex_/
 ├── AGENTS.md ................................. ✅ Root pointer (3.8 KB)
 ├── README.md ................................. ✅ Updated with quick-index
@@ -69,7 +69,7 @@ _codex_/
 ├── scripts/ .................................. ✅ Referenced
 ├── tools/ .................................... ✅ Referenced
 └── .github/workflows/ ........................ (No files created per safety rules)
-```
+```text
 
 ## Implementation Checklist
 
@@ -157,7 +157,7 @@ _codex_/
 **Included in:** `_codex_/AGENTS.md` and `_codex_/codex_index.yaml`
 
 **Formula:**
-```
+```text
 τ = Σ(wi × di × ci) / √n
 
 Where:
@@ -166,7 +166,7 @@ Where:
   di = Read depth (0.1-1.0)
   ci = Cognitive load (0.2-1.0)
   n  = Total file count
-```
+```text
 
 **Optimization:**
 - Wavepoint order: ~3.2 time units

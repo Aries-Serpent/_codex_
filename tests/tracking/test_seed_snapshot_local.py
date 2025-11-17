@@ -9,5 +9,4 @@ def test_seed_snapshot_writes_file(tmp_path: Path):
     assert path.exists()
     assert path.name == "seeds.json"
     text = path.read_text(encoding="utf-8")
-    assert "\"py\": 0" in text
-
+    assert '"py": 0' in text

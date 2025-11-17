@@ -54,7 +54,7 @@ CLI. For example, to add a custom pytest expression you can run:
 
 ```bash
 PYTEST_OPTS='-k "cli and smoke"' ./scripts/run_validation.sh --fast
-```
+```text
 ## Selecting tests
 
 * `--files` accepts a comma-separated list of pytest targets (file paths or
@@ -165,7 +165,7 @@ git add uv.lock
 git commit -m "chore: regenerate uv.lock to fix malformed TOML"
 git push --set-upstream origin fix/regen-uv-lock
 # Open PR and merge after CI green
-```
+```text
 
 ## Definition of Done (DoD) - CI Infrastructure Changes
 

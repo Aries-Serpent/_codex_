@@ -31,7 +31,7 @@ accuracy = get_metric("token_accuracy")
 # Compute score
 score = accuracy(predictions, labels)
 print(f"Accuracy: {score:.4f}")
-```
+```text
 
 ### Class-based metrics
 
@@ -45,7 +45,7 @@ from codex_ml.metrics.metric_implementations import F1Score
 metric = F1Score(average="micro")
 metric.update([1, 0, 1], [1, 0, 0])
 print(metric.compute()["f1_score"])
-```
+```text
 
 ### NDJSON summariser
 
@@ -59,7 +59,7 @@ from codex_ml.metrics.api import summarize_ndjson_logs
 
 summary = summarize_ndjson_logs("runs/train/metrics.ndjson")
 print(summary["loss"])
-```
+```text
 
 ## Optional Metrics
 
@@ -76,7 +76,7 @@ BLEU measures n-gram overlap between generated and reference text. Commonly used
 pip install nltk
 # Or install all optional dependencies
 pip install -r requirements-optional.txt
-```
+```text
 
 **Usage:**
 ```python
@@ -90,7 +90,7 @@ references = ["the cat sat on the mat"]
 score = bleu(predictions, references)
 # Returns: ~1.0 for perfect match
 # Returns: None if nltk not installed
-```
+```text
 
 **Characteristics:**
 - Range: 0.0 to 1.0
@@ -110,7 +110,7 @@ ROUGE-L measures longest common subsequence (LCS) between generated and referenc
 pip install rouge-score
 # Or install all optional dependencies
 pip install -r requirements-optional.txt
-```
+```text
 
 **Usage:**
 ```python
@@ -124,7 +124,7 @@ references = ["the quick brown fox jumped"]
 score = rouge(predictions, references)
 # Returns: F-measure of LCS
 # Returns: None if rouge-score not installed
-```
+```text
 
 **Characteristics:**
 - Range: 0.0 to 1.0
@@ -157,7 +157,7 @@ if score is None:
     print("BLEU not available (missing nltk)")
 else:
     print(f"BLEU score: {score:.4f}")
-```
+```text
 
 ## Installing Optional Dependencies
 
@@ -167,7 +167,7 @@ Install all optional dependencies at once:
 
 ```bash
 pip install -r requirements-optional.txt
-```
+```text
 
 ### Selective Installation
 
@@ -182,7 +182,7 @@ pip install rouge-score
 
 # Both generative metrics
 pip install nltk rouge-score
-```
+```text
 
 ### Extras Group (if configured in pyproject.toml)
 
@@ -192,7 +192,7 @@ pip install -e ".[metrics]"
 
 # Or all optional features
 pip install -e ".[all]"
-```
+```text
 
 ## Testing with Optional Dependencies
 
@@ -207,7 +207,7 @@ pytest tests/metrics/test_bleu_rouge.py
 
 # Specific test
 pytest tests/metrics/test_bleu_rouge.py::TestBLEUMetric::test_bleu_perfect_match
-```
+```text
 
 ## Adding Custom Metrics
 
@@ -221,7 +221,7 @@ def custom_accuracy(preds, targets):
     """Custom accuracy implementation."""
     correct = sum(p == t for p, t in zip(preds, targets))
     return correct / len(preds) if preds else 0.0
-```
+```text
 
 ### With Optional Dependencies
 
@@ -237,7 +237,7 @@ def custom_bleu(preds, targets):
     except ImportError:
         # Return None if dependency not available
         return None
-```
+```text
 
 ### Using patch_registry for Optional Metrics
 
@@ -259,7 +259,7 @@ if "bleu" in CUSTOM_METRICS:
     print(f"BLEU: {score}")
 else:
     print("BLEU not available (missing nltk)")
-```
+```text
 
 **Benefits:**
 - Graceful degradation: No errors if dependencies missing
@@ -277,7 +277,7 @@ from codex_ml.metrics.registry import get_metric
 
 metric = get_metric("bleu")
 score = metric(predictions, references)
-```
+```text
 
 ### list_metrics()
 
@@ -288,7 +288,7 @@ from codex_ml.metrics.registry import metric_registry
 
 metrics = metric_registry.list()
 print(f"Available metrics: {metrics}")
-```
+```text
 
 ### Metric Signature
 
@@ -312,7 +312,7 @@ def metric(
         Float score or None if unavailable
     """
     ...
-```
+```text
 
 ## Common Patterns
 
@@ -328,7 +328,7 @@ if test_score is None:
     print("BLEU unavailable - install nltk")
 else:
     print(f"BLEU available: {test_score}")
-```
+```text
 
 ### Compute Multiple Metrics
 
@@ -349,7 +349,7 @@ for metric_name in metrics:
 # Filter out None values (unavailable metrics)
 available_scores = {k: v for k, v in scores.items() if v is not None}
 print(f"Scores: {available_scores}")
-```
+```text
 
 ## Troubleshooting
 
@@ -360,7 +360,7 @@ print(f"Scores: {available_scores}")
 **Solution:** Install nltk:
 ```bash
 pip install nltk
-```
+```text
 
 ### ROUGE Returns None
 
@@ -369,7 +369,7 @@ pip install nltk
 **Solution:** Install rouge-score:
 ```bash
 pip install rouge-score
-```
+```text
 
 ### ImportError During Metric Computation
 

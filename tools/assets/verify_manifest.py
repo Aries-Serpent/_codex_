@@ -1,4 +1,5 @@
 """Verify asset checksums listed in ``assets/manifest.json``."""
+
 from __future__ import annotations
 
 import hashlib

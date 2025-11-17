@@ -1,8 +1,10 @@
+SAMPLE = {
+    "runners": [
+        {"id": 1, "name": "r1", "status": "online"},
+        {"id": 2, "name": "r2", "status": "offline"},
+    ]
+}
 
-SAMPLE = {"runners": [
-    {"id": 1, "name": "r1", "status": "online"},
-    {"id": 2, "name": "r2", "status": "offline"},
-]}
 
 def test_parse_offline(tmp_path, monkeypatch):
     import tools.runner_doctor as rd  # type: ignore

@@ -38,7 +38,7 @@ man = DatasetManifest.build("data_root", ["splits/train.jsonl", "splits/val.json
 man.write("data_root/manifest.json")
 man2 = DatasetManifest.load("data_root/manifest.json")
 man2.verify("data_root")
-```
+```text
 
 Notes
 - Verification raises ValueError on missing shard or checksum mismatch.

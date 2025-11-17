@@ -1,7 +1,7 @@
 # _codex_: Status Update (2025-09-21)
 
 ## Repo Map Snapshot
-```
+```text
 CHANGELOG.md
 configs/
 logs/
@@ -11,7 +11,7 @@ tests/
 .codex/
 .github/
 _codex/
-```
+```text
 
 ## Capability Audit Summary
 | Capability | Status | Notes |

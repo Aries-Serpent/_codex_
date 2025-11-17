@@ -5,7 +5,7 @@ With the file available at a public URL, load it directly in the browser using [
 
 ``` text
 https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db
-```
+```text
 The page runs SQLite in WebAssembly and exposes the database through Datasette's interface for ad-hoc queries.
 No server-side Python is required; everything runs in the browser.
 

@@ -43,7 +43,9 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
     try:
         run = wandb.init(project=project, mode="offline")
         # Surface mode for tests without requiring API calls
-        resolved["wandb_mode"] = getattr(getattr(run, "settings", None), "mode", "offline") or "offline"
+        resolved["wandb_mode"] = (
+            getattr(getattr(run, "settings", None), "mode", "offline") or "offline"
+        )
     except Exception:
         resolved["wandb_mode"] = "offline"
     finally:

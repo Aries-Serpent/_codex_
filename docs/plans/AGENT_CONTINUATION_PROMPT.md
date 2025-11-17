@@ -55,7 +55,7 @@ python -c "from training.accelerate_init_guard import safe_accelerate_init; prin
 
 # Run tests (should skip without ACCELERATE_TEST)
 pytest -q tests/integration/test_distributed_init.py
-```
+```text
 
 ---
 
@@ -86,7 +86,7 @@ ALIASES: Dict[str, str] = {
     "mlflow": "logging:mlflow",
     "metrics": "metrics:core",
 }
-```
+```text
 
 **Acceptance**:
 - `list()` returns stable, deterministic order
@@ -96,7 +96,7 @@ ALIASES: Dict[str, str] = {
 **Validation Command**:
 ```bash
 pytest -q tests/test_factory_registry.py
-```
+```text
 
 ---
 
@@ -143,7 +143,7 @@ def patch_registry(reg: Dict[str, object]) -> Dict[str, object]:
     reg.setdefault("bleu", bleu)
     reg.setdefault("rouge_l", rouge_l)
     return reg
-```
+```text
 
 **Acceptance**:
 - Metrics skip gracefully when deps not installed
@@ -158,7 +158,7 @@ pytest -q tests/metrics/test_bleu_rouge.py
 # With optional deps
 pip install -r requirements-optional.txt
 pytest -q tests/metrics/test_bleu_rouge.py
-```
+```text
 
 ---
 
@@ -182,7 +182,7 @@ pytest -q tests/modeling/test_lora_minimal.py
 
 # With env flag
 RUN_LORA_TESTS=1 pytest -q tests/modeling/test_lora_minimal.py
-```
+```text
 
 ---
 
@@ -219,7 +219,7 @@ RUN_LORA_TESTS=1 pytest -q tests/modeling/test_lora_minimal.py
 - ✅ Determinism verified (registry list order, artifact SHAs)
 
 ### Final Commit Message Template:
-```
+```text
 Complete S-14, S-15, S-02 follow-on modules
 
 - S-14: Distributed training CPU-safe guards with env gating
@@ -228,13 +228,13 @@ Complete S-14, S-15, S-02 follow-on modules
 - S-12: LoRA minimal tests validated
 - All tests pass with appropriate environment gates
 - Documentation complete for all modules
-```
+```text
 
 ---
 
 ## Directory Structure Reference
 
-```
+```text
 .
 ├── codex_addons/
 │   ├── registry.py              ✅ Exists (validate)
@@ -267,7 +267,7 @@ Complete S-14, S-15, S-02 follow-on modules
 │   │   └── LoRA.md                         ✅ Complete
 │   └── metrics.md                          ⏳ CREATE/UPDATE (S-02)
 └── requirements-optional.txt               ✅ Exists (verify nltk, rouge-score)
-```
+```text
 
 ---
 
@@ -301,6 +301,6 @@ pytest -q tests/test_vector_store_stub.py
 # 4. Commit when all pass
 git add .
 git commit -m "Complete S-14, S-15, S-02 follow-on modules"
-```
+```text
 
 **Ready to proceed!** 🚀

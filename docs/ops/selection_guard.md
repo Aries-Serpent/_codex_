@@ -12,7 +12,7 @@ python tools/selection_guard.py \
   --rules manifests/selection_guard_rules.json \
   --input summary-02.json \
   --selected 3
-```
+```text
 
 Exit codes:
 - `0` — pass (selected candidate meets required signals)

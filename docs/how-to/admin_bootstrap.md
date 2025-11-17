@@ -19,7 +19,7 @@ Prereqs (offline-by-default; opt-in online)
 Dry-run (plan only)
 ```bash
 python -m scripts.ops.codex_repo_admin_bootstrap --owner <org> --repo <name>
-```
+```text
 
 Apply defaults
 ```bash
@@ -33,7 +33,7 @@ python -m scripts.ops.codex_repo_admin_bootstrap \
   --owner <org> --repo <name> \
   --preset default --required-approvals 1 \
   --with-templates --apply
-```
+```text
 
 What it does
 - PATCH /repos: squash-only, delete-branch-on-merge, auto-merge (preset dependent), security_and_analysis best-effort.

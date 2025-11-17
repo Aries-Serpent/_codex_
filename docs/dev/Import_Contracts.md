@@ -16,7 +16,7 @@ See .importlinter for exact rules.
 ```bash
 nox -s lint
 # import-linter runs in advisory mode; violations emit non-zero (1) but do not fail the session.
-```
+```text
 
 ## How to fix violations
 1. Identify the violating import in the output (source → target).

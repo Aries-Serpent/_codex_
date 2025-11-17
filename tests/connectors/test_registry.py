@@ -1,7 +1,11 @@
 import pytest
 
 from codex_ml.connectors.base import Connector
-from codex_ml.connectors.registry import get_connector, list_connectors, register_connector
+from codex_ml.connectors.registry import (
+    get_connector,
+    list_connectors,
+    register_connector,
+)
 
 
 class DummyConnector(Connector):

@@ -14,7 +14,7 @@ export CODEX_TOKENIZER_CACHE=artifacts/tokenizer_cache
 
 # Use local tokenizer model
 python -m codex_ml.tokenization.cli encode --model /path/to/local/model.sp --text "sample"
-```
+```text
 
 ## Offline Mode
 

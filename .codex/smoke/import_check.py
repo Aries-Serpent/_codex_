@@ -62,9 +62,7 @@ for name in sorted(set(targets)):
     try:
         importlib.import_module(name)
     except Exception as e:
-        failures.append(
-            (name, "".join(traceback.format_exception_only(type(e), e)).strip())
-        )
+        failures.append((name, "".join(traceback.format_exception_only(type(e), e)).strip()))
 if failures:
     print("IMPORT_SMOKE_FAILURES:")
     for n, msg in failures:

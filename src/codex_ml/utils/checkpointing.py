@@ -38,7 +38,9 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
+    from codex_ml.utils.provenance import (
+        environment_summary as _prov_env_summary,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
@@ -50,7 +52,9 @@ from .storage import StorageProvider
 logger = logging.getLogger(__name__)
 
 try:
-    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
+    from codex_ml.utils.provenance import (
+        _git_commit as _prov_git_commit,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 
@@ -435,10 +439,10 @@ def _minimal_env_summary() -> dict[str, str | None]:
 
 def _compute_file_checksum(path: Path) -> str | None:
     """Compute SHA-256 checksum of a file.
-    
+
     Args:
         path: Path to file
-        
+
     Returns:
         Hex digest of SHA-256 checksum, or None if file doesn't exist or error
     """
@@ -459,23 +463,23 @@ def _capture_dataset_checksums(
     dataset_paths: list[str | Path] | None = None,
 ) -> dict[str, str]:
     """Capture checksums of dataset files for reproducibility.
-    
+
     Args:
         dataset_paths: Optional list of dataset file paths
-        
+
     Returns:
         Dictionary mapping dataset path to SHA-256 checksum
     """
     if not dataset_paths:
         return {}
-    
+
     checksums: dict[str, str] = {}
     for path_str in dataset_paths:
         path = Path(path_str)
         checksum = _compute_file_checksum(path)
         if checksum:
             checksums[str(path)] = checksum
-    
+
     return checksums
 
 
@@ -512,7 +516,7 @@ def save_checkpoint(
     dataset_paths: list[str | Path] | None = None,
 ) -> None:
     """Save a training checkpoint using ``torch`` when available, ``pickle`` otherwise.
-    
+
     Args:
         path: Path to save checkpoint
         model: Model state dict provider
@@ -532,7 +536,7 @@ def save_checkpoint(
     payload_extra.setdefault("system", env)
     if env.get("git_commit"):
         payload_extra.setdefault("git_commit", env["git_commit"])
-    
+
     # Capture dataset checksums for reproducibility
     if dataset_paths:
         dataset_checksums = _capture_dataset_checksums(dataset_paths)
@@ -572,7 +576,7 @@ def save_checkpoint(
             dataset_checksums = _capture_dataset_checksums(dataset_paths)
             if dataset_checksums:
                 sidecar["dataset_checksums"] = dataset_checksums
-        
+
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
@@ -1052,7 +1056,9 @@ class CheckpointManager:
         self.apply_retention()
 
         if self.storage is not None and self.remote_prefix is not None:
-            remote_path = f"{self.remote_prefix}/{ep_dir.name}" if self.remote_prefix else ep_dir.name
+            remote_path = (
+                f"{self.remote_prefix}/{ep_dir.name}" if self.remote_prefix else ep_dir.name
+            )
             with contextlib.suppress(Exception):  # pragma: no cover - remote sync best effort
                 self.storage.upload_directory(ep_dir, remote_path)
         return ep_dir

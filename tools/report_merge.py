@@ -26,7 +26,9 @@ def deep_set(root: Dict[str, Any], dotted: str, value: Any) -> None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Merge JSON inputs into a status report")
     ap.add_argument("--report", required=True, help="Path to status report JSON to update")
-    ap.add_argument("--in", dest="inputs", action="append", help="SRC_PATH:DEST_DOTTED_PATH", required=True)
+    ap.add_argument(
+        "--in", dest="inputs", action="append", help="SRC_PATH:DEST_DOTTED_PATH", required=True
+    )
     args = ap.parse_args(argv)
 
     report_path = Path(args.report)

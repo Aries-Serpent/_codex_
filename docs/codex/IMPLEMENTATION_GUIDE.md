@@ -104,7 +104,7 @@ pytest tests/unit/test_session_utilities.py -v
 
 # Validators
 pytest tests/unit/test_validators.py -v
-```
+```text
 
 ### Integration Tests
 ```bash
@@ -116,7 +116,7 @@ python scripts/generate_preflight.py --task "Test" --files "setup.py"
 
 # Hook management
 bash scripts/manage_hooks.sh status
-```
+```text
 
 ### Manual Validation
 ```bash
@@ -128,7 +128,7 @@ python -c "from src.codex.utils.context_discovery import get_session_info; print
 
 # File caching
 python -c "from src.codex.utils.session_cache import FileCache; print(FileCache().add('setup.py'))"
-```
+```text
 
 ## Performance Improvements Summary
 
@@ -150,7 +150,7 @@ After Optimization:
 ├── Discovery: 20% (24 ops) → Single pass with cache
 └── Overhead: 10% (12 ops) → Pre-configured timeouts
 Total: 120 operations (58% reduction)
-```
+```text
 ### Time-to-Value Improvement
 
 | Metric | Before | After | Improvement |

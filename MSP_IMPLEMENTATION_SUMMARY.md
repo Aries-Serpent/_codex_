@@ -183,12 +183,12 @@ Each tenant has:
 ### Start Gateway
 ```bash
 bash scripts/local/serve_local.sh
-```
+```text
 
 ### Build Knowledge Base
 ```bash
 bash scripts/local/build_faiss.sh my-tenant data/kb.ndjson
-```
+```text
 
 ### Query API
 ```bash
@@ -196,12 +196,12 @@ curl -X POST http://127.0.0.1:8080/v1/infer \
   -H "Authorization: Bearer api-key" \
   -H "Content-Type: application/json" \
   -d '{"tenant_id": "my-tenant", "prompt": "What is ML?"}'
-```
+```text
 
 ### Run Tests
 ```bash
 bash scripts/local/run_tests.sh
-```
+```text
 
 ## Dependencies
 
@@ -260,7 +260,7 @@ pytest tests/test_msp_infer_api.py -v
 
 # With coverage
 pytest --cov=services.msp_gateway --cov=src.codex.rag --cov=src.codex.retrieval
-```
+```text
 
 ## Next Steps
 

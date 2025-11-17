@@ -53,7 +53,16 @@ def map_intents(intents) -> List[Action]:
                 )
             )
         elif it.name == "BUILD_PIPELINE":
-            out.append(Action("BUILD_DIGEST_PIPELINE", {}, "Compose the five-stage Codex Digest pipeline.", prio))
+            out.append(
+                Action(
+                    "BUILD_DIGEST_PIPELINE",
+                    {},
+                    "Compose the five-stage Codex Digest pipeline.",
+                    prio,
+                )
+            )
         elif it.name == "PLAN_TASKS":
-            out.append(Action("SYNTHESIZE_TASKS", {}, "Aggregate, dedupe, and prioritize tasks.", prio))
+            out.append(
+                Action("SYNTHESIZE_TASKS", {}, "Aggregate, dedupe, and prioritize tasks.", prio)
+            )
     return sorted(out, key=lambda a: a.priority)

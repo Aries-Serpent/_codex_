@@ -24,7 +24,7 @@ This repository includes minimal distributed hooks intended to be environment-ga
 Run:
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/distributed
-```
+```text
 Expected: no-op + env opt-in tests pass unchanged.
 
 *End of doc*

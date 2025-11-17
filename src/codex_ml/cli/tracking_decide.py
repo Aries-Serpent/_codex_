@@ -16,7 +16,10 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
-from codex_ml.tracking.mlflow_guard import GuardDecision, bootstrap_offline_tracking_decision
+from codex_ml.tracking.mlflow_guard import (
+    GuardDecision,
+    bootstrap_offline_tracking_decision,
+)
 
 _ = (ArgparseJSONParser, run_cmd)
 

@@ -17,7 +17,7 @@ SKIP_OPTIONAL=1 bash scripts/docs_build.sh
 
 # Strict build (use on main merges)
 FAIL_ON_MISSING=1 SKIP_OPTIONAL=0 bash scripts/docs_build.sh
-```
+```text
 
 ## Outputs
 
@@ -55,7 +55,7 @@ bash scripts/docs_build.sh
 
 # Or using the Python tool directly
 python tools/build_api_docs.py
-```
+```text
 
 The generated documentation will be written to `artifacts/docs/api/` (local only, git-ignored).
 
@@ -78,7 +78,7 @@ SKIP_OPTIONAL=1 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
 
 # Custom output directory
 OUTPUT_DIR=/path/to/output bash scripts/docs_build.sh
-```
+```text
 
 **Using nox:**
 
@@ -91,7 +91,7 @@ SKIP_OPTIONAL=1 nox -s docs_build
 
 # Strict mode
 FAIL_ON_MISSING=1 nox -s docs_build
-```
+```text
 
 **Using Python tool directly:**
 
@@ -107,7 +107,7 @@ python tools/build_api_docs.py --verbose
 
 # Strict mode: fail if any requested modules are missing (CI use)
 python tools/build_api_docs.py --fail-on-missing
-```
+```text
 
 ### Build Modes
 
@@ -154,7 +154,7 @@ FAIL_ON_MISSING=1 bash scripts/docs_build.sh
 
 # CI with core modules only (strict check, but no optional modules requested)
 SKIP_OPTIONAL=1 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
-```
+```text
 
 **CI Integration:**
 
@@ -170,7 +170,7 @@ For CI/CD workflows, use `FAIL_ON_MISSING=1` to enforce complete dependency inst
 - name: Build API documentation  
   run: |
     FAIL_ON_MISSING=1 nox -s docs_build
-```
+```text
 
 **Note:** Per repository guidelines (AGENTS.md), GitHub Actions workflows should not be committed. The above example shows command-line usage for local CI runners or external CI systems.
 
@@ -192,7 +192,7 @@ xdg-open artifacts/docs/api/index.html
 # Or use Python's HTTP server
 python -m http.server -d artifacts/docs/api 8000
 # Then navigate to http://localhost:8000
-```
+```text
 
 ## API Documentation Structure
 
@@ -262,7 +262,7 @@ def example_function(param1: str, param2: int = 0) -> dict:
         {'status': 'success'}
     """
     ...
-```
+```text
 
 ### Module-Level Docstrings
 
@@ -281,7 +281,7 @@ Example usage:
     from codex_ml import module
     result = module.do_something()
 """
-```
+```text
 
 ## Troubleshooting
 
@@ -303,7 +303,7 @@ pip install pdoc3
 
 # Or use a specific version
 pip install pdoc3==0.10.0
-```
+```text
 
 ### Empty or Missing Documentation
 
@@ -326,7 +326,7 @@ MODULES_TO_DOCUMENT = [
     "codex.logging",
     "your_new_module",  # Add here
 ]
-```
+```text
 
 If the module requires optional dependencies:
 
@@ -336,7 +336,7 @@ OPTIONAL_MODULES = [
     "codex_ml.distributed",
     "your_optional_module",  # Add here
 ]
-```
+```text
 
 ### Updating Documentation
 

@@ -7,7 +7,7 @@
 ## README
 - File: `README.md`
 - SHA-256: `e67a1e5bcc8aa1284276d98acaf2f065beb5d066c36e602dd61871761e3a34b0`
-```
+```text
 # codex-universal
 
 `codex-universal` is a reference implementation of the base Docker image available in OpenAI Codex.
@@ -27,7 +27,7 @@ Run the gates locally or on a self-hosted runner.
 ```bash
 # Standard path (coverage gate enforced at 70%)
 nox -s tests
-```
+```text
 
 # Fast paths vs isolation
 We support fast developer loops while keeping a hermetic fallback:
@@ -46,7 +46,7 @@ We support fast developer loops while keeping a hermetic fallback:
 - Most isolated/offline: install from wheelhouse (`pip install --no-index --find-links`), consistent and network-independent. :contentReference[oaicite:13]{index=13}
 
 > Note: We intentionally keep **coverage fail-under at 70%** until
-```
+```text
 
 ## Inventory
 - Files: 730
@@ -2556,7 +2556,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "7e27bcb9fa80487af252cd0ce033ef845494970fdf3c2ad0ccc5fdcf8cf380f3"
   }
 ]
-```
+```text
 
 </details>
 

@@ -11,7 +11,13 @@ from .api import (
 )
 from .evaluator import batch_metrics
 from .generative import bleu, rouge_l
-from .metric_implementations import BLEUScore, F1Score, MetricRegistry, RecallScore, TokenAccuracy
+from .metric_implementations import (
+    BLEUScore,
+    F1Score,
+    MetricRegistry,
+    RecallScore,
+    TokenAccuracy,
+)
 from .text import perplexity, token_accuracy
 
 __all__ = [

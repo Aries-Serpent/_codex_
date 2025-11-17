@@ -42,4 +42,3 @@ def manifest_for_paths(
                 **extra_fields,
             }
             f_out.write(json.dumps(row) + "\n")
-

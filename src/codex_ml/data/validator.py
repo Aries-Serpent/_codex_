@@ -15,6 +15,7 @@ except Exception:  # pragma: no cover
     def validate(*_args: Any, **_kwargs: Any) -> None:
         raise ImportError("jsonschema is required for dataset validation")
 
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -22,7 +23,11 @@ class DatasetValidator:
     """Validate dataset manifests against the Codex schema."""
 
     _ROOT = next(
-        (parent for parent in Path(__file__).resolve().parents if (parent / "pyproject.toml").exists()),
+        (
+            parent
+            for parent in Path(__file__).resolve().parents
+            if (parent / "pyproject.toml").exists()
+        ),
         Path(__file__).resolve().parents[3],
     )
     SCHEMA_PATH = _ROOT / "configs/schemas/dataset_manifest.schema.json"

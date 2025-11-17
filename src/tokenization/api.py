@@ -22,7 +22,9 @@ try:  # pragma: no cover
     from codex_ml.tokenization.adapter import (
         HFTokenizerAdapter as _CanonicalLegacyTokenizer,  # type: ignore
     )
-    from codex_ml.tokenization.adapter import SentencePieceTokenizer
+    from codex_ml.tokenization.adapter import (
+        SentencePieceTokenizer,
+    )
 
     HFTokenizerAdapter = _CanonicalLegacyTokenizer
 except Exception:  # pragma: no cover - defensive placeholders

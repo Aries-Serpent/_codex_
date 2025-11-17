@@ -8,25 +8,40 @@ try:
 except Exception:
     yaml = None
 
+
 def _load_schema():
     sp = Path("docs/templates/status/codex_status_template.schema.yaml")
     if not sp.exists():
-        print("schema not found at docs/templates/status/codex_status_template.schema.yaml", file=sys.stderr)
+        print(
+            "schema not found at docs/templates/status/codex_status_template.schema.yaml",
+            file=sys.stderr,
+        )
         return None
     txt = sp.read_text(encoding="utf-8")
     if yaml:
         return yaml.safe_load(txt)
     # minimal shim: schema present → act as sentinel
-    return {"$schema":"shim","__raw__":txt}
+    return {"$schema": "shim", "__raw__": txt}
+
 
 def _soft_validate(obj: dict) -> bool:
     # required top-level keys (per v1.1)
-    required = ["metadata","snapshot","delta","patches","automation","security","questions","decisions"]
+    required = [
+        "metadata",
+        "snapshot",
+        "delta",
+        "patches",
+        "automation",
+        "security",
+        "questions",
+        "decisions",
+    ]
     ok = all(k in obj for k in required)
     if not ok:
         missing = [k for k in required if k not in obj]
         print(f"[soft-validate] missing keys: {missing}", file=sys.stderr)
     return ok
+
 
 def _jsonschema_validate(schema: dict, obj: dict) -> bool:
     try:
@@ -39,6 +54,7 @@ def _jsonschema_validate(schema: dict, obj: dict) -> bool:
     except Exception as e:
         print(f"[jsonschema] {e}", file=sys.stderr)
         return False
+
 
 def main():
     if len(sys.argv) < 2:
@@ -53,6 +69,7 @@ def main():
     ok = _jsonschema_validate(schema, data) if schema else _soft_validate(data)
     print("OK" if ok else "FAIL")
     return 0 if ok else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

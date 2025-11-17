@@ -260,7 +260,7 @@ Patch (canonical unified diff):
 *** New File: tools/extract_validation_errors.py
 (Content: 210 lines of Python code for validation error extraction)
 *** End Patch
-```
+```text
 
 ### 4.2 Patch: Create error file for 2025-11-04 report (PATCH-002)
 - **Links**: `FIND-002`
@@ -283,7 +283,7 @@ Patch (canonical unified diff):
 *** New File: reports/daily/error-_codex_status_update-2025-11-04.md
 (Content: 70 lines documenting 3 validation errors)
 *** End Patch
-```
+```text
 
 ---
 
@@ -294,7 +294,7 @@ Patch (canonical unified diff):
 data:
 # No automation configured; manual entry:
 # - Issue #2107: UTF-8 emoji correction (open)
-```
+```text
 
 - **Pull Requests (full list; do not truncate)**:
 ```list type="pr"
@@ -302,7 +302,7 @@ data:
 # No automation configured; manual entry:
 # - PR #2108: Revise Codex status update for 2025-11-04 (merged)
 # - PR (current): Add validation error extraction tool (open)
-```
+```text
 
 - **Coverage Report**:
   - **Coverage %**: 97%

@@ -53,7 +53,7 @@ Reply format (Markdown):
   - **Acceptance Criteria** (bulleted checklist for approval)
   - **Rollback / Fallback Plan** (brief steps to recover if needed)
   - **Next Step** (one sentence: "Awaiting your approval or feedback on the plan above.")
-```
+```text
 
 ---
 
@@ -64,6 +64,6 @@ Use this context:
   - Constraints: Do not create/activate any GitHub Actions; keep changes small and reviewable.
   - Success criteria: Hooks run locally; evaluator enforces rubric & hard-fail rules; docs and ADR added.
   - Environment/Tech stack: Python 3.10+, pre-commit, pytest.
-```
+```text
 
 **Tip:** Pair this with the local gates in `docs/ops/local_gates.md` to verify plans and messages before merging.

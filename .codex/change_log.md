@@ -118,7 +118,7 @@ This log captures file-level changes performed by Codex workflow.
 +- `/workspace/_codex_/tools/codex_workflow.py` (.py, code, 686 bytes)
 +- `/workspace/_codex_/tools/run_codex_workflow.sh` (.sh, code, 11910 bytes)
 +- `/workspace/_codex_/tools/safe_rg.sh` (.sh, code, 28 bytes)
-```
+```text
 
 - **/workspace/_codex_/.codex/inventory.json** — *write*
   Rationale: Initial inventory (JSON)
@@ -633,7 +633,7 @@ This log captures file-level changes performed by Codex workflow.
 +    "size": 28
 +  }
 +]
-```
+```text
 
 - **/workspace/_codex_/.codex/flags.json** — *write*
   Rationale: Set constraint flags
@@ -645,7 +645,7 @@ This log captures file-level changes performed by Codex workflow.
 +{
 +  "DO_NOT_ACTIVATE_GITHUB_ACTIONS": true
 +}
-```
+```text
 
 - **/workspace/_codex_/.codex/mapping.md** — *update*
   Rationale: Initial mapping
@@ -663,7 +663,7 @@ This log captures file-level changes performed by Codex workflow.
 +
 +- **Instrument user/assistant exchanges** → ['/workspace/_codex_/tools/codex_logging_workflow.py', '/workspace/_codex_/src/codex/chat.py', '/workspace/_codex_/src/codex/logging/session_logger.py', '/workspace/_codex_/tests/test_session_logging.py', '/workspace/_codex_/src/codex/logging/conversation_logger.py', '/workspace/_codex_/src/codex/logging/query_logs.py', '/workspace/_codex_/tests/test_conversation_logger.py', '/workspace/_codex_/tests/test_export.py', '/workspace/_codex_/tests/test_chat_session.py']
 +  Rationale: Keyword/heuristic scan for conversation handlers
-```
+```text
 
 - **/workspace/_codex_/codex/logging/session_logger.py** — *write*
   Rationale: Add logging module for session events
@@ -730,7 +730,7 @@ This log captures file-level changes performed by Codex workflow.
 +        return [{"ts": r[0], "role": r[1], "content": r[2]} for r in cur.fetchall()]
 +    finally:
 +        conn.close()
-```
+```text
 
 - **/workspace/_codex_/tests/test_session_logging_mirror.py** — *write*
   Rationale: Add unit-style smoke test for session logging
@@ -754,7 +754,7 @@ This log captures file-level changes performed by Codex workflow.
 +    assert roles == ["user", "assistant"]
 +    assert msgs[0]["content"] == "hello"
 +    assert msgs[1]["content"] == "world"
-```
+```text
 
 - **/workspace/_codex_/README.md** — *update*
   Rationale: Document optional session logging usage
@@ -786,7 +786,7 @@ This log captures file-level changes performed by Codex workflow.
 +
 +**Storage:** SQLite at `.codex/session_logs.db`.
 +**Note:** This change is additive and does not activate any GitHub Actions.
-```
+```text
 
 
 ## Pruning
@@ -837,7 +837,7 @@ This log captures file-level changes performed by Codex workflow.
 +- If/when a real conversation handler exists, insert the four lines described in Phase 3.1.
 +## Policy
  **DO NOT ACTIVATE ANY GitHub Actions files.**
-```
+```text
 
 - **codex/__init__.py** — *create*
   Rationale: ensure codex package importable
@@ -1099,7 +1099,7 @@ index 0000000..9e2dd48
 +if __name__ == "__main__":
 +    raise SystemExit(main())
 +
-```
+```text
 
 ## 2025-08-18T16:43:09+00:00 — Update README: README.md
 Rationale: Document CLI viewer usage.
@@ -1184,19 +1184,19 @@ index 8dd6b39..5c785b7 100644
 
  ## Logging: Querying transcripts
 
-```
+```text
 
 ## 2025-08-18T16:43:24+00:00 — Add smoke tests: tests/test_logging_viewer_cli.py
 Rationale: Ensure viewer CLI basic text and JSON outputs.
 
 ```diff
-```
+```text
 
 ## 2025-08-18T16:44:26+00:00 — Add workflow script: scripts/codex_end_to_end.py
 Rationale: Provide executable workflow for generating viewer, tests, docs.
 
 ```diff
-```
+```text
 
 
 ## 2025-08-18T16:53:56Z
@@ -1853,7 +1853,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    "doc"
 +  ]
  ]
-```
+```text
 </details>
 
 ## 2025-08-19T18:53:33Z
@@ -1959,7 +1959,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    "\\blog_event\\b"
 +  ]
 +]
-```
+```text
 </details>
 
 * **update** `/workspace/_codex_/src/codex/logging/session_logger.py` — Add SessionLogger and log_message helper
@@ -2244,7 +2244,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 -        _cli()
 +    def log(self, role: str, message):
 +        log_message(self.session_id, role, message, db_path=self.db_path)
-```
+```text
 </details>
 
 * **write** `/workspace/_codex_/src/codex/logging/session_query.py` — Add CLI to query session events
@@ -2304,7 +2304,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +
 +if __name__ == "__main__":
 +    raise SystemExit(main())
-```
+```text
 </details>
 
 * **update** `/workspace/_codex_/tests/test_session_logging.py` — Add tests for context manager, helper, and CLI
@@ -2421,7 +2421,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    assert proc.returncode == 0
 +    out = proc.stdout.strip()
 +    assert "assistant" in out and "yo" in out
-```
+```text
 </details>
 
 * **update** `/workspace/_codex_/README.md` — Append session logging usage and CLI docs
@@ -2457,7 +2457,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +
 +> **Important:** DO NOT ACTIVATE ANY GitHub Actions files.
 +
-```
+```text
 </details>
 
 
@@ -2543,7 +2543,7 @@ Rationale: Provide executable workflow for generating viewer, tests, docs.
 +    "DO NOT ACTIVATE ANY GitHub Actions files."
 +  ]
 +}
-```
+```text
 </details>
 
 * **update** `src/codex/logging/session_logger.py` — add `get_session_id` and `fetch_messages` for test compatibility
@@ -2767,7 +2767,7 @@ FileNotFoundError: [Errno 2] No such file or directory: '.codex/sessions/bac648a
      p = root / ".codex"
      p.mkdir(parents=True, exist_ok=True)
 
-```
+```text
 
 </details>
 # Change Log — _repo_scout_
@@ -2806,7 +2806,7 @@ Start: 2025-08-18T23:40:38.367402Z
 - Workflows presence: {"workflows_present": false, "note": "DO NOT ACTIVATE ANY GitHub Actions files."}
 
 ## Phase 2 — Mapping
-```
+```text
 [
   {
     "task": "t1",
@@ -2830,7 +2830,7 @@ Start: 2025-08-18T23:40:38.367402Z
     "rationale": "Exact path target"
   }
 ]
-```
+```text
 
 ## Phase 3 — Best-Effort Construction
 
@@ -2841,7 +2841,7 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ```diff
 
-```
+```text
 </details>
 
 ## 2025-08-19T02:00:59.419250+00:00 — no-op (import already present)
@@ -2851,7 +2851,7 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ```diff
 
-```
+```text
 </details>
 
 ## 2025-08-19T02:00:59.479809+00:00 — no-op (import already present)
@@ -2861,7 +2861,7 @@ Start: 2025-08-18T23:40:38.367402Z
 
 ```diff
 
-```
+```text
 </details>
 - README reviewed: no path updates required for test files.
 
@@ -2883,7 +2883,7 @@ Start: 2025-08-18T23:40:38.367402Z
 +            "Path to SQLite database (default: env CODEX_LOG_DB_PATH or autodetect)"
 +        ),
      )
-```
+```text
 - **File:** tools/codex_log_viewer.py
 - **Action:** update
 - **Rationale:** default CLI uses .codex/session_logs.db and CODEX_LOG_DB_PATH
@@ -2897,7 +2897,7 @@ Start: 2025-08-18T23:40:38.367402Z
 +        default=os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"),
 +    )
      ap.add_argument("--session", default=os.getenv("CODEX_SESSION_ID"))
-```
+```text
 - **File:** README.md
 - **Action:** update
 - **Rationale:** document `.codex/session_logs.db` default and env override
@@ -2911,7 +2911,7 @@ Start: 2025-08-18T23:40:38.367402Z
 @@
 -db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/codex_logs.sqlite"))
 +db = pathlib.Path(os.getenv("CODEX_LOG_DB_PATH", ".codex/session_logs.db"))
-```
+```text
 - **File:** documentation/end_to_end_logging.md
 - **Action:** update
 - **Rationale:** align examples with `.codex/session_logs.db`
@@ -2928,7 +2928,7 @@ Start: 2025-08-18T23:40:38.367402Z
 @@
 -* `--db` (default: `./.codex/codex_logs.sqlite`)
 +* `--db` (default: `./.codex/session_logs.db`)
-```
+```text
 - **File:** tests/test_session_logging.py
 - **Action:** update
 - **Rationale:** reflect `.codex/session_logs.db` naming
@@ -3096,13 +3096,13 @@ index 316954e..5462557 100644
  +with SessionLogger(session_id="demo") as sl:
  +    sl.log("user", "hi")
 @@ -2439,7 +2439,7 @@ Rationale: Provide executable workflow for g
-```
+```text
 ### 2025-08-19T02:48:36+00:00
 - **File:** `pyproject.toml`
 - **Action:** created
 - **Rationale:** Establish PEP 621 packaging with src/ layout for 'codex'.
 - **Diff (summary):**
-```
+```text
 
 (no textual diff or file created)
 
@@ -3113,7 +3113,7 @@ index 316954e..5462557 100644
 - **Action:** created
 - **Rationale:** Create src/codex/__init__.py to ensure importability.
 - **Diff (summary):**
-```
+````text
 
 (no textual diff or file created)
 
@@ -3124,7 +3124,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Add Installation section with editable install instructions.
 - **Diff (summary):**
-```
+````text
 
 --- a/README.md
 +++ b/README.md
@@ -3148,7 +3148,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_session_query_smoke.py
 +++ b/tests/test_session_query_smoke.py
@@ -3167,7 +3167,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_session_logging.py
 +++ b/tests/test_session_logging.py
@@ -3185,7 +3185,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_session_hooks.py
 +++ b/tests/test_session_hooks.py
@@ -3202,7 +3202,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_conversation_logger.py
 +++ b/tests/test_conversation_logger.py
@@ -3224,7 +3224,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_chat_session.py
 +++ b/tests/test_chat_session.py
@@ -3242,7 +3242,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_logging_viewer_cli.py
 +++ b/tests/test_logging_viewer_cli.py
@@ -3262,7 +3262,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** Remove sys.path* test path hacks; rely on installed package.
 - **Diff (summary):**
-```
+````text
 
 --- a/tests/test_export.py
 +++ b/tests/test_export.py
@@ -3284,7 +3284,7 @@ index 316954e..5462557 100644
 - **Action:** created
 - **Rationale:** Add smoke test ensuring 'import codex' works.
 - **Diff (summary):**
-```
+````text
 
 (no textual diff or file created)
 
@@ -3295,8 +3295,8 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
-```
-```
+````text
+```text
 
 ### 2025-08-19T02:51:15+00:00
 - **File:**
@@ -3317,7 +3317,7 @@ index 316954e..5462557 100644
 - **Action:** updated
 - **Rationale:** switch to installed package import and drop path hacks.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_chat_session.py b/tests/test_chat_session.py
 index 8d6d225..fb2b07e 100644
 --- a/tests/test_chat_session.py
@@ -3338,14 +3338,14 @@ index 8d6d225..fb2b07e 100644
      assert _count(db) == 4
      assert os.getenv("CODEX_SESSION_ID") is None
 +
-```
+```text
 
 ### 2025-08-19T02:51:43+00:00
 - **File:** `tests/test_conversation_logger.py`
 - **Action:** updated
 - **Rationale:** remove path hack and import via installed package.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_conversation_logger.py b/tests/test_conversation_logger.py
 index 991ff18..80c27e6 100644
 --- a/tests/test_conversation_logger.py
@@ -3363,14 +3363,14 @@ index 991ff18..80c27e6 100644
      end_session,
      log_message,
      start_session,
-```
+```text
 
 ### 2025-08-19T02:51:46+00:00
 - **File:** `tests/test_export.py`
 - **Action:** updated
 - **Rationale:** remove path manipulation and restore required imports.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_export.py b/tests/test_export.py
 index ea79ca3..55982a3 100644
 --- a/tests/test_export.py
@@ -3385,14 +3385,14 @@ index ea79ca3..55982a3 100644
 
  from codex.logging.config import DEFAULT_LOG_DB
  from codex.logging.export import export_session
-```
+```text
 
 ### 2025-08-19T02:51:46+00:00
 - **File:** `tests/test_export.py`
 - **Action:** updated
 - **Rationale:** remove path manipulation and restore required imports.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_export.py b/tests/test_export.py
 index ea79ca3..55982a3 100644
 --- a/tests/test_export.py
@@ -3407,14 +3407,14 @@ index ea79ca3..55982a3 100644
 
  from codex.logging.config import DEFAULT_LOG_DB
  from codex.logging.export import export_session
-```
+```text
 
 ### 2025-08-19T02:51:50+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** call viewer via installed module and drop src path references.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
 index 635b938..beb97e9 100644
 --- a/tests/test_logging_viewer_cli.py
@@ -3450,14 +3450,14 @@ index 635b938..beb97e9 100644
          "--session-id",
          "S-1",
          "--db",
-```
+```text
 
 ### 2025-08-19T02:51:54+00:00
 - **File:** `tests/test_session_logging_mirror.py`
 - **Action:** updated
 - **Rationale:** use codex package directly.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_session_logging_mirror.py b/tests/test_session_logging_mirror.py
 index ec43241..94f96ca 100644
 --- a/tests/test_session_logging_mirror.py
@@ -3470,14 +3470,14 @@ index ec43241..94f96ca 100644
 
  def test_user_and_assistant_logged_roundtrip(tmp_path, monkeypatch):
      sid = f"pytest-{uuid.uuid4()}"
-```
+```text
 
 ### 2025-08-19T02:51:55+00:00
 - **File:** `tests/test_session_query_smoke.py`
 - **Action:** updated
 - **Rationale:** reference codex module instead of src path.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_session_query_smoke.py b/tests/test_session_query_smoke.py
 index 7a38920..79e79c3 100644
 --- a/tests/test_session_query_smoke.py
@@ -3497,41 +3497,41 @@ index 7a38920..79e79c3 100644
          capture_output=True,
          text=True,
      )
-```
+```text
 
 ### 2025-08-19T02:55:24+00:00
 - **File:** `src/codex/logging/__init__.py`
 - **Action:** created
 - **Rationale:** define logging package for installation.
 - **Diff (summary):**
-```
+```text
 
-```
+```text
 
 ### 2025-08-19T02:55:28+00:00
 - **File:** `codex/logging/viewer.py`
 - **Action:** created
 - **Rationale:** wrapper to expose viewer CLI via installed package.
 - **Diff (summary):**
-```
+```text
 
-```
+```text
 
 ### 2025-08-19T02:55:32+00:00
 - **File:** `codex/logging/query_logs.py`
 - **Action:** created
 - **Rationale:** wrapper to expose query_logs via installed package.
 - **Diff (summary):**
-```
+```text
 
-```
+```text
 
 ### 2025-08-19T02:55:37+00:00
 - **File:** `tests/test_session_query_smoke.py`
 - **Action:** updated
 - **Rationale:** simplify to import check due to module CLI limitations.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_session_query_smoke.py b/tests/test_session_query_smoke.py
 index 7a38920..3b745e8 100644
 --- a/tests/test_session_query_smoke.py
@@ -3554,14 +3554,14 @@ index 7a38920..3b745e8 100644
 -    )
 -    assert proc.returncode == 0
 -    assert "usage" in proc.stdout
-```
+```text
 
 ### 2025-08-19T02:55:41+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** include Path import for annotations.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
 index 635b938..feed886 100644
 --- a/tests/test_logging_viewer_cli.py
@@ -3589,14 +3589,14 @@ index 635b938..feed886 100644
          "--session-id",
          "S-1",
          "--db",
-```
+```text
 
 ### 2025-08-19T02:55:41+00:00
 - **File:** `tests/test_logging_viewer_cli.py`
 - **Action:** updated
 - **Rationale:** include Path import for annotations.
 - **Diff (summary):**
-```
+```text
 diff --git a/tests/test_logging_viewer_cli.py b/tests/test_logging_viewer_cli.py
 index 635b938..feed886 100644
 --- a/tests/test_logging_viewer_cli.py
@@ -3624,7 +3624,7 @@ index 635b938..feed886 100644
          "--session-id",
          "S-1",
          "--db",
-```
+```text
 - **File:** .codex/inventory.md
 - **Action:** append
 - **Rationale:** track newly touched files
@@ -3635,7 +3635,7 @@ index 635b938..feed886 100644
 - **Why**: Add/merge pre-commit hooks: ruff-check, ruff-format, black(manual), hygiene hooks
 ```diff
 *created* /workspace/_codex_/.pre-commit-config.yaml
-```
+```text
 
 ### 2025-08-19T02:58:44Z
 - **File**: /workspace/_codex_/README.md
@@ -3674,7 +3674,7 @@ index 635b938..feed886 100644
 +```bash
 +pre-commit run --hook-stage manual black --all-files
 +```
-```
+```text
 
 ### 2025-08-19T02:58:44Z
 - **File**: /workspace/_codex_/pyproject.toml
@@ -3682,7 +3682,7 @@ index 635b938..feed886 100644
 - **Why**: Add/update Ruff/Black sections in pyproject.toml
 ```diff
 *created* /workspace/_codex_/pyproject.toml
-```
+```text
 
 ### 2025-08-19T02:58:44Z
 - **File**: /workspace/_codex_/tests/test_precommit_config_exists.py
@@ -3690,7 +3690,7 @@ index 635b938..feed886 100644
 - **Why**: Add smoke test for .pre-commit-config.yaml presence
 ```diff
 *created* /workspace/_codex_/tests/test_precommit_config_exists.py
-```
+```text
 
 ### 2025-08-19T02:58:44Z
 - **File**: /workspace/_codex_/.codex/results.md
@@ -3746,7 +3746,7 @@ index 635b938..feed886 100644
 +          - Run: `pipx install pre-commit || pip install --user pre-commit && pre-commit install`
 +          - Then: `pre-commit run --all-files`
 +          - For manual Black: `pre-commit run --hook-stage manual black --all-files`
-```
+```text
 # Change Log
 ### Asset inventory
 - src/codex/__init__.py
@@ -3845,7 +3845,7 @@ index 635b938..feed886 100644
 +[project.optional-dependencies]
 +cli = ["typer>=0.9", "rich>=13"]
 +dev = ["ruff>=0.5", "pytest>=7"]
-```
+```text
 ### Updated `README.md` CLI examples / constraint pin
 
 ```diff
@@ -3875,7 +3875,7 @@ index 635b938..feed886 100644
  ```
 
  The tool reads from `codex.logging.config.DEFAULT_LOG_DB` (defaults to
-```
+```text
 ### Updated `README_UPDATED.md` CLI examples / constraint pin
 
 ```diff
@@ -3901,7 +3901,7 @@ index 635b938..feed886 100644
  * To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
  * **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
 +DO NOT ACTIVATE ANY GitHub Actions files.
-```
+```text
 ### Smoke test exists: `tests/test_import_codex.py`
 ### Updated `tests/test_import_codex.py`
 - ensure module import by adding repository root to `sys.path` and asserting availability.
@@ -3915,7 +3915,7 @@ index 635b938..feed886 100644
 
 ```diff
 
-```
+```text
 
 ### 2025-08-19T07:51:14Z — Modify
 **File:** `README.md`
@@ -3932,7 +3932,7 @@ index c9bb604..eeb3a21 100644
 +## Timestamp Parsing
 +
 +This project supports ISO-8601 timestamps including `Z` (UTC), explicit offsets (e.g., `+05:30`), and naive timestamps (no timezone). See `parse_when` and the regression tests in `tests/test_parse_when.py`.
-```
+```text
 
 ### 2025-08-19T07:51:16Z — Add
 **File:** `tests/test_parse_when.py`
@@ -3941,7 +3941,7 @@ index c9bb604..eeb3a21 100644
 
 ```diff
 
-```
+```text
 
 ### 2025-08-19T07:51:18Z — Modify
 **File:** `tools/codex_workflow.py`
@@ -4821,7 +4821,7 @@ index 9ce1737..3f325f6 100644
 +    if DO_NOT_ACTIVATE_GITHUB_ACTIONS and (ROOT / ".github" / "workflows").exists():
 +        # Read-only scan; do nothing
 +        pass
-```
+```text
 
 ### 2025-08-19T07:51:20Z — Modify
 **File:** `.codex/inventory.json`
@@ -5336,7 +5336,7 @@ index d6ee97f..7e69c90 100644
 -}
 +}
 \ No newline at end of file
-```
+```text
 
 ### 2025-08-19T07:51:28Z — Modify
 **File:** `.codex/results.md`
@@ -5377,7 +5377,7 @@ index 0e84f27..6870116 100644
 @@ -20 +18 @@
 -Errors recorded: 1
 +**Policy Notice:** DO NOT ACTIVATE ANY GitHub Actions files.
-```
+```text
 
 ### 2025-08-19T07:51:37Z — Modify
 **File:** `src/codex/logging/query_logs.py`
@@ -5430,7 +5430,7 @@ index bb1fb96..33da82b 100644
 @@ -199 +212 @@ def main(argv: Optional[List[str]] = None) -> int:
 -            args.before = parse_when(args.before)
 +            args.before = parse_when(args.before).replace(microsecond=0).isoformat()
-```
+```text
 - modified: tools/codex_sqlite_align.py — inject sqlite pooling hook (conditional by env)
 - modified: scripts/codex_end_to_end.py — inject sqlite pooling hook (conditional by env)
 - modified: scripts/apply_session_logging_workflow.py — inject sqlite pooling hook (conditional by env)
@@ -5450,9 +5450,9 @@ index bb1fb96..33da82b 100644
 - modified: README.md — document optional SQLite pool env toggles
 
 ### 2025-08-19T11:02:46Z — Working state snapshot:
-```
+```text
 M tools/codex_workflow.py
-```
+```text
 
 ### 2025-08-19T11:02:46Z — Write .codex/guardrails.md — Capture guardrails
 - existed: False
@@ -5596,7 +5596,7 @@ FAILED tests/test_fetch_messages.py::test_fetch_messages[default_path] - TypeErr
 - after  (first 200 chars): '{\n  "ts": "2025-08-19T11:02:48Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
 ### 2025-08-19T11:04:20Z — Working state snapshot:
-```
+```text
 M .codex/change_log.md
  M .codex/errors.ndjson
  M .codex/flags.env
@@ -5617,7 +5617,7 @@ M .codex/change_log.md
 ?? tests/_codex_introspect.py
 ?? tests/test_fetch_messages.py
 ?? tools/__pycache__/
-```
+```text
 
 ### 2025-08-19T11:04:20Z — Write .codex/guardrails.md — Capture guardrails
 - existed: True
@@ -5734,7 +5734,7 @@ FAILED tests/test_fetch_messages.py::test_fetch_messages[default_path] - sqlite3
 - after  (first 200 chars): '{\n  "ts": "2025-08-19T11:04:21Z",\n  "implemented": [\n    "tests/_codex_introspect.py",\n    "tests/test_fetch_messages.py",\n    ".codex/inventory.tsv",\n    ".codex/mapping.json",\n    ".codex/guardrails'
 
 ### 2025-08-19T11:04:48Z — Working state snapshot:
-```
+```text
 M .codex/change_log.md
  M .codex/errors.ndjson
  M .codex/flags.env
@@ -5755,7 +5755,7 @@ M .codex/change_log.md
 ?? tests/_codex_introspect.py
 ?? tests/test_fetch_messages.py
 ?? tools/__pycache__/
-```
+```text
 
 ### 2025-08-19T11:04:48Z — Write .codex/guardrails.md — Capture guardrails
 - existed: True
@@ -5788,7 +5788,7 @@ M .codex/change_log.md
 - after  (first 200 chars): '\n"""Tests for fetch_messages covering custom and default DB paths."""\n\nimport inspect\nimport os\nimport sqlite3\nfrom pathlib import Path\n\nimport pytest\n\nfrom tests._codex_introspect import (\n    patch_'
 
 ### 2025-08-19T11:04:49Z — Pytest output:
-```
+```text
 .................ss..                                                                                                    [100%]
 ======================================================= warnings summary =======================================================
 tests/test_session_logging.py::test_context_manager_emits_start_end
@@ -5799,11 +5799,11 @@ tests/test_session_logging.py::test_context_manager_emits_start_end
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 19 passed, 2 skipped, 3 warnings in 0.63s
-```
+```text
 Errors:
-```
+```text
 
-```
+```text
 
 ### 2025-08-19T11:04:49Z — Write .codex/results.md — Results summary
 - existed: True
@@ -5849,7 +5849,7 @@ Before committing, run all checks locally:
 ```bash
 pre-commit run --all-files
 pytest
-```
+```text
 
 ## Tool usage
 
@@ -5860,7 +5860,7 @@ Common CLI entry points provided by this repository:
 - `python -m codex.logging.query_logs` – search conversation transcripts.
 
 Keep this document updated as conventions evolve.
-```
+```text
 
 </details>
 
@@ -5899,7 +5899,7 @@ Before committing, run all checks locally:
 ```bash
 pre-commit run --all-files
 pytest
-```
+```text
 
 ## Tool usage
 
@@ -5917,7 +5917,7 @@ Keep this document updated as conventions evolve.
 
 ## Scope & Non-Goals
 - **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
-```
+```text
 
 </details>
 
@@ -5948,9 +5948,9 @@ This repository uses GitHub Actions to run `pre-commit run --all-files` and `pyt
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -5965,7 +5965,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -5978,7 +5978,7 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
 | `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
 | `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-```
+```text
 
 </details>
 
@@ -6005,9 +6005,9 @@ This repository uses GitHub Actions to run `pre-commit run --all-files` and `pyt
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -6022,7 +6022,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -6035,7 +6035,7 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
 | `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
 | `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-```
+```text
 
 </details>
 
@@ -6066,9 +6066,9 @@ This repository uses GitHub Actions to run `pre-commit run --all-files` and `pyt
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -6083,7 +6083,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -6096,7 +6096,7 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
 | `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
 | `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-```
+```text
 
 </details>
 
@@ -6123,9 +6123,9 @@ This repository uses GitHub Actions to run `pre-commit run --all-files` and `pyt
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -6140,7 +6140,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -6153,7 +6153,7 @@ The following environment variables can be set to configure runtime installation
 | `CODEX_ENV_PYTHON_VERSION` | Python version to install  | `3.10`, `3.11.12`, `3.12`, `3.13`                | `pyenv`, `poetry`, `uv`, `ruff`, `black`, `mypy`, `pyright`, `isort` |
 | `CODEX_ENV_NODE_VERSION`   | Node.js version to install | `18`, `20`, `22`                                 | `corepack`, `yarn`, `pnpm`, `npm`                                    |
 | `CODEX_ENV_RUST_VERSION`   | Rust version to install    | `1.83.0`, `1.84.1`, `1.85.1`, `1.86.0`, `1.87.0` |                                                                      |
-```
+```text
 
 </details>
 
@@ -6185,7 +6185,7 @@ The following environment variables can be set to configure runtime installation
 }
 
 **DO NOT ACTIVATE ANY GitHub Actions files.**
-```
+```text
 
 </details>
 
@@ -6210,7 +6210,7 @@ The following environment variables can be set to configure runtime installation
 
 * **DO NOT ACTIVATE ANY GitHub Actions files.**
 
-```
+```text
 
 </details>
 ## src/codex/logging/session_logger.py
@@ -6242,7 +6242,7 @@ The following environment variables can be set to configure runtime installation
 +except Exception:
 +    Set = set  # fallback
 +INITIALIZED_PATHS: set[str] = set()
-```
+```text
 
 ## src/codex/logging/fetch_messages.py
 - action: modified
@@ -6297,7 +6297,7 @@ The following environment variables can be set to configure runtime installation
 +    def _codex_auto_enable_from_env():
 +        return None
 +_codex_auto_enable_from_env()
-```
+```text
 
 ## src/codex/logging/session_hooks.py
 - action: modified
@@ -6323,7 +6323,7 @@ The following environment variables can be set to configure runtime installation
                  f.write(line)
          except OSError:
              # Suppress to avoid impacting primary program flow
-```
+```text
 
 ## src/codex/logging/session_logger.py
 - action: modified
@@ -6340,7 +6340,7 @@ The following environment variables can be set to configure runtime installation
 +        return False  # already initialized (no-op)
 +    INITIALIZED_PATHS.add(key)
      p.parent.mkdir(parents=True, exist_ok=True)
-```
+```text
 
 ## src/codex/logging/fetch_messages.py
 - action: modified
@@ -6408,7 +6408,7 @@ The following environment variables can be set to configure runtime installation
 +    except sqlite3.DatabaseError as exc:  # pragma: no cover - defensive
 +        logger.warning("Failed to fetch messages from %s: %s", path, exc)
 +        return []
-```
+```text
 
 ## src/codex/logging/session_hooks.py
 - action: modified
@@ -6441,7 +6441,7 @@ The following environment variables can be set to configure runtime installation
 -                f.write(line)
 +            with path.open("a", encoding="utf-8", buffering=1) as f:
 +                f.write(line)
-```
+```text
 ## 2025-08-20T04:35:35 — /workspace/_codex_/src/codex/logging/db_utils.py
 **Action:** edit
 **Rationale:** Create shared DB helper resolve_db_path
@@ -6515,7 +6515,7 @@ The following environment variables can be set to configure runtime installation
 
 <details><summary>After (truncated)</summary>
 
-```diff
+````diff
  """
  Shared DB path utilities for codex logging.
  """
@@ -6537,7 +6537,7 @@ The following environment variables can be set to configure runtime installation
          p = b
      p.parent.mkdir(parents=True, exist_ok=True)
      return p
-```
+```text
 
 </details>
 
@@ -6616,7 +6616,7 @@ The following environment variables can be set to configure runtime installation
 
 <details><summary>After (truncated)</summary>
 
-```diff
+````diff
  #!/usr/bin/env python3
  """codex.logging.export: Dump session events from a SQLite DB.
 
@@ -6676,7 +6676,7 @@ The following environment variables can be set to configure runtime installation
      try:
          table = infer_probable_table(conn)
          if table is None:
-```
+```text
 
 </details>
 
@@ -6755,7 +6755,7 @@ The following environment variables can be set to configure runtime installation
 
 <details><summary>After (truncated)</summary>
 
-```diff
+````diff
  """codex.logging.viewer — SQLite-backed session log viewer.
 
  CLI:
@@ -6815,7 +6815,7 @@ The following environment variables can be set to configure runtime installation
      )
      parser.add_argument(
          "--format",
-```
+```text
 
 </details>
 
@@ -6894,7 +6894,7 @@ The following environment variables can be set to configure runtime installation
 
 <details><summary>After (truncated)</summary>
 
-```diff
+````diff
  #!/usr/bin/env python3
  """
  codex.logging.query_logs: Query transcripts from a SQLite database.
@@ -6954,7 +6954,7 @@ The following environment variables can be set to configure runtime installation
      if s2.endswith("Z"):
          s2 = s2[:-1] + "+00:00"
      try:
-```
+```text
 
 </details>
 
@@ -6985,17 +6985,17 @@ Documented ChatSession.__exit__ protocol.
 ## Docstring added: /workspace/_codex_/src/codex/logging/session_query.py
 
 **Before (head):**
-```
+```text
 from __future__ import annotations
 
 import argparse
 import os
 import sqlite3
 
-```
+```text
 
 **After (head):**
-```
+```text
 ""Query logs across sessions with flexible filters (id/role/time/contains).
 
 Usage:
@@ -7008,23 +7008,23 @@ Environment:
     CODEX_LOG_DB_PATH   Path to SQLite file with log rows.
     CODEX_SQLITE_POOL   If "1", prefer a pooled shared connection.
 
-```
+```text
 
 
 ## Docstring added: /workspace/_codex_/src/codex/logging/viewer.py
 
 **Before (head):**
-```
+```text
 from __future__ import annotations
 
 import argparse
 import json
 import os
 
-```
+```text
 
 **After (head):**
-```
+```text
 ""CLI viewer for session-scoped logs stored in SQLite.
 
 Purpose:
@@ -7037,23 +7037,23 @@ Usage:
 
 Environment:
     CODEX_LOG_DB_PATH   Override default DB path (defaults to .codex/session_logs.db).
-```
+```text
 
 
 ## Docstring added: /workspace/_codex_/src/codex/logging/export.py
 
 **Before (head):**
-```
+```text
 from __future__ import annotations
 
 import argparse
 import json
 import os
 
-```
+```text
 
 **After (head):**
-```
+```text
 ""Export all events for a given session as JSON or plain text.
 
 Usage:
@@ -7066,7 +7066,7 @@ Environment:
     CODEX_SQLITE_POOL   If "1", enable pooled connection behavior.
 
 Examples:
-```
+```text
 
 
 ## README.md
@@ -7106,40 +7106,40 @@ Retention section already present; no change.
 **Before:** _no module docstring_
 
 **After (head):**
-```
+```text
 """
 Query logs across sessions with flexible filters (id/role/time/contains).
 
 Usage:
     python -m codex.logging.session_query --session-id <ID>
       [--role user|assistant|system|tool] [--contains substring]
-```
+```text
 
 ## Docstring updated: src/codex/logging/viewer.py
 
 **Before:** _no module docstring_
 
 **After (head):**
-```
+```text
 """
 CLI viewer for session-scoped logs stored in SQLite.
 
 Purpose:
     Render session events (chronological) as text or JSON with optional filters.
-```
+```text
 
 ## Docstring updated: src/codex/logging/export.py
 
 **Before:** _no module docstring_
 
 **After (head):**
-```
+```text
 """
 Export all events for a given session as JSON or plain text.
 
 Usage:
     python -m codex.logging.export SESSION_ID --format {json,text}
-```
+```text
 ## 2025-08-20T05:12:57Z
 - **File:** .pre-commit-config.yaml
 - **Action:** update
@@ -10311,7 +10311,7 @@ index 80d2f41..ec056e7 100644
 +        raise SystemExit(
 +            f"Invalid table name: '{ns.table}'. Only letters, digits, and underscore are allowed."
 +        )
-```
+```text
 
 ## 2025-08-20T05:22:32Z — src/codex/logging/session_hooks.py
 - **Action:** edit
@@ -10358,7 +10358,7 @@ index 80d2f41..ec056e7 100644
 +            logging.warning(
 +                "write failed after retries for %s: %s", path, err2
 +            )
-```
+```text
 
 ## 2025-08-20T05:22:32Z — tests/test_logging_viewer_cli.py
 - **Action:** edit
@@ -10386,7 +10386,7 @@ index 80d2f41..ec056e7 100644
 -        return False  # already initialized (no-op)
 +    if key in INITIALIZED_PATHS:
 +        return p  # already initialized (no-op)
-```
+```text
 ## T1: parse_when -> ValueError
 - **Time:** 2025-08-20T05:43:32+00:00
 - **File:** `/workspace/_codex_/src/codex/logging/query_logs.py`
@@ -10405,7 +10405,7 @@ index 80d2f41..ec056e7 100644
              "Invalid datetime: "
              f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
          ) from exc
-```
+```text
 
 ## T2: session_id validation
 - **Time:** 2025-08-20T05:43:32+00:00
@@ -10424,7 +10424,7 @@ index 80d2f41..ec056e7 100644
 
 
  def _db_path(override: str | None = None) -> str:
-```
+```text
 
 ## T2: tests/test_export.py updated
 - **Time:** 2025-08-20T05:43:32+00:00
@@ -10497,7 +10497,7 @@ index 80d2f41..ec056e7 100644
 +            fn(session_id=bad)
 +        except TypeError:
 +            pytest.skip('Found callable does not accept keyword arg session_id; manual test wiring required')
-```
+```text
 
 ## T1: update query_logs caller
 - **Time:** 2025-08-20T05:50:00+00:00
@@ -10511,7 +10511,7 @@ index 80d2f41..ec056e7 100644
 +    except (ValueError, SystemExit) as exc:
          print(str(exc), file=sys.stderr)
          return 2
-```
+```text
 
 ## T2: session_id validation finalized
 - **Time:** 2025-08-20T05:50:00+00:00
@@ -10546,7 +10546,7 @@ index 80d2f41..ec056e7 100644
 +    if not re.match(r'^[A-Za-z0-9_-]+$', str(session_id or "")):
 +        raise ValueError("Invalid session_id: must match ^[A-Za-z0-9_-]+$")
 +    db_path = _db_path(db)
-```
+```text
 
 ## T2: tests/test_export.py refined
 - **Time:** 2025-08-20T05:50:00+00:00
@@ -10635,7 +10635,7 @@ index 80d2f41..ec056e7 100644
 +    monkeypatch.setattr("src.codex.logging.export._fetch_events", lambda db, sid: [])
 +    with pytest.raises(ValueError):
 +        export_session(session_id)
-```
+```text
 
 ## Scripts: add codex_workflow
 - **Time:** 2025-08-20T05:50:00+00:00
@@ -10658,7 +10658,7 @@ index 80d2f41..ec056e7 100644
 +- Lint restricted to the requested file
 +- DOES NOT ACTIVATE ANY GitHub Actions
 +"""
-```
+```text
 ## README: document DEV-AUTO session
 - **Time:** 2025-08-20T08:06:46Z
 - **File:** `README.md`
@@ -10698,7 +10698,7 @@ index 80d2f41..ec056e7 100644
 +        """Initialize a new :class:`Ingestor` instance."""
 +        # Placeholder implementation
 +        pass
-```
+```text
 
 - **src/ingestion/README.md** — *add*
   Rationale: Document ingestion package purpose and status.
@@ -10715,7 +10715,7 @@ index 80d2f41..ec056e7 100644
 +
 +This module is scaffolded and not yet functional. Future updates will
 +implement ingestion logic and accompanying tests.
-```
+```text
 
 - **tests/test_ingestion_placeholder.py** — *add*
   Rationale: Verify Ingestor class can be imported and instantiated.
@@ -10728,7 +10728,7 @@ index 80d2f41..ec056e7 100644
 +    assert isinstance(ingest, Ingestor)
 +    assert Ingestor.__doc__ is not None
 +    assert "placeholder" in Ingestor.__doc__.lower()
-```
+```text
 ## 2025-08-21T19:14:48Z — update: src/ingestion/__init__.py
 **Rationale:** extend ingest with encoding and chunked streaming plus Ingestor shim.
 
@@ -10972,7 +10972,7 @@ index a128dd0..e12ace3 100644
 +        chunk_size: Optional[int] | None = None,
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
-```
+```text
 ## 2025-08-21T19:15:11Z — update: src/ingestion/README.md
 **Rationale:** document encoding and chunk_size parameters with examples.
 ```diff
@@ -11021,7 +11021,7 @@ index bf53541..f6844d5 100644
 +for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
 +    process(chunk)
 +```
-```
+```text
 diff --git a/src/ingestion/README.md b/src/ingestion/README.md
 index bf53541..f6844d5 100644
 --- a/src/ingestion/README.md
@@ -11067,7 +11067,7 @@ index bf53541..f6844d5 100644
 +for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
 +    process(chunk)
 +```
-```
+```text
 ## 2025-08-21T19:15:14Z — update: tests/test_ingestion_io.py
 **Rationale:** add coverage for encoding, chunk_size, string paths, and directory errors.
 ```diff
@@ -11137,7 +11137,7 @@ index f235b30..b69af8f 100644
      with pytest.raises(FileNotFoundError):
 -        ingestor.ingest(missing_path)
 +        _call_ingest(d)
-```
+```text
 diff --git a/tests/test_ingestion_io.py b/tests/test_ingestion_io.py
 index f235b30..b69af8f 100644
 --- a/tests/test_ingestion_io.py
@@ -11204,7 +11204,7 @@ index f235b30..b69af8f 100644
      with pytest.raises(FileNotFoundError):
 -        ingestor.ingest(missing_path)
 +        _call_ingest(d)
-```
+```text
 ## 2025-08-21T19:15:19Z — update: scripts/deep_research_task_process.py
 **Rationale:** remove ingestion placeholders and reference real ingest implementation.
 ```diff
@@ -11311,7 +11311,7 @@ index aa1a8c1..cb58b05 100644
          ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
          ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
          ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
-```
+```text
 ```diff
 diff --git a/scripts/deep_research_task_process.py b/scripts/deep_research_task_process.py
 index aa1a8c1..cb58b05 100644
@@ -11416,7 +11416,7 @@ index aa1a8c1..cb58b05 100644
          ("3.3", "Ingestion README", _task_ingestion_readme, "Add ingestion module README"),
          ("3.4", "Unify CI workflows", _task_unify_ci, "Unify CI workflows (lint/test/image)"),
          ("3.5", "Update CONTRIBUTING.md", _task_update_contributing, "Update contributing guide"),
-```
+```text
 ## 2025-08-21T19:15:22Z — create: tools/codex_ingestion_workflow.py
 **Rationale:** workflow script to automate ingestion updates and logging.
 ```diff
@@ -11809,7 +11809,7 @@ index 0000000..f00f94b
 +
 +if __name__ == "__main__":
 +    sys.exit(main())
-```
+```text
 ```diff
 diff --git a/tools/codex_ingestion_workflow.py b/tools/codex_ingestion_workflow.py
 new file mode 100755
@@ -12200,7 +12200,7 @@ index 0000000..f00f94b
 +
 +if __name__ == "__main__":
 +    sys.exit(main())
-```
+```text
 ## 2025-08-21T19:15:26Z — update: .codex/results.md
 **Rationale:** append inventory table and final note.
 ```diff
@@ -12224,7 +12224,7 @@ index b428ae2..e6e50c2 100644
 +
 +## Final Notes
 +- **DO NOT ACTIVATE ANY GitHub Actions files.**
-```
+```text
 diff --git a/.codex/results.md b/.codex/results.md
 index b428ae2..e6e50c2 100644
 --- a/.codex/results.md
@@ -12245,7 +12245,7 @@ index b428ae2..e6e50c2 100644
 +
 +## Final Notes
 +- **DO NOT ACTIVATE ANY GitHub Actions files.**
-```
+```text
     ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/__init__.py`
     **Rationale:** Add/normalize ingest(path, encoding, chunk_size) semantics and directory-guard; provide Ingestor shim if absent.
     ```diff
@@ -12323,7 +12323,7 @@ index b428ae2..e6e50c2 100644
 +        def ingest(path: Union[str, Path], encoding: str = "utf-8", chunk_size: Optional[int] | None = None):
 +            return ingest(path, encoding=encoding, chunk_size=chunk_size)
 
-```
+```text
 
     ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/src/ingestion/README.md`
     **Rationale:** Document encoding and chunk_size behavior with examples.
@@ -12356,7 +12356,7 @@ index b428ae2..e6e50c2 100644
 +    process(chunk)
 +```
 
-```
+```text
 
     ## 2025-08-21T19:15:37 — update: `/workspace/_codex_/tests/test_ingestion_io.py`
     **Rationale:** Add tests for encoding, chunk_size, str(path), and directory error behavior.
@@ -12424,7 +12424,7 @@ index b428ae2..e6e50c2 100644
      with pytest.raises(FileNotFoundError):
          _call_ingest(d)
 
-```
+```text
 
 ## 2025-08-21T19:16:49Z — update: src/ingestion/__init__.py
 **Rationale:** convert ingest to return iterator only when chunked.
@@ -12546,7 +12546,7 @@ index a128dd0..39c53ae 100644
 +        chunk_size: Optional[int] | None = None,
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
-```
+```text
 ```diff
 diff --git a/src/ingestion/__init__.py b/src/ingestion/__init__.py
 index a128dd0..39c53ae 100644
@@ -12665,7 +12665,7 @@ index a128dd0..39c53ae 100644
 +        chunk_size: Optional[int] | None = None,
 +    ):
 +        return ingest(path, encoding=encoding, chunk_size=chunk_size)
-```
+```text
 - 2025-08-21T23:17:38Z Initialized/verified .codex/ and log files (append-only guarantees).
 ### 2025-08-21T23:34:25+00:00 — tools/codex_workflow_session_query.py
 - **Action:** edit
@@ -12691,7 +12691,7 @@ index a128dd0..39c53ae 100644
 +    import subprocess
 +    import sys
 
-```
+```text
 
 ### 2025-08-21T23:34:25+00:00 — README.md
 - **Action:** edit
@@ -12708,7 +12708,7 @@ index a128dd0..39c53ae 100644
 +
 +> **DO NOT ACTIVATE ANY GitHub Actions files. ALL GitHub Action.**
 
-```
+```text
 
 ### 2025-08-21T23:46:35Z — Update references
 Scanned 142 files; updated 0 files to use `codex_workflow`
@@ -12846,12 +12846,12 @@ This project uses [Hydra](https://github.com/facebookresearch/hydra) for configu
 ### Run (dry)
 ```bash
 python -m codex_ml.cli.main +dry_run=true
-```
+```text
 
 ### Override examples
 ```bash
 python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
-```
+```text
 
 Effective composed config is saved to `.codex/hydra_last/config.yaml`.
             ```
@@ -13275,7 +13275,7 @@ This project provides optional integration for:
 python tools/monitoring_integrate.py --run-name demo --enable-tensorboard --enable-mlflow
 # With Weights & Biases
 WANDB_PROJECT=myproj python tools/monitoring_integrate.py --run-name demo --enable-tensorboard --enable-wandb
-```
+```text
 
 ### Viewing
 - TensorBoard: `tensorboard --logdir runs/demo/tensorboard`
@@ -13283,20 +13283,20 @@ WANDB_PROJECT=myproj python tools/monitoring_integrate.py --run-name demo --enab
 
 All executions run locally via CLI. Do NOT activate any GitHub Actions online files.
 
-```
+```text
 
 ## 2025-08-25T06:04:56Z — tools/monitoring_integrate.py
 - **Action:** create
 - **Rationale:** add monitoring demo CLI with TensorBoard/MLflow support
 ```text
 see file
-```
+```text
 ## 2025-08-25T06:04:56Z — .gitignore
 - **Action:** edit
 - **Rationale:** ignore monitoring run outputs
 ```text
 runs/
-```
+```text
 ## 2025-08-25T15:04:00Z — src/codex_ml/utils/__init__.py
 - **Action:** create
 - **Rationale:** expose utility package and checkpoint manager
@@ -13401,7 +13401,7 @@ repos:
         args: ["--ignore-missing-imports"]
 # END: CODEX_PRECOMMIT
 
-```
+```text
 
 ## 2025-08-25T16:06:33Z — .github/workflows/ci.yml
 - **Action:** edit
@@ -13463,7 +13463,7 @@ jobs:
           path: coverage.xml
 # END: CODEX_CI_MANUAL
 
-```
+```text
 
 ## 2025-08-25T16:06:33Z — .github/workflows/release.yml.disabled
 - **Action:** create
@@ -13483,7 +13483,7 @@ jobs:
 #       - run: echo "Build/tag steps here..."
 # END: CODEX_RELEASE_DISABLED
 
-```
+```text
 
 ## 2025-08-25T16:06:33Z — pyproject.toml
 - **Action:** edit
@@ -13494,7 +13494,7 @@ jobs:
 addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 # END: CODEX_PYTEST_COVERAGE
 
-```
+```text
 
 ## 2025-08-25T16:06:33Z — README.md
 - **Action:** edit
@@ -13507,7 +13507,7 @@ addopts = "--cov=src --cov-report=term-missing --cov-fail-under=80"
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen)](#)
 <!-- END: CODEX_BADGES -->
 
-```
+```text
 ## 2025-08-25T16:19:23Z — services/api/requirements.txt
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_API_REQS
@@ -13517,7 +13517,7 @@ fastapi==0.111.0
 uvicorn==0.30.1
 pydantic==2.8.2
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — services/api/__init__.py
 - **Action:** upsert
@@ -13526,7 +13526,7 @@ pydantic==2.8.2
 # BEGIN: CODEX_API_INIT
 # package marker
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — services/api/main.py
 - **Action:** upsert
@@ -13628,7 +13628,7 @@ async def evaluate(req: EvalRequest) -> Dict[str, Any]:
 async def status() -> Dict[str, Any]:
     return {"ok": True, "queue": QUEUE.qsize(), "jobs": JOBS}
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — Dockerfile
 - **Action:** upsert
@@ -13655,7 +13655,7 @@ COPY --chown=appuser:appuser services/api /app/services/api
 EXPOSE 8000
 CMD python3 -c "import os; os.umask(0o077); import uvicorn; uvicorn.run('services.api.main:app', host='0.0.0.0', port=8000)"
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — docker-compose.yml
 - **Action:** upsert
@@ -13684,7 +13684,7 @@ volumes:
   artifacts:
     name: codex_artifacts
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — scripts/deploy/build.sh
 - **Action:** upsert
@@ -13698,7 +13698,7 @@ umask 077
 docker build -t "$IMAGE" -f Dockerfile .
 echo "Built $IMAGE"
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — scripts/deploy/run.sh
 - **Action:** upsert
@@ -13726,7 +13726,7 @@ for i in $(seq 1 30); do
 done
 echo "API failed to become healthy in time"; exit 1
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — scripts/deploy/push.sh
 - **Action:** upsert
@@ -13744,7 +13744,7 @@ docker tag "$IMAGE" "$REGISTRY"
 docker push "$REGISTRY"
 echo "Pushed $REGISTRY"
 
-```
+```text
 
 ## 2025-08-25T16:19:23Z — docs/ops/deployment.md
 - **Action:** upsert
@@ -13756,31 +13756,31 @@ echo "Pushed $REGISTRY"
 ## Build
 ```bash
 IMAGE=codex-api:local bash scripts/deploy/build.sh
-```
+```text
 
 ## Run (CPU by default)
 ```bash
 bash scripts/deploy/run.sh
-```
+```text
 If a compatible NVIDIA GPU is detected (nvidia-smi present), the run script will attempt `--gpus all`.
 
 ## Compose (manual)
 ```bash
 docker compose up -d
 curl -fsS http://localhost:8000/status
-```
+```text
 
 ## Use the API
 ```bash
 curl -fsS http://localhost:8000/status | jq .
 curl -fsS -X POST http://localhost:8000/infer -H 'Content-Type: application/json' -d '{"prompt":"hello"}'
 curl -fsS -X POST http://localhost:8000/train -H 'Content-Type: application/json' -d '{"epochs": 2}'
-```
+```text
 Artifacts are written under the named volume `codex_artifacts` and visible inside the container at `/artifacts`.
 
 Policy: DO NOT ACTIVATE ANY GitHub Actions Online files. All validations must run within the Codex environment.
 
-```
+```text
 ## 2025-08-25T20:21:49Z — mkdocs.yml
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MKDOCS
@@ -13812,7 +13812,7 @@ markdown_extensions:
   - toc:
       permalink: true
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/requirements.txt
 - **Action:** upsert
@@ -13824,7 +13824,7 @@ mkdocs-material==9.5.27
 nbformat>=5.9
 nbconvert>=7.16
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/index.md
 - **Action:** upsert
@@ -13837,7 +13837,7 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 
 > **Note to Codex:** Expand each section based on evolving modules (data loaders, checkpointing, safety, API service).
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/getting-started.md
 - **Action:** upsert
@@ -13855,15 +13855,15 @@ Welcome! This site covers **Getting Started (Ubuntu)**, **Concepts**, **API Refe
 ```bash
 pip install -r docs/requirements.txt
 pip install -e .[dev]  # if available
-```
+```text
 
 Run Docs
 
 ```bash
 mkdocs serve
-```
+```text
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/concepts.md
 - **Action:** upsert
@@ -13877,7 +13877,7 @@ mkdocs serve
 - Safety: Filters (block/allow/regex) and sandboxed execution.
 - API: FastAPI service with /train, /infer, /evaluate, /status.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/api.md
 - **Action:** upsert
@@ -13895,7 +13895,7 @@ mkdocs serve
 
 > **Note:** Link autogenerated docs if OpenAPI is served at `/docs`.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/tutorials/quickstart.md
 - **Action:** upsert
@@ -13908,7 +13908,7 @@ mkdocs serve
 2. Run `examples/notebooks/demo_infer.ipynb` to call `/infer`.
 3. Inspect outputs; no GPU required.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/tutorials/end_to_end_cpu.md
 - **Action:** upsert
@@ -13922,7 +13922,7 @@ mkdocs serve
 - Evaluate and report metrics.
 - Use `/train` to write artifacts under a mounted volume when containerized.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/safety.md
 - **Action:** upsert
@@ -13938,7 +13938,7 @@ mkdocs serve
 
 > **Note to Codex:** Expand with concrete red-team datasets & tests.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — docs/model_cards/template.md
 - **Action:** upsert
@@ -13962,7 +13962,7 @@ mkdocs serve
 ## Limitations
 - Known failure modes, out-of-scope uses.
 
-```
+```text
 
 ## 2025-08-25T20:21:49Z — examples/notebooks/demo_infer.ipynb
 - **Action:** create
@@ -14005,7 +14005,7 @@ mkdocs serve
   "nbformat": 4,
   "nbformat_minor": 5
 }
-```
+```text
 
 ## 2025-08-25T20:21:49Z — examples/notebooks/demo_train_eval.ipynb
 - **Action:** create
@@ -14047,7 +14047,7 @@ mkdocs serve
   "nbformat": 4,
   "nbformat_minor": 5
 }
-```
+```text
 ## 2025-08-25T20:43:09Z — src/codex_ml/tracking/mlflow_utils.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_MLFLOW_UTILS
@@ -14116,7 +14116,7 @@ def ensure_local_artifacts(run_dir: Path, summary: Dict[str, Any], seeds: Dict[s
     (run_dir / "seeds.json").write_text(json.dumps(seeds, indent=2), encoding="utf-8")
 # END: CODEX_MLFLOW_UTILS
 
-```
+```text
 
 ## 2025-08-25T20:43:09Z — src/codex_ml/tracking/__init__.py
 - **Action:** upsert
@@ -14142,7 +14142,7 @@ __all__ = [
 ]
 # END: CODEX_MLFLOW_INIT
 
-```
+```text
 
 ## 2025-08-25T20:43:09Z — src/codex_ml/tracking/cli.py
 - **Action:** upsert
@@ -14184,7 +14184,7 @@ def mlflow_from_args(args) -> MlflowConfig:
     )
 # END: CODEX_MLFLOW_CLI
 
-```
+```text
 
 ## 2025-08-25T20:43:09Z — docs/ops/experiment_tracking.md
 - **Action:** upsert
@@ -14222,7 +14222,7 @@ with start_run(cfg) as run:
     log_metrics({"accuracy": 0.9}, step=1, enabled=enabled)
     ensure_local_artifacts(run_dir, {"status": "ok"}, {"seed": 42})
     log_artifacts(run_dir, enabled=enabled)
-```
+```text
 
 ## Reproducibility
 
@@ -14232,7 +14232,7 @@ with start_run(cfg) as run:
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. Run validations locally in the Codex environment.
 
-```
+```text
 ## 2025-08-26T00:50:44Z — codex_ml/interfaces/tokenizer.py
 - **Action:** upsert
 - **Rationale:** insert guarded by # BEGIN: CODEX_IFACE_TOKENIZER
@@ -14281,7 +14281,7 @@ class TokenizerAdapter(ABC):
         raise NotImplementedError
 # END: CODEX_IFACE_TOKENIZER
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — codex_ml/interfaces/reward_model.py
 - **Action:** upsert
@@ -14311,7 +14311,7 @@ class RewardModel(ABC):
         return res
 # END: CODEX_IFACE_REWARD
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — codex_ml/interfaces/rl.py
 - **Action:** upsert
@@ -14348,7 +14348,7 @@ class RLAgent(ABC):
         raise NotImplementedError
 # END: CODEX_IFACE_RL
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — codex_ml/interfaces/__init__.py
 - **Action:** upsert
@@ -14363,7 +14363,7 @@ from .tokenizer import TokenizerAdapter
 __all__ = ["TokenizerAdapter", "RewardModel", "RLAgent"]
 # END: CODEX_IFACE_INIT
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — tests/test_interfaces_compat.py
 - **Action:** upsert
@@ -14429,7 +14429,7 @@ def test_rl_agent_contract(tmp_path):
 # TODO[Codex]: Wire a config reader to set CODEX_*_PATH from configs/interfaces.yaml during pytest collection.
 # END: CODEX_IFACE_TESTS
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — configs/interfaces.example.yaml
 - **Action:** upsert
@@ -14442,7 +14442,7 @@ reward_model: yourpkg.rewards.simple:SimpleReward
 rl_agent: yourpkg.rl.ppo:PPOAgent
 # END: CODEX_IFACE_CONFIG
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — docs/architecture/interfaces.md
 - **Action:** upsert
@@ -14475,7 +14475,7 @@ Projects can expose entry points under:
 
 > **Policy:** DO NOT ACTIVATE ANY GitHub Actions Online files. All validations run locally in the Codex environment.
 
-```
+```text
 
 ## 2025-08-26T00:50:44Z — pyproject.toml
 - **Action:** edit
@@ -14490,7 +14490,7 @@ Projects can expose entry points under:
 # ppo = "yourpkg.rl.ppo:PPOAgent"
 # END: CODEX_IFACE_ENTRYPOINTS
 
-```
+```text
 ## 2025-08-26T03:52:50Z — tracking updates
 - Added seed_snapshot helper and docs.
 ## 2025-08-26T05:28:19Z — requirements-dev.txt
@@ -14509,7 +14509,7 @@ semgrep
 detect-secrets
 # END: CODEX_DEV_REQUIREMENTS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — requirements.txt
 - **Action:** append
@@ -14523,7 +14523,7 @@ accelerate
 peft
 # END: CODEX_RUN_REQUIREMENTS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — scripts/gpu/check_gpu.sh
 - **Action:** upsert
@@ -14541,7 +14541,7 @@ else
 fi
 # END: CODEX_GPU_CHECK
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — docs/ops/environment.md
 - **Action:** upsert
@@ -14554,7 +14554,7 @@ fi
 - Reproducibility: pin requirements and capture image digest when containerized.
 - All validation runs are local (no online CI activation).
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/tokenization/sentencepiece_adapter.py
 - **Action:** upsert
@@ -14605,7 +14605,7 @@ class SentencePieceAdapter:
             raise AssertionError(f"vocab_size {vs} != expected {expected}")
 # END: CODEX_SENTENCEPIECE_ADAPTER
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — tests/test_sentencepiece_adapter.py
 - **Action:** upsert
@@ -14617,7 +14617,7 @@ import pytest
 pytest.skip("heavy SentencePiece training skipped in CI; run locally", allow_module_level=True)
 # END: CODEX_TEST_SP_ADAPTER
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/models/activations.py
 - **Action:** upsert
@@ -14660,7 +14660,7 @@ def get_activation(name: str):
     return _REGISTRY[key]()
 # END: CODEX_ACTIVATIONS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/peft/peft_adapter.py
 - **Action:** upsert
@@ -14679,7 +14679,7 @@ def apply_lora(model, cfg: dict | None = None):
         return model
 # END: CODEX_PEFT_ADAPTER
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — tests/test_activations.py
 - **Action:** upsert
@@ -14695,7 +14695,7 @@ def test_activation_registry_smoke():
         assert act is not None
 # END: CODEX_TEST_ACT
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/peft/__init__.py
 - **Action:** upsert
@@ -14722,7 +14722,7 @@ class EarlyStopping:
         return self.bad > self.patience
 # END: CODEX_TRAINING_CALLBACKS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/training/__init__.py
 - **Action:** upsert
@@ -14738,7 +14738,7 @@ class EarlyStopping:
 - **gradient_accumulation_steps**: accumulate before optimizer step.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — docs/ops/hydra_distributed_overrides.md
 - **Action:** upsert
@@ -14748,27 +14748,27 @@ class EarlyStopping:
 # Hydra Distributed Overrides
 
 ## torchrun (single node)
-```
+```text
 
 torchrun --nproc_per_node=8 train.py trainer.gpus=8
 
-```
+```text
 
 ## multi-node
-```
+```text
 
 torchrun --nnodes=2 --nproc_per_node=8 --rdzv_backend=c10d --rdzv_endpoint=$HOST:29400 train.py
 
-```
+```text
 
 ## tokenizer swap
-```
+```text
 
 tokenizer.backend=sentencepiece tokenizer.vocab_size=32000
 
-```
+```text
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/metrics/curves.py
 - **Action:** upsert
@@ -14799,7 +14799,7 @@ def summarize(path: Path, metric: str) -> Dict[str, float]:
     return {"count": len(vals), "mean": (st.mean(vals) if vals else 0.0)}
 # END: CODEX_METRIC_CURVES
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/metrics/__init__.py
 - **Action:** upsert
@@ -14822,7 +14822,7 @@ def test_curves_roundtrip(tmp_path: Path):
     assert s["count"] == 5 and s["mean"] > 0
 # END: CODEX_TEST_CURVES
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/monitoring/prometheus.py
 - **Action:** upsert
@@ -14843,7 +14843,7 @@ def maybe_export_metrics(app=None, port: int = 9000):
     return counters, gauges
 # END: CODEX_PROMETHEUS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/monitoring/__init__.py
 - **Action:** upsert
@@ -14856,7 +14856,7 @@ def maybe_export_metrics(app=None, port: int = 9000):
 
 ## Prometheus (optional)
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/utils/checksums.py
 - **Action:** upsert
@@ -14883,7 +14883,7 @@ def write_checksum(path: Path):
     (path/"checksum.sha256").write_text(sha256_dir(path))
 # END: CODEX_CHECKSUMS
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/data/cache.py
 - **Action:** upsert
@@ -14914,7 +14914,7 @@ class SimpleCache:
         self._d[k] = (val, time.time())
 # END: CODEX_DATA_CACHE
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/data/sharding.py
 - **Action:** upsert
@@ -14932,7 +14932,7 @@ def shard_range(rank: int, world: int, n: int) -> tuple[int,int]:
     return start, end
 # END: CODEX_DATA_SHARD
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — tests/test_data_cache_sharding.py
 - **Action:** upsert
@@ -14951,7 +14951,7 @@ def test_shard_cover():
     assert len(cov) == n
 # END: CODEX_TEST_DATA_CACHE_SHARD
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/safety/risk_score.py
 - **Action:** upsert
@@ -14971,7 +14971,7 @@ def risk_score(text: str) -> float:
     return float(score)
 # END: CODEX_RISK_SCORE
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — .github/workflows/nightly.yml.disabled
 - **Action:** upsert
@@ -14988,7 +14988,7 @@ def risk_score(text: str) -> float:
 #     steps: [{ uses: actions/checkout@v4 }]
 # END: CODEX_NIGHTLY_DISABLED
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — .github/workflows/vuln_scan.yml.disabled
 - **Action:** upsert
@@ -15004,7 +15004,7 @@ def risk_score(text: str) -> float:
 #     steps: [{ uses: actions/checkout@v4 }]
 # END: CODEX_VULN_DISABLED
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — deploy/helm/Chart.yaml
 - **Action:** upsert
@@ -15017,7 +15017,7 @@ version: 0.0.1
 description: Helm chart (stub)
 # END: CODEX_HELM_CHART
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — deploy/helm/values.yaml
 - **Action:** upsert
@@ -15032,7 +15032,7 @@ service:
   port: 8000
 # END: CODEX_HELM_VALUES
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — docs/ops/grpc_parity.md
 - **Action:** upsert
@@ -15044,7 +15044,7 @@ service:
 - Mirror REST endpoints: Train/Infer/Evaluate/Status.
 - Define .proto, generate stubs, ensure compatibility tests.
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — notebooks/gpu_training_example.ipynb
 - **Action:** upsert
@@ -15060,7 +15060,7 @@ service:
  "nbformat": 4, "nbformat_minor": 5
 }
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — docs/examples/model_card_template.md
 - **Action:** upsert
@@ -15075,7 +15075,7 @@ service:
 ## Ethical Considerations
 ## Metrics & Limitations
 
-```
+```text
 
 ## 2025-08-26T05:28:19Z — src/codex_ml/tracking/git_tag.py
 - **Action:** upsert
@@ -15094,7 +15094,7 @@ def current_commit() -> str | None:
         return None
 # END: CODEX_GIT_TAG
 
-```
+```text
 
 ## 2025-08-26T05:44:30Z — src/codex_ml/peft/__init__.py
 - **Action:** append
@@ -15137,7 +15137,7 @@ deploy:
           capabilities: [gpu]
 # END: CODEX_COMPOSE_GPU
 
-```
+```text
 
 ## 2025-08-26T13:08:13Z — deploy_codex_pipeline.py
 - **Action:** prune
@@ -15156,7 +15156,7 @@ deploy:
           count: 1
           capabilities: [gpu]
 # END: CODEX_COMPOSE_GPU
-```
+```text
 ## 2025-08-26T13:08:13Z — scripts/deploy/run.sh
 - **Action:** edit
 - **Rationale:** pass --gpus all when available
@@ -15165,7 +15165,7 @@ deploy:
 if command -v nvidia-smi >/dev/null 2>&1; then GPU_OPT="--gpus all"; else GPU_OPT=""; fi
 docker compose up -d $GPU_OPT || docker-compose up -d $GPU_OPT
 # END: CODEX_RUN_GPU_FLAG
-```
+```text
 ## 2025-08-26T13:17:17Z — training/engine_hf_trainer.py
 - **Action:** PRUNE
 - **Rationale:** structural mismatch; reverted patch
@@ -15268,7 +15268,7 @@ def _codex_patch_argparse(ap: argparse.ArgumentParser) -> None:
     if "scheduler" not in added:
         ap.add_argument("--scheduler", default=None, help="LR scheduler (cosine, step)")
 # END: CODEX_FUNCTR_DEEPNN
-```
+```text
 ## 2025-08-26T14:31:18Z — deploy_codex_pipeline.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_DEPLOY_MONITORING
@@ -15363,7 +15363,7 @@ def _codex_log_all(handles, step: int, metrics: dict, artifacts: list[Path] | No
         except Exception:
             pass
 # END: CODEX_DEPLOY_MONITORING
-```
+```text
 ## 2025-08-26T14:31:18Z — codex_ml/tracking/mlflow_utils.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_MLFLOW_UTILS
@@ -15406,7 +15406,7 @@ def log_artifacts(paths: Iterable[Path]):
     except Exception:
         pass
 # END: CODEX_MLFLOW_UTILS
-```
+```text
 ## 2025-08-26T14:31:18Z — codex_ml/utils/checkpointing.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_CKPT_RNG_SEED
@@ -15479,7 +15479,7 @@ def verify_shapes(model, checkpoint_state: dict) -> None:
 def log_seed(path: Path, seed: int) -> None:
     (path / "seeds.json").write_text(json.dumps({"seed": seed}), encoding="utf-8")
 # END: CODEX_CKPT_RNG_SEED
-```
+```text
 ## 2025-08-26T14:31:18Z — services/api/main.py
 - **Action:** append
 - **Rationale:** guarded by # BEGIN: CODEX_FASTAPI_HARDEN
@@ -15545,7 +15545,7 @@ def build_app():
     return app
 app = build_app()
 # END: CODEX_FASTAPI_HARDEN
-```
+```text
 ## 2025-08-26T14:31:18Z — docs/ops/monitoring.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_MONITORING_DOC -->
@@ -15559,7 +15559,7 @@ Behavior:
 - TensorBoard: logs to `<output>/tb`
 - Weights & Biases: enabled when flag set
 - MLflow: wraps `mlflow.*` via `codex_ml.tracking.mlflow_utils.*`; artifacts/runs tracked where configured
-```
+```text
 ## 2025-08-26T14:31:18Z — README.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_README_UPDATE -->
@@ -15567,7 +15567,7 @@ Behavior:
 <!-- BEGIN: CODEX_README_UPDATE -->
 Local-only validations & explicit flags for monitoring/tracking.
 **Do not** enable remote CI triggers; run Codex scripts directly.
-```
+```text
 ## 2025-08-26T15:35:50.869788Z — tests/smoke/test_hf_trainer_hello.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_TRAINER
@@ -15617,7 +15617,7 @@ def test_hf_trainer_on_tiny_hello_dataset():
         trainer.train()
         assert (out / "trainer_state.json").exists()
         assert any(out.glob("checkpoint-*"))
-```
+```text
 ## 2025-08-26T15:35:50.870286Z — tests/smoke/test_logging_flags_end_to_end.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_LOGGING_FLAGS
@@ -15660,7 +15660,7 @@ def test_deploy_logging_flags_bootstrap_and_log():
         tb_dir = run_dir / "tb"
         if handles.get("tb") is not None:
             assert any(tb_dir.glob("events.*")), "TensorBoard events missing"
-```
+```text
 ## 2025-08-26T15:35:50.870604Z — tests/smoke/test_mlflow_utils_noop.py
 - **Action:** create
 - **Rationale:** guarded by # BEGIN: CODEX_SMOKE_MLFLOW_NOOP
@@ -15679,7 +15679,7 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_metrics({"loss": 0.1}, step=1)
     MU.log_artifacts([])
     assert True
-```
+```text
 ## 2025-08-26T15:35:50.872152Z — README.md
 - **Action:** append
 - **Rationale:** guarded by <!-- BEGIN: CODEX_SMOKE_README -->
@@ -15687,7 +15687,7 @@ def test_mlflow_utils_tolerant_when_missing():
 <!-- BEGIN: CODEX_SMOKE_README -->
 ## Smoke Tests & Offline Logging
 This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end logging flags. All logging integrations are offline-safe for local validation.
-```
+```text
 ## 2025-08-26T15:40:24.573429Z — tests/smoke/test_hf_trainer_hello.py
 - **Action:** edit
 - **Rationale:** add explicit trainer.save_state and newline
@@ -15702,7 +15702,7 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 +        trainer.save_state()
 +        assert (out / "trainer_state.json").exists()
 +        assert any(out.glob("checkpoint-*"))
-```
+```text
 ## 2025-08-26T15:40:24.573429Z — tests/smoke/test_mlflow_utils_noop.py
 - **Action:** edit
 - **Rationale:** tolerate start_run signature mismatch
@@ -15724,13 +15724,13 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 +    MU.log_metrics({"loss": 0.1}, step=1)
 +    MU.log_artifacts([])
 +    assert True
-```
+```text
 ## 2025-08-26T15:47:42.066793Z — tools/codex_make_smoke_tests.py
 - **Action:** create
 - **Rationale:** generate smoke tests and logging validations
 ```diff
 +<script>
-```
+```text
 ## 2025-08-27T00:00:00Z — training/engine_hf_trainer.py
 - **Action:** edit
 - **Rationale:** add LoRA, precision, checkpointing and error logging hooks.
@@ -15910,3 +15910,5 @@ This repository includes CPU-friendly smoke tests for HF Trainer and end-to-end 
 - Implemented regression tests covering config loading, CLI invocation, and resume wiring.
 - Recorded pytest execution results after modifications (see Testing section of final summary).
 [2025-09-20T05:37:18Z] Generated exhaustive daily status update for 2025-09-20
+
+```

@@ -72,16 +72,12 @@ def append_change(
         f.write(f"- **file**: {file}\n- **rationale**: {rationale}\n")
         if before or after:
             f.write("```diff\n")
-            f.write(
-                f"- BEFORE: {before.strip()[:600]}\n+ AFTER : {after.strip()[:600]}\n"
-            )
+            f.write(f"- BEFORE: {before.strip()[:600]}\n+ AFTER : {after.strip()[:600]}\n")
             f.write("```\n")
         f.write("\n")
 
 
-def emit_error(
-    step_num: str, step_desc: str, err_msg: str, context: str, path: str = ""
-):
+def emit_error(step_num: str, step_desc: str, err_msg: str, context: str, path: str = ""):
     # Console echo per template
     print(
         "Question for ChatGPT-5:\n"
@@ -153,9 +149,7 @@ def phase1_prepare():
             "Constraint not found in README text; enforcing locally.",
             "Set DO_NOT_ACTIVATE_GITHUB_ACTIONS=True",
         )
-    append_change(
-        CODEX_DIR, "Initialize .codex and constraints", "Prepare logs and guardrails"
-    )
+    append_change(CODEX_DIR, "Initialize .codex and constraints", "Prepare logs and guardrails")
 
     # 1.3 Inventory
     step = "1.3"
@@ -174,23 +168,39 @@ def phase1_prepare():
             lang = (
                 "python"
                 if ext == ".py"
-                else "bash"
-                if ext in {".sh", ".bash", ".zsh"}
-                else "javascript"
-                if ext in {".js", ".jsx", ".mjs"}
-                else "typescript"
-                if ext in {".ts", ".tsx"}
-                else "sql"
-                if ext == ".sql"
-                else "html"
-                if ext == ".html"
-                else "dockerfile"
-                if path.name.lower() == "dockerfile" or ext == ".dockerfile"
-                else "yaml"
-                if ext in {".yml", ".yaml"}
-                else "markdown"
-                if ext in {".md", ".markdown"}
-                else "other"
+                else (
+                    "bash"
+                    if ext in {".sh", ".bash", ".zsh"}
+                    else (
+                        "javascript"
+                        if ext in {".js", ".jsx", ".mjs"}
+                        else (
+                            "typescript"
+                            if ext in {".ts", ".tsx"}
+                            else (
+                                "sql"
+                                if ext == ".sql"
+                                else (
+                                    "html"
+                                    if ext == ".html"
+                                    else (
+                                        "dockerfile"
+                                        if path.name.lower() == "dockerfile" or ext == ".dockerfile"
+                                        else (
+                                            "yaml"
+                                            if ext in {".yml", ".yaml"}
+                                            else (
+                                                "markdown"
+                                                if ext in {".md", ".markdown"}
+                                                else "other"
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
             )
             inv.append(
                 {
@@ -203,9 +213,7 @@ def phase1_prepare():
         except Exception as e:
             emit_error(step, "Inventory walk error", str(e), f"path={path}")
     INVENTORY.write_text(json.dumps(inv, indent=2), encoding="utf-8")
-    append_change(
-        INVENTORY, "Create inventory.json", "Repo file inventory written under .codex"
-    )
+    append_change(INVENTORY, "Create inventory.json", "Repo file inventory written under .codex")
 
 
 # -------- Phase 2 --------
@@ -223,9 +231,7 @@ def phase2_search_mapping():
         p = ROOT / path
         files = list(p.rglob("*")) if p.exists() else []
         code_files = [
-            f
-            for f in files
-            if f.suffix.lower() in {".py", ".js", ".ts", ".sh", ".sql", ".html"}
+            f for f in files if f.suffix.lower() in {".py", ".js", ".ts", ".sh", ".sql", ".html"}
         ]
         txt = ""
         for f in code_files[:200]:  # cap reads
@@ -234,17 +240,13 @@ def phase2_search_mapping():
             except Exception:
                 pass
         hints = len(
-            re.findall(
-                r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE
-            )
+            re.findall(r"\b(TODO|FIXME|WIP|TBD|XXX|NotImplemented)\b", txt, flags=re.IGNORECASE)
         )
         present_tests = 1 if "tests" in path.split("/") else 0
         risk = 0.3 if "scripts" in path.split("/") else 0.1
         return 0.5 * len(code_files) + 0.3 * hints + 0.4 * present_tests - 0.2 * risk
 
-    ranked = sorted(
-        ([c, path_score(c)] for c in candidates), key=lambda x: x[1], reverse=True
-    )
+    ranked = sorted(([c, path_score(c)] for c in candidates), key=lambda x: x[1], reverse=True)
     # 2.4 mapping table (markdown)
     lines = [
         "# Mapping Table",
@@ -252,13 +254,13 @@ def phase2_search_mapping():
         "| Task | Candidate Assets | Rationale |",
         "|---|---|---|",
     ]
-    rationale = "Primary locations for source/tests/scripts with highest likelihood of unfinished markers."
+    rationale = (
+        "Primary locations for source/tests/scripts with highest likelihood of unfinished markers."
+    )
     cand_list = ", ".join([c for c, _ in ranked]) if ranked else "(none)"
     lines.append(f"| unfinished-code-harvest | {cand_list} | {rationale} |")
     MAPPING_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    append_change(
-        MAPPING_MD, "Create mapping_table.md", "Ranked candidate asset locations"
-    )
+    append_change(MAPPING_MD, "Create mapping_table.md", "Ranked candidate asset locations")
 
 
 # -------- Phase 3 scanning --------
@@ -283,9 +285,7 @@ def scan_file(relpath: str) -> ScanResult:
     # common markers
     for i, line in enumerate(text.splitlines(), start=1):
         if UNFINISHED_PAT.search(line):
-            result.unfinished.append(
-                UnfinishedItem(line=i, kind="marker", text=line.strip())
-            )
+            result.unfinished.append(UnfinishedItem(line=i, kind="marker", text=line.strip()))
 
     # language specifics
     if relpath.endswith(".py"):
@@ -296,13 +296,9 @@ def scan_file(relpath: str) -> ScanResult:
             for node in ast.walk(tree):
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     body_src = [
-                        text.splitlines()[b.lineno - 1]
-                        for b in node.body
-                        if hasattr(b, "lineno")
+                        text.splitlines()[b.lineno - 1] for b in node.body if hasattr(b, "lineno")
                     ]
-                    if body_src and all(
-                        PY_PASS_OR_ELLIPSIS.match(x or "") for x in body_src
-                    ):
+                    if body_src and all(PY_PASS_OR_ELLIPSIS.match(x or "") for x in body_src):
                         result.unfinished.append(
                             UnfinishedItem(
                                 line=node.lineno,
@@ -457,9 +453,7 @@ def phase3_execute() -> None:
     RESULTS.write_text("# .codex/results.md\n\n", encoding="utf-8")
     with RESULTS.open("a", encoding="utf-8") as f:
         f.write("## Implemented Artifacts\n")
-        f.write(
-            "- inventory.json\n- mapping_table.md\n- smoke_checks.json\n- errors.ndjson\n\n"
-        )
+        f.write("- inventory.json\n- mapping_table.md\n- smoke_checks.json\n- errors.ndjson\n\n")
         f.write("## Unfinished Code Index\n")
         f.write(f"- Files with unfinished markers: **{len(unfinished)}**\n")
         f.write(f"- Total unfinished signals: **{unfinished_count}**\n\n")
@@ -468,9 +462,7 @@ def phase3_execute() -> None:
             for entry in unfinished:
                 for item in entry.unfinished:
                     snip = item.text.replace("|", "\\|")
-                    f.write(
-                        f"| {entry.path} | {item.line} | {item.kind} | `{snip[:160]}` |\n"
-                    )
+                    f.write(f"| {entry.path} | {item.line} | {item.kind} | `{snip[:160]}` |\n")
         f.write("\n## Errors Captured as Research Questions\n")
         try:
             lines = ERROR_LOG.read_text(encoding="utf-8").strip().splitlines()
@@ -478,13 +470,9 @@ def phase3_execute() -> None:
             lines = []
         f.write(f"- Total: **{len(lines)}**\n\n")
         f.write("## Pruning Decisions\n- None (detection rules retained)\n\n")
-        f.write(
-            "## Next Steps\n- Review unfinished index; prioritize high-signal files\n"
-        )
+        f.write("## Next Steps\n- Review unfinished index; prioritize high-signal files\n")
         f.write("- Address compile/test failures recorded in smoke_checks.json\n")
-        f.write(
-            "- Update README references only after fixes are in-place (no CI activation)\n"
-        )
+        f.write("- Update README references only after fixes are in-place (no CI activation)\n")
         f.write("\n**Constraint:** DO NOT ACTIVATE ANY GitHub Actions files.\n")
     append_change(RESULTS, "Update results.md", "Summarize scan results")
 

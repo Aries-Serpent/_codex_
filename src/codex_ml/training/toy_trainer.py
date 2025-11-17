@@ -35,7 +35,9 @@ def train(epochs: int, batch_size: int, log_path: Path) -> None:
                 time.sleep(0.02)  # Simulated step time
             epoch_time = time.time() - epoch_start
             steps_per_sec = steps_per_epoch / max(1e-9, epoch_time)
-            f.write(f"epoch={e} loss={base_loss:.4f} steps/s: {steps_per_sec:.2f} epoch_time_s: {epoch_time:.2f}\n")
+            f.write(
+                f"epoch={e} loss={base_loss:.4f} steps/s: {steps_per_sec:.2f} epoch_time_s: {epoch_time:.2f}\n"
+            )
 
         total_time = time.time() - t0
         f.write(f"total_time_s: {total_time:.2f}\n")

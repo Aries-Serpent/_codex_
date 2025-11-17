@@ -77,7 +77,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
   "learning_rate_history_len": 4,
   "checkpoint_sha256": "5ad3d1f9b1a4c8c0..."
 }
-```
+```text
 
 ## Learning Rate History
 ```json
@@ -86,7 +86,7 @@ set_cudnn_deterministic(True)  # benchmark=False enforced internally
   [0.0008333],
   [0.0006666]
 ]
-```
+```text
 - `linear`: epoch-wise interpolation to `final_lr_scale * base_lr`
 - `step`: decays per `step_size`, `gamma`
 
@@ -112,13 +112,13 @@ run_training(
   checkpoint_dir="ckpts",
   retention_policy={"keep_last": 3, "keep_every": 5}
 )
-```
+```text
 
 ## Config Snapshot
 If `run_config` dict passed to `run_training`, it is written to:
 ```text
 <checkpoint_dir>/config.snapshot.json
-```
+```text
 Overwritten each run (future enhancement: versioning / hashing).
 
 ## Failure Handling
@@ -143,7 +143,7 @@ python -m codex_ml.cli.train epochs=5 checkpoint.dir=artifacts/ck \
   checkpoint.resume=true scheduler.type=linear scheduler.final_lr_scale=0.3 \
   reproducibility.cudnn_deterministic=true \
   checkpoint.retention.keep_last=2
-```
+```text
 
 ## Programmatic Usage
 ```python
@@ -158,7 +158,7 @@ result = run_training(
 )
 print(result["checkpoint_sha256_last"])
 # Inspect callback health: ``result["callback_errors"]`` captures any suppressed exceptions per-stage.
-```
+```text
 
 ## Reproducibility Checklist
 | Item | Status | Action |

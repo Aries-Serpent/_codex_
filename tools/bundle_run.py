@@ -1,4 +1,5 @@
 """Create compressed run bundles and log them to the ledger."""
+
 from __future__ import annotations
 
 import argparse
@@ -33,12 +34,14 @@ def bundle_run(paths: list[str], run_id: str | None = None, level: int = 6) -> P
             for p in paths:
                 tar.add(p, arcname=Path(p).name)
         cctx.flush(zstd.FLUSH_FRAME)
-    ledger.append_event({
-        "run_id": run_id,
-        "event": "bundle",
-        "status": "ok",
-        "data": {"path": str(out_path)},
-    })
+    ledger.append_event(
+        {
+            "run_id": run_id,
+            "event": "bundle",
+            "status": "ok",
+            "data": {"path": str(out_path)},
+        }
+    )
     return out_path
 
 

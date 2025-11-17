@@ -2,7 +2,7 @@
 ## Valid (backticks)
 ```python
 print("ok")
-```
+```text
 
 ## Valid (tildes)
 ~~~md
@@ -12,17 +12,19 @@ print("ok")
 ## Invalid: closing shorter than opening
 ````text
 outer
-```
+````text
 ````
 
 ## Invalid: backticks in info string (backtick fence)
-```py`thon
+````py`thon
 print("nope")
-```
+```text
 
 ## House-rule violation: inner closing-line equals opener
 ````markdown
-```bash
+````bash
 echo hi
-```
+```text
 ````
+
+```

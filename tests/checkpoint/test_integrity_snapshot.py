@@ -6,7 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from codex_ml.utils.checkpoint_integrity import attach_integrity, sha256_file, snapshot_config
+from codex_ml.utils.checkpoint_integrity import (
+    attach_integrity,
+    sha256_file,
+    snapshot_config,
+)
 
 
 def test_sha256_file(tmp_path: Path) -> None:
@@ -50,6 +54,7 @@ def test_snapshot_config_prunes_reserved_keys() -> None:
 def _has_omegaconf() -> bool:
     try:
         import omegaconf  # type: ignore # noqa: F401
+
         return True
     except Exception:
         return False

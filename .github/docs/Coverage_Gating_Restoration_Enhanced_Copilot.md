@@ -51,7 +51,7 @@
 
 ### Conceptual Model
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────────┐
 │                      CI PIPELINE — COVERAGE FLOW                     │
 ├──────────────────────────────────────────────────────────────────────┤
@@ -91,7 +91,7 @@
 │  └───────────────────────────────────────────────────────────────┘   │
 │                                                                      │
 └──────────────────────────────────────────────────────────────────────┘
-```
+```text
 
 ### Design Principles
 
@@ -281,7 +281,7 @@ def coverage_local(session: nox.Session) -> None:
         webbrowser.open(f"file://{html_report}")
     else:
         session.warn("⚠️  HTML report not found, skipping browser open")
-```
+```text
 
 ### Component 2: CI Workflow Enhancement
 
@@ -881,7 +881,7 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-```
+```text
 
 ### Component 4: Coverage Threshold Configuration
 
@@ -902,7 +902,7 @@ if __name__ == "__main__":
 #   3. Commit and push
 # 
 85.0
-```
+```text
 
 ### Component 5: pyproject.toml Coverage Configuration
 
@@ -943,7 +943,7 @@ directory = "artifacts/htmlcov"
 
 [tool.coverage.xml]
 output = "artifacts/coverage.xml"
-```
+```text
 
 ---
 
@@ -1123,7 +1123,7 @@ class TestCoverageParsingScript:
         captured = capsys.readouterr()
         assert exit_code == 0
         assert "Total Coverage: 88.0%" in captured.out
-```
+```text
 
 ---
 
@@ -1147,10 +1147,10 @@ This project enforces a **minimum code coverage threshold of 85%** to maintain h
 
 #### Quick Check (Recommended)
 
-```bash
+````bash
 # Run tests with coverage and auto-open HTML report
 nox -s coverage-local
-```
+```text
 
 This command:
 1. Runs full test suite with coverage instrumentation
@@ -1171,7 +1171,7 @@ nox -s tests
 open artifacts/htmlcov/index.html  # macOS
 xdg-open artifacts/htmlcov/index.html  # Linux
 start artifacts/htmlcov/index.html  # Windows
-```
+```text
 
 #### Viewing Coverage Details
 
@@ -1224,7 +1224,7 @@ nox -s coverage-local
 # In the HTML report, look for:
 # - Red-highlighted lines (not covered)
 # - Low-percentage files in the summary table
-```
+```text
 
 #### Writing Effective Tests
 
@@ -1246,7 +1246,7 @@ def test_process_data_empty_list():
 def test_process_data_invalid_input():
     with pytest.raises(ValueError):
         process_data(None)
-```
+```text
 
 #### Coverage Best Practices
 
@@ -1275,7 +1275,7 @@ class BaseClass:
     @abstractmethod  # Automatically excluded
     def must_implement(self):
         pass
-```
+```text
 
 **Note**: Use `# pragma: no cover` sparingly and only for truly uncoverable code.
 
@@ -1327,7 +1327,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 
 ### README.md Badge Addition
 
-```markdown
+````markdown
 # Codex ML
 
 ![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)
@@ -1335,7 +1335,7 @@ A: Yes! Just run `nox -s tests` without setting `CODEX_COLLECT_COVERAGE`. Covera
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
 ...existing README content...
-```
+```text
 
 ---
 
@@ -1437,7 +1437,7 @@ fi
 
 # 4. Review recent PRs
 gh pr list --state merged --limit 10 --json number,title,checks
-```
+```text
 
 ---
 
@@ -1600,7 +1600,7 @@ def validate_package_thresholds(
         if actual < threshold:
             failures.append(f"{pkg}: {actual}% < {threshold}%")
     return failures
-```
+```text
 
 **Configuration** (`.github/package_thresholds.json`):
 ```json
@@ -1610,7 +1610,7 @@ def validate_package_thresholds(
   "codex_ml.metrics": 95.0,
   "codex_ml.checkpointing": 80.0
 }
-```
+```text
 
 **Integration**: Add step to `coverage-gate` job after overall threshold check.
 
@@ -1657,7 +1657,7 @@ def validate_package_thresholds(
     else
       echo "📉 Coverage decreased by ${DELTA}%"
     fi
-```
+```text
 
 **PR Comment Enhancement**:
 ```javascript
@@ -1679,7 +1679,7 @@ ${deltaLine}
 | **Status** | ${passed ? '✅ **PASSED**' : '❌ **FAILED**'} |
 ...
 `;
-```
+```text
 
 ---
 
@@ -1711,7 +1711,7 @@ ${deltaLine}
     name: codecov-umbrella
     token: ${{ secrets.CODECOV_TOKEN }}
     fail_ci_if_error: false  # Don't block on Codecov failures
-```
+```text
 
 **Note**: Keep our custom gating as primary; use Codecov for enhanced UX only.
 
@@ -1727,7 +1727,7 @@ Similar to Codecov but simpler. Add after coverage collection:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     path-to-lcov: artifacts/coverage.xml
     format: cobertura
-```
+```text
 
 ---
 
@@ -1893,7 +1893,7 @@ jobs:
           git add coverage_history.json
           git commit -m "Update coverage: $COV% on $DATE"
           git push
-```
+```text
 
 **Dashboard HTML** (simplified):
 ```html
@@ -1933,7 +1933,7 @@ jobs:
   </script>
 </body>
 </html>
-```
+```text
 
 ---
 
@@ -1949,7 +1949,7 @@ Already covered in main implementation. Ensure these pass:
 
 ```bash
 pytest tests/ci/test_coverage_parsing.py -v
-```
+```text
 
 #### Test 2: End-to-End CI Simulation
 
@@ -1972,14 +1972,14 @@ git push origin test/coverage-gate-validation
 # 2. Clear error message in logs
 # 3. PR comment posted with correct metrics
 # 4. Artifacts uploaded successfully
-```
+```text
 
 **Cleanup**:
 ```bash
 git checkout main
 git branch -D test/coverage-gate-validation
 git push origin --delete test/coverage-gate-validation
-```
+```text
 
 #### Test 3: Threshold File Corruption Recovery
 
@@ -2011,7 +2011,7 @@ jobs:
         run: |
           # Check logs contain actionable guidance
           echo "✅ Test passed: Missing threshold file detected"
-```
+```text
 
 #### Test 4: Artifact Retention Verification
 
@@ -2045,7 +2045,7 @@ jobs:
           
           echo "❌ No coverage artifacts found within retention window"
           exit 1
-```
+```text
 
 ---
 
@@ -2093,7 +2093,7 @@ git revert <commit-hash-of-coverage-implementation>
 # 3. Delete .github/coverage_threshold.txt
 # 4. Remove coverage docs from CONTRIBUTING.md
 # 5. Commit with message: "Rollback: Temporarily disable coverage gating due to [incident-link]"
-```
+```text
 
 **Post-rollback**:
 - Conduct root-cause analysis
@@ -2196,7 +2196,7 @@ git revert <commit-hash-of-coverage-implementation>
     </package>
   </packages>
 </coverage>
-```
+```text
 
 ### Key Attributes
 
@@ -2287,7 +2287,7 @@ fi
 
 echo "✅ Coverage ${COVERAGE}% meets threshold ${THRESHOLD}%"
 exit 0
-```
+```text
 
 **Installation instructions** (add to CONTRIBUTING.md):
 
@@ -2295,7 +2295,7 @@ exit 0
 # Enable local coverage pre-push hook (optional)
 chmod +x .git/hooks/pre-push
 cp scripts/pre-push-coverage-check.sh .git/hooks/pre-push
-```
+```text
 
 **Pros**:
 - Catches issues before CI runs
@@ -2314,7 +2314,7 @@ cp scripts/pre-push-coverage-check.sh .git/hooks/pre-push
 
 ```bash
 git checkout -b feat/restore-coverage-gating-enhanced
-```
+```text
 
 ### 2. Apply All Changes
 
@@ -2344,7 +2344,7 @@ python .github/scripts/ci_parse_coverage.py artifacts/coverage.xml --output-valu
 
 # Run parser unit tests
 pytest tests/ci/test_coverage_parsing.py -v
-```
+```text
 
 ### 4. Push and Validate in CI
 
@@ -2368,7 +2368,7 @@ Docs: See CONTRIBUTING.md § Code Coverage Requirements
 "
 
 git push origin feat/restore-coverage-gating-enhanced
-```
+```text
 
 ### 5. Open PR and Validate
 
@@ -2429,4 +2429,6 @@ This implementation is **DONE** when:
 **Author**: mbaetiong  
 **Document Version**: 2.0 (Enhanced)  
 **Status**: ✅ Complete & Ready for Implementation
+```text
+
 ```

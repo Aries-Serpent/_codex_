@@ -31,7 +31,7 @@ def process(items: List[str]) -> Dict[str, int]:
 # New (recommended)
 def process(items: list[str]) -> dict[str, int]:
     pass
-```
+```text
 
 **Policy**:
 - **Severity**: WARNING
@@ -60,7 +60,7 @@ def get_value(key: str) -> Optional[str]:
 # New (Python 3.10+)
 def get_value(key: str) -> str | None:
     pass
-```
+```text
 
 **Policy**:
 - **Severity**: SUGGESTION
@@ -96,7 +96,7 @@ try:
     risky_operation()
 except (ValueError, TypeError) as e:
     handle_error(e)
-```
+```text
 
 **Policy**:
 - **Severity**: WARNING
@@ -129,7 +129,7 @@ from dataclasses import dataclass
 class Config:
     epochs: int
     lr: float
-```
+```text
 
 **Policy**:
 - **Severity**: SUGGESTION
@@ -156,7 +156,7 @@ message = "Count: {count}".format(count=value)
 # New
 message = f"Hello, {name}!"
 message = f"Count: {value}"
-```
+```text
 
 **Policy**:
 - **Severity**: SUGGESTION
@@ -184,7 +184,7 @@ if result:
 # After
 if (result := expensive_computation()):
     process(result)
-```
+```text
 
 **Policy**:
 - **Severity**: SUGGESTION
@@ -219,7 +219,7 @@ python tools/modernization_scanner_v2.py src/ --check-walrus
 
 # Fail on ERROR severity (for CI)
 python tools/modernization_scanner_v2.py src/ --fail-on-error
-```
+```text
 
 ### CI Integration
 
@@ -232,7 +232,7 @@ The scanner runs automatically in post-merge validation:
       --json .reports/modernization.json \
       --md .reports/modernization_summary.md
   continue-on-error: true  # Non-blocking
-```
+```text
 
 **CI Behavior**:
 - Runs on every merge to main
@@ -257,7 +257,7 @@ The scanner runs automatically in post-merge validation:
   },
   "issues": [...]
 }
-```
+```text
 
 **Markdown Summary** (`.reports/modernization_summary.md`):
 - Overview statistics
@@ -373,7 +373,7 @@ patterns:
   walrus-operator:
     enabled: false  # Opt-in
     severity: suggestion
-```
+```text
 
 ## Metrics & Tracking
 
@@ -393,7 +393,7 @@ python tools/modernization_scanner_v2.py src/ --json .reports/modern_$(date +%Y%
 
 # Compare with previous
 jq '.total_issues' .reports/modern_*.json
-```
+```text
 
 **Goal**: Trending downward or stable
 

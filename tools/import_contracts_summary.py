@@ -32,10 +32,7 @@ def main() -> None:
         if "BROKEN" in line or "broken" in line:
             broken += 1
 
-    print(
-        f"[import-contracts] contracts={contracts} "
-        f"broken={broken} exit={proc.returncode}"
-    )
+    print(f"[import-contracts] contracts={contracts} " f"broken={broken} exit={proc.returncode}")
     sys.exit(0)
 
 

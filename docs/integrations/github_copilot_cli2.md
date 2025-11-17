@@ -48,7 +48,7 @@ gh extension install github/gh-copilot
 
 # Smoke test: show help
 gh copilot --help
-```
+```text
 * The **install** and **usage** steps above are exactly what GitHub documents (and what the extension README states). ([GitHub Docs][8])
 
 **Org policy note.** If your organization restricts Copilot (or specifically “Copilot in the CLI”), owners must enable it in Copilot org settings/policies. ([GitHub Docs][6])
@@ -61,14 +61,14 @@ gh copilot --help
 
 ```bash
 gh copilot explain "sudo apt-get"
-```
+```text
 Copilot returns a human-readable explanation of the command and flags. ([GitHub Docs][2])
 
 ### 4.2 Suggest a command for a task
 
 ```bash
 gh copilot suggest "Undo the last commit"
-```
+```text
 You’ll get an **interactive** flow where Copilot asks whether this should be a “generic shell”, `git`, or `gh` command, then proposes options (copy/execute/explain further). ([GitHub Docs][2])
 
 ### 4.3 Optional: teach the shell the short aliases (Bash/Zsh)
@@ -79,7 +79,7 @@ echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc && source ~/.bashrc
 
 # Zsh
 echo 'eval "$(gh copilot alias -- zsh)"' >> ~/.zshrc && source ~/.zshrc
-```
+```text
 After this, you can use:
 
 * `ghce "what does 'iptables -L' do?"`  (explain)
@@ -90,7 +90,7 @@ After this, you can use:
 
 ```bash
 gh copilot config
-```
+```text
 From here, you can set the **default execution confirmation** (so `ghcs` won’t prompt every time) and opt in/out of **usage analytics**. GitHub documents those toggles and the sample telemetry payload. ([GitHub Docs][11])
 
 ---
@@ -150,7 +150,7 @@ From here, you can set the **default execution confirmation** (so `ghcs` won’t
 sudo apt update && sudo apt install -y gh
 gh auth login  # browser OAuth
 gh extension install github/gh-copilot
-```
+```text
 ([GitHub Docs][8])
 
 ### 9.2 Quick explain & suggest
@@ -158,7 +158,7 @@ gh extension install github/gh-copilot
 ```bash
 gh copilot explain "sudo sysctl -w net.ipv4.ip_forward=1"
 gh copilot suggest "kill process listening on port 3000"
-```
+```text
 ([GitHub Docs][2])
 
 ### 9.3 Speed with aliases (and allow execution)
@@ -168,14 +168,14 @@ gh copilot suggest "kill process listening on port 3000"
 echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc && source ~/.bashrc
 ghce "what does 'journalctl -u ssh' do?"
 ghcs "archive current dir to tar.gz excluding .git"  # choose Execute in the TUI
-```
+```text
 ([GitHub Docs][10])
 
 ### 9.4 Configure confirmation & analytics
 
 ```bash
 gh copilot config    # set default execution confirmation; toggle analytics
-```
+```text
 ([GitHub Docs][11])
 
 ---

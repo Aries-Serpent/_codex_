@@ -1,4 +1,5 @@
 """Determinism utilities for Codex ML workflows."""
+
 from __future__ import annotations
 
 import logging
@@ -16,7 +17,12 @@ try:  # pragma: no cover - optional dependency guards
 except Exception:  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
-__all__ = ["set_deterministic", "set_cudnn_deterministic", "enable_determinism", "set_global_determinism"]
+__all__ = [
+    "set_deterministic",
+    "set_cudnn_deterministic",
+    "enable_determinism",
+    "set_global_determinism",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +103,9 @@ def enable_determinism(
             "random": seed,
             "numpy": np is not None,
             "torch": torch is not None,
-            "torch_cuda": bool(torch is not None and getattr(torch.cuda, "is_available", lambda: False)()),
+            "torch_cuda": bool(
+                torch is not None and getattr(torch.cuda, "is_available", lambda: False)()
+            ),
         }
     )
 

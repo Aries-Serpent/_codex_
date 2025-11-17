@@ -6,7 +6,7 @@ The `patch_debris` nox session scans the working tree for stray diff markers suc
 
 ```bash
 nox -s patch_debris
-```
+```text
 
 The task is offline-friendly and only inspects text-like files (Python, Markdown, JSON, YAML, TOML, shell, Makefiles). Build caches, hidden directories, and `patches/` are automatically excluded.
 

@@ -6,7 +6,7 @@ Install Codex ML with the optional extras needed for training and logging:
 
 ```bash
 pip install codex-ml[ml,logging]
-```
+```text
 
 This pulls in PyTorch, Transformers, and telemetry integrations such as MLflow and W&B. All functionality works offline once the dependencies are installed.
 
@@ -24,7 +24,7 @@ List all commands and flags with:
 
 ```bash
 codex-ml-cli --help
-```
+```text
 
 ## Config Customization
 

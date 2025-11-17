@@ -167,7 +167,9 @@ def _dependency_plan(session: nox.Session) -> None:
     out_dir = Path("artifacts")
     out_dir.mkdir(exist_ok=True)
     out_file = out_dir / "dependency_plan.json"
-    out_file.write_text(json.dumps({"generated_at": _ts(), "entries": deps}, indent=2), encoding="utf-8")
+    out_file.write_text(
+        json.dumps({"generated_at": _ts(), "entries": deps}, indent=2), encoding="utf-8"
+    )
     session.log(f"[plan] wrote {out_file}")
 
 
@@ -256,6 +258,7 @@ def _ts() -> str:
 # ---------------------------------------------------------------------------
 # Sessions
 # ---------------------------------------------------------------------------
+
 
 @nox.session(name="list_sessions", python=PY_VERSIONS)
 def list_sessions(session: nox.Session) -> None:
@@ -391,6 +394,8 @@ def rollback_smoke(session: nox.Session) -> None:
     else:
         session.log("[rollback] All segmented requirement files present.")
         session.log("To rollback segmentation safely execute:")
-        session.log("  git rm requirements-ml-cpu.txt requirements-eval.txt requirements-notebook.txt")
+        session.log(
+            "  git rm requirements-ml-cpu.txt requirements-eval.txt requirements-notebook.txt"
+        )
         session.log("  Edit noxfile.py: remove ml_tests, eval_tests, notebook_env sessions.")
     session.log("[rollback_smoke] Complete.")

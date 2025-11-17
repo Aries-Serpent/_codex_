@@ -12,7 +12,11 @@ def test_imports_exist():
 
 def test_freeze_counts():
     try:
-        from hhg_logistics.model.peft_utils import apply_lora, freeze_base_weights, load_hf_llm
+        from hhg_logistics.model.peft_utils import (
+            apply_lora,
+            freeze_base_weights,
+            load_hf_llm,
+        )
     except Exception:
         pytest.skip("transformers/peft not installed")
     try:

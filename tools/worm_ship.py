@@ -2,6 +2,7 @@
 
 Disabled unless CODEX_ENABLE_WORM=1 and CODEX_WORM_BUCKET is set.
 """
+
 from __future__ import annotations
 
 import os

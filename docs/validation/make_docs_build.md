@@ -13,7 +13,7 @@ docs-build:
 	@SKIP_OPTIONAL?=1 ; \\
 	FAIL_ON_MISSING?=0 ; \\
 	SKIP_OPTIONAL=$$SKIP_OPTIONAL FAIL_ON_MISSING=$$FAIL_ON_MISSING bash scripts/docs_build.sh
-```
+```text
 
 Inside a recipe, each line is executed by /bin/sh; "SKIP_OPTIONAL?=1" is not a shell command and fails with "command not found", preventing the target from running.
 
@@ -29,7 +29,7 @@ FAIL_ON_MISSING ?= 0
 .PHONY: docs-build
 docs-build:
 	SKIP_OPTIONAL=$(SKIP_OPTIONAL) FAIL_ON_MISSING=$(FAIL_ON_MISSING) bash scripts/docs_build.sh
-```
+```text
 
 ## 3) Alternative (shell‑local defaulting, if you must keep in recipe)
 
@@ -40,7 +40,7 @@ Use POSIX shell parameter expansion (still recommend Make‑level defaults inste
 docs-build:
 	: $${SKIP_OPTIONAL:=1}; : $${FAIL_ON_MISSING:=0}; \\
 	SKIP_OPTIONAL=$$SKIP_OPTIONAL FAIL_ON_MISSING=$$FAIL_ON_MISSING bash scripts/docs_build.sh
-```
+```text
 
 ## 4) CI/Script Consistency
 
@@ -55,7 +55,7 @@ Example workflow step:
 env:
   SKIP_OPTIONAL: "1"
   FAIL_ON_MISSING: "0"
-```
+```text
 
 ## 5) Quick Tests
 
@@ -78,7 +78,7 @@ env:
 .PHONY: docs-build-strict
 docs-build-strict:
 	SKIP_OPTIONAL=0 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
-```
+```text
 
 - Add a nox mirror target (`nox -s docs_build`) to unify local/CI execution.
 

@@ -42,7 +42,7 @@ graph TB
     Codex -->|Distribute Training| Compute
     
     style Codex fill:#326ce5,stroke:#fff,stroke-width:3px,color:#fff
-```
+```text
 
 ### External Actors
 
@@ -112,7 +112,7 @@ graph TB
     style Logging fill:#845ef7
     style Config fill:#ff8787
     style Plugins fill:#69db7c
-```
+```text
 
 ### Container Descriptions
 
@@ -179,7 +179,7 @@ graph TB
     style EvalRunner fill:#51cf66
     style HydraConfig fill:#ff8787
     style SessionLogger fill:#845ef7
-```
+```text
 
 ### Component Responsibilities
 
@@ -244,7 +244,7 @@ sequenceDiagram
     
     Trainer-->>CLI: Training complete
     CLI-->>User: Results & artifact paths
-```
+```text
 
 ### Evaluation Data Flow
 
@@ -275,7 +275,7 @@ sequenceDiagram
     EvalRunner->>Reporter: Format results
     Reporter-->>CLI: Formatted report
     CLI-->>User: Evaluation results
-```
+```text
 
 ### Configuration Resolution Flow
 
@@ -296,7 +296,7 @@ flowchart LR
     Validator --> Final
     
     style Final fill:#51cf66
-```
+```text
 
 ---
 
@@ -342,7 +342,7 @@ graph LR
     Traces --> QueryCLI
     
     style App fill:#326ce5,color:#fff
-```
+```text
 
 **Logging Levels:**
 - Session events (system, user, assistant, tool roles)
@@ -482,14 +482,14 @@ flowchart TD
     F -->|errors| G[[STDOUT error lines]]
     F -->|warnings| H[[STDOUT warning lines]]
     F -->|ok state| I[["[fence-check] OK"]]
-```
+```text
 
 ### Running Locally
 
 ```bash
 python -m pip install -r requirements-dev.txt
 pytest -q tests/test_validate_fences.py
-```
+```text
 
 ---
 

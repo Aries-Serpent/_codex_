@@ -11,6 +11,8 @@ def test_template_lint_detects_missing(tmp_path):
 
 def test_template_lint_passes_with_links(tmp_path):
     good = tmp_path / "good.html"
-    good.write_text('<html><head><link href="theme.css"><link href="print.css"></head></html>', encoding="utf-8")
+    good.write_text(
+        '<html><head><link href="theme.css"><link href="print.css"></head></html>', encoding="utf-8"
+    )
     code = subprocess.call([sys.executable, "tools/template_lint.py", "--dir", str(tmp_path)])
     assert code == 0

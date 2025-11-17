@@ -100,7 +100,7 @@ Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict
 git rm requirements-ml-cpu.txt requirements-eval.txt requirements-notebook.txt
 # Edit noxfile.py: remove ml_tests, eval_tests, notebook_env sessions
 # Optional: set CODEX_DEPENDENCY_EVIDENCE_ENABLE=0 (not recommended)
-```
+```text
 Evidence historical lines remain; do NOT delete `.codex/evidence/dependency_ops.jsonl`.
 
 ## 12. Monitoring Post-Deployment

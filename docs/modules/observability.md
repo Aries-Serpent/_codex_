@@ -4,7 +4,7 @@ Codex runs default to offline-friendly logging and metrics capture to avoid netw
 
 ```bash
 python -m codex_ml.telemetry.server
-```
+```text
 
 Use `track_time` to instrument functions and expose metrics on `/metrics`.
 
@@ -68,7 +68,7 @@ The canonical structured event sink is:
 
 ```text
 codex_ml.logging.ndjson_logger
-```
+```text
 
 It provides newline-delimited JSON (NDJSON) logging with rotation support and
 is used by training/evaluation flows. Any references to "structured logger"

@@ -80,9 +80,7 @@ class ModerationAdapter:
         self._default_policy = default_policy
         self._filters: SafetyFilters | None = None
         self._provider = self._resolve_provider(settings.provider)
-        self._provider_name = (
-            settings.provider if self._provider is not None else "offline"
-        )
+        self._provider_name = settings.provider if self._provider is not None else "offline"
 
     # ------------------------------------------------------------------
     # Public API
@@ -209,9 +207,7 @@ class ModerationAdapter:
         payload = self._provider(text=text, stage=stage)
         return self._normalize_payload(payload, stage)
 
-    def _normalize_payload(
-        self, payload: Any, stage: str
-    ) -> ModerationDecision | None:
+    def _normalize_payload(self, payload: Any, stage: str) -> ModerationDecision | None:
         if isinstance(payload, ModerationDecision):
             return payload
         if isinstance(payload, Mapping):

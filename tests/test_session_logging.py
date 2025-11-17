@@ -47,15 +47,9 @@ def _discover_rows(db_path, session_id):
         cur.execute(f"PRAGMA table_info({t})")
         cols = [r[1] for r in cur.fetchall()]
         c_session = (
-            "session_id"
-            if "session_id" in cols
-            else ("session" if "session" in cols else None)
+            "session_id" if "session_id" in cols else ("session" if "session" in cols else None)
         )
-        c_message = (
-            "message"
-            if "message" in cols
-            else ("content" if "content" in cols else None)
-        )
+        c_message = "message" if "message" in cols else ("content" if "content" in cols else None)
         if not (c_session and c_message):
             continue
         q = f"SELECT * FROM {t} WHERE {c_session}=?"
@@ -67,9 +61,7 @@ def _discover_rows(db_path, session_id):
 
 
 CONFIG = _import_any(["src.codex.logging.config"])
-DEFAULT_LOG_DB = getattr(
-    CONFIG, "DEFAULT_LOG_DB", pathlib.Path(".codex/session_logs.db")
-)
+DEFAULT_LOG_DB = getattr(CONFIG, "DEFAULT_LOG_DB", pathlib.Path(".codex/session_logs.db"))
 
 
 def test_context_manager_emits_start_end(tmp_path, monkeypatch):
@@ -100,28 +92,18 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
                     time.sleep(0.01)
                 used = "python_cm"
     except Exception as e:
-        logging.exception(
-            "session logging hook raised: %s: %s", e.__class__.__name__, e
-        )
+        logging.exception("session logging hook raised: %s: %s", e.__class__.__name__, e)
         if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
             pytest.skip(f"Required session logging hook not available: {e!r}")
         pytest.fail(f"Session logging hook failed: {e!r}")
 
     if used is None:
         # Fallback to shell helpers via source
-        sh = (
-            pathlib.Path(__file__).resolve().parents[1]
-            / "scripts"
-            / "session_logging.sh"
-        )
+        sh = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "session_logging.sh"
         if not sh.exists():
             pytest.skip("No session_hooks module or shell script available")
-        cmd = (
-            f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
-        )
-        cp = subprocess.run(
-            ["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True
-        )
+        cmd = f"set -euo pipefail; source '{sh}'; codex_session_start; codex_session_end"
+        cp = subprocess.run(["bash", "-lc", cmd], cwd=tmp_path, text=True, capture_output=True)
         assert cp.returncode == 0, cp.stderr
         used = "shell"
 
@@ -129,13 +111,9 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
     assert ndjson_file.exists()
     data = ndjson_file.read_text(encoding="utf-8").strip().splitlines()
     assert any(
-        "session_start" in line or '"event":"start"' in line or '"start"' in line
-        for line in data
+        "session_start" in line or '"event":"start"' in line or '"start"' in line for line in data
     )
-    assert any(
-        "session_end" in line or '"event":"end"' in line or '"end"' in line
-        for line in data
-    )
+    assert any("session_end" in line or '"event":"end"' in line or '"end"' in line for line in data)
 
 
 def test_context_manager_recreates_missing_dir(tmp_path, monkeypatch):
@@ -208,11 +186,7 @@ def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
 
     ndjson_file = tmp_path / ".codex" / "sessions" / f"{session_id}.ndjson"
     assert ndjson_file.exists()
-    lines = [
-        json.loads(line)
-        for line in ndjson_file.read_text().splitlines()
-        if line.strip()
-    ]
+    lines = [json.loads(line) for line in ndjson_file.read_text().splitlines() if line.strip()]
     rows = logger_mod.fetch_messages(session_id, db_path=db_path)
     assert len(lines) == len(rows)
 
@@ -234,8 +208,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
         ("B", "2025-01-01T00:00:02Z", "user", "bye"),
     ]
     cur.executemany(
-        "INSERT INTO session_events(session_id, timestamp, role, message) "
-        "VALUES (?,?,?,?)",
+        "INSERT INTO session_events(session_id, timestamp, role, message) " "VALUES (?,?,?,?)",
         data,
     )
     con.commit()
@@ -254,9 +227,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
                 messages = [r.get("message") or r.get("content") for r in parsed]
             except Exception:
                 # Tolerate non-JSON lines containing messages
-                messages = [
-                    line for line in out.splitlines() if "hi" in line or "hey" in line
-                ]
+                messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
             assert any("hey" in m for m in messages)
             return
@@ -287,9 +258,7 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
                 data = json.loads(out)
                 messages = [r.get("message") or r.get("content") for r in data]
             except Exception:
-                messages = [
-                    line for line in out.splitlines() if "hi" in line or "hey" in line
-                ]
+                messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
             assert any("hey" in m for m in messages)
             return

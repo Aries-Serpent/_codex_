@@ -1,6 +1,10 @@
 """Truth-table style regression tests for conversion fidelity."""
 
-from codex_crm.convert.rules import fidelity_score, zd_automation_to_d365, zd_trigger_to_d365
+from codex_crm.convert.rules import (
+    fidelity_score,
+    zd_automation_to_d365,
+    zd_trigger_to_d365,
+)
 
 
 def test_trigger_to_d365_minimal() -> None:

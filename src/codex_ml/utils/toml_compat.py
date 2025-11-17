@@ -8,15 +8,18 @@ Notes:
 - tomllib requires binary mode for load(); this wrapper handles it.
 - Fallback to tomli if tomllib is unavailable.
 """
+
 from __future__ import annotations
 
-from typing import Any, IO
+from typing import IO, Any
 
 try:
     import tomllib as _toml  # Python >=3.11
+
     _BINARY_REQUIRED = True
 except Exception:  # pragma: no cover
     import tomli as _toml  # type: ignore
+
     _BINARY_REQUIRED = False
 
 

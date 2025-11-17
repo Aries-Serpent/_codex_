@@ -29,18 +29,17 @@ def _context_index_for(paths: Iterable[Path]) -> Dict[str, Any]:
 
 
 def test_detector_safeguards_hits(tmp_path: Path) -> None:
-    file_a = tmp_path / 'a.py'
-    file_b = tmp_path / 'b.md'
-    file_a.write_text('seed = 123\n', encoding='utf-8')
-    file_b.write_text('We run WANDB_MODE=offline for safety.\n', encoding='utf-8')
+    file_a = tmp_path / "a.py"
+    file_b = tmp_path / "b.md"
+    file_a.write_text("seed = 123\n", encoding="utf-8")
+    file_b.write_text("We run WANDB_MODE=offline for safety.\n", encoding="utf-8")
 
-    detector_path = Path('scripts/space_traversal/detectors/detector_safeguards.py')
-    module = _load_module(detector_path, 'detector_safeguards')
+    detector_path = Path("scripts/space_traversal/detectors/detector_safeguards.py")
+    module = _load_module(detector_path, "detector_safeguards")
     context_index = _context_index_for([file_a, file_b])
     result = module.detect(context_index)  # type: ignore[attr-defined]
 
-    assert result['id'] == 'safeguards_keywords'
-    assert result['total_hits'] >= 2
-    assert result['unique_files'] == 2
-    assert 'a.py' in ''.join(result['evidence'].keys())
-
+    assert result["id"] == "safeguards_keywords"
+    assert result["total_hits"] >= 2
+    assert result["unique_files"] == 2
+    assert "a.py" in "".join(result["evidence"].keys())

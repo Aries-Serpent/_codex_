@@ -579,7 +579,7 @@ class CodexTaskExecutor:
             anchor = '    session.run("python", str(_CONFIG_VALIDATOR), "--quiet")'
             if anchor in nox_text and not self.dry_run:
                 # Prepare the injection with proper indentation
-                indented_injection = injection.replace('\n', '\n    ')
+                indented_injection = injection.replace("\n", "\n    ")
                 updated = nox_text.replace(
                     anchor,
                     f"{anchor}\n    # Secret scanning\n    {indented_injection}",

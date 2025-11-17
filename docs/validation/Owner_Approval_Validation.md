@@ -17,20 +17,20 @@ Steps
 ```bash
 make owner-approve-24h
 bash scripts/ci/owner_approval_test.sh docker-build-push
-```
+```text
 2) Expiry simulation
 - Edit .github/OWNER_APPROVAL.yml and set created_at 25h in the past:
   created_at: "2025-10-19T18:00:00Z"
 - Rerun:
 ```bash
 bash scripts/ci/owner_approval_test.sh docker-build-push
-```
+```text
 3) Environment variable mode (no commit)
 ```bash
 OWNER_APPROVED_DURATION=24h bash scripts/ci/owner_approval_test.sh docker-build-push
 # Alternatively (until timestamp):
 OWNER_APPROVED_UNTIL="2025-10-21T19:43:52Z" bash scripts/ci/owner_approval_test.sh docker-build-push
-```
+```text
 4) Push (guarded)
 ```bash
 # Expect APPROVED within window:
@@ -39,7 +39,7 @@ bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
 make owner-approve-clear
 # Expect denial:
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run || echo "Denied as expected"
-```
+```text
 
 Notes
 - The guard supports both bullet lists and inline lists for cost_workflows.

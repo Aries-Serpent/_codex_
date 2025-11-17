@@ -1,4 +1,5 @@
 """Tokenization cache with TTL and invalidation strategy."""
+
 from __future__ import annotations
 
 import hashlib
@@ -46,11 +47,7 @@ class TokenizationCache:
         combined = f"{text}|{config_str}"
         return hashlib.sha256(combined.encode()).hexdigest()
 
-    def get(
-        self,
-        text: str,
-        tokenizer_config: Dict[str, Any]
-    ) -> Optional[List[Any]]:
+    def get(self, text: str, tokenizer_config: Dict[str, Any]) -> Optional[List[Any]]:
         """Get tokens from cache if available and not expired.
 
         Args:
@@ -63,19 +60,14 @@ class TokenizationCache:
         key = self._get_cache_key(text, tokenizer_config)
         if key in self.cache:
             entry = self.cache[key]
-            if datetime.now() - entry['timestamp'] < self.ttl:
-                return entry['tokens']
+            if datetime.now() - entry["timestamp"] < self.ttl:
+                return entry["tokens"]
             else:
                 # Cache expired, remove entry
                 del self.cache[key]
         return None
 
-    def set(
-        self,
-        text: str,
-        tokenizer_config: Dict[str, Any],
-        tokens: List[Any]
-    ) -> None:
+    def set(self, text: str, tokenizer_config: Dict[str, Any], tokens: List[Any]) -> None:
         """Store tokens in cache.
 
         Args:
@@ -84,10 +76,7 @@ class TokenizationCache:
             tokens: Tokenization result to cache
         """
         key = self._get_cache_key(text, tokenizer_config)
-        self.cache[key] = {
-            'tokens': tokens,
-            'timestamp': datetime.now()
-        }
+        self.cache[key] = {"tokens": tokens, "timestamp": datetime.now()}
 
     def invalidate_all(self) -> None:
         """Invalidate all cached entries.
@@ -107,7 +96,7 @@ class TokenizationCache:
         now = datetime.now()
 
         for key, entry in self.cache.items():
-            if now - entry['timestamp'] >= self.ttl:
+            if now - entry["timestamp"] >= self.ttl:
                 expired_keys.append(key)
 
         for key in expired_keys:
@@ -130,20 +119,16 @@ class TokenizationCache:
             Dict containing cache statistics including size and oldest entry age
         """
         if not self.cache:
-            return {
-                'size': 0,
-                'oldest_entry_age_seconds': 0,
-                'expired_count': 0
-            }
+            return {"size": 0, "oldest_entry_age_seconds": 0, "expired_count": 0}
 
         now = datetime.now()
-        ages = [(now - entry['timestamp']).total_seconds() for entry in self.cache.values()]
+        ages = [(now - entry["timestamp"]).total_seconds() for entry in self.cache.values()]
         expired = sum(1 for age in ages if timedelta(seconds=age) >= self.ttl)
 
         return {
-            'size': len(self.cache),
-            'oldest_entry_age_seconds': max(ages) if ages else 0,
-            'expired_count': expired
+            "size": len(self.cache),
+            "oldest_entry_age_seconds": max(ages) if ages else 0,
+            "expired_count": expired,
         }
 
 

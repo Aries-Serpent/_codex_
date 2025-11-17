@@ -15,7 +15,7 @@ tests/
 ├── eval/            # Evaluation tests
 ├── cli/             # CLI tests
 └── ...
-```
+```text
 
 ### Test Markers
 
@@ -74,7 +74,7 @@ pytest -m cpu_only
 
 # Combine markers
 pytest -m "smoke and not requires_torch"
-```
+```text
 
 ### Test Naming Conventions
 
@@ -99,7 +99,7 @@ def test_config_loads_valid_yaml():
 def test_model_raises_error_on_invalid_device():
     """Test that model initialization fails with invalid device."""
     pass
-```
+```text
 
 ### Test Structure (AAA Pattern)
 
@@ -114,7 +114,7 @@ def test_example():
     
     # Assert: Verify the expected outcome
     assert result.epochs == 5
-```
+```text
 
 ### Best Practices
 
@@ -144,4 +144,4 @@ pytest -v
 
 # Show print statements
 pytest -s
-```
+```text

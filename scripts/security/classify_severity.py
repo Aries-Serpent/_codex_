@@ -37,6 +37,7 @@ ART_DIR = Path("audit_artifacts")
 IN_REPORT = ART_DIR / "secret_entropy_report.json"
 OUT_REPORT = ART_DIR / "security_severity.json"
 
+
 def classify(entropy: float, length: int) -> str | None:
     if entropy >= 4.0 and 20 <= length <= 48:
         return "high"
@@ -46,8 +47,9 @@ def classify(entropy: float, length: int) -> str | None:
         return "low"
     return None
 
+
 def main():
-    enable = os.getenv("SECURITY_SEVERITY_ENABLE","0") in {"1","true","TRUE","on","yes","YES"}
+    enable = os.getenv("SECURITY_SEVERITY_ENABLE", "0") in {"1", "true", "TRUE", "on", "yes", "YES"}
     if not enable:
         print("[INFO] Security severity classification disabled.")
         return 0
@@ -63,36 +65,39 @@ def main():
 
     findings = data.get("findings", [])
     classified = []
-    counts = {"high":0,"medium":0,"low":0}
+    counts = {"high": 0, "medium": 0, "low": 0}
     for f in findings:
-        token = f.get("span","")
-        entropy = float(f.get("entropy",0.0))
+        token = f.get("span", "")
+        entropy = float(f.get("entropy", 0.0))
         sev = classify(entropy, len(token))
         if sev:
             counts[sev] += 1
-            classified.append({
-                "file": f.get("file"),
-                "span": token[:80],
-                "entropy": entropy,
-                "length": len(token),
-                "severity": sev
-            })
+            classified.append(
+                {
+                    "file": f.get("file"),
+                    "span": token[:80],
+                    "entropy": entropy,
+                    "length": len(token),
+                    "severity": sev,
+                }
+            )
 
     total = sum(counts.values())
     weights = {
-        "high": float(os.getenv("SEVERITY_HIGH_WEIGHT","0.05")),
-        "medium": float(os.getenv("SEVERITY_MEDIUM_WEIGHT","0.02")),
-        "low": float(os.getenv("SEVERITY_LOW_WEIGHT","0.01")),
+        "high": float(os.getenv("SEVERITY_HIGH_WEIGHT", "0.05")),
+        "medium": float(os.getenv("SEVERITY_MEDIUM_WEIGHT", "0.02")),
+        "low": float(os.getenv("SEVERITY_LOW_WEIGHT", "0.01")),
     }
     payload: Dict[str, Any] = {
         "counts": counts | {"total": total},
         "weights": weights,
-        "findings": classified
+        "findings": classified,
     }
     ART_DIR.mkdir(parents=True, exist_ok=True)
     OUT_REPORT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"[INFO] Security severity report written: {OUT_REPORT}")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

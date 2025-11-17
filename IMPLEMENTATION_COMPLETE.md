@@ -251,7 +251,7 @@ python tools/fence_fixer_v2.py docs/ --dry-run --verbose --report --config .fenc
 # Check reports
 cat .reports/fencefix_summary.md
 jq '.review_queue' .reports/fencefix_run.json
-```
+```text
 
 ### Test Modernization Scanner
 ```bash
@@ -262,13 +262,13 @@ python tools/modernization_scanner_v2.py src/ --verbose \
 
 # Review results
 cat .reports/modernization_summary.md
-```
+```text
 
 ### Test ML Predictor
 ```bash
 # Test (without model - returns text, 0.0)
 python tools/ml_predictor.py --test
-```
+```text
 
 ---
 
@@ -301,7 +301,7 @@ python tools/fence_fixer_v2.py docs/ --report --config .fencefixer.yml
 
 # Verify
 python tools/validate_fences.py
-```
+```text
 
 **Phase 2: Modernization Remediation** (2-3 hours)
 ```bash
@@ -314,7 +314,7 @@ python tools/modernization_scanner_v2.py src/ --verbose --json .reports/modern.j
 
 # Verify
 pytest tests/
-```
+```text
 
 ### Short-term (Next Sprint)
 

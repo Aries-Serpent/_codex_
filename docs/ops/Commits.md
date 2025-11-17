@@ -6,7 +6,7 @@ To keep version history consistent we follow the [Conventional Commits](https://
 
 ```text
 <type>(<scope>): <summary>
-```
+```text
 
 * Use lowercase types such as `feat`, `fix`, `docs`, `test`, or `chore`.
 * Scope is optional but encouraged for large areas like `training`, `ops`, or `docs`.

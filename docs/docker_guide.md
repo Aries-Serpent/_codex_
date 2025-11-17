@@ -7,12 +7,12 @@ This guide captures the Phase 4 hardening work for the Docker build system.
 ### CPU (default)
 ```bash
 docker build -t codex:cpu -f Dockerfile .
-```
+```text
 
 ### GPU (requires NVIDIA Container Toolkit)
 ```bash
 docker build -t codex:gpu -f Dockerfile.gpu .
-```
+```text
 
 Use `--build-arg VERSION=$(git rev-parse --short HEAD)` to embed metadata.
 
@@ -25,7 +25,7 @@ docker run --rm \
   -v $(pwd)/models:/app/models \
   -v $(pwd)/data:/app/data \
   codex:cpu python -m codex_ml.cli.train --help
-```
+```text
 
 ### GPU runtime
 ```bash
@@ -36,7 +36,7 @@ docker run --rm \
   -v $(pwd)/models:/app/models \
   -v $(pwd)/data:/app/data \
   codex:gpu python -c "import torch; print(torch.cuda.is_available())"
-```
+```text
 
 ## docker-compose
 
@@ -45,7 +45,7 @@ NVIDIA hardware is available:
 
 ```bash
 docker compose --profile gpu up --build
-```
+```text
 
 ## Offline artefact staging
 

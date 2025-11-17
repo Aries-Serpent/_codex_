@@ -23,7 +23,7 @@ from src.codex_utils.tracking.guards import ensure_mlflow_offline, ensure_wandb_
 uri = ensure_mlflow_offline("artifacts")
 mode = ensure_wandb_offline()
 print(uri, mode)
-```
+```text
 
 Notes
 - No network calls are made by these guards; they operate via environment variables.

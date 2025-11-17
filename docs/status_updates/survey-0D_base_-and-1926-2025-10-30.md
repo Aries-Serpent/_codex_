@@ -5,7 +5,7 @@ rollout_ring: 0D_base_
 eval_preset: base
 deployment_preset: reasoning_pod
 generated_utc: 2025-10-30T03:51:18Z
-```
+```text
 
 ## File Survey: Branch 0D_base_ / PR #1926
 
@@ -216,7 +216,7 @@ def run_unified_training(
             self, epoch: int, path: str, metrics: dict[str, Any], state: dict[str, Any]
         ) -> Any:
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/train_loop.py@0D_base_
 
@@ -487,7 +487,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
         except Exception:
             return batch
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/training/strategies.py@0D_base_
 
@@ -716,7 +716,7 @@ class ContinualReplayStrategy:
         if not phases:
             phases = getattr(config, "continual_schedule", None)
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
 
@@ -965,7 +965,7 @@ def attach_reasoning_adapters(
 ) -> ReasoningHarness:
     if not isinstance(config, ReasoningConfig):
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
 
@@ -1040,7 +1040,7 @@ metadata:
 # See `src/codex_ml/models/reasoning.py` for details.
 
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
 
@@ -1066,7 +1066,7 @@ phase_schedule:
       - reasoning.judge_disagreement
 
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/evaluation/reasoning/base.yaml@0D_base_
 
@@ -1116,7 +1116,7 @@ hydra:
     chdir: false
 
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
@@ -1437,7 +1437,7 @@ def _coerce_bool(value: Any) -> bool | None:
         token = value.strip().lower()
         if token in _BOOLEAN_TRUE:
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_cli/app.py@0D_base_
 
@@ -1726,7 +1726,7 @@ else:  # pragma: no cover - click fallback
     def explain_reasoning_template(name: str) -> None:
         entries = {entry[0]: entry for entry in _discover_reasoning_templates()}
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
@@ -1975,7 +1975,7 @@ def status_report(run_metadata_dir: Path) -> None:
     type=click.Path(dir_okay=False, path_type=str),
     default=None,
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/README_ROOT.md@0D_base_
 
@@ -2002,9 +2002,9 @@ architecture references, and the bespoke-model hosting workflow that underpins e
 ### Repo Map (Reasoning-Focused)
 You can now surface a reasoning-focused repository map:
 
-```bash
+````bash
 codex repo-map --reasoning
-```
+```text
 
 This highlights reasoning overlays, evaluation presets, and trace-capture knobs.
 
@@ -2021,13 +2021,13 @@ Track milestone burndown using the `reasoning_status` table exported by:
 
 ```bash
 codex repo-map --reasoning
-```
+```text
 
 Slice specific categories (for example, rollout rings and curricula) with:
 
 ```bash
 codex repo-map --reasoning --include rollout_ring --include curriculum
-```
+```text
 
 For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
 
@@ -2130,7 +2130,7 @@ codex-train +reasoning=baseline \
   training.max_steps=500 \
   logging.reasoning_trace=true \
   training.output_dir=artifacts/runs/reasoning-starter
-```
+```text
 
 The `+reasoning=baseline` defaults hook into `configs/training/reasoning/baseline.yaml` and emit trace artefacts that downstream
 analysis notebooks can load. Curricula definitions are stored as YAML fragments so you can diff changes between cohorts.
@@ -2141,7 +2141,7 @@ analysis notebooks can load. Curricula definitions are stored as YAML fragments 
 codex evaluate --config configs/evaluation/reasoning.yaml \
   --log-metrics .codex/metrics/reasoning.ndjson \
   --run-id reasoning-milestone-m1
-```
+```text
 
 Every evaluation appends to the NDJSON ledger with per-phase metrics. Use `codex metrics summarize` for quick trend
 checks when preparing milestone readouts.
@@ -2156,7 +2156,7 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
 # codex deploy --config configs/deploy/reasoning_pod.yaml \
 #   --run-metadata-dir runs/train_loop \
 #   --dry-run
-```
+```text
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
 and runtime allowances required by bespoke hosts. Redeployments should always be paired with
@@ -2167,7 +2167,7 @@ and runtime allowances required by bespoke hosts. Redeployments should always be
 ```bash
 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CODEX_MLFLOW_ENABLE=0 WANDB_MODE=offline \
   nox -s tests_offline
-```
+```text
 
 This run exports standard offline toggles and keeps artefacts under `.codex/` for reproducibility (metrics, checkpoints,
 reasoning traces). Combine it with `codex_cli.app checkpoint-smoke` to validate serialization paths without GPUs.
@@ -2253,7 +2253,7 @@ codex deploy \
   --config configs/deploy/reasoning_pod.yaml \
   --model artifacts/runs/reasoning-starter:last \
   --dry-run
-```
+```text
 
 This renders the "reasoning pod" manifest for inspection. It does **not**
 create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md)
@@ -2432,7 +2432,7 @@ phase_schedule:
   - id: challenge
     dataset: datasets/reasoning/challenge.jsonl
     steps: 300
-```
+```text
 
 ## Training pipeline
 
@@ -2552,7 +2552,7 @@ This guide defines the **dry-run** flow for a reasoning pod. All steps are **loc
 
 ### >>> FILE: configs/deploy/reasoning_pod.yaml@0D_base_
 
-```yaml
+````yaml
 [BEGIN CONTENT]
 # Offline-first dry-run config for a "reasoning pod".
 # This file is used by local tools (e.g., selection_report.py) to validate
@@ -2587,7 +2587,7 @@ notes:
   - "Use Python local tools to generate review artifacts for promotion gates."
 
 [END CONTENT]
-```
+```text
 
 ## Survey Results
 
@@ -2601,7 +2601,7 @@ notes:
 - deployment.preset: reasoning_pod
 - metadata.rollout_ring: 0D_base_
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: ReasoningTrainer search@0D_base_
 
@@ -2609,7 +2609,7 @@ notes:
 [BEGIN CONTENT]
 ReasoningTrainer: NOT FOUND in code. References exist only in docs (e.g., docs/README_ROOT.md, docs/guides/reasoning_overview.md).
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: Rollout ring context@0D_base_
 
@@ -2887,7 +2887,7 @@ There MUST be a survey/status file checked in under:
 
 ```text
 docs/status_updates/survey-<ring>-and-<PR>-<DATESTAMP>.md
-```
+```text
 
 For example:
 `docs/status_updates/survey-0D_base_-and-1926-2025-10-29.md`
@@ -2966,7 +2966,7 @@ exactly the fields surfaced by:
 ```bash
 python -m codex_ml.cli.codex_cli status-report \
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: CLI mismatch audit@0D_base_
 
@@ -2976,7 +2976,7 @@ python -m codex_ml.cli.codex_cli status-report \
 - Actual CLI (`src/codex_ml/cli/codex_cli.py`) defines `deploy` with options `--config`, `--dry-run`, and `--run-metadata-dir` only (no `--model`).
 - `repo-map --reasoning` is implemented in both Typer (`src/codex_cli/app.py`) and Click (`src/codex_ml/cli/codex_cli.py`) variants and matches docs, including optional `--include` filtering in the Typer path.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: PR #1926 diff availability@PR#1926
 
@@ -2984,4 +2984,4 @@ python -m codex_ml.cli.codex_cli status-report \
 [BEGIN CONTENT]
 No local diff artifacts for PR #1926 were found in the repository; survey limited to current branch contents.
 [END CONTENT]
-```
+```text

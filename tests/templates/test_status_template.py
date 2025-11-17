@@ -1,4 +1,5 @@
 """Tests for status update template structure and schemas."""
+
 from __future__ import annotations
 
 import json
@@ -33,7 +34,7 @@ def test_status_template_v12_exists() -> None:
 def test_status_template_has_required_sections() -> None:
     """Verify the status template has all required sections."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     required_sections = [
         "## Template Version",
         "## Template CHANGELOG",
@@ -62,7 +63,7 @@ def test_status_template_has_required_sections() -> None:
         "## 11. Scoring Rubric",
         "## 12. Appendix",
     ]
-    
+
     for section in required_sections:
         assert section in contents, f"Missing required section: {section}"
 
@@ -79,14 +80,14 @@ def test_status_template_has_version_metadata() -> None:
 def test_status_template_has_scoring_rubric() -> None:
     """Verify template includes scoring rubric."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     # Check for severity levels
     assert "1 Trivial" in contents
     assert "2 Low" in contents
     assert "3 Medium" in contents
     assert "4 High" in contents
     assert "5 Critical" in contents
-    
+
     # Check for confidence levels
     assert "1 Very Low" in contents
     assert "2 Low" in contents
@@ -99,7 +100,7 @@ def test_status_template_has_scoring_rubric() -> None:
 def test_status_template_has_capability_table() -> None:
     """Verify capability audit table exists with core capabilities."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     core_capabilities = [
         "Tokenization",
         "Modeling",
@@ -114,7 +115,7 @@ def test_status_template_has_capability_table() -> None:
         "Experiment Tracking",
         "Extensibility/Plugins",
     ]
-    
+
     for capability in core_capabilities:
         assert capability in contents, f"Missing core capability: {capability}"
 
@@ -139,7 +140,7 @@ def test_json_schema_is_valid_json() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     assert schema["title"] == "codex_status_update"
     assert schema["type"] == "object"
 
@@ -150,7 +151,7 @@ def test_json_schema_has_required_properties() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     required_props = [
         "metadata",
         "snapshot",
@@ -161,9 +162,9 @@ def test_json_schema_has_required_properties() -> None:
         "questions",
         "decisions",
     ]
-    
+
     assert schema["required"] == required_props
-    
+
     for prop in required_props:
         assert prop in schema["properties"], f"Missing property definition: {prop}"
 
@@ -200,7 +201,7 @@ def test_authoring_guide_v12_exists() -> None:
 def test_authoring_guide_has_required_sections() -> None:
     """Verify authoring guide has all required sections."""
     contents = read_template("authoring_guide_v1.1.md")
-    
+
     required_sections = [
         "## 1. Cadence and Storage",
         "## 2. Title and Metadata",
@@ -215,7 +216,7 @@ def test_authoring_guide_has_required_sections() -> None:
         "## 11. Review and DoD",
         "## 12. Template Updates",
     ]
-    
+
     for section in required_sections:
         assert section in contents, f"Missing section in authoring guide: {section}"
 
@@ -238,7 +239,7 @@ def test_diff_style_guide_v12_exists() -> None:
 def test_diff_style_guide_has_patch_format() -> None:
     """Verify diff style guide includes canonical patch format."""
     contents = read_template("diff_style_guide_v1.1.md")
-    
+
     # Check for patch markers
     assert "*** Begin Patch" in contents
     assert "*** End Patch" in contents
@@ -272,7 +273,7 @@ def test_reports_daily_readme_exists() -> None:
 def test_template_has_secret_masking_guidance() -> None:
     """Verify template includes secret masking guidance."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     assert "[REDACTED:" in contents
     assert "Never include plaintext secrets" in contents
     assert "Secret‑Masking Guidance" in contents
@@ -282,7 +283,7 @@ def test_template_has_secret_masking_guidance() -> None:
 def test_template_has_patch_validation_checklist() -> None:
     """Verify template includes validation checklist for patches."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     checklist_items = [
         "Build/lint/typecheck pass",
         "Unit/integration tests",
@@ -290,7 +291,7 @@ def test_template_has_patch_validation_checklist() -> None:
         "Rollback",
         "Backward compatibility",
     ]
-    
+
     for item in checklist_items:
         assert item in contents, f"Missing validation checklist item: {item}"
 
@@ -299,7 +300,7 @@ def test_template_has_patch_validation_checklist() -> None:
 def test_template_title_format() -> None:
     """Verify template specifies title format correctly."""
     contents = read_template("codex_status_template_v1.1.md")
-    
+
     assert "📍 `_codex_` : Status Update" in contents
     assert "YYYY‑MM‑DD‑HH:mm:z‑UTC" in contents
 
@@ -310,7 +311,7 @@ def test_json_schema_version_constraint() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     template_version = schema["properties"]["metadata"]["properties"]["template_version"]
     assert template_version["const"] == "v1.1"
 
@@ -321,7 +322,7 @@ def test_json_schema_v12_version_constraint() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema_v1.2.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     template_version = schema["properties"]["metadata"]["properties"]["template_version"]
     assert template_version["const"] == "v1.2"
 
@@ -330,7 +331,7 @@ def test_json_schema_v12_version_constraint() -> None:
 def test_status_template_v12_has_enhanced_sections() -> None:
     """Verify v1.2 template has enhanced sections."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     # v1.2 specific sections
     v12_sections = [
         "### 2.6 Schema Validation Report (NEW — v1.2)",
@@ -341,7 +342,7 @@ def test_status_template_v12_has_enhanced_sections() -> None:
         "### 2.8 Audit Integrity Chain (NEW — v1.2)",
         "#### 2.8.1 Integrity Chain Status",
     ]
-    
+
     for section in v12_sections:
         assert section in contents, f"Missing v1.2 section: {section}"
 
@@ -350,7 +351,7 @@ def test_status_template_v12_has_enhanced_sections() -> None:
 def test_status_template_v12_has_git_context() -> None:
     """Verify v1.2 template has git context fields."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     assert "**Git Context**:" in contents
     assert "**Branch**:" in contents
     assert "**Commit SHA**:" in contents
@@ -361,7 +362,7 @@ def test_status_template_v12_has_git_context() -> None:
 def test_status_template_v12_has_environment() -> None:
     """Verify v1.2 template has environment fields."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     assert "**Environment**:" in contents
     assert "**Python**:" in contents
     assert "**PyTorch**:" in contents
@@ -373,14 +374,14 @@ def test_status_template_v12_has_environment() -> None:
 def test_status_template_v12_has_validation_tooling_refs() -> None:
     """Verify v1.2 template references validation tooling."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     validation_tools = [
         "tools/validate_configs.py",
         "tools/schema_validate.py",
         "src/codex_ml/cli/validate.py",
         "src/security/core.py",
     ]
-    
+
     for tool in validation_tools:
         assert tool in contents, f"Missing reference to validation tool: {tool}"
 
@@ -389,14 +390,14 @@ def test_status_template_v12_has_validation_tooling_refs() -> None:
 def test_status_template_v12_has_security_patterns() -> None:
     """Verify v1.2 template documents security validation patterns."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     security_patterns = [
         "SQL Injection",
         "XSS (HTML/JS)",
         "Path Traversal",
         "JSON Injection",
     ]
-    
+
     for pattern in security_patterns:
         assert pattern in contents, f"Missing security pattern: {pattern}"
 
@@ -405,7 +406,7 @@ def test_status_template_v12_has_security_patterns() -> None:
 def test_status_template_v12_has_audit_integrity() -> None:
     """Verify v1.2 template has audit integrity chain."""
     contents = read_template("codex_status_template_v1.2.md")
-    
+
     assert "Audit Integrity Chain" in contents
     assert "SHA256 Hash" in contents
     assert "audit_run_manifest.json" in contents
@@ -418,7 +419,7 @@ def test_json_schema_v12_has_git_context() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema_v1.2.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     git_context = schema["properties"]["metadata"]["properties"]["git_context"]
     assert git_context is not None
     assert "branch" in git_context["properties"]
@@ -432,7 +433,7 @@ def test_json_schema_v12_has_ml_test_score() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema_v1.2.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     assert "ml_test_score" in schema["properties"]
     ml_test_score = schema["properties"]["ml_test_score"]
     assert "data_tests" in ml_test_score["properties"]
@@ -447,7 +448,7 @@ def test_json_schema_v12_has_hydra_config() -> None:
     schema_path = STATUS_TEMPLATES_DIR / "codex_status_template.schema_v1.2.json"
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
-    
+
     assert "hydra_config_snapshot" in schema["properties"]
     hydra_snapshot = schema["properties"]["hydra_config_snapshot"]
     assert "config_groups" in hydra_snapshot["properties"]
@@ -459,7 +460,7 @@ def test_json_schema_v12_has_hydra_config() -> None:
 def test_authoring_guide_v12_has_schema_validation_section() -> None:
     """Verify authoring guide v1.2 documents schema validation."""
     contents = read_template("authoring_guide_v1.2.md")
-    
+
     assert "## 4. Schema Validation Report (NEW v1.2)" in contents
     assert "tools/validate_configs.py" in contents
     assert "jsonschema Draft7Validator" in contents
@@ -469,7 +470,7 @@ def test_authoring_guide_v12_has_schema_validation_section() -> None:
 def test_authoring_guide_v12_has_security_validation_section() -> None:
     """Verify authoring guide v1.2 documents security validation."""
     contents = read_template("authoring_guide_v1.2.md")
-    
+
     assert "## 5. Security Input Validation Summary (NEW v1.2)" in contents
     assert "src/security/core.py" in contents
 
@@ -478,7 +479,7 @@ def test_authoring_guide_v12_has_security_validation_section() -> None:
 def test_authoring_guide_v12_has_audit_integrity_section() -> None:
     """Verify authoring guide v1.2 documents audit integrity."""
     contents = read_template("authoring_guide_v1.2.md")
-    
+
     assert "## 6. Audit Integrity Chain (NEW v1.2)" in contents
     assert "SHA256 hash" in contents
 
@@ -487,7 +488,7 @@ def test_authoring_guide_v12_has_audit_integrity_section() -> None:
 def test_diff_style_guide_v12_has_schema_requirements() -> None:
     """Verify diff style guide v1.2 includes schema validation requirements."""
     contents = read_template("diff_style_guide_v1.2.md")
-    
+
     assert "schema validation passes" in contents
     assert "tools/validate_configs.py" in contents
     assert "NEW v1.2" in contents

@@ -31,7 +31,7 @@ def process_batch(
 ) -> list[list[dict[str, str]]]:
     """Process data in batches."""
     ...
-```
+```text
 
 ## Pre-Commit Checks
 All code must pass:

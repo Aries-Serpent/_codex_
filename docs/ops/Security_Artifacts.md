@@ -9,20 +9,20 @@ Run local security scans and persist artifacts under audit_artifacts/security/ w
 - Quick local sweep (no artifacts):
 ```bash
 nox -s sec_scan
-```
+```text
 
 - Deep sweep with artifacts (opt-in):
 ```bash
 CODEX_AUDIT=1 nox -s sec
 ls audit_artifacts/security/
 # bandit.json, semgrep.json, detect-secrets.json, pip-audit.json (if requirements/base.txt present)
-```
+```text
 
 - Container hygiene (optional tools):
 ```bash
 make docker-hadolint
 CODEX_AUDIT=1 CODEX_IMAGE=codex:local make docker-trivy
-```
+```text
 
 ## Notes
 - Tools must be installed locally (see docs/ops/Local_Tooling_Prereqs.md).

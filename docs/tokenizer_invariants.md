@@ -10,7 +10,7 @@ encoded = tokenizer(
     max_length=CANONICAL_MAX_SEQ_LEN,  # e.g., 2048 / 4096 / 8192
     return_tensors="pt",
 )
-```
+```text
 
 **Why:** Transformers padding/truncation depends on parameters and tokenizer configuration. Explicitly setting `truncation`, `padding`, and `max_length` avoids silent drift across tokenizers and versions.
 

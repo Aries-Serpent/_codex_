@@ -18,7 +18,7 @@ Example:
 . scripts/session_hooks.sh
 codex_session_start "my-cli" "$@"
 trap 'codex_session_end $?' EXIT
-```
+```text
 The start hook stores the current time so that the end hook can compute and
 record the session duration in seconds. Both hooks are best-effort and will not
 abort the main script when logging errors occur.

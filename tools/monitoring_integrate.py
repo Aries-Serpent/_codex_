@@ -254,9 +254,7 @@ class MonitoringSession:
                 )
                 self._log_exception("mlflow_init")
         try:
-            self.metrics_thread = SystemMetrics(
-                self.metrics_interval, self.log_system_metrics
-            )
+            self.metrics_thread = SystemMetrics(self.metrics_interval, self.log_system_metrics)
             self.metrics_thread.start()
         except Exception as e:
             q5(
@@ -311,9 +309,7 @@ class MonitoringSession:
                 f"tag={tag}, step={step}, bins={bins}",
             )
 
-    def log_artifact(
-        self, local_path: Path, artifact_name: Optional[str] = None
-    ) -> None:
+    def log_artifact(self, local_path: Path, artifact_name: Optional[str] = None) -> None:
         try:
             if self.mlf:
                 mlflow.log_artifact(str(local_path), artifact_path=artifact_name or "")
@@ -327,13 +323,9 @@ class MonitoringSession:
             append(self.logs / "system_metrics.jsonl", json.dumps(payload) + "\n")
             step = int(time.time())
             if "cpu_percent" in payload:
-                self.log_scalar(
-                    "system/cpu_percent", float(payload["cpu_percent"]), step
-                )
+                self.log_scalar("system/cpu_percent", float(payload["cpu_percent"]), step)
             if "ram_used_mb" in payload:
-                self.log_scalar(
-                    "system/ram_used_mb", float(payload["ram_used_mb"]), step
-                )
+                self.log_scalar("system/ram_used_mb", float(payload["ram_used_mb"]), step)
         except Exception as e:
             q5(
                 "log_system_metrics",
@@ -417,12 +409,8 @@ def main() -> None:
         description="Integrate monitoring (TB/W&B/MLflow) with system metrics."
     )
     ap.add_argument("--run-name", default="demo", help="Name for this run.")
-    ap.add_argument(
-        "--output-root", default="runs", help="Root directory for run outputs."
-    )
-    ap.add_argument(
-        "--enable-tensorboard", action="store_true", help="Enable TensorBoard logging."
-    )
+    ap.add_argument("--output-root", default="runs", help="Root directory for run outputs.")
+    ap.add_argument("--enable-tensorboard", action="store_true", help="Enable TensorBoard logging.")
     ap.add_argument(
         "--enable-wandb",
         action="store_true",
@@ -440,9 +428,7 @@ def main() -> None:
         help="System metrics interval in seconds.",
     )
     ap.add_argument("--steps", type=int, default=50, help="Demo steps to run.")
-    ap.add_argument(
-        "--write-docs", action="store_true", help="Also write docs/ops/monitoring.md."
-    )
+    ap.add_argument("--write-docs", action="store_true", help="Also write docs/ops/monitoring.md.")
     args = ap.parse_args()
 
     out = REPO / args.output_root / args.run_name

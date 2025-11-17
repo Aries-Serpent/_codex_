@@ -73,7 +73,7 @@
 ## Verification Tests
 
 ### Preflight Sanity Check
-```
+```text
 $ python .github/scripts/ci_dependency_sanity.py
 [sanity] Checking critical imports...
 [sanity] ✓ torch: /path/to/torch/__init__.py
@@ -84,14 +84,14 @@ $ python .github/scripts/ci_dependency_sanity.py
 [sanity] ✓ typer.Typer: present
 [sanity] ✓ hydra.core.ConfigStore: importable
 [sanity] ✓ All critical imports OK.
-```
+```text
 
 ### Torch CPU Verification
 ```python
 import torch
 print('CUDA available:', torch.cuda.is_available())  # False
 print('Torch version:', torch.__version__)  # 2.3.1+cpu
-```
+```text
 
 ### safe_exists Function Tests
 ```python
@@ -100,27 +100,27 @@ Test 2 - group + name: True
 Test 3 - non-existent: False
 Test 4 - wrong group: False
 ✓ All safe_exists tests passed
-```
+```text
 
 ### register_configs Idempotency
 ```python
 register_configs()  # First call
 register_configs()  # Second call - no errors
 ✓ Idempotent registration successful
-```
+```text
 
 ### Renamed Test File
-```
+```text
 $ pytest tests/eval/test_evaluation_metrics.py -v
 tests/eval/test_evaluation_metrics.py::test_perplexity_from_logits PASSED
 tests/eval/test_evaluation_metrics.py::test_token_accuracy PASSED
 2 passed in 0.14s
-```
+```text
 
 ### Security Scan
-```
+```text
 CodeQL: 0 alerts (python, actions)
-```
+```text
 
 ## Determinism Anchors
 

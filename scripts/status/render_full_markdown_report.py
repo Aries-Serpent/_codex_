@@ -40,7 +40,9 @@ def section_snapshot(md: list[str], snap: dict) -> None:
     tests = snap.get("tests_gates", {})
     md.append(f"- Capabilities: {len(caps)}")
     md.append(f"- Findings: {len(fnds)}")
-    md.append(f"- Coverage: {tests.get('coverage_percent', 0)}% (threshold {tests.get('coverage_threshold', 0)}%)")
+    md.append(
+        f"- Coverage: {tests.get('coverage_percent', 0)}% (threshold {tests.get('coverage_threshold', 0)}%)"
+    )
     md.append("")
 
 
@@ -80,7 +82,9 @@ def section_delta(md: list[str], delta: dict) -> None:
     md.append(h2("8. Delta"))
     tc = delta.get("tests_coverage_delta", {})
     if tc:
-        md.append(f"- Coverage Δ: {tc.get('delta_percent',0)} (prev {tc.get('previous_percent',0)} → curr {tc.get('current_percent',0)})")
+        md.append(
+            f"- Coverage Δ: {tc.get('delta_percent',0)} (prev {tc.get('previous_percent',0)} → curr {tc.get('current_percent',0)})"
+        )
     else:
         md.append("- N/A")
     md.append("")

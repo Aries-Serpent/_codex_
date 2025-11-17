@@ -24,7 +24,7 @@ python tools/generate_status_update.py
 
 # Output location
 .codex/status/_codex_status_update-YYYY-MM-DD.json
-```
+```text
 
 ### Via CLI Command
 
@@ -34,7 +34,7 @@ codex-status-audit --generate
 
 # Or via Python module
 python -m cli.status_audit --generate
-```
+```text
 
 ## Output
 
@@ -64,7 +64,7 @@ The tool generates a JSON file with the following structure:
   "questions": [ ... ],
   "decisions": [ ... ]
 }
-```
+```text
 
 ## Capabilities Tracked
 
@@ -96,7 +96,7 @@ schemas/codex_status_update.schema.json
 
 # The tool uses jsonschema for validation
 # Install: pip install jsonschema
-```
+```text
 
 ## Integration
 
@@ -113,7 +113,7 @@ Add to `.pre-commit-config.yaml`:
       language: python
       pass_filenames: false
       always_run: true
-```
+```text
 
 ### CI/CD Pipeline
 
@@ -124,7 +124,7 @@ Add to your workflow:
   run: |
     python tools/generate_status_update.py
     git add .codex/status/_codex_status_update-*.json
-```
+```text
 
 ## Customization
 
@@ -173,14 +173,14 @@ cat .codex/status/_codex_status_update-2025-11-10.json | python -m json.tool
 # Extract specific section
 cat .codex/status/_codex_status_update-2025-11-10.json | \
   python -c "import json, sys; print(json.dumps(json.load(sys.stdin)['snapshot']['capabilities'], indent=2))"
-```
+```text
 
 ### Compare Reports
 
 ```bash
 # Diff two reports
 diff <(jq -S . report1.json) <(jq -S . report2.json)
-```
+```text
 
 ## Troubleshooting
 

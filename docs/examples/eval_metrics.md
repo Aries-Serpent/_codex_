@@ -16,7 +16,7 @@ record = evaluate(
     device="cuda" if torch.cuda.is_available() else "cpu",
 )
 print(record)
-```
+```text
 
 The helper runs in `torch.no_grad()` and restores the model's training mode.  The
 returned dictionary includes `eval_loss`, `loss`, `perplexity`, and

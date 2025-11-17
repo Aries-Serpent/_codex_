@@ -66,6 +66,6 @@ Unset knobs or remove artifacts:
 ```bash
 unset TOKEN_SIMILARITY_ENABLE COVERAGE_ENABLE SECURITY_SEVERITY_ENABLE PREFIX_VALIDATE_AUTO
 git checkout scripts/space_traversal/audit_runner.py
-```
+```text
 
 *End of P5 Integration Reference*

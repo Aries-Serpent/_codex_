@@ -10,9 +10,9 @@ For more details on environment setup, see [OpenAI Codex](http://platform.openai
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -27,7 +27,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -61,7 +61,7 @@ Set up the git hooks before committing:
 ```bash
 pip install pre-commit
 pre-commit install
-```
+```text
 
 Pull requests are validated with `pre-commit run --all-files`; submissions failing these
 hooks will be rejected.
@@ -91,21 +91,21 @@ python -m codex.logging.session_logger --event message \
   --session-id "$CODEX_SESSION_ID" --role user --message "Hello"
 
 # Programmatic usage
-```python
+````python
 from src.codex.logging.session_logger import SessionLogger
 
 with SessionLogger("demo-session") as log:
     log.log_message("user", "Hello")
 ````
 
-```python
+````python
 # Or use ChatSession which logs each message once via log_event
 from src.codex.chat import ChatSession
 
 with ChatSession("demo-session") as chat:
     chat.log_user("Hello")
     chat.log_assistant("Hi there")
-```
+```text
 
 ### Querying
 
@@ -116,7 +116,7 @@ FROM session_events
 WHERE session_id = 'YOUR_SESSION_ID'
 ORDER BY timestamp DESC
 LIMIT 10;
-```
+```text
 
 ### Notes
 
@@ -124,3 +124,5 @@ LIMIT 10;
 - To change the DB location, set `CODEX_LOG_DB_PATH=/path/to/db.sqlite`.
 - **Do NOT activate any GitHub Actions files** as part of this change; keep CI disabled unless you explicitly enable it in repo settings.
   DO NOT ACTIVATE ANY GitHub Actions files.
+
+```

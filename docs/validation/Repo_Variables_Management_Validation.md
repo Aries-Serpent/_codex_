@@ -8,32 +8,32 @@ Steps
 1) Ensure token:
 ```bash
 export GH_PAT="*****"  # or: export _CODEX_BOT_RUNNER="*****"
-```
+```text
 
 2) Create/update variables:
 ```bash
 # Curated + generic
 make runner-vars OWNER=Aries-Serpent REPO=_codex_ RUNS_ON='["self-hosted","linux"]' SETS="FEATURE_FLAG=1 DEPLOY_ENV=staging"
-```
+```text
 
 3) List variables:
 ```bash
 make vars-list OWNER=Aries-Serpent REPO=_codex_
 # Or JSON:
 make vars-list OWNER=Aries-Serpent REPO=_codex_ FORMAT=json
-```
+```text
 
 4) Update existing:
 ```bash
 make runner-vars OWNER=Aries-Serpent REPO=_codex_ SETS="FEATURE_FLAG=0"
-```
+```text
 
 5) Delete variables:
 ```bash
 make runner-vars OWNER=Aries-Serpent REPO=_codex_ DELETE="FEATURE_FLAG DEPLOY_ENV"
 # or
 make vars-delete OWNER=Aries-Serpent REPO=_codex_ NAMES="FEATURE_FLAG DEPLOY_ENV"
-```
+```text
 
 6) Evidence:
 - .codex/evidence/runner_ops.jsonl should include configure_repo_vars entries with created/updated/deleted arrays reflecting your actions.

@@ -25,7 +25,7 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
 ignore = ["E501"]  # Line too long - handled by Black
-```
+```text
 
 ## Rationale
 

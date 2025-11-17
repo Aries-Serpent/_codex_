@@ -6,7 +6,7 @@ without enabling hosted runners.
 
 ```bash
 python tools/offline_ci_runner.py
-```
+```text
 
 This executes, in order:
 

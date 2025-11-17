@@ -21,8 +21,12 @@ def lint_file(p: Path) -> List[str]:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Lint HTML templates for required CSS includes (theme.css, print.css)")
-    ap.add_argument("--dir", default="docs/templates/status", help="Directory to scan for .html files")
+    ap = argparse.ArgumentParser(
+        description="Lint HTML templates for required CSS includes (theme.css, print.css)"
+    )
+    ap.add_argument(
+        "--dir", default="docs/templates/status", help="Directory to scan for .html files"
+    )
     args = ap.parse_args(argv)
 
     root = Path(args.dir)

@@ -17,7 +17,11 @@ REPO = Path(__file__).resolve().parents[1]
 OUT = REPO / "audit_artifacts" / "capabilities_raw.json"
 
 HINTS = [
-    ("Tokenization", ["tokenizer", "tokenization", "sentencepiece", "hf"], ["huggingface", "offline"]),
+    (
+        "Tokenization",
+        ["tokenizer", "tokenization", "sentencepiece", "hf"],
+        ["huggingface", "offline"],
+    ),
     ("Training", ["trainer", "training", "epoch", "optimizer"], ["gpu", "deterministic"]),
     ("Evaluation", ["eval", "metrics", "accuracy", "f1"], ["cli"]),
     ("Security", ["security", "sanitize", "detect-secrets", "bandit"], ["security"]),
@@ -39,7 +43,20 @@ def discover() -> List[Dict]:
             results.append(
                 {
                     "name": name,
-                    "category": name if name in {"Tokenization", "Training", "Evaluation", "Security", "Configuration", "Testing", "Tracking"} else "Other",
+                    "category": (
+                        name
+                        if name
+                        in {
+                            "Tokenization",
+                            "Training",
+                            "Evaluation",
+                            "Security",
+                            "Configuration",
+                            "Testing",
+                            "Tracking",
+                        }
+                        else "Other"
+                    ),
                     "status": "Partially Implemented",
                     "artifacts": ", ".join(evidence[:10]),
                     "gaps": "",

@@ -4,9 +4,13 @@ Minimal metrics utilities used by evaluation/configs.
 Exposed callables can be referenced via entrypoint strings like:
   "codex_ml.metrics:accuracy"
 """
+
 from __future__ import annotations
+
+from typing import List, Union
+
 import torch
-from typing import Union, List
+
 
 def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
     """
@@ -18,6 +22,7 @@ def accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> "torch.Tensor":
         preds = logits
     return (preds == targets).float().mean()
 
+
 def precision(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
     """
     Compute binary classification precision.
@@ -26,13 +31,14 @@ def precision(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Te
         preds = torch.tensor(preds)
     if isinstance(targets, list):
         targets = torch.tensor(targets)
-    
+
     true_positives = ((preds == 1) & (targets == 1)).sum().item()
     predicted_positives = (preds == 1).sum().item()
-    
+
     if predicted_positives == 0:
         return 0.0
     return true_positives / predicted_positives
+
 
 def recall(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
     """
@@ -42,13 +48,14 @@ def recall(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tenso
         preds = torch.tensor(preds)
     if isinstance(targets, list):
         targets = torch.tensor(targets)
-    
+
     true_positives = ((preds == 1) & (targets == 1)).sum().item()
     actual_positives = (targets == 1).sum().item()
-    
+
     if actual_positives == 0:
         return 0.0
     return true_positives / actual_positives
+
 
 def f1_score(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Tensor"]) -> float:
     """
@@ -56,18 +63,21 @@ def f1_score(preds: Union[List, "torch.Tensor"], targets: Union[List, "torch.Ten
     """
     prec = precision(preds, targets)
     rec = recall(preds, targets)
-    
+
     if prec + rec == 0:
         return 0.0
     return 2 * (prec * rec) / (prec + rec)
+
 
 def perplexity(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
     """
     Compute perplexity from logits and targets.
     """
     import torch.nn.functional as F
+
     loss = F.cross_entropy(logits, targets)
     return torch.exp(loss).item()
+
 
 def token_accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
     """
@@ -75,5 +85,6 @@ def token_accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
     """
     preds = logits.argmax(dim=-1)
     return (preds == targets).float().mean().item()
+
 
 __all__ = ["accuracy", "precision", "recall", "f1_score", "perplexity", "token_accuracy"]

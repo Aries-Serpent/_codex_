@@ -18,6 +18,6 @@ prefer_local (default)
 Switch policy to override:
 ```bash
 export CODEX_METRIC_PLUGIN_POLICY=prefer_plugin
-```
+```text
 
 — End

@@ -82,7 +82,7 @@ diff --git a/src/codex_ml/cli/codex_cli.py b/src/codex_ml/cli/codex_cli.py
 +    click.echo(json.dumps(payload, indent=2, sort_keys=True))
 +    if json_path:
 +        Path(json_path).write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-```
+```text
 
 ### Atomic Diff 2 — Persist fallback training metrics
 - **Why:** Align fallback path with evaluation runner by saving NDJSON to disk when optional deps are missing.
@@ -122,7 +122,7 @@ diff --git a/src/codex_ml/training/__init__.py b/src/codex_ml/training/__init__.
 +            "checkpoint_dir": None,
 +            "resumed_from": None,
 +        }
-```
+```text
 
 ### Atomic Diff 3 — Add `--system-metrics` gate to CLI training
 - **Why:** Allow operators to toggle psutil/NVML logging directly from the CLI, ensuring telemetry threads start/stop automatically.
@@ -185,7 +185,7 @@ diff --git a/src/codex_ml/cli/codex_cli.py b/src/codex_ml/cli/codex_cli.py
 +        if metrics_thread is not None:
 +            metrics_thread.stop()
 +            metrics_thread.join()
-```
+```text
 
 5. **Local Tests & Gates**
 
@@ -234,7 +234,7 @@ Codex-ready Task Sequence:
     - If automation fails (e.g., placeholder scan), call `ErrorCaptureRecorder.record` in `status_update_executor` to emit a prompt and log context.【F:tools/status/status_update_executor.py†L29-L88】
   6. Finalization:
     - Commit regenerated artefacts, update outstanding-questions ledger, and rerun `nox -s ci_local` before publishing.
-```
+```text
 
 **Additional Deliverable — Executable Script**
 ```python
@@ -485,4 +485,4 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
     raise SystemExit(main())
-```
+```text

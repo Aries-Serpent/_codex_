@@ -50,12 +50,12 @@ def test_template_readable(relative_path: str) -> None:
 def test_template_has_metadata_header(relative_path: str) -> None:
     contents = read(DOC_TEMPLATES_DIR / relative_path)
     first_lines = contents.splitlines()[:4]
-    assert any(line.startswith("# [Template]") for line in first_lines), (
-        f"Metadata header missing in {relative_path}"
-    )
-    assert any("Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]), (
-        f"Version metadata missing in {relative_path}"
-    )
+    assert any(
+        line.startswith("# [Template]") for line in first_lines
+    ), f"Metadata header missing in {relative_path}"
+    assert any(
+        "Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]
+    ), f"Version metadata missing in {relative_path}"
 
 
 @pytest.mark.templates

@@ -25,10 +25,10 @@
 ```bash
 # Command to verify PR state
 gh pr view 2207 --json mergeable,mergeStateStatus,commits,statusCheckRollup
-```
+```text
 
 **Expected Output:**
-```
+```text
 mergeable: true
 mergeStateStatus: CLEAN
 commits: 102
@@ -39,7 +39,7 @@ statusCheckRollup:
     state: PASS
   - context: nox_gates.yml
     state: PASS
-```
+```text
 
 **Verification Checklist:**
 - ☐ `mergeable` = `true`
@@ -49,13 +49,13 @@ statusCheckRollup:
 - ☐ 102 commits confirmed
 
 **If Any Check Fails:**
-```
+```text
 ⚠️ STOP DEPLOYMENT
 → Investigate failed check
 → Address issue in 0D_base_ branch
 → Push fix and wait for re-run
 → Return to Step 1.1
-```
+```text
 
 ---
 
@@ -79,7 +79,7 @@ detect-secrets scan --baseline .secrets.baseline | grep -i "new"
 # Check GPU packages
 grep -E "(torch|cuda|tensorflow)" uv.lock | wc -l
 # Expected: 0
-```
+```text
 
 **Expected Results:**
 - Bandit: 0 HIGH/CRITICAL issues
@@ -87,13 +87,13 @@ grep -E "(torch|cuda|tensorflow)" uv.lock | wc -l
 - GPU Check: "0"
 
 **If Issues Found:**
-```
+```text
 ⚠️ HALT DEPLOYMENT
 → Create new PR for fixes
 → Address all findings
 → Obtain security clearance
 → Schedule new deployment window
-```
+```text
 
 ---
 
@@ -104,7 +104,7 @@ grep -E "(torch|cuda|tensorflow)" uv.lock | wc -l
 
 **Message Template:**
 
-```
+```text
 🚀 DEPLOYMENT NOTIFICATION: PR #2207
 
 Title: 0D to main
@@ -131,7 +131,7 @@ Changes: 126 files | +20,518 additions | -3,502 deletions
   [ ] @maintainers: Final approval
 
 Proceed with merge? Reply: ✅ APPROVED or 🛑 ON HOLD
-```
+```text
 
 **Required Approvals:**
 - ☐ QA Team acknowledgment
@@ -140,12 +140,12 @@ Proceed with merge? Reply: ✅ APPROVED or 🛑 ON HOLD
 - ☐ Maintainer approval
 
 **If Approval Not Obtained:**
-```
+```text
 ⏸️ DEFER DEPLOYMENT
 → Document blockers
 → Schedule follow-up review
 → Keep PR in ready state
-```
+```text
 
 ---
 
@@ -164,13 +164,13 @@ git pull origin main
 # Verify target state
 git log --oneline -5 main
 # Confirm HEAD = base commit of PR (65e02ec...)
-```
+```text
 
 **Expected Output:**
-```
+```text
 65e02ec... [base commit visible]
 [previous commits...]
-```
+```text
 
 ---
 
@@ -208,13 +208,13 @@ git log --oneline -5 main
 
 ```bash
 gh pr merge 2207 --merge --repo Aries-Serpent/_codex_
-```
+```text
 
 **Expected Output:**
-```
+```text
 ✓ Pull request #2207 merged
 ✓ Merge commit: [SHA-12char]
-```
+```text
 
 ---
 
@@ -232,19 +232,19 @@ git checkout main
 git pull origin main
 git log --oneline -1
 # Should show merge commit
-```
+```text
 
 **Expected Output:**
-```
+```text
 merged: true
 mergedAt: [timestamp]
 mergedBy: [your-username]
 ---
 [merge commit SHA] Merge pull request #2207...
-```
+```text
 
 **If Merge Failed:**
-```
+```text
 🚨 MERGE ERROR
 → Check GitHub error message
 → Common issues:
@@ -252,7 +252,7 @@ mergedBy: [your-username]
   - Status checks failed between pre-check and merge
   - Conflict emerged (rebase required)
 → Resolve issue and retry merge
-```
+```text
 
 ---
 
@@ -268,13 +268,13 @@ mergedBy: [your-username]
 gh run list --workflow=post-merge-validation-optimized.yml -b main -n 1
 
 # Expected: Most recent run should have started within 1-2 minutes
-```
+```text
 
 **Expected Output:**
-```
+```text
 STATUS  TITLE  BRANCH  EVENT  COMMIT  CREATED
 ✓ IN_PROGRESS  Merge pull request #2207...  main  push  [SHA]  ~1m ago
-```
+```text
 
 **Verification:**
 - ☐ Workflow triggered automatically
@@ -282,11 +282,11 @@ STATUS  TITLE  BRANCH  EVENT  COMMIT  CREATED
 - ☐ Commit matches merge commit SHA
 
 **If Workflow Didn't Trigger:**
-```
+```text
 ⚠️ Manual Trigger Required
 → gh workflow run post-merge-validation-optimized.yml -r main
 → Wait 1-2 minutes for workflow to appear
-```
+```text
 
 ---
 
@@ -304,7 +304,7 @@ gh run view $RUN_ID --log
 
 # Check specific jobs
 gh run view $RUN_ID --json jobs
-```
+```text
 
 **Expected Jobs & Timeline:**
 
@@ -320,12 +320,12 @@ gh run view $RUN_ID --json jobs
 **Failure Response:**
 
 If any job fails:
-```
+```text
 🚨 WORKFLOW FAILURE DETECTED
 → gh run view $RUN_ID --log > failure-log.txt
 → Analyze logs for root cause
 → Determine if rollback needed (see Section 10)
-```
+```text
 
 ---
 
@@ -343,11 +343,11 @@ gh run download $RUN_ID -n coverage-report
 
 # View report
 cat coverage-report/coverage-summary.txt
-```
+```text
 
 **Expected Coverage Metrics:**
 
-```
+```text
 Name                 Stmts   Miss  Cover   Missing
 ----------------------------------------------------
 src/                   850    20   97.6%   15-17, 45-48
@@ -355,7 +355,7 @@ src/module1/           220     5   97.7%   12, 89-91
 src/module2/           180     3   98.3%   55-57
 ----------------------------------------------------
 TOTAL                  1250    28   97.8%
-```
+```text
 
 **Validation:**
 - ☐ Overall coverage ≥ 96%
@@ -363,13 +363,13 @@ TOTAL                  1250    28   97.8%
 - ☐ No regression from previous release
 
 **If Coverage Below 96%:**
-```
+```text
 ⚠️ COVERAGE SHORTFALL
 → Determine if issue or acceptable variance
 → Review missing lines for severity
 → Document decision
 → If critical: proceed to rollback
-```
+```text
 
 ---
 
@@ -388,14 +388,14 @@ gh run view $RUN_ID --json artifacts | grep docker
 # Test image locally (optional)
 docker pull ghcr.io/aries-serpent/codex:latest
 docker run --rm ghcr.io/aries-serpent/codex:latest --version
-```
+```text
 
 **Expected Output:**
-```
+```text
 Successfully built Docker image
 Image SHA: sha256:[...hash...]
 Image pushed to: ghcr.io/aries-serpent/codex:latest
-```
+```text
 
 **Validation:**
 - ☐ CPU-only base image used
@@ -416,15 +416,15 @@ gh run view $RUN_ID
 
 # Expected: workflow-conclusion = success
 # Expected: All jobs status = completed with ✓
-```
+```text
 
 **Expected Output:**
-```
+```text
 ✓ WORKFLOW COMPLETED SUCCESSFULLY
   Total Duration: ~32 minutes
   Jobs Passed: 8/8
   Status: SUCCESS
-```
+```text
 
 **Validation Checklist:**
 - ☐ Workflow status: SUCCESS
@@ -434,13 +434,13 @@ gh run view $RUN_ID
 - ☐ Notifications sent
 
 **If Workflow Failed:**
-```
+```text
 🚨 WORKFLOW FAILURE - ESCALATE
 → Document exact failure point
 → Review error messages in logs
 → Contact DevOps team
 → Proceed to ROLLBACK if critical
-```
+```text
 
 ---
 
@@ -467,10 +467,10 @@ git diff main~1 main --name-only | wc -l
 test -f .github/coverage_threshold.txt && echo "✓ Coverage threshold file present"
 test -f .github/docs/AGENTS_PR2224*.md && echo "✓ Review response doc present"
 grep -q "96" .github/coverage_threshold.txt && echo "✓ Coverage threshold set to 96%"
-```
+```text
 
 **Expected Output:**
-```
+```text
 65e02ec Merge pull request #2207...
 [previous commits]
 ---
@@ -478,7 +478,7 @@ grep -q "96" .github/coverage_threshold.txt && echo "✓ Coverage threshold set 
 ✓ Coverage threshold file present
 ✓ Review response doc present
 ✓ Coverage threshold set to 96%
-```
+```text
 
 ---
 
@@ -489,7 +489,7 @@ grep -q "96" .github/coverage_threshold.txt && echo "✓ Coverage threshold set 
 
 **Success Message Template:**
 
-```
+```text
 ✅ DEPLOYMENT SUCCESSFUL: PR #2207
 
 📊 Summary:
@@ -517,7 +517,7 @@ grep -q "96" .github/coverage_threshold.txt && echo "✓ Coverage threshold set 
 
 Deployment completed by: @[your-username]
 Approvals: @qa-team, @security-team, @devops-team
-```
+```text
 
 ---
 
@@ -543,7 +543,7 @@ gh issue create --title "Monitor Coverage Trends Post-PR2207" \
 gh issue create --title "Plan GPU Support Implementation" \
   --body "GPU packages removed for PR #2207. Plan re-introduction with proper CI/CD support." \
   --label future --project "Infrastructure"
-```
+```text
 
 ---
 
@@ -563,7 +563,7 @@ curl http://metrics.example.com/api/error-rate
 # Verify no new exception patterns
 grep -i "exception\|traceback\|fatal" logs/application.log | wc -l
 # Expected: 0 or very low (baseline)
-```
+```text
 
 **Acceptable Error Baseline:**
 - No new error types
@@ -589,7 +589,7 @@ grep -i "exception\|traceback\|fatal" logs/application.log | wc -l
 ```bash
 # Quick health check command
 curl http://health.example.com/api/status | jq .
-```
+```text
 
 ---
 
@@ -604,7 +604,7 @@ curl http://health.example.com/api/status | jq .
 - ☐ Performance metrics normal
 
 **If Issues Detected:**
-```
+```text
 ⚠️ POTENTIAL ISSUE - Assess Severity
 
 MINOR (< 5 users affected):
@@ -618,7 +618,7 @@ MAJOR (> 5 users affected):
 CRITICAL (Production down):
   → EXECUTE IMMEDIATE ROLLBACK
   → See Rollback Procedures below
-```
+```text
 
 ---
 
@@ -648,7 +648,7 @@ CRITICAL (Production down):
 ```bash
 # Notify team
 echo "🚨 ROLLBACK INITIATED - PR #2207" | slurp-notify @dev-team
-```
+```text
 
 **Step 2: Execute Rollback Command (1 minute)**
 
@@ -658,7 +658,7 @@ gh pr revert 2207 --repo Aries-Serpent/_codex_
 
 # Verify revert PR created
 gh pr list --repo Aries-Serpent/_codex_ -s open -l revert
-```
+```text
 
 **Step 3: Create Incident Report (5 minutes)**
 
@@ -686,11 +686,11 @@ gh issue create \
 [Lessons learned and preventive measures]
 " \
   --label incident --label rollback
-```
+```text
 
 **Step 4: Post-Incident Review (Within 24 hours)**
 
-```
+```text
 Participants:
   - Author (mbaetiong)
   - Security Lead
@@ -704,7 +704,7 @@ Agenda:
   3. Contributing factors
   4. Corrective actions
   5. Follow-up items
-```
+```text
 
 ---
 

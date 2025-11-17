@@ -31,10 +31,10 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 **Command-line tasks**: Live in `src/codex/cli.py` and can be invoked with:
 ```bash
 python -m codex.cli <command>
-```
+```text
 
 **Project Structure**:
-```
+```text
 Aries-Serpent/_codex_/
 ├── .github/
 │   ├── docs/              # Documentation
@@ -56,7 +56,7 @@ Aries-Serpent/_codex_/
     ├── sessions/          # Session log files
     ├── logs/              # Error logs
     └── session_logs.db    # SQLite database
-```
+```text
 
 ## Environment Variables
 
@@ -95,7 +95,7 @@ export CODEX_COLLECT_COVERAGE=1
 
 # Validate current environment
 python -m codex.cli validate-env
-```
+```text
 
 ## Logging Roles
 
@@ -123,7 +123,7 @@ log_message(session_id="my-session", role="tool", message="Executed: pytest")
 
 # Log a system event
 log_message(session_id="my-session", role="system", message="Session initialized")
-```
+```text
 
 ## Logging & Evidence Surfaces
 
@@ -158,7 +158,7 @@ Each line is a JSON object (example):
   "actor": "github-actions[bot]",
   "session_id": "S123-456"
 }
-```
+```text
 
 Required keys: `ts`, `action`, `tool` (schema validation session: `nox -s evidence_check`).
 
@@ -200,7 +200,7 @@ pre-commit run --files <changed_files>
 
 # Or run on all files
 pre-commit run --all-files
-```
+```text
 
 ### Testing Workflow
 
@@ -219,7 +219,7 @@ CODEX_COLLECT_COVERAGE=1 nox -s tests
 
 # View coverage report locally
 nox -s coverage-local
-```
+```text
 
 ### Type Checking
 
@@ -227,7 +227,7 @@ If changing Python modules, run:
 
 ```bash
 mypy src/codex
-```
+```text
 
 ## CLI & Tool Usage
 
@@ -243,7 +243,7 @@ python -m codex.cli init-db
 
 # Initialize with custom path
 python -m codex.cli init-db --db-path=.codex/custom.db
-```
+```text
 
 ### Session Logger
 
@@ -258,7 +258,7 @@ python -m codex.cli session-logger \
   --session-id=my-session \
   --role=assistant \
   --message="Analysis complete"
-```
+```text
 
 ### Log Viewer
 
@@ -273,7 +273,7 @@ python -m codex.cli viewer --session-id=abc123
 
 # Output as JSON
 python -m codex.cli viewer --format=json
-```
+```text
 
 ### Query Logs
 
@@ -288,7 +288,7 @@ python -m codex.cli query-logs --search="test" --role=tool
 
 # Combined search
 python -m codex.cli query-logs --search="coverage" --role=user
-```
+```text
 
 ### Environment Validation
 
@@ -299,7 +299,7 @@ Validate and display current environment configuration:
 python -m codex.cli validate-env
 
 # Output shows all CODEX_* variables and their values
-```
+```text
 
 ### Environment Export
 
@@ -314,7 +314,7 @@ python -m codex.cli export-env --format=json
 
 # Export as shell script
 python -m codex.cli export-env --format=shell -o .env
-```
+```text
 
 ### Session Management
 
@@ -329,7 +329,7 @@ python -m codex.cli list-sessions --limit=20
 
 # List as JSON
 python -m codex.cli list-sessions --format=json
-```
+```text
 
 ### Log Cleanup
 
@@ -344,7 +344,7 @@ python -m codex.cli clean-logs --older-than=7
 
 # Delete without confirmation
 python -m codex.cli clean-logs --older-than=30 -y
-```
+```text
 
 ## Optional Dependencies & Mocking
 
@@ -379,7 +379,7 @@ def mock_optional_deps():
     except ImportError:
         hydra = MagicMock()
         # Use mock in tests
-```
+```text
 
 ### Installing Optional Dependencies
 
@@ -395,7 +395,7 @@ pip install -r requirements-notebook.txt
 
 # Install all development dependencies
 pip install -e ".[dev]"
-```
+```text
 
 ## Prohibited Actions & Scope
 
@@ -420,7 +420,7 @@ pip install -e ".[dev]"
 
 ### Directory Structure
 
-```
+```text
 .codex/
 ├── sessions/              # Session-specific log files
 │   └── session_*.log      # Rotated based on session ID
@@ -432,7 +432,7 @@ pip install -e ".[dev]"
 │   └── dependency_ops.jsonl  # Dependency operations (append-only, weekly rotation if >1MB)
 ├── cache/                 # Transient metrics (safe to prune)
 └── session_logs.db        # SQLite database
-```
+```text
 
 ### Retention Policy
 
@@ -455,7 +455,7 @@ find .codex/sessions -name "*.log" -mtime +14 -delete
 
 # Clear cache
 rm -rf .codex/cache/*
-```
+```text
 
 ## Error Handling & Backward Compatibility
 
@@ -488,7 +488,7 @@ except Exception as e:
         context={'operation': 'data_processing'},
         fatal=False  # Set to True to exit after logging
     )
-```
+```text
 
 ### Graceful Degradation
 
@@ -512,7 +512,7 @@ Hydra is used for hierarchical configuration management.
 ### Configuration Files
 
 Located in `configs/` directory:
-```
+```text
 configs/
 ├── config.yaml          # Main configuration
 ├── db/
@@ -521,7 +521,7 @@ configs/
 └── logging/
     ├── debug.yaml
     └── production.yaml
-```
+```text
 
 ### Using Hydra Configurations
 
@@ -534,7 +534,7 @@ def main(cfg: DictConfig):
     # Access configuration
     db_path = cfg.db.path
     log_level = cfg.logging.level
-```
+```text
 
 ### Override Configuration
 
@@ -544,7 +544,7 @@ python script.py db.path=.codex/custom.db logging.level=DEBUG
 
 # Override via environment
 HYDRA_FULL_ERROR=1 python script.py
-```
+```text
 
 ## Production Readiness Checklist
 
@@ -576,9 +576,9 @@ Before deploying or merging major changes:
 6. ✅ End-to-end CLI test - Complete workflow validation
 
 **Test Results**:
-```
+```text
 ======================== 22 passed in 0.44s ==============================
-```
+```text
 
 **CLI Commands Verified**:
 ```bash
@@ -590,7 +590,7 @@ Before deploying or merging major changes:
 ✅ codex export-env --format=json
 ✅ codex list-sessions --limit=5
 ✅ codex clean-logs --dry-run
-```
+```text
 
 **Infrastructure**:
 - DBManager: Connection pooling, thread-safe, auto-init
@@ -619,7 +619,7 @@ mkdir -p .codex/sessions .codex/logs
 
 # Test database connectivity
 python -c "import sqlite3; sqlite3.connect('.codex/session_logs.db').close()"
-```
+```text
 
 #### Issue: Tests failing with import errors
 
@@ -637,7 +637,7 @@ pip install -e ".[dev]"
 
 # Verify installation
 python -c "import codex; print(codex.__version__)"
-```
+```text
 
 #### Issue: Coverage below threshold
 
@@ -654,7 +654,7 @@ python -c "import codex; print(codex.__version__)"
 CODEX_COLLECT_COVERAGE=1 nox -s tests
 python -m http.server -d artifacts/htmlcov 8000
 # Open http://localhost:8000 in browser
-```
+```text
 
 #### Issue: Pre-commit hooks failing
 
@@ -671,7 +671,7 @@ python -m http.server -d artifacts/htmlcov 8000
 pre-commit clean
 pre-commit install --install-hooks
 pre-commit run --all-files
-```
+```text
 
 #### Issue: Environment variables not recognized
 
@@ -689,7 +689,7 @@ env | grep CODEX_
 
 # Validate configuration
 python -m codex.cli validate-env
-```
+```text
 
 ### Getting Help
 

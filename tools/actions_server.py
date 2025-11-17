@@ -17,16 +17,19 @@ import requests
 
 try:
     # Optional: reuse shared client utilities if importable
-    from src.codex_bridge.github_client import most_recent_branch as gh_most_recent_branch
+    from src.codex_bridge.github_client import (
+        most_recent_branch as gh_most_recent_branch,
+    )
 except Exception:  # pragma: no cover - fallback
     gh_most_recent_branch = None
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
-REPO  = os.getenv("CODEX_GH_REPO", "_codex_")
+REPO = os.getenv("CODEX_GH_REPO", "_codex_")
 TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
-BASE  = "https://api.github.com"
+BASE = "https://api.github.com"
 CACHE_DIR = os.getenv("CODEX_CACHE_DIR", ".codex/cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
 
 def _auth_headers() -> Dict[str, str]:
     h = {"Accept": "application/vnd.github+json"}
@@ -34,24 +37,28 @@ def _auth_headers() -> Dict[str, str]:
         h["Authorization"] = f"Bearer {TOKEN}"
     return h
 
+
 def _cache_get(key: str) -> Any | None:
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest()+".json")
+    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
     if os.path.exists(p):
         with open(p, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
 
+
 def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
     # naive cache with timestamp; actions are human-in-the-loop so short TTL is fine
     obj = {"ts": time.time(), "data": data}
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest()+".json")
+    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode()).hexdigest() + ".json")
     with open(p, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
+
 
 def gh_get(url: str):
     r = requests.get(url, headers=_auth_headers(), timeout=30)
     r.raise_for_status()
     return r.json()
+
 
 def list_branches(owner: str, repo: str):
     key = f"branches:{owner}/{repo}"
@@ -62,6 +69,7 @@ def list_branches(owner: str, repo: str):
     _cache_set(key, data)
     return data
 
+
 def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
     # Use raw endpoint; fallback to contents API
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{path}"
@@ -71,8 +79,10 @@ def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
     meta = gh_get(f"{BASE}/repos/{owner}/{repo}/contents/{quote(path)}?ref={quote(ref)}")
     if isinstance(meta, dict) and meta.get("encoding") == "base64":
         import base64
+
         return base64.b64decode(meta["content"]).decode("utf-8", errors="replace")
     return json.dumps(meta, ensure_ascii=False)
+
 
 def code_search(owner: str, repo: str, q: str, ref: str = "main"):
     # GitHub code search requires qualifiers
@@ -92,6 +102,7 @@ def code_search(owner: str, repo: str, q: str, ref: str = "main"):
         hits.append({"path": path, "preview": snippet})
     return {"count": len(hits), "items": hits}
 
+
 class App(BaseHTTPRequestHandler):
     def _ok(self, body: Any, code=200):
         b = body if isinstance(body, (str, bytes)) else json.dumps(body, ensure_ascii=False)
@@ -104,6 +115,7 @@ class App(BaseHTTPRequestHandler):
 
     def do_GET(self):
         from urllib.parse import parse_qs, urlparse
+
         u = urlparse(self.path)
         qs = parse_qs(u.query)
         if u.path == "/healthz":
@@ -117,7 +129,9 @@ class App(BaseHTTPRequestHandler):
             repo = qs.get("repo", [REPO])[0]
             ref = qs.get("ref", ["main"])[0]
             path = qs.get("path", ["README.md"])[0]
-            return self._ok({"path": path, "ref": ref, "content": get_file_text(owner, repo, ref, path)})
+            return self._ok(
+                {"path": path, "ref": ref, "content": get_file_text(owner, repo, ref, path)}
+            )
         if u.path == "/repo/search":
             owner = qs.get("owner", [OWNER])[0]
             repo = qs.get("repo", [REPO])[0]
@@ -134,6 +148,7 @@ class App(BaseHTTPRequestHandler):
                 name = "main"
             return self._ok({"owner": owner, "repo": repo, "branch": name})
         return self._ok({"error": "not found"}, 404)
+
 
 if __name__ == "__main__":
     port = int(os.getenv("CODEX_ACTIONS_PORT", "8010"))

@@ -55,7 +55,7 @@
 ```bash
 python tools/validate_fences.py 2>&1 | grep "ERROR" > remaining_fence_errors.txt
 # Review and manually fix complex cases
-```
+```text
 
 ---
 
@@ -92,7 +92,7 @@ def func() -> list[str]:  # Built-in generic
 from typing import Dict  # Remove
 def func() -> dict[str, int]:  # Built-in generic
     pass
-```
+```text
 
 **Action Items**:
 1. Fix all 11 files with typing imports
@@ -125,7 +125,7 @@ pytest tests/ --ignore=tests/training --tb=short -x 2>&1 | tee test_failures.txt
 
 # Fix and verify
 pytest tests/config/ tests/unit/ -v
-```
+```text
 
 ---
 
@@ -203,7 +203,7 @@ python tools/validate_fences.py 2>&1 | grep "ERROR" > fence_errors.txt
 # 2. Fix files with most errors first
 # 3. Use fence_fixer.py where possible
 # 4. Manual fix for complex nested fences
-```
+```text
 
 ### Priority 2: Code Modernization (1-2 hours)
 ```bash
@@ -216,7 +216,7 @@ sed -i 's/Dict\[/dict[/g' src/utils/checkpointing.py
 # Verify
 python -m pytest src/utils/test_checkpointing.py
 mypy src/utils/checkpointing.py
-```
+```text
 
 ### Priority 3: Test Fixes (if time allows)
 ```bash
@@ -226,7 +226,7 @@ pytest tests/unit/ -v
 pytest tests/eval/ -m "not slow" -v
 
 # Fix failing tests one by one
-```
+```text
 
 ---
 
@@ -254,19 +254,19 @@ pytest tests/eval/ -m "not slow" -v
 ```bash
 python tools/validate_fences.py
 python tools/fence_fixer.py <directory> --dry-run --verbose
-```
+```text
 
 ### Modernization
 ```bash
 python tools/modernization_scanner.py src/ --verbose
-```
+```text
 
 ### Testing
 ```bash
 pytest tests/ -x --tb=short
 pytest -m smoke
 pytest -m "not slow"
-```
+```text
 
 ### Quality Gates
 ```bash
@@ -274,7 +274,7 @@ nox -s lint
 nox -s typecheck  
 nox -s tests
 nox -s gates
-```
+```text
 
 ---
 

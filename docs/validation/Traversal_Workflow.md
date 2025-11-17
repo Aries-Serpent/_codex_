@@ -22,7 +22,7 @@ REPORT (Markdown)
   ↓ (S6 Jinja rendering)
 MANIFEST
   ↓ (S7 Integrity chain)
-```
+```text
 
 ## 3. Component Score Formula
 `score = Σ_i ( weight_i * clamp(component_i, 0, 1) )`
@@ -51,7 +51,7 @@ scoring:
     tests: 0.9
     safeguards: 1.0
     documentation: 1.0
-```
+```text
 
 ### 3.2 Duplication Heuristic Switch (Optional)
 - scoring.dup.heuristic:
@@ -91,12 +91,12 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 python scripts/space_traversal/audit_runner.py diff --old reports/capability_matrix_A.md --new reports/capability_matrix_B.md
 # Or JSON:
 python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/capabilities_scored_old.json --new audit_artifacts/capabilities_scored_new.json
-```
+```text
 
 ## 9. Explain Capability Score
 ```bash
 python scripts/space_traversal/audit_runner.py explain checkpointing
-```
+```text
 Outputs component contributions + normalized weights.
 
 ## 10. Failure Mode Reference
@@ -116,7 +116,7 @@ Outputs component contributions + normalized weights.
   "weights": {"functionality": 0.25, "consistency": 0.2, "tests": 0.25, "safeguards": 0.15, "documentation": 0.15},
   "warnings": []
 }
-```
+```text
 
 ## 12. Roadmap Hooks
 | Hook | Purpose | Candidate Enhancements |

@@ -189,7 +189,7 @@ class CodexErrorHandler:
 
 # Global instance with rotating logs
 error_handler = CodexErrorHandler()
-```
+```text
 
 **Tests** (`tests/test_agents_infrastructure.py`):
 
@@ -226,7 +226,7 @@ def test_set_log_level(tmp_path):
     
     handler.set_log_level("WARNING")
     assert handler.logger.level == logging.WARNING
-```
+```text
 
 **Success Criteria**:
 - ✅ Log files rotate at 10MB
@@ -349,7 +349,7 @@ class TestCLIIntegration:
             count = cursor.fetchone()[0]
         
         assert count == 50, f"Expected 50 rows (5 threads × 10 writes), got {count}"
-```
+```text
 
 **Success Criteria**:
 - ✅ Full workflow test passes (init → log → query)
@@ -440,7 +440,7 @@ class EnvironmentManager:
 
 # Global instance with lazy validation
 env_manager = EnvironmentManager(validate_on_init=False)
-```
+```text
 
 **Tests**:
 
@@ -469,7 +469,7 @@ def test_eager_validation():
     with patch.dict(os.environ, {'CODEX_SQLITE_POOL': 'invalid'}, clear=True):
         with pytest.raises(EnvironmentError):
             env = EnvironmentManager(validate_on_init=True)
-```
+```text
 
 **Success Criteria**:
 - ✅ Import doesn't crash with invalid env
@@ -540,7 +540,7 @@ def export_env_cmd(format: str, output: Optional[str]) -> None:
     except Exception as exc:
         click.echo(f"❌ Failed to export environment: {exc}", err=True)
         sys.exit(1)
-```
+```text
 
 **Tests**:
 
@@ -570,7 +570,7 @@ def test_export_env_to_file(tmp_path):
     assert result.exit_code == 0
     assert output_file.exists()
     assert "CODEX_" in output_file.read_text()
-```
+```text
 
 **Success Criteria**:
 - ✅ Shell, JSON, YAML formats supported
@@ -619,7 +619,7 @@ def test_export_env_to_file(tmp_path):
 
 # Validate
 pytest tests/test_agents_infrastructure.py::TestErrorHandler::test_log_rotation -v
-```
+```text
 
 ---
 
@@ -633,7 +633,7 @@ pytest tests/test_agents_infrastructure.py::TestErrorHandler::test_log_rotation 
 
 # Validate
 pytest tests/test_agents_infrastructure.py::TestCLIIntegration -v
-```
+```text
 
 ---
 
@@ -652,7 +652,7 @@ pytest tests/test_agents_infrastructure.py::TestCLIIntegration -v
 
 # Validate
 pytest tests/test_agents_infrastructure.py::TestEnvironmentManager -v
-```
+```text
 
 ---
 
@@ -671,7 +671,7 @@ pytest tests/test_agents_infrastructure.py::TestEnvironmentManager -v
 # Validate
 pytest tests/test_agents_infrastructure.py::test_export_env -v
 python -m codex.cli export-env --format=json
-```
+```text
 
 ---
 
@@ -724,7 +724,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 rm -f .codex/final_validation.db .codex/final_validation.db-*
 
 echo "✅ All validations passed!"
-```
+```text
 
 ---
 
@@ -759,7 +759,7 @@ echo "✅ All validations passed!"
 
 **Commit Message Template**:
 
-```
+```text
 feat(agents): Phase 1 final push - maximize production readiness
 
 Implements all critical Phase 1 + Phase 2 P0 tasks:
@@ -806,7 +806,7 @@ Set validate_on_init=True for old behavior.
 
 
 Co-authored-by: mbaetiong <91555439+mbaetiong@users.noreply.github.com>
-```
+```text
 ---
 
 ## 🎉 Expected Outcomes

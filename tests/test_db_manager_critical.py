@@ -4,8 +4,9 @@ Tests for P1 defect: close_all_pools() AttributeError causing resource leaks.
 """
 
 import os
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestDBManagerPoolCleanup:
@@ -16,10 +17,12 @@ class TestDBManagerPoolCleanup:
         from codex.logging.db_manager import DBManager
 
         # Enable pooling
-        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
+        with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             # Force reload to pick up env var
             import importlib
+
             import codex.logging.db_manager
+
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
 
@@ -48,9 +51,11 @@ class TestDBManagerPoolCleanup:
         """Test pool cleanup when some connections fail to close."""
         from codex.logging.db_manager import DBManager
 
-        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
+        with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+
             import codex.logging.db_manager
+
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
 
@@ -100,9 +105,11 @@ class TestDBManagerPoolCleanup:
         """Test pool cleanup with multiple database pools."""
         from codex.logging.db_manager import DBManager
 
-        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
+        with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+
             import codex.logging.db_manager
+
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
 
@@ -134,14 +141,15 @@ class TestDBManagerPoolCleanup:
         from codex.logging.db_manager import DBManager
 
         # Verify class attribute exists
-        assert hasattr(DBManager, '_logger'), "DBManager should have _logger class attribute"
+        assert hasattr(DBManager, "_logger"), "DBManager should have _logger class attribute"
 
         # Verify it's a Logger instance
         import logging
+
         assert isinstance(DBManager._logger, logging.Logger), "_logger should be a Logger instance"
 
         # Verify name is correct
-        assert DBManager._logger.name == 'codex.logging.db_manager'
+        assert DBManager._logger.name == "codex.logging.db_manager"
 
     def test_instance_logger_access(self, tmp_path):
         """Test that instance methods can still access logger."""
@@ -150,23 +158,25 @@ class TestDBManagerPoolCleanup:
         db = DBManager(db_path=tmp_path / "test_instance.db")
 
         # Verify instance can access _logger
-        assert hasattr(db, '_logger'), "Instance should have access to _logger"
+        assert hasattr(db, "_logger"), "Instance should have access to _logger"
 
         # Test logging works (capture logs)
-        import logging
-        with patch.object(DBManager._logger, 'info') as mock_info:
+        with patch.object(DBManager._logger, "info"):
             db.init_schema()
             # Schema may already exist, logging is optional
             # Test passes if no exception raised
 
     def test_close_all_pools_logs_errors(self, tmp_path, caplog):
         """Test that errors during close are logged at DEBUG level."""
-        from codex.logging.db_manager import DBManager
         import logging
 
-        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '1'}):
+        from codex.logging.db_manager import DBManager
+
+        with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+
             import codex.logging.db_manager
+
             importlib.reload(codex.logging.db_manager)
             from codex.logging.db_manager import DBManager
 

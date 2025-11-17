@@ -1,4 +1,5 @@
 """Export a JSON snapshot of the current Python environment."""
+
 from __future__ import annotations
 
 import json

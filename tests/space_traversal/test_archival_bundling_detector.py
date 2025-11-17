@@ -1,6 +1,7 @@
 """
 Tests for archival_bundling detector (v1.4.0)
 """
+
 from scripts.space_traversal.detectors.archival_bundling import detect
 
 
@@ -13,9 +14,9 @@ def test_archival_bundling_detector_basic():
             {"path": "audit_artifacts/manifest.json", "ext": ".json"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "archival-bundling"
     assert len(result["evidence_files"]) > 0
     assert "archive" in result["found_patterns"] or "manifest" in result["found_patterns"]
@@ -26,9 +27,9 @@ def test_archival_bundling_detector_basic():
 def test_archival_bundling_detector_no_evidence():
     """Test archival bundling detector with no evidence."""
     file_index = {"files": [{"path": "src/utils/helper.py", "ext": ".py"}]}
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "archival-bundling"
     assert len(result["evidence_files"]) == 0
     assert len(result["found_patterns"]) == 0
@@ -42,9 +43,9 @@ def test_archival_bundling_detector_pointer_files():
             {"path": "bundles/bundle_v2.pointer.json", "ext": ".json"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "archival-bundling"
     assert "manifest" in result["found_patterns"]
     assert len(result["evidence_files"]) > 0
@@ -58,9 +59,9 @@ def test_archival_bundling_detector_validation():
             {"path": "scripts/archive/prefix_validation.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "archival-bundling"
     assert "archive" in result["found_patterns"]
     assert len(result["evidence_files"]) > 0
@@ -75,9 +76,9 @@ def test_archival_bundling_detector_sorted_output():
             {"path": "m_manifest.json", "ext": ".json"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     # Check that evidence files are sorted
     assert result["evidence_files"] == sorted(result["evidence_files"])
     # Check that found patterns are sorted

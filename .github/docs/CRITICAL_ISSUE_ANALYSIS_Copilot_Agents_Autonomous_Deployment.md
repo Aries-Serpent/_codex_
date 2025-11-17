@@ -61,7 +61,7 @@ GitHub Copilot Agents are **autonomous AI "teammates"** that:
 
 ### 2.1 Architecture: The Three-Tier Model
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                     TIER 1: GOVERNANCE LAYER                    │
 │  (Human Strategic Decisions - Approval Authority)               │
@@ -90,11 +90,11 @@ GitHub Copilot Agents are **autonomous AI "teammates"** that:
 │  - Health monitoring and alerting                               │
 │  - Rollback capability                                          │
 └─────────────────────────────────────────────────────────────────┘
-```
+```text
 
 ### 2.2 Deployment Orchestration Flow
 
-```
+```text
 START: Human Decision
 │
 ├─→ [Human] PR #2207 Deployment Authorization
@@ -144,13 +144,13 @@ START: Human Decision
             ├─ Propose: Rollback recommendation with reasoning
             ├─ Wait: Human decision on rollback vs. remediation
             └─ Execute: Human-approved action (rollback or fix)
-```
+```text
 
 ### 2.3 Real-Time Monitoring Dashboard
 
 **GitHub Copilot Agent Task Board (Example):**
 
-```
+```text
 ┌───────────────────────────────────────────────────────────────┐
 │ 🚀 PR #2207 DEPLOYMENT - LIVE ORCHESTRATION DASHBOARD         │
 ├───────────────────────────────────────────────────────────────┤
@@ -203,7 +203,7 @@ START: Human Decision
 │                                                                │
 │ ⏸️  PAUSE DEPLOYMENT    🔄 CONTINUE    🛑 ROLLBACK           │
 └────────────────────────────────────────────────────────────────┘
-```
+```text
 
 ## 🎯 Part 3: IMPLEMENTATION STRATEGY - "ORCHESTRATED AUTONOMOUS DEPLOYMENT"
 
@@ -282,7 +282,7 @@ Execute complete deployment of PR #2207 ("0D to main") using autonomous orchestr
 **Type: Deployment Automation (Autonomous Orchestrated)**  
 **Priority: CRITICAL**  
 **Deadline: 2025-11-14 20:00:00 UTC**
-```
+```text
 
 **Step 2: Copilot Agent Assignment (Automatic)**
 
@@ -290,7 +290,7 @@ Execute complete deployment of PR #2207 ("0D to main") using autonomous orchestr
 # GitHub recognizes @copilot-swe-agent mention
 # Automatically assigns the task to Copilot Coding Agent
 # Agent reviews specification and initiates autonomous orchestration
-```
+```text
 
 **Step 3: Real-Time Monitoring (Continuous)**
 
@@ -362,7 +362,7 @@ In the issue body, ensure:
 **Assigned to: @copilot-swe-agent**
 **Type**: Autonomous Orchestrated Deployment
 **Specification**: [.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md]( https://github.com/Aries-Serpent/_codex_/raw/refs/heads/0D_base_/.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md)
-```
+```text
 
 #### Step 3: Assign & Label (1 minute)
 

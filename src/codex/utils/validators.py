@@ -41,12 +41,12 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
       - valid_syntax: True if Python syntax is valid (if .py file)
     """
     issues = {
-        'has_shebang': True,  # Default pass
-        'balanced_braces': True,
-        'balanced_parens': True,
-        'balanced_brackets': True,
-        'no_trailing_whitespace': True,
-        'valid_syntax': True,
+        "has_shebang": True,  # Default pass
+        "balanced_braces": True,
+        "balanced_parens": True,
+        "balanced_brackets": True,
+        "no_trailing_whitespace": True,
+        "valid_syntax": True,
     }
 
     path = Path(file_path)
@@ -60,54 +60,62 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
         logger.error(f"Failed to read file: {e}")
         return issues
 
-    lines = content.split('\n')
+    lines = content.split("\n")
 
     # Check shebang (for .sh or .py files)
-    if file_path.endswith(('.sh', '.py')):
-        if lines and not lines[0].startswith('#!'):
-            issues['has_shebang'] = False
+    if file_path.endswith((".sh", ".py")):
+        if lines and not lines[0].startswith("#!"):
+            issues["has_shebang"] = False
             logger.warning(f"Missing shebang in {file_path}")
 
     # Check balanced braces
-    open_braces = content.count('{')
-    close_braces = content.count('}')
+    open_braces = content.count("{")
+    close_braces = content.count("}")
     if open_braces != close_braces:
-        issues['balanced_braces'] = False
-        logger.warning(f"Unbalanced braces in {file_path}: {open_braces} open, {close_braces} close")
+        issues["balanced_braces"] = False
+        logger.warning(
+            f"Unbalanced braces in {file_path}: {open_braces} open, {close_braces} close"
+        )
 
     # Check balanced parentheses
-    open_parens = content.count('(')
-    close_parens = content.count(')')
+    open_parens = content.count("(")
+    close_parens = content.count(")")
     if open_parens != close_parens:
-        issues['balanced_parens'] = False
-        logger.warning(f"Unbalanced parentheses in {file_path}: {open_parens} open, {close_parens} close")
+        issues["balanced_parens"] = False
+        logger.warning(
+            f"Unbalanced parentheses in {file_path}: {open_parens} open, {close_parens} close"
+        )
 
     # Check balanced brackets
-    open_brackets = content.count('[')
-    close_brackets = content.count(']')
+    open_brackets = content.count("[")
+    close_brackets = content.count("]")
     if open_brackets != close_brackets:
-        issues['balanced_brackets'] = False
-        logger.warning(f"Unbalanced brackets in {file_path}: {open_brackets} open, {close_brackets} close")
+        issues["balanced_brackets"] = False
+        logger.warning(
+            f"Unbalanced brackets in {file_path}: {open_brackets} open, {close_brackets} close"
+        )
 
     # Check trailing whitespace
     for i, line in enumerate(lines, 1):
         if line.rstrip() != line and line.strip():  # Ignore empty lines
-            issues['no_trailing_whitespace'] = False
+            issues["no_trailing_whitespace"] = False
             logger.warning(f"Trailing whitespace on line {i} in {file_path}")
             break
 
     # Check Python syntax (if .py file)
-    if file_path.endswith('.py'):
+    if file_path.endswith(".py"):
         try:
             ast.parse(content)
         except SyntaxError as e:
-            issues['valid_syntax'] = False
+            issues["valid_syntax"] = False
             logger.error(f"Syntax error in {file_path}: {e}")
 
     return issues
 
 
-def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None) -> tuple[bool, str]:
+def validate_with_checksum(
+    file_path: str, expected_sha256: Optional[str] = None
+) -> tuple[bool, str]:
     """
     Validate file via SHA256 checksum.
 
@@ -132,7 +140,9 @@ def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None
                 logger.info(f"Checksum valid: {file_path}")
                 return True, sha
             else:
-                logger.error(f"Checksum mismatch: {file_path}\n  Expected: {expected_sha256}\n  Got: {sha}")
+                logger.error(
+                    f"Checksum mismatch: {file_path}\n  Expected: {expected_sha256}\n  Got: {sha}"
+                )
                 return False, sha
         else:
             logger.info(f"Checksum computed: {sha} ({file_path})")
@@ -142,7 +152,9 @@ def validate_with_checksum(file_path: str, expected_sha256: Optional[str] = None
         return False, ""
 
 
-def validate_with_diff(original_file: str, modified_file: str, context_lines: int = 3) -> tuple[bool, str]:
+def validate_with_diff(
+    original_file: str, modified_file: str, context_lines: int = 3
+) -> tuple[bool, str]:
     """
     Validate files by comparing them with diff.
 
@@ -158,7 +170,7 @@ def validate_with_diff(original_file: str, modified_file: str, context_lines: in
 
     try:
         result = subprocess.run(
-            ['diff', f'-U{context_lines}', str(original_path), str(modified_path)],
+            ["diff", f"-U{context_lines}", str(original_path), str(modified_path)],
             capture_output=True,
             text=True,
         )
@@ -185,8 +197,8 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
     Returns dict with check results.
     """
     checks = {
-        'syntax_valid': True,
-        'linting_pass': True,
+        "syntax_valid": True,
+        "linting_pass": True,
     }
 
     path = Path(file_path)
@@ -196,20 +208,20 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
 
     try:
         # Python syntax check
-        if file_path.endswith('.py'):
+        if file_path.endswith(".py"):
             content = path.read_text()
             try:
                 ast.parse(content)
                 logger.info(f"Python syntax valid: {file_path}")
             except SyntaxError as e:
-                checks['syntax_valid'] = False
+                checks["syntax_valid"] = False
                 logger.error(f"Python syntax error: {e}")
 
         # Bash syntax check
-        elif file_path.endswith('.sh'):
-            result = subprocess.run(['bash', '-n', str(path)], capture_output=True)
+        elif file_path.endswith(".sh"):
+            result = subprocess.run(["bash", "-n", str(path)], capture_output=True)
             if result.returncode != 0:
-                checks['syntax_valid'] = False
+                checks["syntax_valid"] = False
                 logger.error(f"Bash syntax error: {result.stderr.decode()}")
 
     except Exception as e:

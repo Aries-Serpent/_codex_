@@ -10,7 +10,7 @@ shards from evaluation runs.
 
 ```bash
 python -m codex_ml.eval.eval_runner run --datasets toy_copy_task --metrics exact_match,ppl --output_dir runs/eval
-```
+```text
 It writes `metrics.ndjson` and `metrics.csv` with optional bootstrap confidence
 intervals (`--bootstrap N`). The CSV export is filtered to the declared schema:
 `run_id`, `dataset`, `split`, `phase`, `metric`, `step`, `value`, `n`,

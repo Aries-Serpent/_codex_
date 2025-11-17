@@ -22,4 +22,3 @@ def test_ndjson_logger_writes_lines(tmp_path: Path):
     assert second["_step"] == 1
     assert "run_id" in second
     assert second["timestamp"].endswith("Z") or second["timestamp"].endswith("+00:00")
-

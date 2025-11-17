@@ -38,15 +38,19 @@ OUT = ART_DIR / "secret_context_report.json"
 DEFAULT_KEYWORDS = {"password", "api_key", "token", "secret", "credential", "auth"}
 CONTEXT_PATHS = {"auth", "config", "credentials", "secrets", ".env", "security"}
 
+
 def is_context_path(file_path: str) -> bool:
     """Check if path suggests sensitive context."""
     lower = file_path.lower()
     return any(ctx in lower for ctx in CONTEXT_PATHS)
 
+
 FileContent = Tuple[List[str], str, List[int]]
 
 
-def has_nearby_keywords(lines: Optional[List[str]], line_hint: int, keywords: Set[str], window: int) -> List[str]:
+def has_nearby_keywords(
+    lines: Optional[List[str]], line_hint: int, keywords: Set[str], window: int
+) -> List[str]:
     """Check for keywords within window lines of the finding."""
     if not lines:
         return []
@@ -80,7 +84,9 @@ def load_file_content(file_path: Path) -> Optional[FileContent]:
     return lines, text, newline_positions
 
 
-def compute_line_hints(span: str, text: str, newline_positions: List[int], total_lines: int) -> List[int]:
+def compute_line_hints(
+    span: str, text: str, newline_positions: List[int], total_lines: int
+) -> List[int]:
     """Return all candidate line indices where the span appears."""
     if not span:
         return []
@@ -98,6 +104,7 @@ def compute_line_hints(span: str, text: str, newline_positions: List[int], total
         start = idx + step
     return hints
 
+
 def correlate_findings(
     findings: List[Dict],
     keywords: Set[str],
@@ -106,7 +113,7 @@ def correlate_findings(
 ) -> List[Dict]:
     """Correlate findings with context indicators."""
     elevated = []
-    
+
     file_cache: Dict[Path, Optional[FileContent]] = {}
 
     for finding in findings:
@@ -129,7 +136,9 @@ def correlate_findings(
         if cached:
             lines, text, newline_positions = cached
             total_lines = len(lines)
-            hints = compute_line_hints(finding.get("span", ""), text, newline_positions, total_lines)
+            hints = compute_line_hints(
+                finding.get("span", ""), text, newline_positions, total_lines
+            )
             if not hints:
                 # Fall back to middle of file if span not located.
                 fallback = total_lines // 2 if total_lines else 0
@@ -145,13 +154,16 @@ def correlate_findings(
             context_indicators.extend(f"keyword:{kw}" for kw in nearby)
 
         if context_indicators:
-            elevated.append({
-                **finding,
-                "context_indicators": context_indicators,
-                "elevation": "high" if len(context_indicators) >= 2 else "medium"
-            })
-    
+            elevated.append(
+                {
+                    **finding,
+                    "context_indicators": context_indicators,
+                    "elevation": "high" if len(context_indicators) >= 2 else "medium",
+                }
+            )
+
     return elevated
+
 
 def main():
     enable = os.getenv("SECRET_CONTEXT_ENABLE", "0") in {"1", "true", "TRUE"}
@@ -162,20 +174,20 @@ def main():
     window = int(os.getenv("SECRET_CONTEXT_WINDOW", "10"))
     custom_keywords_str = os.getenv("SECRET_CONTEXT_KEYWORDS", "")
     workspace_root = Path(os.getenv("SECRET_CONTEXT_WORKSPACE_DIR", ".")).resolve()
-    
+
     keywords = DEFAULT_KEYWORDS.copy()
     if custom_keywords_str:
         keywords.update(kw.strip() for kw in custom_keywords_str.split(",") if kw.strip())
-    
+
     if not ENTROPY_REPORT.exists():
         print("[WARN] secret_entropy_report.json missing; run entropy scan first.", file=sys.stderr)
         return 2
-    
+
     entropy_data = json.loads(ENTROPY_REPORT.read_text())
     findings = entropy_data.get("findings", [])
-    
+
     elevated = correlate_findings(findings, keywords, window, workspace_root)
-    
+
     report = {
         "total_findings": len(findings),
         "elevated_findings": len(elevated),
@@ -183,12 +195,13 @@ def main():
         "window_lines": window,
         "findings": elevated[:100],  # Cap output
     }
-    
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"[INFO] Secret context correlation written: {OUT}")
     print(f"[INFO] Elevated: {len(elevated)}/{len(findings)} findings")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

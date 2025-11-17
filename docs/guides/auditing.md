@@ -53,7 +53,7 @@ The provider always returns a structured payload:
     {"title": "Python", "url": "https://example.com", "snippet": "..."}
   ]
 }
-```
+```text
 - When disabled, the status is `"disabled"` and the result list is empty.
 - If no endpoint is configured or the `requests` dependency is unavailable, the
   status becomes `"unavailable"` with a `reason` field describing the blocker.

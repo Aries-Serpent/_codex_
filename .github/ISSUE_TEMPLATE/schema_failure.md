@@ -14,9 +14,9 @@ assignees: ''
 - Tool (schema_validate.py / validate_configs.py / CLI):
 
 ## Error
-```
+```text
 <error output>
-```
+```text
 
 ## Severity / Confidence
 - Severity (1–5):

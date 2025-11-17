@@ -73,12 +73,8 @@ class HunkData:
 
     def validate(self) -> bool:
         """Validate hunk line counts match actual lines"""
-        context_lines = sum(
-            1 for line in self.lines if line.line_type == LineType.CONTEXT
-        )
-        delete_lines = sum(
-            1 for line in self.lines if line.line_type == LineType.DELETE
-        )
+        context_lines = sum(1 for line in self.lines if line.line_type == LineType.CONTEXT)
+        delete_lines = sum(1 for line in self.lines if line.line_type == LineType.DELETE)
         add_lines = sum(1 for line in self.lines if line.line_type == LineType.ADD)
 
         expected_old = context_lines + delete_lines
@@ -408,9 +404,7 @@ class GitPatchParser:
         new_count = int(match.group(4) or "1")
         context = match.group(5) or ""
 
-        self.current_hunk = HunkData(
-            old_start, old_count, new_start, new_count, context
-        )
+        self.current_hunk = HunkData(old_start, old_count, new_start, new_count, context)
 
     def _add_hunk_line(self, line_type: LineType, content: str):
         """Add a line to the current hunk"""
@@ -631,9 +625,7 @@ class PatchApplier:
 
         return {"file": target_path, "operation": "modify", "success": True}
 
-    def _apply_hunk(
-        self, lines: List[str], hunk: HunkData, offset: int
-    ) -> Tuple[List[str], int]:
+    def _apply_hunk(self, lines: List[str], hunk: HunkData, offset: int) -> Tuple[List[str], int]:
         """Apply a single hunk to lines"""
         # Find hunk position (accounting for offset)
         start_pos = hunk.old_start - 1 + offset
@@ -686,9 +678,7 @@ class PatchApplier:
 
         # Calculate line offset change
         old_line_count = sum(
-            1
-            for pl in hunk.lines
-            if pl.line_type in (LineType.CONTEXT, LineType.DELETE)
+            1 for pl in hunk.lines if pl.line_type in (LineType.CONTEXT, LineType.DELETE)
         )
         new_line_count = sum(
             1 for pl in hunk.lines if pl.line_type in (LineType.CONTEXT, LineType.ADD)
@@ -703,21 +693,13 @@ class PatchApplier:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Complete Git Patch Parser and Applier"
-    )
+    parser = argparse.ArgumentParser(description="Complete Git Patch Parser and Applier")
     parser.add_argument("--patch", "-p", help="Patch file (default: stdin)")
-    parser.add_argument(
-        "--apply", action="store_true", help="Apply patches to filesystem"
-    )
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Show what would be done"
-    )
+    parser.add_argument("--apply", action="store_true", help="Apply patches to filesystem")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
     parser.add_argument("--workspace", default=".", help="Workspace root directory")
-    parser.add_argument(
-        "--parse-only", action="store_true", help="Only parse, don't apply"
-    )
+    parser.add_argument("--parse-only", action="store_true", help="Only parse, don't apply")
     parser.add_argument(
         "--output-format",
         choices=["text", "json"],
@@ -756,9 +738,7 @@ def main():
                         "operation": pf.operation.value,
                         "is_binary": pf.is_binary,
                         "hunk_count": len(pf.hunks),
-                        "session_data": pf.session_data.__dict__
-                        if pf.session_data
-                        else None,
+                        "session_data": pf.session_data.__dict__ if pf.session_data else None,
                     }
                     for pf in patch_files
                 ],

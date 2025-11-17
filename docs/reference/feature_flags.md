@@ -12,7 +12,7 @@ Enable PEFT (Parameter-Efficient Fine-Tuning) hooks. Requires optional `peft` de
 ```bash
 export CODEX_ENABLE_PEFT=1
 python -m codex_ml.cli.train --config config.yaml
-```
+```text
 
 ### `CODEX_ENABLE_MLFLOW=1`
 Enable MLflow experiment tracking (local filesystem only).
@@ -23,7 +23,7 @@ Enable MLflow experiment tracking (local filesystem only).
 ```bash
 export CODEX_ENABLE_MLFLOW=1
 python -m codex_ml.eval.runner --config config.yaml
-```
+```text
 
 ### `CODEX_ENABLE_PERF_SAMPLER=1`
 Enable performance sampling during evaluation (CPU/GPU/memory metrics).
@@ -35,7 +35,7 @@ Enable performance sampling during evaluation (CPU/GPU/memory metrics).
 ```bash
 export CODEX_ENABLE_PERF_SAMPLER=1
 python -m codex_ml.eval.runner --config config.yaml
-```
+```text
 
 ### `CODEX_ENABLE_SIGNING`
 Enable cryptographic signing for archive standardization.
@@ -45,7 +45,7 @@ Enable cryptographic signing for archive standardization.
 ```bash
 export CODEX_ENABLE_SIGNING=true
 python -m codex.archive.cli validate-standardization --check-signatures
-```
+```text
 
 ## Design Principles
 

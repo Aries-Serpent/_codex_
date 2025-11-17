@@ -48,13 +48,13 @@ class TestValidatePatch:
 
     def run_validator(self, script_path: str, patch_content: str) -> tuple[int, str]:
         """Helper to run validation script with given patch content."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.patch', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".patch", delete=False) as f:
             f.write(patch_content)
             patch_file = f.name
 
         try:
             result = subprocess.run(
-                ['bash', script_path, patch_file],
+                ["bash", script_path, patch_file],
                 capture_output=True,
                 text=True,
             )
@@ -83,7 +83,7 @@ class TestValidatePatch:
     def test_nonexistent_file_fails(self, script_path):
         """Validator should fail gracefully on missing file."""
         result = subprocess.run(
-            ['bash', script_path, '/nonexistent/patch.file'],
+            ["bash", script_path, "/nonexistent/patch.file"],
             capture_output=True,
             text=True,
         )
@@ -93,7 +93,7 @@ class TestValidatePatch:
     def test_no_arguments_exits_gracefully(self, script_path):
         """Validator should show usage when called without arguments."""
         result = subprocess.run(
-            ['bash', script_path],
+            ["bash", script_path],
             capture_output=True,
             text=True,
         )

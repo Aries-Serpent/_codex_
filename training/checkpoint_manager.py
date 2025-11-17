@@ -37,7 +37,10 @@ if "CheckpointManager" not in globals():
     from typing import Any, Dict, Optional
 
     try:  # Prefer canonical helpers when available.
-        from codex_ml.utils.checkpointing import build_payload_bytes, dump_rng_state  # type: ignore
+        from codex_ml.utils.checkpointing import (  # type: ignore
+            build_payload_bytes,
+            dump_rng_state,
+        )
     except Exception:  # pragma: no cover - legacy fallback path
         try:  # numpy is optional for RNG capture
             import numpy as _np  # type: ignore
@@ -80,7 +83,9 @@ if "CheckpointManager" not in globals():
                     if hasattr(_torch, "random") and hasattr(_torch.random, "get_rng_state"):
                         cpu_state = _torch.random.get_rng_state()
                     else:
-                        cpu_state = _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
+                        cpu_state = (
+                            _torch.get_rng_state() if hasattr(_torch, "get_rng_state") else None
+                        )
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
                 except Exception:  # pragma: no cover - torch optional
@@ -130,6 +135,7 @@ if "CheckpointManager" not in globals():
             buffer = io.BytesIO()
             _torch.save(payload, buffer)
             return buffer.getvalue()
+
 
 class CheckpointManager:
     """Lightweight step-based checkpoint manager."""

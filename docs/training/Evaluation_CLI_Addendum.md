@@ -25,7 +25,7 @@ Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 ```bash
 codex-eval --dry-run
 python -m codex_ml.cli.list_plugins --format json  # stderr must be empty
-```
+```text
 
 ## Tests Reference
 - tests/test_evaluate_cli.py

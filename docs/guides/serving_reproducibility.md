@@ -19,7 +19,7 @@ WANDB_MODE=offline TRANSFORMERS_OFFLINE=1 python -m hhg_logistics.serve.app serv
 
 # 3. Tail request metrics (shared NDJSON + CSV formats)
 tail -f .codex/metrics/serve-run-*.ndjson
-```
+```text
 
 ## Troubleshooting
 

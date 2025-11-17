@@ -11,7 +11,7 @@ CONF_DIR = Path(__file__).resolve().parents[2] / "configs" / "deployment" / "hhg
 
 def test_compose_overrides(monkeypatch):
     """Test that Hydra compose works with overrides.
-    
+
     Mocks required environment variables (e.g., DATA_DIR) so that config interpolations
     can resolve successfully. This test validates the override mechanism and config structure
     with a fully resolved configuration.

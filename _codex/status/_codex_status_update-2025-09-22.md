@@ -78,7 +78,7 @@ Audit Scope
 -    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
 +    cfg_hash = "c898a1161dce426c3f46d5b5f09fd0544abc292a4be5076ecf0d75af2bce2a9c"  # noqa: E501
 +    export_environment(art_dir, seed=resolved_seed, command="codex_ml.train_loop")
-```
+```text
 
 ### Atomic Diff 2 — Allow overriding the metrics artefact directory
 - **Why:** Make it easier for operators to redirect NDJSON outputs to durable storage or per-run folders without editing source constants.【F:src/codex_ml/train_loop.py†L1-L200】
@@ -97,7 +97,7 @@ Audit Scope
 +        seed=args.seed,
 +        art_dir=args.art_dir,
      )
-```
+```text
 
 ### Atomic Diff 3 — Surface telemetry degradation warnings in the CLI
 - **Why:** Make degraded psutil/NVML states visible to users invoking the monitoring CLI so missing metrics do not go unnoticed.【F:src/codex_ml/monitoring/codex_logging.py†L60-L116】【F:src/codex_ml/monitoring/system_metrics.py†L18-L60】
@@ -121,7 +121,7 @@ Audit Scope
 +        if not loggers.gpu and not loggers.tb and not loggers.mlflow_active:
 +            print("[telemetry] running in degraded mode: psutil/NVML/TensorBoard unavailable")
 +        return loggers
-```
+```text
 
 ### Atomic Diff 4 — Harden Hydra plugin installation in the coverage gate
 - **Why:** Ensure `nox -s tests` installs the `hydra.extra` plugin so pytest coverage sessions do not abort when entry points auto-load the extension.【F:noxfile.py†L180-L195】【79f190†L1-L89】
@@ -148,7 +148,7 @@ Audit Scope
 +        session.run("python", "-c", "import hydra_extra", silent=True)
 +    except command.CommandFailed:
 +        session.error("hydra.extra plugin unavailable — install Codex hydra extras before running coverage gates")
-```
+```text
 
 ### Atomic Diff 5 — Persist dataset checksums alongside metrics artefacts
 - **Why:** Capture dataset fingerprints whenever the demo trainer runs to detect silent drift in offline catalogues.【F:src/codex_ml/train_loop.py†L50-L118】【F:src/codex_ml/utils/repro.py†L1-L24】
@@ -194,7 +194,7 @@ Audit Scope
 +        art_dir = ART_DIR
 +    if dataset_sources:
 +        record_dataset_checksums(dataset_sources, art_dir / "dataset_checksums.json")
-```
+```text
 
 ### Atomic Diff 6 — Emit warnings when experiment writers degrade
 - **Why:** Make NDJSON/TensorBoard/MLflow/W&B fallbacks visible so operators know when metrics are missing from downstream sinks.【F:src/codex_ml/tracking/writers.py†L26-L155】
@@ -262,7 +262,7 @@ Audit Scope
 +        degraded = [msg for msg in degraded if msg]
 +        if degraded:
 +            print(f"[tracking] degraded writers detected: {', '.join(degraded)}")
-```
+```text
 
 5. **Local Tests & Gates**
 
@@ -315,7 +315,7 @@ Codex-ready Task Sequence:
     - If environment export or telemetry wiring fails, log a Codex error-capture block referencing the failing step and attach the relevant stack trace for follow-up analysis.【F:src/codex_ml/utils/provenance.py†L1-L88】
   6. Finalization:
     - Run `nox -s tests` to regenerate coverage artefacts and confirm new features remain offline-compliant, then archive updated status manifests under `_codex/status/`.【F:noxfile.py†L180-L195】
-```
+```text
 
 **Additional Deliverable — Executable Script**
 ```python
@@ -360,4 +360,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-```
+```text

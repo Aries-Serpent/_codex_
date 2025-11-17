@@ -47,7 +47,7 @@ python scripts/content_filter/apply_filter.py
 # Archive with sidecar-only style, zip format
 ARCHIVE_POINTER_STYLE=sidecar ARCHIVE_FORMAT=zip MAX_BUNDLE_MB=10 \
 python scripts/archive/select_and_compress.py --root audit_artifacts/raw
-```
+```text
 
 ## 5) Fallback & Warning Codes
 

@@ -31,7 +31,7 @@ python -m codex_ml.eval.evaluator reasoning-suite \
 python tools/schema_validate.py \
   --data manifests/selection_guard_rules.json --schema schemas/selection_guard_rules.schema.json \
   --data manifests/codex_eval_rules.v3.json --schema schemas/codex_eval_rules.v3.schema.json
-```
+```text
 
 The Hydra-ready configs for these probes live under `configs/evaluation/reasoning/` and
 produce NDJSON metrics alongside JSON summaries in `artifacts/reasoning/`.
@@ -46,7 +46,7 @@ produce NDJSON metrics alongside JSON summaries in `artifacts/reasoning/`.
 # runs reasoning suite + evaluator + schemas when available
 
 # runs schema checks if jsonschema is installed
-```
+```text
 
 ## Using nox (optional)
 
@@ -54,7 +54,7 @@ Install dev tools:
 
 ```bash
 pip install -r requirements-dev.txt
-```
+```text
 
 Run gates and tests:
 
@@ -62,7 +62,7 @@ Run gates and tests:
 nox -s gates
 nox -s tests
 nox -s precommit
-```
+```text
 
 ## Exit codes
 - `0`: All local gates passed.

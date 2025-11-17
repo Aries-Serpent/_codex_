@@ -21,7 +21,7 @@ pip install -U pip
 pip install -e .[dev]
 export ITA_API_KEY=$(python scripts/issue_api_key.py)
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
-```
+```text
 `uvicorn` logs the request ID for every call. On Ubuntu you can background the process with
 `systemd --user` units or `tmux` depending on operator preference.
 
@@ -38,7 +38,7 @@ export ITA_API_KEY=$ITA_API_KEY
 # Optional when using the OpenAI Responses API demo
 export OPENAI_API_KEY=sk-...
 python -m codex_client.demo_plan_and_call --query "bridge quickstart" --run-tests tests/unit
-```
+```text
 The demo prints the knowledge base snippets, hygiene scan, optional test run, and PR simulation. All
 network requests stay inside the Ubuntu host unless you point `ITA_URL` elsewhere.
 
@@ -50,7 +50,7 @@ npm install
 export ITA_URL=http://localhost:8080
 export ITA_API_KEY=$ITA_API_KEY
 npm start
-```
+```text
 The Express server listens on port `3978`. Configure your Copilot extension manifest or testing tool
 to POST to `http://localhost:3978/ext/repo/hygiene` (and `/ext/tests/run`). Requests inherit the ITA
 guardrails because the shim copies the headers and never stores credentials on disk.
@@ -64,7 +64,7 @@ the bridge:
 export GITHUB_APP_ID=12345
 export GITHUB_INSTALLATION_ID=67890
 export GITHUB_PRIVATE_KEY_PEM="$(cat ~/keys/copilot-app.pem)"
-```
+```text
 The ITA will validate the configuration before attempting `/git/create-pr` with `confirm=true`.
 
 ## 5. Keep tooling aligned

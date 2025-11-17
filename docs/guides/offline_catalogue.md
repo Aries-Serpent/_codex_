@@ -36,7 +36,7 @@ data/
     weighted_accuracy.json
     length_reward.json
     trainer_functional.json
-```
+```text
 You may also point the loaders at bespoke directories via the following
 environment variables:
 
@@ -68,19 +68,19 @@ python -m codex_ml.cli train \
   data=offline/tiny_corpus \
   training=offline/functional \
   interfaces=offline
-```
+```text
 The shortcut preset ``offline/catalogue`` mirrors ``config.yaml`` while
 activating every offline fragment in one go:
 
 ```bash
 python -m codex_ml.cli train -cn offline/catalogue
-```
+```text
 Evaluations can opt into the weighted accuracy baseline with either of the
 configurations above or manually via:
 
 ```bash
 python -m codex_ml.cli evaluate -cn config metrics/offline/weighted_accuracy
-```
+```text
 The fragments live under `configs/{model,tokenizer,data,metrics}/offline/` and
 mirror the directory layout above.
 
@@ -93,7 +93,7 @@ model and a scripted RL policy. Enable them with the dedicated preset:
 
 ```bash
 python -m codex_ml.cli train -cn offline/tiny_fixtures
-```
+```text
 The preset wires in the following plugin entries:
 
 | Component      | Plugin name             | Fixture location |
@@ -124,7 +124,7 @@ weighted_acc = metrics.resolve_and_instantiate("offline:weighted-accuracy")
 trainer = trainers.resolve_and_instantiate("offline:functional")
 length_rm = reward_models.resolve_and_instantiate("offline:length")
 agent = rl_agents.resolve_and_instantiate("offline:scripted")
-```
+```text
 Missing files raise `FileNotFoundError` with the list of searched locations,
 ensuring offline environments fail fast instead of silently contacting remote
 endpoints.
@@ -140,7 +140,7 @@ python -m codex_ml.cli.plugins_cli list datasets
 python -m codex_ml.cli.plugins_cli list metrics
 python -m codex_ml.cli.plugins_cli list trainers
 python -m codex_ml.cli.plugins_cli list reward_models
-```
+```text
 All commands run entirely offline; if a requested asset is missing, the
 registry surfaces the precise paths that were checked.
 

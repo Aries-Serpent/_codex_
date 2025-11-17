@@ -5,7 +5,7 @@ rollout_ring: 0D_base_
 eval_preset: base
 deployment_preset: reasoning_pod
 generated_utc: 2025-10-29T16:45:54Z
-```
+```text
 
 ## File Survey: Branch 0D_base_ / PR #1926
 
@@ -29,7 +29,7 @@ Schema Alignment:
 Usage:
     from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/train_loop.py@0D_base_
 
@@ -52,7 +52,7 @@ per_epoch_limit: int
     def should_capture(self) -> bool:
         if getattr(self.config, "trace_mode", None) == "disabled":
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/training/strategies.py@0D_base_
 
@@ -74,7 +74,7 @@ backend_name = "functional"
 
         # Minimal shim; functional loop currently handles internal logging.
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/models/reasoning.py@0D_base_
 
@@ -122,7 +122,7 @@ backend_name = "functional"
         if data.numel() >= size:
             return data[:size]
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/training/reasoning/baseline.yaml@0D_base_
 
@@ -169,7 +169,7 @@ training:
     # trace_mode controls how (or whether) the harness records traces.
     #
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/training/reasoning/curricula/starter.yaml@0D_base_
 
@@ -194,7 +194,7 @@ phase_schedule:
       - reasoning.latency_p95
       - reasoning.judge_disagreement
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/evaluation/reasoning/base.yaml@0D_base_
 
@@ -231,7 +231,7 @@ output:
   records_filename: records.ndjson
   metrics_filename: metrics.ndjson
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/eval/evaluator.py@0D_base_
 
@@ -259,7 +259,7 @@ class _MetricAggregator:
     def __init__(self) -> None:
         self._totals: dict[str, float] = {}
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_cli/app.py@0D_base_
 
@@ -281,7 +281,7 @@ help="Only include specified categories (can be repeated).",
             __version__ = "unknown"
         echo(__version__)
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/cli/codex_cli.py@0D_base_
 
@@ -329,7 +329,7 @@ def repo_map(reasoning: bool) -> None:
     is_flag=True,
     help="Required flag. Perform offline validation only; never touch live infra.",
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: src/codex_ml/cli/repo_map.py@0D_base_
 
@@ -372,7 +372,7 @@ section_key="evaluation",
                         eval_preset = value
         else:
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/README_ROOT.md@0D_base_
 
@@ -414,7 +414,7 @@ Key flows:
       continual replay strategy hooks),
    - `src/codex_ml/train_loop.py`
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/README.md@0D_base_
 
@@ -449,7 +449,7 @@ state:
 When you generate a deployment manifest (`configs/deploy/reasoning_pod.yaml`),
 it includes a `rollout_ring` field. That field is a declaration of intent
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/guides/reasoning_overview.md@0D_base_
 
@@ -486,7 +486,7 @@ Milestones build sequentially: do not advance without closing action items or do
      and logs traces / checkpoints.
    When these docs refer to "the trainer", they mean this pair of
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/guides/first_principles_curricula.md@0D_base_
 
@@ -522,7 +522,7 @@ phase_schedule:
     dataset: datasets/reasoning/first_principles.jsonl
     steps: 400
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/deployment/reasoning_pod.md@0D_base_
 
@@ -561,7 +561,7 @@ This is explicitly **not** production hosting. It exists for:
    - `CODEX_CURRICULUM_PHASE`, `CODEX_TRACE_MODE`
      (usually `disabled`, occasionally `param-slice` when
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: configs/deploy/reasoning_pod.yaml@0D_base_
 
@@ -599,7 +599,7 @@ pod:
     - name: CODEX_EVAL_PRESET
       value: "configs/evaluation/reasoning/base.yaml"
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/how-to/run_audit_0D_base_.md@0D_base_
 
@@ -630,7 +630,7 @@ Outputs (deterministic)
 - audit_artifacts/context_index.json (S1)
 - audit_artifacts/facets.json (S2)
 [END CONTENT]
-```
+```text
 
 ### >>> FILE: docs/index.md@0D_base_
 
@@ -651,7 +651,7 @@ Outputs (deterministic)
   - [Traversal Workflow](Traversal_Workflow.md)
   - [Usage Guide](Usage_Guide.md)
 [END CONTENT]
-```
+```text
 
 ---
 
@@ -668,7 +668,7 @@ Outputs (deterministic)
 - deployment.preset: reasoning_pod
 - metadata.rollout_ring: 0D_base_
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: ReasoningTrainer search@0D_base_
 
@@ -676,7 +676,7 @@ Outputs (deterministic)
 [BEGIN CONTENT]
 ReasoningTrainer: NOT FOUND in code. References exist in docs/README_ROOT.md and docs/guides/reasoning_overview.md as historical context.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: PR #1926 diff availability@PR#1926
 
@@ -684,7 +684,7 @@ ReasoningTrainer: NOT FOUND in code. References exist in docs/README_ROOT.md and
 [BEGIN CONTENT]
 No local checkout or diff artifacts for PR #1926 were found. Unable to surface file changes.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: CLI mismatch audit@0D_base_
 
@@ -692,7 +692,7 @@ No local checkout or diff artifacts for PR #1926 were found. Unable to surface f
 [BEGIN CONTENT]
 Docs (e.g. docs/README_ROOT.md, docs/guides/first_principles_curricula.md) describe `codex deploy --config ... --model ... --dry-run`, but src/codex_ml/cli/codex_cli.py deploy command only accepts `--config`, `--dry-run`, and `--run-metadata-dir` with no `--model` option. Repo-map docs and CLI align: `codex repo-map --reasoning` supports `--include` as documented.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: repo ring semantics@0D_base_
 
@@ -700,7 +700,7 @@ Docs (e.g. docs/README_ROOT.md, docs/guides/first_principles_curricula.md) descr
 [BEGIN CONTENT]
 See docs/README.md, docs/README_ROOT.md, docs/how-to/run_audit_0D_base_.md, docs/index.md for rollout ring definitions covering 0A_base_→0D_base_→main.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: Reasoning harness trace hook@0D_base_
 
@@ -708,7 +708,7 @@ See docs/README.md, docs/README_ROOT.md, docs/how-to/run_audit_0D_base_.md, docs
 [BEGIN CONTENT]
 See src/codex_ml/models/reasoning.py::_vectorise_model for trace vector fingerprint used when trace_mode is enabled.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: Evaluation dependencies summary@0D_base_
 
@@ -716,7 +716,7 @@ See src/codex_ml/models/reasoning.py::_vectorise_model for trace vector fingerpr
 [BEGIN CONTENT]
 src/codex_ml/eval/evaluator.py enforces optional deps (torch/datasets/transformers) and raises EvaluationDependencyError when missing.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: Deployment preset summary@0D_base_
 
@@ -724,7 +724,7 @@ src/codex_ml/eval/evaluator.py enforces optional deps (torch/datasets/transforme
 [BEGIN CONTENT]
 configs/deploy/reasoning_pod.yaml declares rollout_ring "0D_base_", dry_run_only true, and sets CODEX_TRACE_MODE=disabled, CODEX_CURRICULUM_PHASE=starter, CODEX_EVAL_PRESET=configs/evaluation/reasoning/base.yaml.
 [END CONTENT]
-```
+```text
 
 ### >>> RESULT: Reasoning repo-map summary@0D_base_
 
@@ -732,4 +732,4 @@ configs/deploy/reasoning_pod.yaml declares rollout_ring "0D_base_", dry_run_only
 [BEGIN CONTENT]
 src/codex_ml/cli/repo_map.py surfaces reasoning_status with trace_mode, curriculum.preset, evaluation.preset, metadata.rollout_ring, deployment.rollout_ring.
 [END CONTENT]
-```
+```text

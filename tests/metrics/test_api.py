@@ -162,7 +162,7 @@ class TestNDJSONLoading:
 
         with ndjson_file.open("w") as f:
             f.write('{"a": 1}\n')
-            f.write('\n')  # Empty line
+            f.write("\n")  # Empty line
             f.write('{"a": 2}\n')
 
         loaded = load_ndjson_logs(ndjson_file)
@@ -174,7 +174,7 @@ class TestNDJSONLoading:
 
         with ndjson_file.open("w") as f:
             f.write('{"a": 1}\n')
-            f.write('not valid json\n')  # Malformed line
+            f.write("not valid json\n")  # Malformed line
             f.write('{"a": 2}\n')
 
         loaded = load_ndjson_logs(ndjson_file)
@@ -209,6 +209,7 @@ class TestNDJSONToCSV:
 
         # Verify CSV content
         import csv
+
         with csv_file.open("r") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
@@ -238,6 +239,7 @@ class TestNDJSONToCSV:
 
         # Verify only specified columns in CSV
         import csv
+
         with csv_file.open("r") as f:
             reader = csv.DictReader(f)
             rows = list(reader)

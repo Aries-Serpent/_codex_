@@ -12,10 +12,15 @@ Index schema:
   ]
 }
 """
+
 from __future__ import annotations
+
+import json
+import os
+import time
 from pathlib import Path
-import json, time, os
-from typing import List, Dict, Any
+from typing import Any, Dict
+
 
 def _read_index(index_path: Path) -> Dict[str, Any]:
     if not index_path.exists():
@@ -25,10 +30,12 @@ def _read_index(index_path: Path) -> Dict[str, Any]:
     except Exception:
         return {"entries": []}
 
+
 def _write_index_atomic(index_path: Path, data: Dict[str, Any]) -> None:
     tmp = index_path.with_suffix(index_path.suffix + ".tmp")
     tmp.write_text(json.dumps(data, indent=2))
     os.replace(tmp, index_path)
+
 
 def update_and_prune(
     checkpoint_path: Path,
@@ -87,6 +94,7 @@ def update_and_prune(
         "pruned": prune_candidates,
         "dry_run": dry_run,
     }
+
 
 def _infer_step_from_name(name: str) -> int:
     # heuristic: checkpoint_{step}.pt

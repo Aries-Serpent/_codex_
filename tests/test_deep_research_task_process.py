@@ -5,9 +5,7 @@ from pathlib import Path
 def test_repo_root_detection(monkeypatch):
     monkeypatch.setenv("REPO_IMPROVEMENT_DRY_RUN", "1")
     monkeypatch.delenv("CODEX_AUTO_RUN", raising=False)
-    mod = importlib.reload(
-        importlib.import_module("scripts.deep_research_task_process")
-    )
+    mod = importlib.reload(importlib.import_module("scripts.deep_research_task_process"))
     repo_root = Path(mod.REPO_ROOT)
     assert (repo_root / ".pre-commit-config.yaml").exists()
     assert (repo_root / "src" / "codex" / "logging").exists()
@@ -17,9 +15,7 @@ def test_repo_root_detection(monkeypatch):
 def test_single_execution_guard(monkeypatch):
     monkeypatch.setenv("REPO_IMPROVEMENT_DRY_RUN", "1")
     monkeypatch.delenv("CODEX_AUTO_RUN", raising=False)
-    mod = importlib.reload(
-        importlib.import_module("scripts.deep_research_task_process")
-    )
+    mod = importlib.reload(importlib.import_module("scripts.deep_research_task_process"))
 
     calls = {"count": 0}
 

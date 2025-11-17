@@ -139,7 +139,7 @@ tests/status_tests/test_status_comprehensive.py .... [ 95%]
 tests/serving_tests/test_inference_serving.py ..... [100%]
 
 ========================= 98 passed in 0.44s ==========================
-```
+```text
 
 ### Performance Metrics
 

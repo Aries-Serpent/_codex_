@@ -79,7 +79,7 @@ diff --git a/src/codex_ml/cli/codex_cli.py b/src/codex_ml/cli/codex_cli.py
 +    click.echo(json.dumps(payload, indent=2, sort_keys=True))
 +    if json_path:
 +        Path(json_path).write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-```
+```text
 
 ### Atomic Diff 2 — Persist fallback training metrics to disk
 - **Why:** Preserve reproducibility for offline runs that rely on synthetic metrics when HF dependencies are unavailable.
@@ -119,7 +119,7 @@ diff --git a/src/codex_ml/training/__init__.py b/src/codex_ml/training/__init__.
 +            "checkpoint_dir": None,
 +            "resumed_from": None,
 +        }
-```
+```text
 
 ### Atomic Diff 3 — Add `--system-metrics` toggle to CLI training
 - **Why:** Allow operators to enable/disable psutil/NVML sampling from the CLI while guaranteeing clean shutdowns.
@@ -197,7 +197,7 @@ diff --git a/src/codex_ml/cli/codex_cli.py b/src/codex_ml/cli/codex_cli.py
 +        if metrics_thread is not None:
 +            metrics_thread.stop()
 +            metrics_thread.join()
-```
+```text
 
 5. **Local Tests & Gates**
 
@@ -267,7 +267,7 @@ Codex-ready Task Sequence:
      - If automation fails, pipe exceptions through `ErrorCaptureRecorder` so prompts land in `.codex/status/status_update_errors.ndjson`.【F:tools/status/status_update_executor.py†L37-L200】
   6. Finalization:
      - Run `nox -s tests` plus targeted pytest cases, regenerate status update artefacts, and update outstanding-questions ledger before merging.【F:noxfile.py†L1-L200】【F:docs/status_update_outstanding_questions.md†L1-L74】
-```
+```text
 **Additional Deliverable — Executable Script**
 ```python
 #!/usr/bin/env python3
@@ -306,4 +306,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-```
+```text

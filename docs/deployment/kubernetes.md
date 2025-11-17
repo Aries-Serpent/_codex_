@@ -9,7 +9,7 @@ Publish a container that bundles the Codex runtime and enables telemetry:
 ```bash
 docker build -t ghcr.io/example/codex-ml:latest .
 docker push ghcr.io/example/codex-ml:latest
-```
+```text
 
 ## 2. Helm chart skeleton
 
@@ -38,7 +38,7 @@ spec:
               value: "1"
           ports:
             - containerPort: 8000
-```
+```text
 
 Expose `/metrics`, `/health`, and `/ready` through a ClusterIP or Ingress. Attach Prometheus annotations to the
 pod metadata to auto-discover the metrics endpoint.

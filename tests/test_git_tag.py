@@ -93,9 +93,7 @@ def test_current_commit_error_returns_none_direct(monkeypatch):
     assert current_commit() is None
 
 
-@pytest.mark.parametrize(
-    "stderr_msg", ["fatal: not a git repository", "git: command not found"]
-)
+@pytest.mark.parametrize("stderr_msg", ["fatal: not a git repository", "git: command not found"])
 def test_handles_missing_repo_or_git(monkeypatch, stderr_msg):
     """
     Module-style: When git is missing or the directory is not a git repo,
@@ -118,9 +116,7 @@ def test_handles_missing_repo_or_git(monkeypatch, stderr_msg):
     assert git_tag.current_commit() is None
 
 
-@pytest.mark.parametrize(
-    "stderr_msg", ["fatal: not a git repository", "git: command not found"]
-)
+@pytest.mark.parametrize("stderr_msg", ["fatal: not a git repository", "git: command not found"])
 def test_current_commit_handles_missing_repo_or_git_direct(monkeypatch, stderr_msg):
     """
     Direct-function test for missing git/repo scenarios. Skips if direct import

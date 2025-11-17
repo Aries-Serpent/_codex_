@@ -78,7 +78,7 @@ def weighted_f1(predictions, targets, weights=None):
     """
     # Implementation here
     return 0.85
-```
+```text
 
 **Requirements**:
 - Deterministic: Same inputs always produce same outputs
@@ -94,7 +94,7 @@ Add entry points to your `pyproject.toml`:
 [project.entry-points."codex_ml.metrics"]
 custom_accuracy = "my_package.metrics:custom_accuracy"
 weighted_f1 = "my_package.metrics:weighted_f1"
-```
+```text
 
 **Format**: `entry_name = "module.path:function_name"`
 
@@ -108,7 +108,7 @@ pip install -e /path/to/my_package
 
 # Or from PyPI
 pip install my_package
-```
+```text
 
 ### Step 4: Use Your Plugin
 
@@ -126,7 +126,7 @@ print(list_metrics())
 metric = get_metric("custom_accuracy")
 score = metric(predictions=["a", "b", "c"], targets=["a", "b", "d"])
 print(f"Score: {score}")  # Output: Score: 0.666...
-```
+```text
 
 ## Advanced Plugin Patterns
 
@@ -159,7 +159,7 @@ class CustomMetric:
 
 # Entry point:
 # custom_metric_plugin = "my_package.metrics:CustomMetric"
-```
+```text
 
 ### Plugin with Optional Dependencies
 
@@ -180,7 +180,7 @@ def rouge_variant(predictions, targets):
         for p, t in zip(predictions, targets)
     ]
     return sum(scores) / len(scores) if scores else None
-```
+```text
 
 ### Multi-Metric Plugin
 
@@ -202,7 +202,7 @@ def register_suite(register_fn):
 
 # Entry point:
 # metric_suite = "my_package.metrics:register_suite"
-```
+```text
 
 ## Testing Your Plugin
 
@@ -248,7 +248,7 @@ def test_plugin_handles_edge_cases():
     # Mismatched lengths (if supported)
     # score = metric(["a"], ["a", "b"])
     # assert ...
-```
+```text
 
 ## Best Practices
 
@@ -273,7 +273,7 @@ def safe_metric(predictions, targets):
         import logging
         logging.warning(f"Metric computation failed: {e}")
         return 0.0
-```
+```text
 
 ### 2. Clear Documentation
 
@@ -310,7 +310,7 @@ def documented_metric(predictions, targets, threshold=0.5):
     """
     # Implementation
     pass
-```
+```text
 
 ### 3. Deterministic Behavior
 
@@ -325,7 +325,7 @@ def non_deterministic_metric(predictions, targets):
     # Don't use random sampling without fixed seed
     sample = random.sample(list(zip(predictions, targets)), k=10)
     return score(sample)
-```
+```text
 
 ### 4. Optional Dependencies
 
@@ -340,7 +340,7 @@ def metric_with_optional_dep(predictions, targets):
     
     # Use optional_lib for computation
     return optional_lib.compute(predictions, targets)
-```
+```text
 
 ## Troubleshooting
 
@@ -362,7 +362,7 @@ logging.basicConfig(level=logging.DEBUG)
 from codex_ml.metrics.registry import init_metric_plugins
 count = init_metric_plugins(force=True)
 print(f"Loaded {count} plugins")
-```
+```text
 
 ### Import Errors
 
@@ -380,7 +380,7 @@ except ImportError as e:
         f"Plugin 'my_metric' requires 'required_dependency'. "
         f"Install with: pip install required_dependency"
     ) from e
-```
+```text
 
 ### Registration Conflicts
 
@@ -396,7 +396,7 @@ def register(register_fn):
     
     # Or use unique name
     register_fn("custom_f1", custom_f1)
-```
+```text
 
 ## See Also
 

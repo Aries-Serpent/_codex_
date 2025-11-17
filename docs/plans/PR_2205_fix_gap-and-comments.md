@@ -277,7 +277,7 @@ def evaluate_epoch(
                 torch.backends.cudnn.benchmark = True  # type: ignore[attr-defined]
 
     return result
-```
+```text
 
 ```python name=src/codex_ml/evaluation/cli.py
 """
@@ -451,7 +451,7 @@ def report_command(
 
 if __name__ == "__main__":  # pragma: no cover
     app()
-```
+```text
 
 ```python name=tools/env_snapshot.py
 """
@@ -505,7 +505,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ```python name=tests/repro/test_determinism.py
 import json
@@ -542,7 +542,7 @@ def test_eval_determinism_twice(tmp_path: Path):
     a = run_once(42)
     b = run_once(42)
     assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
-```
+```text
 
 ```python name=tests/ast/test_ast_cli_schema.py
 import json
@@ -581,7 +581,7 @@ def test_analyze_json_golden(tmp_path: Path):
     golden = json.loads(golden_path.read_text(encoding="utf-8"))
     # Structure must be compatible; allow differences in counts as file system varies
     assert set(data.keys()) == set(golden.keys())
-```
+```text
 
 ```json name=tests/ast/goldens/analyze_min.json
 {
@@ -589,7 +589,7 @@ def test_analyze_json_golden(tmp_path: Path):
   "files": 1,
   "total_lines": 1
 }
-```
+```text
 
 ```json name=docs/ast/schema/ast_cli_output.schema.json
 {
@@ -604,7 +604,7 @@ def test_analyze_json_golden(tmp_path: Path):
   },
   "additionalProperties": false
 }
-```
+```text
 
 ````markdown name=docs/arch/ADR-style-linelength.md
 # [ADR]: Code Style — Line Length and Lint Policy
@@ -644,7 +644,7 @@ ignore = [
 
 [format]
 quote-style = "preserve"
-```
+```text
 
 ```ini name=config/mypy.ini
 # mypy configuration — medium strictness, incremental adoption
@@ -671,7 +671,7 @@ ignore_missing_imports = True
 
 [mypy-jsonschema.*]
 ignore_missing_imports = True
-```
+```text
 
 ```python name=scripts/generate_docs_manifest.py
 """
@@ -700,7 +700,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 ````markdown name=docs/validation/Coverage_Enforcement_Validation.md
 # [Validation]: Coverage Enforcement for Targeted Modules
@@ -734,7 +734,7 @@ addopts = -q --cov=src/codex_ml --cov=src/codex --cov-report=term-missing --cov-
 testpaths = tests
 filterwarnings =
     ignore::DeprecationWarning
-```
+```text
 
 ````markdown name=docs/deploy/cpu_local.md
 # CPU-only Docker: Local Parity with nox/pytest
@@ -743,24 +743,24 @@ filterwarnings =
 ⚛️ Physics: Path🛤️ [Build → Cache → Run] Fields🔄 [Docker, Python] Patterns👁️ [Slim base, non-root] Redundancy🔀 [Multi-stage (opt)] Balance⚖️ [Parity vs. size]
 
 ## Build Image
-```bash
+````bash
 docker build -f docker/Dockerfile.cpu -t codex-cpu:latest .
-```
+```text
 
 ## Smoke Test (Quick)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q -k "determinism or ast_cli_schema"
-```
+```text
 
 ## Full Tests (optional)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q
-```
+```text
 
 — End —
 ````
 
-```gitignore name=.dockerignore
+````gitignore name=.dockerignore
 .venv
 __pycache__
 .git
@@ -773,7 +773,7 @@ artifacts
 mlruns
 .coverage
 .pytest_cache
-```
+```text
 
 ````markdown name=reports/docs/PR2205_Review_Comments_Fixes.md
 # [Report]: PR #2205 Review Thread — Additional Fixes Mapping

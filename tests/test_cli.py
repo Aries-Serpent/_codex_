@@ -155,7 +155,6 @@ def test_fix_pool_missing_cf(monkeypatch) -> None:
     _fix_pool(max_workers=1)
 
 
-
 def test_typer_cli_help() -> None:
     runner = TyperCliRunner()
     result = runner.invoke(codex_cli_app, ["--help"])

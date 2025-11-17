@@ -66,7 +66,7 @@ codex deploy \
   --config configs/deploy/reasoning_pod.yaml \
   --model artifacts/runs/reasoning-starter:last \
   --dry-run
-```
+```text
 
 This renders the "reasoning pod" manifest for inspection. It does **not**
 create or update any live service. See [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md)

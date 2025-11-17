@@ -19,7 +19,7 @@ python -m codex_ml.cli.main tokenizer train \
   --output-dir ./artifacts/tokenizer \
   --seed 42 \
   --force
-```
+```text
 
 The command loads the provided configuration, rewrites the output directory when
 `--force` is supplied, and delegates training to
@@ -32,7 +32,7 @@ from codex_ml.data.make_splits import write_splits
 
 items = [f"doc-{i}" for i in range(500)]
 write_splits(items, out_dir="artifacts/splits", seed=13)
-```
+```text
 
 The helper shuffles inputs deterministically, writes `train.txt`, `val.txt`,
 `test.txt` files and records a `manifest.json` containing counts, a dataset hash
@@ -47,7 +47,7 @@ from codex_ml.tracking.mlflow_utils import init_run
 
 with init_run(run_name="demo", config={"seed": 13}):
     ...  # training code
-```
+```text
 
 Runs are tagged with the current git commit (when discoverable) and a stable
 hash derived from the config payload.
@@ -59,7 +59,7 @@ from codex_ml.tracking.offline import NDJSONLogger
 
 logger = NDJSONLogger("artifacts/logs/events.ndjson", max_bytes=2_000_000)
 logger.write({"epoch": 1, "loss": 0.42})
-```
+```text
 
 The logger automatically rotates files once the size threshold is exceeded,
 keeping a bounded number of backups.
