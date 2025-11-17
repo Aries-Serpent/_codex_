@@ -91,11 +91,15 @@ This PR successfully implements **all requirements** from the problem statement:
 ### Test Results
 
 ```
+# Evaluation tests
 tests/test_evaluate_epoch.py:    11/11 PASSED  ✅
 tests/test_cli_report.py:         9/9  PASSED  ✅
 tests/test_bestk_retention.py:    1/1  PASSED  ✅
 ─────────────────────────────────────────────────
-Total:                           21/21 PASSED  ✅
+# Archival tests
+tests/test_archival_registry.py:  53/53 PASSED  ✅
+─────────────────────────────────────────────────
+Total:                           74/74 PASSED  ✅
 Pass Rate:                           100%       ✅
 ```
 
