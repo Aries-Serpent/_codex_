@@ -166,6 +166,9 @@ class TestOptimizedVectorStore:
         result1 = optimized.search(query, k=5)
         result2 = optimized.search(query, k=5)
         
+        # Verify results are as expected
+        assert result1 == [{"id": "1", "score": 0.9}]
+        assert result2 == [{"id": "1", "score": 0.9}]
         assert mock_store.search.call_count == 2
     
     def test_search_batch(self):

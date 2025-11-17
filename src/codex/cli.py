@@ -1095,7 +1095,6 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
         from pathlib import Path as PathLib
         from codex.metrics.duplication import detect_duplicates, calculate_duplication_ratio
         from codex.metrics.storage import MetricStorage
-        import json
         
         path_obj = PathLib(path).resolve()
         click.echo(f"🔍 Scanning {path_obj} for duplicates...")
@@ -1112,7 +1111,8 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
         for py_file in path_obj.rglob("*.py"):
             try:
                 total_lines += len(py_file.read_text().splitlines())
-            except:
+            except (OSError, UnicodeDecodeError) as e:
+                click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
                 pass
         
         # Calculate ratio
@@ -1191,7 +1191,6 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
         from pathlib import Path as PathLib
         from codex.metrics.duplication import detect_duplicates, calculate_duplication_ratio
         from codex.metrics.storage import MetricStorage
-        import json
         
         path_obj = PathLib(path).resolve()
         click.echo(f"🔍 Generating duplication report for {path_obj}...")
@@ -1295,7 +1294,6 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
         codex duplication compare report.json --baseline=baseline.json --threshold-increase=0.10
     """
     try:
-        import json
         from pathlib import Path as PathLib
         
         current_path = PathLib(current)

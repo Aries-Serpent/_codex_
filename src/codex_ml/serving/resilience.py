@@ -234,7 +234,10 @@ def retry_with_backoff(
             else:
                 logger.error(f"All {max_retries + 1} attempts failed")
     
-    raise last_exception
+    # Guard against None (defensive programming)
+    if last_exception is not None:
+        raise last_exception
+    raise RuntimeError(f"Retry exhausted with no captured exception context (max_retries={max_retries})")
 
 
 class FallbackHandler:
