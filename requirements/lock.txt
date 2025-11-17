@@ -141,7 +141,7 @@ colorama==0.4.6
     #   great-expectations
     #   sacrebleu
     #   tqdm-multiprocess
-colorful==0.5.7
+colorful==0.5.8
     # via ray
 comm==0.2.3
     # via
@@ -161,7 +161,7 @@ cryptography==45.0.7
     #   mlflow
 cycler==0.12.1
     # via matplotlib
-databricks-sdk==0.65.0
+databricks-sdk==0.73.0
     # via
     #   mlflow-skinny
     #   mlflow-tracing
