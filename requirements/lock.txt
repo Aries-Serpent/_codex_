@@ -902,7 +902,7 @@ python-json-logger==4.0.0
     # via jupyter-events
 python-multipart==0.0.20
     # via fastapi
-pytokens==0.2.0
+pytokens==0.3.0
     # via black
 pytz==2025.2
     # via
