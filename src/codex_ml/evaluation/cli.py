@@ -226,14 +226,16 @@ def report_command(
             sort_keys=True,
         )
         out["determinism_match"] = deterministic
-        if not deterministic:
-            typer.echo("Determinism mismatch detected.", err=True)
-            raise typer.Exit(code=4)
 
     if json_output:
         typer.echo(json.dumps(out, indent=2))
     else:
         typer.echo(f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}")
+    
+    # Check determinism after output so JSON is still returned
+    if compare and not out.get("determinism_match", True):
+        typer.echo("Determinism mismatch detected.", err=True)
+        raise typer.Exit(code=4)
 
 
 if __name__ == "__main__":  # pragma: no cover

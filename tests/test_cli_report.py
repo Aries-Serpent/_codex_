@@ -131,8 +131,13 @@ def test_report_determinism_mismatch(tmp_path):
         ],
     )
     
-    assert result.exit_code == 4  # Determinism mismatch
-    output = json.loads(result.stdout)
+    # Should exit with code 4 for determinism mismatch
+    assert result.exit_code == 4
+    # JSON output should be present before error message
+    # Split by the error message to extract JSON
+    stdout_parts = result.stdout.split("Determinism mismatch detected.")
+    json_part = stdout_parts[0].strip()
+    output = json.loads(json_part)
     assert output["determinism_match"] is False
 
 
