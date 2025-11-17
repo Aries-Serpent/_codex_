@@ -90,9 +90,11 @@ class VectorStoreFactory:
             if store_type == "faiss":
                 # FAISSStore constructor: (index_dir, index_name, max_vectors, validate_checksums)
                 # Dimension is set when create_index() is called
+                # Strip dimension from kwargs as it's not a constructor parameter
+                sanitized_kwargs = {k: v for k, v in kwargs.items() if k != 'dimension'}
                 instance = store_class(
                     index_name=index_name,
-                    **kwargs
+                    **sanitized_kwargs
                 )
             else:
                 # Other stores may require dimension

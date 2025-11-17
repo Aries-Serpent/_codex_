@@ -9,9 +9,13 @@ Provides ML model serving capabilities with safeguards:
 - Error handling
 """
 import logging
+import os
 import time
 from collections import defaultdict
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import numpy as np
 
 try:
     from fastapi import FastAPI, HTTPException, Request, status
@@ -33,6 +37,95 @@ logger = logging.getLogger(__name__)
 MAX_BATCH_SIZE = 100
 MAX_INPUT_LENGTH = 10000
 REQUEST_RATE_LIMIT = 1000  # requests per minute per IP
+
+# Model configuration defaults
+DEFAULT_MODEL_DIR = os.environ.get("CODEX_MODEL_DIR", ".codex/models")
+DEFAULT_MODEL_NAME = os.environ.get("CODEX_MODEL_NAME", "default-model")
+DEFAULT_MODEL_TYPE = os.environ.get("CODEX_MODEL_TYPE", "stub")  # stub, huggingface, onnx
+
+
+class ModelLoadError(Exception):
+    """Raised when model loading fails"""
+    pass
+
+
+class ModelConfig:
+    """Configuration for model loading
+    
+    Attributes:
+        model_name: Name of the model
+        model_type: Type of model (stub, huggingface, onnx)
+        model_path: Path to model files
+        device: Device to load model on (cpu, cuda)
+        config_file: Optional config file path
+    """
+    
+    def __init__(
+        self,
+        model_name: str = DEFAULT_MODEL_NAME,
+        model_type: str = DEFAULT_MODEL_TYPE,
+        model_path: Optional[str] = None,
+        device: str = "cpu",
+        config_file: Optional[str] = None,
+    ):
+        self.model_name = model_name
+        self.model_type = model_type
+        self.model_path = model_path or os.path.join(DEFAULT_MODEL_DIR, model_name)
+        self.device = device
+        self.config_file = config_file
+        
+    @classmethod
+    def from_env(cls) -> "ModelConfig":
+        """Create config from environment variables"""
+        return cls(
+            model_name=os.environ.get("CODEX_MODEL_NAME", DEFAULT_MODEL_NAME),
+            model_type=os.environ.get("CODEX_MODEL_TYPE", DEFAULT_MODEL_TYPE),
+            model_path=os.environ.get("CODEX_MODEL_PATH"),
+            device=os.environ.get("CODEX_MODEL_DEVICE", "cpu"),
+            config_file=os.environ.get("CODEX_MODEL_CONFIG"),
+        )
+    
+    @classmethod
+    def from_dict(cls, config: Dict[str, Any]) -> "ModelConfig":
+        """Create config from dictionary"""
+        return cls(
+            model_name=config.get("model_name", DEFAULT_MODEL_NAME),
+            model_type=config.get("model_type", DEFAULT_MODEL_TYPE),
+            model_path=config.get("model_path"),
+            device=config.get("device", "cpu"),
+            config_file=config.get("config_file"),
+        )
+    
+    def validate(self) -> None:
+        """Validate configuration
+        
+        Raises:
+            ValueError: If configuration is invalid
+        """
+        if not self.model_name:
+            raise ValueError("model_name cannot be empty")
+        
+        if self.model_type not in ["stub", "huggingface", "onnx"]:
+            raise ValueError(f"Unsupported model_type: {self.model_type}")
+        
+        if self.device not in ["cpu", "cuda"]:
+            raise ValueError(f"Unsupported device: {self.device}")
+        
+        # For non-stub models, path should exist or be valid
+        if self.model_type != "stub" and self.model_path:
+            path = Path(self.model_path)
+            if not path.exists() and not path.parent.exists():
+                logger.warning(f"Model path does not exist: {self.model_path}")
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary"""
+        return {
+            "model_name": self.model_name,
+            "model_type": self.model_type,
+            "model_path": self.model_path,
+            "device": self.device,
+            "config_file": self.config_file,
+        }
 
 
 if FASTAPI_AVAILABLE:
@@ -60,6 +153,29 @@ if FASTAPI_AVAILABLE:
         model_name: str
         inference_time_ms: float
         metadata: Optional[Dict[str, Any]] = None
+
+
+    class EmbeddingRequest(BaseModel):
+        """Request model for embeddings"""
+        texts: List[str] = Field(..., description="List of texts to embed")
+        
+        @validator('texts')
+        def validate_texts(cls, v):
+            """Validate texts"""
+            if not v:
+                raise ValueError("Texts cannot be empty")
+            if len(v) > MAX_BATCH_SIZE:
+                raise ValueError(f"Batch size cannot exceed {MAX_BATCH_SIZE}")
+            return v
+
+
+    class EmbeddingResponse(BaseModel):
+        """Response model for embeddings"""
+        embeddings: List[List[float]]
+        model_name: str
+        dimension: int
+        num_texts: int
+        inference_time_ms: float
 
 
     class HealthResponse(BaseModel):
@@ -114,34 +230,148 @@ class RateLimiter:
 
 
 class ModelServer:
-    """Base model server with safeguards"""
+    """Base model server with safeguards and real model loading"""
     
-    def __init__(self, model_name: str = "default-model"):
+    def __init__(self, config: Optional[ModelConfig] = None):
         """
         Initialize model server
         
         Args:
-            model_name: Name of the model to serve
+            config: Model configuration (defaults to environment-based config)
         """
-        self.model_name = model_name
+        self.config = config or ModelConfig.from_env()
+        self.config.validate()
+        
+        self.model_name = self.config.model_name
         self.model = None
         self.start_time = time.time()
         self.total_requests = 0
         self.rate_limiter = RateLimiter()
-        logger.info(f"Initialized ModelServer for: {model_name}")
-    
-    def load_model(self, model_name: Optional[str] = None):
-        """Load the model (stub implementation)
+        self.load_errors: List[str] = []
         
-        Args:
-            model_name: Optional model name to load (defaults to self.model_name)
+        logger.info(f"Initialized ModelServer for: {self.model_name}")
+        logger.info(f"Model config: {self.config.to_dict()}")
+    
+    def _load_stub_model(self) -> Dict[str, Any]:
+        """Load a stub model for testing"""
+        logger.info("Loading stub model")
+        return {
+            "type": "stub",
+            "name": self.config.model_name,
+            "device": self.config.device,
+        }
+    
+    def _load_huggingface_model(self) -> Any:
+        """Load a HuggingFace model
+        
+        Returns:
+            Loaded model object
+            
+        Raises:
+            ModelLoadError: If loading fails
         """
-        model_to_load = model_name if model_name else self.model_name
-        logger.info(f"Loading model: {model_to_load}")
-        # Stub: In real implementation, load actual model here
-        self.model = {"type": "stub", "name": model_to_load}
-        logger.info("Model loaded successfully")
-        return self.model
+        try:
+            from transformers import AutoModel, AutoTokenizer
+        except ImportError:
+            raise ModelLoadError(
+                "transformers not installed. Install with: pip install transformers"
+            )
+        
+        try:
+            logger.info(f"Loading HuggingFace model from: {self.config.model_path}")
+            
+            # Check if path exists
+            model_path = Path(self.config.model_path)
+            if not model_path.exists():
+                raise ModelLoadError(f"Model path does not exist: {self.config.model_path}")
+            
+            # Load tokenizer and model
+            tokenizer = AutoTokenizer.from_pretrained(str(model_path))
+            model = AutoModel.from_pretrained(str(model_path))
+            
+            logger.info(f"Successfully loaded HuggingFace model: {self.config.model_name}")
+            
+            return {
+                "type": "huggingface",
+                "name": self.config.model_name,
+                "model": model,
+                "tokenizer": tokenizer,
+                "device": self.config.device,
+            }
+        except Exception as e:
+            error_msg = f"Failed to load HuggingFace model: {str(e)}"
+            logger.error(error_msg)
+            raise ModelLoadError(error_msg) from e
+    
+    def _load_onnx_model(self) -> Any:
+        """Load an ONNX model
+        
+        Returns:
+            Loaded model object
+            
+        Raises:
+            ModelLoadError: If loading fails
+        """
+        try:
+            import onnxruntime as ort
+        except ImportError:
+            raise ModelLoadError(
+                "onnxruntime not installed. Install with: pip install onnxruntime"
+            )
+        
+        try:
+            logger.info(f"Loading ONNX model from: {self.config.model_path}")
+            
+            # Check if path exists
+            model_path = Path(self.config.model_path)
+            if not model_path.exists():
+                raise ModelLoadError(f"Model path does not exist: {self.config.model_path}")
+            
+            # Create inference session
+            session = ort.InferenceSession(str(model_path))
+            
+            logger.info(f"Successfully loaded ONNX model: {self.config.model_name}")
+            
+            return {
+                "type": "onnx",
+                "name": self.config.model_name,
+                "session": session,
+                "device": self.config.device,
+            }
+        except Exception as e:
+            error_msg = f"Failed to load ONNX model: {str(e)}"
+            logger.error(error_msg)
+            raise ModelLoadError(error_msg) from e
+    
+    def load_model(self) -> Any:
+        """Load the model based on configuration
+        
+        Returns:
+            Loaded model object
+            
+        Raises:
+            ModelLoadError: If loading fails
+        """
+        try:
+            if self.config.model_type == "stub":
+                self.model = self._load_stub_model()
+            elif self.config.model_type == "huggingface":
+                self.model = self._load_huggingface_model()
+            elif self.config.model_type == "onnx":
+                self.model = self._load_onnx_model()
+            else:
+                raise ModelLoadError(f"Unsupported model type: {self.config.model_type}")
+            
+            logger.info("Model loaded successfully")
+            return self.model
+            
+        except ModelLoadError:
+            raise
+        except Exception as e:
+            error_msg = f"Unexpected error loading model: {str(e)}"
+            logger.error(error_msg)
+            self.load_errors.append(error_msg)
+            raise ModelLoadError(error_msg) from e
     
     def predict(self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None) -> List[Any]:
         """
@@ -152,19 +382,192 @@ class ModelServer:
             parameters: Optional model parameters
             
         Returns:
-            List of predictions
+            List of predictions with standardized structure
+            
+        Raises:
+            RuntimeError: If model not loaded
         """
         if not self.model:
             raise RuntimeError("Model not loaded. Call load_model() first.")
         
-        # Stub implementation: return dummy predictions
-        # In real implementation, call actual model inference
+        model_type = self.model.get("type", "unknown")
+        
+        if model_type == "stub":
+            # Stub implementation: return dummy predictions
+            predictions = [
+                {
+                    "text": inp,
+                    "label": "POSITIVE",
+                    "score": 0.95 + (i * 0.01) % 0.05,
+                    "model": self.model_name,
+                }
+                for i, inp in enumerate(inputs)
+            ]
+        elif model_type == "huggingface":
+            # HuggingFace model inference
+            predictions = self._predict_huggingface(inputs, parameters)
+        elif model_type == "onnx":
+            # ONNX model inference
+            predictions = self._predict_onnx(inputs, parameters)
+        else:
+            raise RuntimeError(f"Unknown model type: {model_type}")
+        
+        return predictions
+    
+    def _predict_huggingface(
+        self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None
+    ) -> List[Any]:
+        """Run inference with HuggingFace model
+        
+        Args:
+            inputs: List of input texts
+            parameters: Optional inference parameters
+            
+        Returns:
+            List of predictions
+        """
+        # Basic implementation - can be extended for specific model types
+        tokenizer = self.model["tokenizer"]
+        model = self.model["model"]
+        
+        # Tokenize inputs
+        encoded = tokenizer(
+            inputs,
+            padding=True,
+            truncation=True,
+            return_tensors="pt",
+            max_length=MAX_INPUT_LENGTH,
+        )
+        
+        # Run inference
+        import torch
+        with torch.no_grad():
+            outputs = model(**encoded)
+        
+        # Format predictions (basic structure)
         predictions = [
-            {"label": "POSITIVE", "score": 0.95 + i * 0.01}
-            for i in range(len(inputs))
+            {
+                "text": inp,
+                "embedding": outputs.last_hidden_state[i, 0, :].tolist()[:10],  # First 10 dims
+                "model": self.model_name,
+            }
+            for i, inp in enumerate(inputs)
         ]
         
         return predictions
+    
+    def _predict_onnx(
+        self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None
+    ) -> List[Any]:
+        """Run inference with ONNX model
+        
+        Args:
+            inputs: List of input texts
+            parameters: Optional inference parameters
+            
+        Returns:
+            List of predictions
+        """
+        # Basic ONNX inference - needs tokenization
+        session = self.model["session"]
+        
+        # For now, return stub predictions
+        # Real implementation would need proper tokenization
+        logger.warning("ONNX inference not fully implemented - returning stub predictions")
+        predictions = [
+            {
+                "text": inp,
+                "label": "POSITIVE",
+                "score": 0.90,
+                "model": self.model_name,
+            }
+            for inp in inputs
+        ]
+        
+        return predictions
+    
+    def embed(self, texts: List[str]) -> np.ndarray:
+        """Generate embeddings from texts
+        
+        Args:
+            texts: List of input texts
+            
+        Returns:
+            Numpy array of embeddings (shape: [n_texts, dimension])
+            
+        Raises:
+            RuntimeError: If model not loaded
+        """
+        if not self.model:
+            raise RuntimeError("Model not loaded. Call load_model() first.")
+        
+        import numpy as np
+        
+        model_type = self.model.get("type", "unknown")
+        
+        if model_type == "stub":
+            # Return random embeddings for testing
+            dimension = 384  # Default embedding dimension
+            embeddings = np.random.randn(len(texts), dimension).astype(np.float32)
+            # Normalize
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            embeddings = embeddings / np.maximum(norms, 1e-12)
+            return embeddings
+            
+        elif model_type == "huggingface":
+            return self._embed_huggingface(texts)
+            
+        elif model_type == "onnx":
+            # Basic ONNX embedding
+            logger.warning("ONNX embedding not fully implemented - returning stub")
+            dimension = 384
+            embeddings = np.random.randn(len(texts), dimension).astype(np.float32)
+            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+            return embeddings / np.maximum(norms, 1e-12)
+        else:
+            raise RuntimeError(f"Unknown model type: {model_type}")
+    
+    def _embed_huggingface(self, texts: List[str]) -> np.ndarray:
+        """Generate embeddings using HuggingFace model
+        
+        Args:
+            texts: List of input texts
+            
+        Returns:
+            Numpy array of embeddings
+        """
+        import numpy as np
+        import torch
+        
+        tokenizer = self.model["tokenizer"]
+        model = self.model["model"]
+        
+        # Tokenize
+        encoded = tokenizer(
+            texts,
+            padding=True,
+            truncation=True,
+            return_tensors="pt",
+            max_length=MAX_INPUT_LENGTH,
+        )
+        
+        # Generate embeddings (use [CLS] token or mean pooling)
+        with torch.no_grad():
+            outputs = model(**encoded)
+            
+            # Use [CLS] token embedding or mean of last hidden state
+            if hasattr(outputs, "pooler_output") and outputs.pooler_output is not None:
+                embeddings = outputs.pooler_output
+            else:
+                # Mean pooling
+                embeddings = outputs.last_hidden_state.mean(dim=1)
+        
+        # Convert to numpy and normalize
+        embeddings_np = embeddings.cpu().numpy().astype(np.float32)
+        norms = np.linalg.norm(embeddings_np, axis=1, keepdims=True)
+        embeddings_normalized = embeddings_np / np.maximum(norms, 1e-12)
+        
+        return embeddings_normalized
     
     def health_check(self) -> Dict[str, Any]:
         """Perform health check"""
@@ -174,15 +577,18 @@ class ModelServer:
             "uptime_seconds": time.time() - self.start_time,
             "total_requests": self.total_requests,
             "model_name": self.model_name,
+            "model_type": self.config.model_type,
+            "device": self.config.device,
+            "load_errors": self.load_errors,
         }
 
 
-def create_app(model_name: str = "default-model"):
+def create_app(config: Optional[ModelConfig] = None):
     """
     Create FastAPI application with safeguards
     
     Args:
-        model_name: Name of the model to serve
+        config: Model configuration (defaults to environment-based config)
         
     Returns:
         Configured FastAPI application or None if FastAPI not available
@@ -208,8 +614,14 @@ def create_app(model_name: str = "default-model"):
     )
     
     # Initialize model server
-    server = ModelServer(model_name=model_name)
-    server.load_model()
+    server = ModelServer(config=config)
+    
+    # Try to load model on startup
+    try:
+        server.load_model()
+    except ModelLoadError as e:
+        logger.warning(f"Failed to load model on startup: {e}")
+        logger.warning("Server will start but predictions will fail until model is loaded")
     
     @app.middleware("http")
     async def rate_limit_middleware(request: Request, call_next):
@@ -240,6 +652,7 @@ def create_app(model_name: str = "default-model"):
             "endpoints": {
                 "health": "/health",
                 "predict": "/predict (POST)",
+                "embed": "/embed (POST)",
                 "metrics": "/metrics",
             }
         }
@@ -280,6 +693,43 @@ def create_app(model_name: str = "default-model"):
                 detail=f"Prediction failed: {str(e)}"
             )
     
+    @app.post("/embed", response_model=EmbeddingResponse)
+    async def embed(request: EmbeddingRequest):
+        """
+        Embedding endpoint - Generate embeddings from texts
+        
+        Args:
+            request: Embedding request with texts
+            
+        Returns:
+            Embeddings with metadata
+        """
+        try:
+            # Track request
+            server.total_requests += 1
+            
+            # Generate embeddings
+            start_time = time.time()
+            embeddings = server.embed(request.texts)
+            inference_time = (time.time() - start_time) * 1000  # Convert to ms
+            
+            # Convert numpy array to list
+            embeddings_list = embeddings.tolist()
+            
+            return EmbeddingResponse(
+                embeddings=embeddings_list,
+                model_name=server.model_name,
+                dimension=embeddings.shape[1],
+                num_texts=len(request.texts),
+                inference_time_ms=inference_time,
+            )
+        except Exception as e:
+            logger.error(f"Embedding error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Embedding failed: {str(e)}"
+            )
+    
     @app.get("/metrics")
     async def metrics():
         """Metrics endpoint"""
@@ -301,7 +751,11 @@ def main():
     
     import uvicorn
     
-    app = create_app(model_name="codex-model-v1")
+    # Create config from environment
+    config = ModelConfig.from_env()
+    logger.info(f"Starting server with config: {config.to_dict()}")
+    
+    app = create_app(config=config)
     
     uvicorn.run(
         app,
