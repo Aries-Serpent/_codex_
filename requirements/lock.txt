@@ -161,7 +161,7 @@ cryptography==45.0.7
     #   mlflow
 cycler==0.12.1
     # via matplotlib
-databricks-sdk==0.65.0
+databricks-sdk==0.73.0
     # via
     #   mlflow-skinny
     #   mlflow-tracing
