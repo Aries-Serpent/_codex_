@@ -49,7 +49,7 @@ docker build -f Dockerfile.gpu -t codex-gpu:local .
 
 # With CUDA 12.1 PyTorch
 INSTALL_TORCH_GPU=1 ./scripts/packaging/build_docker.sh codex-gpu:cu121
-```
+```text
 
 ### Phase 4: Plugin Registry Prototype ✅
 
@@ -74,13 +74,13 @@ INSTALL_TORCH_GPU=1 ./scripts/packaging/build_docker.sh codex-gpu:cu121
 
 ### All New Tests Passing ✅
 
-```
+```text
 tests/test_metrics_generative.py ......................... 8 passed
 tests/eval/test_eval_provenance_capture.py ............... 2 passed
 tests/plugins/test_metric_plugin_loading.py .............. 3 passed
 ────────────────────────────────────────────────────────────────────
 Total: 13 passed in 4.11s
-```
+```text
 
 ## Files Changed
 

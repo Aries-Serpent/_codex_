@@ -17,7 +17,7 @@ python -m codex_ml.cli metrics ingest --input artifacts/metrics.ndjson \
 
 # Print quick stats (last/min/max by key)
 python -m codex_ml.cli metrics summary --input artifacts/metrics.ndjson
-```
+```text
 
 ### Notes
 - NDJSON = "one JSON object per line"; the CLI streams the file to keep memory usage low.

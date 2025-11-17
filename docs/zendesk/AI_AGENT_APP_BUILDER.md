@@ -60,7 +60,7 @@ Ticket Sidebar            Topbar                   Navbar (App Area)
 ├─ Space:   █             ├─ Space:   ██           ├─ Space:   ██████████
 ├─ Persist: ████          ├─ Persist: █            ├─ Persist: █████
 └─ Complex: █             └─ Complex: ██           └─ Complex: ████████
-```
+```text
 **Interpretation**:
 - **Sidebar**: High contextual awareness (sees current ticket), minimal space
 - **Topbar**: Balanced but limited in all dimensions
@@ -81,7 +81,7 @@ Real-time Data           [▓▓▒▒░░░░░░]  Polling ✓          
 Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects ✓   Custom DB ✗
 Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches ✓     1000s records ✗
 Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓    Chrome override ✗
-```
+```text
 **Legend**:
 - **▓** = Full or strong support
 - **▒** = Partial support with limitations
@@ -120,7 +120,7 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓   
             ║ • File system ✗
             ║ • Native code ✗
             ╚═════════════╝
-```
+```text
 ### Data Flow Topology
 
 ```json
@@ -134,7 +134,7 @@ BOTTLENECK POINTS:
 ⚠ API Proxy (rate limits, latency)
 ⚠ External Service (downtime, throttling)
 ⚠ Client Processing (heavy computation freezes UI)
-```
+```text
 ### Security Boundary Map
 
 ```text
@@ -165,7 +165,7 @@ BOTTLENECK POINTS:
 │             ✗ Bypass Zendesk permissions
 │             ✗ Store credentials client-side
 │             ✗ Direct external API calls
-```
+```text
 ### Performance Profile
 
 ```text
@@ -180,7 +180,7 @@ Heavy Computation      ▓░░░░   ▓▓▓▓▓         ░░░░░
 Real-time Updates      ▓░░░░   ▓▓░░░         ▓░░░░
 
 LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
-```
+```text
 ### Navbar Space Allocation
 
 ```text
@@ -207,7 +207,7 @@ LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
 ✗ Cannot go full-screen
 ✓ Can use tabs/routing within the app area
 ✓ Can open modals/overlays
-```
+```text
 ### Navbar Capability Signature
 
 ```text
@@ -220,7 +220,7 @@ Integration: ███████░░░   7/10
 Real-time:   ██░░░░░░░░   2/10
 
 OVERALL SCORE: 34/60  (Navbar excels at complex, space-intensive apps)
-```
+```text
 ## Mathematical Foundation
 
 ### Notation & Conventions
@@ -471,7 +471,7 @@ Agent → UI → Client → Proxy → External API
 0.5ms  5ms   50ms    350ms     1200ms
 
 Total Expected Latency: ~1.6s
-```
+```text
 ## Feature Feasibility Classification
 
 ### 1. Feature Feasibility Amplitude
@@ -591,7 +591,7 @@ Value (v)
     │  │   DON'T BUILD IN NAVBAR      │
     │  └──────────────────────────────┘
     └─────────────────────────────────→ Complexity (c)
-```
+```text
 ## Practical Decision Rules
 
 ### 1. Closed-Form Heuristic
@@ -632,7 +632,7 @@ Feature Needs Space + Complexity?
                     ├─ YES → Sidebar (limited) or External
                     │
                     └─ NO → Topbar or Navbar
-```
+```text
 ## Worked Examples
 
 ### Example A: Multi-Step Configuration Wizard
@@ -803,7 +803,7 @@ Before implementing a Navbar feature:
   },
   "decision": "BUILD"
 }
-```
+```text
 
 ### 3. Forbidden Patterns
 
@@ -824,7 +824,7 @@ eval(userInput)
 
 // ❌ Client-stored credentials
 localStorage.setItem('api_key', secretKey)
-```
+```text
 
 **Always use**:
 
@@ -840,7 +840,7 @@ client.set('mykey', value)
 
 // ✅ OAuth flows
 client.invoke('oauth', {provider: 'custom'})
-```
+```text
 
 ### 4. Performance Optimization
 
@@ -863,7 +863,7 @@ function getCached(key, fetchFn) {
 
 // Debounce external calls
 const debouncedValidate = debounce(validateExternal, 500)
-```
+```text
 
 **Manage Rate Limits**:
 ```javascript
@@ -881,7 +881,7 @@ async function retryWithBackoff(fn, maxRetries = 3) {
     }
   }
 }
-```
+```text
 
 ### 5. Testing Strategy
 
@@ -948,7 +948,7 @@ def should_build_in_navbar(feature):
         return "CONSIDER"
     else:
         return "DON'T BUILD - Use alternative"
-```
+```text
 
 ### Next Steps
 
@@ -977,7 +977,7 @@ WebSockets               ✗            ✗          ✗  NO
 GraphQL                  ✓            ░          ≈  OK
 SOAP                     ✓            ░          ✗  AVOID
 Server-Sent Events       ✗            ✗          ✗  NO
-```
+```text
 ### Development Lifecycle
 
 ```text
@@ -992,7 +992,7 @@ Publication      ░░░░░░     ▒▒▒▒▒      Marketplace approva
 Maintenance      ░░░░...    ▒▒▒░░      Platform changes, support
 
 TIME SCALE: ░ = Days/Weeks, ▒ = Complexity level
-```
+```text
 ### Feature Feasibility Scorecard (Navbar Context)
 
 ```text
@@ -1012,7 +1012,7 @@ File uploads/processing    ▓▓       ▓▓▓       ▒▒▒         ░
 Custom notifications       ▓        ▒▒▒       ▒▒▒▒        ░░░
 
 LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
-```
+```text
 ### Anti-Patterns to Avoid
 
 ```text
@@ -1041,7 +1041,7 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 ├─ Use async/await for API calls
 ├─ Keep bundle size minimal
 └─ Test with representative Zendesk data
-```
+```text
 ### Cost-Benefit Zones
 
 ```text
@@ -1065,7 +1065,7 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 LOW COMPLEXITY ───────────────────────────────────────────→ HIGH COMPLEXITY
                            │
                          LOW VALUE
-```
+```text
 ### Optimal Use Cases Summary
 
 ```text
@@ -1082,14 +1082,14 @@ AVOID IN NAVBAR:
 ✗✗  Quick actions (prefer Topbar)
 ✗✗  Context-heavy features (prefer Sidebar)
 ✗   Single-purpose simple tools
-```
+```text
 ### Recommended Workflow
 
 ```text
 Developer Team → AI Assistant (ideation/planning) → Official Docs (validation)
               → Development Environment (testing) → AI Assistant (refinement)
               → Production
-```
+```text
 ### Final Recommendations for Navbar App Projects
 
 ```text
@@ -1116,7 +1116,7 @@ Developer Team → AI Assistant (ideation/planning) → Official Docs (validatio
    ├─ Consider fallback patterns (polling vs webhooks)
    ├─ Refactor for performance/bundle size
    └─ Escalate platform issues via official support
-```
+```text
 ## AI Assistant Context & Limitations
 
 This documentation was created with assistance from AI language models. Understanding the context and limitations of AI-generated content is important for proper usage.
@@ -1184,7 +1184,7 @@ SHOULD BE VERIFIED EXTERNALLY:
 • Browser compatibility (latest versions)
 • Third-party API specifications
 • Pricing and billing details
-```
+```text
 ### AI Assistant Capability Profile
 
 ```text
@@ -1201,7 +1201,7 @@ Maintenance            ▓▓▓▓░░░░░░               ░░░░
 
 EXCELS AT: Design, planning, code scaffolding, constraint explanation
 CANNOT: Execute code, test applications, access live systems, update model knowledge
-```
+```text
 ### Effective Usage Guidelines
 
 **Effective Prompts**:
@@ -1248,7 +1248,7 @@ GitHub Copilot      IDE assistant        Inline code completion            After
 ChatGPT             Conversational LLM   General ideation/help             Similar planning use cases
 Zendesk Support     Vendor support       Platform-specific help            Critical platform issues
 AI Assistant (LLM)  Planning/analysis    Comprehensive planning            START HERE for architecture
-```
+```text
 ---
 
 **This mathematical framework enables data-driven decisions about what to build in Zendesk AI Agent App Builder and how to optimize for success within its constraints.**

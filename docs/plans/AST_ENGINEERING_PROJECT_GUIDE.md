@@ -318,7 +318,7 @@ dependencies = [
     "parso>=0.8.0",
     "tree-sitter>=0.20.0",  # Optional for multi-language
 ]
-```
+```text
 
 **Security Review**: Run `pip-audit` and vulnerability scans before installation
 

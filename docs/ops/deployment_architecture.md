@@ -35,4 +35,4 @@
 ```text
 Client -> Ingress -> Codex API Service -> Model Runtime
                    \-> Observability Stack
-```
+```text

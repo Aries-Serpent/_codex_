@@ -24,13 +24,13 @@ The problem statement provided a detailed audit with 7 atomic diffs (A-E, PEFT-g
 env-snapshot:
 	@mkdir -p artifacts
 	PYTHONPATH=src python scripts/env/export_env_json.py artifacts/env_snapshot.json
-```
+```text
 
 **Testing:**
 ```bash
 make -f configs/development/Makefile env-snapshot
 # Creates artifacts/env_snapshot.json ✓
-```
+```text
 
 ### 2. Fixed Makefile Tab/Space Issues
 **File:** `configs/development/Makefile`
@@ -140,11 +140,11 @@ The implementation follows all principles from the problem statement:
 
 ## Files Changed
 
-```
+```text
 IMPLEMENTATION_VALIDATION.md | 268 ++++++++++++++++++++++++++++++++++++
 configs/development/Makefile |  12 +-
 2 files changed, 276 insertions(+), 4 deletions(-)
-```
+```text
 
 ## Conclusion
 

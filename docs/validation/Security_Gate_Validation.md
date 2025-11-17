@@ -10,7 +10,7 @@
 ```bash
 nox -s security
 python tools/security/merge_security_reports.py  # optional; nox already aggregates
-```
+```text
 
 ## Files
 - .bandit.yaml — exclude noisy paths; skip B101; configure severity/confidence

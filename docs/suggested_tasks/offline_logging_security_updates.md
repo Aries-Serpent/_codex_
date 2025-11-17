@@ -27,7 +27,7 @@ configuration and serving hardening.
 +The configuration test ensures Hydra experiment presets (e.g. `experiment=debug`) compose correctly while still honoring
 +explicit CLI overrides like `training.seed` and offline metric sinks. The API test drives the FastAPI middleware to verify
 +that the request rate limiter and prompt length safeguards fail closed when quotas are exceeded.
-```
+```text
 
 ## Validation checklist
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/configuration/test_hydra_override_propagation.py`

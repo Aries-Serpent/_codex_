@@ -19,13 +19,13 @@
 ## Critical Finding: Scoring Algorithm Reality
 
 ### Component Weights (Typical)
-```
+```text
 functionality:   40% weight  ← We haven't addressed this adequately
 consistency:     20% weight
 tests:           25% weight  ← We've done this (134 tests added)
 safeguards:      15% weight  
 documentation:   15% weight  ← We've done this (8 guides)
-```
+```text
 
 ### What We've Achieved vs What's Needed
 
@@ -51,13 +51,13 @@ documentation:   15% weight  ← We've done this (8 guides)
 **Gap to 0.70**: -0.3493 (needs +49% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  0.0000  (weight 0.250) → contribution 0.0000  ❌ CRITICAL
 consistency:    1.0000  (weight 0.200) → contribution 0.2000  ✅
 tests:          0.3333  (weight 0.250) → contribution 0.0833  ⚠️
 safeguards:     0.0000  (weight 0.150) → contribution 0.0000  ❌ CRITICAL
 documentation:  0.4491  (weight 0.150) → contribution 0.0674  ⚠️
-```
+```text
 
 #### Unresolved Issues
 
@@ -121,13 +121,13 @@ documentation:  0.4491  (weight 0.150) → contribution 0.0674  ⚠️
 **Gap to 0.70**: -0.2849 (needs +41% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  0.0000  (weight 0.250) → contribution 0.0000  ❌ CRITICAL
 consistency:    0.7775  (weight 0.200) → contribution 0.1555  ✅
 tests:          0.2765  (weight 0.250) → contribution 0.0691  ⚠️
 safeguards:     1.0000  (weight 0.150) → contribution 0.1500  ✅
 documentation:  0.2695  (weight 0.150) → contribution 0.0404  ⚠️
-```
+```text
 
 #### Unresolved Issues
 
@@ -184,13 +184,13 @@ documentation:  0.2695  (weight 0.150) → contribution 0.0404  ⚠️
 **Gap to 0.70**: -0.1582 (needs +23% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  0.3333  (weight 0.250) → contribution 0.0833  ⚠️
 consistency:    0.8261  (weight 0.200) → contribution 0.1652  ✅
 tests:          0.2609  (weight 0.250) → contribution 0.0652  ⚠️
 safeguards:     0.6667  (weight 0.150) → contribution 0.1000  ⚠️
 documentation:  0.8533  (weight 0.150) → contribution 0.1280  ✅
-```
+```text
 
 #### Unresolved Issues
 
@@ -255,13 +255,13 @@ documentation:  0.8533  (weight 0.150) → contribution 0.1280  ✅
 **Gap to 0.70**: -0.0189 (needs +2.7% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  1.0000  (weight 0.250) → contribution 0.2500  ✅
 consistency:    0.8770  (weight 0.200) → contribution 0.1754  ✅
 tests:          0.2353  (weight 0.250) → contribution 0.0588  ❌ CRITICAL
 safeguards:     0.8333  (weight 0.200) → contribution 0.1667  ✅
 documentation:  0.4790  (weight 0.100) → contribution 0.0479  ⚠️
-```
+```text
 
 #### Unresolved Issues
 
@@ -290,13 +290,13 @@ documentation:  0.4790  (weight 0.100) → contribution 0.0479  ⚠️
 **Gap to 0.70**: -0.0240 (needs +3.4% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  0.7500  (weight 0.250) → contribution 0.1875  ✅
 consistency:    0.9359  (weight 0.200) → contribution 0.1872  ✅
 tests:          0.0053  (weight 0.250) → contribution 0.0013  ❌ CRITICAL
 safeguards:     1.0000  (weight 0.200) → contribution 0.2000  ✅
 documentation:  1.0000  (weight 0.100) → contribution 0.1000  ✅
-```
+```text
 
 #### Unresolved Issues
 
@@ -322,13 +322,13 @@ documentation:  1.0000  (weight 0.100) → contribution 0.1000  ✅
 **Gap to 0.70**: -0.0624 (needs +9% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  1.0000  (weight 0.250) → contribution 0.2500  ✅
 consistency:    0.9278  (weight 0.200) → contribution 0.1856  ✅
 tests:          0.0825  (weight 0.250) → contribution 0.0206  ❌ CRITICAL
 safeguards:     1.0000  (weight 0.200) → contribution 0.2000  ✅
 documentation:  0.2096  (weight 0.100) → contribution 0.0210  ⚠️
-```
+```text
 
 #### Unresolved Issues
 
@@ -359,13 +359,13 @@ documentation:  0.2096  (weight 0.100) → contribution 0.0210  ⚠️
 **Gap to 0.70**: -0.0433 (needs +6% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  1.0000  (weight 0.250) → contribution 0.2500  ✅
 consistency:    0.8482  (weight 0.200) → contribution 0.1696  ✅
 tests:          0.2585  (weight 0.250) → contribution 0.0646  ⚠️
 safeguards:     1.0000  (weight 0.200) → contribution 0.2000  ✅
 documentation:  0.1497  (weight 0.100) → contribution 0.0150  ❌
-```
+```text
 
 #### Unresolved Issues
 
@@ -397,13 +397,13 @@ documentation:  0.1497  (weight 0.100) → contribution 0.0150  ❌
 **Gap to 0.70**: -0.0540 (needs +8% improvement)
 
 #### Current Component Scores
-```
+```text
 functionality:  0.8000  (weight 0.250) → contribution 0.2000  ✅
 consistency:    0.6935  (weight 0.200) → contribution 0.1387  ⚠️
 tests:          0.1290  (weight 0.250) → contribution 0.0323  ❌ CRITICAL
 safeguards:     0.8333  (weight 0.200) → contribution 0.1667  ✅
 documentation:  1.0000  (weight 0.100) → contribution 0.1000  ✅
-```
+```text
 
 #### Unresolved Issues
 
@@ -457,10 +457,10 @@ documentation:  1.0000  (weight 0.100) → contribution 0.1000  ✅
 **Issue**: Adding more tests has diminishing impact due to large existing test base.
 
 **Evidence**:
-```
+```text
 documentation-system: 20 new tests / 1,600 total = 0.0125 impact
 MCP tools: 10 tests / 1,600 total = 0.0062 impact
-```
+```text
 
 **Mitigation**: 
 - Need 100-200 tests per capability to move needle significantly

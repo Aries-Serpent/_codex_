@@ -70,7 +70,7 @@ Current State (Zendesk) ──┐
                           ├──► Diff ──► Plan ──► Apply ──► New State
                           │
 Desired State (JSON) ─────┘
-```
+```text
 ### Environments
 
 Manage multiple Zendesk environments:
@@ -147,7 +147,7 @@ codex zendesk snapshot --env=dev --objects triggers,views,macros
 
 # Check snapshot location
 ls -la snapshot/dev/latest/
-```
+```text
 
 Snapshot files are stored in JSON format, ready for version control.
 
@@ -161,7 +161,7 @@ Here's a complete workflow for managing Zendesk triggers:
 
 ```bash
 codex zendesk snapshot --env=dev
-```
+```text
 
 This creates `snapshot/dev/<timestamp>/triggers.json` and a `latest` symlink.
 
@@ -203,7 +203,7 @@ Create `configs/desired/zendesk/triggers.json`:
     }
   ]
 }
-```
+```text
 
 #### Step 3: Generate Diff
 
@@ -212,7 +212,7 @@ codex zendesk diff triggers \
   --desired-file configs/desired/zendesk/triggers.json \
   --current-file snapshot/dev/latest/triggers.json \
   --output diffs/triggers_diff.json
-```
+```text
 
 Review `diffs/triggers_diff.json` to see what will change.
 
@@ -222,7 +222,7 @@ Review `diffs/triggers_diff.json` to see what will change.
 codex zendesk plan triggers \
   --diff-file diffs/triggers_diff.json \
   --output plans/triggers_plan.json
-```
+```text
 
 The plan is a validated, executable set of changes.
 
@@ -239,7 +239,7 @@ codex zendesk apply triggers \
 codex zendesk apply triggers \
   plans/triggers_plan.json \
   --env=dev
-```
+```text
 
 #### Step 6: Verify and Monitor
 
@@ -252,7 +252,7 @@ codex zendesk snapshot --env=dev
 
 # Compare before/after
 diff snapshot/dev/<before>/triggers.json snapshot/dev/latest/triggers.json
-```
+```text
 
 ### Workflow Automation
 
@@ -283,12 +283,12 @@ tasks:
   
   - name: Verify
     command: codex zendesk snapshot --env=dev
-```
+```text
 
 Execute with:
 ```bash
 codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
-```
+```text
 
 ## Configuration Examples
 
@@ -321,7 +321,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
     }
   ]
 }
-```
+```text
 
 ### Example 2: Views
 
@@ -357,7 +357,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
     "sort_order": "asc"
   }
 }
-```
+```text
 
 ### Example 3: Macros
 
@@ -382,7 +382,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
     }
   ]
 }
-```
+```text
 
 ### Example 4: Ticket Fields
 
@@ -404,7 +404,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
   "required": false,
   "tag": "product"
 }
-```
+```text
 
 ### Example 5: Webhooks
 
@@ -422,7 +422,7 @@ codex-task-sequence --sequence scripts/task_sequences/update_triggers.yaml
     "Content-Type": "application/json"
   }
 }
-```
+```text
 
 **Note**: Use `ENV:` prefix for sensitive values stored in environment variables.
 
@@ -606,7 +606,7 @@ codex zendesk metrics --since 2024-01-01 --until 2024-01-31
 
 # Export to JSON
 codex zendesk metrics --format json > metrics.json
-```
+```text
 
 ### Integration with Monitoring Systems
 
@@ -618,7 +618,7 @@ from codex.zendesk.monitoring.zendesk_metrics import ZendeskMetrics
 
 metrics = ZendeskMetrics()
 prometheus_metrics = metrics.export_prometheus()
-```
+```text
 
 ### Key Metrics to Monitor
 
@@ -645,7 +645,7 @@ export ZENDESK_MAX_RETRIES=5
 
 # Apply with rate limiting
 codex zendesk apply triggers plans/triggers_plan.json --env=dev --rate-limit
-```
+```text
 
 #### Issue 2: Invalid Desired State JSON
 
@@ -660,7 +660,7 @@ jq . configs/desired/zendesk/triggers.json
 python tools/schema_validate.py \
   --data configs/desired/zendesk/triggers.json \
   --schema schemas/zendesk_triggers.schema.json
-```
+```text
 
 #### Issue 3: Missing Group/Schedule IDs
 
@@ -676,7 +676,7 @@ codex zendesk list-schedules --env=dev
 
 # Replace placeholders with actual IDs
 sed -i 's/TIER_1_GROUP_ID/123456789/g' configs/desired/zendesk/triggers.json
-```
+```text
 
 #### Issue 4: Diff Shows Unexpected Changes
 
@@ -692,7 +692,7 @@ diff snapshot/dev/<old>/triggers.json snapshot/dev/latest/triggers.json
 
 # Verify desired state matches intent
 cat configs/desired/zendesk/triggers.json | jq
-```
+```text
 
 #### Issue 5: Apply Fails Partway Through
 
@@ -715,7 +715,7 @@ codex zendesk diff triggers \
 # Apply remaining changes
 codex zendesk plan triggers --diff-file diffs/triggers_recovery_diff.json --output plans/recovery_plan.json
 codex zendesk apply triggers plans/recovery_plan.json --env=dev
-```
+```text
 
 ### Debug Mode
 
@@ -724,7 +724,7 @@ Enable verbose logging:
 ```bash
 export CODEX_LOG_LEVEL=DEBUG
 codex zendesk apply triggers plans/triggers_plan.json --env=dev --verbose
-```
+```text
 
 ### Getting Help
 
@@ -750,7 +750,7 @@ git commit -m "Add high-priority auto-assignment trigger"
 
 # Tag releases
 git tag -a zendesk-release-v1.2.0 -m "Add new support workflows"
-```
+```text
 
 ### 3. Code Review
 
@@ -771,7 +771,7 @@ git tag -a zendesk-release-v1.2.0 -m "Add new support workflows"
 # Archive important snapshots
 mkdir -p archive/snapshots/prod
 cp -r snapshot/prod/<timestamp>/ archive/snapshots/prod/release-v1.0/
-```
+```text
 
 ### 6. Secrets Management
 
@@ -820,7 +820,7 @@ tasks:
   
   - name: Verify changes
     command: codex zendesk metrics --since today
-```
+```text
 
 ### Integration with CI/CD
 
@@ -854,7 +854,7 @@ jobs:
           codex zendesk diff triggers --desired-file configs/desired/zendesk/triggers.json --current-file snapshot/staging/latest/triggers.json --output diffs/triggers_diff.json
           codex zendesk plan triggers --diff-file diffs/triggers_diff.json --output plans/triggers_plan.json
           codex zendesk apply triggers plans/triggers_plan.json --env=staging
-```
+```text
 
 ### ML-Assisted Configuration
 
@@ -872,7 +872,7 @@ codex-infer \
   --model artifacts/zendesk_macro_model \
   --input data/recent_tickets.jsonl \
   --output suggestions/macros.json
-```
+```text
 
 See [docs/runbooks/zendesk_e2e_support_workflows_plan.md](../runbooks/zendesk_e2e_support_workflows_plan.md) for ML integration details.
 
@@ -893,7 +893,7 @@ codex zendesk apply webhooks plans/webhooks_plan.json --env=dev
 
 # Trigger a test ticket to fire webhook
 # Check webhook receiver logs
-```
+```text
 
 ### Bulk Operations
 
@@ -925,7 +925,7 @@ def add_tag_action(trigger):
     })
 
 update_all_triggers('configs/desired/zendesk/triggers.json', add_tag_action)
-```
+```text
 
 ## Next Steps
 

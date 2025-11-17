@@ -277,7 +277,7 @@ pytest tests/archival/test_archive_integration.py tests/configuration/test_confi
 
 # Run with coverage (future)
 pytest tests/archival/ tests/configuration/ --cov=src/codex/archive --cov=configs --cov-report=html
-```
+```text
 
 ---
 

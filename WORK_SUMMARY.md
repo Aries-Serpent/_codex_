@@ -20,13 +20,13 @@ This document summarizes the work completed across two major tasks:
 **Before**:
 ```python
 "signed_at": datetime.utcnow().isoformat() + "Z"
-```
+```text
 
 **After**:
 ```python
 from datetime import datetime, timezone
 "signed_at": datetime.now(timezone.utc).isoformat() + "Z"
-```
+```text
 
 #### 2. CLI Entry Point Consistency
 **Files**: `tools/perf_snapshot.py`, `tools/env_snapshot.py`  
@@ -37,13 +37,13 @@ from datetime import datetime, timezone
 ```python
 if __name__ == "__main__":
     main()
-```
+```text
 
 **After**:
 ```python
 if __name__ == "__main__":
     raise SystemExit(main())
-```
+```text
 
 #### 3. Security Issue: Signature Verification Not Enabled
 **File**: `src/codex/archive/cli.py`, `src/codex/archive/standardization.py`  
@@ -68,12 +68,12 @@ def __init__(self, enable_signing: bool = True, verify_only: bool = False):
         self.enable_signing = enable_signing and os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
     self.sigstore_client = SignstoreClient() if self.enable_signing else None
     self.schema_validator = EvidenceSchemaValidator()
-```
+```text
 
 `src/codex/archive/cli.py`:
 ```python
 manager = StandardizationManager(enable_signing=check_signatures, verify_only=check_signatures)
-```
+```text
 
 ### Impact
 
@@ -154,7 +154,7 @@ splits = [assign_split(k) for k in test_keys]
 
 folds = [stable_fold(f'key{i}') for i in range(1000)]
 # Fold range: 0 to 99 ✓
-```
+```text
 
 ### Recommendations
 

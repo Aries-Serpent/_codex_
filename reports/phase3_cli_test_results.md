@@ -5,18 +5,18 @@
 ## Test Execution
 
 ### CLI Tests
-```
+```text
 CODEX_CLI_LIGHTWEIGHT=1 PYTHONPATH=src pytest tests/cli/ -v --tb=short
-```
+```text
 - Status: **Skipped** (module-level guard due to missing optional dependency `pydantic`)
 - Passed: 0
 - Failed: 0
 - Skipped: 1
 
 ### Smoke Tests
-```
+```text
 CODEX_CLI_LIGHTWEIGHT=1 PYTHONPATH=src pytest tests/specs/test_audit_explain_cli.py::test_audit_explain_cli_smoke -v --tb=line
-```
+```text
 - Status: **Skipped** (`audit runner missing` guard triggered in fixture)
 - Passed: 0
 - Failed: 0

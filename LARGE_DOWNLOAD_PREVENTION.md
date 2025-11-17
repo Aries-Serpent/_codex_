@@ -52,7 +52,7 @@ requests>=2.31.0
 # transformers>=4.38.0  # + models
 # accelerate>=0.29.0  # + CUDA deps (3.5 GB)
 # sentencepiece>=0.1.99  # Optional
-```
+```text
 
 **requirements-ml-lite.txt** (With ML but CPU-only):
 ```txt
@@ -61,7 +61,7 @@ torch>=2.1 --index-url https://download.pytorch.org/whl/cpu  # CPU version ~200M
 transformers>=4.38.0
 sentencepiece>=0.1.99
 # Skip CUDA dependencies entirely
-```
+```text
 
 ### Phase 3: Update Nox Sessions
 
@@ -108,7 +108,7 @@ def tests_ml_full(session: nox.Session):
     
     _install_requirements(session, REQ_MINIMAL, REQ_ML_FULL)
     session.run("pytest", "-m", "requires_torch")
-```
+```text
 
 ### Phase 4: Pip Configuration
 
@@ -120,13 +120,13 @@ max-package-size = 524288000  # 500 MB in bytes
 
 # Use CPU-only PyTorch index
 extra-index-url = https://download.pytorch.org/whl/cpu
-```
+```text
 
 Or use environment variable:
 ```bash
 export PIP_MAX_PACKAGE_SIZE=524288000  # 500 MB
 export PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cpu
-```
+```text
 
 ## Systematic Process for Large Download Prevention
 
@@ -143,7 +143,7 @@ def check_disk_space_before_install(required_gb: float = 5.0):
             f"Insufficient disk space: {available_gb:.1f} GB available, "
             f"need {required_gb:.1f} GB"
         )
-```
+```text
 
 ### Step 2: Package Size Estimation
 ```python
@@ -152,7 +152,7 @@ def estimate_package_sizes(requirements_file: Path) -> dict:
     # Use pip-audit or pip download --dry-run to estimate
     # Return dict of {package: size_mb}
     pass
-```
+```text
 
 ### Step 3: Selective Installation
 ```python
@@ -165,7 +165,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
             continue
         
         subprocess.run(["pip", "install", package])
-```
+```text
 
 ## Application to Current Situation
 

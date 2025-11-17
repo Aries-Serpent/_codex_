@@ -72,21 +72,21 @@ Checked patterns:
 **Status:** Proper front matter structure
 
 **AGENTS.md (root pointer):**
-```
+```text
 Line 1: # AGENTS — Super-Agent Entrypoint
 Line 2: > Quick-start guide for GitHub Copilot and ChatGPT agents...
 Line 3: > **Last Updated:** 2025-11-09
-```
+```text
 ✅ Title present  
 ✅ 1-line summary present  
 ✅ Last-updated metadata present
 
 **docs/guides/AGENTS.md (canonical):**
-```
+```text
 Line 1: # AGENTS — Guidelines for contributors and Codex automation
 Line 2: (blank)
 Line 3: Keep this document updated as conventions evolve.
-```
+```text
 ✅ Title present  
 ✅ Summary present  
 ⚠️ Last-updated could be added (minor)
@@ -171,7 +171,7 @@ Conventions checked:
 ### Particle Physics-Inspired Notation ⭐
 The `codex_index.yaml` includes a mathematical framework for repository traversal:
 
-```
+```text
 τ = Σ(wi × di × ci) / √n
 
 Where:
@@ -180,7 +180,7 @@ Where:
   di = Read depth (0.1-1.0)
   ci = Cognitive load (0.2-1.0)
   n = Total file count
-```
+```text
 
 **Optimization:** Following the wavepoint order reduces traversal time from ~8.5 to ~3.2 time units (62% improvement).
 
@@ -199,7 +199,7 @@ All validation checks passed. Files are ready for commit:
 - `validation.md`
 
 **Recommended commit message:**
-```
+```text
 feat(docs): add AGENTS.md super-agent entrypoint and codex_index.yaml manifest
 
 - Create root AGENTS.md pointer to docs/guides/AGENTS.md
@@ -209,7 +209,7 @@ feat(docs): add AGENTS.md super-agent entrypoint and codex_index.yaml manifest
 - Add validation.md with all checks passing
 
 Resolves: Repository traversal and agent onboarding request
-```
+```text
 
 ---
 **Validation completed:** 2025-11-09  

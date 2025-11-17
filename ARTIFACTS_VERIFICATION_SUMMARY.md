@@ -133,7 +133,7 @@ codex-eval run --config config.json --deterministic --json > run2.json
 
 # Compare
 diff run1.json run2.json  # Should be empty (identical)
-```
+```text
 
 ---
 
@@ -200,7 +200,7 @@ nox -s validate-configs
 codex-eval run --config configs/experiments/minimal.json --deterministic --json > run1.json
 codex-eval run --config configs/experiments/minimal.json --deterministic --json > run2.json
 diff run1.json run2.json  # Must be empty (identical)
-```
+```text
 
 ---
 

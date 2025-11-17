@@ -64,7 +64,7 @@ from codex.archive.retry import retry_with_backoff, RetryConfig
 @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0.5))
 def fetch_blob(tombstone: str) -> bytes:
     ...
-```
+```text
 
 Retries are deterministic in tests when the `seed` attribute is provided.
 
@@ -96,7 +96,7 @@ Retries are deterministic in tests when the `seed` attribute is provided.
 ```bash
 codex archive batch-restore manifest.json --actor ops-team
 codex archive batch-restore manifest.csv --actor ops-team --results batch-results.json
-```
+```text
 
 * `--dry-run` validates the manifest and prints the number of entries without
   touching the backend.

@@ -14,9 +14,9 @@ For more details on environment setup, see [OpenAI Codex](http://platform.openai
 
 The Docker image is available at:
 
-```
+```text
 docker pull ghcr.io/openai/codex-universal:latest
-```
+```text
 
 The below script shows how can you approximate the `setup` environment in Codex:
 
@@ -31,7 +31,7 @@ docker run --rm -it \
     -e CODEX_ENV_SWIFT_VERSION=6.1 \
     -v $(pwd):/workspace/$(basename $(pwd)) -w /workspace/$(basename $(pwd)) \
     ghcr.io/openai/codex-universal:latest
-```
+```text
 
 `codex-universal` includes setup scripts that look for `CODEX_ENV_*` environment variables and configures the language version accordingly.
 
@@ -66,7 +66,7 @@ This repository provides a CLI viewer for session-scoped logs stored in SQLite.
 ```bash
 python -m codex.logging.viewer --session-id <ID> [--db path/to.db] [--format json|text] \
   [--level INFO --contains token --since 2025-01-01 --until 2025-12-31] [--limit 200] [--table logs]
-```
+```text
 
 * **--session-id** (required): Which session to view.
 * **--db**: Path to the SQLite DB. If omitted, common names like `data/logs.sqlite` or `logs.db` are autodetected.
@@ -91,7 +91,7 @@ python -m codex.logging.query_logs --help
 # Specify DB path explicitly or via env:
 #   export CODEX_DB_PATH=.codex/session_logs.db
 #   python -m codex.logging.query_logs --session-id S123 --role user --after 2025-01-01 --format json
-```
+```text
 
 ### Filters
 
@@ -113,7 +113,7 @@ python -m codex.logging.export SESSION_ID --format json
 python -m codex.logging.export SESSION_ID --format text
 # specify a custom database
 python -m codex.logging.export SESSION_ID --db /path/to/db.sqlite
-```
+```text
 
 The tool reads from `src.codex.logging.config.DEFAULT_LOG_DB` (defaults to
 `.codex/session_logs.db`). Override with the
@@ -134,7 +134,7 @@ def handle_user_message(prompt: str) -> str:
     reply = generate_reply(prompt)  # your existing logic
     log_event(session_id, "assistant", reply)
     return reply
-```
+```text
 
 **Storage:** SQLite at `src.codex.logging.config.DEFAULT_LOG_DB`.
 **Note:** This change is additive and does not activate any GitHub Actions.
@@ -164,14 +164,14 @@ This repository supports a simple, environment-driven logging flow suitable for 
 ```bash
 export CODEX_SESSION_ID="$(uuidgen || python -c 'import uuid;print(uuid.uuid4())')"
 export CODEX_LOG_DB_PATH="${PWD}/.codex/session_logs.db"
-```
+```text
 
 #### Set in PowerShell
 
 ```powershell
 $env:CODEX_SESSION_ID = [guid]::NewGuid().ToString()
 $env:CODEX_LOG_DB_PATH = (Join-Path (Get-Location) ".codex/session_logs.db")
-```
+```text
 
 > **Note:** Keep logs within the repo (e.g., `./.codex/`) for portability and review.
 
@@ -195,7 +195,7 @@ cur.executemany("INSERT INTO logs(ts, session, kind, message) VALUES(?,?,?,?)", 
 ])
 con.commit(); con.close()
 print(f"Wrote 3 log rows to {db}")
-```
+```text
 
 ### Log Viewer CLI
 
@@ -203,7 +203,7 @@ If absent, a minimal viewer is provided at `tools/codex_log_viewer.py`:
 
 ```bash
 python tools/codex_log_viewer.py --db "$CODEX_LOG_DB_PATH" --session "$CODEX_SESSION_ID"
-```
+```text
 
 **DO NOT ACTIVATE ANY GitHub Actions files.**
 
@@ -219,7 +219,7 @@ from src.codex.logging.session_logger import SessionLogger
 with SessionLogger(session_id="demo") as sl:
     sl.log("user", "hi")
     sl.log("assistant", "hello")
-```
+```text
 
 This writes to `src.codex.logging.config.DEFAULT_LOG_DB` by default; override with
 `CODEX_LOG_DB_PATH`.
@@ -239,7 +239,7 @@ python -m src.codex.logging.session_query --last 50 --db .codex/session_logs.db
 
 # descending order for session view (optional)
 python -m src.codex.logging.session_query --session-id 12345 --db .codex/session_logs.db --desc
-```
+```text
 
 The tool auto-detects timestamp, session, role, and message columns and will look for
 both `.db` and `.sqlite` variants of the database path. Override the path via `--db` or
@@ -255,22 +255,22 @@ This repository uses [pre-commit](https://pre-commit.com) to run code-quality ho
 pipx install pre-commit || pip install --user pre-commit
 pre-commit install
 pre-commit autoupdate
-```
+```text
 
 **Run on all files**
 ```bash
 pre-commit run --all-files
-```
+```text
 
 **Run on specific files**
 ```bash
 pre-commit run --files path/to/file1.py path/to/file2.py
-```
+```text
 
 **Optional — run Black manually (kept as manual stage)**
 ```bash
 pre-commit run --hook-stage manual black --all-files
-```
+```text
 
 ## Timestamp Parsing
 

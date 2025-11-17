@@ -203,7 +203,7 @@ Output: audit_artifacts/capabilities_scored.json
 # Environment snapshot (via nox session)
 ✅ nox -s env-snapshot
 Output: artifacts/env_snapshot.json
-```
+```text
 
 ### Test Suite
 
@@ -213,7 +213,7 @@ Output: artifacts/env_snapshot.json
 
 # Existing metrics sinks test
 ✅ pytest tests/test_metrics_sinks.py -v
-```
+```text
 
 ---
 

@@ -25,7 +25,7 @@ Use unified diff with explicit markers:
 - old
 + new
 *** End Patch
-```
+```text
 
 Add files:
 ```diff
@@ -33,14 +33,14 @@ Add files:
 *** Add File: path/to/new_file.py
 +<content>
 *** End Patch
-```
+```text
 
 Delete files:
 ```diff
 *** Begin Patch
 *** Delete File: path/to/old_file.py
 *** End Patch
-```
+```text
 
 ## 3. Chunking and Sequencing
 - Break large changes into atomic, logically independent diffs.

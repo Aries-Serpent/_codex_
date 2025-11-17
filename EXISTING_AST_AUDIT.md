@@ -60,7 +60,7 @@ def extract_node_types(source: str) -> Counter:
     for node in ast.walk(tree):
         counts[type(node).__name__] += 1
     return counts
-```
+```text
 
 **Assessment**: 
 - ✅ Simple and straightforward
@@ -83,7 +83,7 @@ class ImportVisitor(ast.NodeVisitor):
         for alias in node.names:
             self.imports.append(alias.name)
         self.generic_visit(node)
-```
+```text
 
 **Assessment**:
 - ✅ Structured approach
@@ -236,7 +236,7 @@ def parse_standardized(source: str) -> StandardizedASTNode:
     from codex_ml.ast.parsers import PythonParser
     parser = PythonParser()
     return parser.parse(source, Path("<string>"))
-```
+```text
 
 **Phase 2**: Deprecation warnings
 ```python
@@ -249,7 +249,7 @@ def old_function():
         stacklevel=2
     )
     # ... existing implementation
-```
+```text
 
 **Phase 3**: Migration (over 2-3 releases)
 - Release N: Introduce new APIs, deprecation warnings
@@ -295,7 +295,7 @@ dependencies = [
     "radon>=6.0.0",       # For metrics
     "parso>=0.8.0",       # For error recovery
 ]
-```
+```text
 
 **Optional Dependencies**:
 ```toml
@@ -304,7 +304,7 @@ ast = [
     "tree-sitter>=0.20.0",
     "tree-sitter-python>=0.20.0",
 ]
-```
+```text
 
 ---
 

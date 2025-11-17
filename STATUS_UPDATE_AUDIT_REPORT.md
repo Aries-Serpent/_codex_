@@ -27,7 +27,7 @@ Comprehensive audit of the `_codex_` repository following 4 waves of offline-fir
 
 ### Directory Structure
 
-```
+```text
 _codex_/
 ├── src/
 │   ├── codex/           # Core codex modules (archive, CLI, logging)
@@ -48,7 +48,7 @@ _codex_/
 ├── reports/             # Status reports and summaries
 ├── audit_artifacts/     # Audit outputs
 └── artifacts/           # Runtime artifacts
-```
+```text
 
 ### Recent Changes (Last 8 Commits)
 
@@ -132,7 +132,7 @@ _codex_/
 
 ### Test Suite Statistics
 
-```
+```text
 Total Test Files:     864
 Total Test Modules:   917
 New Tests (Wave 1-4): 4
@@ -140,7 +140,7 @@ New Tests (Wave 1-4): 4
   - test_structured_logger.py
   - test_perf_sampler.py
   - test_perf_summary.py
-```
+```text
 
 ### Quality Gates (Local)
 
@@ -165,7 +165,7 @@ make perf      # Performance sampling
 make scan      # Security scan
 make deps      # License & dependency audit
 make quick     # Quick nox status
-```
+```text
 
 ---
 
@@ -229,7 +229,7 @@ Modified Files (17):
 ~ src/codex_ml/eval/runner.py (+34 lines)
 ~ src/codex_ml/metrics/sinks.py (+18 lines)
 ~ src/codex_ml/utils/determinism.py
-```
+```text
 
 ### Capability Delta
 
@@ -278,7 +278,7 @@ Modified Files (17):
 +        entry: python tools/security/license_audit.py
 +        language: system
 +        pass_filenames: false
-```
+```text
 
 **Why**: Catch GPL/AGPL dependencies before merge  
 **Risk**: 2/5 (may slow pre-commit)  
@@ -305,7 +305,7 @@ Modified Files (17):
 +if __name__ == "__main__":
 +    import sys
 +    capture_baseline(sys.argv[1] if len(sys.argv) > 1 else "default")
-```
+```text
 
 **Why**: Track performance regressions  
 **Risk**: 1/5 (low)  
@@ -333,7 +333,7 @@ Modified Files (17):
 +1. Run `tools/bootstrap_dev_env.sh`
 +2. Review `docs/SECURITY.md` for security practices
 +3. Check `make help` for available commands
-```
+```text
 
 **Why**: Single entry point for developers  
 **Risk**: 1/5 (documentation only)  
@@ -402,7 +402,7 @@ Modified Files (17):
 
 ## 12. Metrics Summary
 
-```
+```text
 Repository Health Score: 4.5/5.0
 
 Breakdown:
@@ -412,7 +412,7 @@ Breakdown:
 ├─ Documentation:       4.5/5.0  (extensive, needs consolidation)
 ├─ Test Coverage:       4.2/5.0  (864 files, good coverage)
 └─ Developer UX:        5.0/5.0  (excellent tooling)
-```
+```text
 
 **Strengths**:
 - ✅ Comprehensive offline-first tooling
@@ -498,7 +498,7 @@ make deps && cat audit_artifacts/license_audit.json
 
 # Environment snapshot
 make env && cat artifacts/env_snapshot.json
-```
+```text
 
 ### C. Feature Flags Reference
 

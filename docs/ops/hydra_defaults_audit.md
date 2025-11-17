@@ -12,7 +12,7 @@ python -m codex_ml.cli hydra \
   --config-root configs \
   --out-json .codex/reports/hydra_audit.json \
   --out-md .codex/reports/hydra_audit.md
-```
+```text
 
 Recommendations
 ---------------

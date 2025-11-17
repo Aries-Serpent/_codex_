@@ -32,7 +32,7 @@ Paste manifest excerpt (repo_root_sha, template_hash, warnings) here:
   "template_hash": "aab8f6f3f24738ab6e544a887cbe459a6dea9a4e569b92954048fa8404361035",
   "warnings": []
 }
-```
+```text
 
 ---
 
@@ -57,7 +57,7 @@ jq '.capabilities | length' audit_artifacts/capabilities_scored.json
 jq '.low_maturity | length' audit_artifacts/gaps.json
 jq -r '.template_hash' audit_run_manifest.json
 jq '.warnings | length' audit_run_manifest.json
-```
+```text
 
 ---
 
@@ -77,7 +77,7 @@ If you captured both manifests, paste them (only the relevant fields):
 {"repo_root_sha":"a084005db5ba301aa4b1b1f91b3c6566d4da7e79649e558b463b434cf74e7567", "template_hash":"aab8f6f3f24738ab6e544a887cbe459a6dea9a4e569b92954048fa8404361035", "warnings": []}
 // Manifest #2 excerpt
 {"repo_root_sha":"1ad1f179a6d8c6dbfa87283a9dc55e7cebd85cc9709a883f09c031ed314ceeca", "template_hash":"aab8f6f3f24738ab6e544a887cbe459a6dea9a4e569b92954048fa8404361035", "warnings": []}
-```
+```text
 
 To validate score map determinism quickly:
 ```bash
@@ -88,10 +88,10 @@ cp audit_artifacts/capabilities_scored.json audit_artifacts/capabilities_scored_
 python scripts/space_traversal/audit_runner.py diff \
   --old audit_artifacts/capabilities_scored_run1.json \
   --new audit_artifacts/capabilities_scored.json
-```
+```text
 
 Record the diff outcome here (copy the printed table; regressions should be none):
-```
+```text
 ID,OLD,NEW,DELTA
 archival-bundling,0.664,0.6635,-0.0005
 checkpointing,0.8626,0.8626,+0.0000
@@ -118,7 +118,7 @@ tokenization,0.7969,0.7969,+0.0000
 training-engine,0.8354,0.835,-0.0004
 unified-training,0.845,0.845,+0.0000
 vector-stores,0.3317,0.3317,+0.0000
-```
+```text
 
 ---
 
@@ -127,7 +127,7 @@ vector-stores,0.3317,0.3317,+0.0000
 Paste top 10 capabilities by score (`id, score`) for quick visibility:
 ```bash
 jq -r '.capabilities | sort_by(-.score)[:10] | .[] | "\(.id),\(.score)"' audit_artifacts/capabilities_scored.json
-```
+```text
 
 Table (fill after running the command):
 
@@ -151,7 +151,7 @@ Table (fill after running the command):
 Paste the first 10 low maturity entries:
 ```bash
 jq -r '.low_maturity[:10] | .[] | "\(.id),\(.score)"' audit_artifacts/gaps.json
-```
+```text
 
 Table (optional "Primary deficit" by inspecting component scores in `capabilities_scored.json`):
 
@@ -173,10 +173,10 @@ Table (optional "Primary deficit" by inspecting component scores in `capabilitie
 Paste CLI output from:
 ```bash
 python scripts/space_traversal/audit_runner.py explain checkpointing
-```
+```text
 
 Block:
-```
+```text
 Explain: checkpointing
   functionality  value=1.0000 weight=0.250 contribution=0.2500
   consistency    value=0.8812 weight=0.200 contribution=0.1762
@@ -184,7 +184,7 @@ Explain: checkpointing
   safeguards     value=0.8333 weight=0.150 contribution=0.1250
   documentation  value=0.9370 weight=0.150 contribution=0.1406
   Total score: 0.8626
-```
+```text
 
 ---
 
@@ -195,7 +195,7 @@ If a baseline file exists at `baseline/capabilities_scored.json`, paste the diff
 python scripts/space_traversal/audit_runner.py diff \
   --old baseline/capabilities_scored.json \
   --new audit_artifacts/capabilities_scored.json
-```
+```text
 
 Record regressions (if any):
 
@@ -222,7 +222,7 @@ Paste the `artifacts` array from `audit_run_manifest.json`:
     {"name": "gaps.json", "sha": "5e018f437043295169d7b823422c9b07af6709854964de0f9e3c68d6258512fe"}
   ]
 }
-```
+```text
 
 ---
 
@@ -254,7 +254,7 @@ Critical gaps: vector-stores (0.3317), duplication_ratio (0.4002), inference-ser
 Top performers: testing-infrastructure (0.9126), reproducibility (0.8803), checkpointing (0.8626)
 
 Artifacts: audit_artifacts/*, reports/capability_matrix_20251117_040642.md, audit_run_manifest.json
-```
+```text
 
 ---
 
@@ -302,4 +302,4 @@ Convenience targets:
 make space-audit           # full S1–S7
 make space-diff old=<path> new=<path>
 make space-clean           # cleanup if needed
-```
+```text

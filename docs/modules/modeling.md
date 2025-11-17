@@ -17,7 +17,7 @@ build_model(
         loader_kwargs=None,
     ),
 )
-```
+```text
 
 * **dtype guard** – specifying a `dtype` requires `torch` to be installed and
   the attribute to exist on the module. A missing or unknown dtype raises a
@@ -50,7 +50,7 @@ load_causal_lm(
     dtype=None,
     peft_cfg=None,
 )
-```
+```text
 
 * **Registry aware** – if `repo_id` matches a constructor registered via
   `register_causal_lm`, that callable is invoked instead of the Hugging Face
@@ -81,7 +81,7 @@ def build_fixture(*, device=None, dtype=None, peft_cfg=None):
     if device:
         model.to(device)
     return model
-```
+```text
 
 Clean-up helpers are available for tests: `get_registered_causal_lm(name)`
 returns the callable (or `None`) and `unregister_causal_lm(name)` removes the

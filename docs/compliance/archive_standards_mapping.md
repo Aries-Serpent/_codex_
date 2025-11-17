@@ -42,13 +42,13 @@ evidence_record = {
 # Enhance with SLSA L3 metadata
 enhanced = manager.enhance_evidence_record(evidence_record, "user@example.com")
 # Result includes signature, certificate chain, OIDC issuer
-```
+```text
 
 **Verification**:
 ```bash
 # Verify SLSA L3 compliance
 python -m codex.cli archive validate-standardization --check-signatures --check-schema-version
-```
+```text
 
 ---
 
@@ -79,7 +79,7 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
   ],
   "pubkeys": ["<GitHub OIDC>"]
 }
-```
+```text
 
 **Restore Step**:
 ```json
@@ -93,7 +93,7 @@ python -m codex.cli archive validate-standardization --check-signatures --check-
   ],
   "pubkeys": ["<GitHub OIDC>"]
 }
-```
+```text
 
 ### Future in-toto Integration (Phase 3)
 
@@ -109,7 +109,7 @@ link = generate_link_metadata(
     return_value=0
 )
 # Store link metadata reference in standardizationMetadata.in_toto_attestation_id
-```
+```text
 
 ---
 
@@ -152,7 +152,7 @@ link = generate_link_metadata(
     "signed_at": "2025-11-03T00:00:01Z"
   }
 }
-```
+```text
 
 ### Compliance Verification
 
@@ -172,7 +172,7 @@ print("\nCompliance Status:")
 for standard, status in report['compliance'].items():
     print(f"  {standard}: {'✅' if status else '❌'}")
 EOF
-```
+```text
 
 ---
 
@@ -206,31 +206,31 @@ ls -la .codex/evidence/archive_ops.jsonl
 
 # Verify no modifications (git history)
 git log --follow .codex/evidence/archive_ops.jsonl
-```
+```text
 
 **2. Validate Signatures**:
 ```bash
 # Run signature verification
 python -m codex.cli archive validate-standardization --check-signatures
-```
+```text
 
 **3. Check Schema Compliance**:
 ```bash
 # Verify all records match declared schema version
 python -m codex.cli archive validate-standardization --check-schema-version
-```
+```text
 
 **4. Review Standardization Status**:
 ```bash
 # Display compliance report
 python -m codex.cli archive show-standardization-status
-```
+```text
 
 **5. Examine Sample Records**:
 ```bash
 # View recent evidence records
 tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
-```
+```text
 
 ### Expected Audit Outputs
 
@@ -242,7 +242,7 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
    ❌ Errors: 0
 
 ✅ All checks passed!
-```
+```text
 **Standardization Status**:
 ```text
 ============================================================
@@ -257,7 +257,7 @@ Compliance:
   ✅ SLSA_L3
   ✅ IN_TOTO_READY
   ✅ SAA_COMPLIANT
-```
+```text
 ---
 
 ## References

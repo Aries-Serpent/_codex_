@@ -205,7 +205,7 @@ Patch (canonical unified diff; use "Begin/End Patch" markers; chunk for large ch
 - old line
 + new line
 *** End Patch
-```
+```text
 
 If adding files:
 
@@ -214,7 +214,7 @@ If adding files:
 *** Add File: path/to/new_file.py
 +<file contents>
 *** End Patch
-```
+```text
 
 For multi-file patches, sequence multiple blocks. Use feature flags for risky paths where feasible.
 
@@ -231,7 +231,7 @@ data:
 ```list type="pr"
 data:
 # populated by automation; include all entries returned (no truncation)
-```
+```text
 - Coverage Report:
   - Coverage %: <value>
   - Fail-under threshold: <value>

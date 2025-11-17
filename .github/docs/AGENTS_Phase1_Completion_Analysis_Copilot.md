@@ -62,7 +62,7 @@ logger = logging.getLogger('codex.errors')
 
 def close_connection(conn):
     conn.close()  # Crashes if conn is None
-```
+```text
 
 **After**:
 ```python
@@ -73,7 +73,7 @@ def close_connection(conn):
     if not conn:  # Graceful None handling
         return
     conn.close()
-```
+```text
 
 **Production Readiness**: **+10%** (B- → B+)
 
@@ -152,7 +152,7 @@ def init_db_cmd(db_path: str | None):
     manager = DBManager(db_path=db_path_obj)
     manager.init_schema()
     click.echo("✅ Database initialized successfully")
-```
+```text
 
 - ✅ User-friendly output with emojis
 - ✅ Custom DB path support
@@ -172,7 +172,7 @@ db_manager.init_schema()
 with db_manager.connection() as conn:
     conn.row_factory = sqlite3.Row
     # ... query logic
-```
+```text
 
 - ✅ Removed manual DB path resolution
 - ✅ Auto-init on first use
@@ -229,7 +229,7 @@ main(args)  # TypeError: main() expects Namespace, got list
 # After (FIXED)
 args = ["--session-id", session_id, "--format", output_format]
 main(parse_args(args))  # Correct: parse first, then pass
-```
+```text
 
 - ✅ Fixes `TypeError` in `LogViewer.view()`
 - ✅ Shows human-in-loop code review caught issue
@@ -263,7 +263,7 @@ main(parse_args(args))  # Correct: parse first, then pass
 **Current Implementation**: ✅ **OPT-IN VIA ENV**
 ```python
 _POOL_ENABLED = os.getenv("CODEX_SQLITE_POOL") == "1"
-```
+```text
 
 **Assessment**: **PERFECT** — Follows original recommendation exactly
 
@@ -278,7 +278,7 @@ _POOL_ENABLED = os.getenv("CODEX_SQLITE_POOL") == "1"
 # error_handler.py still uses FileHandler
 error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
 handler = logging.FileHandler(self.error_log)
-```
+```text
 
 **Recommendation from Analysis**: Add `RotatingFileHandler`
 
@@ -295,7 +295,7 @@ handler = logging.FileHandler(self.error_log)
 def get_connection(self, auto_init: bool = True):
     if auto_init:
         self.init_schema()
-```
+```text
 
 **Assessment**: **PERFECT** — Exceeds original recommendation (opt-out available)
 
@@ -309,7 +309,7 @@ def get_connection(self, auto_init: bool = True):
 ```python
 # env_vars.py still validates on import
 env_manager = EnvironmentManager()  # Global instance
-```
+```text
 
 **Recommendation from Analysis**: Add `validate_on_init` flag
 
@@ -456,14 +456,14 @@ pytest tests/ -x --tb=short || echo "⚠️  Some tests may fail (unrelated to t
 rm -f .codex/test_validation.db .codex/test_validation.db-wal .codex/test_validation.db-shm
 
 echo "✅ Pre-merge validation complete!"
-```
+```text
 
 **Expected Output**:
-```
+```text
 ✅ Database created successfully
 ✅ All AGENTS infrastructure tests pass
 ✅ Coverage ≥ 85%
-```
+```text
 
 ---
 

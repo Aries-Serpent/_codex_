@@ -43,11 +43,11 @@ python scripts/deployment_orchestrator.py --pr-number 2207 --dry-run
 # Execute actual deployment (requires GH_TOKEN environment variable)
 export GH_TOKEN="your-github-token"
 python scripts/deployment_orchestrator.py --pr-number 2207
-```
+```text
 
 ### Command-Line Options
 
-```
+```text
 --pr-number PR_NUMBER
     Required. Pull request number to deploy.
 
@@ -58,7 +58,7 @@ python scripts/deployment_orchestrator.py --pr-number 2207
 --output-dir OUTPUT_DIR
     Optional. Directory for deployment artifacts.
     Default: .codex/deployments
-```
+```text
 
 ## Requirements
 
@@ -187,7 +187,7 @@ All artifacts are stored in the output directory (default: `.codex/deployments/`
   "workflow_run_id": "123456",
   "coverage_percentage": 97.8
 }
-```
+```text
 
 ## Error Handling
 
@@ -231,7 +231,7 @@ Run the test suite:
 
 ```bash
 pytest tests/test_deployment_orchestrator.py -v
-```
+```text
 
 Test coverage includes:
 - Phase result data structures
@@ -252,7 +252,7 @@ python scripts/deployment_orchestrator.py --pr-number 2207 --dry-run
 
 # Verify artifacts generated
 ls -la .codex/deployments/
-```
+```text
 
 ## Security Considerations
 
@@ -294,13 +294,13 @@ If deployment needs to be rolled back:
 ```bash
 # Install GitHub CLI
 # See: https://cli.github.com/manual/installation
-```
+```text
 
 **Problem**: `GH_TOKEN` not set
 ```bash
 # Set environment variable
 export GH_TOKEN="your-token-here"
-```
+```text
 
 **Problem**: YAML validation fails
 ```bash
@@ -309,7 +309,7 @@ pip install yamllint
 
 # Check YAML manually
 yamllint .github/workflows/post-merge-validation-optimized.yml
-```
+```text
 
 **Problem**: Security scan fails
 ```bash
@@ -318,7 +318,7 @@ pip install bandit
 
 # Run scan manually
 bandit -r src/ --severity-level=HIGH -f json
-```
+```text
 
 ### Debug Mode
 
@@ -327,7 +327,7 @@ For detailed debugging:
 ```bash
 # Run with Python debug output
 python -u scripts/deployment_orchestrator.py --pr-number 2207 --dry-run 2>&1 | tee debug.log
-```
+```text
 
 ## Best Practices
 

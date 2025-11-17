@@ -8,7 +8,7 @@
 
 ## Module Organization
 
-```
+```text
 src/codex_ml/ast/
 ├── __init__.py
 ├── core/
@@ -46,7 +46,7 @@ src/codex_ml/ast/
     ├── __init__.py
     ├── error_handling.py         # Standard error handling
     └── caching.py                # Parse result caching
-```
+```text
 
 ---
 
@@ -124,7 +124,7 @@ class StandardizedASTNode:
             "children": [c.node_id for c in self.children],
             "metadata": self.metadata,
         }
-```
+```text
 
 ---
 
@@ -188,7 +188,7 @@ class BaseParser(ABC):
         """Fallback parsing strategy."""
         # Implementation uses parso for tolerant parsing
         pass
-```
+```text
 
 ---
 
@@ -256,7 +256,7 @@ class DependencyGraph:
             ],
             "edges": self.edges,
         }
-```
+```text
 
 ---
 
@@ -346,7 +346,7 @@ class MetricsAggregator:
             return self._to_markdown()
         else:
             raise ValueError(f"Unsupported format: {format}")
-```
+```text
 
 ---
 
@@ -405,7 +405,7 @@ class PluginRegistry:
 
 # Global registry
 registry = PluginRegistry()
-```
+```text
 
 ---
 
@@ -442,7 +442,7 @@ def safe_parse(source: str, file_path: Path) -> Optional[StandardizedASTNode]:
     except Exception as e:
         logger.exception(f"Unexpected error parsing {file_path}: {e}")
         return None
-```
+```text
 
 ---
 
@@ -483,7 +483,7 @@ class ParseCache:
             del self.cache[first_key]
         
         self.cache[key] = ast
-```
+```text
 
 ---
 
@@ -530,7 +530,7 @@ def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
     
     # Write back
     report_path.write_text(content)
-```
+```text
 
 ---
 

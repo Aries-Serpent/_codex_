@@ -49,7 +49,7 @@ Implement **explicit schema versioning** with:
   "size": "optional integer",
   "commit": "optional string"
 }
-```
+```text
 
 ### V2 Schema (Standardized)
 
@@ -75,7 +75,7 @@ Implement **explicit schema versioning** with:
     "merkle_proof": "optional object for Phase 3"
   }
 }
-```
+```text
 
 ### Coexistence Strategy
 
@@ -85,14 +85,14 @@ Line 1: {"ts": "...", "action": "ARCHIVE", ...}                    [v1 record]
 Line 2: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "1.0"}  [v1]
 Line 3: {"ts": "...", "action": "ARCHIVE", ..., "schemaVersion": "2.0", "standardizationMetadata": {...}}  [v2]
 Line N: ...
-```
+```text
 **Version Detection**:
 ```python
 version = record.get("schemaVersion", auto_detect(record))
 # If no explicit version:
 #   - Has standardizationMetadata? → v2
 #   - Otherwise → v1
-```
+```text
 
 ## Consequences
 
@@ -128,7 +128,7 @@ if standardization_enabled:
     record = standardization_manager.enhance_evidence_record(record)
     # Validates against v2 schema
 _evidence_append(record)
-```
+```text
 
 ### Read-Time Validation
 
@@ -137,14 +137,14 @@ for record in read_evidence_log():
     version = auto_detect_version(record)
     validator.validate(record, version=version)
     # Use record...
-```
+```text
 
 ### Migration (Optional)
 
 ```bash
 python -m codex.cli archive migrate-evidence-to-v2
 # Converts all v1 → v2, creates backup
-```
+```text
 
 ## Backward Compatibility Guarantee
 
@@ -163,7 +163,7 @@ schemas/
 ├── archive_evidence_schema_v1.json   [v1 definition]
 ├── archive_evidence_schema_v2.json   [v2 definition]
 └── archive_evidence_schema_v3.json   [future]
-```
+```text
 Each schema is:
 - ✅ JSON Schema (draft-07) compliant
 - ✅ Self-documenting (includes descriptions)

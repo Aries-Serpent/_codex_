@@ -17,7 +17,7 @@ Run schema checks via the CLI:
 
 ```bash
 python -m codex_ml.validation.schema_check --config-dir configs/
-```
+```text
 
 You can also import the structured config module directly:
 
@@ -25,7 +25,7 @@ You can also import the structured config module directly:
 from configs.schemas import register_schema
 
 register_schema()  # registers "app" schema with Hydra
-```
+```text
 
 ## Updating Schemas
 

@@ -20,7 +20,7 @@ from codex_ml.metrics.registry import get_metric
 metric = get_metric("accuracy@token")
 score = metric(predictions=[1, 2, 3], targets=[1, 2, 4], ignore_index=-100)
 # Returns: 0.666 (2 out of 3 tokens correct)
-```
+```text
 
 **Parameters**:
 - `preds`: Sequence of predicted token IDs
@@ -40,7 +40,7 @@ score = metric(
     targets=["Hello  World", "test"]
 )
 # Returns: 1.0 (both match after normalization)
-```
+```text
 
 **Parameters**:
 - `remove_punct`: Whether to remove punctuation before comparison (default: False)
@@ -56,7 +56,7 @@ score = metric(
     targets=["the cat sat on the mat"]
 )
 # Returns F1 based on token overlap
-```
+```text
 
 ### Generative Metrics
 
@@ -77,7 +77,7 @@ score = metric(
     targets=["a cat sat on a mat", "hello there"]
 )
 # Returns: BLEU score (0.0-1.0)
-```
+```text
 
 **Notes**:
 - No external dependencies required.
@@ -95,7 +95,7 @@ score = metric(
     targets=["the quick brown fox jumped"]
 )
 # Returns: ROUGE-L F-measure (0.0-1.0)
-```
+```text
 
 **Notes**:
 - Offline and dependency-free.
@@ -111,7 +111,7 @@ Character-level F-score metric.
 metric = get_metric("chrf")
 score = metric(preds=["hello"], targets=["helo"])
 # Returns: chrF score or None
-```
+```text
 
 ### Diversity Metrics
 
@@ -123,7 +123,7 @@ Measures lexical diversity as the ratio of unique unigrams (dist-1) or bigrams (
 metric = get_metric("dist-1")
 score = metric(preds=["the cat the dog", "test test"], targets=None)
 # Returns: proportion of unique unigrams
-```
+```text
 
 **Notes**:
 - Higher values indicate more diverse vocabulary
@@ -144,7 +144,7 @@ score = metric([2.3, 1.8, 2.1])  # Returns: exp(mean(nll))
 
 # From sum and count
 score = metric(nll_sum=100.0, n_tokens=50)  # Returns: exp(100/50)
-```
+```text
 
 ### Offline Metrics
 
@@ -160,7 +160,7 @@ Set `CODEX_ML_WEIGHTED_ACCURACY_PATH` or `CODEX_ML_OFFLINE_METRICS_DIR` environm
   "class_b": 2.0,
   "class_c": 0.5
 }
-```
+```text
 
 **Usage**:
 ```python
@@ -170,7 +170,7 @@ score = metric(
     targets=["class_a", "class_c"],
     weights_path="/path/to/weights.json"
 )
-```
+```text
 
 ## Using Metrics in Evaluation
 
@@ -194,7 +194,7 @@ cfg = EvaluationConfig(
 results = run_evaluation(cfg)
 print(results["metrics"])
 # Output: {'exact_match': 0.85, 'f1': 0.92, 'bleu': 0.45, 'rougeL': 0.78}
-```
+```text
 
 ### Listing Available Metrics
 
@@ -204,7 +204,7 @@ from codex_ml.metrics.registry import list_metrics
 available = list_metrics()
 print(available)
 # ['accuracy@token', 'token_accuracy', 'ppl', 'exact_match', 'f1', 'bleu', 'rougeL', ...]
-```
+```text
 
 ## Reproducibility
 
@@ -227,7 +227,7 @@ def my_custom_metric(preds, targets):
     """Compute custom metric."""
     # Your implementation
     return score
-```
+```text
 
 ### Plugin-Based Metrics
 
@@ -236,7 +236,7 @@ For distributable custom metrics, use entry points in your `pyproject.toml`:
 ```toml
 [project.entry-points."codex_ml.metrics"]
 my_metric = "my_package.metrics:my_metric_function"
-```
+```text
 
 The metric will be automatically discovered and registered.
 
@@ -264,7 +264,7 @@ def test_bleu_metric_correctness():
     # No match
     score = metric(preds=["hello"], targets=["goodbye"])
     assert score is not None and score < 0.3 or score is None
-```
+```text
 
 ## Troubleshooting
 
@@ -273,7 +273,7 @@ Some metrics require optional dependencies. Install them:
 
 ```bash
 pip install nltk rouge_score sacrebleu
-```
+```text
 
 ### ImportError for metric dependencies
 The registry gracefully handles missing dependencies. Check which dependencies are needed:

@@ -42,7 +42,7 @@ python -c "import libcst; print(f'libcst version: {libcst.__version__}')" 2>&1
 # List all AST-related imports in codebase
 grep -r "import libcst\|from libcst" src/ --include="*.py" || echo "No libcst imports found"
 grep -r "import ast\|from ast" src/ --include="*.py" | head -20
-```
+```text
 
 **Step 2: Update `pyproject.toml`**
 
@@ -75,7 +75,7 @@ dev = [
     "pytest-benchmark>=4.0",
     # ... existing dev deps
 ]
-```
+```text
 
 **Step 3: Verify No Conflicts**
 
@@ -103,7 +103,7 @@ EOF
 
 # Check for dependency conflicts
 pip check
-```
+```text
 
 **Step 4: Run Full Test Suite**
 
@@ -111,7 +111,7 @@ pip check
 nox -s lint
 nox -s test
 pytest tests/ -v --tb=short
-```
+```text
 
 #### 1.1.2 Acceptance Criteria
 
@@ -128,14 +128,14 @@ pytest tests/ -v --tb=short
 git checkout HEAD -- pyproject.toml
 pip install -e .
 nox -s test  # Verify rollback
-```
+```text
 
 #### 1.1.4 Validation Command
 
 ```bash
 # Run this to verify task complete
 python .github/scripts/validate_dependencies.py --check-ast-core
-```
+```text
 
 ---
 
@@ -176,7 +176,7 @@ code = "def hello(): pass"
 tree = parser.parse(code.encode())
 print(f"✓ Parsed {len(tree.root_node.children)} nodes")
 EOF
-```
+```text
 
 **Step 2: Build Language Binaries (if needed)**
 
@@ -193,7 +193,7 @@ git submodule add https://github.com/tree-sitter/tree-sitter-yaml vendor/tree-si
 # Build
 python setup.py build
 pip install -e .
-```
+```text
 
 **Step 3: Create Language Registry**
 
@@ -243,7 +243,7 @@ class LanguageRegistry:
     def list_supported(cls) -> list:
         """List all supported languages."""
         return list(cls.LANGUAGES.keys())
-```
+```text
 
 #### 1.2.2 Acceptance Criteria
 
@@ -257,7 +257,7 @@ class LanguageRegistry:
 
 ```bash
 python .github/scripts/validate_dependencies.py --check-language-parsers
-```
+```text
 
 ---
 
@@ -297,7 +297,7 @@ for result in results:
 mi = mi_visit(code, True)
 print(f"Maintainability Index: {mi}")
 EOF
-```
+```text
 
 #### 1.3.2 Acceptance Criteria
 
@@ -329,7 +329,7 @@ code = "def hello(): pass"
 module = parso.parse(code)
 print(f"✓ parso version {parso.__version__} working")
 EOF
-```
+```text
 
 #### 1.4.2 Acceptance Criteria
 
@@ -447,7 +447,7 @@ def verify_schema(db_path: Path) -> bool:
     existing = {row[0] for row in cursor.fetchall()}
     
     return all(t in existing for t in tables)
-```
+```text
 
 **Step 2: Create Storage Manager**
 
@@ -530,7 +530,7 @@ class StorageManager:
         if self._conn:
             self._conn.close()
             self._conn = None
-```
+```text
 
 **Step 3: Test Storage**
 
@@ -573,7 +573,7 @@ def test_store_and_retrieve_module():
         
         assert len(results) == 1
         assert results[0]['file_path'] == 'src/example.py'
-```
+```text
 
 #### 1.5.2 Acceptance Criteria
 
@@ -587,7 +587,7 @@ def test_store_and_retrieve_module():
 
 ```bash
 python .github/scripts/validate_dependencies.py --check-storage
-```
+```text
 
 ---
 
@@ -707,7 +707,7 @@ class StandardizedASTNode:
         """Deserialize from dictionary."""
         # Implementation omitted for brevity
         pass
-```
+```text
 
 #### 2.1.2 Acceptance Criteria
 
@@ -839,7 +839,7 @@ class DependencyGraph:
             'fan_out': fan_out,
             'coupling': fan_in * fan_out,
         }
-```
+```text
 
 #### 2.2.2 Acceptance Criteria
 
@@ -946,7 +946,7 @@ class MetricsAggregator:
             'average_maintainability_index': statistics.mean(mis),
             'complexity_coverage_correlation': self.correlate_complexity_coverage(),
         }
-```
+```text
 
 #### 2.3.2 Acceptance Criteria
 
@@ -1008,7 +1008,7 @@ class BaselineManager:
                 delta['changed_files'].append(file)
         
         return delta
-```
+```text
 
 #### 2.4.2 Acceptance Criteria
 
@@ -1064,7 +1064,7 @@ class PluginRegistry:
     def list_languages(cls) -> list:
         """List supported languages."""
         return list(cls._adapters.keys())
-```
+```text
 
 #### 2.5.2 Acceptance Criteria
 
@@ -1132,7 +1132,7 @@ class TestParserBenchmarks:
         # Verify performance: <1ms per 100 tokens
         tokens = len(source.split())
         # (Benchmark automatically compares against threshold)
-```
+```text
 
 ---
 
@@ -1162,7 +1162,7 @@ assert peak < 500 * 1024 * 1024  # 500 MB limit
 tracemalloc.stop()
 print("✓ Memory usage within budget")
 EOF
-```
+```text
 
 ---
 
@@ -1183,7 +1183,7 @@ wc -l /tmp/ast_usage.txt
 # src/cli/ast_upgrade.py:3:import ast
 # scripts/analysis/ast_signature_similarity.py:1:from ast import parse
 # ... (10+ files)
-```
+```text
 
 ### 4.2 Create Migration Layer
 
@@ -1209,7 +1209,7 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
     from codex_ml.ast.parser import UniversalParser
     parser = UniversalParser()
     return parser.parse(source, Path(filename))
-```
+```text
 
 ### 4.3 Phase 1 Refactoring (High Priority Files)
 
@@ -1269,7 +1269,7 @@ def decorated_class_code():
         def is_adult(self) -> bool:
             return self.age >= 18
     """
-```
+```text
 
 ---
 
@@ -1315,7 +1315,7 @@ def decorated_class_code():
 
 ## 🚀 Phase 0 Timeline
 
-```
+```text
 2025-11-10 → 2025-11-11: Dependency Resolution (BLOCK-DEP-001 to 005)
 2025-11-12 → 2025-11-14: Architecture Foundation (BLOCK-ARCH-001 to 005)
 2025-11-15 → 2025-11-16: Performance Baseline (BLOCK-PERF-001 to 003)
@@ -1324,7 +1324,7 @@ def decorated_class_code():
 2025-11-21 → 2025-11-22: Validation & Sign-Off Prep
 2025-11-23 14:00: GO/NO-GO DECISION GATE
 2025-11-24: Sprint 1 Kickoff (if GO)
-```
+```text
 
 ---
 
@@ -1332,7 +1332,7 @@ def decorated_class_code():
 **Phase 0 Start**: 2025-11-09 23:13:57 UTC  
 **Phase 0 Target End**: 2025-11-23 14:00 UTC  
 **Next Document**: Sprint 1 Implementation Plan
-```
+```text
 
 Now creating the detailed validation and risk mitigation guide:
 
@@ -1445,12 +1445,12 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-```
+```text
 
 **Run:**
 ```bash
 python .github/scripts/validate_dependencies.py
-```
+```text
 
 ---
 
@@ -1546,7 +1546,7 @@ def test_metrics_aggregator_correlation():
     summary = aggregator.get_summary()
     assert summary['total_entities'] == 1
     assert summary['average_complexity'] == 5
-```
+```text
 
 ---
 
@@ -1581,7 +1581,7 @@ def test_parser_performance_target(benchmark):
     
     # Implicit: benchmark compares to tolerance
     assert result is not None
-```
+```text
 
 ---
 
@@ -1599,7 +1599,7 @@ pytest --fixtures tests/ast/ | grep "sample\|fixture"
 # synthetic_graph
 # decorated_class_code
 # ... etc
-```
+```text
 
 ### 4.2 Coverage Verification
 
@@ -1607,7 +1607,7 @@ pytest --fixtures tests/ast/ | grep "sample\|fixture"
 pytest tests/ast/ --cov=src/codex_ml/ast --cov-report=term-missing
 
 # Ensure >80% coverage before Phase 1
-```
+```text
 
 ---
 
@@ -1626,7 +1626,7 @@ pip install -e ".[ast]" --no-index
 
 # Verify parsers work offline
 python -c "from codex_ml.ast import UniversalParser; p = UniversalParser(); print('OK')"
-```
+```text
 
 ### 5.2 Python Version Compatibility
 
@@ -1645,7 +1645,7 @@ steps:
   
   - run: pip install -e ".[ast]"
   - run: pytest tests/ast/ -v
-```
+```text
 
 ### 5.3 Scope Creep Prevention
 
@@ -1734,7 +1734,7 @@ nox -s test  # Verify rollback
 # Investigation
 git diff HEAD -- pyproject.toml > /tmp/conflict.patch
 # Manual resolution of conflicting versions
-```
+```text
 
 ### 7.2 If Performance Targets Missed
 
@@ -1752,7 +1752,7 @@ def parse(self, source, file_path):
     result = self._parse_impl(source, file_path)
     self._parse_cache[file_path] = result
     return result
-```
+```text
 
 ### 7.3 If Architecture Design Not Approved
 
@@ -1763,7 +1763,7 @@ def parse(self, source, file_path):
 
 ## Section 8: Success Metrics Dashboard
 
-```
+```text
 ╔════════════════════════════════════════════════════════════╗
 ║              Phase 0 Validation Dashboard                  ║
 ╠════════════════════════════════════════════════════════════╣
@@ -1780,7 +1780,7 @@ def parse(self, source, file_path):
 ║  Days Remaining:                11 days (2025-11-23)     ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
-```
+```text
 
 ---
 
@@ -1788,7 +1788,7 @@ def parse(self, source, file_path):
 **Phase 0 Validation Start**: 2025-11-10  
 **Phase 0 Validation End**: 2025-11-23 14:00 UTC  
 **Go/No-Go Meeting**: 2025-11-23 14:00 UTC
-```
+```text
 
 All Phase 0 guidance documents now created and ready for implementation. Both comprehensive implementation guides cover:
 
@@ -1802,3 +1802,5 @@ All Phase 0 guidance documents now created and ready for implementation. Both co
 ✅ **Timeline & resource allocation**
 
 **Ready to proceed with Phase 0 implementation on 2025-11-10.**
+
+```

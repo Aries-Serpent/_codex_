@@ -21,4 +21,4 @@ text = ingest("data/sample.txt")
 # Chunked streaming
 for chunk in ingest("data/sample.txt", encoding="utf-8", chunk_size=4096):
     process(chunk)
-```
+```text

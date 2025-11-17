@@ -9,7 +9,7 @@ This repo ships a local-first Docker workflow that remains CI-gated by policy. U
 ## Build
 ```bash
 bash scripts/ci/build_image.sh codex:local Dockerfile --load
-```
+```text
 
 You can pass build metadata (displayed in image labels):
 ```bash
@@ -18,12 +18,12 @@ docker build \
   --build-arg VCS_REF="$(git rev-parse --short=12 HEAD)" \
   --build-arg BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   -t codex:local -f Dockerfile .
-```
+```text
 
 ## Run
 ```bash
 docker run --rm -p 8000:8000 codex:local
-```
+```text
 
 Health path override and timeouts (smoke script environment):
 - `HEALTH_PATH` (default `/health`, falls back to `/`)
@@ -43,7 +43,7 @@ Examples:
 ```bash
 docker run --rm -e APP_MODULE="src.codex.api.app:app" -e LOG_LEVEL=debug -p 8000:8000 codex:local
 docker run --rm --env-file .env -p 8000:8000 codex:local
-```
+```text
 
 ## Smoke test
 Script waits for HTTP 200 on `/health` (or falls back to `/`) and can enforce Docker HEALTHCHECK status:
@@ -52,23 +52,23 @@ bash scripts/ci/container_smoke.sh codex:local 8000 18000
 SMOKE_ENFORCE_HEALTH=1 bash scripts/ci/container_smoke.sh codex:local 8000 18000
 # Override the health path and extend startup timeout
 HEALTH_PATH=/ TIMEOUT_STARTUP_SEC=120 bash scripts/ci/container_smoke.sh codex:local 8000 18000
-```
+```text
 
 Pytest (opt-in; requires Docker):
 ```bash
 RUN_CONTAINER_SMOKE=1 pytest -q tests/test_container_smoke.py
-```
+```text
 
 ## SBOM and vulnerability scan (local)
 Generate an SPDX JSON SBOM with syft:
 ```bash
 bash scripts/ci/sbom_syft.sh codex:local
-```
+```text
 
 Scan with trivy and export SARIF:
 ```bash
 bash scripts/ci/scan_trivy.sh codex:local
-```
+```text
 Outputs are saved under `artifacts/security/`.
 
 ## Push (GHCR, opt-in)
@@ -76,7 +76,7 @@ Outputs are saved under `artifacts/security/`.
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag --dry-run
 # After 'docker login ghcr.io' or set GITHUB_TOKEN/GITHUB_ACTOR in CI:
 bash scripts/ci/push_image.sh ghcr.io/OWNER/REPO:tag
-```
+```text
 - GHCR requires lowercase repository/image references. The helper script normalizes `ghcr.io/...` refs before pushing and logs the rewrite.
 Owner approval gate:
 - Push is gated by scripts/ci/owner_approval_guard.sh with TOOL_KEY=docker-build-push.
@@ -98,19 +98,19 @@ The GPU image (`Dockerfile.gpu`) is based on `nvidia/cuda:12.2.2-cudnn8-runtime-
 make docker-gpu-build
 # Or manually:
 docker build -t codex:gpu -f Dockerfile.gpu .
-```
+```text
 
 - Verify GPU support:
 ```bash
 docker run --rm --gpus all codex:gpu python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
-```
+```text
 
 - Run (requires NVIDIA Container Toolkit):
 ```bash
 make docker-gpu-run HOST_PORT=8000
 # Or manually:
 docker run --rm --gpus all -p 8000:8000 codex:gpu
-```
+```text
 
 **Prerequisites for GPU containers**:
 - NVIDIA GPU with CUDA support
@@ -127,7 +127,7 @@ docker run --rm --gpus all -p 8000:8000 codex:gpu
 ```bash
 PLATFORMS=linux/amd64,linux/arm64 BUILDX_FLAGS="--output=type=registry" \
   bash scripts/ci/build_image.sh ghcr.io/OWNER/REPO:tag Dockerfile
-```
+```text
 - The GitHub Actions workflow (`.github/workflows/docker-build-push.yml`) respects `PUSH_PLATFORMS` to enable
   multi-architecture pushes when an OWNER opts in.
 
@@ -139,11 +139,11 @@ PLATFORMS=linux/amd64,linux/arm64 BUILDX_FLAGS="--output=type=registry" \
 For a quick local run after `cp .env.docker.example .env` (or merge with your .env):
 ```bash
 docker compose up
-```
+```text
 For a self-contained local image build + run, use the optional override:
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.override.local.yml up --build
-```
+```text
 
 ## Healthcheck
 The image includes a HEALTHCHECK which probes `/health`, then `/` if missing. Prefer implementing a `/health` route in your API for explicit readiness.

@@ -121,7 +121,7 @@ Document chosen and upcoming items in `docs/troubleshooting/open_questions.md`.
 | Capability | Gap | Risk | Containment / Resolution | Source (status update / commit) | Status |
 | --- | --- | --- | --- | --- | --- |
 | Tokenization | {{gap}} | {{risk}} | {{containment}} | `reports/_codex_status_update-2025-10-05.md` §{{section}} | {{status}} |
-```
+```text
 - Use Markdown links for source references when possible (e.g., commit URLs, report anchors).
 - Keep status values constrained to `open`, `in-progress`, or `closed` for deterministic parsing.
 
@@ -141,7 +141,7 @@ pre-commit install
 pre-commit run --files <changed_files>
 python tools/validate_fences.py --strict-inner
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
-```
+```text
 ### Reproducibility
 - Capture interpreter version and dependency snapshots when relevant.
 - Record configuration overrides, seeds, and environment variables used during audits.
@@ -197,7 +197,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 **Phase 6 – Finalization**
 
@@ -316,6 +316,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 This script is illustrative; the actual implementation must expand the `main()` function to call modules that perform the integration tasks described in the Example Task Prompts. Each phase should append to the `CHANGELOG.md` and update documentation accordingly.

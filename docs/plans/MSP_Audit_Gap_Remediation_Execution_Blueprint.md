@@ -97,7 +97,7 @@ New reusable module with:
 make space-audit
 make space-validate
 # Run validation scripts from docs/validation/Gaps_Coverage_Checklist_And_Scripts.md
-```
+```text
 
 ### CI Testing
 **First run:**

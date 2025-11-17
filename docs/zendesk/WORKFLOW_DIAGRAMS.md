@@ -61,7 +61,7 @@ This document provides visual representations of the Zendesk administration work
 │  MONITOR       │  9. Track metrics and outcomes
 │  Metrics       │     Command: codex zendesk metrics
 └────────────────┘     Monitor success rates, errors
-```
+```text
 ## Multi-Environment Promotion Flow
 
 ```text
@@ -126,7 +126,7 @@ This document provides visual representations of the Zendesk administration work
          • Archive snapshots
          • Update documentation
          • Track metrics
-```
+```text
 ## Object Type Workflows
 
 ### Triggers Workflow
@@ -168,7 +168,7 @@ New Ticket (Priority: High)
     │
     └─> Trigger: "Tag high priority tickets"
         └─> Action: Add tag "priority_escalation"
-```
+```text
 ### Views Workflow
 
 ```text
@@ -208,7 +208,7 @@ Common View Patterns:
    • Status: pending
    • Updated: > 48 hours ago
    Sort: updated_at (oldest first)
-```
+```text
 ### Macros Workflow
 
 ```text
@@ -249,7 +249,7 @@ Macro Design Process:
    │
    └─> Track macro application rates
        └─> Archive unused macros
-```
+```text
 ## Error Handling & Recovery
 
 ```text
@@ -299,7 +299,7 @@ Rollback Decision Tree:
         │
         └─> Critical ──> Emergency Rollback
             └─> Manual intervention + snapshot restore
-```
+```text
 ## Automation & Task Sequences
 
 ```text
@@ -368,7 +368,7 @@ Task Sequence Types:
    ┌────────▼─────────┐
    │ Generate Reports │ ──> Metrics & trends
    └──────────────────┘
-```
+```text
 ## Monitoring & Metrics Flow
 
 ```text
@@ -425,7 +425,7 @@ Dashboard Metrics:
 │
 └─> Configuration Drift
     Target: Monitor trends
-```
+```text
 ## Integration Points
 
 ```text
@@ -466,7 +466,7 @@ Git → _codex_ → Zendesk → Webhooks → External Systems
  ↑                ↓
  └────────────────┘
    Snapshots & Evidence
-```
+```text
 ## Quick Reference Commands
 
 ```bash
@@ -481,7 +481,7 @@ codex zendesk apply triggers plans/plan.json --env=dev --dry-run   # 4. Dry run
 codex zendesk apply triggers plans/plan.json --env=dev             # 5. Apply
 codex zendesk snapshot --env=dev                                    # 6. Verify
 codex zendesk metrics                                               # 7. Monitor
-```
+```text
 
 ## Troubleshooting Decision Tree
 
@@ -512,7 +512,7 @@ Issue Encountered
          └─> Performance Issue ──────> Check rate limiting
                                        Monitor metrics
                                        Optimize batch size
-```
+```text
 ## Best Practices Checklist
 
 ```text
@@ -541,7 +541,7 @@ Regular Maintenance:
 □ Weekly: Review logs
 □ Monthly: Audit configurations
 □ Quarterly: Clean up unused objects
-```
+```text
 ## Additional Resources
 
 - [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) - Complete guide

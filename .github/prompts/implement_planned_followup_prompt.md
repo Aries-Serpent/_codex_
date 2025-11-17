@@ -58,7 +58,7 @@ def set_log_level(self, level: str) -> None:
             f"Must be one of: DEBUG, INFO, WARNING, ERROR, CRITICAL"
         )
     self.logger.setLevel(getattr(logging, level_upper))
-```
+```text
 
 Add test to `tests/test_agents_infrastructure.py`:
 ```python
@@ -78,7 +78,7 @@ def test_set_log_level(tmp_path):
     
     with pytest.raises(ValueError, match="Invalid log level"):
         handler.set_log_level('INVALID')
-```
+```text
 
 ---
 
@@ -97,7 +97,7 @@ def validate(self) -> None:
         EnvironmentError: If validation fails
     """
     self._ensure_validated()
-```
+```text
 
 Add tests to `tests/test_agents_infrastructure.py`:
 ```python
@@ -125,7 +125,7 @@ def test_validate_with_invalid_env():
         
         with pytest.raises(EnvironmentError, match="Invalid value"):
             env.validate()
-```
+```text
 
 **Validation**: `pytest tests/test_agents_infrastructure.py::test_set_log_level -v`
 
@@ -180,7 +180,7 @@ class TestConcurrency:
         with manager.connection() as conn:
             count = conn.execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
         assert count == 50, f"Expected 50 rows, got {count}"
-```
+```text
 
 ---
 
@@ -236,7 +236,7 @@ def test_full_session_lifecycle(self, tmp_path):
             ("%Hello%",)
         ).fetchone()[0]
         assert search_count == 1
-```
+```text
 
 **Validation**: `pytest tests/test_agents_infrastructure.py::TestConcurrency -v`
 
@@ -311,7 +311,7 @@ class TestEdgeCases:
         runner = CliRunner()
         result = runner.invoke(clean_logs_cmd, ["--dry-run", "--older-than=30"])
         assert result.exit_code == 0
-```
+```text
 
 ---
 
@@ -353,7 +353,7 @@ else
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     exit 1
 fi
-```
+```text
 
 **Make executable**: `chmod +x .github/scripts/measure_coverage.sh`
 
@@ -393,7 +393,7 @@ bash .github/scripts/measure_coverage.sh
 rm -f .codex/validation.db*
 
 echo "✅ All validation checks passed!"
-```
+```text
 
 **Make executable**: `chmod +x .github/scripts/validate_agents_implementation.sh`
 
@@ -412,7 +412,7 @@ Add section after existing "Phase 1 Final Push Validation Results":
 **Validation Script**: `.github/scripts/validate_agents_implementation.sh`  
 **Run Date**: 2025-11-14 09:00:00 UTC
 
-```
+````text
 $ bash .github/scripts/validate_agents_implementation.sh
 
 🔍 AGENTS Implementation Validation
@@ -445,7 +445,7 @@ $ bash .github/scripts/validate_agents_implementation.sh
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ All validation checks passed!
-```
+```text
 
 ### Final Metrics
 
@@ -463,7 +463,7 @@ $ bash .github/scripts/validate_agents_implementation.sh
 
 After implementing ALL tasks:
 
-```bash
+````bash
 # 1. Run tests
 pytest tests/test_agents_infrastructure.py -v
 
@@ -477,7 +477,7 @@ bash .github/scripts/validate_agents_implementation.sh
 # - Tests: 25+/25 passing
 # - Coverage: ≥95%
 # - Production ready: 98%
-```
+```text
 
 ---
 

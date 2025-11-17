@@ -46,7 +46,7 @@ export SEVERITY_MULTIPLIER_MODE=additive  # Mode: additive|penalty|none
 export BUNDLE_PREFIX_MODE=1           # Auto-prefix validation
 export PREFIX_VALIDATE_AUTO=1         # Run validate_prefixes.py in manifest stage
 export SUMMARY_ENABLE=1               # Emit knobs_effective.json sidecar
-```
+```text
 
 ### Component Scoring Updates
 
@@ -55,7 +55,7 @@ export SUMMARY_ENABLE=1               # Emit knobs_effective.json sidecar
 consistency = base_consistency * similarity_index  # P5: token similarity multiplier
 tests = max(base_tests, coverage_percent)          # P5: coverage XML override
 safeguards = base_safeguards * sev_factor          # P5: severity-influenced (additive/penalty)
-```
+```text
 
 ---
 
@@ -160,7 +160,7 @@ SAFEGUARD_KEYWORDS = [
     "sha256", "checksum", "rng", "seed",
     "offline", "WANDB_MODE"
 ]
-```
+```text
 
 ### Codex-Recommended Additions (v1.4.0)
 ```python
@@ -169,7 +169,7 @@ SAFEGUARD_KEYWORDS += [
     "deterministic", "reproduce", "manifest",
     "baseline", "secret", "sanitize"
 ]
-```
+```text
 
 **Scoring Logic**: `safeguards = (keywords_with_hits / total_keywords) * severity_factor`
 
@@ -284,7 +284,7 @@ export SUMMARY_ENABLE=1               # Emit knobs_effective.json
 # Override output paths (optional)
 export AUDIT_ARTIFACTS_DIR=audit_artifacts
 export REPORTS_DIR=reports
-```
+```text
 
 ---
 
@@ -307,7 +307,7 @@ python scripts/space_traversal/audit_runner.py diff \
 
 # Validate policy gates
 python scripts/space_traversal/audit_runner.py validate
-```
+```text
 
 ---
 
@@ -380,7 +380,7 @@ python scripts/space_traversal/audit_runner.py validate
 ```python
 # Example: Add GPU training pattern
 DOMAIN_PATTERNS["gpu"] = re.compile(r"cuda|gpu|torch\.cuda", re.I)
-```
+```text
 
 ### Q: Why is my capability score 0.00?
 **A**: Check these in order:
@@ -395,7 +395,7 @@ DOMAIN_PATTERNS["gpu"] = re.compile(r"cuda|gpu|torch\.cuda", re.I)
 unset TOKEN_SIMILARITY_ENABLE
 unset COVERAGE_ENABLE
 unset SECURITY_SEVERITY_ENABLE
-```
+```text
 
 ### Q: Where are the actual detector files?
 **A**: In the repo at `scripts/space_traversal/detectors/` (now includes ml_serving.py, status_reporting.py, archival_bundling.py).
@@ -422,7 +422,7 @@ DOMAIN_PATTERNS = {
     "status": re.compile(r"status|audit|report", re.I),
     "archive": re.compile(r"archive|bundle|manifest", re.I),
 }
-```
+```text
 
 ---
 
@@ -445,7 +445,7 @@ DOCS_SYNONYMS_MAP = {
     "status-reporting": ["status", "audit", "report", "codex_status"],
     "archival-bundling": ["archive", "bundle", "manifest", "pointer"],
 }
-```
+```text
 
 ---
 

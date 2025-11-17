@@ -60,7 +60,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 
 *Rationale:* LoRA integration exists but the user cannot configure parameters or task type. Exposing these improves flexibility.
 
-```
+```text
 *** Begin Patch
 *** Update File: src/codex_ml/peft/peft_adapter.py
 @@
@@ -87,7 +87,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 +    # allow explicit override of task_type via cfg or kwargs
 +    task_type = str(merged.pop("task_type", "CAUSAL_LM"))
 *** End Patch
-```
+```text
 
 *Risk:* Changing defaults may break existing callers expecting `task_type` to be ignored. However, the patch still allows overrides and uses `pop` to prevent duplication.
 
@@ -99,7 +99,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 
 *Rationale:* Running jobs cannot resume from checkpoints; adding a `--resume-from` flag makes experiments recoverable.
 
-```
+```text
 *** Begin Patch
 *** Update File: src/codex_ml/training/__init__.py
 @@
@@ -123,7 +123,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 +        except Exception as exc:
 +            print(f"[Training] Failed to resume from {resume_from}: {exc}")
 *** End Patch
-```
+```text
 
 *Risk:* Users may mistakenly provide an invalid path, causing training to start from epoch `None`. The diff prints a message and continues.
 
@@ -135,7 +135,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 
 *Rationale:* The toy training loop duplicates functionality and does not use experiment tracking. Consolidating loops reduces drift and enables MLflow/W&B logging.
 
-```
+```text
 *** Begin Patch
 *** Update File: src/codex_ml/train_loop.py
 @@
@@ -211,7 +211,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 +    ctx.log_metric(step=best["epoch"], split="best", metric="acc", value=best["acc"])
 +    ctx.finalize()
 *** End Patch
-```
+```text
 
 *Risk:* This diff introduces a dependency on the experiment tracking subsystem; if optional MLflow or W&B are not installed, init may fail. However, `init_experiment` gracefully disables missing backends. Existing scripts depending on `mlflow.log_metrics` will need updates.
 
@@ -223,7 +223,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 
 *Rationale:* Data handling currently loads datasets but does not provide train/val/test splitting or schema validation.
 
-```
+```text
 *** Begin Patch
 *** Add File: src/codex_ml/data/split_utils.py
 +"""Dataset split and validation helpers."""
@@ -264,7 +264,7 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 +        out_paths.append(p)
 +    return SplitPaths(*out_paths)
 *** End Patch
-```
+```text
 
 *Risk:* Splitting large datasets may exhaust memory; ratios may not sum to 1.0. Use streaming splitting for large files in future. The utility writes new files in the same directory, potentially overwriting existing splits.
 
@@ -308,13 +308,13 @@ Below are small, high-impact diff proposals. Each diff includes rationale, risks
 
 Whenever an analysis step or training run encounters an unexpected error, record it using the following format:
 
-```
+```text
 Question for ChatGPT @codex {timestamp}:
 While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error:
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 This captures sufficient context (step number, description, error and surrounding context) to allow ChatGPT to reason about the failure without replicating the entire environment.
 
@@ -322,7 +322,7 @@ This captures sufficient context (step number, description, error and surroundin
 
 Below is a template describing how to transform the high-signal findings and diffs into a **Codex-ready** sequential execution plan. The tasks instruct ChatGPT-5 to implement missing features, explore modules and write code patches while adhering to offline constraints. The corresponding executable script automates the workflow.
 
-```
+```text
 **Codex-ready Task Sequence**
 Transform the supplied task below into a **Codex-ready sequential execution block** that:
 1. Enforces **best-effort construction** before pruning.
@@ -470,7 +470,7 @@ Deliverables:
 - Expanded README/docs/notebooks illustrating configuration, LoRA, MLflow, and deployment workflows.
 :::
 
-```
+```text
 
 An **executable script** implementing the sequence now ships as `scripts/codex_ready_task_runner.py`. It orchestrates the three suggested tasks, records change/error logs, writes gap snapshots, and optionally runs verification commands.
 
@@ -479,7 +479,7 @@ Example usage:
 ```bash
 python scripts/codex_ready_task_runner.py --dry-run
 python scripts/codex_ready_task_runner.py --tasks model_training data_eval_safety --run-tests
-```
+```text
 
 Key behaviours:
 - Parses README/configuration assets to capture references and detect configuration gaps.

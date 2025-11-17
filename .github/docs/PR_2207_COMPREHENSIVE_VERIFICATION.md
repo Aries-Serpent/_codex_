@@ -39,7 +39,7 @@
 yamllint .github/workflows/                    # Syntax validation
 yamllint .github/*.yml                         # Config files
 python -m jsonschema -i audit_run_manifest.json # JSON validation
-```
+```text
 
 **Required Checks:**
 - ☐ All `.yml` files parse without errors
@@ -70,7 +70,7 @@ Pre-Merge Gate Checks:
    
 3. Confirm: Post-merge triggers NOT active on 0D_base_
    Expected: Merge-only workflows inactive
-```
+```text
 
 - ☐ All gate workflows execute successfully
 - ☐ No timeout issues (typical: 15-30 min per workflow)
@@ -85,7 +85,7 @@ Pre-Merge Gate Checks:
 ```bash
 # Run Bandit with PR #2207 configuration
 bandit -r src/ -f json -o bandit-report.json --severity-level=MEDIUM
-```
+```text
 
 **Configuration Validation (`.bandit.yaml`):**
 
@@ -103,7 +103,7 @@ targets:
 
 severity: LOW   ✅ Captures all findings
 confidence: HIGH ✅ Only high-confidence issues
-```
+```text
 
 **Required Verifications:**
 
@@ -118,7 +118,7 @@ confidence: HIGH ✅ Only high-confidence issues
 # Validate secrets baseline consistency
 detect-secrets scan --baseline .secrets.baseline
 detect-secrets audit .secrets.baseline
-```
+```text
 
 **Requirements:**
 
@@ -132,7 +132,7 @@ detect-secrets audit .secrets.baseline
 ```bash
 yamllint .github/workflows/ -d relaxed
 python -m yamllint .github/Copilot.md
-```
+```text
 
 - ☐ All YAML files properly formatted
 - ☐ No conflicting indent levels
@@ -145,9 +145,9 @@ python -m yamllint .github/Copilot.md
 **Gate 1: Coverage Threshold Enforcement**
 
 **New Configuration: `.github/coverage_threshold.txt`**
-```
+```text
 Minimum Coverage: 96%
-```
+```text
 
 **Verification:**
 
@@ -157,7 +157,7 @@ pytest --cov=src --cov-report=term-missing --cov-report=html
 
 # Check coverage percentage
 coverage report --skip-covered
-```
+```text
 
 **Required Checks:**
 
@@ -167,7 +167,7 @@ coverage report --skip-covered
 - ☐ `coverage_report.yml` workflow properly configured
 
 **Action If Coverage < 96%:**
-```
+```text
 OPTION A: Increase test coverage to 96%
   □ Identify uncovered lines
   □ Add unit tests for gaps
@@ -177,7 +177,7 @@ OPTION B: Adjust threshold (if justified)
   □ Update .github/coverage_threshold.txt
   □ Document justification
   □ Obtain approval from team leads
-```
+```text
 
 **Gate 2: Linting & Type Checking**
 
@@ -186,7 +186,7 @@ OPTION B: Adjust threshold (if justified)
 nox -s lint          # Black, isort, Ruff
 nox -s type_check    # Mypy type checking
 nox -s security      # Bandit + Semgrep
-```
+```text
 
 - ☐ Black formatting: PASS
 - ☐ isort import order: PASS
@@ -210,7 +210,7 @@ grep -E "(torch|cuda|tensorflow|nvidia)" uv.lock
 # Verify requirements files
 grep -E "(torch|cuda|tensorflow)" requirements*.txt
 # Expected: NO MATCHES in base requirements.txt
-```
+```text
 
 **Requirements:**
 
@@ -230,7 +230,7 @@ Example Entry (GPU Removal):
   "timestamp": "2025-11-14T16:00:00Z",
   "status": "success"
 }
-```
+```text
 
 - ☐ Audit log entries present
 - ☐ All GPU removals documented
@@ -248,7 +248,7 @@ python -m venv .venv_test
 source .venv_test/bin/activate
 pip install -r requirements.txt
 pip list > installed-packages.txt
-```
+```text
 
 **Requirements:**
 
@@ -264,7 +264,7 @@ pip list > installed-packages.txt
 docker build -t codex:test .                    # CPU-only base
 docker build -f Dockerfile.gpu -t codex:gpu .   # GPU variant (if applicable)
 docker run --rm codex:test python --version
-```
+```text
 
 - ☐ CPU Dockerfile builds without errors
 - ☐ All dependencies installed correctly
@@ -296,7 +296,7 @@ Checklist for .github/Copilot.md:
 ☐ References to other docs valid
 ☐ No broken links or file paths
 ☐ CODEOWNERS assignments explicit
-```
+```text
 
 **Gate 2: Review Response Documentation**
 
@@ -328,7 +328,7 @@ Checklist for .github/Copilot.md:
 git diff HEAD~102..HEAD --name-only | while read file; do
   grep "^$file" .github/CODEOWNERS || echo "ORPHANED: $file"
 done
-```
+```text
 
 **Requirements:**
 
@@ -340,12 +340,12 @@ done
 
 **Current Assignments (per `.github/CODEOWNERS`):**
 
-```
+```text
 .github/Copilot.md              → @mbaetiong, @maintainers
 .github/coverage_threshold.txt  → @maintainers
 .github/docs/                   → @maintainers
 .bandit.yaml                    → @security-team
-```
+```text
 
 - ☐ Assignments appropriate for responsibility level
 - ☐ Secondary owners available for coverage
@@ -362,11 +362,11 @@ done
 ```bash
 # Check gitignore patterns for artifacts
 cat .gitignore | grep -E "artifacts/|\.pyc|__pycache__|\.venv"
-```
+```text
 
 **Expected Entries:**
 
-```
+```text
 artifacts/              ✅ Build outputs never committed
 *.pyc                   ✅ Compiled bytecode excluded
 __pycache__/            ✅ Python cache excluded
@@ -377,7 +377,7 @@ htmlcov/                ✅ HTML coverage reports excluded
 *.egg-info/             ✅ Package metadata excluded
 dist/                   ✅ Distribution builds excluded
 build/                  ✅ Build intermediate files excluded
-```
+```text
 
 - ☐ All artifact patterns correctly excluded
 - ☐ No accidental commits of build outputs
@@ -392,7 +392,7 @@ Format: JSON Lines (one JSON object per line)
 Purpose: Document dependency operations (removals, additions)
 Access: Read-only after merge (audit trail)
 Retention: Permanent (for reproducibility verification)
-```
+```text
 
 - ☐ File format valid JSON Lines
 - ☐ All entries properly timestamped
@@ -426,7 +426,7 @@ Other Restrictions:
   ✅ Require branches to be up-to-date
   ✅ Include administrators in restrictions
   ✅ Allow force pushes (only admin)
-```
+```text
 
 **Pre-Merge Verification:**
 
@@ -443,7 +443,7 @@ gh pr view 2207 --json mergeable,mergeStateStatus
 # Expected Output:
 # mergeable: true
 # mergeStateStatus: CLEAN
-```
+```text
 
 - ☐ PR is mergeable (no conflicts)
 - ☐ Merge state: CLEAN
@@ -471,7 +471,7 @@ Steps:
   5. Build Docker images
   6. Archive build artifacts
   7. Publish status (Slack/email)
-```
+```text
 
 **Requirements:**
 
@@ -491,7 +491,7 @@ gh run list --workflow=post-merge-validation-optimized.yml -b main -n 1
 # 1. Check error logs in run details
 # 2. Assess impact on main branch
 # 3. Decision: Patch PR or Revert
-```
+```text
 
 **Rollback Procedure (if needed):**
 
@@ -501,7 +501,7 @@ gh pr revert 2207 --repo Aries-Serpent/_codex_
 
 # Document revert reason
 # Create follow-up issue for fix
-```
+```text
 
 - ☐ Post-merge workflow execution plan documented
 - ☐ Escalation contacts identified

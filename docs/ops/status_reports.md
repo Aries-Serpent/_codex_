@@ -15,7 +15,7 @@ codex-status-audit --generate
 python tools/generate_status_update.py
 
 # Output: .codex/status/_codex_status_update-YYYY-MM-DD.json
-```
+```text
 
 ### What it includes
 - **Metadata**: Git context, environment info, timestamps
@@ -42,7 +42,7 @@ python tools/status_report.py \
   --summary samples/assistant_message_summary.sample.json \
   --selected 3 \
   --out STATUS_REPORT.md
-```
+```text
 
 ## Verbose & Artifacts
 
@@ -56,7 +56,7 @@ python tools/status_report.py \
   --verbose \
   --save-logs \
   --out STATUS_REPORT.md
-```
+```text
 
 ## What it includes
 - Fence integrity result
@@ -87,7 +87,7 @@ python tools/status_report.py \
   --branch codex/implement-local-status-reporter_2025-10-26 \
   --pr 1916 \
   --out STATUS_REPORT.md
-```
+```text
 
 **Placeholders that will be filled:**
 - `{{branch}}` — branch name passed via `--branch`

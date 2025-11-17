@@ -8,14 +8,14 @@ pre-commit autoupdate
 pre-commit install --install-hooks
 # install hook types we use by default
 pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commit-msg
-```
+```text
 
 ## Normalize Line Endings
 After `.gitattributes` updates, run once per repo:
 ```bash
 git add --renormalize .
 git commit -m "chore: normalize line endings via .gitattributes"
-```
+```text
 
 ## Fast Path vs. Deep Scans
 - Commit-time hooks stay **fast**. If a heavy hook blocks your workflow:
@@ -43,7 +43,7 @@ Operational templates live in [`docs/templates/`](./templates/README.md) and fol
 [PLACEHOLDER: MIGRATION_INTENT_SUMMARY] → "Relocate shared tokenizer helpers to `codex.text` to unblock GPU builds."
 [PLACEHOLDER: COMMAND_LIST] → "`codex-cli sync`, `codex-cli diff`"
 [PLACEHOLDER: APPROVAL_DEADLINE] → "2025-11-07"
-```
+```text
 Keep the metadata header intact (`Version`, `Last Updated`, `Role Workflow`) so automation can parse template state.
 
 ## Troubleshooting

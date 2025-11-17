@@ -77,7 +77,7 @@ codex zendesk snapshot --env=dev
 
 # 3. Explore snapshot
 ls -la snapshot/dev/latest/
-```
+```text
 
 ### Daily Operations
 ```bash
@@ -100,7 +100,7 @@ codex zendesk apply triggers plans/triggers_plan.json --env=dev
 
 # Monitor metrics
 codex zendesk metrics
-```
+```text
 
 ### Using Task Sequences
 ```bash
@@ -118,7 +118,7 @@ tasks:
 EOF
 
 codex-task-sequence --sequence my_workflow.yaml
-```
+```text
 
 ## Configuration Examples
 
@@ -131,7 +131,7 @@ configs/desired/zendesk/
 ├── ticket_fields.json     # Custom fields
 ├── ticket_forms.json      # Submission forms
 └── webhooks.json          # External integrations
-```
+```text
 ### Example Files
 See detailed examples in [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md):
 
@@ -154,7 +154,7 @@ codex zendesk snapshot --env=dev --verbose
 
 # Check logs
 cat .codex/logs/zendesk_*.log
-```
+```text
 
 ### Common Issues
 
@@ -208,7 +208,7 @@ my-zendesk-config/
 ├── diffs/                         # Generated diffs
 ├── plans/                         # Generated plans
 └── scripts/task_sequences/        # Automation workflows
-```
+```text
 ### Environment Variables
 ```bash
 # Required (per environment; configure for each env you use)
@@ -226,7 +226,7 @@ ZENDESK_PROD_TOKEN=your-prod-token
 ZENDESK_RATE_LIMIT_DELAY=1.5      # Seconds between requests
 ZENDESK_MAX_RETRIES=5              # Max retry attempts
 CODEX_LOG_LEVEL=INFO              # DEBUG for verbose output
-```
+```text
 
 ## CLI Reference
 
@@ -254,7 +254,7 @@ codex zendesk apply <object_type> <plan_file> \
 codex zendesk metrics [--since <date>] [--format <json|text>]
 codex zendesk list-groups --env=<env>
 codex zendesk list-schedules --env=<env>
-```
+```text
 
 ### Task Sequence Automation
 ```bash
@@ -263,7 +263,7 @@ codex-task-sequence --sequence <yaml_file>
 
 # List available sequences
 ls scripts/task_sequences/zendesk_*.yaml
-```
+```text
 
 ## Integration Examples
 
@@ -285,7 +285,7 @@ git commit -m "Add priority-based auto-assignment triggers"
 
 # Open PR for review
 gh pr create --title "Add priority triggers" --body "Adds auto-assignment based on priority"
-```
+```text
 
 ### With Monitoring
 ```bash
@@ -303,7 +303,7 @@ alerts:
     condition: rate_limit_retries > 0.05
     action: notify_ops
 EOF
-```
+```text
 
 ## Support and Community
 

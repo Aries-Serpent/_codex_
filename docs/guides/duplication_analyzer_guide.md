@@ -36,7 +36,7 @@ python tools/duplication_analyzer.py --json --output dup_data.json
 
 # Custom threshold
 python tools/duplication_analyzer.py --threshold 0.15
-```
+```text
 
 ### Programmatic Usage
 
@@ -65,7 +65,7 @@ for group in analysis['duplicate_groups'][:5]:
 
 # Generate report
 report = analyzer.generate_report(Path("report.md"))
-```
+```text
 
 ## Configuration
 
@@ -83,7 +83,7 @@ analyzer = DuplicationAnalyzer(
     root_path=Path("."),
     acceptable_ratio=0.05  # Stricter: 5%
 )
-```
+```text
 
 ### File Extensions
 
@@ -96,7 +96,7 @@ analysis = analyzer.analyze(extensions=['.py'])
 
 # Analyze all text files
 analysis = analyzer.analyze(extensions=['.py', '.md', '.rst', '.txt', '.yaml'])
-```
+```text
 
 ## API Reference
 
@@ -184,7 +184,7 @@ Duplicate Count: 718
 Duplication Ratio: 21.45% (HIGH)
 Duplicate Groups: 248
 Content Duplicates: 28
-```
+```text
 
 Top duplicate groups:
 1. `__init__`: 189 files (package markers - acceptable)
@@ -202,7 +202,7 @@ for candidate in candidates[:10]:
     print(f"{candidate['stem']}: {candidate['count']} files")
     print(f"Priority: {candidate['priority']}")
     print(f"Suggestion: {candidate['suggestion']}\n")
-```
+```text
 
 ### 2. Review Duplicates
 
@@ -212,7 +212,7 @@ python tools/duplication_analyzer.py --output review.md
 
 # Review top 10 groups
 head -100 review.md
-```
+```text
 
 ### 3. Consolidate
 
@@ -226,7 +226,7 @@ module3/utils.py
 # After: Single shared module
 common/utils.py
 # Update imports in module1, module2, module3
-```
+```text
 
 For config files:
 ```yaml
@@ -240,7 +240,7 @@ config/base.yaml    # Shared config
 config/dev.yaml     # Extends base
 config/staging.yaml # Extends base
 config/prod.yaml    # Extends base
-```
+```text
 
 ### 4. Verify Reduction
 
@@ -251,7 +251,7 @@ python tools/duplication_analyzer.py
 # Compare ratios
 # Before: 21.45%
 # After: 15.20% (improved!)
-```
+```text
 
 ## Best Practices
 
@@ -312,7 +312,7 @@ jobs:
           fi
       - name: Generate Report
         run: python tools/duplication_analyzer.py --output $GITHUB_STEP_SUMMARY
-```
+```text
 
 ### Pre-commit Hook
 
@@ -324,7 +324,7 @@ if [ $? -ne 0 ]; then
     echo "Warning: High duplication detected. Consider refactoring."
     echo "Run: python tools/duplication_analyzer.py --output dup_report.md"
 fi
-```
+```text
 
 ## Troubleshooting
 
@@ -338,7 +338,7 @@ real_duplicates = [
     g for g in analysis['duplicate_groups']
     if g['stem'] not in ['__init__', '__pycache__']
 ]
-```
+```text
 
 ### Content Duplicates in Tests
 
@@ -349,7 +349,7 @@ for dup in analysis['content_duplicates']:
     if any('test' in path for path in dup['paths']):
         print(f"Test duplicate: {dup['paths']}")
         # Verify if consolidation makes sense
-```
+```text
 
 ### Large Codebases
 
@@ -360,7 +360,7 @@ for subdir in ['src', 'tests', 'tools']:
     analyzer = DuplicationAnalyzer(Path(subdir))
     result = analyzer.analyze()
     print(f"{subdir}: {result['stats']['duplication_ratio']:.2%}")
-```
+```text
 
 ## Examples
 

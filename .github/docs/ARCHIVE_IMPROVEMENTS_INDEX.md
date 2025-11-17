@@ -59,7 +59,7 @@ pytest tests/archive/ -q --maxfail=1
 pytest tests/archive/ --cov=codex.archive --cov-report=term-missing
 codex archive config-show
 codex archive batch-restore --help
-```
+```text
 
 ---
 

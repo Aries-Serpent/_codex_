@@ -12,7 +12,7 @@
 
 ```bash
 SKIP_OPTIONAL=1 bash scripts/docs_build.sh
-```
+```text
 
 ---
 

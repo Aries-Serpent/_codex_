@@ -13,7 +13,7 @@ duration: "24h"
 cost_workflows:
   - docker-build-push
 created_at: "2025-10-20T19:43:52Z"
-```
+```text
 
 Until timestamp (file-based)
 ```yaml
@@ -25,14 +25,14 @@ until: "2025-10-21T00:00:00Z"
 cost_workflows:
   - docker-build-push
 created_at: "2025-10-20T19:43:52Z"
-```
+```text
 
 Env-based (no commit)
 ```bash
 gh variable set OWNER_APPROVED_DURATION -b "24h"
 # Or:
 gh variable set OWNER_APPROVED_UNTIL -b "2025-10-21T00:00:00Z"
-```
+```text
 
 Auto-disable behavior
 - On each push, .github/workflows/workflow-expiry-enforcer.yml checks window expiry.

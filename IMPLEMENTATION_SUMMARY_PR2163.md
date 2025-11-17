@@ -312,7 +312,7 @@ model = config.apply_to_model(model)
 # With autocast for mixed precision
 with config.get_autocast_context():
     output = model(input_tensor)
-```
+```text
 
 **Checkpoint with Dataset Tracking:**
 ```python
@@ -324,7 +324,7 @@ save_checkpoint(
     path, model, optimizer, scheduler, epoch,
     dataset_paths=["data/train.jsonl", "data/val.jsonl"]
 )
-```
+```text
 
 **Metrics API:**
 ```python
@@ -339,7 +339,7 @@ metric_fn = get_metric("token_accuracy")
 # Or direct import
 from codex_ml.metrics.api import token_accuracy
 score = token_accuracy(preds, targets)
-```
+```text
 
 **NDJSON Summarization:**
 ```python
@@ -350,7 +350,7 @@ summarize_ndjson_to_csv(
     "runs/experiment/metrics.ndjson",
     "analysis/metrics.csv"
 )
-```
+```text
 
 ---
 

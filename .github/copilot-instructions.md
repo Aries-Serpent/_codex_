@@ -23,7 +23,7 @@ Use one of the following roles when recording conversation or session events: `s
 ```bash
 pre-commit run --files <changed_files>
 nox -s tests
-```
+```text
 - Ensure optional test dependencies (e.g., `hydra-core`, `mlflow`) are installed or appropriately mocked.
 
 ## Useful Commands
@@ -96,7 +96,7 @@ pre-commit run --files <changed_files>
 
 # Run the test suite (nox runs pytest with coverage)
 nox -s tests
-```
+```text
 Formatting & static checks
 - Format Python code with Black.
 - Lint with Ruff.
@@ -134,7 +134,7 @@ Structure:
 ./.codex/
   session_logs.db
   sessions/<SESSION_ID>.ndjson
-```
+```text
 Retention policy
 - Retain NDJSON files and SQLite rows for 30 days. Purge older logs using (safe, best-effort):
 ```bash
@@ -143,7 +143,7 @@ find ./.codex/sessions -type f -mtime +30 -print -delete || true
 
 # Optionally vacuum the SQLite DB after purging rows (use with care)
 # sqlite3 .codex/session_logs.db "VACUUM;"
-```
+```text
 Error handling & backward compatibility guidance
 This repository must be resilient when optional dependencies or environment differences exist.
 
@@ -161,7 +161,7 @@ try:
 except Exception:
     HAS_MLFLOW = False
     logger.warning("mlflow is not available; mlflow integration disabled.")
-```
+```text
 - When invoking external tooling that may fail (e.g., database writes), wrap calls with retries and custom exceptions. Maintain idempotency where appropriate.
 
 Backward compatibility
@@ -173,7 +173,7 @@ Configuration management (Hydra)
 - When adding new Hydra configs, document overrides and example commands to reproduce runs. Example:
 ```bash
 python -m codex.cli train --config-name=my_config hydra.run.dir=./runs/my_run
-```
+```text
 Next steps toward production readiness
 1. Stabilize the test suite
    - Ensure optional test dependencies (hydra-core, mlflow, etc.) are installed in test environments or suitably mocked.

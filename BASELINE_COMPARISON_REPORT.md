@@ -227,22 +227,22 @@
 ### Files Successfully Indexed
 
 **New Test Files (10 total)**:
-```
+```text
 tests/space_traversal/test_safeguards_keywords.py
 tests/deployment/test_infrastructure.py
 tests/archival/test_bundling.py
 tests/docs/test_documentation_system.py
 + associated __pycache__ files (6 files)
-```
+```text
 
 **New Documentation Files (5 total)**:
-```
+```text
 docs/capabilities/mcp_tools_integration.md
 docs/capabilities/safeguards_keywords.md
 docs/capabilities/deployment_infrastructure.md
 docs/capabilities/archival_bundling.md
 docs/capabilities/documentation_system.md
-```
+```text
 
 **Total File Count Increase**: 3,679 → 3,830 (+151 files)
 
@@ -390,7 +390,7 @@ python scripts/space_traversal/audit_runner.py diff \
 
 # Fail if any score drops > 0.02
 # (Recommended for CI/CD)
-```
+```text
 
 ### Monitoring Recommendations
 
@@ -419,7 +419,7 @@ jobs:
             --old baseline/capabilities_scored_post_remediation.json \
             --new audit_artifacts/capabilities_scored.json
           # Add logic to fail if delta < -0.02
-```
+```text
 
 ---
 

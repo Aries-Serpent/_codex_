@@ -4,7 +4,7 @@ LoRA adapters can be toggled on without changing your base weights. This repo tr
 
 ```bash
 pip install -e '.[ml]'        # includes transformers+peft
-```
+```text
 
 Minimal example (see `codex_ml/models/peft_hooks.py`):
 
@@ -12,7 +12,7 @@ Minimal example (see `codex_ml/models/peft_hooks.py`):
 from codex_ml.models.peft_hooks import build_lora, LoraBuildCfg
 model = ...  # any tiny HF model (CPU is fine)
 model = build_lora(model, LoraBuildCfg(r=8, target_modules=["query","value"]))
-```
+```text
 
 ## Factory integration
 
@@ -41,7 +41,7 @@ factory_config = ModelFactoryConfig(
 )
 
 model = build_model(factory_config)
-```
+```text
 
 If `CODEX_ML_ENABLE_PEFT` is unset (or set to `0`/`false`) the helper logs a
 message and loads the base model without attempting to apply adapters. This

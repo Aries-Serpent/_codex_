@@ -20,6 +20,6 @@ Energy: 5/5
 ## Quick Run
 ```bash
 nox -s coverage
-```
+```text
 
 *End*

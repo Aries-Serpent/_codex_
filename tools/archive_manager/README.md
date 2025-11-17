@@ -40,7 +40,7 @@ python archive_manager.py update \
   --tombstones-logs ./tombstones_logs.jsonl \
   --gzip-tombstones \
   --gzip-jsonl
-```
+```text
 
 ### Vacuum tombstones
 
@@ -57,7 +57,7 @@ python archive_manager.py vacuum \
   --tombstones-logs ./tombstones_logs.jsonl \
   --before 2025-06-01 \
   --gzip-tombstones
-```
+```text
 
 ## Notes
 * JSONL is line-oriented and ideal for append-only logs and streaming; gzip reduces storage/egress.

@@ -45,7 +45,7 @@ dal.get_restore_payload(tombstone)
 _get_item_by_tombstone() → LookupError (uncaught)
   ↓
 KeyError bubbles to user
-```
+```text
 
 ## Solution Design
 
@@ -77,7 +77,7 @@ def restore_to_path(tombstone_id, *, output_path, actor):
         raise RuntimeError(f"Failed to retrieve restore payload: {str(exc)}") from exc
 
     # Continue with safe decompression and file write...
-```
+```text
 
 **Changes**:
 - ✅ Explicit exception handling for LookupError
@@ -115,7 +115,7 @@ def restore(tombstone, output, actor):
     except RuntimeError as runtime_err:
         click.echo(f"ERROR: Restore failed: {str(runtime_err)}", err=True)
         sys.exit(1)
-```
+```text
 
 **Changes**:
 - ✅ Pre-flight backend validation
@@ -147,7 +147,7 @@ def health_check():
     except Exception as exc:
         click.echo(f"Status: ✗ FAILED ({type(exc).__name__})", err=True)
         sys.exit(1)
-```
+```text
 
 **Purpose**:
 - ✅ Operational visibility
@@ -180,7 +180,7 @@ New event type for failures:
   "backend": "sqlite|postgres|mariadb",
   "url": "sqlite:///./.codex/archive.sqlite"
 }
-```
+```text
 
 ### Error Message Flow
 
@@ -231,7 +231,7 @@ ERROR: Archive backend validation failed
 # Test restore with invalid tombstone
 $ python -m codex.archive.cli restore invalid-uuid /tmp/out.txt --by user
 ERROR: Tombstone not found in archive backend
-```
+```text
 
 ## Related Issues
 

@@ -13,7 +13,7 @@ runs/
     config.json
     provenance.ndjson
     checkpoints/
-```
+```text
 ## File formats
 
 * **metrics.ndjson** – schema `v1` rows with timestamp, run id, metric name,
@@ -32,7 +32,7 @@ CSV summary, run:
 ```bash
 python tools/ndjson_to_csv.py runs/20240101-120000-toy-train/metrics.ndjson \
   runs/20240101-120000-toy-train/metrics.csv
-```
+```text
 
 The repository includes `samples/metrics_sample.ndjson` for quick tests of the
 converter.
@@ -50,7 +50,7 @@ codex codex train --config configs/training/base.yaml \
 # Enable W&B offline logging to the "toy" project
 codex codex train --config configs/training/base.yaml \
     --wandb-project toy
-```
+```text
 Internally these map to the following environment variables:
 
 | Variable | Purpose | Default |

@@ -36,7 +36,7 @@ The standardization framework elevates the _codex_ archive system from baseline 
     "issuer": "https://token.actions.githubusercontent.com"
   }
 }
-```
+```text
 
 ### 2. Cryptographic Signing (Sigstore Keyless)
 
@@ -64,7 +64,7 @@ Ephemeral Certificate
 Signature + Certificate
   ↓ (uploaded to Rekor)
 Transparency Log Entry
-```
+```text
 ### 3. Schema Validation
 
 **Objective**: Ensure all records conform to their declared schema version
@@ -94,7 +94,7 @@ StandardizationMetadata(
     in_toto_attestation_id: Optional[str] = None,     # Link metadata (Phase 2+)
     merkle_proof: Optional[Dict[str, Any]] = None     # Tree proof (Phase 3+)
 )
-```
+```text
 
 ## Standardization Guarantees
 
@@ -122,7 +122,7 @@ export SIGSTORE_ID_TOKEN=$(gh auth token)
 
 # Custom schema directory (default: ./schemas)
 export CODEX_SCHEMA_DIR=/path/to/schemas
-```
+```text
 
 ### GitHub Actions Integration
 
@@ -137,7 +137,7 @@ steps:
       CODEX_STANDARDIZATION_ENABLED: "true"
       CODEX_ENABLE_SIGNING: "true"
     run: python -m codex.cli archive store _codex_ file.py --reason "test" --by "${{ github.actor }}"
-```
+```text
 
 ## Compliance Mapping
 
@@ -215,7 +215,7 @@ pytest tests/archive/test_standardization.py -v
 python -m codex.cli archive validate-standardization \
   --check-schema-version \
   --check-signatures
-```
+```text
 
 ### Post-Deployment Verification
 
@@ -227,7 +227,7 @@ tail -1 .codex/evidence/archive_ops.jsonl | python -m json.tool | grep schemaVer
 # Verify signatures (if enabled)
 tail -1 .codex/evidence/archive_ops.jsonl | python -m json.tool | grep -A 3 standardizationMetadata
 # Should show signature field
-```
+```text
 
 ## CLI Commands
 
@@ -249,7 +249,7 @@ python -m codex.cli archive show-standardization-status
 #   ✅ SLSA_L3
 #   ✅ IN_TOTO_READY
 #   ✅ SAA_COMPLIANT
-```
+```text
 
 ### Validate Evidence Records
 
@@ -262,7 +262,7 @@ python -m codex.cli archive validate-standardization --check-signatures
 
 # Attempt repair (migrate v1→v2)
 python -m codex.cli archive validate-standardization --check-schema-version --repair
-```
+```text
 
 ### Migrate to v2 Schema
 
@@ -277,7 +277,7 @@ python -m codex.cli archive migrate-evidence-to-v2
 # ✅ Migration complete: 1234 records converted
 #    v1 records: 0
 #    v2 records: 1234
-```
+```text
 
 ## FAQ
 

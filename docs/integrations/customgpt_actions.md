@@ -7,7 +7,7 @@ This integration exposes minimal HTTP endpoints for CustomGPT **Actions** to:
 ```bash
 python3 tools/actions_server.py
 # Server at http://localhost:8010
-```
+```text
 Then load `actions/openapi.yaml` into your CustomGPT Action configuration.
 
 ### Security

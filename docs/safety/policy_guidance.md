@@ -37,7 +37,7 @@ rules:
         - "AKIA[0-9A-Z]{16}"         # raw regex
         - pattern: "(?i)api[-_]?key\\s*[:=]"  # regex + inline flags
           flags: [IGNORECASE]
-```
+```text
 Key points:
 
 * Omit `applies_to` to target both prompts and outputs.
@@ -77,13 +77,13 @@ Example Hydra override:
 ```bash
 python -m codex_ml.cli.train training.safety.moderation.enabled=true \
   training.safety.moderation.audit_log=artifacts/safety/moderation.ndjson
-```
+```text
 
 The CLI also exposes the adapter. To moderate prompts and outputs offline:
 
 ```bash
 python -m codex_ml.cli.infer --prompt "hello" --moderation --moderation-audit-log artifacts/safety/moderation.ndjson
-```
+```text
 
 ## Logging & auditing
 

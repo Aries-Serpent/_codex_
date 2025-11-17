@@ -9,35 +9,35 @@ export CODEX_ARCHIVE_URL=sqlite:///./.codex/archive.sqlite
 export CODEX_EVIDENCE_DIR=.codex/evidence
 export CODEX_ACTOR="$USER"
 mkdir -p "$CODEX_EVIDENCE_DIR" dist/ work/
-```
+```text
 
 ## Create a manifest
 ```bash
 python -m codex.cli release init-manifest
 # edit release.manifest.json (set tombstones, paths, modes, template_vars)
-```
+```text
 
 ## Pack
 ```bash
 python -m codex.cli release pack --staging work/release_staging --out dist/codex-release.tar.gz
 # emits dist/release.manifest.lock.json (sha256-locked)
-```
+```text
 
 ## Verify
 ```bash
 python -m codex.cli release verify dist/codex-release.tar.gz
-```
+```text
 
 ## Unpack (target)
 ```bash
 python -m codex.cli release unpack dist/codex-release.tar.gz --dest /opt/codex/app
-```
+```text
 
 ### Evidence
 Every PACK/VERIFY/UNPACK appends JSONL to:
 ```text
 .codex/evidence/archive_ops.jsonl
-```
+```text
 
 ## Notes & Guardrails
 - **No scripts executed** during unpack unless `--allow-scripts` is passed (not recommended).

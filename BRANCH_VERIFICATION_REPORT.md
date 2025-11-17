@@ -39,7 +39,7 @@ All Python source files in `src/`, `tests/`, and root directory successfully com
 **Command Run**:
 ```bash
 python -m py_compile <all_python_files>
-```
+```text
 
 **Result**: ✅ All files valid
 
@@ -75,7 +75,7 @@ python -m py_compile <all_python_files>
 ```bash
 ruff check . --fix
 ruff check . --fix --unsafe-fixes  # For additional 486 hidden fixes
-```
+```text
 
 ---
 
@@ -104,7 +104,7 @@ ruff check . --fix --unsafe-fixes  # For additional 486 hidden fixes
 **Command to Fix**:
 ```bash
 black .
-```
+```text
 
 ---
 
@@ -126,12 +126,12 @@ black .
 
 #### Sample Errors
 
-```
+```text
 AGENTS.md:37: ERROR — Missing language tag for fenced block
 AGENTS.md:423: ERROR — Missing language tag for fenced block
 docs/plans/Phase0_ExecutiveDashboard.md:919: ERROR — EOF while inside a fenced block
 IMDS_IMPLEMENTATION_SUMMARY.md:82: ERROR — nested code fence detected (outer=3, inner=3)
-```
+```text
 
 **Impact**: The fence validation tool (`tools/validate_fences.py --strict-inner`) exits with code 1, which would fail CI/CD pipelines that enforce this check.
 
@@ -164,7 +164,7 @@ IMDS_IMPLEMENTATION_SUMMARY.md:82: ERROR — nested code fence detected (outer=3
 **Recommendation**: Run via nox session when dependencies available:
 ```bash
 nox -s typecheck
-```
+```text
 
 ---
 
@@ -255,7 +255,7 @@ isort .
 ruff check .
 black --check .
 isort --check-only .
-```
+```text
 
 **Estimated Time**: 30-45 minutes to run and verify
 
@@ -397,22 +397,22 @@ files = list(Path('src').rglob('*.py')) + list(Path('tests').rglob('*.py'))
 for f in files:
     py_compile.compile(str(f), doraise=True)
 "
-```
+```text
 
 ### Code Quality Check
 ```bash
 ruff check . --statistics
-```
+```text
 
 ### Formatting Check
 ```bash
 black --check .
-```
+```text
 
 ### Fence Validation
 ```bash
 python tools/validate_fences.py --strict-inner
-```
+```text
 
 ---
 

@@ -44,7 +44,7 @@ Next Steps:
 - Validate against readiness.schema.json.
 - Commit refreshed artifacts.
 
-```
+```text
 
 ---
 _Generated with `scripts/survey.sh` • R = α·E + β·T + γ·D (α+β+γ=1)_

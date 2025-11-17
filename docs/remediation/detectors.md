@@ -11,7 +11,7 @@ def detect(file_index: dict) -> dict:
       "required_patterns":[...],
       "meta":{}
     }
-```
+```text
 
 Quality checks:
 - Deterministic: no random ordering; sort outputs.

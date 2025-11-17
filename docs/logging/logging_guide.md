@@ -9,7 +9,7 @@ This repository uses **local-only** logging:
 
 ```bash
 export MLFLOW_TRACKING_URI="file:/absolute/path/to/mlruns"
-```
+```text
 
 References: MLflow file backend / tracking URIs. ([mlflow.org][1])
 
@@ -21,7 +21,7 @@ Use PyTorch’s `SummaryWriter`:
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter("./runs")
 writer.add_scalar("loss", 0.123, 1)
-```
+```text
 
 Reference: PyTorch TensorBoard utilities. ([docs.pytorch.org][2])
 

@@ -2,7 +2,7 @@
 
 ```python
 print("hello")
-```
+```text
 
 ~~~text
 hi

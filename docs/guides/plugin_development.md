@@ -24,7 +24,7 @@ def load_my_dataset(path: str, *, seed: int = 1234) -> dict[str, list[dict[str, 
 
     records = _read_custom_format(path)
     return split_dataset(records, ratios=(0.8, 0.1, 0.1), seed=seed)
-```
+```text
 
 ## Testing your plugin
 

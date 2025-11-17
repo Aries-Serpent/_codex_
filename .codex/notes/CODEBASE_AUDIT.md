@@ -96,7 +96,7 @@
 +    cfg = cfg or {"r": 8, "lora_alpha": 16, "lora_dropout": 0.05, "bias": "none"}
 +    config = LoraConfig(task_type="CAUSAL_LM", **cfg)
 +    return get_peft_model(model, config)
-```
+```text
 
 *Why*: enables parameter-efficient fine-tuning.
 
@@ -121,7 +121,7 @@
 +        record_metrics("epoch_end", ep, m, cfg_hash)
 +        if accum > 1:
 +            m["grad_accum"] = accum
-```
+```text
 
 *Why*: exposes gradient accumulation metadata for reproducibility.
 
@@ -144,7 +144,7 @@
 +  enable: false  # set true to record runs locally
 +  tracking_uri: ./mlruns  # created automatically
 +  experiment: codex-experiments
-```
+```text
 
 *Why*: clarifies local tracking expectations.
 
@@ -193,6 +193,6 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 `tools/apply_interfaces.py` appends these blocks to `.codex/errors.ndjson`; new automation should adopt the same pattern.

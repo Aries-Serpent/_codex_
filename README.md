@@ -41,7 +41,7 @@ SKIP_OPTIONAL=1 nox -s docs_build
 
 # Strict mode (fail if any modules missing - for CI)
 FAIL_ON_MISSING=1 bash scripts/docs_build.sh
-```
+```text
 
 **Build Modes:**
 - **Default**: Includes all available modules (core + optional ML when installed)
@@ -56,12 +56,12 @@ pip install -e .[ml]
 
 # Build full documentation
 nox -s docs_build
-```
+```text
 
 View the generated docs at `artifacts/docs/api/index.html` or serve locally:
 ```bash
 python -m http.server -d artifacts/docs/api 8000
-```
+```text
 
 ### New to _codex_?
 
@@ -98,7 +98,7 @@ pytest -q tests/status/test_example_report_schema.py
 
 # Validate configs
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
-```
+```text
 
 ## Local Gates & Status Reports
 
@@ -110,7 +110,7 @@ This repository ships **local-only** quality gates (no CI) and a local status re
 Quick start:
 ```bash
 python tools/status_report.py --summary samples/assistant_message_summary.sample.json --selected 3 --out STATUS_REPORT.md
-```
+```text
 
 ### Repository Status Audit
 
@@ -132,7 +132,7 @@ codex-status-audit --skip-audit
 
 # Compare against baseline
 codex-status-audit --baseline audit_artifacts/capabilities_scored.json.baseline
-```
+```text
 
 The new JSON-based status update generator provides:
 - Automated repository analysis
@@ -153,7 +153,7 @@ You can generate a local selection recommendation across 1–4 assistant variant
 python tools/selection_report.py \
   --summary samples/assistant_message_summary.sample.json \
   --out SELECTION_REPORT.md
-```
+```text
 
 This runs the evaluator and enforces required selection-guard signals, then explains the tie-break.
 
@@ -168,7 +168,7 @@ codex reasoning-templates list
 codex-train +reasoning=baseline curriculum.phase_schedule=starter \
   logging.reasoning_trace=true training.output_dir=artifacts/runs/reasoning-starter
 codex evaluate --config configs/evaluation/reasoning.yaml --metrics-only
-```
+```text
 
 ### Offline-first environment bootstrap
 
@@ -195,7 +195,7 @@ python tools/selection_report.py --summary samples/assistant_message_summary.sam
 python tools/status_report.py    --summary samples/assistant_message_summary.sample.json --selected 3 \
                                  --template docs/templates/status_update.md \
                                  --branch my/branch --pr 1234 --verbose --save-logs --out STATUS_REPORT.md
-```
+```text
 
 ---
 
@@ -282,7 +282,7 @@ filename:README.md
 
 # Find Mermaid diagrams
 path:docs/ "mermaid" in:file
-```
+```text
 
 ### Quick Navigation
 

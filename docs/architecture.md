@@ -31,7 +31,7 @@ classDiagram
     TrainingEngine --> Checkpointing
     TrainingEngine --> Logging
     TrainingEngine --> Safety
-```
+```text
 
 ## Runtime flow
 
@@ -45,7 +45,7 @@ flowchart LR
     F --> G[Logging]
     G --> H[Experiment Tracking]
     E --> I[Checkpoint Manager]
-```
+```text
 
 **Legend**
 

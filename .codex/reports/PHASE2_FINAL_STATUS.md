@@ -110,7 +110,7 @@ tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_auto_de
 tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_migrate_v1_to_v2 PASSED
 
 ============================== 10 passed in 0.24s ==============================
-```
+```text
 
 **Result**: ✅ 100% pass rate
 
@@ -131,7 +131,7 @@ Compliance:
   ✅ SLSA_L3
   ✅ IN_TOTO_READY
   ✅ SAA_COMPLIANT
-```
+```text
 
 **Result**: ✅ Commands functional
 
@@ -186,14 +186,14 @@ Compliance:
 
 ## Git Commit History
 
-```
+```text
 9aa2fef (HEAD -> copilot/sub-pr-2094) Add CLI commands and comprehensive standardization documentation
 b2fda18 Add Phase 2 implementation summary and completion report
 3ec0646 Add Phase 2 documentation: ADRs, standardization framework, and guides
 41deb14 Add Phase 2 archive standardization foundation: schemas, modules, migrations, tests
 cb04ad9 Add missing scripts/status/render_monthly_html.py CLI
 9935c7c Initial plan
-```
+```text
 
 **Total Commits**: 5  
 **Files Changed**: 21 created, 1 modified  
@@ -313,7 +313,7 @@ cb04ad9 Add missing scripts/status/render_monthly_html.py CLI
 
 ## Metrics Summary
 
-```
+```text
 📊 PHASE 2 STANDARDIZATION - FINAL METRICS
 
 Files:
@@ -351,7 +351,7 @@ Compliance:
 
 Backward Compatibility: 100% ✅
 Breaking Changes: 0 ✅
-```
+```text
 
 ---
 

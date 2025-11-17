@@ -29,6 +29,6 @@ Compare against this baseline in CI/CD:
 python scripts/space_traversal/audit_runner.py diff \
   --old baseline/capabilities_scored_post_remediation.json \
   --new audit_artifacts/capabilities_scored.json
-```
+```text
 
 Fail build if any score drops >0.02 from baseline.

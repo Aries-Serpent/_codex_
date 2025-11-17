@@ -144,7 +144,7 @@ nox -s lint
 
 # Type checking (when available)
 nox -s typecheck
-```
+```text
 
 ---
 

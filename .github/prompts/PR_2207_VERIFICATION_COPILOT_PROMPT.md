@@ -10,37 +10,37 @@ You are tasked with comprehensive pre-merge verification for **PR #2207 ("0D to 
 Command: yamllint .github/workflows/
 Expected: "All files are valid YAML"
 Failure Impact: BLOCK MERGE
-```
+```text
 #### Gate 2: Security Scan
 ```bash
 Command: bandit -r src/ --severity-level=MEDIUM
 Expected: "No HIGH/CRITICAL issues"
 Failure Impact: BLOCK MERGE
-```
+```text
 #### Gate 3: Coverage Check
 ```bash
 Command: pytest --cov=src --cov-report=term-missing
 Expected: "Coverage >= 96%"
 Failure Impact: BLOCK MERGE (or adjust threshold with approval)
-```
+```text
 #### Gate 4: Lock File Consistency
 ```bash
 Command: grep -E "(torch|cuda|tensorflow)" uv.lock
 Expected: "0 matches"
 Failure Impact: BLOCK MERGE
-```
+```text
 #### Gate 5: Merge Conflicts
 ```bash
 Command: gh pr view 2207 --json mergeable
 Expected: "mergeable: true"
 Failure Impact: BLOCK MERGE
-```
+```text
 #### Gate 6: CODEOWNERS Coverage
 ```bash
 Command: Verify all 126 changed files have owner assignment
 Expected: "100% coverage"
 Failure Impact: BLOCK MERGE
-```
+```text
 ### 🔐 SECURITY CHECKLIST
 - ☐ **Secrets Detection:** No new API keys, tokens, or credentials exposed
   - Command: `detect-secrets scan --baseline .secrets.baseline`
@@ -126,38 +126,38 @@ Obtain explicit approval from:
 yamllint .github/workflows/ .github/*.yml
 gh pr view 2207 --json mergeable,mergeStateStatus
 gh pr checks 2207
-```
+```text
 #### Step 2: Security Validation (15 minutes)
 ```bash
 bandit -r src/ -f json -o bandit-report.json
 detect-secrets scan --baseline .secrets.baseline
 pip-audit
 grep -E "(torch|cuda)" uv.lock
-```
+```text
 #### Step 3: Test Coverage (20 minutes)
 ```bash
 pytest --cov=src --cov-report=term-missing
 cat .github/coverage_threshold.txt
 nox -s lint && nox -s type_check
-```
+```text
 #### Step 4: Dependency Validation (10 minutes)
 ```bash
 uv sync --check
 pip install --dry-run -r requirements.txt
 test -f .codex/evidence/dependency_ops.jsonl
-```
+```text
 #### Step 5: Documentation Review (5 minutes)
 ```bash
 grep -E "^(#|##)" .github/Copilot.md
 test -f .github/docs/AGENTS_PR2224_Review_Comments_Response_Copilot.md
-```
+```text
 #### Step 6: CODEOWNERS Verification (3 minutes)
 ```bash
 git diff HEAD~102..HEAD --name-only | \
   while read file; do \
     grep -q "^$file" .github/CODEOWNERS || echo "ORPHANED: $file"; \
   done
-```
+```text
 ### ✅ MERGE AUTHORIZATION DECISION
 **Merge if ALL gates pass:**
 - ✅ Workflow validation: PASS
@@ -194,6 +194,6 @@ Approved By:
 - DevOps: _________________
 Merge Time: 2025-11-14 HH:MM:SS UTC
 Merge Commit: ___________________________
-```
+```text
 ---
 **Copilot, proceed with comprehensive verification using the checklist and execution steps above. Generate detailed reports for any findings and provide clear PASS/FAIL status for each gate.**

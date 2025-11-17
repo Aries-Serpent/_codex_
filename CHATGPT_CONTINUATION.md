@@ -14,7 +14,7 @@ Every chunk begins with a standardized header:
 
 ```text
 —8<—[CHUNK {i}/{N} | topic: {section} | tokens≈{t}]
-```
+```text
 
 **Parameters:**
 - `{i}` - Current chunk number (1-indexed)
@@ -25,7 +25,7 @@ Every chunk begins with a standardized header:
 **Example:**
 ```text
 —8<—[CHUNK 1/3 | topic: Repository Inventory | tokens≈4500]
-```
+```text
 
 ### Chunk Footer Format
 
@@ -33,7 +33,7 @@ If more content remains, the chunk ends with a continuation footer:
 
 ```text
 ⟂ MORE:true | NEXT_CURSOR:{opaque_cursor} | NEXT_STEPS:{bulleted-next}
-```
+```text
 
 **Parameters:**
 - `MORE:true` - Indicates continuation is required
@@ -46,7 +46,7 @@ If more content remains, the chunk ends with a continuation footer:
   - Generate SECURITY.md
   - Generate .github/dependabot.yml
   - Final PR plan
-```
+```text
 
 ### Final Chunk Footer
 
@@ -54,7 +54,7 @@ When all content has been emitted:
 
 ```text
 ⟂ MORE:false | STATUS:COMPLETE
-```
+```text
 
 ### Resume Prompt Format
 
@@ -62,12 +62,12 @@ To resume from a continuation point, use:
 
 ```text
 Resume from NEXT_CURSOR:{opaque_cursor} and continue {topic}
-```
+```text
 
 **Example:**
 ```text
 Resume from NEXT_CURSOR:FILES_SECURITY_MD and continue generating missing files
-```
+```text
 
 ## Implementation Guidelines
 
@@ -104,7 +104,7 @@ Cursors should be:
 **Recommended Pattern:**
 ```text
 {SECTION_ID}_{ARTIFACT_ID}
-```
+```text
 
 Examples:
 - `INV_DIRECTORY_LISTING` - Resume at directory listing
@@ -173,7 +173,7 @@ For automated agents or continuous generation, the assistant can self-resume by 
 **Resume Prompt:**
 ```text
 Resume from NEXT_CURSOR:INV_SRC_DIRECTORY and continue repository inventory
-```
+```text
 
 **Chunk 2:**
 - Emit: `—8<—[CHUNK 2/3 | topic: Source Code Inventory | tokens≈4500]`
@@ -238,7 +238,7 @@ def parse_footer(text):
 def format_resume_prompt(cursor, topic):
     """Generate standardized resume prompt."""
     return f"Resume from NEXT_CURSOR:{cursor} and continue {topic}"
-```
+```text
 
 ---
 

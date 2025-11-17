@@ -28,7 +28,7 @@ xdg-open artifacts/docs/api/index.html
 
 # On Windows
 start artifacts/docs/api/index.html
-```
+```text
 
 **Option 2: Local HTTP server**
 ```bash
@@ -36,7 +36,7 @@ start artifacts/docs/api/index.html
 python -m http.server -d artifacts/docs/api 8000
 
 # Navigate to http://localhost:8000
-```
+```text
 
 ## Building Documentation
 
@@ -58,7 +58,7 @@ python tools/build_api_docs.py
 python tools/build_api_docs.py --verbose
 python tools/build_api_docs.py --skip-optional  # Skip heavy dependencies
 python tools/build_api_docs.py --output-dir /custom/path
-```
+```text
 
 ### Environment Variables
 
@@ -66,7 +66,7 @@ python tools/build_api_docs.py --output-dir /custom/path
 
 ## Directory Structure
 
-```
+```text
 artifacts/docs/
 ├── README.md          # This file
 └── api/               # Auto-generated API reference (git-ignored)
@@ -78,7 +78,7 @@ artifacts/docs/
             ├── session_logger.html
             ├── query_logs.html
             └── ...
-```
+```text
 
 ## Maintenance
 
@@ -100,7 +100,7 @@ MODULES_TO_DOCUMENT = [
     "codex.logging",
     "your_new_module",  # Add here
 ]
-```
+```text
 
 For modules requiring optional dependencies:
 
@@ -109,7 +109,7 @@ OPTIONAL_MODULES = [
     "codex_ml",  # May require torch and other heavy dependencies
     "your_optional_module",  # Add here
 ]
-```
+```text
 
 ## Troubleshooting
 
@@ -119,7 +119,7 @@ The build script will automatically install pdoc3. If this fails:
 
 ```bash
 pip install pdoc3
-```
+```text
 
 ### Import Errors During Build
 
@@ -127,7 +127,7 @@ Use `--skip-optional` to exclude modules with heavy dependencies:
 
 ```bash
 python tools/build_api_docs.py --skip-optional
-```
+```text
 
 ### Empty or Missing Documentation
 

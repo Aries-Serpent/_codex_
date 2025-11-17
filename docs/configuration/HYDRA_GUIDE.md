@@ -19,7 +19,7 @@ configs/
 └── env/
     ├── dev.yaml
     └── prod.yaml
-```
+```text
 
 ## Base Config Example
 ```yaml
@@ -36,7 +36,7 @@ logging:
 paths:
   data_dir: data/
   artifacts_dir: artifacts/
-```
+```text
 
 ## Experiment Overrides
 ```yaml
@@ -46,14 +46,14 @@ trainer:
 
 logging:
   level: DEBUG
-```
+```text
 
 ## Environment Overrides (Optional)
 ```yaml
 # configs/base/environment/dev.yaml
 paths:
   data_dir: data/dev/
-```
+```text
 
 ## Composition Order
 1) base.yaml
@@ -65,7 +65,7 @@ paths:
 Recommended CLI flags (if a tool supports them):
 ```bash
 python -m codex_ml.cli.config trainer.seed=42 logging.level=WARNING
-```
+```text
 
 ### Typer bridge and offline defaults
 
@@ -87,7 +87,7 @@ Run the focused check with:
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/codex_ml/test_cli_train_config_bridge.py -q
-```
+```text
 
 ## Programmatic Merge (Generic YAML)
 ```python
@@ -111,7 +111,7 @@ env_cfg = load_yaml(Path("configs/base/environment/dev.yaml"))
 exp = load_yaml(Path("configs/experimental/experiment.yaml"))
 
 cfg = merge(base, merge(env_cfg, exp))
-```
+```text
 
 ## Environment Variable Conventions
 - TRAINER_SEED → trainer.seed
@@ -122,7 +122,7 @@ Example:
 ```bash
 export TRAINER_BATCH_SIZE=128
 python train.py
-```
+```text
 
 ## Determinism Tips
 - Fix random seeds across libs (torch, numpy, random).
@@ -159,7 +159,7 @@ def apply_env_overrides(cfg: dict) -> dict:
         new.setdefault("trainer", {})
         new["trainer"]["seed"] = int(os.environ["TRAINER_SEED"])
     return new
-```
+```text
 
 ## Testing Guidance
 - Test YAML parseability.

@@ -152,14 +152,14 @@ The 0D_base_ branch has achieved **98% merge readiness**, exceeding the 70% thre
 from typing import List, Dict, Optional
 def func(data: List[Dict[str, Any]]) -> Optional[str]:
     ...
-```
+```text
 
 **After**:
 ```python
 from typing import Optional
 def func(data: list[dict[str, Any]]) -> Optional[str]:
     ...
-```
+```text
 
 **Impact**:
 - Issues: 366 → 212 (42% reduction)

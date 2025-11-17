@@ -11,14 +11,14 @@
 ### Command Executed
 ```bash
 nox -s tests-3.12
-```
+```text
 
 ### Result: FAILED - Disk Space Exhaustion
 
 **Error**:
-```
+```text
 ERROR: Could not install packages due to an OSError: [Errno 28] No space left on device
-```
+```text
 
 ### Disk Analysis
 - **Total Disk**: 72GB
@@ -70,7 +70,7 @@ def tests(session: nox.Session):
     _install_requirements(session, REQ_DEV)  # <- Installs requirements-dev.txt
     _show_vendor_scan(session)
     session.run("pytest", "-q", "--disable-warnings", "-m", "not requires_torch", external=True)
-```
+```text
 
 **Problem**: `requirements-dev.txt` includes ML dependencies
 - Line 32: `transformers>=4.38.0`
@@ -87,7 +87,7 @@ def tests(session: nox.Session):
 # Key Goals:
 #   * Minimal baseline install (no heavy ML / eval deps unless explicitly requested).
 #   * Separate ML, evaluation, notebook, and hygiene verification sessions.
-```
+```text
 
 **Actual Implementation**: 
 - `requirements-dev.txt` contains ML dependencies
@@ -149,7 +149,7 @@ bandit>=1.7.5
 torch>=2.1
 transformers>=4.38.0
 accelerate>=0.29.0
-```
+```text
 
 **Update nox sessions**:
 ```python
@@ -157,7 +157,7 @@ accelerate>=0.29.0
 def tests(session: nox.Session):
     _install_requirements(session, REQ_BASE)  # Only base deps
     session.run("pytest", "-m", "not requires_torch")
-```
+```text
 
 **Estimated Effort**: 2-3 hours
 **Impact**: Tests can run in 2-3 GB instead of 15 GB
@@ -193,7 +193,7 @@ def tests(session: nox.Session):
 # Run only non-ML tests with minimal dependencies
 pip install pytest pytest-cov
 pytest -m "not requires_torch" -q
-```
+```text
 
 **Pros**: Can run immediately with <1GB
 **Cons**: Doesn't test ML functionality
@@ -203,7 +203,7 @@ pytest -m "not requires_torch" -q
 ```bash
 # Skip virtual env, use system packages if pre-installed
 pytest -q tests/
-```
+```text
 
 **Pros**: No installation needed
 **Cons**: May have version mismatches
@@ -224,7 +224,7 @@ Security scans also require dependencies:
 nox -s sec
 # Attempts to install bandit, semgrep, pip-audit
 # Plus src/ dependencies for import analysis
-```
+```text
 
 **Disk Space Needed**: ~5 GB
 **Current Available**: 3.9 GB
@@ -240,7 +240,7 @@ pip install bandit semgrep pip-audit --user
 bandit -r src/ -c bandit.yaml
 semgrep scan --config semgrep_rules/ src/
 pip-audit  # Scans installed packages
-```
+```text
 
 **Estimated Space**: <500 MB
 

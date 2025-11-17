@@ -21,7 +21,7 @@ To restore this file from the archive:
 
 ```bash
 python -m codex.cli archive restore 7b799ac3-9da9-4d47-9d51-9e052c74a9d1 --out .github/workflows/pages_publish_tiles.yml
-```
+```text
 
 ## Replacement
 
@@ -46,7 +46,7 @@ The archival operation was logged in `.codex/evidence/archive_ops.jsonl`:
   "tombstone": "7b799ac3-9da9-4d47-9d51-9e052c74a9d1",
   "ts": "2025-11-02T23:29:34Z"
 }
-```
+```text
 
 ## Policy Reference
 

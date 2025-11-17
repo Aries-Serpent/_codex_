@@ -19,7 +19,7 @@ config = DifferentialPrivacyConfig(
     noise_multiplier=1.2,
     max_grad_norm=1.0,
 )
-```
+```text
 
 The training loop accepts either a `DifferentialPrivacyConfig` instance or a dictionary loaded from your Hydra
 configuration. When `enabled=True`, Opacus wraps the model, optimizer, and data loader, ensuring gradients are
@@ -38,7 +38,7 @@ differential_privacy:
   delta: 1e-5
   noise_multiplier: 1.2
   max_grad_norm: 1.0
-```
+```text
 
 The CLI automatically forwards the `differential_privacy` section to the training loop. Alternatively set
 `CODEX_DP_ENABLED=1` and optional overrides (`CODEX_DP_EPSILON`, `CODEX_DP_NOISE_MULTIPLIER`, etc.) to configure DP
@@ -55,7 +55,7 @@ from codex_ml.safety.redaction import SecretRedactor
 redactor = SecretRedactor()
 redacted = redactor.redact("api_key=sk-1234567890")
 # -> "api_key=[REDACTED_API_KEY]"
-```
+```text
 
 Nested dictionaries and lists are supported through `redact_dict`, making it safe to redact configuration payloads
 before logging.

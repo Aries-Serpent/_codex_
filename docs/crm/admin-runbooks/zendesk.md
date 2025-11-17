@@ -11,13 +11,13 @@ Export per-environment credentials (never commit secrets):
 export ZENDESK_DEV_SUBDOMAIN=...
 export ZENDESK_DEV_EMAIL=...
 export ZENDESK_DEV_TOKEN=...
-```
+```text
 
 Validate:
 ```bash
 python -m codex.cli zendesk env-check --env dev
 python -m codex.cli zendesk deps-check
-```
+```text
 
 ## Dry-run → Plan → Apply
 
@@ -29,7 +29,7 @@ python -m codex.cli zendesk plan diff.json > plan.json
 python -m codex.cli zendesk apply triggers plan.json --env dev --dry-run
 # Apply (mutations + version bump)
 python -m codex.cli zendesk apply triggers plan.json --env dev
-```
+```text
 
 ## Evidence & Metrics
 
@@ -38,4 +38,4 @@ post-change review. After applies, consult metrics:
 
 ```bash
 python -m codex.cli zendesk metrics
-```
+```text

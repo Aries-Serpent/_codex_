@@ -48,7 +48,7 @@ Repository-root
 │     └─ [NEW] MSP_Capability_Audit_File_Map.md
 ├─ [UPDATE] space.mk
 └─ [UPDATE] audit_run_manifest.json (runtime) — now includes missing_detectors in metadata
-```
+```text
 Scope alignment with your selections:
 - Baseline: artifact-based with first-run bootstrap
 - Gating: hard-fail on low maturity AND generate PR summary text; fail on missing-detector

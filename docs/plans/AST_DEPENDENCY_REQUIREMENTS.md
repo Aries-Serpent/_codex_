@@ -40,7 +40,7 @@ ast = [
     "tree-sitter-yaml>=0.20.0",
     "sqlparse>=0.4.0",       # SQL parsing (optional)
 ]
-```
+```text
 
 ---
 
@@ -73,7 +73,7 @@ pip install libcst>=1.0.0 radon>=6.0.0 parso>=0.8.0
 
 # Verify installation
 python -c "import libcst, radon, parso; print('✅ Core AST deps installed')"
-```
+```text
 
 ### Phase 2: Optional Dependencies
 
@@ -83,7 +83,7 @@ pip install tree-sitter>=0.20.0 tree-sitter-python>=0.20.0
 
 # Verify installation
 python -c "import tree_sitter; print('✅ tree-sitter installed')"
-```
+```text
 
 ### Phase 3: Validation
 
@@ -96,7 +96,7 @@ pip check
 
 # Verify no security vulnerabilities
 pip-audit || echo "Install pip-audit: pip install pip-audit"
-```
+```text
 
 ---
 
@@ -112,7 +112,7 @@ pip download libcst radon parso tree-sitter tree-sitter-python   -d /tmp/ast_dep
 
 # Install from local cache
 pip install --no-index --find-links=/tmp/ast_deps/   libcst radon parso tree-sitter tree-sitter-python
-```
+```text
 
 ### Grammar Files
 
@@ -125,7 +125,7 @@ git clone https://github.com/tree-sitter/tree-sitter-yaml
 
 # Build grammars (requires C compiler)
 # This should be done during package build, not at runtime
-```
+```text
 
 ---
 
@@ -170,7 +170,7 @@ except Exception as e:
 
 print("\n✅ All AST dependencies validated")
 EOF
-```
+```text
 
 ---
 

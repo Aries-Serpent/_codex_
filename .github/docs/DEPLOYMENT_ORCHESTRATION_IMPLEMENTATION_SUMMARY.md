@@ -55,7 +55,7 @@ This document provides a comprehensive summary of the autonomous deployment orch
 - ✅ Full workflow execution
 
 **Test Execution**:
-```
+```text
 ============================= test session starts ==============================
 platform linux -- Python 3.12.3, pytest-9.0.1, pluggy-1.6.0
 collected 23 items
@@ -63,7 +63,7 @@ collected 23 items
 tests/test_deployment_orchestrator.py .......................            [100%]
 
 ============================== 23 passed in 0.54s ==============================
-```
+```text
 
 ### 3. Documentation
 
@@ -90,7 +90,7 @@ tests/test_deployment_orchestrator.py .......................            [100%]
 
 ### Workflow Phases
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                     DEPLOYMENT ORCHESTRATOR                      │
 └─────────────────────────────────────────────────────────────────┘
@@ -161,11 +161,11 @@ tests/test_deployment_orchestrator.py .......................            [100%]
                               │
                               ▼
                         ✅ COMPLETE
-```
+```text
 
 ### Data Flow
 
-```
+```text
 Input:
   --pr-number 2207
   --dry-run (optional)
@@ -184,13 +184,13 @@ Output Artifacts:
   ├── health_check_report_{pr}.json
   ├── deployment_summary_{pr}.md
   └── deployment_manifest_{pr}.json
-```
+```text
 
 ## Security Analysis
 
 ### Bandit Security Scan Results
 
-```
+```text
 Code scanned:
   Total lines of code: 611
   Total lines skipped (#nosec): 0
@@ -201,7 +201,7 @@ Run metrics:
     Low: 2
     Medium: 0
     High: 0
-```
+```text
 
 **Low Severity Issues** (Expected and Safe):
 1. **B404**: subprocess module import
@@ -216,10 +216,10 @@ Run metrics:
 
 ### CodeQL Analysis Results
 
-```
+```text
 Analysis Result for 'python'. Found 0 alerts:
 - python: No alerts found.
-```
+```text
 
 ✅ **No security vulnerabilities detected**
 
@@ -263,7 +263,7 @@ $ python scripts/deployment_orchestrator.py --pr-number 2207 --dry-run
 2025-11-14 21:05:59 - INFO - ================================================================================
 2025-11-14 21:05:59 - INFO - DEPLOYMENT ORCHESTRATION COMPLETED SUCCESSFULLY
 2025-11-14 21:05:59 - INFO - ================================================================================
-```
+```text
 
 ### Example 2: Actual Deployment
 
@@ -273,7 +273,7 @@ $ python scripts/deployment_orchestrator.py --pr-number 2207
 
 # Full deployment execution with real GitHub operations
 # Generates complete audit trail
-```
+```text
 
 ### Example 3: Custom Output Directory
 
@@ -282,7 +282,7 @@ $ python scripts/deployment_orchestrator.py \
     --pr-number 2207 \
     --dry-run \
     --output-dir /tmp/deployment-test
-```
+```text
 
 ## Generated Artifacts
 
@@ -318,7 +318,7 @@ $ python scripts/deployment_orchestrator.py \
   "workflow_run_id": null,
   "coverage_percentage": null
 }
-```
+```text
 
 ### Deployment Summary Example
 
@@ -339,7 +339,7 @@ $ python scripts/deployment_orchestrator.py \
   - security_scan: PASS
   - security_issues: 0
   ...
-```
+```text
 
 ## Integration Points
 
@@ -355,7 +355,7 @@ gh pr merge {pr_number} --merge
 # Workflow monitoring
 gh run list --workflow=post-merge-validation-optimized.yml
 gh run view {run_id} --json status,conclusion
-```
+```text
 
 ### Workflow Triggers
 

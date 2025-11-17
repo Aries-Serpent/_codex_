@@ -39,7 +39,7 @@ Address all review comments from PR #2229 to fix critical sudo blocking issues a
 
 **Fix**: Add privilege detection with graceful degradation
 
-````bash
+`````bash
 check_iptables() {
   section "iptables OUTPUT Chain Inspection"
   
@@ -125,7 +125,7 @@ check_iptables() {
 
 **Fix**: Apply same pattern as iptables
 
-```bash
+`````bash
 check_nftables() {
   section "nftables Inspection"
   
@@ -176,7 +176,7 @@ check_nftables() {
     log "No nftables rules referencing $IMDS_IP."
   fi
 }
-```
+```text
 
 ---
 
@@ -191,13 +191,13 @@ check_nftables() {
 
 ```bash
 ISSUE_REF="#2226"   # Can be overridden by config (issue_id)
-```
+```text
 
 **Fixed**:
 
 ```bash
 ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
-```
+```text
 
 **Impact**: Script becomes reusable for different issues without modification
 
@@ -216,7 +216,7 @@ ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
 > Script Version: 1.6 | Last Updated: 2025-11-14T23:14:07Z UTC
 
 ## Purpose
-```
+```text
 
 **Benefit**: Traceability between runbook and script versions
 
@@ -231,7 +231,7 @@ ISSUE_REF=""        # Set via config (issue_id) or environment; empty by default
 
 ```markdown
 If successful, return PR URL, issue comment URL, branch name used, and any follow-up tasks or limitations.
-```
+```text
 
 **Reason**: This is an internal automation instruction, not user-facing documentation
 
@@ -254,7 +254,7 @@ bash .github/scripts/imds_diagnostic.sh
 # - iptables/nftables sections show full output
 # - No "Skipping" warnings
 # - Script completes in < 30s
-```
+```text
 
 ### Test Case 2: Password-Required Sudo (Critical)
 
@@ -277,7 +277,7 @@ bash .github/scripts/imds_diagnostic.sh
 # - Sets metrics: iptables_check_skipped=1, iptables_skip_reason="no_passwordless_sudo"
 # - Continues with other checks
 # - Generates diagnostic report
-```
+```text
 
 ### Test Case 3: Root User
 
@@ -290,7 +290,7 @@ sudo bash .github/scripts/imds_diagnostic.sh
 # - Full iptables/nftables output
 # - No warnings
 # - Script completes quickly
-```
+```text
 
 ### Test Case 4: No Sudo Command
 
@@ -306,7 +306,7 @@ bash .github/scripts/imds_diagnostic.sh
 # - Metrics: iptables_skip_reason="no_sudo_command"
 # - Script continues with other checks
 # - No errors or blocking
-```
+```text
 
 ### Test Case 5: CI/CD Environment
 
@@ -331,7 +331,7 @@ jobs:
         with:
           name: imds-diagnostic-results
           path: diagnostic_results.txt
-```
+```text
 
 **Expected**:
 
@@ -430,7 +430,7 @@ TEST RESULTS:
 Fixes: chatgpt-codex-connector comments on PR #2229
 Closes: #2229 review thread
 "
-```
+```text
 
 ---
 
@@ -461,7 +461,7 @@ Closes: #2229 review thread
 ### Test Results
 
 **Test Case 2 (Critical - Password-Required Sudo)**:
-```
+````text
 $ bash .github/scripts/imds_diagnostic.sh
 
 [2025-11-15T04:43:27Z] ----------------------------------------
@@ -472,16 +472,16 @@ $ bash .github/scripts/imds_diagnostic.sh
 [... continues with other checks ...]
 
 [2025-11-15T04:43:42Z] ✅ Diagnostic completed in 15s
-```
+```text
 
 **Test Case 5 (CI/CD Pipeline)**:
-```
+```text
 Run bash .github/scripts/imds_diagnostic.sh
   Skipping iptables inspection: requires passwordless sudo or root
   Skipping nftables inspection: requires passwordless sudo or root
   [... other checks complete ...]
   ✅ Job completed in 45s
-```
+```text
 
 ### Metrics
 
@@ -538,7 +538,7 @@ All P1-P3 issues addressed. Script now works reliably across all environments wi
 
 `````
 
-```markdown name=.github/docs/AGENTS_IMDS_Sudo_Fix_Validation_Tests.md
+`````markdown name=.github/docs/AGENTS_IMDS_Sudo_Fix_Validation_Tests.md
 # [Validation]: IMDS Sudo Blocking Fix — Comprehensive Test Suite
 > Generated: 2025-11-15 04:43:27 | Author: mbaetiong
 
@@ -590,13 +590,13 @@ chmod 0440 /etc/sudoers.d/imds-diagnostic
 
 **Execution**:
 
-```bash
+`````bash
 bash .github/scripts/imds_diagnostic.sh
-```
+```text
 
 **Expected Output**:
 
-```
+```text
 [2025-11-15T04:43:27Z] ----------------------------------------
 [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [2025-11-15T04:43:27Z] Passwordless sudo available for iptables
@@ -606,7 +606,7 @@ bash .github/scripts/imds_diagnostic.sh
 [2025-11-15T04:43:28Z] nftables Inspection
 [2025-11-15T04:43:28Z] Passwordless sudo available for nftables
 [2025-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
-```
+```text
 
 **Success Criteria**:
 
@@ -628,18 +628,18 @@ sudo rm -f /etc/sudoers.d/imds-diagnostic
 
 # Verify password required
 sudo -n true 2>/dev/null && echo "FAIL: Passwordless sudo still active" || echo "OK: Password required"
-```
+```text
 
 **Execution**:
 
 ```bash
 # Run as non-root user
 bash .github/scripts/imds_diagnostic.sh
-```
+```text
 
 **Expected Output**:
 
-```
+```text
 [2025-11-15T04:43:27Z] ----------------------------------------
 [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [2025-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: requires passwordless sudo or root
@@ -649,7 +649,7 @@ bash .github/scripts/imds_diagnostic.sh
 [2025-11-15T04:43:28Z] nftables Inspection
 [2025-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: requires passwordless sudo or root
 [2025-11-15T04:43:28Z] ℹ️  To enable nftables checks, configure passwordless sudo or run as root
-```
+```text
 
 **Success Criteria**:
 
@@ -664,7 +664,7 @@ bash .github/scripts/imds_diagnostic.sh
 
 **Before Fix Behavior** (regression check):
 
-```
+```text
 [2025-11-15T04:43:27Z] ----------------------------------------
 [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [sudo] password for user: ▂
@@ -672,7 +672,7 @@ bash .github/scripts/imds_diagnostic.sh
                             HUNG HERE (no visible prompt)
                             Never completes
                             Ctrl+C required
-```
+```text
 
 ---
 
@@ -683,17 +683,17 @@ bash .github/scripts/imds_diagnostic.sh
 ```bash
 # Run as root
 sudo -i
-```
+```text
 
 **Execution**:
 
 ```bash
 bash /path/to/.github/scripts/imds_diagnostic.sh
-```
+```text
 
 **Expected Output**:
 
-```
+```text
 [2025-11-15T04:43:27Z] ----------------------------------------
 [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [2025-11-15T04:43:27Z] Running as root, direct iptables access available
@@ -703,7 +703,7 @@ bash /path/to/.github/scripts/imds_diagnostic.sh
 [2025-11-15T04:43:28Z] nftables Inspection
 [2025-11-15T04:43:28Z] Running as root, direct nftables access available
 [2025-11-15T04:43:28Z] No nftables rules referencing 169.254.169.254.
-```
+```text
 
 **Success Criteria**:
 
@@ -726,17 +726,17 @@ export PATH="/usr/local/bin:/usr/bin:/bin"
 
 # Verify sudo not available
 command -v sudo && echo "FAIL: sudo found" || echo "OK: sudo not in PATH"
-```
+```text
 
 **Execution**:
 
 ```bash
 bash .github/scripts/imds_diagnostic.sh
-```
+```text
 
 **Expected Output**:
 
-```
+```text
 [2025-11-15T04:43:27Z] ----------------------------------------
 [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
 [2025-11-15T04:43:27Z] ⚠️  Skipping iptables inspection: sudo not available
@@ -744,7 +744,7 @@ bash .github/scripts/imds_diagnostic.sh
 [2025-11-15T04:43:28Z] ----------------------------------------
 [2025-11-15T04:43:28Z] nftables Inspection
 [2025-11-15T04:43:28Z] ⚠️  Skipping nftables inspection: sudo not available
-```
+```text
 
 **Success Criteria**:
 
@@ -807,7 +807,7 @@ jobs:
             diagnostic_results.txt
             diagnostic_results.json
           retention-days: 7
-```
+```text
 
 **Expected Behavior**:
 
@@ -827,13 +827,13 @@ jobs:
 
 **Before Fix Behavior** (regression check):
 
-```
+```text
 Run bash .github/scripts/imds_diagnostic.sh
   [2025-11-15T04:43:27Z] iptables OUTPUT Chain Inspection
   [... hangs here ...]
   Error: The operation was canceled.
   (timeout after 10 minutes)
-```
+```text
 
 ---
 
@@ -1000,7 +1000,7 @@ else
   echo -e "\n${RED}❌ Some tests failed${NC}"
   exit 1
 fi
-```
+```text
 
 **Usage**:
 
@@ -1033,7 +1033,7 @@ bash tests/validate_sudo_fix.sh
 # Failed: 0
 #
 # ✅ All tests passed!
-```
+```text
 
 ---
 
@@ -1082,14 +1082,14 @@ bash tests/validate_sudo_fix.sh
 ### Metrics Validation
 
 Verified metrics correctly set when checks skipped:
-```json
+````json
 {
   "iptables_check_skipped": 1,
   "iptables_skip_reason": "no_passwordless_sudo",
   "nftables_check_skipped": 1,
   "nftables_skip_reason": "no_passwordless_sudo"
 }
-```
+```text
 
 ### Documentation Validation
 
@@ -1124,5 +1124,7 @@ All critical and non-critical tests passed. Fix validated across all target envi
 
 Both files are now properly formatted for the workbench with correct backtick usage for embedded code blocks.
 
-```
+````text
+```text
+
 ```

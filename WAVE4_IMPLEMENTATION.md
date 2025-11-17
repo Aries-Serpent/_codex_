@@ -247,7 +247,7 @@ make deps
 
 # Type checking
 nox -s typecheck
-```
+```text
 
 ### Status Workflow
 
@@ -261,7 +261,7 @@ python tools/status/validate_status_update.py reports/daily/*.json
 python tools/status/capability_autodiscovery.py
 python tools/docs/harvest_open_questions.py
 python tools/status/render_md.py status.json status.tables.md
-```
+```text
 
 ---
 
@@ -274,7 +274,7 @@ pytest tests/test_perf_summary.py -v
 
 # Test all new components
 pytest tests/test_structured_logger.py tests/test_perf_sampler.py tests/test_perf_summary.py -v
-```
+```text
 
 ### Integration Tests
 ```bash
@@ -288,7 +288,7 @@ python tools/perf/summarize.py
 # Security and compliance
 make scan
 make deps
-```
+```text
 
 ---
 
@@ -306,7 +306,7 @@ ignore = []
 python_version = "3.11"
 ignore_missing_imports = true
 strict = false
-```
+```text
 
 ### Makefile Targets
 

@@ -77,7 +77,7 @@ def test_distributed_init_smoke():
     """
     # TODO: Implement test with mocked distributed env
     pass
-```
+```text
 
 ### Acceptance Criteria
 - Tests skip when no GPU present
@@ -161,7 +161,7 @@ class HookRegistry:
             method = getattr(hook, event, None)
             if callable(method):
                 method(**kwargs)
-```
+```text
 
 2. **docs/training/Hooks.md** (skeleton)
 ```markdown
@@ -184,7 +184,7 @@ class MyCustomHook(TrainingHook):
 
 # Register hook with trainer
 trainer.register_hook(MyCustomHook())
-```
+```text
 
 ## Available Events
 
@@ -199,7 +199,7 @@ trainer.register_hook(MyCustomHook())
 ### Checkpoint Saver Hook
 ### Early Stopping Hook
 ### Custom Metric Logger Hook
-```
+```text
 
 ### Acceptance Criteria
 - Hook API documented
@@ -236,7 +236,7 @@ Provide optional W&B (Weights & Biases) offline logging integration for users wh
 ```bash
 pip install wandb
 export WANDB_MODE=offline
-```
+```text
 
 ## Usage
 
@@ -245,7 +245,7 @@ W&B logging is opt-in. Set environment variable:
 ```bash
 export CODEX_ENABLE_WANDB=1
 export WANDB_MODE=offline
-```
+```text
 
 Then run training/evaluation as normal. W&B will log to local directory.
 
@@ -253,14 +253,14 @@ Then run training/evaluation as normal. W&B will log to local directory.
 
 ```bash
 wandb sync wandb/offline-*
-```
+```text
 
 ## Notes
 
 - Strictly optional (disabled by default)
 - Offline-first (no network required)
 - Graceful degradation if wandb unavailable
-```
+```text
 
 2. **scripts/tracking/wandb_offline_example.py**
 ```python
@@ -281,7 +281,7 @@ try:
     print("✓ W&B offline logging works")
 except ImportError:
     print("⚠ wandb not installed. Install with: pip install wandb")
-```
+```text
 
 ### Acceptance Criteria
 - Logging works with `WANDB_MODE=offline`
@@ -337,7 +337,7 @@ def test_streaming_retry_logic():
     """
     # TODO: Implement
     pass
-```
+```text
 
 2. **docs/data/Offline_Streaming.md**
 ```markdown
@@ -362,7 +362,7 @@ Codex provides clear errors and retry logic for streaming failures.
 - Check network connectivity
 - Verify dataset cached
 - Use local file loaders for CSV/JSON/JSONL
-```
+```text
 
 ### Acceptance Criteria
 - Clear errors with offline flag
@@ -404,7 +404,7 @@ echo "==> Building wheel"
 echo "==> Publishing to ${REGISTRY_URL}"
 # TODO: Implement twine upload or custom registry client
 echo "⚠ Manual step: Upload artifacts/dist/*.whl to ${REGISTRY_URL}"
-```
+```text
 
 2. **docs/deployment/Registry_Publish.md**
 ```markdown
@@ -433,8 +433,8 @@ pypiserver run -p 8080 artifacts/dist/
 
 # Install from local registry
 pip install --index-url http://localhost:8080/simple/ codex
-```
-```
+```text
+```text
 
 ### Acceptance Criteria
 - Local registry publish documented
@@ -474,7 +474,7 @@ Full Helm chart implementation is deferred. This document outlines the plan.
 
 ## Proposed Structure
 
-```
+```text
 charts/codex/
 ├── Chart.yaml
 ├── values.yaml
@@ -482,7 +482,7 @@ charts/codex/
 │   ├── deployment.yaml
 │   ├── service.yaml
 │   └── configmap.yaml
-```
+```text
 
 ## Values Outline
 
@@ -499,7 +499,7 @@ resources:
 env:
   - name: CODEX_ENABLE_MLFLOW
     value: "1"
-```
+```text
 
 ## Next Steps
 
@@ -507,7 +507,7 @@ env:
 2. Test deployment to minikube
 3. Add GPU resource requests
 4. Document values
-```
+```text
 
 ### Acceptance Criteria
 - Plan documented with structure
@@ -557,7 +557,7 @@ graph TB
     
     Provenance --> MLflow[MLflow Optional]
     Provenance --> TB[TensorBoard Optional]
-```
+```text
 
 ## Component Diagram
 
@@ -566,7 +566,7 @@ graph TB
 ## Plugin System
 
 ## Offline-First Design
-```
+```text
 
 ### Acceptance Criteria
 - Mermaid/plantuml diagrams render offline
@@ -601,7 +601,7 @@ Provide complete end-to-end walkthrough from training to evaluation to tracking.
 ```bash
 pip install -e ".[metrics]"
 export CODEX_ENABLE_MLFLOW=1
-```
+```text
 
 ## Step 1: Prepare Data
 
@@ -611,7 +611,7 @@ cat > data/train.jsonl <<EOF
 {"text": "Hello world", "label": 0}
 {"text": "Machine learning", "label": 1}
 EOF
-```
+```text
 
 ## Step 2: Configure Training
 
@@ -626,7 +626,7 @@ training:
   batch_size: 4
   learning_rate: 5e-5
   seed: 42
-```
+```text
 
 ## Step 3: Train
 
@@ -635,7 +635,7 @@ python -m codex_ml.training.train_runner \
   --config configs/train/example.yaml \
   --data data/train.jsonl \
   --output artifacts/models/example
-```
+```text
 
 ## Step 4: Evaluate
 
@@ -645,7 +645,7 @@ python -m codex_ml.eval.runner \
   --dataset data/test.jsonl \
   --metrics accuracy,f1,bleu \
   --output artifacts/eval/example
-```
+```text
 
 ## Step 5: Review Tracking
 
@@ -655,7 +655,7 @@ scripts/tracking/mlflow_ui.sh
 
 # View TensorBoard (if enabled)
 tensorboard --logdir artifacts/tb_runs
-```
+```text
 
 ## Expected Artifacts
 
@@ -663,7 +663,7 @@ tensorboard --logdir artifacts/tb_runs
 - `artifacts/eval/example/` - Evaluation results
 - `artifacts/mlruns/` - MLflow tracking
 - `artifacts/tb_runs/` - TensorBoard logs (optional)
-```
+```text
 
 ### Acceptance Criteria
 - Reproducible run steps
@@ -725,7 +725,7 @@ class PluginFactory:
 model_factory = PluginFactory("codex_ml.models")
 data_factory = PluginFactory("codex_ml.data")
 logging_factory = PluginFactory("codex_ml.logging")
-```
+```text
 
 2. **docs/plugins/Plugin_API_Broader.md**
 ```markdown
@@ -744,7 +744,7 @@ from codex_ml.plugins.factory import model_factory
 class MyCustomModel:
     def __init__(self, config):
         pass
-```
+```text
 
 ## Data Loader Plugins
 
@@ -757,8 +757,8 @@ Declare plugins in pyproject.toml:
 ```toml
 [project.entry-points."codex_ml.models"]
 my_model = "my_pkg.models:MyCustomModel"
-```
-```
+```text
+```text
 
 ### Acceptance Criteria
 - Minimal factory + docs
@@ -802,13 +802,13 @@ apt-get install git-secrets  # Ubuntu
 # Initialize
 git secrets --install
 git secrets --register-aws
-```
+```text
 
 ## Custom Patterns
 
 ```bash
 git secrets --add 'CODEX_API_KEY.*'
-```
+```text
 
 ## Pre-commit Hook
 
@@ -819,8 +819,8 @@ Add to `.pre-commit-config.yaml`:
   rev: master
   hooks:
     - id: git-secrets
-```
-```
+```text
+```text
 
 2. **tools/security/offline_deps_check.py**
 ```python
@@ -854,7 +854,7 @@ def check_dependencies():
 if __name__ == "__main__":
     result = check_dependencies()
     print(json.dumps(result, indent=2))
-```
+```text
 
 ### Acceptance Criteria
 - Doc added
@@ -909,7 +909,7 @@ Audit PROMPTS directory for missing files and TODO markers.
 ## Next Steps
 
 Prioritize by usage frequency.
-```
+```text
 
 ### Acceptance Criteria
 - List of missing refs

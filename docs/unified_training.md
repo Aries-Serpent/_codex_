@@ -4,7 +4,7 @@ This module introduces a single entry point:
 
 ```python
 from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
-```
+```text
 
 ## Goals
 - One façade: `run_unified_training(cfg)` to reduce drift between legacy loops.

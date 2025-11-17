@@ -24,12 +24,12 @@ import sys
 import pytest
 import importlib
 import importlib.util
-```
+```text
 
 **Validation**:
 ```bash
 python -c "from tests.conftest import enable_pooling; print('✅ Import fix verified')"
-```
+```text
 
 ---
 
@@ -50,7 +50,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
     db.init_schema()
     # Schema may already exist, logging is optional
     # Test passes if no exception raised
-```
+```text
 
 **File**: `tests/test_pooling_advanced.py`
 
@@ -82,13 +82,13 @@ while not connections_used.empty():
 
 unique_connections = len(set(connection_ids))
 total_uses = len(connection_ids)
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_instance_logger_access -v
 pytest tests/test_pooling_advanced.py::TestPoolingBehavior::test_concurrent_pool_access -v
-```
+```text
 
 ---
 
@@ -105,35 +105,35 @@ pytest tests/test_pooling_advanced.py::TestPoolingBehavior::test_concurrent_pool
 # Replace:
 == True    →    is True
 == False   →    is False
-```
+```text
 
 **Specific changes**:
 
 1. `tests/conftest.py:380` (enable_pooling fixture)
 ```python
 if not DBManager._POOL_ENABLED is True:  # Changed
-```
+```text
 
 2. `tests/conftest.py:454` (pooling_db_manager fixture)
 ```python
 assert DBManager._POOL_ENABLED is True, \  # Changed
-```
+```text
 
 3. `tests/conftest.py:525` (verify_pooling_enabled function)
 ```python
 assert DBManager._POOL_ENABLED is True, \  # Changed
-```
+```text
 
 4. `tests/test_pooling_advanced.py:113`
 ```python
 assert DBManager._POOL_ENABLED is False, \  # Changed
-```
+```text
 
 **Validation**:
 ```bash
 # Should show no PEP8 warnings for boolean comparisons
 ruff check tests/conftest.py tests/test_pooling_advanced.py
-```
+```text
 
 ---
 
@@ -158,7 +158,7 @@ import os
 import pytest
 from pathlib import Path
 from unittest.mock import patch
-```
+```text
 
 **File**: `tests/test_pooling_advanced.py`
 
@@ -177,13 +177,13 @@ from pathlib import Path
 
 import threading
 from queue import Queue  # Added for thread safety
-```
+```text
 
 **Validation**:
 ```bash
 # Should show no unused import warnings
 ruff check tests/test_db_manager_critical.py tests/test_pooling_advanced.py
-```
+```text
 
 ---
 
@@ -215,4 +215,4 @@ pytest tests/test_agents_infrastructure.py::TestDBManager::test_close_all_pools_
 ruff check tests/
 
 # Expected: No warnings, all tests pass
-```
+```text

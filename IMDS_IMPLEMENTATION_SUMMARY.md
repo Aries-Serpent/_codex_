@@ -59,7 +59,7 @@ To complete the implementation, a maintainer with GitHub access needs to:
 cd /home/runner/work/_codex_/_codex_
 git checkout imds/diagnostic-2226-20251114T213200
 git push -u origin imds/diagnostic-2226-20251114T213200
-```
+```text
 
 ### Step 2: Create Pull Request
 
@@ -81,7 +81,7 @@ Address firewall/IMDS-block issues observed in issue #2226.
 Run the script in read-only mode on any affected host:
 ```bash
 bash .github/scripts/imds_diagnostic.sh
-```
+```text
 
 Attach the generated `diagnostic_results.txt` file to issue #2226 for triage.
 
@@ -105,7 +105,7 @@ EOF
   --reviewer Copilot \
   --label bug \
   --label needs-triage
-```
+```text
 
 ### Step 3: Comment on Issue #2226
 
@@ -124,7 +124,7 @@ I've added an IMDS diagnostic script and runbook:
 git fetch origin
 git checkout imds/diagnostic-2226-20251114T213200
 bash .github/scripts/imds_diagnostic.sh
-```
+```text
 
 This will create a `diagnostic_results.txt` file. **Please attach this file to this issue** for analysis.
 
@@ -133,12 +133,12 @@ This will create a `diagnostic_results.txt` file. **Please attach this file to t
 **Dry-run** (preview changes):
 ```bash
 bash .github/scripts/imds_diagnostic.sh --dry-run
-```
+```text
 
 **Apply fixes** (requires approval from @mbaetiong and root):
 ```bash
 sudo bash .github/scripts/imds_diagnostic.sh --apply
-```
+```text
 
 ⚠️ **Do not run `--apply` without explicit approval from @mbaetiong**
 
@@ -146,7 +146,7 @@ sudo bash .github/scripts/imds_diagnostic.sh --apply
 See PR #[NUMBER] for details.
 EOF
 )"
-```
+```text
 
 ## 🔄 Alternative: Apply Patch Manually
 
@@ -159,7 +159,7 @@ git apply imds-diagnostic-only.patch
 git add .github/docs/imds_diagnostic_RUNBOOK.md .github/scripts/imds_diagnostic.sh
 git commit -m "Add IMDS diagnostic runbook and make script executable"
 git push -u origin imds/diagnostic-2226-20251114T213200
-```
+```text
 
 Then proceed with Step 2 and Step 3 above.
 

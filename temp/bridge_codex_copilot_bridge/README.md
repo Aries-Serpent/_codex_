@@ -23,7 +23,7 @@ temp/bridge_codex_copilot_bridge/
 │  └─ examples/
 │     └─ mcp.json
 └─ README.md (this file)
-```
+```text
 Notes
 - ITA is a stub FastAPI app exposing 4 endpoints with deterministic responses for local smoke tests.
 - Tool specs mirror the ITA contract (JSON Schema params) to be consumable by tool-calling LLMs.

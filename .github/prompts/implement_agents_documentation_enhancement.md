@@ -22,7 +22,7 @@ Implement a production-ready AGENTS.md documentation file with supporting infras
 ## 📋 Current State Analysis
 
 **Repository Structure** (inferred from context):
-```
+```text
 Aries-Serpent/_codex_/
 ├── .github/
 │   ├── docs/
@@ -42,7 +42,7 @@ Aries-Serpent/_codex_/
 └── .codex/
     ├── sessions/
     └── session_logs.db
-```
+```text
 
 **Languages**: Python (primary), Markdown (docs), Shell (automation)
 
@@ -109,7 +109,7 @@ Guidelines for contributors and Codex automation. Keep this file updated as conv
 
 ## Contact / Maintainers
 [Team contacts and escalation]
-```
+```text
 
 **Error Handling**:
 - Log all file creation errors to `.codex/logs/implementation_$(date +%Y%m%d_%H%M%S).log`
@@ -293,7 +293,7 @@ class EnvironmentManager:
 
 # Global instance
 env_manager = EnvironmentManager()
-```
+```text
 
 **Error Handling**:
 ```python
@@ -396,7 +396,7 @@ class CodexErrorHandler:
 
 # Global instance
 error_handler = CodexErrorHandler()
-```
+```text
 
 **Success Criteria**:
 - [ ] `src/codex/config/env_vars.py` created
@@ -495,7 +495,7 @@ def validate_env():
 
 if __name__ == '__main__':
     cli()
-```
+```text
 
 **Error Handling**:
 - All CLI commands wrapped with `@error_handler.log_errors`
@@ -542,7 +542,7 @@ CREATE INDEX IF NOT EXISTS idx_logs_session ON logs(session_id);
 CREATE INDEX IF NOT EXISTS idx_logs_timestamp ON logs(timestamp);
 CREATE INDEX IF NOT EXISTS idx_logs_role ON logs(role);
 CREATE VIRTUAL TABLE IF NOT EXISTS logs_fts USING fts5(message, content='logs', content_rowid='id');
-```
+```text
 
 **Implementation** (see attached AGENTS.md for full spec):
 - Connection pooling if `CODEX_SQLITE_POOL=1`
@@ -688,7 +688,7 @@ def mock_optional_deps():
         hydra = MagicMock()
         with patch.dict('sys.modules', {'hydra': hydra}):
             yield
-```
+```text
 
 **Success Criteria**:
 - [ ] All tests pass with `pytest tests/test_agents_infrastructure.py -v`
@@ -741,7 +741,7 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-```
+```text
 
 **Success Criteria**:
 - [ ] `.pre-commit-config.yaml` created
@@ -777,7 +777,7 @@ pre-commit run --all-files
 
 # 7. Verify AGENTS.md
 markdownlint AGENTS.md
-```
+```text
 
 ### Expected Outputs
 
@@ -853,7 +853,7 @@ If a component fails:
 
 ### If Implementation Incomplete
 
-```
+```text
 @copilot I've reviewed the implementation progress. The following components are still pending:
 
 [LIST PENDING TASKS]
@@ -863,11 +863,11 @@ Please continue implementation focusing on:
 2. [SECONDARY TASK]
 
 Provide updated code for the incomplete components and verify they integrate with existing work.
-```
+```text
 
 ### If Additional Details Required
 
-```
+```text
 @copilot I need more details about:
 
 [SPECIFIC QUESTION OR COMPONENT]
@@ -878,11 +878,11 @@ Please provide:
 - Integration points with existing codebase
 - Testing strategy
 - Error handling approach
-```
+```text
 
 ### If Errors Encountered
 
-```
+```text
 @copilot During implementation I encountered the following errors:
 
 [ERROR LOGS FROM .codex/logs/]
@@ -892,7 +892,7 @@ Please:
 2. Propose a fix with code changes
 3. Update error handling to prevent recurrence
 4. Add regression test
-```
+```text
 
 ---
 
@@ -959,7 +959,7 @@ if [ -f ".codex/session_logs.db" ]; then
 fi
 
 echo "✅ All validation checks passed!"
-```
+```text
 
 Run with: `bash final_validation.sh`
 
@@ -969,4 +969,6 @@ Run with: `bash final_validation.sh`
 **Author**: mbaetiong  
 **Target Agent**: GitHub Copilot Assistant  
 **Status**: Ready for Implementation
+```text
+
 ```

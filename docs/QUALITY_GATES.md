@@ -8,7 +8,7 @@ nox -s cli_smoke    # Typer CLI smoke (version, split, checkpoint, MLflow file b
 nox -s tracking_smoke
 nox -s lint         # Ruff/Black/isort (offline)
 nox -s typecheck    # mypy
-```
+```text
 
 Additional tooling:
 
@@ -22,6 +22,6 @@ Instead of invoking each gate manually you can rely on the bundled harness:
 
 ```bash
 python .codex/scripts/local_ci.py --full
-```
+```text
 
 Use `--fast` to skip the structural checks when iterating quickly, `--list` to inspect the underlying commands, or `--continue-on-failure` to gather all failures in a single pass.

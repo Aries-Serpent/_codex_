@@ -4,7 +4,7 @@ Summarise rotated `metrics.ndjson` shards into CSV or JSONL reports.
 
 ```bash
 python -m codex_ml ndjson-summary --input artifacts/metrics.ndjson --output-format csv
-```
+```text
 
 The command delegates to `codex_utils.cli.ndjson_summary` but routes through
 Codex ML's structured logging to capture CLI start/finish events.

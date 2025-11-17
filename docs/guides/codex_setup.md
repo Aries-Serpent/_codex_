@@ -112,7 +112,7 @@ Insert at top of cli.py after docstring:
 
 ``` text
 import sys
-```
+```text
 ## Next Interaction Options
 
 | Option | Outcome |

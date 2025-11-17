@@ -173,16 +173,16 @@ This document updates the DEEP_RESEARCH_UNRESOLVED_ISSUES.md report to reflect t
 ## 📈 Progress Visualization
 
 ### Before This Work
-```
+```text
 Capabilities below 0.70: ████████ 8/25 (32%)
 Capabilities above 0.70: ████████████████ 17/25 (68%)
-```
+```text
 
 ### After This Work
-```
+```text
 Capabilities below 0.70: ███ 3/25 (12%)
 Capabilities above 0.70: ████████████████████████ 22/25 (88%)
-```
+```text
 
 **Improvement**: +20% repository maturity
 

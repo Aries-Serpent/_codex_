@@ -21,12 +21,12 @@ added) and exposes the following keys:
 type: hf            # or "whitespace"
 pretrained_model_name_or_path: gpt2
 special_tokens: {}
-```
+```text
 To override from the command line:
 
 ```bash
 python -m codex_ml.cli.main tokenizer.type=whitespace
-```
+```text
 To add a new tokeniser backend, subclass `TokenizerAdapter` and register it in
 `TokenizerAdapter.from_config`.
 

@@ -17,7 +17,7 @@ def process_items(items: List[str]) -> Dict[str, int]:
     for item in items:
         result[item] = len(item)
     return result
-```
+```text
 
 **New (Modern)**:
 ```python
@@ -26,7 +26,7 @@ def process_items(items: list[str]) -> dict[str, int]:
     for item in items:
         result[item] = len(item)
     return result
-```
+```text
 
 **Optional is still needed**:
 ```python
@@ -40,7 +40,7 @@ def get_value(key: str) -> Optional[str]:
 def get_value(key: str) -> str | None:
     # Returns None if not found
     pass
-```
+```text
 
 ## String Formatting
 
@@ -51,7 +51,7 @@ def get_value(key: str) -> str | None:
 name = "World"
 message = "Hello, %s!" % name  # %-formatting
 message = "Hello, {}!".format(name)  # .format()
-```
+```text
 
 **New**:
 ```python
@@ -61,7 +61,7 @@ message = f"Hello, {name}!"  # f-string
 # With expressions
 count = 42
 message = f"Count: {count:04d}"  # Count: 0042
-```
+```text
 
 ## Dataclasses (Python 3.7+)
 
@@ -77,7 +77,7 @@ class Config:
     
     def __repr__(self):
         return f"Config(epochs={self.epochs}, ...)"
-```
+```text
 
 **New**:
 ```python
@@ -88,7 +88,7 @@ class Config:
     epochs: int
     batch_size: int
     lr: float = 0.001  # With default
-```
+```text
 
 ## Context Managers
 
@@ -101,13 +101,13 @@ try:
     data = file.read()
 finally:
     file.close()
-```
+```text
 
 **New**:
 ```python
 with open("data.txt") as file:
     data = file.read()
-```
+```text
 
 ## Path Handling
 
@@ -121,7 +121,7 @@ filepath = os.path.join("data", "file.txt")
 if os.path.exists(filepath):
     with open(filepath) as f:
         content = f.read()
-```
+```text
 
 **New**:
 ```python
@@ -130,7 +130,7 @@ from pathlib import Path
 filepath = Path("data") / "file.txt"
 if filepath.exists():
     content = filepath.read_text()
-```
+```text
 
 ## Structural Pattern Matching (Python 3.10+)
 
@@ -147,7 +147,7 @@ def process_command(cmd):
         return update_entity(cmd)
     else:
         return handle_unknown(cmd)
-```
+```text
 
 **New**:
 ```python
@@ -161,7 +161,7 @@ def process_command(cmd):
             return update_entity(rest)
         case _:
             return handle_unknown(cmd)
-```
+```text
 
 ## Dictionary Merging (Python 3.9+)
 
@@ -176,7 +176,7 @@ config = {**defaults, **overrides}
 # or
 config = defaults.copy()
 config.update(overrides)
-```
+```text
 
 **New**:
 ```python
@@ -184,7 +184,7 @@ defaults = {"timeout": 30, "retries": 3}
 overrides = {"timeout": 60}
 
 config = defaults | overrides  # Clean and clear
-```
+```text
 
 ## Type Checking Best Practices
 
@@ -196,7 +196,7 @@ from typing import Any
 
 def process(obj: Any):
     obj.read()  # No type checking
-```
+```text
 
 **New**:
 ```python
@@ -207,7 +207,7 @@ class Readable(Protocol):
 
 def process(obj: Readable):
     obj.read()  # Type-checked
-```
+```text
 
 ### Use `TypedDict` for Dictionary Structures
 
@@ -216,7 +216,7 @@ def process(obj: Readable):
 def create_user(data: dict) -> dict:
     # What keys are required? What types?
     pass
-```
+```text
 
 **New**:
 ```python
@@ -230,7 +230,7 @@ class UserData(TypedDict):
 def create_user(data: UserData) -> UserData:
     # Type-checked dictionary
     pass
-```
+```text
 
 ## Error Handling
 
@@ -242,7 +242,7 @@ try:
     result = process()
 except Exception as e:  # Too broad
     print(f"Error: {e}")
-```
+```text
 
 **New**:
 ```python
@@ -254,7 +254,7 @@ except ValueError as e:
 except FileNotFoundError as e:
     logger.error(f"File not found: {e}")
     return None
-```
+```text
 
 ## List/Dict Comprehensions
 
@@ -266,12 +266,12 @@ result = []
 for item in items:
     if item.is_valid():
         result.append(item.transform())
-```
+```text
 
 **New (Simple case)**:
 ```python
 result = [item.transform() for item in items if item.is_valid()]
-```
+```text
 
 **New (Complex case - use explicit loop)**:
 ```python
@@ -282,7 +282,7 @@ for item in items:
         transformed = item.transform()
         if transformed.is_ready():
             result.append(transformed)
-```
+```text
 
 ## Async/Await
 
@@ -299,7 +299,7 @@ async def fetch_data(url: str) -> dict:
 async def process_urls(urls: list[str]) -> list[dict]:
     tasks = [fetch_data(url) for url in urls]
     return await asyncio.gather(*tasks)
-```
+```text
 
 ## Linting and Type Checking
 
@@ -318,7 +318,7 @@ black .
 
 # isort - Import sorting
 isort .
-```
+```text
 
 ## Common Pitfalls to Avoid
 
@@ -329,7 +329,7 @@ isort .
 def add_item(item, items=[]):  # Bug: list is shared
     items.append(item)
     return items
-```
+```text
 
 **Right**:
 ```python
@@ -338,7 +338,7 @@ def add_item(item, items=None):
         items = []
     items.append(item)
     return items
-```
+```text
 
 ### Using `==` for `None`
 
@@ -346,13 +346,13 @@ def add_item(item, items=None):
 ```python
 if value == None:
     pass
-```
+```text
 
 **Right**:
 ```python
 if value is None:
     pass
-```
+```text
 
 ## Scanning Your Code
 
@@ -360,7 +360,7 @@ Use the modernization scanner:
 
 ```bash
 python tools/modernization_scanner.py src/ --verbose
-```
+```text
 
 This will identify legacy patterns that can be modernized.
 

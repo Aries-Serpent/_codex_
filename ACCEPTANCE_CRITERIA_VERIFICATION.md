@@ -36,7 +36,7 @@ class VectorStore(ABC):
     def search(self, query_vector: np.ndarray, k: int = 5, 
                filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]: ...
     # ... 7 more methods
-```
+```text
 
 ---
 
@@ -95,7 +95,7 @@ class VectorStore(ABC):
 @app.post("/embed", response_model=EmbeddingResponse)
 async def embed(request: EmbeddingRequest):
     # Returns normalized embeddings with metadata
-```
+```text
 
 **Response Format:**
 ```json
@@ -106,7 +106,7 @@ async def embed(request: EmbeddingRequest):
   "num_texts": 2,
   "inference_time_ms": 12.34
 }
-```
+```text
 
 **Backend Support:**
 - **Stub:** Random normalized vectors (384-dim) for testing
@@ -290,7 +290,7 @@ The `search()` method signature includes a `filters` parameter, but it's not yet
 ```python
 def search(self, query_vector, k=5, filters=None):
     # filters parameter currently ignored
-```
+```text
 
 **Research Context:**
 
@@ -336,7 +336,7 @@ def search(self, query_vector, k=5, filters=None):
         results = results[:k]
     
     return results
-```
+```text
 **Pros:** Simple, works for most use cases  
 **Cons:** May miss results if filter is very selective
 
@@ -356,7 +356,7 @@ class FAISSStore:
         else:
             results = self._faiss_search(query_vector, k)
         return results
-```
+```text
 **Pros:** More efficient, scalable  
 **Cons:** Complex, requires index maintenance
 
@@ -403,7 +403,7 @@ quantizer = faiss.IndexFlatL2(d)
 index = faiss.IndexIVFFlat(quantizer, d, nlist)
 index.train(training_vectors)  # Need training step!
 index.add(vectors)
-```
+```text
 
 2. **Parameter Tuning:**
    - `nlist`: Number of clusters (affects accuracy/speed trade-off)
@@ -434,7 +434,7 @@ class FAISSStore:
         if not self.index.is_trained:
             self.index.train(vectors)
         self.index.add(vectors)
-```
+```text
 
 **Estimated Effort:** 2-3 weeks for full implementation with parameter tuning
 
@@ -468,7 +468,7 @@ nbits = 8  # bits per sub-quantizer
 index = faiss.IndexPQ(d, m, nbits)
 index.train(training_vectors)
 index.add(vectors)
-```
+```text
 
 **Trade-offs:**
 - **Pros:** Massive memory savings, faster search
@@ -506,7 +506,7 @@ index_cpu = faiss.IndexFlatL2(d)
 # GPU index (simple conversion)
 res = faiss.StandardGpuResources()
 index_gpu = faiss.index_cpu_to_gpu(res, 0, index_cpu)
-```
+```text
 
 **Challenges:**
 1. **Environment:** Requires CUDA, NVIDIA GPU
@@ -585,7 +585,7 @@ def detect_duplicates_token(files):
     # Find duplicates
     duplicates = {k: v for k, v in token_hashes.items() if len(v) > 1}
     return duplicates
-```
+```text
 
 **Pros:** Fast, catches exact and near-exact duplicates  
 **Cons:** Misses refactored code
@@ -615,7 +615,7 @@ def normalize_ast(node):
     # Replace all names with generic VAR_1, VAR_2, etc.
     # This catches Type-2 clones (renamed variables)
     ...
-```
+```text
 
 **Pros:** Catches structural duplicates  
 **Cons:** More complex, slower
@@ -648,7 +648,7 @@ def detect_duplicates_pylint(directory):
     result = subprocess.run(cmd, capture_output=True, text=True)
     # Parse output
     return parse_pylint_output(result.stdout)
-```
+```text
 
 **Phase 2: Custom AST Implementation**
 - Build on Phase 1
@@ -728,7 +728,7 @@ def calculate_duplication_ratio(duplicates, total_lines):
             duplicate_lines.update(range(start, end + 1))
     
     return len(duplicate_lines) / total_lines if total_lines > 0 else 0.0
-```
+```text
 
 **Testing Strategy:**
 
@@ -762,7 +762,7 @@ def unique2(): pass
 """
     ratio = calculate_ratio(code)
     assert ratio == 0.5  # 2 out of 4 lines duplicated
-```
+```text
 
 **Estimated Effort:** 1 week
 
@@ -811,7 +811,7 @@ def report(
             json.dump(duplicates, f, indent=2)
     elif format == "html":
         generate_html_report(duplicates, output)
-```
+```text
 
 **Integration with existing CLI:**
 ```python
@@ -828,7 +828,7 @@ def duplication(
         ...
     elif action == "compare":
         ...
-```
+```text
 
 **Estimated Effort:** 1 week
 
@@ -904,7 +904,7 @@ def duplication(
     "avg_block_size": 15.5
   }
 }
-```
+```text
 
 **Estimated Effort:** 3-5 days
 
@@ -948,7 +948,7 @@ class BatchingMiddleware:
         # Return results to futures
         for (_, future), result in zip(batch, results):
             future.set_result(result)
-```
+```text
 
 **Caching:**
 
@@ -978,7 +978,7 @@ class ResponseCache:
             del self.cache[oldest[0]]
         
         self.cache[key] = (value, time.time())
-```
+```text
 
 **Estimated Effort:** 2-3 weeks
 

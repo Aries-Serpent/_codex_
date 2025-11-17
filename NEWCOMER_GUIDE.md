@@ -33,7 +33,7 @@ Welcome to **_codex_**! This guide will help you understand the repository struc
 
 ## Repository Structure
 
-```
+```text
 _codex_/
 ├── src/                    # Main source code
 │   ├── codex/             # Core codex modules
@@ -52,7 +52,7 @@ _codex_/
 ├── scripts/               # Automation scripts
 ├── examples/              # Example code and configs
 └── .codex/                # Local automation artifacts
-```
+```text
 
 ### Important Directories
 
@@ -148,7 +148,7 @@ _codex_ uses [Hydra](https://hydra.cc/) for configuration management:
 codex-train +reasoning=baseline \
   curriculum.phase_schedule=starter \
   training.max_steps=500
-```
+```text
 
 ### 2. Plugin System
 
@@ -163,7 +163,7 @@ _codex_ has an extensible plugin architecture:
 # In pyproject.toml
 [project.entry-points."codex_ml.metrics"]
 my_metric = "my_package.metrics:my_metric_function"
-```
+```text
 
 ### 3. Logging and Sessions
 
@@ -179,7 +179,7 @@ Session-based logging tracks all operations:
 python -m codex.logging.session_logger  # Record events
 python -m codex.logging.viewer          # View sessions
 python -m codex.logging.query_logs      # Search logs
-```
+```text
 
 ### 4. Checkpointing and Reproducibility
 
@@ -225,7 +225,7 @@ codex-train +reasoning=baseline \
   curriculum.phase_schedule=starter \
   logging.reasoning_trace=true \
   training.output_dir=artifacts/runs/reasoning
-```
+```text
 
 ### Evaluating a Model
 
@@ -240,7 +240,7 @@ codex evaluate \
   --config configs/evaluation/reasoning.yaml \
   --log-metrics .codex/metrics/reasoning.ndjson \
   --run-id my-eval-run
-```
+```text
 
 ### Managing Configurations
 
@@ -253,7 +253,7 @@ codex reasoning-templates explain baseline
 
 # Validate a configuration
 codex-validate-config --config configs/training/base.yaml
-```
+```text
 
 ### Running Tests
 
@@ -270,7 +270,7 @@ pytest --cov=src/codex_ml tests/
 # Offline tests
 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 \
   nox -s tests_offline
-```
+```text
 
 ### Pre-commit Checks
 
@@ -289,7 +289,7 @@ black src/ --line-length 100
 ruff check src/
 isort src/
 mypy src/
-```
+```text
 
 ## Zendesk Support Administration
 
@@ -351,7 +351,7 @@ nox -s tests
 pytest -m smoke          # Quick smoke tests
 pytest -m integration    # Integration tests
 pytest -m slow           # Resource-intensive tests
-```
+```text
 
 ### Code Quality Tools
 
@@ -493,7 +493,7 @@ codex-validate-config   # Config validation
 codex-list-plugins      # Plugin discovery
 codex-status-audit      # Repository audit
 codex-task-sequence     # Task automation
-```
+```text
 
 ### Common Operations
 
@@ -522,7 +522,7 @@ python -m codex.logging.query_logs
 fence-check
 pre-commit run --all-files
 nox -s tests
-```
+```text
 
 ## Additional Resources
 

@@ -84,7 +84,7 @@ Use the ``get_*`` helpers to instantiate components lazily:
 from codex_ml.registry import get_tokenizer
 
 tokenizer = get_tokenizer("toy", vocab={"a": 0, "b": 1})
-```
+```text
 ## Entry-point discovery
 
 Third-party packages can expose components without importing Codex ML at install
@@ -94,7 +94,7 @@ callable or class:
 ```toml
 [project.entry-points."codex_ml.metrics"]
 toy_metric = "my_extension.metric:build"
-```
+```text
 Registries load entry points on first use.  When a component is requested the
 registry imports the entry point, registers the resulting object, and caches the
 outcome for future lookups.  Broken entry points are reported through

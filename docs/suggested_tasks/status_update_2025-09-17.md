@@ -97,7 +97,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +            raise RuntimeError(f"Failed to load checkpoint {ckpt_path}") from exc
 +        return state
 *** End Patch
-```
+```text
 **Risk:** May load incompatible checkpoints if the model architecture changed; error handling must be robust.
 
 **Rollback:** `git revert` this commit or remove the `load_latest` method.
@@ -113,7 +113,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 *** Begin Patch
 *** Delete File: src/codex/training.py01
 *** End Patch
-```
+```text
 **Risk:** If downstream scripts import `training.py01`, they will break. Search for any references before deletion.
 
 **Rollback:** Restore the file from Git history if needed.
@@ -144,7 +144,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +                "Functional trainer is unavailable. Install the `codex[cli]` extra to enable"
 +            )
 *** End Patch
-```
+```text
 **Risk:** Changing error messages is low‑risk but may require updating tests that check for specific exceptions.
 
 **Rollback:** Revert the diff.
@@ -188,7 +188,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +            fh.write(json.dumps(rec) + "\n")
 +        time.sleep(interval)
 *** End Patch
-```
+```text
 **Risk:** Continuous logging may slow down training or consume disk space; ensure interval is configurable.
 
 **Rollback:** Delete `system_metrics.py` and remove references.
@@ -223,7 +223,7 @@ Below are example minimal diffs to address key issues. The diffs should be appli
 +        manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 +        return lines
 *** End Patch
-```
+```text
 **Risk:** Writing manifest may not be desired for read‑only datasets; ensure this is configurable.
 
 **Rollback:** Remove manifest writing and revert shuffle logic.
@@ -255,7 +255,7 @@ def tests(session: nox.Session) -> None:
     session.install("-r", "requirements/base.txt")
     session.install("-r", "requirements/dev.txt")
     session.run("pytest", "--cov=src/codex_ml", "--cov-fail-under=80")
-```
+```text
 Local gating commands:
 
 - `pytest -q` runs unit tests and should pass without hitting any GitHub Action.
@@ -307,7 +307,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 ```yaml
 **Codex-ready Task Sequence**: |
   # Phase 1 – Preparation
@@ -351,7 +351,7 @@ What are the possible causes, and how can this be resolved while preserving inte
      6.4 Perform a dry run of the CLI (`codex-train`) on a small dataset with the new flags to verify end‑to‑end functionality.
      6.5 Commit all changes locally; do not push or trigger any GitHub Actions.
 
-```
+```text
 **Additional Deliverable**:
 
 ```python
@@ -635,7 +635,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-```
+```text
 **Supplied Task**:
 
 1. **Implement resume functionality:** Add a `load_latest` method to `src/codex_ml/utils/checkpointing.py` and update the training CLI to support `--resume-from` so users can restore interrupted training.

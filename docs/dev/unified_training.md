@@ -17,7 +17,7 @@ from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unifie
 cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)
 result = run_unified_training(cfg)
 print(result)
-```
+```text
 
 ## Schema v2 Additions
 | Field | Purpose |

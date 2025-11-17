@@ -107,7 +107,7 @@ class DeviceMapper:
     @staticmethod
     def get_strategy(name: str) -> DeviceConfig:
         pass
-```
+```text
 
 **`tests/training/test_device_strategy.py` (NEW)**
 - Test auto-detect on CPU
@@ -124,7 +124,7 @@ class DeviceMapper:
 - Add try/except around auto-detect
 
 **Error Capture Block Template:**
-```
+```text
 :::
 Step: Task 2.1 - Add Dtype & Device Mapping
 Error: [ERROR_TYPE]: [ERROR_MESSAGE]
@@ -132,7 +132,7 @@ File: [FILE_PATH]:[LINE_NUMBER]
 Context: [BRIEF_CONTEXT]
 Resolution: [HOW_FIXED_OR_DEFERRED]
 :::
-```
+```text
 
 ---
 
@@ -222,7 +222,7 @@ class RecallScore(MetricBase):
     
     def compute(self) -> Dict[str, float]:
         pass
-```
+```text
 
 **`src/codex_ml/metrics/api.py` (REFACTOR)**
 - Export all metric classes: `from .metric_implementations import *`
@@ -309,7 +309,7 @@ def log_params_safe(params: dict) -> None:
         mlflow.log_params(params)
     except Exception:
         logger.debug(f"[codex] Could not log params {params}")
-```
+```text
 
 **`src/codex_ml/training/unified_training.py` (MODIFY)**
 - Call `init_mlflow_safe()` at trainer init
@@ -391,7 +391,7 @@ def set_seed(seed: int) -> None:
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
-```
+```text
 
 **`src/codex_ml/training/unified_training.py` (MODIFY)**
 - On checkpoint save: `rng_state.capture()` and save to file
@@ -412,7 +412,7 @@ python -m codex.train config=base seed=42 resume_from=outputs/run_1/checkpoint.p
 
 # Compare loss logs (should be identical)
 diff outputs/run_1/metrics.ndjson outputs/run_2/metrics.ndjson
-```
+```text
 
 **Rollback Plan:**
 - If RNG restore fails, log warning and continue (non-deterministic)
@@ -441,7 +441,7 @@ hydra:
     _target_: hydra._internal.BasicLauncher
   sweeper:
     _target_: hydra._internal.BasicSweeper
-```
+```text
 
 **`configs/experiments/sweep_template.yaml` (NEW)**
 ```yaml
@@ -453,7 +453,7 @@ defaults:
 lr: 1e-4
 batch_size: 32
 num_epochs: 10
-```
+```text
 
 **CLI Usage:**
 ```bash
@@ -462,7 +462,7 @@ python -m codex.train config=base
 
 # Sweep multiple hyperparameters
 python -m codex.train --multirun config=experiments/sweep_template lr=1e-3,1e-4,1e-5 batch_size=16,32,64
-```
+```text
 
 **Tests:**
 - `tests/config/test_hydra_sweep.py`: Verify sweep config loads
@@ -525,7 +525,7 @@ class DatasetValidator:
         
         logger.info("✓ All splits found")
         return True
-```
+```text
 
 **`scripts/validate_dataset.py` (NEW)**
 ```python
@@ -547,12 +547,12 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 **CLI Usage:**
 ```bash
 python scripts/validate_dataset.py data/dataset_manifest.json --check-splits
-```
+```text
 
 **Tests:**
 - `tests/data/test_validator.py`: Valid/invalid manifests
@@ -582,7 +582,7 @@ repos:
     rev: v8.18.0
     hooks:
       - id: gitleaks
-```
+```text
 
 **`.bandit.yaml` (NEW)**
 ```yaml
@@ -592,7 +592,7 @@ exclude_dirs:
   - /notebooks
 skips:
   - B101  # assert_used (OK in tests)
-```
+```text
 
 **`noxfile.py` (MODIFY)**
 - Add session: `nox -s security` to run bandit + gitleaks
@@ -623,7 +623,7 @@ def test(session):
         "-v",
         external=True,
     )
-```
+```text
 
 **`pytest.ini` (MODIFY)**
 ```ini
@@ -637,7 +637,7 @@ markers =
     unit: Unit tests
     integration: Integration tests
     regression: Regression tests
-```
+```text
 
 **Workflow:** Coverage report auto-generated and committed to `.codex/coverage/`
 
@@ -713,13 +713,13 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
+```text
 
 **CLI Usage:**
 ```bash
 python -m codex_ml.exec.codex_exec validate-dataset --manifest data/manifest.json
 python -m codex_ml.exec.codex_exec train --config base --offline
-```
+```text
 
 ---
 
@@ -744,7 +744,7 @@ pytest --cov=src --cov-report=html
 
 # Full gate
 nox -s gates
-```
+```text
 
 **Success Criteria:**
 - All tests pass
@@ -779,7 +779,7 @@ python -m codex.train config=base seed=42 num_epochs=2
 # Compare loss curves
 diff outputs/run_1/metrics.ndjson outputs/run_2/metrics.ndjson
 # Should be identical
-```
+```text
 
 ---
 
@@ -824,20 +824,20 @@ diff outputs/run_1/metrics.ndjson outputs/run_2/metrics.ndjson
 ```bash
 git checkout HEAD~1 -- src/codex_ml/metrics/
 git checkout HEAD~1 -- tests/metrics/
-```
+```text
 
 #### Rollback MLflow Guard:
 ```bash
 rm src/codex_ml/logging/mlflow_guard.py
 git checkout HEAD~1 -- src/codex_ml/training/unified_training.py
 unset CODEX_OFFLINE_MODE
-```
+```text
 
 #### Rollback RNG Checkpoint:
 ```bash
 rm src/codex_ml/training/rng_checkpoint.py
 git checkout HEAD~1 -- src/codex_ml/training/unified_training.py
-```
+```text
 
 ### Test Results
 - Coverage: 72% (+5%)
@@ -851,7 +851,7 @@ git checkout HEAD~1 -- src/codex_ml/training/unified_training.py
 ### Error Capture Template
 Use this format for any encountered errors:
 
-```
+```text
 > Step: [TASK_NUMBER]: [TASK_NAME]
 > Timestamp: [ISO_8601_UTC]
 > Error: [ERROR_TYPE]: [ERROR_MESSAGE]
@@ -860,7 +860,7 @@ Use this format for any encountered errors:
 > Severity: [CRITICAL|HIGH|MEDIUM|LOW]
 > Resolution: [HOW_FIXED_OR_REASON_DEFERRED]
 > Rollback: [INSTRUCTION_TO_ROLLBACK_IF_APPLICABLE]
-```
+```text
 
 ### Common Issues & Resolutions
 
@@ -903,7 +903,7 @@ python scripts/test_reproducibility.sh
 
 # Create audit report
 python .codex/generate_audit_report.py > .codex/AUDIT_REPORT_[DATE].md
-```
+```text
 
 ### Commit & Tag (Local Only)
 
@@ -917,7 +917,7 @@ git commit -m "feat: implement metrics API, MLflow guard, RNG checkpoint, sweep 
 # Tag
 git tag -a "v0.2.0-codex-completion" -m "Codex capability audit completion: 20/20 findings addressed"
 
-```
+```text
 
 ---
 
@@ -946,7 +946,7 @@ Provided separately as executable script to automate:
 Execute:
 ```bash
 python .codex/codex_update.py --phase 2 --task metrics --auto-patch --run-tests
-```
+```text
 
 ---
 
@@ -1044,7 +1044,7 @@ The `_codex_` repository is an offline‑first machine‑learning environment de
 +        print("[codex] MLflow disabled: offline mode")
 +    else:
 +        raise
-```
+```text
 
 **Why:** Prevents hard crash when MLflow unavailable.
 **Risk:** Missed metrics in offline mode.
@@ -1059,7 +1059,7 @@ The `_codex_` repository is an offline‑first machine‑learning environment de
 +   import torch
 +   rng_state = torch.get_rng_state()
 +   torch.manual_seed(int(rng_state.sum()) % 2**32)
-```
+```text
 
 **Why:** Ensures resumed runs are deterministic.
 **Risk:** Minor perf degradation.
@@ -1076,7 +1076,7 @@ The `_codex_` repository is an offline‑first machine‑learning environment de
 +  sweep:
 +    dir: outputs/${now:%Y-%m-%d_%H-%M-%S}
 +    subdir: ${hydra.job.name}
-```
+```text
 
 **Why:** Enables local experiment sweeps.
 **Risk:** Disk usage.
@@ -1092,7 +1092,7 @@ nox -s lint
 nox -s test
 pytest --maxfail=1 --disable-warnings -q
 pytest --cov=src --cov-report=term-missing
-```
+```text
 
 **ML Test Score Categories:**
 
@@ -1177,4 +1177,6 @@ Additional Deliverable:
   4. Write tests for new modules.
   5. Run `pytest` and capture failures, formatting them into error capture blocks.
   6. Update `CHANGES.md` with a summary of actions.
+```text
+
 ```

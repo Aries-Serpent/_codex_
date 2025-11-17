@@ -86,7 +86,7 @@ New vector-stores entry requires cross-reference validation against actual codeb
     "value": 0.0
   }
 }
-```
+```text
 
 **Required Action:**
 - Verify vector-stores implementation exists in codebase
@@ -151,7 +151,7 @@ Schema structure validation pending to ensure all audit artifacts conform to exp
 - ~~✅ Added `_schema_version` and `_created_at` fields to checkpoints~~
 - ~~✅ Implemented version validation with warnings on load~~
 - ~~✅ Ensures forward/backward compatibility tracking~~
-```
+```text
 
 ---
 
@@ -240,7 +240,7 @@ class TrainingPipeline:
         'evaluation': ['training_loop'],
         'checkpoint_save': ['training_loop', 'evaluation']
     }
-```
+```text
 
 ---
 
@@ -345,7 +345,7 @@ def function_name(param1: Type1, param2: Type2) -> ReturnType:
         expected output
     """
     # implementation
-```
+```text
 
 #### Missing Type Hints
 
@@ -388,7 +388,7 @@ def process_data(
     total_processed: int = 0
     # ... implementation
     return results, total_processed
-```
+```text
 
 #### Dead Code
 
@@ -474,7 +474,7 @@ class TestDistributedTroubleshooting:
         assert isinstance(issues, list)
     
     # Add 20+ more tests for full coverage
-```
+```text
 
 **2. tests/tools/test_data_drift_check.py** (NEW - 0 → 85%+)
 
@@ -507,7 +507,7 @@ class TestDataDriftCheck:
         assert detector.threshold == 0.05
     
     # Add 10+ more tests for full coverage
-```
+```text
 
 **3. tests/tools/test_verification_tool.py** (NEW - 0 → 85%+)
 
@@ -533,7 +533,7 @@ class TestVerificationTool:
         assert "missing files" in result.errors
     
     # Add 10+ more tests for full coverage
-```
+```text
 
 **4. tests/data/test_loader_enhanced.py** (ENHANCE - 45% → 90%+)
 
@@ -574,7 +574,7 @@ class TestLoaderEnhanced:
         pass
     
     # Add 6+ more tests to reach 90%+
-```
+```text
 
 ---
 
@@ -736,7 +736,7 @@ def troubleshoot_training(rank, world_size, model, optimizer):
             if check_distributed():
                 if verify_nccl():
                     # ... more nested logic
-```
+```text
 
 After:
 ```python
@@ -757,7 +757,7 @@ def troubleshoot_training(rank, world_size, model, optimizer):
             break
     
     return TroubleshootingResult(results)
-```
+```text
 
 **2. Refactor `load_and_validate()` (Complexity 11 → ≤10)**
 
@@ -813,7 +813,7 @@ class CacheHandler:
         if self._config is None:
             self._config = self._load_config()
         return self._config
-```
+```text
 
 **2. Data Loader First Load (2.3s → <2.0s)**
 
@@ -826,7 +826,7 @@ def load_and_validate(paths):
         futures = [executor.submit(load_file, p) for p in paths]
         results = [f.result() for f in futures]
     return results
-```
+```text
 
 **3. Validation Tool Execution (1.2s → <1.0s)**
 
@@ -838,7 +838,7 @@ import functools
 def validate_schema(schema_hash, data_hash):
     # Cached validation
     pass
-```
+```text
 
 ---
 
@@ -846,27 +846,27 @@ def validate_schema(schema_hash, data_hash):
 
 ### Test Summary
 
-```
+```text
 Total Tests: 1,262 (+15 new tests)
 Passed:      1,213 (96.1% → 96.1%)
 Failed:      28   (2.2%)
 Skipped:     21   (1.7%)
-```
+```text
 
 **NEW: ✅ Added comprehensive test suite for data_drift_check.py** (15 tests, 85%+ coverage achieved)
 
 ### Failing Test Suites
 
 **1. ~~training/test_distributed_troubleshooting.py: 12 failures~~** ❌ File doesn't exist - aspirational
-```
+```text
 N/A - Module src/training/distributed_troubleshooting.py doesn't exist in codebase
-```
+```text
 
 **Root Cause:** Module not implemented yet
 **Action:** Need to determine if this module should be created or is misdocumented
 
 **2. ~~tools/test_data_drift_check.py: 8 failures~~** ✅ FIXED - Now passing (15 tests)
-```
+```text
 ✅ All 15 tests passing
 - test_drift_score_no_drift
 - test_drift_score_with_drift
@@ -882,44 +882,44 @@ N/A - Module src/training/distributed_troubleshooting.py doesn't exist in codeba
 - test_main_nonexistent_file
 - test_main_invalid_json
 (Plus 2 more)
-```
+```text
 
 **Status:** ~~RESOLVED - Implementation Complete~~
 ... (9 more)
-```
+```text
 
 **Root Cause:** Module not implemented yet (0% coverage)
 **Action:** Implement missing tests
 
 **2. tools/test_data_drift_check.py: 8 failures**
-```
+```text
 FAILED test_check_drift_no_drift - ModuleNotFoundError
 FAILED test_drift_detector_initialization - AttributeError
 ... (6 more)
-```
+```text
 
 **Root Cause:** Module not implemented yet (0% coverage)
 **Action:** Implement missing tests
 
 **3. data/test_loader_enhanced.py: 8 failures**
-```
+```text
 FAILED test_load_and_validate_empty_file - AssertionError
 FAILED test_load_and_validate_malformed_json - TypeError
 FAILED test_load_and_validate_large_file - MemoryError
 ... (5 more)
-```
+```text
 
 **Root Cause:** Edge cases not handled (45% coverage)
 **Action:** Enhance existing tests and fix edge cases
 
 ### Linting Results
 
-```
+```text
 Total Issues:  34
 Errors:        0
 Warnings:      12 (primarily type hints)
 Info:          22
-```
+```text
 
 **Warning Breakdown:**
 - 12 missing type hints
@@ -934,7 +934,7 @@ ruff check --fix
 
 # Review remaining warnings
 ruff check --output-format=grouped
-```
+```text
 
 ---
 
@@ -973,7 +973,7 @@ def load_and_validate(path: Path):
     
     with open(resolved) as f:
         data = json.load(f)
-```
+```text
 
 **2. Error Message Sanitization (LOW severity)**
 
@@ -989,7 +989,7 @@ except Exception as e:
 except Exception as e:
     logger.error("Error loading data file", exc_info=True)
     # Don't print full path in production
-```
+```text
 
 **3. Configuration Path Validation (LOW severity)**
 
@@ -1008,7 +1008,7 @@ def load_config(config_path: Path):
         raise FileNotFoundError(f"Config not found")
     
     # Load config
-```
+```text
 
 ---
 
@@ -1208,7 +1208,7 @@ This PR represents significant progress but requires critical fixes before merge
 
 ### Appendix A: Complete Test Coverage Report
 
-```
+```text
 Module                                    Stmts   Miss  Cover
 ---------------------------------------------------------------
 src/training/distributed_troubleshooting    127    127     0%
@@ -1221,11 +1221,11 @@ src/training/functional_training            412     47   88.7%
 src/evaluation/metrics                      183     16   91.4%
 ---------------------------------------------------------------
 TOTAL                                      1430    474   66.9%
-```
+```text
 
 ### Appendix B: Detailed Linting Report
 
-```
+```text
 ruff check --output-format=grouped
 
 Warnings (12):
@@ -1248,11 +1248,11 @@ Info (22):
     - src/training/functional_training.py:156
     - src/data/loader_enhanced.py:89
     - tools/data_drift_check.py:145
-```
+```text
 
 ### Appendix C: Performance Profiling Results
 
-```
+```text
 Cache Handler Initialization:
   Total time: 145ms
   Breakdown:
@@ -1273,7 +1273,7 @@ Validation Tool Execution:
     - Schema loading: 0.5s (42%)
     - Validation logic: 0.5s (42%)
     - Report generation: 0.2s (16%)
-```
+```text
 
 ---
 

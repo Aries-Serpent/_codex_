@@ -10,7 +10,7 @@ The Archive Operations Log records all operations performed on archived data.
 ```jsonl
 {"operation":"archive","timestamp":"2023-10-01T12:00:00Z","user":"admin"}
 {"operation":"restore","timestamp":"2023-10-02T12:00:00Z","user":"admin"}
-```
+```text
 
 ## SQL Storage Backend Architecture
 The SQL Storage backend architecture involves the following components:
@@ -24,11 +24,11 @@ The SQL Storage backend architecture involves the following components:
 ### Commands for Creating Tombstones
 ```bash
 CREATE TOMBSTONE FOR record_id;
-```
+```text
 ### Commands for Restoring from Tombstones
 ```bash
 RESTORE record_id FROM tombstone;
-```
+```text
 
 ## Evidence Logging
 Evidence logging is critical for maintaining the integrity of archived data.
@@ -36,7 +36,7 @@ Evidence logging is critical for maintaining the integrity of archived data.
 ### Immutable JSONL Records Example
 ```jsonl
 {"evidence_id":"12345","timestamp":"2023-10-01T12:00:00Z","details":"Evidence created"}
-```
+```text
 
 ## Core Files
 - **archive.py**: Core logic for archiving operations.
@@ -54,11 +54,11 @@ Evidence logging is critical for maintaining the integrity of archived data.
 ### Example of Archiving
 ```bash
 python archive.py --id record_id
-```
+```text
 ### Example of Restoring
 ```bash
 python restore.py --id record_id
-```
+```text
 
 ---
 This document is intended to serve as a guide for executing Archive Policy Operations effectively and efficiently.

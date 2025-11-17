@@ -95,7 +95,7 @@ python -m codex_ml.cli.train epochs=3 steps_per_epoch=5 grad_accum=2 \
   checkpoint.dir=artifacts/ckpts checkpoint.resume=true \
   scheduler.type=linear scheduler.final_lr_scale=0.2 \
   dataset.sources='[data/train.jsonl]'
-```
+```text
 ## Validation Checklist (Current Increment)
 | Check | Status |
 |-------|--------|
@@ -106,4 +106,5 @@ python -m codex_ml.cli.train epochs=3 steps_per_epoch=5 grad_accum=2 \
 | Tokenizer fallback echo path validated | ✅ |
 
 ---
+```text
 ```

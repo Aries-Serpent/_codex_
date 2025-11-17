@@ -8,3 +8,5 @@
 ~~~  <-- mixed tilde fence (intentional error for testing)
 
 End of file.
+
+```

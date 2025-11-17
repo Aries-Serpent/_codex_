@@ -17,7 +17,7 @@ Usage
 from src.tokenization.api import HFTokenizerAdapter, SentencePieceTokenizer
 # Legacy (triggers DeprecationWarning):
 from src.tokenization.api import legacy_tokenizer
-```
+```text
 
 Testing
 - tests/tokenization/test_deprecation.py asserts a DeprecationWarning on legacy access.

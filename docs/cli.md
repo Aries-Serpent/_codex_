@@ -5,14 +5,14 @@ Use the package-style CLI to avoid import coupling and keep the surface stable:
 ```bash
 python -m codex_ml --help
 python -m codex_ml <subcommand> [args]
-```
+```text
 
 Examples:
 
 ```bash
 python -m codex_ml ndjson-summary --input artifacts/metrics.ndjson
 python -m codex_ml ndjson-summary --help
-```
+```text
 
 Notes:
 - This layout replaces one-off script entrypoints.

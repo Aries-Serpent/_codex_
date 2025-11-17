@@ -57,7 +57,7 @@ pytest tests/integration/ -v
 
 # Full test suite
 pytest tests/ -v --cov=src --cov-report=html
-```
+```text
 
 **Test Results:**
 - Total Tests: ________________
@@ -96,7 +96,7 @@ pip-audit --cache-dir /tmp/pip-audit-cache
 
 # Semgrep rules validation
 semgrep --config=semgrep_rules/ src/ --json
-```
+```text
 
 **Security Findings Summary:**
 - Total Issues Found: ________________
@@ -121,10 +121,10 @@ semgrep --config=semgrep_rules/ src/ --json
 
 **Coverage Threshold Configuration:**
 
-```
+```text
 File: .github/coverage_threshold.txt
 Requirement: 96% minimum
-```
+```text
 
 **Coverage Metrics:**
 
@@ -138,7 +138,7 @@ Requirement: 96% minimum
 ```bash
 pytest --cov=src --cov-report=term-missing --cov-report=html
 coverage report --skip-covered
-```
+```text
 
 **Coverage Report Location:**
 - Terminal Output: `coverage-report.txt`
@@ -174,7 +174,7 @@ Verification Commands:
   grep -E "(torch|cuda|tensorflow)" uv.lock | wc -l    # Expected: 0
   uv sync --check                                        # Expected: success
   python -m jsonschema -i uv.lock schema.json           # Expected: valid
-```
+```text
 
 **Lock File Analysis:**
 
@@ -202,7 +202,7 @@ python -c "import sys; print(f'Python {sys.version}')"
 
 # Test core modules
 python -c "from src import __version__; print(f'Package version: {__version__}')"
-```
+```text
 
 **Environment Validation:**
 
@@ -275,7 +275,7 @@ gh workflow view tests.yml
 
 # Validate YAML syntax
 yamllint .github/workflows/tests.yml
-```
+```text
 
 ### Gate 6.2: Status Checks & Approval
 
@@ -314,12 +314,12 @@ yamllint .github/workflows/tests.yml
 
 **Approver Signatures:**
 
-```
+```text
 Primary Reviewer: _________________________ Date: ___/___/___
 Security Reviewer: _________________________ Date: ___/___/___
 QA Reviewer: _________________________ Date: ___/___/___
 DevOps Reviewer: _________________________ Date: ___/___/___
-```
+```text
 
 ---
 
@@ -352,7 +352,7 @@ DevOps Reviewer: _________________________ Date: ___/___/___
    Risk Assessment: ___________________________________
    Mitigation: ________________________________________
    Approved By: ___________________________ Date: ___/___/___
-```
+```text
 
 ### Gate 8.2: Deployment Timeline
 
@@ -410,7 +410,7 @@ gh run view <run-id> --json artifacts
 
 # Verify deployment trigger
 gh deployment list --environment production
-```
+```text
 
 ---
 
@@ -436,7 +436,7 @@ gh pr revert 2207 --repo Aries-Serpent/_codex_
 # Create rollback issue for documentation
 gh issue create --title "Rollback PR #2207: [Reason]" \
   --body "Rollback initiated due to: [specific reason]"
-```
+```text
 
 **Communication Required:**
 

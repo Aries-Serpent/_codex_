@@ -31,7 +31,7 @@ phase_schedule:
   - id: challenge
     dataset: datasets/reasoning/challenge.jsonl
     steps: 300
-```
+```text
 
 ## Training pipeline
 

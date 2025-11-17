@@ -49,7 +49,7 @@ Update the PR description using the template in these scenarios:
 ```bash
 # Read the comprehensive template
 Template location: PR_TEMPLATE_COMPREHENSIVE.md
-```
+```text
 
 ### Step 2: Identify Relevant Sections
 Based on the work performed, identify which capability sections apply:
@@ -153,7 +153,7 @@ After completing "Phase D1: Request Batching", update the PR description:
 - [ ] Memory-bounded caching
 - [ ] CacheMetrics tracking
 - [ ] Thread-safe operations
-```
+```text
 
 ---
 
@@ -224,7 +224,7 @@ Before finishing a session, verify:
 
 ## 📖 QUICK REFERENCE: PR UPDATE WORKFLOW
 
-```
+```text
 1. START SESSION
    ↓
 2. LOAD PR_TEMPLATE_COMPREHENSIVE.md
@@ -249,7 +249,7 @@ Before finishing a session, verify:
    - Update summary statistics
    ↓
 9. END SESSION
-```
+```text
 
 ---
 
@@ -467,7 +467,7 @@ All acceptance criteria met across all phases:
 ✅ Template-based PR description complete
 
 **Status:** READY FOR FINAL REVIEW AND MERGE
-```
+```text
 
 ---
 

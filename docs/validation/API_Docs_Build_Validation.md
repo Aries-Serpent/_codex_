@@ -25,13 +25,13 @@ python tools/validate_api_docs.py \
   --out artifacts/docs/api \
   --allow-optional "wandb" "tensorboard" "torch" \
   --summary
-```
+```text
 
 ### 2. Env-gated test (skip-safe)
 
 ```bash
 CODEX_ENABLE_DOCS_TEST=1 pytest -q tests/docs/test_api_docs_build.py
-```
+```text
 
 ### 3. Nox session (single-runner)
 
@@ -41,7 +41,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate
 
 # Validate full codex_ml (requires more dependencies)
 nox -f nox_sessions/docs_validation.py -s docs_validate_full
-```
+```text
 
 ## What the validator checks
 
@@ -85,7 +85,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
   "out_dir": "/path/to/artifacts/docs/api",
   "package": "codex.cli"
 }
-```
+```text
 
 ## Troubleshooting (common fixes)
 
@@ -94,7 +94,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 **Symptom**:
 ```text
 "errors": ["codex_ml.peft: ImportError: No module named 'peft'"]
-```
+```text
 **Fix**:
 - Add to `--allow-optional` list: `--allow-optional "wandb" "tensorboard" "peft"`
 - Or gate imports in code path via `try/except` + documentation
@@ -105,7 +105,7 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 ```text
 "root_import_ok": false,
 "root_error": "ModuleNotFoundError: No module named 'codex'"
-```
+```text
 **Fix**:
 ```bash
 # Option 1: Install in editable mode
@@ -113,7 +113,7 @@ pip install -e .
 
 # Option 2: Set PYTHONPATH
 export PYTHONPATH=$(pwd)/src:$PYTHONPATH
-```
+```text
 
 ### Stale artifacts
 
@@ -124,7 +124,7 @@ export PYTHONPATH=$(pwd)/src:$PYTHONPATH
 # Remove and rebuild
 rm -rf artifacts/docs/api/*
 python tools/validate_api_docs.py --package codex.cli --out artifacts/docs/api --summary
-```
+```text
 
 ### Source layout changes not reflected
 
@@ -163,7 +163,7 @@ if [ "$ok" != "true" ] || [ "$errors" != "0" ]; then
 fi
 
 echo "✓ API docs validation passed"
-```
+```text
 
 ## Related Documentation
 

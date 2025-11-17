@@ -30,7 +30,7 @@
 
 ### Fixture Hierarchy
 
-```
+```text
 ┌───────────────────────────────────────────────┐
 │         conftest.py (Test Configuration)      │
 │                                               │
@@ -60,7 +60,7 @@
         │  • test_db_manager_critical.py   │
         │  • test_pooling_advanced.py      │
         └──────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -438,7 +438,7 @@ def pooling_mode(request):
         os.environ['CODEX_SQLITE_POOL'] = original_env
     
     importlib.reload(codex.logging.db_manager)
-```
+```text
 
 ---
 
@@ -484,7 +484,7 @@ class TestDBManager:
         
         # Verify pool is empty
         pool_state_tracker['assert_pool_empty']()
-```
+```text
 
 ---
 
@@ -659,7 +659,7 @@ class TestPoolingParametrized:
             assert pool_size == 1, "Connection should be in pool when pooling enabled"
         else:
             assert pool_size == 0, "Connection should NOT be in pool when pooling disabled"
-```
+```text
 
 ---
 
@@ -766,7 +766,7 @@ class TestPoolingParametrized:
 ### Ready for Maintainer Review
 
 All fixtures created, all tests passing, comprehensive coverage achieved.
-```
+```text
 
 **Generated**: 2025-11-14 12:15:26 UTC  
 **Author**: mbaetiong  

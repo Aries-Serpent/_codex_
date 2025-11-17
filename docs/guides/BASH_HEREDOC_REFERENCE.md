@@ -32,14 +32,14 @@ Hello $name!
 Today is $(date +%F).
 The result of 2+2 is $((2 + 2)).
 EOF
-```
+```text
 
 Output:
 ```text
 Hello Codex!
 Today is 2025-10-30.
 The result of 2+2 is 4.
-```
+```text
 **Backslashes retain special meaning**:
 
 ```bash
@@ -47,13 +47,13 @@ cat <<EOF
 Path: C:\\Temp\\file.txt
 Literal dollar: \$HOME
 EOF
-```
+```text
 
 Produces:
 ```text
 Path: C:\Temp\file.txt
 Literal dollar: $HOME
-```
+```text
 ### Single-Quoted Delimiter (`<<'EOF'`)
 
 Content is treated literally—no expansion, no escape interpretation.
@@ -64,14 +64,14 @@ Path: C:\\Temp\\file.txt
 Literal dollar: $HOME
 Command: $(uname -s)
 EOF
-```
+```text
 
 Output (exact match):
 ```text
 Path: C:\\Temp\\file.txt
 Literal dollar: $HOME
 Command: $(uname -s)
-```
+```text
 Use this form for scripts, JSON, YAML, and any text where substitutions would be harmful.
 
 ### Double-Quoted Delimiter (`<<"EOF"`)
@@ -83,7 +83,7 @@ value="quoted"
 cat <<"EOF"
 He said "Hello" to $value
 EOF
-```
+```text
 
 ### Indented Heredocs (`<<-EOF`)
 
@@ -94,13 +94,13 @@ cat <<-EOF
 	Line 1
 	Line 2
 EOF
-```
+```text
 
 Output:
 ```text
 Line 1
 Line 2
-```
+```text
 Combine with quoting rules for literal vs. expanded content: `<<-'EOF'` or `<<-EOF`.
 
 ## Escape Sequence Rules
@@ -121,7 +121,7 @@ printf '%b\n' "Path\tValue"
 cat <<'EOF'
 $(printf '%b\n' "Path\tValue")  # Will **not** expand
 EOF
-```
+```text
 
 If expansion is required inside the heredoc, precompute the string:
 
@@ -130,7 +130,7 @@ line=$(printf '%b' 'Path\tValue')
 cat <<EOF
 $line
 EOF
-```
+```text
 
 ## Command Chaining Patterns
 
@@ -141,7 +141,7 @@ cat <<'EOF' > config.yaml
 name: Codex
 version: "1.0"
 EOF
-```
+```text
 
 ### Using Pipelines
 
@@ -150,7 +150,7 @@ cat <<EOF | grep Codex
 Codex
 Other
 EOF
-```
+```text
 
 ### Feeding Interactive Commands
 
@@ -159,7 +159,7 @@ psql <<'EOF'
 \dt
 SELECT NOW();
 EOF
-```
+```text
 
 ## Common Pitfalls & Solutions
 
@@ -179,7 +179,7 @@ cat <<'EOF' > sample.txt
 line with space 
 EOF
 cat -vet sample.txt
-```
+```text
 
 Output shows trailing spaces as `^I` or `$` markers.
 

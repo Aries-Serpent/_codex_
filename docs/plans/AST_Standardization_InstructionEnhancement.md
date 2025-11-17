@@ -123,7 +123,7 @@ class StandardizedASTNode:
     
     # Analysis Results (populated post-parse)
     analysis_results: Optional["AnalysisResults"] = None
-```
+```text
 
 ### 3.2 Analysis Results Schema
 
@@ -167,7 +167,7 @@ class AnalysisResults:
     dependencies: List["Dependency"]
     timestamp: datetime
     analyzer_version: str
-```
+```text
 
 ### 3.3 Dependency Graph Schema
 
@@ -206,7 +206,7 @@ class DependencyGraph:
     def compute_fan_out(self, node_id: str) -> int:
         """Count outgoing edges."""
         pass
-```
+```text
 
 ### 3.4 Knowledge Graph Export Schema
 
@@ -267,7 +267,7 @@ CREATE TABLE quality_metrics (
     metric_name TEXT NOT NULL,
     metric_value REAL NOT NULL
 );
-```
+```text
 
 ---
 
@@ -358,7 +358,7 @@ CREATE TABLE quality_metrics (
 
 ### 5.1 Testing Strategy (Test Pyramid)
 
-```
+```text
         ┌──────────────────────┐
         │  E2E Tests (5%)      │   Full pipeline: codebase → report
         ├──────────────────────┤
@@ -366,7 +366,7 @@ CREATE TABLE quality_metrics (
         ├──────────────────────┤
         │  Unit Tests (75%)    │   Individual function: parser.parse() → AST
         └──────────────────────┘
-```
+```text
 
 ### 5.2 Test Coverage Targets by Component
 
@@ -460,19 +460,19 @@ CREATE TABLE quality_metrics (
 ```bash
 export CODEX_AST_DISABLED=1
 # Fall back to regex-based analysis
-```
+```text
 
 **If Performance Degraded:**
 ```bash
 # Reduce scope
 codex-analyze src/ --max-file-size 50000 --skip-expensive-analysis
-```
+```text
 
 **If Smell Detection Too Noisy:**
 ```bash
 # Reduce sensitivity
 codex-analyze --smell-threshold high src/
-```
+```text
 
 ---
 
@@ -533,7 +533,7 @@ This requirements document provides **complete, verifiable, and measurable** spe
 **Status:** APPROVED FOR IMPLEMENTATION  
 **Assigned To:** mbaetiong (Primary Engineer)  
 **Review Cycle:** Phase-end gates + final sign-off
-```
+```text
 
 Now creating the complementary validation and implementation guidance file:
 
@@ -577,7 +577,7 @@ Now creating the complementary validation and implementation guidance file:
 ### 2.1 Parser Module Implementation Guide
 
 **File Structure:**
-```
+```text
 src/codex_ml/ast/
 ├── parser.py                    # UniversalParser orchestrator
 ├── language_adapters/
@@ -588,7 +588,7 @@ src/codex_ml/ast/
 │   ├── json_adapter.py          # JSONAdapter
 │   └── sql_adapter.py           # SQLAdapter (custom)
 └── errors.py                    # AST-specific exceptions
-```
+```text
 
 **Implementation Checklist: `python_adapter.py`**
 
@@ -672,7 +672,7 @@ class MetadataExtractor(cst.CSTVisitor):
         # Record import
         pass
         return True
-```
+```text
 
 **Testing: `tests/ast/test_parser.py`**
 
@@ -735,7 +735,7 @@ def test_parser_performance(benchmark):
     
     result = benchmark(adapter.parse, source, Path("large_file.py"))
     assert result is not None
-```
+```text
 
 **Integration Point:** All adapters inherit from `BaseLanguageAdapter`
 
@@ -754,7 +754,7 @@ class BaseLanguageAdapter(ABC):
     def get_supported_extensions(self) -> List[str]:
         """File extensions this adapter handles."""
         pass
-```
+```text
 
 ---
 
@@ -923,7 +923,7 @@ class MetricsAnalyzer:
         yield node, depth
         for child in node.children:
             yield from self._traverse_with_depth(child, depth + 1)
-```
+```text
 
 **Testing: `tests/ast/test_metrics.py`**
 
@@ -970,7 +970,7 @@ def test_maintainability_index_grade():
     
     assert metrics.maintainability_index > 85
     assert metrics.quality_grade == "A"
-```
+```text
 
 ---
 
@@ -1136,7 +1136,7 @@ def test_cycle_detection_complex():
     cycles = graph.detect_cycles()
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C", "D"}
-```
+```text
 
 ---
 
@@ -1144,7 +1144,7 @@ def test_cycle_detection_complex():
 
 ### 3.1 Test Organization
 
-```
+```text
 tests/ast/
 ├── conftest.py                  # Shared fixtures
 ├── fixtures/
@@ -1160,7 +1160,7 @@ tests/ast/
 ├── test_cli.py
 ├── test_integration.py
 └── test_benchmarks.py
-```
+```text
 
 ### 3.2 Fixture Strategy (conftest.py)
 
@@ -1208,7 +1208,7 @@ def synthetic_graph():
     graph.add_edge("C", "A")
     
     return graph
-```
+```text
 
 ### 3.3 Performance Benchmarks
 
@@ -1267,7 +1267,7 @@ class TestAnalyzerPerformance:
         
         time_per_1000_loc = (elapsed / loc) * 1000
         assert time_per_1000_loc < 5.0
-```
+```text
 
 ---
 
@@ -1337,7 +1337,7 @@ jobs:
         with:
           name: ast-report
           path: audit.html
-```
+```text
 
 ---
 

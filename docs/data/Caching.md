@@ -24,7 +24,7 @@ from codex_ml.data.cache import derive_key
 
 key = derive_key("imdb", "train", "42")  # dataset, split, seed
 # Returns: '4f3d2e1a0b9c8d7e'  (16-char hex)
-```
+```text
 
 ### cache_records
 
@@ -44,7 +44,7 @@ path = cache_records(
     key=key
 )
 # Returns: Path('artifacts/cache/4f3d2e1a0b9c8d7e.jsonl')
-```
+```text
 
 ### load_cached_records
 
@@ -62,7 +62,7 @@ if records is None:
 else:
     # Cache hit - use cached data
     print(f"Loaded {len(records)} cached records")
-```
+```text
 
 ## Usage Patterns
 
@@ -87,7 +87,7 @@ def get_preprocessed_data(dataset_name, split, seed):
     cache_records(records, cache_dir="artifacts/cache", key=key)
     
     return records
-```
+```text
 
 ### With Version Control
 
@@ -103,7 +103,7 @@ def get_cached_data_v2(dataset_name, split, seed, version="v1"):
         cache_records(records, cache_dir="artifacts/cache", key=key)
     
     return records
-```
+```text
 
 ### Cache Invalidation
 
@@ -126,7 +126,7 @@ def clear_dataset_cache(dataset_name, cache_dir="artifacts/cache"):
         # Check if key was derived from this dataset
         # (requires storing metadata alongside cache)
         pass
-```
+```text
 
 ## Performance
 
@@ -155,7 +155,7 @@ key = derive_key(dataset, split, seed, tokenizer, max_length)
 
 # Bad - missing preprocessing details
 key = derive_key(dataset, split)
-```
+```text
 
 ### 2. Organize Cache by Purpose
 
@@ -166,7 +166,7 @@ cache_records(records, cache_dir="artifacts/cache/train", key=train_key)
 
 eval_key = derive_key("eval", dataset, split, seed)
 cache_records(records, cache_dir="artifacts/cache/eval", key=eval_key)
-```
+```text
 
 ### 3. Document Cache Keys
 
@@ -186,7 +186,7 @@ def derive_dataset_key(config):
         str(config.seed),
         config.preprocess_version,
     )
-```
+```text
 
 ### 4. Handle Cache Misses Gracefully
 
@@ -211,7 +211,7 @@ def load_or_preprocess(config):
         logger.warning(f"Cache write failed: {e}")
     
     return records
-```
+```text
 
 ## Integration
 
@@ -234,7 +234,7 @@ def load_hf_dataset_cached(name, split, cache_dir="artifacts/cache"):
     
     cache_records(records, cache_dir=cache_dir, key=key)
     return records
-```
+```text
 
 ### With Custom Loaders
 
@@ -260,7 +260,7 @@ def load_custom_dataset(path, preprocess_fn, cache_dir="artifacts/cache"):
     cache_records(records, cache_dir=cache_dir, key=key)
     
     return records
-```
+```text
 
 ## Troubleshooting
 
@@ -272,7 +272,7 @@ def load_custom_dataset(path, preprocess_fn, cache_dir="artifacts/cache"):
 ```python
 import os
 os.makedirs(cache_dir, exist_ok=True, mode=0o755)
-```
+```text
 
 ### Disk Space
 
@@ -287,7 +287,7 @@ def cleanup_old_caches(cache_dir, max_age_days=7):
     for cached_file in Path(cache_dir).glob("*.jsonl"):
         if cached_file.stat().st_mtime < cutoff:
             cached_file.unlink()
-```
+```text
 
 ### Corrupted Cache
 
@@ -304,7 +304,7 @@ def validate_cache(cache_dir, key):
         cached_file = Path(cache_dir) / f"{key}.jsonl"
         cached_file.unlink(missing_ok=True)
         return False
-```
+```text
 
 ## See Also
 

@@ -9,7 +9,7 @@ Example — Add parity test
 +import pytest
 +...
 *** End Patch
-```
+```text
 
 Validation Checklist
 - Lint/typecheck pass

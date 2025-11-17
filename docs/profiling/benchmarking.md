@@ -25,7 +25,7 @@ for epoch in range(5):
 
 profiler.export_jsonl("artifacts/profiling.jsonl")
 print(profiler.summary())
-```
+```text
 
 The `summary()` method returns min/mean/max/median values per section, making it easy to spot regressions between
 runs.
@@ -40,7 +40,7 @@ nox --noxfile configs/development/noxfile.py -s perf -- \
   --batch-size 32 \
   --num-iterations 100 \
   --output artifacts/inference_bench.jsonl
-```
+```text
 
 Each invocation can export NDJSON records which integrate with the session logging infrastructure and can be plotted
 with tools like pandas or Vega.

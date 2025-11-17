@@ -19,13 +19,13 @@ The config schema guard provides best-effort validation of Hydra/OmegaConf confi
 
 ```bash
 python tools/configs/schema_guard.py --path configs/train/example.yaml
-```
+```text
 
 ### Via Nox
 
 ```bash
 nox -s config_schema
-```
+```text
 
 ## Output Format
 
@@ -37,7 +37,7 @@ The tool outputs a JSON report:
   "valid": true,
   "issues": []
 }
-```
+```text
 
 Or with issues:
 
@@ -52,7 +52,7 @@ Or with issues:
     }
   ]
 }
-```
+```text
 
 ## Validation Checks
 
@@ -87,7 +87,7 @@ def _validate(config: dict[str, Any]) -> list[dict[str, str]]:
                 })
     
     return issues
-```
+```text
 
 ## Integration
 
@@ -104,7 +104,7 @@ Add to `.pre-commit-config.yaml`:
       language: system
       files: '^configs/.*\.(yaml|yml|json)$'
       pass_filenames: true
-```
+```text
 
 ### CI/CD
 
@@ -114,7 +114,7 @@ Add to `.pre-commit-config.yaml`:
     for cfg in configs/**/*.yaml; do
       python tools/configs/schema_guard.py --path "$cfg"
     done
-```
+```text
 
 ## Troubleshooting
 
@@ -125,7 +125,7 @@ Add to `.pre-commit-config.yaml`:
 **Solution**: Install OmegaConf for better validation:
 ```bash
 pip install omegaconf>=2.3
-```
+```text
 
 ### YAML Parse Errors
 
@@ -134,7 +134,7 @@ pip install omegaconf>=2.3
 **Solution**: Use a YAML linter first:
 ```bash
 yamllint configs/train/example.yaml
-```
+```text
 
 ### False Positives
 

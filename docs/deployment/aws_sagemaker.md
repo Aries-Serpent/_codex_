@@ -15,7 +15,7 @@ Create a SageMaker-compatible image based on the Codex runtime:
 aws sagemaker create-image-version \
   --image-name codex-ml \
   --base-image-uri <account>.dkr.ecr.<region>.amazonaws.com/codex-ml:latest
-```
+```text
 
 Ensure the container exposes `/invocations` and `/ping` endpoints. Mount the metrics exporter to `/metrics` for
 Prometheus scraping via Amazon Managed Service for Prometheus (AMP).
@@ -30,7 +30,7 @@ aws sagemaker create-model \
 aws sagemaker create-endpoint-config \
   --endpoint-config-name codex-ml-config \
   --production-variants VariantName=AllTraffic,ModelName=codex-ml,InitialInstanceCount=1,InstanceType=ml.g5.2xlarge
-```
+```text
 
 Enable data capture for compliance by setting `EnableCapture=true` on the endpoint configuration. Route captured
 payloads to S3 and apply the session ID headers to correlate with Codex logs.
@@ -41,7 +41,7 @@ payloads to S3 and apply the session ID headers to correlate with Codex logs.
 aws sagemaker create-endpoint \
   --endpoint-name codex-ml \
   --endpoint-config-name codex-ml-config
-```
+```text
 
 Monitor the endpoint using CloudWatch metrics and forward Prometheus data to AMP. When deploying to multiple
 regions, share the `.codex/evidence/phase5_*.jsonl` artefacts with the operations team for traceability.

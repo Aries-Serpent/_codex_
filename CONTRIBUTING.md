@@ -29,7 +29,7 @@ Validation Gates:
 - `pytest tests/cli/test_token_refresh.py -q`
 - `coverage run -m pytest src/cli/`
 Rollback Signal: `[PLACEHOLDER:rollback_signal]` crossing threshold
-```
+```text
 
 ### Additional Expectations
 

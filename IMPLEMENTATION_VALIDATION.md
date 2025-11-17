@@ -23,7 +23,7 @@ All atomic diffs from the problem statement have been verified as implemented. T
 ```python
 from codex_ml.eval.runner import _normalise_metrics_sink
 assert _normalise_metrics_sink(None) == ['ndjson']  # ✅ Passes
-```
+```text
 
 **Rollback:** Change default in `_normalise_metrics_sink` from `"ndjson"` to `"csv"`
 
@@ -46,7 +46,7 @@ assert _normalise_metrics_sink(None) == ['ndjson']  # ✅ Passes
 ```bash
 grep "repro.set_seed" src/codex_ml/cli/train.py
 # Output: repro.set_seed(seed) ✅
-```
+```text
 
 **Rollback:** Remove lines 21 and 305
 
@@ -66,7 +66,7 @@ grep "repro.set_seed" src/codex_ml/cli/train.py
 ```bash
 grep -A 10 'model-smoke' noxfile.py
 # Shows complete session definition ✅
-```
+```text
 
 **Rollback:** Remove the `model_smoke` nox session
 
@@ -86,7 +86,7 @@ grep -A 10 'model-smoke' noxfile.py
 ```bash
 grep -A 5 "^setup:" configs/development/Makefile
 # Shows lock.txt enforcement ✅
-```
+```text
 
 **Rollback:** Remove the existence check and use `requirements/dev.txt` directly
 
@@ -106,7 +106,7 @@ grep -A 5 "^setup:" configs/development/Makefile
 ```bash
 grep -B 1 "digest" Dockerfile | head -3
 # Shows: "# For immutable builds, prefer digest pinning. Example:" ✅
-```
+```text
 
 **Rollback:** N/A (documentation only)
 
@@ -128,7 +128,7 @@ grep -B 1 "digest" Dockerfile | head -3
 from codex_ml.models.factory import ENV_ENABLE_PEFT, _should_enable_peft
 assert ENV_ENABLE_PEFT == "CODEX_ML_ENABLE_PEFT"  # ✅
 assert _should_enable_peft(None) == False  # ✅ Default OFF
-```
+```text
 
 **Rollback:** Remove environment variable checks and always apply PEFT when configured
 
@@ -152,7 +152,7 @@ assert _should_enable_peft(None) == False  # ✅ Default OFF
 from codex_ml.data.splits import assign_split, stable_fold
 assert 0 <= stable_fold("test-id") < 100  # ✅
 assert assign_split("test-id") in {"train", "val", "test"}  # ✅
-```
+```text
 
 **Rollback:** Delete `splits.py` helper (note: this would break existing code)
 
@@ -173,7 +173,7 @@ assert assign_split("test-id") in {"train", "val", "test"}  # ✅
 ```bash
 make -f configs/development/Makefile env-snapshot
 # Creates artifacts/env_snapshot.json with Python version, platform, git commit ✅
-```
+```text
 
 **Rollback:** Remove `env-snapshot` target and references
 

@@ -29,7 +29,7 @@ codex-update-runner --help
 codex-workflow --help
 codex-task-sequence --help
 codex-ast-upgrade --help
-```
+```text
 
 `codex-script` continues to rely on Hydra for configuration loading, so it
 honours the original configuration tree under `configs/`.

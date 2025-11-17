@@ -19,7 +19,7 @@ def nonzero_rate(df=None, **kwargs) -> float:
     if df is None or "value" not in df.columns:
         return float("nan")
     return float((df["value"] != 0).mean())
-```
+```text
 
 ## Hooks
 
@@ -34,7 +34,7 @@ class StepCounterHook(BaseHook):
 
     def on_step_end(self, state):
         state["plugin_steps"] += 1
-```
+```text
 
 ## Loading plugins
 
@@ -45,14 +45,14 @@ plugins:
   enable: true
   modules:
     - "hhg_logistics.plugins.example_plugin"
-```
+```text
 
 ```python
 from hhg_logistics.plugins import load_plugins
 
 if cfg.plugins.enable:
     load_plugins(cfg.plugins.modules)
-```
+```text
 
 Plugins may also provide custom hooks; instantiate them within configuration or code as needed.
 

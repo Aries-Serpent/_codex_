@@ -26,7 +26,7 @@ docs/
   examples/self_hosted_example.yml      # Example only; NOT active
   examples/python-variant/README.md     # Deprecated Python variant (note)
   validation/Bridge_Run_Validation.md
-```
+```text
 
 ## Default Allow/Deny Policy
 | Policy | Value |

@@ -14,7 +14,7 @@ ckpt_path, meta = save_checkpoint("artifacts/ckpts", {"state": 1}, metric_value=
 state, meta2 = load_checkpoint(ckpt_path, restore_rng=True)
 best_state, best_meta, best_path = load_best("artifacts/ckpts")
 verify = verify_checkpoint(best_path)
-```
+```text
 
 Index Schema (index.json)
 | Field | Type | Notes |

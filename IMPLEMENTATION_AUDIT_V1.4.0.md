@@ -24,7 +24,7 @@ Added 4 new domain patterns to `DOMAIN_PATTERNS`:
 "secret": re.compile(r"secret|baseline|redact", re.I),
 "status": re.compile(r"status|audit|report", re.I),
 "archive": re.compile(r"archive|bundle|manifest", re.I),
-```
+```text
 
 ### 2. Enhanced Safeguard Keywords
 
@@ -34,7 +34,7 @@ Extended `SAFEGUARD_KEYWORDS` list with 6 new keywords:
 # Codex-specific additions (v1.4.0)
 "deterministic", "reproduce", "manifest",
 "baseline", "secret", "sanitize"
-```
+```text
 
 Total safeguard keywords: **12** (was 6)
 
@@ -48,7 +48,7 @@ Added 4 new entries to `DOCS_SYNONYMS_MAP`:
 "inference-serving": ["serve", "api", "inference", "predict", "fastapi"],
 "status-reporting": ["status", "audit", "report", "codex_status"],
 "archival-bundling": ["archive", "bundle", "manifest", "pointer"],
-```
+```text
 
 ### 4. Created 3 New Dynamic Detectors
 
@@ -127,7 +127,7 @@ Explain: ml-serving
 # Policy validation
 $ python scripts/space_traversal/audit_runner.py validate
 # Exits with code 4 (expected, low maturity capabilities present)
-```
+```text
 
 ### Detection Stats
 
@@ -240,13 +240,13 @@ score = (
 consistency = base_consistency * similarity_index
 tests = max(base_tests, coverage_percent)
 safeguards = base_safeguards * severity_factor
-```
+```text
 
 ---
 
 ## Directory Structure
 
-```
+```text
 _codex_/
 ├── .copilot-space/
 │   └── workflow.yaml                  # v1.4.0 config
@@ -275,7 +275,7 @@ _codex_/
 ├── reports/                           # S6 markdown matrices
 │   └── capability_matrix_*.md
 └── audit_run_manifest.json           # S7 provenance
-```
+```text
 
 ---
 
@@ -297,7 +297,7 @@ export PREFIX_VALIDATE_AUTO=1
 
 # Knobs summary
 export SUMMARY_ENABLE=1
-```
+```text
 
 ---
 

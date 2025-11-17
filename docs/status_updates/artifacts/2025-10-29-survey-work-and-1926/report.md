@@ -54,7 +54,7 @@ sanitize_slug() {
   value="$(echo "${value}" | sed -E 's/_+/_/g; s/^_+//; s/_+$//')"
   printf '%s' "${value:-na}"
 }
-```
+```text
 
 **FILE:** tools/survey_sanitize.py@HEAD
 ```text
@@ -95,7 +95,7 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
             buffer.append(clean)
         else:
             output.append(clean)
-```
+```text
 
 **FILE:** docs/status_updates/README.md@HEAD
 ```text
@@ -113,7 +113,7 @@ def _wrap_content_blocks(lines: Iterable[str]) -> List[str]:
    - Report: `docs/status_updates/survey-<branch>-and-<PR>-<YYYY-MM-DD>.md`
    - Artifacts: `docs/status_updates/artifacts/<YYYY-MM-DD>-survey-<branch>-and-<PR>/`
    - The artifact folder also mirrors the report at `report.md` for easy packaging.
-```
+```text
 
 ### 4.2 CLI/Docs Mismatches
 - None observed; README and script usage align.

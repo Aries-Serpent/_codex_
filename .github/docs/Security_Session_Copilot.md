@@ -16,7 +16,7 @@ Produce three artifacts and a summary in the security session:
 ## Commands (CI)
 ```bash
 nox -s security
-```
+```text
 
 ## Accept/Fail Criteria
 - ACCEPT: No HIGH/CRITICAL dependency vulns OR only allowlisted with valid future expiry.

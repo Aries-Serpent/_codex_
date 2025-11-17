@@ -11,7 +11,7 @@ cd agents/codex_client
 python -m venv .venv && source .venv/bin/activate
 pip install -U pip
 pip install -e .
-```
+```text
 ## Usage
 
 1. Export the ITA connection information:
@@ -40,6 +40,6 @@ codex_client/
 ├── config.py          # Environment-driven configuration helpers
 ├── demo_plan_and_call.py  # Runnable script showing how a Codex agent would orchestrate calls
 └── models.py          # Pydantic models shared between client components
-```
+```text
 The package is intentionally lightweight so it can be embedded directly into Codex function-calling scaffolds or invoked as a
 CLI helper within existing workflows.

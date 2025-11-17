@@ -40,7 +40,7 @@ scoring:
     documentation: 1.0
   dup:
     heuristic: simple  # or token_similarity (experimental)
-```
+```text
 
 ## 5. Meta Rendering
 - Detectors may return `meta` (dictionary) along with evidence/patterns.

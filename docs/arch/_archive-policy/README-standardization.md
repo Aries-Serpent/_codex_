@@ -24,25 +24,25 @@ export CODEX_STANDARDIZATION_ENABLED=true
 
 # For GitHub Actions (signing enabled automatically):
 export CODEX_ENABLE_SIGNING=true
-```
+```text
 
 ### 2. Check Status
 
 ```bash
 python -m codex.cli archive show-standardization-status
-```
+```text
 
 ### 3. Validate Evidence Log
 
 ```bash
 python -m codex.cli archive validate-standardization --check-schema-version
-```
+```text
 
 ### 4. Migrate Old Records (Optional)
 
 ```bash
 python -m codex.cli archive migrate-evidence-to-v2
-```
+```text
 
 ## File Structure
 
@@ -69,7 +69,7 @@ docs/arch/
 ├── adr-2025-11-03-evidence-schema-versioning.md
 └── _archive-policy/
     └── standardization-framework.md
-```
+```text
 ## Example: Enhanced Evidence Record
 
 ### Before (v1)
@@ -81,7 +81,7 @@ docs/arch/
   "tombstone": "d3e8729-...",
   "sha256": "e3b0c442..."
 }
-```
+```text
 
 ### After (v2)
 ```json
@@ -99,7 +99,7 @@ docs/arch/
     "signed_at": "2025-11-02T19:44:01Z"
   }
 }
-```
+```text
 
 ## Testing
 
@@ -111,7 +111,7 @@ pytest tests/archive/test_standardization.py -v
 pytest tests/archive/test_standardization.py --cov=src/codex/archive
 
 # Expected: 10 tests pass, >85% coverage
-```
+```text
 
 ## GitHub Actions Setup
 
@@ -148,7 +148,7 @@ jobs:
           python -m codex.cli archive store _codex_ file.py \
             --reason "cleanup" \
             --by "${{ github.actor }}"
-```
+```text
 
 ## Troubleshooting
 
@@ -160,19 +160,19 @@ ls -la schemas/archive_evidence_schema_*.json
 # Validate JSON syntax
 python -m json.tool schemas/archive_evidence_schema_v1.json
 python -m json.tool schemas/archive_evidence_schema_v2.json
-```
+```text
 
 ### Module not found errors
 ```bash
 # Install dependencies
 pip install jsonschema sigstore
-```
+```text
 
 ### Backward compatibility concerns
 ```bash
 # Run backward compatibility tests
 pytest tests/archive/test_standardization.py::TestBackwardCompatibility -v
-```
+```text
 
 ## Documentation
 
