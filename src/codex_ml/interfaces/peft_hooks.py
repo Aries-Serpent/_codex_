@@ -1,4 +1,5 @@
 """Guarded PEFT/LoRA helper utilities."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -12,7 +13,12 @@ except Exception:  # pragma: no cover - gracefully degrade when peft unavailable
     TaskType = None  # type: ignore[assignment]
     get_peft_model = None  # type: ignore[assignment]
 
-__all__ = ["build_peft_config", "enable_peft", "load_adapter_for_inference", "ensure_peft_available"]
+__all__ = [
+    "build_peft_config",
+    "enable_peft",
+    "load_adapter_for_inference",
+    "ensure_peft_available",
+]
 
 
 @dataclass(frozen=True)

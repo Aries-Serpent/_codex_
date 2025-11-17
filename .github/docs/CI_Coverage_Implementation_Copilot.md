@@ -77,7 +77,7 @@ git commit -m "chore: regenerate uv.lock to fix malformed TOML"
 git push --set-upstream origin fix/regen-uv-lock
 
 # 8. Open PR and merge after CI green
-```
+```text
 
 ### Verification Commands
 
@@ -95,7 +95,7 @@ nox -s evidence_check
 
 # Test coverage parser (if coverage.xml exists)
 python .github/scripts/ci_parse_coverage.py artifacts/coverage.xml
-```
+```text
 
 ## Troubleshooting
 

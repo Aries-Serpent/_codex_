@@ -52,7 +52,7 @@ from unittest.mock import patch
 # Line 424: importlib.reload(codex.logging.db_manager)  # ❌ NameError
 # Line 629: importlib.reload(codex.logging.db_manager)  # ❌ NameError
 # Line 639: importlib.reload(codex.logging.db_manager)  # ❌ NameError
-```
+```text
 
 **Root Cause**: `importlib.util` does not include `reload()` function. Need explicit `import importlib`.
 
@@ -61,7 +61,7 @@ from unittest.mock import patch
 # Add to imports section (line 4)
 import importlib
 import importlib.util
-```
+```text
 
 **Impact**: **CRITICAL** — fixtures will fail with `NameError` when used
 
@@ -82,7 +82,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
     db.init_schema()
     # Should have logged initialization
     assert mock_info.called or True  # ❌ Always passes (or True)
-```
+```text
 
 **Problem**: `or True` makes assertion always evaluate to `True`, rendering test meaningless.
 
@@ -94,7 +94,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
     db.init_schema()
     # Schema may already exist, logging is optional
     # Test passes if no exception raised
-```
+```text
 
 **Option 2: Delete DB first for deterministic test**
 ```python
@@ -103,7 +103,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
     db.db_path.unlink(missing_ok=True)
     db.init_schema()
     assert mock_info.called, "Should log when initializing fresh schema"
-```
+```text
 
 **Option 3: Just verify mock works**
 ```python
@@ -111,7 +111,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
     db.init_schema()
     # Verify mocking infrastructure works
     assert isinstance(mock_info.called, bool)
-```
+```text
 
 **Recommendation**: **Option 1** (simplest, matches test intent)
 
@@ -133,13 +133,13 @@ with patch.object(DBManager._logger, 'info') as mock_info:
 ```python
 assert DBManager._POOL_ENABLED == True  # ❌ Equality check
 assert DBManager._POOL_ENABLED == False  # ❌ Equality check
-```
+```text
 
 **PEP8 Best Practice**:
 ```python
 assert DBManager._POOL_ENABLED is True  # ✅ Identity check
 assert DBManager._POOL_ENABLED is False  # ✅ Identity check
-```
+```text
 
 **Rationale**: 
 - `True`, `False`, `None` are singletons
@@ -157,7 +157,7 @@ assert DBManager._POOL_ENABLED is False  # ✅ Identity check
 # Find and replace in affected files
 sed -i 's/== True/is True/g' tests/conftest.py tests/test_pooling_advanced.py
 sed -i 's/== False/is False/g' tests/conftest.py tests/test_pooling_advanced.py
-```
+```text
 
 ---
 
@@ -179,7 +179,7 @@ import threading      # ❌ UNUSED
 import time           # ❌ UNUSED
 from pathlib import Path
 from unittest.mock import patch, MagicMock  # MagicMock unused
-```
+```text
 
 **Fix**:
 ```python
@@ -188,7 +188,7 @@ import os
 import pytest
 from pathlib import Path
 from unittest.mock import patch
-```
+```text
 
 **`tests/test_pooling_advanced.py`** (3 unused imports):
 ```python
@@ -197,13 +197,13 @@ import pytest         # ❌ UNUSED
 import time           # ❌ UNUSED
 import threading
 from pathlib import Path  # ❌ UNUSED
-```
+```text
 
 **Fix**:
 ```python
 # Clean imports
 import threading
-```
+```text
 
 ---
 
@@ -223,7 +223,7 @@ def worker(thread_id):
     for i in range(5):
         conn = pooling_db_manager.get_connection()
         connections_used.append(id(conn))  # ⚠️ Not thread-safe
-```
+```text
 
 **Problem**: While CPython's GIL typically prevents list corruption for simple `append()`, this is an implementation detail and not guaranteed.
 
@@ -275,7 +275,7 @@ def test_concurrent_pool_access(self, pooling_db_manager):
     # Should have reused connections (fewer unique than total uses)
     assert unique_connections < total_uses, \
         f"Expected connection reuse (unique: {unique_connections}, uses: {total_uses})"
-```
+```text
 
 ---
 
@@ -303,7 +303,7 @@ Phase 4: Cleanup (P3) — 5 minutes
 ├─ Remove unused imports from test_db_manager_critical.py
 ├─ Remove unused imports from test_pooling_advanced.py
 └─ Run linting to confirm clean state
-```
+```text
 
 ---
 
@@ -336,15 +336,15 @@ Phase 4: Cleanup (P3) — 5 minutes
 
 ### Validation Results
 
-```
+````text
 [PASTE TEST OUTPUT]
-```
+```text
 
 ### Linting
 
-```
+```text
 [PASTE RUFF OUTPUT]
-```
+```text
 
 ### Ready for Merge
 

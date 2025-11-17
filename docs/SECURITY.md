@@ -16,7 +16,7 @@ python tools/security/license_audit.py
 
 # Snapshot dependencies
 python tools/security/dep_snapshot.py
-```
+```text
 
 All scans are offline and output to `audit_artifacts/` directory.
 

@@ -26,7 +26,6 @@ def test_codexml_cli_requires_hydra_when_running(monkeypatch):
     assert "hydra-core" in str(excinfo.value)
 
 
-
 def test_hydra_main_help(monkeypatch, capsys):
     module_name = "codex_ml.cli.hydra_main"
     monkeypatch.setitem(sys.modules, "hydra", None)
@@ -34,7 +33,7 @@ def test_hydra_main_help(monkeypatch, capsys):
     if module_name in sys.modules:
         del sys.modules[module_name]
     module = importlib.import_module(module_name)
-    monkeypatch.setattr(sys, 'argv', ['codex-train', '--help'])
+    monkeypatch.setattr(sys, "argv", ["codex-train", "--help"])
     with pytest.raises(SystemExit) as excinfo:
         module.main()
     assert excinfo.value.code == 0

@@ -45,7 +45,7 @@ extras. Expect long runtimes.
 ```bash
 pip install -e '.[all]'
 pytest -q
-```
+```text
 
 Additional notes:
 

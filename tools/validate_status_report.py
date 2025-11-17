@@ -99,29 +99,29 @@ def check_required_sections(content: str, version: str | None) -> tuple[list[str
     required_sections = COMMON_REQUIRED_SECTIONS + VERSION_REQUIRED_SECTIONS.get(
         version_key, VERSION_REQUIRED_SECTIONS["v1.1"]
     )
-    
+
     found = []
     missing = []
-    
+
     for section in required_sections:
         if section in content:
             found.append(section)
         else:
             missing.append(section)
-    
+
     return found, missing
 
 
 def check_title_format(content: str, is_template: bool = False) -> bool:
     """Check if the title follows the required format."""
-    lines = content.split('\n')
+    lines = content.split("\n")
     for line in lines[:10]:  # Check first 10 lines
-        if line.startswith('# '):
+        if line.startswith("# "):
             # For templates, accept the template title
-            if is_template and 'Template:' in line and '_codex_' in line:
+            if is_template and "Template:" in line and "_codex_" in line:
                 return True
             # For reports, require the exact format
-            if '📍 `_codex_` : Status Update' in line:
+            if "📍 `_codex_` : Status Update" in line:
                 return True
     return False
 
@@ -161,20 +161,20 @@ def validate_report(report_path: Path) -> int:
     if not report_path.exists():
         print(f"❌ Error: File not found: {report_path}", file=sys.stderr)
         return 1
-    
-    content = report_path.read_text(encoding='utf-8')
-    is_template = 'template' in report_path.name.lower()
-    
+
+    content = report_path.read_text(encoding="utf-8")
+    is_template = "template" in report_path.name.lower()
+
     print(f"Validating: {report_path}")
     print("=" * 60)
-    
+
     # Check title format
     has_valid_title = check_title_format(content, is_template=is_template)
     if has_valid_title:
         print("✓ Title format correct")
     else:
         print("✗ Title format incorrect (expected: 📍 `_codex_` : Status Update <date>)")
-    
+
     # Check template version
     version, is_supported = check_template_version(content)
     canonical_version = _canonicalise_version(version) if version else None
@@ -192,21 +192,21 @@ def validate_report(report_path: Path) -> int:
     sections_version = canonical_version if is_supported else None
     found, missing = check_required_sections(content, sections_version)
     print(f"\n✓ Found {len(found)}/{len(found) + len(missing)} required sections")
-    
+
     if missing:
         print(f"\n✗ Missing sections ({len(missing)}):")
         for section in missing:
             print(f"  - {section}")
-    
+
     # Check for severity/confidence scoring
     has_severity = "Severity:" in content or "Severity (1–5)" in content
     has_confidence = "Confidence:" in content or "Confidence (1–5)" in content
-    
+
     if has_severity and has_confidence:
         print("\n✓ Scoring rubric elements present")
     else:
         print("\n⚠ Warning: Scoring rubric elements may be incomplete")
-    
+
     # Summary
     print("\n" + "=" * 60)
     if not missing and has_valid_title and canonical_version and is_supported:
@@ -233,9 +233,9 @@ Examples:
         type=Path,
         help="Path to the status report markdown file",
     )
-    
+
     args = parser.parse_args()
-    
+
     return validate_report(args.report_file)
 
 

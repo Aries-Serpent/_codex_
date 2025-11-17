@@ -24,7 +24,7 @@ pip install torch
 
 # Or install standalone
 pip install tensorboard
-```
+```text
 
 ## Usage
 
@@ -43,7 +43,7 @@ with get_tb_writer("runs/experiment_001") as writer:
         for step in range(100):
             loss = train_step()
             writer.add_scalar("train/loss", loss, step)
-```
+```text
 
 ### In Training Loop
 
@@ -61,7 +61,7 @@ def train(config):
                     global_step = epoch * len(dataloader) + batch_idx
                     tb.add_scalar("train/loss", loss, global_step)
                     tb.add_scalar("train/lr", optimizer.param_groups[0]['lr'], global_step)
-```
+```text
 
 ### Checking Availability
 
@@ -72,7 +72,7 @@ if is_tensorboard_available():
     print("TensorBoard is available")
 else:
     print("TensorBoard not installed - logging disabled")
-```
+```text
 
 ## Environment Variable
 
@@ -82,7 +82,7 @@ Enable TensorBoard logging:
 
 ```bash
 export CODEX_ENABLE_TENSORBOARD=1
-```
+```text
 
 When not set or set to any other value, TensorBoard logging is disabled.
 
@@ -92,14 +92,14 @@ When not set or set to any other value, TensorBoard logging is disabled.
 
 ```text
 artifacts/tb_runs/
-```
+```text
 ### Custom Location
 
 ```python
 with get_tb_writer("/custom/path/to/logs") as writer:
     if writer:
         writer.add_scalar("metric", value, step)
-```
+```text
 
 ## Viewing Logs
 
@@ -107,7 +107,7 @@ with get_tb_writer("/custom/path/to/logs") as writer:
 
 ```bash
 tensorboard --logdir artifacts/tb_runs
-```
+```text
 
 Access at: http://localhost:6006
 
@@ -115,7 +115,7 @@ Access at: http://localhost:6006
 
 ```bash
 tensorboard --logdir artifacts/tb_runs --port 8080
-```
+```text
 
 ## Logging Capabilities
 
@@ -129,7 +129,7 @@ with get_tb_writer() as tb:
             "train_loss": 0.5,
             "val_loss": 0.6
         }, step=100)
-```
+```text
 
 ### Histograms
 
@@ -140,7 +140,7 @@ with get_tb_writer() as tb:
     if tb:
         weights = model.layer.weight.data
         tb.add_histogram("layer/weights", weights, step=100)
-```
+```text
 
 ### Images
 
@@ -149,7 +149,7 @@ with get_tb_writer() as tb:
     if tb:
         # img should be (C, H, W) tensor
         tb.add_image("input/sample", img, step=100)
-```
+```text
 
 ### Text
 
@@ -157,7 +157,7 @@ with get_tb_writer() as tb:
 with get_tb_writer() as tb:
     if tb:
         tb.add_text("config", str(config), step=0)
-```
+```text
 
 ### Graphs
 
@@ -165,7 +165,7 @@ with get_tb_writer() as tb:
 with get_tb_writer() as tb:
     if tb:
         tb.add_graph(model, input_tensor)
-```
+```text
 
 ## Integration Examples
 
@@ -192,7 +192,7 @@ def main():
                     "train_loss": train_loss,
                     "val_loss": val_loss
                 }, epoch)
-```
+```text
 
 ### With Evaluation
 
@@ -211,7 +211,7 @@ def evaluate(model, dataset):
                 tb.add_scalar(f"eval/{metric_name}", score, step=0)
         
         return results
-```
+```text
 
 ## Comparison with MLflow
 
@@ -234,7 +234,7 @@ def evaluate(model, dataset):
 with get_tb_writer() as tb:
     if tb:  # Always check before using
         tb.add_scalar("metric", value, step)
-```
+```text
 
 ### 2. Use Descriptive Names
 
@@ -246,7 +246,7 @@ tb.add_scalar("val/accuracy/top1", acc, step)
 # Bad
 tb.add_scalar("loss", loss, step)
 tb.add_scalar("acc", acc, step)
-```
+```text
 
 ### 3. Log at Appropriate Frequency
 
@@ -255,14 +255,14 @@ tb.add_scalar("acc", acc, step)
 if step % log_interval == 0:
     if tb:
         tb.add_scalar("train/loss", loss, step)
-```
+```text
 
 ### 4. Clean Up Old Runs
 
 ```bash
 # Remove old TensorBoard logs
 rm -rf artifacts/tb_runs/old_experiment
-```
+```text
 
 ## Troubleshooting
 
@@ -275,7 +275,7 @@ rm -rf artifacts/tb_runs/old_experiment
 pip install tensorboard
 # Or with PyTorch
 pip install torch
-```
+```text
 
 ### No Logs Appearing
 
@@ -294,7 +294,7 @@ os.environ["CODEX_ENABLE_TENSORBOARD"] = "1"
 # Explicitly flush
 if tb:
     tb.flush()
-```
+```text
 
 ### Permission Errors
 
@@ -304,7 +304,7 @@ if tb:
 ```bash
 mkdir -p artifacts/tb_runs
 chmod 755 artifacts/tb_runs
-```
+```text
 
 ## See Also
 

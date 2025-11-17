@@ -17,13 +17,13 @@ Core dependencies are included in the base installation:
 
 ```bash
 pip install -e .
-```
+```text
 
 For optional features (tree-sitter, SQL parsing):
 
 ```bash
 pip install -e ".[ast]"
-```
+```text
 
 ## Quick Start
 
@@ -54,7 +54,7 @@ node = StandardizedASTNode(
 # Traverse the tree
 for n in node.walk():
     print(f"{n.name} at depth {n.get_depth()}")
-```
+```text
 
 ### Dependency Analysis
 
@@ -70,7 +70,7 @@ graph.add_edge("module_c", "module_a")  # Creates a cycle
 # Detect cycles
 cycles = graph.detect_cycles()
 print(f"Found {len(cycles)} cycle(s)")
-```
+```text
 
 ### Code Metrics
 
@@ -92,7 +92,7 @@ print(f"Quality tier: {metrics.quality_tier}")  # A-F grade
 agg = MetricsAggregator()
 agg.store_metrics("function_1", metrics)
 summary = agg.summary()
-```
+```text
 
 ## CLI Usage
 
@@ -105,7 +105,7 @@ python -m codex.ast.cli audit . --output audit_report.html
 
 # Compare metrics between commits
 python -m codex.ast.cli diff HEAD~1 HEAD --metric complexity
-```
+```text
 
 ## Testing
 
@@ -113,13 +113,13 @@ Run the test suite:
 
 ```bash
 pytest tests/ast/ -v
-```
+```text
 
 With coverage:
 
 ```bash
 pytest tests/ast/ --cov=src/codex/ast --cov-report=term-missing
-```
+```text
 
 **Current coverage: 96.38%** (25 tests, all passing)
 

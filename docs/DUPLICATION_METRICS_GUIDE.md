@@ -29,7 +29,7 @@ codex duplication check --threshold=0.15
 
 # Save results to file
 codex duplication check --output=duplication.json
-```
+```text
 
 ### Generate Detailed Report
 
@@ -42,7 +42,7 @@ codex duplication report --format=text --output=report.txt
 
 # Save to database
 codex duplication report --save-db --output=report.json
-```
+```text
 
 ### Compare Against Baseline
 
@@ -52,7 +52,7 @@ codex duplication compare current.json --baseline=baseline.json
 
 # Fail if increased by more than 10%
 codex duplication compare current.json --baseline=baseline.json --threshold-increase=0.10
-```
+```text
 
 ## Installation
 
@@ -64,7 +64,7 @@ pip install pylint
 
 # Already included in codex
 pip install click
-```
+```text
 
 ### Verification
 
@@ -74,7 +74,7 @@ codex duplication --help
 
 # Run a quick check
 codex duplication check --help
-```
+```text
 
 ## CLI Commands
 
@@ -85,7 +85,7 @@ Check code for duplicates and calculate duplication ratio.
 **Usage:**
 ```bash
 codex duplication check [PATH] [OPTIONS]
-```
+```text
 
 **Arguments:**
 - `PATH`: Directory to scan (default: current directory)
@@ -114,14 +114,14 @@ codex duplication check --output=results.json
 
 # All options combined
 codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
-```
+```text
 
 **Exit Codes:**
 - `0`: Success (ratio within threshold)
 - `1`: Failure (ratio exceeds threshold or error occurred)
 
 **Output:**
-```
+```text
 🔍 Scanning /home/user/project for duplicates...
 
 📊 Duplication Report:
@@ -133,7 +133,7 @@ codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
   Duplicate blocks: 8
 
 ✅ Duplication ratio 10.00% is within threshold 10.00%
-```
+```text
 
 ---
 
@@ -144,7 +144,7 @@ Generate detailed duplication report with full block information.
 **Usage:**
 ```bash
 codex duplication report [PATH] [OPTIONS]
-```
+```text
 
 **Arguments:**
 - `PATH`: Directory to scan (default: current directory)
@@ -168,7 +168,7 @@ codex duplication report --save-db --output=report.json
 
 # Custom scan path
 codex duplication report src/ --output=src-report.json
-```
+```text
 
 **JSON Output Format:**
 ```json
@@ -195,10 +195,10 @@ codex duplication report src/ --output=src-report.json
     "avg_block_size": 12.5
   }
 }
-```
+```text
 
 **Text Output Format:**
-```
+```text
 ============================================================
 DUPLICATION REPORT
 ============================================================
@@ -229,7 +229,7 @@ DUPLICATE BLOCKS
     - utils1.py:50
     - utils2.py:75
     - helpers.py:120
-```
+```text
 
 ---
 
@@ -240,7 +240,7 @@ Compare current duplication metrics against baseline.
 **Usage:**
 ```bash
 codex duplication compare CURRENT [OPTIONS]
-```
+```text
 
 **Arguments:**
 - `CURRENT`: Path to current metrics JSON file
@@ -259,31 +259,31 @@ codex duplication compare current.json --baseline=baseline.json --threshold-incr
 
 # Show current metrics only (no baseline)
 codex duplication compare current.json
-```
+```text
 
 **Exit Codes:**
 - `0`: Success (decrease or within threshold increase)
 - `1`: Failure (increase exceeds threshold)
 
 **Output with Baseline:**
-```
+```text
 📊 Duplication Comparison
   Baseline: 12.00%
   Current:  15.00%
   Change:   +3.00% (+25.0%)
 
 ❌ Duplication increased by 3.00%, exceeds threshold 2.00%
-```
+```text
 
 **Output without Baseline:**
-```
+```text
 📊 Current Duplication Metrics
   Ratio: 15.00%
   Total lines: 10,000
   Duplicate lines: 1,500
 
 💡 Use --baseline to compare against a previous report
-```
+```text
 
 ## Python API
 
@@ -308,7 +308,7 @@ print(f"Duplicate blocks: {len(ratio.duplicate_blocks)}")
 storage = MetricStorage()
 result = storage.save(ratio, commit_sha="abc123")
 print(f"Saved with ID: {result['sqlite_id']}")
-```
+```text
 
 ### Advanced Detection
 
@@ -335,7 +335,7 @@ for block in duplicates:
     print(f"Occurrences: {len(block.occurrences)}")
     for occ in block.occurrences:
         print(f"  - {occ['file']}:{occ['start']}-{occ['end']}")
-```
+```text
 
 ### Storage Operations
 
@@ -368,7 +368,7 @@ recent = storage.query_history(
     since="2025-01-01T00:00:00Z",
     limit=5,
 )
-```
+```text
 
 ## CI/CD Integration
 
@@ -405,7 +405,7 @@ jobs:
         with:
           name: duplication-report
           path: duplication.json
-```
+```text
 
 ### GitLab CI
 
@@ -420,7 +420,7 @@ duplication_check:
     paths:
       - duplication.json
     when: always
-```
+```text
 
 ### Pre-commit Hook
 
@@ -435,7 +435,7 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-```
+```text
 
 ### Baseline Tracking
 
@@ -461,7 +461,7 @@ if (( $(echo "$CURRENT_RATIO < $BASELINE_RATIO" | bc -l) )); then
     echo "✅ New baseline: $CURRENT_RATIO (was $BASELINE_RATIO)"
     cp current.json baseline.json
 fi
-```
+```text
 
 ## Configuration
 
@@ -475,7 +475,7 @@ export CODEX_METRICS_SQLITE_PATH=".metrics/duplication.db"
 # Detection settings
 export CODEX_DUPLICATION_MIN_LINES=4
 export CODEX_DUPLICATION_THRESHOLD=0.10
-```
+```text
 
 ### .codex/config.yaml (future)
 
@@ -488,28 +488,28 @@ duplication:
   storage:
     json_dir: .codex/metrics/json
     sqlite_path: .codex/metrics/duplication.db
-```
+```text
 
 ## Troubleshooting
 
 ### pylint not found
 
 **Problem:**
-```
+```text
 Failed to check duplicates: pylint not found
-```
+```text
 
 **Solution:**
 ```bash
 pip install pylint
-```
+```text
 
 ### Timeout on large codebases
 
 **Problem:**
-```
+```text
 pylint timed out scanning /path/to/large/repo
-```
+```text
 
 **Solution:**
 Scan subdirectories separately:
@@ -517,7 +517,7 @@ Scan subdirectories separately:
 for dir in src/*/; do
     codex duplication check "$dir" --output="${dir//\//-}.json"
 done
-```
+```text
 
 ### High false positive rate
 
@@ -532,16 +532,16 @@ Many trivial code patterns flagged as duplicates.
 ### Database locked error
 
 **Problem:**
-```
+```text
 database is locked
-```
+```text
 
 **Solution:**
 ```bash
 # Close other connections to the database
 # Or use JSON-only mode
 codex duplication report --output=report.json  # Doesn't use --save-db
-```
+```text
 
 ### Inconsistent results between runs
 
@@ -570,14 +570,14 @@ CURRENT=$(jq -r '.ratio' baseline.json)
 # Set threshold slightly above current
 THRESHOLD=$(echo "$CURRENT + 0.02" | bc)
 codex duplication check --threshold=$THRESHOLD
-```
+```text
 
 ### 2. Track Trends
 
 ```bash
 # Weekly cron job
 0 0 * * 0 codex duplication report --save-db --output=/var/metrics/weekly-$(date +\%Y\%m\%d).json
-```
+```text
 
 Query trends:
 ```python
@@ -588,17 +588,17 @@ history = storage.query_history(limit=52)  # Last year
 
 for metric in history:
     print(f"{metric['timestamp']}: {metric['ratio']:.2%}")
-```
+```text
 
 ### 3. Exclude Generated Code
 
 Create `.duplicationignore`:
-```
+```text
 *_pb2.py
 **/migrations/**
 **/node_modules/**
 **/__pycache__/**
-```
+```text
 
 ### 4. Focus on High-Severity Blocks
 
@@ -609,7 +609,7 @@ high_severity_blocks = [
 ]
 
 print(f"High-severity duplicates: {len(high_severity_blocks)}")
-```
+```text
 
 ### 5. CI/CD Gates
 
@@ -621,15 +621,15 @@ print(f"High-severity duplicates: {len(high_severity_blocks)}")
     codex duplication compare current.json \
         --baseline=baseline.json \
         --threshold-increase=0.03  # Max 3% increase
-```
+```text
 
 ## Metrics Explanation
 
 ### Duplication Ratio
 
-```
+```text
 Duplication Ratio = Duplicate Lines / Total Lines
-```
+```text
 
 Where:
 - **Duplicate Lines**: Count of lines that appear in duplicate blocks (overlap-aware)

@@ -8,4 +8,3 @@ def test_apply_lora_if_available_identity_without_peft():
     wrapped = apply_lora_if_available(model)
     # If `peft` is not installed, helper returns the model unchanged.
     assert wrapped is model
-

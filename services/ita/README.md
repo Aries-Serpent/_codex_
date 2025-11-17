@@ -30,7 +30,7 @@ export ITA_API_KEY=$(python scripts/issue_api_key.py)
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 # Sanity check
 curl -H "X-API-Key: $ITA_API_KEY" -H "X-Request-Id: demo" http://localhost:8080/healthz
-```
+```text
 ## Development
 
 - Run the unit tests with `pytest` or `nox -s tests` from the repository root.
@@ -47,4 +47,4 @@ services/ita/
 ├── runtime/            # Local-only storage for hashed API keys (ignored by git)
 ├── scripts/            # Operational helpers (e.g., issuing API keys)
 └── tests/              # Regression and contract tests
-```
+```text

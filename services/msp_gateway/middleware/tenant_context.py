@@ -23,24 +23,25 @@ security = HTTPBearer()
 
 class TenantRegistry:
     """Manages tenant information using SQLite or in-memory storage"""
-    
+
     def __init__(self, backend: str = "sqlite"):
         self.backend = backend
         self.tenants: Dict[str, Dict[str, Any]] = {}  # In-memory cache
-        
+
         if backend == "sqlite":
             self._init_sqlite()
-    
+
     def _init_sqlite(self):
         """Initialize SQLite database for tenant registry"""
         db_path = Path(settings.db_path)
         db_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        
+
         # Create tenants table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS tenants (
                 tenant_id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -52,12 +53,13 @@ class TenantRegistry:
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
-        """)
-        
+        """
+        )
+
         conn.commit()
         conn.close()
         logger.info(f"Initialized SQLite tenant registry at {db_path}")
-    
+
     def create_tenant(
         self,
         tenant_id: str,
@@ -69,14 +71,15 @@ class TenantRegistry:
     ) -> Dict[str, Any]:
         """Create a new tenant"""
         import json
-        
+
         now = datetime.utcnow().isoformat()
-        
+
         tenant_data = {
             "tenant_id": tenant_id,
             "name": name,
             "api_key": api_key,
-            "quota": quota or {
+            "quota": quota
+            or {
                 "requests_per_minute": settings.rate_limit_requests_per_minute,
                 "tokens_per_minute": settings.rate_limit_tokens_per_minute,
             },
@@ -86,61 +89,72 @@ class TenantRegistry:
             "created_at": now,
             "updated_at": now,
         }
-        
+
         if self.backend == "sqlite":
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
-            
+
             try:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO tenants (
                         tenant_id, name, api_key, quota_json, policies_json,
                         metadata_json, active, created_at, updated_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    tenant_id, name, api_key,
-                    json.dumps(tenant_data["quota"]),
-                    json.dumps(tenant_data["policies"]),
-                    json.dumps(tenant_data["metadata"]),
-                    1, now, now
-                ))
+                """,
+                    (
+                        tenant_id,
+                        name,
+                        api_key,
+                        json.dumps(tenant_data["quota"]),
+                        json.dumps(tenant_data["policies"]),
+                        json.dumps(tenant_data["metadata"]),
+                        1,
+                        now,
+                        now,
+                    ),
+                )
                 conn.commit()
             except sqlite3.IntegrityError as e:
                 conn.close()
                 raise ValueError(f"Tenant or API key already exists: {e}")
             finally:
                 conn.close()
-        
+
         # Cache in memory
         self.tenants[tenant_id] = tenant_data
-        
+
         # Register API key
         auth_manager.register_api_key(api_key, tenant_id)
-        
+
         logger.info(f"Created tenant: {tenant_id}")
         return tenant_data
-    
+
     def get_tenant(self, tenant_id: str) -> Optional[Dict[str, Any]]:
         """Get tenant by ID"""
         # Check cache first
         if tenant_id in self.tenants:
             return self.tenants[tenant_id]
-        
+
         # Load from SQLite
         if self.backend == "sqlite":
             import json
+
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
                 FROM tenants WHERE tenant_id = ?
-            """, (tenant_id,))
-            
+            """,
+                (tenant_id,),
+            )
+
             row = cursor.fetchone()
             conn.close()
-            
+
             if row:
                 tenant_data = {
                     "tenant_id": row[0],
@@ -156,30 +170,34 @@ class TenantRegistry:
                 # Cache it
                 self.tenants[tenant_id] = tenant_data
                 return tenant_data
-        
+
         return None
-    
+
     def get_tenant_by_api_key(self, api_key: str) -> Optional[Dict[str, Any]]:
         """Get tenant by API key"""
         tenant_id = auth_manager.verify_api_key(api_key)
         if tenant_id:
             return self.get_tenant(tenant_id)
-        
+
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
+
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
                 FROM tenants WHERE api_key = ?
-            """, (api_key,))
-            
+            """,
+                (api_key,),
+            )
+
             row = cursor.fetchone()
             conn.close()
-            
+
             if row:
                 tenant_id = row[0]
                 tenant_data = {
@@ -197,85 +215,92 @@ class TenantRegistry:
                 self.tenants[tenant_id] = tenant_data
                 auth_manager.register_api_key(api_key, tenant_id)
                 return tenant_data
-        
+
         return None
-    
+
     def list_tenants(self) -> list[Dict[str, Any]]:
         """List all tenants"""
         if self.backend == "sqlite":
             import json
+
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 SELECT tenant_id, name, api_key, quota_json, policies_json,
                        metadata_json, active, created_at, updated_at
                 FROM tenants
-            """)
-            
+            """
+            )
+
             rows = cursor.fetchall()
             conn.close()
-            
+
             tenants = []
             for row in rows:
-                tenants.append({
-                    "tenant_id": row[0],
-                    "name": row[1],
-                    "api_key": row[2],
-                    "quota": json.loads(row[3]) if row[3] else {},
-                    "policies": json.loads(row[4]) if row[4] else [],
-                    "metadata": json.loads(row[5]) if row[5] else {},
-                    "active": bool(row[6]),
-                    "created_at": row[7],
-                    "updated_at": row[8],
-                })
+                tenants.append(
+                    {
+                        "tenant_id": row[0],
+                        "name": row[1],
+                        "api_key": row[2],
+                        "quota": json.loads(row[3]) if row[3] else {},
+                        "policies": json.loads(row[4]) if row[4] else [],
+                        "metadata": json.loads(row[5]) if row[5] else {},
+                        "active": bool(row[6]),
+                        "created_at": row[7],
+                        "updated_at": row[8],
+                    }
+                )
             return tenants
 
         return list(self.tenants.values())
-    
+
     def delete_tenant(self, tenant_id: str) -> None:
         """Delete (deactivate) a tenant and revoke API key
-        
+
         Args:
             tenant_id: Tenant identifier
-        
+
         Raises:
             ValueError: If tenant not found
         """
-        
+
         # Get existing tenant
         tenant_data = self.get_tenant(tenant_id)
         if not tenant_data:
             raise ValueError(f"Tenant not found: {tenant_id}")
-        
+
         # Deactivate tenant
         tenant_data["active"] = False
         tenant_data["updated_at"] = datetime.utcnow().isoformat()
-        
+
         # Update in SQLite
         if self.backend == "sqlite":
             conn = sqlite3.connect(settings.db_path)
             cursor = conn.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 UPDATE tenants
                 SET active = 0, updated_at = ?
                 WHERE tenant_id = ?
-            """, (tenant_data["updated_at"], tenant_id))
-            
+            """,
+                (tenant_data["updated_at"], tenant_id),
+            )
+
             conn.commit()
             conn.close()
-        
+
         # Update cache
         self.tenants[tenant_id] = tenant_data
-        
+
         # Revoke API key
         api_key = tenant_data.get("api_key")
         if api_key:
             auth_manager.revoke_api_key(api_key)
-        
-        logger.info(f"Deleted (deactivated) tenant: {tenant_id}")
 
+        logger.info(f"Deleted (deactivated) tenant: {tenant_id}")
 
     def update_tenant(
         self,
@@ -379,50 +404,46 @@ tenant_registry = TenantRegistry(backend=settings.tenant_registry_backend)
 
 class TenantContextMiddleware(BaseHTTPMiddleware):
     """Middleware to resolve tenant context from API key"""
-    
+
     async def dispatch(self, request: Request, call_next):
         # Skip health check, docs, root endpoint, and optionally admin endpoints
         public_paths = ["/health", "/docs", "/redoc", "/openapi.json", "/"]
-        
+
         # If API key not required, also allow admin endpoints for bootstrapping
         if not settings.api_key_required:
             public_paths.append("/admin")
-        
+
         # Check if path should skip auth
-        if request.url.path in public_paths or any(request.url.path.startswith(p) for p in public_paths if p != "/"):
+        if request.url.path in public_paths or any(
+            request.url.path.startswith(p) for p in public_paths if p != "/"
+        ):
             return await call_next(request)
-        
+
         # If API key authentication is disabled, skip the check
         if not settings.api_key_required:
             # No tenant context when auth is disabled
             return await call_next(request)
-        
+
         # Extract API key from Authorization header
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Missing or invalid Authorization header"
+                detail="Missing or invalid Authorization header",
             )
-        
+
         api_key = auth_header.replace("Bearer ", "")
-        
+
         # Resolve tenant
         tenant = tenant_registry.get_tenant_by_api_key(api_key)
         if not tenant:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid API key"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
+
         if not tenant.get("active", True):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Tenant is inactive"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenant is inactive")
+
         # Attach tenant to request state
         request.state.tenant = tenant
-        
+
         response = await call_next(request)
         return response

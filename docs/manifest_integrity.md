@@ -7,4 +7,4 @@ Use canonical JSON for reproducible hashing/signing.
 CLI:
 ```bash
 python -m codex_ml.cli.manifest hash --path path/to/manifest.json
-```
+```text

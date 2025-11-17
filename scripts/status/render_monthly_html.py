@@ -80,11 +80,11 @@ def render_reports_rows(data: Dict[str, Any]) -> str:
         snapshot = report.get("snapshot", {})
         tests_gates = snapshot.get("tests_gates", {})
         findings = snapshot.get("findings", [])
-        
+
         timestamp = html.escape(str(meta.get("timestamp_utc", "")))
         coverage = html.escape(str(tests_gates.get("coverage_percent", "N/A")))
         findings_count = len(findings)
-        
+
         parts = [
             "<tr>",
             f"<td>{timestamp}</td>",
@@ -107,7 +107,7 @@ def main(argv=None) -> int:
 
     month = data.get("month", "")
     summary = data.get("summary", {})
-    
+
     html_out = (
         tpl.replace("{{title}}", f"Status Monthly — {html.escape(month)}")
         .replace("{{month}}", html.escape(month))

@@ -140,22 +140,22 @@ All 5 capabilities now have dedicated documentation:
 ## Files Created
 
 ### Test Files (5 new test modules, 72 tests total)
-```
+```text
 tests/space_traversal/test_safeguards_keywords.py (13 tests)
 tests/deployment/test_infrastructure.py (14 tests)
 tests/archival/test_bundling.py (15 tests)
 tests/docs/test_documentation_system.py (20 tests)
 tests/space_traversal/test_mcp_tools_integration.py (10 existing tests)
-```
+```text
 
 ### Documentation Files (5 capability guides)
-```
+```text
 docs/capabilities/mcp_tools_integration.md
 docs/capabilities/safeguards_keywords.md
 docs/capabilities/deployment_infrastructure.md
 docs/capabilities/archival_bundling.md
 docs/capabilities/documentation_system.md
-```
+```text
 
 ---
 
@@ -169,7 +169,7 @@ $ pytest tests/space_traversal/test_safeguards_keywords.py \
          tests/docs/test_documentation_system.py -v
 
 ======================== 61 passed, 1 skipped in 0.32s =========================
-```
+```text
 
 ### Coverage by Capability
 

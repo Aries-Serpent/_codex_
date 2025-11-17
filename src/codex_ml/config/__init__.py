@@ -464,15 +464,11 @@ class EvaluationConfig:
         allowed_sinks = {"ndjson", "csv", "none"}
         if isinstance(self.metrics_sink, str):
             tokens = [
-                token.strip().lower()
-                for token in self.metrics_sink.split(",")
-                if token.strip()
+                token.strip().lower() for token in self.metrics_sink.split(",") if token.strip()
             ]
         elif isinstance(self.metrics_sink, Sequence):
             tokens = [
-                str(token).strip().lower()
-                for token in self.metrics_sink
-                if str(token).strip()
+                str(token).strip().lower() for token in self.metrics_sink if str(token).strip()
             ]
         else:
             raise ConfigError(
@@ -797,7 +793,12 @@ class ValidationThresholds:
 
 
 try:  # pragma: no cover - optional dependency
-    from .settings import AppSettings, EvalRow, eval_row_schema, get_settings  # noqa: E402,F401
+    from .settings import (  # noqa: E402,F401
+        AppSettings,
+        EvalRow,
+        eval_row_schema,
+        get_settings,
+    )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
     AppSettings = None  # type: ignore[assignment]
     EvalRow = None  # type: ignore[assignment]

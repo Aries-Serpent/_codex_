@@ -46,7 +46,7 @@ if is_stable_name("metrics", "token_accuracy"):
 # Get description for a stable name
 desc = get_description("metrics", "f1")
 print(f"F1 score: {desc}")
-```
+```text
 
 ### Entry Point Groups
 
@@ -86,7 +86,7 @@ item = registry.get("my_component")
 # Check membership
 if "my_component" in registry:
     print("✓ Component registered")
-```
+```text
 
 **Key guarantees:**
 - `list()` and `names()` always return names in **sorted order** (deterministic across runs)
@@ -118,7 +118,7 @@ def new_accuracy(preds, labels):
 assert "accuracy" in registry
 assert len(registry) == 1
 assert registry.list() == ["accuracy"]
-```
+```text
 
 ## Plugin Development
 
@@ -142,14 +142,14 @@ def custom_accuracy(predictions, labels):
 
 # Mark as Codex v1 API
 custom_accuracy.__codex_api__ = "v1"
-```
+```text
 
 **Register via entry point** (in `pyproject.toml`):
 
 ```toml
 [project.entry-points."codex_ml.metrics"]
 custom_accuracy = "my_package.my_metrics:custom_accuracy"
-```
+```text
 
 ### Creating a Model Plugin
 
@@ -181,14 +181,14 @@ def load_custom_model(config):
 
 
 load_custom_model.__codex_api__ = "v1"
-```
+```text
 
 **Register via entry point**:
 
 ```toml
 [project.entry-points."codex_ml.models"]
 custom = "my_package.my_models:load_custom_model"
-```
+```text
 
 ### Creating a Data Loader Plugin
 
@@ -217,14 +217,14 @@ def load_custom_format(path, **kwargs):
 
 
 load_custom_format.__codex_api__ = "v1"
-```
+```text
 
 **Register via entry point**:
 
 ```toml
 [project.entry-points."codex_ml.data_loaders"]
 custom_format = "my_package.my_loaders:load_custom_format"
-```
+```text
 
 ## Adapter Interfaces
 
@@ -251,7 +251,7 @@ def metric_adapter(predictions: List[Any], labels: List[Any]) -> float:
     """
     # Implementation
     pass
-```
+```text
 
 ### Model Factory Adapter
 
@@ -280,7 +280,7 @@ def model_factory(config: Dict[str, Any]) -> Tuple[Any, Any]:
     """
     # Implementation
     pass
-```
+```text
 
 ### Data Loader Adapter
 
@@ -307,7 +307,7 @@ def data_loader(path: str | Path, **kwargs: Any) -> Iterator[Dict[str, Any]]:
     """
     # Implementation
     pass
-```
+```text
 
 ## Usage Examples
 
@@ -325,7 +325,7 @@ for name, plugin in plugins.items():
 # Discover metrics
 metrics = discover(group="codex_ml.metrics")
 print(f"Available metrics: {list(metrics.keys())}")
-```
+```text
 
 ### Using Registered Components
 
@@ -337,7 +337,7 @@ if "accuracy" in BUILTIN_METRICS:
     accuracy_fn = BUILTIN_METRICS["accuracy"]
     score = accuracy_fn([1, 2, 3], [1, 2, 0])
     print(f"Accuracy: {score}")
-```
+```text
 
 ### Loading from Entry Points
 
@@ -360,7 +360,7 @@ print("Available:", registry.names())
 
 # Use a component
 component = registry.resolve_and_instantiate("my_component", option="value")
-```
+```text
 
 ## API Versioning
 
@@ -375,7 +375,7 @@ my_plugin.__codex_api__ = "v1"
 
 # Legacy attribute also supported
 my_plugin.__codex_ext_api__ = "v1"
-```
+```text
 
 When loading plugins, specify the required API version:
 
@@ -384,7 +384,7 @@ registry.load_from_entry_points(
     group="codex_ml.plugins",
     require_api="v1"  # Only load v1 plugins
 )
-```
+```text
 
 ## Best Practices
 
@@ -396,7 +396,7 @@ registry.load_from_entry_points(
 
 # Avoid
 @registry.register("model1")
-```
+```text
 
 ### 2. Provide Metadata
 
@@ -406,7 +406,7 @@ registry.load_from_entry_points(
     category="classification",
     requires=["numpy", "scipy"]
 )
-```
+```text
 
 ### 3. Handle Missing Dependencies
 
@@ -420,7 +420,7 @@ def load_optional_component(config):
             "Install with: pip install optional_library"
         )
     # Implementation
-```
+```text
 
 ### 4. Validate Configuration
 
@@ -431,7 +431,7 @@ def model_factory(config):
         if key not in config:
             raise ValueError(f"Missing required config key: {key}")
     # Implementation
-```
+```text
 
 ### 5. Document Return Types
 
@@ -445,7 +445,7 @@ def data_loader(path: str) -> Iterator[Dict[str, Any]]:
             - metadata: dict
     """
     # Implementation
-```
+```text
 
 ## Troubleshooting
 
@@ -458,7 +458,7 @@ from codex_ml.plugins.registry import discover
 plugins = discover(group="codex_ml.plugins")
 if "my_plugin" not in plugins:
     print("Plugin not found. Check entry point configuration.")
-```
+```text
 
 ### Import Errors
 
@@ -469,7 +469,7 @@ count, errors = registry.load_from_entry_points(group="my_group")
 # Check for import errors
 for name, error in errors.items():
     print(f"Failed to load {name}: {error}")
-```
+```text
 
 ### Duplicate Registrations
 
@@ -491,7 +491,7 @@ with warnings.catch_warnings(record=True) as w:
     
     if w:
         print(f"Warning: {w[0].message}")
-```
+```text
 
 ## Migration Guide
 
@@ -503,7 +503,7 @@ with warnings.catch_warnings(record=True) as w:
 # In main code
 from my_metrics import accuracy, f1
 METRICS = {"accuracy": accuracy, "f1": f1}
-```
+```text
 
 **After:**
 
@@ -511,20 +511,20 @@ METRICS = {"accuracy": accuracy, "f1": f1}
 # In plugin module
 accuracy.__codex_api__ = "v1"
 f1.__codex_api__ = "v1"
-```
+```text
 
 ```toml
 # In pyproject.toml
 [project.entry-points."codex_ml.metrics"]
 accuracy = "my_package.my_metrics:accuracy"
 f1 = "my_package.my_metrics:f1"
-```
+```text
 
 ```python
 # In main code - auto-discovered
 from codex_ml.plugins.registry import discover
 metrics = discover(group="codex_ml.metrics")
-```
+```text
 
 ## Testing Plugins
 
@@ -539,7 +539,7 @@ def test_my_metric():
     
     score = custom_accuracy(preds, labels)
     assert score == 0.75  # 3 out of 4 correct
-```
+```text
 
 ### Integration Tests
 
@@ -550,7 +550,7 @@ def test_plugin_discovery():
     plugin = get("my_plugin", group="codex_ml.plugins")
     assert plugin is not None
     assert callable(plugin)
-```
+```text
 
 ## Related Documentation
 

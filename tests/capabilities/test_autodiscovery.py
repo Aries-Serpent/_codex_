@@ -8,6 +8,7 @@ import pytest
 SCRIPT = Path("tools/capability_autodiscover.py")
 OUT = Path("audit_artifacts/capabilities_raw.json")
 
+
 @pytest.mark.skipif(not SCRIPT.exists(), reason="autodiscovery tool missing")
 def test_autodiscovery_runs(tmp_path, monkeypatch):
     # Run the script and ensure it writes the output file

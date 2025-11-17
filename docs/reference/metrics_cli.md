@@ -3,7 +3,7 @@
 ## Synopsis
 ```bash
 python -m codex_ml.cli metrics <subcommand> [options]
-```
+```text
 
 ## Subcommands
 - `ingest` — read NDJSON and produce a tidy CSV (and optionally Parquet).

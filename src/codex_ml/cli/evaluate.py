@@ -15,7 +15,12 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
-from codex_ml.eval.metrics import accuracy, classification_f1, perplexity, token_accuracy
+from codex_ml.eval.metrics import (
+    accuracy,
+    classification_f1,
+    perplexity,
+    token_accuracy,
+)
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
 from codex_ml.utils.optional import optional_import

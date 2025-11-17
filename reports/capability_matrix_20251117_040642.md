@@ -70,7 +70,7 @@ Patterns Found: archive, bundle, manifest
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/archive/README_UPDATED.md
 .codex/copilot_bridge/manifests/bridge_manifest.schema.json
 .codex/copilot_bridge/var/manifests/.gitkeep
@@ -81,7 +81,7 @@ Evidence Files (first 10):
 .codex/reports/merge_summary_archive_policy_20251024.txt
 .codex/status/manifest-2025-09-22T02-15-21Z.json
 .codex/validation/20250910T052842Z/post_manifest.json
-```
+```text
 ### checkpointing
 Score: 0.8626
 
@@ -93,7 +93,7 @@ Patterns Found: load, save_checkpoint
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 codex_ml/utils/checkpointing.py
 configs/schemas/checkpoint_manifest.schema.json
 docs/CHECKPOINTS.md
@@ -104,7 +104,7 @@ docs/guides/checkpointing.md
 docs/how-to/checkpoint_metadata.md
 docs/modules/checkpoint_manager.md
 docs/training/Checkpointing_Surfaces.md
-```
+```text
 ### ci-cd-pipeline
 Score: 0.8544
 
@@ -116,7 +116,7 @@ Patterns Found: automation, ci, pre-commit, validation, workflow
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/smoke/import_check.py
 .github/scripts/validate_agents_infrastructure.sh
 .github/workflows/archive-gates.yml.disabled
@@ -127,7 +127,7 @@ Evidence Files (first 10):
 .github/workflows/coverage_report.yml
 .github/workflows/daily_status_cron.yml
 .github/workflows/daily_status_enrich.yml
-```
+```text
 ### code-quality-tooling
 Score: 0.8120
 
@@ -139,7 +139,7 @@ Patterns Found: format, lint, quality, security-scan, type-check
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .bandit.yaml
 .bandit.yml
 .codex/evidence/phase5_privacy_safety.jsonl
@@ -150,7 +150,7 @@ Evidence Files (first 10):
 .github/docs/DEPLOYMENT_ORCHESTRATION_SECURITY_SUMMARY.md
 .github/docs/Security_Gates_Copilot.md
 .github/docs/Security_Session_Copilot.md
-```
+```text
 ### configuration
 Score: 0.7565
 
@@ -162,7 +162,7 @@ Patterns Found: config, hydra
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/copilot_bridge/config/bridge.config.json
 .codex/evidence/phase4_hydra_check.jsonl
 .codex/hydra_last/config.yaml
@@ -173,7 +173,7 @@ Evidence Files (first 10):
 .pre-commit-config.yaml
 agents/codex_client/codex_client/config.py
 agents/codex_client/tests/test_config.py
-```
+```text
 ### data-pipeline
 Score: 0.8048
 
@@ -185,7 +185,7 @@ Patterns Found: loader, split
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .github/workflows/data_validation.yml
 codex_ml/data/checksums.py
 configs/deployment/hhg_logistics/data/default.yaml
@@ -196,7 +196,7 @@ configs/training/data/offline/tiny_corpus.yaml
 configs/training/data/tiny.yaml
 data/.gitkeep
 data/models/.gitkeep
-```
+```text
 ### deployment-infrastructure
 Score: 0.6460
 
@@ -208,7 +208,7 @@ Patterns Found: deploy, docker, helm, service
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .dockerignore
 Dockerfile
 Dockerfile.gpu
@@ -219,7 +219,7 @@ deploy/interactive_entrypoint.sh
 deploy/setup_universal.sh
 docker-compose.yml
 docker/Dockerfile.cpu
-```
+```text
 ### documentation-system
 Score: 0.6754
 
@@ -231,7 +231,7 @@ Patterns Found: docs, markdown, mkdocs
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 README.md
 docs/ARCHITECTURE.md
 docs/CHANGELOG.md
@@ -242,7 +242,7 @@ docs/CHECKPOINTS.md
 docs/CLI.md
 docs/CODEX_STRUCTURE_CONSOLIDATION_PROMPT.md
 docs/CONTRIBUTING.addendum.md
-```
+```text
 ### duplication_ratio
 Score: 0.4002
 
@@ -254,7 +254,7 @@ Patterns Found: None
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .bandit.yaml
 .bandit.yml
 .codex/DO_NOT_ACTIVATE_ACTIONS.txt
@@ -265,7 +265,7 @@ Evidence Files (first 10):
 .codex/action_log.ndjson
 .codex/analysis_metrics.jsonl
 .codex/archive/README_UPDATED.md
-```
+```text
 ### evaluation-metrics
 Score: 0.8164
 
@@ -277,7 +277,7 @@ Patterns Found: metric, perplexity
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md
 configs/deployment/hhg_logistics/eval/default.yaml
 configs/evaluation/base.yaml
@@ -288,7 +288,7 @@ configs/evaluation/reasoning/base.yaml
 configs/evaluation/reasoning/default.yaml
 configs/evaluation/reasoning/local_ci.yaml
 configs/evaluation/reasoning/math.yaml
-```
+```text
 ### experiment-management
 Score: 0.7942
 
@@ -300,7 +300,7 @@ Patterns Found: experiment, metadata, mlflow, tracking, wandb
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/copilot_bridge/manifests/bridge_manifest.schema.json
 .codex/copilot_bridge/var/manifests/.gitkeep
 .codex/evidence/provenance/root-cleanup/intoto.jsonl
@@ -311,7 +311,7 @@ Evidence Files (first 10):
 .codex/validation/20250910T052842Z/pre_manifest.json
 .codex/validation/20250910T071257Z/post_manifest.json
 .codex/validation/20250910T071257Z/pre_manifest.json
-```
+```text
 ### inference-serving
 Score: 0.5176
 
@@ -323,7 +323,7 @@ Patterns Found: serve
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/copilot_bridge/bridge/server.js
 configs/deployment/hhg_logistics/serve/local.yaml
 copilot/extension/server/index.js
@@ -334,7 +334,7 @@ src/hhg_logistics/monitor/serve_report.py
 src/hhg_logistics/serve/__init__.py
 src/hhg_logistics/serve/app.py
 src/hhg_logistics/serve/smoke.py
-```
+```text
 ### logging-tracking
 Score: 0.7925
 
@@ -346,7 +346,7 @@ Patterns Found: log, mlflow
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/action_log.ndjson
 .codex/automation_out/change_log.md
 .codex/automation_out/db_catalog.json
@@ -357,7 +357,7 @@ Evidence Files (first 10):
 .codex/copilot_bridge/var/logs/.gitkeep
 .codex/errors_codex.log
 .codex/evidence/phase5_structured_logging.jsonl
-```
+```text
 ### mcp-tools-integration
 Score: 0.6199
 
@@ -369,7 +369,7 @@ Patterns Found: mcp, tool
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 configs/evaluation/reasoning/tools.yaml
 configs/training/reasoning/tool_execution.yaml
 data/sample/reasoning/tool_eval.jsonl
@@ -380,7 +380,7 @@ docs/reference/tools.md
 docs/validation/Schema_Validation_Tooling.md
 mcp/mcp.json
 mcp/server/README.md
-```
+```text
 ### ml-serving
 Score: 0.8594
 
@@ -392,7 +392,7 @@ Patterns Found: api, predict, serve
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/copilot_bridge/bridge/server.js
 P1_FIX_API_KEY_OPTIONAL.md
 actions/openapi.yaml
@@ -403,7 +403,7 @@ docs/api.md
 docs/api/README.md
 docs/api/loop_eval.md
 docs/api_catalog.md
-```
+```text
 ### peft_hooks
 Score: 0.7190
 
@@ -415,7 +415,7 @@ Patterns Found: LoraConfig, get_peft_model, lora, peft, prepare_model_for_kbit_t
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 cli/script_polish.py
 cli/update_runner.py
 codex_addons/metrics/collector.py
@@ -426,7 +426,7 @@ models/peft_utils.py
 nox_sessions/docs_validation.py
 noxfile.py
 scripts/codex_ready_task_runner.py
-```
+```text
 ### reproducibility
 Score: 0.8803
 
@@ -438,7 +438,7 @@ Patterns Found: deterministic, reproducibility, rng_state, seed, sha256
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/validation/file_integrity_compare.json
 _codex_reports/2025-10-06/reproducibility.json
 _codex_reports/2025-10-06/seed_scan.json
@@ -449,7 +449,7 @@ docs/guides/serving_reproducibility.md
 docs/integrity_and_uris.md
 docs/manifest_integrity.md
 docs/ops/Deterministic_Installs.md
-```
+```text
 ### safeguards_keywords
 Score: 0.6431
 
@@ -461,7 +461,7 @@ Patterns Found: WANDB_MODE, checksum, offline, rng, seed, sha256
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/README.md
 .codex/change_log-large.md
 .codex/disabled_workflows/release-upload.yml
@@ -472,7 +472,7 @@ Evidence Files (first 10):
 .codex/reports/PHASE2_STANDARDIZATION_SUMMARY.md
 .codex/scripts/maintenance.sh
 .codex/scripts/setup.sh
-```
+```text
 ### safety-security
 Score: 0.7385
 
@@ -484,7 +484,7 @@ Patterns Found: sanitize, secret
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/evidence/phase5_privacy_safety.jsonl
 artifacts/security/safety.txt
 configs/base/safety/policy.yaml
@@ -495,7 +495,7 @@ docs/safety.md
 docs/safety/differential_privacy.md
 docs/safety/moderation_adapter.md
 docs/safety/policy_guidance.md
-```
+```text
 ### status-reporting
 Score: 0.7556
 
@@ -507,7 +507,7 @@ Patterns Found: audit, report, status
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .codex/GATES_REPORT.txt
 .codex/automation_out/coverage_report.json
 .codex/change_log_compare_report.json
@@ -518,7 +518,7 @@ Evidence Files (first 10):
 .codex/evidence/phase4_dependencies_audit.jsonl
 .codex/notes/CODEBASE_AUDIT.md
 .codex/reports/.gitkeep
-```
+```text
 ### testing-infrastructure
 Score: 0.9126
 
@@ -530,7 +530,7 @@ Patterns Found: fixture, pytest, test_
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 .github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md
 agents/codex_client/pyproject.toml
 configs/base/offline/tiny_fixtures.yaml
@@ -541,7 +541,7 @@ pytest.ini
 services/ita/pyproject.toml
 temp/bridge_codex_copilot_bridge/agents/codex_client/pyproject.toml
 temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml
-```
+```text
 ### tokenization
 Score: 0.7969
 
@@ -553,7 +553,7 @@ Patterns Found: encode, tokenizer
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 _codex_reports/2025-10-06/tokenizer_check.json
 artifacts/models/tiny_tokenizer/vocab.json
 codex_digest/tokenizer.py
@@ -564,7 +564,7 @@ configs/training/tokenizer/offline/tiny_vocab.yaml
 configs/training/tokenizer/offline/tinyllama.yaml
 configs/training/tokenizer/train_tokenizer.yaml
 docs/guides/tokenization.md
-```
+```text
 ### training-engine
 Score: 0.8350
 
@@ -576,7 +576,7 @@ Patterns Found: epoch, train
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 _codex_reports/2025-10-06/trainer_smoke.json
 _codex_reports/2025-10-06/trainer_smoke.log
 artifacts/diffs/training_py01_removal.md
@@ -587,7 +587,7 @@ configs/schemas/training.schema.yaml
 configs/schemas/training_profile.schema.json
 configs/simple/train.yaml
 configs/training/base.yaml
-```
+```text
 ### unified-training
 Score: 0.8450
 
@@ -599,13 +599,13 @@ Patterns Found: UnifiedTrainingConfig, run_unified_training
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 scripts/space_traversal/detectors/unified_training.py
 src/codex_ml/detectors/unified_training.py
 src/codex_ml/training/unified_training.py
 tests/detectors/test_unified_training.py
 tools/bench_unified_training.py
-```
+```text
 ### vector-stores
 Score: 0.3317
 
@@ -617,11 +617,11 @@ Patterns Found: None
 Missing Patterns: None
 
 Evidence Files (first 10):
-```
+```text
 codex_addons/vector_stores/__init__.py
 codex_addons/vector_stores/pgvector_stub.py
 codex_addons/vector_stores/weaviate_stub.py
-```
+```text
 
 ## 6. Appendix
 | Field | Description |

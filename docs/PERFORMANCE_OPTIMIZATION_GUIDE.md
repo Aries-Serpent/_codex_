@@ -60,7 +60,7 @@ batching = BatchingMiddleware(
 async def handle_request(data):
     result = await batching.process(data)
     return result
-```
+```text
 
 ### Configuration
 
@@ -82,7 +82,7 @@ batching = BatchingMiddleware(
     max_batch_size=32,
     max_wait_time=0.1,  # 100ms (default)
 )
-```
+```text
 
 ### Performance Metrics
 
@@ -96,7 +96,7 @@ print(f"Avg latency: {metrics['average_latency']:.3f}s")
 print(f"p95 latency: {metrics['latency_p95']:.3f}s")
 print(f"Throughput: {metrics['throughput_rps']:.1f} req/s")
 print(f"Avg batch size: {metrics['average_batch_size']:.1f}")
-```
+```text
 
 ### Trade-offs
 
@@ -141,7 +141,7 @@ def predict_with_cache(input_data):
     cache.put(input_data, result)
     
     return result
-```
+```text
 
 ### Configuration
 
@@ -163,7 +163,7 @@ cache = ResponseCache(
     max_size=10000,
     default_ttl=0,  # No TTL
 )
-```
+```text
 
 ### Cache Metrics
 
@@ -176,7 +176,7 @@ print(f"Hit rate: {metrics['hit_rate']:.1%}")
 print(f"Evictions: {metrics['evictions']}")
 print(f"Size: {metrics['total_size']}/{metrics['max_size']}")
 print(f"Utilization: {metrics['memory_utilization']:.1%}")
-```
+```text
 
 ### Cache Management
 
@@ -191,7 +191,7 @@ print(f"Removed {removed} expired entries")
 # Check if key exists (not expired)
 if input_data in cache:
     print("Cached result available")
-```
+```text
 
 ### Trade-offs
 
@@ -231,7 +231,7 @@ optimized_store = OptimizedVectorStore(
 
 # Search (automatically cached)
 results = optimized_store.search(query_vector, k=10)
-```
+```text
 
 ### Batch Search
 
@@ -245,7 +245,7 @@ query_vectors = np.array([
 
 # Batch search with caching
 results = optimized_store.search_batch(query_vectors, k=10)
-```
+```text
 
 ### Retrieval Metrics
 
@@ -261,7 +261,7 @@ print(f"Throughput: {metrics['retrieval']['throughput_qps']:.1f} queries/s")
 # Cache metrics
 print(f"Hit rate: {metrics['cache']['hit_rate']:.1%}")
 print(f"Cache size: {metrics['cache']['total_size']}")
-```
+```text
 
 ### Memory-Mapped Indices
 
@@ -279,7 +279,7 @@ should_mmap = enable_memory_mapped_index(index_path)
 if should_mmap:
     print("Large index detected, using memory-mapped files")
     # FAISS will automatically use memory mapping
-```
+```text
 
 ### Trade-offs
 
@@ -324,7 +324,7 @@ try:
     result = breaker.call(call_external_service)
 except Exception as e:
     print(f"Circuit breaker: {e}")
-```
+```text
 
 ### Retry with Exponential Backoff
 
@@ -342,7 +342,7 @@ result = retry_with_backoff(
     backoff_factor=2.0,    # Double each time
     exceptions=(requests.RequestException,),
 )
-```
+```text
 
 ### Fallback Handler
 
@@ -367,7 +367,7 @@ result = handler.call_with_fallback(
     fallback_key=input_data,
     input_data,
 )
-```
+```text
 
 ### Combined Resilience
 
@@ -398,7 +398,7 @@ def resilient_predict(input_data):
             lambda: model.predict(input_data),
             fallback_key=input_data,
         )
-```
+```text
 
 ---
 
@@ -444,7 +444,7 @@ class PerformanceMonitor:
         print(f"\nCircuit Breaker:")
         print(f"  State: {metrics['circuit_breaker']['state']}")
         print(f"  Failures: {metrics['circuit_breaker']['failure_count']}")
-```
+```text
 
 ---
 
@@ -458,7 +458,7 @@ results = model.predict(inputs)
 
 # Measure performance
 # Only add optimizations if needed based on metrics
-```
+```text
 
 ### 2. Choose Appropriate Batch Sizes
 
@@ -471,7 +471,7 @@ batching = BatchingMiddleware(max_batch_size=16)
 
 # Real-time: minimal batching
 batching = BatchingMiddleware(max_batch_size=4, max_wait_time=0.02)
-```
+```text
 
 ### 3. Set Appropriate TTLs
 
@@ -484,7 +484,7 @@ cache = ResponseCache(default_ttl=60)  # 1 minute
 
 # Real-time data: no caching
 # Don't use cache for time-sensitive predictions
-```
+```text
 
 ### 4. Monitor and Tune
 
@@ -500,7 +500,7 @@ def monitor_performance():
     # Alert on high latency
     if metrics['batching']['latency_p95'] > 1.0:
         logger.warning("High p95 latency, consider tuning batch parameters")
-```
+```text
 
 ---
 
@@ -579,7 +579,7 @@ batching = BatchingMiddleware(max_batch_size=32, max_wait_time=0.1)
 cache = ResponseCache(max_size=1000, default_ttl=300.0)
 optimized_store = OptimizedVectorStore(store, enable_cache=True)
 breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5, timeout=60.0))
-```
+```text
 
 ---
 

@@ -277,34 +277,34 @@ class TestDBManager:
 
     def test_close_all_pools_integration(self, pooling_db_manager, pool_state_tracker):
         """Integration test for pool cleanup using fixtures.
-        
+
         This test validates that:
         1. Pooling is actually enabled (via fixture)
         2. Connections are returned to pool (not immediately closed)
         3. close_all_pools() clears all connections
         4. Pool dictionary is emptied
-        
+
         Fixtures used:
             pooling_db_manager: Provides DBManager with pooling enabled
             pool_state_tracker: Tracks pool size changes
         """
         from codex.logging.db_manager import DBManager
-        
+
         # Get connection and return to pool
         conn1 = pooling_db_manager.get_connection()
         pooling_db_manager.close_connection(conn1)
-        
+
         # Verify pool grew (connection was added)
-        pool_state_tracker['assert_pool_grew']()
-        
+        pool_state_tracker["assert_pool_grew"]()
+
         # Verify pool has exactly 1 connection
-        pool_state_tracker['assert_pool_size'](1)
-        
+        pool_state_tracker["assert_pool_size"](1)
+
         # Cleanup
         DBManager.close_all_pools()
-        
+
         # Verify pool is empty
-        pool_state_tracker['assert_pool_empty']()
+        pool_state_tracker["assert_pool_empty"]()
 
 
 class TestCLIEndToEnd:
@@ -314,12 +314,18 @@ class TestCLIEndToEnd:
         """Test complete CLI workflow: init → log → view → query."""
         from click.testing import CliRunner
 
-        from codex.cli import init_db_cmd, query_logs_cmd, session_logger_cmd, viewer_cmd
+        from codex.cli import (
+            init_db_cmd,
+            query_logs_cmd,
+            session_logger_cmd,
+            viewer_cmd,
+        )
 
         runner = CliRunner()
-        
+
         # Set up environment
         import os
+
         db_path = str(tmp_path / "e2e_test.db")
         os.environ["CODEX_LOG_DB_PATH"] = db_path
 
@@ -385,6 +391,7 @@ class TestNewCLICommands:
         assert result.exit_code == 0
         # Should be valid JSON
         import json
+
         data = json.loads(result.output)
         assert "CODEX_ENV_PYTHON_VERSION" in data
 
@@ -395,11 +402,12 @@ class TestNewCLICommands:
         from codex.cli import list_sessions_cmd
 
         runner = CliRunner()
-        
+
         # Set up test database
         import os
+
         db_path = str(tmp_path / "list_test.db")
-        
+
         # Save and clear environment
         old_db_path = os.environ.get("CODEX_LOG_DB_PATH")
         os.environ["CODEX_LOG_DB_PATH"] = db_path
@@ -407,6 +415,7 @@ class TestNewCLICommands:
         try:
             # Initialize and add some data
             from codex.logging.db_manager import DBManager
+
             manager = DBManager(db_path=tmp_path / "list_test.db")
             manager.init_schema()
 
@@ -441,8 +450,9 @@ class TestMissingMethods:
 
     def test_set_log_level(self, tmp_path):
         """Test dynamic log level setting."""
-        from codex.logging.error_handler import CodexErrorHandler
         import logging
+
+        from codex.logging.error_handler import CodexErrorHandler
 
         handler = CodexErrorHandler(log_dir=tmp_path)
 
@@ -450,25 +460,27 @@ class TestMissingMethods:
         assert handler.logger.level == logging.ERROR
 
         # Test valid levels
-        handler.set_log_level('DEBUG')
+        handler.set_log_level("DEBUG")
         assert handler.logger.level == logging.DEBUG
 
-        handler.set_log_level('warning')  # case-insensitive
+        handler.set_log_level("warning")  # case-insensitive
         assert handler.logger.level == logging.WARNING
 
-        handler.set_log_level('INFO')
+        handler.set_log_level("INFO")
         assert handler.logger.level == logging.INFO
 
         # Test invalid level
         import pytest
+
         with pytest.raises(ValueError, match="Invalid log level"):
-            handler.set_log_level('INVALID')
+            handler.set_log_level("INVALID")
 
     def test_public_validate_method(self):
         """Test public validate() method."""
-        from codex.config.env_vars import EnvironmentManager
         import os
         from unittest.mock import patch
+
+        from codex.config.env_vars import EnvironmentManager
 
         # Lazy validation mode
         with patch.dict(os.environ, {}, clear=True):
@@ -487,12 +499,14 @@ class TestMissingMethods:
 
     def test_validate_with_invalid_env(self):
         """Test validate() detects invalid environment."""
-        from codex.config.env_vars import EnvironmentManager
         import os
         from unittest.mock import patch
+
         import pytest
 
-        with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '999'}, clear=True):
+        from codex.config.env_vars import EnvironmentManager
+
+        with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "999"}, clear=True):
             env = EnvironmentManager(lazy_validation=True)
 
             # Should fail on explicit validation
@@ -505,9 +519,10 @@ class TestEdgeCases:
 
     def test_error_handler_with_empty_log_dir(self):
         """Test ErrorHandler with non-existent log directory."""
-        from codex.logging.error_handler import CodexErrorHandler
-        from pathlib import Path
         import time
+        from pathlib import Path
+
+        from codex.logging.error_handler import CodexErrorHandler
 
         # Non-existent path should be created
         fake_path = Path("/tmp/codex_test_nonexistent_" + str(time.time()))
@@ -517,13 +532,16 @@ class TestEdgeCases:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(fake_path)
 
     def test_db_manager_invalid_path(self):
         """Test DBManager with invalid/read-only path."""
-        from codex.logging.db_manager import DBManager
         from pathlib import Path
+
         import pytest
+
+        from codex.logging.db_manager import DBManager
 
         # Invalid path should raise error on init_schema
         db = DBManager(db_path=Path("/invalid/readonly/path.db"))
@@ -533,16 +551,17 @@ class TestEdgeCases:
 
     def test_environment_manager_missing_optional_vars(self):
         """Test EnvironmentManager with missing optional variables."""
-        from codex.config.env_vars import EnvironmentManager
         import os
         from unittest.mock import patch
+
+        from codex.config.env_vars import EnvironmentManager
 
         with patch.dict(os.environ, {}, clear=True):
             env = EnvironmentManager()
 
             # Should use defaults for optional vars
-            assert env.get('CODEX_ENV_PYTHON_VERSION') == '3.12'
-            assert env.get('CODEX_SESSION_LOG_DIR') == '.codex/sessions'
+            assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12"
+            assert env.get("CODEX_SESSION_LOG_DIR") == ".codex/sessions"
 
     def test_db_manager_empty_database(self, tmp_path):
         """Test querying empty database."""
@@ -559,10 +578,12 @@ class TestEdgeCases:
 
     def test_export_env_with_empty_config(self):
         """Test export-env with minimal environment."""
-        from click.testing import CliRunner
-        from codex.cli import export_env_cmd
         import os
         from unittest.mock import patch
+
+        from click.testing import CliRunner
+
+        from codex.cli import export_env_cmd
 
         runner = CliRunner()
 
@@ -572,12 +593,14 @@ class TestEdgeCases:
 
             # Should have at least defaults
             import json
+
             config = json.loads(result.output)
-            assert 'CODEX_ENV_PYTHON_VERSION' in config
+            assert "CODEX_ENV_PYTHON_VERSION" in config
 
     def test_clean_logs_with_no_old_logs(self):
         """Test clean-logs when no old logs exist."""
         from click.testing import CliRunner
+
         from codex.cli import clean_logs_cmd
 
         runner = CliRunner()
@@ -591,9 +614,10 @@ class TestConcurrentAccess:
 
     def test_db_manager_concurrent_access(self, tmp_path):
         """Test DBManager handles concurrent writes correctly (WAL mode)."""
-        from codex.logging.db_manager import DBManager
         import threading
         import time
+
+        from codex.logging.db_manager import DBManager
 
         db_path = tmp_path / "concurrent_test.db"
         manager = DBManager(db_path=db_path)
@@ -610,8 +634,12 @@ class TestConcurrentAccess:
                         conn.execute(
                             "INSERT INTO session_events (ts, session_id, role, message) "
                             "VALUES (?, ?, ?, ?)",
-                            (time.time(), f"thread-{thread_id}", "user",
-                             f"Message {i} from thread {thread_id}")
+                            (
+                                time.time(),
+                                f"thread-{thread_id}",
+                                "user",
+                                f"Message {i} from thread {thread_id}",
+                            ),
                         )
                         conn.commit()
                     write_count[0] += 1
@@ -649,10 +677,12 @@ class TestFullSessionLifecycle:
 
         Flow: init-db → log messages → query database → verify results
         """
+        import time
+
         from click.testing import CliRunner
+
         from codex.cli import init_db_cmd
         from codex.logging.db_manager import DBManager
-        import time
 
         runner = CliRunner()
         db_path = tmp_path / "lifecycle_test.db"
@@ -679,7 +709,7 @@ class TestFullSessionLifecycle:
                 conn.execute(
                     "INSERT INTO session_events (ts, session_id, role, message) "
                     "VALUES (?, ?, ?, ?)",
-                    (time.time(), session_id, role, message)
+                    (time.time(), session_id, role, message),
                 )
                 conn.commit()
 
@@ -687,8 +717,7 @@ class TestFullSessionLifecycle:
         with manager.connection() as conn:
             # Count total messages
             cursor = conn.execute(
-                "SELECT COUNT(*) FROM session_events WHERE session_id = ?",
-                (session_id,)
+                "SELECT COUNT(*) FROM session_events WHERE session_id = ?", (session_id,)
             )
             count = cursor.fetchone()[0]
             assert count == 5, f"Expected 5 messages, got {count}"
@@ -696,7 +725,7 @@ class TestFullSessionLifecycle:
             # Verify message content
             cursor = conn.execute(
                 "SELECT role, message FROM session_events WHERE session_id = ? ORDER BY ts",
-                (session_id,)
+                (session_id,),
             )
             rows = cursor.fetchall()
 
@@ -708,8 +737,7 @@ class TestFullSessionLifecycle:
         # Step 4: Test query functionality (simulates query-logs)
         with manager.connection() as conn:
             cursor = conn.execute(
-                "SELECT COUNT(*) FROM session_events WHERE message LIKE ?",
-                ("%world%",)
+                "SELECT COUNT(*) FROM session_events WHERE message LIKE ?", ("%world%",)
             )
             search_count = cursor.fetchone()[0]
             assert search_count == 1, "Search should find 'Hello, world'"
@@ -724,10 +752,11 @@ class TestViewerCLIWrapper:
         This is a regression test for the P1 bug where the wrapper called
         main(parse_args(args)) instead of main(args), causing TypeError.
         """
-        from codex.logging.viewer import LogViewer
-        from codex.logging.db_manager import DBManager
-        from unittest.mock import patch
         import time
+        from unittest.mock import patch
+
+        from codex.logging.db_manager import DBManager
+        from codex.logging.viewer import LogViewer
 
         # Set up test database
         db_path = tmp_path / "viewer_test.db"
@@ -738,14 +767,13 @@ class TestViewerCLIWrapper:
         session_id = "test-viewer-123"
         with manager.connection() as conn:
             conn.execute(
-                "INSERT INTO session_events (ts, session_id, role, message) "
-                "VALUES (?, ?, ?, ?)",
-                (time.time(), session_id, "user", "Test message")
+                "INSERT INTO session_events (ts, session_id, role, message) " "VALUES (?, ?, ?, ?)",
+                (time.time(), session_id, "user", "Test message"),
             )
             conn.commit()
 
         # Mock main() to verify it receives a list, not Namespace
-        with patch('codex.logging.viewer.main') as mock_main:
+        with patch("codex.logging.viewer.main") as mock_main:
             mock_main.return_value = 0
 
             viewer = LogViewer()
@@ -759,8 +787,7 @@ class TestViewerCLIWrapper:
             assert len(call_args) == 1, "main() should be called with one argument"
             argv = call_args[0]
             assert isinstance(argv, list), f"Expected list, got {type(argv)}"
-            assert all(isinstance(arg, str) for arg in argv), \
-                "All argv elements should be strings"
+            assert all(isinstance(arg, str) for arg in argv), "All argv elements should be strings"
 
             # Verify correct arguments
             assert "--session-id" in argv
@@ -770,11 +797,12 @@ class TestViewerCLIWrapper:
 
     def test_viewer_wrapper_with_actual_main(self, tmp_path):
         """Test that viewer wrapper works end-to-end with actual main()."""
-        from codex.logging.viewer import LogViewer
-        from codex.logging.db_manager import DBManager
-        from unittest.mock import patch
-        import time
         import os
+        import time
+        from unittest.mock import patch
+
+        from codex.logging.db_manager import DBManager
+        from codex.logging.viewer import LogViewer
 
         # Set up test database
         db_path = tmp_path / "viewer_e2e.db"
@@ -785,17 +813,16 @@ class TestViewerCLIWrapper:
         session_id = "test-e2e-456"
         with manager.connection() as conn:
             conn.execute(
-                "INSERT INTO session_events (ts, session_id, role, message) "
-                "VALUES (?, ?, ?, ?)",
-                (time.time(), session_id, "user", "E2E test message")
+                "INSERT INTO session_events (ts, session_id, role, message) " "VALUES (?, ?, ?, ?)",
+                (time.time(), session_id, "user", "E2E test message"),
             )
             conn.commit()
 
         # Set DB path in environment so viewer can find it
-        with patch.dict(os.environ, {'CODEX_LOG_DB_PATH': str(db_path)}):
+        with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": str(db_path)}):
             # Capture stdout to verify output
-            from io import StringIO
             import sys
+            from io import StringIO
 
             old_stdout = sys.stdout
             sys.stdout = captured_output = StringIO()
@@ -806,8 +833,6 @@ class TestViewerCLIWrapper:
 
                 output = captured_output.getvalue()
                 # Should contain the test message
-                assert "E2E test message" in output, \
-                    f"Expected message in output, got: {output}"
+                assert "E2E test message" in output, f"Expected message in output, got: {output}"
             finally:
                 sys.stdout = old_stdout
-

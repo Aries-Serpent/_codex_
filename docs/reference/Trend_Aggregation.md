@@ -22,7 +22,7 @@ Historical `capabilities_scored*.json` snapshots under `audit_artifacts/`.
     {"id":"alpha","scores":[0.50,0.55,0.60],"delta":0.10,"pct_change":0.20,"sparkline":"▁▄█"}
   ]
 }
-```
+```text
 
 ## 4. Sparkline Encoding
 
@@ -41,7 +41,7 @@ Unicode block characters represent normalized position within min-max range.
 ```bash
 TREND_SPARKLINE=1 python scripts/archive/trend_aggregate.py
 jq '.capabilities[] | select(.delta > 0)' audit_artifacts/trend_scores.json
-```
+```text
 
 ## 7. Alerts (Future)
 

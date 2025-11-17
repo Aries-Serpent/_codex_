@@ -41,8 +41,18 @@ def _validate_pair(data_path: str, schema_path: str) -> bool:
 
 def main(argv: List[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Validate JSON data with JSON Schema")
-    p.add_argument("--data", action="append", default=[], help="Path to JSON data (can repeat; pairs with --schema)")
-    p.add_argument("--schema", action="append", default=[], help="Path to JSON schema (repeat; pairs with --data)")
+    p.add_argument(
+        "--data",
+        action="append",
+        default=[],
+        help="Path to JSON data (can repeat; pairs with --schema)",
+    )
+    p.add_argument(
+        "--schema",
+        action="append",
+        default=[],
+        help="Path to JSON schema (repeat; pairs with --data)",
+    )
     args = p.parse_args(argv)
 
     if not args.data or not args.schema or len(args.data) != len(args.schema):

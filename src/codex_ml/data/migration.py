@@ -1,4 +1,5 @@
 """Data migration utilities for assignment mappings."""
+
 from __future__ import annotations
 
 import json
@@ -24,20 +25,19 @@ class AssignmentMappingMigration:
             v1_data = json.load(f)
 
         # Transform v1 structure to v2
-        v2_data: Dict[str, Any] = {
-            "version": "2.0",
-            "mappings": []
-        }
+        v2_data: Dict[str, Any] = {"version": "2.0", "mappings": []}
 
         for item in v1_data.get("assignments", []):
-            v2_data["mappings"].append({
-                "id": item["id"],
-                "name": item.get("name", ""),
-                "type": item.get("type", "default"),
-                # Add new v2 fields
-                "created_at": item.get("timestamp", ""),
-                "metadata": item.get("extra", {})
-            })
+            v2_data["mappings"].append(
+                {
+                    "id": item["id"],
+                    "name": item.get("name", ""),
+                    "type": item.get("type", "default"),
+                    # Add new v2 fields
+                    "created_at": item.get("timestamp", ""),
+                    "metadata": item.get("extra", {}),
+                }
+            )
 
         return v2_data
 
@@ -55,28 +55,23 @@ class AssignmentMappingMigration:
             v2_data = json.load(f)
 
         # Transform v2 structure to v3
-        v3_data: Dict[str, Any] = {
-            "version": "3.0",
-            "schema": "assignment_mapping_v3",
-            "items": []
-        }
+        v3_data: Dict[str, Any] = {"version": "3.0", "schema": "assignment_mapping_v3", "items": []}
 
         for mapping in v2_data.get("mappings", []):
-            v3_data["items"].append({
-                "uuid": mapping["id"],
-                "label": mapping.get("name", ""),
-                "category": mapping.get("type", "general"),
-                "timestamp": mapping.get("created_at", ""),
-                "attributes": mapping.get("metadata", {})
-            })
+            v3_data["items"].append(
+                {
+                    "uuid": mapping["id"],
+                    "label": mapping.get("name", ""),
+                    "category": mapping.get("type", "general"),
+                    "timestamp": mapping.get("created_at", ""),
+                    "attributes": mapping.get("metadata", {}),
+                }
+            )
 
         return v3_data
 
 
-def load_assignment_mappings(
-    path: Path,
-    auto_migrate: bool = True
-) -> Dict[str, Any]:
+def load_assignment_mappings(path: Path, auto_migrate: bool = True) -> Dict[str, Any]:
     """Load assignment mappings with automatic migration support.
 
     Args:
@@ -103,16 +98,14 @@ def load_assignment_mappings(
             f"Loading v1 assignment mappings. Please migrate to v3. "
             f"Use: python -m codex_ml.data.migration migrate --input {path}",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         if auto_migrate:
             # Create temporary v2 file
             import tempfile
+
             with tempfile.NamedTemporaryFile(
-                mode='w',
-                suffix='.json',
-                delete=False,
-                encoding="utf-8"
+                mode="w", suffix=".json", delete=False, encoding="utf-8"
             ) as tf:
                 v2_data = AssignmentMappingMigration.migrate_v1_to_v2(path)
                 json.dump(v2_data, tf)
@@ -129,16 +122,14 @@ def load_assignment_mappings(
         warnings.warn(
             "Loading v2 assignment mappings. Consider migrating to v3.",
             PendingDeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         if auto_migrate:
             # Create temporary file for migration
             import tempfile
+
             with tempfile.NamedTemporaryFile(
-                mode='w',
-                suffix='.json',
-                delete=False,
-                encoding="utf-8"
+                mode="w", suffix=".json", delete=False, encoding="utf-8"
             ) as tf:
                 json.dump(data, tf)
                 temp_path = Path(tf.name)

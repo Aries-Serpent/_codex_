@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
-from typer.testing import CliRunner
+
 import torch
 from codex_ml.evaluation import cli as eval_cli
+from typer.testing import CliRunner
+
 
 class NoopLogger:
     def __init__(self, path: Path):
@@ -15,6 +17,7 @@ class NoopLogger:
 
     def close(self):
         pass
+
 
 def test_cli_uses_logger(tmp_path, monkeypatch):
     runner = CliRunner()
@@ -31,7 +34,9 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
         "logging": {"mlflow": False},
     }
     monkeypatch.setattr(eval_cli, "_load_config", lambda _: cfg)
-    monkeypatch.setattr("codex_ml.evaluation.cli.build_loggers", lambda opts: [NoopLogger(tmp_path / "m.ndjson")])
+    monkeypatch.setattr(
+        "codex_ml.evaluation.cli.build_loggers", lambda opts: [NoopLogger(tmp_path / "m.ndjson")]
+    )
     res = runner.invoke(eval_cli.app, ["run", "--config", str(tmp_path / "fake.json")])
     assert res.exit_code == 0
     assert (tmp_path / "m.ndjson").exists()

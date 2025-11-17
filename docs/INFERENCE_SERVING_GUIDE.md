@@ -33,7 +33,7 @@ server.load_model()
 # Make predictions
 predictions = server.predict(["Hello world", "Test input"])
 print(predictions)
-```
+```text
 
 ### FastAPI Server
 
@@ -47,7 +47,7 @@ export CODEX_MODEL_DEVICE=cpu
 
 # Run the server
 python -m src.codex_ml.serving.inference_server
-```
+```text
 
 The server will be available at `http://localhost:8000` with the following endpoints:
 
@@ -85,7 +85,7 @@ config_dict = {
 
 config = ModelConfig.from_dict(config_dict)
 server = ModelServer(config=config)
-```
+```text
 
 ### ModelConfig Class
 
@@ -107,7 +107,7 @@ config.validate()
 
 # Convert to dictionary
 config_dict = config.to_dict()
-```
+```text
 
 ## Model Backends
 
@@ -119,7 +119,7 @@ Best for development and testing. Returns dummy predictions:
 config = ModelConfig(model_type="stub", model_name="test-model")
 server = ModelServer(config=config)
 server.load_model()
-```
+```text
 
 **Output Format:**
 ```python
@@ -131,7 +131,7 @@ server.load_model()
         "model": "test-model"
     }
 ]
-```
+```text
 
 ### HuggingFace Models
 
@@ -146,7 +146,7 @@ config = ModelConfig(
 )
 server = ModelServer(config=config)
 server.load_model()
-```
+```text
 
 **Requirements:**
 - Model files must exist at the specified path
@@ -161,7 +161,7 @@ server.load_model()
         "model": "bert-classifier"
     }
 ]
-```
+```text
 
 ### ONNX Models
 
@@ -176,7 +176,7 @@ config = ModelConfig(
 )
 server = ModelServer(config=config)
 server.load_model()
-```
+```text
 
 **Requirements:**
 - Model file must exist at the specified path
@@ -200,7 +200,7 @@ for pred in predictions:
     print(f"Text: {pred['text']}")
     print(f"Label: {pred['label']}")
     print(f"Score: {pred['score']}")
-```
+```text
 
 ### With Parameters
 
@@ -214,7 +214,7 @@ predictions = server.predict(
         "temperature": 0.7,
     }
 )
-```
+```text
 
 ### Input Constraints
 
@@ -233,7 +233,7 @@ try:
 except ModelLoadError as e:
     print(f"Failed to load model: {e}")
     # Handle error (fallback, retry, etc.)
-```
+```text
 
 Common errors:
 - **Missing model files**: Model path does not exist
@@ -247,7 +247,7 @@ try:
     predictions = server.predict(inputs)
 except RuntimeError as e:
     print(f"Prediction failed: {e}")
-```
+```text
 
 Common errors:
 - **Model not loaded**: Call `load_model()` first
@@ -270,7 +270,7 @@ print(f"Device: {health['device']}")
 # Check for load errors
 if health['load_errors']:
     print(f"Load Errors: {health['load_errors']}")
-```
+```text
 
 ## Rate Limiting
 
@@ -295,7 +295,7 @@ if limiter.is_allowed(client_ip):
 else:
     # Reject request
     pass
-```
+```text
 
 ## API Endpoints (FastAPI)
 
@@ -314,7 +314,7 @@ Server information and available endpoints.
         "metrics": "/metrics"
     }
 }
-```
+```text
 
 ### GET /health
 
@@ -332,7 +332,7 @@ Health check endpoint.
     "device": "cpu",
     "load_errors": []
 }
-```
+```text
 
 ### POST /predict
 
@@ -346,7 +346,7 @@ Make predictions.
         "max_length": 512
     }
 }
-```
+```text
 
 **Response:**
 ```json
@@ -366,7 +366,7 @@ Make predictions.
         "total_requests": 43
     }
 }
-```
+```text
 
 ### GET /metrics
 
@@ -380,7 +380,7 @@ Server metrics.
     "model_name": "my-model",
     "model_loaded": true
 }
-```
+```text
 
 ## What's NOT Covered (Advanced Features)
 
@@ -436,7 +436,7 @@ for inp, pred in zip(inputs, predictions):
     print(f"\nInput: {inp}")
     print(f"Label: {pred['label']}")
     print(f"Score: {pred['score']:.2f}")
-```
+```text
 
 ### Complete Example: Running FastAPI Server
 
@@ -463,7 +463,7 @@ curl -X POST http://localhost:8000/predict \
     "inputs": ["This is a test"],
     "parameters": {}
   }'
-```
+```text
 
 ## Troubleshooting
 

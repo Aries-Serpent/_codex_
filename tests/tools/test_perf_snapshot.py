@@ -7,11 +7,14 @@ epoch_time_s: 44.2
 latency_p50_ms: 9.8
 """
 
+
 def test_perf_snapshot_parses_tmp(tmp_path):
     log = tmp_path / "perf.log"
     out = tmp_path / "perf.json"
     log.write_text(LOG, encoding="utf-8")
-    code = subprocess.call([sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)])
+    code = subprocess.call(
+        [sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)]
+    )
     assert code == 0
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data["training"]["throughput_steps_per_sec"] == 12.5
@@ -22,7 +25,9 @@ def test_perf_snapshot_parses_tmp(tmp_path):
 def test_perf_snapshot_handles_missing_log(tmp_path):
     log = tmp_path / "missing.log"
     out = tmp_path / "perf.json"
-    code = subprocess.call([sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)])
+    code = subprocess.call(
+        [sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)]
+    )
     assert code == 0
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data == {"raw": {}}

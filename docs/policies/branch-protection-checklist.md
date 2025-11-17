@@ -42,7 +42,7 @@ jobs:
     name: Lint commit messages (Conventional Commits)
   gates:
     name: Archive PR gates
-```
+```text
 
 If you rename the jobs, update the branch protection required checks accordingly.
 

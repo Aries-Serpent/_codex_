@@ -17,4 +17,4 @@ Always read the Actions schema first, pick the newest branch via /repo/most_rece
 - fetch and quote exact lines
 - never infer content not retrieved
 - log file paths in the final answer
-```
+```text

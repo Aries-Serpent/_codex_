@@ -14,7 +14,7 @@ pre-commit (pre-commit stage)
               ├── validate with tools/validate_patch.py
               ├── apply + restage (git apply --index)
               └── rerun checks → ledger events
-```
+```text
 
 The orchestrator is intentionally **manual**: developers opt in via
 `pre-commit run llm-auto-fix --hook-stage manual` (or a wrapper script) after a

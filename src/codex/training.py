@@ -26,16 +26,16 @@ except Exception:  # keep imports resilient
     clip_grad_norm_ = None  # type: ignore[assignment]
 
 from codex_ml.models import MiniLM, MiniLMConfig
-from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.monitoring.codex_logging import (
     CodexLoggers,
     _codex_log_all,
     _codex_logging_bootstrap,
 )
+from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse
 from codex_ml.monitoring.codex_logging import (
-    _codex_patch_argparse as _codex_monitor_patch_argparse,
+    _codex_sample_system,
 )
-from codex_ml.monitoring.codex_logging import _codex_sample_system
+from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt
 from codex_ml.symbolic_pipeline import (
     PretrainCfg,
     RewardModelCfg,

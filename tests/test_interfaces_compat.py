@@ -13,9 +13,7 @@ from codex_ml.interfaces import (
     TokenizerAdapter,
     apply_config,
 )
-from codex_ml.interfaces import (
-    tokenizer as tokenizer_mod,
-)
+from codex_ml.interfaces import tokenizer as tokenizer_mod
 
 # Load interface definitions from config or environment
 CFG_PATH = os.getenv("CODEX_INTERFACES_CFG", "configs/interfaces.yaml")

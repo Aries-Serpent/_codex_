@@ -16,7 +16,7 @@ uvicorn codex_ml.main:app \
   --port 8443 \
   --ssl-keyfile key.pem \
   --ssl-certfile cert.pem
-```
+```text
 
 ## Let's Encrypt / ACME (production)
 
@@ -31,7 +31,7 @@ services:
       - "traefik.http.routers.codex.rule=Host(`api.example.com`)"
       - "traefik.http.routers.codex.entrypoints=websecure"
       - "traefik.http.routers.codex.tls.certresolver=letsencrypt"
-```
+```text
 
 ## Mutual TLS between services
 
@@ -42,14 +42,14 @@ curl https://api.internal:8000/health \
   --cert client-cert.pem \
   --key client-key.pem \
   --cacert ca.pem
-```
+```text
 
 Configure the reverse proxy (e.g. Nginx) to validate client certificates:
 
 ```nginx
 ssl_client_certificate /etc/nginx/certs/ca.pem;
 ssl_verify_client on;
-```
+```text
 
 ## Hardening checklist
 

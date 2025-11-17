@@ -11,7 +11,7 @@ Install `jsonschema` in your environment and run:
 
 ```bash
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests/cli/test_cli_schemas.py
-```
+```text
 
 This suite verifies that stdout contains exactly one JSON document and matches the corresponding schema.
 
@@ -22,6 +22,6 @@ This suite verifies that stdout contains exactly one JSON document and matches t
 ```json
 { "ok": true, "data": <payload> }
 { "ok": false, "error": "message" }
-```
+```text
 
 This keeps stderr free for diagnostics while downstream tools consume predictable JSON.

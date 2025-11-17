@@ -9,7 +9,7 @@ Prereqs
 Dry‑run
 ```bash
 python -m scripts.ops.bootstrap_self_hosted_runner --owner <org> --repo <name> --dry-run
-```
+```text
 
 Apply
 ```bash
@@ -20,7 +20,7 @@ export GITHUB_APP_INSTALLATION_ID=...
 export GITHUB_APP_PRIVATE_KEY_PATH=/secure/github-app.pem
 
 python -m scripts.ops.bootstrap_self_hosted_runner --owner <org> --repo <name> --labels codex,linux,x64
-```
+```text
 
 Notes
 - Uses ephemeral App→Installation tokens, then a short‑lived runner registration token.

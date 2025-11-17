@@ -165,7 +165,9 @@ def test_rename_without_adr_is_flagged():
     if compliance.EVIDENCE.exists():
         compliance.EVIDENCE.unlink()
 
-    entry = compliance.DiffEntry(status="R100", path=destination_relative, original_path=original_relative)
+    entry = compliance.DiffEntry(
+        status="R100", path=destination_relative, original_path=original_relative
+    )
 
     try:
         previous_cwd = Path.cwd()
@@ -175,7 +177,9 @@ def test_rename_without_adr_is_flagged():
         finally:
             os.chdir(previous_cwd)
         assert original_relative in result.missing_adr, "Rename without ADR should be flagged"
-        assert original_relative in result.missing_evidence, "Rename without evidence should be flagged"
+        assert (
+            original_relative in result.missing_evidence
+        ), "Rename without evidence should be flagged"
         assert result.return_code == 2, "Missing ADR should cause failure return code"
     finally:
         compliance.EVIDENCE = previous_evidence
@@ -194,7 +198,7 @@ def test_rename_without_adr_is_flagged():
 def test_copy_does_not_require_tombstone():
     """
     Ensure copy entries (C status) do not require tombstone/ADR/evidence.
-    
+
     A git copy leaves the original file intact and creates a new file at the destination.
     This is not a removal operation and should not trigger archival compliance checks.
     """
@@ -215,7 +219,9 @@ def test_copy_does_not_require_tombstone():
     if compliance.EVIDENCE.exists():
         compliance.EVIDENCE.unlink()
 
-    entry = compliance.DiffEntry(status="C100", path=destination_relative, original_path=original_relative)
+    entry = compliance.DiffEntry(
+        status="C100", path=destination_relative, original_path=original_relative
+    )
 
     try:
         previous_cwd = Path.cwd()
@@ -224,9 +230,11 @@ def test_copy_does_not_require_tombstone():
             result = compliance.evaluate_entries([entry])
         finally:
             os.chdir(previous_cwd)
-        
+
         # Copy operations should NOT be flagged for missing tombstone, ADR, or evidence
-        assert original_relative not in result.missing_stub, "Copy should not require tombstone stub"
+        assert (
+            original_relative not in result.missing_stub
+        ), "Copy should not require tombstone stub"
         assert original_relative not in result.missing_adr, "Copy should not require ADR"
         assert original_relative not in result.missing_evidence, "Copy should not require evidence"
         assert result.return_code == 0, "Copy operations should pass compliance check"

@@ -94,8 +94,7 @@ def apply_routing(
         True,
         "--dry-run/--no-dry-run",
         help=(
-            "Simulate routing apply; --no-dry-run would perform outbound "
-            "calls when implemented."
+            "Simulate routing apply; --no-dry-run would perform outbound " "calls when implemented."
         ),
     ),
 ) -> None:
@@ -112,9 +111,7 @@ def apply_slas(
     dry_run: bool = typer.Option(
         True,
         "--dry-run/--no-dry-run",
-        help=(
-            "Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."
-        ),
+        help=("Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."),
     ),
 ) -> None:
     """Apply SLA operations (stub) and emit evidence."""

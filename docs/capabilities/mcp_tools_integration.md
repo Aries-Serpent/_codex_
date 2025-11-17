@@ -22,7 +22,7 @@ Comprehensive tests are available in `tests/space_traversal/test_mcp_tools_integ
 Run tests:
 ```bash
 pytest tests/space_traversal/test_mcp_tools_integration.py -v
-```
+```text
 
 ## Current Status
 

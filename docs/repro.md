@@ -74,7 +74,7 @@ metadata = load_checkpoint(
     ckpt_dir=Path("runs/model/checkpoints/epoch-4"),
 )
 print("Restored epoch", metadata.get("epoch"))
-```
+```text
 
 If the `.sha256` digest does not match the on-disk files the load call raises a
 `ValueError`, signalling that the checkpoint is corrupted or incomplete.

@@ -104,7 +104,7 @@ export CODEX_ENABLE_SIGNING=true
 
 # GitHub OIDC token (auto-provided in GitHub Actions)
 export SIGSTORE_ID_TOKEN=$(gh auth token)
-```
+```text
 
 ### GitHub Actions Integration
 
@@ -118,7 +118,7 @@ steps:
     env:
       CODEX_ENABLE_SIGNING: "true"
     run: python -m codex.cli archive store ...
-```
+```text
 
 ## Approval
 

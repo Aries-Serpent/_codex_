@@ -191,9 +191,7 @@ class EnvironmentManager:
         """
         self._ensure_validated()
         config = self.ENV_VARS.get(var_name)
-        fallback = (
-            default if default is not None else (config.default if config else None)
-        )
+        fallback = default if default is not None else (config.default if config else None)
         value = os.getenv(var_name, fallback)
         # Return None as-is to preserve type distinction for optional variables
         return value if value is not None else ""

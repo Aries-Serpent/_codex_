@@ -13,5 +13,8 @@ def test_connector_offline_ok(tmp_path, monkeypatch):
     p = tmp_path / "configs/connectors"
     p.mkdir(parents=True, exist_ok=True)
     (p / "github_connector.config.json").write_text(__import__("json").dumps(cfg), encoding="utf-8")
-    code = subprocess.call([sys.executable, "-c", "import tools.connectors.github_connector_check as c; c.main()"], cwd=str(tmp_path))
+    code = subprocess.call(
+        [sys.executable, "-c", "import tools.connectors.github_connector_check as c; c.main()"],
+        cwd=str(tmp_path),
+    )
     assert code == 0

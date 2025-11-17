@@ -91,6 +91,7 @@ def register_configs() -> None:
 
     try:
         from hydra.core.config_store import ConfigStore
+
         from codex_ml.utils.hydra_cs import safe_exists
     except Exception:  # pragma: no cover - hydra optional dependency
         return

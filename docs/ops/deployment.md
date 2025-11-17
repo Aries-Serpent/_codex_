@@ -16,14 +16,14 @@ Both runtime stages create a non-root `appuser`, install curl for health probes,
 
 # GPU build
 ./scripts/deploy/orchestrate.sh build --gpu
-```
+```text
 
 ## docker-compose
 `docker-compose.yml` defines a CPU profile with mounted data/artifact volumes and an HTTP healthcheck.
 
 ```bash
 docker compose up --build codex-cpu
-```
+```text
 
 Environment variables:
 - `MODEL_NAME`, `TOKENIZER_NAME`, `MAX_NEW_TOKENS` control inference defaults.
@@ -35,7 +35,7 @@ Updated chart values introduce replicas, resource requests, liveness/readiness p
 ```bash
 helm lint deploy/helm
 helm template codex deploy/helm
-```
+```text
 
 Override values per environment using `--values` or `--set` flags. For production, ensure GPU nodes are available to satisfy `nvidia.com/gpu` limits.
 
@@ -63,7 +63,7 @@ After deploying, validate endpoints:
 ```bash
 pytest tests/deployment/test_api_integration.py -k health
 curl https://codex.example.com/ready
-```
+```text
 
 ## Secrets Management
 Inject API keys and model credentials via Kubernetes Secrets. Avoid hard-coding values in `values.yaml`; reference environment variables instead.

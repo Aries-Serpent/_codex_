@@ -12,6 +12,7 @@ from codex_ml.io.atomic import atomic_write_text, canonical_json_dumps
 
 CANON_SEPARATORS = (",", ":")  # compact; RFC8785-compatible shape
 
+
 def _reject_non_json_number(x: float) -> None:
     # JSON forbids NaN/Infinity; JCS/I-JSON require IEEE-754-friendly numbers.
     if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):

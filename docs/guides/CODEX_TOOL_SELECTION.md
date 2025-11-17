@@ -29,7 +29,7 @@ START: "I need to create/modify a file"
   │    └─→ NO: Consider `sed` or line-by-line editing
   │
   └─→ END: Execute with validation
-```
+```text
 ## Tool Comparison Matrix
 
 | Operation | Tool | When to Use | Pros | Cons | Success Rate |
@@ -56,7 +56,7 @@ cat <<'EOF' > scripts/new_script.sh
 echo "Hello World"
 EOF
 chmod +x scripts/new_script.sh
-```
+```text
 
 ### Scenario 2: Single-Line Change
 
@@ -70,7 +70,7 @@ sed -i 's/old_value/new_value/g' config.yaml
 
 # In-place with backup
 sed -i.bak 's/old_value/new_value/' config.yaml
-```
+```text
 
 ### Scenario 3: Multi-Line File with Variables
 
@@ -82,7 +82,7 @@ Branch: $branch
 Date: $(date -u +%F)
 User: $USER
 EOF
-```
+```text
 
 ### Scenario 4: Complex Script (Multiple Lines)
 
@@ -102,7 +102,7 @@ bash -n "$temp_script"
 # Move to final location
 mv "$temp_script" scripts/final_script.sh
 chmod +x scripts/final_script.sh
-```
+```text
 
 ### Scenario 5: Patch Application
 
@@ -118,7 +118,7 @@ bash scripts/validate_patch.sh changes.patch
 if [[ $? -eq 0 ]]; then
   git apply changes.patch
 fi
-```
+```text
 
 ## Common Mistakes & Corrections
 
@@ -129,35 +129,35 @@ fi
 cat <<EOF > file.json
 { "var": "$VAR" }  # VAR will expand!
 EOF
-```
+```text
 
 ✅ **CORRECT**: Quote delimiter for literal
 ```bash
 cat <<'EOF' > file.json
 { "var": "$VAR" }  # VAR stays literal
 EOF
-```
+```text
 
 ### Mistake 2: Forgetting to escape $ in sed
 
 ❌ **WRONG**: Dollar sign not escaped
 ```bash
 sed -i 's/price/$100/g' file.txt  # $ has special meaning in sed!
-```
+```text
 
 ✅ **CORRECT**: Escape or use different delimiter
 ```bash
 sed -i 's/price/\$100/g' file.txt
 # OR
 sed -i 's|price|$100|g' file.txt  # Use | as delimiter
-```
+```text
 
 ### Mistake 3: Not validating complex patches
 
 ❌ **WRONG**: Applying patch without checking
 ```bash
 git apply potentially-broken.patch  # May silently fail or corrupt files!
-```
+```text
 
 ✅ **CORRECT**: Dry-run first
 ```bash
@@ -165,7 +165,7 @@ git apply --check potentially-broken.patch  # Dry-run
 if [[ $? -eq 0 ]]; then
   git apply potentially-broken.patch
 fi
-```
+```text
 
 ## Research References
 

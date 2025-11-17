@@ -7,7 +7,7 @@ Produce a local-only **SELECTION_REPORT.md** recommending the best assistant can
 python tools/selection_report.py \
   --summary samples/assistant_message_summary.sample.json \
   --out SELECTION_REPORT.md
-```
+```text
 
 ## What it does
 - Validates the input structure and extracts the assistant variants.

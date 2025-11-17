@@ -158,9 +158,7 @@ class TestModuleListBuilding:
 
     def test_main_exits_when_no_modules_available(self, monkeypatch):
         """Test that main exits with code 2 when no modules are importable."""
-        monkeypatch.setattr(
-            build_api_docs, "filter_modules", lambda m: ([], m)
-        )
+        monkeypatch.setattr(build_api_docs, "filter_modules", lambda m: ([], m))
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
 
         with patch("sys.argv", ["build_api_docs.py"]):
@@ -224,9 +222,7 @@ class TestLogging:
     def test_verbose_flag_enables_debug_logging(self, monkeypatch, caplog):
         """Test that --verbose enables debug-level logging."""
         monkeypatch.setattr(build_api_docs, "check_pdoc_installed", lambda: True)
-        monkeypatch.setattr(
-            build_api_docs, "filter_modules", lambda m: (m, [])
-        )
+        monkeypatch.setattr(build_api_docs, "filter_modules", lambda m: (m, []))
         monkeypatch.setattr(build_api_docs, "build_docs", lambda *args: None)
 
         with patch("sys.argv", ["build_api_docs.py", "--verbose"]):

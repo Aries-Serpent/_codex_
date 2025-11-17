@@ -6,7 +6,7 @@ from pathlib import Path
 
 _PY_WARN = (
     "import warnings as _warnings\n"
-    "_warnings.warn(\"Deprecated shim: re-export from canonical module\", "
+    '_warnings.warn("Deprecated shim: re-export from canonical module", '
     "DeprecationWarning, stacklevel=2)\n"
 )
 

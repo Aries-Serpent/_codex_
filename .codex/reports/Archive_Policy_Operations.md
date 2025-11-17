@@ -14,7 +14,7 @@ CREATE TABLE archived_data (
     data JSONB,
     archived_at TIMESTAMP DEFAULT NOW()
 );
-```
+```text
 
 ## Tombstone Creation
 - Create tombstones for records that are archived to indicate their status.

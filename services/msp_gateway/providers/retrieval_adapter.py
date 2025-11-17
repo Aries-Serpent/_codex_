@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class RetrievalAdapter:
     """Adapter for retrieval operations"""
-    
+
     def __init__(
         self,
         index_base_dir: str = ".codex/tenants",
@@ -25,7 +25,7 @@ class RetrievalAdapter:
             embedding_model=embedding_model,
             cache_dir=cache_dir,
         )
-    
+
     def query(
         self,
         tenant_id: str,
@@ -35,14 +35,14 @@ class RetrievalAdapter:
         filters: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
         """Query the knowledge base
-        
+
         Args:
             tenant_id: Tenant identifier
             query: Search query
             top_k: Number of results
             index_name: Index to search
             filters: Optional metadata filters
-        
+
         Returns:
             List of search results
         """
@@ -58,7 +58,7 @@ class RetrievalAdapter:
         except Exception as e:
             logger.error(f"Error querying knowledge base for tenant {tenant_id}: {e}")
             return []
-    
+
     def build_index(
         self,
         tenant_id: str,
@@ -67,7 +67,7 @@ class RetrievalAdapter:
         text_field: str = "content",
     ):
         """Build a new index for a tenant
-        
+
         Args:
             tenant_id: Tenant identifier
             documents: List of documents

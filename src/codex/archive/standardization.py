@@ -47,7 +47,9 @@ class StandardizationManager:
         if verify_only:
             self.enable_signing = True
         else:
-            self.enable_signing = enable_signing and os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
+            self.enable_signing = (
+                enable_signing and os.getenv("CODEX_ENABLE_SIGNING", "false").lower() == "true"
+            )
         self.sigstore_client = SignstoreClient() if self.enable_signing else None
         self.schema_validator = EvidenceSchemaValidator()
 
@@ -149,8 +151,9 @@ class StandardizationManager:
         else:
             result["verification_details"]["signature_valid"] = True  # No sig required
 
-        result["valid"] = result["verification_details"].get("schema_valid") and \
-                         result["verification_details"].get("signature_valid")
+        result["valid"] = result["verification_details"].get("schema_valid") and result[
+            "verification_details"
+        ].get("signature_valid")
 
         return result
 

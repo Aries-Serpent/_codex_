@@ -106,7 +106,7 @@ AlphaProductSurface = {
   replay_strategy,
   rollout_ring
 }
-```
+```text
 
 Each knob is offline-first and review-gated:
 

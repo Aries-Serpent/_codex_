@@ -25,13 +25,13 @@
 **Context**: Workflow job dependency visualization
 
 **Content**:
-```
+```text
 validate-imports (2min)
   ├─> test-core (parallel, 3min)
   ├─> test-smoke (parallel, 1min)
   ├─> lint-check (parallel, 1min)
   └─> modernization-scan (parallel, 2min)
-```
+```text
 
 **Evidence for `text` classification**:
 - ✅ ASCII box-drawing characters (`├─>`, `└─>`)
@@ -80,7 +80,7 @@ validate-imports (2min)
 - ```
 + **Job Dependencies**:
 + ```text
-```
+```text
 
 **Lines**: 66-67
 
@@ -96,7 +96,7 @@ validate-imports (2min)
 
 ```bash
 python tools/fence_fixer_v2.py docs/ --dry-run --report --verbose
-```
+```text
 
 **Results**:
 - ✅ Files scanned: 509

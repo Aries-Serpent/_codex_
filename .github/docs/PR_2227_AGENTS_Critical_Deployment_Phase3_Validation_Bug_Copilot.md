@@ -80,7 +80,7 @@ def phase_3_post_merge_validation(self) -> PhaseResult:
                         result.details["monitoring"] = "Workflow triggered, monitoring required"
                         result.status = PhaseStatus.SUCCESS  # ⚠️ PROBLEM: No conclusion check
                     else:
-```
+```text
 
 ### Expected Workflow States
 
@@ -157,11 +157,11 @@ self.manifest.workflow_run_id = str(run_id)
 # Step 9: Actual workflow completes 5 minutes later
 # status: "completed"
 # conclusion: "failure"  # ← Tests failed, but too late to stop deployment
-```
+```text
 
 **Race Condition Diagram**:
 
-```
+```text
 Timeline:
 T+0s:   PR merged → workflow triggered (status: queued)
 T+5s:   Workflow starts (status: in_progress, conclusion: null)
@@ -170,7 +170,7 @@ T+11s:  Phase 4 starts (assumes validation passed)
 T+15s:  Phase 5 starts (deployment proceeding)
 T+180s: Workflow completes (conclusion: failure ⚠️ ignored)
 T+240s: Production deployment complete (with failed tests!)
-```
+```text
 
 ---
 
@@ -191,7 +191,7 @@ result.status = PhaseStatus.SUCCESS  # ❌ WRONG: Still running
 
 # Correct behavior should be
 result.status = PhaseStatus.IN_PROGRESS  # ✅ Wait for completion
-```
+```text
 
 **Scenario 2: Workflow Failed**
 
@@ -208,7 +208,7 @@ result.status = PhaseStatus.SUCCESS  # ❌ WRONG: Ignores failure conclusion
 
 # Correct behavior should be
 result.status = PhaseStatus.FAILED  # ✅ Reflect actual conclusion
-```
+```text
 
 **Scenario 3: Workflow Timed Out**
 
@@ -225,7 +225,7 @@ result.status = PhaseStatus.SUCCESS  # ❌ WRONG: Timeout is not success
 
 # Correct behavior should be
 result.status = PhaseStatus.FAILED  # ✅ Timeout is a failure
-```
+```text
 
 **Scenario 4: Workflow Cancelled**
 
@@ -242,7 +242,7 @@ result.status = PhaseStatus.SUCCESS  # ❌ WRONG: Cancelled is not success
 
 # Correct behavior should be
 result.status = PhaseStatus.FAILED  # ✅ Cancelled deployment should fail
-```
+```text
 
 ---
 
@@ -329,7 +329,7 @@ result.status = PhaseStatus.FAILED  # ✅ Cancelled deployment should fail
 
 **Scenario A: Failed Unit Tests**
 
-```
+```text
 T+0m:  PR merged with breaking change
 T+0m:  Workflow triggered (status: queued)
 T+0m:  Phase 3 starts, waits 10s
@@ -341,7 +341,7 @@ T+10m: Production users report errors
 T+15m: Incident declared (Sev-1)
 T+30m: Rollback initiated
 T+60m: Root cause analysis finds contradictory records
-```
+```text
 
 **Impact**:
 - User-facing outage: 25 minutes
@@ -353,7 +353,7 @@ T+60m: Root cause analysis finds contradictory records
 
 **Scenario B: Coverage Threshold Violation**
 
-```
+```text
 T+0m:  PR merged with untested code (50% coverage, threshold: 80%)
 T+0m:  Phase 3 declares SUCCESS (workflow still running)
 T+5m:  Production deployment completes
@@ -361,7 +361,7 @@ T+8m:  Workflow completes (conclusion: failure, reason: coverage threshold not m
 T+0m:  Production now running code with 50% coverage
 T+1d:  Edge case bug discovered (untested code path)
 T+1d:  Incident declared (root cause: low coverage)
-```
+```text
 
 **Impact**:
 - Technical debt introduced: High
@@ -655,7 +655,7 @@ def _get_failed_jobs(self, run_id: str) -> List[str]:
             self.logger.warning(f"Failed to parse failed jobs: {e}")
 
     return failed_jobs
-```
+```text
 
 ---
 
@@ -720,7 +720,7 @@ EOF
 git add .github/workflows/post-merge-validation-optimized.yml
 git commit -m "test: add intentionally failing workflow"
 git push origin test/deployment-phase3-bug
-```
+```text
 
 ### Reproduce Bug
 
@@ -736,7 +736,7 @@ python scripts/deployment_orchestrator.py --pr-number=XXXX
 # 5. Phase 4 starts (deployment proceeds)
 # 6. Workflow completes later with conclusion: failure ⚠️ Ignored
 # 7. Deployment completes with broken code
-```
+```text
 
 ### Expected Behavior (After Fix)
 
@@ -752,7 +752,7 @@ python scripts/deployment_orchestrator.py --pr-number=XXXX
 # 5. Phase 3 declares FAILED ✅
 # 6. Deployment halts (does not proceed to Phase 4)
 # 7. Error reported with failed job details
-```
+```text
 
 ---
 
@@ -775,7 +775,7 @@ def test_phase3_workflow_success():
     
     assert result.status == PhaseStatus.SUCCESS
     assert result.details["workflow_conclusion"] == "success"
-```
+```text
 
 ### Test Case 2: Workflow Failure (Critical)
 
@@ -797,7 +797,7 @@ def test_phase3_workflow_failure():
     assert result.status == PhaseStatus.FAILED
     assert result.details["workflow_conclusion"] == "failure"
     assert "failed_jobs" in result.details
-```
+```text
 
 ### Test Case 3: Workflow In Progress
 
@@ -822,7 +822,7 @@ def test_phase3_workflow_in_progress():
         # AFTER FIX: Waits until T+60s, then SUCCESS ✅
         assert result.status == PhaseStatus.SUCCESS
         assert mock_wait.called
-```
+```text
 
 ### Test Case 4: Workflow Timeout
 
@@ -839,7 +839,7 @@ def test_phase3_workflow_timeout():
         
         assert result.status == PhaseStatus.FAILED
         assert "timeout" in result.details.get("error", "").lower()
-```
+```text
 
 ---
 
@@ -857,6 +857,8 @@ def test_phase3_workflow_timeout():
 **Role**: Critical Deployment Safety Analyst  
 **Status**: ⚠️ **URGENT - PRODUCTION DEPLOYMENT RISK**  
 **Next Action**: Implement completion polling + conclusion verification, add comprehensive tests
-```
+```text
 
 This document provides a comprehensive problematic statement with contextual details, reproduction steps, and a complete solution for the Phase 3 validation bug.
+
+```

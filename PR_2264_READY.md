@@ -69,11 +69,11 @@ Per @mbaetiong's request:
 ## Test Status
 
 All 31 tests passing:
-```
+```text
 tests/retrieval/test_faiss_store_enhanced.py::........... (11/11)
 tests/tools/test_duplication_analyzer.py::.......... (10/10)
 tests/codex_ml/test_inference_server.py::.......... (10/10)
-```
+```text
 
 ## Awaiting
 

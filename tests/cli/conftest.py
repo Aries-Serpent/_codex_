@@ -11,4 +11,3 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
     spec = importlib.util.find_spec("torch")
     if spec is None:
         pytest.skip("torch not installed", allow_module_level=True)
-

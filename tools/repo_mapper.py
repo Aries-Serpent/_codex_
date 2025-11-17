@@ -33,9 +33,7 @@ EXCLUDED_DIRS: Tuple[str, ...] = (
 )
 
 # Specific filenames to exclude
-EXCLUDED_FILENAMES: Tuple[str, ...] = (
-    OUTPUT_FILE_NAME,
-)
+EXCLUDED_FILENAMES: Tuple[str, ...] = (OUTPUT_FILE_NAME,)
 
 
 def should_skip(path: Path) -> bool:

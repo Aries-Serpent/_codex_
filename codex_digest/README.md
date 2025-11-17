@@ -13,7 +13,7 @@ A tiny, modular pipeline that converts context into **organized, prioritized tas
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
-```
+```text
 Alternatively place `codex_digest/` at repo root and set `PYTHONPATH=.`.
 
 ## Use
@@ -21,7 +21,7 @@ Alternatively place `codex_digest/` at repo root and set `PYTHONPATH=.`.
 ```bash
 python -m codex_digest.cli --input-file DESCRIPTION.md --context-file CONTEXT.md --dry-run
 cat .codex_digest.md
-```
+```text
 The pipeline runs entirely offline and does not trigger network calls or GitHub Actions.
 
 ## Guarantees

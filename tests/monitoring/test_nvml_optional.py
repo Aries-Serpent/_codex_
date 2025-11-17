@@ -42,4 +42,3 @@ def test_nvml_present_has_numeric_fields():
             v = entry.get(k)
             if v is not None:
                 assert isinstance(v, Number)
-

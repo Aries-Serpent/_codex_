@@ -36,7 +36,7 @@ def test_schema_is_valid_json():
     """Test that the schema is valid JSON."""
     with open(SCHEMA) as f:
         schema = json.load(f)
-    
+
     assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
     assert schema["title"] == "codex_status_update"
     assert schema["type"] == "object"
@@ -49,7 +49,7 @@ def test_generator_runs_successfully():
         capture_output=True,
         text=True,
     )
-    
+
     assert result.returncode == 0, f"Generator failed: {result.stderr}"
     assert "Status update saved to" in result.stdout
 
@@ -59,12 +59,12 @@ def test_generated_report_is_valid_json():
     # Find the most recent report
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     assert len(reports) > 0, "No status update reports found"
-    
+
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     assert isinstance(data, dict)
 
 
@@ -72,10 +72,10 @@ def test_report_has_required_sections():
     """Test that the report contains all required top-level sections."""
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     required_sections = [
         "metadata",
         "snapshot",
@@ -86,7 +86,7 @@ def test_report_has_required_sections():
         "questions",
         "decisions",
     ]
-    
+
     for section in required_sections:
         assert section in data, f"Missing required section: {section}"
 
@@ -96,12 +96,12 @@ def test_metadata_structure():
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     assert len(reports) > 0, "No status update reports found"
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     metadata = data["metadata"]
-    
+
     assert "title" in metadata
     assert metadata["title"].startswith("📍 `_codex_` : Status Update")
     assert "timestamp_utc" in metadata
@@ -117,25 +117,32 @@ def test_snapshot_has_capabilities():
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     assert len(reports) > 0, "No status update reports found"
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     capabilities = data["snapshot"]["capabilities"]
-    
+
     assert isinstance(capabilities, list)
     assert len(capabilities) > 0
-    
+
     # Check first capability structure
     cap = capabilities[0]
     required_fields = [
-        "name", "status", "artifacts", "gaps", "risks",
-        "severity", "confidence", "patch_plan", "rollback"
+        "name",
+        "status",
+        "artifacts",
+        "gaps",
+        "risks",
+        "severity",
+        "confidence",
+        "patch_plan",
+        "rollback",
     ]
-    
+
     for field in required_fields:
         assert field in cap, f"Capability missing required field: {field}"
-    
+
     # Check status is valid enum value
     assert cap["status"] in ["Implemented", "Partially Implemented", "Stubbed", "Missing"]
 
@@ -145,17 +152,17 @@ def test_repro_registry():
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     assert len(reports) > 0, "No status update reports found"
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     repro = data["snapshot"]["repro"]
-    
+
     assert "core_controls" in repro
     assert "registry" in repro
     assert isinstance(repro["registry"], list)
     assert len(repro["registry"]) > 0
-    
+
     # Check first registry entry
     entry = repro["registry"][0]
     assert "id" in entry
@@ -167,17 +174,17 @@ def test_repro_registry():
 def test_report_validates_against_schema():
     """Test that the report validates against the JSON schema."""
     jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
-    
+
     with open(SCHEMA) as f:
         schema = json.load(f)
-    
+
     reports = sorted(STATUS_DIR.glob("_codex_status_update-*.json"))
     assert len(reports) > 0, "No status update reports found"
     latest_report = reports[-1]
-    
+
     with open(latest_report) as f:
         data = json.load(f)
-    
+
     # This will raise ValidationError if invalid
     jsonschema.validate(data, schema)
 
@@ -190,7 +197,7 @@ def test_cli_integration():
         capture_output=True,
         text=True,
     )
-    
+
     assert result.returncode == 0, f"CLI failed: {result.stderr}"
     assert "Status update saved to" in result.stdout
 
@@ -209,12 +216,13 @@ invalid_report = {"metadata": {}}
 is_valid, errors = validate_report(invalid_report)
 sys.exit(0 if is_valid else 1)
 """
-    
+
     import tempfile
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(f"from pathlib import Path\n{test_script}")
         temp_script = f.name
-    
+
     try:
         result = subprocess.run(
             [sys.executable, temp_script],
@@ -235,8 +243,11 @@ def test_invalid_report_saved_separately():
     # depending on whether validation failures have occurred
     if invalid_reports:
         # If they exist, verify they're not treated as valid reports
-        valid_reports = [r for r in STATUS_DIR.glob("_codex_status_update-*.json") 
-                        if not r.name.endswith('.invalid.json')]
+        valid_reports = [
+            r
+            for r in STATUS_DIR.glob("_codex_status_update-*.json")
+            if not r.name.endswith(".invalid.json")
+        ]
         # Ensure the test suite uses only valid reports
         assert len(valid_reports) > 0, "Should have valid reports for testing"
 

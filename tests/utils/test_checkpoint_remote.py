@@ -17,7 +17,9 @@ class _DummyModule:
     def state_dict(self) -> dict[str, int]:
         return {"value": 1}
 
-    def load_state_dict(self, state_dict, strict: bool = True) -> None:  # pragma: no cover - smoke path
+    def load_state_dict(
+        self, state_dict, strict: bool = True
+    ) -> None:  # pragma: no cover - smoke path
         assert state_dict["value"] == 1
 
 

@@ -33,17 +33,21 @@ class Group(_ZendeskBaseModel):
     def diff(self, other: Group) -> list[dict[str, Any]]:
         patches: list[dict[str, Any]] = []
         if self.description != other.description:
-            patches.append({
-                "op": "replace",
-                "path": "/description",
-                "value": self.description,
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/description",
+                    "value": self.description,
+                }
+            )
         if _sorted_members(self.memberships) != _sorted_members(other.memberships):
-            patches.append({
-                "op": "replace",
-                "path": "/memberships",
-                "value": [_dump_membership(member) for member in self.memberships],
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/memberships",
+                    "value": [_dump_membership(member) for member in self.memberships],
+                }
+            )
         return patches
 
 

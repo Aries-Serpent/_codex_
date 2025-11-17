@@ -95,7 +95,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +
 +__all__ = ["TokenizerAdapter", "load_tokenizer", "register_tokenizer"]
 *** End Patch
-```
+```text
 
 - **Risk:** Removing the stub may break imports for users that rely on the `_DummyTok`. However, exposing the real API under the same package ensures forwards compatibility.
 - **Rollback:** Restore `tokenization/loader.py` and revert `__init__.py` to its original state.
@@ -156,7 +156,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +    r = _recall(preds, labels)
 +    return 2 * p * r / (p + r + 1e-8)
 *** End Patch
-```
+```text
 
 - **Risk:** Additional metrics may introduce slight runtime overhead; naming collisions could occur with existing plugin metrics.
 - **Rollback:** Remove entries from `_BUILTIN_METRICS` and delete `classification_metrics.py`.
@@ -211,7 +211,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
  codex-import-ndjson = "codex_ml.cli.import_ndjson:main"
 +codex-hydra-audit = "codex_ml.cli.hydra_audit:audit_config"
 *** End Patch
-```
+```text
 
 - **Risk:** Hydra optional dependency may not be installed; CLI returns non-zero exit code if placeholders found, which could break existing scripts expecting success.
 - **Rollback:** Remove the CLI and entrypoint from `pyproject.toml`.
@@ -276,7 +276,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +                finally:
 +                    self._db_manager.close_connection(conn)
 *** End Patch
-```
+```text
 
 - **Risk:** Slightly increases logging overhead; SQLite schema migration required on existing installations.
 - **Rollback:** Drop `metric_records` table and remove insertion logic; logs remain unaffected.
@@ -317,7 +317,7 @@ Below are example minimal diffs to address key gaps. Each diff includes rational
 +
 +CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
 *** End Patch
-```
+```text
 
 - **Risk:** Increases repository size; GPU images require large base image; maintainers must build and publish this variant.
 - **Rollback:** Remove `Dockerfile.gpu`; CPU variant remains unchanged.
@@ -383,7 +383,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
 This structured question can be inserted into conversations with ChatGPT @codex to obtain targeted troubleshooting guidance.
 

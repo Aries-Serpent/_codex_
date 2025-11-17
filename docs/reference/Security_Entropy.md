@@ -25,7 +25,7 @@ Identify potential secret tokens missed by simple pattern lists using Shannon en
   "count": 3,
   "findings": [{"file":"secrets.txt","span":"AKIAABCDEFGHIJKLMNOP","entropy":4.2}]
 }
-```
+```text
 
 ## 4. Integration
 

@@ -8,13 +8,25 @@ import json
 import pathlib
 import sys
 
-REQUIRED_TOP = ["metadata","snapshot","delta","patches","automation","security","questions","decisions"]
+REQUIRED_TOP = [
+    "metadata",
+    "snapshot",
+    "delta",
+    "patches",
+    "automation",
+    "security",
+    "questions",
+    "decisions",
+]
+
 
 def _err(msg: str) -> None:
     print(f"[validate] ERROR: {msg}", file=sys.stderr)
 
+
 def _ok(msg: str) -> None:
     print(f"[validate] OK: {msg}")
+
 
 def validate_v11(report: dict) -> bool:
     ok = True
@@ -30,6 +42,7 @@ def validate_v11(report: dict) -> bool:
         _err("metadata.title missing or not string")
         ok = False
     return ok
+
 
 def validate_v12(report: dict) -> bool:
     # Accept v1.2 as additive superset of v1.1 for now.
@@ -47,9 +60,10 @@ def validate_v12(report: dict) -> bool:
         ok = False
     return ok
 
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--schema", choices=["v1.1","v1.2","dual"], default="v1.1")
+    ap.add_argument("--schema", choices=["v1.1", "v1.2", "dual"], default="v1.1")
     ap.add_argument("report_json", type=pathlib.Path)
     args = ap.parse_args()
     data = json.loads(args.report_json.read_text(encoding="utf-8"))
@@ -58,12 +72,17 @@ def main() -> int:
     if args.schema == "v1.2":
         return 0 if validate_v12(data) else 2
     # dual
-    v11 = validate_v11(data) if data.get("metadata",{}).get("template_version") == "v1.1" else False
-    v12 = validate_v12(data) if data.get("metadata",{}).get("template_version") == "v1.2" else False
+    v11 = (
+        validate_v11(data) if data.get("metadata", {}).get("template_version") == "v1.1" else False
+    )
+    v12 = (
+        validate_v12(data) if data.get("metadata", {}).get("template_version") == "v1.2" else False
+    )
     if v11 or v12:
         _ok("dual validation succeeded")
         return 0
     return 2
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -73,7 +73,7 @@ nox -s tests
 nox -s lint
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
 semgrep --config ./semgrep_rules/python-security.yaml --include src/ --error
-```
+```text
 
 ## Drop-in Instruction Pack (Builder → Configure → Instructions)
 ```markdown
@@ -123,7 +123,7 @@ semgrep --config ./semgrep_rules/python-security.yaml --include src/ --error
 
 **Style**
 - Crisp, engineering tone. No fluff. Keep each Gap Card to ~200–300 words + the diff.
-```
+```text
 
 ## Optional Custom GPT Action (Builder → Actions)
 ```yaml
@@ -149,7 +149,7 @@ paths:
         - { in: path, name: sha,   required: true, schema: { type: string } }
         - { in: query, name: recursive, schema: { type: integer, enum: [1] } }
       responses: { "200": { description: OK } }
-```
+```text
 
 ## Why this matters
 - Connectors ground the GPT in live repo context with citations while staying read-only.

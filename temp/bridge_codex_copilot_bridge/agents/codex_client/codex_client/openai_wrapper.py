@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 import asyncio
@@ -18,10 +17,14 @@ BASE_BACKOFF_S = float(os.getenv("OPENAI_BASE_BACKOFF_S", "0.5"))
 MAX_CONCURRENCY = int(os.getenv("OPENAI_MAX_CONCURRENCY", "6"))
 _sema = asyncio.Semaphore(MAX_CONCURRENCY)
 
-def _jitter_delay(attempt:int)->float:
-    return min(30.0, BASE_BACKOFF_S * (2 ** attempt)) * random.random()
 
-async def stream(messages: list[dict], extra: Optional[Dict[str, Any]] = None) -> AsyncIterator[str]:
+def _jitter_delay(attempt: int) -> float:
+    return min(30.0, BASE_BACKOFF_S * (2**attempt)) * random.random()
+
+
+async def stream(
+    messages: list[dict], extra: Optional[Dict[str, Any]] = None
+) -> AsyncIterator[str]:
     extra = extra or {}
     attempt = 0
     while True:

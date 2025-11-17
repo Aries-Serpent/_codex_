@@ -53,35 +53,41 @@ class Trigger(_ZendeskBaseModel):
 
         patches: list[dict[str, Any]] = []
         if self.position != other.position:
-            patches.append({
-                "op": "replace",
-                "path": "/position",
-                "value": self.position,
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/position",
+                    "value": self.position,
+                }
+            )
         if self.category != other.category:
-            patches.append({
-                "op": "replace",
-                "path": "/category",
-                "value": self.category,
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/category",
+                    "value": self.category,
+                }
+            )
         if self.conditions != other.conditions:
-            patches.append({
-                "op": "replace",
-                "path": "/conditions",
-                "value": _dump_conditions(self.conditions),
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/conditions",
+                    "value": _dump_conditions(self.conditions),
+                }
+            )
         if self.actions != other.actions:
-            patches.append({
-                "op": "replace",
-                "path": "/actions",
-                "value": [_dump_action(action) for action in self.actions],
-            })
+            patches.append(
+                {
+                    "op": "replace",
+                    "path": "/actions",
+                    "value": [_dump_action(action) for action in self.actions],
+                }
+            )
         return patches
 
 
-def _dump_conditions(
-    conditions: dict[str, Iterable[Condition]]
-) -> dict[str, list[dict[str, Any]]]:
+def _dump_conditions(conditions: dict[str, Iterable[Condition]]) -> dict[str, list[dict[str, Any]]]:
     """Serialize condition groups into JSON-compatible dictionaries."""
 
     return {

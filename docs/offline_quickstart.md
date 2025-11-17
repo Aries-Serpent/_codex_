@@ -11,7 +11,7 @@ import os, random, numpy as np, torch
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")  # if using CUDA
 random.seed(0); np.random.seed(0); torch.manual_seed(0)
 torch.use_deterministic_algorithms(True)  # throws if an op is non-deterministic
-```
+```text
 
 Notes: Determinism can reduce performance and certain ops may error—prefer explicit toggles in smoke tests.
 
@@ -22,13 +22,13 @@ Default behavior: if you don't set anything, the repo bootstraps MLflow to a **l
 ```bash
 # default chosen by repo if unset:
 export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
-```
+```text
 
 To use a remote tracking server, **opt in** explicitly:
 
 ```bash
 export MLFLOW_TRACKING_URI="http://localhost:5000"
-```
+```text
 
 This prevents accidental remote logging while keeping remote usage intentional.
 
@@ -51,14 +51,14 @@ Run targeted tests:
 
 ```bash
 pytest -q tests/tokenization/test_roundtrip_basic.py tests/tokenization/test_padding_truncation_ext.py -k "encode_decode_presence or padding or truncation"
-```
+```text
 
 If you want stricter offline coverage, build the tiny SentencePiece fixture then re-run:
 
 ```bash
 python tools/make_spm_fixture.py
 pytest -q tests/tokenization/test_sp_fixture_roundtrip.py
-```
+```text
 
 ## 4) Hydra defaults (example)
 

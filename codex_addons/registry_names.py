@@ -5,6 +5,7 @@ This module defines stable, frozen registry names used across the
 codex_addons plugin system. These names form part of the public API
 and should not be changed without a deprecation cycle.
 """
+
 from __future__ import annotations
 
 from typing import Final
@@ -58,7 +59,7 @@ ALL_REGISTRY_NAMES: Final[dict[str, dict[str, str]]] = {
 
 def get_all_stable_names() -> dict[str, dict[str, str]]:
     """Get all stable registry names across all registries.
-    
+
     Returns:
         Dictionary mapping registry kind to name->description mappings
     """
@@ -67,11 +68,11 @@ def get_all_stable_names() -> dict[str, dict[str, str]]:
 
 def is_stable_name(kind: str, name: str) -> bool:
     """Check if a name is in the stable registry for a given kind.
-    
+
     Args:
         kind: Registry kind (e.g., 'metrics', 'models')
         name: Name to check
-        
+
     Returns:
         True if name is in the stable registry for this kind
     """
@@ -82,11 +83,11 @@ def is_stable_name(kind: str, name: str) -> bool:
 
 def get_description(kind: str, name: str) -> str | None:
     """Get description for a stable registry name.
-    
+
     Args:
         kind: Registry kind (e.g., 'metrics', 'models')
         name: Name to look up
-        
+
     Returns:
         Description string if found, None otherwise
     """

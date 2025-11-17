@@ -50,7 +50,7 @@ rouge_score = metrics.rouge_l(predictions, targets)
 if rouge_score is None:
     raise EvaluationError("rouge_score package is required for ROUGE-L")
 results[metric_name] = rouge_score["rougeL_f"]  # Assumes dict
-```
+```text
 
 **After**:
 ```python
@@ -65,7 +65,7 @@ if isinstance(rouge_score, dict):
             break
 else:
     results[metric_name] = rouge_score
-```
+```text
 
 **Rationale**: Registry returns float; some external implementations return dict. This change provides backward compatibility.
 
@@ -82,7 +82,7 @@ metrics = [
   "rouge-score>=0.1.2",
   "sacrebleu>=2.4",
 ]
-```
+```text
 
 **Usage**: `pip install ".[metrics]"`
 
@@ -126,7 +126,7 @@ metrics = [
 
 ```bash
 git revert 3fbb2f6
-```
+```text
 
 Reverts:
 - Runner ROUGE-L compatibility changes
@@ -185,7 +185,7 @@ docker build -f Dockerfile.gpu -t codex-gpu:cu121 \
 docker build -f Dockerfile.gpu -t codex-gpu:custom \
   --build-arg INSTALL_TORCH_GPU=1 \
   --build-arg TORCH_WHEEL="torch==2.5.0+cu124 ..." .
-```
+```text
 
 #### Packaging Scripts
 
@@ -197,7 +197,7 @@ docker build -f Dockerfile.gpu -t codex-gpu:custom \
 ```bash
 ./scripts/packaging/build_wheel.sh
 # Output: artifacts/dist/*.whl
-```
+```text
 
 **File**: `scripts/packaging/build_docker.sh` (new)
 
@@ -215,7 +215,7 @@ INSTALL_TORCH_GPU=1 ./scripts/packaging/build_docker.sh codex-gpu:cu121
 INSTALL_TORCH_GPU=1 \
 TORCH_WHEEL="torch==..." \
 ./scripts/packaging/build_docker.sh codex-gpu:custom
-```
+```text
 
 #### Documentation
 
@@ -241,7 +241,7 @@ TORCH_WHEEL="torch==..." \
 
 ```bash
 git checkout 3fbb2f6~1 -- Dockerfile.gpu scripts/packaging/ docs/deployment/docker_gpu.md docs/docker.md
-```
+```text
 
 **Impact**: None. Default Dockerfile.gpu behavior unchanged (no GPU install).
 
@@ -303,7 +303,7 @@ def repro_smoke(session: nox.Session) -> None:
         "tests/eval/test_eval_provenance_capture.py",
         "tests/plugins/test_metric_plugin_loading.py",
     )
-```
+```text
 
 **Usage**: `nox -s repro_smoke`
 
@@ -329,7 +329,7 @@ def repro_smoke(session: nox.Session) -> None:
         "tests/eval/test_eval_provenance_capture.py",
         "tests/plugins/test_metric_plugin_loading.py",
     )
-```
+```text
 
 **Differences**: Development version uses helper functions, bootstrap packages, and pytest-randomly plugin
 
@@ -367,7 +367,7 @@ git checkout 70508f4~1 -- \
   docs/validation/Repro_Validation.md \
   docs/validation/Metrics_Validation.md \
   tests/plugins/test_metric_plugin_loading.py
-```
+```text
 
 **Impact**: None. Nox sessions are opt-in; no CI changes.
 
@@ -394,7 +394,7 @@ mlflow.log_param("codex_git_commit", os.getenv("CODEX_GIT_COMMIT", ""))
 mlflow.log_param("conda_env", os.getenv("CONDA_DEFAULT_ENV", ""))
 mlflow.log_param("seed", seed_value)
 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-```
+```text
 
 **Error Handling**: All logging wrapped in try-except; failures silently ignored
 
@@ -402,7 +402,7 @@ mlflow.log_param("dataset_path", str(dataset_path.resolve()))
 ```bash
 export CODEX_ENABLE_MLFLOW=1
 export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)  # optional
-```
+```text
 
 #### MLflow Local UI Viewer
 
@@ -414,7 +414,7 @@ export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)  # optional
 ```bash
 scripts/tracking/mlflow_ui.sh
 # Access at: http://localhost:5000
-```
+```text
 
 **File**: `docs/tracking/Offline_MLflow.md` (new) - Complete offline MLflow guide
 
@@ -429,7 +429,7 @@ scripts/tracking/mlflow_ui.sh
 python tools/configs/list_groups.py
 # Or via nox
 nox -s config_index
-```
+```text
 
 #### Nox Sessions
 
@@ -453,7 +453,7 @@ git checkout <batch5_commit>~1 -- \
   tools/configs/list_groups.py \
   noxfile.py \
   configs/development/noxfile.py
-```
+```text
 
 **Impact**: None. MLflow logging is opt-in; config discovery is informative only.
 
@@ -532,7 +532,7 @@ git revert <batch_commit_hash>
 
 # Rollback multiple batches
 git revert <batch4_hash> <batch3_hash> <batch2_hash>
-```
+```text
 
 Impact of rollback is minimal due to:
 - Opt-in features

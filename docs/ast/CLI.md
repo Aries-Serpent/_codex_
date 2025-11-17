@@ -10,7 +10,7 @@
 python -m codex.ast.cli analyze . --json
 python -m codex.ast.cli audit .
 python -m codex.ast.cli diff pathA pathB --json
-```
+```text
 
 | Command | Output | Exit codes |
 |--------|--------|------------|

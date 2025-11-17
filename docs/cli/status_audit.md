@@ -8,7 +8,7 @@ The `codex-status-audit` command provides a comprehensive status update audit re
 
 ```bash
 codex-status-audit [OPTIONS]
-```
+```text
 
 ### Options
 
@@ -24,7 +24,7 @@ codex-status-audit [OPTIONS]
 
 ```bash
 codex-status-audit
-```
+```text
 
 This will:
 1. Run the complete capability audit pipeline
@@ -36,7 +36,7 @@ This will:
 
 ```bash
 codex-status-audit --skip-audit
-```
+```text
 
 This is useful when you've already run the audit and just want to regenerate the report.
 
@@ -44,7 +44,7 @@ This is useful when you've already run the audit and just want to regenerate the
 
 ```bash
 codex-status-audit --baseline audit_artifacts/capabilities_scored.json.baseline
-```
+```text
 
 This will show improvements and regressions compared to the baseline.
 
@@ -52,7 +52,7 @@ This will show improvements and regressions compared to the baseline.
 
 ```bash
 codex-status-audit --output my_reports
-```
+```text
 
 ## Output
 

@@ -82,7 +82,7 @@ def status(session: nox.Session) -> None:
         "--save-logs",
         "--out", "STATUS_REPORT.md",
     )
-```
+```text
 
 **Usage**: `nox -s status`
 
@@ -238,7 +238,7 @@ python tools/docs/gen_open_questions.py
 
 # Verify assets
 python tools/assets/verify_manifest.py
-```
+```text
 
 ---
 

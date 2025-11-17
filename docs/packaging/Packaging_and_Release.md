@@ -21,19 +21,19 @@ This guide covers local, offline-friendly packaging for the Codex ML project.
 ## Build
 ```bash
 ./scripts/build_wheel.sh
-```
+```text
 If missing, create it from patches/PS-1h_packaging_wheel_manifest_tests.patch (adds checksums).
 Artifacts are written to dist/. SHA256SUMS is generated if sha256sum/shasum is available.
 
 ## Verify Metadata
 ```bash
 twine check dist/*
-```
+```text
 
 ## Install Locally
 ```bash
 pip install dist/*.whl
-```
+```text
 
 ## Quick Sanity (pyproject)
 ```bash
@@ -53,7 +53,7 @@ assert data['project']['license']=='MIT'
 assert data['project']['requires-python'].startswith('>=3.10')
 print('ok: license & python floor')
 PY
-```
+```text
 
 ## Quick Sanity (scripts)
 ```bash
@@ -70,7 +70,7 @@ assert scripts.get('codex-eval') == "codex_ml.cli.entrypoints:eval_main"
 assert scripts.get('codex-list-plugins') == "codex_ml.cli.list_plugins:main"
 print('ok: console scripts wired')
 PY
-```
+```text
 
 ## Troubleshooting (pyproject duplicates)
 | Symptom | Cause | Fix |

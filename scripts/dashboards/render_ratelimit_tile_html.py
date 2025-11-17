@@ -12,7 +12,9 @@ def load_tile(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def scale_points(series: List[Tuple[str, int]], width: int, height: int, pad: int = 20) -> List[Tuple[float, float]]:
+def scale_points(
+    series: List[Tuple[str, int]], width: int, height: int, pad: int = 20
+) -> List[Tuple[float, float]]:
     if not series:
         return []
     xs = list(range(len(series)))

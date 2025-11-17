@@ -62,7 +62,7 @@ Each report should reference the previous report in its metadata:
 ```markdown
 - Prior Report Reference:
   - Path: reports/daily/YYYY-MM-DD.md
-```
+```text
 
 This enables delta tracking and historical analysis.
 

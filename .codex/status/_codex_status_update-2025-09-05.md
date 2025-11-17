@@ -66,7 +66,7 @@
 +    if spm is None:
 +        raise ImportError("sentencepiece not installed")
 +    model = spm.SentencePieceProcessor(model_file=str(model_file))
-```
+```text
 - *Why*: Avoid hard crash when sentencepiece is absent.
 - *Risk*: Masking genuine install issues.
 - *Rollback*: Revert `sentencepiece_adapter.py`.
@@ -79,7 +79,7 @@
 @@
 -    tracking_uri: Optional[str] = "./mlruns",
 +    tracking_uri: Optional[str] = os.getenv("CODEX_MLFLOW_URI", "file:mlruns"),
-```
+```text
 - *Why*: Use file-based store by default for offline reproducibility.
 - *Risk*: Environment variable misconfiguration.
 - *Rollback*: Revert change to `mlflow_utils.py`.
@@ -97,7 +97,7 @@
 +    trainer = Trainer(model=model, args=training_args,
 +                      train_dataset=train_ds, eval_dataset=eval_ds,
 +                      resume_from_checkpoint=args.resume_from)
-```
+```text
 - *Why*: Enable resuming from checkpoints.
 - *Risk*: Incompatible checkpoints causing load errors.
 - *Rollback*: Remove `resume_from_checkpoint` argument.
@@ -114,7 +114,7 @@
 -    - id: detect-secrets
 +    - id: detect-secrets
 +      args: ["--baseline", ".secrets.baseline"]
-```
+```text
 - *Why*: Enforce secrets scanning using existing baseline.
 - *Risk*: False positives blocking commits.
 - *Rollback*: Revert pre-commit config.
@@ -126,7 +126,7 @@
 +++ b/Dockerfile
 @@
  CMD ["python", "-m", "codex.cli"]
-```
+```text
 - *Why*: Provide default CLI entrypoint for container deployments.
 - *Risk*: Entrypoint may not cover all use cases.
 - *Rollback*: Revert Dockerfile.
@@ -210,28 +210,28 @@
 - Plugin registry for external components: pending design discussion.
 
 ## 8. Error Capture Blocks
-```
+```text
 Question for ChatGPT @codex 2025-09-05:
 While performing step "nox -s tests", encountered the following error:
 ERROR tests/test_cli.py
 E   ModuleNotFoundError: No module named 'click'
 Context: Coverage environment lacks `click`; CLI tests abort.
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 
-```
+```text
 Historical log excerpt (errors_codex.log):
 ModuleNotFoundError: No module named 'codex_ml.cli'
 Context: audit_repo metrics generation executed without repo installed.
 Status: Unresolved — ensure `codex_ml` is on `PYTHONPATH` or installed.
-```
+```text
 
-```
+```text
 Historical log excerpt (errors_codex.log):
 command not found: pre-commit
 Context: pre-commit hook invoked before installing `pre-commit`.
 Status: Resolved — `pre-commit` installed and runs successfully.
-```
+```text
 
 ## Outstanding Codex Automation Questions
 

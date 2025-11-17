@@ -35,7 +35,7 @@ Standardize detector `meta` fields for cross-capability analytics & future feder
      "tags":["async"]
   }
 }
-```
+```text
 
 ## 4. Scoring Influence (Planned)
 

@@ -371,6 +371,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     except Exception as e:
         try:
             from codex_ml.utils.errors import record_error
+
             record_error("T00", "pre_training_check", str(e), "cli.train")
         except Exception:
             # Error recording failed, continue silently

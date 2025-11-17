@@ -18,18 +18,18 @@ This document describes the evaluation entrypoints and expected IO behavior.
 JSON summary:
 ```bash
 codex-eval --format json --task perplexity --model foo --data bar
-```
+```text
 
 NDJSON streaming:
 ```bash
 codex-eval --format ndjson --task perplexity --stream --model foo --data bar
-```
+```text
 
 Help:
 ```bash
 codex-eval --help
 python -m codex_ml.eval.run_eval --help
-```
+```text
 
 ## Environment Controls
 | Variable | Meaning | Default |

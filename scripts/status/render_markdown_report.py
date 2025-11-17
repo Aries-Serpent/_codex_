@@ -17,7 +17,7 @@ def main(argv=None) -> int:
     ap.add_argument("--json", required=True)
     ap.add_argument("--out", required=True)
     args = ap.parse_args(argv)
-    
+
     data = json.loads(Path(args.json).read_text(encoding="utf-8"))
     md = []
     md.append(f"# {data['metadata']['title']}")
@@ -27,7 +27,7 @@ def main(argv=None) -> int:
     md.append("")
     md.append("## 1. Executive Summary")
     md.append("- Fill this section from JSON fields as needed.")
-    
+
     md_text = "\n".join(md)
     Path(args.out).write_text(md_text, encoding="utf-8")
     print(f"[OK] Wrote {args.out}")

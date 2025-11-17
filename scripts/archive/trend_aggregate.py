@@ -30,7 +30,7 @@ def sparkline(series: List[float]) -> str:
     chars = "▁▂▃▄▅▆▇█"
     mn, mx = min(series), max(series)
     rng = mx - mn if mx != mn else 1e-9
-    return "".join(chars[int((v-mn)/rng*(len(chars)-1))] for v in series)
+    return "".join(chars[int((v - mn) / rng * (len(chars) - 1))] for v in series)
 
 
 def find_score_files(limit: int) -> List[Path]:
@@ -40,7 +40,7 @@ def find_score_files(limit: int) -> List[Path]:
     return files[-limit:]
 
 
-def load_scores(p: Path) -> Dict[str,float]:
+def load_scores(p: Path) -> Dict[str, float]:
     try:
         data = json.loads(p.read_text())
     except Exception:
@@ -52,38 +52,38 @@ def load_scores(p: Path) -> Dict[str,float]:
 
 
 def main():
-    limit = int(os.getenv("TREND_LIMIT","30"))
-    spark_enable = os.getenv("TREND_SPARKLINE","0") in {"1","true","TRUE"}
-    
+    limit = int(os.getenv("TREND_LIMIT", "30"))
+    spark_enable = os.getenv("TREND_SPARKLINE", "0") in {"1", "true", "TRUE"}
+
     files = find_score_files(limit)
     if not files:
         print("[INFO] No historical scored files found.")
         return 0
-    
-    history: Dict[str,List[float]] = {}
+
+    history: Dict[str, List[float]] = {}
     timestamps = []
-    
+
     for f in files:
         scores = load_scores(f)
         timestamps.append(f.name)
         for cid, sc in scores.items():
             history.setdefault(cid, []).append(sc)
-    
+
     payload = {"capabilities": [], "snapshots": timestamps}
-    
+
     for cid, series in history.items():
         delta = series[-1] - series[0]
         pct = (delta / series[0]) if series[0] else 0.0
         entry = {
             "id": cid,
-            "scores": [round(s,4) for s in series],
-            "delta": round(delta,4),
-            "pct_change": round(pct,4),
+            "scores": [round(s, 4) for s in series],
+            "delta": round(delta, 4),
+            "pct_change": round(pct, 4),
         }
         if spark_enable:
             entry["sparkline"] = sparkline(series)
         payload["capabilities"].append(entry)
-    
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"[INFO] Trend scores written: {OUT}")

@@ -35,7 +35,7 @@ gh run list --workflow=post-merge-validation-optimized.yml -b main -n 1
 
 # If rollback needed
 gh pr revert 2207
-```
+```text
 
 ### Human Decision Points
 

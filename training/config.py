@@ -12,7 +12,15 @@ import os
 from dataclasses import dataclass, fields
 from pathlib import Path
 from types import UnionType
-from typing import Any, Mapping, MutableMapping, Union, get_args, get_origin, get_type_hints
+from typing import (
+    Any,
+    Mapping,
+    MutableMapping,
+    Union,
+    get_args,
+    get_origin,
+    get_type_hints,
+)
 
 _VALID_PRECISIONS = {"fp32", "fp16", "bf16"}
 

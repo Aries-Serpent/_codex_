@@ -21,7 +21,7 @@ REPORT (Markdown)
   ↓ (S6 Jinja rendering)
 MANIFEST
   ↓ (S7 Integrity chain)
-```
+```text
 
 ## 3. Component Score Formula
 `score = Σ_i ( weight_i * clamp(component_i, 0, 1) )`
@@ -67,12 +67,12 @@ Extend by editing `SAFEGUARD_KEYWORDS` in `audit_runner.py`.
 python scripts/space_traversal/audit_runner.py diff --old reports/capability_matrix_A.md --new reports/capability_matrix_B.md
 # Or JSON:
 python scripts/space_traversal/audit_runner.py diff --old audit_artifacts/capabilities_scored_old.json --new audit_artifacts/capabilities_scored_new.json
-```
+```text
 
 ## 9. Explain Capability Score
 ```bash
 python scripts/space_traversal/audit_runner.py explain checkpointing
-```
+```text
 Outputs component contributions + normalized weights.
 
 ## 10. Failure Mode Reference
@@ -101,7 +101,7 @@ Outputs component contributions + normalized weights.
   },
   "warnings": []
 }
-```
+```text
 
 ## 12. Extensible Roadmap Hooks
 | Hook | Purpose | Candidate Enhancements |
@@ -123,7 +123,7 @@ Outputs component contributions + normalized weights.
 make space-clean
 # or manually
 rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
-```
+```text
 
 ## 15. Life-cycle Integration Tips
 | Phase | Use |
@@ -148,7 +148,7 @@ rm -rf audit_artifacts/ reports/capability_matrix_*.md audit_run_manifest.json
   "found_patterns": ["log","mlflow"],
   "evidence_files": ["src/.../tracking.py", "..."]
 }
-```
+```text
 
 ## 17. Appendices
 ### A. Detector Template Stub
@@ -170,6 +170,6 @@ def detect(file_index: dict) -> dict:
         "required_patterns": required,
         "meta": {"layer": "serving"}
     }
-```
+```text
 
 *End of Workflow Doc*

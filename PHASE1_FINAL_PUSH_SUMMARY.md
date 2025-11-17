@@ -26,7 +26,7 @@ handler = CodexErrorHandler(
     max_bytes=10 * 1024 * 1024,  # 10MB
     backup_count=5
 )
-```
+```text
 
 ### 2. Lazy Validation ✅
 
@@ -45,7 +45,7 @@ env = EnvironmentManager()
 
 # Lazy validation
 env = EnvironmentManager(lazy_validation=True)
-```
+```text
 
 ### 3. export-env CLI Command ✅
 
@@ -61,7 +61,7 @@ env = EnvironmentManager(lazy_validation=True)
 $ codex export-env                    # Text to stdout
 $ codex export-env --format=json      # JSON to stdout
 $ codex export-env --format=shell -o .env  # Shell to file
-```
+```text
 
 ### 4. list-sessions CLI Command ✅
 
@@ -79,7 +79,7 @@ $ codex list-sessions --limit=10
 Session ID                               Messages   Last Activity
 ----------------------------------------------------------------------
 abc123...                               15         2025-11-14 08:00:00
-```
+```text
 
 ### 5. clean-logs CLI Command ✅
 
@@ -96,7 +96,7 @@ abc123...                               15         2025-11-14 08:00:00
 $ codex clean-logs --dry-run           # Preview
 $ codex clean-logs --older-than=7      # With confirmation
 $ codex clean-logs --older-than=30 -y  # Skip confirmation
-```
+```text
 
 ### 6. End-to-End CLI Test ✅
 
@@ -126,9 +126,9 @@ $ codex clean-logs --older-than=30 -y  # Skip confirmation
 
 ## Test Results
 
-```
+```text
 ======================== 22 passed in 0.44s ==============================
-```
+```text
 
 **Test Breakdown**:
 - EnvironmentManager: 5 tests

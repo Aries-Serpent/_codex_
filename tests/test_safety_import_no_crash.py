@@ -5,4 +5,3 @@ def test_import_safety_filters_no_crash():
     from codex_ml.safety import SafetyFilters  # noqa: F401
 
     assert SafetyFilters is not None
-

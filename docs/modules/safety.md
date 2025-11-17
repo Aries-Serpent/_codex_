@@ -15,7 +15,7 @@ from src.security import validate_input, rate_limiter
 def process_prompt(prompt: str) -> str:
     safe_prompt = validate_input(prompt, input_type="html")
     return safe_prompt
-```
+```text
 
 ## Content Filters
 `src/security/content_filters.py` provides profanity, PII, and malware detection helpers.
@@ -27,7 +27,7 @@ payload = "Contact jane@example.com with SSN 123-45-6789"
 flags = detect_personal_data(payload)
 if flags["pii"]:
     raise RuntimeError("PII detected")
-```
+```text
 
 ## Secret Management
 - `check_secret_entropy` rejects weak credentials.

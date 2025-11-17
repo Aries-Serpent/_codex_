@@ -35,22 +35,27 @@ def save_checkpoint(
         raise RuntimeError("PyTorch required to save checkpoints")
     weights = os.path.join(out_dir, "weights.pt")
     metadata = os.path.join(out_dir, "metadata.json")
-    
+
     # Add explicit schema version and creation timestamp
     payload = {
         "_schema_version": SCHEMA_VERSION,
         "_created_at": datetime.utcnow().isoformat(),
-        "state": state
+        "state": state,
     }
     torch.save(payload, weights)
-    
+
     # Include schema version in metadata for validation
     with open(metadata, "w", encoding="utf-8") as f:
-        json.dump({
-            **meta,
-            "_schema_version": SCHEMA_VERSION,
-            "_created_at": datetime.utcnow().isoformat()
-        }, f, indent=2, sort_keys=True)
+        json.dump(
+            {
+                **meta,
+                "_schema_version": SCHEMA_VERSION,
+                "_created_at": datetime.utcnow().isoformat(),
+            },
+            f,
+            indent=2,
+            sort_keys=True,
+        )
     # Retention (best-effort): keep only the last K sibling epoch dirs
     with suppress(Exception):
         parent = os.path.dirname(out_dir)
@@ -106,9 +111,9 @@ def load_checkpoint(
             f"current schema is v{SCHEMA_VERSION}. "
             f"This may indicate compatibility issues.",
             UserWarning,
-            stacklevel=2
+            stacklevel=2,
         )
-    
+
     state = payload.get("state", payload)
     return state, meta
 

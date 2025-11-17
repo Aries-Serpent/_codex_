@@ -5,7 +5,7 @@
 codex zendesk docs-sync --dry-run   # Inspect URLs
 codex zendesk docs-sync             # Download HTML snapshots
 codex zendesk docs-catalog          # Regenerate Markdown catalog index
-```
+```text
 
 ## Notes
 - Sources come from `data/zendesk_docs_manifest.json`.

@@ -315,31 +315,31 @@
 ## FILES MANIFEST
 
 ### Source Code
-```
+```text
 src/codex/retrieval/stores/faiss_store.py (enhanced)
 src/codex_ml/serving/inference_server.py (new)
 src/codex_ml/serving/__init__.py (new)
 tools/duplication_analyzer.py (new)
-```
+```text
 
 ### Tests
-```
+```text
 tests/retrieval/__init__.py (new)
 tests/retrieval/test_faiss_store_enhanced.py (new, 11 tests)
 tests/tools/test_duplication_analyzer.py (new, 10 tests)
 tests/codex_ml/__init__.py (new)
 tests/codex_ml/test_inference_server.py (new, 10 tests)
-```
+```text
 
 ### Documentation
-```
+```text
 docs/guides/vector_stores_guide.md (new, 9.3KB)
 docs/guides/duplication_analyzer_guide.md (new, 9.3KB)
 docs/guides/inference_server_guide.md (new, 10.5KB)
 GAP_REMEDIATION_PLAN.md (new)
 GAP_REMEDIATION_STATUS.md (new)
 DETERMINISTIC_AUDIT_REPORT_v1.1.0.md (existing, hydrated)
-```
+```text
 
 ---
 

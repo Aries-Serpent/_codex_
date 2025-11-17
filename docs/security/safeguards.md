@@ -30,7 +30,7 @@
     }
   ]
 }
-```
+```text
 
 ## Failure Message
 `High/Critical vulnerabilities found (not allowlisted): <package:id:severity>`

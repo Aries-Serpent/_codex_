@@ -59,7 +59,7 @@ After merging:
 python -m pip install -r requirements-dev.txt
 python .github/scripts/ci_dependency_sanity.py
 nox -s coverage
-```
+```text
 
 ## Expected Outcomes
 - Zero import errors during pytest collection

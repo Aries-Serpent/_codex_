@@ -27,7 +27,7 @@ This guide documents the CI/CD optimization strategies implemented for the _code
     key: ${{ runner.os }}-pytest-${{ hashFiles('**/pyproject.toml') }}
     restore-keys: |
       ${{ runner.os }}-pytest-
-```
+```text
 
 **Benefits**:
 - Reduces pip install time from ~2min to ~10s on cache hit
@@ -48,7 +48,7 @@ strategy:
   fail-fast: false
   matrix:
     test-group: [config, unit, integration]
-```
+```text
 
 **Benefits**:
 - Runs test groups in parallel on separate runners
@@ -69,7 +69,7 @@ validate-imports (2min)
   ├─> test-smoke (parallel, 1min)
   ├─> lint-check (parallel, 1min)
   └─> modernization-scan (parallel, 2min)
-```
+```text
 
 **Total Time**: max(3, 1, 1, 2) + 2 = **5 minutes** (worst case)
 
@@ -85,7 +85,7 @@ jobs:
     timeout-minutes: 5
   test-smoke:
     timeout-minutes: 3
-```
+```text
 
 **Benefits**:
 - Prevents stuck jobs from blocking queue
@@ -163,7 +163,7 @@ jobs:
 # Check individual job times in GitHub UI
 # Look for "Cache not found" in logs
 # Check test duration with pytest --durations=10
-```
+```text
 
 **Solutions**:
 1. Verify cache keys are correct
@@ -189,7 +189,7 @@ key: ${{ runner.os }}-deps-v1-${{ hashFiles('**/requirements*.txt') }}
 restore-keys: |
   ${{ runner.os }}-deps-v1-
   ${{ runner.os }}-deps-
-```
+```text
 
 ### Flaky Tests
 
@@ -218,7 +218,7 @@ on:
       - 'src/**'
       - 'tests/**'
       - '!**/*.md'  # Exclude markdown
-```
+```text
 
 ### Artifact Caching
 
@@ -233,7 +233,7 @@ Cache build artifacts between jobs:
 - uses: actions/download-artifact@v4
   with:
     name: dist
-```
+```text
 
 ### Docker Layer Caching
 
@@ -244,7 +244,7 @@ For Docker-based workflows:
   with:
     cache-from: type=gha
     cache-to: type=gha,mode=max
-```
+```text
 
 ## Future Improvements
 

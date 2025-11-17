@@ -1,4 +1,5 @@
 """Test suite for tokenization cache."""
+
 from __future__ import annotations
 
 import time
@@ -126,13 +127,17 @@ class TestTokenizationCache:
         import hashlib
         import json
 
-        key1 = hashlib.sha256(f"text1|{json.dumps({'model': 'a'}, sort_keys=True)}".encode()).hexdigest()
-        key2 = hashlib.sha256(f"text2|{json.dumps({'model': 'b'}, sort_keys=True)}".encode()).hexdigest()
+        key1 = hashlib.sha256(
+            f"text1|{json.dumps({'model': 'a'}, sort_keys=True)}".encode()
+        ).hexdigest()
+        key2 = hashlib.sha256(
+            f"text2|{json.dumps({'model': 'b'}, sort_keys=True)}".encode()
+        ).hexdigest()
 
         # Make key1 and key2 old (>1 hour)
         old_time = datetime.now() - timedelta(hours=2)
-        cache.cache[key1]['timestamp'] = old_time
-        cache.cache[key2]['timestamp'] = old_time
+        cache.cache[key1]["timestamp"] = old_time
+        cache.cache[key2]["timestamp"] = old_time
 
         # Invalidate expired
         removed = cache.invalidate_expired()
@@ -147,9 +152,9 @@ class TestTokenizationCache:
 
         # Empty cache
         stats = cache.stats()
-        assert stats['size'] == 0
-        assert stats['oldest_entry_age_seconds'] == 0
-        assert stats['expired_count'] == 0
+        assert stats["size"] == 0
+        assert stats["oldest_entry_age_seconds"] == 0
+        assert stats["expired_count"] == 0
 
         # Add entries
         cache.set("text1", {"model": "a"}, [1])
@@ -157,9 +162,9 @@ class TestTokenizationCache:
         cache.set("text2", {"model": "b"}, [2])
 
         stats = cache.stats()
-        assert stats['size'] == 2
-        assert stats['oldest_entry_age_seconds'] > 0
-        assert stats['expired_count'] == 0
+        assert stats["size"] == 2
+        assert stats["oldest_entry_age_seconds"] > 0
+        assert stats["expired_count"] == 0
 
     def test_cache_key_generation_consistent(self):
         """Test cache key is consistent for same inputs."""

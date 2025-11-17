@@ -63,7 +63,9 @@ def heuristic_coverage(rules: list[CodeownersRule]) -> dict[str, bool]:
     return {
         "src": any(p.startswith("src") or p.startswith("/src") for p in pats),
         "tests": any(p.startswith("tests") or p.startswith("/tests") for p in pats),
-        "docs": any(p.startswith("docs") or p.startswith("/docs") or p.startswith(".github") for p in pats),
+        "docs": any(
+            p.startswith("docs") or p.startswith("/docs") or p.startswith(".github") for p in pats
+        ),
     }
 
 
@@ -75,7 +77,9 @@ def validate_codeowners_text(text: str) -> CodeownersReport:
         errs.append("No parsable CODEOWNERS rules found.")
     any_missing_owners = [r for r in rules if not r.owners]
     if any_missing_owners:
-        warns.append(f"{len(any_missing_owners)} rule(s) missing owners (lines: {', '.join(str(r.line_no) for r in any_missing_owners)})")
+        warns.append(
+            f"{len(any_missing_owners)} rule(s) missing owners (lines: {', '.join(str(r.line_no) for r in any_missing_owners)})"
+        )
     owners_ok = validate_owners(rules)
     if not owners_ok:
         errs.append("One or more owners do not match @user or @org/team format.")

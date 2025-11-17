@@ -17,7 +17,7 @@ The FastAPI Inference Server provides ML model serving with comprehensive safegu
 
 ```bash
 pip install fastapi uvicorn pydantic
-```
+```text
 
 ## Quick Start
 
@@ -33,7 +33,7 @@ app = create_app(model_name="my-model-v1")
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-```
+```text
 
 ### Start Server
 
@@ -46,7 +46,7 @@ uvicorn src.codex_ml.serving.inference_server:create_app --factory --reload
 
 # Method 3: Custom
 python -c "from src.codex_ml.serving.inference_server import create_app; import uvicorn; uvicorn.run(create_app('my-model'), port=8000)"
-```
+```text
 
 ### Make Requests
 
@@ -66,7 +66,7 @@ data = {
 response = requests.post("http://localhost:8000/predict", json=data)
 results = response.json()
 print(results["predictions"])
-```
+```text
 
 ## Configuration
 
@@ -81,7 +81,7 @@ from src.codex_ml.serving.inference_server import (
 
 # These are module-level constants
 # Modify before import if needed
-```
+```text
 
 ### Custom Rate Limiting
 
@@ -94,7 +94,7 @@ server.rate_limiter = RateLimiter(
     max_requests=500,    # Lower limit
     window_seconds=60
 )
-```
+```text
 
 ### Model Loading
 
@@ -114,7 +114,7 @@ class CustomModelServer(ModelServer):
         with torch.no_grad():
             predictions = self.model(inputs)
         return predictions.tolist()
-```
+```text
 
 ## API Endpoints
 
@@ -133,7 +133,7 @@ Service information and available endpoints.
     "metrics": "/metrics"
   }
 }
-```
+```text
 
 ### GET /health
 
@@ -147,7 +147,7 @@ Health check endpoint.
   "uptime_seconds": 123.45,
   "total_requests": 42
 }
-```
+```text
 
 ### POST /predict
 
@@ -162,7 +162,7 @@ Inference endpoint.
     "max_length": 100
   }
 }
-```
+```text
 
 **Validation:**
 - `inputs`: Required, non-empty list
@@ -184,7 +184,7 @@ Inference endpoint.
     "total_requests": 43
   }
 }
-```
+```text
 
 **Errors:**
 - `400`: Invalid input (batch size, length)
@@ -203,7 +203,7 @@ Metrics endpoint.
   "model_name": "my-model",
   "model_loaded": true
 }
-```
+```text
 
 ## Rate Limiting
 
@@ -221,7 +221,7 @@ if limiter.is_allowed("client_ip_address"):
 else:
     # Return 429 Too Many Requests
     pass
-```
+```text
 
 ### Sliding Window
 
@@ -239,7 +239,7 @@ app.middleware_stack = [
     m for m in app.middleware_stack
     if "rate_limit" not in str(m)
 ]
-```
+```text
 
 ## Input Validation
 
@@ -259,7 +259,7 @@ class PredictionRequest(BaseModel):
         if len(v) > MAX_BATCH_SIZE:
             raise ValueError(f"Batch size exceeds {MAX_BATCH_SIZE}")
         return v
-```
+```text
 
 ### Custom Validation
 
@@ -272,7 +272,7 @@ class CustomRequest(PredictionRequest):
             if not text.isascii():
                 raise ValueError("Only ASCII input allowed")
         return v
-```
+```text
 
 ## Error Handling
 
@@ -287,7 +287,7 @@ except requests.HTTPError as e:
     if e.response.status_code == 429:
         print("Rate limited. Wait before retrying.")
         time.sleep(60)  # Wait 1 minute
-```
+```text
 
 **Invalid Input (400):**
 ```python
@@ -298,7 +298,7 @@ except requests.HTTPError as e:
     if e.response.status_code == 400:
         print(f"Invalid input: {e.response.json()['detail']}")
         # Fix input and retry
-```
+```text
 
 **Server Error (500):**
 ```python
@@ -309,7 +309,7 @@ except requests.HTTPError as e:
     if e.response.status_code == 500:
         print("Server error. Check server logs.")
         # Implement retry with backoff
-```
+```text
 
 ## Production Deployment
 
@@ -323,7 +323,7 @@ pip install gunicorn
 gunicorn -w 4 -k uvicorn.workers.UvicornWorker \
   src.codex_ml.serving.inference_server:create_app \
   --bind 0.0.0.0:8000
-```
+```text
 
 ### With Docker
 
@@ -339,7 +339,7 @@ EXPOSE 8000
 
 CMD ["uvicorn", "src.codex_ml.serving.inference_server:create_app", \
      "--factory", "--host", "0.0.0.0", "--port", "8000"]
-```
+```text
 
 ### Environment Variables
 
@@ -349,7 +349,7 @@ export MODEL_NAME="production-model-v2"
 
 # Run
 python src/codex_ml/serving/inference_server.py
-```
+```text
 
 ## Monitoring
 
@@ -367,7 +367,7 @@ async def predict(request: PredictionRequest):
     with latency_histogram.time():
         # ... inference ...
         pass
-```
+```text
 
 ### Logging
 
@@ -382,7 +382,7 @@ logging.basicConfig(
 # Logs appear in server output
 # INFO - Initialized ModelServer for: my-model
 # INFO - Model loaded successfully
-```
+```text
 
 ## Testing
 
@@ -404,7 +404,7 @@ def test_rate_limiter():
     assert limiter.is_allowed("client1") is True
     assert limiter.is_allowed("client1") is True
     assert limiter.is_allowed("client1") is False  # Exceeded
-```
+```text
 
 ### Integration Tests
 
@@ -424,7 +424,7 @@ def test_predict():
     response = client.post("/predict", json=data)
     assert response.status_code == 200
     assert "predictions" in response.json()
-```
+```text
 
 ## Best Practices
 

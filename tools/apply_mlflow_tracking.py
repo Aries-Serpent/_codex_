@@ -66,9 +66,7 @@ def q5(step: str, err: str, ctx: str) -> None:
         """
     )
     with ERRORS.open("a", encoding="utf-8") as fh:
-        fh.write(
-            json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n"
-        )
+        fh.write(json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n")
     sys.stderr.write(rq + "\n")
 
 
@@ -265,9 +263,7 @@ def apply() -> None:
             UTILS_CODE,
             UTILS_SENT,
         )
-        upsert(
-            REPO / "src" / "codex_ml" / "tracking" / "__init__.py", INIT_CODE, INIT_SENT
-        )
+        upsert(REPO / "src" / "codex_ml" / "tracking" / "__init__.py", INIT_CODE, INIT_SENT)
         upsert(REPO / "src" / "codex_ml" / "tracking" / "cli.py", CLI_CODE, CLI_SENT)
         upsert(REPO / "docs" / "ops" / "experiment_tracking.md", DOCS_CODE, DOCS_SENT)
     except Exception as e:  # pragma: no cover
@@ -304,9 +300,7 @@ def validate_run(enable_mlflow: bool, tracking_uri: str, experiment: str) -> Non
     out_dir = REPO / "output" / "experiments" / run_id
     seeds = _set_global_seeds(1234)
     summary = {"run_id": run_id, "metric@seed1234": 0.1234}
-    cfg = MlflowConfig(
-        enable=enable_mlflow, tracking_uri=tracking_uri, experiment=experiment
-    )
+    cfg = MlflowConfig(enable=enable_mlflow, tracking_uri=tracking_uri, experiment=experiment)
 
     enabled = False
     try:
@@ -338,9 +332,7 @@ def validate_run(enable_mlflow: bool, tracking_uri: str, experiment: str) -> Non
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--apply", action="store_true", help="create MLflow utilities, CLI flags, docs"
-    )
+    ap.add_argument("--apply", action="store_true", help="create MLflow utilities, CLI flags, docs")
     ap.add_argument(
         "--validate",
         action="store_true",
@@ -354,9 +346,7 @@ def main() -> None:
     if args.apply:
         apply()
     if args.validate:
-        validate_run(
-            args.mlflow_enable, args.mlflow_tracking_uri, args.mlflow_experiment
-        )
+        validate_run(args.mlflow_enable, args.mlflow_tracking_uri, args.mlflow_experiment)
     if not (args.apply or args.validate):
         print(
             "Usage: --apply [--validate] [--mlflow-enable] [--mlflow-tracking-uri URI] [--mlflow-experiment NAME]"

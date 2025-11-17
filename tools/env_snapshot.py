@@ -1,4 +1,5 @@
 """Environment snapshot CLI used by status automation and tests."""
+
 from __future__ import annotations
 
 import argparse
@@ -26,7 +27,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 def capture_environment() -> dict[str, Any]:
     """Collect environment details, including variables, for serialization.
-    
+
     Captures:
     - Python version and platform information (from environment_summary)
     - Python interpreter path
@@ -34,18 +35,18 @@ def capture_environment() -> dict[str, Any]:
     - CODEX_* environment variables (highlighted separately)
     """
     info = environment_summary()
-    
+
     # Add interpreter path explicitly
     info["python_executable"] = sys.executable
-    
+
     # Capture all environment variables
     info["env"] = dict(os.environ)
-    
+
     # Highlight CODEX_* environment variables for easy access
     codex_vars = {k: v for k, v in os.environ.items() if k.startswith("CODEX_")}
     if codex_vars:
         info["codex_env_vars"] = codex_vars
-    
+
     return info
 
 

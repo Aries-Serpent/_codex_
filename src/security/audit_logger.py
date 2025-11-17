@@ -4,6 +4,7 @@ Tamper-Evident Audit Logger
 Implements a simple hash-chained NDJSON audit log:
 Each event includes the SHA256 of the previous record to detect tampering.
 """
+
 from __future__ import annotations
 
 import hashlib

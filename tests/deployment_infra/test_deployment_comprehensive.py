@@ -18,13 +18,13 @@ class TestDockerConfiguration:
     def test_dockerfile_exists(self):
         """Test that Dockerfiles exist in expected locations."""
         repo_root = Path(__file__).parents[2]
-        
+
         dockerfiles = [
             repo_root / "Dockerfile",
             repo_root / "Dockerfile.gpu",
             repo_root / "Dockerfile.local",
         ]
-        
+
         existing = [d for d in dockerfiles if d.exists()]
         assert len(existing) > 0, "At least one Dockerfile should exist"
 
@@ -32,10 +32,10 @@ class TestDockerConfiguration:
         """Test that Dockerfiles have valid FROM statements."""
         repo_root = Path(__file__).parents[2]
         dockerfile = repo_root / "Dockerfile"
-        
+
         if not dockerfile.exists():
             pytest.skip("Dockerfile not found")
-        
+
         content = dockerfile.read_text()
         assert "FROM" in content, "Dockerfile should have FROM statement"
 
@@ -43,7 +43,7 @@ class TestDockerConfiguration:
         """Test that .dockerignore file exists."""
         repo_root = Path(__file__).parents[2]
         dockerignore = repo_root / ".dockerignore"
-        
+
         if dockerignore.exists():
             content = dockerignore.read_text()
             # Should ignore common patterns
@@ -52,10 +52,10 @@ class TestDockerConfiguration:
     def test_docker_entrypoint_pattern(self, tmp_path):
         """Test Docker entrypoint script patterns."""
         entrypoint = tmp_path / "entrypoint.sh"
-        
+
         # Create sample entrypoint
-        entrypoint.write_text("#!/bin/bash\nset -e\nexec \"$@\"\n")
-        
+        entrypoint.write_text('#!/bin/bash\nset -e\nexec "$@"\n')
+
         content = entrypoint.read_text()
         assert "#!/bin/bash" in content or "#!/bin/sh" in content
         assert "exec" in content or "python" in content
@@ -67,7 +67,7 @@ class TestDockerConfiguration:
             "NODE_VERSION": "18",
             "BUILD_DATE": "2025-11-09",
         }
-        
+
         # Validate build args structure
         assert isinstance(build_config, dict)
         assert "PYTHON_VERSION" in build_config
@@ -80,7 +80,7 @@ class TestDockerCompose:
         """Test that docker-compose.yml exists."""
         repo_root = Path(__file__).parents[2]
         compose_file = repo_root / "docker-compose.yml"
-        
+
         if compose_file.exists():
             content = compose_file.read_text()
             assert "version:" in content or "services:" in content
@@ -91,15 +91,15 @@ class TestDockerCompose:
             import yaml
         except ImportError:
             pytest.skip("PyYAML not installed")
-        
+
         repo_root = Path(__file__).parents[2]
         compose_file = repo_root / "docker-compose.yml"
-        
+
         if not compose_file.exists():
             pytest.skip("docker-compose.yml not found")
-        
+
         content = yaml.safe_load(compose_file.read_text())
-        
+
         if "services" in content:
             assert isinstance(content["services"], dict)
             assert len(content["services"]) > 0
@@ -111,7 +111,7 @@ class TestDockerCompose:
             "source": "./data",
             "target": "/app/data",
         }
-        
+
         assert volume_config["type"] in ["bind", "volume"]
         assert "source" in volume_config or "volume" in volume_config
         assert "target" in volume_config
@@ -124,7 +124,7 @@ class TestDockerCompose:
                 "driver": "default",
             },
         }
-        
+
         assert "driver" in network_config
         assert network_config["driver"] in ["bridge", "host", "overlay", "none"]
 
@@ -140,7 +140,7 @@ class TestServiceEndpoints:
             "interval": 30,
             "timeout": 5,
         }
-        
+
         assert health_config["path"].startswith("/")
         assert health_config["port"] > 0
         assert health_config["interval"] > 0
@@ -156,7 +156,7 @@ class TestServiceEndpoints:
             "initialDelaySeconds": 10,
             "periodSeconds": 5,
         }
-        
+
         assert "httpGet" in readiness or "exec" in readiness or "tcpSocket" in readiness
         assert readiness["initialDelaySeconds"] >= 0
         assert readiness["periodSeconds"] > 0
@@ -172,6 +172,6 @@ class TestServiceEndpoints:
             "periodSeconds": 10,
             "failureThreshold": 3,
         }
-        
+
         assert "httpGet" in liveness or "exec" in liveness or "tcpSocket" in liveness
         assert liveness["failureThreshold"] > 0

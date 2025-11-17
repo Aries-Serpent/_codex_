@@ -50,7 +50,7 @@ fields are expected unless noted otherwise.
 - `params.ndjson` – CLI/config snapshot.
 - `metrics.ndjson` – structured metrics log.
 - Additional artefacts (plots, checkpoints, notebooks).
-```
+```text
 ### Usage Notes
 
 1. Store experiment write-ups under the `experiments/` directory. File names should include the date and a short slug

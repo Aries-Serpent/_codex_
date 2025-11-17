@@ -78,13 +78,10 @@ def _coerce_lora_cfg(cfg: Any) -> Optional[LoraBuildCfg]:
         return cfg
     if isinstance(cfg, Mapping):
         allowed = {field.name for field in fields(LoraBuildCfg)}
-        filtered: dict[str, Any] = {
-            key: value for key, value in cfg.items() if key in allowed
-        }
+        filtered: dict[str, Any] = {key: value for key, value in cfg.items() if key in allowed}
         return LoraBuildCfg(**filtered)
     raise TypeError(
-        "LoRA configuration must be a mapping or LoraBuildCfg instance; "
-        f"received {type(cfg)!r}."
+        "LoRA configuration must be a mapping or LoraBuildCfg instance; " f"received {type(cfg)!r}."
     )
 
 
@@ -100,9 +97,7 @@ def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any])
             raise exc
 
 
-def _apply_quantization_options(
-    options: MutableMapping[str, Any], quantization: Any
-) -> None:
+def _apply_quantization_options(options: MutableMapping[str, Any], quantization: Any) -> None:
     """Normalize quantization hints into builder kwargs.
 
     Parameters
@@ -174,9 +169,7 @@ def _apply_quantization_options(
             for key, value in config_payload.items():
                 setattr(existing, key, value)
         else:
-            options.setdefault(
-                "quantization_config", BitsAndBytesConfig(**config_payload)
-            )
+            options.setdefault("quantization_config", BitsAndBytesConfig(**config_payload))
 
 
 def create_model(
@@ -198,9 +191,7 @@ def create_model(
     if quantization_payload is not None:
         _apply_quantization_options(options, quantization_payload)
     resolved_dtype = _resolve_dtype(dtype if dtype is not None else options.pop("dtype", None))
-    resolved_device = _resolve_device(
-        device if device is not None else options.pop("device", None)
-    )
+    resolved_device = _resolve_device(device if device is not None else options.pop("device", None))
     lora_payload = lora_cfg if lora_cfg is not None else options.pop("lora", None)
 
     model = _call_builder(builder, options)
@@ -218,9 +209,7 @@ def create_model(
             logger.debug("model_factory: applying LoRA adapters with config: %s", lora_config)
             model = build_lora(model, lora_config)
         else:
-            logger.debug(
-                "model_factory: PEFT enabled but no LoRA configuration provided; skipping"
-            )
+            logger.debug("model_factory: PEFT enabled but no LoRA configuration provided; skipping")
     else:
         logger.debug("model_factory: PEFT disabled; skipping LoRA application")
 
@@ -229,7 +218,7 @@ def create_model(
 
 class _MockModel:
     """Minimal model stub for smoke testing dtype/device resolution."""
-    
+
     def __init__(self, dtype: Any, device: Any) -> None:
         self.dtype = dtype
         self.device = device
@@ -237,17 +226,17 @@ class _MockModel:
 
 def load_model(config: Optional[Mapping[str, Any]] = None) -> _MockModel:
     """Simplified model loader for smoke testing (validates dtype/device handling).
-    
+
     This is a minimal stub that validates dtype and device resolution without
     requiring an actual model builder. Used primarily for CI/smoke tests.
-    
+
     Parameters
     ----------
     config : Optional[Mapping[str, Any]]
         Configuration mapping that may contain 'dtype' and 'device' keys.
         - 'dtype': string like 'float32', 'fp16', 'bfloat16' or torch.dtype
         - 'device': string like 'cpu', 'cuda', 'auto' or torch.device
-    
+
     Returns
     -------
     _MockModel
@@ -255,16 +244,12 @@ def load_model(config: Optional[Mapping[str, Any]] = None) -> _MockModel:
     """
     if config is None:
         config = {}
-    
+
     resolved_dtype = _resolve_dtype(config.get("dtype"))
     resolved_device = _resolve_device(config.get("device"))
-    
-    logger.debug(
-        "load_model smoke test: dtype=%s, device=%s", 
-        resolved_dtype, 
-        resolved_device
-    )
-    
+
+    logger.debug("load_model smoke test: dtype=%s, device=%s", resolved_dtype, resolved_device)
+
     return _MockModel(resolved_dtype, resolved_device)
 
 

@@ -130,7 +130,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Document archival API and CLI usage
   - Add examples to existing docs
   - Update README with archival best practices
-```
+```text
 
 **Target**: Test coverage 0.04 → 0.70+, Documentation 0.31 → 0.70+
 
@@ -169,7 +169,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test offline mode configuration
   - Test catalogue loading
   - Test fixture configuration
-```
+```text
 
 **Target**: Test coverage 0.00 → 0.70+
 
@@ -208,7 +208,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test docker-compose configuration
   - Test service orchestration
   - Test volume mounts and networking
-```
+```text
 
 **Target**: Test coverage 0.02 → 0.70+, Functionality 0.80 → 0.85+ (add k8s manifests)
 
@@ -245,7 +245,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Document safeguard patterns and usage
   - Add examples for reproducibility
   - Create safeguards best practices guide
-```
+```text
 
 **Target**: Test coverage 0.00 → 0.70+, Documentation 0.16 → 0.70+
 
@@ -285,7 +285,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Set up Sphinx configuration
   - Generate API documentation
   - Integrate with existing mkdocs
-```
+```text
 
 **Target**: Test coverage 0.02 → 0.70+, Functionality 0.75 → 0.85+
 
@@ -324,7 +324,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test experiment restoration
   - Test configuration tracking
   - Test seed management
-```
+```text
 
 **Target**: Test coverage 0.02 → 0.70+
 
@@ -361,7 +361,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Document PEFT integration patterns
   - Add LoRA configuration examples
   - Create PEFT tuning guide
-```
+```text
 
 **Target**: Test coverage 0.10 → 0.70+, Documentation 0.20 → 0.70+
 
@@ -394,7 +394,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test SentencePiece model training
   - Test vocabulary generation
   - Test model serialization
-```
+```text
 
 **Target**: Test coverage 0.24 → 0.70+
 
@@ -434,7 +434,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Add edge cases to test_status_report.py
   - Add verbose mode tests to test_status_report_verbose.py
   - Add CLI tests to test_status_audit.py
-```
+```text
 
 **Target**: Test coverage 0.18 → 0.70+, Score 0.759 → 0.85+
 
@@ -474,7 +474,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test throughput metrics
   - Test latency benchmarks
   - Test concurrent requests
-```
+```text
 
 **Target**: Test coverage 0.31 → 0.70+, Functionality 0.33 → 0.85+
 
@@ -513,7 +513,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Document vector store patterns
   - Add usage examples
   - Document testing strategies
-```
+```text
 
 **Target**: Functionality 0.00 → 0.70+, Documentation 0.35 → 0.70+
 
@@ -546,7 +546,7 @@ This plan addresses 11 low-maturity capabilities (score < 0.70) and 1 good-matur
   - Test stem extraction
   - Test similarity metrics
   - Test deduplication strategies
-```
+```text
 
 **Target**: Mark as deferred or implement (Functionality 0.00 → 0.70+)
 
@@ -578,7 +578,7 @@ Improve AST-level parsing consistency across analysis tools and code quality che
   - Document AST usage patterns
   - Add examples for common AST operations
   - Create AST analysis guide
-```
+```text
 
 **Target**: AST-level consistency score → 0.85+
 
@@ -615,7 +615,7 @@ Implement proper pytest-cov integration for accurate coverage reporting across a
   - Test coverage data collection
   - Test coverage reporting
   - Test coverage threshold enforcement
-```
+```text
 
 **Target**: Full pytest-cov integration with branch coverage reporting
 
@@ -648,7 +648,7 @@ Address capabilities with zero components through targeted testing.
   - Add validation for vector store operations
   - Add error handling for missing implementations
   - Add deprecation warnings for stubs
-```
+```text
 
 **Target**: Eliminate all zero-component scores
 
@@ -801,10 +801,10 @@ Address capabilities with zero components through targeted testing.
 
 ### A. Capability Scoring Formula
 
-```
+```text
 score = (functionality * 0.25) + (consistency * 0.20) + (tests * 0.25) + 
         (safeguards * 0.15) + (documentation * 0.15)
-```
+```text
 
 ### B. Component Definitions
 

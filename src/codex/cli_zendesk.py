@@ -579,17 +579,9 @@ def _normalize_routing_rule(rule: Any) -> dict[str, Any] | None:
     name = data.get("name") or data.get("title") or data.get("id")
     if not name:
         return None
-    conditions = (
-        data.get("conditions")
-        or data.get("matching_criteria")
-        or data.get("match")
-        or {}
-    )
+    conditions = data.get("conditions") or data.get("matching_criteria") or data.get("match") or {}
     destination = (
-        data.get("destination")
-        or data.get("target")
-        or data.get("queue")
-        or data.get("queue_id")
+        data.get("destination") or data.get("target") or data.get("queue") or data.get("queue_id")
     )
     payload: dict[str, Any] = {
         "name": name,
@@ -609,12 +601,7 @@ def _normalize_talk_menu(menu: Any) -> dict[str, Any] | None:
     if isinstance(prompts, (str, bytes)):
         prompts = [prompts]
     entries = []
-    raw_entries = (
-        data.get("entries")
-        or data.get("options")
-        or data.get("routes")
-        or []
-    )
+    raw_entries = data.get("entries") or data.get("options") or data.get("routes") or []
     for entry in raw_entries or []:
         entry_data = _object_to_mapping(entry)
         dtmf = (

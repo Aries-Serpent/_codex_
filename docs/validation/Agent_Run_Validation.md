@@ -14,7 +14,7 @@ python scripts/agent/probe_env.py
 # Optional gated tests (Agent-run)
 ACCELERATE_TEST=1 pytest -q tests/integration/test_distributed_init.py || true
 RUN_LORA_TESTS=1 pytest -q tests/modeling/test_lora_minimal.py || true
-```
+```text
 
 ## Outputs
 

@@ -181,7 +181,9 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
     return dict(data)
 
 
-def _apply_overrides_to_mapping(mapping: dict[str, Any], overrides: Sequence[str]) -> dict[str, Any]:
+def _apply_overrides_to_mapping(
+    mapping: dict[str, Any], overrides: Sequence[str]
+) -> dict[str, Any]:
     """Apply dotlist overrides directly to a plain mapping (without OmegaConf dependency)."""
     for item in overrides:
         if "=" not in item:
@@ -236,7 +238,9 @@ class TrainingDefaults:
         }
 
 
-def load_training_cfg(*, allow_fallback: bool = True, overrides: Optional[list[str]] = None) -> DictConfig:
+def load_training_cfg(
+    *, allow_fallback: bool = True, overrides: Optional[list[str]] = None
+) -> DictConfig:
     """Load Hydra config from ``configs/training/base.yaml`` with fallback.
 
     Resolution order:

@@ -124,13 +124,13 @@
 
 **Content**: ASCII tree diagram showing CI job dependencies
 
-```
+```text
 validate-imports (2min)
   ├─> test-core (parallel, 3min)
   ├─> test-smoke (parallel, 1min)
   ├─> lint-check (parallel, 1min)
   └─> modernization-scan (parallel, 2min)
-```
+```text
 
 **Evidence for `text` classification**:
 - ASCII box-drawing characters (├─>, └─>)
@@ -145,7 +145,7 @@ validate-imports (2min)
 ```diff
 - ```
 + ```text
-```
+```text
 
 **Impact**: Semantic-preserving, display-only change
 
@@ -153,7 +153,7 @@ validate-imports (2min)
 
 ```bash
 python tools/fence_fixer_v2.py docs/ --dry-run --report
-```
+```text
 
 **Results**:
 - ✅ Files scanned: 509
@@ -333,7 +333,7 @@ python tools/modernization_scanner_v2.py src/  # 0 warnings
 
 # Type checking
 mypy src/ --ignore-missing-imports  # Clean
-```
+```text
 
 ### Performance Metrics
 

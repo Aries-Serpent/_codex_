@@ -111,7 +111,9 @@ def _candidate_from_meta(meta: FileMeta, *, now: float) -> ConsolidationCandidat
     )
 
 
-def _is_near_duplicate(path_a: Path, path_b: Path, *, sim: Similarity, jaccard_min: float, hd_max: int) -> bool:
+def _is_near_duplicate(
+    path_a: Path, path_b: Path, *, sim: Similarity, jaccard_min: float, hd_max: int
+) -> bool:
     if path_a.suffix == ".py" and path_b.suffix == ".py" and sim.py_ast_equal:
         return True
     if sim.jaccard >= jaccard_min:

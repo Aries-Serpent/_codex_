@@ -3,6 +3,7 @@
 Validates that both "rougeL" and "rouge_l" resolve to the same offline
 implementation and produce identical results.
 """
+
 import sys
 from pathlib import Path
 

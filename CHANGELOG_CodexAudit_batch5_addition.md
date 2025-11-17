@@ -22,7 +22,7 @@ mlflow.log_param("codex_git_commit", os.getenv("CODEX_GIT_COMMIT", ""))
 mlflow.log_param("conda_env", os.getenv("CONDA_DEFAULT_ENV", ""))
 mlflow.log_param("seed", seed_value)
 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-```
+```text
 
 **Error Handling**: All logging wrapped in try-except; failures silently ignored
 
@@ -31,7 +31,7 @@ mlflow.log_param("dataset_path", str(dataset_path.resolve()))
 export CODEX_ENABLE_MLFLOW=1
 export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)  # optional
 # Run evaluation
-```
+```text
 
 #### MLflow Local UI Viewer
 
@@ -43,7 +43,7 @@ export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)  # optional
 ```bash
 scripts/tracking/mlflow_ui.sh
 # Access at: http://localhost:5000
-```
+```text
 
 **Environment**:
 - `MLFLOW_TRACKING_URI`: Default `file:./mlruns`
@@ -69,14 +69,14 @@ scripts/tracking/mlflow_ui.sh
   "roots": ["/path/to/configs", ...],
   "note": "For fuller listing, use Hydra's compose API"
 }
-```
+```text
 
 **Usage**:
 ```bash
 python tools/configs/list_groups.py
 # Or via nox
 nox -s config_index
-```
+```text
 
 #### Nox Sessions
 
@@ -91,7 +91,7 @@ def tracking_smoke(session: nox.Session) -> None:
     """Run local MLflow smoke test against file backend."""
     session.env["MLFLOW_TRACKING_URI"] = "file:./mlruns"
     # Creates mlruns directory and verifies setup
-```
+```text
 
 2. `config_index` - List Hydra config groups
 ```python
@@ -99,7 +99,7 @@ def tracking_smoke(session: nox.Session) -> None:
 def config_index(session: nox.Session) -> None:
     """List Hydra config groups (offline discovery)."""
     session.run("python", "tools/configs/list_groups.py")
-```
+```text
 
 **File**: `configs/development/noxfile.py` (updated)
 
@@ -115,7 +115,7 @@ git checkout <batch5_commit>~1 -- \
   tools/configs/list_groups.py \
   noxfile.py \
   configs/development/noxfile.py
-```
+```text
 
 **Impact**: None. MLflow logging is opt-in; config discovery is informative only.
 

@@ -18,19 +18,19 @@ uv sync --extra test --extra cli  # installs optional deps and the hydra.extra p
 source .venv/bin/activate
 # or, if you prefer pip:
 pip install -e '.[test-core]'
-```
+```text
 
 List the consolidated Phase 4 nox sessions:
 
 ```bash
 nox --noxfile configs/development/noxfile.py --list
-```
+```text
 
 Install additional extras when you require GPU / tracking support:
 
 ```bash
 pip install -e '.[test,tracking,ml]'
-```
+```text
 
 ### Offline-first testing
 
@@ -40,7 +40,7 @@ Use the offline matrix to validate the environment without network access:
 nox --noxfile configs/development/noxfile.py -s tests
 nox --noxfile configs/development/noxfile.py -s coverage
 nox --noxfile configs/development/noxfile.py -s offline_check
-```
+```text
 
 If pytest reports skips such as `Skipped: could not import 'transformers'`,
 install the optional extras documented in
@@ -55,7 +55,7 @@ module initialises a local `file:` tracking URI automatically:
 ```bash
 export CODEX_OFFLINE_MODE=1  # fully disable MLflow
 python -m codex_ml.training.unified_training
-```
+```text
 
 ### Validate dataset manifests
 
@@ -64,7 +64,7 @@ and check that all referenced files exist:
 
 ```bash
 python scripts/validate_dataset.py data/dataset_manifest.json --check-splits
-```
+```text
 
 ### Unified executor
 
@@ -74,12 +74,12 @@ quick training smoke test:
 ```bash
 python -m codex_ml.exec.codex_exec validate-dataset --manifest data/manifest.json
 python -m codex_ml.exec.codex_exec train --config base
-```
+```text
 ## 1.5 Explore the repository layout
 
 ```bash
 codex repo-map
-```
+```text
 
 The command prints the top-level directories and key files (hidden entries are
 omitted for brevity) so you can quickly orient yourself after cloning the repo.
@@ -95,7 +95,7 @@ artifacts/models/gpt2/
 artifacts/models/tinyllama/
 data/offline/tiny_corpus.txt
 data/offline/weighted_accuracy.json
-```
+```text
 You can also set the environment variables described in
 [`guides/offline_catalogue.md`](guides/offline_catalogue.md) to point
 at alternative locations.  Skip this step entirely if you prefer the minimal
@@ -108,7 +108,7 @@ services.
 
 ```bash
 python examples/tokenize.py
-```
+```text
 Expected output:
 
 ```json
@@ -117,7 +117,7 @@ Expected output:
   "encoded": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
   "decoded": "Codex makes registries fun!"
 }
-```
+```text
 ## 4a. Reasoning template quickstart
 
 `codex` ships reasoning-first presets so you can exercise the roadmap milestones without building a curriculum from scratch.
@@ -131,7 +131,7 @@ codex-train +reasoning=baseline \
 codex evaluate --config configs/evaluation/reasoning.yaml \
   --log-metrics .codex/metrics/reasoning.ndjson \
   --run-id quickstart-reasoning
-```
+```text
 
 The `+reasoning=baseline` overlay activates trace logging, NDJSON ledgers, and evaluator hooks described in
 [`guides/reasoning_overview.md`](guides/reasoning_overview.md). Pair these commands with the bespoke hosting checklist in
@@ -151,7 +151,7 @@ from codex_ml.data.split_utils import deterministic_split
 
 records = list(iter_jsonl("data/offline/tiny_corpus.jsonl"))
 train, val, test = deterministic_split(records, seed=1234, val_fraction=0.15, test_fraction=0.05)
-```
+```text
 
 When caching shards, call `codex_ml.data.cache.write_jsonl_with_crc()` to emit a
 `.crc32` sidecar.  The checksum is derived from the streaming
@@ -166,14 +166,14 @@ from codex_ml.training import TrainingRunConfig, build_dataloader
 
 cfg = TrainingRunConfig(batch_size=16, num_workers=2, pin_memory=True)
 dataloader = build_dataloader(dataset, cfg)
-```
+```text
 
 ```bash
 export CODEX_MLFLOW_ENABLE=0  # keep MLflow disabled unless you opt-in
 python examples/train_toy.py
 # or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics
 # or compose via Hydra: python -m codex_ml.cli.hydra_main experiment=debug training.max_epochs=3
-```
+```text
 
 > **Tip:** set `training.mlflow_enable=true` (and optionally
 > `training.mlflow_tracking_uri=file:.codex/mlruns`) to record the same run in a
@@ -188,7 +188,7 @@ validated before a run starts. Compose presets and ad-hoc flags side-by-side:
 
 ```bash
 python -m codex_ml.cli.hydra_main experiment=fast training.max_epochs=2
-```
+```text
 
 Hydra's `-m/--multirun` mode fans out parameter grids locally. The command below
 launches four runs (2×2 sweep) and stores results under `multirun/` with
@@ -196,7 +196,7 @@ auto-numbered job IDs in `hydra.job.num`:
 
 ```bash
 python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4
-```
+```text
 
 Each subdirectory captures the effective config and stdout/stderr for easy
 post-run comparison.
@@ -207,7 +207,7 @@ extra overrides you need:
 ```bash
 python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline -m \
   training.max_epochs=1
-```
+```text
 
 The helper YAML locks Hydra's output folders under `.codex/hydra/` so you can
 inspect multirun artefacts without touching remote services.
@@ -235,13 +235,13 @@ and writes NDJSON:
 
 ```bash
 tail -n +1 .codex/metrics.ndjson
-```
+```text
 
 You can also emit an aggregated evaluation record straight from the CLI:
 
 ```bash
 codex evaluate --config configs/evaluation/base.yaml --log-metrics artifacts/eval_runs.ndjson
-```
+```text
 
 Each record includes `eval_loss`, `perplexity`, and `token_accuracy` (when logits
 and labels are available).  Adjust the cadence with
@@ -253,7 +253,7 @@ Enable LoRA in config:
 
 ```bash
 codex-train training.lora_enable=true training.lora_r=8 training.lora_alpha=16 training.lora_dropout=0.05
-```
+```text
 
 See [`docs/examples/lora_quickstart.md`](examples/lora_quickstart.md) for a minimal snippet.
 
@@ -279,7 +279,7 @@ you can tail progress without any external services:
 
 ```bash
 tail -f .codex/metrics.ndjson
-```
+```text
 ### Padding, truncation and caching
 
 Codex ML exposes the Hugging Face-style padding and truncation flags directly
@@ -299,7 +299,7 @@ environment before launching training.
 ```bash
 python examples/mlflow_offline.py runs/examples/<latest-run>
 python examples/evaluate_toy.py
-```
+```text
 Use the printed `mlflow ui --backend-store-uri ...` command to explore the run
 offline.  TensorBoard summaries are saved alongside the run when enabled.
 
@@ -353,7 +353,7 @@ def build_toy_model(*, device=None, dtype=None, peft_cfg=None):
 
 
 model = load_causal_lm("toy-causal", device="cuda", dtype="bf16")
-```
+```text
 
 Passing `dtype="bf16"` or `dtype="fp16"` maps to `torch.bfloat16` /
 `torch.float16` automatically.  Hardware support varies – on CPU the loader

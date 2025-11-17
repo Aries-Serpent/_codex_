@@ -35,7 +35,7 @@ Capabilities:
  - Callback dispatch points.
  - Deprecation channel for legacy loop.
  - Structured result dictionary.
-```
+```text
 
 - `src/codex_ml/training/unified_training.py` (legacy shim)
 ```text
@@ -49,7 +49,7 @@ def train_loop(*args: Any, **kwargs: Any) -> Any:
     from codex_ml.train_loop import run_training as _legacy_train_loop
 
     return _legacy_train_loop(*args, **kwargs)
-```
+```text
 
 - `src/codex_ml/models/reasoning.py`
 ```text
@@ -66,7 +66,7 @@ class ReasoningHead(nn.Module):
         self.activation = nn.Tanh()
         self.dropout = nn.Dropout(cfg.dropout)
         self.decoder = nn.Linear(proj_size, vocab)
-```
+```text
 
 - `docs/guides/reasoning_overview.md`
 ```text
@@ -103,7 +103,7 @@ training:
     enabled: true
     trace_mode: "weights"
     trace_history: 128
-```
+```text
 
 - `configs/training/reasoning/curricula/starter.yaml`
 ```text
@@ -119,7 +119,7 @@ phase_schedule:
     metrics:
       - reasoning.win_rate
       - reasoning.critique_density
-```
+```text
 
 - `configs/evaluation/reasoning/base.yaml`
 ```text
@@ -132,7 +132,7 @@ probes:
   - theorem_proving
   - math_verification
   - tool_audit
-```
+```text
 
 - `configs/deploy/reasoning_pod.yaml`
 ```text
@@ -145,7 +145,7 @@ reasoning:
     mode: weights  # {weights, activations}; switch in baseline.yaml as desired
   evaluation_preset: configs/evaluation/reasoning/base.yaml
   curriculum_template: configs/training/reasoning/baseline.yaml
-```
+```text
 
 - `src/codex_ml/cli/codex_cli.py`
 ```text
@@ -170,7 +170,7 @@ reasoning:
 )
 def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
     """Validate reasoning pod deployment readiness in dry-run mode."""
-```
+```text
 
 ## 5) Gaps & Remediations
 | Gap | Impact | Fix (owner) | Target Ring |
@@ -199,3 +199,5 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
 
 ---
 _Generated with `scripts/survey.sh` • R = α·E + β·T + γ·D (α+β+γ=1)_
+
+```

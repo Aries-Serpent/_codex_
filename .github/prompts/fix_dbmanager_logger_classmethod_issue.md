@@ -27,7 +27,7 @@ class DBManager:
     @classmethod
     def close_all_pools(cls):
         cls.logger.debug(...)  # ← AttributeError: cls has no 'logger'
-```
+```text
 
 ---
 
@@ -101,7 +101,7 @@ grep -n "self.logger" src/codex/logging/db_manager.py
 # Verify class attribute exists
 grep -n "_logger = logging.getLogger" src/codex/logging/db_manager.py
 # Should show class-level declaration
-```
+```text
 
 ---
 
@@ -310,7 +310,7 @@ class TestDBManagerPoolCleanup:
             # Note: May not always trigger error depending on SQLite version
             # Just verify no exception raised
             assert len(DBManager._CONNECTION_POOL) == 0
-```
+```text
 
 **Validation Commands**:
 ```bash
@@ -323,7 +323,7 @@ pytest tests/test_db_manager_critical.py --cov=src/codex/logging/db_manager --co
 # Expected output:
 # 7/7 tests passing
 # Coverage: close_all_pools() should be 100% covered
-```
+```text
 
 ---
 
@@ -362,7 +362,7 @@ class TestDBManager:
             
             # Verify cleared
             assert len(DBManager._CONNECTION_POOL) == 0
-```
+```text
 
 **Validation Commands**:
 ```bash
@@ -370,7 +370,7 @@ class TestDBManager:
 pytest tests/test_agents_infrastructure.py -v
 
 # Should show all existing tests still pass + new test
-```
+```text
 
 ---
 
@@ -428,7 +428,7 @@ print('✅ Pool cleanup working')
 
 # 5. Cleanup test files
 rm -f .codex/test_regression.db* .codex/test_pool_regression.db*
-```
+```text
 
 ---
 
@@ -473,7 +473,7 @@ def close_all_pools(cls) -> None:
                 except sqlite3.Error as exc:
                     cls._logger.debug(f"Error closing pooled connection: {exc}")
         cls._CONNECTION_POOL.clear()
-```
+```text
 
 **Add note to class docstring**:
 
@@ -509,7 +509,7 @@ class DBManager:
         _POOL_ENABLED: Connection pooling enabled flag
         _CONNECTION_POOL: Shared connection pool dictionary
     """
-```
+```text
 
 ---
 
@@ -663,7 +663,7 @@ class DBManager:
 - ✅ Documentation updated
 
 **Expected Test Results**:
-```
+```text
 tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pools_success PASSED
 tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pools_with_connection_errors PASSED
 tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pools_empty_pool PASSED
@@ -673,7 +673,7 @@ tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_instance_logge
 tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pools_logs_errors PASSED
 
 ================================ 7 passed in 0.42s =================================
-```
+```text
 
 ---
 
@@ -695,7 +695,7 @@ tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pool
 **Context**: [What was being attempted]
 **Attempts**: [What was tried to resolve]
 **Recommendation**: [Suggested next steps or maintainer intervention needed]
-```
+```text
 
 ---
 
@@ -756,7 +756,7 @@ tests/test_db_manager_critical.py::TestDBManagerPoolCleanup::test_close_all_pool
 ### Ready for Maintainer Review
 
 **No errors encountered**. All validation steps passed. Ready for final review and merge.
-```
+```text
 
 ---
 

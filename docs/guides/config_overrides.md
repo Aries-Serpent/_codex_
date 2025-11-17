@@ -10,7 +10,7 @@ defaults:
   - override hydra/job_logging: disabled   # silence Hydra's verbose logging
   - trainer: base                         # pull in configs/training/legacy/trainer_base.yaml
   - _self_                                # keep the current file last
-```
+```text
 
 What each entry provides:
 
@@ -30,7 +30,7 @@ log:
   dir: logs
   formats:
     - ndjson
-```
+```text
 
 ### Fresh override examples
 
@@ -47,7 +47,7 @@ codex-train logging.mlflow_uri=null logging.mlflow_enable=false
 # compose the offline sweep preset and keep epochs at one
 python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline \
   training.max_epochs=1
-```
+```text
 
 Hydra understands `dot.path=value` for single values, `node=[a,b]` for lists, and
 `foo.bar='{json:1}'` when you need structured overrides. See the Hydra docs for

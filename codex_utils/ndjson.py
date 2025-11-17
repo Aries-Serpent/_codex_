@@ -7,17 +7,15 @@ from typing import Any, Dict, Iterable, Mapping
 
 try:
     # re-exported for backwards compat
-    from codex_ml.logging.ndjson_logger import (
-        NDJSONLogger as _CoreNDJSONLogger,
-    )
+    from codex_ml.logging.ndjson_logger import NDJSONLogger as _CoreNDJSONLogger
     from codex_ml.logging.ndjson_logger import (
         is_legacy_mode,
         timestamped_record,
     )
 except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
     try:
-        from src.codex_ml.logging.ndjson_logger import (  # type: ignore[attr-defined]
-            NDJSONLogger as _CoreNDJSONLogger,
+        from src.codex_ml.logging.ndjson_logger import (
+            NDJSONLogger as _CoreNDJSONLogger,  # type: ignore[attr-defined]
         )
         from src.codex_ml.logging.ndjson_logger import (
             is_legacy_mode,
@@ -75,4 +73,3 @@ class NDJSONLogger(_CoreNDJSONLogger):
         """Alias for :meth:`log_many` to preserve the historical API."""
 
         return self.log_many(records)
-

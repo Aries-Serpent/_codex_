@@ -113,7 +113,7 @@ Update File: src/codex/cli.py
 + pass
 *** End Patch ***
 End Patch
-```
+```text
 
 **Risk:** Modifying the global thread pool may affect downstream libraries unexpectedly; using internal attributes such as `_executor` relies on CPython implementation details. To mitigate, the patch catches exceptions and performs no action on unsupported platforms.
 
@@ -153,7 +153,7 @@ Update File: training/engine_hf_trainer.py
  # Construct Trainer
 *** End Patch ***
 End Patch
-```
+```text
 
 **Risk:** Forcing gradient accumulation to 1 when LoRA is enabled may slow training if users wanted accumulation. It ensures LoRA layers receive full gradients, but may not be necessary for all adapter implementations. To mitigate, warn rather than force the value.
 
@@ -200,7 +200,7 @@ Add File: src/codex_ml/rl/simple_agent.py
 + fh.read()
 *** End Patch ***
 End Patch
-```
+```text
 ```diff
 *** Begin Patch ***
 Update File: configs/interfaces.yaml (new)
@@ -214,7 +214,7 @@ Update File: configs/interfaces.yaml (new)
 + path: codex_ml.rl.simple_agent:RandomAgent
 *** End Patch ***
 End Patch
-```
+```text
 
 **Risk:** Adding a new file `configs/interfaces.yaml` may override user‑supplied environment variables; ensure the registry respects existing variables. The `RandomAgent` is a trivial implementation that does not perform real RL, so it should not be used in production.
 
@@ -245,7 +245,7 @@ Update File: training/engine_hf_trainer.py
 + training_args = load_training_arguments(cfg.training_cfg_path, cfg.output_dir, resume)
 *** End Patch ***
 End Patch
-```
+```text
 
 **Risk:** Automatically seeding may surprise users expecting random initialisation; environment capture writes a JSON file to `output_dir`, which may clutter logs. Provide a config flag to disable this behaviour if needed.
 
@@ -265,7 +265,7 @@ pytest --cov=src --cov=training --cov-report=term-missing --cov-fail-under=75
 nox -s lint
 # run mypy type checks
 nox -s typecheck
-```
+```text
 
 * **ML test score mapping:**
 
@@ -307,7 +307,7 @@ Some features require significant effort or unclear ownership and are therefore 
 When analysis steps fail, capture the error in the prescribed format. Example:
 ```vbnet
 Question for ChatGPT @codex 2025‑09‑14T10:00Z: While performing [STEP_3:Search & Mapping], encountered the following error: FileNotFoundError: Config file 'configs/interfaces.yaml' not found Context: Attempting to load RL interface configuration in `apply_config()` for tests. What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 This log would be appended to `.codex/errors.ndjson` and printed to stderr. Possible causes include missing file, incorrect path or mis‑spelled file name. Resolution could involve creating the file (as shown in Diff C) or setting the environment variable `CODEX_INTERFACES_CFG` to a custom path.
 
 9 Codex‑ready task sequence template
@@ -345,7 +345,7 @@ The YAML below translates the high‑signal findings and atomic diffs into a str
  - Generate updated documentation (Markdown or notebooks) describing the changes.
  - Append entries to `.codex/change_log.md` summarising each change with rationale and preview.
  - Save results to `.codex/status/_codex_status_update-<date>.md` for future reference.
-```
+```text
 
 ### Example tasks for Codex to action
 Below are concrete examples of tasks (expanded from high‑signal findings) that Codex can execute sequentially. Each task should be treated as an independent execution block following the above structure.
@@ -361,7 +361,7 @@ Add LoRA integration to the HF training engine: modify `training/engine_hf_train
 ::: # Example Suggested Task Prompt 3
 Create a minimal RL agent implementation (`RandomAgent`) in `codex_ml/rl/simple_agent.py` and a default `configs/interfaces.yaml` mapping to built‑in components. Update interface tests to use this agent, and document how to register custom components.
 :::
-```
+```text
 These tasks adhere to the sequential phases and include error capture, testing and documentation requirements. Codex should execute each task until completion or prune with justification.
 
 ## Outstanding Codex Automation Questions

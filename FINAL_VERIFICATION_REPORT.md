@@ -232,7 +232,7 @@ tests/tools/test_duplication_analyzer.py
 
 tests/codex_ml/test_inference_server.py
   ✅ 14/14 tests PASSED (Note: 10 unique, 4 parametrized)
-```
+```text
 
 **Total Test Coverage**:
 - ✅ 31+ test functions implemented
@@ -281,7 +281,7 @@ tests/codex_ml/test_inference_server.py
 **Verification**:
 
 #### Commit History
-```
+```text
 57aeb67 - Prepare for PR #2264 comment resolution
 544ec0d - Complete documentation and final summary
 0b474be - Add comprehensive documentation for critical gaps
@@ -290,7 +290,7 @@ f1cfeec - Implement vector-stores gap remediation: FAISS enhancements
 982d35f - Add audit artifacts and capability matrix report
 e10713c - Audit: S1-S7 artifacts + matrix + manifest (v1.1.0)
 acf4b5d - Initial plan
-```
+```text
 
 **Total Changes**:
 - ✅ 27 files changed
@@ -401,7 +401,7 @@ acf4b5d - Initial plan
 ✅ Persistence with checksums
 ✅ Search with validation
 ✅ Error handling
-```
+```text
 
 #### Duplication Analyzer
 ```python
@@ -411,7 +411,7 @@ acf4b5d - Initial plan
 ✅ Report generation
 ✅ Refactoring candidates
 ✅ CLI interface
-```
+```text
 
 #### Inference Server
 ```python
@@ -421,7 +421,7 @@ acf4b5d - Initial plan
 ✅ Input validation
 ✅ Health checks
 ✅ Metrics collection
-```
+```text
 
 ---
 
@@ -523,6 +523,6 @@ ls -la docs/guides/
 # Check git history
 git log --oneline -8
 git diff --stat HEAD~7
-```
+```text
 
 **End of Verification Report**

@@ -12,22 +12,22 @@ constrained runners.
 **Option 1: pytest (recommended)**
 ```bash
 pytest --cov=src/codex_ml --cov-fail-under=3.5
-```
+```text
 
 **Option 2: Makefile**
 ```bash
 make -C config test
-```
+```text
 
 **Option 3: nox**
 ```bash
 nox --noxfile configs/development/noxfile.py -s tests
-```
+```text
 
 **Option 3b: Offline gate**
 ```bash
 nox --noxfile configs/development/noxfile.py -s offline_check
-```
+```text
 
 The offline gate shells out to `nox -s tests --verbose` and scans the logs for
 network calls. Any occurrence of `http`, `download`, or `fetch` fails the
@@ -36,7 +36,7 @@ session.
 **Option 4: Validate enforcement**
 ```bash
 python scripts/validate_coverage_gates.py
-```
+```text
 
 ### Hydra plugin guard
 

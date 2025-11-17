@@ -24,7 +24,7 @@ The autonomous deployment orchestration implementation has undergone comprehensi
 - Date: 2025-11-14
 
 **Results**:
-```
+```text
 Total issues (by severity):
   Undefined: 0
   Low: 2
@@ -36,7 +36,7 @@ Total issues (by confidence):
   Low: 0
   Medium: 0
   High: 2
-```
+```text
 
 **Findings**:
 
@@ -77,10 +77,10 @@ Total issues (by confidence):
 - Date: 2025-11-14
 
 **Results**:
-```
+```text
 Analysis Result for 'python'. Found 0 alerts:
 - python: No alerts found.
-```
+```text
 
 **Conclusion**: ✅ No security vulnerabilities detected by CodeQL
 
@@ -122,7 +122,7 @@ subprocess.run(cmd, shell=False, capture_output=True, text=True, check=check)
 
 # File path validation
 Path(file_path).exists()  # Uses pathlib for safe path handling
-```
+```text
 
 ### 4. Error Handling and Information Disclosure
 
@@ -159,7 +159,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-```
+```text
 
 **Findings**:
 - ✅ Uses only Python standard library
@@ -186,7 +186,7 @@ self.output_dir.mkdir(parents=True, exist_ok=True)
 # Safe file writing
 with open(report_file, "w") as f:
     json.dump(result.details, f, indent=2)
-```
+```text
 
 ### 7. Authentication and Authorization
 

@@ -4,6 +4,7 @@ Comprehensive tests for archival bundling compression formats.
 Tests cover tar.gz, zip, and tar.xz compression formats with various
 file types and sizes to ensure proper bundling and extraction.
 """
+
 from __future__ import annotations
 
 import tarfile
@@ -22,12 +23,12 @@ class TestTarGzCompression:
         source_dir.mkdir()
         (source_dir / "file1.txt").write_text("content1")
         (source_dir / "file2.txt").write_text("content2")
-        
+
         # Create tar.gz archive
         archive_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_dir, arcname=".")
-        
+
         assert archive_path.exists()
         assert archive_path.suffix == ".gz"
         assert archive_path.stat().st_size > 0
@@ -38,17 +39,17 @@ class TestTarGzCompression:
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.txt").write_text("test content")
-        
+
         archive_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_dir / "test.txt", arcname="test.txt")
-        
+
         # Extract
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
         with tarfile.open(archive_path, "r:gz") as tar:
             tar.extractall(extract_dir)
-        
+
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()
         assert extracted_file.read_text() == "test content"
@@ -58,14 +59,14 @@ class TestTarGzCompression:
         # Create file with compressible content
         source_file = tmp_path / "compressible.txt"
         source_file.write_text("test " * 10000)  # Highly compressible
-        
+
         archive_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_file, arcname="compressible.txt")
-        
+
         original_size = source_file.stat().st_size
         compressed_size = archive_path.stat().st_size
-        
+
         # Should achieve at least 50% compression on repetitive text
         assert compressed_size < original_size * 0.5
 
@@ -74,17 +75,17 @@ class TestTarGzCompression:
         source_file = tmp_path / "metadata_test.txt"
         source_file.write_text("content")
         source_file.chmod(0o644)
-        
+
         archive_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_file, arcname="metadata_test.txt")
-        
+
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
         with tarfile.open(archive_path, "r:gz") as tar:
             tar.extractall(extract_dir)
-        
+
         extracted_file = extract_dir / "metadata_test.txt"
         assert extracted_file.exists()
         # Permissions should be preserved (on Unix-like systems)
@@ -95,17 +96,17 @@ class TestTarGzCompression:
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "empty_dir").mkdir()
-        
+
         archive_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_dir, arcname=".")
-        
+
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
         with tarfile.open(archive_path, "r:gz") as tar:
             tar.extractall(extract_dir)
-        
+
         assert (extract_dir / "empty_dir").exists()
         assert (extract_dir / "empty_dir").is_dir()
 
@@ -119,12 +120,12 @@ class TestZipCompression:
         source_dir.mkdir()
         (source_dir / "file1.txt").write_text("zip content 1")
         (source_dir / "file2.txt").write_text("zip content 2")
-        
+
         archive_path = tmp_path / "bundle.zip"
         with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as zf:
             for file in source_dir.iterdir():
                 zf.write(file, arcname=file.name)
-        
+
         assert archive_path.exists()
         assert archive_path.suffix == ".zip"
 
@@ -133,11 +134,11 @@ class TestZipCompression:
         archive_path = tmp_path / "bundle.zip"
         with zipfile.ZipFile(archive_path, "w") as zf:
             zf.writestr("test.txt", "zip test content")
-        
+
         extract_dir = tmp_path / "extracted"
         with zipfile.ZipFile(archive_path, "r") as zf:
             zf.extractall(extract_dir)
-        
+
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()
         assert extracted_file.read_text() == "zip test content"
@@ -146,17 +147,17 @@ class TestZipCompression:
         """Test ZIP compression with different levels"""
         source_file = tmp_path / "compressible.txt"
         source_file.write_text("compress this " * 5000)
-        
+
         # No compression
         archive_stored = tmp_path / "stored.zip"
         with zipfile.ZipFile(archive_stored, "w", zipfile.ZIP_STORED) as zf:
             zf.write(source_file, arcname="file.txt")
-        
+
         # With compression
         archive_deflated = tmp_path / "deflated.zip"
         with zipfile.ZipFile(archive_deflated, "w", zipfile.ZIP_DEFLATED) as zf:
             zf.write(source_file, arcname="file.txt")
-        
+
         # Compressed should be smaller
         assert archive_deflated.stat().st_size < archive_stored.stat().st_size
 
@@ -164,15 +165,15 @@ class TestZipCompression:
         """Test ZIP handling of special characters in filenames"""
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        
+
         # Create files with special characters (safe for most filesystems)
         special_file = source_dir / "special-file_name.txt"
         special_file.write_text("special content")
-        
+
         archive_path = tmp_path / "bundle.zip"
         with zipfile.ZipFile(archive_path, "w") as zf:
             zf.write(special_file, arcname=special_file.name)
-        
+
         # Verify it's in the archive
         with zipfile.ZipFile(archive_path, "r") as zf:
             assert "special-file_name.txt" in zf.namelist()
@@ -183,7 +184,7 @@ class TestZipCompression:
         with zipfile.ZipFile(archive_path, "w") as zf:
             zf.writestr("file1.txt", "content1")
             zf.writestr("file2.txt", "content2")
-        
+
         # Test archive integrity
         with zipfile.ZipFile(archive_path, "r") as zf:
             # testzip() returns None if archive is valid
@@ -199,11 +200,11 @@ class TestTarXzCompression:
         source_dir.mkdir()
         (source_dir / "file1.txt").write_text("xz content 1")
         (source_dir / "file2.txt").write_text("xz content 2")
-        
+
         archive_path = tmp_path / "bundle.tar.xz"
         with tarfile.open(archive_path, "w:xz") as tar:
             tar.add(source_dir, arcname=".")
-        
+
         assert archive_path.exists()
         assert archive_path.suffix == ".xz"
 
@@ -211,16 +212,16 @@ class TestTarXzCompression:
         """Test extracting a tar.xz archive"""
         source_file = tmp_path / "test.txt"
         source_file.write_text("xz test content")
-        
+
         archive_path = tmp_path / "bundle.tar.xz"
         with tarfile.open(archive_path, "w:xz") as tar:
             tar.add(source_file, arcname="test.txt")
-        
+
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
         with tarfile.open(archive_path, "r:xz") as tar:
             tar.extractall(extract_dir)
-        
+
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()
         assert extracted_file.read_text() == "xz test content"
@@ -230,16 +231,16 @@ class TestTarXzCompression:
         # Create highly compressible content
         source_file = tmp_path / "highly_compressible.txt"
         source_file.write_text("repeat " * 10000)
-        
+
         # Create both formats
         targz_path = tmp_path / "bundle.tar.gz"
         with tarfile.open(targz_path, "w:gz") as tar:
             tar.add(source_file, arcname="file.txt")
-        
+
         tarxz_path = tmp_path / "bundle.tar.xz"
         with tarfile.open(tarxz_path, "w:xz") as tar:
             tar.add(source_file, arcname="file.txt")
-        
+
         # XZ should typically achieve better compression
         # (though it may not always be true for small files)
         assert tarxz_path.exists()
@@ -251,17 +252,17 @@ class TestTarXzCompression:
         nested_dir = source_dir / "level1" / "level2" / "level3"
         nested_dir.mkdir(parents=True)
         (nested_dir / "deep_file.txt").write_text("deep content")
-        
+
         archive_path = tmp_path / "bundle.tar.xz"
         with tarfile.open(archive_path, "w:xz") as tar:
             tar.add(source_dir, arcname=".")
-        
+
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
         with tarfile.open(archive_path, "r:xz") as tar:
             tar.extractall(extract_dir)
-        
+
         extracted_file = extract_dir / "level1" / "level2" / "level3" / "deep_file.txt"
         assert extracted_file.exists()
         assert extracted_file.read_text() == "deep content"
@@ -270,16 +271,16 @@ class TestTarXzCompression:
         """Test that tar.xz preserves exact file count"""
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        
+
         # Create multiple files
         file_count = 25
         for i in range(file_count):
             (source_dir / f"file_{i}.txt").write_text(f"content {i}")
-        
+
         archive_path = tmp_path / "bundle.tar.xz"
         with tarfile.open(archive_path, "w:xz") as tar:
             tar.add(source_dir, arcname=".")
-        
+
         # Count files in archive
         with tarfile.open(archive_path, "r:xz") as tar:
             members = tar.getmembers()

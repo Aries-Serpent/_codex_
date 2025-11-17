@@ -11,23 +11,23 @@ Prereqs
 ```bash
 nox -s tests
 nox -s docs_build
-```
+```text
 
 2) Minimal experiment config
 - Use configs/experiments/minimal.json (or .toml). Validate:
 ```bash
 nox -s validate-configs
-```
+```text
 
 3) Train (reference loop)
 ```bash
 python -m codex_ml.training.loop --config configs/experiments/minimal.json
-```
+```text
 
 4) Evaluate (new eval loop + CLI)
 ```bash
 codex-eval run --config configs/experiments/minimal.json --json > artifacts/eval_report.json
-```
+```text
 
 5) Checkpoints (best‑k retention)
 - Check {run_dir}/checkpoints and index.json to see retained files.
@@ -37,12 +37,12 @@ codex-eval run --config configs/experiments/minimal.json --json > artifacts/eval
 - Convert to summary:
 ```bash
 codex-eval report --json --input runs/eval/.../metrics.ndjson > artifacts/eval_summary.json
-```
+```text
 
 7) Security Gate
 ```bash
 nox -s security
-```
+```text
 
 8) Determinism Proof
 - Re-run step 4 with same seed and compare artifacts/eval_report.json hashes.

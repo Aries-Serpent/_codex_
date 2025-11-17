@@ -1,5 +1,6 @@
 """Stub numpy module for optional dependency gating."""
 
+
 class _Random:
     @staticmethod
     def seed(seed):

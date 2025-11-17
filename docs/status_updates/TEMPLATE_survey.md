@@ -50,12 +50,12 @@ This survey collects:
 ### 4.1 Files & Excerpts
 ```text
 <Paste normalized file excerpts here>
-```
+```text
 
 ### 4.2 Search Results
 ```text
 <Paste normalized grep/ag/ripgrep results here>
-```
+```text
 
 ---
 

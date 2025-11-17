@@ -80,7 +80,7 @@ Required performance targets:
 
 ## Test Organization
 
-```
+```text
 tests/ast/
 ├── unit/                    # Unit tests (90%+ coverage target)
 │   ├── core/
@@ -100,7 +100,7 @@ tests/ast/
 └── fixtures/                # Test fixtures
     ├── sample_code.py
     └── test_files/
-```
+```text
 
 ---
 
@@ -123,7 +123,7 @@ pytest tests/ast/ \
   --cov=src/codex_ml/ast \
   --cov-report=term-missing \
   --cov-fail-under=80
-```
+```text
 
 ---
 

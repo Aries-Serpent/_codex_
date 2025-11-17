@@ -9,7 +9,7 @@ az ml model create \
   --name codex-ml \
   --path artifacts/model \
   --type custom_model
-```
+```text
 
 Upload `.codex/evidence/phase5_*.jsonl` alongside the model for compliance evidence.
 
@@ -17,7 +17,7 @@ Upload `.codex/evidence/phase5_*.jsonl` alongside the model for compliance evide
 
 ```bash
 az acr build --registry <acr-name> --image codex-ml:latest .
-```
+```text
 
 Ensure the image exposes `/score` for predictions and `/metrics` for Prometheus scraping.
 
@@ -35,7 +35,7 @@ az ml online-deployment create \
   --image <acr-name>.azurecr.io/codex-ml:latest \
   --instance-type Standard_NC6s_v3 \
   --instance-count 1
-```
+```text
 
 ## 4. Enable monitoring and logging
 

@@ -24,7 +24,7 @@ CODEX_OPTIONAL_SOFTFAIL=1 pytest -q -k evaluator
 # Hard-fail simulation
 pip uninstall -y pydantic typer
 CODEX_OPTIONAL_SOFTFAIL=0 pytest -q -k evaluator  # should raise SystemExit(2)
-```
+```text
 
 ## Implementation Details
 
@@ -37,7 +37,7 @@ def _require_module(name: str) -> None:
 
 for _optional in ("pydantic", "typer"):
     _require_module(_optional)
-```
+```text
 
 ### After (Soft Fail)
 ```python
@@ -49,7 +49,7 @@ for _pkg in _OPTIONAL_PACKAGES:
 
 if MISSING_OPTIONALS and not SOFT_FAIL:
     raise SystemExit(2)  # ✅ Only fails if explicitly disabled
-```
+```text
 
 ### Test Adaptation
 ```python
@@ -57,26 +57,26 @@ pytestmark = pytest.mark.skipif(
     bool(ce.MISSING_OPTIONALS),
     reason=f"Optional dependencies missing: {ce.MISSING_OPTIONALS}"
 )
-```
+```text
 
 ## Error That Was Fixed
 
 **Before Fix:**
-```
+```text
 INTERNALERROR> SystemExit: 2
 INTERNALERROR> ... import tools.codex_evaluator as ce
 nox > Command pytest ... failed with exit code 3
 Error: Process completed with exit code 1
-```
+```text
 
 **After Fix:**
-```
+```text
 nox > Running session coverage
 nox > pytest ... --cov-fail-under=95 -v
 [evaluator] Optional dependencies missing (soft-fail mode): pydantic, typer
 tests/evaluators/test_codex_evaluator.py::test_optional_dependencies_available SKIPPED
 ... (other tests run normally)
 Coverage report generated: artifacts/coverage.xml
-```
+```text
 
 — End —

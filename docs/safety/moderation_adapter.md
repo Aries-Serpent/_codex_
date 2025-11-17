@@ -33,7 +33,7 @@ safety:
     fail_open: false
     audit_log: artifacts/safety/moderation.ndjson
     label: training
-```
+```text
 
 Hydra overrides can toggle individual fields:
 
@@ -41,7 +41,7 @@ Hydra overrides can toggle individual fields:
 python -m codex_ml.cli.train \
   training.safety.moderation.enabled=true \
   training.safety.moderation.audit_log=artifacts/safety/moderation.ndjson
-```
+```text
 
 When moderation blocks a prompt or sample, training raises `ModerationRejection`
 with the offending rule IDs. The failure is also written to
@@ -57,7 +57,7 @@ python -m codex_ml.cli.infer \
   --moderation \
   --moderation-policy configs/base/safety/policy.yaml \
   --moderation-audit-log artifacts/safety/moderation.ndjson
-```
+```text
 
 Key flags:
 
@@ -85,7 +85,7 @@ Audit entries are JSON lines in the configured file:
   "label": "cli.infer",
   "original_digest": "5c0495…"
 }
-```
+```text
 
 Use `jq` or `tail -f` during incident response to monitor decisions. Because
 only digests and sanitized text are stored, the log remains safe to share with

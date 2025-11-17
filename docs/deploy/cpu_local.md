@@ -6,22 +6,22 @@
 ## Build Image
 ```bash
 docker build -f docker/Dockerfile.cpu -t codex-cpu:latest .
-```
+```text
 
 ## Smoke Test (Quick)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q -k "determinism or ast_cli_schema"
-```
+```text
 
 ## Full Tests (optional)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest pytest -q
-```
+```text
 
 ## Run nox Sessions (inside container)
 ```bash
 docker run --rm -v "$PWD":/app -w /app codex-cpu:latest nox -s tests
-```
+```text
 
 ## Tips
 - Use `.dockerignore` to reduce context (`.git`, `.venv`, `__pycache__`, `artifacts`, `mlruns`).

@@ -90,7 +90,7 @@ This PR successfully implements **all requirements** from the problem statement:
 
 ### Test Results
 
-```
+```text
 # Evaluation tests
 tests/test_evaluate_epoch.py:    11/11 PASSED  ✅
 tests/test_cli_report.py:         9/9  PASSED  ✅
@@ -101,15 +101,15 @@ tests/test_archival_registry.py:  53/53 PASSED  ✅
 ─────────────────────────────────────────────────
 Total:                           74/74 PASSED  ✅
 Pass Rate:                           100%       ✅
-```
+```text
 
 ### Security Scan (CodeQL)
 
-```
+```text
 Language: Python
 Alerts:   0 ✅
 Status:   CLEAN
-```
+```text
 
 **No vulnerabilities found** ✅
 

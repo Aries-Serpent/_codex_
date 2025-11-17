@@ -16,7 +16,7 @@ def test_early_stopping_resets_on_improvement():
     es.step(1.1)
     es.step(0.9)  # improvement resets counter
     assert es.step(1.0) is False  # bad=1
-    assert es.step(1.0) is True   # bad=2 -> stop
+    assert es.step(1.0) is True  # bad=2 -> stop
 
 
 def test_early_stopping_respects_min_delta():
@@ -24,4 +24,6 @@ def test_early_stopping_respects_min_delta():
     es.mode = "min"
     es.step(1.0)
     assert es.step(0.6) is True  # improvement < min_delta -> treated as no progress
+
+
 # END: CODEX_TEST_TRAINING_CALLBACKS

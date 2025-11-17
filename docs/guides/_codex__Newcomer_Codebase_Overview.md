@@ -276,4 +276,4 @@ pip install -e .[ml,train,tracking]
 codex-validate-config
 codex-train dataset=lines trainer.functional=true
 codex-eval +eval.task=token_accuracy
-```
+```text

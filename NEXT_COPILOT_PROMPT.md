@@ -185,7 +185,7 @@ codex duplication report --format json --output duplication.json
 
 # Compare against baseline
 codex duplication compare --baseline baseline.json
-```
+```text
 
 #### 5. Tests
 **Unit Tests:**
@@ -412,7 +412,7 @@ Only pursue if:
 
 When starting a new PR, use this template with Copilot:
 
-```
+```text
 @copilot I'm ready to implement [PR B / PR C / PR D] from the follow-up PR plan.
 
 Objective: [Copy objective from above]
@@ -433,7 +433,7 @@ Acceptance Criteria:
 [Copy acceptance criteria from above]
 
 Let's start with step 1: creating the implementation plan.
-```
+```text
 
 ---
 

@@ -24,9 +24,12 @@ try:
     from scripts.config.parse_knobs import normalize_from_env
 except Exception:
     print("[WARN] parse_knobs not available; falling back to raw env usage", file=sys.stderr)
+
     def normalize_from_env():
         import os as _os
+
         return dict(_os.environ), []
+
 
 ARTIFACTS_DIR = Path("audit_artifacts")
 REPORT_PATH = ARTIFACTS_DIR / "content_filter_report.json"
@@ -53,7 +56,7 @@ PII_PACKS = {
     ],
 }
 
-TEXT_EXTENSIONS = {".md",".json",".py",".yaml",".yml",".toml",".rst",".txt",".cfg",".ini"}
+TEXT_EXTENSIONS = {".md", ".json", ".py", ".yaml", ".yml", ".toml", ".rst", ".txt", ".cfg", ".ini"}
 
 
 def build_extension_set(profile: str, custom_exts: list[str]) -> List[str]:
@@ -67,24 +70,26 @@ def build_extension_set(profile: str, custom_exts: list[str]) -> List[str]:
     return sorted(exts)
 
 
-def compile_patterns(base_set: str, custom_list: list[str], merge_mode: str) -> Tuple[List[re.Pattern], List[str], List[str]]:
+def compile_patterns(
+    base_set: str, custom_list: list[str], merge_mode: str
+) -> Tuple[List[re.Pattern], List[str], List[str]]:
     invalid: List[str] = []
     base_patterns = PII_PACKS.get(base_set, PII_PACKS["minimal"])
-    
+
     if merge_mode == "replace":
         merged = custom_list or base_patterns
     elif merge_mode == "union-extended":
         merged = list(dict.fromkeys(PII_PACKS["extended"] + custom_list))
     else:  # union-minimal
         merged = list(dict.fromkeys(base_patterns + custom_list))
-    
+
     compiled: List[re.Pattern] = []
     for pat in sorted(merged):
         try:
             compiled.append(re.compile(pat))
         except re.error:
             invalid.append(pat)
-    
+
     return compiled, merged, invalid
 
 
@@ -92,18 +97,22 @@ def is_text_file(path: Path) -> bool:
     return path.suffix.lower() in TEXT_EXTENSIONS
 
 
-def redact_text_lines(lines: List[str], compiled_patterns: List[re.Pattern]) -> Tuple[List[str], int]:
+def redact_text_lines(
+    lines: List[str], compiled_patterns: List[re.Pattern]
+) -> Tuple[List[str], int]:
     redactions = 0
     mask_counter = 0
     out = []
     for line in lines:
         for rx in compiled_patterns:
+
             def repl_fn(match):
                 nonlocal mask_counter, redactions
                 mask = f"<REDACT:{mask_counter}>"
                 mask_counter += 1
                 redactions += 1
                 return mask
+
             line = rx.sub(repl_fn, line)
         out.append(line)
     return out, redactions
@@ -130,7 +139,7 @@ def process_allowlist(exts: List[str]) -> Tuple[List[str], List[str]]:
 
 def main():
     knobs, knob_warnings = normalize_from_env()
-    
+
     # Extract normalized values (handle missing keys gracefully)
     mode = knobs.get("CONTENT_FILTER_MODE", "allowlist")
     profile = knobs.get("ALLOWLIST_PROFILE", "A")
@@ -139,13 +148,13 @@ def main():
     custom_list = knobs.get("PII_CUSTOM_LIST", [])
     merge_mode = knobs.get("PII_MODE", "union-minimal")
     strategy = knobs.get("PII_REGEX_STRATEGY", "skip-manifest")
-    
+
     if not ARTIFACTS_DIR.exists():
         print("[INFO] No artifacts directory present; skipping filtering.", file=sys.stderr)
         return 0
-    
+
     warnings: list[str] = list(knob_warnings)
-    
+
     if mode == "allowlist":
         exts = build_extension_set(profile, custom_exts)
         kept, skipped = process_allowlist(exts)
@@ -166,7 +175,7 @@ def main():
         exts = build_extension_set(profile, custom_exts)
         kept, skipped = process_allowlist(exts)
         compiled, merged_raw, invalid_raw = compile_patterns(base_set, custom_list, merge_mode)
-        
+
         if invalid_raw:
             if strategy == "abort":
                 report = {
@@ -182,7 +191,7 @@ def main():
                 print("[ERR] Aborting due to invalid regex patterns.", file=sys.stderr)
                 return 2
             warnings.append(f"invalid_regex:{len(invalid_raw)}")
-        
+
         redactions_total = 0
         for rel in kept:
             p = Path(rel)
@@ -192,17 +201,17 @@ def main():
                 lines = p.read_text(encoding="utf-8", errors="ignore").splitlines()
             except Exception:
                 continue
-            
+
             redacted_lines, count = redact_text_lines(lines, compiled)
             redactions_total += count
-            
+
             if count > 0:
                 sidecar = Path(rel + ".redacted")
                 try:
                     sidecar.write_text("\n".join(redacted_lines), encoding="utf-8")
                 except Exception as e:
                     warnings.append(f"write_fail:{rel}:{e}")
-        
+
         report = {
             "mode": "combined" if mode == "combined" else "pii",
             "profile": profile,
@@ -216,7 +225,7 @@ def main():
             "invalid_patterns": invalid_raw,
             "warnings": warnings,
         }
-    
+
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"[INFO] Content filter report written: {REPORT_PATH}")

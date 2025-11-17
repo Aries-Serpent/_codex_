@@ -24,7 +24,7 @@ def build_small_local_model(**kwargs):
         "model": load_local_model(dtype=kwargs.get("dtype")),
         "tokenizer": load_local_tokenizer(),
     }
-```
+```text
 
 Factories can return either a `(model, tokenizer)` tuple, a mapping with
 `model`/`tokenizer` keys, or an object exposing those attributes.  For loaders
@@ -71,7 +71,7 @@ def register(register_fn=register_metric):
 
 def weighted_accuracy(predictions, targets, weights=None):
     ...
-```
+```text
 
 The same pattern works for tokenizers using
 `codex_ml.registry.tokenizers.register_tokenizer`:
@@ -86,7 +86,7 @@ def register_tokenizers(register_fn=register_tokenizer):
 
 def build_custom_tokenizer(**kwargs):
     ...
-```
+```text
 
 ### pyproject.toml
 
@@ -96,7 +96,7 @@ weighted = "my_pkg.codex_plugins:register"
 
 [project.entry-points."codex_ml.tokenizers"]
 my_tokenizer = "my_pkg.codex_plugins:register_tokenizers"
-```
+```text
 
 Each plugin entry point is invoked once.  Implementations can contribute more
 than one component by calling `register_fn` multiple times.

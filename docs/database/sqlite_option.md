@@ -8,7 +8,7 @@ improved concurrent writes.
 
 ```bash
 export CODEX_SQLITE_POOL=1
-```
+```text
 With the environment variable set, the `src.codex.db.sqlite_patch` module
 patches `sqlite3.connect` to reuse a connection per thread and applies helpful
 `PRAGMA` settings such as `journal_mode=WAL`.
@@ -20,6 +20,6 @@ If unset, `.codex/session_logs.db` is used.
 
 ```bash
 export CODEX_LOG_DB_PATH=/tmp/session_logs.db
-```
+```text
 Any command that uses the logging utilities will create the database if it does
 not already exist.

@@ -53,10 +53,7 @@ def load_history(directory: Path) -> List[RateLimitEntry]:
         captured = parse_timestamp(payload.get("captured_utc"))
         if not captured:
             continue
-        resources = (
-            payload.get("data", {})
-            .get("resources", {})
-        )
+        resources = payload.get("data", {}).get("resources", {})
         entries.append(RateLimitEntry(captured=captured, resources=resources))
     entries.sort(key=lambda entry: entry.captured)
     return entries

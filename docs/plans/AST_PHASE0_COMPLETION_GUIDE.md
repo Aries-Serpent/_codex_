@@ -50,7 +50,7 @@
 
 ### Phase 0 Critical Path (5 Days to Gate Decision)
 
-```
+```text
 Day 1-2: Stakeholder Review Meeting
   ├─ Present findings from deep research
   ├─ Review Phase 1 Quick Wins proposal (5 days)
@@ -74,7 +74,7 @@ Day 5: Final Go/No-Go Decision
   ├─ Risk acceptance sign-off
   ├─ Commit resources
   └─ Official kickoff or defer decision
-```
+```text
 
 ---
 
@@ -193,7 +193,7 @@ ast = [
     "tree-sitter-yaml>=0.20.0",
     "sqlparse>=0.4.0",
 ]
-```
+```text
 
 **Validation Command**:
 ```bash
@@ -207,7 +207,7 @@ print(f'  libcst: {libcst.__version__}')
 print(f'  radon: {radon.__version__}')
 print(f'  parso: {parso.__version__}')
 "
-```
+```text
 
 **Success Criteria**:
 - ✅ `pip install -e .` succeeds without conflicts
@@ -332,7 +332,7 @@ class StandardizedASTNode:
         if self.parent is None:
             return 0
         return self.parent.get_depth() + 1
-```
+```text
 
 **Unit Tests**: `tests/ast/test_node.py`
 ```python
@@ -403,7 +403,7 @@ def test_tree_traversal():
     nodes = list(root.walk())
     assert len(nodes) == 3
     assert nodes[0] == root
-```
+```text
 
 ---
 
@@ -541,7 +541,7 @@ class DependencyGraph:
             stack.extend(self.edges.get(current, set()))
         
         return visited - {node_id}
-```
+```text
 
 **Unit Tests**: `tests/ast/test_graph.py`
 ```python
@@ -586,7 +586,7 @@ def test_topological_sort():
     order = graph.topological_sort()
     assert order.index("A") < order.index("B")
     assert order.index("B") < order.index("C")
-```
+```text
 
 ---
 
@@ -718,7 +718,7 @@ class MetricsAggregator:
             "max_cyclomatic_complexity": max(ccs),
             "average_maintainability_index": statistics.mean(mis),
         }
-```
+```text
 
 **Unit Tests**: `tests/ast/test_metrics.py`
 ```python
@@ -743,7 +743,7 @@ def test_quality_tier():
     assert m_a.quality_tier == "A"
     assert m_b.quality_tier == "B"
     assert m_f.quality_tier == "F"
-```
+```text
 
 ---
 
@@ -828,7 +828,7 @@ def test_quality_tier():
 **Phase 0 Status**: ✅ **PLANNING COMPLETE - AWAITING STAKEHOLDER APPROVAL**
 
 **Next Action**: Schedule stakeholder review meeting to present findings and gain approval for Phase 1 Quick Wins execution.
-```
+```text
 
 I'll continue with the Phase 1 complete implementation specification in the next file.
 
@@ -969,7 +969,7 @@ __all__ = [
     "CodeMetrics",
     "MetricsAggregator",
 ]
-```
+```text
 
 ### Module 2: `src/codex/ast/node.py` (COMPLETE - SEE ABOVE)
 
@@ -1047,7 +1047,7 @@ def diff(commit1: str, commit2: str, metric: str):
 
 if __name__ == "__main__":
     cli()
-```
+```text
 
 ### Test Files
 
@@ -1099,7 +1099,7 @@ def sample_metrics() -> CodeMetrics:
         comment_lines=5,
         maintainability_index=85.0,
     )
-```
+```text
 
 **`tests/ast/test_*.py`** - (All test files as specified in Part 1, Tasks 5-8)
 
@@ -1108,7 +1108,7 @@ def sample_metrics() -> CodeMetrics:
 ## Part 3: Git Commit Strategy (5 Atomic Commits)
 
 ### Commit 1: Dependencies
-```
+```text
 commit: "feat(ast): Add core dependencies (libcst, radon, parso)"
 files:
   - pyproject.toml
@@ -1118,10 +1118,10 @@ changes:
 tests:
   - Verify: pip install -e . succeeds
   - Verify: All imports work
-```
+```text
 
 ### Commit 2: Foundation Modules
-```
+```text
 commit: "feat(ast): Add StandardizedASTNode, DependencyGraph, MetricsAggregator"
 files:
   - src/codex/ast/__init__.py (NEW)
@@ -1135,10 +1135,10 @@ changes:
 tests:
   - All imports work
   - Basic instantiation tests pass
-```
+```text
 
 ### Commit 3: Comprehensive Tests
-```
+```text
 commit: "test(ast): Add 20 unit + integration tests (>80% coverage)"
 files:
   - tests/ast/conftest.py (NEW)
@@ -1152,10 +1152,10 @@ changes:
 tests:
   - pytest tests/ast/ -v: all 20 passing
   - Coverage: >80%
-```
+```text
 
 ### Commit 4: CLI + Documentation
-```
+```text
 commit: "feat(ast): Add CLI interface and documentation"
 files:
   - src/codex/ast/cli.py (NEW)
@@ -1169,10 +1169,10 @@ changes:
 tests:
   - CLI commands parse correctly
   - Docs render without errors
-```
+```text
 
 ### Commit 5: Validation Report
-```
+```text
 commit: "chore(ast): Phase 1 completion and validation report"
 files:
   - PHASE1_COMPLETION_REPORT.md (NEW)
@@ -1185,7 +1185,7 @@ tests:
   - All tests passing
   - Linting clean
   - Type checking passing
-```
+```text
 
 ---
 
@@ -1933,6 +1933,6 @@ summary:
 
 ...
 
-```
+```text
 
 ---

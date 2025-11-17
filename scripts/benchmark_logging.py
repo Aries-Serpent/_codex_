@@ -15,9 +15,7 @@ def bench_once(n: int, pooled: bool, use_threads: int = 1):
     db = os.getenv("CODEX_SQLITE_DB", "codex_bench.sqlite3")
     conn = sqlite3.connect(db)
     cur = conn.cursor()
-    cur.execute(
-        "CREATE TABLE IF NOT EXISTS bench_log(id INTEGER PRIMARY KEY, ts REAL, msg TEXT)"
-    )
+    cur.execute("CREATE TABLE IF NOT EXISTS bench_log(id INTEGER PRIMARY KEY, ts REAL, msg TEXT)")
     conn.commit()
     cur.close()
     if not pooled:
@@ -27,9 +25,7 @@ def bench_once(n: int, pooled: bool, use_threads: int = 1):
         for i in range(start_i, end_i):
             c = sqlite3.connect(db)
             cu = c.cursor()
-            cu.execute(
-                "INSERT INTO bench_log(ts,msg) VALUES(?,?)", (time.time(), f"m{i}")
-            )
+            cu.execute("INSERT INTO bench_log(ts,msg) VALUES(?,?)", (time.time(), f"m{i}"))
             c.commit()
             cu.close()
             if not pooled:
@@ -60,14 +56,8 @@ def main():
     ap.add_argument("--rounds", type=int, default=3)
     args = ap.parse_args()
 
-    base = [
-        bench_once(args.N, pooled=False, use_threads=args.threads)
-        for _ in range(args.rounds)
-    ]
-    pool = [
-        bench_once(args.N, pooled=True, use_threads=args.threads)
-        for _ in range(args.rounds)
-    ]
+    base = [bench_once(args.N, pooled=False, use_threads=args.threads) for _ in range(args.rounds)]
+    pool = [bench_once(args.N, pooled=True, use_threads=args.threads) for _ in range(args.rounds)]
 
     def thr(n, t):
         return n / t
@@ -79,11 +69,7 @@ def main():
     print("POOL seconds:", pool, "median=", statistics.median(pool))
     print("BASE thr:", Tb, "median=", statistics.median(Tb))
     print("POOL thr:", Tp, "median=", statistics.median(Tp))
-    imp = (
-        (statistics.median(Tp) - statistics.median(Tb))
-        / max(1e-9, statistics.median(Tb))
-        * 100.0
-    )
+    imp = (statistics.median(Tp) - statistics.median(Tb)) / max(1e-9, statistics.median(Tb)) * 100.0
     print(f"IMPROVEMENT %: {imp:.2f}")
 
 

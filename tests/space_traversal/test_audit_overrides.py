@@ -1,7 +1,6 @@
 """Tests for capability overrides functionality in audit_runner."""
 
 
-
 def test_apply_overrides_basic():
     """Test basic override application merging aliases into canonical IDs."""
     from scripts.space_traversal.audit_runner import apply_overrides

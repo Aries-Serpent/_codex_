@@ -20,7 +20,9 @@ def iso_now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
 
 
-def make_error_block(step_no: str, step_desc: str, msg: str, ctx: str, ts: str | None = None) -> str:
+def make_error_block(
+    step_no: str, step_desc: str, msg: str, ctx: str, ts: str | None = None
+) -> str:
     ts = ts or iso_now()
     return (
         f"Question for ChatGPT-5 {ts}:\n"
@@ -35,7 +37,9 @@ CODEX_DIR = Path(__file__).resolve().parents[1] / ".codex"
 ERRORS_NDJSON = CODEX_DIR / "errors.ndjson"
 
 
-def log_error(step_no: str, step_desc: str, msg: str, ctx: str, *, errors_path: Path | None = None) -> str:
+def log_error(
+    step_no: str, step_desc: str, msg: str, ctx: str, *, errors_path: Path | None = None
+) -> str:
     """Append an error capture block to `.codex/errors.ndjson` and stderr."""
     ts = iso_now()
     block = make_error_block(step_no, step_desc, msg, ctx, ts=ts)

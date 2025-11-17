@@ -33,8 +33,7 @@ def test_runtime_nvml_failure_advisory(monkeypatch):
     mod = importlib.import_module("codex_ml.callbacks.system_metrics")
 
     class _FakeNVML:
-        class NVMLError(Exception):
-            ...
+        class NVMLError(Exception): ...
 
         def nvmlInit(self):  # type: ignore  # noqa: N802
             raise RuntimeError("NVML init failed")

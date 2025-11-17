@@ -31,14 +31,14 @@ class FSSpecStorage(StorageProvider):
         try:
             import fsspec  # type: ignore[import-untyped]
         except Exception as exc:  # pragma: no cover - optional dependency missing
-            raise RuntimeError(
-                "fsspec is required to use the FSSpecStorage backend"
-            ) from exc
+            raise RuntimeError("fsspec is required to use the FSSpecStorage backend") from exc
 
         fs, root_path = fsspec.core.url_to_fs(self.base_url)
         self._fs = fs
         self._root_path = root_path.rstrip("/")
-        if self.create and not self._fs.exists(self._root_path):  # pragma: no cover - memfs creates eagerly
+        if self.create and not self._fs.exists(
+            self._root_path
+        ):  # pragma: no cover - memfs creates eagerly
             self._fs.makedirs(self._root_path, exist_ok=True)
 
     # ------------------------------------------------------------------
@@ -113,4 +113,3 @@ class FSSpecStorage(StorageProvider):
 
 
 __all__ = ["StorageProvider", "FSSpecStorage"]
-

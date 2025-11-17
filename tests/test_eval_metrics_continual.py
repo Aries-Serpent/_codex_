@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from codex_ml.eval.metrics import average_forgetting, backward_transfer, forward_transfer
+from codex_ml.eval.metrics import (
+    average_forgetting,
+    backward_transfer,
+    forward_transfer,
+)
 
 
 def test_forward_transfer_positive() -> None:

@@ -39,7 +39,7 @@ async def dispatch(self, request: Request, call_next):
         return await call_next(request)
     
     # ... rest of authentication logic ...
-```
+```text
 
 ### Changes to Routers
 
@@ -58,14 +58,14 @@ if tenant:
 else:
     # No tenant context (API key not required), use tenant_id from request
     tenant_id = request.tenant_id
-```
+```text
 
 ## Behavior
 
 ### With API Key Required (Default, Production)
 ```bash
 export MSP_API_KEY_REQUIRED=1  # or True
-```
+```text
 - ✅ Requires `Authorization: Bearer <api_key>` header
 - ✅ Validates API key against tenant registry
 - ✅ Sets `request.state.tenant` with tenant context
@@ -75,7 +75,7 @@ export MSP_API_KEY_REQUIRED=1  # or True
 ### Without API Key (Local Development, Bootstrapping)
 ```bash
 export MSP_API_KEY_REQUIRED=0  # or False
-```
+```text
 - ✅ Skips `Authorization` header requirement
 - ✅ No tenant context in `request.state.tenant`
 - ✅ Uses `tenant_id` directly from request body
@@ -126,7 +126,7 @@ curl -X POST http://127.0.0.1:8080/v1/infer \
     "tenant_id": "my-tenant",
     "prompt": "Hello"
   }'
-```
+```text
 
 ### Production Deployment
 ```bash
@@ -142,7 +142,7 @@ curl -X POST http://127.0.0.1:8080/v1/infer \
     "tenant_id": "my-tenant",
     "prompt": "Hello"
   }'
-```
+```text
 
 ## Security Considerations
 
@@ -167,7 +167,7 @@ MSP_API_KEY_REQUIRED=0 python3 -m pytest tests/test_msp_infer_api.py::test_root_
 
 # Test with auth enabled (default)
 python3 -m pytest tests/test_msp_infer_api.py::test_infer_endpoint_no_auth -v
-```
+```text
 
 ---
 

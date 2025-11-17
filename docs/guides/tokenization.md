@@ -22,7 +22,7 @@ import tokenization.api as legacy_api
 
 # Preferred
 from codex_ml.tokenization import api as canonical_api
-```
+```text
 
 ## Testing Guidance
 - Deprecation warnings are expected when importing legacy shims.

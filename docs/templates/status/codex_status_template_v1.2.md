@@ -296,7 +296,7 @@ Patch (canonical unified diff; use "Begin/End Patch" markers; chunk for large ch
 - old line
 + new line
 *** End Patch
-```
+```text
 
 ---
 
@@ -311,7 +311,7 @@ data:
 ```list type="pr"
 data:
 # populated by automation; include all entries returned (no truncation)
-```
+```text
 - **Coverage Report**:
   - **Coverage %**: <value>
   - **Fail-under threshold**: <value>

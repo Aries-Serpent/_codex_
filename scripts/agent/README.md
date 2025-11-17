@@ -4,7 +4,7 @@ Run selected jobs from PR checkboxes by exporting env flags and calling:
 
 ```bash
 ./scripts/agent/run_selected_jobs.sh
-```
+```text
 
 ## Produces
 
@@ -31,4 +31,4 @@ ACCELERATE_TEST=1 RUN_LORA_TESTS=1 SKIP_OPTIONAL=1 ./scripts/agent/run_selected_
 
 # Run only docs build
 SKIP_OPTIONAL=1 RUN_AUDIT=0 ./scripts/agent/run_selected_jobs.sh
-```
+```text

@@ -78,7 +78,7 @@ mode: "until"
 until: "2025-10-21T04:00:00Z"
 cost_workflows: ["all"]
 created_at: "2025-10-20T16:00:00Z"
-```
+```text
 
 Count-based approvals (next N runs):
 - Optional keys can be added to `.github/OWNER_APPROVAL.yml` (e.g., `runs_max: 5`), but automatic decrement is not performed to avoid CI self-writes. Owners may manually adjust as needed.

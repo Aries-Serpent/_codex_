@@ -154,7 +154,7 @@ Subject: feat(dvc): add dvc.yaml, params.yaml, .dvcignore, data gitkeeps, prepar
   "pre-commit>=3.7",
   "nbstripout>=0.6",
 ]
-```
+```text
 ---
 
 ```diff
@@ -177,7 +177,7 @@ Subject: chore(make): add DVC convenience targets (data-pull, data-push, pipelin
 +
 +pipeline: dvc-repro
 +@echo "Reproducing DVC pipeline..."
-```
+```text
 
 ---
 
@@ -215,7 +215,7 @@ Subject: feat(provenance): write DVC dataset hashes and config fingerprint to .c
    "pydantic-settings>=2.2",
 +  "pyyaml>=6.0",
  ]
-```
+```text
 
 ---
 
@@ -237,7 +237,7 @@ This file should be saved as:
 
 ```text
 *codex*/patches/I2_Data_Spine_P2.1-P2.3.md
-```
+```text
 
 and listed in:
 
@@ -247,4 +247,4 @@ series:
     patches:
       - I2_Data_Spine_P2.1-P2.3.md
     applied: true
-```
+```text

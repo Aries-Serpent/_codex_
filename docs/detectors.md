@@ -7,4 +7,4 @@ Small, pluggable checks that emit findings and a bounded [0..1] score.
 CLI:
 ```bash
 python -m codex_ml.cli.detectors run
-```
+```text

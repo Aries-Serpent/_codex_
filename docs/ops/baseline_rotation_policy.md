@@ -32,7 +32,7 @@ mv audit_artifacts/baselines/baseline_*.json audit_artifacts/baselines/archive/
 # Commit rotation
 git add audit_artifacts/baselines/
 git commit -m "chore: rotate old baselines to archive"
-```
+```text
 
 ### Automated Rotation (Future)
 
@@ -41,7 +41,7 @@ A rotation script will be added in a future PR to automate this process:
 ```bash
 # Future command
 python scripts/baseline_rotation.py --keep 10 --archive
-```
+```text
 
 ## Size Monitoring
 
@@ -53,7 +53,7 @@ du -sh audit_artifacts/baselines/
 
 # Check total repo size
 git count-objects -vH
-```
+```text
 
 ## Archive Strategy
 
@@ -67,12 +67,12 @@ If baseline storage impacts repository performance:
 
 ```text
 baseline_<branch>_<timestamp>_<short-sha>.json
-```
+```text
 Example:
 ```text
 baseline_main_20251106_3a59994.json
 baseline_pr2123_20251106_91fe32d.json
-```
+```text
 ## Notes
 
 - Baselines are deterministic and should produce identical SHAs when regenerated

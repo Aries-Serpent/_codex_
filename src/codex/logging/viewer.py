@@ -61,9 +61,7 @@ CANDIDATE_LVL = ["level", "lvl", "severity", "log_level"]
 class LogViewer:
     """Wrapper class for viewing session logs."""
 
-    def view(
-        self, session_id: str | None = None, output_format: str = "text"
-    ) -> None:
+    def view(self, session_id: str | None = None, output_format: str = "text") -> None:
         """View session logs.
 
         Args:
@@ -104,18 +102,13 @@ def _validate_table_name(value: str | None) -> str | None:
         return value
     if re.fullmatch(r"[A-Za-z0-9_]+", value):
         return value
-    msg = (
-        f"Invalid table name: '{value}'. "
-        "Only letters, digits, and underscore are allowed."
-    )
+    msg = f"Invalid table name: '{value}'. " "Only letters, digits, and underscore are allowed."
     raise argparse.ArgumentTypeError(msg)
 
 
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Session Logging (SQLite) viewer")
-    parser.add_argument(
-        "--session-id", required=True, help="Session identifier to filter"
-    )
+    parser.add_argument("--session-id", required=True, help="Session identifier to filter")
     parser.add_argument(
         "--db",
         default=os.getenv("CODEX_LOG_DB_PATH"),
@@ -128,9 +121,7 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
         help="Output format",
     )
     parser.add_argument("--level", action="append", help="Filter by level (repeatable)")
-    parser.add_argument(
-        "--contains", help="Substring filter on message (case-insensitive)"
-    )
+    parser.add_argument("--contains", help="Substring filter on message (case-insensitive)")
     parser.add_argument("--since", help="ISO date/time lower bound (inclusive)")
     parser.add_argument("--until", help="ISO date/time upper bound (inclusive)")
     parser.add_argument("--limit", type=int, help="Max rows to return")
@@ -198,8 +189,7 @@ def infer_schema(
         if sid and ts and msg:
             return {"table": table, "sid": sid, "ts": ts, "msg": msg, "lvl": lvl}
     raise RuntimeError(
-        "No suitable table found (need at least session_id, timestamp, "
-        "message columns)."
+        "No suitable table found (need at least session_id, timestamp, " "message columns)."
     )
 
 
@@ -268,17 +258,14 @@ def main(argv: Optional[list[str]] = None) -> int:
     db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
         print(
-            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite "
-            "in repo.",
+            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite " "in repo.",
             file=sys.stderr,
         )
         return 2
     try:
         conn = connect_db(db_path)
         schema = infer_schema(conn, ns.table)
-        query, args = build_query(
-            schema, ns.level, ns.contains, ns.since, ns.until, ns.limit
-        )
+        query, args = build_query(schema, ns.level, ns.contains, ns.since, ns.until, ns.limit)
         args[0] = ns.session_id
         rows = conn.execute(query, args).fetchall()
         if ns.format == "json":

@@ -19,7 +19,12 @@ from .core import (
     verify_session_integrity,
 )
 from .encryption import EncryptionError, decrypt, encrypt, generate_key
-from .secrets import SecretRotationPolicy, SecretRotationState, check_secret_entropy, rotate_secret
+from .secrets import (
+    SecretRotationPolicy,
+    SecretRotationState,
+    check_secret_entropy,
+    rotate_secret,
+)
 
 __all__ = [
     "SecurityError",

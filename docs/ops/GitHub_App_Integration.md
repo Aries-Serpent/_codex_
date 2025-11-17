@@ -29,7 +29,7 @@ python tools/github/app_token.py --help
 GITHUB_APP_ID=12345 \
 GITHUB_APP_PRIVATE_KEY_PATH=./app-private-key.pem \
 python tools/github/app_token.py --print-jwt | sed 's/..../XXXX/g'  # redact for logs
-```
+```text
 
 Exchange for installation token (network):
 ```bash
@@ -37,13 +37,13 @@ GITHUB_APP_ID=12345 \
 GITHUB_APP_INSTALLATION_ID=67890 \
 GITHUB_APP_PRIVATE_KEY_PATH=./app-private-key.pem \
 python tools/github/app_token.py --print-installation-token > .gh_inst_token
-```
+```text
 
 Login `gh` using the token (optional):
 ```bash
 export GH_TOKEN=$(cat .gh_inst_token)
 make gh-app-login
-```
+```text
 
 ## Token generation (Bash + openssl)
 ```bash
@@ -51,7 +51,7 @@ GITHUB_APP_ID=12345 \
 GITHUB_APP_INSTALLATION_ID=67890 \
 GITHUB_APP_PRIVATE_KEY_PATH=./app-private-key.pem \
 bash tools/github/app_token.sh > .gh_inst_token
-```
+```text
 
 ## Self-hosted runner (optional)
 Prepare short-lived runner token and target URL:
@@ -59,7 +59,7 @@ Prepare short-lived runner token and target URL:
 export CODEX_RUNNER_TOKEN=...   # from org/repo settings
 export CODEX_RUNNER_URL=https://github.com/Aries-Serpent/_codex_
 DRY_RUN=1 tools/github/runner_register.sh   # inspect steps
-```
+```text
 
 ### Unregistering a runner
 Safely remove a runner configuration when decommissioning a host:
@@ -67,7 +67,7 @@ Safely remove a runner configuration when decommissioning a host:
 export CODEX_RUNNER_TOKEN=...   # removal token (short-lived)
 DRY_RUN=1 tools/github/runner_unregister.sh   # review
 tools/github/runner_unregister.sh             # execute
-```
+```text
 
 ## GitHub API wrapper (App token or PAT)
 The wrapper emits a sanitized curl for review or performs the request:
@@ -96,7 +96,7 @@ GH_TOKEN=$INSTALLATION_TOKEN python tools/github/gh_api.py \
 ## Pagination
 - Use `--paginate` to follow `Link: ... rel="next"` until exhausted.
 - Control page size with `--per-page 100` and bound traversal with `--max-pages`.
-```
+```text
 Use `--param key=value` to add query params, `--data/--data-file` for JSON body, and set `GITHUB_AUTH_SCHEME=Bearer` if you must use a non-default header scheme.
 
 ## Copilot CLI (optional)
@@ -104,7 +104,7 @@ If you use the GitHub Copilot CLI:
 ```bash
 make copilot-version
 copilot --banner   # then /login or export GH_TOKEN/GITHUB_TOKEN with Copilot Requests permission
-```
+```text
 
 ## Security notes
 - Never commit tokens or keys. Prefer `direnv`, `pass`, or OS keychain.

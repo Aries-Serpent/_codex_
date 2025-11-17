@@ -188,7 +188,7 @@ jq '[.files[] | select(.path | contains("test_safeguards")
 jq '[.files[] | select(.path | contains("docs/capabilities"))] | length' \
     audit_artifacts/context_index.json
 # Output: 5 ✅
-```
+```text
 
 ---
 
@@ -208,7 +208,7 @@ jq '[.files[] | select(.path | contains("docs/capabilities"))] | length' \
 python scripts/space_traversal/audit_runner.py diff \
   --old baseline/capabilities_scored_post_remediation.json \
   --new audit_artifacts/capabilities_scored.json
-```
+```text
 
 ### CI/CD Integration
 
@@ -231,7 +231,7 @@ jobs:
             --old baseline/capabilities_scored_post_remediation.json \
             --new audit_artifacts/capabilities_scored.json
           # Add logic to fail if any delta < -0.02
-```
+```text
 
 ### Monitoring Schedule
 

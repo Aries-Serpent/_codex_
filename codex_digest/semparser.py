@@ -24,7 +24,11 @@ class SemParser:
 
     RULES = [
         ("AUDIT_REPO", [re.compile(r"\baudit\b"), re.compile(r"\brepo|repository\b")], {}),
-        ("FIX_PRECOMMIT", [re.compile(r"\bpre-?commit\b"), re.compile(r"\bhung|stall|timeout\b")], {}),
+        (
+            "FIX_PRECOMMIT",
+            [re.compile(r"\bpre-?commit\b"), re.compile(r"\bhung|stall|timeout\b")],
+            {},
+        ),
         ("TEST_COVERAGE", [re.compile(r"\bpytest\b"), re.compile(r"\bcoverage|--cov\b")], {}),
         ("PLAN_TASKS", [re.compile(r"\bplan|tasks|prioriti[sz]e\b")], {}),
         ("BUILD_PIPELINE", [re.compile(r"\bpipeline|orchestrat|workflow\b")], {}),
@@ -40,7 +44,9 @@ class SemParser:
                 matches = p.findall(text.lower())
                 score += len(matches)
             if score:
-                intents.append(Intent(name=name, confidence=min(1.0, 0.35 + 0.2 * score), slots=slots))
+                intents.append(
+                    Intent(name=name, confidence=min(1.0, 0.35 + 0.2 * score), slots=slots)
+                )
 
         entities += re.findall(r"`([^`]+)`", text)
         entities += re.findall(r"\bSTEP\s*\d+\b", text, flags=re.I)

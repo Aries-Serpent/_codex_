@@ -46,7 +46,7 @@ python tools/fence_fixer.py *.md
 # Step 4: Verify reduction
 python tools/validate_fences.py 2>&1 | grep -c "ERROR"
 # Target: < 5 errors
-```
+```text
 
 **Files to Fix** (top offenders):
 1. `docs/status_updates/survey-0D_base_-and-1926-2025-10-30.md` (25 errors)
@@ -56,7 +56,7 @@ python tools/validate_fences.py 2>&1 | grep -c "ERROR"
 5. `docs/guides/archive_standardization_guide.md` (10 errors)
 
 **Prompt for Copilot**:
-```
+```text
 Fix all markdown code fence errors in the repository:
 
 1. Run the fence fixer tool on documentation directories
@@ -65,7 +65,7 @@ Fix all markdown code fence errors in the repository:
 4. Commit changes with message: "Fix documentation fence errors (109 → <5)"
 
 Target: Reduce fence errors from 109 to under 5.
-```
+```text
 
 ---
 
@@ -88,7 +88,7 @@ pytest tests/ --ignore=tests/training --tb=short -x
 # - Missing test dependencies
 # - Configuration issues
 # - Import errors in test files
-```
+```text
 
 **Known Issues to Fix**:
 - Test files with missing dependencies
@@ -96,7 +96,7 @@ pytest tests/ --ignore=tests/training --tb=short -x
 - Tests requiring specific environment setup
 
 **Prompt for Copilot**:
-```
+```text
 Improve test suite pass rate from 96% to 99%:
 
 1. Run pytest to identify all failing tests (excluding known torch issues)
@@ -109,7 +109,7 @@ Improve test suite pass rate from 96% to 99%:
 4. Target: Get test pass rate above 99% (950+ of 957 tests)
 
 Focus on quick wins - tests that fail due to simple import/config issues.
-```
+```text
 
 ---
 
@@ -131,10 +131,10 @@ python tools/modernization_scanner.py src/ --verbose > modernization_report.txt
 # 1. Replace typing.List/Dict/Optional with built-in types
 # 2. Update old string formatting to f-strings
 # 3. Modernize exception handling
-```
+```text
 
 **Prompt for Copilot**:
-```
+```text
 Apply modernization scanner suggestions to source code:
 
 1. Run: python tools/modernization_scanner.py src/ --verbose
@@ -149,17 +149,17 @@ Apply modernization scanner suggestions to source code:
 5. Commit: "Modernize Python code: use built-in generic types"
 
 Target: Reduce modernization suggestions from 11 to 0.
-```
+```text
 
 #### 3.2: Add Type Hints to Uncovered Functions
 
 ```bash
 # Find functions without type hints
 ruff check --select ANN src/ 2>&1 | grep -c "Missing type annotation"
-```
+```text
 
 **Prompt for Copilot**:
-```
+```text
 Add type hints to functions missing annotations:
 
 1. Run: ruff check --select ANN src/
@@ -172,7 +172,7 @@ Add type hints to functions missing annotations:
 5. Commit: "Add type hints to uncovered functions"
 
 Target: Increase type hint coverage to 95%+
-```
+```text
 
 ---
 
@@ -188,10 +188,10 @@ Target: Increase type hint coverage to 95%+
 
 ```bash
 # Add CI badges to README.md
-```
+```text
 
 **Prompt for Copilot**:
-```
+```text
 Add CI status badges to README.md:
 
 1. Add badge for post-merge-validation workflow
@@ -200,12 +200,12 @@ Add CI status badges to README.md:
 4. Update badge URLs to match repository
 5. Place badges in "Status & CI Badges" section
 6. Commit: "Add CI workflow badges to README"
-```
+```text
 
 #### 4.2: Create CHANGELOG Entry
 
 **Prompt for Copilot**:
-```
+```text
 Add changelog entry for 0D_base_ merge:
 
 1. Create entry in CHANGELOG.md or docs/CHANGELOG.md
@@ -216,12 +216,12 @@ Add changelog entry for 0D_base_ merge:
    - New documentation (4 guides)
 3. Use format: ## [Unreleased] - 2025-11-07
 4. Commit: "Add changelog entry for merge readiness improvements"
-```
+```text
 
 #### 4.3: Add Pre-commit Hook Configuration
 
 **Prompt for Copilot**:
-```
+```text
 Enhance pre-commit configuration:
 
 1. Update .pre-commit-config.yaml to include:
@@ -230,7 +230,7 @@ Enhance pre-commit configuration:
 2. Ensure hooks are non-blocking for new patterns
 3. Test hooks work: pre-commit run --all-files
 4. Commit: "Enhance pre-commit hooks with new validators"
-```
+```text
 
 ---
 
@@ -313,7 +313,7 @@ grep -c "!\[.*\]" README.md
 # Overall
 nox -s gates
 # Target: All gates pass
-```
+```text
 
 ---
 
@@ -349,29 +349,29 @@ Achieve 100/100 by meeting these targets:
 Execute these prompts in order:
 
 ### Prompt 1: Documentation Fixes
-```
+```text
 Fix all markdown fence errors to achieve < 5 total errors. Use tools/fence_fixer.py on docs/ and root *.md files. Verify with tools/validate_fences.py. Target: 109 errors → < 5 errors.
-```
+```text
 
 ### Prompt 2: Code Modernization
-```
+```text
 Apply all modernization scanner suggestions. Replace typing.List/Dict/Set/Tuple with built-in types. Add type hints to functions missing annotations. Verify with mypy. Target: 11 suggestions → 0, type coverage 95%+.
-```
+```text
 
 ### Prompt 3: Test Fixes
-```
+```text
 Improve test pass rate from 96% to 99%+. Fix tests failing due to imports, config, or fixtures. Skip environment-dependent tests properly. Do not modify intentionally skipped tests. Target: 950+ of 957 tests passing.
-```
+```text
 
 ### Prompt 4: Standards Polish
-```
+```text
 Add CI workflow badges to README, create changelog entry for merge improvements, enhance pre-commit config with new validators. Target: All standard compliance items checked.
-```
+```text
 
 ### Prompt 5: Final Validation
-```
+```text
 Run all quality gates (nox -s gates), verify all success criteria met, generate final 100/100 scorecard, create completion report documenting achievement.
-```
+```text
 
 ---
 

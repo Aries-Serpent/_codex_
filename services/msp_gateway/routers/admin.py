@@ -21,21 +21,18 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 @router.post("/tenants", response_model=TenantResponse, status_code=status.HTTP_201_CREATED)
 async def create_tenant(tenant_request: TenantCreateRequest):
     """Create a new tenant
-    
+
     Args:
         tenant_request: Tenant creation request
-    
+
     Returns:
         TenantResponse with created tenant information
     """
     if not settings.admin_api_enabled:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin API is disabled"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
+
     logger.info(f"Creating tenant: {tenant_request.tenant_id}")
-    
+
     try:
         tenant_data = tenant_registry.create_tenant(
             tenant_id=tenant_request.tenant_id,
@@ -45,7 +42,7 @@ async def create_tenant(tenant_request: TenantCreateRequest):
             policies=tenant_request.policies,
             metadata=tenant_request.metadata,
         )
-        
+
         response = TenantResponse(
             tenant_id=tenant_data["tenant_id"],
             name=tenant_data["name"],
@@ -56,47 +53,39 @@ async def create_tenant(tenant_request: TenantCreateRequest):
             updated_at=tenant_data["updated_at"],
             metadata=tenant_data["metadata"],
         )
-        
+
         logger.info(f"Tenant created successfully: {tenant_request.tenant_id}")
         return response
-    
+
     except ValueError as e:
         logger.error(f"Error creating tenant: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
         logger.error(f"Unexpected error creating tenant: {e}", exc_info=True)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error"
         )
 
 
 @router.get("/tenants/{tenant_id}", response_model=TenantResponse)
 async def get_tenant(tenant_id: str):
     """Get tenant information
-    
+
     Args:
         tenant_id: Tenant identifier
-    
+
     Returns:
         TenantResponse with tenant information
     """
     if not settings.admin_api_enabled:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin API is disabled"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
+
     tenant_data = tenant_registry.get_tenant(tenant_id)
     if not tenant_data:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Tenant not found: {tenant_id}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
         )
-    
+
     return TenantResponse(
         tenant_id=tenant_data["tenant_id"],
         name=tenant_data["name"],
@@ -112,18 +101,15 @@ async def get_tenant(tenant_id: str):
 @router.get("/tenants", response_model=List[TenantResponse])
 async def list_tenants():
     """List all tenants
-    
+
     Returns:
         List of TenantResponse objects
     """
     if not settings.admin_api_enabled:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin API is disabled"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
+
     tenants = tenant_registry.list_tenants()
-    
+
     return [
         TenantResponse(
             tenant_id=t["tenant_id"],
@@ -142,20 +128,17 @@ async def list_tenants():
 @router.patch("/tenants/{tenant_id}", response_model=TenantResponse)
 async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
     """Update tenant information
-    
+
     Args:
         tenant_id: Tenant identifier
         update_request: Tenant update request
-    
+
     Returns:
         TenantResponse with updated tenant information
     """
     if not settings.admin_api_enabled:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin API is disabled"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
+
     updated_tenant = tenant_registry.update_tenant(
         tenant_id,
         name=update_request.name,
@@ -167,10 +150,9 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
 
     if not updated_tenant:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Tenant not found: {tenant_id}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
         )
-    
+
     # Update tenant using registry method (persists to database)
     try:
         updated_tenant = tenant_registry.update_tenant(
@@ -182,13 +164,10 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
             active=update_request.active,
         )
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
     logger.info(f"Tenant updated: {tenant_id}")
-    
+
     return TenantResponse(
         tenant_id=updated_tenant["tenant_id"],
         name=updated_tenant["name"],
@@ -204,30 +183,23 @@ async def update_tenant(tenant_id: str, update_request: TenantUpdateRequest):
 @router.delete("/tenants/{tenant_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tenant(tenant_id: str):
     """Delete (deactivate) a tenant
-    
+
     Args:
         tenant_id: Tenant identifier
     """
     if not settings.admin_api_enabled:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin API is disabled"
-        )
-    
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin API is disabled")
+
     if not tenant_registry.deactivate_tenant(tenant_id):
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Tenant not found: {tenant_id}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Tenant not found: {tenant_id}"
         )
-    
+
     # Delete (deactivate) tenant using registry method (persists to database and revokes API key)
     try:
         tenant_registry.delete_tenant(tenant_id)
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=str(e)
-        )
-    
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
     logger.info(f"Tenant deactivated: {tenant_id}")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

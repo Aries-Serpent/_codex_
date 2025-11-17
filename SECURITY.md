@@ -41,7 +41,7 @@ For sensitive reports, you may encrypt your message using our PGP key:
 
 ```text
 [PGP public key fingerprint - to be added]
-```
+```text
 
 ### What NOT to Do
 
@@ -162,7 +162,7 @@ When using _codex_:
 Run pre-commit checks:
 ```bash
 pre-commit run --all-files
-```
+```text
 
 ### CI/CD Security Checks
 Our CI pipeline includes:
@@ -184,7 +184,7 @@ safety check --json
 
 # Ruff - General linting including security rules
 ruff check src/
-```
+```text
 
 ## Secure Development Guidelines
 

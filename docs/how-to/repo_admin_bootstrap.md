@@ -22,7 +22,7 @@ export GITHUB_APP_INSTALLATION_ID=<installation id>
 export GITHUB_APP_PRIVATE_KEY_PATH=/path/to/private-key.pem
 # or: export GITHUB_TOKEN=<fine-grained PAT>
 python -m scripts.ops.codex_repo_admin_bootstrap --owner <org> --repo <name> --apply --detect-default-branch --dependabot-updates
-```
+```text
 
 ## 2) Prerequisites
 
@@ -62,7 +62,7 @@ Dry-run mode prints the planned operations without contacting GitHub:
     "files": [...]
   }
 }
-```
+```text
 
 Use this to verify presets and required checks before enabling `--apply`.
 

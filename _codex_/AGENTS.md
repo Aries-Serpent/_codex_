@@ -151,7 +151,7 @@ priorities:
   critical: [_codex_/AGENTS.md, _codex_/codex_index.yaml]
   high: [AGENT_CONTINUATION_PROMPT.md, codex_ready_task_sequence.yaml, codex_task_executor.py]
   medium: [README.md, CHATGPT_CONTINUATION.md, examples/]
-```
+```text
 
 ---
 
@@ -188,7 +188,7 @@ python codex_task_executor.py --logs-dir .codex/logs --reports-dir reports
 
 # Dry-run mode
 python codex_task_executor.py --dry-run
-```
+```text
 
 ---
 
@@ -255,7 +255,7 @@ mypy src/
 
 # Pre-commit hooks (all)
 pre-commit run --all-files
-```
+```text
 
 ---
 
@@ -314,7 +314,7 @@ pre-commit run --files <file1> <file2>
 
 # Run on all files
 pre-commit run --all-files
-```
+```text
 
 ### Optional Dependencies
 
@@ -404,7 +404,7 @@ Before committing changes involving AGENTS.md or manifests:
 ### Mathematical Framework
 
 **Traversal Complexity Equation**:
-```
+```text
 τ = Σ(wi × di × ci) / √n
 
 Where:
@@ -414,7 +414,7 @@ Where:
   ci = Cognitive load coefficient (0.2-1.0)
   n  = Total number of files in repository
   Σ  = Sum across all files
-```
+```text
 
 ### Variable Legend
 
@@ -430,7 +430,7 @@ Where:
 
 For this repository (~40 primary files):
 
-```
+```text
 τ_optimal = (10×1.0×0.5 + 10×1.0×0.5 + 7×1.0×0.5 + 7×0.3×1.0 + ...) / √40
 τ_optimal ≈ 3.2 time units
 
@@ -438,7 +438,7 @@ For this repository (~40 primary files):
 τ_random ≈ 8.5 time units
 
 Optimization: 62% reduction (8.5 → 3.2 time units)
-```
+```text
 
 ### Optimization Strategy
 

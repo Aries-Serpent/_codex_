@@ -12,21 +12,21 @@ This guide shows how to:
 python -m codex_ml.cli metrics validate \
   --input artifacts/train.ndjson \
   --schema schemas/metrics.ndjson.schema.json
-```
+```text
 
 Draft-07 is used for compatibility and stability. Install `jsonschema` if validation is desired.
 
 ## Tail
 ```bash
 python -m codex_ml.cli metrics tail --input artifacts/train.ndjson --n 20 --follow
-```
+```text
 
 ## Badge
 Insert the following markers in your `README.md`:
 ```md
 <!-- codex:metric-badge:start -->
 <!-- codex:metric-badge:end -->
-```
+```text
 Then run:
 ```bash
 python -m codex_ml.cli metrics badge \
@@ -35,6 +35,6 @@ python -m codex_ml.cli metrics badge \
   --metric val_loss \
   --label val_loss \
   --precision 4
-```
+```text
 
 > The badge is static Markdown; no network access occurs while updating it.

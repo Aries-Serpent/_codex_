@@ -10,7 +10,7 @@ This project accepts documentation updates and `.codex` artefacts. Before submit
 pre-commit run --all-files
 mypy .
 pytest
-```
+```text
 
 ### Pre-commit quickstart
 
@@ -20,26 +20,26 @@ We use **pre-commit** for fast linting/formatting locally and in CI.
 
 ```bash
 pre-commit install --install-hooks
-```
+```text
 
 2) Run all configured hooks:
 
 ```bash
 pre-commit run --all-files
-```
+```text
 
 3) Heavy scanners are configured as **manual-stage** hooks. Run them explicitly when needed or in CI:
 
 ```bash
 pre-commit run --hook-stage manual --all-files
-```
+```text
 
 These commands are also available via Make targets:
 
 ```bash
 make hooks-prewarm
 make hooks-manual
-```
+```text
 
 ## Optional Dependencies
 
@@ -61,13 +61,13 @@ need the extended capabilities.
 
 ```bash
 pip install -r requirements/dev.txt
-```
+```text
 
 **Install a single package:**
 
 ```bash
 pip install mlflow  # replace with the dependency you need
-```
+```text
 
 If you deliberately run without optional dependencies (for example on an
 air-gapped runner) the codebase degrades gracefully. When a feature requires an
@@ -77,14 +77,14 @@ optional dependency Codex emits an actionable error similar to:
 ImportError: mlflow is required for experiment tracking.
 Install with: pip install mlflow
 Or install all optional dependencies: pip install -r requirements/dev.txt
-```
+```text
 
 Restore the full experience by reinstalling the development requirements once
 you leave the minimal environment:
 
 ```bash
 pip install -r requirements/dev.txt
-```
+```text
 
 ## Software Bill of Materials (SBOM)
 
@@ -98,7 +98,7 @@ chain reporting.
 pip install -r requirements/dev.txt  # ensures cyclonedx-bom is available
 make -C config sbom
 # Output written to dist/sbom.json
-```
+```text
 
 Inspect the SBOM with standard tooling:
 
@@ -106,7 +106,7 @@ Inspect the SBOM with standard tooling:
 jq '.components | length' dist/sbom.json  # dependency count
 jq '.components[] | {name, version, license: .licenses[0].license.id}' dist/sbom.json
 jq '.components[] | select(.name == "pytest")' dist/sbom.json
-```
+```text
 
 ### Continuous integration
 
@@ -149,7 +149,7 @@ committing, run:
 
 ``` text
 pre-commit run detect-secrets --files <files>
-```
+```text
 To verify third-party dependency licenses, run:
 
 ``` text
@@ -220,7 +220,7 @@ Install every optional dependency with:
 
 ```bash
 pip install -r requirements/dev.txt
-```
+```text
 Offline/minimal environments can skip these extras. When optional features are invoked without the dependency installed, the CLI raises a descriptive `ImportError` including the `pip install …` command.
 
 ### Testing without optional dependencies
@@ -229,7 +229,7 @@ Offline/minimal environments can skip these extras. When optional features are i
 pip uninstall hydra-core mlflow wandb tensorboard -y
 python -c "import codex_ml; print('✓ Core imports work without extras')"
 pip install -r requirements/dev.txt
-```
+```text
 
 ## Software Bill of Materials (SBOM)
 
@@ -241,7 +241,7 @@ We generate a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials to 
 pip install -r requirements/dev.txt
 make -C config sbom
 # Output: dist/sbom.json
-```
+```text
 
 ### Continuous integration
 
@@ -258,7 +258,7 @@ jq '.components | length' dist/sbom.json
 
 # Inspect a specific package
 jq '.components[] | select(.name == "pytest")' dist/sbom.json
-```
+```text
 
 Use the SBOM to perform license audits, vulnerability scans, and downstream reporting.
 
@@ -284,4 +284,4 @@ export CODEX_POST_COMMIT_COMMENT=1
 python tools/codex_run_tasks.py
 # or via GH CLI:
 tools/post_commit_comment.sh
-```
+```text

@@ -16,7 +16,7 @@ export CODEX_ARCHIVE_URL=sqlite:///./.codex/archive.sqlite
 # MariaDB (requires pymysql installed)
 # export CODEX_ARCHIVE_BACKEND=mariadb
 # export CODEX_ARCHIVE_URL=mysql+pymysql://user:pass@host/dbname  # pragma: allowlist secret
-```
+```text
 
 ## Initialize schema
 For SQLite the CLI auto-creates the schema from `db/migrations/sqlite/001_init.sql`.
@@ -25,19 +25,19 @@ For Postgres/MariaDB apply the SQL under `db/migrations/{postgres|mariadb}/001_i
 ## Archive a file
 ```bash
 python -m codex.cli archive store _codex_ src/legacy/zendesk_v1.py --reason dead --by "marc" --commit d3e8729 --mime text/x-python --lang python
-```
+```text
 Output includes the **tombstone** (UUID) and **sha256**. Replace the file with a brief stub that points to the tombstone and restoration command.
 
 ## Restore a file
 ```bash
 python -m codex.cli archive restore <TOMBSTONE-UUID> --out restored/zendesk_v1.py
-```
+```text
 
 ## Evidence
 All actions append JSONL lines to:
 ```text
 .codex/evidence/archive_ops.jsonl
-```
+```text
 Each line contains: ts, action (ARCHIVE/RESTORE), actor, repo, path, tombstone, sha256, size, commit.
 
 ## Governance

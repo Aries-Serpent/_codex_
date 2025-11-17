@@ -14,6 +14,6 @@ model = get_peft_model(base, cfg)
 ids = tok("hello world", return_tensors="pt").input_ids
 loss = model(input_ids=ids, labels=ids).loss
 print(float(loss))
-```
+```text
 
 > Tip: enable mixed precision in the training config for consumer GPUs.

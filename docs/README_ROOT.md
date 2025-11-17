@@ -21,7 +21,7 @@ You can now surface a reasoning-focused repository map:
 
 ```bash
 codex repo-map --reasoning
-```
+```text
 
 This highlights reasoning overlays, evaluation presets, and trace-capture knobs.
 
@@ -38,13 +38,13 @@ Track milestone burndown using the `reasoning_status` table exported by:
 
 ```bash
 codex repo-map --reasoning
-```
+```text
 
 Slice specific categories (for example, rollout rings and curricula) with:
 
 ```bash
 codex repo-map --reasoning --include rollout_ring --include curriculum
-```
+```text
 
 For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](guides/reasoning_overview.md).
 
@@ -147,7 +147,7 @@ codex-train +reasoning=baseline \
   training.max_steps=500 \
   logging.reasoning_trace=true \
   training.output_dir=artifacts/runs/reasoning-starter
-```
+```text
 
 The `+reasoning=baseline` defaults hook into `configs/training/reasoning/baseline.yaml` and emit trace artefacts that downstream
 analysis notebooks can load. Curricula definitions are stored as YAML fragments so you can diff changes between cohorts.
@@ -158,7 +158,7 @@ analysis notebooks can load. Curricula definitions are stored as YAML fragments 
 codex evaluate --config configs/evaluation/reasoning.yaml \
   --log-metrics .codex/metrics/reasoning.ndjson \
   --run-id reasoning-milestone-m1
-```
+```text
 
 Every evaluation appends to the NDJSON ledger with per-phase metrics. Use `codex metrics summarize` for quick trend
 checks when preparing milestone readouts.
@@ -173,7 +173,7 @@ codex deploy --config configs/deploy/reasoning_pod.yaml \
 # codex deploy --config configs/deploy/reasoning_pod.yaml \
 #   --run-metadata-dir runs/train_loop \
 #   --dry-run
-```
+```text
 Always leave `--dry-run` in place. The manifest is a review artifact, not a production action, and the embedded
 `rollout_ring` is an intent badge rather than permission to ship. Dry runs confirm manifest parity, bundler signatures,
 and runtime allowances required by bespoke hosts. Redeployments should always be paired with
@@ -184,7 +184,7 @@ and runtime allowances required by bespoke hosts. Redeployments should always be
 ```bash
 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 CODEX_MLFLOW_ENABLE=0 WANDB_MODE=offline \
   nox -s tests_offline
-```
+```text
 
 This run exports standard offline toggles and keeps artefacts under `.codex/` for reproducibility (metrics, checkpoints,
 reasoning traces). Combine it with `codex_cli.app checkpoint-smoke` to validate serialization paths without GPUs.

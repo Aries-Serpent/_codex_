@@ -210,7 +210,7 @@
 - ✅ Directory creation
 - ✅ Sample file generation
 - ✅ Next steps guidance
-```
+```text
 
 ### JSON Template Validation
 ```bash
@@ -219,7 +219,7 @@
 - ✅ macros.sample.json (valid)
 - ✅ views.sample.json (valid)
 - ✅ webhooks.sample.json (valid)
-```
+```text
 
 ## Integration Points
 

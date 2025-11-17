@@ -440,7 +440,7 @@ def _format_optional_block(extras: OrderedDict[str, list[str]]) -> str:
 
 
 def _merge_optional_dependencies(
-    existing: OrderedDict[str, list[str]]
+    existing: OrderedDict[str, list[str]],
 ) -> tuple[OrderedDict[str, list[str]], bool]:
     merged: OrderedDict[str, list[str]] = OrderedDict()
     changed = False
@@ -565,9 +565,7 @@ def main():
     if deps_span:
         deduped_existing: list[str] = []
         seen_items: set[str] = set()
-        seen_identities: set[
-            tuple[str, tuple[str, ...], str, str | None, str | None]
-        ] = set()
+        seen_identities: set[tuple[str, tuple[str, ...], str, str | None, str | None]] = set()
         for dep in existing_deps:
             if dep in seen_items:
                 continue

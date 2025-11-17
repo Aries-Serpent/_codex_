@@ -15,7 +15,6 @@ except Exception:  # pragma: no cover - allow utilities without torch
 from . import provenance  # noqa: F401
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: F401
 from .checkpointing import CheckpointManager  # noqa: F401
-from .storage import FSSpecStorage, StorageProvider  # noqa: F401
 from .provenance import environment_summary  # noqa: F401
 from .repro import (  # noqa: F401
     record_dataset_checksums,
@@ -26,6 +25,7 @@ from .repro import (  # noqa: F401
 )
 from .seed import deterministic_shuffle  # noqa: F401
 from .seeding import set_reproducible  # noqa: F401
+from .storage import FSSpecStorage, StorageProvider  # noqa: F401
 
 __all__ = [
     "CheckpointManager",

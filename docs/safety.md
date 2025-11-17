@@ -42,7 +42,7 @@ regex:
   - (?i)customer_id\s*[:=]\s*\d+
 pii:
   - \b\d{4}-\d{4}-\d{4}-\d{4}\b
-```
+```text
 
 Apply the overrides by passing the YAML string to `sanitize_prompt` (or wiring
 them into the `SafetyConfig` used by training/evaluation tooling). Invalid or
@@ -64,7 +64,7 @@ Disable sanitisation only when working with trusted fixtures:
 ```bash
 python -m codex_ml.cli.train training.sanitize_prompts=false
 python -m codex_ml.cli.evaluate sanitize_prompts=false
-```
+```text
 
 Doing so preserves raw prompts in the training/evaluation loop, so the run log
 will retain sensitive strings. Always review and scrub generated artifacts
@@ -77,7 +77,7 @@ Use the lightweight scanner to spot obvious secrets before pushing changes:
 ```bash
 make codex-secrets-scan              # scans git diff against HEAD
 python tools/scan_secrets.py docs/   # scan specific paths
-```
+```text
 
 The script runs locally, requires no external services, and flags any lines
 matching built-in credential patterns. Review findings carefully—some false

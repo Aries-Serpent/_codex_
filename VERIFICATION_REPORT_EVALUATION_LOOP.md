@@ -27,12 +27,12 @@
 - [x] No test failures introduced
 
 **Test Results**:
-```
+```text
 tests/test_evaluate_epoch.py:  11 passed  ✅
 tests/test_cli_report.py:       9 passed  ✅
 tests/test_bestk_retention.py:  1 passed  ✅
 Total:                         21 passed  ✅
-```
+```text
 
 ### 3. Security ✅
 

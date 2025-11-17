@@ -11,7 +11,7 @@ Use a stable API layer for common metrics:
 
 ```python
 from codex_ml.metrics.api import accuracy, micro_f1, macro_f1, perplexity, token_accuracy, bleu, rouge_l
-```
+```text
 
 See also: [Tests Overview](../tests_overview.md)
 
@@ -19,7 +19,7 @@ See also: [Tests Overview](../tests_overview.md)
 
 ```python
 from codex_ml.metrics.evaluator import batch_metrics
-```
+```text
 
 * **Loss & perplexity** – if the model output exposes a scalar `loss`
   attribute (or dict key), `batch_metrics` records it alongside its

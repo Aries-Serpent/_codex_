@@ -24,7 +24,7 @@ for batch in pretraining_corpus:
     tokens = tokenize(batch)
     loss = model.loss(tokens)
     model.update(loss)
-```
+```text
 ## Stage 2: Supervised Fine-Tuning (SFT)
 
 **Iterative Prompt**
@@ -48,7 +48,7 @@ for prompt, solution in sft_dataset:
     model.update(loss)
 
 save_weights(model, M1_path)
-```
+```text
 ## Stage 3: Reinforcement Learning from Human Feedback (RLHF)
 
 **Iterative Prompt**
@@ -75,7 +75,7 @@ for step in range(rl_steps):
     policy = ppo_update(policy, prompts, responses, rewards)
 
 save_weights(policy, M2_path)
-```
+```text
 ## Utility Equation
 
 The combined utility of a model (M) during training can be expressed as:

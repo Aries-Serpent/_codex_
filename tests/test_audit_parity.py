@@ -23,9 +23,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "audit_artifacts"
 
+
 def run(cmd, **kwargs):
     print(f"+ {' '.join(cmd)}")
     subprocess.run(cmd, check=True, cwd=ROOT, **kwargs)
+
 
 def test_audit_parity_smoke(tmp_path):
     # Ensure a clean workspace
@@ -55,12 +57,16 @@ def test_audit_parity_smoke(tmp_path):
 
     # Sanity: mcp-tools-integration appears in raw capabilities (detector presence)
     ids_raw = {c["id"] for c in raw_j.get("capabilities", [])}
-    assert "mcp-tools-integration" in ids_raw, "Detector 'mcp-tools-integration' not found in capabilities_raw.json"
+    assert (
+        "mcp-tools-integration" in ids_raw
+    ), "Detector 'mcp-tools-integration' not found in capabilities_raw.json"
 
     # Sanity: scored capabilities include numeric score for each capability
     for c in scored_j.get("capabilities", []):
         assert "id" in c and "score" in c, f"Scored capability missing fields: {c}"
-        assert isinstance(c["score"], (int, float)), f"Score is not numeric for capability {c.get('id')}"
+        assert isinstance(
+            c["score"], (int, float)
+        ), f"Score is not numeric for capability {c.get('id')}"
 
     # Manifest includes normalized_weights (P2)
     assert "normalized_weights" in manifest_j, "manifest missing 'normalized_weights'"

@@ -28,7 +28,7 @@ pyright                                            # pass=Π_types ✓
 
 # one-line smoke (if Makefile present)
 make lint && make test
-```
+```text
 ---
 
 ## 2) The model (state, phases, gates, patches)
@@ -92,7 +92,7 @@ from transformers import AutoTokenizer
 tok = AutoTokenizer.from_pretrained("bert-base-uncased")
 out = tok(["hello world"], padding="max_length", truncation=True, max_length=8, return_tensors="pt")
 assert out["input_ids"].shape[-1] == 8
-```
+```text
 (Transformers docs cover padding/truncation semantics and batch behaviors.)
 
 ### 5.2 Ingestion utils (`src/ingestion/encoding_detect.py`, `io_text.py`, `utils.py`)
@@ -104,7 +104,7 @@ assert out["input_ids"].shape[-1] == 8
 
 ```bash
 python -m charset_normalizer normalizer somefile.txt   # has a built-in CLI
-```
+```text
 (Charset-normalizer is a modern alternative to chardet.)
 
 ### 5.3 MLflow utils (`src/codex_ml/tracking/mlflow_utils.py`)
@@ -117,7 +117,7 @@ python -m charset_normalizer normalizer somefile.txt   # has a built-in CLI
 ```bash
 export MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING=true
 python your_train.py   # MLflow may auto-enable system metrics per docs
-```
+```text
 ---
 
 ## 6) Error capture format
@@ -130,7 +130,7 @@ While performing [STEP_NUMBER:STEP_DESCRIPTION], encountered the following error
 [ERROR_MESSAGE]
 Context: [BRIEF_CONTEXT]
 What are the possible causes, and how can this be resolved while preserving intended functionality?
-```
+```text
 ---
 
 ## 7) Troubleshooting & references
@@ -170,4 +170,4 @@ python tools/assets/build_manifest.py && python tools/assets/verify_manifest.py
 python tools/status/capability_autodiscovery.py
 nox -s status-validate
 python tools/docs/harvest_open_questions.py
-```
+```text

@@ -16,7 +16,7 @@ MSP Gateway is a tenant-aware inference API built with FastAPI that provides:
 
 ## Architecture
 
-```
+```text
 services/msp_gateway/          # FastAPI gateway service
 ├── app.py                     # FastAPI app factory
 ├── main.py                    # Uvicorn entrypoint
@@ -62,7 +62,7 @@ scripts/local/                 # Local runner scripts
 ├── serve_local.sh            # Start gateway
 ├── build_faiss.sh            # Build FAISS index
 └── run_tests.sh              # Run tests offline
-```
+```text
 
 ## Quick Start
 
@@ -72,20 +72,20 @@ scripts/local/                 # Local runner scripts
 pip install -e .
 pip install fastapi uvicorn httpx
 pip install sentence-transformers faiss-cpu
-```
+```text
 
 ### 2. Build a Knowledge Base Index
 
 ```bash
 # Create sample data or use your own NDJSON file
 bash scripts/local/build_faiss.sh my-tenant data/kb.ndjson
-```
+```text
 
 ### 3. Start the Gateway
 
 ```bash
 bash scripts/local/serve_local.sh
-```
+```text
 
 The gateway will start on `http://127.0.0.1:8080`.
 
@@ -103,7 +103,7 @@ curl -X POST http://127.0.0.1:8080/admin/tenants \
       "tokens_per_minute": 10000
     }
   }'
-```
+```text
 
 ### 5. Query the Knowledge Base
 
@@ -116,7 +116,7 @@ curl -X POST http://127.0.0.1:8080/v1/query_kb \
     "query": "What is machine learning?",
     "top_k": 3
   }'
-```
+```text
 
 ### 6. Run Inference
 
@@ -133,7 +133,7 @@ curl -X POST http://127.0.0.1:8080/v1/infer \
       "rag_top_k": 3
     }
   }'
-```
+```text
 
 ## Python Client
 
@@ -163,7 +163,7 @@ response = client.infer(
 )
 
 print(response["generated_text"])
-```
+```text
 
 ## Configuration
 
@@ -177,14 +177,14 @@ MSP_HOST=127.0.0.1                     # Bind address (localhost only)
 MSP_PORT=8080                          # Server port
 MSP_OFFLINE=1                          # Enforce offline mode (default: true)
 MSP_BASE_DIR=.codex                    # Base directory for data
-```
+```text
 
 #### Logging
 ```bash
 MSP_LOG_DIR=.codex/logs                # Log directory
 MSP_LOG_LEVEL=INFO                     # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
 MSP_LOG_FORMAT=json                    # Log format: json or text
-```
+```text
 
 #### Model Settings
 ```bash
@@ -192,7 +192,7 @@ MSP_MODEL_BACKEND=mock                 # Backend: mock, local, transformers, lla
 MSP_MODEL_PATH=/path/to/model          # Path to local model weights
 MSP_MODEL_NAME_OR_PATH=gpt2            # HuggingFace model identifier
 MSP_MODEL_DEVICE=cpu                   # Device: cpu or cuda
-```
+```text
 
 #### Vector Search & Retrieval
 ```bash
@@ -202,33 +202,33 @@ MSP_INDEX_DIR=.codex/faiss             # Alternative generic index path
 MSP_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 MSP_EMBEDDING_CACHE_DIR=artifacts/emb  # Cache for model weights
 MSP_TOP_K=5                            # Default top-k results (1-100)
-```
+```text
 
 #### Rate Limiting
 ```bash
 MSP_RATE_LIMIT_ENABLED=1                      # Enable rate limiting
 MSP_RATE_LIMIT_REQUESTS_PER_MINUTE=60         # Requests per minute per tenant
 MSP_RATE_LIMIT_TOKENS_PER_MINUTE=10000        # Tokens per minute per tenant
-```
+```text
 
 #### Security & Policies
 ```bash
 MSP_POLICY_DIR=policies                # Policy files directory
 MSP_REDACTION_ENABLED=1                # Enable PII redaction
 MSP_API_KEY_REQUIRED=1                 # Require API key auth
-```
+```text
 
 #### Database & Storage
 ```bash
 MSP_DB_PATH=.codex/msp_gateway.db      # SQLite database path
 MSP_TENANT_REGISTRY_BACKEND=sqlite     # Backend: sqlite or memory
-```
+```text
 
 #### Feature Flags
 ```bash
 MSP_ADMIN_API_ENABLED=1                # Enable /admin endpoints
 MSP_KB_QUERY_ENABLED=1                 # Enable /v1/query_kb
-```
+```text
 
 ### Configuration Files
 
@@ -255,13 +255,13 @@ Run the test suite:
 
 ```bash
 bash scripts/local/run_tests.sh
-```
+```text
 
 Or use pytest directly:
 
 ```bash
 pytest tests/test_msp_*.py -v
-```
+```text
 
 ## Security Features
 

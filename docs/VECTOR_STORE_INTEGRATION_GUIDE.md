@@ -42,7 +42,7 @@ for result in results:
 
 # Save for later use
 store.save()
-```
+```text
 
 ### Using with Inference Server Embeddings
 
@@ -68,7 +68,7 @@ ids = store.add(embeddings, metadata=metadata)
 new_text = ["AI and ML"]
 query_embedding = server.embed(new_text)
 results = store.search(query_embedding[0], k=2)
-```
+```text
 
 ## VectorStore Interface
 
@@ -87,7 +87,7 @@ class MyVectorStore(VectorStore):
         pass
     
     # ... other required methods
-```
+```text
 
 ### Required Methods
 
@@ -116,7 +116,7 @@ store = FAISSStore(
     max_vectors=10_000_000,         # Safety limit
     validate_checksums=True         # Validate on load
 )
-```
+```text
 
 ### Adding Vectors
 
@@ -126,7 +126,7 @@ store = FAISSStore(
 vectors = np.random.randn(10, 128).astype(np.float32)
 ids = store.add(vectors)
 # Returns: ['uuid-1', 'uuid-2', ...]
-```
+```text
 
 #### Custom IDs
 
@@ -135,7 +135,7 @@ vectors = np.random.randn(10, 128).astype(np.float32)
 custom_ids = [f"doc-{i}" for i in range(10)]
 ids = store.add(vectors, ids=custom_ids)
 # Returns: ['doc-0', 'doc-1', ...]
-```
+```text
 
 #### With Metadata
 
@@ -147,7 +147,7 @@ metadata = [
     # ... more metadata
 ]
 ids = store.add(vectors, metadata=metadata)
-```
+```text
 
 ### Searching Vectors
 
@@ -162,7 +162,7 @@ for result in results:
     print(result['score'])        # Similarity score (0-1)
     print(result['metadata'])     # Associated metadata
     print(result['distance'])     # Raw L2 distance
-```
+```text
 
 #### Search Parameters
 
@@ -180,7 +180,7 @@ results = store.get("doc-0")
 # Get by multiple IDs
 results = store.get(["doc-0", "doc-5", "doc-9"])
 # Returns list with 3 items
-```
+```text
 
 ### Deleting Vectors
 
@@ -192,7 +192,7 @@ deleted_count = store.delete("doc-0")
 # Delete multiple vectors
 deleted_count = store.delete(["doc-0", "doc-1", "doc-2"])
 # Returns: 3
-```
+```text
 
 **Note:** FAISS doesn't support efficient deletion. The store marks vectors as deleted and rebuilds the index when necessary.
 
@@ -206,7 +206,7 @@ store.save()
 
 # Save to custom location
 store.save(path="/custom/path")
-```
+```text
 
 Saves three files:
 - `{index_name}.index` - FAISS index
@@ -221,7 +221,7 @@ store.load()
 
 # Load from custom location
 store.load(path="/custom/path")
-```
+```text
 
 Validates:
 - Index integrity
@@ -236,13 +236,13 @@ Validates:
 ```python
 total = store.count()
 print(f"Total vectors: {total}")
-```
+```text
 
 #### Clear
 
 ```python
 store.clear()  # Removes all vectors and resets index
-```
+```text
 
 #### Health Check
 
@@ -257,7 +257,7 @@ print(health)
 #     "backend": "faiss",
 #     ...
 # }
-```
+```text
 
 ## Embedding Generation
 
@@ -277,7 +277,7 @@ embeddings = server.embed(texts)
 
 # Returns: numpy array of shape (2, dimension)
 # Vectors are L2-normalized
-```
+```text
 
 ### FastAPI /embed Endpoint
 
@@ -285,7 +285,7 @@ embeddings = server.embed(texts)
 # Start server
 export CODEX_MODEL_TYPE=stub
 python -m src.codex_ml.serving.inference_server
-```
+```text
 
 ```bash
 # Make request
@@ -294,7 +294,7 @@ curl -X POST http://localhost:8000/embed \
   -d '{
     "texts": ["Hello world", "Vector embeddings"]
   }'
-```
+```text
 
 Response:
 ```json
@@ -305,7 +305,7 @@ Response:
   "num_texts": 2,
   "inference_time_ms": 12.34
 }
-```
+```text
 
 ## Error Handling
 
@@ -327,7 +327,7 @@ try:
     store.get("nonexistent-id")
 except VectorNotFoundError as e:
     print(f"Vector not found: {e}")
-```
+```text
 
 ### Common Errors
 
@@ -396,7 +396,7 @@ new_results = store2.search(new_query_embedding[0], k=2)
 print(f"Query: {new_query}\n")
 for result in new_results:
     print(f"- {result['document']['metadata']['text']}")
-```
+```text
 
 ## Performance Considerations
 
@@ -440,38 +440,38 @@ for result in new_results:
 ## Troubleshooting
 
 ### Dimension Mismatch
-```
+```text
 Problem: DimensionMismatchError when adding vectors
 Solution: Ensure all vectors have the same dimension as the first batch
-```
+```text
 
 ### Large Memory Usage
-```
+```text
 Problem: Index consumes too much memory
 Solution: 
 - Reduce max_vectors limit
 - Save and clear index periodically
 - Use memory-mapped files (future feature)
-```
+```text
 
 ### Slow Search
-```
+```text
 Problem: Search takes too long
 Solution:
 - Reduce k (number of results)
 - Use smaller vector dimensions
 - Consider ANN algorithms (future feature)
-```
+```text
 
 ### Load Failures
-```
+```text
 Problem: Cannot load saved index
 Solution:
 - Check file paths exist
 - Verify index_name matches
 - Check file permissions
 - Validate files aren't corrupted
-```
+```text
 
 ## Next Steps
 
@@ -499,7 +499,7 @@ filters = {"category": "tech"}
 
 # Not equal
 filters = {"category": {"$ne": "spam"}}
-```
+```text
 
 #### Range Operators
 ```python
@@ -517,7 +517,7 @@ filters = {"score": {"$lte": 0.9}}
 
 # Combined range
 filters = {"score": {"$gte": 0.5, "$lte": 1.0}}
-```
+```text
 
 #### List Operators
 ```python
@@ -526,7 +526,7 @@ filters = {"category": {"$in": ["tech", "news", "sports"]}}
 
 # Not in list
 filters = {"category": {"$nin": ["spam", "ads"]}}
-```
+```text
 
 #### Field Existence
 ```python
@@ -535,7 +535,7 @@ filters = {"author": {"$exists": True}}
 
 # Field does not exist
 filters = {"optional_field": {"$exists": False}}
-```
+```text
 
 #### Logical Operators
 ```python
@@ -568,7 +568,7 @@ filters = {
         {"score": {"$gte": 0.8}}
     ]
 }
-```
+```text
 
 ### Usage Examples
 
@@ -603,7 +603,7 @@ results = store.search(
 )
 
 print(f"Found {len(results)} tech articles")
-```
+```text
 
 #### Range Filtering
 ```python
@@ -625,7 +625,7 @@ results = store.search(
         }
     }
 )
-```
+```text
 
 #### Multi-Criteria Filtering
 ```python
@@ -658,7 +658,7 @@ results = store.search(
         ]
     }
 )
-```
+```text
 
 ### Performance Considerations
 
@@ -684,7 +684,7 @@ results = store.search(
     filters={"category": "tech"}  # Single condition
 )
 # Internally fetches top-30, then filters to return up to 10
-```
+```text
 
 **Tips for Best Performance:**
 1. Use filters with high selectivity (match many documents)
@@ -725,7 +725,7 @@ class VectorStore(ABC):
     def save(path: Optional[str] = None) -> None
     def load(path: Optional[str] = None) -> None
     def health_check() -> Dict[str, Any]
-```
+```text
 
 ### FAISSStore
 
@@ -740,7 +740,7 @@ class FAISSStore(VectorStore):
     
     def create_index(embeddings: np.ndarray, documents: List[Dict])
     # Legacy method, use add() instead
-```
+```text
 
 ### ModelServer.embed()
 
@@ -754,7 +754,7 @@ def embed(texts: List[str]) -> np.ndarray:
     Returns:
         Normalized embeddings (shape: [len(texts), dimension])
     """
-```
+```text
 
 ## Related Documentation
 

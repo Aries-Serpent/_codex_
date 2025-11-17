@@ -107,7 +107,7 @@ safetensors==0.6.2
 accelerate==0.29.0
 peft==0.17.1
 sentencepiece==0.2.1
-```
+```text
 
 ### c) `requirements-eval.txt`
 ```text
@@ -119,7 +119,7 @@ lm-eval==0.4.9.1
 rouge-score==0.1.2
 sacrebleu==2.5.1
 nltk==3.9.2
-```
+```text
 
 ### d) `requirements-notebook.txt`
 ```text
@@ -127,7 +127,7 @@ jupyterlab==4.4.9
 notebook==7.4.7
 nbconvert==7.16.6
 matplotlib==3.10.6
-```
+```text
 
 ### e) Blocking GPU Vendor Wheels (Guard)
 ```bash
@@ -148,7 +148,7 @@ if vendors:
     sys.exit(1)
 print(json.dumps(record))
 PY
-```
+```text
 
 ---
 
@@ -184,7 +184,7 @@ def eval_tests(session):
     session.install("-r", "requirements-dev.txt")
     session.install("-r", "requirements-eval.txt")
     session.run("pytest", "-q", "-m", "eval or metrics")
-```
+```text
 
 ---
 
@@ -294,7 +294,7 @@ omegaconf==2.3.0
 defusedxml>=0.7.1
 requests>=2.31.0
 psutil>=7.0.0
-```
+```text
 
 ---
 

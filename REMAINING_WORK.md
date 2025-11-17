@@ -50,7 +50,7 @@ pytest --cov=src/codex_ml --cov=src/codex --cov-report=xml --cov-report=html --c
 # - src/codex_ml/checkpointing/bestk.py
 # - src/codex_ml/logging/registry.py
 # - tools/validate_experiments.py
-```
+```text
 
 **Acceptance:**
 - coverage.xml artifact generated and committed to artifacts/
@@ -74,7 +74,7 @@ nox -s security
 # This generates artifacts/security_report.json
 # Verify no HIGH/CRITICAL vulnerabilities (or all allowlisted)
 # Check bandit and gitleaks outputs
-```
+```text
 
 **Acceptance:**
 - artifacts/security_report.json generated and committed
@@ -102,7 +102,7 @@ python tools/validate_experiments.py \
 
 # Verify validation passes
 # Check that schema files are excluded
-```
+```text
 
 **Acceptance:**
 - validate-configs session runs successfully
@@ -134,7 +134,7 @@ black --check .
 # Auto-fix where safe:
 ruff check --fix .
 black .
-```
+```text
 
 **Acceptance:**
 - ruff check . passes with no errors
@@ -162,7 +162,7 @@ mypy src/
 # - Protocol implementations
 # - Optional types
 # - Any usage reduction
-```
+```text
 
 **Acceptance:**
 - mypy passes on src/ directory
@@ -188,7 +188,7 @@ mypy src/
 # Add env snapshot test
 # Capture environment variables, package versions
 # Store in artifacts/env_snapshot.json
-```
+```text
 
 **Acceptance:**
 - Determinism tests pass
@@ -204,7 +204,7 @@ mypy src/
 - Some artifacts generated
 
 **Required Artifacts:**
-```
+```text
 artifacts/
 ├── coverage.xml              # From pytest-cov
 ├── htmlcov/                  # Coverage HTML report
@@ -212,7 +212,7 @@ artifacts/
 ├── validation_logs.txt       # From nox -s validate-configs
 ├── env_snapshot.json         # Environment details
 └── docs/                     # API docs (if SKIP_OPTIONAL=1)
-```
+```text
 
 **Acceptance:**
 - All required artifacts generated

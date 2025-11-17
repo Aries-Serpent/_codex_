@@ -55,7 +55,11 @@ def __getattr__(name: str):  # pragma: no cover - shim for optional deps
 
         return mapping[name]
     if name in {"build_peft_config", "enable_peft", "load_adapter_for_inference"}:
-        from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
+        from .peft_hooks import (
+            build_peft_config,
+            enable_peft,
+            load_adapter_for_inference,
+        )
 
         mapping = {
             "build_peft_config": build_peft_config,

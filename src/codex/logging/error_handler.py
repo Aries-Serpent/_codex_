@@ -46,25 +46,21 @@ class CodexErrorHandler:
         self.log_dir = log_dir or Path(".codex/logs")
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-        self.error_log = (
-            self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
-        )
+        self.error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
 
         # Configure logger - use unique name per instance to avoid conflicts
         # This ensures each instance uses its own log file
         self.logger = logging.getLogger(f"codex.errors.{id(self)}")
         self.logger.setLevel(logging.ERROR)
         self.logger.propagate = False  # Don't propagate to parent loggers
-        
+
         # Use RotatingFileHandler for automatic log rotation
         handler = RotatingFileHandler(
             self.error_log,
             maxBytes=max_bytes,
             backupCount=backup_count,
         )
-        handler.setFormatter(
-            logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
-        )
+        handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
         self.logger.addHandler(handler)
 
     def set_log_level(self, level: str) -> None:

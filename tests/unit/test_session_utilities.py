@@ -23,21 +23,21 @@ class TestFileCache:
     def test_cache_file(self):
         """Test adding file to cache."""
         cache = FileCache()
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.py') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".py") as f:
             f.write("test content")
             temp_path = f.name
 
         try:
             assert cache.add(temp_path)
             stats = cache.stats()
-            assert stats['cached_files'] == 1
+            assert stats["cached_files"] == 1
         finally:
             Path(temp_path).unlink()
 
     def test_cache_hit(self):
         """Test cache hit on retrieval."""
         cache = FileCache()
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.py') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".py") as f:
             f.write("test content")
             temp_path = f.name
 
@@ -57,7 +57,7 @@ class TestFileCache:
     def test_cache_invalidation(self):
         """Test cache invalidation on file modification."""
         cache = FileCache()
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.py') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".py") as f:
             f.write("original content")
             temp_path = f.name
 
@@ -66,7 +66,7 @@ class TestFileCache:
             original_sha = cache.get_sha(temp_path)
 
             # Modify file
-            with open(temp_path, 'w') as f:
+            with open(temp_path, "w") as f:
                 f.write("modified content")
 
             # Ensure filesystem timestamp updates

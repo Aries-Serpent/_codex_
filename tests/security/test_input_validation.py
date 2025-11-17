@@ -7,7 +7,10 @@ core = None
 try:
     core = importlib.import_module("src.security.core")
 except Exception:
-    pytest.skip("src.security.core not available; skipping security input validation tests", allow_module_level=True)
+    pytest.skip(
+        "src.security.core not available; skipping security input validation tests",
+        allow_module_level=True,
+    )
 
 
 def test_sql_injection_patterns_present():

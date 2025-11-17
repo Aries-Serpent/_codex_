@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from .rules import ConversionFidelity, automation_to_d365, compute_fidelity, trigger_to_d365
+from .rules import (
+    ConversionFidelity,
+    automation_to_d365,
+    compute_fidelity,
+    trigger_to_d365,
+)
 
 __all__ = [
     "ConversionFidelity",

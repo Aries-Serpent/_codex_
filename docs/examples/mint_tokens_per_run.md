@@ -17,7 +17,7 @@ export GITHUB_APP_INSTALLATION_ID=<installation-id>
 export GITHUB_APP_PRIVATE_KEY_PEM="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"  # pragma: allowlist secret
 # Option B: file path
 export GITHUB_APP_PRIVATE_KEY_PATH=/secure/app-private-key.pem
-```
+```text
 
 Because the script speaks to the GitHub REST API it is gated behind the Codex
 network guardrails. Real calls require `CODEX_NET_MODE=online_allowlist` **and**
@@ -31,27 +31,27 @@ Dry-run the scoping payload to verify repositories and permissions parsing:
 python -m scripts.ops.codex_mint_tokens_per_run --dry-run \
   --repositories your-org/private-repo \
   --permissions contents=read metadata=read
-```
+```text
 
 Create a scoped installation token and print the masked value:
 
 ```bash
 python -m scripts.ops.codex_mint_tokens_per_run --repositories your-org/private-repo \
   --permissions contents=read metadata=read
-```
+```text
 
 Request a self-hosted runner registration token (output is **masked**):
 
 ```bash
 python -m scripts.ops.codex_mint_tokens_per_run --runner --owner your-org --repo private-repo
-```
+```text
 
 Revoke the installation token once the action completes:
 
 ```bash
 python -m scripts.ops.codex_mint_tokens_per_run --repositories your-org/private-repo \
   --permissions contents=read metadata=read --verbose
-```
+```text
 
 ## Rate-limit headers
 Pass `--print-headers` to inspect the core rate-limit buckets after the main operation.

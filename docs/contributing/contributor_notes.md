@@ -27,7 +27,7 @@ pip install -e .
 
 # Set up pre-commit hooks
 pre-commit install
-```
+```text
 
 ### Running Tests
 
@@ -43,7 +43,7 @@ pytest -m "not slow"
 
 # Run specific test file
 pytest tests/config/test_config_schema.py -v
-```
+```text
 
 ### Code Quality
 
@@ -56,7 +56,7 @@ nox -s typecheck
 
 # Run all quality gates
 nox -s gates
-```
+```text
 
 ### Common Tasks
 
@@ -87,7 +87,7 @@ The project uses Hydra for configuration management:
 ```python
 import torch
 print(torch.__file__)  # Should show site-packages path
-```
+```text
 
 **Pytest Markers**: Always use registered markers from `pytest.ini`:
 - `smoke` - Quick smoke tests

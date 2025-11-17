@@ -33,6 +33,6 @@ Set `CODEX_AUDIT=1` to persist security scan outputs under `audit_artifacts/secu
 Run:
 ```bash
 CODEX_AUDIT=1 nox -s sec
-```
+```text
 
 *End*

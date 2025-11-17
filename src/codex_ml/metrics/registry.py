@@ -98,7 +98,7 @@ def _load_policy_from_file() -> Optional[str]:
         if line.lower().startswith("policy"):
             parts = line.split("=", 1)
             if len(parts) == 2:
-                return parts[1].strip().strip('"\'')
+                return parts[1].strip().strip("\"'")
     return None
 
 
@@ -146,7 +146,7 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
                 "metric-plugin.conflict-resolution",
                 f"Plugin metric '{name}' overrode existing local implementation.",
                 f"name={name}; policy={policy}; retained=plugin",
-                "Override applied per policy."
+                "Override applied per policy.",
             )
     elif policy == "alias_plugin":
         # Keep both: local under original name, plugin under alias
@@ -157,7 +157,7 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
                 "metric-plugin.conflict-resolution",
                 f"Plugin metric '{name}' registered as alias '{alias_name}'.",
                 f"name={name}; policy={policy}; retained=local+alias",
-                "Both implementations retained under separate names."
+                "Both implementations retained under separate names.",
             )
     elif policy == "shadow_warn":
         # Keep local, just log the shadow
@@ -166,7 +166,7 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
                 "metric-plugin.conflict-resolution",
                 f"Plugin metric '{name}' ignored (local retained).",
                 f"name={name}; policy={policy}; retained=local",
-                "Shadow recorded; no override performed."
+                "Shadow recorded; no override performed.",
             )
     elif policy == "error":
         # Re-raise original conflict (strict legacy mode)
@@ -181,7 +181,7 @@ def _resolve_plugin_conflict(name: str, fn: Callable[..., object]) -> None:
                 "metric-plugin.conflict-resolution",
                 f"Plugin metric '{name}' suppressed (local retained).",
                 f"name={name}; policy={policy}; retained=local",
-                "No override per default policy."
+                "No override per default policy.",
             )
 
 
@@ -208,7 +208,7 @@ def _register_metric_from_plugin(
                 "metric-plugin.register",
                 f"Conflict without callable for '{name}'",
                 f"name={name}",
-                "Plugin provided no callable; cannot resolve conflict."
+                "Plugin provided no callable; cannot resolve conflict.",
             )
             raise
         # Apply policy-based conflict resolution
@@ -220,7 +220,7 @@ def _register_metric_from_plugin(
             "metric-plugin.register",
             str(exc),
             f"name={name}",
-            "Can the plugin metric be validated or renamed?"
+            "Can the plugin metric be validated or renamed?",
         )
         raise
 
@@ -336,6 +336,7 @@ def alias_metric(alias: str, target: str, *, override: bool = True) -> None:
     This creates a thin wrapper that defers lookup to the target metric
     at call time, ensuring both names always resolve to the same implementation.
     """
+
     def _alias_wrapper(*args, **kwargs):
         fn = metric_registry.get(target)
         return fn(*args, **kwargs)

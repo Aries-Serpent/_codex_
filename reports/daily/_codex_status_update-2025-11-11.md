@@ -227,7 +227,7 @@ Below consolidates status_update_2025.md with audit workflow context.
 + trainer.train()
 +
 + assert any(p.suffix == ".model" for p in out_dir.iterdir())
-```
+```text
 ```diff
 +++ tests/codex_ml/test_checkpoint_core.py
 @@
@@ -254,7 +254,7 @@ Below consolidates status_update_2025.md with audit workflow context.
 + assert loaded_state["step"] == 10
 + assert loaded_meta["run_id"] == "test"
 + assert loaded_meta["_schema_version"] == SCHEMA_VERSION
-```
+```text
 ```diff
 +++ src/codex_ml/training/loop.py
 @@
@@ -303,7 +303,7 @@ Below consolidates status_update_2025.md with audit workflow context.
 + """Thin wrapper over :func:`save_checkpoint` for consistency."""
 +
 + return save_checkpoint(out_dir, state=state, meta=meta)
-```
+```text
 ```diff
 +++ src/codex_ml/logging/registry.py
 @@
@@ -339,7 +339,7 @@ Below consolidates status_update_2025.md with audit workflow context.
 + # MLflow hooks can be added here in the future, guarded by cfg.enable_mlflow
 +
 + return loggers
-```
+```text
 ```diff
 +++ tools/env_snapshot.py
 @@
@@ -367,12 +367,12 @@ Below consolidates status_update_2025.md with audit workflow context.
 +
 +if __name__ == "__main__": # pragma: no cover - script entrypoint
 + main()
-```
+```text
 
 ---
 
 ## 9. Local Tests & Gates (Offline)
-```
+```text
 # Core unit tests
 nox -s tests
 
@@ -394,7 +394,7 @@ nox -s typecheck
 
 # Docs
 nox -s docs_build
-```
+```text
 
 | Task | Command |
 | --- | --- |
@@ -927,7 +927,7 @@ Status: Pending execution this run.
   },
   "dashboard_tiles": []
 }
-```
+```text
 
 ---
 

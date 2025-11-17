@@ -52,7 +52,7 @@ class CodexErrorHandler:
         self.logger = logging.getLogger(f'codex.errors.{id(self)}')
         self.logger.setLevel(logging.ERROR)
         # No method to change log level dynamically
-```
+```text
 
 **Required Change**:
 ```python
@@ -77,7 +77,7 @@ def set_log_level(self, level: str) -> None:
             f"Must be one of: DEBUG, INFO, WARNING, ERROR, CRITICAL"
         )
     self.logger.setLevel(getattr(logging, level_upper))
-```
+```text
 
 **Test** (add to `tests/test_agents_infrastructure.py`):
 ```python
@@ -101,12 +101,12 @@ def test_set_log_level(tmp_path):
     # Test invalid level
     with pytest.raises(ValueError, match="Invalid log level"):
         handler.set_log_level('INVALID')
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_agents_infrastructure.py::test_set_log_level -v
-```
+```text
 
 ---
 
@@ -127,7 +127,7 @@ class EnvironmentManager:
         if not self._validated:
             self._validate_environment()
             self._validated = True
-```
+```text
 
 **Required Change**:
 ```python
@@ -147,7 +147,7 @@ def validate(self) -> None:
         env.validate()  # Explicit validation
     """
     self._ensure_validated()
-```
+```text
 
 **Test** (add to `tests/test_agents_infrastructure.py`):
 ```python
@@ -181,13 +181,13 @@ def test_validate_with_invalid_env():
         # Should fail on explicit validation
         with pytest.raises(EnvironmentError, match="Invalid value"):
             env.validate()
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_agents_infrastructure.py::test_public_validate_method -v
 pytest tests/test_agents_infrastructure.py::test_validate_with_invalid_env -v
-```
+```text
 
 ---
 
@@ -255,12 +255,12 @@ def test_db_manager_concurrent_access(tmp_path):
     
     assert count == 50, f"Expected 50 rows (5 threads × 10 writes), got {count}"
     assert write_count[0] == 50, f"Write count mismatch: {write_count[0]}"
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_agents_infrastructure.py::test_db_manager_concurrent_access -v
-```
+```text
 
 ---
 
@@ -346,12 +346,12 @@ def test_cli_full_session_lifecycle(tmp_path):
         )
         search_count = cursor.fetchone()[0]
         assert search_count == 1, "Search should find 'Hello, world'"
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_agents_infrastructure.py::test_cli_full_session_lifecycle -v
-```
+```text
 
 ---
 
@@ -471,12 +471,12 @@ class TestEdgeCases:
             result = runner.invoke(list_sessions_cmd, ["--limit=10"])
             assert result.exit_code == 0
             # Should indicate no sessions found
-```
+```text
 
 **Validation**:
 ```bash
 pytest tests/test_agents_infrastructure.py::TestEdgeCases -v --cov=src/codex --cov-report=term-missing
-```
+```text
 
 ---
 
@@ -536,13 +536,13 @@ else
     echo "   View detailed report: artifacts/htmlcov_agents/index.html"
     exit 1
 fi
-```
+```text
 
 **Validation**:
 ```bash
 chmod +x .github/scripts/measure_coverage.sh
 bash .github/scripts/measure_coverage.sh
-```
+```text
 
 ---
 
@@ -605,13 +605,13 @@ rm -f .codex/validation_test.db .codex/validation_test.db-*
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "✅ All validation checks passed!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-```
+```text
 
 **Validation**:
 ```bash
 chmod +x .github/scripts/validate_agents_implementation.sh
 bash .github/scripts/validate_agents_implementation.sh > .github/docs/validation_output.txt
-```
+```text
 
 ---
 
@@ -630,7 +630,7 @@ bash .github/scripts/validate_agents_implementation.sh > .github/docs/validation
 
 ### Test Execution
 
-```
+```text
 $ bash .github/scripts/validate_agents_implementation.sh
 
 🔍 AGENTS.md Implementation Validation
@@ -674,7 +674,7 @@ Initializing database: .codex/validation_test.db
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ All validation checks passed!
-```
+```text
 
 ### Metrics
 
@@ -684,7 +684,7 @@ Initializing database: .codex/validation_test.db
 | **Test Coverage** | 95.23% | ≥95% | ✅ |
 | **CLI Commands** | 8/8 | 100% | ✅ |
 | **Production Readiness** | 98% | 98% | ✅ |
-```
+```text
 
 ---
 

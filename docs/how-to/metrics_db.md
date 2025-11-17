@@ -9,7 +9,7 @@ python -m codex_ml.cli metrics ingest \
   --input runs.ndjson --out-csv runs.csv \
   --to-sqlite runs.sqlite --table metrics \
   --chunk-size 5000 --create-index
-```
+```text
 
 - Loads via a single transaction with chunked `executemany()` batches.
 - `--chunk-size` tunes batch size (default: `5000`).
@@ -22,7 +22,7 @@ python -m codex_ml.cli metrics ingest \
 python -m codex_ml.cli metrics ingest \
   --input runs.ndjson --out-csv runs.csv \
   --to-duckdb runs.duckdb --table metrics --mode replace
-```
+```text
 
 | Mode    | Behavior                                                                |
 |---------|-------------------------------------------------------------------------|

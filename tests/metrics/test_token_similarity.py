@@ -5,6 +5,7 @@ Validates:
 - Disabled mode skips output
 - Enabled mode produces similarity_index in range [0,1]
 """
+
 import json
 import os
 import shutil
@@ -21,11 +22,11 @@ def setup_raw():
     ART.mkdir()
     raw = {
         "capabilities": [
-            {"id":"alpha","evidence_files":["a1.txt","a2.txt"]},
-            {"id":"beta","evidence_files":["b1.txt"]},
+            {"id": "alpha", "evidence_files": ["a1.txt", "a2.txt"]},
+            {"id": "beta", "evidence_files": ["b1.txt"]},
         ]
     }
-    (ART/"capabilities_raw.json").write_text(json.dumps(raw), encoding="utf-8")
+    (ART / "capabilities_raw.json").write_text(json.dumps(raw), encoding="utf-8")
     Path("a1.txt").write_text("foo bar baz")
     Path("a2.txt").write_text("foo bar qux")
     Path("b1.txt").write_text("solo content")
@@ -34,8 +35,8 @@ def setup_raw():
 def test_similarity_enabled():
     setup_raw()
     env = os.environ.copy()
-    env["TOKEN_SIMILARITY_ENABLE"]="1"
-    subprocess.run([sys.executable,"scripts/metrics/token_similarity.py"],check=True,env=env)
+    env["TOKEN_SIMILARITY_ENABLE"] = "1"
+    subprocess.run([sys.executable, "scripts/metrics/token_similarity.py"], check=True, env=env)
     out = ART / "token_similarity.json"
     assert out.exists()
     data = json.loads(out.read_text())
@@ -46,6 +47,6 @@ def test_similarity_enabled():
 def test_similarity_disabled():
     setup_raw()
     env = os.environ.copy()
-    env["TOKEN_SIMILARITY_ENABLE"]="0"
-    subprocess.run([sys.executable,"scripts/metrics/token_similarity.py"],check=True,env=env)
-    assert not (ART/"token_similarity.json").exists()
+    env["TOKEN_SIMILARITY_ENABLE"] = "0"
+    subprocess.run([sys.executable, "scripts/metrics/token_similarity.py"], check=True, env=env)
+    assert not (ART / "token_similarity.json").exists()

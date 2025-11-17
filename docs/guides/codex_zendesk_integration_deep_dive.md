@@ -57,7 +57,7 @@ export ZENDESK_DEV_TOKEN=...
 
 python -m codex.cli zendesk env-check --env dev      # validates presence + `zenpy` availability
 python -m codex.cli zendesk deps-check               # checks optional deps (zenpy, torch)
-```
+```text
 
 Notes:
 - The CLI requires Zenpy for API access; `env-check` prompts you to install it if missing.
@@ -201,4 +201,4 @@ codex zendesk apply triggers plan.json --env dev
 # 5) Metrics + evidence
 codex zendesk metrics
 ls .codex/evidence/
-```
+```text

@@ -17,11 +17,11 @@ Synthesize a concise status update from the latest audit artifacts, highlighting
 - Full status update:
 ```bash
 python scripts/space_traversal/status_update_report.py
-```
+```text
 - With baseline comparison:
 ```bash
 python scripts/space_traversal/status_update_report.py --base baseline/capabilities_scored.json
-```
+```text
 
 ## Report Sections
 | Section | What to include |

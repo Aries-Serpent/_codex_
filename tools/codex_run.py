@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Codex offline runner: audit -> pre-commit -> tests.
-   Avoids network/CI, provides fallback when external CLI missing."""
+Avoids network/CI, provides fallback when external CLI missing."""
 from __future__ import annotations
 
 import argparse
@@ -15,10 +15,23 @@ from typing import List, Tuple
 
 OK, WARN, FAIL = 0, 1, 2
 
-def run(cmd: List[str], *, cwd: Path | None = None, timeout: int | None = None, env: dict | None = None, log: Path | None = None) -> Tuple[int, str]:
-    proc = subprocess.Popen(cmd, cwd=str(cwd) if cwd else None,
-                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                            env=env or os.environ.copy(), text=True)
+
+def run(
+    cmd: List[str],
+    *,
+    cwd: Path | None = None,
+    timeout: int | None = None,
+    env: dict | None = None,
+    log: Path | None = None,
+) -> Tuple[int, str]:
+    proc = subprocess.Popen(
+        cmd,
+        cwd=str(cwd) if cwd else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        env=env or os.environ.copy(),
+        text=True,
+    )
     try:
         out, _ = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -33,6 +46,7 @@ def run(cmd: List[str], *, cwd: Path | None = None, timeout: int | None = None, 
             fh.write(out)
     return rc, out
 
+
 def rewrite_readme_cli(readme: Path) -> Tuple[bool, str]:
     if not readme.exists():
         return False, "README not found; skipped"
@@ -43,53 +57,69 @@ def rewrite_readme_cli(readme: Path) -> Tuple[bool, str]:
         return True, "normalized CLI references"
     return False, "no changes"
 
+
 def run_audit(prompt: Path, artifacts: Path) -> Tuple[int, str]:
     artifacts.mkdir(parents=True, exist_ok=True)
     if Path("tools/audit_builder.py").exists():
-        rc, out = run([sys.executable, "tools/audit_builder.py", "--prompt-file", str(prompt)], log=artifacts/"audit.log")
+        rc, out = run(
+            [sys.executable, "tools/audit_builder.py", "--prompt-file", str(prompt)],
+            log=artifacts / "audit.log",
+        )
         if rc == 0:
-            (artifacts/"audit.md").write_text(out, encoding="utf-8")
+            (artifacts / "audit.md").write_text(out, encoding="utf-8")
             return OK, "audit generated"
         return FAIL, "audit script failed"
     return WARN, "audit script missing"
+
 
 def precommit_run(timeout: int, artifacts: Path, skip_hooks: str | None = None) -> Tuple[int, str]:
     env = os.environ.copy()
     if skip_hooks:
         env["SKIP"] = skip_hooks
     cmd = ["pre-commit", "run", "--all-files", "--verbose"]
-    rc, _ = run(cmd, timeout=timeout, env=env, log=artifacts/"precommit.log")
+    rc, _ = run(cmd, timeout=timeout, env=env, log=artifacts / "precommit.log")
     if rc == 124:
         return WARN, "pre-commit timed out"
     if rc != 0:
-        run(["pre-commit", "clean"], env=env, log=artifacts/"precommit.log")
-        rc2, _ = run(cmd, timeout=timeout, env=env, log=artifacts/"precommit.log")
+        run(["pre-commit", "clean"], env=env, log=artifacts / "precommit.log")
+        rc2, _ = run(cmd, timeout=timeout, env=env, log=artifacts / "precommit.log")
         if rc2 != 0:
             return FAIL, "pre-commit failed"
     return OK, "pre-commit passed"
+
 
 def has_pytest_cov() -> bool:
     rc, out = run(["pytest", "--version"])
     return "pytest-cov" in out
 
+
 def run_tests(cov_target: str, cov_threshold: int, artifacts: Path) -> Tuple[int, str]:
     if has_pytest_cov():
-        cmd = ["pytest", f"--cov={cov_target}", "--cov-report=term", f"--cov-fail-under={cov_threshold}"]
-        rc, out = run(cmd, log=artifacts/"tests.log")
+        cmd = [
+            "pytest",
+            f"--cov={cov_target}",
+            "--cov-report=term",
+            f"--cov-fail-under={cov_threshold}",
+        ]
+        rc, out = run(cmd, log=artifacts / "tests.log")
         if rc != 0:
             return FAIL, "tests or coverage failed"
         return OK, "tests with coverage passed"
-    rc, _ = run(["pytest", "-q"], log=artifacts/"tests.log")
+    rc, _ = run(["pytest", "-q"], log=artifacts / "tests.log")
     if rc != 0:
         return FAIL, "tests failed"
     return WARN, "tests passed without coverage"
+
 
 def append_changelog(msgs: List[str]) -> None:
     path = Path("CHANGELOG_codex.md")
     stamp = time.strftime("%Y-%m-%d %H:%M:%S")
     entry = [f"## {stamp} – Codex run"] + [f"- {m}" for m in msgs]
     previous = path.read_text(encoding="utf-8") if path.exists() else ""
-    path.write_text((previous + ("\n" if previous else "") + "\n".join(entry) + "\n"), encoding="utf-8")
+    path.write_text(
+        (previous + ("\n" if previous else "") + "\n".join(entry) + "\n"), encoding="utf-8"
+    )
+
 
 def main() -> int:
     ap = argparse.ArgumentParser()
@@ -123,6 +153,7 @@ def main() -> int:
     for m in msgs:
         print(m)
     return 0 if status == OK else (1 if status == WARN else 2)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

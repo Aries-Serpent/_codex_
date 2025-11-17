@@ -41,9 +41,7 @@ ROLES = {"system", "user", "assistant", "tool"}
 
 def git_root() -> Path:
     try:
-        out = run(
-            ["git", "rev-parse", "--show-toplevel"], capture_output=True
-        ).stdout.strip()
+        out = run(["git", "rev-parse", "--show-toplevel"], capture_output=True).stdout.strip()
         return Path(out)
     except Exception:
         return Path.cwd()
@@ -53,9 +51,7 @@ def require_clean_worktree() -> None:
     try:
         out = run(["git", "status", "--porcelain"], capture_output=True).stdout
         if out.strip():
-            raise RuntimeError(
-                "Working tree not clean. Commit or stash before running."
-            )
+            raise RuntimeError("Working tree not clean. Commit or stash before running.")
     except FileNotFoundError as e:
         sys.stderr.write(
             "WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {}\n".format(
@@ -143,8 +139,7 @@ def inventory(root: Path) -> List[Tuple[str, str, str]]:
             kind = p.suffix or "file"
             role = (
                 "code"
-                if p.suffix
-                in {".py", ".sh", ".sql", ".js", ".ts", ".jsx", ".tsx", ".html"}
+                if p.suffix in {".py", ".sh", ".sql", ".js", ".ts", ".jsx", ".tsx", ".html"}
                 else "doc"
             )
             items.append((str(p.relative_to(root)), kind, role))
@@ -441,9 +436,7 @@ python -m src.codex.logging.session_query --session-id demo --last 50
 def patch_readme(readme_path: Path) -> None:
     text = read_text(readme_path)
     if "Session Logging (Context Manager)" in text and "Session Query (CLI)" in text:
-        append_change(
-            readme_path, "kept", "README already contains session logging sections"
-        )
+        append_change(readme_path, "kept", "README already contains session logging sections")
         return
     new = text.rstrip() + "\n\n" + README_SNIPPET + "\n"
     write_file(readme_path, new, "Append session logging usage and CLI docs")

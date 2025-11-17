@@ -37,9 +37,9 @@ _session_id_ctx: contextvars.ContextVar[str | None] = contextvars.ContextVar(
     "codex_session_id", default=None
 )
 _SESSION_LOGGER_DISABLED = object()
-_session_logger_ctx: contextvars.ContextVar[
-    SessionLogger | object | None
-] = contextvars.ContextVar("codex_session_logger", default=None)
+_session_logger_ctx: contextvars.ContextVar[SessionLogger | object | None] = contextvars.ContextVar(
+    "codex_session_logger", default=None
+)
 
 
 def _session_log_dir() -> Path:

@@ -18,13 +18,13 @@ Build the image without GPU-specific PyTorch installation. This creates a smalle
 
 ```bash
 docker build -f Dockerfile.gpu -t codex-gpu:local .
-```
+```text
 
 Or use the helper script:
 
 ```bash
 ./scripts/packaging/build_docker.sh codex-gpu:local
-```
+```text
 
 ### Option 2: With CUDA 12.1 PyTorch (Recommended)
 
@@ -34,13 +34,13 @@ Build with the default CUDA 12.1 compatible PyTorch wheels:
 docker build -f Dockerfile.gpu -t codex-gpu:cu121 \
   --build-arg INSTALL_TORCH_GPU=1 \
   .
-```
+```text
 
 Or use the helper script:
 
 ```bash
 INSTALL_TORCH_GPU=1 ./scripts/packaging/build_docker.sh codex-gpu:cu121
-```
+```text
 
 **Installed Versions**:
 - `torch==2.4.0+cu121`
@@ -55,7 +55,7 @@ docker build -f Dockerfile.gpu -t codex-gpu:custom \
   --build-arg INSTALL_TORCH_GPU=1 \
   --build-arg TORCH_WHEEL="torch==2.5.0+cu124 --extra-index-url https://download.pytorch.org/whl/cu124" \
   .
-```
+```text
 
 Or use the helper script:
 
@@ -63,7 +63,7 @@ Or use the helper script:
 INSTALL_TORCH_GPU=1 \
 TORCH_WHEEL="torch==2.5.0+cu124 --extra-index-url https://download.pytorch.org/whl/cu124" \
 ./scripts/packaging/build_docker.sh codex-gpu:custom
-```
+```text
 
 ## Verifying GPU Support
 
@@ -72,7 +72,7 @@ After building, verify CUDA availability:
 ```bash
 docker run --rm codex-gpu:cu121 \
   python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
-```
+```text
 
 **Expected Output**:
 - With GPU build args: `CUDA available: False` (no GPU in container, but library installed)
@@ -84,19 +84,19 @@ docker run --rm codex-gpu:cu121 \
 
 ```bash
 docker run --rm -p 8000:8000 codex-gpu:cu121
-```
+```text
 
 ### GPU Mode (Requires NVIDIA Container Toolkit)
 
 ```bash
 docker run --rm --gpus all -p 8000:8000 codex-gpu:cu121
-```
+```text
 
 To use specific GPUs:
 
 ```bash
 docker run --rm --gpus '"device=0,1"' -p 8000:8000 codex-gpu:cu121
-```
+```text
 
 ## Prerequisites
 
@@ -123,13 +123,13 @@ curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.li
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
-```
+```text
 
 Verify installation:
 
 ```bash
 docker run --rm --gpus all nvidia/cuda:12.2.2-base-ubuntu22.04 nvidia-smi
-```
+```text
 
 ## Smoke Test
 
@@ -148,7 +148,7 @@ if torch.cuda.is_available():
     print(f'CUDA version: {torch.version.cuda}')
     print(f'GPU count: {torch.cuda.device_count()}')
 "
-```
+```text
 
 ## CUDA Version Compatibility
 
@@ -190,7 +190,7 @@ docker run --rm --gpus all nvidia/cuda:12.2.2-base-ubuntu22.04 nvidia-smi
 
 # Run container with GPU access
 docker run --rm --gpus all codex-gpu:cu121 python -c "import torch; print(torch.cuda.is_available())"
-```
+```text
 
 ### Torch Import Errors
 
@@ -203,7 +203,7 @@ docker run --rm --gpus all codex-gpu:cu121 python -c "import torch; print(torch.
 docker build --no-cache -f Dockerfile.gpu \
   --build-arg INSTALL_TORCH_GPU=1 \
   -t codex-gpu:cu121 .
-```
+```text
 
 ### Wheel Compatibility Issues
 
@@ -217,7 +217,7 @@ Example for CUDA 12.1:
 ```bash
 # List available wheels
 curl -s https://download.pytorch.org/whl/cu121/torch/ | grep -o 'torch-[0-9.]*+cu121'
-```
+```text
 
 ## Build Args Reference
 
@@ -240,7 +240,7 @@ For specific torch configuration:
 # Example: Installing specific torch with custom flags
 --build-arg INSTALL_TORCH_GPU=1 \
 --build-arg TORCH_WHEEL="torch==2.4.1+cu121 torchvision==0.19.1+cu121 --extra-index-url https://download.pytorch.org/whl/cu121"
-```
+```text
 
 ### Multi-Architecture Builds
 
@@ -252,7 +252,7 @@ docker buildx build \
   -t codex-gpu:cu121 \
   --push \
   .
-```
+```text
 
 Note: GPU images are typically amd64 only due to NVIDIA CUDA requirements.
 

@@ -8,17 +8,17 @@
 - `.github/workflows` must not use triggers such as `on: push` or `pull_request`; workflows run only within the Codex environment or other ephemeral setups.
 
 ## mypy
-```
+```text
 tests/_codex_introspect.py: error: Source file found twice under different module names: "_codex_introspect" and "tests._codex_introspect"
 Found 1 error in 1 file (errors prevented further checking)
 
 ./tools/codex_supplied_task_runner.py:138: SyntaxWarning: invalid escape sequence '\.'
   Get-ChildItem .\.codex\sessions -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force
 
-```
+```text
 
 ## ruff
-```
+```text
 
 error: unexpected argument '--diff' found
 
@@ -26,10 +26,10 @@ Usage: ruff [OPTIONS] <COMMAND>
 
 For more information, try '--help'.
 
-```
+```text
 
 ## pytest
-```
+```text
 ..................................x.XxxXxxxx.....................x....................ss.......                          [100%]
 ======================================================= warnings summary =======================================================
 tests/test_fetch_messages.py::test_fetch_messages[custom_path]
@@ -44,7 +44,7 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 83 passed, 3 skipped, 8 xfailed, 2 xpassed, 2 warnings in 7.91s
 
 
-```
+```text
 
 **Note:** Look for mypy messages like 'Duplicate module named' and confirm they are gone.
 ## codex_exec
@@ -57,13 +57,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:00:58Z
 
@@ -71,13 +71,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:01:07Z
 
@@ -85,13 +85,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:01:17Z
 
@@ -99,13 +99,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:02:06Z
 
@@ -113,13 +113,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:03:36Z
 
@@ -127,13 +127,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:03:45Z
 
@@ -141,13 +141,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Hydra Validation 2025-08-25T05:04:25Z
 
@@ -155,13 +155,13 @@ tests/test_ndjson_db_parity.py::test_ndjson_matches_db
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 ## $ python -m codex_ml.cli.main train.epochs=2 tokenizer.name=gpt2 +dry_run=true
 ```/root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.cli.main' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
-```
+```text
 
 # Manual Hydra run after install
 
@@ -199,7 +199,7 @@ dry_run: true
 # Validation 2025-08-25T05:32:07Z
 
 ## pytest (metrics)
-```
+```text
 
 ============================================================ ERRORS ============================================================
 ____________________________________________ ERROR collecting tests/test_metrics.py ____________________________________________
@@ -228,15 +228,15 @@ ERROR tests/test_metrics.py
 
 (exit=2)
 
-```
+```text
 
 ## train_loop (demo)
-```
+```text
 /root/.pyenv/versions/3.12.10/bin/python: Error while finding module specification for 'codex_ml.train_loop' (ModuleNotFoundError: No module named 'codex_ml')
 
 (exit=1)
 
-```
+```text
 {
   "ts": "2025-08-25T05:59:45Z",
   "acceptance": {
@@ -253,7 +253,7 @@ ERROR tests/test_metrics.py
 ## 2025-08-25T15:04:00Z Checkpointing
 
 ### pre-commit
-```
+```text
 fix end of files.........................................................Passed
 trim trailing whitespace.................................................Passed
 check yaml...............................................................Passed
@@ -263,33 +263,33 @@ ruff-format..............................................................Passed
 bandit..................................................................Skipped
 Detect secrets..........................................................Skipped
 semgrep.................................................................Skipped
-```
+```text
 
 ### pytest
-```
+```text
 ........                                                                                                                 [100%]
 8 passed, 1 skipped in 29.46s
-```
+```text
 
 # Data loaders validation 2025-08-25T15:44:06Z
 
 ## pytest tests/test_loaders.py
-```
+```text
 .....                                                                                                                    [100%]
 5 passed in 0.06s
 
-```
+```text
 
 ## pre-commit run --all-files (partial)
-```
+```text
 
-```
+```text
 Pre-commit run was interrupted during semgrep environment setup.
 
 # Validation 2025-08-25T15:54:21Z
 
 ## $ pytest -q -k safety --maxfail=1
-```
+```text
 ============================================================ ERRORS ============================================================
 _____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
 ImportError while importing test module '/workspace/_codex_/tests/test_checkpoint_roundtrip.py'.
@@ -307,7 +307,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 1 error in 0.08s
 
 (exit=1)
-```
+```text
 
 # Validation 2025-08-25T15:58:16Z
 
@@ -316,12 +316,12 @@ ERROR tests/test_checkpoint_roundtrip.py
 3 passed in 0.07s
 
 (exit=0)
-```
+```text
 
 # Validation 2025-08-25T16:06:37Z
 
 ## pre-commit (all files)
-```
+```text
 [INFO] Initializing environment for https://github.com/pre-commit/pre-commit-hooks.
 [WARNING] repo `https://github.com/pre-commit/pre-commit-hooks` uses deprecated stage names (commit, push) which will be removed in a future version.  Hint: often `pre-commit autoupdate --repo https://github.com/pre-commit/pre-commit-hooks` will fix this.  if it does not -- consider reporting an issue to that repo.
 [INFO] Initializing environment for https://github.com/psf/black.
@@ -1509,10 +1509,10 @@ Found 1 error in 1 file (errors prevented further checking)
 
 (exit=1)
 
-```
+```text
 
 ## black --check .
-```
+```text
 would reformat /workspace/_codex_/.codex/run_db_utils_workflow.py
 would reformat /workspace/_codex_/.codex/run_workflow.py
 would reformat /workspace/_codex_/.codex/codex_repo_scout.py
@@ -1549,10 +1549,10 @@ Oh no! 💥 💔 💥
 
 (exit=1)
 
-```
+```text
 
 ## isort --check-only --profile black .
-```
+```text
 Skipped 1 files
 ERROR: /workspace/_codex_/src/codex_ml/train_loop.py Imports are incorrectly sorted and/or formatted.
 ERROR: /workspace/_codex_/src/codex_ml/safety/sandbox.py Imports are incorrectly sorted and/or formatted.
@@ -1573,10 +1573,10 @@ ERROR: /workspace/_codex_/tests/test_metrics.py Imports are incorrectly sorted a
 
 (exit=1)
 
-```
+```text
 
 ## flake8 .
-```
+```text
 ./.codex/codex_repo_scout.py:57:80: E501 line too long (82 > 79 characters)
 ./.codex/codex_repo_scout.py:62:80: E501 line too long (86 > 79 characters)
 ./.codex/codex_repo_scout.py:76:80: E501 line too long (86 > 79 characters)
@@ -2670,10 +2670,10 @@ ERROR: /workspace/_codex_/tests/test_metrics.py Imports are incorrectly sorted a
 
 (exit=1)
 
-```
+```text
 
 ## mypy --ignore-missing-imports .
-```
+```text
 training/engine_hf_trainer.py: error: Source file found twice under different module names: "engine_hf_trainer" and "training.engine_hf_trainer"
 training/engine_hf_trainer.py: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#mapping-file-paths-to-modules for more info
 training/engine_hf_trainer.py: note: Common resolutions include: a) adding `__init__.py` somewhere, b) using `--explicit-package-bases` or adjusting MYPYPATH
@@ -2683,10 +2683,10 @@ Found 1 error in 1 file (errors prevented further checking)
 
 (exit=2)
 
-```
+```text
 
 ## pytest with coverage gate
-```
+```text
 
 ============================================================ ERRORS ============================================================
 _____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
@@ -2706,12 +2706,12 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 (exit=1)
 
-```
+```text
 
 # Validation 2025-08-25T16:08:15Z
 
 ## pre-commit (all files)
-```
+```text
 fix end of files.........................................................Passed
 trim trailing whitespace.................................................Passed
 check yaml...............................................................Failed
@@ -2905,10 +2905,10 @@ Found 5 errors in 4 files (checked 45 source files)
 
 (exit=1)
 
-```
+```text
 
 ## black --check .
-```
+```text
 would reformat /workspace/_codex_/src/codex_ml/cli/main.py
 would reformat /workspace/_codex_/src/codex_ml/data/cli.py
 would reformat /workspace/_codex_/.codex/run_db_utils_workflow.py
@@ -2945,10 +2945,10 @@ Oh no! 💥 💔 💥
 
 (exit=1)
 
-```
+```text
 
 ## isort --check-only --profile black .
-```
+```text
 Skipped 2 files
 ERROR: /workspace/_codex_/src/codex_ml/train_loop.py Imports are incorrectly sorted and/or formatted.
 ERROR: /workspace/_codex_/src/codex_ml/safety/sandbox.py Imports are incorrectly sorted and/or formatted.
@@ -2969,10 +2969,10 @@ ERROR: /workspace/_codex_/tests/test_metrics.py Imports are incorrectly sorted a
 
 (exit=1)
 
-```
+```text
 
 ## flake8 .
-```
+```text
 ./scripts/deep_research_task_process.py:522:201: E501 line too long (209 > 200 characters)
 ./scripts/deploy_codex_pipeline.py:6:1: E265 block comment should start with '# '
 ./src/codex_ml/__init__.py:15:5: F401 '.symbolic_pipeline.ModelHandle' imported but unused
@@ -3083,10 +3083,10 @@ ERROR: /workspace/_codex_/tests/test_metrics.py Imports are incorrectly sorted a
 
 (exit=1)
 
-```
+```text
 
 ## mypy --ignore-missing-imports src
-```
+```text
 src/ingestion/encoding_detect.py:55: error: Name "enc" already defined on line 44  [no-redef]
 src/codex_ml/utils/checkpointing.py:105: error: Library stubs not installed for "yaml"  [import-untyped]
 src/codex_ml/utils/checkpointing.py:105: note: Hint: "python3 -m pip install types-PyYAML"
@@ -3099,10 +3099,10 @@ Found 5 errors in 4 files (checked 45 source files)
 
 (exit=1)
 
-```
+```text
 
 ## pytest with coverage gate
-```
+```text
 
 ============================================================ ERRORS ============================================================
 _____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
@@ -3122,12 +3122,12 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 (exit=1)
 
-```
+```text
 
 # Validation 2025-08-25T16:09:02Z
 
 ## pre-commit (all files)
-```
+```text
 fix end of files.........................................................Passed
 trim trailing whitespace.................................................Passed
 check yaml...............................................................Failed
@@ -3214,10 +3214,10 @@ mypy.................................................(no files to check)Skipped
 
 (exit=1)
 
-```
+```text
 
 ## black --check .
-```
+```text
 would reformat /workspace/_codex_/src/codex_ml/cli/main.py
 would reformat /workspace/_codex_/src/codex_ml/data/cli.py
 would reformat /workspace/_codex_/.codex/run_db_utils_workflow.py
@@ -3254,10 +3254,10 @@ Oh no! 💥 💔 💥
 
 (exit=1)
 
-```
+```text
 
 ## isort --check-only --profile black .
-```
+```text
 Skipped 2 files
 ERROR: /workspace/_codex_/src/codex_ml/train_loop.py Imports are incorrectly sorted and/or formatted.
 ERROR: /workspace/_codex_/src/codex_ml/safety/sandbox.py Imports are incorrectly sorted and/or formatted.
@@ -3278,10 +3278,10 @@ ERROR: /workspace/_codex_/tests/test_metrics.py Imports are incorrectly sorted a
 
 (exit=1)
 
-```
+```text
 
 ## flake8 apply_ci_precommit.py
-```
+```text
 tools/apply_ci_precommit.py:19:1: F401 'shutil' imported but unused
 tools/apply_ci_precommit.py:19:1: F401 're' imported but unused
 tools/apply_ci_precommit.py:19:11: E401 multiple imports on one line
@@ -3302,18 +3302,18 @@ tools/apply_ci_precommit.py:280:1: E305 expected 2 blank lines after class or fu
 
 (exit=1)
 
-```
+```text
 
 ## mypy apply_ci_precommit.py
-```
+```text
 Success: no issues found in 1 source file
 
 (exit=0)
 
-```
+```text
 
 ## pytest with coverage gate
-```
+```text
 
 ============================================================ ERRORS ============================================================
 _____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
@@ -3333,7 +3333,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 (exit=1)
 
-```
+```text
 
 # Validation 2025-08-25T16:19:31Z
 
@@ -3413,7 +3413,7 @@ curl: (7) Failed to connect to localhost port 8000 after 0 ms: Couldn't connect 
 # Validation 2025-08-25T20:21:56Z
 
 ## Install MkDocs deps
-```
+```text
 Collecting mkdocs==1.6.0 (from -r docs/requirements.txt (line 2))
   Downloading mkdocs-1.6.0-py3-none-any.whl.metadata (6.0 kB)
 Collecting mkdocs-material==9.5.27 (from -r docs/requirements.txt (line 3))
@@ -3573,10 +3573,10 @@ Successfully installed attrs-25.3.0 babel-2.17.0 beautifulsoup4-4.13.5 bleach-6.
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
-```
+```text
 
 ## mkdocs build --strict
-```
+```text
 INFO    -  Cleaning site directory
 INFO    -  Building documentation to directory: /workspace/_codex_/site
 INFO    -  The following pages exist in the docs directory, but are not included in the "nav" configuration:
@@ -3584,10 +3584,10 @@ INFO    -  The following pages exist in the docs directory, but are not included
 INFO    -  Documentation built in 0.34 seconds
 
 (exit=0)
-```
+```text
 
 ## Execute notebooks (optional)
-```
+```text
 nbconvert ok
 
 (exit=0)
@@ -3811,7 +3811,7 @@ Traceback (most recent call last):
 jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 
 (exit=1)
-```
+```text
 
 # Validation 2025-08-25T20:43:46Z
 - Created local artifacts at: /workspace/_codex_/output/experiments/run-1756154626
@@ -3833,17 +3833,17 @@ jupyter_client.kernelspec.NoSuchKernel: No such kernel named python3
 # Validation 2025-08-26T00:50:52Z
 
 ## mypy interfaces
-```
+```text
 usage: mypy [-h] [-v] [-V] [more options; see below]
             [-m MODULE] [-p PACKAGE] [-c PROGRAM_TEXT] [files ...]
 mypy: error: unrecognized arguments: -q
 
 (exit=2)
 
-```
+```text
 
 ## pytest interfaces
-```
+```text
 
 ============================================================ ERRORS ============================================================
 _____________________________________ ERROR collecting tests/test_checkpoint_roundtrip.py ______________________________________
@@ -3863,7 +3863,7 @@ ERROR tests/test_checkpoint_roundtrip.py
 
 (exit=1)
 
-```
+```text
 
 # Repo scan 2025-08-26T00:51:15Z
 - codex_ml/interfaces/reward_model.py
@@ -3877,15 +3877,15 @@ ERROR tests/test_checkpoint_roundtrip.py
 # Validation 2025-08-26T00:51:15Z
 
 ## mypy interfaces
-```
+```text
 Success: no issues found in 4 source files
 
 (exit=0)
 
-```
+```text
 
 ## pytest interfaces
-```
+```text
 
 ============================================================ ERRORS ============================================================
 _______________________________________ ERROR collecting tests/test_interfaces_compat.py _______________________________________
@@ -3906,7 +3906,7 @@ ERROR tests/test_interfaces_compat.py
 
 (exit=2)
 
-```
+```text
 
 # Repo scan 2025-08-26T00:51:52Z
 - src/codex_ml/interfaces/reward_model.py
@@ -3920,21 +3920,21 @@ ERROR tests/test_interfaces_compat.py
 # Validation 2025-08-26T00:51:52Z
 
 ## mypy interfaces
-```
+```text
 mypy: can't read file 'codex_ml/interfaces': No such file or directory
 
 (exit=2)
 
-```
+```text
 
 ## pytest interfaces
-```
+```text
 sss                                                                                                                      [100%]
 3 skipped in 0.05s
 
 (exit=0)
 
-```
+```text
 
 # Repo scan 2025-08-26T00:52:00Z
 - src/codex_ml/interfaces/reward_model.py
@@ -3948,21 +3948,21 @@ sss                                                                             
 # Validation 2025-08-26T00:52:00Z
 
 ## mypy interfaces
-```
+```text
 Success: no issues found in 4 source files
 
 (exit=0)
 
-```
+```text
 
 ## pytest interfaces
-```
+```text
 sss                                                                                                                      [100%]
 3 skipped in 0.04s
 
 (exit=0)
 
-```
+```text
 
 # Pre-commit 2025-08-26T00:52:30Z
 
@@ -4560,7 +4560,7 @@ Runs appear under specified experiment (when enabled); repeated runs with the sa
 # Deps 2025-08-26T05:28:24Z
 
 ## python -m pip install -r requirements-dev.txt
-```
+```text
 Requirement already satisfied: black in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from -r requirements-dev.txt (line 2)) (25.1.0)
 Requirement already satisfied: isort in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from -r requirements-dev.txt (line 3)) (6.0.1)
 Collecting flake8 (from -r requirements-dev.txt (line 4))
@@ -4902,22 +4902,22 @@ Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bra
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
-```
+```text
 
 ## python -m pip install -r requirements.txt
-```
+```text
 
 # Validation 2025-08-26T05:29:34Z
 
 ## GPU check
-```
+```text
 No NVIDIA GPU detected.
 
 (exit=0)
-```
+```text
 
 ## black --check .
-```
+```text
 Skipping .ipynb files as Jupyter dependencies are not installed.
 You can fix this by running ``pip install "black[jupyter]"``
 would reformat /workspace/_codex_/.codex/run_db_utils_workflow.py
@@ -4980,10 +4980,10 @@ Oh no! 💥 💔 💥
 52 files would be reformatted, 131 files would be left unchanged, 2 files would fail to reformat.
 
 (exit=123)
-```
+```text
 
 ## isort --check-only .
-```
+```text
 Skipped 1 files
 ERROR: /workspace/_codex_/functional_training.py Imports are incorrectly sorted and/or formatted.
 ERROR: /workspace/_codex_/src/codex_ml/pipeline.py Imports are incorrectly sorted and/or formatted.
@@ -5050,10 +5050,10 @@ ERROR: /workspace/_codex_/scripts/apply_session_logging_workflow.py Imports are 
 ERROR: /workspace/_codex_/scripts/deploy_codex_pipeline.py Imports are incorrectly sorted and/or formatted.
 
 (exit=1)
-```
+```text
 
 ## flake8 .
-```
+```text
 ./.codex/codex_repo_scout.py:57:80: E501 line too long (82 > 79 characters)
 ./.codex/codex_repo_scout.py:62:80: E501 line too long (86 > 79 characters)
 ./.codex/codex_repo_scout.py:76:80: E501 line too long (86 > 79 characters)
@@ -6384,18 +6384,18 @@ ERROR: /workspace/_codex_/scripts/deploy_codex_pipeline.py Imports are incorrect
 <unknown>:138: SyntaxWarning: invalid escape sequence '\.'
 
 (exit=1)
-```
+```text
 
 ## mypy --ignore-missing-imports .
-```
+```text
 services/api/main.py:55: error: Unterminated f-string literal (detected at line 55)  [syntax]
 Found 1 error in 1 file (errors prevented further checking)
 
 (exit=2)
-```
+```text
 
 ## pytest -q --maxfail=1
-```
+```text
 
 ============================================================ ERRORS ============================================================
 __________________________________________ ERROR collecting tests/test_activations.py __________________________________________
@@ -6418,7 +6418,7 @@ ERROR tests/test_activations.py
 1 error in 0.10s
 
 (exit=1)
-```
+```text
 
 ## pre-commit run --all-files
 
@@ -6431,7 +6431,7 @@ Check the log at /root/.cache/pre-commit/pre-commit.log
 # Deps 2025-08-26T05:45:48Z
 
 ## python -m pip install -r requirements-dev.txt
-```
+```text
 Requirement already satisfied: black in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from -r requirements-dev.txt (line 2)) (25.1.0)
 Requirement already satisfied: isort in /root/.pyenv/versions/3.12.10/lib/python3.12/site-packages (from -r requirements-dev.txt (line 3)) (6.0.1)
 Collecting flake8 (from -r requirements-dev.txt (line 4))
@@ -6773,22 +6773,22 @@ Successfully installed PyYAML-6.0.2 attrs-25.3.0 bandit-1.8.6 boltons-21.0.0 bra
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
 
 (exit=0)
-```
+```text
 
 ## python -m pip install -r requirements.txt
-```
+```text
 
 # Validation 2025-08-26T05:50:44Z
 
 ## GPU check
-```
+```text
 No NVIDIA GPU detected.
 
 (exit=0)
-```
+```text
 
 ## black --check .
-```
+```text
 Skipping .ipynb files as Jupyter dependencies are not installed.
 You can fix this by running ``pip install "black[jupyter]"``
 would reformat /workspace/_codex_/.codex/run_db_utils_workflow.py
@@ -6851,10 +6851,10 @@ Oh no! 💥 💔 💥
 53 files would be reformatted, 131 files would be left unchanged, 1 file would fail to reformat.
 
 (exit=123)
-```
+```text
 
 ## isort --check-only .
-```
+```text
 Skipped 1 files
 ERROR: /workspace/_codex_/functional_training.py Imports are incorrectly sorted and/or formatted.
 ERROR: /workspace/_codex_/training/engine_hf_trainer.py Imports are incorrectly sorted and/or formatted.
@@ -6921,10 +6921,10 @@ ERROR: /workspace/_codex_/tests/test_tokenization.py Imports are incorrectly sor
 ERROR: /workspace/_codex_/tests/test_mlflow_utils.py Imports are incorrectly sorted and/or formatted.
 
 (exit=1)
-```
+```text
 
 ## flake8 .
-```
+```text
 ./.codex/codex_repo_scout.py:57:80: E501 line too long (82 > 79 characters)
 ./.codex/codex_repo_scout.py:62:80: E501 line too long (86 > 79 characters)
 ./.codex/codex_repo_scout.py:76:80: E501 line too long (86 > 79 characters)
@@ -8256,24 +8256,24 @@ ERROR: /workspace/_codex_/tests/test_mlflow_utils.py Imports are incorrectly sor
 <unknown>:138: SyntaxWarning: invalid escape sequence '\.'
 
 (exit=1)
-```
+```text
 
 
 # Validation 2025-08-26T13:08:17Z
 
 ## HF Trainer knobs doc check
-```
+```text
 Unknown option: -
 usage: python [option] ... [-c cmd | -m mod | file | -] [arg] ...
 Try `python -h' for more information.
 
 (exit=2)
-```
+```text
 
 ## Dry-run compose syntax
-```
+```text
 ERROR: [Errno 2] No such file or directory: 'docker'
-```
+```text
 
 # Patch Summary 2025-08-26T13:18:52Z
 - Added GPU compose reservation and run.sh flag.
@@ -8283,7 +8283,7 @@ ERROR: [Errno 2] No such file or directory: 'docker'
 # Validation 2025-08-26T14:31:18Z
 
 ## python -m compileall .
-```
+```text
 Listing '.'...
 Listing './.codex'...
 Listing './.codex/automation_out'...
@@ -8592,10 +8592,10 @@ SyntaxError: keyword argument repeated: eval_dataset
   Get-ChildItem .\.codex\sessions -File | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force
 
 (exit=1)
-```
+```text
 
 ## pytest -q --maxfail=1
-```
+```text
 
 # Validation 2025-08-26T15:35:50.872437Z
 
@@ -9208,3 +9208,5 @@ ERROR tests/test_ingestion_read_text.py
 ERROR tests/tracking/test_mlflow_utils.py
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 1 skipped, 6 errors in 11.89s
+
+```

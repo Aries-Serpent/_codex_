@@ -39,7 +39,7 @@ All commands tested and working:
 ✅ python -m codex.cli session-logger --role=user --message="Test"
 ✅ python -m codex.cli viewer --format=text
 ✅ python -m codex.cli query-logs --search="Test"
-```
+```text
 
 ## Conclusion
 

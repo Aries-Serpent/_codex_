@@ -23,5 +23,13 @@ def test_patch_apply_add_update_delete(tmp_path):
         ),
         encoding="utf-8",
     )
-    code = subprocess.call([sys.executable, "-c", "import tools.patch_apply as p; p.main()", "--patch-file", str(patch)])
+    code = subprocess.call(
+        [
+            sys.executable,
+            "-c",
+            "import tools.patch_apply as p; p.main()",
+            "--patch-file",
+            str(patch),
+        ]
+    )
     assert code == 0

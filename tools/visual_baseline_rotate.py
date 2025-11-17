@@ -28,7 +28,9 @@ def rotate(dir_path: Path, keep: int) -> List[str]:
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Rotate baseline PNG artifacts (keep last N) per template directory")
+    ap = argparse.ArgumentParser(
+        description="Rotate baseline PNG artifacts (keep last N) per template directory"
+    )
     ap.add_argument("--root", default="visual_baseline", help="Baseline root directory")
     ap.add_argument("--template", required=True, help="Template name (subdirectory under root)")
     ap.add_argument("--keep", type=int, default=5, help="How many to keep")

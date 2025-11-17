@@ -34,7 +34,7 @@ All parameter logging is best-effort. Failures are silently ignored to preserve 
 
 ```bash
 export CODEX_ENABLE_MLFLOW=1
-```
+```text
 
 ### Step 2: (Optional) Set Environment Variables
 
@@ -45,7 +45,7 @@ export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)
 # Capture conda environment
 export CONDA_DEFAULT_ENV=$(conda info --envs | grep '*' | awk '{print $1}')
 # Or if already in conda env, it's usually set automatically
-```
+```text
 
 ### Step 3: Run Evaluation
 
@@ -55,7 +55,7 @@ python -m codex_ml.eval.runner \
   --metrics exact_match f1 \
   --output-dir results/eval_001 \
   --seed 42
-```
+```text
 
 ### Step 4: View Results in MLflow UI
 
@@ -65,7 +65,7 @@ scripts/tracking/mlflow_ui.sh
 
 # Or manually
 mlflow ui --backend-store-uri file:./mlruns --port 5000
-```
+```text
 
 Access at: http://localhost:5000
 
@@ -104,7 +104,7 @@ dataset.unlink()
 
 # View in UI
 scripts/tracking/mlflow_ui.sh
-```
+```text
 
 ## Logged Parameters in UI
 
@@ -121,7 +121,7 @@ For quick smoke testing:
 
 ```bash
 nox -s tracking_smoke
-```
+```text
 
 This creates a local `mlruns` directory and verifies the tracking URI setup.
 
@@ -133,7 +133,7 @@ Override the default tracking URI:
 
 ```bash
 export MLFLOW_TRACKING_URI=file:/custom/path/mlruns
-```
+```text
 
 The runner will still use `file:artifacts/mlruns` by default, but the `mlflow_ui.sh` script respects `MLFLOW_TRACKING_URI`.
 
@@ -142,7 +142,7 @@ The runner will still use `file:artifacts/mlruns` by default, but the `mlflow_ui
 ```bash
 # Edit mlflow_ui.sh or run manually
 mlflow ui --backend-store-uri file:./mlruns --port 8080
-```
+```text
 
 ## Error Handling
 
@@ -156,7 +156,7 @@ try:
     # ... log params ...
 except Exception:
     pass  # Silently ignore
-```
+```text
 
 **Behavior**:
 - If MLflow is not installed: evaluation continues normally
@@ -172,7 +172,7 @@ except Exception:
 **Solution**:
 ```bash
 pip install mlflow>=2.4
-```
+```text
 
 ### UI Shows No Runs
 
@@ -191,7 +191,7 @@ ls -la artifacts/mlruns/0
 
 # Verify tracking URI matches
 echo $MLFLOW_TRACKING_URI
-```
+```text
 
 ### Parameters Not Logged
 
@@ -207,7 +207,7 @@ python -c "import mlflow; print('MLflow OK')"
 # Check environment
 echo $CODEX_GIT_COMMIT
 echo $CONDA_DEFAULT_ENV
-```
+```text
 
 ## Comparison: Local vs Remote MLflow
 
@@ -226,7 +226,7 @@ echo $CONDA_DEFAULT_ENV
 
 ```bash
 export CODEX_GIT_COMMIT=$(git rev-parse --short HEAD)
-```
+```text
 
 Enables full reproducibility by tracking code version.
 
@@ -237,7 +237,7 @@ Keep evaluations in same location for easy comparison:
 ```bash
 # In .bashrc or .zshrc
 export MLFLOW_TRACKING_URI=file:./mlruns
-```
+```text
 
 ### 3. Clean Old Runs
 
@@ -247,14 +247,14 @@ mv mlruns mlruns_archive_$(date +%Y%m%d)
 
 # Or delete
 rm -rf mlruns
-```
+```text
 
 ### 4. Export Runs for Sharing
 
 ```bash
 # MLflow export (if needed for sharing)
 mlflow experiments export --experiment-id 0 --output-file experiment.json
-```
+```text
 
 ## Integration with Other Tools
 
@@ -263,7 +263,7 @@ mlflow experiments export --experiment-id 0 --output-file experiment.json
 ```bash
 # Hydra config can set CODEX_ENABLE_MLFLOW
 python run.py ++mlflow.enabled=true
-```
+```text
 
 ### With Jupyter
 
@@ -274,7 +274,7 @@ os.environ['CODEX_GIT_COMMIT'] = 'notebook_run'
 
 from codex_ml.eval.runner import run_evaluation
 # ... run evaluation ...
-```
+```text
 
 ### With DVC
 
@@ -283,7 +283,7 @@ Track MLflow runs alongside DVC metrics:
 ```bash
 dvc metrics show
 # Compare with MLflow UI for richer details
-```
+```text
 
 ## See Also
 

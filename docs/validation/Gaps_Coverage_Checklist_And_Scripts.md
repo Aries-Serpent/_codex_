@@ -17,7 +17,7 @@ print("Missing in gaps:", sorted(calc_low - low))
 print("Unexpected in gaps:", sorted(low - calc_low))
 sys.exit(1 if (calc_low - low) or (low - calc_low) else 0)
 PY
-```
+```text
 
 2) Primary deficit sanity
 ```bash
@@ -32,7 +32,7 @@ for g in gaps["low_maturity"]:
 print("Primary deficit mismatches:", mismatch)
 sys.exit(1 if mismatch else 0)
 PY
-```
+```text
 
 3) Zero-component inventory
 ```bash
@@ -41,7 +41,7 @@ import json
 zeros = json.load(open("audit_artifacts/component_gaps.json"))
 print(json.dumps(zeros, indent=2))
 PY
-```
+```text
 
 4) Missing required patterns
 ```bash
@@ -55,7 +55,7 @@ for c in scored["capabilities"]:
     if miss:
         print(c["id"], "missing:", ", ".join(miss))
 PY
-```
+```text
 
 5) Missing detectors (overrides)
 ```bash
@@ -69,7 +69,7 @@ missing = sorted(set(over.keys()) - have)
 print("Missing detectors:", missing)
 exit(1 if missing else 0)
 PY
-```
+```text
 
 Checklist:
 - [ ] gaps.json matches threshold logic

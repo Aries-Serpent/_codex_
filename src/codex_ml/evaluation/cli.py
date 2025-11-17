@@ -12,12 +12,13 @@ Exit codes:
     3 runtime error
     4 determinism mismatch (report comparison)
 """
+
 from __future__ import annotations
+
 import importlib
 import json
-import sys
 from pathlib import Path
-from typing import Optional, Dict, Any, Callable, Sequence, Iterable, List
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence
 
 import typer
 
@@ -81,7 +82,9 @@ def _resolve_metrics(cfg: Dict[str, Any], names: Sequence[str] | None) -> Dict[s
     return resolved
 
 
-def _resolve_transform(cfg: Dict[str, Any], override: Optional[str], key: str) -> Optional[Callable]:
+def _resolve_transform(
+    cfg: Dict[str, Any], override: Optional[str], key: str
+) -> Optional[Callable]:
     evaluation_cfg = cfg.get("evaluation", {})
     spec = override or evaluation_cfg.get(key)
     if spec is None:
@@ -137,7 +140,10 @@ def run_command(
     criterion = cfg.get("_criterion")
 
     if model is None or dataloader is None or criterion is None:
-        typer.echo("Config must inject _model_obj, _eval_dataloader, _criterion for reference CLI.", err=True)
+        typer.echo(
+            "Config must inject _model_obj, _eval_dataloader, _criterion for reference CLI.",
+            err=True,
+        )
         raise typer.Exit(code=2)
 
     log_dir = Path("runs/eval")
@@ -238,7 +244,7 @@ def report_command(
         typer.echo(json.dumps(out, indent=2))
     else:
         typer.echo(f"Report: loss={out['loss']:.4f} count={out['count']} metrics={out['metrics']}")
-    
+
     # Check determinism after output so JSON is still returned
     if compare and not out["determinism_match"]:
         typer.echo("Determinism mismatch detected.", err=True)

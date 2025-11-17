@@ -22,50 +22,50 @@
 ## 📦 Files Created/Modified
 
 ### Core Modules (Python)
-```
+```text
 src/codex/archive/
 ├── standardization.py         (NEW) - 195 LOC - Standardization manager
 ├── sigstore_client.py         (NEW) - 135 LOC - Keyless signing client  
 ├── evidence_schema.py         (NEW) - 140 LOC - Schema validation & migration
 └── [api.py future integration]
-```
+```text
 
 ### Schema Definitions (JSON)
-```
+```text
 schemas/
 ├── archive_evidence_schema_v1.json  (NEW) - 55 lines - Legacy format
 └── archive_evidence_schema_v2.json  (NEW) - 135 lines - Standardized format
-```
+```text
 
 ### Database Migrations (SQL)
-```
+```text
 db/migrations/
 ├── sqlite/002_add_standardization.sql     (NEW) - 24 lines
 ├── postgres/002_add_standardization.sql   (NEW) - 22 lines
 └── mariadb/002_add_standardization.sql    (NEW) - 22 lines
-```
+```text
 
 ### Tests
-```
+```text
 tests/archive/
 └── test_standardization.py    (NEW) - 120 LOC - 10 comprehensive tests
-```
+```text
 
 ### Documentation
-```
+```text
 docs/arch/
 ├── adr-2025-11-02-archive-sigstore-integration.md      (NEW) - 180 lines
 ├── adr-2025-11-03-evidence-schema-versioning.md        (NEW) - 200 lines
 └── _archive-policy/
     ├── standardization-framework.md                    (NEW) - 380 lines
     └── README-standardization.md                       (NEW) - 185 lines
-```
+```text
 
 ### Scripts
-```
+```text
 scripts/status/
 └── render_monthly_html.py     (NEW) - 128 LOC - Monthly HTML report renderer
-```
+```text
 
 ---
 
@@ -86,7 +86,7 @@ tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_auto_de
 tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_migrate_v1_to_v2 PASSED
 
 ============================== 10 passed in 0.24s ==============================
-```
+```text
 
 **Result**: ✅ 100% pass rate
 
@@ -143,7 +143,7 @@ tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_migrate
   "issuer": "https://token.actions.githubusercontent.com",
   "signed_at": "2025-11-03T00:00:00Z"
 }
-```
+```text
 
 ### 3. Sigstore Integration (Mock)
 - **GitHub OIDC**: Ephemeral identity from GitHub Actions
@@ -165,7 +165,7 @@ tests/archive/test_standardization.py::TestEvidenceSchemaValidator::test_migrate
 ```bash
 export CODEX_STANDARDIZATION_ENABLED=true
 export CODEX_ENABLE_SIGNING=false  # true in GitHub Actions
-```
+```text
 
 ### Check Status
 ```python
@@ -181,7 +181,7 @@ print(report)
 #   "schema_versions_supported": ["1.0", "2.0"],
 #   "compliance": {"slsa_l3": True, "in_toto_ready": True, "saa_compliant": True}
 # }
-```
+```text
 
 ### Enhance Evidence Record
 ```python
@@ -195,7 +195,7 @@ record = {
 
 enhanced = manager.enhance_evidence_record(record, "user", sign_now=False)
 # enhanced now includes schemaVersion and standardizationMetadata
-```
+```text
 
 ### Migrate v1 → v2
 ```python
@@ -203,7 +203,7 @@ from src.codex.archive.evidence_schema import EvidenceSchemaValidator
 
 validator = EvidenceSchemaValidator()
 v2_record = validator.migrate_to_v2(v1_record)
-```
+```text
 
 ---
 
@@ -318,7 +318,7 @@ pytest tests/archive/test_standardization.py -v
 
 # Check integration
 python -c "from src.codex.archive.standardization import StandardizationManager; print('✓ OK')"
-```
+```text
 
 ---
 

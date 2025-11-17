@@ -15,7 +15,7 @@ python -c "from codex_ml.monitoring.microhelpers import sample; import json; pri
 
 codex-perf --numpy-matmul --size 2048 --iters 5
 codex-perf --torch-matmul --size 4096 --iters 10 --json
-```
+```text
 
 ### Extras (opt-in)
 
@@ -35,7 +35,7 @@ codex-perf --torch-matmul --size 4096 --iters 10 --json
 
 ```bash
 export MLFLOW_TRACKING_URI="file:./artifacts/mlruns"
-```
+```text
 
 ## Flow at a glance
 
@@ -47,7 +47,7 @@ flowchart LR
     T -->|checkpoints| A[(./artifacts)]
     T -->|system stats| LOG[(logs)]
   end
-```
+```text
 
 > All optional deps (psutil, pynvml, torch, numpy, mlflow) are **guarded**. Missing deps degrade gracefully.
 

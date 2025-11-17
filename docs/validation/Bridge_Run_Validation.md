@@ -43,5 +43,5 @@ echo "CLI: $CLI_MANIFEST"; sha256sum "$CLI_MANIFEST"
 echo "BRIDG: $BR_MANIFEST"; sha256sum "$BR_MANIFEST"
 echo "From API (CLI) : $CLI_HASH"
 echo "From API (BRIDG): $BR_HASH"
-```
+```text
 

@@ -19,7 +19,7 @@ All requested offline hardening and reproducibility guard patchsets have been ve
 
 ```python
 metrics_sinks = _normalise_metrics_sink(getattr(eval_cfg, "metrics_sink", "ndjson"))
-```
+```text
 
 The default is already `"ndjson"` with CSV as a fallback option. The system supports multiple sinks via the `_normalise_metrics_sink` function.
 
@@ -38,7 +38,7 @@ try:
     repro.set_seed(seed)
 except Exception as exc:
     LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)
-```
+```text
 
 The training CLI already calls `repro.set_seed(seed)` to ensure deterministic behavior.
 
@@ -69,7 +69,7 @@ def assign_split(example_id: str) -> str:
     if fold < 90:
         return "val"
     return "test"
-```
+```text
 
 **Tests**: Multiple test files exist:
 - `tests/test_splits.py`
@@ -90,7 +90,7 @@ try:
 except Exception:  # ImportError and others
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
-```
+```text
 
 The system gracefully handles missing PEFT dependencies. The `build_lora` function returns the model unchanged if PEFT is not installed:
 
@@ -99,7 +99,7 @@ def build_lora(model: Any, cfg: Optional[LoraBuildCfg] = None) -> Any:
     if LoraConfig is None or get_peft_model is None:
         return model
     # ... PEFT logic
-```
+```text
 
 ---
 
@@ -121,7 +121,7 @@ def model_smoke(session: nox.Session) -> None:
             "load_model({'device': 'cpu', 'dtype': 'float32'})"
         ),
     )
-```
+```text
 
 **Usage**: `nox -s model-smoke`
 
@@ -140,7 +140,7 @@ setup:
 	fi
 	pip install -r requirements/lock.txt
 	pip install -r requirements/dev.txt --no-deps
-```
+```text
 
 The Makefile enforces `requirements/lock.txt` for reproducible installs.
 
@@ -168,7 +168,7 @@ The tokenization CLI exists but doesn't have all the explicit offline flags ment
 # For immutable builds, prefer digest pinning. Example:
 # FROM python:3.11-slim@sha256:<digest-here>
 FROM python:3.11-slim AS builder
-```
+```text
 
 ---
 

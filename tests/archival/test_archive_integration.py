@@ -27,6 +27,7 @@ class TestArchiveBasics:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_manifest_file_structure(self):
@@ -54,6 +55,7 @@ class TestArchiveBasics:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_evidence_file_creation(self):
@@ -80,6 +82,7 @@ class TestArchiveBasics:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
 
@@ -140,6 +143,7 @@ class TestManifestOperations:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_manifest_validation(self):
@@ -196,6 +200,7 @@ class TestEvidenceLogging:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(test_dir)
 
     def test_evidence_timestamp_format(self):
@@ -234,7 +239,8 @@ class TestArchiveScripts:
         """Test that archive module can be imported."""
         try:
             from src.codex import archive
-            assert hasattr(archive, 'api') or True  # Module exists
+
+            assert hasattr(archive, "api") or True  # Module exists
         except ImportError:
             pytest.skip("Archive module not in path")
 
@@ -253,6 +259,7 @@ class TestArchiveTombstoneCompliance:
         """Test that tombstone compliance test can be imported."""
         try:
             from tests.archival import test_archival_tombstone_required
-            assert hasattr(test_archival_tombstone_required, 'test_missing_tombstone_fails')
+
+            assert hasattr(test_archival_tombstone_required, "test_missing_tombstone_fails")
         except ImportError as e:
             pytest.skip(f"Cannot import tombstone test: {e}")

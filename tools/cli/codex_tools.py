@@ -20,8 +20,16 @@ def cmd_fences(_: argparse.Namespace) -> int:
 def cmd_eval(args: argparse.Namespace) -> int:
     rules = args.rules or os.path.join(REPO_ROOT, "manifests", "codex_eval_rules.v3.json")
     inp = args.input or os.path.join(REPO_ROOT, "samples", "assistant_message_summary.sample.json")
-    return run([sys.executable, os.path.join(REPO_ROOT, "tools", "codex_evaluator.py"),
-                "--rules", rules, "--input", inp])
+    return run(
+        [
+            sys.executable,
+            os.path.join(REPO_ROOT, "tools", "codex_evaluator.py"),
+            "--rules",
+            rules,
+            "--input",
+            inp,
+        ]
+    )
 
 
 def cmd_gate(args: argparse.Namespace) -> int:

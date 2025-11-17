@@ -1,4 +1,5 @@
 """Fail if active GitHub workflows are present without opt-in."""
+
 from __future__ import annotations
 
 import os

@@ -44,33 +44,39 @@ def ts() -> str:
 
 
 def append(path: Path, txt: str) -> None:
-    path.write_text(
-        path.read_text(encoding="utf-8") + txt, encoding="utf-8"
-    ) if path.exists() else path.write_text(txt, encoding="utf-8")
+    (
+        path.write_text(path.read_text(encoding="utf-8") + txt, encoding="utf-8")
+        if path.exists()
+        else path.write_text(txt, encoding="utf-8")
+    )
 
 
 def log_change(title: str, path: Path, rationale: str, content_preview: str) -> None:
     append(
         CHANGE_LOG,
-        textwrap.dedent(f"""
+        textwrap.dedent(
+            f"""
     ## {ts()} — {path.relative_to(REPO)}
     - **Action:** {title}
     - **Rationale:** {rationale}
     ```text
     {content_preview[:4000]}
     ```
-    """).lstrip(),
+    """
+        ).lstrip(),
     )
 
 
 def q5(step: str, err: str, ctx: str) -> None:
-    prompt = textwrap.dedent(f"""\
+    prompt = textwrap.dedent(
+        f"""\
     Question for ChatGPT-5 {ts()}:
     While performing [{step}], encountered the following error:
     {err}
     Context: {ctx}
     What are the possible causes, and how can this be resolved while preserving intended functionality?
-    """)
+    """
+    )
     append(
         ERRORS,
         json.dumps({"ts": ts(), "step": step, "error": err, "context": ctx}) + "\n",
@@ -370,9 +376,7 @@ def readme_cleanup():
         cleaned = re.sub(r"\]\(\)", "](#)", txt)  # replace empty links
         if cleaned != txt:
             p.write_text(cleaned, encoding="utf-8")
-            log_change(
-                "edit", p, "Normalize empty Markdown links to anchors", cleaned[:500]
-            )
+            log_change("edit", p, "Normalize empty Markdown links to anchors", cleaned[:500])
     except Exception as e:
         q5("3.README-cleanup", str(e), f"path={p}")
 
@@ -424,15 +428,9 @@ def main():
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--apply", action="store_true", help="write metrics, trainer, tests"
-    )
-    ap.add_argument(
-        "--validate", action="store_true", help="run tests & demo training loop"
-    )
-    ap.add_argument(
-        "--epochs", type=int, default=3, help="epochs for demo training loop"
-    )
+    ap.add_argument("--apply", action="store_true", help="write metrics, trainer, tests")
+    ap.add_argument("--validate", action="store_true", help="run tests & demo training loop")
+    ap.add_argument("--epochs", type=int, default=3, help="epochs for demo training loop")
     args = ap.parse_args()
 
     if args.apply:

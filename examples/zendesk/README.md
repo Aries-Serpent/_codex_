@@ -8,7 +8,7 @@ Run the interactive setup script:
 
 ```bash
 ./quickstart.sh
-```
+```text
 
 This will:
 1. Check prerequisites (_codex_ installation, credentials)
@@ -42,7 +42,7 @@ Interactive setup script for first-time Zendesk configuration management.
 **Usage**:
 ```bash
 ./quickstart.sh
-```
+```text
 
 **Features**:
 - Guided credential setup
@@ -85,7 +85,7 @@ Located in `../../scripts/task_sequences/`:
   ],
   "description": "Description of what this trigger does"
 }
-```
+```text
 
 ### Macro Template
 
@@ -109,7 +109,7 @@ Located in `../../scripts/task_sequences/`:
   ],
   "description": "Description of macro purpose"
 }
-```
+```text
 
 ### View Template
 
@@ -133,7 +133,7 @@ Located in `../../scripts/task_sequences/`:
     "sort_order": "asc"
   }
 }
-```
+```text
 
 ### Webhook Template
 
@@ -149,7 +149,7 @@ Located in `../../scripts/task_sequences/`:
     "Content-Type": "application/json"
   }
 }
-```
+```text
 
 ## Common Use Cases
 
@@ -170,7 +170,7 @@ Located in `../../scripts/task_sequences/`:
     {"field": "status", "value": "open"}
   ]
 }
-```
+```text
 
 ### 2. Incident Escalation
 
@@ -197,7 +197,7 @@ Located in `../../scripts/task_sequences/`:
     ]
   }
 }
-```
+```text
 
 ### 3. Agent Queue View
 
@@ -217,7 +217,7 @@ Located in `../../scripts/task_sequences/`:
     "sort_order": "desc"
   }
 }
-```
+```text
 
 ### 4. Standard Resolution Macros
 
@@ -243,7 +243,7 @@ Located in `../../scripts/task_sequences/`:
     }
   ]
 }
-```
+```text
 
 ## Testing Your Configurations
 
@@ -251,7 +251,7 @@ Located in `../../scripts/task_sequences/`:
 
 ```bash
 jq . configs/desired/zendesk/triggers.json
-```
+```text
 
 ### 2. Generate Diff
 
@@ -260,20 +260,20 @@ codex zendesk diff triggers \
   --desired-file configs/desired/zendesk/triggers.json \
   --current-file snapshot/dev/latest/triggers.json \
   --output diffs/triggers_diff.json
-```
+```text
 
 ### 3. Review Diff
 
 ```bash
 cat diffs/triggers_diff.json | jq
-```
+```text
 
 ### 4. Dry Run
 
 ```bash
 codex zendesk apply triggers plans/triggers_plan.json \
   --env=dev --dry-run
-```
+```text
 
 ## Best Practices
 

@@ -21,7 +21,7 @@ Confirm generative metrics behave correctly as optional features and the evaluat
 nox -s repro_smoke
 # Or directly:
 pytest -q tests/test_metrics_generative.py
-```
+```text
 
 **Expected Outcome**:
 - All 8 tests pass
@@ -47,7 +47,7 @@ pip install ".[metrics]"
 
 # Run specific test
 pytest -q tests/test_metrics_generative.py::test_bleu_optional_behavior -v
-```
+```text
 
 **Expected Outcome**:
 - BLEU metric returns a float in range [0, 1]
@@ -64,7 +64,7 @@ assert score is not None, 'BLEU should return value with nltk installed'
 assert 0 <= score <= 1, f'BLEU score {score} out of range'
 print(f'✓ BLEU available: score={score:.3f}')
 "
-```
+```text
 
 ### 3. ROUGE-L Available With Extras
 
@@ -75,7 +75,7 @@ pip install ".[metrics]"
 
 # Run specific test
 pytest -q tests/test_metrics_generative.py::test_rouge_l_optional_behavior -v
-```
+```text
 
 **Expected Outcome**:
 - ROUGE-L metric returns a float in range [0, 1]
@@ -92,7 +92,7 @@ assert score is not None, 'ROUGE-L should return value with rouge_score installe
 assert 0 <= score <= 1, f'ROUGE-L score {score} out of range'
 print(f'✓ ROUGE-L available: score={score:.3f}')
 "
-```
+```text
 
 ### 4. Runner ROUGE-L Compatibility
 
@@ -101,7 +101,7 @@ print(f'✓ ROUGE-L available: score={score:.3f}')
 # Test runner compatibility
 pytest -q tests/test_metrics_generative.py::test_runner_handles_rouge_float_return -v
 pytest -q tests/test_metrics_generative.py::test_runner_handles_rouge_dict_return -v
-```
+```text
 
 **Expected Outcome**:
 - Runner accepts float return from ROUGE metric
@@ -125,7 +125,7 @@ if isinstance(rouge_score, dict):
             break
 else:
     results[metric_name] = rouge_score
-```
+```text
 
 ## Without Metrics Extras
 
@@ -138,7 +138,7 @@ pip uninstall -y nltk rouge-score sacrebleu
 
 # Run tests
 pytest -q tests/test_metrics_generative.py
-```
+```text
 
 **Expected Outcome**:
 - All tests still pass
@@ -164,7 +164,7 @@ rouge = get_metric('rougeL')
 score = rouge(['test'], ['test'])
 print(f'ROUGE-L without deps: {score}')  # Should be None
 "
-```
+```text
 
 ## Acceptance Criteria
 
@@ -189,7 +189,7 @@ pip install -e ".[metrics]"
 pytest tests/test_metrics_generative.py -v
 
 # Expected: All 8 tests pass, BLEU/ROUGE return actual scores
-```
+```text
 
 ### Scenario 2: Production Environment (Without Extras)
 
@@ -201,7 +201,7 @@ pip install -e .
 pytest tests/test_metrics_generative.py -v
 
 # Expected: All 8 tests pass, BLEU/ROUGE return None
-```
+```text
 
 ### Scenario 3: Evaluation With Optional Metrics
 
@@ -235,7 +235,7 @@ print('Metrics:', result['metrics'])
 
 dataset.unlink()
 "
-```
+```text
 
 ## Troubleshooting
 
@@ -244,24 +244,24 @@ dataset.unlink()
 **Check Installation**:
 ```bash
 python -c "import nltk; print(nltk.__version__)"
-```
+```text
 
 **Solution**:
 ```bash
 pip install --force-reinstall nltk>=3.8
-```
+```text
 
 ### ROUGE-L Returns None Despite Installation
 
 **Check Installation**:
 ```bash
 python -c "import rouge_score; print(rouge_score.__version__)"
-```
+```text
 
 **Solution**:
 ```bash
 pip install --force-reinstall rouge-score>=0.1.2
-```
+```text
 
 ### Runner Raises Error on ROUGE Dict
 
@@ -284,7 +284,7 @@ If your implementation uses different keys, the test will fail with clear messag
 pip install pytest pytest-mock -q
 # Or full dev install
 pip install -r requirements-dev.txt
-```
+```text
 
 ## Performance Notes
 

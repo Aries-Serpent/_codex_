@@ -5,7 +5,7 @@ Use `python -m codex_ml.cli track bootstrap` to enforce **local** tracking store
 ```bash
 python -m codex_ml.cli track bootstrap --root ./mlruns_local --backend both --mode offline --write-env .codex/exports.env --print-exports
 source <(python -m codex_ml.cli track bootstrap --root ./mlruns_local --backend mlflow --print-exports)
-```
+```text
 
 - **MLflow**: produces a `file:` tracking URI (`MLFLOW_TRACKING_URI`) and defaults the experiment name to `codex-local`.
 - **Weights & Biases**: sets `WANDB_MODE=offline` by default (use `--mode disabled` to emit `WANDB_DISABLED=true`).

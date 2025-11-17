@@ -53,9 +53,7 @@ def sh(
             args, cwd=cwd or REPO_ROOT, capture_output=capture, text=True, check=False
         )
         if check and proc.returncode != 0:
-            raise subprocess.CalledProcessError(
-                proc.returncode, args, proc.stdout, proc.stderr
-            )
+            raise subprocess.CalledProcessError(proc.returncode, args, proc.stdout, proc.stderr)
         return proc.returncode, proc.stdout or "", proc.stderr or ""
     except Exception as e:
         log_error(
@@ -227,10 +225,7 @@ def patch_session_logger(path: Path) -> bool:
     m = re.search(r"def\s+init_db\s*\(([^)]*)\)\s*:\s*\n", content)
     if m and "INITIALIZED_PATHS" in content:
         params = [p.strip().split("=")[0].strip() for p in m.group(1).split(",")]
-        path_param = (
-            next((p for p in params if p and p not in {"self", "cls"}), None)
-            or "db_path"
-        )
+        path_param = next((p for p in params if p and p not in {"self", "cls"}), None) or "db_path"
         guard = (
             f"    _codex_path = {path_param}\n"
             f"    if _codex_path in INITIALIZED_PATHS:\n"
@@ -275,7 +270,8 @@ def patch_fetch_messages(path: Path) -> bool:
 
     # Ensure import + call for sqlite_patch.auto_enable_from_env
     if "auto_enable_from_env" not in content:
-        header = textwrap.dedent("""
+        header = textwrap.dedent(
+            """
         # --- Codex patch: enable sqlite pragmas from environment (best-effort)
         try:
             from sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
@@ -283,7 +279,8 @@ def patch_fetch_messages(path: Path) -> bool:
             def _codex_auto_enable_from_env():
                 return None
         _codex_auto_enable_from_env()
-        """).lstrip("\n")
+        """
+        ).lstrip("\n")
         # After imports block
         m = re.search(
             r"(?:^|\n)(?:from\s+\S+\s+import\s+\S+|import\s+\S+)(?:.*\n)+(?!\s*from|\s*import)",
@@ -298,7 +295,8 @@ def patch_fetch_messages(path: Path) -> bool:
 
     # Add pooled connection manager
     if "def get_conn(" not in content:
-        cmgr = textwrap.dedent("""
+        cmgr = textwrap.dedent(
+            """
         import sqlite3, contextlib, os
         _POOL: dict[str, sqlite3.Connection] = {}
         @contextlib.contextmanager
@@ -320,7 +318,8 @@ def patch_fetch_messages(path: Path) -> bool:
                     yield conn
                 finally:
                     conn.close()
-        """).lstrip("\n")
+        """
+        ).lstrip("\n")
         content = cmgr + "\n" + content
         changed = True
 
@@ -426,17 +425,14 @@ def run_precommit_for(files: List[Path]) -> Tuple[int, str]:
     args = ["pre-commit", "run", "--files"] + [str(f) for f in files]
     rc, out, err = sh(args, step=step, check=False)
     if rc != 0:
-        log_error(
-            step, "pre-commit failed", err or out, {"files": [str(f) for f in files]}
-        )
+        log_error(step, "pre-commit failed", err or out, {"files": [str(f) for f in files]})
     return rc, out or err
 
 
 def run_targeted_pytest() -> Tuple[int, str]:
     step = "3.x pytest"
     test_expr = (
-        "tests/test_session_hooks.py::"
-        "TestPythonSessionHooks::test_session_logs_after_cwd_change"
+        "tests/test_session_hooks.py::" "TestPythonSessionHooks::test_session_logs_after_cwd_change"
     )
     rc, out, err = sh(["pytest", "-q", test_expr], step=step, check=False)
     if rc != 0:
@@ -506,8 +502,7 @@ def main():
 
     if patch_fetch_messages(FILES["fetch_messages"]):
         implemented["t4..t6"] = (
-            "Enabled sqlite_patch; added pooled context manager; "
-            "attempted connect rewrites"
+            "Enabled sqlite_patch; added pooled context manager; " "attempted connect rewrites"
         )
     else:
         gaps.append("fetch_messages unchanged or partially changed")
@@ -518,9 +513,7 @@ def main():
         gaps.append("session_hooks unchanged (no open() patterns or read-only)")
 
     # 3.x Lint only on touched files
-    rc_pc, out_pc = run_precommit_for(
-        [FILES["session_logger"], FILES["fetch_messages"]]
-    )
+    rc_pc, out_pc = run_precommit_for([FILES["session_logger"], FILES["fetch_messages"]])
     if rc_pc != 0:
         had_error = True
 

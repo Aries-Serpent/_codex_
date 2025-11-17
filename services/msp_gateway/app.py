@@ -22,7 +22,7 @@ log_dir.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=getattr(logging, settings.log_level.upper()),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ START_TIME = time.time()
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application
-    
+
     Returns:
         Configured FastAPI application
     """
@@ -44,7 +44,7 @@ def create_app() -> FastAPI:
         docs_url="/docs" if not settings.offline else None,
         redoc_url="/redoc" if not settings.offline else None,
     )
-    
+
     # Add CORS middleware (local mode: allow all origins)
     app.add_middleware(
         CORSMiddleware,
@@ -53,31 +53,31 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # Add custom middleware. Starlette wraps middleware such that the most
     # recently added middleware runs first. Register the tenant context before
     # the rate limiter so tenant information is attached to the request state
     # prior to rate limiting checks.
     app.add_middleware(TenantContextMiddleware)
     app.add_middleware(RateLimitMiddleware)
-    
+
     # Include routers
     app.include_router(kb_router)
     app.include_router(infer_router)
     app.include_router(admin_router)
-    
+
     # Health check endpoint
     @app.get("/health", response_model=HealthResponse, tags=["health"])
     async def health_check():
         """Health check endpoint"""
         uptime = time.time() - START_TIME
-        
+
         # Basic component checks
         checks = {
             "database": True,  # SQLite is always available
             "policies_loaded": True,  # Policies loaded at startup
         }
-        
+
         return HealthResponse(
             status="healthy",
             version="0.1.0",
@@ -85,7 +85,7 @@ def create_app() -> FastAPI:
             uptime_seconds=uptime,
             checks=checks,
         )
-    
+
     # Root endpoint
     @app.get("/", tags=["info"])
     async def root():
@@ -100,28 +100,28 @@ def create_app() -> FastAPI:
                 "inference": "/v1/infer",
                 "kb_query": "/v1/query_kb",
                 "admin": "/admin",
-            }
+            },
         }
-    
+
     # Exception handlers
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
         """Global exception handler"""
         logger.error(f"Unhandled exception: {exc}", exc_info=True)
-        
+
         error_response = ErrorResponse(
             error="InternalServerError",
             message="An unexpected error occurred",
             details={"exception": str(exc)} if not settings.offline else {},
         )
-        
+
         return JSONResponse(
             status_code=500,
             content=error_response.model_dump(),
         )
-    
+
     logger.info(f"MSP Gateway application created (offline_mode={settings.offline})")
-    
+
     return app
 
 

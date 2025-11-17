@@ -5,12 +5,12 @@ Install the requirement if needed:
 
 ```bash
 pip install -r requirements/lock.txt
-```
+```text
 ## Export
 
 ```bash
 python tools/export_to_parquet.py
-```
+```text
 The script attaches `.artifacts/snippets.db`, installs the `httpfs` and `azure` extensions, and writes Parquet files under `parquet/`.
 Each partition corresponds to a `snippet.id` value.
 
@@ -26,9 +26,9 @@ SET azure_storage_access_key='ACCESS_KEY';
 -- Read data from Azure Blob Storage
 SELECT *
 FROM read_parquet('azure://container/snippet/id=1/*.parquet');
-```
+```text
 For a local dataset:
 
 ```sql
 SELECT * FROM read_parquet('parquet/snippet/id=1/*.parquet');
-```
+```text

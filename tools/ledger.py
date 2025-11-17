@@ -2,6 +2,7 @@
 
 Provides helpers to append events and verify the chain integrity.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -100,12 +101,14 @@ def _main() -> int:
     ns = ap.parse_args()
     if ns.cmd == "append":
         data = _parse_kv(ns.data)
-        rec = append_event({
-            "run_id": ns.run_id,
-            "event": ns.event,
-            "status": ns.status,
-            "data": data,
-        })
+        rec = append_event(
+            {
+                "run_id": ns.run_id,
+                "event": ns.event,
+                "status": ns.status,
+                "data": data,
+            }
+        )
         print(json.dumps(rec, indent=2))
         return 0
     else:  # verify

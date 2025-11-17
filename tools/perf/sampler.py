@@ -11,6 +11,7 @@ try:
 except Exception:
     nvml = None
 
+
 class PerfSampler:
     def __init__(self, out="artifacts/logs/perf.ndjson", interval=2.0):
         self.out = Path(out)
@@ -22,7 +23,7 @@ class PerfSampler:
             except Exception:
                 # GPU not available or NVML initialization failed
                 pass
-    
+
     def sample_once(self):
         row = {"ts": time.time()}
         if psutil:
@@ -32,14 +33,14 @@ class PerfSampler:
                 dev = nvml.nvmlDeviceGetHandleByIndex(0)
                 row["gpu"] = {
                     "util": nvml.nvmlDeviceGetUtilizationRates(dev).gpu,
-                    "mem_used": nvml.nvmlDeviceGetMemoryInfo(dev).used
+                    "mem_used": nvml.nvmlDeviceGetMemoryInfo(dev).used,
                 }
             except Exception:
                 # GPU metrics not available or device error
                 pass
         with self.out.open("a", encoding="utf-8") as f:
             f.write(json.dumps(row) + "\n")
-    
+
     def run(self, steps=5):
         for _ in range(steps):
             self.sample_once()

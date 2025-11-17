@@ -61,7 +61,7 @@ This document provides **requirements, architecture, and standardization strateg
 
 ### 2.1 System Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    AST Analysis Framework                   │
 ├─────────────────────────────────────────────────────────────┤
@@ -95,7 +95,7 @@ This document provides **requirements, architecture, and standardization strateg
 │  └──────────────────────────────────────────────────────┘  │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
-```
+```text
 
 ### 2.2 Core Components
 
@@ -142,7 +142,7 @@ class StandardizedAST:
     docstring: Optional[str]
     type_hints: Dict[str, str]
     dependencies: List[str]
-```
+```text
 
 #### **Component 2: Metrics Analyzer**
 **File:** `src/codex_ml/ast/analyzers/metrics.py`
@@ -174,7 +174,7 @@ class CodeMetrics:
         """Rate code quality: A (excellent) → F (poor)."""
         # A-F grading based on metrics
         pass
-```
+```text
 
 #### **Component 3: Dependency Graph Builder**
 **File:** `src/codex_ml/ast/analyzers/dependencies.py`
@@ -216,7 +216,7 @@ class DependencyGraph:
     def get_transitive_deps(self, node_id: str) -> Set[str]:
         """Get all transitive dependencies."""
         pass
-```
+```text
 
 #### **Component 4: Code Smell Detector**
 **File:** `src/codex_ml/ast/analyzers/smells.py`
@@ -257,7 +257,7 @@ class CodeSmell:
     location: SourceLocation
     message: str
     suggested_fix: Optional[str] = None
-```
+```text
 
 #### **Component 5: Knowledge Graph Builder**
 **File:** `src/codex_ml/ast/knowledge_graph.py`
@@ -308,11 +308,11 @@ class KnowledgeGraph:
     def export_to_sqlite(self, db_path: str) -> None:
         """Export KG to SQLite database."""
         pass
-```
+```text
 
 ### 2.3 Data Flow Diagram
 
-```
+```text
 Source Code Files
        ↓
 [Parser Layer]
@@ -347,7 +347,7 @@ Source Code Files
   • codex-analyze <path>
   • codex-audit --output report.html
   • codex-diff <commit1> <commit2>
-```
+```text
 
 ---
 
@@ -369,7 +369,7 @@ Source Code Files
 #### **Task 1: Parser & Standardization (Sprint 1)**
 
 **Files to Create:**
-```
+```text
 src/codex_ml/ast/
 ├── __init__.py
 ├── parser.py                    # UniversalParser class
@@ -381,7 +381,7 @@ src/codex_ml/ast/
 │   ├── json_adapter.py          # JSON parser
 │   └── sql_adapter.py           # SQL parser (custom)
 └── errors.py                    # AST-specific exceptions
-```
+```text
 
 **Implementation Steps:**
 1. Define `StandardizedAST` dataclass with unified node types
@@ -401,14 +401,14 @@ src/codex_ml/ast/
 #### **Task 2: Metrics Analysis (Sprint 2)**
 
 **Files to Create:**
-```
+```text
 src/codex_ml/ast/analyzers/
 ├── __init__.py
 ├── metrics.py                   # MetricsAnalyzer class
 ├── halstead.py                  # Halstead metrics
 ├── cyclomatic.py                # Cyclomatic complexity
 └── maintainability.py           # Maintainability index
-```
+```text
 
 **Implementation Steps:**
 1. Implement cyclomatic complexity using AST traversal
@@ -427,11 +427,11 @@ src/codex_ml/ast/analyzers/
 #### **Task 3: Dependency Analysis (Sprint 3)**
 
 **Files to Create:**
-```
+```text
 src/codex_ml/ast/analyzers/
 ├── dependencies.py              # DependencyGraphBuilder
 └── cycle_detection.py           # Circular dep detection
-```
+```text
 
 **Implementation Steps:**
 1. Extract imports from Python AST
@@ -451,7 +451,7 @@ src/codex_ml/ast/analyzers/
 #### **Task 4: Code Smells & Knowledge Graph (Sprint 4)**
 
 **Files to Create:**
-```
+```text
 src/codex_ml/ast/analyzers/
 ├── smells.py                    # CodeSmellDetector
 ├── duplication.py               # Duplication detection
@@ -465,7 +465,7 @@ src/codex_ml/ast/
 │   ├── sqlite_exporter.py
 │   ├── markdown_exporter.py
 │   └── html_exporter.py
-```
+```text
 
 **Implementation Steps:**
 1. Implement long function detection (>50 LOC)
@@ -485,7 +485,7 @@ src/codex_ml/ast/
 #### **Task 5: CLI Tools (Sprint 5)**
 
 **Files to Create:**
-```
+```text
 scripts/
 ├── codex-analyze                # Main CLI tool
 ├── codex-audit                  # Audit report generator
@@ -495,7 +495,7 @@ src/codex_ml/ast/cli/
 ├── __init__.py
 ├── cli.py                       # Click-based CLI
 └── formatters.py                # Output formatting
-```
+```text
 
 **Implementation Steps:**
 1. Create Click-based CLI interface
@@ -517,7 +517,7 @@ codex-diff HEAD~1 HEAD --metric complexity
 
 # Export to SQLite
 codex-analyze . --export codebase.db --format sqlite
-```
+```text
 
 **Success Criteria:**
 - [ ] CLI tools installable via `pip install -e .`
@@ -529,7 +529,7 @@ codex-analyze . --export codebase.db --format sqlite
 #### **Task 6: Testing & Documentation (Sprint 6)**
 
 **Files to Create:**
-```
+```text
 tests/ast/
 ├── test_parser.py
 ├── test_metrics.py
@@ -546,7 +546,7 @@ docs/
 │   ├── api_reference.md
 │   ├── usage_guide.md
 │   └── examples.md
-```
+```text
 
 **Implementation Steps:**
 1. Write unit tests for each analyzer
@@ -602,7 +602,7 @@ def analyze_and_update_maturity():
     })
     
     return prioritized
-```
+```text
 
 ### 4.2 Sample Integration Output
 
@@ -628,7 +628,7 @@ def analyze_and_update_maturity():
 ### Low Priority Issues
 - [ ] Refactor 2 unused code blocks
 - [ ] Update 15 outdated docstrings
-```
+```text
 
 ---
 
@@ -691,7 +691,7 @@ def test_dependency_cycle_detection():
     
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C"}
-```
+```text
 
 ---
 
@@ -706,7 +706,7 @@ def test_dependency_cycle_detection():
 codex-analyze = "codex_ml.ast.cli:cli"
 codex-audit = "codex_ml.ast.cli:audit"
 codex-diff = "codex_ml.ast.cli:diff"
-```
+```text
 
 ### 6.2 Sample CLI Workflows
 
@@ -730,7 +730,7 @@ $ codex-analyze src/codex_ml/training/unified_training.py --format table
 ║ 1 high-complexity function (CC > 10)                         ║
 ║ 2 long functions (LOC > 50)                                  ║
 ╚════════════════════════════════════════════════════════════════╝
-```
+```text
 
 **Workflow 2: Full Codebase Audit with HTML Report**
 ```bash
@@ -741,7 +741,7 @@ Generated audit report: audit_report.html
   - 15 high-priority issues found
   - Dependency graph exported to audit_report/graph.dot
   - Recommendations saved to audit_report/recommendations.md
-```
+```text
 
 **Workflow 3: Commit Comparison**
 ```bash
@@ -758,7 +758,7 @@ $ codex-diff HEAD~5 HEAD --metric complexity
 ║ • train_model() CC increased from 12 → 18                    ║
 ║ • data_loader() CC increased from 8 → 14                     ║
 ╚════════════════════════════════════════════════════════════════╝
-```
+```text
 
 ---
 
@@ -784,7 +784,7 @@ $ codex-diff HEAD~5 HEAD --metric complexity
 ```python
 parser = UniversalParser()
 ast = parser.parse(source_code, "python")
-```
+```text
 
 ### `MetricsAnalyzer`
 **Purpose:** Extract code quality metrics
@@ -799,7 +799,7 @@ analyzer = MetricsAnalyzer()
 metrics = analyzer.analyze(ast)
 print(f"Complexity: {metrics.cyclomatic_complexity}")
 print(f"Grade: {metrics.quality_tier}")
-```
+```text
 
 ## Usage Examples
 
@@ -821,7 +821,7 @@ print(f"File: example.py")
 print(f"LOC: {metrics.lines_of_code}")
 print(f"Complexity: {metrics.cyclomatic_complexity}")
 print(f"Grade: {metrics.quality_tier}")
-```
+```text
 
 ### Example 2: Build Dependency Graph
 
@@ -838,7 +838,7 @@ print(f"Found {len(cycles)} circular dependencies")
 
 for cycle in cycles:
     print(f"  Cycle: {' → '.join(cycle)}")
-```
+```text
 
 ### Example 3: Export to SQLite
 
@@ -865,7 +865,7 @@ cursor.execute("""
 """)
 for row in cursor:
     print(f"{row[0]}: CC={row[1]}")
-```
+```text
 
 ---
 
@@ -876,14 +876,14 @@ for row in cursor:
 **Option 1: As Package Dependency**
 ```bash
 pip install codex-ml[ast]
-```
+```text
 
 **Option 2: From Source**
 ```bash
 git clone <repo>
 cd _codex_
 pip install -e ".[ast]"
-```
+```text
 
 ### 8.2 CI/CD Integration
 
@@ -942,7 +942,7 @@ jobs:
               repo: context.repo.repo,
               body: `## AST Analysis Report\n\n${diff}`
             });
-```
+```text
 
 ### 8.3 Team Adoption Strategy
 
@@ -975,19 +975,19 @@ jobs:
 # Disable AST parsing; fall back to regex-based analysis
 export CODEX_AST_DISABLED=1
 codex-audit src/ --format markdown
-```
+```text
 
 **If Performance Degraded:**
 ```bash
 # Reduce analysis scope
 codex-analyze src/ --max-file-size 50000 --skip-heavy-analysis
-```
+```text
 
 **If False Positives Too High:**
 ```bash
 # Update configuration to reduce sensitivity
 codex-analyze --smell-threshold high src/
-```
+```text
 
 ---
 
@@ -1127,7 +1127,7 @@ test_parse_async_function()
 test_parse_comprehension()
 test_parse_lambda()
 test_parse_nested_structures()
-```
+```text
 
 **Dependencies:** libcst, pyyaml, json (stdlib)
 
@@ -1150,7 +1150,7 @@ test_complexity_linear_function()  # CC = 1
 test_complexity_if_else()          # CC = 2
 test_complexity_nested_loops()     # CC = 4
 test_complexity_exception_handling()  # CC = N + 1
-```
+```text
 
 **Reference:**
 - Cyclomatic Complexity (CC) = 1 + (branches)
@@ -1179,7 +1179,7 @@ test_extract_star_import()
 test_detect_cycle_simple()    # A → B → A
 test_detect_cycle_complex()   # A → B → C → D → A
 test_transitive_dependencies()
-```
+```text
 
 ---
 
@@ -1217,7 +1217,7 @@ test_detect_high_complexity()
 test_detect_unused_import()
 test_detect_duplication()
 test_detect_dead_code()
-```
+```text
 
 ---
 
@@ -1238,7 +1238,7 @@ test_extract_function_types()
 test_extract_class_attributes()
 test_infer_from_assignment()
 test_detect_type_mismatch()
-```
+```text
 
 ---
 
@@ -1329,7 +1329,7 @@ codex-diff <ref1> <ref2>          # Compare two commits
 codex-export <path> <format>      # Export to specific format
   --include-metrics               # Include computed metrics
   --include-graph                 # Include dependency graph
-```
+```text
 
 **Acceptance Criteria:**
 - AC1: All CLI tools work offline (no network calls)
@@ -1362,7 +1362,7 @@ def test_parse_speed_benchmark(benchmark):
 def test_analyze_speed_benchmark(benchmark):
     result = benchmark(analyzer.analyze, large_codebase)
     assert result is not None
-```
+```text
 
 ---
 
@@ -1440,7 +1440,7 @@ def test_analyze_speed_benchmark(benchmark):
 
 **Test Pyramid:**
 
-```
+```text
         ┌─────────────────┐
         │  E2E Tests (5%) │  - Full pipeline tests
         ├─────────────────┤
@@ -1450,7 +1450,7 @@ def test_analyze_speed_benchmark(benchmark):
         │  Unit Tests     │  - Individual function tests
         │  (70%)          │
         └─────────────────┘
-```
+```text
 
 **Test Coverage by Component:**
 
@@ -1468,7 +1468,7 @@ def test_analyze_speed_benchmark(benchmark):
 test_parser_regression.py       # Ensure parser doesn't break on known files
 test_metrics_regression.py       # Ensure metrics consistent over time
 test_cycle_detection_regression.py  # Ensure cycles detected correctly
-```
+```text
 
 ---
 
@@ -1520,7 +1520,7 @@ class CodeSmell:
     location: SourceLocation
     message: str
     suggested_fix: Optional[str]
-```
+```text
 
 ### 4.2 Knowledge Graph Schema
 
@@ -1559,10 +1559,10 @@ class CodeSmell:
   3. Fail if critical quality gates breached
   4. Comment on PR with findings
   5. Upload report as artifact
-```
+```text
 
 **Quality Gates:**
-```
+```text
 PASS if:
   - No new circular dependencies introduced
   - Average complexity not increased >10%
@@ -1572,19 +1572,19 @@ PASS if:
 
 FAIL if:
   - Any of above violated
-```
+```text
 
 ---
 
 ### 5.2 IDE Integration
 
 **VSCode Extension (Future):**
-```
+```text
 - Show inline complexity warnings
 - Hover for metric details
 - Quick-fix suggestions
 - Code smell highlighting
-```
+```text
 
 ---
 
@@ -1596,7 +1596,7 @@ FAIL if:
 codex-audit src/ --update-maturity MATURITY_REMAINING_WORK.md
 
 # Output: Updated checklist with findings
-```
+```text
 
 ---
 
@@ -1691,3 +1691,5 @@ This **Requirements Specification** provides **comprehensive, verifiable, and me
 2. Estimate effort per FR
 3. Prioritize requirements
 4. Allocate
+
+```

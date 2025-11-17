@@ -17,13 +17,13 @@ if is_distributed_available():
     print("✓ Distributed training is available")
 else:
     print("✗ Distributed training not available (CPU-only mode)")
-```
+```text
 
 ### Check Accelerate Installation
 
 ```bash
 python -c "import accelerate; print(f'Accelerate {accelerate.__version__}')"
-```
+```text
 
 ### Check CUDA Availability
 
@@ -31,7 +31,7 @@ python -c "import accelerate; print(f'Accelerate {accelerate.__version__}')"
 import torch
 print(f"CUDA available: {torch.cuda.is_available()}")
 print(f"CUDA devices: {torch.cuda.device_count()}")
-```
+```text
 
 ## Common Issues
 
@@ -40,7 +40,7 @@ print(f"CUDA devices: {torch.cuda.device_count()}")
 **Symptom:**
 ```text
 ImportError: No module named 'accelerate'
-```
+```text
 **Solution:**
 Install accelerate with the appropriate extras:
 
@@ -53,14 +53,14 @@ pip install "accelerate>=0.20"
 
 # Or install codex with training extras
 pip install -e ".[train]"
-```
+```text
 
 ### 2. Accelerate Version Compatibility
 
 **Symptom:**
 ```text
 TypeError: Accelerator.__init__() got an unexpected keyword argument 'dataloader_config'
-```
+```text
 **Cause:**
 Mixing accelerate API versions (pre-0.30 vs 0.30+).
 
@@ -69,20 +69,20 @@ The codebase includes compatibility shims. Ensure you're using a supported versi
 
 ```bash
 pip install "accelerate>=0.20,<1.0"
-```
+```text
 
 ### 3. NCCL Backend Errors on CPU
 
 **Symptom:**
 ```text
 RuntimeError: NCCL is not available on CPU-only builds
-```
+```text
 **Solution:**
 Use the `gloo` backend for CPU-only distributed training:
 
 ```bash
 export CODEX_DIST_BACKEND=gloo
-```
+```text
 
 Or in your training config:
 
@@ -90,14 +90,14 @@ Or in your training config:
 training:
   distributed:
     backend: gloo
-```
+```text
 
 ### 4. Distributed Initialization Timeout
 
 **Symptom:**
 ```text
 RuntimeError: Timed out initializing process group
-```
+```text
 **Solutions:**
 
 1. **Check network connectivity** between nodes
@@ -118,7 +118,7 @@ RuntimeError: Timed out initializing process group
 **Symptom:**
 ```text
 RuntimeError: expected scalar type Float but found Half
-```
+```text
 **Solution:**
 Ensure consistent dtype usage. Disable mixed precision if needed:
 
@@ -126,7 +126,7 @@ Ensure consistent dtype usage. Disable mixed precision if needed:
 from accelerate import Accelerator
 
 accelerator = Accelerator(mixed_precision="no")
-```
+```text
 
 ### 6. Out of Memory (OOM) in Distributed Training
 
@@ -168,7 +168,7 @@ accelerator = Accelerator(
     even_batches=True,
     split_batches=False,
 )
-```
+```text
 
 ## CPU-Only Fallback
 
@@ -190,7 +190,7 @@ from codex_ml.distributed import (
 assert init_distributed_if_needed() is False
 assert get_rank() == 0
 assert get_world_size() == 1
-```
+```text
 
 ### Skip Distributed Tests
 
@@ -202,7 +202,7 @@ pytest tests/ -k "not distributed"
 # Or set environment variable
 export CODEX_SKIP_DISTRIBUTED_TESTS=1
 pytest tests/
-```
+```text
 
 ## Environment Variables Reference
 
@@ -229,7 +229,7 @@ torchrun --nproc_per_node=2 -m codex_ml.cli.train \
 # Using accelerate
 accelerate launch --num_processes=2 -m codex_ml.cli.train \
     --config configs/training/base.yaml
-```
+```text
 
 ### Multi-Node Training
 
@@ -251,7 +251,7 @@ torchrun \
     --master_addr=master.example.com \
     --master_port=29500 \
     -m codex_ml.cli.train --config configs/training/base.yaml
-```
+```text
 
 ## Debugging Tips
 
@@ -263,7 +263,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 from codex_ml.distributed import init_distributed_if_needed
 init_distributed_if_needed()  # Will log detailed initialization steps
-```
+```text
 
 ### 2. Check Process Group Status
 
@@ -275,7 +275,7 @@ if dist.is_initialized():
     print(f"Backend: {dist.get_backend()}")
 else:
     print("Distributed not initialized")
-```
+```text
 
 ### 3. Test Communication
 
@@ -289,7 +289,7 @@ if dist.is_initialized():
     dist.all_reduce(tensor)
     assert tensor.item() == dist.get_world_size()
     print("✓ Communication test passed")
-```
+```text
 
 ### 4. Monitor GPU Usage
 
@@ -299,7 +299,7 @@ watch -n 1 nvidia-smi
 
 # Or use nvtop for better visualization
 nvtop
-```
+```text
 
 ## Safe Accelerate Initialization
 
@@ -322,7 +322,7 @@ elif result.skip_reason:
 else:
     print(f"✗ Error: {result.error}")
     # Handle error or fall back to CPU
-```
+```text
 
 ### Diagnostic Mode
 
@@ -330,7 +330,7 @@ Run the guard in diagnostic mode to check your environment:
 
 ```bash
 python training/accelerate_init_guard.py
-```
+```text
 
 **Output example:**
 ```text
@@ -353,7 +353,7 @@ Availability Checks:
 
 Initialization Test:
   Result: AccelerateInitResult(skipped, reason=cpu_only)
-```
+```text
 ### Skip-Safe Integration Tests
 
 The integration tests use pytest markers to skip on CPU-only runners:
@@ -367,7 +367,7 @@ ACCELERATE_TEST=1 pytest tests/integration/test_distributed_init.py
 
 # Skip integration tests entirely
 pytest -m "not integration"
-```
+```text
 
 ### Environment Variable Reference for Safe Init
 
@@ -390,7 +390,7 @@ AccelerateInitResult(
     gpu_available=False,
     ...
 )
-```
+```text
 
 **Accelerate Not Installed:**
 ```python
@@ -400,7 +400,7 @@ AccelerateInitResult(
     accelerate_available=False,
     ...
 )
-```
+```text
 
 **Successful Initialization:**
 ```python
@@ -412,7 +412,7 @@ AccelerateInitResult(
     gpu_available=True,
     ...
 )
-```
+```text
 
 ## Performance Optimization
 
@@ -430,7 +430,7 @@ training:
   per_device_batch_size: 4
   gradient_accumulation_steps: 4
   # Effective batch = 4 * 2 GPUs * 4 = 32
-```
+```text
 
 ### 3. Enable Compilation (PyTorch 2.0+)
 
@@ -439,7 +439,7 @@ import torch
 
 # Compile model for faster execution
 model = torch.compile(model)
-```
+```text
 
 ## Related Documentation
 
@@ -461,4 +461,4 @@ If issues persist:
 python -c "import torch; print(f'PyTorch: {torch.__version__}')"
 python -c "import accelerate; print(f'Accelerate: {accelerate.__version__}')"
 nvidia-smi  # If using GPU
-```
+```text

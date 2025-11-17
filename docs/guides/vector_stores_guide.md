@@ -16,7 +16,7 @@ The FAISS Vector Store provides local, CPU-based vector similarity search for em
 
 ```bash
 pip install faiss-cpu numpy
-```
+```text
 
 ## Quick Start
 
@@ -48,7 +48,7 @@ results = store.search(query, top_k=5)
 
 for result in results:
     print(f"Score: {result['score']:.4f}, Doc: {result['document']['text']}")
-```
+```text
 
 ### Loading Existing Index
 
@@ -63,7 +63,7 @@ print(f"Status: {health['status']}, Vectors: {health['num_vectors']}")
 
 # Search
 results = store.search(query_vector, top_k=10)
-```
+```text
 
 ## Configuration
 
@@ -83,7 +83,7 @@ store = FAISSStore(
     max_vectors=100_000,  # Custom limit
     validate_checksums=True
 )
-```
+```text
 
 ### Index Naming
 
@@ -97,7 +97,7 @@ store = FAISSStore(index_name="embeddings_2024")
 # Invalid - will raise ValueError
 store = FAISSStore(index_name="my index")  # spaces not allowed
 store = FAISSStore(index_name="index/v1")  # slashes not allowed
-```
+```text
 
 ## API Reference
 
@@ -216,7 +216,7 @@ store.create_index(raw_embeddings, documents)
 
 # Search also auto-normalizes queries
 results = store.search(raw_query)  # normalized internally
-```
+```text
 
 ### Batch Processing
 
@@ -238,7 +238,7 @@ for batch_start in range(0, total_docs, BATCH_SIZE):
 # Combine and create index
 final_embeddings = np.vstack(all_embeddings)
 store.create_index(final_embeddings, all_docs)
-```
+```text
 
 ### Memory Management
 
@@ -253,7 +253,7 @@ store.save()
 store2 = FAISSStore(index_name="large-index")
 store2.load()
 results = store2.search(query)
-```
+```text
 
 ## Error Handling
 
@@ -266,7 +266,7 @@ try:
 except ValueError as e:
     print(f"Dimension error: {e}")
     # Reshape or re-embed query
-```
+```text
 
 **Index Not Loaded:**
 ```python
@@ -276,7 +276,7 @@ except RuntimeError as e:
     print("Loading index...")
     store.load()
     results = store.search(query)
-```
+```text
 
 **Safety Limit Exceeded:**
 ```python
@@ -285,7 +285,7 @@ try:
 except RuntimeError as e:
     print(f"Too many vectors: {e}")
     # Process in smaller batches or increase max_vectors
-```
+```text
 
 ## Migration from Stubs
 
@@ -301,7 +301,7 @@ from src.codex.retrieval.stores.faiss_store import FAISSStore
 store = FAISSStore(index_name="migrated-from-pgvector")
 store.create_index(embeddings, documents)
 store.save()
-```
+```text
 
 ### From Weaviate Stub
 
@@ -314,7 +314,7 @@ from codex_addons.vector_stores.weaviate_stub import WeaviateStore
 from src.codex.retrieval.stores.faiss_store import FAISSStore
 store = FAISSStore(index_name="migrated-from-weaviate")
 # ... rest same as above
-```
+```text
 
 ## Best Practices
 
@@ -363,7 +363,7 @@ store = FAISSStore(index_name="migrated-from-weaviate")
 pip install faiss-cpu
 # Or for GPU support
 pip install faiss-gpu
-```
+```text
 
 ### Corrupted Index
 ```python
@@ -371,14 +371,14 @@ pip install faiss-gpu
 store = FAISSStore(index_name="recovered")
 store.create_index(original_embeddings, original_documents)
 store.save()
-```
+```text
 
 ### Checksum Mismatch
 ```python
 # Disable validation if needed
 store = FAISSStore(validate_checksums=False)
 store.load()
-```
+```text
 
 ## Examples
 

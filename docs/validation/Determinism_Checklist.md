@@ -14,13 +14,13 @@ python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_A.json
 
 python scripts/space_traversal/audit_runner.py run
 python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_B.json
-```
+```text
 
 2. Compare sidecars.
 
 ```bash
 diff -q audit_artifacts/canonical_A.json audit_artifacts/canonical_B.json && echo "Deterministic ✅"
-```
+```text
 
 ## Gates
 

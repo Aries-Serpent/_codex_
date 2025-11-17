@@ -34,7 +34,7 @@ Keep this document updated as conventions evolve.
 ```bash
 pre-commit run --files <changed_files>
 nox -s tests
-```
+```text
 - Coverage gates target **`src/codex_ml`**; run `pytest --cov=src/codex_ml --cov-fail-under=3.5` when checking locally.
 - Optional deps (e.g., `hydra-core`, `mlflow`): install in a dedicated env or provide mocks.
 
@@ -50,13 +50,13 @@ nox -s tests
 # example: minimal agent
 def run_agent(task: str) -> str:
     return f"ok: {task}"
-```
+```text
 Local checks before commit:
 ```bash
 pre-commit run --all-files
 # Deterministic tests; ML suites are optionally skipped if torch isn't installed.
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
-```
+```text
 
 > Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments. ([Happy Test][2])
 
@@ -67,7 +67,7 @@ You can inspect the composed defaults and override at the CLI:
 ```bash
 python -m codex_ml.cli.config --info defaults   # show defaults list
 python -m codex_ml.cli.config trainer.seed=123 trainer.deterministic=true logging.format=ndjson
-```
+```text
 
 See Hydra's docs for background on defaults lists and composition order.
 

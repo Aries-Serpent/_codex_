@@ -15,7 +15,7 @@ This guide addresses common issues encountered when building API documentation w
 ImportError: No module named 'wandb'
 ImportError: No module named 'tensorboard'
 ImportError: cannot import name 'functional' from 'torch.nn'
-```
+```text
 **Cause**: The module being documented imports optional dependencies that aren't installed.
 
 **Solutions**:
@@ -25,7 +25,7 @@ ImportError: cannot import name 'functional' from 'torch.nn'
 python tools/validate_api_docs.py \
   --package codex_ml \
   --allow-optional "wandb" "tensorboard" "torch" "transformers" "peft" "accelerate"
-```
+```text
 
 **Option B**: Gate imports in source code
 ```python
@@ -41,14 +41,14 @@ except ImportError:
 if WANDB_AVAILABLE:
     # wandb code here
     pass
-```
+```text
 
 **Option C**: Install optional dependencies
 ```bash
 pip install -e ".[all]"  # Install all optional dependencies
 # or
 pip install wandb tensorboard  # Install specific ones
-```
+```text
 
 ---
 
@@ -62,7 +62,7 @@ pip install wandb tensorboard  # Install specific ones
     "notes": "pdoc unavailable: ModuleNotFoundError: No module named 'pdoc'"
   }
 }
-```
+```text
 
 **Solution**:
 
@@ -72,7 +72,7 @@ pip install pdoc3
 
 # Or let the build script install it automatically
 python tools/build_api_docs.py
-```
+```text
 
 **Offline workaround**: The validator will print a "skipped" note and exit gracefully.
 
@@ -84,7 +84,7 @@ python tools/build_api_docs.py
 ```text
 ModuleNotFoundError: No module named 'codex'
 ModuleNotFoundError: No module named 'codex_ml'
-```
+```text
 **Cause**: Python can't find the package modules.
 
 **Solutions**:
@@ -92,13 +92,13 @@ ModuleNotFoundError: No module named 'codex_ml'
 **Option A**: Install in editable mode (recommended)
 ```bash
 pip install -e .
-```
+```text
 
 **Option B**: Set PYTHONPATH manually
 ```bash
 export PYTHONPATH=/path/to/repo/src:$PYTHONPATH
 python tools/build_api_docs.py
-```
+```text
 
 **Option C**: The build script automatically adds `src/` to path (already handled)
 
@@ -114,7 +114,7 @@ python tools/build_api_docs.py
     "file_count": 0
   }
 }
-```
+```text
 
 **Causes & Fixes**:
 
@@ -161,7 +161,7 @@ python tools/build_api_docs.py
 **Symptom**:
 ```text
 ImportError: cannot import name 'functional' from 'torch.nn' (/path/to/torch/nn/__init__.py)
-```
+```text
 **Cause**: A local `torch/` directory shadows the real PyTorch package.
 
 **Solution**:
@@ -170,7 +170,7 @@ ImportError: cannot import name 'functional' from 'torch.nn' (/path/to/torch/nn/
 mv torch torch_local
 
 # Or ensure it's not in PYTHONPATH
-```
+```text
 
 ---
 
@@ -179,12 +179,12 @@ mv torch torch_local
 **Symptom**:
 ```text
 DeprecationWarning: codex_ml.interfaces.tokenizer_hf is deprecated
-```
+```text
 **Fix**: These are informational and don't block the build. To suppress:
 
 ```bash
 python -W ignore::DeprecationWarning tools/build_api_docs.py
-```
+```text
 
 ---
 
@@ -193,7 +193,7 @@ python -W ignore::DeprecationWarning tools/build_api_docs.py
 **Symptom**:
 ```text
 PermissionError: [Errno 13] Permission denied: 'artifacts/docs/api'
-```
+```text
 **Solution**:
 ```bash
 # Ensure directory is writable
@@ -201,7 +201,7 @@ chmod -R u+w artifacts/docs/
 
 # Or use a different output directory
 python tools/build_api_docs.py --output-dir /tmp/api_docs
-```
+```text
 
 ---
 
@@ -257,7 +257,7 @@ python tools/build_api_docs.py --output-dir /tmp/api_docs
 # Test if package can be imported
 PYTHONPATH=src python -c "import codex.cli; print('✓ codex.cli importable')"
 PYTHONPATH=src python -c "import codex_ml; print('✓ codex_ml importable')"
-```
+```text
 
 ### List package modules
 ```bash
@@ -268,19 +268,19 @@ import codex.cli
 for mod in pkgutil.walk_packages(codex.cli.__path__, prefix='codex.cli.'):
     print(mod.name)
 "
-```
+```text
 
 ### Check pdoc installation
 ```bash
 pdoc --version
 python -c "import pdoc; print(pdoc.__version__)"
-```
+```text
 
 ### Verify build output
 ```bash
 # Check what was generated
 find artifacts/docs/api -name "*.html" | head -20
-```
+```text
 
 ## Escalation
 

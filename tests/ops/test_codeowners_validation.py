@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from src.tools.codeowners_validate import validate_codeowners_text, validate_repo_codeowners
+from src.tools.codeowners_validate import (
+    validate_codeowners_text,
+    validate_repo_codeowners,
+)
 
 
 def test_validate_codeowners_happy_path():

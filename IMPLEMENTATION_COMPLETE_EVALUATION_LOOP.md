@@ -102,13 +102,13 @@ All source code files were **already implemented** in previous work:
 ## Test Results
 
 ### New Tests (This PR)
-```
+```text
 tests/test_evaluate_epoch.py:  11/11 PASSED ✅
 tests/test_cli_report.py:       9/9 PASSED ✅
 tests/test_bestk_retention.py:  1/1 PASSED ✅
 --------------------------------
 Total:                         21/21 PASSED
-```
+```text
 
 ### Coverage Analysis
 

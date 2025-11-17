@@ -34,5 +34,6 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
     # Either rollover produced a file, or truncation fallback kept a single-element JSON
     if not rolled:
         import json
+
         data = json.loads(telem.read_text(encoding="utf-8"))
         assert isinstance(data, list) and len(data) >= 1

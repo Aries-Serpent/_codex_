@@ -15,7 +15,7 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 EVIDENCE = Path(".codex/evidence/dependency_ops.jsonl")
 

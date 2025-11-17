@@ -82,7 +82,7 @@ ast = [
     "tree-sitter-yaml>=0.20.0",
     "sqlparse>=0.4.0",
 ]
-```
+```text
 
 ---
 
@@ -163,7 +163,7 @@ class DependencyGraph:
                 strongconnect(node_id)
         
         return sccs
-```
+```text
 
 ---
 
@@ -224,7 +224,7 @@ class ParallelAnalyzer:
         with open(file_path) as f:
             source = f.read()
         return parser.parse(source, file_path)
-```
+```text
 
 ---
 
@@ -276,7 +276,7 @@ class ParallelAnalyzer:
 **Blockers Addressed**: BLOCK-DEP-001 to 005, BLOCK-ARCH-001, BLOCK-PERF-001
 
 **Deliverables**:
-```
+```text
 src/codex_ml/ast/
 ├── __init__.py
 ├── nodes.py                    (StandardizedASTNode dataclass)
@@ -299,7 +299,7 @@ tests/ast/
 ├── test_parser.py             (Parser unit tests)
 ├── test_nodes.py              (Node serialization tests)
 └── benchmarks.py              (Performance baselines)
-```
+```text
 
 **Gate Criteria**:
 - ✅ `pip install -e ".[ast]"` succeeds (no conflicts)
@@ -323,7 +323,7 @@ tests/ast/
 **Blockers Addressed**: BLOCK-ARCH-002 to 004, BLOCK-PERF-002, ARCH-CHAL-005
 
 **Deliverables**:
-```
+```text
 src/codex_ml/ast/
 ├── graph.py                   (DependencyGraph + cycle detection)
 ├── metrics.py                 (CodeMetrics dataclass)
@@ -343,7 +343,7 @@ tests/ast/
 ├── test_metrics.py            (Metrics computation)
 ├── test_analyzers.py          (Analyzer tests)
 └── fixtures/                  (Synthetic test graphs)
-```
+```text
 
 **Gate Criteria**:
 - ✅ Cycle detection 100% accurate on synthetic graphs
@@ -368,7 +368,7 @@ tests/ast/
 **Blockers Addressed**: BLOCK-ARCH-005, BLOCK-PERF-003, All integration/documentation issues
 
 **Deliverables**:
-```
+```text
 src/codex_ml/ast/
 ├── plugins.py                 (Plugin registry + loader)
 ├── streaming.py               (Streaming parser)
@@ -404,7 +404,7 @@ tests/ast/
 ├── test_cli.py                (CLI tests)
 ├── test_exporters.py          (Exporter tests)
 └── test_integration.py        (E2E integration tests)
-```
+```text
 
 **Gate Criteria**:
 - ✅ Plugin registration/loading working
@@ -485,7 +485,7 @@ print('✓ All AST dependencies installed successfully')
 pip check
 
 echo "✓ Dependency installation complete"
-```
+```text
 
 ### 2. StandardizedASTNode + Parser
 
@@ -539,7 +539,7 @@ class StandardizedASTNode:
             'docstring': self.docstring,
             'decorators': self.decorators,
         }
-```
+```text
 
 ### 3. Tarjan's Cycle Detection Algorithm
 
@@ -591,7 +591,7 @@ class DependencyGraph:
                 strongconnect(node_id)
         
         return sccs
-```
+```text
 
 ### 4. GitHub Actions Workflow
 
@@ -633,7 +633,7 @@ jobs:
         with:
           name: ast-analysis-report
           path: audit_report.html
-```
+```text
 
 ### 5. CLI Interface
 
@@ -679,7 +679,7 @@ def audit(path, output):
 
 if __name__ == '__main__':
     cli()
-```
+```text
 
 ---
 
@@ -775,3 +775,5 @@ if __name__ == '__main__':
 **Repository**: Aries-Serpent/_codex_
 
 This comprehensive 3,000+ line deep research document provides **complete implementation guidance** for all 46 AST blockers with executable code, ideal OSS references, and a structured roadmap for immediate engineering team action.
+
+```

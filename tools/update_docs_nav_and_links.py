@@ -23,9 +23,7 @@ def update_links() -> list[Path]:
         new_text = text
         for old, new in LINK_MAP.items():
             new_text = new_text.replace(old, new)
-        new_text = re.sub(
-            r"CHANGELOG_([\w.-]+)\.md", r"docs/changelog/CHANGELOG_\1.md", new_text
-        )
+        new_text = re.sub(r"CHANGELOG_([\w.-]+)\.md", r"docs/changelog/CHANGELOG_\1.md", new_text)
         if new_text != text:
             path.write_text(new_text, encoding="utf-8")
             touched.append(path)
@@ -48,9 +46,7 @@ def update_mkdocs() -> None:
                             if value.endswith(old):
                                 item[key] = value.replace(old, new)
                         if "CHANGELOG_" in value and "docs/changelog/" not in value:
-                            item[key] = value.replace(
-                                "CHANGELOG_", "docs/changelog/CHANGELOG_"
-                            )
+                            item[key] = value.replace("CHANGELOG_", "docs/changelog/CHANGELOG_")
                     elif isinstance(value, list):
                         rewrite_nav(value)
 
@@ -60,9 +56,7 @@ def update_mkdocs() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--mkdocs", action="store_true", help="Also update mkdocs.yml navigation"
-    )
+    parser.add_argument("--mkdocs", action="store_true", help="Also update mkdocs.yml navigation")
     args = parser.parse_args()
     update_links()
     if args.mkdocs:

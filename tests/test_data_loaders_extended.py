@@ -26,7 +26,10 @@ def test_jsonl_bom_and_malformed(tmp_path):
 
 def test_csv_quoted_fields(tmp_path):
     f = tmp_path / "quoted.csv"
-    f.write_text('id,text,note\n1,"hello, world","a \\"quoted\\" note"\n2,plain,"multi,comma,entry"\n', encoding="utf-8")
+    f.write_text(
+        'id,text,note\n1,"hello, world","a \\"quoted\\" note"\n2,plain,"multi,comma,entry"\n',
+        encoding="utf-8",
+    )
     records, meta = loaders.load_csv(f)
     assert len(records) == 2
     assert records[0]["note"].startswith('a "quoted"')

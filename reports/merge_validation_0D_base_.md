@@ -26,7 +26,7 @@ This report documents the implementation of merge readiness improvements request
 ```bash
 python -c "import torch; assert 'site-packages' in torch.__file__"
 # ✓ Passes - torch imports from site-packages
-```
+```text
 
 #### 2. ✅ Documentation Fence Fixer (IMPLEMENTED)
 
@@ -43,7 +43,7 @@ python tools/fence_fixer.py . --dry-run --verbose
 
 # Apply fixes
 python tools/fence_fixer.py .
-```
+```text
 
 **Features**:
 - Pattern-based language detection (Python, JSON, YAML, Bash, SQL, etc.)
@@ -114,7 +114,7 @@ python tools/fence_fixer.py .
 **Usage**:
 ```bash
 python tools/modernization_scanner.py src/ --verbose
-```
+```text
 
 ---
 
@@ -169,7 +169,7 @@ python tools/modernization_scanner.py src/ --verbose
 python tools/fence_fixer.py docs/ --dry-run --verbose
 # Review changes, then apply
 python tools/fence_fixer.py docs/
-```
+```text
 
 **Priority**: P2 (Medium) - Can be done post-merge
 **Effort**: 1-2 hours
@@ -249,14 +249,14 @@ echo "✓ OmegaConf compatibility verified"
 # Run smoke tests
 pytest tests/config/test_config_schema.py tests/unit/test_data_cache_locking.py -v
 echo "✓ Critical tests pass"
-```
+```text
 
 ### CI Workflow Verification
 
 After merge, check:
 ```text
 https://github.com/Aries-Serpent/_codex_/actions
-```
+```text
 
 Both workflows should appear:
 - ✓ `Validate Documentation`

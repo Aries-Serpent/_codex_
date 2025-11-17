@@ -48,8 +48,12 @@ def pip_audit_check(max_critical: int, max_high: int) -> Tuple[bool, str]:
         data = json.loads(out or "[]")
     except Exception:
         return False, "pip-audit JSON parse error"
-    crit = sum(1 for v in data for a in v.get("vulns", []) if a.get("severity", "").lower() == "critical")
-    high = sum(1 for v in data for a in v.get("vulns", []) if a.get("severity", "").lower() == "high")
+    crit = sum(
+        1 for v in data for a in v.get("vulns", []) if a.get("severity", "").lower() == "critical"
+    )
+    high = sum(
+        1 for v in data for a in v.get("vulns", []) if a.get("severity", "").lower() == "high"
+    )
     ok = (crit <= max_critical) and (high <= max_high)
     return ok, f"pip_audit_critical={crit}/{max_critical} high={high}/{max_high}"
 
@@ -61,9 +65,19 @@ def main(argv=None) -> int:
         return 0
 
     # Validate policy file against schema (best-effort)
-    if Path("tools/schema_validate.py").exists() and Path("configs/schemas/security_policy.schema.json").exists():
+    if (
+        Path("tools/schema_validate.py").exists()
+        and Path("configs/schemas/security_policy.schema.json").exists()
+    ):
         subprocess.call(
-            [sys.executable, "tools/schema_validate.py", "--data", str(policy_path), "--schema", "configs/schemas/security_policy.schema.json"]
+            [
+                sys.executable,
+                "tools/schema_validate.py",
+                "--data",
+                str(policy_path),
+                "--schema",
+                "configs/schemas/security_policy.schema.json",
+            ]
         )
 
     policy = json.loads(policy_path.read_text(encoding="utf-8"))

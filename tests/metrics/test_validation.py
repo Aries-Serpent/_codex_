@@ -1,4 +1,5 @@
 """Test suite for metrics validation."""
+
 from __future__ import annotations
 
 import pytest
@@ -41,7 +42,7 @@ class TestMetricValidation:
         metrics = get_all_registered_metrics()
         assert isinstance(metrics, list)
         # List may be empty if registry not set up, but should be a list
-        
+
     def test_metric_validation_error_inheritance(self):
         """Test MetricValidationError inherits from Exception."""
         assert issubclass(MetricValidationError, Exception)

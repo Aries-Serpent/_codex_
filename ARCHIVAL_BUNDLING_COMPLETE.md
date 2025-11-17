@@ -229,12 +229,12 @@ This PR successfully delivers **TWO MAJOR PHASES**:
 
 ### Progress Visualization
 
-```
+```text
 Maturity Progress:
 Before: ████░░░░░░░░░░░░░░░░░░░░ 0/25 (0%)
 After:  ████████░░░░░░░░░░░░░░░░ 5/25 (20%)
 Target: ███████████████████████░ 23/25 (92%)
-```
+```text
 
 ---
 
