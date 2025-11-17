@@ -1,6 +1,7 @@
 """
 Tests for Inference Server
 """
+import numpy as np
 import os
 import pytest
 import time
@@ -320,6 +321,70 @@ class TestValidation:
         # This tests the constant definition
         assert MAX_INPUT_LENGTH > 0
         assert MAX_INPUT_LENGTH <= 100000  # Reasonable upper bound
+
+
+class TestEmbedding:
+    """Test embedding functionality"""
+    
+    def test_embed_stub_model(self):
+        """Test embedding with stub model"""
+        config = ModelConfig(model_type="stub")
+        server = ModelServer(config=config)
+        server.load_model()
+        
+        texts = ["Hello world", "Test text", "Another example"]
+        embeddings = server.embed(texts)
+        
+        # Check shape
+        assert embeddings.shape[0] == 3
+        assert embeddings.shape[1] > 0  # Should have some dimension
+        
+        # Check normalized
+        norms = np.linalg.norm(embeddings, axis=1)
+        assert np.allclose(norms, 1.0, atol=1e-5)
+    
+    def test_embed_without_model(self):
+        """Test embedding without loaded model"""
+        server = ModelServer()
+        
+        with pytest.raises(RuntimeError, match="Model not loaded"):
+            server.embed(["test"])
+    
+    def test_embed_returns_numpy(self):
+        """Test that embed returns numpy array"""
+        config = ModelConfig(model_type="stub")
+        server = ModelServer(config=config)
+        server.load_model()
+        
+        embeddings = server.embed(["test"])
+        
+        assert isinstance(embeddings, np.ndarray)
+        assert embeddings.dtype == np.float32
+    
+    def test_embed_batch(self):
+        """Test embedding multiple texts"""
+        config = ModelConfig(model_type="stub")
+        server = ModelServer(config=config)
+        server.load_model()
+        
+        texts = [f"text-{i}" for i in range(20)]
+        embeddings = server.embed(texts)
+        
+        assert embeddings.shape[0] == 20
+        
+        # Each embedding should be different (for stub, they're random)
+        # Check that not all embeddings are identical
+        assert not np.allclose(embeddings[0], embeddings[1])
+    
+    def test_embed_empty_list(self):
+        """Test embedding empty list"""
+        config = ModelConfig(model_type="stub")
+        server = ModelServer(config=config)
+        server.load_model()
+        
+        embeddings = server.embed([])
+        
+        assert embeddings.shape[0] == 0
 
 
 if __name__ == "__main__":
