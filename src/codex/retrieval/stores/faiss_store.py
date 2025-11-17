@@ -23,6 +23,7 @@ import numpy as np
 from ..filtering import apply_filters, calculate_fetch_multiplier
 from .base import (
     DimensionMismatchError,
+    IndexNotLoadedError,
     VectorNotFoundError,
     VectorStore,
 )
@@ -588,10 +589,17 @@ class FAISSStore(VectorStore):
             ids: Single ID or list of IDs to retrieve
 
         Returns:
-            List of results with id, metadata
+            List of results with id, vector, and metadata
+
+        Raises:
+            VectorNotFoundError: If vector ID not found
+            IndexNotLoadedError: If index is not loaded
         """
         if isinstance(ids, str):
             ids = [ids]
+
+        if self.index is None:
+            raise IndexNotLoadedError("Index not loaded. Call create_index() or load() first.")
 
         results = []
         for vid in ids:
@@ -602,12 +610,15 @@ class FAISSStore(VectorStore):
             if idx >= len(self.documents):
                 raise VectorNotFoundError(f"Document index out of range: {idx}")
 
+            # Reconstruct vector from FAISS index
+            vector = self.index.reconstruct(int(idx))
+
             doc = self.documents[idx]
             results.append(
                 {
                     "id": vid,
+                    "vector": vector,
                     "metadata": doc.get("metadata", {}),
-                    "index": idx,
                 }
             )
 
