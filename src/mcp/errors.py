@@ -1,0 +1,70 @@
+"""Error hierarchy for MCP components and tests."""
+
+from __future__ import annotations
+
+from typing import Any, Dict, Iterable
+
+
+class MCPError(Exception):
+    """Base class for MCP-specific errors with codes and HTTP status."""
+
+    code = "MCP_ERROR"
+    http_status = 500
+
+    def __init__(self, message: str, *, details: Dict[str, Any] | None = None):
+        super().__init__(message)
+        self.message = message
+        self.details = details or {}
+
+    def to_dict(self) -> Dict[str, Any]:
+        payload = {"code": self.code, "message": self.message}
+        if self.details:
+            payload["details"] = self.details
+        return payload
+
+
+class ToolNotFound(MCPError):
+    code = "TOOL_NOT_FOUND"
+    http_status = 404
+
+
+class ValidationError(MCPError):
+    code = "VALIDATION_ERROR"
+    http_status = 400
+
+
+class RateLimitExceeded(MCPError):
+    code = "RATE_LIMIT_EXCEEDED"
+    http_status = 429
+
+
+class Unauthorized(MCPError):
+    code = "UNAUTHORIZED"
+    http_status = 401
+
+
+_KNOWN_CODES: Iterable[str] = {
+    MCPError.code,
+    ToolNotFound.code,
+    ValidationError.code,
+    RateLimitExceeded.code,
+    Unauthorized.code,
+}
+
+
+def validate_error_response(code: str, message: str) -> bool:
+    """Validate that an error response uses a known code and message."""
+
+    if not code or not message:
+        return False
+    return code in _KNOWN_CODES
+
+
+__all__ = [
+    "MCPError",
+    "ToolNotFound",
+    "ValidationError",
+    "RateLimitExceeded",
+    "Unauthorized",
+    "validate_error_response",
+]
