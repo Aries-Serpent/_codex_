@@ -385,7 +385,7 @@ def example_complete_integration():
     principal = Principal.from_credential("api-key-xyz")
     session_token = authenticator.generate_session_token(principal)
     print(f"✓ User authenticated: {principal.principal_id[:16]}...")
-    
+    print(f"✓ Session token: {session_token[:16]}...")
     # 4. Authorize access
     tool_name = "kb.search"
     if not authorizer.authorize(principal, tool_name):
