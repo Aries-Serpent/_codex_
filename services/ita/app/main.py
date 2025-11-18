@@ -98,12 +98,15 @@ async def get_request_context(request: Request) -> RequestContext:
 
 @app.middleware("http")
 async def inject_request_context(request: Request, call_next):
+    headers: dict[str, str] | None = None
     try:
         request.state.context = _authenticate_request(
             x_request_id=request.headers.get("X-Request-Id"),
             x_api_key=request.headers.get("X-API-Key"),
         )
-        
+
+        headers = {"X-Request-Id": _get_request_id(request)}
+
         # MCP Rate Limiting - check if request is allowed
         if MCP_AVAILABLE:
             principal_id = request.state.context.api_key_hash[:16]  # Use first 16 chars of hash as ID
@@ -111,25 +114,32 @@ async def inject_request_context(request: Request, call_next):
             if not _rate_limiter.allow(principal_id, endpoint):
                 from mcp.errors import RateLimitExceeded
                 raise RateLimitExceeded(f"Rate limit exceeded for {endpoint}")
-        
+
     except HTTPException as exc:
-        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+        headers = headers or {"X-Request-Id": _get_request_id(request)}
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=headers,
+        )
     except Exception as exc:
+        headers = headers or {"X-Request-Id": _get_request_id(request)}
         # Handle MCP errors in middleware
         if MCP_AVAILABLE and isinstance(exc, MCPError):
             return JSONResponse(
                 status_code=exc.http_status,
                 content=exc.to_dict(),
-                headers={"X-Request-Id": _get_request_id(request)}
+                headers=headers,
             )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"detail": str(exc)},
-            headers={"X-Request-Id": _get_request_id(request)}
+            headers=headers,
         )
-    
+
     response = await call_next(request)
-    response.headers["X-Request-Id"] = _get_request_id(request)
+    request_id_header = headers or {"X-Request-Id": _get_request_id(request)}
+    response.headers["X-Request-Id"] = request_id_header["X-Request-Id"]
     return response
 
 
