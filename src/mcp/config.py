@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -76,16 +77,27 @@ class MCPConfig:
     def load(cls, config_path: Optional[Path] = None) -> "MCPConfig":
         """Load MCP configuration from file.
 
+        Configuration Resolution Strategy:
+        1. If config_path is provided, load from that specific file
+        2. Otherwise, search for config file in standard locations (in order):
+           - mcp_config.json (project root)
+           - .codex/mcp_config.json
+           - config/mcp_config.json
+        3. If no config file found, use minimal default configuration
+        4. Environment variables override file-based settings:
+           - ITA_URL overrides ita_url from config
+           - ITA_API_KEY overrides ita_api_key from config
+
         Args:
             config_path: Optional path to config file. If not provided,
                         looks for mcp_config.json in standard locations.
 
         Returns:
-            MCPConfig instance
+            MCPConfig instance with file-based config and environment overrides applied
         """
 
         if config_path is None:
-            # Try standard locations
+            # Search for config in standard locations (priority order)
             candidates = [
                 Path("mcp_config.json"),
                 Path(".codex/mcp_config.json"),
@@ -96,7 +108,7 @@ class MCPConfig:
                     config_path = candidate
                     break
 
-            # If still not found, return minimal default config
+            # Fallback: No config file found, return default configuration
             if config_path is None or not config_path.exists():
                 # Use default checksum for empty config
                 default_content = json.dumps(
