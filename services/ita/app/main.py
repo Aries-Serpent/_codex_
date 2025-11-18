@@ -24,6 +24,14 @@ from .models import (
 from .security import ApiKeyStore, verify_api_key
 from .tests_runner import simulate_test_execution
 
+# Import MCP modules for integration
+try:
+    from mcp.errors import MCPError
+    from mcp.rate_limit import MCPRateLimiter
+    MCP_AVAILABLE = True
+except ImportError:
+    MCP_AVAILABLE = False
+
 app = FastAPI(
     title="Internal Tools API (ITA)",
     description=(
@@ -40,6 +48,31 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# MCP Error Handler - Unified error responses
+if MCP_AVAILABLE:
+    @app.exception_handler(MCPError)
+    async def mcp_error_handler(request: Request, exc: MCPError):
+        """Handle MCP-specific errors with consistent JSON responses."""
+        return JSONResponse(
+            status_code=exc.http_status,
+            content=exc.to_dict(),
+            headers={"X-Request-Id": _get_request_id(request)}
+        )
+
+    # Initialize rate limiter (5 requests/sec, burst 20)
+    _rate_limiter = MCPRateLimiter(rate=5.0, capacity=20)
+
+
+def _get_request_id(request: Request) -> str:
+    """
+    Helper to safely extract the X-Request-Id value from the request context.
+    If no RequestContext has been attached yet, returns "unknown".
+    """
+    ctx = getattr(request.state, "context", None)
+    if isinstance(ctx, RequestContext) and ctx.request_id:
+        return ctx.request_id
+    return "unknown"
 
 
 def _authenticate_request(x_request_id: str | None, x_api_key: str | None) -> RequestContext:
@@ -64,15 +97,48 @@ async def get_request_context(request: Request) -> RequestContext:
 
 @app.middleware("http")
 async def inject_request_context(request: Request, call_next):
+    headers: dict[str, str] | None = None
     try:
         request.state.context = _authenticate_request(
             x_request_id=request.headers.get("X-Request-Id"),
             x_api_key=request.headers.get("X-API-Key"),
         )
+
+        headers = {"X-Request-Id": _get_request_id(request)}
+
+        # MCP Rate Limiting - check if request is allowed
+        if MCP_AVAILABLE:
+            principal_id = request.state.context.api_key_hash[:16]  # Use first 16 chars of hash as ID
+            endpoint = request.url.path
+            if not _rate_limiter.allow(principal_id, endpoint):
+                from mcp.errors import RateLimitExceeded
+                raise RateLimitExceeded(f"Rate limit exceeded for {endpoint}")
+
     except HTTPException as exc:
-        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+        headers = headers or {"X-Request-Id": _get_request_id(request)}
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail},
+            headers=headers,
+        )
+    except Exception as exc:
+        headers = headers or {"X-Request-Id": _get_request_id(request)}
+        # Handle MCP errors in middleware
+        if MCP_AVAILABLE and isinstance(exc, MCPError):
+            return JSONResponse(
+                status_code=exc.http_status,
+                content=exc.to_dict(),
+                headers=headers,
+            )
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"detail": str(exc)},
+            headers=headers,
+        )
+
     response = await call_next(request)
-    response.headers["X-Request-Id"] = request.state.context.request_id
+    request_id_header = headers or {"X-Request-Id": _get_request_id(request)}
+    response.headers["X-Request-Id"] = request_id_header["X-Request-Id"]
     return response
 
 
