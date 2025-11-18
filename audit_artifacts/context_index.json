@@ -1,6 +1,6 @@
 {
-  "generated": 1763437974.9543605,
-  "count": 3821,
+  "generated": 1763438289.58771,
+  "count": 3825,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -2709,6 +2709,24 @@
       "sha": "c70d8cd06c62422fca464b95ee3b66417f24723bb32a75bcd82aca0cc6506a30"
     },
     {
+      "path": "MCP_100_PERCENT_ROADMAP.md",
+      "ext": ".md",
+      "size": 10842,
+      "sha": "20716092467d43a72d185552d5207a67312afe031f7e2e67204454112e2546ac"
+    },
+    {
+      "path": "MCP_CAPABILITIES_REFERENCE.md",
+      "ext": ".md",
+      "size": 13203,
+      "sha": "37a5dec9c4f15a765b409e979728f39670869cc58ca13a0ff2b507ac1a4023c5"
+    },
+    {
+      "path": "MCP_DEVELOPER_GUIDE.md",
+      "ext": ".md",
+      "size": 15645,
+      "sha": "acba398073912c84534b6885c4fb434277d05fe547e5d24009a97a5aa24b1852"
+    },
+    {
       "path": "MCP_IMPLEMENTATION_SUMMARY.md",
       "ext": ".md",
       "size": 12082,
@@ -2725,6 +2743,12 @@
       "ext": ".md",
       "size": 7436,
       "sha": "4cbf769edb3c5762070a36b8c881764a3f61adfc0e1e9339ea78a13b05e19bd4"
+    },
+    {
+      "path": "MCP_SECURITY_GUIDE.md",
+      "ext": ".md",
+      "size": 15413,
+      "sha": "4bacbb513bde761f27abaf714358dcd4795827ecec0b4833abc25e77877180dc"
     },
     {
       "path": "MERGE_READINESS_CONFIRMATION.md",
@@ -3546,7 +3570,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 1341,
-      "sha": "898b3f651658f753834689b6f0373945d610e3fab52c4522897083d4ee74bf96"
+      "sha": "3e1e01f758295a408e6f456e6a9281436c0691d16f29387d9cfb616155a0ecfa"
     },
     {
       "path": "audit_run_manifest_run1.json",
