@@ -55,4 +55,16 @@ scoring:
 | `weights` | Effective normalized weights |
 | `warnings` | Scoring normalization or stage notes |
 
+## 7. MCP Integration (Overview)
+
+This Space can also assess MCP server readiness using the same S1–S7 workflow.
+
+| Aspect | How It's Represented |
+|--------|----------------------|
+| MCP capabilities | New `mcp-*` capability IDs produced by dynamic detectors in `scripts/space_traversal/detectors/` |
+| Scoring | Same component weights & thresholds as other capabilities |
+| Gaps | MCP gaps appear in `gaps.json` and the matrix alongside non-MCP capabilities |
+
+See `MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md` and `MCP_IMPLEMENTATION_SUMMARY.md` for a full MCP capability taxonomy and mapping to `_codex_`.
+
 *End of Spec*

@@ -111,7 +111,26 @@ python tools/ndjson_to_csv.py .codex/metrics/training.ndjson artifacts/runs/metr
 The repository ships a sample log at `samples/metrics_sample.ndjson` for quick
 tests.
 
-## 9. Additional references
+## 9. MCP Capability Validation
+
+To validate MCP-related capabilities:
+
+```bash
+python scripts/space_traversal/audit_runner.py run
+python scripts/space_traversal/audit_runner.py explain mcp-protocol-surface
+python scripts/space_traversal/audit_runner.py explain mcp-rate-limiting
+```
+
+Then inspect:
+
+- `audit_artifacts/capabilities_raw.json` (presence of `mcp-*` IDs)
+- `audit_artifacts/capabilities_scored.json` (scores & components)
+- `audit_artifacts/gaps.json` (MCP gaps)
+- Latest `reports/capability_matrix_*.md` (MCP rows in matrix)
+
+See `MCP_IMPLEMENTATION_SUMMARY.md` for detailed information on MCP capabilities and their implementation.
+
+## 10. Additional references
 
 - [Quickstart walkthrough](../quickstart.md)
 - [CLI reference](../CLI.md)

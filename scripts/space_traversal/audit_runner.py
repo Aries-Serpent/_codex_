@@ -49,7 +49,19 @@ CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 # default safeguard keywords (can be overridden from workflow.yaml)
-SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
+SAFEGUARD_KEYWORDS = [
+    "sha256",
+    "checksum",
+    "rng",
+    "seed",
+    "offline",
+    "WANDB_MODE",
+    # MCP-specific safeguards
+    "confirm",
+    "dry_run",
+    "RateLimitExceeded",
+    "Unauthorized",
+]
 VERSION = "1.1.0"
 
 # Import scoring helpers (P1)
