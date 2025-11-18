@@ -61,6 +61,7 @@ SAFEGUARD_KEYWORDS = [
     "dry_run",
     "RateLimitExceeded",
     "Unauthorized",
+    "ValidationError",
 ]
 VERSION = "1.1.0"
 
