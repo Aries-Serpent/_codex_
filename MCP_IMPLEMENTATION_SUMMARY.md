@@ -2,9 +2,37 @@
 > **Date**: 2025-11-18  
 > **Authors**: Copilot Extended (System)  
 > **Energy**: 5  
+> **Status**: Phase 1 Complete - Core modules integrated
 
 ## Overview
-This summary outlines the introduction of **MCP (Model Context Protocol)** capabilities into the Codex audit framework and codebase. We added detectors for key MCP readiness aspects and provided core module stubs to support an MCP server implementation. This ensures that the audit now tracks MCP-specific maturity (e.g., `mcp-protocol-surface`, `mcp-authz-authn`, etc.), highlighting gaps to address.
+This summary outlines the introduction of **MCP (Model Context Protocol)** capabilities into the Codex audit framework and codebase. We implemented detectors for key MCP readiness aspects, provided core module stubs, and **integrated them into the ITA service and JSON-RPC bridge** for full functionality.
+
+## Implementation Phases
+
+### Phase 1: Core Detectors & Modules (Complete ✓)
+Added 9 MCP-specific detectors and 6 core modules as framework-agnostic foundation.
+
+### Phase 2: Integration & Functionality (Complete ✓)
+**NEW**: Integrated MCP modules into production services:
+
+- **mcp/config.py** - Centralized configuration module
+  - MCPConfig class loads from mcp.json and environment
+  - Manages tool definitions, ITA URL, API keys
+  - Provides unified configuration access
+
+- **mcp/server/server.py** - Full JSON-RPC server implementation
+  - MCPJSONRPCServer with stdio protocol support
+  - Integrated MCPToolRegistry for tool discovery
+  - Implements listTools, callTool, negotiateVersion methods
+  - Rate limiting with MCPRateLimiter (5 req/sec, burst 20)
+  - Unified error handling with MCPError hierarchy
+  - **All tests passing** (6/6 test suites ✓)
+
+- **services/ita/app/main.py** - ITA FastAPI integration
+  - MCPError exception handler for unified error responses
+  - Rate limiting middleware integrated
+  - Graceful fallback if MCP modules unavailable
+  - Proper error propagation with trace IDs
 
 ## New MCP Capabilities & Detectors
 We defined 12 new capabilities (prefixed `mcp-`) corresponding to recommended MCP server features:
@@ -62,28 +90,61 @@ Importantly, adding these stubs does not change runtime behavior of the existing
   - Flesh out `mcp_security_safeguards` by considering additional measures (for example, ensuring that tool execution for certain tools require confirmation or simulate dry-run).
   - Consider multi-tenancy if needed (if not, that capability can remain not applicable, or eventually be removed).
 
-## Validation Commands
+### JSON-RPC Server Verification
 
-To validate MCP-related capabilities after running the audit:
+The MCP JSON-RPC server has been fully implemented and tested:
 
 ```bash
-# Run the full audit
-python scripts/space_traversal/audit_runner.py run
+$ python3 test_mcp_server.py
 
-# Explain specific MCP capabilities
-python scripts/space_traversal/audit_runner.py explain mcp-protocol-surface
-python scripts/space_traversal/audit_runner.py explain mcp-rate-limiting
-python scripts/space_traversal/audit_runner.py explain mcp-tooling-registry
+MCP JSON-RPC SERVER - FUNCTIONALITY VERIFICATION
+================================================================================
+TEST 1: Server Initialization ✓
+  - Config name: codex-copilot-bridge
+  - Tools registered: 2
+  - ITA URL: http://localhost:8080
 
-# Check for differences
-python scripts/space_traversal/audit_runner.py diff
+TEST 2: listTools Method ✓
+  - Tools returned: 2
+    * kb.search: Retrieve knowledge snippets via the ITA
+    * repo.hygiene: Run repository hygiene checks via the ITA
+
+TEST 3: negotiateVersion Method ✓
+  - Negotiated version: 1.0
+  - Supported versions: ['1.0']
+
+TEST 4: callTool - Tool Not Found ✓
+  - Error code: 404
+  - Error message: Tool not found: nonexistent.tool
+
+TEST 5: Rate Limiting ✓
+  - Successful requests before limit: 20
+  - Rate limiter: 5 req/sec, burst 20
+
+TEST 6: Invalid JSON-RPC Requests ✓
+  - Validation error for invalid protocol version
+
+ALL TESTS PASSED ✓
 ```
 
-Then inspect:
-- `audit_artifacts/capabilities_raw.json` (presence of `mcp-*` IDs)
-- `audit_artifacts/capabilities_scored.json` (scores & components)
-- `audit_artifacts/gaps.json` (MCP gaps)
-- Latest `reports/capability_matrix_*.md` (MCP rows in matrix)
+### Usage Examples
+
+**Start the MCP JSON-RPC Server:**
+```bash
+python3 -m mcp.server.server
+```
+
+**Test with JSON-RPC request:**
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"listTools","params":{}}' | python3 -m mcp.server.server
+```
+
+**Configure via environment:**
+```bash
+export ITA_URL=http://localhost:8080
+export ITA_API_KEY=your_api_key
+python3 -m mcp.server.server
+```
 
 ## Audit Trail and Versioning
 All these changes bump the internal audit workflow to a new version (conceptually, v1.5.0 if we continue from 1.4.0). The `.copilot-space/workflow.yaml` was updated to include these new capability IDs under `capability_map.overrides` (with `dynamic: true`). We maintain the same weightings and thresholds for scoring (so MCP capabilities are judged by the same 0.70/0.85 cutoffs for low/medium).

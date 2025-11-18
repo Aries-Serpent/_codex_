@@ -1,5 +1,5 @@
 {
-  "generated": 1763424912.415256,
+  "generated": 1763434990.5639174,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -288,6 +288,7 @@
       "examples/plugins/toy_trainer/__init__.py",
       "examples/train_toy.py",
       "notebooks/gpu_training_example.ipynb",
+      "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
       "scripts/space_traversal/detectors/unified_training.py",
       "scripts/train.py",
       "src/codex/training.py",
@@ -1215,6 +1216,8 @@
       "docs/validation/SBOM_Config_Validation.md",
       "hydra/__init__.py",
       "hydra/errors.py",
+      "mcp/__pycache__/config.cpython-312.pyc",
+      "mcp/config.py",
       "patches/pending/2025-09-21_hydra_entrypoint.patch",
       "scripts/config/__init__.py",
       "scripts/config/parse_knobs.py",
