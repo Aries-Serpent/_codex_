@@ -90,9 +90,13 @@ class MCPServer:
         self._logger = logging.getLogger(__name__)
         self._tool_registry = tool_registry or ToolRegistry()
 
+        # Server-supported MCP protocol versions, in preference order.
+        self._supported_versions: List[str] = ["1.0"]
+
         # Map JSON-RPC method -> async handler(params) -> result
         self._methods: Dict[str, Callable[[Optional[Dict[str, Any]]], Awaitable[Any]]] = {
             "mcp.listTools": self.handle_list_tools,
+            "mcp.negotiateVersion": self.handle_negotiate_version,
         }
 
     async def handle_list_tools(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
@@ -105,6 +109,33 @@ class MCPServer:
             A plain list of tool dictionaries.
         """
         return await self._tool_registry.list_tools()
+
+    async def handle_negotiate_version(self, params: Optional[Dict[str, Any]] = None) -> str:
+        """Handler for mcp.negotiateVersion.
+
+        Expected params:
+            {"supported": ["1.0", "0.9", ...]}
+
+        Returns:
+            The negotiated version string as the JSON-RPC result.
+
+        Raises:
+            JsonRpcError: If params are missing, malformed, or if no compatible
+            version can be found.
+        """
+        if not params or "supported" not in params:
+            raise JsonRpcError(code=-32602, message="Missing 'supported' in params")
+
+        client_versions = params["supported"]
+        if not isinstance(client_versions, list):
+            raise JsonRpcError(code=-32602, message="'supported' must be a list")
+
+        # Find the first common version in server preference order.
+        for version in self._supported_versions:
+            if version in client_versions:
+                return version
+
+        raise JsonRpcError(code=-32602, message="No compatible version found")
 
     async def _dispatch_request(self, method: str, params: Optional[Dict[str, Any]]) -> Any:
         """Dispatch a JSON-RPC request to the appropriate handler.
