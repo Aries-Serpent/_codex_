@@ -83,7 +83,6 @@ class MCPConfig:
         Returns:
             MCPConfig instance
         """
-        import os
 
         if config_path is None:
             # Try standard locations
