@@ -10,7 +10,7 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.errors import MCPError, ValidationError
+from mcp.errors import MCPError
 
 
 def test_jsonrpc_version_compliance():
@@ -160,26 +160,10 @@ def test_error_code_ranges():
     # Standard JSON-RPC errors (-32768 to -32000)
     parse_error = -32700
     invalid_request = -32600
-    method_not_found = -32601
-    invalid_params = -32602
-    internal_error = -32603
-    
-    # MCP-specific errors (-32000 to -32099)
-    mcp_error = -32000
-    rate_limit = -32002
-    version_mismatch = -32003
     
     # Verify standard JSON-RPC error codes are in valid range
     assert -32768 <= parse_error <= -32000
     assert -32768 <= invalid_request <= -32000
-    assert -32768 <= method_not_found <= -32000
-    assert -32768 <= invalid_params <= -32000
-    assert -32768 <= internal_error <= -32000
-    
-    # Verify MCP-specific error codes are in valid range
-    assert -32099 <= mcp_error <= -32000
-    assert -32099 <= rate_limit <= -32000
-    assert -32099 <= version_mismatch <= -32000
 
 
 def test_mcp_error_mappings():

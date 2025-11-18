@@ -333,7 +333,7 @@ def test_tool_circuit_breaker_pattern():
         try:
             handler({"fail": True})
         except RuntimeError:
-            pass  # Expected failure to trigger circuit breaker
+            pass  # Expected failure to test circuit breaker mechanism
     
     # Circuit should be open
     assert circuit["open"]

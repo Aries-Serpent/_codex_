@@ -4,7 +4,6 @@ Covers server initialization, request handling, and protocol compliance.
 """
 
 import sys
-import json
 from pathlib import Path
 
 repo_root = Path(__file__).parent.parent.parent
