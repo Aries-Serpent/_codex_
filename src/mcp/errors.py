@@ -18,7 +18,7 @@ class MCPError(Exception):
         self.details = details or {}
 
     def to_dict(self) -> Dict[str, Any]:
-        payload = {"code": self.code, "message": self.message}
+        payload: Dict[str, Any] = {"code": self.code, "message": self.message}
         if self.details:
             payload["details"] = self.details
         return payload

@@ -51,7 +51,7 @@ class ToolDefinition:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
-        result = {
+        result: Dict[str, Any] = {
             "name": self.name,
             "description": self.description,
             "endpoint": self.endpoint,
@@ -163,7 +163,7 @@ class MCPConfig:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
-        result = {
+        result: Dict[str, Any] = {
             "name": self.name,
             "tools": [t.to_dict() for t in self.tools],
             "ita_url": self.ita_url,
