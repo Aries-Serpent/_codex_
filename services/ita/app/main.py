@@ -27,7 +27,6 @@ from .tests_runner import simulate_test_execution
 # Import MCP modules for integration
 try:
     from mcp.errors import MCPError
-    from mcp.auth import MCPAuthenticator, Principal
     from mcp.rate_limit import MCPRateLimiter
     MCP_AVAILABLE = True
 except ImportError:

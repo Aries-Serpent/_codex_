@@ -3,7 +3,6 @@ Tests for MCP protocol surface and JSON-RPC compliance.
 Covers protocol adherence, message formats, and edge cases.
 """
 
-import pytest
 import sys
 import json
 from pathlib import Path
@@ -170,9 +169,17 @@ def test_error_code_ranges():
     rate_limit = -32002
     version_mismatch = -32003
     
+    # Verify standard JSON-RPC error codes are in valid range
     assert -32768 <= parse_error <= -32000
     assert -32768 <= invalid_request <= -32000
+    assert -32768 <= method_not_found <= -32000
+    assert -32768 <= invalid_params <= -32000
+    assert -32768 <= internal_error <= -32000
+    
+    # Verify MCP-specific error codes are in valid range
     assert -32099 <= mcp_error <= -32000
+    assert -32099 <= rate_limit <= -32000
+    assert -32099 <= version_mismatch <= -32000
 
 
 def test_mcp_error_mappings():

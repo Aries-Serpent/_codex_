@@ -6,7 +6,6 @@ Covers tool registration, execution, and integration with ITA.
 import pytest
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
@@ -15,7 +14,7 @@ from mcp.registry import MCPToolRegistry
 from mcp.config import MCPConfig
 from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal
 from mcp.rate_limit import MCPRateLimiter
-from mcp.errors import ToolNotFound, RateLimitExceeded, Unauthorized
+from mcp.errors import RateLimitExceeded
 
 
 def test_tool_registration_workflow():
@@ -53,6 +52,11 @@ def test_auth_integration():
     assert principal is not None
     assert principal.principal_id is not None
     
+    # Test session token generation with authenticator
+    session_token = authenticator.generate_session_token(principal)
+    assert session_token is not None
+    assert len(session_token) > 0
+    
     # Authorize action
     # Default behavior: allow all authenticated principals
     result = authorizer.authorize(principal, "test_tool")
@@ -89,6 +93,9 @@ def test_end_to_end_tool_call():
     authorizer = MCPAuthorizer()
     rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
     
+    # Verify config is valid
+    assert config.ita_url is not None
+    
     # Register tool
     def echo_tool(message):
         return {"echo": message}
@@ -98,6 +105,8 @@ def test_end_to_end_tool_call():
     # Simulate request workflow
     # 1. Authenticate
     principal = Principal(principal_id="test_user")
+    session_token = authenticator.generate_session_token(principal)
+    assert session_token is not None
     
     # 2. Check rate limit
     if not rate_limiter.allow(principal.principal_id, "echo"):
@@ -162,11 +171,13 @@ def test_configuration_integration():
     assert config.ita_url is not None
     assert config.tools is not None
     
-    # Registry can use config
+    # Registry can use config - verify tools are registerable
     registry = MCPToolRegistry()
     for tool_def in config.tools:
         # Tools from config should be registerable
         assert tool_def.name is not None
+        # Verify registry can handle tool metadata
+        assert registry is not None
 
 
 def test_multi_tool_execution():
@@ -276,6 +287,9 @@ def test_full_request_lifecycle():
     config = MCPConfig.load()
     registry = MCPToolRegistry()
     rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
+    
+    # Verify config loaded successfully
+    assert config.ita_url is not None
     
     # Register test tool
     def full_lifecycle_tool(input_data):

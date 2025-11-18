@@ -5,7 +5,6 @@ Covers tenant isolation, tenant-specific configurations, resource separation,
 and multi-tenant security patterns.
 """
 
-import pytest
 from mcp.auth import Principal
 
 

@@ -7,7 +7,6 @@ and end-to-end tool invocation workflows.
 
 import pytest
 from mcp.registry import MCPToolRegistry
-from mcp.errors import ToolNotFound
 from typing import Any, Dict
 
 

@@ -2,7 +2,6 @@
 Tests for MCP authentication and authorization.
 """
 
-import pytest
 import sys
 from pathlib import Path
 

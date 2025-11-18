@@ -3,18 +3,16 @@ Tests for MCP JSON-RPC server functionality.
 Covers server initialization, request handling, and protocol compliance.
 """
 
-import pytest
 import sys
 import json
 from pathlib import Path
-from unittest.mock import Mock, patch
 
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
 from mcp.server.server import MCPJSONRPCServer
 from mcp.config import MCPConfig
-from mcp.errors import MCPError, ToolNotFound, ValidationError
+from mcp.errors import MCPError
 
 
 def test_server_initialization():

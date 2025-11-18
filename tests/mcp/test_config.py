@@ -3,7 +3,6 @@ Tests for MCP configuration management.
 """
 
 import json
-import pytest
 import sys
 import tempfile
 from pathlib import Path

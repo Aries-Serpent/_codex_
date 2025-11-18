@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 # Add parent directories to path for imports
 import os
@@ -21,7 +21,7 @@ from mcp.config import MCPConfig, ToolDefinition
 from mcp.errors import MCPError, ToolNotFound, ValidationError, RateLimitExceeded
 from mcp.versioning import MCP_VERSIONS, negotiate_version
 from mcp.rate_limit import MCPRateLimiter
-from mcp.auth import Principal, MCPAuthenticator
+from mcp.auth import MCPAuthenticator
 
 # Try to import httpx for making requests to ITA
 try:
