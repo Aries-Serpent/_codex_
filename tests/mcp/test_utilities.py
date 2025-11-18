@@ -20,6 +20,15 @@ def create_test_principal(principal_id: str = "test-user-123") -> Principal:
     return Principal(principal_id=principal_id)
 
 
+def _make_registry_handler(tool_name: str) -> Callable[[Dict[str, Any]], Dict[str, Any]]:
+    """Create a handler that captures the tool name at definition time."""
+
+    def _handler(params: Dict[str, Any]) -> Dict[str, Any]:
+        return {"tool": tool_name, "params": params}
+
+    return _handler
+
+
 def create_test_registry(tools: Optional[List[str]] = None) -> MCPToolRegistry:
     """
     Create a test registry with optional pre-registered tools.
@@ -36,7 +45,7 @@ def create_test_registry(tools: Optional[List[str]] = None) -> MCPToolRegistry:
         for tool_name in tools:
             registry.register_tool(
                 tool_name,
-                handler=lambda params: {"tool": tool_name, "params": params},
+                handler=_make_registry_handler(tool_name),
                 schema={"type": "object"},
                 metadata={"description": f"Test tool: {tool_name}"}
             )

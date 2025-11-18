@@ -9,14 +9,23 @@ All functions are deterministic and safe for audit pipeline usage.
 """
 
 import hashlib
-import random
 import logging
+import os
+import random
 from typing import Any, Callable, Dict, Optional, TypeVar
 from functools import wraps
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar('T')
+
+
+def is_offline() -> bool:
+    """Return True if offline/deterministic mode is active via env vars."""
+
+    offline_env = os.environ.get("OFFLINE_MODE", "").lower()
+    mcp_offline = os.environ.get("MCP_OFFLINE", "").lower()
+    return offline_env in ("true", "1", "yes") or mcp_offline in ("true", "1", "yes")
 
 
 def verify_checksum(data: str, expected_checksum: str, algorithm: str = "sha256") -> bool:

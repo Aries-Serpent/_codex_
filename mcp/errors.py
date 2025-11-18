@@ -5,31 +5,40 @@ class MCPError(Exception):
     """
     code: str = "MCP_ERROR"
     http_status: int = 500
+    jsonrpc_code: int = -32000
     def __init__(self, message: str = ""):
         super().__init__(message)
         self.message = message or self.code
     def to_dict(self):
-        return {"code": self.code, "message": self.message}
+        return {
+            "code": self.code,
+            "message": self.message,
+            "jsonrpc_code": self.jsonrpc_code,
+        }
 
 
 class ToolNotFound(MCPError):
     code = "TOOL_NOT_FOUND"
     http_status = 404
+    jsonrpc_code = -32601
 
 
 class ValidationError(MCPError):
     code = "VALIDATION_ERROR"
     http_status = 400
+    jsonrpc_code = -32602
 
 
 class RateLimitExceeded(MCPError):
     code = "RATE_LIMIT_EXCEEDED"
     http_status = 429
+    jsonrpc_code = -32002
 
 
 class Unauthorized(MCPError):
     code = "UNAUTHORIZED"
     http_status = 401
+    jsonrpc_code = -32001
 
 
 def validate_error_response(error_code: str, message: str) -> bool:
