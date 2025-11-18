@@ -469,12 +469,12 @@ class MockServer:
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
-                "result": {"tools": self.tools}
+                "result": self.tools
             }
         
         # Handle negotiateVersion
         if method == "negotiateVersion":
-            client_versions = params.get("versions", [])
+            client_versions = params.get("supported", [])
             # Return first supported version that client offers
             for version in self.supported_versions:
                 if version in client_versions:
