@@ -190,11 +190,11 @@ def test_mcp_error_mappings():
         (ToolNotFound("not found"), -32601, 404),
         (ValidationError("bad input"), -32602, 400),
         (RateLimitExceeded("too many"), -32002, 429),
-        (Unauthorized("no auth"), -32600, 401),
+        (Unauthorized("no auth"), -32001, 401),
     ]
     
     for error, expected_code, expected_http in error_mappings:
-        assert error.code == expected_code
+        assert error.jsonrpc_code == expected_code
         assert error.http_status == expected_http
 
 

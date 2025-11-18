@@ -18,6 +18,8 @@ import random
 from typing import Any, Dict, Optional
 from dataclasses import dataclass
 
+from .safeguards import is_offline
+
 
 @dataclass
 class TenantContext:
@@ -179,6 +181,24 @@ def decrypt_tenant_data(
     return decrypted_bytes.decode('utf-8')
 
 
+def confirm_tenant_operation(message: str, offline: bool = False) -> bool:
+    """
+    Confirm a potentially destructive multi-tenant operation.
+
+    When offline=True or global offline detection is active, this function
+    avoids interactive prompts entirely and returns False to keep the system
+    in a safe default state.
+    """
+    effective_offline = offline or is_offline()
+    if effective_offline:
+        print(f"[OFFLINE MODE] Skipping confirmation prompt: {message}")
+        return False
+
+    print(message)
+    response = input("Proceed? (yes/no): ").strip().lower()
+    return response in ("yes", "y")
+
+
 def confirm_tenant_action(
     tenant_id: str,
     action: str,
@@ -187,32 +207,28 @@ def confirm_tenant_action(
 ) -> bool:
     """
     Confirm critical tenant actions with optional offline mode.
-    
+
     Args:
         tenant_id: Tenant identifier
         action: Action description
-        offline: If True, auto-confirm in offline mode
+        offline: If True, skip prompts and default to safe denial
         require_confirm: If False, skip confirmation
-    
+
     Returns:
         True if confirmed
-    
+
     Safeguard keywords: confirm, offline
     """
     if not require_confirm:
         return True
-    
-    if offline:
-        # In offline mode, log and auto-confirm
-        print(f"[OFFLINE MODE] Auto-confirming tenant action:")
-        print(f"  Tenant: {tenant_id}")
-        print(f"  Action: {action}")
-        return True
-    
-    # In production, prompt for confirmation
-    print(f"Confirm action for tenant '{tenant_id}': {action}")
-    response = input("Proceed? (yes/no): ")
-    return response.lower() in ("yes", "y")
+
+    message = f"Confirm action for tenant '{tenant_id}': {action}"
+    confirmed = confirm_tenant_operation(message, offline=offline)
+
+    if not confirmed:
+        print(f"Action cancelled for tenant '{tenant_id}'")
+
+    return confirmed
 
 
 def dry_run_tenant_operation(
