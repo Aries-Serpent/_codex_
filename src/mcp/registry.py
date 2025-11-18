@@ -10,11 +10,11 @@ from typing import Any, Callable, Dict, List, Optional
 
 def compute_tool_checksum(tool_name: str, tool_data: Dict[str, Any]) -> str:
     """Compute SHA-256 checksum of tool definition for integrity verification.
-    
+
     Args:
         tool_name: Name of the tool
         tool_data: Dictionary containing tool definition (schema, metadata, etc.)
-        
+
     Returns:
         64-character hex string (SHA-256 hash)
     """

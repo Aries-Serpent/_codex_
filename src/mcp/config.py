@@ -11,10 +11,10 @@ from typing import Any, Dict, List, Optional
 
 def compute_checksum(data: str | bytes) -> str:
     """Compute SHA-256 checksum of data.
-    
+
     Args:
         data: String or bytes to hash
-        
+
     Returns:
         64-character hex string
     """
@@ -26,19 +26,19 @@ def compute_checksum(data: str | bytes) -> str:
 @dataclass
 class ToolDefinition:
     """Definition of an MCP tool from configuration."""
-    
+
     name: str
     description: str = ""
     endpoint: str = ""
     metadata: Optional[Dict[str, Any]] = None
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ToolDefinition":
         """Create ToolDefinition from dictionary.
-        
+
         Args:
             data: Dictionary with tool definition
-            
+
         Returns:
             ToolDefinition instance
         """
@@ -48,7 +48,7 @@ class ToolDefinition:
             endpoint=data.get("endpoint", ""),
             metadata=data.get("metadata"),
         )
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         result = {
@@ -64,27 +64,27 @@ class ToolDefinition:
 @dataclass
 class MCPConfig:
     """MCP configuration with tools and settings."""
-    
+
     name: str
     tools: List[ToolDefinition]
     ita_url: str
     config_checksum: str
     ita_api_key: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
-    
+
     @classmethod
     def load(cls, config_path: Optional[Path] = None) -> "MCPConfig":
         """Load MCP configuration from file.
-        
+
         Args:
             config_path: Optional path to config file. If not provided,
                         looks for mcp_config.json in standard locations.
-                        
+
         Returns:
             MCPConfig instance
         """
         import os
-        
+
         if config_path is None:
             # Try standard locations
             candidates = [
@@ -96,11 +96,13 @@ class MCPConfig:
                 if candidate.exists():
                     config_path = candidate
                     break
-            
+
             # If still not found, return minimal default config
             if config_path is None or not config_path.exists():
                 # Use default checksum for empty config
-                default_content = json.dumps({"name": "default", "tools": [], "ita_url": "http://localhost:8000"})
+                default_content = json.dumps(
+                    {"name": "default", "tools": [], "ita_url": "http://localhost:8000"}
+                )
                 return cls(
                     name="default",
                     tools=[],
@@ -108,18 +110,18 @@ class MCPConfig:
                     ita_api_key=os.environ.get("ITA_API_KEY"),
                     config_checksum=compute_checksum(default_content),
                 )
-        
+
         # Load from file
         content = config_path.read_text()
         checksum = compute_checksum(content)
         data = json.loads(content)
-        
+
         tools = [ToolDefinition.from_dict(t) for t in data.get("tools", [])]
-        
+
         # Allow environment variable overrides
         ita_url = os.environ.get("ITA_URL", data.get("ita_url", "http://localhost:8000"))
         ita_api_key = os.environ.get("ITA_API_KEY", data.get("ita_api_key"))
-        
+
         return cls(
             name=data.get("name", "mcp"),
             tools=tools,
@@ -128,13 +130,13 @@ class MCPConfig:
             config_checksum=checksum,
             metadata=data.get("metadata"),
         )
-    
+
     def get_tool(self, name: str) -> Optional[ToolDefinition]:
         """Get tool by name.
-        
+
         Args:
             name: Tool name to retrieve
-            
+
         Returns:
             ToolDefinition if found, None otherwise
         """
@@ -142,23 +144,23 @@ class MCPConfig:
             if tool.name == name:
                 return tool
         return None
-    
+
     def verify_integrity(self, config_path: Path) -> bool:
         """Verify configuration file integrity using checksum.
-        
+
         Args:
             config_path: Path to configuration file
-            
+
         Returns:
             True if checksums match, False otherwise
         """
         if not config_path.exists():
             return False
-        
+
         current_content = config_path.read_text()
         current_checksum = compute_checksum(current_content)
         return current_checksum == self.config_checksum
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         result = {
