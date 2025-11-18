@@ -63,7 +63,7 @@ def test_server_negotiate_version():
 
 
 def test_server_call_tool_not_found():
-    """Test callTool with non-existent tool returns proper error."""
+    """Test callTool with non-existent tool returns proper JSON-RPC error code."""
     config = MCPConfig.load()
     server = MCPJSONRPCServer(config)
     
@@ -80,7 +80,10 @@ def test_server_call_tool_not_found():
     response = server.handle_request(request)
     
     assert "error" in response
-    assert response["error"]["code"] == 404
+    # JSON-RPC error code should be -32601 (Method not found), not HTTP 404
+    assert response["error"]["code"] == -32601
+    # HTTP status should be preserved in error.data for observability
+    assert response["error"]["data"]["http_status"] == 404
 
 
 def test_server_invalid_jsonrpc_version():
@@ -258,3 +261,92 @@ def test_server_notification_handling():
     
     # Notifications should not return a response (or return None)
     assert response is None or "id" not in response
+
+
+def test_jsonrpc_error_code_not_http_status():
+    """Test that JSON-RPC error.code uses protocol codes, not HTTP status codes."""
+    config = MCPConfig.load()
+    server = MCPJSONRPCServer(config)
+    
+    # Test ValidationError: should use -32602, not HTTP 400
+    request = {
+        "jsonrpc": "1.0",  # Invalid version triggers ValidationError
+        "id": 100,
+        "method": "listTools"
+    }
+    
+    response = server.handle_request(request)
+    
+    assert "error" in response
+    assert response["error"]["code"] == -32602  # JSON-RPC Invalid params
+    assert response["error"]["data"]["http_status"] == 400  # HTTP status preserved in data
+
+
+def test_jsonrpc_error_codes_are_negative():
+    """Test that all JSON-RPC error codes are negative integers per spec."""
+    config = MCPConfig.load()
+    server = MCPJSONRPCServer(config)
+    
+    # Test various error scenarios
+    test_cases = [
+        # (request, expected_error_code_range)
+        (
+            {"jsonrpc": "2.0", "id": 1, "method": "nonexistent_method", "params": {}},
+            (-32768, -32000)  # Standard JSON-RPC range
+        ),
+        (
+            {"jsonrpc": "2.0", "id": 2, "method": "callTool", "params": {}},  # Missing tool name
+            (-32768, -32000)
+        ),
+    ]
+    
+    for request, (min_code, max_code) in test_cases:
+        response = server.handle_request(request)
+        
+        if "error" in response:
+            error_code = response["error"]["code"]
+            # All JSON-RPC error codes must be negative
+            assert error_code < 0, f"Error code {error_code} is not negative"
+            # Should be in valid JSON-RPC range
+            assert min_code <= error_code <= max_code, \
+                f"Error code {error_code} outside range [{min_code}, {max_code}]"
+
+
+def test_mcp_error_jsonrpc_code_mapping():
+    """Test that MCPError subclasses have correct jsonrpc_code mappings."""
+    from mcp.errors import ToolNotFound, ValidationError, RateLimitExceeded, Unauthorized
+    
+    # Verify each error class has correct jsonrpc_code
+    assert ToolNotFound.jsonrpc_code == -32601  # Method not found
+    assert ValidationError.jsonrpc_code == -32602  # Invalid params
+    assert RateLimitExceeded.jsonrpc_code == -32002  # MCP-specific
+    assert Unauthorized.jsonrpc_code == -32001  # MCP-specific
+    
+    # Verify HTTP status is different from jsonrpc_code
+    assert ToolNotFound.http_status == 404
+    assert ToolNotFound.http_status != ToolNotFound.jsonrpc_code
+
+
+def test_error_data_includes_http_status():
+    """Test that error.data includes http_status for observability."""
+    config = MCPConfig.load()
+    server = MCPJSONRPCServer(config)
+    
+    request = {
+        "jsonrpc": "2.0",
+        "id": 200,
+        "method": "callTool",
+        "params": {
+            "name": "nonexistent",
+            "params": {}
+        }
+    }
+    
+    response = server.handle_request(request)
+    
+    assert "error" in response
+    assert "data" in response["error"]
+    assert "http_status" in response["error"]["data"]
+    assert isinstance(response["error"]["data"]["http_status"], int)
+    # HTTP status codes are positive (e.g., 404, 500)
+    assert response["error"]["data"]["http_status"] > 0

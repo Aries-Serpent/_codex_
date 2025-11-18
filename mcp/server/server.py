@@ -130,9 +130,12 @@ class MCPJSONRPCServer:
                 "jsonrpc": "2.0",
                 "id": request_id,
                 "error": {
-                    "code": e.http_status,
+                    "code": e.jsonrpc_code,
                     "message": e.message,
-                    "data": e.to_dict()
+                    "data": {
+                        **e.to_dict(),
+                        "http_status": e.http_status  # Preserve HTTP status for observability
+                    }
                 }
             }
         except Exception as e:
