@@ -108,7 +108,7 @@ async def inject_request_context(request: Request, call_next):
 
         # MCP Rate Limiting - check if request is allowed
         if MCP_AVAILABLE:
-            principal_id = request.state.context.api_key_hash[:16]  # Use first 16 chars of hash as ID
+            principal_id = request.state.context.api_key_hash  # Use full hash for identity
             endpoint = request.url.path
             if not _rate_limiter.allow(principal_id, endpoint):
                 from mcp.errors import RateLimitExceeded
