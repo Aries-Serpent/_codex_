@@ -2,8 +2,26 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional
+
+
+def compute_tool_checksum(tool_name: str, tool_data: Dict[str, Any]) -> str:
+    """Compute SHA-256 checksum of tool definition for integrity verification.
+    
+    Args:
+        tool_name: Name of the tool
+        tool_data: Dictionary containing tool definition (schema, metadata, etc.)
+        
+    Returns:
+        64-character hex string (SHA-256 hash)
+    """
+    # Combine tool name and data for checksum
+    combined = {"name": tool_name, "data": tool_data}
+    serialized = json.dumps(combined, sort_keys=True)
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
 @dataclass
@@ -14,6 +32,7 @@ class ToolDefinition:
     handler: Callable[..., Any]
     schema: Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, Any]] = None
+    require_confirm: bool = False  # Whether tool requires confirmation before execution
 
 
 class MCPToolRegistry:
@@ -33,6 +52,7 @@ class MCPToolRegistry:
         handler: Callable[..., Any],
         schema: Optional[Dict[str, Any]] = None,
         metadata: Optional[Dict[str, Any]] = None,
+        require_confirm: bool = False,
     ) -> None:
         """Register a new tool with the registry.
 
@@ -41,12 +61,14 @@ class MCPToolRegistry:
             handler: Callable that implements the tool logic
             schema: Optional JSON schema for tool parameters
             metadata: Optional metadata dictionary
+            require_confirm: Whether tool requires confirmation before execution
         """
         self._tools[name] = ToolDefinition(
             name=name,
             handler=handler,
             schema=schema,
             metadata=metadata,
+            require_confirm=require_confirm,
         )
 
     def list_tools(self) -> List[Dict[str, Any]]:
@@ -81,4 +103,4 @@ class MCPToolRegistry:
         return tool_def.handler if tool_def else None
 
 
-__all__ = ["MCPToolRegistry", "ToolDefinition"]
+__all__ = ["MCPToolRegistry", "ToolDefinition", "compute_tool_checksum"]

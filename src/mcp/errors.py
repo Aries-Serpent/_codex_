@@ -10,6 +10,7 @@ class MCPError(Exception):
 
     code = "MCP_ERROR"
     http_status = 500
+    jsonrpc_code = -32000  # JSON-RPC error code
 
     def __init__(self, message: str, *, details: Dict[str, Any] | None = None):
         super().__init__(message)
@@ -26,21 +27,25 @@ class MCPError(Exception):
 class ToolNotFound(MCPError):
     code = "TOOL_NOT_FOUND"
     http_status = 404
+    jsonrpc_code = -32601  # Method not found
 
 
 class ValidationError(MCPError):
     code = "VALIDATION_ERROR"
     http_status = 400
+    jsonrpc_code = -32602  # Invalid params
 
 
 class RateLimitExceeded(MCPError):
     code = "RATE_LIMIT_EXCEEDED"
     http_status = 429
+    jsonrpc_code = -32002  # Custom: rate limit
 
 
 class Unauthorized(MCPError):
     code = "UNAUTHORIZED"
     http_status = 401
+    jsonrpc_code = -32001  # Custom: unauthorized
 
 
 _KNOWN_CODES: Iterable[str] = {
