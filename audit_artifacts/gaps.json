@@ -1,5 +1,5 @@
 {
-  "generated": 1763437824.2044673,
+  "generated": 1763437977.0239356,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -671,12 +671,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7811758502504613,
-        "tests": 0.2847350382283153,
+        "consistency": 0.7825176655325831,
+        "tests": 0.2831719445171421,
         "safeguards": 1.0,
         "documentation": 0.34285714285714286
       },
-      "score": 0.4288,
+      "score": 0.4287,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -2390,6 +2390,32 @@
         "scripts/space_traversal/coverage_ingest.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -3492,6 +3518,8 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -4572,12 +4600,12 @@
       "id": "mcp-error-handling",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8888888888888888,
-        "tests": 0.4444444444444444,
+        "consistency": 0.9090909090909091,
+        "tests": 0.5454545454545454,
         "safeguards": 0.16666666666666666,
         "documentation": 0.37142857142857144
       },
-      "score": 0.6196,
+      "score": 0.6489,
       "evidence_files": [
         "mcp/errors.py",
         "mcp/server/server.py",
@@ -4587,6 +4615,8 @@
         "test_mcp_server.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [
@@ -4599,13 +4629,14 @@
       "components": {
         "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.6666666666666666,
+        "tests": 0.5,
         "safeguards": 0.0,
         "documentation": 0.37142857142857144
       },
-      "score": 0.6724,
+      "score": 0.6307,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py"
       ],
@@ -4617,12 +4648,12 @@
       "id": "mcp-protocol-surface",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.75,
-        "tests": 0.3333333333333333,
+        "consistency": 0.7692307692307692,
+        "tests": 0.38461538461538464,
         "safeguards": 0.8333333333333334,
         "documentation": 0.37142857142857144
       },
-      "score": 0.664,
+      "score": 0.6807,
       "evidence_files": [
         "mcp/auth.py",
         "mcp/server/server.py",
@@ -4635,6 +4666,7 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
         "test_mcp_server.py",
         "tests/hhg_logistics/serve/test_app.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [
@@ -4646,12 +4678,12 @@
       "id": "mcp-rate-limiting",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8620689655172413,
-        "tests": 0.4827586206896552,
+        "consistency": 0.8666666666666667,
+        "tests": 0.5,
         "safeguards": 0.3333333333333333,
         "documentation": 0.37142857142857144
       },
-      "score": 0.6488,
+      "score": 0.654,
       "evidence_files": [
         "mcp/rate_limit.py",
         "mcp/server/server.py",
@@ -4674,6 +4706,7 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/scripts/test_prune_rate_limit_history.py",
@@ -4766,18 +4799,20 @@
       "id": "mcp-tooling-registry",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.6,
-        "tests": 0.4,
+        "consistency": 0.7142857142857143,
+        "tests": 0.42857142857142855,
         "safeguards": 0.0,
         "documentation": 0.37142857142857144
       },
-      "score": 0.5257,
+      "score": 0.5557,
       "evidence_files": [
         "mcp/mcp.json",
         "mcp/registry.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
-        "temp/bridge_codex_copilot_bridge/mcp/mcp.json"
+        "temp/bridge_codex_copilot_bridge/mcp/mcp.json",
+        "tests/mcp/test_registry.py"
       ],
       "found_patterns": [
         "mcp.json",
@@ -4788,12 +4823,12 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9235474006116208,
-        "tests": 0.10091743119266056,
+        "consistency": 0.9264705882352942,
+        "tests": 0.10294117647058823,
         "safeguards": 1.0,
         "documentation": 0.37142857142857144
       },
-      "score": 0.6657,
+      "score": 0.6667,
       "evidence_files": [
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
@@ -4823,6 +4858,17 @@
         "mcp/server/__init__.py",
         "mcp/server/server.py",
         "mcp/versioning.py",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_error_handling.py",
@@ -4860,6 +4906,8 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
@@ -5133,17 +5181,18 @@
       "components": {
         "functionality": 2.0,
         "consistency": 1.0,
-        "tests": 0.5,
+        "tests": 0.5714285714285714,
         "safeguards": 0.16666666666666666,
         "documentation": 0.37142857142857144
       },
-      "score": 0.6557,
+      "score": 0.6736,
       "evidence_files": [
         "mcp/server/server.py",
         "mcp/versioning.py",
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "test_mcp_server.py",
         "tests/mcp/test_mcp_core_smoke.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [

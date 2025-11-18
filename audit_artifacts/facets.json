@@ -1,5 +1,5 @@
 {
-  "generated": 1763437822.1596081,
+  "generated": 1763437974.984903,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -288,6 +288,7 @@
       "examples/plugins/toy_trainer/__init__.py",
       "examples/train_toy.py",
       "notebooks/gpu_training_example.ipynb",
+      "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
       "scripts/space_traversal/detectors/unified_training.py",
       "scripts/train.py",
       "src/codex/training.py",

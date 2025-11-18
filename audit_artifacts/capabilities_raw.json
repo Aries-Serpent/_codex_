@@ -1,5 +1,5 @@
 {
-  "generated": 1763437822.9231765,
+  "generated": 1763437975.7211733,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -108,6 +108,7 @@
         "scripts/archive_paths.sh",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/status/bundle_status_artifacts.sh",
         "src/codex/archive/__init__.py",
@@ -3681,6 +3682,32 @@
         "scripts/space_traversal/coverage_ingest.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -4783,6 +4810,8 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -5970,6 +5999,7 @@
         "manifests/selection_guard_rules.json",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/tracking/mlflow_ui.sh",
         "src/codex/release/manifest.py",
@@ -6064,7 +6094,7 @@
       "meta": {
         "mlflow_integration": 36,
         "wandb_integration": 4,
-        "experiment_utils": 17,
+        "experiment_utils": 18,
         "metadata_files": 81
       }
     },
@@ -6461,6 +6491,8 @@
         "test_mcp_server.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [
@@ -6478,6 +6510,7 @@
       "id": "mcp-multi-tenant",
       "evidence_files": [
         "policies/tenant_policy.schema.json",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py"
       ],
@@ -7234,6 +7267,7 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
         "test_mcp_server.py",
         "tests/hhg_logistics/serve/test_app.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [
@@ -7272,6 +7306,7 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/scripts/test_prune_rate_limit_history.py",
@@ -7370,9 +7405,11 @@
       "evidence_files": [
         "mcp/mcp.json",
         "mcp/registry.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
-        "temp/bridge_codex_copilot_bridge/mcp/mcp.json"
+        "temp/bridge_codex_copilot_bridge/mcp/mcp.json",
+        "tests/mcp/test_registry.py"
       ],
       "found_patterns": [
         "mcp.json",
@@ -7417,6 +7454,17 @@
         "mcp/server/__init__.py",
         "mcp/server/server.py",
         "mcp/versioning.py",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_error_handling.py",
@@ -7454,6 +7502,8 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
@@ -7737,6 +7787,7 @@
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "test_mcp_server.py",
         "tests/mcp/test_mcp_core_smoke.py",
+        "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
       "found_patterns": [
@@ -7780,6 +7831,8 @@
         "mcp/server/server.py",
         "schemas/cli/gh_api_envelope.schema.json",
         "scripts/local/serve_local.sh",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/ml_serving.py",
         "services/api/__init__.py",
@@ -8027,6 +8080,7 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
@@ -8102,7 +8156,7 @@
       ],
       "meta": {
         "seed_management": 28,
-        "repro_utils": 19,
+        "repro_utils": 20,
         "determinism_configs": 7,
         "integrity_validation": 31
       }
@@ -9532,6 +9586,7 @@
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
         "scripts/space_traversal/audit_runner.py",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/status_update_report.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -10035,6 +10090,8 @@
         "tests/mcp/test_integration.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
         "tests/mcp/test_server.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -10754,7 +10811,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 1061,
+        "test_count": 1063,
         "config_count": 27,
         "fixture_count": 29
       }
@@ -10956,6 +11013,7 @@
         "examples/plugins/toy_trainer/__init__.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
         "src/codex/training.py",
