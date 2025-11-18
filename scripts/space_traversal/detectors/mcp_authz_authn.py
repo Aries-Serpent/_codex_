@@ -10,7 +10,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     files = [f.get("path", "") for f in file_index.get("files", [])]
     evidence = []
     found = []
-    keywords = ["verify_api_key", "authenticate", "X-API-Key", "Authorization"]
+    keywords = ["API-Key", "authenticate", "authorize"]
     for path in files:
         if path.endswith(".py"):
             try:
