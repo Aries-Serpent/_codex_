@@ -1,5 +1,5 @@
 {
-  "generated": 1763434990.5639174,
+  "generated": 1763435444.783677,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1281,6 +1281,7 @@
       "tests/configuration/test_hydra_validation.py",
       "tests/configuration/test_yaml_under_configs_parse.py",
       "tests/interfaces/test_apply_config.py",
+      "tests/mcp/test_config.py",
       "tests/pipeline/test_pipeline_config.py",
       "tests/smoke/test_config_validate_cli.py",
       "tests/specs/_workflow_config_utils.py",

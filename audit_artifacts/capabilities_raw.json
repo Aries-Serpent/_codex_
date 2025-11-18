@@ -1,5 +1,5 @@
 {
-  "generated": 1763434991.2622113,
+  "generated": 1763435445.4824748,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -1085,6 +1085,7 @@
         "tests/configuration/test_hydra_validation.py",
         "tests/configuration/test_yaml_under_configs_parse.py",
         "tests/interfaces/test_apply_config.py",
+        "tests/mcp/test_config.py",
         "tests/pipeline/test_pipeline_config.py",
         "tests/smoke/test_config_validate_cli.py",
         "tests/specs/_workflow_config_utils.py",
@@ -1400,6 +1401,7 @@
         "docs/How_We_Release.md",
         "docs/INFERENCE_SERVING_GUIDE.md",
         "docs/Implementation_Update_merged.md",
+        "docs/MCP_Usage_Guide.md",
         "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
         "docs/PHASE1_SETUP_REQUIREMENTS.md",
         "docs/PR_PLAN.md",
@@ -1962,10 +1964,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 564,
+        "markdown_count": 565,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 566
+        "total_docs": 567
       }
     },
     {
@@ -2285,6 +2287,7 @@
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
         ".github/prompts/PR_2207_VERIFICATION_COPILOT_PROMPT.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         ".github/prompts/fix_dbmanager_logger_classmethod_issue.md",
         ".github/prompts/fix_pr2224_review_comments.md",
         ".github/prompts/implement_agents_documentation_enhancement.md",
@@ -2420,6 +2423,7 @@
         "MATURITY_IMPROVEMENT_PLAN.md",
         "MATURITY_REMAINING_WORK.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "Makefile",
@@ -2827,6 +2831,7 @@
         "docs/How_We_Release.md",
         "docs/INFERENCE_SERVING_GUIDE.md",
         "docs/Implementation_Update_merged.md",
+        "docs/MCP_Usage_Guide.md",
         "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
         "docs/PHASE1_SETUP_REQUIREMENTS.md",
         "docs/PR_PLAN.md",
@@ -4807,6 +4812,10 @@
         "tests/logging/test_session_logger_structured.py",
         "tests/logging/test_structured_logging.py",
         "tests/manifest/test_warning_aggregation.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -6447,6 +6456,7 @@
         "temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/demo_plan_and_call.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/utils/github_app.py",
         "tests/github/test_gh_api_wrapper.py",
+        "tests/mcp/test_auth.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/test_deployment_orchestrator.py",
         "tests/test_msp_infer_api.py",
@@ -6481,7 +6491,8 @@
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "services/ita/app/main.py",
         "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-        "test_mcp_server.py"
+        "test_mcp_server.py",
+        "tests/mcp/test_mcp_core_smoke.py"
       ],
       "found_patterns": [
         "MCPError",
@@ -6559,6 +6570,7 @@
         ".github/docs/pr2229_fix_imds_sudo_blocking.md",
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         ".github/prompts/implement_planned_followup_prompt.md",
         ".github/scripts/ci_parse_coverage.py",
         ".reports/modernization_after.md",
@@ -6599,6 +6611,7 @@
         "MATURITY_IMPROVEMENT_PLAN.md",
         "MATURITY_REMAINING_WORK.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
         "NEXT_COPILOT_PROMPT.md",
@@ -7284,6 +7297,7 @@
         "test_mcp_server.py",
         "tests/codex_ml/test_inference_integration.py",
         "tests/codex_ml/test_inference_server.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/scripts/test_prune_rate_limit_history.py",
         "tests/security/test_rate_limiting.py",
@@ -7404,11 +7418,14 @@
       "evidence_files": [
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "configs/evaluation/reasoning/tools.yaml",
         "configs/training/reasoning/tool_execution.yaml",
         "data/sample/reasoning/tool_eval.jsonl",
         "data/sample/reasoning/tool_traces.jsonl",
+        "docs/MCP_Usage_Guide.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/ops/Local_Tooling_Prereqs.md",
@@ -7474,6 +7491,10 @@
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/README.md",
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/openai_wrapper.py",
         "test_mcp_server.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
         "tests/tools/.gitkeep",
@@ -7754,7 +7775,8 @@
         "mcp/server/server.py",
         "mcp/versioning.py",
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
-        "test_mcp_server.py"
+        "test_mcp_server.py",
+        "tests/mcp/test_mcp_core_smoke.py"
       ],
       "found_patterns": [
         "MCP_VERSIONS",
@@ -8214,6 +8236,7 @@
         "IMPLEMENTATION_VALIDATION.md",
         "MATURITY_IMPLEMENTATION_SUMMARY.md",
         "MATURITY_IMPROVEMENT_PLAN.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
@@ -8552,6 +8575,9 @@
         "experiments/2025-01-15_smoke.md",
         "hydra/errors.py",
         "inventory.md",
+        "mcp/auth.py",
+        "mcp/config.py",
+        "mcp/rate_limit.py",
         "nox_sessions/audit.py",
         "nox_sessions/docs_validation.py",
         "nox_sessions/fence_tests.py",
@@ -8894,6 +8920,9 @@
         "tests/integration/test_mlflow_offline.py",
         "tests/logging/test_mlflow_guard.py",
         "tests/logging/test_run_schema.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_registry_aliases.py",
         "tests/metrics/test_scoring_integration.py",
@@ -10040,6 +10069,10 @@
         "tests/logging/test_session_logger_structured.py",
         "tests/logging/test_structured_logging.py",
         "tests/manifest/test_warning_aggregation.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -10758,7 +10791,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 1054,
+        "test_count": 1058,
         "config_count": 27,
         "fixture_count": 29
       }

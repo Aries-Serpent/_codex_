@@ -1,6 +1,6 @@
 {
-  "generated": 1763434990.533887,
-  "count": 3814,
+  "generated": 1763435444.7536821,
+  "count": 3821,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -1887,6 +1887,12 @@
       "sha": "7454d68158833771de610ea492d97e23e10ebf32d2d2df4aa06960d40ee8dbb4"
     },
     {
+      "path": ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
+      "ext": ".md",
+      "size": 36187,
+      "sha": "2b99efa84bce5fd16dd5a5209591ba733effc4535964c71595e2336304a5d30e"
+    },
+    {
       "path": ".github/prompts/fix_dbmanager_logger_classmethod_issue.md",
       "ext": ".md",
       "size": 24666,
@@ -2695,6 +2701,12 @@
       "ext": ".md",
       "size": 12082,
       "sha": "99e3af595e729529bd2570223cfb9b9f1b36de2102230938ebb96e34c9fc2359"
+    },
+    {
+      "path": "MCP_INTEGRATION_COMPLETE.md",
+      "ext": ".md",
+      "size": 7975,
+      "sha": "b87444b25fb6f2b0bc2a6890869ce7eaed5de8aedb1b419106dfa2a78e6f2b09"
     },
     {
       "path": "MERGE_READINESS_CONFIRMATION.md",
@@ -3516,7 +3528,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 1341,
-      "sha": "64c25df866903c83f84b0300d006c0089068251630cc2054efe899a00265db83"
+      "sha": "d5f24a71701ac3020e6c7e51c68d74bfb672a9cbc62bade01fb9a84b6d70725d"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -5137,6 +5149,12 @@
       "ext": ".md",
       "size": 6942,
       "sha": "30a28b71b726d546bf19cf775ac6648f64e19939cdecccf0c258c53624af79e5"
+    },
+    {
+      "path": "docs/MCP_Usage_Guide.md",
+      "ext": ".md",
+      "size": 927,
+      "sha": "af274636125268cf9e9d97fca727cae93d12fb6a89fc76e28f710d81d22c1372"
     },
     {
       "path": "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
@@ -8837,14 +8855,14 @@
     {
       "path": "mcp/__pycache__/auth.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 1908,
-      "sha": "300fc97f4bcaf78a229fafd010832d60560202eaa73604037cc1fdc46a997a8a"
+      "size": 4538,
+      "sha": "721f1996a4952912485c1d8e8d0fa5ac7bd352e1f50f20e4574103d0c874cdde"
     },
     {
       "path": "mcp/__pycache__/config.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 3338,
-      "sha": "a35399312df2f2d5fe1e84c9fd5b32dd7f658d03fc5b1aa4de65f2d28272abd8"
+      "size": 4556,
+      "sha": "3c8cd9f42eb585a55808d188d6042f9a781172cfa4fbadd6a9f79e396664bc4e"
     },
     {
       "path": "mcp/__pycache__/errors.cpython-312.pyc",
@@ -8855,8 +8873,8 @@
     {
       "path": "mcp/__pycache__/rate_limit.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 1745,
-      "sha": "f77a432c3d065f12f6e21b35815b45e2c4dd258ab9303c35655d8e69e87ccb3c"
+      "size": 3358,
+      "sha": "522a2373c84f9b5404fe47a818006695befbc959206d78b4237a06832e7a0599"
     },
     {
       "path": "mcp/__pycache__/registry.cpython-312.pyc",
@@ -8873,14 +8891,14 @@
     {
       "path": "mcp/auth.py",
       "ext": ".py",
-      "size": 1323,
-      "sha": "ea6910ed75b47af26a4fbe0f028cb4b893c67d56948e2a9109198ad2620f752e"
+      "size": 3176,
+      "sha": "c88fe576baea4d6d2afeff27571a3c7148385c52557df76a6312bdfd68c66f77"
     },
     {
       "path": "mcp/config.py",
       "ext": ".py",
-      "size": 2191,
-      "sha": "ca3069faa3ab04ef0ea42696b496b5e546fcaf81720947f6659fdb2b33f547b2"
+      "size": 3302,
+      "sha": "93c7aa41f1822c744b55c86a2b8ea14627f2d810861092a0084d9ef0d07c77e7"
     },
     {
       "path": "mcp/errors.py",
@@ -8897,8 +8915,8 @@
     {
       "path": "mcp/rate_limit.py",
       "ext": ".py",
-      "size": 1256,
-      "sha": "02fe04e1a227e64ec3300760a037bdb471af5b769b999cad8e3667ef433b30ed"
+      "size": 2745,
+      "sha": "9088c975fb948cb01f253d5ba42ddcdb63af2dff367feed67c686f1a008b337e"
     },
     {
       "path": "mcp/registry.py",
@@ -10265,8 +10283,8 @@
     {
       "path": "scripts/space_traversal/audit_runner.py",
       "ext": ".py",
-      "size": 26929,
-      "sha": "30d81ceaf6a5d54153a1cdfbf12e1a295f6852056354af66635764cce7f685ea"
+      "size": 27061,
+      "sha": "ad7d0a50ea2a34b01733ccec241cf2847111f6fd09567bc0f56af84bfb1ca6a7"
     },
     {
       "path": "scripts/space_traversal/capability_scoring.py",
@@ -17017,6 +17035,30 @@
       "ext": ".py",
       "size": 1786,
       "sha": "3e2632f2192c943b66765f1f59bdf5d86fd320fcbd06b4bbe8f4640fa355670d"
+    },
+    {
+      "path": "tests/mcp/__init__.py",
+      "ext": ".py",
+      "size": 51,
+      "sha": "43600b90671023f653803a5de7f92d2f4af4317215d652572f62040f79ea6dac"
+    },
+    {
+      "path": "tests/mcp/test_auth.py",
+      "ext": ".py",
+      "size": 2971,
+      "sha": "b4971ec326413bca3980e2014996b8c3badcedf9f0ecb2272ab7a9d0d0bb0c84"
+    },
+    {
+      "path": "tests/mcp/test_config.py",
+      "ext": ".py",
+      "size": 3404,
+      "sha": "751f662ece448237c795f19447b920702424ae77f18a9db3c52b84223c46291e"
+    },
+    {
+      "path": "tests/mcp/test_mcp_core_smoke.py",
+      "ext": ".py",
+      "size": 4724,
+      "sha": "646e5b11368a20bf83c47d8d2576f36d918e8ab9030339f4ab23652f7b4cd3ed"
     },
     {
       "path": "tests/metrics/test_api.py",

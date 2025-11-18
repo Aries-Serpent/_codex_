@@ -1,5 +1,5 @@
 {
-  "generated": 1763434992.4858289,
+  "generated": 1763435446.7095833,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -88,8 +88,8 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9363957597173145,
-        "tests": 0.00530035335689046,
+        "consistency": 0.9365079365079365,
+        "tests": 0.005291005291005291,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -112,6 +112,7 @@
         "docs/How_We_Release.md",
         "docs/INFERENCE_SERVING_GUIDE.md",
         "docs/Implementation_Update_merged.md",
+        "docs/MCP_Usage_Guide.md",
         "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
         "docs/PHASE1_SETUP_REQUIREMENTS.md",
         "docs/PR_PLAN.md",
@@ -672,12 +673,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7829050865233351,
-        "tests": 0.28054535920293655,
+        "consistency": 0.7827793771264067,
+        "tests": 0.28107825176655327,
         "safeguards": 1.0,
-        "documentation": 0.3443328550932568
+        "documentation": 0.34334763948497854
       },
-      "score": 0.4284,
+      "score": 0.4283,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -993,6 +994,7 @@
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
         ".github/prompts/PR_2207_VERIFICATION_COPILOT_PROMPT.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         ".github/prompts/fix_dbmanager_logger_classmethod_issue.md",
         ".github/prompts/fix_pr2224_review_comments.md",
         ".github/prompts/implement_agents_documentation_enhancement.md",
@@ -1128,6 +1130,7 @@
         "MATURITY_IMPROVEMENT_PLAN.md",
         "MATURITY_REMAINING_WORK.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "Makefile",
@@ -1535,6 +1538,7 @@
         "docs/How_We_Release.md",
         "docs/INFERENCE_SERVING_GUIDE.md",
         "docs/Implementation_Update_merged.md",
+        "docs/MCP_Usage_Guide.md",
         "docs/PERFORMANCE_OPTIMIZATION_GUIDE.md",
         "docs/PHASE1_SETUP_REQUIREMENTS.md",
         "docs/PR_PLAN.md",
@@ -3515,6 +3519,10 @@
         "tests/logging/test_session_logger_structured.py",
         "tests/logging/test_structured_logging.py",
         "tests/manifest/test_warning_aggregation.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -4543,12 +4551,12 @@
       "id": "mcp-authz-authn",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.967741935483871,
-        "tests": 0.16129032258064516,
-        "safeguards": 0.3333333333333333,
-        "documentation": 0.3299856527977044
+        "consistency": 0.96875,
+        "tests": 0.21875,
+        "safeguards": 0.6666666666666666,
+        "documentation": 0.35765379113018597
       },
-      "score": 0.5834,
+      "score": 0.6521,
       "evidence_files": [
         "agents/codex_client/codex_client/bridge.py",
         "agents/msp_client.py",
@@ -4570,6 +4578,7 @@
         "temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/demo_plan_and_call.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/utils/github_app.py",
         "tests/github/test_gh_api_wrapper.py",
+        "tests/mcp/test_auth.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/test_deployment_orchestrator.py",
         "tests/test_msp_infer_api.py",
@@ -4593,19 +4602,20 @@
       "id": "mcp-error-handling",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8333333333333334,
-        "tests": 0.16666666666666666,
-        "safeguards": 0.0,
-        "documentation": 0.3299856527977044
+        "consistency": 0.8571428571428572,
+        "tests": 0.2857142857142857,
+        "safeguards": 0.16666666666666666,
+        "documentation": 0.35765379113018597
       },
-      "score": 0.5078,
+      "score": 0.5715,
       "evidence_files": [
         "mcp/errors.py",
         "mcp/server/server.py",
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "services/ita/app/main.py",
         "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-        "test_mcp_server.py"
+        "test_mcp_server.py",
+        "tests/mcp/test_mcp_core_smoke.py"
       ],
       "found_patterns": [
         "MCPError",
@@ -4617,11 +4627,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.25,
+        "tests": 0.5,
         "safeguards": 0.0,
-        "documentation": 0.3299856527977044
+        "documentation": 0.35765379113018597
       },
-      "score": 0.562,
+      "score": 0.6286,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
         "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
@@ -4636,12 +4646,12 @@
       "id": "mcp-observability",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8654390934844193,
-        "tests": 0.29036827195467424,
+        "consistency": 0.865819209039548,
+        "tests": 0.2909604519774011,
         "safeguards": 1.0,
-        "documentation": 0.3299856527977044
+        "documentation": 0.35765379113018597
       },
-      "score": 0.6952,
+      "score": 0.6996,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -4687,6 +4697,7 @@
         ".github/docs/pr2229_fix_imds_sudo_blocking.md",
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         ".github/prompts/implement_planned_followup_prompt.md",
         ".github/scripts/ci_parse_coverage.py",
         ".reports/modernization_after.md",
@@ -4727,6 +4738,7 @@
         "MATURITY_IMPROVEMENT_PLAN.md",
         "MATURITY_REMAINING_WORK.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
         "NEXT_COPILOT_PROMPT.md",
@@ -5362,11 +5374,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.7272727272727273,
-        "tests": 0.18181818181818182,
-        "safeguards": 0.6666666666666666,
-        "documentation": 0.3299856527977044
+        "tests": 0.2727272727272727,
+        "safeguards": 0.8333333333333334,
+        "documentation": 0.35765379113018597
       },
-      "score": 0.5904,
+      "score": 0.6423,
       "evidence_files": [
         "mcp/auth.py",
         "mcp/server/server.py",
@@ -5389,12 +5401,12 @@
       "id": "mcp-rate-limiting",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.84,
-        "tests": 0.4,
-        "safeguards": 0.16666666666666666,
-        "documentation": 0.3299856527977044
+        "consistency": 0.8461538461538461,
+        "tests": 0.4230769230769231,
+        "safeguards": 0.3333333333333333,
+        "documentation": 0.35765379113018597
       },
-      "score": 0.5925,
+      "score": 0.6286,
       "evidence_files": [
         "mcp/rate_limit.py",
         "mcp/server/server.py",
@@ -5414,6 +5426,7 @@
         "test_mcp_server.py",
         "tests/codex_ml/test_inference_integration.py",
         "tests/codex_ml/test_inference_server.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/scripts/test_prune_rate_limit_history.py",
         "tests/security/test_rate_limiting.py",
@@ -5432,11 +5445,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.8596491228070176,
-        "tests": 0.10526315789473684,
+        "tests": 0.12280701754385964,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.3299856527977044
+        "documentation": 0.35765379113018597
       },
-      "score": 0.6227,
+      "score": 0.6313,
       "evidence_files": [
         "actions/openapi.yaml",
         "agents/codex_client/codex_client/models.py",
@@ -5506,11 +5519,11 @@
       "components": {
         "functionality": 1.0,
         "consistency": 0.7142857142857143,
-        "tests": 0.14285714285714285,
+        "tests": 0.2857142857142857,
         "safeguards": 0.0,
-        "documentation": 0.3299856527977044
+        "documentation": 0.35765379113018597
       },
-      "score": 0.4781,
+      "score": 0.5179,
       "evidence_files": [
         "mcp/__pycache__/registry.cpython-312.pyc",
         "mcp/mcp.json",
@@ -5529,20 +5542,23 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.924924924924925,
-        "tests": 0.07207207207207207,
+        "consistency": 0.9235294117647059,
+        "tests": 0.08235294117647059,
         "safeguards": 1.0,
-        "documentation": 0.3299856527977044
+        "documentation": 0.35765379113018597
       },
-      "score": 0.6525,
+      "score": 0.6589,
       "evidence_files": [
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
         ".github/prompts/MCP_MAPPING_OUTLINE.md",
+        ".github/prompts/Patchset_1-2_MCP_Core_Module_Integration.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "configs/evaluation/reasoning/tools.yaml",
         "configs/training/reasoning/tool_execution.yaml",
         "data/sample/reasoning/tool_eval.jsonl",
         "data/sample/reasoning/tool_traces.jsonl",
+        "docs/MCP_Usage_Guide.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/ops/Local_Tooling_Prereqs.md",
@@ -5608,6 +5624,10 @@
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/README.md",
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/openai_wrapper.py",
         "test_mcp_server.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
         "tests/tools/.gitkeep",
@@ -5880,16 +5900,17 @@
       "components": {
         "functionality": 2.0,
         "consistency": 1.0,
-        "tests": 0.25,
-        "safeguards": 0.0,
-        "documentation": 0.3299856527977044
+        "tests": 0.4,
+        "safeguards": 0.16666666666666666,
+        "documentation": 0.35765379113018597
       },
-      "score": 0.562,
+      "score": 0.6286,
       "evidence_files": [
         "mcp/server/server.py",
         "mcp/versioning.py",
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
-        "test_mcp_server.py"
+        "test_mcp_server.py",
+        "tests/mcp/test_mcp_core_smoke.py"
       ],
       "found_patterns": [
         "MCP_VERSIONS",
@@ -5900,10 +5921,10 @@
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8518518518518519,
-        "tests": 0.25625625625625625,
+        "consistency": 0.8508946322067594,
+        "tests": 0.25745526838966204,
         "safeguards": 1.0,
-        "documentation": 0.2582496413199426
+        "documentation": 0.2575107296137339
       },
       "score": 0.6732,
       "evidence_files": [
@@ -5990,6 +6011,7 @@
         "IMPLEMENTATION_VALIDATION.md",
         "MATURITY_IMPLEMENTATION_SUMMARY.md",
         "MATURITY_IMPROVEMENT_PLAN.md",
+        "MCP_INTEGRATION_COMPLETE.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
@@ -6328,6 +6350,9 @@
         "experiments/2025-01-15_smoke.md",
         "hydra/errors.py",
         "inventory.md",
+        "mcp/auth.py",
+        "mcp/config.py",
+        "mcp/rate_limit.py",
         "nox_sessions/audit.py",
         "nox_sessions/docs_validation.py",
         "nox_sessions/fence_tests.py",
@@ -6670,6 +6695,9 @@
         "tests/integration/test_mlflow_offline.py",
         "tests/logging/test_mlflow_guard.py",
         "tests/logging/test_run_schema.py",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_mcp_core_smoke.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_registry_aliases.py",
         "tests/metrics/test_scoring_integration.py",
@@ -6923,9 +6951,9 @@
         "consistency": 1.0,
         "tests": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.6886657101865136
+        "documentation": 0.6866952789699571
       },
-      "score": 0.5533,
+      "score": 0.553,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
