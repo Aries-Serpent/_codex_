@@ -73,6 +73,19 @@ capability_map:
     ml-serving: ["serve", "predict", "api"]
     status-reporting: ["status", "audit", "report"]
     archival-bundling: ["archive", "bundle", "manifest"]
+    # v1.5.0 additions (MCP capabilities)
+    mcp-protocol-surface: ["FastAPI", "jsonrpc", "endpoint"]
+    mcp-schema-validation: ["BaseModel", "OpenAPI", "schema"]
+    mcp-tooling-registry: ["registry", "tools"]
+    mcp-authz-authn: ["API-Key", "authenticate", "authorize"]
+    mcp-observability: ["logging", "metrics", "tracing"]
+    mcp-rate-limiting: ["RateLimiter", "throttle"]
+    mcp-error-handling: ["MCPError", "HTTPException", "error"]
+    mcp-configuration: ["config", "environment", "mcp.json"]
+    mcp-security-safeguards: ["confirm", "dry_run", "sanitize"]
+    mcp-lifecycle-management: ["startup", "shutdown", "healthz"]
+    mcp-versioning-compat: ["MCP_VERSIONS", "negotiate_version"]
+    mcp-multi-tenant: ["tenant", "isolation"]
   dynamic: true
 
 output:
