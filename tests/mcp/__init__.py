@@ -1,3 +1,1 @@
-"""MCP test suite initialization."""
-
-__all__ = []
+"""MCP tests package."""
