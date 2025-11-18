@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import sys
 from typing import Any, Dict, List, Optional
+from urllib.parse import urljoin, urlsplit
 
 # Add parent directories to path for imports
 import os
@@ -21,7 +22,7 @@ from mcp.config import MCPConfig, ToolDefinition
 from mcp.errors import MCPError, ToolNotFound, ValidationError, RateLimitExceeded
 from mcp.versioning import MCP_VERSIONS, negotiate_version
 from mcp.rate_limit import MCPRateLimiter
-from mcp.auth import Principal, MCPAuthenticator
+from mcp.auth import MCPAuthenticator
 
 # Try to import httpx for making requests to ITA
 try:
@@ -63,6 +64,18 @@ class MCPJSONRPCServer:
         
         self.registry.register_tool(tool.name, handler, schema=schema, metadata=metadata)
     
+    def _normalize_endpoint(self, endpoint: str) -> str:
+        """Return a relative path that respects overrides regardless of input host."""
+
+        parsed = urlsplit(endpoint)
+        if parsed.scheme:
+            relative = parsed.path or "/"
+            if parsed.query:
+                relative = f"{relative}?{parsed.query}"
+        else:
+            relative = endpoint
+        return relative
+
     def _call_ita_endpoint(self, endpoint: str, params: Dict[str, Any]) -> Dict[str, Any]:
         """Call an ITA endpoint via HTTP."""
         if not HAS_HTTPX:
@@ -70,9 +83,11 @@ class MCPJSONRPCServer:
                 "error": "httpx not available - install with: pip install httpx",
                 "simulated": True
             }
-        
+
         # Construct full URL
-        url = f"{self.config.ita_url}{endpoint.replace(self.config.ita_url, '')}"
+        relative = self._normalize_endpoint(endpoint)
+        base = self.config.ita_url.rstrip("/") + "/"
+        url = urljoin(base, relative.lstrip("/"))
         
         headers = {}
         if self.config.ita_api_key:
@@ -90,20 +105,27 @@ class MCPJSONRPCServer:
                 "endpoint": url
             }
     
-    def handle_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+    def handle_request(self, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
         Handle a JSON-RPC 2.0 request.
-        
+
         Args:
             request: JSON-RPC request object
-            
+
         Returns:
             JSON-RPC response object
         """
+        if isinstance(request, str):
+            request = json.loads(request)
+        if not isinstance(request, dict):
+            raise ValueError("JSON-RPC request must be a dict or JSON string")
+
         request_id = request.get("id")
         method = request.get("method")
         params = request.get("params", {})
-        
+
+        is_notification = request_id is None
+
         try:
             # Validate JSON-RPC version
             if request.get("jsonrpc") != "2.0":
@@ -119,6 +141,8 @@ class MCPJSONRPCServer:
             else:
                 raise ToolNotFound(f"Unknown method: {method}")
             
+            if is_notification:
+                return None
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
@@ -126,6 +150,8 @@ class MCPJSONRPCServer:
             }
             
         except MCPError as e:
+            if is_notification:
+                return None
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
@@ -136,6 +162,8 @@ class MCPJSONRPCServer:
                 }
             }
         except Exception as e:
+            if is_notification:
+                return None
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
@@ -145,13 +173,18 @@ class MCPJSONRPCServer:
                 }
             }
     
-    def _handle_list_tools(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def _handle_list_tools(self, params: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Handle listTools request."""
-        tools = self.registry.list_tools()
-        return {
-            "tools": tools,
-            "version": MCP_VERSIONS[0]
-        }
+
+        versioned_tools: List[Dict[str, Any]] = []
+        for tool in self.registry.list_tools():
+            entry = dict(tool)
+            metadata = entry.get("metadata", {})
+            metadata = dict(metadata)
+            metadata.setdefault("version", MCP_VERSIONS[0])
+            entry["metadata"] = metadata
+            versioned_tools.append(entry)
+        return versioned_tools
     
     def _handle_call_tool(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle callTool request."""
@@ -173,6 +206,7 @@ class MCPJSONRPCServer:
         
         # Execute tool
         try:
+            self.registry.enforce_safeguards(tool_name, tool_params)
             result = handler(**tool_params)
             return {
                 "tool": tool_name,
@@ -189,10 +223,7 @@ class MCPJSONRPCServer:
         client_versions = params.get("versions", ["1.0"])
         try:
             version = negotiate_version(client_versions)
-            return {
-                "version": version,
-                "supported": MCP_VERSIONS
-            }
+            return version
         except Exception as e:
             raise ValidationError(f"Version negotiation failed: {str(e)}")
     
