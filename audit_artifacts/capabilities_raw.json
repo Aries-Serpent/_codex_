@@ -1,5 +1,5 @@
 {
-  "generated": 1763439485.7812598,
+  "generated": 1763439800.9229999,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -2431,6 +2431,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "Makefile",
@@ -3459,6 +3460,7 @@
         "mcp/errors.py",
         "mcp/examples.py",
         "mcp/mcp.json",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -4824,6 +4826,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -6524,6 +6527,7 @@
     {
       "id": "mcp-multi-tenant",
       "evidence_files": [
+        "mcp/multi_tenant.py",
         "policies/tenant_policy.schema.json",
         "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
@@ -7083,6 +7087,7 @@
         "tests/logging/test_registry_logger.py",
         "tests/logging/test_run_schema.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -7468,6 +7473,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "configs/evaluation/reasoning/tools.yaml",
         "configs/training/reasoning/tool_execution.yaml",
         "data/sample/reasoning/tool_eval.jsonl",
@@ -7484,6 +7490,7 @@
         "mcp/errors.py",
         "mcp/examples.py",
         "mcp/mcp.json",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -7545,6 +7552,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
@@ -8298,6 +8306,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
@@ -8639,6 +8648,7 @@
         "mcp/auth.py",
         "mcp/config.py",
         "mcp/examples.py",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -10154,6 +10164,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -10873,7 +10884,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 1069,
+        "test_count": 1070,
         "config_count": 27,
         "fixture_count": 29
       }

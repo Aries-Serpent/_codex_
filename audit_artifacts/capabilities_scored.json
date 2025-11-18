@@ -1,5 +1,5 @@
 {
-  "generated": 1763439486.9032972,
+  "generated": 1763439802.045799,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -8,9 +8,9 @@
         "consistency": 0.8795811518324608,
         "tests": 0.24607329842931938,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.6382978723404256
+        "documentation": 0.6373937677053824
       },
-      "score": 0.7082,
+      "score": 0.708,
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -217,9 +217,9 @@
         "consistency": 0.8811881188118812,
         "tests": 0.6831683168316832,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.950354609929078
+        "documentation": 0.9490084985835693
       },
-      "score": 0.8646,
+      "score": 0.8644,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "configs/schemas/checkpoint_manifest.schema.json",
@@ -1960,12 +1960,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.783141962421712,
-        "tests": 0.2831419624217119,
+        "consistency": 0.7833116036505867,
+        "tests": 0.2831812255541069,
         "safeguards": 1.0,
-        "documentation": 0.3404255319148936
+        "documentation": 0.3399433427762039
       },
-      "score": 0.4285,
+      "score": 0.4284,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -2427,6 +2427,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "Makefile",
@@ -3455,6 +3456,7 @@
         "mcp/errors.py",
         "mcp/examples.py",
         "mcp/mcp.json",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -4820,6 +4822,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -6442,9 +6445,9 @@
         "consistency": 0.9705882352941176,
         "tests": 0.23529411764705882,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.6939,
+      "score": 0.6959,
       "evidence_files": [
         "agents/codex_client/codex_client/bridge.py",
         "agents/msp_client.py",
@@ -6495,9 +6498,9 @@
         "consistency": 0.9230769230769231,
         "tests": 0.6153846153846154,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.7794,
+      "score": 0.7815,
       "evidence_files": [
         "mcp/errors.py",
         "mcp/server/server.py",
@@ -6523,12 +6526,13 @@
       "components": {
         "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.6,
-        "safeguards": 0.16666666666666666,
-        "documentation": 0.4397163120567376
+        "tests": 0.5,
+        "safeguards": 1.0,
+        "documentation": 0.4532577903682719
       },
-      "score": 0.691,
+      "score": 0.793,
       "evidence_files": [
+        "mcp/multi_tenant.py",
         "policies/tenant_policy.schema.json",
         "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
@@ -6543,12 +6547,12 @@
       "id": "mcp-observability",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8675034867503486,
-        "tests": 0.28870292887029286,
+        "consistency": 0.8676880222841226,
+        "tests": 0.28969359331476324,
         "safeguards": 1.0,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.7116,
+      "score": 0.7139,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -7090,6 +7094,7 @@
         "tests/logging/test_registry_logger.py",
         "tests/logging/test_run_schema.py",
         "tests/mcp/test_observability.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -7282,9 +7287,9 @@
         "consistency": 0.7692307692307692,
         "tests": 0.38461538461538464,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.691,
+      "score": 0.693,
       "evidence_files": [
         "mcp/auth.py",
         "mcp/server/server.py",
@@ -7312,9 +7317,9 @@
         "consistency": 0.8857142857142857,
         "tests": 0.5142857142857142,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.7467,
+      "score": 0.7487,
       "evidence_files": [
         "mcp/examples.py",
         "mcp/rate_limit.py",
@@ -7364,9 +7369,9 @@
         "consistency": 0.864406779661017,
         "tests": 0.13559322033898305,
         "safeguards": 1.0,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.6727,
+      "score": 0.6748,
       "evidence_files": [
         "actions/openapi.yaml",
         "agents/codex_client/codex_client/models.py",
@@ -7440,9 +7445,9 @@
         "consistency": 0.7142857142857143,
         "tests": 0.42857142857142855,
         "safeguards": 0.5,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.641,
+      "score": 0.643,
       "evidence_files": [
         "mcp/mcp.json",
         "mcp/registry.py",
@@ -7461,12 +7466,12 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9289772727272727,
-        "tests": 0.11079545454545454,
+        "consistency": 0.9295774647887324,
+        "tests": 0.11267605633802817,
         "safeguards": 1.0,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.6795,
+      "score": 0.6821,
       "evidence_files": [
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
         ".github/prompts/MCP_AUDIT_AND_IMPLEMENTATION_PLAN.md",
@@ -7481,6 +7486,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "configs/evaluation/reasoning/tools.yaml",
         "configs/training/reasoning/tool_execution.yaml",
         "data/sample/reasoning/tool_eval.jsonl",
@@ -7497,6 +7503,7 @@
         "mcp/errors.py",
         "mcp/examples.py",
         "mcp/mcp.json",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -7558,6 +7565,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
@@ -7833,9 +7841,9 @@
         "consistency": 1.0,
         "tests": 0.5,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.4397163120567376
+        "documentation": 0.4532577903682719
       },
-      "score": 0.766,
+      "score": 0.768,
       "evidence_files": [
         "mcp/examples.py",
         "mcp/server/server.py",
@@ -7982,7 +7990,7 @@
         "consistency": 0.8660714285714286,
         "tests": 0.49107142857142855,
         "safeguards": 1.0,
-        "documentation": 0.15602836879432624
+        "documentation": 0.15580736543909346
       },
       "score": 0.7194,
       "evidence_files": [
@@ -8208,12 +8216,12 @@
       "id": "safeguards_keywords",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8525390625,
-        "tests": 0.2587890625,
+        "consistency": 0.8528265107212476,
+        "tests": 0.25828460038986356,
         "safeguards": 1.0,
-        "documentation": 0.2553191489361702
+        "documentation": 0.2549575070821529
       },
-      "score": 0.6735,
+      "score": 0.6734,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -8307,6 +8315,7 @@
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
+        "MCP_USER_PROMPTS_FINAL.md",
         "MERGE_READINESS_CONFIRMATION.md",
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
@@ -8648,6 +8657,7 @@
         "mcp/auth.py",
         "mcp/config.py",
         "mcp/examples.py",
+        "mcp/multi_tenant.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -9776,8 +9786,8 @@
       "id": "testing-infrastructure",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.8868445262189513,
-        "tests": 0.9889604415823368,
+        "consistency": 0.8869485294117647,
+        "tests": 0.9889705882352942,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -10164,6 +10174,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
@@ -11270,9 +11281,9 @@
         "consistency": 1.0,
         "tests": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.6808510638297872
+        "documentation": 0.6798866855524078
       },
-      "score": 0.5521,
+      "score": 0.552,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
