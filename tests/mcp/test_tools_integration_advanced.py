@@ -6,7 +6,6 @@ Focus: ITA endpoint integration, tool chaining, concurrent execution.
 import pytest
 import threading
 from mcp.registry import MCPToolRegistry
-from typing import Any, Dict, List
 
 
 def test_ita_endpoint_wrapper_pattern():
@@ -334,7 +333,7 @@ def test_tool_circuit_breaker_pattern():
         try:
             handler({"fail": True})
         except RuntimeError:
-            pass
+            pass  # Expected failure to trigger circuit breaker
     
     # Circuit should be open
     assert circuit["open"]
@@ -353,7 +352,7 @@ def test_tool_fallback_pattern():
             if handler:
                 return handler(params)
         except Exception:
-            pass
+            pass  # Intentionally swallow exception to test fallback mechanism
         
         fallback = registry.get_tool(fallback_name)
         return fallback(params) if fallback else None

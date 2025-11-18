@@ -3,11 +3,9 @@ Tests for MCP observability features.
 Covers logging, metrics, tracing, and monitoring capabilities.
 """
 
-import pytest
 import sys
 import logging
 from pathlib import Path
-from unittest.mock import Mock, patch
 from io import StringIO
 
 repo_root = Path(__file__).parent.parent.parent

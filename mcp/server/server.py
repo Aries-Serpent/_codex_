@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 # Add parent directories to path for imports
 import os
@@ -21,7 +21,7 @@ from mcp.config import MCPConfig, ToolDefinition
 from mcp.errors import MCPError, ToolNotFound, ValidationError, RateLimitExceeded
 from mcp.versioning import MCP_VERSIONS, negotiate_version
 from mcp.rate_limit import MCPRateLimiter
-from mcp.auth import Principal, MCPAuthenticator
+from mcp.auth import MCPAuthenticator
 
 # Try to import httpx for making requests to ITA
 try:
@@ -130,9 +130,12 @@ class MCPJSONRPCServer:
                 "jsonrpc": "2.0",
                 "id": request_id,
                 "error": {
-                    "code": e.http_status,
+                    "code": e.jsonrpc_code,
                     "message": e.message,
-                    "data": e.to_dict()
+                    "data": {
+                        **e.to_dict(),
+                        "http_status": e.http_status  # Preserve HTTP status for observability
+                    }
                 }
             }
         except Exception as e:

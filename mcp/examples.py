@@ -212,7 +212,7 @@ def example_schema_validation():
     
     # Invalid request (missing required field)
     try:
-        request = SearchRequest(limit=5)  # Missing 'query'
+        SearchRequest(limit=5)  # Missing 'query'
     except ValidationError as e:
         print(f"\n✗ Expected validation error: Missing 'query' field")
         print(f"  Error count: {len(e.errors())}")

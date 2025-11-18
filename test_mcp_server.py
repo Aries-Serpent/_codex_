@@ -4,8 +4,6 @@ Test script for MCP JSON-RPC Server.
 Verifies complete functionality of the server.
 """
 
-import json
-import subprocess
 import sys
 from pathlib import Path
 

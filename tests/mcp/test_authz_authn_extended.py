@@ -5,7 +5,6 @@ Covers credential hashing, principal management, authorization checks,
 session tokens, and permission verification.
 """
 
-import pytest
 from mcp.auth import (
     hash_credential, Principal, MCPAuthenticator, MCPAuthorizer
 )
