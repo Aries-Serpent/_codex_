@@ -1,13 +1,13 @@
 """Integration tests for MCP server."""
 
 import asyncio
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from mcp.auth import AllowAllAuthorizer, BasicAuthenticator, Principal
 from mcp.server import MCPServer, Tool, ToolRegistry
 
 
-async def _call_server(server: MCPServer, request: Dict[str, Any]) -> Dict[str, Any] | None:
+async def _call_server(server: MCPServer, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Helper to call the server asynchronously."""
     return await server.handle_request(request)
 
