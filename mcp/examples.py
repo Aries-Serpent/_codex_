@@ -11,7 +11,6 @@ from mcp.auth import Principal, MCPAuthenticator, MCPAuthorizer
 from mcp.rate_limit import MCPRateLimiter
 from mcp.errors import ToolNotFound, RateLimitExceeded, Unauthorized
 from mcp.versioning import negotiate_version, MCP_VERSIONS
-from mcp.config import MCPConfig
 from mcp.safeguards import (
     compute_checksum, verify_checksum, confirm_action,
     dry_run_wrapper
