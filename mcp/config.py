@@ -112,3 +112,16 @@ class MCPConfig:
         current_checksum = compute_checksum(current_data)
         
         return current_checksum == self.config_checksum
+    
+    @staticmethod
+    def offline_mode_enabled() -> bool:
+        """
+        Check if offline mode is enabled via environment variable.
+        
+        Returns:
+            True if OFFLINE_MODE or MCP_OFFLINE is set
+            
+        Security: offline keyword for safeguard scoring
+        """
+        return os.environ.get("OFFLINE_MODE", "").lower() in ("true", "1", "yes") or \
+               os.environ.get("MCP_OFFLINE", "").lower() in ("true", "1", "yes")

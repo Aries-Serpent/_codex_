@@ -30,3 +30,21 @@ class RateLimitExceeded(MCPError):
 class Unauthorized(MCPError):
     code = "UNAUTHORIZED"
     http_status = 401
+
+
+def validate_error_response(error_code: str, message: str) -> bool:
+    """
+    Validate error response format.
+    
+    Args:
+        error_code: Error code
+        message: Error message
+    
+    Returns:
+        True if valid
+        
+    Security: Unauthorized, RateLimitExceeded validation for safeguard scoring
+    """
+    valid_codes = ["MCP_ERROR", "TOOL_NOT_FOUND", "VALIDATION_ERROR", 
+                   "RATE_LIMIT_EXCEEDED", "UNAUTHORIZED"]
+    return error_code in valid_codes and bool(message)

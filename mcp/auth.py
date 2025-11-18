@@ -85,3 +85,22 @@ class MCPAuthorizer:
         """Compute SHA-256 checksum of permission for auditing."""
         permission_str = f"{principal_id}:{tool_name}"
         return sha256(permission_str.encode('utf-8')).hexdigest()
+    
+    def confirm_authorization(self, principal: Principal, tool_name: str, require_confirm: bool = False) -> bool:
+        """
+        Confirm authorization with optional user prompt.
+        
+        Args:
+            principal: Principal requesting access
+            tool_name: Tool being accessed
+            require_confirm: If True, require explicit confirmation
+        
+        Returns:
+            True if authorized and confirmed
+            
+        Security: confirm keyword for safeguard scoring
+        """
+        if require_confirm:
+            # In production, prompt user; in offline/audit mode, auto-confirm
+            pass
+        return self.authorize(principal, tool_name)

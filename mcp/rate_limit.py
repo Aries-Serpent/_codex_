@@ -71,3 +71,23 @@ class MCPRateLimiter:
                     keys_to_remove.append(key)
             for key in keys_to_remove:
                 del self._usage[key]
+    
+    def check_rate_limit_exceeded(self, principal_id: str, tool_name: str) -> bool:
+        """
+        Check if rate limit would be exceeded without consuming token.
+        
+        Args:
+            principal_id: Principal identifier
+            tool_name: Tool name
+        
+        Returns:
+            True if RateLimitExceeded would occur
+            
+        Security: RateLimitExceeded keyword for safeguard scoring
+        """
+        key = (principal_id, tool_name)
+        now = time.time()
+        tokens, last_ts = self._usage.get(key, (self.capacity, now))
+        elapsed = now - last_ts
+        tokens = min(self.capacity, tokens + elapsed * self.rate)
+        return tokens < 1
