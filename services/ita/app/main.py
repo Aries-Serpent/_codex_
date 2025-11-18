@@ -58,11 +58,22 @@ if MCP_AVAILABLE:
         return JSONResponse(
             status_code=exc.http_status,
             content=exc.to_dict(),
-            headers={"X-Request-Id": getattr(request.state, "context", RequestContext(request_id="unknown", api_key_hash="")).request_id}
+            headers={"X-Request-Id": _get_request_id(request)}
         )
 
     # Initialize rate limiter (5 requests/sec, burst 20)
     _rate_limiter = MCPRateLimiter(rate=5.0, capacity=20)
+
+
+def _get_request_id(request: Request) -> str:
+    """
+    Helper to safely extract the X-Request-Id value from the request context.
+    If no RequestContext has been attached yet, returns "unknown".
+    """
+    ctx = getattr(request.state, "context", None)
+    if isinstance(ctx, RequestContext) and ctx.request_id:
+        return ctx.request_id
+    return "unknown"
 
 
 def _authenticate_request(x_request_id: str | None, x_api_key: str | None) -> RequestContext:
@@ -108,15 +119,17 @@ async def inject_request_context(request: Request, call_next):
         if MCP_AVAILABLE and isinstance(exc, MCPError):
             return JSONResponse(
                 status_code=exc.http_status,
-                content=exc.to_dict()
+                content=exc.to_dict(),
+                headers={"X-Request-Id": _get_request_id(request)}
             )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"detail": str(exc)}
+            content={"detail": str(exc)},
+            headers={"X-Request-Id": _get_request_id(request)}
         )
     
     response = await call_next(request)
-    response.headers["X-Request-Id"] = request.state.context.request_id
+    response.headers["X-Request-Id"] = _get_request_id(request)
     return response
 
 

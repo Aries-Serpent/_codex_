@@ -36,7 +36,7 @@ def create_test_registry(tools: Optional[List[str]] = None) -> MCPToolRegistry:
         for tool_name in tools:
             registry.register_tool(
                 tool_name,
-                handler=lambda params: {"tool": tool_name, "params": params},
+                handler=lambda params, name=tool_name: {"tool": name, "params": params},
                 schema={"type": "object"},
                 metadata={"description": f"Test tool: {tool_name}"}
             )
