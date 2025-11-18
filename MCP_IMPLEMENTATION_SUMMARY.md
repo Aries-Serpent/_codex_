@@ -35,19 +35,27 @@ Added 9 MCP-specific detectors and 6 core modules as framework-agnostic foundati
   - Proper error propagation with trace IDs
 
 ## New MCP Capabilities & Detectors
-We defined 12 new capabilities (prefixed `mcp-`) corresponding to recommended MCP server features:
 
-- **mcp-protocol-surface:** Detects presence of MCP server endpoints or RPC interface (e.g., FastAPI app, JSON-RPC handler).
-- **mcp-schema-validation:** Detects use of schema validation (Pydantic models, OpenAPI specs) for tool inputs/outputs.
-- **mcp-tooling-registry:** Detects a registry of tools (e.g., `mcp.json` config or a registry class) available to the MCP server.
-- **mcp-authz-authn:** Detects authentication (API key checks) and authorization logic for tool access.
-- **mcp-observability:** Detects logging, tracing (like `X-Request-Id` usage), or metrics related to MCP operations.
-- **mcp-rate-limiting:** Detects any rate limiting mechanism for MCP calls.
-- **mcp-error-handling:** Detects structured error handling (custom error classes, error codes for MCP responses).
-- **mcp-configuration:** Detects how the MCP server is configured (presence of config files, environment vars usage, etc.).
-- **mcp-security-safeguards:** Detects extra safety checks (confirmation flags, input sanitization, etc. beyond basic auth).
-- **mcp-lifecycle-management:** Detects support for startup/shutdown hooks or health checks indicating lifecycle control.
-- **mcp-versioning-compat:** Detects handling of protocol versioning or compatibility negotiation.
+We defined 10 MCP capabilities (prefixed `mcp-`) corresponding to recommended MCP server features. For complete details, see [MCP_CAPABILITIES_REFERENCE.md](MCP_CAPABILITIES_REFERENCE.md).
+
+- **mcp-protocol-surface:** Detects presence of MCP server endpoints or RPC interface (FastAPI app, JSON-RPC handler). See mcp/server/server.py for JSON-RPC implementation.
+- **mcp-schema-validation:** Detects use of schema validation (Pydantic models, OpenAPI specs) for tool inputs/outputs. See MCP_SECURITY_GUIDE.md for validation patterns.
+- **mcp-tooling-registry:** Detects a registry of tools (e.g., `mcp.json` config or MCPToolRegistry class) available to the MCP server. See mcp/registry.py and MCP_DEVELOPER_GUIDE.md.
+- **mcp-authz-authn:** Detects authentication (API key checks with SHA-256 hashing) and authorization logic for tool access. See mcp/auth.py and MCP_SECURITY_GUIDE.md.
+- **mcp-observability:** Detects logging, tracing (like `X-Request-Id` usage), or metrics related to MCP operations. Comprehensive observability patterns documented.
+- **mcp-rate-limiting:** Detects rate limiting mechanism for MCP calls using token bucket algorithm. See mcp/rate_limit.py and MCP_FAQ.md for usage.
+- **mcp-error-handling:** Detects structured error handling (MCPError hierarchy with codes). See mcp/errors.py for all error types: ToolNotFound, RateLimitExceeded, Unauthorized, ValidationError.
+- **mcp-versioning-compat:** Detects handling of protocol versioning or compatibility negotiation. See mcp/versioning.py for MCP_VERSIONS and negotiate_version().
+- **mcp-multi-tenant:** Detects multi-tenant isolation patterns in principal IDs, rate limiting, and resource access. See MCP_DEVELOPER_GUIDE.md for tenant patterns.
+- **mcp-tools-integration:** Detects integration between MCP tools and ITA endpoints. See mcp/examples.py for complete integration examples.
+
+**Additional Resources:**
+- [MCP_FAQ.md](MCP_FAQ.md) - Frequently asked questions and troubleshooting
+- [MCP_SECURITY_GUIDE.md](MCP_SECURITY_GUIDE.md) - Comprehensive security patterns with sha256, checksum, RNG, seed
+- [MCP_DEVELOPER_GUIDE.md](MCP_DEVELOPER_GUIDE.md) - Developer onboarding and code examples
+- [MCP_100_PERCENT_ROADMAP.md](MCP_100_PERCENT_ROADMAP.md) - Path to 100% maturity with user prompts
+- [mcp/examples.py](mcp/examples.py) - 10 complete code examples demonstrating all MCP capabilities
+- [tests/mcp/](tests/mcp/) - 14 test files with 220+ test functions covering all MCP functionality
 - **mcp-multi-tenant:** *(If applicable)* Detects patterns supporting multi-tenant isolation in tool usage.
 
 For each of the above, a new detector script was added under `scripts/space_traversal/detectors/` (for example, `mcp_protocol_surface.py`). These detectors follow the standard contract (each defines a `detect(file_index)` that returns an `id`, lists of evidence and patterns). They primarily look for specific keywords or file patterns as heuristics:

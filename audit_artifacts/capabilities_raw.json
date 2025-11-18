@@ -1,5 +1,5 @@
 {
-  "generated": 1763439210.4979413,
+  "generated": 1763439485.7812598,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -2426,6 +2426,7 @@
         "MCP_100_PERCENT_ROADMAP.md",
         "MCP_CAPABILITIES_REFERENCE.md",
         "MCP_DEVELOPER_GUIDE.md",
+        "MCP_FAQ.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
@@ -3456,6 +3457,7 @@
         "mcp/auth.py",
         "mcp/config.py",
         "mcp/errors.py",
+        "mcp/examples.py",
         "mcp/mcp.json",
         "mcp/rate_limit.py",
         "mcp/registry.py",
@@ -4822,6 +4824,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -6444,6 +6447,7 @@
         "agents/codex_client/codex_client/bridge.py",
         "agents/msp_client.py",
         "mcp/auth.py",
+        "mcp/examples.py",
         "mcp/server/server.py",
         "scripts/deployment_orchestrator.py",
         "scripts/ops/codex_mint_tokens_per_run.py",
@@ -6503,7 +6507,8 @@
         "tests/mcp/test_observability.py",
         "tests/mcp/test_protocol.py",
         "tests/mcp/test_registry.py",
-        "tests/mcp/test_server.py"
+        "tests/mcp/test_server.py",
+        "tests/mcp/test_utilities.py"
       ],
       "found_patterns": [
         "MCPError",
@@ -6627,6 +6632,7 @@
         "MCP_100_PERCENT_ROADMAP.md",
         "MCP_CAPABILITIES_REFERENCE.md",
         "MCP_DEVELOPER_GUIDE.md",
+        "MCP_FAQ.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
@@ -7301,6 +7307,7 @@
     {
       "id": "mcp-rate-limiting",
       "evidence_files": [
+        "mcp/examples.py",
         "mcp/rate_limit.py",
         "mcp/safeguards.py",
         "mcp/server/server.py",
@@ -7327,6 +7334,7 @@
         "tests/mcp/test_observability.py",
         "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py",
+        "tests/mcp/test_utilities.py",
         "tests/ops/test_codex_mint_tokens_contract.py",
         "tests/scripts/test_prune_rate_limit_history.py",
         "tests/security/test_rate_limiting.py",
@@ -7353,6 +7361,7 @@
         "agents/codex_client/codex_client/models.py",
         "configs/development/noxfile.py",
         "conftest.py",
+        "mcp/examples.py",
         "noxfile.py",
         "scripts/space_traversal/detectors/mcp_schema_validation.py",
         "services/api/main.py",
@@ -7454,6 +7463,7 @@
         "MCP_100_PERCENT_ROADMAP.md",
         "MCP_CAPABILITIES_REFERENCE.md",
         "MCP_DEVELOPER_GUIDE.md",
+        "MCP_FAQ.md",
         "MCP_IMPLEMENTATION_SUMMARY.md",
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
@@ -7472,6 +7482,7 @@
         "mcp/auth.py",
         "mcp/config.py",
         "mcp/errors.py",
+        "mcp/examples.py",
         "mcp/mcp.json",
         "mcp/rate_limit.py",
         "mcp/registry.py",
@@ -7534,6 +7545,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_utilities.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
         "tests/tools/.gitkeep",
@@ -7811,6 +7823,7 @@
     {
       "id": "mcp-versioning-compat",
       "evidence_files": [
+        "mcp/examples.py",
         "mcp/server/server.py",
         "mcp/versioning.py",
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
@@ -8280,6 +8293,8 @@
         "MATURITY_IMPROVEMENT_PLAN.md",
         "MCP_100_PERCENT_ROADMAP.md",
         "MCP_CAPABILITIES_REFERENCE.md",
+        "MCP_FAQ.md",
+        "MCP_IMPLEMENTATION_SUMMARY.md",
         "MCP_INTEGRATION_COMPLETE.md",
         "MCP_SCORE_REMEDIATION_COMPLETE.md",
         "MCP_SECURITY_GUIDE.md",
@@ -8623,6 +8638,7 @@
         "inventory.md",
         "mcp/auth.py",
         "mcp/config.py",
+        "mcp/examples.py",
         "mcp/rate_limit.py",
         "mcp/registry.py",
         "mcp/safeguards.py",
@@ -8977,6 +8993,7 @@
         "tests/mcp/test_multi_tenant_extended.py",
         "tests/mcp/test_observability.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_utilities.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_registry_aliases.py",
         "tests/metrics/test_scoring_integration.py",
@@ -10137,6 +10154,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_server.py",
         "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_utilities.py",
         "tests/metrics/test_api.py",
         "tests/metrics/test_bleu_rouge.py",
         "tests/metrics/test_bleu_score.py",
@@ -10855,7 +10873,7 @@
         "marker"
       ],
       "meta": {
-        "test_count": 1068,
+        "test_count": 1069,
         "config_count": 27,
         "fixture_count": 29
       }

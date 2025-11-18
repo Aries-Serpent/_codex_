@@ -1,6 +1,6 @@
 {
-  "generated": 1763439209.884294,
-  "count": 3829,
+  "generated": 1763439485.1656594,
+  "count": 3832,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -2733,10 +2733,16 @@
       "sha": "acba398073912c84534b6885c4fb434277d05fe547e5d24009a97a5aa24b1852"
     },
     {
+      "path": "MCP_FAQ.md",
+      "ext": ".md",
+      "size": 10405,
+      "sha": "b91657a80a14e8ace01c42e5cc124d48d2e78759d5081adfd4f8c9e762f44d4d"
+    },
+    {
       "path": "MCP_IMPLEMENTATION_SUMMARY.md",
       "ext": ".md",
-      "size": 12082,
-      "sha": "99e3af595e729529bd2570223cfb9b9f1b36de2102230938ebb96e34c9fc2359"
+      "size": 13203,
+      "sha": "44e1fafe5844a0b1c7cb96181263f1bed33e18616a5a854916e0fd8eb7ae48ab"
     },
     {
       "path": "MCP_INTEGRATION_COMPLETE.md",
@@ -3576,7 +3582,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 1341,
-      "sha": "4f945da438ffbcf496159f2ace2d1a79202c577a25bfffc1e4be049a21a43eea"
+      "sha": "862cb34ab1d96bd61cfb68931b3eb753d245ba3ccfd0c62402e957398a369437"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -8911,6 +8917,12 @@
       "ext": ".py",
       "size": 1289,
       "sha": "a178499829d7566c778a7d54aed0e33dd2cb617e552bf1e858a5205f8d29136d"
+    },
+    {
+      "path": "mcp/examples.py",
+      "ext": ".py",
+      "size": 14663,
+      "sha": "2fd1f368721461ceb5a29325957f8e3f53de8a069b1baf8711604f3c259f015c"
     },
     {
       "path": "mcp/mcp.json",
@@ -17107,6 +17119,12 @@
       "ext": ".py",
       "size": 10969,
       "sha": "35d9d0daef30d61e2a2c409b7e2b06f735bc429abd5f3386d4ef3a28545fa2d8"
+    },
+    {
+      "path": "tests/mcp/test_utilities.py",
+      "ext": ".py",
+      "size": 10378,
+      "sha": "a587ea8634df9006bf3e0c93cbfba8debb3911e5225eca149b552cbfa0333fc4"
     },
     {
       "path": "tests/metrics/test_api.py",
