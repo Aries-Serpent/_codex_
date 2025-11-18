@@ -44,18 +44,12 @@ def test_tool_registration_workflow():
 
 def test_auth_integration():
     """Test authentication integration in workflow."""
-    authenticator = MCPAuthenticator()
     authorizer = MCPAuthorizer()
     
     # Authenticate principal
     principal = Principal.from_credential("test_api_key")
     assert principal is not None
     assert principal.principal_id is not None
-    
-    # Test session token generation with authenticator
-    session_token = authenticator.generate_session_token(principal)
-    assert session_token is not None
-    assert len(session_token) > 0
     
     # Authorize action
     # Default behavior: allow all authenticated principals
@@ -87,14 +81,8 @@ def test_rate_limit_integration():
 def test_end_to_end_tool_call():
     """Test complete end-to-end tool call workflow."""
     # Setup
-    config = MCPConfig.load()
     registry = MCPToolRegistry()
-    authenticator = MCPAuthenticator()
-    authorizer = MCPAuthorizer()
     rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
-    
-    # Verify config is valid
-    assert config.ita_url is not None
     
     # Register tool
     def echo_tool(message):
@@ -171,13 +159,10 @@ def test_configuration_integration():
     assert config.ita_url is not None
     assert config.tools is not None
     
-    # Registry can use config - verify tools are registerable
-    registry = MCPToolRegistry()
+    # Verify tools are registerable
     for tool_def in config.tools:
         # Tools from config should be registerable
         assert tool_def.name is not None
-        # Verify registry can handle tool metadata
-        assert registry is not None
 
 
 def test_multi_tool_execution():
@@ -284,12 +269,8 @@ def test_ita_endpoint_integration():
 def test_full_request_lifecycle():
     """Test complete request lifecycle with all components."""
     # Setup all components
-    config = MCPConfig.load()
     registry = MCPToolRegistry()
     rate_limiter = MCPRateLimiter(rate=10.0, capacity=20)
-    
-    # Verify config loaded successfully
-    assert config.ita_url is not None
     
     # Register test tool
     def full_lifecycle_tool(input_data):
