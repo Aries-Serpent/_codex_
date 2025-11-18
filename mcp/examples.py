@@ -14,7 +14,7 @@ from mcp.versioning import negotiate_version, MCP_VERSIONS
 from mcp.config import MCPConfig
 from mcp.safeguards import (
     compute_checksum, verify_checksum, confirm_action,
-    dry_run_wrapper, safe_seed_rng
+    dry_run_wrapper
 )
 
 
