@@ -72,7 +72,14 @@ class ToolRegistry:
 
 
 class MCPServer:
-    """Minimal MCP server implementing a subset of JSON-RPC 2.0 behavior."""
+    """Minimal MCP server implementing a subset of JSON-RPC 2.0 behavior.
+    
+    This is a future-ready MCP server aligned with the mcp/server/README.md constraints:
+    - Supports tool invocations (mcp.listTools initially, with mcp.callTool planned)
+    - Designed for future alignment with the Internal Tools API (ITA)
+    - Uses short-lived API keys approach (avoiding OAuth for remote MCP access)
+    - Correctly handles JSON-RPC 2.0 requests vs. notifications
+    """
 
     def __init__(self, tool_registry: Optional[ToolRegistry] = None) -> None:
         """Initialize the MCP server.
