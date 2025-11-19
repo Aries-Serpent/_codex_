@@ -427,6 +427,111 @@ def enable_pooling(isolated_db_manager, clean_connection_pool):
     importlib.reload(codex.logging.db_manager)
 
 
+# ============================================================================
+# MCP SERVER FIXTURE (Mock Server for JSON-RPC Tests)
+# ============================================================================
+
+
+class MockServer:
+    """Minimal mock MCP server for testing JSON-RPC interactions.
+    
+    Provides basic JSON-RPC method handling for common MCP operations:
+    - listTools: Returns a list of example tools
+    - negotiateVersion: Returns the first supported version from client's list
+    - Unknown methods: Returns JSON-RPC Method Not Found error (-32601)
+    
+    This is a lightweight test fixture. Replace with real server factory
+    if the codebase provides one.
+    """
+    
+    def __init__(self):
+        self.tools = [
+            {"name": "example_tool_1", "description": "First example tool"},
+            {"name": "example_tool_2", "description": "Second example tool"},
+        ]
+        self.supported_versions = ["1.0", "1.1"]
+    
+    def handle_request(self, request: dict) -> dict:
+        """Handle a JSON-RPC request and return a response.
+        
+        Args:
+            request: JSON-RPC request dict with 'method', 'id', and optional 'params'
+            
+        Returns:
+            JSON-RPC response dict with either 'result' or 'error'
+        """
+        method = request.get("method")
+        request_id = request.get("id")
+        params = request.get("params", {})
+        
+        # Handle listTools
+        if method == "listTools":
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "result": self.tools
+            }
+        
+        # Handle negotiateVersion
+        if method == "negotiateVersion":
+            client_versions = params.get("supported", [])
+            # Return first supported version that client offers
+            for version in self.supported_versions:
+                if version in client_versions:
+                    return {
+                        "jsonrpc": "2.0",
+                        "id": request_id,
+                        "result": version
+                    }
+            # No common version found
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "error": {
+                    "code": -32602,
+                    "message": "No compatible version found"
+                }
+            }
+        
+        # Unknown method - return Method Not Found error
+        return {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": {
+                "code": -32601,
+                "message": f"Method not found: {method}"
+            }
+        }
+
+
+@pytest.fixture
+def server():
+    """Provide a mock MCP server for JSON-RPC testing.
+    
+    Returns a MockServer instance that implements minimal JSON-RPC
+    behaviors required for testing (listTools, negotiateVersion, etc.).
+    
+    This fixture can be used by any test that needs a server instance
+    without requiring the full MCP server stack.
+    
+    Example:
+        def test_server_interaction(server):
+            request = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "listTools",
+                "params": {}
+            }
+            response = server.handle_request(request)
+            assert "result" in response
+    
+    Note:
+        This is a lightweight mock. Replace with a real server factory
+        if your codebase provides one (e.g., create_test_server()).
+    """
+    return MockServer()
+
+
 @pytest.fixture
 def pooling_db_manager(enable_pooling, tmp_path):
     """Provide DBManager instance with pooling enabled.
