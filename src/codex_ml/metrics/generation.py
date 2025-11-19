@@ -5,12 +5,76 @@ BLEU, ROUGE-L (minimal, no external deps)
 Author: mbaetiong
 Generated: 2025-11-19 04:20:17
 """
+
 from __future__ import annotations
-from typing import List, Sequence
+
+import math
+from typing import Callable, Iterable, List, Sequence
 
 
 def _tokenize(s: str) -> List[str]:
     return [t for t in s.strip().split() if t]
+
+
+def compute_brevity_penalty(
+    hypotheses: Sequence[str],
+    norm_refs: Sequence[Sequence[str]],
+    tokenize: Callable[[str], Iterable[str]] = _tokenize,
+) -> float:
+    """Compute BLEU brevity penalty aligning hypotheses and references."""
+
+    if len(hypotheses) != len(norm_refs):
+        raise ValueError("hypotheses and references length must match")
+
+    hyp_len = sum(len(list(tokenize(h))) for h in hypotheses)
+    ref_len = 0
+
+    # P1 fix: zip hypotheses with their reference sets so each hypothesis uses
+    # its own length instead of relying on norm_refs.index(refs).
+    for hyp, refs in zip(hypotheses, norm_refs):
+        cand_len = len(list(tokenize(hyp)))
+        if not refs:
+            best = 0
+        else:
+            ref_candidates = (
+                (abs(len(list(tokenize(r))) - cand_len), len(list(tokenize(r)))) for r in refs
+            )
+            best = min(ref_candidates)[1]
+        ref_len += best
+
+    if hyp_len == 0:
+        return 0.0
+    if hyp_len > ref_len:
+        return 1.0
+    return math.exp(1.0 - ref_len / hyp_len)
+
+
+def compute_corpus_bleu(
+    hypotheses: Sequence[str],
+    norm_refs: Sequence[Sequence[str]],
+    tokenize: Callable[[str], Iterable[str]] = _tokenize,
+) -> float:
+    """Minimal BLEU-like helper to exercise compute_brevity_penalty in tests."""
+
+    if len(hypotheses) != len(norm_refs):
+        raise ValueError("hypotheses and references length must match")
+
+    bp = compute_brevity_penalty(hypotheses, norm_refs, tokenize=tokenize)
+
+    total_matches = 0
+    total_tokens = 0
+    for hyp, refs in zip(hypotheses, norm_refs):
+        hyp_tokens = list(tokenize(hyp))
+        total_tokens += len(hyp_tokens)
+        ref_token_set: set[str] = set()
+        for r in refs:
+            ref_token_set.update(list(tokenize(r)))
+        total_matches += sum(1 for tok in hyp_tokens if tok in ref_token_set)
+
+    if total_tokens == 0 or total_matches == 0:
+        return 0.0
+    precision = total_matches / total_tokens
+    return bp * precision
 
 
 def _ngram_counts(tokens: List[str], n: int) -> dict[tuple[str, ...], int]:
@@ -23,7 +87,12 @@ def _ngram_counts(tokens: List[str], n: int) -> dict[tuple[str, ...], int]:
     return counts
 
 
-def bleu(hypotheses: Sequence[str], references: Sequence[Sequence[str]] | Sequence[str], max_n: int = 4, smooth: float = 1e-9) -> float:
+def bleu(
+    hypotheses: Sequence[str],
+    references: Sequence[Sequence[str]] | Sequence[str],
+    max_n: int = 4,
+    smooth: float = 1e-9,
+) -> float:
     """
     Minimal BLEU implementation (corpus-level) without external deps.
 
@@ -65,23 +134,14 @@ def bleu(hypotheses: Sequence[str], references: Sequence[Sequence[str]] | Sequen
             den += total
         precisions.append((num + smooth) / (max(1, den) + smooth))
     # geometric mean of precisions
-    import math
-
     geo = math.exp(sum(math.log(p) for p in precisions) / max(1, len(precisions)))
-    # brevity penalty
-    hyp_len = sum(len(_tokenize(h)) for h in hypotheses)
-    ref_len = 0
-    for hyp, refs in zip(hypotheses, norm_refs):
-        # choose ref length closest to hyp length for this hypothesis
-        cand = len(_tokenize(hyp))
-        best = min((abs(len(_tokenize(r)) - cand), len(_tokenize(r))) for r in refs)[1] if refs else 0
-        ref_len += best
-    bp = 1.0 if hyp_len > ref_len else (math.exp(1 - ref_len / max(1, hyp_len)) if hyp_len > 0 else 0.0)
+    bp = compute_brevity_penalty(hypotheses, norm_refs, tokenize=_tokenize)
     return float(bp * geo)
 
 
 def rouge_l(hypotheses: Sequence[str], references: Sequence[str]) -> float:
     """Simple ROUGE-L (LCS-based) averaged over pairs."""
+
     def lcs(a: List[str], b: List[str]) -> int:
         m, n = len(a), len(b)
         dp = [[0] * (n + 1) for _ in range(m + 1)]
@@ -99,9 +159,9 @@ def rouge_l(hypotheses: Sequence[str], references: Sequence[str]) -> float:
         if not ht or not rt:
             scores.append(0.0)
             continue
-        l = lcs(ht, rt)
-        prec = l / len(ht)
-        rec = l / len(rt)
+        lcs_len = lcs(ht, rt)
+        prec = lcs_len / len(ht)
+        rec = lcs_len / len(rt)
         denom = prec + rec if (prec + rec) > 0 else 1e-12
         f = 2 * prec * rec / denom
         scores.append(f)
