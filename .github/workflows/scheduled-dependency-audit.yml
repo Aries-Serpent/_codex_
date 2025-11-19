@@ -17,8 +17,8 @@ on:
         default: false
 
 env:
-  PYTHON_VERSION: ${{ inputs.python_version || '3.11' }}
-  ALLOW_MULTIARCH: ${{ inputs.enable_multiarch && 'true' || 'false' }}
+  PYTHON_VERSION: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.python_version) || '3.11' }}
+  ALLOW_MULTIARCH: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.enable_multiarch == 'true') && 'true' || 'false' }}
 
 jobs:
   baseline-wheels:
