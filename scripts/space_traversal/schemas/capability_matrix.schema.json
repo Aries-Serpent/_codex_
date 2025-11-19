@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Capability Matrix",
+  "type": "object",
+  "required": ["timestamp", "capabilities", "weights", "template_hash", "metrics_schema_version"],
+  "properties": {
+    "timestamp": {"type": "string"},
+    "metrics_schema_version": {"type": "string"},
+    "template_hash": {"type": "string"},
+    "weights": {"type": "object"},
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "score", "components"],
+        "properties": {
+          "id": {"type": "string"},
+          "score": {"type": "number"},
+          "components": {"type": "object"},
+          "evidence_files": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "gaps": {
+      "type": "array"
+    }
+  }
+}
