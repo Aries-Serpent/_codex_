@@ -421,4 +421,3 @@ Notes:
   - Produce the specific PR diffs (file patches) for PR-1..PR-5 above.
   - Generate unit tests for the new behaviors (overrides merge, missing-detector gate, JSON companion).
   - Produce the new detector v2 loader and a detector example.
-
