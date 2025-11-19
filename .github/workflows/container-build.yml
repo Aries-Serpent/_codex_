@@ -18,6 +18,35 @@ env:
   ALLOW_MULTIARCH: 'false'
 
 jobs:
+  build-wheels:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    strategy:
+      matrix:
+        platform: [ 'linux/amd64', 'linux/arm64' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
+        uses: docker/build-push-action@v6
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        with:
+          context: .
+          file: Dockerfile
+          target: builder
+          platforms: ${{ matrix.platform }}
+          outputs: type=local,dest=./wheelhouse
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Upload wheelhouse artifact (${{ matrix.platform }})
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheelhouse-${{ matrix.platform }}
+          path: ./wheelhouse
   build-cpu:
     runs-on: ubuntu-latest
     permissions:
@@ -50,6 +79,8 @@ jobs:
           target: ${{ steps.set_target.outputs.target }}
           push: ${{ steps.set_target.outputs.should_push == 'true' }}
           tags: codex-ml:cpu-${{ matrix.platform }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   build-gpu:
     runs-on: ubuntu-latest
     permissions:
@@ -81,3 +112,5 @@ jobs:
           target: ${{ steps.set_target.outputs.target }}
           push: ${{ steps.set_target.outputs.should_push == 'true' }}
           tags: codex-ml:gpu-${{ matrix.platform }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

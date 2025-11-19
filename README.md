@@ -314,3 +314,12 @@ docker build --platform=linux/amd64 -f Dockerfile.gpu -t codex-ml:gpu-local .
 
 Notes:
 - If you set `ALLOW_MULTIARCH` to `true` in the workflow, CI will attempt arm64 builds; ensure that required Python wheels exist for that platform.
+
+### Build cache and per-arch wheels
+
+- The Dockerfiles use BuildKit cache mounts to speed up Python package downloads:
+  - Ensure BuildKit is enabled (default on GitHub Actions; locally: export DOCKER_BUILDKIT=1).
+- CI uses docker/build-push-action cache-to/cache-from to reuse layers across runs.
+- Per-arch wheel builds:
+  - The workflow uploads wheelhouse artifacts for each enabled platform (amd64 always; arm64 only when ALLOW_MULTIARCH='true').
+  - Review artifacts in the Actions run to validate wheel availability on each platform before enabling multi-arch pushes.
