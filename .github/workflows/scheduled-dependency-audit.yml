@@ -68,7 +68,7 @@ jobs:
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: baseline-wheelhouse-${{ matrix.platform }}
+          name: baseline-wheelhouse-${{ replace(matrix.platform, '/', '-') }}
           path: ./wheelhouse
           retention-days: 30
 
