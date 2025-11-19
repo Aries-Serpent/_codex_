@@ -7,15 +7,22 @@ try:
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
-    # Create placeholder types
+    from types import ModuleType
+
+    # Create placeholder types so consumer code can import the registry
+    # without torch installed. These stubs intentionally expose only the
+    # attributes accessed by this module.
     class _DummyOptimizer:
         pass
+
     class _DummyScheduler:
         pass
-    torch = type('torch', (), {
-        'optim': type('optim', (), {'Optimizer': _DummyOptimizer})(),
-        'optim.lr_scheduler': type('lr_scheduler', (), {'_LRScheduler': _DummyScheduler})()
-    })()
+
+    torch = ModuleType("torch")
+    torch.optim = ModuleType("optim")
+    torch.optim.Optimizer = _DummyOptimizer
+    torch.optim.lr_scheduler = ModuleType("lr_scheduler")
+    torch.optim.lr_scheduler._LRScheduler = _DummyScheduler
 
 
 @dataclass
