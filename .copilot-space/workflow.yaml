@@ -9,6 +9,7 @@
 # - Score regression guard remains; thresholds unchanged.
 
 version: 1.4.0
+metrics_schema_version: "2.0.0"
 
 stages:
   - id: index
