@@ -28,19 +28,19 @@ COPY MANIFEST.in ./
 COPY requirements/ ./requirements/
 COPY uv.lock ./uv.lock
 
-RUN pip install --upgrade pip setuptools wheel
+RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip setuptools wheel
 RUN mkdir -p /tmp/wheels
 
 # Build wheels for runtime dependencies so the final stage installs offline.
-RUN if [ -f "requirements/docker.txt" ]; then \
-      pip wheel --wheel-dir /tmp/wheels -r requirements/docker.txt; \
+RUN --mount=type=cache,target=/root/.cache/pip if [ -f "requirements/docker.txt" ]; then \
+      pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/docker.txt; \
     elif [ -f "requirements/base.txt" ]; then \
-      pip wheel --wheel-dir /tmp/wheels -r requirements/base.txt; \
+      pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt; \
     fi
 
 # Copy the full source tree and build a project wheel.
 COPY . .
-RUN pip wheel --no-deps --wheel-dir /tmp/wheels .
+RUN --mount=type=cache,target=/root/.cache/pip pip wheel --no-build-isolation --no-deps --wheel-dir /tmp/wheels .
 
 # For immutable builds, prefer digest pinning. Example:
 # FROM python:3.11-slim@sha256:<digest-here>

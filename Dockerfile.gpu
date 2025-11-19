@@ -25,15 +25,25 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-RUN python -m pip install --upgrade pip setuptools wheel build
-
+# Stage dependency manifests first to maximise layer reuse.
 COPY pyproject.toml ./
 COPY MANIFEST.in ./
 COPY requirements/ ./requirements/
 COPY uv.lock ./uv.lock
-COPY . .
 
-RUN python -m build --wheel --no-isolation --outdir /tmp/dist
+RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --upgrade pip setuptools wheel
+RUN mkdir -p /tmp/wheels
+
+# Build wheels for runtime dependencies so the final stage installs offline.
+RUN --mount=type=cache,target=/root/.cache/pip if [ -f "requirements/docker.txt" ]; then \
+      pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/docker.txt; \
+    elif [ -f "requirements/base.txt" ]; then \
+      pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt; \
+    fi
+
+# Copy the full source tree and build a project wheel.
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/pip pip wheel --no-build-isolation --no-deps --wheel-dir /tmp/wheels .
 
 FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 AS runtime
 
@@ -55,16 +65,16 @@ ENV PYTHONUNBUFFERED=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
-    python3 \
-    python3-venv \
+    python3.11 \
+    python3.11-venv \
+    python3.11-dev \
+    python3.11-distutils \
     python3-pip \
-    python3-distutils \
     tini \
  && rm -rf /var/lib/apt/lists/*
 
-# Create the virtual environment within the CUDA base image so binaries and wheels match
-RUN python3 -m venv /opt/venv \
- && /opt/venv/bin/pip install --upgrade pip setuptools wheel
+# Ensure python3 points to 3.11
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
 
 # OCI labels for provenance/metadata
 LABEL org.opencontainers.image.title="codex-gpu" \
@@ -76,63 +86,37 @@ LABEL org.opencontainers.image.title="codex-gpu" \
       org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.vendor="Aries-Serpent" \
-      org.opencontainers.image.base.name="nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04"
+      org.opencontainers.image.base.name="nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04"
 
 # Non-root runtime user
 RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser -m appuser
 
 WORKDIR /app
 
-COPY requirements/ ./requirements/
-COPY uv.lock ./uv.lock
-COPY pyproject.toml ./
+# Materialise a dedicated virtualenv and install from the cached wheels.
+COPY --from=builder /tmp/wheels /tmp/wheels
+RUN python3 -m venv /opt/venv \
+ && /opt/venv/bin/pip install --upgrade pip setuptools wheel \
+ && /opt/venv/bin/pip install /tmp/wheels/*.whl \
+ && rm -rf /tmp/wheels
 
-# GPU-specific setup: Conditionally install CUDA-enabled PyTorch
-# Base image provides CUDA 12.2.2 runtime, we use compatible PyTorch wheels (CUDA 12.1)
-# Set INSTALL_TORCH_GPU=1 to enable GPU PyTorch installation
-# Optionally specify custom wheel via TORCH_WHEEL build arg
-RUN if [ "$INSTALL_TORCH_GPU" = "1" ]; then \
-      if [ -n "$TORCH_WHEEL" ]; then \
-        echo "Installing custom PyTorch: $TORCH_WHEEL"; \
-        /opt/venv/bin/pip install --no-cache-dir $TORCH_WHEEL; \
+# Optionally install CUDA-enabled PyTorch if requested
+# Prefer an explicit wheel via TORCH_WHEEL for full reproducibility.
+RUN if [ "${INSTALL_TORCH_GPU}" = "1" ] ; then \
+      if [ -n "${TORCH_WHEEL}" ] ; then \
+        /opt/venv/bin/pip install "${TORCH_WHEEL}" ; \
       else \
-        echo "Installing default CUDA 12.1 PyTorch ${TORCH_VERSION}"; \
-        /opt/venv/bin/pip install --no-cache-dir \
-          torch==${TORCH_VERSION} --index-url https://download.pytorch.org/whl/cu121 \
-       && /opt/venv/bin/pip install --no-cache-dir \
-          torchvision==${TORCHVISION_VERSION} --index-url https://download.pytorch.org/whl/cu121; \
-      fi; \
-    else \
-      echo "Skipping GPU PyTorch install (INSTALL_TORCH_GPU not set to 1)"; \
-    fi
+        /opt/venv/bin/pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
+          torch=="${TORCH_VERSION}" torchvision=="${TORCHVISION_VERSION}"; \
+      fi \
+    ; fi
 
-# Install application dependencies
-# Using CUDA 12.2 compatible wheels (matching base image nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04)
-RUN if [ -f "requirements/docker.txt" ]; then \
-      /opt/venv/bin/pip install -r requirements/docker.txt; \
-    elif [ -f "requirements/base.txt" ]; then \
-      # Skip torch from base.txt if GPU version was installed above
-      if [ "$INSTALL_TORCH_GPU" = "1" ]; then \
-        python3 -c "import re; \
-with open('requirements/base.txt') as f, open('/tmp/base_no_torch.txt', 'w') as out: \
-    for line in f: \
-        if not re.match(r'^\s*torch(\W|$)', line): \
-            out.write(line)" || cp requirements/base.txt /tmp/base_no_torch.txt; \
-        /opt/venv/bin/pip install -r /tmp/base_no_torch.txt; \
-      else \
-        /opt/venv/bin/pip install -r requirements/base.txt; \
-      fi; \
-    fi
-
-COPY --from=builder /tmp/dist /tmp/dist
-COPY --from=builder /app/configs /app/configs
-COPY --from=builder /app/hydra /app/hydra
-COPY --from=builder /app/src /app/src
+# Copy runtime assets (configs, Hydra defaults, source for debugging).
+COPY configs /app/configs
+COPY hydra /app/hydra
+COPY src /app/src
 COPY docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
-
-RUN /opt/venv/bin/pip install --no-deps /tmp/dist/*.whl \
- && rm -rf /tmp/dist
 
 EXPOSE 8000
 
