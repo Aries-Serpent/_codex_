@@ -32,7 +32,7 @@ COPY requirements/ ./requirements/
 COPY uv.lock ./uv.lock
 
 RUN --mount=type=cache,target=/root/.cache/pip python -m pip install --upgrade pip setuptools wheel
-RUN --mount=type=cache,target=/root/.cache/pip mkdir -p /tmp/wheels
+RUN mkdir -p /tmp/wheels
 
 # Build wheels for runtime dependencies so the final stage installs offline.
 RUN --mount=type=cache,target=/root/.cache/pip if [ -f "requirements/docker.txt" ]; then \
