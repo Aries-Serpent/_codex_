@@ -95,11 +95,11 @@ Dependency drift occurs when:
 
 ```bash
 # Download artifacts from two workflow runs
-gh run download <run-id-old> -n baseline-wheelhouse-linux/amd64 -D old/
-gh run download <run-id-new> -n baseline-wheelhouse-linux/amd64 -D new/
+gh run download <run-id-old> -n baseline-wheelhouse-linux-amd64 -D old/
+gh run download <run-id-new> -n baseline-wheelhouse-linux-amd64 -D new/
 
 # Compare manifests
-diff old/manifest-linux/amd64.json new/manifest-linux/amd64.json
+diff old/manifest-linux-amd64.json new/manifest-linux-amd64.json
 ```
 
 ## SBOM Integration
