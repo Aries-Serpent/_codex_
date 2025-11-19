@@ -23,13 +23,23 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Set build target & push flag
+        id: set_target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "target=production" > $GITHUB_OUTPUT
+            echo "should_push=true" > $GITHUB_OUTPUT
+          else
+            echo "target=runtime" > $GITHUB_OUTPUT
+            echo "should_push=false" > $GITHUB_OUTPUT
+          fi
       - name: Build CPU image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile
-          target: production
-          push: false
+          target: ${{ steps.set_target.outputs.target }}
+          push: ${{ steps.set_target.outputs.should_push == 'true' }}
           tags: codex-ml:cpu-latest
   build-gpu:
     runs-on: ubuntu-latest
@@ -40,11 +50,21 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Set build target & push flag
+        id: set_target
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "target=production" > $GITHUB_OUTPUT
+            echo "should_push=true" > $GITHUB_OUTPUT
+          else
+            echo "target=runtime" > $GITHUB_OUTPUT
+            echo "should_push=false" > $GITHUB_OUTPUT
+          fi
       - name: Build GPU image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile.gpu
-          target: production
-          push: false
+          target: ${{ steps.set_target.outputs.target }}
+          push: ${{ steps.set_target.outputs.should_push == 'true' }}
           tags: codex-ml:gpu-latest
