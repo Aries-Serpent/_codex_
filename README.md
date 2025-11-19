@@ -295,3 +295,100 @@ path:docs/ "mermaid" in:file
 ---
 
 **For more search patterns and ChatGPT/Copilot guidance**, see [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md).
+
+## Building Docker images locally
+
+To reproduce the CI image builds locally (recommended to use linux/amd64 platform to match published wheels):
+
+- CPU image:
+
+```bash
+docker build --platform=linux/amd64 -f Dockerfile -t codex-ml:cpu-local .
+```
+
+- GPU image (requires NVIDIA container toolkit and compatible CUDA runtime):
+
+```bash
+docker build --platform=linux/amd64 -f Dockerfile.gpu -t codex-ml:gpu-local .
+```
+
+Notes:
+- If you set `ALLOW_MULTIARCH` to `true` in the workflow, CI will attempt arm64 builds; ensure that required Python wheels exist for that platform.
+
+### Build cache and per-arch wheels
+
+- The Dockerfiles use BuildKit cache mounts to speed up Python package downloads:
+  - Ensure BuildKit is enabled (default on GitHub Actions; locally: export DOCKER_BUILDKIT=1).
+- CI uses docker/build-push-action cache-to/cache-from to reuse layers across runs.
+- Per-arch wheel builds:
+  - The workflow uploads wheelhouse artifacts for each enabled platform (amd64 always; arm64 only when ALLOW_MULTIARCH='true').
+  - Review artifacts in the Actions run to validate wheel availability on each platform before enabling multi-arch pushes.
+
+## Supply Chain Security & Dependency Management
+
+### Wheel Manifest & Baseline Artifacts
+
+The CI pipeline generates cryptographic manifests of all Python wheels built during the image build process:
+
+- **Manifest Generation**: Each wheel build produces a `manifest.json` with SHA256 hashes
+- **Per-Platform Baselines**: Separate manifests for `linux/amd64` and `linux/arm64` (when enabled)
+- **Artifact Storage**: Manifests uploaded to GitHub Actions artifacts for 30-90 days
+
+Generate a local manifest:
+```bash
+python scripts/ci/generate_wheel_manifest.py \
+  --wheelhouse ./wheelhouse \
+  --output manifest.json \
+  --platform linux/amd64 \
+  --python-version 3.11
+```
+
+### SBOM (Software Bill of Materials)
+
+Every PR build generates SBOM files in multiple formats:
+
+- **SPDX JSON**: Industry-standard format for license compliance
+- **CycloneDX JSON**: OWASP standard for security analysis
+- **Syft JSON**: Anchore-native format with rich metadata
+
+SBOMs are automatically:
+- Generated for both CPU and GPU images
+- Scanned with Grype for known vulnerabilities
+- Uploaded to GitHub Security tab (SARIF format)
+- Stored as workflow artifacts
+
+### Scheduled Dependency Audit
+
+Weekly automated audit workflow (`scheduled-dependency-audit.yml`) runs:
+
+1. **Baseline Regeneration**: Rebuild wheelhouse and manifests
+2. **Drift Detection**: Compare with previous baseline, alert on changes
+3. **SBOM Scanning**: Generate and scan SBOMs for vulnerabilities
+4. **Upgrade Compatibility**: Test Python 3.11, 3.12, 3.13 compatibility
+5. **Issue Creation**: Auto-file GitHub issues when drift detected
+
+Trigger manually:
+```bash
+gh workflow run scheduled-dependency-audit.yml \
+  -f python_version=3.12 \
+  -f enable_multiarch=true
+```
+
+### Upgrade Strategy
+
+| Scenario | Action | Trigger |
+|----------|--------|---------|
+| **Ray publishes 3.12 wheels** | Test in shadow matrix | Weekly audit detects availability |
+| **Hash mismatch detected** | Review manifest diff, update pins | Drift detection alerts |
+| **CVE in dependency** | Review Grype SARIF, patch/upgrade | Security scan on PR |
+| **Multi-arch expansion** | Enable `ALLOW_MULTIARCH=true`, verify artifacts | Manual testing then repo variable |
+| **Python minor upgrade** | Run upgrade-compatibility job, fix issues | Scheduled audit tests new versions |
+
+### Security Posture
+
+- ✅ All wheels integrity-verified via SHA256 manifest
+- ✅ SBOM generation on every PR build
+- ✅ Vulnerability scanning with Grype (critical = fail)
+- ✅ Weekly dependency drift detection
+- ✅ Automated Python version compatibility testing
+- ✅ GitHub Security integration for SARIF alerts

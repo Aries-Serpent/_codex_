@@ -1,5 +1,5 @@
 {
-  "generated": 1763439800.3371208,
+  "generated": 1763513400.759393,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1216,13 +1216,14 @@
       "docs/validation/SBOM_Config_Validation.md",
       "hydra/__init__.py",
       "hydra/errors.py",
-      "mcp/config.py",
       "patches/pending/2025-09-21_hydra_entrypoint.patch",
       "scripts/config/__init__.py",
       "scripts/config/parse_knobs.py",
       "scripts/config/schema_validate.py",
       "scripts/generate-config.sh",
       "scripts/runner/configure_repo_vars.sh",
+      "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+      "scripts/space_traversal/detectors/mcp_configuration.py",
       "scripts/status/visual_compare_with_config.sh",
       "services/msp_gateway/config.py",
       "src/codex/archive/config.py",
@@ -1245,6 +1246,7 @@
       "src/codex_ml/utils/hydra_cs.py",
       "src/hydra_extra/__init__.py",
       "src/logging_config.py",
+      "src/mcp/config.py",
       "templates/github_repo_baseline/ISSUE_TEMPLATE/config.yml",
       "tests/archive/test_config.py",
       "tests/archive/test_logging_config.py",
