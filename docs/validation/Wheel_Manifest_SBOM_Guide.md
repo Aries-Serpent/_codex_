@@ -48,8 +48,8 @@ The `build-wheels` job automatically:
 4. Uploads both wheels and manifest as artifacts
 
 **Artifacts**:
-- `wheelhouse-linux/amd64/`: Wheels + manifest for amd64
-- `wheelhouse-linux/arm64/`: Wheels + manifest for arm64 (if `ALLOW_MULTIARCH=true`)
+- `wheelhouse-linux-amd64`: Wheels + manifest for amd64
+- `wheelhouse-linux-arm64`: Wheels + manifest for arm64 (if `ALLOW_MULTIARCH=true`)
 
 ### 3. Scheduled Audit
 
