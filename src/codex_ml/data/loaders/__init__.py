@@ -14,13 +14,35 @@ Author: mbaetiong
 Generated: 2025-11-19 04:02:05
 """
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict
+import inspect
 import logging
 
 logger = logging.getLogger(__name__)
 
 # Lazy imports to avoid hard dependencies
 _LOADERS: Dict[str, Callable] = {}
+
+
+def _resolve_loader(loader_entry: Callable) -> Callable:
+    """Resolve lazy loader factories into actual loader callables."""
+
+    if not callable(loader_entry):
+        raise TypeError("Registered loader must be callable")
+
+    try:
+        signature = inspect.signature(loader_entry)
+    except (TypeError, ValueError):
+        # Built-in or C-level callables without signature support
+        return loader_entry
+
+    if len(signature.parameters) == 0:
+        resolved = loader_entry()
+        if not callable(resolved):
+            raise TypeError("Lazy loader factory must return a callable")
+        return resolved
+
+    return loader_entry
 
 
 def register_loader(extensions: list, loader_fn: Callable):
@@ -70,8 +92,8 @@ def load_dataset(file_path, **kwargs) -> Any:
         )
     
     logger.info(f"Loading dataset: {path} (format: {ext})")
-    loader_fn = _LOADERS[ext]
-    
+    loader_fn = _resolve_loader(_LOADERS[ext])
+
     return loader_fn(path, **kwargs)
 
 
