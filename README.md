@@ -295,3 +295,22 @@ path:docs/ "mermaid" in:file
 ---
 
 **For more search patterns and ChatGPT/Copilot guidance**, see [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md).
+
+## Building Docker images locally
+
+To reproduce the CI image builds locally (recommended to use linux/amd64 platform to match published wheels):
+
+- CPU image:
+
+```bash
+docker build --platform=linux/amd64 -f Dockerfile -t codex-ml:cpu-local .
+```
+
+- GPU image (requires NVIDIA container toolkit and compatible CUDA runtime):
+
+```bash
+docker build --platform=linux/amd64 -f Dockerfile.gpu -t codex-ml:gpu-local .
+```
+
+Notes:
+- If you set `ALLOW_MULTIARCH` to `true` in the workflow, CI will attempt arm64 builds; ensure that required Python wheels exist for that platform.

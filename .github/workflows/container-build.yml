@@ -13,12 +13,19 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Set this to 'true' to enable building arm64 images (off by default to avoid wheel issues)
+  ALLOW_MULTIARCH: 'false'
+
 jobs:
   build-cpu:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        platform: [ 'linux/amd64', 'linux/arm64' ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -35,18 +42,22 @@ jobs:
           fi
       - name: Build CPU image
         uses: docker/build-push-action@v6
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
         with:
           context: .
           file: Dockerfile
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           target: ${{ steps.set_target.outputs.target }}
           push: ${{ steps.set_target.outputs.should_push == 'true' }}
-          tags: codex-ml:cpu-latest
+          tags: codex-ml:cpu-${{ matrix.platform }}-latest
   build-gpu:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    strategy:
+      matrix:
+        platform: [ 'linux/amd64' ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -66,7 +77,7 @@ jobs:
         with:
           context: .
           file: Dockerfile.gpu
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           target: ${{ steps.set_target.outputs.target }}
           push: ${{ steps.set_target.outputs.should_push == 'true' }}
-          tags: codex-ml:gpu-latest
+          tags: codex-ml:gpu-${{ matrix.platform }}-latest
