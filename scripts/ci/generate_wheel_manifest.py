@@ -17,7 +17,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 
 def compute_sha256(filepath: Path) -> str:
