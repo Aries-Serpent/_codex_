@@ -208,11 +208,11 @@ jobs:
       - name: Compare manifests
         id: compare
         run: |
-          if [ -f "./previous-baseline/manifest-linux/amd64.json" ] && [ -f "./current-baseline/manifest-linux/amd64.json" ]; then
+          if [ -f "./previous-baseline/manifest-linux-amd64.json" ] && [ -f "./current-baseline/manifest-linux-amd64.json" ]; then
             echo "Comparing wheel manifests..."
 
             # Simple diff check (can be enhanced with jq for detailed comparison)
-            if ! diff -q ./previous-baseline/manifest-linux/amd64.json ./current-baseline/manifest-linux/amd64.json; then
+            if ! diff -q ./previous-baseline/manifest-linux-amd64.json ./current-baseline/manifest-linux-amd64.json; then
               echo "drift_detected=true" >> $GITHUB_OUTPUT
               echo "⚠️ Dependency drift detected"
             else
