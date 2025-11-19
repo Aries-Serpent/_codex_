@@ -47,8 +47,7 @@ jobs:
           outputs: type=local,dest=./wheelhouse
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+          # build-args removed: Dockerfile does not support PYTHON_VERSION
 
       - name: Set up Python
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
