@@ -67,6 +67,20 @@ All notable changes to this project will be documented in this file.
 - Tooling: Documented fence validator architecture and added focused tests
   covering default returns, skip lists, and warn-mode output.
 
+### Fixed (2025-11-19) - Metrics
+- **BLEU brevity penalty**: Corrected corpus BLEU brevity penalty logic in
+  `src/codex_ml/metrics/generation.py` to iterate over hypotheses and their
+  reference sets in lockstep, preventing `norm_refs.index(refs)` from pairing
+  multiple references with the first hypothesis when reference lists are reused.
+- **Regression tests**: Added `tests/metrics/test_bleu_brevity_penalty.py` to
+  reproduce the misalignment, assert the fixed penalty, and validate
+  `compute_corpus_bleu()` precision.
+- **Impact**: BLEU scores for corpora that reuse or duplicate reference lists
+  will now reflect the correct brevity penalty and may change relative to prior
+  (buggy) calculations. A migration/email template for model owners lives at
+  `docs/migrations/bleu_brevity_penalty_migration.md` to guide downstream
+  threshold updates.
+
 ## 2025-10-26
 
 ### Added
