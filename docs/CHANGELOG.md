@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added (2025-11-18) - MCP + ITA Integration (PR #2297)
+
+- **MCP Modules**: Complete implementation of Model Context Protocol integration:
+  - `src/mcp/registry.py` - Tool registry with `MCPToolRegistry`, `compute_tool_checksum`, and confirmation support
+  - `src/mcp/config.py` - Configuration management with `MCPConfig`, environment variable overrides (`ITA_URL`, `ITA_API_KEY`)
+  - `src/mcp/versioning.py` - Protocol version negotiation with `MCP_VERSIONS` and `negotiate_version()`
+  - Enhanced `src/mcp/errors.py` with JSON-RPC error code mappings (`jsonrpc_code` attribute on all error classes)
+  
+- **Test Coverage**: Comprehensive MCP test suite with 200/200 tests passing (100% success rate):
+  - Registry tests (19), Config tests (7), Auth tests (26), Server tests (4)
+  - Protocol tests (24), Error handling tests (14), Schema validation tests (21)
+  - Tools integration tests (59), Multi-tenant tests (12), Observability tests (12)
+  - Core smoke tests (12), Integration tests (1)
+
+### Fixed (2025-11-18) - Security & Consistency (PR #2297)
+
+- **Security**: Fixed principal_id entropy reduction vulnerability:
+  - Changed `Principal.from_credential()` to use full 64-character SHA-256 hash instead of truncated 16 characters
+  - Updated ITA app (`services/ita/app/main.py`) to use complete hash for identity verification
+  - Eliminated entropy loss from 256 bits to 64 bits, restoring full cryptographic security
+  
+- **Naming Consistency**: Standardized `Principal` field naming across codebase:
+  - Changed all `Principal(id=...)` to `Principal(principal_id=...)`
+  - Updated test expectations for 64-character hash tokens
+  - Fixed authentication token format to use deterministic SHA-256 hashing
+
+### Changed (2025-11-18) - Code Quality (PR #2297)
+
+- **Code Quality**: Applied comprehensive validation standards:
+  - Formatted all MCP modules with Black (zero formatting errors)
+  - Fixed all Ruff linting issues (zero linting errors)
+  - Added type annotations for Mypy compliance (8/8 source files passing)
+  - Removed trailing whitespace and standardized code style
+  
+- **ITA Integration**: Enhanced MCP error handling and rate limiting in ITA service:
+  - Added `MCPError` exception handler with proper JSON responses
+  - Implemented rate limiting using `MCPRateLimiter` (5 req/sec, burst 20)
+  - Improved error reporting with X-Request-Id headers
+
 ### Added
 - **API docs generator**: `--fail-on-missing` flag for strict module checking in CI/CD workflows. When enabled, the build exits with code 3 if any requested modules are missing, allowing CI to enforce complete dependency installation. Default behavior remains graceful (non-strict) for local development. Return codes: 0=success, 2=no modules found, 3=strict failure. Module availability is checked using `importlib.util.find_spec()`. (PR #2118)
 

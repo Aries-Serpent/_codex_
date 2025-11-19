@@ -34,8 +34,8 @@ def test_principal_from_credential():
     """Test creating Principal from credential with secure hashing."""
     principal = Principal.from_credential("my_secret_key")
     
-    # Principal ID should be first 16 chars of hash
-    assert len(principal.principal_id) == 16
+    # Principal ID should be full SHA-256 hash (64 hex chars) for security
+    assert len(principal.principal_id) == 64
     assert all(c in '0123456789abcdef' for c in principal.principal_id)
 
 

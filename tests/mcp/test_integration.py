@@ -29,13 +29,15 @@ def test_end_to_end_tool_call() -> None:
     # Arrange: auth components (explicitly instantiated to avoid NameError)
     authenticator = BasicAuthenticator()
     authorizer = AllowAllAuthorizer()
-    principal = Principal(id="user-123")
+    principal = Principal(principal_id="user-123")
 
     token = authenticator.generate_session_token(principal)
-    assert token == "token-user-123"
+    # Token should be a 64-char hex hash (SHA-256)
+    assert len(token) == 64
+    assert all(c in '0123456789abcdef' for c in token)
 
-    # For now, we just assert authorize() returns True; later it can enforce real policy.
-    assert authorizer.authorize(token, resource="tool:echo", action="invoke")
+    # For now, we just assert authorize() returns True for a valid principal
+    assert authorizer.authorize(principal, tool_name="echo")
 
     # Act: send a JSON-RPC request to list tools
     request: Dict[str, Any] = {

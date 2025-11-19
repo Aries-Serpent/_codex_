@@ -27,7 +27,7 @@ def test_hash_credential_deterministic():
 def test_principal_from_credential():
     """Test creating principal from credential."""
     principal = Principal.from_credential("api-key-123")
-    assert len(principal.principal_id) == 16
+    assert len(principal.principal_id) == 64  # Full SHA-256 hash for security
     assert principal.principal_id.isalnum()
 
 
@@ -153,7 +153,7 @@ def test_principal_creation_variants():
     p2 = Principal.from_credential("credential")
     
     assert p1.principal_id == "explicit-id"
-    assert len(p2.principal_id) == 16
+    assert len(p2.principal_id) == 64  # Full SHA-256 hash for security
 
 
 def test_authenticator_multiple_sessions():

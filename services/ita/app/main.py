@@ -28,6 +28,7 @@ from .tests_runner import simulate_test_execution
 try:
     from mcp.errors import MCPError
     from mcp.rate_limit import MCPRateLimiter
+
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
@@ -51,13 +52,14 @@ app.add_middleware(
 
 # MCP Error Handler - Unified error responses
 if MCP_AVAILABLE:
+
     @app.exception_handler(MCPError)
     async def mcp_error_handler(request: Request, exc: MCPError):
         """Handle MCP-specific errors with consistent JSON responses."""
         return JSONResponse(
             status_code=exc.http_status,
             content=exc.to_dict(),
-            headers={"X-Request-Id": _get_request_id(request)}
+            headers={"X-Request-Id": _get_request_id(request)},
         )
 
     # Initialize rate limiter (5 requests/sec, burst 20)
@@ -108,10 +110,11 @@ async def inject_request_context(request: Request, call_next):
 
         # MCP Rate Limiting - check if request is allowed
         if MCP_AVAILABLE:
-            principal_id = request.state.context.api_key_hash[:16]  # Use first 16 chars of hash as ID
+            principal_id = request.state.context.api_key_hash  # Use full hash for identity
             endpoint = request.url.path
             if not _rate_limiter.allow(principal_id, endpoint):
                 from mcp.errors import RateLimitExceeded
+
                 raise RateLimitExceeded(f"Rate limit exceeded for {endpoint}")
 
     except HTTPException as exc:

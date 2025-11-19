@@ -29,7 +29,7 @@ class Principal:
         """Create a principal based on a hashed credential."""
 
         hashed = hash_credential(credential)
-        return cls(principal_id=hashed[:16])
+        return cls(principal_id=hashed)  # Use full hash for security
 
 
 class MCPAuthenticator:

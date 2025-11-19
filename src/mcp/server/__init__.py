@@ -10,7 +10,7 @@ class JsonRpcError(Exception):
 
     def __init__(self, code: int, message: str, data: Any = None) -> None:
         """Initialize a JSON-RPC error.
-        
+
         Args:
             code: JSON-RPC error code.
             message: Human-readable error message.
@@ -23,7 +23,7 @@ class JsonRpcError(Exception):
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert error to JSON-RPC error object format.
-        
+
         Returns:
             Dictionary with code, message, and optional data fields.
         """
@@ -51,7 +51,7 @@ class ToolRegistry:
 
     def register(self, tool: Tool) -> None:
         """Register a tool in the registry.
-        
+
         Args:
             tool: The tool to register.
         """
@@ -59,21 +59,18 @@ class ToolRegistry:
 
     async def list_tools(self) -> List[Dict[str, Any]]:
         """List all registered tools.
-        
+
         Returns:
             A plain list of tool dictionaries (not wrapped in an object).
             This matches JSON-RPC client expectations for mcp.listTools result.
         """
         # Requirement: listTools result must be a plain list, not wrapped in {"tools": ...}
-        return [
-            {"name": t.name, "description": t.description}
-            for t in self._tools.values()
-        ]
+        return [{"name": t.name, "description": t.description} for t in self._tools.values()]
 
 
 class MCPServer:
     """Minimal MCP server implementing a subset of JSON-RPC 2.0 behavior.
-    
+
     This is a future-ready MCP server aligned with the mcp/server/README.md constraints:
     - Supports tool invocations (mcp.listTools initially, with mcp.callTool planned)
     - Designed for future alignment with the Internal Tools API (ITA)
@@ -83,7 +80,7 @@ class MCPServer:
 
     def __init__(self, tool_registry: Optional[ToolRegistry] = None) -> None:
         """Initialize the MCP server.
-        
+
         Args:
             tool_registry: Optional tool registry. If not provided, creates an empty one.
         """
@@ -99,12 +96,14 @@ class MCPServer:
             "mcp.negotiateVersion": self.handle_negotiate_version,
         }
 
-    async def handle_list_tools(self, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    async def handle_list_tools(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Handler for mcp.listTools, returns a plain list of tool objects.
-        
+
         Args:
             params: Optional parameters (unused for listTools).
-            
+
         Returns:
             A plain list of tool dictionaries.
         """
@@ -139,14 +138,14 @@ class MCPServer:
 
     async def _dispatch_request(self, method: str, params: Optional[Dict[str, Any]]) -> Any:
         """Dispatch a JSON-RPC request to the appropriate handler.
-        
+
         Args:
             method: The JSON-RPC method name.
             params: Optional method parameters.
-            
+
         Returns:
             The result from the method handler.
-            
+
         Raises:
             JsonRpcError: If the method is not found.
         """
@@ -157,7 +156,7 @@ class MCPServer:
 
     async def _dispatch_notification(self, method: str, params: Optional[Dict[str, Any]]) -> None:
         """Dispatch a JSON-RPC notification (no response expected).
-        
+
         Args:
             method: The JSON-RPC method name.
             params: Optional method parameters.
