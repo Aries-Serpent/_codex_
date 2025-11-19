@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Permissive Phase-A validate_report schema",
+  "type": ["object", "array"],
+  "additionalProperties": true,
+  "properties": {
+    "validators": {"type": "array"},
+    "missing_files": {"type": ["array", "object"]},
+    "gaps": {"type": ["array", "object"]},
+    "capabilities_scored": {"type": ["object", "array"]}
+  }
+}
