@@ -71,9 +71,9 @@ def bleu(hypotheses: Sequence[str], references: Sequence[Sequence[str]] | Sequen
     # brevity penalty
     hyp_len = sum(len(_tokenize(h)) for h in hypotheses)
     ref_len = 0
-    for refs in norm_refs:
-        # choose ref length closest to hyp length
-        cand = len(_tokenize(hypotheses[norm_refs.index(refs)]))
+    for hyp, refs in zip(hypotheses, norm_refs):
+        # choose ref length closest to hyp length for this hypothesis
+        cand = len(_tokenize(hyp))
         best = min((abs(len(_tokenize(r)) - cand), len(_tokenize(r))) for r in refs)[1] if refs else 0
         ref_len += best
     bp = 1.0 if hyp_len > ref_len else (math.exp(1 - ref_len / max(1, hyp_len)) if hyp_len > 0 else 0.0)
