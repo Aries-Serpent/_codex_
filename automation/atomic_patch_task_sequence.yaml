@@ -1,0 +1,170 @@
+version: "2025-11-20"
+title: "Codex Atomic Patch Task Sequence"
+description: |
+  Guided sequence for automated patching focused on high-impact, low-regret fixes.
+  Each task bundles audit notes, atomic diffs, risk/rollback guidance, and validation steps
+  so agents can execute patches deterministically and capture evidence for review.
+metadata:
+  generated_by: "ChatGPT Codex"
+  audience: "Automation agents and maintainers"
+  offline_first: true
+  default_seed: 42
+  evidence_dir: "codex_logs"
+  reports_dir: "reports"
+execution_phases:
+  - name: preparation
+    steps:
+      - "Ensure working tree clean and honor .gitignore (git status --short)."
+      - "Export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 for deterministic pytest startup."
+      - "Create evidence and report directories if missing ({evidence_dir}, {reports_dir})."
+  - name: search_and_mapping
+    steps:
+      - "Inventory existing artefacts relevant to each task (use rg for TODO/NotImplementedError)."
+      - "Record baseline context: python --version, platform, git rev-parse HEAD (store under {evidence_dir})."
+  - name: construction
+    steps:
+      - "Apply the atomic diff(s) for selected task in isolation."
+      - "Capture rationale/risk/rollback notes to {reports_dir}/<task>_notes.md."
+  - name: validation
+    steps:
+      - "Run targeted checks per task (pytest -k <selector> or script)."
+      - "If optional deps missing, log skip reason instead of failing the run."
+  - name: finalisation
+    steps:
+      - "Summarise changes and validation outputs in {reports_dir}/summary.md."
+      - "Archive evidence directory for traceability."
+
+# High-impact atomic diffs. Each block is runnable independently.
+tasks:
+  - id: T1_tokenizer_determinism
+    objective: "Guard tokenizer regressions with deterministic round-trip and padding tests."
+    existing_artefacts:
+      - "tokenization/train_tokenizer.py"
+      - "tokenizer/fast_tokenizer.py"
+      - "tests/ (sparse coverage)"
+    gaps: "No regression tests to ensure encode/decode stability across library versions."
+    risk: "Low; tests may expose latent bugs or version-specific behaviour."
+    atomic_diff:
+      description: "Add pytest module covering round-trip decode and padding/truncation paths."
+      patchset:
+        - file: "tests/tokenization/test_fast_tokenizer.py"
+          actions:
+            - "Create fixture that trains a tiny BPE model on synthetic corpus."
+            - "Assert decode(strip()) == original text."
+            - "Assert padding/truncation respects max_length."
+    validation:
+      - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/tokenization/test_fast_tokenizer.py"
+    rollback: "Remove the new test file if downstream environments cannot satisfy tokenizers dependency."
+
+  - id: T2_dataset_registry
+    objective: "Provide extensible dataset loader registry with entry-point hook for plugins."
+    existing_artefacts:
+      - "src/codex_ml/data/split.py"
+      - "pyproject.toml (entry-points for metrics/models)"
+    gaps: "No central registry for dataset loaders; ingestion requires ad-hoc wiring."
+    risk: "Medium; new entry-point group could conflict if names overlap."
+    atomic_diff:
+      description: "Introduce dataset registry module and packaging hook."
+      patchset:
+        - file: "src/codex_ml/data/registry.py"
+          actions:
+            - "Implement register_loader decorator enforcing unique names."
+            - "Expose load(name, *args, **kwargs) to dispatch registered loaders."
+            - "Provide available() helper returning copy of registry."
+        - file: "pyproject.toml"
+          actions:
+            - "Add project.entry-points."codex_ml.datasets" group for external loaders."
+    validation:
+      - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -k dataset_registry"
+      - "python -c \"import codex_ml.data.registry as r; print(r.available())\""
+    rollback: "Delete registry module and remove entry-point group from pyproject.toml."
+
+  - id: T3_checkpoint_resume
+    objective: "Prove checkpoint save/resume parity for short training runs."
+    existing_artefacts:
+      - "training/checkpoint_manager.py"
+      - "src/utils/checkpoint.py"
+    gaps: "No regression test ensuring metrics identical after resume."
+    risk: "Medium; flakiness possible if RNG capture incomplete."
+    atomic_diff:
+      description: "Add synthetic training test that saves checkpoint mid-run and resumes."
+      patchset:
+        - file: "tests/training/test_checkpoint_resume.py"
+          actions:
+            - "Train tiny model for N steps with fixed seed; capture metrics."
+            - "Resume from checkpoint and assert continuation matches baseline within tolerance."
+    validation:
+      - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/training/test_checkpoint_resume.py"
+    rollback: "Skip test via marker or remove file if environments lack torch extras."
+
+  - id: T4_logging_retention
+    objective: "Prevent runaway NDJSON log growth and validate secret redaction."
+    existing_artefacts:
+      - "src/codex_ml/monitoring/codex_logging.py"
+      - "src/codex_ml/utils/system_metrics.py"
+    gaps: "No retention policy; secret redaction logic lacks regression tests."
+    risk: "Low/Medium; deletion bugs could drop logs if misconfigured."
+    atomic_diff:
+      description: "Add retention config and regression test for redaction."
+      patchset:
+        - file: "src/codex_ml/monitoring/codex_logging.py"
+          actions:
+            - "Introduce max_log_files parameter (default 20) and prune oldest files."
+            - "Document offline-safe behaviour."
+        - file: "tests/monitoring/test_codex_logging.py"
+          actions:
+            - "Assert tokens like 'sk-***' are redacted."
+            - "Simulate >max_log_files files and ensure pruning keeps most recent."
+    validation:
+      - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/monitoring/test_codex_logging.py"
+    rollback: "Revert retention option to previous behaviour and delete test."
+
+  - id: T5_deployment_gpu_compose
+    objective: "Provide GPU-friendly Dockerfile and docker-compose services for local orchestration."
+    existing_artefacts:
+      - "Dockerfile"
+      - "docker-compose.override.local.yml"
+    gaps: "GPU variant and compose services are absent; users hand-roll setups."
+    risk: "Medium; GPU builds fail without NVIDIA runtime."
+    atomic_diff:
+      description: "Add CUDA-based Dockerfile and compose services for CPU/GPU."
+      patchset:
+        - file: "Dockerfile.gpu"
+          actions:
+            - "Base on nvidia/cuda:12.x, install python3 + venv, install project wheel."
+            - "Expose uvicorn entrypoint with non-root user."
+        - file: "docker-compose.yml"
+          actions:
+            - "Define codex-cpu and codex-gpu services with port mappings."
+            - "Set NVIDIA_VISIBLE_DEVICES for GPU service."
+    validation:
+      - "docker build -f Dockerfile.gpu ."
+      - "docker compose config"
+    rollback: "Remove GPU Dockerfile and compose file; retain CPU Dockerfile."
+
+  - id: T6_docs_quickstart_plugins
+    objective: "Guide users through quickstart and plugin scaffolding with deterministic steps."
+    existing_artefacts:
+      - "README.md"
+      - "docs/how-to (sparse quickstart content)"
+    gaps: "No single quickstart; plugin scaffolding workflow undocumented."
+    risk: "Low; documentation-only change."
+    atomic_diff:
+      description: "Add quickstart and plugin scaffolding guide with CLI snippets."
+      patchset:
+        - file: "docs/quickstart_and_plugins.md"
+          actions:
+            - "Outline prerequisites, install commands, offline flags, and training/eval invocation."
+            - "Describe how to register plugins via entry points with example snippets."
+            - "Include rollback advice for CLI scaffolding (remove generated files)."
+    validation:
+      - "Proofread and run markdown lint if available (npx markdownlint-cli)."
+    rollback: "Remove the new doc if content becomes stale or redundant."
+
+# Error capture template used across tasks
+error_capture:
+  format: |
+    Question for ChatGPT @codex {timestamp}: While performing [{step}:{description}], encountered the following error:
+    {error}
+    Context: {context}
+    What are the possible causes, and how can this be resolved while preserving intended functionality?
