@@ -169,15 +169,16 @@ def pooling_db_manager(tmp_path, request):
     # temporarily disable pool reuse during acquisition while keeping pooling on
     # for close_connection. Tests that explicitly verify reuse keep the default
     # behavior.
-    if request.node.name != "test_connection_reuse_from_pool":
+    if request.node.get_closest_marker("pool_disable_reuse"):
         original_get = manager.get_connection
 
         def _get_connection_no_reuse(*args, **kwargs):
+            original_pooling_state = DBManager._POOL_ENABLED
             DBManager._POOL_ENABLED = False
             try:
                 return original_get(*args, **kwargs)
             finally:
-                DBManager._POOL_ENABLED = True
+                DBManager._POOL_ENABLED = original_pooling_state
 
         manager.get_connection = _get_connection_no_reuse  # type: ignore[attr-defined]
 
