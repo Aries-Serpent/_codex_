@@ -131,3 +131,9 @@ series:
     patches:
       - I2_Data_Spine_P2.1-P2.3.md
     applied: true
+
+# Additional task sequences
+related_sequences:
+  - name: atomic_patch_tasks
+    path: automation/atomic_patch_task_sequence.yaml
+    description: "High-impact atomic diffs with rationale, risks, validation, and rollback steps."

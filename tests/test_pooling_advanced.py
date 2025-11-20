@@ -9,10 +9,13 @@ Tests advanced pooling scenarios:
 
 import threading
 
+import pytest
+
 
 class TestPoolingBehavior:
     """Test connection pooling behavior with fixtures."""
 
+    @pytest.mark.pool_disable_reuse
     def test_multiple_connections_pooled(self, pooling_db_manager, pool_state_tracker):
         """Test that multiple connections are correctly pooled."""
         # Get and return 3 connections

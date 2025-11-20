@@ -410,25 +410,39 @@ def duplication_ratio(evidence_files: List[str]) -> float:
     dup = sum(c - 1 for c in counts.values() if c > 1)
     return min(1.0, dup / max(1, len(stems)))
 
-def load_coverage_map(path: Path) -> Dict[str, float]:
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text())
-    except Exception as exc:
-        warn(f"Unable to parse coverage map: {exc}")
-        return {}
-    coverage = {}
-    for entry in data.get("capabilities", []):
-        cid = entry.get("id")
-        percent = entry.get("coverage_percent")
-        if cid is None or percent is None:
-            continue
+def load_coverage_map(*paths: Path) -> Dict[str, float]:
+    """Load coverage percentages, supporting legacy and new filenames.
+
+    The first readable path wins to preserve deterministic behavior while
+    maintaining compatibility with historical artifacts (coverage_stats.json)
+    and the newer coverage_map.json produced by coverage_ingest.
+    """
+
+    def _load(path: Path) -> Dict[str, float]:
+        if not path.exists():
+            return {}
         try:
-            coverage[cid] = float(percent)
-        except (TypeError, ValueError):
-            continue
-    return coverage
+            data = json.loads(path.read_text())
+        except Exception as exc:
+            warn(f"Unable to parse coverage map {path}: {exc}")
+            return {}
+        coverage = {}
+        for entry in data.get("capabilities", []):
+            cid = entry.get("id")
+            percent = entry.get("coverage_percent")
+            if cid is None or percent is None:
+                continue
+            try:
+                coverage[cid] = float(percent)
+            except (TypeError, ValueError):
+                continue
+        return coverage
+
+    for p in paths:
+        coverage = _load(p)
+        if coverage:
+            return coverage
+    return {}
 
 def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     test_files = [f for f in evidence_files if f.startswith("tests/")]
@@ -497,7 +511,9 @@ def stage_s4_scoring(cfg, raw_payload):
         weights_norm = ({k: v / total_w for k, v in weights_cfg.items()} if total_w > 0 else weights_cfg)
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
-    coverage_map = load_coverage_map(artifacts_dir / "coverage_map.json")
+    coverage_map = load_coverage_map(
+        artifacts_dir / "coverage_map.json", artifacts_dir / "coverage_stats.json"
+    )
     file_cache = {}
     for cap in raw_caps:
         for ef in cap.get("evidence_files", []):
