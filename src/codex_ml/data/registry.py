@@ -35,7 +35,10 @@ def _load_loader_attr(module: str, attr: str) -> Any:
 class _DatasetRegistry:
     """Registry that supports explicit and entry-point registrations."""
 
-    _ENTRY_POINT_GROUP = "codex_ml.data_loaders"
+    _ENTRY_POINT_GROUPS: tuple[str, ...] = (
+        "codex_ml.data_loaders",
+        "codex_ml.datasets",
+    )
 
     def __init__(self) -> None:
         self._items: dict[str, Any] = {}
@@ -75,25 +78,32 @@ class _DatasetRegistry:
         self._ensure_entry_points_loaded()
         return sorted(self._items.keys())
 
+    def available(self) -> dict[str, Any]:
+        """Return a copy of registered datasets after loading entry points."""
+
+        self._ensure_entry_points_loaded()
+        return dict(self._items)
+
     def _ensure_entry_points_loaded(self) -> None:
         if self._entry_points_loaded:
             return
 
-        try:
-            entry_points = metadata.entry_points(group=self._ENTRY_POINT_GROUP)
-        except Exception:  # pragma: no cover - metadata backend failure
-            entry_points = ()
-
-        for entry_point in entry_points:
-            key = self._normalise(entry_point.name)
-            if key in self._items:
-                continue
+        for group in self._ENTRY_POINT_GROUPS:
             try:
-                value = entry_point.load()
-            except Exception as exc:  # pragma: no cover - plugin failure
-                self._failed_entry_points[key] = exc
-                continue
-            self._items[key] = value
+                entry_points = metadata.entry_points(group=group)
+            except Exception:  # pragma: no cover - metadata backend failure
+                entry_points = ()
+
+            for entry_point in entry_points:
+                key = self._normalise(entry_point.name)
+                if key in self._items:
+                    continue
+                try:
+                    value = entry_point.load()
+                except Exception as exc:  # pragma: no cover - plugin failure
+                    self._failed_entry_points[key] = exc
+                    continue
+                self._items[key] = value
 
         self._entry_points_loaded = True
 
@@ -121,6 +131,12 @@ def get_dataset(name: str, **kwargs: Any) -> Any:
 
 def list_datasets() -> list[str]:
     return data_loader_registry.list()
+
+
+def available_datasets() -> dict[str, Any]:
+    """Return a mapping of dataset names to loader callables."""
+
+    return data_loader_registry.available()
 
 
 def split_dataset(
