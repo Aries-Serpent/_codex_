@@ -166,6 +166,31 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args()
 
+def decode_and_validate(
+    input_path: Path,
+    output_path: Path,
+    extract_path: Path,
+    schema_path: Path = None,
+    stable_output: bool = False,
+    generate_baseline: bool = False
+) -> dict:
+    # Decode
+    decoded_json = decode_base64_gzip(input_path)
+    output_path.write_text(json.dumps(decoded_json, indent=2, ensure_ascii=False))
+    findings_raw = walk_for_gaps(decoded_json)
+    findings = normalize_findings(findings_raw)
+    # Write extracted findings
+    extract_path.write_text(json.dumps({"count": len(findings)}, indent=2))
+    # Validate against schema if provided
+    if schema_path:
+        import scripts.space_traversal.validate_snapshot_schema as validate
+        validate.validate_snapshot(decoded_json, schema_path)
+    result = {
+        "decoded": decoded_json,
+        "findings": findings,
+    }
+    return result
+
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args() if argv is None else parse_args(argv)
 
