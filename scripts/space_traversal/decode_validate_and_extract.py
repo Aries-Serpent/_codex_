@@ -1,17 +1,30 @@
 # ---- [BEGIN: Testable Entrypoint for direct import by test suite] ----
-def decode_and_validate(artifact_path, schema_path=None):
+def decode_and_validate(
+    artifact_path,
+    schema_path=None,
+    output_path=None,
+    extract_path=None,
+    stable_output=False,
+    generate_baseline=False
+):
     """
-    API: Minimal helper for test import (decode & validate only).
+    API: Helper for test import; decode & validate with output options.
     Args:
       artifact_path (str or Path): Path to artifact JSON file
       schema_path (str or Path, optional): Path to schema JSON file
+      output_path (str or Path, optional): Where to write decoded JSON
+      extract_path (str or Path, optional): Where to write extracted GAPs
+      stable_output (bool): Use deterministic output (default: False)
+      generate_baseline (bool): Write capabilities_scored to baseline (default: False)
     Returns:
       Decoded artifact data (usually a dict)
     Raises:
       FileNotFoundError, jsonschema.ValidationError if schema invalid
+      TypeError if input args are malformed
     """
     from pathlib import Path
     import json
+
     if isinstance(artifact_path, str):
         artifact = Path(artifact_path)
     else:
@@ -19,6 +32,7 @@ def decode_and_validate(artifact_path, schema_path=None):
     if not artifact.exists():
         raise FileNotFoundError(f"Artifact not found: {artifact}")
     data = json.loads(artifact.read_text(encoding="utf-8"))
+
     if schema_path:
         import jsonschema
         schema = Path(schema_path)
@@ -26,6 +40,23 @@ def decode_and_validate(artifact_path, schema_path=None):
             raise FileNotFoundError(f"Schema not found: {schema}")
         schema_obj = json.loads(schema.read_text(encoding="utf-8"))
         jsonschema.validate(instance=data, schema=schema_obj)
+    
+    # Extraction step
+    findings = walk_for_gaps(data)
+    findings_norm = normalize_findings(findings)
+
+    # Write outputs if requested
+    if output_path:
+        Path(output_path).write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    if extract_path:
+        Path(extract_path).write_text(json.dumps(findings_norm, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    # Baseline generation
+    if generate_baseline:
+        baseline_path = output_path or "baseline_capabilities_scored.json"
+        if isinstance(data, dict) and "capabilities_scored" in data:
+            Path(baseline_path).write_text(json.dumps(data["capabilities_scored"], indent=2, ensure_ascii=False), encoding="utf-8")
+
     return data
 # ---- [END: Testable Entrypoint] ----
 
