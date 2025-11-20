@@ -1,5 +1,4 @@
-# [Python]: Artifact Pipeline Test Suite
-> Generated: 2025-11-20 21:41:02 | Author: mbaetiong
+#!/usr/bin/env python
 
 import json
 import subprocess
