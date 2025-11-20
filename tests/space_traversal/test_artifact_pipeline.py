@@ -1,3 +1,6 @@
+# [Python]: Artifact Pipeline Test Suite
+> Generated: 2025-11-20 21:41:02 | Author: mbaetiong
+
 import json
 import subprocess
 import sys
@@ -37,7 +40,6 @@ def test_decode_and_extract(tmp_path: Path):
 def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
     output = tmp_path / "decoded.json"
     extract = tmp_path / "gaps.json"
-
     result = decode_validate_and_extract.decode_and_validate(
         input_path=FIXTURE,
         output_path=output,
@@ -46,7 +48,6 @@ def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
         stable_output=True,
         generate_baseline=False,
     )
-
     assert result["decoded"]["report"]["id"] == "artifact-001"
     written = json.loads(output.read_text())
     assert written["metadata"]["source"] == "unit-test"
