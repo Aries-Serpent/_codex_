@@ -1,3 +1,34 @@
+# ---- [BEGIN: Testable Entrypoint for direct import by test suite] ----
+def decode_and_validate(artifact_path, schema_path=None):
+    """
+    API: Minimal helper for test import (decode & validate only).
+    Args:
+      artifact_path (str or Path): Path to artifact JSON file
+      schema_path (str or Path, optional): Path to schema JSON file
+    Returns:
+      Decoded artifact data (usually a dict)
+    Raises:
+      FileNotFoundError, jsonschema.ValidationError if schema invalid
+    """
+    from pathlib import Path
+    import json
+    if isinstance(artifact_path, str):
+        artifact = Path(artifact_path)
+    else:
+        artifact = artifact_path
+    if not artifact.exists():
+        raise FileNotFoundError(f"Artifact not found: {artifact}")
+    data = json.loads(artifact.read_text(encoding="utf-8"))
+    if schema_path:
+        import jsonschema
+        schema = Path(schema_path)
+        if not schema.exists():
+            raise FileNotFoundError(f"Schema not found: {schema}")
+        schema_obj = json.loads(schema.read_text(encoding="utf-8"))
+        jsonschema.validate(instance=data, schema=schema_obj)
+    return data
+# ---- [END: Testable Entrypoint] ----
+
 """
 Decode validator artifact snapshot, validate against schema, extract GAPs.
 
