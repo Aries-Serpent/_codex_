@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Decode artifact
         run: |
-          python scripts/space_traversal/decode_validate_and_extract.py --stable-output --generate-baseline
+          PYTHONPATH="${PYTHONPATH}:$(pwd)" python scripts/space_traversal/decode_validate_and_extract.py --stable-output --generate-baseline
       - name: Run focused tests
         run: |
           pytest tests/space_traversal/test_artifact_pipeline.py -q
