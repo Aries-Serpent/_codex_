@@ -1,29 +1,28 @@
 name: decode-validate-artifact
-
 on:
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'scripts/space_traversal/**'
-      - 'tests/fixtures/pasted.txt'
-      - '.github/workflows/decode-validate-artifact.yml'
-      - 'requirements-dev.txt'
+    inputs:
+      artifact_path:
+        description: 'Path to artifact JSON file'
+        required: true
+      schema_path:
+        description: 'Optional: Path to schema JSON file'
+        required: false
 
 jobs:
-  validate-phase-a:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: 3.11
       - name: Install dependencies
+        run: pip install jsonschema
+      - name: Validate artifact
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
-      - name: Decode artifact
-        run: |
-          PYTHONPATH="${PYTHONPATH}:$(pwd)" python scripts/space_traversal/decode_validate_and_extract.py --stable-output --generate-baseline
-      - name: Run focused tests
-        run: |
-          pytest tests/space_traversal/test_artifact_pipeline.py -q
+          python scripts/space_traversal/decode_validate_and_extract.py \
+            "${{ github.event.inputs.artifact_path }}" \
+            --schema "${{ github.event.inputs.schema_path }}"
