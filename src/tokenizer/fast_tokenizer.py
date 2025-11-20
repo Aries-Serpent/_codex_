@@ -41,6 +41,25 @@ class FastTokenizerWrapper:
     def decode(self, token_ids: Iterable[int]) -> str:
         return self.tokenizer.decode(list(token_ids))
 
+    def encode(
+        self,
+        text: str,
+        *,
+        padding: str | bool = False,
+        truncation: bool | None = None,
+        max_length: int | None = None,
+    ) -> list[int]:
+        """Encode text to token IDs with optional padding/truncation."""
+
+        encoding = self.tokenizer.encode(text)
+        ids = list(encoding.ids)
+        if max_length is not None:
+            if truncation:
+                ids = ids[:max_length]
+            if padding == "max_length" and len(ids) < max_length:
+                ids = ids + [0] * (max_length - len(ids))
+        return ids
+
     @property
     def vocab_size(self) -> int:
         """Expose the underlying vocabulary size."""
@@ -62,13 +81,12 @@ class FastTokenizerWrapper:
     ) -> dict[str, list[int]]:
         """Provide a minimal call interface returning input ids."""
 
-        encoding = self.tokenizer.encode(text)
-        ids = list(encoding.ids)
-        if padding == "max_length" and max_length is not None:
-            if len(ids) < max_length:
-                ids = ids + [0] * (max_length - len(ids))
-            else:
-                ids = ids[:max_length]
+        ids = self.encode(
+            text,
+            padding=padding,
+            truncation=True if max_length is not None else False,
+            max_length=max_length,
+        )
         return {"input_ids": ids}
 
 

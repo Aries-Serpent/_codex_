@@ -11,7 +11,3 @@ Rationale:
 
 Version: 1.1.0
 """
-
-from typing import List
-
-__all__: List[str] = []
