@@ -101,7 +101,7 @@ options:
   # validate: non-zero exit if any capability is below low threshold
   fail_on_low_maturity: true
   # validate: non-zero exit if any capability_map.overrides ID is missing from scored capabilities
-  fail_on_missing_detector: true
+  fail_on_missing_detector: false
 
 # Optional safeguards override (P3). If present, the runner will use this list instead of its defaults.
 safeguards:

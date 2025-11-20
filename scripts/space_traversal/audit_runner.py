@@ -36,7 +36,6 @@ from typing import Any, Callable, Dict, List, Tuple
 
 try:
     from jinja2 import Environment, FileSystemLoader
-
     import yaml
 except ImportError:
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
@@ -49,7 +48,6 @@ ROOT = Path(__file__).resolve().parents[2]
 CFG_PATH = ROOT / ".copilot-space" / "workflow.yaml"
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
-# default safeguard keywords (can be overridden from workflow.yaml)
 SAFEGUARD_KEYWORDS = [
     "sha256",
     "checksum",
@@ -73,13 +71,11 @@ try:
 except Exception:
     capability_scoring = None  # fallback handled in runtime paths
 
-
 # ---------------------------------------------------------------------------
 # Utility Functions
 # ---------------------------------------------------------------------------
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
-
 
 def _sha256_file(p: Path) -> str:
     h = hashlib.sha256()
@@ -87,7 +83,6 @@ def _sha256_file(p: Path) -> str:
         for chunk in iter(lambda: f.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
-
 
 def load_config() -> dict:
     """
@@ -103,7 +98,6 @@ def load_config() -> dict:
         SAFEGUARD_KEYWORDS = list(extra)
     return cfg
 
-
 def read_file_text_safe(p: Path) -> str:
     if p.suffix.lower() not in SAFE_TEXT_EXT:
         return ""
@@ -112,14 +106,11 @@ def read_file_text_safe(p: Path) -> str:
     except Exception:
         return ""
 
-
 def warn(msg: str):
     print(f"[WARN] {msg}", file=sys.stderr)
 
-
 def info(msg: str):
     print(f"[INFO] {msg}")
-
 
 def merge_capability_entries(target: Dict[str, Any] | None, source: Dict[str, Any], canonical_id: str) -> Dict[str, Any]:
     """Merge two capability entries ensuring unique fields are combined."""
@@ -150,7 +141,6 @@ def merge_capability_entries(target: Dict[str, Any] | None, source: Dict[str, An
 
     return merged
 
-
 def apply_overrides(
     capabilities: List[Dict[str, Any]],
     overrides: Dict[str, List[str]],
@@ -160,7 +150,6 @@ def apply_overrides(
 
     Returns merged capabilities plus missing detector aliases.
     """
-
     cap_map: Dict[str, Dict[str, Any]] = {cap["id"]: cap for cap in capabilities}
     missing: List[str] = []
 
@@ -193,38 +182,9 @@ def apply_overrides(
 
     return merged_caps, missing
 
-
 # ---------------------------------------------------------------------------
 # Stage Implementations
 # ---------------------------------------------------------------------------
-def stage_s1_index(cfg):
-    out_dir = Path(cfg["output"]["artifacts_dir"])
-    out_dir.mkdir(parents=True, exist_ok=True)
-    files_meta = []
-    for p in sorted(ROOT.rglob("*")):
-        if p.is_dir():
-            continue
-        rel = p.relative_to(ROOT).as_posix()
-        if (
-            rel.startswith(".git/")
-            or rel.startswith("audit_artifacts/")
-            or rel.startswith("reports/")
-        ):
-            continue
-        ext = p.suffix.lower()
-        size = p.stat().st_size
-        sha = _sha256_file(p) if size < 2_000_000 else None
-        files_meta.append({"path": rel, "ext": ext, "size": size, "sha": sha})
-    idx = {
-        "generated": time.time(),
-        "count": len(files_meta),
-        "files": files_meta,
-        "version": VERSION,
-    }
-    (out_dir / "context_index.json").write_text(json.dumps(idx, indent=2), encoding="utf-8")
-    return idx
-
-
 DOMAIN_PATTERNS = {
     "checkpoint": re.compile(r"checkpoint", re.I),
     "token": re.compile(r"tokeniz", re.I),
@@ -236,20 +196,6 @@ DOMAIN_PATTERNS = {
     "config": re.compile(r"config|hydra", re.I),
 }
 
-
-def stage_s2_facets(cfg, context_idx):
-    facets = {k: [] for k in DOMAIN_PATTERNS}
-    for f in context_idx["files"]:
-        for key, rx in DOMAIN_PATTERNS.items():
-            if rx.search(f["path"]):
-                facets[key].append(f["path"])
-    payload = {"generated": time.time(), "facets": facets, "version": VERSION}
-    out = Path(cfg["output"]["artifacts_dir"]) / "facets.json"
-    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return payload
-
-
-# Static baseline capability inference rules
 BASE_CAPABILITY_RULES = [
     {
         "id": "checkpointing",
@@ -301,7 +247,6 @@ BASE_CAPABILITY_RULES = [
     },
 ]
 
-
 def load_dynamic_detectors() -> List[Callable]:
     detectors_dir = ROOT / "scripts" / "space_traversal" / "detectors"
     funcs = []
@@ -309,21 +254,85 @@ def load_dynamic_detectors() -> List[Callable]:
         return funcs
     for py in sorted(detectors_dir.glob("*.py")):
         spec = importlib.util.spec_from_file_location(py.stem, py)
-        if spec and spec.loader:
-            module = importlib.util.module_from_spec(spec)
-            try:
-                spec.loader.exec_module(module)
-            except Exception as e:
-                warn(f"Failed loading detector {py.name}: {e}")
-                continue
-            if hasattr(module, "detect") and callable(module.detect):
-                sig = inspect.signature(module.detect)
-                if len(sig.parameters) == 1:
-                    funcs.append(module.detect)
-                else:
-                    warn(f"Detector {py.name} has invalid signature; skipping.")
+        if not spec or not spec.loader:
+            continue
+        module = importlib.util.module_from_spec(spec)
+        try:
+            spec.loader.exec_module(module)
+        except Exception as e:
+            warn(f"Failed loading detector {py.name}: {e}")
+            continue
+        if hasattr(module, "detect_v2") and callable(module.detect_v2):
+            funcs.append(module.detect_v2)
+        elif hasattr(module, "detect") and callable(module.detect):
+            funcs.append(module.detect)
+        else:
+            warn(f"No usable detector function in {py.name}; skipping.")
     return funcs
 
+def _normalize_detector_output(det: dict) -> dict:
+    if "evidence" in det:
+        normalized = []
+        evidence_files = []
+        for entry in det.get("evidence", []):
+            if isinstance(entry, dict):
+                path = entry.get("path")
+                if path:
+                    evidence_files.append(path)
+                normalized.append(entry)
+            elif isinstance(entry, str):
+                evidence_files.append(entry)
+                normalized.append({"path": entry})
+        meta = det.get("meta", {})
+        meta["_evidence_v2"] = normalized
+    else:
+        evidence_files = det.get("evidence_files", [])
+        meta = det.get("meta", {})
+    return {
+        "id": det["id"],
+        "evidence_files": sorted(set(evidence_files)),
+        "found_patterns": sorted(set(det.get("found_patterns", []))),
+        "required_patterns": det.get("required_patterns", []),
+        "meta": meta,
+    }
+
+def stage_s1_index(cfg):
+    out_dir = Path(cfg["output"]["artifacts_dir"])
+    out_dir.mkdir(parents=True, exist_ok=True)
+    files_meta = []
+    for p in sorted(ROOT.rglob("*")):
+        if p.is_dir():
+            continue
+        rel = p.relative_to(ROOT).as_posix()
+        if (
+            rel.startswith(".git/")
+            or rel.startswith("audit_artifacts/")
+            or rel.startswith("reports/")
+        ):
+            continue
+        ext = p.suffix.lower()
+        size = p.stat().st_size
+        sha = _sha256_file(p) if size < 2_000_000 else None
+        files_meta.append({"path": rel, "ext": ext, "size": size, "sha": sha})
+    idx = {
+        "generated": time.time(),
+        "count": len(files_meta),
+        "files": files_meta,
+        "version": VERSION,
+    }
+    (out_dir / "context_index.json").write_text(json.dumps(idx, indent=2), encoding="utf-8")
+    return idx
+
+def stage_s2_facets(cfg, context_idx):
+    facets = {k: [] for k in DOMAIN_PATTERNS}
+    for f in context_idx["files"]:
+        for key, rx in DOMAIN_PATTERNS.items():
+            if rx.search(f["path"]):
+                facets[key].append(f["path"])
+    payload = {"generated": time.time(), "facets": facets, "version": VERSION}
+    out = Path(cfg["output"]["artifacts_dir"]) / "facets.json"
+    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return payload
 
 def stage_s3_capabilities(cfg, facets):
     out_dir = Path(cfg["output"]["artifacts_dir"])
@@ -353,11 +362,11 @@ def stage_s3_capabilities(cfg, facets):
         )
     # Dynamic detectors
     if cfg.get("capability_map", {}).get("dynamic", False):
+        dynamic_funcs = load_dynamic_detectors()
         context_idx_path = out_dir / "context_index.json"
         if not context_idx_path.exists():
             warn("context_index.json missing for dynamic detectors; re-run S1")
         else:
-            dynamic_funcs = load_dynamic_detectors()
             ctx_index = json.loads(context_idx_path.read_text())
             for func in dynamic_funcs:
                 try:
@@ -368,20 +377,8 @@ def stage_s3_capabilities(cfg, facets):
                 if not isinstance(det, dict) or "id" not in det:
                     warn("Invalid detector return structure; skipping.")
                     continue
-                # Normalize expected fields
-                for key in ["evidence_files", "found_patterns", "required_patterns"]:
-                    det.setdefault(key, [])
-                capabilities.append(
-                    {
-                        "id": det["id"],
-                        "evidence_files": sorted(set(det["evidence_files"])),
-                        "found_patterns": sorted(set(det["found_patterns"])),
-                        "required_patterns": det["required_patterns"],
-                        "meta": det.get("meta", {}),
-                    }
-                )
-    # Sorting & overrides merge
-    capabilities = sorted(capabilities, key=lambda c: c["id"])
+                capabilities.append(_normalize_detector_output(det))
+
     overrides_cfg = cfg.get("capability_map", {}).get("overrides", {})
     fail_on_missing = cfg.get("options", {}).get("fail_on_missing_detector", False)
     missing_detectors: List[str] = []
@@ -403,7 +400,6 @@ def stage_s3_capabilities(cfg, facets):
     )
     return {"capabilities": capabilities, "missing_detectors": missing_detectors}
 
-
 def duplication_ratio(evidence_files: List[str]) -> float:
     stems = [Path(f).stem for f in evidence_files]
     if not stems:
@@ -414,7 +410,6 @@ def duplication_ratio(evidence_files: List[str]) -> float:
     dup = sum(c - 1 for c in counts.values() if c > 1)
     return min(1.0, dup / max(1, len(stems)))
 
-
 def load_coverage_map(path: Path) -> Dict[str, float]:
     if not path.exists():
         return {}
@@ -423,7 +418,6 @@ def load_coverage_map(path: Path) -> Dict[str, float]:
     except Exception as exc:
         warn(f"Unable to parse coverage map: {exc}")
         return {}
-
     coverage = {}
     for entry in data.get("capabilities", []):
         cid = entry.get("id")
@@ -435,7 +429,6 @@ def load_coverage_map(path: Path) -> Dict[str, float]:
         except (TypeError, ValueError):
             continue
     return coverage
-
 
 def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     test_files = [f for f in evidence_files if f.startswith("tests/")]
@@ -452,14 +445,12 @@ def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     ratio = len(uniq) / len(set(evidence_files))
     return min(1.0, ratio)
 
-
 def safeguard_score(evidence_files: List[str], file_cache: Dict[str, str]) -> float:
     hits = 0
     for kw in SAFEGUARD_KEYWORDS:
         if any(kw in file_cache.get(f, "") for f in evidence_files):
             hits += 1
     return hits / len(SAFEGUARD_KEYWORDS) if SAFEGUARD_KEYWORDS else 0.0
-
 
 def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
     """
@@ -473,7 +464,6 @@ def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
         if p.startswith("docs/"):
             docs.append(p)
         elif p.count("/") == 0 and p.endswith(".md"):
-            # top-level README-like markdown
             docs.append(p)
         elif p.endswith(".md") and p.startswith("_codex"):
             docs.append(p)
@@ -481,9 +471,7 @@ def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
     hits = sum(1 for p in docs if token in file_cache[p].lower())
     if not docs:
         return 0.0
-    # scale factor: ensure small doc sets still get reasonable credit
     return min(1.0, hits / max(3, len(docs) * 0.1))
-
 
 def stage_s4_scoring(cfg, raw_payload):
     """
@@ -500,26 +488,19 @@ def stage_s4_scoring(cfg, raw_payload):
     if abs(total_w - 1.0) > 1e-9:
         warnings.append(f"weights_normalized_from:{total_w}")
 
-    # Use helper normalization when available; otherwise fall back to manual normalization
     if capability_scoring:
         try:
             weights_norm = capability_scoring.normalize_weights(weights_cfg)
         except Exception:
-            # fallback
-            weights_norm = (
-                {k: v / total_w for k, v in weights_cfg.items()} if total_w > 0 else weights_cfg
-            )
+            weights_norm = ({k: v / total_w for k, v in weights_cfg.items()} if total_w > 0 else weights_cfg)
     else:
-        weights_norm = (
-            {k: v / total_w for k, v in weights_cfg.items()} if total_w > 0 else weights_cfg
-        )
+        weights_norm = ({k: v / total_w for k, v in weights_cfg.items()} if total_w > 0 else weights_cfg)
 
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     coverage_map = load_coverage_map(artifacts_dir / "coverage_map.json")
     file_cache = {}
-    # Preload evidence & docs
     for cap in raw_caps:
-        for ef in cap["evidence_files"]:
+        for ef in cap.get("evidence_files", []):
             if ef not in file_cache:
                 file_cache[ef] = read_file_text_safe(ROOT / ef)
     for p in sorted(ROOT.rglob("*.md")):
@@ -529,15 +510,13 @@ def stage_s4_scoring(cfg, raw_payload):
 
     scored = []
     for cap in raw_caps:
-        functionality = len(cap["found_patterns"]) / max(1, len(cap.get("required_patterns", [])))
-        consistency = 1.0 - duplication_ratio(cap["evidence_files"])
-        tests = estimate_test_depth(cap["id"], cap["evidence_files"])
-        tests = max(tests, coverage_map.get(cap["id"], 0.0))
-        safeguards = safeguard_score(cap["evidence_files"], file_cache)
-        documentation = docs_score(cap["id"], file_cache)
-        missing_patterns = sorted(
-            [pat for pat in cap.get("required_patterns", []) if pat not in cap["found_patterns"]]
-        )
+        functionality = len(cap.get("found_patterns", [])) / max(1, len(cap.get("required_patterns", [])))
+        consistency = 1.0 - duplication_ratio(cap.get("evidence_files", []))
+        tests = estimate_test_depth(cap.get("id"), cap.get("evidence_files", []))
+        tests = max(tests, coverage_map.get(cap.get("id"), 0.0))
+        safeguards = safeguard_score(cap.get("evidence_files", []), file_cache)
+        documentation = docs_score(cap.get("id"), file_cache)
+        missing_patterns = sorted([pat for pat in cap.get("required_patterns", []) if pat not in cap.get("found_patterns", [])])
         components = {
             "functionality": functionality,
             "consistency": consistency,
@@ -545,20 +524,25 @@ def stage_s4_scoring(cfg, raw_payload):
             "safeguards": safeguards,
             "documentation": documentation,
         }
-        # Use scoring helper if available, otherwise fall back to local computation
+
         if capability_scoring:
-            score = capability_scoring.score_capability(components, weights_cfg)
+            score = capability_scoring.score_capability(components, weights_norm)
+            try:
+                explanation = capability_scoring.explain_score({"id": cap.get("id"), "components": components}, weights_norm)
+            except Exception:
+                explanation = {"id": cap.get("id"), "score": 0.0, "partials": {}}
         else:
-            # ensure clamping locally
             clamped = {k: max(0.0, min(1.0, v)) for k, v in components.items()}
             score = sum(clamped[k] * weights_norm.get(k, 0.0) for k in weights_norm)
+            explanation = {"id": cap.get("id"), "score": round(score, 4), "partials": {}}
+
         scored.append(
             {
-                "id": cap["id"],
+                "id": cap.get("id"),
                 "components": components,
                 "score": round(score, 4),
-                "evidence_files": cap["evidence_files"],
-                "found_patterns": cap["found_patterns"],
+                "evidence_files": cap.get("evidence_files", []),
+                "found_patterns": cap.get("found_patterns", []),
                 "required_patterns": cap.get("required_patterns", []),
                 "missing_patterns": missing_patterns,
                 "meta": cap.get("meta", {}),
@@ -576,12 +560,10 @@ def stage_s4_scoring(cfg, raw_payload):
             },
             indent=2,
         ),
-        encoding="utf-8",
+        encoding="utf-8"
     )
-    # write warnings (temp) for manifest stage
     (artifacts_dir / "_scoring_warnings.json").write_text(json.dumps(warnings), encoding="utf-8")
     return scored
-
 
 def stage_s5_gaps(cfg, scored_caps):
     thresholds = cfg["scoring"]["thresholds"]
@@ -594,7 +576,6 @@ def stage_s5_gaps(cfg, scored_caps):
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload
 
-
 def render_template(cfg, context):
     tpl_path = cfg["output"]["matrix_template"]
     tpl_dir = Path(tpl_path).parent
@@ -605,7 +586,6 @@ def render_template(cfg, context):
         lstrip_blocks=True,
     )
     template = env.get_template(Path(tpl_path).name)
-    # Add template hash into context if available
     concatenated = b""
     for t in sorted(tpl_dir.glob("*.j2")):
         concatenated += t.read_bytes()
@@ -618,7 +598,6 @@ def render_template(cfg, context):
     out_file.write_text(output, encoding="utf-8")
     return out_file, stamp
 
-
 def classify_level(score: float, thresholds: Dict[str, float]) -> str:
     low = thresholds.get("low", 0.0)
     medium = thresholds.get("medium", low)
@@ -627,7 +606,6 @@ def classify_level(score: float, thresholds: Dict[str, float]) -> str:
     if score < medium:
         return "medium"
     return "high"
-
 
 def build_json_companion_payload(context: Dict[str, Any], markdown_name: str) -> Dict[str, Any]:
     thresholds = context["thresholds"]
@@ -641,7 +619,6 @@ def build_json_companion_payload(context: Dict[str, Any], markdown_name: str) ->
         "capabilities": [],
         "gaps": context["gaps"],
     }
-
     for cap in context["capabilities"]:
         payload["capabilities"].append(
             {
@@ -656,14 +633,12 @@ def build_json_companion_payload(context: Dict[str, Any], markdown_name: str) ->
         )
     return payload
 
-
 def render_json_companion(cfg, context, stamp: str, markdown_path: Path):
     payload = build_json_companion_payload(context, markdown_path.name)
     reports_dir = Path(cfg["output"]["reports_dir"])
     json_path = reports_dir / f"capability_matrix_{stamp}.json"
     json_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return json_path
-
 
 def stage_s6_render(cfg, scored_caps, gaps, raw_payload):
     context = {
@@ -678,11 +653,7 @@ def stage_s6_render(cfg, scored_caps, gaps, raw_payload):
     json_path = render_json_companion(cfg, context, stamp, markdown_path)
     return markdown_path, json_path
 
-
 def stage_s7_manifest(cfg):
-    """
-    P2: Add normalized_weights to manifest when possible while preserving backward compatibility.
-    """
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     manifest = {
         "timestamp": time.time(),
@@ -711,7 +682,6 @@ def stage_s7_manifest(cfg):
                 manifest["normalized_weights"] = cfg["weights"]
     except Exception as e:
         warn(f"Could not compute normalized_weights for manifest: {e}")
-        # fallback omitted; keep configured weights only
 
     for p in artifacts_dir.glob("*.json"):
         if p.name.startswith("_"):
@@ -724,9 +694,7 @@ def stage_s7_manifest(cfg):
                 "sha": _sha256_file(p),
                 "size": p.stat().st_size,
                 "format": p.suffix.lstrip("."),
-                "generated_at": time.strftime(
-                    "%Y-%m-%dT%H:%M:%SZ", time.gmtime(p.stat().st_mtime)
-                ),
+                "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(p.stat().st_mtime)),
             }
         )
 
@@ -741,20 +709,16 @@ def stage_s7_manifest(cfg):
                     "sha": _sha256_file(report),
                     "size": report.stat().st_size,
                     "format": report.suffix.lstrip("."),
-                    "generated_at": time.strftime(
-                        "%Y-%m-%dT%H:%M:%SZ", time.gmtime(report.stat().st_mtime)
-                    ),
+                    "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(report.stat().st_mtime)),
                 }
             )
 
-    # Add template hash
     tpl_dir = Path(cfg["output"]["matrix_template"]).parent
     concat = b""
     for t in sorted(tpl_dir.glob("*.j2")):
         concat += t.read_bytes()
     manifest["template_hash"] = _sha256_bytes(concat)
 
-    # Scoring warnings
     warn_file = artifacts_dir / "_scoring_warnings.json"
     if warn_file.exists():
         manifest["warnings"].extend(json.loads(warn_file.read_text()))
@@ -763,10 +727,6 @@ def stage_s7_manifest(cfg):
     out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
 
-
-# ---------------------------------------------------------------------------
-# Ancillary Commands: diff & explain
-# ---------------------------------------------------------------------------
 def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     data = {}
@@ -774,7 +734,6 @@ def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
         data = json.loads(text)
         caps = data.get("capabilities", [])
     else:
-        # naive markdown table parsing for scores section
         lines = text.splitlines()
         caps = []
         in_table = False
@@ -796,12 +755,9 @@ def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
                         )
                     except ValueError:
                         pass
-        # embed in synthetic structure
         data["capabilities"] = caps
-    # build id->score map
     mapping = {c["id"]: c.get("score") for c in data.get("capabilities", [])}
     return mapping
-
 
 def command_diff(args, cfg):
     old_path = Path(args.old)
@@ -831,7 +787,6 @@ def command_diff(args, cfg):
         warn(f"Score regressions detected: {regressions}")
         sys.exit(3)
 
-
 def command_explain(args, cfg):
     scored_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_scored.json"
     if not scored_file.exists():
@@ -843,27 +798,17 @@ def command_explain(args, cfg):
     if not target:
         print(f"Capability {cap_id} not found.", file=sys.stderr)
         sys.exit(2)
-
-    # Use helper explain_score when available (P1)
     weights_cfg = cfg["weights"]
     if capability_scoring:
         try:
             explanation = capability_scoring.explain_score(target, weights_cfg)
             print(f"Explain: {cap_id}")
             for k, v in explanation["partials"].items():
-                print(
-                    f"  {k:14s} "
-                    f"value={v['component_value']:.4f} "
-                    f"weight={v['weight']:.3f} "
-                    f"contribution={v['contribution']:.4f}"
-                )
+                print(f"  {k:14s} value={v['component_value']:.4f} weight={v['weight']:.3f} contribution={v['contribution']:.4f}")
             print(f"  Total score: {explanation['score']:.4f}")
             return
         except Exception:
-            # fallback to local explain
             pass
-
-    # Fallback explain logic (keeps old behavior)
     total_w = sum(weights_cfg.values())
     if abs(total_w - 1.0) > 1e-9:
         weights = {k: v / total_w for k, v in weights_cfg.items()}
@@ -876,7 +821,6 @@ def command_explain(args, cfg):
         w = weights[k]
         print(f"  {k:14s} value={v:.4f} weight={w:.3f} contribution={(v*w):.4f}")
     print(f"  Total score: {target['score']:.4f}")
-
 
 # ---------------------------------------------------------------------------
 # Orchestrator
@@ -891,7 +835,6 @@ def run_full(cfg):
     stage_s7_manifest(cfg)
     info("Audit complete.")
 
-
 def run_stage(cfg, stage_id: str):
     artifacts_dir = Path(cfg["output"]["artifacts_dir"])
     artifacts_dir.mkdir(parents=True, exist_ok=True)
@@ -904,19 +847,13 @@ def run_stage(cfg, stage_id: str):
         stage_s2_facets(cfg, idx)
     elif stage_id == "S3":
         idx = json.loads(context_idx.read_text()) if context_idx.exists() else stage_s1_index(cfg)
-        facets = (
-            json.loads(facets_file.read_text())
-            if facets_file.exists()
-            else stage_s2_facets(cfg, idx)
-        )
+        facets = (json.loads(facets_file.read_text()) if facets_file.exists() else stage_s2_facets(cfg, idx))
         stage_s3_capabilities(cfg, facets)
     elif stage_id == "S4":
         raw = json.loads((artifacts_dir / "capabilities_raw.json").read_text())
         stage_s4_scoring(cfg, raw)
     elif stage_id == "S5":
-        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())[
-            "capabilities"
-        ]
+        scored = json.loads((artifacts_dir / "capabilities_scored.json").read_text())["capabilities"]
         stage_s5_gaps(cfg, scored)
     elif stage_id == "S6":
         scored_blob = json.loads((artifacts_dir / "capabilities_scored.json").read_text())
@@ -931,7 +868,6 @@ def run_stage(cfg, stage_id: str):
     else:
         print("Unknown stage ID", file=sys.stderr)
         sys.exit(2)
-
 
 # ---------------------------------------------------------------------------
 # CLI
@@ -967,7 +903,6 @@ def main():
         command_explain(args, cfg)
     else:
         parser.print_help()
-
 
 if __name__ == "__main__":
     main()
