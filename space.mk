@@ -2,6 +2,8 @@
 
 SPACE_PY ?= python
 RUNNER ?= scripts/space_traversal/audit_runner.py
+SPACE_DECODE ?= scripts/space_traversal/decode_validate_and_extract.py
+SPACE_STABLE ?= --stable-output
 
 .PHONY: space-audit
 space-audit:
@@ -26,7 +28,11 @@ space-diff:
 
 .PHONY: space-validate
 space-validate:
-	$(SPACE_PY) $(RUNNER) validate
+        $(SPACE_PY) $(RUNNER) validate
+
+.PHONY: space-decode
+space-decode:
+        $(SPACE_PY) $(SPACE_DECODE) $(SPACE_STABLE) --generate-baseline
 
 .PHONY: space-status
 space-status:

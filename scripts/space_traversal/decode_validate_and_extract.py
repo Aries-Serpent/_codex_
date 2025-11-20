@@ -12,11 +12,15 @@ import os
 import sys
 import time
 import subprocess
+from pathlib import Path
 from typing import Any, Dict, List, Tuple, Optional
 from urllib.request import urlopen, Request
 
 DEFAULT_MAX_BYTES = 200 * 1024 * 1024
 GAP_KEYS = {"gaps", "missing_files", "missing", "evidence", "failures", "errors"}
+DEFAULT_INPUT = Path("tests/fixtures/pasted.txt")
+DEFAULT_DECODED = Path("audit_artifacts/decoded_snapshot.json")
+DEFAULT_EXTRACT = Path("audit_artifacts/gaps_extracted.json")
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -30,6 +34,12 @@ def decode_b64_gz_bytes(b64_bytes: bytes) -> bytes:
         return gzip.decompress(decoded)
     except Exception as exc:
         raise RuntimeError(f"gunzip decompress error: {exc}")
+
+def decode_base64_gzip(input_path: Path) -> dict[str, Any]:
+    payload = input_path.read_text(encoding="utf-8").strip()
+    data = base64.b64decode(payload)
+    decompressed = gzip.decompress(data)
+    return json.loads(decompressed.decode("utf-8"))
 
 def load_from_local(path: str, max_bytes: int) -> Any:
     with open(path, "rb") as fh:
@@ -143,18 +153,21 @@ def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]
         fh.write("python3 scripts/space_traversal/decode_validate_and_extract.py --input artifacts/validate_report_20251119.json.gz.b64 --out-dir ./artifacts/extracted_validate\n")
         fh.write("```\n")
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Decode artifact and validate schema")
+    parser.add_argument("--input", type=str, default=str(DEFAULT_INPUT), help="Base64+gzip input file")
+    parser.add_argument("--url", type=str, help="raw URL to fetch the b64+gz file")
+    parser.add_argument("--out-dir", type=str, help="output directory (default: artifacts/extracted_validate_<timestamp>)")
+    parser.add_argument("--stable-output", action="store_true", help="use deterministic output dir (omit timestamp)")
+    parser.add_argument("--generate-baseline", action="store_true", help="generate baseline from decoded JSON (writing capabilities_scored if present)")
+    parser.add_argument("--baseline-path", type=str, help="path to write baseline JSON if --generate-baseline is set (overrides default)")
+    parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="max input size in bytes")
+    parser.add_argument("--fail-on-missing-keys", help="comma separated top-level keys that must exist in decoded JSON")
+    parser.add_argument("--quiet", action="store_true")
+    return parser.parse_args()
+
 def main(argv: Optional[List[str]] = None) -> int:
-    p = argparse.ArgumentParser(description="Decode base64+gz Phase A validator snapshot and extract gaps")
-    p.add_argument("--input", help="local path to b64+gz file")
-    p.add_argument("--url", help="raw URL to fetch the b64+gz file")
-    p.add_argument("--out-dir", help="output directory (default: artifacts/extracted_validate_<timestamp>)")
-    p.add_argument("--stable-output", action="store_true", help="use deterministic output dir (omit timestamp)")
-    p.add_argument("--generate-baseline", action="store_true", help="generate baseline from decoded JSON (writing capabilities_scored if present)")
-    p.add_argument("--baseline-path", help="path to write baseline JSON if --generate-baseline is set (overrides default)")
-    p.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="max input size in bytes")
-    p.add_argument("--fail-on-missing-keys", help="comma separated top-level keys that must exist in decoded JSON")
-    p.add_argument("--quiet", action="store_true")
-    args = p.parse_args(argv)
+    args = parse_args() if argv is None else parse_args(argv)
 
     if not args.input and not args.url:
         eprint("Either --input or --url must be provided")
@@ -188,22 +201,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         if missing:
             eprint(f"Missing required keys in decoded JSON: {missing}")
             out_base = args.out_dir or ("artifacts/extracted_validate")
-            if args.stable_output:
-                out_dir = out_base
-            else:
-                out_dir = f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
+            out_dir = out_base if args.stable_output else f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
             write_outputs(out_dir, decoded_json, [])
             return 5
 
-    # Walk for gaps
     findings_raw = walk_for_gaps(decoded_json)
     findings = normalize_findings(findings_raw)
 
     out_base = args.out_dir or ("artifacts/extracted_validate")
-    if args.stable_output:
-        out_dir = out_base
-    else:
-        out_dir = f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
+    out_dir = out_base if args.stable_output else f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
 
     try:
         write_outputs(out_dir, decoded_json, findings)
@@ -220,7 +226,6 @@ def main(argv: Optional[List[str]] = None) -> int:
                 baseline_dir = os.path.join(out_dir, "baseline")
                 os.makedirs(baseline_dir, exist_ok=True)
                 baseline_path = os.path.join(baseline_dir, "capabilities_scored.json")
-            # Try to call helper script
             gen_script = os.path.join(os.path.dirname(__file__), "generate_baseline.py")
             if os.path.exists(gen_script):
                 ret = subprocess.run([sys.executable, gen_script, "--input", args.input if args.input else "", "--baseline-path", baseline_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -230,7 +235,6 @@ def main(argv: Optional[List[str]] = None) -> int:
                     if not args.quiet:
                         print(f"Wrote baseline to: {baseline_path}")
             else:
-                # fallback write
                 if isinstance(decoded_json, dict) and "capabilities_scored" in decoded_json:
                     with open(baseline_path, "w", encoding="utf-8") as fh:
                         json.dump(decoded_json["capabilities_scored"], fh, indent=2, ensure_ascii=False)
@@ -261,8 +265,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if not args.quiet:
         print(f"Wrote outputs to: {out_dir}")
         print(f"Found {len(findings)} GAP-like findings.")
-    return 0
 
+    return 0
 
 if __name__ == "__main__":
     raise SystemExit(main())

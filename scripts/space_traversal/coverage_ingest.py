@@ -20,7 +20,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 COVERAGE_XML = Path(os.getenv("COVERAGE_XML_PATH", "coverage.xml"))
-OUT = Path("audit_artifacts/coverage_stats.json")
+OUT = Path("audit_artifacts/coverage_map.json")
 RAW = Path("audit_artifacts/capabilities_raw.json")
 
 
