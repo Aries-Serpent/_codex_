@@ -73,7 +73,7 @@ tasks:
             - "Provide available() helper returning copy of registry."
         - file: "pyproject.toml"
           actions:
-            - "Add project.entry-points."codex_ml.datasets" group for external loaders."
+            - "Add project.entry-points.\"codex_ml.datasets\" group for external loaders."
     validation:
       - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -k dataset_registry"
       - "python -c \"import codex_ml.data.registry as r; print(r.available())\""
