@@ -1,12 +1,47 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Permissive Phase-A validate_report schema",
-  "type": ["object", "array"],
-  "additionalProperties": true,
+  "title": "Decoded Phase-A validator report schema",
+  "type": "object",
   "properties": {
-    "validators": {"type": "array"},
-    "missing_files": {"type": ["array", "object"]},
-    "gaps": {"type": ["array", "object"]},
-    "capabilities_scored": {"type": ["object", "array"]}
-  }
+    "report": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "generated_at": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "validators": { "type": "array" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "missing_files": {
+      "type": [ "array", "object" ]
+    },
+    "gaps": {
+      "type": [ "array", "object" ],
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "severity": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "capabilities_scored": {
+      "type": [ "object", "array" ]
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": ["report", "gaps"],
+  "additionalProperties": true
 }

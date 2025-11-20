@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """
 Extract validator 'gaps' from a committed gzipped/base64 Phase A snapshot.
+
+This script supports:
+  - Extraction of gap-like findings using a recursive search for common keys ("gaps", "missing_files", etc.) and suspicious patterns.
+  - Normalization and human-friendly summarization for markdown/report output.
+  - Optional fetching of remote base64+gz files via requests.
+  - Output to JSON (decoded + gaps) and enhanced markdown summary for CI/manual inspection.
 """
 from __future__ import annotations
+
 import argparse
 import base64
 import gzip
@@ -15,6 +22,17 @@ try:
     import requests
 except Exception:
     requests = None
+
+__all__ = [
+    "decode_b64_gz_bytes",
+    "load_from_local",
+    "load_from_url",
+    "walk_for_gaps",
+    "summarize_gap_value",
+    "normalize_findings",
+    "write_outputs",
+    "main"
+]
 
 GAP_KEYS = {"gaps", "missing_files", "missing", "evidence", "failures", "errors"}
 
@@ -63,7 +81,11 @@ def walk_for_gaps(obj: Any, path: Tuple[str, ...] = ()) -> List[Dict[str, Any]]:
             if isinstance(item, (dict, list)):
                 findings.extend(walk_for_gaps(item, p))
             else:
-                if isinstance(item, str) and ("missing" in item.lower() or item.endswith(".py") or item.endswith(".md")):
+                if isinstance(item, str) and (
+                    "missing" in item.lower()
+                    or item.endswith(".py")
+                    or item.endswith(".md")
+                ):
                     findings.append(
                         {"locator": _path_str(p), "key": "list-item", "value": item, "summary": f"List item: {item}"}
                     )
@@ -93,7 +115,12 @@ def normalize_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         summary = f.get("summary") or ""
         value = f.get("value")
         try:
-            short_value = value if isinstance(value, (str, int, float, type(None))) else (value if len(repr(value)) < 800 else repr(value)[:800] + "...")
+            if isinstance(value, (str, int, float, type(None))):
+                short_value = value
+            elif len(repr(value)) < 800:
+                short_value = value
+            else:
+                short_value = repr(value)[:800] + "..."
         except Exception:
             short_value = repr(value)
         out.append(
