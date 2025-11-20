@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Capability Matrix JSON Companion",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "markdown_report",
+    "thresholds",
+    "weights",
+    "capabilities",
+    "gaps",
+    "missing_detectors"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "generated_at": { "type": "string" },
+    "markdown_report": { "type": "string" },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "missing_detectors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "score", "level", "components"],
+        "properties": {
+          "id": { "type": "string" },
+          "score": { "type": "number" },
+          "level": { "type": "string", "enum": ["low", "medium", "high"] },
+          "components": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          },
+          "evidence_count": { "type": "integer", "minimum": 0 },
+          "missing_patterns": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "meta": { "type": "object" }
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": { "type": "object" }
+    }
+  },
+  "additionalProperties": true
+}
