@@ -46,3 +46,13 @@ space-status-delta:
 .PHONY: space-clean
 space-clean:
 	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md reports/codex_status_update_*.md
+
+space-decode-validate:
+	@echo "Decoding committed Phase-A artifacts..."
+	@mkdir -p artifacts/extracted_local
+	@for f in artifacts/*.json.gz.b64; do \
+		[ -f $$f ] || continue; \
+		base=$$(basename $$f .json.gz.b64); \
+		python3 scripts/space_traversal/decode_validate_and_extract.py --input $$f --out-dir artifacts/extracted_local/$$base --stable-output || exit 1; \
+	done
+	@echo "Done. Extracted artifacts under artifacts/extracted_local/"
