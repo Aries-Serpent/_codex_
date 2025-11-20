@@ -1,16 +1,21 @@
+from __future__ import annotations
+
 # ---- [BEGIN: Testable Entrypoint for direct import by test suite] ----
 def decode_and_validate(
-    artifact_path,
+    artifact_path=None,
+    *,
+    input_path=None,
     schema_path=None,
     output_path=None,
     extract_path=None,
     stable_output=False,
-    generate_baseline=False
+    generate_baseline=False,
 ):
     """
     API: Helper for test import; decode & validate with output options.
     Args:
-      artifact_path (str or Path): Path to artifact JSON file
+      artifact_path (str or Path): Path to artifact JSON file (deprecated in favor of input_path)
+      input_path (str or Path, optional): Path to artifact JSON file (alias)
       schema_path (str or Path, optional): Path to schema JSON file
       output_path (str or Path, optional): Where to write decoded JSON
       extract_path (str or Path, optional): Where to write extracted GAPs
@@ -25,13 +30,15 @@ def decode_and_validate(
     from pathlib import Path
     import json
 
-    if isinstance(artifact_path, str):
-        artifact = Path(artifact_path)
-    else:
-        artifact = artifact_path
+    selected_path = input_path if input_path is not None else artifact_path
+    if selected_path is None:
+        raise TypeError("decode_and_validate requires 'input_path' or 'artifact_path'")
+
+    artifact = Path(selected_path)
     if not artifact.exists():
         raise FileNotFoundError(f"Artifact not found: {artifact}")
-    data = json.loads(artifact.read_text(encoding="utf-8"))
+
+    decoded = decode_base64_gzip(artifact)
 
     if schema_path:
         import jsonschema
@@ -39,25 +46,24 @@ def decode_and_validate(
         if not schema.exists():
             raise FileNotFoundError(f"Schema not found: {schema}")
         schema_obj = json.loads(schema.read_text(encoding="utf-8"))
-        jsonschema.validate(instance=data, schema=schema_obj)
-    
-    # Extraction step
-    findings = walk_for_gaps(data)
-    findings_norm = normalize_findings(findings)
+        jsonschema.validate(instance=decoded, schema=schema_obj)
 
-    # Write outputs if requested
+    findings = normalize_findings(walk_for_gaps(decoded))
+    gaps = decoded.get("gaps") if isinstance(decoded, dict) else None
+    gap_count = len(gaps) if isinstance(gaps, list) else len(findings)
+    findings_payload = {"count": gap_count, "findings": findings}
+
     if output_path:
-        Path(output_path).write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        Path(output_path).write_text(json.dumps(decoded, indent=2, ensure_ascii=False), encoding="utf-8")
     if extract_path:
-        Path(extract_path).write_text(json.dumps(findings_norm, indent=2, ensure_ascii=False), encoding="utf-8")
+        Path(extract_path).write_text(json.dumps(findings_payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # Baseline generation
     if generate_baseline:
         baseline_path = output_path or "baseline_capabilities_scored.json"
-        if isinstance(data, dict) and "capabilities_scored" in data:
-            Path(baseline_path).write_text(json.dumps(data["capabilities_scored"], indent=2, ensure_ascii=False), encoding="utf-8")
+        if isinstance(decoded, dict) and "capabilities_scored" in decoded:
+            Path(baseline_path).write_text(json.dumps(decoded["capabilities_scored"], indent=2, ensure_ascii=False), encoding="utf-8")
 
-    return data
+    return {"decoded": decoded, "findings": findings, "count": gap_count}
 # ---- [END: Testable Entrypoint] ----
 
 """
@@ -65,7 +71,6 @@ Decode validator artifact snapshot, validate against schema, extract GAPs.
 
 Provides options: --stable-output, --generate-baseline, --baseline-path, --schema
 """
-from __future__ import annotations
 
 import argparse
 import base64
