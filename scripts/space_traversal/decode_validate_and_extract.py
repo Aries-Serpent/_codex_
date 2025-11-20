@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
 """
-Decode and extract Phase-A validator snapshot(s) committed as base64+gz.
-Provides options: --stable-output, --generate-baseline, --baseline-path
+Decode validator artifact snapshot, validate against schema, extract GAPs.
+
+Provides options: --stable-output, --generate-baseline, --baseline-path, --schema
 """
 from __future__ import annotations
+
 import argparse
 import base64
 import gzip
@@ -21,6 +22,7 @@ GAP_KEYS = {"gaps", "missing_files", "missing", "evidence", "failures", "errors"
 DEFAULT_INPUT = Path("tests/fixtures/pasted.txt")
 DEFAULT_DECODED = Path("audit_artifacts/decoded_snapshot.json")
 DEFAULT_EXTRACT = Path("audit_artifacts/gaps_extracted.json")
+DEFAULT_SCHEMA = Path("scripts/space_traversal/schemas/validate_report_schema.json")
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -153,54 +155,28 @@ def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]
         fh.write("python3 scripts/space_traversal/decode_validate_and_extract.py --input artifacts/validate_report_20251119.json.gz.b64 --out-dir ./artifacts/extracted_validate\n")
         fh.write("```\n")
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Decode artifact and validate schema")
     parser.add_argument("--input", type=str, default=str(DEFAULT_INPUT), help="Base64+gzip input file")
     parser.add_argument("--url", type=str, help="raw URL to fetch the b64+gz file")
     parser.add_argument("--out-dir", type=str, help="output directory (default: artifacts/extracted_validate_<timestamp>)")
+    parser.add_argument("--schema", type=str, default=str(DEFAULT_SCHEMA), help="Path to validator schema JSON")
     parser.add_argument("--stable-output", action="store_true", help="use deterministic output dir (omit timestamp)")
     parser.add_argument("--generate-baseline", action="store_true", help="generate baseline from decoded JSON (writing capabilities_scored if present)")
     parser.add_argument("--baseline-path", type=str, help="path to write baseline JSON if --generate-baseline is set (overrides default)")
     parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="max input size in bytes")
     parser.add_argument("--fail-on-missing-keys", help="comma separated top-level keys that must exist in decoded JSON")
     parser.add_argument("--quiet", action="store_true")
-    return parser.parse_args()
-
-def decode_and_validate(
-    input_path: Path,
-    output_path: Path,
-    extract_path: Path,
-    schema_path: Path = None,
-    stable_output: bool = False,
-    generate_baseline: bool = False
-) -> dict:
-    # Decode input
-    decoded_json = decode_base64_gzip(input_path)
-    output_path.write_text(json.dumps(decoded_json, indent=2, ensure_ascii=False))
-    findings_raw = walk_for_gaps(decoded_json)
-    findings = normalize_findings(findings_raw)
-    # Extraction pipeline -- ensure count matches expected gaps key
-    if "gaps" in decoded_json and isinstance(decoded_json["gaps"], list):
-        extract_count = len(decoded_json["gaps"])
-    else:
-        extract_count = 0
-    extract_path.write_text(json.dumps({"count": extract_count}, indent=2))
-    # Validate against schema if provided
-    if schema_path:
-        import scripts.space_traversal.validate_snapshot_schema as validate
-        validate.validate_snapshot(decoded_json, schema_path)
-    return {
-        "decoded": decoded_json,
-        "findings": findings,
-    }
+    return parser.parse_args(argv) if argv is not None else parser.parse_args()
 
 def main(argv: Optional[List[str]] = None) -> int:
-    args = parse_args() if argv is None else parse_args(argv)
+    args = parse_args(argv)
 
     if not args.input and not args.url:
         eprint("Either --input or --url must be provided")
         return 2
 
+    # --- Load input ---
     try:
         if args.url:
             decoded_json = load_from_url(args.url, args.max_bytes)
@@ -219,7 +195,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         eprint(f"Unexpected error loading input: {exc}")
         return 3
 
-    # optional top-level validation
+    # --- Validate missing keys ---
     if args.fail_on_missing_keys:
         missing = []
         required = [k.strip() for k in args.fail_on_missing_keys.split(",") if k.strip()]
@@ -233,6 +209,21 @@ def main(argv: Optional[List[str]] = None) -> int:
             write_outputs(out_dir, decoded_json, [])
             return 5
 
+    # --- Schema validation ---
+    schema_validated = False
+    schema_path = args.schema or str(DEFAULT_SCHEMA)
+    if schema_path and os.path.exists(schema_path):
+        try:
+            import scripts.space_traversal.validate_snapshot_schema as validate
+            validate.validate_snapshot(decoded_json, schema_path)
+            schema_validated = True
+        except Exception as exc:
+            eprint(f"Schema validation failed: {exc}")
+            return 6
+    else:
+        eprint(f"Schema path not found: {schema_path}. Skipping schema validation.")
+
+    # --- Gap extraction ---
     findings_raw = walk_for_gaps(decoded_json)
     findings = normalize_findings(findings_raw)
 
@@ -245,7 +236,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         eprint(f"Error writing outputs: {exc}")
         return 5
 
-    # Optional: generate baseline from decoded JSON
+    # --- Optional: baseline generation ---
     if args.generate_baseline:
         try:
             if args.baseline_path:
@@ -274,7 +265,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         except Exception as exc:
             eprint(f"Baseline write failed: {exc}")
 
-    # Optional: produce stable manifest for deterministic tests when requested
+    # --- Stable manifest ---
     if args.stable_output:
         try:
             try:
@@ -292,6 +283,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if not args.quiet:
         print(f"Wrote outputs to: {out_dir}")
+        print(f"Validated against schema: {'yes' if schema_validated else 'no'}")
         print(f"Found {len(findings)} GAP-like findings.")
 
     return 0
