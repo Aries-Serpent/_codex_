@@ -165,6 +165,9 @@ def apply_overrides(
             else:
                 missing_aliases.append(alias)
 
+        if missing_aliases:
+            missing.extend(f"{canonical_id}::{alias}" for alias in missing_aliases)
+
         if target_entry:
             target_entry = merge_capability_entries(target_entry, target_entry, canonical_id)
             meta = target_entry.setdefault("meta", {})
@@ -172,8 +175,6 @@ def apply_overrides(
                 meta.setdefault("override_aliases", [])
                 meta["override_aliases"] = sorted(set(meta["override_aliases"]) | set(used_aliases))
             cap_map[canonical_id] = target_entry
-        elif missing_aliases:
-            missing.extend(f"{canonical_id}::{alias}" for alias in missing_aliases)
 
     merged_caps = sorted(cap_map.values(), key=lambda c: c["id"])
     if fail_on_missing and missing:

@@ -279,16 +279,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     # --- Schema validation ---
     schema_validated = False
     schema_path = args.schema or str(DEFAULT_SCHEMA)
-    if schema_path and os.path.exists(schema_path):
+    schema_path_obj = Path(schema_path)
+    if schema_path_obj.exists():
         try:
             import scripts.space_traversal.validate_snapshot_schema as validate
-            validate.validate_snapshot(decoded_json, schema_path)
+            validate.validate_snapshot(decoded_json, schema_path_obj)
             schema_validated = True
         except Exception as exc:
             eprint(f"Schema validation failed: {exc}")
             return 6
     else:
-        eprint(f"Schema path not found: {schema_path}. Skipping schema validation.")
+        eprint(f"Schema path not found: {schema_path_obj}. Skipping schema validation.")
 
     # --- Gap extraction ---
     findings_raw = walk_for_gaps(decoded_json)
