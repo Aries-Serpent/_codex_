@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+"""
+Decode and extract Phase-A validator snapshot(s) committed as base64+gz.
+Provides options: --stable-output, --generate-baseline, --baseline-path
+"""
 from __future__ import annotations
 
 import argparse
