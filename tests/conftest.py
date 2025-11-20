@@ -50,7 +50,6 @@ for _mod in HEAVY_MODULES:
     if importlib.util.find_spec(_mod) is None:
         _inject_stub_module(_mod)
 
-
 def _missing_modules(modules: list[str]) -> list[str]:
     return [mod for mod in modules if importlib.util.find_spec(mod) is None]
 
