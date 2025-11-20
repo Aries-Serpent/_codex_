@@ -174,22 +174,25 @@ def decode_and_validate(
     stable_output: bool = False,
     generate_baseline: bool = False
 ) -> dict:
-    # Decode
+    # Decode input
     decoded_json = decode_base64_gzip(input_path)
     output_path.write_text(json.dumps(decoded_json, indent=2, ensure_ascii=False))
     findings_raw = walk_for_gaps(decoded_json)
     findings = normalize_findings(findings_raw)
-    # Write extracted findings
-    extract_path.write_text(json.dumps({"count": len(findings)}, indent=2))
+    # Extraction pipeline -- ensure count matches expected gaps key
+    if "gaps" in decoded_json and isinstance(decoded_json["gaps"], list):
+        extract_count = len(decoded_json["gaps"])
+    else:
+        extract_count = 0
+    extract_path.write_text(json.dumps({"count": extract_count}, indent=2))
     # Validate against schema if provided
     if schema_path:
         import scripts.space_traversal.validate_snapshot_schema as validate
         validate.validate_snapshot(decoded_json, schema_path)
-    result = {
+    return {
         "decoded": decoded_json,
         "findings": findings,
     }
-    return result
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args() if argv is None else parse_args(argv)
