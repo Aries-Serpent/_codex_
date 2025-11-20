@@ -4,9 +4,8 @@ Conftest to avoid ImportError during collection when optional heavy dependencies
 are not installed in the CI/test environment.
 """
 from __future__ import annotations
-import sys
-import types
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -30,30 +29,6 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
     "requires_numpy": ["numpy"],
     "requires_sentencepiece": ["sentencepiece"],
 }
-
-def _inject_stub_module(name: str):
-    if name in sys.modules:
-        return
-    m = types.ModuleType(name)
-    m.__all__ = []
-    setattr(m, "__version__", "0.0.0-stub")
-    if name == "numpy":
-        class _ndarray_stub:
-            def __init__(self, *args, **kwargs):
-                pass
-            def __array__(self):
-                return []
-            @property
-            def shape(self):
-                return ()
-        m.ndarray = _ndarray_stub
-        m.array = lambda *args, **kwargs: []
-    sys.modules[name] = m
-
-for _mod in HEAVY_MODULES:
-    if importlib.util.find_spec(_mod) is None:
-        _inject_stub_module(_mod)
-
 
 def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = None) -> bool:
     """Return True when ``name`` resolves to an in-repo stub instead of the real package."""
@@ -83,6 +58,33 @@ def _missing_modules(modules: list[str]) -> list[str]:
             missing.append(mod)
 
     return missing
+
+
+_ORIGINAL_IMPORTORSKIP = pytest.importorskip
+
+
+def _importorskip_optional_dep(
+    modname: str,
+    minversion: str | None = None,
+    reason: str | None = None,
+):
+    """Skip when ``modname`` only resolves to an in-repo stub.
+
+    ``pytest.importorskip`` treats stub packages as if the real dependency is installed,
+    which causes guarded tests to run and fail on attribute errors. This wrapper checks
+    whether the resolved module is a local stub and forces a skip so the tests behave as
+    expected when optional ML dependencies are absent.
+    """
+
+    spec = importlib.util.find_spec(modname)
+    if spec is None or _is_stub_module(modname, spec):
+        message = reason or f"{modname} is not installed"
+        raise pytest.skip.Exception(message, allow_module_level=True)
+
+    return _ORIGINAL_IMPORTORSKIP(modname, minversion=minversion, reason=reason)
+
+
+pytest.importorskip = _importorskip_optional_dep
 
 def pytest_collection_modifyitems(session, config, items):
     for item in items:
