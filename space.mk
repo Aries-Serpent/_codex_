@@ -28,11 +28,11 @@ space-diff:
 
 .PHONY: space-validate
 space-validate:
-        $(SPACE_PY) $(RUNNER) validate
+	$(SPACE_PY) $(RUNNER) validate
 
 .PHONY: space-decode
 space-decode:
-        $(SPACE_PY) $(SPACE_DECODE) $(SPACE_STABLE) --generate-baseline
+	$(SPACE_PY) $(SPACE_DECODE) $(SPACE_STABLE) --generate-baseline
 
 .PHONY: space-status
 space-status:
