@@ -360,8 +360,19 @@ def safeguard_score(evidence_files: List[str], file_cache: Dict[str, str]) -> fl
             hits += 1
     return hits / len(SAFEGUARD_KEYWORDS) if SAFEGUARD_KEYWORDS else 0.0
 
+DOCS_EXCLUDE_PREFIXES = (
+    "reports/",
+    "audit_artifacts/",
+)
+
+
 def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
-    docs = [p for p in file_cache if p.startswith("docs/") or p.endswith(".md")]
+    def _is_doc(path: str) -> bool:
+        if not (path.startswith("docs/") or path.endswith(".md")):
+            return False
+        return not any(path.startswith(prefix) for prefix in DOCS_EXCLUDE_PREFIXES)
+
+    docs = [p for p in file_cache if _is_doc(p)]
     token = cap_id.split("-")[0]
     hits = sum(1 for p in docs if token in file_cache[p].lower())
     if not docs:
