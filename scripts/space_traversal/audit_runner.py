@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator — authoritative v1.2.0
+Audit Runner Orchestrator — authoritative v1.2.0 (patch: matrix_template lookup robustness)
 
-Key features / hardening in this authoritative version:
- - Config path fallback: prefer .copilot-space/workflow.yaml, fallback to repo-root workflow.yaml
- - Support detect_v2() and detect(), normalize outputs, preserve evidence v2 in meta._evidence_v2
- - Write JSON companion (reports/capability_matrix_<ts>.json) in S6 with stable ordering
- - Ensure render_template returns (md_out, json_out) — tests expect both
- - Stage S7 computes repo_root_sha using same filtered file listing as S1 for determinism
- - Protective detector loading with defensive logging and warnings regarding import-time side effects
- - Coverage ingest integrated in S4 if audit_artifacts/coverage_map.json is present
- - Consistent artifact metadata in manifest
+This variant fixes a config-shape mismatch reported in PR feedback:
+ - Accepts `matrix_template` either under cfg["output"]["matrix_template"] OR top-level cfg["matrix_template"].
+ - Likewise, resolves reports_dir from cfg["output"]["reports_dir"] or top-level cfg["reports_dir"].
+ - Ensures all internal references use the same helpers so tests and callers that pass a
+   manually-constructed cfg dict (like unit tests) won't KeyError.
+
+Other features retained:
+ - detect_v2/detect support, normalization
+ - S1..S7 stages, deterministic ordering and hashing
+ - JSON companion for S6 (render_template returns (md_out, json_out))
 """
 from __future__ import annotations
 import argparse
@@ -85,6 +86,39 @@ def info(msg: str):
     print(f"[INFO] {msg}")
 
 # ---------------------------------------------------------------------------
+# Config access helpers (robust to top-level vs nested config shapes)
+# ---------------------------------------------------------------------------
+def _get_matrix_template(cfg: dict) -> str:
+    """
+    Return the configured matrix template path.
+    Accepts either:
+      - cfg["output"]["matrix_template"]
+      - cfg["matrix_template"] (top-level)
+    """
+    if not isinstance(cfg, dict):
+        raise KeyError("cfg must be a dict")
+    out = cfg.get("output") or {}
+    mt = out.get("matrix_template")
+    if mt:
+        return mt
+    mt2 = cfg.get("matrix_template")
+    if mt2:
+        return mt2
+    raise KeyError("matrix_template not found in config. Provide either 'output.matrix_template' or top-level 'matrix_template'")
+
+def _get_reports_dir(cfg: dict) -> str:
+    """
+    Return the configured reports directory.
+    Accepts cfg["output"]["reports_dir"] or top-level cfg["reports_dir"].
+    """
+    out = cfg.get("output") or {}
+    return out.get("reports_dir") or cfg.get("reports_dir") or "reports"
+
+def _get_artifacts_dir(cfg: dict) -> str:
+    out = cfg.get("output") or {}
+    return out.get("artifacts_dir") or cfg.get("artifacts_dir") or "audit_artifacts"
+
+# ---------------------------------------------------------------------------
 # Deterministic file filter used by S1 and S7 (keep consistent)
 # ---------------------------------------------------------------------------
 def _iter_repo_files():
@@ -110,6 +144,7 @@ def load_dynamic_detectors() -> List[Callable]:
             spec = importlib.util.spec_from_file_location(py.stem, py)
             if spec and spec.loader:
                 module = importlib.util.module_from_spec(spec)
+                # Execute module in isolated namespace; warn about side-effects
                 try:
                     spec.loader.exec_module(module)
                 except Exception as e:
@@ -147,7 +182,7 @@ def _normalize_detector_output(det: dict) -> dict:
     }
 
 # ---------------------------------------------------------------------------
-# Stages S1..S7
+# Stages S1..S7 (implementation unchanged except for template lookup usage)
 # ---------------------------------------------------------------------------
 DOMAIN_PATTERNS = {
     "checkpoint": re.compile(r"checkpoint", re.I),
@@ -172,7 +207,7 @@ BASE_CAPABILITY_RULES = [
 ]
 
 def stage_s1_index(cfg):
-    out_dir = Path(cfg["output"]["artifacts_dir"])
+    out_dir = Path(_get_artifacts_dir(cfg))
     out_dir.mkdir(parents=True, exist_ok=True)
     files_meta = []
     for p in _iter_repo_files():
@@ -192,15 +227,16 @@ def stage_s2_facets(cfg, context_idx):
             if rx.search(f["path"]):
                 facets[key].append(f["path"])
     payload = {"generated": time.time(), "facets": facets, "version": VERSION}
-    out = Path(cfg["output"]["artifacts_dir"]) / "facets.json"
+    out = Path(_get_artifacts_dir(cfg)) / "facets.json"
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload
 
 def stage_s3_capabilities(cfg, facets):
-    out_dir = Path(cfg["output"]["artifacts_dir"])
+    out_dir = Path(_get_artifacts_dir(cfg))
     out_dir.mkdir(parents=True, exist_ok=True)
     file_cache: Dict[str, str] = {}
     capabilities = []
+    # Static rules
     for rule in BASE_CAPABILITY_RULES:
         evidence_files = []
         for facet in rule["facet_keys"]:
@@ -221,9 +257,10 @@ def stage_s3_capabilities(cfg, facets):
             "required_patterns": rule["required_patterns"],
             "meta": {},
         })
+    # Dynamic detectors
     if cfg.get("capability_map", {}).get("dynamic", False):
         dynamic_funcs = load_dynamic_detectors()
-        ctx_path = Path(cfg["output"]["artifacts_dir"]) / "context_index.json"
+        ctx_path = Path(_get_artifacts_dir(cfg)) / "context_index.json"
         if not ctx_path.exists():
             warn("context_index.json missing for dynamic detectors; re-run S1")
         else:
@@ -240,7 +277,7 @@ def stage_s3_capabilities(cfg, facets):
                     warn(f"Detector {func} returned invalid shape: {e}")
                     continue
                 capabilities.append(normalized)
-    # overrides merging
+    # Apply overrides merging (canonical <- aliases)
     overrides = cfg.get("capability_map", {}).get("overrides", {}) or {}
     if overrides:
         by_id = {c["id"]: c for c in capabilities}
@@ -260,6 +297,7 @@ def stage_s3_capabilities(cfg, facets):
                 base["meta"].setdefault("_aliases", [])
                 if alias not in base["meta"]["_aliases"]:
                     base["meta"]["_aliases"].append(alias)
+            # ensure deterministic ordering of alias list
             if "meta" in base and "_aliases" in base["meta"]:
                 base["meta"]["_aliases"] = sorted(base["meta"]["_aliases"])
             merged[canonical] = base
@@ -269,8 +307,9 @@ def stage_s3_capabilities(cfg, facets):
         if missing_refs and cfg.get("options", {}).get("fail_on_missing_detector", False):
             warn(f"Missing detector references in overrides: {missing_refs}")
             sys.exit(5)
+    # Sort capabilities deterministically
     capabilities = sorted(capabilities, key=lambda c: c["id"])
-    out_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_raw.json"
+    out_file = Path(_get_artifacts_dir(cfg)) / "capabilities_raw.json"
     out_file.write_text(json.dumps({"generated": time.time(), "capabilities": capabilities, "version": VERSION}, indent=2), encoding="utf-8")
     return capabilities
 
@@ -329,7 +368,7 @@ def stage_s4_scoring(cfg, raw_caps):
         else:
             weights = {k: v / total_w for k, v in weights.items()}
 
-    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
     file_cache = {}
     for cap in raw_caps:
         for ef in cap.get("evidence_files", []):
@@ -397,12 +436,13 @@ def stage_s5_gaps(cfg, scored_caps):
         if c["score"] < thresholds["low"]:
             low.append(c)
     payload = {"generated": time.time(), "low_maturity": low, "version": VERSION}
-    out = Path(cfg["output"]["artifacts_dir"]) / "gaps.json"
+    out = Path(_get_artifacts_dir(cfg)) / "gaps.json"
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload
 
 def render_template(cfg, context):
-    tpl_path = cfg["output"]["matrix_template"]
+    # Resolve matrix template path robustly (top-level or nested under output)
+    tpl_path = _get_matrix_template(cfg)
     tpl_dir = Path(tpl_path).parent
     env = Environment(loader=FileSystemLoader(str(tpl_dir)), autoescape=False, trim_blocks=True, lstrip_blocks=True)
     template = env.get_template(Path(tpl_path).name)
@@ -411,7 +451,7 @@ def render_template(cfg, context):
         concatenated += t.read_bytes()
     context["template_hash"] = _sha256_bytes(concatenated)
     output = template.render(**context)
-    reports_dir = Path(cfg["output"]["reports_dir"])
+    reports_dir = Path(_get_reports_dir(cfg))
     reports_dir.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d_%H%M%S")
     md_out = reports_dir / f"capability_matrix_{stamp}.md"
@@ -440,7 +480,7 @@ def stage_s6_render(cfg, scored_caps, gaps):
     return render_template(cfg, context)
 
 def stage_s7_manifest(cfg):
-    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
     files_for_hash = [p.relative_to(ROOT).as_posix() for p in _iter_repo_files()]
     repo_root_sha = _sha256_bytes(json.dumps(sorted(files_for_hash)).encode())
     manifest = {
@@ -462,7 +502,7 @@ def stage_s7_manifest(cfg):
             "format": "json",
             "generated_at": p.stat().st_mtime
         })
-    tpl_dir = Path(cfg["output"]["matrix_template"]).parent
+    tpl_dir = Path(_get_matrix_template(cfg)).parent
     concat = b""
     for t in sorted(tpl_dir.glob("*.j2")):
         concat += t.read_bytes()
@@ -474,6 +514,7 @@ def stage_s7_manifest(cfg):
     out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest
 
+# diff & explain functions
 def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     data = {}
@@ -494,11 +535,15 @@ def load_capabilities_from_any(path: Path) -> Dict[str, Any]:
                 parts = [p.strip() for p in ln.strip().split("|")[1:-1]]
                 if len(parts) >= 2 and parts[0] != "----":
                     try:
-                        caps.append({"id": parts[0], "score": float(parts[1])})
+                        caps.append({
+                            "id": parts[0],
+                            "score": float(parts[1]),
+                        })
                     except ValueError:
                         pass
         data["capabilities"] = caps
-    return {c["id"]: c.get("score") for c in data.get("capabilities", [])}
+    mapping = {c["id"]: c.get("score") for c in data.get("capabilities", [])}
+    return mapping
 
 def command_diff(args, cfg):
     old_path = Path(args.old)
@@ -529,7 +574,7 @@ def command_diff(args, cfg):
         sys.exit(3)
 
 def command_explain(args, cfg):
-    scored_file = Path(cfg["output"]["artifacts_dir"]) / "capabilities_scored.json"
+    scored_file = Path(_get_artifacts_dir(cfg)) / "capabilities_scored.json"
     if not scored_file.exists():
         print("Scored file missing. Run stage S4 first.", file=sys.stderr)
         sys.exit(2)
@@ -549,13 +594,14 @@ def command_explain(args, cfg):
     for k, v in components.items():
         w = weights.get(k, 0.0)
         print(f"  {k:14s} value={v:.4f} weight={w:.3f} contribution={(v*w):.4f}")
-    explain_dir = Path(cfg["output"]["artifacts_dir"]) / "explain"
+    explain_dir = Path(_get_artifacts_dir(cfg)) / "explain"
     if explain_dir.exists():
         explain_file = explain_dir / f"{cap_id}.json"
         if explain_file.exists():
             print(f"Explain JSON: {explain_file}")
     print(f"  Total score: {target['score']:.4f}")
 
+# orchestrator
 def run_full(cfg):
     ctx = stage_s1_index(cfg)
     facets = stage_s2_facets(cfg, ctx)
@@ -567,7 +613,7 @@ def run_full(cfg):
     info("Audit complete.")
 
 def run_stage(cfg, stage_id: str):
-    artifacts_dir = Path(cfg["output"]["artifacts_dir"])
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     context_idx = artifacts_dir / "context_index.json"
     facets_file = artifacts_dir / "facets.json"
