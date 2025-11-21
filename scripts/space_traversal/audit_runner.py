@@ -283,13 +283,18 @@ def stage_s3_capabilities(cfg, facets):
         by_id = {c["id"]: c for c in capabilities}
         merged = {}
         missing_refs = []
+        missing_by_canonical: Dict[str, List[str]] = {}
         for canonical, aliases in overrides.items():
             base = by_id.get(canonical, {"id": canonical, "evidence_files": [], "found_patterns": [], "required_patterns": [], "meta": {}})
+            base_from_existing = canonical in by_id
+            alias_contributed = False
             for alias in aliases:
                 if alias not in by_id:
                     missing_refs.append(alias)
+                    missing_by_canonical.setdefault(canonical, []).append(alias)
                     continue
                 a = by_id[alias]
+                alias_contributed = True
                 base["evidence_files"] = sorted(set(base.get("evidence_files", []) + a.get("evidence_files", [])))
                 base["found_patterns"] = sorted(set(base.get("found_patterns", []) + a.get("found_patterns", [])))
                 base["required_patterns"] = sorted(set(base.get("required_patterns", []) + a.get("required_patterns", [])))
@@ -297,16 +302,27 @@ def stage_s3_capabilities(cfg, facets):
                 base["meta"].setdefault("_aliases", [])
                 if alias not in base["meta"]["_aliases"]:
                     base["meta"]["_aliases"].append(alias)
+            if missing_by_canonical.get(canonical):
+                base.setdefault("meta", {})
+                base["meta"].setdefault("missing_detectors", [])
+                for missing_alias in missing_by_canonical[canonical]:
+                    if missing_alias not in base["meta"]["missing_detectors"]:
+                        base["meta"]["missing_detectors"].append(missing_alias)
+                base["meta"]["missing_detectors"] = sorted(base["meta"]["missing_detectors"])
             # ensure deterministic ordering of alias list
             if "meta" in base and "_aliases" in base["meta"]:
                 base["meta"]["_aliases"] = sorted(base["meta"]["_aliases"])
+            if not base_from_existing and not alias_contributed and not missing_by_canonical.get(canonical):
+                # Avoid fabricating an empty capability when nothing real was merged
+                continue
             merged[canonical] = base
         referenced = set(sum((aliases for aliases in overrides.values()), []))
         remaining = {k: v for k, v in by_id.items() if k not in referenced and k not in merged}
         capabilities = list(remaining.values()) + list(merged.values())
-        if missing_refs and cfg.get("options", {}).get("fail_on_missing_detector", False):
+        if missing_refs:
             warn(f"Missing detector references in overrides: {missing_refs}")
-            sys.exit(5)
+            if cfg.get("options", {}).get("fail_on_missing_detector", False):
+                sys.exit(5)
     # Sort capabilities deterministically
     capabilities = sorted(capabilities, key=lambda c: c["id"])
     out_file = Path(_get_artifacts_dir(cfg)) / "capabilities_raw.json"
@@ -483,12 +499,24 @@ def stage_s7_manifest(cfg):
     artifacts_dir = Path(_get_artifacts_dir(cfg))
     files_for_hash = [p.relative_to(ROOT).as_posix() for p in _iter_repo_files()]
     repo_root_sha = _sha256_bytes(json.dumps(sorted(files_for_hash)).encode())
+    try:
+        from scripts.space_traversal import capability_scoring as cs
+    except Exception:
+        cs = None
+
+    weights = cfg["weights"]
+    total_w = sum(weights.values())
+    normalized_weights = dict(weights)
+    if total_w > 0 and abs(total_w - 1.0) > 1e-9:
+        normalized_weights = cs.normalize_weights(weights) if cs else {k: v / total_w for k, v in weights.items()}
+
     manifest = {
         "timestamp": time.time(),
         "version": VERSION,
         "repo_root_sha": repo_root_sha,
         "artifacts": [],
         "weights": cfg["weights"],
+        "normalized_weights": normalized_weights,
         "warnings": [],
         "metrics_schema_version": cfg.get("metrics_schema_version", "2.0.0"),
     }
