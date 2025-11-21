@@ -1,59 +1,27 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Capability Matrix JSON Companion",
+  "title": "Capability Matrix",
   "type": "object",
-  "required": [
-    "schema_version",
-    "generated_at",
-    "markdown_report",
-    "thresholds",
-    "weights",
-    "capabilities",
-    "gaps",
-    "missing_detectors"
-  ],
+  "required": ["timestamp", "capabilities", "weights", "template_hash", "metrics_schema_version"],
   "properties": {
-    "schema_version": { "type": "string" },
-    "generated_at": { "type": "string" },
-    "markdown_report": { "type": "string" },
-    "thresholds": {
-      "type": "object",
-      "additionalProperties": { "type": "number" }
-    },
-    "weights": {
-      "type": "object",
-      "additionalProperties": { "type": "number" }
-    },
-    "missing_detectors": {
-      "type": "array",
-      "items": { "type": "string" }
-    },
+    "timestamp": {"type": "string"},
+    "metrics_schema_version": {"type": "string"},
+    "template_hash": {"type": "string"},
+    "weights": {"type": "object"},
+    "scoring_thresholds": {"type": "object"},
     "capabilities": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "score", "level", "components"],
+        "required": ["id", "score", "components"],
         "properties": {
-          "id": { "type": "string" },
-          "score": { "type": "number" },
-          "level": { "type": "string", "enum": ["low", "medium", "high"] },
-          "components": {
-            "type": "object",
-            "additionalProperties": { "type": "number" }
-          },
-          "evidence_count": { "type": "integer", "minimum": 0 },
-          "missing_patterns": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "meta": { "type": "object" }
+          "id": {"type": "string"},
+          "score": {"type": "number"},
+          "components": {"type": "object"},
+          "evidence_files": {"type": "array", "items": {"type": "string"}}
         }
       }
     },
-    "gaps": {
-      "type": "array",
-      "items": { "type": "object" }
-    }
-  },
-  "additionalProperties": true
+    "gaps": {"type": "array"}
+  }
 }

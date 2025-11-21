@@ -1,44 +1,28 @@
-# [Report]: Capability Matrix
-Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine] Energy: 5
+# [Report]: Capability Matrix  
+> Generated: {{ timestamp }} | Author: audit_system  
+ Roles: [Primary: Automated Auditor], [Secondary: Provenance Engine]  Energy: 5  
 
 ## 1. Summary
 Total Capabilities: {{ capabilities|length }}
-Low Maturity (< {{ "%.2f"|format(thresholds.low) }}): {{ gaps|length }}
-{% if thresholds.medium -%}
-Medium Maturity ({{ "%.2f"|format(thresholds.low) }} - {{ "%.2f"|format(thresholds.medium) }}): {{ capabilities|selectattr('score', 'ge', thresholds.low)|selectattr('score', 'lt', thresholds.medium)|list|length }}
-High Maturity (>= {{ "%.2f"|format(thresholds.medium) }}): {{ capabilities|selectattr('score', 'ge', thresholds.medium)|list|length }}
-{% endif %}
+Low Maturity (< {{ scoring.thresholds.low }}) : {{ gaps|length }}
 
 ## 2. Capability Scores
-| ID | Score | Level | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
-|----|-------|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
-{% set medium_min = thresholds.low %}
-{% set high_min = thresholds.get('medium', 0.85) %}
+| ID | Score | Functionality | Consistency | Tests | Safeguards | Docs | Evidence Count |
+|----|-------|--------------:|------------:|------:|-----------:|-----:|---------------:|
 {% for cap in capabilities -%}
-{% set lvl = "High" %}
-{% if cap.score < medium_min %}
-  {% set lvl = "Low" %}
-{% elif cap.score < high_min %}
-  {% set lvl = "Medium" %}
-{% endif %}
-{% set f = cap.components.functionality %}{% set c = cap.components.consistency %}{% set t = cap.components.tests %}{% set s = cap.components.safeguards %}{% set d = cap.components.documentation %}
-| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ lvl }} | {{ "%.2f"|format(f) }}{% if f == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(c) }}{% if c == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(t) }}{% if t == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(s) }}{% if s == 0 %} (ZERO){% endif %} | {{ "%.2f"|format(d) }}{% if d == 0 %} (ZERO){% endif %} | {{ cap.evidence_files|length }} |
+| {{ cap.id }} | {{ "%.2f"|format(cap.score) }} | {{ "%.2f"|format(cap.components.functionality) }} | {{ "%.2f"|format(cap.components.consistency) }} | {{ "%.2f"|format(cap.components.tests) }} | {{ "%.2f"|format(cap.components.safeguards) }} | {{ "%.2f"|format(cap.components.documentation) }} | {{ cap.evidence_files|length }} |
 {% endfor %}
 
 ## 3. Low Maturity Focus
-{% if gaps and gaps|length > 0 %}
-| ID | Score | Primary Deficit | Missing Patterns |
-|----|-------|-----------------|------------------|
+{% if gaps %}
+| ID | Score | Primary Deficit |
+|----|-------|-----------------|
 {% for g in gaps -%}
-{% set comp = (g.components|dictsort(false, 'value'))[0][0] %}
-| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {{ comp }} | {{ g.missing_patterns|join(", ") if g.missing_patterns else "None" }} |
+{# Pick smallest numeric component #}
+| {{ g.id }} | {{ "%.2f"|format(g.score) }} | {% set comp = (g.components|dictsort(false, 'value'))[0][0] %}{{ comp }} |
 {% endfor %}
 {% else %}
 All capabilities meet minimum thresholds.
-{% endif %}
-
-{% if missing_detectors %}
-> **Action:** Detectors missing for overrides — {{ missing_detectors|join(", ") }}
 {% endif %}
 
 ## 4. Weight Reference
@@ -54,29 +38,20 @@ All capabilities meet minimum thresholds.
 Score: {{ "%.4f"|format(cap.score) }}
 
 Components:
-- Functionality: {{ cap.components.functionality }}{% if cap.components.functionality == 0 %} (ZERO){% endif %}
-- Consistency: {{ cap.components.consistency }}{% if cap.components.consistency == 0 %} (ZERO){% endif %}
-- Tests: {{ cap.components.tests }}{% if cap.components.tests == 0 %} (ZERO){% endif %}
-- Safeguards: {{ cap.components.safeguards }}{% if cap.components.safeguards == 0 %} (ZERO){% endif %}
-- Documentation: {{ cap.components.documentation }}{% if cap.components.documentation == 0 %} (ZERO){% endif %}
+- Functionality: {{ cap.components.functionality }}
+- Consistency: {{ cap.components.consistency }}
+- Tests: {{ cap.components.tests }}
+- Safeguards: {{ cap.components.safeguards }}
+- Documentation: {{ cap.components.documentation }}
 
-{% if cap.meta %}
-Meta:
-{% for key, value in cap.meta|dictsort %}
-- {{ key }}: {{ value }}
-{% endfor %}
-{% endif %}
-
-Required Patterns: {{ cap.required_patterns|join(", ") if cap.required_patterns else "None" }}
 Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
-Missing Patterns: {{ cap.missing_patterns|join(", ") if cap.missing_patterns else "None" }}
 
 Evidence Files (first 10):
-```
+{{ "```" }}
 {% for f in cap.evidence_files[:10] -%}
 {{ f }}
 {% endfor %}
-```
+{{ "```" }}
 {% endfor %}
 
 ## 6. Appendix

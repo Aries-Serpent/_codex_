@@ -1,86 +1,57 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Coverage XML Ingestion (P4)
-
-Reads coverage.xml (Cobertura or lcov-like parsed into coverage.xml) and produces
-coverage_stats.json:
-- For each file: lines_covered, lines_total
-- Aggregate mapping from capability evidence to coverage percent if file matches
-- Intended to refine tests component (use max(existing_tests_ratio, coverage_percent))
-
-Environment:
-  COVERAGE_XML_PATH=coverage.xml (default)
+Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)
 """
-from __future__ import annotations
-
-import json
-import os
-import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
+import xml.etree.ElementTree as ET
+import json
+import sys
 
-COVERAGE_XML = Path(os.getenv("COVERAGE_XML_PATH", "coverage.xml"))
-OUT = Path("audit_artifacts/coverage_map.json")
-RAW = Path("audit_artifacts/capabilities_raw.json")
+ROOT = Path(__file__).resolve().parents[2]
 
-
-def parse_coverage(root: Path):
-    if not root.exists():
-        return {}
+def parse_coverage_xml(xml_path: Path):
     try:
-        tree = ET.parse(str(root))
-    except Exception as e:
-        print(f"[ERR] Failed to parse coverage XML: {e}", file=sys.stderr)
-        return {}
+        tree = ET.parse(xml_path)
+    except ET.ParseError as e:
+        print(f"Failed parsing coverage xml: {e}", file=sys.stderr)
+        sys.exit(2)
+    root = tree.getroot()
+    cov = {}
+    for cls in root.findall(".//class"):
+        filename = cls.get("filename")
+        lines = []
+        for ln in cls.findall(".//line"):
+            num = ln.get("number")
+            hits = ln.get("hits")
+            if num is not None and hits is not None and int(hits) > 0:
+                lines.append(int(num))
+        if filename:
+            cov[filename] = {"covered_lines": sorted(set(lines))}
+    for f, data in cov.items():
+        try:
+            full_path = ROOT / f
+            total_lines = sum(1 for _ in open(full_path, "r", encoding="utf-8", errors="ignore"))
+            data["percent"] = len(data["covered_lines"]) / max(1, total_lines)
+        except Exception:
+            data["percent"] = 0.0
+    return cov
 
-    data = {}
-    # Cobertura style: <class filename="..."><lines>...</lines>
-    for cls in tree.findall(".//class"):
-        fname = cls.attrib.get("filename")
-        if not fname:
-            continue
-        lines = cls.findall(".//line")
-        total = 0
-        covered = 0
-        for ln in lines:
-            total += 1
-            if ln.attrib.get("hits", "0") != "0":
-                covered += 1
-        if total > 0:
-            data[fname] = {"covered": covered, "total": total, "percent": covered / total}
-    return data
-
-
-def map_to_capabilities(cov_map, capabilities):
-    result = []
-    for cap in capabilities:
-        ev = cap.get("evidence_files", [])
-        matched = [cov_map[f] for f in ev if f in cov_map]
-        if matched:
-            covered = sum(m["covered"] for m in matched)
-            total = sum(m["total"] for m in matched)
-            percent = covered / total if total else 0.0
-        else:
-            covered = total = 0
-            percent = 0.0
-        result.append({"id": cap["id"], "coverage_percent": round(percent, 4)})
-    return result
-
+def write_coverage_map(out_path: Path, cov_map: dict):
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(cov_map, indent=2), encoding="utf-8")
 
 def main():
-    if not RAW.exists():
-        print("[WARN] capabilities_raw.json absent; run earlier stages.", file=sys.stderr)
-        return 2
-
-    caps = json.loads(RAW.read_text())["capabilities"]
-    cov_map = parse_coverage(COVERAGE_XML)
-    mapping = map_to_capabilities(cov_map, caps)
-
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps({"capabilities": mapping}, indent=2), encoding="utf-8")
-    print(f"[INFO] Coverage stats written: {OUT}")
-    return 0
-
+    if len(sys.argv) < 2:
+        print("Usage: coverage_ingest.py <coverage_xml_path>", file=sys.stderr)
+        sys.exit(2)
+    xml_in = Path(sys.argv[1])
+    if not xml_in.exists():
+        print("Coverage xml not found", file=sys.stderr)
+        sys.exit(2)
+    cov_map = parse_coverage_xml(xml_in)
+    out = Path.cwd() / "audit_artifacts" / "coverage_map.json"
+    write_coverage_map(out, cov_map)
+    print(f"Wrote coverage map to {out}")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
