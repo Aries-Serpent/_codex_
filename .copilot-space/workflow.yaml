@@ -1,31 +1,43 @@
-version: 1.2.0
+# Copilot Space Workflow Spec (v1.4.0)
+# Codex-Specific Enhancements:
+# - Extended domain patterns for ML serving, security, status, archival
+# - P5 features: token similarity, coverage stats, security severity
+# - Auto-prefix validation in manifest stage
+# - Enhanced safeguard keywords and documentation synonyms
+# - Dynamic detector loading for new capabilities
+# - Enforce low maturity and missing-detector gates during `validate`.
+# - Score regression guard remains; thresholds unchanged.
+
+version: 1.4.0
+metrics_schema_version: "2.0.0"
+
 stages:
   - id: index
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S1"]
   - id: facets
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S2"]
   - id: capabilities
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S3"]
   - id: scoring
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S4"]
   - id: gaps
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S5"]
   - id: render
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S6"]
   - id: manifest
-    script: audit_runner.py
+    script: scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S7"]
 
@@ -41,9 +53,40 @@ scoring:
     low: 0.70
     medium: 0.85
 
+  # Optional component caps. Any missing key defaults to 1.0.
+  component_caps:
+    functionality: 1.0
+    consistency: 1.0
+    tests: 1.0
+    safeguards: 1.0
+    documentation: 1.0
+
+  # Optional duplication heuristic switch (experimental).
+  # - simple: current file-stem duplication ratio (default)
+  # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
+  dup:
+    heuristic: simple  # or "token_similarity"
+
 capability_map:
   overrides:
     training-engine: ["train_loop", "functional_training"]
+    # v1.4.0 additions
+    ml-serving: ["serve", "predict", "api"]
+    status-reporting: ["status", "audit", "report"]
+    archival-bundling: ["archive", "bundle", "manifest"]
+    # v1.5.0 additions (MCP capabilities)
+    mcp-protocol-surface: ["FastAPI", "jsonrpc", "endpoint"]
+    mcp-schema-validation: ["BaseModel", "OpenAPI", "schema"]
+    mcp-tooling-registry: ["registry", "tools"]
+    mcp-authz-authn: ["API-Key", "authenticate", "authorize"]
+    mcp-observability: ["logging", "metrics", "tracing"]
+    mcp-rate-limiting: ["RateLimiter", "throttle"]
+    mcp-error-handling: ["MCPError", "HTTPException", "error"]
+    mcp-configuration: ["config", "environment", "mcp.json"]
+    mcp-security-safeguards: ["confirm", "dry_run", "sanitize"]
+    mcp-lifecycle-management: ["startup", "shutdown", "healthz"]
+    mcp-versioning-compat: ["MCP_VERSIONS", "negotiate_version"]
+    mcp-multi-tenant: ["tenant", "isolation"]
   dynamic: true
 
 output:
@@ -52,8 +95,20 @@ output:
   matrix_template: templates/audit/capability_matrix.md.j2
 
 options:
+  # diff: non-zero exit if any capability score drops beyond threshold
   fail_on_score_regression: true
   regression_delta_threshold: 0.02
-  fail_on_missing_detector: true
+  # validate: non-zero exit if any capability is below low threshold
+  fail_on_low_maturity: true
+  # validate: non-zero exit if any capability_map.overrides ID is missing from scored capabilities
+  fail_on_missing_detector: false
 
-metrics_schema_version: "2.0.0"
+# Optional safeguards override (P3). If present, the runner will use this list instead of its defaults.
+safeguards:
+  keywords:
+    - sha256
+    - checksum
+    - rng
+    - seed
+    - offline
+    - WANDB_MODE
