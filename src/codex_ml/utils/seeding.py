@@ -3,6 +3,7 @@ from __future__ import annotations
 """
 Centralized, import-light helpers for reproducible and deterministic runs.
 """
+import contextlib
 import os
 import random
 
@@ -39,6 +40,15 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             backend = torch.backends.cudnn  # type: ignore[attr-defined]
             backend.deterministic = deterministic
             backend.benchmark = not deterministic
+            if deterministic:
+                os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":16:8")
+                torch.use_deterministic_algorithms(True)
+                matmul_backend = getattr(torch.backends, "cuda", None)
+                if matmul_backend is not None:
+                    setattr(matmul_backend.matmul, "allow_tf32", False)
+            else:
+                with contextlib.suppress(Exception):
+                    torch.use_deterministic_algorithms(False)
         except Exception:
             pass
     except Exception:

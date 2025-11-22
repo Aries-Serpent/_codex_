@@ -5,6 +5,7 @@ from __future__ import annotations
 BASE_TRAINING_CONFIG: dict[str, object] = {
     "model_name": "sshleifer/tiny-gpt2",
     "tokenizer_name": "sshleifer/tiny-gpt2",
+    "config_version": "1.0",
     "learning_rate": 5e-5,
     "batch_size": 8,
     "epochs": 3,

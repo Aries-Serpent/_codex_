@@ -1,14 +1,11 @@
-"""Reproducibility helpers for deterministic seeding and checkpoint resume."""
-
-from __future__ import annotations
-
 import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -56,8 +53,21 @@ def set_deterministic(flag: bool) -> None:
     _set_deterministic(flag)
 
 
-def record_dataset_checksums(files: Iterable[Path], out_path: Path) -> dict[str, str]:
-    """Write SHA256 checksums for ``files`` to ``out_path``."""
+def _dataset_version(checksums: Mapping[str, str], *, name: str | None = None) -> str:
+    """Return a deterministic dataset version hash from file checksums."""
+
+    payload = {
+        "name": name or "dataset",
+        "files": {k: checksums[k] for k in sorted(checksums)},
+    }
+    raw = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def record_dataset_checksums(
+    files: Iterable[Path], out_path: Path, *, dataset_name: str | None = None
+) -> dict[str, str]:
+    """Write SHA256 checksums for ``files`` to ``out_path`` and a version sidecar."""
 
     checksums: dict[str, str] = {}
     for fp in files:
@@ -66,11 +76,37 @@ def record_dataset_checksums(files: Iterable[Path], out_path: Path) -> dict[str,
             checksums[p.name] = hashlib.sha256(p.read_bytes()).hexdigest()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(checksums, indent=2), encoding="utf-8")
+
+    version = _dataset_version(checksums, name=dataset_name)
+    sidecar = out_path.with_suffix(out_path.suffix + ".version.json")
+    sidecar.write_text(
+        json.dumps({"version": version, "files": checksums, "name": dataset_name}, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
     return checksums
 
 
-def capture_environment(save_path: str | Path) -> None:
-    """Capture Python packages and environment variables for reproducibility."""
+def _copy_if_exists(path: Path, dest_dir: Path) -> Path | None:
+    if not path.exists():
+        return None
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    target = dest_dir / path.name
+    shutil.copy2(path, target)
+    return target
+
+
+_LOCK_CANDIDATES: Sequence[str] = (
+    "requirements/lock.txt",
+    "uv.lock",
+    "requirements/lock-ml.txt",
+    "requirements/lock-eval.txt",
+)
+
+
+def capture_environment(
+    save_path: str | Path, *, include_locks: bool = True, lock_candidates: Sequence[str] = _LOCK_CANDIDATES
+) -> None:
+    """Capture Python packages, environment variables, and dependency locks."""
 
     target = Path(save_path)
     target.mkdir(parents=True, exist_ok=True)
@@ -85,9 +121,15 @@ def capture_environment(save_path: str | Path) -> None:
     }
     (target / "env_vars.json").write_text(json.dumps(redacted_env, indent=2), encoding="utf-8")
 
+    if include_locks:
+        locks_dir = target / "dependency_locks"
+        for candidate in lock_candidates:
+            _copy_if_exists(Path(candidate), locks_dir)
+
 
 __all__ = [
     "capture_environment",
+    "_dataset_version",
     "record_dataset_checksums",
     "restore_rng_state",
     "set_deterministic",
