@@ -232,6 +232,8 @@ class CheckpointMeta:
     metric_value: float | None
     sha256: str | None  # of the serialized payload (bytes)
     config_snapshot: dict[str, Any] | None = None
+    config_version: str | None = None
+    dataset_version: str | None = None
 
 
 def _config_hash(config: dict[str, Any] | None) -> str | None:
@@ -460,6 +462,14 @@ def save_checkpoint(
         if candidate:
             snapshot_data = dict(candidate)
 
+    cfg_version = None
+    dataset_version = None
+    if isinstance(config, dict):
+        cfg_version = str(config.get("config_version")) if "config_version" in config else None
+        dataset_version = (
+            str(config.get("dataset_version")) if "dataset_version" in config else None
+        )
+
     meta = CheckpointMeta(
         schema_version=SCHEMA_VERSION,
         created_at=_now(),
@@ -471,6 +481,8 @@ def save_checkpoint(
         metric_value=metric_value,
         sha256=None,
         config_snapshot=snapshot_data,
+        config_version=cfg_version,
+        dataset_version=dataset_version,
     )
 
     # Serialize payload (state + meta stub for verification)

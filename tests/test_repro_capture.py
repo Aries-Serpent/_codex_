@@ -16,3 +16,13 @@ def test_capture_environment_writes_files(tmp_path: Path, monkeypatch: pytest.Mo
     env_vars = json.loads((tmp_path / "env_vars.json").read_text(encoding="utf-8"))
     assert pip_freeze
     assert env_vars["TEST_SECRET_KEY"] == "<redacted>"  # noqa: S105
+
+    locks_dir = tmp_path / "dependency_locks"
+    expected_locks = {
+        "lock.txt",
+        "lock-ml.txt",
+        "lock-eval.txt",
+        "uv.lock",
+    }
+    present = {p.name for p in locks_dir.iterdir()}
+    assert expected_locks.intersection(present), "no dependency locks were captured"

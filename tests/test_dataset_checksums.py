@@ -9,8 +9,12 @@ def test_record_dataset_checksums(tmp_path):
     f2 = tmp_path / "b.txt"
     f2.write_text("world")
     out = tmp_path / "checksums.json"
-    checksums = record_dataset_checksums([f1, f2], out)
+    checksums = record_dataset_checksums([f1, f2], out, dataset_name="sample")
     assert out.exists()
     data = json.loads(out.read_text())
     assert data == checksums
     assert set(data.keys()) == {"a.txt", "b.txt"}
+    sidecar = json.loads(out.with_suffix(out.suffix + ".version.json").read_text())
+    assert sidecar["files"] == checksums
+    assert sidecar["name"] == "sample"
+    assert len(sidecar["version"]) == 64

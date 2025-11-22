@@ -33,3 +33,26 @@ def test_sentencepiece_trainer_roundtrip(tmp_path: pathlib.Path) -> None:
     decoded = loaded.decode(ids)
     assert isinstance(decoded, str)
     assert "hello" in decoded
+
+
+def test_sentencepiece_trainer_reproducible(tmp_path: pathlib.Path) -> None:
+    corpus = tmp_path / "corpus.txt"
+    corpus.write_text("determinism test", encoding="utf-8")
+
+    tok_a = SPTokenizer.train(
+        input_files=[str(corpus)],
+        vocab_size=64,
+        output_dir=str(tmp_path / "tok_a"),
+        seed=7,
+    )
+    tok_b = SPTokenizer.train(
+        input_files=[str(corpus)],
+        vocab_size=64,
+        output_dir=str(tmp_path / "tok_b"),
+        seed=7,
+    )
+
+    model_a = (tmp_path / "tok_a" / "spm.model").read_bytes()
+    model_b = (tmp_path / "tok_b" / "spm.model").read_bytes()
+    assert model_a == model_b
+    assert tok_a.decode(tok_a.encode("determinism")) == tok_b.decode(tok_b.encode("determinism"))

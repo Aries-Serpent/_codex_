@@ -13,31 +13,31 @@ metrics_schema_version: "2.0.0"
 
 stages:
   - id: index
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S1"]
   - id: facets
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S2"]
   - id: capabilities
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S3"]
   - id: scoring
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S4"]
   - id: gaps
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S5"]
   - id: render
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S6"]
   - id: manifest
-    script: audit_runner.py
+    script: ./scripts/space_traversal/audit_runner.py
     entry: stage
     args: ["S7"]
 
