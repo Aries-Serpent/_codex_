@@ -23,6 +23,7 @@ import contextlib
 import importlib
 import importlib.util
 import json
+import os
 import time
 import warnings
 from collections.abc import Iterable, Mapping, Sequence
@@ -36,7 +37,7 @@ from codex_ml.logging.mlflow_guard import (
     log_params_safe,
 )
 from codex_ml.training.device_strategy import DeviceConfig, DeviceMapper
-from codex_ml.training.rng_checkpoint import RNGState, set_seed
+from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.training.strategies import (
     TrainingCallback,
     TrainingResult,
@@ -47,6 +48,7 @@ from codex_ml.utils.checkpoint_core import (
     load_checkpoint,
     save_checkpoint,
 )
+from codex_ml.utils.repro import capture_environment, set_seed
 
 try:  # optional torch
     import torch
@@ -143,6 +145,10 @@ class UnifiedTrainingConfig:
     learning_rate: float = 3e-4
     seed: int = 42
     output_dir: str = "runs/unified"
+    config_version: str = "1.0"
+    dataset_version: str | None = None
+    deterministic: bool = True
+    auto_capture_env: bool = True
     backend: str | None = None  # "functional" | "legacy" | None (auto)
     mlflow_enable: bool = False
     wandb_enable: bool = False
@@ -169,6 +175,9 @@ class UnifiedTrainingConfig:
             errors.append("dtype must be one of {fp32, fp16, bf16}")
         if not (0 <= self.seed < 2**32):
             errors.append("seed must be in [0, 2**32)")
+        self.config_version = str(self.config_version)
+        self.deterministic = bool(self.deterministic)
+        self.auto_capture_env = bool(self.auto_capture_env)
         if self.continual is not None and not isinstance(self.continual, ContinualConfig):
             if isinstance(self.continual, Mapping):
                 self.continual = ContinualConfig(**dict(self.continual))
@@ -181,14 +190,35 @@ class UnifiedTrainingConfig:
 # ------------------------------ Seeding & Helpers -----------------------------
 
 
-def _seed_all(seed: int) -> None:
-    set_seed(seed)
+def _seed_all(seed: int, *, deterministic: bool = True) -> None:
+    set_seed(seed, deterministic=deterministic)
 
 
 def _auto_backend(cfg: UnifiedTrainingConfig) -> str:
     if cfg.backend:
         return cfg.backend
     return "functional"
+
+
+def distributed_context() -> dict[str, Any]:
+    """Capture distributed training context from environment and torch (best effort)."""
+
+    context: dict[str, Any] = {
+        "world_size": int(os.getenv("WORLD_SIZE", "1") or 1),
+        "rank": int(os.getenv("RANK", "0") or 0),
+        "local_rank": int(os.getenv("LOCAL_RANK", os.getenv("LOCALWORLD", "0")) or 0),
+    }
+    if torch is not None:
+        try:  # pragma: no cover - torch.distributed is optional
+            import torch.distributed as dist
+
+            if dist.is_available() and dist.is_initialized():
+                context["backend"] = dist.get_backend()
+                context["world_size"] = max(context["world_size"], dist.get_world_size())
+                context["rank"] = max(context["rank"], dist.get_rank())
+        except Exception:
+            context.setdefault("backend_error", "unavailable")
+    return context
 
 
 # ------------------------------- Orchestrator ---------------------------------
@@ -237,6 +267,8 @@ def _emit_checkpoint_epoch(
             "metrics": metrics,
             "keep_last": cfg.keep_last,
             "best_k": cfg.best_k,
+            "config_version": cfg.config_version,
+            "dataset_version": cfg.dataset_version,
         },
     )
 
@@ -294,6 +326,10 @@ def _write_checkpoint_metadata(
         payload["config_hash"] = checkpoint_meta.config_hash
     if checkpoint_meta.rng:
         payload["rng"] = checkpoint_meta.rng
+    if checkpoint_meta.config_version is not None:
+        payload["config_version"] = checkpoint_meta.config_version
+    if checkpoint_meta.dataset_version is not None:
+        payload["dataset_version"] = checkpoint_meta.dataset_version
 
     with contextlib.suppress(Exception):  # pragma: no cover
         (ckpt_dir / "metadata.json").write_text(
@@ -308,8 +344,10 @@ def run_unified_training(
 ) -> dict[str, Any]:
     """Execute training under unified orchestrator."""
     start = time.time()
-    _seed_all(cfg.seed)
+    _seed_all(cfg.seed, deterministic=bool(cfg.deterministic))
     rng_state = RNGState()
+    output_root = Path(cfg.output_dir)
+    output_root.mkdir(parents=True, exist_ok=True)
 
     mlflow_active = bool(cfg.mlflow_enable and init_mlflow_safe())
 
@@ -322,7 +360,18 @@ def run_unified_training(
         "global_step": 0,
         "resume_from": cfg.resume_from,
         "mlflow_active": mlflow_active,
+        "output_dir": str(output_root),
     }
+    state["distributed"] = distributed_context()
+    if cfg.dataset_version is not None:
+        state["dataset_version"] = cfg.dataset_version
+    if cfg.auto_capture_env:
+        env_dir = output_root / "environment"
+        try:
+            capture_environment(env_dir)
+            state["environment_snapshot"] = str(env_dir)
+        except Exception as exc:  # pragma: no cover - best effort capture
+            state["environment_snapshot_error"] = repr(exc)
     if isinstance(cfg.continual, ContinualConfig):
         state["continual"] = asdict(cfg.continual)
 
@@ -497,6 +546,8 @@ def run_unified_training(
         "elapsed_s": round(time.time() - start, 4),
         "resume_from": cfg.resume_from,
         "mlflow_active": mlflow_active,
+        "config_version": cfg.config_version,
+        "dataset_version": cfg.dataset_version,
     }
 
 
@@ -540,6 +591,7 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
 __all__ = [
     "ContinualConfig",
     "ContinualPhase",
+    "distributed_context",
     "UnifiedTrainingConfig",
     "run_unified_training",
     "train_loop",

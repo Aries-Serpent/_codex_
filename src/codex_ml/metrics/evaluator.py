@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Mapping
+from collections import Counter
+from typing import Iterable, Mapping
 
 try:  # pragma: no cover - torch optional in tests
     import torch
@@ -26,6 +27,73 @@ def _perplexity(avg_loss: float) -> float:
         return float(math.exp(avg_loss))
     except Exception:
         return float("inf")
+
+
+def _as_str_list(candidate: object) -> list[str] | None:
+    if candidate is None:
+        return None
+    if isinstance(candidate, str):
+        return [candidate]
+    if isinstance(candidate, Iterable) and not isinstance(candidate, Mapping):
+        values: list[str] = []
+        for item in candidate:
+            if item is None:
+                continue
+            values.append(str(item))
+        return values or None
+    return None
+
+
+def _unigram_overlap(pred: Iterable[str], ref: Iterable[str]) -> tuple[int, int, int]:
+    pred_counts = Counter(pred)
+    ref_counts = Counter(ref)
+    overlap = sum((pred_counts & ref_counts).values())
+    return overlap, sum(pred_counts.values()), sum(ref_counts.values())
+
+
+def _exact_match(preds: list[str], refs: list[str]) -> float:
+    total = min(len(preds), len(refs))
+    if total == 0:
+        return 0.0
+    matches = sum(1 for p, r in zip(preds, refs) if p == r)
+    return matches / total
+
+
+def _bleu1(preds: list[str], refs: list[str]) -> float:
+    if not preds or not refs:
+        return 0.0
+    scores: list[float] = []
+    for pred, ref in zip(preds, refs):
+        pred_tokens = pred.split()
+        ref_tokens = ref.split()
+        overlap, pred_total, ref_total = _unigram_overlap(pred_tokens, ref_tokens)
+        if pred_total == 0:
+            scores.append(0.0)
+            continue
+        precision = overlap / pred_total
+        brevity_penalty = 1.0 if pred_total > ref_total else (pred_total / ref_total) if ref_total else 0.0
+        scores.append(brevity_penalty * precision)
+    return float(sum(scores) / len(scores))
+
+
+def _rouge1_f1(preds: list[str], refs: list[str]) -> float:
+    if not preds or not refs:
+        return 0.0
+    scores: list[float] = []
+    for pred, ref in zip(preds, refs):
+        pred_tokens = pred.split()
+        ref_tokens = ref.split()
+        overlap, pred_total, ref_total = _unigram_overlap(pred_tokens, ref_tokens)
+        if overlap == 0:
+            scores.append(0.0)
+            continue
+        precision = overlap / pred_total if pred_total else 0.0
+        recall = overlap / ref_total if ref_total else 0.0
+        if precision + recall == 0:
+            scores.append(0.0)
+        else:
+            scores.append(2 * precision * recall / (precision + recall))
+    return float(sum(scores) / len(scores))
 
 
 def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict[str, float]:
@@ -56,6 +124,21 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
                 record["token_accuracy"] = float(accuracy_tensor.mean().item())
         except Exception:
             pass
+
+    text_preds = _as_str_list(getattr(outputs, "predictions", None))
+    if text_preds is None and isinstance(outputs, Mapping):
+        text_preds = _as_str_list(outputs.get("predictions"))
+    text_refs = None
+    if isinstance(batch, Mapping):
+        for key in ("references", "targets", "labels_text"):
+            text_refs = _as_str_list(batch.get(key))
+            if text_refs:
+                break
+
+    if text_preds and text_refs:
+        record["exact_match"] = _exact_match(text_preds, text_refs)
+        record["bleu1"] = _bleu1(text_preds, text_refs)
+        record["rouge1"] = _rouge1_f1(text_preds, text_refs)
 
     return record
 
