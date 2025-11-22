@@ -44,6 +44,13 @@ Components:
 - Safeguards: {{ cap.components.safeguards }}
 - Documentation: {{ cap.components.documentation }}
 
+{% if cap.meta %}
+Meta:
+{% for k, v in cap.meta.items() -%}
+- {{ k }}: {{ v }}
+{% endfor %}
+{% endif %}
+
 Patterns Found: {{ cap.found_patterns|join(", ") if cap.found_patterns else "None" }}
 
 Evidence Files (first 10):

@@ -365,12 +365,24 @@ DOCS_EXCLUDE_PREFIXES = (
     "audit_artifacts/",
 )
 
+DOCS_INCLUDE_PREFIXES = (
+    "docs/",
+)
+
+DOCS_STANDALONE_FILES = {
+    "README.md",
+}
+
 
 def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
     def _is_doc(path: str) -> bool:
-        if not (path.startswith("docs/") or path.endswith(".md")):
+        if not path.endswith(".md"):
             return False
-        return not any(path.startswith(prefix) for prefix in DOCS_EXCLUDE_PREFIXES)
+        if any(path.startswith(prefix) for prefix in DOCS_EXCLUDE_PREFIXES):
+            return False
+        if any(path.startswith(prefix) for prefix in DOCS_INCLUDE_PREFIXES):
+            return True
+        return path in DOCS_STANDALONE_FILES
 
     docs = [p for p in file_cache if _is_doc(p)]
     token = cap_id.split("-")[0]
@@ -448,6 +460,7 @@ def stage_s4_scoring(cfg, raw_caps):
             "score": round(score, 4),
             "evidence_files": cap.get("evidence_files", []),
             "found_patterns": cap.get("found_patterns", []),
+            "meta": cap.get("meta", {}),
             "explain": explanation
         })
 
