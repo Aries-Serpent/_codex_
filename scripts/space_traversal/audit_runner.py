@@ -167,6 +167,8 @@ def _normalize_detector_output(det: dict) -> dict:
     if not isinstance(det, dict) or "id" not in det:
         raise ValueError("Detector output must be dict with 'id'")
     meta = det.get("meta", {}) or {}
+    docs_keywords = det.get("docs_keywords") or []
+    normalized_docs_keywords = sorted({kw.lower() for kw in docs_keywords}) if docs_keywords else []
     if "evidence" in det:
         evidence_list = det.get("evidence", [])
         evidence_files = [e.get("path") for e in evidence_list if isinstance(e, dict) and e.get("path")]
@@ -178,6 +180,7 @@ def _normalize_detector_output(det: dict) -> dict:
         "evidence_files": sorted(set(evidence_files)),
         "found_patterns": sorted(set(det.get("found_patterns", []))),
         "required_patterns": det.get("required_patterns", []),
+        "docs_keywords": normalized_docs_keywords,
         "meta": meta,
     }
 
@@ -255,6 +258,7 @@ def stage_s3_capabilities(cfg, facets):
             "evidence_files": sorted(set(evidence_files)),
             "found_patterns": sorted(pattern_hits),
             "required_patterns": rule["required_patterns"],
+            "docs_keywords": rule.get("docs_keywords", []),
             "meta": {},
         })
     # Dynamic detectors
@@ -285,7 +289,17 @@ def stage_s3_capabilities(cfg, facets):
         missing_refs = []
         missing_by_canonical: Dict[str, List[str]] = {}
         for canonical, aliases in overrides.items():
-            base = by_id.get(canonical, {"id": canonical, "evidence_files": [], "found_patterns": [], "required_patterns": [], "meta": {}})
+            base = by_id.get(
+                canonical,
+                {
+                    "id": canonical,
+                    "evidence_files": [],
+                    "found_patterns": [],
+                    "required_patterns": [],
+                    "docs_keywords": [],
+                    "meta": {},
+                },
+            )
             base_from_existing = canonical in by_id
             alias_contributed = False
             for alias in aliases:
@@ -298,6 +312,7 @@ def stage_s3_capabilities(cfg, facets):
                 base["evidence_files"] = sorted(set(base.get("evidence_files", []) + a.get("evidence_files", [])))
                 base["found_patterns"] = sorted(set(base.get("found_patterns", []) + a.get("found_patterns", [])))
                 base["required_patterns"] = sorted(set(base.get("required_patterns", []) + a.get("required_patterns", [])))
+                base["docs_keywords"] = sorted(set(base.get("docs_keywords", []) + a.get("docs_keywords", [])))
                 base.setdefault("meta", {})
                 base["meta"].setdefault("_aliases", [])
                 if alias not in base["meta"]["_aliases"]:
@@ -373,8 +388,47 @@ DOCS_STANDALONE_FILES = {
     "README.md",
 }
 
+DOCS_SYNONYMS_MAP = {
+    "checkpointing": ["ckpt", "checkpointing", "checkpoints"],
+    "tokenization": ["tokenizer", "tokenize", "bpe", "sentencepiece"],
+    "training-engine": ["trainer", "training", "train"],
+    "evaluation-metrics": ["metrics", "eval", "perplexity", "accuracy", "loss"],
+    "data-pipeline": ["dataset", "dataloader", "loader", "ingest", "preprocess"],
+    "safety-security": ["sanitize", "redact", "secret", "security", "baseline"],
+    "logging-tracking": ["tracking", "mlflow", "wandb", "tensorboard", "log"],
+    "configuration": ["config", "hydra", "omegaconf", "yaml"],
+    "ml-serving": ["serve", "api", "inference", "predict", "fastapi"],
+    "inference-serving": ["serve", "api", "inference", "predict", "fastapi"],
+    "status-reporting": ["status", "audit", "report", "codex_status"],
+    "archival-bundling": ["archive", "bundle", "manifest", "pointer"],
+}
 
-def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
+
+def _expand_doc_tokens(cap_id: str, docs_keywords: List[str]) -> set[str]:
+    tokens = set()
+    base = (cap_id or "").split("-")[0].lower()
+    seeds = [base] if base else []
+    seeds.extend(docs_keywords or [])
+    for tok in seeds:
+        if not tok:
+            continue
+        t = tok.lower()
+        tokens.add(t)
+        tokens.add(t.replace("-", " "))
+        if not t.endswith("s"):
+            tokens.add(f"{t}s")
+    synonyms = DOCS_SYNONYMS_MAP.get(cap_id, []) + DOCS_SYNONYMS_MAP.get(base, [])
+    for syn in synonyms:
+        s = syn.lower()
+        tokens.add(s)
+        if not s.endswith("s"):
+            tokens.add(f"{s}s")
+    return tokens
+
+
+def _docs_score(cap_id: str, file_cache: Dict[str, str], docs_keywords: List[str]) -> float:
+    tokens = _expand_doc_tokens(cap_id, docs_keywords)
+
     def _is_doc(path: str) -> bool:
         if not path.endswith(".md"):
             return False
@@ -385,11 +439,18 @@ def docs_score(cap_id: str, file_cache: Dict[str, str]) -> float:
         return path in DOCS_STANDALONE_FILES
 
     docs = [p for p in file_cache if _is_doc(p)]
-    token = cap_id.split("-")[0]
-    hits = sum(1 for p in docs if token in file_cache[p].lower())
     if not docs:
         return 0.0
+    hits = 0
+    for p in docs:
+        text = file_cache.get(p, "").lower()
+        if any(tok in text for tok in tokens):
+            hits += 1
     return min(1.0, hits / max(3, len(docs) * 0.1))
+
+
+def docs_score(cap_id: str, file_cache: Dict[str, str], docs_keywords: List[str] | None = None) -> float:
+    return _docs_score(cap_id, file_cache, docs_keywords or [])
 
 def stage_s4_scoring(cfg, raw_caps):
     try:
@@ -440,7 +501,7 @@ def stage_s4_scoring(cfg, raw_caps):
                 coverage_value = sum(vals) / len(vals)
                 tests = max(tests, coverage_value)
         safeguards = safeguard_score(cap.get("evidence_files", []), file_cache)
-        documentation = docs_score(cap.get("id"), file_cache)
+        documentation = docs_score(cap.get("id"), file_cache, cap.get("docs_keywords", []))
         components = {
             "functionality": functionality,
             "consistency": consistency,
