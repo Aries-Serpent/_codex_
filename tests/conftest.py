@@ -5,12 +5,23 @@ are not installed in the CI/test environment.
 """
 from __future__ import annotations
 import importlib.util
+import importlib
+import importlib.machinery
+import importlib.util
 import sys
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
+# site-packages modules when they are installed. We still keep the repository
+# root on sys.path for project imports but move it to the end of the search
+# order so optional dependency discovery prefers the genuine distributions.
+if (repo_str := str(REPO_ROOT)) in sys.path:
+    sys.path.remove(repo_str)
+    sys.path.append(repo_str)
 
 HEAVY_MODULES = [
     "numpy",
@@ -49,11 +60,30 @@ def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = Non
     return origin_path.is_relative_to(REPO_ROOT / name)
 
 
+def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | None:
+    """Resolve ``modname`` while preferring non-stub site-packages specs."""
+
+    primary_spec = importlib.util.find_spec(modname)
+    if primary_spec and not _is_stub_module(modname, primary_spec):
+        return primary_spec
+
+    clean_paths = [
+        p
+        for p in sys.path
+        if not Path(p).resolve().is_relative_to(REPO_ROOT)
+    ]
+    alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
+    if alternate and not _is_stub_module(modname, alternate):
+        return alternate
+
+    return primary_spec or alternate
+
+
 def _missing_modules(modules: list[str]) -> list[str]:
     missing: list[str] = []
 
     for mod in modules:
-        spec = importlib.util.find_spec(mod)
+        spec = _find_spec_prefer_real(mod)
         if spec is None or _is_stub_module(mod, spec):
             missing.append(mod)
 
@@ -76,7 +106,7 @@ def _importorskip_optional_dep(
     expected when optional ML dependencies are absent.
     """
 
-    spec = importlib.util.find_spec(modname)
+    spec = _find_spec_prefer_real(modname)
     if spec is None or _is_stub_module(modname, spec):
         message = reason or f"{modname} is not installed"
         raise pytest.skip.Exception(message, allow_module_level=True)
