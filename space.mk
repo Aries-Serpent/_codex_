@@ -35,11 +35,15 @@ space-clean:
 # Inference pipeline helpers (deterministic, offline-first)
 .PHONY: inference-run
 inference-run:
-	$(SPACE_PY) scripts/inference_pipeline.py --config .copilot-space/workflow.yaml --input scripts/config/sample_inference_input.json --output audit_artifacts/inference_output.json
+@echo "[INFO] Running deterministic inference (WANDB_MODE=offline)"
+@export WANDB_MODE=offline; \
+$(SPACE_PY) scripts/inference_pipeline.py --config .copilot-space/workflow.yaml --input scripts/config/sample_inference_input.json --output audit_artifacts/inference_output.json
 
 .PHONY: inference-fast
 inference-fast:
-	$(SPACE_PY) scripts/inference_pipeline.py --config .copilot-space/workflow.yaml --input scripts/config/sample_inference_input.json --output audit_artifacts/inference_output.json --explain
+@echo "[INFO] Running deterministic inference (explain) (WANDB_MODE=offline)"
+@export WANDB_MODE=offline; \
+$(SPACE_PY) scripts/inference_pipeline.py --config .copilot-space/workflow.yaml --input scripts/config/sample_inference_input.json --output audit_artifacts/inference_output.json --explain
 
 .PHONY: inference-test
 inference-test:

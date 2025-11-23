@@ -56,6 +56,12 @@ class DummyAutoModel:
         return DummyModel()
 
 
+class NamedDummyTokenizer(DummyTokenizer):
+    def __init__(self, name):
+        super().__init__()
+        self.name_or_path = name
+
+
 def _write_config(tmp_path: Path, model_dir: Path) -> Path:
     cfg = {
         "inference": {
@@ -110,3 +116,36 @@ def test_invalid_input_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
     context = {"tokenizer": tokenizer}
     with pytest.raises(ValueError):
         pipeline.stage_i2_preprocess({}, context, cfg)
+
+
+def test_token_cache_keys_include_tokenizer_and_model(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    os.environ["WANDB_MODE"] = "offline"
+    pipeline.TOKEN_CACHE.clear()
+    cfg = pipeline.InferenceConfig(model_path=tmp_path / "model", max_input_length=16)
+    context_a = {"tokenizer": NamedDummyTokenizer("tok-a"), "model_hash": "hash-a"}
+    context_b = {"tokenizer": NamedDummyTokenizer("tok-b"), "model_hash": "hash-b"}
+    inputs = {"text": "hello world"}
+
+    res_a = pipeline.stage_i2_preprocess(inputs, context_a, cfg)
+    res_b = pipeline.stage_i2_preprocess(inputs, context_b, cfg)
+
+    assert res_a["tokens"]["input_ids"].shape == res_b["tokens"]["input_ids"].shape
+    assert len(pipeline.TOKEN_CACHE) == 2
+
+
+def test_allow_online_flag_bypasses_enforcement(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+    # Ensure pipeline can be invoked with allow_online when WANDB_MODE is not set
+    os.environ.pop("WANDB_MODE", None)
+    model_dir = tmp_path / "model"
+    model_dir.mkdir()
+    (model_dir / "config.json").write_text("{}")
+
+    monkeypatch.setattr(pipeline, "AutoTokenizer", DummyAutoTokenizer)
+    monkeypatch.setattr(pipeline, "AutoModelForCausalLM", DummyAutoModel)
+
+    config_path = _write_config(tmp_path, model_dir)
+    input_path = _write_input(tmp_path)
+    out_path = tmp_path / "out.json"
+
+    result = pipeline.run_pipeline(config_path, input_path, out_path, allow_online=True)
+    assert "output_hash" in result
