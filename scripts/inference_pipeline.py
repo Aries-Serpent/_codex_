@@ -152,7 +152,7 @@ def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
 def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
     model_path = cfg.model_path
     if not model_path.exists():
-        raise FileNotFoundError(f"Model path not found: {model_path}")
+        raise ValueError(f"Model path not found: {model_path}")
     model_hash = sha256_path(model_path)
     cache_key = f"{str(model_path)}:{model_hash}"
     if cache_key in MODEL_CACHE:
