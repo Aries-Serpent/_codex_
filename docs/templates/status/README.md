@@ -9,7 +9,7 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
   - All v1.1 features plus schema validation, security input validation, and audit integrity chains
   - Structured tracking for git context, environment, ML Test Scores, Hydra configs
   - Integrated with validation tooling (`tools/validate_configs.py`, `src/codex_ml/cli/validate.py`)
-  
+
 - **codex_status_template_v1.1.md** - Original comprehensive template (v1.1)
   - Full structure for repo audits with snapshot, delta tracking, patch diffs
   - Dynamic capability discovery and reproducibility tracking
@@ -26,19 +26,25 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
 - **authoring_guide_v1.2.md** - Enhanced authoring guide for v1.2 **[RECOMMENDED]**
   - Includes schema validation, security input validation, and audit integrity guidance
   - Documents integration with validation tooling
-  
+
 - **authoring_guide_v1.1.md** - Original authoring guide (v1.1)
   - Cadence, storage, scoring rubric
   - Dynamic capabilities and reproducibility registry
-  
+
 - **diff_style_guide_v1.2.md** - Enhanced diff style guide for v1.2 **[RECOMMENDED]**
   - Schema validation requirements for patches
   - Security code handling guidance
-  
+
 - **diff_style_guide_v1.1.md** - Original diff style guide (v1.1)
   - Mandatory patch elements
   - Canonical diff fences format
   - Chunking and sequencing
+
+## Audit pipeline linkage (single canonical view)
+
+- The capability-audit command path lives in `docs/cli/status_audit.md` and orchestrates `scripts/space_traversal/audit_runner.py` → `status_update_report.py` using these templates/schemas.
+- Detectors that populate the capability catalog are documented in `detectors/README.md` and implemented under `scripts/space_traversal/detectors/`.
+- Validation helpers (`tools/validate_status_report.py`, `tools/generate_status_update.py`) and tests (`tests/templates/test_status_template.py`, `tests/cli/test_status_audit.py`, `tests/detectors/`) keep the template + pipeline in sync and reproducible.
 
 ## Usage
 
@@ -117,13 +123,13 @@ Previous version: **v1.1** (Still supported)
   - **Audit Integrity**: SHA256 hashing for tamper-evident audit trails
   - **Enhanced Tracking**: Nox sessions, MLflow offline, per-module coverage, determinism tests
   - **See `SCHEMA_ENHANCEMENTS_v1.2.md` for complete details**
-  
-- **v1.1** (2025-11-02): 
+
+- **v1.1** (2025-11-02):
   - Dynamic Capability Audit with Extended Catalog
   - Reproducibility Registry for extensible controls
   - Schemas updated to allow additional properties and tagging
-  
-- **v1.0** (2025-11-02): 
+
+- **v1.0** (2025-11-02):
   - Initial release with full snapshot, delta tracking
   - Severity/Confidence scoring (1-5)
   - Atomic patch diffs with validation checklists

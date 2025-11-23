@@ -86,6 +86,26 @@ The command orchestrates two main tools:
 1. `scripts/space_traversal/audit_runner.py`: Runs the capability audit pipeline (stages S1-S7)
 2. `scripts/space_traversal/status_update_report.py`: Generates the status update report
 
+## Deterministic capability-audit compilation (single reference)
+
+Use this checklist when you need one canonical view of the capability-audit pipeline and its supporting assets:
+
+- **Entrypoint & orchestration**: `cli/status_audit.py` (this command) calls `scripts/space_traversal/audit_runner.py` for capability detection and `scripts/space_traversal/status_update_report.py` for report assembly.
+- **Schemas & templates**: `docs/templates/status/codex_status_template_v1.2.md` with schemas `docs/templates/status/codex_status_template.schema_v1.2.json` and `.yaml`; authoring guidance in `docs/templates/status/authoring_guide_v1.2.md`.
+- **Detectors guidance**: `detectors/README.md` plus detector implementations under `scripts/space_traversal/detectors/` (keep outputs deterministic and side-effect free).
+- **Config & validation helpers**: `tools/validate_status_report.py`, `tools/generate_status_update.py`, and schema helpers in `scripts/space_traversal/schemas/`.
+- **Tests that guard production behavior**: `tests/cli/test_status_audit.py` (CLI wiring), `tests/templates/test_status_template.py` (templates/schemas present), and `tests/detectors/` (detector contract).
+
+Recommended verification commands (use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` for determinism):
+
+```bash
+codex-status-audit --quick --output reports --artifacts audit_artifacts
+python tools/validate_status_report.py --help  # confirm validation CLI available
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/cli/test_status_audit.py tests/templates/test_status_template.py tests/detectors
+```
+
+If optional ML dependencies are missing, run with `--skip-audit` to reuse existing artifacts while still exercising the reporting path.
+
 ## See Also
 
 - `codex-audit-runner run`: Run the full audit pipeline directly
