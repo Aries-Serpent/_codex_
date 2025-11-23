@@ -58,3 +58,20 @@ def test_list_steps_subprocess(tmp_path):
 
     assert result.returncode == 0
     assert "step_1_1_resolve_repo_root_and_branches" in result.stdout
+
+
+def test_main_exits_non_zero_on_step_failure(tmp_path, monkeypatch):
+    """`main` should propagate failures instead of masking them."""
+
+    _patch_output_roots(tmp_path)
+
+    def failing_step(ctx):
+        raise RuntimeError("Simulated failure")
+
+    failing_wrapped = orchestrator.phase_step(1, "1.1", "Test step")(failing_step)
+    monkeypatch.setattr(orchestrator, "step_1_1_resolve_repo_root_and_branches", failing_wrapped)
+    monkeypatch.setattr(orchestrator, "PHASE_FUNCTIONS", [failing_wrapped])
+
+    exit_code = orchestrator.main(["--steps", "1.1"])
+
+    assert exit_code == 1

@@ -79,6 +79,15 @@ class StepContext:
     description: str
 
 
+class StepFailure(RuntimeError):
+    """Raised when a phase step fails and has already been captured."""
+
+    def __init__(self, ctx: StepContext, original: BaseException):
+        super().__init__(f"Step {ctx.phase_id}.{ctx.step_id} failed: {original}")
+        self.ctx = ctx
+        self.original = original
+
+
 # ---- Utility helpers -------------------------------------------------------------------------
 
 
@@ -173,7 +182,7 @@ def phase_step(phase_id: int, step_id: str, description: str):
             except Exception as exc:  # noqa: BLE001
                 log(f"ERROR {ctx.phase_id}.{ctx.step_id} - {exc}")
                 error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs}")
-                return None
+                raise StepFailure(ctx, exc) from exc
 
         wrapper.phase_id = phase_id
         wrapper.step_label = step_id
@@ -529,7 +538,11 @@ def main(argv: Optional[List[str]] = None) -> int:
             continue
 
         log(f"Running {label} ({fn.__name__})")
-        fn()
+        try:
+            fn()
+        except StepFailure as exc:
+            log(f"Aborting after failure in {label}: {exc}")
+            return 1
 
     log("Finished codex_audit_orchestrator run")
     return 0
@@ -537,3 +550,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
