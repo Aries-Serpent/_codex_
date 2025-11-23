@@ -9,10 +9,13 @@
 torch>=2.1
 
 # Transformers (without model downloads)
-transformers>=4.38.0
+transformers>=4.41
 
 # Tokenization
 sentencepiece>=0.1.99
+
+# Deterministic numeric kernels
+numpy>=1.26
 
 # Note: Do NOT include:
 # - accelerate (pulls CUDA dependencies)
