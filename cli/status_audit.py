@@ -117,13 +117,15 @@ def main(argv: List[str] | None = None) -> int:
     print("=" * 70)
     print()
 
+    artifacts_dir = Path(args.artifacts)
+
     # Step 1: Run audit pipeline (unless skipped)
     if not args.skip_audit:
         print("[STEP 1/2] Running capability audit pipeline")
-        print(f"           Artifacts will be saved to: {args.artifacts}/")
+        print(f"           Artifacts will be saved to: {artifacts_dir}/")
         print()
 
-        audit_cmd = [sys.executable, str(audit_runner), "run", "--artifacts-dir", args.artifacts]
+        audit_cmd = [sys.executable, str(audit_runner), "run", "--artifacts-dir", str(artifacts_dir)]
         rc = _run_command(audit_cmd, "Capability audit")
 
         if rc != 0:
@@ -132,6 +134,17 @@ def main(argv: List[str] | None = None) -> int:
     else:
         print("[STEP 1/2] Skipping audit pipeline (using existing artifacts)")
         print()
+
+        # Validate required artifacts before attempting report generation
+        required_artifacts = [artifacts_dir / "capabilities_scored.json"]
+        missing = [p for p in required_artifacts if not p.exists()]
+        if missing:
+            print(
+                "[ERROR] Missing required audit artifacts when --skip-audit is used:\n"
+                + "\n".join(f" - {p}" for p in missing),
+                file=sys.stderr,
+            )
+            return 2
 
     # Step 2: Generate status update report
     print("[STEP 2/2] Generating status update report")
@@ -142,7 +155,7 @@ def main(argv: List[str] | None = None) -> int:
         sys.executable,
         str(status_reporter),
         "--artifacts",
-        args.artifacts,
+        str(artifacts_dir),
         "--reports",
         args.output,
     ]

@@ -20,12 +20,16 @@ Security & Safety:
 - Wrap any heavy parsing in functions invoked by the detect function (not on import).
 - Add unit tests for detector behavior and ensure deterministic outputs (no random order).
 - Use defensive coding: validate input, return canonical types, and raise descriptive exceptions.
+- Ensure ordering is deterministic: sort any lists you emit in results so downstream capability scoring remains stable across runs.
+- Keep outputs small and text-only; audit_runner enforces `SAFE_TEXT_EXT` and size limits for deterministic hashing.
 
 Best Practices:
 - Keep detectors minimal and deterministic.
 - Document detector id and intent in module-level docstring.
 - Add a corresponding unit test under tests/detectors/ to validate expected outputs for sample file_index.
 - When adding new detectors, request code review.
+- If a detector depends on configuration files, validate their presence explicitly and provide actionable error messages so
+  `codex-status-audit --skip-audit` can surface missing prerequisites quickly.
 
 Pipeline integration & verification:
 - Runtime wiring: detectors are imported by `scripts/space_traversal/audit_runner.py` during the capability-audit pipeline invoked via `codex-status-audit`.
