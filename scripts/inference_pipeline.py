@@ -1,26 +1,19 @@
 #!/usr/bin/env python
 """
-Deterministic Inference Pipeline Runner (v1.0.3)
+Deterministic Inference Pipeline Runner (v1.0.2)
 
-Stages:
-  - I1: Load Model
-  - I2: Preprocess Inputs
-  - I3: Run Inference
-  - I4: Postprocess & Hash
-
-The pipeline enforces offline execution and deterministic seeds. It emits a
-manifest with SHA256 hashes for inputs, model weights, and outputs to ensure
-reproducibility and integrity.
-
-Changelog:
-- v1.0.1: Fixed token cache scoping to include tokenizer config hash (P1 issue).
-- v1.0.2: Added fallback for tokenizer.name_or_path to handle test stubs without the attribute.
-- v1.0.3: Hardened cache keys (model/tokenizer/max_length/override) and added optional online override flag.
+Production hardening:
+ - Ensure importlib is imported for dynamic preprocessor overrides.
+ - Token cache key includes model_hash, tokenizer identity, max_input_length, and preprocessor override identifier.
+ - Safe tokenizer identity extraction (fallbacks).
+ - Use context["tokenizer"] in inference stage (no NameError).
+ - Keep strict offline default via WANDB_MODE=offline; add --allow-online hidden flag for test harnesses.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import inspect
 import json
 import os
@@ -35,40 +28,36 @@ import torch
 import yaml
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-PIPELINE_VERSION = "1.0.3"
+PIPELINE_VERSION = "1.0.2"
 DEFAULT_SEED = 42
 MAX_INPUT_LENGTH = 512
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
+
+# Caches
 MODEL_CACHE: Dict[str, Tuple[torch.nn.Module, Any, str]] = {}
 TOKEN_CACHE: Dict[str, Dict[str, torch.Tensor]] = {}
 
-
 @dataclass
 class InferenceConfig:
-    """Configuration for deterministic inference. Version: v1.0.2"""
-
     model_path: Path
     seed: int = DEFAULT_SEED
     deterministic: bool = True
     max_input_length: int = MAX_INPUT_LENGTH
     preprocessor_override: Optional[str] = None
 
-
 class DeterminismError(RuntimeError):
-    """Raised when deterministic constraints are violated."""
+    pass
 
-
+# ---- Utilities ----
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
-
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 16), b""):
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
-
 
 def sha256_path(path: Path) -> str:
     if path.is_file():
@@ -79,12 +68,11 @@ def sha256_path(path: Path) -> str:
             if child.is_dir():
                 continue
             digest.update(child.relative_to(path).as_posix().encode("utf-8"))
-            with child.open("rb") as handle:
-                for chunk in iter(lambda: handle.read(1 << 15), b""):
+            with child.open("rb") as fh:
+                for chunk in iter(lambda: fh.read(1 << 15), b""):
                     digest.update(chunk)
         return digest.hexdigest()
     raise FileNotFoundError(f"Cannot hash missing path: {path}")
-
 
 def enforce_offline_mode(allow_online: bool = False) -> None:
     if allow_online:
@@ -92,15 +80,7 @@ def enforce_offline_mode(allow_online: bool = False) -> None:
     if os.environ.get("WANDB_MODE") != "offline":
         raise DeterminismError("Offline mode required: set WANDB_MODE=offline for inference")
 
-
 def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True) -> None:
-    """
-    Set global seeds for Python, NumPy, and torch. Version: v1.0.2
-
-    This function also toggles deterministic algorithms where supported to
-    reduce nondeterministic kernel usage.
-    """
-
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -110,22 +90,33 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
         try:
             torch.use_deterministic_algorithms(True, warn_only=False)
         except Exception:
+            # Older torch versions may not support warn_only
             torch.use_deterministic_algorithms(True)
         torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
         torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
 
-
 def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.Tensor]]:
-    module_path, func_name = path_str.split(":", maxsplit=1)
-    module = importlib.import_module(module_path)
-    fn = getattr(module, func_name)
+    """
+    Load a callable given a module.path:callable_name string.
+    Raises informative errors on failure.
+    """
+    try:
+        module_path, func_name = path_str.split(":", maxsplit=1)
+    except Exception as e:
+        raise TypeError(f"preprocessor_override must be 'module_path:callable'; got: {path_str}") from e
+
+    try:
+        module = importlib.import_module(module_path)
+    except Exception as e:
+        raise ImportError(f"Failed to import module '{module_path}' for override '{path_str}': {e}") from e
+
+    fn = getattr(module, func_name, None)
     if not callable(fn):
-        raise TypeError(f"Override {path_str} is not callable")
+        raise TypeError(f"Override {path_str} is not callable or not found in module")
     sig = inspect.signature(fn)
     if len(sig.parameters) < 2:
         raise TypeError("Preprocessor override must accept at least (text, tokenizer, *args)")
     return fn
-
 
 def load_inference_config(config_path: Path) -> InferenceConfig:
     if not config_path.exists():
@@ -139,80 +130,61 @@ def load_inference_config(config_path: Path) -> InferenceConfig:
     deterministic = bool(inference_cfg.get("deterministic", True))
     max_input_length = int(inference_cfg.get("max_input_length", MAX_INPUT_LENGTH))
     preprocessor_override = inference_cfg.get("preprocessor_override")
-    return InferenceConfig(
-        model_path=model_path,
-        seed=seed,
-        deterministic=deterministic,
-        max_input_length=max_input_length,
-        preprocessor_override=preprocessor_override,
-    )
+    return InferenceConfig(model_path=model_path, seed=seed, deterministic=deterministic, max_input_length=max_input_length, preprocessor_override=preprocessor_override)
 
-
+# ---- Load model ----
 def _load_model_from_directory(model_dir: Path) -> Tuple[torch.nn.Module, Any]:
     tokenizer = AutoTokenizer.from_pretrained(str(model_dir), local_files_only=True)
     model = AutoModelForCausalLM.from_pretrained(str(model_dir), local_files_only=True)
     model.eval()
     return model, tokenizer
 
-
 def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
     loaded = torch.load(model_path, map_location="cpu")
     if isinstance(loaded, torch.nn.Module):
         model = loaded
     else:
-        raise ValueError("Expected a torch.nn.Module in the serialized file for deterministic inference")
+        raise ValueError("Serialized model file must contain a torch.nn.Module")
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(str(model_path.parent), local_files_only=True)
     return model, tokenizer
 
-
 def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
-    """
-    Loads model deterministically from path with seeded RNG. Version: v1.0.2
-
-    Cache is keyed by the model hash to avoid repeated loads.
-    """
-
     model_path = cfg.model_path
     if not model_path.exists():
-        raise ValueError(f"Model path {model_path} not found. Ensure pre-trained model is available locally.")
-
+        raise FileNotFoundError(f"Model path not found: {model_path}")
     model_hash = sha256_path(model_path)
-    cache_key = f"{model_path}:{model_hash}"
-    cached = MODEL_CACHE.get(cache_key)
-    if cached:
-        model, tokenizer, _ = cached
-        return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash, "meta": {"source": "cache"}}
-
+    cache_key = f"{str(model_path)}:{model_hash}"
+    if cache_key in MODEL_CACHE:
+        model, tokenizer, _ = MODEL_CACHE[cache_key]
+        return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash}
     set_deterministic_seeds(cfg.seed, cfg.deterministic)
     if model_path.is_dir():
         model, tokenizer = _load_model_from_directory(model_path)
     else:
         model, tokenizer = _load_model_from_file(model_path)
-
     MODEL_CACHE[cache_key] = (model, tokenizer, model_hash)
-    return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash, "meta": {"source": "disk"}}
+    return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash}
 
-
+# ---- Preprocess with scoped token cache ----
 def _tokenizer_identity(tokenizer: Any) -> str:
-    name = getattr(tokenizer, "name_or_path", None)
+    # Prefer name_or_path or pretrained_model_name_or_path; fallback to class name + repr fragment for uniqueness
+    name = getattr(tokenizer, "name_or_path", None) or getattr(tokenizer, "pretrained_model_name_or_path", None)
     if name:
         return str(name)
     cls = tokenizer.__class__.__name__
-    rep = getattr(tokenizer, "__repr__", None)
-    frag = rep()[:64] if callable(rep) else cls
-    return f"{cls}:{frag}"
-
+    try:
+        rep = tokenizer.__repr__()[:64]
+    except Exception:
+        rep = cls
+    return f"{cls}:{rep}"
 
 def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig,
                         override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None) -> Dict[str, Any]:
-    """Tokenize and batch inputs using fixed tokenization. Version: v1.0.3"""
-
     tokenizer = context["tokenizer"]
     text = inputs.get("text")
     if not isinstance(text, str) or not text.strip():
         raise ValueError("Input must contain 'text' field with non-empty string.")
-
     input_hash = sha256_bytes(json.dumps(inputs, sort_keys=True).encode("utf-8"))
     model_hash = context.get("model_hash", "unknown_model")
     tokenizer_id = _tokenizer_identity(tokenizer)
@@ -221,37 +193,25 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
     if cache_key in TOKEN_CACHE:
         cached_tokens = TOKEN_CACHE[cache_key]
         return {"tokens": {k: v.clone() for k, v in cached_tokens.items()}, "input_hash": input_hash}
-
     tokenizer.model_max_length = min(getattr(tokenizer, "model_max_length", cfg.max_input_length), cfg.max_input_length)
     if override:
         tokens = override(text, tokenizer, cfg.max_input_length)
     else:
         tokens = tokenizer(
-            text,
-            return_tensors="pt",
-            truncation=True,
-            max_length=cfg.max_input_length,
-            padding=False,
+            text, return_tensors="pt", truncation=True, max_length=cfg.max_input_length, padding=False
         )
     if tokens.get("input_ids") is None:
         raise ValueError("Tokenizer must return 'input_ids' for inference")
     if tokens["input_ids"].shape[0] != 1:
         raise ValueError("Batch size must be 1 for deterministic inference")
-
     TOKEN_CACHE[cache_key] = {k: v.clone() for k, v in tokens.items()}
     return {"tokens": tokens, "input_hash": input_hash}
 
-
+# ---- Inference ----
 def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig) -> Dict[str, Any]:
-    """
-    Execute model prediction with seeded RNG. Version: v1.0.2
-    Uses greedy decoding to avoid nondeterministic sampling.
-    """
-
     model = context["model"]
     tokenizer = context["tokenizer"]
     tokens = processed["tokens"]
-
     set_deterministic_seeds(cfg.seed, cfg.deterministic)
     with torch.no_grad():
         if hasattr(model, "generate"):
@@ -272,13 +232,11 @@ def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], c
                 raise ValueError("Model output missing 'logits' for greedy decoding")
             top_ids = logits.argmax(dim=-1)
             decoded = tokenizer.decode(top_ids[0], skip_special_tokens=True)
-    return {"predictions": decoded, "raw": decoded}
+    return {"predictions": decoded}
 
-
+# ---- Postprocess ----
 def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], context: Dict[str, Any],
                          cfg: InferenceConfig, timings: Dict[str, float]) -> Dict[str, Any]:
-    """Format outputs and compute SHA256 hashes for integrity. Version: v1.0.2"""
-
     payload = {
         "predictions": results["predictions"],
         "input_hash": processed["input_hash"],
@@ -296,59 +254,36 @@ def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], con
     }
     return manifest
 
-
-def build_manifest(output: Dict[str, Any], output_path: Path) -> Dict[str, Any]:
-    artifact_hash = sha256_bytes(json.dumps(output, sort_keys=True).encode("utf-8"))
-    return {
-        "artifacts": {
-            "output": {
-                "path": str(output_path),
-                "hash": artifact_hash,
-            }
-        },
-        "pipeline_version": PIPELINE_VERSION,
-        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    }
-
-
-def run_pipeline(config_path: Path, input_path: Path, output_path: Path, manifest_path: Optional[Path] = None,
-                 explain: bool = False, allow_online: bool = False) -> Dict[str, Any]:
+# ---- Runner ----
+def run_pipeline(config_path: Path, input_path: Path, output_path: Path, manifest_path: Optional[Path] = None, explain: bool = False, allow_online: bool = False) -> Dict[str, Any]:
     enforce_offline_mode(allow_online=allow_online)
     cfg = load_inference_config(config_path)
     override = _load_callable(cfg.preprocessor_override) if cfg.preprocessor_override else None
-
     inputs = json.loads(input_path.read_text())
-
     timings: Dict[str, float] = {}
-
     start = time.perf_counter()
     context = stage_i1_load_model(cfg)
     timings["I1_load_model_s"] = time.perf_counter() - start
-
     start = time.perf_counter()
     processed = stage_i2_preprocess(inputs, context, cfg, override)
     timings["I2_preprocess_s"] = time.perf_counter() - start
-
     start = time.perf_counter()
     results = stage_i3_run_inference(processed, context, cfg)
     timings["I3_infer_s"] = time.perf_counter() - start
-
     start = time.perf_counter()
     output = stage_i4_postprocess(results, processed, context, cfg, timings)
     timings["I4_postprocess_s"] = time.perf_counter() - start
-
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(output, indent=2))
-
     if manifest_path:
-        manifest = build_manifest(output, output_path)
+        manifest = {"pipeline_version": PIPELINE_VERSION, "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "output_hash": output["output_hash"]}
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         manifest_path.write_text(json.dumps(manifest, indent=2))
     if explain:
         print(json.dumps({"output_hash": output["output_hash"], "timings": timings}, indent=2))
     return output
 
-
+# ---- CLI ----
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Deterministic Inference Pipeline")
     parser.add_argument("--config", required=True, type=Path, help="Config YAML path")
@@ -359,11 +294,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-online", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args()
 
-
 def main():
     args = parse_args()
     run_pipeline(args.config, args.input, args.output, manifest_path=args.manifest, explain=args.explain, allow_online=args.allow_online)
-
 
 if __name__ == "__main__":
     main()
