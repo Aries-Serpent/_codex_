@@ -32,7 +32,7 @@ REQUIRED = [
 
 RIPGREP_PATTERNS = [
     "detect_v2",
-    r"def detect\\b",
+    r"def detect\b",
     "template_hash",
     "capability_matrix_.*\\.json",
     "metrics_schema_version",
@@ -57,6 +57,16 @@ def git_head_sha():
     return r.stdout.strip()
 
 def checkout_branch(branch="0D_base_"):
+    """Checkout the target branch unless explicitly skipped.
+
+    Set CODEX_SKIP_VALIDATE_CHECKOUT=1 to avoid any git operations. This is
+    useful for offline or test environments where changing branches is
+    undesirable.
+    """
+    if os.getenv("CODEX_SKIP_VALIDATE_CHECKOUT", "").lower() in {"1", "true", "yes"}:
+        current = run(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+        return current.stdout.strip() if current.returncode == 0 else None
+
     # Try to fetch and checkout branch if present remotely, otherwise attempt local checkout
     run(["git", "fetch", "origin"], check=False)
     r = run(["git", "rev-parse", "--verify", "--quiet", branch])
@@ -155,7 +165,9 @@ def main():
     for pat in RIPGREP_PATTERNS:
         hits = rg_search(pat)
         rg_results[pat] = hits
+    zero_hit_patterns = [pat for pat, hits in rg_results.items() if not hits]
     report["ripgrep_hits"] = rg_results
+    report["ripgrep_zero_hits"] = zero_hit_patterns
 
     # detectors & schemas listing
     report["detectors"] = list_dir("scripts/space_traversal/detectors")
@@ -175,6 +187,20 @@ def main():
 
     json.dump(report, sys.stdout, indent=2)
     sys.stdout.write("\n")
+
+    failures = []
+    if missing:
+        failures.append(
+            "missing required files or directories: " + ", ".join(sorted(missing))
+        )
+    if zero_hit_patterns:
+        failures.append(
+            "ripgrep patterns with zero hits: " + ", ".join(zero_hit_patterns)
+        )
+
+    if failures:
+        sys.stderr.write("Validation failed: " + "; ".join(failures) + "\n")
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()
