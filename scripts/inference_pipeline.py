@@ -14,6 +14,7 @@ reproducibility and integrity.
 
 Changelog:
 - v1.0.1: Fixed token cache scoping to include tokenizer config hash (P1 issue).
+- v1.0.2: Added fallback for tokenizer.name_or_path to handle test stubs without the attribute.
 """
 from __future__ import annotations
 
@@ -36,7 +37,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from scripts.space_traversal.audit_runner import DOMAIN_PATTERNS
 
-PIPELINE_VERSION = "1.0.1"
+PIPELINE_VERSION = "1.0.2"
 DEFAULT_SEED = 42
 MAX_INPUT_LENGTH = 512
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
@@ -46,7 +47,7 @@ TOKEN_CACHE: Dict[str, Dict[str, torch.Tensor]] = {}
 
 @dataclass
 class InferenceConfig:
-    """Configuration for deterministic inference. Version: v1.0.1"""
+    """Configuration for deterministic inference. Version: v1.0.2"""
 
     model_path: Path
     seed: int = DEFAULT_SEED
@@ -94,7 +95,7 @@ def enforce_offline_mode() -> None:
 
 def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True) -> None:
     """
-    Set global seeds for Python, NumPy, and torch. Version: v1.0.1
+    Set global seeds for Python, NumPy, and torch. Version: v1.0.2
 
     This function also toggles deterministic algorithms where supported to
     reduce nondeterministic kernel usage.
@@ -167,7 +168,7 @@ def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
 
 def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
     """
-    Loads model deterministically from path with seeded RNG. Version: v1.0.1
+    Loads model deterministically from path with seeded RNG. Version: v1.0.2
 
     Cache is keyed by the model hash to avoid repeated loads.
     """
@@ -194,7 +195,7 @@ def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
 
 def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig,
                         override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None) -> Dict[str, Any]:
-    """Tokenize and batch inputs using fixed tokenization. Version: v1.0.1"""
+    """Tokenize and batch inputs using fixed tokenization. Version: v1.0.2"""
 
     tokenizer = context["tokenizer"]
     text = inputs.get("text")
@@ -203,7 +204,9 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
 
     input_hash = sha256_bytes(json.dumps(inputs, sort_keys=True).encode("utf-8"))
     # Scope cache by tokenizer config to prevent cross-model reuse (fixes P1 issue)
-    tokenizer_hash = sha256_bytes(str(tokenizer.name_or_path).encode("utf-8"))
+    # Use getattr with fallback for test stubs that may not have name_or_path
+    tokenizer_name = getattr(tokenizer, 'name_or_path', 'unknown_tokenizer')
+    tokenizer_hash = sha256_bytes(tokenizer_name.encode("utf-8"))
     cache_key = f"{input_hash}_{tokenizer_hash}"
     if cache_key in TOKEN_CACHE:
         cached_tokens = TOKEN_CACHE[cache_key]
@@ -231,7 +234,7 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
 
 def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig) -> Dict[str, Any]:
     """
-    Execute model prediction with seeded RNG. Version: v1.0.1
+    Execute model prediction with seeded RNG. Version: v1.0.2
     Uses greedy decoding to avoid nondeterministic sampling.
     """
 
@@ -264,7 +267,7 @@ def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], c
 
 def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], context: Dict[str, Any],
                          cfg: InferenceConfig, timings: Dict[str, float]) -> Dict[str, Any]:
-    """Format outputs and compute SHA256 hashes for integrity. Version: v1.0.1"""
+    """Format outputs and compute SHA256 hashes for integrity. Version: v1.0.2"""
 
     payload = {
         "predictions": results["predictions"],
