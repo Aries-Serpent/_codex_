@@ -5,4 +5,6 @@ tomli>=2.0; python_version < "3.11"
 pytest
 pytest-cov
 nox
+numpy>=1.26
 torch>=2.2
+transformers>=4.41

@@ -112,3 +112,10 @@ safeguards:
     - seed
     - offline
     - WANDB_MODE
+
+inference:
+  model_path: "models/deterministic_dummy"
+  seed: 42
+  deterministic: true
+  max_input_length: 512
+  preprocessor_override: null
