@@ -91,10 +91,12 @@ The command orchestrates two main tools:
 Use this checklist when you need one canonical view of the capability-audit pipeline and its supporting assets:
 
 - **Entrypoint & orchestration**: `cli/status_audit.py` (this command) calls `scripts/space_traversal/audit_runner.py` for capability detection and `scripts/space_traversal/status_update_report.py` for report assembly.
+- **Deterministic offline orchestrator**: `tools/codex_audit_orchestrator.py` provides a single executable that snapshots context, indexes stubs, emits gap-plan placeholders, and prepares reproducibility artifacts under `audit_artifacts/` (see phases 1–6 in the source docstring).
 - **Schemas & templates**: `docs/templates/status/codex_status_template_v1.2.md` with schemas `docs/templates/status/codex_status_template.schema_v1.2.json` and `.yaml`; authoring guidance in `docs/templates/status/authoring_guide_v1.2.md`.
 - **Detectors guidance**: `detectors/README.md` plus detector implementations under `scripts/space_traversal/detectors/` (keep outputs deterministic and side-effect free).
 - **Config & validation helpers**: `tools/validate_status_report.py`, `tools/generate_status_update.py`, and schema helpers in `scripts/space_traversal/schemas/`.
 - **Tests that guard production behavior**: `tests/cli/test_status_audit.py` (CLI wiring), `tests/templates/test_status_template.py` (templates/schemas present), and `tests/detectors/` (detector contract).
+- **Quick verification commands**: run `python tools/codex_audit_orchestrator.py --list-steps` to view orchestrator phases, `python tools/codex_audit_orchestrator.py` to emit deterministic artifacts into `audit_artifacts/`, and `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/audit/test_codex_audit_orchestrator.py` for safety checks.
 
 Recommended verification commands (use `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` for determinism):
 
