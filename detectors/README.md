@@ -27,6 +27,12 @@ Best Practices:
 - Add a corresponding unit test under tests/detectors/ to validate expected outputs for sample file_index.
 - When adding new detectors, request code review.
 
+Pipeline integration & verification:
+- Runtime wiring: detectors are imported by `scripts/space_traversal/audit_runner.py` during the capability-audit pipeline invoked via `codex-status-audit`.
+- Schema + template alignment: outputs feed the status templates in `docs/templates/status/` (see `codex_status_template_v1.2.md` and schema files) and must remain deterministic for reproducible reports.
+- Tests: run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/detectors tests/cli/test_status_audit.py` to validate detector contracts, CLI orchestration, and downstream template presence. Add fixture-specific tests in `tests/detectors/fixtures` when introducing new heuristics.
+- Edge cases: handle empty `file_index`, missing optional evidence fields, and ensure no network or filesystem writes occur during import or detection.
+
 Example:
 ```python
 def detect(file_index: dict) -> dict:
