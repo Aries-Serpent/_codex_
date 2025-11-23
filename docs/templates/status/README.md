@@ -78,6 +78,22 @@ This directory contains the canonical templates and schemas for `_codex_` daily 
    jsonschema -i your_report.json codex_status_template.schema.json
    ```
 
+### Canonical capability-audit pipeline (deterministic)
+
+Use the packaged CLI to generate reports and artifacts in one deterministic pass:
+
+```bash
+python cli/status_audit.py --output reports --artifacts audit_artifacts
+```
+
+- The command shells out to `scripts/space_traversal/audit_runner.py` and `status_update_report.py` for artifact creation and
+  templated report rendering.
+- For existing artifact re-use, run `python cli/status_audit.py --skip-audit --artifacts audit_artifacts --output reports`.
+  When `--skip-audit` is used the CLI now validates `audit_artifacts/capabilities_scored.json` up-front so failures are fast and
+  deterministic.
+- Detectors referenced by the pipeline live in `scripts/space_traversal/detectors/` and should remain side‑effect free
+  (see `detectors/README.md`).
+
 ### Report Location
 
 Daily reports are stored in:

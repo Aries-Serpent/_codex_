@@ -100,6 +100,8 @@ def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
 
     # Should fail because capabilities_scored.json is missing
     assert result.returncode != 0
+    assert "Missing required audit artifacts" in result.stderr
+    assert "capabilities_scored.json" in result.stderr
 
 
 @pytest.mark.slow
