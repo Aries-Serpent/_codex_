@@ -5,12 +5,20 @@
   unit tests.
 - Evaluation CLI options for selecting metrics and providing prediction/target
   transforms.
+- Capability-audit validation now honors CODEX_SKIP_VALIDATE_CHECKOUT and has a
+  regression test confirming required templates, detectors, schemas, and
+  supporting scripts are present.
+- Post-iteration status checklist capturing audit artifacts and capability-to-marker
+  mapping.
 
 ### Changed
 - Evaluation loop now supports text post-processing hooks to unlock generative
   metrics.
 - NDJSON logger registry reuses the core logger with rotation, GPU telemetry and
   configurable size limits.
+- Capability audit validator now exits non-zero with clear messaging when required
+  assets are missing or ripgrep patterns have zero hits; tests exercise both
+  branches.
 
 ### Documentation
 - Updated metrics guide and logging guide to reflect generative metrics and
