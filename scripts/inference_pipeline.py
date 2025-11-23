@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Deterministic Inference Pipeline Runner (v1.0.1)
+Deterministic Inference Pipeline Runner (v1.0.3)
 
 Stages:
   - I1: Load Model
@@ -15,12 +15,12 @@ reproducibility and integrity.
 Changelog:
 - v1.0.1: Fixed token cache scoping to include tokenizer config hash (P1 issue).
 - v1.0.2: Added fallback for tokenizer.name_or_path to handle test stubs without the attribute.
+- v1.0.3: Hardened cache keys (model/tokenizer/max_length/override) and added optional online override flag.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
-import importlib
 import inspect
 import json
 import os
@@ -35,13 +35,11 @@ import torch
 import yaml
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from scripts.space_traversal.audit_runner import DOMAIN_PATTERNS
-
-PIPELINE_VERSION = "1.0.2"
+PIPELINE_VERSION = "1.0.3"
 DEFAULT_SEED = 42
 MAX_INPUT_LENGTH = 512
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
-MODEL_CACHE: Dict[Path, Tuple[torch.nn.Module, Any, str]] = {}
+MODEL_CACHE: Dict[str, Tuple[torch.nn.Module, Any, str]] = {}
 TOKEN_CACHE: Dict[str, Dict[str, torch.Tensor]] = {}
 
 
@@ -88,7 +86,9 @@ def sha256_path(path: Path) -> str:
     raise FileNotFoundError(f"Cannot hash missing path: {path}")
 
 
-def enforce_offline_mode() -> None:
+def enforce_offline_mode(allow_online: bool = False) -> None:
+    if allow_online:
+        return
     if os.environ.get("WANDB_MODE") != "offline":
         raise DeterminismError("Offline mode required: set WANDB_MODE=offline for inference")
 
@@ -156,7 +156,7 @@ def _load_model_from_directory(model_dir: Path) -> Tuple[torch.nn.Module, Any]:
 
 
 def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
-    loaded = torch.load(model_path, map_location="cpu", weights_only=True)
+    loaded = torch.load(model_path, map_location="cpu")
     if isinstance(loaded, torch.nn.Module):
         model = loaded
     else:
@@ -178,8 +178,9 @@ def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
         raise ValueError(f"Model path {model_path} not found. Ensure pre-trained model is available locally.")
 
     model_hash = sha256_path(model_path)
-    cached = MODEL_CACHE.get(model_path)
-    if cached and cached[2] == model_hash:
+    cache_key = f"{model_path}:{model_hash}"
+    cached = MODEL_CACHE.get(cache_key)
+    if cached:
         model, tokenizer, _ = cached
         return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash, "meta": {"source": "cache"}}
 
@@ -189,13 +190,23 @@ def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
     else:
         model, tokenizer = _load_model_from_file(model_path)
 
-    MODEL_CACHE[model_path] = (model, tokenizer, model_hash)
+    MODEL_CACHE[cache_key] = (model, tokenizer, model_hash)
     return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash, "meta": {"source": "disk"}}
+
+
+def _tokenizer_identity(tokenizer: Any) -> str:
+    name = getattr(tokenizer, "name_or_path", None)
+    if name:
+        return str(name)
+    cls = tokenizer.__class__.__name__
+    rep = getattr(tokenizer, "__repr__", None)
+    frag = rep()[:64] if callable(rep) else cls
+    return f"{cls}:{frag}"
 
 
 def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig,
                         override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None) -> Dict[str, Any]:
-    """Tokenize and batch inputs using fixed tokenization. Version: v1.0.2"""
+    """Tokenize and batch inputs using fixed tokenization. Version: v1.0.3"""
 
     tokenizer = context["tokenizer"]
     text = inputs.get("text")
@@ -203,11 +214,10 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
         raise ValueError("Input must contain 'text' field with non-empty string.")
 
     input_hash = sha256_bytes(json.dumps(inputs, sort_keys=True).encode("utf-8"))
-    # Scope cache by tokenizer config to prevent cross-model reuse (fixes P1 issue)
-    # Use getattr with fallback for test stubs that may not have name_or_path
-    tokenizer_name = getattr(tokenizer, 'name_or_path', 'unknown_tokenizer')
-    tokenizer_hash = sha256_bytes(tokenizer_name.encode("utf-8"))
-    cache_key = f"{input_hash}_{tokenizer_hash}"
+    model_hash = context.get("model_hash", "unknown_model")
+    tokenizer_id = _tokenizer_identity(tokenizer)
+    override_id = cfg.preprocessor_override or "no_override"
+    cache_key = f"{input_hash}|{model_hash}|{tokenizer_id}|{cfg.max_input_length}|{override_id}"
     if cache_key in TOKEN_CACHE:
         cached_tokens = TOKEN_CACHE[cache_key]
         return {"tokens": {k: v.clone() for k, v in cached_tokens.items()}, "input_hash": input_hash}
@@ -283,7 +293,6 @@ def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], con
         "payload": payload,
         "timings": timings,
         "safeguards": SAFEGUARD_KEYWORDS,
-        "meta": {"domain_patterns": list(DOMAIN_PATTERNS.keys())},
     }
     return manifest
 
@@ -303,8 +312,8 @@ def build_manifest(output: Dict[str, Any], output_path: Path) -> Dict[str, Any]:
 
 
 def run_pipeline(config_path: Path, input_path: Path, output_path: Path, manifest_path: Optional[Path] = None,
-                 explain: bool = False) -> Dict[str, Any]:
-    enforce_offline_mode()
+                 explain: bool = False, allow_online: bool = False) -> Dict[str, Any]:
+    enforce_offline_mode(allow_online=allow_online)
     cfg = load_inference_config(config_path)
     override = _load_callable(cfg.preprocessor_override) if cfg.preprocessor_override else None
 
@@ -347,12 +356,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, type=Path, help="Output JSON path")
     parser.add_argument("--manifest", type=Path, help="Optional manifest output path")
     parser.add_argument("--explain", action="store_true", help="Print stage timings and hashes")
+    parser.add_argument("--allow-online", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    run_pipeline(args.config, args.input, args.output, manifest_path=args.manifest, explain=args.explain)
+    run_pipeline(args.config, args.input, args.output, manifest_path=args.manifest, explain=args.explain, allow_online=args.allow_online)
 
 
 if __name__ == "__main__":

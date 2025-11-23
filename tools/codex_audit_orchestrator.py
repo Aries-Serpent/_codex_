@@ -148,20 +148,23 @@ def serialize_json(path: Path, data: Any) -> None:
 def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> None:
     """Record error in the standardized ChatGPT @codex format."""
 
-    ERROR_CAPTURES_DIR.mkdir(parents=True, exist_ok=True)
-    timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
-    error_message = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
-    block = ERROR_CAPTURE_TEMPLATE.format(
-        timestamp=timestamp,
-        step_number=f"{ctx.phase_id}.{ctx.step_id}",
-        step_description=ctx.description,
-        error_message=error_message.strip(),
-        brief_context=brief_context,
-    )
-    path = ERROR_CAPTURES_DIR / "error_captures_codex_questions.md"
-    with path.open("a", encoding="utf-8") as f:
-        f.write(block)
-    log(f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id}")
+    try:
+        ERROR_CAPTURES_DIR.mkdir(parents=True, exist_ok=True)
+        timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+        error_message = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        block = ERROR_CAPTURE_TEMPLATE.format(
+            timestamp=timestamp,
+            step_number=f"{ctx.phase_id}.{ctx.step_id}",
+            step_description=ctx.description,
+            error_message=error_message.strip(),
+            brief_context=brief_context,
+        )
+        path = ERROR_CAPTURES_DIR / "error_captures_codex_questions.md"
+        with path.open("a", encoding="utf-8") as f:
+            f.write(block)
+        log(f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id}")
+    except Exception as capture_exc:  # noqa: BLE001
+        log(f"CRITICAL: failed to write error capture for {ctx.phase_id}.{ctx.step_id}: {capture_exc}")
 
 
 def phase_step(phase_id: int, step_id: str, description: str):
@@ -182,7 +185,7 @@ def phase_step(phase_id: int, step_id: str, description: str):
             except Exception as exc:  # noqa: BLE001
                 log(f"ERROR {ctx.phase_id}.{ctx.step_id} - {exc}")
                 error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs}")
-                raise StepFailure(ctx, exc) from exc
+                return None
 
         wrapper.phase_id = phase_id
         wrapper.step_label = step_id
@@ -504,6 +507,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Optional subset of steps to run, e.g. 1.1 2.2 6.1. "
         "If omitted, all known steps are executed.",
     )
+    parser.add_argument(
+        "--continue-on-error",
+        action="store_true",
+        help="Continue executing remaining steps even if a step reports failure.",
+    )
     return parser.parse_args(argv)
 
 
@@ -530,6 +538,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         requested_labels = requested_labels & available_labels
         log(f"Executing only requested steps: {sorted(requested_labels)}")
 
+    failed_steps: List[str] = []
+
     for fn in PHASE_FUNCTIONS:
         label = getattr(fn, "step_label", fn.__name__)
 
@@ -539,10 +549,22 @@ def main(argv: Optional[List[str]] = None) -> int:
 
         log(f"Running {label} ({fn.__name__})")
         try:
-            fn()
-        except StepFailure as exc:
-            log(f"Aborting after failure in {label}: {exc}")
-            return 1
+            result = fn()
+        except Exception as exc:  # noqa: BLE001
+            log(f"UNHANDLED EXCEPTION in {label}: {exc}")
+            error_capture(exc, StepContext(0, label, "unhandled"), brief_context="unhandled")
+            result = None
+
+        if result is None:
+            failed_steps.append(label)
+            log(f"Step {label} reported failure (None).")
+            if not args.continue_on_error:
+                log("Fail-fast enabled; exiting early.")
+                break
+
+    if failed_steps:
+        log(f"Run completed with failures in steps: {failed_steps}")
+        return 1
 
     log("Finished codex_audit_orchestrator run")
     return 0
