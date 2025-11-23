@@ -32,7 +32,7 @@ REQUIRED = [
 
 RIPGREP_PATTERNS = [
     "detect_v2",
-    r"def detect\\b",
+    r"def detect\b",
     "template_hash",
     "capability_matrix_.*\\.json",
     "metrics_schema_version",
