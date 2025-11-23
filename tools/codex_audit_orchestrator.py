@@ -175,6 +175,9 @@ def phase_step(phase_id: int, step_id: str, description: str):
                 error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs}")
                 return None
 
+        wrapper.phase_id = phase_id
+        wrapper.step_label = step_id
+        wrapper.step_description = description
         return wrapper
 
     return decorator
@@ -501,16 +504,31 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.list_steps:
         print("Available steps:")
         for fn in PHASE_FUNCTIONS:
-            print(f" - {fn.__name__}")
+            label = getattr(fn, "step_label", fn.__name__)
+            description = getattr(fn, "step_description", "")
+            print(f" - {label} ({fn.__name__}): {description}")
         return 0
 
     log("Starting codex_audit_orchestrator run")
 
     requested_labels = set(args.steps or [])
+    available_labels = {getattr(fn, "step_label", fn.__name__) for fn in PHASE_FUNCTIONS}
+
+    if requested_labels:
+        unknown_labels = requested_labels - available_labels
+        if unknown_labels:
+            log(f"Unknown --steps labels requested; ignoring: {sorted(unknown_labels)}")
+        requested_labels = requested_labels & available_labels
+        log(f"Executing only requested steps: {sorted(requested_labels)}")
 
     for fn in PHASE_FUNCTIONS:
-        if requested_labels:
-            log(f"Running {fn.__name__} (requested labels present: {sorted(requested_labels)})")
+        label = getattr(fn, "step_label", fn.__name__)
+
+        if requested_labels and label not in requested_labels:
+            log(f"Skipping {label} ({fn.__name__}) because it was not requested")
+            continue
+
+        log(f"Running {label} ({fn.__name__})")
         fn()
 
     log("Finished codex_audit_orchestrator run")
