@@ -6,7 +6,7 @@ absl-py==2.3.1
     # via
     #   rouge-score
     #   tensorboard
-accelerate==1.11.0
+accelerate==1.12.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1115,7 +1115,7 @@ tomlkit==0.13.3
     # via dvc
 toolz==1.1.0
     # via altair
-torch==2.9.1
+torch==2.9.1+cpu
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
