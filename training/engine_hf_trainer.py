@@ -664,15 +664,33 @@ class CSVMetricsWriter:
             row = obj.redacted().dict()
         else:
             row = dict(obj)
+        new_keys = set(row)
         if self._header is None:
-            self._header = sorted(row)
+            self._header = sorted(new_keys)
             with self.path.open("w", encoding="utf-8", newline="") as fh:
-                writer = csv.DictWriter(fh, fieldnames=self._header)
+                writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
                 writer.writeheader()
                 writer.writerow(row)
             return
+
+        existing_keys = set(self._header)
+        if new_keys - existing_keys:
+            # Expand the header to accommodate new metrics and rewrite the CSV.
+            self._header = sorted(existing_keys | new_keys)
+            existing_rows: list[dict[str, Any]] = []
+            with self.path.open("r", encoding="utf-8", newline="") as fh:
+                reader = csv.DictReader(fh)
+                existing_rows.extend(reader)
+            existing_rows.append(row)
+            with self.path.open("w", encoding="utf-8", newline="") as fh:
+                writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
+                writer.writeheader()
+                for rec in existing_rows:
+                    writer.writerow(rec)
+            return
+
         with self.path.open("a", encoding="utf-8", newline="") as fh:
-            writer = csv.DictWriter(fh, fieldnames=self._header)
+            writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
             writer.writerow(row)
 
     def close(self) -> None:  # pragma: no cover - no persistent handles
@@ -746,16 +764,18 @@ def load_training_arguments(
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
     cfg: Dict[str, object] = {}
-    # Load base config from Hydra when provided
-    if hydra_cfg is not None:
-        cfg.update(hydra_cfg)
-    elif path is not None:
+
+    # Always honor user-provided config files, then layer Hydra overrides when supplied.
+    if path is not None:
         if path.exists():
             loaded = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
             if isinstance(loaded, dict):
                 cfg.update(loaded)
         else:
             print(f"[warning] config {path} missing, using default training args")
+
+    if hydra_cfg is not None:
+        cfg.update(hydra_cfg)
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
 
