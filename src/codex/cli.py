@@ -378,22 +378,38 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "lora_task_type": args.lora_task_type,
             "seed": args.seed,
         }
-        hydra_cfg: dict[str, object] = {
-            "gradient_accumulation_steps": args.gradient_accumulation_steps,
-            "precision": args.precision,
-            "seed": args.seed,
+
+        hydra_cfg: dict[str, object] = {}
+        defaults = {
+            "gradient_accumulation_steps": parser.get_default("gradient_accumulation_steps"),
+            "precision": parser.get_default("precision"),
+            "seed": parser.get_default("seed"),
+            "lora_r": parser.get_default("lora_r"),
+            "lora_alpha": parser.get_default("lora_alpha"),
+            "lora_dropout": parser.get_default("lora_dropout"),
+            "lora_task_type": parser.get_default("lora_task_type"),
         }
+
+        if args.gradient_accumulation_steps != defaults["gradient_accumulation_steps"]:
+            hydra_cfg["gradient_accumulation_steps"] = args.gradient_accumulation_steps
+        if args.precision is not None:
+            hydra_cfg["precision"] = args.precision
+        if args.seed != defaults["seed"]:
+            hydra_cfg["seed"] = args.seed
+
         lora_section: dict[str, object] = {}
-        if args.lora_r:
+        if args.lora_r and args.lora_r != defaults["lora_r"]:
             lora_section["r"] = args.lora_r
-        if args.lora_alpha is not None:
+        if args.lora_alpha is not None and args.lora_alpha != defaults["lora_alpha"]:
             lora_section["alpha"] = args.lora_alpha
-        if args.lora_dropout:
+        if args.lora_dropout and args.lora_dropout != defaults["lora_dropout"]:
             lora_section["dropout"] = args.lora_dropout
         if args.lora_task_type:
             lora_section["task_type"] = args.lora_task_type
         if lora_section:
             hydra_cfg["lora"] = lora_section
+        if not hydra_cfg:
+            hydra_cfg = None
         if args.config_path:
             kw["config_path"] = args.config_path
         if hydra_cfg:
