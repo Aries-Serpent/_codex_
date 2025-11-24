@@ -9,6 +9,10 @@ import importlib
 import warnings
 from typing import Any
 
+from codex_ml.utils import checkpoint_core as _core
+
+_warned = False
+
 # Map legacy names -> new import paths when they land.
 _ALIASES = {
     # "load_checkpoint": "codex_ml.checkpointing.core:load_checkpoint",
@@ -27,8 +31,25 @@ def __getattr__(name: str) -> Any:
         )
         mod = importlib.import_module(modname)
         return getattr(mod, func)
+    warnings.warn(
+        "codex_ml.checkpointing.compat is deprecated; attribute lookup failed",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     raise AttributeError(name)
 
 
 def __dir__() -> list[str]:
     return sorted(list(globals()) + list(_ALIASES.keys()))
+
+
+def save_checkpoint(*args, **kwargs):
+    global _warned
+    if not _warned:
+        warnings.warn(
+            "codex_ml.checkpointing.compat.save_checkpoint is deprecated; use checkpoint_core.save_checkpoint",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        _warned = True
+    return _core.save_checkpoint(*args, **kwargs)

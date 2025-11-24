@@ -10,10 +10,11 @@ Tests cover:
 - Callback ordering and execution
 - State persistence across epochs
 """
-import pytest
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
+import pytest
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

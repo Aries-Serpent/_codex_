@@ -1,4 +1,4 @@
-from codex_ml.data.loaders import split_indices
+from codex_ml.data import split_indices
 
 
 def test_split_indices_deterministic():
