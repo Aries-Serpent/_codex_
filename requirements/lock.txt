@@ -6,7 +6,7 @@ absl-py==2.3.1
     # via
     #   rouge-score
     #   tensorboard
-accelerate==1.11.0
+accelerate==1.12.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -471,7 +471,7 @@ jupyterlab-widgets==3.0.15
     # via ipywidgets
 kiwisolver==1.4.9
     # via matplotlib
-kombu==5.5.4
+kombu==5.6.0
     # via
     #   celery
     #   dvc-task
@@ -586,7 +586,7 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via lm-eval
-numpy==2.2.6
+numpy==2.3.3
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
@@ -1115,7 +1115,7 @@ tomlkit==0.13.3
     # via dvc
 toolz==1.1.0
     # via altair
-torch==2.9.1
+torch==2.9.1+cpu
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
