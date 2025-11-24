@@ -1,0 +1,9 @@
+defaults:
+  - model: base
+  - data: local
+  - training: minimal
+  - experiment: default
+  - _self_
+
+artifacts_dir: artifacts
+notes: []
