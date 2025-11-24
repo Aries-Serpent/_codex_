@@ -3,9 +3,8 @@ import pytest
 pytest.importorskip("torch")
 pytest.importorskip("opacus")
 
-import torch.nn.functional as F
-
 import torch
+import torch.nn.functional as F
 from codex.training import TrainCfg, run_custom_trainer
 
 

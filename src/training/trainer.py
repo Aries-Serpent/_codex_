@@ -13,11 +13,10 @@ from pathlib import Path
 from typing import Any
 
 try:  # pragma: no cover - optional torch guard for import-time failures
-    from torch.cuda.amp import GradScaler, autocast
-    from torch.utils.data import DataLoader
-
     import torch
     from torch import nn
+    from torch.cuda.amp import GradScaler, autocast
+    from torch.utils.data import DataLoader
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
     nn = Any  # type: ignore[assignment]
@@ -34,15 +33,15 @@ else:  # pragma: no cover - fallback types
     OptimizerType = Any
     DataLoaderType = Any
 
-from ..codex_ml.utils.repro import set_seed as _set_seed
-from ..logging_utils import (
+from codex_ml.utils.repro import set_seed as _set_seed
+from logging_utils import (
     LoggingConfig,
     LoggingSession,
     log_metrics,
     setup_logging,
     shutdown_logging,
 )
-from ..metrics import append_ndjson
+from metrics import append_ndjson
 from .checkpointing import load_checkpoint
 from .simple_trainer import SimpleTrainer
 

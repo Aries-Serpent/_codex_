@@ -13,15 +13,41 @@ Supports:
 Author: mbaetiong
 Generated: 2025-11-19 04:02:05
 """
+from importlib import util
 from pathlib import Path
 from typing import Any, Callable, Dict
 import inspect
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
 # Lazy imports to avoid hard dependencies
 _LOADERS: Dict[str, Callable] = {}
+_CORE_MODULE_NAME = "codex_ml.data._core_loaders"
+_CORE_MODULE_PATH = Path(__file__).resolve().parent.parent / "loaders.py"
+
+if _CORE_MODULE_NAME in sys.modules:
+    _core = sys.modules[_CORE_MODULE_NAME]
+else:
+    spec = util.spec_from_file_location(_CORE_MODULE_NAME, _CORE_MODULE_PATH)
+    if spec is None or spec.loader is None:  # pragma: no cover - defensive
+        raise ImportError(f"Unable to load core loaders from {_CORE_MODULE_PATH}")
+    _core = util.module_from_spec(spec)
+    sys.modules[_CORE_MODULE_NAME] = _core
+    spec.loader.exec_module(_core)
+
+# Re-export helpers from the core loader module for compatibility with
+# ``from codex_ml.data.loaders import ...`` call sites.
+stream_paths = _core.stream_paths
+iter_jsonl = _core.iter_jsonl
+iter_txt = _core.iter_txt
+collect_stats = _core.collect_stats
+split_indices = _core.split_indices
+load_jsonl = _core.load_jsonl
+load_csv = _core.load_csv
+compute_file_checksum = _core.compute_file_checksum
+Sample = _core.Sample
 
 
 def _resolve_loader(loader_entry: Callable) -> Callable:
@@ -117,6 +143,20 @@ def _lazy_load_hdf5():
 register_loader(['.parquet'], _lazy_load_parquet)
 register_loader(['.arrow', '.ipc'], _lazy_load_arrow)
 register_loader(['.h5', '.hdf5'], _lazy_load_hdf5)
+
+__all__ = [
+    "load_dataset",
+    "register_loader",
+    "stream_paths",
+    "iter_jsonl",
+    "iter_txt",
+    "collect_stats",
+    "split_indices",
+    "load_jsonl",
+    "load_csv",
+    "compute_file_checksum",
+    "Sample",
+]
 
 
 __all__ = [

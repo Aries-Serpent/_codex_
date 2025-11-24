@@ -19,8 +19,20 @@ from __future__ import annotations
 
 import inspect
 import time
+import os
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Sequence
+from uuid import uuid4
+
+from codex_ml.metrics.api import get_metric
+from codex_ml.metrics.writers import (
+    BaseMetricsWriter,
+    CSVMetricsWriter,
+    NDJSONMetricsWriter,
+)
+from codex_ml.tracking.offline import decide_offline
+from codex_ml.training.engine import TrainingEngine
 
 try:
     import torch
@@ -135,6 +147,8 @@ def evaluate_epoch(
             torch.manual_seed(seed)
 
     started = time.time()
+    target_device = torch.device(device)
+    model = model.to(target_device)
     model.eval()
     running_loss = 0.0
     total = 0
@@ -159,8 +173,8 @@ def evaluate_epoch(
             else:
                 raise ValueError("Dataloader must yield (inputs, targets) pairs.")
 
-            inputs = inputs.to(device)
-            targets = targets.to(device)
+            inputs = inputs.to(target_device)
+            targets = targets.to(target_device)
 
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -279,3 +293,152 @@ def evaluate_epoch(
                 pass
 
     return result
+
+
+def _resolve_metric_functions(metric_specs: Dict[str, Callable] | Iterable[str | Callable]) -> Dict[str, Callable]:
+    """Coerce metric specifications into callable form using the registry."""
+
+    resolved: Dict[str, Callable] = {}
+    if isinstance(metric_specs, dict):
+        items = metric_specs.items()
+    else:
+        items = ((getattr(fn, "__name__", str(fn)), fn) for fn in metric_specs)
+    for name, fn in items:
+        if isinstance(fn, str):
+            resolved[name] = get_metric(fn)
+        else:
+            resolved[name] = fn
+    return resolved
+
+
+def _collect_system_metrics() -> Dict[str, float]:
+    """Best-effort system metrics (CPU/memory) without network calls."""
+
+    cpu_percent = None
+    memory_percent = None
+    try:  # pragma: no cover - optional dependency path
+        import psutil
+
+        cpu_percent = float(psutil.cpu_percent(interval=None))
+        memory_percent = float(psutil.virtual_memory().percent)
+    except Exception:
+        pass
+
+    metrics: Dict[str, float] = {}
+    if cpu_percent is not None:
+        metrics["system.cpu_percent"] = cpu_percent
+    if memory_percent is not None:
+        metrics["system.memory_percent"] = memory_percent
+    return metrics
+
+
+def run_metrics_evaluation(
+    data: Iterable[tuple[Any, Any]],
+    metric_specs: Dict[str, Callable] | Iterable[str | Callable],
+    *,
+    metric_writers: Iterable[BaseMetricsWriter] | None = None,
+    run_id: str | None = None,
+    log_system_metrics: bool = True,
+    enable_mlflow: bool = True,
+    mlruns_dir: str | Path = "mlruns",
+) -> Dict[str, float]:
+    """Evaluate predictions against targets using registry-backed metrics.
+
+    Parameters
+    ----------
+    data:
+        Iterable of ``(prediction, target)`` tuples.
+    metric_specs:
+        Mapping of metric name to callable or iterable of names/callables. Metric
+        names are resolved through :mod:`codex_ml.metrics.api`.
+    metric_writers:
+        Optional collection of metrics writers (NDJSON/CSV) that receive structured
+        records tagged with run id, step, and metric name.
+    run_id:
+        Optional run identifier. When omitted, a stable offline-safe id is
+        generated.
+    log_system_metrics:
+        When ``True`` capture CPU/memory utilisation and emit to writers and the
+        returned summary.
+    enable_mlflow:
+        When ``True`` attempt offline MLflow logging using :class:`TrainingEngine`.
+        This is a best-effort operation; if mlflow is unavailable no error is
+        raised.
+    mlruns_dir:
+        Path to the offline MLflow store used when ``enable_mlflow`` is true.
+    """
+
+    resolved_metrics = _resolve_metric_functions(metric_specs)
+    run_identifier = run_id or os.getenv("CODEX_RUN_ID") or f"eval-{uuid4().hex}"
+    writers = list(metric_writers or [])
+
+    preds: list[Any] = []
+    targets: list[Any] = []
+
+    for step, pair in enumerate(data):
+        try:
+            pred, target = pair
+        except Exception as exc:  # pragma: no cover - defensive unpacking
+            raise ValueError("Each evaluation item must be a (prediction, target) tuple") from exc
+        preds.append(pred)
+        targets.append(target)
+
+        for name, fn in resolved_metrics.items():
+            try:
+                value = float(fn([pred], [target]))
+            except Exception:
+                value = float("nan")
+            record = {
+                "metric": name,
+                "value": value,
+                "step": step,
+                "split": "eval",
+                "run_id": run_identifier,
+                "tags": {"metric": name, "step": step, "phase": "per-sample"},
+            }
+            for writer in writers:
+                writer.write(record)
+
+    final_metrics: Dict[str, float] = {}
+    for name, fn in resolved_metrics.items():
+        try:
+            final_metrics[name] = float(fn(preds, targets))
+        except Exception:
+            final_metrics[name] = float("nan")
+
+    summary_record = {
+        "metric": "aggregate",
+        "value": 1.0,
+        "step": len(preds),
+        "split": "eval",
+        "run_id": run_identifier,
+        "tags": {"phase": "summary", "step": len(preds)},
+        "metrics": final_metrics,
+    }
+
+    system_metrics = _collect_system_metrics() if log_system_metrics else {}
+    if system_metrics:
+        summary_record["system"] = system_metrics
+
+    for writer in writers:
+        writer.write(summary_record)
+        writer.close()
+
+    mlflow_info: Dict[str, str] = {}
+    if enable_mlflow:
+        decision = decide_offline(prefer_offline=True, allow_remote=False, mlruns_dir=mlruns_dir)
+        os.environ["MLFLOW_TRACKING_URI"] = decision.mlflow_tracking_uri
+        tracker = TrainingEngine(enable_mlflow=True, mlflow_dir=str(Path(mlruns_dir)))
+        tracker.start_run(params={"run_id": run_identifier}, tags={"mode": "evaluation"})
+        tracker.log_metrics(final_metrics, step=len(preds))
+        tracker.end_run()
+        if tracker.mlflow_error:
+            mlflow_info["mlflow_error"] = tracker.mlflow_error
+        mlflow_info["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
+
+    return {
+        "run_id": run_identifier,
+        "metrics": final_metrics,
+        "system": system_metrics,
+        **({"mlflow": mlflow_info} if mlflow_info else {}),
+    }

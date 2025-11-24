@@ -9,12 +9,13 @@ Tests cover:
 - Caching behavior
 - Manifest generation
 """
-import pytest
-import json
 import csv
+import json
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
+
+import pytest
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

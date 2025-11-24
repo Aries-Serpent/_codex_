@@ -1,7 +1,8 @@
 from __future__ import annotations
-import torch
+
 import pytest
 
+import torch
 from src.codex_ml.training.schedulers.registry import get_scheduler_registry
 
 

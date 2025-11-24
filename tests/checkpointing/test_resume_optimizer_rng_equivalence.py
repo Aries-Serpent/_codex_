@@ -16,10 +16,10 @@ def test_resume_optimizer_rng_equivalence(tmp_path) -> None:
     checkpoint_core.save_checkpoint(ckpt_dir, payload=payload, metadata=metadata)
 
     sequence_after_save = [random.random() for _ in range(4)]
-    loaded = checkpoint_core.load_checkpoint(ckpt_dir)
-    assert loaded["optimizer_state"] == payload["optimizer_state"]
+    loaded_state, loaded_meta = checkpoint_core.load_checkpoint(ckpt_dir)
+    assert loaded_state["optimizer_state"] == payload["optimizer_state"]
 
-    rng_payload = loaded.get("_rng")
+    rng_payload = loaded_meta.rng
     assert rng_payload is not None
     checkpoint_core.restore_rng_state(rng_payload)
     sequence_after_restore = [random.random() for _ in range(4)]

@@ -3,9 +3,11 @@ Unit tests for overrides merging and missing-detector strict gate
 """
 import json
 from pathlib import Path
+
 import pytest
 
 from scripts.space_traversal import audit_runner as runner
+
 
 def make_cfg(tmp_path):
     cfg = {

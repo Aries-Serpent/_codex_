@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional, List
 
-from src.codex_ml.logging.unified_logger import LoggerRegistry, LoggerBackend
+from typing import Any, Dict, List, Optional
+
+from src.codex_ml.logging.unified_logger import LoggerBackend, LoggerRegistry
 
 
 class DummyBackend(LoggerBackend):
