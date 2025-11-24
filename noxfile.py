@@ -275,6 +275,7 @@ def list_sessions(session: nox.Session) -> None:
         "evidence_check",
         "dependency_plan",
         "rollback_smoke",
+        "regression",
     ]
     session.log("Available sessions:")
     for s in sessions:
@@ -323,6 +324,19 @@ def eval_tests(session: nox.Session) -> None:
     _install_requirements(session, REQ_DEV, REQ_EVAL)
     _show_vendor_scan(session)
     session.run("pytest", "-q", "-m", "eval or metrics", external=True)
+
+
+@nox.session(name="regression", python=PY_VERSIONS)
+def regression(session: nox.Session) -> None:
+    """Offline regression suite covering R1-R5 categories."""
+
+    _choose_python(session)
+    _install_requirements(session, REQ_DEV)
+    env = {
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+        "CODEX_NET_MODE": "offline",
+    }
+    session.run("python", "-m", "codex_regression.runner", external=True, env=env)
 
 
 @nox.session(name="notebook_env", python=PY_VERSIONS)
