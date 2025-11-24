@@ -4,6 +4,10 @@ import hashlib
 import json
 import math
 import time
+import hashlib
+import json
+import math
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -11,6 +15,7 @@ from typing import Any, Optional
 from codex_ml.io.atomic import atomic_write_text, canonical_json_dumps
 
 CANON_SEPARATORS = (",", ":")  # compact; RFC8785-compatible shape
+SCHEMA_ID = "codex.checkpoint.v2"
 
 
 def _reject_non_json_number(x: float) -> None:
@@ -72,18 +77,68 @@ def validate_manifest(m: dict[str, Any]) -> list[str]:
     """Return list of problems; empty if valid enough for hashing."""
 
     problems: list[str] = []
-    for k in ("run_id", "step", "epoch", "created_utc"):
-        if k not in m:
-            problems.append(f"missing field: {k}")
-    if "created_utc" in m and not isinstance(m["created_utc"], (int, float)):
-        problems.append("created_utc must be number (UTC seconds)")
-    for n in ("step", "epoch"):
-        if n in m and not isinstance(m[n], int):
-            problems.append(f"{n} must be int")
-    # number sanity
-    if "created_utc" in m:
-        _reject_non_json_number(float(m["created_utc"]))
+    if not isinstance(m, dict):
+        return ["manifest must be a mapping"]
+    if "schema" in m and m["schema"] not in (SCHEMA_ID,):
+        problems.append("unsupported schema")
+
+    required_flat = ("run_id", "step", "epoch", "created_utc")
+    has_run_block = "run" in m and isinstance(m.get("run"), dict)
+    missing_flat = [r for r in required_flat if r not in m]
+    if missing_flat and not has_run_block:
+        problems.extend(f"missing field: {r}" for r in missing_flat)
+
+    run = m.get("run")
+    if run is not None:
+        if not isinstance(run, dict):
+            problems.append("run must be a mapping")
+        else:
+            if "id" not in run:
+                problems.append("missing field: run.id")
+            if "created_at" in run and not isinstance(run["created_at"], str):
+                problems.append("run.created_at must be string timestamp")
+
+    weights = m.get("weights")
+    if weights is not None and not isinstance(weights, dict):
+        problems.append("weights must be a mapping when provided")
+
     return problems
+
+
+def from_dict(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Create a normalized manifest ensuring schema id and basic validation."""
+
+    normalized = dict(manifest)
+    normalized.setdefault("schema", SCHEMA_ID)
+    problems = validate_manifest(normalized)
+    if problems:
+        raise ValueError("; ".join(problems))
+    return normalized
+
+
+def to_dict(manifest: dict[str, Any]) -> dict[str, Any]:
+    """Return a shallow copy with schema id enforced (used for roundtrips)."""
+
+    copy = dict(manifest)
+    copy.setdefault("schema", SCHEMA_ID)
+    return copy
+
+
+def upgrade_from_v1(v1_manifest: dict[str, Any]) -> dict[str, Any]:
+    """Best-effort upgrade from legacy v1 schema into v2 layout."""
+
+    meta = v1_manifest.get("meta", {})
+    return {
+        "schema": SCHEMA_ID,
+        "run": {
+            "id": meta.get("id", "unknown"),
+            "created_at": meta.get("created_at", ""),
+            "framework": meta.get("framework", "unknown"),
+        },
+        "weights": v1_manifest.get("weights", {}),
+        "optimizer": v1_manifest.get("optimizer", {}),
+        "notes": v1_manifest.get("notes"),
+    }
 
 
 def new_manifest(run_id: str, step: int, epoch: int, notes: str | None = None) -> dict[str, Any]:

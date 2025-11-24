@@ -4,8 +4,9 @@ Tests for Inference Server
 
 import time
 
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy")
 
 from src.codex_ml.serving.inference_server import (
     MAX_BATCH_SIZE,

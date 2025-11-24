@@ -1,13 +1,14 @@
 import pytest
 
+np = pytest.importorskip("numpy")
+pytest.importorskip("transformers")
+
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from training.cache import TokenCache
 from training.datasets import TextDataset
 
 
 def test_cache_roundtrip(tmp_path):
-    np = pytest.importorskip("numpy")
-    pytest.importorskip("transformers")
     from transformers import AutoTokenizer
 
     tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")

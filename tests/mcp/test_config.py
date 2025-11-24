@@ -105,7 +105,7 @@ def test_mcp_config_verify_integrity():
 def test_mcp_config_env_override():
     """Test that environment variables override config values."""
     import os
-    
+
     # Set environment variables
     os.environ['ITA_URL'] = 'http://custom-url:9999'
     os.environ['ITA_API_KEY'] = 'custom_key_123'
