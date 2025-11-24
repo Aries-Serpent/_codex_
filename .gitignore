@@ -130,6 +130,8 @@ artifacts/*
 # Allow docs README but ignore generated API docs
 !artifacts/docs/
 !artifacts/docs/README.md
+# Keep regression log path tracked for offline runs
+!artifacts/model_regression_log.ndjson
 # Allow migration summaries
 !artifacts/MIGRATION_SUMMARY.md
 !artifacts/*.md
