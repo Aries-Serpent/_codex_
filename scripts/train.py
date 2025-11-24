@@ -131,6 +131,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         lora_task_type=cfg.lora_task_type if cfg.use_lora else None,
         mlflow_tracking_uri=cfg.mlflow_tracking_uri,
         distributed=False,
+        config_path=args.config,
+        hydra_cfg=_config_to_dict(cfg),
     )
     print(json.dumps(metrics, indent=2, sort_keys=True))
     return 0

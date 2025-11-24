@@ -117,6 +117,7 @@ import math
 import os
 import random
 import re
+import shutil
 import time
 import warnings
 from dataclasses import dataclass
@@ -831,6 +832,30 @@ def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     return ds
 
 
+def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    """Convert a config mapping into JSON-safe primitives for manifest storage."""
+
+    if cfg is None:
+        return None
+
+    def _convert(value: Any) -> Any:
+        if isinstance(value, Mapping):
+            return {str(k): _convert(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple, set)):
+            return [_convert(v) for v in value]
+        if isinstance(value, Path):
+            return str(value)
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            return value
+        return str(value)
+
+    try:
+        normalized = _convert(cfg)
+    except Exception:
+        return None
+    return normalized if isinstance(normalized, dict) else None
+
+
 def run_hf_trainer(
     texts: Iterable[str],
     output_dir: Path,
@@ -906,6 +931,8 @@ def run_hf_trainer(
     custom_resume = resume_ckpt if resume_ckpt and resume_ckpt.is_file() else None
 
     # Resolve tokenizer configuration
+    config_snapshot = _sanitize_config_snapshot(hydra_cfg)
+    copied_resume_config: Path | None = None
     cfg: Dict[str, object] = {}
     if config_path and config_path.exists():
         try:
@@ -919,6 +946,8 @@ def run_hf_trainer(
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except Exception:
             cfg = {}
+        if config_snapshot is None and cfg:
+            config_snapshot = _sanitize_config_snapshot(cfg)
     tokenizer_path = tokenizer_path or cast(Optional[str], cfg.get("tokenizer_path"))
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
@@ -1198,13 +1227,27 @@ def run_hf_trainer(
         if hasattr(writer_obj, "close"):
             writer_obj.close()
 
+    if config_path and config_path.exists():
+        suffix = config_path.suffix or ".yaml"
+        target_path = output_dir / f"resume_config{suffix}"
+        try:
+            if config_path.resolve() != target_path.resolve():
+                target_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(config_path, target_path)
+            copied_resume_config = target_path
+        except Exception:
+            copied_resume_config = None
+
     manifest = {
+        "manifest_version": 1,
         "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir else None,
         "last_checkpoint": trainer.state.last_model_checkpoint,
         "best_checkpoint": trainer.state.best_model_checkpoint,
         "global_step": int(trainer.state.global_step),
         "resume_from": str(resume_ckpt) if resume_ckpt else None,
         "config_path": str(config_path) if config_path else None,
+        "copied_config_path": str(copied_resume_config) if copied_resume_config else None,
+        "config": config_snapshot,
     }
     (output_dir / "resume_manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
