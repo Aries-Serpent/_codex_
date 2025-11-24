@@ -290,7 +290,14 @@ def tests(session: nox.Session) -> None:
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
     _show_vendor_scan(session)
-    session.run("pytest", "-q", "--disable-warnings", "-m", "not requires_torch", external=True)
+    session.run(
+        "pytest",
+        "-q",
+        "--disable-warnings",
+        "-m",
+        "not requires_torch",
+        external=True,
+    )
 
 
 @nox.session(name="ml_tests", python=PY_VERSIONS)

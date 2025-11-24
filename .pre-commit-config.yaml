@@ -6,3 +6,20 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        args: ["-c", "bandit.yaml", "-r", "src", "training"]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ["--no-verify"]
+  - repo: local
+    hooks:
+      - id: pip-compile
+        name: pip-compile (manual)
+        entry: bash -c 'if [ -f requirements.in ]; then pip-compile requirements.in -o requirements.txt; fi'
+        language: system
+        stages: [manual]

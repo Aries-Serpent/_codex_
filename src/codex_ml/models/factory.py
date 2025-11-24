@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from dataclasses import fields
@@ -23,6 +24,8 @@ logger = logging.getLogger(__name__)
 
 ENV_ENABLE_PEFT = "CODEX_ML_ENABLE_PEFT"
 ENV_ENABLE_PEFT_ALT = "CODEX_ENABLE_PEFT"
+ENV_QUANTIZATION = "CODEX_ML_QUANTIZATION"
+ENV_LORA_CONFIG = "CODEX_ML_LORA_CONFIG"
 _TRUE_LITERALS = {"1", "true", "yes", "on", "enable", "enabled"}
 
 
@@ -83,6 +86,37 @@ def _coerce_lora_cfg(cfg: Any) -> Optional[LoraBuildCfg]:
     raise TypeError(
         "LoRA configuration must be a mapping or LoraBuildCfg instance; " f"received {type(cfg)!r}."
     )
+
+
+def validate_lora_config(cfg: Any) -> LoraBuildCfg:
+    """Validate LoRA hyperparameters, returning a ``LoraBuildCfg``."""
+
+    lora_cfg = _coerce_lora_cfg(cfg)
+    if lora_cfg is None:
+        raise ValueError("LoRA configuration is required when PEFT is enabled")
+
+    errors = []
+    if lora_cfg.r is not None and lora_cfg.r <= 0:
+        errors.append("lora r must be > 0")
+    if lora_cfg.alpha is not None and lora_cfg.alpha <= 0:
+        errors.append("lora alpha must be > 0")
+    if lora_cfg.dropout is not None and not (0 <= lora_cfg.dropout < 1):
+        errors.append("lora dropout must be in [0, 1)")
+    if errors:
+        raise ValueError("; ".join(errors))
+    return lora_cfg
+
+
+def _load_lora_from_env() -> Optional[LoraBuildCfg]:
+    payload = os.getenv(ENV_LORA_CONFIG)
+    if not payload:
+        return None
+    try:
+        data = json.loads(payload)
+    except json.JSONDecodeError:
+        logger.warning("Invalid JSON in %s; ignoring", ENV_LORA_CONFIG)
+        return None
+    return _coerce_lora_cfg(data)
 
 
 def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any]) -> Any:
@@ -188,11 +222,17 @@ def create_model(
     quantization_payload = (
         quantization if quantization is not None else options.pop("quantization", None)
     )
+    if quantization_payload is None:
+        env_quant = os.getenv(ENV_QUANTIZATION)
+        if env_quant:
+            quantization_payload = env_quant
     if quantization_payload is not None:
         _apply_quantization_options(options, quantization_payload)
     resolved_dtype = _resolve_dtype(dtype if dtype is not None else options.pop("dtype", None))
     resolved_device = _resolve_device(device if device is not None else options.pop("device", None))
     lora_payload = lora_cfg if lora_cfg is not None else options.pop("lora", None)
+    if lora_payload is None:
+        lora_payload = _load_lora_from_env()
 
     model = _call_builder(builder, options)
 
@@ -204,12 +244,16 @@ def create_model(
         model = model.to(device=resolved_device)
 
     if _should_enable_peft(enable_peft):
-        lora_config = _coerce_lora_cfg(lora_payload)
+        try:
+            lora_config = validate_lora_config(lora_payload) if lora_payload is not None else LoraBuildCfg()
+        except ValueError as exc:
+            logger.warning("Invalid LoRA configuration: %s. Disabling PEFT.", exc)
+            lora_config = None
         if lora_config is not None:
             logger.debug("model_factory: applying LoRA adapters with config: %s", lora_config)
             model = build_lora(model, lora_config)
         else:
-            logger.debug("model_factory: PEFT enabled but no LoRA configuration provided; skipping")
+            logger.debug("model_factory: PEFT enabled but no valid LoRA configuration provided; skipping")
     else:
         logger.debug("model_factory: PEFT disabled; skipping LoRA application")
 
@@ -253,4 +297,13 @@ def load_model(config: Optional[Mapping[str, Any]] = None) -> _MockModel:
     return _MockModel(resolved_dtype, resolved_device)
 
 
-__all__ = ["create_model", "load_model", "_MockModel", "ENV_ENABLE_PEFT", "LoraBuildCfg"]
+__all__ = [
+    "create_model",
+    "load_model",
+    "_MockModel",
+    "ENV_ENABLE_PEFT",
+    "ENV_QUANTIZATION",
+    "ENV_LORA_CONFIG",
+    "LoraBuildCfg",
+    "validate_lora_config",
+]
