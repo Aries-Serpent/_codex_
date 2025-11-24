@@ -354,6 +354,46 @@ if typer is not None:
         raise typer.Exit(code=exit_code)
 
     @app.command()
+    def package_service(
+        model_dir: Path = typer.Argument(..., help="Path to the trained model directory"),
+        output: Path = typer.Option(
+            Path("artifacts/packages/service.tar.gz"),
+            "--output",
+            help="Path to write the packaged archive",
+        ),
+        metadata_json: str | None = typer.Option(
+            None,
+            "--metadata-json",
+            help="Optional JSON metadata to include in the package",
+        ),
+        prompt: str | None = typer.Option(None, "--prompt", help="Prompt to scan for safety"),
+        secret: list[str] | None = typer.Option(
+            None,
+            "--secret",
+            help="Secret names to load from the offline store",
+        ),
+    ) -> None:
+        """Package a model directory into an offline deployable tarball."""
+
+        from codex_ml.deployment.package import build_service_package
+
+        try:
+            meta_payload = json.loads(metadata_json) if metadata_json else {}
+            if not isinstance(meta_payload, dict):
+                raise ValueError("metadata must decode to a JSON object")
+        except Exception as exc:
+            raise typer.BadParameter(str(exc)) from exc
+
+        result = build_service_package(
+            model_dir=model_dir,
+            output_path=output,
+            metadata=meta_payload,
+            prompt=prompt,
+            secret_names=secret,
+        )
+        typer.echo(json.dumps(result, indent=2, sort_keys=True))
+
+    @app.command()
     def version() -> None:
         """Print the Codex ML package version."""
         import codex_ml

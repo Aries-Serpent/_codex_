@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
+from uuid import uuid4
 
 _REQUIRED_FIELDS = ("metric", "value", "step")
 
@@ -26,6 +28,8 @@ class MetricsRecord:
     split: str = "train"
     ts: str = field(default_factory=_timestamp)
     extra: dict[str, Any] = field(default_factory=dict)
+    run_id: str | None = None
+    tags: Mapping[str, str] | None = None
 
     def as_dict(self) -> dict[str, Any]:
         payload = {
@@ -36,15 +40,27 @@ class MetricsRecord:
             "ts": self.ts,
         }
         payload.update(self.extra)
+        if self.run_id:
+            payload["run_id"] = self.run_id
+        if self.tags:
+            payload["tags"] = dict(self.tags)
         return payload
 
 
 class BaseMetricsWriter:
     """Common validation helpers shared across metrics writers."""
 
-    def __init__(self, path: str | Path) -> None:
+    def __init__(
+        self,
+        path: str | Path,
+        *,
+        run_id: str | None = None,
+        default_tags: Mapping[str, str] | None = None,
+    ) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.run_id = run_id or os.getenv("CODEX_RUN_ID") or f"run-{uuid4().hex}"
+        self.default_tags = dict(default_tags) if default_tags else {}
 
     def _normalise(self, record: Mapping[str, Any] | MetricsRecord) -> dict[str, Any]:
         if isinstance(record, MetricsRecord):
@@ -56,6 +72,8 @@ class BaseMetricsWriter:
             payload.setdefault("metric", "unknown")
             payload.setdefault("value", 0.0)
             payload.setdefault("step", 0)
+        payload.setdefault("run_id", self.run_id)
+        raw_tags = payload.pop("tags", {}) or {}
         missing = [field for field in _REQUIRED_FIELDS if field not in payload]
         if missing:
             raise ValueError(f"metric record missing required fields: {missing}")
@@ -66,6 +84,14 @@ class BaseMetricsWriter:
         payload["step"] = int(payload["step"])
         payload["metric"] = str(payload["metric"])
         payload["split"] = str(payload.get("split", "train"))
+        tags = dict(self.default_tags)
+        if isinstance(raw_tags, Mapping):
+            tags.update({str(k): str(v) for k, v in raw_tags.items()})
+        tags.setdefault("metric", payload["metric"])
+        tags.setdefault("step", str(payload["step"]))
+        if payload.get("run_id"):
+            tags.setdefault("run_id", str(payload["run_id"]))
+        payload["tags"] = tags
         return payload
 
     def close(self) -> None:  # pragma: no cover - convenience for parity with logging APIs
@@ -87,10 +113,10 @@ class NDJSONMetricsWriter(BaseMetricsWriter):
 class CSVMetricsWriter(BaseMetricsWriter):
     """Persist metrics to CSV with a stable header."""
 
-    _FIELDS: Sequence[str] = ("metric", "value", "step", "split", "ts")
+    _FIELDS: Sequence[str] = ("metric", "value", "step", "split", "ts", "run_id", "tags")
 
-    def __init__(self, path: str | Path) -> None:
-        super().__init__(path)
+    def __init__(self, path: str | Path, **kwargs: Any) -> None:
+        super().__init__(path, **kwargs)
         self._has_header = self.path.exists() and self.path.stat().st_size > 0
 
     def write(self, record: Mapping[str, Any] | MetricsRecord) -> None:
@@ -100,7 +126,9 @@ class CSVMetricsWriter(BaseMetricsWriter):
             if not self._has_header:
                 writer.writeheader()
                 self._has_header = True
-            writer.writerow({field: payload.get(field) for field in self._FIELDS})
+            row = {field: payload.get(field) for field in self._FIELDS}
+            row["tags"] = json.dumps(payload.get("tags", {}), sort_keys=True)
+            writer.writerow(row)
 
 
 __all__ = ["MetricsRecord", "NDJSONMetricsWriter", "CSVMetricsWriter"]
