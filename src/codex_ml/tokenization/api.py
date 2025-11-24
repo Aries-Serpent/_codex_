@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Iterable, Optional, Protocol, Sequence, cast
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
 
+from codex_ml.interfaces.contracts import validate_tokenizer_contract
+
 from .adapter import WhitespaceTokenizer
 
 BOS_TOKEN = "<BOS>"
@@ -75,9 +77,13 @@ def load_tokenizer(
     if target and str(target).endswith(".model"):
         from .sentencepiece_adapter import SentencePieceAdapter
 
-        return cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
+        adapter = cast(TokenizerAdapter, SentencePieceAdapter(Path(target)).load())
+        validate_tokenizer_contract(adapter)
+        return adapter
     adapter = _load_hf_adapter()
-    return adapter.load(target, use_fast=use_fast)
+    instance = adapter.load(target, use_fast=use_fast)
+    validate_tokenizer_contract(instance)
+    return instance
 
 
 def get_tokenizer(*args, **kwargs):
