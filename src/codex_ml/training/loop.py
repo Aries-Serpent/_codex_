@@ -33,6 +33,11 @@ from __future__ import annotations
 
 from typing import Any, Callable, Iterable
 
+from codex_ml.interfaces.contracts import (
+    TrainingContractError,
+    validate_training_model,
+)
+
 
 def train_epoch(
     model: Any,
@@ -80,19 +85,20 @@ def train_epoch(
     if callbacks is None:
         callbacks = []
 
-    if not hasattr(model, "step"):
-        raise AttributeError(
-            f"Model {type(model).__name__} must implement a .step(batch, state) method"
-        )
+    validate_training_model(model)
 
     metrics_accumulator: dict[str, list[float]] = {}
 
     for step_idx, batch in enumerate(dataloader):
         # Call model's step method
         step_metrics = model.step(batch, state)
+        if not isinstance(step_metrics, dict):
+            raise TrainingContractError("Model.step must return a mapping of metrics")
 
         # Accumulate metrics
         for key, value in step_metrics.items():
+            if not isinstance(key, str):
+                raise TrainingContractError("Metric keys must be strings")
             if key not in metrics_accumulator:
                 metrics_accumulator[key] = []
             # Handle numeric values
@@ -100,6 +106,8 @@ def train_epoch(
                 metrics_accumulator[key].append(float(value))
             elif hasattr(value, "item"):  # torch tensor-like
                 metrics_accumulator[key].append(float(value.item()))
+            else:
+                raise TrainingContractError("Metric values must be numeric")
 
         # Update state
         state["step"] = step_idx
