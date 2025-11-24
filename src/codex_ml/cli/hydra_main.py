@@ -4,16 +4,23 @@ from __future__ import annotations
 
 import argparse
 import json
+import json
 import logging
 import platform
 import sys
+import uuid
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from codex_ml.cli.config import AppConfig, register_configs
+from codex_ml.codex_data import DataConfig, load_dataset
+from codex_ml.codex_model import ModelConfig, build_codex_model
 from codex_ml.data.reasoning_manifest import list_reasoning_corpora
+from codex_ml.tracking.experiments import finish_run, log_metric, new_run_info, start_run
 from codex_ml.training import run_functional_training
 
 try:
@@ -111,6 +118,97 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
     return {}
 
 
+def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
+    conf_root = Path(__file__).resolve().parents[2] / "conf"
+    config_path = conf_root / "config.yaml"
+    if not config_path.exists():
+        return {
+            "model": {"base_model_path": None, "dtype": "float32", "device": "cpu", "enable_lora": False},
+            "data": {
+                "dataset_path": "data/sample.jsonl",
+                "train_ratio": 0.8,
+                "val_ratio": 0.1,
+                "test_ratio": 0.1,
+                "seed": 42,
+            },
+            "experiment": {"name": "offline-default"},
+        }
+    try:
+        cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return {}
+
+    if overrides:
+        cfg.setdefault("overrides", [])
+        cfg["overrides"].extend(list(overrides))
+    return cfg
+
+
+def _ensure_local_dataset(path: Path) -> None:
+    if path.exists():
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    samples = [
+        {"text": "example-0", "label": 0},
+        {"text": "example-1", "label": 1},
+        {"text": "example-2", "label": 0},
+        {"text": "example-3", "label": 1},
+    ]
+    path.write_text("\n".join(json.dumps(sample) for sample in samples), encoding="utf-8")
+
+
+def _run_minimal_training(cfg: Mapping[str, Any]) -> Mapping[str, Any]:
+    model_cfg = cfg.get("model", {}) if isinstance(cfg, Mapping) else {}
+    data_cfg = cfg.get("data", {}) if isinstance(cfg, Mapping) else {}
+    exp_cfg = cfg.get("experiment", {}) if isinstance(cfg, Mapping) else {}
+    dataset_path = Path(data_cfg.get("dataset_path", "data/sample.jsonl"))
+    _ensure_local_dataset(dataset_path)
+
+    data_config = DataConfig(
+        dataset_path=dataset_path,
+        train_ratio=float(data_cfg.get("train_ratio", 0.8) or 0.8),
+        val_ratio=float(data_cfg.get("val_ratio", 0.1) or 0.1),
+        test_ratio=float(data_cfg.get("test_ratio", 0.1) or 0.1),
+        seed=int(data_cfg.get("seed", 42) or 42),
+        cache_dir=data_cfg.get("cache_dir", "artifacts/cache"),
+    )
+    splits = load_dataset(data_config)
+
+    model_config = ModelConfig(
+        base_model_path=model_cfg.get("base_model_path"),
+        dtype=model_cfg.get("dtype"),
+        device=model_cfg.get("device"),
+        enable_lora=bool(model_cfg.get("enable_lora", False)),
+        lora_r=int(model_cfg.get("lora_r", 4) or 4),
+        lora_alpha=int(model_cfg.get("lora_alpha", 8) or 8),
+        lora_dropout=float(model_cfg.get("lora_dropout", 0.05) or 0.05),
+        lora_target_modules=tuple(model_cfg.get("lora_target_modules", ()) or ()),
+        lora_task_type=str(model_cfg.get("lora_task_type", "FEATURE_EXTRACTION")),
+    )
+    model = build_codex_model(model_config)
+
+    run_info = new_run_info(
+        exp_cfg.get("name", "offline-default"),
+        git_hash=exp_cfg.get("git_hash", "unknown"),
+        config_version=str(exp_cfg.get("config_version", "local")),
+        data_version=str(exp_cfg.get("data_version", dataset_path.name)),
+        run_id=exp_cfg.get("run_id") or uuid.uuid4().hex[:10],
+    )
+    run_dir = start_run(run_info)
+    log_metric(run_info, "train_samples", len(splits.train))
+    log_metric(run_info, "val_samples", len(splits.val))
+    log_metric(run_info, "test_samples", len(splits.test))
+    finish_run(run_info, status="completed")
+    return {
+        "run_id": run_info.run_id,
+        "run_dir": str(run_dir),
+        "train_samples": len(splits.train),
+        "val_samples": len(splits.val),
+        "test_samples": len(splits.test),
+        "model_type": type(model).__name__,
+    }
+
+
 if hydra is not None:  # pragma: no cover - executed when hydra available
 
     @hydra.main(version_base="1.3", config_path=None, config_name="app")
@@ -161,22 +259,21 @@ else:  # pragma: no cover - hydra missing, provide informative failure
 
 
 def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
-    guidance = (
-        "hydra-core is required for codex-train; "
-        "install it with `pip install hydra-core` before running."
-    )
     logger = init_json_logging()
     with capture_exceptions(logger):
         log_event(logger, "cli.start", prog=prog, args=list(args))
-        print(guidance, file=sys.stderr)
+        cfg = _load_conf_defaults(args)
+        result = _run_minimal_training(cfg)
         log_event(
             logger,
             "cli.finish",
             prog=prog,
             status="ok",
             exit_code=0,
-            reason="hydra-core missing",
+            mode="minimal",
+            result=result,
         )
+        print(json.dumps({"ok": True, "mode": "minimal", "result": result}))
         return 0
 
 

@@ -31,6 +31,14 @@ from .mlflow_utils import (
     seed_snapshot,
     start_run,
 )
+from .experiments import (
+    RunInfo,
+    finish_run,
+    load_events,
+    log_metric,
+    new_run_info,
+    start_run as start_local_run,
+)
 
 __all__ = [
     "MlflowConfig",
@@ -42,5 +50,11 @@ __all__ = [
     "seed_snapshot",
     "ExperimentContext",
     "init_experiment",
+    "RunInfo",
+    "new_run_info",
+    "start_local_run",
+    "log_metric",
+    "finish_run",
+    "load_events",
 ]
 # END: CODEX_MLFLOW_INIT
