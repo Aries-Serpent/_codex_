@@ -3,10 +3,11 @@ Test code blocks in markdown files for syntax validity.
 
 Part of documentation-system capability maturity improvement.
 """
-import pytest
-import re
 import ast
+import re
 from pathlib import Path
+
+import pytest
 
 
 @pytest.fixture(scope="module")

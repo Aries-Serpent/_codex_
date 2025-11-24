@@ -4,12 +4,13 @@ Extended tests for complete dataset loader suite
 Author: mbaetiong
 Generated: 2025-11-19 04:02:05
 """
-import pytest
-import tempfile
 import json
+import tempfile
 from pathlib import Path
 
-from src.codex_ml.data.loaders import load_dataset
+import pytest
+
+from codex_ml.data import load_dataset
 
 
 class TestParquetLoader:
@@ -22,8 +23,9 @@ class TestParquetLoader:
     def test_load_parquet_basic(self):
         """Test basic Parquet loading"""
         import pandas as pd
+
         from src.codex_ml.data.loaders.parquet_loader import load_parquet
-        
+
         # Create sample Parquet
         df = pd.DataFrame({
             "text": ["Sample 1", "Sample 2", "Sample 3"],
@@ -46,8 +48,9 @@ class TestParquetLoader:
     def test_load_parquet_batched(self):
         """Test batched Parquet loading"""
         import pandas as pd
+
         from src.codex_ml.data.loaders.parquet_loader import load_parquet
-        
+
         # Create larger dataset
         df = pd.DataFrame({
             "id": range(100),
@@ -75,8 +78,9 @@ class TestArrowLoader:
         """Test basic Arrow loading"""
         import pyarrow as pa
         import pyarrow.ipc as ipc
+
         from src.codex_ml.data.loaders.arrow_loader import load_arrow
-        
+
         # Create sample Arrow file
         schema = pa.schema([
             ('text', pa.string()),
@@ -112,8 +116,9 @@ class TestHDF5Loader:
         """Test basic HDF5 loading"""
         import h5py
         import numpy as np
+
         from src.codex_ml.data.loaders.hdf5_loader import load_hdf5
-        
+
         # Create sample HDF5
         data = np.random.rand(100, 10)
         

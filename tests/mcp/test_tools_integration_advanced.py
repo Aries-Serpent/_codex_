@@ -3,8 +3,10 @@ Advanced tests for MCP tools integration.
 Focus: ITA endpoint integration, tool chaining, concurrent execution.
 """
 
-import pytest
 import threading
+
+import pytest
+
 from mcp.registry import MCPToolRegistry
 
 

@@ -16,12 +16,16 @@ import sys
 from pathlib import Path
 
 RAW_ROOT = Path("audit_artifacts/raw")
+BUNDLE_ROOT = Path("audit_artifacts/bundles")
 
 
 def setup_files():
     if RAW_ROOT.exists():
         shutil.rmtree(RAW_ROOT)
+    if BUNDLE_ROOT.exists():
+        shutil.rmtree(BUNDLE_ROOT)
     RAW_ROOT.mkdir(parents=True)
+    BUNDLE_ROOT.mkdir(parents=True, exist_ok=True)
     # create ~1MB total
     (RAW_ROOT / "a.txt").write_text("x" * 400_000)
     (RAW_ROOT / "b.txt").write_text("y" * 400_000)
@@ -37,13 +41,11 @@ def run_env(env):
 
 
 def pointer_files():
-    bdir = Path("audit_artifacts/bundles")
-    return list(bdir.glob("*.pointer.json"))
+    return list(BUNDLE_ROOT.glob("*.pointer.json"))
 
 
 def sidecars():
-    bdir = Path("audit_artifacts/bundles")
-    return list(bdir.glob("*.sha256"))
+    return list(BUNDLE_ROOT.glob("*.sha256"))
 
 
 def test_pointer_both():

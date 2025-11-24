@@ -9,31 +9,10 @@ from typing import Dict, Iterator, List, Tuple
 import numpy as np
 import pytest
 
-
-def _ensure_real_torch() -> None:
-    repo_root = Path(__file__).resolve().parents[1]
-    removed: List[Tuple[int, str]] = []
-    for idx in range(len(sys.path) - 1, -1, -1):
-        entry = sys.path[idx]
-        try:
-            resolved = Path(entry or ".").resolve()
-        except Exception:
-            continue
-        if resolved == repo_root:
-            removed.append((idx, entry))
-            del sys.path[idx]
-    try:
-        sys.modules.pop("torch", None)
-        importlib.import_module("torch")
-    except ModuleNotFoundError:
-        pytest.skip("torch is not installed", allow_module_level=True)
-    finally:
-        for idx, entry in sorted(removed):
-            sys.path.insert(idx, entry)
-
-
-_ensure_real_torch()
-torch = pytest.importorskip("torch")
+try:
+    torch = pytest.importorskip("torch")
+except Exception as exc:  # pragma: no cover - runtime guard
+    pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
 
 class _TinyTokenizer:

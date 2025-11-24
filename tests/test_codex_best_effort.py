@@ -14,9 +14,8 @@ from configs.base_config import BASE_TRAINING_CONFIG, get_base_training_config
 ROOT = Path(__file__).resolve().parents[1]
 
 try:  # Optional dependency for evaluation helper tests
-    from torch.utils.data import DataLoader
-
     import torch
+    from torch.utils.data import DataLoader
 except Exception:  # pragma: no cover - torch may be unavailable
     torch = None  # type: ignore
     DataLoader = None  # type: ignore

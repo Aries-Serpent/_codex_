@@ -9,9 +9,8 @@ pytest.importorskip("accelerate")
 pytest.importorskip("omegaconf")
 pytest.importorskip("yaml")
 
-from transformers.trainer_utils import IntervalStrategy
-
 from training.engine_hf_trainer import load_training_arguments
+from transformers.trainer_utils import IntervalStrategy
 
 
 def test_base_config_load(tmp_path):

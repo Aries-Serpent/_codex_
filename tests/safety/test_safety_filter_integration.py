@@ -1,7 +1,7 @@
 import json
 from types import SimpleNamespace
 
-from codex_ml.data.loaders import stream_paths
+from codex_ml.data import stream_paths
 from codex_ml.safety.filters import REDACT_TOKEN
 
 
