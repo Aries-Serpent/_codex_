@@ -1,0 +1,6 @@
+dataset_path: data/sample.jsonl
+train_ratio: 0.8
+val_ratio: 0.1
+test_ratio: 0.1
+seed: 42
+cache_dir: artifacts/cache

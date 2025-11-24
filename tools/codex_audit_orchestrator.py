@@ -23,6 +23,12 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from codex_audit.errors import ErrorRecord, attach_ra_references, capture_error
+from codex_audit.gates import run_gates
+from codex_audit.policy import write_policy_mapping
+from codex_audit.prompting import prepare_repo_status_prompt
+from codex_audit.scorecard import render_scorecard
+
 # Basic configuration (same as upstream)
 REPO_ROOT_SENTINEL = ".git"
 TARGET_BRANCHES = ["main", "0D_base_"]
@@ -32,6 +38,9 @@ GAP_PLANS_DIR = AUDIT_ROOT / "gap_plans"
 ERROR_CAPTURES_DIR = AUDIT_ROOT / "error_captures"
 LOGS_DIR = AUDIT_ROOT / "logs"
 REPORTS_DIR = AUDIT_ROOT / "reports"
+ARTIFACTS_DIR = Path("artifacts")
+ERROR_RECORDS_JSON = ERROR_CAPTURES_DIR / "error_records.json"
+ERROR_RECORDS_MD = ERROR_CAPTURES_DIR / "error_captures_codex_questions.md"
 
 ERROR_CAPTURE_TEMPLATE = (
     "Question for ChatGPT @codex {timestamp}:\n"
@@ -95,25 +104,32 @@ def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> N
     """
     try:
         ERROR_CAPTURES_DIR.mkdir(parents=True, exist_ok=True)
-        timestamp = dt.datetime.utcnow().isoformat(timespec="seconds") + "Z"
         error_message = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        record = ErrorRecord(
+            phase_id=ctx.phase_id,
+            step_label=ctx.step_id,
+            description=ctx.description,
+            message=error_message.strip(),
+            brief_context=brief_context,
+        )
+        attach_ra_references(record, ["RA-1", "RA-3", "RA-4"])
+        capture_error(ERROR_RECORDS_JSON, ERROR_RECORDS_MD, record)
         block = ERROR_CAPTURE_TEMPLATE.format(
-            timestamp=timestamp,
+            timestamp=record.timestamp,
             step_number=f"{ctx.phase_id}.{ctx.step_id}",
             step_description=ctx.description,
             error_message=error_message.strip(),
-            brief_context=brief_context,
+            brief_context=f"{brief_context} | RA={','.join(record.ra_references)}",
         )
-        path = ERROR_CAPTURES_DIR / "error_captures_codex_questions.md"
-        with path.open("a", encoding="utf-8") as f:
+        with ERROR_RECORDS_MD.open("a", encoding="utf-8") as f:
             f.write(block)
-        log(f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id}")
+        log(f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id} with RA refs {record.ra_references}")
     except Exception as write_exc:
         # If error capture itself fails, log to file and stderr for triage.
         log(f"CRITICAL: Failed to write error capture for {ctx.phase_id}.{ctx.step_id}: {write_exc}")
         print(f"[CRITICAL] Error capture write failed: {write_exc}", file=sys.stderr)
 
-def phase_step(phase_id: int, step_id: str, description: str):
+def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[List[str]] = None):
     """
     Decorator for phase steps. On exception: log, record capture, and return None.
     On success: return the function's result if truthy, else True to indicate success.
@@ -129,11 +145,13 @@ def phase_step(phase_id: int, step_id: str, description: str):
                 return result if result is not None else True  # Success indicator
             except Exception as exc:  # noqa: BLE001
                 log(f"ERROR {ctx.phase_id}.{ctx.step_id} - {exc}")
-                error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs}")
+                refs = ra_refs or ["RA-1", "RA-3"]
+                error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs} | RA={','.join(refs)}")
                 return None  # Failure indicator
         wrapper.phase_id = phase_id
         wrapper.step_label = step_id
         wrapper.step_description = description
+        wrapper.ra_refs = ra_refs or ["RA-1", "RA-3"]
         return wrapper
     return decorator
 
@@ -253,6 +271,28 @@ def step_2_3_capability_mapping(ctx: StepContext) -> bool:
     serialize_json(REPORTS_DIR / "capability_audit_table.json", capability_map)
     return True  # Explicit success
 
+
+@phase_step(2, "2.4", "Normalize repo_audit_policy_codex into RA map", ra_refs=["RA-1", "RA-2", "RA-3"])
+def step_2_4_policy_mapping(ctx: StepContext) -> bool:  # noqa: ARG001
+    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    target = ARTIFACTS_DIR / "ra_policy_map.json"
+    write_policy_mapping(target)
+    log(f"Wrote RA policy map to {target}")
+    return True
+
+
+@phase_step(2, "2.5", "Run local gates and render scorecard", ra_refs=["RA-3", "RA-4", "RA-5"])
+def step_2_5_run_gates_and_scorecard(ctx: StepContext) -> bool:  # noqa: ARG001
+    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    gate_results_path = ARTIFACTS_DIR / "gate_results.json"
+    policy_path = ARTIFACTS_DIR / "ra_policy_map.json"
+    scorecard_path = ARTIFACTS_DIR / "repo_audit_scorecard.md"
+    policy_map = write_policy_mapping(policy_path)
+    gate_results = run_gates(repo_root=find_repo_root(), output_path=gate_results_path)
+    render_scorecard(gate_results_path=gate_results_path, policy_map=policy_map, output_path=scorecard_path)
+    log(f"Captured {len(gate_results)} gate results and rendered scorecard")
+    return True
+
 @phase_step(3, "3.1", "Propose atomic diffs for high-signal gaps")
 def step_3_1_propose_atomic_diffs(ctx: StepContext) -> bool:
     GAP_PLANS_DIR.mkdir(parents=True, exist_ok=True)
@@ -358,6 +398,26 @@ def step_6_2_followup_prompts(ctx: StepContext) -> bool:
     )
     return True  # Explicit success
 
+
+@phase_step(6, "6.3", "Prepare repo status prompt for Codex", ra_refs=["RA-1", "RA-2", "RA-5"])
+def step_6_3_status_prompt(ctx: StepContext) -> bool:  # noqa: ARG001
+    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    gate_results_path = ARTIFACTS_DIR / "gate_results.json"
+    policy_path = ARTIFACTS_DIR / "ra_policy_map.json"
+    scorecard_path = ARTIFACTS_DIR / "repo_audit_scorecard.md"
+    if not gate_results_path.exists():
+        gate_results_path.write_text("[]", encoding="utf-8")
+    if not policy_path.exists():
+        write_policy_mapping(policy_path)
+    prepare_repo_status_prompt(
+        gate_results_path=gate_results_path,
+        policy_map_path=policy_path,
+        scorecard_path=scorecard_path,
+        output_path=ARTIFACTS_DIR / "repo_status_update_prompt.txt",
+    )
+    log("Prepared repo status prompt for Codex consumption")
+    return True
+
 # Minimal set of PHASE_FUNCTIONS to exercise orchestration and tests
 PHASE_FUNCTIONS = [
     step_1_2_create_output_dirs,
@@ -365,6 +425,8 @@ PHASE_FUNCTIONS = [
     step_2_1_list_top_level,
     step_2_2_stub_scan,
     step_2_3_capability_mapping,
+    step_2_4_policy_mapping,
+    step_2_5_run_gates_and_scorecard,
     step_3_1_propose_atomic_diffs,
     step_3_2_test_gate_suggestions,
     step_3_3_repro_checklist,
@@ -373,6 +435,7 @@ PHASE_FUNCTIONS = [
     step_5_1_error_capture_file,
     step_6_1_status_update,
     step_6_2_followup_prompts,
+    step_6_3_status_prompt,
 ]
 
 # --------------------------

@@ -42,6 +42,9 @@ def _load_config(path: str | Path | None) -> Mapping[str, Any]:
 def _merge(namespace: argparse.Namespace, config: Mapping[str, Any]) -> dict[str, Any]:
     merged = {**config}
     for key, value in vars(namespace).items():
+        # Only apply CLI overrides for explicitly provided values. Boolean flags
+        # with argparse.SUPPRESS defaults will only appear when set on the CLI,
+        # avoiding clobbering YAML-configured booleans.
         if value is not None:
             merged[key] = value
     return merged
@@ -196,20 +199,30 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--learning-rate", dest="learning_rate", type=float, default=None)
     parser.add_argument("--per-device-train-batch-size", dest="per_device_train_batch_size", type=int, default=None)
     parser.add_argument("--gradient-accumulation-steps", dest="gradient_accumulation_steps", type=int, default=None)
-    parser.add_argument("--fp16", action="store_true", help="Enable fp16 training")
-    parser.add_argument("--bf16", action="store_true", help="Enable bf16 training")
+    parser.add_argument("--fp16", action="store_true", default=argparse.SUPPRESS, help="Enable fp16 training")
+    parser.add_argument("--bf16", action="store_true", default=argparse.SUPPRESS, help="Enable bf16 training")
     parser.add_argument("--max-steps", dest="max_steps", type=int, default=None)
     parser.add_argument("--save-steps", dest="save_steps", type=int, default=None)
     parser.add_argument("--save-total-limit", dest="save_total_limit", type=int, default=None)
     parser.add_argument("--block-size", dest="block_size", type=int, default=None)
     parser.add_argument("--resume-from-checkpoint", dest="resume_from_checkpoint", default=None)
     parser.add_argument("--codex-resume-checkpoint", dest="codex_resume_checkpoint", default=None)
-    parser.add_argument("--use-lora", action="store_true", help="Enable LoRA/PEFT wrapping")
+    parser.add_argument(
+        "--use-lora",
+        action="store_true",
+        default=argparse.SUPPRESS,
+        help="Enable LoRA/PEFT wrapping",
+    )
     parser.add_argument("--lora-r", dest="lora_r", type=int, default=None)
     parser.add_argument("--lora-alpha", dest="lora_alpha", type=int, default=None)
     parser.add_argument("--lora-dropout", dest="lora_dropout", type=float, default=None)
     parser.add_argument("--lora-target-modules", dest="lora_target_modules", nargs="*", default=None)
-    parser.add_argument("--allow-remote", dest="allow_remote", action="store_true")
+    parser.add_argument(
+        "--allow-remote",
+        dest="allow_remote",
+        action="store_true",
+        default=argparse.SUPPRESS,
+    )
     return parser
 
 

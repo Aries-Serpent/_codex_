@@ -106,7 +106,11 @@ def main(argv=None) -> int:
 
     from codex_ml.training.unified_training import run_unified_training
 
-    @hydra.main(config_path=str(Path("configs")), config_name="defaults", version_base=None)
+    conf_root = Path("conf")
+    hydra_path = conf_root if (conf_root / "config.yaml").is_file() else Path("configs")
+    hydra_name = "config" if (hydra_path / "config.yaml").is_file() else "defaults"
+
+    @hydra.main(config_path=str(hydra_path), config_name=hydra_name, version_base=None)
     def _entry(cfg: DictConfig) -> int:
         show_cfg = os.environ.get("CODEX_SHOW_CFG", "0")
         if show_cfg.lower() in {"1", "true", "yes"}:

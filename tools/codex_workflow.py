@@ -17,6 +17,8 @@ import subprocess
 import sys
 import time
 
+from codex_regression.runner import run_regression
+
 __all__ = ["main"]
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -102,6 +104,15 @@ def main(argv: list[str] | None = None) -> int:
         rc, out = run(["python", "tools/run_tests.py"])
         if rc != 0:
             error_capture("STEP 3 (tests)", out or "non-zero exit", "pytest with optional coverage")
+
+        regression_results = run_regression()
+        failed_regressions = [r for r in regression_results if r.get("status") != "passed"]
+        if failed_regressions:
+            error_capture(
+                "STEP 4 (regression)",
+                json.dumps(failed_regressions, indent=2),
+                "Regression suite failures",
+            )
         return 0
     except Exception as e:  # pragma: no cover - safety net
         error_capture("WORKFLOW (unexpected)", repr(e), "codex_workflow guard")
