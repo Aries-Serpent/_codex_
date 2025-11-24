@@ -1,8 +1,8 @@
 import json
 import subprocess
 import sys
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
 SCRIPT = "scripts/space_traversal/stable_manifest.py"
 

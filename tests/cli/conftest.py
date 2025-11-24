@@ -31,8 +31,14 @@ if os.environ.get("CODEX_CLI_LIGHTWEIGHT", "0") != "1":
         if (spec := importlib.util.find_spec(name)) is None or _is_stub_spec(spec, name)
     ]
     if missing:
-        raise SystemExit(0)
+        pytest.skip(
+            f"Skipping CLI tests: missing required dependencies {missing}",
+            allow_module_level=True,
+        )
 
     spec = importlib.util.find_spec("torch")
     if spec is None or _is_stub_spec(spec, "torch"):
-        raise SystemExit(0)
+        pytest.skip(
+            "Skipping CLI tests: torch unavailable or stubbed",
+            allow_module_level=True,
+        )

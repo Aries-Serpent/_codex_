@@ -10,9 +10,7 @@ from omegaconf import OmegaConf
 # Prefer the project unified config if present; otherwise use a tiny fallback.
 try:
     # Existing project config (if available)
-    from codex_ml.training.unified_training import (
-        UnifiedTrainingConfig as _Cfg,  # type: ignore
-    )
+    from codex_ml.training.unified_training import UnifiedTrainingConfig as _Cfg  # type: ignore
 except Exception:
 
     @dataclasses.dataclass

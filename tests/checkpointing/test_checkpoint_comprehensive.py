@@ -12,11 +12,13 @@ Tests cover:
 - Metadata validation
 - Distributed checkpointing
 """
-import pytest
-import torch
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
+
+import pytest
+
+import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive
