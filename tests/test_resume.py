@@ -1,67 +1,76 @@
+import json
 from pathlib import Path
 
 import pytest
+from click.testing import CliRunner
 
-from codex_ml.utils.checkpointing import CheckpointManager
-from tests.helpers.optional_dependencies import import_optional_dependency
+from src.codex.cli import cli
+from training.engine_hf_trainer import run_hf_trainer
+from tests.test_engine_hf_trainer import _install_minimal_hf_stubs
 
-torch = import_optional_dependency("torch", allow_stub=False)
-if not hasattr(torch, "nn"):
-    pytest.skip("torch.nn not available; skipping checkpoint resume tests", allow_module_level=True)
-
-
-class Tiny(torch.nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-        self.l = torch.nn.Linear(4, 3)
+pytest.importorskip("torch")
+pytest.importorskip("transformers")
+pytest.importorskip("datasets")
+pytest.importorskip("accelerate")
+pytest.importorskip("yaml")
 
 
-def test_resume_roundtrip(tmp_path: Path) -> None:
-    model = Tiny()
-    opt = torch.optim.SGD(model.parameters(), lr=0.1)
-    sch = torch.optim.lr_scheduler.StepLR(opt, step_size=1, gamma=0.5)
+def write_manifest(run_dir: Path, *, config=None, config_path=None, manifest_version: int | None = 1):
+    manifest = {
+        "manifest_version": manifest_version,
+        "checkpoint_dir": str(run_dir / "checkpoints"),
+        "last_checkpoint": None,
+        "best_checkpoint": None,
+        "global_step": 0,
+        "resume_from": None,
+        "config_path": config_path,
+        "copied_config_path": None,
+        "config": config,
+    }
+    manifest_path = run_dir / "resume_manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
 
-    ckpt_root = tmp_path / "output" / "checkpoints"
-    mgr = CheckpointManager(ckpt_root, keep_last=2, keep_best=1)
 
-    out1 = mgr.save(
-        1,
-        model=model,
-        optimizer=opt,
-        scheduler=sch,
-        config={"exp": "test"},
-        metrics={"val_loss": 0.9},
+def test_resume_prefers_manifest_snapshot(monkeypatch, tmp_path):
+    _install_minimal_hf_stubs(monkeypatch, tmp_path)
+    run_dir = tmp_path / "run1"
+    hydra_cfg = {"model_name": "tiny-gpt", "training": {"lr": 0.001}}
+    run_hf_trainer(
+        ["hello", "world"],
+        run_dir,
+        model_name="sshleifer/tiny-gpt2",
+        hydra_cfg=hydra_cfg,
+        distributed=False,
+        metrics_writer="none",
     )
-    assert (out1 / "state.pt").exists()
-    assert (ckpt_root / "last").exists()
 
-    # train to change weights
-    for _ in range(2):
-        x = torch.randn(5, 4)
-        y = torch.randint(0, 3, (5,))
-        opt.zero_grad()
-        loss = torch.nn.CrossEntropyLoss()(model.l(x), y)
-        loss.backward()
-        opt.step()
-        sch.step()
-
-    out2 = mgr.save(2, model=model, optimizer=opt, scheduler=sch, metrics={"val_loss": 0.5})
-    assert (out2 / "state.pt").exists()
-
-    fresh = Tiny()
-    opt2 = torch.optim.SGD(fresh.parameters(), lr=0.1)
-    sch2 = torch.optim.lr_scheduler.StepLR(opt2, step_size=1, gamma=0.5)
-    info = mgr.resume_from(out2, model=fresh, optimizer=opt2, scheduler=sch2)
-    assert info["state"] is True
-    assert info["meta"]["epoch"] == 2
+    runner = CliRunner()
+    result = runner.invoke(cli, ["resume", str(run_dir)])
+    assert result.exit_code == 0
+    assert "config snapshot" in result.output
+    assert "\"lr\": 0.001" in result.output
 
 
-def test_retention_policy(tmp_path: Path) -> None:
-    model = Tiny()
-    opt = torch.optim.SGD(model.parameters(), lr=0.1)
-    mgr = CheckpointManager(tmp_path / "output" / "checkpoints", keep_last=2, keep_best=1)
-    for e in range(1, 6):
-        mgr.save(e, model, opt, metrics={"val_loss": 10 - e})
-    epochs = sorted(p.name for p in (tmp_path / "output" / "checkpoints").glob("epoch-*"))
-    assert "epoch-5" in epochs and "epoch-4" in epochs
-    assert "epoch-3" not in epochs
+def test_resume_uses_copied_config_file_when_snapshot_missing(tmp_path):
+    runner = CliRunner()
+    run_dir = tmp_path / "run2"
+    run_dir.mkdir()
+    write_manifest(run_dir, config=None, config_path="configs/training/base.yaml")
+    copied = run_dir / "resume_config.yaml"
+    copied.write_text("learning_rate: 0.002\nbatch_size: 4", encoding="utf-8")
+
+    result = runner.invoke(cli, ["resume", str(run_dir)])
+    assert result.exit_code == 0
+    assert "Using copied config file" in result.output
+    assert "learning_rate: 0.002" in result.output
+
+
+def test_resume_fails_when_no_snapshot_or_path(tmp_path):
+    runner = CliRunner()
+    run_dir = tmp_path / "run3"
+    run_dir.mkdir()
+    write_manifest(run_dir, config=None, config_path=None)
+
+    result = runner.invoke(cli, ["resume", str(run_dir)])
+    assert result.exit_code != 0
+    assert "ERROR: No configuration snapshot or config_path available" in result.output
