@@ -109,6 +109,7 @@ def _install_accelerate_compat() -> None:
 _install_accelerate_compat()
 
 import argparse
+import csv
 import importlib
 import importlib.util
 import json
@@ -116,6 +117,7 @@ import math
 import os
 import random
 import re
+import shutil
 import time
 import warnings
 from dataclasses import dataclass
@@ -649,6 +651,52 @@ class NDJSONMetricsWriter:
             pass
 
 
+class CSVMetricsWriter:
+    """Persist metrics to CSV with stable columns."""
+
+    def __init__(self, path: str = ".codex/metrics.csv") -> None:
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._header: list[str] | None = None
+
+    def write(self, obj: Mapping[str, Any] | LogRecord) -> None:
+        if isinstance(obj, LogRecord):
+            row = obj.redacted().dict()
+        else:
+            row = dict(obj)
+        new_keys = set(row)
+        if self._header is None:
+            self._header = sorted(new_keys)
+            with self.path.open("w", encoding="utf-8", newline="") as fh:
+                writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
+                writer.writeheader()
+                writer.writerow(row)
+            return
+
+        existing_keys = set(self._header)
+        if new_keys - existing_keys:
+            # Expand the header to accommodate new metrics and rewrite the CSV.
+            self._header = sorted(existing_keys | new_keys)
+            existing_rows: list[dict[str, Any]] = []
+            with self.path.open("r", encoding="utf-8", newline="") as fh:
+                reader = csv.DictReader(fh)
+                existing_rows.extend(reader)
+            existing_rows.append(row)
+            with self.path.open("w", encoding="utf-8", newline="") as fh:
+                writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
+                writer.writeheader()
+                for rec in existing_rows:
+                    writer.writerow(rec)
+            return
+
+        with self.path.open("a", encoding="utf-8", newline="") as fh:
+            writer = csv.DictWriter(fh, fieldnames=self._header, extrasaction="ignore")
+            writer.writerow(row)
+
+    def close(self) -> None:  # pragma: no cover - no persistent handles
+        return None
+
+
 @dataclass
 class HFTrainerConfig:
     """Configuration for the HuggingFace Trainer.
@@ -716,16 +764,18 @@ def load_training_arguments(
 ) -> TrainingArguments:
     """Load ``TrainingArguments`` from YAML and apply runtime overrides."""
     cfg: Dict[str, object] = {}
-    # Load base config from Hydra when provided
-    if hydra_cfg is not None:
-        cfg.update(hydra_cfg)
-    elif path is not None:
+
+    # Always honor user-provided config files, then layer Hydra overrides when supplied.
+    if path is not None:
         if path.exists():
             loaded = OmegaConf.to_container(OmegaConf.load(path), resolve=True)
             if isinstance(loaded, dict):
                 cfg.update(loaded)
         else:
             print(f"[warning] config {path} missing, using default training args")
+
+    if hydra_cfg is not None:
+        cfg.update(hydra_cfg)
     cfg.setdefault("output_dir", str(output_dir))
     cfg["output_dir"] = str(output_dir)
 
@@ -802,6 +852,30 @@ def prepare_dataset(texts: Iterable[str], tokenizer) -> Dataset:
     return ds
 
 
+def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    """Convert a config mapping into JSON-safe primitives for manifest storage."""
+
+    if cfg is None:
+        return None
+
+    def _convert(value: Any) -> Any:
+        if isinstance(value, Mapping):
+            return {str(k): _convert(v) for k, v in value.items()}
+        if isinstance(value, (list, tuple, set)):
+            return [_convert(v) for v in value]
+        if isinstance(value, Path):
+            return str(value)
+        if isinstance(value, (str, int, float, bool)) or value is None:
+            return value
+        return str(value)
+
+    try:
+        normalized = _convert(cfg)
+    except Exception:
+        return None
+    return normalized if isinstance(normalized, dict) else None
+
+
 def run_hf_trainer(
     texts: Iterable[str],
     output_dir: Path,
@@ -839,6 +913,9 @@ def run_hf_trainer(
     hydra_cfg: Optional[Dict[str, object]] = None,
     mlflow_tracking_uri: Optional[str] = None,
     log_args: Optional[argparse.Namespace] = None,
+    metrics_writer: str = "ndjson",
+    metrics_path: Optional[str] = None,
+    sys_metrics: bool = False,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
     resolved_det = True if deterministic is None else bool(deterministic)
@@ -874,6 +951,8 @@ def run_hf_trainer(
     custom_resume = resume_ckpt if resume_ckpt and resume_ckpt.is_file() else None
 
     # Resolve tokenizer configuration
+    config_snapshot = _sanitize_config_snapshot(hydra_cfg)
+    copied_resume_config: Path | None = None
     cfg: Dict[str, object] = {}
     if config_path and config_path.exists():
         try:
@@ -887,6 +966,8 @@ def run_hf_trainer(
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
         except Exception:
             cfg = {}
+        if config_snapshot is None and cfg:
+            config_snapshot = _sanitize_config_snapshot(cfg)
     tokenizer_path = tokenizer_path or cast(Optional[str], cfg.get("tokenizer_path"))
     use_fast_tokenizer = cast(bool, cfg.get("use_fast_tokenizer", use_fast_tokenizer))
     tokenizer_name = tokenizer_name or cast(Optional[str], cfg.get("tokenizer_name")) or model_name
@@ -1124,15 +1205,16 @@ def run_hf_trainer(
     metrics.setdefault("global_step", trainer.state.global_step)
 
     # Codex offline logging
-    try:
-        sysd = _codex_sample_system()
-        log_vals = {
-            **{k: v for k, v in metrics.items() if isinstance(v, (int, float))},
-            **sysd,
-        }
-        _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-    except Exception:
-        pass
+    if sys_metrics:
+        try:
+            sysd = _codex_sample_system()
+            log_vals = {
+                **{k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+                **sysd,
+            }
+            _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
+        except Exception:
+            pass
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1152,9 +1234,44 @@ def run_hf_trainer(
         json.dump(metrics, fh)
     record = dict(metrics)
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    writer = NDJSONMetricsWriter(str(output_dir / "metrics.ndjson"))
-    writer.write(record)
-    writer.close()
+    writer_choice = (metrics_writer or "ndjson").lower()
+    if writer_choice != "none":
+        path = Path(metrics_path) if metrics_path else output_dir / (
+            "metrics.csv" if writer_choice == "csv" else "metrics.ndjson"
+        )
+        if writer_choice == "csv":
+            writer_obj = CSVMetricsWriter(str(path))
+        else:
+            writer_obj = NDJSONMetricsWriter(str(path))
+        writer_obj.write(record)
+        if hasattr(writer_obj, "close"):
+            writer_obj.close()
+
+    if config_path and config_path.exists():
+        suffix = config_path.suffix or ".yaml"
+        target_path = output_dir / f"resume_config{suffix}"
+        try:
+            if config_path.resolve() != target_path.resolve():
+                target_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(config_path, target_path)
+            copied_resume_config = target_path
+        except Exception:
+            copied_resume_config = None
+
+    manifest = {
+        "manifest_version": 1,
+        "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir else None,
+        "last_checkpoint": trainer.state.last_model_checkpoint,
+        "best_checkpoint": trainer.state.best_model_checkpoint,
+        "global_step": int(trainer.state.global_step),
+        "resume_from": str(resume_ckpt) if resume_ckpt else None,
+        "config_path": str(config_path) if config_path else None,
+        "copied_config_path": str(copied_resume_config) if copied_resume_config else None,
+        "config": config_snapshot,
+    }
+    (output_dir / "resume_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     _log_mlflow_metrics(
         metrics,
@@ -1193,5 +1310,22 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="LoRA task type (e.g., CAUSAL_LM, SEQ_CLS)",
+    )
+    add(
+        "--metrics-writer",
+        choices=["ndjson", "csv", "none"],
+        default="ndjson",
+        help="Persist metrics to NDJSON (default), CSV, or disable persistence.",
+    )
+    add(
+        "--metrics-path",
+        type=str,
+        default=None,
+        help="Optional custom path for metrics output (overrides default file name).",
+    )
+    add(
+        "--sys-metrics",
+        action="store_true",
+        help="Enable CPU/GPU/system metrics sampling and structured logging.",
     )
     return _codex_patch_argparse(parser)

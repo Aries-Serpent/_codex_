@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+from pathlib import Path
 from typing import Dict, Iterable, Iterator, Sequence
 
 import numpy as np
@@ -36,8 +39,19 @@ def _encode_text(tokenizer, text: str, max_length: int) -> Dict[str, np.ndarray]
 class TextDataset(torch.utils.data.Dataset):
     """Materialized dataset of tokenized texts."""
 
-    def __init__(self, items: Sequence[str], tokenizer, max_length: int) -> None:
-        self.data = [_encode_text(tokenizer, t, max_length) for t in items]
+    def __init__(
+        self,
+        items: Sequence[str],
+        tokenizer,
+        max_length: int,
+        *,
+        seed_data: int | None = None,
+    ) -> None:
+        ordered = list(items)
+        if seed_data is not None and len(ordered) > 1:
+            rng = np.random.default_rng(seed_data)
+            rng.shuffle(ordered)
+        self.data = [_encode_text(tokenizer, t, max_length) for t in ordered]
 
     def __len__(self) -> int:  # pragma: no cover - trivial
         return len(self.data)
@@ -84,3 +98,32 @@ def to_hf_dataset(items: Sequence[str], tokenizer, max_length: int) -> Dataset:
         raise ImportError("datasets is required for to_hf_dataset")
     data = [_encode_text(tokenizer, t, max_length) for t in items]
     return Dataset.from_list(data)
+
+
+def compute_dataset_hash(items: Iterable[str]) -> str:
+    """Compute a stable SHA256 hash for a collection of text samples."""
+
+    digest = hashlib.sha256()
+    for text in items:
+        digest.update(text.encode("utf-8"))
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
+def cache_texts(
+    items: Sequence[str],
+    cache_dir: str | Path,
+    *,
+    name: str = "dataset",
+    include_hash: bool = True,
+) -> Path:
+    """Persist raw texts to a cache directory with a hash-derived filename."""
+
+    cache_root = Path(cache_dir)
+    cache_root.mkdir(parents=True, exist_ok=True)
+    ds_hash = compute_dataset_hash(items) if include_hash else "nohash"
+    target = cache_root / f"{name}-{ds_hash}.jsonl"
+    with target.open("w", encoding="utf-8") as fh:
+        for text in items:
+            fh.write(json.dumps({"text": text}) + "\n")
+    return target

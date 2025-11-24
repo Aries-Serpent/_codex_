@@ -13,6 +13,7 @@ __all__ = [
     "EOS_TOKEN",
     "PAD_TOKEN",
     "UNK_TOKEN",
+    "pad_sequences",
 ]
 
 

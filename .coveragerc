@@ -1,11 +1,7 @@
 [run]
 branch = True
 parallel = True
-source =
-    tools
-    codex_utils
 omit =
-    tests/*
     */__init__.py
 
 [report]

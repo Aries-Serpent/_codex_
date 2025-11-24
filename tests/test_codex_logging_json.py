@@ -1,0 +1,23 @@
+import logging
+import os
+
+from codex_ml.monitoring.codex_logging import init_logger
+
+
+def test_json_logger_format(monkeypatch, capsys):
+    monkeypatch.setenv("CODEX_JSON_LOGGING", "1")
+    logger = init_logger("test_json")
+    logger.handlers.clear()
+    logger = init_logger("test_json")
+    logger.info("hello")
+    captured = capsys.readouterr()
+    combined = (captured.out + captured.err).strip()
+    assert '"msg": "hello"' in combined
+
+
+def test_nvml_disabled(monkeypatch):
+    monkeypatch.setenv("CODEX_DISABLE_NVML", "1")
+    # Re-import module to trigger guard
+    import importlib
+    mod = importlib.reload(importlib.import_module("codex_ml.monitoring.codex_logging"))
+    assert getattr(mod, "pynvml") is None

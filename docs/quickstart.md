@@ -359,3 +359,53 @@ Passing `dtype="bf16"` or `dtype="fp16"` maps to `torch.bfloat16` /
 `torch.float16` automatically.  Hardware support varies – on CPU the loader
 falls back gracefully when the dtype is unsupported.  LoRA/PEFT dictionaries are
 also forwarded so registries can decide whether to attach adapters.
+
+## Reproducible sweeps
+
+Generate Hydra-compatible sweeps with reproducibility metadata baked in:
+
+```bash
+codex config-sweep \
+  --base-config configs/training/base.yaml \
+  --output configs/training/sweeps/generated.yaml \
+  --seeds 1,2,3 \
+  --dataset-version v0 \
+  --dataset-path data/tiny/train.jsonl \
+  --param training.batch_size=4,8
+```
+
+The output YAML records the seed grid, dataset version/hash, the source config,
+`git_sha`, and any `locked_overrides` for auditing.
+
+## Train, persist metrics, and resume
+
+Run training with explicit metrics persistence and MLflow controls:
+
+```bash
+codex train \
+  --config configs/training/base.yaml \
+  --mlflow --mlflow-tracking-uri file:mlruns \
+  --resume
+```
+
+Manifests emitted under `runs/*/provenance/manifest.json` capture the best and
+latest checkpoints plus config pointers. Resume using:
+
+```bash
+codex resume runs/default/provenance/manifest.json --mlflow-run-name resumed
+```
+
+Metrics writers are selectable in the HF trainer (`--metrics-writer ndjson|csv|none`).
+
+## Plugin registration at a glance
+
+To expose a custom tokenizer/model/metric without touching core code, register
+an entry point in `pyproject.toml`:
+
+```toml
+[project.entry-points."codex_ml.models"]
+my_toy_model = "my_package.builders:build_model"
+```
+
+The registry resolver in `codex_ml.registry` automatically loads plugins when
+encountered in configs or CLI overrides.

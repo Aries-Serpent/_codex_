@@ -360,6 +360,12 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             help="LoRA task type (defaults to CAUSAL_LM)",
         )
         parser.add_argument("--seed", type=int, default=0)
+        parser.add_argument(
+            "--config-path",
+            type=Path,
+            default=None,
+            help="Optional training config file (JSON/YAML) to snapshot into resume manifests.",
+        )
 
         args = parser.parse_args(list(engine_args))
         kw: dict[str, object] = {
@@ -372,6 +378,42 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             "lora_task_type": args.lora_task_type,
             "seed": args.seed,
         }
+
+        hydra_cfg: dict[str, object] = {}
+        defaults = {
+            "gradient_accumulation_steps": parser.get_default("gradient_accumulation_steps"),
+            "precision": parser.get_default("precision"),
+            "seed": parser.get_default("seed"),
+            "lora_r": parser.get_default("lora_r"),
+            "lora_alpha": parser.get_default("lora_alpha"),
+            "lora_dropout": parser.get_default("lora_dropout"),
+            "lora_task_type": parser.get_default("lora_task_type"),
+        }
+
+        if args.gradient_accumulation_steps != defaults["gradient_accumulation_steps"]:
+            hydra_cfg["gradient_accumulation_steps"] = args.gradient_accumulation_steps
+        if args.precision is not None:
+            hydra_cfg["precision"] = args.precision
+        if args.seed != defaults["seed"]:
+            hydra_cfg["seed"] = args.seed
+
+        lora_section: dict[str, object] = {}
+        if args.lora_r and args.lora_r != defaults["lora_r"]:
+            lora_section["r"] = args.lora_r
+        if args.lora_alpha is not None and args.lora_alpha != defaults["lora_alpha"]:
+            lora_section["alpha"] = args.lora_alpha
+        if args.lora_dropout and args.lora_dropout != defaults["lora_dropout"]:
+            lora_section["dropout"] = args.lora_dropout
+        if args.lora_task_type:
+            lora_section["task_type"] = args.lora_task_type
+        if lora_section:
+            hydra_cfg["lora"] = lora_section
+        if not hydra_cfg:
+            hydra_cfg = None
+        if args.config_path:
+            kw["config_path"] = args.config_path
+        if hydra_cfg:
+            kw["hydra_cfg"] = hydra_cfg
         # Optionally forward device/dtype if parser/engine supports them
         for opt in ("device", "dtype"):
             if hasattr(args, opt):
@@ -441,6 +483,68 @@ def run_task(task: str | None) -> None:
         sys.exit(1)
     func = ALLOWED_TASKS[task][0]
     func()
+
+
+@cli.command("resume")
+@click.argument("run_dir", type=click.Path(exists=True, path_type=Path))
+def resume_cmd(run_dir: Path) -> None:
+    """Resume a training run by emitting the canonical configuration.
+
+    Precedence (highest to lowest):
+    1. Embedded snapshot in ``resume_manifest.json`` under ``config``.
+    2. Copied config file in ``run_dir`` (``resume_config.json|yaml|yml``).
+    3. ``config_path`` recorded in the manifest (absolute or relative to the run dir).
+    Fails with a non-zero exit code if no configuration source is available.
+    """
+
+    manifest_path = run_dir / "resume_manifest.json"
+    if not manifest_path.exists():
+        click.echo(f"ERROR: resume_manifest.json not found in {run_dir}", err=True)
+        raise SystemExit(2)
+
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception as exc:  # pragma: no cover - robust CLI behavior
+        click.echo(f"ERROR: failed to read resume_manifest.json: {exc}", err=True)
+        raise SystemExit(2)
+
+    if manifest.get("config") is not None:
+        click.echo("INFO: Using config snapshot embedded in resume_manifest.json")
+        click.echo(json.dumps(manifest["config"], indent=2, sort_keys=True))
+        raise SystemExit(0)
+
+    for suffix in (".json", ".yaml", ".yml"):
+        candidate = run_dir / f"resume_config{suffix}"
+        if candidate.exists():
+            click.echo(f"INFO: Using copied config file: {candidate.name}")
+            content = candidate.read_text(encoding="utf-8")
+            try:
+                parsed = json.loads(content)
+                click.echo(json.dumps(parsed, indent=2, sort_keys=True))
+            except Exception:
+                click.echo(content)
+            raise SystemExit(0)
+
+    cfg_path = manifest.get("config_path")
+    if cfg_path:
+        for path in (Path(cfg_path), run_dir / cfg_path):
+            if path.exists():
+                click.echo(f"INFO: Using config_path from manifest: {path}")
+                content = path.read_text(encoding="utf-8")
+                try:
+                    parsed = json.loads(content)
+                    click.echo(json.dumps(parsed, indent=2, sort_keys=True))
+                except Exception:
+                    click.echo(content)
+                raise SystemExit(0)
+
+    click.echo(
+        "ERROR: No configuration snapshot or config_path available in resume manifest. "
+        "Refusing to resume to avoid using defaults. Re-run training passing --config-path or "
+        "ensure your run directory contains a resume_config.(json|yaml|yml).",
+        err=True,
+    )
+    raise SystemExit(1)
 
 
 @cli.group(
