@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import importlib
+import importlib.util
 from pathlib import Path
 
 import pytest
 
 pytest.importorskip("tokenizers")
 pytest.importorskip("transformers")
+
+accelerate_available = importlib.util.find_spec("accelerate") is not None
 
 from fastapi.testclient import TestClient
 from tokenizers import Tokenizer
@@ -14,7 +18,7 @@ from tokenizers.pre_tokenizers import Whitespace
 from transformers import AutoModelForCausalLM, GPT2Config
 
 from cli import train_codex
-from codex.api import app as api_app
+api_app = importlib.import_module("codex.api.app")
 from codex_ml.security import DenylistEnforcer, DenylistViolation
 from codex_ml.utils import checkpointing
 from tokenization.loader import load_tokenizer
@@ -58,6 +62,7 @@ def test_denylist_blocks_prompt() -> None:
         enforcer.ensure_allowed("my ssn is 123-45-6789")
 
 
+@pytest.mark.skipif(not accelerate_available, reason="accelerate is required for Trainer-based CLI")
 def test_training_cli_checkpoint_cycle(tmp_path: Path, tokenizer_path: Path) -> None:
     train_file = tmp_path / "train.txt"
     train_file.write_text("hello codex\nhello world\n", encoding="utf-8")

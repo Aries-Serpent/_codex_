@@ -151,10 +151,6 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def vocab_size(self) -> int:
         return int(getattr(self.tokenizer, "vocab_size", 0))
 
-    @property
-    def name_or_path(self) -> str:
-        return str(getattr(self.tokenizer, "name_or_path", self.name_or_path))
-
 
 class WhitespaceTokenizer(TokenizerAdapter):
     """Simple whitespace tokenizer primarily used for tests."""
