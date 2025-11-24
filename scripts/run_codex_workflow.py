@@ -73,7 +73,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     offline_mode = not args.online
-    if not _gate_offline_mode(offline_mode):
+    if offline_mode and not _gate_offline_mode(offline_mode):
         parser.error("Offline gate failed; networked execution is not permitted.")
 
     contexts: List[WorkflowContext] = []

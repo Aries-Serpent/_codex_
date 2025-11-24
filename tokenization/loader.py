@@ -14,12 +14,15 @@ def _ensure_special_tokens(tokenizer: PreTrainedTokenizerFast) -> PreTrainedToke
         tokenizer.pad_token = tokenizer.eos_token or tokenizer.unk_token or "[PAD]"
     if tokenizer.eos_token is None:
         tokenizer.eos_token = tokenizer.pad_token
+    if tokenizer.pad_token_id is None:
+        tokenizer.add_special_tokens({"pad_token": tokenizer.pad_token})
     return tokenizer
 
 
 def _load_from_file(tokenizer_file: Path) -> PreTrainedTokenizerFast:
     tokenizer_obj = Tokenizer.from_file(str(tokenizer_file))
     tokenizer = PreTrainedTokenizerFast(tokenizer_object=tokenizer_obj)
+    tokenizer.model_max_length = 512
     return _ensure_special_tokens(tokenizer)
 
 

@@ -31,12 +31,10 @@ import-safe and usable in minimal environments.
 
 from __future__ import annotations
 
+from itertools import chain
 from typing import Any, Callable, Iterable
 
-from codex_ml.interfaces.contracts import (
-    TrainingContractError,
-    validate_training_model,
-)
+from codex_ml.interfaces.contracts import TrainingContractError, validate_training_model
 
 
 def train_epoch(
@@ -85,11 +83,17 @@ def train_epoch(
     if callbacks is None:
         callbacks = []
 
-    validate_training_model(model)
+    data_iter = iter(dataloader)
+    try:
+        first_batch = next(data_iter)
+    except StopIteration:
+        raise TrainingContractError("Dataloader produced no batches for training")
+
+    validate_training_model(model, first_batch, state)
 
     metrics_accumulator: dict[str, list[float]] = {}
 
-    for step_idx, batch in enumerate(dataloader):
+    for step_idx, batch in enumerate(chain([first_batch], data_iter)):
         # Call model's step method
         step_metrics = model.step(batch, state)
         if not isinstance(step_metrics, dict):

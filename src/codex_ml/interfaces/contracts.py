@@ -110,8 +110,8 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         raise TokenizationContractError("decode must raise ValueError for non-integer ids")
 
 
-def validate_training_model(model: Any) -> None:
-    """Validate that a model exposes a compliant ``step`` method."""
+def validate_training_model(model: Any, sample_batch: Any, state: Mapping[str, Any] | None = None) -> None:
+    """Validate that a model exposes a compliant ``step`` method using a real batch."""
 
     if not hasattr(model, "step"):
         raise TrainingContractError("Model must implement a step(batch, state) method")
@@ -120,8 +120,9 @@ def validate_training_model(model: Any) -> None:
     if not callable(step_fn):
         raise TrainingContractError("Model.step must be callable")
 
+    state_copy: dict[str, Any] = dict(state) if state is not None else {}
     try:
-        result = step_fn({}, {})
+        result = step_fn(sample_batch, state_copy)
     except Exception as exc:  # pragma: no cover - model specific
         raise TrainingContractError(f"Model.step failed contract smoke test: {exc}") from exc
 
