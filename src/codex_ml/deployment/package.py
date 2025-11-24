@@ -62,9 +62,12 @@ def build_service_package(
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
+    manifest_destination = output.with_suffix(output.suffix + ".manifest.json")
     with tarfile.open(output, "w:gz") as tar:
         tar.add(manifest_path, arcname="manifest.json")
         tar.add(pointer_path, arcname="model_pointer.txt")
+
+    shutil.copyfile(manifest_path, manifest_destination)
 
     hook_results: dict[str, Any] = {}
     for name in deployment_registry.names():
@@ -86,7 +89,7 @@ def build_service_package(
     return {
         "run_id": run_id,
         "package": str(output),
-        "manifest": str(manifest_path),
+        "manifest": str(manifest_destination),
         "hooks": hook_results,
     }
 
