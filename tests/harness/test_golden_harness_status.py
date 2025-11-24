@@ -135,3 +135,45 @@ def test_golden_status_red_on_policy_failure(tmp_path):
 
     assert status["overall_status"] == "red"
     assert any(sig["status"] == "red" for sig in status["signals"])
+
+
+def test_golden_status_handles_boolean_policy_payload(tmp_path):
+    honesty_path = tmp_path / "honesty.json"
+    honesty_path.write_text(
+        json.dumps(
+            {
+                "workflow": "unit",
+                "statements": [{"content": "ok", "category": "VERIFIED", "verified": True}],
+                "summary": {"total": 1, "verified": 1, "categories": {"VERIFIED": 1}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    tool_trace_path = tmp_path / "tool_trace.ndjson"
+    _write_tool_trace(
+        tool_trace_path,
+        [
+            {
+                "tool": "pytest",
+                "args": ["-q"],
+                "exit_code": 0,
+                "started_at": "now",
+                "finished_at": "now",
+                "stdout": "",
+                "stderr": "",
+                "ra_gate_match": True,
+            }
+        ],
+    )
+    ra_policy_path = tmp_path / "ra_policy.json"
+    ra_policy_path.write_text(json.dumps({"status": False}), encoding="utf-8")
+
+    status = compute_golden_harness_status(
+        ra_policy_path=ra_policy_path,
+        honesty_path=honesty_path,
+        tool_trace_path=tool_trace_path,
+        output_path=tmp_path / "status.json",
+    )
+
+    assert status["overall_status"] == "red"
+    assert any(sig["name"] == "ra_policy" and sig["status"] == "red" for sig in status["signals"])

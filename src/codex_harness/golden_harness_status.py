@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-_STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved"}
-_STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "red"}
+_STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1", "yes"}
+_STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "red", "false", "0", "no"}
 
 
 @dataclass
@@ -27,6 +27,8 @@ def _utc_now() -> str:
 def _normalize_status(value: Any) -> bool | None:
     if value is None:
         return None
+    if isinstance(value, bool):
+        return value
     lowered = str(value).lower()
     if lowered in _STATUS_PASS:
         return True

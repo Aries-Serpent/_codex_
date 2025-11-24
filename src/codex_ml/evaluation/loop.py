@@ -147,6 +147,8 @@ def evaluate_epoch(
             torch.manual_seed(seed)
 
     started = time.time()
+    target_device = torch.device(device)
+    model = model.to(target_device)
     model.eval()
     running_loss = 0.0
     total = 0
@@ -171,8 +173,8 @@ def evaluate_epoch(
             else:
                 raise ValueError("Dataloader must yield (inputs, targets) pairs.")
 
-            inputs = inputs.to(device)
-            targets = targets.to(device)
+            inputs = inputs.to(target_device)
+            targets = targets.to(target_device)
 
             outputs = model(inputs)
             loss = criterion(outputs, targets)

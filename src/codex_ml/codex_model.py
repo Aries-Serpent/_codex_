@@ -33,7 +33,7 @@ def _optional_peft() -> Any | None:
 def _to_dtype(torch_mod: Any, dtype: str | Any | None) -> Any | None:
     if dtype is None:
         return None
-    if isinstance(dtype, torch_mod.dtype.__class__):  # type: ignore[attr-defined]
+    if isinstance(dtype, getattr(torch_mod, "dtype", type(None))):
         return dtype
     mapping: Mapping[str, Any] = {
         "float16": torch_mod.float16,

@@ -70,7 +70,15 @@ def run_regression(
         code, output = _run_pytest(marker, extra_pytest_args)
         duration = time.perf_counter() - start
         summary = _parse_summary(output)
-        status = "passed" if code == 0 else "failed"
+        if code == 0:
+            status = "passed"
+        elif code == 5:
+            status = "skipped"
+        else:
+            status = "failed"
+        metadata = {"marker": marker, "tests": summary.get("total", 0), "exit_code": code}
+        if code == 5:
+            metadata["note"] = "no tests collected"
         record_regression(
             RegressionRun(
                 category=category,
@@ -78,7 +86,7 @@ def run_regression(
                 status=status,
                 duration_s=round(duration, 3),
                 details=output.strip()[-2000:],
-                metadata={"marker": marker, "tests": summary.get("total", 0)},
+                metadata=metadata,
             )
         )
         results.append(

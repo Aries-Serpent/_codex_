@@ -2,6 +2,7 @@ defaults:
   - model: base
   - data: local
   - training: minimal
+  - evaluation: minimal
   - experiment: default
   - _self_
 
