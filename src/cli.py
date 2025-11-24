@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import importlib.machinery
 import sys
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -12,10 +13,44 @@ from typing import Any
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
 
-from .data.registry import build as build_registered_dataset
-from .logging_utils import LoggingConfig
-from .metrics import accuracy as metrics_accuracy
-from .training.trainer import CheckpointConfig, Trainer, TrainerConfig
+from data.registry import build as build_registered_dataset
+from logging_utils import LoggingConfig
+from metrics import accuracy as metrics_accuracy
+from training.trainer import CheckpointConfig, Trainer, TrainerConfig
+
+CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
+PROJECT_ROOT = CLI_PACKAGE_PATH.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+TOKENIZATION_DIR = PROJECT_ROOT / "tokenization"
+tokenization_pkg = sys.modules.get("tokenization")
+if tokenization_pkg is None:
+    tokenization_pkg = importlib.util.module_from_spec(
+        importlib.machinery.ModuleSpec("tokenization", loader=None, is_package=True)
+    )
+    tokenization_pkg.__path__ = [str(TOKENIZATION_DIR)]
+    sys.modules["tokenization"] = tokenization_pkg
+
+tokenization_spec = importlib.util.spec_from_file_location(
+    "tokenization.loader",
+    TOKENIZATION_DIR / "loader.py",
+    submodule_search_locations=[str(TOKENIZATION_DIR)],
+)
+if tokenization_spec is None or tokenization_spec.loader is None:
+    raise ImportError(f"Unable to load tokenization.loader from {TOKENIZATION_DIR}")
+tokenization_loader = importlib.util.module_from_spec(tokenization_spec)
+sys.modules["tokenization.loader"] = tokenization_loader
+tokenization_spec.loader.exec_module(tokenization_loader)
+TRAIN_CODEX_PATH = CLI_PACKAGE_PATH / "train_codex.py"
+if not TRAIN_CODEX_PATH.exists():
+    raise ImportError(f"train_codex module not found at {TRAIN_CODEX_PATH}")
+
+spec = importlib.util.spec_from_file_location("cli.train_codex", TRAIN_CODEX_PATH)
+if spec is None or spec.loader is None:
+    raise ImportError(f"Unable to load train_codex module from {TRAIN_CODEX_PATH}")
+train_codex = importlib.util.module_from_spec(spec)
+sys.modules["cli.train_codex"] = train_codex
+spec.loader.exec_module(train_codex)
 
 
 def _ensure_real_torch() -> None:

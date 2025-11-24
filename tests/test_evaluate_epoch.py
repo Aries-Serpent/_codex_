@@ -27,6 +27,16 @@ class _SimpleModel(torch.nn.Module):
         return self.linear(x)
 
 
+class _DeviceAwareModel(_SimpleModel):
+    def __init__(self):
+        super().__init__()
+        self.last_seen_device = None
+
+    def forward(self, x):
+        self.last_seen_device = x.device
+        return super().forward(x)
+
+
 class _SimpleCriterion:
     def __call__(self, outputs, targets):
         return torch.nn.functional.cross_entropy(outputs, targets)
@@ -242,3 +252,28 @@ def test_evaluate_epoch_invalid_batch_shape():
 
     with pytest.raises(ValueError, match="must yield .* pairs"):
         evaluate_epoch(model, data, criterion, device="cpu")
+
+
+def test_evaluate_epoch_aligns_devices_cpu():
+    model = _DeviceAwareModel()
+    data = [(torch.randn(2, 4), torch.randint(0, 3, (2,)))]
+    criterion = _SimpleCriterion()
+
+    evaluate_epoch(model, data, criterion, device="cpu")
+
+    assert next(model.parameters()).device.type == "cpu"
+    assert model.last_seen_device is not None
+    assert model.last_seen_device.type == "cpu"
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+def test_evaluate_epoch_aligns_devices_cuda():
+    model = _DeviceAwareModel()
+    data = [(torch.randn(2, 4), torch.randint(0, 3, (2,)))]
+    criterion = _SimpleCriterion()
+
+    evaluate_epoch(model, data, criterion, device="cuda")
+
+    assert next(model.parameters()).device.type == "cuda"
+    assert model.last_seen_device is not None
+    assert model.last_seen_device.type == "cuda"
