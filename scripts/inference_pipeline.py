@@ -114,8 +114,13 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
     if not callable(fn):
         raise TypeError(f"Override {path_str} is not callable or not found in module")
     sig = inspect.signature(fn)
-    if len(sig.parameters) < 2:
-        raise TypeError("Preprocessor override must accept at least (text, tokenizer, *args)")
+    try:
+        sig.bind(None, None, None)
+    except TypeError as e:
+        raise TypeError(
+            "Preprocessor override must accept (text, tokenizer, max_input_length) "
+            "as positional arguments"
+        ) from e
     return fn
 
 def load_inference_config(config_path: Path) -> InferenceConfig:
