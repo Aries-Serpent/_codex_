@@ -6,9 +6,14 @@ and unauthorized access patterns.
 """
 
 import pytest
+
 from mcp.errors import (
-    MCPError, ToolNotFound, ValidationError,
-    RateLimitExceeded, Unauthorized, validate_error_response
+    MCPError,
+    RateLimitExceeded,
+    ToolNotFound,
+    Unauthorized,
+    ValidationError,
+    validate_error_response,
 )
 
 

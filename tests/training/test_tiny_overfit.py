@@ -6,10 +6,9 @@ import pytest
 
 pytest.importorskip("torch")
 
-from torch.utils.data import Dataset
-
 import torch
 from torch import nn
+from torch.utils.data import Dataset
 from training.functional_training import TrainCfg, run_custom_trainer
 from training.seed import ensure_global_seed
 

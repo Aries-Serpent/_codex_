@@ -2,7 +2,6 @@ import pytest
 
 torch = pytest.importorskip("torch", reason="torch not installed")
 import torch.nn.functional as F  # noqa: E402
-
 from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
 
 

@@ -3,11 +3,13 @@ from __future__ import annotations
 
 import json
 import os
-from types import SimpleNamespace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
-import torch
+
+np = pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
 
 from scripts import inference_pipeline as pipeline
 

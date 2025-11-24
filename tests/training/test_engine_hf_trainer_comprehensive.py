@@ -1,5 +1,4 @@
-"""
-Comprehensive tests for HuggingFace Trainer integration
+"""Comprehensive tests for HuggingFace Trainer integration.
 
 Tests cover:
 - Model loading with various dtypes
@@ -10,11 +9,14 @@ Tests cover:
 - Early stopping
 - Checkpoint integration
 """
-import pytest
-import torch
+ 
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

@@ -5,9 +5,11 @@ Covers tool discovery, registration, execution, ITA endpoint integration,
 and end-to-end tool invocation workflows.
 """
 
-import pytest
-from mcp.registry import MCPToolRegistry
 from typing import Any, Dict
+
+import pytest
+
+from mcp.registry import MCPToolRegistry
 
 
 def test_tool_discovery():
