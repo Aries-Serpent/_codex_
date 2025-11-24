@@ -131,29 +131,91 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def save_pretrained(self, output_dir: str) -> None:
         self.tokenizer.save_pretrained(output_dir)
 
+    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:  # pragma: no cover - thin wrapper
+        added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
+        mapping: dict[str, int] = {}
+        if hasattr(self.tokenizer, "get_vocab"):
+            vocab = self.tokenizer.get_vocab()
+            for tok in tokens:
+                if tok in vocab:
+                    mapping[str(tok)] = int(vocab[tok])
+        if not mapping and added:
+            start = int(self.tokenizer.vocab_size) - added
+            mapping = {str(tok): start + idx for idx, tok in enumerate(tokens)}
+        return mapping
+
+    def save(self, path: Path) -> None:  # pragma: no cover - delegation
+        self.save_pretrained(str(path))
+
+    @property
+    def vocab_size(self) -> int:
+        return int(getattr(self.tokenizer, "vocab_size", 0))
+
+    @property
+    def name_or_path(self) -> str:
+        return str(getattr(self.tokenizer, "name_or_path", self.name_or_path))
+
 
 class WhitespaceTokenizer(TokenizerAdapter):
     """Simple whitespace tokenizer primarily used for tests."""
 
+    def __init__(self) -> None:
+        self._special_tokens: list[str] = []
+        self._dynamic_vocab: set[str] = set()
+
     def encode(self, text: str, **kwargs: Any) -> list[int]:
+        if not isinstance(text, str):
+            raise TypeError("text must be a string")
         tokens = text.split()
         stable_ids: list[int] = []
         for tok in tokens:
             digest = hashlib.blake2b(tok.encode("utf-8"), digest_size=8).digest()
             stable_ids.append(int.from_bytes(digest, "big") % (2**31))
+            self._dynamic_vocab.add(tok)
         return stable_ids
 
     def decode(
         self, tokens: Iterable[int], **kwargs: Any
     ) -> str:  # pragma: no cover - lossy decode
+        for tok in tokens:
+            if not isinstance(tok, int):
+                raise ValueError("tokens must be integers")
         return " ".join(str(t) for t in tokens)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
-        return [self.encode(t) for t in texts]
+        encoded: list[list[int]] = []
+        for text in texts:
+            if not isinstance(text, str):
+                raise TypeError("batch_encode expects an iterable of strings")
+            encoded.append(self.encode(text, **kwargs))
+        return encoded
+
+    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:  # pragma: no cover - simple mapping
+        mapping: dict[str, int] = {}
+        start = self.vocab_size
+        for offset, tok in enumerate(tokens):
+            mapping[str(tok)] = start + offset
+        self._special_tokens.extend([str(tok) for tok in tokens])
+        return mapping
 
     def save_pretrained(self, output_dir: str) -> None:  # pragma: no cover - trivial
         Path(output_dir).mkdir(parents=True, exist_ok=True)
         (Path(output_dir) / "tokenizer.txt").write_text("whitespace", encoding="utf-8")
+
+    def save(self, path: Path) -> None:  # pragma: no cover - trivial
+        if path.suffix:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("whitespace", encoding="utf-8")
+        else:
+            self.save_pretrained(str(path))
+
+    @property
+    def vocab_size(self) -> int:
+        return len(self._dynamic_vocab) + len(self._special_tokens)
+
+    @property
+    def name_or_path(self) -> str:
+        return "whitespace-tokenizer"
 
 
 class SentencePieceTokenizer(TokenizerAdapter):
@@ -476,3 +538,14 @@ class SentencePieceTokenizer(TokenizerAdapter):
             elif self.special_tokens:
                 fallback = target / "special_tokens.json"
                 fallback.write_text(json.dumps(self.special_tokens, indent=2), encoding="utf-8")
+
+    def save(self, path: Path) -> None:  # pragma: no cover - compatibility wrapper
+        self.save_pretrained(str(path))
+
+    @property
+    def vocab_size(self) -> int:
+        return self._processor_vocab_size(self._processor)
+
+    @property
+    def name_or_path(self) -> str:
+        return str(self.model_path or "sentencepiece-tokenizer")
