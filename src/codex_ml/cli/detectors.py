@@ -6,10 +6,11 @@ from typing import Iterable
 
 from ..detectors.aggregate import scorecard
 from ..detectors.unified_training import detector_unified_training
+from ..detectors.experiment_summary import detector_experiment_summary
 
 
 def _default_detectors() -> Iterable:
-    return [detector_unified_training]
+    return [detector_unified_training, detector_experiment_summary]
 
 
 def run(argv: list[str] | None = None) -> int:
