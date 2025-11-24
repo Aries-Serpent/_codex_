@@ -108,10 +108,56 @@ def register_seed_snapshot(
     global _LAST_SEEDED_TORCH_STATE
     global _LAST_SEEDED_TORCH_CUDA_STATE
 
-    _LAST_SEEDED_PYTHON_STATE = python_state
-    _LAST_SEEDED_NUMPY_STATE = numpy_state
-    _LAST_SEEDED_TORCH_STATE = torch_state
-    _LAST_SEEDED_TORCH_CUDA_STATE = torch_cuda_state
+    if python_state is not None:
+        _LAST_SEEDED_PYTHON_STATE = python_state
+    if numpy_state is not None:
+        _LAST_SEEDED_NUMPY_STATE = numpy_state
+    if torch_state is not None:
+        _LAST_SEEDED_TORCH_STATE = torch_state
+    if torch_cuda_state is not None:
+        _LAST_SEEDED_TORCH_CUDA_STATE = torch_cuda_state
+
+
+_ORIGINAL_RANDOM_SEED = random.seed
+
+
+def _random_seed_with_snapshot(a: Any | None = None, version: int = 2) -> None:
+    """Wrap ``random.seed`` to preserve the pre-draw RNG state for restores."""
+
+    _ORIGINAL_RANDOM_SEED(a, version)
+    try:
+        register_seed_snapshot(python_state=random.getstate())
+    except Exception:
+        pass
+
+
+if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
+    _random_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
+    random.seed = _random_seed_with_snapshot
+
+if TORCH_AVAILABLE:
+    _ORIGINAL_TORCH_MANUAL_SEED = torch.manual_seed
+
+    def _torch_manual_seed_with_snapshot(seed: int) -> Any:
+        result = _ORIGINAL_TORCH_MANUAL_SEED(seed)
+        try:
+            cuda_state = None
+            if getattr(torch, "cuda", None) and getattr(torch.cuda, "is_available", lambda: False)():
+                try:
+                    cuda_state = [s.tolist() for s in torch.cuda.get_rng_state_all()]
+                except Exception:
+                    cuda_state = None
+            register_seed_snapshot(
+                torch_state=torch.get_rng_state().tolist(),
+                torch_cuda_state=cuda_state,
+            )
+        except Exception:
+            pass
+        return result
+
+    if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
+        _torch_manual_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
+        torch.manual_seed = _torch_manual_seed_with_snapshot
 
 
 class StateDictProvider(Protocol):
@@ -734,7 +780,16 @@ def load_payload(
     """Load training state from path into provided objects."""
     if not TORCH_AVAILABLE:
         raise RuntimeError("torch is required to load checkpoints")
-    state: dict[str, Any] = load_checkpoint(path, map_location="cpu")
+    raw: dict[str, Any] = load_checkpoint(path, map_location="cpu")
+    meta_block: dict[str, Any] = {}
+    if isinstance(raw, dict) and "state" in raw:
+        meta_candidate = raw.get("meta")
+        if isinstance(meta_candidate, dict):
+            meta_block = meta_candidate
+        raw = raw.get("state") or {}
+    state: dict[str, Any] = raw if isinstance(raw, dict) else {}
+    if "rng" not in state and meta_block.get("rng"):
+        state["rng"] = meta_block["rng"]
     if model is not None and state.get("model") is not None:
         model.load_state_dict(state["model"])
     if optimizer is not None and state.get("optimizer"):
@@ -746,7 +801,7 @@ def load_payload(
         with contextlib.suppress(Exception):
             scaler.load_state_dict(state["scaler"])
     if state.get("rng"):
-        _rng_load(state["rng"], prefer_resume=True)
+        _rng_load(state["rng"], prefer_resume=False)
     return state
 
 
@@ -1062,6 +1117,66 @@ class CheckpointManager:
             with contextlib.suppress(Exception):  # pragma: no cover - remote sync best effort
                 self.storage.upload_directory(ep_dir, remote_path)
         return ep_dir
+
+    def save_now(
+        self,
+        step: int,
+        payload: Any,
+        metrics: dict[str, Any] | None = None,
+        prefix: str = "ckpt",
+        *,
+        rng_state: bool = False,
+    ) -> Path:
+        """Save an arbitrary payload immediately with retention semantics."""
+
+        metrics = metrics or {}
+        metric_key = next(iter(metrics)) if metrics else "val_loss"
+        checkpoint_dir = self.root / f"epoch-{step:04d}"
+        checkpoint_dir.mkdir(parents=True, exist_ok=True)
+
+        # Decode serialized payloads to preserve RNG state fields where possible.
+        state_payload: Any = payload
+        if isinstance(payload, (bytes, bytearray)):
+            try:
+                state_payload = torch.load(io.BytesIO(payload), map_location="cpu")
+            except Exception:
+                state_payload = {"payload": payload}
+
+        ckpt_path, _ = checkpoint_core.save_checkpoint(
+            checkpoint_dir,
+            state=state_payload if isinstance(state_payload, dict) else None,
+            payload=state_payload if isinstance(state_payload, dict) else None,
+            metadata={"epoch": step, "metrics": metrics},
+            metric_value=None,
+            metric_key=metric_key,
+            best_metric=metric_key,
+            mode="min",
+            top_k=self.keep_best or 1,
+            best_k=self.keep_best or 1,
+            include_rng=rng_state,
+            keep_last=self.keep_last,
+            prefix=prefix,
+        )
+        meta_sidecar = {
+            "step": int(step),
+            "metrics": metrics,
+        }
+        if rng_state:
+            if isinstance(state_payload, dict) and "rng" in state_payload:
+                meta_sidecar["rng"] = state_payload.get("rng")
+            else:
+                try:
+                    meta_sidecar["rng"] = _rng_dump()
+                except Exception:
+                    meta_sidecar["rng"] = {}
+        try:
+            ckpt_path.with_suffix(".meta.json").write_text(
+                json.dumps(meta_sidecar, indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+        return ckpt_path
 
     # ------------------------------------------------------------------
     # Resume

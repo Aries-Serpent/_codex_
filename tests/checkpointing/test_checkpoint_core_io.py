@@ -10,7 +10,7 @@ def test_save_and_load_roundtrip(tmp_path) -> None:
         "optimizer_state": {"beta": 0.9},
     }
     metadata = {"metrics": {"loss": 0.25}}
-    state_path = checkpoint_core.save_checkpoint(
+    state_path, _meta = checkpoint_core.save_checkpoint(
         ckpt_dir,
         payload=payload,
         metadata=metadata,
@@ -18,8 +18,8 @@ def test_save_and_load_roundtrip(tmp_path) -> None:
     )
     assert state_path.exists()
 
-    loaded = checkpoint_core.load_checkpoint(ckpt_dir)
-    assert loaded["model_state"] == payload["model_state"]
-    assert loaded["optimizer_state"] == payload["optimizer_state"]
-    assert loaded["_schema_version"] == checkpoint_core.SCHEMA_VERSION
-    assert "_rng" not in loaded
+    loaded_state, loaded_meta = checkpoint_core.load_checkpoint(ckpt_dir)
+    assert loaded_state["model_state"] == payload["model_state"]
+    assert loaded_state["optimizer_state"] == payload["optimizer_state"]
+    assert loaded_meta.schema_version == checkpoint_core.SCHEMA_VERSION
+    assert loaded_meta.rng == {}  # include_rng was False

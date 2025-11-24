@@ -3,18 +3,19 @@ Core MCP module smoke tests.
 Tests basic functionality of MCP registry, errors, rate limiting, and versioning.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add repo root to path
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from mcp.registry import MCPToolRegistry
-from mcp.errors import MCPError, ToolNotFound, ValidationError, RateLimitExceeded, Unauthorized
+from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound, Unauthorized, ValidationError
 from mcp.rate_limit import MCPRateLimiter
-from mcp.versioning import negotiate_version, MCP_VERSIONS
+from mcp.registry import MCPToolRegistry
+from mcp.versioning import MCP_VERSIONS, negotiate_version
 
 
 def test_registry_basic():

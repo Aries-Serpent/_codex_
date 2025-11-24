@@ -8,6 +8,7 @@ import platform
 import random
 import re
 import time
+import shutil
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -435,22 +436,42 @@ def _prune_best_k(root: Path, idx: dict[str, Any]) -> None:
 
 def save_checkpoint(
     checkpoint_dir: str | Path,
-    state: dict[str, Any],
+    state: dict[str, Any] | None = None,
     *,
+    payload: dict[str, Any] | None = None,
+    metadata: dict[str, Any] | None = None,
     metric_value: float | None = None,
     metric_key: str = "val_loss",
+    best_metric: str | None = None,
     mode: str = "min",
     top_k: int = 3,
+    best_k: int | None = None,
     config: dict[str, Any] | None = None,
     prefix: str = "ckpt",
+    include_rng: bool = True,
+    keep_last: int | None = None,
 ) -> tuple[Path, CheckpointMeta]:
     """
     Save a checkpoint with atomic IO, metadata, and update best-k retention index.
 
     Returns: (checkpoint_path, metadata)
     """
+    if best_k is not None:
+        top_k = best_k
+    if best_metric is not None:
+        metric_key = best_metric
+
     root = Path(checkpoint_dir)
     root.mkdir(parents=True, exist_ok=True)
+    metadata_sidecar = dict(metadata) if metadata is not None else None
+
+    if metric_value is None and metadata is not None:
+        metrics = metadata.get("metrics")
+        if isinstance(metrics, dict) and metric_key in metrics:
+            try:
+                metric_value = float(metrics[metric_key])
+            except Exception:
+                metric_value = metrics[metric_key]
 
     # Build metadata
     snapshot_data: dict[str, Any] | None = None
@@ -475,7 +496,7 @@ def save_checkpoint(
         created_at=_now(),
         git_sha=_git_sha_try(),
         config_hash=_config_hash(config),
-        rng=_rng_snapshot(),
+        rng=_rng_snapshot() if include_rng else {},
         env=capture_environment_summary(),
         metric_key=metric_key,
         metric_value=metric_value,
@@ -486,19 +507,48 @@ def save_checkpoint(
     )
 
     # Serialize payload (state + meta stub for verification)
-    payload = {"state": state, "meta": asdict(meta)}
+    state_data = payload if payload is not None else (state or {})
+    if include_rng and isinstance(state_data, dict):
+        # Ensure RNG snapshots are embedded in the serialized state for
+        # compatibility with loaders that expect `state["rng"]` rather than
+        # reading from metadata only.
+        state_data = dict(state_data)
+        state_data.setdefault("rng", meta.rng)
+
+    payload_obj = {"state": state_data, "meta": asdict(meta)}
+    if metadata:
+        payload_obj["meta"]["user_metadata"] = metadata
     if meta.config_snapshot is None:
-        payload["meta"].pop("config_snapshot", None)
-    digest = _digest_payload(payload).hex()
+        payload_obj["meta"].pop("config_snapshot", None)
+    payload_obj["meta"]["sha256"] = None
+    raw = _serialize_payload(payload_obj)
+    digest = hashlib.sha256(raw).hexdigest()
     meta.sha256 = digest
-    # Re-embed meta with sha for persistence
-    payload["meta"]["sha256"] = digest
-    raw = _serialize_payload(payload)
+
+    # Emit standalone digest for compatibility with legacy consumers
+    safe_write_text(root / "state.sha256", digest)
+
+    if metadata_sidecar is not None:
+        sidecar = {
+            "schema_version": SCHEMA_VERSION,
+            "digest_sha256": digest,
+            "environment": meta.env,
+        }
+        sidecar.update(metadata_sidecar)
+        safe_write_bytes(root / "metadata.json", lambda: json.dumps(sidecar).encode("utf-8"))
 
     # Choose name and write atomically
     ckpt_name = _ckpt_name(prefix=prefix)
     ckpt_path = root / ckpt_name
     safe_write_bytes(ckpt_path, lambda: raw)
+
+    # Compatibility alias expected by some tooling/tests
+    state_alias = root / "state.pt"
+    if not state_alias.exists():
+        try:
+            shutil.copyfile(ckpt_path, state_alias)
+        except Exception:
+            pass
 
     if attach_integrity is not None:
         try:
@@ -512,7 +562,20 @@ def save_checkpoint(
         except Exception:
             pass
 
-    # Update index
+    if keep_last:
+        parent = root.parent
+        candidates = sorted(
+            [p for p in parent.iterdir() if p.is_dir()], key=_epoch_dir_sort_key
+        )
+        for old in candidates[:-keep_last]:
+            if old == root:
+                continue
+            try:
+                shutil.rmtree(old)
+            except Exception:
+                pass
+
+    # Update index for this checkpoint directory
     idx = _load_index(root)
     idx["schema_version"] = SCHEMA_VERSION
     idx["metric_key"] = metric_key
@@ -529,6 +592,27 @@ def save_checkpoint(
     )
     _prune_best_k(root, idx)
     _write_index(root, idx)
+    # Backwards compatibility alias expected by older callers/tests
+    safe_write_text(root / "best_index.json", json.dumps(idx["entries"], indent=2))
+
+    # Aggregate index at the parent checkpoint root (tracks best directories)
+    parent_idx = _load_index(root.parent)
+    parent_idx["schema_version"] = SCHEMA_VERSION
+    parent_idx["metric_key"] = metric_key
+    parent_idx["mode"] = "min" if mode.lower().startswith("min") else "max"
+    parent_idx["top_k"] = int(top_k)
+    parent_idx.setdefault("entries", [])
+    parent_idx["entries"].append(
+        {
+            "path": root.name,
+            "metric": metric_value,
+            "created_at": meta.created_at,
+            "sha256": digest,
+        }
+    )
+    _prune_best_k(root.parent, parent_idx)
+    _write_index(root.parent, parent_idx)
+    safe_write_text(root.parent / "best_index.json", json.dumps(parent_idx["entries"], indent=2))
 
     try:
         manifest = dict(collect_run_metadata())
@@ -589,16 +673,23 @@ def load_checkpoint(
     Load a checkpoint file and optionally restore RNG state from metadata.
     """
     p = Path(path)
+    if p.is_dir():
+        state, meta, actual = load_best(p)
+        if restore_rng and meta.rng:
+            _rng_restore(meta.rng)
+        return state, meta
+
     raw = _read_bytes(p)
     obj = _deserialize_payload(raw, map_location=map_location)
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
     meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
     # Integrity verification
-    digest_meta = {k: v for k, v in meta_dict.items() if k != "sha256"}
-    digest_meta.setdefault("sha256", None)
-    digest_payload = {"state": state, "meta": digest_meta}
-    if _digest_payload(digest_payload).hex() != meta.sha256:
+    digest_meta = dict(meta_dict)
+    digest_meta["sha256"] = None
+    expected_digest = meta_dict.get("sha256")
+    calc_digest = hashlib.sha256(_serialize_payload({"state": state, "meta": digest_meta})).hexdigest()
+    if expected_digest and calc_digest != expected_digest:
         raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}")
     if restore_rng and meta.rng:
         _rng_restore(meta.rng)

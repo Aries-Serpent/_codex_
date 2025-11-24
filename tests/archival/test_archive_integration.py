@@ -126,7 +126,7 @@ class TestArchiveUtilities:
 class TestManifestOperations:
     """Test manifest file operations."""
 
-    def test_manifest_atomic_write(self):
+    def test_manifest_atomic_rename(self):
         """Test atomic manifest write using temp file."""
         test_dir = Path(tempfile.mkdtemp())
         manifest_file = test_dir / "manifest.json"

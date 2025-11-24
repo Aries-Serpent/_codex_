@@ -3,10 +3,10 @@ Tests for MCP observability features.
 Covers logging, metrics, tracing, and monitoring capabilities.
 """
 
-import sys
 import logging
-from pathlib import Path
+import sys
 from io import StringIO
+from pathlib import Path
 
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root))
@@ -35,7 +35,7 @@ def test_logging_configuration():
 def test_request_id_tracing():
     """Test X-Request-Id header for request tracing."""
     import uuid
-    
+
     # Simulate request ID generation
     request_id = str(uuid.uuid4())
     
@@ -45,8 +45,8 @@ def test_request_id_tracing():
 
 def test_error_logging_with_context():
     """Test that errors are logged with appropriate context."""
-    from mcp.errors import MCPError, ToolNotFound, RateLimitExceeded
-    
+    from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound
+
     # Errors should have meaningful messages for logging
     errors_to_test = [
         (MCPError("Test error"), "MCP_ERROR"),

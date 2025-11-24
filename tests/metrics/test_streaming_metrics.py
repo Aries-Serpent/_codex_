@@ -1,12 +1,12 @@
 """
 Tests for streaming metrics functionality
 """
-import pytest
-import torch
 import numpy as np
+import pytest
 
-from src.codex_ml.metrics.streaming import StreamingLoss
+import torch
 from src.codex_ml.metrics.classification import StreamingAccuracy
+from src.codex_ml.metrics.streaming import StreamingLoss
 
 
 class TestStreamingLoss:

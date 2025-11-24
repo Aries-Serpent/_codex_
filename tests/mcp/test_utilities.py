@@ -8,10 +8,11 @@ Provides common test patterns, mocks, and assertions.
 import hashlib
 import random
 from typing import Any, Callable, Dict, List, Optional
-from mcp.registry import MCPToolRegistry
-from mcp.auth import Principal, MCPAuthenticator, MCPAuthorizer
-from mcp.rate_limit import MCPRateLimiter
+
+from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal
 from mcp.errors import MCPError, ToolNotFound
+from mcp.rate_limit import MCPRateLimiter
+from mcp.registry import MCPToolRegistry
 
 
 # Test Data Generators

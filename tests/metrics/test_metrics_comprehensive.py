@@ -11,9 +11,10 @@ Tests cover:
 - Custom metrics
 - Metric registry
 """
-import pytest
-import torch
 import numpy as np
+import pytest
+
+import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive
