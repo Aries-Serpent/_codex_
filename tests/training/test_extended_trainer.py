@@ -16,27 +16,14 @@ if str(SRC) not in sys.path:
 
 import pytest  # noqa: E402
 
+try:
+    import torch
+except Exception as exc:  # pragma: no cover - runtime guard
+    pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
+
 import training.trainer as trainer_mod  # noqa: E402
 
 from src.logging_utils import LoggingConfig  # noqa: E402
-
-
-def _import_real_torch():
-    site_packages = (
-        Path(sys.executable).resolve().parent.parent
-        / f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages"
-    )
-    if site_packages.exists() and str(site_packages) not in sys.path:
-        sys.path.insert(0, str(site_packages))
-    if "torch" in sys.modules:
-        del sys.modules["torch"]
-    return importlib.import_module("torch")
-
-
-torch = _import_real_torch()
-
-if not hasattr(torch, "nn"):
-    pytest.skip("PyTorch runtime not available", allow_module_level=True)
 
 torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):

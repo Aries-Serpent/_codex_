@@ -4,13 +4,16 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+
 import pytest
 
-from scripts.space_traversal import coverage_ingest_stub
-from scripts.space_traversal import decode_validate_and_extract
-from scripts.space_traversal import generate_baseline
-from scripts.space_traversal import stable_manifest
-from scripts.space_traversal import validate_snapshot_schema
+from scripts.space_traversal import (
+    coverage_ingest_stub,
+    decode_validate_and_extract,
+    generate_baseline,
+    stable_manifest,
+    validate_snapshot_schema,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / "tests/fixtures/pasted.txt"

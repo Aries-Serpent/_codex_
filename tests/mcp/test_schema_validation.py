@@ -5,9 +5,11 @@ Covers Pydantic models, JSON Schema validation, OpenAPI integration,
 and data validation patterns used across MCP.
 """
 
-import pytest
-from pydantic import BaseModel, ValidationError as PydanticValidationError
 from typing import Any, Dict, Optional
+
+import pytest
+from pydantic import BaseModel
+from pydantic import ValidationError as PydanticValidationError
 
 
 # Sample Pydantic models for MCP tool requests/responses

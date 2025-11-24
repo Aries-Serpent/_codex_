@@ -2,14 +2,13 @@ import pytest
 
 pytest.importorskip("torch")
 
-from torch.optim import SGD
-
 from codex_ml.utils.checkpointing import (
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,
 )
 from torch import nn
+from torch.optim import SGD
 
 
 def test_load_checkpoint_detects_corruption(tmp_path):

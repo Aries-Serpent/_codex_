@@ -3,10 +3,11 @@ Test all markdown files for broken internal and external links.
 
 Part of documentation-system capability maturity improvement.
 """
-import pytest
 import re
 from pathlib import Path
 from typing import List, Tuple
+
+import pytest
 
 
 @pytest.fixture(scope="module")

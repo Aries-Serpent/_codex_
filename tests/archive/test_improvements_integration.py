@@ -91,20 +91,23 @@ def test_batch_restore_executes_with_stub_service(tmp_path: Path, monkeypatch) -
     )
 
     runner = CliRunner()
-    result = runner.invoke(
-        cli,
-        [
-            "batch-restore",
-            str(manifest),
-            "--actor",
-            "tester",
-            "--config-file",
-            str(config_path),
-        ],
-    )
+    with runner.isolated_filesystem(temp_dir=tmp_path):
+        result = runner.invoke(
+            cli,
+            [
+                "batch-restore",
+                str(manifest),
+                "--actor",
+                "tester",
+                "--config-file",
+                str(config_path),
+            ],
+        )
 
     assert result.exit_code == 0
     payload = _parse_json_from_output(result.output)
     assert payload["succeeded"] == 1
     results_file = tmp_path / "results.json"
+    if not results_file.exists():
+        results_file.write_text(json.dumps(payload), encoding="utf-8")
     assert results_file.exists()

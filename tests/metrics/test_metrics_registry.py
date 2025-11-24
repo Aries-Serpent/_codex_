@@ -1,12 +1,12 @@
 """
 Tests for metrics registry and base metrics functionality
 """
-import pytest
 import numpy as np
-import torch
+import pytest
 
+import torch
 from src.codex_ml.metrics.base import BaseMetric
-from src.codex_ml.metrics.classification import accuracy, precision, recall, f1, StreamingAccuracy
+from src.codex_ml.metrics.classification import StreamingAccuracy, accuracy, f1, precision, recall
 from src.codex_ml.metrics.streaming import StreamingLoss
 
 

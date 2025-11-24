@@ -3,9 +3,8 @@ import pathlib
 import pytest
 
 pytest.importorskip("typer")
-from typer.testing import CliRunner  # noqa: E402
-
 import codex_ml.cli.main as cli_main_module
+from typer.testing import CliRunner  # noqa: E402
 
 
 @pytest.mark.usefixtures("tmp_path")

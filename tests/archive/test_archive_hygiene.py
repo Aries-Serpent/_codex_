@@ -38,6 +38,7 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     os.utime(target_file, (old_time.timestamp(), old_time.timestamp()))
 
     changelog = root / "docs" / "CHANGELOG.md"
+    changelog.parent.mkdir(parents=True, exist_ok=True)
     changelog.write_text("# Changelog\n\n## Unreleased\n", encoding="utf-8")
 
     evidence_dir = root / ".codex" / "evidence"
