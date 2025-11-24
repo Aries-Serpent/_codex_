@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
@@ -7,6 +8,7 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
+from types import SimpleNamespace
 
 import click
 
@@ -22,6 +24,8 @@ from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 from codex_utils.ndjson import NDJSONLogger
+from omegaconf import OmegaConf
+import yaml
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -42,6 +46,33 @@ def _get_tokenizer_pipeline():
             ) from exc
         raise
     return tokenizer_pipeline
+
+
+def _csv_list(text: str) -> list[str]:
+    return [part.strip() for part in text.split(",") if part.strip()]
+
+
+def _update_path(target: object, dotted_path: str, value: object) -> None:
+    parts = dotted_path.split(".")
+    current: object = target
+    for part in parts[:-1]:
+        next_obj: object | None = None
+        if isinstance(current, dict):
+            next_obj = current.get(part)
+            if next_obj is None:
+                next_obj = {}
+                current[part] = next_obj
+        else:
+            next_obj = getattr(current, part, None)
+            if next_obj is None:
+                next_obj = SimpleNamespace()
+                setattr(current, part, next_obj)
+        current = next_obj
+    final_key = parts[-1]
+    if isinstance(current, dict):
+        current[final_key] = value
+    else:
+        setattr(current, final_key, value)
 
 
 @click.group()
@@ -166,6 +197,134 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     click.echo(text)
 
 
+def _hash_dataset(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+@codex.command("config-sweep")
+@click.option(
+    "--base-config",
+    default="configs/training/base.yaml",
+    show_default=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Base config to seed the sweep metadata.",
+)
+@click.option(
+    "--output",
+    default="configs/training/sweeps/generated.yaml",
+    show_default=True,
+    type=click.Path(dir_okay=False, path_type=Path),
+    help="Path for the generated Hydra sweep file.",
+)
+@click.option(
+    "--seeds",
+    default="42",
+    show_default=True,
+    help="Comma-separated integer seeds for reproducibility sweeps.",
+)
+@click.option(
+    "--dataset-version",
+    default=None,
+    help="Optional dataset version string recorded in the sweep metadata.",
+)
+@click.option(
+    "--dataset-path",
+    default=None,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Optional dataset file to fingerprint for reproducibility metadata.",
+)
+@click.option(
+    "--param",
+    multiple=True,
+    help="Additional sweep parameter in key=csvlist form (e.g. training.batch_size=4,8).",
+)
+@click.option(
+    "--locked-override",
+    multiple=True,
+    help="Key=value pairs recorded under locked_overrides to document fixed settings.",
+)
+def config_sweep(
+    base_config: Path,
+    output: Path,
+    seeds: str,
+    dataset_version: str | None,
+    dataset_path: Path | None,
+    param: tuple[str, ...],
+    locked_override: tuple[str, ...],
+) -> None:
+    """Generate a Hydra-friendly sweep config with reproducibility metadata."""
+
+    try:
+        seeds_list = [int(s) for s in _csv_list(seeds)]
+    except ValueError as exc:  # pragma: no cover - Click shows context
+        raise click.ClickException(f"invalid seed list: {seeds}") from exc
+
+    sweeper_params: dict[str, str] = {
+        "training.seed": ",".join(str(s) for s in seeds_list)
+    }
+    for item in param:
+        if "=" not in item:
+            raise click.ClickException("--param entries must look like key=csvlist")
+        key, value = item.split("=", 1)
+        sweeper_params[key.strip()] = value.strip()
+
+    locked_overrides: dict[str, str] = {}
+    for item in locked_override:
+        if "=" not in item:
+            raise click.ClickException("--locked-override entries must look like key=value")
+        key, value = item.split("=", 1)
+        locked_overrides[key.strip()] = value.strip()
+
+    dataset_hash = None
+    resolved_dataset_path = dataset_path
+    if resolved_dataset_path is None:
+        try:
+            loaded = OmegaConf.load(base_config)
+            maybe_path = loaded.get("training", {}).get("dataset", {}).get("train_path")
+            if maybe_path:
+                resolved_dataset_path = Path(maybe_path)
+        except Exception:
+            resolved_dataset_path = None
+    if resolved_dataset_path is not None and resolved_dataset_path.exists():
+        dataset_hash = _hash_dataset(resolved_dataset_path)
+
+    hydra_block = {
+        "job": {"chdir": False},
+        "run": {"dir": ".codex/hydra/runs/${now:%Y-%m-%d_%H-%M-%S}"},
+        "sweep": {
+            "dir": ".codex/hydra/multirun/${now:%Y-%m-%d_%H-%M-%S}",
+            "subdir": "${hydra.job.override_dirname}",
+        },
+        "sweeper": {"params": sweeper_params},
+    }
+
+    metadata = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "base_config": str(base_config),
+        "dataset_version": dataset_version,
+        "dataset_hash": dataset_hash,
+        "seeds": seeds_list,
+    }
+    git_sha = os.popen("git rev-parse --short HEAD 2>/dev/null").read().strip()
+    if git_sha:
+        metadata["git_sha"] = git_sha
+
+    payload = {
+        "defaults": ["_self_"],
+        "hydra": hydra_block,
+        "reproducibility": metadata,
+        "locked_overrides": locked_overrides,
+    }
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(yaml.safe_dump(payload), encoding="utf-8")
+    click.echo(f"sweep config written to {output}")
+
+
 @codex.command()
 @click.option(
     "--config",
@@ -193,6 +352,27 @@ def tokenizer_decode(token_ids: tuple[int, ...], tokenizer_path: str) -> None:
     is_flag=True,
     help="Enable PEFT/LoRA hooks (requires CODEX_ENABLE_PEFT).",
 )
+@click.option(
+    "--mlflow/--no-mlflow",
+    "mlflow_toggle",
+    default=None,
+    help="Enable or disable MLflow logging regardless of config defaults.",
+)
+@click.option(
+    "--mlflow-tracking-uri",
+    default=None,
+    help="Tracking URI to forward MLflow runs (e.g., file:mlruns or http URL).",
+)
+@click.option(
+    "--mlflow-run-name",
+    default=None,
+    help="Optional MLflow run name override.",
+)
+@click.option(
+    "--mlflow-experiment",
+    default=None,
+    help="Optional MLflow experiment name override.",
+)
 def train(
     config: str,
     overrides: tuple[str, ...],
@@ -200,6 +380,10 @@ def train(
     seed: int | None,
     resume_from: str | None,
     enable_peft: bool,
+    mlflow_toggle: bool | None,
+    mlflow_tracking_uri: str | None,
+    mlflow_run_name: str | None,
+    mlflow_experiment: str | None,
 ) -> None:
     """Train a language model using the Codex functional trainer."""
     from codex_ml.training import run_functional_training
@@ -209,6 +393,8 @@ def train(
         cfg_obj, raw_cfg = load_app_config(config, overrides)
     except ConfigError as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
+
+    training_cfg = getattr(raw_cfg, "training", raw_cfg)
 
     if seed is not None:
         if hasattr(raw_cfg, "training") and hasattr(raw_cfg.training, "seed"):
@@ -228,7 +414,21 @@ def train(
         os.environ.pop("CODEX_ENABLE_PEFT", None)
         os.environ.pop("CODEX_ML_ENABLE_PEFT", None)
 
-    training_cfg = getattr(raw_cfg, "training", raw_cfg)
+    if mlflow_toggle is not None:
+        for target in (cfg_obj.training, training_cfg):
+            _update_path(target, "logging.mlflow_enable", mlflow_toggle)
+            _update_path(target, "mlflow_enable", mlflow_toggle)
+
+    if mlflow_tracking_uri:
+        for target in (cfg_obj.training, training_cfg):
+            _update_path(target, "logging.mlflow_tracking_uri", mlflow_tracking_uri)
+            _update_path(target, "mlflow_tracking_uri", mlflow_tracking_uri)
+
+    if mlflow_run_name:
+        _update_path(training_cfg, "logging.mlflow_run_name", mlflow_run_name)
+
+    if mlflow_experiment:
+        _update_path(training_cfg, "logging.mlflow_experiment", mlflow_experiment)
 
     if resume_from:
         if hasattr(cfg_obj.training, "resume_from"):
@@ -247,6 +447,67 @@ def train(
             str(exc),
             f"config={config} resume={resume} resume_from={resume_from}",
         )
+        raise click.ClickException(str(exc)) from exc
+
+
+@codex.command()
+@click.argument("manifest", type=click.Path(exists=True, dir_okay=False, path_type=str))
+@click.option(
+    "--mlflow/--no-mlflow",
+    "mlflow_toggle",
+    default=None,
+    help="Enable or disable MLflow logging when resuming from a manifest.",
+)
+@click.option("--mlflow-tracking-uri", default=None, help="Optional MLflow tracking URI override.")
+@click.option("--mlflow-run-name", default=None, help="Optional MLflow run name override.")
+@click.option("--mlflow-experiment", default=None, help="Optional MLflow experiment override.")
+def resume(
+    manifest: str,
+    mlflow_toggle: bool | None,
+    mlflow_tracking_uri: str | None,
+    mlflow_run_name: str | None,
+    mlflow_experiment: str | None,
+) -> None:
+    """Resume training from a manifest emitted by the HF trainer."""
+
+    from codex_ml.training import run_functional_training
+
+    manifest_path = Path(manifest)
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    checkpoint = (
+        data.get("best_checkpoint")
+        or data.get("last_checkpoint")
+        or data.get("resume_from")
+    )
+    config_path = data.get("config_path") or "configs/training/base.yaml"
+    if not checkpoint:
+        raise click.ClickException("manifest missing checkpoint information")
+
+    try:
+        cfg_obj, raw_cfg = load_app_config(config_path, tuple())
+    except ConfigError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    training_cfg = getattr(raw_cfg, "training", raw_cfg)
+    if hasattr(training_cfg, "resume_from"):
+        training_cfg.resume_from = checkpoint
+
+    if mlflow_toggle is not None:
+        _update_path(training_cfg, "logging.mlflow_enable", mlflow_toggle)
+        _update_path(training_cfg, "mlflow_enable", mlflow_toggle)
+    if mlflow_tracking_uri:
+        _update_path(training_cfg, "logging.mlflow_tracking_uri", mlflow_tracking_uri)
+        _update_path(training_cfg, "mlflow_tracking_uri", mlflow_tracking_uri)
+    if mlflow_run_name:
+        _update_path(training_cfg, "logging.mlflow_run_name", mlflow_run_name)
+    if mlflow_experiment:
+        _update_path(training_cfg, "logging.mlflow_experiment", mlflow_experiment)
+    try:
+        run_functional_training(config=training_cfg, resume=True)
+        provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
+        _emit_provenance_summary(provenance_dir)
+        click.echo(f"resumed training from {checkpoint}")
+    except Exception as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
 

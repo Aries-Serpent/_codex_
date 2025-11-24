@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import json
 import logging
 import os
 import platform
@@ -52,10 +53,13 @@ try:  # pragma: no cover - optional
 except Exception:  # pragma: no cover - psutil not installed
     psutil = None  # type: ignore
 
-try:  # pragma: no cover - optional
-    import pynvml  # type: ignore
-except Exception:  # pragma: no cover - nvml not installed
+if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
     pynvml = None  # type: ignore
+else:
+    try:  # pragma: no cover - optional
+        import pynvml  # type: ignore
+    except Exception:  # pragma: no cover - nvml not installed
+        pynvml = None  # type: ignore
 
 try:  # pragma: no cover - optional
     import torch  # type: ignore
@@ -145,15 +149,24 @@ logger = logging.getLogger(__name__)
 
 
 def init_logger(name: str = __name__) -> logging.Logger:
-    """Return a standard library logger with the offline MLflow guard applied."""
+    """Return a standard library logger with JSON logging guardrails."""
 
     _maybe_init_mlflow_offline()
     logger_obj = logging.getLogger(name)
-    if not logger_obj.handlers:
-        handler = logging.StreamHandler()
+    if logger_obj.handlers:
+        return logger_obj
+
+    handler = logging.StreamHandler()
+    if os.getenv("CODEX_JSON_LOGGING", "0") == "1":
+        handler.setFormatter(
+            logging.Formatter(fmt=json.dumps({"time": "%(asctime)s", "level": "%(levelname)s", "name": "%(name)s", "msg": "%(message)s"}))
+        )
+    else:
         fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
         handler.setFormatter(logging.Formatter(fmt))
-        logger_obj.addHandler(handler)
+    logger_obj.addHandler(handler)
+    logger_obj.setLevel(logging.INFO)
+    logger_obj.propagate = False
     return logger_obj
 
 

@@ -126,6 +126,8 @@ class TrainingConfig:
     deterministic: bool = True
     val_split: float = 0.0
     mlflow_tracking_uri: str | None = None
+    dataset_version: str | None = None
+    dataset_hash: str | None = None
     use_lora: bool = False
     lora_r: int | None = None
     lora_alpha: float | None = None

@@ -109,6 +109,7 @@ def _install_accelerate_compat() -> None:
 _install_accelerate_compat()
 
 import argparse
+import csv
 import importlib
 import importlib.util
 import json
@@ -649,6 +650,34 @@ class NDJSONMetricsWriter:
             pass
 
 
+class CSVMetricsWriter:
+    """Persist metrics to CSV with stable columns."""
+
+    def __init__(self, path: str = ".codex/metrics.csv") -> None:
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._header: list[str] | None = None
+
+    def write(self, obj: Mapping[str, Any] | LogRecord) -> None:
+        if isinstance(obj, LogRecord):
+            row = obj.redacted().dict()
+        else:
+            row = dict(obj)
+        if self._header is None:
+            self._header = sorted(row)
+            with self.path.open("w", encoding="utf-8", newline="") as fh:
+                writer = csv.DictWriter(fh, fieldnames=self._header)
+                writer.writeheader()
+                writer.writerow(row)
+            return
+        with self.path.open("a", encoding="utf-8", newline="") as fh:
+            writer = csv.DictWriter(fh, fieldnames=self._header)
+            writer.writerow(row)
+
+    def close(self) -> None:  # pragma: no cover - no persistent handles
+        return None
+
+
 @dataclass
 class HFTrainerConfig:
     """Configuration for the HuggingFace Trainer.
@@ -839,6 +868,9 @@ def run_hf_trainer(
     hydra_cfg: Optional[Dict[str, object]] = None,
     mlflow_tracking_uri: Optional[str] = None,
     log_args: Optional[argparse.Namespace] = None,
+    metrics_writer: str = "ndjson",
+    metrics_path: Optional[str] = None,
+    sys_metrics: bool = False,
 ) -> Dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
     resolved_det = True if deterministic is None else bool(deterministic)
@@ -1124,15 +1156,16 @@ def run_hf_trainer(
     metrics.setdefault("global_step", trainer.state.global_step)
 
     # Codex offline logging
-    try:
-        sysd = _codex_sample_system()
-        log_vals = {
-            **{k: v for k, v in metrics.items() if isinstance(v, (int, float))},
-            **sysd,
-        }
-        _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-    except Exception:
-        pass
+    if sys_metrics:
+        try:
+            sysd = _codex_sample_system()
+            log_vals = {
+                **{k: v for k, v in metrics.items() if isinstance(v, (int, float))},
+                **sysd,
+            }
+            _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
+        except Exception:
+            pass
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1152,9 +1185,30 @@ def run_hf_trainer(
         json.dump(metrics, fh)
     record = dict(metrics)
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    writer = NDJSONMetricsWriter(str(output_dir / "metrics.ndjson"))
-    writer.write(record)
-    writer.close()
+    writer_choice = (metrics_writer or "ndjson").lower()
+    if writer_choice != "none":
+        path = Path(metrics_path) if metrics_path else output_dir / (
+            "metrics.csv" if writer_choice == "csv" else "metrics.ndjson"
+        )
+        if writer_choice == "csv":
+            writer_obj = CSVMetricsWriter(str(path))
+        else:
+            writer_obj = NDJSONMetricsWriter(str(path))
+        writer_obj.write(record)
+        if hasattr(writer_obj, "close"):
+            writer_obj.close()
+
+    manifest = {
+        "checkpoint_dir": str(checkpoint_dir) if checkpoint_dir else None,
+        "last_checkpoint": trainer.state.last_model_checkpoint,
+        "best_checkpoint": trainer.state.best_model_checkpoint,
+        "global_step": int(trainer.state.global_step),
+        "resume_from": str(resume_ckpt) if resume_ckpt else None,
+        "config_path": str(config_path) if config_path else None,
+    }
+    (output_dir / "resume_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
 
     _log_mlflow_metrics(
         metrics,
@@ -1193,5 +1247,22 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         default=None,
         help="LoRA task type (e.g., CAUSAL_LM, SEQ_CLS)",
+    )
+    add(
+        "--metrics-writer",
+        choices=["ndjson", "csv", "none"],
+        default="ndjson",
+        help="Persist metrics to NDJSON (default), CSV, or disable persistence.",
+    )
+    add(
+        "--metrics-path",
+        type=str,
+        default=None,
+        help="Optional custom path for metrics output (overrides default file name).",
+    )
+    add(
+        "--sys-metrics",
+        action="store_true",
+        help="Enable CPU/GPU/system metrics sampling and structured logging.",
     )
     return _codex_patch_argparse(parser)
