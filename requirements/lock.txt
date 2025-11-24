@@ -909,7 +909,7 @@ pytz==2025.2
     #   great-expectations
     #   pandas
     #   typepy
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   codex-ml (pyproject.toml)
     #   accelerate
