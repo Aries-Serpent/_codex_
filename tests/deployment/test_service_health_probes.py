@@ -17,7 +17,7 @@ class TestServiceHealthConcepts:
     def test_health_endpoint_pattern_documented(self):
         """Verify health endpoint patterns are documented."""
         from pathlib import Path
-        
+
         # Check if any documentation mentions health endpoints
         docs = list(Path("docs").glob("**/*.md")) if Path("docs").exists() else []
         mcp_files = list(Path("mcp").glob("**/*.py")) if Path("mcp").exists() else []
@@ -37,8 +37,9 @@ class TestServiceHealthConcepts:
     def test_deployment_has_service_definitions(self):
         """Verify services are defined in deployment configs."""
         from pathlib import Path
+
         import yaml
-        
+
         # Check docker-compose
         compose_file = Path("docker-compose.yml")
         if compose_file.exists():
@@ -53,7 +54,7 @@ class TestServiceHealthConcepts:
     def test_service_readiness_concept(self):
         """Verify readiness/liveness concepts are present."""
         from pathlib import Path
-        
+
         # Look for k8s manifests or deployment configs
         deploy_files = []
         if Path("deploy").exists():

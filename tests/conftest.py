@@ -4,7 +4,7 @@ Conftest to avoid ImportError during collection when optional heavy dependencies
 are not installed in the CI/test environment.
 """
 from __future__ import annotations
-import importlib.util
+
 import importlib
 import importlib.machinery
 import importlib.util

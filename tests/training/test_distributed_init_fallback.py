@@ -101,7 +101,6 @@ def test_distributed_backend_selection(backend, monkeypatch):
     """Test that distributed backend selection works or fails gracefully."""
     try:
         import torch.distributed as dist
-
         from codex_ml.distributed import init_distributed_if_needed
 
         # Don't actually initialize if already initialized

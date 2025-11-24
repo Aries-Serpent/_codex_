@@ -1,0 +1,146 @@
+version: "1.1"
+title: "Codex-ready Sequential Execution Block"
+description: |
+  Implements the user-supplied task as a deterministic, Codex-executable workflow.
+  The sequence enforces best-effort construction before any pruning, exhaustively
+  explores related modules/scripts/tooling, and records explicit pruning rationale
+  plus research-grade error capture prompts for ChatGPT @codex.
+metadata:
+  offline_only: true
+  forbid_github_actions: true
+  retain_artifacts_under: artifacts/codex_ready
+  default_seed: 1234
+  honor_env_flags:
+    - CODEX_FORCE_CPU
+    - CODEX_ABORT_ON_GPU_PULL
+    - CODEX_COLLECT_COVERAGE
+  safety:
+    disallow_workflow_writes: true
+    disallow_remote_downloads_by_default: true
+phases:
+  - name: "Preparation"
+    number: 1
+    steps:
+      - id: 1.1
+        description: "Validate environment (Python version, git status, offline guard)."
+        actions:
+          - "python -c 'import sys; print(sys.version)'"
+          - "git status --short"
+          - "test ! -d .github/workflows || (echo 'workflows present - ensure no writes' && exit 1)"
+        outputs:
+          - path: "{artifacts}/env_snapshot.json"
+            description: "Python version, platform, cwd, git head, timestamp."
+      - id: 1.2
+        description: "Load project metadata (AUDIT_PROMPT.md if present; pytest.ini; noxfile.py; denylist)."
+        outputs:
+          - path: "{artifacts}/project_metadata.md"
+            description: "Key gates, policies, and audit priorities discovered during prep."
+      - id: 1.3
+        description: "Build workspace index grouped by extension (code/config/tests/docs/scripts/notebooks/other)."
+        outputs:
+          - path: "{artifacts}/workspace_index.json"
+            description: "In-memory index persisted for downstream mapping."
+
+  - name: "Search & Mapping"
+    number: 2
+    steps:
+      - id: 2.1
+        description: "Scan for TODO/NotImplementedError/stub markers and map to capability buckets."
+        outputs:
+          - path: "{artifacts}/stub_report.json"
+            description: "List of stubs with file, line, capability tag, and snippet."
+      - id: 2.2
+        description: "Explore related modules, scripts, or tooling for each capability; note viable adaptation/mapping options."
+        outputs:
+          - path: "{artifacts}/capability_mapping.json"
+            description: "Capability -> related files + adaptation notes."
+      - id: 2.3
+        description: "Identify config/code mismatches (Hydra YAML vs Python consumers)."
+        outputs:
+          - path: "{artifacts}/config_alignment.md"
+            description: "Missing/unused configs and proposed alignment actions."
+
+  - name: "Best-Effort Construction"
+    number: 3
+    steps:
+      - id: 3.1
+        description: "For each gap, propose a targeted fix and attempt to implement it in-place (prefer minimal, backward-compatible patches)."
+        policy:
+          exhaust_related_modules: true
+          allow_dry_run: true
+        outputs:
+          - path: "{artifacts}/patch_log.md"
+            description: "Chronological record of applied patches with rationale and residual risks."
+      - id: 3.2
+        description: "Verify implemented fixes via relevant local checks (unit/integration/smoke) with offline guards."
+        commands:
+          - "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q --disable-warnings || true"
+          - "nox -s tests -- --maxfail=1 || true"
+        outputs:
+          - path: "{artifacts}/verification_results.json"
+            description: "Pass/fail per command plus stdout/stderr snippets."
+      - id: 3.3
+        description: "Update status report with changes made, rationale, and residual risks after verification."
+        outputs:
+          - path: "{artifacts}/status_report.md"
+            description: "Iterative status including mitigation notes and next steps."
+
+  - name: "Controlled Pruning"
+    number: 4
+    steps:
+      - id: 4.1
+        description: "Only after exhausting construction options, mark items for pruning with explicit rationale and fallback."
+        conditions:
+          - "Confirm search/mapping attempted for the capability."
+          - "Confirm no viable adaptation path exists."
+        outputs:
+          - path: "{artifacts}/pruning_rationale.md"
+            description: "What was pruned, why, and how to roll back or replace."
+      - id: 4.2
+        description: "Guard pruned paths behind feature flags where deletion is unsafe; document toggles."
+
+  - name: "Error Capture"
+    number: 5
+    steps:
+      - id: 5.1
+        description: "Wrap critical operations with structured error capture; emit research questions formatted for ChatGPT @codex."
+        template: |
+          Question from ChatGPT @codex {{timestamp}}:
+          While performing [{{step_number}}:{{step_description}}], encountered the following error: {{error_message}} Context: {{context}}. What are the possible causes, and how can this be resolved while preserving intended functionality?
+        outputs:
+          - path: "{artifacts}/error_questions.md"
+            description: "Accumulated research questions with timestamps and context."
+      - id: 5.2
+        description: "Record partial progress to change log even when errors occur; continue if safe."
+
+  - name: "Finalization"
+    number: 6
+    steps:
+      - id: 6.1
+        description: "Summarize completed fixes, partial items, deferred/pruned work, tests run, and residual risks."
+        outputs:
+          - path: "{artifacts}/final_summary.md"
+            description: "Snapshot of production-readiness state and next actions."
+      - id: 6.2
+        description: "Archive artifacts; ensure no GitHub Actions or remote CI were triggered."
+        assertions:
+          - "test ! -d .github/workflows || true"
+      - id: 6.3
+        description: "Emit console summary and return non-zero status if required capabilities remain unmet without mitigations."
+
+cli_parameters:
+  artifacts:
+    default: "artifacts/codex_ready"
+    description: "Directory for all generated artifacts (logs, reports, archives)."
+  root:
+    default: "."
+    description: "Repository root for scanning and patching."
+  dry_run:
+    default: false
+    description: "If true, record intended changes without mutating files."
+  max_errors:
+    default: 25
+    description: "Stop execution after this many captured errors."
+  coverage_threshold:
+    default: 80
+    description: "Coverage expectation for verification when enabled."

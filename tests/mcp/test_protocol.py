@@ -3,8 +3,8 @@ Tests for MCP protocol surface and JSON-RPC compliance.
 Covers protocol adherence, message formats, and edge cases.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 repo_root = Path(__file__).parent.parent.parent
@@ -168,13 +168,7 @@ def test_error_code_ranges():
 
 def test_mcp_error_mappings():
     """Test MCP error code to HTTP status mappings."""
-    from mcp.errors import (
-        MCPError,
-        ToolNotFound,
-        ValidationError,
-        RateLimitExceeded,
-        Unauthorized
-    )
+    from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound, Unauthorized, ValidationError
     
     error_mappings = [
         (MCPError("base"), -32000, 500),
@@ -192,7 +186,7 @@ def test_mcp_error_mappings():
 def test_protocol_version_negotiation():
     """Test MCP version negotiation protocol."""
     from mcp.versioning import MCP_VERSIONS, negotiate_version
-    
+
     # Server supports certain versions
     assert isinstance(MCP_VERSIONS, list)
     assert len(MCP_VERSIONS) > 0

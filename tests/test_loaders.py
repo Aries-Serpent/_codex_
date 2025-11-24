@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from codex_ml.data.loaders import collect_stats, iter_jsonl, iter_txt, stream_paths
+from codex_ml.data import collect_stats, iter_jsonl, iter_txt, stream_paths
 
 
 def _write(tmp: Path, name: str, lines):

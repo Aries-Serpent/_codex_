@@ -5,9 +5,7 @@ Covers credential hashing, principal management, authorization checks,
 session tokens, and permission verification.
 """
 
-from mcp.auth import (
-    hash_credential, Principal, MCPAuthenticator, MCPAuthorizer
-)
+from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal, hash_credential
 
 
 def test_hash_credential():

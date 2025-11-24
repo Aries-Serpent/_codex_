@@ -10,6 +10,12 @@ _MODULE_EXPORTS = {
     "iter_jsonl": ".loaders",
     "iter_txt": ".loaders",
     "stream_paths": ".loaders",
+    "load_dataset": ".loaders",
+    "load_jsonl": ".loaders",
+    "load_csv": ".loaders",
+    "split_indices": ".loaders",
+    "compute_file_checksum": ".loaders",
+    "Sample": ".loaders",
     "StreamingDataModule": ".datamodule",
     "default_example_validator": ".datamodule",
     "iter_jsonl_chunks": ".streaming",
@@ -35,5 +41,16 @@ def __getattr__(name: str) -> Any:
 
 if TYPE_CHECKING:  # pragma: no cover - import for type checkers only
     from .datamodule import StreamingDataModule, default_example_validator
-    from .loaders import collect_stats, iter_jsonl, iter_txt, stream_paths
+    from .loaders import (
+        Sample,
+        collect_stats,
+        compute_file_checksum,
+        iter_jsonl,
+        iter_txt,
+        load_csv,
+        load_dataset,
+        load_jsonl,
+        split_indices,
+        stream_paths,
+    )
     from .streaming import iter_jsonl_chunks
