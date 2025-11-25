@@ -252,8 +252,15 @@ def init_metric_plugins(*, force: bool = False) -> int:
 
 
 def _ensure_metric_plugins_loaded() -> None:
-    if not _METRIC_PLUGINS_LOADED:
-        init_metric_plugins()
+    if _METRIC_PLUGINS_LOADED:
+        return
+
+    # Register built-in reward metrics alongside generative defaults without
+    # creating import cycles at module import time.
+    from . import reward as _reward  # noqa: WPS433
+
+    _ = _reward
+    init_metric_plugins()
 
 
 def register(
