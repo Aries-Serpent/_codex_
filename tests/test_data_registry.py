@@ -1,52 +1,58 @@
-from __future__ import annotations
-
-import itertools
+from importlib import metadata
 
 import pytest
 
-from src.data import registry
+from codex_ml.data.registry import _DatasetRegistry
 
 
-def test_register_and_get_roundtrip():
-    name = "example_dataset"
+def test_dataset_registry_register_and_get() -> None:
+    registry = _DatasetRegistry()
 
-    @registry.register(name)
-    def _builder(**kwargs):
-        return kwargs
+    @registry.register("Demo")
+    def loader(value: int) -> int:
+        return value * 2
 
-    assert name in registry.list_datasets()
-    result = registry.build(name, value=5)
-    assert result["value"] == 5
-
-    with pytest.raises(registry.DatasetRegistryError):
-        registry.register(name)(_builder)  # type: ignore[misc]
+    assert registry.get("demo")(3) == 6
+    assert "demo" in registry.list()
 
 
-def test_synthetic_dataset_builder_available():
-    torch = pytest.importorskip("torch")
-    if getattr(torch, "__version__", "").endswith("stub"):
-        pytest.skip("real torch runtime is not available")
-    if not hasattr(torch, "utils") or not hasattr(torch.utils, "data"):
-        pytest.skip("torch.utils.data unavailable")
+def test_dataset_registry_duplicate_registration_raises() -> None:
+    registry = _DatasetRegistry()
 
-    train_loader, val_loader = registry.build(
-        "synthetic_classification",
-        num_samples=12,
-        input_dim=4,
-        num_classes=2,
-        batch_size=4,
-        seed=11,
-        val_split=0.5,
-    )
-    batch = next(iter(train_loader))
-    features, labels = batch
-    assert features.shape[-1] == 4
-    assert labels.dtype == torch.long
-    if val_loader is not None:
-        val_batch = next(iter(val_loader))
-        assert isinstance(val_batch, tuple)
-        assert len(val_batch) == 2
-        assert all(len(b) <= 4 for b in val_batch)
+    @registry.register("demo")
+    def loader(value: int) -> int:  # pragma: no cover - behaviour tested via exception
+        return value
 
-    # Exhaust the loader to ensure it yields finite batches
-    assert sum(1 for _ in itertools.islice(train_loader, 10)) >= 1
+    with pytest.raises(ValueError):
+        registry.register("demo")(loader)
+
+
+class _DummyEntryPoint:
+    def __init__(self, name: str, target: object):
+        self.name = name
+        self._target = target
+
+    def load(self) -> object:
+        return self._target
+
+
+def test_dataset_registry_entry_points(monkeypatch) -> None:
+    registry = _DatasetRegistry()
+
+    def loader(value: str) -> str:
+        return value.upper()
+
+    def fake_entry_points(*, group: str):
+        if group in registry._ENTRY_POINT_GROUPS:  # type: ignore[attr-defined]
+            return (_DummyEntryPoint("entry_loader", loader),)
+        return ()
+
+    monkeypatch.setattr(metadata, "entry_points", fake_entry_points)
+
+    resolved = registry.get("entry_loader")
+    assert callable(resolved)
+    assert resolved("ok") == "OK"
+    assert "entry_loader" in registry.available()
+
+    # Subsequent calls reuse cached entry point state
+    assert registry.list() == ["entry_loader"]

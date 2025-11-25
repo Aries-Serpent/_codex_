@@ -260,6 +260,8 @@ def load_line_dataset(
 
     source_checksum = _sha256_file(dataset_path)
 
+    source_checksum = _sha256_file(dataset_path)
+
     lines = dataset_path.read_text(encoding="utf-8").splitlines()
     if shuffle:
         rng = random.Random(seed)

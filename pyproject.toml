@@ -296,6 +296,9 @@ codex_ml = ["**/tests/*", "torch_stub/*", ".stubs/*"]
 [project.entry-points."codex_ml.tokenizers"]
 hf = "codex_ml.registry.tokenizers:_build_hf_tokenizer"
 
+[project.entry-points."codex_ml.reward_models"]
+heuristic = "codex_ml.plugins.registries:_reward_model_heuristic"
+
 [project.entry-points."codex_ml.models"]
 minilm = "codex_ml.models.registry:_build_minilm"
 bert_base_uncased = "codex_ml.models.registry:_build_default_bert"
@@ -312,9 +315,13 @@ token_accuracy_plugin = "examples.plugins.metrics_token_accuracy_plugin:TokenAcc
 
 [project.entry-points."codex_ml.data_loaders"]
 lines = "codex_ml.data.registry:load_line_dataset"
+jsonl = "codex_ml.data.registry:load_jsonl"
+csv = "codex_ml.data.registry:load_csv"
 
 [project.entry-points."codex_ml.datasets"]
 lines = "codex_ml.data.registry:load_line_dataset"
+jsonl = "codex_ml.data.registry:load_jsonl"
+csv = "codex_ml.data.registry:load_csv"
 
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"

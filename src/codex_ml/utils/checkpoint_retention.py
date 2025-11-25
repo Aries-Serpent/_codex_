@@ -16,6 +16,7 @@ class RetainSpec:
     keep_last: int = 3
     best_k: int = 0
     best_metric: str = "val_loss"
+    mode: str = "min"
 
 
 def _epoch_sort_key(path: Path) -> tuple[int, str]:
@@ -103,7 +104,9 @@ def retain(checkpoints_root: Path, spec: RetainSpec) -> None:
             if metric_val is None:
                 continue
             scored.append((metric_val, entry))
-        scored.sort(key=lambda item: item[0])
+        if spec.mode not in {"min", "max"}:
+            raise ValueError("mode must be 'min' or 'max'")
+        scored.sort(key=lambda item: item[0], reverse=spec.mode == "max")
         for _, entry in scored[: spec.best_k]:
             keep.add(entry)
 
