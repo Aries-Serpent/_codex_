@@ -37,3 +37,28 @@ def test_load_dataset_cache_hit(tmp_path: Path) -> None:
     assert cached.val == first.val
     assert cached.test == first.test
     assert cache_file.exists()
+
+
+def test_load_dataset_invalidation_on_change(tmp_path: Path) -> None:
+    data_path = tmp_path / "dataset.jsonl"
+    initial_records = [{"id": idx, "text": f"row-{idx}"} for idx in range(5)]
+    data_path.write_text("\n".join([json.dumps(r) for r in initial_records]), encoding="utf-8")
+
+    cfg = DataConfig(dataset_path=data_path, cache_dir=tmp_path / "cache")
+    first = load_dataset(cfg)
+    assert first.cache_path is not None
+
+    # Modify the dataset to force a checksum change
+    updated_records = initial_records + [{"id": 99, "text": "new"}]
+    data_path.write_text("\n".join([json.dumps(r) for r in updated_records]), encoding="utf-8")
+
+    refreshed = load_dataset(cfg)
+    assert refreshed.cache_path is not None
+    assert refreshed.cache_path != first.cache_path
+    assert refreshed.from_cache is False
+
+    # Changing the loader version also invalidates the cache
+    cfg.loader_version = "2.0"
+    versioned = load_dataset(cfg)
+    assert versioned.cache_path is not None
+    assert versioned.cache_path != refreshed.cache_path
