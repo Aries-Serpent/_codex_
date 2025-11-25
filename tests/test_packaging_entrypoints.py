@@ -1,8 +1,22 @@
 from __future__ import annotations
 
+from importlib import import_module
+from importlib.util import find_spec
 from pathlib import Path
 
-import tomllib
+import pytest
+
+tomllib_spec = find_spec("tomllib")
+if tomllib_spec is not None:
+    tomllib = import_module("tomllib")
+else:
+    tomli_spec = find_spec("tomli")
+    if tomli_spec is not None:
+        tomllib = import_module("tomli")  # type: ignore[assignment]
+    else:
+        tomllib = None  # type: ignore[assignment]
+
+pytestmark = pytest.mark.skipif(tomllib is None, reason="tomllib/tomli not available")
 
 
 def test_packaging_entry_points_declared() -> None:
