@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
@@ -42,6 +43,12 @@ DEFAULT_GROUPS: Dict[str, Tuple[Tuple[Path, Path], ...]] = {
     "deployment": (
         (Path("configs/deployment/interfaces.yaml"), Path("configs/schemas/deployment_interfaces.schema.yaml")),
         (Path("configs/deploy/reasoning_pod.yaml"), Path("configs/schemas/deployment_reasoning_pod.schema.yaml")),
+    ),
+    "monitoring": (
+        (
+            Path("configs/deployment/hhg_logistics/monitor/default.yaml"),
+            Path("configs/schemas/monitoring.schema.yaml"),
+        ),
     ),
 }
 
@@ -113,12 +120,16 @@ def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
     return list(_iter_errors(instance, schema))
 
 
-def _write_report(path: Path, results: List[Dict[str, Any]]) -> None:
+def _write_report(
+    path: Path, results: List[Dict[str, Any]], *, started_at: str, duration_seconds: float
+) -> None:
     counts = Counter(result["status"] for result in results)
     report = {
         "total": len(results),
         "counts": dict(counts),
         "results": results,
+        "started_at": started_at,
+        "duration_seconds": round(duration_seconds, 3),
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -174,6 +185,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     allow_partial = bool(parsed.allow_partial or (parsed.root and not parsed.strict))
     exit_code = 0
     results: List[Dict[str, Any]] = []
+    start_ts = time.time()
 
     for config_path, schema_path in _resolve_targets(parsed):
         status = "ok"
@@ -213,7 +225,12 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
 
     if parsed.report:
-        _write_report(Path(parsed.report), results)
+        _write_report(
+            Path(parsed.report),
+            results,
+            started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start_ts)),
+            duration_seconds=time.time() - start_ts,
+        )
 
     return exit_code
 

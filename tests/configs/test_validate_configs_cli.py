@@ -24,6 +24,8 @@ def test_group_validation_report(tmp_path: Path) -> None:
             "logging",
             "--group",
             "tracking",
+            "--group",
+            "monitoring",
             "--quiet",
             "--report",
             str(report),
@@ -33,7 +35,7 @@ def test_group_validation_report(tmp_path: Path) -> None:
     )
     assert result.returncode == 0, result.stdout + result.stderr
     content = json.loads(report.read_text(encoding="utf-8"))
-    assert content["total"] >= 2
+    assert content["total"] >= 3
     assert content["counts"].get("fail", 0) == 0
 
 

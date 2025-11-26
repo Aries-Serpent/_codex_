@@ -10,7 +10,7 @@ Validate all default config groups with strict enforcement:
 python tools/validate_configs.py --group all --strict --quiet
 ```
 
-Generate a JSON report for auditing:
+Generate a JSON report for auditing (includes timestamps and duration):
 
 ```bash
 python tools/validate_configs.py \
@@ -34,6 +34,7 @@ Use `--group` to target specific config families. Multiple groups may be provide
 - `logging` – `configs/base/logging/base.yaml`
 - `tracking` – `configs/tracking/base.yaml`, `configs/tracking/offline.yaml`
 - `deployment` – `configs/deployment/interfaces.yaml`, `configs/deploy/reasoning_pod.yaml`
+- `monitoring` – `configs/deployment/hhg_logistics/monitor/default.yaml`
 
 ## Strict vs Partial
 

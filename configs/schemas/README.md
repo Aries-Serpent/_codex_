@@ -14,6 +14,7 @@ Structured schema helpers for Codex configurations live here. The package expose
 - `tracking.schema.yaml` – YAML schema for MLflow/W&B tracking toggles.
 - `deployment_interfaces.schema.yaml` – Schema for deployment interface mappings.
 - `deployment_reasoning_pod.schema.yaml` – Schema for the reasoning pod dry-run manifest.
+- `monitoring.schema.yaml` – Schema for offline-first monitoring defaults (data/serve drift).
 
 ## Validating Configurations
 
