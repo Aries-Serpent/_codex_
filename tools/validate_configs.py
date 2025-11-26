@@ -30,6 +30,11 @@ DEFAULT_TARGETS: Tuple[Tuple[Path, Path], ...] = (
 )
 
 
+def iter_yaml_files(root: Path) -> Iterable[Path]:
+    for path in root.rglob("*.yaml"):
+        yield path
+
+
 def _load_yaml(path: Path) -> Any:
     if yaml is None:
         raise RuntimeError("PyYAML is required to load configuration files")
@@ -58,6 +63,12 @@ def _iter_errors(instance: Any, schema: Any) -> Iterator[str]:
         yield f"{location}: {error.message}"
 
 
+def _filter_errors(errors: List[str], *, allow_partial: bool) -> List[str]:
+    if not allow_partial:
+        return errors
+    return [err for err in errors if "required property" not in err]
+
+
 def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
     try:
         instance = _load_yaml(config_path)
@@ -71,6 +82,16 @@ def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
 
 
 def _resolve_targets(args: argparse.Namespace) -> Iterable[Tuple[Path, Path]]:
+    if args.root:
+        if args.config:
+            raise SystemExit("--config cannot be used with --root; pick one mode")
+        if not args.schema:
+            raise SystemExit("--schema is required when using --root")
+        root_path = Path(args.root)
+        if not root_path.exists():
+            raise SystemExit(f"config root not found: {root_path}")
+        schema_path = Path(args.schema)
+        return ((path, schema_path) for path in iter_yaml_files(root_path))
     if args.config and args.schema:
         return ((Path(args.config), Path(args.schema)),)
     if args.config or args.schema:
@@ -82,9 +103,21 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate Codex configuration files")
     parser.add_argument("--config", help="Path to config file", default=None)
     parser.add_argument("--schema", help="Path to schema file", default=None)
+    parser.add_argument("--root", help="Validate all YAML configs under this directory", default=None)
+    parser.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help="Permit partial configs by filtering missing required-field errors",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Fail on missing required fields when used with --root",
+    )
     parser.add_argument("--quiet", action="store_true", help="Suppress OK messages")
     parsed = parser.parse_args(list(argv) if argv is not None else None)
 
+    allow_partial = bool(parsed.allow_partial or (parsed.root and not parsed.strict))
     exit_code = 0
     for config_path, schema_path in _resolve_targets(parsed):
         if not config_path.exists():
@@ -93,7 +126,12 @@ def main(argv: Iterable[str] | None = None) -> int:
         if not schema_path.exists():
             print(f"skip: {schema_path} (missing)")
             continue
-        errors = validate_pair(config_path, schema_path)
+        raw_errors = validate_pair(config_path, schema_path)
+        errors = _filter_errors(raw_errors, allow_partial=allow_partial)
+        if raw_errors and not errors and allow_partial:
+            if not parsed.quiet:
+                print(f"SKIP {config_path} (partial config allowed)")
+            continue
         if errors:
             exit_code = 1
             print(f"FAIL {config_path} -> {schema_path}")
