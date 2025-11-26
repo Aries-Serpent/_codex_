@@ -32,6 +32,8 @@ metric_registry = Registry("metric")
 _METRIC_PLUGINS_LOADED = False
 _METRIC_PLUGINS_LOCK = threading.Lock()
 _PLUGIN_CONFLICT_LOGGED: set[str] = set()
+_REWARD_METRICS_LOADED = False
+_REWARD_METRICS_LOCK = threading.Lock()
 
 # Ensure built-in generative metrics are registered on import.
 from . import generative as _generative  # noqa: F401, E402
@@ -252,8 +254,23 @@ def init_metric_plugins(*, force: bool = False) -> int:
 
 
 def _ensure_metric_plugins_loaded() -> None:
-    if not _METRIC_PLUGINS_LOADED:
-        init_metric_plugins()
+    global _REWARD_METRICS_LOADED
+
+    if not _REWARD_METRICS_LOADED:
+        with _REWARD_METRICS_LOCK:
+            if not _REWARD_METRICS_LOADED:
+                # Register built-in reward metrics alongside generative
+                # defaults without creating import cycles at module import
+                # time.
+                from . import reward as _reward  # noqa: WPS433
+
+                _ = _reward
+                _REWARD_METRICS_LOADED = True
+
+    if _METRIC_PLUGINS_LOADED:
+        return
+
+    init_metric_plugins()
 
 
 def register(

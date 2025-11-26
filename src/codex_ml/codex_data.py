@@ -7,6 +7,7 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Callable
 
 
 @dataclass
@@ -17,6 +18,7 @@ class DataConfig:
     test_ratio: float = 0.1
     seed: int = 42
     cache_dir: str | Path = "artifacts/cache"
+    loader_version: str = "1.0"
 
 
 @dataclass
@@ -45,15 +47,27 @@ def _load_raw_dataset(path: Path) -> list:
         return [line.rstrip("\n") for line in handle if line.strip()]
 
 
-def _cache_key(cfg: DataConfig, dataset_path: Path, count: int) -> str:
+def _hash_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(chunk_size), b""):
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _cache_key(
+    cfg: DataConfig, dataset_path: Path, *, checksum_fn: Callable[[Path], str] = _hash_file
+) -> str:
     h = hashlib.sha256()
     h.update(str(dataset_path.resolve()).encode("utf-8"))
-    h.update(str(dataset_path.stat().st_mtime_ns).encode("utf-8"))
+    h.update(checksum_fn(dataset_path).encode("utf-8"))
+    h.update(str(cfg.loader_version).encode("utf-8"))
     h.update(str(cfg.seed).encode("utf-8"))
     h.update(str(cfg.train_ratio).encode("utf-8"))
     h.update(str(cfg.val_ratio).encode("utf-8"))
     h.update(str(cfg.test_ratio).encode("utf-8"))
-    h.update(str(count).encode("utf-8"))
     return h.hexdigest()
 
 
@@ -87,7 +101,7 @@ def load_dataset(cfg: DataConfig) -> DatasetSplits:
         raise FileNotFoundError(f"Dataset not found: {dataset_path}")
 
     raw_data = _load_raw_dataset(dataset_path)
-    key = _cache_key(cfg, dataset_path, len(raw_data))
+    key = _cache_key(cfg, dataset_path)
     cache_path = cache_dir / f"splits-{key}.json"
 
     if cache_path.exists():

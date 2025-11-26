@@ -1,0 +1,122 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: MonitoringConfig
+description: Schema for monitoring settings used in deployment pipelines.
+type: object
+required:
+  - monitor
+properties:
+  monitor:
+    type: object
+    required:
+      - tracking
+      - metrics_dir
+      - reports_dir
+      - tags
+      - data
+      - serve
+    properties:
+      tracking:
+        type: object
+        required:
+          - allow_remote
+        properties:
+          allow_remote:
+            type: boolean
+            description: Whether remote tracking backends are allowed (otherwise file-only).
+        additionalProperties: false
+      metrics_dir:
+        type: string
+        description: Directory for aggregated metrics artifacts.
+      reports_dir:
+        type: string
+        description: Directory for rendered monitoring reports.
+      tags:
+        type: object
+        properties:
+          project:
+            type: string
+          env:
+            type:
+              - string
+              - number
+        additionalProperties: true
+      data:
+        type: object
+        required:
+          - enable
+          - reference_csv
+          - current_csv
+          - report_dir
+          - report_html
+          - report_json
+          - thresholds
+          - abort_on_critical
+          - tracked_columns
+        properties:
+          enable:
+            type: boolean
+          reference_csv:
+            type: string
+          current_csv:
+            type: string
+          report_dir:
+            type: string
+          report_html:
+            type: string
+          report_json:
+            type: string
+          thresholds:
+            type: object
+            properties:
+              drift_share_critical:
+                type: number
+              p_value_critical:
+                type: number
+            additionalProperties: false
+          abort_on_critical:
+            type: boolean
+          tracked_columns:
+            type: array
+            items:
+              type: string
+        additionalProperties: false
+      serve:
+        type: object
+        required:
+          - enable
+          - reference_csv
+          - current_src
+          - report_dir
+          - report_html
+          - report_json
+          - ensure_reference_if_missing
+          - thresholds
+          - abort_on_critical
+        properties:
+          enable:
+            type: boolean
+          reference_csv:
+            type: string
+          current_src:
+            type: string
+          report_dir:
+            type: string
+          report_html:
+            type: string
+          report_json:
+            type: string
+          ensure_reference_if_missing:
+            type: boolean
+          thresholds:
+            type: object
+            properties:
+              latency_p95_increase_pct_critical:
+                type: number
+              gen_len_drop_pct_critical:
+                type: number
+            additionalProperties: false
+          abort_on_critical:
+            type: boolean
+        additionalProperties: false
+    additionalProperties: false
+additionalProperties: false

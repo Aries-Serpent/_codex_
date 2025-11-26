@@ -11,6 +11,7 @@ from .api import (
 )
 from .evaluator import batch_metrics
 from .generative import bleu, rouge_l
+from .reward import reward_mean, reward_success_rate
 from .metric_implementations import (
     BLEUScore,
     F1Score,
@@ -40,4 +41,6 @@ __all__ = [
     "summarize_ndjson_to_sqlite",
     "bleu",
     "rouge_l",
+    "reward_mean",
+    "reward_success_rate",
 ]
