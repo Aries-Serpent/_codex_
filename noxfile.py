@@ -26,6 +26,7 @@ Markers (pytest.ini expected):
 
 Sessions Overview:
   tests           -> Baseline (no ML heavy deps).
+  config_validation -> Validate Hydra configs against schemas.
   ml_tests        -> ML dependencies (requirements-ml-cpu.txt).
   eval_tests      -> Evaluation metrics stack (requirements-eval.txt).
   notebook_env    -> Optional notebook/visualization environment build.
@@ -268,6 +269,7 @@ def list_sessions(session: nox.Session) -> None:
     _choose_python(session)
     sessions = [
         "tests",
+        "config_validation",
         "ml_tests",
         "eval_tests",
         "notebook_env",
@@ -299,6 +301,22 @@ def tests(session: nox.Session) -> None:
         "not requires_torch",
         external=True,
     )
+
+
+@nox.session(name="config_validation", python=PY_VERSIONS)
+def config_validation(session: nox.Session) -> None:
+    """
+    Validate Hydra configuration files against bundled schemas.
+
+    This session guards against config drift by running the lightweight
+    validator in tools/validate_configs.py with development dependencies
+    (jsonschema/PyYAML) available.
+    """
+
+    _choose_python(session)
+    _install_requirements(session, REQ_DEV)
+    args = session.posargs or ["--group", "all", "--quiet"]
+    session.run("python", "tools/validate_configs.py", *args, external=True)
 
 
 @nox.session(name="ml_tests", python=PY_VERSIONS)

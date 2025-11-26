@@ -1,0 +1,39 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://codexml.dev/schemas/logging.schema.yaml
+title: LoggingConfig
+type: object
+additionalProperties: false
+required:
+  - telemetry
+properties:
+  telemetry:
+    type: object
+    additionalProperties: false
+    properties:
+      enabled:
+        type: boolean
+        description: Enable or disable telemetry emission.
+      exporter:
+        type: string
+        description: Telemetry backend implementation.
+        enum:
+          - prometheus
+          - none
+          - disabled
+      port:
+        type: integer
+        minimum: 1
+        maximum: 65535
+        description: Listener port for the exporter when applicable.
+      metrics:
+        anyOf:
+          - type: array
+            description: List of metric names to emit.
+            items:
+              type: string
+          - type: string
+            description: Metrics expressed as a single comma-delimited string.
+    required:
+      - enabled
+      - exporter
+      - metrics

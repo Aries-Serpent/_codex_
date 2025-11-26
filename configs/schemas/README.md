@@ -10,6 +10,12 @@ Structured schema helpers for Codex configurations live here. The package expose
 - `model.schema.yaml` – Model configuration schema capturing LoRA/precision toggles.
 - `training_profile.schema.json` – JSON schema for the Hydra profile used by `codex_ml.cli.train`.
 - `evaluation.schema.json` – JSON schema for the evaluation CLI defaults.
+- `logging.schema.yaml` – YAML schema for telemetry and metrics logging defaults.
+- `tracking.schema.yaml` – YAML schema for MLflow/W&B tracking toggles.
+- `deployment_interfaces.schema.yaml` – Schema for deployment interface mappings.
+- `deployment_reasoning_pod.schema.yaml` – Schema for the reasoning pod dry-run manifest.
+- `monitoring.schema.yaml` – Schema for offline-first monitoring defaults (data/serve drift).
+- `tools/generate_schema.py` – Helper script to infer draft schemas from sample configs for new groups.
 
 ## Validating Configurations
 
@@ -33,3 +39,4 @@ register_schema()  # registers "app" schema with Hydra
 2. Use JSON Schema 2020-12 or minimal YAML schema definitions for offline validation.
 3. Update tests under `tests/configuration/` if new required fields are introduced.
 4. Document schema changes in `docs/` when CLI behaviour changes.
+5. Prototype new schemas with `python tools/generate_schema.py <config>` before refining by hand.

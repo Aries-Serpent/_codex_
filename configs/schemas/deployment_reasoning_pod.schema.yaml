@@ -1,0 +1,74 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://codexml.dev/schemas/deployment_reasoning_pod.schema.yaml
+title: ReasoningPodDeployment
+type: object
+additionalProperties: false
+required:
+  - kind
+  - name
+  - version
+  - rollout_ring
+  - image
+  - resources
+  - reasoning
+  - artifacts
+properties:
+  kind:
+    const: ReasoningPod
+  name:
+    type: string
+  version:
+    type: integer
+    minimum: 0
+  rollout_ring:
+    type: string
+  image:
+    type: object
+    additionalProperties: false
+    required: [repository, tag]
+    properties:
+      repository:
+        type: string
+      tag:
+        type: string
+  resources:
+    type: object
+    additionalProperties: false
+    properties:
+      cpu:
+        type: string
+      memory:
+        type: string
+  reasoning:
+    type: object
+    additionalProperties: false
+    required:
+      - trace_capture
+      - evaluation_preset
+      - curriculum_template
+    properties:
+      trace_capture:
+        type: object
+        additionalProperties: false
+        required:
+          - mode
+        properties:
+          mode:
+            type: string
+            enum: [weights, activations]
+      evaluation_preset:
+        type: string
+      curriculum_template:
+        type: string
+  artifacts:
+    type: object
+    additionalProperties: false
+    properties:
+      emit_markdown:
+        type: string
+      emit_json:
+        type: string
+  notes:
+    type: array
+    items:
+      type: string

@@ -145,3 +145,38 @@ jobs:
             .codex/cache/maintenance_summary.json
             artifacts/**
           if-no-files-found: ignore
+
+  config-validation:
+    name: "Config validation (strict)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CODEX_FORCE_CPU: "1"
+      CODEX_VENDOR_PURGE: "1"
+      CODEX_DEPENDENCY_EVIDENCE_ENABLE: "1"
+      CODEX_ALLOW_TRITON_CPU: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Upgrade pip and install nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install nox
+
+      - name: Run config validation (strict)
+        run: |
+          nox -s config_validation -- --group all --strict --quiet --report artifacts/config_validation_report.json
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: config-validation-report
+          path: artifacts/config_validation_report.json
+          if-no-files-found: warn

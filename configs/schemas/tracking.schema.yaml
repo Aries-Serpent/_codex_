@@ -1,0 +1,54 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://codexml.dev/schemas/tracking.schema.yaml
+title: TrackingConfig
+type: object
+additionalProperties: false
+required:
+  - mlflow
+  - wandb
+properties:
+  mlflow:
+    type: object
+    additionalProperties: false
+    properties:
+      enabled:
+        type: boolean
+        description: Toggle MLflow tracking.
+      enable:
+        type: boolean
+        description: Alternate toggle spelling for MLflow tracking.
+      tracking_uri:
+        type: string
+        description: MLflow tracking URI or local directory.
+      local_dir:
+        type: string
+        description: Local artifact store for offline runs.
+    anyOf:
+      - required:
+          - enabled
+      - required:
+          - enable
+  wandb:
+    type: object
+    additionalProperties: false
+    properties:
+      enabled:
+        type: boolean
+        description: Toggle Weights & Biases logging.
+      enable:
+        type: boolean
+        description: Alternate toggle spelling for Weights & Biases logging.
+      mode:
+        type: string
+        description: WandB mode (online, offline, disabled).
+      project:
+        type: string
+        description: WandB project name.
+      disabled:
+        type: boolean
+        description: Disable wandb even when mode is set.
+    anyOf:
+      - required:
+          - enabled
+      - required:
+          - enable
