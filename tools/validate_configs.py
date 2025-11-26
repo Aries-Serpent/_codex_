@@ -6,8 +6,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
 from pathlib import Path
-from typing import Any, Iterable, Iterator, List, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Sequence, Tuple
 
 try:  # pragma: no cover - optional dependency guard
     import yaml
@@ -20,19 +21,50 @@ except Exception:  # pragma: no cover
     Draft202012Validator = None  # type: ignore[assignment]
     Draft7Validator = None  # type: ignore[assignment]
 
-DEFAULT_TARGETS: Tuple[Tuple[Path, Path], ...] = (
-    (Path("configs/training/base.yaml"), Path("configs/schemas/training.schema.yaml")),
-    (
-        Path("configs/training/profiles/default.yaml"),
-        Path("configs/schemas/training_profile.schema.json"),
+DEFAULT_GROUPS: Dict[str, Tuple[Tuple[Path, Path], ...]] = {
+    "training": (
+        (Path("configs/training/base.yaml"), Path("configs/schemas/training.schema.yaml")),
+        (
+            Path("configs/training/profiles/default.yaml"),
+            Path("configs/schemas/training_profile.schema.json"),
+        ),
     ),
-    (Path("configs/evaluation/default.yaml"), Path("configs/schemas/evaluation.schema.json")),
-)
+    "evaluation": (
+        (Path("configs/evaluation/default.yaml"), Path("configs/schemas/evaluation.schema.json")),
+    ),
+    "logging": (
+        (Path("configs/base/logging/base.yaml"), Path("configs/schemas/logging.schema.yaml")),
+    ),
+    "tracking": (
+        (Path("configs/tracking/base.yaml"), Path("configs/schemas/tracking.schema.yaml")),
+        (Path("configs/tracking/offline.yaml"), Path("configs/schemas/tracking.schema.yaml")),
+    ),
+    "deployment": (
+        (Path("configs/deployment/interfaces.yaml"), Path("configs/schemas/deployment_interfaces.schema.yaml")),
+        (Path("configs/deploy/reasoning_pod.yaml"), Path("configs/schemas/deployment_reasoning_pod.schema.yaml")),
+    ),
+}
 
 
 def iter_yaml_files(root: Path) -> Iterable[Path]:
     for path in root.rglob("*.yaml"):
         yield path
+
+
+def _flatten_groups(groups: Sequence[str]) -> Tuple[Tuple[Path, Path], ...]:
+    if not groups or "all" in groups:
+        selected = list(DEFAULT_GROUPS)
+    else:
+        selected = list(groups)
+
+    unknown = set(selected) - set(DEFAULT_GROUPS)
+    if unknown:
+        raise SystemExit(f"unknown group(s): {sorted(unknown)}")
+
+    flattened: List[Tuple[Path, Path]] = []
+    for group in selected:
+        flattened.extend(DEFAULT_GROUPS[group])
+    return tuple(flattened)
 
 
 def _load_yaml(path: Path) -> Any:
@@ -81,6 +113,17 @@ def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
     return list(_iter_errors(instance, schema))
 
 
+def _write_report(path: Path, results: List[Dict[str, Any]]) -> None:
+    counts = Counter(result["status"] for result in results)
+    report = {
+        "total": len(results),
+        "counts": dict(counts),
+        "results": results,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+
+
 def _resolve_targets(args: argparse.Namespace) -> Iterable[Tuple[Path, Path]]:
     if args.root:
         if args.config:
@@ -96,7 +139,7 @@ def _resolve_targets(args: argparse.Namespace) -> Iterable[Tuple[Path, Path]]:
         return ((Path(args.config), Path(args.schema)),)
     if args.config or args.schema:
         raise SystemExit("--config and --schema must be provided together")
-    return DEFAULT_TARGETS
+    return _flatten_groups(args.group)
 
 
 def main(argv: Iterable[str] | None = None) -> int:
@@ -104,6 +147,12 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--config", help="Path to config file", default=None)
     parser.add_argument("--schema", help="Path to schema file", default=None)
     parser.add_argument("--root", help="Validate all YAML configs under this directory", default=None)
+    parser.add_argument(
+        "--group",
+        action="append",
+        choices=sorted(list(DEFAULT_GROUPS) + ["all"]),
+        help="Named config groups to validate (default: all groups)",
+    )
     parser.add_argument(
         "--allow-partial",
         action="store_true",
@@ -115,30 +164,57 @@ def main(argv: Iterable[str] | None = None) -> int:
         help="Fail on missing required fields when used with --root",
     )
     parser.add_argument("--quiet", action="store_true", help="Suppress OK messages")
+    parser.add_argument(
+        "--report",
+        help="Optional path to write a JSON summary report",
+        default=None,
+    )
     parsed = parser.parse_args(list(argv) if argv is not None else None)
 
     allow_partial = bool(parsed.allow_partial or (parsed.root and not parsed.strict))
     exit_code = 0
+    results: List[Dict[str, Any]] = []
+
     for config_path, schema_path in _resolve_targets(parsed):
+        status = "ok"
+        filtered_errors: List[str] = []
+
         if not config_path.exists():
+            status = "missing_config"
+            filtered_errors = [f"config missing: {config_path}"]
             print(f"skip: {config_path} (missing)")
-            continue
-        if not schema_path.exists():
+        elif not schema_path.exists():
+            status = "missing_schema"
+            filtered_errors = [f"schema missing: {schema_path}"]
             print(f"skip: {schema_path} (missing)")
-            continue
-        raw_errors = validate_pair(config_path, schema_path)
-        errors = _filter_errors(raw_errors, allow_partial=allow_partial)
-        if raw_errors and not errors and allow_partial:
-            if not parsed.quiet:
-                print(f"SKIP {config_path} (partial config allowed)")
-            continue
-        if errors:
-            exit_code = 1
-            print(f"FAIL {config_path} -> {schema_path}")
-            for error in errors:
-                print(f"  - {error}")
-        elif not parsed.quiet:
-            print(f"OK   {config_path}")
+        else:
+            raw_errors = validate_pair(config_path, schema_path)
+            filtered_errors = _filter_errors(raw_errors, allow_partial=allow_partial)
+            if raw_errors and not filtered_errors and allow_partial:
+                status = "partial"
+                if not parsed.quiet:
+                    print(f"SKIP {config_path} (partial config allowed)")
+            elif filtered_errors:
+                status = "fail"
+                exit_code = 1
+                print(f"FAIL {config_path} -> {schema_path}")
+                for error in filtered_errors:
+                    print(f"  - {error}")
+            elif not parsed.quiet:
+                print(f"OK   {config_path}")
+
+        results.append(
+            {
+                "config": str(config_path),
+                "schema": str(schema_path),
+                "status": status,
+                "errors": filtered_errors,
+            }
+        )
+
+    if parsed.report:
+        _write_report(Path(parsed.report), results)
+
     return exit_code
 
 

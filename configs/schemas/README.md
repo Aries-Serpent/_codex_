@@ -10,6 +10,10 @@ Structured schema helpers for Codex configurations live here. The package expose
 - `model.schema.yaml` – Model configuration schema capturing LoRA/precision toggles.
 - `training_profile.schema.json` – JSON schema for the Hydra profile used by `codex_ml.cli.train`.
 - `evaluation.schema.json` – JSON schema for the evaluation CLI defaults.
+- `logging.schema.yaml` – YAML schema for telemetry and metrics logging defaults.
+- `tracking.schema.yaml` – YAML schema for MLflow/W&B tracking toggles.
+- `deployment_interfaces.schema.yaml` – Schema for deployment interface mappings.
+- `deployment_reasoning_pod.schema.yaml` – Schema for the reasoning pod dry-run manifest.
 
 ## Validating Configurations
 

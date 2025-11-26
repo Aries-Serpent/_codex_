@@ -315,7 +315,8 @@ def config_validation(session: nox.Session) -> None:
 
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
-    session.run("python", "tools/validate_configs.py", "--quiet", external=True)
+    args = session.posargs or ["--group", "all", "--quiet"]
+    session.run("python", "tools/validate_configs.py", *args, external=True)
 
 
 @nox.session(name="ml_tests", python=PY_VERSIONS)
