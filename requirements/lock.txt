@@ -931,7 +931,7 @@ pyzmq==27.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-ray==2.50.1
+ray==2.52.0
     # via codex-ml (pyproject.toml)
 referencing==0.37.0
     # via
