@@ -92,3 +92,26 @@ def test_malformed_config_is_rejected() -> None:
         or "failed to load config" in result.stderr
         or "required property" in result.stderr
     )
+
+
+def test_log_file_is_written(tmp_path: Path) -> None:
+    log_path = tmp_path / "validation_log.jsonl"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(TOOL),
+            "--group",
+            "logging",
+            "--quiet",
+            "--log",
+            str(log_path),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    lines = log_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 1
+    payload = json.loads(lines[0])
+    assert payload["total"] >= 1
+    assert payload["exit_code"] == 0

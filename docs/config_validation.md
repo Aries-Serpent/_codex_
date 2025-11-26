@@ -25,6 +25,12 @@ Validate every YAML file under a directory against a specific schema:
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml --strict
 ```
 
+Write a JSON Lines log for each run (append-only):
+
+```bash
+python tools/validate_configs.py --group logging --log artifacts/validation_log.jsonl --quiet
+```
+
 ## Groups
 
 Use `--group` to target specific config families. Multiple groups may be provided, and `all` is the default.
@@ -41,6 +47,11 @@ Use `--group` to target specific config families. Multiple groups may be provide
 - `--strict` enforces all required fields, even for partial overlays.
 - Without `--strict`, required-field errors are filtered when using `--root` to accommodate overlay configs.
 
+## Logging and Reporting
+
+- `--report <path>` writes a structured JSON summary with counts, timestamps, and results.
+- `--log <path>` appends an NDJSON record per run, including exit codes, to support CI artifact monitoring.
+
 ## CI Integration
 
 The GitHub Actions workflow runs the `config_validation` nox session with `--strict` and generates a JSON report artifact. Failures block merges.
@@ -50,3 +61,11 @@ The GitHub Actions workflow runs the `config_validation` nox session with `--str
 - Ensure `jsonschema` and `PyYAML` are installed (provided via `requirements-dev.txt`).
 - Use `--report` to inspect which files failed and why.
 - For partial configs, run without `--strict` to identify required-field gaps incrementally.
+
+## Schema Generation Prototype
+
+Use `tools/generate_schema.py` to draft a JSON Schema from a sample config:
+
+```bash
+python tools/generate_schema.py configs/training/base.yaml --output artifacts/training.schema.generated.json
+```

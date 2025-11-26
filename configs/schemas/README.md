@@ -15,6 +15,7 @@ Structured schema helpers for Codex configurations live here. The package expose
 - `deployment_interfaces.schema.yaml` – Schema for deployment interface mappings.
 - `deployment_reasoning_pod.schema.yaml` – Schema for the reasoning pod dry-run manifest.
 - `monitoring.schema.yaml` – Schema for offline-first monitoring defaults (data/serve drift).
+- `tools/generate_schema.py` – Helper script to infer draft schemas from sample configs for new groups.
 
 ## Validating Configurations
 
@@ -38,3 +39,4 @@ register_schema()  # registers "app" schema with Hydra
 2. Use JSON Schema 2020-12 or minimal YAML schema definitions for offline validation.
 3. Update tests under `tests/configuration/` if new required fields are introduced.
 4. Document schema changes in `docs/` when CLI behaviour changes.
+5. Prototype new schemas with `python tools/generate_schema.py <config>` before refining by hand.

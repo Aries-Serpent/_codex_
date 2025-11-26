@@ -120,19 +120,29 @@ def validate_pair(config_path: Path, schema_path: Path) -> List[str]:
     return list(_iter_errors(instance, schema))
 
 
-def _write_report(
-    path: Path, results: List[Dict[str, Any]], *, started_at: str, duration_seconds: float
-) -> None:
+def _build_report(
+    results: List[Dict[str, Any]], *, started_at: str, duration_seconds: float, exit_code: int
+) -> Dict[str, Any]:
     counts = Counter(result["status"] for result in results)
-    report = {
+    return {
         "total": len(results),
         "counts": dict(counts),
         "results": results,
         "started_at": started_at,
         "duration_seconds": round(duration_seconds, 3),
+        "exit_code": exit_code,
     }
+
+
+def _write_report(path: Path, report: Dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+
+
+def _append_log(path: Path, report: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as log_file:
+        log_file.write(json.dumps(report) + "\n")
 
 
 def _resolve_targets(args: argparse.Namespace) -> Iterable[Tuple[Path, Path]]:
@@ -180,6 +190,11 @@ def main(argv: Iterable[str] | None = None) -> int:
         help="Optional path to write a JSON summary report",
         default=None,
     )
+    parser.add_argument(
+        "--log",
+        help="Optional JSONL path to append summary records for observability",
+        default=None,
+    )
     parsed = parser.parse_args(list(argv) if argv is not None else None)
 
     allow_partial = bool(parsed.allow_partial or (parsed.root and not parsed.strict))
@@ -224,13 +239,18 @@ def main(argv: Iterable[str] | None = None) -> int:
             }
         )
 
+    ended = time.time()
+    report = _build_report(
+        results,
+        started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start_ts)),
+        duration_seconds=ended - start_ts,
+        exit_code=exit_code,
+    )
+
     if parsed.report:
-        _write_report(
-            Path(parsed.report),
-            results,
-            started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start_ts)),
-            duration_seconds=time.time() - start_ts,
-        )
+        _write_report(Path(parsed.report), report)
+    if parsed.log:
+        _append_log(Path(parsed.log), report)
 
     return exit_code
 
