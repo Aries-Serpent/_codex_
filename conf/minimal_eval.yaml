@@ -1,0 +1,6 @@
+# Minimal evaluation config stub for `_codex_`.
+
+eval:
+  batch_size: 4
+  split: "validation"
+  base_score: 0.5

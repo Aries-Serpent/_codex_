@@ -24,6 +24,13 @@
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
+#### Latest offline-first updates
+
+- **Inference serving:** FastAPI server now wires a deterministic local model with real `/predict` and `/embed` responses. See [docs/INFERENCE_SERVING_GUIDE.md](docs/INFERENCE_SERVING_GUIDE.md) for usage and configuration.
+- **Duplication quality gate:** Reusable duplication analysis module with CLI wrapper and thresholds is documented in [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md).
+- **Training telemetry toggle:** `codex-train` exposes `--system-metrics` to emit optional CPU/RAM metrics; documented in [docs/CLI.md](docs/CLI.md).
+- **Gap/task alignment:** The declarative task list in [codex_task_sequence.yaml](codex_task_sequence.yaml) is mapped to [codex_gap_registry.yaml](codex_gap_registry.yaml) so every gap is closed or explicitly deferred.
+
 ### API Reference
 
 📚 **[API Documentation](docs/api/README.md)** - Comprehensive API reference auto-generated from source code docstrings

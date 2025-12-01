@@ -37,7 +37,7 @@ def _sha256_bytes(b: bytes) -> str:
 
 def _config_fingerprint(cfg: DictConfig) -> str:
     container = _to_container(cfg)
-    yml = yaml.safe_dump(container, sort_keys=True)
+    yml = yaml.safe_dump(container)
     return _sha256_bytes(yml.encode("utf-8"))
 
 

@@ -46,13 +46,38 @@ REQUEST_RATE_LIMIT = 1000  # requests per minute per IP
 # Model configuration defaults
 DEFAULT_MODEL_DIR = os.environ.get("CODEX_MODEL_DIR", ".codex/models")
 DEFAULT_MODEL_NAME = os.environ.get("CODEX_MODEL_NAME", "default-model")
-DEFAULT_MODEL_TYPE = os.environ.get("CODEX_MODEL_TYPE", "stub")  # stub, huggingface, onnx
+DEFAULT_MODEL_TYPE = os.environ.get("CODEX_MODEL_TYPE", "stub")  # stub, huggingface, onnx, local
 
 
 class ModelLoadError(Exception):
     """Raised when model loading fails"""
 
     pass
+
+
+class SimpleInferenceModel:
+    """Lightweight, deterministic model used for local testing."""
+
+    def __call__(self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None):
+        return self.predict(inputs, parameters=parameters)
+
+    def predict(self, inputs: List[str], parameters: Optional[Dict[str, Any]] = None):
+        results = []
+        for text in inputs:
+            if text == "raise-error":
+                raise RuntimeError("synthetic failure for testing")
+            results.append({"text": text, "prediction": text.upper(), "echo": True})
+        return results
+
+    def embed(self, texts: List[str]) -> np.ndarray:
+        if any(t == "raise-error" for t in texts):
+            raise RuntimeError("synthetic embed failure")
+        dimension = 8
+        embeddings = np.zeros((len(texts), dimension), dtype=np.float32)
+        for idx, text in enumerate(texts):
+            hashed = sum(ord(ch) for ch in text) % dimension
+            embeddings[idx, hashed] = 1.0
+        return embeddings
 
 
 class ModelConfig:
@@ -111,14 +136,14 @@ class ModelConfig:
         if not self.model_name:
             raise ValueError("model_name cannot be empty")
 
-        if self.model_type not in ["stub", "huggingface", "onnx"]:
+        if self.model_type not in ["stub", "huggingface", "onnx", "local"]:
             raise ValueError(f"Unsupported model_type: {self.model_type}")
 
         if self.device not in ["cpu", "cuda"]:
             raise ValueError(f"Unsupported device: {self.device}")
 
         # For non-stub models, path should exist or be valid
-        if self.model_type != "stub" and self.model_path:
+        if self.model_type not in {"stub", "local"} and self.model_path:
             path = Path(self.model_path)
             if not path.exists() and not path.parent.exists():
                 logger.warning(f"Model path does not exist: {self.model_path}")
@@ -260,11 +285,12 @@ class ModelServer:
         logger.info(f"Model config: {self.config.to_dict()}")
 
     def _load_stub_model(self) -> Dict[str, Any]:
-        """Load a stub model for testing"""
-        logger.info("Loading stub model")
+        """Load a lightweight local model for testing"""
+        logger.info("Loading local stub model")
         return {
-            "type": "stub",
+            "type": "local",
             "name": self.config.model_name,
+            "model": SimpleInferenceModel(),
             "device": self.config.device,
         }
 
@@ -358,7 +384,7 @@ class ModelServer:
             ModelLoadError: If loading fails
         """
         try:
-            if self.config.model_type == "stub":
+            if self.config.model_type in {"stub", "local"}:
                 self.model = self._load_stub_model()
             elif self.config.model_type == "huggingface":
                 self.model = self._load_huggingface_model()
@@ -397,17 +423,9 @@ class ModelServer:
 
         model_type = self.model.get("type", "unknown")
 
-        if model_type == "stub":
-            # Stub implementation: return dummy predictions
-            predictions = [
-                {
-                    "text": inp,
-                    "label": "POSITIVE",
-                    "score": 0.95 + (i * 0.01) % 0.05,
-                    "model": self.model_name,
-                }
-                for i, inp in enumerate(inputs)
-            ]
+        if model_type == "local":
+            model = self.model.get("model")
+            predictions = model.predict(inputs, parameters=parameters)
         elif model_type == "huggingface":
             # HuggingFace model inference
             predictions = self._predict_huggingface(inputs, parameters)
@@ -511,14 +529,9 @@ class ModelServer:
 
         model_type = self.model.get("type", "unknown")
 
-        if model_type == "stub":
-            # Return random embeddings for testing
-            dimension = 384  # Default embedding dimension
-            embeddings = np.random.randn(len(texts), dimension).astype(np.float32)
-            # Normalize
-            norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-            embeddings = embeddings / np.maximum(norms, 1e-12)
-            return embeddings
+        if model_type == "local":
+            model = self.model.get("model")
+            return model.embed(texts)
 
         elif model_type == "huggingface":
             return self._embed_huggingface(texts)

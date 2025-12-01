@@ -18,7 +18,7 @@ pytest.importorskip("yaml")
 
 
 def _write_training_config(path: Path, payload: dict[str, Any]) -> None:
-    path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+    path.write_text(yaml.safe_dump(payload), encoding="utf-8")
 
 
 def test_train_command_uses_config_defaults(

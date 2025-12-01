@@ -35,6 +35,11 @@ predictions = server.predict(["Hello world", "Test input"])
 print(predictions)
 ```text
 
+The bundled `SimpleInferenceModel` is deterministic and exercises both happy-path and error-path logic:
+
+- `/predict` echoes inputs with uppercase `prediction` fields and returns HTTP 500 for the sentinel input `"raise-error"`.
+- `/embed` returns lightweight one-hot embeddings (dimension 8) keyed by character sums and raises HTTP 500 for `"raise-error"`.
+
 ### FastAPI Server
 
 To run a full FastAPI server:
