@@ -1,7 +1,7 @@
 codex_task_sequence:
   metadata:
     name: "_codex_ gap-resolution sequence"
-    version: "0.7.0"
+    version: "0.8.0"
     description: >
       Declarative sequence for finding, tracking, and resolving implementation
       gaps across the _codex_ project. Phases are meant to be executed on a
@@ -37,6 +37,16 @@ codex_task_sequence:
             phases, but results may inform manual review.
           actions:
             - "python -m codex_ml.cli.env_check || python -m codex_ml.cli.env_check"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.4"
+          description: >
+            Perform an initial validation pass over YAML configs under `conf/`
+            using codex_config_validate.py. Failures are recorded but do not
+            stop the sequence; they should be reviewed and addressed.
+          actions:
+            - "python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md || python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md"
           on_error:
             strategy: record_and_continue
 
@@ -148,6 +158,16 @@ codex_task_sequence:
           on_error:
             strategy: record_and_continue
 
+        - id: "3.7"
+          description: >
+            Re-run config validation after any changes introduced by this
+            sequence, capturing an updated report. This provides a stronger
+            signal about configuration health in the context of new code.
+          actions:
+            - "python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md || python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md"
+          on_error:
+            strategy: record_and_continue
+
     - id: 4
       name: Controlled Pruning
       steps:
@@ -203,8 +223,8 @@ codex_task_sequence:
           description: >
             Generate a reproducibility bundle manifest that references the
             audit, gap artifacts, ML test summaries, dependency reports,
-            secret scan results, environment snapshot, and minimal run
-            directories.
+            secret scan results, environment snapshot, minimal run
+            directories, and config validation report.
           actions:
             - "python tools/codex_reproducibility_bundle.py --audit _codex_status_update-2025-11-27.md --manifest-out codex_reproducibility_manifest.json"
           on_error:

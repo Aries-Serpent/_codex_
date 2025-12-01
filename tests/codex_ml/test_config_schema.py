@@ -1,0 +1,42 @@
+from codex_ml.config import schema
+
+
+def test_from_dict_constructs_defaults_for_missing_sections():
+    cfg = schema.from_dict({})
+    assert cfg.model.hidden_size == 256
+    assert cfg.training.max_steps == 100
+    assert cfg.data.dataset_name == "dummy"
+    assert cfg.eval.batch_size == 8
+
+
+def test_from_dict_overrides_fields_when_present():
+    raw = {
+        "model": {"hidden_size": 512, "dtype": "float16"},
+        "training": {"learning_rate": 5e-4, "max_steps": 200},
+        "data": {"dataset_name": "my_ds", "num_workers": 4},
+        "eval": {"batch_size": 16, "split": "test"},
+    }
+    cfg = schema.from_dict(raw)
+    assert cfg.model.hidden_size == 512
+    assert cfg.model.dtype == "float16"
+    assert cfg.training.learning_rate == 5e-4
+    assert cfg.training.max_steps == 200
+    assert cfg.data.dataset_name == "my_ds"
+    assert cfg.data.num_workers == 4
+    assert cfg.eval.batch_size == 16
+    assert cfg.eval.split == "test"
+
+
+def test_from_dict_raises_on_non_mapping_sections():
+    bads = [
+        {"model": 123},
+        {"training": "nope"},
+        {"data": 1.5},
+        {"eval": ["bad"]},
+    ]
+    for raw in bads:
+        try:
+            schema.from_dict(raw)
+            assert False, f"Expected ConfigValidationError for: {raw}"
+        except schema.ConfigValidationError:
+            pass

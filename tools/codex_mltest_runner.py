@@ -1,110 +1,141 @@
 #!/usr/bin/env python
-"""Run pytest subsets based on ML Test Score categories.
+"""Run pytest targets based on ML Test Score categories.
 
-This script:
-- Reads `codex_ml_test_map.yaml`.
-- Accepts one or more categories: data, model, infrastructure, regression, performance.
-- Runs pytest restricted to the test paths for those categories.
-- Emits a very small, machine-readable summary to stdout.
+Reads:
+- codex_ml_test_map.yaml
 
-Design:
-- Multiple categories are merged (unique test paths).
-- If no category is provided, all categories are used.
-- This is strictly local/offline, no CI or Actions integration.
+Executes pytest for tests whose `category` matches requested categories.
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import shlex
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Optional
 
-import yaml
+from tools import codex_mltest_map_validate as map_validate
 
 
 def _load_map(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        raise FileNotFoundError(path)
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    if not isinstance(data, dict):
-        raise ValueError("ML test map YAML must be a mapping at top level")
-    cats = data.get("categories")
-    if not isinstance(cats, dict):
-        raise ValueError("ML test map missing 'categories' mapping")
-    return cats
+    data = map_validate.load_ml_test_map(path)
+    map_validate.validate_structure(data)
+    return data
 
 
-def _collect_tests(cats: Dict[str, Any], selected: List[str]) -> List[str]:
-    tests: Set[str] = set()
-    if not selected:
-        selected = sorted(cats.keys())
+def _collect_tests(categories: Dict[str, Any], selected: Optional[List[str]]) -> List[str]:
+    if selected:
+        names = set(selected)
+    else:
+        names = set(categories.keys())
 
-    for name in selected:
-        meta = cats.get(name)
-        if not isinstance(meta, dict):
+    collected: List[str] = []
+    seen = set()
+    for name in sorted(categories.keys()):
+        if name not in names:
             continue
-        tlist = meta.get("tests") or []
-        if isinstance(tlist, list):
-            for t in tlist:
-                if isinstance(t, str):
-                    tests.add(t)
-    return sorted(tests)
+        tests = categories[name].get("tests", []) or []
+        for t in tests:
+            if t not in seen:
+                collected.append(t)
+                seen.add(t)
+    return collected
 
 
-def _run_pytest(tests: List[str]) -> int:
-    if not tests:
-        print("No tests to run for selected categories; exiting with 0.")
-        return 0
-    cmd = ["pytest", "-q"] + tests
-    print("Running:", " ".join(cmd))
-    proc = subprocess.run(cmd, check=False)
-    return proc.returncode
+def _collect_tests_with_categories(
+    categories: Dict[str, Any], selected: Optional[List[str]]
+) -> List[tuple[str, str]]:
+    targets: List[tuple[str, str]] = []
+    if selected:
+        names = selected
+    else:
+        names = sorted(categories.keys())
+    for name in names:
+        tests = categories.get(name, {}).get("tests", []) or []
+        for t in tests:
+            targets.append((t, name))
+    return targets
 
 
-def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Run pytest by ML Test Score categories.")
+def run_tests(repo_root: Path, targets: List[tuple[str, str]]) -> Dict[str, Any]:
+    results: List[Dict[str, Any]] = []
+    overall_rc = 0
+    for target, category in targets:
+        cmd_list = ["pytest", target, "-q"]
+        try:
+            proc = subprocess.run(
+                cmd_list,
+                cwd=str(repo_root),
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            rc = proc.returncode
+            stdout = proc.stdout
+            stderr = proc.stderr
+        except TypeError:
+            proc = subprocess.run(cmd_list, check=False)  # type: ignore[arg-type]
+            rc = getattr(proc, "returncode", 1)
+            stdout = getattr(proc, "stdout", "")
+            stderr = getattr(proc, "stderr", "")
+        if rc != 0:
+            overall_rc = 1
+        results.append(
+            {
+                "target": target,
+                "category": category,
+                "cmd": cmd_list,
+                "returncode": rc,
+                "stdout": stdout,
+                "stderr": stderr,
+            }
+        )
+    return {"overall_returncode": overall_rc, "results": results}
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run ML Test Score categories via pytest."
+    )
     parser.add_argument(
-        "--map",
+        "--repo-root",
         type=str,
-        default="codex_ml_test_map.yaml",
-        help="Path to ML test map YAML (default: codex_ml_test_map.yaml).",
+        default=".",
+        help="Repository root (default: current directory).",
     )
     parser.add_argument(
         "--category",
         "-c",
         action="append",
-        dest="categories",
         default=None,
-        help="Category to run (can be specified multiple times). "
-        "If omitted, all categories are run.",
+        help="Category to run (may be repeated). If omitted, all tests run.",
+    )
+    parser.add_argument(
+        "--map",
+        type=str,
+        default="codex_ml_test_map.yaml",
+        help="Test map YAML path (default: codex_ml_test_map.yaml).",
     )
     parser.add_argument(
         "--json-summary",
         type=str,
-        default=None,
-        help="Optional path to write a JSON summary of the run.",
+        default="codex_mltest_summary.json",
+        help="JSON summary path (default: codex_mltest_summary.json).",
     )
     args = parser.parse_args(argv)
 
-    cats = _load_map(Path(args.map).expanduser().resolve())
-    selected = args.categories or []
-    tests = _collect_tests(cats, selected)
-    rc = _run_pytest(tests)
+    root = Path(args.repo_root).resolve()
+    mapping = _load_map(root / args.map)
+    categories = mapping.get("categories", {})
+    targets = _collect_tests_with_categories(categories, args.category)
+    result = run_tests(root, targets)
 
-    summary = {
-        "categories": selected or sorted(cats.keys()),
-        "tests": tests,
-        "return_code": rc,
-    }
-    if args.json_summary:
-        out = Path(args.json_summary).expanduser().resolve()
-        out.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-        print(f"Wrote ML test summary to {out}")
-
-    print("MLTEST_SUMMARY_JSON:", json.dumps(summary, sort_keys=True))
-    return rc
+    out_raw = Path(args.json_summary)
+    out = out_raw if out_raw.is_absolute() else root / out_raw
+    out.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    print(f"Wrote MLTest summary to {out}")
+    return int(result["overall_returncode"])
 
 
 if __name__ == "__main__":  # pragma: no cover

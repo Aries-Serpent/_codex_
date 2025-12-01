@@ -1,187 +1,94 @@
 #!/usr/bin/env python
-"""Lightweight dependency audit for _codex_.
+"""Dependency audit stub for `_codex_`.
 
-This tool inspects common dependency declaration files:
-
-- pyproject.toml (if present)
-- requirements.txt (if present)
-- requirements-dev.txt (if present)
-
-and emits a JSON + Markdown report with:
-
-- discovered packages (name + version spec where available)
-- source file they came from
-- simple flags (e.g. "unversioned", "pinned")
-
-It is intentionally small and not a full SBOM generator.
+Parses a requirements-style file under --repo-root (requirements.txt by default)
+and emits JSON/Markdown summaries. This is intentionally lightweight and
+offline-only.
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import sys
-from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:  # pragma: no cover
-    tomllib = None  # type: ignore
+from typing import Any, Dict, List
 
 
-@dataclass
-class Dependency:
-    name: str
-    spec: str
-    source: str
-    pinned: bool
-
-
-def _parse_requirements(path: Path) -> List[Dependency]:
-    deps: List[Dependency] = []
+def _parse_requirements(path: Path) -> List[Dict[str, str]]:
+    deps: List[Dict[str, str]] = []
     if not path.exists():
         return deps
-    for line in path.read_text(encoding="utf-8").splitlines():
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        spec = ""
-        name = line
-        for sep in ["==", ">=", "<=", "~=", ">", "<"]:
-            if sep in line:
-                parts = line.split(sep, 1)
-                name = parts[0].strip()
-                spec = sep + parts[1].strip()
-                break
-        pinned = "==" in line
-        deps.append(Dependency(name=name, spec=spec, source=str(path), pinned=pinned))
+        name_ver = line.replace("==", ":").replace(">=", ":")
+        if ":" in name_ver:
+            name, ver = name_ver.split(":", 1)
+        else:
+            name, ver = name_ver, ""
+        deps.append({"name": name.strip(), "version": ver.strip()})
     return deps
 
 
-def _parse_pyproject(path: Path) -> List[Dependency]:
-    deps: List[Dependency] = []
-    if not path.exists() or tomllib is None:
-        return deps
-    data = tomllib.loads(path.read_text(encoding="utf-8"))
-    proj = data.get("project") or {}
-    for sec_key in ("dependencies",):
-        items = proj.get(sec_key) or []
-        if not isinstance(items, list):
-            continue
-        for item in items:
-            if not isinstance(item, str):
-                continue
-            line = item.strip()
-            if not line:
-                continue
-            name = line
-            spec = ""
-            for sep in ["==", ">=", "<=", "~=", ">", "<"]:
-                if sep in line:
-                    parts = line.split(sep, 1)
-                    name = parts[0].strip()
-                    spec = sep + parts[1].strip()
-                    break
-            pinned = "==" in line
-            deps.append(Dependency(name=name, spec=spec, source=str(path), pinned=pinned))
-    return deps
-
-
-def _collect_dependencies(repo_root: Path) -> List[Dependency]:
-    deps: List[Dependency] = []
-    pyproject = repo_root / "pyproject.toml"
-    req = repo_root / "requirements.txt"
-    req_dev = repo_root / "requirements-dev.txt"
-    deps.extend(_parse_pyproject(pyproject))
-    deps.extend(_parse_requirements(req))
-    deps.extend(_parse_requirements(req_dev))
-    seen = set()
-    uniq: List[Dependency] = []
-    for d in deps:
-        key = (d.name, d.spec, d.source)
-        if key in seen:
-            continue
-        seen.add(key)
-        uniq.append(d)
-    return uniq
-
-
-def _build_summary(deps: List[Dependency]) -> Dict[str, Any]:
-    by_source: Dict[str, List[Dict[str, Any]]] = {}
-    for d in deps:
-        by_source.setdefault(d.source, []).append(asdict(d))
+def build_report(repo_root: Path, requirements_file: str = "requirements.txt") -> Dict[str, Any]:
+    req_path = repo_root / requirements_file
+    deps = _parse_requirements(req_path)
+    summary = {"total_dependencies": len(deps)}
     return {
-        "total_dependencies": len(deps),
-        "by_source": by_source,
+        "summary": summary,
+        "dependencies": deps,
+        "source_file": str(req_path),
     }
 
 
-def _write_json(path: Path, deps: List[Dependency]) -> None:
-    data = {
-        "dependencies": [asdict(d) for d in deps],
-        "summary": _build_summary(deps),
-    }
-    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+def _write_json(path: Path, report: Dict[str, Any]) -> None:
+    path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _write_markdown(path: Path, deps: List[Dependency]) -> None:
+def _write_markdown(path: Path, report: Dict[str, Any]) -> None:
+    deps = report.get("dependencies", []) or []
     lines: List[str] = []
-    lines.append("# _codex_ Dependency Audit\n")
+    lines.append("# `_codex_` Dependency Audit\n")
+    lines.append(f"- Total dependencies: **{report.get('summary', {}).get('total_dependencies', 0)}**\n")
     if not deps:
-        lines.append("No dependency files were found or parsed.\n")
-        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        lines.append("No dependencies found.\n")
+        path.write_text("\n".join(lines), encoding="utf-8")
         return
-
-    summary = _build_summary(deps)
-    lines.append("## Summary\n")
-    lines.append(f"- Total dependencies: **{summary['total_dependencies']}**\n")
-    lines.append("## Details by source\n")
-
-    for src, entries in summary["by_source"].items():
-        lines.append(f"### {src}\n")
-        lines.append("| Name | Spec | Pinned |")
-        lines.append("| ---- | ---- | ------ |")
-        for e in entries:
-            lines.append(
-                f"| `{e['name']}` | `{e['spec']}` | "
-                f"{'yes' if e['pinned'] else 'no'} |"
-            )
-        lines.append("")
-
+    lines.append("| Name | Version |")
+    lines.append("| ---- | ------- |")
+    for dep in deps:
+        lines.append(f"| {dep.get('name')} | {dep.get('version')} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Audit _codex_ dependencies.")
-    parser.add_argument(
-        "--repo-root",
-        type=str,
-        default=".",
-        help="Repository root (default: current directory).",
-    )
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Dependency audit stub for _codex_.")
+    parser.add_argument("--repo-root", type=str, default=".", help="Repository root.")
     parser.add_argument(
         "--json-out",
         type=str,
         default="codex_dependency_report.json",
-        help="JSON output path (default: codex_dependency_report.json).",
+        help="Output JSON path (default: codex_dependency_report.json).",
     )
     parser.add_argument(
         "--md-out",
         type=str,
         default="codex_dependency_report.md",
-        help="Markdown output path (default: codex_dependency_report.md).",
+        help="Output Markdown path (default: codex_dependency_report.md).",
     )
     args = parser.parse_args(argv)
 
     root = Path(args.repo_root).expanduser().resolve()
-    deps = _collect_dependencies(root)
-    json_out = root / args.json_out
-    md_out = root / args.md_out
-    _write_json(json_out, deps)
-    _write_markdown(md_out, deps)
-    print(f"Wrote dependency JSON report to {json_out}")
-    print(f"Wrote dependency Markdown report to {md_out}")
+    report = build_report(root)
+
+    json_out_raw = Path(args.json_out)
+    md_out_raw = Path(args.md_out)
+    json_out = json_out_raw if json_out_raw.is_absolute() else root / json_out_raw
+    md_out = md_out_raw if md_out_raw.is_absolute() else root / md_out_raw
+    _write_json(json_out, report)
+    _write_markdown(md_out, report)
+    print(f"Wrote dependency report to {json_out}")
     return 0
 
 
