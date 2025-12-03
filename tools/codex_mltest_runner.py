@@ -20,6 +20,21 @@ from tools import codex_mltest_map_validate as map_validate
 
 def _load_map(path: Path) -> Dict[str, Any]:
     data = map_validate.load_ml_test_map(path)
+    # Allow a simplified structure with top-level tests list by reshaping into
+    # categories keyed by their declared category (defaulting to
+    # "uncategorized").
+    if isinstance(data, dict):
+        categories = data.get("categories")
+        tests_list = data.get("tests")
+        if not isinstance(categories, dict) and isinstance(tests_list, list):
+            cat_map: Dict[str, Dict[str, List[str]]] = {}
+            for entry in tests_list:
+                category = entry.get("category", "uncategorized")
+                target = entry.get("pytest_target") or entry.get("target")
+                if not target:
+                    continue
+                cat_map.setdefault(category, {}).setdefault("tests", []).append(target)
+            data["categories"] = cat_map
     map_validate.validate_structure(data)
     return data
 

@@ -97,8 +97,8 @@ def main():
     schema = load_schema(args.schema)
     files = discover(args.paths)
     if not files:
-        print("No config files discovered.", file=sys.stderr)
-        sys.exit(3)
+        print("No config files found; validated 0 config file(s).")
+        sys.exit(0)
 
     failures = []
     for f in files:

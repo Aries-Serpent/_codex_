@@ -1,0 +1,298 @@
+    data = json.loads(json_out.read_text(encoding="utf-8"))
+    assert "issues" in data
+```
+
+===============================================================================
+4) Documentation – docs/security/security_baseline_local_only.md
+================================================================
+
+Create/overwrite: docs/security/security_baseline_local_only.md
+
+````markdown
+# Security & Safety Baseline for `_codex_` (Local-Only Scaffolding)
+
+This document describes the current *local-only* security and safety
+baseline for `_codex_`. The goal is to provide:
+
+- A lightweight **secret scan**.
+- A lightweight **dependency pinning** check.
+
+All tooling is:
+
+- Offline-only.
+- Intended for developer use.
+- Non-blocking by default (advisory, with explicit reports).
+
+## 1. Secret Scanner
+
+Tool:
+
+- `tools/codex_secret_scan.py`
+
+Purpose:
+
+- Heuristically scan source files for obviously sensitive tokens
+  (API keys, private key blocks, bearer tokens, etc.).
+
+Key behaviors:
+
+- Only scans text-like files by extension (e.g., `.py`, `.md`, `.json`).
+- Skips common noisy directories (`.git`, `.venv`, `__pycache__`, etc.).
+- Uses a small set of regular expressions for patterns such as:
+  - AWS-style access keys
+  - `API_KEY = "..."` patterns
+  - `-----BEGIN PRIVATE KEY-----` blocks
+  - Slack-style tokens
+- Produces:
+  - `codex_secret_scan_report.json`
+  - `codex_secret_scan_report.md`
+
+Example usage:
+
+```bash
+python tools/codex_secret_scan.py \
+  --root . \
+  --json-out codex_secret_scan_report.json \
+  --md-out codex_secret_scan_report.md
+````
+
+> NOTE: This is a **heuristic** tool and does **not** guarantee that
+> no secrets exist. It is a safety net and should be complemented with
+> additional processes as needed.
+
+## 2. Dependency Pinning Checker
+
+Tool:
+
+* `tools/codex_dep_pin_check.py`
+
+Purpose:
+
+* Inspect a small set of dependency files for obviously unpinned or
+  loosely pinned entries. This supports reproducibility and safer
+  upgrades.
+
+Inputs (if present at repo root):
+
+* `requirements.txt`
+* `requirements-dev.txt`
+* `requirements-local.txt`
+* `pyproject.toml` (shallow inspection of dependency entries)
+* `environment.yml` (shallow conda-style dependency lines)
+
+Outputs:
+
+* `codex_dep_pin_report.json`
+* `codex_dep_pin_report.md`
+
+Heuristics:
+
+* Lines without `==` in `requirements*.txt` are treated as potential
+  unpinned or loose dependencies.
+* `pyproject.toml` lines where dependency strings lack `==` are
+  flagged as `pyproject_missing_exact_pin`.
+* `environment.yml` deps are treated as:
+
+  * `env_yml_loose_pin` if found with `>=`/`<=` but no exact `==`.
+  * `env_yml_missing_pin` if no version spec is present.
+
+Example usage:
+
+```bash
+python tools/codex_dep_pin_check.py \
+  --repo-root . \
+  --json-out codex_dep_pin_report.json \
+  --md-out codex_dep_pin_report.md
+```
+
+## 3. Relationship to Reproducibility & Gap Registry
+
+These tools complement:
+
+* `tools/codex_repro_manifest.py`:
+
+  * The repro manifest can reference the pin report and secret scan
+    artifacts to provide a more complete picture of environment and
+    risk surface.
+
+* `tools/codex_gap_registry.py`:
+
+  * Any issues discovered repeatedly by these tools can be promoted to
+    explicit gaps with `risk_level` and `status`.
+
+The intent is to create:
+
+* A **low-friction** local baseline that surfaces security and safety
+  concerns early.
+* A path to formalizing recurring issues as tracked, auditable gaps.
+
+````
+
+===============================================================================
+5) Wire Security & Safety checks into codex_task_sequence.yaml
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply this
+minimal extension:
+
+1. Locate the phase that addresses **Security & Safety** or a suitable
+   late phase such as `"Finalization & Reporting"`. If such a phase
+   exists, append two new steps under its `steps` list:
+
+```yaml
+       - id: "<PHASE_ID>.S1"
+         description: >
+           Run a local heuristic secret scan over the repository.
+           This is a best-effort advisory step that produces JSON and
+           Markdown reports but does not fail the overall sequence.
+         actions:
+           - >
+             python tools/codex_secret_scan.py
+             --root .
+             --json-out codex_secret_scan_report.json
+             --md-out codex_secret_scan_report.md
+         on_error:
+           strategy: record_and_continue
+
+       - id: "<PHASE_ID>.S2"
+         description: >
+           Run a local dependency pinning check over common dependency
+           files (requirements, pyproject, environment.yml). This is
+           advisory-only and produces JSON and Markdown reports.
+         actions:
+           - >
+             python tools/codex_dep_pin_check.py
+             --repo-root .
+             --json-out codex_dep_pin_report.json
+             --md-out codex_dep_pin_report.md
+         on_error:
+           strategy: record_and_continue
+````
+
+Replace `<PHASE_ID>` with the numeric id of that phase (e.g. `"8.S1"` /
+`"8.S2"` if the phase id is 8). Ensure indentation matches surrounding
+entries.
+
+2. If there is **no** obvious Security/Safety or Finalization phase
+   where this fits, append a new phase at the end of the `phases` list:
+
+```yaml
+       - id: 11
+         name: Security & Safety Baseline (Local-Only)
+         steps:
+           - id: "11.1"
+             description: >
+               Run a local heuristic secret scan over the repository.
+               This step is advisory-only and produces JSON and
+               Markdown reports.
+             actions:
+               - >
+                 python tools/codex_secret_scan.py
+                 --root .
+                 --json-out codex_secret_scan_report.json
+                 --md-out codex_secret_scan_report.md
+             on_error:
+               strategy: record_and_continue
+
+           - id: "11.2"
+             description: >
+               Run a local dependency pinning check over common
+               dependency files. This step is advisory-only and
+               produces JSON and Markdown reports.
+             actions:
+               - >
+                 python tools/codex_dep_pin_check.py
+                 --repo-root .
+                 --json-out codex_dep_pin_report.json
+                 --md-out codex_dep_pin_report.md
+             on_error:
+               strategy: record_and_continue
+```
+
+Use `id: 11` or the next unused integer; keep indentation consistent.
+
+===============================================================================
+6) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/tools/test_codex_security_tools.py -q`
+* `pytest tests/tools -q`
+* `python tools/codex_secret_scan.py --root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md`
+* `python tools/codex_dep_pin_check.py --repo-root . --json-out codex_dep_pin_report.json --md-out codex_dep_pin_report.md`
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* Both security tools run and produce their JSON/Markdown artifacts.
+* The new tests pass.
+* The updated task sequence runs the Security & Safety steps with
+  `record_and_continue` and does not break other phases.
+
+All changes remain local/offline and avoid any GitHub Actions or external CI.
+
+
+---
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 24**) you can paste directly into your Codex implementation GPT.
+
+This one focuses on **Data Handling & Deterministic Splits + Dataset Index** so the audit’s “Data Handling” + “Reproducibility” sections are concretely backed by code:
+
+* Deterministic split helpers (`train/val/test`).
+* A minimal dataset registry for named loaders.
+* A dataset index tool for introspecting what’s on disk.
+* Tests and docs.
+* Wiring into `codex_task_sequence.yaml` with `record_and_continue`.
+
+All patchsets are explicit, local/offline, and do **not** touch GitHub Actions.
+
+---
+
+### Codex Batch 24 – Data Handling, Deterministic Splits, Dataset Index
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_
+on a feature branch (e.g. feature/data-handling-and-splits).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement deterministic split helpers:
+   - `src/codex_ml/data/splits.py`
+2. Implement a minimal dataset registry:
+   - `src/codex_ml/data/dataset_registry.py`
+3. Implement dataset index tool:
+   - `tools/codex_dataset_index.py`
+4. Add tests:
+   - `tests/codex_ml/test_dataset_splits_and_registry.py`
+5. Add docs:
+   - `docs/data/dataset_handling_and_splits.md`
+6. Extend `codex_task_sequence.yaml` with a data-handling step.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Deterministic splits – src/codex_ml/data/splits.py
+===============================================================================
+
+Create/overwrite: src/codex_ml/data/splits.py
+
+```python
+"""Deterministic dataset splitting utilities for `_codex_`.
+
+This module provides simple train/val/test splitting helpers which are:
+
+- **Deterministic** given:
+  - a list of IDs, and
+  - a seed.
+- **Order-stable**: the same IDs and seed always produce the same
+  split assignment, regardless of input order.
+
+The design is intentionally minimal and framework-agnostic. It does
+not assume a specific dataset backend; callers can use the assigned

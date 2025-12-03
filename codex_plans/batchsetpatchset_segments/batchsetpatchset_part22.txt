@@ -1,0 +1,275 @@
+    - “best-k” metadata (e.g., top-N by validation metric)
+
+5.2 Add or extend:
+- src/codex_ml/checkpoint/core.py
+- tests/codex_ml/test_checkpoint_roundtrip.py
+
+with tests that:
+- Train a tiny model for a few steps.
+- Save checkpoint A, continue training, save checkpoint B.
+- Resume from A and B and verify:
+    - Deterministic behavior when resuming from the same seed.
+    - “best-k” logic updates correctly.
+
+E6 – Security & Dependency Locking
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+6.1 Add explicit dependency lockfiles and doc:
+
+- requirements/base.txt
+- requirements/dev.txt
+- docs/dev/dependencies_and_locking.md
+
+6.2 Implement a tiny secrets scanning guard, e.g.:
+
+- tools/codex_secrets_scan.py
+
+Scope:
+- Regex-based scanning of the repo for patterns resembling tokens, secrets, etc.
+- Output:
+    - codex_secrets_scan_report.json
+- NO network calls; this is just a local hygiene tool.
+
+6.3 Add tests:
+- tests/tools/test_codex_secrets_scan.py
+  that:
+    - Writes a fake file containing “secretlike” strings.
+    - Ensures the tool flags it and the report JSON has the right shape.
+
+E7 – Deployment (Packaging & Docker)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+7.1 Add or refine packaging metadata:
+
+- pyproject.toml (preferred) or setup.cfg/setup.py
+  including:
+    - package name
+    - minimal extras for dev (tests, docs)
+    - console_scripts entry points:
+        - codex-cli -> tools.codex_cli:main (or equivalent)
+        - codex-train -> tools.codex_train:main (if created)
+
+7.2 Add a minimal Dockerfile for **local only** use:
+
+- Dockerfile.codex-local
+
+Constraints:
+- Base on a common Python image (e.g. python:3.11-slim).
+- Install only local dependencies (requirements/base.txt).
+- Provide an example CMD such as running `codex_cli quick-audit`.
+
+7.3 Add docs:
+- docs/deploy/packaging_and_docker.md
+  describing how to:
+    - install the package locally
+    - build and run the local Docker image
+  with no reference to CI/CD or cloud registries.
+
+E8 – Experiment Tracking Semantics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+8.1 Formalize the filesystem-based run layout documented alongside:
+
+- docs/experiments/run_layout_and_metadata.md
+
+Clarify:
+- Run directory naming convention (run-YYYYMMDD-HHMMSS or run-XXXX).
+- Required `meta.json` fields:
+    - mode, status, config_path, seed, dataset, metrics_summary_path, etc.
+- Location of logs and checkpoints.
+
+8.2 Implement a small helper module, e.g.:
+
+- src/codex_ml/experiments/run_context.py
+
+Features:
+- Context manager / helper class to:
+    - create a new run directory under runs/
+    - write meta.json on start and finalize it (status: completed/failed)
+    - surface paths for logs, checkpoints, metrics files.
+
+8.3 Add tests:
+- tests/codex_ml/test_experiment_run_context.py
+  verifying:
+    - meta.json is created and updated.
+    - logs/ and checkpoints/ directories are created as expected.
+
+E9 – Gap Registry & YAML Coverage Closure
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+9.1 Use the existing tools:
+- tools/codex_gap_registry.py
+- tools/codex_yaml_gap_check.py
+
+to ensure:
+
+- Every gap captured in codex_gap_registry.yaml is either:
+    - directly addressed by a step in codex_task_sequence.yaml, or
+    - marked as `status: deferred` with a `deferred_reason` field.
+
+9.2 Patch:
+- codex_task_sequence.yaml
+- codex_gap_registry.yaml
+
+as needed so that:
+- `gaps_without_yaml_step` is **empty** or only contains explicitly deferred gaps.
+- `yaml_steps_without_gap` is restricted to legitimate “meta” or scaffolding steps.
+
+9.3 Add a brief doc section to:
+
+- docs/gaps/gap_registry_usage.md
+
+describing:
+- How to run the gap registry + YAML gap check loop.
+- How to add a new gap or retire a closed gap.
+
+E10 – Tests for New Tools
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+10.1 Add test modules for tools that currently lack coverage:
+
+- tests/tools/test_codex_cli.py
+- tests/tools/test_codex_repro_manifest.py
+- tests/tools/test_codex_gap_registry_and_yaml_check.py
+- tests/tools/test_codex_task_sequence_runner.py
+
+Tests should cover:
+- Happy path invocation with small temp files.
+- Basic error handling where appropriate.
+
+10.2 Wire these test modules into:
+- local gate runner (`codex_local_gate_runner`)
+- ML test map if such a YAML file exists (`codex_ml_test_map.yaml`).
+
+E11 – Extensibility & Registry Story
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+11.1 Survey existing registries:
+
+- Dataset registry
+- Metrics registry
+- Any tokenizer/model registries
+
+11.2 Add a short doc:
+
+- docs/extensibility/registries_and_plugins.md
+
+explaining:
+- How to register a new dataset.
+- How to register a new metric.
+- How to plug a new model/tokenizer.
+
+11.3 If necessary, add a very small example plugin file under tests or
+an `examples/` directory showing adding and using a custom dataset/metric.
+
+E12 – Top-Level Docs & Architecture Overview
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+12.1 Update README.md to include:
+
+- A concise overview of:
+    - Task sequence (codex_task_sequence.yaml)
+    - CLI (tools/codex_cli.py)
+    - Gap registry and YAML coverage
+    - Quick audit script
+    - Experiment and dataset indices
+- A “Getting Started” section that:
+    - points to quick-audit
+    - points to training CLI
+    - references the reproducibility manifest
+
+12.2 Add or refine:
+
+- docs/architecture/codex_system_overview.md
+
+with:
+- A diagram or narrative describing the flow:
+    - data → training → evaluation → runs/ → metrics → gap registry → repro manifest
+- Pointers to each major tool and module.
+
+PHASE 2 – INTEGRATION & LOCAL GATES
+-----------------------------------
+
+2.1 Run and validate:
+
+- Local gates via tools/codex_local_gate_runner.py
+- ML tests via tools/codex_mltest_runner.py (if present)
+- Dataset/experiment/metrics tools:
+    - tools/codex_dataset_index.py
+    - tools/codex_experiment_index.py
+    - tools/codex_metrics_eval.py
+
+2.2 Ensure that:
+- codex_local_gate_report.json
+- codex_experiment_index.json
+- codex_dataset_index.json
+- codex_metrics_summary.json
+are generated or can be generated successfully.
+
+PHASE 3 – GAP REGISTRY & YAML CHECK LOOP
+----------------------------------------
+
+3.1 Run the gap registry & YAML coverage tools:
+
+- python tools/codex_gap_registry.py \
+    --audit _codex_status_update-2025-11-27.md \
+    --change-log codex_change_log.md \
+    --errors codex_error_questions.md \
+    --out codex_gap_registry.yaml
+
+- python tools/codex_yaml_gap_check.py \
+    --gaps codex_gap_registry.yaml \
+    --yaml codex_task_sequence.yaml \
+    --out codex_yaml_gap_report.md
+
+3.2 If any gaps are still unmapped, or YAML steps lack gaps without a
+clear reason, iterate the patches on codex_task_sequence.yaml and
+codex_gap_registry.yaml until:
+
+- gaps_without_yaml_step is empty or only includes deferred gaps.
+- yaml_steps_without_gap are justified.
+
+PHASE 4 – FINAL STATUS UPDATE & OUTPUTS
+---------------------------------------
+
+4.1 Produce an updated status audit file, e.g.:
+
+- _codex_status_update-2025-11-XX_entropy-closure.md
+
+that:
+- Summarizes changes per entropy E1–E12.
+- Lists the new tools, modules, and docs added.
+- Confirms local gates/tests status.
+
+4.2 Ensure the following key artifacts exist and are up to date:
+
+- codex_task_sequence.yaml
+- codex_gap_registry.yaml
+- codex_yaml_gap_report.md
+- codex_repro_manifest.json
+- codex_local_gate_report.json
+- codex_dataset_index.{json,md}
+- codex_experiment_index.json
+- codex_metrics_summary.json
+- Updated docs under docs/** and README.md
+
+4.3 In your final response back to the human operator, present:
+
+- A list of added/modified files (paths).
+- High-signal notes for each entropy E1–E12:
+    - “Resolved”, “Partially Resolved”, or “Deferred” with rationale.
+- Any follow-up technical debt or TODOs that are intentionally left as
+  future work (not hidden).
+
+Execute all steps above **best-effort until completion**, staying within
+the constraints and patterns of the existing codebase.
+```
+
+------
+
+## Remaining Open Entropies (Post-Batch 1–27) in `_codex_` Repository
+
+| **Entropy ID** | **Capability Area** | **Status** | **Path / Artifact** | **Priority** | **Blocker?** | **Resolution Strategy** |
+| --- | --- | --- | --- | --- | --- | --- |
+| **C11** | Inference Serving | Partial stub (no real model integration)[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/.codex/status/_codex_status_update-2025-09-21.md#L2-L5)[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/DEEP_RESEARCH_UNRESOLVED_ISSUES.md#L50-L58) | `src/codex_ml/serving/` (FastAPI server, no ML loading)[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/.codex/status/_codex_status_update-2025-09-21.md#L2-L5) | High | Yes | Implement actual model loader and inference pipeline (e.g. load PyTorch/ONNX models) and connect to `/infer` endpoints[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/DEEP_RESEARCH_UNRESOLVED_ISSUES.md#L50-L58). Add end-to-end tests for predictions. |
+| **C12** | Vector Store Backends | Stubs present (FAISS done; PGVector/Weaviate missing)[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/CHANGELOG_CodexAudit.md#L2-L4) | `src/codex/retrieval/stores/pgvector_store.py` (stub), `weaviate_store.py`[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/CHANGELOG_CodexAudit.md#L2-L4) | Low | No | Implement remaining vector index backends or remove stubs. Integrate with vector store factory and add tests for multi-backend support[GitHub](https://github.com/Aries-Serpent/_codex_/blob/501760008365fc6cae9ac67220976112b2c6411b/CHANGELOG_CodexAudit.md#L2-L4). |

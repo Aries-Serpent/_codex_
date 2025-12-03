@@ -158,6 +158,18 @@ codex_task_sequence:
           on_error:
             strategy: record_and_continue
 
+        - id: "3.E1"
+          description: >
+            Run a minimal tracked training run using train_minimal with an
+            explicit experiment name. This ensures that experiment_meta.json is
+            written and that the experiment summary tooling has at least one
+            labeled run to operate on.
+          actions:
+            - >
+              python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --runs-dir runs --seed 123 --max-steps 2 --experiment-name codex-sequence-smoke || python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --runs-dir runs --seed 123 --max-steps 2 --experiment-name codex-sequence-smoke
+          on_error:
+            strategy: record_and_continue
+
         - id: "3.7"
           description: >
             Re-run config validation after any changes introduced by this
@@ -237,5 +249,25 @@ codex_task_sequence:
             for quick inspection of recent runs.
           actions:
             - "python tools/codex_experiment_index.py --runs-dir runs --json-out codex_experiment_index.json --md-out codex_experiment_index.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.5"
+          description: >
+            Generate a reproducibility manifest and status digest by
+            aggregating environment snapshot, dependency report, gap registry,
+            experiment index, and local gate report. This step is offline-only
+            and produces both JSON and Markdown artifacts.
+          actions:
+            - >
+              python tools/codex_repro_manifest.py
+              --repo-root .
+              --env-snapshot codex_env_snapshot.json
+              --dep-report codex_dependency_report.json
+              --gap-registry codex_gap_registry.yaml
+              --experiment-index codex_experiment_index.json
+              --local-gate codex_local_gate_report.json
+              --json-out codex_reproducibility_manifest.json
+              --md-out codex_reproducibility_manifest.md
           on_error:
             strategy: record_and_continue
