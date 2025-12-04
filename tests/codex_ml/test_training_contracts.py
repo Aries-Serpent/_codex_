@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import pytest
 
-import pytest
-
 from codex_ml.interfaces.contracts import TrainingContractError
 from codex_ml.training.loop import train_epoch
 

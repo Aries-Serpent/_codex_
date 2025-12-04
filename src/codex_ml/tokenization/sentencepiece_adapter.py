@@ -14,11 +14,9 @@ avoids heavy dependencies and therefore expects the caller to have the
 from __future__ import annotations
 
 import json
-import json
 import numbers
 import os
 from pathlib import Path
-from types import SimpleNamespace
 from typing import Optional, Sequence
 
 spm = None  # type: ignore[assignment]
@@ -40,6 +38,8 @@ def _get_sentencepiece():
     except Exception:
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.
+        from types import SimpleNamespace
+
         class _StubSentencePieceTrainer:
             @staticmethod
             def train(input: str, model_prefix: str, vocab_size: int, character_coverage: float, model_type: str, **_: object):
