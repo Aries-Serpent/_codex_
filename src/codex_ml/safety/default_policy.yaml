@@ -1,0 +1,87 @@
+# Default Safety Policy for _codex_
+# This policy is loaded automatically if CODEX_SAFETY_POLICY_PATH is not set
+# To bypass all safety checks, set CODEX_SAFETY_BYPASS=1
+
+version: "1.0"
+description: "Default safety policy with essential security patterns"
+
+rules:
+  # Dangerous shell commands
+  - id: block-rm-rf-root
+    pattern: "rm\\s+-rf\\s+/"
+    action: block
+    stage: prompt
+    description: "Block dangerous rm -rf / commands"
+
+  - id: block-format-commands
+    pattern: "(mkfs|dd\\s+if=.*of=/dev/|fdisk)"
+    action: block
+    stage: prompt
+    description: "Block filesystem formatting commands"
+
+  # Credential patterns
+  - id: redact-credit-cards
+    pattern: "\\b\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4}\\b"
+    action: redact
+    stage: both
+    description: "Redact potential credit card numbers"
+
+  - id: redact-api-keys
+    pattern: "(api[_-]?key|apikey)[\\s:=\"']+[\\w\\-]{16,}"
+    action: redact
+    stage: both
+    description: "Redact API keys"
+
+  - id: redact-passwords
+    pattern: "(password|passwd|pwd)[\\s:=\"']+\\S{8,}"
+    action: redact
+    stage: both
+    description: "Redact passwords"
+
+  - id: redact-tokens
+    pattern: "(token|bearer)[\\s:=\"']+[\\w\\-\\.]{20,}"
+    action: redact
+    stage: both
+    description: "Redact authentication tokens"
+
+  # AWS credentials
+  - id: redact-aws-keys
+    pattern: "AKIA[0-9A-Z]{16}"
+    action: redact
+    stage: both
+    description: "Redact AWS access keys"
+
+  - id: redact-aws-secrets
+    pattern: "aws[_-]?secret[_-]?access[_-]?key[\\s:=\"']+\\S{40}"
+    action: redact
+    stage: both
+    description: "Redact AWS secret keys"
+
+  # SSH and private keys
+  - id: redact-ssh-private-keys
+    pattern: "-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----"
+    action: redact
+    stage: both
+    description: "Redact SSH private keys"
+
+  # Email addresses (optional, can be relaxed)
+  - id: flag-email-addresses
+    pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"
+    action: flag
+    stage: output
+    description: "Flag email addresses for review"
+
+  # SQL injection patterns
+  - id: block-sql-injection
+    pattern: "(union\\s+select|drop\\s+table|delete\\s+from.*where\\s+1=1)"
+    action: block
+    stage: prompt
+    description: "Block potential SQL injection patterns"
+
+# Bypass option (set CODEX_SAFETY_BYPASS=1 to disable all checks)
+allow_bypass: true
+
+# Logging configuration
+logging:
+  log_matches: true
+  log_level: INFO
