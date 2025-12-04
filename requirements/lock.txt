@@ -267,7 +267,7 @@ flatten-dict==0.4.2
     # via dvc
 flufl-lock==8.2.0
     # via dvc
-fonttools==4.59.2
+fonttools==4.61.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -931,7 +931,7 @@ pyzmq==27.1.0
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-ray==2.50.1
+ray==2.52.0
     # via codex-ml (pyproject.toml)
 referencing==0.37.0
     # via
