@@ -1,6 +1,7 @@
 # Default Safety Policy for _codex_
 # This policy is loaded automatically if CODEX_SAFETY_POLICY_PATH is not set
-# To bypass all safety checks, set CODEX_SAFETY_BYPASS=1
+# To bypass safety checks during development/testing, set CODEX_SAFETY_BYPASS=1
+# The allow_bypass setting below enables the bypass mechanism (set to false in production)
 
 version: "1.0"
 description: "Default safety policy with essential security patterns"
@@ -66,7 +67,7 @@ rules:
 
   # Email addresses (optional, can be relaxed)
   - id: flag-email-addresses
-    pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"
+    pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b"
     action: flag
     stage: output
     description: "Flag email addresses for review"
@@ -78,8 +79,9 @@ rules:
     stage: prompt
     description: "Block potential SQL injection patterns"
 
-# Bypass option (set CODEX_SAFETY_BYPASS=1 to disable all checks)
-allow_bypass: true
+# Bypass option: allows CODEX_SAFETY_BYPASS=1 to disable checks
+# WARNING: Set to false in production environments
+allow_bypass: false
 
 # Logging configuration
 logging:
