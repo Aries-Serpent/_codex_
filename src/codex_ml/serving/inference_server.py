@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 MAX_BATCH_SIZE = 100
 MAX_INPUT_LENGTH = 10000
-_MAX_SEED_VALUE = 2**32  # Used for deterministic embedding generation
+_EMBEDDING_SEED_MODULO = 2**32  # Modulus for deterministic embedding generation seeds (2^32 chosen to match 32-bit unsigned integer range)
 REQUEST_RATE_LIMIT = 1000
 
 
