@@ -452,7 +452,7 @@ def train(
         metrics_logger = SystemMetricsLogger(metrics_path)
 
     try:
-        with metrics_logger or nullcontext():
+        with metrics_logger if metrics_logger else nullcontext():
             run_functional_training(config=training_cfg, resume=resume)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
