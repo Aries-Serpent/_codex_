@@ -22,7 +22,17 @@ def normalized_json(path: Path) -> dict:
     return data
 
 def run_pipeline():
-    subprocess.run(["python", str(ROOT / "scripts" / "space_traversal" / "audit_runner.py"), "run"], check=True)
+    result = subprocess.run(
+        ["python", str(ROOT / "scripts" / "space_traversal" / "audit_runner.py"), "run"],
+        capture_output=True,
+        text=True
+    )
+    if result.returncode != 0:
+        print(f"[ERROR] Pipeline failed with return code {result.returncode}")
+        print(f"STDOUT:\n{result.stdout}")
+        print(f"STDERR:\n{result.stderr}")
+        raise RuntimeError(f"Pipeline execution failed: {result.stderr[:500]}")
+    return result
 
 def main():
     parser = argparse.ArgumentParser(description="Verify determinism of audit pipeline")

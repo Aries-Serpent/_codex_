@@ -91,7 +91,8 @@ def main():
         dirs_to_scan = [ROOT]
     else:
         dirs_to_scan = [ROOT / "src", ROOT / "scripts", ROOT / "deploy"]
-        if args.include_tests or True:
+        # Include tests by default unless explicitly excluded
+        if args.include_tests or not hasattr(args, 'exclude_tests'):
             dirs_to_scan.append(ROOT / "tests")
 
     results = scan_dirs(dirs_to_scan)

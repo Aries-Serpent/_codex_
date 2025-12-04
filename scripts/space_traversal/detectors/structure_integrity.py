@@ -13,9 +13,7 @@ KNOWN_SHADOW_RISKS = {
     "hydra", "torch", "numpy", "requests", "wandb", "mlflow", "pandas"
 }
 
-EVIDENCE_LIMIT = 10  # configurable cap for evidence size
-
-def detect(file_index: dict) -> dict:
+def detect(file_index: dict, evidence_limit: int = 10) -> dict:
     files = [f["path"] for f in file_index["files"]]
     root_dirs: Set[str] = set()
     src_dirs: Set[str] = set()
@@ -38,19 +36,19 @@ def detect(file_index: dict) -> dict:
     # Split-brain evidence: include a balanced sample (root + src) for each dir
     for d in sorted(intersection):
         found_patterns.append("split-brain")
-        root_samples = [f for f in files if f.startswith(f"{d}/")][:EVIDENCE_LIMIT//2]
-        src_samples = [f for f in files if f.startswith(f"src/{d}/")][:EVIDENCE_LIMIT//2]
+        root_samples = [f for f in files if f.startswith(f"{d}/")][:evidence_limit//2]
+        src_samples = [f for f in files if f.startswith(f"src/{d}/")][:evidence_limit//2]
         evidence_files.extend(root_samples + src_samples)
 
     # Library shadowing evidence
     for d in sorted(root_dirs):
         if d.lower() in KNOWN_SHADOW_RISKS:
             found_patterns.append("lib-shadowing")
-            shadow_files = [f for f in files if f.startswith(f"{d}/")][:EVIDENCE_LIMIT]
+            shadow_files = [f for f in files if f.startswith(f"{d}/")][:evidence_limit]
             evidence_files.extend(shadow_files)
 
     # De-duplicate and cap
-    evidence_files = sorted(list(dict.fromkeys(evidence_files)))[:EVIDENCE_LIMIT]
+    evidence_files = sorted(list(dict.fromkeys(evidence_files)))[:evidence_limit]
 
     return {
         "id": "structural-integrity",
@@ -62,6 +60,6 @@ def detect(file_index: dict) -> dict:
             "description": "Detects architectural split-brain and namespace shadowing.",
             "split_dirs": sorted(list(intersection)),
             "shadow_dirs": [d for d in root_dirs if d.lower() in KNOWN_SHADOW_RISKS],
-            "evidence_limit": EVIDENCE_LIMIT
+            "evidence_limit": evidence_limit
         }
     }
