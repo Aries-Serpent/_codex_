@@ -83,14 +83,14 @@ def _get_sentencepiece():
                 return " ".join(id_to_token.get(int(i), "<unk>") for i in ids)
 
             def get_piece_size(self):
-                return len(self.vocab) or 1
+                return len(self.vocab) if self.vocab else 1
 
             # Compatibility shims
             def __getattr__(self, name: str):  # pragma: no cover - compatibility
                 """
                 Provide compatibility shims for certain attribute names.
 
-                Returns the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
+                Returns a bound reference to the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
                 to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
                 """
                 if name in {"GetPieceSize", "piece_size", "vocab_size"}:

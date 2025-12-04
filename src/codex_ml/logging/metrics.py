@@ -7,7 +7,7 @@ import os
 import time
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, TextIO
 
 try:  # optional psutil
     import psutil  # type: ignore
@@ -29,7 +29,7 @@ class MetricLogger:
     def __init__(self, path: Path) -> None:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._fh = None  # type: ignore[var-annotated]
+        self._fh: Optional[TextIO] = None
 
     def _ensure_open(self) -> None:
         if self._fh is None:

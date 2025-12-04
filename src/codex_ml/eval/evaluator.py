@@ -173,11 +173,20 @@ def evaluate_dataloader(
             if isinstance(outputs, dict):
                 output_mapping = outputs
             else:
-                output_mapping = {
-                    name: getattr(outputs, name)
-                    for name in dir(outputs)
-                    if not name.startswith("_") and not callable(getattr(outputs, name))
-                }
+                # Use vars(outputs) if possible for efficiency; otherwise, cache getattr
+                try:
+                    output_mapping = {
+                        name: value
+                        for name, value in vars(outputs).items()
+                        if not name.startswith("_") and not callable(value)
+                    }
+                except TypeError:
+                    output_mapping = {
+                        name: value
+                        for name in dir(outputs)
+                        if not name.startswith("_")
+                        and not callable((value := getattr(outputs, name)))
+                    }
 
             loss_val = output_mapping.get("loss")
             if loss_val is not None:

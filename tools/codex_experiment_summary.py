@@ -29,15 +29,15 @@ import yaml
 
 
 def _iter_run_dirs(base: Path) -> List[tuple[str, Path]]:
-    out: List[tuple[str, Path]] = []
+    run_dirs: List[tuple[str, Path]] = []
     for mode in ("train", "eval"):
         root = base / mode
         if not root.exists():
             continue
         for p in root.iterdir():
             if p.is_dir():
-                out.append((mode, p))
-    return out
+                run_dirs.append((mode, p))
+    return run_dirs
 
 
 def _load_manifest(run_dir: Path) -> Dict[str, Any]:
