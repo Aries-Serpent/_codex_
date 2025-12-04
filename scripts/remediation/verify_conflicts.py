@@ -28,11 +28,15 @@ def check_import(module_name: str, expected_location_substr: str = None) -> bool
             return False
         origin = spec.origin or "namespace"
         print(f"  [OK] Resolved to: {origin}")
-        if expected_location_substr and expected_location_substr not in str(origin):
-            print(f"  [RISK] Unexpected location!")
-            print(f"         Expected path containing: '{expected_location_substr}'")
-            print(f"         Actual path:              '{origin}'")
-            return False
+        if expected_location_substr:
+            # Accept both site-packages and dist-packages
+            if ("site-packages" in str(origin) or "dist-packages" in str(origin)):
+                return True
+            else:
+                print(f"  [RISK] Unexpected location!")
+                print(f"         Expected path containing: '{expected_location_substr}' or 'dist-packages'")
+                print(f"         Actual path:              '{origin}'")
+                return False
         return True
     except Exception as e:
         print(f"  [CRITICAL] Import crashed: {e}")
@@ -40,8 +44,8 @@ def check_import(module_name: str, expected_location_substr: str = None) -> bool
 
 def main():
     parser = argparse.ArgumentParser(description="Verify import conflicts and shadowing.")
-    parser.add_argument("--expect-site-packages", action="store_true", help="Require 'hydra' to resolve from site-packages.")
-    parser.add_argument("--allow-shadow", action="store_true", help="Allow hydra shadowing without non-zero exit.")
+    parser.add_argument("--expect-site-packages", action="store_true", help="Require 'hydra' and 'yaml' to resolve from site-packages.")
+    parser.add_argument("--allow-shadow", action="store_true", help="Allow shadowing without non-zero exit.")
     args = parser.parse_args()
 
     print("--- Structural Integrity Verification ---")
@@ -49,8 +53,17 @@ def main():
 
     failures = 0
 
+    # 0. Check YAML Shadowing (Critical)
+    print(">>> Case 0: Library Shadowing (yaml)")
+    yaml_ok = check_import("yaml", expected_location_substr="site-packages" if args.expect_site_packages else None)
+    if args.expect_site_packages and not yaml_ok:
+        print("  [!] CRITICAL: Local 'yaml/' or 'yaml_legacy/' directory may be shadowing PyYAML.")
+        print("      Remediation: Ensure 'yaml/' renamed to 'yaml_legacy/' or removed.")
+        if not args.allow_shadow:
+            failures += 1
+
     # 1. Check Hydra Shadowing (Critical)
-    print(">>> Case 1: Library Shadowing (hydra)")
+    print("\n>>> Case 1: Library Shadowing (hydra)")
     hydra_ok = check_import("hydra", expected_location_substr="site-packages" if args.expect_site_packages else None)
     if args.expect_site_packages and not hydra_ok:
         print("  [!] CRITICAL: Local 'hydra/' directory is shadowing the installed library.")
