@@ -149,7 +149,7 @@ class ModelServer:
 
         embeddings = []
         for text in texts:
-            seed = abs(hash(text)) % _MAX_SEED_VALUE
+            seed = abs(hash(text)) % _EMBEDDING_SEED_MODULO
             rng = np.random.default_rng(seed)
             vec = rng.random(self._embedding_dim, dtype=np.float32)
             norm = np.linalg.norm(vec)
