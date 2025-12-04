@@ -8,7 +8,7 @@ This guide describes the lightweight, offline tooling that captures the local ex
 
 - Python version and executable path
 - Host platform metadata (system, release, machine)
-- Full environment variables (sorted for determinism)
+- Selected environment variables (safe prefixes only; sensitive keys redacted)
 - Installed distributions via `importlib.metadata`
 
 Example usage:
