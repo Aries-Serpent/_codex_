@@ -1,5 +1,5 @@
 {
-  "generated": 1764885597.09508,
+  "generated": 1764889634.6443853,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -2118,6 +2118,7 @@
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Repro_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
@@ -2164,10 +2165,10 @@
       ],
       "docs_keywords": [],
       "meta": {
-        "markdown_count": 616,
+        "markdown_count": 617,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 618
+        "total_docs": 619
       }
     },
     {
@@ -2665,6 +2666,7 @@
         "PROMPTS/CHATGPT_SEARCH_RECIPES.md",
         "PR_2207_AUDIT_REPORT.md",
         "PR_2264_READY.md",
+        "PR_2389_CHECKLIST_VALIDATION.md",
         "PR_FINAL_SUMMARY.md",
         "PR_SUMMARY_FINAL.md",
         "PR_TEMPLATE_COMPREHENSIVE.md",
@@ -2674,6 +2676,7 @@
         "REVIEW_SUMMARY.md",
         "SECURITY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "SESSION_SUMMARY_2025-12-04.md",
         "SPACE_TRAVERSAL_COMPLETE.md",
         "STAGE1_EXECUTION_SUMMARY.md",
@@ -3739,6 +3742,7 @@
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Repro_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
@@ -6412,7 +6416,8 @@
         "validate-codex-index.yml.template",
         "validate_fences.py",
         "validation.md",
-        "yaml/__init__.py"
+        "yaml_legacy/__init__.py",
+        "yaml_legacy/__pycache__/__init__.cpython-312.pyc"
       ],
       "found_patterns": [],
       "required_patterns": [
@@ -8365,6 +8370,7 @@
         "docs/tracking_offline.md",
         "docs/tracking_offline_bootstrap.md",
         "docs/troubleshooting/error_log.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/zendesk_api_catalog_generated.md",
         "logs/error_captures.log",
         "patches/changelog.patch",
@@ -9816,10 +9822,12 @@
         "MERGE_READINESS_CONFIRMATION.md",
         "PHASE1_FINAL_PUSH_SUMMARY.md",
         "PR_2207_AUDIT_REPORT.md",
+        "PR_2389_CHECKLIST_VALIDATION.md",
         "PR_FINAL_SUMMARY.md",
         "PR_TEMPLATE_COMPREHENSIVE.md",
         "SECURITY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
         "WAVE2_IMPLEMENTATION.md",
@@ -9924,6 +9932,7 @@
         "docs/validation/Dependency_Segmentation_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Runner_Status_Validation.md",
         "docs/validation/SelfHostedRunner_Validation.md",
         "docs/validation/Usage_Guide.md",
@@ -11456,6 +11465,7 @@
           "NEWCOMER_GUIDE.md": 2,
           "NEXT_COPILOT_PROMPT.md": 1,
           "PROMOTION_READINESS_PR2205.yaml": 1,
+          "PR_2389_CHECKLIST_VALIDATION.md": 2,
           "PR_TEMPLATE_COMPREHENSIVE.md": 2,
           "README.md": 1,
           "REMAINING_WORK.md": 2,
@@ -12732,6 +12742,7 @@
         "PR_SUMMARY_FINAL.md",
         "REVIEW_SUMMARY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "SESSION_SUMMARY_2025-12-04.md",
         "STAGE1_EXECUTION_SUMMARY.md",
         "STATUS_SCHEMA_IMPLEMENTATION.md",

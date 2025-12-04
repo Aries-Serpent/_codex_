@@ -59,7 +59,7 @@ def detect(file_index: dict, evidence_limit: int = 10) -> dict:
             "risk_level": "high" if found_patterns else "low",
             "description": "Detects architectural split-brain and namespace shadowing.",
             "split_dirs": sorted(list(intersection)),
-            "shadow_dirs": [d for d in root_dirs if d.lower() in KNOWN_SHADOW_RISKS],
+            "shadow_dirs": sorted([d for d in root_dirs if d.lower() in KNOWN_SHADOW_RISKS]),
             "evidence_limit": evidence_limit
         }
     }

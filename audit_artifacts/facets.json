@@ -1,5 +1,5 @@
 {
-  "generated": 1764885596.1497784,
+  "generated": 1764889633.8787827,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -941,6 +941,7 @@
       "docs/tracking_offline.md",
       "docs/tracking_offline_bootstrap.md",
       "docs/troubleshooting/error_log.md",
+      "docs/validation/Remediation_Execution_Log.md",
       "docs/zendesk_api_catalog_generated.md",
       "logs/error_captures.log",
       "patches/changelog.patch",

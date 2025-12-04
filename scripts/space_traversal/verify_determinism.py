@@ -14,12 +14,15 @@ ARTIFACTS = ["audit_artifacts/capabilities_scored.json", "audit_run_manifest.jso
 
 def normalized_json(path: Path) -> dict:
     data = json.loads(path.read_text(encoding="utf-8"))
-    # Remove volatile fields if present
-    if "generated" in data:
-        del data["generated"]
-    if "timestamp" in data:
-        del data["timestamp"]
-    return data
+    # Recursively remove volatile fields
+    def remove_volatile(obj):
+        if isinstance(obj, dict):
+            return {k: remove_volatile(v) for k, v in obj.items() 
+                    if k not in ['generated', 'timestamp', 'generated_at', 'sha', 'size']}
+        elif isinstance(obj, list):
+            return [remove_volatile(item) for item in obj]
+        return obj
+    return remove_volatile(data)
 
 def run_pipeline():
     result = subprocess.run(

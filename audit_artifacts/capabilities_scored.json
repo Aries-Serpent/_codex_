@@ -1,5 +1,5 @@
 {
-  "generated": 1764885598.442439,
+  "generated": 1764889635.904808,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -1573,12 +1573,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9336569579288025,
-        "tests": 0.0048543689320388345,
+        "consistency": 0.9337641357027464,
+        "tests": 0.004846526655896607,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.6754,
+      "score": 0.6755,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -2166,6 +2166,7 @@
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Repro_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
@@ -2205,14 +2206,14 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 616,
+        "markdown_count": 617,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 618
+        "total_docs": 619
       },
       "explain": {
         "id": "documentation-system",
-        "score": 0.6754,
+        "score": 0.6755,
         "partials": {}
       }
     },
@@ -2220,10 +2221,10 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7872641509433962,
-        "tests": 0.2832547169811321,
+        "consistency": 0.7874646559849199,
+        "tests": 0.28298774740810556,
         "safeguards": 1.0,
-        "documentation": 0.12965964343598055
+        "documentation": 0.12944983818770225
       },
       "score": 0.3977,
       "evidence_files": [
@@ -2719,6 +2720,7 @@
         "PROMPTS/CHATGPT_SEARCH_RECIPES.md",
         "PR_2207_AUDIT_REPORT.md",
         "PR_2264_READY.md",
+        "PR_2389_CHECKLIST_VALIDATION.md",
         "PR_FINAL_SUMMARY.md",
         "PR_SUMMARY_FINAL.md",
         "PR_TEMPLATE_COMPREHENSIVE.md",
@@ -2728,6 +2730,7 @@
         "REVIEW_SUMMARY.md",
         "SECURITY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "SESSION_SUMMARY_2025-12-04.md",
         "SPACE_TRAVERSAL_COMPLETE.md",
         "STAGE1_EXECUTION_SUMMARY.md",
@@ -3793,6 +3796,7 @@
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Repo_Variables_Management_Validation.md",
         "docs/validation/Repro_Validation.md",
         "docs/validation/Runner_Status_Validation.md",
@@ -6466,7 +6470,8 @@
         "validate-codex-index.yml.template",
         "validate_fences.py",
         "validation.md",
-        "yaml/__init__.py"
+        "yaml_legacy/__init__.py",
+        "yaml_legacy/__pycache__/__init__.cpython-312.pyc"
       ],
       "found_patterns": [],
       "meta": {},
@@ -8349,12 +8354,12 @@
       "id": "logging-tracking",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8338983050847457,
-        "tests": 0.3152542372881356,
+        "consistency": 0.8344594594594594,
+        "tests": 0.3141891891891892,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7956,
+      "score": 0.7954,
       "evidence_files": [
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
@@ -8455,6 +8460,7 @@
         "docs/tracking_offline.md",
         "docs/tracking_offline_bootstrap.md",
         "docs/troubleshooting/error_log.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/zendesk_api_catalog_generated.md",
         "logs/error_captures.log",
         "patches/changelog.patch",
@@ -8659,7 +8665,7 @@
       "meta": {},
       "explain": {
         "id": "logging-tracking",
-        "score": 0.7956,
+        "score": 0.7954,
         "partials": {}
       }
     },
@@ -8670,9 +8676,9 @@
         "consistency": 0.9583333333333334,
         "tests": 0.4583333333333333,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.8281,
+      "score": 0.8305,
       "evidence_files": [
         "agents/codex_client/codex_client/bridge.py",
         "scripts/deployment_orchestrator.py",
@@ -8714,7 +8720,7 @@
       },
       "explain": {
         "id": "mcp-authz-authn",
-        "score": 0.8281,
+        "score": 0.8305,
         "partials": {}
       }
     },
@@ -8725,9 +8731,9 @@
         "consistency": 0.7962962962962963,
         "tests": 0.4074074074074074,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.633,
+      "score": 0.6354,
       "evidence_files": [
         ".codex/codex.env.json",
         ".codex/copilot_bridge/.env.example",
@@ -8807,7 +8813,7 @@
       },
       "explain": {
         "id": "mcp-configuration",
-        "score": 0.633,
+        "score": 0.6354,
         "partials": {}
       }
     },
@@ -8818,9 +8824,9 @@
         "consistency": 0.9230769230769231,
         "tests": 0.5384615384615384,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.9661,
+      "score": 0.9685,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "services/ita/app/main.py",
@@ -8850,7 +8856,7 @@
       },
       "explain": {
         "id": "mcp-error-handling",
-        "score": 0.9661,
+        "score": 0.9685,
         "partials": {}
       }
     },
@@ -8861,9 +8867,9 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.2219,
+      "score": 0.2243,
       "evidence_files": [],
       "found_patterns": [],
       "meta": {
@@ -8879,7 +8885,7 @@
       },
       "explain": {
         "id": "mcp-lifecycle-management",
-        "score": 0.2219,
+        "score": 0.2243,
         "partials": {}
       }
     },
@@ -8890,9 +8896,9 @@
         "consistency": 1.0,
         "tests": 0.6,
         "safeguards": 0.16666666666666666,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6469,
+      "score": 0.6493,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
         "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
@@ -8912,7 +8918,7 @@
       },
       "explain": {
         "id": "mcp-multi-tenant",
-        "score": 0.6469,
+        "score": 0.6493,
         "partials": {}
       }
     },
@@ -8923,9 +8929,9 @@
         "consistency": 0.872093023255814,
         "tests": 0.29198966408268734,
         "safeguards": 1.0,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.9193,
+      "score": 0.9217,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -9718,7 +9724,7 @@
       },
       "explain": {
         "id": "mcp-observability",
-        "score": 0.9193,
+        "score": 0.9217,
         "partials": {}
       }
     },
@@ -9729,9 +9735,9 @@
         "consistency": 0.8666666666666667,
         "tests": 0.4,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6702,
+      "score": 0.6726,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
@@ -9763,7 +9769,7 @@
       },
       "explain": {
         "id": "mcp-protocol-surface",
-        "score": 0.6702,
+        "score": 0.6726,
         "partials": {}
       }
     },
@@ -9774,9 +9780,9 @@
         "consistency": 0.8333333333333334,
         "tests": 0.5,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.9385,
+      "score": 0.9409,
       "evidence_files": [
         "scripts/ops/codex_mint_tokens_per_run.py",
         "scripts/space_traversal/detectors/mcp_rate_limiting.py",
@@ -9822,7 +9828,7 @@
       },
       "explain": {
         "id": "mcp-rate-limiting",
-        "score": 0.9385,
+        "score": 0.9409,
         "partials": {}
       }
     },
@@ -9833,9 +9839,9 @@
         "consistency": 0.8620689655172413,
         "tests": 0.13793103448275862,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6038,
+      "score": 0.6062,
       "evidence_files": [
         "actions/openapi.yaml",
         "agents/codex_client/codex_client/models.py",
@@ -9910,7 +9916,7 @@
       },
       "explain": {
         "id": "mcp-schema-validation",
-        "score": 0.6038,
+        "score": 0.6062,
         "partials": {}
       }
     },
@@ -9918,12 +9924,12 @@
       "id": "mcp-security-safeguards",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9265175718849841,
-        "tests": 0.12460063897763578,
+        "consistency": 0.9272151898734178,
+        "tests": 0.12341772151898735,
         "safeguards": 1.0,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6383,
+      "score": 0.6406,
       "evidence_files": [
         ".codex/change_log-large.md",
         ".codex/change_log.md",
@@ -9985,10 +9991,12 @@
         "MERGE_READINESS_CONFIRMATION.md",
         "PHASE1_FINAL_PUSH_SUMMARY.md",
         "PR_2207_AUDIT_REPORT.md",
+        "PR_2389_CHECKLIST_VALIDATION.md",
         "PR_FINAL_SUMMARY.md",
         "PR_TEMPLATE_COMPREHENSIVE.md",
         "SECURITY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
         "WAVE2_IMPLEMENTATION.md",
@@ -10093,6 +10101,7 @@
         "docs/validation/Dependency_Segmentation_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
+        "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Runner_Status_Validation.md",
         "docs/validation/SelfHostedRunner_Validation.md",
         "docs/validation/Usage_Guide.md",
@@ -10254,7 +10263,7 @@
       },
       "explain": {
         "id": "mcp-security-safeguards",
-        "score": 0.6383,
+        "score": 0.6406,
         "partials": {}
       }
     },
@@ -10265,9 +10274,9 @@
         "consistency": 0.875,
         "tests": 0.5,
         "safeguards": 0.3333333333333333,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6219,
+      "score": 0.6243,
       "evidence_files": [
         "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
@@ -10291,7 +10300,7 @@
       },
       "explain": {
         "id": "mcp-tooling-registry",
-        "score": 0.6219,
+        "score": 0.6243,
         "partials": {}
       }
     },
@@ -10302,9 +10311,9 @@
         "consistency": 0.9440389294403893,
         "tests": 0.14841849148418493,
         "safeguards": 1.0,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.6478,
+      "score": 0.6502,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -10727,7 +10736,7 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.6478,
+        "score": 0.6502,
         "partials": {}
       }
     },
@@ -10738,9 +10747,9 @@
         "consistency": 1.0,
         "tests": 0.5714285714285714,
         "safeguards": 0.16666666666666666,
-        "documentation": 0.1458670988654781
+        "documentation": 0.16181229773462782
       },
-      "score": 0.8897,
+      "score": 0.8921,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "src/mcp/server/__init__.py",
@@ -10763,7 +10772,7 @@
       },
       "explain": {
         "id": "mcp-versioning-compat",
-        "score": 0.8897,
+        "score": 0.8921,
         "partials": {}
       }
     },
@@ -10918,7 +10927,7 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.06482982171799027
+        "documentation": 0.06472491909385113
       },
       "score": 0.4597,
       "evidence_files": [],
@@ -11548,7 +11557,7 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.01620745542949757
+        "documentation": 0.016181229773462782
       },
       "score": 0.4524,
       "evidence_files": [],
@@ -11665,6 +11674,7 @@
           "NEWCOMER_GUIDE.md": 2,
           "NEXT_COPILOT_PROMPT.md": 1,
           "PROMOTION_READINESS_PR2205.yaml": 1,
+          "PR_2389_CHECKLIST_VALIDATION.md": 2,
           "PR_TEMPLATE_COMPREHENSIVE.md": 2,
           "README.md": 1,
           "REMAINING_WORK.md": 2,
@@ -12817,8 +12827,8 @@
       "id": "status-reporting",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9020408163265307,
-        "tests": 0.11428571428571428,
+        "consistency": 0.9022403258655805,
+        "tests": 0.11405295315682282,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -12960,6 +12970,7 @@
         "PR_SUMMARY_FINAL.md",
         "REVIEW_SUMMARY.md",
         "SELECTION_REPORT.md",
+        "SELF_VALIDATION_REPORT.md",
         "SESSION_SUMMARY_2025-12-04.md",
         "STAGE1_EXECUTION_SUMMARY.md",
         "STATUS_SCHEMA_IMPLEMENTATION.md",
@@ -13343,9 +13354,9 @@
         "consistency": 0.9,
         "tests": 0.0,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.2593192868719611
+        "documentation": 0.2750809061488673
       },
-      "score": 0.5689,
+      "score": 0.5713,
       "evidence_files": [
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
@@ -13382,7 +13393,7 @@
       },
       "explain": {
         "id": "structural-integrity",
-        "score": 0.5689,
+        "score": 0.5713,
         "partials": {}
       }
     },
@@ -15065,7 +15076,7 @@
         "consistency": 1.0,
         "tests": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.2755267423014587
+        "documentation": 0.2750809061488673
       },
       "score": 0.4913,
       "evidence_files": [
