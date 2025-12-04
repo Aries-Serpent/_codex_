@@ -11,22 +11,27 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import sys
+from importlib import metadata
 from pathlib import Path
 from typing import Any, Dict, List
 
 
 def _installed_packages() -> List[Dict[str, str]]:
-    try:
-        import pkg_resources  # type: ignore
-    except Exception:
-        return []
-    pkgs = []
-    for dist in pkg_resources.working_set:  # pragma: no cover (ordering)
-        pkgs.append({"name": dist.project_name, "version": dist.version})
-    pkgs.sort(key=lambda d: d["name"].lower())
-    return pkgs
+    packages: List[Dict[str, str]] = []
+    for dist in metadata.distributions():  # pragma: no cover (ordering)
+        packages.append({"name": dist.metadata["Name"], "version": dist.version})
+    packages.sort(key=lambda d: d["name"].lower())
+    return packages
+
+
+def _environment_variables() -> Dict[str, str]:
+    captured: Dict[str, str] = {}
+    for key, value in sorted(os.environ.items()):
+        captured[key] = value
+    return captured
 
 
 def build_snapshot() -> Dict[str, Any]:
@@ -40,6 +45,7 @@ def build_snapshot() -> Dict[str, Any]:
             "release": platform.release(),
             "machine": platform.machine(),
         },
+        "environment": _environment_variables(),
         "installed_packages": _installed_packages(),
     }
 
