@@ -18,6 +18,7 @@ any available metadata (change log, hardship, capability map).
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -50,7 +51,7 @@ def _slugify(text: str) -> str:
     text = text.strip().lower()
     text = re.sub(r"[^a-z0-9]+", "-", text)
     text = re.sub(r"-+", "-", text).strip("-")
-    return text or f"gap-{hash(original_text)}"
+    return text or f"gap-{hashlib.md5(original_text.encode()).hexdigest()[:8]}"
 
 
 def _infer_capability_from_text(text: str) -> str:
