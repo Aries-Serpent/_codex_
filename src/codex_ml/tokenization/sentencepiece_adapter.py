@@ -77,6 +77,12 @@ def _get_sentencepiece():
 
             # Compatibility shims
             def __getattr__(self, name: str):  # pragma: no cover - compatibility
+                """
+                Provide compatibility shims for certain attribute names.
+
+                Returns the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
+                to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
+                """
                 if name in {"GetPieceSize", "piece_size", "vocab_size"}:
                     return self.get_piece_size
                 raise AttributeError(name)
