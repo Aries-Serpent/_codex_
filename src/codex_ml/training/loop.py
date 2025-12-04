@@ -40,10 +40,28 @@ def train_epoch(
 
 
 def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -> Dict[str, float]:
-    """Very small training routine used by the minimal CLI.
+    """
+    Very small training routine used by the minimal CLI.
 
     The function decays a scalar loss and logs it to metrics.ndjson for
     downstream indexing. It intentionally avoids heavyweight dependencies.
+
+    Parameters
+    ----------
+    config : Dict[str, Any]
+        Configuration dictionary. Expected keys:
+        - 'training.base_loss' (float, optional): Initial loss value (default: 10.0)
+        - 'training.decay' (float, optional): Loss decay factor per step (default: 0.9)
+    max_steps : int
+        Number of training steps to run (minimum 1).
+    run_dir : str
+        Directory path where metrics.ndjson will be written.
+
+    Returns
+    -------
+    Dict[str, float]
+        Dictionary containing:
+        - 'loss_final': The final loss value after training.
     """
 
     run_path = Path(run_dir)
