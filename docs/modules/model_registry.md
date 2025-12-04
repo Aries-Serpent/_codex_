@@ -63,6 +63,14 @@ When LoRA is active the HF training engine emits a warning and forces
 `gradient_accumulation_steps` to `1` to ensure adapter parameters receive full
 updates.
 
+### Validation
+
+The registry validates LoRA payloads before applying adapters:
+
+- `dtype` must be a supported torch dtype string (e.g., `float16`, `bfloat16`, `float32`).
+- `device` must be `cpu` or `cuda`.
+- Invalid fields raise `ValueError` in strict mode or emit warnings in non-strict mode so runs stay offline-friendly.
+
 ## Adding new models
 
 Use `codex_ml.registry.register_model` to attach new constructors or ship an

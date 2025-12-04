@@ -51,7 +51,7 @@ def update_mkdocs() -> None:
                         rewrite_nav(value)
 
     rewrite_nav(nav)
-    cfg.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+    cfg.write_text(yaml.safe_dump(data), encoding="utf-8")
 
 
 def main() -> None:

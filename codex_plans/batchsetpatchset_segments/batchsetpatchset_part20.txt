@@ -1,0 +1,211 @@
+code is responsible for converting tensors or other types.
+
+Example:
+
+```python
+from codex_ml.metrics.core import compute_metrics
+
+y_true = [0, 1, 1, 0]
+y_pred = [0, 1, 0, 0]
+metrics = compute_metrics(y_true, y_pred, ["accuracy", "mse"])
+print(metrics)
+````
+
+## 2. Metrics Evaluation Tool
+
+Tool:
+
+* `tools/codex_metrics_eval.py`
+
+Purpose:
+
+* Read prediction logs from NDJSON/JSONL/CSV files.
+* Extract `prediction` and `target` fields (configurable).
+* Compute one or more metrics (configurable).
+* Emit a JSON summary (and optional CSV).
+
+Supported formats:
+
+* NDJSON / JSONL / JSON Lines:
+
+  * One JSON object per line, each containing the prediction and target
+    fields.
+* CSV:
+
+  * A header row with `prediction` / `target` (or customized names).
+
+Usage example:
+
+```bash
+python tools/codex_metrics_eval.py \
+  preds.ndjson \
+  --prediction-field prediction \
+  --target-field target \
+  --metrics accuracy,mse \
+  --json-out codex_metrics_summary.json \
+  --csv-out codex_metrics_summary.csv
+```
+
+Output JSON structure (simplified):
+
+```json
+{
+  "metrics": {
+    "accuracy": 0.75,
+    "mse": 0.25
+  },
+  "metrics_requested": ["accuracy", "mse"],
+  "available_metrics": ["accuracy", "mse"],
+  "stats": {
+    "total_records": 100,
+    "parsed_records": 98,
+    "missing_field_records": 1,
+    "parse_errors": 1
+  },
+  "num_inputs": 1,
+  "inputs": ["preds.ndjson"],
+  "fields": {
+    "prediction": "prediction",
+    "target": "target"
+  }
+}
+```
+
+The tool is **best-effort**:
+
+* Lines that fail JSON/CSV parsing are counted as `parse_errors`.
+* Lines missing required fields are counted as `missing_field_records`.
+* Only successfully parsed records with both fields contribute to
+  metrics.
+
+## 3. Relationship to NDJSON / JSONL Logging
+
+For model evaluation, NDJSON/JSONL is a natural choice:
+
+* Each prediction/target pair is one JSON object per line.
+* Easy to stream and post-process with CLI tools.
+* Integrates well with MLOps pipelines that rely on line-oriented logs.
+
+The metrics tool assumes each record has:
+
+* A field for the model's output (e.g. `"prediction"`).
+* A field for the ground-truth label (e.g. `"target"`).
+
+Other fields (timestamps, IDs, etc.) are ignored by this tool but can
+be used by upstream logging and downstream analysis.
+
+## 4. Integration with Task Sequences & Reproducibility
+
+The metrics tool is intended to be wired into:
+
+* `codex_task_sequence.yaml` – as a step that runs after evaluation or
+  prediction logging.
+* Reproducibility tooling:
+
+  * The resulting `codex_metrics_summary.json` can be referenced from
+    the reproducibility manifest and/or gap registry.
+
+Future extensions can add:
+
+* Additional metrics (F1, precision/recall, calibration).
+* Per-class metrics and confusion matrices.
+* Richer metadata about evaluation datasets and conditions.
+
+````
+
+===============================================================================
+5) Wire metrics eval into codex_task_sequence.yaml
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply a
+minimal extension as follows:
+
+1. Identify the phase that corresponds to **Evaluation & Metrics** or,
+   if it does not exist yet, the phase that runs validation / test
+   loops or produces prediction logs.
+
+2. Under that phase’s `steps` list, append a new step that runs the
+   metrics evaluation tool against one or more prediction logs. Use a
+   generic pattern and comment so the operator can adjust file names.
+
+For example (adjust `<PHASE_ID>` to match the numeric id of that
+phase, and tweak the log file paths as appropriate):
+
+```yaml
+       - id: "<PHASE_ID>.METRICS"
+         description: >
+           Compute basic evaluation metrics (accuracy, MSE) from the
+           most recent prediction or evaluation logs written in
+           NDJSON/JSONL/CSV format. This step emits a summary JSON
+           at codex_metrics_summary.json for reproducibility and
+           downstream reporting.
+         actions:
+           - >
+             python tools/codex_metrics_eval.py
+             outputs/predictions.ndjson
+             --prediction-field prediction
+             --target-field target
+             --metrics accuracy,mse
+             --json-out codex_metrics_summary.json
+             --csv-out codex_metrics_summary.csv
+         on_error:
+           strategy: record_and_continue
+````
+
+Notes:
+
+* Replace `outputs/predictions.ndjson` with the actual path(s) your
+  pipelines generate. Multiple files can be passed as additional
+  positional arguments.
+* Keep indentation consistent with neighboring YAML entries.
+* The `record_and_continue` strategy ensures this step does not break
+  the entire sequence if logs are missing or malformed.
+
+===============================================================================
+6) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/codex_ml/test_metrics_core_and_eval_tool.py -q`
+* `pytest tests/codex_ml -q`  (to ensure no cross-module breakage)
+* Example manual runs:
+
+  * `python tools/codex_metrics_eval.py some_preds.ndjson --json-out codex_metrics_summary.json`
+  * `python tools/codex_metrics_eval.py some_preds.csv --json-out codex_metrics_summary.json --csv-out codex_metrics_summary.csv`
+* Run the task sequence to ensure the new step is wired correctly:
+
+  * `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* `src/codex_ml/metrics/core.py` exposes `accuracy` and `mse` by default.
+* `tools/codex_metrics_eval.py` successfully parses both NDJSON/JSONL and CSV logs.
+* `codex_metrics_summary.json` (and optional CSV) are generated and contain sensible values.
+* The new YAML step runs with `record_and_continue` semantics and does not introduce any external CI or network dependencies.
+
+This batch advances the Evaluation & Metrics capability and hooks it into the existing reproducibility + task sequence spine in a way that Codex can build on directly.
+
+------
+
+Here’s how I’ll structure this for you:
+
+1. Updated **entropy table** (what’s still “open” after assuming Batches 1–27 are applied).
+2. A **single, tailored Codex prompt** that tells ChatGPT @codex to close those entropies end-to-end.
+
+---
+
+## 1. Updated Open Entropies Table (Post-Patchsets)
+
+Assumption: all previously generated patchsets/batches (including 24–27: data handling, local gates, experiment index, unified CLI, metrics eval, etc.) have been implemented cleanly and tests added there are passing.
+
+**Table: Open Entropies / Residual Gaps**
+
+| Entropy ID | Area / Capability                               | Status After Patchsets                              | Residual Gap / Risk                                                                                                                                  | Next Work Unit (high-level)                                                                               |
+| ---------: | ----------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+|         E1 | Tokenization & Model Wiring                     | Core tokenization + training loop exist but limited | Verify/extend fast tokenizer coverage, vocab configs, padding/truncation policies, and actual model wiring (LoRA/PEFT hooks) for real training runs. | Audit `codex_ml.tokenization`, model init paths, and training loop; add missing adapters, configs, tests. |
+|         E2 | Training Engine & CLI                           | Minimal training loop + some tests                  | No fully config-driven training CLI (e.g. `codex_train.py`) with Hydra-like configs and clean resume/restart semantics.                              | Implement a proper training CLI, wire to config tree, verify resume + gradient accumulation behavior.     |
+|         E3 | Config / Hydra Tree & Sweeps                    | Partial configs + references in audit               | No guaranteed, coherent Hydra (or equivalent) config tree covering model, data, training, eval, logging, seeds, etc.                                 | Build/normalize config hierarchy; ensure safe defaults; add a small “sweep” pattern (non-Action).         |
+|         E4 | Logging & Monitoring (beyond snapshots)         | Env snapshot, dataset/experiment indices exist      | Missing integrated runtime logging for system metrics (CPU/GPU/RAM) and training metrics (loss, LR) – even if only local/JSON/NDJSON.                | Introduce a small logging utility (e.g. `codex_ml.logging.runtime`) and thread into training loop.        |
+|         E5 | Checkpointing & Resume                          | Minimal checkpoint core tests exist                 | Need verification of: optimizer/scheduler/RNG state snapshots, best-k retention, and alignment of file naming with docs.                             | Inspect checkpoint module; add missing fields + tests that do round-trip w/ seeds & “best-k” semantics.   |
+|         E6 | Security & Dependency Locking                   | Env/dep reports exist                               | No explicit dependency lockfiles wiring (e.g. `requirements*.txt` + docs) and no stub secrets scanner / guardrails.                                  | Add dependency locking conventions + a tiny secrets-scan helper (offline regex-based), document usage.    |

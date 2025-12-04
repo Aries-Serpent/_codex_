@@ -1,0 +1,336 @@
+codex_task_sequence:
+  metadata:
+    name: "_codex_ gap-resolution sequence"
+    version: "0.8.0"
+    description: >
+      Declarative sequence for finding, tracking, and resolving implementation
+      gaps across the _codex_ project. Phases are meant to be executed on a
+      local, offline environment with no cost-incurring CI or Actions.
+
+  phases:
+    - id: 1
+      name: Preparation
+      steps:
+        - id: "1.1"
+          description: >
+            Verify that the repository root is initialized and required Python
+            dependencies (at minimum: pyyaml, pytest) are available.
+          actions:
+            - "python -c \"import yaml\""
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.2"
+          description: >
+            Validate presence of the latest audit file and create placeholders
+            for change and error logs if they do not exist.
+          actions:
+            - "python -c \"import pathlib as p; (p.Path('codex_change_log.md')).touch(); (p.Path('codex_error_questions.md')).touch(); print('prepared logs')\""
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.3"
+          description: >
+            Run a lightweight environment and security health check, which
+            triggers environment snapshot, dependency audit, and secret scan
+            stub. This step is best-effort and should not block further
+            phases, but results may inform manual review.
+          actions:
+            - "python -m codex_ml.cli.env_check || python -m codex_ml.cli.env_check"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.4"
+          description: >
+            Perform an initial validation pass over YAML configs under `conf/`
+            using codex_config_validate.py. Failures are recorded but do not
+            stop the sequence; they should be reviewed and addressed.
+          actions:
+            - "python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md || python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.5"
+          description: >
+            Capture a local environment snapshot and dependency inventory for
+            downstream reproducibility tooling. Both commands are best-effort
+            and safe to rerun.
+          actions:
+            - "python tools/codex_env_snapshot.py --out codex_env_snapshot.json"
+            - "python tools/codex_dependency_report.py --out codex_dependency_report.json"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.6"
+          description: >
+            Perform a local secret scan to surface obvious credential patterns
+            before proceeding. This is offline-only and safe to rerun.
+          actions:
+            - "python tools/codex_secret_scan.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md || python tools/codex_secret_scan.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "1.7"
+          description: >
+            Check dependency manifests for unpinned requirements to improve
+            repeatability. Results are advisory and do not block the sequence.
+          actions:
+            - "python tools/codex_dep_pin_check.py --repo-root . --json-out codex_dep_pin_report.json --md-out codex_dep_pin_report.md || python tools/codex_dep_pin_check.py --repo-root . --json-out codex_dep_pin_report.json --md-out codex_dep_pin_report.md"
+          on_error:
+            strategy: record_and_continue
+
+    - id: 2
+      name: Search & Mapping
+      steps:
+        - id: "2.1"
+          description: >
+            Sanity-check that codex_task_sequence.yaml is valid and contains
+            the expected top-level structure.
+          actions:
+            - "python -c \"import yaml, pathlib as p; data=yaml.safe_load(p.Path('codex_task_sequence.yaml').read_text()); assert 'codex_task_sequence' in data\""
+          on_error:
+            strategy: record_and_stop
+
+        - id: "2.2"
+          description: >
+            Ensure codex_gap_registry.yaml exists; if missing, generate it
+            using the latest audit file.
+          actions:
+            - "python tools/codex_gap_registry.py --audit _codex_status_update-2025-11-27.md --change-log codex_change_log.md --errors codex_error_questions.md --out codex_gap_registry.yaml"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "2.3"
+          description: >
+            Ensure codex_gap_trends.md exists and is up to date with the
+            current codex_gap_registry.yaml.
+          actions:
+            - "python tools/codex_gap_trends.py --registry codex_gap_registry.yaml --out codex_gap_trends.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "2.4"
+          description: >
+            Regenerate codex_gap_registry.yaml from the latest audit and change
+            log (explicit regeneration step).
+          actions:
+            - "python tools/codex_gap_registry.py --audit _codex_status_update-2025-11-27.md --change-log codex_change_log.md --errors codex_error_questions.md --out codex_gap_registry.yaml"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "2.5"
+          description: >
+            Validate coverage between codex_gap_registry.yaml and
+            codex_task_sequence.yaml and emit codex_yaml_gap_report.md.
+          actions:
+            - "python tools/codex_yaml_gap_check.py --gaps codex_gap_registry.yaml --yaml codex_task_sequence.yaml --out codex_yaml_gap_report.md"
+          on_error:
+            strategy: record_and_continue
+
+    - id: 3
+      name: Best-Effort Construction
+      steps:
+        - id: "3.1"
+          description: >
+            For a selected subset of gaps (e.g. tokenization, training),
+            generate per-gap docs stubs using codex_gap_bootstrap.py.
+          actions:
+            - "python tools/codex_gap_bootstrap.py tokenization.fast_backend || true"
+            - "python tools/codex_gap_bootstrap.py training.grad_accumulation || true"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.2"
+          description: >
+            Run the test suite focused on tools and core scaffolding to ensure
+            that basic building blocks are functioning.
+          actions:
+            - "pytest tests/tools -q || pytest tests/tools -q --maxfail=1"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.3"
+          description: >
+            Run the test suite for codex_ml scaffolding (including minimal
+            training loop and config integration).
+          actions:
+            - "pytest tests/codex_ml -q || pytest tests/codex_ml -q --maxfail=1"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.4"
+          description: >
+            Run ML Test Score–driven tests for the 'infrastructure' category
+            using codex_ml_test_map.yaml and codex_mltest_runner.py. This
+            provides a focused quality signal for orchestration and tooling.
+          actions:
+            - "python tools/codex_mltest_runner.py --category infrastructure --json-summary codex_mltest_infra_summary.json || python tools/codex_mltest_runner.py --category infrastructure --json-summary codex_mltest_infra_summary.json"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.5"
+          description: >
+            Execute a minimal training CLI run using conf/minimal_train.yaml
+            and a very small number of steps to validate the end-to-end
+            train pipeline wiring.
+          actions:
+            - "python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --seed 123 --runs-dir runs --max-steps 5 || python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --seed 123 --runs-dir runs --max-steps 5"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.6"
+          description: >
+            Execute a minimal evaluation CLI run using conf/minimal_eval.yaml
+            with a dummy checkpoint path to validate the eval pipeline wiring.
+          actions:
+            - "python -m codex_ml.cli.eval_minimal --config conf/minimal_eval.yaml --seed 123 --runs-dir runs --checkpoint runs/train || python -m codex_ml.cli.eval_minimal --config conf/minimal_eval.yaml --seed 123 --runs-dir runs --checkpoint runs/train"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.E1"
+          description: >
+            Run a minimal tracked training run using train_minimal with an
+            explicit experiment name. This ensures that experiment_meta.json is
+            written and that the experiment summary tooling has at least one
+            labeled run to operate on.
+          actions:
+            - >
+              python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --runs-dir runs --seed 123 --max-steps 2 --experiment-name codex-sequence-smoke || python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --runs-dir runs --seed 123 --max-steps 2 --experiment-name codex-sequence-smoke
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.7"
+          description: >
+            Re-run config validation after any changes introduced by this
+            sequence, capturing an updated report. This provides a stronger
+            signal about configuration health in the context of new code.
+          actions:
+            - "python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md || python tools/codex_config_validate.py --conf-dir conf --json-out codex_config_validation_report.json --md-out codex_config_validation_report.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.8"
+          description: >
+            Generate a lightweight dataset index over the data directory to
+            support later reproducibility and manifest tooling.
+          actions:
+            - "python tools/codex_dataset_index.py --data-root data --json-out codex_dataset_index.json --md-out codex_dataset_index.md || python tools/codex_dataset_index.py --data-root data --json-out codex_dataset_index.json --md-out codex_dataset_index.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "3.9"
+          description: >
+            Run local gates (simple smoke commands defined in codex_local_gate.yaml)
+            and capture the summary artifacts for downstream manifest steps.
+          actions:
+            - "python tools/codex_local_gate_runner.py --repo-root . --config codex_local_gate.yaml --json-out codex_local_gate_report.json --md-out codex_local_gate_report.md || python tools/codex_local_gate_runner.py --repo-root . --config codex_local_gate.yaml --json-out codex_local_gate_report.json --md-out codex_local_gate_report.md"
+          on_error:
+            strategy: record_and_continue
+
+    - id: 4
+      name: Controlled Pruning
+      steps:
+        - id: "4.1"
+          description: >
+            Detect any gaps that have not yet been mapped to a yaml_phase_step
+            and mark them explicitly as deferred in codex_gap_registry.yaml
+            (this is a manual, policy-driven process; this step only records
+            that the task was run).
+          actions:
+            - "python -c \"print('Review codex_yaml_gap_report.md and adjust yaml_phase_step / status fields as per policy.')\""
+          on_error:
+            strategy: record_and_continue
+
+    - id: 5
+      name: Error Capture & Question Generation
+      steps:
+        - id: "5.1"
+          description: >
+            Consolidate any errors captured in codex_error_questions.md during
+            this run for further ChatGPT @codex investigation.
+          actions:
+            - "python -c \"import pathlib as p; f=p.Path('codex_error_questions.md'); print('error_file_exists=', f.exists())\""
+          on_error:
+            strategy: record_and_continue
+
+    - id: 6
+      name: Finalization
+      steps:
+        - id: "6.1"
+          description: >
+            Verify that the key outputs of this sequence exist and are
+            non-empty where applicable: codex_gap_registry.yaml,
+            codex_yaml_gap_report.md, codex_gap_trends.md.
+          actions:
+            - "python -c \"import pathlib as p; assert p.Path('codex_gap_registry.yaml').exists()\""
+            - "python -c \"import pathlib as p; assert p.Path('codex_yaml_gap_report.md').exists()\""
+            - "python -c \"import pathlib as p; assert p.Path('codex_gap_trends.md').exists()\""
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.2"
+          description: >
+            Verify that the dependency audit and secret scan reports exist
+            after the env & security health check.
+          actions:
+            - "python -c \"import pathlib as p; assert p.Path('codex_dependency_report.json').exists()\""
+            - "python -c \"import pathlib as p; assert p.Path('codex_secret_scan_report.json').exists()\""
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.3"
+          description: >
+            Generate a reproducibility bundle manifest that references the
+            audit, gap artifacts, ML test summaries, dependency reports,
+            secret scan results, environment snapshot, minimal run
+            directories, and config validation report.
+          actions:
+            - "python tools/codex_reproducibility_bundle.py --audit _codex_status_update-2025-11-27.md --manifest-out codex_reproducibility_manifest.json"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.4"
+          description: >
+            Regenerate the experiment index from runs/train and runs/eval,
+            producing codex_experiment_index.json and codex_experiment_index.md
+            for quick inspection of recent runs.
+          actions:
+            - "python tools/codex_experiment_index.py --runs-dir runs --json-out codex_experiment_index.json --md-out codex_experiment_index.md"
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.5"
+          description: >
+            Generate a reproducibility manifest and status digest by
+            aggregating environment snapshot, dependency report, gap registry,
+            experiment index, and local gate report. This step is offline-only
+            and produces both JSON and Markdown artifacts.
+          actions:
+            - >
+              python tools/codex_repro_manifest.py
+              --repo-root .
+              --env-snapshot codex_env_snapshot.json
+              --dep-report codex_dependency_report.json
+              --gap-registry codex_gap_registry.yaml
+              --experiment-index codex_experiment_index.json
+              --local-gate codex_local_gate_report.json
+              --json-out codex_reproducibility_manifest.json
+              --md-out codex_reproducibility_manifest.md
+          on_error:
+            strategy: record_and_continue
+
+        - id: "6.6"
+          description: >
+            Build a metrics summary from a small sample prediction log to
+            validate the metrics evaluation tooling and generate example
+            artifacts.
+          actions:
+            - >
+              python - <<'PYCODE'
+              import pathlib
+              path = pathlib.Path("metrics_sample.ndjson")
+              path.write_text('{"label":1,"prediction":1}\n{"label":0,"prediction":1}\n', encoding="utf-8")
+              PYCODE
+            - "python tools/codex_metrics_eval.py metrics_sample.ndjson --metrics accuracy,mse --json-out codex_metrics_summary.json --csv-out codex_metrics_summary.csv || python tools/codex_metrics_eval.py metrics_sample.ndjson --metrics accuracy,mse --json-out codex_metrics_summary.json --csv-out codex_metrics_summary.csv"
+          on_error:
+            strategy: record_and_continue
