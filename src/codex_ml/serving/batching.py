@@ -98,6 +98,7 @@ class BatchingMiddleware:
             if inspect.isawaitable(outputs):
                 outputs = await outputs
         except Exception as exc:  # pragma: no cover - surfaced in tests
+            logger.exception("Exception occurred during batch processing")
             for req in batch:
                 if not req.future.done():
                     req.future.set_exception(exc)
