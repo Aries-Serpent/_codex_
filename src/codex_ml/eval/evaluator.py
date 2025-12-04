@@ -183,9 +183,8 @@ def evaluate_dataloader(
                 except TypeError:
                     output_mapping = {
                         name: value
-                        for name in dir(outputs)
-                        if not name.startswith("_")
-                        and not callable((value := getattr(outputs, name)))
+                        for name in (n for n in dir(outputs) if not n.startswith("_"))
+                        if not callable((value := getattr(outputs, name)))
                     }
 
             loss_val = output_mapping.get("loss")
