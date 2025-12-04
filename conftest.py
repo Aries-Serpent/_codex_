@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import importlib.util
 import os as _os
 import pathlib
@@ -217,6 +218,32 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         for it in items:
             if _needs_pydantic(it):
                 it.add_marker(skip_pydantic)
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    config.addinivalue_line("markers", "asyncio: mark a test as asyncio-based")
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_pyfunc_call(pyfuncitem: pytest.Function) -> bool | None:
+    """Lightweight asyncio runner to support pytest.mark.asyncio without plugins."""
+
+    obj = pyfuncitem.obj
+    if not asyncio.iscoroutinefunction(obj):
+        return None
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        # Only pass fixtures that the function explicitly declares.
+        argnames = getattr(pyfuncitem._fixtureinfo, "argnames", ())  # type: ignore[attr-defined]
+        call_args = {name: pyfuncitem.funcargs[name] for name in argnames}
+        loop.run_until_complete(obj(**call_args))
+        loop.run_until_complete(loop.shutdown_asyncgens())
+    finally:
+        loop.close()
+        asyncio.set_event_loop(None)
+    return True
 
 
 def _gpu_available() -> bool:

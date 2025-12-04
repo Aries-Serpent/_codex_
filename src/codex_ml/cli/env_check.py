@@ -1,26 +1,20 @@
-"""Environment + security health-check CLI for _codex_.
+"""Env & security health check CLI for `_codex_`.
 
-This CLI is a small wrapper that orchestrates:
+Thin wrapper that calls:
+- tools/codex_env_snapshot.py
+- tools/codex_dependency_audit.py
+- tools/codex_secret_scan_stub.py
 
-- Environment snapshot
-- Dependency audit
-- Secret scan stub
-
-and prints a concise, human-readable summary. It is intended for local
-pre-flight checks before running more complex sequences or sharing
-artifacts with others.
-
-Exit code:
-- 0: Everything ran, no secret findings.
-- 1: Tools succeeded but the secret scan reported one or more findings.
-- >1: A sub-tool failed to run.
+It is intentionally best-effort; failures are printed but not raised.
 """
+
 from __future__ import annotations
 
+import argparse
 import shlex
 import subprocess
 from pathlib import Path
-from typing import Any, Dict
+from typing import List, Dict
 
 
 def _run(cmd: str, cwd: Path) -> int:
@@ -28,41 +22,34 @@ def _run(cmd: str, cwd: Path) -> int:
     return proc.returncode
 
 
-def run_health_check(repo_root: Path) -> Dict[str, Any]:
-    root = repo_root
-
-    results: Dict[str, Any] = {
-        "env_snapshot_rc": None,
-        "dependency_audit_rc": None,
-        "secret_scan_rc": None,
+def run_health_check(repo_root: Path) -> Dict[str, int]:
+    cmds = {
+        "env_snapshot_rc": "python tools/codex_env_snapshot.py --out codex_env_snapshot.json",
+        "dependency_audit_rc": "python tools/codex_dependency_audit.py --repo-root . --json-out codex_dependency_report.json --md-out codex_dependency_report.md",
+        "secret_scan_rc": "python tools/codex_secret_scan_stub.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md",
     }
-
-    results["env_snapshot_rc"] = _run(
-        "python tools/codex_env_snapshot.py", root
-    )
-    results["dependency_audit_rc"] = _run(
-        "python tools/codex_dependency_audit.py", root
-    )
-    results["secret_scan_rc"] = _run(
-        "python tools/codex_secret_scan_stub.py", root
-    )
-
+    results: Dict[str, int] = {}
+    for key, cmd in cmds.items():
+        results[key] = _run(cmd, repo_root)
     return results
 
 
-def main() -> int:
-    root = Path(".").resolve()
+def main(argv: List[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run env & security health checks for _codex_."
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Repository root (default: current directory).",
+    )
+    args = parser.parse_args(argv)
+
+    root = Path(args.repo_root).resolve()
     results = run_health_check(root)
-
-    print("=== _codex_ Environment & Security Health Check ===")
-    print(f"- env snapshot rc      : {results['env_snapshot_rc']}")
-    print(f"- dependency audit rc  : {results['dependency_audit_rc']}")
-    print(f"- secret scan rc       : {results['secret_scan_rc']}")
-
-    if any(v not in (0, None) for v in results.values()):
-        return 2
-
-    return 0
+    overall = 0 if all(rc == 0 for rc in results.values()) else 1
+    return overall
 
 
 if __name__ == "__main__":  # pragma: no cover

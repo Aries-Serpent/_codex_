@@ -1,0 +1,369 @@
+splits to construct dataloaders however they like.
+
+Typical usage::
+
+    from codex_ml.data.splits import assign_splits
+
+    ids = ["sample-1", "sample-2", "sample-3"]
+    assignments = assign_splits(
+        ids,
+        seed=123,
+        train_fraction=0.8,
+        val_fraction=0.1,
+        test_fraction=0.1,
+    )
+
+    # assignments is a dict: id -> "train" | "val" | "test"
+
+"""
+
+from __future__ import annotations
+
+import hashlib
+from dataclasses import dataclass
+from typing import Dict, Iterable, List, Mapping
+
+
+@dataclass(frozen=True)
+class SplitFractions:
+    train: float
+    val: float
+    test: float
+
+    def normalized(self) -> "SplitFractions":
+        total = self.train + self.val + self.test
+        if total <= 0.0:
+            raise ValueError("Sum of split fractions must be > 0")
+        return SplitFractions(
+            train=self.train / total,
+            val=self.val / total,
+            test=self.test / total,
+        )
+
+
+def _hash_to_unit_interval(s: str, seed: int) -> float:
+    """Hash (id, seed) pair into [0, 1).
+
+    Uses sha256(id || seed) and takes the first 8 bytes as an integer.
+    """
+    key = f"{s}::{seed}".encode("utf-8")
+    h = hashlib.sha256(key).digest()
+    # Take first 8 bytes
+    val = int.from_bytes(h[:8], "big")
+    return val / float(1 << 64)
+
+
+def assign_splits(
+    ids: Iterable[str],
+    seed: int,
+    train_fraction: float = 0.8,
+    val_fraction: float = 0.1,
+    test_fraction: float = 0.1,
+) -> Dict[str, str]:
+    """Assign each id to "train", "val", or "test" deterministically.
+
+    Fractions are normalized if they do not sum to 1.0.
+
+    Parameters
+    ----------
+    ids:
+        Iterable of sample identifiers (strings).
+    seed:
+        Integer seed used in hashing.
+    train_fraction, val_fraction, test_fraction:
+        Fractions for each split; normalized prior to use.
+
+    Returns
+    -------
+    mapping: dict
+        Mapping from id -> split_name ("train", "val", "test").
+    """
+    fracs = SplitFractions(train_fraction, val_fraction, test_fraction).normalized()
+    t_cut = fracs.train
+    v_cut = fracs.train + fracs.val
+
+    assignments: Dict[str, str] = {}
+    for s in ids:
+        u = _hash_to_unit_interval(str(s), seed)
+        if u < t_cut:
+            assignments[s] = "train"
+        elif u < v_cut:
+            assignments[s] = "val"
+        else:
+            assignments[s] = "test"
+    return assignments
+
+
+def split_id_lists(
+    ids: Iterable[str],
+    seed: int,
+    train_fraction: float = 0.8,
+    val_fraction: float = 0.1,
+    test_fraction: float = 0.1,
+) -> Mapping[str, List[str]]:
+    """Return explicit lists of IDs per split.
+
+    Convenience wrapper over :func:`assign_splits`.
+    """
+    assign = assign_splits(
+        ids,
+        seed=seed,
+        train_fraction=train_fraction,
+        val_fraction=val_fraction,
+        test_fraction=test_fraction,
+    )
+    out: Dict[str, List[str]] = {"train": [], "val": [], "test": []}
+    for k, v in assign.items():
+        out.setdefault(v, []).append(k)
+    # Optionally sort for stable presentation
+    for k in out:
+        out[k].sort()
+    return out
+````
+
+===============================================================================
+2) Dataset registry – src/codex_ml/data/dataset_registry.py
+===========================================================
+
+Create/overwrite: src/codex_ml/data/dataset_registry.py
+
+```python
+"""Minimal dataset registry for `_codex_`.
+
+The goal is to provide *just enough* structure that:
+
+- Callers can request a dataset by name and get back:
+  - a list of IDs
+  - a callable to materialize samples lazily, or
+  - a pre-built dataset object in future extensions.
+
+For now, we implement:
+
+- An in-memory registry of dataset factories.
+- A reference implementation for a "dummy" dataset, used in tests.
+
+This is deliberately lightweight and does not depend on any particular
+ML framework.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Callable, Dict, Iterable, List, Tuple, Any, Optional
+
+
+@dataclass
+class DatasetHandle:
+    name: str
+    ids: List[str]
+    load_fn: Callable[[str], Any]
+
+
+class DatasetRegistry:
+    """Simple registry of dataset factories."""
+
+    def __init__(self) -> None:
+        self._factories: Dict[str, Callable[[], DatasetHandle]] = {}
+
+    def register(self, name: str, factory: Callable[[], DatasetHandle]) -> None:
+        if name in self._factories:
+            raise ValueError(f"Dataset {name!r} already registered")
+        self._factories[name] = factory
+
+    def has(self, name: str) -> bool:
+        return name in self._factories
+
+    def list_datasets(self) -> List[str]:
+        return sorted(self._factories.keys())
+
+    def get(self, name: str) -> DatasetHandle:
+        try:
+            factory = self._factories[name]
+        except KeyError as exc:
+            raise KeyError(f"Dataset {name!r} is not registered") from exc
+        return factory()
+
+
+_global_registry: Optional[DatasetRegistry] = None
+
+
+def get_global_registry() -> DatasetRegistry:
+    global _global_registry
+    if _global_registry is None:
+        _global_registry = DatasetRegistry()
+        _register_builtins(_global_registry)
+    return _global_registry
+
+
+def _register_builtins(reg: DatasetRegistry) -> None:
+    """Register built-in example datasets used in tests.
+
+    This is intentionally minimal and can be extended as needed.
+    """
+
+    def _dummy_dataset_factory() -> DatasetHandle:
+        ids = [f"dummy-{i}" for i in range(10)]
+
+        def load_fn(sample_id: str) -> Dict[str, Any]:
+            return {"id": sample_id, "value": len(sample_id)}
+
+        return DatasetHandle(name="dummy", ids=ids, load_fn=load_fn)
+
+    reg.register("dummy", _dummy_dataset_factory)
+
+
+def list_datasets() -> List[str]:
+    return get_global_registry().list_datasets()
+
+
+def load_dataset(name: str) -> DatasetHandle:
+    return get_global_registry().get(name)
+```
+
+===============================================================================
+3) Dataset index tool – tools/codex_dataset_index.py
+====================================================
+
+Create/overwrite: tools/codex_dataset_index.py
+
+```python
+#!/usr/bin/env python
+"""Dataset index tool for `_codex_`.
+
+This tool walks a data directory and builds a lightweight index, so
+that:
+
+- Operators can see what datasets and files are present.
+- The reproducibility manifest and gap registry have a concrete
+  artifact to reference for "data handling" state.
+
+Inputs:
+
+- `--data-root` (default: `data/`) – directory to walk.
+
+Outputs:
+
+- `codex_dataset_index.json`
+- `codex_dataset_index.md`
+
+The index is intentionally shallow:
+
+- It records relative paths, sizes (in bytes), and a simple "kind"
+  based on extension.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, List, Optional
+
+
+@dataclass
+class DatasetFile:
+    path: str
+    size_bytes: int
+    kind: str
+
+
+_KIND_BY_EXT = {
+    ".json": "json",
+    ".ndjson": "ndjson",
+    ".csv": "csv",
+    ".tsv": "tsv",
+    ".txt": "text",
+    ".parquet": "parquet",
+    ".pt": "torch_tensor",
+    ".bin": "binary",
+}
+
+
+def _classify(path: Path) -> str:
+    ext = path.suffix.lower()
+    return _KIND_BY_EXT.get(ext, "other")
+
+
+def build_index(data_root: Path) -> Dict[str, object]:
+    data_root = data_root.expanduser().resolve()
+    files: List[DatasetFile] = []
+    for dirpath, _, filenames in os.walk(data_root):
+        for name in filenames:
+            p = Path(dirpath) / name
+            if not p.is_file():
+                continue
+            rel = p.relative_to(data_root)
+            size = p.stat().st_size
+            files.append(
+                DatasetFile(
+                    path=str(rel),
+                    size_bytes=int(size),
+                    kind=_classify(p),
+                )
+            )
+
+    total_bytes = sum(f.size_bytes for f in files)
+    by_kind: Dict[str, int] = {}
+    for f in files:
+        by_kind[f.kind] = by_kind.get(f.kind, 0) + 1
+
+    return {
+        "data_root": str(data_root),
+        "total_files": len(files),
+        "total_bytes": int(total_bytes),
+        "files": [asdict(f) for f in files],
+        "files_by_kind": by_kind,
+    }
+
+
+def _write_json(path: Path, index: Dict[str, object]) -> None:
+    path.write_text(json.dumps(index, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_markdown(path: Path, index: Dict[str, object]) -> None:
+    lines: List[str] = []
+    lines.append("# `_codex_` Dataset Index\n")
+    lines.append(f"- Data root   : `{index.get('data_root', '.')}`")
+    lines.append(f"- Total files : **{index.get('total_files', 0)}**")
+    lines.append(f"- Total bytes : **{index.get('total_bytes', 0)}**\n")
+
+    by_kind = index.get("files_by_kind") or {}
+    if by_kind:
+        lines.append("## File Counts by Kind\n")
+        for kind, count in sorted(by_kind.items()):
+            lines.append(f"- **{kind}**: {count}")
+        lines.append("")
+
+    files = index.get("files") or []
+    if files:
+        lines.append("## Files\n")
+        lines.append("| Path | Size (bytes) | Kind |")
+        lines.append("| ---- | ------------ | ---- |")
+        for f in files:
+            lines.append(
+                "| `{path}` | {size} | {kind} |".format(
+                    path=f.get("path"),
+                    size=f.get("size_bytes"),
+                    kind=f.get("kind"),
+                )
+            )
+        lines.append("")
+
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Generate a dataset index for `_codex_`."
+    )
+    parser.add_argument(
+        "--data-root",
+        type=str,
+        default="data",
+        help="Data root directory (default: data).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,

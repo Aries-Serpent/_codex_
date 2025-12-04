@@ -1,95 +1,57 @@
-# _codex_ Security & Safety Baseline (Scaffolding)
+# `_codex_` Security & Safety Baseline (Scaffolding)
 
-This document captures the initial security and safety posture for the
-`_codex_` environment, focusing on **local developer workflows** rather
-than production deployments.
+This document captures the *initial*, local-only security and safety
+baseline for `_codex_`. It is not a full threat model, but it ties
+together the tooling included in this repo.
 
-It is intentionally conservative and will evolve over time.
+## 1. Scope & Assumptions
 
-## 1. Dependency Hygiene
+- All workflows are assumed to run:
+  - On local developer machines, or
+  - In self-managed, offline containers.
+- No cost-incurring external services are invoked by default.
+- This baseline does **not** replace organization-wide security policies.
 
-Tools:
+## 2. Key Tools
 
+- `tools/codex_env_snapshot.py`
+  - Captures Python + platform info and installed packages.
 - `tools/codex_dependency_audit.py`
-  - Aggregates dependencies from:
-    - `pyproject.toml`
-    - `requirements.txt`
-    - `requirements-dev.txt`
-  - Outputs:
-    - `codex_dependency_report.json`
-    - `codex_dependency_report.md`
-
-Use it to:
-
-- Check for unpinned or loosely pinned dependencies.
-- Identify which files introduce each dependency.
-- Inform future work on lockfiles or SBOM generation.
-
-## 2. Secrets Hygiene (Stub)
-
-Tools:
-
+  - Records a static list of installed packages and versions.
 - `tools/codex_secret_scan_stub.py`
-  - Lightweight, heuristic scan for:
-    - Private key markers (`BEGIN PRIVATE KEY`)
-    - Common cloud secret env var names
-    - Token-like patterns for a few providers
-  - Outputs:
-    - `codex_secret_scan_report.json`
-    - `codex_secret_scan_report.md`
+  - Performs a trivial pattern-based scan for obvious secrets.
+- `src/codex_ml/cli/env_check.py`
+  - Runs the three tools above and is called from:
+    - `codex_task_sequence.yaml` (Preparation phase).
+    - `codex_ml.cli.codex_env` (health subcommand).
 
-Limitations:
+These tools are best-effort and meant to be extended.
 
-- This is not a full secret scanner.
-- False positives are acceptable; false negatives are possible.
-- It is meant as a **local, low-friction check** when editing new code or
-  preparing to share a branch.
+## 3. Usage
 
-Future extensions may:
+From repo root:
 
-- Add more patterns.
-- Integrate with dedicated secret-scanning tools (still local only).
+```bash
+python -m codex_ml.cli.env_check --repo-root .
+```
 
-## 3. Environment & Security Health Check
+Or via the unified env CLI (if present):
 
-Tool:
+```bash
+python -m codex_ml.cli.codex_env health
+```
 
-- `codex_ml.cli.env_check` (module)
-- Entrypoint (recommended from repo root):
+Artifacts produced:
 
-  ```bash
-  python -m codex_ml.cli.env_check
-  ```
+* `codex_env_snapshot.json`
+* `codex_dependency_report.json`
+* `codex_secret_scan_report.json`
 
-What it does:
-1. Runs tools/codex_env_snapshot.py to capture:
-   - Python version & executable
-   - Platform details
-   - Selected environment variables (CODEX_, CUDA_, etc.)
-2. Runs tools/codex_dependency_audit.py.
-3. Runs tools/codex_secret_scan_stub.py.
+## 4. Next Steps (Future Work)
 
-The health check is designed as a pre-flight step before:
-- Running the full gap/task sequence.
-- Capturing a reproducibility bundle.
-- Sharing a set of artifacts with others.
+Future hardening may include:
 
-## 4. Relationship to Reproducibility
-
-Security & safety are tied to reproducibility:
-- Knowing which dependencies were installed and from where aids incident
-  response and reproducible builds.
-- A clean secret baseline helps ensure that reproducible artifacts can be
-  safely shared without leaking credentials.
-
-Related docs/tools:
-- docs/reproducibility/reproducibility_checklist.md
-- tools/codex_env_snapshot.py
-- tools/codex_reproducibility_bundle.py
-
-## 5. Next Steps (Future Work)
-- Introduce optional hooks to enforce dependency pins for core paths.
-- Add structured configuration for allowed/blocked dependencies.
-- Expand secret-scan patterns and allow project-specific allowlists.
-- Tie health-check results more directly into the gap registry or task
-  sequence reports.
+* Stronger secret scanning (regex-based, entropy-based).
+* Dependency vulnerability checks (e.g. using offline advisories).
+* Policy enforcement on minimum test coverage and linting.
+* Signed reproducibility manifests.

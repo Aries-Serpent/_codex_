@@ -1,0 +1,357 @@
+Here’s the next **end-to-end Codex batch** (call this **Batch 25**) you can paste directly into your Codex implementation GPT.
+
+This batch closes two big loops the earlier scaffolding depended on:
+
+* **Local Gate Runner** → actually produces `codex_local_gate_report.json`
+* **Experiment Indexer** → actually produces `codex_experiment_index.json`
+* Tests + docs for both
+* Wiring into `codex_task_sequence.yaml` using `record_and_continue`
+
+Everything is local/offline, no GitHub Actions, no external services.
+
+---
+
+### Codex Batch 25 – Local Gate Runner & Experiment Index
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_
+on a feature branch (e.g. feature/local-gate-and-experiment-index).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a **Local Gate Runner**:
+   - `tools/codex_local_gate_runner.py` → `codex_local_gate_report.json`
+2. Implement an **Experiment Indexer**:
+   - `tools/codex_experiment_index.py` → `codex_experiment_index.json`
+3. Add tests:
+   - `tests/tools/test_codex_local_gate_and_experiment_index.py`
+4. Add docs:
+   - `docs/ci/local_gate_and_experiment_index.md`
+5. Wire both into `codex_task_sequence.yaml` with `record_and_continue`.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Local Gate Runner – tools/codex_local_gate_runner.py
+===============================================================================
+
+Create/overwrite: tools/codex_local_gate_runner.py
+
+```python
+#!/usr/bin/env python
+"""Local gate runner for `_codex_`.
+
+Purpose
+-------
+Provide a *local-only* analogue of "CI gates" that can be run by
+developers or orchestration scripts. The runner:
+
+- Executes a configurable list of shell commands (pytest, lint, etc.).
+- Captures return codes and truncated output.
+- Emits a JSON summary for consumption by:
+  - codex_repro_manifest.py
+  - codex_gap_registry.py
+  - human operators.
+
+Design
+------
+- Offline-only.
+- No network calls.
+- No GitHub Actions or external CI integration.
+- Safe to run repeatedly.
+
+Default gates (if no config file is provided) are intentionally
+minimal and may be extended later:
+
+- pytest tests/tools -q
+- pytest tests/codex_ml -q
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import shlex
+import subprocess
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import yaml
+
+
+@dataclass
+class GateCommand:
+    name: str
+    cmd: str
+
+
+@dataclass
+class GateResult:
+    name: str
+    cmd: str
+    returncode: int
+    stdout: str
+    stderr: str
+
+
+_DEFAULT_GATES: List[GateCommand] = [
+    GateCommand(name="pytest_tools", cmd="pytest tests/tools -q"),
+    GateCommand(name="pytest_codex_ml", cmd="pytest tests/codex_ml -q"),
+]
+
+
+def _load_gate_config(path: Path) -> List[GateCommand]:
+    """Load gate config from YAML.
+
+    Optional file structure:
+
+    gate_commands:
+      - name: "pytest_tools"
+        cmd: "pytest tests/tools -q"
+      - name: "pytest_codex_ml"
+        cmd: "pytest tests/codex_ml -q"
+    """
+    if not path.exists():
+        return list(_DEFAULT_GATES)
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    cmds: List[GateCommand] = []
+    for item in data.get("gate_commands", []) or []:
+        cmds.append(
+            GateCommand(
+                name=str(item.get("name")),
+                cmd=str(item.get("cmd")),
+            )
+        )
+    if not cmds:
+        return list(_DEFAULT_GATES)
+    return cmds
+
+
+def _run_command(cmd: str, cwd: Path, max_output: int = 8000) -> GateResult:
+    args = shlex.split(cmd)
+    proc = subprocess.run(
+        args,
+        cwd=str(cwd),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    stdout = proc.stdout[-max_output:]
+    stderr = proc.stderr[-max_output:]
+    return GateResult(
+        name=cmd,
+        cmd=cmd,
+        returncode=proc.returncode,
+        stdout=stdout,
+        stderr=stderr,
+    )
+
+
+def run_gates(repo_root: Path, gates: List[GateCommand]) -> Dict[str, Any]:
+    repo_root = repo_root.expanduser().resolve()
+    results: List[GateResult] = []
+    overall_rc = 0
+
+    for gate in gates:
+        res = _run_command(gate.cmd, cwd=repo_root)
+        # Store the explicit name but keep cmd too.
+        results.append(
+            GateResult(
+                name=gate.name,
+                cmd=gate.cmd,
+                returncode=res.returncode,
+                stdout=res.stdout,
+                stderr=res.stderr,
+            )
+        )
+        if res.returncode != 0:
+            overall_rc = 1
+
+    return {
+        "repo_root": str(repo_root),
+        "overall_returncode": overall_rc,
+        "results": [
+            {
+                "name": r.name,
+                "cmd": r.cmd,
+                "returncode": r.returncode,
+                "stdout": r.stdout,
+                "stderr": r.stderr,
+            }
+            for r in results
+        ],
+    }
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run local CI gates for `_codex_` and emit a JSON summary."
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Repository root (default: current directory).",
+    )
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="codex_local_gate.yaml",
+        help="Optional YAML config for gate commands "
+        "(default: codex_local_gate.yaml).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_local_gate_report.json",
+        help="JSON output path (default: codex_local_gate_report.json).",
+    )
+    args = parser.parse_args(argv)
+
+    repo_root = Path(args.repo_root).expanduser().resolve()
+    config = Path(args.config).expanduser().resolve()
+    gates = _load_gate_config(config)
+    summary = run_gates(repo_root, gates)
+
+    out_path = Path(args.json_out).expanduser().resolve()
+    out_path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+
+    print(f"[codex_local_gate_runner] Wrote local gate report to {out_path}")
+    print(f"[codex_local_gate_runner] overall_returncode={summary['overall_returncode']}")
+    # Return the overall gate code so callers can choose to block if desired.
+    return int(summary["overall_returncode"])
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+````
+
+===============================================================================
+2) Experiment Indexer – tools/codex_experiment_index.py
+=======================================================
+
+Create/overwrite: tools/codex_experiment_index.py
+
+```python
+#!/usr/bin/env python
+"""Experiment index tooling for `_codex_`.
+
+Purpose
+-------
+Provide a lightweight, backend-agnostic index of local experiment runs
+(e.g. training/eval runs), so that:
+
+- Reproducibility manifests can reference runs.
+- Gap registry can track missing experiment metadata.
+- Operators have a quick, greppable summary.
+
+Design
+------
+- Offline-only.
+- No MLflow/W&B servers; purely filesystem-based.
+- Compatible with future integration (e.g. writing the same fields
+  MLflow would track).
+
+By default, the tool expects a directory `runs/` with a simple
+structure such as:
+
+runs/
+  run-0001/
+    meta.json
+  run-0002/
+    meta.json
+
+Where `meta.json` can contain arbitrary fields, but we look for:
+
+- "mode"         (e.g. "train", "eval")
+- "status"       (e.g. "completed", "failed")
+- "config_path"  (e.g. "conf/train.yaml")
+
+If meta.json is missing, we still index the run with minimal fields.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+
+@dataclass
+class RunRecord:
+    run_id: str
+    path: str
+    mode: str
+    status: str
+    config_path: Optional[str]
+
+
+def _load_meta(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def build_index(runs_root: Path) -> Dict[str, Any]:
+    runs_root = runs_root.expanduser().resolve()
+    runs: List[RunRecord] = []
+
+    if not runs_root.exists():
+        return {
+            "runs_dir": str(runs_root),
+            "runs": [],
+        }
+
+    for entry in sorted(runs_root.iterdir()):
+        if not entry.is_dir():
+            continue
+        run_id = entry.name
+        meta = _load_meta(entry / "meta.json")
+        mode = str(meta.get("mode", "unknown"))
+        status = str(meta.get("status", "unknown"))
+        config_path = meta.get("config_path")
+        if config_path is not None:
+            config_path = str(config_path)
+        runs.append(
+            RunRecord(
+                run_id=run_id,
+                path=str(entry),
+                mode=mode,
+                status=status,
+                config_path=config_path,
+            )
+        )
+
+    return {
+        "runs_dir": str(runs_root),
+        "runs": [asdict(r) for r in runs],
+    }
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Build a lightweight experiment index for `_codex_`."
+    )
+    parser.add_argument(
+        "--runs-root",
+        type=str,
+        default="runs",
+        help="Root directory for runs (default: runs).",
+    )
+    parser.add_argument(
+        "--out",
+        type=str,
+        default="codex_experiment_index.json",

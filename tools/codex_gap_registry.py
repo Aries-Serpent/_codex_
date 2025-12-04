@@ -218,7 +218,7 @@ def build_registry(
     change_log: Optional[Path],
     errors: Optional[Path],
     hardship: Optional[Path],
-    cap_map: Optional[Path],
+    cap_map: Optional[Path] = None,
 ) -> Dict[str, Any]:
     gaps = _parse_audit(audit) if audit else []
     change_rows = _parse_change_log(change_log) if change_log else {}

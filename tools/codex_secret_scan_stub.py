@@ -1,146 +1,91 @@
 #!/usr/bin/env python
-"""Lightweight secret scan stub for _codex_.
+"""Secret scan stub for `_codex_`.
 
-This is NOT a full secret scanner. It provides a simple, conservative pass
-over the working tree to flag obvious high-signal patterns such as:
-
-- "BEGIN PRIVATE KEY"
-- "AWS_ACCESS_KEY_ID" / "AWS_SECRET_ACCESS_KEY"
-- strings that look like tokens in source files (heuristic)
-
-Design goals:
-- No external dependencies.
-- Local, offline use only.
-- Best-effort detection, false positives acceptable.
+Performs a *very* simple pattern-based scan looking for suspicious tokens
+in text files under a given root. Outputs JSON and Markdown summaries.
 """
+
 from __future__ import annotations
 
 import argparse
 import json
-import re
-from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
-SECRET_PATTERNS = [
-    re.compile(r"BEGIN\s+PRIVATE\s+KEY", re.IGNORECASE),
-    re.compile(r"AWS_ACCESS_KEY_ID", re.IGNORECASE),
-    re.compile(r"AWS_SECRET_ACCESS_KEY", re.IGNORECASE),
-    re.compile(r"AIza[0-9A-Za-z\-_]{35}"),
-    re.compile(r"pk_live_[0-9A-Za-z]{20,}"),
-]
-
-SKIP_DIRS = {
-    ".git",
-    ".mypy_cache",
-    ".pytest_cache",
-    "__pycache__",
-    "node_modules",
-    "venv",
-    ".venv",
-}
+PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", "AWS_SECRET_ACCESS_KEY"]
 
 
-@dataclass
-class Finding:
-    path: str
-    line_no: int
-    snippet: str
-    pattern: str
-
-
-def _iter_files(root: Path) -> List[Path]:
+def _iter_text_files(root: Path) -> List[Path]:
     files: List[Path] = []
     for p in root.rglob("*"):
-        if p.is_dir():
-            if p.name in SKIP_DIRS:
-                continue
+        if not p.is_file():
             continue
-        if p.suffix.lower() in {".py", ".md", ".yaml", ".yml", ".toml", ".txt", ".json"}:
-            files.append(p)
+        if p.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".zip", ".tar", ".gz"}:
+            continue
+        files.append(p)
     return files
 
 
-def _scan_file(path: Path) -> List[Finding]:
-    findings: List[Finding] = []
-    try:
-        text = path.read_text(encoding="utf-8", errors="ignore")
-    except Exception:
-        return findings
-    for i, line in enumerate(text.splitlines(), start=1):
-        for pat in SECRET_PATTERNS:
-            if pat.search(line):
-                snippet = line.strip()
-                if len(snippet) > 120:
-                    snippet = snippet[:117] + "..."
-                findings.append(
-                    Finding(
-                        path=str(path),
-                        line_no=i,
-                        snippet=snippet,
-                        pattern=pat.pattern,
-                    )
-                )
-    return findings
+def scan(root: Path) -> Dict[str, List[Dict[str, str]]]:
+    findings: List[Dict[str, str]] = []
+    for f in _iter_text_files(root):
+        try:
+            text = f.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        for patt in PATTERNS:
+            if patt in text:
+                snippet = text.strip().splitlines()[0] if text.strip().splitlines() else ""
+                findings.append({"file": str(f), "pattern": patt, "snippet": snippet[:200]})
+    return {"findings": findings, "total_findings": len(findings)}
 
 
-def _scan_root(root: Path) -> List[Finding]:
-    all_findings: List[Finding] = []
-    for f in _iter_files(root):
-        all_findings.extend(_scan_file(f))
-    return all_findings
+def _write_json(path: Path, data: Dict[str, object]) -> None:
+    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Run a lightweight secret scan stub.")
-    parser.add_argument(
-        "--repo-root",
-        type=str,
-        default=".",
-        help="Repository root (default: current directory).",
-    )
+def _write_markdown(path: Path, data: Dict[str, object]) -> None:
+    findings = data.get("findings", []) or []
+    lines: List[str] = []
+    lines.append("# `_codex_` Secret Scan Stub\n")
+    lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
+    if not findings:
+        lines.append("No findings.\n")
+        path.write_text("\n".join(lines), encoding="utf-8")
+        return
+    lines.append("| File | Pattern | Snippet |")
+    lines.append("| ---- | ------- | ------- |")
+    for f in findings:
+        lines.append(f"| `{f.get('file')}` | {f.get('pattern')} | {f.get('snippet','')[:80]} |")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Secret scan stub for _codex_.")
+    parser.add_argument("--repo-root", type=str, default=".", help="Root directory to scan.")
     parser.add_argument(
         "--json-out",
         type=str,
         default="codex_secret_scan_report.json",
-        help="JSON output path (default: codex_secret_scan_report.json).",
+        help="Output JSON path (default: codex_secret_scan_report.json).",
     )
     parser.add_argument(
         "--md-out",
         type=str,
         default="codex_secret_scan_report.md",
-        help="Markdown output path (default: codex_secret_scan_report.md).",
+        help="Output Markdown path (default: codex_secret_scan_report.md).",
     )
     args = parser.parse_args(argv)
 
     root = Path(args.repo_root).expanduser().resolve()
-    findings = _scan_root(root)
-    json_out = root / args.json_out
-    md_out = root / args.md_out
-
-    data = {
-        "total_findings": len(findings),
-        "findings": [asdict(f) for f in findings],
-    }
-    json_out.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
-
-    lines: List[str] = []
-    lines.append("# _codex_ Secret Scan Stub Report\n")
-    lines.append(f"- Total findings: **{len(findings)}**\n")
-    if findings:
-        lines.append("## Findings\n")
-        lines.append("| File | Line | Pattern | Snippet |")
-        lines.append("| ---- | ---- | ------- | ------- |")
-        for f in findings:
-            lines.append(
-                f"| `{f.path}` | {f.line_no} | `{f.pattern}` | `{f.snippet}` |"
-            )
-    else:
-        lines.append("No high-signal patterns were detected.\n")
-
-    md_out.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote secret scan JSON report to {json_out}")
-    print(f"Wrote secret scan Markdown report to {md_out}")
+    data = scan(root)
+    json_out_raw = Path(args.json_out)
+    md_out_raw = Path(args.md_out)
+    json_out = json_out_raw if json_out_raw.is_absolute() else root / json_out_raw
+    md_out = md_out_raw if md_out_raw.is_absolute() else root / md_out_raw
+    _write_json(json_out, data)
+    _write_markdown(md_out, data)
+    print(f"Wrote secret scan stub report to {json_out}")
     return 0
 
 
