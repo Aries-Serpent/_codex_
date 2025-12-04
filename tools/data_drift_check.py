@@ -18,7 +18,7 @@ def drift_score(ref: dict, cur: dict) -> float:
     cur_dist = cur.get("hist", {}).get("label", {})
     all_keys = set(ref_dist.keys()) | set(cur_dist.keys())
     diffs = [abs(ref_dist.get(k, 0.0) - cur_dist.get(k, 0.0)) for k in all_keys]
-    return max(diffs) if diffs else 0.0
+    return round(max(diffs), 6) if diffs else 0.0
 
 
 def main(argv=None) -> int:

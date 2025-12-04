@@ -1,0 +1,27 @@
+from pathlib import Path
+import json
+
+from codex_ml.logging.metrics import MetricLogger
+
+
+def test_metric_logger_writes_ndjson(tmp_path: Path):
+    path = tmp_path / "metrics.ndjson"
+    logger = MetricLogger(path)
+
+    logger.log(step=0, loss=1.0)
+    logger.log(step=1, loss=0.9, accuracy=0.5)
+    logger.close()
+
+    assert path.exists()
+    lines = path.read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) == 2
+
+    rec0 = json.loads(lines[0])
+    assert rec0["step"] == 0
+    assert rec0["metrics"]["loss"] == 1.0
+    assert "timestamp" in rec0
+
+    rec1 = json.loads(lines[1])
+    assert rec1["step"] == 1
+    assert rec1["metrics"]["loss"] == 0.9
+    assert rec1["metrics"]["accuracy"] == 0.5

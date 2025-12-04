@@ -1,0 +1,11 @@
+# Hardship / risk metadata for _codex_ gaps.
+# This file is intentionally small and conservative; it can be expanded as
+# more gaps are identified and triaged.
+
+gaps:
+  tokenization.fast_backend:
+    risk_level: medium
+    notes: "Fast tokenizer backend impacts training speed and parity, but is not yet user-facing."
+  training.grad_accumulation:
+    risk_level: high
+    notes: "Incorrect grad accumulation can destabilize training and invalidate experiments."

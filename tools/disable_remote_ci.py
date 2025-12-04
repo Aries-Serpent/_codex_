@@ -101,7 +101,7 @@ def patch_yaml(path: Path) -> tuple[bool, int]:
         c1 = set_manual_trigger(data)
         c2 = hard_guard_jobs(data)
         if c1 or c2:
-            path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+            path.write_text(yaml.safe_dump(data), encoding="utf-8")
         return (c1 or c2, c2)
     # Fallback (coarse regex) if PyYAML missing
     any_change = False

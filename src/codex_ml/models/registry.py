@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
@@ -259,6 +260,31 @@ def _resolve_torch_dtype(value: Any | None):
     return None
 
 
+def _validate_lora_config(config: dict[str, Any]) -> dict[str, Any]:
+    cleaned = dict(config)
+    strict = bool(cleaned.get("strict_validation", True))
+    dtype_value = cleaned.get("dtype")
+    resolved_dtype = _resolve_torch_dtype(dtype_value)
+    if dtype_value is not None and resolved_dtype is None:
+        message = f"Unsupported lora.dtype value: {dtype_value!r}"
+        if strict:
+            raise ValueError(message)
+        warnings.warn(message, RuntimeWarning)
+        cleaned.pop("dtype", None)
+    else:
+        cleaned["dtype"] = resolved_dtype if dtype_value is not None else dtype_value
+
+    device_value = cleaned.get("device")
+    normalized_device = _normalise_device(device_value)
+    if device_value is not None and normalized_device != device_value:
+        message = f"Normalising lora.device from {device_value!r} to {normalized_device!r}"
+        if strict:
+            raise ValueError(message)
+        warnings.warn(message, RuntimeWarning)
+    cleaned["device"] = normalized_device if device_value is not None else device_value
+    return cleaned
+
+
 def get_model(
     name: str,
     cfg: dict[str, Any] | None = None,
@@ -279,8 +305,9 @@ def get_model(
     lora_cfg = config.get("lora", {})
     adapter = adapter_loader or apply_lora
     if isinstance(lora_cfg, dict) and lora_cfg.get("enabled") and adapter is not None:
+        validated_lora = _validate_lora_config(lora_cfg)
         try:
-            model = adapter(model, lora_cfg)
+            model = adapter(model, validated_lora)
         except Exception:  # pragma: no cover - adapter failure should not crash load
             pass
     dtype_value = _resolve_torch_dtype(config.get("dtype"))

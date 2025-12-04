@@ -70,7 +70,7 @@ def write_snapshot(out_path: Path, snapshot: Mapping[str, Any]) -> None:
     out_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True))
 
 
-def main(argv: Sequence[str] | None = None) -> Mapping[str, Any]:
+def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     try:
         text = args.log.read_text(encoding="utf-8")
@@ -79,7 +79,7 @@ def main(argv: Sequence[str] | None = None) -> Mapping[str, Any]:
     snapshot = parse_perf_log(text)
     write_snapshot(args.out, snapshot)
     print(f"Performance snapshot written to {args.out}")
-    return snapshot
+    return 0
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point
