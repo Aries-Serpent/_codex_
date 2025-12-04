@@ -95,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
         out_path = out_path.expanduser().resolve()
     out_path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
     print(f"Wrote ML test summary to {out_path}")
-    return 0
+    return result.returncode
 
 
 if __name__ == "__main__":  # pragma: no cover
