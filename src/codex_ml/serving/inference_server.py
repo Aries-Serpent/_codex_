@@ -251,5 +251,5 @@ if FASTAPI_AVAILABLE:
 
 else:
 
-    def create_app():  # pragma: no cover
-        raise ImportError("FastAPI not installed")
+    def create_app() -> None:  # pragma: no cover
+        raise NotImplementedError("FastAPI not installed")
