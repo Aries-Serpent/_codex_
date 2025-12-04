@@ -62,5 +62,5 @@ if missing:
         {"(Other docs)": [{pathlib.Path(m).stem: m} for m in sorted(missing)]}
     )
 
-mk.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+mk.write_text(yaml.safe_dump(data), encoding="utf-8")
 print({"added_to_nav": len(missing), "strict": data.get("strict")})

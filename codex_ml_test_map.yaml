@@ -1,0 +1,21 @@
+categories:
+  data:
+    description: Data validation tests
+    tests:
+      - tests/data
+  model:
+    description: Model behavior tests
+    tests:
+      - tests/models
+  infra:
+    description: Infrastructure smoke tests
+    tests:
+      - tests/infra
+  regression:
+    description: Regression guardrails
+    tests:
+      - tests/regression
+  performance:
+    description: Lightweight performance checks
+    tests:
+      - tests/performance

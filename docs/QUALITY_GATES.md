@@ -15,6 +15,13 @@ Additional tooling:
 * `nox -s sast` — Bandit, Semgrep (local rules), and `pip-audit`.
 * `CODEX_COV_FLOOR=75 nox -s coverage` — bump the coverage floor for focused sweeps.
 * `pre-commit run --all-files` — formatters and secret detection.
+* `python tools/duplication_analyzer.py --path src --severity medium` — duplication ratio gate (uses `src/codex/analysis/duplication.py`).
+
+Duplication gate notes:
+
+- Ratios are calculated on normalized tokens with optional AST similarity; set `--severity high` to fail aggressively.
+- Reports are written to `reports/duplication_report.json` and can be consumed by local dashboards or audits.
+- A zero-ratio path is exercised in tests to guard regressions.
 
 ## Batch runner
 

@@ -1,0 +1,74 @@
+"""Minimal metrics logging utilities for `_codex_`."""
+
+from __future__ import annotations
+
+import json
+import os
+import time
+from dataclasses import dataclass, asdict, field
+from pathlib import Path
+from typing import Dict, Optional
+
+try:  # optional psutil
+    import psutil  # type: ignore
+except Exception:  # pragma: no cover
+    psutil = None
+
+
+@dataclass
+class MetricRecord:
+    step: int
+    timestamp: float
+    metrics: Dict[str, float] = field(default_factory=dict)
+    system: Optional[Dict[str, float]] = None
+
+
+class MetricLogger:
+    """Append-only NDJSON metric logger."""
+
+    def __init__(self, path: Path) -> None:
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._fh = None  # type: ignore[var-annotated]
+
+    def _ensure_open(self) -> None:
+        if self._fh is None:
+            self._fh = self.path.open("a", encoding="utf-8")
+
+    def _collect_system_metrics(self) -> Optional[Dict[str, float]]:
+        if psutil is None:
+            return None
+        try:
+            vm = psutil.virtual_memory()
+            return {
+                "cpu_percent": float(psutil.cpu_percent(interval=None)),
+                "ram_used_mb": float(vm.used) / (1024.0 * 1024.0),
+                "ram_percent": float(vm.percent),
+            }
+        except Exception:  # pragma: no cover
+            return None
+
+    def log(self, step: int, **scalars: float) -> None:
+        self._ensure_open()
+        ts = time.time()
+        rec = MetricRecord(
+            step=step,
+            timestamp=ts,
+            metrics={k: float(v) for k, v in scalars.items()},
+            system=self._collect_system_metrics(),
+        )
+        assert self._fh is not None
+        self._fh.write(json.dumps(asdict(rec)) + os.linesep)
+        self._fh.flush()
+
+    def close(self) -> None:
+        if self._fh is not None:
+            self._fh.close()
+            self._fh = None
+
+    def __enter__(self) -> "MetricLogger":
+        self._ensure_open()
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        self.close()

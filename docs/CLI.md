@@ -12,3 +12,7 @@ The `codex_cli` package exposes offline-friendly commands:
 >
 > * Commands are designed to be **offline** and do not start servers or require network services.
 > * Optional deps: `mlflow` (for `track-smoke`), `torch` (for `split-smoke` and `checkpoint-smoke`).
+
+## Training telemetry toggle
+
+`codex-train` accepts `--system-metrics` to emit lightweight CPU and memory telemetry alongside training metrics. The flag is **off by default** to keep runs minimal; enable it only when you need local observability.

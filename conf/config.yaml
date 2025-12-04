@@ -1,10 +1,6 @@
 defaults:
-  - model: base
-  - data: local
-  - training: minimal
-  - evaluation: minimal
-  - experiment: default
-  - _self_
+  - experiment: basic
 
-artifacts_dir: artifacts
-notes: []
+experiment:
+  name: "basic"
+  seed: 42

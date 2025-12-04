@@ -26,7 +26,7 @@ def test_cli_train_creates_checkpoint(tmp_path):
             "format": "jsonl",
         },
     }
-    cfg_path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
+    cfg_path.write_text(yaml.safe_dump(cfg), encoding="utf-8")
 
     runner = CliRunner()
     result = runner.invoke(codex, ["train", "--config", str(cfg_path)])

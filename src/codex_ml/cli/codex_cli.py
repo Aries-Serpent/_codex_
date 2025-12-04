@@ -5,6 +5,7 @@ import json
 import os
 import sys
 from collections.abc import Sequence
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -22,6 +23,7 @@ from codex_ml.codex_structured_logging import (
 )
 from codex_ml.config import ConfigError, load_app_config
 from codex_ml.telemetry import start_metrics_server
+from codex_ml.monitoring.system_metrics import SystemMetricsLogger
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 from codex_utils.ndjson import NDJSONLogger
 from omegaconf import OmegaConf
@@ -359,6 +361,12 @@ def config_sweep(
     help="Enable or disable MLflow logging regardless of config defaults.",
 )
 @click.option(
+    "--system-metrics/--no-system-metrics",
+    "system_metrics",
+    default=False,
+    help="Enable system metrics logging during training.",
+)
+@click.option(
     "--mlflow-tracking-uri",
     default=None,
     help="Tracking URI to forward MLflow runs (e.g., file:mlruns or http URL).",
@@ -381,6 +389,7 @@ def train(
     resume_from: str | None,
     enable_peft: bool,
     mlflow_toggle: bool | None,
+    system_metrics: bool,
     mlflow_tracking_uri: str | None,
     mlflow_run_name: str | None,
     mlflow_experiment: str | None,
@@ -436,8 +445,15 @@ def train(
         training_cfg.resume_from = resume_from  # type: ignore[attr-defined]
         resume = True
 
+    metrics_logger: SystemMetricsLogger | None = None
+    if system_metrics:
+        metrics_path = Path(cfg_obj.training.output_dir) / "logs" / "system_metrics.ndjson"
+        metrics_path.parent.mkdir(parents=True, exist_ok=True)
+        metrics_logger = SystemMetricsLogger(metrics_path)
+
     try:
-        run_functional_training(config=training_cfg, resume=resume)
+        with metrics_logger or nullcontext():
+            run_functional_training(config=training_cfg, resume=resume)
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("training complete")

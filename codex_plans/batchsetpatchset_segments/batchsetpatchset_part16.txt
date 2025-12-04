@@ -1,0 +1,230 @@
+    intentionally conservative: failures in later steps do not prevent
+    earlier artifacts from being generated.
+    """
+    repo_root = Path(args.repo_root).expanduser().resolve()
+    cwd = Path.cwd()
+    if cwd != repo_root:
+        print(f"[codex_cli.quick-audit] NOTE: expected to run from repo root, currently {cwd}")
+
+    overall_rc = 0
+
+    def _run(step: str, fn: Callable[[argparse.Namespace], int], ns: argparse.Namespace) -> None:
+        nonlocal overall_rc
+        print(f"[codex_cli.quick-audit] Step: {step}")
+        rc = fn(ns)
+        if rc != 0:
+            print(f"[codex_cli.quick-audit] Step {step} returned {rc} (continuing).")
+            overall_rc = 1
+
+    # 1) Env snapshot
+    ns_env = argparse.Namespace(out="codex_env_snapshot.json")
+    _run("env_snapshot", _cmd_env_snapshot, ns_env)
+
+    # 2) Dependency report
+    ns_dep = argparse.Namespace(out="codex_dependency_report.json")
+    _run("dependency_report", _cmd_dep_report, ns_dep)
+
+    # 3) Dataset index
+    ns_ds = argparse.Namespace(
+        data_root="data",
+        json_out="codex_dataset_index.json",
+        md_out="codex_dataset_index.md",
+    )
+    _run("dataset_index", _cmd_dataset_index, ns_ds)
+
+    # 4) Local gates
+    ns_gate = argparse.Namespace(
+        repo_root=str(repo_root),
+        config="codex_local_gate.yaml",
+        json_out="codex_local_gate_report.json",
+    )
+    _run("local_gates", _cmd_gates_run, ns_gate)
+
+    # 5) Experiment index
+    ns_exp = argparse.Namespace(
+        runs_root="runs",
+        out="codex_experiment_index.json",
+    )
+    _run("experiment_index", _cmd_experiment_index, ns_exp)
+
+    # 6) Gap registry (best effort, uses latest audit / change log / errors if present)
+    ns_gap = argparse.Namespace(
+        audit="_codex_status_update-2025-11-27.md",
+        change_log="codex_change_log.md",
+        errors="codex_error_questions.md",
+        out="codex_gap_registry.yaml",
+    )
+    _run("gap_registry", _cmd_gap_registry, ns_gap)
+
+    # 7) YAML gap check (if registry + task sequence exist)
+    ns_yaml = argparse.Namespace(
+        gaps="codex_gap_registry.yaml",
+        yaml="codex_task_sequence.yaml",
+        out="codex_yaml_gap_report.md",
+    )
+    _run("yaml_gap_check", _cmd_yaml_gap_check, ns_yaml)
+
+    # 8) Repro manifest
+    ns_repro = argparse.Namespace(
+        out="codex_repro_manifest.json",
+        env="codex_env_snapshot.json",
+        deps="codex_dependency_report.json",
+        gates="codex_local_gate_report.json",
+        dataset_index="codex_dataset_index.json",
+        experiment_index="codex_experiment_index.json",
+    )
+    _run("repro_manifest", _cmd_repro_manifest, ns_repro)
+
+    return overall_rc
+
+
+# ---------------------------------------------------------------------------
+# Parser wiring
+# ---------------------------------------------------------------------------
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Unified CLI for `_codex_` tooling.",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # env
+    p_env = subparsers.add_parser("env", help="Environment-related commands.")
+    env_sub = p_env.add_subparsers(dest="env_command", required=True)
+
+    p_env_snap = env_sub.add_parser("snapshot", help="Generate environment snapshot JSON.")
+    p_env_snap.add_argument("--out", type=str, default="codex_env_snapshot.json")
+    p_env_snap.set_defaults(func=_cmd_env_snapshot)
+
+    # deps
+    p_dep = subparsers.add_parser("deps", help="Dependency-related commands.")
+    dep_sub = p_dep.add_subparsers(dest="deps_command", required=True)
+
+    p_dep_report = dep_sub.add_parser("report", help="Generate dependency report JSON.")
+    p_dep_report.add_argument("--out", type=str, default="codex_dependency_report.json")
+    p_dep_report.set_defaults(func=_cmd_dep_report)
+
+    # dataset
+    p_ds = subparsers.add_parser("dataset", help="Dataset-related commands.")
+    ds_sub = p_ds.add_subparsers(dest="dataset_command", required=True)
+
+    p_ds_index = ds_sub.add_parser("index", help="Build dataset index JSON/Markdown.")
+    p_ds_index.add_argument("--data-root", type=str, default="data")
+    p_ds_index.add_argument("--json-out", type=str, default="codex_dataset_index.json")
+    p_ds_index.add_argument("--md-out", type=str, default="codex_dataset_index.md")
+    p_ds_index.set_defaults(func=_cmd_dataset_index)
+
+    # mltest
+    p_ml = subparsers.add_parser("mltest", help="ML test score-related commands.")
+    ml_sub = p_ml.add_subparsers(dest="mltest_command", required=True)
+
+    p_ml_run = ml_sub.add_parser("run", help="Run ML-category-scoped tests.")
+    p_ml_run.add_argument("--repo-root", type=str, default=".")
+    p_ml_run.add_argument("--map", type=str, default="codex_ml_test_map.yaml")
+    group = p_ml_run.add_mutually_exclusive_group(required=True)
+    group.add_argument("--all", action="store_true", help="Run all categories.")
+    group.add_argument("--category", type=str, help="Run a single category.")
+    p_ml_run.add_argument("--json-out", type=str, default="codex_mltest_results.json")
+    p_ml_run.set_defaults(func=_cmd_mltest_run)
+
+    # gates
+    p_gate = subparsers.add_parser("gates", help="Local gate commands.")
+    gate_sub = p_gate.add_subparsers(dest="gate_command", required=True)
+
+    p_gate_run = gate_sub.add_parser("run", help="Run local gates and emit JSON report.")
+    p_gate_run.add_argument("--repo-root", type=str, default=".")
+    p_gate_run.add_argument("--config", type=str, default="codex_local_gate.yaml")
+    p_gate_run.add_argument("--json-out", type=str, default="codex_local_gate_report.json")
+    p_gate_run.set_defaults(func=_cmd_gates_run)
+
+    # experiments
+    p_exp = subparsers.add_parser("experiments", help="Experiment index commands.")
+    exp_sub = p_exp.add_subparsers(dest="exp_command", required=True)
+
+    p_exp_idx = exp_sub.add_parser("index", help="Build experiment index JSON.")
+    p_exp_idx.add_argument("--runs-root", type=str, default="runs")
+    p_exp_idx.add_argument("--out", type=str, default="codex_experiment_index.json")
+    p_exp_idx.set_defaults(func=_cmd_experiment_index)
+
+    # gap-registry
+    p_gap = subparsers.add_parser("gap-registry", help="Gap registry commands.")
+    gap_sub = p_gap.add_subparsers(dest="gap_command", required=True)
+
+    p_gap_update = gap_sub.add_parser("update", help="Rebuild gap registry YAML.")
+    p_gap_update.add_argument("--audit", type=str, default="_codex_status_update-2025-11-27.md")
+    p_gap_update.add_argument("--change-log", type=str, default="codex_change_log.md")
+    p_gap_update.add_argument("--errors", type=str, default="codex_error_questions.md")
+    p_gap_update.add_argument("--out", type=str, default="codex_gap_registry.yaml")
+    p_gap_update.set_defaults(func=_cmd_gap_registry)
+
+    # yaml-gaps
+    p_yaml = subparsers.add_parser("yaml-gaps", help="YAML coverage gap checks.")
+    yaml_sub = p_yaml.add_subparsers(dest="yaml_command", required=True)
+
+    p_yaml_check = yaml_sub.add_parser("check", help="Generate YAML gap coverage report.")
+    p_yaml_check.add_argument("--gaps", type=str, default="codex_gap_registry.yaml")
+    p_yaml_check.add_argument("--yaml", type=str, default="codex_task_sequence.yaml")
+    p_yaml_check.add_argument("--out", type=str, default="codex_yaml_gap_report.md")
+    p_yaml_check.set_defaults(func=_cmd_yaml_gap_check)
+
+    # task-sequence
+    p_ts = subparsers.add_parser("task-sequence", help="Task sequence runner commands.")
+    ts_sub = p_ts.add_subparsers(dest="ts_command", required=True)
+
+    p_ts_run = ts_sub.add_parser("run", help="Run codex_task_sequence.yaml.")
+    p_ts_run.add_argument("--yaml", type=str, default="codex_task_sequence.yaml")
+    p_ts_run.add_argument("--repo-root", type=str, default=".")
+    p_ts_run.add_argument("--change-log", type=str, default="codex_change_log.md")
+    p_ts_run.add_argument("--errors", type=str, default="codex_error_questions.md")
+    p_ts_run.set_defaults(func=_cmd_task_sequence_run)
+
+    # repro-manifest
+    p_rep = subparsers.add_parser("repro-manifest", help="Reproducibility manifest commands.")
+    rep_sub = p_rep.add_subparsers(dest="repro_command", required=True)
+
+    p_rep_build = rep_sub.add_parser("build", help="Build reproducibility manifest JSON.")
+    p_rep_build.add_argument("--out", type=str, default="codex_repro_manifest.json")
+    p_rep_build.add_argument("--env", type=str, default="codex_env_snapshot.json")
+    p_rep_build.add_argument("--deps", type=str, default="codex_dependency_report.json")
+    p_rep_build.add_argument("--gates", type=str, default="codex_local_gate_report.json")
+    p_rep_build.add_argument("--dataset-index", type=str, default="codex_dataset_index.json")
+    p_rep_build.add_argument("--experiment-index", type=str, default="codex_experiment_index.json")
+    p_rep_build.set_defaults(func=_cmd_repro_manifest)
+
+    # quick-audit
+    p_quick = subparsers.add_parser("quick-audit", help="Run a best-effort local audit sequence.")
+    p_quick.add_argument("--repo-root", type=str, default=".")
+    p_quick.set_defaults(func=_cmd_quick_audit)
+
+    return parser
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    func = getattr(args, "func", None)
+    if func is None:
+        parser.print_help()
+        return 1
+    return int(func(args))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+````
+
+===============================================================================
+2) Quick Audit Script – scripts/codex_quick_audit.sh
+====================================================
+
+Create/overwrite: scripts/codex_quick_audit.sh
+
+```bash
+#!/usr/bin/env bash
+# Simple wrapper to run a best-effort local audit for `_codex_`.
+#
+# This script is intentionally small; it delegates to tools/codex_cli.py.
+# It is safe to run multiple times and is purely local/offline.
+
+set -euo pipefail
+

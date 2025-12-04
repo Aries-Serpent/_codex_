@@ -1,0 +1,350 @@
+        path.write_text("\n".join(lines), encoding="utf-8")
+        return
+
+    for exp_name, runs in sorted(experiments.items(), key=lambda kv: kv[0]):
+        lines.append(f"## Experiment: `{exp_name}`\n")
+        lines.append("| Mode | Run ID | Created At | Seed | Last Metric |")
+        lines.append("| ---- | ------ | ---------- | ---- | ----------- |")
+        for e in sorted(runs, key=lambda r: (r.get("mode") or "", r.get("run_id") or "")):
+            last = e.get("last_metric") or {}
+            if isinstance(last, dict) and any(
+                k in last for k in ("loss", "accuracy", "eval_loss", "eval_accuracy")
+            ):
+                parts = []
+                for k in ("loss", "accuracy", "eval_loss", "eval_accuracy"):
+                    if k in last:
+                        parts.append(f"{k}={last[k]}")
+                last_str = ", ".join(parts)
+            else:
+                last_str = "" if not last else json.dumps(last)[:80]
+            lines.append(
+                "| {mode} | `{run_id}` | {created} | {seed} | {metric} |".format(
+                    mode=e.get("mode"),
+                    run_id=e.get("run_id"),
+                    created=e.get("created_at") or "",
+                    seed=e.get("seed") or "",
+                    metric=last_str,
+                )
+            )
+        lines.append("")  # blank line between experiments
+
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(description="Summarize experiments for `_codex_`.")
+    parser.add_argument(
+        "--runs-dir",
+        type=str,
+        default="runs",
+        help="Base runs directory (default: runs)",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_experiment_summary.json",
+        help="JSON output path (default: codex_experiment_summary.json)",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=str,
+        default="codex_experiment_summary.md",
+        help="Markdown output path (default: codex_experiment_summary.md)",
+    )
+    args = parser.parse_args(argv)
+
+    runs_dir = Path(args.runs_dir).expanduser().resolve()
+    summary = build_summary(runs_dir)
+
+    json_out = Path(args.json_out).expanduser().resolve()
+    md_out = Path(args.md_out).expanduser().resolve()
+    _write_json(json_out, summary)
+    _write_markdown(md_out, summary)
+
+    print(f"Wrote experiment summary JSON to {json_out}")
+    print(f"Wrote experiment summary Markdown to {md_out}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+5) Tests for experiment tracking
+================================
+
+Create/overwrite: tests/codex_ml/test_experiment_logging.py
+
+```python
+from pathlib import Path
+import json
+import yaml
+
+from codex_ml.logging.experiment import ExperimentTracker
+from codex_ml.cli import train_minimal, eval_minimal
+
+
+def test_experiment_tracker_writes_meta(tmp_path: Path):
+    run_dir = tmp_path / "runs" / "train" / "train-run"
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    tracker = ExperimentTracker(run_dir=run_dir, mode="train", run_id="train-run")
+    tracker.log_experiment(
+        experiment_name="exp-test",
+        labels={"k": "v"},
+    )
+
+    meta_path = run_dir / "experiment_meta.json"
+    assert meta_path.exists()
+    data = json.loads(meta_path.read_text(encoding="utf-8"))
+    assert data["experiment_name"] == "exp-test"
+    assert data["mode"] == "train"
+    assert data["run_id"] == "train-run"
+    assert data["labels"]["k"] == "v"
+
+
+def _write_dummy_config(path: Path) -> None:
+    cfg = {
+        "model": {"hidden_size": 64},
+        "training": {"max_steps": 2, "batch_size": 1},
+        "data": {"dataset_name": "dummy"},
+        "eval": {"batch_size": 1},
+    }
+    path.write_text(yaml.safe_dump(cfg, sort_keys=False), encoding="utf-8")
+
+
+def test_train_minimal_integration_with_experiment_tracker(tmp_path: Path):
+    conf_dir = tmp_path / "conf"
+    conf_dir.mkdir()
+    cfg_path = conf_dir / "train.yaml"
+    _write_dummy_config(cfg_path)
+
+    runs_dir = tmp_path / "runs"
+
+    rc = train_minimal.main(
+        [
+            "--config",
+            str(cfg_path),
+            "--runs-dir",
+            str(runs_dir),
+            "--seed",
+            "13",
+            "--max-steps",
+            "2",
+            "--experiment-name",
+            "exp-train",
+        ]
+    )
+    assert rc == 0
+
+    train_root = runs_dir / "train"
+    run_dirs = [p for p in train_root.iterdir() if p.is_dir()]
+    assert run_dirs
+    meta = (run_dirs[0] / "experiment_meta.json").read_text(encoding="utf-8")
+    data = json.loads(meta)
+    assert data["experiment_name"] == "exp-train"
+
+
+def test_eval_minimal_integration_with_experiment_tracker(tmp_path: Path):
+    conf_dir = tmp_path / "conf"
+    conf_dir.mkdir()
+    cfg_path = conf_dir / "eval.yaml"
+    _write_dummy_config(cfg_path)
+
+    runs_dir = tmp_path / "runs"
+    ckpt_dir = runs_dir / "train"
+    ckpt_dir.mkdir(parents=True, exist_ok=True)
+
+    rc = eval_minimal.main(
+        [
+            "--config",
+            str(cfg_path),
+            "--runs-dir",
+            str(runs_dir),
+            "--seed",
+            "17",
+            "--checkpoint",
+            str(ckpt_dir),
+            "--experiment-name",
+            "exp-eval",
+        ]
+    )
+    assert rc == 0
+
+    eval_root = runs_dir / "eval"
+    run_dirs = [p for p in eval_root.iterdir() if p.is_dir()]
+    assert run_dirs
+    meta = (run_dirs[0] / "experiment_meta.json").read_text(encoding="utf-8")
+    data = json.loads(meta)
+    assert data["experiment_name"] == "exp-eval"
+    assert data["labels"]["checkpoint"].endswith("train")
+```
+
+===============================================================================
+6) Experiment tracking doc
+==========================
+
+Create/overwrite: docs/experiments/experiment_tracking_minimal.md
+
+````markdown
+# Minimal Experiment Tracking in `_codex_` (Scaffolding)
+
+This document describes the *current* experiment tracking story for
+`_codex_`. It is intentionally minimal and offline-only.
+
+## 1. Files Per Run
+
+Each training or evaluation run directory under `runs/` may contain:
+
+- `run_manifest.yaml` – context + config snapshot
+- `metrics.ndjson` – stepwise metrics, written by `MetricLogger`
+- `experiment_meta.json` – experiment metadata, written by
+  `ExperimentTracker`
+
+Example layout:
+
+```text
+runs/
+  train/
+    train-20251127-000000-s123/
+      run_manifest.yaml
+      metrics.ndjson
+      experiment_meta.json
+  eval/
+    eval-20251127-000100-s123/
+      run_manifest.yaml
+      metrics.ndjson
+      experiment_meta.json
+````
+
+## 2. ExperimentTracker
+
+Module:
+
+* `codex_ml.logging.experiment`
+
+Key pieces:
+
+* `ExperimentMeta` dataclass
+* `ExperimentTracker` class
+
+Usage (conceptual):
+
+```python
+from codex_ml.logging.experiment import ExperimentTracker
+
+tracker = ExperimentTracker(run_dir=run_dir, mode="train", run_id=run_dir.name)
+tracker.log_experiment(
+    experiment_name="my-experiment",
+    labels={"source": "train_minimal", "config_path": str(cfg_path)},
+)
+```
+
+If `experiment_name` is falsy (empty, None), the call is a no-op.
+
+## 3. Integration with Minimal CLIs
+
+The following CLIs accept `--experiment-name`:
+
+* `codex_ml.cli.train_minimal`
+* `codex_ml.cli.eval_minimal`
+
+Example:
+
+```bash
+python -m codex_ml.cli.train_minimal \
+  --config conf/minimal_train.yaml \
+  --runs-dir runs \
+  --seed 123 \
+  --max-steps 5 \
+  --experiment-name "exp-foo"
+
+python -m codex_ml.cli.eval_minimal \
+  --config conf/minimal_eval.yaml \
+  --runs-dir runs \
+  --seed 123 \
+  --checkpoint runs/train \
+  --experiment-name "exp-foo"
+```
+
+If `--experiment-name` is omitted, no `experiment_meta.json` is written
+for the run.
+
+## 4. Experiment Summary Tool
+
+Tool:
+
+* `tools/codex_experiment_summary.py`
+
+Usage:
+
+```bash
+python tools/codex_experiment_summary.py \
+  --runs-dir runs \
+  --json-out codex_experiment_summary.json \
+  --md-out codex_experiment_summary.md
+```
+
+Behavior:
+
+* Scans `runs/train/**` and `runs/eval/**`.
+* Reads:
+
+  * `run_manifest.yaml`
+  * `experiment_meta.json` (if present)
+  * `metrics.ndjson` (last line only)
+* Groups runs by `experiment_name` (or `(unlabeled)`).
+* Produces:
+
+  * JSON summary for programmatic use.
+  * Markdown summary for quick inspection.
+
+## 5. Relationship to Gap Registry & Reproducibility
+
+This experiment tracking layer complements:
+
+* Gap registry:
+
+  * Which gaps are associated with which runs.
+* Reproducibility manifest:
+
+  * `codex_reproducibility_manifest.json` can reference:
+
+    * `codex_experiment_index.json`
+    * `codex_experiment_summary.json`
+
+Together, they provide:
+
+* A **what** view (gaps, tasks).
+* A **how** view (runs, configs, metrics).
+* A **where** view (artifacts on disk).
+
+These are deliberately kept small and local, and can be extended to
+richer tracking systems in future work.
+
+````
+
+===============================================================================
+7) Extend codex_task_sequence.yaml – experiment tracking smoke
+===============================================================================
+
+Do **not** rewrite the entire `codex_task_sequence.yaml`. Apply the
+following minimal textual update:
+
+1. Under the phase that handles **Best-Effort Construction** (the same
+   phase where minimal training is run), append a new step to run a
+   small tracked experiment.
+
+   Locate the phase whose `name` is `"Best-Effort Construction"`
+   (or equivalent) and append this step to its `steps` list:
+
+```yaml
+       - id: "<PHASE_ID>.E1"
+         description: >
+           Run a minimal tracked training run using train_minimal with
+           an explicit experiment name. This ensures that
+           experiment_meta.json is written and that the experiment
+           summary tooling has at least one labeled run to operate on.
+         actions:
+           - >

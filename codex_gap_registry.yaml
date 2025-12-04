@@ -1,0 +1,21 @@
+gaps:
+- id: training.training.loop.does.not.expose.gradient.accumulation.settings
+  capability: training
+  location: []
+  description: Training loop does not expose gradient accumulation settings
+  status: missing
+  risk_level: null
+  yaml_phase_step: null
+  ml_test_categories: null
+  last_seen_in_audit: '2025-11-27'
+  notes: Extracted from High-Signal Findings in audit.
+- id: tokenization.tokenization.fast.backend.missing.parity.tests
+  capability: tokenization
+  location: []
+  description: Tokenization fast backend missing parity tests
+  status: missing
+  risk_level: null
+  yaml_phase_step: null
+  ml_test_categories: null
+  last_seen_in_audit: '2025-11-27'
+  notes: Extracted from High-Signal Findings in audit.

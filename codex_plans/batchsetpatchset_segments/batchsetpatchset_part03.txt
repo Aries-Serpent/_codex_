@@ -1,0 +1,292 @@
+             python -m codex_ml.cli.train_minimal
+             --config conf/minimal_train.yaml
+             --runs-dir runs
+             --seed 123
+             --max-steps 2
+             --experiment-name codex-sequence-smoke
+         on_error:
+           strategy: record_and_continue
+````
+
+Replace `<PHASE_ID>` with the integer id of the Best-Effort
+Construction phase (e.g. `"3.E1"` if the phase id is 3). Keep the
+indentation aligned with other steps in that phase.
+
+2. (Optional, but recommended) If there is a **Reproducibility /
+   Experiment tracking** phase already, you may append an additional step
+   that runs the summary tool:
+
+```yaml
+       - id: "<PHASE_ID>.E2"
+         description: >
+           Generate a fresh experiment summary over all runs in the
+           local runs/ directory. This is safe and local-only, and
+           produces both JSON and Markdown artifacts.
+         actions:
+           - "python tools/codex_experiment_summary.py --runs-dir runs --json-out codex_experiment_summary.json --md-out codex_experiment_summary.md || python tools/codex_experiment_summary.py --runs-dir runs --json-out codex_experiment_summary.json --md-out codex_experiment_summary.md"
+         on_error:
+           strategy: record_and_continue
+```
+
+Again, replace `<PHASE_ID>` appropriately and match indentation.
+
+===============================================================================
+8) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/codex_ml/test_experiment_logging.py -q`
+* `pytest tests/codex_ml -q`
+* `python -m codex_ml.cli.train_minimal --config conf/minimal_train.yaml --runs-dir runs --seed 123 --max-steps 2 --experiment-name exp-smoke`
+* `python -m codex_ml.cli.eval_minimal --config conf/minimal_eval.yaml --runs-dir runs --seed 123 --checkpoint runs/train --experiment-name exp-smoke`
+* `python tools/codex_experiment_summary.py --runs-dir runs --json-out codex_experiment_summary.json --md-out codex_experiment_summary.md`
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* `experiment_meta.json` is written for runs when `--experiment-name` is set.
+* The new tests pass.
+* `codex_experiment_summary.*` is created and groups runs by experiment name.
+* The updated task sequence steps run without breaking other phases, and any failures are captured via `record_and_continue`.
+
+As always, keep everything local, offline, and avoid any GitHub Actions or external CI changes.
+
+```
+::contentReference[oaicite:0]{index=0}
+```
+
+
+------
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 21**) you can paste directly into your Codex implementation GPT.
+
+This batch focuses on **Reproducibility Manifest & Status Digest**:
+
+* A unified **reproducibility manifest tool** that stitches together env snapshot, dependencies, gaps, experiments, and local gate.
+* A small **human-readable markdown digest**.
+* Tests for the repro manifest.
+* A **doc** describing the manifest and how it fits the reproducibility checklist.
+* A light extension to `codex_task_sequence.yaml` to generate the manifest as part of the sequence.
+
+All patchsets are explicit, local/offline, and do **not** touch GitHub Actions.
+
+---
+
+### Codex Batch 21 – Reproducibility Manifest & Status Digest
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_ on a feature
+branch (e.g. feature/repro-manifest-and-digest).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a **reproducibility manifest tool**:
+   - `tools/codex_repro_manifest.py`
+2. Emit both JSON + Markdown views:
+   - `codex_reproducibility_manifest.json`
+   - `codex_reproducibility_manifest.md`
+3. Add tests:
+   - `tests/tools/test_codex_repro_manifest.py`
+4. Add documentation:
+   - `docs/reproducibility/repro_manifest_and_status_digest.md`
+5. Extend `codex_task_sequence.yaml` with a reproducibility manifest step.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Reproducibility manifest tool – tools/codex_repro_manifest.py
+===============================================================================
+
+Create/overwrite: tools/codex_repro_manifest.py
+
+```python
+#!/usr/bin/env python
+"""Reproducibility Manifest generator for `_codex_`.
+
+This tool aggregates high-signal artifacts into a single manifest:
+
+Inputs (all optional, best-effort):
+
+- codex_env_snapshot.json          (environment snapshot)
+- codex_dependency_report.json     (dependency / package view)
+- codex_gap_registry.yaml          (gap registry)
+- codex_experiment_index.json      (runs index)
+- codex_local_gate_report.json     (local gate summary)
+
+Outputs:
+
+- codex_reproducibility_manifest.json
+- codex_reproducibility_manifest.md
+
+Design goals:
+
+- Offline-only.
+- Pure summarization and cross-link; no heavy analysis.
+- Safe to call repeatedly.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as _dt
+import json
+from collections import Counter
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import yaml
+
+
+def _load_json(path: Path) -> Any:
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _load_yaml(path: Path) -> Any:
+    if not path.exists():
+        return None
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return None
+
+
+def _summarize_env(snapshot: Any) -> Dict[str, Any]:
+    if not snapshot or not isinstance(snapshot, dict):
+        return {"available": False}
+
+    python_version = snapshot.get("python", {}).get("version")
+    os_info = snapshot.get("os", {})
+    env_vars = snapshot.get("env", {})
+
+    # Only small, non-sensitive summary.
+    codex_vars = {
+        k: v for k, v in env_vars.items() if str(k).upper().startswith("CODEX_")
+    }
+
+    return {
+        "available": True,
+        "python_version": python_version,
+        "os_platform": os_info.get("platform"),
+        "os_release": os_info.get("release"),
+        "codex_env_var_keys": sorted(codex_vars.keys()),
+    }
+
+
+def _summarize_deps(report: Any) -> Dict[str, Any]:
+    if not report or not isinstance(report, dict):
+        return {"available": False}
+
+    pkgs = report.get("packages") or []
+    total = len(pkgs)
+    # Try to separate direct vs transitive if represented; if not, just count.
+    direct = sum(1 for p in pkgs if p.get("kind") == "direct")
+    return {
+        "available": True,
+        "total_packages": total,
+        "direct_dependencies": direct,
+    }
+
+
+def _summarize_gaps(registry: Any) -> Dict[str, Any]:
+    if not registry or not isinstance(registry, dict):
+        return {"available": False}
+
+    gaps = registry.get("gaps", []) or []
+    total = len(gaps)
+    by_status = Counter()
+    by_risk = Counter()
+    for g in gaps:
+        by_status[str(g.get("status") or "unknown")] += 1
+        by_risk[str(g.get("risk_level") or "unknown")] += 1
+    return {
+        "available": True,
+        "total_gaps": total,
+        "by_status": dict(sorted(by_status.items())),
+        "by_risk_level": dict(sorted(by_risk.items())),
+    }
+
+
+def _summarize_experiments(index: Any) -> Dict[str, Any]:
+    if not index or not isinstance(index, dict):
+        return {"available": False}
+
+    runs = index.get("runs", []) or []
+    total = len(runs)
+    by_mode = Counter()
+    cfg_paths = set()
+    for r in runs:
+        by_mode[str(r.get("mode") or "unknown")] += 1
+        cfg = r.get("config_path")
+        if cfg:
+            cfg_paths.add(str(cfg))
+    return {
+        "available": True,
+        "total_runs": total,
+        "runs_by_mode": dict(sorted(by_mode.items())),
+        "unique_config_paths": sorted(cfg_paths),
+    }
+
+
+def _summarize_local_gate(gate: Any) -> Dict[str, Any]:
+    if not gate or not isinstance(gate, dict):
+        return {"available": False}
+
+    overall = int(gate.get("overall_returncode", 0))
+    results = gate.get("results", []) or []
+    failed = [r for r in results if int(r.get("returncode", 0)) != 0]
+    return {
+        "available": True,
+        "overall_returncode": overall,
+        "total_commands": len(results),
+        "failed_commands": [f.get("name") for f in failed],
+    }
+
+
+def build_manifest(
+    repo_root: Path,
+    env_snapshot_path: Path,
+    dep_report_path: Path,
+    gap_registry_path: Path,
+    exp_index_path: Path,
+    local_gate_path: Path,
+) -> Dict[str, Any]:
+    env_snapshot = _load_json(env_snapshot_path)
+    dep_report = _load_json(dep_report_path)
+    gap_registry = _load_yaml(gap_registry_path)
+    exp_index = _load_json(exp_index_path)
+    local_gate = _load_json(local_gate_path)
+
+    now = _dt.datetime.utcnow().isoformat() + "Z"
+
+    return {
+        "generated_at": now,
+        "repo_root": str(repo_root),
+        "inputs": {
+            "env_snapshot": str(env_snapshot_path),
+            "dependency_report": str(dep_report_path),
+            "gap_registry": str(gap_registry_path),
+            "experiment_index": str(exp_index_path),
+            "local_gate_report": str(local_gate_path),
+        },
+        "summary": {
+            "environment": _summarize_env(env_snapshot),
+            "dependencies": _summarize_deps(dep_report),
+            "gaps": _summarize_gaps(gap_registry),
+            "experiments": _summarize_experiments(exp_index),
+            "local_gate": _summarize_local_gate(local_gate),
+        },
+    }
+
+
