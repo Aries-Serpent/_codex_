@@ -32,7 +32,10 @@ def _get_sentencepiece():
         import sentencepiece as sentencepiece_module  # type: ignore
 
         if not hasattr(sentencepiece_module, "SentencePieceTrainer"):
-            raise ImportError("sentencepiece not fully available")
+            raise ImportError(
+                "sentencepiece module is missing SentencePieceTrainer. "
+                "Try reinstalling: pip install --force-reinstall sentencepiece"
+            )
         spm = sentencepiece_module
         return sentencepiece_module
     except Exception:
@@ -42,7 +45,14 @@ def _get_sentencepiece():
 
         class _StubSentencePieceTrainer:
             @staticmethod
-            def train(input_path: str, model_prefix: str, vocab_size: int, character_coverage: float, model_type: str, **_: object):
+            def train(
+                input_path: str,
+                model_prefix: str,
+                vocab_size: int,
+                character_coverage: float,
+                model_type: str,
+                **_: object,
+            ):
                 corpus_path = Path(input_path)
                 tokens: list[str] = []
                 if corpus_path.exists():

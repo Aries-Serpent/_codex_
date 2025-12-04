@@ -17,7 +17,6 @@ from typing import Any, Dict, Iterable, List, Sequence, Tuple
 
 from codex_ml.metrics import core as metrics_core
 
-
 LabelPred = Tuple[float, float]
 
 
@@ -65,7 +64,10 @@ def _get_first_key(record: Dict[str, Any], keys: Sequence[str]) -> Any:
             return record.get(key)
     return None
 
-def _extract_targets(records: Iterable[Dict[str, Any]]) -> Tuple[List[float], List[float]]:
+
+def _extract_labels_and_predictions(
+    records: Iterable[Dict[str, Any]],
+) -> Tuple[List[float], List[float]]:
     labels: List[float] = []
     predictions: List[float] = []
     for record in records:
@@ -93,7 +95,7 @@ def _write_csv(stats: EvalStats, path: Path) -> None:
 
 def evaluate(path: Path, metric_names: Sequence[str]) -> EvalStats:
     records = _load_records(path)
-    labels, predictions = _extract_targets(records)
+    labels, predictions = _extract_labels_and_predictions(records)
     metrics = metrics_core.compute_metrics(metric_names, labels, predictions)
     return EvalStats(count=len(labels), metrics=dict(metrics))
 

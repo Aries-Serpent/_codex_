@@ -146,9 +146,10 @@ class ModelServer:
         if not texts:
             return np.zeros((0, self._embedding_dim), dtype=np.float32)
 
+        _MAX_SEED_VALUE = 2**32
         embeddings = []
         for text in texts:
-            seed = abs(hash(text)) % (2**32)
+            seed = abs(hash(text)) % _MAX_SEED_VALUE
             rng = np.random.default_rng(seed)
             vec = rng.random(self._embedding_dim, dtype=np.float32)
             norm = np.linalg.norm(vec)
@@ -182,7 +183,6 @@ if FASTAPI_AVAILABLE:
         inference_time_ms: float
         metadata: Optional[Dict[str, Any]] = None
 
-
     def _validate_payload(inputs: List[str]) -> None:
         if not inputs:
             raise HTTPException(status_code=400, detail="Inputs cannot be empty")
@@ -190,7 +190,6 @@ if FASTAPI_AVAILABLE:
             raise HTTPException(status_code=400, detail="Batch size exceeds limit")
         if any(len(text) > MAX_INPUT_LENGTH for text in inputs):
             raise HTTPException(status_code=400, detail="Input length exceeds limit")
-
 
     def create_app() -> FastAPI:
         app = FastAPI()
@@ -229,7 +228,9 @@ if FASTAPI_AVAILABLE:
 
         @app.post("/predict", response_model=PredictionResponse)
         def predict(request: PredictionRequest, http_request: Request):
-            client_key = http_request.client.host if getattr(http_request, "client", None) else "global"
+            client_key = (
+                http_request.client.host if getattr(http_request, "client", None) else "global"
+            )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 
@@ -252,4 +253,3 @@ else:
 
     def create_app():  # pragma: no cover
         raise ImportError("FastAPI not installed")
-
