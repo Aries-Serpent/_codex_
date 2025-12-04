@@ -181,6 +181,7 @@ def evaluate_dataloader(
                         if not name.startswith("_") and not callable(value)
                     }
                 except TypeError:
+                    # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)
                     output_mapping = {
                         name: value
                         for name in (n for n in dir(outputs) if not n.startswith("_"))
