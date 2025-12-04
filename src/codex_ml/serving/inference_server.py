@@ -228,8 +228,8 @@ if FASTAPI_AVAILABLE:
             }
 
         @app.post("/predict", response_model=PredictionResponse)
-        def predict(request: PredictionRequest, raw_request: Request):
-            client_key = raw_request.client.host if getattr(raw_request, "client", None) else "global"
+        def predict(request: PredictionRequest, http_request: Request):
+            client_key = http_request.client.host if getattr(http_request, "client", None) else "global"
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
 

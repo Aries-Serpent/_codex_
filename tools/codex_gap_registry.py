@@ -47,8 +47,8 @@ _DATE_RE = re.compile(r"(20\d{2}-\d{2}-\d{2})")
 
 def _slugify(text: str) -> str:
     text = text.strip().lower()
-    text = re.sub(r"[^a-z0-9]+", ".", text)
-    text = re.sub(r"\.+", ".", text).strip(".")
+    text = re.sub(r"[^a-z0-9]+", "-", text)
+    text = re.sub(r"-+", "-", text).strip("-")
     return text or "gap"
 
 

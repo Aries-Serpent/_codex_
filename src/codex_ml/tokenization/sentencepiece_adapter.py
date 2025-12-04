@@ -42,8 +42,8 @@ def _get_sentencepiece():
 
         class _StubSentencePieceTrainer:
             @staticmethod
-            def train(input: str, model_prefix: str, vocab_size: int, character_coverage: float, model_type: str, **_: object):
-                corpus_path = Path(input)
+            def train(input_path: str, model_prefix: str, vocab_size: int, character_coverage: float, model_type: str, **_: object):
+                corpus_path = Path(input_path)
                 tokens: list[str] = []
                 if corpus_path.exists():
                     tokens = corpus_path.read_text(encoding="utf-8").split()
@@ -77,6 +77,12 @@ def _get_sentencepiece():
 
             # Compatibility shims
             def __getattr__(self, name: str):  # pragma: no cover - compatibility
+                """
+                Provide compatibility shims for certain attribute names.
+
+                Returns the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
+                to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
+                """
                 if name in {"GetPieceSize", "piece_size", "vocab_size"}:
                     return self.get_piece_size
                 raise AttributeError(name)

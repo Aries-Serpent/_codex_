@@ -59,12 +59,18 @@ def _load_records(path: Path) -> List[Dict[str, Any]]:
     raise ValueError(f"Unsupported file type: {path.suffix}")
 
 
+def _get_first_key(record: Dict[str, Any], keys: Sequence[str]) -> Any:
+    for key in keys:
+        if key in record:
+            return record.get(key)
+    return None
+
 def _extract_targets(records: Iterable[Dict[str, Any]]) -> Tuple[List[float], List[float]]:
     labels: List[float] = []
     predictions: List[float] = []
     for record in records:
-        label = record.get("label") if "label" in record else record.get("target") if "target" in record else record.get("truth")
-        pred = record.get("prediction") if "prediction" in record else record.get("pred") if "pred" in record else record.get("output")
+        label = _get_first_key(record, ["label", "target", "truth"])
+        pred = _get_first_key(record, ["prediction", "pred", "output"])
         if label is None or pred is None:
             continue
         labels.append(float(label))
