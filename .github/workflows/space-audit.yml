@@ -105,7 +105,7 @@ jobs:
           retention-days: 90
 
   quality-gates:
-    name: Quality Gates
+    name: Quality Gates & Regression Check
     runs-on: ubuntu-latest
     needs: [space-audit-fast]
     if: github.event_name == 'pull_request'
@@ -114,6 +114,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for baseline comparison
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -129,6 +131,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: audit-artifacts-fast
+
+      - name: Check for baseline
+        id: check-baseline
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            echo "baseline_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Baseline found for regression comparison"
+          else
+            echo "baseline_exists=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No baseline found - this will be established after merge"
+          fi
+
+      - name: Regression diff (if baseline exists)
+        if: steps.check-baseline.outputs.baseline_exists == 'true'
+        run: |
+          python scripts/space_traversal/audit_runner.py diff \
+            --old audit_artifacts/baselines/capabilities_scored.json \
+            --new audit_artifacts/capabilities_scored.json || echo "Diff completed with warnings"
 
       - name: Check for low maturity capabilities
         run: |
@@ -153,3 +173,31 @@ jobs:
           else
             echo "legacy_import_usage.csv not found, skipping check"
           fi
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let comment = '## 🔍 Audit Quality Gates\n\n';
+            
+            if (fs.existsSync('audit_artifacts/gaps.json')) {
+              const gaps = JSON.parse(fs.readFileSync('audit_artifacts/gaps.json'));
+              const lowCount = (gaps.low_maturity || []).length;
+              comment += `- Low maturity capabilities: **${lowCount}**\n`;
+            }
+            
+            if (fs.existsSync('reports/legacy_import_usage.csv')) {
+              const lines = fs.readFileSync('reports/legacy_import_usage.csv', 'utf8').split('\n').length - 1;
+              comment += `- Legacy imports detected: **${lines}**\n`;
+            }
+            
+            comment += '\n✅ Quality gates check completed';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

@@ -25,10 +25,12 @@ def normalized_json(path: Path) -> dict:
     return remove_volatile(data)
 
 def run_pipeline():
+    import sys
     result = subprocess.run(
-        ["python", str(ROOT / "scripts" / "space_traversal" / "audit_runner.py"), "run"],
+        [sys.executable, str(ROOT / "scripts" / "space_traversal" / "audit_runner.py"), "run"],
         capture_output=True,
-        text=True
+        text=True,
+        cwd=ROOT
     )
     if result.returncode != 0:
         print(f"[ERROR] Pipeline failed with return code {result.returncode}")

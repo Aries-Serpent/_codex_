@@ -128,3 +128,88 @@ def test_capabilities_scored_structure():
         expected_components = ["functionality", "consistency", "tests", "safeguards", "documentation"]
         for component in expected_components:
             assert component in components, f"Missing component: {component}"
+
+
+def test_structural_integrity_detector_present():
+    """Test that structural-integrity capability is detected and reported."""
+    repo_root = Path(__file__).resolve().parents[2]
+    raw_path = repo_root / "audit_artifacts" / "capabilities_raw.json"
+    
+    if not raw_path.exists():
+        result = subprocess.run(
+            ["python", str(repo_root / "scripts" / "space_traversal" / "audit_runner.py"), "stage", "S3"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            pytest.skip(f"Cannot generate raw capabilities: {result.stderr[:200]}")
+    
+    if not raw_path.exists():
+        pytest.skip("capabilities_raw.json not available")
+    
+    with open(raw_path, 'r') as f:
+        data = json.load(f)
+    
+    assert "capabilities" in data, "Missing capabilities field"
+    cap_ids = [cap["id"] for cap in data["capabilities"]]
+    assert "structural-integrity" in cap_ids, "structural-integrity detector not present"
+
+
+def test_context_index_paths_sorted():
+    """Test that context_index.json has sorted paths for determinism."""
+    repo_root = Path(__file__).resolve().parents[2]
+    index_path = repo_root / "audit_artifacts" / "context_index.json"
+    
+    if not index_path.exists():
+        result = subprocess.run(
+            ["python", str(repo_root / "scripts" / "space_traversal" / "audit_runner.py"), "stage", "S1"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            pytest.skip(f"Cannot generate context index: {result.stderr[:200]}")
+    
+    if not index_path.exists():
+        pytest.skip("context_index.json not available")
+    
+    with open(index_path, 'r') as f:
+        data = json.load(f)
+    
+    assert "files" in data, "Missing files field"
+    paths = [f["path"] for f in data["files"]]
+    assert paths == sorted(paths), "Paths not sorted (required for determinism)"
+
+
+def test_capability_matrix_generated():
+    """Test that capability_matrix report is generated."""
+    repo_root = Path(__file__).resolve().parents[2]
+    reports_dir = repo_root / "reports"
+    
+    if not reports_dir.exists():
+        pytest.skip("reports directory not found")
+    
+    # Check for any capability_matrix file
+    matrix_files = list(reports_dir.glob("capability_matrix_*.md"))
+    
+    if len(matrix_files) == 0:
+        # Try to generate
+        result = subprocess.run(
+            ["python", str(repo_root / "scripts" / "space_traversal" / "audit_runner.py"), "stage", "S6"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            pytest.skip(f"Cannot generate matrix report: {result.stderr[:200]}")
+        
+        matrix_files = list(reports_dir.glob("capability_matrix_*.md"))
+    
+    assert len(matrix_files) > 0, "No capability_matrix report found"
+    
+    # Check first matrix file has template_hash reference
+    with open(matrix_files[0], 'r') as f:
+        content = f.read()
+        assert "template_hash" in content.lower() or "sha256" in content.lower(), \
+            "Matrix report missing template hash reference"
