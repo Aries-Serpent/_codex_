@@ -65,7 +65,7 @@ class BatchingMiddleware:
         if self.flush_task is not None and not self.flush_task.done():
             return
 
-        task: asyncio.Task = None  # type: ignore
+        task: Optional[asyncio.Task] = None
 
         async def delayed_flush() -> None:
             try:
