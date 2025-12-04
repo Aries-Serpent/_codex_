@@ -60,7 +60,7 @@ def _missing_dependencies(
 
 def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str, float]:
     """Evaluate a model on the given texts and return metrics.
-    
+
     Parameters
     ----------
     model : Any
@@ -69,7 +69,7 @@ def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str
         A Hugging Face tokenizer instance (e.g., AutoTokenizer).
     texts : Iterable[str]
         Text samples to evaluate on.
-        
+
     Returns
     -------
     dict[str, float]
@@ -95,14 +95,14 @@ def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str
 
 def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     """Load a model by name and evaluate it on the given texts.
-    
+
     Parameters
     ----------
     model_name : str
         Name or path of the Hugging Face model to load.
     texts : Iterable[str]
         Text samples to evaluate on.
-        
+
     Returns
     -------
     dict[str, float]
@@ -126,7 +126,7 @@ def run_evaluator(model_name: str, texts: Iterable[str]) -> dict[str, float]:
     return evaluate_model(model, tokenizer, texts)
 
 
-def evaluate_constant(predictions, targets) -> float:
+def evaluate_constant(predictions: Sequence[Any], targets: Sequence[Any]) -> float:
     """Return a dummy accuracy-style score for smoke tests."""
     if not predictions:
         return 0.0
@@ -134,7 +134,9 @@ def evaluate_constant(predictions, targets) -> float:
     return correct / max(len(predictions), 1)
 
 
-def evaluate_dataloader(model: Any, dataloader: Iterable[dict[str, Any]], eval_cfg, device: Any) -> dict[str, float]:
+def evaluate_dataloader(
+    model: Any, dataloader: Iterable[dict[str, Any]], eval_cfg, device: Any
+) -> dict[str, float]:
     """Evaluate a model over a dataloader while restoring training mode.
 
     This lightweight helper mirrors the legacy evaluator surface used by the

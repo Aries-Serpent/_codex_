@@ -60,7 +60,7 @@ def _yaml_dumps(data: Any) -> str:
         import yaml
     except Exception:
         return json.dumps(data, indent=2, sort_keys=True)
-    return yaml.safe_dump(data)
+    return yaml.safe_dump(data, sort_keys=False)
 
 
 def _git_commit() -> str | None:

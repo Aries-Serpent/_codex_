@@ -71,7 +71,8 @@ class BatchingMiddleware:
                 await self._flush_batch()
             finally:
                 # Ensure the handle is cleared when the task completes.
-                self.flush_task = None
+                if self.flush_task is asyncio.current_task():
+                    self.flush_task = None
 
         self.flush_task = asyncio.create_task(delayed_flush())
 
@@ -119,4 +120,3 @@ class BatchingMiddleware:
         if self.flush_task is not None and not self.flush_task.done():
             self.flush_task.cancel()
         await self._flush_batch()
-

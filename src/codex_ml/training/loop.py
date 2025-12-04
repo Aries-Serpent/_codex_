@@ -5,7 +5,7 @@ with real optimizers, schedulers, and gradient accumulation.
 """
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Iterable
 
 from codex_ml.interfaces.contracts import TrainingContractError
 from codex_ml.logging.metrics import MetricLogger
@@ -16,7 +16,9 @@ def train_one_step(loss_value: float) -> float:
     return loss_value * 0.9
 
 
-def train_epoch(model, dataloader, state):
+def train_epoch(
+    model: Any, dataloader: Iterable[Dict[str, Any]], state: Dict[str, Any]
+) -> Dict[str, float]:
     if not dataloader:
         raise TrainingContractError("Dataloader must not be empty")
     losses = []
@@ -57,7 +59,9 @@ def run_minimal_training(config: Dict[str, Any], max_steps: int, run_dir: str) -
     return {"loss_final": loss}
 
 
-def run_minimal_evaluation(config: Dict[str, Any], checkpoint: str, run_dir: str) -> Dict[str, float]:
+def run_minimal_evaluation(
+    config: Dict[str, Any], checkpoint: str, run_dir: str
+) -> Dict[str, float]:
     """Tiny evaluation stub that logs a deterministic score."""
 
     run_path = Path(run_dir)
