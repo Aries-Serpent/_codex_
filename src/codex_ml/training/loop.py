@@ -23,7 +23,10 @@ def train_epoch(model, dataloader, state):
     for batch in dataloader:
         if "input_ids" not in batch:
             raise TrainingContractError("input_ids missing from batch")
-        result = model.step(batch, state)
+        try:
+            result = model.step(batch, state)
+        except Exception as exc:  # pragma: no cover - surfaced in tests
+            raise TrainingContractError(f"Model.step failed to process batch: {exc}") from exc
         if "loss" not in result:
             raise TrainingContractError("Model step did not return loss")
         losses.append(float(result["loss"]))

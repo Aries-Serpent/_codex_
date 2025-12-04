@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from codex_ml.cli import utils as cli_utils
+from codex_ml.logging.experiment import ExperimentTracker
 
 
 def _import_training_loop():
@@ -41,6 +42,12 @@ def _build_argparser() -> argparse.ArgumentParser:
         default="",
         help="Checkpoint directory or file to evaluate (optional).",
     )
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default="",
+        help="Optional experiment name for tracking (default: empty).",
+    )
     return parser
 
 
@@ -55,6 +62,16 @@ def main(argv: list[str] | None = None) -> int:
     ctx = cli_utils.create_run_dir(base_runs, mode="eval", seed=args.seed)
     ctx.config_path = str(config_path)
     cli_utils.write_run_manifest(ctx, config)
+
+    tracker = ExperimentTracker(run_dir=ctx.run_dir, mode="eval", run_id=ctx.run_id)
+    tracker.log_experiment(
+        experiment_name=args.experiment_name,
+        labels={
+            "source": "eval_minimal",
+            "config_path": str(config_path),
+            "checkpoint": str(args.checkpoint),
+        },
+    )
 
     training_loop = _import_training_loop()
     training_loop.run_minimal_evaluation(

@@ -1,144 +1,65 @@
 #!/usr/bin/env python
-"""Build a lightweight experiment index from `runs/` for `_codex_`."""
+"""Index experiment metadata under a runs directory."""
 
 from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import yaml
+from typing import Dict, List
 
 
-def _load_manifest(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    if not isinstance(data, dict):
-        return {}
-    return data
+@dataclass
+class RunRecord:
+    run_id: str
+    meta_path: str
+    meta: Dict[str, object]
 
 
-def _summarize_metrics(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {"num_records": 0, "last_step": None, "last_metrics": {}}
-    last = None
-    count = 0
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            rec = json.loads(line)
-        except Exception:
-            continue
-        last = rec
-        count += 1
-    if last is None:
-        return {"num_records": 0, "last_step": None, "last_metrics": {}}
-    return {
-        "num_records": count,
-        "last_step": last.get("step"),
-        "last_metrics": last.get("metrics", {}),
+def _load_meta(path: Path) -> Dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def build_index(runs_root: Path) -> Dict[str, object]:
+    runs: List[RunRecord] = []
+    for meta_file in sorted(list(runs_root.rglob("meta.json")) + list(runs_root.rglob("experiment_meta.json"))):
+        run_id = meta_file.parent.name
+        runs.append(RunRecord(run_id=run_id, meta_path=str(meta_file.relative_to(runs_root)), meta=_load_meta(meta_file)))
+    return {"runs_root": str(runs_root), "runs": runs}
+
+
+def _write_json(index: Dict[str, object], path: Path) -> None:
+    payload = {
+        "runs_root": index["runs_root"],
+        "runs": [record.__dict__ for record in index["runs"]],
     }
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
 
 
-def _iter_run_dirs(base: Path, mode: str) -> List[Path]:
-    root = base / mode
-    if not root.exists():
-        return []
-    return sorted([p for p in root.iterdir() if p.is_dir()])
-
-
-def build_index(runs_dir: Path) -> Dict[str, Any]:
-    runs_dir = runs_dir.expanduser().resolve()
-    records: List[Dict[str, Any]] = []
-
-    for mode in ("train", "eval"):
-        for run_dir in _iter_run_dirs(runs_dir, mode):
-            manifest = _load_manifest(run_dir / "run_manifest.yaml")
-            ctx = manifest.get("context") or {}
-            summary = _summarize_metrics(run_dir / "metrics.ndjson")
-            records.append(
-                {
-                    "mode": mode,
-                    "run_id": ctx.get("run_id", run_dir.name),
-                    "run_dir": str(run_dir),
-                    "seed": ctx.get("seed"),
-                    "created_at": ctx.get("created_at"),
-                    "config_path": ctx.get("config_path"),
-                    "metrics": summary,
-                }
-            )
-
-    return {"runs_dir": str(runs_dir), "total_runs": len(records), "runs": records}
-
-
-def _write_json(path: Path, index: Dict[str, Any]) -> None:
-    path.write_text(json.dumps(index, indent=2, sort_keys=True), encoding="utf-8")
-
-
-def _write_markdown(path: Path, index: Dict[str, Any]) -> None:
-    lines: List[str] = []
-    lines.append("# _codex_ Experiment Index\n")
-    lines.append(f"- Runs directory: `{index['runs_dir']}`")
-    lines.append(f"- Total runs: **{index['total_runs']}**\n")
-
-    if not index["runs"]:
-        lines.append("No runs were found under `runs/train` or `runs/eval`.\n")
-        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        return
-
-    lines.append("## Runs\n")
-    lines.append("| Mode | Run ID | Seed | Last Step | Last Metrics | Run Dir |")
-    lines.append("| ---- | ------ | ---- | --------- | ------------ | ------- |")
-    for rec in index["runs"]:
-        metric_str = ", ".join(f"{k}={v}" for k, v in rec["metrics"].get("last_metrics", {}).items())
-        lines.append(
-            f"| `{rec['mode']}` | `{rec['run_id']}` | `{rec.get('seed', '')}` | "
-            f"`{rec['metrics'].get('last_step')}` | `{metric_str}` | `{rec['run_dir']}` |"
-        )
-
+def _write_markdown(index: Dict[str, object], path: Path) -> None:
+    lines = ["# Experiment Index", "", f"Runs root: `{index['runs_root']}`", "", "| Run ID | Meta Path |", "| --- | --- |"]
+    for record in index["runs"]:
+        lines.append(f"| {record.run_id} | {record.meta_path} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = argparse.ArgumentParser(description="Build experiment index from runs/.")
-    parser.add_argument("--runs-dir", type=str, default="runs", help="Runs directory (default: runs).")
-    parser.add_argument(
-        "--json-out",
-        type=str,
-        default="codex_experiment_index.json",
-        help="JSON output path (default: codex_experiment_index.json).",
-    )
-    parser.add_argument(
-        "--md-out",
-        type=str,
-        default="codex_experiment_index.md",
-        help="Markdown output path (default: codex_experiment_index.md).",
-    )
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Index experiment metadata under runs/.")
+    parser.add_argument("--runs-dir", type=Path, default=Path("runs"), help="Root directory containing run outputs.")
+    parser.add_argument("--json-out", type=Path, default=Path("codex_experiment_index.json"), help="JSON output path.")
+    parser.add_argument("--md-out", type=Path, default=Path("codex_experiment_index.md"), help="Markdown output path.")
     args = parser.parse_args(argv)
 
-    runs_dir = Path(args.runs_dir).expanduser().resolve()
-    index = build_index(runs_dir)
+    runs_root = args.runs_dir.expanduser().resolve()
+    runs_root.mkdir(parents=True, exist_ok=True)
 
-    base_dir = runs_dir.parent
-    json_out = Path(args.json_out)
-    if not json_out.is_absolute():
-        json_out = (base_dir / json_out).resolve()
-    else:
-        json_out = json_out.expanduser().resolve()
-
-    md_out = Path(args.md_out)
-    if not md_out.is_absolute():
-        md_out = (base_dir / md_out).resolve()
-    else:
-        md_out = md_out.expanduser().resolve()
-
-    _write_json(json_out, index)
-    _write_markdown(md_out, index)
-    print(f"Wrote experiment index JSON to {json_out}")
+    index = build_index(runs_root)
+    json_out = args.json_out.expanduser().resolve()
+    md_out = args.md_out.expanduser().resolve()
+    _write_json(index, json_out)
+    _write_markdown(index, md_out)
+    print(f"Wrote experiment index to {json_out} and {md_out}")
     return 0
 
 

@@ -1,0 +1,326 @@
+) -> Tuple[List[object], List[object], EvalStats]:
+    y_true: List[object] = []
+    y_pred: List[object] = []
+    stats = EvalStats(
+        total_records=0,
+        parsed_records=0,
+        missing_field_records=0,
+        parse_errors=0,
+    )
+
+    with path.open("r", encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            stats.total_records += 1
+            if pred_field not in row or target_field not in row:
+                stats.missing_field_records += 1
+                continue
+            try:
+                pred_val = row[pred_field]
+                target_val = row[target_field]
+            except Exception:
+                stats.parse_errors += 1
+                continue
+            y_pred.append(pred_val)
+            y_true.append(target_val)
+            stats.parsed_records += 1
+    return y_true, y_pred, stats
+
+
+def _merge_stats(stats_list: Iterable[EvalStats]) -> EvalStats:
+    total = EvalStats(0, 0, 0, 0)
+    for s in stats_list:
+        total.total_records += s.total_records
+        total.parsed_records += s.parsed_records
+        total.missing_field_records += s.missing_field_records
+        total.parse_errors += s.parse_errors
+    return total
+
+
+def evaluate(config: EvalConfig) -> Dict[str, object]:
+    all_y_true: List[object] = []
+    all_y_pred: List[object] = []
+    all_stats: List[EvalStats] = []
+
+    for path in config.inputs:
+        if _is_ndjson_like(path):
+            y_t, y_p, stats = _load_ndjson(path, config.pred_field, config.target_field)
+        elif _is_csv_like(path):
+            y_t, y_p, stats = _load_csv(path, config.pred_field, config.target_field)
+        else:
+            # Skip unsupported format with a synthetic stats record.
+            stats = EvalStats(
+                total_records=0,
+                parsed_records=0,
+                missing_field_records=0,
+                parse_errors=0,
+            )
+            all_stats.append(stats)
+            continue
+        all_y_true.extend(y_t)
+        all_y_pred.extend(y_p)
+        all_stats.append(stats)
+
+    metrics = compute_metrics(all_y_true, all_y_pred, config.metrics)
+    stats_total = _merge_stats(all_stats)
+
+    return {
+        "metrics": metrics,
+        "metrics_requested": list(config.metrics),
+        "available_metrics": list_metrics(),
+        "stats": asdict(stats_total),
+        "num_inputs": len(config.inputs),
+        "inputs": [str(p) for p in config.inputs],
+        "fields": {
+            "prediction": config.pred_field,
+            "target": config.target_field,
+        },
+    }
+
+
+def _write_json(path: Path, data: Dict[str, object]) -> None:
+    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_csv(path: Path, metrics: Dict[str, float]) -> None:
+    with path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        header = sorted(metrics.keys())
+        writer.writerow(header)
+        writer.writerow([metrics[k] for k in header])
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Evaluate metrics from NDJSON/JSONL/CSV prediction logs.",
+    )
+    parser.add_argument(
+        "inputs",
+        nargs="+",
+        help="Input files (NDJSON/JSONL/CSV).",
+    )
+    parser.add_argument(
+        "--prediction-field",
+        type=str,
+        default="prediction",
+        help="Field/column name for predictions (default: prediction).",
+    )
+    parser.add_argument(
+        "--target-field",
+        type=str,
+        default="target",
+        help="Field/column name for targets (default: target).",
+    )
+    parser.add_argument(
+        "--metrics",
+        type=str,
+        default="accuracy",
+        help="Comma-separated list of metric names (default: accuracy).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_metrics_summary.json",
+        help="JSON output path (default: codex_metrics_summary.json).",
+    )
+    parser.add_argument(
+        "--csv-out",
+        type=str,
+        default="",
+        help="Optional CSV output path (single-row metrics table).",
+    )
+    args = parser.parse_args(argv)
+
+    metric_names = [m.strip() for m in args.metrics.split(",") if m.strip()]
+    if not metric_names:
+        metric_names = ["accuracy"]
+
+    cfg = EvalConfig(
+        inputs=[Path(p) for p in args.inputs],
+        pred_field=args.prediction_field,
+        target_field=args.target_field,
+        metrics=metric_names,
+    )
+    summary = evaluate(cfg)
+
+    json_out = Path(args.json_out).expanduser().resolve()
+    _write_json(json_out, summary)
+    print(f"[codex_metrics_eval] Wrote JSON summary to {json_out}")
+
+    if args.csv_out:
+        csv_out = Path(args.csv_out).expanduser().resolve()
+        _write_csv(csv_out, summary["metrics"])
+        print(f"[codex_metrics_eval] Wrote CSV metrics to {csv_out}")
+
+    # Return 0 even if stats show many skipped records; the tool is
+    # best-effort, not a hard gate.
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+3) Tests – tests/codex_ml/test_metrics_core_and_eval_tool.py
+============================================================
+
+Create/overwrite: tests/codex_ml/test_metrics_core_and_eval_tool.py
+
+```python
+from pathlib import Path
+import json
+import csv
+
+from codex_ml.metrics.core import (
+    list_metrics,
+    compute_metrics,
+    get_registry,
+)
+import tools.codex_metrics_eval as metrics_eval
+
+
+def test_metrics_registry_contains_default_metrics():
+    names = list_metrics()
+    assert "accuracy" in names
+    assert "mse" in names
+
+    reg = get_registry()
+    m = reg.get("accuracy")
+    assert m.name == "accuracy"
+    assert "accuracy" in m.description.lower()
+
+
+def test_accuracy_and_mse_reasonable_values():
+    y_true = [0, 1, 1, 0]
+    y_pred = [0, 1, 0, 0]
+    metrics = compute_metrics(y_true, y_pred, ["accuracy", "mse"])
+
+    # Accuracy: 3 correct out of 4
+    assert abs(metrics["accuracy"] - 0.75) < 1e-9
+    # MSE should be non-negative
+    assert metrics["mse"] >= 0.0
+
+
+def test_metrics_eval_on_ndjson(tmp_path: Path):
+    ndjson_path = tmp_path / "preds.ndjson"
+    lines = [
+        {"prediction": 1, "target": 1},
+        {"prediction": 0, "target": 1},
+        {"prediction": 1, "target": 1},
+    ]
+    with ndjson_path.open("w", encoding="utf-8") as f:
+        for obj in lines:
+            f.write(json.dumps(obj) + "\n")
+
+    cfg = metrics_eval.EvalConfig(
+        inputs=[ndjson_path],
+        pred_field="prediction",
+        target_field="target",
+        metrics=["accuracy"],
+    )
+    summary = metrics_eval.evaluate(cfg)
+    assert "metrics" in summary
+    assert "accuracy" in summary["metrics"]
+    assert summary["stats"]["parsed_records"] == len(lines)
+    assert summary["stats"]["parse_errors"] == 0
+
+
+def test_metrics_eval_on_csv(tmp_path: Path):
+    csv_path = tmp_path / "preds.csv"
+    rows = [
+        {"prediction": 1, "target": 1},
+        {"prediction": 0, "target": 1},
+        {"prediction": 1, "target": 1},
+    ]
+    with csv_path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["prediction", "target"])
+        writer.writeheader()
+        writer.writerows(rows)
+
+    cfg = metrics_eval.EvalConfig(
+        inputs=[csv_path],
+        pred_field="prediction",
+        target_field="target",
+        metrics=["accuracy", "mse"],
+    )
+    summary = metrics_eval.evaluate(cfg)
+    assert set(summary["metrics_requested"]) == {"accuracy", "mse"}
+    assert summary["stats"]["parsed_records"] == len(rows)
+
+
+def test_metrics_eval_main_writes_outputs(tmp_path: Path, monkeypatch):
+    ndjson_path = tmp_path / "preds.ndjson"
+    lines = [
+        {"prediction": 1, "target": 1},
+        {"prediction": 0, "target": 0},
+    ]
+    with ndjson_path.open("w", encoding="utf-8") as f:
+        for obj in lines:
+            f.write(json.dumps(obj) + "\n")
+
+    json_out = tmp_path / "summary.json"
+    csv_out = tmp_path / "summary.csv"
+
+    rc = metrics_eval.main(
+        [
+            str(ndjson_path),
+            "--prediction-field",
+            "prediction",
+            "--target-field",
+            "target",
+            "--metrics",
+            "accuracy,mse",
+            "--json-out",
+            str(json_out),
+            "--csv-out",
+            str(csv_out),
+        ]
+    )
+    assert rc == 0
+    assert json_out.exists()
+    assert csv_out.exists()
+
+    summary = json.loads(json_out.read_text(encoding="utf-8"))
+    assert "metrics" in summary
+    assert "accuracy" in summary["metrics"]
+    assert "mse" in summary["metrics"]
+```
+
+===============================================================================
+4) Documentation – docs/metrics/codex_metrics_and_eval.md
+=========================================================
+
+Create/overwrite: docs/metrics/codex_metrics_and_eval.md
+
+````markdown
+# Metrics & Evaluation in `_codex_` (Scaffolding)
+
+This document describes the initial scaffolding for metrics and
+evaluation tooling in `_codex_`, as implemented in:
+
+- `codex_ml.metrics.core`
+- `tools/codex_metrics_eval.py`
+
+The intent is to satisfy the audit's **Evaluation & Metrics** and
+**Logging** requirements in a minimal but extensible way.
+
+## 1. Metrics Core
+
+Module:
+
+- `codex_ml.metrics.core`
+
+Key pieces:
+
+- `MetricRegistry` – in-memory registry of metrics.
+- Default metrics:
+  - `accuracy` – simple classification accuracy based on equality.
+  - `mse` – mean squared error for numeric targets/predictions.
+- Helper functions:
+  - `list_metrics()` – list available metric names.
+  - `compute_metrics(y_true, y_pred, metric_names)` – compute a dict
+    of metrics in one call.
+
+The implementation is deliberately small and dependency-light. Inputs
+are expected to be Python sequences (lists, tuples, etc.); higher-level

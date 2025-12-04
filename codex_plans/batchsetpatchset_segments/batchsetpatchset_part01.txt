@@ -1,0 +1,350 @@
+Here’s the next **end-to-end Codex batch** (call this **Batch 20**) you can paste directly into your Codex implementation GPT.
+
+This batch focuses on **Experiment Tracking (minimal, offline)** and wiring it into the existing minimal train/eval CLIs and task sequence:
+
+* A simple `ExperimentTracker` helper.
+* Optional `--experiment-name` flag for train/eval CLIs.
+* A small experiment summary tool.
+* Tests and docs.
+* A light extension to `codex_task_sequence.yaml`.
+
+All patchsets are explicit and self-contained.
+
+---
+
+### Codex Batch 20 – Minimal Experiment Tracking & Integration
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_ on a feature
+branch (e.g. feature/experiment-tracking-minimal).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a **minimal experiment tracking helper**:
+   - `src/codex_ml/logging/experiment.py`
+2. Wire experiment tracking into **train/eval CLIs**:
+   - `src/codex_ml/cli/train_minimal.py`
+   - `src/codex_ml/cli/eval_minimal.py`
+3. Implement an **experiment summary tool**:
+   - `tools/codex_experiment_summary.py`
+4. Add tests:
+   - `tests/codex_ml/test_experiment_logging.py`
+5. Add docs:
+   - `docs/experiments/experiment_tracking_minimal.md`
+6. Extend `codex_task_sequence.yaml` with a small experiment-tracking smoke step.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Minimal experiment tracking helper
+===============================================================================
+
+Create/overwrite: src/codex_ml/logging/experiment.py
+
+```python
+"""Minimal experiment tracking helper for `_codex_`.
+
+This is intentionally lightweight and offline-only. It does NOT depend
+on MLflow, W&B, or any external tracking service.
+
+Design:
+
+- Each run directory (e.g. runs/train/<run_id>) may contain:
+  - run_manifest.yaml   (already produced by train/eval CLIs)
+  - metrics.ndjson      (already produced by MetricLogger)
+  - experiment_meta.json (added by this module)
+
+- `experiment_meta.json` is a single JSON object:
+
+  {
+    "experiment_name": "...",
+    "mode": "train" | "eval",
+    "run_id": "...",
+    "labels": { ... arbitrary key/value ... }
+  }
+
+Callers:
+
+- `codex_ml.cli.train_minimal`
+- `codex_ml.cli.eval_minimal`
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, Any, Optional
+
+
+@dataclass
+class ExperimentMeta:
+    experiment_name: str
+    mode: str
+    run_id: str
+    labels: Dict[str, Any]
+
+
+class ExperimentTracker:
+    """Best-effort experiment metadata writer."""
+
+    def __init__(self, run_dir: Path, mode: str, run_id: str) -> None:
+        self._run_dir = Path(run_dir).expanduser().resolve()
+        self._mode = mode
+        self._run_id = run_id
+
+    def log_experiment(
+        self,
+        experiment_name: Optional[str],
+        labels: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Write experiment_meta.json if an experiment name is provided.
+
+        If experiment_name is None or empty, this is a no-op.
+        """
+        if not experiment_name:
+            return
+        meta = ExperimentMeta(
+            experiment_name=experiment_name,
+            mode=self._mode,
+            run_id=self._run_id,
+            labels=labels or {},
+        )
+        out = self._run_dir / "experiment_meta.json"
+        out.write_text(
+            json.dumps(asdict(meta), indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+````
+
+===============================================================================
+2) Wire experiment tracking into train_minimal
+==============================================
+
+Update: src/codex_ml/cli/train_minimal.py
+
+* Add an import:
+
+```python
+from codex_ml.logging.experiment import ExperimentTracker
+```
+
+* Extend `main`’s argument parser with an optional experiment name:
+
+Inside `main(...)`, after the existing `--max-steps` argument:
+
+```python
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default="",
+        help="Optional experiment name for tracking (default: empty).",
+    )
+```
+
+* After computing `run_dir`, derive `run_id` and create an `ExperimentTracker`:
+
+Right after:
+
+```python
+    raw_cfg = _load_config(cfg_path)
+    run_dir = _make_run_dir(runs_root, args.seed)
+    _write_manifest(run_dir, cfg_path, raw_cfg, args.seed)
+```
+
+insert:
+
+```python
+    tracker = ExperimentTracker(run_dir=run_dir, mode="train", run_id=run_dir.name)
+    tracker.log_experiment(
+        experiment_name=args.experiment_name,
+        labels={
+            "source": "train_minimal",
+            "config_path": str(cfg_path),
+        },
+    )
+```
+
+No other behavior changes: if `--experiment-name` is omitted, the tracker is a no-op.
+
+===============================================================================
+3) Wire experiment tracking into eval_minimal
+=============================================
+
+Update: src/codex_ml/cli/eval_minimal.py
+
+* Add an import:
+
+```python
+from codex_ml.logging.experiment import ExperimentTracker
+```
+
+* Extend `main`’s argument parser with an optional experiment name:
+
+Inside `main(...)`, after existing `--checkpoint` argument:
+
+```python
+    parser.add_argument(
+        "--experiment-name",
+        type=str,
+        default="",
+        help="Optional experiment name for tracking (default: empty).",
+    )
+```
+
+* After creating `run_dir` and writing the manifest, create an `ExperimentTracker`:
+
+Right after:
+
+```python
+    raw_cfg = _load_config(cfg_path)
+    run_dir = _make_run_dir(runs_root, args.seed)
+    _write_manifest(run_dir, cfg_path, raw_cfg, args.seed, ckpt_path)
+```
+
+insert:
+
+```python
+    tracker = ExperimentTracker(run_dir=run_dir, mode="eval", run_id=run_dir.name)
+    tracker.log_experiment(
+        experiment_name=args.experiment_name,
+        labels={
+            "source": "eval_minimal",
+            "config_path": str(cfg_path),
+            "checkpoint": str(ckpt_path),
+        },
+    )
+```
+
+Again, if `--experiment-name` is omitted, nothing is written.
+
+===============================================================================
+4) Experiment summary tool
+==========================
+
+Create/overwrite: tools/codex_experiment_summary.py
+
+```python
+#!/usr/bin/env python
+"""Summarize experiments from `_codex_` runs.
+
+This tool walks `runs/train/**` and `runs/eval/**` and looks for:
+
+- run_manifest.yaml
+- experiment_meta.json
+- metrics.ndjson
+
+It then produces:
+
+- codex_experiment_summary.json
+- codex_experiment_summary.md
+
+The summary groups runs by `experiment_name` (if present), and includes:
+
+- mode, run_id, created_at, seed
+- latest metric snapshot (if any)
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import yaml
+
+
+def _iter_run_dirs(base: Path) -> List[tuple[str, Path]]:
+    out: List[tuple[str, Path]] = []
+    for mode in ("train", "eval"):
+        root = base / mode
+        if not root.exists():
+            continue
+        for p in root.iterdir():
+            if p.is_dir():
+                out.append((mode, p))
+    return out
+
+
+def _load_manifest(run_dir: Path) -> Dict[str, Any]:
+    p = run_dir / "run_manifest.yaml"
+    if not p.exists():
+        return {}
+    return yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+
+
+def _load_experiment_meta(run_dir: Path) -> Dict[str, Any]:
+    p = run_dir / "experiment_meta.json"
+    if not p.exists():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _load_last_metric(run_dir: Path) -> Optional[Dict[str, Any]]:
+    p = run_dir / "metrics.ndjson"
+    if not p.exists():
+        return None
+    last = None
+    with p.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            last = line
+    if last is None:
+        return None
+    try:
+        return json.loads(last)
+    except Exception:
+        return {"raw": last}
+
+
+def build_summary(runs_dir: Path) -> Dict[str, Any]:
+    experiments: Dict[str, List[Dict[str, Any]]] = {}
+    for mode, run_dir in _iter_run_dirs(runs_dir):
+        manifest = _load_manifest(run_dir)
+        meta = _load_experiment_meta(run_dir)
+        last_metric = _load_last_metric(run_dir)
+
+        ctx = manifest.get("context", {}) or {}
+        exp_name = meta.get("experiment_name") or "(unlabeled)"
+
+        entry = {
+            "mode": mode,
+            "run_id": ctx.get("run_id", run_dir.name),
+            "path": str(run_dir),
+            "created_at": ctx.get("created_at"),
+            "seed": ctx.get("seed"),
+            "config_path": ctx.get("config_path"),
+            "experiment_name": exp_name,
+            "labels": meta.get("labels") or {},
+            "last_metric": last_metric,
+        }
+        experiments.setdefault(exp_name, []).append(entry)
+
+    return {"runs_dir": str(runs_dir), "experiments": experiments}
+
+
+def _write_json(path: Path, summary: Dict[str, Any]) -> None:
+    path.write_text(json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_markdown(path: Path, summary: Dict[str, Any]) -> None:
+    experiments = summary.get("experiments", {}) or {}
+    lines: List[str] = []
+    lines.append("# `_codex_` Experiment Summary\n")
+    lines.append(f"- Base dir: `{summary.get('runs_dir', '.')}`")
+    lines.append(f"- Total experiment groups: **{len(experiments)}**\n")
+
+    if not experiments:
+        lines.append("No experiments found.\n")

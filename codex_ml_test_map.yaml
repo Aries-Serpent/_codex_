@@ -1,16 +1,21 @@
-# ML Test Score mapping for `_codex_` (scaffolding).
-#
-# categories -> description + tests
 categories:
-  infrastructure:
-    description: "Core tools sanity (env snapshot, experiment index, config validate)"
-    tests:
-      - tests/tools
-  codex_ml:
-    description: "Core codex_ml scaffolding tests"
-    tests:
-      - tests/codex_ml
   data:
-    description: "Placeholder for future data tests"
+    description: Data validation tests
     tests:
       - tests/data
+  model:
+    description: Model behavior tests
+    tests:
+      - tests/models
+  infra:
+    description: Infrastructure smoke tests
+    tests:
+      - tests/infra
+  regression:
+    description: Regression guardrails
+    tests:
+      - tests/regression
+  performance:
+    description: Lightweight performance checks
+    tests:
+      - tests/performance
