@@ -46,10 +46,11 @@ _DATE_RE = re.compile(r"(20\d{2}-\d{2}-\d{2})")
 
 
 def _slugify(text: str) -> str:
+    original_text = text
     text = text.strip().lower()
     text = re.sub(r"[^a-z0-9]+", "-", text)
     text = re.sub(r"-+", "-", text).strip("-")
-    return text or "gap"
+    return text or f"gap-{hash(original_text)}"
 
 
 def _infer_capability_from_text(text: str) -> str:

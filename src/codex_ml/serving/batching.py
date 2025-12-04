@@ -65,16 +65,19 @@ class BatchingMiddleware:
         if self.flush_task is not None and not self.flush_task.done():
             return
 
+        task: Optional[asyncio.Task] = None
+
         async def delayed_flush() -> None:
             try:
                 await asyncio.sleep(self.max_wait_time)
                 await self._flush_batch()
             finally:
                 # Ensure the handle is cleared when the task completes.
-                if self.flush_task is asyncio.current_task():
+                if task is asyncio.current_task():
                     self.flush_task = None
 
-        self.flush_task = asyncio.create_task(delayed_flush())
+        task = asyncio.create_task(delayed_flush())
+        self.flush_task = task
 
     def _pop_batch_locked(self) -> List[BatchRequest]:
         batch = list(self.batch_queue)
