@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 MAX_BATCH_SIZE = 100
 MAX_INPUT_LENGTH = 10000
-_EMBEDDING_SEED_MODULO = 2**32  # Modulus for deterministic embedding generation seeds (2^32 chosen to match 32-bit unsigned integer range)
+_MAX_EMBEDDING_SEED = 2**32  # Maximum seed value for deterministic embedding generation (2^32 chosen to match 32-bit unsigned integer range)
 REQUEST_RATE_LIMIT = 1000
 
 
@@ -149,7 +149,7 @@ class ModelServer:
 
         embeddings = []
         for text in texts:
-            seed = abs(hash(text)) % _EMBEDDING_SEED_MODULO
+            seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
             rng = np.random.default_rng(seed)
             vec = rng.random(self._embedding_dim, dtype=np.float32)
             norm = np.linalg.norm(vec)
