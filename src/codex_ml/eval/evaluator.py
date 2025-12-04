@@ -132,3 +132,70 @@ def evaluate_constant(predictions, targets) -> float:
         return 0.0
     correct = sum(1 for p, t in zip(predictions, targets) if p == t)
     return correct / max(len(predictions), 1)
+
+
+def evaluate_dataloader(model: Any, dataloader: Iterable[dict[str, Any]], eval_cfg, device: Any) -> dict[str, float]:
+    """Evaluate a model over a dataloader while restoring training mode.
+
+    This lightweight helper mirrors the legacy evaluator surface used by the
+    smoke tests. It averages loss and any requested metric keys exposed by the
+    model output while ensuring the model's training flag is restored after the
+    run.
+    """
+
+    if not _HAS_TORCH or torch is None:
+        raise ImportError("evaluate_dataloader requires the optional torch dependency")
+
+    metric_keys = set(eval_cfg.get("metric_keys", []) if eval_cfg else [])
+    device = torch.device(device) if device is not None else torch.device("cpu")
+
+    was_training = bool(getattr(model, "training", False))
+    if hasattr(model, "eval"):
+        model.eval()
+
+    totals: dict[str, float] = {key: 0.0 for key in metric_keys}
+    loss_total = 0.0
+    loss_steps = 0
+    batches = 0
+    samples = 0
+
+    try:
+        for batch in dataloader:
+            batches += 1
+            samples += 1
+            moved = {k: (v.to(device) if hasattr(v, "to") else v) for k, v in batch.items()}
+            with torch.no_grad():
+                outputs = model(**moved)
+
+            output_mapping: dict[str, Any]
+            if isinstance(outputs, dict):
+                output_mapping = outputs
+            else:
+                output_mapping = {
+                    name: getattr(outputs, name)
+                    for name in dir(outputs)
+                    if not name.startswith("_") and not callable(getattr(outputs, name))
+                }
+
+            loss_val = output_mapping.get("loss")
+            if loss_val is not None:
+                loss_total += float(loss_val.detach().cpu().item())
+                loss_steps += 1
+
+            for key in metric_keys:
+                if key in output_mapping and output_mapping[key] is not None:
+                    totals[key] += float(output_mapping[key].detach().cpu().item())
+    finally:
+        if was_training and hasattr(model, "train"):
+            model.train(True)
+
+    metrics: dict[str, float] = {}
+    if loss_steps:
+        metrics["loss"] = loss_total / float(loss_steps)
+    for key in metric_keys:
+        if batches:
+            metrics[key] = totals[key] / float(batches)
+
+    metrics["batches"] = float(batches)
+    metrics["samples"] = float(samples)
+    return metrics
