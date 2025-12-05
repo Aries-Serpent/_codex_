@@ -1,5 +1,5 @@
 {
-  "generated": 1764891022.6005998,
+  "generated": 1764900074.976164,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -799,12 +799,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7838218053927315,
-        "tests": 0.2832356389214537,
+        "consistency": 0.7835244558857946,
+        "tests": 0.28270535923238943,
         "safeguards": 1.0,
         "documentation": 0.12944983818770225
       },
-      "score": 0.397,
+      "score": 0.3968,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -1065,6 +1065,7 @@
         ".github/chatmodes/template.chatmode.md",
         ".github/copilot-instructions.md",
         ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
+        ".github/copilot_agent_task_prompt.next.md",
         ".github/copilot_prompts/Coverage_96-99_NextIteration.md",
         ".github/coverage_threshold.txt",
         ".github/dependabot.yml",
@@ -1192,6 +1193,10 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
+        ".pytest_cache/.gitignore",
+        ".pytest_cache/CACHEDIR.TAG",
+        ".pytest_cache/README.md",
+        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -1322,6 +1327,7 @@
         "Usage_Guide.md",
         "VERIFICATION_ARTIFACTS_MANIFEST.md",
         "VERIFICATION_REPORT_EVALUATION_LOOP.md",
+        "WAVE2_FINAL_VALIDATION.md",
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
@@ -1573,6 +1579,9 @@
         "config/README.md",
         "config/mypy.ini",
         "config/sample-sbom-config.yaml",
+        "config_legacy/README.md",
+        "config_legacy/__init__.py",
+        "config_legacy/errors.py",
         "configs/README.md",
         "configs/__init__.py",
         "configs/base/app.yaml",
@@ -2440,8 +2449,6 @@
         "experiments/2025-01-15_smoke.md",
         "great_expectations/checkpoints/clean_checkpoint.yml",
         "great_expectations/expectations/clean_data_suite.json",
-        "hydra/__init__.py",
-        "hydra/errors.py",
         "imds-diagnostic-changes.patch",
         "imds-diagnostic-only.patch",
         "installation_summary.json",
@@ -2567,6 +2574,7 @@
         "scripts/ci/build_image.sh",
         "scripts/ci/buildx_setup.sh",
         "scripts/ci/container_smoke.sh",
+        "scripts/ci/establish_baseline.sh",
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/ci/owner_approval_guard.sh",
         "scripts/ci/owner_approval_status.sh",
@@ -5076,7 +5084,7 @@
       "meta": {},
       "explain": {
         "id": "duplication_ratio",
-        "score": 0.397,
+        "score": 0.3968,
         "partials": {
           "functionality": {
             "component_value": 0.0,
@@ -5084,14 +5092,14 @@
             "contribution": 0.0
           },
           "consistency": {
-            "component_value": 0.7838218053927315,
+            "component_value": 0.7835244558857946,
             "weight": 0.2,
-            "contribution": 0.1567643610785463
+            "contribution": 0.1567048911771589
           },
           "tests": {
-            "component_value": 0.2832356389214537,
+            "component_value": 0.28270535923238943,
             "weight": 0.25,
-            "contribution": 0.07080890973036343
+            "contribution": 0.07067633980809736
           },
           "safeguards": {
             "component_value": 1.0,
@@ -5419,12 +5427,12 @@
       "id": "mcp-observability",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.872093023255814,
-        "tests": 0.29198966408268734,
+        "consistency": 0.8722580645161291,
+        "tests": 0.29161290322580646,
         "safeguards": 1.0,
         "documentation": 0.16181229773462782
       },
-      "score": 0.6717,
+      "score": 0.6716,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -5539,6 +5547,7 @@
         "STATUS_UPDATE_AUDIT_REPORT.md",
         "UPDATED_AUDIT_REPORT_2025-12-04.md",
         "VERIFICATION_ARTIFACTS_MANIFEST.md",
+        "WAVE2_FINAL_VALIDATION.md",
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
@@ -6217,7 +6226,7 @@
       },
       "explain": {
         "id": "mcp-observability",
-        "score": 0.6717,
+        "score": 0.6716,
         "partials": {
           "functionality": {
             "component_value": 1.0,
@@ -6225,14 +6234,14 @@
             "contribution": 0.25
           },
           "consistency": {
-            "component_value": 0.872093023255814,
+            "component_value": 0.8722580645161291,
             "weight": 0.2,
-            "contribution": 0.1744186046511628
+            "contribution": 0.17445161290322583
           },
           "tests": {
-            "component_value": 0.29198966408268734,
+            "component_value": 0.29161290322580646,
             "weight": 0.25,
-            "contribution": 0.07299741602067183
+            "contribution": 0.07290322580645162
           },
           "safeguards": {
             "component_value": 1.0,
@@ -6521,12 +6530,12 @@
       "id": "mcp-security-safeguards",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9272151898734178,
-        "tests": 0.12341772151898735,
+        "consistency": 0.9274447949526814,
+        "tests": 0.12302839116719243,
         "safeguards": 1.0,
         "documentation": 0.16181229773462782
       },
-      "score": 0.6406,
+      "score": 0.6405,
       "evidence_files": [
         ".codex/change_log-large.md",
         ".codex/change_log.md",
@@ -6596,6 +6605,7 @@
         "SELF_VALIDATION_REPORT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
+        "WAVE2_FINAL_VALIDATION.md",
         "WAVE2_IMPLEMENTATION.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex_reports/errors_2025-10-19.md",
@@ -6860,7 +6870,7 @@
       },
       "explain": {
         "id": "mcp-security-safeguards",
-        "score": 0.6406,
+        "score": 0.6405,
         "partials": {
           "functionality": {
             "component_value": 1.0,
@@ -6868,14 +6878,14 @@
             "contribution": 0.25
           },
           "consistency": {
-            "component_value": 0.9272151898734178,
+            "component_value": 0.9274447949526814,
             "weight": 0.2,
-            "contribution": 0.18544303797468356
+            "contribution": 0.1854889589905363
           },
           "tests": {
-            "component_value": 0.12341772151898735,
+            "component_value": 0.12302839116719243,
             "weight": 0.25,
-            "contribution": 0.030854430379746837
+            "contribution": 0.030757097791798107
           },
           "safeguards": {
             "component_value": 1.0,
@@ -8210,6 +8220,7 @@
           "conf/experiment/default.yaml": 1,
           "conf/experiment/sweep.yaml": 2,
           "conf/training/minimal.yaml": 1,
+          "config_legacy/errors.py": 1,
           "configs/README.md": 1,
           "configs/base/app.yaml": 1,
           "configs/base/base.yaml": 2,
@@ -8532,7 +8543,6 @@
           "examples/mlflow_offline.py": 1,
           "examples/safety/policy_bypass_example.yaml": 1,
           "experiments/2025-01-15_smoke.md": 2,
-          "hydra/errors.py": 1,
           "inventory.md": 2,
           "nox_sessions/audit.py": 1,
           "nox_sessions/docs_validation.py": 1,
@@ -9262,7 +9272,6 @@
           "training"
         ],
         "shadow_dirs": [
-          "hydra",
           "torch"
         ],
         "evidence_limit": 10
