@@ -10,7 +10,7 @@ pytest.importorskip("torch")
 import torch
 from codex_ml.utils.checkpointing import build_payload_bytes, load_payload
 from torch import nn
-from training.checkpoint_manager import CheckpointManager
+from src.training.checkpoint_manager import CheckpointManager
 
 
 def test_checkpoint_manager_persists_rng(tmp_path):

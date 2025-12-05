@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import types
 
-from training import engine_hf_trainer as eng
+from src.training import engine_hf_trainer as eng
 
 
 def _dummy_tokenizer():
