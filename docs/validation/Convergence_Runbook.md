@@ -243,6 +243,132 @@ Before approving audit remediation PR, verify:
 - Approval: [ ] Yes [ ] No [ ] Conditional
 - Notes: _______________________________________________
 
+## Wave 2 Remediation Summary
+
+### Overview
+Wave 2 focused on resolving critical shadowing issues and establishing production-ready CI regression tracking.
+
+**Status**: ✅ **COMPLETE**  
+**Date**: 2025-12-04  
+**PR**: #2389  
+**Key Commits**: `b8e4b83`, `1a81ef1`, `569844b`
+
+### Key Achievements
+
+#### 1. YAML Shadowing Resolution ✅
+**Problem**: Local `yaml/` directory was shadowing the PyYAML library, breaking S6-S7 stages.
+
+**Solution**:
+- Created `yaml_legacy/` shim module with safe import wrapper
+- Updated `audit_runner.py` to import YAML from site-packages only
+- Added verification to `verify_conflicts.py`
+
+**Result**: Full pipeline S1-S7 now operational.
+
+#### 2. Hydra Namespace Preparation ✅
+**Problem**: Local `hydra/` directory shadowing `hydra-core` package.
+
+**Solution**:
+- Renamed `hydra/` to `config_legacy/`
+- Added deprecation warnings in legacy modules
+- Updated 29 import references throughout codebase
+- Enhanced conflict verification with remediation guidance
+
+**Result**: Clear migration path established; shadowing detected and documented.
+
+#### 3. CI Regression Baseline ✅
+**Implemented**:
+- Baseline storage: `audit_artifacts/baselines/capabilities_scored.json`
+- Establishment script: `scripts/ci/establish_baseline.sh`
+- Conditional regression diff in CI workflow
+- Quality gate checks for low maturity and legacy imports
+
+**CI Workflow Structure**:
+- **PRs**: Fast audit + conflict verification + regression check
+- **Main**: Full audit + determinism validation + artifact retention
+
+**Result**: Automated regression detection prevents score degradation.
+
+#### 4. Enhanced Testing ✅
+**New Tests**:
+- `tests/validation/test_shadowing.py` - Detects yaml/hydra shadowing
+- `tests/validation/test_audit_pipeline.py` - Validates S1-S7 stages
+- `tests/validation/test_legacy_import_report.py` - Ensures report generation
+
+**Coverage**: Critical paths for audit system integrity.
+
+#### 5. Determinism Verification ✅
+**Tool**: `scripts/space_traversal/verify_determinism.py`
+
+**Features**:
+- Runs pipeline multiple times
+- Compares artifacts excluding volatile fields (timestamps, sizes)
+- Fails on any mismatch
+
+**Result**: Reproducible artifact generation confirmed.
+
+### Quality Gates Established
+
+| Gate | Tool | Threshold | Status |
+|------|------|-----------|--------|
+| Shadowing Prevention | `verify_conflicts.py` | 0 shadowed imports | ✅ Enforced |
+| Template Integrity | `validate_template_hash.py` | Hash match | ✅ Enforced |
+| Score Regression | `audit_runner.py diff` | ±2% tolerance | ✅ Enforced |
+| Low Maturity | Quality gates job | Info only (not blocking) | ✅ Tracked |
+| Legacy Imports | Legacy report | Info only (not blocking) | ✅ Tracked |
+
+### Documentation Updates
+
+**Updated Files**:
+- `Usage_Guide.md` - Added CI Regression Baseline Workflow section
+- `Convergence_Runbook.md` - Added Reviewer Sign-off Checklist
+- `Traversal_Workflow.md` - Enhanced with v1.4.0 features
+- `WAVE2_FINAL_VALIDATION.md` - Comprehensive validation report
+
+### Artifacts & Evidence
+
+**Baseline Established**: `audit_artifacts/baselines/capabilities_scored.json` (471 KB)
+- Contains post-remediation capability scores
+- Serves as regression detection baseline
+- Committed to repository for CI access
+
+**Manifest Integrity**: `audit_run_manifest.json`
+- Includes `repo_root_sha` for content verification
+- Includes `template_hash` for template integrity
+- Captures audit pipeline version and configuration
+
+### Known Limitations
+
+1. **Hydra Remediation**: Completed directory rename and import updates; validation confirms no shadowing when hydra-core installed
+2. **Split-Brain Ambiguity**: Both `training/` and `src/training/` remain importable; documented as known architectural issue
+3. **Legacy Imports**: 29 import sites identified; refactoring deferred to separate task
+
+### Next Steps (Post-Wave 2)
+
+1. **Legacy Import Refactoring**: Prioritize high-frequency imports for migration
+2. **Baseline Maintenance**: Refresh baseline after major capability improvements
+3. **CI Enhancements**: Consider auto-baseline refresh on scheduled intervals
+4. **Split-Brain Resolution**: Long-term architectural convergence
+
+### Verification Commands
+
+To validate Wave 2 remediation:
+```bash
+# Verify shadowing resolution
+python scripts/remediation/verify_conflicts.py --expect-site-packages
+
+# Verify template integrity
+python scripts/space_traversal/validate_template_hash.py
+
+# Run full audit
+python scripts/space_traversal/audit_runner.py run
+
+# Run validation tests
+pytest tests/validation/ -v
+```
+
+All commands should execute without errors (assuming hydra-core installed).
+
 ## Support
 For issues or questions:
 - Check the logs in `audit_artifacts/` for detailed error messages
