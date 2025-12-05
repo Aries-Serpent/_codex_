@@ -10,7 +10,7 @@ from typing import Any
 import torch
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from tokenization.loader import load_tokenizer
+from src.tokenization.loader import load_tokenizer
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
 from tokenizers.pre_tokenizers import Whitespace
