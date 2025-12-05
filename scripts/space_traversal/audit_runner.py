@@ -26,8 +26,21 @@ import inspect
 from pathlib import Path
 from typing import Dict, List, Any, Callable
 
+def import_yaml_from_sitepackages():
+    """Import yaml from site-packages only, avoiding local shadowing."""
+    import sys
+    original = list(sys.path)
+    try:
+        site_paths = [p for p in sys.path if "site-packages" in p or "dist-packages" in p]
+        if site_paths:
+            sys.path = site_paths
+        import yaml  # noqa
+        return yaml
+    finally:
+        sys.path = original
+
 try:
-    import yaml
+    yaml = import_yaml_from_sitepackages()
     from jinja2 import Environment, FileSystemLoader
 except Exception:
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
