@@ -57,9 +57,11 @@ def main():
     print(">>> Case 0: Library Shadowing (yaml)")
     yaml_ok = check_import("yaml", expected_location_substr="site-packages" if args.expect_site_packages else None)
     if args.expect_site_packages and not yaml_ok:
-        print("  [!] CRITICAL: Local 'yaml/' or 'yaml_legacy/' directory may be shadowing PyYAML.")
-        print("      Remediation: Ensure 'yaml/' renamed to 'yaml_legacy/' or removed.")
-        print("      Quick fix: run `git mv yaml yaml_legacy || true` to avoid shadowing.")
+        print("  [!] CRITICAL: Local 'yaml/' directory is shadowing the installed PyYAML library.")
+        print("      Remediation: Rename root 'yaml/' → 'yaml_legacy/' OR remove local shim to allow PyYAML usage.")
+        print("      Commands:")
+        print("        git mv yaml yaml_legacy || true")
+        print("        # Ensure site-packages PyYAML imports are used")
         if not args.allow_shadow:
             failures += 1
 
@@ -72,9 +74,10 @@ def main():
     if legacy_hydra.exists():
         print(f"  [!] CRITICAL: Local 'hydra/' directory still exists at repository root.")
         print(f"      This WILL shadow the installed hydra-core package.")
-        print(f"      Remediation: Rename 'hydra/' to 'config_legacy/' immediately:")
-        print(f"                   git mv hydra config_legacy")
-        print(f"      Quick fix: run `git mv hydra config_legacy || true` and update imports to `src.codex_conf` or add deprecation shims.")
+        print(f"      Remediation: Rename 'hydra/' → 'config_legacy/' OR move under 'src/codex_conf/'.")
+        print(f"      Commands:")
+        print(f"        git mv hydra config_legacy || true")
+        print(f"        # Update imports to hydra-core or src.codex_conf; add DeprecationWarning in config_legacy/__init__.py")
         if not args.allow_shadow:
             failures += 1
             hydra_ok = False
