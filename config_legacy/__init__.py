@@ -30,7 +30,6 @@ import importlib
 import importlib.util
 import os
 import sys
-import warnings
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
@@ -42,6 +41,9 @@ __all__: list[str]
 
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
+    # This function stub is preserved for API compatibility
+    # The actual loading logic is in _load_real_module() below
+    pass
 
 
 _HYDRA_EXTRA_MESSAGE = (
