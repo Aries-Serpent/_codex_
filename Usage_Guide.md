@@ -14,9 +14,10 @@
 5. [Understanding Outputs](#5-understanding-outputs)
 6. [Diff & Explain](#6-diff--explain)
 7. [Quality Gates](#7-quality-gates)
-8. [Pre-Commit Workflow](#8-pre-commit-workflow)
-9. [Troubleshooting](#9-troubleshooting)
-10. [Advanced Usage](#10-advanced-usage)
+8. [CI Regression Baseline Workflow](#8-ci-regression-baseline-workflow)
+9. [Pre-Commit Workflow](#9-pre-commit-workflow)
+10. [Troubleshooting](#10-troubleshooting)
+11. [Advanced Usage](#11-advanced-usage)
 
 ## 1. Quick Start
 
@@ -837,7 +838,208 @@ To add custom gates:
 4. Call `sys.exit(code)` on failure
 5. Add warning to manifest
 
-## 8. Pre-Commit Workflow
+## 8. CI Regression Baseline Workflow
+
+### Overview
+The CI system uses a baseline to detect score regressions between runs. This ensures that code changes don't degrade capability maturity scores.
+
+### Baseline Location
+```
+audit_artifacts/baselines/capabilities_scored.json
+```
+
+### Establishing a Baseline
+
+#### When to Establish
+- **First time**: When setting up the audit system
+- **After major refactoring**: When structural changes invalidate old scores
+- **After detector updates**: When scoring logic changes significantly
+- **Post-remediation**: After fixing capabilities to lock in improvements
+
+#### Using the Script
+```bash
+# Establish baseline from successful audit
+./scripts/ci/establish_baseline.sh
+
+# Force overwrite existing baseline
+./scripts/ci/establish_baseline.sh --force
+```
+
+**What it does:**
+1. Runs full audit pipeline (S1-S7)
+2. Copies `capabilities_scored.json` to baseline directory
+3. Validates baseline is valid JSON with capabilities
+4. Reports statistics
+
+#### Manual Baseline Establishment
+```bash
+# Run audit first
+python scripts/space_traversal/audit_runner.py run
+
+# Copy to baseline
+mkdir -p audit_artifacts/baselines
+cp audit_artifacts/capabilities_scored.json audit_artifacts/baselines/
+
+# Commit to repository
+git add audit_artifacts/baselines/capabilities_scored.json
+git commit -m "feat: Establish audit baseline"
+git push
+```
+
+### CI Workflow Integration
+
+#### PR Workflow (Fast Audit + Regression Check)
+When you open a PR, the CI:
+1. Runs fast audit (S1, S3, S4, S6)
+2. Checks if baseline exists
+3. If baseline exists: Runs regression diff
+4. Reports results as PR comment
+5. Quality gates check low maturity count and legacy imports
+
+#### Main Branch Workflow (Full Audit + Determinism)
+After merge to main:
+1. Runs full audit with all stages
+2. Validates template hash integrity
+3. Runs determinism checks
+4. Updates artifacts with retention
+
+### Regression Comparison
+
+#### Running Diff Manually
+```bash
+# Compare current run against baseline
+python scripts/space_traversal/audit_runner.py diff \
+  --old audit_artifacts/baselines/capabilities_scored.json \
+  --new audit_artifacts/capabilities_scored.json
+
+# With strict failure on regression
+python scripts/space_traversal/audit_runner.py diff \
+  --old audit_artifacts/baselines/capabilities_scored.json \
+  --new audit_artifacts/capabilities_scored.json \
+  --fail-on-regression
+```
+
+**Exit codes:**
+- `0`: No regressions detected
+- `3`: Score regression detected (when `--fail-on-regression` or `fail_on_score_regression: true` in config)
+
+#### Understanding Diff Output
+```
+Capability: training-engine
+  Old score: 0.850 → New score: 0.820 [REGRESSION: -0.030]
+  Components changed:
+    - tests: 1.0 → 0.8 (-0.2)
+
+Capability: mcp-protocol-surface
+  Old score: 0.900 → New score: 0.920 [IMPROVED: +0.020]
+```
+
+### Quality Gates Configuration
+
+#### In workflow.yaml
+```yaml
+options:
+  fail_on_score_regression: true      # Fail CI on score drops
+  regression_delta_threshold: 0.02    # Allow ±2% tolerance
+  fail_on_low_maturity: false         # Don't block on low scores
+```
+
+#### CI Behavior
+- **fail_on_score_regression: true**: PR fails if any capability score drops more than threshold
+- **fail_on_score_regression: false**: Regressions logged but don't block merge
+- **regression_delta_threshold**: Grace period for minor score fluctuations
+
+### Updating the Baseline
+
+#### After Capability Improvements
+```bash
+# Run audit and verify improvements
+make space-audit
+
+# Check score changes
+python scripts/space_traversal/audit_runner.py diff \
+  --old audit_artifacts/baselines/capabilities_scored.json \
+  --new audit_artifacts/capabilities_scored.json
+
+# If improvements are confirmed, update baseline
+./scripts/ci/establish_baseline.sh --force
+
+# Commit the new baseline
+git add audit_artifacts/baselines/capabilities_scored.json
+git commit -m "feat: Update audit baseline with improved scores"
+git push
+```
+
+#### Baseline Update Checklist
+- [ ] Verify full audit passes: `python scripts/space_traversal/audit_runner.py run`
+- [ ] Review diff output for expected changes
+- [ ] Check no unintended regressions exist
+- [ ] Run tests: `pytest tests/validation/`
+- [ ] Update baseline: `./scripts/ci/establish_baseline.sh --force`
+- [ ] Commit and push baseline file
+
+### Troubleshooting
+
+#### "Baseline missing - regression diff skipped"
+**Cause:** No baseline file exists yet  
+**Fix:** Establish baseline using `./scripts/ci/establish_baseline.sh`
+
+#### "Regression detected" in CI
+**Cause:** Code changes reduced capability scores  
+**Options:**
+1. Fix the code to restore scores
+2. If intentional, update baseline after review
+3. Adjust `regression_delta_threshold` if too strict
+
+#### "Baseline is stale" warning
+**Cause:** Baseline is >30 days old or detectors changed  
+**Fix:** Re-establish baseline with current codebase state
+
+### Best Practices
+
+1. **Establish baseline early**: Set it up when audit system is first integrated
+2. **Update after major work**: Refresh baseline after capability improvements merge
+3. **Don't update frivolously**: Only update when scores genuinely improve
+4. **Review diff always**: Never blindly update baseline without understanding changes
+5. **Document updates**: Include score changes in commit message
+
+### Example PR Flow
+
+```bash
+# 1. Create feature branch
+git checkout -b feat/improve-training
+
+# 2. Make changes to improve capability
+# ... edit files ...
+
+# 3. Run local audit
+make space-audit
+
+# 4. Check diff against baseline
+python scripts/space_traversal/audit_runner.py diff \
+  --old audit_artifacts/baselines/capabilities_scored.json \
+  --new audit_artifacts/capabilities_scored.json
+
+# 5. Verify improvement
+# Expected output: training-engine: 0.82 → 0.89 [IMPROVED: +0.07]
+
+# 6. Commit and push
+git add .
+git commit -m "feat: Improve training engine documentation and tests"
+git push origin feat/improve-training
+
+# 7. Open PR - CI will validate against baseline
+
+# 8. After PR merges, update baseline
+git checkout main
+git pull
+./scripts/ci/establish_baseline.sh --force
+git add audit_artifacts/baselines/capabilities_scored.json
+git commit -m "feat: Update baseline with training improvements"
+git push
+```
+
+## 9. Pre-Commit Workflow
 
 ### Standard Checklist
 
@@ -968,7 +1170,7 @@ Make executable:
 chmod +x .git/hooks/pre-commit
 ```
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 ### Common Issues
 
@@ -1085,7 +1287,7 @@ Run with Python unbuffered:
 python -u scripts/space_traversal/audit_runner.py run 2>&1 | tee audit_debug.log
 ```
 
-## 10. Advanced Usage
+## 11. Advanced Usage
 
 ### Custom Templates
 Modify `templates/audit/capability_matrix.md.j2`:
