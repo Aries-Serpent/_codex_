@@ -70,7 +70,7 @@ def test_shim_module_identity():
     # Test that shims properly forward identity
     # This would catch cases where shims create copies instead of references
     try:
-        import training.engine_hf_trainer as legacy
+        import src.training.engine_hf_trainer as legacy
         import src.training.engine_hf_trainer as canonical
         
         # For true shims, these should be the same module object

@@ -4,7 +4,7 @@ import os
 import random
 from pathlib import Path
 
-from training.seed_utils import set_all_seeds
+from src.training.seed_utils import set_all_seeds
 
 
 def test_set_all_seeds_reproducible_python(tmp_path: Path) -> None:
