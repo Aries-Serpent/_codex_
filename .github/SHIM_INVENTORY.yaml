@@ -74,16 +74,14 @@ inventory:
     notes: "Canonical shim forwards to legacy implementation."
 
   - module: tokenization.train_tokenizer
-    legacy_path: tokenization/train_tokenizer.py
+    legacy_path: ""
     canonical_path: src/tokenization/train_tokenizer.py
     owner: nlp-team
-    status: shim
-    rationale: "Tokenization training shim during convergence."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - tokenization/train_tokenizer.py
-      - src/tokenization/train_tokenizer.py
-    notes: "Tokenization 100% migrated to src.* imports. Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "Tokenization fully migrated to src.* - no legacy root file exists."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Tokenization 100% migrated to src.* imports. No shim needed - module only exists in canonical location."
 
 policy:
   strict_conflicts:

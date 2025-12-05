@@ -25,6 +25,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
       
+      - name: Validate inventory paths
+        run: |
+          python scripts/remediation/validate_inventory_paths.py
       - name: Generate shim inventory
         run: |
           python scripts/remediation/list_shims.py \
