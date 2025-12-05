@@ -849,6 +849,12 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
     return result
 
 
+# Public API exports:
+# Keep the surface minimal and explicit to avoid namespace pollution.
+# Core training API is always exported. HF trainer helpers (run_hf_trainer,
+# get_hf_revision) are included for backward compatibility but should migrate
+# to src.training.engine_hf_trainer in the future.
+
 __all__ = [
     "TrainCfg",
     "evaluate_batches",
