@@ -350,6 +350,64 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 3. **CI Enhancements**: Consider auto-baseline refresh on scheduled intervals
 4. **Split-Brain Resolution**: Long-term architectural convergence
 
+### Wave 2.1 Update (Determinism Hardening) - 2025-12-05
+
+**PR**: #2390 (sub-PR copilot/sub-pr-2390)  
+**Status**: ✅ **COMPLETE**
+
+#### Additional Improvements
+
+1. **Determinism Hardening**:
+   - Enhanced `audit_runner.py` stage_s4 to sort evidence_files and found_patterns
+   - Round all component scores to 6 decimals for float precision consistency
+   - Sort capabilities by ID for deterministic output ordering
+   - Use `json.dumps(..., sort_keys=True, ensure_ascii=False)` for stable JSON
+
+2. **Verification Enhancement**:
+   - Improved `verify_determinism.py` with deep normalization and diff reporting
+   - Added `deep_diff()` function to pinpoint exact differences when mismatches occur
+   - Normalize capabilities by sorting and rounding before comparison
+
+3. **Baseline Consolidation**:
+   - Standardized baseline path: `audit_artifacts/baselines/capabilities_scored.json`
+   - Established baseline with 39 tracked capabilities
+   - Script: `scripts/ci/establish_baseline.sh` (with --force option)
+
+4. **Legacy Import Tooling**:
+   - Created `scripts/remediation/refactor_imports.py` for AST-based safe refactoring
+   - Supports dry-run mode and batch processing with test validation
+   - Ready for execution: 99 legacy imports identified (29 hydra, 53 training, 13 tokenization, 4 models)
+
+5. **CI Workflow Enhancements**:
+   - Added determinism check to full audit job
+   - Implemented baseline age tracking (30-day refresh trigger)
+   - Enhanced PR comments with quality metrics, shadowing status, and regression analysis
+   - Added shadowing check step in quality-gates job
+
+#### Validation Results (2025-12-05)
+
+```
+✅ Determinism Check: PASS (2 runs identical)
+✅ Template Hash: PASS (manifest matches computed hash)
+✅ Shadowing Gates: PASS (yaml & hydra resolve to site-packages)
+✅ Baseline: Established (39 capabilities tracked)
+✅ Regression Diff: All deltas = 0.0000 (perfect baseline match)
+✅ Validation Tests: 9/10 PASS (1 minor context_index test failure)
+```
+
+#### Artifacts SHA256 (for verification)
+
+```bash
+# audit_run_manifest.json
+sha256sum audit_run_manifest.json
+
+# capabilities_scored.json  
+sha256sum audit_artifacts/capabilities_scored.json
+
+# Baseline
+sha256sum audit_artifacts/baselines/capabilities_scored.json
+```
+
 ### Verification Commands
 
 To validate Wave 2 remediation:

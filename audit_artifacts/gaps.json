@@ -1,5 +1,5 @@
 {
-  "generated": 1764919254.7062593,
+  "generated": 1764919544.662272,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -803,12 +803,12 @@
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.785897,
-        "tests": 0.280213,
+        "consistency": 0.785714,
+        "tests": 0.279704,
         "safeguards": 1.0,
         "documentation": 0.128617
       },
-      "score": 0.396525,
+      "score": 0.396361,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -1069,6 +1069,7 @@
         ".github/chatmodes/template.chatmode.md",
         ".github/copilot-instructions.md",
         ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
+        ".github/copilot_agent_task_prompt.next.md",
         ".github/copilot_agent_task_prompt.next.md.backup",
         ".github/copilot_agent_task_prompt.next_v1.2.1.md",
         ".github/copilot_prompts/Coverage_96-99_NextIteration.md",
@@ -1198,6 +1199,11 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
+        ".pytest_cache/.gitignore",
+        ".pytest_cache/CACHEDIR.TAG",
+        ".pytest_cache/README.md",
+        ".pytest_cache/v/cache/lastfailed",
+        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -1771,6 +1777,7 @@
         "deploy/interactive_entrypoint.sh",
         "deploy/setup_universal.sh",
         "detectors/README.md",
+        "determinism_validation.log",
         "diagnostic_results.txt",
         "docker-compose.override.local.yml",
         "docker-compose.override.yml",
@@ -2518,6 +2525,7 @@
         "pyproject.toml",
         "pytest.ini",
         "pytest_validation.txt",
+        "pytest_validation_summary.txt",
         "requirements-dev.txt",
         "requirements-eval.txt",
         "requirements-minimal.txt",
@@ -2552,6 +2560,7 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
+        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
         "scripts/agent/run_selected_jobs.sh",
@@ -2713,7 +2722,9 @@
         "scripts/smoke_after_build.sh",
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/__init__.py",
+        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
         "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/coverage_ingest.py",
@@ -2891,6 +2902,7 @@
         "services/msp_gateway/schemas/responses.py",
         "services/msp_gateway/security.py",
         "setup.cfg",
+        "shadowing_validation.log",
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
@@ -3602,6 +3614,7 @@
         "temp/bridge_codex_copilot_bridge/services/ita/tests/test_endpoints.py",
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/README.md",
         "temp/bridge_codex_copilot_bridge/tools/codex_safety/openai_wrapper.py",
+        "template_hash_validation.log",
         "templates/PR_Template_Checklist_to_yaml.html",
         "templates/audit/capability_matrix.md.j2",
         "templates/audit/status_update_report.md.j2",
@@ -4807,10 +4820,12 @@
         "tests/utils/test_rng_state.py",
         "tests/utils/test_seed.py",
         "tests/validation/__pycache__/test_audit_pipeline.cpython-312-pytest-9.0.1.pyc",
+        "tests/validation/__pycache__/test_determinism_normalization.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/__pycache__/test_shadowing.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/__pycache__/test_shadowing_yaml.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/test_audit_pipeline.py",
+        "tests/validation/test_determinism_normalization.py",
         "tests/validation/test_legacy_import_report.py",
         "tests/validation/test_shadowing.py",
         "tests/validation/test_shadowing_yaml.py",
@@ -5126,7 +5141,7 @@
       "meta": {},
       "explain": {
         "id": "duplication_ratio",
-        "score": 0.3965,
+        "score": 0.3964,
         "partials": {
           "functionality": {
             "component_value": 0.0,
@@ -5134,14 +5149,14 @@
             "contribution": 0.0
           },
           "consistency": {
-            "component_value": 0.785897,
+            "component_value": 0.785714,
             "weight": 0.2,
-            "contribution": 0.1571794
+            "contribution": 0.15714280000000003
           },
           "tests": {
-            "component_value": 0.280213,
+            "component_value": 0.279704,
             "weight": 0.25,
-            "contribution": 0.07005325
+            "contribution": 0.069926
           },
           "safeguards": {
             "component_value": 1.0,
@@ -5471,12 +5486,12 @@
       "id": "mcp-observability",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.872914,
-        "tests": 0.290116,
+        "consistency": 0.873077,
+        "tests": 0.289744,
         "safeguards": 1.0,
         "documentation": 0.160772
       },
-      "score": 0.671228,
+      "score": 0.671167,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -5503,6 +5518,7 @@
         ".codex/status/_codex_status_update-2025-09-22.md",
         ".codex/status/_codex_status_update-2025-09-23.md",
         ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
+        ".github/copilot_agent_task_prompt.next.md",
         ".github/copilot_prompts/Coverage_96-99_NextIteration.md",
         ".github/docs/ARCHIVE_CONFIG_ADR.md",
         ".github/docs/ARCHIVE_DEPLOYMENT_GUIDE.md",
@@ -6282,14 +6298,14 @@
             "contribution": 0.25
           },
           "consistency": {
-            "component_value": 0.872914,
+            "component_value": 0.873077,
             "weight": 0.2,
-            "contribution": 0.1745828
+            "contribution": 0.1746154
           },
           "tests": {
-            "component_value": 0.290116,
+            "component_value": 0.289744,
             "weight": 0.25,
-            "contribution": 0.072529
+            "contribution": 0.072436
           },
           "safeguards": {
             "component_value": 1.0,
@@ -8137,6 +8153,7 @@
           ".copilot-space/workflow.yaml": 6,
           ".github/ISSUE_TEMPLATE/capability_request.md": 1,
           ".github/_workflows_disabled/release-upload.yml": 2,
+          ".github/copilot_agent_task_prompt.next.md": 1,
           ".github/copilot_prompts/Coverage_96-99_NextIteration.md": 1,
           ".github/docs/ARCHIVE_IMPROVEMENTS_USAGE.md": 1,
           ".github/docs/Copilot_Audit_InstructionEnhancement.md": 1,
@@ -8594,7 +8611,7 @@
           "docs/validation/Atomic_Diffs_Next_Unresolved_2025-10-11.md": 1,
           "docs/validation/Bridge_Run_Validation.md": 2,
           "docs/validation/CODEBASE_Status_Audit_2025-10-14.md": 1,
-          "docs/validation/Convergence_Runbook.md": 1,
+          "docs/validation/Convergence_Runbook.md": 2,
           "docs/validation/Metrics_Validation.md": 1,
           "docs/validation/Offline_Audit_Validation.md": 1,
           "docs/validation/PR2208_CI_Failure_Remediation_Plan.md": 1,
@@ -8620,6 +8637,7 @@
           "policies/safelist.yaml": 1,
           "prompts/orchestrator/green.md": 1,
           "prompts/repo_status_update_for_codex.md": 1,
+          "pytest_validation.txt": 4,
           "scripts/archive/select_and_compress.py": 1,
           "scripts/archive/trend_aggregate.py": 1,
           "scripts/audit/build_integrity_chain.py": 1,

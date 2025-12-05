@@ -50,6 +50,18 @@ jobs:
         run: |
           pytest -v tests/validation/test_shadowing.py || echo "Shadowing test skipped or failed"
 
+      - name: Capture regression diff (if baseline present)
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            python scripts/space_traversal/audit_runner.py diff \
+              --old audit_artifacts/baselines/capabilities_scored.json \
+              --new audit_artifacts/capabilities_scored.json \
+              > audit_artifacts/regression_diff.txt 2>&1 || true
+            echo "✅ Regression diff captured"
+          else
+            echo "ℹ️ No baseline found - regression diff skipped"
+          fi
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,7 +69,8 @@ jobs:
           name: audit-artifacts-fast
           path: |
             audit_artifacts/
-            reports/legacy_import_usage.csv
+            audit_run_manifest.json
+            reports/
           retention-days: 30
 
   space-audit-full:
@@ -94,6 +107,18 @@ jobs:
         run: |
           python scripts/space_traversal/validate_template_hash.py
 
+      - name: Capture regression diff (if baseline present)
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            python scripts/space_traversal/audit_runner.py diff \
+              --old audit_artifacts/baselines/capabilities_scored.json \
+              --new audit_artifacts/capabilities_scored.json \
+              > audit_artifacts/regression_diff.txt 2>&1 || true
+            echo "✅ Regression diff captured"
+          else
+            echo "ℹ️ No baseline found - regression diff skipped"
+          fi
+
       - name: Run validation tests
         run: |
           pytest tests/validation/ -v --tb=short || echo "Some validation tests may have skipped"
@@ -101,8 +126,8 @@ jobs:
       - name: Check baseline age
         id: baseline-check
         run: |
-          if [ -f baseline/capabilities_scored_post_remediation.json ]; then
-            AGE_DAYS=$(( ($(date +%s) - $(stat -c %Y baseline/capabilities_scored_post_remediation.json)) / 86400 ))
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            AGE_DAYS=$(( ($(date +%s) - $(stat -c %Y audit_artifacts/baselines/capabilities_scored.json)) / 86400 ))
             echo "baseline_age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
             if [ $AGE_DAYS -gt 30 ]; then
               echo "baseline_needs_update=true" >> $GITHUB_OUTPUT
@@ -119,8 +144,8 @@ jobs:
       - name: Update baseline (if needed on main)
         if: github.ref == 'refs/heads/main' && steps.baseline-check.outputs.baseline_needs_update == 'true'
         run: |
-          mkdir -p baseline
-          cp audit_artifacts/capabilities_scored.json baseline/capabilities_scored_post_remediation.json
+          mkdir -p audit_artifacts/baselines
+          cp audit_artifacts/capabilities_scored.json audit_artifacts/baselines/capabilities_scored.json
           echo "✅ Baseline updated from successful main branch audit"
 
       - name: Upload artifacts

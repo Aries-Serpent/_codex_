@@ -1,6 +1,6 @@
 {
-  "generated": 1764919252.3175445,
-  "count": 4311,
+  "generated": 1764919542.257402,
+  "count": 4326,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -1557,6 +1557,12 @@
       "sha": "1d701115325074514713af969a1577500389b580100d21ca117205a97f739320"
     },
     {
+      "path": ".github/copilot_agent_task_prompt.next.md",
+      "ext": ".md",
+      "size": 10543,
+      "sha": "00730bcdd861a6396f9bd2697da05b6af99e63e72060656c06b1bee199ba5077"
+    },
+    {
       "path": ".github/copilot_agent_task_prompt.next.md.backup",
       "ext": ".backup",
       "size": 10451,
@@ -2243,8 +2249,8 @@
     {
       "path": ".github/workflows/space-audit.yml",
       "ext": ".yml",
-      "size": 10504,
-      "sha": "823efebb1ceae01d51f0b1f0894d9fbe0a35102d18ef23cb0b3cdbb1484fd0f6"
+      "size": 11666,
+      "sha": "08096c7e70d8064dcccb22f8388fbc89e6609ef97841783f6ba88aa13bb58755"
     },
     {
       "path": ".github/workflows/status_gate.yml",
@@ -2329,6 +2335,36 @@
       "ext": ".yaml",
       "size": 1148,
       "sha": "5dcd904b3b40aff9d5af542ebfe6347b77c6866b3560ed9bd02fced022d3e468"
+    },
+    {
+      "path": ".pytest_cache/.gitignore",
+      "ext": "",
+      "size": 37,
+      "sha": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd"
+    },
+    {
+      "path": ".pytest_cache/CACHEDIR.TAG",
+      "ext": ".tag",
+      "size": 191,
+      "sha": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4"
+    },
+    {
+      "path": ".pytest_cache/README.md",
+      "ext": ".md",
+      "size": 302,
+      "sha": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+    },
+    {
+      "path": ".pytest_cache/v/cache/lastfailed",
+      "ext": "",
+      "size": 86,
+      "sha": "1cdf93505800019218448ab25595f45a832099b3385080797f029acbaf2e16a0"
+    },
+    {
+      "path": ".pytest_cache/v/cache/nodeids",
+      "ext": "",
+      "size": 909,
+      "sha": "8a61958aabd619cefdb7ac58e9127d7a9b1b084a7a01d6e41f8b5f1e019eedcf"
     },
     {
       "path": ".reports/fencefix_run.json",
@@ -3791,8 +3827,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1903,
-      "sha": "7fb8a42121f171c2dc6a1e5c47bd6653cd7a1c8bb0a176ee102d0392f7218d83"
+      "size": 1904,
+      "sha": "40b4925e4645595cfe0bb9614c7adb900f209f7b86a141c365e9d2c08b1cfd30"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -5767,6 +5803,12 @@
       "ext": ".md",
       "size": 2828,
       "sha": "4f4100db8a93ed440a04259b66b25927398e9f215f60bdd815912fe785b7c6b0"
+    },
+    {
+      "path": "determinism_validation.log",
+      "ext": ".log",
+      "size": 76,
+      "sha": "95e710f2b9a2aad2fe8ad8144dab3e941ddb627f20aa243012f5c19a6058fbc8"
     },
     {
       "path": "diagnostic_results.txt",
@@ -9377,8 +9419,8 @@
     {
       "path": "docs/validation/Convergence_Runbook.md",
       "ext": ".md",
-      "size": 13894,
-      "sha": "fe0bf1d30561a96d81f9d050962c84ce08137a26091d521d892e9afd35e19bf8"
+      "size": 16158,
+      "sha": "6e130dd9dca0001ca6d9e22043d0b794de857fad46e219f2733b4ff83a95e462"
     },
     {
       "path": "docs/validation/Coverage_Enforcement_Validation.md",
@@ -10247,8 +10289,14 @@
     {
       "path": "pytest_validation.txt",
       "ext": ".txt",
+      "size": 448494,
+      "sha": "5803d6f83115a85470b1d41f091aa0dea5d991d1e162d964dc7efe2ccaa4313d"
+    },
+    {
+      "path": "pytest_validation_summary.txt",
+      "ext": ".txt",
       "size": 586,
-      "sha": "6cebe6b42fbc0a0bbd6e3695b0518d3df1bbd6a8428b1be9cacbbb48eb179efc"
+      "sha": "274515d397e12f582e1a5ab637bed5740b7d5ac1260b02b08cc95e471dc422ac"
     },
     {
       "path": "requirements/base.txt",
@@ -10453,6 +10501,12 @@
       "ext": ".py",
       "size": 323,
       "sha": "b9e48784ea944ee5d315f3f7ff7115167cfd4c65c85380ba104839b58b7d1959"
+    },
+    {
+      "path": "scripts/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 486,
+      "sha": "bc42b844c8eaa2366879ac7b55bfc65fbae83af7194b77ed65bf94737b76dc56"
     },
     {
       "path": "scripts/agent/README.md",
@@ -11177,8 +11231,8 @@
     {
       "path": "scripts/remediation/verify_conflicts.py",
       "ext": ".py",
-      "size": 5393,
-      "sha": "e8c1d4c42602d1651b9c1c1ab6356caf2a70d468b08a4cc7b5a745f3f1d668fb"
+      "size": 5721,
+      "sha": "48cc7302ede34f2c4f82572589302d9fdf6424215b8c0f8633b6a6f3e5bb72ff"
     },
     {
       "path": "scripts/repo_audit.py",
@@ -11421,10 +11475,22 @@
       "sha": "886aaa30832098a482a8ae0ada1fedeba3681594b820cadaaa0d183abf9c9eb7"
     },
     {
+      "path": "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 564,
+      "sha": "0ff26172fdd6f7cc440aa7f0375130d888f73bfbb16e344588b9acfc0a3e73aa"
+    },
+    {
       "path": "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
       "ext": ".pyc",
       "size": 47749,
       "sha": "73415f7885ce94a8026c27cc27295827829c050e6af415b90ed65f7f0b3f38e8"
+    },
+    {
+      "path": "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 2825,
+      "sha": "4256a8717a4c97b51735dffcf77869c2c66b2f783f289e384ded690a38c4bc21"
     },
     {
       "path": "scripts/space_traversal/audit_runner.py",
@@ -12487,6 +12553,12 @@
       "ext": ".cfg",
       "size": 179,
       "sha": "564d1590bc4d0eca874725d808f2a179451e4e7121420214a0dc2a7aecc4a4eb"
+    },
+    {
+      "path": "shadowing_validation.log",
+      "ext": ".log",
+      "size": 2404,
+      "sha": "153f5d277b7fc600a5603fd2dae4dc589eba02035db6d23a76a34968243ad0f2"
     },
     {
       "path": "sitecustomize.py",
@@ -16753,6 +16825,12 @@
       "ext": ".py",
       "size": 78,
       "sha": "212e2caaf889bbd573a9129bf5f9e79975e59dd04b4fd0b1cee45a4b233a1a4d"
+    },
+    {
+      "path": "template_hash_validation.log",
+      "ext": ".log",
+      "size": 39,
+      "sha": "71cba07b0d4bf50ece487ab9cbb846425cb12581e08d4de65f77da8d9136527c"
     },
     {
       "path": "templates/PR_Template_Checklist_to_yaml.html",
@@ -23985,6 +24063,12 @@
       "sha": "98aad1f3ad8cddfa0bd823994e3778fe934ba7c47ec454f3f43741f3c6609c4f"
     },
     {
+      "path": "tests/validation/__pycache__/test_determinism_normalization.cpython-312-pytest-9.0.1.pyc",
+      "ext": ".pyc",
+      "size": 5347,
+      "sha": "994e6b7646ca38ca3049c59f13ba45dd7979a8bf02492fa07685d11b7ebb13ea"
+    },
+    {
       "path": "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
       "ext": ".pyc",
       "size": 2785,
@@ -24007,6 +24091,12 @@
       "ext": ".py",
       "size": 8447,
       "sha": "bb99f60e2c78e288b3084684e03ba67d7372a7940c9d8cf48eba75ec1281078a"
+    },
+    {
+      "path": "tests/validation/test_determinism_normalization.py",
+      "ext": ".py",
+      "size": 1350,
+      "sha": "5e2c73ee0d638a9d2153f4cbff2cdbf1fc62d31904dfd6d62553efc77336ed55"
     },
     {
       "path": "tests/validation/test_legacy_import_report.py",
