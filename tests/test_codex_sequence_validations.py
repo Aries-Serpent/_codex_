@@ -31,7 +31,7 @@ def _build_dummy_dataset(torch):
 
 def test_evaluate_dataloader_runs() -> None:
     torch = pytest.importorskip("torch")
-    from training.functional_training import TrainCfg, evaluate_dataloader
+    from src.training.functional_training import TrainCfg, evaluate_dataloader
 
     dataset = _build_dummy_dataset(torch)
     loader = torch.utils.data.DataLoader(dataset, batch_size=2)
@@ -60,7 +60,7 @@ def test_evaluate_dataloader_runs() -> None:
 
 def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
     torch = pytest.importorskip("torch")
-    from training.functional_training import TrainCfg, run_custom_trainer
+    from src.training.functional_training import TrainCfg, run_custom_trainer
 
     dataset = _build_dummy_dataset(torch)
     step_counter = {"steps": 0}
