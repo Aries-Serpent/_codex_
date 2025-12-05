@@ -50,6 +50,18 @@ jobs:
         run: |
           pytest -v tests/validation/test_shadowing.py || echo "Shadowing test skipped or failed"
 
+      - name: Capture regression diff (if baseline present)
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            python scripts/space_traversal/audit_runner.py diff \
+              --old audit_artifacts/baselines/capabilities_scored.json \
+              --new audit_artifacts/capabilities_scored.json \
+              > audit_artifacts/regression_diff.txt 2>&1 || true
+            echo "✅ Regression diff captured"
+          else
+            echo "ℹ️ No baseline found - regression diff skipped"
+          fi
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,7 +69,8 @@ jobs:
           name: audit-artifacts-fast
           path: |
             audit_artifacts/
-            reports/legacy_import_usage.csv
+            audit_run_manifest.json
+            reports/
           retention-days: 30
 
   space-audit-full:
@@ -66,6 +79,7 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -85,13 +99,54 @@ jobs:
         run: |
           python scripts/space_traversal/audit_runner.py run
 
+      - name: Run determinism check
+        run: |
+          python scripts/space_traversal/verify_determinism.py --runs 2
+
       - name: Validate template hash
         run: |
           python scripts/space_traversal/validate_template_hash.py
 
+      - name: Capture regression diff (if baseline present)
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            python scripts/space_traversal/audit_runner.py diff \
+              --old audit_artifacts/baselines/capabilities_scored.json \
+              --new audit_artifacts/capabilities_scored.json \
+              > audit_artifacts/regression_diff.txt 2>&1 || true
+            echo "✅ Regression diff captured"
+          else
+            echo "ℹ️ No baseline found - regression diff skipped"
+          fi
+
       - name: Run validation tests
         run: |
           pytest tests/validation/ -v --tb=short || echo "Some validation tests may have skipped"
+
+      - name: Check baseline age
+        id: baseline-check
+        run: |
+          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+            AGE_DAYS=$(( ($(date +%s) - $(stat -c %Y audit_artifacts/baselines/capabilities_scored.json)) / 86400 ))
+            echo "baseline_age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
+            if [ $AGE_DAYS -gt 30 ]; then
+              echo "baseline_needs_update=true" >> $GITHUB_OUTPUT
+              echo "⚠️ Baseline is $AGE_DAYS days old and needs update"
+            else
+              echo "baseline_needs_update=false" >> $GITHUB_OUTPUT
+              echo "✅ Baseline is current ($AGE_DAYS days old)"
+            fi
+          else
+            echo "baseline_needs_update=true" >> $GITHUB_OUTPUT
+            echo "ℹ️ No baseline found - will be established"
+          fi
+
+      - name: Update baseline (if needed on main)
+        if: github.ref == 'refs/heads/main' && steps.baseline-check.outputs.baseline_needs_update == 'true'
+        run: |
+          mkdir -p audit_artifacts/baselines
+          cp audit_artifacts/capabilities_scored.json audit_artifacts/baselines/capabilities_scored.json
+          echo "✅ Baseline updated from successful main branch audit"
 
       - name: Upload artifacts
         if: always()
@@ -102,6 +157,7 @@ jobs:
             audit_artifacts/
             reports/
             audit_run_manifest.json
+            baseline/
           retention-days: 90
 
   quality-gates:
@@ -111,6 +167,7 @@ jobs:
     if: github.event_name == 'pull_request'
     permissions:
       contents: read
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -135,7 +192,7 @@ jobs:
       - name: Check for baseline
         id: check-baseline
         run: |
-          if [ -f audit_artifacts/baselines/capabilities_scored.json ]; then
+          if [ -f baseline/capabilities_scored_post_remediation.json ]; then
             echo "baseline_exists=true" >> $GITHUB_OUTPUT
             echo "✅ Baseline found for regression comparison"
           else
@@ -144,34 +201,60 @@ jobs:
           fi
 
       - name: Regression diff (if baseline exists)
+        id: regression-diff
         if: steps.check-baseline.outputs.baseline_exists == 'true'
+        continue-on-error: true
         run: |
           python scripts/space_traversal/audit_runner.py diff \
-            --old audit_artifacts/baselines/capabilities_scored.json \
-            --new audit_artifacts/capabilities_scored.json || echo "Diff completed with warnings"
+            --old baseline/capabilities_scored_post_remediation.json \
+            --new audit_artifacts/capabilities_scored.json > regression_diff.txt 2>&1 || true
+          
+          if [ -f regression_diff.txt ]; then
+            echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+            cat regression_diff.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
 
       - name: Check for low maturity capabilities
+        id: maturity-check
         run: |
           if [ -f audit_artifacts/gaps.json ]; then
             LOW_COUNT=$(python -c "import json; data=json.load(open('audit_artifacts/gaps.json')); print(len(data.get('low_maturity', [])))")
+            echo "low_count=$LOW_COUNT" >> $GITHUB_OUTPUT
             echo "Low maturity capabilities: $LOW_COUNT"
             if [ "$LOW_COUNT" -gt 10 ]; then
               echo "⚠️ Warning: $LOW_COUNT capabilities below threshold"
             fi
           else
+            echo "low_count=0" >> $GITHUB_OUTPUT
             echo "gaps.json not found, skipping check"
           fi
 
       - name: Check legacy import usage
+        id: legacy-check
         run: |
           if [ -f reports/legacy_import_usage.csv ]; then
             LINE_COUNT=$(wc -l < reports/legacy_import_usage.csv)
-            echo "Legacy imports found: $((LINE_COUNT - 1))"
-            if [ "$LINE_COUNT" -gt 100 ]; then
+            IMPORT_COUNT=$((LINE_COUNT - 1))
+            echo "import_count=$IMPORT_COUNT" >> $GITHUB_OUTPUT
+            echo "Legacy imports found: $IMPORT_COUNT"
+            if [ "$IMPORT_COUNT" -gt 100 ]; then
               echo "⚠️ Warning: High number of legacy imports detected"
             fi
           else
+            echo "import_count=0" >> $GITHUB_OUTPUT
             echo "legacy_import_usage.csv not found, skipping check"
+          fi
+
+      - name: Check shadowing status
+        id: shadowing-check
+        run: |
+          python scripts/remediation/verify_conflicts.py --expect-site-packages > shadowing_check.txt 2>&1 || true
+          
+          if grep -q "PASS" shadowing_check.txt; then
+            echo "shadowing_status=✅ No shadowing detected" >> $GITHUB_OUTPUT
+          else
+            echo "shadowing_status=⚠️ Shadowing issues detected" >> $GITHUB_OUTPUT
           fi
       
       - name: Comment PR with results
@@ -180,20 +263,43 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            let comment = '## 🔍 Audit Quality Gates\n\n';
+            let comment = '## 🔍 Audit Quality Gates Report\n\n';
             
-            if (fs.existsSync('audit_artifacts/gaps.json')) {
-              const gaps = JSON.parse(fs.readFileSync('audit_artifacts/gaps.json'));
-              const lowCount = (gaps.low_maturity || []).length;
-              comment += `- Low maturity capabilities: **${lowCount}**\n`;
+            // Quality metrics
+            comment += '### Quality Metrics\n';
+            const lowCount = '${{ steps.maturity-check.outputs.low_count }}';
+            const importCount = '${{ steps.legacy-check.outputs.import_count }}';
+            const shadowingStatus = '${{ steps.shadowing-check.outputs.shadowing_status }}';
+            
+            comment += `- **Low maturity capabilities:** ${lowCount}\n`;
+            comment += `- **Legacy imports:** ${importCount}\n`;
+            comment += `- **Shadowing check:** ${shadowingStatus}\n\n`;
+            
+            // Baseline comparison
+            const baselineExists = '${{ steps.check-baseline.outputs.baseline_exists }}';
+            if (baselineExists === 'true') {
+              comment += '### Regression Analysis\n';
+              comment += '✅ Compared against established baseline\n';
+              const diffOutput = '${{ steps.regression-diff.outputs.diff_output }}';
+              if (diffOutput && diffOutput.length > 0) {
+                comment += '<details><summary>View regression diff</summary>\n\n';
+                comment += '```\n' + diffOutput.substring(0, 1000) + '\n```\n';
+                comment += '</details>\n\n';
+              }
+            } else {
+              comment += '### Baseline Status\n';
+              comment += 'ℹ️ No baseline found - will be established after merge to main\n\n';
             }
             
-            if (fs.existsSync('reports/legacy_import_usage.csv')) {
-              const lines = fs.readFileSync('reports/legacy_import_usage.csv', 'utf8').split('\n').length - 1;
-              comment += `- Legacy imports detected: **${lines}**\n`;
-            }
+            // Quality gate status
+            const lowCountNum = parseInt(lowCount) || 0;
+            const importCountNum = parseInt(importCount) || 0;
             
-            comment += '\n✅ Quality gates check completed';
+            if (lowCountNum <= 10 && importCountNum <= 100 && shadowingStatus.includes('✅')) {
+              comment += '---\n✅ **All quality gates passed**';
+            } else {
+              comment += '---\n⚠️ **Quality gates: Some warnings detected** (non-blocking)';
+            }
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,

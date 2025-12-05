@@ -59,6 +59,7 @@ def main():
     if args.expect_site_packages and not yaml_ok:
         print("  [!] CRITICAL: Local 'yaml/' or 'yaml_legacy/' directory may be shadowing PyYAML.")
         print("      Remediation: Ensure 'yaml/' renamed to 'yaml_legacy/' or removed.")
+        print("      Quick fix: run `git mv yaml yaml_legacy || true` to avoid shadowing.")
         if not args.allow_shadow:
             failures += 1
 
@@ -73,6 +74,7 @@ def main():
         print(f"      This WILL shadow the installed hydra-core package.")
         print(f"      Remediation: Rename 'hydra/' to 'config_legacy/' immediately:")
         print(f"                   git mv hydra config_legacy")
+        print(f"      Quick fix: run `git mv hydra config_legacy || true` and update imports to `src.codex_conf` or add deprecation shims.")
         if not args.allow_shadow:
             failures += 1
             hydra_ok = False
@@ -86,6 +88,7 @@ def main():
         print("  [!] CRITICAL: 'hydra' import does not resolve to site-packages.")
         print("      Remediation: Ensure no local 'hydra/' directory exists.")
         print("                   Verify hydra-core is installed: pip install hydra-core")
+        print("      Quick fix: run `git mv hydra config_legacy || true` and update imports.")
         if not args.allow_shadow:
             failures += 1
 
