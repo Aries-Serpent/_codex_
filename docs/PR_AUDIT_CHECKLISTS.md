@@ -38,7 +38,9 @@
 ---
 
 ### Version 1.3.0 (Enhanced - 2025-12-05)
-**Status**: ✅ Template ready for future PRs
+**Status**: ✅ **ACTIVE** - Template ready for immediate use
+
+**Location**: `docs/PR_AUDIT_CHECKLIST_v1.3.0.md` (comprehensive checklist)
 
 **Enhancements Over v1.2.0**:
 
@@ -131,13 +133,24 @@ Use **Version 1.2.0** for straightforward changes:
 - Minor refactoring
 - Documentation updates
 
-### For Complex PRs
-Use **Version 1.3.0** for PRs involving:
+### For Complex PRs or Full Audit
+Use **Version 1.3.0 (ACTIVE)** for PRs involving:
 - Dependency updates
 - Security-sensitive changes
 - Architectural modifications
 - Breaking changes
 - Performance optimizations
+- **S1-S7 audit pipeline execution**
+- **Determinism verification**
+
+### CI/CD Integration
+For full S1-S7 audit + determinism validation:
+- **Recommended**: Execute in CI/CD environment
+- **Dependencies**: pyyaml, jinja2, (optional: torch, transformers, mlflow)
+- **Runtime**: 5-10 minutes for full pipeline
+- **Commands**: See `docs/PR_AUDIT_CHECKLIST_v1.3.0.md` Appendix
+
+**Quick local validation**: Use `make space-audit-fast` for S1-S4 only
 
 ### Customization
 Both templates can be customized based on:
