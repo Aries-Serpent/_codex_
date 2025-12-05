@@ -1279,6 +1279,7 @@ websocket-client==1.9.0
 websockets==15.0.1
     # via uvicorn
 # Updated to werkzeug==3.1.4 due to security fix: see https://github.com/pallets/werkzeug/releases/tag/3.1.4
+# Updated to werkzeug==3.1.4 due to security fix: see https://github.com/pallets/werkzeug/releases/tag/3.1.4
     # Updated to werkzeug==3.1.4 for security fixes and bug improvements
     # See: https://github.com/pallets/werkzeug/releases/tag/3.1.4
 werkzeug==3.1.4
