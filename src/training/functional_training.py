@@ -855,4 +855,7 @@ __all__ = [
     "evaluate_dataloader",
     "run_custom_trainer",
     "main",
+    "get_hf_revision",
+    "run_hf_trainer",
+    "get_model",
 ]
