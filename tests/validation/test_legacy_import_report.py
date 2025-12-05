@@ -1,6 +1,4 @@
-import os
 import csv
-import tempfile
 import subprocess
 from pathlib import Path
 

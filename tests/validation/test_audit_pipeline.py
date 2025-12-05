@@ -183,7 +183,7 @@ def test_context_index_paths_sorted():
 
 
 def test_capability_matrix_generated():
-    """Test that capability_matrix report is generated."""
+    """Test that capability_matrix report is generated (S6 stage)."""
     repo_root = Path(__file__).resolve().parents[2]
     reports_dir = repo_root / "reports"
     
@@ -208,8 +208,18 @@ def test_capability_matrix_generated():
     
     assert len(matrix_files) > 0, "No capability_matrix report found"
     
-    # Check first matrix file has template_hash reference
-    with open(matrix_files[0], 'r') as f:
+    # Validate report content
+    matrix_file = matrix_files[0]
+    with open(matrix_file, 'r') as f:
         content = f.read()
-        assert "template_hash" in content.lower() or "sha256" in content.lower(), \
-            "Matrix report missing template hash reference"
+    
+    # Check for key sections expected in S6 rendered report
+    assert len(content) > 100, "Matrix report appears empty or truncated"
+    assert "capability" in content.lower(), "Matrix report missing capability information"
+    
+    # Check for template hash reference (integrity marker)
+    assert "template_hash" in content.lower() or "sha256" in content.lower(), \
+        "Matrix report missing template hash reference"
+    
+    # Check for score information
+    assert "score" in content.lower(), "Matrix report missing score information"

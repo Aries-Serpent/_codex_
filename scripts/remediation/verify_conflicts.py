@@ -64,10 +64,28 @@ def main():
 
     # 1. Check Hydra Shadowing (Critical)
     print("\n>>> Case 1: Library Shadowing (hydra)")
+    
+    # Check if legacy directories exist
+    legacy_hydra = ROOT / "hydra"
+    legacy_config = ROOT / "config_legacy"
+    if legacy_hydra.exists():
+        print(f"  [!] CRITICAL: Local 'hydra/' directory still exists at repository root.")
+        print(f"      This WILL shadow the installed hydra-core package.")
+        print(f"      Remediation: Rename 'hydra/' to 'config_legacy/' immediately:")
+        print(f"                   git mv hydra config_legacy")
+        if not args.allow_shadow:
+            failures += 1
+            hydra_ok = False
+    elif legacy_config.exists():
+        print(f"  [OK] Legacy 'hydra/' has been renamed to 'config_legacy/'")
+        print(f"       Imports should now use 'import hydra' (from site-packages)")
+    
+    # Verify hydra resolves to site-packages
     hydra_ok = check_import("hydra", expected_location_substr="site-packages" if args.expect_site_packages else None)
     if args.expect_site_packages and not hydra_ok:
-        print("  [!] CRITICAL: Local 'hydra/' directory is shadowing the installed library.")
-        print("      Remediation: Rename root 'hydra/' to 'config_legacy/' or move under 'src/codex_conf/'.")
+        print("  [!] CRITICAL: 'hydra' import does not resolve to site-packages.")
+        print("      Remediation: Ensure no local 'hydra/' directory exists.")
+        print("                   Verify hydra-core is installed: pip install hydra-core")
         if not args.allow_shadow:
             failures += 1
 
