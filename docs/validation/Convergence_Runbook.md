@@ -271,7 +271,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 **Solution**:
 - Renamed `hydra/` to `config_legacy/`
 - Added deprecation warnings in legacy modules
-- Updated 29 import references throughout codebase
+- Updated 29 import references throughout codebase (identified via `scripts/remediation/analyze_legacy_usage.py`)
 - Enhanced conflict verification with remediation guidance
 
 **Result**: Clear migration path established; shadowing detected and documented.

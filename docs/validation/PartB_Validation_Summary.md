@@ -42,7 +42,7 @@ python scripts/space_traversal/verify_determinism.py --runs 2
 
 **Status**: Deferred due to runtime constraints  
 **Reason**: Full audit pipeline takes 30-60 seconds per run, requires 2× runs = ~2 minutes  
-**Note**: Can be executed in CI or during final validation
+**Recommendation**: Should be executed in CI pipeline or during final pre-merge validation to ensure reproducible artifact generation
 
 **Pending Acceptance Criteria**:
 - [ ] Identical repo_root_sha across two runs
