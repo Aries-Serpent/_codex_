@@ -1,5 +1,5 @@
 {
-  "generated": 1764891020.2074473,
+  "generated": 1764900072.613176,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1162,6 +1162,9 @@
       "config/README.md",
       "config/mypy.ini",
       "config/sample-sbom-config.yaml",
+      "config_legacy/README.md",
+      "config_legacy/__init__.py",
+      "config_legacy/errors.py",
       "configs/README.md",
       "configs/__init__.py",
       "configs/base/app.yaml",
@@ -1319,8 +1322,6 @@
       "docs/reference/configs.md",
       "docs/validation/Hydra_Config_Validation.md",
       "docs/validation/SBOM_Config_Validation.md",
-      "hydra/__init__.py",
-      "hydra/errors.py",
       "patches/pending/2025-09-21_hydra_entrypoint.patch",
       "scripts/config/__init__.py",
       "scripts/config/parse_knobs.py",

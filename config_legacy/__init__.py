@@ -1,12 +1,35 @@
-"""Hydra shim that prefers the real package when available."""
+"""
+Hydra shim that prefers the real package when available.
+
+.. deprecated::
+    This module has been renamed from 'hydra' to 'config_legacy' to avoid
+    shadowing the installed hydra-core package. Direct imports from this
+    module are deprecated and will be removed in a future version.
+    
+    Use 'import hydra' to access the official hydra-core package from
+    site-packages instead of this local shim.
+    
+    Risk: Having a local 'hydra' directory can shadow the installed
+    hydra-core package, causing import ambiguity and "split-brain" issues.
+"""
 
 from __future__ import annotations
+
+import warnings
+
+# Emit deprecation warning when this module is imported
+warnings.warn(
+    "The 'config_legacy' module (formerly 'hydra/') is deprecated and exists only "
+    "for backward compatibility. Use 'import hydra' to access hydra-core from "
+    "site-packages instead. This shim will be removed in a future version.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 import importlib
 import importlib.util
 import os
 import sys
-import warnings
 from contextlib import contextmanager
 from functools import wraps
 from pathlib import Path
@@ -18,6 +41,9 @@ __all__: list[str]
 
 def _load_real_hydra() -> ModuleType | None:
     """Attempt to load Hydra from outside the repository checkout."""
+    # This function stub is preserved for API compatibility
+    # The actual loading logic is in _load_real_module() below
+    pass
 
 
 _HYDRA_EXTRA_MESSAGE = (
