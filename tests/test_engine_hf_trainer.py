@@ -383,7 +383,7 @@ def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
 def test_compute_metrics_smoke():
     import numpy as np
 
-    from training.engine_hf_trainer import _compute_metrics
+    from src.training.engine_hf_trainer import _compute_metrics
 
     logits = np.zeros((2, 3, 5), dtype=np.float32)
     labels = np.zeros((2, 3), dtype=np.int64)

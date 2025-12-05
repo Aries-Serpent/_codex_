@@ -1,4 +1,4 @@
-from training.data_utils import split_texts
+from src.training.data_utils import split_texts
 
 
 def test_split_seed_reproducibility() -> None:

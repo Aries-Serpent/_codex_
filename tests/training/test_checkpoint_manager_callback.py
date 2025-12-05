@@ -7,7 +7,7 @@ pytest.importorskip("transformers")
 
 import torch
 from torch.optim import SGD
-from training.checkpoint_manager import CheckpointManager
+from src.training.checkpoint_manager import CheckpointManager
 from transformers import TrainerControl, TrainerState
 
 

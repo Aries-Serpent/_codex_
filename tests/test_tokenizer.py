@@ -76,7 +76,7 @@ def test_tokenizer_basic(tmp_path):
     pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
     pytest.importorskip("tokenizers", reason="tokenizers not installed")
     from codex_ml.interfaces.tokenizer import HFTokenizer
-    from tokenization.train_tokenizer import TrainTokenizerConfig, train
+    from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("Run pre-commit --all-files now.\n", encoding="utf-8")

@@ -6,7 +6,7 @@ pytest.importorskip("tokenizers")
 
 from tokenizers import Tokenizer
 
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_bpe_streaming_equivalence(tmp_path):
