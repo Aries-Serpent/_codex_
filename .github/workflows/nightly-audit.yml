@@ -1,0 +1,98 @@
+name: Nightly Audit & Shim Governance
+on:
+  schedule:
+    - cron: "0 2 * * *" # daily at 02:00 UTC
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  nightly-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+      
+      - name: Validate inventory paths
+        run: |
+          python scripts/remediation/validate_inventory_paths.py
+      - name: Generate shim inventory
+        run: |
+          python scripts/remediation/list_shims.py \
+            --roots training src/training tokenization src/tokenization \
+            --output .github/SHIM_INVENTORY.yaml
+      
+      - name: Strict conflict detection
+        id: conflicts
+        continue-on-error: true
+        run: |
+          python scripts/remediation/verify_conflicts.py \
+            --mode strict \
+            --output audit_artifacts/conflicts.json
+      
+      - name: Legacy usage report
+        run: |
+          python scripts/remediation/analyze_legacy_usage.py || echo "Legacy analysis skipped (dependencies missing)"
+      
+      - name: Upload nightly artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-shim-governance-${{ github.run_id }}
+          path: |
+            .github/SHIM_INVENTORY.yaml
+            audit_artifacts/conflicts.json
+            reports/legacy_import_usage.csv
+      
+      - name: Create issue on conflicts
+        if: steps.conflicts.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let conflicts = {};
+            try {
+              conflicts = JSON.parse(fs.readFileSync('audit_artifacts/conflicts.json', 'utf8'));
+            } catch (e) {
+              conflicts = {violations: ['Unable to parse conflicts.json']};
+            }
+            
+            const body = `## 🚨 Nightly Audit: Strict Conflict Detection Failed
+            
+            **Run**: ${{ github.run_id }}
+            **Date**: ${new Date().toISOString()}
+            
+            **Violations Found**: ${conflicts.violations ? conflicts.violations.length : 'unknown'}
+            
+            ### Details
+            \`\`\`json
+            ${JSON.stringify(conflicts, null, 2)}
+            \`\`\`
+            
+            ### Action Required
+            Review the conflicts and either:
+            1. Add to whitelist in \`.github/SHIM_INVENTORY.yaml\`
+            2. Resolve the split-brain issue
+            3. Update the consolidation plan
+            
+            See: [Nightly Audit Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Nightly Audit] Strict conflicts detected - ${new Date().toISOString().split('T')[0]}`,
+              body: body,
+              labels: ['audit', 'shim-governance', 'automated']
+            });

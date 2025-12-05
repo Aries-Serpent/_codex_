@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from training.engine_hf_trainer import CSVMetricsWriter, NDJSONMetricsWriter
+from src.training.engine_hf_trainer import CSVMetricsWriter, NDJSONMetricsWriter
 
 
 def test_csv_metrics_writer(tmp_path: Path):

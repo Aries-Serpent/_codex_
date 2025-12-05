@@ -21,7 +21,7 @@ from cli import train_codex
 api_app = importlib.import_module("codex.api.app")
 from codex_ml.security import DenylistEnforcer, DenylistViolation
 from codex_ml.utils import checkpointing
-from tokenization.loader import load_tokenizer
+from src.tokenization.loader import load_tokenizer
 
 
 @pytest.fixture()

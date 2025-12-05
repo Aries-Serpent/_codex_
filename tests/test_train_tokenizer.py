@@ -25,7 +25,7 @@ def _stub_tokenizers(monkeypatch):
 
 
 def test_train_tokenizer_no_corpus_raises(tmp_path):
-    from tokenization.train_tokenizer import TrainTokenizerConfig, train
+    from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
     cfg = TrainTokenizerConfig(
         corpus_glob=str(tmp_path / "missing" / "*.txt"),

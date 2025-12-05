@@ -11,8 +11,8 @@ pytest.importorskip("yaml")
 import torch
 from codex.training import TrainCfg, run_custom_trainer
 from codex_ml.models import MiniLM, MiniLMConfig
-from training.data_utils import TextDataset
-from training.engine_hf_trainer import run_hf_trainer
+from src.training.data_utils import TextDataset
+from src.training.engine_hf_trainer import run_hf_trainer
 
 
 class _Tok:

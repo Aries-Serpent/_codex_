@@ -99,7 +99,10 @@ def _inject_curriculum_flags(argv: list[str]) -> list[str]:
 
 def main(argv=None) -> int:
     try:
-        import hydra
+        try:
+            import hydra
+        except ImportError:
+            import config_legacy as hydra
         from omegaconf import DictConfig, OmegaConf
     except Exception:
         return _print_missing("hydra-core")

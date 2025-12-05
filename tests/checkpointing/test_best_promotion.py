@@ -1,7 +1,7 @@
 import json
 import os
 
-from training.checkpoint_manager import CheckpointManager
+from src.training.checkpoint_manager import CheckpointManager
 
 
 def test_best_promotion(tmp_path):

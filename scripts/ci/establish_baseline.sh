@@ -14,6 +14,7 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 BASELINE_DIR="${REPO_ROOT}/audit_artifacts/baselines"
 BASELINE_FILE="${BASELINE_DIR}/capabilities_scored.json"
+META_FILE="${BASELINE_DIR}/metadata.json"
 AUDIT_OUTPUT="${REPO_ROOT}/audit_artifacts/capabilities_scored.json"
 
 FORCE=false
@@ -59,14 +60,30 @@ if ! python -c "import json; json.load(open('${BASELINE_FILE}'))" 2>/dev/null; t
     exit 4
 fi
 
+# Generate baseline metadata
+echo "📝 Writing baseline metadata..."
+SHA="$(sha256sum "${BASELINE_FILE}" | awk '{print $1}')"
+DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+CAPABILITY_COUNT=$(python -c "import json; data=json.load(open('${BASELINE_FILE}')); print(len(data.get('capabilities', [])))")
+
+cat > "${META_FILE}" <<EOF
+{
+  "date": "${DATE}",
+  "sha256": "${SHA}",
+  "capabilities_count": ${CAPABILITY_COUNT},
+  "source_artifact": "audit_artifacts/capabilities_scored.json"
+}
+EOF
+
 echo "✅ Baseline established successfully!"
 echo "   Location: ${BASELINE_FILE}"
+echo "   Metadata: ${META_FILE}"
 echo ""
 echo "📊 Baseline stats:"
-CAPABILITY_COUNT=$(python -c "import json; data=json.load(open('${BASELINE_FILE}')); print(len(data.get('capabilities', [])))")
 echo "   - Capabilities tracked: ${CAPABILITY_COUNT}"
+echo "   - SHA256: ${SHA}"
 echo ""
 echo "ℹ️  Next steps:"
-echo "   1. Commit the baseline: git add ${BASELINE_FILE}"
+echo "   1. Commit the baseline: git add ${BASELINE_FILE} ${META_FILE}"
 echo "   2. Push to repository: git commit -m 'feat: Establish audit baseline' && git push"
 echo "   3. CI will now use this baseline for regression detection"

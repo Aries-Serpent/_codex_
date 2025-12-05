@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from tokenization import train_tokenizer as module
+from src.tokenization import train_tokenizer as module
 
 
 def test_iter_text_uses_configured_chunk_size(monkeypatch):

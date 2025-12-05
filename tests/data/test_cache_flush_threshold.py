@@ -2,7 +2,7 @@ import pytest
 
 pytest.importorskip("numpy")
 
-from training.cache import TokenCache
+from src.training.cache import TokenCache
 
 
 def test_cache_flush_threshold(tmp_path):

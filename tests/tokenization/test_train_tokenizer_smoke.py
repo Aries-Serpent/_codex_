@@ -2,7 +2,7 @@ import json
 
 from tokenizers import Tokenizer
 
-from tokenization.train_tokenizer import TrainTokenizerConfig, train
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_train_tokenizer_smoke(tmp_path):

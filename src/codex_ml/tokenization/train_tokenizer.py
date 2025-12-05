@@ -14,7 +14,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from tokenization import train_tokenizer as _legacy_train_tokenizer
+from src.tokenization import train_tokenizer as _legacy_train_tokenizer
 
 # ``TrainTokenizerConfig`` is a dataclass defined in the legacy module.  We
 # expose it directly so type-checkers and callers see the expanded field set

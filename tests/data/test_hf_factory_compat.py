@@ -4,7 +4,7 @@ from codex_ml.utils.hf_pinning import load_from_pretrained
 
 pytest.importorskip("datasets")
 
-from training.datasets import to_hf_dataset  # noqa: E402
+from src.training.datasets import to_hf_dataset  # noqa: E402
 
 
 def test_hf_dataset_factory():

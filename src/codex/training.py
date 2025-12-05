@@ -125,7 +125,7 @@ def save_checkpoint(
 
 
 try:  # re-export functional training helpers
-    from training.functional_training import (  # type: ignore
+    from src.training.functional_training import (  # type: ignore
         TrainCfg,
         run_custom_trainer,
     )
@@ -143,7 +143,7 @@ except Exception:  # pragma: no cover - training optional
 
 
 try:  # optional HF trainer
-    from training.engine_hf_trainer import run_hf_trainer  # type: ignore
+    from src.training.engine_hf_trainer import run_hf_trainer  # type: ignore
 except Exception:  # pragma: no cover - optional dependency
 
     def run_hf_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]

@@ -13,7 +13,10 @@ from typing import Callable, Iterable, Iterator, Optional, Sequence, Union
 from ingestion import ingest
 
 try:  # pragma: no cover - optional dependency
-    import hydra
+    try:
+        import hydra
+    except ImportError:
+        import config_legacy as hydra
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
     hydra = None  # type: ignore

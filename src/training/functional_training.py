@@ -1,0 +1,852 @@
+from __future__ import annotations
+
+import argparse
+import contextlib
+import json
+import logging
+import os
+from dataclasses import asdict, dataclass
+from os import PathLike
+from pathlib import Path
+from typing import Any, Callable, Dict, Mapping, Optional, Sequence
+
+import numpy as np
+
+import torch
+from codex_ml.logging.file_logger import FileLogger
+from codex_ml.logging.run_metadata import log_run_metadata
+from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
+from codex_ml.utils.checkpointing import (
+    dump_rng_state,
+    load_rng_state,
+    load_training_checkpoint,
+    save_checkpoint,
+    set_seed,
+)
+from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
+from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
+from torch.nn.utils import clip_grad_norm_
+from torch.utils.data import DataLoader
+
+# ruff: noqa: I001
+
+
+
+
+
+LOGGER = logging.getLogger(__name__)
+
+# optional dependencies -----------------------------------------------------
+try:  # pragma: no cover - optional config dependency
+    from omegaconf import DictConfig, OmegaConf  # type: ignore
+except Exception:  # pragma: no cover - omegaconf not installed
+    DictConfig = Any  # type: ignore
+    OmegaConf = None  # type: ignore
+
+try:  # pragma: no cover - optional logging dependency
+    from codex_ml.monitoring.codex_logging import (
+        CodexLoggers,
+        _codex_log_all,
+        _codex_logging_bootstrap,
+    )
+except Exception:  # pragma: no cover - monitoring module missing
+    CodexLoggers = Any  # type: ignore
+
+    def _codex_log_all(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        """Fallback no-op logger when monitoring is unavailable."""
+
+    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> Dict[str, Any]:  # type: ignore
+        return {}
+
+
+try:  # pragma: no cover - optional system metrics dependency
+    from codex_ml.monitoring.system_metrics import SystemMetricsLogger
+except Exception:  # pragma: no cover - metrics optional
+    SystemMetricsLogger = None  # type: ignore[misc]
+
+
+try:  # pragma: no cover - optional manifest helper
+    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+except Exception:  # pragma: no cover - optional dependency missing
+    manifest_for_paths = None  # type: ignore
+
+
+try:  # pragma: no cover - optional model registry
+    from codex_ml.models.registry import get_model
+except Exception:  # pragma: no cover - minimal training may not need registry
+
+    def get_model(*args: Any, **kwargs: Any):  # type: ignore
+        raise RuntimeError("codex_ml.models.registry is unavailable")
+
+
+try:  # pragma: no cover - optional system metrics dependency chain
+    from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
+except Exception:  # pragma: no cover - optional dependency missing
+    collect_system_metrics = None  # type: ignore[assignment]
+
+
+def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
+    """Collect system metrics when enabled and the optional helper is available."""
+
+    if not enabled or collect_system_metrics is None:
+        return None
+    try:
+        metrics = collect_system_metrics()
+    except Exception:
+        LOGGER.debug("Failed to collect system metrics for training metrics payload", exc_info=True)
+        return None
+    if not isinstance(metrics, dict):
+        return None
+    numeric_metrics: dict[str, float] = {}
+    for key, value in metrics.items():
+        if isinstance(value, (int, float)):
+            numeric_metrics[str(key)] = float(value)
+    return numeric_metrics or None
+
+
+try:  # pragma: no cover - optional HF trainer helpers
+    from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
+except Exception:  # pragma: no cover - hf trainer not available
+
+    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        raise RuntimeError("HuggingFace trainer is unavailable")
+
+    def _compute_metrics(*args: Any, **kwargs: Any) -> Dict[str, float]:  # type: ignore
+        return {}
+
+    def get_hf_revision(identifier: PathLike[str] | str) -> str:
+        norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
+        overrides: Dict[str, Any] = {}
+        env_revision = os.environ.get("HF_REVISION")
+        if env_revision:
+            overrides["revision"] = env_revision
+        try:
+            revision, _ = ensure_pinned_kwargs(norm, overrides)
+        except ValueError as exc:  # pragma: no cover - environment misconfiguration
+            if env_revision:
+                raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
+            raise
+        if revision is None:
+            raise RuntimeError("Expected a remote identifier when resolving HF revision")
+        return revision
+
+
+_LOCAL_PATH_PREFIXES = ("./", "../", "/")
+
+
+def _normalize_identifier(identifier: PathLike[str] | str | None) -> str | None:
+    if identifier is None:
+        return None
+    if isinstance(identifier, PathLike):
+        return os.fspath(identifier)
+    return str(identifier)
+
+
+def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
+    norm = _normalize_identifier(identifier)
+    if norm is None:
+        return False
+    if norm.startswith(_LOCAL_PATH_PREFIXES):
+        return True
+    try:
+        return Path(norm).expanduser().exists()
+    except OSError:
+        return False
+
+
+try:  # optional LoRA support
+    from peft import LoraConfig, get_peft_model  # type: ignore
+except Exception:  # pragma: no cover - optional
+    LoraConfig = None  # type: ignore
+    get_peft_model = None  # type: ignore
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Training orchestrator entry point.
+
+    Loads configuration via load_training_cfg, prepares datasets and dispatches
+    to either the HuggingFace trainer or a minimal custom loop depending on --engine.
+    """
+    from codex_ml.utils.config_loader import load_training_cfg  # local import
+
+    parser = argparse.ArgumentParser(description="Training orchestrator entry.")
+    parser.add_argument("--engine", choices=["hf", "custom"], default="hf")
+    parser.add_argument("--texts", nargs="*", help="Training texts (overrides cfg.training.texts)")
+    parser.add_argument("--val-texts", nargs="*", default=None)
+    parser.add_argument("--output-dir", type=Path, default=Path("training_runs"))
+    parser.add_argument(
+        "--cfg-override",
+        dest="overrides",
+        nargs="*",
+        default=None,
+        help="Hydra-style overrides for load_training_cfg",
+    )
+    parser.add_argument("--lora-r", type=int, default=None, help="LoRA rank parameter")
+    parser.add_argument("--lora-alpha", type=int, default=None, help="LoRA alpha parameter")
+    parser.add_argument("--lora-dropout", type=float, default=None, help="LoRA dropout rate")
+    args = parser.parse_args(list(argv) if argv is not None else None)
+
+    cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
+    # Flatten training.* into top-level dict for hydra_cfg propagation
+    training_cfg: Dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    nested = training_cfg.pop("training", {})
+    if isinstance(nested, dict):
+        training_cfg.update(nested)
+
+    texts = args.texts or training_cfg.get("texts")
+    if not texts:
+        parser.error("Provide training texts via --texts or config.training.texts")
+    val_texts = args.val_texts or training_cfg.get("val_texts")
+    seed = int(training_cfg.get("seed", 0))
+
+    # Optionally record dataset manifest for reproducibility
+    if manifest_for_paths is not None:
+        manifest_sources = training_cfg.get("data_path")
+        data_section = (
+            training_cfg.get("data") if isinstance(training_cfg.get("data"), dict) else {}
+        )
+        if not manifest_sources and isinstance(data_section, dict):
+            manifest_sources = data_section.get("path") or data_section.get("paths")
+        if manifest_sources:
+            import glob
+
+            if isinstance(manifest_sources, (str, os.PathLike)):
+                patterns = [os.fspath(manifest_sources)]
+            elif isinstance(manifest_sources, (list, tuple, set)):
+                patterns = [os.fspath(p) for p in manifest_sources]
+            else:
+                patterns = []
+            collected: list[Path] = []
+            for pattern in patterns:
+                for candidate in glob.glob(pattern):
+                    path = Path(candidate)
+                    if path.is_file():
+                        collected.append(path)
+            if collected:
+                try:
+                    manifest_for_paths(
+                        collected,
+                        Path("artifacts/data_manifest.jsonl"),
+                        {"run": training_cfg.get("run_name", "")},
+                    )
+                except Exception:
+                    pass
+
+    if args.engine == "hf":
+        # Prepare keyword args and propagate hydra_cfg for downstream compatibility
+        kw: Dict[str, Any] = {"hydra_cfg": training_cfg, "seed": seed}
+        for key in ("gradient_accumulation_steps", "precision"):
+            if key in training_cfg:
+                kw[key] = training_cfg[key]
+        if "grad_accum" in training_cfg and "gradient_accumulation_steps" not in kw:
+            kw["gradient_accumulation_steps"] = training_cfg["grad_accum"]
+        repro_cfg = training_cfg.get("reproducibility")
+        if isinstance(repro_cfg, dict) and "cudnn_deterministic" in repro_cfg:
+            kw["deterministic"] = bool(repro_cfg.get("cudnn_deterministic"))
+        elif "deterministic" in training_cfg:
+            kw["deterministic"] = bool(training_cfg["deterministic"])
+        lora_cfg = training_cfg.get("lora")
+        if isinstance(lora_cfg, dict) and lora_cfg.get("enable"):
+            kw["lora_r"] = lora_cfg.get("r")
+            kw["lora_alpha"] = lora_cfg.get("alpha", 16)
+            kw["lora_dropout"] = lora_cfg.get("dropout")
+        if args.lora_r is not None:
+            kw["lora_r"] = args.lora_r
+        if args.lora_alpha is not None:
+            kw["lora_alpha"] = args.lora_alpha
+        if args.lora_dropout is not None:
+            kw["lora_dropout"] = args.lora_dropout
+        run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
+    else:
+        # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
+        from datasets import Dataset  # type: ignore
+
+        from transformers import AutoTokenizer  # type: ignore
+
+        model_cfg = training_cfg.get(
+            "model",
+            {"name": training_cfg.get("model_name", "sshleifer/tiny-gpt2")},
+        )
+        model = get_model(model_cfg.get("name", "MiniLM"), model_cfg)
+        tok_name = model_cfg.get("pretrained_model_name_or_path") or model_cfg.get("name")
+        tokenizer_kwargs: Dict[str, Any] = {}
+        if not _looks_like_local_source(tok_name):
+            tokenizer_kwargs["revision"] = get_hf_revision(tok_name)
+        tokenizer = load_from_pretrained(
+            AutoTokenizer,
+            tok_name,
+            **tokenizer_kwargs,
+        )
+        if getattr(tokenizer, "pad_token", None) is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        tokenized = tokenizer(list(texts), padding=True, return_tensors="pt")
+        tokenized["labels"] = tokenized["input_ids"].clone()
+        tokenized["labels"][tokenized["attention_mask"] == 0] = -100
+        tokenized_np = {k: v.numpy() for k, v in tokenized.items()}
+        train_ds = Dataset.from_dict(tokenized_np)
+
+        val_ds = None
+        if val_texts:
+            val_tok = tokenizer(list(val_texts), padding=True, return_tensors="pt")
+            val_tok["labels"] = val_tok["input_ids"].clone()
+            val_tok["labels"][val_tok["attention_mask"] == 0] = -100
+            val_ds = Dataset.from_dict({k: v.numpy() for k, v in val_tok.items()})
+
+        train_kwargs = {
+            f: training_cfg.get(f, getattr(TrainCfg, f)) for f in TrainCfg.__annotations__
+        }
+        lora_cfg = training_cfg.get("lora", {})
+        train_kwargs["use_lora"] = bool(lora_cfg.get("enable", train_kwargs.get("use_lora")))
+        train_kwargs["lora_r"] = lora_cfg.get("r", train_kwargs.get("lora_r"))
+        train_kwargs["lora_alpha"] = lora_cfg.get("alpha", train_kwargs.get("lora_alpha"))
+        train_kwargs["lora_dropout"] = lora_cfg.get("dropout", train_kwargs.get("lora_dropout"))
+        train_cfg = TrainCfg(**train_kwargs)
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
+    return 0
+
+
+def _worker_init_fn(worker_id: int) -> None:
+    """Initialise worker seed deterministically."""
+    seed = torch.initial_seed() % 2**32
+    np.random.seed(seed + worker_id)
+
+
+@dataclass
+class TrainCfg:
+    epochs: int = 1
+    batch_size: int = 8
+    grad_accum: int = 1
+    lr: float = 5e-4
+    weight_decay: float = 0.0
+    warmup_steps: int = 0
+    max_steps: Optional[int] = None
+    max_grad_norm: Optional[float] = 1.0
+    dtype: str = "fp32"  # fp32|fp16|bf16
+    log_every: int = 50
+    save_every: int = 500
+    patience: int = 100
+    seed: int = 42
+    resume_from: Optional[str] = None
+    checkpoint_dir: str = "checkpoints"
+    use_lora: bool = False
+    lora_r: int = 4
+    lora_alpha: int = 16
+    lora_dropout: float = 0.0
+    device: Optional[str] = None
+    limit_train_batches: Optional[int] = None
+    limit_val_batches: Optional[int] = None
+    dp_enabled: bool = False
+    dp_noise_multiplier: float = 1.0
+    dp_max_grad_norm: float = 1.0
+    dp_target_delta: float = 1e-5
+    mlflow_enable: bool = False
+    mlflow_tracking_uri: Optional[str] = None
+    deterministic: bool = True
+    log_dir: str = "logs"
+    log_formats: tuple[str, ...] = ("ndjson",)
+    collate_fn: Optional[Callable[[dict[str, Any]], Any]] = None
+    log_system_metrics: bool = False
+    system_metrics_interval: float = 60.0
+    system_metrics_path: Optional[str] = None
+    keep_last: Optional[int] = None
+
+
+def _prune_checkpoint_files(
+    root: Path, keep_last: Optional[int], pattern: str = "step*.pt*"
+) -> None:
+    if keep_last is None or keep_last <= 0:
+        return
+    candidates = [p for p in root.glob(pattern) if p.is_file()]
+    if len(candidates) <= keep_last:
+        return
+    candidates.sort(key=lambda item: item.stat().st_mtime)
+    for stale in candidates[:-keep_last]:
+        with contextlib.suppress(FileNotFoundError):
+            stale.unlink()
+        with contextlib.suppress(FileNotFoundError):
+            stale.with_suffix(".meta.json").unlink()
+
+
+def evaluate_batches(
+    model,
+    dataloader,
+    metrics_fn,
+    *,
+    device: torch.device,
+    limit_batches: int | None = None,
+) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` and aggregate metrics without gradients."""
+
+    import torch as _torch
+
+    was_training = getattr(model, "training", False)
+    model.eval()
+
+    loss_total = 0.0
+    loss_steps = 0
+    preds: list[np.ndarray] = []
+    labels: list[np.ndarray] = []
+
+    with _torch.no_grad():
+        for batch_index, batch in enumerate(dataloader):
+            if limit_batches is not None and batch_index >= int(limit_batches):
+                break
+            for key, value in batch.items():
+                batch[key] = value.to(device)
+            outputs = model(**batch)
+            if isinstance(outputs, dict):
+                logits = outputs.get("logits")
+                loss = outputs.get("loss")
+            else:
+                logits = getattr(outputs, "logits", None)
+                loss = getattr(outputs, "loss", None)
+            if loss is not None:
+                loss_steps += 1
+                loss_total += float(loss.detach().cpu().item())
+            if logits is not None and metrics_fn is not None and "labels" in batch:
+                preds.append(logits.detach().cpu().numpy())
+                labels.append(batch["labels"].detach().cpu().numpy())
+
+    metrics: dict[str, float] = {}
+    if metrics_fn is not None and preds and labels:
+        stacked = (np.concatenate(preds), np.concatenate(labels))
+        metrics.update(metrics_fn(stacked))
+    if loss_steps:
+        metrics["loss"] = loss_total / float(loss_steps)
+    metrics.setdefault("batches_evaluated", float(len(preds) or loss_steps))
+
+    if was_training:
+        model.train()
+
+    return metrics
+
+
+def evaluate_dataloader(model, dataloader, cfg: TrainCfg, device: torch.device) -> dict[str, float]:
+    """Evaluate ``model`` on ``dataloader`` while aggregating metrics offline."""
+
+    if dataloader is None:
+        return {}
+
+    metrics = evaluate_batches(
+        model,
+        dataloader,
+        _compute_metrics,
+        device=device,
+        limit_batches=cfg.limit_val_batches,
+    )
+    if "num_batches" not in metrics and "batches_evaluated" in metrics:
+        metrics["num_batches"] = float(metrics["batches_evaluated"])
+    return metrics
+
+
+def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dict[str, Any]:
+    """Train ``model`` on ``train_ds`` using a minimal deterministic loop."""
+    device = torch.device(cfg.device or ("cuda" if torch.cuda.is_available() else "cpu"))
+    model.to(device)
+    set_seed(cfg.seed, deterministic=cfg.deterministic)
+    if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
+        assert (
+            torch.backends.cudnn.deterministic
+        ), "cuDNN must be deterministic; call set_reproducible()"
+    loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
+
+    if cfg.use_lora and LoraConfig and get_peft_model:
+        try:
+            lcfg = LoraConfig(
+                r=cfg.lora_r,
+                lora_alpha=cfg.lora_alpha,
+                lora_dropout=cfg.lora_dropout,
+                bias="none",
+            )
+            model = get_peft_model(model, lcfg)
+        except Exception:
+            pass
+
+    metrics_path: Optional[Path] = None
+    config_snapshot: Optional[Path] = None
+    log_formats = tuple(cfg.log_formats)
+    metrics_root: Path
+    metrics_stem = "metrics"
+    if cfg.mlflow_enable:
+        artifact_root = Path(cfg.checkpoint_dir or ".codex") / "mlflow"
+        artifact_root.mkdir(parents=True, exist_ok=True)
+        metrics_root = artifact_root
+        try:
+            config_snapshot = artifact_root / "config.json"
+            config_snapshot.write_text(
+                json.dumps(asdict(cfg), indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+        except Exception:
+            config_snapshot = None
+    else:
+        metrics_root = Path(cfg.log_dir)
+
+    metrics_logger = FileLogger(root=metrics_root, formats=log_formats, filename_stem=metrics_stem)
+    metrics_path = metrics_logger.paths().get("ndjson")
+    if metrics_path is not None and metrics_path.exists():
+        try:
+            metrics_path.unlink()
+        except Exception:
+            pass
+
+    def _safe_len(data: Any) -> int | None:
+        try:
+            return int(len(data))  # type: ignore[arg-type]
+        except Exception:
+            return None
+
+    metadata_logger: Any = metrics_logger
+    if "csv" in log_formats:
+        ndjson_target = metrics_logger.paths().get("ndjson")
+
+        class _NdjsonOnlyLogger:
+            def __init__(self, target: Path) -> None:
+                self._target = target
+
+            def log(self, row: Mapping[str, object]) -> None:
+                with self._target.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(dict(row), ensure_ascii=False) + "\n")
+
+        metadata_logger = _NdjsonOnlyLogger(ndjson_target) if ndjson_target is not None else None
+
+    if metadata_logger is not None:
+        log_run_metadata(
+            metadata_logger,
+            seed=cfg.seed,
+            deterministic=cfg.deterministic,
+            resume=bool(cfg.resume_from),
+            dataset_format=getattr(cfg, "dataset_format", None),
+            dataset_source=getattr(cfg, "dataset_source", None),
+            train_examples=_safe_len(train_ds),
+            eval_examples=_safe_len(val_ds) if val_ds is not None else 0,
+            extras={"log_formats": list(log_formats)},
+        )
+
+    def _append_metric(
+        record: Dict[str, object], system_metrics: Optional[dict[str, float]] = None
+    ) -> None:
+        payload = dict(record)
+        metrics = system_metrics
+        if metrics is None:
+            metrics = _maybe_collect_system_metrics(cfg.log_system_metrics)
+        if metrics:
+            payload.update({f"sys_{key}": value for key, value in metrics.items()})
+        metrics_logger.log(payload)
+
+    system_logger = None
+    if cfg.log_system_metrics and SystemMetricsLogger is not None:
+        base_dir = Path(cfg.checkpoint_dir)
+        target = (
+            Path(cfg.system_metrics_path)
+            if isinstance(cfg.system_metrics_path, (str, Path)) and cfg.system_metrics_path
+            else base_dir / "system_metrics.ndjson"
+        )
+        target = Path(target)
+        if not target.is_absolute():
+            target = base_dir / target
+        try:
+            system_logger = SystemMetricsLogger(
+                target, interval=max(0.5, float(cfg.system_metrics_interval))
+            )
+            system_logger.start()
+        except Exception:
+            system_logger = None
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    scheduler = None
+    if cfg.warmup_steps and cfg.max_steps is not None:
+        max_steps = cfg.max_steps
+
+        def lr_lambda(step: int) -> float:
+            if step < cfg.warmup_steps:
+                return step / float(max(1, cfg.warmup_steps))
+            return max(0.0, (max_steps - step) / float(max(1, max_steps - cfg.warmup_steps)))
+
+        scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
+
+    start_epoch = 0
+    global_step = 0
+    best_val = float("inf")
+    start_step = 0
+    if cfg.resume_from:
+        try:
+            state = load_training_checkpoint(cfg.resume_from, model, optimizer, scheduler)
+            start_epoch = int(state.get("epoch") or 0)
+            extra = state.get("extra", {})
+            global_step = int(extra.get("global_step", 0))
+            best_val = float(extra.get("best_val", best_val))
+            start_step = int(extra.get("step_in_epoch", 0))
+            if rng := extra.get("rng_state"):
+                load_rng_state(rng)
+        except Exception:
+            pass
+
+    train_loader = DataLoader(
+        train_ds,
+        batch_size=cfg.batch_size,
+        shuffle=True,
+        drop_last=True,
+        pin_memory=torch.cuda.is_available(),
+        worker_init_fn=_worker_init_fn,
+        generator=torch.Generator().manual_seed(cfg.seed),
+        collate_fn=cfg.collate_fn,
+    )
+    val_loader = None
+    if val_ds is not None:
+        val_loader = DataLoader(
+            val_ds,
+            batch_size=cfg.batch_size,
+            shuffle=False,
+            drop_last=False,
+            pin_memory=torch.cuda.is_available(),
+            worker_init_fn=_worker_init_fn,
+            generator=torch.Generator().manual_seed(cfg.seed),
+            collate_fn=cfg.collate_fn,
+        )
+
+    privacy_engine = None
+    if cfg.dp_enabled:
+        try:
+            from opacus import PrivacyEngine  # type: ignore
+
+            privacy_engine = PrivacyEngine()
+            model, optimizer, train_loader = privacy_engine.make_private(
+                module=model,
+                optimizer=optimizer,
+                data_loader=train_loader,
+                noise_multiplier=cfg.dp_noise_multiplier,
+                max_grad_norm=cfg.dp_max_grad_norm,
+            )
+        except Exception:
+            privacy_engine = None
+
+    use_amp = cfg.dtype in {"fp16", "bf16"} and torch.cuda.is_available()
+    scaler = torch.cuda.amp.GradScaler(enabled=cfg.dtype == "fp16")
+    autocast_dtype = {
+        "fp16": torch.float16,
+        "bf16": torch.bfloat16,
+    }.get(cfg.dtype, torch.float32)
+
+    history: list[float] = []
+    patience_ctr = 0
+
+    run_name = f"run-{cfg.seed}"
+    with maybe_mlflow(
+        enable=bool(cfg.mlflow_enable),
+        run_name=run_name,
+        tracking_uri=cfg.mlflow_tracking_uri,
+    ) as mlf:
+        try:
+            if cfg.mlflow_enable:
+                try:
+                    params = {
+                        "training.lr": cfg.lr,
+                        "training.batch_size": cfg.batch_size,
+                        "training.epochs": cfg.epochs,
+                        "training.grad_accum": cfg.grad_accum,
+                        "training.dtype": cfg.dtype,
+                        "training.max_grad_norm": cfg.max_grad_norm,
+                        "training.use_lora": cfg.use_lora,
+                    }
+                    mlf.log_params(_as_flat_params(params))
+                except Exception:
+                    pass
+
+            for epoch in range(start_epoch, cfg.epochs):
+                model.train()
+                optimizer.zero_grad(set_to_none=True)
+                for step, batch in enumerate(train_loader):
+                    if epoch == start_epoch and step < start_step:
+                        continue
+                    if cfg.limit_train_batches and step >= cfg.limit_train_batches:
+                        break
+
+                    @track_time(TRAIN_STEP_DURATION)
+                    def _step() -> float:
+                        for k, v in batch.items():
+                            batch[k] = v.to(device)
+                        with torch.autocast(
+                            device_type=device.type, dtype=autocast_dtype, enabled=use_amp
+                        ):
+                            out = model(**batch)
+                            loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                            loss_t = loss_t / cfg.grad_accum
+                        if cfg.dtype == "fp16":
+                            scaler.scale(loss_t).backward()
+                        else:
+                            loss_t.backward()
+                        if (step + 1) % cfg.grad_accum == 0:
+                            if cfg.max_grad_norm is not None:
+                                if cfg.dtype == "fp16":
+                                    scaler.unscale_(optimizer)
+                                clip_grad_norm_(model.parameters(), cfg.max_grad_norm)
+                            if cfg.dtype == "fp16":
+                                scaler.step(optimizer)
+                                scaler.update()
+                            else:
+                                optimizer.step()
+                            optimizer.zero_grad(set_to_none=True)
+                        return float(loss_t.detach())
+
+                    loss = _step()
+                    if EXAMPLES_PROCESSED:
+                        first = next(iter(batch.values()))
+                        EXAMPLES_PROCESSED.inc(int(getattr(first, "shape", [0])[0]))
+                    global_step += 1
+                    if scheduler:
+                        scheduler.step()
+                    if global_step % cfg.log_every == 0:
+                        loss_val = float(loss * cfg.grad_accum)
+                        history.append(loss_val)
+                        try:
+                            _codex_log_all(global_step, {"train_loss": loss_val}, loggers)
+                        except Exception:
+                            print(f"step {global_step}: loss {loss_val:.4f}")
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics({"train/loss": loss_val}, step=global_step)
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "train",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    "loss": loss_val,
+                                }
+                            )
+                    if cfg.save_every and global_step % cfg.save_every == 0:
+                        ckpt = Path(cfg.checkpoint_dir) / f"step{global_step:08d}.ptz"
+                        save_checkpoint(
+                            ckpt,
+                            model,
+                            optimizer,
+                            scheduler,
+                            epoch,
+                            {
+                                "global_step": global_step,
+                                "best_val": best_val,
+                                "step_in_epoch": step + 1,
+                                "rng_state": dump_rng_state(),
+                            },
+                        )
+                        _prune_checkpoint_files(Path(cfg.checkpoint_dir), cfg.keep_last)
+                    if cfg.max_steps and global_step >= cfg.max_steps:
+                        break
+                if cfg.max_steps and global_step >= cfg.max_steps:
+                    break
+                if epoch == start_epoch:
+                    start_step = 0
+                if val_loader is not None:
+                    metrics = evaluate_dataloader(model, val_loader, cfg, device)
+                    if metrics:
+                        numeric_metrics = {
+                            f"val_{k}": float(v)
+                            for k, v in metrics.items()
+                            if isinstance(v, (int, float))
+                        }
+                        if numeric_metrics:
+                            try:
+                                _codex_log_all(global_step, numeric_metrics, loggers)
+                            except Exception:
+                                pass
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics(
+                                    {f"eval/{k}": float(v) for k, v in numeric_metrics.items()},
+                                    step=global_step,
+                                )
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "eval",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    **{k: float(v) for k, v in numeric_metrics.items()},
+                                }
+                            )
+                    val_ppl = float(metrics.get("perplexity", float("inf")))
+                    if metrics.get("num_batches", 0) > 0 and val_ppl < best_val:
+                        best_val = val_ppl
+                        patience_ctr = 0
+                        ckpt = Path(cfg.checkpoint_dir) / "best.ptz"
+                        save_checkpoint(
+                            ckpt,
+                            model,
+                            optimizer,
+                            scheduler,
+                            epoch + 1,
+                            {
+                                "global_step": global_step,
+                                "best_val": best_val,
+                                "step_in_epoch": 0,
+                                "rng_state": dump_rng_state(),
+                            },
+                        )
+                    else:
+                        patience_ctr += 1
+                    if patience_ctr >= cfg.patience:
+                        break
+                if privacy_engine is not None:
+                    try:
+                        eps, _ = privacy_engine.get_privacy_spent(cfg.dp_target_delta)
+                        _codex_log_all(global_step, {"epsilon": float(eps)}, loggers)
+                        if cfg.mlflow_enable:
+                            try:
+                                mlf.log_metrics(
+                                    {"train/privacy_epsilon": float(eps)}, step=global_step
+                                )
+                            except Exception:
+                                pass
+                            _append_metric(
+                                {
+                                    "phase": "privacy",
+                                    "epoch": epoch + 1,
+                                    "step": global_step,
+                                    "epsilon": float(eps),
+                                }
+                            )
+                    except Exception:
+                        pass
+        finally:
+            if system_logger is not None:
+                try:
+                    system_logger.stop()
+                except Exception:
+                    pass
+
+        result = {"global_step": global_step, "history": history, "best_val": best_val}
+        if cfg.mlflow_enable:
+            try:
+                final_payload = {
+                    "final/best_val": float(best_val),
+                    "final/global_step": float(global_step),
+                }
+                if history:
+                    final_payload["final/last_loss"] = float(history[-1])
+                mlf.log_metrics(final_payload, step=global_step)
+                for key, value in final_payload.items():
+                    _append_metric(
+                        {
+                            "phase": "final",
+                            "metric": key,
+                            "value": float(value),
+                            "step": global_step,
+                        }
+                    )
+                artifacts: list[Path] = []
+                if metrics_path and metrics_path.exists():
+                    artifacts.append(metrics_path)
+                if config_snapshot and config_snapshot.exists():
+                    artifacts.append(config_snapshot)
+                for artifact in artifacts:
+                    try:
+                        mlf.log_artifact(str(artifact))
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+    return result

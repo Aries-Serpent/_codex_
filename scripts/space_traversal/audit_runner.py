@@ -533,11 +533,17 @@ def stage_s4_scoring(cfg, raw_caps):
             score = sum(components[k] * weights[k] for k in weights)
             explanation = {"id": cap.get("id"), "score": round(score, 6), "partials": {}}
         
-        # Ensure deterministic ordering of lists
+        # Normalize for deterministic output: sort lists, round floats
+        try:
+            components_norm = {k: round(float(v), 6) for k, v in components.items()}
+        except (ValueError, TypeError) as e:
+            # Fallback: keep original values if conversion fails
+            components_norm = components
+            print(f"Warning: Could not normalize components for {cap.get('id')}: {e}", file=sys.stderr)
         scored.append({
             "id": cap.get("id"),
-            "components": components,
-            "score": round(score, 6),
+            "components": components_norm,
+            "score": round(float(score), 6),
             "evidence_files": sorted(cap.get("evidence_files", [])),
             "found_patterns": sorted(cap.get("found_patterns", [])),
             "meta": cap.get("meta", {}),

@@ -1,0 +1,6 @@
+{
+  "training": "src.training",
+  "tokenization": "src.tokenization",
+  "models": "src.modeling",
+  "hydra": "config_legacy"
+}
