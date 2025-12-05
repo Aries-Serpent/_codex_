@@ -6,7 +6,6 @@ ensuring import path changes don't break functionality.
 """
 import importlib
 import os
-import sys
 import pytest
 
 

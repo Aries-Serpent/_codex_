@@ -562,7 +562,6 @@ def _compute_metrics(eval_pred):
         Dictionary containing token_accuracy and perplexity metrics
     """
     preds, labels = eval_pred
-    import numpy as np
 
     mask = labels != -100
     acc = (preds.argmax(-1)[mask] == labels[mask]).mean() if mask.any() else 0.0
