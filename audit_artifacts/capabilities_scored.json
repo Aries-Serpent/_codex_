@@ -1,16 +1,13 @@
 {
-  "generated": 1764918908.6501045,
   "capabilities": [
     {
-      "id": "archival-bundling",
       "components": {
+        "consistency": 0.885572,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8855721393034826,
-        "tests": 0.24875621890547264,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.248756
       },
-      "score": 0.7643,
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -214,37 +211,63 @@
         "tools/codex_repro_manifest.py",
         "tools/codex_reproducibility_bundle.py"
       ],
+      "explain": {
+        "id": "archival-bundling",
+        "partials": {
+          "consistency": {
+            "component_value": 0.885572,
+            "contribution": 0.1771144,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.248756,
+            "contribution": 0.062189,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7643
+      },
       "found_patterns": [
         "archive",
         "bundle",
         "manifest"
       ],
+      "id": "archival-bundling",
       "meta": {
-        "layer": "storage",
-        "priority": "high",
         "category": "reproducibility",
+        "layer": "storage",
         "missing_detectors": [
           "archive",
           "bundle",
           "manifest"
-        ]
+        ],
+        "priority": "high"
       },
-      "explain": {
-        "id": "archival-bundling",
-        "score": 0.7643,
-        "partials": {}
-      }
+      "score": 0.764303
     },
     {
-      "id": "checkpointing",
       "components": {
+        "consistency": 0.889908,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8857142857142857,
-        "tests": 0.6857142857142857,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.66055
       },
-      "score": 0.8736,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "configs/schemas/checkpoint_manifest.schema.json",
@@ -267,6 +290,10 @@
         "src/codex_ml/checkpointing/utils.py",
         "src/codex_ml/cli/checkpoint_validate.py",
         "src/codex_ml/training/rng_checkpoint.py",
+        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint.py",
         "src/codex_ml/utils/checkpoint_core.py",
         "src/codex_ml/utils/checkpoint_event.py",
@@ -352,27 +379,53 @@
         "tools/validate_checkpoint.py",
         "training/checkpoint_manager.py"
       ],
+      "explain": {
+        "id": "checkpointing",
+        "partials": {
+          "consistency": {
+            "component_value": 0.889908,
+            "contribution": 0.17798160000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.66055,
+            "contribution": 0.1651375,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8681
+      },
       "found_patterns": [
         "load",
         "save_checkpoint"
       ],
+      "id": "checkpointing",
       "meta": {},
-      "explain": {
-        "id": "checkpointing",
-        "score": 0.8736,
-        "partials": {}
-      }
+      "score": 0.868119
     },
     {
-      "id": "ci-cd-pipeline",
       "components": {
+        "consistency": 0.921311,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.921311475409836,
-        "tests": 0.47540983606557374,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.47541
       },
-      "score": 0.8531,
       "evidence_files": [
         ".codex/smoke/import_check.py",
         ".github/scripts/validate_agents_infrastructure.sh",
@@ -680,6 +733,37 @@
         "training/checkpoint_manager.py",
         "validate_fences.py"
       ],
+      "explain": {
+        "id": "ci-cd-pipeline",
+        "partials": {
+          "consistency": {
+            "component_value": 0.921311,
+            "contribution": 0.18426220000000001,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.47541,
+            "contribution": 0.1188525,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8531
+      },
       "found_patterns": [
         "automation",
         "ci",
@@ -687,29 +771,24 @@
         "validation",
         "workflow"
       ],
+      "id": "ci-cd-pipeline",
       "meta": {
-        "github_actions": 41,
-        "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 259,
-        "note": "GitHub Actions present but not activated per AGENTS.md"
+        "github_actions": 41,
+        "note": "GitHub Actions present but not activated per AGENTS.md",
+        "pre_commit_hooks": 3,
+        "validation_scripts": 259
       },
-      "explain": {
-        "id": "ci-cd-pipeline",
-        "score": 0.8531,
-        "partials": {}
-      }
+      "score": 0.853115
     },
     {
-      "id": "code-quality-tooling",
       "components": {
+        "consistency": 0.869198,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.869198312236287,
-        "tests": 0.5232067510548524,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.523207
       },
-      "score": 0.8296,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -949,6 +1028,37 @@
         "tools/validate_status_report.py",
         "validate_fences.py"
       ],
+      "explain": {
+        "id": "code-quality-tooling",
+        "partials": {
+          "consistency": {
+            "component_value": 0.869198,
+            "contribution": 0.1738396,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.523207,
+            "contribution": 0.13080175,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8296
+      },
       "found_patterns": [
         "format",
         "lint",
@@ -956,29 +1066,24 @@
         "security-scan",
         "type-check"
       ],
+      "id": "code-quality-tooling",
       "meta": {
         "formatters": 2,
         "linters": 5,
-        "type_checkers": 9,
+        "quality_scripts": 67,
         "security_scanners": 159,
-        "quality_scripts": 67
+        "type_checkers": 9
       },
-      "explain": {
-        "id": "code-quality-tooling",
-        "score": 0.8296,
-        "partials": {}
-      }
+      "score": 0.829641
     },
     {
-      "id": "configuration",
       "components": {
+        "consistency": 0.773852,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.7722419928825623,
-        "tests": 0.21708185053380782,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.215548
       },
-      "score": 0.7587,
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
         ".codex/evidence/phase4_hydra_check.jsonl",
@@ -1177,6 +1282,8 @@
         "src/codex_ml/cli/hydra_entry.py",
         "src/codex_ml/cli/hydra_main.py",
         "src/codex_ml/config/__init__.py",
+        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -1262,27 +1369,53 @@
         "tools/visual_compare_config.py",
         "training/config.py"
       ],
+      "explain": {
+        "id": "configuration",
+        "partials": {
+          "consistency": {
+            "component_value": 0.773852,
+            "contribution": 0.1547704,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.215548,
+            "contribution": 0.053887,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7587
+      },
       "found_patterns": [
         "config",
         "hydra"
       ],
+      "id": "configuration",
       "meta": {},
-      "explain": {
-        "id": "configuration",
-        "score": 0.7587,
-        "partials": {}
-      }
+      "score": 0.758657
     },
     {
-      "id": "data-pipeline",
       "components": {
+        "consistency": 0.883978,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8833333333333333,
-        "tests": 0.4111111111111111,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.40884
       },
-      "score": 0.8044,
       "evidence_files": [
         ".github/workflows/data_validation.yml",
         "codex_ml/data/checksums.py",
@@ -1373,6 +1506,7 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/training/dataloader_utils.py",
+        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/run_metadata.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
@@ -1465,27 +1599,53 @@
         "training/data_utils.py",
         "training/datasets.py"
       ],
+      "explain": {
+        "id": "data-pipeline",
+        "partials": {
+          "consistency": {
+            "component_value": 0.883978,
+            "contribution": 0.17679560000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.40884,
+            "contribution": 0.10221,
+            "weight": 0.25
+          }
+        },
+        "score": 0.804
+      },
       "found_patterns": [
         "loader",
         "split"
       ],
+      "id": "data-pipeline",
       "meta": {},
-      "explain": {
-        "id": "data-pipeline",
-        "score": 0.8044,
-        "partials": {}
-      }
+      "score": 0.804006
     },
     {
-      "id": "deployment-infrastructure",
       "components": {
+        "consistency": 0.68254,
+        "documentation": 1.0,
         "functionality": 0.8,
-        "consistency": 0.6825396825396826,
-        "tests": 0.14285714285714285,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.142857
       },
-      "score": 0.6472,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -1551,35 +1711,61 @@
         "tests/services/api/test_middleware_security.py",
         "tests/services/api/test_rate_limit_middleware.py"
       ],
+      "explain": {
+        "id": "deployment-infrastructure",
+        "partials": {
+          "consistency": {
+            "component_value": 0.68254,
+            "contribution": 0.13650800000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.8,
+            "contribution": 0.2,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.142857,
+            "contribution": 0.03571425,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6472
+      },
       "found_patterns": [
         "deploy",
         "docker",
         "helm",
         "service"
       ],
+      "id": "deployment-infrastructure",
       "meta": {
+        "deploy_scripts": 3,
         "docker_configs": 9,
-        "k8s_manifests": 0,
         "helm_charts": 2,
-        "service_definitions": 49,
-        "deploy_scripts": 3
+        "k8s_manifests": 0,
+        "service_definitions": 49
       },
-      "explain": {
-        "id": "deployment-infrastructure",
-        "score": 0.6472,
-        "partials": {}
-      }
+      "score": 0.647222
     },
     {
-      "id": "documentation-system",
       "components": {
+        "consistency": 0.934189,
+        "documentation": 1.0,
         "functionality": 0.75,
-        "consistency": 0.9341894060995185,
-        "tests": 0.004815409309791332,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.004815
       },
-      "score": 0.6755,
       "evidence_files": [
         "README.md",
         "docs/ARCHITECTURE.md",
@@ -2205,33 +2391,59 @@
         "docs/zendesk_api_reference.md",
         "mkdocs.yml"
       ],
+      "explain": {
+        "id": "documentation-system",
+        "partials": {
+          "consistency": {
+            "component_value": 0.934189,
+            "contribution": 0.18683780000000003,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.75,
+            "contribution": 0.1875,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.004815,
+            "contribution": 0.00120375,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6755
+      },
       "found_patterns": [
         "docs",
         "markdown",
         "mkdocs"
       ],
+      "id": "documentation-system",
       "meta": {
+        "config_count": 1,
         "markdown_count": 621,
         "rst_count": 0,
-        "config_count": 1,
         "total_docs": 623
       },
-      "explain": {
-        "id": "documentation-system",
-        "score": 0.6755,
-        "partials": {}
-      }
+      "score": 0.675542
     },
     {
-      "id": "duplication_ratio",
       "components": {
+        "consistency": 0.785897,
+        "documentation": 0.128617,
         "functionality": 0.0,
-        "consistency": 0.7877790834312574,
-        "tests": 0.2824911868390129,
         "safeguards": 1.0,
-        "documentation": 0.12861736334405144
+        "tests": 0.280213
       },
-      "score": 0.3975,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -2756,6 +2968,8 @@
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
+        "__pycache__/sitecustomize.cpython-312.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -2901,6 +3115,8 @@
         "codex_digest/EXECUTION.md",
         "codex_digest/README.md",
         "codex_digest/__init__.py",
+        "codex_digest/__pycache__/__init__.cpython-312.pyc",
+        "codex_digest/__pycache__/error_capture.cpython-312.pyc",
         "codex_digest/cli.py",
         "codex_digest/error_capture.py",
         "codex_digest/mapper.py",
@@ -2916,7 +3132,7 @@
         "codex_gap_registry.yaml",
         "codex_gap_trends.md",
         "codex_hardship.yaml",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/_package_main.py",
@@ -3902,6 +4118,7 @@
         "noxfile.py",
         "noxfile.security_additions.py",
         "omegaconf/__init__.py",
+        "omegaconf/__pycache__/__init__.cpython-312.pyc",
         "ops/threat_model/STRIDE.md",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
         "patches/analysis.patch",
@@ -3935,6 +4152,7 @@
         "prompts/repo_status_update_for_codex.md",
         "pyproject.toml",
         "pytest.ini",
+        "pytest_validation.txt",
         "requirements-dev.txt",
         "requirements-eval.txt",
         "requirements-minimal.txt",
@@ -4088,6 +4306,7 @@
         "scripts/remediation/README.md",
         "scripts/remediation/analyze_legacy_usage.py",
         "scripts/remediation/cleanup_root.py",
+        "scripts/remediation/refactor_imports.py",
         "scripts/remediation/verify_conflicts.py",
         "scripts/repo_audit.py",
         "scripts/rollback_ml_tests.sh",
@@ -4265,6 +4484,7 @@
         "semgrep_rules/python/subprocess_shell.yml",
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "sentencepiece/__init__.py",
+        "sentencepiece/__pycache__/__init__.cpython-312.pyc",
         "services/__init__.py",
         "services/api/__init__.py",
         "services/api/main.py",
@@ -4309,6 +4529,7 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
+        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
         "src/codex/_version.py",
@@ -4484,6 +4705,10 @@
         "src/codex_harness/tool_trace.py",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
+        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
+        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
+        "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/__init__.py",
         "src/codex_ml/analysis/extractors.py",
@@ -4546,6 +4771,8 @@
         "src/codex_ml/codex_model.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
+        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -4617,6 +4844,9 @@
         "src/codex_ml/hf_loader.py",
         "src/codex_ml/ingest.py",
         "src/codex_ml/interfaces/__init__.py",
+        "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
+        "src/codex_ml/interfaces/__pycache__/tokenizer.cpython-312.pyc",
         "src/codex_ml/interfaces/contracts.py",
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/registry.py",
@@ -4640,6 +4870,14 @@
         "src/codex_ml/main.py",
         "src/codex_ml/metrics.py",
         "src/codex_ml/metrics/__init__.py",
+        "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
+        "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/base.py",
@@ -4700,6 +4938,12 @@
         "src/codex_ml/perf/profiler.py",
         "src/codex_ml/pipeline.py",
         "src/codex_ml/plugins/__init__.py",
+        "src/codex_ml/plugins/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/plugins/__pycache__/base.cpython-312.pyc",
+        "src/codex_ml/plugins/__pycache__/loader.cpython-312.pyc",
+        "src/codex_ml/plugins/__pycache__/programmatic.cpython-312.pyc",
+        "src/codex_ml/plugins/__pycache__/registries.cpython-312.pyc",
+        "src/codex_ml/plugins/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/plugins/base.py",
         "src/codex_ml/plugins/loader.py",
         "src/codex_ml/plugins/programmatic.py",
@@ -4707,6 +4951,8 @@
         "src/codex_ml/plugins/registry.py",
         "src/codex_ml/registry.py",
         "src/codex_ml/registry/__init__.py",
+        "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
         "src/codex_ml/registry/base.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/registry/metrics.py",
@@ -4741,6 +4987,8 @@
         "src/codex_ml/telemetry/metrics.py",
         "src/codex_ml/telemetry/server.py",
         "src/codex_ml/tokenization/__init__.py",
+        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -4785,6 +5033,17 @@
         "src/codex_ml/training/toy_trainer.py",
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/__init__.py",
+        "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
         "src/codex_ml/utils/artifacts.py",
         "src/codex_ml/utils/atomic_io.py",
         "src/codex_ml/utils/checkpoint.py",
@@ -4989,6 +5248,8 @@
         "test_mcp_server.py",
         "test_results_stage1.txt",
         "tests/__init__.py",
+        "tests/__pycache__/__init__.cpython-312.pyc",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/test_ast_similarity.py",
@@ -6180,6 +6441,10 @@
         "tests/utils/test_repro_rng.py",
         "tests/utils/test_rng_state.py",
         "tests/utils/test_seed.py",
+        "tests/validation/__pycache__/test_audit_pipeline.cpython-312-pytest-9.0.1.pyc",
+        "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
+        "tests/validation/__pycache__/test_shadowing.cpython-312-pytest-9.0.1.pyc",
+        "tests/validation/__pycache__/test_shadowing_yaml.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/test_audit_pipeline.py",
         "tests/validation/test_legacy_import_report.py",
         "tests/validation/test_shadowing.py",
@@ -6464,7 +6729,9 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -6481,6 +6748,7 @@
         "training/streaming.py",
         "transformed_pr_overview.md",
         "transformers/__init__.py",
+        "transformers/__pycache__/__init__.cpython-312.pyc",
         "typer/testing.py",
         "uv.lock",
         "uv.lock.bak",
@@ -6489,24 +6757,50 @@
         "validation.md",
         "yaml_legacy/__init__.py"
       ],
-      "found_patterns": [],
-      "meta": {},
       "explain": {
         "id": "duplication_ratio",
-        "score": 0.3975,
-        "partials": {}
-      }
+        "partials": {
+          "consistency": {
+            "component_value": 0.785897,
+            "contribution": 0.1571794,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.128617,
+            "contribution": 0.019292550000000002,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.280213,
+            "contribution": 0.07005325,
+            "weight": 0.25
+          }
+        },
+        "score": 0.3965
+      },
+      "found_patterns": [],
+      "id": "duplication_ratio",
+      "meta": {},
+      "score": 0.396525
     },
     {
-      "id": "evaluation-metrics",
       "components": {
+        "consistency": 0.882353,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8814814814814815,
-        "tests": 0.45925925925925926,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "safeguards": 0.833333,
+        "tests": 0.455882
       },
-      "score": 0.8161,
       "evidence_files": [
         ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
         "IMPLEMENTATION_COMPLETE_EVALUATION_LOOP.md",
@@ -6571,6 +6865,7 @@
         "src/codex_ml/evaluation/__init__.py",
         "src/codex_ml/evaluation/cli.py",
         "src/codex_ml/evaluation/loop.py",
+        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
         "src/codex_ml/metrics/evaluator.py",
         "src/codex_ml/training/eval.py",
         "src/evaluation/__init__.py",
@@ -6644,27 +6939,53 @@
         "tools/codex_metrics_eval.py",
         "training/evaluate.py"
       ],
+      "explain": {
+        "id": "evaluation-metrics",
+        "partials": {
+          "consistency": {
+            "component_value": 0.882353,
+            "contribution": 0.17647060000000003,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.455882,
+            "contribution": 0.1139705,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8154
+      },
       "found_patterns": [
         "metric",
         "perplexity"
       ],
+      "id": "evaluation-metrics",
       "meta": {},
-      "explain": {
-        "id": "evaluation-metrics",
-        "score": 0.8161,
-        "partials": {}
-      }
+      "score": 0.815441
     },
     {
-      "id": "example-evidence-v2",
       "components": {
+        "consistency": 0.891892,
+        "documentation": 1.0,
         "functionality": 2.0,
-        "consistency": 0.8918918918918919,
-        "tests": 0.7207207207207207,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.720721
       },
-      "score": 1.1586,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "src/codex_ml/checkpointing/__init__.py",
@@ -6778,1364 +7099,1390 @@
         "tools/validate_checkpoint.py",
         "training/checkpoint_manager.py"
       ],
+      "explain": {
+        "id": "example-evidence-v2",
+        "partials": {
+          "consistency": {
+            "component_value": 0.891892,
+            "contribution": 0.17837840000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.720721,
+            "contribution": 0.18018025,
+            "weight": 0.25
+          }
+        },
+        "score": 0.9086
+      },
       "found_patterns": [
         "checkpoint",
         "serve"
       ],
+      "id": "example-evidence-v2",
       "meta": {
-        "detector_version": "v2",
-        "source": "example_v2",
         "_evidence_v2": [
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "codex_ml/utils/checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/__init__.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/atomic_io.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/best_k_retention.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/bestk.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/checkpoint_core.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/compat.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/schema_v2.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/checkpointing/utils.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/cli/checkpoint_validate.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/serving/inference_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/telemetry/server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/training/rng_checkpoint.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint_core.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint_event.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint_integrity.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint_manager.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpoint_retention.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/codex_ml/utils/checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/hhg_logistics/monitor/serve_report.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/hhg_logistics/serve/__init__.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/hhg_logistics/serve/app.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/hhg_logistics/serve/smoke.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/mcp/server/__init__.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/training/checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/utils/checkpoint.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "src/utils/checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "temp/bridge_codex_copilot_bridge/mcp/server/main.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "test_mcp_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_checkpoint_integrity_tolerant.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_checkpoint_integrity_wiring.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_checkpoint_load_roundtrip.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_checkpoint_peft_state.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_checkpoint_schema.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_integrity_snapshot.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_no_direct_atomic_write_usage.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_run_metadata_sidecar.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_runmeta_enrichment.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpoint/test_state_providers.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/__init__.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_atomic_io.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_atomic_write.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_atomicity_and_resume.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_best_not_pruned.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_best_promotion.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_bestk.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_canonical_json.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpoint_comprehensive.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpoint_core_io.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpoint_json_event.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpoint_retention.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpoint_schema_and_compat.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_checkpointing_compat.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_corrupt_checkpoint_load.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_load_latest.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_meta_schema.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_periodic_and_trim.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_resume_optimizer_rng_equivalence.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_retention_and_digest.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_retention_local.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_rng_state_checkpoint.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_rng_state_roundtrip.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_roundtrip.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_schema_v2_basic.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_schema_v2_jcs_numbers.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/checkpointing/test_schema_v2_upgrade.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/cli/test_cli_checkpoint_validate.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/codex_ml/test_checkpoint_core.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/codex_ml/test_checkpoint_utils.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/codex_ml/test_inference_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/hhg_logistics/serve/test_app.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/mcp/test_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/smoke/test_checkpoint_hashing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/telemetry/test_metrics_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_actions_server_smoke.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_bundle.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_checksum.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_checksum_and_retention.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_commit_meta.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_corrupt_load.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_corruption.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_integrity.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_integrity_corruption.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_manager.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_metadata.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_provenance.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_restore_rng_torch.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_roundtrip.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_save_resume.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_sha_rng.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_system_meta.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpoint_util.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/test_checkpointing_utils_extra.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_compat.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_integrity.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_manager_basic.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_manager_callback.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_manifest.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_resume.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/training/test_checkpoint_rng_restore.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpoint_remote.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpoint_rng.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpointing.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpointing_core.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpointing_safe_load.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tools/actions_server.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tools/validate_checkpoint.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           },
           {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "training/checkpoint_manager.py",
-            "sha": null,
             "ranges": [
               {
-                "start_line": 1,
-                "end_line": 40
+                "end_line": 40,
+                "start_line": 1
               }
             ],
-            "confidence": 0.9,
-            "excerpt": null
+            "sha": null
           }
-        ]
+        ],
+        "detector_version": "v2",
+        "source": "example_v2"
       },
-      "explain": {
-        "id": "example-evidence-v2",
-        "score": 1.1586,
-        "partials": {}
-      }
+      "score": 0.908559
     },
     {
-      "id": "experiment-management",
       "components": {
+        "consistency": 0.795031,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.7924528301886793,
-        "tests": 0.3522012578616352,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.347826
       },
-      "score": 0.7965,
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
         ".codex/copilot_bridge/var/manifests/.gitkeep",
@@ -8225,6 +8572,8 @@
         "src/codex_ml/tracking/mlflow_guard.py",
         "src/codex_ml/tracking/mlflow_utils.py",
         "src/codex_ml/tracking/mlflow_wrapper.py",
+        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/experiment_tracking_mlflow.py",
         "src/codex_ml/utils/logging_mlflow.py",
         "src/codex_ml/utils/logging_wandb.py",
@@ -8297,6 +8646,37 @@
         "tools/validate_experiments.py",
         "training/offline_wandb.py"
       ],
+      "explain": {
+        "id": "experiment-management",
+        "partials": {
+          "consistency": {
+            "component_value": 0.795031,
+            "contribution": 0.15900620000000001,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.347826,
+            "contribution": 0.0869565,
+            "weight": 0.25
+          }
+        },
+        "score": 0.796
+      },
       "found_patterns": [
         "experiment",
         "metadata",
@@ -8304,28 +8684,23 @@
         "tracking",
         "wandb"
       ],
+      "id": "experiment-management",
       "meta": {
-        "mlflow_integration": 38,
-        "wandb_integration": 4,
         "experiment_utils": 30,
-        "metadata_files": 89
+        "metadata_files": 91,
+        "mlflow_integration": 38,
+        "wandb_integration": 4
       },
-      "explain": {
-        "id": "experiment-management",
-        "score": 0.7965,
-        "partials": {}
-      }
+      "score": 0.795963
     },
     {
-      "id": "inference-serving",
       "components": {
-        "functionality": 0.3333333333333333,
         "consistency": 0.8,
-        "tests": 0.44,
-        "safeguards": 0.8333333333333334,
-        "documentation": 1.0
+        "documentation": 1.0,
+        "functionality": 0.333333,
+        "safeguards": 0.833333,
+        "tests": 0.44
       },
-      "score": 0.6283,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "configs/deployment/hhg_logistics/serve/local.yaml",
@@ -8353,29 +8728,55 @@
         "tests/test_actions_server_smoke.py",
         "tools/actions_server.py"
       ],
+      "explain": {
+        "id": "inference-serving",
+        "partials": {
+          "consistency": {
+            "component_value": 0.8,
+            "contribution": 0.16000000000000003,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.333333,
+            "contribution": 0.08333325,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.44,
+            "contribution": 0.11,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6283
+      },
       "found_patterns": [
         "serve"
       ],
+      "id": "inference-serving",
       "meta": {
-        "layer": "serving",
-        "interface": "http"
+        "interface": "http",
+        "layer": "serving"
       },
-      "explain": {
-        "id": "inference-serving",
-        "score": 0.6283,
-        "partials": {}
-      }
+      "score": 0.628333
     },
     {
-      "id": "logging-tracking",
       "components": {
+        "consistency": 0.835017,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.835016835016835,
-        "tests": 0.31313131313131315,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.313131
       },
-      "score": 0.7953,
       "evidence_files": [
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
@@ -8675,27 +9076,53 @@
         "tools/purge_session_logs.py",
         "tools/unify_logging_canonical.py"
       ],
+      "explain": {
+        "id": "logging-tracking",
+        "partials": {
+          "consistency": {
+            "component_value": 0.835017,
+            "contribution": 0.16700340000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.313131,
+            "contribution": 0.07828275,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7953
+      },
       "found_patterns": [
         "log",
         "mlflow"
       ],
+      "id": "logging-tracking",
       "meta": {},
-      "explain": {
-        "id": "logging-tracking",
-        "score": 0.7953,
-        "partials": {}
-      }
+      "score": 0.795286
     },
     {
-      "id": "mcp-authz-authn",
       "components": {
+        "consistency": 0.958333,
+        "documentation": 0.160772,
         "functionality": 1.5,
-        "consistency": 0.9583333333333334,
-        "tests": 0.4583333333333333,
-        "safeguards": 0.8333333333333334,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.833333,
+        "tests": 0.458333
       },
-      "score": 0.8304,
       "evidence_files": [
         "agents/codex_client/codex_client/bridge.py",
         "scripts/deployment_orchestrator.py",
@@ -8722,11 +9149,43 @@
         "tests/test_msp_infer_api.py",
         "tools/codex_apply_modeling_monitoring_api.py"
       ],
+      "explain": {
+        "id": "mcp-authz-authn",
+        "partials": {
+          "consistency": {
+            "component_value": 0.958333,
+            "contribution": 0.19166660000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.458333,
+            "contribution": 0.11458325,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7054
+      },
       "found_patterns": [
         "API-Key",
         "authenticate",
         "authorize"
       ],
+      "id": "mcp-authz-authn",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -8735,22 +9194,16 @@
           "authorize"
         ]
       },
-      "explain": {
-        "id": "mcp-authz-authn",
-        "score": 0.8304,
-        "partials": {}
-      }
+      "score": 0.705366
     },
     {
-      "id": "mcp-configuration",
       "components": {
+        "consistency": 0.803571,
+        "documentation": 0.160772,
         "functionality": 1.0,
-        "consistency": 0.7962962962962963,
-        "tests": 0.4074074074074074,
-        "safeguards": 0.6666666666666666,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.666667,
+        "tests": 0.392857
       },
-      "score": 0.6352,
       "evidence_files": [
         ".codex/codex.env.json",
         ".codex/copilot_bridge/.env.example",
@@ -8779,6 +9232,8 @@
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
+        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -8807,43 +9262,69 @@
         "tests/fixtures/malformed_config.yaml",
         "tests/mcp/test_config.py"
       ],
+      "explain": {
+        "id": "mcp-configuration",
+        "partials": {
+          "consistency": {
+            "component_value": 0.803571,
+            "contribution": 0.16071420000000003,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.666667,
+            "contribution": 0.10000005,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.392857,
+            "contribution": 0.09821425,
+            "weight": 0.25
+          }
+        },
+        "score": 0.633
+      },
       "found_patterns": [
         "config",
         "environment",
         "mcp.json"
       ],
+      "id": "mcp-configuration",
       "meta": {
         "category": "mcp",
-        "layer": "infrastructure",
-        "detector_version": "1.0",
         "config_types": [
           "mcp.json",
           "environment",
           "yaml",
           "python"
         ],
+        "detector_version": "1.0",
+        "layer": "infrastructure",
         "missing_detectors": [
           "config",
           "environment",
           "mcp.json"
         ]
       },
-      "explain": {
-        "id": "mcp-configuration",
-        "score": 0.6352,
-        "partials": {}
-      }
+      "score": 0.633044
     },
     {
-      "id": "mcp-error-handling",
       "components": {
+        "consistency": 0.923077,
+        "documentation": 0.160772,
         "functionality": 2.0,
-        "consistency": 0.9230769230769231,
-        "tests": 0.5384615384615384,
-        "safeguards": 0.8333333333333334,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.833333,
+        "tests": 0.538462
       },
-      "score": 0.9683,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "services/ita/app/main.py",
@@ -8859,10 +9340,42 @@
         "tests/mcp/test_server.py",
         "tests/mcp/test_utilities.py"
       ],
+      "explain": {
+        "id": "mcp-error-handling",
+        "partials": {
+          "consistency": {
+            "component_value": 0.923077,
+            "contribution": 0.1846154,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.538462,
+            "contribution": 0.1346155,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7183
+      },
       "found_patterns": [
         "MCPError",
         "error payload"
       ],
+      "id": "mcp-error-handling",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -8871,51 +9384,71 @@
           "error"
         ]
       },
-      "explain": {
-        "id": "mcp-error-handling",
-        "score": 0.9683,
-        "partials": {}
-      }
+      "score": 0.718347
     },
     {
-      "id": "mcp-lifecycle-management",
       "components": {
-        "functionality": 0.0,
         "consistency": 1.0,
-        "tests": 0.0,
+        "documentation": 0.160772,
+        "functionality": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.1607717041800643
+        "tests": 0.0
       },
-      "score": 0.2241,
       "evidence_files": [],
+      "explain": {
+        "id": "mcp-lifecycle-management",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          }
+        },
+        "score": 0.2241
+      },
       "found_patterns": [],
+      "id": "mcp-lifecycle-management",
       "meta": {
         "category": "mcp",
-        "priority": "high",
-        "framework": "FastAPI",
         "detector_version": "1.0",
+        "framework": "FastAPI",
         "missing_detectors": [
           "healthz",
           "shutdown",
           "startup"
-        ]
+        ],
+        "priority": "high"
       },
-      "explain": {
-        "id": "mcp-lifecycle-management",
-        "score": 0.2241,
-        "partials": {}
-      }
+      "score": 0.224116
     },
     {
-      "id": "mcp-multi-tenant",
       "components": {
-        "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.6,
-        "safeguards": 0.16666666666666666,
-        "documentation": 0.1607717041800643
+        "documentation": 0.160772,
+        "functionality": 1.0,
+        "safeguards": 0.166667,
+        "tests": 0.6
       },
-      "score": 0.6491,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
         "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
@@ -8923,9 +9456,41 @@
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
       ],
+      "explain": {
+        "id": "mcp-multi-tenant",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.166667,
+            "contribution": 0.02500005,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.6,
+            "contribution": 0.15,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6491
+      },
       "found_patterns": [
         "tenant"
       ],
+      "id": "mcp-multi-tenant",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -8933,22 +9498,16 @@
           "tenant"
         ]
       },
-      "explain": {
-        "id": "mcp-multi-tenant",
-        "score": 0.6491,
-        "partials": {}
-      }
+      "score": 0.649116
     },
     {
-      "id": "mcp-observability",
       "components": {
+        "consistency": 0.872914,
+        "documentation": 0.160772,
         "functionality": 2.0,
-        "consistency": 0.8729139922978177,
-        "tests": 0.2901155327342747,
         "safeguards": 1.0,
-        "documentation": 0.1607717041800643
+        "tests": 0.290116
       },
-      "score": 0.9212,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -9089,7 +9648,7 @@
         "codex_addons/registry.py",
         "codex_addons/registry_names.py",
         "codex_dependency_report.md",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_ml/tracking/writers.py",
         "codex_plans/track_B.md",
         "codex_plans/track_G.md",
@@ -9730,12 +10289,44 @@
         "training/functional_training.py",
         "transformed_pr_overview.md"
       ],
+      "explain": {
+        "id": "mcp-observability",
+        "partials": {
+          "consistency": {
+            "component_value": 0.872914,
+            "contribution": 0.1745828,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.290116,
+            "contribution": 0.072529,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6712
+      },
       "found_patterns": [
         "X-Request-Id",
         "init_json_logging",
         "metrics",
         "prometheus"
       ],
+      "id": "mcp-observability",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -9744,22 +10335,16 @@
           "tracing"
         ]
       },
-      "explain": {
-        "id": "mcp-observability",
-        "score": 0.9212,
-        "partials": {}
-      }
+      "score": 0.671228
     },
     {
-      "id": "mcp-protocol-surface",
       "components": {
+        "consistency": 0.866667,
+        "documentation": 0.160772,
         "functionality": 1.0,
-        "consistency": 0.8666666666666667,
-        "tests": 0.4,
-        "safeguards": 0.8333333333333334,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.833333,
+        "tests": 0.4
       },
-      "score": 0.6724,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
@@ -9777,10 +10362,42 @@
         "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
+      "explain": {
+        "id": "mcp-protocol-surface",
+        "partials": {
+          "consistency": {
+            "component_value": 0.866667,
+            "contribution": 0.1733334,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.4,
+            "contribution": 0.1,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6724
+      },
       "found_patterns": [
         "FastAPI",
         "jsonrpc"
       ],
+      "id": "mcp-protocol-surface",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -9789,22 +10406,16 @@
           "jsonrpc"
         ]
       },
-      "explain": {
-        "id": "mcp-protocol-surface",
-        "score": 0.6724,
-        "partials": {}
-      }
+      "score": 0.672449
     },
     {
-      "id": "mcp-rate-limiting",
       "components": {
+        "consistency": 0.833333,
+        "documentation": 0.160772,
         "functionality": 2.0,
-        "consistency": 0.8333333333333334,
-        "tests": 0.5,
-        "safeguards": 0.8333333333333334,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.833333,
+        "tests": 0.5
       },
-      "score": 0.9408,
       "evidence_files": [
         "scripts/ops/codex_mint_tokens_per_run.py",
         "scripts/space_traversal/detectors/mcp_rate_limiting.py",
@@ -9837,10 +10448,42 @@
         "tests/test_api_rate_limit.py",
         "tests/test_msp_infer_api.py"
       ],
+      "explain": {
+        "id": "mcp-rate-limiting",
+        "partials": {
+          "consistency": {
+            "component_value": 0.833333,
+            "contribution": 0.1666666,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.5,
+            "contribution": 0.125,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6908
+      },
       "found_patterns": [
         "RateLimiter",
         "rate_limit"
       ],
+      "id": "mcp-rate-limiting",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -9848,22 +10491,16 @@
           "throttle"
         ]
       },
-      "explain": {
-        "id": "mcp-rate-limiting",
-        "score": 0.9408,
-        "partials": {}
-      }
+      "score": 0.690782
     },
     {
-      "id": "mcp-schema-validation",
       "components": {
+        "consistency": 0.862069,
+        "documentation": 0.160772,
         "functionality": 1.0,
-        "consistency": 0.8620689655172413,
-        "tests": 0.13793103448275862,
-        "safeguards": 0.8333333333333334,
-        "documentation": 0.1607717041800643
+        "safeguards": 0.833333,
+        "tests": 0.137931
       },
-      "score": 0.606,
       "evidence_files": [
         "actions/openapi.yaml",
         "agents/codex_client/codex_client/models.py",
@@ -9924,10 +10561,42 @@
         "tools/codex_evaluator.py",
         "tools/testing/optional_deps.py"
       ],
+      "explain": {
+        "id": "mcp-schema-validation",
+        "partials": {
+          "consistency": {
+            "component_value": 0.862069,
+            "contribution": 0.1724138,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.833333,
+            "contribution": 0.12499995,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.137931,
+            "contribution": 0.03448275,
+            "weight": 0.25
+          }
+        },
+        "score": 0.606
+      },
       "found_patterns": [
         "BaseModel",
         "OpenAPI"
       ],
+      "id": "mcp-schema-validation",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -9936,22 +10605,16 @@
           "schema"
         ]
       },
-      "explain": {
-        "id": "mcp-schema-validation",
-        "score": 0.606,
-        "partials": {}
-      }
+      "score": 0.606012
     },
     {
-      "id": "mcp-security-safeguards",
       "components": {
+        "consistency": 0.928349,
+        "documentation": 0.160772,
         "functionality": 1.0,
-        "consistency": 0.928125,
-        "tests": 0.121875,
         "safeguards": 1.0,
-        "documentation": 0.1607717041800643
+        "tests": 0.121495
       },
-      "score": 0.6402,
       "evidence_files": [
         ".codex/change_log-large.md",
         ".codex/change_log.md",
@@ -10036,7 +10699,7 @@
         "cli/task_sequence.py",
         "codex_digest/cli.py",
         "codex_digest/pipeline.py",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_task_executor.py",
         "configs/development/noxfile.py",
         "docs/CHANGELOG.md",
@@ -10143,6 +10806,7 @@
         "scripts/ops/codex_mint_tokens_per_run.py",
         "scripts/ops/codex_repo_admin_bootstrap.py",
         "scripts/remediation/cleanup_root.py",
+        "scripts/remediation/refactor_imports.py",
         "scripts/run_sweep.py",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
@@ -10274,11 +10938,43 @@
         "tools/workflow_merge.py",
         "training/engine_hf_trainer.py"
       ],
+      "explain": {
+        "id": "mcp-security-safeguards",
+        "partials": {
+          "consistency": {
+            "component_value": 0.928349,
+            "contribution": 0.1856698,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.121495,
+            "contribution": 0.03037375,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6402
+      },
       "found_patterns": [
         "confirm",
         "dry_run",
         "sanitize"
       ],
+      "id": "mcp-security-safeguards",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -10287,22 +10983,16 @@
           "sanitize"
         ]
       },
-      "explain": {
-        "id": "mcp-security-safeguards",
-        "score": 0.6402,
-        "partials": {}
-      }
+      "score": 0.640159
     },
     {
-      "id": "mcp-tooling-registry",
       "components": {
-        "functionality": 1.0,
         "consistency": 0.875,
-        "tests": 0.5,
-        "safeguards": 0.3333333333333333,
-        "documentation": 0.1607717041800643
+        "documentation": 0.160772,
+        "functionality": 1.0,
+        "safeguards": 0.333333,
+        "tests": 0.5
       },
-      "score": 0.6241,
       "evidence_files": [
         "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
@@ -10313,10 +11003,42 @@
         "tests/tools/test_codex_gap_registry.py",
         "tools/codex_gap_registry.py"
       ],
+      "explain": {
+        "id": "mcp-tooling-registry",
+        "partials": {
+          "consistency": {
+            "component_value": 0.875,
+            "contribution": 0.17500000000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.333333,
+            "contribution": 0.049999949999999994,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.5,
+            "contribution": 0.125,
+            "weight": 0.25
+          }
+        },
+        "score": 0.6241
+      },
       "found_patterns": [
         "mcp.json",
         "registry"
       ],
+      "id": "mcp-tooling-registry",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -10324,22 +11046,16 @@
           "tools"
         ]
       },
-      "explain": {
-        "id": "mcp-tooling-registry",
-        "score": 0.6241,
-        "partials": {}
-      }
+      "score": 0.624116
     },
     {
-      "id": "mcp-tools-integration",
       "components": {
+        "consistency": 0.944039,
+        "documentation": 0.160772,
         "functionality": 1.0,
-        "consistency": 0.9440389294403893,
-        "tests": 0.14841849148418493,
         "safeguards": 1.0,
-        "documentation": 0.1607717041800643
+        "tests": 0.148418
       },
-      "score": 0.65,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -10753,29 +11469,55 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py"
       ],
+      "explain": {
+        "id": "mcp-tools-integration",
+        "partials": {
+          "consistency": {
+            "component_value": 0.944039,
+            "contribution": 0.1888078,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.148418,
+            "contribution": 0.0371045,
+            "weight": 0.25
+          }
+        },
+        "score": 0.65
+      },
       "found_patterns": [
         "mcp",
         "tool"
       ],
+      "id": "mcp-tools-integration",
       "meta": {
         "layer": "integration"
       },
-      "explain": {
-        "id": "mcp-tools-integration",
-        "score": 0.65,
-        "partials": {}
-      }
+      "score": 0.650028
     },
     {
-      "id": "mcp-versioning-compat",
       "components": {
-        "functionality": 2.0,
         "consistency": 1.0,
-        "tests": 0.5714285714285714,
-        "safeguards": 0.16666666666666666,
-        "documentation": 0.1607717041800643
+        "documentation": 0.160772,
+        "functionality": 2.0,
+        "safeguards": 0.166667,
+        "tests": 0.571429
       },
-      "score": 0.892,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "src/mcp/server/__init__.py",
@@ -10785,10 +11527,42 @@
         "tests/mcp/test_protocol.py",
         "tests/mcp/test_server.py"
       ],
+      "explain": {
+        "id": "mcp-versioning-compat",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.160772,
+            "contribution": 0.0241158,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.166667,
+            "contribution": 0.02500005,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.571429,
+            "contribution": 0.14285725,
+            "weight": 0.25
+          }
+        },
+        "score": 0.642
+      },
       "found_patterns": [
         "MCP_VERSIONS",
         "negotiate_version"
       ],
+      "id": "mcp-versioning-compat",
       "meta": {
         "category": "mcp",
         "missing_detectors": [
@@ -10796,22 +11570,16 @@
           "negotiate_version"
         ]
       },
-      "explain": {
-        "id": "mcp-versioning-compat",
-        "score": 0.892,
-        "partials": {}
-      }
+      "score": 0.641973
     },
     {
-      "id": "ml-serving",
       "components": {
+        "consistency": 0.787611,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.7927927927927928,
-        "tests": 0.7027027027027027,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.690265
       },
-      "score": 0.8842,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "P1_FIX_API_KEY_OPTIONAL.md",
@@ -10855,6 +11623,7 @@
         "src/codex/archive/api.py",
         "src/codex/release/api.py",
         "src/codex_ml/cli/infer.py",
+        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/serving/__init__.py",
         "src/codex_ml/serving/batching.py",
@@ -10862,6 +11631,7 @@
         "src/codex_ml/serving/inference_server.py",
         "src/codex_ml/serving/resilience.py",
         "src/codex_ml/telemetry/server.py",
+        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/training/legacy_api.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -10925,38 +11695,95 @@
         "tools/ml_predictor.py",
         "tools/validate_api_docs.py"
       ],
+      "explain": {
+        "id": "ml-serving",
+        "partials": {
+          "consistency": {
+            "component_value": 0.787611,
+            "contribution": 0.1575222,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.690265,
+            "contribution": 0.17256625,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8801
+      },
       "found_patterns": [
         "api",
         "predict",
         "serve"
       ],
+      "id": "ml-serving",
       "meta": {
-        "layer": "inference",
-        "priority": "high",
         "category": "deployment",
+        "layer": "inference",
         "missing_detectors": [
           "api",
           "predict",
           "serve"
-        ]
+        ],
+        "priority": "high"
       },
-      "explain": {
-        "id": "ml-serving",
-        "score": 0.8842,
-        "partials": {}
-      }
+      "score": 0.880088
     },
     {
-      "id": "peft_hooks",
       "components": {
-        "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.0,
+        "documentation": 0.064309,
+        "functionality": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.06430868167202572
+        "tests": 0.0
       },
-      "score": 0.4596,
       "evidence_files": [],
+      "explain": {
+        "id": "peft_hooks",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.064309,
+            "contribution": 0.00964635,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          }
+        },
+        "score": 0.4596
+      },
       "found_patterns": [
         "LoraConfig",
         "get_peft_model",
@@ -10964,6 +11791,7 @@
         "peft",
         "prepare_model_for_kbit_training"
       ],
+      "id": "peft_hooks",
       "meta": {
         "_evidence_v2": {
           "cli/script_polish.py": [
@@ -11448,22 +12276,16 @@
           ]
         }
       },
-      "explain": {
-        "id": "peft_hooks",
-        "score": 0.4596,
-        "partials": {}
-      }
+      "score": 0.459646
     },
     {
-      "id": "reproducibility",
       "components": {
+        "consistency": 0.892473,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8901098901098901,
-        "tests": 0.5384615384615384,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.526882
       },
-      "score": 0.8626,
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
         "DETERMINISTIC_AUDIT_REPORT_v1.1.0.md",
@@ -11497,6 +12319,8 @@
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
         "src/codex_ml/training/rng_checkpoint.py",
+        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
+        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint_integrity.py",
         "src/codex_ml/utils/checksum.py",
         "src/codex_ml/utils/checksums.py",
@@ -11557,6 +12381,37 @@
         "training/seed.py",
         "training/seed_utils.py"
       ],
+      "explain": {
+        "id": "reproducibility",
+        "partials": {
+          "consistency": {
+            "component_value": 0.892473,
+            "contribution": 0.1784946,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.526882,
+            "contribution": 0.1317205,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8602
+      },
       "found_patterns": [
         "deterministic",
         "reproducibility",
@@ -11564,29 +12419,55 @@
         "seed",
         "sha256"
       ],
+      "id": "reproducibility",
       "meta": {
-        "seed_management": 28,
-        "repro_utils": 30,
         "determinism_configs": 8,
-        "integrity_validation": 35
+        "integrity_validation": 36,
+        "repro_utils": 30,
+        "seed_management": 29
       },
-      "explain": {
-        "id": "reproducibility",
-        "score": 0.8626,
-        "partials": {}
-      }
+      "score": 0.860215
     },
     {
-      "id": "safeguards_keywords",
       "components": {
-        "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.0,
+        "documentation": 0.016077,
+        "functionality": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.01607717041800643
+        "tests": 0.0
       },
-      "score": 0.4524,
       "evidence_files": [],
+      "explain": {
+        "id": "safeguards_keywords",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.016077,
+            "contribution": 0.00241155,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          }
+        },
+        "score": 0.4524
+      },
       "found_patterns": [
         "WANDB_MODE",
         "checksum",
@@ -11595,6 +12476,7 @@
         "seed",
         "sha256"
       ],
+      "id": "safeguards_keywords",
       "meta": {
         "_evidence_v2": {
           ".codex/README.md": 2,
@@ -11746,7 +12628,7 @@
           "codex_addons/metrics/collector.py": 1,
           "codex_digest/README.md": 1,
           "codex_digest/mapper.py": 1,
-          "codex_implement_status_update_PLAN_(2025\u201111\u201109).md": 4,
+          "codex_implement_status_update_PLAN_(2025‑11‑09).md": 4,
           "codex_ml/data/checksums.py": 1,
           "codex_plans/batchsetpatchset_segments/batchsetpatchset_part01.txt": 2,
           "codex_plans/batchsetpatchset_segments/batchsetpatchset_part02.txt": 2,
@@ -12770,22 +13652,16 @@
           "validation.md": 2
         }
       },
-      "explain": {
-        "id": "safeguards_keywords",
-        "score": 0.4524,
-        "partials": {}
-      }
+      "score": 0.452412
     },
     {
-      "id": "safety-security",
       "components": {
+        "consistency": 0.862745,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8627450980392157,
-        "tests": 0.3333333333333333,
         "safeguards": 0.5,
-        "documentation": 1.0
+        "tests": 0.333333
       },
-      "score": 0.7309,
       "evidence_files": [
         ".codex/evidence/phase5_privacy_safety.jsonl",
         "artifacts/security/safety.txt",
@@ -12839,27 +13715,53 @@
         "tools/codex_safety/openai_wrapper.py",
         "tools/survey_sanitize.py"
       ],
+      "explain": {
+        "id": "safety-security",
+        "partials": {
+          "consistency": {
+            "component_value": 0.862745,
+            "contribution": 0.172549,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.5,
+            "contribution": 0.075,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.333333,
+            "contribution": 0.08333325,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7309
+      },
       "found_patterns": [
         "sanitize",
         "secret"
       ],
+      "id": "safety-security",
       "meta": {},
-      "explain": {
-        "id": "safety-security",
-        "score": 0.7309,
-        "partials": {}
-      }
+      "score": 0.730882
     },
     {
-      "id": "status-reporting",
       "components": {
+        "consistency": 0.903226,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.902834008097166,
-        "tests": 0.11336032388663968,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.116935
       },
-      "score": 0.7589,
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
         ".codex/automation_out/coverage_report.json",
@@ -13050,7 +13952,7 @@
         "cli/status_audit.py",
         "codex_dependency_report.json",
         "codex_dependency_report.md",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_mltest_infra_summary.json",
         "codex_secret_scan_report.json",
         "codex_secret_scan_report.md",
@@ -13316,6 +14218,8 @@
         "tests/tools/test_report_merge.py",
         "tests/tracking/test_tracking_ndjson_summary.py",
         "tests/tracking/test_tracking_summary_rotation.py",
+        "tests/validation/__pycache__/test_audit_pipeline.cpython-312-pytest-9.0.1.pyc",
+        "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/test_audit_pipeline.py",
         "tests/validation/test_legacy_import_report.py",
         "tests/visual/test_status_html_render.py",
@@ -13356,38 +14260,66 @@
         "tools/status_report.py",
         "tools/validate_status_report.py"
       ],
+      "explain": {
+        "id": "status-reporting",
+        "partials": {
+          "consistency": {
+            "component_value": 0.903226,
+            "contribution": 0.1806452,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.116935,
+            "contribution": 0.02923375,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7599
+      },
       "found_patterns": [
         "audit",
         "report",
         "status"
       ],
+      "id": "status-reporting",
       "meta": {
-        "layer": "operations",
-        "priority": "medium",
         "category": "monitoring",
+        "layer": "operations",
         "missing_detectors": [
           "audit",
           "report",
           "status"
-        ]
+        ],
+        "priority": "medium"
       },
-      "explain": {
-        "id": "status-reporting",
-        "score": 0.7589,
-        "partials": {}
-      }
+      "score": 0.759879
     },
     {
-      "id": "structural-integrity",
       "components": {
-        "functionality": 1.0,
         "consistency": 0.9,
-        "tests": 0.0,
-        "safeguards": 0.6666666666666666,
-        "documentation": 0.3215434083601286
+        "documentation": 0.321543,
+        "functionality": 1.0,
+        "safeguards": 0.666667,
+        "tests": 0.0
       },
-      "score": 0.5782,
       "evidence_files": [
+        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
+        "__pycache__/sitecustomize.cpython-312.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/_package_main.py",
@@ -13395,18 +14327,53 @@
         "codex_ml/data/checksums.py",
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
-        "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py",
-        "codex_utils/mlflow_offline.py"
+        "codex_utils/json_report.py"
       ],
+      "explain": {
+        "id": "structural-integrity",
+        "partials": {
+          "consistency": {
+            "component_value": 0.9,
+            "contribution": 0.18000000000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.321543,
+            "contribution": 0.04823145,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.666667,
+            "contribution": 0.10000005,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          }
+        },
+        "score": 0.5782
+      },
       "found_patterns": [
         "lib-shadowing",
         "split-brain"
       ],
+      "id": "structural-integrity",
       "meta": {
-        "risk_level": "high",
         "description": "Detects architectural split-brain and namespace shadowing.",
+        "evidence_limit": 10,
+        "risk_level": "high",
+        "shadow_dirs": [
+          "torch"
+        ],
         "split_dirs": [
+          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -13414,30 +14381,21 @@
           "tokenization",
           "tools",
           "training"
-        ],
-        "shadow_dirs": [
-          "torch"
-        ],
-        "evidence_limit": 10
+        ]
       },
-      "explain": {
-        "id": "structural-integrity",
-        "score": 0.5782,
-        "partials": {}
-      }
+      "score": 0.578232
     },
     {
-      "id": "testing-infrastructure",
       "components": {
+        "consistency": 0.891466,
+        "documentation": 1.0,
         "functionality": 0.75,
-        "consistency": 0.892116182572614,
-        "tests": 0.9892116182572614,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.988401
       },
-      "score": 0.9132,
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -13450,6 +14408,7 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/test_ast_similarity.py",
@@ -14643,32 +15602,58 @@
         "tests/zd/test_evidence_parity.py",
         "tools/make_spm_fixture.py"
       ],
+      "explain": {
+        "id": "testing-infrastructure",
+        "partials": {
+          "consistency": {
+            "component_value": 0.891466,
+            "contribution": 0.1782932,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.75,
+            "contribution": 0.1875,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.988401,
+            "contribution": 0.24710025,
+            "weight": 0.25
+          }
+        },
+        "score": 0.9129
+      },
       "found_patterns": [
         "fixture",
         "pytest",
         "test_"
       ],
+      "id": "testing-infrastructure",
       "meta": {
-        "test_count": 1183,
         "config_count": 27,
-        "fixture_count": 33
+        "fixture_count": 35,
+        "test_count": 1183
       },
-      "explain": {
-        "id": "testing-infrastructure",
-        "score": 0.9132,
-        "partials": {}
-      }
+      "score": 0.912893
     },
     {
-      "id": "tokenization",
       "components": {
+        "consistency": 0.831933,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8275862068965517,
-        "tests": 0.5258620689655172,
-        "safeguards": 0.6666666666666666,
-        "documentation": 1.0
+        "safeguards": 0.666667,
+        "tests": 0.512605
       },
-      "score": 0.797,
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
         "artifacts/models/tiny_tokenizer/vocab.json",
@@ -14694,10 +15679,13 @@
         "examples/tokenize.py",
         "interfaces/tokenizer.py",
         "src/codex_ml/cli/tokenizer.py",
+        "src/codex_ml/interfaces/__pycache__/tokenizer.cpython-312.pyc",
         "src/codex_ml/interfaces/tokenizer.py",
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/registry/tokenizers.py",
         "src/codex_ml/tokenization/__init__.py",
+        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -14787,27 +15775,53 @@
         "tokenization/sentencepiece_adapter.py",
         "tools/bench_tokenizer.py"
       ],
+      "explain": {
+        "id": "tokenization",
+        "partials": {
+          "consistency": {
+            "component_value": 0.831933,
+            "contribution": 0.16638660000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.666667,
+            "contribution": 0.10000005,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.512605,
+            "contribution": 0.12815125,
+            "weight": 0.25
+          }
+        },
+        "score": 0.7945
+      },
       "found_patterns": [
         "encode",
         "tokenizer"
       ],
+      "id": "tokenization",
       "meta": {},
-      "explain": {
-        "id": "tokenization",
-        "score": 0.797,
-        "partials": {}
-      }
+      "score": 0.794538
     },
     {
-      "id": "training-engine",
       "components": {
+        "consistency": 0.863071,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "consistency": 0.8630705394190872,
-        "tests": 0.44813278008298757,
         "safeguards": 1.0,
-        "documentation": 1.0
+        "tests": 0.448133
       },
-      "score": 0.8346,
       "evidence_files": [
         "_codex_reports/2025-10-06/trainer_smoke.json",
         "_codex_reports/2025-10-06/trainer_smoke.log",
@@ -15051,34 +16065,60 @@
         "training/seed_utils.py",
         "training/streaming.py"
       ],
+      "explain": {
+        "id": "training-engine",
+        "partials": {
+          "consistency": {
+            "component_value": 0.863071,
+            "contribution": 0.17261420000000002,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.448133,
+            "contribution": 0.11203325,
+            "weight": 0.25
+          }
+        },
+        "score": 0.8346
+      },
       "found_patterns": [
         "epoch",
         "functional_training",
         "train",
         "train_loop"
       ],
+      "id": "training-engine",
       "meta": {
         "_aliases": [
           "functional_training",
           "train_loop"
         ]
       },
-      "explain": {
-        "id": "training-engine",
-        "score": 0.8346,
-        "partials": {}
-      }
+      "score": 0.834647
     },
     {
-      "id": "unified-training",
       "components": {
-        "functionality": 1.0,
         "consistency": 0.6,
-        "tests": 1.0,
+        "documentation": 1.0,
+        "functionality": 1.0,
         "safeguards": 0.5,
-        "documentation": 1.0
+        "tests": 1.0
       },
-      "score": 0.845,
       "evidence_files": [
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
@@ -15086,44 +16126,99 @@
         "tests/detectors/test_unified_training.py",
         "tools/bench_unified_training.py"
       ],
+      "explain": {
+        "id": "unified-training",
+        "partials": {
+          "consistency": {
+            "component_value": 0.6,
+            "contribution": 0.12,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 1.0,
+            "contribution": 0.15,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.5,
+            "contribution": 0.075,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          }
+        },
+        "score": 0.845
+      },
       "found_patterns": [
         "UnifiedTrainingConfig",
         "run_unified_training"
       ],
+      "id": "unified-training",
       "meta": {
         "category": "training"
       },
-      "explain": {
-        "id": "unified-training",
-        "score": 0.845,
-        "partials": {}
-      }
+      "score": 0.845
     },
     {
-      "id": "vector-stores",
       "components": {
-        "functionality": 0.0,
         "consistency": 1.0,
-        "tests": 1.0,
+        "documentation": 0.273312,
+        "functionality": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.2733118971061093
+        "tests": 1.0
       },
-      "score": 0.491,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
         "codex_addons/vector_stores/weaviate_stub.py"
       ],
+      "explain": {
+        "id": "vector-stores",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.273312,
+            "contribution": 0.0409968,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 1.0,
+            "contribution": 0.25,
+            "weight": 0.25
+          }
+        },
+        "score": 0.491
+      },
       "found_patterns": [],
+      "id": "vector-stores",
       "meta": {
         "mode": "stub-or-mock"
       },
-      "explain": {
-        "id": "vector-stores",
-        "score": 0.491,
-        "partials": {}
-      }
+      "score": 0.490997
     }
   ],
+  "generated": 1764919254.6959827,
   "version": "1.2.0"
 }

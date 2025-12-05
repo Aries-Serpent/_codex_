@@ -517,31 +517,40 @@ def stage_s4_scoring(cfg, raw_caps):
                 tests = max(tests, coverage_value)
         safeguards = safeguard_score(cap.get("evidence_files", []), file_cache)
         documentation = docs_score(cap.get("id"), file_cache, cap.get("docs_keywords", []))
+        
+        # Round components to 6 decimals for determinism
         components = {
-            "functionality": functionality,
-            "consistency": consistency,
-            "tests": tests,
-            "safeguards": safeguards,
-            "documentation": documentation,
+            "functionality": round(functionality, 6),
+            "consistency": round(consistency, 6),
+            "tests": round(tests, 6),
+            "safeguards": round(safeguards, 6),
+            "documentation": round(documentation, 6),
         }
         if cs:
             score = cs.score_capability(components, weights)
             explanation = cs.explain_score({"id": cap.get("id"), "components": components}, weights)
         else:
             score = sum(components[k] * weights[k] for k in weights)
-            explanation = {"id": cap.get("id"), "score": round(score, 4), "partials": {}}
+            explanation = {"id": cap.get("id"), "score": round(score, 6), "partials": {}}
+        
+        # Ensure deterministic ordering of lists
         scored.append({
             "id": cap.get("id"),
             "components": components,
-            "score": round(score, 4),
-            "evidence_files": cap.get("evidence_files", []),
-            "found_patterns": cap.get("found_patterns", []),
+            "score": round(score, 6),
+            "evidence_files": sorted(cap.get("evidence_files", [])),
+            "found_patterns": sorted(cap.get("found_patterns", [])),
             "meta": cap.get("meta", {}),
             "explain": explanation
         })
 
+    # Sort capabilities by id for determinism
+    scored = sorted(scored, key=lambda x: x["id"])
+
     out = artifacts_dir / "capabilities_scored.json"
-    out.write_text(json.dumps({"generated": time.time(), "capabilities": scored, "version": VERSION}, indent=2), encoding="utf-8")
+    # Use sort_keys and consistent separators for deterministic JSON output
+    out.write_text(json.dumps({"generated": time.time(), "capabilities": scored, "version": VERSION}, 
+                              indent=2, sort_keys=True, ensure_ascii=False), encoding="utf-8")
     (artifacts_dir / "_scoring_warnings.json").write_text(json.dumps(warnings), encoding="utf-8")
     return scored
 
