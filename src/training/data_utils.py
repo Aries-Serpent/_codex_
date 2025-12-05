@@ -30,7 +30,7 @@ except ImportError:  # pragma: no cover - platform-specific fallback
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     if torch is not None:
-        from torch import Tensor  # type: ignore[attr-defined]
+        Tensor = torch.Tensor  # type: ignore[attr-defined]
     else:
         Tensor = Any  # type: ignore[misc]
 else:  # pragma: no cover - runtime alias

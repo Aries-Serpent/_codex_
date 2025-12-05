@@ -647,7 +647,7 @@ class NDJSONMetricsWriter:
         try:
             self.close()
         except Exception:
-            pass
+            pass  # Best effort cleanup; __del__ cannot raise exceptions
 
 
 class CSVMetricsWriter:
@@ -1213,7 +1213,7 @@ def run_hf_trainer(
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
         except Exception:
-            pass
+            pass  # Logging failure; continue with training
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1225,7 +1225,7 @@ def run_hf_trainer(
             writer.flush()
             writer.close()
         except Exception:
-            pass
+            pass  # TensorBoard logging failure; continue with training
 
     # Persist metrics to JSON and NDJSON for downstream analytics
     metrics_json = output_dir / "metrics.json"
@@ -1235,8 +1235,10 @@ def run_hf_trainer(
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     writer_choice = (metrics_writer or "ndjson").lower()
     if writer_choice != "none":
-        path = Path(metrics_path) if metrics_path else output_dir / (
-            "metrics.csv" if writer_choice == "csv" else "metrics.ndjson"
+        path = (
+            Path(metrics_path)
+            if metrics_path
+            else output_dir / ("metrics.csv" if writer_choice == "csv" else "metrics.ndjson")
         )
         if writer_choice == "csv":
             writer_obj = CSVMetricsWriter(str(path))
