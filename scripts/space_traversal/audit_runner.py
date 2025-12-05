@@ -27,13 +27,15 @@ from pathlib import Path
 from typing import Dict, List, Any, Callable
 
 def import_yaml_from_sitepackages():
-    """Import yaml from site-packages only, avoiding local shadowing."""
+    """Import yaml from site-packages, avoiding local directory shadowing."""
     import sys
+    import os
     original = list(sys.path)
     try:
-        site_paths = [p for p in sys.path if "site-packages" in p or "dist-packages" in p]
-        if site_paths:
-            sys.path = site_paths
+        # Remove current directory and repository root from sys.path to avoid local shadowing
+        repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        filtered = [p for p in sys.path if p and os.path.abspath(p) != repo_root and os.path.abspath(p) != '']
+        sys.path = filtered
         import yaml  # noqa
         return yaml
     finally:

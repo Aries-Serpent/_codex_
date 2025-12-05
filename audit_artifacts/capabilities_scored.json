@@ -1,16 +1,16 @@
 {
-  "generated": 1764900074.9680896,
+  "generated": 1764918908.6501045,
   "capabilities": [
     {
       "id": "archival-bundling",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.885,
-        "tests": 0.25,
+        "consistency": 0.8855721393034826,
+        "tests": 0.24875621890547264,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.7645,
+      "score": 0.7643,
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -120,6 +120,7 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -230,46 +231,20 @@
       },
       "explain": {
         "id": "archival-bundling",
-        "score": 0.7645,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.885,
-            "weight": 0.2,
-            "contribution": 0.17700000000000002
-          },
-          "tests": {
-            "component_value": 0.25,
-            "weight": 0.25,
-            "contribution": 0.0625
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.7643,
+        "partials": {}
       }
     },
     {
       "id": "checkpointing",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8899082568807339,
-        "tests": 0.6605504587155964,
+        "consistency": 0.8857142857142857,
+        "tests": 0.6857142857142857,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.8681,
+      "score": 0.8736,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "configs/schemas/checkpoint_manifest.schema.json",
@@ -292,10 +267,6 @@
         "src/codex_ml/checkpointing/utils.py",
         "src/codex_ml/cli/checkpoint_validate.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint.py",
         "src/codex_ml/utils/checkpoint_core.py",
         "src/codex_ml/utils/checkpoint_event.py",
@@ -388,34 +359,8 @@
       "meta": {},
       "explain": {
         "id": "checkpointing",
-        "score": 0.8681,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8899082568807339,
-            "weight": 0.2,
-            "contribution": 0.1779816513761468
-          },
-          "tests": {
-            "component_value": 0.6605504587155964,
-            "weight": 0.25,
-            "contribution": 0.1651376146788991
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8736,
+        "partials": {}
       }
     },
     {
@@ -752,45 +697,19 @@
       "explain": {
         "id": "ci-cd-pipeline",
         "score": 0.8531,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.921311475409836,
-            "weight": 0.2,
-            "contribution": 0.18426229508196723
-          },
-          "tests": {
-            "component_value": 0.47540983606557374,
-            "weight": 0.25,
-            "contribution": 0.11885245901639344
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "code-quality-tooling",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8686440677966102,
-        "tests": 0.5254237288135594,
+        "consistency": 0.869198312236287,
+        "tests": 0.5232067510548524,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.8301,
+      "score": 0.8296,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -874,6 +793,7 @@
         "scripts/security/secret_context_correlate.py",
         "scripts/security/secret_entropy_scan.py",
         "scripts/space_traversal/decode_validate_and_extract.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/extract_validate_gaps.py",
@@ -1040,47 +960,21 @@
         "formatters": 2,
         "linters": 5,
         "type_checkers": 9,
-        "security_scanners": 158,
+        "security_scanners": 159,
         "quality_scripts": 67
       },
       "explain": {
         "id": "code-quality-tooling",
-        "score": 0.8301,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8686440677966102,
-            "weight": 0.2,
-            "contribution": 0.17372881355932204
-          },
-          "tests": {
-            "component_value": 0.5254237288135594,
-            "weight": 0.25,
-            "contribution": 0.13135593220338984
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8296,
+        "partials": {}
       }
     },
     {
       "id": "configuration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.7730496453900709,
-        "tests": 0.21631205673758866,
+        "consistency": 0.7722419928825623,
+        "tests": 0.21708185053380782,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -1269,6 +1163,7 @@
         "scripts/config/schema_validate.py",
         "scripts/generate-config.sh",
         "scripts/runner/configure_repo_vars.sh",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/status/visual_compare_with_config.sh",
         "services/msp_gateway/config.py",
@@ -1282,8 +1177,6 @@
         "src/codex_ml/cli/hydra_entry.py",
         "src/codex_ml/cli/hydra_main.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -1377,45 +1270,19 @@
       "explain": {
         "id": "configuration",
         "score": 0.7587,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.7730496453900709,
-            "weight": 0.2,
-            "contribution": 0.15460992907801419
-          },
-          "tests": {
-            "component_value": 0.21631205673758866,
-            "weight": 0.25,
-            "contribution": 0.054078014184397165
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "data-pipeline",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8839779005524862,
-        "tests": 0.4088397790055249,
+        "consistency": 0.8833333333333333,
+        "tests": 0.4111111111111111,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.804,
+      "score": 0.8044,
       "evidence_files": [
         ".github/workflows/data_validation.yml",
         "codex_ml/data/checksums.py",
@@ -1506,7 +1373,6 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/training/dataloader_utils.py",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/run_metadata.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
@@ -1606,34 +1472,8 @@
       "meta": {},
       "explain": {
         "id": "data-pipeline",
-        "score": 0.804,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8839779005524862,
-            "weight": 0.2,
-            "contribution": 0.17679558011049723
-          },
-          "tests": {
-            "component_value": 0.4088397790055249,
-            "weight": 0.25,
-            "contribution": 0.10220994475138122
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8044,
+        "partials": {}
       }
     },
     {
@@ -1727,41 +1567,15 @@
       "explain": {
         "id": "deployment-infrastructure",
         "score": 0.6472,
-        "partials": {
-          "functionality": {
-            "component_value": 0.8,
-            "weight": 0.25,
-            "contribution": 0.2
-          },
-          "consistency": {
-            "component_value": 0.6825396825396826,
-            "weight": 0.2,
-            "contribution": 0.13650793650793652
-          },
-          "tests": {
-            "component_value": 0.14285714285714285,
-            "weight": 0.25,
-            "contribution": 0.03571428571428571
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.9337641357027464,
-        "tests": 0.004846526655896607,
+        "consistency": 0.9341894060995185,
+        "tests": 0.004815409309791332,
         "safeguards": 1.0,
         "documentation": 1.0
       },
@@ -2328,6 +2142,7 @@
         "docs/validation/Agent_Run_Validation.md",
         "docs/validation/Atomic_Diffs_Next_Unresolved_2025-10-11.md",
         "docs/validation/Atomic_Diffs_Next_Unresolved_2025-10-18.md",
+        "docs/validation/Batchset_Execution_Log.md",
         "docs/validation/Bridge_Run_Validation.md",
         "docs/validation/Build_55787805698_Fix.md",
         "docs/validation/CI_Fast_Defaults.md",
@@ -2345,11 +2160,14 @@
         "docs/validation/Gaps_Coverage_Checklist_And_Scripts.md",
         "docs/validation/Hydra_Config_Validation.md",
         "docs/validation/Metrics_Validation.md",
+        "docs/validation/Next_Iteration_Prompt_v1.3.0.md",
         "docs/validation/Offline_Audit_Validation.md",
         "docs/validation/OptionalDeps_SoftFail_Validation.md",
         "docs/validation/Owner_Approval_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
         "docs/validation/PR2208_CI_Failure_Remediation_Plan.md",
+        "docs/validation/PartB_Completion_Report.md",
+        "docs/validation/PartB_Validation_Summary.md",
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
@@ -2393,53 +2211,27 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 617,
+        "markdown_count": 621,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 619
+        "total_docs": 623
       },
       "explain": {
         "id": "documentation-system",
         "score": 0.6755,
-        "partials": {
-          "functionality": {
-            "component_value": 0.75,
-            "weight": 0.25,
-            "contribution": 0.1875
-          },
-          "consistency": {
-            "component_value": 0.9337641357027464,
-            "weight": 0.2,
-            "contribution": 0.1867528271405493
-          },
-          "tests": {
-            "component_value": 0.004846526655896607,
-            "weight": 0.25,
-            "contribution": 0.0012116316639741518
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "duplication_ratio",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.7835244558857946,
-        "tests": 0.28270535923238943,
+        "consistency": 0.7877790834312574,
+        "tests": 0.2824911868390129,
         "safeguards": 1.0,
-        "documentation": 0.12944983818770225
+        "documentation": 0.12861736334405144
       },
-      "score": 0.3968,
+      "score": 0.3975,
       "evidence_files": [
         ".bandit.yaml",
         ".bandit.yml",
@@ -2700,7 +2492,8 @@
         ".github/chatmodes/template.chatmode.md",
         ".github/copilot-instructions.md",
         ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
-        ".github/copilot_agent_task_prompt.next.md",
+        ".github/copilot_agent_task_prompt.next.md.backup",
+        ".github/copilot_agent_task_prompt.next_v1.2.1.md",
         ".github/copilot_prompts/Coverage_96-99_NextIteration.md",
         ".github/coverage_threshold.txt",
         ".github/dependabot.yml",
@@ -2828,10 +2621,6 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
-        ".pytest_cache/.gitignore",
-        ".pytest_cache/CACHEDIR.TAG",
-        ".pytest_cache/README.md",
-        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -2929,6 +2718,7 @@
         "Makefile.status",
         "NEWCOMER_GUIDE.md",
         "NEXT_COPILOT_PROMPT.md",
+        "NEXT_ITERATION_PROMPT.md",
         "P1_FIX_API_KEY_OPTIONAL.md",
         "PHASE1_FINAL_PUSH_SUMMARY.md",
         "PR-2151_Comprehensive_Error_Log.md",
@@ -2966,8 +2756,6 @@
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
-        "__pycache__/sitecustomize.cpython-312.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -3113,8 +2901,6 @@
         "codex_digest/EXECUTION.md",
         "codex_digest/README.md",
         "codex_digest/__init__.py",
-        "codex_digest/__pycache__/__init__.cpython-312.pyc",
-        "codex_digest/__pycache__/error_capture.cpython-312.pyc",
         "codex_digest/cli.py",
         "codex_digest/error_capture.py",
         "codex_digest/mapper.py",
@@ -3997,6 +3783,7 @@
         "docs/validation/Agent_Run_Validation.md",
         "docs/validation/Atomic_Diffs_Next_Unresolved_2025-10-11.md",
         "docs/validation/Atomic_Diffs_Next_Unresolved_2025-10-18.md",
+        "docs/validation/Batchset_Execution_Log.md",
         "docs/validation/Bridge_Run_Validation.md",
         "docs/validation/Build_55787805698_Fix.md",
         "docs/validation/CI_Fast_Defaults.md",
@@ -4014,11 +3801,14 @@
         "docs/validation/Gaps_Coverage_Checklist_And_Scripts.md",
         "docs/validation/Hydra_Config_Validation.md",
         "docs/validation/Metrics_Validation.md",
+        "docs/validation/Next_Iteration_Prompt_v1.3.0.md",
         "docs/validation/Offline_Audit_Validation.md",
         "docs/validation/OptionalDeps_SoftFail_Validation.md",
         "docs/validation/Owner_Approval_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
         "docs/validation/PR2208_CI_Failure_Remediation_Plan.md",
+        "docs/validation/PartB_Completion_Report.md",
+        "docs/validation/PartB_Validation_Summary.md",
         "docs/validation/Patch_Completeness_Review_2025-10-18.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Post_Apply_Validation_Checklist_2025-10-11.md",
@@ -4112,7 +3902,6 @@
         "noxfile.py",
         "noxfile.security_additions.py",
         "omegaconf/__init__.py",
-        "omegaconf/__pycache__/__init__.cpython-312.pyc",
         "ops/threat_model/STRIDE.md",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
         "patches/analysis.patch",
@@ -4340,6 +4129,7 @@
         "scripts/smoke_after_build.sh",
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/__init__.py",
+        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/coverage_ingest.py",
@@ -4347,6 +4137,39 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -4442,7 +4265,6 @@
         "semgrep_rules/python/subprocess_shell.yml",
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "sentencepiece/__init__.py",
-        "sentencepiece/__pycache__/__init__.cpython-312.pyc",
         "services/__init__.py",
         "services/api/__init__.py",
         "services/api/main.py",
@@ -4487,7 +4309,6 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
-        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
         "src/codex/_version.py",
@@ -4663,10 +4484,6 @@
         "src/codex_harness/tool_trace.py",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
-        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
-        "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/__init__.py",
         "src/codex_ml/analysis/extractors.py",
@@ -4729,8 +4546,6 @@
         "src/codex_ml/codex_model.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -4802,9 +4617,6 @@
         "src/codex_ml/hf_loader.py",
         "src/codex_ml/ingest.py",
         "src/codex_ml/interfaces/__init__.py",
-        "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
-        "src/codex_ml/interfaces/__pycache__/tokenizer.cpython-312.pyc",
         "src/codex_ml/interfaces/contracts.py",
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/registry.py",
@@ -4828,14 +4640,6 @@
         "src/codex_ml/main.py",
         "src/codex_ml/metrics.py",
         "src/codex_ml/metrics/__init__.py",
-        "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/base.py",
@@ -4896,12 +4700,6 @@
         "src/codex_ml/perf/profiler.py",
         "src/codex_ml/pipeline.py",
         "src/codex_ml/plugins/__init__.py",
-        "src/codex_ml/plugins/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/base.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/loader.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/programmatic.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registries.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/plugins/base.py",
         "src/codex_ml/plugins/loader.py",
         "src/codex_ml/plugins/programmatic.py",
@@ -4909,8 +4707,6 @@
         "src/codex_ml/plugins/registry.py",
         "src/codex_ml/registry.py",
         "src/codex_ml/registry/__init__.py",
-        "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
         "src/codex_ml/registry/base.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/registry/metrics.py",
@@ -4945,8 +4741,6 @@
         "src/codex_ml/telemetry/metrics.py",
         "src/codex_ml/telemetry/server.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -4991,17 +4785,6 @@
         "src/codex_ml/training/toy_trainer.py",
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/__init__.py",
-        "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
         "src/codex_ml/utils/artifacts.py",
         "src/codex_ml/utils/atomic_io.py",
         "src/codex_ml/utils/checkpoint.py",
@@ -5206,8 +4989,6 @@
         "test_mcp_server.py",
         "test_results_stage1.txt",
         "tests/__init__.py",
-        "tests/__pycache__/__init__.cpython-312.pyc",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/test_ast_similarity.py",
@@ -6399,10 +6180,6 @@
         "tests/utils/test_repro_rng.py",
         "tests/utils/test_rng_state.py",
         "tests/utils/test_seed.py",
-        "tests/validation/__pycache__/test_audit_pipeline.cpython-312-pytest-9.0.1.pyc",
-        "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
-        "tests/validation/__pycache__/test_shadowing.cpython-312-pytest-9.0.1.pyc",
-        "tests/validation/__pycache__/test_shadowing_yaml.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/test_audit_pipeline.py",
         "tests/validation/test_legacy_import_report.py",
         "tests/validation/test_shadowing.py",
@@ -6687,9 +6464,7 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -6706,7 +6481,6 @@
         "training/streaming.py",
         "transformed_pr_overview.md",
         "transformers/__init__.py",
-        "transformers/__pycache__/__init__.cpython-312.pyc",
         "typer/testing.py",
         "uv.lock",
         "uv.lock.bak",
@@ -6719,46 +6493,20 @@
       "meta": {},
       "explain": {
         "id": "duplication_ratio",
-        "score": 0.3968,
-        "partials": {
-          "functionality": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "consistency": {
-            "component_value": 0.7835244558857946,
-            "weight": 0.2,
-            "contribution": 0.1567048911771589
-          },
-          "tests": {
-            "component_value": 0.28270535923238943,
-            "weight": 0.25,
-            "contribution": 0.07067633980809736
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 0.12944983818770225,
-            "weight": 0.15,
-            "contribution": 0.019417475728155338
-          }
-        }
+        "score": 0.3975,
+        "partials": {}
       }
     },
     {
       "id": "evaluation-metrics",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8823529411764706,
-        "tests": 0.45588235294117646,
+        "consistency": 0.8814814814814815,
+        "tests": 0.45925925925925926,
         "safeguards": 0.8333333333333334,
         "documentation": 1.0
       },
-      "score": 0.8154,
+      "score": 0.8161,
       "evidence_files": [
         ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
         "IMPLEMENTATION_COMPLETE_EVALUATION_LOOP.md",
@@ -6823,7 +6571,6 @@
         "src/codex_ml/evaluation/__init__.py",
         "src/codex_ml/evaluation/cli.py",
         "src/codex_ml/evaluation/loop.py",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
         "src/codex_ml/metrics/evaluator.py",
         "src/codex_ml/training/eval.py",
         "src/evaluation/__init__.py",
@@ -6904,34 +6651,8 @@
       "meta": {},
       "explain": {
         "id": "evaluation-metrics",
-        "score": 0.8154,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8823529411764706,
-            "weight": 0.2,
-            "contribution": 0.17647058823529413
-          },
-          "tests": {
-            "component_value": 0.45588235294117646,
-            "weight": 0.25,
-            "contribution": 0.11397058823529412
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8161,
+        "partials": {}
       }
     },
     {
@@ -6943,7 +6664,7 @@
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.9086,
+      "score": 1.1586,
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
         "src/codex_ml/checkpointing/__init__.py",
@@ -8401,46 +8122,20 @@
       },
       "explain": {
         "id": "example-evidence-v2",
-        "score": 0.9086,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8918918918918919,
-            "weight": 0.2,
-            "contribution": 0.1783783783783784
-          },
-          "tests": {
-            "component_value": 0.7207207207207207,
-            "weight": 0.25,
-            "contribution": 0.18018018018018017
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 1.1586,
+        "partials": {}
       }
     },
     {
       "id": "experiment-management",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.79375,
-        "tests": 0.35,
+        "consistency": 0.7924528301886793,
+        "tests": 0.3522012578616352,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7963,
+      "score": 0.7965,
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
         ".codex/copilot_bridge/var/manifests/.gitkeep",
@@ -8513,6 +8208,7 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/tracking/mlflow_ui.sh",
@@ -8529,8 +8225,6 @@
         "src/codex_ml/tracking/mlflow_guard.py",
         "src/codex_ml/tracking/mlflow_utils.py",
         "src/codex_ml/tracking/mlflow_wrapper.py",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/experiment_tracking_mlflow.py",
         "src/codex_ml/utils/logging_mlflow.py",
         "src/codex_ml/utils/logging_wandb.py",
@@ -8613,39 +8307,13 @@
       "meta": {
         "mlflow_integration": 38,
         "wandb_integration": 4,
-        "experiment_utils": 29,
-        "metadata_files": 91
+        "experiment_utils": 30,
+        "metadata_files": 89
       },
       "explain": {
         "id": "experiment-management",
-        "score": 0.7963,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.79375,
-            "weight": 0.2,
-            "contribution": 0.15875
-          },
-          "tests": {
-            "component_value": 0.35,
-            "weight": 0.25,
-            "contribution": 0.0875
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.7965,
+        "partials": {}
       }
     },
     {
@@ -8695,45 +8363,19 @@
       "explain": {
         "id": "inference-serving",
         "score": 0.6283,
-        "partials": {
-          "functionality": {
-            "component_value": 0.3333333333333333,
-            "weight": 0.25,
-            "contribution": 0.08333333333333333
-          },
-          "consistency": {
-            "component_value": 0.8,
-            "weight": 0.2,
-            "contribution": 0.16000000000000003
-          },
-          "tests": {
-            "component_value": 0.44,
-            "weight": 0.25,
-            "contribution": 0.11
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "logging-tracking",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8344594594594594,
-        "tests": 0.3141891891891892,
+        "consistency": 0.835016835016835,
+        "tests": 0.31313131313131315,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.7954,
+      "score": 0.7953,
       "evidence_files": [
         ".codex/action_log.ndjson",
         ".codex/automation_out/change_log.md",
@@ -8834,6 +8476,7 @@
         "docs/tracking_offline.md",
         "docs/tracking_offline_bootstrap.md",
         "docs/troubleshooting/error_log.md",
+        "docs/validation/Batchset_Execution_Log.md",
         "docs/validation/Remediation_Execution_Log.md",
         "docs/zendesk_api_catalog_generated.md",
         "logs/error_captures.log",
@@ -9039,34 +8682,8 @@
       "meta": {},
       "explain": {
         "id": "logging-tracking",
-        "score": 0.7954,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8344594594594594,
-            "weight": 0.2,
-            "contribution": 0.1668918918918919
-          },
-          "tests": {
-            "component_value": 0.3141891891891892,
-            "weight": 0.25,
-            "contribution": 0.0785472972972973
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.7953,
+        "partials": {}
       }
     },
     {
@@ -9076,9 +8693,9 @@
         "consistency": 0.9583333333333334,
         "tests": 0.4583333333333333,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.7055,
+      "score": 0.8304,
       "evidence_files": [
         "agents/codex_client/codex_client/bridge.py",
         "scripts/deployment_orchestrator.py",
@@ -9120,46 +8737,20 @@
       },
       "explain": {
         "id": "mcp-authz-authn",
-        "score": 0.7055,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9583333333333334,
-            "weight": 0.2,
-            "contribution": 0.19166666666666668
-          },
-          "tests": {
-            "component_value": 0.4583333333333333,
-            "weight": 0.25,
-            "contribution": 0.11458333333333333
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.8304,
+        "partials": {}
       }
     },
     {
       "id": "mcp-configuration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8,
-        "tests": 0.4,
+        "consistency": 0.7962962962962963,
+        "tests": 0.4074074074074074,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6343,
+      "score": 0.6352,
       "evidence_files": [
         ".codex/codex.env.json",
         ".codex/copilot_bridge/.env.example",
@@ -9182,13 +8773,12 @@
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
         "src/codex_ml/config/settings.py",
@@ -9240,34 +8830,8 @@
       },
       "explain": {
         "id": "mcp-configuration",
-        "score": 0.6343,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8,
-            "weight": 0.2,
-            "contribution": 0.16000000000000003
-          },
-          "tests": {
-            "component_value": 0.4,
-            "weight": 0.25,
-            "contribution": 0.1
-          },
-          "safeguards": {
-            "component_value": 0.6666666666666666,
-            "weight": 0.15,
-            "contribution": 0.09999999999999999
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.6352,
+        "partials": {}
       }
     },
     {
@@ -9277,9 +8841,9 @@
         "consistency": 0.9230769230769231,
         "tests": 0.5384615384615384,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.7185,
+      "score": 0.9683,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "services/ita/app/main.py",
@@ -9309,34 +8873,8 @@
       },
       "explain": {
         "id": "mcp-error-handling",
-        "score": 0.7185,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9230769230769231,
-            "weight": 0.2,
-            "contribution": 0.18461538461538463
-          },
-          "tests": {
-            "component_value": 0.5384615384615384,
-            "weight": 0.25,
-            "contribution": 0.1346153846153846
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.9683,
+        "partials": {}
       }
     },
     {
@@ -9346,9 +8884,9 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.2243,
+      "score": 0.2241,
       "evidence_files": [],
       "found_patterns": [],
       "meta": {
@@ -9364,34 +8902,8 @@
       },
       "explain": {
         "id": "mcp-lifecycle-management",
-        "score": 0.2243,
-        "partials": {
-          "functionality": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "safeguards": {
-            "component_value": 0.0,
-            "weight": 0.15,
-            "contribution": 0.0
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.2241,
+        "partials": {}
       }
     },
     {
@@ -9399,13 +8911,14 @@
       "components": {
         "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.75,
+        "tests": 0.6,
         "safeguards": 0.16666666666666666,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6868,
+      "score": 0.6491,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
@@ -9422,46 +8935,20 @@
       },
       "explain": {
         "id": "mcp-multi-tenant",
-        "score": 0.6868,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 0.75,
-            "weight": 0.25,
-            "contribution": 0.1875
-          },
-          "safeguards": {
-            "component_value": 0.16666666666666666,
-            "weight": 0.15,
-            "contribution": 0.024999999999999998
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.6491,
+        "partials": {}
       }
     },
     {
       "id": "mcp-observability",
       "components": {
         "functionality": 2.0,
-        "consistency": 0.8722580645161291,
-        "tests": 0.29161290322580646,
+        "consistency": 0.8729139922978177,
+        "tests": 0.2901155327342747,
         "safeguards": 1.0,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6716,
+      "score": 0.9212,
       "evidence_files": [
         ".codex/README.md",
         ".codex/change_log-large.md",
@@ -9564,6 +9051,7 @@
         "MSP_IMPLEMENTATION_SUMMARY.md",
         "NEWCOMER_GUIDE.md",
         "NEXT_COPILOT_PROMPT.md",
+        "NEXT_ITERATION_PROMPT.md",
         "PR-2151_Comprehensive_Error_Log.md",
         "PROGRESS_REPORT_100_PERCENT.md",
         "PR_2264_READY.md",
@@ -9800,8 +9288,11 @@
         "docs/troubleshooting/open_questions.md",
         "docs/tutorials/end_to_end_cpu.md",
         "docs/validation/CI_Remediation_Verification.md",
+        "docs/validation/Convergence_Runbook.md",
         "docs/validation/Dependency_Segmentation_Validation.md",
         "docs/validation/Metrics_Validation.md",
+        "docs/validation/PartB_Completion_Report.md",
+        "docs/validation/PartB_Validation_Summary.md",
         "docs/validation/Repro_Validation.md",
         "docs/validation/Usage_Guide.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
@@ -10255,34 +9746,8 @@
       },
       "explain": {
         "id": "mcp-observability",
-        "score": 0.6716,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8722580645161291,
-            "weight": 0.2,
-            "contribution": 0.17445161290322583
-          },
-          "tests": {
-            "component_value": 0.29161290322580646,
-            "weight": 0.25,
-            "contribution": 0.07290322580645162
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.9212,
+        "partials": {}
       }
     },
     {
@@ -10292,9 +9757,9 @@
         "consistency": 0.8666666666666667,
         "tests": 0.4,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6726,
+      "score": 0.6724,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_error_handling.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
@@ -10326,34 +9791,8 @@
       },
       "explain": {
         "id": "mcp-protocol-surface",
-        "score": 0.6726,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8666666666666667,
-            "weight": 0.2,
-            "contribution": 0.17333333333333334
-          },
-          "tests": {
-            "component_value": 0.4,
-            "weight": 0.25,
-            "contribution": 0.1
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.6724,
+        "partials": {}
       }
     },
     {
@@ -10363,9 +9802,9 @@
         "consistency": 0.8333333333333334,
         "tests": 0.5,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6909,
+      "score": 0.9408,
       "evidence_files": [
         "scripts/ops/codex_mint_tokens_per_run.py",
         "scripts/space_traversal/detectors/mcp_rate_limiting.py",
@@ -10411,34 +9850,8 @@
       },
       "explain": {
         "id": "mcp-rate-limiting",
-        "score": 0.6909,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.2,
-            "contribution": 0.16666666666666669
-          },
-          "tests": {
-            "component_value": 0.5,
-            "weight": 0.25,
-            "contribution": 0.125
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.9408,
+        "partials": {}
       }
     },
     {
@@ -10448,9 +9861,9 @@
         "consistency": 0.8620689655172413,
         "tests": 0.13793103448275862,
         "safeguards": 0.8333333333333334,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6062,
+      "score": 0.606,
       "evidence_files": [
         "actions/openapi.yaml",
         "agents/codex_client/codex_client/models.py",
@@ -10525,46 +9938,20 @@
       },
       "explain": {
         "id": "mcp-schema-validation",
-        "score": 0.6062,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8620689655172413,
-            "weight": 0.2,
-            "contribution": 0.1724137931034483
-          },
-          "tests": {
-            "component_value": 0.13793103448275862,
-            "weight": 0.25,
-            "contribution": 0.034482758620689655
-          },
-          "safeguards": {
-            "component_value": 0.8333333333333334,
-            "weight": 0.15,
-            "contribution": 0.125
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.606,
+        "partials": {}
       }
     },
     {
       "id": "mcp-security-safeguards",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9274447949526814,
-        "tests": 0.12302839116719243,
+        "consistency": 0.928125,
+        "tests": 0.121875,
         "safeguards": 1.0,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6405,
+      "score": 0.6402,
       "evidence_files": [
         ".codex/change_log-large.md",
         ".codex/change_log.md",
@@ -10624,6 +10011,7 @@
         "MCP_SECURITY_GUIDE.md",
         "MCP_USER_PROMPTS_FINAL.md",
         "MERGE_READINESS_CONFIRMATION.md",
+        "NEXT_ITERATION_PROMPT.md",
         "PHASE1_FINAL_PUSH_SUMMARY.md",
         "PR_2207_AUDIT_REPORT.md",
         "PR_2389_CHECKLIST_VALIDATION.md",
@@ -10734,8 +10122,10 @@
         "docs/troubleshooting.md",
         "docs/usage.md",
         "docs/validation/Build_55787805698_Fix.md",
+        "docs/validation/Convergence_Runbook.md",
         "docs/validation/Dependency_Segmentation_Validation.md",
         "docs/validation/Owner_Approved_CI_Validation.md",
+        "docs/validation/PartB_Validation_Summary.md",
         "docs/validation/Patch_Scope_Confirmation_2025-10-18.md",
         "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/Runner_Status_Validation.md",
@@ -10899,47 +10289,22 @@
       },
       "explain": {
         "id": "mcp-security-safeguards",
-        "score": 0.6405,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9274447949526814,
-            "weight": 0.2,
-            "contribution": 0.1854889589905363
-          },
-          "tests": {
-            "component_value": 0.12302839116719243,
-            "weight": 0.25,
-            "contribution": 0.030757097791798107
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.6402,
+        "partials": {}
       }
     },
     {
       "id": "mcp-tooling-registry",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8571428571428572,
-        "tests": 0.5714285714285714,
+        "consistency": 0.875,
+        "tests": 0.5,
         "safeguards": 0.3333333333333333,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6386,
+      "score": 0.6241,
       "evidence_files": [
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -10961,46 +10326,20 @@
       },
       "explain": {
         "id": "mcp-tooling-registry",
-        "score": 0.6386,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8571428571428572,
-            "weight": 0.2,
-            "contribution": 0.17142857142857146
-          },
-          "tests": {
-            "component_value": 0.5714285714285714,
-            "weight": 0.25,
-            "contribution": 0.14285714285714285
-          },
-          "safeguards": {
-            "component_value": 0.3333333333333333,
-            "weight": 0.15,
-            "contribution": 0.049999999999999996
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.6241,
+        "partials": {}
       }
     },
     {
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9420654911838791,
-        "tests": 0.15365239294710328,
+        "consistency": 0.9440389294403893,
+        "tests": 0.14841849148418493,
         "safeguards": 1.0,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6511,
+      "score": 0.65,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -11028,6 +10367,20 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -11409,34 +10762,8 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.6511,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9420654911838791,
-            "weight": 0.2,
-            "contribution": 0.18841309823677582
-          },
-          "tests": {
-            "component_value": 0.15365239294710328,
-            "weight": 0.25,
-            "contribution": 0.03841309823677582
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.65,
+        "partials": {}
       }
     },
     {
@@ -11446,9 +10773,9 @@
         "consistency": 1.0,
         "tests": 0.5714285714285714,
         "safeguards": 0.16666666666666666,
-        "documentation": 0.16181229773462782
+        "documentation": 0.1607717041800643
       },
-      "score": 0.6421,
+      "score": 0.892,
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "src/mcp/server/__init__.py",
@@ -11471,46 +10798,20 @@
       },
       "explain": {
         "id": "mcp-versioning-compat",
-        "score": 0.6421,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 0.5714285714285714,
-            "weight": 0.25,
-            "contribution": 0.14285714285714285
-          },
-          "safeguards": {
-            "component_value": 0.16666666666666666,
-            "weight": 0.15,
-            "contribution": 0.024999999999999998
-          },
-          "documentation": {
-            "component_value": 0.16181229773462782,
-            "weight": 0.15,
-            "contribution": 0.024271844660194174
-          }
-        }
+        "score": 0.892,
+        "partials": {}
       }
     },
     {
       "id": "ml-serving",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.7837837837837838,
+        "consistency": 0.7927927927927928,
         "tests": 0.7027027027027027,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8824,
+      "score": 0.8842,
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
         "P1_FIX_API_KEY_OPTIONAL.md",
@@ -11539,6 +10840,8 @@
         "scripts/config/sample_inference_input.json",
         "scripts/inference_pipeline.py",
         "scripts/local/serve_local.sh",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/ml_serving.py",
         "services/api/__init__.py",
@@ -11552,7 +10855,6 @@
         "src/codex/archive/api.py",
         "src/codex/release/api.py",
         "src/codex_ml/cli/infer.py",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/serving/__init__.py",
         "src/codex_ml/serving/batching.py",
@@ -11560,7 +10862,6 @@
         "src/codex_ml/serving/inference_server.py",
         "src/codex_ml/serving/resilience.py",
         "src/codex_ml/telemetry/server.py",
-        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/training/legacy_api.py",
         "src/hhg_logistics/monitor/serve_report.py",
@@ -11641,34 +10942,8 @@
       },
       "explain": {
         "id": "ml-serving",
-        "score": 0.8824,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.7837837837837838,
-            "weight": 0.2,
-            "contribution": 0.15675675675675677
-          },
-          "tests": {
-            "component_value": 0.7027027027027027,
-            "weight": 0.25,
-            "contribution": 0.17567567567567569
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8842,
+        "partials": {}
       }
     },
     {
@@ -11678,9 +10953,9 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.06472491909385113
+        "documentation": 0.06430868167202572
       },
-      "score": 0.4597,
+      "score": 0.4596,
       "evidence_files": [],
       "found_patterns": [
         "LoraConfig",
@@ -12175,34 +11450,8 @@
       },
       "explain": {
         "id": "peft_hooks",
-        "score": 0.4597,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "safeguards": {
-            "component_value": 0.0,
-            "weight": 0.15,
-            "contribution": 0.0
-          },
-          "documentation": {
-            "component_value": 0.06472491909385113,
-            "weight": 0.15,
-            "contribution": 0.009708737864077669
-          }
-        }
+        "score": 0.4596,
+        "partials": {}
       }
     },
     {
@@ -12240,14 +11489,14 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint_integrity.py",
         "src/codex_ml/utils/checksum.py",
         "src/codex_ml/utils/checksums.py",
@@ -12316,41 +11565,15 @@
         "sha256"
       ],
       "meta": {
-        "seed_management": 29,
-        "repro_utils": 29,
+        "seed_management": 28,
+        "repro_utils": 30,
         "determinism_configs": 8,
         "integrity_validation": 35
       },
       "explain": {
         "id": "reproducibility",
         "score": 0.8626,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8901098901098901,
-            "weight": 0.2,
-            "contribution": 0.17802197802197803
-          },
-          "tests": {
-            "component_value": 0.5384615384615384,
-            "weight": 0.25,
-            "contribution": 0.1346153846153846
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
@@ -12360,7 +11583,7 @@
         "consistency": 1.0,
         "tests": 0.0,
         "safeguards": 0.0,
-        "documentation": 0.016181229773462782
+        "documentation": 0.01607717041800643
       },
       "score": 0.4524,
       "evidence_files": [],
@@ -13550,33 +12773,7 @@
       "explain": {
         "id": "safeguards_keywords",
         "score": 0.4524,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "safeguards": {
-            "component_value": 0.0,
-            "weight": 0.15,
-            "contribution": 0.0
-          },
-          "documentation": {
-            "component_value": 0.016181229773462782,
-            "weight": 0.15,
-            "contribution": 0.0024271844660194173
-          }
-        }
+        "partials": {}
       }
     },
     {
@@ -13650,45 +12847,19 @@
       "explain": {
         "id": "safety-security",
         "score": 0.7309,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8627450980392157,
-            "weight": 0.2,
-            "contribution": 0.17254901960784316
-          },
-          "tests": {
-            "component_value": 0.3333333333333333,
-            "weight": 0.25,
-            "contribution": 0.08333333333333333
-          },
-          "safeguards": {
-            "component_value": 0.5,
-            "weight": 0.15,
-            "contribution": 0.075
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
       "id": "status-reporting",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.9024390243902439,
-        "tests": 0.11788617886178862,
+        "consistency": 0.902834008097166,
+        "tests": 0.11336032388663968,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.76,
+      "score": 0.7589,
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
         ".codex/automation_out/coverage_report.json",
@@ -14017,6 +13188,8 @@
         "docs/templates/status_update.md",
         "docs/validation/CODEBASE_Status_Audit_2025-10-14.md",
         "docs/validation/Offline_Audit_Validation.md",
+        "docs/validation/PartB_Completion_Report.md",
+        "docs/validation/PartB_Validation_Summary.md",
         "docs/validation/Runner_Status_Validation.md",
         "docs/validation/Status_Report_Validation.md",
         "docs/validation/Status_Update_Audit_Prompt.md",
@@ -14043,7 +13216,9 @@
         "scripts/repo_audit.py",
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
+        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/schemas/validate_report_schema.json",
         "scripts/space_traversal/status_update_report.py",
@@ -14141,8 +13316,6 @@
         "tests/tools/test_report_merge.py",
         "tests/tracking/test_tracking_ndjson_summary.py",
         "tests/tracking/test_tracking_summary_rotation.py",
-        "tests/validation/__pycache__/test_audit_pipeline.cpython-312-pytest-9.0.1.pyc",
-        "tests/validation/__pycache__/test_legacy_import_report.cpython-312-pytest-9.0.1.pyc",
         "tests/validation/test_audit_pipeline.py",
         "tests/validation/test_legacy_import_report.py",
         "tests/visual/test_status_html_render.py",
@@ -14200,34 +13373,8 @@
       },
       "explain": {
         "id": "status-reporting",
-        "score": 0.76,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9024390243902439,
-            "weight": 0.2,
-            "contribution": 0.1804878048780488
-          },
-          "tests": {
-            "component_value": 0.11788617886178862,
-            "weight": 0.25,
-            "contribution": 0.029471544715447155
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.7589,
+        "partials": {}
       }
     },
     {
@@ -14237,12 +13384,10 @@
         "consistency": 0.9,
         "tests": 0.0,
         "safeguards": 0.6666666666666666,
-        "documentation": 0.2750809061488673
+        "documentation": 0.3215434083601286
       },
-      "score": 0.5713,
+      "score": 0.5782,
       "evidence_files": [
-        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
-        "__pycache__/sitecustomize.cpython-312.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/_package_main.py",
@@ -14250,7 +13395,9 @@
         "codex_ml/data/checksums.py",
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
-        "codex_utils/json_report.py"
+        "codex_utils/json_report.py",
+        "codex_utils/logging_setup.py",
+        "codex_utils/mlflow_offline.py"
       ],
       "found_patterns": [
         "lib-shadowing",
@@ -14260,7 +13407,6 @@
         "risk_level": "high",
         "description": "Detects architectural split-brain and namespace shadowing.",
         "split_dirs": [
-          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -14276,49 +13422,22 @@
       },
       "explain": {
         "id": "structural-integrity",
-        "score": 0.5713,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.9,
-            "weight": 0.2,
-            "contribution": 0.18000000000000002
-          },
-          "tests": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "safeguards": {
-            "component_value": 0.6666666666666666,
-            "weight": 0.15,
-            "contribution": 0.09999999999999999
-          },
-          "documentation": {
-            "component_value": 0.2750809061488673,
-            "weight": 0.15,
-            "contribution": 0.0412621359223301
-          }
-        }
+        "score": 0.5782,
+        "partials": {}
       }
     },
     {
       "id": "testing-infrastructure",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.8914664457332229,
-        "tests": 0.9884009942004971,
+        "consistency": 0.892116182572614,
+        "tests": 0.9892116182572614,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.9129,
+      "score": 0.9132,
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -14331,7 +13450,6 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.1.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/test_ast_similarity.py",
@@ -15533,50 +14651,24 @@
       "meta": {
         "test_count": 1183,
         "config_count": 27,
-        "fixture_count": 35
+        "fixture_count": 33
       },
       "explain": {
         "id": "testing-infrastructure",
-        "score": 0.9129,
-        "partials": {
-          "functionality": {
-            "component_value": 0.75,
-            "weight": 0.25,
-            "contribution": 0.1875
-          },
-          "consistency": {
-            "component_value": 0.8914664457332229,
-            "weight": 0.2,
-            "contribution": 0.17829328914664458
-          },
-          "tests": {
-            "component_value": 0.9884009942004971,
-            "weight": 0.25,
-            "contribution": 0.24710024855012427
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.9132,
+        "partials": {}
       }
     },
     {
       "id": "tokenization",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8319327731092436,
-        "tests": 0.5126050420168067,
+        "consistency": 0.8275862068965517,
+        "tests": 0.5258620689655172,
         "safeguards": 0.6666666666666666,
         "documentation": 1.0
       },
-      "score": 0.7945,
+      "score": 0.797,
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
         "artifacts/models/tiny_tokenizer/vocab.json",
@@ -15602,13 +14694,10 @@
         "examples/tokenize.py",
         "interfaces/tokenizer.py",
         "src/codex_ml/cli/tokenizer.py",
-        "src/codex_ml/interfaces/__pycache__/tokenizer.cpython-312.pyc",
         "src/codex_ml/interfaces/tokenizer.py",
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/registry/tokenizers.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -15705,46 +14794,20 @@
       "meta": {},
       "explain": {
         "id": "tokenization",
-        "score": 0.7945,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8319327731092436,
-            "weight": 0.2,
-            "contribution": 0.16638655462184873
-          },
-          "tests": {
-            "component_value": 0.5126050420168067,
-            "weight": 0.25,
-            "contribution": 0.12815126050420167
-          },
-          "safeguards": {
-            "component_value": 0.6666666666666666,
-            "weight": 0.15,
-            "contribution": 0.09999999999999999
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.797,
+        "partials": {}
       }
     },
     {
       "id": "training-engine",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.8613445378151261,
-        "tests": 0.453781512605042,
+        "consistency": 0.8630705394190872,
+        "tests": 0.44813278008298757,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.8357,
+      "score": 0.8346,
       "evidence_files": [
         "_codex_reports/2025-10-06/trainer_smoke.json",
         "_codex_reports/2025-10-06/trainer_smoke.log",
@@ -15819,6 +14882,9 @@
         "examples/plugins/toy_trainer/__init__.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
@@ -15999,34 +15065,8 @@
       },
       "explain": {
         "id": "training-engine",
-        "score": 0.8357,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.8613445378151261,
-            "weight": 0.2,
-            "contribution": 0.17226890756302524
-          },
-          "tests": {
-            "component_value": 0.453781512605042,
-            "weight": 0.25,
-            "contribution": 0.1134453781512605
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "score": 0.8346,
+        "partials": {}
       }
     },
     {
@@ -16056,33 +15096,7 @@
       "explain": {
         "id": "unified-training",
         "score": 0.845,
-        "partials": {
-          "functionality": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "consistency": {
-            "component_value": 0.6,
-            "weight": 0.2,
-            "contribution": 0.12
-          },
-          "tests": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "safeguards": {
-            "component_value": 0.5,
-            "weight": 0.15,
-            "contribution": 0.075
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "weight": 0.15,
-            "contribution": 0.15
-          }
-        }
+        "partials": {}
       }
     },
     {
@@ -16092,9 +15106,9 @@
         "consistency": 1.0,
         "tests": 1.0,
         "safeguards": 0.0,
-        "documentation": 0.2750809061488673
+        "documentation": 0.2733118971061093
       },
-      "score": 0.4913,
+      "score": 0.491,
       "evidence_files": [
         "codex_addons/vector_stores/__init__.py",
         "codex_addons/vector_stores/pgvector_stub.py",
@@ -16106,34 +15120,8 @@
       },
       "explain": {
         "id": "vector-stores",
-        "score": 0.4913,
-        "partials": {
-          "functionality": {
-            "component_value": 0.0,
-            "weight": 0.25,
-            "contribution": 0.0
-          },
-          "consistency": {
-            "component_value": 1.0,
-            "weight": 0.2,
-            "contribution": 0.2
-          },
-          "tests": {
-            "component_value": 1.0,
-            "weight": 0.25,
-            "contribution": 0.25
-          },
-          "safeguards": {
-            "component_value": 0.0,
-            "weight": 0.15,
-            "contribution": 0.0
-          },
-          "documentation": {
-            "component_value": 0.2750809061488673,
-            "weight": 0.15,
-            "contribution": 0.0412621359223301
-          }
-        }
+        "score": 0.491,
+        "partials": {}
       }
     }
   ],
