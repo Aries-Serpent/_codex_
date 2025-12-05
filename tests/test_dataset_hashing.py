@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from training.datasets import cache_texts, compute_dataset_hash
+from src.training.datasets import cache_texts, compute_dataset_hash
 
 
 def test_compute_dataset_hash_stable():

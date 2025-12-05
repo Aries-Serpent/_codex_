@@ -6,7 +6,7 @@ import types
 
 import pytest
 
-from models.chat_model import ChatModel, ChatModelConfig
+from src.models.chat_model import ChatModel, ChatModelConfig
 
 
 def _install_stub_modules(monkeypatch: pytest.MonkeyPatch) -> None:
