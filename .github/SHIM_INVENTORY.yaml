@@ -1,0 +1,86 @@
+# [Inventory]: Shim & Canonical Module Registry (v1.2.9)
+# > Generated: 2025-12-05 | Author: mbaetiong
+# Purpose: Govern legacy shims and canonical modules during convergence.
+# Fields:
+# - module: logical module name
+# - legacy_path: root path of legacy module (if any)
+# - canonical_path: src path of canonical module (or planned target)
+# - owner: primary maintainer
+# - status: one of [active, shim, migrated, scheduled]
+# - rationale: brief reason for shim
+# - deprecation_date: ISO date if scheduled to deprecate
+# - whitelist_duplicates: list of known, approved duplicates for strict checks
+# - notes: free-form
+
+inventory:
+  - module: training.engine_hf_trainer
+    legacy_path: training/engine_hf_trainer.py
+    canonical_path: src/training/engine_hf_trainer.py
+    owner: core-ml-platform
+    status: shim
+    rationale: "Bridge legacy training to canonical src.* imports during migration."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates:
+      - training/__init__.py
+      - src/training/__init__.py
+    notes: "Identity assertions allowed under SHIM_IDENTITY_STRICT env in CI."
+
+  - module: training.functional_training
+    legacy_path: training/functional_training.py
+    canonical_path: src/training/functional_training.py
+    owner: core-ml-platform
+    status: shim
+    rationale: "Refactor in-progress; ensure parity coverage before consolidation."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates: []
+    notes: ""
+
+  - module: training.data_utils
+    legacy_path: training/data_utils.py
+    canonical_path: src/training/data_utils.py
+    owner: core-ml-platform
+    status: shim
+    rationale: "Data utilities shim for canonical path convergence."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates: []
+    notes: ""
+
+  - module: training.checkpoint_manager
+    legacy_path: training/checkpoint_manager.py
+    canonical_path: src/training/checkpoint_manager.py
+    owner: core-ml-platform
+    status: shim
+    rationale: "Checkpoint management shim during migration."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates: []
+    notes: ""
+
+  - module: training.config
+    legacy_path: training/config.py
+    canonical_path: src/training/config.py
+    owner: core-ml-platform
+    status: shim
+    rationale: "Configuration shim for training modules."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates: []
+    notes: ""
+
+  - module: tokenization.train_tokenizer
+    legacy_path: tokenization/train_tokenizer.py
+    canonical_path: src/tokenization/train_tokenizer.py
+    owner: nlp-team
+    status: shim
+    rationale: "Tokenization training shim during convergence."
+    deprecation_date: "2026-03-31"
+    whitelist_duplicates: []
+    notes: "Tokenization 100% migrated to src.* imports."
+
+policy:
+  strict_conflicts:
+    enabled: true
+    whitelist_source: ".github/SHIM_INVENTORY.yaml"
+  decision_gates:
+    min_equivalence_overlap: 3
+    usage_trend_threshold_pct: 10
+    usage_trend_window_days: 90
+    low_risk_tests_threshold: 10
