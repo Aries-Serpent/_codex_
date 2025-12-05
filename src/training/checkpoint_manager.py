@@ -30,7 +30,6 @@ except Exception:
 
 if "CheckpointManager" not in globals():
     import io
-    import json
     import os
     import random
     from pathlib import Path
@@ -207,7 +206,7 @@ class CheckpointManager:
                                 }
                             )
                         except (TypeError, ValueError):
-                            pass
+                            pass  # Malformed checkpoint data; skip
             except Exception:
                 self._best_records = []
         self._best_records = self._best_records[: self.best_k]
@@ -347,7 +346,7 @@ class CheckpointManager:
             try:
                 p.unlink()
             except FileNotFoundError:
-                pass
+                pass  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[Dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
@@ -397,7 +396,7 @@ class CheckpointManager:
                 if link.exists() or link.is_symlink():
                     link.unlink()
             except FileNotFoundError:
-                pass
+                pass  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -409,12 +408,12 @@ class CheckpointManager:
                     if child.is_symlink() or child.is_file():
                         child.unlink()
                 except FileNotFoundError:
-                    pass
+                    pass  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError:
-            pass
+            pass  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

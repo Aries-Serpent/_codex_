@@ -4,7 +4,7 @@ import random
 
 import pytest
 
-from training.seed import ensure_global_seed
+from src.training.seed import ensure_global_seed
 
 
 def test_ensure_global_seed_sets_random_state() -> None:

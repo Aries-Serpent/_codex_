@@ -274,10 +274,10 @@ from omegaconf import OmegaConf
 
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
-    from training.checkpoint_manager import CheckpointManager
+    from src.training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[assignment]
-    log_error("checkpoint_import", str(exc), "training.checkpoint_manager")
+    log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
@@ -562,7 +562,6 @@ def _compute_metrics(eval_pred):
         Dictionary containing token_accuracy and perplexity metrics
     """
     preds, labels = eval_pred
-    import numpy as np
 
     mask = labels != -100
     acc = (preds.argmax(-1)[mask] == labels[mask]).mean() if mask.any() else 0.0

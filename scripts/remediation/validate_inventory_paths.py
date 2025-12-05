@@ -7,7 +7,6 @@ Usage:
   python scripts/remediation/validate_inventory_paths.py
 """
 import yaml
-import os
 import sys
 from pathlib import Path
 

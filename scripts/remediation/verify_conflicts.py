@@ -99,7 +99,6 @@ def check_split_brain_strict(inventory):
         canonical_exists = (ROOT / canonical).exists() if canonical else False
         
         if legacy_exists and canonical_exists:
-            dup_tuple = (module, legacy, canonical)
             findings["duplicates"].append({
                 "module": module,
                 "legacy_path": legacy,

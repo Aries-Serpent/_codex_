@@ -105,7 +105,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
 
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
+    from src.training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
 except Exception:  # pragma: no cover - hf trainer not available
 
     def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
@@ -230,7 +230,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         {"run": training_cfg.get("run_name", "")},
                     )
                 except Exception:
-                    pass
+                    pass  # Metadata write failure; continue training
 
     if args.engine == "hf":
         # Prepare keyword args and propagate hydra_cfg for downstream compatibility
@@ -461,7 +461,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             )
             model = get_peft_model(model, lcfg)
         except Exception:
-            pass
+            pass  # PEFT configuration failed; use base model
 
     metrics_path: Optional[Path] = None
     config_snapshot: Optional[Path] = None
@@ -581,7 +581,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
             if rng := extra.get("rng_state"):
                 load_rng_state(rng)
         except Exception:
-            pass
+            pass  # RNG state restore failed; use default initialization
 
     train_loader = DataLoader(
         train_ds,

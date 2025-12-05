@@ -348,7 +348,7 @@ def cache_dataset(
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
                     except Exception:
-                        pass
+                        pass  # File lock release failed; continue cleanup
         except Exception:
             # Skip samples that fail to serialize
             continue

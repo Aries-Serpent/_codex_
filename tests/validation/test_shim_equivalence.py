@@ -6,7 +6,6 @@ ensuring import path changes don't break functionality.
 """
 import importlib
 import os
-import sys
 import pytest
 
 
@@ -71,14 +70,14 @@ def test_shim_module_identity():
     # Test that shims properly forward identity
     # This would catch cases where shims create copies instead of references
     try:
-        import training.engine_hf_trainer as legacy
-        import src.training.engine_hf_trainer as canonical
+        import training.engine_hf_trainer as legacy  # Legacy shim
+        import src.training.engine_hf_trainer as canonical  # Canonical source
         
         # For true shims, these should be the same module object
         # (This is aspirational - current shims may not achieve this)
         if hasattr(legacy, '__file__') and hasattr(canonical, '__file__'):
             # At minimum, they should resolve to compatible implementations
             assert public_api(legacy) == public_api(canonical), \
-                "Shim and legacy APIs diverged"
+                "Shim and canonical APIs diverged"
     except ImportError:
         pytest.skip("Modules not available for identity check")
