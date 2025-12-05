@@ -10,13 +10,16 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
-from hydra import compose, initialize_config_dir
+try:
+    from hydra import compose, initialize_config_dir
+except ImportError:
+    from config_legacy import compose, initialize_config_dir
 from omegaconf import OmegaConf
 
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
 from metrics import accuracy as metrics_accuracy
-from training.trainer import CheckpointConfig, Trainer, TrainerConfig
+from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"
 PROJECT_ROOT = CLI_PACKAGE_PATH.parent

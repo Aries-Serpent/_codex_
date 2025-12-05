@@ -54,7 +54,7 @@ except Exception:  # pragma: no cover - tolerate missing numpy
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
-    from training.checkpoint_manager import (
+    from src.training.checkpoint_manager import (
         CheckpointManager,  # type: ignore # noqa: F401
     )
 except Exception:  # pragma: no cover - fallback to canonical

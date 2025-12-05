@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""CLI wrapper around :func:`training.engine_hf_trainer.run_hf_trainer`."""
+"""CLI wrapper around :func:`src.training.engine_hf_trainer.run_hf_trainer`."""
 
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Mapping
 
-from training.config import TrainingConfig
-from training.engine_hf_trainer import run_hf_trainer
+from src.training.config import TrainingConfig
+from src.training.engine_hf_trainer import run_hf_trainer
 
 
 def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

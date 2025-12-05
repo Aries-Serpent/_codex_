@@ -17,8 +17,12 @@ def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
 
 # Hydra import with robust fallbacks to support offline environments
 try:  # pragma: no cover - optional dependency
-    from hydra import compose, initialize_config_dir  # type: ignore
-    from hydra.errors import MissingConfigException  # type: ignore
+    try:
+        from hydra import compose, initialize_config_dir  # type: ignore
+        from hydra.errors import MissingConfigException  # type: ignore
+    except ImportError:
+        from config_legacy import compose, initialize_config_dir  # type: ignore
+        from config_legacy.errors import MissingConfigException  # type: ignore
 
     _HYDRA_AVAILABLE = True
 except Exception:  # pragma: no cover - import guard

@@ -124,32 +124,6 @@ def save_checkpoint(
     return str(p)
 
 
-try:  # re-export functional training helpers
-    from training.functional_training import (  # type: ignore
-        TrainCfg,
-        run_custom_trainer,
-    )
-except Exception:  # pragma: no cover - training optional
-
-    class TrainCfg:  # type: ignore[misc]
-        """Placeholder config when the functional trainer extras are missing."""
-
-        pass
-
-    def run_custom_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]
-        raise RuntimeError(
-            "Functional trainer is unavailable. Install the `codex[cli]` extra to enable"
-        )
-
-
-try:  # optional HF trainer
-    from training.engine_hf_trainer import run_hf_trainer  # type: ignore
-except Exception:  # pragma: no cover - optional dependency
-
-    def run_hf_trainer(*args, **kwargs):  # type: ignore[no-untyped-def]
-        raise RuntimeError("HuggingFace trainer is unavailable")
-
-
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter  # type: ignore
 except Exception:  # pragma: no cover - optional dep

@@ -3,7 +3,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import hydra
+try:
+    import hydra
+except ImportError:
+    import config_legacy as hydra
 from common.randomness import set_seed
 from omegaconf import DictConfig, OmegaConf
 

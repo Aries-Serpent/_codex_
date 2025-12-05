@@ -9,7 +9,7 @@ pytest.importorskip("accelerate")
 pytest.importorskip("omegaconf")
 pytest.importorskip("yaml")
 
-from training.engine_hf_trainer import load_training_arguments
+from src.training.engine_hf_trainer import load_training_arguments
 from transformers.trainer_utils import IntervalStrategy
 
 

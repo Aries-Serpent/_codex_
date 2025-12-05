@@ -1,31 +1,49 @@
 {
-  "timestamp": 1763513402.8271208,
-  "version": "1.1.0",
-  "repo_root_sha": "e795bc66cd6808ca6fb04addc7b140a05c51939860851d4d4509491dfc3df1b2",
+  "timestamp": 1764919545.113153,
+  "version": "1.2.0",
+  "repo_root_sha": "66a2f826cf40032790152aef95cf503dea356b192a17af026a745a7058533807",
   "artifacts": [
     {
       "name": "facets.json",
-      "sha": "c3e2bc4e57263c22c3f7cfc8c93d9df52f83f34cac1d0ba14889ed5f66b38edb"
+      "sha": "a91cb978736771d75dc00327213b1c27b192a6e5d82afd8c7dd9f803daa629e0",
+      "size": 66319,
+      "format": "json",
+      "generated_at": 1764919542.289496
     },
     {
       "name": "capabilities_raw.json",
-      "sha": "9d5bbb9eb43952e3be9d50bb39d3ff11c5b8d6b3e803c9f3c647c19ca2188d16"
+      "sha": "22f6ffdce1b2fb4683e923c93fc32e540bda00f62c2b33d753c39fb61cf8bf0d",
+      "size": 655816,
+      "format": "json",
+      "generated_at": 1764919543.2514987
     },
     {
       "name": "capabilities_scored.json",
-      "sha": "9636dd17b8e6f80fafcf9663d59783321b1713ce1349302e0afcc315955ce3b7"
+      "sha": "19903fe5af29fbafc7b8773c090040b2edcc1bdee35dc06c61c81fd52544fa3c",
+      "size": 691335,
+      "format": "json",
+      "generated_at": 1764919544.659503
     },
     {
       "name": "context_index.json",
-      "sha": "7dada0f75e1ea989eb6f5a0ab047ae06a59015cd931e76f173ea4b71f858416a"
+      "sha": "485a3cd265035aa3ea2771c511904f3664af8bf4d051ee7fdbab7bd5f0c5a724",
+      "size": 806263,
+      "format": "json",
+      "generated_at": 1764919542.270496
     },
     {
       "name": "capabilities_scored_run1.json",
-      "sha": "283c4273b6f4955a339e624aaba16183bd685192695d9784e364a434fd193236"
+      "sha": "283c4273b6f4955a339e624aaba16183bd685192695d9784e364a434fd193236",
+      "size": 451992,
+      "format": "json",
+      "generated_at": 1764918593.8649015
     },
     {
       "name": "gaps.json",
-      "sha": "2fdbae8d8436da5c9711c58ae32428a259f5ca2ce59e897e5c9bd83ffa86015a"
+      "sha": "ede159dfbcdf963ff66e1d33f202ccd824f5020b907c2ba41c276b7d98df58fb",
+      "size": 415810,
+      "format": "json",
+      "generated_at": 1764919544.664503
     }
   ],
   "weights": {
@@ -35,7 +53,6 @@
     "safeguards": 0.15,
     "documentation": 0.15
   },
-  "warnings": [],
   "normalized_weights": {
     "functionality": 0.25,
     "consistency": 0.2,
@@ -43,5 +60,7 @@
     "safeguards": 0.15,
     "documentation": 0.15
   },
-  "template_hash": "aab8f6f3f24738ab6e544a887cbe459a6dea9a4e569b92954048fa8404361035"
+  "warnings": [],
+  "metrics_schema_version": "2.0.0",
+  "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43"
 }

@@ -7,7 +7,7 @@ pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
 import torch
-from training.engine_hf_trainer import _seed_everything
+from src.training.engine_hf_trainer import _seed_everything
 
 
 def test_seed_repeats():

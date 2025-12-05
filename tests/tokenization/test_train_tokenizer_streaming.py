@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from tokenization import train_tokenizer
+from src.tokenization import train_tokenizer
 
 
 def test_iter_text_uses_chunk_size(monkeypatch):

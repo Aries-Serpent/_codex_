@@ -5,7 +5,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
-import hydra
+try:
+    import hydra
+except ImportError:
+    import config_legacy as hydra
 from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)

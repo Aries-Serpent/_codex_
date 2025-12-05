@@ -2,7 +2,7 @@ import pytest
 
 from codex.training import TrainCfg, run_custom_trainer
 from codex_ml.models import MiniLM, MiniLMConfig
-from training.data_utils import TextDataset, split_texts
+from src.training.data_utils import TextDataset, split_texts
 
 
 class _Tok:

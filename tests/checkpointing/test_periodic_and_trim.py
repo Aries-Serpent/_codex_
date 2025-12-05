@@ -1,4 +1,4 @@
-from training.checkpoint_manager import CheckpointManager
+from src.training.checkpoint_manager import CheckpointManager
 
 
 def test_periodic_and_trim(tmp_path):

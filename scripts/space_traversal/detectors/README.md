@@ -33,3 +33,47 @@ def detect(file_index: dict) -> dict:
     # analyze file_index["files"] and return capability dict
     pass
 ```
+
+---
+
+## Detector: structure_integrity.py
+
+**Purpose**: Detects "Split Brain" architecture and library shadowing risks.
+
+**ID**: `structural-integrity`
+
+**Detection Logic**:
+
+1. **Split-Brain Detection**:
+   - Identifies directories that exist in both root and `src/`
+   - Examples: `training/` and `src/training/`, `tokenization/` and `src/tokenization/`
+   - Evidence: Balanced sample of files from both locations (5 from root + 5 from src)
+
+2. **Library Shadowing Detection**:
+   - Identifies root directories that may shadow PyPI packages
+   - Known shadow risks: `hydra`, `torch`, `numpy`, `requests`, `wandb`, `mlflow`, `pandas`
+   - Evidence: Sample files from shadowing directory
+
+**Configuration**:
+- `EVIDENCE_LIMIT`: 10 files (configurable)
+- Balanced sampling ensures representation from both root and src
+
+**Meta Fields**:
+- `risk_level`: "high" if issues found, "low" otherwise
+- `description`: Detector purpose
+- `split_dirs`: List of split-brain directories
+- `shadow_dirs`: List of shadowing directories
+- `evidence_limit`: Evidence cap value
+
+**Integration**:
+```bash
+# Test detector
+python scripts/space_traversal/audit_runner.py stage S3
+
+# View results
+cat audit_artifacts/capabilities_raw.json | jq '.capabilities[] | select(.id=="structural-integrity")'
+```
+
+**Related**:
+- `scripts/remediation/verify_conflicts.py`: Runtime verification
+- `tests/validation/test_shadowing.py`: Automated test for shadowing

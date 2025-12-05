@@ -10,7 +10,7 @@ pytest.importorskip("datasets")
 pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
-import training.engine_hf_trainer as hf
+import src.training.engine_hf_trainer as hf
 
 
 def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):

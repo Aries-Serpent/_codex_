@@ -1,0 +1,84 @@
+# [Inventory]: Shim & Canonical Module Registry (v1.2.9)
+# > Generated: 2025-12-05 | Author: mbaetiong
+# Purpose: Govern legacy shims and canonical modules during convergence.
+# Fields:
+# - module: logical module name
+# - legacy_path: root path of legacy module (if any)
+# - canonical_path: src path of canonical module (or planned target)
+# - owner: primary maintainer
+# - status: one of [active, shim, migrated, scheduled]
+# - rationale: brief reason for shim
+# - deprecation_date: ISO date if scheduled to deprecate
+# - whitelist_duplicates: list of known, approved duplicates for strict checks
+# - notes: free-form
+
+inventory:
+  - module: training.engine_hf_trainer
+    legacy_path: ""
+    canonical_path: src/training/engine_hf_trainer.py
+    owner: core-ml-platform
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+
+  - module: training.functional_training
+    legacy_path: ""
+    canonical_path: src/training/functional_training.py
+    owner: core-ml-platform
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+
+  - module: training.data_utils
+    legacy_path: ""
+    canonical_path: src/training/data_utils.py
+    owner: core-ml-platform
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+
+  - module: training.checkpoint_manager
+    legacy_path: ""
+    canonical_path: src/training/checkpoint_manager.py
+    owner: core-ml-platform
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+
+  - module: training.config
+    legacy_path: ""
+    canonical_path: src/training/config.py
+    owner: core-ml-platform
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+
+  - module: tokenization.train_tokenizer
+    legacy_path: ""
+    canonical_path: src/tokenization/train_tokenizer.py
+    owner: nlp-team
+    status: migrated
+    rationale: "Tokenization fully migrated to src.* - no legacy root file exists."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Tokenization 100% migrated to src.* imports. No shim needed - module only exists in canonical location."
+
+policy:
+  strict_conflicts:
+    enabled: true
+    whitelist_source: ".github/SHIM_INVENTORY.yaml"
+  decision_gates:
+    min_equivalence_overlap: 3
+    usage_trend_threshold_pct: 10
+    usage_trend_window_days: 90
+    low_risk_tests_threshold: 10

@@ -4,7 +4,7 @@ import importlib
 
 import pytest
 
-from models.peft_utils import summarize_peft
+from src.models.peft_utils import summarize_peft
 
 
 def test_summarize_peft_graceful_without_peft() -> None:

@@ -1,7 +1,7 @@
 import pytest
 
-from training.checkpointing import save_checkpoint
-from training.trainer import CheckpointConfig, Trainer, TrainerConfig
+from src.training.checkpointing import save_checkpoint
+from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 try:  # pragma: no cover - optional dependency
     import torch  # type: ignore

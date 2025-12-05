@@ -10,7 +10,7 @@ pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
 import torch
-from training.engine_hf_trainer import run_hf_trainer
+from src.training.engine_hf_trainer import run_hf_trainer
 
 
 def test_hf_trainer_hydra_lora_cfg(monkeypatch, tmp_path):

@@ -27,6 +27,20 @@ space-diff:
 space-clean:
 	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md
 
+.PHONY: space-remediation
+space-remediation:
+	$(SPACE_PY) scripts/remediation/cleanup_root.py --dry-run
+	@echo "Run with --yes to execute cleanup"
+
+.PHONY: space-verify
+space-verify:
+	$(SPACE_PY) scripts/remediation/verify_conflicts.py --expect-site-packages
+	$(SPACE_PY) scripts/remediation/analyze_legacy_usage.py
+
+.PHONY: space-test
+space-test:
+	pytest tests/validation/ -v
+
 # Inference pipeline helpers (deterministic, offline-first)
 .PHONY: inference-run
 inference-run:

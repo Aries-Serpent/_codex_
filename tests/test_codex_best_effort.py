@@ -29,7 +29,7 @@ def test_base_config_returns_copy() -> None:
 
 @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
 def test_evaluate_batches_runs() -> None:
-    from training.functional_training import evaluate_batches
+    from src.training.functional_training import evaluate_batches
 
     class _ToyDataset(torch.utils.data.Dataset):
         def __len__(self) -> int:

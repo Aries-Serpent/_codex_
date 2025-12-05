@@ -4,9 +4,15 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from hydra.utils import to_absolute_path
+try:
+    from hydra.utils import to_absolute_path
+except ImportError:
+    from config_legacy.utils import to_absolute_path
 
-import hydra
+try:
+    import hydra
+except ImportError:
+    import config_legacy as hydra
 from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import (
     ensure_local_tracking,

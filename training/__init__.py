@@ -1,10 +1,33 @@
-"""Compatibility shims for legacy ``training`` imports."""
+"""
+Legacy compatibility layer for training module.
 
-import sys as _sys
+DEPRECATED: Use src.training.* instead.
+This module provides backward compatibility by re-exporting from canonical src.training.
+"""
 
-from src.training import trainer as _extended_trainer_module
-from src.training.trainer import CheckpointConfig, ExtendedTrainer, TrainerConfig
+import warnings as _warnings
 
-_sys.modules.setdefault("training.trainer", _extended_trainer_module)
+_warnings.warn(
+    "Importing from 'training' is deprecated. Use 'src.training' instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-__all__ = ["CheckpointConfig", "ExtendedTrainer", "TrainerConfig"]
+# Re-export all public members from canonical src.training modules
+import src.training.checkpoint_manager as _m4
+import src.training.config as _m5
+import src.training.data_utils as _m3
+import src.training.engine_hf_trainer as _m1
+import src.training.functional_training as _m2
+import src.training.trainer as _m6
+from src.training.checkpoint_manager import *  # noqa: F401, F403
+from src.training.config import *  # noqa: F401, F403
+from src.training.data_utils import *  # noqa: F401, F403
+from src.training.engine_hf_trainer import *  # noqa: F401, F403
+from src.training.functional_training import *  # noqa: F401, F403
+from src.training.trainer import *  # noqa: F401, F403
+
+# Build __all__ from all imported modules
+__all__ = []
+for _mod in [_m1, _m2, _m3, _m4, _m5, _m6]:
+    __all__.extend([_name for _name in dir(_mod) if not _name.startswith("_")])

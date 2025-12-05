@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from training.checkpoint_manager import CheckpointManager
+from src.training.checkpoint_manager import CheckpointManager
 
 
 def test_atomicity_and_resume(tmp_path, monkeypatch):

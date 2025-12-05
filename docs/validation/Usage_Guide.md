@@ -87,3 +87,113 @@ to confirm which config group contributes a value.
 - [Logging guide](guides/LOGGING.md)
 
 *Last reviewed:* 2025-10-19
+
+---
+
+## Audit Traversal Workflow (v1.1.0)
+
+### Running the Audit Pipeline
+
+The audit pipeline analyzes repository structure, detects capabilities, scores maturity, and generates reports.
+
+#### Quick Commands
+```bash
+# Full pipeline (all stages S1-S7)
+python scripts/space_traversal/audit_runner.py run
+
+# Fast path (skip facet grouping and gap analysis)
+make space-audit-fast
+
+# Single stage execution
+python scripts/space_traversal/audit_runner.py stage S4
+```
+
+#### CI Integration
+The audit runs automatically in CI:
+- **Pull Requests**: Fast audit + conflict verification
+- **Main branch pushes**: Full audit + determinism check
+
+```bash
+# Locally run what CI runs
+make space-audit-fast
+python scripts/remediation/verify_conflicts.py --expect-site-packages
+python scripts/remediation/analyze_legacy_usage.py
+```
+
+### Remediation Commands
+
+#### Clean up repository root
+```bash
+# Preview what will be moved
+python scripts/remediation/cleanup_root.py --dry-run
+
+# Execute cleanup (moves *_REPORT.md and *_SUMMARY.md to reports/archive/)
+python scripts/remediation/cleanup_root.py --yes
+```
+
+#### Verify import conflicts
+```bash
+# Check for hydra shadowing and split-brain imports
+python scripts/remediation/verify_conflicts.py --expect-site-packages
+
+# Generate legacy import usage report (outputs to reports/legacy_import_usage.csv)
+python scripts/remediation/analyze_legacy_usage.py
+```
+
+### Verification Commands
+
+```bash
+# Verify determinism across multiple runs
+python scripts/space_traversal/verify_determinism.py --runs 2
+
+# Validate template integrity
+python scripts/space_traversal/validate_template_hash.py
+
+# Run validation test suite
+pytest tests/validation/ -v
+```
+
+### Advanced Features
+
+#### Compare audit runs
+```bash
+# Compare score changes
+python scripts/space_traversal/audit_runner.py diff \
+  --old audit_artifacts/capabilities_scored_old.json \
+  --new audit_artifacts/capabilities_scored_new.json
+```
+
+#### Explain capability scores
+```bash
+# Get detailed breakdown of how a score was calculated
+python scripts/space_traversal/audit_runner.py explain checkpointing
+```
+
+### Expected Outputs
+
+- `audit_artifacts/context_index.json` - File inventory
+- `audit_artifacts/capabilities_raw.json` - Raw capability detection
+- `audit_artifacts/capabilities_scored.json` - Scored capabilities
+- `audit_artifacts/gaps.json` - Low-maturity capabilities
+- `reports/capability_matrix_<timestamp>.md` - Human-readable report
+- `reports/legacy_import_usage.csv` - Legacy import analysis
+- `audit_run_manifest.json` - Integrity manifest
+
+### Troubleshooting
+
+**Hydra Shadowing Detected**:
+```bash
+# If hydra/ directory shadows the PyPI package, rename it:
+git mv hydra config_legacy
+# Or move under src/:
+git mv hydra src/codex_conf
+```
+
+**Score Regressions**:
+```bash
+# Use diff to identify which capabilities declined
+make space-diff old=reports/old.md new=reports/new.md
+```
+
+For detailed remediation procedures, see `docs/validation/Convergence_Runbook.md`.
+
