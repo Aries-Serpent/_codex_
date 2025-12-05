@@ -14,64 +14,54 @@
 
 inventory:
   - module: training.engine_hf_trainer
-    legacy_path: training/engine_hf_trainer.py
+    legacy_path: ""
     canonical_path: src/training/engine_hf_trainer.py
     owner: core-ml-platform
-    status: shim
-    rationale: "Bridge legacy training to canonical src.* imports during migration."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - training/engine_hf_trainer.py
-      - src/training/engine_hf_trainer.py
-    notes: "Identity assertions allowed under SHIM_IDENTITY_STRICT env in CI. Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
 
   - module: training.functional_training
-    legacy_path: training/functional_training.py
+    legacy_path: ""
     canonical_path: src/training/functional_training.py
     owner: core-ml-platform
-    status: shim
-    rationale: "Refactor in-progress; ensure parity coverage before consolidation."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - training/functional_training.py
-      - src/training/functional_training.py
-    notes: "Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
 
   - module: training.data_utils
-    legacy_path: training/data_utils.py
+    legacy_path: ""
     canonical_path: src/training/data_utils.py
     owner: core-ml-platform
-    status: shim
-    rationale: "Data utilities shim for canonical path convergence."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - training/data_utils.py
-      - src/training/data_utils.py
-    notes: "Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
 
   - module: training.checkpoint_manager
-    legacy_path: training/checkpoint_manager.py
+    legacy_path: ""
     canonical_path: src/training/checkpoint_manager.py
     owner: core-ml-platform
-    status: shim
-    rationale: "Checkpoint management shim during migration."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - training/checkpoint_manager.py
-      - src/training/checkpoint_manager.py
-    notes: "Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
 
   - module: training.config
-    legacy_path: training/config.py
+    legacy_path: ""
     canonical_path: src/training/config.py
     owner: core-ml-platform
-    status: shim
-    rationale: "Configuration shim for training modules."
-    deprecation_date: "2026-03-31"
-    whitelist_duplicates:
-      - training/config.py
-      - src/training/config.py
-    notes: "Canonical shim forwards to legacy implementation."
+    status: migrated
+    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
 
   - module: tokenization.train_tokenizer
     legacy_path: ""
