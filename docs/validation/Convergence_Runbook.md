@@ -190,6 +190,59 @@ After completing this runbook:
 4. Update documentation to reflect new import patterns
 5. Monitor CI for any regressions
 
+## Reviewer Sign-off Checklist
+
+Before approving audit remediation PR, verify:
+
+### Structural Integrity
+- [ ] No `hydra/` directory exists at repository root
+- [ ] `config_legacy/` contains deprecation warnings and README
+- [ ] `verify_conflicts.py --expect-site-packages` passes (or with `--allow-shadow` if hydra-core not installed)
+- [ ] Shadowing tests pass: `pytest tests/validation/test_shadowing.py`
+
+### Baseline & CI
+- [ ] Baseline file exists: `audit_artifacts/baselines/capabilities_scored.json`
+- [ ] Baseline contains valid JSON with capabilities array
+- [ ] CI workflow includes baseline comparison logic
+- [ ] PR includes audit quality metrics in description
+
+### Test Coverage
+- [ ] Validation tests pass: `pytest tests/validation/ -v`
+- [ ] Determinism verified: `python scripts/space_traversal/verify_determinism.py --runs 2`
+- [ ] Template hash valid: `python scripts/space_traversal/validate_template_hash.py`
+- [ ] Legacy import report generated: `reports/legacy_import_usage.csv`
+
+### Documentation
+- [ ] Usage_Guide.md includes CI regression baseline workflow section
+- [ ] Convergence_Runbook.md updated with current commands
+- [ ] All scripts have usage examples in help text
+- [ ] README in config_legacy explains migration path
+
+### Code Quality
+- [ ] No security vulnerabilities introduced (CodeQL clean)
+- [ ] Code review comments addressed
+- [ ] All linters pass (ruff, black, mypy)
+- [ ] No commented-out code blocks remaining
+
+### Functional Validation
+- [ ] Full audit runs successfully: `python scripts/space_traversal/audit_runner.py run`
+- [ ] Report generated: `reports/capability_matrix_*.md` exists
+- [ ] Manifest includes all required fields (repo_root_sha, template_hash)
+- [ ] Diff command works: `audit_runner.py diff --old <baseline> --new <current>`
+
+### Rollback Preparedness
+- [ ] Rollback plan documented
+- [ ] Backup of pre-remediation state available (if needed)
+- [ ] Revert commits identified in case of issues
+
+---
+
+**Sign-off:**
+- Reviewer Name: _______________
+- Date: _______________
+- Approval: [ ] Yes [ ] No [ ] Conditional
+- Notes: _______________________________________________
+
 ## Support
 For issues or questions:
 - Check the logs in `audit_artifacts/` for detailed error messages
