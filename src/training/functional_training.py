@@ -31,9 +31,6 @@ from torch.utils.data import DataLoader
 # ruff: noqa: I001
 
 
-
-
-
 LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
@@ -489,7 +486,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
         try:
             metrics_path.unlink()
         except Exception:
-            pass
+            pass  # File deletion failed; continue with training
 
     def _safe_len(data: Any) -> int | None:
         try:
@@ -652,7 +649,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     }
                     mlf.log_params(_as_flat_params(params))
                 except Exception:
-                    pass
+                    pass  # MLflow parameter logging failed; continue training
 
             for epoch in range(start_epoch, cfg.epochs):
                 model.train()
@@ -708,7 +705,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             try:
                                 mlf.log_metrics({"train/loss": loss_val}, step=global_step)
                             except Exception:
-                                pass
+                                pass  # MLflow metric logging failed; continue training
                             _append_metric(
                                 {
                                     "phase": "train",
@@ -751,7 +748,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             try:
                                 _codex_log_all(global_step, numeric_metrics, loggers)
                             except Exception:
-                                pass
+                                pass  # Codex logging failed; continue training
                         if cfg.mlflow_enable:
                             try:
                                 mlf.log_metrics(
@@ -759,7 +756,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                     step=global_step,
                                 )
                             except Exception:
-                                pass
+                                pass  # MLflow eval metric logging failed; continue training
                             _append_metric(
                                 {
                                     "phase": "eval",
@@ -800,7 +797,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                     {"train/privacy_epsilon": float(eps)}, step=global_step
                                 )
                             except Exception:
-                                pass
+                                pass  # MLflow privacy metric logging failed; continue training
                             _append_metric(
                                 {
                                     "phase": "privacy",
@@ -810,13 +807,13 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                                 }
                             )
                     except Exception:
-                        pass
+                        pass  # Privacy accounting failed; continue training
         finally:
             if system_logger is not None:
                 try:
                     system_logger.stop()
                 except Exception:
-                    pass
+                    pass  # System logger cleanup failed; continue
 
         result = {"global_step": global_step, "history": history, "best_val": best_val}
         if cfg.mlflow_enable:
@@ -846,7 +843,25 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                     try:
                         mlf.log_artifact(str(artifact))
                     except Exception:
-                        continue
+                        continue  # Artifact logging failed; try next artifact
             except Exception:
-                pass
+                pass  # MLflow final metrics logging failed; continue
     return result
+
+
+# Public API exports:
+# Keep the surface minimal and explicit to avoid namespace pollution.
+# Core training API is always exported. HF trainer helpers (run_hf_trainer,
+# get_hf_revision) are included for backward compatibility but should migrate
+# to src.training.engine_hf_trainer in the future.
+
+__all__ = [
+    "TrainCfg",
+    "evaluate_batches",
+    "evaluate_dataloader",
+    "run_custom_trainer",
+    "main",
+    "get_hf_revision",
+    "run_hf_trainer",
+    "get_model",
+]
