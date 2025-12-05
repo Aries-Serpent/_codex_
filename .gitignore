@@ -115,6 +115,8 @@ site/
 reports/*
 !/reports/
 !/reports/*.md
+!/reports/capability_trends.jsonl
+!/reports/.gitkeep
 !/reports/daily/
 !/reports/daily/README.md
 artifacts/*
