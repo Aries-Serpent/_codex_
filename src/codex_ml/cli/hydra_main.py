@@ -57,7 +57,10 @@ _CURRICULUM_PRESETS = {
 _CORPUS_CHOICES = tuple(sorted(list_reasoning_corpora()))
 
 try:  # pragma: no cover - hydra optional at runtime
-    import hydra
+    try:
+        import hydra
+    except ImportError:
+        import config_legacy as hydra
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None

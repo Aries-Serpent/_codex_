@@ -8,9 +8,15 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-from hydra.utils import to_absolute_path
+try:
+    from hydra.utils import to_absolute_path
+except ImportError:
+    from config_legacy.utils import to_absolute_path
 
-import hydra
+try:
+    import hydra
+except ImportError:
+    import config_legacy as hydra
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,

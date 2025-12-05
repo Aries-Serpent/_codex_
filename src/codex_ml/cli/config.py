@@ -90,7 +90,10 @@ def register_configs() -> None:
     """Register structured configs with Hydra's ConfigStore."""
 
     try:
-        from hydra.core.config_store import ConfigStore
+        try:
+            from hydra.core.config_store import ConfigStore
+        except ImportError:
+            from config_legacy.core.config_store import ConfigStore
 
         from codex_ml.utils.hydra_cs import safe_exists
     except Exception:  # pragma: no cover - hydra optional dependency
