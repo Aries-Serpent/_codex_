@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 """
-[Analysis]: Legacy Import Detector (v1.2.0)
+[Analysis]: Legacy Import Detector (v1.2.1)
 Scans the codebase for imports that reference the 'Split Brain' root directories
-(training, tokenization, models, hydra) instead of the `src` namespace.
+(training, tokenization, models) instead of the `src` namespace.
 
-Update v1.2.0:
+Note: 'hydra' is excluded from LEGACY_MODULES because it refers to the hydra-core
+PyPI package, not a local module. The local hydra directory was renamed to config_legacy.
+
+Update v1.2.1:
+- Removed 'hydra' from LEGACY_MODULES (imports refer to PyPI package hydra-core)
 - Ignore relative ImportFrom (level >= 1) to avoid false positives (e.g., `from .models import ...`)
 - Optional flag --include-relative to re-include relative imports for debugging.
 - Report includes a 'relative' boolean field for transparency.
@@ -24,7 +28,8 @@ from pathlib import Path
 from collections import defaultdict
 
 ROOT = Path(__file__).resolve().parents[2]
-LEGACY_MODULES = {"training", "tokenization", "models", "hydra"}
+# Note: 'hydra' removed - it refers to PyPI package, not local module
+LEGACY_MODULES = {"training", "tokenization", "models"}
 
 class ImportVisitor(ast.NodeVisitor):
     def __init__(self, filepath, include_relative=False):
