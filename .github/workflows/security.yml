@@ -1,0 +1,148 @@
+name: Security Scans
+
+on:
+  push:
+    branches: [ main, develop, copilot/** ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security-scans:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit[toml] pip-audit detect-secrets
+      
+      - name: Run Bandit (Python security linter)
+        id: bandit
+        continue-on-error: true
+        run: |
+          echo "Running Bandit security analysis..."
+          bandit -r src/ training/ cli/ \
+            -ll \
+            -f json \
+            -o bandit-report.json \
+            --exit-zero
+          
+          # Also generate text report for logs
+          bandit -r src/ training/ cli/ -ll -f txt || true
+          
+          # Check if any issues found
+          if [ -f bandit-report.json ]; then
+            issue_count=$(python -c "import json; data=json.load(open('bandit-report.json')); print(len(data.get('results', [])))")
+            echo "Bandit found $issue_count issue(s)"
+            if [ "$issue_count" -gt "0" ]; then
+              echo "::warning::Bandit found $issue_count security issue(s)"
+            fi
+          fi
+      
+      - name: Upload Bandit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.json
+          retention-days: 30
+      
+      - name: Run pip-audit (dependency vulnerability scanner)
+        id: pip-audit
+        continue-on-error: true
+        run: |
+          echo "Running pip-audit for dependency vulnerabilities..."
+          # Create requirements files if they don't exist
+          if [ ! -f requirements.txt ]; then
+            pip freeze > requirements.txt
+          fi
+          
+          # Run pip-audit
+          pip-audit --desc --format json --output pip-audit-report.json || true
+          pip-audit --desc || true
+          
+          # Check results
+          if [ -f pip-audit-report.json ]; then
+            vuln_count=$(python -c "import json; data=json.load(open('pip-audit-report.json')); print(len(data.get('dependencies', [])))" 2>/dev/null || echo "0")
+            echo "pip-audit found $vuln_count vulnerable package(s)"
+            if [ "$vuln_count" -gt "0" ]; then
+              echo "::warning::pip-audit found $vuln_count vulnerable package(s)"
+            fi
+          fi
+      
+      - name: Upload pip-audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: pip-audit-report.json
+          retention-days: 30
+      
+      - name: Run detect-secrets (secret scanner)
+        id: detect-secrets
+        continue-on-error: true
+        run: |
+          echo "Running detect-secrets to find exposed secrets..."
+          
+          # Create baseline if it doesn't exist
+          if [ ! -f .secrets.baseline ]; then
+            echo "Creating new secrets baseline..."
+            detect-secrets scan --all-files --exclude-files '.git/.*' > .secrets.baseline
+          fi
+          
+          # Scan for new secrets
+          detect-secrets scan --baseline .secrets.baseline \
+            --all-files \
+            --exclude-files '.git/.*|.*\.pyc|.*\.egg-info/.*|.*/__pycache__/.*' \
+            || true
+          
+          # Audit the baseline
+          detect-secrets audit .secrets.baseline || true
+      
+      - name: Security scan summary
+        if: always()
+        run: |
+          echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f bandit-report.json ]; then
+            issue_count=$(python -c "import json; data=json.load(open('bandit-report.json')); print(len(data.get('results', [])))" 2>/dev/null || echo "0")
+            echo "- **Bandit**: $issue_count issue(s) found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ -f pip-audit-report.json ]; then
+            vuln_count=$(python -c "import json; data=json.load(open('pip-audit-report.json')); print(len(data.get('dependencies', [])))" 2>/dev/null || echo "0")
+            echo "- **pip-audit**: $vuln_count vulnerable package(s)" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "- **detect-secrets**: Baseline scan complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed reports in the artifacts." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Fail on critical issues (optional - currently informational)
+        if: false  # Set to true to fail CI on security issues
+        run: |
+          if [ -f bandit-report.json ]; then
+            issue_count=$(python -c "import json; data=json.load(open('bandit-report.json')); print(len(data.get('results', [])))" 2>/dev/null || echo "0")
+            if [ "$issue_count" -gt "0" ]; then
+              echo "::error::Security scan found issues. Review bandit-report.json"
+              exit 1
+            fi
+          fi

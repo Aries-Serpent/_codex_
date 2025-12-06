@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: codex-ml-metrics
+  labels:
+    app: codex-ml
+    prometheus: kube-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: codex-ml
+      component: inference
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    scheme: http

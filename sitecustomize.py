@@ -87,3 +87,30 @@ _install_optional_stub("sentencepiece")
 from codex_ml.utils.experiment_tracking_mlflow import ensure_local_tracking
 
 ensure_local_tracking()
+
+
+# ============================================================================
+# Offline-First Configuration for Experiment Tracking (Phase 3: Autonomy)
+# ============================================================================
+import os
+
+# Default W&B to offline mode unless explicitly overridden
+# This prevents accidental network calls during training
+if "WANDB_MODE" not in os.environ:
+    os.environ["WANDB_MODE"] = "offline"
+    if not os.environ.get("CODEX_SILENT_SITECUSTOMIZE"):
+        print("ℹ️  W&B defaulted to offline mode (set WANDB_MODE=online to override)", file=sys.stderr)
+
+# Set other offline-first defaults for HuggingFace
+if "HF_HUB_OFFLINE" not in os.environ:
+    os.environ["HF_HUB_OFFLINE"] = "1"
+
+if "TRANSFORMERS_OFFLINE" not in os.environ:
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
+# Disable telemetry by default
+if "WANDB_DISABLE_CODE" not in os.environ:
+    os.environ["WANDB_DISABLE_CODE"] = "true"
+
+if "WANDB_SILENT" not in os.environ:
+    os.environ["WANDB_SILENT"] = "true"
