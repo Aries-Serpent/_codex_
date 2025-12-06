@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: codex-ml-config
+  labels:
+    app: codex-ml
+data:
+  # Offline-first configuration
+  WANDB_MODE: "offline"
+  HF_DATASETS_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  
+  # Disable telemetry
+  DO_NOT_TRACK: "1"
+  DISABLE_TELEMETRY: "1"
+  
+  # Deterministic training
+  PYTHONHASHSEED: "0"
+  CUBLAS_WORKSPACE_CONFIG: ":4096:8"
+  
+  # Application settings
+  WORKERS: "4"
+  MAX_REQUESTS: "1000"
+  TIMEOUT: "60"
+  
+  # Logging
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"

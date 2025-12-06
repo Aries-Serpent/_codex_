@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+- hpa.yaml
+- resourcequota.yaml
+- servicemonitor.yaml
+
+commonLabels:
+  app: codex-ml
+  managed-by: kustomize
+
+images:
+- name: codex-ml
+  newTag: latest
