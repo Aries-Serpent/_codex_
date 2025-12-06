@@ -11,3 +11,5 @@ __all__ = [
 
 from .feature_store import Feature, FeatureGroup, FeatureMetadata, FeatureStore
 from .monitoring import FeatureHealthMonitor, FeatureHealthStatus
+
+__version__ = "1.0.0"

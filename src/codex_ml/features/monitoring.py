@@ -191,3 +191,39 @@ class FeatureHealthMonitor:
         """Reset error counts for all features."""
         self.error_counts.clear()
         logger.info("Reset error counts for all features")
+    
+    def get_time_until_stale(self, feature_name: str, threshold_hours: int = 24) -> float:
+        """Get time until feature becomes stale.
+        
+        Args:
+            feature_name: Feature name
+            threshold_hours: Staleness threshold in hours
+            
+        Returns:
+            Hours until stale (negative if already stale)
+        """
+        last_updated = self.feature_updates.get(feature_name)
+        if not last_updated:
+            return float('-inf')  # Already very stale
+        
+        now = datetime.now()
+        age = now - last_updated
+        age_hours = age.total_seconds() / 3600
+        return threshold_hours - age_hours
+    
+    def get_freshness_distribution(self) -> Dict[str, float]:
+        """Get distribution of feature freshness as percentages.
+        
+        Returns:
+            Dictionary with percentage per freshness level
+        """
+        report = self.get_freshness_report()
+        total = sum(report.values())
+        
+        if total == 0:
+            return {level: 0.0 for level in report.keys()}
+        
+        return {
+            level: (count / total) * 100
+            for level, count in report.items()
+        }
