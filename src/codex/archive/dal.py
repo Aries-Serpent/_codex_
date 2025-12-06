@@ -679,13 +679,22 @@ class PostgresDAL(BaseDAL):
             cur.close()
 
     def ensure_artifact(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres artifact ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "PostgreSQL artifact operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def insert_item(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres item ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "PostgreSQL item operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def insert_event(self, **_: Any) -> None:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres event ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "PostgreSQL event operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
         cur = self.conn.cursor()
@@ -745,12 +754,16 @@ class PostgresDAL(BaseDAL):
                 cur.close()
 
     def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
-        raise NotImplementedError(
-            "Implement postgres recent listing or use SQLite backend for dev."
+        raise RuntimeError(
+            "PostgreSQL recent_items not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
         )
 
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement postgres summary or use SQLite backend for dev.")
+        raise RuntimeError(
+            "PostgreSQL summary not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def create_release_meta(
         self,
@@ -905,13 +918,22 @@ class MariaDbDAL(BaseDAL):
                 cur.close()
 
     def ensure_artifact(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb artifact ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "MariaDB artifact operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def insert_item(self, **_: Any) -> dict[str, Any]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb item ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "MariaDB item operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def insert_event(self, **_: Any) -> None:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb event ops or use SQLite backend for dev.")
+        raise RuntimeError(
+            "MariaDB event operations not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
         cur = self.conn.cursor()
@@ -970,10 +992,16 @@ class MariaDbDAL(BaseDAL):
                 cur.close()
 
     def recent_items(self, *_: Any, **__: Any) -> list[dict[str, Any]]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb listing or use SQLite backend for dev.")
+        raise RuntimeError(
+            "MariaDB recent_items not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def summary(self) -> dict[str, int]:  # pragma: no cover - stub
-        raise NotImplementedError("Implement mariadb summary or use SQLite backend for dev.")
+        raise RuntimeError(
+            "MariaDB summary not yet implemented. "
+            "Use CODEX_ARCHIVE_BACKEND=sqlite (default) for offline/local mode."
+        )
 
     def create_release_meta(
         self,

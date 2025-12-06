@@ -1,23 +1,23 @@
 # Stub Analysis Report
 
-**Total Stubs**: 57
+**Total Stubs**: 46
 
 ## Summary by Priority
 
-- **P0**: 50
+- **P0**: 39
 - **P1**: 3
 - **P2**: 4
 
 ## Summary by Type
 
-- **NotImplementedError**: 50
+- **NotImplementedError**: 39
 - **FIXME**: 3
 - **TODO**: 4
 
 ## Detailed List
 
 
-### P0 Priority (50 items)
+### P0 Priority (39 items)
 
 **src/codex/archive/dal.py:104** [NotImplementedError]
 - Message: NotImplementedError
@@ -54,36 +54,6 @@
 
 **src/codex/archive/dal.py:198** [NotImplementedError]
 - Message: NotImplementedError
-
-**src/codex/archive/dal.py:682** [NotImplementedError]
-- Message: Implement postgres artifact ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:685** [NotImplementedError]
-- Message: Implement postgres item ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:688** [NotImplementedError]
-- Message: Implement postgres event ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:748** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:753** [NotImplementedError]
-- Message: Implement postgres summary or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:908** [NotImplementedError]
-- Message: Implement mariadb artifact ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:911** [NotImplementedError]
-- Message: Implement mariadb item ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:914** [NotImplementedError]
-- Message: Implement mariadb event ops or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:973** [NotImplementedError]
-- Message: Implement mariadb listing or use SQLite backend for dev.
-
-**src/codex/archive/dal.py:976** [NotImplementedError]
-- Message: Implement mariadb summary or use SQLite backend for dev.
 
 **src/codex/retrieval/stores/pgvector_store.py:26** [NotImplementedError]
 - Message: NotImplementedError
@@ -133,14 +103,11 @@
 **src/codex_ml/metrics/base.py:29** [NotImplementedError]
 - Message: NotImplementedError
 
-**src/codex_ml/metrics/writers.py:101** [NotImplementedError]
+**src/codex_ml/metrics/writers.py:102** [NotImplementedError]
 - Message: NotImplementedError
 
 **src/codex_ml/monitoring/drift_detection.py:85** [NotImplementedError]
 - Message: Subclasses must implement detect()
-
-**src/codex_ml/serving/inference_server.py:255** [NotImplementedError]
-- Message: FastAPI not installed
 
 **src/codex_ml/utils/stub_cleanup.py:1** [NotImplementedError]
 - Message: NotImplementedError
