@@ -2,6 +2,7 @@
 """Tests for error_logging utility."""
 import tempfile
 from pathlib import Path
+import pytest
 from src.utils.error_logging import append_error
 
 
