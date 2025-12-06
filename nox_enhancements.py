@@ -92,7 +92,7 @@ def docker_test(session):
     )
     
     # Build only if image doesn't exist (docker images -q returns empty string when no match)
-    if not result or not result.strip():
+    if not result.strip():
         print("\nDocker image not found, building...")
         docker_build(session)
     else:
