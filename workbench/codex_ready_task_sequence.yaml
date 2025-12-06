@@ -1,0 +1,392 @@
+# Codex-Ready Task Sequence for Autonomous Remediation
+# Generated: 2025-12-06
+# 
+# This YAML defines an executable task sequence for Codex agents to systematically
+# address the identified gaps and transform the codebase into a fully autonomous system.
+#
+# Execution Instructions:
+# 1. Tasks are ordered by priority and dependencies
+# 2. Each task includes verification criteria
+# 3. Tasks can be executed sequentially or in parallel where indicated
+# 4. Progress tracking via status field updates
+
+version: "1.0"
+metadata:
+  repository: Aries-Serpent/_codex_
+  branch: main
+  audit_date: "2025-12-06"
+  total_tasks: 45
+  estimated_effort_days: 200
+  target_completion: "2025-05-31"
+
+phases:
+  - name: "Phase 1: Foundation"
+    duration_weeks: 4
+    priority: P0-P1
+    tasks:
+      - id: "T001"
+        title: "Run pip-audit and remediate critical CVEs"
+        priority: P0
+        effort: "1-2 days"
+        owner: security
+        status: not_started
+        description: |
+          Scan all requirements files for vulnerabilities and update packages.
+        commands:
+          - "pip install pip-audit"
+          - "pip-audit -r requirements.txt"
+          - "pip-audit -r requirements-dev.txt"
+          - "pip-audit -r requirements-ml-cpu.txt"
+        verification:
+          - "pip-audit returns zero critical vulnerabilities"
+          - "All packages updated to secure versions"
+        dependencies: []
+
+      - id: "T002"
+        title: "Run bandit/semgrep and fix high-severity findings"
+        priority: P0
+        effort: "1-2 days"
+        owner: security
+        status: not_started
+        description: |
+          Execute static analysis and remediate security issues.
+        commands:
+          - "bandit -r src/ -f json -o workbench/bandit_results.json"
+          - "semgrep --config=semgrep_rules/ src/ --json > workbench/semgrep_results.json"
+        verification:
+          - "Zero high or critical severity findings"
+          - "All medium findings reviewed and documented"
+        dependencies: []
+
+      - id: "T003"
+        title: "Verify secrets baseline accuracy"
+        priority: P0
+        effort: "1 day"
+        owner: security
+        status: not_started
+        description: |
+          Review all entries in .secrets.baseline for false positives.
+        commands:
+          - "detect-secrets scan"
+          - "detect-secrets audit .secrets.baseline"
+        verification:
+          - "All baseline entries confirmed as false positives"
+          - "Baseline is current with latest scan"
+        dependencies: []
+
+      - id: "T004"
+        title: "Implement health check endpoints"
+        priority: P0
+        effort: "3-5 days"
+        owner: ops
+        status: not_started
+        description: |
+          Add /health, /ready, and /live endpoints to all services.
+        implementation:
+          files_to_create:
+            - "src/codex/health/__init__.py"
+            - "src/codex/health/checks.py"
+            - "services/health_endpoints.py"
+          files_to_modify:
+            - "services/inference/app.py"
+            - "services/training/app.py"
+        verification:
+          - "All services respond to /health endpoint"
+          - "Readiness checks verify dependencies"
+          - "Liveness checks detect hung processes"
+        dependencies: []
+
+      - id: "T005"
+        title: "Add coverage gate enforcement"
+        priority: P0
+        effort: "1-2 days"
+        owner: qa
+        status: not_started
+        description: |
+          Configure pytest-cov with minimum 80% threshold.
+        implementation:
+          files_to_modify:
+            - "pytest.ini"
+            - "noxfile.py"
+            - ".github/workflows/test.yml"
+        verification:
+          - "pytest --cov fails if coverage < 80%"
+          - "Nox tests session enforces threshold"
+          - "CI blocks merge on coverage failure"
+        dependencies: []
+
+      - id: "T006"
+        title: "Save and restore RNG state in checkpoints"
+        priority: P1
+        effort: "3-5 days"
+        owner: ml
+        status: not_started
+        description: |
+          Add RNG state capture to checkpoint manager.
+        implementation:
+          files_to_modify:
+            - "src/training/checkpoint_manager.py"
+            - "src/utils/checkpointing.py"
+        verification:
+          - "Checkpoint manifest includes RNG state"
+          - "Resume restores identical RNG state"
+          - "Determinism test passes"
+        dependencies: []
+
+      - id: "T007"
+        title: "Enforce deterministic operations"
+        priority: P1
+        effort: "1-2 days"
+        owner: ml
+        status: not_started
+        description: |
+          Enable torch deterministic mode in all training scripts.
+        implementation:
+          files_to_modify:
+            - "src/training/trainer.py"
+            - "src/training/engine_hf_trainer.py"
+            - "training/config.py"
+        verification:
+          - "torch.use_deterministic_algorithms(True) called"
+          - "CUBLAS workspace configured"
+          - "Training produces identical results with same seed"
+        dependencies: ["T006"]
+
+      - id: "T008"
+        title: "Capture environment metadata"
+        priority: P1
+        effort: "1-2 days"
+        owner: ops
+        status: not_started
+        description: |
+          Log Python version, CUDA version, hardware info at training start.
+        implementation:
+          files_to_create:
+            - "src/utils/environment_capture.py"
+          files_to_modify:
+            - "src/training/trainer.py"
+        verification:
+          - "Training logs include full environment snapshot"
+          - "Environment manifest saved with checkpoints"
+        dependencies: []
+
+      - id: "T009"
+        title: "Pin Docker base images"
+        priority: P1
+        effort: "1 day"
+        owner: ops
+        status: not_started
+        description: |
+          Replace tags with SHA256 digests in all Dockerfiles.
+        implementation:
+          files_to_modify:
+            - "Dockerfile"
+            - "Dockerfile.gpu"
+            - "Dockerfile.local"
+        verification:
+          - "All FROM statements use SHA256 digests"
+          - "Images build reproducibly"
+        dependencies: []
+
+      - id: "T010"
+        title: "Implement config drift detection"
+        priority: P1
+        effort: "3-5 days"
+        owner: platform
+        status: not_started
+        description: |
+          Monitor config changes and alert on unexpected drift.
+        implementation:
+          files_to_create:
+            - "src/codex/drift/__init__.py"
+            - "src/codex/drift/config_monitor.py"
+            - "scripts/check_config_drift.py"
+          files_to_modify:
+            - "noxfile.py"
+        verification:
+          - "Drift detection runs on config load"
+          - "Alerts generated on unexpected changes"
+          - "Baseline configs tracked"
+        dependencies: []
+
+      - id: "T011"
+        title: "Add automated dependency vulnerability scanning"
+        priority: P1
+        effort: "1-2 days"
+        owner: security
+        status: not_started
+        description: |
+          Integrate pip-audit and safety into CI pipeline.
+        implementation:
+          files_to_create:
+            - ".github/workflows/security-scan.yml"
+          files_to_modify:
+            - "noxfile.py"
+        verification:
+          - "CI runs dependency scan on every PR"
+          - "High/critical vulnerabilities block merge"
+          - "Weekly scheduled scans run"
+        dependencies: ["T001"]
+
+      - id: "T012"
+        title: "Set up alerting for training failures"
+        priority: P1
+        effort: "3-5 days"
+        owner: ops
+        status: not_started
+        description: |
+          Configure alerting hooks in training pipeline.
+        implementation:
+          files_to_create:
+            - "src/codex/alerting/__init__.py"
+            - "src/codex/alerting/slack_notifier.py"
+            - "src/codex/alerting/email_notifier.py"
+          files_to_modify:
+            - "src/training/trainer.py"
+        verification:
+          - "Alerts sent on training failure"
+          - "Alerts include error details and logs"
+          - "Alert channels configurable"
+        dependencies: []
+
+      - id: "T013"
+        title: "Add performance degradation alerts"
+        priority: P1
+        effort: "3-5 days"
+        owner: ops
+        status: not_started
+        description: |
+          Monitor training metrics and alert on anomalies.
+        implementation:
+          files_to_create:
+            - "src/codex/monitoring/performance_monitor.py"
+          files_to_modify:
+            - "src/training/trainer.py"
+        verification:
+          - "Alerts on loss spike"
+          - "Alerts on throughput drop"
+          - "Baseline metrics tracked"
+        dependencies: ["T012"]
+
+      - id: "T014"
+        title: "Set up Prometheus metrics collection"
+        priority: P1
+        effort: "3-5 days"
+        owner: ops
+        status: not_started
+        description: |
+          Instrument services with Prometheus client library.
+        implementation:
+          files_to_create:
+            - "src/codex/metrics/__init__.py"
+            - "src/codex/metrics/prometheus_exporter.py"
+          files_to_modify:
+            - "services/inference/app.py"
+            - "requirements.txt"
+        verification:
+          - "/metrics endpoint exposes Prometheus metrics"
+          - "Training metrics exported"
+          - "System metrics exported"
+        dependencies: []
+
+      - id: "T015"
+        title: "Create Grafana dashboards"
+        priority: P1
+        effort: "3-5 days"
+        owner: ops
+        status: not_started
+        description: |
+          Build monitoring dashboards for key metrics.
+        implementation:
+          files_to_create:
+            - "monitoring/grafana/training_dashboard.json"
+            - "monitoring/grafana/system_dashboard.json"
+            - "monitoring/docker-compose.grafana.yml"
+        verification:
+          - "Dashboards display training metrics"
+          - "Dashboards display system metrics"
+          - "Dashboards accessible locally"
+        dependencies: ["T014"]
+
+  - name: "Phase 2: Reproducibility & Quality"
+    duration_weeks: 4
+    priority: P2
+    tasks:
+      - id: "T016"
+        title: "Implement data drift monitoring"
+        priority: P2
+        effort: "5-10 days"
+        owner: ml
+        status: not_started
+        parallel_with: ["T017", "T018"]
+
+      - id: "T017"
+        title: "Add model drift detection"
+        priority: P2
+        effort: "5-10 days"
+        owner: ml
+        status: not_started
+        parallel_with: ["T016", "T018"]
+
+      - id: "T018"
+        title: "Activate DVC for data versioning"
+        priority: P2
+        effort: "3-5 days"
+        owner: ml
+        status: not_started
+        parallel_with: ["T016", "T017"]
+
+  - name: "Phase 3: Advanced Autonomy"
+    duration_weeks: 4
+    priority: P2-P3
+    tasks:
+      - id: "T019"
+        title: "Build regression test suite"
+        priority: P2
+        effort: "5-10 days"
+        owner: qa
+        status: not_started
+
+      - id: "T020"
+        title: "Add mutation testing"
+        priority: P2
+        effort: "3-5 days"
+        owner: qa
+        status: not_started
+        dependencies: ["T019"]
+
+  - name: "Phase 4: Excellence & Innovation"
+    duration_weeks: 4
+    priority: P3
+    tasks:
+      - id: "T021"
+        title: "Clean up TODOs and stubs"
+        priority: P3
+        effort: "20+ days"
+        owner: team
+        status: not_started
+        description: |
+          Systematic cleanup of 1,152 identified stubs.
+
+execution_guidelines:
+  - "Execute tasks sequentially within each phase"
+  - "Tasks marked parallel_with can run concurrently"
+  - "Verify each task before proceeding to next"
+  - "Update status field after completion"
+  - "Document any deviations or issues"
+  - "Run full test suite after each phase"
+
+success_criteria:
+  - "All P0 tasks completed with verification passing"
+  - "All P1 tasks completed within 2 weeks"
+  - "Coverage maintains ≥80% threshold"
+  - "No critical security vulnerabilities"
+  - "Deterministic training verified"
+  - "Health checks operational"
+  - "Monitoring dashboards deployed"
+
+rollback_plan:
+  - "Each task creates backup branch before changes"
+  - "Verification failures trigger automatic rollback"
+  - "Failed tasks documented in workbench/task_failures.log"
+  - "Team notified of rollback events"

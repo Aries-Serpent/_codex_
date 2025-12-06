@@ -1,0 +1,387 @@
+{
+  "summary": {
+    "total_capabilities": 18,
+    "average_score": 0.92,
+    "good_capabilities": 17,
+    "partial_capabilities": 1,
+    "needs_work_capabilities": 0
+  },
+  "capabilities": {
+    "1_tokenization": {
+      "name": "Tokenization",
+      "score": 1.0,
+      "paths_checked": 3,
+      "paths_found": 3,
+      "python_files": 24,
+      "config_files": 0,
+      "path_status": {
+        "src/tokenization/": true,
+        "tokenization/": true,
+        "src/codex_ml/tokenization/": true
+      },
+      "key_features": [
+        "HuggingFace tokenizer integration",
+        "Fast tokenizer support",
+        "Vocab management",
+        "Special token handling",
+        "CLI interface"
+      ],
+      "status": "good"
+    },
+    "2_modeling": {
+      "name": "Modeling",
+      "score": 1.0,
+      "paths_checked": 2,
+      "paths_found": 2,
+      "python_files": 18,
+      "config_files": 0,
+      "path_status": {
+        "src/codex_ml/models/": true,
+        "models/": true
+      },
+      "key_features": [
+        "Model factory",
+        "LoRA/PEFT integration",
+        "Device placement",
+        "Dtype handling",
+        "Quantization support"
+      ],
+      "status": "good"
+    },
+    "3_training": {
+      "name": "Training Engine",
+      "score": 1.0,
+      "paths_checked": 3,
+      "paths_found": 3,
+      "python_files": 39,
+      "config_files": 0,
+      "path_status": {
+        "src/training/": true,
+        "training/": true,
+        "src/codex_ml/training/": true
+      },
+      "key_features": [
+        "HF Trainer wrapper",
+        "Custom training loops",
+        "DDP/FSDP support",
+        "Gradient accumulation",
+        "Mixed precision"
+      ],
+      "status": "good"
+    },
+    "4_configuration": {
+      "name": "Configuration",
+      "score": 1.0,
+      "paths_checked": 4,
+      "paths_found": 3,
+      "python_files": 5,
+      "config_files": 111,
+      "path_status": {
+        "configs/": true,
+        "config/": true,
+        "hydra/": false,
+        "conf/": true
+      },
+      "key_features": [
+        "Hydra integration",
+        "Schema validation",
+        "Sweep support",
+        "Config composition",
+        "Environment overrides"
+      ],
+      "status": "good"
+    },
+    "5_evaluation": {
+      "name": "Evaluation & Metrics",
+      "score": 1.0,
+      "paths_checked": 2,
+      "paths_found": 2,
+      "python_files": 27,
+      "config_files": 0,
+      "path_status": {
+        "src/codex_ml/eval/": true,
+        "src/codex_ml/metrics/": true
+      },
+      "key_features": [
+        "lm-eval integration",
+        "Custom metrics",
+        "NDJSON logging",
+        "Metric registry",
+        "Evaluation CLI"
+      ],
+      "status": "good"
+    },
+    "6_logging": {
+      "name": "Logging & Monitoring",
+      "score": 1.0,
+      "paths_checked": 2,
+      "paths_found": 2,
+      "python_files": 15,
+      "config_files": 0,
+      "path_status": {
+        "src/codex/logging/": true,
+        "src/utils/logging_factory.py": true
+      },
+      "key_features": [
+        "TensorBoard integration",
+        "MLflow support",
+        "W&B integration",
+        "System metrics (psutil/NVML)",
+        "Structured logging"
+      ],
+      "status": "good"
+    },
+    "7_checkpointing": {
+      "name": "Checkpointing & Resume",
+      "score": 0.7,
+      "paths_checked": 2,
+      "paths_found": 1,
+      "python_files": 1,
+      "config_files": 0,
+      "path_status": {
+        "src/training/checkpoint_manager.py": true,
+        "src/utils/checkpoint*.py": false
+      },
+      "key_features": [
+        "RNG state saving",
+        "Optimizer state",
+        "Scheduler state",
+        "Best-k retention",
+        "Resume from checkpoint"
+      ],
+      "status": "good"
+    },
+    "8_data": {
+      "name": "Data Handling",
+      "score": 1.0,
+      "paths_checked": 3,
+      "paths_found": 3,
+      "python_files": 34,
+      "config_files": 0,
+      "path_status": {
+        "src/codex_ml/data/": true,
+        "data/": true,
+        "src/training/data_utils.py": true
+      },
+      "key_features": [
+        "Dataset loading",
+        "Train/val splits",
+        "Data caching",
+        "Streaming support",
+        "Deterministic shuffling"
+      ],
+      "status": "good"
+    },
+    "9_security": {
+      "name": "Security & Safety",
+      "score": 1.0,
+      "paths_checked": 4,
+      "paths_found": 4,
+      "python_files": 0,
+      "config_files": 11,
+      "path_status": {
+        ".secrets.baseline": true,
+        "bandit.yaml": true,
+        ".bandit.yml": true,
+        "semgrep_rules/": true
+      },
+      "key_features": [
+        "Secrets scanning",
+        "Dependency locking",
+        "Prompt sanitization",
+        "Bandit SAST",
+        "Semgrep rules"
+      ],
+      "status": "good"
+    },
+    "10_ci_test": {
+      "name": "Internal CI/Test",
+      "score": 1.0,
+      "paths_checked": 4,
+      "paths_found": 4,
+      "python_files": 1187,
+      "config_files": 2,
+      "path_status": {
+        "noxfile.py": true,
+        "pytest.ini": true,
+        ".pre-commit-config.yaml": true,
+        "tests/": true
+      },
+      "key_features": [
+        "Nox sessions",
+        "Pytest markers",
+        "Coverage gates",
+        "Pre-commit hooks",
+        "Test isolation"
+      ],
+      "status": "good"
+    },
+    "11_deployment": {
+      "name": "Deployment",
+      "score": 1.0,
+      "paths_checked": 4,
+      "paths_found": 3,
+      "python_files": 2,
+      "config_files": 3,
+      "path_status": {
+        "Dockerfile*": false,
+        "docker-compose.yml": true,
+        "deploy/": true,
+        "manifests/": true
+      },
+      "key_features": [
+        "Docker images",
+        "Docker Compose",
+        "Helm charts",
+        "K8s manifests",
+        "CLI packaging"
+      ],
+      "status": "good"
+    },
+    "12_documentation": {
+      "name": "Documentation",
+      "score": 1.0,
+      "paths_checked": 4,
+      "paths_found": 4,
+      "python_files": 1,
+      "config_files": 5,
+      "path_status": {
+        "README.md": true,
+        "docs/": true,
+        "AGENTS.md": true,
+        "mkdocs.yml": true
+      },
+      "key_features": [
+        "README completeness",
+        "MkDocs setup",
+        "API documentation",
+        "Tutorials/notebooks",
+        "Quickstart guides"
+      ],
+      "status": "good"
+    },
+    "13_experiment_tracking": {
+      "name": "Experiment Tracking",
+      "score": 0.7,
+      "paths_checked": 2,
+      "paths_found": 1,
+      "python_files": 12,
+      "config_files": 0,
+      "path_status": {
+        "src/codex_ml/tracking/": true,
+        "mlruns/": false
+      },
+      "key_features": [
+        "MLflow file backend",
+        "W&B offline mode",
+        "Artifact management",
+        "Run comparison",
+        "Hyperparameter logging"
+      ],
+      "status": "good"
+    },
+    "14_extensibility": {
+      "name": "Extensibility",
+      "score": 1.0,
+      "paths_checked": 3,
+      "paths_found": 3,
+      "python_files": 23,
+      "config_files": 0,
+      "path_status": {
+        "src/codex_ml/plugins/": true,
+        "src/codex_ml/registry/": true,
+        "examples/plugins/": true
+      },
+      "key_features": [
+        "Plugin entry points",
+        "Registry patterns",
+        "Detector discovery",
+        "Custom callbacks",
+        "Extension API"
+      ],
+      "status": "good"
+    },
+    "15_observability": {
+      "name": "Observability",
+      "score": 1.0,
+      "paths_checked": 2,
+      "paths_found": 2,
+      "python_files": 34,
+      "config_files": 1,
+      "path_status": {
+        "monitoring/": true,
+        "services/": true
+      },
+      "key_features": [
+        "Metrics endpoints",
+        "Prometheus integration",
+        "Health checks",
+        "Alerting",
+        "Distributed tracing"
+      ],
+      "status": "good"
+    },
+    "16_versioning": {
+      "name": "Versioning & Releases",
+      "score": 0.77,
+      "paths_checked": 3,
+      "paths_found": 2,
+      "python_files": 0,
+      "config_files": 41,
+      "path_status": {
+        "CHANGELOG.md": false,
+        ".github/workflows/": true,
+        "pyproject.toml": true
+      },
+      "key_features": [
+        "Semantic versioning",
+        "Changelog maintenance",
+        "Release automation",
+        "Version bumping",
+        "Git tagging"
+      ],
+      "status": "good"
+    },
+    "17_dependencies": {
+      "name": "Dependency Management",
+      "score": 0.67,
+      "paths_checked": 3,
+      "paths_found": 2,
+      "python_files": 0,
+      "config_files": 0,
+      "path_status": {
+        "requirements*.txt": false,
+        "uv.lock": true,
+        "pyproject.toml": true
+      },
+      "key_features": [
+        "Lock files",
+        "Vulnerability scanning",
+        "Update automation",
+        "Dependency pinning",
+        "SBOM generation"
+      ],
+      "status": "partial"
+    },
+    "18_error_handling": {
+      "name": "Error Handling & Recovery",
+      "score": 0.7,
+      "paths_checked": 2,
+      "paths_found": 1,
+      "python_files": 1,
+      "config_files": 0,
+      "path_status": {
+        "src/*/errors.py": false,
+        "src/mcp/errors.py": true
+      },
+      "key_features": [
+        "Exception hierarchy",
+        "Retry logic",
+        "Circuit breakers",
+        "Error recovery",
+        "Graceful degradation"
+      ],
+      "status": "good"
+    }
+  }
+}
