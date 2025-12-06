@@ -47,7 +47,6 @@ for notebook in $notebooks; do
         >"$output_log" 2>&1
     exit_code=$?
     head -50 "$output_log"
-    rm -f "$output_log"
     
     if [ $exit_code -eq 0 ]; then
         echo "  ✓ Passed"
