@@ -65,7 +65,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh 2>/dev/null || true
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD python -c "from codex_ml.serving.health import health_check; health_check()" || exit 1
+  CMD python -c "import sys; from codex_ml.serving.health import health_check; sys.exit(0 if health_check() else 1)"
 
 # Expose health probe port (if running server)
 EXPOSE 8000

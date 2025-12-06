@@ -143,40 +143,53 @@ monitor = ComprehensiveDriftMonitor(
 ### Step 2: Continuous Monitoring
 
 ```python
+import logging
 import time
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s"
+)
+logger = logging.getLogger("continuous_learning")
+
 def continuous_learning_loop():
-    """Run continuous learning loop."""
+    """Run continuous learning loop with error handling and logging."""
     
     while True:
-        # 1. Collect new data
-        new_data = collect_production_data()
-        
-        # 2. Compute statistics
-        current_stats = compute_statistics(new_data)
-        baseline_stats = load_baseline_statistics()
-        
-        # 3. Monitor for drift
-        results = monitor.monitor_all(
-            current_data_stats=current_stats,
-            baseline_data_stats=baseline_stats,
-            current_metrics=get_production_metrics(),
-            baseline_metrics=load_baseline_metrics()
-        )
-        
-        # 4. Check if retraining needed
-        if monitor.has_critical_drift():
-            drift_score = results["data_drift"]["score"]
+        try:
+            # 1. Collect new data
+            new_data = collect_production_data()
             
-            if pipeline.should_retrain(
-                drift_score=drift_score,
-                samples_count=len(new_data)
-            ):
-                # 5. Trigger retraining
-                retrain_and_deploy(new_data, drift_score)
-        
-        # Wait before next check (e.g., hourly)
-        time.sleep(3600)
+            # 2. Compute statistics
+            current_stats = compute_statistics(new_data)
+            baseline_stats = load_baseline_statistics()
+            
+            # 3. Monitor for drift
+            results = monitor.monitor_all(
+                current_data_stats=current_stats,
+                baseline_data_stats=baseline_stats,
+                current_metrics=get_production_metrics(),
+                baseline_metrics=load_baseline_metrics()
+            )
+            
+            # 4. Check if retraining needed
+            if monitor.has_critical_drift():
+                drift_score = results["data_drift"]["score"]
+                
+                if pipeline.should_retrain(
+                    drift_score=drift_score,
+                    samples_count=len(new_data)
+                ):
+                    # 5. Trigger retraining
+                    logger.info("Triggering retraining due to drift (score: %s)", drift_score)
+                    retrain_and_deploy(new_data, drift_score)
+            
+            # Wait before next check (e.g., hourly)
+            time.sleep(3600)
+        except Exception as e:
+            logger.error("Exception in continuous learning loop: %s", e, exc_info=True)
+            # Optionally, wait before retrying to avoid rapid failure loops
+            time.sleep(60)
 ```
 
 ### Step 3: Retraining Function
