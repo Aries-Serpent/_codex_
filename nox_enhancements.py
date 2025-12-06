@@ -81,7 +81,7 @@ def docker_build(session):
 @nox.session(name="docker_test")
 def docker_test(session):
     """Test Docker image functionality."""
-    # Check if image exists
+    # Check if image exists (session.run returns output string or None)
     result = session.run(
         "docker",
         "images",
@@ -92,7 +92,8 @@ def docker_test(session):
     )
     
     # Build only if image doesn't exist (docker images -q returns empty string when no match)
-    if not result.strip():
+    image_exists = result and isinstance(result, str) and result.strip()
+    if not image_exists:
         print("\nDocker image not found, building...")
         docker_build(session)
     else:
