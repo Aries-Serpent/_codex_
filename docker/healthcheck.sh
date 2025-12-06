@@ -15,7 +15,4 @@ except ImportError as e:
 except KeyError:
     print('Health check returned unexpected format', file=sys.stderr)
     sys.exit(1)
-except Exception as e:
-    print(f'Health check failed: {e}', file=sys.stderr)
-    sys.exit(1)
 "

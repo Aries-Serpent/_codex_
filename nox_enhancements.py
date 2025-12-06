@@ -96,7 +96,9 @@ def docker_test(session):
             check=False,
         )
         image_exists = bool(result.stdout.strip())
-    except Exception:
+    except (subprocess.SubprocessError, OSError, FileNotFoundError) as e:
+        print(f"\nWarning: Failed to check for existing Docker image: {e}")
+        print("Proceeding with build...")
         image_exists = False
     
     # Build only if image doesn't exist
