@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 import contextlib
 import json
 import os
@@ -99,15 +100,21 @@ class ArchiveDAL:
         raise ValueError(f"Unsupported CODEX_ARCHIVE_BACKEND: {backend}")
 
 
-class BaseDAL:
+class BaseDAL(abc.ABC):
+    @abc.abstractmethod
     def txn(self) -> contextlib.AbstractContextManager[None]:
-        raise NotImplementedError
+        """Create a transaction context. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def ensure_schema(self) -> None:
-        raise NotImplementedError
+        """Ensure database schema exists. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
-        raise NotImplementedError
+        """Insert referent record. Subclasses must implement."""
+        pass
 
     @staticmethod
     def validate_identifier(name: str, allowed: Iterable[str]) -> str:
@@ -116,12 +123,17 @@ class BaseDAL:
             raise ValueError(f"identifier not allowed: {name}")
         return name
 
+    @abc.abstractmethod
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
-        raise NotImplementedError
+        """Get recent items. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def summary(self) -> dict[str, int]:
-        raise NotImplementedError
+        """Get summary statistics. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def ensure_artifact(
         self,
         *,
@@ -133,8 +145,10 @@ class BaseDAL:
         storage_driver: str = "db",
         object_url: str | None = None,
     ) -> dict[str, Any]:
-        raise NotImplementedError
+        """Ensure artifact exists. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def insert_item(
         self,
         *,
@@ -149,8 +163,10 @@ class BaseDAL:
         metadata: dict[str, Any] | None = None,
         archived_by: str = "codex",
     ) -> dict[str, Any]:
-        raise NotImplementedError
+        """Insert item record. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def insert_event(
         self,
         *,
@@ -159,12 +175,16 @@ class BaseDAL:
         actor: str,
         context: dict[str, Any] | None = None,
     ) -> None:
-        raise NotImplementedError
+        """Insert event record. Subclasses must implement."""
+        pass
 
+    @abc.abstractmethod
     def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
-        raise NotImplementedError
+        """Fetch item and artifact by tombstone ID. Subclasses must implement."""
+        pass
 
     # -------- Release persistence (optional) --------
+    @abc.abstractmethod
     def create_release_meta(
         self,
         *,
@@ -175,9 +195,9 @@ class BaseDAL:
         metadata: dict[str, Any],
     ) -> dict[str, Any]:
         """Insert a row into release_meta and return the persisted row."""
+        pass
 
-        raise NotImplementedError
-
+    @abc.abstractmethod
     def add_release_component(
         self,
         *,
@@ -189,13 +209,12 @@ class BaseDAL:
         template_vars: dict[str, Any],
     ) -> dict[str, Any]:
         """Insert a row into release_component for this release."""
+        pass
 
-        raise NotImplementedError
-
+    @abc.abstractmethod
     def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
         """Lookup release_meta by its human release_id."""
-
-        raise NotImplementedError
+        pass
 
 
 class SqliteDAL(BaseDAL):

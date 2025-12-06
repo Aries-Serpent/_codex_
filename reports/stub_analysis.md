@@ -1,89 +1,26 @@
 # Stub Analysis Report
 
-**Total Stubs**: 38
+**Total Stubs**: 17
 
 ## Summary by Priority
 
-- **P0**: 31
+- **P0**: 10
 - **P1**: 3
 - **P2**: 4
 
 ## Summary by Type
 
-- **NotImplementedError**: 31
+- **NotImplementedError**: 10
 - **FIXME**: 3
 - **TODO**: 4
 
 ## Detailed List
 
 
-### P0 Priority (31 items)
-
-**src/codex/archive/dal.py:104** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:107** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:110** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:120** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:123** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:136** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:152** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:162** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:165** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:179** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:193** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/archive/dal.py:198** [NotImplementedError]
-- Message: NotImplementedError
+### P0 Priority (10 items)
 
 **src/codex_ml/connectors/base.py:4** [NotImplementedError]
 - Message: NotImplementedError
-
-**src/codex_ml/interfaces/tokenizer.py:280** [NotImplementedError]
-- Message: self._GUARD_MESSAGE.format(method=method)
-
-**src/codex_ml/interfaces/tokenizer.py:322** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/interfaces/tokenizer.py:326** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/interfaces/tokenizer.py:340** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/metrics/base.py:19** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/metrics/base.py:24** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/metrics/base.py:29** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/metrics/writers.py:102** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/monitoring/drift_detection.py:85** [NotImplementedError]
-- Message: Subclasses must implement detect()
 
 **src/codex_ml/utils/stub_cleanup.py:1** [NotImplementedError]
 - Message: NotImplementedError
@@ -91,25 +28,25 @@
 **src/codex_ml/utils/stub_cleanup.py:25** [NotImplementedError]
 - Message: NotImplementedError, TODO, FIXME
 
-**src/codex_ml/utils/stub_cleanup.py:117** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:89** [NotImplementedError]
 - Message: NotImplementedError
 
-**src/codex_ml/utils/stub_cleanup.py:118** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:91** [NotImplementedError]
 - Message: NotImplementedError
 
-**src/codex_ml/utils/stub_cleanup.py:119** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:94** [NotImplementedError]
+- Message: raise 
+
+**src/codex_ml/utils/stub_cleanup.py:102** [NotImplementedError]
 - Message: NotImplementedError
 
-**src/codex_ml/utils/stub_cleanup.py:126** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:107** [NotImplementedError]
 - Message: NotImplementedError
 
-**src/codex_ml/utils/stub_cleanup.py:131** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex_ml/utils/stub_cleanup.py:173** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:177** [NotImplementedError]
 - Message: NotImplementedError, TODO, FIXME
 
-**src/codex_ml/utils/stub_cleanup.py:194** [NotImplementedError]
+**src/codex_ml/utils/stub_cleanup.py:198** [NotImplementedError]
 - Message: self.get_by_type("NotImplementedError")
 
 
@@ -118,10 +55,10 @@
 **src/codex_ml/utils/stub_cleanup.py:85** [FIXME]
 - Message: Simple text-based analysis for TODOs/FIXMEs
 
-**src/codex_ml/utils/stub_cleanup.py:103** [FIXME]
+**src/codex_ml/utils/stub_cleanup.py:127** [FIXME]
 - Message: Check for FIXME
 
-**src/codex_ml/utils/stub_cleanup.py:104** [FIXME]
+**src/codex_ml/utils/stub_cleanup.py:128** [FIXME]
 - Message: " in line:
 
 
@@ -133,9 +70,9 @@
 **src/codex_ml/utils/stub_cleanup.py:85** [TODO]
 - Message: Simple text-based analysis for TODOs/FIXMEs
 
-**src/codex_ml/utils/stub_cleanup.py:89** [TODO]
+**src/codex_ml/utils/stub_cleanup.py:113** [TODO]
 - Message: Check for TODO
 
-**src/codex_ml/utils/stub_cleanup.py:90** [TODO]
+**src/codex_ml/utils/stub_cleanup.py:114** [TODO]
 - Message: " in line:
 

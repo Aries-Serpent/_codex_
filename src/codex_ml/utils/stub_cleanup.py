@@ -86,6 +86,30 @@ class StubAnalyzer:
             for i, line in enumerate(lines, start=1):
                 line_lower = line.lower()
                 
+                # Skip comments and docstrings when looking for NotImplementedError
+                # Only flag actual raise statements
+                if "notimplementederror" in line_lower:
+                    # Only flag if it's an actual raise statement
+                    stripped = line.strip()
+                    if stripped.startswith("raise ") and "NotImplementedError" in line:
+                        priority = "P0"  # Actual raise statements are P0
+                        
+                        # Try to extract message
+                        if "(" in line and ")" in line:
+                            message_part = line.split("(", 1)[1].rsplit(")", 1)[0]
+                            message = message_part.strip('"\'')
+                        else:
+                            message = "NotImplementedError"
+                        
+                        self.stubs.append(StubInfo(
+                            file_path=file_path,
+                            line_number=i,
+                            stub_type="NotImplementedError",
+                            message=message,
+                            priority=priority,
+                            context=line.strip()
+                        ))
+                
                 # Check for TODO
                 if "todo" in line_lower and "#" in line:
                     priority = self._determine_priority(line)
@@ -109,26 +133,6 @@ class StubAnalyzer:
                         file_path=file_path,
                         line_number=i,
                         stub_type="FIXME",
-                        message=message,
-                        priority=priority,
-                        context=line.strip()
-                    ))
-                
-                # Check for NotImplementedError
-                if "notimplementederror" in line_lower:
-                    priority = "P0"  # NotImplementedError is always high priority
-                    
-                    # Try to extract message
-                    if "(" in line and ")" in line:
-                        message_part = line.split("(", 1)[1].rsplit(")", 1)[0]
-                        message = message_part.strip('"\'')
-                    else:
-                        message = "NotImplementedError"
-                    
-                    self.stubs.append(StubInfo(
-                        file_path=file_path,
-                        line_number=i,
-                        stub_type="NotImplementedError",
                         message=message,
                         priority=priority,
                         context=line.strip()

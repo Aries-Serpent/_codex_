@@ -81,8 +81,14 @@ class DriftDetector:
             
         Returns:
             True if drift detected
+            
+        Note:
+            Subclasses must implement this method.
         """
-        raise NotImplementedError("Subclasses must implement detect()")
+        raise TypeError(
+            f"{self.__class__.__name__}.detect() must be implemented by subclass. "
+            f"Use DataDriftDetector, ConfigDriftDetector, or ModelDriftDetector."
+        )
     
     def add_alert(self, alert: DriftAlert):
         """Add drift alert."""
