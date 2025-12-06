@@ -61,7 +61,7 @@ inventory:
     rationale: "Temporary compatibility layer during v1.3.0 consolidation - legacy file provides backward compatibility."
     deprecation_date: null
     whitelist_duplicates: ["training/config.py"]
-    notes: "Legacy training/ directory contains identical implementation for backward compatibility during transition. Will be removed in future release."
+    notes: "Legacy training/ directory contains near-identical implementation for backward compatibility during transition. Will be removed in future release."
 
   - module: tokenization.train_tokenizer
     legacy_path: ""
