@@ -37,14 +37,19 @@ for notebook in $notebooks; do
     output_nb="/tmp/$(basename "$notebook" .ipynb)_output.ipynb"
     
     # Run notebook with papermill (timeout after 5 minutes)
-    if timeout 300 papermill "$notebook" "$output_nb" \
+    output_log=$(mktemp)
+    timeout 300 papermill "$notebook" "$output_nb" \
         --log-output \
         --no-progress-bar \
-        2>&1 | head -50; then
+        >"$output_log" 2>&1
+    exit_code=$?
+    head -50 "$output_log"
+    rm -f "$output_log"
+    
+    if [ $exit_code -eq 0 ]; then
         echo "  ✓ Passed"
         ((passed++))
     else
-        exit_code=$?
         if [ $exit_code -eq 124 ]; then
             echo "  ⏱️  Timeout (5 minutes exceeded)"
         else

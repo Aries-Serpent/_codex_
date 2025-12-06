@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -68,7 +69,7 @@ def generate_sbom_cyclonedx(output_path: Path, packages: List[Dict[str, str]]) -
         "serialNumber": f"urn:uuid:codex-{output_path.stem}",
         "version": 1,
         "metadata": {
-            "timestamp": None,  # Would use datetime.utcnow().isoformat() + "Z"
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "tools": [
                 {
                     "vendor": "Aries-Serpent",

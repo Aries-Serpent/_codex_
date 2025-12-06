@@ -84,7 +84,7 @@ log ""
 
 # Run tests with coverage
 log "Running test suite with coverage..."
-if pytest tests/ --cov=src --cov=training --cov-report=term --cov-report=html --cov-fail-under=70 2>&1 | tee -a "$REPORT_FILE"; then
+if pytest tests/ --cov=src --cov=cli --cov-report=term --cov-report=html --cov-fail-under=70 2>&1 | tee -a "$REPORT_FILE"; then
     log "✅ Test coverage meets 70% threshold"
 else
     log "❌ Test coverage below 70% - action required"

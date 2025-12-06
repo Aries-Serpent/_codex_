@@ -290,6 +290,12 @@ def tests(session: nox.Session) -> None:
     Baseline test session (no heavy ML / eval dependencies).
     Use pytest markers to skip ML-specific tests.
     Run with coverage enforcement to ensure coverage gate is respected.
+    
+    Available pytest markers:
+    - requires_torch: Tests requiring PyTorch (excluded by default)
+    - slow: Long-running tests
+    
+    See pytest.ini for the full list of registered markers.
     """
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
