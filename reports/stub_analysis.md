@@ -1,23 +1,23 @@
 # Stub Analysis Report
 
-**Total Stubs**: 46
+**Total Stubs**: 38
 
 ## Summary by Priority
 
-- **P0**: 39
+- **P0**: 31
 - **P1**: 3
 - **P2**: 4
 
 ## Summary by Type
 
-- **NotImplementedError**: 39
+- **NotImplementedError**: 31
 - **FIXME**: 3
 - **TODO**: 4
 
 ## Detailed List
 
 
-### P0 Priority (39 items)
+### P0 Priority (31 items)
 
 **src/codex/archive/dal.py:104** [NotImplementedError]
 - Message: NotImplementedError
@@ -53,30 +53,6 @@
 - Message: NotImplementedError
 
 **src/codex/archive/dal.py:198** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/pgvector_store.py:26** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/pgvector_store.py:32** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/pgvector_store.py:38** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/pgvector_store.py:44** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/weaviate_store.py:27** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/weaviate_store.py:33** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/weaviate_store.py:39** [NotImplementedError]
-- Message: NotImplementedError
-
-**src/codex/retrieval/stores/weaviate_store.py:45** [NotImplementedError]
 - Message: NotImplementedError
 
 **src/codex_ml/connectors/base.py:4** [NotImplementedError]
