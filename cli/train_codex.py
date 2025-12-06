@@ -18,6 +18,7 @@ from transformers import (
     TrainingArguments,
 )
 
+from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.utils import checkpointing
 
 
@@ -173,7 +174,6 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
         
         # Validate and restore RNG state if resuming
         if strict_resume:
-            from codex_ml.training.rng_checkpoint import RNGState
             rng_path = RNGState.path_for_checkpoint(Path(cfg["codex_resume_checkpoint"]))
             
             if not rng_path.exists():
@@ -189,7 +189,6 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
             print(f"✓ RNG state restored from {rng_path}")
         elif resume_hf or cfg.get("codex_resume_checkpoint"):
             # Non-strict mode: warn if RNG sidecar missing
-            from codex_ml.training.rng_checkpoint import RNGState
             rng_path = RNGState.path_for_checkpoint(
                 Path(cfg.get("codex_resume_checkpoint") or resume_hf)
             )

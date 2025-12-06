@@ -48,8 +48,12 @@ spec:
           value: "1"
         - name: WANDB_MODE
           value: "offline"
+        # PYTHONHASHSEED=0 ensures reproducible Python hash values for deterministic operations.
+        # This is required for consistent model training and inference results.
         - name: PYTHONHASHSEED
           value: "0"
+        # CUBLAS_WORKSPACE_CONFIG=:4096:8 enforces deterministic CUDA operations.
+        # This may impact performance but is necessary for reproducibility in GPU computations.
         - name: CUBLAS_WORKSPACE_CONFIG
           value: ":4096:8"
         envFrom:

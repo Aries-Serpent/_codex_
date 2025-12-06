@@ -2,6 +2,39 @@
 
 Welcome to Codex ML! This guide will help you get started with the autonomous machine learning system.
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Install from Source](#install-from-source)
+  - [Optional Dependencies](#optional-dependencies)
+- [Quick Start](#quick-start)
+  - [Basic Training with Determinism](#1-basic-training-with-determinism)
+  - [Health Monitoring](#2-health-monitoring)
+  - [Experiment Tracking (Offline-First)](#3-experiment-tracking-offline-first)
+  - [Safe Prompt Handling](#4-safe-prompt-handling)
+- [Core Features](#core-features)
+  - [Reproducibility (Phase 2)](#reproducibility-phase-2)
+  - [Autonomy (Phase 3)](#autonomy-phase-3)
+  - [Production Excellence (Phase 4)](#production-excellence-phase-4)
+- [Complete Training Pipeline](#complete-training-pipeline)
+- [CLI Usage](#cli-usage)
+  - [Training with Strict Resume](#training-with-strict-resume)
+  - [Prompt Sanitization](#prompt-sanitization)
+  - [SBOM Generation](#sbom-generation)
+  - [Stub Analysis](#stub-analysis)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Configuration Files](#configuration-files)
+- [Testing Your Setup](#testing-your-setup)
+  - [Run Tests](#run-tests)
+  - [Run Nox Sessions](#run-nox-sessions)
+  - [Security Scans](#security-scans)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+- [Next Steps](#next-steps)
+- [Support](#support)
+
 ## Installation
 
 ### Prerequisites

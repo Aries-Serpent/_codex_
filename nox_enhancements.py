@@ -80,9 +80,33 @@ def docker_build(session):
 
 @nox.session(name="docker_test")
 def docker_test(session):
-    """Test Docker image functionality."""
-    # Build first
-    docker_build(session)
+    """Test Docker image functionality.
+    
+    Note: This will build the image if it doesn't exist. To force a rebuild,
+    run 'docker_build' session first.
+    """
+    import subprocess
+    
+    # Check if image exists using subprocess
+    try:
+        result = subprocess.run(
+            ["docker", "images", "-q", "codex-ml:optimized"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        image_exists = bool(result.stdout.strip())
+    except (subprocess.SubprocessError, OSError, FileNotFoundError) as e:
+        print(f"\nWarning: Failed to check for existing Docker image: {e}")
+        print("Proceeding with build...")
+        image_exists = False
+    
+    # Build only if image doesn't exist
+    if not image_exists:
+        print("\nDocker image not found, building...")
+        docker_build(session)
+    else:
+        print("\nDocker image found, skipping build...")
     
     print("\nTesting Docker image...")
     
