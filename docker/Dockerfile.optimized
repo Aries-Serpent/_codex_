@@ -55,17 +55,17 @@ RUN pip install --no-cache-dir /tmp/*.whl && \
     rm /tmp/*.whl && \
     pip cache purge
 
-# Switch to non-root user
-USER codex
-WORKDIR /home/codex
-
-# Copy entry scripts (if any)
-COPY --chown=codex:codex docker/entrypoint.sh /usr/local/bin/
-COPY --chown=codex:codex docker/healthcheck.sh /usr/local/bin/
+# Copy entry scripts and set permissions (must be done as root before USER switch)
+COPY docker/entrypoint.sh /usr/local/bin/
+COPY docker/healthcheck.sh /usr/local/bin/
 # Set execute permissions with explicit error checking
 RUN if [ -f /usr/local/bin/entrypoint.sh ]; then chmod +x /usr/local/bin/entrypoint.sh; fi && \
     if [ ! -f /usr/local/bin/healthcheck.sh ]; then echo "ERROR: healthcheck.sh not found" && exit 1; fi && \
     chmod +x /usr/local/bin/healthcheck.sh
+
+# Switch to non-root user
+USER codex
+WORKDIR /home/codex
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
