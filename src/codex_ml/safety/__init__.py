@@ -6,6 +6,7 @@ from .moderation import (
     ModerationRejection,
     ModerationSettings,
 )
+from .prompt_sanitizer import PromptSanitizer
 from .redaction import SecretRedactor
 from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 
@@ -31,6 +32,7 @@ __all__ = [
     "ModerationDecision",
     "ModerationRejection",
     "ModerationSettings",
+    "PromptSanitizer",
     "SafetyFilters",
     "run_in_sandbox",
     "docker_available",
