@@ -14,54 +14,54 @@
 
 inventory:
   - module: training.engine_hf_trainer
-    legacy_path: ""
+    legacy_path: "training/engine_hf_trainer.py"
     canonical_path: src/training/engine_hf_trainer.py
     owner: core-ml-platform
-    status: migrated
-    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    status: shim
+    rationale: "Temporary compatibility layer during v1.3.0 consolidation - legacy file provides backward compatibility."
     deprecation_date: null
-    whitelist_duplicates: []
-    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+    whitelist_duplicates: ["training/engine_hf_trainer.py"]
+    notes: "Legacy training/ directory contains near-identical implementation for backward compatibility during transition. Will be removed in future release."
 
   - module: training.functional_training
-    legacy_path: ""
+    legacy_path: "training/functional_training.py"
     canonical_path: src/training/functional_training.py
     owner: core-ml-platform
-    status: migrated
-    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    status: shim
+    rationale: "Temporary compatibility layer during v1.3.0 consolidation - legacy file provides backward compatibility."
     deprecation_date: null
-    whitelist_duplicates: []
-    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+    whitelist_duplicates: ["training/functional_training.py"]
+    notes: "Legacy training/ directory contains near-identical implementation for backward compatibility during transition. Will be removed in future release."
 
   - module: training.data_utils
-    legacy_path: ""
+    legacy_path: "training/data_utils.py"
     canonical_path: src/training/data_utils.py
     owner: core-ml-platform
-    status: migrated
-    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    status: shim
+    rationale: "Temporary compatibility layer during v1.3.0 consolidation - legacy file provides backward compatibility."
     deprecation_date: null
-    whitelist_duplicates: []
-    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+    whitelist_duplicates: ["training/data_utils.py"]
+    notes: "Legacy training/ directory contains near-identical implementation for backward compatibility during transition. Will be removed in future release."
 
   - module: training.checkpoint_manager
-    legacy_path: ""
+    legacy_path: "training/checkpoint_manager.py"
     canonical_path: src/training/checkpoint_manager.py
     owner: core-ml-platform
-    status: migrated
-    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    status: shim
+    rationale: "Temporary compatibility shim - re-exports CheckpointManager from codex_ml.utils.checkpointing with deprecation warning."
     deprecation_date: null
-    whitelist_duplicates: []
-    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+    whitelist_duplicates: ["training/checkpoint_manager.py"]
+    notes: "Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
 
   - module: training.config
-    legacy_path: ""
+    legacy_path: "training/config.py"
     canonical_path: src/training/config.py
     owner: core-ml-platform
-    status: migrated
-    rationale: "v1.3.0 consolidation complete - legacy module moved to canonical src.* location."
+    status: shim
+    rationale: "Temporary compatibility layer during v1.3.0 consolidation - legacy file provides backward compatibility."
     deprecation_date: null
-    whitelist_duplicates: []
-    notes: "Consolidated in v1.3.0. Legacy training/ directory now contains compatibility layer that re-exports from src.training.*"
+    whitelist_duplicates: ["training/config.py"]
+    notes: "Legacy training/ directory contains identical implementation for backward compatibility during transition. Will be removed in future release."
 
   - module: tokenization.train_tokenizer
     legacy_path: ""
@@ -72,6 +72,36 @@ inventory:
     deprecation_date: null
     whitelist_duplicates: []
     notes: "Tokenization 100% migrated to src.* imports. No shim needed - module only exists in canonical location."
+
+  - module: tokenization.api
+    legacy_path: "tokenization/api.py"
+    canonical_path: src/tokenization/api.py
+    owner: nlp-team
+    status: shim
+    rationale: "Temporary compatibility shim - re-exports from codex_ml.tokenization.api with deprecation warning."
+    deprecation_date: null
+    whitelist_duplicates: ["tokenization/api.py"]
+    notes: "Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
+
+  - module: tokenization.cli
+    legacy_path: "tokenization/cli.py"
+    canonical_path: src/tokenization/cli.py
+    owner: nlp-team
+    status: shim
+    rationale: "Temporary compatibility shim - loads canonical implementation from src/tokenization/cli.py."
+    deprecation_date: null
+    whitelist_duplicates: ["tokenization/cli.py"]
+    notes: "Legacy file is a shim that dynamically loads the canonical implementation for backward compatibility. Will be removed in future release."
+
+  - module: tokenization.sentencepiece_adapter
+    legacy_path: "tokenization/sentencepiece_adapter.py"
+    canonical_path: src/tokenization/sentencepiece_adapter.py
+    owner: nlp-team
+    status: shim
+    rationale: "Temporary compatibility shim - re-exports from codex_ml.tokenization.sentencepiece_adapter with deprecation warning."
+    deprecation_date: null
+    whitelist_duplicates: ["tokenization/sentencepiece_adapter.py"]
+    notes: "Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
 
 policy:
   strict_conflicts:
