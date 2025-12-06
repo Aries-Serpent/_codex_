@@ -291,11 +291,12 @@ def tests(session: nox.Session) -> None:
     Use pytest markers to skip ML-specific tests.
     Run with coverage enforcement to ensure coverage gate is respected.
     
-    Available pytest markers:
-    - requires_torch: Tests requiring PyTorch (excluded by default)
+    This session excludes tests marked with 'requires_torch'.
+    See pytest.ini for the full list of registered markers including:
+    - requires_torch: Tests requiring PyTorch (excluded here)
     - slow: Long-running tests
-    
-    See pytest.ini for the full list of registered markers.
+    - smoke: Quick validation tests
+    - integration: Cross-component integration tests
     """
     _choose_python(session)
     _install_requirements(session, REQ_DEV)

@@ -38,6 +38,9 @@ for notebook in $notebooks; do
     
     # Run notebook with papermill (timeout after 5 minutes)
     output_log=$(mktemp)
+    # Ensure cleanup on exit
+    trap "rm -f '$output_log'" EXIT
+    
     timeout 300 papermill "$notebook" "$output_nb" \
         --log-output \
         --no-progress-bar \
