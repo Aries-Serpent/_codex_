@@ -98,7 +98,11 @@ class BaseMetricsWriter:
         """Close writer resources if necessary."""
 
     def write(self, record: Mapping[str, Any] | MetricsRecord) -> None:
-        raise NotImplementedError
+        """Write a metrics record. Subclasses must implement this method."""
+        raise TypeError(
+            f"{self.__class__.__name__}.write() must be implemented by subclass. "
+            f"Use NDJSONMetricsWriter or CSVMetricsWriter."
+        )
 
 
 class NDJSONMetricsWriter(BaseMetricsWriter):

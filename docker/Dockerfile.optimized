@@ -1,0 +1,74 @@
+# Multi-Stage Optimized Dockerfile
+# Produces smaller, more secure Docker images
+
+# Stage 1: Builder
+FROM python:3.11-slim as builder
+
+LABEL maintainer="codex-ml-team"
+LABEL stage="builder"
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        g++ \
+        git \
+        && rm -rf /var/lib/apt/lists/*
+
+# Copy source files
+COPY pyproject.toml README.md ./
+COPY src/ src/
+COPY training/ training/
+COPY cli/ cli/
+
+# Build wheel
+RUN pip install --no-cache-dir build && \
+    python -m build --wheel && \
+    ls -lh dist/
+
+# Stage 2: Runtime
+FROM python:3.11-slim
+
+LABEL maintainer="codex-ml-team"
+LABEL stage="runtime"
+LABEL description="Codex ML Training Environment (Optimized)"
+
+# Install runtime dependencies only
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -u 1000 -s /bin/bash codex && \
+    mkdir -p /home/codex/.cache && \
+    chown -R codex:codex /home/codex
+
+# Copy wheel from builder
+COPY --from=builder /build/dist/*.whl /tmp/
+
+# Install package
+RUN pip install --no-cache-dir /tmp/*.whl && \
+    rm /tmp/*.whl && \
+    pip cache purge
+
+# Switch to non-root user
+USER codex
+WORKDIR /home/codex
+
+# Copy entry scripts (if any)
+COPY --chown=codex:codex docker/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh 2>/dev/null || true
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "from codex_ml.serving.health import health_check; health_check()" || exit 1
+
+# Expose health probe port (if running server)
+EXPOSE 8000
+
+# Default command
+CMD ["python", "-m", "cli.train_codex", "--help"]

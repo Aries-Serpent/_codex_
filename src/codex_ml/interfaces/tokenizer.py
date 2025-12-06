@@ -277,7 +277,7 @@ class TokenizerProtocolGuard(TokenizerProtocol):
     )
 
     def _raise(self, method: str) -> None:
-        raise NotImplementedError(self._GUARD_MESSAGE.format(method=method))
+        raise TypeError(self._GUARD_MESSAGE.format(method=method))
 
     def encode(
         self,
@@ -319,11 +319,13 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
     """Protocol for tokenizers that can be trained and persisted offline."""
 
     def save(self, path: str) -> None:
-        raise NotImplementedError
+        """Save tokenizer. Implementations must override."""
+        raise TypeError(f"{self.__class__.__name__}.save() must be implemented")
 
     @classmethod
     def load(cls, path: str) -> TrainableTokenizerProtocol:
-        raise NotImplementedError
+        """Load tokenizer. Implementations must override."""
+        raise TypeError(f"{cls.__name__}.load() must be implemented")
 
     @classmethod
     def train(
@@ -337,7 +339,8 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
         seed: int = 17,
         output_dir: str = "artifacts/tokenizer",
     ) -> TrainableTokenizerProtocol:
-        raise NotImplementedError
+        """Train tokenizer. Implementations must override."""
+        raise TypeError(f"{cls.__name__}.train() must be implemented")
 
 
 class HFTokenizer(TokenizerAdapter):
