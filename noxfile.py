@@ -289,14 +289,19 @@ def tests(session: nox.Session) -> None:
     """
     Baseline test session (no heavy ML / eval dependencies).
     Use pytest markers to skip ML-specific tests.
+    Run with coverage enforcement to ensure coverage gate is respected.
     """
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
     _show_vendor_scan(session)
+    # Include both src and training packages in coverage measurement
     session.run(
         "pytest",
-        "-q",
-        "--disable-warnings",
+        "--cov=src",
+        "--cov=training",
+        "--cov-report=term-missing",
+        "--cov-report=xml",
+        "--cov-fail-under=70",
         "-m",
         "not requires_torch",
         external=True,
