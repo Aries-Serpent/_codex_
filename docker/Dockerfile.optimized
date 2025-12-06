@@ -61,11 +61,13 @@ WORKDIR /home/codex
 
 # Copy entry scripts (if any)
 COPY --chown=codex:codex docker/entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh 2>/dev/null || true
+COPY --chown=codex:codex docker/healthcheck.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh 2>/dev/null || true && \
+    chmod +x /usr/local/bin/healthcheck.sh
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD python -c "import sys; from codex_ml.serving.health import health_check; sys.exit(0 if health_check() else 1)"
+  CMD ["/usr/local/bin/healthcheck.sh"]
 
 # Expose health probe port (if running server)
 EXPOSE 8000
