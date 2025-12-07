@@ -1325,7 +1325,8 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
             try:
                 total_lines += len(py_file.read_text().splitlines())
                 files_scanned += 1
-            except:
+            except (OSError, UnicodeDecodeError):
+                # Skip files that can't be read or decoded
                 pass
 
         # Calculate ratio

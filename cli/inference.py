@@ -13,8 +13,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from codex_ml.safety import PromptSanitizer
-from utils.sanitize import sanitize_prompt
+from codex_ml.safety import PromptSanitizer  # noqa: E402 - path must be modified first
+from utils.sanitize import sanitize_prompt  # noqa: E402 - path must be modified first
 
 
 def run_inference(prompt: str, sanitize: bool = True, strict: bool = True) -> tuple[str, str]:

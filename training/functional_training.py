@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Mapping, Optional, Sequence
 
 import numpy as np
+from torch.nn.utils import clip_grad_norm_
+from torch.utils.data import DataLoader
 
 import torch
 from codex_ml.logging.file_logger import FileLogger
@@ -25,8 +27,6 @@ from codex_ml.utils.checkpointing import (
 )
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from torch.nn.utils import clip_grad_norm_
-from torch.utils.data import DataLoader
 
 LOGGER = logging.getLogger(__name__)
 
@@ -99,7 +99,11 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
 
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import _compute_metrics, get_hf_revision, run_hf_trainer
+    from training.engine_hf_trainer import (
+        _compute_metrics,
+        get_hf_revision,
+        run_hf_trainer,
+    )
 except Exception:  # pragma: no cover - hf trainer not available
 
     def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore

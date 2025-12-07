@@ -197,7 +197,7 @@ def report_command(
     if not input.exists():
         typer.echo(f"Input log not found: {input}", err=True)
         raise typer.Exit(code=2)
-    lines = [json.loads(l) for l in input.read_text().splitlines() if l.strip()]
+    lines = [json.loads(line) for line in input.read_text().splitlines() if line.strip()]
     epoch_records = [r for r in lines if r.get("type") == "epoch"]
     if not epoch_records:
         typer.echo("No epoch records found.", err=True)
@@ -215,7 +215,7 @@ def report_command(
         if not compare.exists():
             typer.echo(f"Compare file not found: {compare}", err=True)
             raise typer.Exit(code=2)
-        cmp_lines = [json.loads(l) for l in compare.read_text().splitlines() if l.strip()]
+        cmp_lines = [json.loads(line) for line in compare.read_text().splitlines() if line.strip()]
         cmp_epochs = [r for r in cmp_lines if r.get("type") == "epoch"]
         if not cmp_epochs:
             typer.echo("Compare file has no epoch records.", err=True)

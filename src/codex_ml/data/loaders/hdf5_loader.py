@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import h5py
-    import numpy as np
+    import numpy as np  # noqa: F401 - imported to check availability
 
     HDF5_AVAILABLE = True
 except ImportError:

@@ -30,9 +30,11 @@ from pathlib import Path
 from typing import Any, Literal, Protocol, Union
 
 try:  # Align schema metadata with checkpoint_core when available
+    from codex_ml.utils import checkpoint_core
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
 except Exception:  # pragma: no cover - optional dependency
     _CORE_SCHEMA_VERSION = "1.0"
+    checkpoint_core = None  # type: ignore[assignment]
 
 CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
@@ -44,7 +46,10 @@ try:
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
-from codex_ml.utils.seeding import set_reproducible
+# ruff: noqa: E402, I001
+from codex_ml.utils.seeding import (
+    set_reproducible,  # after optional imports
+)
 
 from .checkpoint_event import maybe_emit_checkpoint_saved_event
 from .storage import StorageProvider
@@ -1145,21 +1150,27 @@ class CheckpointManager:
             except Exception:
                 state_payload = {"payload": payload}
 
-        ckpt_path, _ = checkpoint_core.save_checkpoint(
-            checkpoint_dir,
-            state=state_payload if isinstance(state_payload, dict) else None,
-            payload=state_payload if isinstance(state_payload, dict) else None,
-            metadata={"epoch": step, "metrics": metrics},
-            metric_value=None,
-            metric_key=metric_key,
-            best_metric=metric_key,
-            mode="min",
-            top_k=self.keep_best or 1,
-            best_k=self.keep_best or 1,
-            include_rng=rng_state,
-            keep_last=self.keep_last,
-            prefix=prefix,
-        )
+        if checkpoint_core is not None:
+            ckpt_path, _ = checkpoint_core.save_checkpoint(
+                checkpoint_dir,
+                state=state_payload if isinstance(state_payload, dict) else None,
+                payload=state_payload if isinstance(state_payload, dict) else None,
+                metadata={"epoch": step, "metrics": metrics},
+                metric_value=None,
+                metric_key=metric_key,
+                best_metric=metric_key,
+                mode="min",
+                top_k=self.keep_best or 1,
+                best_k=self.keep_best or 1,
+                include_rng=rng_state,
+                keep_last=self.keep_last,
+                prefix=prefix,
+            )
+        else:
+            # Fallback: save using basic serialization
+            ckpt_path = checkpoint_dir / "state.pkl"
+            with open(ckpt_path, "wb") as f:
+                pickle.dump(state_payload, f)
         meta_sidecar = {
             "step": int(step),
             "metrics": metrics,
@@ -1366,10 +1377,6 @@ class CheckpointManager:
             reverse=True,
         )
         return discovered
-
-        if strict:
-            raise FileNotFoundError(f"no checkpoint state files found under: {root}")
-        return {"meta": {}, "state": False, "path": None}
 
     # ------------------------------------------------------------------
     # Retention

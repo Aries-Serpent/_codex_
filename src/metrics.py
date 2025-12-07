@@ -16,7 +16,7 @@ def accuracy(predictions: Iterable[int], labels: Iterable[int]) -> float:
         raise ValueError("predictions and labels must be the same length")
     if not preds:
         return 0.0
-    matches = sum(int(p == l) for p, l in zip(preds, labs, strict=False))
+    matches = sum(int(pred == label) for pred, label in zip(preds, labs, strict=False))
     return matches / len(preds)
 
 

@@ -57,7 +57,7 @@ class WandBLogger:
     def _check_wandb(self) -> bool:
         """Check if W&B is available and not disabled."""
         try:
-            import wandb
+            import wandb  # noqa: F401 - imported to check availability
 
             mode = os.getenv("WANDB_MODE", "offline")
             return mode != "disabled"

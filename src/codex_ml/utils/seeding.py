@@ -1,8 +1,9 @@
-from __future__ import annotations
-
 """
 Centralized, import-light helpers for reproducible and deterministic runs.
 """
+
+from __future__ import annotations
+
 import contextlib
 import os
 import random

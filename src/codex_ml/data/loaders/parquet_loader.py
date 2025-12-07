@@ -22,7 +22,7 @@ from typing import Any, Dict, Iterator, List, Optional
 logger = logging.getLogger(__name__)
 
 try:
-    import pandas as pd
+    import pandas as pd  # noqa: F401 - imported to check availability
     import pyarrow.parquet as pq
 
     PARQUET_AVAILABLE = True

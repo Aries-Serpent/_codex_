@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 
-def _require_torch() -> "torch":
+def _require_torch() -> Any:
     import importlib
 
     if importlib.util.find_spec("torch") is None:
