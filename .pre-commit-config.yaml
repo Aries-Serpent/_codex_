@@ -16,6 +16,26 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--no-verify"]
+  # Security scanning: pip-audit for dependency vulnerabilities
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.6.1
+    hooks:
+      - id: pip-audit
+        name: pip-audit (dependency vulnerability scan)
+        args: ["--desc", "--skip-editable"]
+        # Note: May require requirements files to be present
+        # Run manually with: pre-commit run pip-audit --all-files
+  
+  # Security scanning: gitleaks for secrets detection
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secrets detection)
+        args: ["detect", "--source=.", "--no-git", "--config=.gitleaks.toml", "--verbose"]
+        # Note: Requires .gitleaks.toml config file
+        # To generate baseline: gitleaks detect --source=. --report-path=.gitleaks-baseline.json
+  
   - repo: local
     hooks:
       - id: pip-compile

@@ -1,15 +1,52 @@
-"""Feature store monitoring and health checks."""
+"""Feature store monitoring and health checks.
+
+Provides:
+- Feature freshness tracking
+- Health status monitoring
+- SLA enforcement and alerting
+- Health report generation
+"""
 
 from __future__ import annotations
 
+import json
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-__all__ = ["FeatureHealthMonitor", "FeatureHealthStatus"]
+__all__ = ["FeatureHealthMonitor", "FeatureHealthStatus", "HealthAlert"]
+
+
+@dataclass
+class HealthAlert:
+    """Alert for unhealthy feature.
+    
+    Attributes:
+        feature_name: Feature name
+        severity: Alert severity (CRITICAL, WARNING, INFO)
+        message: Alert message
+        timestamp: Alert timestamp
+        metric_value: Relevant metric value
+    """
+    
+    feature_name: str
+    severity: str
+    message: str
+    timestamp: str
+    metric_value: Optional[float] = None
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary."""
+        return {
+            "feature_name": self.feature_name,
+            "severity": self.severity,
+            "message": self.message,
+            "timestamp": self.timestamp,
+            "metric_value": self.metric_value,
+        }
 
 
 @dataclass
@@ -225,3 +262,227 @@ class FeatureHealthMonitor:
             return {level: 0.0 for level in report.keys()}
 
         return {level: (count / total) * 100 for level, count in report.items()}
+    
+    def check_all(self, feature_names: List[str]) -> Dict[str, FeatureHealthStatus]:
+        """Check health of all features (alias for check_all_features).
+        
+        Args:
+            feature_names: List of feature names to check
+            
+        Returns:
+            Dictionary mapping feature names to health status
+        """
+        return self.check_all_features(feature_names)
+    
+    def generate_alerts(
+        self,
+        health_statuses: Dict[str, FeatureHealthStatus],
+        sla_minutes: int = 120,
+    ) -> List[HealthAlert]:
+        """Generate alerts for unhealthy features.
+        
+        Args:
+            health_statuses: Dictionary of feature health statuses
+            sla_minutes: SLA threshold in minutes
+            
+        Returns:
+            List of health alerts
+        """
+        alerts = []
+        now = datetime.now()
+        
+        for feature_name, status in health_statuses.items():
+            # Critical: Feature never updated or very stale
+            if status.last_updated == "never":
+                alerts.append(
+                    HealthAlert(
+                        feature_name=feature_name,
+                        severity="CRITICAL",
+                        message="Feature has never been updated",
+                        timestamp=now.isoformat(),
+                    )
+                )
+            elif status.freshness_level == "VERY_STALE":
+                alerts.append(
+                    HealthAlert(
+                        feature_name=feature_name,
+                        severity="CRITICAL",
+                        message=f"Feature is very stale ({status.freshness_minutes:.0f} min)",
+                        timestamp=now.isoformat(),
+                        metric_value=status.freshness_minutes,
+                    )
+                )
+            # Warning: Feature approaching SLA violation
+            elif status.freshness_minutes > sla_minutes * 0.8:
+                alerts.append(
+                    HealthAlert(
+                        feature_name=feature_name,
+                        severity="WARNING",
+                        message=f"Feature approaching SLA violation ({status.freshness_minutes:.0f}/{sla_minutes} min)",
+                        timestamp=now.isoformat(),
+                        metric_value=status.freshness_minutes,
+                    )
+                )
+            # Warning: High error rate
+            if status.error_count > 5:
+                alerts.append(
+                    HealthAlert(
+                        feature_name=feature_name,
+                        severity="WARNING",
+                        message=f"High error count ({status.error_count} errors)",
+                        timestamp=now.isoformat(),
+                        metric_value=float(status.error_count),
+                    )
+                )
+        
+        return alerts
+    
+    def generate_health_report(
+        self,
+        health_statuses: Dict[str, FeatureHealthStatus],
+        format: str = "markdown",
+        include_recommendations: bool = True,
+    ) -> str:
+        """Generate health report in specified format.
+        
+        Args:
+            health_statuses: Dictionary of feature health statuses
+            format: Report format (json, markdown)
+            include_recommendations: Include recommendations section
+            
+        Returns:
+            Formatted health report string
+        """
+        if format == "json":
+            return self._generate_json_report(health_statuses, include_recommendations)
+        elif format == "markdown":
+            return self._generate_markdown_report(health_statuses, include_recommendations)
+        else:
+            raise ValueError(f"Unsupported format: {format}")
+    
+    def _generate_json_report(
+        self,
+        health_statuses: Dict[str, FeatureHealthStatus],
+        include_recommendations: bool,
+    ) -> str:
+        """Generate JSON health report."""
+        report = {
+            "timestamp": datetime.now().isoformat(),
+            "summary": {
+                "total_features": len(health_statuses),
+                "healthy_features": sum(1 for s in health_statuses.values() if s.is_healthy),
+                "unhealthy_features": sum(1 for s in health_statuses.values() if not s.is_healthy),
+            },
+            "freshness_distribution": self.get_freshness_distribution(),
+            "features": {
+                name: {
+                    "is_healthy": status.is_healthy,
+                    "last_updated": status.last_updated,
+                    "freshness_minutes": status.freshness_minutes,
+                    "freshness_level": status.freshness_level,
+                    "error_count": status.error_count,
+                    "warnings": status.warnings,
+                }
+                for name, status in health_statuses.items()
+            },
+            "alerts": [alert.to_dict() for alert in self.generate_alerts(health_statuses)],
+        }
+        
+        if include_recommendations:
+            report["recommendations"] = self._generate_recommendations(health_statuses)
+        
+        return json.dumps(report, indent=2)
+    
+    def _generate_markdown_report(
+        self,
+        health_statuses: Dict[str, FeatureHealthStatus],
+        include_recommendations: bool,
+    ) -> str:
+        """Generate Markdown health report."""
+        lines = []
+        lines.append("# Feature Health Report")
+        lines.append(f"\n**Generated:** {datetime.now().isoformat()}\n")
+        
+        # Summary
+        healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
+        total_count = len(health_statuses)
+        lines.append("## Summary\n")
+        lines.append(f"- Total Features: {total_count}")
+        lines.append(f"- Healthy: {healthy_count} ({healthy_count/total_count*100:.1f}%)")
+        lines.append(f"- Unhealthy: {total_count - healthy_count} ({(total_count-healthy_count)/total_count*100:.1f}%)")
+        
+        # Freshness Distribution
+        freshness_dist = self.get_freshness_distribution()
+        lines.append("\n## Freshness Distribution\n")
+        for level, pct in freshness_dist.items():
+            lines.append(f"- {level}: {pct:.1f}%")
+        
+        # Feature Details
+        lines.append("\n## Feature Details\n")
+        lines.append("| Feature | Status | Freshness | Last Updated | Errors |")
+        lines.append("|---------|--------|-----------|--------------|--------|")
+        
+        for name, status in sorted(health_statuses.items()):
+            status_icon = "✓" if status.is_healthy else "✗"
+            lines.append(
+                f"| {name} | {status_icon} | {status.freshness_level} | "
+                f"{status.last_updated} | {status.error_count} |"
+            )
+        
+        # Alerts
+        alerts = self.generate_alerts(health_statuses)
+        if alerts:
+            lines.append("\n## Alerts\n")
+            for alert in alerts:
+                lines.append(f"- **[{alert.severity}]** {alert.feature_name}: {alert.message}")
+        
+        # Recommendations
+        if include_recommendations:
+            recommendations = self._generate_recommendations(health_statuses)
+            if recommendations:
+                lines.append("\n## Recommendations\n")
+                for rec in recommendations:
+                    lines.append(f"- {rec}")
+        
+        return "\n".join(lines)
+    
+    def _generate_recommendations(
+        self,
+        health_statuses: Dict[str, FeatureHealthStatus],
+    ) -> List[str]:
+        """Generate recommendations based on health statuses."""
+        recommendations = []
+        
+        # Check for stale features
+        stale_features = [
+            name for name, status in health_statuses.items()
+            if status.freshness_level in ["STALE", "VERY_STALE"]
+        ]
+        if stale_features:
+            recommendations.append(
+                f"Update {len(stale_features)} stale feature(s): {', '.join(stale_features[:5])}"
+                + (" ..." if len(stale_features) > 5 else "")
+            )
+        
+        # Check for features with high error rates
+        error_features = [
+            name for name, status in health_statuses.items()
+            if status.error_count > 5
+        ]
+        if error_features:
+            recommendations.append(
+                f"Investigate {len(error_features)} feature(s) with high error rates: {', '.join(error_features[:5])}"
+                + (" ..." if len(error_features) > 5 else "")
+            )
+        
+        # Check for features never updated
+        never_updated = [
+            name for name, status in health_statuses.items()
+            if status.last_updated == "never"
+        ]
+        if never_updated:
+            recommendations.append(
+                f"Initialize {len(never_updated)} feature(s) that have never been updated"
+            )
+        
+        return recommendations

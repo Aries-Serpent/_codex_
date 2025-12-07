@@ -1,0 +1,78 @@
+# Experiment Tracking Configuration
+# WP-A: MLflow Experiment Tracking
+
+# MLflow tracking (opt-in, disabled by default)
+mlflow_enabled: false
+
+# MLflow tracking URI (local file-based by default for offline-first)
+mlflow_uri: "file:./artifacts/mlruns"
+
+# MLflow experiment name
+mlflow_experiment_name: "codex_training"
+
+# Tracking writer selection
+# Options: "ndjson", "mlflow", "tensorboard", "wandb", "composite"
+writer: "ndjson"
+
+# NDJSON writer configuration (always enabled as fallback)
+ndjson:
+  enabled: true
+  path: "artifacts/metrics/run_metrics.ndjson"
+  max_bytes: 104857600  # 100MB
+  backup_count: 5
+
+# TensorBoard writer configuration
+tensorboard:
+  enabled: false
+  logdir: "artifacts/tensorboard"
+
+# Weights & Biases configuration
+wandb:
+  enabled: false
+  project: "codex"
+  mode: "offline"  # Use "online" only with explicit opt-in
+
+# Composite writer (enables multiple writers simultaneously)
+composite:
+  enabled: false
+  writers:
+    - "ndjson"
+    # Uncomment to enable additional writers:
+    # - "mlflow"
+    # - "tensorboard"
+    # - "wandb"
+
+# Artifact tracking
+artifacts:
+  enabled: true
+  # Artifacts to track automatically
+  track_checkpoints: true
+  track_configs: true
+  track_env_snapshot: true
+  track_dataset_manifest: true
+
+# Metrics configuration
+metrics:
+  log_interval: 10  # Log every N steps
+  log_to_console: true
+  log_to_file: true
+
+# Provenance tracking
+provenance:
+  enabled: true
+  # Track git commit
+  track_git_commit: true
+  # Track uncommitted changes
+  track_git_dirty: true
+  # Track dataset hash
+  track_dataset_hash: true
+  # Track random seed
+  track_seed: true
+
+# Safety and privacy
+safety:
+  # Never allow remote tracking URIs by default
+  # Set MLFLOW_ALLOW_REMOTE=1 to override
+  allow_remote: false
+  # Offline-first: prefer local file-based tracking
+  offline_first: true

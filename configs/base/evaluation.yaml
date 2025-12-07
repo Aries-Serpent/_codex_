@@ -1,0 +1,77 @@
+# Evaluation Configuration (WP-C: Evaluation Standardization)
+#
+# This configuration defines settings for the unified evaluation runner.
+# Integrates with tracking system (MLflow/NDJSON) for result logging.
+#
+# Usage:
+#   python -m src.codex_ml.evaluation.runner --config +evaluation.metrics=[accuracy,rouge]
+
+evaluation:
+  # Batch size for evaluation
+  batch_size: 32
+  
+  # Maximum number of samples to evaluate (null = all)
+  max_samples: null
+  
+  # Device for evaluation (cpu, cuda, cuda:0, etc.)
+  device: "cpu"
+  
+  # Number of DataLoader workers
+  num_workers: 0
+  
+  # Output directory for evaluation artifacts
+  output_dir: "artifacts/evaluation"
+  
+  # Whether to save individual predictions
+  save_predictions: false
+  
+  # Log interval (print progress every N batches)
+  log_interval: 10
+  
+  # Metrics to compute
+  metrics:
+    # Classification accuracy
+    - name: accuracy
+      type: accuracy
+      ignore_index: -100
+    
+    # BLEU score for generation tasks
+    # - name: bleu
+    #   type: bleu
+    #   max_order: 4
+    
+    # ROUGE scores for summarization
+    # - name: rouge
+    #   type: rouge
+    #   rouge_types: [rouge1, rouge2, rougeL]
+    #   use_stemmer: true
+    
+    # Perplexity for language models
+    # - name: perplexity
+    #   type: perplexity
+    #   ignore_index: -100
+    
+    # Latency measurement
+    # - name: latency
+    #   type: latency
+    #   per_sample: true
+  
+  # Tracking integration
+  tracking:
+    # Whether to log to tracking system (MLflow/NDJSON)
+    enabled: true
+    
+    # Use tracking writer from training config
+    use_training_writer: true
+
+# Safety: Evaluation is offline-first
+# - No remote calls required
+# - All metrics computed locally
+# - Artifacts saved to local filesystem
+# - Tracking integration optional
+
+# Notes:
+# - Enable specific metrics based on task type
+# - BLEU/ROUGE require optional dependencies (sacrebleu, rouge-score)
+# - Perplexity requires torch
+# - Latency works with any model

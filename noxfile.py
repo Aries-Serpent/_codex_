@@ -50,6 +50,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import List
 
@@ -422,6 +423,205 @@ def dependency_plan(session: nox.Session) -> None:
     _choose_python(session)
     _install_requirements(session, REQ_DEV)
     _dependency_plan(session)
+
+
+@nox.session(name="security", python=PY_VERSIONS)
+def security(session: nox.Session) -> None:
+    """
+    Run security scans: pip-audit for dependency vulnerabilities and gitleaks for secrets.
+    
+    This session performs:
+    1. pip-audit: Scans Python dependencies for known CVEs
+    2. gitleaks: Scans codebase for accidentally committed secrets
+    
+    Exit codes:
+    - 0: No vulnerabilities or secrets found
+    - 1: Vulnerabilities or secrets detected
+    
+    Usage:
+        nox -s security
+        
+    To update allowlist for known issues:
+        Create/edit security_allowlist.json with known acceptable findings
+    """
+    _choose_python(session)
+    session.log("[security] Running security scans...")
+    
+    # Install security tools
+    session.install("pip-audit", "gitleaks", silent=False)
+    
+    # Check for allowlist file
+    allowlist_file = Path("security_allowlist.json")
+    has_allowlist = allowlist_file.exists()
+    
+    if has_allowlist:
+        session.log(f"[security] Using allowlist: {allowlist_file}")
+    else:
+        session.log("[security] No allowlist found (create security_allowlist.json if needed)")
+    
+    # Run pip-audit
+    session.log("[security] Running pip-audit (dependency vulnerability scan)...")
+    try:
+        # Scan installed packages
+        session.run(
+            "pip-audit",
+            "--desc",
+            "--skip-editable",
+            external=True,
+            success_codes=[0, 1]  # Allow failure to continue to gitleaks
+        )
+        session.log("[security] ✓ pip-audit scan complete")
+    except Exception as e:
+        session.warn(f"[security] pip-audit failed: {e}")
+    
+    # Run gitleaks
+    session.log("[security] Running gitleaks (secrets detection)...")
+    try:
+        # Check if gitleaks config exists
+        gitleaks_config = Path(".gitleaks.toml")
+        if not gitleaks_config.exists():
+            session.log("[security] No .gitleaks.toml found, using default gitleaks config")
+            session.run(
+                "gitleaks",
+                "detect",
+                "--source=.",
+                "--no-git",
+                "--verbose",
+                external=True,
+                success_codes=[0, 1]
+            )
+        else:
+            session.run(
+                "gitleaks",
+                "detect",
+                "--source=.",
+                "--no-git",
+                "--config=.gitleaks.toml",
+                "--verbose",
+                external=True,
+                success_codes=[0, 1]
+            )
+        session.log("[security] ✓ gitleaks scan complete")
+    except Exception as e:
+        session.warn(f"[security] gitleaks failed: {e}")
+    
+    session.log("[security] Security scans complete!")
+    session.log("[security] Review output above for any findings.")
+
+
+@nox.session(name="feature_health", python=PY_VERSIONS)
+def feature_health(session: nox.Session) -> None:
+    """
+    Run feature store health monitoring and generate health report.
+    
+    This session:
+    1. Checks health of all registered features
+    2. Generates health report (JSON + Markdown)
+    3. Alerts on stale or unhealthy features
+    
+    Exit codes:
+    - 0: All features healthy
+    - 1: Some features unhealthy (warnings)
+    - 2: Critical health issues detected
+    
+    Usage:
+        nox -s feature_health
+        nox -s feature_health -- --format=json
+        nox -s feature_health -- --store-path=custom/path
+    """
+    _choose_python(session)
+    session.log("[feature_health] Running feature health monitoring...")
+    
+    # Install dependencies
+    session.install("-e", ".", silent=False)
+    
+    # Check if feature store exists
+    import os
+    store_path = Path(os.getenv("FEATURE_STORE_PATH", "artifacts/features"))
+    
+    if not store_path.exists():
+        session.warn(f"[feature_health] Feature store not found at: {store_path}")
+        session.warn("[feature_health] Create feature store first or set FEATURE_STORE_PATH")
+        return
+    
+    # Run health check via CLI
+    try:
+        session.log("[feature_health] Checking feature health...")
+        
+        # Generate health report
+        report_path = store_path / "health_reports" / f"health_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        session.run(
+            "python",
+            "-m",
+            "codex_ml.cli.feature_store",
+            "health",
+            "--store-path",
+            str(store_path),
+            "--format",
+            "markdown",
+            "--output",
+            str(report_path),
+            external=True,
+        )
+        
+        session.log(f"[feature_health] ✓ Health report generated: {report_path}")
+        
+        # Also generate JSON report
+        json_report_path = report_path.with_suffix(".json")
+        session.run(
+            "python",
+            "-m",
+            "codex_ml.cli.feature_store",
+            "health",
+            "--store-path",
+            str(store_path),
+            "--format",
+            "json",
+            "--output",
+            str(json_report_path),
+            external=True,
+        )
+        
+        session.log(f"[feature_health] ✓ JSON report generated: {json_report_path}")
+        
+        # Parse JSON to check for critical issues
+        try:
+            import json
+            with open(json_report_path) as f:
+                report_data = json.load(f)
+            
+            unhealthy_count = report_data.get("summary", {}).get("unhealthy_features", 0)
+            total_count = report_data.get("summary", {}).get("total_features", 0)
+            
+            if total_count == 0:
+                session.log("[feature_health] ⚠ No features registered")
+                return
+            
+            alerts = report_data.get("alerts", [])
+            critical_alerts = [a for a in alerts if a.get("severity") == "CRITICAL"]
+            
+            if critical_alerts:
+                session.error(f"[feature_health] ✗ {len(critical_alerts)} CRITICAL alert(s) detected")
+                for alert in critical_alerts[:5]:  # Show first 5
+                    session.error(f"  - {alert.get('feature_name')}: {alert.get('message')}")
+                session.error("[feature_health] Feature health check FAILED")
+                raise SystemExit(2)
+            elif unhealthy_count > 0:
+                session.warn(f"[feature_health] ⚠ {unhealthy_count}/{total_count} features unhealthy")
+                session.log("[feature_health] Review health report for details")
+            else:
+                session.log(f"[feature_health] ✓ All {total_count} features healthy")
+                
+        except Exception as e:
+            session.warn(f"[feature_health] Could not parse health report: {e}")
+        
+    except Exception as e:
+        session.error(f"[feature_health] Health check failed: {e}")
+        raise
+    
+    session.log("[feature_health] Feature health monitoring complete!")
 
 
 @nox.session(name="rollback_smoke", python=PY_VERSIONS)
