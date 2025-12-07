@@ -200,18 +200,34 @@ def calculate_latency_delta(
     if not latencies:
         return 0.0
 
-    import numpy as np
+    try:
+        import numpy as np
+        
+        latencies_array = np.array(latencies)
+        p_latency = np.percentile(latencies_array, percentile)
 
-    latencies_array = np.array(latencies)
-    p_latency = np.percentile(latencies_array, percentile)
+        if baseline_latencies:
+            baseline_array = np.array(baseline_latencies)
+            baseline_p = np.percentile(baseline_array, percentile)
+            delta = p_latency - baseline_p
+            return float(delta)
 
-    if baseline_latencies:
-        baseline_array = np.array(baseline_latencies)
-        baseline_p = np.percentile(baseline_array, percentile)
-        delta = p_latency - baseline_p
-        return float(delta)
-
-    return float(p_latency)
+        return float(p_latency)
+    except ImportError:
+        # Fallback without numpy
+        sorted_latencies = sorted(latencies)
+        idx = int(len(sorted_latencies) * percentile / 100.0)
+        idx = min(idx, len(sorted_latencies) - 1)
+        p_latency = sorted_latencies[idx]
+        
+        if baseline_latencies:
+            sorted_baseline = sorted(baseline_latencies)
+            b_idx = int(len(sorted_baseline) * percentile / 100.0)
+            b_idx = min(b_idx, len(sorted_baseline) - 1)
+            baseline_p = sorted_baseline[b_idx]
+            return float(p_latency - baseline_p)
+        
+        return float(p_latency)
 
 
 def calculate_judge_disagreement(
@@ -232,26 +248,45 @@ def calculate_judge_disagreement(
     if not judge_ratings:
         return 0.0
 
-    import numpy as np
+    try:
+        import numpy as np
+        
+        disagreements = []
 
-    disagreements = []
+        for ratings in judge_ratings:
+            if len(ratings) < 2:
+                continue
 
-    for ratings in judge_ratings:
-        if len(ratings) < 2:
-            continue
+            # Calculate coefficient of variation (normalized std dev)
+            ratings_array = np.array(ratings)
+            mean = np.mean(ratings_array)
 
-        # Calculate coefficient of variation (normalized std dev)
-        ratings_array = np.array(ratings)
-        mean = np.mean(ratings_array)
+            if mean == 0:
+                disagreements.append(0.0)
+            else:
+                std = np.std(ratings_array)
+                cv = std / mean
+                disagreements.append(min(cv, 1.0))  # Cap at 1.0
 
-        if mean == 0:
-            disagreements.append(0.0)
-        else:
-            std = np.std(ratings_array)
-            cv = std / mean
-            disagreements.append(min(cv, 1.0))  # Cap at 1.0
-
-    return float(np.mean(disagreements)) if disagreements else 0.0
+        return float(np.mean(disagreements)) if disagreements else 0.0
+    except ImportError:
+        # Fallback without numpy
+        disagreements = []
+        
+        for ratings in judge_ratings:
+            if len(ratings) < 2:
+                continue
+            
+            mean = sum(ratings) / len(ratings)
+            if mean == 0:
+                disagreements.append(0.0)
+            else:
+                variance = sum((x - mean) ** 2 for x in ratings) / len(ratings)
+                std = variance ** 0.5
+                cv = std / mean
+                disagreements.append(min(cv, 1.0))
+        
+        return sum(disagreements) / len(disagreements) if disagreements else 0.0
 
 
 def calculate_trace_coverage(
@@ -285,7 +320,7 @@ def calculate_trace_coverage(
             steps_found = sum(
                 1 for step in required_steps[i] if step.lower() in response_lower
             )
-            coverage = steps_found / len(required_steps[i])
+            coverage = steps_found / len(required_steps[i]) if required_steps[i] else 0.0
         else:
             # Generic step detection
             step_indicators = [
