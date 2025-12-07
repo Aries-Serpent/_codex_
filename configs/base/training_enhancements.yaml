@@ -1,0 +1,75 @@
+# Training Enhancements Configuration
+# Provides early stopping and advanced learning rate scheduling
+
+# Early Stopping Configuration
+early_stopping:
+  # Whether early stopping is enabled (default: false for backward compatibility)
+  enabled: false
+  
+  # Number of evaluation epochs with no improvement before stopping
+  patience: 3
+  
+  # Metric to monitor for early stopping
+  # Common options: 'val_loss', 'val_accuracy', 'eval_loss', 'eval_accuracy'
+  monitor: "val_loss"
+  
+  # Mode: 'min' to minimize metric, 'max' to maximize metric
+  mode: "min"
+  
+  # Minimum change in monitored metric to qualify as improvement
+  min_delta: 0.0001
+  
+  # Whether to print early stopping messages
+  verbose: true
+
+# Learning Rate Scheduler Configuration
+scheduler:
+  # Scheduler type
+  # Options: constant, constant_with_warmup, linear, cosine, 
+  #          cosine_with_restarts, polynomial, inverse_sqrt
+  type: "linear"
+  
+  # Number of warmup steps (linear warmup from 0 to initial LR)
+  num_warmup_steps: 0
+  
+  # Total number of training steps
+  # Set to null to auto-calculate from num_epochs, dataset_size, and batch_size
+  num_training_steps: null
+  
+  # Scheduler-specific parameters
+  
+  # For cosine_with_restarts: number of restart cycles
+  num_cycles: 0.5
+  
+  # For linear/polynomial: final learning rate
+  lr_end: 0.0
+  
+  # For polynomial: decay power
+  power: 1.0
+
+# Training Loop Configuration
+training:
+  # Gradient accumulation steps
+  gradient_accumulation_steps: 1
+  
+  # Mixed precision training (if supported)
+  mixed_precision: false
+  
+  # Gradient clipping max norm (null to disable)
+  max_grad_norm: 1.0
+  
+  # Logging frequency (steps)
+  logging_steps: 100
+  
+  # Evaluation frequency (steps)
+  eval_steps: 500
+  
+  # Checkpoint saving frequency (steps)
+  save_steps: 1000
+
+# Notes:
+# - Early stopping is disabled by default to maintain backward compatibility
+# - Enable it by setting early_stopping.enabled: true
+# - Scheduler type 'linear' with warmup is a good default for most tasks
+# - For fine-tuning, consider 'constant_with_warmup' or small warmup + cosine
+# - Set num_training_steps explicitly or let it be auto-calculated
