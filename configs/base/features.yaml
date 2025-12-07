@@ -1,0 +1,126 @@
+# Feature Store Configuration
+# Controls feature store behavior, storage, versioning, and health monitoring
+
+feature_store:
+  # Storage configuration
+  storage:
+    # Base path for feature store (relative to project root or absolute)
+    base_path: "artifacts/features"
+    
+    # Storage format for materialized features
+    format: "parquet"  # Options: parquet, csv, feather
+    
+    # Compression for parquet files
+    compression: "snappy"  # Options: snappy, gzip, brotli, none
+    
+    # Partition features by date for efficient retrieval
+    partition_by_date: true
+    
+  # Versioning configuration
+  versioning:
+    # Enable feature versioning
+    enabled: true
+    
+    # Version naming scheme
+    scheme: "semantic"  # Options: semantic (1.0.0), timestamp, hash
+    
+    # Auto-increment version on feature update
+    auto_increment: true
+    
+    # Retain old versions (number of versions to keep, 0 = keep all)
+    retention_count: 10
+    
+  # Point-in-time retrieval configuration
+  point_in_time:
+    # Enable point-in-time feature retrieval
+    enabled: true
+    
+    # Default lookback window in days
+    default_lookback_days: 30
+    
+    # Cache PoT queries for performance
+    cache_enabled: true
+    cache_ttl_minutes: 60
+
+# Feature Health Monitoring Configuration
+monitoring:
+  # Freshness thresholds (minutes)
+  freshness_thresholds:
+    fresh: 60           # < 1 hour: Fresh
+    acceptable: 360     # 1-6 hours: Acceptable
+    stale: 1440         # 6-24 hours: Stale
+    very_stale: 10080   # > 24 hours: Very stale
+  
+  # Health check configuration
+  health_checks:
+    # Enable automated health checks
+    enabled: true
+    
+    # Health check interval (minutes)
+    interval_minutes: 15
+    
+    # Error threshold for unhealthy status
+    error_threshold: 5
+    
+  # SLA configuration
+  sla:
+    # Feature freshness SLA (minutes)
+    freshness_sla_minutes: 120
+    
+    # Error rate SLA (percentage)
+    error_rate_sla_percent: 1.0
+    
+    # Alert on SLA violation
+    alert_on_violation: true
+    
+  # Alerting configuration
+  alerting:
+    # Enable alerting system
+    enabled: true
+    
+    # Alert severity levels
+    # CRITICAL: Feature unavailable or very stale
+    # WARNING: Feature approaching staleness threshold
+    # INFO: Feature health degradation
+    levels: ["CRITICAL", "WARNING", "INFO"]
+    
+    # Alert channels (for future integration)
+    channels: ["log"]  # Options: log, email, slack, pagerduty
+    
+  # Reporting configuration
+  reporting:
+    # Generate health reports
+    enabled: true
+    
+    # Report output directory
+    output_dir: "artifacts/features/health_reports"
+    
+    # Report formats
+    formats: ["json", "markdown"]  # Options: json, markdown, html
+    
+    # Include detailed metrics in report
+    detailed_metrics: true
+    
+    # Include historical trends
+    include_trends: true
+
+# CLI Configuration
+cli:
+  # Default commands behavior
+  register:
+    # Auto-save registry after registration
+    auto_save: true
+    
+  list:
+    # Include version information in list output
+    show_versions: true
+    
+    # Include health status in list output
+    show_health: true
+    
+  health:
+    # Default output format
+    format: "markdown"  # Options: json, markdown, table
+    
+    # Include recommendations in health report
+    include_recommendations: true
