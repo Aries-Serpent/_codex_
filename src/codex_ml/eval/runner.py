@@ -92,12 +92,13 @@ def _safe_operation(
 
 def _normalise_metrics_sink(value: Any) -> list[str]:
     allowed = {"ndjson", "csv", "none"}
+    tokens: list[str]
     if isinstance(value, str):
         tokens = [token.strip().lower() for token in value.split(",") if token.strip()]
     elif isinstance(value, Sequence) and not isinstance(value, (bytes, bytearray)):
         tokens = [str(item).strip().lower() for item in value if str(item).strip()]
     else:
-        tokens: list[str] = []
+        tokens = []
     if not tokens:
         tokens = ["ndjson"]
     invalid = [token for token in tokens if token not in allowed]
