@@ -1,0 +1,69 @@
+# Data Validation Configuration
+# Controls dataset quality checks and validation rules
+
+data_validation:
+  # Enable data validation
+  enabled: false  # Disabled by default, opt-in
+  
+  # Validation on pipeline stages
+  validate_on_load: true
+  validate_on_transform: false
+  validate_before_training: true
+  
+  # Required columns
+  required_columns:
+    enabled: true
+    columns: []  # List of required column names
+  
+  # Null value checks
+  null_checks:
+    enabled: true
+    allow_nulls: false
+    columns: []  # Empty = check all columns
+  
+  # Data type validation
+  data_types:
+    enabled: true
+    type_mapping: {}  # Map column names to expected types
+  
+  # Range validation
+  range_checks:
+    enabled: false
+    ranges: {}  # Map column names to {min: val, max: val}
+  
+  # Uniqueness checks
+  uniqueness:
+    enabled: false
+    unique_columns: []  # Columns that must have unique values
+  
+  # JSON schema validation
+  schema_validation:
+    enabled: false
+    schema: {}  # JSON schema specification
+  
+  # Great Expectations integration
+  great_expectations:
+    enabled: false
+    context_root: "great_expectations"
+    expectation_suite_name: "default"
+    checkpoint_name: "default_checkpoint"
+  
+  # Performance settings
+  performance:
+    # Sample large datasets for validation
+    sampling_enabled: true
+    sample_size: 10000  # Max rows to validate
+    sampling_strategy: "random"  # Options: random, first, stratified
+  
+  # Error handling
+  error_handling:
+    # Fail on validation error or just warn
+    fail_on_error: true
+    log_validation_results: true
+    save_validation_report: true
+    report_path: "artifacts/validation_reports"
+  
+  # Custom validation rules
+  custom_rules:
+    enabled: false
+    rules: []  # List of custom rule configurations
