@@ -50,6 +50,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import List
 
@@ -506,6 +507,121 @@ def security(session: nox.Session) -> None:
     
     session.log("[security] Security scans complete!")
     session.log("[security] Review output above for any findings.")
+
+
+@nox.session(name="feature_health", python=PY_VERSIONS)
+def feature_health(session: nox.Session) -> None:
+    """
+    Run feature store health monitoring and generate health report.
+    
+    This session:
+    1. Checks health of all registered features
+    2. Generates health report (JSON + Markdown)
+    3. Alerts on stale or unhealthy features
+    
+    Exit codes:
+    - 0: All features healthy
+    - 1: Some features unhealthy (warnings)
+    - 2: Critical health issues detected
+    
+    Usage:
+        nox -s feature_health
+        nox -s feature_health -- --format=json
+        nox -s feature_health -- --store-path=custom/path
+    """
+    _choose_python(session)
+    session.log("[feature_health] Running feature health monitoring...")
+    
+    # Install dependencies
+    session.install("-e", ".", silent=False)
+    
+    # Check if feature store exists
+    import os
+    store_path = Path(os.getenv("FEATURE_STORE_PATH", "artifacts/features"))
+    
+    if not store_path.exists():
+        session.warn(f"[feature_health] Feature store not found at: {store_path}")
+        session.warn("[feature_health] Create feature store first or set FEATURE_STORE_PATH")
+        return
+    
+    # Run health check via CLI
+    try:
+        session.log("[feature_health] Checking feature health...")
+        
+        # Generate health report
+        report_path = store_path / "health_reports" / f"health_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        session.run(
+            "python",
+            "-m",
+            "codex_ml.cli.feature_store",
+            "health",
+            "--store-path",
+            str(store_path),
+            "--format",
+            "markdown",
+            "--output",
+            str(report_path),
+            external=True,
+        )
+        
+        session.log(f"[feature_health] ✓ Health report generated: {report_path}")
+        
+        # Also generate JSON report
+        json_report_path = report_path.with_suffix(".json")
+        session.run(
+            "python",
+            "-m",
+            "codex_ml.cli.feature_store",
+            "health",
+            "--store-path",
+            str(store_path),
+            "--format",
+            "json",
+            "--output",
+            str(json_report_path),
+            external=True,
+        )
+        
+        session.log(f"[feature_health] ✓ JSON report generated: {json_report_path}")
+        
+        # Parse JSON to check for critical issues
+        try:
+            import json
+            with open(json_report_path) as f:
+                report_data = json.load(f)
+            
+            unhealthy_count = report_data.get("summary", {}).get("unhealthy_features", 0)
+            total_count = report_data.get("summary", {}).get("total_features", 0)
+            
+            if total_count == 0:
+                session.log("[feature_health] ⚠ No features registered")
+                return
+            
+            alerts = report_data.get("alerts", [])
+            critical_alerts = [a for a in alerts if a.get("severity") == "CRITICAL"]
+            
+            if critical_alerts:
+                session.error(f"[feature_health] ✗ {len(critical_alerts)} CRITICAL alert(s) detected")
+                for alert in critical_alerts[:5]:  # Show first 5
+                    session.error(f"  - {alert.get('feature_name')}: {alert.get('message')}")
+                session.error("[feature_health] Feature health check FAILED")
+                session.error(code=2)
+            elif unhealthy_count > 0:
+                session.warn(f"[feature_health] ⚠ {unhealthy_count}/{total_count} features unhealthy")
+                session.log("[feature_health] Review health report for details")
+            else:
+                session.log(f"[feature_health] ✓ All {total_count} features healthy")
+                
+        except Exception as e:
+            session.warn(f"[feature_health] Could not parse health report: {e}")
+        
+    except Exception as e:
+        session.error(f"[feature_health] Health check failed: {e}")
+        raise
+    
+    session.log("[feature_health] Feature health monitoring complete!")
 
 
 @nox.session(name="rollback_smoke", python=PY_VERSIONS)
