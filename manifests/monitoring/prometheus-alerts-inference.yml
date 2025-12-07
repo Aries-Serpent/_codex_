@@ -1,0 +1,75 @@
+groups:
+  - name: inference_server_alerts
+    interval: 30s
+    rules:
+      - alert: HighErrorRate
+        expr: rate(inference_errors_total[5m]) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }} errors/sec (threshold: 1)"
+
+      - alert: CircuitBreakerOpen
+        expr: circuit_breaker_state == 2
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker open for model {{ $labels.model }}"
+          description: "Circuit breaker has been open for 1+ minutes"
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(inference_request_latency_milliseconds_bucket[5m])) > 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High P95 latency on {{$labels.endpoint}}"
+          description: "P95 latency is {{ $value }}ms (threshold: 1000ms)"
+
+      - alert: LowCacheHitRate
+        expr: rate(model_cache_hits_total[5m]) / (rate(model_cache_hits_total[5m]) + rate(model_cache_misses_total[5m])) < 0.5
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 50%)"
+
+      - alert: HighCPUUsage
+        expr: cpu_usage_percent > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% (threshold: 90%)"
+
+      - alert: HighMemoryUsage
+        expr: memory_usage_bytes / 1024 / 1024 / 1024 > 12
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}GB (threshold: 12GB)"
+
+      - alert: GPUNotUtilized
+        expr: gpu_usage_percent < 20
+        for: 15m
+        labels:
+          severity: info
+        annotations:
+          summary: "GPU underutilized on device {{$labels.device}}"
+          description: "GPU usage is {{ $value }}% (threshold: 20%)"
+
+      - alert: InferenceServerDown
+        expr: up{job="inference_server"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Inference server is down"
+          description: "Inference server has been down for 1+ minutes"

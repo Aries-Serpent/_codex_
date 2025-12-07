@@ -14,7 +14,14 @@ logger = logging.getLogger(__name__)
 class WeaviateStore:
     """Weaviate vector store (stub implementation for offline mode)"""
 
-    def __init__(self, url: Optional[str] = None, api_key: Optional[str] = None):
+    def __init__(
+        self,
+        index_name: str = "default",
+        url: Optional[str] = None,
+        api_key: Optional[str] = None,
+        **kwargs
+    ):
+        self.index_name = index_name
         self.url = url
         self.api_key = api_key
         logger.warning(
