@@ -666,10 +666,4 @@ class TestFeatureMetadata:
         assert metadata_dict["dtype"] == "float64"
 
 
-# Fixtures for pytest
-@pytest.fixture
-def tmp_path():
-    """Provide temporary directory for tests."""
-    import tempfile
-    with tempfile.TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir)
+# pytest's built-in tmp_path fixture is used (no custom fixture needed)

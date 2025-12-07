@@ -293,12 +293,18 @@ def info(
         store = FeatureStore(store_path)
         monitor = FeatureHealthMonitor()
         
-        # Get metadata
+        # Get metadata - handle case where feature exists but has no metadata
         metadata = store.get_feature_metadata(feature_name)
         
-        if not metadata:
-            console.print(f"[yellow]Feature not found: {feature_name}[/yellow]")
-            return
+        if metadata is None:
+            # Check if feature exists in any group
+            feature = store._find_feature(feature_name)
+            if feature is None:
+                console.print(f"[yellow]Feature not found: {feature_name}[/yellow]")
+                return
+            else:
+                console.print(f"[yellow]Feature exists but has no metadata: {feature_name}[/yellow]")
+                # Continue with health check even without metadata
         
         # Get health status
         health = monitor.check_feature_health(feature_name)
@@ -306,15 +312,16 @@ def info(
         # Display information
         console.print(f"\n[bold]Feature: {feature_name}[/bold]\n")
         
-        console.print(f"[cyan]Metadata:[/cyan]")
-        console.print(f"  Version: {metadata.version}")
-        console.print(f"  Data Type: {metadata.dtype}")
-        console.print(f"  Description: {metadata.description}")
-        console.print(f"  Created: {metadata.created_at}")
-        console.print(f"  Updated: {metadata.updated_at}")
-        
-        if metadata.tags:
-            console.print(f"  Tags: {', '.join(f'{k}={v}' for k, v in metadata.tags.items())}")
+        if metadata:
+            console.print(f"[cyan]Metadata:[/cyan]")
+            console.print(f"  Version: {metadata.version}")
+            console.print(f"  Data Type: {metadata.dtype}")
+            console.print(f"  Description: {metadata.description}")
+            console.print(f"  Created: {metadata.created_at}")
+            console.print(f"  Updated: {metadata.updated_at}")
+            
+            if metadata.tags:
+                console.print(f"  Tags: {', '.join(f'{k}={v}' for k, v in metadata.tags.items())}")
         
         console.print(f"\n[cyan]Health Status:[/cyan]")
         health_icon = "✓" if health.is_healthy else "✗"

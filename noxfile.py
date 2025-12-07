@@ -607,7 +607,7 @@ def feature_health(session: nox.Session) -> None:
                 for alert in critical_alerts[:5]:  # Show first 5
                     session.error(f"  - {alert.get('feature_name')}: {alert.get('message')}")
                 session.error("[feature_health] Feature health check FAILED")
-                session.error(code=2)
+                raise SystemExit(2)
             elif unhealthy_count > 0:
                 session.warn(f"[feature_health] ⚠ {unhealthy_count}/{total_count} features unhealthy")
                 session.log("[feature_health] Review health report for details")

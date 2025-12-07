@@ -13,7 +13,7 @@ import json
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 def list_checkpoints(
     checkpoint_dir: Path,
@@ -55,7 +55,7 @@ def apply_retention_policy(
     checkpoints: List[dict],
     keep_last_n: int = 5,
     keep_days: int = 30,
-) -> tuple[List[dict], List[dict]]:
+) -> Tuple[List[dict], List[dict]]:
     """Apply retention policy and return (to_keep, to_delete)."""
     # Sort by age (newest first)
     sorted_ckpts = sorted(checkpoints, key=lambda x: x["age_days"])
