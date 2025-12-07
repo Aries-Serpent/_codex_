@@ -13,7 +13,6 @@ from uuid import uuid4
 from codex_ml.plugins.registry import Registry
 from codex_ml.security.runtime import load_secret, scan_prompt_for_unsafe_content
 
-
 deployment_registry = Registry("deployment")
 
 

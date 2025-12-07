@@ -15,7 +15,7 @@ except Exception:  # pragma: no cover - defensive
 try:  # pragma: no cover - optional import cycle guard
     from codex_ml.training.device_strategy import DeviceConfig
 except Exception:  # pragma: no cover - fallback for lightweight environments
-    DeviceConfig = None  # type: ignore[assignment]
+    DeviceConfig = None
 
 warnings.warn(
     "codex_ml.interfaces.tokenizer_hf is deprecated; import HFTokenizerAdapter "

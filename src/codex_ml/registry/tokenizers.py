@@ -295,7 +295,7 @@ def encode_cached(
     for attr in ("cache_identifier", "name_or_path", "_name_or_path", "identifier"):
         value = getattr(tokenizer, attr, None)
         if value is not None:
-            identifier = value  # type: ignore[assignment]
+            identifier = value
             break
     else:
         identifier = id(tokenizer)

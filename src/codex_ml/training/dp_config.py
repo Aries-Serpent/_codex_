@@ -56,7 +56,7 @@ def make_private_model(
         return model, optimizer, data_loader, None
 
     dp_config._ensure_dependency()
-    from opacus import PrivacyEngine  # type: ignore
+    from opacus import PrivacyEngine
 
     privacy_engine = PrivacyEngine(secure_rng=bool(dp_config.secure_rng))
     model, optimizer, data_loader = privacy_engine.make_private(

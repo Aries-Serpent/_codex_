@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import math
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 try:  # pragma: no cover - optional dependency
-    import torch
+    import torch as _torch
 except Exception:  # pragma: no cover - torch may be unavailable in minimal envs
-    torch = None  # type: ignore[assignment]
+    _torch = None  # type: ignore[assignment]
     _HAS_TORCH = False
 else:
     _HAS_TORCH = True
@@ -16,7 +20,7 @@ __all__ = ["token_accuracy", "perplexity"]
 def token_accuracy(logits: torch.Tensor, targets: torch.Tensor) -> float:
     """Compute token-level accuracy given logits and target ids."""
 
-    if not _HAS_TORCH or torch is None:
+    if not _HAS_TORCH or _torch is None:
         raise ImportError("PyTorch is required for token_accuracy")
     preds = logits.argmax(dim=-1)
     correct = (preds == targets).float().sum().item()

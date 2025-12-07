@@ -14,7 +14,7 @@ except Exception:  # pragma: no cover - torch optional in tests
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
-            return float(value.item())  # type: ignore[arg-type]
+            return float(value.item())
         return float(value)  # type: ignore[arg-type]
     except Exception:
         return 0.0
@@ -71,7 +71,9 @@ def _bleu1(preds: list[str], refs: list[str]) -> float:
             scores.append(0.0)
             continue
         precision = overlap / pred_total
-        brevity_penalty = 1.0 if pred_total > ref_total else (pred_total / ref_total) if ref_total else 0.0
+        brevity_penalty = (
+            1.0 if pred_total > ref_total else (pred_total / ref_total) if ref_total else 0.0
+        )
         scores.append(brevity_penalty * precision)
     return float(sum(scores) / len(scores))
 
@@ -118,7 +120,7 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             target = labels
             if hasattr(target, "to") and getattr(target, "device", None) != preds.device:
                 target = target.to(preds.device)
-            common = min(preds.shape[-1], target.shape[-1])  # type: ignore[arg-type]
+            common = min(preds.shape[-1], target.shape[-1])
             if common > 0:
                 accuracy_tensor = (preds[..., :common] == target[..., :common]).float()
                 record["token_accuracy"] = float(accuracy_tensor.mean().item())

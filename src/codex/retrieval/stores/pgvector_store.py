@@ -23,24 +23,24 @@ class PGVectorStore:
 
     def create_index(self, embeddings: np.ndarray, documents: list[dict[str, Any]]):
         """Stub: Create index"""
-        raise NotImplementedError(
+        raise RuntimeError(
             "PGVectorStore is not available in offline mode. Use FAISSStore instead."
         )
 
     def save(self):
         """Stub: Save index"""
-        raise NotImplementedError(
+        raise RuntimeError(
             "PGVectorStore is not available in offline mode. Use FAISSStore instead."
         )
 
     def load(self):
         """Stub: Load index"""
-        raise NotImplementedError(
+        raise RuntimeError(
             "PGVectorStore is not available in offline mode. Use FAISSStore instead."
         )
 
     def search(self, query_vector: np.ndarray, top_k: int = 5) -> list[dict[str, Any]]:
         """Stub: Search"""
-        raise NotImplementedError(
+        raise RuntimeError(
             "PGVectorStore is not available in offline mode. Use FAISSStore instead."
         )

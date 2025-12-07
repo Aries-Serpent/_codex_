@@ -46,7 +46,7 @@ try:  # optional dependency
 
     _HAS_MLFLOW = True
 except Exception:  # pragma: no cover - optional
-    mlflow = None  # type: ignore
+    mlflow = None
     _HAS_MLFLOW = False
 
 
@@ -259,11 +259,11 @@ if _HAS_HYDRA:
         arg_list = sys.argv[1:]
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
-            cfg_map = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[union-attr]
+            cfg_map = OmegaConf.to_container(cfg, resolve=True)
             if isinstance(cfg_map, dict):
                 _sanitize_eval_config(cfg_map)
             checkpoint_dir = (
-                cfg_map.get("checkpoint", {}).get("dir")  # type: ignore[assignment]
+                cfg_map.get("checkpoint", {}).get("dir")
                 if isinstance(cfg_map, dict)
                 else None
             )

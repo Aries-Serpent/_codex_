@@ -8,13 +8,13 @@ from pathlib import Path
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
 except ModuleNotFoundError:  # pragma: no cover - pydantic missing
-    ValidationError = None  # type: ignore[assignment]
+    ValidationError = None
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file
 except Exception:  # pragma: no cover - schema validation optional
-    TrainConfig = None  # type: ignore[assignment]
-    validate_config_file = None  # type: ignore[assignment]
+    TrainConfig = None
+    validate_config_file = None
 
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
@@ -28,7 +28,7 @@ from codex_ml.utils.yaml_support import MissingPyYAMLError, safe_load
 _ = (ArgparseJSONParser, run_cmd)
 
 try:  # Optional dependency: prefer Typer when available
-    import typer  # type: ignore
+    import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
     typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub without Typer attributes
@@ -108,7 +108,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
             model_name, epochs = _fallback_validate_config(config_path)
             echo(f"OK: {config_path} is valid. model_name={model_name} epochs={epochs}")
             raise exit_cls(code=0)
-        except exit_cls:  # type: ignore[misc]
+        except exit_cls:
             raise
         except Exception as exc:  # pragma: no cover - simple fallback
             echo(f"Invalid configuration:\n{exc}", err=True)
@@ -118,7 +118,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
         cfg = validate_config_file(config_path)
         echo(f"OK: {config_path} is valid. model_name={cfg.model_name} epochs={cfg.epochs}")
         raise exit_cls(code=0)
-    except exit_cls:  # type: ignore[misc]
+    except exit_cls:
         raise
     except ValidationError as exc:
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)

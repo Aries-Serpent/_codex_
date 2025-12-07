@@ -1,3 +1,9 @@
+"""Evaluation run orchestration and execution.
+
+Provides high-level functions for running model evaluation across datasets,
+managing evaluation loops, and collecting metrics in a unified format.
+"""
+
 from __future__ import annotations
 
 import argparse

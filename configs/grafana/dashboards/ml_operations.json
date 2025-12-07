@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "title": "ML Operations Dashboard",
+    "panels": [
+      {
+        "title": "Model Performance",
+        "targets": [{"expr": "model_accuracy"}],
+        "type": "graph"
+      },
+      {
+        "title": "Request Rate",
+        "targets": [{"expr": "rate(http_requests_total[5m])"}],
+        "type": "graph"
+      },
+      {
+        "title": "Error Rate", 
+        "targets": [{"expr": "rate(http_errors_total[5m])"}],
+        "type": "graph"
+      },
+      {
+        "title": "Active Models",
+        "targets": [{"expr": "active_models"}],
+        "type": "stat"
+      }
+    ],
+    "refresh": "30s"
+  }
+}

@@ -30,10 +30,10 @@ from typing import Any, Optional
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
-    from peft import LoraConfig, get_peft_model  # type: ignore
+    from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - `peft` not installed
-    LoraConfig = None  # type: ignore
-    get_peft_model = None  # type: ignore
+    LoraConfig = None
+    get_peft_model = None
 
 __all__ = ["apply_lora", "LoraConfig", "get_peft_model", "DEFAULT_CFG"]
 
@@ -126,7 +126,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
 
     try:
-        config = LoraConfig(task_type=task_type, **config_kwargs)  # type: ignore[call-arg]
+        config = LoraConfig(task_type=task_type, **config_kwargs)
         adapted = get_peft_model(model, config)
         try:
             setattr(adapted, "peft_config", dict(merged))

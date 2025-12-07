@@ -18,8 +18,8 @@ Notes:
 from __future__ import annotations
 
 import inspect
-import time
 import os
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Sequence
@@ -28,8 +28,6 @@ from uuid import uuid4
 from codex_ml.metrics.api import get_metric
 from codex_ml.metrics.writers import (
     BaseMetricsWriter,
-    CSVMetricsWriter,
-    NDJSONMetricsWriter,
 )
 from codex_ml.tracking.offline import decide_offline
 from codex_ml.training.engine import TrainingEngine
@@ -295,7 +293,9 @@ def evaluate_epoch(
     return result
 
 
-def _resolve_metric_functions(metric_specs: Dict[str, Callable] | Iterable[str | Callable]) -> Dict[str, Callable]:
+def _resolve_metric_functions(
+    metric_specs: Dict[str, Callable] | Iterable[str | Callable],
+) -> Dict[str, Callable]:
     """Coerce metric specifications into callable form using the registry."""
 
     resolved: Dict[str, Callable] = {}

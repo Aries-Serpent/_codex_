@@ -268,7 +268,7 @@ if _HAS_CLICK:
         help="Enable Prometheus telemetry",
     )
     @click.option("--telemetry-port", default=8001, show_default=True, help="Telemetry server port")
-    def train_model(**kwargs: Any) -> None:  # type: ignore[ban-all-any]
+    def train_model(**kwargs: Any) -> None:
         """Train a model using the unified training pipeline."""
 
         _train_model_from_click(**kwargs)
@@ -300,7 +300,7 @@ if __name__ == "__main__":  # pragma: no cover
 try:
     from .codex_cli import app as infer  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - optional CLI wiring
-    infer = cli  # type: ignore[assignment]
+    infer = cli
 
 
 main = package_main

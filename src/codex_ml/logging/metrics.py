@@ -5,12 +5,12 @@ from __future__ import annotations
 import json
 import os
 import time
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Dict, Optional, TextIO
 
 try:  # optional psutil
-    import psutil  # type: ignore
+    import psutil
 except Exception:  # pragma: no cover
     psutil = None
 

@@ -18,7 +18,7 @@ from codex_ml.plugins import registries
 _ = (ArgparseJSONParser, run_cmd)
 
 try:  # Optional dependency: Typer preferred when available
-    import typer  # type: ignore
+    import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer missing
     typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub

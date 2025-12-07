@@ -28,15 +28,15 @@ else:
     _TrainTokenizerConfig = Any
 
 if typer is not None and hasattr(typer, "Typer"):
-    _Typer = typer.Typer  # type: ignore[attr-defined]
+    _Typer = typer.Typer
 else:  # pragma: no cover - Typer missing in environment
     typer = None
 
-    class _FallbackTyper:  # type: ignore[too-many-instance-attributes]
+    class _FallbackTyper:
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility stub
             raise RuntimeError("Typer is required for codex_ml.cli.tokenizer")
 
-    _Typer = _FallbackTyper  # type: ignore[misc]
+    _Typer = _FallbackTyper
 
 
 app = _Typer(help="Tokenizer utilities")
@@ -57,7 +57,7 @@ def _echo(message: str) -> None:
 def _load_mapping(path: Path) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     if _HAS_YAML:
-        data = yaml.safe_load(text)  # type: ignore[no-any-unimported]
+        data = yaml.safe_load(text)
     else:
         data = json.loads(text)
     if not isinstance(data, dict):

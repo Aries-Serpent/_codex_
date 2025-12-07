@@ -18,15 +18,15 @@ if _HAS_TRANSFORMERS and transformers is not None:
     PreTrainedTokenizerBase = getattr(transformers, "PreTrainedTokenizerBase", Any)
     if AutoModelForCausalLM is None or AutoTokenizer is None:  # pragma: no cover - stubbed install
         _HAS_TRANSFORMERS = False
-        AutoModelForCausalLM = None  # type: ignore[assignment]
-        AutoTokenizer = None  # type: ignore[assignment]
-        PreTrainedModel = Any  # type: ignore[assignment]
-        PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+        AutoModelForCausalLM = None
+        AutoTokenizer = None
+        PreTrainedModel = Any
+        PreTrainedTokenizerBase = Any
 else:  # pragma: no cover - optional dependency
-    AutoModelForCausalLM = None  # type: ignore[assignment]
-    AutoTokenizer = None  # type: ignore[assignment]
-    PreTrainedModel = Any  # type: ignore[assignment]
-    PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    PreTrainedModel = Any
+    PreTrainedTokenizerBase = Any
 
 try:  # optional PEFT
     from peft import LoraConfig, PeftModel, get_peft_model
@@ -103,9 +103,9 @@ def _ensure_torch() -> None:
 def _normalise_mapping(config: Mapping[str, Any]) -> MutableMapping[str, Any]:
     if hasattr(config, "to_container"):
         try:
-            return config.to_container(resolve=True)  # type: ignore[attr-defined]
+            return config.to_container(resolve=True)
         except Exception:  # pragma: no cover - fall back to simple dict conversion
-            return dict(config)  # type: ignore[arg-type]
+            return dict(config)
     return dict(config)
 
 

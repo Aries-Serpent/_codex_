@@ -16,7 +16,7 @@ _torch_module, _HAS_TORCH = optional_import("torch")
 if _HAS_TORCH:
     torch = cast(Any, _torch_module)
 else:
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel  # type: ignore
@@ -26,8 +26,8 @@ else:  # pragma: no cover - runtime fallback when transformers missing
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
-    AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)  # type: ignore[attr-defined]
+    AutoModelForCausalLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForCausalLM)
+    AutoModelForMaskedLM = cast("type[HF_PreTrainedModel]", transformers.AutoModelForMaskedLM)
 else:  # pragma: no cover - optional dependency unavailable
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoModelForMaskedLM = None  # type: ignore[assignment]

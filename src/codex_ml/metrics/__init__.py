@@ -11,7 +11,6 @@ from .api import (
 )
 from .evaluator import batch_metrics
 from .generative import bleu, rouge_l
-from .reward import reward_mean, reward_success_rate
 from .metric_implementations import (
     BLEUScore,
     F1Score,
@@ -19,6 +18,7 @@ from .metric_implementations import (
     RecallScore,
     TokenAccuracy,
 )
+from .reward import reward_mean, reward_success_rate
 from .text import perplexity, token_accuracy
 
 __all__ = [

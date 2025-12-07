@@ -35,9 +35,9 @@ def _coerce_triples(data: Iterable[Any]) -> list[tuple[str, str, float]]:
             completion = item.get("completion")
             reward_value_raw = item.get("reward")
         elif isinstance(item, (tuple, list)) and len(item) >= 3:
-            prompt = item[0]  # type: ignore[index]
-            completion = item[1]  # type: ignore[index]
-            reward_value_raw = item[2]  # type: ignore[index]
+            prompt = item[0]
+            completion = item[1]
+            reward_value_raw = item[2]
         else:  # pragma: no cover - defensive branch
             LOGGER.debug("Skipping unsupported preference entry: %r", item)
             continue

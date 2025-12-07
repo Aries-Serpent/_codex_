@@ -15,7 +15,7 @@ from typing import Any, Optional
 try:
     import numpy as np
 except Exception:
-    np = None  # type: ignore
+    np = None
 try:
     import torch
 except Exception:
@@ -47,18 +47,18 @@ def set_seed(seed: int, deterministic: bool = True) -> RNGState:
             # performance and may restrict certain operators.
             try:  # pragma: no cover - environment dependent
                 if hasattr(torch, "use_deterministic_algorithms"):
-                    torch.use_deterministic_algorithms(True)  # type: ignore[attr-defined]
+                    torch.use_deterministic_algorithms(True)
             except Exception:
                 # Fallback to legacy CuDNN knobs
                 try:
-                    torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-                    torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+                    torch.backends.cudnn.deterministic = True
+                    torch.backends.cudnn.benchmark = False
                 except Exception:
                     pass
         torch_state = torch.get_rng_state().tolist() if hasattr(torch, "get_rng_state") else None
         if hasattr(torch.cuda, "get_rng_state_all"):
             try:
-                torch_cuda_state = [t.tolist() for t in torch.cuda.get_rng_state_all()]  # type: ignore
+                torch_cuda_state = [t.tolist() for t in torch.cuda.get_rng_state_all()]
             except Exception:
                 torch_cuda_state = None
     return RNGState(random.getstate(), np_state, torch_state, torch_cuda_state)
@@ -72,9 +72,9 @@ def _to_jsonable(obj: Any) -> Any:
     - dict/list    -> recurse
     """
     try:
-        import numpy as _np  # type: ignore
+        import numpy as _np
     except Exception:  # pragma: no cover - numpy optional
-        _np = None  # type: ignore
+        _np = None
 
     if _np is not None and isinstance(obj, _np.ndarray):
         return obj.tolist()
@@ -130,7 +130,7 @@ def restore_rng(state: RNGState) -> None:
     if torch is not None:
         if state.torch_state is not None and hasattr(torch, "set_rng_state"):
             try:
-                torch.set_rng_state(torch.ByteTensor(state.torch_state))  # type: ignore[attr-defined]
+                torch.set_rng_state(torch.ByteTensor(state.torch_state))
             except Exception:
                 pass
         if (
@@ -140,7 +140,7 @@ def restore_rng(state: RNGState) -> None:
         ):
             try:
                 tensors = [torch.ByteTensor(t) for t in state.torch_cuda_state]
-                torch.cuda.set_rng_state_all(tensors)  # type: ignore[attr-defined]
+                torch.cuda.set_rng_state_all(tensors)
             except Exception:
                 pass
 

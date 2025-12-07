@@ -8,6 +8,8 @@ from __future__ import annotations
 import importlib
 import importlib.machinery
 import importlib.util
+import os
+import random
 import sys
 from pathlib import Path
 
@@ -236,3 +238,37 @@ def pooling_mode(request):
     finally:
         DBManager.close_all_pools()
         DBManager._POOL_ENABLED = original
+
+
+@pytest.fixture(autouse=True)
+def set_deterministic_seed():
+    """
+    Autouse fixture to set deterministic seeds for randomness sources.
+    This prevents flakiness arising from non-deterministic RNG state.
+    """
+    seed = int(os.environ.get("CODEX_TEST_SEED", "42"))
+    random.seed(seed)
+    
+    # Guard optional numpy usage without adding a hard dependency
+    try:
+        import numpy as np
+        np.random.seed(seed)
+    except Exception:  # pragma: no cover - numpy not required for all environments
+        pass
+    
+    # Guard optional torch usage without adding a hard dependency
+    try:
+        import torch
+        torch.manual_seed(seed)
+        # If using CUDA in CI, prefer CPU determinism by default.
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+            # Optional deterministic flags (may slow tests)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+    except Exception:
+        # Torch not installed or not desired in CI; ignore.
+        pass
+    
+    yield
+    # nothing to cleanup; leave RNG state as-is for test isolation

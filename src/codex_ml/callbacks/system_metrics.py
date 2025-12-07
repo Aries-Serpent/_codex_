@@ -8,17 +8,17 @@ from typing import Any
 from codex_ml.callbacks import Callback
 
 try:  # pragma: no cover - optional dependency import
-    import pynvml  # type: ignore[import-not-found]
+    import pynvml
 
     _NVML_AVAILABLE = True
 except Exception:  # pragma: no cover - optional dependency
-    pynvml = None  # type: ignore[assignment]
+    pynvml = None
     _NVML_AVAILABLE = False
 
 
 def _psutil_snapshot() -> dict[str, Any]:
     try:
-        import psutil  # type: ignore
+        import psutil
     except Exception:  # pragma: no cover - optional dependency
         return {}
 

@@ -8,9 +8,9 @@ from codex_ml.interfaces.tokenizer import TokenizerAdapter
 from codex_ml.plugins.registries import tokenizers
 
 try:  # pragma: no cover - optional dependency guard
-    from tokenizers import Tokenizer as _FastTokenizer  # type: ignore
+    from tokenizers import Tokenizer as _FastTokenizer
 except Exception:  # pragma: no cover - dependency missing
-    _FastTokenizer = None  # type: ignore[assignment]
+    _FastTokenizer = None
 
 
 @tokenizers.register("hf_tokenizer_json")

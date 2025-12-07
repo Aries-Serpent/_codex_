@@ -118,4 +118,3 @@ def ensure_default_datasets(data_root: Path | None = None) -> None:
         ),
         overwrite=True,
     )
-

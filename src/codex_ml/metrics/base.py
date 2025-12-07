@@ -5,9 +5,11 @@ Abstract base class for batch and streaming metrics
 Author: mbaetiong
 Generated: 2025-11-19 04:20:17
 """
+
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 
 class BaseMetric(ABC):
@@ -15,18 +17,18 @@ class BaseMetric(ABC):
 
     @abstractmethod
     def update(self, preds: Any, labels: Any, **kwargs) -> None:
-        """Accumulate a batch into internal state."""
-        raise NotImplementedError
+        """Accumulate a batch into internal state. Subclasses must implement."""
+        pass
 
     @abstractmethod
     def compute(self) -> Any:
-        """Compute the final metric from current internal state."""
-        raise NotImplementedError
+        """Compute the final metric from current internal state. Subclasses must implement."""
+        pass
 
     @abstractmethod
     def reset(self) -> None:
-        """Reset internal state for a fresh accumulation."""
-        raise NotImplementedError
+        """Reset internal state for a fresh accumulation. Subclasses must implement."""
+        pass
 
     def meta(self) -> Dict[str, Any]:
         """Optional: return metadata about the metric instance."""

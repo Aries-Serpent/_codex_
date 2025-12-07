@@ -12,16 +12,19 @@ Features:
 Author: mbaetiong
 Generated: 2025-11-19 04:02:05
 """
+
 from __future__ import annotations
-from pathlib import Path
-from typing import List, Dict, Any, Optional, Iterator
+
 import logging
+from pathlib import Path
+from typing import Any, Dict, Iterator, List, Optional
 
 logger = logging.getLogger(__name__)
 
 try:
     import pyarrow as pa
     import pyarrow.ipc as ipc
+
     ARROW_AVAILABLE = True
 except ImportError:
     ARROW_AVAILABLE = False
@@ -31,103 +34,102 @@ except ImportError:
 class ArrowLoader:
     """
     Efficient Arrow IPC file loader
-    
+
     Arrow IPC format benefits:
     - Zero-copy reads via memory mapping
     - Language-agnostic format
     - Preserves schema metadata
     - Efficient for columnar data
-    
+
     Examples:
         >>> loader = ArrowLoader("dataset.arrow")
         >>> data = loader.load()
-        >>> 
+        >>>
         >>> # Stream large files
         >>> for batch in loader.load_batched():
         >>>     process(batch)
     """
-    
+
     def __init__(self, file_path: Path):
         """
         Initialize Arrow IPC loader
-        
+
         Args:
             file_path: Path to .arrow file
         """
         if not ARROW_AVAILABLE:
             raise ImportError(
-                "PyArrow required for Arrow support.\n"
-                "Install: pip install pyarrow>=10.0.0"
+                "PyArrow required for Arrow support.\n" "Install: pip install pyarrow>=10.0.0"
             )
-        
+
         self.file_path = Path(file_path)
         if not self.file_path.exists():
             raise FileNotFoundError(f"Arrow file not found: {file_path}")
-        
+
         # Validate file by opening
         try:
-            with pa.memory_map(str(self.file_path), 'r') as source:
+            with pa.memory_map(str(self.file_path), "r") as source:
                 with ipc.open_file(source) as reader:
                     self.schema = reader.schema
                     self.num_batches = reader.num_record_batches
         except Exception as e:
             raise ValueError(f"Invalid Arrow IPC file: {e}")
-    
+
     def load(self) -> List[Dict[str, Any]]:
         """
         Load entire Arrow file into memory
-        
+
         Returns:
             List of dict records
         """
         logger.info(f"Loading Arrow IPC: {self.file_path}")
-        
-        with pa.memory_map(str(self.file_path), 'r') as source:
+
+        with pa.memory_map(str(self.file_path), "r") as source:
             with ipc.open_file(source) as reader:
                 table = reader.read_all()
-        
+
         # Convert to list of dicts
         records = []
         for batch in table.to_batches():
             df = batch.to_pandas()
-            records.extend(df.to_dict('records'))
-        
+            records.extend(df.to_dict("records"))
+
         logger.info(f"Loaded {len(records)} records from Arrow")
         return records
-    
+
     def load_batched(self) -> Iterator[List[Dict[str, Any]]]:
         """
         Stream Arrow file in record batches
-        
+
         Yields:
             Batches of dict records
         """
-        logger.info(f"Streaming Arrow IPC in batches")
-        
-        with pa.memory_map(str(self.file_path), 'r') as source:
+        logger.info("Streaming Arrow IPC in batches")
+
+        with pa.memory_map(str(self.file_path), "r") as source:
             with ipc.open_file(source) as reader:
                 for i in range(reader.num_record_batches):
                     batch = reader.get_batch(i)
                     df = batch.to_pandas()
-                    yield df.to_dict('records')
-    
+                    yield df.to_dict("records")
+
     def get_schema(self):
         """
         Get Arrow schema
-        
+
         Returns:
             PyArrow Schema object
         """
         return self.schema
-    
+
     def get_metadata(self) -> Dict[str, Any]:
         """
         Extract Arrow file metadata
-        
+
         Returns:
             Metadata dictionary
         """
-        with pa.memory_map(str(self.file_path), 'r') as source:
+        with pa.memory_map(str(self.file_path), "r") as source:
             with ipc.open_file(source) as reader:
                 return {
                     "num_batches": reader.num_record_batches,
@@ -138,30 +140,27 @@ class ArrowLoader:
                 }
 
 
-def load_arrow(
-    file_path: Path,
-    batch_size: Optional[int] = None
-):
+def load_arrow(file_path: Path, batch_size: Optional[int] = None):
     """
     Convenience function to load Arrow IPC dataset
-    
+
     Args:
         file_path: Path to .arrow file
         batch_size: If set, return batched generator
-    
+
     Returns:
         List of dicts or generator of batches
-    
+
     Examples:
         >>> # Load all
         >>> data = load_arrow("dataset.arrow")
-        >>> 
+        >>>
         >>> # Stream batches
         >>> for batch in load_arrow("large.arrow", batch_size=True):
         >>>     process(batch)
     """
     loader = ArrowLoader(file_path)
-    
+
     if batch_size:
         return loader.load_batched()
     else:

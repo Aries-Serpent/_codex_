@@ -67,4 +67,4 @@ else:  # pragma: no cover - exercised in minimal test envs
         "AutoTokenizer",
         "PreTrainedTokenizerBase",
     ]
-    __path__ = []  # type: ignore[assignment]
+    __path__ = []

@@ -19,7 +19,7 @@ _warnings.warn(
 try:  # pragma: no cover
     from codex_ml.tokenization.adapter import SentencePieceTokenizer
     from codex_ml.tokenization.sentencepiece_adapter import (
-        SentencePieceAdapter as _CanonicalSentencePieceAdapter,  # type: ignore
+        SentencePieceAdapter as _CanonicalSentencePieceAdapter,
     )
 except Exception:  # pragma: no cover - defensive placeholders
 
@@ -30,13 +30,13 @@ except Exception:  # pragma: no cover - defensive placeholders
         def __init__(self, *args, **kwargs):
             raise RuntimeError("SentencePiece not available")
 
-    class SentencePieceAdapter:  # type: ignore
+    class SentencePieceAdapter:
         def __init__(self, *args, **kwargs):
             raise RuntimeError("SentencePiece not available")
 
 else:
     SentencePieceAdapter = _CanonicalSentencePieceAdapter
-    SentencePieceAdapter.__doc__ = getattr(  # type: ignore[attr-defined]
+    SentencePieceAdapter.__doc__ = getattr(
         _CanonicalSentencePieceAdapter, "__doc__", None
     )
 

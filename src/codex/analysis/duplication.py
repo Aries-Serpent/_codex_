@@ -67,7 +67,9 @@ def analyze_duplication(
     total_files = len(files)
     duplicate_count = sum(max(len(paths) - 1, 0) for paths in stem_groups.values())
     ratio = duplicate_count / max(total_files, 1)
-    severity = _assess_severity(ratio, acceptable=acceptable_ratio, warning=warning_ratio, critical=critical_ratio)
+    severity = _assess_severity(
+        ratio, acceptable=acceptable_ratio, warning=warning_ratio, critical=critical_ratio
+    )
 
     def _format_paths(paths: list[Path]) -> list[str]:
         return [str(p.relative_to(base)) for p in paths]
@@ -101,7 +103,9 @@ def analyze_duplication(
     if ratio < acceptable_ratio:
         recommendations.append(f"Duplication ratio {ratio:.2%} is within acceptable limits.")
     elif ratio < warning_ratio:
-        recommendations.append(f"Duplication ratio {ratio:.2%} is elevated; review duplicate groups.")
+        recommendations.append(
+            f"Duplication ratio {ratio:.2%} is elevated; review duplicate groups."
+        )
     else:
         recommendations.append(f"Duplication ratio {ratio:.2%} is high; prioritise consolidation.")
 

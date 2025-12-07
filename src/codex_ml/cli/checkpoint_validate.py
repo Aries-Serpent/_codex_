@@ -140,7 +140,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
             typer.echo(f"OK: {path}")
 
 else:  # pragma: no cover - Typer missing
-    app = None  # type: ignore[assignment]
+    app = None
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -7,23 +7,24 @@ This module centralizes simple helpers for:
 The goal is to provide a stable import path for future integrations with more
 advanced MLOps reproducibility tooling, without introducing hard dependencies.
 """
+
 from __future__ import annotations
 
+import importlib.util
 import os
 import random
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict
-import importlib.util
 
 _np_spec = importlib.util.find_spec("numpy")
 if _np_spec is not None:
-    import numpy as _np  # type: ignore
+    import numpy as _np
 else:  # pragma: no cover
     _np = None
 
 _torch_spec = importlib.util.find_spec("torch")
 if _torch_spec is not None:
-    import torch as _torch  # type: ignore
+    import torch as _torch
 else:  # pragma: no cover
     _torch = None
 
@@ -64,7 +65,7 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
             _torch.manual_seed(seed)
             if hasattr(_torch, "cuda"):
                 try:
-                    _torch.cuda.manual_seed_all(seed)  # type: ignore[attr-defined]
+                    _torch.cuda.manual_seed_all(seed)
                 except Exception:  # pragma: no cover
                     pass
         except Exception:  # pragma: no cover

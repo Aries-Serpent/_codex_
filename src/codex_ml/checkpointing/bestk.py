@@ -78,13 +78,17 @@ def update_and_prune(
     # Force newest checkpoint retention if requested
     if keep_last and str(checkpoint_path) not in {e["path"] for e in kept}:
         kept.append(new_entry)
-        kept = _select_top_k_with_protection(kept, k=k, strategy=strategy, protected_path=str(checkpoint_path))
+        kept = _select_top_k_with_protection(
+            kept, k=k, strategy=strategy, protected_path=str(checkpoint_path)
+        )
     else:
         # When keep_last=True and the path is already present, replace older copies
         kept = _dedupe_keep_latest(kept, str(checkpoint_path))
 
     final_paths = {e["path"] for e in kept}
-    prune_candidates: List[Dict[str, Any]] = [e for e in entries_before if e["path"] not in final_paths]
+    prune_candidates: List[Dict[str, Any]] = [
+        e for e in entries_before if e["path"] not in final_paths
+    ]
     prune_candidates.extend(duplicate_entries)
 
     if not dry_run:
@@ -157,7 +161,9 @@ def _select_top_k_with_protection(
     return _select_top_k(kept, k=k, strategy=strategy)
 
 
-def _dedupe_keep_latest(entries: Iterable[Dict[str, Any]], target_path: str) -> List[Dict[str, Any]]:
+def _dedupe_keep_latest(
+    entries: Iterable[Dict[str, Any]], target_path: str
+) -> List[Dict[str, Any]]:
     """Ensure at most one entry per path; for target_path prefer the newest copy."""
 
     latest: Dict[str, Dict[str, Any]] = {}

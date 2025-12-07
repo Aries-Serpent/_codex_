@@ -16,19 +16,19 @@ from typing import Iterable, Optional, Sequence
 from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol
 
 try:  # pragma: no cover - optional dependency
-    import sentencepiece as spm  # type: ignore
+    import sentencepiece as spm
 except Exception:  # pragma: no cover - optional dependency
     spm = None  # type: ignore[assignment]
 
 __all__ = ["SPTokenizer"]
 
 
-def _require_sentencepiece() -> "spm":  # type: ignore[name-defined]
+def _require_sentencepiece() -> "spm":
     if spm is None:  # pragma: no cover - runtime guard
         raise ImportError(
             "sentencepiece is required for SPTokenizer; install 'sentencepiece' to use the trainer"
         )
-    return spm  # type: ignore[return-value]
+    return spm
 
 
 class SPTokenizer(TrainableTokenizerProtocol):

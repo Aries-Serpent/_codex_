@@ -1,0 +1,36 @@
+# Event Configuration for Codex ML
+
+# Publisher type: local, azure, aws
+publisher_type: local
+
+# Azure Event Grid Configuration
+azure:
+  enabled: false
+  topic_endpoint: ${AZURE_EVENT_GRID_ENDPOINT:}
+  # Set AZURE_EVENT_GRID_KEY in your environment. This value is required for Azure Event Grid publishing.
+  topic_key: ${AZURE_EVENT_GRID_KEY:REQUIRED}
+
+# AWS EventBridge Configuration
+aws:
+  enabled: false
+  event_bus_name: ${AWS_EVENT_BUS_NAME:default}
+  region: ${AWS_REGION:us-east-1}
+
+# Event Filters
+filters:
+  # Only publish these event types (empty = all)
+  allowed_types: []
+  # Minimum severity level (debug, info, warning, error)
+  min_severity: info
+
+# Batching Configuration
+batching:
+  enabled: true
+  max_batch_size: 10
+  max_wait_seconds: 5
+
+# Retry Configuration
+retry:
+  enabled: true
+  max_attempts: 3
+  backoff_multiplier: 2.0

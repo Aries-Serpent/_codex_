@@ -28,9 +28,9 @@ Callers:
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 
 @dataclass
@@ -72,4 +72,3 @@ class ExperimentTracker:
             json.dumps(asdict(meta), indent=2, sort_keys=True),
             encoding="utf-8",
         )
-

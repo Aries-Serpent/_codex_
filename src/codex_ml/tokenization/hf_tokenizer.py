@@ -13,7 +13,7 @@ from codex_ml.utils.optional import optional_import
 from .api import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN, TokenizerAdapter
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from transformers import AutoTokenizer as HF_AutoTokenizer  # type: ignore
+    from transformers import AutoTokenizer as HF_AutoTokenizer
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - runtime fallback when dependency missing
     HF_AutoTokenizer = HF_PreTrainedTokenizerBase = object  # type: ignore
@@ -21,10 +21,10 @@ else:  # pragma: no cover - runtime fallback when dependency missing
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "AutoTokenizer"):
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
     PreTrainedTokenizerBase = cast(
         "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
-    )  # type: ignore[attr-defined]
+    )
 else:  # pragma: no cover - optional dependency unavailable
     AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
@@ -179,7 +179,7 @@ class _WhitespaceFallbackTokenizer:
             sequences = [self._pad(seq, pad_to) for seq in sequences]
         if return_tensors == "pt":
             try:
-                import torch  # type: ignore
+                import torch
             except Exception:  # pragma: no cover - torch optional
                 pass
             else:
@@ -271,19 +271,19 @@ class HFTokenizerAdapter(TokenizerAdapter):
             (save_dir / "tokenizer.json").replace(path)
 
     @property
-    def vocab_size(self) -> int:  # type: ignore[override]
+    def vocab_size(self) -> int:
         return int(self.tokenizer.vocab_size)
 
     @property
-    def pad_id(self) -> int:  # type: ignore[override]
+    def pad_id(self) -> int:
         return int(self.tokenizer.pad_token_id or 0)
 
     @property
-    def eos_id(self) -> int:  # type: ignore[override]
+    def eos_id(self) -> int:
         return int(self.tokenizer.eos_token_id or 0)
 
     @property
-    def name_or_path(self) -> str:  # type: ignore[override]
+    def name_or_path(self) -> str:
         return str(self.tokenizer.name_or_path)
 
     def batch_encode(

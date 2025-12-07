@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Iterable, Mapping
-import json
 
 from .gates import GateResult
 

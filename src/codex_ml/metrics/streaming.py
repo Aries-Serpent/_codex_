@@ -5,10 +5,15 @@ StreamingLoss for accumulating loss values
 Author: mbaetiong
 Generated: 2025-11-19 04:20:17
 """
+
 from __future__ import annotations
+
 from typing import Any
+
 import numpy as np
+
 import torch
+
 from .base import BaseMetric
 
 

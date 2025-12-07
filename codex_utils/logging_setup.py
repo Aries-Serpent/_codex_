@@ -7,16 +7,16 @@ from contextlib import AbstractContextManager
 from typing import Any, Dict, Iterable, Optional
 
 try:
-    from torch.utils.tensorboard import SummaryWriter  # type: ignore
+    from torch.utils.tensorboard import SummaryWriter
 except Exception:
-    SummaryWriter = None  # type: ignore
+    SummaryWriter = None
 try:
-    import psutil  # type: ignore
+    import psutil
 except Exception:
-    psutil = None  # type: ignore
+    psutil = None
 
 try:  # pragma: no cover - ``resource`` missing on some platforms
-    import resource  # type: ignore
+    import resource
 except Exception:  # pragma: no cover - fallback path
     resource = None  # type: ignore
 

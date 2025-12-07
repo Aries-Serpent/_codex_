@@ -1,3 +1,9 @@
+"""Fallback evaluation metrics for synthetic data.
+
+Provides basic evaluation metrics (token accuracy, perplexity proxy, exact match)
+for use when full evaluation dependencies are unavailable.
+"""
+
 from __future__ import annotations
 
 import math

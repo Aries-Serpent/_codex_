@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import json
 import logging
 import os
 import platform
@@ -27,19 +26,19 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
 
 # Optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional
-    from torch.utils.tensorboard import SummaryWriter  # type: ignore
+    from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - tensorboard not installed
-    SummaryWriter = None  # type: ignore
+    SummaryWriter = None
 
 try:  # pragma: no cover - optional
-    import wandb  # type: ignore
+    import wandb
 except Exception:  # pragma: no cover - wandb not installed
-    wandb = None  # type: ignore
+    wandb = None
 
 try:  # pragma: no cover - optional
-    import mlflow  # type: ignore
+    import mlflow
 except Exception:  # pragma: no cover - mlflow not installed
-    mlflow = None  # type: ignore
+    mlflow = None
 
 
 def _ensure_local_mlflow_tracking_uri_default() -> None:
@@ -49,20 +48,20 @@ def _ensure_local_mlflow_tracking_uri_default() -> None:
 
 
 try:  # pragma: no cover - optional
-    import psutil  # type: ignore
+    import psutil
 except Exception:  # pragma: no cover - psutil not installed
-    psutil = None  # type: ignore
+    psutil = None
 
 if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
-    pynvml = None  # type: ignore
+    pynvml = None
 else:
     try:  # pragma: no cover - optional
         import pynvml  # type: ignore
     except Exception:  # pragma: no cover - nvml not installed
-        pynvml = None  # type: ignore
+        pynvml = None
 
 try:  # pragma: no cover - optional
-    import torch  # type: ignore
+    import torch
 except Exception:  # pragma: no cover - torch not installed
     torch = None  # type: ignore
 
@@ -159,7 +158,16 @@ def init_logger(name: str = __name__) -> logging.Logger:
     handler = logging.StreamHandler()
     if os.getenv("CODEX_JSON_LOGGING", "0") == "1":
         handler.setFormatter(
-            logging.Formatter(fmt=json.dumps({"time": "%(asctime)s", "level": "%(levelname)s", "name": "%(name)s", "msg": "%(message)s"}))
+            logging.Formatter(
+                fmt=json.dumps(
+                    {
+                        "time": "%(asctime)s",
+                        "level": "%(levelname)s",
+                        "name": "%(name)s",
+                        "msg": "%(message)s",
+                    }
+                )
+            )
         )
     else:
         fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
@@ -402,7 +410,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
     # Try to initialise NVML when GPU telemetry requested; gracefully disable on failure.
     if gpu:
         try:  # pragma: no cover - depends on NVML
-            import pynvml as _nv  # type: ignore
+            import pynvml as _nv
 
             _nv.nvmlInit()
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
@@ -513,7 +521,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 logdir = tb_cfg.get("logdir", "runs/tb")
                 try:  # pragma: no cover - depends on tensorboard install
                     os.makedirs(logdir, exist_ok=True)
-                    tb_handle = SummaryWriter(logdir)  # type: ignore[arg-type]
+                    tb_handle = SummaryWriter(logdir)
                 except Exception as exc:  # pragma: no cover - optional
                     tb_detail = f"error:{exc.__class__.__name__}"
             component_statuses.append(
@@ -581,7 +589,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
     else:
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
-            tb_handle = SummaryWriter(logdir)  # type: ignore[arg-type]
+            tb_handle = SummaryWriter(logdir)
         except Exception as exc:  # pragma: no cover - optional
             tb_detail = f"error:{exc.__class__.__name__}"
             tb_handle = None
@@ -759,7 +767,7 @@ def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
     out: dict[str, float] = {}
     for k, v in values.items():
         try:
-            out[k] = float(v)  # type: ignore[arg-type]
+            out[k] = float(v)
         except Exception:
             continue
     return out

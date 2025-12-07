@@ -17,7 +17,7 @@ except Exception:  # pragma: no cover - torch optional in tests
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
-            return float(value.item())  # type: ignore[arg-type]
+            return float(value.item())
         return float(value)  # type: ignore[arg-type]
     except Exception:
         return 0.0

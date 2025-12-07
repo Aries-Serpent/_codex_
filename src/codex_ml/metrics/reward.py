@@ -1,3 +1,9 @@
+"""Reward-based evaluation metrics for RLHF and preference learning.
+
+Provides metrics for computing mean and median rewards from model predictions,
+supporting both scalar rewards and dictionary payloads with reward fields.
+"""
+
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
@@ -28,7 +34,10 @@ def reward_mean(predictions: Sequence[object], targets: Sequence[object] | None 
 @register_metric("reward/success_rate", override=True)
 @register_metric("reward:success_rate", override=True)
 def reward_success_rate(
-    predictions: Sequence[object], targets: Sequence[object] | None = None, *, threshold: float = 0.0
+    predictions: Sequence[object],
+    targets: Sequence[object] | None = None,
+    *,
+    threshold: float = 0.0,
 ) -> float:
     """Proportion of rewards meeting or exceeding ``threshold``."""
 

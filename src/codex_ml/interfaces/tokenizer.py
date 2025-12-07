@@ -29,7 +29,7 @@ from codex_ml.utils.hf_revision import get_hf_revision
 
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency
-    from transformers import AutoTokenizer as _AutoTokenizer  # type: ignore
+    from transformers import AutoTokenizer as _AutoTokenizer
 except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
 
@@ -46,7 +46,7 @@ def _resolve_auto_tokenizer():
     global _AutoTokenizer
     if _AutoTokenizer is None:
         try:
-            from transformers import AutoTokenizer as _Imported  # type: ignore
+            from transformers import AutoTokenizer as _Imported
         except Exception:
             _AutoTokenizer = None  # ensure consistency if import keeps failing
         else:
@@ -277,7 +277,7 @@ class TokenizerProtocolGuard(TokenizerProtocol):
     )
 
     def _raise(self, method: str) -> None:
-        raise NotImplementedError(self._GUARD_MESSAGE.format(method=method))
+        raise TypeError(self._GUARD_MESSAGE.format(method=method))
 
     def encode(
         self,
@@ -319,11 +319,13 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
     """Protocol for tokenizers that can be trained and persisted offline."""
 
     def save(self, path: str) -> None:
-        raise NotImplementedError
+        """Save tokenizer. Implementations must override."""
+        raise TypeError(f"{self.__class__.__name__}.save() must be implemented")
 
     @classmethod
     def load(cls, path: str) -> TrainableTokenizerProtocol:
-        raise NotImplementedError
+        """Load tokenizer. Implementations must override."""
+        raise TypeError(f"{cls.__name__}.load() must be implemented")
 
     @classmethod
     def train(
@@ -337,7 +339,8 @@ class TrainableTokenizerProtocol(TokenizerProtocol, Protocol):
         seed: int = 17,
         output_dir: str = "artifacts/tokenizer",
     ) -> TrainableTokenizerProtocol:
-        raise NotImplementedError
+        """Train tokenizer. Implementations must override."""
+        raise TypeError(f"{cls.__name__}.train() must be implemented")
 
 
 class HFTokenizer(TokenizerAdapter):
@@ -529,7 +532,7 @@ class HFTokenizer(TokenizerAdapter):
                 return_tensors=None,
             )
             if return_dict:
-                return enc  # type: ignore[return-value]
+                return enc
             # Extract input_ids safely and ensure lists of ints
             input_ids = enc.get("input_ids", [])
             return [list(seq) for seq in input_ids]

@@ -6,9 +6,8 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterable, Optional, Protocol, Sequence, cast
 
-from codex_ml.interfaces.tokenizer import HFTokenizer
-
 from codex_ml.interfaces.contracts import validate_tokenizer_contract
+from codex_ml.interfaces.tokenizer import HFTokenizer
 
 from .adapter import WhitespaceTokenizer
 

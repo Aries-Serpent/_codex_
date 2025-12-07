@@ -126,7 +126,7 @@ else:
         result: DictConfig = DictConfig(base)
         for key, value in other.items():
             if isinstance(value, Mapping) and isinstance(result.get(key), Mapping):
-                result[key] = _merge_dicts(result[key], value)  # type: ignore[arg-type]
+                result[key] = _merge_dicts(result[key], value)
             else:
                 result[key] = _to_dictconfig(value)
         return result

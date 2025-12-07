@@ -18,22 +18,22 @@ def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
 # Hydra import with robust fallbacks to support offline environments
 try:  # pragma: no cover - optional dependency
     try:
-        from hydra import compose, initialize_config_dir  # type: ignore
-        from hydra.errors import MissingConfigException  # type: ignore
+        from hydra import compose, initialize_config_dir
+        from hydra.errors import MissingConfigException
     except ImportError:
-        from config_legacy import compose, initialize_config_dir  # type: ignore
-        from config_legacy.errors import MissingConfigException  # type: ignore
+        from config_legacy import compose, initialize_config_dir
+        from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
 except Exception:  # pragma: no cover - import guard
     try:
-        from hydra_core import compose, initialize_config_dir  # type: ignore
-        from hydra_core.errors import MissingConfigException  # type: ignore
+        from hydra_core import compose, initialize_config_dir
+        from hydra_core.errors import MissingConfigException
 
         _HYDRA_AVAILABLE = True
     except Exception:  # pragma: no cover - import guard
-        compose = None  # type: ignore[assignment]
-        initialize_config_dir = None  # type: ignore[assignment]
+        compose = None
+        initialize_config_dir = None
 
         class MissingConfigException(RuntimeError):
             """Fallback error used when Hydra is unavailable."""
@@ -110,7 +110,7 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
 # Detect whether DictConfig in the active env already supports attribute access
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
-    _ = _TEST_CFG.training  # type: ignore[attr-defined]
+    _ = _TEST_CFG.training
 except Exception:  # AttributeError when attribute access unsupported
     _DICTCONFIG_SUPPORTS_ATTR = False
 else:
@@ -122,7 +122,7 @@ finally:  # pragma: no cover - cleanup guard
         pass
 
 
-class _AttrDictConfig(DictConfig):  # type: ignore[misc]
+class _AttrDictConfig(DictConfig):
     """DictConfig-compatible object offering attribute access for mappings.
 
     Used when OmegaConf's DictConfig attribute access is unavailable in the environment.
@@ -158,7 +158,7 @@ class _AttrDictConfig(DictConfig):  # type: ignore[misc]
         else:
             dict.__setitem__(self, name, self._wrap(value))
 
-    def __setitem__(self, key: Any, value: Any) -> None:  # type: ignore[override]
+    def __setitem__(self, key: Any, value: Any) -> None:
         dict.__setitem__(self, key, self._wrap(value))
 
 
@@ -263,7 +263,7 @@ def load_training_cfg(
         # Hydra Compose API: https://hydra.cc/docs/advanced/compose_api/
         with initialize_config_dir(version_base=None, config_dir=str(cfg_dir)):
             hydra_cfg = compose(config_name=_PRIMARY, overrides=overrides)
-        container = OmegaConf.to_container(hydra_cfg, resolve=True)  # type: ignore[arg-type]
+        container = OmegaConf.to_container(hydra_cfg, resolve=True)
         if not isinstance(container, Mapping):
             raise TypeError("Hydra compose did not return a mapping configuration")
         return _to_config_object(container)

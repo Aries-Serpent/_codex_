@@ -33,7 +33,7 @@ def _normalise_ratios(ratios: Iterable[float]) -> tuple[float, float, float]:
     total = sum(values)
     if not 0.99 <= total <= 1.01:
         raise ValueError("split ratios must sum to 1.0 (allowing minor rounding error)")
-    return values  # type: ignore[return-value]
+    return values
 
 
 def ensure_split_seed(seed: int | None = None) -> int:

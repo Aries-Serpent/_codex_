@@ -13,7 +13,7 @@ from math import exp
 try:  # optional dependency for a real classifier
     from transformers import pipeline  # type: ignore
 except Exception:  # pragma: no cover - transformers not installed
-    pipeline = None  # type: ignore
+    pipeline = None
 
 MODEL_NAME = "philschmid/tiny-bert-sst2-distilled"
 _classifier = None

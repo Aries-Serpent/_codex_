@@ -279,7 +279,7 @@ def _write_deterministic_json(path: Path, record: MappingABC[str, Any]) -> None:
 
 def _collect_dependency_flags() -> dict[str, Any]:
     try:
-        from codex_ml.monitoring import system_metrics  # type: ignore
+        from codex_ml.monitoring import system_metrics
 
         psutil_available = bool(getattr(system_metrics, "HAS_PSUTIL", False))
         nvml_available = bool(getattr(system_metrics, "HAS_NVML", False))
@@ -511,7 +511,7 @@ class TensorBoardWriter(BaseWriter):
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
         try:  # optional dependency
-            from torch.utils.tensorboard import SummaryWriter  # type: ignore
+            from torch.utils.tensorboard import SummaryWriter
 
             self._writer = SummaryWriter(log_dir=str(logdir))
             _emit_summary(
@@ -601,7 +601,7 @@ class MLflowWriter(BaseWriter):
             "system_metrics_enabled": guard_decision.system_metrics_enabled,
         }
         try:  # optional dependency
-            import mlflow  # type: ignore
+            import mlflow
 
             mlflow.set_tracking_uri(target_uri)
             mlflow.set_experiment(exp_name)
@@ -665,7 +665,7 @@ class WandbWriter(BaseWriter):
         self._disabled_reason: str | None = None
         self._summary_path = Path(summary_path) if summary_path is not None else None
         try:  # optional dependency
-            import wandb  # type: ignore
+            import wandb
 
             self._run = wandb.init(
                 project=project,

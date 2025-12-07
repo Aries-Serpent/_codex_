@@ -47,7 +47,7 @@ MLFLOW_DEFAULT_URI = _DEFAULT_LITERAL_URI
 
 # Attempt a top-level lazy import (non-fatal)
 try:  # pragma: no cover - optional dependency
-    import mlflow as _m  # type: ignore
+    import mlflow as _m
 
     _mlf = _m
     _HAS_MLFLOW = True
@@ -112,7 +112,7 @@ def _ensure_mlflow_available() -> None:
     try:
         import importlib
 
-        _m = importlib.import_module("mlflow")  # type: ignore
+        _m = importlib.import_module("mlflow")
         _mlf = _m
         _HAS_MLFLOW = True
     except Exception as exc:
@@ -222,12 +222,12 @@ def start_run(
         # Configure tracking URI and experiment if provided
         target_uri = mlflow_guard.bootstrap_offline_tracking(requested_uri=cfg.tracking_uri)
         if target_uri:
-            _mlf.set_tracking_uri(target_uri)  # type: ignore[attr-defined]
+            _mlf.set_tracking_uri(target_uri)
         if cfg.experiment:
-            _mlf.set_experiment(cfg.experiment)  # type: ignore[attr-defined]
+            _mlf.set_experiment(cfg.experiment)
 
         # Start the run with optional tags. mlflow.start_run returns a context manager.
-        return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[return-value]
+        return _mlf.start_run(tags=cfg.run_tags or {})
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to initialize MLflow run") from exc
 
@@ -268,7 +268,7 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
     if ml is None:
         return
     try:
-        ml.log_params(dict(d))  # type: ignore[arg-type]
+        ml.log_params(dict(d))
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to log parameters to MLflow") from exc
 
@@ -298,7 +298,7 @@ def log_metrics(
     metrics = {k: v for k, v in metrics.items() if k != "_step"}
     for k, v in metrics.items():
         try:
-            ml.log_metric(k, float(v), step=step)  # type: ignore[arg-type]
+            ml.log_metric(k, float(v), step=step)
         except Exception:
             # be robust; drop bad values quietly
             pass
@@ -329,9 +329,9 @@ def log_artifacts(
         try:
             if p.is_dir():
                 # log_artifacts expects a directory path
-                ml.log_artifacts(str(p))  # type: ignore[arg-type]
+                ml.log_artifacts(str(p))
             else:
-                ml.log_artifact(str(p))  # type: ignore[arg-type]
+                ml.log_artifact(str(p))
         except Exception as exc:  # pragma: no cover
             raise RuntimeError(f"Failed to log artifact {p}") from exc
 
@@ -426,12 +426,12 @@ def init_run(
     if _mlf is None:  # pragma: no cover - defensive guard
         raise_optional_dependency_error("mlflow", "experiment tracking")
 
-    run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[call-arg]
+    run = _mlf.start_run(run_name=run_name, **kwargs)
 
     try:
         commit = current_commit_hash()
         if commit:
-            _mlf.set_tag("git_commit", commit[:7])  # type: ignore[attr-defined]
+            _mlf.set_tag("git_commit", commit[:7])
     except Exception:
         pass
 
@@ -442,7 +442,7 @@ def init_run(
             except TypeError:
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-            _mlf.set_tag("config_hash", digest)  # type: ignore[attr-defined]
+            _mlf.set_tag("config_hash", digest)
         except Exception:
             pass
 

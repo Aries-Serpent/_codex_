@@ -77,7 +77,7 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
     )
 
     try:
-        from prometheus_client import Counter, Gauge, start_http_server  # type: ignore
+        from prometheus_client import Counter, Gauge, start_http_server
     except Exception as exc:  # pragma: no cover - optional dependency
         sink = _FallbackSink(destination)
         counters = {"requests_total": _FallbackCounter("requests_total", "Total requests", sink)}
