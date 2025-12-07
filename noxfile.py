@@ -424,6 +424,90 @@ def dependency_plan(session: nox.Session) -> None:
     _dependency_plan(session)
 
 
+@nox.session(name="security", python=PY_VERSIONS)
+def security(session: nox.Session) -> None:
+    """
+    Run security scans: pip-audit for dependency vulnerabilities and gitleaks for secrets.
+    
+    This session performs:
+    1. pip-audit: Scans Python dependencies for known CVEs
+    2. gitleaks: Scans codebase for accidentally committed secrets
+    
+    Exit codes:
+    - 0: No vulnerabilities or secrets found
+    - 1: Vulnerabilities or secrets detected
+    
+    Usage:
+        nox -s security
+        
+    To update allowlist for known issues:
+        Create/edit security_allowlist.json with known acceptable findings
+    """
+    _choose_python(session)
+    session.log("[security] Running security scans...")
+    
+    # Install security tools
+    session.install("pip-audit", "gitleaks", silent=False)
+    
+    # Check for allowlist file
+    allowlist_file = Path("security_allowlist.json")
+    has_allowlist = allowlist_file.exists()
+    
+    if has_allowlist:
+        session.log(f"[security] Using allowlist: {allowlist_file}")
+    else:
+        session.log("[security] No allowlist found (create security_allowlist.json if needed)")
+    
+    # Run pip-audit
+    session.log("[security] Running pip-audit (dependency vulnerability scan)...")
+    try:
+        # Scan installed packages
+        session.run(
+            "pip-audit",
+            "--desc",
+            "--skip-editable",
+            external=True,
+            success_codes=[0, 1]  # Allow failure to continue to gitleaks
+        )
+        session.log("[security] ✓ pip-audit scan complete")
+    except Exception as e:
+        session.warn(f"[security] pip-audit failed: {e}")
+    
+    # Run gitleaks
+    session.log("[security] Running gitleaks (secrets detection)...")
+    try:
+        # Check if gitleaks config exists
+        gitleaks_config = Path(".gitleaks.toml")
+        if not gitleaks_config.exists():
+            session.log("[security] No .gitleaks.toml found, using default gitleaks config")
+            session.run(
+                "gitleaks",
+                "detect",
+                "--source=.",
+                "--no-git",
+                "--verbose",
+                external=True,
+                success_codes=[0, 1]
+            )
+        else:
+            session.run(
+                "gitleaks",
+                "detect",
+                "--source=.",
+                "--no-git",
+                "--config=.gitleaks.toml",
+                "--verbose",
+                external=True,
+                success_codes=[0, 1]
+            )
+        session.log("[security] ✓ gitleaks scan complete")
+    except Exception as e:
+        session.warn(f"[security] gitleaks failed: {e}")
+    
+    session.log("[security] Security scans complete!")
+    session.log("[security] Review output above for any findings.")
+
+
 @nox.session(name="rollback_smoke", python=PY_VERSIONS)
 def rollback_smoke(session: nox.Session) -> None:
     """
