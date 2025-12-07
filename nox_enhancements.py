@@ -10,6 +10,8 @@ These sessions provide optional enhancements beyond core functionality:
 Add to your noxfile.py or run directly:
   nox -f nox_enhancements.py -s <session_name>
 """
+import subprocess
+
 import nox
 
 nox.options.reuse_existing_virtualenvs = True
@@ -85,8 +87,6 @@ def docker_test(session):
     Note: This will build the image if it doesn't exist. To force a rebuild,
     run 'docker_build' session first.
     """
-    import subprocess
-    
     # Check if image exists using subprocess
     try:
         result = subprocess.run(
