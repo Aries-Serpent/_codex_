@@ -21,7 +21,7 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
     try:  # pragma: no cover - optional dependency
         import torch
 
-        autocast_cls = torch.cuda.amp.autocast
+        autocast_cls: Any = torch.cuda.amp.autocast
     except Exception:  # pragma: no cover - dependency missing or AMP unavailable
         yield
         return
@@ -41,6 +41,7 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
         else:
             target_dtype = dtype
 
+    context: Any
     try:
         if target_dtype is not None:
             context = autocast_cls(dtype=target_dtype)
