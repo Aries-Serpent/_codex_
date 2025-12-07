@@ -141,6 +141,30 @@ try:
 except ImportError:
     logger.warning("FAISS store not available for registration")
 
+# Auto-register Pinecone store
+try:
+    from codex.retrieval.stores.pinecone_store import PineconeStore
+
+    VectorStoreRegistry.register("pinecone", PineconeStore)
+except ImportError:
+    logger.warning("Pinecone store not available for registration")
+
+# Auto-register Weaviate store
+try:
+    from codex.retrieval.stores.weaviate_store import WeaviateStore
+
+    VectorStoreRegistry.register("weaviate", WeaviateStore)
+except ImportError:
+    logger.warning("Weaviate store not available for registration")
+
+# Auto-register PGVector store
+try:
+    from codex.retrieval.stores.pgvector_store import PGVectorStore
+
+    VectorStoreRegistry.register("pgvector", PGVectorStore)
+except ImportError:
+    logger.warning("PGVector store not available for registration")
+
 
 def get_default_store(dimension: int, index_name: str = "default") -> Any:
     """
@@ -154,6 +178,75 @@ def get_default_store(dimension: int, index_name: str = "default") -> Any:
         Vector store instance
     """
     return VectorStoreFactory.create(store_type="faiss", index_name=index_name, dimension=dimension)
+
+
+def auto_detect_store() -> str:
+    """
+    Auto-detect the best available vector store backend.
+
+    Returns:
+        Store type string (e.g., "faiss", "pinecone")
+
+    Priority:
+    1. FAISS (always available, local)
+    2. PGVector (if PostgreSQL available)
+    3. Pinecone (if API key configured)
+    4. Weaviate (if URL configured)
+    """
+    import os
+
+    # Always prefer FAISS for local/offline mode
+    if "faiss" in VectorStoreRegistry.list_types():
+        logger.info("Auto-detected: FAISS (local/offline)")
+        return "faiss"
+
+    # Check for PGVector configuration
+    if "pgvector" in VectorStoreRegistry.list_types():
+        pg_conn = os.getenv("PGVECTOR_CONNECTION_STRING")
+        if pg_conn:
+            logger.info("Auto-detected: PGVector (PostgreSQL)")
+            return "pgvector"
+
+    # Check for Pinecone configuration
+    if "pinecone" in VectorStoreRegistry.list_types():
+        pinecone_key = os.getenv("PINECONE_API_KEY")
+        if pinecone_key:
+            logger.info("Auto-detected: Pinecone (cloud)")
+            return "pinecone"
+
+    # Check for Weaviate configuration
+    if "weaviate" in VectorStoreRegistry.list_types():
+        weaviate_url = os.getenv("WEAVIATE_URL")
+        if weaviate_url:
+            logger.info("Auto-detected: Weaviate (cloud/self-hosted)")
+            return "weaviate"
+
+    # Fallback to first available
+    available = VectorStoreRegistry.list_types()
+    if available:
+        fallback = available[0]
+        logger.warning(f"No preferred backend detected, falling back to: {fallback}")
+        return fallback
+
+    raise RuntimeError("No vector store backends available. Install faiss-cpu or configure a cloud provider.")
+
+
+def create_auto_store(index_name: str = "default", dimension: Optional[int] = None, **kwargs) -> Any:
+    """
+    Create a vector store with auto-detected backend.
+
+    Args:
+        index_name: Index name
+        dimension: Embedding dimension
+        **kwargs: Additional store-specific parameters
+
+    Returns:
+        Vector store instance
+    """
+    store_type = auto_detect_store()
+    return VectorStoreFactory.create(
+        store_type=store_type, index_name=index_name, dimension=dimension, **kwargs
+    )
 
 
 if __name__ == "__main__":
