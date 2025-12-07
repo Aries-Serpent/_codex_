@@ -20,9 +20,7 @@ def _ensure_repo_root_on_path() -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     _ensure_repo_root_on_path()
     try:
-        from scripts.space_traversal.audit_runner import (
-            main as _runner_main,  # type: ignore
-        )
+        from scripts.space_traversal.audit_runner import main as _runner_main  # type: ignore
     except Exception as exc:  # pragma: no cover
         print("Failed to load scripts/space_traversal/audit_runner.py:", exc, file=sys.stderr)
         return 1

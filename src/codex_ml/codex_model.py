@@ -8,7 +8,6 @@ available.
 
 from __future__ import annotations
 
-import importlib.util
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping
@@ -91,7 +90,9 @@ def _load_checkpoint(torch_mod: Any, config: ModelConfig, map_location: str) -> 
         if input_dim != 4 or output_dim != 2:
             import torch.nn as nn
 
-            model = nn.Sequential(nn.Linear(input_dim, input_dim), nn.ReLU(), nn.Linear(input_dim, output_dim))
+            model = nn.Sequential(
+                nn.Linear(input_dim, input_dim), nn.ReLU(), nn.Linear(input_dim, output_dim)
+            )
         model.load_state_dict(state_dict, strict=False)
         return model
     raise TypeError(f"Unsupported checkpoint type: {type(checkpoint)}")
@@ -115,7 +116,9 @@ def build_codex_model(config: ModelConfig) -> Any:
         peft_mod = _optional_peft()
         if peft_mod is None:
             raise RuntimeError("peft is required when enable_lora=True")
-        task_type = getattr(peft_mod.TaskType, config.lora_task_type, peft_mod.TaskType.FEATURE_EXTRACTION)
+        task_type = getattr(
+            peft_mod.TaskType, config.lora_task_type, peft_mod.TaskType.FEATURE_EXTRACTION
+        )
         lora_cfg = peft_mod.LoraConfig(
             task_type=task_type,
             r=int(config.lora_r),

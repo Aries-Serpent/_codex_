@@ -12,10 +12,8 @@ from typing import Any, Iterable, Iterator, Sequence
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (
-        DatasetDict,  # type: ignore
-        load_from_disk,  # type: ignore
-    )
+    from datasets import DatasetDict  # type: ignore
+    from datasets import load_from_disk  # type: ignore
     from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):  # type: ignore[override]

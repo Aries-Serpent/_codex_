@@ -13,6 +13,7 @@ try:
     import hydra
 except ImportError:
     import config_legacy as hydra
+
 from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import (
     ensure_local_tracking,
@@ -32,10 +33,9 @@ from omegaconf import DictConfig, OmegaConf
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
+    import torch
     from torch.optim import AdamW
     from torch.utils.data import DataLoader, Dataset
-
-    import torch
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
     AdamW = None  # type: ignore

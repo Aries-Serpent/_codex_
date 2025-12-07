@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import time
 import uuid
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
@@ -40,40 +40,54 @@ def start_run(run_info: RunInfo, base_dir: str | Path = "artifacts/experiments")
     run_dir = _run_dir(base_dir, run_info.run_id)
     _write_metadata(run_dir, run_info)
     logger = _logger_for(run_dir)
-    logger.write({
-        "type": "start",
-        "ts": time.time(),
-        "run_id": run_info.run_id,
-        "experiment": run_info.experiment_name,
-        "git_hash": run_info.git_hash,
-        "config_version": run_info.config_version,
-        "data_version": run_info.data_version,
-    })
+    logger.write(
+        {
+            "type": "start",
+            "ts": time.time(),
+            "run_id": run_info.run_id,
+            "experiment": run_info.experiment_name,
+            "git_hash": run_info.git_hash,
+            "config_version": run_info.config_version,
+            "data_version": run_info.data_version,
+        }
+    )
     return run_dir
 
 
-def log_metric(run_info: RunInfo, name: str, value: float, step: int | None = None, base_dir: str | Path = "artifacts/experiments") -> None:
+def log_metric(
+    run_info: RunInfo,
+    name: str,
+    value: float,
+    step: int | None = None,
+    base_dir: str | Path = "artifacts/experiments",
+) -> None:
     run_dir = _run_dir(base_dir, run_info.run_id)
     logger = _logger_for(run_dir)
-    logger.write({
-        "type": "metric",
-        "ts": time.time(),
-        "run_id": run_info.run_id,
-        "name": name,
-        "value": float(value),
-        "step": step,
-    })
+    logger.write(
+        {
+            "type": "metric",
+            "ts": time.time(),
+            "run_id": run_info.run_id,
+            "name": name,
+            "value": float(value),
+            "step": step,
+        }
+    )
 
 
-def finish_run(run_info: RunInfo, status: str = "completed", base_dir: str | Path = "artifacts/experiments") -> Path:
+def finish_run(
+    run_info: RunInfo, status: str = "completed", base_dir: str | Path = "artifacts/experiments"
+) -> Path:
     run_dir = _run_dir(base_dir, run_info.run_id)
     logger = _logger_for(run_dir)
-    logger.write({
-        "type": "finish",
-        "ts": time.time(),
-        "run_id": run_info.run_id,
-        "status": status,
-    })
+    logger.write(
+        {
+            "type": "finish",
+            "ts": time.time(),
+            "run_id": run_info.run_id,
+            "status": status,
+        }
+    )
     return run_dir
 
 

@@ -199,7 +199,9 @@ def _error_capture_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:  #
     if ctx.errors:
         ctx.apply_rollbacks()
     ctx.notes.append("errors-reviewed")
-    ctx.register_rollback("error_capture", lambda context: context.notes.pop() if context.notes else None)
+    ctx.register_rollback(
+        "error_capture", lambda context: context.notes.pop() if context.notes else None
+    )
 
 
 def _finalization_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:
@@ -254,7 +256,9 @@ DEFAULT_ROUTER = CapabilityRouter(CAPABILITY_ROUTING.values())
 
 
 class WorkflowOrchestrator:
-    def __init__(self, router: CapabilityRouter | None = None, *, offline_mode: bool = True) -> None:
+    def __init__(
+        self, router: CapabilityRouter | None = None, *, offline_mode: bool = True
+    ) -> None:
         self.router = router or DEFAULT_ROUTER
         self.offline_mode = offline_mode
 
@@ -268,7 +272,11 @@ class WorkflowOrchestrator:
                 ctx,
                 phase_name,
                 action.__name__,
-                extra_context={"capability": plan.name, "phase": phase_name, "offline": ctx.offline_mode},
+                extra_context={
+                    "capability": plan.name,
+                    "phase": phase_name,
+                    "offline": ctx.offline_mode,
+                },
             ):
                 action(ctx, plan)
             ctx.phase_history.append(phase_name)

@@ -7,8 +7,8 @@ import pickle
 import platform
 import random
 import re
-import time
 import shutil
+import time
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass
 from datetime import datetime
@@ -564,9 +564,7 @@ def save_checkpoint(
 
     if keep_last:
         parent = root.parent
-        candidates = sorted(
-            [p for p in parent.iterdir() if p.is_dir()], key=_epoch_dir_sort_key
-        )
+        candidates = sorted([p for p in parent.iterdir() if p.is_dir()], key=_epoch_dir_sort_key)
         for old in candidates[:-keep_last]:
             if old == root:
                 continue
@@ -688,7 +686,9 @@ def load_checkpoint(
     digest_meta = dict(meta_dict)
     digest_meta["sha256"] = None
     expected_digest = meta_dict.get("sha256")
-    calc_digest = hashlib.sha256(_serialize_payload({"state": state, "meta": digest_meta})).hexdigest()
+    calc_digest = hashlib.sha256(
+        _serialize_payload({"state": state, "meta": digest_meta})
+    ).hexdigest()
     if expected_digest and calc_digest != expected_digest:
         raise CheckpointIntegrityError(f"Checksum mismatch for {p.name}")
     if restore_rng and meta.rng:

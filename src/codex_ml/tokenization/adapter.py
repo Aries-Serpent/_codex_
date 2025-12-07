@@ -131,7 +131,9 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def save_pretrained(self, output_dir: str) -> None:
         self.tokenizer.save_pretrained(output_dir)
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:  # pragma: no cover - thin wrapper
+    def add_special_tokens(
+        self, tokens: Sequence[str]
+    ) -> dict[str, int]:  # pragma: no cover - thin wrapper
         added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
         mapping: dict[str, int] = {}
         if hasattr(self.tokenizer, "get_vocab"):
@@ -186,7 +188,9 @@ class WhitespaceTokenizer(TokenizerAdapter):
             encoded.append(self.encode(text, **kwargs))
         return encoded
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:  # pragma: no cover - simple mapping
+    def add_special_tokens(
+        self, tokens: Sequence[str]
+    ) -> dict[str, int]:  # pragma: no cover - simple mapping
         mapping: dict[str, int] = {}
         start = self.vocab_size
         for offset, tok in enumerate(tokens):

@@ -18,11 +18,9 @@ _warnings.warn(
     stacklevel=2,
 )
 try:
-    from codex_ml.utils.checkpointing import (
-        CheckpointManager,  # type: ignore
-        build_payload_bytes,  # type: ignore
-        dump_rng_state,  # type: ignore
-    )
+    from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
+    from codex_ml.utils.checkpointing import build_payload_bytes  # type: ignore
+    from codex_ml.utils.checkpointing import dump_rng_state  # type: ignore
 except Exception:
     # fall back to existing local implementation below (if present)
     pass

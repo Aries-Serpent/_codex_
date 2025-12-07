@@ -12,6 +12,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import click
+import yaml
 
 from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (
@@ -22,12 +23,11 @@ from codex_ml.codex_structured_logging import (
     run_cmd,
 )
 from codex_ml.config import ConfigError, load_app_config
-from codex_ml.telemetry import start_metrics_server
 from codex_ml.monitoring.system_metrics import SystemMetricsLogger
+from codex_ml.telemetry import start_metrics_server
 from codex_ml.utils.provenance import export_environment, load_environment_summary
 from codex_utils.ndjson import NDJSONLogger
 from omegaconf import OmegaConf
-import yaml
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -265,9 +265,7 @@ def config_sweep(
     except ValueError as exc:  # pragma: no cover - Click shows context
         raise click.ClickException(f"invalid seed list: {seeds}") from exc
 
-    sweeper_params: dict[str, str] = {
-        "training.seed": ",".join(str(s) for s in seeds_list)
-    }
+    sweeper_params: dict[str, str] = {"training.seed": ",".join(str(s) for s in seeds_list)}
     for item in param:
         if "=" not in item:
             raise click.ClickException("--param entries must look like key=csvlist")
@@ -491,9 +489,7 @@ def resume(
     manifest_path = Path(manifest)
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
     checkpoint = (
-        data.get("best_checkpoint")
-        or data.get("last_checkpoint")
-        or data.get("resume_from")
+        data.get("best_checkpoint") or data.get("last_checkpoint") or data.get("resume_from")
     )
     config_path = data.get("config_path") or "configs/training/base.yaml"
     if not checkpoint:

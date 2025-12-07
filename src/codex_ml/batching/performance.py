@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Any, Dict, List, Optional
-
 
 _LATENCY_QUANTUM = Decimal("0.0000001")
 

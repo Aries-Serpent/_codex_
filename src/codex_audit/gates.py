@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Tuple
-import json
-
 
 GateCheck = Callable[[Path], Tuple[str, str]]
 
@@ -118,8 +117,12 @@ def run_gates(repo_root: Path | None = None, output_path: Path | None = None) ->
     results: List[GateResult] = []
     for definition in GATE_DEFINITIONS:
         status, detail = definition.check(root)
-        rollback = "No action required; gate is read-only." if status == "pass" else (
-            f"Restore or create {definition.category} assets referenced by {definition.gate_id}."
+        rollback = (
+            "No action required; gate is read-only."
+            if status == "pass"
+            else (
+                f"Restore or create {definition.category} assets referenced by {definition.gate_id}."
+            )
         )
         results.append(
             GateResult(

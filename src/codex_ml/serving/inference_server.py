@@ -21,7 +21,10 @@ except ImportError:  # pragma: no cover
     FastAPI = None  # type: ignore
     HTTPException = Exception  # type: ignore
     BaseModel = object  # type: ignore
-    Field = lambda *a, **k: None  # type: ignore
+
+    def Field(*a, **k):
+        return None  # type: ignore
+
     Request = object  # type: ignore
 
 logger = logging.getLogger(__name__)
@@ -252,6 +255,4 @@ if FASTAPI_AVAILABLE:
 else:
 
     def create_app() -> None:  # pragma: no cover
-        raise RuntimeError(
-            "FastAPI not installed. Install with: pip install fastapi uvicorn"
-        )
+        raise RuntimeError("FastAPI not installed. Install with: pip install fastapi uvicorn")

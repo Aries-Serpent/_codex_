@@ -3,11 +3,11 @@
 Provides comprehensive performance profiling and benchmarking tools
 for training pipelines, model inference, and data loading.
 """
+
 from __future__ import annotations
 
 import logging
 import time
-from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -28,7 +28,7 @@ __all__ = [
 @dataclass
 class BenchmarkResult:
     """Results from a performance benchmark.
-    
+
     Attributes:
         name: Benchmark name
         duration_ms: Total duration in milliseconds
@@ -37,13 +37,14 @@ class BenchmarkResult:
         gpu_memory_mb: Peak GPU memory in MB (if available)
         metadata: Additional metadata
     """
+
     name: str
     duration_ms: float
     throughput: Optional[float] = None
     memory_mb: Optional[float] = None
     gpu_memory_mb: Optional[float] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __str__(self) -> str:
         """String representation."""
         parts = [
@@ -57,7 +58,7 @@ class BenchmarkResult:
         if self.gpu_memory_mb:
             parts.append(f"  GPU Memory: {self.gpu_memory_mb:.2f}MB")
         return "\n".join(parts)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -72,7 +73,7 @@ class BenchmarkResult:
 
 class PerformanceBenchmark:
     """Performance benchmarking context manager.
-    
+
     Example:
         >>> benchmark = PerformanceBenchmark("training_step")
         >>> with benchmark:
@@ -80,10 +81,10 @@ class PerformanceBenchmark:
         ...     pass
         >>> print(benchmark.result)
     """
-    
+
     def __init__(self, name: str, warmup_iters: int = 0):
         """Initialize benchmark.
-        
+
         Args:
             name: Benchmark name
             warmup_iters: Number of warmup iterations before timing
@@ -94,37 +95,37 @@ class PerformanceBenchmark:
         self._start_time = 0.0
         self._start_memory = 0.0
         self._start_gpu_memory = 0.0
-    
+
     def __enter__(self):
         """Start benchmark."""
         # Record initial memory
         if torch.cuda.is_available():
             torch.cuda.reset_peak_memory_stats()
             self._start_gpu_memory = torch.cuda.memory_allocated() / 1024**2
-        
+
         # Start timing
         self._start_time = time.perf_counter()
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """End benchmark and record results."""
         # End timing
         duration_s = time.perf_counter() - self._start_time
         duration_ms = duration_s * 1000
-        
+
         # Record peak memory
         gpu_memory_mb = None
         if torch.cuda.is_available():
             gpu_memory_mb = torch.cuda.max_memory_allocated() / 1024**2
-        
+
         self.result = BenchmarkResult(
             name=self.name,
             duration_ms=duration_ms,
             gpu_memory_mb=gpu_memory_mb,
         )
-        
+
         logger.info(f"Benchmark '{self.name}': {duration_ms:.2f}ms")
-        
+
         return False
 
 
@@ -136,54 +137,54 @@ def benchmark_training_step(
     warmup_iters: int = 2,
 ) -> BenchmarkResult:
     """Benchmark a training step.
-    
+
     Args:
         model: PyTorch model
         batch: Input batch
         optimizer: Optimizer
         num_iterations: Number of iterations to run
         warmup_iters: Warmup iterations
-    
+
     Returns:
         BenchmarkResult with timing and throughput
     """
     model.train()
-    
+
     # Warmup
     for _ in range(warmup_iters):
         optimizer.zero_grad()
         outputs = model(**batch)
-        loss = outputs.loss if hasattr(outputs, 'loss') else outputs[0]
+        loss = outputs.loss if hasattr(outputs, "loss") else outputs[0]
         loss.backward()
         optimizer.step()
-    
+
     # Benchmark
     if torch.cuda.is_available():
         torch.cuda.synchronize()
         torch.cuda.reset_peak_memory_stats()
-    
+
     start_time = time.perf_counter()
-    
+
     for _ in range(num_iterations):
         optimizer.zero_grad()
         outputs = model(**batch)
-        loss = outputs.loss if hasattr(outputs, 'loss') else outputs[0]
+        loss = outputs.loss if hasattr(outputs, "loss") else outputs[0]
         loss.backward()
         optimizer.step()
-    
+
     if torch.cuda.is_available():
         torch.cuda.synchronize()
-    
+
     duration_s = time.perf_counter() - start_time
     duration_ms = duration_s * 1000
     throughput = num_iterations / duration_s
-    
+
     gpu_memory_mb = None
     if torch.cuda.is_available():
         gpu_memory_mb = torch.cuda.max_memory_allocated() / 1024**2
-    
+
     batch_size = next(iter(batch.values())).shape[0]
-    
+
     return BenchmarkResult(
         name="training_step",
         duration_ms=duration_ms,
@@ -193,7 +194,7 @@ def benchmark_training_step(
             "num_iterations": num_iterations,
             "batch_size": batch_size,
             "avg_ms_per_step": duration_ms / num_iterations,
-        }
+        },
     )
 
 
@@ -204,47 +205,47 @@ def benchmark_inference(
     warmup_iters: int = 10,
 ) -> BenchmarkResult:
     """Benchmark model inference.
-    
+
     Args:
         model: PyTorch model
         batch: Input batch
         num_iterations: Number of iterations
         warmup_iters: Warmup iterations
-    
+
     Returns:
         BenchmarkResult with timing and throughput
     """
     model.eval()
-    
+
     # Warmup
     with torch.no_grad():
         for _ in range(warmup_iters):
             _ = model(**batch)
-    
+
     # Benchmark
     if torch.cuda.is_available():
         torch.cuda.synchronize()
         torch.cuda.reset_peak_memory_stats()
-    
+
     start_time = time.perf_counter()
-    
+
     with torch.no_grad():
         for _ in range(num_iterations):
             _ = model(**batch)
-    
+
     if torch.cuda.is_available():
         torch.cuda.synchronize()
-    
+
     duration_s = time.perf_counter() - start_time
     duration_ms = duration_s * 1000
     throughput = num_iterations / duration_s
-    
+
     gpu_memory_mb = None
     if torch.cuda.is_available():
         gpu_memory_mb = torch.cuda.max_memory_allocated() / 1024**2
-    
+
     batch_size = next(iter(batch.values())).shape[0]
-    
+
     return BenchmarkResult(
         name="inference",
         duration_ms=duration_ms,
@@ -254,7 +255,7 @@ def benchmark_inference(
             "num_iterations": num_iterations,
             "batch_size": batch_size,
             "avg_ms_per_sample": duration_ms / (num_iterations * batch_size),
-        }
+        },
     )
 
 
@@ -263,26 +264,26 @@ def benchmark_data_loading(
     num_batches: int = 100,
 ) -> BenchmarkResult:
     """Benchmark data loading speed.
-    
+
     Args:
         dataloader: PyTorch DataLoader
         num_batches: Number of batches to load
-    
+
     Returns:
         BenchmarkResult with timing and throughput
     """
     start_time = time.perf_counter()
-    
+
     count = 0
     for batch in dataloader:
         count += 1
         if count >= num_batches:
             break
-    
+
     duration_s = time.perf_counter() - start_time
     duration_ms = duration_s * 1000
     throughput = count / duration_s
-    
+
     return BenchmarkResult(
         name="data_loading",
         duration_ms=duration_ms,
@@ -290,13 +291,13 @@ def benchmark_data_loading(
         metadata={
             "num_batches": count,
             "avg_ms_per_batch": duration_ms / count,
-        }
+        },
     )
 
 
 class BenchmarkSuite:
     """Suite of benchmarks for comprehensive performance testing.
-    
+
     Example:
         >>> suite = BenchmarkSuite("training_pipeline")
         >>> suite.add_result(benchmark_training_step(model, batch, optimizer))
@@ -304,53 +305,53 @@ class BenchmarkSuite:
         >>> suite.save_results("benchmarks.json")
         >>> suite.print_summary()
     """
-    
+
     def __init__(self, name: str):
         """Initialize benchmark suite.
-        
+
         Args:
             name: Suite name
         """
         self.name = name
         self.results: List[BenchmarkResult] = []
-    
+
     def add_result(self, result: BenchmarkResult):
         """Add a benchmark result.
-        
+
         Args:
             result: BenchmarkResult to add
         """
         self.results.append(result)
         logger.info(f"Added benchmark: {result.name}")
-    
+
     def print_summary(self):
         """Print summary of all benchmarks."""
         print(f"\n{'='*60}")
         print(f"Benchmark Suite: {self.name}")
         print(f"{'='*60}")
-        
+
         for result in self.results:
             print(f"\n{result}")
-        
+
         print(f"\n{'='*60}")
         print(f"Total benchmarks: {len(self.results)}")
         print(f"{'='*60}\n")
-    
+
     def save_results(self, path: str):
         """Save results to JSON file.
-        
+
         Args:
             path: Output file path
         """
         import json
-        
+
         output = {
             "suite_name": self.name,
             "results": [r.to_dict() for r in self.results],
         }
-        
+
         Path(path).parent.mkdir(parents=True, exist_ok=True)
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             json.dump(output, f, indent=2)
-        
+
         logger.info(f"Saved benchmark results to: {path}")

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import json
 import logging
 import os
 import platform
@@ -159,7 +158,16 @@ def init_logger(name: str = __name__) -> logging.Logger:
     handler = logging.StreamHandler()
     if os.getenv("CODEX_JSON_LOGGING", "0") == "1":
         handler.setFormatter(
-            logging.Formatter(fmt=json.dumps({"time": "%(asctime)s", "level": "%(levelname)s", "name": "%(name)s", "msg": "%(message)s"}))
+            logging.Formatter(
+                fmt=json.dumps(
+                    {
+                        "time": "%(asctime)s",
+                        "level": "%(levelname)s",
+                        "name": "%(name)s",
+                        "msg": "%(message)s",
+                    }
+                )
+            )
         )
     else:
         fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"

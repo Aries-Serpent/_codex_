@@ -5,9 +5,8 @@ import warnings
 from typing import Iterable
 
 try:  # pragma: no cover - torch is optional
-    import torch.distributed as dist  # type: ignore
-
     import torch  # type: ignore
+    import torch.distributed as dist  # type: ignore
 except Exception:  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
     dist = None  # type: ignore[assignment]

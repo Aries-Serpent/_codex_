@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+import json
 from datetime import date
 from pathlib import Path
 from typing import Mapping, Sequence
-import json
 
 from .policy import build_policy_mapping
 from .scorecard import render_scorecard
@@ -24,7 +24,9 @@ def _load_policy_map(path: Path) -> Mapping[str, object]:
 def _render_gate_bullets(results: Sequence[Mapping[str, object]]) -> str:
     lines = []
     for gate in results:
-        icon = "✅" if gate.get("status") == "pass" else "⚠️" if gate.get("status") == "warn" else "❌"
+        icon = (
+            "✅" if gate.get("status") == "pass" else "⚠️" if gate.get("status") == "warn" else "❌"
+        )
         ra = gate.get("ra_rule", "RA-1")
         lines.append(
             f"- {icon} {gate.get('gate_id')} ({gate.get('category')}): {gate.get('detail')} [RA: {ra}]"
@@ -47,7 +49,9 @@ def prepare_repo_status_prompt(
 
     gates = _load_gate_results(gates_path)
     policy_map = _load_policy_map(policy_path)
-    render_scorecard(gate_results_path=gates_path, policy_map=policy_map, output_path=scorecard_target)
+    render_scorecard(
+        gate_results_path=gates_path, policy_map=policy_map, output_path=scorecard_target
+    )
 
     ra_rules = policy_map.get("ra_rules", {})
     ra_lines = [f"- {k}: {v}" for k, v in sorted(ra_rules.items())]

@@ -245,7 +245,9 @@ def create_model(
 
     if _should_enable_peft(enable_peft):
         try:
-            lora_config = validate_lora_config(lora_payload) if lora_payload is not None else LoraBuildCfg()
+            lora_config = (
+                validate_lora_config(lora_payload) if lora_payload is not None else LoraBuildCfg()
+            )
         except ValueError as exc:
             logger.warning("Invalid LoRA configuration: %s. Disabling PEFT.", exc)
             lora_config = None
@@ -253,7 +255,9 @@ def create_model(
             logger.debug("model_factory: applying LoRA adapters with config: %s", lora_config)
             model = build_lora(model, lora_config)
         else:
-            logger.debug("model_factory: PEFT enabled but no valid LoRA configuration provided; skipping")
+            logger.debug(
+                "model_factory: PEFT enabled but no valid LoRA configuration provided; skipping"
+            )
     else:
         logger.debug("model_factory: PEFT disabled; skipping LoRA application")
 

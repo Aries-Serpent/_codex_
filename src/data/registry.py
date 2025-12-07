@@ -6,9 +6,8 @@ import importlib
 from typing import Any, Callable
 
 try:  # pragma: no cover - torch is optional
-    from torch.utils.data import DataLoader, TensorDataset, random_split
-
     import torch
+    from torch.utils.data import DataLoader, TensorDataset, random_split
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
     torch = None  # type: ignore[assignment]
     DataLoader = None  # type: ignore[assignment]

@@ -98,9 +98,7 @@ def _coerce_training(data: Dict[str, Any]) -> TrainingConfig:
         learning_rate=float(data.get("learning_rate", 1e-3)),
         batch_size=int(data.get("batch_size", 8)),
         max_steps=int(data.get("max_steps", 100)),
-        gradient_accumulation_steps=int(
-            data.get("gradient_accumulation_steps", 1)
-        ),
+        gradient_accumulation_steps=int(data.get("gradient_accumulation_steps", 1)),
         log_every_n_steps=int(data.get("log_every_n_steps", 10)),
         seed=int(data.get("seed", 123)),
     )
@@ -120,11 +118,7 @@ def _coerce_eval(data: Dict[str, Any]) -> EvalConfig:
     return EvalConfig(
         batch_size=int(data.get("batch_size", 8)),
         split=str(data.get("split", "validation")),
-        max_batches=(
-            None
-            if data.get("max_batches", None) is None
-            else int(data["max_batches"])
-        ),
+        max_batches=(None if data.get("max_batches", None) is None else int(data["max_batches"])),
     )
 
 

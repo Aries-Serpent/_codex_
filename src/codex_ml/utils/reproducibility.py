@@ -7,13 +7,14 @@ This module centralizes simple helpers for:
 The goal is to provide a stable import path for future integrations with more
 advanced MLOps reproducibility tooling, without introducing hard dependencies.
 """
+
 from __future__ import annotations
 
+import importlib.util
 import os
 import random
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict
-import importlib.util
 
 _np_spec = importlib.util.find_spec("numpy")
 if _np_spec is not None:

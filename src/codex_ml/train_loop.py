@@ -90,11 +90,10 @@ ART_DIR = Path("artifacts")
 _TELEMETRY_JSON_ENABLED = True
 
 try:
-    from torch.optim.lr_scheduler import StepLR
-    from torch.utils.data import DataLoader, Dataset
-
     import torch
     from torch import nn, optim
+    from torch.optim.lr_scheduler import StepLR
+    from torch.utils.data import DataLoader, Dataset
 
     _HAS_TORCH = True
 except Exception:  # noqa: BLE001

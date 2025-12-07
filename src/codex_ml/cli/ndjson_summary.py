@@ -5,8 +5,9 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 from collections.abc import Mapping as MappingABC
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 

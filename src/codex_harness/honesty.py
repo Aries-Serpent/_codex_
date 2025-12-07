@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
@@ -50,7 +50,11 @@ class HonestyMetadata:
 class HonestyRecorder:
     """Capture and flush honesty statements for the golden harness."""
 
-    def __init__(self, workflow: str = "default", output_path: Path | str = Path("artifacts/honesty_metadata.json")) -> None:
+    def __init__(
+        self,
+        workflow: str = "default",
+        output_path: Path | str = Path("artifacts/honesty_metadata.json"),
+    ) -> None:
         self.workflow = workflow
         self.output_path = Path(output_path)
         self._metadata = HonestyMetadata(workflow=workflow)
@@ -105,4 +109,3 @@ class HonestyRecorder:
                     metadata=stmt.get("metadata"),
                 )
             )
-

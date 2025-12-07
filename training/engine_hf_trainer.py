@@ -1236,8 +1236,10 @@ def run_hf_trainer(
     record["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     writer_choice = (metrics_writer or "ndjson").lower()
     if writer_choice != "none":
-        path = Path(metrics_path) if metrics_path else output_dir / (
-            "metrics.csv" if writer_choice == "csv" else "metrics.ndjson"
+        path = (
+            Path(metrics_path)
+            if metrics_path
+            else output_dir / ("metrics.csv" if writer_choice == "csv" else "metrics.ndjson")
         )
         if writer_choice == "csv":
             writer_obj = CSVMetricsWriter(str(path))

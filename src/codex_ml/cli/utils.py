@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import datetime as _dt
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Dict
 

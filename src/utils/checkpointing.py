@@ -27,9 +27,7 @@ try:  # pragma: no cover - prefer canonical RNG helpers
     from codex_ml.utils.checkpoint_core import (
         dump_rng_state as _canonical_dump_rng_state,  # type: ignore
     )
-    from codex_ml.utils.checkpoint_core import (
-        load_rng_state as _canonical_load_rng_state,
-    )
+    from codex_ml.utils.checkpoint_core import load_rng_state as _canonical_load_rng_state
     from codex_ml.utils.checkpoint_core import set_seed as _canonical_set_seed
 except Exception:  # pragma: no cover - canonical RNG helpers unavailable
     _canonical_dump_rng_state = None  # type: ignore[assignment]
@@ -55,9 +53,7 @@ def save_ckpt(*args, **kwargs):  # pragma: no cover - passthrough
 
 
 def verify_ckpt_integrity(*args, **kwargs):  # pragma: no cover - passthrough
-    from codex_ml.utils.checkpoint_core import (
-        verify_checkpoint as _verify,  # type: ignore
-    )
+    from codex_ml.utils.checkpoint_core import verify_checkpoint as _verify  # type: ignore
 
     return _verify(*args, **kwargs)
 

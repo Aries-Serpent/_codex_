@@ -6,8 +6,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-import torch
 import yaml
+
+import torch
+from codex_ml.training.rng_checkpoint import RNGState
+from codex_ml.utils import checkpointing
 from tokenization.loader import load_tokenizer
 from torch.utils.data import Dataset
 from transformers import (
@@ -17,9 +20,6 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-
-from codex_ml.training.rng_checkpoint import RNGState
-from codex_ml.utils import checkpointing
 
 
 @dataclass
@@ -52,7 +52,9 @@ def _merge(namespace: argparse.Namespace, config: Mapping[str, Any]) -> dict[str
 
 
 def _build_dataset(tokenizer, train_file: Path, block_size: int) -> Dataset:
-    lines = [line.strip() for line in train_file.read_text(encoding="utf-8").splitlines() if line.strip()]
+    lines = [
+        line.strip() for line in train_file.read_text(encoding="utf-8").splitlines() if line.strip()
+    ]
     if not lines:
         raise ValueError("Training file is empty")
     encodings = tokenizer(
@@ -100,7 +102,9 @@ def _build_model(config: dict[str, Any], tokenizer) -> AutoModelForCausalLM:
     return model
 
 
-def _apply_lora_if_requested(model: AutoModelForCausalLM, config: dict[str, Any]) -> AutoModelForCausalLM:
+def _apply_lora_if_requested(
+    model: AutoModelForCausalLM, config: dict[str, Any]
+) -> AutoModelForCausalLM:
     if not config.get("use_lora"):
         return model
     import importlib.util
@@ -168,21 +172,21 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
     # Handle resumption with RNG state validation
     resume_hf = cfg.get("resume_from_checkpoint")
     strict_resume = bool(cfg.get("strict_resume", False))
-    
+
     if cfg.get("codex_resume_checkpoint"):
-        checkpoint_dir = Path(cfg["codex_resume_checkpoint"]).parent
-        
+        Path(cfg["codex_resume_checkpoint"]).parent
+
         # Validate and restore RNG state if resuming
         if strict_resume:
             rng_path = RNGState.path_for_checkpoint(Path(cfg["codex_resume_checkpoint"]))
-            
+
             if not rng_path.exists():
                 raise FileNotFoundError(
                     f"Strict resume enabled but RNG sidecar missing: {rng_path}\n"
                     f"Cannot guarantee deterministic resume. Please disable --strict-resume "
                     f"or ensure RNG sidecar was saved with checkpoint."
                 )
-            
+
             # Load and restore RNG state
             rng_state = RNGState.load_from_file(rng_path)
             rng_state.restore()
@@ -199,9 +203,13 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
             else:
                 print(f"⚠️ RNG sidecar not found: {rng_path}")
                 print("   Resume may not be fully deterministic.")
-        
+
         checkpointing.load_training_checkpoint(
-            cfg["codex_resume_checkpoint"], model=model, optimizer=None, scheduler=None, strict=False
+            cfg["codex_resume_checkpoint"],
+            model=model,
+            optimizer=None,
+            scheduler=None,
+            strict=False,
         )
 
     trainer.train(resume_from_checkpoint=resume_hf)
@@ -216,7 +224,7 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
         epoch=int(cfg.get("num_train_epochs", 1)),
         dataset_paths=[train_file],
     )
-    
+
     # Save RNG sidecar with checkpoint
     rng_state = RNGState()
     rng_state.capture()
@@ -225,23 +233,44 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
     print(f"✓ RNG sidecar saved: {rng_sidecar_path}")
 
     trainer_state = output_dir / "trainer_state.json"
-    return TrainingResult(output_dir=output_dir, checkpoint_path=checkpoint_path, trainer_state_path=trainer_state)
+    return TrainingResult(
+        output_dir=output_dir, checkpoint_path=checkpoint_path, trainer_state_path=trainer_state
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train Codex models with HuggingFace Trainer")
     parser.add_argument("--config", help="YAML/JSON config file", default=None)
-    parser.add_argument("--train-file", dest="train_file", help="Path to training text file", default=None)
-    parser.add_argument("--output-dir", dest="output_dir", help="Output directory for checkpoints", default=None)
-    parser.add_argument("--tokenizer-file", dest="tokenizer_file", help="Tokenizer JSON/vocab file", default=None)
-    parser.add_argument("--tokenizer-model", dest="tokenizer_model", help="Tokenizer model name or path", default=None)
+    parser.add_argument(
+        "--train-file", dest="train_file", help="Path to training text file", default=None
+    )
+    parser.add_argument(
+        "--output-dir", dest="output_dir", help="Output directory for checkpoints", default=None
+    )
+    parser.add_argument(
+        "--tokenizer-file", dest="tokenizer_file", help="Tokenizer JSON/vocab file", default=None
+    )
+    parser.add_argument(
+        "--tokenizer-model",
+        dest="tokenizer_model",
+        help="Tokenizer model name or path",
+        default=None,
+    )
     parser.add_argument("--model-name", dest="model_name", help="Model name or path", default=None)
     parser.add_argument("--num-train-epochs", dest="num_train_epochs", type=float, default=None)
     parser.add_argument("--learning-rate", dest="learning_rate", type=float, default=None)
-    parser.add_argument("--per-device-train-batch-size", dest="per_device_train_batch_size", type=int, default=None)
-    parser.add_argument("--gradient-accumulation-steps", dest="gradient_accumulation_steps", type=int, default=None)
-    parser.add_argument("--fp16", action="store_true", default=argparse.SUPPRESS, help="Enable fp16 training")
-    parser.add_argument("--bf16", action="store_true", default=argparse.SUPPRESS, help="Enable bf16 training")
+    parser.add_argument(
+        "--per-device-train-batch-size", dest="per_device_train_batch_size", type=int, default=None
+    )
+    parser.add_argument(
+        "--gradient-accumulation-steps", dest="gradient_accumulation_steps", type=int, default=None
+    )
+    parser.add_argument(
+        "--fp16", action="store_true", default=argparse.SUPPRESS, help="Enable fp16 training"
+    )
+    parser.add_argument(
+        "--bf16", action="store_true", default=argparse.SUPPRESS, help="Enable bf16 training"
+    )
     parser.add_argument("--max-steps", dest="max_steps", type=int, default=None)
     parser.add_argument("--save-steps", dest="save_steps", type=int, default=None)
     parser.add_argument("--save-total-limit", dest="save_total_limit", type=int, default=None)
@@ -264,7 +293,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lora-r", dest="lora_r", type=int, default=None)
     parser.add_argument("--lora-alpha", dest="lora_alpha", type=int, default=None)
     parser.add_argument("--lora-dropout", dest="lora_dropout", type=float, default=None)
-    parser.add_argument("--lora-target-modules", dest="lora_target_modules", nargs="*", default=None)
+    parser.add_argument(
+        "--lora-target-modules", dest="lora_target_modules", nargs="*", default=None
+    )
     parser.add_argument(
         "--allow-remote",
         dest="allow_remote",

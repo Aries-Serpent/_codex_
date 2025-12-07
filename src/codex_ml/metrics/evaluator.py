@@ -71,7 +71,9 @@ def _bleu1(preds: list[str], refs: list[str]) -> float:
             scores.append(0.0)
             continue
         precision = overlap / pred_total
-        brevity_penalty = 1.0 if pred_total > ref_total else (pred_total / ref_total) if ref_total else 0.0
+        brevity_penalty = (
+            1.0 if pred_total > ref_total else (pred_total / ref_total) if ref_total else 0.0
+        )
         scores.append(brevity_penalty * precision)
     return float(sum(scores) / len(scores))
 

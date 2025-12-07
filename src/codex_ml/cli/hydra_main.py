@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import json
 import logging
 import platform
 import sys
@@ -20,7 +19,12 @@ from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.codex_data import DataConfig, load_dataset
 from codex_ml.codex_model import ModelConfig, build_codex_model
 from codex_ml.data.reasoning_manifest import list_reasoning_corpora
-from codex_ml.tracking.experiments import finish_run, log_metric, new_run_info, start_run
+from codex_ml.tracking.experiments import (
+    finish_run,
+    log_metric,
+    new_run_info,
+    start_run,
+)
 from codex_ml.training import run_functional_training
 
 try:
@@ -126,7 +130,12 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
     config_path = conf_root / "config.yaml"
     if not config_path.exists():
         return {
-            "model": {"base_model_path": None, "dtype": "float32", "device": "cpu", "enable_lora": False},
+            "model": {
+                "base_model_path": None,
+                "dtype": "float32",
+                "device": "cpu",
+                "enable_lora": False,
+            },
             "data": {
                 "dataset_path": "data/sample.jsonl",
                 "train_ratio": 0.8,

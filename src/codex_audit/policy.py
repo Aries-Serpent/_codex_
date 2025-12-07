@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Mapping, MutableMapping, Sequence
-import json
-
 
 RA_RULES: Mapping[str, str] = {
     "RA-1": "No fabrication: every assertion must be grounded in repository evidence.",
@@ -111,7 +110,9 @@ def build_policy_mapping(
     }
 
 
-def write_policy_mapping(path: Path, mapping: MutableMapping[str, object] | None = None) -> Dict[str, object]:
+def write_policy_mapping(
+    path: Path, mapping: MutableMapping[str, object] | None = None
+) -> Dict[str, object]:
     path.parent.mkdir(parents=True, exist_ok=True)
     mapping_to_write = mapping or build_policy_mapping()
     with path.open("w", encoding="utf-8") as fp:

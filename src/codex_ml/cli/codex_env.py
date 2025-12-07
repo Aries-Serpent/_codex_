@@ -59,9 +59,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Unified Codex environment CLI for local orchestration."
     )
-    parser.add_argument(
-        "--repo-root", type=str, default=".", help="Repository root (default: .)"
-    )
+    parser.add_argument("--repo-root", type=str, default=".", help="Repository root (default: .)")
     sub = parser.add_subparsers(dest="command", required=True)
 
     ph = sub.add_parser("health", help="Run env & security health check.")

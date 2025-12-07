@@ -38,9 +38,7 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import (
-        environment_summary as _prov_env_summary,  # type: ignore
-    )
+    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
@@ -52,9 +50,7 @@ from .storage import StorageProvider
 logger = logging.getLogger(__name__)
 
 try:
-    from codex_ml.utils.provenance import (
-        _git_commit as _prov_git_commit,  # type: ignore
-    )
+    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 
@@ -142,7 +138,10 @@ if TORCH_AVAILABLE:
         result = _ORIGINAL_TORCH_MANUAL_SEED(seed)
         try:
             cuda_state = None
-            if getattr(torch, "cuda", None) and getattr(torch.cuda, "is_available", lambda: False)():
+            if (
+                getattr(torch, "cuda", None)
+                and getattr(torch.cuda, "is_available", lambda: False)()
+            ):
                 try:
                     cuda_state = [s.tolist() for s in torch.cuda.get_rng_state_all()]
                 except Exception:

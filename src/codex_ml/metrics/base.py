@@ -5,9 +5,11 @@ Abstract base class for batch and streaming metrics
 Author: mbaetiong
 Generated: 2025-11-19 04:20:17
 """
+
 from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 
 class BaseMetric(ABC):

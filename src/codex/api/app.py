@@ -7,21 +7,21 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-import torch
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.tokenization.loader import load_tokenizer
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
 from tokenizers.pre_tokenizers import Whitespace
+
+import torch
+from codex_ml.security import DenylistEnforcer, DenylistViolation
+from src.tokenization.loader import load_tokenizer
 from transformers import (
     AutoModelForCausalLM,
     GPT2Config,
     PreTrainedTokenizerBase,
     PreTrainedTokenizerFast,
 )
-
-from codex_ml.security import DenylistEnforcer, DenylistViolation
 
 app = FastAPI(title="codex", version="0.2.0")
 
@@ -55,7 +55,9 @@ def _denylist_cached() -> DenylistEnforcer:
 def _fallback_tokenizer() -> PreTrainedTokenizerFast:
     tokenizer_obj = Tokenizer(WordLevel({"[PAD]": 0, "[UNK]": 1, "hello": 2, "world": 3}))
     tokenizer_obj.pre_tokenizer = Whitespace()
-    tokenizer = PreTrainedTokenizerFast(tokenizer_object=tokenizer_obj, pad_token="[PAD]", unk_token="[UNK]")
+    tokenizer = PreTrainedTokenizerFast(
+        tokenizer_object=tokenizer_obj, pad_token="[PAD]", unk_token="[UNK]"
+    )
     tokenizer.pad_token = "[PAD]"
     tokenizer.eos_token = tokenizer.eos_token or tokenizer.pad_token
     return tokenizer
