@@ -427,6 +427,8 @@ Key environment variables for Codex ML:
 ```bash
 # Determinism
 export PYTHONHASHSEED=0
+# CUBLAS_WORKSPACE_CONFIG format: :<workspace_size>:<num_rng_algorithms>
+# Here, 4096 is the workspace size in bytes, and 8 is the number of RNG algorithms.
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
 # Offline mode (default)
