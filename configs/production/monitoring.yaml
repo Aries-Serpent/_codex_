@@ -1,0 +1,288 @@
+# Production Monitoring Configuration
+# Phase 6.5: Monitoring & Alerting
+# Real-time visibility into MLOps metrics
+
+monitoring:
+  # Enable monitoring
+  enabled: true
+  
+  # Monitoring interval (seconds)
+  interval_seconds: 60
+  
+  # Dashboards configuration
+  dashboards:
+    # MLOps Overview Dashboard
+    - name: "mlops_overview"
+      enabled: true
+      refresh_rate: 300  # 5 minutes
+      components:
+        - name: "mlflow_metrics"
+          type: "timeseries"
+          metrics: ["loss", "accuracy", "f1_score"]
+          
+        - name: "training_runs"
+          type: "counter"
+          metric: "total_runs"
+          
+        - name: "success_rate"
+          type: "gauge"
+          metric: "run_success_rate"
+          
+        - name: "avg_duration"
+          type: "gauge"
+          metric: "avg_run_duration"
+          
+    # Feature Store Health Dashboard
+    - name: "feature_health"
+      enabled: true
+      refresh_rate: 900  # 15 minutes
+      components:
+        - name: "feature_freshness"
+          type: "heatmap"
+          metric: "feature_age_minutes"
+          
+        - name: "feature_quality"
+          type: "gauge"
+          metric: "feature_quality_score"
+          
+        - name: "feature_usage"
+          type: "timeseries"
+          metric: "feature_access_count"
+          
+        - name: "stale_features"
+          type: "list"
+          filter: "age > 48h"
+          
+    # Data Quality Dashboard
+    - name: "data_quality"
+      enabled: true
+      refresh_rate: 300  # 5 minutes
+      components:
+        - name: "validation_pass_rate"
+          type: "gauge"
+          metric: "validation_pass_rate"
+          target: 0.95
+          
+        - name: "schema_violations"
+          type: "counter"
+          metric: "schema_violations"
+          
+        - name: "drift_detection"
+          type: "timeseries"
+          metric: "drift_score"
+          threshold: 0.1
+          
+        - name: "null_rate"
+          type: "gauge"
+          metric: "null_rate"
+          
+    # Training Progress Dashboard
+    - name: "training_progress"
+      enabled: true
+      refresh_rate: 60  # 1 minute
+      components:
+        - name: "loss_curves"
+          type: "timeseries"
+          metrics: ["train_loss", "val_loss"]
+          
+        - name: "metric_trends"
+          type: "timeseries"
+          metrics: ["accuracy", "f1_score", "precision", "recall"]
+          
+        - name: "learning_rate"
+          type: "timeseries"
+          metric: "learning_rate"
+          
+        - name: "gpu_utilization"
+          type: "gauge"
+          metric: "gpu_utilization"
+          
+    # Model Performance Dashboard
+    - name: "model_performance"
+      enabled: true
+      refresh_rate: 300  # 5 minutes
+      components:
+        - name: "inference_latency"
+          type: "histogram"
+          metric: "inference_latency_ms"
+          percentiles: [50, 90, 95, 99]
+          
+        - name: "throughput"
+          type: "gauge"
+          metric: "requests_per_second"
+          
+        - name: "error_rate"
+          type: "gauge"
+          metric: "error_rate"
+          
+        - name: "model_accuracy"
+          type: "timeseries"
+          metric: "online_accuracy"
+          
+  # Alerting configuration
+  alerting:
+    enabled: true
+    
+    # Alert channels
+    channels:
+      slack:
+        enabled: true
+        webhook_url: "${SLACK_WEBHOOK_URL}"
+        channel: "#mlops-alerts"
+        username: "MLOps Monitor"
+        
+      email:
+        enabled: false
+        recipients: ["mlops-team@company.com"]
+        smtp_host: "smtp.company.com"
+        smtp_port: 587
+        
+      pagerduty:
+        enabled: false
+        service_key: "${PAGERDUTY_KEY}"
+        
+      log:
+        enabled: true
+        log_path: "artifacts/monitoring/alerts.log"
+        
+    # Alert rules
+    rules:
+      # Feature staleness
+      - name: "Feature Staleness Warning"
+        condition: "feature_age_hours > 48"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 60
+        
+      - name: "Feature Staleness Critical"
+        condition: "feature_age_hours > 72"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "log"]
+        cooldown_minutes: 30
+        
+      # Data validation
+      - name: "Validation Failure"
+        condition: "validation_pass_rate < 0.95"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "log"]
+        cooldown_minutes: 15
+        
+      - name: "High Null Rate"
+        condition: "null_rate > 0.10"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 30
+        
+      - name: "Distribution Drift"
+        condition: "drift_score > 0.2"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 60
+        
+      # Training anomalies
+      - name: "Loss Spike"
+        condition: "loss_spike > 3_std_dev"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 10
+        
+      - name: "Training Failure"
+        condition: "run_status == 'FAILED'"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "log"]
+        cooldown_minutes: 5
+        
+      - name: "Low GPU Utilization"
+        condition: "gpu_utilization < 0.30"
+        severity: "INFO"
+        channels: ["log"]
+        cooldown_minutes: 60
+        
+      # Model performance
+      - name: "Model Degradation"
+        condition: "accuracy_drop > 0.05"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "email", "log"]
+        cooldown_minutes: 15
+        
+      - name: "High Inference Latency"
+        condition: "p95_latency_ms > 200"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 30
+        
+      - name: "High Error Rate"
+        condition: "error_rate > 0.01"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "log"]
+        cooldown_minutes: 10
+        
+      # Storage
+      - name: "Storage Threshold Warning"
+        condition: "storage_usage > 0.80"
+        severity: "WARNING"
+        channels: ["slack", "log"]
+        cooldown_minutes: 120
+        
+      - name: "Storage Threshold Critical"
+        condition: "storage_usage > 0.90"
+        severity: "CRITICAL"
+        channels: ["slack", "pagerduty", "log"]
+        cooldown_minutes: 60
+        
+  # Metrics collection
+  metrics:
+    # Prometheus integration
+    prometheus:
+      enabled: false
+      port: 9090
+      metrics_path: "/metrics"
+      
+    # Custom metrics
+    custom:
+      enabled: true
+      output_path: "artifacts/monitoring/metrics"
+      
+  # Health checks
+  health_checks:
+    enabled: true
+    
+    # Services to check
+    services:
+      - name: "mlflow_server"
+        url: "http://localhost:5000/health"
+        interval_seconds: 60
+        timeout_seconds: 5
+        
+      - name: "feature_store"
+        check_type: "file_system"
+        path: "artifacts/features"
+        interval_seconds: 300
+        
+      - name: "training_pipeline"
+        check_type: "custom"
+        interval_seconds: 300
+        
+  # SLA monitoring
+  sla:
+    enabled: true
+    
+    # SLA definitions
+    targets:
+      feature_freshness_minutes: 120
+      validation_pass_rate: 0.95
+      model_accuracy: 0.85
+      p95_latency_ms: 100
+      error_rate: 0.01
+      
+    # SLA reporting
+    reporting:
+      enabled: true
+      interval_hours: 24
+      output_path: "artifacts/monitoring/sla_reports"
+      
+  # Retention policies
+  retention:
+    metrics_retention_days: 90
+    alerts_retention_days: 365
+    dashboards_retention_days: 30
