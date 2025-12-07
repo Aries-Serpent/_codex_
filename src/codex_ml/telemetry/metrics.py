@@ -5,11 +5,11 @@ from functools import wraps
 from typing import Any, Callable
 
 try:  # optional dependency
-    from prometheus_client import Counter, Histogram  # type: ignore
+    from prometheus_client import Counter, Histogram
 
     _HAS_PROM = True
 except Exception:  # pragma: no cover - optional
-    Counter = Histogram = None  # type: ignore
+    Counter = Histogram = None
     _HAS_PROM = False
 
 REQUEST_LATENCY = Histogram("data_load_seconds", "Time spent loading data") if _HAS_PROM else None

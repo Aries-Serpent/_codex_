@@ -628,7 +628,7 @@ def load_app_config(
 
     def _to_plain(mapping: Mapping[str, Any]) -> dict[str, Any]:
         if hasattr(OmegaConf, "to_container"):
-            return dict(OmegaConf.to_container(mapping, resolve=True))  # type: ignore[arg-type]
+            return dict(OmegaConf.to_container(mapping, resolve=True))
         return dict(mapping)
 
     if isinstance(schema, Mapping):
@@ -662,7 +662,7 @@ def load_app_config(
                         child["value"] = value
                 continue
             if isinstance(value, Mapping) and isinstance(target.get(key), dict):
-                target[key] = _deep_update(target[key], value)  # type: ignore[index]
+                target[key] = _deep_update(target[key], value)
             elif isinstance(value, Mapping):
                 target[key] = _deep_update({}, value)
             else:
@@ -803,12 +803,12 @@ except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when
     AppSettings = None  # type: ignore[assignment]
     EvalRow = None  # type: ignore[assignment]
 
-    def eval_row_schema() -> dict:  # type: ignore[override]
+    def eval_row_schema() -> dict:
         raise ModuleNotFoundError(
             "pydantic is required to generate evaluation schemas; install the optional dependencies"
         )
 
-    def get_settings():  # type: ignore[override]
+    def get_settings():
         raise ModuleNotFoundError(
             "pydantic is required to load AppSettings; install the optional dependencies"
         )

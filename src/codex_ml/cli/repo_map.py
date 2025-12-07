@@ -10,7 +10,7 @@ from typing import Any
 try:  # pragma: no cover - optional dependency path
     import yaml  # type: ignore
 except Exception:  # pragma: no cover - PyYAML not installed in minimal envs
-    yaml = None  # type: ignore
+    yaml = None
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 

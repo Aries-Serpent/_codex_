@@ -11,12 +11,12 @@ from urllib.parse import urlparse
 try:  # pragma: no cover - optional dependency
     import mlflow
 except Exception:  # pragma: no cover - mlflow optional
-    mlflow = None  # type: ignore
+    mlflow = None
 
 try:  # pragma: no cover - optional dependency
     import wandb
 except Exception:  # pragma: no cover - wandb optional
-    wandb = None  # type: ignore
+    wandb = None
 
 
 logger = logging.getLogger(__name__)

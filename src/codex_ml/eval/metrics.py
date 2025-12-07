@@ -8,7 +8,7 @@ from typing import Iterable, List, Optional, Sequence
 try:  # Optional dependency for efficiency
     import numpy as _np
 except Exception:  # pragma: no cover - numpy is optional
-    _np = None  # type: ignore
+    _np = None
 
 __all__ = [
     "MetricError",
@@ -294,7 +294,7 @@ def bleu(
     if len(candidates) != len(references):
         raise MetricError("bleu", "candidates and references length mismatch")
     try:
-        import sacrebleu  # type: ignore
+        import sacrebleu
 
         hyp = [c.lower() if lowercase else c for c in candidates]
         ref = [r.lower() if lowercase else r for r in references]

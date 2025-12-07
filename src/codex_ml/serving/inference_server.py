@@ -18,14 +18,14 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore
-    HTTPException = Exception  # type: ignore
-    BaseModel = object  # type: ignore
+    FastAPI = None
+    HTTPException = Exception
+    BaseModel = object
 
     def Field(*a, **k):
-        return None  # type: ignore
+        return None
 
-    Request = object  # type: ignore
+    Request = object
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,7 @@ class ModelServer:
     def embed(self, texts: List[str]):
         if self.model is None:
             raise RuntimeError("Model not loaded")
-        import numpy as np  # type: ignore
+        import numpy as np
 
         if not texts:
             return np.zeros((0, self._embedding_dim), dtype=np.float32)

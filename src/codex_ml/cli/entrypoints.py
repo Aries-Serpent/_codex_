@@ -17,9 +17,9 @@ try:  # pragma: no cover - structured logging is optional offline
         log_event,
     )
 except Exception:  # pragma: no cover - degrade gracefully without structured logging
-    ArgparseJSONParser = None  # type: ignore[assignment]
+    ArgparseJSONParser = None
 
-    def init_json_logging():  # type: ignore[override]
+    def init_json_logging():
         class _NullLogger:
             def info(self, *_a: object, **_k: object) -> None:
                 return None
@@ -32,7 +32,7 @@ except Exception:  # pragma: no cover - degrade gracefully without structured lo
 
         return _NullLogger()
 
-    def log_event(*_a: object, **_k: object) -> None:  # type: ignore[override]
+    def log_event(*_a: object, **_k: object) -> None:
         return None
 
     class _CaptureContext:
@@ -42,7 +42,7 @@ except Exception:  # pragma: no cover - degrade gracefully without structured lo
         def __exit__(self, *_exc: object) -> bool:  # pragma: no cover - trivial branch
             return False
 
-    def capture_exceptions(logger=None, **_kwargs):  # type: ignore[override]
+    def capture_exceptions(logger=None, **_kwargs):
         if callable(logger) and not isinstance(logger, type):
             return logger
         return _CaptureContext()
@@ -60,7 +60,7 @@ def train_main() -> int:
     except Exception as exc:  # pragma: no cover - defensive
         _die(f"[codex-train] hydra_main not available: {exc}")
     try:
-        main = getattr(hydra_main, "main", None)  # type: ignore[name-defined]
+        main = getattr(hydra_main, "main", None)
         if callable(main):
             return int(main())
         runpy.run_module("codex_ml.cli.hydra_main", run_name="__main__")
@@ -91,7 +91,7 @@ def _load_main(module_path: str, failures: list[str]) -> int | None:
         return None
 
     try:
-        return int(result)  # type: ignore[arg-type]
+        return int(result)
     except Exception as exc:
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
         return None

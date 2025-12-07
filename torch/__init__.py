@@ -45,7 +45,7 @@ else:  # pragma: no cover - exercised in minimal test envs
     __all__: list[str] = []
     IS_CODEX_STUB = True
 
-    def __getattr__(name: str) -> NoReturn:  # type: ignore[override]
+    def __getattr__(name: str) -> NoReturn:
         raise AttributeError(_MISSING_MSG)
 
     def __dir__() -> list[str]:  # pragma: no cover - simple stub helper

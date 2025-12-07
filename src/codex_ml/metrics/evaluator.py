@@ -14,7 +14,7 @@ except Exception:  # pragma: no cover - torch optional in tests
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
-            return float(value.item())  # type: ignore[arg-type]
+            return float(value.item())
         return float(value)  # type: ignore[arg-type]
     except Exception:
         return 0.0
@@ -120,7 +120,7 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             target = labels
             if hasattr(target, "to") and getattr(target, "device", None) != preds.device:
                 target = target.to(preds.device)
-            common = min(preds.shape[-1], target.shape[-1])  # type: ignore[arg-type]
+            common = min(preds.shape[-1], target.shape[-1])
             if common > 0:
                 accuracy_tensor = (preds[..., :common] == target[..., :common]).float()
                 record["token_accuracy"] = float(accuracy_tensor.mean().item())

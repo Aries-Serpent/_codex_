@@ -5,12 +5,12 @@ import warnings
 from typing import Iterable
 
 try:  # pragma: no cover - torch is optional
-    import torch.distributed as dist  # type: ignore
+    import torch.distributed as dist
 
-    import torch  # type: ignore
+    import torch
 except Exception:  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
-    dist = None  # type: ignore[assignment]
+    dist = None
 
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}
 _FALLBACK_ENV_FLAGS = ("CODEX_DDP_ENABLE",)
@@ -141,13 +141,13 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
 def get_rank() -> int:
     if dist is None or not getattr(dist, "is_initialized", lambda: False)():
         return 0
-    return int(dist.get_rank())  # type: ignore[call-arg]
+    return int(dist.get_rank())
 
 
 def get_world_size() -> int:
     if dist is None or not getattr(dist, "is_initialized", lambda: False)():
         return 1
-    return int(dist.get_world_size())  # type: ignore[call-arg]
+    return int(dist.get_world_size())
 
 
 def barrier() -> None:

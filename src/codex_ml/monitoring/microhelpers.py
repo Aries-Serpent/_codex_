@@ -10,12 +10,12 @@ __all__ = ["sample", "get_proc_stats", "get_sys_stats", "get_gpu_stats"]
 
 # ----- optional deps (never hard-crash) ---------------------------------------
 try:  # psutil for CPU/RAM (process + system)
-    import psutil as _psutil  # type: ignore
+    import psutil as _psutil
 except Exception:  # pragma: no cover
-    _psutil = None  # type: ignore
+    _psutil = None
 
 try:  # NVML for GPU stats via pynvml / nvidia-ml-py3
-    from pynvml import (  # type: ignore
+    from pynvml import (
         NVML_TEMPERATURE_GPU,
         NVMLError,
         nvmlDeviceGetCount,
@@ -28,11 +28,11 @@ try:  # NVML for GPU stats via pynvml / nvidia-ml-py3
         nvmlShutdown,
     )
 except Exception:  # pragma: no cover
-    nvmlInit = nvmlShutdown = nvmlDeviceGetCount = None  # type: ignore
-    nvmlDeviceGetHandleByIndex = nvmlDeviceGetName = None  # type: ignore
-    nvmlDeviceGetUtilizationRates = nvmlDeviceGetMemoryInfo = None  # type: ignore
-    nvmlDeviceGetTemperature = NVML_TEMPERATURE_GPU = None  # type: ignore
-    NVMLError = Exception  # type: ignore
+    nvmlInit = nvmlShutdown = nvmlDeviceGetCount = None
+    nvmlDeviceGetHandleByIndex = nvmlDeviceGetName = None
+    nvmlDeviceGetUtilizationRates = nvmlDeviceGetMemoryInfo = None
+    nvmlDeviceGetTemperature = NVML_TEMPERATURE_GPU = None
+    NVMLError = Exception
 
 _NVML_READY = False
 
@@ -90,25 +90,25 @@ def get_gpu_stats() -> list[dict[str, Any]]:
     if not _ensure_nvml():
         return []
     try:
-        count = nvmlDeviceGetCount()  # type: ignore
+        count = nvmlDeviceGetCount()
         out: list[dict[str, Any]] = []
         for i in range(int(count)):
-            h = nvmlDeviceGetHandleByIndex(i)  # type: ignore
-            name = nvmlDeviceGetName(h)  # type: ignore
+            h = nvmlDeviceGetHandleByIndex(i)
+            name = nvmlDeviceGetName(h)
             try:
-                util = nvmlDeviceGetUtilizationRates(h)  # type: ignore
+                util = nvmlDeviceGetUtilizationRates(h)
                 util_pct = float(getattr(util, "gpu", 0.0))
-            except NVMLError:  # type: ignore
+            except NVMLError:
                 util_pct = 0.0
             try:
-                mem = nvmlDeviceGetMemoryInfo(h)  # type: ignore
+                mem = nvmlDeviceGetMemoryInfo(h)
                 mem_used_mb = float(mem.used) / (1024 * 1024)
                 mem_total_mb = float(mem.total) / (1024 * 1024)
-            except NVMLError:  # type: ignore
+            except NVMLError:
                 mem_used_mb = mem_total_mb = 0.0
             try:
-                temp_c = float(nvmlDeviceGetTemperature(h, NVML_TEMPERATURE_GPU))  # type: ignore
-            except NVMLError:  # type: ignore
+                temp_c = float(nvmlDeviceGetTemperature(h, NVML_TEMPERATURE_GPU))
+            except NVMLError:
                 temp_c = 0.0
             out.append(
                 {

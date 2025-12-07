@@ -176,7 +176,7 @@ def cache_tokenized(
         sample_path = path / sample_name
 
         if _HAS_TORCH and torch is not None and hasattr(torch, "save"):
-            torch.save(ids, sample_path)  # type: ignore[operator]
+            torch.save(ids, sample_path)
         else:
             sample_path.write_text(json.dumps(ids), encoding="utf-8")
 

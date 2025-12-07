@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, Optional, TextIO
 
 try:  # optional psutil
-    import psutil  # type: ignore
+    import psutil
 except Exception:  # pragma: no cover
     psutil = None
 

@@ -13,7 +13,7 @@ from typing import Any, Callable
 
 def _maybe_cuda_sync() -> None:
     try:
-        import torch  # type: ignore
+        import torch
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
@@ -22,7 +22,7 @@ def _maybe_cuda_sync() -> None:
 
 
 def _target_numpy_matmul(n: int = 2048) -> None:
-    import numpy as np  # type: ignore
+    import numpy as np
 
     a = np.random.rand(n, n).astype("float32")
     b = np.random.rand(n, n).astype("float32")
@@ -30,7 +30,7 @@ def _target_numpy_matmul(n: int = 2048) -> None:
 
 
 def _target_torch_matmul(n: int = 4096, device: str = "auto") -> None:
-    import torch  # type: ignore
+    import torch
 
     if device == "auto":
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -134,7 +134,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.mlflow:
         try:
-            import mlflow  # type: ignore
+            import mlflow
 
             from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 

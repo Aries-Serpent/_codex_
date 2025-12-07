@@ -46,7 +46,7 @@ try:
 
     _HAS_REASONING_ADAPTERS = True
 except Exception:  # noqa: BLE001
-    attach_reasoning_adapters = None  # type: ignore[assignment]
+    attach_reasoning_adapters = None
     _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
 from codex_ml.training.dp_config import DifferentialPrivacyConfig, make_private_model
@@ -57,7 +57,7 @@ try:
     from codex_ml.utils.repro import record_dataset_checksums
 except Exception:  # noqa: BLE001
 
-    def record_dataset_checksums(*_, **__):  # type: ignore
+    def record_dataset_checksums(*_, **__):
         return {}
 
 
@@ -65,7 +65,7 @@ try:
     from codex_ml.utils.seeding import set_reproducible
 except Exception:  # noqa: BLE001
 
-    def set_reproducible(*_, **__):  # type: ignore
+    def set_reproducible(*_, **__):
         return None
 
 
@@ -73,7 +73,7 @@ try:
     from codex_ml.telemetry import start_metrics_server
 except Exception:  # noqa: BLE001
 
-    def start_metrics_server(*_, **__):  # type: ignore
+    def start_metrics_server(*_, **__):
         return None
 
 
@@ -82,7 +82,7 @@ try:
 
     _HAS_MLFLOW = True
 except Exception:  # noqa: BLE001
-    mlflow = None  # type: ignore
+    mlflow = None
     _HAS_MLFLOW = False
 
 logger = logging.getLogger(__name__)
@@ -101,25 +101,25 @@ except Exception:  # noqa: BLE001
     torch = None  # type: ignore
     nn = None  # type: ignore
     optim = None  # type: ignore
-    StepLR = None  # type: ignore
-    DataLoader = None  # type: ignore
-    Dataset = object  # type: ignore
+    StepLR = None
+    DataLoader = None
+    Dataset = object
     _HAS_TORCH = False
 
 try:
     from codex_ml.models.registry import get_model as instantiate_model
 except Exception:  # noqa: BLE001
-    instantiate_model = None  # type: ignore
+    instantiate_model = None
 
 try:
     from codex_ml.lora import apply_lora
 except Exception:  # noqa: BLE001
-    apply_lora = None  # type: ignore
+    apply_lora = None
 
 try:
     from codex_ml.data import loaders as data_loaders
 except Exception:  # noqa: BLE001
-    data_loaders = None  # type: ignore
+    data_loaders = None
 
 try:
     from codex_ml.callbacks import (
@@ -156,14 +156,14 @@ except Exception:  # noqa: BLE001
             base.update(addon)
         return base
 
-    EvaluationCallback = Callback  # type: ignore
-    LoggingCallback = Callback  # type: ignore
+    EvaluationCallback = Callback
+    LoggingCallback = Callback
 
 try:
     from codex_ml.utils.determinism import set_cudnn_deterministic
 except Exception:  # noqa: BLE001
 
-    def set_cudnn_deterministic(enable: bool, benchmark: bool = False):  # type: ignore
+    def set_cudnn_deterministic(enable: bool, benchmark: bool = False):
         return
 
 
@@ -171,7 +171,7 @@ try:
     from codex_ml.utils.retention import prune_checkpoints
 except Exception:  # noqa: BLE001
 
-    def prune_checkpoints(*args, **kwargs):  # type: ignore
+    def prune_checkpoints(*args, **kwargs):
         return {"dry_run": True}
 
 
@@ -204,7 +204,7 @@ if _HAS_TORCH:
 
 else:
 
-    class ToyDataset:  # type: ignore[override]
+    class ToyDataset:
         def __init__(self, *_, **__):
             raise RuntimeError("Torch is required to construct ToyDataset")
 
@@ -417,7 +417,7 @@ def _set_seed(seed: Optional[int]) -> int:
     try:
         import numpy as np  # noqa
 
-        np.random.seed(resolved_seed)  # type: ignore
+        np.random.seed(resolved_seed)
     except Exception:  # noqa: BLE001
         pass
     if _HAS_TORCH:
@@ -581,7 +581,7 @@ def _assert_bf16_capability(
         return
     want_bf16 = False
     try:
-        import torch as _torch  # type: ignore
+        import torch as _torch
     except Exception as exc:  # pragma: no cover - environment dependent
         if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
             raise RuntimeError("bf16 required but PyTorch is not installed") from exc
@@ -1546,7 +1546,7 @@ def run_training(
         for key in ("keep_best_k", "keep_best"):
             if key in retention_policy:
                 try:
-                    candidate = int(retention_policy[key])  # type: ignore[index]
+                    candidate = int(retention_policy[key])
                 except (TypeError, ValueError):
                     continue
                 if candidate > 0:

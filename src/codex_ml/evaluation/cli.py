@@ -132,7 +132,7 @@ def run_command(
     cfg = _load_config(config)
     # Lazy import evaluation loop
     from codex_ml.evaluation.loop import evaluate_epoch
-    from codex_ml.logging.registry import build_loggers  # type: ignore
+    from codex_ml.logging.registry import build_loggers
 
     # Minimal synthetic components derived from config (placeholder)
     model = cfg.get("_model_obj")

@@ -10,7 +10,7 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
 except Exception:  # pragma: no cover
-    ValidationError = Exception  # type: ignore[assignment]
+    ValidationError = Exception
 
     def validate(*_args: Any, **_kwargs: Any) -> None:
         raise ImportError("jsonschema is required for dataset validation")

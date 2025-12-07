@@ -7,9 +7,9 @@ import os
 from typing import Any, Mapping
 
 try:  # pragma: no cover - optional import
-    import mlflow  # type: ignore[import-not-found]
+    import mlflow
 except Exception:  # pragma: no cover - environments without mlflow
-    mlflow = None  # type: ignore[assignment]
+    mlflow = None
 
 from codex_ml.tracking.mlflow_guard import ensure_file_backend
 
@@ -39,7 +39,7 @@ def init_mlflow_safe(offline_mode: bool | None = None) -> bool:
 
     try:
         uri = ensure_file_backend(force=True)
-        if mlflow.active_run():  # type: ignore[operator]
+        if mlflow.active_run():
             LOGGER.debug("[codex] MLflow run already active at %s", uri)
             return True
         mlflow.set_tracking_uri(uri)
@@ -57,7 +57,7 @@ def log_metric_safe(key: str, value: float, *, step: int | None = None) -> None:
     if mlflow is None:
         return
     try:
-        if mlflow.active_run():  # type: ignore[operator]
+        if mlflow.active_run():
             mlflow.log_metric(key, float(value), step=step)
     except Exception as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow metric logging failed (%s): %s", key, exc)
@@ -69,7 +69,7 @@ def log_params_safe(params: Mapping[str, Any]) -> None:
     if mlflow is None:
         return
     try:
-        if mlflow.active_run():  # type: ignore[operator]
+        if mlflow.active_run():
             mlflow.log_params(dict(params))
     except Exception as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow parameter logging failed: %s", exc)
@@ -81,7 +81,7 @@ def log_artifact_safe(path: str) -> None:
     if mlflow is None:
         return
     try:
-        if mlflow.active_run():  # type: ignore[operator]
+        if mlflow.active_run():
             mlflow.log_artifact(path)
     except Exception as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow artifact logging failed for %s: %s", path, exc)

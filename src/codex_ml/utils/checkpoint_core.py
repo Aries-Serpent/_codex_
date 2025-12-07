@@ -17,14 +17,14 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import torch  # type: ignore
+    import torch
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
 
 try:
-    import numpy as np  # type: ignore
+    import numpy as np
 except Exception:  # pragma: no cover
-    np = None  # type: ignore
+    np = None
 
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
@@ -34,28 +34,28 @@ except Exception:  # pragma: no cover - treated as unavailable
 from .atomic_io import safe_write_bytes, safe_write_text
 
 try:
-    from .checkpoint_integrity import attach_integrity, snapshot_config  # type: ignore
+    from .checkpoint_integrity import attach_integrity, snapshot_config
 except Exception:  # pragma: no cover - optional dependency issues tolerated
     attach_integrity = None  # type: ignore[assignment]
 
-    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[return-value]
+    def snapshot_config(_config: object) -> dict[str, Any]:
         return {}
 
 
 try:  # provenance extras are optional
-    from .provenance import environment_summary as _environment_summary  # type: ignore
+    from .provenance import environment_summary as _environment_summary
 except Exception:  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 
 try:  # runtime metadata sidecar (best-effort)
-    from .run_metadata import collect_run_metadata, write_run_manifest  # type: ignore
+    from .run_metadata import collect_run_metadata, write_run_manifest
 except Exception:  # pragma: no cover - optional dependency
 
-    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[override]
+    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:
         return {}
 
-    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[override]
+    def write_run_manifest(*_args: object, **_kwargs: object) -> None:
         return None
 
 
@@ -150,7 +150,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 torch_state_raw = snap["torch_cpu"]
                 if torch_state_raw is not None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
-                    torch.set_rng_state(torch_cpu_state)  # type: ignore[arg-type]
+                    torch.set_rng_state(torch_cpu_state)
         except Exception:
             pass
         try:
@@ -255,7 +255,7 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
     torch_save = getattr(torch, "save", None) if torch is not None else None
     if callable(torch_save):
         try:
-            torch_save(state, buf)  # type: ignore[arg-type]
+            torch_save(state, buf)
         except Exception:
             buf.seek(0)
             buf.truncate(0)
@@ -297,14 +297,14 @@ def _digest_payload(payload: dict[str, Any]) -> bytes:
             hasher.update(b"prim")
             hasher.update(repr(value).encode("utf-8"))
             return
-        if np is not None and isinstance(value, np.ndarray):  # type: ignore[attr-defined]
+        if np is not None and isinstance(value, np.ndarray):
             hasher.update(b"ndarray")
             hasher.update(str(value.dtype).encode("utf-8"))
             hasher.update(str(value.shape).encode("utf-8"))
             hasher.update(value.tobytes())
             return
         torch_is_tensor = getattr(torch, "is_tensor", None) if torch is not None else None
-        if callable(torch_is_tensor) and torch_is_tensor(value):  # type: ignore[attr-defined]
+        if callable(torch_is_tensor) and torch_is_tensor(value):
             tensor = value.detach().cpu()
             hasher.update(b"tensor")
             hasher.update(str(tensor.dtype).encode("utf-8"))
@@ -347,21 +347,21 @@ def _deserialize_payload(
         if use_weights_only:
             kwargs["weights_only"] = False
         try:
-            return torch_load(buf, **kwargs)  # type: ignore[no-any-return]
+            return torch_load(buf, **kwargs)
         except TypeError as exc:
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
                 fallback_kwargs = dict(kwargs)
                 fallback_kwargs.pop("weights_only", None)
                 try:
-                    return torch_load(buf, **fallback_kwargs)  # type: ignore[no-any-return]
+                    return torch_load(buf, **fallback_kwargs)
                 except Exception:
                     buf.seek(0)
             else:
                 buf.seek(0)
         except Exception:
             buf.seek(0)
-    return pickle.load(buf)  # type: ignore[no-any-return]
+    return pickle.load(buf)
 
 
 _CKPT_COUNTER = count()
@@ -658,7 +658,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
             f"Checksum mismatch for {p.name}: expected {expected}, got {actual}"
         )
     # Return a dataclass for convenience
-    return CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
+    return CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
 
 
 def load_checkpoint(
@@ -681,7 +681,7 @@ def load_checkpoint(
     obj = _deserialize_payload(raw, map_location=map_location)
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})
-    meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})  # type: ignore[arg-type]
+    meta = CheckpointMeta(**{k: meta_dict.get(k) for k in CheckpointMeta.__annotations__.keys()})
     # Integrity verification
     digest_meta = dict(meta_dict)
     digest_meta["sha256"] = None

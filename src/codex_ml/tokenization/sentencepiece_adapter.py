@@ -19,7 +19,7 @@ import os
 from pathlib import Path
 from typing import Optional, Sequence
 
-spm = None  # type: ignore[assignment]
+spm = None
 
 
 def _get_sentencepiece():
@@ -29,7 +29,7 @@ def _get_sentencepiece():
     if spm is not None:
         return spm
     try:  # pragma: no cover - optional dependency
-        import sentencepiece as sentencepiece_module  # type: ignore
+        import sentencepiece as sentencepiece_module
 
         if not hasattr(sentencepiece_module, "SentencePieceTrainer"):
             raise ImportError(

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 try:  # Optional dependency: Typer preferred when present
-    import typer  # type: ignore
+    import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer absent
     typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub

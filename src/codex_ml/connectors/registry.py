@@ -20,7 +20,7 @@ def register_connector(name: str, cls: Type[Connector]) -> None:
 def get_connector(name: str, **kwargs) -> Connector:
     if name not in _REGISTRY:
         raise KeyError(name)
-    return _REGISTRY[name](**kwargs)  # type: ignore[call-arg]
+    return _REGISTRY[name](**kwargs)
 
 
 def list_connectors() -> dict[str, Type[Connector]]:

@@ -315,7 +315,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Path | None]:
     if isinstance(cfg, DictConfig):
         cfg.seed = seed
         try:
-            cfg.reproducibility["seed"] = seed  # type: ignore[index]
+            cfg.reproducibility["seed"] = seed
         except Exception:
             pass
     reproducibility_cfg.setdefault("seed", seed)

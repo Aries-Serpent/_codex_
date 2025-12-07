@@ -21,7 +21,7 @@ except Exception:  # pragma: no cover - checkpoint_core optional in minimal inst
 CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 try:  # pragma: no cover - optional torch dependency in lightweight environments
-    import torch  # type: ignore
+    import torch
 except Exception:  # pragma: no cover - allow checkpoint utilities without torch
     torch = None  # type: ignore[assignment]
 
@@ -91,9 +91,9 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
 
 
 try:  # pragma: no cover - numpy is optional for deployments
-    import numpy as _np  # type: ignore
+    import numpy as _np
 except Exception:  # pragma: no cover - gracefully handle absence
-    _np = None  # type: ignore[assignment]
+    _np = None
 
 __all__ = ["save_checkpoint", "load_checkpoint", "restore_into", "prune_best_k"]
 
@@ -234,13 +234,13 @@ def _restore_rng_state(state: Mapping[str, Any]) -> None:
     with suppress(Exception):  # pragma: no cover - corrupt payloads ignored
         py_state = state.get("python")
         if py_state is not None:
-            _random.setstate(py_state)  # type: ignore[arg-type]
+            _random.setstate(py_state)
 
     if _np is not None:
         with suppress(Exception):  # pragma: no cover
             np_state = state.get("numpy")
             if np_state is not None:
-                _np.random.set_state(np_state)  # type: ignore[arg-type]
+                _np.random.set_state(np_state)
 
     if torch is not None:
         with suppress(Exception):  # pragma: no cover
@@ -457,21 +457,21 @@ def restore_into(
         if model is not None and model_state is not None:
             load_state = getattr(model, "load_state_dict", None)
             if callable(load_state):
-                load_state(model_state)  # type: ignore[arg-type]
+                load_state(model_state)
 
     with suppress(Exception):
         opt_state = payload.get("optimizer")
         if optimizer is not None and opt_state is not None:
             load_state = getattr(optimizer, "load_state_dict", None)
             if callable(load_state):
-                load_state(opt_state)  # type: ignore[arg-type]
+                load_state(opt_state)
 
     with suppress(Exception):
         sched_state = payload.get("scheduler")
         if scheduler is not None and sched_state is not None:
             load_state = getattr(scheduler, "load_state_dict", None)
             if callable(load_state):
-                load_state(sched_state)  # type: ignore[arg-type]
+                load_state(sched_state)
 
 
 def load_checkpoint(

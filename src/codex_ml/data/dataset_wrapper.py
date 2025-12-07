@@ -8,7 +8,7 @@ from typing import Iterable
 try:  # pragma: no cover - optional dependency
     from datasets import Dataset
 except Exception:  # pragma: no cover - datasets missing
-    Dataset = None  # type: ignore[assignment]
+    Dataset = None
 
 __all__ = ["train_val_test_split", "DATASETS_AVAILABLE"]
 
@@ -32,7 +32,7 @@ def _validate_splits(splits: Iterable[float]) -> tuple[float, float, float]:
     total = sum(values)
     if abs(total - 1.0) > 1e-6:
         raise ValueError("split fractions must sum to 1.0")
-    return values  # type: ignore[return-value]
+    return values
 
 
 def train_val_test_split(

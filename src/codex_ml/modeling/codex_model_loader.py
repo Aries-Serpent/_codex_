@@ -9,9 +9,9 @@ from codex_ml.utils.optional import optional_import
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
+    AutoModelForCausalLM = transformers.AutoModelForCausalLM
 else:  # pragma: no cover - optional dependency
-    AutoModelForCausalLM = None  # type: ignore[assignment]
+    AutoModelForCausalLM = None
 
 __all__ = ["load_model_with_optional_lora"]
 
@@ -27,7 +27,7 @@ def _get_registry_factory(name: str):
 
 def _maybe_import_peft():
     try:  # optional dependency
-        from peft import LoraConfig, PeftModel, get_peft_model  # type: ignore
+        from peft import LoraConfig, PeftModel, get_peft_model
 
         return LoraConfig, get_peft_model, PeftModel
     except Exception:  # pragma: no cover - optional dep
@@ -83,7 +83,7 @@ def load_model_with_optional_lora(
     if dtype:
         import importlib
 
-        torch = importlib.import_module("torch")  # type: ignore
+        torch = importlib.import_module("torch")
         torch_dtype = getattr(torch, dtype, None)
         if torch_dtype is None:
             raise ValueError(f"Unknown dtype: {dtype}")
@@ -142,7 +142,7 @@ def load_model_with_optional_lora(
 
     TaskType = None
     try:  # pragma: no cover - optional enum
-        from peft import TaskType as _TaskType  # type: ignore
+        from peft import TaskType as _TaskType
 
         TaskType = _TaskType
     except Exception:
@@ -157,8 +157,8 @@ def load_model_with_optional_lora(
     task_type_value: Any = TaskType.CAUSAL_LM if TaskType is not None else "CAUSAL_LM"
     cfg = None
     try:
-        cfg = LoraConfig(task_type=task_type_value, **cfg_kwargs)  # type: ignore[call-arg]
+        cfg = LoraConfig(task_type=task_type_value, **cfg_kwargs)
     except TypeError:
-        cfg = LoraConfig(**cfg_kwargs)  # type: ignore[call-arg]
+        cfg = LoraConfig(**cfg_kwargs)
 
-    return get_peft_model(model, cfg)  # type: ignore[misc]
+    return get_peft_model(model, cfg)

@@ -23,11 +23,11 @@ def _import_bleu_rouge():
         Tuple of (sentence_bleu, SmoothingFunction, rouge_scorer) or (None, None, None)
     """
     try:
-        from nltk.translate.bleu_score import (  # type: ignore
+        from nltk.translate.bleu_score import (
             SmoothingFunction,
             sentence_bleu,
         )
-        from rouge_score import rouge_scorer  # type: ignore
+        from rouge_score import rouge_scorer
 
         return sentence_bleu, SmoothingFunction, rouge_scorer
     except Exception:

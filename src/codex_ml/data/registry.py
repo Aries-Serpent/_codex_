@@ -27,7 +27,7 @@ def _load_loader_attr(module: str, attr: str) -> Any:
     module_obj = importlib.util.module_from_spec(spec)
     loader = spec.loader
     assert loader is not None  # for type-checkers
-    loader.exec_module(module_obj)  # type: ignore[call-arg]
+    loader.exec_module(module_obj)
     sys.modules[module_name] = module_obj
     return getattr(module_obj, attr)
 

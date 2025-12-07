@@ -19,7 +19,7 @@ try:  # pragma: no cover - optional dependency
         import config_legacy as hydra
     from omegaconf import MISSING
 except Exception:  # pragma: no cover - optional dependency
-    hydra = None  # type: ignore
+    hydra = None
     MISSING = object()  # type: ignore
 
 
@@ -200,7 +200,7 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         model_path = model_prefix.with_suffix(".model")
         if "sentencepiece_model_pb2" not in sys.modules:
             try:  # pragma: no cover - optional dependency handling
-                import sentencepiece_model_pb2  # type: ignore # noqa: F401
+                import sentencepiece_model_pb2
             except Exception:
                 try:
                     from sentencepiece import sentencepiece_model_pb2 as _sp_model_pb2
@@ -241,12 +241,12 @@ def train(cfg: TrainTokenizerConfig) -> Path:
 if _HYDRA_AVAILABLE:  # pragma: no cover - optional dependency
 
     @hydra.main(config_path="../../configs", config_name="tokenization/base", version_base=None)
-    def main(cfg: TrainTokenizerConfig) -> None:  # type: ignore[misc]
+    def main(cfg: TrainTokenizerConfig) -> None:
         train(cfg)
 
 else:  # pragma: no cover - fallback when hydra missing
 
-    def main() -> None:  # type: ignore[override]
+    def main() -> None:
         cfg = TrainTokenizerConfig(corpus_glob="")
         train(cfg)
 

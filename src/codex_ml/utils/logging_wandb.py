@@ -29,7 +29,7 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
 
     run = None
     try:  # pragma: no cover - optional dependency
-        import wandb  # type: ignore
+        import wandb
 
         os.environ.setdefault("WANDB_MODE", "offline")
         project = os.environ.get("WANDB_PROJECT", "codex-offline")

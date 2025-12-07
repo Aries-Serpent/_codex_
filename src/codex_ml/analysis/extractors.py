@@ -105,7 +105,7 @@ def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
     """Minimal CST extraction preserving formatting."""
     out = Extraction()
     try:
-        for n in module.body:  # type: ignore[attr-defined]
+        for n in module.body:
             if cst and isinstance(n, cst.SimpleStatementLine):
                 code = n.code
                 if "import " in code:

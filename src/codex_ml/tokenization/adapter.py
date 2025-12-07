@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional, Sequence
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
 
-spm = None  # type: ignore[assignment]
+spm = None
 _SPM_IMPORT_ERROR: Exception | None = None
 
 
@@ -25,7 +25,7 @@ def _ensure_sentencepiece() -> bool:
     if spm is not None:
         return True
     try:  # pragma: no cover - optional dependency
-        import sentencepiece as _spm  # type: ignore
+        import sentencepiece as _spm
     except Exception as exc:  # pragma: no cover - dependency missing
         _SPM_IMPORT_ERROR = exc
         spm = None
@@ -97,7 +97,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
 
     def __post_init__(self) -> None:  # pragma: no cover - simple delegation
         try:
-            from transformers import AutoTokenizer  # type: ignore
+            from transformers import AutoTokenizer
         except Exception as exc:  # pragma: no cover - transformers optional
             warnings.warn(
                 f"transformers unavailable for HFTokenizerAdapter; falling back to WhitespaceTokenizer ({exc})",

@@ -47,11 +47,11 @@ from codex_ml.utils.train_helpers import clip_gradients, get_amp_scaler, maybe_a
 torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS:
-    AutoModelForCausalLM = transformers.AutoModelForCausalLM  # type: ignore[attr-defined]
-    AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+    AutoModelForCausalLM = transformers.AutoModelForCausalLM
+    AutoTokenizer = transformers.AutoTokenizer
 else:  # pragma: no cover - optional dependency
-    AutoModelForCausalLM = None  # type: ignore[assignment]
-    AutoTokenizer = None  # type: ignore[assignment]
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
 
 
 @dataclass
@@ -240,7 +240,7 @@ def train(
                 except Exception:
                     pass
             try:
-                return int(len(tensor))  # type: ignore[arg-type]
+                return int(len(tensor))
             except Exception:
                 shape = getattr(tensor, "shape", None)
                 if shape:

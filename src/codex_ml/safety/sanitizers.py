@@ -7,7 +7,7 @@ from typing import Dict, Iterable, Pattern
 try:  # pragma: no cover - optional dependency
     import yaml
 except Exception:  # pragma: no cover - optional dependency
-    yaml = None  # type: ignore[assignment]
+    yaml = None
 
 DEFAULT_SECRET_PATTERNS = [
     re.compile(r"ghp_[A-Za-z0-9]{36}"),

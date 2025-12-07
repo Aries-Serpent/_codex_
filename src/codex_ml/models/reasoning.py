@@ -28,7 +28,7 @@ class ReasoningHead(nn.Module):
         self.dropout = nn.Dropout(cfg.dropout)
         self.decoder = nn.Linear(proj_size, vocab)
 
-    def forward(self, hidden_state: torch.Tensor) -> torch.Tensor:  # type: ignore[override]
+    def forward(self, hidden_state: torch.Tensor) -> torch.Tensor:
         if hidden_state.ndim == 1:
             hidden_state = hidden_state.unsqueeze(0)
         return self.decoder(self.dropout(self.activation(self.projection(hidden_state))))
@@ -87,7 +87,7 @@ class ToolUseAdapter(nn.Module):
             return hidden_state[:, -1]
         return hidden_state.mean(dim=1)
 
-    def forward(  # type: ignore[override]
+    def forward(
         self,
         hidden_state: torch.Tensor,
         attention_mask: torch.Tensor | None = None,

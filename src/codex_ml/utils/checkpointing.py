@@ -34,17 +34,17 @@ try:  # Align schema metadata with checkpoint_core when available
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
 except Exception:  # pragma: no cover - optional dependency
     _CORE_SCHEMA_VERSION = "1.0"
-    checkpoint_core = None  # type: ignore[assignment]
+    checkpoint_core = None
 
 CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
     from codex_ml.utils.provenance import (
-        environment_summary as _prov_env_summary,  # type: ignore
+        environment_summary as _prov_env_summary,
     )
 except Exception:  # pragma: no cover - provenance optional
-    _prov_env_summary = None  # type: ignore[assignment]
+    _prov_env_summary = None
 
 # ruff: noqa: E402, I001
 from codex_ml.utils.seeding import (
@@ -58,10 +58,10 @@ logger = logging.getLogger(__name__)
 
 try:
     from codex_ml.utils.provenance import (
-        _git_commit as _prov_git_commit,  # type: ignore
+        _git_commit as _prov_git_commit,
     )
 except Exception:  # pragma: no cover - provenance optional
-    _prov_git_commit = None  # type: ignore[assignment]
+    _prov_git_commit = None
 
 try:  # pragma: no cover - optional codex_digest dependency
     from codex_digest.error_capture import log_error as capture_error
@@ -187,7 +187,7 @@ class ModuleStateDictProvider(StateDictProvider):
             if isinstance(result, Mapping):
                 return dict(result)
             if hasattr(result, "items"):
-                return dict(result.items())  # type: ignore[arg-type]
+                return dict(result.items())
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
@@ -215,7 +215,7 @@ class OptimizerStateDictProvider(StateDictProvider):
             if isinstance(result, Mapping):
                 return dict(result)
             if hasattr(result, "items"):
-                return dict(result.items())  # type: ignore[arg-type]
+                return dict(result.items())
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
@@ -240,7 +240,7 @@ class SchedulerStateDictProvider(StateDictProvider):
             if isinstance(result, Mapping):
                 return dict(result)
             if hasattr(result, "items"):
-                return dict(result.items())  # type: ignore[arg-type]
+                return dict(result.items())
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
@@ -268,7 +268,7 @@ class GradScalerStateDictProvider(StateDictProvider):
             if isinstance(result, Mapping):
                 return dict(result)
             if hasattr(result, "items"):
-                return dict(result.items())  # type: ignore[arg-type]
+                return dict(result.items())
         return {}
 
     def load_state_dict(self, state_dict: Mapping[str, Any], strict: bool = True) -> Any:
@@ -309,7 +309,7 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     try:
         signature = inspect.signature(torch.save)
     except (TypeError, ValueError):  # pragma: no cover - signature may fail on older torch
-        signature = None  # type: ignore[assignment]
+        signature = None
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
     torch.save(dict(payload), path, **save_kwargs)
@@ -392,7 +392,7 @@ def _snapshot_state(source: Any | StateMapping | None) -> dict[str, Any] | None:
         return None
     if isinstance(source, Mapping):
         return dict(source)
-    if hasattr(source, "state_dict") and callable(source.state_dict):  # type: ignore[attr-defined]
+    if hasattr(source, "state_dict") and callable(source.state_dict):
         result = source.state_dict()
         if isinstance(result, Mapping):
             return dict(result)
@@ -453,8 +453,8 @@ def _fallback_git_commit() -> str | None:
 def _safe_git_commit() -> str | None:
     """Try provenance _git_commit then fallback to subprocess."""
     try:
-        if callable(_prov_git_commit):  # type: ignore[truthy-bool]
-            return _prov_git_commit()  # type: ignore[misc]
+        if callable(_prov_git_commit):
+            return _prov_git_commit()
     except Exception as exc:
         logger.info(
             "checkpointing._safe_git_commit: provenance hook failed: %s", exc, exc_info=True
@@ -474,7 +474,7 @@ def _minimal_env_summary() -> dict[str, str | None]:
             info["cuda"] = (
                 torch.version.cuda
                 if hasattr(torch, "version") and torch.cuda.is_available()
-                else None  # type: ignore[attr-defined]
+                else None
             )
         except Exception:
             info["torch"] = (
@@ -540,8 +540,8 @@ def _capture_dataset_checksums(
 def _safe_environment_summary() -> dict[str, Any]:
     """Attempt to collect rich environment summary; fallback to minimal if needed."""
     try:
-        if callable(_prov_env_summary):  # type: ignore[truthy-bool]
-            env = _prov_env_summary()  # type: ignore[misc]
+        if callable(_prov_env_summary):
+            env = _prov_env_summary()
             if isinstance(env, dict):
                 # Ensure git_commit present if known
                 gc = env.get("git_commit") or _safe_git_commit()
@@ -845,7 +845,7 @@ def _rng_dump() -> dict[str, Any]:
     }
 
     if NUMPY_AVAILABLE:  # pragma: no branch
-        np_state_current = np.random.get_state()  # type: ignore[no-untyped-call]
+        np_state_current = np.random.get_state()
         state["numpy"] = _numpy_state_payload(
             _LAST_SEEDED_NUMPY_STATE if _LAST_SEEDED_NUMPY_STATE is not None else np_state_current
         )
@@ -864,7 +864,7 @@ def _rng_dump() -> dict[str, Any]:
                 else:  # pragma: no cover - defensive fallback
                     cpu_state = None
                 if cpu_state is not None:
-                    torch_state["cpu"] = cpu_state.tolist()  # type: ignore[call-arg]
+                    torch_state["cpu"] = cpu_state.tolist()
             except Exception:  # pragma: no cover - optional torch stubs
                 return {}
             try:

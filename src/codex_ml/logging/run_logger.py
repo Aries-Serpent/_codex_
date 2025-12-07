@@ -49,7 +49,7 @@ def _normalize_cli(cli: Any) -> dict[str, Any]:
     if isinstance(cli, SequenceABC) and not isinstance(cli, (str, bytes, bytearray)):
         return {"argv": [str(item) for item in cli]}
     if isinstance(cli, MappingABC):
-        argv = cli.get("argv", [])  # type: ignore[arg-type]
+        argv = cli.get("argv", [])
         if isinstance(argv, SequenceABC) and not isinstance(argv, (str, bytes, bytearray)):
             argv_list = [str(item) for item in argv]
         elif argv is None:
@@ -57,7 +57,7 @@ def _normalize_cli(cli: Any) -> dict[str, Any]:
         else:
             argv_list = [str(argv)]
         payload: dict[str, Any] = {"argv": argv_list}
-        options = cli.get("options")  # type: ignore[arg-type]
+        options = cli.get("options")
         if isinstance(options, MappingABC):
             payload["options"] = _normalize_mapping(options)
         for key, value in cli.items():

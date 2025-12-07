@@ -11,9 +11,9 @@ from typing import Any, Iterator, Mapping
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking, last_decision
 
 if util.find_spec("mlflow") is not None:  # pragma: no branch - deterministic import path
-    import mlflow  # type: ignore[import-not-found]
+    import mlflow
 else:  # pragma: no cover - exercised when MLflow is absent
-    mlflow = None  # type: ignore[assignment]
+    mlflow = None
 
 
 LOG = logging.getLogger(__name__)

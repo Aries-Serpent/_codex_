@@ -4,11 +4,11 @@ import logging
 from typing import Optional
 
 try:  # optional dependency
-    from prometheus_client import start_http_server  # type: ignore
+    from prometheus_client import start_http_server
 
     _HAS_PROM = True
 except Exception:  # pragma: no cover - optional
-    start_http_server = None  # type: ignore
+    start_http_server = None
     _HAS_PROM = False
 
 logger = logging.getLogger(__name__)

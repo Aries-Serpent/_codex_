@@ -64,7 +64,7 @@ def _bootstrap_examples() -> None:
         return
 
     try:
-        from examples.plugins.hello_plugin import HelloPlugin  # type: ignore
+        from examples.plugins.hello_plugin import HelloPlugin
     except Exception:  # pragma: no cover - optional example absent
 
         class HelloPlugin(BasePlugin):
@@ -79,7 +79,7 @@ def _bootstrap_examples() -> None:
 
     try:
         from examples.plugins.metrics_token_accuracy_plugin import (
-            TokenAccuracyPlugin,  # type: ignore
+            TokenAccuracyPlugin,
         )
     except Exception:  # pragma: no cover - optional example absent
 
@@ -93,8 +93,8 @@ def _bootstrap_examples() -> None:
             def activate(self, app_ctx=None) -> None:
                 return
 
-    _register_example(HelloPlugin)  # type: ignore[arg-type]
-    _register_example(TokenAccuracyPlugin)  # type: ignore[arg-type]
+    _register_example(HelloPlugin)
+    _register_example(TokenAccuracyPlugin)
 
     _BOOTSTRAPPED = True
 

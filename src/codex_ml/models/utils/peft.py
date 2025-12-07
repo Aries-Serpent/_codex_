@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable, Optional, Sequence, Union
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from peft import TaskType  # type: ignore
+    from peft import TaskType
 
 DEFAULT_TASK_TYPE = "CAUSAL_LM"
 
@@ -28,7 +28,7 @@ def apply_lora_if_available(
     """
 
     try:  # pragma: no cover - optional dependency
-        from peft import LoraConfig, TaskType, get_peft_model  # type: ignore
+        from peft import LoraConfig, TaskType, get_peft_model
     except Exception:  # pragma: no cover - dependency missing
         return model
 

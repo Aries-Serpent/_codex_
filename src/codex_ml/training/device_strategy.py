@@ -56,7 +56,7 @@ def _device_available(name: str) -> bool:
         if name == "mps":
             return (
                 hasattr(torch.backends, "mps")
-                and torch.backends.mps.is_available()  # type: ignore[attr-defined]
+                and torch.backends.mps.is_available()
             )
     except Exception:  # pragma: no cover - safety net
         return False

@@ -89,7 +89,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         raise TokenizationContractError("encode must return a list[int]")
 
     try:
-        adapter.encode(None)  # type: ignore[arg-type]
+        adapter.encode(None)
     except TypeError:
         pass
     else:  # pragma: no cover - enforce strict error mode
@@ -101,7 +101,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         raise TokenizationContractError(f"decode failed for numeric ids: {exc}") from exc
 
     try:
-        adapter.decode(["bad"])  # type: ignore[list-item]
+        adapter.decode(["bad"])
     except ValueError:
         pass
     else:  # pragma: no cover - enforce strict error mode
@@ -116,7 +116,7 @@ def validate_training_model(
     if not hasattr(model, "step"):
         raise TrainingContractError("Model must implement a step(batch, state) method")
 
-    step_fn = model.step  # type: ignore[attr-defined]
+    step_fn = model.step
     if not callable(step_fn):
         raise TrainingContractError("Model.step must be callable")
 

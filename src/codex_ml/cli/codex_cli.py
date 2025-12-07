@@ -440,7 +440,7 @@ def train(
     if resume_from:
         if hasattr(cfg_obj.training, "resume_from"):
             cfg_obj.training.resume_from = resume_from
-        training_cfg.resume_from = resume_from  # type: ignore[attr-defined]
+        training_cfg.resume_from = resume_from
         resume = True
 
     metrics_logger: SystemMetricsLogger | None = None

@@ -83,10 +83,10 @@ except Exception:  # pragma: no cover - degrade gracefully when metrics extras m
     RecallScore = _MissingMetric("RecallScore")  # type: ignore[assignment]
     BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[assignment]
     TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[assignment]
-    get_metric = _MissingMetric("get_metric")  # type: ignore[assignment]
-    register_metric = _MissingMetric("register_metric")  # type: ignore[assignment]
-    list_metrics = _MissingMetric("list_metrics")  # type: ignore[assignment]
-    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")  # type: ignore[assignment]
+    get_metric = _MissingMetric("get_metric")
+    register_metric = _MissingMetric("register_metric")
+    list_metrics = _MissingMetric("list_metrics")
+    summarize_ndjson_logs = _MissingMetric("summarize_ndjson_logs")
 
 if MetricRegistry.__class__.__name__ != "_MissingMetric":
     __all__ += [

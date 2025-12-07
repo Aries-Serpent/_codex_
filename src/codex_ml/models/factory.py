@@ -11,7 +11,7 @@ from typing import Any, Callable, Mapping, MutableMapping, Optional
 try:  # pragma: no cover - optional transformers dependency
     from transformers import BitsAndBytesConfig
 except Exception:  # pragma: no cover - transformers/quantization optional
-    BitsAndBytesConfig = None  # type: ignore[assignment]
+    BitsAndBytesConfig = None
 
 from .peft_hooks import LoraBuildCfg, build_lora
 

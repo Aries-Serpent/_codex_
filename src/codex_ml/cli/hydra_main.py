@@ -31,15 +31,15 @@ try:
     from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - safe fallback
 
-    def init_distributed_if_needed(*_args, **_kwargs):  # type: ignore[return-value]
+    def init_distributed_if_needed(*_args, **_kwargs):
         return False
 
-    def cleanup_distributed() -> None:  # type: ignore[return-value]
+    def cleanup_distributed() -> None:
         return None
 
 else:  # pragma: no cover - executed when distributed helpers are available
-    init_distributed_if_needed = _distributed.init_distributed_if_needed  # type: ignore[attr-defined]
-    cleanup_distributed = _distributed.cleanup  # type: ignore[attr-defined]
+    init_distributed_if_needed = _distributed.init_distributed_if_needed
+    cleanup_distributed = _distributed.cleanup
 
 
 from codex_ml.codex_structured_logging import (
@@ -116,7 +116,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
     if not default_yaml.is_file():
         return {}
     try:
-        loaded = OmegaConf.load(str(default_yaml))  # type: ignore[no-untyped-call]
+        loaded = OmegaConf.load(str(default_yaml))
         container = OmegaConf.to_container(loaded, resolve=True)
         if isinstance(container, Mapping):
             return container
@@ -236,10 +236,10 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
             defaults = _load_yaml_defaults()
             if defaults:
                 try:
-                    defaults_cfg = OmegaConf.create(defaults)  # type: ignore[no-untyped-call]
+                    defaults_cfg = OmegaConf.create(defaults)
                     resolved_cfg = OmegaConf.create(resolved)
                     merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
-                    resolved = OmegaConf.to_container(merged_cfg, resolve=True)  # type: ignore[assignment]
+                    resolved = OmegaConf.to_container(merged_cfg, resolve=True)
                 except Exception:
                     LOGGER.debug("Hydra defaults merge failed", exc_info=True)
                     combined = dict(defaults)
@@ -267,7 +267,7 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
             return result
 
 else:  # pragma: no cover - hydra missing, provide informative failure
-    _hydra_entry = None  # type: ignore[assignment]
+    _hydra_entry = None
 
 
 def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
@@ -381,7 +381,7 @@ def main(argv: Sequence[str] | None = None) -> Any:
     backup_argv = sys.argv[:]
     try:
         sys.argv = [prog_name, *overrides]
-        return _hydra_entry()  # type: ignore[misc]
+        return _hydra_entry()
     finally:
         sys.argv = backup_argv
 

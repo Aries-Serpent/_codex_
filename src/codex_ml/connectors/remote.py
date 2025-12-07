@@ -50,7 +50,7 @@ class RemoteConnector(Connector):
 
         return self._local.root
 
-    async def list_files(self, path: str) -> list[str]:  # type: ignore[override]
+    async def list_files(self, path: str) -> list[str]:
         try:
             entries = await self._local.list_files(path)
         except ConnectorError as exc:
@@ -68,7 +68,7 @@ class RemoteConnector(Connector):
         )
         return filtered
 
-    async def read_file(self, path: str) -> bytes:  # type: ignore[override]
+    async def read_file(self, path: str) -> bytes:
         try:
             data = await self._local.read_file(path)
         except ConnectorError as exc:
@@ -85,7 +85,7 @@ class RemoteConnector(Connector):
         )
         return data
 
-    async def write_file(self, path: str, data: bytes) -> None:  # type: ignore[override]
+    async def write_file(self, path: str, data: bytes) -> None:
         if self.readonly:
             record_health_event(
                 "connectors.remote",

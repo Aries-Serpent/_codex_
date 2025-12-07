@@ -25,7 +25,7 @@ class MissingPyYAMLError(ModuleNotFoundError):
 
 
 if _yaml is not None:  # pragma: no cover - executed when PyYAML present
-    YAMLError = _yaml.YAMLError  # type: ignore[attr-defined]
+    YAMLError = _yaml.YAMLError
 else:  # pragma: no cover - avoids attribute errors when PyYAML missing
 
     class YAMLError(RuntimeError):
