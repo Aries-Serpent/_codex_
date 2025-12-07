@@ -7,7 +7,8 @@ publisher_type: local
 azure:
   enabled: false
   topic_endpoint: ${AZURE_EVENT_GRID_ENDPOINT:}
-  topic_key: ${AZURE_EVENT_GRID_KEY:}
+  # Set AZURE_EVENT_GRID_KEY in your environment. This value is required for Azure Event Grid publishing.
+  topic_key: ${AZURE_EVENT_GRID_KEY:REQUIRED}
 
 # AWS EventBridge Configuration
 aws:
