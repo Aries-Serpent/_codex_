@@ -257,8 +257,8 @@ def render_repo_map(*, reasoning: bool = False, include: Sequence[str] | None = 
     reasoning_status_block: list[str] = []
 
     if reasoning:
-        summary, sections = _collect_reasoning_sections(REPO_ROOT)
-        extras.update(sections)
+        summary, reasoning_sections = _collect_reasoning_sections(REPO_ROOT)
+        extras.update(reasoning_sections)
         reasoning_status_block = _format_reasoning_summary(summary)
 
     sections: list[tuple[str, list[str]]] = []
