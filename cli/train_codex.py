@@ -218,7 +218,6 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
     )
     
     # Save RNG sidecar with checkpoint
-    from codex_ml.training.rng_checkpoint import RNGState
     rng_state = RNGState()
     rng_state.capture()
     rng_sidecar_path = RNGState.path_for_checkpoint(checkpoint_path)
