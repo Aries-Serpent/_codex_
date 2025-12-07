@@ -114,12 +114,24 @@ We use **Dependabot** to monitor and update dependencies:
 
 ### Dependency Scanning
 
-We run the following security scans:
+We run the following automated security scans in CI:
 
-- **Bandit**: Python static analysis for security issues
-- **Safety**: Python dependency vulnerability scanning (if configured)
+- **Bandit**: Python static analysis for security issues (SAST)
+- **pip-audit**: Python dependency vulnerability scanning against OSV database
+- **detect-secrets**: Secret detection to prevent credential leaks
 - **GitHub Dependency Graph**: Automatic vulnerability alerts
 - **CodeQL**: Semantic code analysis (if enabled)
+
+**CI Workflow**: `.github/workflows/security.yml`
+- Runs on every push and pull request
+- Generates security reports as artifacts
+- Currently informational (warnings only), can be configured to fail CI
+
+**Prompt Sanitization**: 
+- Default sanitization enabled for all inference endpoints
+- Detects and blocks: XSS, SQL injection, command injection, code execution
+- Module: `src/codex_ml/safety/prompt_sanitizer.py`
+- CLI flags: `--sanitize` (default), `--no-sanitize`, `--strict`, `--non-strict`
 
 ### Reviewing Dependency Updates
 

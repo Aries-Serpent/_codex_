@@ -18,6 +18,7 @@ from transformers import (
     TrainingArguments,
 )
 
+from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.utils import checkpointing
 
 
@@ -164,8 +165,41 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
         data_collator=data_collator,
     )
 
+    # Handle resumption with RNG state validation
     resume_hf = cfg.get("resume_from_checkpoint")
+    strict_resume = bool(cfg.get("strict_resume", False))
+    
     if cfg.get("codex_resume_checkpoint"):
+        checkpoint_dir = Path(cfg["codex_resume_checkpoint"]).parent
+        
+        # Validate and restore RNG state if resuming
+        if strict_resume:
+            rng_path = RNGState.path_for_checkpoint(Path(cfg["codex_resume_checkpoint"]))
+            
+            if not rng_path.exists():
+                raise FileNotFoundError(
+                    f"Strict resume enabled but RNG sidecar missing: {rng_path}\n"
+                    f"Cannot guarantee deterministic resume. Please disable --strict-resume "
+                    f"or ensure RNG sidecar was saved with checkpoint."
+                )
+            
+            # Load and restore RNG state
+            rng_state = RNGState.load_from_file(rng_path)
+            rng_state.restore()
+            print(f"✓ RNG state restored from {rng_path}")
+        elif resume_hf or cfg.get("codex_resume_checkpoint"):
+            # Non-strict mode: warn if RNG sidecar missing
+            rng_path = RNGState.path_for_checkpoint(
+                Path(cfg.get("codex_resume_checkpoint") or resume_hf)
+            )
+            if rng_path.exists():
+                rng_state = RNGState.load_from_file(rng_path)
+                rng_state.restore()
+                print(f"✓ RNG state restored from {rng_path}")
+            else:
+                print(f"⚠️ RNG sidecar not found: {rng_path}")
+                print("   Resume may not be fully deterministic.")
+        
         checkpointing.load_training_checkpoint(
             cfg["codex_resume_checkpoint"], model=model, optimizer=None, scheduler=None, strict=False
         )
@@ -182,6 +216,13 @@ def run_training(config: Mapping[str, Any] | None = None) -> TrainingResult:
         epoch=int(cfg.get("num_train_epochs", 1)),
         dataset_paths=[train_file],
     )
+    
+    # Save RNG sidecar with checkpoint
+    rng_state = RNGState()
+    rng_state.capture()
+    rng_sidecar_path = RNGState.path_for_checkpoint(checkpoint_path)
+    rng_state.save_to_file(rng_sidecar_path)
+    print(f"✓ RNG sidecar saved: {rng_sidecar_path}")
 
     trainer_state = output_dir / "trainer_state.json"
     return TrainingResult(output_dir=output_dir, checkpoint_path=checkpoint_path, trainer_state_path=trainer_state)
@@ -207,6 +248,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--block-size", dest="block_size", type=int, default=None)
     parser.add_argument("--resume-from-checkpoint", dest="resume_from_checkpoint", default=None)
     parser.add_argument("--codex-resume-checkpoint", dest="codex_resume_checkpoint", default=None)
+    parser.add_argument(
+        "--strict-resume",
+        dest="strict_resume",
+        action="store_true",
+        default=argparse.SUPPRESS,
+        help="Require RNG sidecar file when resuming (ensures deterministic resume)",
+    )
     parser.add_argument(
         "--use-lora",
         action="store_true",
