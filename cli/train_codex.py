@@ -7,12 +7,12 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import yaml
+from torch.utils.data import Dataset
 
 import torch
 from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.utils import checkpointing
 from tokenization.loader import load_tokenizer
-from torch.utils.data import Dataset
 from transformers import (
     AutoModelForCausalLM,
     DataCollatorForLanguageModeling,

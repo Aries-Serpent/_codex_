@@ -37,7 +37,9 @@ logger = logging.getLogger(__name__)
 
 # Try to import the repository-provided encoding detector if present.
 try:
-    from .encoding_detect import detect_encoding as _repo_detect_encoding  # type: ignore
+    from .encoding_detect import (
+        detect_encoding as _repo_detect_encoding,  # type: ignore
+    )
 except Exception:
     _repo_detect_encoding = None  # type: ignore
 

@@ -38,7 +38,9 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import environment_summary as _prov_env_summary  # type: ignore
+    from codex_ml.utils.provenance import (
+        environment_summary as _prov_env_summary,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None  # type: ignore[assignment]
 
@@ -50,7 +52,9 @@ from .storage import StorageProvider
 logger = logging.getLogger(__name__)
 
 try:
-    from codex_ml.utils.provenance import _git_commit as _prov_git_commit  # type: ignore
+    from codex_ml.utils.provenance import (
+        _git_commit as _prov_git_commit,  # type: ignore
+    )
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None  # type: ignore[assignment]
 

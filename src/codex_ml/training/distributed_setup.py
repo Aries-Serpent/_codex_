@@ -11,8 +11,9 @@ import logging
 import os
 from typing import Optional
 
-import torch
 import torch.distributed as dist
+
+import torch
 
 logger = logging.getLogger(__name__)
 

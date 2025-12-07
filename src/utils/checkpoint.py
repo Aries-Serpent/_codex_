@@ -54,9 +54,13 @@ except Exception:  # pragma: no cover - tolerate missing numpy
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
-    from src.training.checkpoint_manager import CheckpointManager  # type: ignore # noqa: F401
+    from src.training.checkpoint_manager import (
+        CheckpointManager,  # type: ignore # noqa: F401
+    )
 except Exception:  # pragma: no cover - fallback to canonical
-    from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore # noqa: F401
+    from codex_ml.utils.checkpointing import (
+        CheckpointManager,  # type: ignore # noqa: F401
+    )
 
 try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (
@@ -68,7 +72,9 @@ try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (
         restore_rng_state as _restore_rng_state,  # type: ignore
     )
-    from codex_ml.utils.checkpoint_core import save_checkpoint as _canonical_save_checkpoint
+    from codex_ml.utils.checkpoint_core import (
+        save_checkpoint as _canonical_save_checkpoint,
+    )
 except Exception:  # pragma: no cover - canonical helpers unavailable
     pass
 

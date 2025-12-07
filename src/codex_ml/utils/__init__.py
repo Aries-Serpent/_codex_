@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from . import checkpoint_core  # noqa: F401
-from . import checkpointing  # noqa: F401
-from . import error_log  # noqa: F401
+from . import (
+    checkpoint_core,  # noqa: F401
+    checkpointing,  # noqa: F401
+    error_log,  # noqa: F401
+)
 
 try:  # pragma: no cover - optional torch dependency
     from . import modeling  # noqa: F401

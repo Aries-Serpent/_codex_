@@ -21,7 +21,9 @@ typer, _HAS_TYPER = optional_import("typer")
 yaml, _HAS_YAML = optional_import("yaml")
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
-    from codex_ml.tokenization.train_tokenizer import TrainTokenizerConfig as _TrainTokenizerConfig
+    from codex_ml.tokenization.train_tokenizer import (
+        TrainTokenizerConfig as _TrainTokenizerConfig,
+    )
 else:
     _TrainTokenizerConfig = Any
 

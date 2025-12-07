@@ -28,9 +28,6 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader
 
-# ruff: noqa: I001
-
-
 LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------

@@ -900,8 +900,9 @@ def run_functional_training(
         from transformers import AutoTokenizer  # type: ignore
     except Exception:  # pragma: no cover - optional dependencies
         try:
-            import torch
             from torch.utils.data import DataLoader
+
+            import torch
         except Exception:
             tokens = sum(len(text.split()) for text in train_texts)
             metrics = [

@@ -33,9 +33,10 @@ from omegaconf import DictConfig, OmegaConf
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
-    import torch
     from torch.optim import AdamW
     from torch.utils.data import DataLoader, Dataset
+
+    import torch
 except Exception:  # pragma: no cover
     torch = None  # type: ignore
     AdamW = None  # type: ignore

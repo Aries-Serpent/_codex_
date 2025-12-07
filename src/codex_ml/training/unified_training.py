@@ -581,7 +581,9 @@ def functional_training(*args: Any, **kwargs: Any) -> Any:
         "functional_training",
         "codex_ml.training.legacy_api.run_functional_training or run_unified_training",
     )
-    from codex_ml.training.legacy_api import run_functional_training as _legacy_functional
+    from codex_ml.training.legacy_api import (
+        run_functional_training as _legacy_functional,
+    )
 
     return _legacy_functional(*args, **kwargs)
 

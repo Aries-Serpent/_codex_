@@ -22,7 +22,9 @@ from typing import Iterator, Optional, Union
 # Local utility imports (optional modules handled gracefully)
 try:
     # Prefer a dedicated encoding detector if present in repo
-    from .encoding_detect import detect_encoding as _repo_detect_encoding  # type: ignore
+    from .encoding_detect import (
+        detect_encoding as _repo_detect_encoding,  # type: ignore
+    )
 except Exception:
     _repo_detect_encoding = None  # type: ignore
 
