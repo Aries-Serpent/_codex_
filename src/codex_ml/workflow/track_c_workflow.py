@@ -1,3 +1,11 @@
+"""Track-C workflow orchestration for capability planning and execution.
+
+This module provides a phased workflow system for managing capability
+implementations, rollbacks, and error handling across six standard phases:
+Preparation, Search & Mapping, Best-Effort Construction, Controlled Pruning,
+Error Capture, and Finalization.
+"""
+
 from __future__ import annotations
 
 from contextlib import contextmanager

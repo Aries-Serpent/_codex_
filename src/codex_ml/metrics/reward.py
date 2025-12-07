@@ -1,3 +1,9 @@
+"""Reward-based evaluation metrics for RLHF and preference learning.
+
+Provides metrics for computing mean and median rewards from model predictions,
+supporting both scalar rewards and dictionary payloads with reward fields.
+"""
+
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
