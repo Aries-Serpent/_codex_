@@ -86,7 +86,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
         if not (_HAS_TORCH and _HAS_TRANSFORMERS):
             raise ImportError("torch and transformers are required for inference")
-        AutoTokenizer = transformers.AutoTokenizer  # type: ignore[attr-defined]
+        AutoTokenizer = transformers.AutoTokenizer
         tok_name = args.tokenizer or args.checkpoint
         tokenizer = load_from_pretrained(AutoTokenizer, tok_name, revision=get_hf_revision())
 

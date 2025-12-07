@@ -36,7 +36,7 @@ def _fsync_dir(path: Path) -> None:
             os.close(dir_fd)
     elif os.name != "nt":
         # On POSIX platforms lacking O_DIRECTORY, opening the directory works.
-        with open(path, "rb") as dir_handle:  # type: ignore[arg-type]
+        with open(path, "rb") as dir_handle:
             os.fsync(dir_handle.fileno())
     else:
         # Windows lacks a straightforward directory fsync; skip best-effort.

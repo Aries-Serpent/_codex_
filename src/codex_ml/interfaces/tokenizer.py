@@ -29,7 +29,7 @@ from codex_ml.utils.hf_revision import get_hf_revision
 
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency
-    from transformers import AutoTokenizer as _AutoTokenizer  # type: ignore
+    from transformers import AutoTokenizer as _AutoTokenizer
 except Exception:  # pragma: no cover - optional dependency
     _AutoTokenizer = None  # type: ignore
 
@@ -46,7 +46,7 @@ def _resolve_auto_tokenizer():
     global _AutoTokenizer
     if _AutoTokenizer is None:
         try:
-            from transformers import AutoTokenizer as _Imported  # type: ignore
+            from transformers import AutoTokenizer as _Imported
         except Exception:
             _AutoTokenizer = None  # ensure consistency if import keeps failing
         else:
@@ -532,7 +532,7 @@ class HFTokenizer(TokenizerAdapter):
                 return_tensors=None,
             )
             if return_dict:
-                return enc  # type: ignore[return-value]
+                return enc
             # Extract input_ids safely and ensure lists of ints
             input_ids = enc.get("input_ids", [])
             return [list(seq) for seq in input_ids]

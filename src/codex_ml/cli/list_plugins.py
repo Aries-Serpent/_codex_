@@ -29,7 +29,7 @@ _JSON_EPILOG = (
 
 def _list_models_safe() -> list[str]:
     try:
-        from codex_ml.registry import list_models  # type: ignore[attr-defined]
+        from codex_ml.registry import list_models
     except Exception:
         return []
     try:
@@ -40,7 +40,7 @@ def _list_models_safe() -> list[str]:
 
 def _list_tokenizers_safe() -> list[str]:
     try:
-        from codex_ml.registry import list_tokenizers  # type: ignore[attr-defined]
+        from codex_ml.registry import list_tokenizers
     except Exception:
         return []
     try:
@@ -51,7 +51,7 @@ def _list_tokenizers_safe() -> list[str]:
 
 def _list_datasets_safe() -> list[str]:
     try:
-        from codex_ml.data.registry import list_datasets  # type: ignore[attr-defined]
+        from codex_ml.data.registry import list_datasets
     except Exception:
         return []
     try:
@@ -63,7 +63,7 @@ def _list_datasets_safe() -> list[str]:
 def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
     snapshot: dict[str, Any] = {"names": [], "discovered": []}
     try:
-        from codex_ml.plugins import programmatic  # type: ignore[attr-defined]
+        from codex_ml.plugins import programmatic
     except Exception:
         return snapshot
 

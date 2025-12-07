@@ -13,26 +13,26 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from codex_ml.safety import PromptSanitizer
-from utils.sanitize import sanitize_prompt
+from codex_ml.safety import PromptSanitizer  # noqa: E402 - path must be modified first
+from utils.sanitize import sanitize_prompt  # noqa: E402 - path must be modified first
 
 
 def run_inference(prompt: str, sanitize: bool = True, strict: bool = True) -> tuple[str, str]:
     """
     Placeholder inference function. Replace or extend to call the real model.
     For safety, CLI will print sanitized prompt when echoing.
-    
+
     Args:
         prompt: The user-provided prompt
         sanitize: Whether to sanitize the prompt
         strict: Whether to use strict mode (raise on unsafe) or redact
-        
+
     Returns:
         Tuple of (safe_preview, result)
     """
     # Example: echo a safe preview, then "process" the original prompt
     safe_preview = sanitize_prompt(prompt)
-    
+
     if sanitize:
         sanitizer = PromptSanitizer(strict=strict)
         try:
@@ -40,7 +40,7 @@ def run_inference(prompt: str, sanitize: bool = True, strict: bool = True) -> tu
         except ValueError as e:
             # In strict mode, unsafe prompts raise ValueError
             return f"ERROR: {e}", ""
-    
+
     # Replace this with the real model call; keep original prompt to preserve semantics
     # result = model.generate(prompt)
     result = f"<processed>{prompt}</processed>"  # placeholder
@@ -55,29 +55,29 @@ def main(argv=None):
         "--sanitize",
         action="store_true",
         default=True,
-        help="Enable prompt sanitization (default: True)"
+        help="Enable prompt sanitization (default: True)",
     )
     parser.add_argument(
         "--no-sanitize",
         action="store_false",
         dest="sanitize",
-        help="Disable prompt sanitization (not recommended)"
+        help="Disable prompt sanitization (not recommended)",
     )
     parser.add_argument(
         "--strict",
         action="store_true",
         default=True,
-        help="Use strict sanitization mode (reject unsafe prompts)"
+        help="Use strict sanitization mode (reject unsafe prompts)",
     )
     parser.add_argument(
         "--non-strict",
         action="store_false",
         dest="strict",
-        help="Use non-strict mode (redact unsafe patterns)"
+        help="Use non-strict mode (redact unsafe patterns)",
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     safe_preview, result = run_inference(args.prompt, sanitize=args.sanitize, strict=args.strict)
     # Print sanitized preview to stdout for CI tests that check for sanitization
     print(safe_preview)

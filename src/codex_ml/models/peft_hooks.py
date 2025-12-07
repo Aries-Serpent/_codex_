@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 try:
-    from peft import LoraConfig, get_peft_model  # type: ignore
+    from peft import LoraConfig, get_peft_model
 except Exception:  # ImportError and others
-    LoraConfig = None  # type: ignore
-    get_peft_model = None  # type: ignore
+    LoraConfig = None
+    get_peft_model = None
 
 
 @dataclass

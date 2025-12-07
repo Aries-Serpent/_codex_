@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import json
 import subprocess
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Sequence
-
 
 _STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1"}
 _STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "false", "0", "red"}

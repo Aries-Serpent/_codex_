@@ -9,11 +9,11 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 from .registry import register_dataset
 
 try:  # optional dependency
-    from datasets import load_dataset as _load_dataset  # type: ignore
+    from datasets import load_dataset as _load_dataset
 
     _HAS_DATASETS = True
 except Exception:  # pragma: no cover - optional
-    _load_dataset = None  # type: ignore
+    _load_dataset = None
     _HAS_DATASETS = False
 
 

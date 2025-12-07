@@ -8,7 +8,7 @@ from typing import Optional
 try:  # pragma: no cover - optional dependency
     import numpy as np
 except Exception:  # pragma: no cover - numpy may be absent
-    np = None  # type: ignore[assignment]
+    np = None
 
 try:  # pragma: no cover - optional dependency
     import torch

@@ -33,13 +33,13 @@ if (
         ]
     )
 ):
-    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)  # type: ignore[attr-defined]
-    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[attr-defined]
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[attr-defined]
-    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)  # type: ignore[attr-defined]
+    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)
+    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
+    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)
     PreTrainedTokenizerBase = cast(
         "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
-    )  # type: ignore[attr-defined]
+    )
 else:  # pragma: no cover - optional dependency missing
     AutoModel = None  # type: ignore[assignment]
     AutoModelForCausalLM = None  # type: ignore[assignment]
@@ -188,7 +188,7 @@ def load_model(
             )
         else:
             try:
-                from peft import PeftModel  # type: ignore
+                from peft import PeftModel
             except Exception as exc:  # pragma: no cover - optional dependency
                 logger.info(
                     "load_model: PEFT adapter not applied (dependency missing): %s",
@@ -244,7 +244,7 @@ def load_causal_lm(
     except TypeError:
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.
         loader_kwargs.pop("torch_dtype", None)
-        model = AutoModelForCausalLM.from_pretrained(  # type: ignore[call-arg]  # nosec B615 - revision enforced
+        model = AutoModelForCausalLM.from_pretrained(
             repo_id,
             **loader_kwargs,
         )
@@ -257,7 +257,7 @@ def load_causal_lm(
 
     if peft_cfg:
         try:
-            from peft import LoraConfig, get_peft_model  # type: ignore
+            from peft import LoraConfig, get_peft_model
         except Exception as exc:  # pragma: no cover - optional dependency
             logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
         else:
@@ -279,7 +279,7 @@ def load_causal_lm(
     adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
     if adapter_path:
         try:
-            from peft import PeftModel  # type: ignore
+            from peft import PeftModel
         except Exception as exc:  # pragma: no cover - optional dependency
             logger.info(
                 "load_causal_lm: PEFT adapter not applied (dependency missing): %s",

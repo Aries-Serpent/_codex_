@@ -1,11 +1,12 @@
 """CLI for feature store management."""
+
 import json
 from pathlib import Path
 
-import typer
 from rich.console import Console
 from rich.table import Table
 
+import typer
 from codex_ml.features.feature_store import FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
 
@@ -21,11 +22,11 @@ def list_features(
     try:
         store = FeatureStore(store_path)
         features = store.list_features()
-        
+
         if not features:
             console.print("[yellow]No features registered yet[/yellow]")
             return
-        
+
         console.print(f"\n[bold]Registered Features ({len(features)}):[/bold]")
         for name in sorted(features):
             console.print(f"  • {name}")
@@ -44,14 +45,14 @@ def check_health(
     try:
         store = FeatureStore(store_path)
         monitor = FeatureHealthMonitor(freshness_threshold_minutes=freshness_threshold)
-        
+
         features = store.list_features()
         if not features:
             console.print("[yellow]No features to check[/yellow]")
             return
-        
+
         health_status = monitor.check_all_features(features)
-        
+
         table = Table(title="Feature Health Status")
         table.add_column("Feature", style="cyan")
         table.add_column("Status", justify="center")
@@ -59,12 +60,16 @@ def check_health(
         table.add_column("Level", justify="center")
         table.add_column("Errors", justify="right")
         table.add_column("Warnings")
-        
+
         for name, status in health_status.items():
             status_emoji = "✅" if status.is_healthy else "❌"
-            freshness = f"{status.freshness_minutes:.1f}m" if status.freshness_minutes != float('inf') else "∞"
+            freshness = (
+                f"{status.freshness_minutes:.1f}m"
+                if status.freshness_minutes != float("inf")
+                else "∞"
+            )
             warnings_str = "; ".join(status.warnings) if status.warnings else ""
-            
+
             # Color freshness level
             level_colors = {
                 "FRESH": "[green]FRESH[/green]",
@@ -74,7 +79,7 @@ def check_health(
                 "UNKNOWN": "[dim]UNKNOWN[/dim]",
             }
             level_colored = level_colors.get(status.freshness_level, status.freshness_level)
-            
+
             table.add_row(
                 name,
                 status_emoji,
@@ -83,7 +88,7 @@ def check_health(
                 str(status.error_count),
                 warnings_str,
             )
-        
+
         console.print(table)
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
@@ -98,16 +103,16 @@ def export_metadata(
     """Export feature metadata to JSON."""
     try:
         store = FeatureStore(store_path)
-        
+
         metadata = {}
         for name in store.list_features():
             meta = store.get_feature_metadata(name)
             if meta:
                 metadata[name] = meta.to_dict()
-        
+
         with open(output, "w") as f:
             json.dump(metadata, f, indent=2)
-        
+
         console.print(f"✅ Exported metadata for {len(metadata)} features to {output}")
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")

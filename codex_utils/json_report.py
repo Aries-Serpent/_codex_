@@ -120,15 +120,15 @@ def _coerce_lines(value: Any) -> List[str]:
         cleaned = [ln for ln in lines if ln]
         return cleaned or [stripped]
     if isinstance(value, Mapping):
-        lines: List[str] = []
+        result_lines: List[str] = []
         for v in value.values():
-            lines.extend(_coerce_lines(v))
-        return lines
+            result_lines.extend(_coerce_lines(v))
+        return result_lines
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        lines: List[str] = []
+        seq_lines: List[str] = []
         for item in value:
-            lines.extend(_coerce_lines(item))
-        return lines
+            seq_lines.extend(_coerce_lines(item))
+        return seq_lines
     return [str(value)]
 
 

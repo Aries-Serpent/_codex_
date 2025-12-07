@@ -12,7 +12,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     """
     resolved: dict[str, str] = {}
     try:
-        import mlflow  # type: ignore
+        import mlflow
     except Exception:
         return {"mlflow": "unavailable"}
 
@@ -33,7 +33,7 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
     """
     resolved: dict[str, str] = {}
     try:
-        import wandb  # type: ignore
+        import wandb
     except Exception:
         return {"wandb": "unavailable"}
 

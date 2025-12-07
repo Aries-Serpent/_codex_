@@ -14,7 +14,7 @@ from codex_ml.utils import checkpoint_core as _core
 _warned = False
 
 # Map legacy names -> new import paths when they land.
-_ALIASES = {
+_ALIASES: dict[str, str] = {
     # "load_checkpoint": "codex_ml.checkpointing.core:load_checkpoint",
     # "save_checkpoint": "codex_ml.checkpointing.core:save_checkpoint",
 }

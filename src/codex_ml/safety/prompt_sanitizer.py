@@ -3,6 +3,7 @@
 This module provides sanitization utilities to protect against prompt injection
 attacks, code execution attempts, and other malicious patterns in user-provided prompts.
 """
+
 from __future__ import annotations
 
 import logging
@@ -16,12 +17,12 @@ __all__ = ["PromptSanitizer"]
 
 class PromptSanitizer:
     """Sanitizer for detecting and preventing prompt injection attacks.
-    
+
     Attributes:
         INJECTION_PATTERNS: List of regex patterns for common injection attempts.
         strict: Whether to raise errors (True) or redact patterns (False).
     """
-    
+
     # Common injection patterns - based on OWASP Top 10
     INJECTION_PATTERNS = [
         r"<script",
@@ -40,43 +41,42 @@ class PromptSanitizer:
         r"INSERT\s+INTO",
         r"UPDATE\s+.*\s+SET",
     ]
-    
+
     def __init__(self, strict: bool = True):
         """Initialize the sanitizer.
-        
+
         Args:
             strict: If True, raise ValueError on unsafe prompts.
                    If False, redact unsafe patterns with [REDACTED].
         """
         self.strict = strict
         self.patterns = [re.compile(p, re.IGNORECASE) for p in self.INJECTION_PATTERNS]
-    
+
     def sanitize(self, prompt: str) -> str:
         """Sanitize prompt by removing/escaping dangerous patterns.
-        
+
         Args:
             prompt: The user-provided prompt to sanitize.
-            
+
         Returns:
             The sanitized prompt (unchanged if safe, redacted if non-strict).
-            
+
         Raises:
             ValueError: If prompt contains unsafe patterns and strict=True.
         """
         if not prompt:
             return prompt
-            
+
         original = prompt
         found_patterns: List[str] = []
-        
+
         for pattern in self.patterns:
             if pattern.search(prompt):
                 found_patterns.append(pattern.pattern)
                 if self.strict:
                     # Raise error in strict mode
                     logger.warning(
-                        "Unsafe prompt detected (pattern: %s). Prompt rejected.",
-                        pattern.pattern
+                        "Unsafe prompt detected (pattern: %s). Prompt rejected.", pattern.pattern
                     )
                     raise ValueError(
                         f"Unsafe prompt detected (pattern: {pattern.pattern}). "
@@ -85,28 +85,28 @@ class PromptSanitizer:
                 else:
                     # Remove pattern in non-strict mode
                     prompt = pattern.sub("[REDACTED]", prompt)
-        
+
         if prompt != original:
             logger.info(
                 "Prompt sanitized: %d chars changed, patterns: %s",
                 len(original) - len(prompt),
-                ", ".join(found_patterns)
+                ", ".join(found_patterns),
             )
-        
+
         return prompt
-    
+
     def is_safe(self, prompt: str) -> bool:
         """Check if prompt is safe without modifying.
-        
+
         Args:
             prompt: The prompt to check.
-            
+
         Returns:
             True if prompt is safe, False if it contains unsafe patterns.
         """
         if not prompt:
             return True
-            
+
         try:
             # Use strict mode for checking
             temp_sanitizer = PromptSanitizer(strict=True)
@@ -114,22 +114,22 @@ class PromptSanitizer:
             return True
         except ValueError:
             return False
-    
+
     def get_violations(self, prompt: str) -> List[str]:
         """Get list of violated patterns in the prompt.
-        
+
         Args:
             prompt: The prompt to check.
-            
+
         Returns:
             List of pattern strings that matched the prompt.
         """
         if not prompt:
             return []
-            
+
         violations = []
         for pattern in self.patterns:
             if pattern.search(prompt):
                 violations.append(pattern.pattern)
-        
+
         return violations

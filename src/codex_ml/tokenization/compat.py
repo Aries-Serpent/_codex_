@@ -6,7 +6,7 @@ import importlib
 import warnings
 from typing import Any
 
-_ALIASES = {
+_ALIASES: dict[str, str] = {
     # "encode": "codex_ml.tokenization.api:encode",
     # "decode": "codex_ml.tokenization.api:decode",
 }

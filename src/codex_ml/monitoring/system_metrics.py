@@ -40,9 +40,9 @@ DEFAULT_NVML_REQUESTED = DEFAULT_POLL_GPU and _DEFAULT_ENABLE_NVML_FLAG and not 
 
 try:  # pragma: no cover - optional dependency
     if DEFAULT_ENABLE_PSUTIL:
-        import psutil  # type: ignore
+        import psutil
     else:  # pragma: no cover - controlled via feature flag
-        psutil = None  # type: ignore[assignment]
+        psutil = None
 except Exception as exc:  # pragma: no cover - psutil missing
     logger.warning(
         "psutil import failed; falling back to minimal sampler",
@@ -52,14 +52,14 @@ except Exception as exc:  # pragma: no cover - psutil missing
             "error": repr(exc),
         },
     )
-    psutil = None  # type: ignore[assignment]
+    psutil = None
 
 
 try:  # pragma: no cover - optional dependency
     if DEFAULT_POLL_GPU and DEFAULT_ENABLE_NVML:
-        import pynvml  # type: ignore
+        import pynvml
     else:  # pragma: no cover - GPU polling disabled via feature flag
-        pynvml = None  # type: ignore[assignment]
+        pynvml = None
 except Exception as exc:  # pragma: no cover - pynvml missing
     logger.warning(
         "pynvml import failed; GPU metrics disabled",
@@ -69,11 +69,11 @@ except Exception as exc:  # pragma: no cover - pynvml missing
             "error": repr(exc),
         },
     )
-    pynvml = None  # type: ignore[assignment]
+    pynvml = None
 
 
 try:  # pragma: no cover - optional dependency
-    import resource  # type: ignore
+    import resource
 except Exception:  # pragma: no cover - platform dependent
     resource = None  # type: ignore[assignment]
 
@@ -241,7 +241,7 @@ def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
         payload["swap"] = None
 
     try:
-        payload["load_avg"] = list(os.getloadavg())  # type: ignore[arg-type]
+        payload["load_avg"] = list(os.getloadavg())
     except Exception:  # pragma: no cover - platform specific
         payload["load_avg"] = None
 

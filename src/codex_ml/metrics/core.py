@@ -16,7 +16,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Dict, Iterable, List, Mapping, MutableMapping, Sequence
 
-
 Number = float | int
 
 
@@ -52,7 +51,9 @@ class MetricRegistry:
     def list_metrics(self) -> List[str]:
         return sorted(self._metrics.keys())
 
-    def compute(self, names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]) -> Dict[str, float | None]:
+    def compute(
+        self, names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]
+    ) -> Dict[str, float | None]:
         results: Dict[str, float | None] = {}
         for name in names:
             metric = self.get(name)
@@ -88,8 +89,16 @@ def _mse(labels: Sequence[Number], predictions: Sequence[Number]) -> float:
 
 def _init_default_registry() -> MetricRegistry:
     registry = MetricRegistry()
-    registry.register(Metric(name="accuracy", func=_accuracy, description="Proportion of matching labels and predictions."))
-    registry.register(Metric(name="mse", func=_mse, description="Mean squared error over numeric targets."))
+    registry.register(
+        Metric(
+            name="accuracy",
+            func=_accuracy,
+            description="Proportion of matching labels and predictions.",
+        )
+    )
+    registry.register(
+        Metric(name="mse", func=_mse, description="Mean squared error over numeric targets.")
+    )
     return registry
 
 
@@ -104,7 +113,8 @@ def list_metrics() -> List[str]:
     return get_registry().list_metrics()
 
 
-def compute_metrics(metric_names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]) -> Mapping[str, float | None]:
+def compute_metrics(
+    metric_names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]
+) -> Mapping[str, float | None]:
     registry = get_registry()
     return registry.compute(metric_names, labels, predictions)
-

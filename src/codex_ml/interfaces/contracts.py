@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Protocol, Sequence
+from typing import Any, Mapping, Protocol, Sequence
 
 
 class TokenizationContractError(TypeError):
@@ -24,25 +24,19 @@ class TrainingContractError(TypeError):
 class TokenizerContract(Protocol):
     """Minimal tokenizer surface used by training and evaluation."""
 
-    def encode(self, text: str) -> list[int]:
-        ...
+    def encode(self, text: str) -> list[int]: ...
 
-    def decode(self, ids: Sequence[int]) -> str:
-        ...
+    def decode(self, ids: Sequence[int]) -> str: ...
 
-    def add_special_tokens(self, tokens: Sequence[str]) -> Mapping[str, int]:
-        ...
+    def add_special_tokens(self, tokens: Sequence[str]) -> Mapping[str, int]: ...
 
-    def save(self, path: Path) -> None:
-        ...
+    def save(self, path: Path) -> None: ...
 
     @property
-    def vocab_size(self) -> int:
-        ...
+    def vocab_size(self) -> int: ...
 
     @property
-    def name_or_path(self) -> str:
-        ...
+    def name_or_path(self) -> str: ...
 
 
 @dataclass(slots=True)
@@ -73,12 +67,16 @@ def validate_tokenizer_contract(adapter: Any) -> None:
     * Expose ``vocab_size`` and ``name_or_path`` attributes.
     """
 
-    missing = [name for name in ("encode", "decode", "add_special_tokens") if not hasattr(adapter, name)]
+    missing = [
+        name for name in ("encode", "decode", "add_special_tokens") if not hasattr(adapter, name)
+    ]
     if missing:
         raise TokenizationContractError(f"Tokenizer missing required methods: {missing}")
 
     if not hasattr(adapter, "vocab_size") or not hasattr(adapter, "name_or_path"):
-        raise TokenizationContractError("Tokenizer must expose vocab_size and name_or_path properties")
+        raise TokenizationContractError(
+            "Tokenizer must expose vocab_size and name_or_path properties"
+        )
 
     try:
         tokens = adapter.encode("contract smoke test")
@@ -91,7 +89,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         raise TokenizationContractError("encode must return a list[int]")
 
     try:
-        adapter.encode(None)  # type: ignore[arg-type]
+        adapter.encode(None)
     except TypeError:
         pass
     else:  # pragma: no cover - enforce strict error mode
@@ -103,20 +101,22 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         raise TokenizationContractError(f"decode failed for numeric ids: {exc}") from exc
 
     try:
-        adapter.decode(["bad"])  # type: ignore[list-item]
+        adapter.decode(["bad"])
     except ValueError:
         pass
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError("decode must raise ValueError for non-integer ids")
 
 
-def validate_training_model(model: Any, sample_batch: Any, state: Mapping[str, Any] | None = None) -> None:
+def validate_training_model(
+    model: Any, sample_batch: Any, state: Mapping[str, Any] | None = None
+) -> None:
     """Validate that a model exposes a compliant ``step`` method using a real batch."""
 
     if not hasattr(model, "step"):
         raise TrainingContractError("Model must implement a step(batch, state) method")
 
-    step_fn = model.step  # type: ignore[attr-defined]
+    step_fn = model.step
     if not callable(step_fn):
         raise TrainingContractError("Model.step must be callable")
 

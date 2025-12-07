@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, MutableMapping, Optional
-import json
+from typing import Dict, Iterable, List, Mapping, Optional
 
 
 @dataclass
@@ -15,7 +15,9 @@ class ErrorRecord:
     message: str
     brief_context: str
     ra_references: List[str] = field(default_factory=lambda: ["RA-1", "RA-3"])
-    timestamp: str = field(default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z")
+    timestamp: str = field(
+        default_factory=lambda: datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    )
 
     def to_dict(self) -> Dict[str, object]:
         return {
@@ -66,7 +68,9 @@ def load_error_records(path: Path) -> Iterable[ErrorRecord]:
         )
 
 
-def attach_ra_references(record: ErrorRecord, ra_rules: Optional[Iterable[str]] = None) -> ErrorRecord:
+def attach_ra_references(
+    record: ErrorRecord, ra_rules: Optional[Iterable[str]] = None
+) -> ErrorRecord:
     if ra_rules:
         record.ra_references = list(dict.fromkeys(ra_rules))
     return record

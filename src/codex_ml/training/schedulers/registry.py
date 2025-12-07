@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Callable, Dict, Optional, Any
+from typing import Any, Callable, Dict
 
 try:
     import torch
+
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -28,6 +30,7 @@ except ImportError:
 @dataclass
 class SchedulerSpec:
     """Specification for a scheduler factory."""
+
     factory: Callable[..., Any]
     description: str
 
@@ -43,16 +46,20 @@ class SchedulerRegistry:
     def _register_builtins(self) -> None:
         if not TORCH_AVAILABLE:
             return
-        from torch.optim.lr_scheduler import StepLR, CosineAnnealingLR
+        from torch.optim.lr_scheduler import CosineAnnealingLR, StepLR
 
         self.register(
             "step_lr",
-            lambda optimizer, step_size=10, gamma=0.1: StepLR(optimizer, step_size=int(step_size), gamma=float(gamma)),
+            lambda optimizer, step_size=10, gamma=0.1: StepLR(
+                optimizer, step_size=int(step_size), gamma=float(gamma)
+            ),
             "StepLR(optimizer, step_size=10, gamma=0.1)",
         )
         self.register(
             "cosine_annealing",
-            lambda optimizer, T_max=50, eta_min=0.0: CosineAnnealingLR(optimizer, T_max=int(T_max), eta_min=float(eta_min)),
+            lambda optimizer, T_max=50, eta_min=0.0: CosineAnnealingLR(
+                optimizer, T_max=int(T_max), eta_min=float(eta_min)
+            ),
             "CosineAnnealingLR(optimizer, T_max=50, eta_min=0.0)",
         )
 

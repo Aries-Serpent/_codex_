@@ -32,7 +32,7 @@ def _iter_entry_points(group: str):
     importlib.invalidate_caches()
     collected: list[Any] = []
     try:
-        items = metadata.entry_points(group=group)  # type: ignore[arg-type]
+        items = metadata.entry_points(group=group)
     except TypeError:  # pragma: no cover - older importlib
         eps = metadata.entry_points()
         items = (
@@ -44,7 +44,7 @@ def _iter_entry_points(group: str):
         items = []
     collected.extend(items)
     try:  # pragma: no cover - best effort fallback
-        for dist in metadata.distributions():  # type: ignore[attr-defined]
+        for dist in metadata.distributions():
             for ep in getattr(dist, "entry_points", ()):
                 if getattr(ep, "group", None) == group:
                     collected.append(ep)

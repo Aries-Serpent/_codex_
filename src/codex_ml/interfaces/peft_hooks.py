@@ -8,10 +8,10 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, PeftModel, TaskType, get_peft_model
 except Exception:  # pragma: no cover - gracefully degrade when peft unavailable
-    LoraConfig = None  # type: ignore[assignment]
-    PeftModel = None  # type: ignore[assignment]
-    TaskType = None  # type: ignore[assignment]
-    get_peft_model = None  # type: ignore[assignment]
+    LoraConfig = None
+    PeftModel = None
+    TaskType = None
+    get_peft_model = None
 
 __all__ = [
     "build_peft_config",
@@ -46,7 +46,7 @@ def build_peft_config(
 
     ensure_peft_available()
     task_type = getattr(TaskType, task)
-    return LoraConfig(  # type: ignore[operator]
+    return LoraConfig(
         task_type=task_type,
         r=r,
         lora_alpha=alpha,
@@ -59,7 +59,7 @@ def enable_peft(model: Any, peft_cfg: Any, adapter_name: str = "lora") -> Any:
     """Wrap ``model`` with a PEFT adapter when available."""
 
     ensure_peft_available()
-    adapted = get_peft_model(model, peft_cfg, adapter_name=adapter_name)  # type: ignore[misc]
+    adapted = get_peft_model(model, peft_cfg, adapter_name=adapter_name)
     try:  # pragma: no cover - optional diagnostics
         adapted.print_trainable_parameters()
     except Exception:

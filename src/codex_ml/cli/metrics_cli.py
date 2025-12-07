@@ -92,7 +92,7 @@ def _write_csv(rows: Iterable[Row], out_csv: Path) -> int:
 
 def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
     try:
-        import pandas as pd  # type: ignore
+        import pandas as pd
 
         df = pd.read_csv(in_csv)
         df.to_parquet(out_parquet)
@@ -103,7 +103,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
 
 def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     try:
-        import jsonschema  # type: ignore
+        import jsonschema
     except Exception:  # pragma: no cover - import guards
         print("[metrics-cli] jsonschema not installed; skipping validation", file=sys.stderr)
         return
@@ -113,7 +113,7 @@ def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     for idx, record in enumerate(_iter_ndjson(data_path), start=1):
         try:
             validator.validate(record)
-        except jsonschema.exceptions.ValidationError as exc:  # type: ignore[attr-defined]
+        except jsonschema.exceptions.ValidationError as exc:
             raise ValueError(f"schema validation failed at record {idx}: {exc.message}") from exc
 
 
@@ -184,7 +184,7 @@ def _csv_to_duckdb(
     """Bulk load CSV into DuckDB with selectable write mode."""
 
     try:
-        import duckdb  # type: ignore
+        import duckdb
     except ModuleNotFoundError as exc:  # pragma: no cover - import guard
         raise SystemExit(
             "[metrics-cli] duckdb dependency missing; install with `pip install duckdb`"
@@ -337,7 +337,7 @@ def cmd_summary(args: argparse.Namespace) -> int:
 
 def cmd_validate(args: argparse.Namespace) -> int:
     try:
-        import jsonschema  # type: ignore
+        import jsonschema
     except Exception as exc:  # pragma: no cover - import guard
         print(
             f"[metrics-cli] jsonschema not installed; cannot validate ({exc!r})",

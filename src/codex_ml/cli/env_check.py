@@ -14,7 +14,7 @@ import argparse
 import shlex
 import subprocess
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 
 def _run(cmd: str, cwd: Path) -> int:
@@ -35,9 +35,7 @@ def run_health_check(repo_root: Path) -> Dict[str, int]:
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Run env & security health checks for _codex_."
-    )
+    parser = argparse.ArgumentParser(description="Run env & security health checks for _codex_.")
     parser.add_argument(
         "--repo-root",
         type=str,

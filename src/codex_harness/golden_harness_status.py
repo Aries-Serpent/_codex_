@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 _STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1", "yes"}
 _STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "red", "false", "0", "no"}
@@ -54,13 +54,17 @@ def _evaluate_ra_policy(policy: Any) -> HarnessSignal:
     statuses: List[bool] = []
     if isinstance(policy, dict):
         if "policies" in policy:
-            statuses.extend([_normalize_status(p.get("status")) for p in policy.get("policies", [])])
+            statuses.extend(
+                [_normalize_status(p.get("status")) for p in policy.get("policies", [])]
+            )
         if "results" in policy:
             statuses.extend([_normalize_status(p.get("status")) for p in policy.get("results", [])])
         if "status" in policy:
             statuses.append(_normalize_status(policy.get("status")))
         if not statuses:
-            statuses.extend([_normalize_status(v) for v in policy.values() if not isinstance(v, (dict, list))])
+            statuses.extend(
+                [_normalize_status(v) for v in policy.values() if not isinstance(v, (dict, list))]
+            )
     if not statuses:
         return HarnessSignal(
             name="ra_policy",
@@ -74,7 +78,9 @@ def _evaluate_ra_policy(policy: Any) -> HarnessSignal:
             status="red",
             detail="At least one RA gate failed.",
         )
-    return HarnessSignal(name="ra_policy", status="green", detail="RA policies reported pass states.")
+    return HarnessSignal(
+        name="ra_policy", status="green", detail="RA policies reported pass states."
+    )
 
 
 def _extract_gate_mapping(payload: Any) -> Dict[str, bool | None]:
@@ -115,7 +121,9 @@ def _evaluate_honesty(path: Path) -> HarnessSignal:
             status="yellow",
             detail="Some honesty statements are incomplete; review required.",
         )
-    return HarnessSignal(name="honesty_metadata", status="green", detail="Honesty statements recorded and complete.")
+    return HarnessSignal(
+        name="honesty_metadata", status="green", detail="Honesty statements recorded and complete."
+    )
 
 
 def _evaluate_tool_trace(trace_path: Path, gate_path: Path | None) -> HarnessSignal:

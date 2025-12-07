@@ -29,7 +29,7 @@ class FSSpecStorage(StorageProvider):
 
     def __post_init__(self) -> None:
         try:
-            import fsspec  # type: ignore[import-untyped]
+            import fsspec
         except Exception as exc:  # pragma: no cover - optional dependency missing
             raise RuntimeError("fsspec is required to use the FSSpecStorage backend") from exc
 

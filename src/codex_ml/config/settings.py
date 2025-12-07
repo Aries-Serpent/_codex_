@@ -11,9 +11,9 @@ from pydantic import BaseModel, ConfigDict, Field
 try:  # pragma: no cover - optional dependency shim
     from pydantic_settings import BaseSettings, SettingsConfigDict
 except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
-    BaseSettings = BaseModel  # type: ignore[misc]
+    BaseSettings = BaseModel
 
-    def SettingsConfigDict(**config: Any) -> ConfigDict:  # type: ignore[misc]
+    def SettingsConfigDict(**config: Any) -> ConfigDict:
         """Return a ``ConfigDict`` compatible with Pydantic's configuration API.
         Ignores unsupported keys like 'env_file' when pydantic_settings is unavailable.
         """
@@ -75,4 +75,4 @@ def eval_row_schema() -> dict:
 def get_settings() -> AppSettings:
     """Return cached :class:`AppSettings` loaded from the environment."""
 
-    return AppSettings()  # type: ignore[call-arg]
+    return AppSettings()

@@ -47,7 +47,7 @@ def _merge_model_cfg(cfg: Any = None, **overrides: Any) -> dict[str, Any]:
                 "Model configuration must be a mapping when using the plugin catalogue; "
                 f"received {type(cfg).__name__}."
             )
-        merged.update(cfg)  # type: ignore[arg-type]
+        merged.update(cfg)
     merged.update(overrides)
     return merged
 

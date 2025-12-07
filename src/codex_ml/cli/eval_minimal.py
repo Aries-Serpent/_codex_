@@ -11,7 +11,7 @@ from codex_ml.logging.experiment import ExperimentTracker
 
 
 def _import_training_loop():
-    from codex_ml.training import loop as training_loop  # type: ignore
+    from codex_ml.training import loop as training_loop
 
     return training_loop
 

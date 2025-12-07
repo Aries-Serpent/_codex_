@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 try:  # pragma: no cover - optional dependency
     import requests
 except Exception:  # pragma: no cover - requests missing or broken
-    requests = None  # type: ignore[assignment]
+    requests = None
 
 
 class SearchProvider(ABC):
@@ -179,7 +179,7 @@ class ExternalWebSearch(SearchProvider):
     def _perform_http(self, query: str, result: dict[str, Any]) -> dict[str, Any]:
         http_get = self._http_get
         if http_get is None and requests is not None:
-            http_get = requests.get  # type: ignore[assignment]
+            http_get = requests.get
 
         if http_get is None:
             result["status"] = "unavailable"

@@ -356,7 +356,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         from omegaconf import DictConfig, OmegaConf
 
         if isinstance(cfg, DictConfig):
-            resolved = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[arg-type]
+            resolved = OmegaConf.to_container(cfg, resolve=True)
         else:
             resolved = cfg
     except Exception:  # pragma: no cover - OmegaConf missing

@@ -17,13 +17,13 @@ try:  # pragma: no cover - platform dependent
     from .sandbox import docker_available, firejail_available, run_in_sandbox
 except Exception:  # pragma: no cover - fallback for non-POSIX
 
-    def docker_available() -> bool:  # type: ignore[return-type]
+    def docker_available() -> bool:
         return False
 
-    def firejail_available() -> bool:  # type: ignore[return-type]
+    def firejail_available() -> bool:
         return False
 
-    def run_in_sandbox(*args, **kwargs):  # type: ignore[no-redef]
+    def run_in_sandbox(*args, **kwargs):
         raise RuntimeError("Sandbox is not available on this platform; run_in_sandbox disabled")
 
 

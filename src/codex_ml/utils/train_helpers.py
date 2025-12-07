@@ -21,7 +21,7 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
     try:  # pragma: no cover - optional dependency
         import torch
 
-        autocast_cls = torch.cuda.amp.autocast  # type: ignore[attr-defined]
+        autocast_cls: Any = torch.cuda.amp.autocast
     except Exception:  # pragma: no cover - dependency missing or AMP unavailable
         yield
         return
@@ -41,6 +41,7 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
         else:
             target_dtype = dtype
 
+    context: Any
     try:
         if target_dtype is not None:
             context = autocast_cls(dtype=target_dtype)
@@ -70,7 +71,7 @@ def clip_gradients(parameters: Iterable[object], max_norm: float) -> None:
         return
 
     try:
-        torch.nn.utils.clip_grad_norm_(params, max_norm)  # type: ignore[attr-defined]
+        torch.nn.utils.clip_grad_norm_(params, max_norm)
     except Exception:  # pragma: no cover - clipping best-effort
         return
 
@@ -78,16 +79,16 @@ def clip_gradients(parameters: Iterable[object], max_norm: float) -> None:
 class _FakeScaler:
     """Fallback ``GradScaler`` implementation used when AMP is unavailable."""
 
-    def scale(self, value):  # type: ignore[no-untyped-def]
+    def scale(self, value):
         return value
 
-    def unscale_(self, _optimizer):  # type: ignore[no-untyped-def]
+    def unscale_(self, _optimizer):
         return None
 
-    def step(self, optimizer):  # type: ignore[no-untyped-def]
+    def step(self, optimizer):
         optimizer.step()
 
-    def update(self) -> None:  # type: ignore[override]
+    def update(self) -> None:
         return None
 
 
@@ -100,7 +101,7 @@ def get_amp_scaler(enabled: bool):
     try:  # pragma: no cover - optional dependency
         import torch
 
-        return torch.cuda.amp.GradScaler()  # type: ignore[attr-defined]
+        return torch.cuda.amp.GradScaler()
     except Exception:  # pragma: no cover - AMP unavailable
         return _FakeScaler()
 

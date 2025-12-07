@@ -9,7 +9,7 @@ try:
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 except ModuleNotFoundError as exc:  # pragma: no cover - fallback for src layout
     try:
-        from src.codex_ml.tracking.mlflow_guard import (  # type: ignore[attr-defined]
+        from src.codex_ml.tracking.mlflow_guard import (
             bootstrap_offline_tracking,
         )
     except ModuleNotFoundError:
@@ -22,7 +22,7 @@ def _safe_import_mlflow() -> Optional[Any]:
     """Return the ``mlflow`` module if available, otherwise ``None``."""
 
     try:  # pragma: no cover - exercised in integration tests
-        return importlib.import_module("mlflow")  # type: ignore[return-value]
+        return importlib.import_module("mlflow")
     except Exception:
         return None
 
@@ -92,9 +92,9 @@ def mlflow_offline_session(
             yielded = None
         else:
             try:
-                mlflow.set_tracking_uri(local_uri)  # type: ignore[attr-defined]
+                mlflow.set_tracking_uri(local_uri)
                 if experiment:
-                    mlflow.set_experiment(experiment)  # type: ignore[attr-defined]
+                    mlflow.set_experiment(experiment)
             except Exception as exc:  # pragma: no cover - defensive guard
                 raise RuntimeError("Failed to configure MLflow for offline use") from exc
 

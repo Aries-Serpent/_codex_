@@ -24,7 +24,7 @@ def _enable_mlflow(uri: str | None) -> dict[str, Any]:
         if uri:
             os.environ["MLFLOW_TRACKING_URI"] = uri
             try:
-                mlflow.set_tracking_uri(uri)  # type: ignore[attr-defined]
+                mlflow.set_tracking_uri(uri)
             except Exception:
                 pass
         result["enabled"] = True

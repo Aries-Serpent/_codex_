@@ -7,20 +7,20 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
-    import psutil  # type: ignore
+    import psutil
 except Exception:  # pragma: no cover - optional dependency may be absent
-    psutil = None  # type: ignore[assignment]
+    psutil = None
 
 try:  # pragma: no cover - optional dependency
-    import pynvml  # type: ignore
+    import pynvml
 except Exception:  # pragma: no cover - optional dependency may be absent
-    pynvml = None  # type: ignore[assignment]
+    pynvml = None
 else:  # pragma: no cover - NVML initialisation best effort
     try:
         pynvml.nvmlInit()
     except Exception:  # pragma: no cover - unavailable runtime
         LOGGER.debug("NVML initialisation failed", exc_info=True)
-        pynvml = None  # type: ignore[assignment]
+        pynvml = None
 
 
 def collect_metrics() -> dict[str, float]:

@@ -10,7 +10,7 @@ from typing import Optional
 try:  # pragma: no cover - optional dependency guards
     import numpy as np
 except Exception:  # pragma: no cover
-    np = None  # type: ignore[assignment]
+    np = None
 
 try:  # pragma: no cover - optional dependency guards
     import torch
@@ -44,7 +44,7 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
         torch.manual_seed(seed)
         if hasattr(torch, "cuda"):
             try:
-                torch.cuda.manual_seed_all(seed)  # type: ignore[call-arg]
+                torch.cuda.manual_seed_all(seed)
             except Exception:  # pragma: no cover - optional CUDA path
                 logger.debug("torch.cuda.manual_seed_all unavailable", exc_info=True)
         if deterministic:
@@ -53,8 +53,8 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
             except Exception:
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
             try:
-                torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-                torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+                torch.backends.cudnn.deterministic = True
+                torch.backends.cudnn.benchmark = False
             except Exception:
                 logger.debug("torch.backends.cudnn unavailable", exc_info=True)
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
@@ -66,7 +66,7 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
     if torch is None:
         return
     try:
-        backend = torch.backends.cudnn  # type: ignore[attr-defined]
+        backend = torch.backends.cudnn
     except Exception:  # pragma: no cover - backend unavailable
         logger.debug("torch.backends.cudnn missing", exc_info=True)
         return

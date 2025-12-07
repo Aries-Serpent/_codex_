@@ -14,11 +14,10 @@ try:
     from hydra import compose, initialize_config_dir
 except ImportError:
     from config_legacy import compose, initialize_config_dir
-from omegaconf import OmegaConf
-
 from data.registry import build as build_registered_dataset
 from logging_utils import LoggingConfig
 from metrics import accuracy as metrics_accuracy
+from omegaconf import OmegaConf
 from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"

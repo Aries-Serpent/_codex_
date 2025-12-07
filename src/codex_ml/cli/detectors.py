@@ -5,8 +5,8 @@ import sys
 from typing import Iterable
 
 from ..detectors.aggregate import scorecard
-from ..detectors.unified_training import detector_unified_training
 from ..detectors.experiment_summary import detector_experiment_summary
+from ..detectors.unified_training import detector_unified_training
 
 
 def _default_detectors() -> Iterable:

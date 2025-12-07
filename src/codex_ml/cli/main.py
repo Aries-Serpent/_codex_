@@ -15,7 +15,7 @@ from typing import Annotated, Any
 try:  # Optional dependency used for loading curriculum presets
     import yaml  # type: ignore
 except Exception:  # pragma: no cover - PyYAML is optional
-    yaml = None  # type: ignore
+    yaml = None
 
 
 def _load_typer():
@@ -469,7 +469,7 @@ else:
         from codex_digest.error_capture import log_error as _log_error
     except Exception:  # pragma: no cover
 
-        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
+        def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
             return None
 
     _functional_training_main = None
@@ -478,7 +478,7 @@ else:
         global _functional_training_main
         if _functional_training_main is None:
             try:
-                from codex.training import main as _functional_training  # type: ignore
+                from codex.training import main as _functional_training
             except Exception:
                 _functional_training_main = None
             else:
@@ -528,10 +528,10 @@ else:
         main_fn(argv)
 
     try:  # pragma: no cover - evaluation is optional
-        from codex_ml.eval.eval_runner import evaluate_datasets  # type: ignore
+        from codex_ml.eval.eval_runner import evaluate_datasets
     except Exception:  # pragma: no cover
 
-        def evaluate_datasets(*args, **kwargs):  # type: ignore
+        def evaluate_datasets(*args, **kwargs):
             return None
 
     if _HAS_HYDRA and hydra is not None:
@@ -590,7 +590,7 @@ else:
 
     else:  # pragma: no cover - hydra missing
 
-        def main(cfg: Any = None) -> None:  # type: ignore[unused-argument]
+        def main(cfg: Any = None) -> None:
             raise ImportError(
                 "hydra-core is required to use codex_ml.cli.main; "
                 "install it with `pip install hydra-core`."

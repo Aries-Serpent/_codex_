@@ -3,6 +3,7 @@
 This module provides a sandboxed execution environment for plugins with
 contract testing, health monitoring, and automatic failure handling.
 """
+
 from __future__ import annotations
 
 import logging
@@ -11,8 +12,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +22,13 @@ __all__ = [
     "PluginContract",
     "Plugin",
     "PluginSandbox",
-    "PluginManager"
+    "PluginManager",
 ]
 
 
 class PluginStatus(Enum):
     """Plugin status states."""
+
     ENABLED = "enabled"
     DISABLED = "disabled"
     FAILED = "failed"
@@ -37,7 +38,7 @@ class PluginStatus(Enum):
 @dataclass
 class PluginHealth:
     """Plugin health information.
-    
+
     Attributes:
         plugin_name: Name of the plugin
         status: Current status
@@ -46,23 +47,24 @@ class PluginHealth:
         last_failure: Timestamp of last failure
         last_error: Last error message
     """
+
     plugin_name: str
     status: PluginStatus = PluginStatus.ENABLED
     failure_count: int = 0
     last_success: Optional[str] = None
     last_failure: Optional[str] = None
     last_error: Optional[str] = None
-    
+
     def record_success(self):
         """Record successful execution."""
         self.failure_count = 0
         self.last_success = datetime.utcnow().isoformat()
         if self.status == PluginStatus.FAILED:
             self.status = PluginStatus.ENABLED
-    
+
     def record_failure(self, error: str):
         """Record failure.
-        
+
         Args:
             error: Error message
         """
@@ -74,7 +76,7 @@ class PluginHealth:
 @dataclass
 class PluginContract:
     """Contract specification for a plugin.
-    
+
     Attributes:
         required_methods: List of required method names
         input_schema: Expected input schema (simplified)
@@ -82,6 +84,7 @@ class PluginContract:
         max_execution_time: Maximum execution time in seconds
         required_config_keys: Required configuration keys
     """
+
     required_methods: List[str] = field(default_factory=list)
     input_schema: Optional[Dict[str, Type]] = None
     output_schema: Optional[Dict[str, Type]] = None
@@ -91,68 +94,66 @@ class PluginContract:
 
 class Plugin(ABC):
     """Base class for plugins.
-    
+
     All plugins must inherit from this class and implement required methods.
     """
-    
+
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         """Initialize plugin.
-        
+
         Args:
             config: Plugin configuration
         """
         self.config = config or {}
         self.name = self.__class__.__name__
-    
+
     @abstractmethod
     def initialize(self) -> bool:
         """Initialize the plugin.
-        
+
         Returns:
             True if initialization successful
         """
         pass
-    
+
     @abstractmethod
     def execute(self, *args, **kwargs) -> Any:
         """Execute plugin logic.
-        
+
         Args:
             *args: Positional arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Plugin execution result
         """
         pass
-    
+
     @abstractmethod
     def cleanup(self):
         """Clean up plugin resources."""
         pass
-    
+
     def get_contract(self) -> PluginContract:
         """Get plugin contract specification.
-        
+
         Returns:
             PluginContract object
         """
-        return PluginContract(
-            required_methods=["initialize", "execute", "cleanup"]
-        )
+        return PluginContract(required_methods=["initialize", "execute", "cleanup"])
 
 
 class PluginSandbox:
     """Sandboxed execution environment for plugins."""
-    
+
     def __init__(
         self,
         max_failures: int = 3,
         quarantine_duration: int = 300,  # 5 minutes
-        enable_auto_disable: bool = True
+        enable_auto_disable: bool = True,
     ):
         """Initialize plugin sandbox.
-        
+
         Args:
             max_failures: Maximum failures before auto-disable
             quarantine_duration: Quarantine duration in seconds
@@ -162,14 +163,14 @@ class PluginSandbox:
         self.quarantine_duration = quarantine_duration
         self.enable_auto_disable = enable_auto_disable
         self.health: Dict[str, PluginHealth] = {}
-    
+
     def validate_contract(self, plugin: Plugin, contract: PluginContract) -> bool:
         """Validate plugin against contract.
-        
+
         Args:
             plugin: Plugin instance
             contract: Contract specification
-            
+
         Returns:
             True if plugin satisfies contract
         """
@@ -178,86 +179,82 @@ class PluginSandbox:
             if not hasattr(plugin, method_name):
                 logger.error(f"Plugin {plugin.name} missing required method: {method_name}")
                 return False
-            
+
             method = getattr(plugin, method_name)
             if not callable(method):
                 logger.error(f"Plugin {plugin.name} method {method_name} is not callable")
                 return False
-        
+
         # Check required config keys
         for key in contract.required_config_keys:
             if key not in plugin.config:
                 logger.error(f"Plugin {plugin.name} missing required config key: {key}")
                 return False
-        
+
         logger.info(f"Plugin {plugin.name} contract validation passed")
         return True
-    
+
     def execute_sandboxed(
-        self,
-        plugin: Plugin,
-        method_name: str = "execute",
-        *args,
-        **kwargs
+        self, plugin: Plugin, method_name: str = "execute", *args, **kwargs
     ) -> Optional[Any]:
         """Execute plugin method in sandbox.
-        
+
         Args:
             plugin: Plugin instance
             method_name: Method to execute
             *args: Positional arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Execution result or None on failure
         """
         plugin_name = plugin.name
-        
+
         # Initialize health tracking
         if plugin_name not in self.health:
             self.health[plugin_name] = PluginHealth(plugin_name=plugin_name)
-        
+
         health = self.health[plugin_name]
-        
+
         # Check if plugin is disabled
         if health.status == PluginStatus.DISABLED:
             logger.warning(f"Plugin {plugin_name} is disabled, skipping execution")
             return None
-        
+
         # Check if plugin is quarantined
         if health.status == PluginStatus.QUARANTINED:
             # TODO: Check quarantine duration
             logger.warning(f"Plugin {plugin_name} is quarantined, skipping execution")
             return None
-        
+
         try:
             # Get method
             if not hasattr(plugin, method_name):
                 raise AttributeError(f"Plugin {plugin_name} has no method {method_name}")
-            
+
             method = getattr(plugin, method_name)
-            
+
             # Execute in sandbox
             logger.debug(f"Executing {plugin_name}.{method_name}()")
             result = method(*args, **kwargs)
-            
+
             # Record success
             health.record_success()
             logger.debug(f"Plugin {plugin_name}.{method_name}() succeeded")
-            
+
             return result
-        
+
         except Exception as e:
             # Record failure
             error_msg = f"{type(e).__name__}: {str(e)}"
             health.record_failure(error_msg)
-            
+
             logger.error(
                 f"Plugin {plugin_name}.{method_name}() failed "
                 f"(failures: {health.failure_count}/{self.max_failures}): {error_msg}"
             )
             logger.debug(traceback.format_exc())
-            
+
             # Auto-disable if too many failures
             if self.enable_auto_disable and health.failure_count >= self.max_failures:
                 health.status = PluginStatus.DISABLED
@@ -265,31 +262,31 @@ class PluginSandbox:
                     f"Plugin {plugin_name} auto-disabled after "
                     f"{health.failure_count} consecutive failures"
                 )
-            
+
             return None
-    
+
     def get_health_status(self, plugin_name: str) -> Optional[PluginHealth]:
         """Get health status for a plugin.
-        
+
         Args:
             plugin_name: Name of the plugin
-            
+
         Returns:
             PluginHealth object or None
         """
         return self.health.get(plugin_name)
-    
+
     def get_all_health(self) -> Dict[str, PluginHealth]:
         """Get health status for all plugins.
-        
+
         Returns:
             Dictionary mapping plugin names to health objects
         """
         return self.health.copy()
-    
+
     def enable_plugin(self, plugin_name: str):
         """Manually enable a plugin.
-        
+
         Args:
             plugin_name: Name of the plugin
         """
@@ -297,10 +294,10 @@ class PluginSandbox:
             self.health[plugin_name].status = PluginStatus.ENABLED
             self.health[plugin_name].failure_count = 0
             logger.info(f"Plugin {plugin_name} manually enabled")
-    
+
     def disable_plugin(self, plugin_name: str):
         """Manually disable a plugin.
-        
+
         Args:
             plugin_name: Name of the plugin
         """
@@ -311,14 +308,10 @@ class PluginSandbox:
 
 class PluginManager:
     """Manager for plugin lifecycle and execution."""
-    
-    def __init__(
-        self,
-        sandbox: Optional[PluginSandbox] = None,
-        validate_contracts: bool = True
-    ):
+
+    def __init__(self, sandbox: Optional[PluginSandbox] = None, validate_contracts: bool = True):
         """Initialize plugin manager.
-        
+
         Args:
             sandbox: Plugin sandbox (creates default if None)
             validate_contracts: Enable contract validation
@@ -326,25 +319,25 @@ class PluginManager:
         self.sandbox = sandbox or PluginSandbox()
         self.validate_contracts = validate_contracts
         self.plugins: Dict[str, Plugin] = {}
-    
+
     def register_plugin(self, plugin: Plugin) -> bool:
         """Register a plugin.
-        
+
         Args:
             plugin: Plugin instance
-            
+
         Returns:
             True if registration successful
         """
         plugin_name = plugin.name
-        
+
         # Validate contract if enabled
         if self.validate_contracts:
             contract = plugin.get_contract()
             if not self.sandbox.validate_contract(plugin, contract):
                 logger.error(f"Plugin {plugin_name} failed contract validation")
                 return False
-        
+
         # Initialize plugin
         try:
             if not plugin.initialize():
@@ -353,53 +346,48 @@ class PluginManager:
         except Exception as e:
             logger.error(f"Plugin {plugin_name} initialization raised exception: {e}")
             return False
-        
+
         # Register
         self.plugins[plugin_name] = plugin
         logger.info(f"Plugin {plugin_name} registered successfully")
         return True
-    
-    def execute_plugin(
-        self,
-        plugin_name: str,
-        *args,
-        **kwargs
-    ) -> Optional[Any]:
+
+    def execute_plugin(self, plugin_name: str, *args, **kwargs) -> Optional[Any]:
         """Execute a registered plugin.
-        
+
         Args:
             plugin_name: Name of the plugin
             *args: Positional arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Execution result or None on failure
         """
         if plugin_name not in self.plugins:
             logger.error(f"Plugin {plugin_name} not registered")
             return None
-        
+
         plugin = self.plugins[plugin_name]
         return self.sandbox.execute_sandboxed(plugin, "execute", *args, **kwargs)
-    
+
     def execute_all_plugins(self, *args, **kwargs) -> Dict[str, Any]:
         """Execute all registered plugins.
-        
+
         Args:
             *args: Positional arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Dictionary mapping plugin names to results
         """
         results = {}
-        
+
         for plugin_name, plugin in self.plugins.items():
             result = self.sandbox.execute_sandboxed(plugin, "execute", *args, **kwargs)
             results[plugin_name] = result
-        
+
         return results
-    
+
     def cleanup_all(self):
         """Clean up all plugins."""
         for plugin_name, plugin in self.plugins.items():
@@ -408,23 +396,23 @@ class PluginManager:
                 logger.info(f"Plugin {plugin_name} cleanup complete")
             except Exception as e:
                 logger.error(f"Plugin {plugin_name} cleanup failed: {e}")
-    
+
     def get_plugin_health_report(self) -> Dict[str, Any]:
         """Get health report for all plugins.
-        
+
         Returns:
             Health report dictionary
         """
         health_data = self.sandbox.get_all_health()
-        
+
         report = {
             "total_plugins": len(self.plugins),
             "enabled": 0,
             "disabled": 0,
             "failed": 0,
-            "plugins": {}
+            "plugins": {},
         }
-        
+
         for plugin_name, health in health_data.items():
             if health.status == PluginStatus.ENABLED:
                 report["enabled"] += 1
@@ -432,13 +420,13 @@ class PluginManager:
                 report["disabled"] += 1
             elif health.status == PluginStatus.FAILED:
                 report["failed"] += 1
-            
+
             report["plugins"][plugin_name] = {
                 "status": health.status.value,
                 "failure_count": health.failure_count,
                 "last_success": health.last_success,
                 "last_failure": health.last_failure,
-                "last_error": health.last_error
+                "last_error": health.last_error,
             }
-        
+
         return report

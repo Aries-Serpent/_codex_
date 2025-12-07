@@ -12,8 +12,8 @@ try:  # Optional dependency: prometheus-client
 
     _HAS_PROMETHEUS = True
 except Exception:  # pragma: no cover - optional dependency path
-    CollectorRegistry = None  # type: ignore[assignment]
-    Counter = Gauge = Histogram = None  # type: ignore[assignment]
+    CollectorRegistry = None
+    Counter = Gauge = Histogram = None
     _HAS_PROMETHEUS = False
 
 

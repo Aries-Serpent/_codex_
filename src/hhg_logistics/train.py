@@ -13,6 +13,7 @@ try:
     import hydra
 except ImportError:
     import config_legacy as hydra
+
 from common.hooks import CheckpointHook, EMAHook, HookManager, NDJSONLogHook
 from common.mlflow_guard import (
     ensure_local_tracking,

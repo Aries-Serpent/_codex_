@@ -6,7 +6,9 @@ from pathlib import Path
 from .core import DetectorResult, clamp01
 
 
-def detector_experiment_summary(summary_path: str | Path = "artifacts/experiment_summary.json") -> DetectorResult:
+def detector_experiment_summary(
+    summary_path: str | Path = "artifacts/experiment_summary.json",
+) -> DetectorResult:
     path = Path(summary_path)
     if not path.exists():
         return DetectorResult(

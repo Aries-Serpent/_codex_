@@ -1,8 +1,9 @@
-from __future__ import annotations
-
 """
 Centralized, import-light helpers for reproducible and deterministic runs.
 """
+
+from __future__ import annotations
+
 import contextlib
 import os
 import random
@@ -22,22 +23,22 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
     os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     try:
-        import numpy as np  # type: ignore
+        import numpy as np
 
-        np.random.seed(seed)  # type: ignore[attr-defined]
+        np.random.seed(seed)
     except Exception:
         pass
     try:
-        import torch  # type: ignore
+        import torch
 
-        torch.manual_seed(seed)  # type: ignore[attr-defined]
+        torch.manual_seed(seed)
         if hasattr(torch, "cuda") and callable(getattr(torch.cuda, "manual_seed_all", None)):
             try:
-                torch.cuda.manual_seed_all(seed)  # type: ignore[attr-defined]
+                torch.cuda.manual_seed_all(seed)
             except Exception:
                 pass
         try:
-            backend = torch.backends.cudnn  # type: ignore[attr-defined]
+            backend = torch.backends.cudnn
             backend.deterministic = deterministic
             backend.benchmark = not deterministic
             if deterministic:
@@ -61,10 +62,10 @@ def set_deterministic(enabled: bool = True) -> None:
     Safe no-op when frameworks are absent.
     """
     try:
-        import torch  # type: ignore
+        import torch
 
         try:
-            backend = torch.backends.cudnn  # type: ignore[attr-defined]
+            backend = torch.backends.cudnn
             backend.deterministic = enabled
             backend.benchmark = not enabled
         except Exception:

@@ -21,6 +21,14 @@ and remains stable across releases so that lightweight tooling can rely on it.
 """
 
 # BEGIN: CODEX_MLFLOW_INIT
+from .experiments import (
+    RunInfo,
+    finish_run,
+    load_events,
+    log_metric,
+    new_run_info,
+)
+from .experiments import start_run as start_local_run
 from .init_experiment import ExperimentContext, init_experiment
 from .mlflow_utils import (
     MlflowConfig,
@@ -30,14 +38,6 @@ from .mlflow_utils import (
     log_params,
     seed_snapshot,
     start_run,
-)
-from .experiments import (
-    RunInfo,
-    finish_run,
-    load_events,
-    log_metric,
-    new_run_info,
-    start_run as start_local_run,
 )
 
 __all__ = [

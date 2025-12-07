@@ -7,13 +7,13 @@ Provides tools for:
 - Mixed precision optimization
 - Kernel fusion hints
 """
+
 from __future__ import annotations
 
 import logging
-import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Any, Callable
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -31,7 +31,7 @@ __all__ = [
 
 class TorchProfiler:
     """PyTorch Profiler wrapper with enhanced features.
-    
+
     Example:
         >>> profiler = TorchProfiler("training_profile")
         >>> with profiler:
@@ -39,7 +39,7 @@ class TorchProfiler:
         ...     pass
         >>> profiler.export_chrome_trace("profile.json")
     """
-    
+
     def __init__(
         self,
         name: str = "profile",
@@ -49,7 +49,7 @@ class TorchProfiler:
         with_stack: bool = False,
     ):
         """Initialize profiler.
-        
+
         Args:
             name: Profile name
             activities: List of activities to profile
@@ -58,7 +58,7 @@ class TorchProfiler:
             with_stack: Whether to record stack traces
         """
         self.name = name
-        
+
         if activities is None and torch.cuda.is_available():
             activities = [
                 torch.profiler.ProfilerActivity.CPU,
@@ -66,42 +66,44 @@ class TorchProfiler:
             ]
         elif activities is None:
             activities = [torch.profiler.ProfilerActivity.CPU]
-        
+
         self.profiler = torch.profiler.profile(
             activities=activities,
             record_shapes=record_shapes,
             profile_memory=profile_memory,
             with_stack=with_stack,
         )
-    
+
     def __enter__(self):
         """Start profiling."""
         self.profiler.__enter__()
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Stop profiling."""
         self.profiler.__exit__(exc_type, exc_val, exc_tb)
-        
+
         # Print summary
-        print(self.profiler.key_averages().table(
-            sort_by="cuda_time_total" if torch.cuda.is_available() else "cpu_time_total",
-            row_limit=10,
-        ))
-    
+        print(
+            self.profiler.key_averages().table(
+                sort_by="cuda_time_total" if torch.cuda.is_available() else "cpu_time_total",
+                row_limit=10,
+            )
+        )
+
     def export_chrome_trace(self, path: str):
         """Export Chrome trace for visualization.
-        
+
         Args:
             path: Output path for trace file
         """
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         self.profiler.export_chrome_trace(path)
         logger.info(f"Chrome trace exported to: {path}")
-    
+
     def export_stacks(self, path: str):
         """Export stack traces.
-        
+
         Args:
             path: Output path for stacks file
         """
@@ -112,17 +114,17 @@ class TorchProfiler:
 
 class MemoryOptimizer:
     """Memory optimization utilities.
-    
+
     Example:
         >>> optimizer = MemoryOptimizer()
         >>> optimizer.optimize_model(model)
         >>> optimizer.print_memory_summary()
     """
-    
+
     @staticmethod
     def optimize_model(model: nn.Module, aggressive: bool = False):
         """Apply memory optimizations to model.
-        
+
         Args:
             model: PyTorch model
             aggressive: Whether to apply aggressive optimizations
@@ -132,7 +134,7 @@ class MemoryOptimizer:
             if hasattr(module, "gradient_checkpointing_enable"):
                 module.gradient_checkpointing_enable()
                 logger.info(f"Enabled gradient checkpointing for {type(module).__name__}")
-        
+
         # Set model to channels_last memory format (if compatible)
         if aggressive and torch.cuda.is_available():
             try:
@@ -140,32 +142,32 @@ class MemoryOptimizer:
                 logger.info("Converted model to channels_last memory format")
             except Exception as e:
                 logger.debug(f"Could not convert to channels_last: {e}")
-        
+
         # Enable TF32 for faster matmul on Ampere GPUs
         if torch.cuda.is_available():
             torch.backends.cuda.matmul.allow_tf32 = True
             torch.backends.cudnn.allow_tf32 = True
             logger.info("Enabled TF32 for faster computation")
-        
+
         return model
-    
+
     @staticmethod
     def print_memory_summary():
         """Print CUDA memory summary."""
         if torch.cuda.is_available():
             print(torch.cuda.memory_summary())
-    
+
     @staticmethod
     def clear_cache():
         """Clear CUDA cache."""
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             logger.info("Cleared CUDA cache")
-    
+
     @staticmethod
     def set_memory_fraction(fraction: float, device: int = 0):
         """Set maximum memory fraction for CUDA device.
-        
+
         Args:
             fraction: Fraction of memory to use (0.0 to 1.0)
             device: CUDA device index
@@ -177,15 +179,15 @@ class MemoryOptimizer:
 
 def enable_gradient_checkpointing(model: nn.Module) -> nn.Module:
     """Enable gradient checkpointing for model.
-    
+
     Trades compute for memory by recomputing activations during backward pass.
-    
+
     Args:
         model: PyTorch model
-    
+
     Returns:
         Model with gradient checkpointing enabled
-    
+
     Example:
         >>> model = MyModel()
         >>> model = enable_gradient_checkpointing(model)
@@ -193,7 +195,7 @@ def enable_gradient_checkpointing(model: nn.Module) -> nn.Module:
     for module in model.modules():
         if hasattr(module, "gradient_checkpointing_enable"):
             module.gradient_checkpointing_enable()
-    
+
     logger.info("Gradient checkpointing enabled")
     return model
 
@@ -205,16 +207,16 @@ def optimize_model(
     gradient_checkpointing: bool = False,
 ) -> nn.Module:
     """Apply comprehensive optimizations to model.
-    
+
     Args:
         model: PyTorch model
         compile: Whether to compile with torch.compile (PyTorch 2.0+)
         channels_last: Whether to use channels_last memory format
         gradient_checkpointing: Whether to enable gradient checkpointing
-    
+
     Returns:
         Optimized model
-    
+
     Example:
         >>> model = MyModel()
         >>> model = optimize_model(model, compile=True)
@@ -222,7 +224,7 @@ def optimize_model(
     # Enable gradient checkpointing
     if gradient_checkpointing:
         model = enable_gradient_checkpointing(model)
-    
+
     # Convert to channels_last
     if channels_last and torch.cuda.is_available():
         try:
@@ -230,7 +232,7 @@ def optimize_model(
             logger.info("Converted to channels_last memory format")
         except Exception as e:
             logger.debug(f"Could not convert to channels_last: {e}")
-    
+
     # Compile with torch.compile (PyTorch 2.0+)
     if compile and hasattr(torch, "compile"):
         try:
@@ -238,14 +240,14 @@ def optimize_model(
             logger.info("Model compiled with torch.compile")
         except Exception as e:
             logger.warning(f"Could not compile model: {e}")
-    
+
     # Enable performance optimizations
     if torch.cuda.is_available():
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
         torch.backends.cudnn.benchmark = True
         logger.info("Enabled CUDA performance optimizations")
-    
+
     return model
 
 
@@ -256,45 +258,45 @@ def profile_model(
     export_path: Optional[str] = None,
 ):
     """Context manager for profiling model operations.
-    
+
     Args:
         name: Profile name
         export_chrome: Whether to export Chrome trace
         export_path: Path for exports (default: ./profiling/{name})
-    
+
     Example:
         >>> with profile_model("forward_pass"):
         ...     output = model(input)
     """
     if export_path is None:
         export_path = f"./profiling/{name}"
-    
+
     Path(export_path).mkdir(parents=True, exist_ok=True)
-    
+
     profiler = TorchProfiler(name)
-    
+
     with profiler:
         yield profiler
-    
+
     if export_chrome:
         profiler.export_chrome_trace(f"{export_path}/trace.json")
 
 
 class AsyncDataPrefetcher:
     """Asynchronous data prefetcher for faster data loading.
-    
+
     Prefetches next batch to GPU while current batch is processing.
-    
+
     Example:
         >>> prefetcher = AsyncDataPrefetcher(dataloader, device="cuda")
         >>> for batch in prefetcher:
         ...     # Process batch
         ...     pass
     """
-    
+
     def __init__(self, dataloader, device: str = "cuda"):
         """Initialize prefetcher.
-        
+
         Args:
             dataloader: PyTorch DataLoader
             device: Target device for prefetching
@@ -302,11 +304,11 @@ class AsyncDataPrefetcher:
         self.dataloader = dataloader
         self.device = torch.device(device)
         self.stream = torch.cuda.Stream() if device.startswith("cuda") else None
-    
+
     def __iter__(self):
         """Iterate with prefetching."""
         loader_iter = iter(self.dataloader)
-        
+
         # Prefetch first batch
         try:
             batch = next(loader_iter)
@@ -315,27 +317,27 @@ class AsyncDataPrefetcher:
                     batch = self._to_device(batch)
         except StopIteration:
             return
-        
+
         # Main loop with prefetching
         for next_batch in loader_iter:
             # Wait for prefetch
             if self.stream is not None:
                 torch.cuda.current_stream().wait_stream(self.stream)
-            
+
             yield batch
-            
+
             # Prefetch next batch
             if self.stream is not None:
                 with torch.cuda.stream(self.stream):
                     batch = self._to_device(next_batch)
             else:
                 batch = self._to_device(next_batch)
-        
+
         # Yield last batch
         if self.stream is not None:
             torch.cuda.current_stream().wait_stream(self.stream)
         yield batch
-    
+
     def _to_device(self, batch):
         """Move batch to device."""
         if isinstance(batch, torch.Tensor):

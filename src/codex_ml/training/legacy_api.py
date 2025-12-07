@@ -39,7 +39,7 @@ from codex_ml.utils.train_helpers import maybe_autocast
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency in tests
-    from omegaconf import DictConfig, OmegaConf  # type: ignore
+    from omegaconf import DictConfig, OmegaConf
 except Exception as exc:  # pragma: no cover - OmegaConf optional
     logger.debug("OmegaConf unavailable: %s", exc)
     DictConfig = None  # type: ignore[assignment]
@@ -267,8 +267,8 @@ def _coerce_safety(raw: Any, default: Optional[SafetySettings] = None) -> Safety
 
 
 def _normalize_config(raw: Mapping[str, Any]) -> dict[str, Any]:
-    if DictConfig is not None and isinstance(raw, DictConfig):  # type: ignore[arg-type]
-        container = OmegaConf.to_container(raw, resolve=True)  # type: ignore[union-attr]
+    if DictConfig is not None and isinstance(raw, DictConfig):
+        container = OmegaConf.to_container(raw, resolve=True)
         if isinstance(container, dict):
             return container
         raise TypeError("DictConfig did not resolve to a mapping container")
@@ -292,8 +292,8 @@ def _merge_dataset_config(dataset: dict[str, Any], mapping: Mapping[str, Any]) -
 def _maybe_resolve_container(value: Any) -> Any:
     """Resolve DictConfig objects into plain Python containers when possible."""
 
-    if DictConfig is not None and isinstance(value, DictConfig):  # type: ignore[arg-type]
-        resolved = OmegaConf.to_container(value, resolve=True)  # type: ignore[union-attr]
+    if DictConfig is not None and isinstance(value, DictConfig):
+        resolved = OmegaConf.to_container(value, resolve=True)
         return resolved
     return value
 
@@ -524,7 +524,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             if lowered in {"false", "0", "no", "n", "off"}:
                 return False
         try:
-            return bool(int(raw))  # type: ignore[arg-type]
+            return bool(int(raw))
         except Exception:
             return bool(raw)
 
@@ -895,9 +895,9 @@ def run_functional_training(
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        from datasets import Dataset  # type: ignore
+        from datasets import Dataset
 
-        from transformers import AutoTokenizer  # type: ignore
+        from transformers import AutoTokenizer
     except Exception:  # pragma: no cover - optional dependencies
         try:
             from torch.utils.data import DataLoader
@@ -1094,7 +1094,7 @@ def run_functional_training(
 
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
-    import numpy as np  # type: ignore
+    import numpy as np
 
     from codex_ml.models.registry import get_model
     from codex_ml.training.functional_training import TrainCfg, run_custom_trainer
@@ -1151,7 +1151,7 @@ def run_functional_training(
         if isinstance(seq, Mapping):
             raise TypeError("Nested mappings are not supported in tokenizer encodings")
         try:
-            iterator = list(seq)  # type: ignore[arg-type]
+            iterator = list(seq)
         except TypeError as err:
             raise TypeError("Tokenizer encodings must be sequences") from err
         normalized: list[int] = []
@@ -1441,7 +1441,7 @@ def _evaluate_model(
         return {}
 
     try:
-        if len(dataset) == 0:  # type: ignore[arg-type]
+        if len(dataset) == 0:
             return {}
     except Exception:  # pragma: no cover - len may not be defined
         pass
@@ -1460,7 +1460,7 @@ def _evaluate_model(
     device = getattr(model, "device", None)
     if device is None and hasattr(model, "parameters"):
         try:
-            first_param = next(model.parameters())  # type: ignore[attr-defined]
+            first_param = next(model.parameters())
         except StopIteration:
             first_param = None
         except Exception:  # pragma: no cover - non-module models

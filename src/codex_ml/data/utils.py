@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Dict, List, Sequence, Tuple
 
 
 @dataclass
@@ -60,4 +60,3 @@ def assign_split_map(
     for _id in eval_ids:
         out[_id] = "eval"
     return out
-

@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
 try:  # Optional dependency
-    from omegaconf import DictConfig, OmegaConf  # type: ignore
+    from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - optional
     DictConfig = object  # type: ignore
     OmegaConf = None  # type: ignore
@@ -86,7 +86,7 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
         pass
 
     try:
-        import psutil  # type: ignore
+        import psutil
 
         physical = psutil.cpu_count(logical=False)
         if physical is not None:
@@ -339,10 +339,10 @@ def snapshot_hydra_config(
         if isinstance(cfg, DictConfig):
             target = cfg
         else:
-            target = OmegaConf.create(cfg)  # type: ignore[assignment]
+            target = OmegaConf.create(cfg)
 
         if hasattr(OmegaConf, "to_yaml"):
-            rendered_config = OmegaConf.to_yaml(target)  # type: ignore[attr-defined]
+            rendered_config = OmegaConf.to_yaml(target)
         else:
             container = OmegaConf.to_container(target, resolve=True)
             rendered_config = _yaml_dumps(container)

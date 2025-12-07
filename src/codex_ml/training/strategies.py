@@ -222,7 +222,7 @@ class LegacyStrategy:
     ) -> TrainingResult:
         import warnings
 
-        from codex_ml.train_loop import run_training as _legacy  # type: ignore
+        from codex_ml.train_loop import run_training as _legacy
 
         warnings.warn(
             "Legacy training loop usage is deprecated – unified orchestrator proxy.",

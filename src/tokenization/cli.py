@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, NoReturn
 
 try:  # pragma: no cover - optional dependency
-    import typer as _typer  # type: ignore
+    import typer as _typer
 except Exception:  # pragma: no cover - fallback when typer missing
     _typer = None
 else:
@@ -418,7 +418,7 @@ def encode(
         and isinstance(ids_source[0], Sequence)
         and not isinstance(ids_source[0], (str, bytes))
     ):
-        ids_list = [int(x) for x in ids_source[0]]  # type: ignore[index]
+        ids_list = [int(x) for x in ids_source[0]]
     else:
         ids_list = [int(x) for x in ids_source]
 

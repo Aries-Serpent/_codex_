@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from types import ModuleType
-from typing import IO, Any, Optional
+from typing import IO, Any, Optional, Type
 
 _PY_YAML_INSTALL_HINT = 'pip install "PyYAML>=6.0"'
 
+_yaml_module: Optional[ModuleType]
 try:  # pragma: no cover - import guard
-    import yaml as _yaml  # type: ignore
+    import yaml as _yaml_module  # type: ignore
 except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
-    _yaml: Optional[ModuleType] = None
+    _yaml_module = None
     _YAML_IMPORT_ERROR = exc
 else:  # pragma: no cover - exercised when PyYAML installed
     _YAML_IMPORT_ERROR = None
@@ -24,22 +25,26 @@ class MissingPyYAMLError(ModuleNotFoundError):
         )
 
 
-if _yaml is not None:  # pragma: no cover - executed when PyYAML present
-    YAMLError = _yaml.YAMLError  # type: ignore[attr-defined]
+YAMLErrorType: Type[Exception]
+if _yaml_module is not None:  # pragma: no cover - executed when PyYAML present
+    YAMLErrorType = _yaml_module.YAMLError
 else:  # pragma: no cover - avoids attribute errors when PyYAML missing
 
-    class YAMLError(RuntimeError):
+    class YAMLErrorType(RuntimeError):  # type: ignore[no-redef]
         """Placeholder exception used when PyYAML is unavailable."""
 
         pass
+
+# Alias for backward compatibility
+YAMLError = YAMLErrorType
 
 
 def require_yaml() -> ModuleType:
     """Return the imported PyYAML module or raise ``MissingPyYAMLError``."""
 
-    if _yaml is None:
+    if _yaml_module is None:
         raise MissingPyYAMLError() from _YAML_IMPORT_ERROR
-    return _yaml
+    return _yaml_module
 
 
 def safe_load(stream: Any) -> Any:
@@ -59,7 +64,7 @@ def safe_dump(data: Any, stream: IO[str] | None = None, **kwargs: Any) -> Any:
 def yaml_available() -> bool:
     """Return ``True`` when PyYAML was imported successfully."""
 
-    return _yaml is not None
+    return _yaml_module is not None
 
 
 __all__ = [

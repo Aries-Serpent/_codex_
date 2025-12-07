@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Optional
 
 try:  # pragma: no cover - optional dependency
-    from torch.utils.tensorboard import SummaryWriter  # type: ignore
+    from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - optional dependency path
-    SummaryWriter = None  # type: ignore[assignment]
+    SummaryWriter = None
 
 
 class TBWriter:

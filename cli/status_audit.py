@@ -125,7 +125,13 @@ def main(argv: List[str] | None = None) -> int:
         print(f"           Artifacts will be saved to: {artifacts_dir}/")
         print()
 
-        audit_cmd = [sys.executable, str(audit_runner), "run", "--artifacts-dir", str(artifacts_dir)]
+        audit_cmd = [
+            sys.executable,
+            str(audit_runner),
+            "run",
+            "--artifacts-dir",
+            str(artifacts_dir),
+        ]
         rc = _run_command(audit_cmd, "Capability audit")
 
         if rc != 0:

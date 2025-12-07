@@ -67,4 +67,9 @@ def load_secret(
     return data[name]
 
 
-__all__ = ["scan_prompt_for_unsafe_content", "load_secret", "PromptSecurityError", "SecretNotFoundError"]
+__all__ = [
+    "scan_prompt_for_unsafe_content",
+    "load_secret",
+    "PromptSecurityError",
+    "SecretNotFoundError",
+]
