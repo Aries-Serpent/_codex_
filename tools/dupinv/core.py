@@ -34,6 +34,14 @@ class DuplicateScanner:
         self.config = config or {}
         self.detectors = {}
         self.cross_reference = None
+        self.git_metadata = None
+        
+        # Initialize git metadata collector (Phase 5)
+        from .git_metadata import GitMetadataCollector
+        try:
+            self.git_metadata = GitMetadataCollector(self.root_path)
+        except Exception:
+            self.git_metadata = None
         
         # Initialize SHIM inventory integration
         self._init_shim_integration()
@@ -129,6 +137,29 @@ class DuplicateScanner:
 
         return groups
 
+    def _apply_git_metadata(
+        self, groups: List[DuplicateGroup]
+    ) -> List[DuplicateGroup]:
+        """
+        Enrich duplicate groups with git metadata.
+
+        Args:
+            groups: List of duplicate groups
+
+        Returns:
+            Updated list with git metadata
+        """
+        for group in groups:
+            for member in group.member_files:
+                # Construct full path
+                file_path = self.root_path / member.path
+
+                if file_path.exists():
+                    # Enrich with git metadata
+                    self.git_metadata.enrich_member_file(member, file_path)
+
+        return groups
+
     def scan(self, modes: List[str] = None) -> SupplementalInventory:
         """
         Scan repository for duplicates using specified detection modes.
@@ -169,6 +200,10 @@ class DuplicateScanner:
         # Apply SHIM cross-reference to all groups
         if self.cross_reference:
             all_groups = self._apply_shim_cross_reference(all_groups)
+        
+        # Apply git metadata enrichment (Phase 5)
+        if self.git_metadata:
+            all_groups = self._apply_git_metadata(all_groups)
         
         # Calculate duration
         duration = time.time() - start_time
