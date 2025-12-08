@@ -6,25 +6,29 @@ Validates that the whitelist parsing logic correctly handles
 duplicate module paths according to SHIM_INVENTORY.yaml.
 """
 import importlib.util
+from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
 
+# Constants
+SHIM_INVENTORY_FILENAME = "SHIM_INVENTORY.yaml"
 
-def _load_verify_conflicts_module(test_root):
+
+@contextmanager
+def _load_verify_conflicts_with_root(test_root):
     """
-    Helper to load verify_conflicts module with temporary ROOT override.
+    Context manager to load verify_conflicts module with temporary ROOT override.
 
     Note: This function manipulates module-level global state (ROOT variable)
     which is necessary because the verify_conflicts module uses ROOT as a
-    global. We set ROOT after exec_module to ensure it's correctly set
-    regardless of how the module initializes.
+    global. The original ROOT is restored on exit.
 
     Args:
         test_root: Path to use as temporary ROOT directory for testing
 
-    Returns:
-        tuple: (verify_conflicts module, original_root value for cleanup)
+    Yields:
+        verify_conflicts module with ROOT set to test_root
     """
     script_path = (
         Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
@@ -39,7 +43,12 @@ def _load_verify_conflicts_module(test_root):
     original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
     verify_conflicts.ROOT = test_root
 
-    return verify_conflicts, original_root
+    try:
+        yield verify_conflicts
+    finally:
+        # Restore original ROOT
+        if original_root is not None:
+            verify_conflicts.ROOT = original_root
 
 
 def test_verify_conflicts_whitelist_parsing(tmp_path):
@@ -90,7 +99,7 @@ policy:
     # Create .github directory and inventory
     github_dir = root / ".github"
     github_dir.mkdir()
-    inventory_path = github_dir / "SHIM_INVENTORY.yaml"
+    inventory_path = github_dir / SHIM_INVENTORY_FILENAME
     inventory_path.write_text(inventory_content)
 
     # Create duplicate files (both legacy and canonical paths)
@@ -112,10 +121,8 @@ policy:
     src_tokenization_dir.mkdir(parents=True)
     (src_tokenization_dir / "api.py").write_text("# Canonical file")
 
-    # Import and test the function using helper
-    verify_conflicts, original_root = _load_verify_conflicts_module(root)
-
-    try:
+    # Test using context manager
+    with _load_verify_conflicts_with_root(root) as verify_conflicts:
         # Load inventory and check
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
@@ -136,11 +143,6 @@ policy:
         assert "training.engine_hf_trainer" in whitelisted_modules
         assert "training.config" in whitelisted_modules
         assert "tokenization.api" in whitelisted_modules
-
-    finally:
-        # Restore original ROOT if it existed
-        if original_root is not None:
-            verify_conflicts.ROOT = original_root
 
 
 def test_verify_conflicts_non_whitelisted_violation(tmp_path):
@@ -171,7 +173,7 @@ policy:
     # Create .github directory and inventory
     github_dir = root / ".github"
     github_dir.mkdir()
-    inventory_path = github_dir / "SHIM_INVENTORY.yaml"
+    inventory_path = github_dir / SHIM_INVENTORY_FILENAME
     inventory_path.write_text(inventory_content)
 
     # Create duplicate files
@@ -183,10 +185,8 @@ policy:
     src_models_dir.mkdir(parents=True)
     (src_models_dir / "test_model.py").write_text("# Canonical file")
 
-    # Import and test using helper
-    verify_conflicts, original_root = _load_verify_conflicts_module(root)
-
-    try:
+    # Test using context manager
+    with _load_verify_conflicts_with_root(root) as verify_conflicts:
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
@@ -205,10 +205,6 @@ policy:
         violation = findings["violations"][0]
         assert violation["module"] == "models.test_model"
         assert violation["severity"] == "error"
-
-    finally:
-        if original_root is not None:
-            verify_conflicts.ROOT = original_root
 
 
 def test_verify_conflicts_empty_whitelist(tmp_path):
@@ -238,7 +234,7 @@ policy:
     # Create .github directory and inventory
     github_dir = root / ".github"
     github_dir.mkdir()
-    inventory_path = github_dir / "SHIM_INVENTORY.yaml"
+    inventory_path = github_dir / SHIM_INVENTORY_FILENAME
     inventory_path.write_text(inventory_content)
 
     # Create duplicate files
@@ -250,10 +246,8 @@ policy:
     src_training_dir.mkdir(parents=True)
     (src_training_dir / "new_module.py").write_text("# Canonical file")
 
-    # Import and test using helper
-    verify_conflicts, original_root = _load_verify_conflicts_module(root)
-
-    try:
+    # Test using context manager
+    with _load_verify_conflicts_with_root(root) as verify_conflicts:
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
@@ -261,10 +255,6 @@ policy:
         assert len(findings["duplicates"]) == 1
         assert len(findings["whitelisted"]) == 0
         assert len(findings["violations"]) == 1
-
-    finally:
-        if original_root is not None:
-            verify_conflicts.ROOT = original_root
 
 
 if __name__ == "__main__":
