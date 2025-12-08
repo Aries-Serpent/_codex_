@@ -89,8 +89,18 @@ class DuplicateScanner:
             respect_gitignore=respect_gitignore,
         )
         
+        # Add semantic detector (Phase 4)
+        from .semantic_detector import MinHashDetector
+        
+        semantic_threshold = self.config.get("semantic_threshold", 0.75)
+        self.detectors["semantic"] = MinHashDetector(
+            self.root_path,
+            threshold=semantic_threshold,
+            exclude_patterns=exclude_patterns,
+            respect_gitignore=respect_gitignore,
+        )
+        
         # Other detectors will be added in later phases
-        # self.detectors["semantic"] = SemanticDetector(...)
 
     def _apply_shim_cross_reference(
         self, groups: List[DuplicateGroup]
