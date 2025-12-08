@@ -255,10 +255,12 @@ class TaskState:
         if m > 0:
             acceleration = force / (gamma * m)
             self.velocity += acceleration * dt
-            # Enforce speed limit
+            # Enforce speed limit with safety margin below speed of light
+            # SPEED_LIMIT_FACTOR provides a small buffer to avoid numerical instability at c
+            SPEED_LIMIT_FACTOR = 0.9999
             speed = np.linalg.norm(self.velocity)
             if speed >= self._constants.c:
-                self.velocity *= (0.9999 * self._constants.c / speed)
+                self.velocity *= (SPEED_LIMIT_FACTOR * self._constants.c / speed)
     
     def update_position(self, dt: float) -> None:
         """Update position based on velocity."""

@@ -91,7 +91,9 @@ class AdoptionMetricsCollector:
                     metrics["avg_duration_seconds"] = sum(durations) / len(durations)
                 
                 # Calculate adoption score (0-1)
-                metrics["adoption_score"] = min(1.0, len(all_runs) / 100.0)
+                # TARGET_RUN_COUNT represents full adoption baseline (100 runs = 100% adoption)
+                TARGET_RUN_COUNT = 100.0
+                metrics["adoption_score"] = min(1.0, len(all_runs) / TARGET_RUN_COUNT)
             
         except ImportError:
             logger.debug("MLflow not available")
