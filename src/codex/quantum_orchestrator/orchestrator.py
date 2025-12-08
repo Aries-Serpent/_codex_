@@ -23,6 +23,10 @@ from enum import Enum
 # SECTION 1: PHYSICAL CONSTANTS
 # ============================================================================
 
+# SPEED_LIMIT_FACTOR provides a small safety margin below speed of light
+# to avoid numerical instability at c
+SPEED_LIMIT_FACTOR = 0.9999
+
 @dataclass
 class PhysicsConstants:
     """Physical constants governing the orchestrator."""
@@ -43,8 +47,8 @@ class PhysicsConstants:
 # SECTION 2: TASK STATE REPRESENTATION
 # ============================================================================
 
+@dataclass
 class TaskVector:
-    """Position in 5D task space."""
     """Position in 5D task space."""
     priority: float = 0.0
     complexity: float = 1.0
@@ -256,8 +260,6 @@ class TaskState:
             acceleration = force / (gamma * m)
             self.velocity += acceleration * dt
             # Enforce speed limit with safety margin below speed of light
-            # SPEED_LIMIT_FACTOR provides a small buffer to avoid numerical instability at c
-            SPEED_LIMIT_FACTOR = 0.9999
             speed = np.linalg.norm(self.velocity)
             if speed >= self._constants.c:
                 self.velocity *= (SPEED_LIMIT_FACTOR * self._constants.c / speed)

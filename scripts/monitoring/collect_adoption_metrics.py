@@ -27,6 +27,9 @@ from typing import Dict, Any, List
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# TARGET_RUN_COUNT represents full adoption baseline (100 runs = 100% adoption)
+TARGET_RUN_COUNT = 100.0
+
 
 class AdoptionMetricsCollector:
     """Agent-driven metrics collector for MLOps feature adoption."""
@@ -91,8 +94,6 @@ class AdoptionMetricsCollector:
                     metrics["avg_duration_seconds"] = sum(durations) / len(durations)
                 
                 # Calculate adoption score (0-1)
-                # TARGET_RUN_COUNT represents full adoption baseline (100 runs = 100% adoption)
-                TARGET_RUN_COUNT = 100.0
                 metrics["adoption_score"] = min(1.0, len(all_runs) / TARGET_RUN_COUNT)
             
         except ImportError:

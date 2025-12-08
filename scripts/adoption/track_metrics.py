@@ -43,6 +43,12 @@ VALIDATION_CONFIG_WEIGHT = SCORING_WEIGHTS["validation_config"]
 EVALUATION_CONFIG_WEIGHT = SCORING_WEIGHTS["evaluation_config"]
 MONITORING_CONFIG_WEIGHT = SCORING_WEIGHTS["monitoring_config"]
 
+# WEIGHT_SUM_EPSILON is the tolerance for floating-point weight sum validation
+WEIGHT_SUM_EPSILON = 0.001
+
+# MAX_ARTIFACTS_PER_RUN is a performance safeguard to prevent excessive file system traversal
+MAX_ARTIFACTS_PER_RUN = 10000
+
 def _validate_scoring_weights() -> None:
     """
     Validate that scoring weights sum to 1.0.
@@ -50,8 +56,6 @@ def _validate_scoring_weights() -> None:
     Raises:
         ValueError: If weights don't sum to approximately 1.0
     """
-    # WEIGHT_SUM_EPSILON is the tolerance for floating-point weight sum validation
-    WEIGHT_SUM_EPSILON = 0.001
     total_weight = sum(SCORING_WEIGHTS.values())
     if abs(total_weight - 1.0) >= WEIGHT_SUM_EPSILON:
         raise ValueError(
@@ -117,8 +121,6 @@ class AdoptionTracker:
                         artifacts_dir = run_dir / "artifacts"
                         if artifacts_dir.exists():
                             # Count files efficiently using os.walk (more performant than rglob)
-                            # MAX_ARTIFACTS_PER_RUN is a performance safeguard to prevent excessive file system traversal
-                            MAX_ARTIFACTS_PER_RUN = 10000
                             try:
                                 file_count = 0
                                 for root, dirs, files in os.walk(artifacts_dir):
