@@ -1,0 +1,51 @@
+# Base tracking configuration for experiment tracking
+# Supports MLflow, NDJSON, TensorBoard, and W&B
+
+tracking:
+  # MLflow configuration
+  mlflow:
+    enabled: false  # Opt-in by default for backward compatibility
+    tracking_uri: "file:./mlruns"  # Local file storage (offline-first)
+    experiment_name: "codex_experiments"
+    artifact_location: "./mlruns/artifacts"
+    
+    # Auto-logging features
+    auto_log:
+      enabled: true
+      log_input_examples: true
+      log_model_signatures: true
+      log_models: true
+    
+    # Tags to automatically add to runs
+    default_tags:
+      framework: "codex_ml"
+      environment: "local"
+  
+  # NDJSON logging (always enabled as fallback)
+  ndjson:
+    enabled: true
+    output_dir: "./runs/logs"
+    rotation:
+      max_bytes: 10485760  # 10MB
+      max_age_s: 86400     # 24 hours
+      backup_count: 5
+  
+  # TensorBoard configuration
+  tensorboard:
+    enabled: false
+    log_dir: "./runs/tensorboard"
+  
+  # Weights & Biases configuration
+  wandb:
+    enabled: false
+    project: "codex"
+    entity: null  # Set to your W&B username/team
+    mode: "offline"  # Use "online" for live syncing
+    
+  # Composite writer settings
+  composite:
+    # Which writers to enable
+    writers: ["ndjson"]  # Add "mlflow", "tensorboard", "wandb" as needed
+    
+    # Graceful degradation on writer failures
+    fail_silently: true

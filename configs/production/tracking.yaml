@@ -1,0 +1,91 @@
+# Production MLflow Tracking Configuration
+# Phase 6.1: MLflow Tracking Integration
+# Enables experiment tracking in production training workflows
+
+tracking:
+  # MLflow Configuration
+  mlflow:
+    # Enable MLflow tracking (opt-in)
+    enabled: true
+    
+    # Tracking URI
+    # Options:
+    # - "file://./mlruns" - Local file-based storage (offline-first)
+    # - "http://mlflow-server:5000" - Centralized MLflow server
+    # - "s3://bucket/mlruns" - S3-backed storage
+    uri: "file://./mlruns"
+    
+    # Experiment name
+    experiment_name: "production_experiments"
+    
+    # Artifact storage location
+    # For production, consider using S3 or Azure Blob Storage
+    artifact_location: "file://./artifacts/mlflow"
+    
+    # Auto-logging configuration
+    auto_log:
+      enabled: true
+      log_models: true
+      log_input_examples: false  # Disabled for privacy
+      log_model_signatures: true
+      
+    # What to log
+    log_artifacts: true
+    log_configs: true
+    log_env_snapshot: true
+    log_dataset_manifest: true
+    log_git_info: true
+    
+    # Performance settings
+    batch_metrics: true  # Batch metric logging for performance
+    async_logging: false  # Set true for high-throughput scenarios
+    
+  # NDJSON fallback (always enabled)
+  ndjson:
+    enabled: true
+    path: "artifacts/metrics/production_metrics.ndjson"
+    max_bytes: 209715200  # 200MB
+    backup_count: 10
+    
+  # Composite writer (both MLflow and NDJSON)
+  writer: "composite"
+  composite:
+    enabled: true
+    writers:
+      - "mlflow"
+      - "ndjson"
+  
+  # Metrics logging
+  metrics:
+    log_interval: 10  # Log every N steps
+    log_to_console: true
+    log_to_file: true
+    
+  # Provenance tracking
+  provenance:
+    enabled: true
+    track_git_commit: true
+    track_git_dirty: true
+    track_dataset_hash: true
+    track_seed: true
+    track_hostname: true
+    track_user: true
+    
+  # Safety settings
+  safety:
+    offline_first: true
+    allow_remote: false  # Set MLFLOW_ALLOW_REMOTE=1 to override
+    sanitize_params: true  # Remove sensitive data from params
+    
+  # Performance monitoring
+  performance:
+    track_duration: true
+    track_memory: true
+    track_gpu_metrics: true
+    
+  # Error handling
+  error_handling:
+    fail_on_tracking_error: false  # Don't fail training if tracking fails
+    log_tracking_errors: true
+    retry_attempts: 3
+    retry_delay_seconds: 5
