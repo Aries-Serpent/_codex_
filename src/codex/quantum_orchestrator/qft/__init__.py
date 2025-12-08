@@ -3,6 +3,7 @@ Quantum Field Theory extensions for quantum orchestrator.
 
 Includes:
 - Second quantization (task spawning)
+- Quantum entanglement (Bell states)
 - Path integral optimization
 - Quantum annealing
 - Action functionals
@@ -17,6 +18,14 @@ from .second_quantization import (
     CommutatorAlgebra,
     TaskSpawner,
     BatchCreationOperator,
+)
+
+from .entanglement import (
+    BellState,
+    EntangledPair,
+    EntanglementMetrics,
+    EntanglementManager,
+    TransactionalTaskGroup,
 )
 
 from .path_integral import (
@@ -40,6 +49,12 @@ __all__ = [
     "CommutatorAlgebra",
     "TaskSpawner",
     "BatchCreationOperator",
+    # Entanglement
+    "BellState",
+    "EntangledPair",
+    "EntanglementMetrics",
+    "EntanglementManager",
+    "TransactionalTaskGroup",
     # Path Integral
     "ExecutionPath",
     "ActionFunctional",
