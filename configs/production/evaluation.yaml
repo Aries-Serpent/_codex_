@@ -1,0 +1,177 @@
+# Production Evaluation Configuration
+# Phase 6.4: Evaluation Standardization
+# Standardized evaluation across all models
+
+evaluation:
+  # Evaluation runner
+  runner: "EvaluationRunner"
+  
+  # Enable evaluation
+  enabled: true
+  
+  # Evaluation frequency
+  eval_frequency: "epoch"  # Options: epoch, step, manual
+  eval_interval: 1  # Evaluate every N epochs/steps
+  
+  # Dataset configuration
+  datasets:
+    validation:
+      enabled: true
+      batch_size: 64
+      num_workers: 4
+      
+    test:
+      enabled: true
+      batch_size: 64
+      num_workers: 4
+      
+  # Metrics by model type
+  metrics:
+    # Classification metrics
+    classification:
+      - "accuracy"
+      - "precision"
+      - "recall"
+      - "f1_score"
+      - "auc_roc"
+      - "confusion_matrix"
+      - "classification_report"
+      
+    # Regression metrics
+    regression:
+      - "mse"
+      - "rmse"
+      - "mae"
+      - "r2_score"
+      - "mape"
+      - "median_absolute_error"
+      
+    # Ranking metrics
+    ranking:
+      - "ndcg"
+      - "ndcg@10"
+      - "map"
+      - "mrr"
+      - "precision@k"
+      - "recall@k"
+      
+    # Recommendation metrics
+    recommendation:
+      - "hit_rate"
+      - "coverage"
+      - "diversity"
+      - "novelty"
+      - "serendipity"
+      
+    # NLP metrics
+    nlp:
+      - "bleu"
+      - "rouge"
+      - "meteor"
+      - "perplexity"
+      - "bertscore"
+      
+    # Custom metrics (callable)
+    custom: []
+    
+  # Reporting
+  reporting:
+    enabled: true
+    format: ["json", "html", "markdown"]
+    output_path: "artifacts/evaluation_reports"
+    include_plots: true
+    include_samples: true
+    max_samples: 100
+    
+    # Comparison reports
+    comparison:
+      enabled: true
+      baseline_model: "current_production"
+      compare_metrics: ["accuracy", "f1_score", "latency"]
+      
+  # Tracking integration
+  tracking_integration:
+    enabled: true
+    log_to_mlflow: true
+    log_artifacts: true
+    log_plots: true
+    log_confusion_matrix: true
+    
+  # CI/CD integration
+  ci_cd:
+    enabled: true
+    
+    # Quality gates (minimum thresholds)
+    quality_gates:
+      accuracy:
+        min: 0.85
+        severity: "critical"
+      f1_score:
+        min: 0.80
+        severity: "critical"
+      precision:
+        min: 0.75
+        severity: "warning"
+      recall:
+        min: 0.75
+        severity: "warning"
+      
+    # Regression detection
+    regression_detection:
+      enabled: true
+      max_degradation_percent: 5.0  # Max 5% degradation vs baseline
+      
+  # Performance evaluation
+  performance:
+    enabled: true
+    
+    # Latency measurement
+    latency:
+      enabled: true
+      percentiles: [50, 90, 95, 99]
+      target_p95_ms: 100
+      
+    # Throughput measurement
+    throughput:
+      enabled: true
+      target_qps: 100
+      
+    # Memory profiling
+    memory:
+      enabled: true
+      track_peak_memory: true
+      
+  # Model comparison
+  model_comparison:
+    enabled: true
+    baseline_path: "models/baseline"
+    comparison_datasets: ["validation", "test"]
+    
+  # A/B testing support
+  ab_testing:
+    enabled: false
+    variant_configs: []
+    
+  # Error analysis
+  error_analysis:
+    enabled: true
+    generate_error_report: true
+    max_errors_to_log: 100
+    error_categories:
+      - "false_positives"
+      - "false_negatives"
+      - "high_confidence_errors"
+      - "low_confidence_errors"
+      
+  # Fairness evaluation
+  fairness:
+    enabled: false  # Enable if fairness is a concern
+    protected_attributes: []
+    fairness_metrics: ["demographic_parity", "equalized_odds"]
+    
+  # Save best model
+  save_best_model:
+    enabled: true
+    monitor: "f1_score"  # Metric to monitor
+    mode: "max"  # max or min
+    save_path: "models/best"
