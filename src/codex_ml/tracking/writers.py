@@ -768,6 +768,355 @@ class CompositeWriter(BaseWriter):
         return self._disabled_components
 
 
+# Enhanced MLflow tracking classes
+try:
+    from mlflow.tracking import MlflowClient
+
+    MLFLOW_CLIENT_AVAILABLE = True
+except ImportError:
+    MlflowClient = None
+    MLFLOW_CLIENT_AVAILABLE = False
+
+
+class MLflowMetricWriter:
+    """
+    Enhanced MLflow metric writer with better error handling.
+
+    Provides graceful degradation and automatic run management.
+    """
+
+    def __init__(
+        self,
+        tracking_uri: Optional[str] = None,
+        experiment_name: Optional[str] = None,
+    ):
+        """
+        Initialize MLflow metric writer.
+
+        Args:
+            tracking_uri: MLflow tracking URI (default: file:///mlruns)
+            experiment_name: Experiment name for grouping runs
+        """
+        self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "file:///mlruns")
+        self.experiment_name = experiment_name or "codex_default"
+        self._client: Optional[MlflowClient] = None
+        self._initialized = False
+
+        if MLFLOW_CLIENT_AVAILABLE:
+            self._initialize()
+
+    def _initialize(self) -> None:
+        """Initialize MLflow connection."""
+        if not MLFLOW_CLIENT_AVAILABLE:
+            logger.warning("MLflow not available - metrics will not be tracked")
+            return
+
+        try:
+            import mlflow
+
+            mlflow.set_tracking_uri(self.tracking_uri)
+            mlflow.set_experiment(self.experiment_name)
+            self._client = MlflowClient(self.tracking_uri)
+            self._initialized = True
+            logger.info(f"MLflow initialized: {self.tracking_uri}")
+        except Exception as e:
+            logger.error(f"Failed to initialize MLflow: {e}")
+            self._initialized = False
+
+    def write(self, metrics: dict[str, float], step: int = 0) -> bool:
+        """
+        Write metrics to active MLflow run.
+
+        Args:
+            metrics: Dictionary of metric name -> value
+            step: Training step/epoch number
+
+        Returns:
+            True if successful, False otherwise
+        """
+        if not self._initialized:
+            return False
+
+        try:
+            import mlflow
+
+            if mlflow.active_run() is None:
+                logger.warning("No active MLflow run - cannot log metrics")
+                return False
+
+            mlflow.log_metrics(metrics, step=step)
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log metrics to MLflow: {e}")
+            return False
+
+    def write_metric(self, key: str, value: float, step: int = 0) -> bool:
+        """Write single metric."""
+        return self.write({key: value}, step)
+
+    def write_batch(
+        self,
+        metrics_batch: list[dict[str, Any]],
+    ) -> int:
+        """
+        Write batch of metrics.
+
+        Args:
+            metrics_batch: List of {"metrics": {...}, "step": int}
+
+        Returns:
+            Number of successfully written batches
+        """
+        success_count = 0
+        for batch in metrics_batch:
+            if self.write(batch.get("metrics", {}), batch.get("step", 0)):
+                success_count += 1
+        return success_count
+
+
+class MLflowParamWriter:
+    """Write parameters to MLflow."""
+
+    def __init__(self, metric_writer: MLflowMetricWriter):
+        self._writer = metric_writer
+
+    def write_params(self, params: dict[str, Any]) -> bool:
+        """Log parameters to active run."""
+        if not self._writer._initialized:
+            return False
+
+        try:
+            import mlflow
+
+            if mlflow.active_run() is None:
+                logger.warning("No active MLflow run - cannot log params")
+                return False
+
+            # MLflow params must be strings
+            str_params = {k: str(v) for k, v in params.items()}
+            mlflow.log_params(str_params)
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log params: {e}")
+            return False
+
+    def write_config(self, config: dict[str, Any], prefix: str = "") -> bool:
+        """Log nested config with flattened keys."""
+        flat_params = self._flatten_dict(config, prefix)
+        return self.write_params(flat_params)
+
+    def _flatten_dict(
+        self,
+        d: dict[str, Any],
+        prefix: str = "",
+        sep: str = ".",
+    ) -> dict[str, Any]:
+        """Flatten nested dictionary."""
+        items = {}
+        for k, v in d.items():
+            key = f"{prefix}{sep}{k}" if prefix else k
+            if isinstance(v, dict):
+                items.update(self._flatten_dict(v, key, sep))
+            else:
+                items[key] = v
+        return items
+
+
+class MLflowArtifactWriter:
+    """Write artifacts to MLflow."""
+
+    def __init__(self, metric_writer: MLflowMetricWriter):
+        self._writer = metric_writer
+
+    def log_artifact(
+        self,
+        local_path: str | Path,
+        artifact_path: Optional[str] = None,
+    ) -> bool:
+        """Log a local file as artifact."""
+        if not self._writer._initialized:
+            return False
+
+        try:
+            import mlflow
+
+            if mlflow.active_run() is None:
+                logger.warning("No active MLflow run - cannot log artifact")
+                return False
+
+            mlflow.log_artifact(str(local_path), artifact_path)
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log artifact: {e}")
+            return False
+
+    def log_dict(
+        self,
+        data: dict[str, Any],
+        filename: str,
+    ) -> bool:
+        """Log dictionary as JSON artifact."""
+        if not self._writer._initialized:
+            return False
+
+        try:
+            import mlflow
+
+            if mlflow.active_run() is None:
+                logger.warning("No active MLflow run - cannot log dict")
+                return False
+
+            mlflow.log_dict(data, filename)
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log dict artifact: {e}")
+            return False
+
+    def log_model(
+        self,
+        model: Any,
+        artifact_path: str = "model",
+    ) -> bool:
+        """Log model artifact (HuggingFace, PyTorch, or scikit-learn)."""
+        if not self._writer._initialized:
+            return False
+
+        try:
+            import mlflow
+
+            if mlflow.active_run() is None:
+                logger.warning("No active MLflow run - cannot log model")
+                return False
+
+            # Attempt to detect model type
+            if hasattr(model, "save_pretrained"):
+                # HuggingFace model
+                import tempfile
+
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    model.save_pretrained(tmpdir)
+                    mlflow.log_artifacts(tmpdir, artifact_path)
+            elif hasattr(model, "state_dict"):
+                # PyTorch model
+                try:
+                    import mlflow.pytorch
+
+                    mlflow.pytorch.log_model(model, artifact_path)
+                except ImportError:
+                    logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
+                    return False
+            elif "sklearn" in type(model).__module__:
+                # scikit-learn model
+                try:
+                    import mlflow.sklearn
+
+                    mlflow.sklearn.log_model(model, artifact_path)
+                except ImportError:
+                    logger.warning(
+                        "mlflow.sklearn is not available; cannot log scikit-learn model."
+                    )
+                    return False
+            else:
+                logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
+                return False
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to log model: {e}")
+            return False
+
+
+class MLflowRunManager:
+    """Context manager for MLflow run lifecycle."""
+
+    def __init__(
+        self,
+        tracking_uri: Optional[str] = None,
+        experiment_name: Optional[str] = None,
+        run_name: Optional[str] = None,
+        tags: Optional[dict[str, str]] = None,
+    ):
+        self.metric_writer = MLflowMetricWriter(tracking_uri, experiment_name)
+        self.param_writer = MLflowParamWriter(self.metric_writer)
+        self.artifact_writer = MLflowArtifactWriter(self.metric_writer)
+        self.run_name = run_name
+        self.tags = tags or {}
+        self._run = None
+
+    def start_run(self):
+        """Context manager for MLflow run."""
+        return self
+
+    def __enter__(self):
+        """Enter context manager."""
+        if not MLFLOW_CLIENT_AVAILABLE or not self.metric_writer._initialized:
+            return self
+
+        try:
+            import mlflow
+
+            self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
+            self._run.__enter__()
+        except Exception as e:
+            logger.warning(f"Failed to start MLflow run: {e}")
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit context manager."""
+        if self._run is not None:
+            try:
+                self._run.__exit__(exc_type, exc_val, exc_tb)
+            except Exception as e:
+                logger.warning(f"Failed to end MLflow run: {e}")
+            finally:
+                self._run = None
+        return False
+
+    @property
+    def run_id(self) -> Optional[str]:
+        """Get current run ID."""
+        if self._run is not None:
+            try:
+                return self._run.info.run_id
+            except Exception:
+                pass
+        return None
+
+    def log_metrics(self, metrics: dict[str, float], step: int = 0) -> bool:
+        """Convenience method to log metrics."""
+        return self.metric_writer.write(metrics, step)
+
+    def log_params(self, params: dict[str, Any]) -> bool:
+        """Convenience method to log params."""
+        return self.param_writer.write_params(params)
+
+    def log_artifact(self, path: str | Path) -> bool:
+        """Convenience method to log artifact."""
+        return self.artifact_writer.log_artifact(path)
+
+
+def create_mlflow_tracker(
+    tracking_uri: Optional[str] = None,
+    experiment_name: Optional[str] = None,
+    run_name: Optional[str] = None,
+) -> MLflowRunManager:
+    """
+    Create an MLflow tracker with all writers.
+
+    Usage:
+        tracker = create_mlflow_tracker(experiment_name="my_experiment")
+        with tracker.start_run():
+            tracker.log_params({"lr": 0.001})
+            for step in range(100):
+                tracker.log_metrics({"loss": 0.5}, step=step)
+    """
+    return MLflowRunManager(
+        tracking_uri=tracking_uri,
+        experiment_name=experiment_name,
+        run_name=run_name,
+    )
+
+
 __all__ = [
     "BaseWriter",
     "NdjsonWriter",
@@ -775,4 +1124,9 @@ __all__ = [
     "MLflowWriter",
     "WandbWriter",
     "CompositeWriter",
+    "MLflowMetricWriter",
+    "MLflowParamWriter",
+    "MLflowArtifactWriter",
+    "MLflowRunManager",
+    "create_mlflow_tracker",
 ]
