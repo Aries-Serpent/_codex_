@@ -1243,7 +1243,7 @@ uvicorn==0.30.1
     #   fastapi-cli
     #   mlflow-skinny
     #   ray
-uvloop==0.21.0
+uvloop==0.22.1
     # via uvicorn
 vine==5.1.0
     # via
