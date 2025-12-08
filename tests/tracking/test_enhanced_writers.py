@@ -18,7 +18,8 @@ class TestMLflowMetricWriter:
 
             with patch.object(writers, "MLFLOW_CLIENT_AVAILABLE", False):
                 writer = writers.MLflowMetricWriter()
-                assert writer.write({"loss": 0.5}, step=1) is False
+                result = writer.write({"loss": 0.5}, step=1)
+                assert result is False
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
     @patch("codex_ml.tracking.writers.mlflow")
