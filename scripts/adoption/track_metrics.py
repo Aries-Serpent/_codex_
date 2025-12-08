@@ -8,8 +8,25 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, Any
 
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Scoring weights for adoption score calculation
+MLFLOW_CONFIG_WEIGHT = 0.10
+MLFLOW_EXPERIMENTS_WEIGHT = 0.05
+MLFLOW_RUNS_WEIGHT = 0.05
+MLFLOW_ARTIFACTS_WEIGHT = 0.05
+FEATURE_STORE_CONFIG_WEIGHT = 0.10
+FEATURE_STORE_DEFINED_WEIGHT = 0.075
+FEATURE_STORE_REGISTERED_WEIGHT = 0.075
+VALIDATION_CONFIG_WEIGHT = 0.20
+EVALUATION_CONFIG_WEIGHT = 0.15
+MONITORING_CONFIG_WEIGHT = 0.15
 
 class AdoptionTracker:
     """
@@ -91,16 +108,18 @@ class AdoptionTracker:
         fs_config = Path("configs/production/features.yaml")
         if fs_config.exists():
             fs_metrics["enabled_in_configs"] = True
-            try:
-                import yaml
-                with open(fs_config) as f:
-                    config = yaml.safe_load(f)
-                    if config and "feature_store" in config:
-                        feature_groups = config["feature_store"].get("feature_groups", [])
-                        fs_metrics["feature_groups_defined"] = len(feature_groups)
-                logger.info(f"✓ Feature Store: {fs_metrics['feature_groups_defined']} groups defined")
-            except Exception as e:
-                logger.warning(f"Error reading feature store config: {e}")
+            if yaml is not None:
+                try:
+                    with open(fs_config) as f:
+                        config = yaml.safe_load(f)
+                        if config and "feature_store" in config:
+                            feature_groups = config["feature_store"].get("feature_groups", [])
+                            fs_metrics["feature_groups_defined"] = len(feature_groups)
+                    logger.info(f"✓ Feature Store: {fs_metrics['feature_groups_defined']} groups defined")
+                except Exception as e:
+                    logger.warning(f"Error reading feature store config: {e}")
+            else:
+                logger.warning("YAML library not available, skipping feature group count")
         
         # Check for registered feature groups
         fs_storage = Path("data/feature_store")
@@ -161,44 +180,44 @@ class AdoptionTracker:
         """
         Calculate overall adoption score (0.0 to 1.0).
         
-        Scoring:
-        - MLflow tracking: 25%
-        - Feature store: 25%
-        - Data validation: 20%
-        - Evaluation: 15%
-        - Monitoring: 15%
+        Scoring weights:
+        - MLflow tracking: 25% (config 10% + experiments 5% + runs 5% + artifacts 5%)
+        - Feature store: 25% (config 10% + defined 7.5% + registered 7.5%)
+        - Data validation: 20% (config 20%)
+        - Evaluation: 15% (config 15%)
+        - Monitoring: 15% (config 15%)
         """
         score = 0.0
         
-        # MLflow (25 points)
+        # MLflow (25 points total)
         if self.metrics["mlflow"].get("enabled_in_configs"):
-            score += 0.10
+            score += MLFLOW_CONFIG_WEIGHT
         if self.metrics["mlflow"].get("experiments_created", 0) > 0:
-            score += 0.05
+            score += MLFLOW_EXPERIMENTS_WEIGHT
         if self.metrics["mlflow"].get("runs_logged", 0) > 0:
-            score += 0.05
+            score += MLFLOW_RUNS_WEIGHT
         if self.metrics["mlflow"].get("artifacts_stored", 0) > 0:
-            score += 0.05
+            score += MLFLOW_ARTIFACTS_WEIGHT
         
-        # Feature Store (25 points)
+        # Feature Store (25 points total)
         if self.metrics["feature_store"].get("enabled_in_configs"):
-            score += 0.10
+            score += FEATURE_STORE_CONFIG_WEIGHT
         if self.metrics["feature_store"].get("feature_groups_defined", 0) > 0:
-            score += 0.075
+            score += FEATURE_STORE_DEFINED_WEIGHT
         if self.metrics["feature_store"].get("feature_groups_registered", 0) > 0:
-            score += 0.075
+            score += FEATURE_STORE_REGISTERED_WEIGHT
         
-        # Validation (20 points)
+        # Validation (20 points total)
         if self.metrics["validation"].get("enabled_in_configs"):
-            score += 0.20
+            score += VALIDATION_CONFIG_WEIGHT
         
-        # Evaluation (15 points)
+        # Evaluation (15 points total)
         if self.metrics["evaluation"].get("enabled_in_configs"):
-            score += 0.15
+            score += EVALUATION_CONFIG_WEIGHT
         
-        # Monitoring (15 points)
+        # Monitoring (15 points total)
         if self.metrics["monitoring"].get("enabled_in_configs"):
-            score += 0.15
+            score += MONITORING_CONFIG_WEIGHT
         
         return round(score, 2)
     
