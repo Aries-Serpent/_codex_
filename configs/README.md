@@ -1,6 +1,16 @@
 # Configuration Management
 
+This is the **canonical** configuration directory for _codex_.
+
 All project configuration files live in this directory. The tree is organised by environment (base shared defaults), domain (training, evaluation, deployment), and contributor tooling (development). Each subdirectory contains YAML or structured data that can be composed with Hydra or loaded directly by utilities in `src/codex_ml`.
+
+## ⚠️ Deprecated Directories
+
+The following directories are deprecated and will be removed in v2.0.0:
+- `conf/` → Migrate to `configs/`
+- `config/` → Migrate to `configs/`
+
+See the `DEPRECATED.md` files in those directories for migration instructions.
 
 ## Directory Overview
 
