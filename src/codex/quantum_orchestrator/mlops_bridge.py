@@ -404,8 +404,15 @@ class ObservableOrchestrator:
         if self.logging:
             self.logging.logger.info("Starting quantum orchestration run")
         
-        # Run orchestrator
-        results = self.orchestrator.run(max_iterations)
+        # Run orchestrator using observable evolve (so hooks are called)
+        iteration = 0
+        for iteration in range(max_iterations):
+            # Use observable evolve (triggers hooks)
+            self.evolve()
+            
+            # Check convergence
+            if self._has_converged():
+                break
         
         elapsed_time = time.time() - start_time
         
@@ -414,14 +421,27 @@ class ObservableOrchestrator:
                 f"Orchestration run completed in {elapsed_time:.2f}s"
             )
         
-        # Add observability data to results
-        results['elapsed_time'] = elapsed_time
-        results['iterations'] = self.orchestrator.state.timestamp / self.orchestrator.dt
+        # Build results
+        results = {
+            'elapsed_time': elapsed_time,
+            'iterations': iteration + 1,  # At least 1 if loop entered
+            'timestamp': self.orchestrator.state.timestamp,
+            'coherence': self.orchestrator.state.coherence,
+        }
         
         if self.metrics:
             results['metrics_collected'] = len(self.metrics.metrics)
         
         return results
+    
+    def _has_converged(self) -> bool:
+        """Check if orchestration has converged."""
+        # All tasks completed
+        all_complete = all(
+            abs(task.spinor.total_probability) < 0.01
+            for task in self.orchestrator.state.tasks.values()
+        )
+        return all_complete
     
     def get_metrics_report(self) -> str:
         """Get metrics in Prometheus format."""

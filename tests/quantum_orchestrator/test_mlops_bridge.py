@@ -299,7 +299,13 @@ class TestIntegration:
                 f"task{i}",
                 f"Task {i}",
                 priority=0.5 + i * 0.1,
+                rest_mass=1.0 + i * 0.2,
             )
+            # Set lower initial probability so tasks need evolution
+            task = obs_orch.orchestrator.state.tasks[f"task{i}"]
+            import numpy as np
+            task.spinor.components = np.array([0.4+0j, 0.3+0j, 0.0+0j, 0.0+0j])
+            task.spinor.normalize()
         
         # Track events
         events = []
@@ -310,9 +316,9 @@ class TestIntegration:
         # Run
         results = obs_orch.run(max_iterations=10)
         
-        # Verify
-        assert results["iterations"] > 0
-        assert len(events) > 0
+        # Verify - tasks with lower probability need iterations to evolve
+        assert results["iterations"] >= 1  # At least 1 iteration occurred
+        assert len(events) >= 1  # At least 1 evolution step
         
         # Get reports
         metrics = obs_orch.get_metrics_report()
