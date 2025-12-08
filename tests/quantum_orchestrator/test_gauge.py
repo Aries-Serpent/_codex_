@@ -58,7 +58,7 @@ def simple_state(simple_task):
     """Create a simple orchestrator state with one task."""
     return OrchestratorState(
         tasks={"task_1": simple_task},
-        time=0.0,
+        timestamp=0.0,
         constants=PhysicsConstants(),
     )
 
@@ -83,7 +83,7 @@ def multi_task_state(physics_constants):
     
     return OrchestratorState(
         tasks=tasks,
-        time=0.0,
+        timestamp=0.0,
         constants=physics_constants,
     )
 
@@ -187,7 +187,10 @@ def test_translation_symmetry_apply(multi_task_state):
         translated_pos = translated.tasks[task_id].position.to_array()
         
         expected = original_pos + displacement
-        np.testing.assert_allclose(translated_pos, expected, rtol=1e-10)
+        # dependency_depth (index 4) is an integer field, so handle separately
+        np.testing.assert_allclose(translated_pos[:4], expected[:4], rtol=1e-10)
+        # Integer field: check it increased by int(displacement[4])
+        assert translated_pos[4] == original_pos[4] + int(displacement[4])
 
 
 def test_translation_momentum_computation(multi_task_state):
@@ -211,7 +214,7 @@ def test_translation_momentum_conservation(multi_task_state):
     # Create evolved state (with same total momentum)
     state_after = OrchestratorState(
         tasks=multi_task_state.tasks.copy(),
-        time=1.0,
+        timestamp=1.0,
         constants=multi_task_state.constants,
     )
     
@@ -245,7 +248,7 @@ def test_time_translation_energy_conservation(multi_task_state):
     # Create state with same energy
     state_after = OrchestratorState(
         tasks=multi_task_state.tasks.copy(),
-        time=1.0,
+        timestamp=1.0,
         constants=multi_task_state.constants,
     )
     
@@ -294,7 +297,7 @@ def test_noether_continuity_equation(multi_task_state):
     # Create slightly evolved state
     state_after = OrchestratorState(
         tasks=multi_task_state.tasks.copy(),
-        time=0.01,
+        timestamp=0.01,
         constants=multi_task_state.constants,
     )
     
@@ -331,7 +334,7 @@ def test_gauge_checker_verify_all(multi_task_state):
     # Create evolved state
     state_after = OrchestratorState(
         tasks=multi_task_state.tasks.copy(),
-        time=0.1,
+        timestamp=0.1,
         constants=multi_task_state.constants,
     )
     
