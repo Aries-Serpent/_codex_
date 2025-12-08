@@ -53,9 +53,23 @@ from .mlops_bridge import (
     Metric,
 )
 
-# QFT Extensions (Phase C.3 - Path Integral Optimization)
+# QFT Extensions (Phases C.1, C.2, C.3)
 try:
     from .qft import (
+        # C.1 - Second Quantization
+        ParticleStatistics,
+        FockState,
+        CreationOperator,
+        AnnihilationOperator,
+        NumberOperator,
+        TaskSpawner,
+        BatchCreationOperator,
+        # C.2 - Entanglement
+        BellState,
+        EntangledPair,
+        EntanglementManager,
+        TransactionalTaskGroup,
+        # C.3 - Path Integral
         ExecutionPath,
         ActionFunctional,
         PathSampler,
@@ -109,6 +123,19 @@ __all__ = [
 # Conditionally add QFT exports if available
 if QFT_AVAILABLE:
     __all__.extend([
+        # Phase C.1 - Second Quantization
+        "ParticleStatistics",
+        "FockState",
+        "CreationOperator",
+        "AnnihilationOperator",
+        "NumberOperator",
+        "TaskSpawner",
+        "BatchCreationOperator",
+        # Phase C.2 - Entanglement
+        "BellState",
+        "EntangledPair",
+        "EntanglementManager",
+        "TransactionalTaskGroup",
         # Phase C.3 - Path Integral Optimization
         "ExecutionPath",
         "ActionFunctional",
