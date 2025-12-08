@@ -33,6 +33,26 @@
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
+### 🆕 Latest Updates (December 2025)
+
+#### Duplicate Detection & Technical Debt Management
+- **Comprehensive Duplicate Detection System**: 4 detection modes (exact, normalized, AST, semantic) operational
+- **SHIM Integration**: Cross-references with `.github/SHIM_INVENTORY.yaml` for prioritization
+- **Git Metadata**: Enriches findings with blame, churn, and age metrics
+- **Complete Documentation**: See [docs/DUPLICATE_DETECTION.md](docs/DUPLICATE_DETECTION.md)
+- **Automation**: Weekly GitHub Actions workflow for continuous monitoring
+- **CLI Tool**: `python tools/duplicate_inventory.py` - full-featured duplicate scanner
+
+#### Nightly Audit Fix
+- **Whitelist Parsing**: Fixed false positives in `scripts/remediation/verify_conflicts.py`
+- **Strict Mode**: Correctly excludes whitelisted modules from violations
+- **Comprehensive Tests**: 3 test cases added, all passing
+
+#### Remediation Execution
+- **Module Consolidation**: Removed 6 duplicate files (scripts/analysis/ → tools/dupinv/)
+- **Configuration Audit**: 12 config duplicates analyzed, migration plan created
+- **Refactoring Roadmap**: 217 prioritized tickets with detailed implementation plans
+
 #### Latest offline-first updates
 
 - **Inference serving:** FastAPI server now wires a deterministic local model with real `/predict` and `/embed` responses. See [docs/INFERENCE_SERVING_GUIDE.md](docs/INFERENCE_SERVING_GUIDE.md) for usage and configuration.

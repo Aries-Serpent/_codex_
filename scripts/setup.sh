@@ -1099,3 +1099,37 @@ if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
 fi
 
 exit 0
+# =============================================================================
+# Post-Setup Information (December 2025 Updates)
+# =============================================================================
+#
+# NEW CAPABILITIES AVAILABLE:
+#
+# 1. Duplicate Detection System
+#    - Run comprehensive duplicate scan:
+#      python tools/duplicate_inventory.py . --modes exact,normalized,ast,semantic
+#    - Quick exact-only scan:
+#      python tools/duplicate_inventory.py . --modes exact
+#    - See: docs/DUPLICATE_DETECTION.md
+#
+# 2. SHIM Inventory Integration
+#    - Check for conflicts with whitelist:
+#      python scripts/remediation/verify_conflicts.py --mode strict
+#    - SHIM inventory location: .github/SHIM_INVENTORY.yaml
+#
+# 3. Configuration Management
+#    - Audit config duplicates:
+#      python scripts/remediation/consolidate_configs.py --verify-only
+#    - Generate migration guide:
+#      python scripts/remediation/consolidate_configs.py --generate-guide
+#
+# 4. Module Consolidation
+#    - Check for duplicate Python modules:
+#      python scripts/remediation/consolidate_modules.py --dry-run
+#
+# For complete documentation, see:
+#   - scripts/remediation/README.md
+#   - docs/DUPLICATE_DETECTION.md
+#   - .codex/duplicate_analysis_full/ (if scan has been run)
+#
+# =============================================================================

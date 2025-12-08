@@ -1087,3 +1087,33 @@ if (( fail_count > 0 )) && [[ "$STRICT_SETUP" == "1" ]]; then
 fi
 
 exit 0
+# =============================================================================
+# Post-Maintenance Information (December 2025 Updates)
+# =============================================================================
+#
+# MAINTENANCE ENHANCEMENTS:
+#
+# 1. Duplicate Detection (Post-Maintenance Check)
+#    After maintenance, you can run duplicate detection to ensure clean state:
+#      python tools/duplicate_inventory.py . --modes exact --output-dir /tmp/dup-check
+#
+# 2. Conflict Verification
+#    Verify no new split-brain issues introduced:
+#      python scripts/remediation/verify_conflicts.py --mode strict
+#
+# 3. Weekly Duplicate Monitoring
+#    GitHub Actions workflow available for continuous monitoring:
+#      .github/workflows/duplicate-detection-weekly.yml
+#
+# 4. Remediation Scripts
+#    If issues found, use:
+#      - scripts/remediation/consolidate_configs.py (for config duplicates)
+#      - scripts/remediation/consolidate_modules.py (for Python modules)
+#      - See: scripts/remediation/README.md for complete guide
+#
+# For technical debt management:
+#   - Review: .codex/duplicate_analysis_full/ (baseline scan results)
+#   - Tickets: .codex/duplicate_analysis_full/CODE_LEVEL_REFACTORING_TICKETS.md
+#   - Documentation: docs/DUPLICATE_DETECTION.md
+#
+# =============================================================================
