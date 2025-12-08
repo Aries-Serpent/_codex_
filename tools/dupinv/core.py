@@ -78,8 +78,18 @@ class DuplicateScanner:
             normalize_identifiers=normalize_identifiers,
         )
         
+        # Add AST detector (Phase 3)
+        from .ast_detector import ASTDetector
+        
+        similarity_threshold = self.config.get("ast_similarity_threshold", 0.85)
+        self.detectors["ast"] = ASTDetector(
+            self.root_path,
+            similarity_threshold=similarity_threshold,
+            exclude_patterns=exclude_patterns,
+            respect_gitignore=respect_gitignore,
+        )
+        
         # Other detectors will be added in later phases
-        # self.detectors["ast"] = ASTDetector(...)
         # self.detectors["semantic"] = SemanticDetector(...)
 
     def _apply_shim_cross_reference(
