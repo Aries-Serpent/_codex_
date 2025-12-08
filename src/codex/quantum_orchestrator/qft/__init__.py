@@ -7,6 +7,7 @@ Includes:
 - Path integral optimization
 - Quantum annealing
 - Action functionals
+- Gauge symmetries and conservation laws
 """
 
 from .second_quantization import (
@@ -39,6 +40,17 @@ from .path_integral import (
     visualize_action_landscape,
 )
 
+from .gauge import (
+    SymmetryType,
+    TransformationResult,
+    U1GaugeTransform,
+    TranslationSymmetry,
+    TimeTranslationSymmetry,
+    NoetherCurrent,
+    GaugeChecker,
+    ConservationEnforcer,
+)
+
 __all__ = [
     # Second Quantization
     "ParticleStatistics",
@@ -64,4 +76,13 @@ __all__ = [
     "AdaptivePathOptimizer",
     "compare_paths",
     "visualize_action_landscape",
+    # Gauge Symmetries
+    "SymmetryType",
+    "TransformationResult",
+    "U1GaugeTransform",
+    "TranslationSymmetry",
+    "TimeTranslationSymmetry",
+    "NoetherCurrent",
+    "GaugeChecker",
+    "ConservationEnforcer",
 ]
