@@ -25,7 +25,7 @@ python scripts/remediation/cleanup_root.py --yes
 
 **Usage**:
 ```bash
-# Basic check
+# Basic check (legacy mode)
 python scripts/remediation/verify_conflicts.py
 
 # Enforce hydra from site-packages
@@ -33,18 +33,46 @@ python scripts/remediation/verify_conflicts.py --expect-site-packages
 
 # Allow shadowing without exit code (warn only)
 python scripts/remediation/verify_conflicts.py --allow-shadow
+
+# Strict mode: Fail on non-whitelisted duplicates (used by nightly audit)
+python scripts/remediation/verify_conflicts.py --mode strict --output audit_artifacts/conflicts.json
+
+# Shim-aware mode: Warn only for whitelisted duplicates
+python scripts/remediation/verify_conflicts.py --mode shim-aware
 ```
 
-**Checks**:
+**Modes**:
+- `legacy` (default): Original behavior - checks for library shadowing and split-brain ambiguity
+- `strict`: Fail on any non-whitelisted duplicate module paths (uses `.github/SHIM_INVENTORY.yaml`)
+- `shim-aware`: Warn only for whitelisted duplicates from inventory
+
+**Checks** (legacy mode):
 1. Hydra library shadowing (critical)
 2. Training module split-brain
 3. Tokenization module split-brain
 4. Models module split-brain
 
+**Checks** (strict/shim-aware modes):
+1. Duplicate module paths (legacy vs canonical)
+2. Whitelist validation against `.github/SHIM_INVENTORY.yaml`
+3. Library shadowing (yaml, hydra)
+
 **Exit Codes**:
 - 0: Pass
-- 1: Structural risks detected
+- 1: Structural risks detected (legacy) or non-whitelisted duplicates found (strict)
 - 2: Import check failed
+
+**Output**:
+When using `--output`, generates a JSON file with findings:
+```json
+{
+  "duplicates": [...],
+  "whitelisted": [...],
+  "violations": [...],
+  "mode": "strict",
+  "library_shadowing": {...}
+}
+```
 
 ### analyze_legacy_usage.py
 **Purpose**: Scan codebase for legacy imports that should be refactored.
