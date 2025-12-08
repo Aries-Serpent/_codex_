@@ -43,8 +43,8 @@ class PhysicsConstants:
 # SECTION 2: TASK STATE REPRESENTATION
 # ============================================================================
 
-@dataclass
 class TaskVector:
+    """Position in 5D task space."""
     """Position in 5D task space."""
     priority: float = 0.0
     complexity: float = 1.0
