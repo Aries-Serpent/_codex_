@@ -1,0 +1,5 @@
+name: offline-default
+git_hash: ${oc.env:CODEX_GIT_HASH,unknown}
+config_version: conf/config.yaml
+data_version: ${data.dataset_path}
+run_id: null

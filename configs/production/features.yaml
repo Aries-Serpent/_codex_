@@ -1,0 +1,135 @@
+# Production Feature Store Configuration
+# Phase 6.2: Feature Store Deployment
+# Centralized feature management with versioning and health monitoring
+
+feature_store:
+  # Enable feature store
+  enabled: true
+  
+  # Backend selection
+  # Options: "local" (parquet-based), "redis", "feast"
+  backend: "local"
+  
+  # Storage configuration
+  storage:
+    base_path: "artifacts/features/production"
+    format: "parquet"
+    compression: "snappy"
+    partition_by_date: true
+    
+  # Registry configuration
+  registry_path: "./artifacts/features/production_registry"
+  
+  # Versioning
+  versioning:
+    enabled: true
+    scheme: "semantic"  # 1.0.0 format
+    auto_increment: true
+    retention_count: 20  # Keep last 20 versions
+    
+  # Point-in-time retrieval
+  point_in_time:
+    enabled: true
+    default_lookback_days: 30
+    cache_enabled: true
+    cache_ttl_minutes: 60
+    
+  # Default TTL for features
+  default_ttl_hours: 24
+  
+  # Feature Health Monitoring
+  health_check:
+    enabled: true
+    interval_minutes: 30
+    stale_threshold_hours: 48
+    error_threshold: 5
+    
+  # SLA Configuration
+  sla:
+    freshness_sla_minutes: 120  # 2 hours
+    error_rate_sla_percent: 1.0
+    alert_on_violation: true
+    
+  # Alerting
+  alerting:
+    enabled: true
+    levels: ["CRITICAL", "WARNING", "INFO"]
+    channels: ["log", "slack"]  # Add "email", "pagerduty" as needed
+    
+    # Alert rules
+    rules:
+      - name: "Feature Staleness"
+        condition: "feature_age > 48h"
+        severity: "WARNING"
+        channels: ["log", "slack"]
+        
+      - name: "Feature Unavailable"
+        condition: "feature_missing"
+        severity: "CRITICAL"
+        channels: ["log", "slack"]
+        
+      - name: "High Error Rate"
+        condition: "error_rate > 5%"
+        severity: "CRITICAL"
+        channels: ["log", "slack"]
+        
+  # Reporting
+  reporting:
+    enabled: true
+    output_dir: "artifacts/features/health_reports"
+    formats: ["json", "markdown", "html"]
+    detailed_metrics: true
+    include_trends: true
+    report_interval_hours: 24
+    
+  # Production feature groups (to be registered)
+  initial_feature_groups:
+    - name: "user_features"
+      version: "1.0.0"
+      description: "User demographic and profile features"
+      priority: "high"
+      
+    - name: "transaction_features"
+      version: "1.0.0"
+      description: "Transaction aggregation and statistical features"
+      priority: "high"
+      
+    - name: "behavioral_features"
+      version: "1.0.0"
+      description: "User behavioral patterns and interaction features"
+      priority: "high"
+      
+    - name: "temporal_features"
+      version: "1.0.0"
+      description: "Time-based derived features (hour, day, seasonality)"
+      priority: "medium"
+      
+    - name: "embedding_features"
+      version: "1.0.0"
+      description: "Pre-computed embeddings (user, item, content)"
+      priority: "medium"
+      
+    - name: "interaction_features"
+      version: "1.0.0"
+      description: "User-item interaction features"
+      priority: "medium"
+      
+    - name: "aggregation_features"
+      version: "1.0.0"
+      description: "Statistical aggregations over time windows"
+      priority: "low"
+      
+    - name: "graph_features"
+      version: "1.0.0"
+      description: "Network and graph-based features"
+      priority: "low"
+      
+    - name: "text_features"
+      version: "1.0.0"
+      description: "NLP-derived text features"
+      priority: "low"
+      
+    - name: "image_features"
+      version: "1.0.0"
+      description: "Vision model derived features"
+      priority: "low"

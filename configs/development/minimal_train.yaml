@@ -1,0 +1,15 @@
+# Minimal training config stub for `_codex_`.
+# This is intentionally tiny and is meant only for smoke tests and examples.
+
+model:
+  hidden_size: 32
+
+training:
+  learning_rate: 1.0e-3
+  batch_size: 4
+  max_steps: 10
+  base_loss: 10.0
+  decay: 0.9
+
+data:
+  dataset_name: "dummy"

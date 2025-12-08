@@ -1,0 +1,6 @@
+defaults:
+  - experiment: basic
+
+experiment:
+  name: "basic"
+  seed: 42

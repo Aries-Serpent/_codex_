@@ -1,0 +1,164 @@
+# Production Data Validation Configuration
+# Phase 6.3: Data Validation Integration
+# Ensures data quality before training
+
+data_validation:
+  # Enable data validation
+  enabled: true
+  
+  # Validation on pipeline stages
+  validate_on_load: true
+  validate_on_transform: true
+  validate_before_training: true
+  
+  # Fail behavior
+  fail_on_error: true
+  fail_on_warning: false
+  
+  # Performance settings
+  performance:
+    sampling_enabled: true
+    sample_size: 10000
+    sampling_strategy: "random"  # Options: random, first, stratified
+    parallel_validation: true
+    num_workers: 4
+    
+  # Required columns validation
+  required_columns:
+    enabled: true
+    # Define per dataset in dataset-specific configs
+    columns: []
+    
+  # Null value checks
+  null_checks:
+    enabled: true
+    null_threshold: 0.05  # Max 5% nulls allowed
+    columns: []  # Empty = check all columns
+    
+  # Data type validation
+  data_types:
+    enabled: true
+    strict_mode: false  # Allow compatible type conversions
+    type_mapping: {}
+    
+  # Range validation
+  range_checks:
+    enabled: true
+    rules:
+      # Example rules (customize per dataset)
+      # - column: "age"
+      #   min: 0
+      #   max: 120
+      # - column: "amount"
+      #   min: 0
+    
+  # Uniqueness checks
+  uniqueness:
+    enabled: true
+    unique_columns: []  # Columns that must have unique values
+    duplicate_threshold: 0.01  # Max 1% duplicates
+    
+  # Statistical validation
+  statistical_checks:
+    enabled: true
+    
+    # Distribution drift detection
+    drift_detection:
+      enabled: true
+      reference_dataset: "baseline"
+      threshold: 0.1  # KL divergence threshold
+      
+    # Outlier detection
+    outlier_detection:
+      enabled: true
+      method: "iqr"  # Options: iqr, zscore, isolation_forest
+      threshold: 3.0
+      
+  # Schema validation
+  schema_validation:
+    enabled: true
+    strict_mode: false
+    schema: {}
+    
+  # Great Expectations integration
+  great_expectations:
+    enabled: false  # Optional: enable if using GE
+    context_root: "great_expectations"
+    expectation_suite_name: "production_suite"
+    checkpoint_name: "production_checkpoint"
+    
+  # Dataset-specific validation rules
+  datasets:
+    training:
+      required_columns: ["id", "features", "label"]
+      null_checks:
+        null_threshold: 0.01  # Stricter for training data
+      range_checks:
+        enabled: true
+      validation_priority: "critical"
+      
+    validation:
+      required_columns: ["id", "features", "label"]
+      schema_validation:
+        enabled: true
+      distribution_checks:
+        enabled: true
+      validation_priority: "critical"
+      
+    test:
+      required_columns: ["id", "features", "label"]
+      label_balance_check:
+        enabled: true
+        min_samples_per_class: 10
+      validation_priority: "critical"
+      
+    inference:
+      required_columns: ["id", "features"]
+      anomaly_detection:
+        enabled: true
+      validation_priority: "high"
+      
+  # Reporting
+  reporting:
+    enabled: true
+    output_path: "artifacts/validation_reports"
+    format: ["json", "html", "markdown"]
+    include_summary: true
+    include_details: true
+    include_visualizations: true
+    
+  # Alerting
+  alerting:
+    enabled: true
+    on_failure: ["log", "slack"]
+    on_warning: ["log"]
+    
+    # Alert rules
+    rules:
+      - name: "Critical Validation Failure"
+        condition: "validation_failed"
+        severity: "CRITICAL"
+        channels: ["log", "slack"]
+        
+      - name: "High Null Rate"
+        condition: "null_rate > 10%"
+        severity: "WARNING"
+        channels: ["log", "slack"]
+        
+      - name: "Distribution Drift Detected"
+        condition: "drift_score > 0.2"
+        severity: "WARNING"
+        channels: ["log", "slack"]
+        
+  # Error handling
+  error_handling:
+    log_validation_results: true
+    save_validation_report: true
+    save_failed_samples: true
+    failed_samples_path: "artifacts/validation_reports/failed_samples"
+    max_failed_samples: 1000
+    
+  # Retention
+  retention:
+    keep_reports_days: 90
+    keep_failed_samples_days: 30

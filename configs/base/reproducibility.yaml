@@ -1,0 +1,39 @@
+# Reproducibility configuration
+# Settings to ensure deterministic and reproducible experiments
+
+reproducibility:
+  # Global random seed
+  seed: 42
+  
+  # Whether to set environment variables for reproducibility
+  set_env_vars: true
+  
+  # Capture environment information
+  capture_environment:
+    enabled: true
+    include:
+      - python_version
+      - pip_freeze
+      - git_commit
+      - git_branch
+      - cuda_version
+      - gpu_info
+  
+  # Dataset hashing for versioning
+  hash_datasets:
+    enabled: true
+    algorithm: "sha256"
+    
+  # Framework-specific settings
+  pytorch:
+    deterministic: true
+    benchmark: false  # Disable cuDNN benchmark for reproducibility
+    cublas_workspace_config: ":4096:8"
+  
+  tensorflow:
+    deterministic_ops: true
+  
+  # Save reproducibility info to file
+  save_info:
+    enabled: true
+    output_path: "./runs/reproducibility_info.json"
