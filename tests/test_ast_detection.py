@@ -3,7 +3,7 @@
 import tempfile
 from pathlib import Path
 
-from tools.dupinv.ast_parsers.python_parser import PythonASTParser, FunctionSignature
+from tools.dupinv.ast_parsers.python_parser import PythonASTParser
 from tools.dupinv.ast_detector import ASTDetector
 
 

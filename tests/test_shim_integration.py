@@ -9,7 +9,6 @@ from tools.dupinv.shim_integration import (
     ShimInventoryReader,
     CrossReference,
     ShimEntry,
-    CrossReferenceResult,
 )
 
 

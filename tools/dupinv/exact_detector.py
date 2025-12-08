@@ -2,7 +2,7 @@
 
 import hashlib
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 
 from .schema import DuplicateGroup, MemberFile
 
@@ -66,6 +66,7 @@ class ExactDetector:
                         if line and not line.startswith("#"):
                             patterns.add(line)
             except Exception:
+                # Skip if .gitignore can't be read
                 pass
         return patterns
 

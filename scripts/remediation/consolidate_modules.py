@@ -8,7 +8,6 @@ Consolidates duplicate Python modules by:
 3. Cleaning up references
 """
 
-import subprocess
 from pathlib import Path
 import re
 

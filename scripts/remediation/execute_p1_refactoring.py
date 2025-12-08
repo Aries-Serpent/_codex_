@@ -11,10 +11,8 @@ Focuses on:
 """
 
 import ast
-import re
 from pathlib import Path
-from typing import List, Dict, Tuple
-import shutil
+from typing import List, Tuple
 
 class RefactoringExecutor:
     """Executes P1 refactoring tickets."""
@@ -41,7 +39,7 @@ class RefactoringExecutor:
                 for node in ast.walk(tree):
                     if isinstance(node, ast.FunctionDef) and node.name == 'to_dict':
                         results.append((py_file, node.lineno))
-            except:
+            except Exception:
                 continue
         
         return results
@@ -123,7 +121,7 @@ class DictSerializable:
                         methods = {m.name for m in node.body if isinstance(m, ast.FunctionDef)}
                         if '__enter__' in methods or '__exit__' in methods:
                             results.append((py_file, node.name, node.lineno))
-            except:
+            except Exception:
                 continue
         
         return results
@@ -163,7 +161,7 @@ class DictSerializable:
                     content = file.read()
                     if 'for epoch' in content.lower() or 'training loop' in content.lower():
                         loop_files.append(f)
-            except:
+            except Exception:
                 continue
         
         print(f"Found {len(loop_files)} files with training loops")

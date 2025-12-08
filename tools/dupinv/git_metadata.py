@@ -177,7 +177,7 @@ class GitMetadataCollector:
                 from email.utils import parsedate_to_datetime
                 try:
                     first_commit = parsedate_to_datetime(first_commit_str)
-                except:
+                except Exception:
                     return None
             
             age = (datetime.now(first_commit.tzinfo) - first_commit).days

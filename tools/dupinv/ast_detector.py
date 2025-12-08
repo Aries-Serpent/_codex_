@@ -1,9 +1,8 @@
 """AST-based duplicate detector for function and class level duplication."""
 
-import hashlib
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Dict, List
 
 from .schema import DuplicateGroup, MemberFile
 from .ast_parsers.python_parser import FunctionSignature, PythonASTParser
