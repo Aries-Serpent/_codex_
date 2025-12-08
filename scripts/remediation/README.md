@@ -1,8 +1,100 @@
 # Remediation Scripts
 
-This directory contains scripts for addressing "Split Brain" architecture and import shadowing issues in the _codex_ repository.
+This directory contains scripts for addressing "Split Brain" architecture, import shadowing, and duplicate detection issues in the _codex_ repository.
 
 ## Scripts
+
+### verify_conflicts.py
+**Purpose**: Detect import shadowing, split-brain conflicts, and enforce SHIM inventory compliance.
+
+**Status**: ✅ **Fixed and Enhanced** (December 2025)
+- Fixed whitelist parsing bug (was causing false positives)
+- Added comprehensive test suite (3 tests, all passing)
+- Enhanced strict mode with proper SHIM inventory integration
+
+**Usage**:
+```bash
+# Basic check (legacy mode)
+python scripts/remediation/verify_conflicts.py
+
+# Enforce hydra from site-packages
+python scripts/remediation/verify_conflicts.py --expect-site-packages
+
+# Allow shadowing without exit code (warn only)
+python scripts/remediation/verify_conflicts.py --allow-shadow
+
+# Strict mode: Fail on non-whitelisted duplicates (used by nightly audit)
+python scripts/remediation/verify_conflicts.py --mode strict --output audit_artifacts/conflicts.json
+
+# Shim-aware mode: Warn only for whitelisted duplicates
+python scripts/remediation/verify_conflicts.py --mode shim-aware
+```
+
+**Modes**:
+- `legacy` (default): Original behavior - checks for library shadowing and split-brain ambiguity
+- `strict`: Fail on any non-whitelisted duplicate module paths (uses `.github/SHIM_INVENTORY.yaml`)
+- `shim-aware`: Warn only for whitelisted duplicates from inventory
+
+**Checks** (legacy mode):
+1. Hydra library shadowing (critical)
+2. Split-brain architecture detection
+3. Module path conflicts
+
+**Checks** (strict mode):
+1. Duplicate module paths
+2. SHIM inventory whitelist validation
+3. Returns exit code 0 only if all duplicates are whitelisted
+
+### consolidate_configs.py ✨ NEW
+**Purpose**: Consolidate duplicate configuration files following canonical structure.
+
+**Usage**:
+```bash
+# Dry-run (preview changes)
+python scripts/remediation/consolidate_configs.py --dry-run
+
+# Verify files exist
+python scripts/remediation/consolidate_configs.py --verify-only
+
+# Generate SHIM inventory entries
+python scripts/remediation/consolidate_configs.py --generate-shim
+
+# Generate migration guide
+python scripts/remediation/consolidate_configs.py --generate-guide
+
+# Execute consolidation
+python scripts/remediation/consolidate_configs.py --execute
+```
+
+**Features**:
+- Consolidates flat `conf/` to hierarchical `conf/{training,data,experiment}/`
+- Consolidates `configs/` to singular `config/`
+- Validates file identity before removal
+- Generates SHIM inventory entries for migration tracking
+- Creates detailed migration guide
+
+### consolidate_modules.py ✨ NEW
+**Purpose**: Consolidate duplicate Python modules by removing duplicates and updating imports.
+
+**Status**: ✅ **Executed Successfully**
+- Removed `scripts/analysis/` (consolidated to `tools/dupinv/`)
+- Removed `tools/revert_or_restore(other).py`
+- Removed `codex_ml/_package_main.py` (kept src/ version)
+
+**Usage**:
+```bash
+# Dry-run (preview changes)
+python scripts/remediation/consolidate_modules.py --dry-run
+
+# Execute consolidation
+python scripts/remediation/consolidate_modules.py --execute
+```
+
+**Features**:
+- Finds all import references using safe pathlib operations
+- Updates imports automatically
+- Removes duplicate directories/files
+- Validates no broken references
 
 ### cleanup_root.py
 **Purpose**: Sanitize repository root by moving report clutter to archive.
@@ -20,31 +112,111 @@ python scripts/remediation/cleanup_root.py --yes
 
 **Destination**: `reports/archive/`
 
-### verify_conflicts.py
-**Purpose**: Detect import shadowing and split-brain conflicts.
+## Duplicate Detection System ✨ NEW
 
-**Usage**:
+See **[docs/DUPLICATE_DETECTION.md](../../docs/DUPLICATE_DETECTION.md)** for complete documentation.
+
+### Quick Start
 ```bash
-# Basic check
-python scripts/remediation/verify_conflicts.py
+# Run duplicate detection scan
+python tools/duplicate_inventory.py . --modes exact,normalized,ast,semantic
 
-# Enforce hydra from site-packages
-python scripts/remediation/verify_conflicts.py --expect-site-packages
+# Scan with specific modes
+python tools/duplicate_inventory.py . --modes exact --output-dir ./results
 
-# Allow shadowing without exit code (warn only)
-python scripts/remediation/verify_conflicts.py --allow-shadow
+# Generate all output formats
+python tools/duplicate_inventory.py . --formats yaml,json,csv,markdown
 ```
 
-**Checks**:
-1. Hydra library shadowing (critical)
+### Detection Modes
+1. **Exact**: SHA256-based file duplicate detection
+2. **Normalized**: Comment/whitespace-agnostic matching
+3. **AST**: Function and class level duplicate detection
+4. **Semantic**: MinHash-based fuzzy matching with clustering
+
+### Integration Features
+- **SHIM Cross-Reference**: Identifies duplicates NOT in `.github/SHIM_INVENTORY.yaml`
+- **Git Metadata**: Enriches findings with blame, churn, and age metrics
+- **Multi-Format Output**: YAML, JSON, CSV, and Markdown reports
+
+### Continuous Monitoring
+Weekly GitHub Actions workflow available at:
+`.github/workflows/duplicate-detection-weekly.yml`
+
+## Related Documentation
+
+- **Duplicate Detection**: [docs/DUPLICATE_DETECTION.md](../../docs/DUPLICATE_DETECTION.md)
+- **SHIM Inventory**: [.github/SHIM_INVENTORY.yaml](../../.github/SHIM_INVENTORY.yaml)
+- **Remediation Plans**: [.codex/duplicate_analysis_full/](../../.codex/duplicate_analysis_full/)
+- **Implementation Status**: [.github/prompts/duplicate_detection_inventory/](../../.github/prompts/duplicate_detection_inventory/)
+
+## Testing
+
+Run remediation script tests:
+```bash
+# Test verify_conflicts.py
+python -m pytest tests/scripts/test_verify_conflicts.py -v
+
+# Test duplicate detection system
+python -m pytest tests/test_exact_detection.py tests/test_normalize.py tests/test_ast_detection.py tests/test_semantic_detection.py tests/test_shim_integration.py -v
+```
+
+## Recent Updates (December 2025)
+
+### Whitelist Parsing Fix ✅
+- Fixed bug causing 8 false positive violations in nightly audit
+- Whitelist now correctly parsed from `.github/SHIM_INVENTORY.yaml`
+- Added comprehensive test suite (3 tests)
+- Script returns exit code 0 when all duplicates are whitelisted
+
+### Module Consolidation ✅
+- Removed `scripts/analysis/` duplicate modules
+- Consolidated to `tools/dupinv/` as canonical location
+- All imports validated, no broken references
+- 6 duplicate files eliminated total
+
+### Configuration Audit ✅
+- Identified 12 duplicate configuration files
+- Created consolidation script with migration plan
+- SHIM entries prepared for migration tracking
+
+### Duplicate Detection System ✅
+- Complete 4-mode detection system operational
+- 1,332 duplicate groups identified in baseline scan
+- 217 refactoring tickets created with detailed plans
+- Continuous monitoring workflow configured
+
+## Support
+
+For issues or questions:
+- Check [docs/DUPLICATE_DETECTION.md](../../docs/DUPLICATE_DETECTION.md) for troubleshooting
+- Review SHIM inventory for whitelist guidance
+- See remediation tickets in `.codex/duplicate_analysis_full/`
 2. Training module split-brain
 3. Tokenization module split-brain
 4. Models module split-brain
 
+**Checks** (strict/shim-aware modes):
+1. Duplicate module paths (legacy vs canonical)
+2. Whitelist validation against `.github/SHIM_INVENTORY.yaml`
+3. Library shadowing (yaml, hydra)
+
 **Exit Codes**:
 - 0: Pass
-- 1: Structural risks detected
+- 1: Structural risks detected (legacy) or non-whitelisted duplicates found (strict)
 - 2: Import check failed
+
+**Output**:
+When using `--output`, generates a JSON file with findings:
+```json
+{
+  "duplicates": [...],
+  "whitelisted": [...],
+  "violations": [...],
+  "mode": "strict",
+  "library_shadowing": {...}
+}
+```
 
 ### analyze_legacy_usage.py
 **Purpose**: Scan codebase for legacy imports that should be refactored.

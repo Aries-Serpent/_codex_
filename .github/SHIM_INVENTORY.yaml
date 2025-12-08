@@ -103,6 +103,87 @@ inventory:
     whitelist_duplicates: ["tokenization/sentencepiece_adapter.py"]
     notes: "Legacy file contains deprecation warning and re-export logic for backward compatibility. Will be removed in future release."
 
+  # === Configuration Migration (Added 2025-12-08) ===
+
+  - module: config.training_minimal
+    legacy_path: "conf/minimal_train.yaml"
+    canonical_path: "conf/training/minimal.yaml"
+    owner: ml-platform
+    status: migration
+    rationale: "Migrating from flat conf/ to hierarchical conf/{training,data,experiment}/"
+    deprecation_date: "2026-03-01"
+    whitelist_duplicates:
+      - "conf/minimal_train.yaml"
+    notes: "Legacy flat structure being replaced by hierarchical. Both kept during migration period. Remove legacy after all code updated."
+
+  - module: config.training_config
+    legacy_path: "conf/config.yaml"
+    canonical_path: "conf/training/config.yaml"
+    owner: ml-platform
+    status: migration
+    rationale: "Migrating from flat conf/ to hierarchical conf/{training,data,experiment}/"
+    deprecation_date: "2026-03-01"
+    whitelist_duplicates:
+      - "conf/config.yaml"
+    notes: "Legacy flat structure being replaced by hierarchical. Both kept during migration period."
+
+  - module: config.eval_minimal
+    legacy_path: "conf/minimal_eval.yaml"
+    canonical_path: "conf/eval/minimal.yaml"
+    owner: ml-platform
+    status: migration
+    rationale: "Migrating from flat conf/ to hierarchical conf/{training,data,experiment}/"
+    deprecation_date: "2026-03-01"
+    whitelist_duplicates:
+      - "conf/minimal_eval.yaml"
+    notes: "Legacy flat structure being replaced by hierarchical. Both kept during migration period."
+
+  # === Intentional Duplicates (Added 2025-12-08) ===
+
+  - module: repository.markers
+    legacy_path: ""
+    canonical_path: ""
+    owner: repository-admin
+    status: intentional
+    rationale: "Empty files serving as directory markers (.gitkeep) and Python package markers (__init__.py)"
+    deprecation_date: null
+    whitelist_duplicates:
+      - ".gitkeep"
+      - "__init__.py"
+      - "artifacts/.gitkeep"
+      - "monitoring/.gitkeep"
+      - "data/.gitkeep"
+    notes: "Standard practice - these files serve specific purposes (git tracking, Python imports). Not actual duplicates requiring remediation."
+
+  - module: python.common_patterns
+    legacy_path: ""
+    canonical_path: ""
+    owner: python-team
+    status: intentional
+    rationale: "Standard Python magic methods and common function names"
+    deprecation_date: null
+    whitelist_duplicates:
+      - "__init__"
+      - "__repr__"
+      - "__str__"
+      - "__call__"
+      - "main"
+      - "forward"
+      - "to_dict"
+    notes: "These are standard Python patterns and language idioms, not code duplication requiring refactoring. Each implementation is contextually appropriate."
+
+  - module: pytest.fixtures
+    legacy_path: ""
+    canonical_path: ""
+    owner: qa-team
+    status: intentional
+    rationale: "pytest conftest.py files provide directory-specific test fixtures"
+    deprecation_date: null
+    whitelist_duplicates:
+      - "tests/*/conftest.py"
+      - "conftest.py"
+    notes: "pytest design pattern - each test directory can have its own conftest.py for scoped fixtures. This is correct test infrastructure, not duplication."
+
 policy:
   strict_conflicts:
     enabled: true
