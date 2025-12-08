@@ -21,19 +21,21 @@ class ModuleConsolidator:
         self.changes = []
     
     def find_import_references(self, old_module: str) -> list:
-        """Find all files importing the old module."""
+        """Find all files importing the old module using safe Python pathlib."""
         try:
-            result = subprocess.run(
-                ['grep', '-r', '-l', '--include=*.py', old_module, str(self.root)],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            files_with_refs = []
             
-            if result.returncode == 0:
-                files = [Path(f.strip()) for f in result.stdout.splitlines() if f.strip()]
-                return [f for f in files if f.exists()]
-            return []
+            # Use pathlib to safely search for Python files
+            for py_file in self.root.rglob('*.py'):
+                try:
+                    with open(py_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        if old_module in content:
+                            files_with_refs.append(py_file)
+                except (IOError, UnicodeDecodeError):
+                    continue
+            
+            return files_with_refs
         except Exception as e:
             print(f"Error finding references: {e}")
             return []

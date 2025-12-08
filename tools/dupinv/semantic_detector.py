@@ -83,7 +83,7 @@ class MinHashDetector:
         """
         Compute MinHash signature.
 
-        Simple implementation using hash functions.
+        Uses deterministic hashing for consistent results across runs.
 
         Args:
             shingles: Set of shingles
@@ -98,8 +98,9 @@ class MinHashDetector:
         for i in range(self.num_perm):
             min_hash = float('inf')
             for shingle in shingles:
-                # Combine shingle with permutation index
-                h = hash((shingle, i)) & 0xffffffff
+                # Use deterministic hash (SHA256) for consistent results
+                hash_input = f"{shingle}:{i}".encode('utf-8')
+                h = int(hashlib.sha256(hash_input).hexdigest()[:8], 16)
                 min_hash = min(min_hash, h)
             signature.append(min_hash)
         

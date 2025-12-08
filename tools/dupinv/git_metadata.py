@@ -165,11 +165,22 @@ class GitMetadataCollector:
             if result.returncode != 0 or not result.stdout.strip():
                 return None
 
-            # Parse date
+            # Parse date - handle various git date formats
             first_commit_str = result.stdout.strip().splitlines()[-1]
-            first_commit = datetime.fromisoformat(first_commit_str.replace("Z", "+00:00"))
+            try:
+                # Try ISO format with timezone
+                if first_commit_str.endswith('Z'):
+                    first_commit_str = first_commit_str[:-1] + '+00:00'
+                first_commit = datetime.fromisoformat(first_commit_str)
+            except ValueError:
+                # Fallback for other formats
+                from email.utils import parsedate_to_datetime
+                try:
+                    first_commit = parsedate_to_datetime(first_commit_str)
+                except:
+                    return None
+            
             age = (datetime.now(first_commit.tzinfo) - first_commit).days
-
             return age
 
         except Exception:

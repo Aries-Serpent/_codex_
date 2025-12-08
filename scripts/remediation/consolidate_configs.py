@@ -130,8 +130,9 @@ class ConfigConsolidator:
         entries = []
         for source, target, action in CONSOLIDATION_MAP:
             if action == "keep_both_update_shim":
+                target_stem = Path(target).stem
                 entry = f"""
-  - module: config.{Path(target).stem}
+  - module: config.{target_stem}
     legacy_path: "{source}"
     canonical_path: "{target}"
     owner: ml-platform

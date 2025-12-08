@@ -173,11 +173,22 @@ class CrossReference:
 
         for path in paths:
             if derive_module:
-                # Derive module name from path
-                # e.g., "training/engine_hf_trainer.py" -> "training.engine_hf_trainer"
-                module = path.replace("/", ".").replace(".py", "")
-                if module.startswith("src."):
-                    module = module[4:]  # Remove "src." prefix
+                # Derive module name from path with proper package handling
+                # e.g., "src/training/engine.py" -> "training.engine"
+                from pathlib import Path
+                p = Path(path)
+                
+                # Remove src/ prefix if present
+                parts = list(p.parts)
+                if parts and parts[0] == 'src':
+                    parts = parts[1:]
+                
+                # Remove file extension and convert to module notation
+                if parts:
+                    parts[-1] = p.stem  # Get filename without extension
+                    module = '.'.join(parts)
+                else:
+                    module = None
             else:
                 module = None
 

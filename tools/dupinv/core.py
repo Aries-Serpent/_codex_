@@ -51,6 +51,9 @@ class DuplicateScanner:
 
     def _init_shim_integration(self):
         """Initialize SHIM inventory integration."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         try:
             reader = ShimInventoryReader(self.root_path)
             shim_entries = reader.load()
@@ -58,9 +61,10 @@ class DuplicateScanner:
         except FileNotFoundError:
             # SHIM inventory not found - continue without it
             self.cross_reference = None
+            logger.debug("SHIM inventory not found, continuing without cross-reference")
         except Exception as e:
             # Log error but continue
-            print(f"Warning: Failed to load SHIM inventory: {e}")
+            logger.warning(f"Failed to load SHIM inventory: {e}")
             self.cross_reference = None
 
     def _init_detectors(self):
