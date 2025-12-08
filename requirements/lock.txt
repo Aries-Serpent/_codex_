@@ -665,7 +665,7 @@ opentelemetry-api==1.37.0
     #   opentelemetry-semantic-conventions
 opentelemetry-exporter-prometheus==0.58b0
     # via ray
-opentelemetry-proto==1.38.0
+opentelemetry-proto==1.39.0
     # via ray
 opentelemetry-sdk==1.37.0
     # via
