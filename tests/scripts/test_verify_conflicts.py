@@ -5,20 +5,30 @@ Tests for scripts/remediation/verify_conflicts.py
 Validates that the whitelist parsing logic correctly handles
 duplicate module paths according to SHIM_INVENTORY.yaml.
 """
-import json
+import importlib.util
 import tempfile
 from pathlib import Path
+
 import pytest
-import importlib.util
 
 
 def _load_verify_conflicts_module(test_root):
-    """Helper to load verify_conflicts module with temporary ROOT override."""
+    """
+    Helper to load verify_conflicts module with temporary ROOT override.
+
+    Note: This function manipulates module-level global state (ROOT variable)
+    which is necessary because the verify_conflicts module uses ROOT as a
+    global. The double assignment is intentional - exec_module may reset
+    module-level variables, so we set ROOT both before and after loading.
+
+    Args:
+        test_root: Path to use as temporary ROOT directory for testing
+
+    Returns:
+        tuple: (verify_conflicts module, original_root value for cleanup)
+    """
     script_path = (
-        Path(__file__).resolve().parents[2]
-        / "scripts"
-        / "remediation"
-        / "verify_conflicts.py"
+        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
     )
     spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
     verify_conflicts = importlib.util.module_from_spec(spec)
