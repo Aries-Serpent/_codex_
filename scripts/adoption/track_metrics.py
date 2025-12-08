@@ -43,9 +43,19 @@ VALIDATION_CONFIG_WEIGHT = SCORING_WEIGHTS["validation_config"]
 EVALUATION_CONFIG_WEIGHT = SCORING_WEIGHTS["evaluation_config"]
 MONITORING_CONFIG_WEIGHT = SCORING_WEIGHTS["monitoring_config"]
 
-# Verify weights sum to 1.0 at module load
-_TOTAL_WEIGHT = sum(SCORING_WEIGHTS.values())
-assert abs(_TOTAL_WEIGHT - 1.0) < 0.001, f"Scoring weights must sum to 1.0, got {_TOTAL_WEIGHT}"
+def _validate_scoring_weights() -> None:
+    """
+    Validate that scoring weights sum to 1.0.
+    
+    Raises:
+        ValueError: If weights don't sum to approximately 1.0
+    """
+    total_weight = sum(SCORING_WEIGHTS.values())
+    if abs(total_weight - 1.0) >= 0.001:
+        raise ValueError(
+            f"Scoring weights must sum to 1.0, got {total_weight}. "
+            f"Please check SCORING_WEIGHTS configuration."
+        )
 
 class AdoptionTracker:
     """
@@ -60,6 +70,7 @@ class AdoptionTracker:
     """
     
     def __init__(self, days: int = 7):
+        _validate_scoring_weights()  # Validate weights on initialization
         self.days = days
         self.metrics = {
             "timestamp": datetime.now().isoformat(),
@@ -111,6 +122,7 @@ class AdoptionTracker:
                                     file_count += len(files)
                                     if file_count >= 10000:
                                         file_count = 10000
+                                        dirs.clear()  # Prevent os.walk from descending further
                                         break
                                 artifact_count += file_count
                             except Exception:

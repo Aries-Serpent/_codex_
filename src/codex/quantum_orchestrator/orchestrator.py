@@ -44,7 +44,6 @@ class PhysicsConstants:
 # ============================================================================
 
 @dataclass
-@dataclass
 class TaskVector:
     """Position in 5D task space."""
     priority: float = 0.0
