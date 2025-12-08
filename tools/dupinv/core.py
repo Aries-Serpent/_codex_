@@ -48,8 +48,18 @@ class DuplicateScanner:
             respect_gitignore=respect_gitignore,
         )
         
+        # Add normalized detector (Phase 2)
+        from .normalize import NormalizedDetector
+        
+        normalize_identifiers = self.config.get("normalize_identifiers", False)
+        self.detectors["normalized"] = NormalizedDetector(
+            self.root_path,
+            exclude_patterns=exclude_patterns,
+            respect_gitignore=respect_gitignore,
+            normalize_identifiers=normalize_identifiers,
+        )
+        
         # Other detectors will be added in later phases
-        # self.detectors["normalized"] = NormalizedDetector(...)
         # self.detectors["ast"] = ASTDetector(...)
         # self.detectors["semantic"] = SemanticDetector(...)
 
