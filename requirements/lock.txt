@@ -493,7 +493,7 @@ markdown==3.10
     # via tensorboard
 markdown-it-py==4.0.0
     # via rich
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   flask
     #   jinja2
