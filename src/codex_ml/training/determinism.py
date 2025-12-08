@@ -6,35 +6,35 @@ including CuDNN settings.
 """
 
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
 try:
-    import torch
-    TORCH_AVAILABLE = hasattr(torch, 'manual_seed')
+    import torch  # type: ignore
+
+    TORCH_AVAILABLE = hasattr(torch, "manual_seed")
 except (ImportError, AttributeError):
-    torch = None
+    torch = None  # type: ignore
     TORCH_AVAILABLE = False
 
 
 def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
     """
     Enable deterministic operations for reproducibility.
-    
+
     Warning: May reduce performance significantly.
-    
+
     Args:
         enabled: Whether to enable deterministic mode
         warn: Whether to warn about performance impact
-        
+
     Returns:
         True if successfully set, False if PyTorch not available
-    
+
     Example:
         # Enable for reproducibility
         set_deterministic_mode(True)
-        
+
         # Disable for performance
         set_deterministic_mode(False)
     """
@@ -42,13 +42,13 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
         if warn:
             logger.warning("PyTorch not available - deterministic mode not set")
         return False
-    
+
     try:
         if enabled:
             # Enable CuDNN determinism
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
-            
+
             # PyTorch 1.8+ deterministic algorithms
             if hasattr(torch, "use_deterministic_algorithms"):
                 try:
@@ -57,7 +57,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
                 except TypeError:
                     # Older PyTorch version without warn_only
                     torch.use_deterministic_algorithms(True)
-            
+
             if warn:
                 logger.warning(
                     "Deterministic mode enabled - this may reduce performance. "
@@ -67,24 +67,27 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
             # Disable determinism for performance
             torch.backends.cudnn.deterministic = False
             torch.backends.cudnn.benchmark = True
-            
+
             if hasattr(torch, "use_deterministic_algorithms"):
                 torch.use_deterministic_algorithms(False)
-            
+
             if warn:
                 logger.info("Deterministic mode disabled - performance optimizations enabled")
-        
+
         return True
-    
+
     except Exception as e:
         logger.error(f"Failed to set deterministic mode: {e}")
         return False
 
 
-def get_deterministic_status() -> dict[str, bool]:
+from typing import Optional
+
+
+def get_deterministic_status() -> dict[str, Optional[bool]]:
     """
     Get current deterministic mode status.
-    
+
     Returns:
         Dictionary with status of deterministic settings
     """
@@ -95,19 +98,19 @@ def get_deterministic_status() -> dict[str, bool]:
             "cudnn_benchmark": False,
             "use_deterministic_algorithms": False,
         }
-    
+
     status = {
         "torch_available": True,
         "cudnn_deterministic": torch.backends.cudnn.deterministic,
         "cudnn_benchmark": torch.backends.cudnn.benchmark,
     }
-    
+
     # Check if use_deterministic_algorithms is available
     if hasattr(torch, "are_deterministic_algorithms_enabled"):
         status["use_deterministic_algorithms"] = torch.are_deterministic_algorithms_enabled()
     else:
         status["use_deterministic_algorithms"] = None
-    
+
     return status
 
 
