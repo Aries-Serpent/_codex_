@@ -9,6 +9,29 @@ import json
 import tempfile
 from pathlib import Path
 import pytest
+import importlib.util
+
+
+def _load_verify_conflicts_module(test_root):
+    """Helper to load verify_conflicts module with temporary ROOT override."""
+    script_path = (
+        Path(__file__).resolve().parents[2]
+        / "scripts"
+        / "remediation"
+        / "verify_conflicts.py"
+    )
+    spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
+    verify_conflicts = importlib.util.module_from_spec(spec)
+
+    # Temporarily override ROOT
+    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
+    verify_conflicts.ROOT = test_root
+
+    spec.loader.exec_module(verify_conflicts)
+    # Note: exec_module may reset ROOT, so we ensure it's set after loading
+    verify_conflicts.ROOT = test_root
+
+    return verify_conflicts, original_root
 
 
 def test_verify_conflicts_whitelist_parsing(tmp_path):
@@ -81,25 +104,10 @@ policy:
     src_tokenization_dir.mkdir(parents=True)
     (src_tokenization_dir / "api.py").write_text("# Canonical file")
 
-    # Import and test the function
-    # We need to temporarily modify the ROOT variable in the module
-    import sys
-    import importlib.util
-
-    script_path = (
-        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
-    )
-    spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
-    verify_conflicts = importlib.util.module_from_spec(spec)
-
-    # Temporarily override ROOT
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
-    verify_conflicts.ROOT = root
+    # Import and test the function using helper
+    verify_conflicts, original_root = _load_verify_conflicts_module(root)
 
     try:
-        spec.loader.exec_module(verify_conflicts)
-        verify_conflicts.ROOT = root  # Ensure it's set after exec_module
-
         # Load inventory and check
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
@@ -167,22 +175,10 @@ policy:
     src_models_dir.mkdir(parents=True)
     (src_models_dir / "test_model.py").write_text("# Canonical file")
 
-    # Import and test
-    import importlib.util
-
-    script_path = (
-        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
-    )
-    spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
-    verify_conflicts = importlib.util.module_from_spec(spec)
-
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
-    verify_conflicts.ROOT = root
+    # Import and test using helper
+    verify_conflicts, original_root = _load_verify_conflicts_module(root)
 
     try:
-        spec.loader.exec_module(verify_conflicts)
-        verify_conflicts.ROOT = root
-
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
@@ -246,22 +242,10 @@ policy:
     src_training_dir.mkdir(parents=True)
     (src_training_dir / "new_module.py").write_text("# Canonical file")
 
-    # Import and test
-    import importlib.util
-
-    script_path = (
-        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
-    )
-    spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
-    verify_conflicts = importlib.util.module_from_spec(spec)
-
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
-    verify_conflicts.ROOT = root
+    # Import and test using helper
+    verify_conflicts, original_root = _load_verify_conflicts_module(root)
 
     try:
-        spec.loader.exec_module(verify_conflicts)
-        verify_conflicts.ROOT = root
-
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
