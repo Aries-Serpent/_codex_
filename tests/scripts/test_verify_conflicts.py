@@ -6,7 +6,6 @@ Validates that the whitelist parsing logic correctly handles
 duplicate module paths according to SHIM_INVENTORY.yaml.
 """
 import importlib.util
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -18,8 +17,8 @@ def _load_verify_conflicts_module(test_root):
 
     Note: This function manipulates module-level global state (ROOT variable)
     which is necessary because the verify_conflicts module uses ROOT as a
-    global. The double assignment is intentional - exec_module may reset
-    module-level variables, so we set ROOT both before and after loading.
+    global. We set ROOT after exec_module to ensure it's correctly set
+    regardless of how the module initializes.
 
     Args:
         test_root: Path to use as temporary ROOT directory for testing
@@ -33,12 +32,11 @@ def _load_verify_conflicts_module(test_root):
     spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
     verify_conflicts = importlib.util.module_from_spec(spec)
 
-    # Temporarily override ROOT
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
-    verify_conflicts.ROOT = test_root
-
+    # Load the module first
     spec.loader.exec_module(verify_conflicts)
-    # Note: exec_module may reset ROOT, so we ensure it's set after loading
+
+    # Save original ROOT and set test ROOT
+    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
     verify_conflicts.ROOT = test_root
 
     return verify_conflicts, original_root
