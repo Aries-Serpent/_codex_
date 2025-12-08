@@ -51,68 +51,76 @@ policy:
     enabled: true
     whitelist_source: ".github/SHIM_INVENTORY.yaml"
 """
-    
+
     # Create test directory structure
     root = tmp_path / "test_repo"
     root.mkdir()
-    
+
     # Create .github directory and inventory
     github_dir = root / ".github"
     github_dir.mkdir()
     inventory_path = github_dir / "SHIM_INVENTORY.yaml"
     inventory_path.write_text(inventory_content)
-    
+
     # Create duplicate files (both legacy and canonical paths)
     training_dir = root / "training"
     training_dir.mkdir()
     (training_dir / "engine_hf_trainer.py").write_text("# Legacy file")
     (training_dir / "config.py").write_text("# Legacy file")
-    
+
     src_training_dir = root / "src" / "training"
     src_training_dir.mkdir(parents=True)
     (src_training_dir / "engine_hf_trainer.py").write_text("# Canonical file")
     (src_training_dir / "config.py").write_text("# Canonical file")
-    
+
     tokenization_dir = root / "tokenization"
     tokenization_dir.mkdir()
     (tokenization_dir / "api.py").write_text("# Legacy file")
-    
+
     src_tokenization_dir = root / "src" / "tokenization"
     src_tokenization_dir.mkdir(parents=True)
     (src_tokenization_dir / "api.py").write_text("# Canonical file")
-    
+
     # Import and test the function
     # We need to temporarily modify the ROOT variable in the module
     import sys
     import importlib.util
-    
-    script_path = Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
+
+    script_path = (
+        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
+    )
     spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
     verify_conflicts = importlib.util.module_from_spec(spec)
-    
+
     # Temporarily override ROOT
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, 'ROOT') else None
+    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
     verify_conflicts.ROOT = root
-    
+
     try:
         spec.loader.exec_module(verify_conflicts)
         verify_conflicts.ROOT = root  # Ensure it's set after exec_module
-        
+
         # Load inventory and check
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
-        
+
         # Verify results
-        assert len(findings["duplicates"]) == 3, f"Expected 3 duplicates, got {len(findings['duplicates'])}"
-        assert len(findings["whitelisted"]) == 3, f"Expected 3 whitelisted, got {len(findings['whitelisted'])}"
-        assert len(findings["violations"]) == 0, f"Expected 0 violations, got {len(findings['violations'])}: {findings['violations']}"
-        
+        assert (
+            len(findings["duplicates"]) == 3
+        ), f"Expected 3 duplicates, got {len(findings['duplicates'])}"
+        assert (
+            len(findings["whitelisted"]) == 3
+        ), f"Expected 3 whitelisted, got {len(findings['whitelisted'])}"
+        assert (
+            len(findings["violations"]) == 0
+        ), f"Expected 0 violations, got {len(findings['violations'])}: {findings['violations']}"
+
         # Verify specific entries
         whitelisted_modules = {entry["module"] for entry in findings["whitelisted"]}
         assert "training.engine_hf_trainer" in whitelisted_modules
         assert "training.config" in whitelisted_modules
         assert "tokenization.api" in whitelisted_modules
-        
+
     finally:
         # Restore original ROOT if it existed
         if original_root is not None:
@@ -139,53 +147,129 @@ policy:
     enabled: true
     whitelist_source: ".github/SHIM_INVENTORY.yaml"
 """
-    
+
     # Create test directory structure
     root = tmp_path / "test_repo2"
     root.mkdir()
-    
+
     # Create .github directory and inventory
     github_dir = root / ".github"
     github_dir.mkdir()
     inventory_path = github_dir / "SHIM_INVENTORY.yaml"
     inventory_path.write_text(inventory_content)
-    
+
     # Create duplicate files
     models_dir = root / "models"
     models_dir.mkdir()
     (models_dir / "test_model.py").write_text("# Legacy file")
-    
+
     src_models_dir = root / "src" / "models"
     src_models_dir.mkdir(parents=True)
     (src_models_dir / "test_model.py").write_text("# Canonical file")
-    
+
     # Import and test
     import importlib.util
-    
-    script_path = Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
+
+    script_path = (
+        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
+    )
     spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
     verify_conflicts = importlib.util.module_from_spec(spec)
-    
-    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, 'ROOT') else None
+
+    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
     verify_conflicts.ROOT = root
-    
+
     try:
         spec.loader.exec_module(verify_conflicts)
         verify_conflicts.ROOT = root
-        
+
         inventory = verify_conflicts.load_inventory()
         findings = verify_conflicts.check_split_brain_strict(inventory)
-        
+
         # Verify results
-        assert len(findings["duplicates"]) == 1, f"Expected 1 duplicate, got {len(findings['duplicates'])}"
-        assert len(findings["whitelisted"]) == 0, f"Expected 0 whitelisted, got {len(findings['whitelisted'])}"
-        assert len(findings["violations"]) == 1, f"Expected 1 violation, got {len(findings['violations'])}"
-        
+        assert (
+            len(findings["duplicates"]) == 1
+        ), f"Expected 1 duplicate, got {len(findings['duplicates'])}"
+        assert (
+            len(findings["whitelisted"]) == 0
+        ), f"Expected 0 whitelisted, got {len(findings['whitelisted'])}"
+        assert (
+            len(findings["violations"]) == 1
+        ), f"Expected 1 violation, got {len(findings['violations'])}"
+
         # Verify violation details
         violation = findings["violations"][0]
         assert violation["module"] == "models.test_model"
         assert violation["severity"] == "error"
-        
+
+    finally:
+        if original_root is not None:
+            verify_conflicts.ROOT = original_root
+
+
+def test_verify_conflicts_empty_whitelist(tmp_path):
+    """Test that modules with empty whitelist_duplicates are treated as non-whitelisted."""
+    inventory_content = """
+inventory:
+  - module: training.new_module
+    legacy_path: "training/new_module.py"
+    canonical_path: src/training/new_module.py
+    owner: test-team
+    status: active
+    rationale: "Test module"
+    deprecation_date: null
+    whitelist_duplicates: []
+    notes: "No whitelist"
+
+policy:
+  strict_conflicts:
+    enabled: true
+    whitelist_source: ".github/SHIM_INVENTORY.yaml"
+"""
+
+    # Create test directory structure
+    root = tmp_path / "test_repo3"
+    root.mkdir()
+
+    # Create .github directory and inventory
+    github_dir = root / ".github"
+    github_dir.mkdir()
+    inventory_path = github_dir / "SHIM_INVENTORY.yaml"
+    inventory_path.write_text(inventory_content)
+
+    # Create duplicate files
+    training_dir = root / "training"
+    training_dir.mkdir()
+    (training_dir / "new_module.py").write_text("# Legacy file")
+
+    src_training_dir = root / "src" / "training"
+    src_training_dir.mkdir(parents=True)
+    (src_training_dir / "new_module.py").write_text("# Canonical file")
+
+    # Import and test
+    import importlib.util
+
+    script_path = (
+        Path(__file__).resolve().parents[2] / "scripts" / "remediation" / "verify_conflicts.py"
+    )
+    spec = importlib.util.spec_from_file_location("verify_conflicts", script_path)
+    verify_conflicts = importlib.util.module_from_spec(spec)
+
+    original_root = verify_conflicts.ROOT if hasattr(verify_conflicts, "ROOT") else None
+    verify_conflicts.ROOT = root
+
+    try:
+        spec.loader.exec_module(verify_conflicts)
+        verify_conflicts.ROOT = root
+
+        inventory = verify_conflicts.load_inventory()
+        findings = verify_conflicts.check_split_brain_strict(inventory)
+
+        # Verify results - empty whitelist should be treated as non-whitelisted
+        assert len(findings["duplicates"]) == 1
+        assert len(findings["whitelisted"]) == 0
+        assert len(findings["violations"]) == 1
+
     finally:
         if original_root is not None:
             verify_conflicts.ROOT = original_root
