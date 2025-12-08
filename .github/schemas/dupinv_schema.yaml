@@ -1,0 +1,236 @@
+# SUPPLEMENTAL_DUPLICATE_INVENTORY Schema Definition
+#
+# This schema defines the structure for the supplemental duplicate inventory
+# output that identifies duplicate files and functionality across the codebase.
+
+version: "1.0.0"
+
+metadata:
+  type: object
+  required:
+    - generated_at
+    - scanner_version
+    - repository_root
+    - detection_modes
+    - total_files_scanned
+    - total_groups
+    - total_violations
+    - scan_duration_seconds
+  properties:
+    generated_at:
+      type: string
+      format: date-time
+      description: ISO8601 timestamp when inventory was generated
+    scanner_version:
+      type: string
+      description: Version of the duplicate detection scanner
+    repository_root:
+      type: string
+      description: Absolute path to repository root
+    detection_modes:
+      type: array
+      items:
+        type: string
+        enum: [exact, normalized, ast, semantic]
+      description: Detection modes used in scan
+    total_files_scanned:
+      type: integer
+      minimum: 0
+      description: Total number of files scanned
+    total_groups:
+      type: integer
+      minimum: 0
+      description: Total number of duplicate groups found
+    total_violations:
+      type: integer
+      minimum: 0
+      description: Number of groups that are violations (not whitelisted)
+    scan_duration_seconds:
+      type: number
+      minimum: 0
+      description: Time taken to complete scan
+
+member_file:
+  type: object
+  required:
+    - path
+    - file_hash
+    - similarity_score
+  properties:
+    path:
+      type: string
+      description: Relative path from repository root
+    start_line:
+      type: integer
+      nullable: true
+      description: Start line for function/class duplicates
+    end_line:
+      type: integer
+      nullable: true
+      description: End line for function/class duplicates
+    file_hash:
+      type: string
+      description: SHA256 hash of file content
+    normalized_hash:
+      type: string
+      nullable: true
+      description: Hash after normalization (comments/whitespace removed)
+    similarity_score:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+      description: Similarity score (1.0 = identical)
+    git_blame_top_author:
+      type: string
+      nullable: true
+      description: Top contributor by line count
+    git_author_email:
+      type: string
+      nullable: true
+      format: email
+      description: Email of top contributor
+    churn_last_90_days:
+      type: integer
+      nullable: true
+      minimum: 0
+      description: Number of commits touching file in last 90 days
+    test_coverage:
+      type: number
+      nullable: true
+      minimum: 0.0
+      maximum: 1.0
+      description: Test coverage percentage (if available)
+
+duplicate_group:
+  type: object
+  required:
+    - id
+    - type
+    - representative_path
+    - member_files
+    - reason
+    - suggested_action
+    - confidence
+    - tags
+    - meta
+    - summary
+  properties:
+    id:
+      type: string
+      pattern: "^dup-[a-z]+-[0-9]{3,}$"
+      description: Unique identifier for duplicate group
+    type:
+      type: string
+      enum: [exact-file, normalized-file, function-ast, semantic-cluster]
+      description: Type of duplicate detection
+    language:
+      type: string
+      nullable: true
+      description: Programming language (python, javascript, etc.)
+    representative_path:
+      type: string
+      description: Path to representative file (shortest or most canonical)
+    member_files:
+      type: array
+      minItems: 2
+      items:
+        $ref: "#/member_file"
+      description: All files in duplicate group
+    reason:
+      type: string
+      description: Human-readable reason for grouping
+    suggested_action:
+      type: string
+      enum: [refactor, consolidate, vendorize, ignore, whitelist]
+      description: Recommended action
+    confidence:
+      type: string
+      enum: [low, medium, high]
+      description: Confidence level of duplicate detection
+    tags:
+      type: array
+      items:
+        type: string
+      description: Tags for categorization
+    meta:
+      type: object
+      required:
+        - detection_method
+      properties:
+        detection_method:
+          type: array
+          items:
+            type: string
+          description: Methods that flagged this duplicate
+        created_at:
+          type: string
+          format: date-time
+          description: When this group was detected
+        scanner_version:
+          type: string
+          description: Scanner version that detected this
+        excluded:
+          type: boolean
+          description: Whether files were excluded from scan
+      additionalProperties: true
+      description: Additional metadata
+    summary:
+      type: string
+      description: Short code snippet (1-3 lines)
+    # SHIM integration fields
+    in_shim_inventory:
+      type: boolean
+      default: false
+      description: Whether duplicate is in SHIM_INVENTORY.yaml
+    shim_status:
+      type: string
+      nullable: true
+      enum: [active, shim, migrated, scheduled]
+      description: Status in SHIM inventory
+    is_whitelisted:
+      type: boolean
+      default: false
+      description: Whether duplicate is whitelisted
+    shim_recommendations:
+      type: array
+      items:
+        type: string
+      description: Recommendations based on SHIM status
+
+supplemental_inventory:
+  type: object
+  required:
+    - metadata
+    - duplicate_groups
+  properties:
+    metadata:
+      $ref: "#/metadata"
+    duplicate_groups:
+      type: array
+      items:
+        $ref: "#/duplicate_group"
+      description: All duplicate groups found
+    intentional_duplicates:
+      type: array
+      items:
+        $ref: "#/duplicate_group"
+      default: []
+      description: Duplicates identified as intentional (vendored, generated, etc.)
+
+# Output formats
+output_formats:
+  yaml:
+    file: "SUPPLEMENTAL_DUPLICATE_INVENTORY.yaml"
+    description: "Primary machine-readable format"
+  json:
+    file: "supplemental_duplicates.json"
+    description: "JSON format for programmatic access"
+  csv:
+    file: "supplemental_duplicates.csv"
+    description: "Flat summary table"
+  markdown:
+    file: "supplemental_duplicates.md"
+    description: "Human-readable report"
+  intentional:
+    file: "intentional_duplicates.yml"
+    description: "Intentional duplicates only"

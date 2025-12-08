@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed
+- Fixed whitelist parsing in `scripts/remediation/verify_conflicts.py` to correctly 
+  exclude whitelisted duplicates from strict mode violations. The script now properly 
+  matches module paths against the `whitelist_duplicates` entries in `.github/SHIM_INVENTORY.yaml`,
+  preventing false positive violations in nightly audit runs.
+
 ### Added
 - Offline-friendly BLEU/ROUGE-L generative metrics with registry integration and
   unit tests.
@@ -10,6 +16,8 @@
   supporting scripts are present.
 - Post-iteration status checklist capturing audit artifacts and capability-to-marker
   mapping.
+- Comprehensive test suite for `verify_conflicts.py` in `tests/scripts/test_verify_conflicts.py`
+  validating whitelist parsing logic and edge cases.
 
 ### Changed
 - Evaluation loop now supports text post-processing hooks to unlock generative
