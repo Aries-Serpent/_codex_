@@ -111,7 +111,7 @@ class MetricsCollector:
             current = self.orchestrator.dirac.compute_current(task)
             metrics.append(Metric(
                 "quantum_task_current_magnitude",
-                float(np.linalg.norm(current)) if hasattr(np, 'linalg') else 0.0,
+                float(np.linalg.norm(current)) if np is not None else 0.0,
                 MetricType.GAUGE,
                 labels,
             ))
