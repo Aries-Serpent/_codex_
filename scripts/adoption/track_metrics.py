@@ -28,6 +28,14 @@ VALIDATION_CONFIG_WEIGHT = 0.20
 EVALUATION_CONFIG_WEIGHT = 0.15
 MONITORING_CONFIG_WEIGHT = 0.15
 
+# Verify weights sum to 1.0 at module load
+_TOTAL_WEIGHT = (
+    MLFLOW_CONFIG_WEIGHT + MLFLOW_EXPERIMENTS_WEIGHT + MLFLOW_RUNS_WEIGHT + MLFLOW_ARTIFACTS_WEIGHT +
+    FEATURE_STORE_CONFIG_WEIGHT + FEATURE_STORE_DEFINED_WEIGHT + FEATURE_STORE_REGISTERED_WEIGHT +
+    VALIDATION_CONFIG_WEIGHT + EVALUATION_CONFIG_WEIGHT + MONITORING_CONFIG_WEIGHT
+)
+assert abs(_TOTAL_WEIGHT - 1.0) < 0.001, f"Scoring weights must sum to 1.0, got {_TOTAL_WEIGHT}"
+
 class AdoptionTracker:
     """
     Tracks adoption metrics for Phase 6 MLOps features.
@@ -84,8 +92,8 @@ class AdoptionTracker:
                     for run_dir in runs:
                         artifacts_dir = run_dir / "artifacts"
                         if artifacts_dir.exists():
-                            # Use generator expression for efficiency
-                            artifact_count += sum(1 for _ in artifacts_dir.rglob("*"))
+                            # Count files only (not directories) for artifact count
+                            artifact_count += sum(1 for f in artifacts_dir.rglob("*") if f.is_file())
                 
                 mlflow_metrics["runs_logged"] = run_count
                 mlflow_metrics["artifacts_stored"] = artifact_count
