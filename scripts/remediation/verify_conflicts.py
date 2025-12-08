@@ -79,11 +79,13 @@ def check_split_brain_strict(inventory):
     }
     
     # Build whitelist from inventory
-    whitelist = set()
+    # Map module to set of whitelisted paths for that module
+    whitelist = {}
     for item in inventory.get("inventory", []):
         module = item.get("module", "")
-        for w in item.get("whitelist_duplicates", []):
-            whitelist.add((module, w))
+        whitelist_paths = item.get("whitelist_duplicates", [])
+        if module and whitelist_paths:
+            whitelist[module] = set(whitelist_paths)
     
     # Check for duplicates
     for item in inventory.get("inventory", []):
@@ -105,8 +107,11 @@ def check_split_brain_strict(inventory):
                 "canonical_path": canonical
             })
             
-            # Check whitelist
-            if (module, legacy) in whitelist or (module, canonical) in whitelist:
+            # Check if this module has any whitelisted paths
+            # If the legacy path or canonical path is in the whitelist for this module,
+            # then the entire duplicate is whitelisted
+            module_whitelist = whitelist.get(module, set())
+            if legacy in module_whitelist or canonical in module_whitelist:
                 findings["whitelisted"].append({
                     "module": module,
                     "legacy_path": legacy,
