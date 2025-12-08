@@ -9,56 +9,14 @@ Ensures:
 """
 
 import pytest
-import sys
-from typing import Tuple, List
+from codex_ml.data.splitting import split_indices
 
-# Mock numpy if not available
 try:
     import numpy as np
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
     np = None
-
-
-def split_indices(
-    n: int,
-    train_ratio: float,
-    val_ratio: float,
-    seed: int = 42,
-) -> Tuple[List[int], List[int], List[int]]:
-    """
-    Split indices deterministically.
-    
-    Args:
-        n: Total number of samples
-        train_ratio: Proportion for training
-        val_ratio: Proportion for validation
-        seed: Random seed
-        
-    Returns:
-        (train_indices, val_indices, test_indices)
-    """
-    if NUMPY_AVAILABLE:
-        rng = np.random.default_rng(seed)
-        indices = np.arange(n)
-        rng.shuffle(indices)
-        indices_list = indices.tolist()
-    else:
-        # Fallback to Python random
-        import random
-        random.seed(seed)
-        indices_list = list(range(n))
-        random.shuffle(indices_list)
-    
-    train_end = int(n * train_ratio)
-    val_end = train_end + int(n * val_ratio)
-    
-    train = indices_list[:train_end]
-    val = indices_list[train_end:val_end]
-    test = indices_list[val_end:]
-    
-    return train, val, test
 
 
 class TestDeterministicSplits:

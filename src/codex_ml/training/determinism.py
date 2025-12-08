@@ -51,15 +51,12 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
             
             # PyTorch 1.8+ deterministic algorithms
             if hasattr(torch, "use_deterministic_algorithms"):
-                torch.use_deterministic_algorithms(True)
-            
-            # PyTorch 1.11+ warn_only option
-            if hasattr(torch, "use_deterministic_algorithms"):
                 try:
+                    # PyTorch 1.11+ supports warn_only parameter
                     torch.use_deterministic_algorithms(True, warn_only=False)
                 except TypeError:
                     # Older PyTorch version without warn_only
-                    pass
+                    torch.use_deterministic_algorithms(True)
             
             if warn:
                 logger.warning(
