@@ -1,0 +1,70 @@
+# Data validation configuration
+# Validates data quality before training and inference
+
+validation:
+  enabled: true
+  
+  # Fail training if validation fails
+  fail_on_error: true
+  
+  # Sampling for large datasets
+  sampling:
+    enabled: true
+    sample_size: 10000
+    method: "random"  # "random" or "stratified"
+  
+  # Schema validation
+  schema:
+    enabled: true
+    strict_mode: false  # Allow additional columns
+    
+  # Required columns check
+  required_columns:
+    enabled: true
+    columns: []  # Specify per dataset
+  
+  # Statistical checks
+  statistical:
+    enabled: true
+    
+    # Null value thresholds
+    null_threshold: 0.05  # Max 5% null values
+    
+    # Duplicate check
+    duplicate_threshold: 0.01  # Max 1% duplicates
+    
+    # Outlier detection
+    outlier_detection:
+      enabled: true
+      method: "iqr"  # "iqr" or "zscore"
+      threshold: 3.0
+  
+  # Range checks
+  range_checks:
+    enabled: true
+    rules: []  # Specify per feature
+    # Example:
+    # - column: "age"
+    #   min: 0
+    #   max: 120
+    # - column: "amount"
+    #   min: 0
+  
+  # Distribution drift detection
+  drift_detection:
+    enabled: false
+    baseline_path: null
+    threshold: 0.1
+    method: "ks_test"  # Kolmogorov-Smirnov test
+  
+  # Reporting
+  reporting:
+    enabled: true
+    output_dir: "./artifacts/validation"
+    formats: ["json", "html"]
+  
+  # Alerting
+  alerting:
+    enabled: false
+    on_failure: []  # e.g., ["slack", "email"]
+    on_warning: []

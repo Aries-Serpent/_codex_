@@ -814,6 +814,72 @@ except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when
         )
 
 
+# Unified configuration management for consolidated configs/
+CONFIG_PATH = Path(__file__).parent.parent.parent.parent / "configs"
+
+
+def get_config(
+    config_name: str = "hydra/config",
+    overrides: list[str] | None = None,
+) -> Any:
+    """Load configuration using Hydra.
+    
+    Args:
+        config_name: Config file name (without .yaml)
+        overrides: List of overrides (e.g., ["training.epochs=100"])
+        
+    Returns:
+        Loaded configuration
+        
+    Raises:
+        ImportError: If hydra is not installed
+    """
+    if OmegaConf is None:
+        raise ImportError(
+            "hydra-core and omegaconf are required for unified config loading. "
+            "Install with: pip install hydra-core omegaconf"
+        )
+    
+    try:
+        import hydra
+        from hydra import compose, initialize_config_dir
+    except ImportError as e:
+        raise ImportError(
+            "hydra-core is required for unified config loading. "
+            "Install with: pip install hydra-core"
+        ) from e
+    
+    with initialize_config_dir(str(CONFIG_PATH.resolve()), version_base=None):
+        cfg = compose(config_name=config_name, overrides=overrides or [])
+    return cfg
+
+
+def load_yaml(path: str | Path) -> dict[str, Any]:
+    """Load a YAML config file directly.
+    
+    Args:
+        path: Path to YAML file
+        
+    Returns:
+        Config dictionary
+        
+    Raises:
+        ImportError: If omegaconf is not installed
+        FileNotFoundError: If file doesn't exist
+    """
+    if OmegaConf is None:
+        raise ImportError(
+            "omegaconf is required for YAML loading. "
+            "Install with: pip install omegaconf"
+        )
+    
+    path_obj = Path(path)
+    if not path_obj.exists():
+        raise FileNotFoundError(f"Config file not found: {path}")
+    
+    return OmegaConf.to_container(OmegaConf.load(str(path)))  # type: ignore
+
+
 __all__ = sorted(
     set(
         __all__
@@ -822,6 +888,9 @@ __all__ = sorted(
             "EvalRow",
             "eval_row_schema",
             "get_settings",
+            "get_config",
+            "load_yaml",
+            "CONFIG_PATH",
         ]
     )
 )

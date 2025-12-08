@@ -83,12 +83,18 @@ class FeatureHealthMonitor:
         "VERY_STALE": float("inf"),  # > 24 hours
     }
 
-    def __init__(self, freshness_threshold_minutes: int = 60):
+    def __init__(
+        self, 
+        feature_store: Optional["FeatureStore"] = None,
+        freshness_threshold_minutes: int = 60
+    ):
         """Initialize feature health monitor.
 
         Args:
+            feature_store: Optional FeatureStore instance for integration
             freshness_threshold_minutes: Max minutes before feature is stale
         """
+        self.feature_store = feature_store
         self.freshness_threshold = timedelta(minutes=freshness_threshold_minutes)
         self.feature_updates: Dict[str, datetime] = {}
         self.error_counts: Dict[str, int] = {}
@@ -486,3 +492,111 @@ class FeatureHealthMonitor:
             )
         
         return recommendations
+    
+    def check_health(self) -> Dict[str, Any]:
+        """Check health of all features in feature store.
+        
+        Returns:
+            Dictionary with overall_status and detailed health information
+        """
+        if self.feature_store is None:
+            # Use manually tracked features if no feature store
+            feature_names = list(self.feature_updates.keys())
+        else:
+            # Get feature names from feature store
+            try:
+                feature_names = list(self.feature_store.feature_groups.keys())
+                # Update feature_updates from feature store versions
+                for name in feature_names:
+                    versions = self.feature_store.feature_versions.get(name, [])
+                    if versions:
+                        latest = versions[-1]
+                        if hasattr(latest, 'created_at'):
+                            try:
+                                self.feature_updates[name] = datetime.fromisoformat(latest.created_at)
+                            except (ValueError, AttributeError):
+                                pass
+            except Exception as e:
+                logger.warning(f"Could not load features from store: {e}")
+                feature_names = list(self.feature_updates.keys())
+        
+        # Check health of all features
+        health_statuses = self.check_all_features(feature_names)
+        
+        # Calculate overall status
+        healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
+        total_count = len(health_statuses)
+        
+        if total_count == 0:
+            overall_status = "unknown"
+        elif healthy_count == total_count:
+            overall_status = "healthy"
+        elif healthy_count >= total_count * 0.8:
+            overall_status = "warning"
+        else:
+            overall_status = "critical"
+        
+        # Generate alerts
+        alerts = self.generate_alerts(health_statuses, sla_minutes=120)
+        
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "overall_status": overall_status,
+            "total_features": total_count,
+            "healthy_features": healthy_count,
+            "unhealthy_features": total_count - healthy_count,
+            "health_statuses": {name: vars(status) for name, status in health_statuses.items()},
+            "alerts": [alert.to_dict() for alert in alerts],
+            "freshness_distribution": self.get_freshness_report() if feature_names else {},
+        }
+    
+    def save_health_report(self, output_path: Optional[str] = None, format: str = "json") -> Dict[str, Any]:
+        """Save health report to file.
+        
+        Args:
+            output_path: Optional output file path (default: auto-generated)
+            format: Report format ('json' or 'markdown')
+        
+        Returns:
+            Health report dictionary
+        """
+        report = self.check_health()
+        
+        # Generate default path if not provided
+        if output_path is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            ext = "json" if format == "json" else "md"
+            output_path = f"health_report_{timestamp}.{ext}"
+        
+        # Write report
+        from pathlib import Path
+        output_file = Path(output_path)
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        if format == "json":
+            with open(output_file, 'w') as f:
+                json.dump(report, f, indent=2)
+            logger.info(f"Saved health report to {output_path}")
+        elif format == "markdown":
+            # Get health statuses for markdown generation
+            feature_names = list(report["health_statuses"].keys())
+            health_statuses = self.check_all_features(feature_names)
+            markdown_content = self._generate_markdown_report(health_statuses)
+            with open(output_file, 'w') as f:
+                f.write(markdown_content)
+            logger.info(f"Saved markdown health report to {output_path}")
+        else:
+            raise ValueError(f"Unsupported format: {format}. Use 'json' or 'markdown'")
+        
+        return report
+    
+    def get_stale_features(self, threshold_hours: int = 24) -> List[str]:
+        """Get list of stale features.
+        
+        Args:
+            threshold_hours: Hours threshold for staleness (default: 24)
+        
+        Returns:
+            List of stale feature names
+        """
+        return self.alert_stale_features(threshold_hours=threshold_hours)

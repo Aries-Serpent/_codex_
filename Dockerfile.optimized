@@ -1,0 +1,252 @@
+# syntax=docker/dockerfile:1.7
+# Optimized multi-stage Dockerfile with security hardening (D1)
+#
+# Build options:
+#   --build-arg BUILD_ENV=prod|dev|minimal (default: prod)
+#   --build-arg ENABLE_GPU=1|0 (default: 0)
+#   --build-arg ENABLE_MLFLOW=1|0 (default: 1)
+#   --build-arg ENABLE_RAY=1|0 (default: 0)
+#   --build-arg TORCH_VERSION=2.4.0
+#   --build-arg PYTHON_VERSION=3.11
+#
+# Examples:
+#   # Production CPU build
+#   docker build -t codex:prod .
+#
+#   # Development with GPU
+#   docker build --build-arg BUILD_ENV=dev --build-arg ENABLE_GPU=1 -t codex:dev-gpu .
+#
+#   # Minimal CPU build
+#   docker build --build-arg BUILD_ENV=minimal -t codex:minimal .
+
+##############################################################################
+# Build Arguments
+##############################################################################
+ARG PYTHON_VERSION=3.11
+ARG BUILD_ENV=prod
+ARG ENABLE_GPU=0
+ARG ENABLE_MLFLOW=1
+ARG ENABLE_RAY=0
+ARG TORCH_VERSION=2.4.0
+ARG TORCHVISION_VERSION=0.19.0
+
+# Metadata
+ARG VERSION="0.0.0"
+ARG VCS_REF="unknown"
+ARG BUILD_DATE="unknown"
+ARG VCS_URL="https://github.com/Aries-Serpent/_codex_"
+
+##############################################################################
+# Stage 1: Builder - Compile dependencies and build wheels
+##############################################################################
+FROM python:${PYTHON_VERSION}-slim AS builder
+
+ARG BUILD_ENV
+ARG ENABLE_GPU
+ARG ENABLE_MLFLOW
+ARG ENABLE_RAY
+
+# Build environment
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency files first for better caching
+COPY pyproject.toml MANIFEST.in ./
+COPY requirements/ ./requirements/
+COPY uv.lock* ./
+
+# Upgrade pip and install build tools
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --upgrade pip setuptools wheel
+
+# Create wheels directory
+RUN mkdir -p /tmp/wheels
+
+# Build wheels based on BUILD_ENV
+RUN --mount=type=cache,target=/root/.cache/pip \
+    if [ "${BUILD_ENV}" = "minimal" ]; then \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/minimal.txt || \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt; \
+    elif [ "${BUILD_ENV}" = "dev" ]; then \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/dev.txt || \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt; \
+    else \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/docker.txt || \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements/base.txt || \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels -r requirements.txt; \
+    fi
+
+# Conditionally add MLflow
+RUN --mount=type=cache,target=/root/.cache/pip \
+    if [ "${ENABLE_MLFLOW}" = "1" ]; then \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels mlflow; \
+    fi
+
+# Conditionally add Ray
+RUN --mount=type=cache,target=/root/.cache/pip \
+    if [ "${ENABLE_RAY}" = "1" ]; then \
+        pip wheel --no-build-isolation --wheel-dir /tmp/wheels 'ray[train]'; \
+    fi
+
+# Copy source and build project wheel
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip wheel --no-build-isolation --no-deps --wheel-dir /tmp/wheels .
+
+##############################################################################
+# Stage 2: Base Runtime - Minimal base with Python
+##############################################################################
+FROM python:${PYTHON_VERSION}-slim AS base-runtime
+
+# Runtime environment
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PATH="/opt/venv/bin:${PATH}" \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# Install minimal runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    tini \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user early (security best practice)
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser
+
+##############################################################################
+# Stage 3: GPU Runtime (conditional)
+##############################################################################
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 AS gpu-runtime
+
+ARG PYTHON_VERSION
+
+# Runtime environment
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PATH="/opt/venv/bin:${PATH}" \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# Install Python and runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-venv \
+    python${PYTHON_VERSION}-dev \
+    python3-pip \
+    tini \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
+
+# Create non-root user
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser
+
+##############################################################################
+# Stage 4: Final Runtime Selection
+##############################################################################
+FROM ${ENABLE_GPU:+gpu-runtime}${ENABLE_GPU:-base-runtime} AS runtime
+
+ARG VERSION
+ARG VCS_REF
+ARG BUILD_DATE
+ARG VCS_URL
+ARG BUILD_ENV
+ARG ENABLE_GPU
+ARG ENABLE_MLFLOW
+ARG ENABLE_RAY
+ARG TORCH_VERSION
+ARG TORCHVISION_VERSION
+
+# OCI metadata labels
+LABEL org.opencontainers.image.title="codex" \
+      org.opencontainers.image.description="Aries-Serpent _codex_ optimized runtime" \
+      org.opencontainers.image.url="${VCS_URL}" \
+      org.opencontainers.image.source="${VCS_URL}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="Aries-Serpent" \
+      org.label.build_env="${BUILD_ENV}" \
+      org.label.gpu_enabled="${ENABLE_GPU}" \
+      org.label.mlflow_enabled="${ENABLE_MLFLOW}" \
+      org.label.ray_enabled="${ENABLE_RAY}"
+
+WORKDIR /app
+
+# Create virtualenv and install from wheels
+COPY --from=builder --chown=appuser:appuser /tmp/wheels /tmp/wheels
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip setuptools wheel \
+    && /opt/venv/bin/pip install /tmp/wheels/*.whl \
+    && rm -rf /tmp/wheels
+
+# Conditionally install GPU PyTorch
+RUN if [ "${ENABLE_GPU}" = "1" ]; then \
+        /opt/venv/bin/pip install --extra-index-url https://download.pytorch.org/whl/cu121 \
+            torch=="${TORCH_VERSION}" torchvision=="${TORCHVISION_VERSION}"; \
+    fi
+
+# Copy application files
+COPY --chown=appuser:appuser configs /app/configs
+COPY --chown=appuser:appuser src /app/src
+COPY --chown=appuser:appuser docker/entrypoint.sh /app/docker/entrypoint.sh
+
+# Fix permissions and make entrypoint executable
+RUN chmod +x /app/docker/entrypoint.sh \
+    && chown -R appuser:appuser /app
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/logs /app/artifacts /app/outputs \
+    && chown -R appuser:appuser /app/logs /app/artifacts /app/outputs
+
+# Security: Switch to non-root user (MUST be after all RUN commands that need root)
+USER appuser
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -fsS http://localhost:8000/health || exit 1
+
+# Use tini as init system (reaps zombie processes)
+ENTRYPOINT ["/usr/bin/tini", "--", "/app/docker/entrypoint.sh"]
+CMD ["uvicorn", "src.codex.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "info"]
+
+##############################################################################
+# Build Information
+##############################################################################
+# This Dockerfile implements D1 requirements:
+# ✓ Multi-stage builds (builder + runtime stages)
+# ✓ Non-root user (appuser:1000:1000)
+# ✓ ARG flags for conditional features (GPU, MLflow, Ray, build env)
+# ✓ Security best practices:
+#   - Minimal base images
+#   - No cache in final stage
+#   - Tini init system
+#   - Health checks
+#   - Proper file permissions
+#   - Clean apt lists
+# ✓ OCI metadata labels
+# ✓ Layer optimization (copy files in order of change frequency)
+##############################################################################
