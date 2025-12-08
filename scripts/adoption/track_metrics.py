@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -16,24 +17,34 @@ except ImportError:
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Scoring weights for adoption score calculation
-MLFLOW_CONFIG_WEIGHT = 0.10
-MLFLOW_EXPERIMENTS_WEIGHT = 0.05
-MLFLOW_RUNS_WEIGHT = 0.05
-MLFLOW_ARTIFACTS_WEIGHT = 0.05
-FEATURE_STORE_CONFIG_WEIGHT = 0.10
-FEATURE_STORE_DEFINED_WEIGHT = 0.075
-FEATURE_STORE_REGISTERED_WEIGHT = 0.075
-VALIDATION_CONFIG_WEIGHT = 0.20
-EVALUATION_CONFIG_WEIGHT = 0.15
-MONITORING_CONFIG_WEIGHT = 0.15
+# Scoring weights for adoption score calculation (decimal values where 0.10 = 10%)
+SCORING_WEIGHTS = {
+    "mlflow_config": 0.10,
+    "mlflow_experiments": 0.05,
+    "mlflow_runs": 0.05,
+    "mlflow_artifacts": 0.05,
+    "feature_store_config": 0.10,
+    "feature_store_defined": 0.075,
+    "feature_store_registered": 0.075,
+    "validation_config": 0.20,
+    "evaluation_config": 0.15,
+    "monitoring_config": 0.15,
+}
+
+# Individual constants for easier access
+MLFLOW_CONFIG_WEIGHT = SCORING_WEIGHTS["mlflow_config"]
+MLFLOW_EXPERIMENTS_WEIGHT = SCORING_WEIGHTS["mlflow_experiments"]
+MLFLOW_RUNS_WEIGHT = SCORING_WEIGHTS["mlflow_runs"]
+MLFLOW_ARTIFACTS_WEIGHT = SCORING_WEIGHTS["mlflow_artifacts"]
+FEATURE_STORE_CONFIG_WEIGHT = SCORING_WEIGHTS["feature_store_config"]
+FEATURE_STORE_DEFINED_WEIGHT = SCORING_WEIGHTS["feature_store_defined"]
+FEATURE_STORE_REGISTERED_WEIGHT = SCORING_WEIGHTS["feature_store_registered"]
+VALIDATION_CONFIG_WEIGHT = SCORING_WEIGHTS["validation_config"]
+EVALUATION_CONFIG_WEIGHT = SCORING_WEIGHTS["evaluation_config"]
+MONITORING_CONFIG_WEIGHT = SCORING_WEIGHTS["monitoring_config"]
 
 # Verify weights sum to 1.0 at module load
-_TOTAL_WEIGHT = (
-    MLFLOW_CONFIG_WEIGHT + MLFLOW_EXPERIMENTS_WEIGHT + MLFLOW_RUNS_WEIGHT + MLFLOW_ARTIFACTS_WEIGHT +
-    FEATURE_STORE_CONFIG_WEIGHT + FEATURE_STORE_DEFINED_WEIGHT + FEATURE_STORE_REGISTERED_WEIGHT +
-    VALIDATION_CONFIG_WEIGHT + EVALUATION_CONFIG_WEIGHT + MONITORING_CONFIG_WEIGHT
-)
+_TOTAL_WEIGHT = sum(SCORING_WEIGHTS.values())
 assert abs(_TOTAL_WEIGHT - 1.0) < 0.001, f"Scoring weights must sum to 1.0, got {_TOTAL_WEIGHT}"
 
 class AdoptionTracker:
@@ -92,8 +103,19 @@ class AdoptionTracker:
                     for run_dir in runs:
                         artifacts_dir = run_dir / "artifacts"
                         if artifacts_dir.exists():
-                            # Count files only (not directories) for artifact count
-                            artifact_count += sum(1 for f in artifacts_dir.rglob("*") if f.is_file())
+                            # Count files efficiently using os.walk (more performant than rglob)
+                            # Limit to 10000 files per run to prevent performance issues
+                            try:
+                                file_count = 0
+                                for root, dirs, files in os.walk(artifacts_dir):
+                                    file_count += len(files)
+                                    if file_count >= 10000:
+                                        file_count = 10000
+                                        break
+                                artifact_count += file_count
+                            except Exception:
+                                # If there's an error reading artifacts, skip counting for this run
+                                pass
                 
                 mlflow_metrics["runs_logged"] = run_count
                 mlflow_metrics["artifacts_stored"] = artifact_count
