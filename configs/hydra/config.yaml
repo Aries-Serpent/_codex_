@@ -1,7 +1,7 @@
 defaults:
-- base/training
-- base/model
-- base/data
+- training/base
+- model/base
+- data/base
 - _self_
 hydra:
   searchpath:
