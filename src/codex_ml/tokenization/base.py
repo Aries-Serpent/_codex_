@@ -71,13 +71,17 @@ class ByteLevelTokenizer:
         # Convert to UTF-8 bytes, offset by special tokens
         ids = [b + self._special_token_offset for b in text.encode("utf-8")]
 
+        # Truncation (reserve space for EOS if needed)
+        if self.truncation and self.max_length is not None:
+            if add_special_tokens:
+                # Reserve space for EOS token
+                ids = ids[: max(0, self.max_length - 1)]
+            else:
+                ids = ids[: self.max_length]
+
         # Add EOS token
         if add_special_tokens:
             ids.append(self.eos_token_id)
-
-        # Truncation
-        if self.truncation and self.max_length is not None:
-            ids = ids[: self.max_length]
 
         # Padding
         if self.padding == "max_length" and self.max_length is not None:

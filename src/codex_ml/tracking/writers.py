@@ -954,7 +954,6 @@ class MLflowArtifactWriter:
         self,
         data: dict[str, Any],
         filename: str,
-        artifact_path: Optional[str] = None,
     ) -> bool:
         """Log dictionary as JSON artifact."""
         if not self._writer._initialized:
@@ -977,9 +976,8 @@ class MLflowArtifactWriter:
         self,
         model: Any,
         artifact_path: str = "model",
-        **kwargs,
     ) -> bool:
-        """Log model artifact."""
+        """Log model artifact (HuggingFace, PyTorch, or scikit-learn)."""
         if not self._writer._initialized:
             return False
 
@@ -998,9 +996,29 @@ class MLflowArtifactWriter:
                 with tempfile.TemporaryDirectory() as tmpdir:
                     model.save_pretrained(tmpdir)
                     mlflow.log_artifacts(tmpdir, artifact_path)
+            elif hasattr(model, "state_dict"):
+                # PyTorch model
+                try:
+                    import mlflow.pytorch
+
+                    mlflow.pytorch.log_model(model, artifact_path)
+                except ImportError:
+                    logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
+                    return False
+            elif "sklearn" in type(model).__module__:
+                # scikit-learn model
+                try:
+                    import mlflow.sklearn
+
+                    mlflow.sklearn.log_model(model, artifact_path)
+                except ImportError:
+                    logger.warning(
+                        "mlflow.sklearn is not available; cannot log scikit-learn model."
+                    )
+                    return False
             else:
-                # Generic artifact
-                mlflow.log_artifact(str(model), artifact_path)
+                logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
+                return False
             return True
         except Exception as e:
             logger.warning(f"Failed to log model: {e}")

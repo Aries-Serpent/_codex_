@@ -99,6 +99,9 @@ class SeedManager:
 
         # NumPy
         if NUMPY_AVAILABLE:
+            # Use modern API for better behavior in multi-threaded contexts
+            _ = np.random.default_rng(self.seed)  # Creates RNG instance
+            # Also set global seed for legacy code compatibility
             np.random.seed(self.seed)
             state.numpy_seed = self.seed
         elif self.warn_on_missing:

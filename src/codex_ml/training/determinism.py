@@ -6,6 +6,7 @@ including CuDNN settings.
 """
 
 import logging
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -79,9 +80,6 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
     except Exception as e:
         logger.error(f"Failed to set deterministic mode: {e}")
         return False
-
-
-from typing import Optional
 
 
 def get_deterministic_status() -> dict[str, Optional[bool]]:
