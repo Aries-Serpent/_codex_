@@ -84,7 +84,8 @@ class AdoptionTracker:
                     for run_dir in runs:
                         artifacts_dir = run_dir / "artifacts"
                         if artifacts_dir.exists():
-                            artifact_count += len(list(artifacts_dir.rglob("*")))
+                            # Use generator expression for efficiency
+                            artifact_count += sum(1 for _ in artifacts_dir.rglob("*"))
                 
                 mlflow_metrics["runs_logged"] = run_count
                 mlflow_metrics["artifacts_stored"] = artifact_count
@@ -180,12 +181,14 @@ class AdoptionTracker:
         """
         Calculate overall adoption score (0.0 to 1.0).
         
-        Scoring weights:
-        - MLflow tracking: 25% (config 10% + experiments 5% + runs 5% + artifacts 5%)
-        - Feature store: 25% (config 10% + defined 7.5% + registered 7.5%)
-        - Data validation: 20% (config 20%)
-        - Evaluation: 15% (config 15%)
-        - Monitoring: 15% (config 15%)
+        Scoring weights (decimal values where 0.10 = 10%):
+        - MLflow tracking: 0.25 total (config 0.10 + experiments 0.05 + runs 0.05 + artifacts 0.05)
+        - Feature store: 0.25 total (config 0.10 + defined 0.075 + registered 0.075)
+        - Data validation: 0.20 total (config 0.20)
+        - Evaluation: 0.15 total (config 0.15)
+        - Monitoring: 0.15 total (config 0.15)
+        
+        Total: 1.00 (100%)
         """
         score = 0.0
         
