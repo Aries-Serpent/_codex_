@@ -1,0 +1,12 @@
+# Example sweep demonstrating override combinations
+name: offline-sweep
+git_hash: ${oc.env:CODEX_GIT_HASH,unknown}
+config_version: conf/config.yaml
+data_version: ${data.dataset_path}
+run_id: null
+hydra:
+  sweeper:
+    params:
+      training.max_epochs: 1,2
+      training.batch_size: 2,4
+      data.seed: 7,13
