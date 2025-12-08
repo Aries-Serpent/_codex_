@@ -292,7 +292,8 @@ def benchmark(tasks: int, iterations: int, warmup: int):
     for i in range(iterations):
         orchestrator.evolve()
         if i % max(1, iterations // 10) == 0:
-            click.echo(f"  Progress: {100 * i // iterations}%", nl=False)
+            progress_pct = 100 * i // iterations
+            click.echo(f"  Progress: {progress_pct:3d}%   ", nl=False)  # Extra spaces to clear line
             click.echo("\r", nl=False)
     
     elapsed = time.perf_counter() - start_time
@@ -325,6 +326,8 @@ def inspect(task_id: str, format: str):
     test_tasks = create_test_tasks(5)
     
     if task_id not in test_tasks:
+        # sys.exit is appropriate here as this is a CLI command, not a library function
+        # Users invoking this via CLI expect proper exit codes for error conditions
         click.echo(f"❌ Task '{task_id}' not found. Available tasks:", err=True)
         for tid in test_tasks:
             click.echo(f"   - {tid}", err=True)
@@ -408,6 +411,7 @@ def qft():
     entanglement, and path integral optimization.
     """
     if not QFT_AVAILABLE:
+        # sys.exit is appropriate here as this is a CLI command
         click.echo("❌ QFT extensions not available", err=True)
         click.echo("   Install dependencies or check imports", err=True)
         sys.exit(1)
@@ -492,6 +496,7 @@ def entangle(task_a: str, task_b: str, bell_state: str):
     test_tasks = create_test_tasks(5)
     
     if task_a not in test_tasks or task_b not in test_tasks:
+        # sys.exit is appropriate here as this is a CLI command
         click.echo(f"❌ Tasks not found. Available:", err=True)
         for tid in test_tasks:
             click.echo(f"   - {tid}", err=True)
