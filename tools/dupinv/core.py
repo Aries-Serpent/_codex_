@@ -11,6 +11,7 @@ from typing import Dict, List, Optional
 
 from .exact_detector import ExactDetector
 from .schema import DuplicateGroup, InventoryMetadata, SupplementalInventory
+from .shim_integration import ShimInventoryReader, CrossReference
 
 
 class DuplicateScanner:
@@ -32,9 +33,27 @@ class DuplicateScanner:
         self.root_path = Path(root_path).resolve()
         self.config = config or {}
         self.detectors = {}
+        self.cross_reference = None
+        
+        # Initialize SHIM inventory integration
+        self._init_shim_integration()
         
         # Initialize available detectors
         self._init_detectors()
+
+    def _init_shim_integration(self):
+        """Initialize SHIM inventory integration."""
+        try:
+            reader = ShimInventoryReader(self.root_path)
+            shim_entries = reader.load()
+            self.cross_reference = CrossReference(shim_entries)
+        except FileNotFoundError:
+            # SHIM inventory not found - continue without it
+            self.cross_reference = None
+        except Exception as e:
+            # Log error but continue
+            print(f"Warning: Failed to load SHIM inventory: {e}")
+            self.cross_reference = None
 
     def _init_detectors(self):
         """Initialize detection engines based on configuration."""
@@ -62,6 +81,33 @@ class DuplicateScanner:
         # Other detectors will be added in later phases
         # self.detectors["ast"] = ASTDetector(...)
         # self.detectors["semantic"] = SemanticDetector(...)
+
+    def _apply_shim_cross_reference(
+        self, groups: List[DuplicateGroup]
+    ) -> List[DuplicateGroup]:
+        """
+        Apply SHIM inventory cross-reference to duplicate groups.
+
+        Args:
+            groups: List of duplicate groups
+
+        Returns:
+            Updated list of duplicate groups with SHIM data populated
+        """
+        for group in groups:
+            # Extract file paths from member files
+            paths = [member.path for member in group.member_files]
+
+            # Cross-reference with SHIM inventory
+            result = self.cross_reference.check_paths(paths, derive_module=True)
+
+            # Update group with SHIM data
+            group.in_shim_inventory = result.in_shim_inventory
+            group.is_whitelisted = result.is_whitelisted
+            group.shim_status = result.shim_status
+            group.shim_recommendations = result.recommendations
+
+        return groups
 
     def scan(self, modes: List[str] = None) -> SupplementalInventory:
         """
@@ -99,6 +145,10 @@ class DuplicateScanner:
             for group in groups:
                 for member in group.member_files:
                     files_scanned.add(member.path)
+        
+        # Apply SHIM cross-reference to all groups
+        if self.cross_reference:
+            all_groups = self._apply_shim_cross_reference(all_groups)
         
         # Calculate duration
         duration = time.time() - start_time
