@@ -5,7 +5,10 @@ Provides functions to split datasets into train/val/test sets with
 guaranteed determinism and reproducibility.
 """
 
+import logging
 from typing import List, Tuple
+
+logger = logging.getLogger(__name__)
 
 try:
     import numpy as np
@@ -70,6 +73,16 @@ def split_indices(
     else:
         # Fallback to Python random
         import random
+        import warnings
+
+        warnings.warn(
+            "NumPy is not available. Falling back to Python's random module for splitting. "
+            "This will produce DIFFERENT splits than NumPy for the same seed, "
+            "which may break cross-platform reproducibility. "
+            "Consider installing NumPy for consistent results: pip install numpy",
+            UserWarning,
+            stacklevel=2,
+        )
 
         random.seed(seed)
         indices_list = list(range(n))

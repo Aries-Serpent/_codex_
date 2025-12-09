@@ -794,7 +794,7 @@ class MLflowMetricWriter:
         Initialize MLflow metric writer.
 
         Args:
-            tracking_uri: MLflow tracking URI (default: file:///mlruns)
+            tracking_uri: MLflow tracking URI (default: mlruns)
             experiment_name: Experiment name for grouping runs
         """
         self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "mlruns")
@@ -916,7 +916,7 @@ class MLflowParamWriter:
             Escaped string key
             
         Note:
-            Escaped keys are NOT automatically unescaped when reading back from MLflow.
+            Use `_unescape_key` to reverse escaping when reconstructing keys.
             Keys with literal backslash-separator sequences (e.g., "file\.txt") will be
             indistinguishable from keys that were escaped (e.g., "file.txt" → "file\.txt").
             This is a known limitation for one-way logging to MLflow.
@@ -926,13 +926,33 @@ class MLflowParamWriter:
         # Escape separator characters in keys to prevent collisions
         return key_str.replace(sep, f"\\{sep}")
 
+    def _unescape_key(self, key: str, sep: str = ".") -> str:
+        """Reverse escaping performed by _escape_key.
+        
+        Args:
+            key: Escaped string key
+            sep: Separator character that was escaped
+        
+        Returns:
+            Unescaped string key
+            
+        Note:
+            This method reverses the escaping applied by `_escape_key`.
+            Use this when reconstructing original key names from escaped keys.
+        """
+        return key.replace(f"\\{sep}", sep)
+
     def _flatten_dict(
         self,
         d: dict[str, Any],
         prefix: str = "",
         sep: str = ".",
     ) -> dict[str, Any]:
-        """Flatten nested dictionary with key validation and separator escaping."""
+        """Flatten nested dictionary with key validation and separator escaping.
+        
+        Note:
+            Use `_unescape_key` to reverse escaping when reconstructing keys.
+        """
         items = {}
         for k, v in d.items():
             escaped_key = self._escape_key(k, sep)
