@@ -1,5 +1,5 @@
 {
-  "generated": 1765263526.0316525,
+  "generated": 1765265388.8284855,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -312,9 +312,6 @@
       "examples/production_training_with_mlflow.py",
       "examples/train_toy.py",
       "notebooks/gpu_training_example.ipynb",
-      "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-      "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-      "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
       "scripts/space_traversal/detectors/functional_training.py",
       "scripts/space_traversal/detectors/train_loop.py",
       "scripts/space_traversal/detectors/unified_training.py",
@@ -1405,7 +1402,6 @@
       "scripts/migrate_configs.py",
       "scripts/remediation/consolidate_configs.py",
       "scripts/runner/configure_repo_vars.sh",
-      "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
       "scripts/space_traversal/detectors/mcp_configuration.py",
       "scripts/status/visual_compare_with_config.sh",
       "services/msp_gateway/config.py",
@@ -1481,6 +1477,7 @@
       "tests/mcp/test_config.py",
       "tests/pipeline/test_pipeline_config.py",
       "tests/smoke/test_config_validate_cli.py",
+      "tests/space_traversal/test_mcp_configuration.py",
       "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
       "tests/space_traversal/test_peft_comprehensive/test_config_loading.py",
       "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",

@@ -1,5 +1,5 @@
 {
-  "generated": 1765263530.559688,
+  "generated": 1765265393.438433,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -874,15 +874,14 @@
       "id": "mcp-lifecycle-management",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.871795,
-        "tests": 0.461538,
+        "consistency": 0.880952,
+        "tests": 0.52381,
         "safeguards": 0.833333,
         "documentation": 1.0
       },
-      "score": 0.564743,
+      "score": 0.582143,
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -919,6 +918,10 @@
         "tests/mcp/test_tools_integration.py",
         "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
+        "tests/space_traversal/test_mcp_configuration.py",
+        "tests/space_traversal/test_mcp_schema_validation.py",
+        "tests/space_traversal/test_mcp_security_safeguards.py",
+        "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py"
       ],
       "found_patterns": [],
@@ -937,85 +940,7 @@
       },
       "explain": {
         "id": "mcp-lifecycle-management",
-        "score": 0.564743,
-        "partials": {}
-      }
-    },
-    {
-      "id": "mcp-multi-tenant",
-      "components": {
-        "functionality": 1.0,
-        "consistency": 1.0,
-        "tests": 0.6,
-        "safeguards": 0.166667,
-        "documentation": 0.236337
-      },
-      "score": 0.660451,
-      "evidence_files": [
-        "policies/tenant_policy.schema.json",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/mcp_multi_tenant.py",
-        "services/msp_gateway/middleware/tenant_context.py",
-        "tests/mcp/test_multi_tenant_extended.py"
-      ],
-      "found_patterns": [
-        "tenant"
-      ],
-      "meta": {
-        "category": "mcp",
-        "missing_detectors": [
-          "isolation",
-          "tenant"
-        ]
-      },
-      "explain": {
-        "id": "mcp-multi-tenant",
-        "score": 0.660451,
-        "partials": {}
-      }
-    },
-    {
-      "id": "mcp-protocol-surface",
-      "components": {
-        "functionality": 1.0,
-        "consistency": 0.866667,
-        "tests": 0.4,
-        "safeguards": 0.833333,
-        "documentation": 0.236337
-      },
-      "score": 0.683784,
-      "evidence_files": [
-        "scripts/space_traversal/detectors/mcp_error_handling.py",
-        "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
-        "scripts/space_traversal/detectors/mcp_protocol_surface.py",
-        "services/msp_gateway/app.py",
-        "src/codex/api/app.py",
-        "src/codex_ml/serving/inference_server.py",
-        "src/hhg_logistics/serve/app.py",
-        "src/mcp/errors.py",
-        "src/mcp/server/__init__.py",
-        "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-        "test_mcp_server.py",
-        "tests/hhg_logistics/serve/test_app.py",
-        "tests/mcp/test_integration.py",
-        "tests/mcp/test_protocol.py",
-        "tests/mcp/test_server.py"
-      ],
-      "found_patterns": [
-        "FastAPI",
-        "jsonrpc"
-      ],
-      "meta": {
-        "category": "mcp",
-        "missing_detectors": [
-          "FastAPI",
-          "endpoint",
-          "jsonrpc"
-        ]
-      },
-      "explain": {
-        "id": "mcp-protocol-surface",
-        "score": 0.683784,
+        "score": 0.582143,
         "partials": {}
       }
     },
@@ -1023,12 +948,12 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.930394,
-        "tests": 0.143852,
+        "consistency": 0.928741,
+        "tests": 0.15677,
         "safeguards": 1.0,
         "documentation": 0.236337
       },
-      "score": 0.657492,
+      "score": 0.660391,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -1061,20 +986,6 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -1139,6 +1050,10 @@
         "tests/mcp/test_tools_integration.py",
         "tests/mcp/test_tools_integration_advanced.py",
         "tests/mcp/test_utilities.py",
+        "tests/space_traversal/test_mcp_configuration.py",
+        "tests/space_traversal/test_mcp_schema_validation.py",
+        "tests/space_traversal/test_mcp_security_safeguards.py",
+        "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
         "tests/tools/.gitkeep",
@@ -1471,63 +1386,7 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.657492,
-        "partials": {}
-      }
-    },
-    {
-      "id": "structural-integrity",
-      "components": {
-        "functionality": 1.0,
-        "consistency": 0.9,
-        "tests": 0.0,
-        "safeguards": 0.666667,
-        "documentation": 1.0
-      },
-      "score": 0.68,
-      "evidence_files": [
-        "codex_ml/__init__.py",
-        "codex_ml/__main__.py",
-        "codex_ml/cli/main.py",
-        "codex_ml/data/checksums.py",
-        "codex_ml/pipeline.py",
-        "codex_utils/__init__.py",
-        "codex_utils/cli/ndjson_summary.py",
-        "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py",
-        "codex_utils/mlflow_offline.py"
-      ],
-      "found_patterns": [
-        "lib-shadowing",
-        "split-brain"
-      ],
-      "meta": {
-        "risk_level": "high",
-        "description": "Detects architectural split-brain and namespace shadowing.",
-        "split_dirs": [
-          "codex_ml",
-          "codex_utils",
-          "data",
-          "experiments",
-          "services",
-          "tokenization",
-          "tools",
-          "training"
-        ],
-        "shadow_dirs": [
-          "torch"
-        ],
-        "evidence_limit": 10,
-        "safeguards": [
-          "bounded",
-          "validation",
-          "deterministic",
-          "error-handling"
-        ]
-      },
-      "explain": {
-        "id": "structural-integrity",
-        "score": 0.68,
+        "score": 0.660391,
         "partials": {}
       }
     }
