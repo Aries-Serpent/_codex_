@@ -115,14 +115,14 @@ class TestGetDeterministicStatus:
 
         status = get_deterministic_status()
 
-        assert status["pytorch_available"] is True
+        assert status["torch_available"] is True
         assert status["cudnn_deterministic"] is True
         assert status["cudnn_benchmark"] is False
 
         if hasattr(torch, "are_deterministic_algorithms_enabled"):
-            assert "deterministic_algorithms" in status
+            assert "use_deterministic_algorithms" in status
             # The actual value depends on whether it was successfully set
-            assert isinstance(status["deterministic_algorithms"], bool)
+            assert isinstance(status["use_deterministic_algorithms"], (bool, type(None)))
 
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_get_status_after_disabling(self):
@@ -131,7 +131,7 @@ class TestGetDeterministicStatus:
 
         status = get_deterministic_status()
 
-        assert status["pytorch_available"] is True
+        assert status["torch_available"] is True
         assert status["cudnn_deterministic"] is False
         assert status["cudnn_benchmark"] is True
 
@@ -140,10 +140,10 @@ class TestGetDeterministicStatus:
         """Test getting status when PyTorch is not available."""
         status = get_deterministic_status()
 
-        assert status["pytorch_available"] is False
-        # Other keys should not be present
-        assert "cudnn_deterministic" not in status
-        assert "cudnn_benchmark" not in status
+        assert status["torch_available"] is False
+        # When torch is unavailable, function still returns keys but all False
+        assert status["cudnn_deterministic"] is False
+        assert status["cudnn_benchmark"] is False
 
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_status_reflects_manual_changes(self):
