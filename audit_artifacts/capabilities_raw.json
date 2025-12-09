@@ -1,5 +1,5 @@
 {
-  "generated": 1765265391.740256,
+  "generated": 1765294242.8940268,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -4373,7 +4373,6 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
-        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/adoption/track_metrics.py",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
@@ -4557,7 +4556,6 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/__init__.py",
-        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/coverage_ingest.py",
@@ -4565,7 +4563,6 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -13440,7 +13437,6 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
@@ -13536,7 +13532,7 @@
         "seed_management": 33,
         "repro_utils": 39,
         "determinism_configs": 9,
-        "integrity_validation": 40
+        "integrity_validation": 39
       }
     },
     {

@@ -2408,11 +2408,11 @@
     },
     {
       "components": {
-        "consistency": 0.783156,
+        "consistency": 0.78323,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.272068
+        "tests": 0.272242
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -4399,7 +4399,6 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
-        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/adoption/track_metrics.py",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
@@ -4583,7 +4582,6 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/__init__.py",
-        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/coverage_ingest.py",
@@ -4591,7 +4589,6 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -7109,7 +7106,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.774648
+        "score": 0.774706
       },
       "found_patterns": [
         "analysis",
@@ -7122,7 +7119,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.774648
+      "score": 0.774706
     },
     {
       "components": {
@@ -13506,11 +13503,11 @@
     },
     {
       "components": {
-        "consistency": 0.867925,
+        "consistency": 0.866667,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.5
+        "tests": 0.504762
       },
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
@@ -13543,7 +13540,6 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
@@ -13623,7 +13619,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.848585
+        "score": 0.849524
       },
       "found_patterns": [
         "deterministic",
@@ -13635,11 +13631,11 @@
       "id": "reproducibility",
       "meta": {
         "determinism_configs": 9,
-        "integrity_validation": 40,
+        "integrity_validation": 39,
         "repro_utils": 39,
         "seed_management": 33
       },
-      "score": 0.848585
+      "score": 0.849524
     },
     {
       "components": {
@@ -19587,6 +19583,6 @@
       "score": 0.845
     }
   ],
-  "generated": 1765265393.4263942,
+  "generated": 1765294244.584194,
   "version": "1.2.0"
 }

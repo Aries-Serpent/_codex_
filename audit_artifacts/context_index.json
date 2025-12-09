@@ -1,6 +1,6 @@
 {
-  "generated": 1765265388.7917023,
-  "count": 4690,
+  "generated": 1765294239.9463425,
+  "count": 4687,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -4559,8 +4559,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1902,
-      "sha": "7271c282548968076491dfa9d4690b8e628df1e0e4a414fd43fdb89787f30970"
+      "size": 1904,
+      "sha": "c1fa495cb8658b260d1258dee943e28d84d88c798eec57ecf00b7431b1063aa2"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -11907,12 +11907,6 @@
       "sha": "b9e48784ea944ee5d315f3f7ff7115167cfd4c65c85380ba104839b58b7d1959"
     },
     {
-      "path": "scripts/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 486,
-      "sha": "10b2e281753cefb26b50a3555cd7dc9114942e1a70c893f360673dd314da55ec"
-    },
-    {
       "path": "scripts/adoption/track_metrics.py",
       "ext": ".py",
       "size": 12235,
@@ -13011,12 +13005,6 @@
       "sha": "886aaa30832098a482a8ae0ada1fedeba3681594b820cadaaa0d183abf9c9eb7"
     },
     {
-      "path": "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 564,
-      "sha": "ee9b44748b19d9a3e7d721819b8104e4e0033f95e107196435693d10ee67e644"
-    },
-    {
       "path": "scripts/space_traversal/audit_runner.py",
       "ext": ".py",
       "size": 40462,
@@ -13057,12 +13045,6 @@
       "ext": ".md",
       "size": 2978,
       "sha": "c46eac5e3ce3e5bc1ff8df9c2b39be352b0738925e168eb9684165875a597e58"
-    },
-    {
-      "path": "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3513,
-      "sha": "706c47892eed62a945ccc9c0e6678f1c2da160c1a77c77c3420dc7a8027f6b49"
     },
     {
       "path": "scripts/space_traversal/detectors/archival_bundling.py",
