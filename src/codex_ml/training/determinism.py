@@ -27,7 +27,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
     Args:
         enabled: Whether to enable deterministic mode
-        warn: Whether to warn about performance impact
+        warn: Whether to log messages about mode changes and performance impact
 
     Returns:
         True if successfully set, False if PyTorch not available
@@ -72,7 +72,8 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
             if hasattr(torch, "use_deterministic_algorithms"):
                 torch.use_deterministic_algorithms(False)
 
-            logger.info("Deterministic mode disabled - performance optimizations enabled")
+            if warn:
+                logger.info("Deterministic mode disabled - performance optimizations enabled")
 
         return True
 

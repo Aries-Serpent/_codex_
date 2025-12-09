@@ -192,14 +192,15 @@ class TestWithNumPy:
         seed = 42
 
         # Track whether NumPy's default_rng was called
-        numpy_rng_called = []
+        numpy_rng_called = False
 
         # Wrap np.random.default_rng to track calls
         if NUMPY_AVAILABLE:
             original_default_rng = np.random.default_rng
 
             def tracked_default_rng(*args, **kwargs):
-                numpy_rng_called.append(True)
+                nonlocal numpy_rng_called
+                numpy_rng_called = True
                 return original_default_rng(*args, **kwargs)
 
             monkeypatch.setattr(np.random, "default_rng", tracked_default_rng)
@@ -208,7 +209,7 @@ class TestWithNumPy:
         train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
 
         # Verify that numpy default_rng was actually called
-        assert len(numpy_rng_called) > 0, "NumPy default_rng should have been called"
+        assert numpy_rng_called, "NumPy default_rng should have been called"
 
         # Verify the split is reasonable
         assert len(train) == 80

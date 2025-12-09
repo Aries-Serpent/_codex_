@@ -97,8 +97,6 @@ class SeedManager:
                 "Set PYTHONHASHSEED as an environment variable before running your script "
                 "for reproducible Python hash randomization."
             )
-            # Document the intended value for reference, but don't set it (it won't work)
-            python_hash = str(self.seed)
 
         state = SeedState(
             seed=self.seed,
