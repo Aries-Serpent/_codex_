@@ -1034,9 +1034,6 @@ class MLflowArtifactWriter:
                 else:
                     logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
                     return False
-            else:
-                logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
-                return False
             return True
         except Exception as e:
             logger.warning(f"Failed to log model: {e}")
