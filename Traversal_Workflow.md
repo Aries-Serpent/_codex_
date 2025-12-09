@@ -1,8 +1,8 @@
-# Copilot Space Traversal Workflow
+# Copilot Space Traversal Workflow (v1.4.0)
 
 **Roles:** [Audit Orchestrator], [Capability Cartographer]  
 **Energy:** 5  
-**Version:** 1.1.0
+**Version:** 1.4.0
 
 > **NOTE:** For operational commands and usage examples, see `Usage_Guide.md`
 
@@ -61,8 +61,11 @@ The audit pipeline consists of seven sequential stages, each producing a specifi
 - **Input:** `capabilities_raw.json`, weights from workflow.yaml
 - **Process:**
   - Calculate 5 component scores per capability
-  - Apply normalized weights
+  - Apply normalized weights (auto-normalize with warning)
   - Clamp values to [0, 1] range
+  - Coverage augmentation via optional `coverage_map.json`
+  - Documentation scoring with synonym expansion per capability
+  - Duplicate heuristic selectable via `scoring.dup.heuristic` (`simple` or `token_similarity`)
   - Aggregate to final score
 - **Output:** `capabilities_scored.json` with component breakdowns
 - **Transparency:** All intermediate values preserved for audit
@@ -81,9 +84,10 @@ The audit pipeline consists of seven sequential stages, each producing a specifi
   - Load template from `templates/audit/capability_matrix.md.j2`
   - Inject capability data, scores, gaps, weights
   - Compute template hash for drift detection
-  - Render markdown with timestamp
-- **Output:** `reports/capability_matrix_<timestamp>.md`
-- **Format:** Human-readable tabular report
+  - Render markdown with timestamp and companion JSON
+  - Emit `codex_status_update_<date>.md` issue body for daily status automation
+- **Output:** `reports/capability_matrix_<timestamp>.md`, `reports/capability_matrix_<timestamp>.json`, `reports/codex_status_update_<date>.md`
+- **Format:** Human-readable tabular report + daily status issue text
 
 #### Stage S7: Manifest Generation
 - **Input:** All artifacts, workflow.yaml
@@ -92,7 +96,7 @@ The audit pipeline consists of seven sequential stages, each producing a specifi
   - Hash each artifact JSON file
   - Concatenate template files for template_hash
   - Collect warnings (e.g., weight normalization)
-  - Bundle configuration snapshot
+  - Bundle configuration snapshot with `metrics_schema_version` and normalized weights
 - **Output:** `audit_run_manifest.json` at repository root
 - **Integrity:** Cryptographic chain for audit trail
 
@@ -724,23 +728,19 @@ Before committing changes that affect capabilities:
 - [ ] Commit manifest and latest report: `git add audit_run_manifest.json reports/capability_matrix_*.md`
 - [ ] Document any intentional score decreases in commit message
 
-## 15. Upgrade Path (Planned)
+## 15. Upgrade Path (Planned / Experimental)
 
 ### Version 1.2.x: Token Similarity
-- Replace simple stem duplication with token-level similarity
-- Jaccard index for code token overlap
-- Configuration: `scoring.dup.heuristic: token_similarity`
+- Status: **configurable** via `scoring.dup.heuristic: token_similarity` (fallbacks to simple if helper absent)
+- Approach: token-level overlap to refine duplication penalty
 
 ### Version 1.3.x: Coverage XML Integration
-- Ingest `coverage.xml` for precise test depth
-- Replace heuristic test scoring with line coverage data
-- Configuration: `scoring.coverage.xml_path: coverage.xml`
+- Status: **partially** satisfied via `coverage_map.json` augmentation; XML ingestion remains roadmap
+- Goal: replace heuristic test depth with line coverage
 
 ### Version 1.4.x: Trend Aggregation
-- Store historical scores in SQLite database
-- Generate trend charts (matplotlib/plotly)
-- Detect gradual regressions over time
-- Configuration: `trends.db_path: .codex/audit_trends.db`
+- Status: **roadmap** — trend DB and visualization hooks pending
+- Goal: store historical scores and chart regressions over time
 
 ### Version 2.0.0: Multi-Repo Federation
 - Aggregate audit results across multiple repositories
@@ -755,6 +755,6 @@ Before committing changes that affect capabilities:
 
 ---
 
-**Last Updated:** 2025-11-19  
-**Specification Version:** 1.1.0  
+**Last Updated:** 2025-12-09  
+**Specification Version:** 1.4.0  
 **Maintained By:** Codex Audit Orchestrator Team
