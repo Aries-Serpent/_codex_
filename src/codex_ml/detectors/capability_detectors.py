@@ -539,6 +539,366 @@ def detector_extensibility() -> DetectorResult:
     )
 
 
+# --- Logging Capability Detector ---
+
+
+def detector_logging() -> DetectorResult:
+    """Detect logging and monitoring capability maturity.
+
+    Checks:
+    - Centralized metrics sink
+    - Prometheus/OTel exporters
+    - Log rotation
+    - PII scrubbing
+    - Alerting
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check logging module exists
+    logging_paths = ["src/codex/logging/", "src/codex_ml/logging/", "monitoring/"]
+    logging_files = 0
+    for p in logging_paths:
+        if _check_path_exists(p):
+            logging_files += _count_python_files(p)
+
+    if logging_files > 0:
+        score += 0.15
+        details["checks"]["logging_module"] = logging_files
+
+    # Check for logging tests
+    logging_tests = _count_test_files("tests/capabilities/logging")
+    logging_tests += _count_test_files("tests/logging")
+    if logging_tests > 0:
+        score += 0.2
+        details["checks"]["logging_tests"] = logging_tests
+
+    # Check for metrics sink
+    if _check_file_content(
+        "tests/capabilities/logging/test_logging_comprehensive.py",
+        ["MetricsSink", "record"],
+    ).get("MetricsSink", False):
+        score += 0.15
+        details["checks"]["metrics_sink"] = True
+
+    # Check for Prometheus exporter
+    if _check_file_content(
+        "tests/capabilities/logging/test_logging_comprehensive.py",
+        ["PrometheusExporter", "export"],
+    ).get("PrometheusExporter", False):
+        score += 0.1
+        details["checks"]["prometheus_exporter"] = True
+
+    # Check for PII scrubbing
+    if _check_file_content(
+        "tests/capabilities/logging/test_logging_comprehensive.py",
+        ["scrub_pii", "PII_PATTERNS"],
+    ).get("scrub_pii", False):
+        score += 0.15
+        details["checks"]["pii_scrubbing"] = True
+
+    # Check for alerting
+    if _check_file_content(
+        "tests/capabilities/logging/test_logging_comprehensive.py",
+        ["AlertRule", "AlertManager"],
+    ).get("AlertRule", False):
+        score += 0.15
+        details["checks"]["alerting"] = True
+
+    # Check for log rotation
+    if _check_file_content(
+        "tests/capabilities/logging/test_logging_comprehensive.py",
+        ["LogRotator", "should_rotate"],
+    ).get("LogRotator", False):
+        score += 0.1
+        details["checks"]["log_rotation"] = True
+
+    return DetectorResult(
+        name="logging",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Checkpointing Capability Detector ---
+
+
+def detector_checkpointing() -> DetectorResult:
+    """Detect checkpointing and resume capability maturity.
+
+    Checks:
+    - RNG state validation
+    - Checksum verification
+    - Best-k retention
+    - Corruption handling
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check checkpointing module exists
+    ckpt_paths = ["src/training/checkpoint_manager.py", "src/codex_ml/checkpointing/"]
+    ckpt_found = any(_check_path_exists(p) for p in ckpt_paths)
+    if ckpt_found:
+        score += 0.15
+        details["checks"]["checkpointing_module"] = True
+
+    # Check for checkpointing tests
+    ckpt_tests = _count_test_files("tests/capabilities/checkpoint_capability")
+    ckpt_tests += sum(1 for f in Path("tests/").rglob("test_checkpoint*.py") if f.exists())
+    if ckpt_tests > 0:
+        score += 0.2
+        details["checks"]["checkpointing_tests"] = ckpt_tests
+
+    # Check for RNG state tests
+    if _check_file_content(
+        "tests/capabilities/checkpoint_capability/test_checkpointing_comprehensive.py",
+        ["RNGState", "python_state"],
+    ).get("RNGState", False):
+        score += 0.15
+        details["checks"]["rng_state"] = True
+
+    # Check for checksum validation
+    if _check_file_content(
+        "tests/capabilities/checkpoint_capability/test_checkpointing_comprehensive.py",
+        ["compute_checkpoint_checksum", "verify_checksum"],
+    ).get("compute_checkpoint_checksum", False):
+        score += 0.15
+        details["checks"]["checksum_validation"] = True
+
+    # Check for best-k retention
+    if _check_file_content(
+        "tests/capabilities/checkpoint_capability/test_checkpointing_comprehensive.py",
+        ["BestKCheckpointManager", "get_checkpoints_to_delete"],
+    ).get("BestKCheckpointManager", False):
+        score += 0.15
+        details["checks"]["best_k_retention"] = True
+
+    # Check for corruption handling
+    if _check_file_content(
+        "tests/capabilities/checkpoint_capability/test_checkpointing_comprehensive.py",
+        ["CorruptionDetector", "AutoHealManager"],
+    ).get("CorruptionDetector", False):
+        score += 0.2
+        details["checks"]["corruption_handling"] = True
+
+    return DetectorResult(
+        name="checkpointing",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- CI/Test Capability Detector ---
+
+
+def detector_ci_test() -> DetectorResult:
+    """Detect CI/Test capability maturity.
+
+    Checks:
+    - Coverage gates
+    - Nox sessions
+    - Deterministic seeding
+    - Test isolation
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check CI infrastructure exists
+    ci_files = ["noxfile.py", "pytest.ini", ".pre-commit-config.yaml"]
+    ci_found = sum(1 for f in ci_files if _check_path_exists(f))
+    if ci_found > 0:
+        score += 0.15
+        details["checks"]["ci_infrastructure"] = ci_found
+
+    # Check for CI tests
+    ci_tests = _count_test_files("tests/capabilities/ci_test")
+    ci_tests += _count_test_files("tests/ci")
+    if ci_tests > 0:
+        score += 0.2
+        details["checks"]["ci_tests"] = ci_tests
+
+    # Check for coverage gate tests
+    if _check_file_content(
+        "tests/capabilities/ci_test/test_ci_comprehensive.py",
+        ["CoverageGate", "check"],
+    ).get("CoverageGate", False):
+        score += 0.15
+        details["checks"]["coverage_gates"] = True
+
+    # Check for nox session tests
+    if _check_file_content(
+        "tests/capabilities/ci_test/test_ci_comprehensive.py",
+        ["NoxSession", "NoxConfig"],
+    ).get("NoxSession", False):
+        score += 0.15
+        details["checks"]["nox_sessions"] = True
+
+    # Check for deterministic seeding
+    if _check_file_content(
+        "tests/capabilities/ci_test/test_ci_comprehensive.py",
+        ["DeterministicSeeder", "seed_all"],
+    ).get("DeterministicSeeder", False):
+        score += 0.15
+        details["checks"]["deterministic_seeding"] = True
+
+    # Check for test isolation
+    if _check_file_content(
+        "tests/capabilities/ci_test/test_ci_comprehensive.py",
+        ["IsolationManager", "create_temp_dir"],
+    ).get("IsolationManager", False):
+        score += 0.2
+        details["checks"]["test_isolation"] = True
+
+    return DetectorResult(
+        name="ci_test",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Versioning Capability Detector ---
+
+
+def detector_versioning() -> DetectorResult:
+    """Detect versioning and releases capability maturity.
+
+    Checks:
+    - Semantic versioning
+    - Release automation
+    - Changelog generation
+    - Artifact signing
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check versioning infrastructure
+    version_files = ["pyproject.toml", ".github/workflows/"]
+    version_found = sum(1 for f in version_files if _check_path_exists(f))
+    if version_found > 0:
+        score += 0.1
+        details["checks"]["versioning_infrastructure"] = version_found
+
+    # Check for versioning tests
+    version_tests = _count_test_files("tests/capabilities/versioning")
+    if version_tests > 0:
+        score += 0.2
+        details["checks"]["versioning_tests"] = version_tests
+
+    # Check for semantic version tests
+    if _check_file_content(
+        "tests/capabilities/versioning/test_versioning_comprehensive.py",
+        ["SemanticVersion", "bump_major"],
+    ).get("SemanticVersion", False):
+        score += 0.15
+        details["checks"]["semantic_versioning"] = True
+
+    # Check for changelog tests
+    if _check_file_content(
+        "tests/capabilities/versioning/test_versioning_comprehensive.py",
+        ["Changelog", "ChangelogEntry"],
+    ).get("Changelog", False):
+        score += 0.15
+        details["checks"]["changelog_generation"] = True
+
+    # Check for release automation
+    if _check_file_content(
+        "tests/capabilities/versioning/test_versioning_comprehensive.py",
+        ["ReleaseManager", "create_release"],
+    ).get("ReleaseManager", False):
+        score += 0.2
+        details["checks"]["release_automation"] = True
+
+    # Check for artifact signing
+    if _check_file_content(
+        "tests/capabilities/versioning/test_versioning_comprehensive.py",
+        ["ArtifactSigner", "SignedRelease"],
+    ).get("ArtifactSigner", False):
+        score += 0.2
+        details["checks"]["artifact_signing"] = True
+
+    return DetectorResult(
+        name="versioning",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Error Handling Capability Detector ---
+
+
+def detector_error_handling() -> DetectorResult:
+    """Detect error handling and recovery capability maturity.
+
+    Checks:
+    - Exception hierarchy
+    - Retry logic
+    - Circuit breakers
+    - Dead-letter queues
+    - Self-remediation
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check error handling module exists
+    error_paths = ["src/mcp/errors.py", "src/codex_ml/errors.py"]
+    error_found = any(_check_path_exists(p) for p in error_paths)
+    if error_found:
+        score += 0.1
+        details["checks"]["error_module"] = True
+
+    # Check for error handling tests
+    error_tests = _count_test_files("tests/capabilities/error_handling")
+    if error_tests > 0:
+        score += 0.2
+        details["checks"]["error_tests"] = error_tests
+
+    # Check for exception hierarchy
+    if _check_file_content(
+        "tests/capabilities/error_handling/test_error_handling_comprehensive.py",
+        ["CodexError", "ValidationError", "NetworkError"],
+    ).get("CodexError", False):
+        score += 0.15
+        details["checks"]["exception_hierarchy"] = True
+
+    # Check for retry logic
+    if _check_file_content(
+        "tests/capabilities/error_handling/test_error_handling_comprehensive.py",
+        ["RetryConfig", "Retrier"],
+    ).get("RetryConfig", False):
+        score += 0.15
+        details["checks"]["retry_logic"] = True
+
+    # Check for circuit breakers
+    if _check_file_content(
+        "tests/capabilities/error_handling/test_error_handling_comprehensive.py",
+        ["CircuitBreaker", "CircuitState"],
+    ).get("CircuitBreaker", False):
+        score += 0.15
+        details["checks"]["circuit_breakers"] = True
+
+    # Check for dead-letter queue
+    if _check_file_content(
+        "tests/capabilities/error_handling/test_error_handling_comprehensive.py",
+        ["DeadLetterQueue", "retry"],
+    ).get("DeadLetterQueue", False):
+        score += 0.15
+        details["checks"]["dead_letter_queue"] = True
+
+    # Check for self-remediation
+    if _check_file_content(
+        "tests/capabilities/error_handling/test_error_handling_comprehensive.py",
+        ["RemediationManager", "remediate"],
+    ).get("RemediationManager", False):
+        score += 0.1
+        details["checks"]["self_remediation"] = True
+
+    return DetectorResult(
+        name="error_handling",
+        score=clamp01(score),
+        details=details,
+    )
+
+
 # --- Aggregate Capability Scorecard ---
 
 
@@ -550,6 +910,11 @@ def get_capability_detectors() -> list:
         detector_evaluation,
         detector_security,
         detector_extensibility,
+        detector_logging,
+        detector_checkpointing,
+        detector_ci_test,
+        detector_versioning,
+        detector_error_handling,
     ]
 
 
@@ -577,6 +942,11 @@ __all__ = [
     "detector_evaluation",
     "detector_security",
     "detector_extensibility",
+    "detector_logging",
+    "detector_checkpointing",
+    "detector_ci_test",
+    "detector_versioning",
+    "detector_error_handling",
     "get_capability_detectors",
     "run_capability_audit",
 ]
