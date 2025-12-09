@@ -623,7 +623,7 @@ def write_daily_status_issue(cfg, context, report_path: Path):
         try:
             report_ref = report_path.relative_to(ROOT)
         except ValueError:
-            report_ref = report_path
+            pass
 
     lines = [
         f"# [Daily Audit Status] {date_str}",
@@ -662,7 +662,8 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "scoring": cfg.get("scoring", {}),
     }
     result = render_template(cfg, context)
-    write_daily_status_issue(cfg, context, result[0])
+    issue_path = write_daily_status_issue(cfg, context, result[0])
+    info(f"Daily status issue body written to {issue_path}")
     # Backward compatibility: still return the same tuple from render_template.
     return result
 
