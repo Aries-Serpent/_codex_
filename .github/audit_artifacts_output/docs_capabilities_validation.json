@@ -1,0 +1,244 @@
+{
+  "validation_date": "2025-12-09",
+  "total_files": 14,
+  "files_with_issues": 14,
+  "completeness_percent": 0.0,
+  "results": [
+    {
+      "filename": "archival_bundling.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "ci_cd_pipeline.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "deployment_infrastructure.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "documentation_system.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "duplication_detection.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": true,
+        "tests": true,
+        "detectors": true,
+        "scoring": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_configuration.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "detectors": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_schema_validation.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": true,
+        "detectors": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_security_safeguards.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "detectors": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_tooling_registry.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "detectors": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_tools_integration.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true,
+        "metrics": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "safeguards_detection.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": true,
+        "tests": true,
+        "detectors": true,
+        "scoring": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "safeguards_keywords.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "status_reporting.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "structural_integrity.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": true,
+        "tests": true,
+        "detectors": true,
+        "metrics": true,
+        "examples": true
+      },
+      "missing_items": [
+        "scope"
+      ],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total": 14,
+    "complete": 0,
+    "incomplete": 14,
+    "meets_threshold": false
+  }
+}
