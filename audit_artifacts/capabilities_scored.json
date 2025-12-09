@@ -19667,8 +19667,76 @@
         "category": "training"
       },
       "score": 0.845
+    },
+    {
+      "components": {
+        "consistency": 0.931034,
+        "documentation": 1.0,
+        "functionality": 2.2,
+        "safeguards": 0.666667,
+        "tests": 0.241379
+      },
+      "evidence_files": [
+        "codex_addons/vector_stores/__init__.py",
+        "codex_addons/vector_stores/pgvector_stub.py",
+        "codex_addons/vector_stores/weaviate_stub.py",
+        "scripts/metrics/token_similarity.py",
+        "scripts/space_traversal/detectors/vector_store_detector.py",
+        "services/msp_gateway/config.py",
+        "services/msp_gateway/providers/retrieval_adapter.py",
+        "services/msp_gateway/routers/infer.py",
+        "services/msp_gateway/routers/kb.py",
+        "src/codex/archive/similarity.py",
+        "src/codex/retrieval/__init__.py",
+        "src/codex/retrieval/optimizations.py",
+        "src/codex/retrieval/search.py",
+        "src/codex/retrieval/stores/__init__.py",
+        "src/codex/retrieval/stores/advanced_indexing.py",
+        "src/codex/retrieval/stores/base.py",
+        "src/codex/retrieval/stores/factory.py",
+        "src/codex/retrieval/stores/faiss_store.py",
+        "src/codex/retrieval/stores/pgvector_store.py",
+        "src/codex/retrieval/stores/pinecone_store.py",
+        "src/codex/retrieval/stores/weaviate_store.py",
+        "src/codex_ml/data/loaders/hdf5_loader.py",
+        "src/codex_ml/models/reasoning.py",
+        "tests/retrieval/test_factory.py",
+        "tests/retrieval/test_faiss_filtering_integration.py",
+        "tests/retrieval/test_faiss_store_enhanced.py",
+        "tests/retrieval/test_vector_performance.py",
+        "tests/retrieval/test_vector_store_interface.py",
+        "tests/test_retrieval_pipeline.py"
+      ],
+      "explain": {
+        "id": "vector-stores",
+        "partials": {},
+        "score": 1.046552
+      },
+      "found_patterns": [
+        "chroma",
+        "cosine_similarity",
+        "embedding",
+        "faiss",
+        "pinecone",
+        "retrieval",
+        "search",
+        "semantic_search",
+        "similarity",
+        "vector",
+        "weaviate"
+      ],
+      "id": "vector-stores",
+      "meta": {
+        "bounded": true,
+        "deterministic": true,
+        "error_handling": true,
+        "mode": "hybrid",
+        "offline": true,
+        "validation": true
+      },
+      "score": 1.046552
     }
   ],
-  "generated": 1765294641.7660239,
+  "generated": 1765294782.035674,
   "version": "1.2.0"
 }

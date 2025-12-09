@@ -28,20 +28,27 @@ MAX_READ_BYTES = 200_000
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
-def _read_text(path: Path) -> str:
+def _read_text(path_input) -> str:
     """
     Read text from file with bounded read.
     
     Safeguard: Bounded read to prevent memory issues.
+    Validation: Handles both string and Path inputs.
     
     Args:
-        path: Path to file (absolute or relative to REPO_ROOT)
+        path_input: Path to file (string or Path object, absolute or relative to REPO_ROOT)
         
     Returns:
         File content (up to MAX_READ_BYTES) or empty string on error
     """
     try:
-        # Validation: Handle both absolute and relative paths
+        # Validation: Convert to Path if string
+        if isinstance(path_input, str):
+            path = Path(path_input)
+        else:
+            path = path_input
+        
+        # Handle both absolute and relative paths
         if not path.is_absolute():
             path = REPO_ROOT / path
         
