@@ -157,10 +157,17 @@ class TestMLflowArtifactWriter:
             f.write("test artifact")
             temp_path = f.name
 
-        result = artifact_writer.log_artifact(temp_path)
+        try:
+            result = artifact_writer.log_artifact(temp_path)
 
-        assert result is True
-        mock_mlflow.log_artifact.assert_called_once()
+            assert result is True
+            mock_mlflow.log_artifact.assert_called_once()
+        finally:
+            # Clean up temporary file
+            import os
+
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
 
 
 class TestMLflowRunManager:

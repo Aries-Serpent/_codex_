@@ -797,7 +797,7 @@ class MLflowMetricWriter:
             tracking_uri: MLflow tracking URI (default: file:///mlruns)
             experiment_name: Experiment name for grouping runs
         """
-        self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "file:///mlruns")
+        self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "mlruns")
         self.experiment_name = experiment_name or "codex_default"
         self._client: Optional[MlflowClient] = None
         self._initialized = False
@@ -905,16 +905,32 @@ class MLflowParamWriter:
         flat_params = self._flatten_dict(config, prefix)
         return self.write_params(flat_params)
 
+    def _escape_key(self, key: Any, sep: str = ".") -> str:
+        """Convert and escape a key for safe use in flattened dict.
+        
+        Args:
+            key: Key to escape (any type)
+            sep: Separator character to escape
+            
+        Returns:
+            Escaped string key
+        """
+        # Convert non-string keys to string
+        key_str = str(key) if not isinstance(key, str) else key
+        # Escape separator characters in keys to prevent collisions
+        return key_str.replace(sep, f"\\{sep}")
+
     def _flatten_dict(
         self,
         d: dict[str, Any],
         prefix: str = "",
         sep: str = ".",
     ) -> dict[str, Any]:
-        """Flatten nested dictionary."""
+        """Flatten nested dictionary with key validation and separator escaping."""
         items = {}
         for k, v in d.items():
-            key = f"{prefix}{sep}{k}" if prefix else k
+            escaped_key = self._escape_key(k, sep)
+            key = f"{prefix}{sep}{escaped_key}" if prefix else escaped_key
             if isinstance(v, dict):
                 items.update(self._flatten_dict(v, key, sep))
             else:
@@ -1005,20 +1021,31 @@ class MLflowArtifactWriter:
                 except ImportError:
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
-            elif "sklearn" in type(model).__module__:
-                # scikit-learn model
-                try:
-                    import mlflow.sklearn
-
-                    mlflow.sklearn.log_model(model, artifact_path)
-                except ImportError:
-                    logger.warning(
-                        "mlflow.sklearn is not available; cannot log scikit-learn model."
-                    )
-                    return False
             else:
-                logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
-                return False
+                # Try robust sklearn detection using isinstance
+                is_sklearn = False
+                try:
+                    from sklearn.base import BaseEstimator
+
+                    is_sklearn = isinstance(model, BaseEstimator)
+                except ImportError:
+                    # Fallback to module name check if sklearn not available
+                    is_sklearn = "sklearn" in type(model).__module__
+                
+                if is_sklearn:
+                    # scikit-learn model
+                    try:
+                        import mlflow.sklearn
+
+                        mlflow.sklearn.log_model(model, artifact_path)
+                    except ImportError:
+                        logger.warning(
+                            "mlflow.sklearn is not available; cannot log scikit-learn model."
+                        )
+                        return False
+                else:
+                    logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
+                    return False
             return True
         except Exception as e:
             logger.warning(f"Failed to log model: {e}")

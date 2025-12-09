@@ -53,6 +53,17 @@ class ByteLevelTokenizer:
         self.padding = padding
         self.truncation = truncation
 
+        # Validate max_length if set
+        if max_length is not None and max_length < 1:
+            import warnings
+
+            warnings.warn(
+                f"max_length={max_length} is less than 1. This may produce unexpected results "
+                "as sequences will be truncated to empty or minimal length.",
+                UserWarning,
+                stacklevel=2,
+            )
+
         # Vocabulary: bytes 0-255 + special tokens
         # Offset by 3 to reserve special token IDs
         self._special_token_offset = 3
@@ -108,6 +119,9 @@ class ByteLevelTokenizer:
             ids = [i for i in ids if i not in special_ids]
 
         # Convert back to bytes
+        # Byte values are offset by _special_token_offset (3) during encoding
+        # to reserve IDs 0-2 for special tokens (pad, eos, unk).
+        # Here we reverse that: subtract the offset to get original byte values (0-255).
         bytes_list = []
         for i in ids:
             byte_val = i - self._special_token_offset
