@@ -27,8 +27,8 @@ def split_indices(
 ) -> Tuple[List[int], List[int], List[int]]:
     """Split indices deterministically into train/val/test sets.
 
-    ⚠️ CROSS-PLATFORM REPRODUCIBILITY WARNING ⚠️
-    ============================================
+    WARNING: Cross-Platform Reproducibility Limitation
+    ====================================================
     The same seed produces DIFFERENT results depending on NumPy availability:
     - With NumPy: Uses np.random.default_rng (PCG64 algorithm)
     - Without NumPy: Uses Python random.shuffle (Mersenne Twister)

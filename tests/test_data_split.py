@@ -220,13 +220,18 @@ class TestWithNumPy:
         assert all_indices == set(range(100))
 
 
-@pytest.mark.skipif(NUMPY_AVAILABLE, reason="Test for NumPy unavailable case")
 class TestWithoutNumPy:
     """Tests for behavior when NumPy is not available."""
 
-    def test_warns_when_numpy_unavailable(self):
+    def test_warns_when_numpy_unavailable(self, monkeypatch):
         """Test that a warning is issued when NumPy is not available."""
+        # Mock NumPy as unavailable
         import warnings
+
+        import codex_ml.data.splitting as splitting_module
+
+        monkeypatch.setattr(splitting_module, "NUMPY_AVAILABLE", False)
+        monkeypatch.setattr(splitting_module, "np", None)
 
         n = 100
         seed = 42
@@ -248,4 +253,6 @@ class TestWithoutNumPy:
 
         # Verify all indices are present
         all_indices = set(train + val + test)
+        assert all_indices == set(range(n))
+
         assert all_indices == set(range(n))
