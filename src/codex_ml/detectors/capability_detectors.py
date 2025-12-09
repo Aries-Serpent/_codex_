@@ -6,6 +6,19 @@ Provides detectors for:
 - Evaluation capability
 - Security capability
 - Extensibility capability
+- Logging capability
+- Checkpointing capability
+- CI/Test capability
+- Versioning capability
+- Error Handling capability
+- Modeling capability
+- Training Engine capability
+- Data Handling capability
+- Deployment capability
+- Documentation capability
+- Experiment Tracking capability
+- Observability capability
+- Dependency Management capability
 """
 
 from __future__ import annotations
@@ -899,6 +912,562 @@ def detector_error_handling() -> DetectorResult:
     )
 
 
+# --- Modeling Capability Detector ---
+
+
+def detector_modeling() -> DetectorResult:
+    """Detect modeling capability maturity.
+
+    Checks:
+    - Model factory patterns
+    - Device/dtype matrix
+    - PEFT/LoRA integration
+    - Model card provenance
+    - Quantization support
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check modeling module exists
+    model_paths = ["src/codex_ml/models/", "src/modeling/"]
+    model_files = 0
+    for p in model_paths:
+        if _check_path_exists(p):
+            model_files += _count_python_files(p)
+
+    if model_files > 0:
+        score += 0.15
+        details["checks"]["modeling_module"] = model_files
+
+    # Check for modeling tests
+    model_tests = _count_test_files("tests/capabilities/modeling")
+    if model_tests > 0:
+        score += 0.2
+        details["checks"]["modeling_tests"] = model_tests
+
+    # Check for model factory
+    if _check_file_content(
+        "tests/capabilities/modeling/test_modeling_comprehensive.py",
+        ["ModelFactory", "create"],
+    ).get("ModelFactory", False):
+        score += 0.15
+        details["checks"]["model_factory"] = True
+
+    # Check for device/dtype matrix
+    if _check_file_content(
+        "tests/capabilities/modeling/test_modeling_comprehensive.py",
+        ["DeviceDtypeMatrix", "is_compatible"],
+    ).get("DeviceDtypeMatrix", False):
+        score += 0.15
+        details["checks"]["device_dtype_matrix"] = True
+
+    # Check for LoRA integration
+    if _check_file_content(
+        "tests/capabilities/modeling/test_modeling_comprehensive.py",
+        ["LoRAConfig", "LoRAAdapter"],
+    ).get("LoRAConfig", False):
+        score += 0.15
+        details["checks"]["lora_integration"] = True
+
+    # Check for model card
+    if _check_file_content(
+        "tests/capabilities/modeling/test_modeling_comprehensive.py",
+        ["ModelCard", "compute_checksum"],
+    ).get("ModelCard", False):
+        score += 0.2
+        details["checks"]["model_card"] = True
+
+    return DetectorResult(
+        name="modeling",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Training Engine Capability Detector ---
+
+
+def detector_training_engine() -> DetectorResult:
+    """Detect training engine capability maturity.
+
+    Checks:
+    - Distributed training (DDP/FSDP)
+    - Gradient accumulation
+    - Mixed precision
+    - Resume logic
+    - Hyperparameter sweeps
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check training module exists
+    training_paths = ["src/training/", "training/"]
+    training_files = 0
+    for p in training_paths:
+        if _check_path_exists(p):
+            training_files += _count_python_files(p)
+
+    if training_files > 0:
+        score += 0.1
+        details["checks"]["training_module"] = training_files
+
+    # Check for training tests
+    training_tests = _count_test_files("tests/capabilities/training_engine")
+    if training_tests > 0:
+        score += 0.2
+        details["checks"]["training_tests"] = training_tests
+
+    # Check for distributed training
+    if _check_file_content(
+        "tests/capabilities/training_engine/test_training_engine_comprehensive.py",
+        ["DistributedConfig", "DistributedStrategy"],
+    ).get("DistributedConfig", False):
+        score += 0.15
+        details["checks"]["distributed_training"] = True
+
+    # Check for gradient accumulation
+    if _check_file_content(
+        "tests/capabilities/training_engine/test_training_engine_comprehensive.py",
+        ["GradientAccumulator", "should_sync"],
+    ).get("GradientAccumulator", False):
+        score += 0.15
+        details["checks"]["gradient_accumulation"] = True
+
+    # Check for mixed precision
+    if _check_file_content(
+        "tests/capabilities/training_engine/test_training_engine_comprehensive.py",
+        ["MixedPrecisionConfig", "GradScaler"],
+    ).get("MixedPrecisionConfig", False):
+        score += 0.15
+        details["checks"]["mixed_precision"] = True
+
+    # Check for hyperparameter sweeps
+    if _check_file_content(
+        "tests/capabilities/training_engine/test_training_engine_comprehensive.py",
+        ["SweepConfig", "SweepRunner"],
+    ).get("SweepConfig", False):
+        score += 0.25
+        details["checks"]["hyperparameter_sweeps"] = True
+
+    return DetectorResult(
+        name="training_engine",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Data Handling Capability Detector ---
+
+
+def detector_data_handling() -> DetectorResult:
+    """Detect data handling capability maturity.
+
+    Checks:
+    - Schema validation
+    - Deterministic shuffling
+    - Leakage detection
+    - Imbalance checks
+    - Dataset versioning
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check data module exists
+    data_paths = ["src/data/", "src/codex_ml/data/"]
+    data_files = 0
+    for p in data_paths:
+        if _check_path_exists(p):
+            data_files += _count_python_files(p)
+
+    if data_files > 0:
+        score += 0.1
+        details["checks"]["data_module"] = data_files
+
+    # Check for data handling tests
+    data_tests = _count_test_files("tests/capabilities/data_handling")
+    if data_tests > 0:
+        score += 0.2
+        details["checks"]["data_tests"] = data_tests
+
+    # Check for schema validation
+    if _check_file_content(
+        "tests/capabilities/data_handling/test_data_handling_comprehensive.py",
+        ["DataSchema", "validate"],
+    ).get("DataSchema", False):
+        score += 0.15
+        details["checks"]["schema_validation"] = True
+
+    # Check for deterministic shuffle
+    if _check_file_content(
+        "tests/capabilities/data_handling/test_data_handling_comprehensive.py",
+        ["DeterministicShuffle", "shuffle"],
+    ).get("DeterministicShuffle", False):
+        score += 0.15
+        details["checks"]["deterministic_shuffle"] = True
+
+    # Check for leakage detection
+    if _check_file_content(
+        "tests/capabilities/data_handling/test_data_handling_comprehensive.py",
+        ["LeakageDetector", "detect_overlap"],
+    ).get("LeakageDetector", False):
+        score += 0.2
+        details["checks"]["leakage_detection"] = True
+
+    # Check for dataset versioning
+    if _check_file_content(
+        "tests/capabilities/data_handling/test_data_handling_comprehensive.py",
+        ["DatasetVersion", "DatasetRegistry"],
+    ).get("DatasetVersion", False):
+        score += 0.2
+        details["checks"]["dataset_versioning"] = True
+
+    return DetectorResult(
+        name="data_handling",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Deployment Capability Detector ---
+
+
+def detector_deployment() -> DetectorResult:
+    """Detect deployment capability maturity.
+
+    Checks:
+    - Build attestation
+    - Health probes
+    - K8s manifests
+    - Rollout automation
+    - Docker image management
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check deployment artifacts exist
+    deploy_files = ["Dockerfile", "docker-compose.yml", "docker-compose.yaml"]
+    deploy_found = sum(1 for f in deploy_files if _check_path_exists(f))
+    if deploy_found > 0:
+        score += 0.1
+        details["checks"]["deployment_files"] = deploy_found
+
+    # Check for deployment tests
+    deploy_tests = _count_test_files("tests/capabilities/deployment")
+    if deploy_tests > 0:
+        score += 0.2
+        details["checks"]["deployment_tests"] = deploy_tests
+
+    # Check for build attestation
+    if _check_file_content(
+        "tests/capabilities/deployment/test_deployment_comprehensive.py",
+        ["BuildAttestation", "compute_digest"],
+    ).get("BuildAttestation", False):
+        score += 0.15
+        details["checks"]["build_attestation"] = True
+
+    # Check for health probes
+    if _check_file_content(
+        "tests/capabilities/deployment/test_deployment_comprehensive.py",
+        ["HealthProbe", "ReadinessProbe"],
+    ).get("HealthProbe", False):
+        score += 0.15
+        details["checks"]["health_probes"] = True
+
+    # Check for K8s manifests
+    if _check_file_content(
+        "tests/capabilities/deployment/test_deployment_comprehensive.py",
+        ["K8sManifest", "DeploymentManifest"],
+    ).get("K8sManifest", False):
+        score += 0.2
+        details["checks"]["k8s_manifests"] = True
+
+    # Check for rollout automation
+    if _check_file_content(
+        "tests/capabilities/deployment/test_deployment_comprehensive.py",
+        ["Rollout", "rollback"],
+    ).get("Rollout", False):
+        score += 0.2
+        details["checks"]["rollout_automation"] = True
+
+    return DetectorResult(
+        name="deployment",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Documentation Capability Detector ---
+
+
+def detector_documentation() -> DetectorResult:
+    """Detect documentation capability maturity.
+
+    Checks:
+    - API documentation
+    - README completeness
+    - Notebook validation
+    - Design doc linking
+    - Doc coverage
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check documentation exists
+    doc_paths = ["docs/", "README.md"]
+    doc_found = sum(1 for p in doc_paths if _check_path_exists(p))
+    if doc_found > 0:
+        score += 0.1
+        details["checks"]["documentation_exists"] = doc_found
+
+    # Check for documentation tests
+    doc_tests = _count_test_files("tests/capabilities/documentation")
+    if doc_tests > 0:
+        score += 0.2
+        details["checks"]["documentation_tests"] = doc_tests
+
+    # Check for docstring parser
+    if _check_file_content(
+        "tests/capabilities/documentation/test_documentation_comprehensive.py",
+        ["DocstringParser", "parse"],
+    ).get("DocstringParser", False):
+        score += 0.15
+        details["checks"]["docstring_parser"] = True
+
+    # Check for README validator
+    if _check_file_content(
+        "tests/capabilities/documentation/test_documentation_comprehensive.py",
+        ["READMEValidator", "validate"],
+    ).get("READMEValidator", False):
+        score += 0.15
+        details["checks"]["readme_validator"] = True
+
+    # Check for notebook validation
+    if _check_file_content(
+        "tests/capabilities/documentation/test_documentation_comprehensive.py",
+        ["NotebookValidator", "check_outputs"],
+    ).get("NotebookValidator", False):
+        score += 0.2
+        details["checks"]["notebook_validation"] = True
+
+    # Check for API reference
+    if _check_file_content(
+        "tests/capabilities/documentation/test_documentation_comprehensive.py",
+        ["APIReference", "to_markdown"],
+    ).get("APIReference", False):
+        score += 0.2
+        details["checks"]["api_reference"] = True
+
+    return DetectorResult(
+        name="documentation",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Experiment Tracking Capability Detector ---
+
+
+def detector_experiment_tracking() -> DetectorResult:
+    """Detect experiment tracking capability maturity.
+
+    Checks:
+    - Offline mode
+    - Artifact management
+    - Run resumption
+    - Cross-run comparison
+    - MLflow integration
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check experiment tracking module exists
+    exp_paths = ["src/codex_ml/experiment/", "mlruns/"]
+    exp_found = any(_check_path_exists(p) for p in exp_paths)
+    if exp_found:
+        score += 0.1
+        details["checks"]["experiment_module"] = True
+
+    # Check for experiment tracking tests
+    exp_tests = _count_test_files("tests/capabilities/experiment_tracking")
+    if exp_tests > 0:
+        score += 0.2
+        details["checks"]["experiment_tests"] = exp_tests
+
+    # Check for offline tracker
+    if _check_file_content(
+        "tests/capabilities/experiment_tracking/test_experiment_tracking_comprehensive.py",
+        ["OfflineTracker", "create_run"],
+    ).get("OfflineTracker", False):
+        score += 0.15
+        details["checks"]["offline_mode"] = True
+
+    # Check for artifact store
+    if _check_file_content(
+        "tests/capabilities/experiment_tracking/test_experiment_tracking_comprehensive.py",
+        ["ArtifactStore", "store"],
+    ).get("ArtifactStore", False):
+        score += 0.15
+        details["checks"]["artifact_store"] = True
+
+    # Check for run comparison
+    if _check_file_content(
+        "tests/capabilities/experiment_tracking/test_experiment_tracking_comprehensive.py",
+        ["RunComparison", "compare_metric"],
+    ).get("RunComparison", False):
+        score += 0.2
+        details["checks"]["run_comparison"] = True
+
+    # Check for run checkpoint
+    if _check_file_content(
+        "tests/capabilities/experiment_tracking/test_experiment_tracking_comprehensive.py",
+        ["RunCheckpoint", "save"],
+    ).get("RunCheckpoint", False):
+        score += 0.2
+        details["checks"]["run_checkpoint"] = True
+
+    return DetectorResult(
+        name="experiment_tracking",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Observability Capability Detector ---
+
+
+def detector_observability() -> DetectorResult:
+    """Detect observability capability maturity.
+
+    Checks:
+    - Metrics endpoints
+    - SLOs
+    - Alerting
+    - Dashboards
+    - Distributed tracing
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check observability module exists
+    obs_paths = ["src/codex_ml/observability/", "monitoring/"]
+    obs_found = any(_check_path_exists(p) for p in obs_paths)
+    if obs_found:
+        score += 0.1
+        details["checks"]["observability_module"] = True
+
+    # Check for observability tests
+    obs_tests = _count_test_files("tests/capabilities/observability")
+    if obs_tests > 0:
+        score += 0.2
+        details["checks"]["observability_tests"] = obs_tests
+
+    # Check for metrics endpoint
+    if _check_file_content(
+        "tests/capabilities/observability/test_observability_comprehensive.py",
+        ["MetricsEndpoint", "export_prometheus"],
+    ).get("MetricsEndpoint", False):
+        score += 0.15
+        details["checks"]["metrics_endpoint"] = True
+
+    # Check for SLO tracking
+    if _check_file_content(
+        "tests/capabilities/observability/test_observability_comprehensive.py",
+        ["SLO", "error_budget_remaining"],
+    ).get("SLO", False):
+        score += 0.15
+        details["checks"]["slo_tracking"] = True
+
+    # Check for alerting
+    if _check_file_content(
+        "tests/capabilities/observability/test_observability_comprehensive.py",
+        ["Alert", "AlertManager"],
+    ).get("Alert", False):
+        score += 0.2
+        details["checks"]["alerting"] = True
+
+    # Check for distributed tracing
+    if _check_file_content(
+        "tests/capabilities/observability/test_observability_comprehensive.py",
+        ["Span", "Tracer"],
+    ).get("Span", False):
+        score += 0.2
+        details["checks"]["distributed_tracing"] = True
+
+    return DetectorResult(
+        name="observability",
+        score=clamp01(score),
+        details=details,
+    )
+
+
+# --- Dependency Management Capability Detector ---
+
+
+def detector_dependency_mgmt() -> DetectorResult:
+    """Detect dependency management capability maturity.
+
+    Checks:
+    - Lockfile enforcement
+    - CVE detection
+    - Upgrade policy
+    - Dependency graph
+    - Vendor verification
+    """
+    score = 0.0
+    details: dict[str, Any] = {"checks": {}}
+
+    # Check dependency files exist
+    dep_files = ["requirements.txt", "pyproject.toml", "requirements/"]
+    dep_found = sum(1 for f in dep_files if _check_path_exists(f))
+    if dep_found > 0:
+        score += 0.1
+        details["checks"]["dependency_files"] = dep_found
+
+    # Check for dependency management tests
+    dep_tests = _count_test_files("tests/capabilities/dependency_mgmt")
+    if dep_tests > 0:
+        score += 0.2
+        details["checks"]["dependency_tests"] = dep_tests
+
+    # Check for lockfile management
+    if _check_file_content(
+        "tests/capabilities/dependency_mgmt/test_dependency_mgmt_comprehensive.py",
+        ["Lockfile", "verify"],
+    ).get("Lockfile", False):
+        score += 0.15
+        details["checks"]["lockfile_management"] = True
+
+    # Check for CVE detection
+    if _check_file_content(
+        "tests/capabilities/dependency_mgmt/test_dependency_mgmt_comprehensive.py",
+        ["CVEDatabase", "check_package"],
+    ).get("CVEDatabase", False):
+        score += 0.15
+        details["checks"]["cve_detection"] = True
+
+    # Check for upgrade policy
+    if _check_file_content(
+        "tests/capabilities/dependency_mgmt/test_dependency_mgmt_comprehensive.py",
+        ["UpgradePolicy", "should_upgrade"],
+    ).get("UpgradePolicy", False):
+        score += 0.2
+        details["checks"]["upgrade_policy"] = True
+
+    # Check for dependency graph
+    if _check_file_content(
+        "tests/capabilities/dependency_mgmt/test_dependency_mgmt_comprehensive.py",
+        ["DependencyGraph", "get_dependencies"],
+    ).get("DependencyGraph", False):
+        score += 0.2
+        details["checks"]["dependency_graph"] = True
+
+    return DetectorResult(
+        name="dependency_mgmt",
+        score=clamp01(score),
+        details=details,
+    )
+
+
 # --- Aggregate Capability Scorecard ---
 
 
@@ -915,6 +1484,14 @@ def get_capability_detectors() -> list:
         detector_ci_test,
         detector_versioning,
         detector_error_handling,
+        detector_modeling,
+        detector_training_engine,
+        detector_data_handling,
+        detector_deployment,
+        detector_documentation,
+        detector_experiment_tracking,
+        detector_observability,
+        detector_dependency_mgmt,
     ]
 
 
@@ -947,6 +1524,14 @@ __all__ = [
     "detector_ci_test",
     "detector_versioning",
     "detector_error_handling",
+    "detector_modeling",
+    "detector_training_engine",
+    "detector_data_handling",
+    "detector_deployment",
+    "detector_documentation",
+    "detector_experiment_tracking",
+    "detector_observability",
+    "detector_dependency_mgmt",
     "get_capability_detectors",
     "run_capability_audit",
 ]
