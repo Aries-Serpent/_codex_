@@ -2,11 +2,11 @@
   "capabilities": [
     {
       "components": {
-        "consistency": 0.875576,
+        "consistency": 0.874419,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.230415
+        "tests": 0.227907
       },
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
@@ -133,7 +133,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -211,13 +210,12 @@
         "tests/manifest/test_warning_aggregation.py",
         "tests/ops/test_archive_pr_checklist.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
         "tests/test_checkpoint_bundle.py",
         "tests/tools/test_codex_repro_manifest.py",
         "tests/tools/test_codex_reproducibility_bundle.py",
+        "tests/training/test_checkpoint_manifest.py",
         "tools/archive_manager/Makefile",
         "tools/archive_manager/README.md",
         "tools/archive_manager/archive_manager.py",
@@ -230,7 +228,7 @@
       "explain": {
         "id": "archival-bundling",
         "partials": {},
-        "score": 0.782719
+        "score": 0.781861
       },
       "found_patterns": [
         "archive",
@@ -248,15 +246,15 @@
         ],
         "priority": "high"
       },
-      "score": 0.782719
+      "score": 0.781861
     },
     {
       "components": {
-        "consistency": 0.892562,
+        "consistency": 0.881818,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.669421
+        "tests": 0.672727
       },
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
@@ -281,10 +279,6 @@
         "src/codex_ml/checkpointing/utils.py",
         "src/codex_ml/cli/checkpoint_validate.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint.py",
         "src/codex_ml/utils/checkpoint_core.py",
         "src/codex_ml/utils/checkpoint_event.py",
@@ -339,20 +333,6 @@
         "tests/codex_ml/test_checkpoint_core.py",
         "tests/codex_ml/test_checkpoint_utils.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_compat.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_basic.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_callback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
         "tests/test_checkpoint_bundle.py",
         "tests/test_checkpoint_checksum.py",
         "tests/test_checkpoint_checksum_and_retention.py",
@@ -373,6 +353,13 @@
         "tests/test_checkpointing.py",
         "tests/test_checkpointing_utils_extra.py",
         "tests/test_rng_checkpoint.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
         "tests/utils/test_checkpoint_remote.py",
         "tests/utils/test_checkpoint_rng.py",
         "tests/utils/test_checkpointing.py",
@@ -384,7 +371,7 @@
       "explain": {
         "id": "checkpointing",
         "partials": {},
-        "score": 0.870868
+        "score": 0.869545
       },
       "found_patterns": [
         "load",
@@ -392,7 +379,7 @@
       ],
       "id": "checkpointing",
       "meta": {},
-      "score": 0.870868
+      "score": 0.869545
     },
     {
       "components": {
@@ -623,13 +610,6 @@
         "tests/smoke/test_config_validate_cli.py",
         "tests/space_traversal/test_audit_overrides.py",
         "tests/space_traversal/test_audit_runner_integration.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
         "tests/specs/test_audit_diff_cli.py",
         "tests/specs/test_audit_explain_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
@@ -673,6 +653,13 @@
         "tests/tools/test_validate_experiments.py",
         "tests/tools/test_validate_fences.py",
         "tests/tools/test_validate_fences_samples.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
         "tests/unit/test_validate_patch.py",
         "tests/utils/test_checkpoint_remote.py",
         "tests/utils/test_checkpoint_rng.py",
@@ -750,11 +737,11 @@
     },
     {
       "components": {
-        "consistency": 0.870968,
+        "consistency": 0.869388,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.508065
+        "tests": 0.514286
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -843,7 +830,6 @@
         "scripts/security/secret_context_correlate.py",
         "scripts/security/secret_entropy_scan.py",
         "scripts/space_traversal/decode_validate_and_extract.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/extract_validate_gaps.py",
@@ -871,8 +857,6 @@
         "services/msp_gateway/security.py",
         "setup.cfg",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -1009,7 +993,7 @@
       "explain": {
         "id": "code-quality-tooling",
         "partials": {},
-        "score": 0.82621
+        "score": 0.827449
       },
       "found_patterns": [
         "format",
@@ -1023,18 +1007,18 @@
         "formatters": 2,
         "linters": 5,
         "quality_scripts": 69,
-        "security_scanners": 168,
+        "security_scanners": 165,
         "type_checkers": 9
       },
-      "score": 0.82621
+      "score": 0.827449
     },
     {
       "components": {
-        "consistency": 0.756098,
+        "consistency": 0.753894,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.207317
+        "tests": 0.202492
       },
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
@@ -1056,7 +1040,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -1255,7 +1238,6 @@
         "scripts/migrate_configs.py",
         "scripts/remediation/consolidate_configs.py",
         "scripts/runner/configure_repo_vars.sh",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/status/visual_compare_with_config.sh",
         "services/msp_gateway/config.py",
@@ -1269,8 +1251,6 @@
         "src/codex_ml/cli/hydra_entry.py",
         "src/codex_ml/cli/hydra_main.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -1333,12 +1313,6 @@
         "tests/mcp/test_config.py",
         "tests/pipeline/test_pipeline_config.py",
         "tests/smoke/test_config_validate_cli.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_base_config.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_config_loading.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
-        "tests/space_traversal/test_peft_comprehensive/test_config_loading.py",
-        "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",
         "tests/specs/_workflow_config_utils.py",
         "tests/stub_packages/hydra/__init__.py",
         "tests/test_cli_config_sweep.py",
@@ -1354,6 +1328,9 @@
         "tests/tools/test_validate_configs.py",
         "tests/train/test_hydra_degrade.py",
         "tests/train/test_hydra_main_exit_path.py",
+        "tests/training/test_base_config.py",
+        "tests/training/test_config_loading.py",
+        "tests/training/test_training_config_module.py",
         "tests/unit/test_config_compose.py",
         "tests/visual/test_visual_compare_config.py",
         "tools/apply_hydra_scaffold.py",
@@ -1369,7 +1346,7 @@
       "explain": {
         "id": "configuration",
         "partials": {},
-        "score": 0.753049
+        "score": 0.751402
       },
       "found_patterns": [
         "config",
@@ -1377,15 +1354,15 @@
       ],
       "id": "configuration",
       "meta": {},
-      "score": 0.753049
+      "score": 0.751402
     },
     {
       "components": {
-        "consistency": 0.873096,
+        "consistency": 0.869792,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.390863
+        "tests": 0.395833
       },
       "evidence_files": [
         ".github/prompts/sprint_execution_plan/phase_2_reproducibility/T6_dataset_hash_manifest.md",
@@ -1446,9 +1423,6 @@
         "src/codex_ml/cli/migrate_data.py",
         "src/codex_ml/codex_data.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -1488,7 +1462,6 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/training/dataloader_utils.py",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/run_metadata.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
@@ -1550,8 +1523,6 @@
         "tests/integration/test_data_gate.py",
         "tests/integration/test_data_report.py",
         "tests/multilingual/test_data_loader.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
         "tests/stub_packages/torch/utils/data/__init__.py",
         "tests/test_checkpoint_metadata.py",
         "tests/test_codex_data.py",
@@ -1575,6 +1546,7 @@
         "tests/tools/test_data_drift_check.py",
         "tests/train_loop/test_dataset_cast_policy_event.py",
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
         "tests/unit/test_data_cache_locking.py",
         "tests/unit/test_datasets_module.py",
         "tools/apply_data_loaders.py",
@@ -1589,7 +1561,7 @@
       "explain": {
         "id": "data-pipeline",
         "partials": {},
-        "score": 0.797335
+        "score": 0.797917
       },
       "found_patterns": [
         "loader",
@@ -1597,7 +1569,7 @@
       ],
       "id": "data-pipeline",
       "meta": {},
-      "score": 0.797335
+      "score": 0.797917
     },
     {
       "components": {
@@ -2415,11 +2387,11 @@
     },
     {
       "components": {
-        "consistency": 0.783878,
+        "consistency": 0.782803,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.273288
+        "tests": 0.272029
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -3228,8 +3200,6 @@
         "codex_digest/EXECUTION.md",
         "codex_digest/README.md",
         "codex_digest/__init__.py",
-        "codex_digest/__pycache__/__init__.cpython-312.pyc",
-        "codex_digest/__pycache__/error_capture.cpython-312.pyc",
         "codex_digest/cli.py",
         "codex_digest/error_capture.py",
         "codex_digest/mapper.py",
@@ -3332,7 +3302,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -4341,7 +4310,6 @@
         "noxfile.py",
         "noxfile.security_additions.py",
         "omegaconf/__init__.py",
-        "omegaconf/__pycache__/__init__.cpython-312.pyc",
         "ops/threat_model/STRIDE.md",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
         "patches/analysis.patch",
@@ -4437,8 +4405,6 @@
         "scripts/benchmarks/performance_optimizer.py",
         "scripts/build_wheel.sh",
         "scripts/canonicalize_artifacts.py",
-        "scripts/capabilities_scored.json",
-        "scripts/capabilities_scored_backup.json",
         "scripts/check_dependency_evidence.py",
         "scripts/check_licenses.py",
         "scripts/ci/build_image.sh",
@@ -4601,39 +4567,7 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
         "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -4707,7 +4641,6 @@
         "scripts/task_sequences/zendesk_first_cycle.yaml",
         "scripts/torch_policy_check.py",
         "scripts/torch_repair_cpu.sh",
-        "scripts/track_progress.py",
         "scripts/tracking/mlflow_ui.sh",
         "scripts/train.py",
         "scripts/validate_all_capabilities.sh",
@@ -4732,7 +4665,6 @@
         "semgrep_rules/python/subprocess_shell.yml",
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "sentencepiece/__init__.py",
-        "sentencepiece/__pycache__/__init__.cpython-312.pyc",
         "services/__init__.py",
         "services/api/__init__.py",
         "services/api/main.py",
@@ -4777,12 +4709,8 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
-        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
-        "src/codex/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/__pycache__/_version.cpython-312.pyc",
-        "src/codex/__pycache__/training.cpython-312.pyc",
         "src/codex/_version.py",
         "src/codex/analysis/duplication.py",
         "src/codex/api/__init__.py",
@@ -4973,10 +4901,6 @@
         "src/codex_harness/tool_trace.py",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
-        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
-        "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/__init__.py",
         "src/codex_ml/analysis/extractors.py",
@@ -5042,8 +4966,6 @@
         "src/codex_ml/codex_model.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -5058,9 +4980,6 @@
         "src/codex_ml/connectors/registry.py",
         "src/codex_ml/connectors/remote.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -5138,8 +5057,6 @@
         "src/codex_ml/hf_loader.py",
         "src/codex_ml/ingest.py",
         "src/codex_ml/interfaces/__init__.py",
-        "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/interfaces/contracts.py",
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/registry.py",
@@ -5149,9 +5066,6 @@
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/io/atomic.py",
         "src/codex_ml/logging/__init__.py",
-        "src/codex_ml/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/file_logger.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex_ml/logging/experiment.py",
         "src/codex_ml/logging/file_logger.py",
         "src/codex_ml/logging/metrics.py",
@@ -5166,14 +5080,6 @@
         "src/codex_ml/main.py",
         "src/codex_ml/metrics.py",
         "src/codex_ml/metrics/__init__.py",
-        "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/base.py",
@@ -5195,18 +5101,11 @@
         "src/codex_ml/metrics_base.py",
         "src/codex_ml/model_registry.py",
         "src/codex_ml/modeling/__init__.py",
-        "src/codex_ml/modeling/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/modeling/__pycache__/codex_model.cpython-312.pyc",
-        "src/codex_ml/modeling/__pycache__/codex_model_loader.cpython-312.pyc",
         "src/codex_ml/modeling/codex_model.py",
         "src/codex_ml/modeling/codex_model_loader.py",
         "src/codex_ml/modeling/factory.py",
         "src/codex_ml/modeling/model_factory.py",
         "src/codex_ml/models/__init__.py",
-        "src/codex_ml/models/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/decoder_only.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/minilm.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/reasoning.cpython-312.pyc",
         "src/codex_ml/models/activations.py",
         "src/codex_ml/models/decoder_only.py",
         "src/codex_ml/models/factory.py",
@@ -5220,13 +5119,6 @@
         "src/codex_ml/models/utils/__init__.py",
         "src/codex_ml/models/utils/peft.py",
         "src/codex_ml/monitoring/__init__.py",
-        "src/codex_ml/monitoring/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/_logger_types.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/codex_logging.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/metrics_export.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/prometheus.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/prometheus_metrics.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/system_metrics.cpython-312.pyc",
         "src/codex_ml/monitoring/_logger_types.py",
         "src/codex_ml/monitoring/async_writer.py",
         "src/codex_ml/monitoring/cli.py",
@@ -5251,12 +5143,6 @@
         "src/codex_ml/perf/profiler.py",
         "src/codex_ml/pipeline.py",
         "src/codex_ml/plugins/__init__.py",
-        "src/codex_ml/plugins/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/base.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/loader.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/programmatic.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registries.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/plugins/base.py",
         "src/codex_ml/plugins/entry_points.py",
         "src/codex_ml/plugins/fairness_checker.py",
@@ -5268,8 +5154,6 @@
         "src/codex_ml/plugins/registry.py",
         "src/codex_ml/registry.py",
         "src/codex_ml/registry/__init__.py",
-        "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
         "src/codex_ml/registry/base.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/registry/metrics.py",
@@ -5287,8 +5171,6 @@
         "src/codex_ml/rl/scripted_agent.py",
         "src/codex_ml/rl/simple_agent.py",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -5315,8 +5197,6 @@
         "src/codex_ml/telemetry/metrics.py",
         "src/codex_ml/telemetry/server.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -5331,10 +5211,6 @@
         "src/codex_ml/tokenization/sp_trainer.py",
         "src/codex_ml/tokenization/train_tokenizer.py",
         "src/codex_ml/tracking/__init__.py",
-        "src/codex_ml/tracking/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/offline.cpython-312.pyc",
         "src/codex_ml/tracking/cli.py",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/git_tag.py",
@@ -5349,8 +5225,6 @@
         "src/codex_ml/train_loop.py",
         "src/codex_ml/training.py",
         "src/codex_ml/training/__init__.py",
-        "src/codex_ml/training/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/training/__pycache__/device_strategy.cpython-312.pyc",
         "src/codex_ml/training/ab_testing.py",
         "src/codex_ml/training/callbacks.py",
         "src/codex_ml/training/continuous_learning.py",
@@ -5381,17 +5255,6 @@
         "src/codex_ml/training/tracking_integration.py",
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/__init__.py",
-        "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
         "src/codex_ml/utils/artifacts.py",
         "src/codex_ml/utils/atomic_io.py",
         "src/codex_ml/utils/checkpoint.py",
@@ -5502,10 +5365,6 @@
         "src/hydra_extra/__init__.py",
         "src/ingestion/README.md",
         "src/ingestion/__init__.py",
-        "src/ingestion/__pycache__/__init__.cpython-312.pyc",
-        "src/ingestion/__pycache__/encoding_detect.cpython-312.pyc",
-        "src/ingestion/__pycache__/io_text.cpython-312.pyc",
-        "src/ingestion/__pycache__/utils.cpython-312.pyc",
         "src/ingestion/csv_ingestor.py",
         "src/ingestion/encoding_detect.py",
         "src/ingestion/file_ingestor.py",
@@ -5538,23 +5397,15 @@
         "src/services/mcp/lifecycle.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "src/tools/archive_pr_checklist.py",
         "src/tools/codeowners_validate.py",
         "src/training/__init__.py",
-        "src/training/__pycache__/__init__.cpython-312.pyc",
-        "src/training/__pycache__/trainer.cpython-312.pyc",
         "src/training/checkpoint_manager.py",
         "src/training/checkpointing.py",
         "src/training/config.py",
@@ -6005,8 +5856,6 @@
         "tests/harness/test_honesty.py",
         "tests/harness/test_tool_trace.py",
         "tests/helpers/__init__.py",
-        "tests/helpers/__pycache__/__init__.cpython-312.pyc",
-        "tests/helpers/__pycache__/optional_dependencies.cpython-312.pyc",
         "tests/helpers/optional_dependencies.py",
         "tests/hf_loader/test_amp_dtype_map.py",
         "tests/hf_loader/test_bf16_probe.py",
@@ -6299,109 +6148,6 @@
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_medium_threshold.py",
         "tests/space_traversal/test_ml_serving_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/__init__.cpython-312.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_base_config.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_callbacks.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_compat.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_basic.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_callback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_config_loading.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_cuda_determinism_guard.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_curriculum.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_custom_loop_overfit.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_determinism_utilities.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_device_strategy.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed_context.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed_init_fallback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_early_stopping.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_lora_cfg.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_evaluate_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_extended_trainer.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_main.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_lora_optional.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_lora_toggles.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_mid_epoch_naming.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_mid_epoch_resume_equivalence.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_offline_wandb.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_overfit_smoke.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_peft_hooks.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_resume_and_retention.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_rng_reproducibility.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_functional_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_scheduler_amp_resume_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_scheduler_registry.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_util.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_utils.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_split_determinism.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_strict_determinism.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_tiny_overfit.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_trainer_auto_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity_and_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_repro.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_warnings.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/conftest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
-        "tests/space_traversal/test_peft_comprehensive/test_callbacks.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
-        "tests/space_traversal/test_peft_comprehensive/test_config_loading.py",
-        "tests/space_traversal/test_peft_comprehensive/test_cuda_determinism_guard.py",
-        "tests/space_traversal/test_peft_comprehensive/test_curriculum.py",
-        "tests/space_traversal/test_peft_comprehensive/test_custom_loop_overfit.py",
-        "tests/space_traversal/test_peft_comprehensive/test_determinism_utilities.py",
-        "tests/space_traversal/test_peft_comprehensive/test_device_strategy.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed_context.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed_init_fallback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_early_stopping.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py",
-        "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_lora_optional.py",
-        "tests/space_traversal/test_peft_comprehensive/test_lora_toggles.py",
-        "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_naming.py",
-        "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_resume_equivalence.py",
-        "tests/space_traversal/test_peft_comprehensive/test_offline_wandb.py",
-        "tests/space_traversal/test_peft_comprehensive/test_overfit_smoke.py",
-        "tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py",
-        "tests/space_traversal/test_peft_comprehensive/test_resume_and_retention.py",
-        "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_scheduler_amp_resume_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_scheduler_registry.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_util.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_utils.py",
-        "tests/space_traversal/test_peft_comprehensive/test_split_determinism.py",
-        "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py",
-        "tests/space_traversal/test_peft_comprehensive/test_tiny_overfit.py",
-        "tests/space_traversal/test_peft_comprehensive/test_trainer_auto_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_repro.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py",
         "tests/space_traversal/test_safeguards_keywords.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
         "tests/space_traversal/test_status_reporting_detector.py",
@@ -6888,6 +6634,57 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
+        "tests/training/conftest.py",
+        "tests/training/test_base_config.py",
+        "tests/training/test_callbacks.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
+        "tests/training/test_config_loading.py",
+        "tests/training/test_cuda_determinism_guard.py",
+        "tests/training/test_curriculum.py",
+        "tests/training/test_custom_loop_overfit.py",
+        "tests/training/test_determinism_utilities.py",
+        "tests/training/test_device_strategy.py",
+        "tests/training/test_distributed.py",
+        "tests/training/test_distributed_context.py",
+        "tests/training/test_distributed_init_fallback.py",
+        "tests/training/test_early_stopping.py",
+        "tests/training/test_engine_hf_trainer_comprehensive.py",
+        "tests/training/test_engine_hf_trainer_lora_cfg.py",
+        "tests/training/test_evaluate_module.py",
+        "tests/training/test_extended_trainer.py",
+        "tests/training/test_functional_training_evaluation.py",
+        "tests/training/test_functional_training_main.py",
+        "tests/training/test_lora_optional.py",
+        "tests/training/test_lora_toggles.py",
+        "tests/training/test_mid_epoch_naming.py",
+        "tests/training/test_mid_epoch_resume_equivalence.py",
+        "tests/training/test_offline_wandb.py",
+        "tests/training/test_overfit_smoke.py",
+        "tests/training/test_resume_and_retention.py",
+        "tests/training/test_rng_reproducibility.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
+        "tests/training/test_run_functional_training_resume.py",
+        "tests/training/test_scheduler_amp_resume_parity.py",
+        "tests/training/test_scheduler_registry.py",
+        "tests/training/test_seed_util.py",
+        "tests/training/test_seed_utils.py",
+        "tests/training/test_split_determinism.py",
+        "tests/training/test_strict_determinism.py",
+        "tests/training/test_tiny_overfit.py",
+        "tests/training/test_trainer_auto_resume.py",
+        "tests/training/test_training_config_module.py",
+        "tests/training/test_unified_training_parity.py",
+        "tests/training/test_unified_training_parity_and_resume.py",
+        "tests/training/test_unified_training_repro.py",
+        "tests/training/test_unified_training_resume.py",
+        "tests/training/test_unified_training_warnings.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
         "tests/unit/__init__.py",
@@ -7259,7 +7056,6 @@
         "training/streaming.py",
         "transformed_pr_overview.md",
         "transformers/__init__.py",
-        "transformers/__pycache__/__init__.cpython-312.pyc",
         "typer/testing.py",
         "uv.lock",
         "uv.lock.bak",
@@ -7289,7 +7085,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.775098
+        "score": 0.774568
       },
       "found_patterns": [
         "analysis",
@@ -7302,15 +7098,15 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.775098
+      "score": 0.774568
     },
     {
       "components": {
-        "consistency": 0.870968,
+        "consistency": 0.868421,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.432258
+        "tests": 0.427632
       },
       "evidence_files": [
         ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
@@ -7390,7 +7186,6 @@
         "src/codex_ml/evaluation/metrics/perplexity.py",
         "src/codex_ml/evaluation/metrics/rouge.py",
         "src/codex_ml/evaluation/runner.py",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
         "src/codex_ml/metrics/evaluator.py",
         "src/codex_ml/training/eval.py",
         "src/evaluation/__init__.py",
@@ -7444,10 +7239,6 @@
         "tests/retrieval/test_vector_performance.py",
         "tests/retrieval/test_vector_store_interface.py",
         "tests/schemas/eval_probe.schema.json",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_evaluate_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
         "tests/test_eval_fallback.py",
         "tests/test_eval_loop_cpu.py",
         "tests/test_eval_loop_minimal.py",
@@ -7463,6 +7254,8 @@
         "tests/test_run_eval_cli.py",
         "tests/test_training_eval.py",
         "tests/test_training_lr_history_and_eval.py",
+        "tests/training/test_evaluate_module.py",
+        "tests/training/test_functional_training_evaluation.py",
         "tests/unit/test_evaluate_cli_flags.py",
         "tests/unit/test_evaluate_cli_metrics_log.py",
         "tools/codex_evaluator.py",
@@ -7472,7 +7265,7 @@
       "explain": {
         "id": "evaluation-metrics",
         "partials": {},
-        "score": 0.807258
+        "score": 0.805592
       },
       "found_patterns": [
         "metric",
@@ -7480,7 +7273,7 @@
       ],
       "id": "evaluation-metrics",
       "meta": {},
-      "score": 0.807258
+      "score": 0.805592
     },
     {
       "components": {
@@ -7570,13 +7363,6 @@
         "tests/hhg_logistics/serve/test_app.py",
         "tests/mcp/test_server.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
         "tests/telemetry/test_metrics_server.py",
         "tests/test_actions_server_smoke.py",
         "tests/test_checkpoint_bundle.py",
@@ -7599,6 +7385,13 @@
         "tests/test_checkpointing.py",
         "tests/test_checkpointing_utils_extra.py",
         "tests/test_rng_checkpoint.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
         "tests/utils/test_checkpoint_remote.py",
         "tests/utils/test_checkpoint_rng.py",
         "tests/utils/test_checkpointing.py",
@@ -8571,90 +8364,6 @@
           {
             "confidence": 0.9,
             "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
-            "path": "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
-            "ranges": [
-              {
-                "end_line": 40,
-                "start_line": 1
-              }
-            ],
-            "sha": null
-          },
-          {
-            "confidence": 0.9,
-            "excerpt": null,
             "path": "tests/telemetry/test_metrics_server.py",
             "ranges": [
               {
@@ -8919,6 +8628,90 @@
           {
             "confidence": 0.9,
             "excerpt": null,
+            "path": "tests/training/test_checkpoint_compat.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_integrity.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_manager_basic.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_manager_callback.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_manifest.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_resume.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
+            "path": "tests/training/test_checkpoint_rng_restore.py",
+            "ranges": [
+              {
+                "end_line": 40,
+                "start_line": 1
+              }
+            ],
+            "sha": null
+          },
+          {
+            "confidence": 0.9,
+            "excerpt": null,
             "path": "tests/utils/test_checkpoint_remote.py",
             "ranges": [
               {
@@ -9020,11 +8813,11 @@
     },
     {
       "components": {
-        "consistency": 0.793814,
+        "consistency": 0.784946,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.314433
+        "tests": 0.311828
       },
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -9120,7 +8913,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/tracking/mlflow_ui.sh",
@@ -9133,16 +8925,12 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/monitoring/mlflow_utils.py",
         "src/codex_ml/registry/mlflow_registry.py",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/init_experiment.py",
         "src/codex_ml/tracking/mlflow_guard.py",
         "src/codex_ml/tracking/mlflow_utils.py",
         "src/codex_ml/tracking/mlflow_wrapper.py",
         "src/codex_ml/training/mlflow_integration.py",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/experiment_tracking_mlflow.py",
         "src/codex_ml/utils/logging_mlflow.py",
         "src/codex_ml/utils/logging_wandb.py",
@@ -9177,12 +8965,6 @@
         "tests/monitoring/test_mlflow_monitoring_utils.py",
         "tests/monitoring/test_monitoring_mlflow_utils.py",
         "tests/smoke/test_mlflow_utils_noop.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_offline_wandb.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_offline_wandb.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
         "tests/test_checkpoint_metadata.py",
@@ -9209,6 +8991,9 @@
         "tests/tracking/test_mlflow_offline_cli.py",
         "tests/tracking/test_mlflow_offline_guard.py",
         "tests/tracking/test_mlflow_utils_py.old",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_offline_wandb.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
         "tests/unit/test_mlflow_guard.py",
         "tests/unit/test_provenance.py",
         "tests/utils/test_provenance_export.py",
@@ -9225,7 +9010,7 @@
       "explain": {
         "id": "experiment-management",
         "partials": {},
-        "score": 0.787371
+        "score": 0.784946
       },
       "found_patterns": [
         "experiment",
@@ -9236,12 +9021,12 @@
       ],
       "id": "experiment-management",
       "meta": {
-        "experiment_utils": 35,
-        "metadata_files": 109,
+        "experiment_utils": 32,
+        "metadata_files": 105,
         "mlflow_integration": 45,
-        "wandb_integration": 7
+        "wandb_integration": 6
       },
-      "score": 0.787371
+      "score": 0.784946
     },
     {
       "components": {
@@ -9295,11 +9080,11 @@
     },
     {
       "components": {
-        "consistency": 0.83125,
+        "consistency": 0.829582,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.30625
+        "tests": 0.315113
       },
       "evidence_files": [
         ".codex/action_log.ndjson",
@@ -9440,9 +9225,6 @@
         "src/codex_ml/cli/tracking_decide.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/logging/__init__.py",
-        "src/codex_ml/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/file_logger.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex_ml/logging/experiment.py",
         "src/codex_ml/logging/file_logger.py",
         "src/codex_ml/logging/metrics.py",
@@ -9454,16 +9236,10 @@
         "src/codex_ml/logging/session_logger.py",
         "src/codex_ml/logging/structured.py",
         "src/codex_ml/logging/unified_logger.py",
-        "src/codex_ml/monitoring/__pycache__/_logger_types.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/codex_logging.cpython-312.pyc",
         "src/codex_ml/monitoring/_logger_types.py",
         "src/codex_ml/monitoring/codex_logging.py",
         "src/codex_ml/monitoring/tracking.py",
         "src/codex_ml/tracking/__init__.py",
-        "src/codex_ml/tracking/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/offline.cpython-312.pyc",
         "src/codex_ml/tracking/cli.py",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/git_tag.py",
@@ -9626,7 +9402,7 @@
       "explain": {
         "id": "logging-tracking",
         "partials": {},
-        "score": 0.792813
+        "score": 0.794695
       },
       "found_patterns": [
         "log",
@@ -9634,7 +9410,7 @@
       ],
       "id": "logging-tracking",
       "meta": {},
-      "score": 0.792813
+      "score": 0.794695
     },
     {
       "components": {
@@ -9697,11 +9473,11 @@
     },
     {
       "components": {
-        "consistency": 0.78125,
+        "consistency": 0.770492,
         "documentation": 0.178571,
         "functionality": 1.0,
         "safeguards": 0.666667,
-        "tests": 0.375
+        "tests": 0.393443
       },
       "evidence_files": [
         ".codex/codex.env.json",
@@ -9730,14 +9506,11 @@
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -9772,7 +9545,7 @@
       "explain": {
         "id": "mcp-configuration",
         "partials": {},
-        "score": 0.626786
+        "score": 0.629245
       },
       "found_patterns": [
         "config",
@@ -9796,7 +9569,7 @@
           "mcp.json"
         ]
       },
-      "score": 0.626786
+      "score": 0.629245
     },
     {
       "components": {
@@ -9843,15 +9616,14 @@
     },
     {
       "components": {
-        "consistency": 0.871795,
+        "consistency": 0.868421,
         "documentation": 1.0,
         "functionality": 0.0,
         "safeguards": 0.833333,
-        "tests": 0.461538
+        "tests": 0.473684
       },
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -9893,7 +9665,7 @@
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.564743
+        "score": 0.567105
       },
       "found_patterns": [],
       "id": "mcp-lifecycle-management",
@@ -9910,7 +9682,7 @@
         "priority": "high",
         "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.564743
+      "score": 0.567105
     },
     {
       "components": {
@@ -9918,11 +9690,10 @@
         "documentation": 0.178571,
         "functionality": 1.0,
         "safeguards": 0.166667,
-        "tests": 0.6
+        "tests": 0.75
       },
       "evidence_files": [
         "policies/tenant_policy.schema.json",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
@@ -9930,7 +9701,7 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.651786
+        "score": 0.689286
       },
       "found_patterns": [
         "tenant"
@@ -9943,15 +9714,15 @@
           "tenant"
         ]
       },
-      "score": 0.651786
+      "score": 0.689286
     },
     {
       "components": {
-        "consistency": 0.874605,
+        "consistency": 0.874207,
         "documentation": 0.178571,
         "functionality": 2.0,
         "safeguards": 1.0,
-        "tests": 0.253952
+        "tests": 0.2537
       },
       "evidence_files": [
         ".codex/README.md",
@@ -10428,10 +10199,8 @@
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/detectors/detector_duplication.py",
-        "scripts/space_traversal/detectors/detector_peft.py",
         "scripts/space_traversal/detectors/detector_safeguards.py",
         "scripts/space_traversal/detectors/mcp_observability.py",
-        "scripts/space_traversal/detectors/vector_store_detector.py",
         "scripts/train.py",
         "services/api/main.py",
         "services/ita/README.md",
@@ -10741,18 +10510,6 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/space_traversal/test_duplication_ratio_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/test_curriculum.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py",
-        "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_resume_equivalence.py",
-        "tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py",
-        "tests/space_traversal/test_peft_comprehensive/test_resume_and_retention.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
-        "tests/space_traversal/test_peft_comprehensive/test_scheduler_amp_resume_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py",
         "tests/specs/test_cli_normalization.py",
         "tests/specs/test_metrics_schema.py",
         "tests/telemetry/test_metrics_server.py",
@@ -10849,6 +10606,17 @@
         "tests/tracking/test_tracking_writers_offline.py",
         "tests/tracking/test_writers_roundtrip.py",
         "tests/train_loop/test_dataset_cast_policy_event.py",
+        "tests/training/test_curriculum.py",
+        "tests/training/test_engine_hf_trainer_lora_cfg.py",
+        "tests/training/test_evaluate_module.py",
+        "tests/training/test_extended_trainer.py",
+        "tests/training/test_functional_training_evaluation.py",
+        "tests/training/test_mid_epoch_resume_equivalence.py",
+        "tests/training/test_resume_and_retention.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
+        "tests/training/test_scheduler_amp_resume_parity.py",
+        "tests/training/test_strict_determinism.py",
+        "tests/training/test_unified_training_parity_and_resume.py",
         "tests/unit/test_evaluate_cli_flags.py",
         "tests/unit/test_evaluate_cli_metrics_log.py",
         "tests/unit/test_logging_utils_module.py",
@@ -10907,7 +10675,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 0.915195
+        "score": 0.915052
       },
       "found_patterns": [
         "X-Request-Id",
@@ -10924,7 +10692,7 @@
           "tracing"
         ]
       },
-      "score": 0.915195
+      "score": 0.915052
     },
     {
       "components": {
@@ -11530,14 +11298,13 @@
     },
     {
       "components": {
-        "consistency": 0.875,
+        "consistency": 0.857143,
         "documentation": 0.178571,
         "functionality": 1.0,
         "safeguards": 0.333333,
-        "tests": 0.5
+        "tests": 0.571429
       },
       "evidence_files": [
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -11549,7 +11316,7 @@
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.626786
+        "score": 0.641071
       },
       "found_patterns": [
         "mcp.json",
@@ -11563,15 +11330,15 @@
           "tools"
         ]
       },
-      "score": 0.626786
+      "score": 0.641071
     },
     {
       "components": {
-        "consistency": 0.93911,
+        "consistency": 0.937046,
         "documentation": 0.178571,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.145199
+        "tests": 0.150121
       },
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
@@ -11601,20 +11368,6 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -12005,7 +11758,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.650907
+        "score": 0.651725
       },
       "found_patterns": [
         "mcp",
@@ -12015,7 +11768,7 @@
       "meta": {
         "layer": "integration"
       },
-      "score": 0.650907
+      "score": 0.651725
     },
     {
       "components": {
@@ -12055,11 +11808,11 @@
     },
     {
       "components": {
-        "consistency": 0.806202,
+        "consistency": 0.801587,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.674419
+        "tests": 0.690476
       },
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
@@ -12096,8 +11849,6 @@
         "scripts/config/sample_inference_input.json",
         "scripts/inference_pipeline.py",
         "scripts/local/serve_local.sh",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/ml_serving.py",
         "services/api/__init__.py",
@@ -12111,7 +11862,6 @@
         "src/codex/archive/api.py",
         "src/codex/release/api.py",
         "src/codex_ml/cli/infer.py",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/serving/__init__.py",
         "src/codex_ml/serving/batching.py",
@@ -12195,7 +11945,7 @@
       "explain": {
         "id": "ml-serving",
         "partials": {},
-        "score": 0.879845
+        "score": 0.882936
       },
       "found_patterns": [
         "api",
@@ -12213,13 +11963,13 @@
         ],
         "priority": "high"
       },
-      "score": 0.879845
+      "score": 0.882936
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 1.0,
-        "functionality": 1.8,
+        "documentation": 0.059524,
+        "functionality": 1.0,
         "safeguards": 0.0,
         "tests": 0.0
       },
@@ -12227,15 +11977,11 @@
       "explain": {
         "id": "peft_hooks",
         "partials": {},
-        "score": 0.8
+        "score": 0.458929
       },
       "found_patterns": [
         "LoraConfig",
-        "LoraLayer",
-        "PeftModel",
-        "adapter",
         "get_peft_model",
-        "inject_adapter",
         "lora",
         "peft",
         "prepare_model_for_kbit_training"
@@ -12243,18 +11989,11 @@
       "id": "peft_hooks",
       "meta": {
         "_evidence_v2": {
-          "cli/ast_upgrade.py": [
-            "adapter"
-          ],
           "cli/script_polish.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
-          ],
-          "cli/task_sequence.py": [
-            "adapter"
           ],
           "cli/train_codex.py": [
             "LoraConfig",
@@ -12268,15 +12007,8 @@
           "codex_addons/metrics/collector.py": [
             "lora"
           ],
-          "codex_regression/log.py": [
-            "adapter"
-          ],
           "codex_task_executor.py": [
-            "adapter",
             "lora"
-          ],
-          "interfaces/tokenizer.py": [
-            "adapter"
           ],
           "models/chat_model.py": [
             "LoraConfig",
@@ -12286,12 +12018,10 @@
           ],
           "models/lora/_test_utils.py": [
             "LoraConfig",
-            "adapter",
             "lora",
             "peft"
           ],
           "models/peft_utils.py": [
-            "adapter",
             "peft"
           ],
           "nox_sessions/docs_validation.py": [
@@ -12301,7 +12031,6 @@
             "peft"
           ],
           "scripts/codex_ready_task_runner.py": [
-            "adapter",
             "peft"
           ],
           "scripts/make_quickstart_notebook.py": [
@@ -12309,11 +12038,7 @@
           ],
           "scripts/space_traversal/detectors/detector_peft.py": [
             "LoraConfig",
-            "LoraLayer",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
-            "inject_adapter",
             "lora",
             "peft",
             "prepare_model_for_kbit_training"
@@ -12322,44 +12047,15 @@
             "lora"
           ],
           "services/api/main.py": [
-            "adapter",
             "lora",
             "peft"
-          ],
-          "services/msp_gateway/config.py": [
-            "adapter"
-          ],
-          "services/msp_gateway/providers/__init__.py": [
-            "adapter"
-          ],
-          "services/msp_gateway/providers/model_adapter.py": [
-            "adapter"
-          ],
-          "services/msp_gateway/routers/infer.py": [
-            "adapter"
-          ],
-          "services/msp_gateway/routers/kb.py": [
-            "adapter"
           ],
           "src/codex/cli.py": [
             "lora"
           ],
-          "src/codex/logging/session_logger.py": [
-            "adapter"
-          ],
-          "src/codex/quantum_orchestrator/mlops_bridge.py": [
-            "adapter"
-          ],
           "src/codex/training.py": [
-            "adapter",
             "lora",
             "peft"
-          ],
-          "src/codex/zendesk/monitoring/zendesk_metrics.py": [
-            "adapter"
-          ],
-          "src/codex_cli/app.py": [
-            "adapter"
           ],
           "src/codex_ml/cli/codex_cli.py": [
             "peft"
@@ -12374,7 +12070,6 @@
             "lora"
           ],
           "src/codex_ml/cli/infer.py": [
-            "adapter",
             "lora"
           ],
           "src/codex_ml/cli/train.py": [
@@ -12382,59 +12077,25 @@
           ],
           "src/codex_ml/codex_model.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
-          "src/codex_ml/config/__init__.py": [
-            "adapter"
-          ],
           "src/codex_ml/config_schema.py": [
             "LoraConfig",
-            "adapter",
             "lora"
-          ],
-          "src/codex_ml/evaluation/metrics/__init__.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/metrics/accuracy.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/metrics/bleu.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/metrics/latency.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/metrics/perplexity.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/metrics/rouge.py": [
-            "adapter"
-          ],
-          "src/codex_ml/evaluation/runner.py": [
-            "adapter"
           ],
           "src/codex_ml/hf_loader.py": [
             "LoraConfig",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "src/codex_ml/interfaces/__init__.py": [
-            "adapter",
             "peft"
-          ],
-          "src/codex_ml/interfaces/contracts.py": [
-            "adapter"
           ],
           "src/codex_ml/interfaces/peft_hooks.py": [
             "LoraConfig",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
@@ -12442,61 +12103,40 @@
           "src/codex_ml/interfaces/rl.py": [
             "lora"
           ],
-          "src/codex_ml/interfaces/tokenizer.py": [
-            "adapter"
-          ],
-          "src/codex_ml/interfaces/tokenizer_hf.py": [
-            "adapter"
-          ],
           "src/codex_ml/model_registry.py": [
-            "adapter",
             "lora",
             "peft"
           ],
           "src/codex_ml/modeling/__init__.py": [
-            "adapter",
             "lora"
           ],
           "src/codex_ml/modeling/codex_model.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "src/codex_ml/modeling/codex_model_loader.py": [
             "LoraConfig",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "src/codex_ml/modeling/factory.py": [
-            "adapter",
             "lora",
             "peft"
           ],
-          "src/codex_ml/models/__init__.py": [
-            "adapter"
-          ],
           "src/codex_ml/models/factory.py": [
-            "adapter",
             "lora",
             "peft"
           ],
           "src/codex_ml/models/peft_hooks.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
-          "src/codex_ml/models/reasoning.py": [
-            "adapter"
-          ],
           "src/codex_ml/models/registry.py": [
-            "adapter",
             "lora",
             "peft"
           ],
@@ -12506,59 +12146,20 @@
           ],
           "src/codex_ml/models/utils/peft.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "src/codex_ml/peft/peft_adapter.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
-          ],
-          "src/codex_ml/plugins/registries.py": [
-            "adapter"
-          ],
-          "src/codex_ml/registry/__init__.py": [
-            "adapter"
-          ],
-          "src/codex_ml/registry/tokenizers.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/adapter.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/api.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/cli.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/hf_adapter.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/hf_tokenizer.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/offline_vocab.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/pipeline.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/sentencepiece_adapter.py": [
-            "adapter"
-          ],
-          "src/codex_ml/tokenization/sp_trainer.py": [
-            "adapter"
           ],
           "src/codex_ml/tracking/init_experiment.py": [
             "lora"
           ],
           "src/codex_ml/train_loop.py": [
-            "adapter",
             "lora"
           ],
           "src/codex_ml/training/functional_training.py": [
@@ -12566,32 +12167,20 @@
             "peft"
           ],
           "src/codex_ml/training/legacy_api.py": [
-            "adapter",
             "lora",
             "peft"
           ],
-          "src/codex_ml/utils/experiment_tracking_mlflow.py": [
-            "adapter"
-          ],
           "src/codex_ml/utils/modeling.py": [
             "LoraConfig",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
-          "src/codex_ml/utils/storage.py": [
-            "adapter"
-          ],
           "src/hhg_logistics/model/adapters.py": [
-            "PeftModel",
-            "adapter",
             "peft"
           ],
           "src/hhg_logistics/model/peft_utils.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
@@ -12600,29 +12189,17 @@
             "peft"
           ],
           "src/hhg_logistics/serve/app.py": [
-            "adapter",
             "peft"
           ],
           "src/hhg_logistics/train.py": [
-            "adapter",
             "lora",
             "peft"
           ],
           "src/modeling.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
-          ],
-          "src/tokenization/__init__.py": [
-            "adapter"
-          ],
-          "src/tokenization/api.py": [
-            "adapter"
-          ],
-          "src/tokenization/sentencepiece_adapter.py": [
-            "adapter"
           ],
           "src/training/checkpointing.py": [
             "get_peft_model",
@@ -12633,7 +12210,6 @@
             "lora"
           ],
           "src/training/engine_hf_trainer.py": [
-            "adapter",
             "lora",
             "peft"
           ],
@@ -12642,9 +12218,6 @@
             "get_peft_model",
             "lora",
             "peft"
-          ],
-          "tests/capability_specialization/test_capability_contracts.py": [
-            "adapter"
           ],
           "tests/checkpoint/test_checkpoint_peft_state.py": [
             "LoraConfig",
@@ -12658,9 +12231,6 @@
           "tests/cli/test_infer_cli_lora.py": [
             "lora"
           ],
-          "tests/codex_ml/test_tokenization_adapters.py": [
-            "adapter"
-          ],
           "tests/config/test_config_settings.py": [
             "lora"
           ],
@@ -12668,18 +12238,11 @@
             "LoraConfig",
             "lora"
           ],
-          "tests/evaluation/test_evaluation_runner.py": [
-            "adapter"
-          ],
           "tests/helpers/optional_dependencies.py": [
-            "adapter",
             "peft"
           ],
           "tests/integration/test_build_api_docs_integration.py": [
             "peft"
-          ],
-          "tests/interfaces/test_tokenizer_hf.py": [
-            "adapter"
           ],
           "tests/modeling/test_codex_model.py": [
             "lora",
@@ -12693,7 +12256,6 @@
           ],
           "tests/modeling/test_lora_minimal.py": [
             "LoraConfig",
-            "PeftModel",
             "get_peft_model",
             "lora",
             "peft"
@@ -12726,36 +12288,25 @@
             "peft"
           ],
           "tests/models/test_registry_dtype.py": [
-            "adapter",
             "lora"
           ],
           "tests/models/test_registry_validation.py": [
-            "adapter",
             "lora"
           ],
           "tests/peft/test_apply_lora.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "tests/peft/test_peft_smoke.py": [
-            "adapter",
             "lora",
             "peft"
           ],
           "tests/peft_tests/test_peft_comprehensive.py": [
             "LoraConfig",
-            "adapter",
             "lora",
             "peft"
-          ],
-          "tests/plugins/test_tokenization_deprecation_shims.py": [
-            "adapter"
-          ],
-          "tests/quantum_orchestrator/test_mlops_bridge.py": [
-            "adapter"
           ],
           "tests/services/api/test_rate_limit_middleware.py": [
             "lora"
@@ -12765,34 +12316,6 @@
             "get_peft_model",
             "lora",
             "peft"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py": [
-            "lora"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py": [
-            "lora"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_lora_optional.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_lora_toggles.py": [
-            "adapter",
-            "lora"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py": [
-            "LoraConfig",
-            "LoraLayer",
-            "PeftModel",
-            "adapter",
-            "get_peft_model",
-            "inject_adapter",
-            "lora",
-            "peft",
-            "prepare_model_for_kbit_training"
-          ],
-          "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py": [
-            "lora"
           ],
           "tests/test_cli_train_engine.py": [
             "lora"
@@ -12823,18 +12346,10 @@
           "tests/test_hf_trainer_lora_config.py": [
             "lora"
           ],
-          "tests/test_interfaces_compat.py": [
-            "adapter"
-          ],
           "tests/test_loader_registry.py": [
-            "adapter",
             "lora"
           ],
-          "tests/test_log_adapters.py": [
-            "adapter"
-          ],
           "tests/test_model_factory.py": [
-            "adapter",
             "lora",
             "peft"
           ],
@@ -12842,13 +12357,11 @@
             "lora"
           ],
           "tests/test_model_loader.py": [
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "tests/test_model_registry_helpers.py": [
-            "adapter",
             "lora"
           ],
           "tests/test_modeling_module.py": [
@@ -12864,7 +12377,6 @@
           ],
           "tests/test_peft_adapter.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
@@ -12874,31 +12386,13 @@
           ],
           "tests/test_peft_hooks.py": [
             "LoraConfig",
-            "PeftModel",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
           ],
           "tests/test_peft_integration.py": [
-            "adapter",
             "lora",
             "peft"
-          ],
-          "tests/test_sentencepiece_adapter.py": [
-            "adapter"
-          ],
-          "tests/test_session_logger_log_adapters.py": [
-            "adapter"
-          ],
-          "tests/test_tokenizer.py": [
-            "adapter"
-          ],
-          "tests/test_tokenizer_batch_encode.py": [
-            "adapter"
-          ],
-          "tests/test_tokenizer_wrapper.py": [
-            "adapter"
           ],
           "tests/test_train_codex_cli_merge.py": [
             "lora"
@@ -12906,56 +12400,26 @@
           "tests/test_training_integration_flags.py": [
             "lora"
           ],
-          "tests/tokenization/test_adapter.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_deprecation.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_hf_adapter_canonical.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_hf_tokenizer_adapter.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_load_tokenizer_use_fast.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_roundtrip.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_adapter.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_adapter_edges.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_adapter_prefix.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_adapter_stub.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_adapter_train.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_roundtrip.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_sentencepiece_tokenizer.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_tokenization_api_and_deprecation.py": [
-            "adapter"
-          ],
-          "tests/tokenization/test_tokenizer_cli.py": [
-            "adapter"
-          ],
           "tests/tracking/test_init_experiment_tags.py": [
             "lora"
           ],
+          "tests/training/test_engine_hf_trainer_lora_cfg.py": [
+            "lora"
+          ],
+          "tests/training/test_functional_training_main.py": [
+            "lora"
+          ],
+          "tests/training/test_lora_optional.py": [
+            "lora",
+            "peft"
+          ],
+          "tests/training/test_lora_toggles.py": [
+            "lora"
+          ],
+          "tests/training/test_training_config_module.py": [
+            "lora"
+          ],
           "tests/unit/test_adapters.py": [
-            "adapter",
             "peft"
           ],
           "tests/unit/test_build_api_docs.py": [
@@ -12972,33 +12436,19 @@
             "lora",
             "peft"
           ],
-          "tests/unit/test_train_entrypoint.py": [
-            "adapter"
-          ],
           "tests/utils/test_modeling.py": [
             "LoraConfig",
             "get_peft_model",
             "lora",
             "peft"
           ],
-          "tokenization/__init__.py": [
-            "adapter"
-          ],
-          "tokenization/sentencepiece_adapter.py": [
-            "adapter"
-          ],
           "tools/apply_codex_audit_tasks.py": [
-            "adapter",
             "lora"
-          ],
-          "tools/apply_interfaces.py": [
-            "adapter"
           ],
           "tools/apply_pyproject_packaging.py": [
             "peft"
           ],
           "tools/apply_stack_polish.py": [
-            "adapter",
             "lora",
             "peft"
           ],
@@ -13009,12 +12459,8 @@
             "lora",
             "peft"
           ],
-          "tools/codex_coverage_booster.py": [
-            "adapter"
-          ],
           "tools/codex_execute_audit.py": [
             "LoraConfig",
-            "adapter",
             "get_peft_model",
             "lora",
             "peft"
@@ -13023,17 +12469,10 @@
             "lora",
             "peft"
           ],
-          "tools/codex_logging_workflow.py": [
-            "adapter"
-          ],
-          "tools/post_check_validation.py": [
-            "adapter"
-          ],
           "training/config.py": [
             "lora"
           ],
           "training/engine_hf_trainer.py": [
-            "adapter",
             "lora",
             "peft"
           ],
@@ -13043,21 +12482,17 @@
             "lora",
             "peft"
           ]
-        },
-        "bounded": true,
-        "detection_method": "token_matching",
-        "deterministic": true,
-        "offline": true
+        }
       },
-      "score": 0.8
+      "score": 0.458929
     },
     {
       "components": {
-        "consistency": 0.876106,
+        "consistency": 0.864078,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.504425
+        "tests": 0.504854
       },
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
@@ -13089,19 +12524,14 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
         "src/codex_ml/reproducibility/__init__.py",
         "src/codex_ml/reproducibility/seed_manager.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint_integrity.py",
         "src/codex_ml/utils/checkpoint_integrity_validation.py",
         "src/codex_ml/utils/checksum.py",
@@ -13133,16 +12563,6 @@
         "tests/reproducibility/test_seed_manager.py",
         "tests/smoke/test_artifacts_hash.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_rng_reproducibility.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_util.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_utils.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
-        "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_util.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_utils.py",
         "tests/test_checkpoint_checksum.py",
         "tests/test_checkpoint_checksum_and_retention.py",
         "tests/test_checkpoint_integrity.py",
@@ -13164,6 +12584,11 @@
         "tests/test_simple_cli_seeding.py",
         "tests/tools/test_codex_reproducibility_bundle.py",
         "tests/tracking/test_seed_snapshot_local.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_rng_restore.py",
+        "tests/training/test_rng_reproducibility.py",
+        "tests/training/test_seed_util.py",
+        "tests/training/test_seed_utils.py",
         "tests/utils/test_checkpoint_rng.py",
         "tests/utils/test_repro_rng.py",
         "tests/utils/test_rng_state.py",
@@ -13177,7 +12602,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.851327
+        "score": 0.849029
       },
       "found_patterns": [
         "deterministic",
@@ -13189,11 +12614,11 @@
       "id": "reproducibility",
       "meta": {
         "determinism_configs": 9,
-        "integrity_validation": 41,
-        "repro_utils": 41,
-        "seed_management": 38
+        "integrity_validation": 37,
+        "repro_utils": 39,
+        "seed_management": 33
       },
-      "score": 0.851327
+      "score": 0.849029
     },
     {
       "components": {
@@ -14478,8 +13903,6 @@
           "scripts/benchmarks/performance_optimizer.py": 5,
           "scripts/build_wheel.sh": 2,
           "scripts/canonicalize_artifacts.py": 2,
-          "scripts/capabilities_scored.json": 17,
-          "scripts/capabilities_scored_backup.json": 17,
           "scripts/check_dependency_evidence.py": 3,
           "scripts/check_licenses.py": 1,
           "scripts/ci/container_smoke.sh": 2,
@@ -14582,7 +14005,7 @@
           "scripts/space_traversal/detectors/code_quality_tooling.py": 2,
           "scripts/space_traversal/detectors/deployment_infrastructure.py": 1,
           "scripts/space_traversal/detectors/detector_duplication.py": 6,
-          "scripts/space_traversal/detectors/detector_peft.py": 6,
+          "scripts/space_traversal/detectors/detector_peft.py": 2,
           "scripts/space_traversal/detectors/detector_safeguards.py": 30,
           "scripts/space_traversal/detectors/example_v2.py": 1,
           "scripts/space_traversal/detectors/experiment_management.py": 1,
@@ -14608,7 +14031,7 @@
           "scripts/space_traversal/detectors/testing_infrastructure.py": 1,
           "scripts/space_traversal/detectors/train_loop.py": 1,
           "scripts/space_traversal/detectors/unified_training.py": 1,
-          "scripts/space_traversal/detectors/vector_store_detector.py": 6,
+          "scripts/space_traversal/detectors/vector_store_detector.py": 1,
           "scripts/space_traversal/dup_similarity.py": 5,
           "scripts/space_traversal/extract_validate_gaps.py": 2,
           "scripts/space_traversal/generate_baseline.py": 3,
@@ -14630,7 +14053,6 @@
           "scripts/survey.sh": 1,
           "scripts/torch_policy_check.py": 3,
           "scripts/torch_repair_cpu.sh": 1,
-          "scripts/track_progress.py": 1,
           "scripts/tracking/mlflow_ui.sh": 1,
           "scripts/train.py": 8,
           "scripts/validate_all_capabilities.sh": 7,
@@ -15845,57 +15267,6 @@
           "tests/space_traversal/test_mcp_tools_integration.py": 1,
           "tests/space_traversal/test_medium_threshold.py": 2,
           "tests/space_traversal/test_ml_serving_detector.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/conftest.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_base_config.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_callbacks.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_config_loading.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_cuda_determinism_guard.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_curriculum.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_custom_loop_overfit.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_determinism_utilities.py": 5,
-          "tests/space_traversal/test_peft_comprehensive/test_device_strategy.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_distributed.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_distributed_context.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_distributed_init_fallback.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_early_stopping.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py": 5,
-          "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_lora_optional.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_lora_toggles.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_naming.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_resume_equivalence.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_offline_wandb.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_overfit_smoke.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_resume_and_retention.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_scheduler_amp_resume_parity.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_scheduler_registry.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_seed_util.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_seed_utils.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_split_determinism.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_tiny_overfit.py": 3,
-          "tests/space_traversal/test_peft_comprehensive/test_trainer_auto_resume.py": 2,
-          "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py": 4,
-          "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_unified_training_repro.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_unified_training_resume.py": 1,
-          "tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py": 2,
           "tests/space_traversal/test_safeguards_keywords.py": 10,
           "tests/space_traversal/test_stable_manifest_cli.py": 1,
           "tests/space_traversal/test_status_reporting_detector.py": 1,
@@ -16365,6 +15736,56 @@
           "tests/train_loop/test_dtype_logging_and_dataset_gate.py": 3,
           "tests/train_loop/test_resolve_dtype_and_device.py": 2,
           "tests/train_loop/test_telemetry_rollover.py": 1,
+          "tests/training/conftest.py": 4,
+          "tests/training/test_base_config.py": 1,
+          "tests/training/test_callbacks.py": 1,
+          "tests/training/test_checkpoint_compat.py": 3,
+          "tests/training/test_checkpoint_integrity.py": 3,
+          "tests/training/test_checkpoint_manager_basic.py": 1,
+          "tests/training/test_checkpoint_manager_callback.py": 1,
+          "tests/training/test_checkpoint_manifest.py": 2,
+          "tests/training/test_checkpoint_resume.py": 2,
+          "tests/training/test_checkpoint_rng_restore.py": 3,
+          "tests/training/test_config_loading.py": 2,
+          "tests/training/test_cuda_determinism_guard.py": 2,
+          "tests/training/test_curriculum.py": 2,
+          "tests/training/test_custom_loop_overfit.py": 2,
+          "tests/training/test_determinism_utilities.py": 5,
+          "tests/training/test_device_strategy.py": 3,
+          "tests/training/test_distributed.py": 2,
+          "tests/training/test_distributed_context.py": 1,
+          "tests/training/test_distributed_init_fallback.py": 4,
+          "tests/training/test_early_stopping.py": 2,
+          "tests/training/test_engine_hf_trainer_comprehensive.py": 5,
+          "tests/training/test_engine_hf_trainer_lora_cfg.py": 1,
+          "tests/training/test_evaluate_module.py": 1,
+          "tests/training/test_extended_trainer.py": 4,
+          "tests/training/test_functional_training_evaluation.py": 3,
+          "tests/training/test_functional_training_main.py": 3,
+          "tests/training/test_lora_optional.py": 3,
+          "tests/training/test_lora_toggles.py": 1,
+          "tests/training/test_mid_epoch_naming.py": 1,
+          "tests/training/test_mid_epoch_resume_equivalence.py": 2,
+          "tests/training/test_offline_wandb.py": 3,
+          "tests/training/test_overfit_smoke.py": 4,
+          "tests/training/test_resume_and_retention.py": 4,
+          "tests/training/test_rng_reproducibility.py": 4,
+          "tests/training/test_run_custom_trainer_metadata.py": 3,
+          "tests/training/test_run_functional_training_resume.py": 2,
+          "tests/training/test_scheduler_amp_resume_parity.py": 1,
+          "tests/training/test_scheduler_registry.py": 1,
+          "tests/training/test_seed_util.py": 3,
+          "tests/training/test_seed_utils.py": 4,
+          "tests/training/test_split_determinism.py": 2,
+          "tests/training/test_strict_determinism.py": 3,
+          "tests/training/test_tiny_overfit.py": 3,
+          "tests/training/test_trainer_auto_resume.py": 2,
+          "tests/training/test_training_config_module.py": 4,
+          "tests/training/test_unified_training_parity.py": 1,
+          "tests/training/test_unified_training_parity_and_resume.py": 1,
+          "tests/training/test_unified_training_repro.py": 1,
+          "tests/training/test_unified_training_resume.py": 1,
+          "tests/training/test_unified_training_warnings.py": 2,
           "tests/typer_cli/test_detectors_cli.py": 1,
           "tests/unit/test_adapters.py": 1,
           "tests/unit/test_apply_ops_normalization.py": 1,
@@ -16696,11 +16117,11 @@
     },
     {
       "components": {
-        "consistency": 0.87931,
+        "consistency": 0.875,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.5,
-        "tests": 0.327586
+        "tests": 0.339286
       },
       "evidence_files": [
         ".codex/evidence/phase5_privacy_safety.jsonl",
@@ -16720,8 +16141,6 @@
         "docs/security/codex_security_safety_baseline.md",
         "examples/safety/policy_bypass_example.yaml",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -16765,7 +16184,7 @@
       "explain": {
         "id": "safety-security",
         "partials": {},
-        "score": 0.732758
+        "score": 0.734822
       },
       "found_patterns": [
         "sanitize",
@@ -16773,15 +16192,15 @@
       ],
       "id": "safety-security",
       "meta": {},
-      "score": 0.732758
+      "score": 0.734822
     },
     {
       "components": {
-        "consistency": 0.903955,
+        "consistency": 0.903774,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.107345
+        "tests": 0.107547
       },
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
@@ -17172,7 +16591,6 @@
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
         "scripts/space_traversal/audit_runner.py",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/schemas/validate_report_schema.json",
         "scripts/space_traversal/status_update_report.py",
@@ -17319,7 +16737,7 @@
       "explain": {
         "id": "status-reporting",
         "partials": {},
-        "score": 0.757627
+        "score": 0.757642
       },
       "found_patterns": [
         "audit",
@@ -17337,7 +16755,7 @@
         ],
         "priority": "medium"
       },
-      "score": 0.757627
+      "score": 0.757642
     },
     {
       "components": {
@@ -17348,7 +16766,6 @@
         "tests": 0.0
       },
       "evidence_files": [
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/cli/main.py",
@@ -17357,7 +16774,8 @@
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py"
+        "codex_utils/logging_setup.py",
+        "codex_utils/mlflow_offline.py"
       ],
       "explain": {
         "id": "structural-integrity",
@@ -17377,7 +16795,6 @@
           "torch"
         ],
         "split_dirs": [
-          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -17392,11 +16809,11 @@
     },
     {
       "components": {
-        "consistency": 0.887236,
+        "consistency": 0.887931,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.989037
+        "tests": 0.989028
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
@@ -18073,58 +17490,6 @@
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_medium_threshold.py",
         "tests/space_traversal/test_ml_serving_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/conftest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
-        "tests/space_traversal/test_peft_comprehensive/test_callbacks.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_callback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
-        "tests/space_traversal/test_peft_comprehensive/test_config_loading.py",
-        "tests/space_traversal/test_peft_comprehensive/test_cuda_determinism_guard.py",
-        "tests/space_traversal/test_peft_comprehensive/test_curriculum.py",
-        "tests/space_traversal/test_peft_comprehensive/test_custom_loop_overfit.py",
-        "tests/space_traversal/test_peft_comprehensive/test_determinism_utilities.py",
-        "tests/space_traversal/test_peft_comprehensive/test_device_strategy.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed_context.py",
-        "tests/space_traversal/test_peft_comprehensive/test_distributed_init_fallback.py",
-        "tests/space_traversal/test_peft_comprehensive/test_early_stopping.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py",
-        "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_lora_optional.py",
-        "tests/space_traversal/test_peft_comprehensive/test_lora_toggles.py",
-        "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_naming.py",
-        "tests/space_traversal/test_peft_comprehensive/test_mid_epoch_resume_equivalence.py",
-        "tests/space_traversal/test_peft_comprehensive/test_offline_wandb.py",
-        "tests/space_traversal/test_peft_comprehensive/test_overfit_smoke.py",
-        "tests/space_traversal/test_peft_comprehensive/test_peft_hooks.py",
-        "tests/space_traversal/test_peft_comprehensive/test_resume_and_retention.py",
-        "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_scheduler_amp_resume_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_scheduler_registry.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_util.py",
-        "tests/space_traversal/test_peft_comprehensive/test_seed_utils.py",
-        "tests/space_traversal/test_peft_comprehensive/test_split_determinism.py",
-        "tests/space_traversal/test_peft_comprehensive/test_strict_determinism.py",
-        "tests/space_traversal/test_peft_comprehensive/test_tiny_overfit.py",
-        "tests/space_traversal/test_peft_comprehensive/test_trainer_auto_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_repro.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py",
         "tests/space_traversal/test_safeguards_keywords.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
         "tests/space_traversal/test_status_reporting_detector.py",
@@ -18609,6 +17974,57 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
+        "tests/training/conftest.py",
+        "tests/training/test_base_config.py",
+        "tests/training/test_callbacks.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
+        "tests/training/test_config_loading.py",
+        "tests/training/test_cuda_determinism_guard.py",
+        "tests/training/test_curriculum.py",
+        "tests/training/test_custom_loop_overfit.py",
+        "tests/training/test_determinism_utilities.py",
+        "tests/training/test_device_strategy.py",
+        "tests/training/test_distributed.py",
+        "tests/training/test_distributed_context.py",
+        "tests/training/test_distributed_init_fallback.py",
+        "tests/training/test_early_stopping.py",
+        "tests/training/test_engine_hf_trainer_comprehensive.py",
+        "tests/training/test_engine_hf_trainer_lora_cfg.py",
+        "tests/training/test_evaluate_module.py",
+        "tests/training/test_extended_trainer.py",
+        "tests/training/test_functional_training_evaluation.py",
+        "tests/training/test_functional_training_main.py",
+        "tests/training/test_lora_optional.py",
+        "tests/training/test_lora_toggles.py",
+        "tests/training/test_mid_epoch_naming.py",
+        "tests/training/test_mid_epoch_resume_equivalence.py",
+        "tests/training/test_offline_wandb.py",
+        "tests/training/test_overfit_smoke.py",
+        "tests/training/test_resume_and_retention.py",
+        "tests/training/test_rng_reproducibility.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
+        "tests/training/test_run_functional_training_resume.py",
+        "tests/training/test_scheduler_amp_resume_parity.py",
+        "tests/training/test_scheduler_registry.py",
+        "tests/training/test_seed_util.py",
+        "tests/training/test_seed_utils.py",
+        "tests/training/test_split_determinism.py",
+        "tests/training/test_strict_determinism.py",
+        "tests/training/test_tiny_overfit.py",
+        "tests/training/test_trainer_auto_resume.py",
+        "tests/training/test_training_config_module.py",
+        "tests/training/test_unified_training_parity.py",
+        "tests/training/test_unified_training_parity_and_resume.py",
+        "tests/training/test_unified_training_repro.py",
+        "tests/training/test_unified_training_resume.py",
+        "tests/training/test_unified_training_warnings.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
         "tests/unit/__init__.py",
@@ -18680,7 +18096,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.912206
+        "score": 0.912343
       },
       "found_patterns": [
         "fixture",
@@ -18690,18 +18106,18 @@
       "id": "testing-infrastructure",
       "meta": {
         "config_count": 27,
-        "fixture_count": 36,
+        "fixture_count": 35,
         "test_count": 1252
       },
-      "score": 0.912206
+      "score": 0.912343
     },
     {
       "components": {
-        "consistency": 0.824,
+        "consistency": 0.82906,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.666667,
-        "tests": 0.496
+        "tests": 0.529915
       },
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
@@ -18732,8 +18148,6 @@
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/registry/tokenizers.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -18749,17 +18163,11 @@
         "src/codex_ml/tokenization/train_tokenizer.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/codex_ml/test_tokenization_adapters.py",
@@ -18833,7 +18241,7 @@
       "explain": {
         "id": "tokenization",
         "partials": {},
-        "score": 0.7888
+        "score": 0.798291
       },
       "found_patterns": [
         "encode",
@@ -18841,15 +18249,15 @@
       ],
       "id": "tokenization",
       "meta": {},
-      "score": 0.7888
+      "score": 0.798291
     },
     {
       "components": {
-        "consistency": 0.841897,
+        "consistency": 0.850187,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.351779
+        "tests": 0.419476
       },
       "evidence_files": [
         ".github/prompts/capability_excellence_plan/E3_DISTRIBUTED_TRAINING_EXCELLENCE.md",
@@ -18931,14 +18339,10 @@
         "examples/production_training_with_mlflow.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
-        "src/codex/__pycache__/training.cpython-312.pyc",
         "src/codex/training.py",
         "src/codex_ml/cli/minimal_train.py",
         "src/codex_ml/cli/train.py",
@@ -18952,8 +18356,6 @@
         "src/codex_ml/train_loop.py",
         "src/codex_ml/training.py",
         "src/codex_ml/training/__init__.py",
-        "src/codex_ml/training/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/training/__pycache__/device_strategy.cpython-312.pyc",
         "src/codex_ml/training/ab_testing.py",
         "src/codex_ml/training/callbacks.py",
         "src/codex_ml/training/continuous_learning.py",
@@ -18985,11 +18387,8 @@
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/train_helpers.py",
         "src/hhg_logistics/train.py",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/train_tokenizer.py",
         "src/training/__init__.py",
-        "src/training/__pycache__/__init__.cpython-312.pyc",
-        "src/training/__pycache__/trainer.cpython-312.pyc",
         "src/training/checkpoint_manager.py",
         "src/training/checkpointing.py",
         "src/training/config.py",
@@ -19017,34 +18416,6 @@
         "tests/schemas/train_probe.schema.json",
         "tests/scripts/test_train_script.py",
         "tests/smoke/test_hf_trainer_hello.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_lora_cfg.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_extended_trainer.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_main.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_functional_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_trainer_auto_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity_and_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_repro.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_warnings.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py",
-        "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py",
-        "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_trainer_auto_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_parity_and_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_repro.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_resume.py",
-        "tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py",
         "tests/test_cli_train_command.py",
         "tests/test_cli_train_engine.py",
         "tests/test_engine_hf_trainer.py",
@@ -19086,6 +18457,57 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
+        "tests/training/conftest.py",
+        "tests/training/test_base_config.py",
+        "tests/training/test_callbacks.py",
+        "tests/training/test_checkpoint_compat.py",
+        "tests/training/test_checkpoint_integrity.py",
+        "tests/training/test_checkpoint_manager_basic.py",
+        "tests/training/test_checkpoint_manager_callback.py",
+        "tests/training/test_checkpoint_manifest.py",
+        "tests/training/test_checkpoint_resume.py",
+        "tests/training/test_checkpoint_rng_restore.py",
+        "tests/training/test_config_loading.py",
+        "tests/training/test_cuda_determinism_guard.py",
+        "tests/training/test_curriculum.py",
+        "tests/training/test_custom_loop_overfit.py",
+        "tests/training/test_determinism_utilities.py",
+        "tests/training/test_device_strategy.py",
+        "tests/training/test_distributed.py",
+        "tests/training/test_distributed_context.py",
+        "tests/training/test_distributed_init_fallback.py",
+        "tests/training/test_early_stopping.py",
+        "tests/training/test_engine_hf_trainer_comprehensive.py",
+        "tests/training/test_engine_hf_trainer_lora_cfg.py",
+        "tests/training/test_evaluate_module.py",
+        "tests/training/test_extended_trainer.py",
+        "tests/training/test_functional_training_evaluation.py",
+        "tests/training/test_functional_training_main.py",
+        "tests/training/test_lora_optional.py",
+        "tests/training/test_lora_toggles.py",
+        "tests/training/test_mid_epoch_naming.py",
+        "tests/training/test_mid_epoch_resume_equivalence.py",
+        "tests/training/test_offline_wandb.py",
+        "tests/training/test_overfit_smoke.py",
+        "tests/training/test_resume_and_retention.py",
+        "tests/training/test_rng_reproducibility.py",
+        "tests/training/test_run_custom_trainer_metadata.py",
+        "tests/training/test_run_functional_training_resume.py",
+        "tests/training/test_scheduler_amp_resume_parity.py",
+        "tests/training/test_scheduler_registry.py",
+        "tests/training/test_seed_util.py",
+        "tests/training/test_seed_utils.py",
+        "tests/training/test_split_determinism.py",
+        "tests/training/test_strict_determinism.py",
+        "tests/training/test_tiny_overfit.py",
+        "tests/training/test_trainer_auto_resume.py",
+        "tests/training/test_training_config_module.py",
+        "tests/training/test_unified_training_parity.py",
+        "tests/training/test_unified_training_parity_and_resume.py",
+        "tests/training/test_unified_training_repro.py",
+        "tests/training/test_unified_training_resume.py",
+        "tests/training/test_unified_training_warnings.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
         "tools/bench_unified_training.py",
@@ -19109,7 +18531,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.806324
+        "score": 0.824906
       },
       "found_patterns": [
         "epoch",
@@ -19124,7 +18546,7 @@
           "train_loop"
         ]
       },
-      "score": 0.806324
+      "score": 0.824906
     },
     {
       "components": {
@@ -19155,8 +18577,33 @@
         "category": "training"
       },
       "score": 0.845
+    },
+    {
+      "components": {
+        "consistency": 1.0,
+        "documentation": 0.327381,
+        "functionality": 0.0,
+        "safeguards": 0.0,
+        "tests": 1.0
+      },
+      "evidence_files": [
+        "codex_addons/vector_stores/__init__.py",
+        "codex_addons/vector_stores/pgvector_stub.py",
+        "codex_addons/vector_stores/weaviate_stub.py"
+      ],
+      "explain": {
+        "id": "vector-stores",
+        "partials": {},
+        "score": 0.499107
+      },
+      "found_patterns": [],
+      "id": "vector-stores",
+      "meta": {
+        "mode": "stub-or-mock"
+      },
+      "score": 0.499107
     }
   ],
-  "generated": 1765262238.3459444,
+  "generated": 1765261771.5181122,
   "version": "1.2.0"
 }

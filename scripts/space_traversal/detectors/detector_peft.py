@@ -1,45 +1,118 @@
+"""
+PEFT Hooks Detector
+
+Detects Parameter-Efficient Fine-Tuning (PEFT) implementations including LoRA,
+adapters, and hook systems for efficient model fine-tuning.
+
+Patterns detected: peft, lora, adapter, hooks, fine-tuning
+"""
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Dict, List
 
+# PEFT-related tokens and patterns
 PEFT_TOKENS = {
     "peft",
     "lora",
     "LoraConfig",
     "get_peft_model",
     "prepare_model_for_kbit_training",
+    "adapter",
+    "PeftModel",
+    "LoraLayer",
+    "inject_adapter",
 }
+
 MAX_READ_BYTES = 200_000
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _read_text(path: Path) -> str:
+    """
+    Read text from file with bounded read.
+    
+    Safeguard: Bounded read to prevent memory issues.
+    
+    Args:
+        path: Path to file (absolute or relative to REPO_ROOT)
+        
+    Returns:
+        File content (up to MAX_READ_BYTES) or empty string on error
+    """
     try:
+        # Validation: Handle both absolute and relative paths
+        if not path.is_absolute():
+            path = REPO_ROOT / path
+        
+        if not path.exists():
+            return ""
+        
+        # Bounded read safeguard
         return path.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
-    except Exception:
+    except (OSError, IOError, UnicodeDecodeError):
+        # Defensive error handling
         return ""
 
 
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
-    """Find evidence of PEFT/LoRA wiring using the S1 context index."""
+    """
+    Find evidence of PEFT/LoRA implementations using the S1 context index.
+    
+    This detector identifies parameter-efficient fine-tuning code including
+    LoRA (Low-Rank Adaptation), adapters, and PEFT hook systems for efficient
+    model fine-tuning with reduced memory and computational requirements.
+    
+    Args:
+        file_index: Context index from S1 with files list
+        
+    Returns:
+        Detection result with evidence, patterns, and metadata
+    """
 
     files = file_index.get("files", [])
     evidence: Dict[str, List[str]] = {}
+    
     for entry in files:
         rel_path = entry.get("path")
+        
+        # Validation: Check path is valid
         if not rel_path or not rel_path.endswith(".py"):
             continue
+        
+        # Read file with safeguards (bounded, error handling)
         text = _read_text(REPO_ROOT / rel_path)
+        if not text:
+            continue
+        
+        # Detect PEFT tokens
         tokens = sorted([t for t in PEFT_TOKENS if t in text])
         if tokens:
             evidence[rel_path] = tokens
+
+    # Calculate metrics
+    total_tokens = sum(len(tokens) for tokens in evidence.values())
+    found_patterns_set = {token for tokens in evidence.values() for token in tokens}
 
     return {
         "id": "peft_hooks",
         "evidence": dict(sorted(evidence.items())),
         "files_with_peft": int(len(evidence)),
+        "total_peft_tokens": total_tokens,
+        "metrics": {
+            "files_with_peft": len(evidence),
+            "unique_tokens_found": len(found_patterns_set),
+            "total_token_occurrences": total_tokens,
+        },
+        # Detector contract fields
         "evidence_files": sorted(evidence.keys()),
-        "found_patterns": sorted({token for tokens in evidence.values() for token in tokens}),
-        "required_patterns": sorted(PEFT_TOKENS),
+        "found_patterns": sorted(found_patterns_set),
+        "required_patterns": ["peft", "lora", "adapter", "hooks", "fine-tuning"],
+        "docs_keywords": ["peft", "lora", "adapter", "hooks", "fine-tuning", "efficient", "parameter-efficient"],
+        "meta": {
+            "detection_method": "token_matching",
+            "deterministic": True,
+            "offline": True,
+            "bounded": True,
+        }
     }

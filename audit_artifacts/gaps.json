@@ -1,5 +1,5 @@
 {
-  "generated": 1765261771.529502,
+  "generated": 1765262238.3582559,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -869,12 +869,12 @@
       "id": "mcp-configuration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.770492,
-        "tests": 0.393443,
+        "consistency": 0.78125,
+        "tests": 0.375,
         "safeguards": 0.666667,
         "documentation": 0.178571
       },
-      "score": 0.629245,
+      "score": 0.626786,
       "evidence_files": [
         ".codex/codex.env.json",
         ".codex/copilot_bridge/.env.example",
@@ -902,11 +902,14 @@
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
+        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
+        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -961,7 +964,7 @@
       },
       "explain": {
         "id": "mcp-configuration",
-        "score": 0.629245,
+        "score": 0.626786,
         "partials": {}
       }
     },
@@ -969,14 +972,15 @@
       "id": "mcp-lifecycle-management",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.868421,
-        "tests": 0.473684,
+        "consistency": 0.871795,
+        "tests": 0.461538,
         "safeguards": 0.833333,
         "documentation": 1.0
       },
-      "score": 0.567105,
+      "score": 0.564743,
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -1031,7 +1035,7 @@
       },
       "explain": {
         "id": "mcp-lifecycle-management",
-        "score": 0.567105,
+        "score": 0.564743,
         "partials": {}
       }
     },
@@ -1040,13 +1044,14 @@
       "components": {
         "functionality": 1.0,
         "consistency": 1.0,
-        "tests": 0.75,
+        "tests": 0.6,
         "safeguards": 0.166667,
         "documentation": 0.178571
       },
-      "score": 0.689286,
+      "score": 0.651786,
       "evidence_files": [
         "policies/tenant_policy.schema.json",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
@@ -1063,7 +1068,7 @@
       },
       "explain": {
         "id": "mcp-multi-tenant",
-        "score": 0.689286,
+        "score": 0.651786,
         "partials": {}
       }
     },
@@ -1609,13 +1614,14 @@
       "id": "mcp-tooling-registry",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.857143,
-        "tests": 0.571429,
+        "consistency": 0.875,
+        "tests": 0.5,
         "safeguards": 0.333333,
         "documentation": 0.178571
       },
-      "score": 0.641071,
+      "score": 0.626786,
       "evidence_files": [
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -1637,7 +1643,7 @@
       },
       "explain": {
         "id": "mcp-tooling-registry",
-        "score": 0.641071,
+        "score": 0.626786,
         "partials": {}
       }
     },
@@ -1645,12 +1651,12 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.937046,
-        "tests": 0.150121,
+        "consistency": 0.93911,
+        "tests": 0.145199,
         "safeguards": 1.0,
         "documentation": 0.178571
       },
-      "score": 0.651725,
+      "score": 0.650907,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -1679,6 +1685,20 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -2075,528 +2095,7 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.651725,
-        "partials": {}
-      }
-    },
-    {
-      "id": "peft_hooks",
-      "components": {
-        "functionality": 1.0,
-        "consistency": 1.0,
-        "tests": 0.0,
-        "safeguards": 0.0,
-        "documentation": 0.059524
-      },
-      "score": 0.458929,
-      "evidence_files": [],
-      "found_patterns": [
-        "LoraConfig",
-        "get_peft_model",
-        "lora",
-        "peft",
-        "prepare_model_for_kbit_training"
-      ],
-      "meta": {
-        "_evidence_v2": {
-          "cli/script_polish.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "cli/train_codex.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "cli/update_runner.py": [
-            "lora"
-          ],
-          "codex_addons/metrics/collector.py": [
-            "lora"
-          ],
-          "codex_task_executor.py": [
-            "lora"
-          ],
-          "models/chat_model.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "models/lora/_test_utils.py": [
-            "LoraConfig",
-            "lora",
-            "peft"
-          ],
-          "models/peft_utils.py": [
-            "peft"
-          ],
-          "nox_sessions/docs_validation.py": [
-            "peft"
-          ],
-          "noxfile.py": [
-            "peft"
-          ],
-          "scripts/codex_ready_task_runner.py": [
-            "peft"
-          ],
-          "scripts/make_quickstart_notebook.py": [
-            "lora"
-          ],
-          "scripts/space_traversal/detectors/detector_peft.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft",
-            "prepare_model_for_kbit_training"
-          ],
-          "scripts/train.py": [
-            "lora"
-          ],
-          "services/api/main.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex/cli.py": [
-            "lora"
-          ],
-          "src/codex/training.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/cli/codex_cli.py": [
-            "peft"
-          ],
-          "src/codex_ml/cli/config.py": [
-            "lora"
-          ],
-          "src/codex_ml/cli/generate.py": [
-            "lora"
-          ],
-          "src/codex_ml/cli/hydra_main.py": [
-            "lora"
-          ],
-          "src/codex_ml/cli/infer.py": [
-            "lora"
-          ],
-          "src/codex_ml/cli/train.py": [
-            "lora"
-          ],
-          "src/codex_ml/codex_model.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/config_schema.py": [
-            "LoraConfig",
-            "lora"
-          ],
-          "src/codex_ml/hf_loader.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/interfaces/__init__.py": [
-            "peft"
-          ],
-          "src/codex_ml/interfaces/peft_hooks.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/interfaces/rl.py": [
-            "lora"
-          ],
-          "src/codex_ml/model_registry.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/modeling/__init__.py": [
-            "lora"
-          ],
-          "src/codex_ml/modeling/codex_model.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/modeling/codex_model_loader.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/modeling/factory.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/models/factory.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/models/peft_hooks.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/models/registry.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/models/utils/__init__.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/models/utils/peft.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/peft/peft_adapter.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/tracking/init_experiment.py": [
-            "lora"
-          ],
-          "src/codex_ml/train_loop.py": [
-            "lora"
-          ],
-          "src/codex_ml/training/functional_training.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/training/legacy_api.py": [
-            "lora",
-            "peft"
-          ],
-          "src/codex_ml/utils/modeling.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/hhg_logistics/model/adapters.py": [
-            "peft"
-          ],
-          "src/hhg_logistics/model/peft_utils.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/hhg_logistics/registry/__init__.py": [
-            "peft"
-          ],
-          "src/hhg_logistics/serve/app.py": [
-            "peft"
-          ],
-          "src/hhg_logistics/train.py": [
-            "lora",
-            "peft"
-          ],
-          "src/modeling.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/training/checkpointing.py": [
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "src/training/config.py": [
-            "lora"
-          ],
-          "src/training/engine_hf_trainer.py": [
-            "lora",
-            "peft"
-          ],
-          "src/training/functional_training.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/checkpoint/test_checkpoint_peft_state.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/cli/test_generate_safety.py": [
-            "lora"
-          ],
-          "tests/cli/test_infer_cli_lora.py": [
-            "lora"
-          ],
-          "tests/config/test_config_settings.py": [
-            "lora"
-          ],
-          "tests/config/test_validate_config.py": [
-            "LoraConfig",
-            "lora"
-          ],
-          "tests/helpers/optional_dependencies.py": [
-            "peft"
-          ],
-          "tests/integration/test_build_api_docs_integration.py": [
-            "peft"
-          ],
-          "tests/modeling/test_codex_model.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/modeling/test_decoder_only.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/modeling/test_lora_minimal.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/modeling/test_modeling_module.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/models/test_chat_model.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/models/test_lora_integration.py": [
-            "lora"
-          ],
-          "tests/models/test_models_registry_api.py": [
-            "lora"
-          ],
-          "tests/models/test_peft_optional.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/models/test_peft_smoke.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/models/test_peft_utils.py": [
-            "peft"
-          ],
-          "tests/models/test_registry_dtype.py": [
-            "lora"
-          ],
-          "tests/models/test_registry_validation.py": [
-            "lora"
-          ],
-          "tests/peft/test_apply_lora.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/peft/test_peft_smoke.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/peft_tests/test_peft_comprehensive.py": [
-            "LoraConfig",
-            "lora",
-            "peft"
-          ],
-          "tests/services/api/test_rate_limit_middleware.py": [
-            "lora"
-          ],
-          "tests/space_traversal/test_detector_peft.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_cli_train_engine.py": [
-            "lora"
-          ],
-          "tests/test_codex_model.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/test_codexml_cli.py": [
-            "lora"
-          ],
-          "tests/test_docs_examples_paths.py": [
-            "lora"
-          ],
-          "tests/test_engine_hf_trainer.py": [
-            "lora"
-          ],
-          "tests/test_engine_hf_trainer_lora.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/test_hf_loader_peft_guard.py": [
-            "peft"
-          ],
-          "tests/test_hf_loader_registry.py": [
-            "peft"
-          ],
-          "tests/test_hf_trainer_lora_config.py": [
-            "lora"
-          ],
-          "tests/test_loader_registry.py": [
-            "lora"
-          ],
-          "tests/test_model_factory.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/test_model_factory_lora_validation.py": [
-            "lora"
-          ],
-          "tests/test_model_loader.py": [
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_model_registry_helpers.py": [
-            "lora"
-          ],
-          "tests/test_modeling_module.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_modeling_utils.py": [
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_peft_adapter.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_peft_gating.py": [
-            "peft"
-          ],
-          "tests/test_peft_hooks.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tests/test_peft_integration.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/test_train_codex_cli_merge.py": [
-            "lora"
-          ],
-          "tests/test_training_integration_flags.py": [
-            "lora"
-          ],
-          "tests/tracking/test_init_experiment_tags.py": [
-            "lora"
-          ],
-          "tests/training/test_engine_hf_trainer_lora_cfg.py": [
-            "lora"
-          ],
-          "tests/training/test_functional_training_main.py": [
-            "lora"
-          ],
-          "tests/training/test_lora_optional.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/training/test_lora_toggles.py": [
-            "lora"
-          ],
-          "tests/training/test_training_config_module.py": [
-            "lora"
-          ],
-          "tests/unit/test_adapters.py": [
-            "peft"
-          ],
-          "tests/unit/test_build_api_docs.py": [
-            "peft"
-          ],
-          "tests/unit/test_cli_prompt_sanitisation.py": [
-            "lora"
-          ],
-          "tests/unit/test_modeling_module.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/unit/test_peft_utils.py": [
-            "lora",
-            "peft"
-          ],
-          "tests/utils/test_modeling.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tools/apply_codex_audit_tasks.py": [
-            "lora"
-          ],
-          "tools/apply_pyproject_packaging.py": [
-            "peft"
-          ],
-          "tools/apply_stack_polish.py": [
-            "lora",
-            "peft"
-          ],
-          "tools/build_api_docs.py": [
-            "peft"
-          ],
-          "tools/codex_audit_orchestrator.py": [
-            "lora",
-            "peft"
-          ],
-          "tools/codex_execute_audit.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ],
-          "tools/codex_gap_registry.py": [
-            "lora",
-            "peft"
-          ],
-          "training/config.py": [
-            "lora"
-          ],
-          "training/engine_hf_trainer.py": [
-            "lora",
-            "peft"
-          ],
-          "training/functional_training.py": [
-            "LoraConfig",
-            "get_peft_model",
-            "lora",
-            "peft"
-          ]
-        }
-      },
-      "explain": {
-        "id": "peft_hooks",
-        "score": 0.458929,
+        "score": 0.650907,
         "partials": {}
       }
     },
@@ -2611,6 +2110,7 @@
       },
       "score": 0.576875,
       "evidence_files": [
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/cli/main.py",
@@ -2619,8 +2119,7 @@
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py",
-        "codex_utils/mlflow_offline.py"
+        "codex_utils/logging_setup.py"
       ],
       "found_patterns": [
         "lib-shadowing",
@@ -2630,6 +2129,7 @@
         "risk_level": "high",
         "description": "Detects architectural split-brain and namespace shadowing.",
         "split_dirs": [
+          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -2647,31 +2147,6 @@
       "explain": {
         "id": "structural-integrity",
         "score": 0.576875,
-        "partials": {}
-      }
-    },
-    {
-      "id": "vector-stores",
-      "components": {
-        "functionality": 0.0,
-        "consistency": 1.0,
-        "tests": 1.0,
-        "safeguards": 0.0,
-        "documentation": 0.327381
-      },
-      "score": 0.499107,
-      "evidence_files": [
-        "codex_addons/vector_stores/__init__.py",
-        "codex_addons/vector_stores/pgvector_stub.py",
-        "codex_addons/vector_stores/weaviate_stub.py"
-      ],
-      "found_patterns": [],
-      "meta": {
-        "mode": "stub-or-mock"
-      },
-      "explain": {
-        "id": "vector-stores",
-        "score": 0.499107,
         "partials": {}
       }
     }
