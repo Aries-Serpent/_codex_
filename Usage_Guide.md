@@ -74,7 +74,7 @@ make space-audit-fast
 **Note:** No gaps.json or manifest generated
 
 ### Daily Status Issue Body
-- Generated automatically during S6 in full or fast runs.
+- Generated automatically during any pipeline invocation that reaches S6 (both full and fast targets include S6).
 - Location: `reports/codex_status_update_<YYYY-MM-DD>.md`
 - Use: paste into a GitHub issue for the daily audit status update.
 

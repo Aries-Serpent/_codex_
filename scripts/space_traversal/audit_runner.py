@@ -629,7 +629,7 @@ def write_daily_status_issue(cfg, context, report_path: Path):
         f"- Capabilities scored: {total_caps}",
         f"- Low maturity (< {low_threshold}): {len(gaps)}",
         f"- Matrix report: {report_ref}",
-        "- Manifest: audit_run_manifest.json (generated in S7)",
+        "- Manifest (after S7): audit_run_manifest.json",
         "",
         "## Low Maturity Focus",
     ]
