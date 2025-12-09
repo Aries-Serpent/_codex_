@@ -1,8 +1,8 @@
-# Space Traversal Audit System - Usage Guide
+# Space Traversal Audit System - Usage Guide (v1.4.0)
 
 **Roles:** [Audit Orchestrator], [Capability Cartographer]  
 **Energy:** 5  
-**Version:** 1.1.0
+**Version:** 1.4.0
 
 > **NOTE:** For technical workflow details and formulas, see `Traversal_Workflow.md`
 
@@ -47,6 +47,7 @@ reports/
 └── capability_matrix_<timestamp>.md  # S6: Human-readable report
 
 audit_run_manifest.json          # S7: Integrity manifest
+reports/codex_status_update_<date>.md # S6: Issue-ready daily status body
 ```
 
 ## 2. Key Commands
@@ -71,6 +72,11 @@ make space-audit-fast
 **Duration:** ~15-30 seconds  
 **Use Case:** Quick iteration during development  
 **Note:** No gaps.json or manifest generated
+
+### Daily Status Issue Body
+- Generated automatically during S6 in full or fast runs.
+- Location: `reports/codex_status_update_<YYYY-MM-DD>.md`
+- Use: paste into a GitHub issue for the daily audit status update.
 
 ### Single Stage Execution
 ```bash
@@ -509,7 +515,7 @@ def detect(file_index):
 {
   "generated": 1700000000.0,
   "count": 1234,
-  "version": "1.1.0",
+  "version": "1.4.0",
   "files": [
     {
       "path": "src/main.py",
@@ -526,7 +532,7 @@ def detect(file_index):
 ```json
 {
   "generated": 1700000000.0,
-  "version": "1.1.0",
+  "version": "1.4.0",
   "facets": {
     "checkpoint": ["src/checkpoint.py", "tests/test_checkpoint.py"],
     "logging": ["src/logging.py", "docs/logging.md"]
@@ -539,7 +545,7 @@ def detect(file_index):
 ```json
 {
   "generated": 1700000000.0,
-  "version": "1.1.0",
+  "version": "1.4.0",
   "capabilities": [
     {
       "id": "checkpointing",
@@ -556,7 +562,7 @@ def detect(file_index):
 ```json
 {
   "generated": 1700000000.0,
-  "version": "1.1.0",
+  "version": "1.4.0",
   "capabilities": [
     {
       "id": "checkpointing",
@@ -613,6 +619,11 @@ Generated: 2025-11-19 12:34:56 UTC
 - documentation (0.550)
 ```
 **Use:** Human-readable audit summary for reports, PRs, documentation
+
+#### codex_status_update_<YYYY-MM-DD>.md (S6)
+Markdown body ready to paste into a daily audit status issue.
+
+**Use:** Created automatically during S6; publishes counts, gaps, and pointers to the latest matrix and manifest.
 
 ### Manifest File
 
@@ -1535,6 +1546,6 @@ audit_run_manifest.json                       # Integrity manifest
 
 ---
 
-**Last Updated:** 2025-11-19  
-**Version:** 1.1.0  
+**Last Updated:** 2025-12-09  
+**Version:** 1.4.0  
 **Maintained By:** Codex Audit Orchestrator Team

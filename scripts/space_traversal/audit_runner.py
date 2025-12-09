@@ -600,6 +600,51 @@ def render_template(cfg, context):
     json_out.write_text(json.dumps(comp, indent=2, sort_keys=True), encoding="utf-8")
     return md_out, json_out
 
+def _write_daily_status_issue(cfg, context, report_path: Path):
+    """
+    Produce a daily status issue body alongside the matrix report.
+
+    This keeps the audit pipeline self-contained while enabling schedulers
+    (e.g., nightly/cron workflows) to pick up the issue text directly from
+    the reports directory and create an issue automatically.
+    """
+    reports_dir = Path(_get_reports_dir(cfg))
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    date_str = time.strftime("%Y-%m-%d")
+    issue_path = reports_dir / f"codex_status_update_{date_str}.md"
+
+    gaps = sorted(context.get("gaps", []), key=lambda g: g.get("score", 0.0))
+    low_threshold = context.get("scoring", {}).get("thresholds", {}).get("low")
+    total_caps = len(context.get("capabilities", []))
+
+    lines = [
+        f"# [Daily Audit Status] {date_str}",
+        "",
+        f"- Generated: {context.get('timestamp')}",
+        f"- Capabilities scored: {total_caps}",
+        f"- Low maturity (< {low_threshold}): {len(gaps)}",
+        f"- Matrix report: {report_path.relative_to(ROOT) if report_path.exists() else report_path}",
+        "- Manifest: audit_run_manifest.json (generated in S7)",
+        "",
+        "## Low Maturity Focus",
+    ]
+    if gaps:
+        for g in gaps:
+            lines.append(f"- {g.get('id')} — score {g.get('score'):.2f}")
+    else:
+        lines.append("No low-maturity capabilities detected.")
+
+    lines.extend(
+        [
+            "",
+            "## Next Steps",
+            "- Review gaps above and plan remediation.",
+            "- If acceptable, promote report and manifest to baseline.",
+        ]
+    )
+    issue_path.write_text("\n".join(lines), encoding="utf-8")
+    return issue_path
+
 def stage_s6_render(cfg, scored_caps, gaps):
     context = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
@@ -608,7 +653,9 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "weights": cfg["weights"],
         "scoring": cfg.get("scoring", {}),
     }
-    return render_template(cfg, context)
+    md_out, json_out = render_template(cfg, context)
+    _write_daily_status_issue(cfg, context, md_out)
+    return md_out, json_out
 
 def stage_s7_manifest(cfg):
     artifacts_dir = Path(_get_artifacts_dir(cfg))
