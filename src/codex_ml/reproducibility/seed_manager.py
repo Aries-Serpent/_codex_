@@ -93,8 +93,9 @@ class SeedManager:
     def set_all_seeds(self) -> SeedState:
         """Set seeds for all supported frameworks.
 
-        NOTE: PYTHONHASHSEED must be set BEFORE interpreter startup to be
-        effective. Setting it via os.environ after startup has no effect.
+        Note:
+            PYTHONHASHSEED must be set BEFORE interpreter startup to be effective.
+            Setting it via os.environ after startup has NO effect on hash randomization.
 
         Returns:
             SeedState object containing all seed values and flags
@@ -102,14 +103,16 @@ class SeedManager:
         # Python random
         random.seed(self.seed)
 
-        # Warn about PYTHONHASHSEED limitation
+        # Warn about PYTHONHASHSEED limitation (don't set it, just warn)
         if "PYTHONHASHSEED" not in os.environ:
             logger.warning(
                 "PYTHONHASHSEED was not set before interpreter startup. "
-                "For reproducible Python hash randomization, set PYTHONHASHSEED "
-                "as an environment variable before running your script: "
-                "PYTHONHASHSEED=42 python your_script.py"
+                "For reproducible Python hash randomization, set it BEFORE running: "
+                "PYTHONHASHSEED=%d python your_script.py",
+                self.seed,
             )
+        # Note: We intentionally do NOT set os.environ["PYTHONHASHSEED"] here
+        # because it has no effect after interpreter startup.
 
         python_hash = os.environ.get("PYTHONHASHSEED", str(self.seed))
         state = SeedState(

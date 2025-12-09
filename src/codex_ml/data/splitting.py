@@ -6,7 +6,6 @@ guaranteed determinism and reproducibility.
 """
 
 import logging
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -24,27 +23,30 @@ def split_indices(
     train_ratio: float = 0.8,
     val_ratio: float = 0.1,
     seed: int = 42,
-) -> Tuple[List[int], List[int], List[int]]:
-    """Split indices into train/val/test sets.
+) -> tuple[list[int], list[int], list[int]]:
+    """Split indices deterministically into train/val/test sets.
 
-    WARNING: Cross-Platform Reproducibility Limitation
-    =================================================
-    Results differ between NumPy and Python random backends.
-    The same seed produces DIFFERENT splits depending on NumPy availability.
+    ⚠️ CROSS-PLATFORM REPRODUCIBILITY WARNING ⚠️
+    ============================================
+    The same seed produces DIFFERENT results depending on NumPy availability:
+    - With NumPy: Uses np.random.default_rng (PCG64 algorithm)
+    - Without NumPy: Uses Python random.shuffle (Mersenne Twister)
 
-    For cross-environment reproducibility, choose ONE of:
-    1. Ensure NumPy is consistently installed across all environments
-    2. Accept different splits on different platforms (not recommended for production)
-    3. Implement a custom deterministic shuffle using a fixed algorithm
+    For guaranteed reproducibility across environments:
+    1. Ensure NumPy is consistently installed, OR
+    2. Accept different splits on different platforms (not recommended)
 
     Args:
-        n: Number of indices
+        n: Total number of indices
         train_ratio: Fraction for training (default: 0.8)
         val_ratio: Fraction for validation (default: 0.1)
         seed: Random seed for reproducibility
 
     Returns:
         Tuple of (train_indices, val_indices, test_indices)
+
+    Raises:
+        ValueError: If ratios don't sum to <= 1.0 or n <= 0
 
     Example:
         >>> train, val, test = split_indices(1000, 0.8, 0.1, seed=42)

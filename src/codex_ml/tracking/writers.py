@@ -905,12 +905,11 @@ class MLflowParamWriter:
         flat_params = self._flatten_dict(config, prefix)
         return self.write_params(flat_params)
 
-    def _escape_key(self, key: Any, sep: str = ".") -> str:
-        """Escape separator characters in keys (one-way operation).
+    def _escape_key(self, key: str, sep: str = ".") -> str:
+        """Escape separator characters in keys.
 
-        NOTE: This is a one-way operation. There is no unescape method because
-        MLflow keys are stored escaped. Users should use descriptive key names
-        that avoid dots/separators when possible.
+        NOTE: This is a one-way transformation. Keys with literal backslash-dot
+        sequences cannot be distinguished from escaped keys after transformation.
 
         Args:
             key: Key to escape (any type)
@@ -919,7 +918,8 @@ class MLflowParamWriter:
         Returns:
             Escaped string key
         """
-        return str(key).replace(sep, f"\\{sep}")
+        key_str = str(key) if not isinstance(key, str) else key
+        return key_str.replace(sep, f"\\{sep}")
 
     def _flatten_dict(
         self,

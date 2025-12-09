@@ -187,37 +187,28 @@ class TestWithNumPy:
     """Tests that specifically require NumPy."""
 
     def test_uses_numpy_rng(self, monkeypatch):
-        """Test uses NumPy random number generator when available."""
-        n = 100
-        seed = 42
+        """Verify NumPy backend is actually used."""
+        pytest.importorskip("numpy")
+        import numpy as np
 
-        # Track whether NumPy's default_rng was called using a wrapper class
-        numpy_rng_called = False
+        shuffle_calls = []
+        original_default_rng = np.random.default_rng
 
-        if NUMPY_AVAILABLE:
-            original_default_rng = np.random.default_rng
+        class TrackedRNG:
+            def __init__(self, seed):
+                self._rng = original_default_rng(seed)
 
-            class TrackedRNG:
-                """Wrapper to track RNG usage without tightly coupling to NumPy internals."""
-                def __init__(self, *args, **kwargs):
-                    nonlocal numpy_rng_called
-                    numpy_rng_called = True
-                    self._rng = original_default_rng(*args, **kwargs)
-                
-                def shuffle(self, x):
-                    return self._rng.shuffle(x)
-                
-                def __getattr__(self, name):
-                    # Delegate other attributes to the real RNG
-                    return getattr(self._rng, name)
+            def shuffle(self, x):
+                shuffle_calls.append(True)
+                return self._rng.shuffle(x)
 
-            monkeypatch.setattr(np.random, "default_rng", TrackedRNG)
+            def __getattr__(self, name):
+                return getattr(self._rng, name)
 
-        # Get result from our function
-        train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
+        monkeypatch.setattr(np.random, "default_rng", TrackedRNG)
 
-        # Verify that numpy default_rng was actually called
-        assert numpy_rng_called, "NumPy default_rng should have been called"
+        train, val, test = split_indices(100, 0.8, 0.1, seed=42)
+        assert len(shuffle_calls) > 0, "NumPy RNG should have been used"
 
         # Verify the split is reasonable
         assert len(train) == 80
@@ -226,7 +217,7 @@ class TestWithNumPy:
 
         # Verify all indices are present
         all_indices = set(train + val + test)
-        assert all_indices == set(range(n))
+        assert all_indices == set(range(100))
 
 
 @pytest.mark.skipif(NUMPY_AVAILABLE, reason="Test for NumPy unavailable case")

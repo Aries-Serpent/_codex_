@@ -42,18 +42,17 @@ class ByteLevelTokenizer:
         pad_token_id: int = 0,
         eos_token_id: int = 1,
         unk_token_id: int = 2,
-        max_length: Optional[int] = None,
+        max_length: int | None = None,
         padding: str = "max_length",
         truncation: bool = True,
     ) -> None:
         """Initialize ByteLevelTokenizer.
 
         Args:
-            pad_token_id: ID for padding token (default: 0)
-            eos_token_id: ID for end-of-sequence token (default: 1)
-            unk_token_id: ID for unknown token (default: 2)
-            max_length: Maximum sequence length. Must be >= 1 if set.
-                When add_special_tokens=True, one position is reserved for EOS.
+            pad_token_id: ID for padding token
+            eos_token_id: ID for end-of-sequence token
+            unk_token_id: ID for unknown token
+            max_length: Maximum sequence length (must be >= 1 if set)
             padding: Padding strategy - "max_length" or "longest"
             truncation: Whether to truncate sequences exceeding max_length
 
@@ -65,11 +64,11 @@ class ByteLevelTokenizer:
                 f"max_length must be >= 1 when set, got {max_length}. "
                 f"Use max_length=None to disable truncation."
             )
+        self.max_length = max_length
 
         self.pad_token_id = pad_token_id
         self.eos_token_id = eos_token_id
         self.unk_token_id = unk_token_id
-        self.max_length = max_length
         self.padding = padding
         self.truncation = truncation
 
