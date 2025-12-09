@@ -2,11 +2,11 @@
   "capabilities": [
     {
       "components": {
-        "consistency": 0.875576,
+        "consistency": 0.874419,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.230415
+        "tests": 0.227907
       },
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
@@ -133,7 +133,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -211,7 +210,6 @@
         "tests/manifest/test_warning_aggregation.py",
         "tests/ops/test_archive_pr_checklist.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
@@ -230,7 +228,7 @@
       "explain": {
         "id": "archival-bundling",
         "partials": {},
-        "score": 0.782719
+        "score": 0.781861
       },
       "found_patterns": [
         "archive",
@@ -248,15 +246,15 @@
         ],
         "priority": "high"
       },
-      "score": 0.782719
+      "score": 0.781861
     },
     {
       "components": {
-        "consistency": 0.892562,
+        "consistency": 0.881818,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.669421
+        "tests": 0.672727
       },
       "evidence_files": [
         "codex_ml/utils/checkpointing.py",
@@ -281,10 +279,6 @@
         "src/codex_ml/checkpointing/utils.py",
         "src/codex_ml/cli/checkpoint_validate.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint.py",
         "src/codex_ml/utils/checkpoint_core.py",
         "src/codex_ml/utils/checkpoint_event.py",
@@ -339,13 +333,6 @@
         "tests/codex_ml/test_checkpoint_core.py",
         "tests/codex_ml/test_checkpoint_utils.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_compat.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_basic.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_callback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_compat.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manager_basic.py",
@@ -384,7 +371,7 @@
       "explain": {
         "id": "checkpointing",
         "partials": {},
-        "score": 0.870868
+        "score": 0.869545
       },
       "found_patterns": [
         "load",
@@ -392,7 +379,7 @@
       ],
       "id": "checkpointing",
       "meta": {},
-      "score": 0.870868
+      "score": 0.869545
     },
     {
       "components": {
@@ -750,11 +737,11 @@
     },
     {
       "components": {
-        "consistency": 0.870968,
+        "consistency": 0.869388,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.508065
+        "tests": 0.514286
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -843,7 +830,6 @@
         "scripts/security/secret_context_correlate.py",
         "scripts/security/secret_entropy_scan.py",
         "scripts/space_traversal/decode_validate_and_extract.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/extract_validate_gaps.py",
@@ -871,8 +857,6 @@
         "services/msp_gateway/security.py",
         "setup.cfg",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -1009,7 +993,7 @@
       "explain": {
         "id": "code-quality-tooling",
         "partials": {},
-        "score": 0.82621
+        "score": 0.827449
       },
       "found_patterns": [
         "format",
@@ -1023,18 +1007,18 @@
         "formatters": 2,
         "linters": 5,
         "quality_scripts": 69,
-        "security_scanners": 168,
+        "security_scanners": 165,
         "type_checkers": 9
       },
-      "score": 0.82621
+      "score": 0.827449
     },
     {
       "components": {
-        "consistency": 0.756098,
+        "consistency": 0.751553,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.207317
+        "tests": 0.201863
       },
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
@@ -1056,7 +1040,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -1228,6 +1211,7 @@
         "configs/training/tokenizer/train_tokenizer.yaml",
         "configs/training/tracking/base.yaml",
         "configs/training/tracking/offline.yaml",
+        "docs/capabilities/mcp_configuration.md",
         "docs/config/config_patterns_and_conventions.md",
         "docs/config_consolidation_guide.md",
         "docs/config_validation.md",
@@ -1255,7 +1239,6 @@
         "scripts/migrate_configs.py",
         "scripts/remediation/consolidate_configs.py",
         "scripts/runner/configure_repo_vars.sh",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/status/visual_compare_with_config.sh",
         "services/msp_gateway/config.py",
@@ -1269,8 +1252,6 @@
         "src/codex_ml/cli/hydra_entry.py",
         "src/codex_ml/cli/hydra_main.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -1333,9 +1314,6 @@
         "tests/mcp/test_config.py",
         "tests/pipeline/test_pipeline_config.py",
         "tests/smoke/test_config_validate_cli.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_base_config.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_config_loading.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
         "tests/space_traversal/test_peft_comprehensive/test_config_loading.py",
         "tests/space_traversal/test_peft_comprehensive/test_training_config_module.py",
@@ -1369,7 +1347,7 @@
       "explain": {
         "id": "configuration",
         "partials": {},
-        "score": 0.753049
+        "score": 0.750776
       },
       "found_patterns": [
         "config",
@@ -1377,15 +1355,15 @@
       ],
       "id": "configuration",
       "meta": {},
-      "score": 0.753049
+      "score": 0.750776
     },
     {
       "components": {
-        "consistency": 0.873096,
+        "consistency": 0.869792,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.390863
+        "tests": 0.395833
       },
       "evidence_files": [
         ".github/prompts/sprint_execution_plan/phase_2_reproducibility/T6_dataset_hash_manifest.md",
@@ -1446,9 +1424,6 @@
         "src/codex_ml/cli/migrate_data.py",
         "src/codex_ml/codex_data.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -1488,7 +1463,6 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/training/dataloader_utils.py",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/run_metadata.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
@@ -1550,7 +1524,6 @@
         "tests/integration/test_data_gate.py",
         "tests/integration/test_data_report.py",
         "tests/multilingual/test_data_loader.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
         "tests/stub_packages/torch/utils/data/__init__.py",
         "tests/test_checkpoint_metadata.py",
@@ -1589,7 +1562,7 @@
       "explain": {
         "id": "data-pipeline",
         "partials": {},
-        "score": 0.797335
+        "score": 0.797917
       },
       "found_patterns": [
         "loader",
@@ -1597,7 +1570,7 @@
       ],
       "id": "data-pipeline",
       "meta": {},
-      "score": 0.797335
+      "score": 0.797917
     },
     {
       "components": {
@@ -1713,11 +1686,11 @@
     },
     {
       "components": {
-        "consistency": 0.933135,
+        "consistency": 0.93353,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.004458
+        "tests": 0.004431
       },
       "evidence_files": [
         "README.md",
@@ -1808,9 +1781,13 @@
         "docs/capabilities/deployment_infrastructure.md",
         "docs/capabilities/documentation_system.md",
         "docs/capabilities/duplication_detection.md",
+        "docs/capabilities/mcp_configuration.md",
+        "docs/capabilities/mcp_schema_validation.md",
+        "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
+        "docs/capabilities/structural_integrity.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -2397,7 +2374,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.675242
+        "score": 0.675314
       },
       "found_patterns": [
         "docs",
@@ -2407,19 +2384,19 @@
       "id": "documentation-system",
       "meta": {
         "config_count": 1,
-        "markdown_count": 671,
+        "markdown_count": 675,
         "rst_count": 0,
-        "total_docs": 673
+        "total_docs": 677
       },
-      "score": 0.675242
+      "score": 0.675314
     },
     {
       "components": {
-        "consistency": 0.783878,
+        "consistency": 0.783166,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.273288
+        "tests": 0.271523
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -2888,11 +2865,6 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
-        ".pytest_cache/.gitignore",
-        ".pytest_cache/CACHEDIR.TAG",
-        ".pytest_cache/README.md",
-        ".pytest_cache/v/cache/lastfailed",
-        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -3074,7 +3046,6 @@
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -3228,8 +3199,6 @@
         "codex_digest/EXECUTION.md",
         "codex_digest/README.md",
         "codex_digest/__init__.py",
-        "codex_digest/__pycache__/__init__.cpython-312.pyc",
-        "codex_digest/__pycache__/error_capture.cpython-312.pyc",
         "codex_digest/cli.py",
         "codex_digest/error_capture.py",
         "codex_digest/mapper.py",
@@ -3332,7 +3301,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -3649,9 +3617,13 @@
         "docs/capabilities/deployment_infrastructure.md",
         "docs/capabilities/documentation_system.md",
         "docs/capabilities/duplication_detection.md",
+        "docs/capabilities/mcp_configuration.md",
+        "docs/capabilities/mcp_schema_validation.md",
+        "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
+        "docs/capabilities/structural_integrity.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -4341,7 +4313,6 @@
         "noxfile.py",
         "noxfile.security_additions.py",
         "omegaconf/__init__.py",
-        "omegaconf/__pycache__/__init__.cpython-312.pyc",
         "ops/threat_model/STRIDE.md",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
         "patches/analysis.patch",
@@ -4601,39 +4572,6 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -4732,7 +4670,6 @@
         "semgrep_rules/python/subprocess_shell.yml",
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "sentencepiece/__init__.py",
-        "sentencepiece/__pycache__/__init__.cpython-312.pyc",
         "services/__init__.py",
         "services/api/__init__.py",
         "services/api/main.py",
@@ -4777,12 +4714,8 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
-        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
-        "src/codex/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/__pycache__/_version.cpython-312.pyc",
-        "src/codex/__pycache__/training.cpython-312.pyc",
         "src/codex/_version.py",
         "src/codex/analysis/duplication.py",
         "src/codex/api/__init__.py",
@@ -4973,10 +4906,6 @@
         "src/codex_harness/tool_trace.py",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
-        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
-        "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/__init__.py",
         "src/codex_ml/analysis/extractors.py",
@@ -5042,8 +4971,6 @@
         "src/codex_ml/codex_model.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -5058,9 +4985,6 @@
         "src/codex_ml/connectors/registry.py",
         "src/codex_ml/connectors/remote.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -5138,8 +5062,6 @@
         "src/codex_ml/hf_loader.py",
         "src/codex_ml/ingest.py",
         "src/codex_ml/interfaces/__init__.py",
-        "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/interfaces/contracts.py",
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/registry.py",
@@ -5149,9 +5071,6 @@
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/io/atomic.py",
         "src/codex_ml/logging/__init__.py",
-        "src/codex_ml/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/file_logger.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex_ml/logging/experiment.py",
         "src/codex_ml/logging/file_logger.py",
         "src/codex_ml/logging/metrics.py",
@@ -5166,14 +5085,6 @@
         "src/codex_ml/main.py",
         "src/codex_ml/metrics.py",
         "src/codex_ml/metrics/__init__.py",
-        "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/base.py",
@@ -5195,18 +5106,11 @@
         "src/codex_ml/metrics_base.py",
         "src/codex_ml/model_registry.py",
         "src/codex_ml/modeling/__init__.py",
-        "src/codex_ml/modeling/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/modeling/__pycache__/codex_model.cpython-312.pyc",
-        "src/codex_ml/modeling/__pycache__/codex_model_loader.cpython-312.pyc",
         "src/codex_ml/modeling/codex_model.py",
         "src/codex_ml/modeling/codex_model_loader.py",
         "src/codex_ml/modeling/factory.py",
         "src/codex_ml/modeling/model_factory.py",
         "src/codex_ml/models/__init__.py",
-        "src/codex_ml/models/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/decoder_only.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/minilm.cpython-312.pyc",
-        "src/codex_ml/models/__pycache__/reasoning.cpython-312.pyc",
         "src/codex_ml/models/activations.py",
         "src/codex_ml/models/decoder_only.py",
         "src/codex_ml/models/factory.py",
@@ -5220,13 +5124,6 @@
         "src/codex_ml/models/utils/__init__.py",
         "src/codex_ml/models/utils/peft.py",
         "src/codex_ml/monitoring/__init__.py",
-        "src/codex_ml/monitoring/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/_logger_types.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/codex_logging.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/metrics_export.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/prometheus.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/prometheus_metrics.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/system_metrics.cpython-312.pyc",
         "src/codex_ml/monitoring/_logger_types.py",
         "src/codex_ml/monitoring/async_writer.py",
         "src/codex_ml/monitoring/cli.py",
@@ -5251,12 +5148,6 @@
         "src/codex_ml/perf/profiler.py",
         "src/codex_ml/pipeline.py",
         "src/codex_ml/plugins/__init__.py",
-        "src/codex_ml/plugins/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/base.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/loader.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/programmatic.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registries.cpython-312.pyc",
-        "src/codex_ml/plugins/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/plugins/base.py",
         "src/codex_ml/plugins/entry_points.py",
         "src/codex_ml/plugins/fairness_checker.py",
@@ -5268,8 +5159,6 @@
         "src/codex_ml/plugins/registry.py",
         "src/codex_ml/registry.py",
         "src/codex_ml/registry/__init__.py",
-        "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
         "src/codex_ml/registry/base.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/registry/metrics.py",
@@ -5287,8 +5176,6 @@
         "src/codex_ml/rl/scripted_agent.py",
         "src/codex_ml/rl/simple_agent.py",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -5315,8 +5202,6 @@
         "src/codex_ml/telemetry/metrics.py",
         "src/codex_ml/telemetry/server.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -5331,10 +5216,6 @@
         "src/codex_ml/tokenization/sp_trainer.py",
         "src/codex_ml/tokenization/train_tokenizer.py",
         "src/codex_ml/tracking/__init__.py",
-        "src/codex_ml/tracking/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/offline.cpython-312.pyc",
         "src/codex_ml/tracking/cli.py",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/git_tag.py",
@@ -5349,8 +5230,6 @@
         "src/codex_ml/train_loop.py",
         "src/codex_ml/training.py",
         "src/codex_ml/training/__init__.py",
-        "src/codex_ml/training/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/training/__pycache__/device_strategy.cpython-312.pyc",
         "src/codex_ml/training/ab_testing.py",
         "src/codex_ml/training/callbacks.py",
         "src/codex_ml/training/continuous_learning.py",
@@ -5381,17 +5260,6 @@
         "src/codex_ml/training/tracking_integration.py",
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/__init__.py",
-        "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
         "src/codex_ml/utils/artifacts.py",
         "src/codex_ml/utils/atomic_io.py",
         "src/codex_ml/utils/checkpoint.py",
@@ -5502,10 +5370,6 @@
         "src/hydra_extra/__init__.py",
         "src/ingestion/README.md",
         "src/ingestion/__init__.py",
-        "src/ingestion/__pycache__/__init__.cpython-312.pyc",
-        "src/ingestion/__pycache__/encoding_detect.cpython-312.pyc",
-        "src/ingestion/__pycache__/io_text.cpython-312.pyc",
-        "src/ingestion/__pycache__/utils.cpython-312.pyc",
         "src/ingestion/csv_ingestor.py",
         "src/ingestion/encoding_detect.py",
         "src/ingestion/file_ingestor.py",
@@ -5538,23 +5402,15 @@
         "src/services/mcp/lifecycle.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "src/tools/archive_pr_checklist.py",
         "src/tools/codeowners_validate.py",
         "src/training/__init__.py",
-        "src/training/__pycache__/__init__.cpython-312.pyc",
-        "src/training/__pycache__/trainer.cpython-312.pyc",
         "src/training/checkpoint_manager.py",
         "src/training/checkpointing.py",
         "src/training/config.py",
@@ -5626,8 +5482,6 @@
         "test_mcp_server.py",
         "test_results_stage1.txt",
         "tests/__init__.py",
-        "tests/__pycache__/__init__.cpython-312.pyc",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/__init__.py",
@@ -6005,8 +5859,6 @@
         "tests/harness/test_honesty.py",
         "tests/harness/test_tool_trace.py",
         "tests/helpers/__init__.py",
-        "tests/helpers/__pycache__/__init__.cpython-312.pyc",
-        "tests/helpers/__pycache__/optional_dependencies.cpython-312.pyc",
         "tests/helpers/optional_dependencies.py",
         "tests/hf_loader/test_amp_dtype_map.py",
         "tests/hf_loader/test_bf16_probe.py",
@@ -6213,8 +6065,6 @@
         "tests/retrieval/test_vector_store_interface.py",
         "tests/reward_models/test_length_reward_model.py",
         "tests/safeguards/__init__.py",
-        "tests/safeguards/__pycache__/__init__.cpython-312.pyc",
-        "tests/safeguards/__pycache__/test_keyword_detection.cpython-312-pytest-9.0.2.pyc",
         "tests/safeguards/test_keyword_detection.py",
         "tests/safeguards_tests/test_safeguards_comprehensive.py",
         "tests/safety/test_filters.py",
@@ -6299,58 +6149,6 @@
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_medium_threshold.py",
         "tests/space_traversal/test_ml_serving_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/__init__.cpython-312.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_base_config.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_callbacks.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_compat.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_basic.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manager_callback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_config_loading.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_cuda_determinism_guard.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_curriculum.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_custom_loop_overfit.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_determinism_utilities.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_device_strategy.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed_context.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_distributed_init_fallback.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_early_stopping.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_lora_cfg.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_evaluate_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_extended_trainer.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_main.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_lora_optional.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_lora_toggles.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_mid_epoch_naming.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_mid_epoch_resume_equivalence.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_offline_wandb.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_overfit_smoke.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_peft_hooks.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_resume_and_retention.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_rng_reproducibility.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_functional_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_scheduler_amp_resume_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_scheduler_registry.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_util.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_utils.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_split_determinism.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_strict_determinism.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_tiny_overfit.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_trainer_auto_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity_and_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_repro.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_warnings.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/conftest.py",
         "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
         "tests/space_traversal/test_peft_comprehensive/test_callbacks.py",
@@ -7240,9 +7038,7 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -7259,7 +7055,6 @@
         "training/streaming.py",
         "transformed_pr_overview.md",
         "transformers/__init__.py",
-        "transformers/__pycache__/__init__.cpython-312.pyc",
         "typer/testing.py",
         "uv.lock",
         "uv.lock.bak",
@@ -7289,7 +7084,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.775098
+        "score": 0.774514
       },
       "found_patterns": [
         "analysis",
@@ -7302,15 +7097,15 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.775098
+      "score": 0.774514
     },
     {
       "components": {
-        "consistency": 0.870968,
+        "consistency": 0.868421,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.432258
+        "tests": 0.427632
       },
       "evidence_files": [
         ".github/docs/PostMergeValidation_IssueTemplate_InstructionEnhancement.md",
@@ -7390,7 +7185,6 @@
         "src/codex_ml/evaluation/metrics/perplexity.py",
         "src/codex_ml/evaluation/metrics/rouge.py",
         "src/codex_ml/evaluation/runner.py",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
         "src/codex_ml/metrics/evaluator.py",
         "src/codex_ml/training/eval.py",
         "src/evaluation/__init__.py",
@@ -7444,8 +7238,6 @@
         "tests/retrieval/test_vector_performance.py",
         "tests/retrieval/test_vector_store_interface.py",
         "tests/schemas/eval_probe.schema.json",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_evaluate_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_evaluate_module.py",
         "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
         "tests/test_eval_fallback.py",
@@ -7472,7 +7264,7 @@
       "explain": {
         "id": "evaluation-metrics",
         "partials": {},
-        "score": 0.807258
+        "score": 0.805592
       },
       "found_patterns": [
         "metric",
@@ -7480,7 +7272,7 @@
       ],
       "id": "evaluation-metrics",
       "meta": {},
-      "score": 0.807258
+      "score": 0.805592
     },
     {
       "components": {
@@ -9020,11 +8812,11 @@
     },
     {
       "components": {
-        "consistency": 0.793814,
+        "consistency": 0.784946,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.314433
+        "tests": 0.311828
       },
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -9120,7 +8912,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/tracking/mlflow_ui.sh",
@@ -9133,16 +8924,12 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/monitoring/mlflow_utils.py",
         "src/codex_ml/registry/mlflow_registry.py",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/init_experiment.py",
         "src/codex_ml/tracking/mlflow_guard.py",
         "src/codex_ml/tracking/mlflow_utils.py",
         "src/codex_ml/tracking/mlflow_wrapper.py",
         "src/codex_ml/training/mlflow_integration.py",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/experiment_tracking_mlflow.py",
         "src/codex_ml/utils/logging_mlflow.py",
         "src/codex_ml/utils/logging_wandb.py",
@@ -9177,9 +8964,6 @@
         "tests/monitoring/test_mlflow_monitoring_utils.py",
         "tests/monitoring/test_monitoring_mlflow_utils.py",
         "tests/smoke/test_mlflow_utils_noop.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_manifest.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_offline_wandb.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
         "tests/space_traversal/test_peft_comprehensive/test_offline_wandb.py",
         "tests/space_traversal/test_peft_comprehensive/test_run_custom_trainer_metadata.py",
@@ -9225,7 +9009,7 @@
       "explain": {
         "id": "experiment-management",
         "partials": {},
-        "score": 0.787371
+        "score": 0.784946
       },
       "found_patterns": [
         "experiment",
@@ -9236,12 +9020,12 @@
       ],
       "id": "experiment-management",
       "meta": {
-        "experiment_utils": 35,
-        "metadata_files": 109,
+        "experiment_utils": 32,
+        "metadata_files": 105,
         "mlflow_integration": 45,
-        "wandb_integration": 7
+        "wandb_integration": 6
       },
-      "score": 0.787371
+      "score": 0.784946
     },
     {
       "components": {
@@ -9295,11 +9079,11 @@
     },
     {
       "components": {
-        "consistency": 0.83125,
+        "consistency": 0.829582,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.30625
+        "tests": 0.315113
       },
       "evidence_files": [
         ".codex/action_log.ndjson",
@@ -9440,9 +9224,6 @@
         "src/codex_ml/cli/tracking_decide.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/logging/__init__.py",
-        "src/codex_ml/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/file_logger.cpython-312.pyc",
-        "src/codex_ml/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex_ml/logging/experiment.py",
         "src/codex_ml/logging/file_logger.py",
         "src/codex_ml/logging/metrics.py",
@@ -9454,16 +9235,10 @@
         "src/codex_ml/logging/session_logger.py",
         "src/codex_ml/logging/structured.py",
         "src/codex_ml/logging/unified_logger.py",
-        "src/codex_ml/monitoring/__pycache__/_logger_types.cpython-312.pyc",
-        "src/codex_ml/monitoring/__pycache__/codex_logging.cpython-312.pyc",
         "src/codex_ml/monitoring/_logger_types.py",
         "src/codex_ml/monitoring/codex_logging.py",
         "src/codex_ml/monitoring/tracking.py",
         "src/codex_ml/tracking/__init__.py",
-        "src/codex_ml/tracking/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/experiments.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/init_experiment.cpython-312.pyc",
-        "src/codex_ml/tracking/__pycache__/offline.cpython-312.pyc",
         "src/codex_ml/tracking/cli.py",
         "src/codex_ml/tracking/experiments.py",
         "src/codex_ml/tracking/git_tag.py",
@@ -9626,7 +9401,7 @@
       "explain": {
         "id": "logging-tracking",
         "partials": {},
-        "score": 0.792813
+        "score": 0.794695
       },
       "found_patterns": [
         "log",
@@ -9634,12 +9409,12 @@
       ],
       "id": "logging-tracking",
       "meta": {},
-      "score": 0.792813
+      "score": 0.794695
     },
     {
       "components": {
         "consistency": 0.964286,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 0.464286
@@ -9677,7 +9452,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 0.860714
+        "score": 0.867213
       },
       "found_patterns": [
         "API-Key",
@@ -9693,15 +9468,15 @@
           "authorize"
         ]
       },
-      "score": 0.860714
+      "score": 0.867213
     },
     {
       "components": {
-        "consistency": 0.78125,
-        "documentation": 0.178571,
+        "consistency": 0.758065,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 0.666667,
-        "tests": 0.375
+        "tests": 0.387097
       },
       "evidence_files": [
         ".codex/codex.env.json",
@@ -9725,19 +9500,17 @@
         "configs/development/examples/online.env.example",
         "configs/events/event_config.yaml",
         "configs/hydra/config.yaml",
+        "docs/capabilities/mcp_configuration.md",
         "docs/config/config_patterns_and_conventions.md",
         "scripts/config/__init__.py",
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -9772,7 +9545,7 @@
       "explain": {
         "id": "mcp-configuration",
         "partials": {},
-        "score": 0.626786
+        "score": 0.631671
       },
       "found_patterns": [
         "config",
@@ -9796,12 +9569,12 @@
           "mcp.json"
         ]
       },
-      "score": 0.626786
+      "score": 0.631671
     },
     {
       "components": {
         "consistency": 0.923077,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 2.0,
         "safeguards": 0.833333,
         "tests": 0.538462
@@ -9824,7 +9597,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 0.971017
+        "score": 0.977515
       },
       "found_patterns": [
         "MCPError",
@@ -9839,19 +9612,18 @@
           "error"
         ]
       },
-      "score": 0.971017
+      "score": 0.977515
     },
     {
       "components": {
-        "consistency": 0.871795,
+        "consistency": 0.868421,
         "documentation": 1.0,
         "functionality": 0.0,
         "safeguards": 0.833333,
-        "tests": 0.461538
+        "tests": 0.473684
       },
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -9893,7 +9665,7 @@
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.564743
+        "score": 0.567105
       },
       "found_patterns": [],
       "id": "mcp-lifecycle-management",
@@ -9910,19 +9682,18 @@
         "priority": "high",
         "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.564743
+      "score": 0.567105
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 0.166667,
-        "tests": 0.6
+        "tests": 0.75
       },
       "evidence_files": [
         "policies/tenant_policy.schema.json",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
@@ -9930,7 +9701,7 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.651786
+        "score": 0.695784
       },
       "found_patterns": [
         "tenant"
@@ -9943,15 +9714,15 @@
           "tenant"
         ]
       },
-      "score": 0.651786
+      "score": 0.695784
     },
     {
       "components": {
-        "consistency": 0.874605,
-        "documentation": 0.178571,
+        "consistency": 0.875131,
+        "documentation": 0.221893,
         "functionality": 2.0,
         "safeguards": 1.0,
-        "tests": 0.253952
+        "tests": 0.252886
       },
       "evidence_files": [
         ".codex/README.md",
@@ -10225,6 +9996,10 @@
         "docs/bridge/governance.md",
         "docs/bridge/overview.md",
         "docs/capabilities/duplication_detection.md",
+        "docs/capabilities/mcp_configuration.md",
+        "docs/capabilities/mcp_schema_validation.md",
+        "docs/capabilities/mcp_tooling_registry.md",
+        "docs/capabilities/structural_integrity.md",
         "docs/capability_contracts.md",
         "docs/checklists/approval_gate_checklist.md",
         "docs/cli.md",
@@ -10907,7 +10682,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 0.915195
+        "score": 0.921532
       },
       "found_patterns": [
         "X-Request-Id",
@@ -10924,12 +10699,12 @@
           "tracing"
         ]
       },
-      "score": 0.915195
+      "score": 0.921532
     },
     {
       "components": {
         "consistency": 0.866667,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 0.833333,
         "tests": 0.4
@@ -10954,7 +10729,7 @@
       "explain": {
         "id": "mcp-protocol-surface",
         "partials": {},
-        "score": 0.675119
+        "score": 0.681617
       },
       "found_patterns": [
         "FastAPI",
@@ -10969,12 +10744,12 @@
           "jsonrpc"
         ]
       },
-      "score": 0.675119
+      "score": 0.681617
     },
     {
       "components": {
         "consistency": 0.828571,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 0.514286
@@ -11019,7 +10794,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 0.971071
+        "score": 0.97757
       },
       "found_patterns": [
         "RateLimiter",
@@ -11033,12 +10808,12 @@
           "throttle"
         ]
       },
-      "score": 0.971071
+      "score": 0.97757
     },
     {
       "components": {
         "consistency": 0.862069,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 0.833333,
         "tests": 0.137931
@@ -11106,7 +10881,7 @@
       "explain": {
         "id": "mcp-schema-validation",
         "partials": {},
-        "score": 0.608682
+        "score": 0.61518
       },
       "found_patterns": [
         "BaseModel",
@@ -11121,12 +10896,12 @@
           "schema"
         ]
       },
-      "score": 0.608682
+      "score": 0.61518
     },
     {
       "components": {
         "consistency": 0.933155,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 1.0,
         "tests": 0.112299
@@ -11510,7 +11285,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.641491
+        "score": 0.64799
       },
       "found_patterns": [
         "confirm",
@@ -11526,18 +11301,18 @@
           "sanitize"
         ]
       },
-      "score": 0.641491
+      "score": 0.64799
     },
     {
       "components": {
-        "consistency": 0.875,
-        "documentation": 0.178571,
+        "consistency": 0.75,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 0.333333,
         "tests": 0.5
       },
       "evidence_files": [
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "docs/capabilities/mcp_tooling_registry.md",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -11549,7 +11324,7 @@
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.626786
+        "score": 0.608284
       },
       "found_patterns": [
         "mcp.json",
@@ -11563,15 +11338,15 @@
           "tools"
         ]
       },
-      "score": 0.626786
+      "score": 0.608284
     },
     {
       "components": {
-        "consistency": 0.93911,
-        "documentation": 0.178571,
+        "consistency": 0.930288,
+        "documentation": 0.221893,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.145199
+        "tests": 0.149038
       },
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
@@ -11595,26 +11370,15 @@
         "data/sample/reasoning/tool_eval.jsonl",
         "data/sample/reasoning/tool_traces.jsonl",
         "docs/MCP_Usage_Guide.md",
+        "docs/capabilities/mcp_configuration.md",
+        "docs/capabilities/mcp_schema_validation.md",
+        "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/mcp/lifecycle_management.md",
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -12005,7 +11769,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.650907
+        "score": 0.656601
       },
       "found_patterns": [
         "mcp",
@@ -12015,12 +11779,12 @@
       "meta": {
         "layer": "integration"
       },
-      "score": 0.650907
+      "score": 0.656601
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.178571,
+        "documentation": 0.221893,
         "functionality": 2.0,
         "safeguards": 0.166667,
         "tests": 0.571429
@@ -12037,7 +11801,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 0.894643
+        "score": 0.901141
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -12051,15 +11815,15 @@
           "negotiate_version"
         ]
       },
-      "score": 0.894643
+      "score": 0.901141
     },
     {
       "components": {
-        "consistency": 0.806202,
+        "consistency": 0.801587,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.674419
+        "tests": 0.690476
       },
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
@@ -12096,8 +11860,6 @@
         "scripts/config/sample_inference_input.json",
         "scripts/inference_pipeline.py",
         "scripts/local/serve_local.sh",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/ml_serving.py",
         "services/api/__init__.py",
@@ -12111,7 +11873,6 @@
         "src/codex/archive/api.py",
         "src/codex/release/api.py",
         "src/codex_ml/cli/infer.py",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/serving/__init__.py",
         "src/codex_ml/serving/batching.py",
@@ -12195,7 +11956,7 @@
       "explain": {
         "id": "ml-serving",
         "partials": {},
-        "score": 0.879845
+        "score": 0.882936
       },
       "found_patterns": [
         "api",
@@ -12213,7 +11974,7 @@
         ],
         "priority": "high"
       },
-      "score": 0.879845
+      "score": 0.882936
     },
     {
       "components": {
@@ -13053,11 +12814,11 @@
     },
     {
       "components": {
-        "consistency": 0.876106,
+        "consistency": 0.865385,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.504425
+        "tests": 0.5
       },
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
@@ -13072,6 +12833,7 @@
         "codex_reproducibility_manifest.json",
         "configs/base/deterministic.yaml",
         "configs/base/reproducibility.yaml",
+        "docs/capabilities/structural_integrity.md",
         "docs/checkpoint_integrity.md",
         "docs/explanations/reproducibility.md",
         "docs/guides/serving_reproducibility.md",
@@ -13089,19 +12851,14 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
         "src/codex_ml/reproducibility/__init__.py",
         "src/codex_ml/reproducibility/seed_manager.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint_integrity.py",
         "src/codex_ml/utils/checkpoint_integrity_validation.py",
         "src/codex_ml/utils/checksum.py",
@@ -13133,11 +12890,6 @@
         "tests/reproducibility/test_seed_manager.py",
         "tests/smoke/test_artifacts_hash.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_integrity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_checkpoint_rng_restore.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_rng_reproducibility.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_util.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_seed_utils.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
         "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py",
@@ -13177,7 +12929,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.851327
+        "score": 0.848077
       },
       "found_patterns": [
         "deterministic",
@@ -13189,11 +12941,11 @@
       "id": "reproducibility",
       "meta": {
         "determinism_configs": 9,
-        "integrity_validation": 41,
-        "repro_utils": 41,
-        "seed_management": 38
+        "integrity_validation": 38,
+        "repro_utils": 39,
+        "seed_management": 33
       },
-      "score": 0.851327
+      "score": 0.848077
     },
     {
       "components": {
@@ -13983,8 +13735,12 @@
           "docs/bridge/overview.md": 4,
           "docs/bridge/ubuntu_cli.md": 1,
           "docs/capabilities/duplication_detection.md": 4,
+          "docs/capabilities/mcp_configuration.md": 7,
+          "docs/capabilities/mcp_schema_validation.md": 7,
+          "docs/capabilities/mcp_tooling_registry.md": 5,
           "docs/capabilities/safeguards_detection.md": 33,
           "docs/capabilities/safeguards_keywords.md": 1,
+          "docs/capabilities/structural_integrity.md": 5,
           "docs/capability_contracts.md": 3,
           "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md": 1,
           "docs/changes/MSP_Capability_Audit_File_Map.md": 4,
@@ -16696,11 +16452,11 @@
     },
     {
       "components": {
-        "consistency": 0.87931,
+        "consistency": 0.875,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.5,
-        "tests": 0.327586
+        "tests": 0.339286
       },
       "evidence_files": [
         ".codex/evidence/phase5_privacy_safety.jsonl",
@@ -16720,8 +16476,6 @@
         "docs/security/codex_security_safety_baseline.md",
         "examples/safety/policy_bypass_example.yaml",
         "src/codex_ml/safety/__init__.py",
-        "src/codex_ml/safety/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/safety/__pycache__/filters.cpython-312.pyc",
         "src/codex_ml/safety/default_policy.yaml",
         "src/codex_ml/safety/filters.py",
         "src/codex_ml/safety/moderation.py",
@@ -16765,7 +16519,7 @@
       "explain": {
         "id": "safety-security",
         "partials": {},
-        "score": 0.732758
+        "score": 0.734822
       },
       "found_patterns": [
         "sanitize",
@@ -16773,15 +16527,15 @@
       ],
       "id": "safety-security",
       "meta": {},
-      "score": 0.732758
+      "score": 0.734822
     },
     {
       "components": {
-        "consistency": 0.903955,
+        "consistency": 0.903774,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.107345
+        "tests": 0.107547
       },
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
@@ -17172,7 +16926,6 @@
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
         "scripts/space_traversal/audit_runner.py",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/schemas/validate_report_schema.json",
         "scripts/space_traversal/status_update_report.py",
@@ -17319,7 +17072,7 @@
       "explain": {
         "id": "status-reporting",
         "partials": {},
-        "score": 0.757627
+        "score": 0.757642
       },
       "found_patterns": [
         "audit",
@@ -17337,18 +17090,17 @@
         ],
         "priority": "medium"
       },
-      "score": 0.757627
+      "score": 0.757642
     },
     {
       "components": {
         "consistency": 0.9,
-        "documentation": 0.3125,
+        "documentation": 0.325444,
         "functionality": 1.0,
         "safeguards": 0.666667,
         "tests": 0.0
       },
       "evidence_files": [
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/cli/main.py",
@@ -17357,12 +17109,13 @@
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py"
+        "codex_utils/logging_setup.py",
+        "codex_utils/mlflow_offline.py"
       ],
       "explain": {
         "id": "structural-integrity",
         "partials": {},
-        "score": 0.576875
+        "score": 0.578817
       },
       "found_patterns": [
         "lib-shadowing",
@@ -17377,7 +17130,6 @@
           "torch"
         ],
         "split_dirs": [
-          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -17388,19 +17140,18 @@
           "training"
         ]
       },
-      "score": 0.576875
+      "score": 0.578817
     },
     {
       "components": {
-        "consistency": 0.887236,
+        "consistency": 0.88854,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.989037
+        "tests": 0.989796
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -17413,7 +17164,6 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/__init__.py",
@@ -18073,7 +17823,6 @@
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_medium_threshold.py",
         "tests/space_traversal/test_ml_serving_detector.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/conftest.py",
         "tests/space_traversal/test_peft_comprehensive/test_base_config.py",
         "tests/space_traversal/test_peft_comprehensive/test_callbacks.py",
@@ -18680,7 +18429,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.912206
+        "score": 0.912657
       },
       "found_patterns": [
         "fixture",
@@ -18690,18 +18439,18 @@
       "id": "testing-infrastructure",
       "meta": {
         "config_count": 27,
-        "fixture_count": 36,
+        "fixture_count": 33,
         "test_count": 1252
       },
-      "score": 0.912206
+      "score": 0.912657
     },
     {
       "components": {
-        "consistency": 0.824,
+        "consistency": 0.82906,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.666667,
-        "tests": 0.496
+        "tests": 0.529915
       },
       "evidence_files": [
         "_codex_reports/2025-10-06/tokenizer_check.json",
@@ -18732,8 +18481,6 @@
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/registry/tokenizers.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -18749,17 +18496,11 @@
         "src/codex_ml/tokenization/train_tokenizer.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "tests/cli/test_tokenizer_cli.py",
         "tests/codex_ml/test_tokenization_adapters.py",
@@ -18833,7 +18574,7 @@
       "explain": {
         "id": "tokenization",
         "partials": {},
-        "score": 0.7888
+        "score": 0.798291
       },
       "found_patterns": [
         "encode",
@@ -18841,15 +18582,15 @@
       ],
       "id": "tokenization",
       "meta": {},
-      "score": 0.7888
+      "score": 0.798291
     },
     {
       "components": {
-        "consistency": 0.841897,
+        "consistency": 0.830435,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.351779
+        "tests": 0.326087
       },
       "evidence_files": [
         ".github/prompts/capability_excellence_plan/E3_DISTRIBUTED_TRAINING_EXCELLENCE.md",
@@ -18931,14 +18672,10 @@
         "examples/production_training_with_mlflow.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
         "scripts/train.py",
-        "src/codex/__pycache__/training.cpython-312.pyc",
         "src/codex/training.py",
         "src/codex_ml/cli/minimal_train.py",
         "src/codex_ml/cli/train.py",
@@ -18952,8 +18689,6 @@
         "src/codex_ml/train_loop.py",
         "src/codex_ml/training.py",
         "src/codex_ml/training/__init__.py",
-        "src/codex_ml/training/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/training/__pycache__/device_strategy.cpython-312.pyc",
         "src/codex_ml/training/ab_testing.py",
         "src/codex_ml/training/callbacks.py",
         "src/codex_ml/training/continuous_learning.py",
@@ -18985,11 +18720,8 @@
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/train_helpers.py",
         "src/hhg_logistics/train.py",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/train_tokenizer.py",
         "src/training/__init__.py",
-        "src/training/__pycache__/__init__.cpython-312.pyc",
-        "src/training/__pycache__/trainer.cpython-312.pyc",
         "src/training/checkpoint_manager.py",
         "src/training/checkpointing.py",
         "src/training/config.py",
@@ -19017,20 +18749,6 @@
         "tests/schemas/train_probe.schema.json",
         "tests/scripts/test_train_script.py",
         "tests/smoke/test_hf_trainer_hello.py",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_engine_hf_trainer_lora_cfg.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_extended_trainer.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_evaluation.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_functional_training_main.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_custom_trainer_metadata.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_run_functional_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_trainer_auto_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_training_config_module.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_parity_and_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_repro.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_resume.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/test_peft_comprehensive/__pycache__/test_unified_training_warnings.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_comprehensive.py",
         "tests/space_traversal/test_peft_comprehensive/test_engine_hf_trainer_lora_cfg.py",
         "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
@@ -19109,7 +18827,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.806324
+        "score": 0.797609
       },
       "found_patterns": [
         "epoch",
@@ -19124,7 +18842,7 @@
           "train_loop"
         ]
       },
-      "score": 0.806324
+      "score": 0.797609
     },
     {
       "components": {
@@ -19157,6 +18875,6 @@
       "score": 0.845
     }
   ],
-  "generated": 1765262238.3459444,
+  "generated": 1765263319.7778146,
   "version": "1.2.0"
 }
