@@ -255,4 +255,3 @@ class TestWithoutNumPy:
         all_indices = set(train + val + test)
         assert all_indices == set(range(n))
 
-        assert all_indices == set(range(n))
