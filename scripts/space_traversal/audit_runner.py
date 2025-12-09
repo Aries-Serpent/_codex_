@@ -617,10 +617,12 @@ def write_daily_status_issue(cfg, context, report_path: Path):
     gaps = sorted(context.get("gaps", []), key=lambda g: g.get("score", 0.0))
     low_threshold = context.get("scoring", {}).get("thresholds", {}).get("low")
     total_caps = len(context.get("capabilities", []))
-    try:
-        report_ref = report_path.relative_to(ROOT) if report_path.exists() else report_path
-    except ValueError:
-        report_ref = report_path
+    report_ref = report_path
+    if report_path.exists():
+        try:
+            report_ref = report_path.relative_to(ROOT)
+        except ValueError:
+            report_ref = report_path
 
     lines = [
         f"# [Daily Audit Status] {date_str}",
@@ -660,6 +662,7 @@ def stage_s6_render(cfg, scored_caps, gaps):
     }
     md_out, json_out = render_template(cfg, context)
     write_daily_status_issue(cfg, context, md_out)
+    # Backward compatibility: still return the same tuple from render_template.
     return md_out, json_out
 
 def stage_s7_manifest(cfg):
