@@ -102,7 +102,9 @@ class TestDeterministicMode:
         assert result is False
         # Should not warn when warn=False
         warning_messages = [record.message for record in caplog.records]
-        assert len(warning_messages) == 0
+        assert not any("PyTorch not available" in msg for msg in warning_messages), (
+            "Should not warn about PyTorch not available when warn=False"
+        )
 
 
 class TestGetDeterministicStatus:

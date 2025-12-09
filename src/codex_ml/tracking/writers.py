@@ -906,7 +906,7 @@ class MLflowParamWriter:
         return self.write_params(flat_params)
 
     def _escape_key(self, key: Any, sep: str = ".") -> str:
-        """Convert and escape a key for safe use in flattened dict.
+        r"""Convert and escape a key for safe use in flattened dict.
         
         Args:
             key: Key to escape (any type)
@@ -914,6 +914,12 @@ class MLflowParamWriter:
             
         Returns:
             Escaped string key
+            
+        Note:
+            Escaped keys are NOT automatically unescaped when reading back from MLflow.
+            Keys with literal backslash-separator sequences (e.g., "file\.txt") will be
+            indistinguishable from keys that were escaped (e.g., "file.txt" → "file\.txt").
+            This is a known limitation for one-way logging to MLflow.
         """
         # Convert non-string keys to string
         key_str = str(key) if not isinstance(key, str) else key
@@ -1029,7 +1035,9 @@ class MLflowArtifactWriter:
 
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError:
-                    # Fallback to module name check if sklearn not available
+                    # Fallback to module name check if sklearn not available.
+                    # Note: This may produce false positives if other libraries use "sklearn" in module names.
+                    # Only use this fallback when sklearn itself is not available for import.
                     is_sklearn = "sklearn" in type(model).__module__
                 
                 if is_sklearn:

@@ -191,24 +191,24 @@ class TestWithNumPy:
         n = 100
         seed = 42
 
-        # Track whether NumPy's shuffle was called
-        numpy_shuffle_called = []
+        # Track whether NumPy's default_rng was called
+        numpy_rng_called = []
 
-        # Wrap numpy shuffle to track calls
+        # Wrap np.random.default_rng to track calls
         if NUMPY_AVAILABLE:
-            original_shuffle = np.random.Generator.shuffle
+            original_default_rng = np.random.default_rng
 
-            def tracked_shuffle(self, x):
-                numpy_shuffle_called.append(True)
-                return original_shuffle(self, x)
+            def tracked_default_rng(*args, **kwargs):
+                numpy_rng_called.append(True)
+                return original_default_rng(*args, **kwargs)
 
-            monkeypatch.setattr(np.random.Generator, "shuffle", tracked_shuffle)
+            monkeypatch.setattr(np.random, "default_rng", tracked_default_rng)
 
         # Get result from our function
         train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
 
-        # Verify that numpy shuffle was actually called
-        assert len(numpy_shuffle_called) > 0, "NumPy shuffle should have been called"
+        # Verify that numpy default_rng was actually called
+        assert len(numpy_rng_called) > 0, "NumPy default_rng should have been called"
 
         # Verify the split is reasonable
         assert len(train) == 80

@@ -1,7 +1,6 @@
 """Tests for config deprecation warnings."""
 
 import os
-import tempfile
 import warnings
 from pathlib import Path
 from unittest.mock import patch
