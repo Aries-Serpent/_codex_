@@ -616,6 +616,7 @@ def write_daily_status_issue(cfg, context, report_path: Path):
     # Sort ascending to surface the lowest-maturity items first.
     gaps = sorted(context.get("gaps", []), key=lambda g: g.get("score", 0.0))
     low_threshold = context.get("scoring", {}).get("thresholds", {}).get("low")
+    low_threshold_display = low_threshold if low_threshold is not None else "n/a"
     total_caps = len(context.get("capabilities", []))
     report_ref = report_path
     if report_path.exists():
@@ -629,7 +630,7 @@ def write_daily_status_issue(cfg, context, report_path: Path):
         "",
         f"- Generated: {context.get('timestamp')}",
         f"- Capabilities scored: {total_caps}",
-        f"- Low maturity (< {low_threshold}): {len(gaps)}",
+        f"- Low maturity (< {low_threshold_display}): {len(gaps)}",
         f"- Matrix report: {report_ref}",
         "- Manifest (after S7): audit_run_manifest.json",
         "",
@@ -660,10 +661,10 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "weights": cfg["weights"],
         "scoring": cfg.get("scoring", {}),
     }
-    md_out, json_out = render_template(cfg, context)
-    write_daily_status_issue(cfg, context, md_out)
+    result = render_template(cfg, context)
+    write_daily_status_issue(cfg, context, result[0])
     # Backward compatibility: still return the same tuple from render_template.
-    return md_out, json_out
+    return result
 
 def stage_s7_manifest(cfg):
     artifacts_dir = Path(_get_artifacts_dir(cfg))
