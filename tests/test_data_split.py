@@ -191,19 +191,27 @@ class TestWithNumPy:
         n = 100
         seed = 42
 
-        # Track whether NumPy's default_rng was called
+        # Track whether NumPy's default_rng was called using a wrapper class
         numpy_rng_called = False
 
-        # Wrap np.random.default_rng to track calls
         if NUMPY_AVAILABLE:
             original_default_rng = np.random.default_rng
 
-            def tracked_default_rng(*args, **kwargs):
-                nonlocal numpy_rng_called
-                numpy_rng_called = True
-                return original_default_rng(*args, **kwargs)
+            class TrackedRNG:
+                """Wrapper to track RNG usage without tightly coupling to NumPy internals."""
+                def __init__(self, *args, **kwargs):
+                    nonlocal numpy_rng_called
+                    numpy_rng_called = True
+                    self._rng = original_default_rng(*args, **kwargs)
+                
+                def shuffle(self, x):
+                    return self._rng.shuffle(x)
+                
+                def __getattr__(self, name):
+                    # Delegate other attributes to the real RNG
+                    return getattr(self._rng, name)
 
-            monkeypatch.setattr(np.random, "default_rng", tracked_default_rng)
+            monkeypatch.setattr(np.random, "default_rng", TrackedRNG)
 
         # Get result from our function
         train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
@@ -212,6 +220,37 @@ class TestWithNumPy:
         assert numpy_rng_called, "NumPy default_rng should have been called"
 
         # Verify the split is reasonable
+        assert len(train) == 80
+        assert len(val) == 10
+        assert len(test) == 10
+
+        # Verify all indices are present
+        all_indices = set(train + val + test)
+        assert all_indices == set(range(n))
+
+
+@pytest.mark.skipif(NUMPY_AVAILABLE, reason="Test for NumPy unavailable case")
+class TestWithoutNumPy:
+    """Tests for behavior when NumPy is not available."""
+
+    def test_warns_when_numpy_unavailable(self):
+        """Test that a warning is issued when NumPy is not available."""
+        import warnings
+
+        n = 100
+        seed = 42
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
+
+            # Should have issued a warning about NumPy not being available
+            assert len(w) == 1
+            assert issubclass(w[0].category, UserWarning)
+            assert "NumPy is not available" in str(w[0].message)
+            assert "Falling back to Python's random module" in str(w[0].message)
+
+        # Verify the split still works (with Python random)
         assert len(train) == 80
         assert len(val) == 10
         assert len(test) == 10
