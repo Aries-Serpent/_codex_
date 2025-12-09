@@ -3473,7 +3473,7 @@
         "codex_gap_registry.yaml",
         "codex_gap_trends.md",
         "codex_hardship.yaml",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/cli/main.py",
@@ -10278,6 +10278,38 @@
         "safeguards": 0.0,
         "tests": 0.0
       },
+      "evidence_files": [],
+      "explain": {
+        "id": "mcp-lifecycle-management",
+        "partials": {
+          "consistency": {
+            "component_value": 1.0,
+            "contribution": 0.2,
+            "weight": 0.2
+          },
+          "documentation": {
+            "component_value": 0.149477,
+            "contribution": 0.02242155,
+            "weight": 0.15
+          },
+          "functionality": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          },
+          "safeguards": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.15
+          },
+          "tests": {
+            "component_value": 0.0,
+            "contribution": 0.0,
+            "weight": 0.25
+          }
+        },
+        "score": 0.2224
+      },
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
         "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
@@ -10634,7 +10666,7 @@
         "codex_addons/registry.py",
         "codex_addons/registry_names.py",
         "codex_dependency_report.md",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_ml/tracking/writers.py",
         "codex_plans/track_B.md",
         "codex_plans/track_G.md",
@@ -11919,7 +11951,7 @@
         "codex_digest/README.md",
         "codex_digest/cli.py",
         "codex_digest/pipeline.py",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_plans/track_D.md",
         "codex_plans/track_E.md",
         "codex_secret_scan_report.md",
@@ -14849,7 +14881,7 @@
           "codex_digest/semparser.py": 2,
           "codex_digest/tokenizer.py": 3,
           "codex_hardship.yaml": 1,
-          "codex_implement_status_update_PLAN_(2025\u201111\u201109).md": 11,
+          "codex_implement_status_update_PLAN_(2025‑11‑09).md": 11,
           "codex_ml/__init__.py": 3,
           "codex_ml/__main__.py": 1,
           "codex_ml/cli/main.py": 2,
@@ -17059,7 +17091,7 @@
         "cli/status_audit.py",
         "codex_dependency_report.json",
         "codex_dependency_report.md",
-        "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+        "codex_implement_status_update_PLAN_(2025‑11‑09).md",
         "codex_mltest_infra_summary.json",
         "codex_secret_scan_report.json",
         "codex_secret_scan_report.md",
