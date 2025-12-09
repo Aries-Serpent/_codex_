@@ -26,5 +26,14 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(set(found)),
         "required_patterns": required,
-        "meta": {"category": "mcp"}
+        "docs_keywords": [
+            "mcp", "tools", "registry", "tooling", "discovery", "invocation",
+            "capabilities", "plugins", "extensions", "management", "tool-registry",
+            "validation", "safeguards"
+        ],
+        "meta": {
+            "category": "mcp",
+            "safeguards": ["validation", "timeout", "error-isolation", "resource-limits", "audit-trail"],
+            "detector_version": "1.1"
+        }
     }

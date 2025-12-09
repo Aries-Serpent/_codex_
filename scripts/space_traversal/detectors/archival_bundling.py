@@ -69,5 +69,15 @@ def detect(file_index: dict) -> dict:
         "evidence_files": sorted(evidence),
         "found_patterns": sorted(found),
         "required_patterns": required,
-        "meta": {"layer": "storage", "priority": "high", "category": "reproducibility"},
+        "docs_keywords": [
+            "archival", "bundling", "archive", "bundle", "manifest", "pointer",
+            "reproducibility", "storage", "validation", "safeguards"
+        ],
+        "meta": {
+            "layer": "storage",
+            "priority": "high",
+            "category": "reproducibility",
+            "safeguards": ["validation", "integrity-checks", "bounded-operations"],
+            "detector_version": "1.5"
+        },
     }

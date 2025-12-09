@@ -84,11 +84,18 @@ def detect(file_index: dict) -> dict:
         "evidence_files": evidence_files,
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
+        "docs_keywords": [
+            "ci", "cd", "pipeline", "automation", "testing", "deployment",
+            "github-actions", "pre-commit", "validation", "quality-gates",
+            "continuous-integration", "continuous-deployment", "workflow"
+        ],
         "meta": {
             "github_actions": len(github_actions),
             "pre_commit_hooks": len(pre_commit),
             "ci_configs": len(ci_configs),
             "validation_scripts": len(test_scripts),
             "note": "GitHub Actions present but not activated per AGENTS.md",
+            "safeguards": ["validation", "quality-gates", "automated-testing"],
+            "detector_version": "1.1"
         },
     }
