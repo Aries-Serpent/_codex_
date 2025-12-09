@@ -31,10 +31,12 @@ def parse_coverage_xml(xml_path: Path):
     for f, data in cov.items():
         try:
             full_path = ROOT / f
-            total_lines = sum(1 for _ in open(full_path, "r", encoding="utf-8", errors="ignore"))
-            data["percent"] = len(data["covered_lines"]) / max(1, total_lines)
+            total_lines = sum(
+                1 for _ in open(full_path, "r", encoding="utf-8", errors="ignore")
+            )
+            data["percent"] = len(data["covered_lines"]) / max(1, total_lines)  # type: ignore[assignment]
         except Exception:
-            data["percent"] = 0.0
+            data["percent"] = 0.0  # type: ignore[assignment]
     return cov
 
 
