@@ -41,6 +41,9 @@ def parse_coverage_xml_to_map(xml_path: Path, root: Optional[Path] = None) -> Di
     if root is None:
         root = ROOT
     
+    if not xml_path.exists():
+        return {}
+    
     try:
         tree = ET.parse(xml_path)
     except ET.ParseError as e:
