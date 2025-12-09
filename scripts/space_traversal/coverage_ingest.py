@@ -93,9 +93,8 @@ def parse_coverage_xml_to_map(
         try:
             full_path = root / f
             if full_path.exists() and full_path.stat().st_size < MAX_READ_BYTES:
-                total_lines = sum(
-                    1 for _ in open(full_path, "r", encoding="utf-8", errors="ignore")
-                )
+                with open(full_path, "r", encoding="utf-8", errors="ignore") as file:
+                    total_lines = sum(1 for _ in file)
                 data["total_lines"] = total_lines  # type: ignore[assignment]
                 covered_count = len(data["covered_lines"])
                 data["percent"] = round(covered_count / max(1, total_lines), 6)  # type: ignore[assignment,arg-type]

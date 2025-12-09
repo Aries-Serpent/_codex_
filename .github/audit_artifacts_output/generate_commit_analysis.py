@@ -10,7 +10,7 @@ from pathlib import Path
 
 def run_git(cmd):
     result = subprocess.run(
-        cmd, shell=True, capture_output=True, text=True, 
+        cmd, capture_output=True, text=True, shell=True,
         cwd="/home/runner/work/_codex_/_codex_"
     )
     return result.stdout.strip()
