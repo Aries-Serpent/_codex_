@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from typing import Dict, List
 
-_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" "KEY"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
 PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
 

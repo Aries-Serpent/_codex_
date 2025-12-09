@@ -22,6 +22,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from codex_ml.detectors.capability_detectors import run_capability_audit
 
+WARN_THRESHOLD = 0.85
+
 
 def print_table(result: dict, threshold: float = 0.99) -> None:
     """Print audit results as a formatted table."""
@@ -46,7 +48,8 @@ def print_table(result: dict, threshold: float = 0.99) -> None:
     for detail in result["details"]:
         name = detail["name"]
         score = detail["score"] * 100
-        status = "✅" if score >= threshold * 100 else "⚠️" if score >= 85 else "❌"
+        warn_cutoff = WARN_THRESHOLD * 100
+        status = "✅" if score >= threshold * 100 else "⚠️" if score >= warn_cutoff else "❌"
         checks = detail.get("details", {}).get("checks", {})
         passed = sum(1 for v in checks.values() if v and v != 0)
         total = len(checks)
@@ -92,7 +95,7 @@ def write_markdown_matrix(result: dict, threshold: float, path: Path) -> None:
             "PASS"
             if detail["score"] >= threshold
             else "WARN"
-            if detail["score"] >= 0.85
+            if detail["score"] >= WARN_THRESHOLD
             else "FAIL"
         )
         lines.append(
@@ -114,8 +117,8 @@ def main() -> int:
     parser.add_argument(
         "--fail-under",
         type=float,
-        default=0.85,
-        help="Fail if score is below this threshold (default: 0.85)",
+        default=WARN_THRESHOLD,
+        help=f"Fail if score is below this threshold (default: {WARN_THRESHOLD})",
     )
     parser.add_argument(
         "--output",

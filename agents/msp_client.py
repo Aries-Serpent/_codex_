@@ -251,8 +251,8 @@ class MSPClient:
 # Example usage
 if __name__ == "__main__":
     # Create client
-    demo_api_key = os.getenv("MSP_API_KEY", "")
-    client = MSPClient(api_key=demo_api_key or None)
+    demo_api_key = os.getenv("MSP_API_KEY") or "your-api-key-here"
+    client = MSPClient(api_key=demo_api_key)
 
     try:
         # Check health

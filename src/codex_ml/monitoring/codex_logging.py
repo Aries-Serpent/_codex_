@@ -194,7 +194,7 @@ _SENSITIVE_LOG_KEYS = (
     "output_text",
 )
 
-_AWS_SECRET_PATTERN = "aws_secret_access_" + "key"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
 _SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
