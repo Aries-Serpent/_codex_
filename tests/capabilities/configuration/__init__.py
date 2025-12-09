@@ -1,0 +1,1 @@
+"""Configuration capability comprehensive tests."""
