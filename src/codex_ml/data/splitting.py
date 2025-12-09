@@ -21,43 +21,35 @@ except ImportError:
 
 def split_indices(
     n: int,
-    train_ratio: float,
-    val_ratio: float,
+    train_ratio: float = 0.8,
+    val_ratio: float = 0.1,
     seed: int = 42,
 ) -> Tuple[List[int], List[int], List[int]]:
-    """
-    Split indices deterministically into train/val/test sets.
-
+    """Split indices into train/val/test sets.
+    
+    WARNING: Cross-Platform Reproducibility Limitation
+    =================================================
+    Results differ between NumPy and Python random backends.
+    The same seed produces DIFFERENT splits depending on NumPy availability.
+    
+    For cross-environment reproducibility, choose ONE of:
+    1. Ensure NumPy is consistently installed across all environments
+    2. Use the pure Python fallback by setting CODEX_FORCE_PYTHON_RANDOM=1
+    3. Implement a custom deterministic shuffle using a fixed algorithm
+    
     Args:
-        n: Total number of samples
-        train_ratio: Proportion for training (0.0 to 1.0)
-        val_ratio: Proportion for validation (0.0 to 1.0)
+        n: Number of indices
+        train_ratio: Fraction for training (default: 0.8)
+        val_ratio: Fraction for validation (default: 0.1)
         seed: Random seed for reproducibility
-
+    
     Returns:
         Tuple of (train_indices, val_indices, test_indices)
-
+        
     Example:
         >>> train, val, test = split_indices(1000, 0.8, 0.1, seed=42)
         >>> len(train), len(val), len(test)
         (800, 100, 100)
-
-    Note:
-        - Uses NumPy's default_rng if available, otherwise falls back to Python random
-        - All indices appear exactly once across all splits
-        - Deterministic: same seed always produces same split within the same backend
-        
-    Warning:
-        **Cross-platform reproducibility limitation**: NumPy and Python's random module
-        use different RNG algorithms. The same seed will produce DIFFERENT splits depending
-        on whether NumPy is installed. For true cross-platform reproducibility:
-        
-        - Option 1 (Recommended): Make NumPy a required dependency
-        - Option 2: Always use the same RNG backend in all environments
-        - Option 3: Accept different splits on different platforms
-        
-        Consider making NumPy required for this function if reproducibility across
-        environments is critical for your use case.
     """
     if not 0 <= train_ratio <= 1 or not 0 <= val_ratio <= 1:
         raise ValueError("Ratios must be between 0 and 1")

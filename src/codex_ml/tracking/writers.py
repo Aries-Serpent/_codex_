@@ -906,7 +906,11 @@ class MLflowParamWriter:
         return self.write_params(flat_params)
 
     def _escape_key(self, key: Any, sep: str = ".") -> str:
-        r"""Convert and escape a key for safe use in flattened dict.
+        """Escape separator characters in keys (one-way operation).
+        
+        NOTE: This is a one-way operation. There is no unescape method because
+        MLflow keys are stored escaped. Users should use descriptive key names
+        that avoid dots/separators when possible.
         
         Args:
             key: Key to escape (any type)
@@ -914,33 +918,8 @@ class MLflowParamWriter:
             
         Returns:
             Escaped string key
-            
-        Note:
-            Use `_unescape_key` to reverse escaping when reconstructing keys.
-            Keys with literal backslash-separator sequences (e.g., "file\.txt") will be
-            indistinguishable from keys that were escaped (e.g., "file.txt" → "file\.txt").
-            This is a known limitation for one-way logging to MLflow.
         """
-        # Convert non-string keys to string
-        key_str = str(key) if not isinstance(key, str) else key
-        # Escape separator characters in keys to prevent collisions
-        return key_str.replace(sep, f"\\{sep}")
-
-    def _unescape_key(self, key: str, sep: str = ".") -> str:
-        """Reverse escaping performed by _escape_key.
-        
-        Args:
-            key: Escaped string key
-            sep: Separator character that was escaped
-        
-        Returns:
-            Unescaped string key
-            
-        Note:
-            This method reverses the escaping applied by `_escape_key`.
-            Use this when reconstructing original key names from escaped keys.
-        """
-        return key.replace(f"\\{sep}", sep)
+        return str(key).replace(sep, f"\\{sep}")
 
     def _flatten_dict(
         self,
@@ -948,11 +927,7 @@ class MLflowParamWriter:
         prefix: str = "",
         sep: str = ".",
     ) -> dict[str, Any]:
-        """Flatten nested dictionary with key validation and separator escaping.
-        
-        Note:
-            Use `_unescape_key` to reverse escaping when reconstructing keys.
-        """
+        """Flatten nested dictionary with key validation and separator escaping."""
         items = {}
         for k, v in d.items():
             escaped_key = self._escape_key(k, sep)
@@ -1019,7 +994,19 @@ class MLflowArtifactWriter:
         model: Any,
         artifact_path: str = "model",
     ) -> bool:
-        """Log model artifact (HuggingFace, PyTorch, or scikit-learn)."""
+        """Log model with robust type detection.
+        
+        NOTE: Fallback detection may produce false positives for non-sklearn
+        models that happen to have fit/predict methods. When sklearn is
+        unavailable, use isinstance() checks with your specific model types.
+        
+        Args:
+            model: Model object to log
+            artifact_path: Path within artifact storage (default: "model")
+            
+        Returns:
+            True if model logged successfully, False otherwise
+        """
         if not self._writer._initialized:
             return False
 
@@ -1055,10 +1042,11 @@ class MLflowArtifactWriter:
 
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError:
-                    # Fallback to module name check if sklearn not available.
-                    # Note: This may produce false positives if other libraries use "sklearn" in module names.
-                    # Only use this fallback when sklearn itself is not available for import.
-                    is_sklearn = "sklearn" in type(model).__module__
+                    # Fallback: check characteristic methods (may have false positives)
+                    model_module = getattr(type(model), "__module__", "")
+                    has_fit = callable(getattr(model, "fit", None))
+                    has_predict = callable(getattr(model, "predict", None))
+                    is_sklearn = "sklearn" in model_module and has_fit and has_predict
                 
                 if is_sklearn:
                     # scikit-learn model

@@ -62,8 +62,9 @@ class SeedManager:
         state = seed_mgr.set_all_seeds()
         
         # Use the NumPy RNG for reproducible operations (recommended)
-        if seed_mgr.numpy_rng is not None:
-            random_data = seed_mgr.numpy_rng.standard_normal(100)
+        rng = seed_mgr.get_rng()
+        if rng is not None:
+            random_data = rng.standard_normal(100)
 
         # At end of training
         seed_mgr.save_state("seed_state.json")
@@ -87,23 +88,30 @@ class SeedManager:
         self.deterministic = deterministic
         self.warn_on_missing = warn_on_missing
         self._state: Optional[SeedState] = None
-        self.numpy_rng: Optional[object] = None  # type: ignore
+        self._rng: Optional[object] = None  # type: ignore
 
     def set_all_seeds(self) -> SeedState:
-        """Set all random seeds for reproducibility."""
+        """Set seeds for all supported frameworks.
+        
+        NOTE: PYTHONHASHSEED must be set BEFORE interpreter startup to be
+        effective. Setting it via os.environ after startup has no effect.
+        
+        Returns:
+            SeedState object containing all seed values and flags
+        """
         # Python random
         random.seed(self.seed)
 
-        # Python hash seed (must be set before interpreter starts)
-        python_hash = os.environ.get("PYTHONHASHSEED", str(self.seed))
+        # Warn about PYTHONHASHSEED limitation
         if "PYTHONHASHSEED" not in os.environ:
             logger.warning(
                 "PYTHONHASHSEED was not set before interpreter startup. "
-                "It cannot be set after the interpreter has started. "
-                "Set PYTHONHASHSEED as an environment variable before running your script "
-                "for reproducible Python hash randomization."
+                "For reproducible Python hash randomization, set PYTHONHASHSEED "
+                "as an environment variable before running your script: "
+                "PYTHONHASHSEED=42 python your_script.py"
             )
 
+        python_hash = os.environ.get("PYTHONHASHSEED", str(self.seed))
         state = SeedState(
             seed=self.seed,
             python_hash_seed=python_hash,
@@ -111,17 +119,16 @@ class SeedManager:
 
         # NumPy
         if NUMPY_AVAILABLE:
-            # Set global seed for backward compatibility with legacy code using np.random.* functions.
-            # Modern NumPy best practice is to use np.random.default_rng(self.seed) and avoid the global RNG state.
-            # For new code, prefer using the Generator instance stored in self.numpy_rng
+            # Legacy API for backward compatibility
             np.random.seed(self.seed)
-            # Create and store a Generator instance for modern NumPy RNG usage
-            self.numpy_rng = np.random.default_rng(self.seed)
+            # Note: For modern Generator-based code, use get_rng() method
             state.numpy_seed = self.seed
             state.numpy_rng_available = True
         elif self.warn_on_missing:
             logger.warning("NumPy not available - seed not set")
-            self.numpy_rng = None
+
+        # Store RNG for later use (not discarded)
+        self._rng = self.get_rng()
 
         # PyTorch
         if TORCH_AVAILABLE:
@@ -159,6 +166,16 @@ class SeedManager:
         logger.info(f"Seeds set: {self.seed} (deterministic={self.deterministic})")
 
         return state
+
+    def get_rng(self) -> Any:
+        """Get a reproducible NumPy Generator instance.
+        
+        Returns:
+            np.random.Generator if NumPy available, else None
+        """
+        if NUMPY_AVAILABLE:
+            return np.random.default_rng(self.seed)
+        return None
 
     def save_state(self, path: str) -> None:
         """Save seed state to JSON file."""
