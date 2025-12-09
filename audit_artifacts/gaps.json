@@ -1,5 +1,5 @@
 {
-  "generated": 1765294244.596431,
+  "generated": 1765294386.9156196,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -874,14 +874,15 @@
       "id": "mcp-lifecycle-management",
       "components": {
         "functionality": 0.0,
-        "consistency": 0.880952,
-        "tests": 0.52381,
+        "consistency": 0.883721,
+        "tests": 0.511628,
         "safeguards": 0.833333,
         "documentation": 1.0
       },
-      "score": 0.582143,
+      "score": 0.579651,
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -940,7 +941,7 @@
       },
       "explain": {
         "id": "mcp-lifecycle-management",
-        "score": 0.582143,
+        "score": 0.579651,
         "partials": {}
       }
     },
@@ -948,12 +949,12 @@
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
-        "consistency": 0.928741,
-        "tests": 0.15677,
+        "consistency": 0.931034,
+        "tests": 0.151724,
         "safeguards": 1.0,
         "documentation": 0.236337
       },
-      "score": 0.660391,
+      "score": 0.659588,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -986,6 +987,20 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -1386,7 +1401,7 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.660391,
+        "score": 0.659588,
         "partials": {}
       }
     }

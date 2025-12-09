@@ -2,11 +2,11 @@
   "capabilities": [
     {
       "components": {
-        "consistency": 0.874419,
+        "consistency": 0.875,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.227907
+        "tests": 0.226852
       },
       "evidence_files": [
         ".codex/archive/README_UPDATED.md",
@@ -133,6 +133,7 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -228,7 +229,7 @@
       "explain": {
         "id": "archival-bundling",
         "partials": {},
-        "score": 0.781861
+        "score": 0.781713
       },
       "found_patterns": [
         "archive",
@@ -252,7 +253,7 @@
           "bounded-operations"
         ]
       },
-      "score": 0.781861
+      "score": 0.781713
     },
     {
       "components": {
@@ -749,11 +750,11 @@
     },
     {
       "components": {
-        "consistency": 0.866397,
+        "consistency": 0.866935,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.51417
+        "tests": 0.512097
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -843,6 +844,7 @@
         "scripts/security/secret_context_correlate.py",
         "scripts/security/secret_entropy_scan.py",
         "scripts/space_traversal/decode_validate_and_extract.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/extract_validate_gaps.py",
@@ -1007,7 +1009,7 @@
       "explain": {
         "id": "code-quality-tooling",
         "partials": {},
-        "score": 0.826822
+        "score": 0.826411
       },
       "found_patterns": [
         "format",
@@ -1021,18 +1023,18 @@
         "formatters": 2,
         "linters": 5,
         "quality_scripts": 69,
-        "security_scanners": 167,
+        "security_scanners": 168,
         "type_checkers": 9
       },
-      "score": 0.826822
+      "score": 0.826411
     },
     {
       "components": {
-        "consistency": 0.752322,
+        "consistency": 0.753086,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.204334
+        "tests": 0.203704
       },
       "evidence_files": [
         ".codex/copilot_bridge/config/bridge.config.json",
@@ -1253,6 +1255,7 @@
         "scripts/migrate_configs.py",
         "scripts/remediation/consolidate_configs.py",
         "scripts/runner/configure_repo_vars.sh",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/status/visual_compare_with_config.sh",
         "services/msp_gateway/config.py",
@@ -1362,7 +1365,7 @@
       "explain": {
         "id": "configuration",
         "partials": {},
-        "score": 0.751548
+        "score": 0.751543
       },
       "found_patterns": [
         "config",
@@ -1370,7 +1373,7 @@
       ],
       "id": "configuration",
       "meta": {},
-      "score": 0.751548
+      "score": 0.751543
     },
     {
       "components": {
@@ -2408,11 +2411,11 @@
     },
     {
       "components": {
-        "consistency": 0.78323,
+        "consistency": 0.784746,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.272242
+        "tests": 0.270339
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -4589,6 +4592,39 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
+        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -7106,7 +7142,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.774706
+        "score": 0.774534
       },
       "found_patterns": [
         "analysis",
@@ -7119,7 +7155,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.774706
+      "score": 0.774534
     },
     {
       "components": {
@@ -8834,11 +8870,11 @@
     },
     {
       "components": {
-        "consistency": 0.784946,
+        "consistency": 0.786096,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.311828
+        "tests": 0.31016
       },
       "evidence_files": [
         ".codex/copilot_bridge/manifests/bridge_manifest.schema.json",
@@ -8934,6 +8970,7 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
+        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/tracking/mlflow_ui.sh",
@@ -9031,7 +9068,7 @@
       "explain": {
         "id": "experiment-management",
         "partials": {},
-        "score": 0.784946
+        "score": 0.784759
       },
       "found_patterns": [
         "experiment",
@@ -9042,12 +9079,12 @@
       ],
       "id": "experiment-management",
       "meta": {
-        "experiment_utils": 32,
+        "experiment_utils": 33,
         "metadata_files": 105,
         "mlflow_integration": 45,
         "wandb_integration": 6
       },
-      "score": 0.784946
+      "score": 0.784759
     },
     {
       "components": {
@@ -9494,11 +9531,11 @@
     },
     {
       "components": {
-        "consistency": 0.761905,
+        "consistency": 0.765625,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.666667,
-        "tests": 0.444444
+        "tests": 0.4375
       },
       "evidence_files": [
         ".codex/codex.env.json",
@@ -9528,6 +9565,7 @@
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
@@ -9568,7 +9606,7 @@
       "explain": {
         "id": "mcp-configuration",
         "partials": {},
-        "score": 0.763492
+        "score": 0.7625
       },
       "found_patterns": [
         "config",
@@ -9598,7 +9636,7 @@
           "secret-management"
         ]
       },
-      "score": 0.763492
+      "score": 0.7625
     },
     {
       "components": {
@@ -9645,14 +9683,15 @@
     },
     {
       "components": {
-        "consistency": 0.880952,
+        "consistency": 0.883721,
         "documentation": 1.0,
         "functionality": 0.0,
         "safeguards": 0.833333,
-        "tests": 0.52381
+        "tests": 0.511628
       },
       "evidence_files": [
         "docs/mcp/lifecycle_management.md",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -9698,7 +9737,7 @@
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.582143
+        "score": 0.579651
       },
       "found_patterns": [],
       "id": "mcp-lifecycle-management",
@@ -9715,7 +9754,7 @@
         "priority": "high",
         "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.582143
+      "score": 0.579651
     },
     {
       "components": {
@@ -9727,6 +9766,7 @@
       },
       "evidence_files": [
         "policies/tenant_policy.schema.json",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
@@ -11980,14 +12020,15 @@
     },
     {
       "components": {
-        "consistency": 0.777778,
+        "consistency": 0.8,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.333333,
-        "tests": 0.888889
+        "tests": 0.8
       },
       "evidence_files": [
         "docs/capabilities/mcp_tooling_registry.md",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -12000,7 +12041,7 @@
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.827778
+        "score": 0.81
       },
       "found_patterns": [
         "mcp.json",
@@ -12022,15 +12063,15 @@
           "audit-trail"
         ]
       },
-      "score": 0.827778
+      "score": 0.81
     },
     {
       "components": {
-        "consistency": 0.928741,
+        "consistency": 0.931034,
         "documentation": 0.236337,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.15677
+        "tests": 0.151724
       },
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
@@ -12064,6 +12105,20 @@
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
+        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -12458,7 +12513,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.660391
+        "score": 0.659588
       },
       "found_patterns": [
         "mcp",
@@ -12468,7 +12523,7 @@
       "meta": {
         "layer": "integration"
       },
-      "score": 0.660391
+      "score": 0.659588
     },
     {
       "components": {
@@ -12508,11 +12563,11 @@
     },
     {
       "components": {
-        "consistency": 0.801587,
+        "consistency": 0.804688,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.690476
+        "tests": 0.679688
       },
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
@@ -12549,6 +12604,8 @@
         "scripts/config/sample_inference_input.json",
         "scripts/inference_pipeline.py",
         "scripts/local/serve_local.sh",
+        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/ml_serving.py",
         "services/api/__init__.py",
@@ -12645,7 +12702,7 @@
       "explain": {
         "id": "ml-serving",
         "partials": {},
-        "score": 0.882936
+        "score": 0.88086
       },
       "found_patterns": [
         "api",
@@ -12663,7 +12720,7 @@
         ],
         "priority": "high"
       },
-      "score": 0.882936
+      "score": 0.88086
     },
     {
       "components": {
@@ -13503,11 +13560,11 @@
     },
     {
       "components": {
-        "consistency": 0.866667,
+        "consistency": 0.869159,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.504762
+        "tests": 0.495327
       },
       "evidence_files": [
         ".codex/validation/file_integrity_compare.json",
@@ -13540,6 +13597,8 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
+        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
@@ -13619,7 +13678,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.849524
+        "score": 0.847664
       },
       "found_patterns": [
         "deterministic",
@@ -13631,11 +13690,11 @@
       "id": "reproducibility",
       "meta": {
         "determinism_configs": 9,
-        "integrity_validation": 39,
-        "repro_utils": 39,
+        "integrity_validation": 40,
+        "repro_utils": 40,
         "seed_management": 33
       },
-      "score": 0.849524
+      "score": 0.847664
     },
     {
       "components": {
@@ -17228,11 +17287,11 @@
     },
     {
       "components": {
-        "consistency": 0.903774,
+        "consistency": 0.903955,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.107547
+        "tests": 0.107345
       },
       "evidence_files": [
         ".codex/GATES_REPORT.txt",
@@ -17623,6 +17682,7 @@
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
         "scripts/space_traversal/audit_runner.py",
+        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/schemas/validate_report_schema.json",
         "scripts/space_traversal/status_update_report.py",
@@ -17769,7 +17829,7 @@
       "explain": {
         "id": "status-reporting",
         "partials": {},
-        "score": 0.757642
+        "score": 0.757627
       },
       "found_patterns": [
         "audit",
@@ -17787,7 +17847,7 @@
         ],
         "priority": "medium"
       },
-      "score": 0.757642
+      "score": 0.757627
     },
     {
       "components": {
@@ -19294,11 +19354,11 @@
     },
     {
       "components": {
-        "consistency": 0.830435,
+        "consistency": 0.832618,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.326087
+        "tests": 0.321888
       },
       "evidence_files": [
         ".github/prompts/capability_excellence_plan/E3_DISTRIBUTED_TRAINING_EXCELLENCE.md",
@@ -19380,6 +19440,9 @@
         "examples/production_training_with_mlflow.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
+        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
@@ -19535,7 +19598,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.797609
+        "score": 0.796996
       },
       "found_patterns": [
         "epoch",
@@ -19550,7 +19613,7 @@
           "train_loop"
         ]
       },
-      "score": 0.797609
+      "score": 0.796996
     },
     {
       "components": {
@@ -19583,6 +19646,6 @@
       "score": 0.845
     }
   ],
-  "generated": 1765294244.584194,
+  "generated": 1765294386.9029584,
   "version": "1.2.0"
 }
