@@ -46,22 +46,31 @@ class ByteLevelTokenizer:
         padding: str = "max_length",
         truncation: bool = True,
     ) -> None:
+        """Initialize ByteLevelTokenizer.
+
+        Args:
+            pad_token_id: ID for padding token
+            eos_token_id: ID for end-of-sequence token
+            unk_token_id: ID for unknown token
+            max_length: Maximum sequence length (must be >= 1 if set)
+            padding: Padding strategy - "max_length" or "longest"
+            truncation: Whether to truncate sequences exceeding max_length
+
+        Raises:
+            ValueError: If max_length is set but <= 0
+        """
+        if max_length is not None and max_length <= 0:
+            raise ValueError(
+                f"max_length must be >= 1 when set, got {max_length}. "
+                f"Use max_length=None to disable truncation."
+            )
+
         self.pad_token_id = pad_token_id
         self.eos_token_id = eos_token_id
         self.unk_token_id = unk_token_id
         self.max_length = max_length
         self.padding = padding
         self.truncation = truncation
-
-        # Validate max_length if set
-        if max_length is not None and max_length <= 0:
-            import warnings
-
-            warnings.warn(
-                f"max_length={max_length} is zero or negative. This will produce empty outputs or errors.",
-                UserWarning,
-                stacklevel=2,
-            )
 
         # Vocabulary: bytes 0-255 + special tokens
         # Offset by 3 to reserve special token IDs
@@ -101,8 +110,15 @@ class ByteLevelTokenizer:
         return ids
 
     def decode(self, ids: List[int], skip_special_tokens: bool = True) -> str:
-        """
-        Decode token IDs to text.
+        """Decode token IDs back to text.
+
+        Token ID layout (offset arithmetic):
+        - 0: PAD token
+        - 1: UNK token
+        - 2: EOS token
+        - 3-258: Byte values 0-255 (offset by 3 to avoid collision with specials)
+
+        The offset ensures special tokens (0-2) don't conflict with byte values.
 
         Args:
             ids: List of token IDs
@@ -118,13 +134,11 @@ class ByteLevelTokenizer:
             ids = [i for i in ids if i not in special_ids]
 
         # Convert back to bytes
-        # Byte values are offset by _special_token_offset (3) during encoding
-        # to reserve IDs 0-2 for special tokens (pad, eos, unk).
-        # Here we reverse that: subtract the offset to get original byte values (0-255).
         bytes_list = []
-        for i in ids:
-            byte_val = i - self._special_token_offset
-            if 0 <= byte_val <= 255:
+        for id_ in ids:
+            # Remove offset to get original byte value
+            byte_val = id_ - self._special_token_offset
+            if 0 <= byte_val <= 255:  # Valid byte range only
                 bytes_list.append(byte_val)
 
         return bytes(bytes_list).decode("utf-8", errors="replace")

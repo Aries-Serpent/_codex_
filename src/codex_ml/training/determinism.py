@@ -20,17 +20,17 @@ except (ImportError, AttributeError):
 
 
 def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
-    """
-    Enable deterministic operations for reproducibility.
+    """Enable or disable deterministic mode for reproducibility.
 
-    Warning: May reduce performance significantly.
+    Warning: Enabling deterministic mode may reduce performance SIGNIFICANTLY
+    due to algorithmic constraints in cuDNN and other backends.
 
     Args:
         enabled: Whether to enable deterministic mode
-        warn: Whether to log messages about mode changes and performance impact
+        warn: Whether to log performance warning when enabling
 
     Returns:
-        True if successfully set, False if PyTorch not available
+        True if operation succeeded, False otherwise
 
     Example:
         # Enable for reproducibility
@@ -61,8 +61,8 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
             if warn:
                 logger.warning(
-                    "Deterministic mode enabled - this may reduce performance significantly. "
-                    "CuDNN benchmark disabled, deterministic algorithms enforced."
+                    "Deterministic mode enabled. This may reduce performance "
+                    "SIGNIFICANTLY due to algorithmic constraints."
                 )
         else:
             # Disable determinism for performance

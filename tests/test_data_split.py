@@ -187,31 +187,66 @@ class TestWithNumPy:
     """Tests that specifically require NumPy."""
 
     def test_uses_numpy_rng(self, monkeypatch):
-        """Test uses NumPy random number generator when available."""
+        """Verify NumPy backend is actually used."""
+        pytest.importorskip("numpy")
+        import numpy as np
+
+        shuffle_calls = []
+        original_default_rng = np.random.default_rng
+
+        class TrackedRNG:
+            def __init__(self, seed):
+                self._rng = original_default_rng(seed)
+
+            def shuffle(self, x):
+                shuffle_calls.append(True)
+                return self._rng.shuffle(x)
+
+            def __getattr__(self, name):
+                return getattr(self._rng, name)
+
+        monkeypatch.setattr(np.random, "default_rng", TrackedRNG)
+
+        train, val, test = split_indices(100, 0.8, 0.1, seed=42)
+        assert len(shuffle_calls) > 0, "NumPy RNG should have been used"
+
+        # Verify the split is reasonable
+        assert len(train) == 80
+        assert len(val) == 10
+        assert len(test) == 10
+
+        # Verify all indices are present
+        all_indices = set(train + val + test)
+        assert all_indices == set(range(100))
+
+
+class TestWithoutNumPy:
+    """Tests for behavior when NumPy is not available."""
+
+    def test_warns_when_numpy_unavailable(self, monkeypatch):
+        """Test that a warning is issued when NumPy is not available."""
+        # Mock NumPy as unavailable
+        import warnings
+
+        import codex_ml.data.splitting as splitting_module
+
+        monkeypatch.setattr(splitting_module, "NUMPY_AVAILABLE", False)
+        monkeypatch.setattr(splitting_module, "np", None)
+
         n = 100
         seed = 42
 
-        # Track whether NumPy's default_rng was called
-        numpy_rng_called = False
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
 
-        # Wrap np.random.default_rng to track calls
-        if NUMPY_AVAILABLE:
-            original_default_rng = np.random.default_rng
+            # Should have issued a warning about NumPy not being available
+            assert len(w) == 1
+            assert issubclass(w[0].category, UserWarning)
+            assert "NumPy is not available" in str(w[0].message)
+            assert "Falling back to Python's random module" in str(w[0].message)
 
-            def tracked_default_rng(*args, **kwargs):
-                nonlocal numpy_rng_called
-                numpy_rng_called = True
-                return original_default_rng(*args, **kwargs)
-
-            monkeypatch.setattr(np.random, "default_rng", tracked_default_rng)
-
-        # Get result from our function
-        train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
-
-        # Verify that numpy default_rng was actually called
-        assert numpy_rng_called, "NumPy default_rng should have been called"
-
-        # Verify the split is reasonable
+        # Verify the split still works (with Python random)
         assert len(train) == 80
         assert len(val) == 10
         assert len(test) == 10

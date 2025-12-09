@@ -1,7 +1,6 @@
 """Tests for enhanced MLflow tracking writers."""
 
 import importlib
-import tempfile
 from unittest.mock import Mock, patch
 
 
@@ -140,8 +139,8 @@ class TestMLflowArtifactWriter:
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
     @patch("codex_ml.tracking.writers.mlflow")
-    def test_log_artifact(self, mock_mlflow):
-        """Test logging artifact."""
+    def test_log_artifact(self, mock_mlflow, tmp_path):
+        """Test artifact logging with proper cleanup using pytest tmp_path."""
         from codex_ml.tracking.writers import MLflowArtifactWriter, MLflowMetricWriter
 
         mock_mlflow.active_run.return_value = Mock()
@@ -153,21 +152,14 @@ class TestMLflowArtifactWriter:
 
         artifact_writer = MLflowArtifactWriter(metric_writer)
 
-        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".txt") as f:
-            f.write("test artifact")
-            temp_path = f.name
+        # Use pytest's tmp_path fixture (auto-cleanup)
+        tmp_file = tmp_path / "test_artifact.txt"
+        tmp_file.write_text("test content")
 
-        try:
-            result = artifact_writer.log_artifact(temp_path)
+        result = artifact_writer.log_artifact(str(tmp_file))
 
-            assert result is True
-            mock_mlflow.log_artifact.assert_called_once()
-        finally:
-            # Clean up temporary file
-            import os
-
-            if os.path.exists(temp_path):
-                os.unlink(temp_path)
+        assert result is True
+        mock_mlflow.log_artifact.assert_called_once()
 
 
 class TestMLflowRunManager:
