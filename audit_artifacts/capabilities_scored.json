@@ -1596,7 +1596,7 @@
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.1125
+        "tests": 0.125
       },
       "evidence_files": [
         ".dockerignore",
@@ -1683,7 +1683,7 @@
       "explain": {
         "id": "deployment-infrastructure",
         "partials": {},
-        "score": 0.690625
+        "score": 0.69375
       },
       "found_patterns": [
         "deploy",
@@ -1704,7 +1704,7 @@
         "service_definitions": 49,
         "terraform_configs": 0
       },
-      "score": 0.690625
+      "score": 0.69375
     },
     {
       "components": {
@@ -1712,7 +1712,7 @@
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.004412
+        "tests": 0.005882
       },
       "evidence_files": [
         "README.md",
@@ -2399,7 +2399,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.675368
+        "score": 0.675735
       },
       "found_patterns": [
         "docs",
@@ -2416,15 +2416,15 @@
         "total_docs": 680,
         "validation": true
       },
-      "score": 0.675368
+      "score": 0.675735
     },
     {
       "components": {
-        "consistency": 0.784413,
+        "consistency": 0.784081,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.270224
+        "tests": 0.270533
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -6205,9 +6205,11 @@
         "tests/space_traversal/test_audit_runner_integration.py",
         "tests/space_traversal/test_coverage_end_to_end.py",
         "tests/space_traversal/test_coverage_enhanced.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_detector_duplication.py",
         "tests/space_traversal/test_detector_peft.py",
         "tests/space_traversal/test_detector_safeguards.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_duplication_ratio_detector.py",
         "tests/space_traversal/test_explain_enhanced.py",
         "tests/space_traversal/test_mcp_configuration.py",
@@ -7153,7 +7155,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.774439
+        "score": 0.774449
       },
       "found_patterns": [
         "analysis",
@@ -7166,7 +7168,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.774439
+      "score": 0.774449
     },
     {
       "components": {
@@ -9099,11 +9101,11 @@
     },
     {
       "components": {
-        "consistency": 0.832558,
+        "consistency": 0.833333,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.339535
+        "tests": 0.342593
       },
       "evidence_files": [
         ".codex/copilot_bridge/bridge/server.js",
@@ -9284,6 +9286,7 @@
         "tests/serving_tests/test_inference_serving.py",
         "tests/smoke/test_plugin_registry.py",
         "tests/space_traversal/test_audit_overrides.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_ml_serving_detector.py",
         "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
@@ -9325,7 +9328,7 @@
       "explain": {
         "id": "inference-serving",
         "partials": {},
-        "score": 0.801395
+        "score": 0.802315
       },
       "found_patterns": [
         "fastapi",
@@ -9342,7 +9345,7 @@
         "layer": "serving",
         "offline": true
       },
-      "score": 0.801395
+      "score": 0.802315
     },
     {
       "components": {
@@ -11200,11 +11203,11 @@
     },
     {
       "components": {
-        "consistency": 0.907371,
+        "consistency": 0.906561,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.143426
+        "tests": 0.145129
       },
       "evidence_files": [
         ".codex/README.md",
@@ -12077,6 +12080,8 @@
         "tests/serving/test_model_loader.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_audit_overrides.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_mcp_configuration.py",
         "tests/space_traversal/test_mcp_schema_validation.py",
         "tests/space_traversal/test_mcp_security_safeguards.py",
@@ -12215,7 +12220,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.767331
+        "score": 0.767594
       },
       "found_patterns": [
         "bounds",
@@ -12243,7 +12248,7 @@
           "rollback"
         ]
       },
-      "score": 0.767331
+      "score": 0.767594
     },
     {
       "components": {
@@ -16577,9 +16582,11 @@
           "tests/space_traversal/test_audit_runner_integration.py": 3,
           "tests/space_traversal/test_coverage_end_to_end.py": 1,
           "tests/space_traversal/test_coverage_enhanced.py": 2,
+          "tests/space_traversal/test_deployment_infrastructure.py": 5,
           "tests/space_traversal/test_detector_duplication.py": 1,
           "tests/space_traversal/test_detector_peft.py": 1,
           "tests/space_traversal/test_detector_safeguards.py": 5,
+          "tests/space_traversal/test_documentation_system.py": 5,
           "tests/space_traversal/test_duplication_ratio_detector.py": 5,
           "tests/space_traversal/test_explain_enhanced.py": 2,
           "tests/space_traversal/test_mcp_configuration.py": 4,
@@ -18141,11 +18148,11 @@
     },
     {
       "components": {
-        "consistency": 0.888976,
+        "consistency": 0.887588,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.989836
+        "tests": 0.989852
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
@@ -18812,9 +18819,11 @@
         "tests/space_traversal/test_audit_runner_integration.py",
         "tests/space_traversal/test_coverage_end_to_end.py",
         "tests/space_traversal/test_coverage_enhanced.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_detector_duplication.py",
         "tests/space_traversal/test_detector_peft.py",
         "tests/space_traversal/test_detector_safeguards.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_duplication_ratio_detector.py",
         "tests/space_traversal/test_explain_enhanced.py",
         "tests/space_traversal/test_mcp_configuration.py",
@@ -19431,7 +19440,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.912754
+        "score": 0.912481
       },
       "found_patterns": [
         "fixture",
@@ -19442,9 +19451,9 @@
       "meta": {
         "config_count": 27,
         "fixture_count": 33,
-        "test_count": 1257
+        "test_count": 1259
       },
-      "score": 0.912754
+      "score": 0.912481
     },
     {
       "components": {
@@ -19948,6 +19957,6 @@
       "score": 1.046552
     }
   ],
-  "generated": 1765295273.983791,
+  "generated": 1765295524.330541,
   "version": "1.2.0"
 }

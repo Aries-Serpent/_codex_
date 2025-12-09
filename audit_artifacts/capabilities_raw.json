@@ -1,5 +1,5 @@
 {
-  "generated": 1765295272.2376785,
+  "generated": 1765295522.590789,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -6195,9 +6195,11 @@
         "tests/space_traversal/test_audit_runner_integration.py",
         "tests/space_traversal/test_coverage_end_to_end.py",
         "tests/space_traversal/test_coverage_enhanced.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_detector_duplication.py",
         "tests/space_traversal/test_detector_peft.py",
         "tests/space_traversal/test_detector_safeguards.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_duplication_ratio_detector.py",
         "tests/space_traversal/test_explain_enhanced.py",
         "tests/space_traversal/test_mcp_configuration.py",
@@ -9253,6 +9255,7 @@
         "tests/serving_tests/test_inference_serving.py",
         "tests/smoke/test_plugin_registry.py",
         "tests/space_traversal/test_audit_overrides.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/space_traversal/test_ml_serving_detector.py",
         "tests/space_traversal/test_peft_comprehensive/test_extended_trainer.py",
@@ -12004,6 +12007,8 @@
         "tests/serving/test_model_loader.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_audit_overrides.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_mcp_configuration.py",
         "tests/space_traversal/test_mcp_schema_validation.py",
         "tests/space_traversal/test_mcp_security_safeguards.py",
@@ -16507,9 +16512,11 @@
           "tests/space_traversal/test_audit_runner_integration.py": 3,
           "tests/space_traversal/test_coverage_end_to_end.py": 1,
           "tests/space_traversal/test_coverage_enhanced.py": 2,
+          "tests/space_traversal/test_deployment_infrastructure.py": 5,
           "tests/space_traversal/test_detector_duplication.py": 1,
           "tests/space_traversal/test_detector_peft.py": 1,
           "tests/space_traversal/test_detector_safeguards.py": 5,
+          "tests/space_traversal/test_documentation_system.py": 5,
           "tests/space_traversal/test_duplication_ratio_detector.py": 5,
           "tests/space_traversal/test_explain_enhanced.py": 2,
           "tests/space_traversal/test_mcp_configuration.py": 4,
@@ -18723,9 +18730,11 @@
         "tests/space_traversal/test_audit_runner_integration.py",
         "tests/space_traversal/test_coverage_end_to_end.py",
         "tests/space_traversal/test_coverage_enhanced.py",
+        "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_detector_duplication.py",
         "tests/space_traversal/test_detector_peft.py",
         "tests/space_traversal/test_detector_safeguards.py",
+        "tests/space_traversal/test_documentation_system.py",
         "tests/space_traversal/test_duplication_ratio_detector.py",
         "tests/space_traversal/test_explain_enhanced.py",
         "tests/space_traversal/test_mcp_configuration.py",
@@ -19352,7 +19361,7 @@
       ],
       "docs_keywords": [],
       "meta": {
-        "test_count": 1257,
+        "test_count": 1259,
         "config_count": 27,
         "fixture_count": 33
       }

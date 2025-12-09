@@ -1,16 +1,16 @@
 {
-  "generated": 1765295273.9968436,
+  "generated": 1765295524.3439033,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
       "components": {
         "functionality": 1.0,
         "consistency": 0.6875,
-        "tests": 0.1125,
+        "tests": 0.125,
         "safeguards": 0.833333,
         "documentation": 1.0
       },
-      "score": 0.690625,
+      "score": 0.69375,
       "evidence_files": [
         ".dockerignore",
         "Dockerfile",
@@ -113,7 +113,7 @@
       },
       "explain": {
         "id": "deployment-infrastructure",
-        "score": 0.690625,
+        "score": 0.69375,
         "partials": {}
       }
     },
@@ -122,11 +122,11 @@
       "components": {
         "functionality": 0.75,
         "consistency": 0.933824,
-        "tests": 0.004412,
+        "tests": 0.005882,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.675368,
+      "score": 0.675735,
       "evidence_files": [
         "README.md",
         "docs/API_REFERENCE.md",
@@ -825,7 +825,7 @@
       },
       "explain": {
         "id": "documentation-system",
-        "score": 0.675368,
+        "score": 0.675735,
         "partials": {}
       }
     },

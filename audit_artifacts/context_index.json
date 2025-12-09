@@ -1,6 +1,6 @@
 {
-  "generated": 1765295268.9795284,
-  "count": 4722,
+  "generated": 1765295519.3273025,
+  "count": 4724,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -4559,8 +4559,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1903,
-      "sha": "b996103b0e1f5276f1be82163d96fb280892edb5fc4a0c86112f98909df998b0"
+      "size": 1902,
+      "sha": "8f1cb378a8332f4fd695c74f5d76a81c09c63704713aabe92312288ff8161af5"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -13079,8 +13079,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 3146,
-      "sha": "8369c867e0644f9d256f4dbf358dc1b28a0b3955b694370a18786f633824aa3b"
+      "size": 3870,
+      "sha": "8ea93765469ee30329e65e3dca66f5b594d0ec6d21d4a803365df23bbd64dc88"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
@@ -13103,8 +13103,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 3371,
-      "sha": "16ca8e32f53491098982423e21e6c699208323ea5756975916ce33cd123d700b"
+      "size": 3791,
+      "sha": "734777fa56518c06ede9fd4e9e8fb888c2468ca8642ea773d6b4499ff8c60875"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
@@ -13127,8 +13127,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 1717,
-      "sha": "18e318e41fcfb197b226482b32a0e40f152455da37f7678a4880f4ec71e52e2e"
+      "size": 3779,
+      "sha": "c6912e004ebe7ca8211d017cd324ce47997ba74a704883b09450b7f7b350b86b"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
@@ -22671,6 +22671,12 @@
       "sha": "525507a8079b59231bf9c1ec9fe84520c90466a3c123f992f32053d5870c54d0"
     },
     {
+      "path": "tests/space_traversal/test_deployment_infrastructure.py",
+      "ext": ".py",
+      "size": 11061,
+      "sha": "1de20ea4a2c5fd9669a86e808daa5f7a197d0a28df6b0f17f157f09d35e233c3"
+    },
+    {
       "path": "tests/space_traversal/test_detector_duplication.py",
       "ext": ".py",
       "size": 1614,
@@ -22687,6 +22693,12 @@
       "ext": ".py",
       "size": 1517,
       "sha": "b18e901b3214b884e47c431c480dbebed5ca58398782189bb11c897770c51fae"
+    },
+    {
+      "path": "tests/space_traversal/test_documentation_system.py",
+      "ext": ".py",
+      "size": 8556,
+      "sha": "01d40e92038eb55a4928cb666a124ef48155db3bcf0617b7ca7d977dc4d2b419"
     },
     {
       "path": "tests/space_traversal/test_duplication_ratio_detector.py",
