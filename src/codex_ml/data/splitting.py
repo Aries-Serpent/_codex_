@@ -43,9 +43,18 @@ def split_indices(
         - Uses NumPy's default_rng if available, otherwise falls back to Python random
         - All indices appear exactly once across all splits
         - Deterministic: same seed always produces same split within the same backend
-        - WARNING: NumPy and Python random use different RNG algorithms, so the same
-          seed will produce different splits depending on whether NumPy is installed.
-          For cross-platform reproducibility, ensure NumPy is available in all environments.
+        
+    Warning:
+        **Cross-platform reproducibility limitation**: NumPy and Python's random module
+        use different RNG algorithms. The same seed will produce DIFFERENT splits depending
+        on whether NumPy is installed. For true cross-platform reproducibility:
+        
+        - Option 1 (Recommended): Make NumPy a required dependency
+        - Option 2: Always use the same RNG backend in all environments
+        - Option 3: Accept different splits on different platforms
+        
+        Consider making NumPy required for this function if reproducibility across
+        environments is critical for your use case.
     """
     if not 0 <= train_ratio <= 1 or not 0 <= val_ratio <= 1:
         raise ValueError("Ratios must be between 0 and 1")

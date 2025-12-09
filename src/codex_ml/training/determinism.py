@@ -27,7 +27,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
     Args:
         enabled: Whether to enable deterministic mode
-        warn: Whether to warn about performance impact
+        warn: Whether to log messages about mode changes and performance impact
 
     Returns:
         True if successfully set, False if PyTorch not available

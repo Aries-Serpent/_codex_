@@ -88,16 +88,15 @@ class SeedManager:
         # Python random
         random.seed(self.seed)
 
-        # Python hash seed (must be set before interpreter starts ideally)
+        # Python hash seed (must be set before interpreter starts)
         python_hash = os.environ.get("PYTHONHASHSEED", str(self.seed))
         if "PYTHONHASHSEED" not in os.environ:
             logger.warning(
                 "PYTHONHASHSEED was not set before interpreter startup. "
-                "Setting it now has no effect on the current process. "
+                "It cannot be set after the interpreter has started. "
                 "Set PYTHONHASHSEED as an environment variable before running your script "
                 "for reproducible Python hash randomization."
             )
-        os.environ["PYTHONHASHSEED"] = python_hash
 
         state = SeedState(
             seed=self.seed,
@@ -106,8 +105,9 @@ class SeedManager:
 
         # NumPy
         if NUMPY_AVAILABLE:
-            # Set global seed for legacy NumPy code compatibility.
-            # If you need a reproducible np.random.Generator, create one with np.random.default_rng(self.seed).
+            # Set global seed for backward compatibility with legacy code using np.random.* functions.
+            # Modern NumPy best practice is to use np.random.default_rng(self.seed) and avoid the global RNG state.
+            # For new code, prefer creating a Generator: rng = np.random.default_rng(self.seed)
             np.random.seed(self.seed)
             state.numpy_seed = self.seed
         elif self.warn_on_missing:
@@ -131,7 +131,13 @@ class SeedManager:
 
                 # PyTorch 1.8+ deterministic algorithms
                 if hasattr(torch, "use_deterministic_algorithms"):
-                    torch.use_deterministic_algorithms(True)
+                    try:
+                        torch.use_deterministic_algorithms(True)
+                    except RuntimeError as e:
+                        logger.warning(
+                            f"torch.use_deterministic_algorithms(True) failed: {e}. "
+                            "Some operations may not be fully deterministic."
+                        )
             else:
                 state.cudnn_deterministic = False
                 state.cudnn_benchmark = True

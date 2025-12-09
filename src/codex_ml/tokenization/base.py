@@ -54,12 +54,11 @@ class ByteLevelTokenizer:
         self.truncation = truncation
 
         # Validate max_length if set
-        if max_length is not None and max_length < 1:
+        if max_length is not None and max_length <= 0:
             import warnings
 
             warnings.warn(
-                f"max_length={max_length} is less than 1. This may produce unexpected results "
-                "as sequences will be truncated to empty or minimal length.",
+                f"max_length={max_length} is zero or negative. This will produce empty outputs or errors.",
                 UserWarning,
                 stacklevel=2,
             )
