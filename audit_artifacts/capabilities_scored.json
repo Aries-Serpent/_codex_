@@ -11203,11 +11203,11 @@
     },
     {
       "components": {
-        "consistency": 0.906561,
+        "consistency": 0.90566,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.145129
+        "tests": 0.144985
       },
       "evidence_files": [
         ".codex/README.md",
@@ -11856,6 +11856,7 @@
         "scripts/space_traversal/detectors/mcp_schema_validation.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
+        "scripts/space_traversal/detectors/mcp_tools_integration.py",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/detectors/vector_store_detector.py",
@@ -12220,7 +12221,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.767594
+        "score": 0.767378
       },
       "found_patterns": [
         "bounds",
@@ -12248,7 +12249,7 @@
           "rollback"
         ]
       },
-      "score": 0.767594
+      "score": 0.767378
     },
     {
       "components": {
@@ -12300,7 +12301,7 @@
     {
       "components": {
         "consistency": 0.931034,
-        "documentation": 0.250368,
+        "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
         "tests": 0.151724
@@ -12745,17 +12746,22 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.661693
+        "score": 0.774138
       },
       "found_patterns": [
+        "integration",
         "mcp",
+        "registry",
         "tool"
       ],
       "id": "mcp-tools-integration",
       "meta": {
-        "layer": "integration"
+        "bounded": true,
+        "deterministic": true,
+        "layer": "integration",
+        "offline": true
       },
-      "score": 0.661693
+      "score": 0.774138
     },
     {
       "components": {
@@ -15344,7 +15350,7 @@
           "scripts/space_traversal/detectors/mcp_schema_validation.py": 4,
           "scripts/space_traversal/detectors/mcp_security_safeguards.py": 7,
           "scripts/space_traversal/detectors/mcp_tooling_registry.py": 4,
-          "scripts/space_traversal/detectors/mcp_tools_integration.py": 1,
+          "scripts/space_traversal/detectors/mcp_tools_integration.py": 6,
           "scripts/space_traversal/detectors/mcp_versioning_compat.py": 1,
           "scripts/space_traversal/detectors/ml_serving.py": 1,
           "scripts/space_traversal/detectors/reproducibility.py": 7,
@@ -19957,6 +19963,6 @@
       "score": 1.046552
     }
   ],
-  "generated": 1765295524.330541,
+  "generated": 1765295666.4283695,
   "version": "1.2.0"
 }

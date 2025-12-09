@@ -1,5 +1,5 @@
 {
-  "generated": 1765295522.590789,
+  "generated": 1765295664.6430726,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -11783,6 +11783,7 @@
         "scripts/space_traversal/detectors/mcp_schema_validation.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
+        "scripts/space_traversal/detectors/mcp_tools_integration.py",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/detectors/vector_store_detector.py",
@@ -12687,16 +12688,32 @@
         "tools/worm_ship.py"
       ],
       "found_patterns": [
+        "integration",
         "mcp",
+        "registry",
         "tool"
       ],
       "required_patterns": [
         "mcp",
-        "tool"
+        "tool",
+        "registry",
+        "integration"
       ],
-      "docs_keywords": [],
+      "docs_keywords": [
+        "api",
+        "client",
+        "integration",
+        "mcp",
+        "plugins",
+        "registry",
+        "server",
+        "tools"
+      ],
       "meta": {
-        "layer": "integration"
+        "layer": "integration",
+        "deterministic": true,
+        "offline": true,
+        "bounded": true
       }
     },
     {
@@ -15274,7 +15291,7 @@
           "scripts/space_traversal/detectors/mcp_schema_validation.py": 4,
           "scripts/space_traversal/detectors/mcp_security_safeguards.py": 7,
           "scripts/space_traversal/detectors/mcp_tooling_registry.py": 4,
-          "scripts/space_traversal/detectors/mcp_tools_integration.py": 1,
+          "scripts/space_traversal/detectors/mcp_tools_integration.py": 6,
           "scripts/space_traversal/detectors/mcp_versioning_compat.py": 1,
           "scripts/space_traversal/detectors/ml_serving.py": 1,
           "scripts/space_traversal/detectors/reproducibility.py": 7,

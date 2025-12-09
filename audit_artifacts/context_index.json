@@ -1,5 +1,5 @@
 {
-  "generated": 1765295519.3273025,
+  "generated": 1765295661.3791451,
   "count": 4724,
   "files": [
     {
@@ -4560,7 +4560,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 1902,
-      "sha": "8f1cb378a8332f4fd695c74f5d76a81c09c63704713aabe92312288ff8161af5"
+      "sha": "8f7f1a44ab515e12ac9532512eebc8f22a8556e61fcd777002bd0771ff7935d3"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -13397,8 +13397,8 @@
     {
       "path": "scripts/space_traversal/detectors/mcp_tools_integration.py",
       "ext": ".py",
-      "size": 1106,
-      "sha": "3bd47c41b96e017938956f0935921fb4e024fc0fdaa141cbe130f5e7e5a8240e"
+      "size": 2193,
+      "sha": "ee1e3d32152e0b576bc80708a168540c76f82a9f634cfc819d7e48198d025141"
     },
     {
       "path": "scripts/space_traversal/detectors/mcp_versioning_compat.py",
