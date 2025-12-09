@@ -2,12 +2,13 @@
 """
 Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)
 """
-from pathlib import Path
-import xml.etree.ElementTree as ET
 import json
 import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+
 
 def parse_coverage_xml(xml_path: Path):
     try:
@@ -36,9 +37,11 @@ def parse_coverage_xml(xml_path: Path):
             data["percent"] = 0.0
     return cov
 
+
 def write_coverage_map(out_path: Path, cov_map: dict):
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(cov_map, indent=2), encoding="utf-8")
+
 
 def main():
     if len(sys.argv) < 2:
@@ -52,6 +55,7 @@ def main():
     out = Path.cwd() / "audit_artifacts" / "coverage_map.json"
     write_coverage_map(out, cov_map)
     print(f"Wrote coverage map to {out}")
+
 
 if __name__ == "__main__":
     main()
