@@ -1688,11 +1688,11 @@
     },
     {
       "components": {
-        "consistency": 0.932836,
+        "consistency": 0.932936,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.004478
+        "tests": 0.004471
       },
       "evidence_files": [
         "README.md",
@@ -1972,6 +1972,7 @@
         "docs/logging/metrics_and_experiment_tracking.md",
         "docs/maintenance/Torch_CPU_Policy.md",
         "docs/manifest_integrity.md",
+        "docs/mcp/lifecycle_management.md",
         "docs/metrics.md",
         "docs/metrics/codex_metrics_and_eval.md",
         "docs/migrations/bleu_brevity_penalty_migration.md",
@@ -2369,7 +2370,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.675187
+        "score": 0.675205
       },
       "found_patterns": [
         "docs",
@@ -2379,19 +2380,19 @@
       "id": "documentation-system",
       "meta": {
         "config_count": 1,
-        "markdown_count": 668,
+        "markdown_count": 669,
         "rst_count": 0,
-        "total_docs": 670
+        "total_docs": 671
       },
-      "score": 0.675187
+      "score": 0.675205
     },
     {
       "components": {
-        "consistency": 0.784443,
-        "documentation": 0.119581,
+        "consistency": 0.784052,
+        "documentation": 0.119403,
         "functionality": 0.0,
         "safeguards": 1.0,
-        "tests": 0.269818
+        "tests": 0.269882
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -2876,6 +2877,7 @@
         ".statusrc.json",
         ".vscode/settings.json",
         ".yamllint.yml",
+        "=",
         "ACCEPTANCE_CRITERIA_VERIFICATION.md",
         "ACHIEVEMENT_99_PERCENT.md",
         "ACHIEVEMENT_STATUS_98_8_PERCENT.md",
@@ -3812,6 +3814,7 @@
         "docs/logging/metrics_and_experiment_tracking.md",
         "docs/maintenance/Torch_CPU_Policy.md",
         "docs/manifest_integrity.md",
+        "docs/mcp/lifecycle_management.md",
         "docs/metrics.md",
         "docs/metrics/codex_metrics_and_eval.md",
         "docs/migrations/bleu_brevity_penalty_migration.md",
@@ -4744,6 +4747,7 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
+        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
         "src/codex/_version.py",
@@ -5428,6 +5432,10 @@
         "src/security/core.py",
         "src/security/encryption.py",
         "src/security/secrets.py",
+        "src/services/mcp/__init__.py",
+        "src/services/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/services/mcp/__pycache__/lifecycle.cpython-312.pyc",
+        "src/services/mcp/lifecycle.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
         "src/tokenization/api.py",
@@ -5944,11 +5952,14 @@
         "tests/logging/test_structured_logging.py",
         "tests/manifest/test_warning_aggregation.py",
         "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_lifecycle_management.cpython-312-pytest-9.0.2.pyc",
         "tests/mcp/test_auth.py",
         "tests/mcp/test_authz_authn_extended.py",
         "tests/mcp/test_config.py",
         "tests/mcp/test_error_handling_extended.py",
         "tests/mcp/test_integration.py",
+        "tests/mcp/test_lifecycle_management.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_multi_tenant_extended.py",
         "tests/mcp/test_observability.py",
@@ -7116,12 +7127,12 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.39228
+        "score": 0.392191
       },
       "found_patterns": [],
       "id": "duplication_ratio",
       "meta": {},
-      "score": 0.39228
+      "score": 0.392191
     },
     {
       "components": {
@@ -9439,7 +9450,7 @@
     {
       "components": {
         "consistency": 0.962963,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.5,
         "safeguards": 0.833333,
         "tests": 0.481481
@@ -9476,7 +9487,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 0.835384
+        "score": 0.83759
       },
       "found_patterns": [
         "API-Key",
@@ -9492,12 +9503,12 @@
           "authorize"
         ]
       },
-      "score": 0.835384
+      "score": 0.83759
     },
     {
       "components": {
         "consistency": 0.774194,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 0.666667,
         "tests": 0.387097
@@ -9569,7 +9580,7 @@
       "explain": {
         "id": "mcp-configuration",
         "partials": {},
-        "score": 0.624035
+        "score": 0.62624
       },
       "found_patterns": [
         "config",
@@ -9593,12 +9604,12 @@
           "mcp.json"
         ]
       },
-      "score": 0.624035
+      "score": 0.62624
     },
     {
       "components": {
         "consistency": 0.923077,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 2.0,
         "safeguards": 0.833333,
         "tests": 0.538462
@@ -9621,7 +9632,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 0.966652
+        "score": 0.968858
       },
       "found_patterns": [
         "MCPError",
@@ -9636,41 +9647,87 @@
           "error"
         ]
       },
-      "score": 0.966652
+      "score": 0.968858
     },
     {
       "components": {
-        "consistency": 1.0,
-        "documentation": 0.149477,
+        "consistency": 0.860465,
+        "documentation": 1.0,
         "functionality": 0.0,
-        "safeguards": 0.0,
-        "tests": 0.0
+        "safeguards": 0.833333,
+        "tests": 0.465116
       },
-      "evidence_files": [],
+      "evidence_files": [
+        "docs/mcp/lifecycle_management.md",
+        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
+        "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
+        "src/mcp/__init__.py",
+        "src/mcp/auth.py",
+        "src/mcp/config.py",
+        "src/mcp/errors.py",
+        "src/mcp/rate_limit.py",
+        "src/mcp/registry.py",
+        "src/mcp/server/README.md",
+        "src/mcp/server/__init__.py",
+        "src/mcp/versioning.py",
+        "src/services/mcp/__init__.py",
+        "src/services/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/services/mcp/__pycache__/lifecycle.cpython-312.pyc",
+        "src/services/mcp/lifecycle.py",
+        "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
+        "temp/bridge_codex_copilot_bridge/mcp/mcp.json",
+        "temp/bridge_codex_copilot_bridge/mcp/server/README.md",
+        "temp/bridge_codex_copilot_bridge/mcp/server/main.py",
+        "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
+        "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
+        "test_mcp_server.py",
+        "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_lifecycle_management.cpython-312-pytest-9.0.2.pyc",
+        "tests/mcp/test_auth.py",
+        "tests/mcp/test_authz_authn_extended.py",
+        "tests/mcp/test_config.py",
+        "tests/mcp/test_error_handling_extended.py",
+        "tests/mcp/test_integration.py",
+        "tests/mcp/test_lifecycle_management.py",
+        "tests/mcp/test_mcp_core_smoke.py",
+        "tests/mcp/test_multi_tenant_extended.py",
+        "tests/mcp/test_observability.py",
+        "tests/mcp/test_protocol.py",
+        "tests/mcp/test_registry.py",
+        "tests/mcp/test_schema_validation.py",
+        "tests/mcp/test_server.py",
+        "tests/mcp/test_tools_integration.py",
+        "tests/mcp/test_tools_integration_advanced.py",
+        "tests/mcp/test_utilities.py",
+        "tests/space_traversal/test_mcp_tools_integration.py"
+      ],
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.222422
+        "score": 0.563372
       },
       "found_patterns": [],
       "id": "mcp-lifecycle-management",
       "meta": {
         "category": "mcp",
-        "detector_version": "1.0",
+        "detector_version": "1.2",
         "framework": "FastAPI",
+        "implementation": "src/services/mcp/lifecycle.py",
         "missing_detectors": [
           "healthz",
           "shutdown",
           "startup"
         ],
-        "priority": "high"
+        "priority": "high",
+        "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.222422
+      "score": 0.563372
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 0.166667,
         "tests": 0.6
@@ -9685,7 +9742,7 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.647422
+        "score": 0.649627
       },
       "found_patterns": [
         "tenant"
@@ -9698,12 +9755,12 @@
           "tenant"
         ]
       },
-      "score": 0.647422
+      "score": 0.649627
     },
     {
       "components": {
         "consistency": 0.873539,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 0.252922
@@ -10654,7 +10711,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 0.91036
+        "score": 0.912565
       },
       "found_patterns": [
         "X-Request-Id",
@@ -10671,12 +10728,12 @@
           "tracing"
         ]
       },
-      "score": 0.91036
+      "score": 0.912565
     },
     {
       "components": {
         "consistency": 0.866667,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 0.833333,
         "tests": 0.4
@@ -10701,7 +10758,7 @@
       "explain": {
         "id": "mcp-protocol-surface",
         "partials": {},
-        "score": 0.670755
+        "score": 0.67296
       },
       "found_patterns": [
         "FastAPI",
@@ -10716,12 +10773,12 @@
           "jsonrpc"
         ]
       },
-      "score": 0.670755
+      "score": 0.67296
     },
     {
       "components": {
         "consistency": 0.823529,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 2.0,
         "safeguards": 0.833333,
         "tests": 0.529412
@@ -10765,7 +10822,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 0.94448
+        "score": 0.946686
       },
       "found_patterns": [
         "RateLimiter",
@@ -10779,12 +10836,12 @@
           "throttle"
         ]
       },
-      "score": 0.94448
+      "score": 0.946686
     },
     {
       "components": {
         "consistency": 0.862069,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 0.833333,
         "tests": 0.137931
@@ -10852,7 +10909,7 @@
       "explain": {
         "id": "mcp-schema-validation",
         "partials": {},
-        "score": 0.604318
+        "score": 0.606523
       },
       "found_patterns": [
         "BaseModel",
@@ -10867,12 +10924,12 @@
           "schema"
         ]
       },
-      "score": 0.604318
+      "score": 0.606523
     },
     {
       "components": {
         "consistency": 0.932432,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 1.0,
         "tests": 0.110811
@@ -11252,7 +11309,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.636611
+        "score": 0.638816
       },
       "found_patterns": [
         "confirm",
@@ -11268,12 +11325,12 @@
           "sanitize"
         ]
       },
-      "score": 0.636611
+      "score": 0.638816
     },
     {
       "components": {
         "consistency": 0.875,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 0.333333,
         "tests": 0.5
@@ -11291,7 +11348,7 @@
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.622421
+        "score": 0.624627
       },
       "found_patterns": [
         "mcp.json",
@@ -11305,15 +11362,15 @@
           "tools"
         ]
       },
-      "score": 0.622421
+      "score": 0.624627
     },
     {
       "components": {
-        "consistency": 0.940898,
-        "documentation": 0.149477,
+        "consistency": 0.937355,
+        "documentation": 0.164179,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.144208
+        "tests": 0.148492
       },
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
@@ -11339,6 +11396,7 @@
         "docs/MCP_Usage_Guide.md",
         "docs/capabilities/mcp_tools_integration.md",
         "docs/guides/CODEX_TOOL_SELECTION.md",
+        "docs/mcp/lifecycle_management.md",
         "docs/ops/Local_Tooling_Prereqs.md",
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
@@ -11381,6 +11439,10 @@
         "src/mcp/server/README.md",
         "src/mcp/server/__init__.py",
         "src/mcp/versioning.py",
+        "src/services/mcp/__init__.py",
+        "src/services/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/services/mcp/__pycache__/lifecycle.cpython-312.pyc",
+        "src/services/mcp/lifecycle.py",
         "src/tools/archive_pr_checklist.py",
         "src/tools/codeowners_validate.py",
         "temp/bridge_codex_copilot_bridge/agents/codex_client/client/openai_tools.py",
@@ -11402,11 +11464,14 @@
         "tests/codex_ml/test_metrics_core_and_eval_tool.py",
         "tests/harness/test_tool_trace.py",
         "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_lifecycle_management.cpython-312-pytest-9.0.2.pyc",
         "tests/mcp/test_auth.py",
         "tests/mcp/test_authz_authn_extended.py",
         "tests/mcp/test_config.py",
         "tests/mcp/test_error_handling_extended.py",
         "tests/mcp/test_integration.py",
+        "tests/mcp/test_lifecycle_management.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_multi_tenant_extended.py",
         "tests/mcp/test_observability.py",
@@ -11743,7 +11808,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.646653
+        "score": 0.649221
       },
       "found_patterns": [
         "mcp",
@@ -11753,12 +11818,12 @@
       "meta": {
         "layer": "integration"
       },
-      "score": 0.646653
+      "score": 0.649221
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.149477,
+        "documentation": 0.164179,
         "functionality": 2.0,
         "safeguards": 0.166667,
         "tests": 0.571429
@@ -11775,7 +11840,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 0.890279
+        "score": 0.892484
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -11789,7 +11854,7 @@
           "negotiate_version"
         ]
       },
-      "score": 0.890279
+      "score": 0.892484
     },
     {
       "components": {
@@ -11955,7 +12020,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.059791,
+        "documentation": 0.059701,
         "functionality": 1.0,
         "safeguards": 0.0,
         "tests": 0.0
@@ -11964,7 +12029,7 @@
       "explain": {
         "id": "peft_hooks",
         "partials": {},
-        "score": 0.458969
+        "score": 0.458955
       },
       "found_patterns": [
         "LoraConfig",
@@ -12471,7 +12536,7 @@
           ]
         }
       },
-      "score": 0.458969
+      "score": 0.458955
     },
     {
       "components": {
@@ -12612,7 +12677,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.014948,
+        "documentation": 0.014925,
         "functionality": 1.0,
         "safeguards": 0.0,
         "tests": 0.0
@@ -12621,7 +12686,7 @@
       "explain": {
         "id": "safeguards_keywords",
         "partials": {},
-        "score": 0.452242
+        "score": 0.452239
       },
       "found_patterns": [
         "WANDB_MODE",
@@ -13934,7 +13999,7 @@
           "workbench/reproducibility_checklist.md": 2
         }
       },
-      "score": 0.452242
+      "score": 0.452239
     },
     {
       "components": {
@@ -14584,12 +14649,13 @@
     {
       "components": {
         "consistency": 0.9,
-        "documentation": 0.313901,
+        "documentation": 0.313433,
         "functionality": 1.0,
         "safeguards": 0.666667,
         "tests": 0.0
       },
       "evidence_files": [
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
         "codex_ml/cli/main.py",
@@ -14598,13 +14664,12 @@
         "codex_utils/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py",
-        "codex_utils/mlflow_offline.py"
+        "codex_utils/logging_setup.py"
       ],
       "explain": {
         "id": "structural-integrity",
         "partials": {},
-        "score": 0.577085
+        "score": 0.577015
       },
       "found_patterns": [
         "lib-shadowing",
@@ -14619,24 +14684,26 @@
           "torch"
         ],
         "split_dirs": [
+          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
           "experiments",
+          "services",
           "tokenization",
           "tools",
           "training"
         ]
       },
-      "score": 0.577085
+      "score": 0.577015
     },
     {
       "components": {
-        "consistency": 0.888365,
+        "consistency": 0.888452,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.988994
+        "tests": 0.989002
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
@@ -15088,6 +15155,7 @@
         "tests/mcp/test_config.py",
         "tests/mcp/test_error_handling_extended.py",
         "tests/mcp/test_integration.py",
+        "tests/mcp/test_lifecycle_management.py",
         "tests/mcp/test_mcp_core_smoke.py",
         "tests/mcp/test_multi_tenant_extended.py",
         "tests/mcp/test_observability.py",
@@ -15915,7 +15983,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.912421
+        "score": 0.912441
       },
       "found_patterns": [
         "fixture",
@@ -15926,9 +15994,9 @@
       "meta": {
         "config_count": 27,
         "fixture_count": 35,
-        "test_count": 1248
+        "test_count": 1249
       },
-      "score": 0.912421
+      "score": 0.912441
     },
     {
       "components": {
@@ -16403,7 +16471,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.328849,
+        "documentation": 0.328358,
         "functionality": 0.0,
         "safeguards": 0.0,
         "tests": 1.0
@@ -16416,16 +16484,16 @@
       "explain": {
         "id": "vector-stores",
         "partials": {},
-        "score": 0.499327
+        "score": 0.499254
       },
       "found_patterns": [],
       "id": "vector-stores",
       "meta": {
         "mode": "stub-or-mock"
       },
-      "score": 0.499327
+      "score": 0.499254
     }
   ],
-  "generated": 1765259413.2254922,
+  "generated": 1765260168.503256,
   "version": "1.2.0"
 }

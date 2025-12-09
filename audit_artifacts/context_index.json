@@ -1,6 +1,6 @@
 {
-  "generated": 1765259410.9033988,
-  "count": 4718,
+  "generated": 1765260166.178984,
+  "count": 4728,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -2825,8 +2825,8 @@
     {
       "path": ".pytest_cache/v/cache/nodeids",
       "ext": "",
-      "size": 2733,
-      "sha": "8e6bf5af4db0d5cce106dfd0e5b2e43091c6d440b3eca02561914bbff873bdfa"
+      "size": 5185,
+      "sha": "843e06f72f3fe3c6650e1fcc41f79a06e44b5dc13fd584c64493c5e440995b5f"
     },
     {
       "path": ".reports/fencefix_run.json",
@@ -2893,6 +2893,12 @@
       "ext": ".yml",
       "size": 138,
       "sha": "d3ba32280cc11de0c410a723fc1bd09fdd0bc74d275fd182b36e74bbf662ba59"
+    },
+    {
+      "path": "=",
+      "ext": "",
+      "size": 0,
+      "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "ACCEPTANCE_CRITERIA_VERIFICATION.md",
@@ -4589,8 +4595,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1902,
-      "sha": "5a16d834150e828722f756b553a773b09693472fb1d8a89ca06761035681aa34"
+      "size": 1905,
+      "sha": "56dc391c72e2b3eb4b604c1dc951e595945d5acf2f3322087b9bf4134f8e5e85"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -8509,6 +8515,12 @@
       "ext": ".md",
       "size": 278,
       "sha": "e8d0990c5377cbb58f6c0aa76d9a44dfb2a372737db46786055d27e5afa10711"
+    },
+    {
+      "path": "docs/mcp/lifecycle_management.md",
+      "ext": ".md",
+      "size": 915,
+      "sha": "976f18c262c81b80023185682ca0b473d9b59295be1df00c1d245095ffcfc4be"
     },
     {
       "path": "docs/metrics/codex_metrics_and_eval.md",
@@ -13151,8 +13163,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 2615,
-      "sha": "5b5853a2ba496cbd06d32a03549c86387fa6faa959804d69eccab60a3949768a"
+      "size": 2788,
+      "sha": "89059ac0e7fb24bb544c9a27bd3c8590d7e07bca5758dc2ca27a89fcd4399258"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
@@ -13349,8 +13361,8 @@
     {
       "path": "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
       "ext": ".py",
-      "size": 2197,
-      "sha": "3b2a829158673a47fb8e8caed37789dc1602230dc20f595f8a74897930ea2d7a"
+      "size": 2427,
+      "sha": "d72b7c0c527a3dfd84c38d2547349d9742e380f9e782fbc21ff9bce63f774d11"
     },
     {
       "path": "scripts/space_traversal/detectors/mcp_multi_tenant.py",
@@ -14101,6 +14113,12 @@
       "ext": ".py",
       "size": 0,
       "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 146,
+      "sha": "545177679bce0af6373a83201f332fde4def3cc8692b00376ce947b5b52feb7e"
     },
     {
       "path": "src/cli.py",
@@ -18207,6 +18225,30 @@
       "sha": "7ccb8fc7c1530b70d39094604c806a08e02cdf7b00e47cd9c747fbdf9f9aebc3"
     },
     {
+      "path": "src/services/mcp/__init__.py",
+      "ext": ".py",
+      "size": 0,
+      "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/services/mcp/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 159,
+      "sha": "f1d85d04ce85b868474b6e372923c5b2b30c14e9a0fedaf4ed977d3198da0b2a"
+    },
+    {
+      "path": "src/services/mcp/__pycache__/lifecycle.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 7134,
+      "sha": "2ac444c7131afe1c6f7c5f0f96190dc45c3417ec4183743c5d2a9bf565077423"
+    },
+    {
+      "path": "src/services/mcp/lifecycle.py",
+      "ext": ".py",
+      "size": 4349,
+      "sha": "0e84b77762b3f2a781a236f04b9a91bf5218e71fb32f79778329951863a97dd9"
+    },
+    {
       "path": "src/tokenization/.gitkeep",
       "ext": "",
       "size": 0,
@@ -21303,6 +21345,18 @@
       "sha": "511e55fe7d669b9073fbe3621fc64be1e27c20a43e70c7d6ec976a784720bfdc"
     },
     {
+      "path": "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 185,
+      "sha": "1079a03fc459edf682a2bab68ccfb8360258bdbce54293bb46d1cfc5c4b219f4"
+    },
+    {
+      "path": "tests/mcp/__pycache__/test_lifecycle_management.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 33877,
+      "sha": "27c06d6b0b2561095b1ceca5eb33c4438120fb336db442caacce30acf1d952fe"
+    },
+    {
       "path": "tests/mcp/test_auth.py",
       "ext": ".py",
       "size": 2980,
@@ -21331,6 +21385,12 @@
       "ext": ".py",
       "size": 2131,
       "sha": "3442a538ec37ca21e580a997ec2a9d8926d9dac8e480b0b8778f429f02c6df70"
+    },
+    {
+      "path": "tests/mcp/test_lifecycle_management.py",
+      "ext": ".py",
+      "size": 12299,
+      "sha": "ad213c379ed2e267a1e17e9cdb12c7d2bb35d3c167d52d980609991c7b106d07"
     },
     {
       "path": "tests/mcp/test_mcp_core_smoke.py",
