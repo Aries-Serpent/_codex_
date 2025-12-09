@@ -254,4 +254,3 @@ class TestWithoutNumPy:
         # Verify all indices are present
         all_indices = set(train + val + test)
         assert all_indices == set(range(n))
-

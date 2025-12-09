@@ -136,7 +136,8 @@ class ByteLevelTokenizer:
         # Convert back to bytes
         bytes_list = []
         for id_ in ids:
-            byte_val = id_ - self._special_token_offset  # Remove offset to get original byte value
+            # Remove offset to get original byte value
+            byte_val = id_ - self._special_token_offset
             if 0 <= byte_val <= 255:  # Valid byte range only
                 bytes_list.append(byte_val)
 

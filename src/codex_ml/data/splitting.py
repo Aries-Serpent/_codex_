@@ -71,7 +71,8 @@ def split_indices(
         import warnings
 
         warnings.warn(
-            "NumPy is not available. Falling back to Python's random module for splitting. "
+            "NumPy is not available. "
+            "Falling back to Python's random module for splitting. "
             "This will produce DIFFERENT splits than NumPy for the same seed, "
             "which may break cross-platform reproducibility. "
             "Consider installing NumPy for consistent results: pip install numpy",
