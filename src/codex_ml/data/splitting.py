@@ -34,7 +34,7 @@ def split_indices(
     
     For cross-environment reproducibility, choose ONE of:
     1. Ensure NumPy is consistently installed across all environments
-    2. Use the pure Python fallback by setting CODEX_FORCE_PYTHON_RANDOM=1
+    2. Accept different splits on different platforms (not recommended for production)
     3. Implement a custom deterministic shuffle using a fixed algorithm
     
     Args:
