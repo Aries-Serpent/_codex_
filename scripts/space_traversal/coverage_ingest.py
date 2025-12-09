@@ -15,7 +15,10 @@ import sys
 from typing import Dict, Any, List, Optional
 
 ROOT = Path(__file__).resolve().parents[2]
-MAX_READ_BYTES = 200_000  # Match audit_runner.py constant
+
+# Shared constant from audit_runner.py for consistency
+# Max bytes to read from files to avoid memory issues
+MAX_READ_BYTES = 200_000
 
 def parse_coverage_xml_to_map(xml_path: Path, root: Optional[Path] = None) -> Dict[str, Dict[str, Any]]:
     """

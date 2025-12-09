@@ -44,7 +44,8 @@ def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
             try:
                 dt = datetime.fromisoformat(timestamp.replace("UTC", "").strip())
                 timestamp = dt.timestamp()
-            except Exception:
+            except (ValueError, TypeError) as e:
+                # Fallback to 0 if parsing fails
                 timestamp = 0
         
         # Extract capabilities
@@ -55,7 +56,7 @@ def _load_manifest_or_scored(path: Path) -> Optional[Dict[str, Any]]:
             "capabilities": capabilities,
             "source": str(path)
         }
-    except Exception as e:
+    except (IOError, json.JSONDecodeError) as e:
         print(f"Failed to load {path}: {e}", file=sys.stderr)
         return None
 

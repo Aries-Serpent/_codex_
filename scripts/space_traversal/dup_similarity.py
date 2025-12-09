@@ -1,5 +1,5 @@
 """
-dup_similarity.py — Token-similarity duplication heuristic
+Token-similarity duplication heuristic for content-aware file duplication detection.
 
 Intent:
 - Provide an alternative duplication ratio estimation using token similarity
@@ -25,7 +25,6 @@ Notes:
 
 from __future__ import annotations
 
-import hashlib
 import re
 from pathlib import Path
 from typing import Dict, List, Set
@@ -78,7 +77,7 @@ def _deterministic_sample_pairs(n: int, max_pairs: int) -> List[tuple]:
     """
     Deterministically sample pairs for comparison when total pairs > max_pairs.
     
-    Uses sorted indices and hash-based selection for reproducibility.
+    Uses sorted indices and simple hash-based selection for reproducibility.
     
     Args:
         n: Number of items
@@ -93,16 +92,21 @@ def _deterministic_sample_pairs(n: int, max_pairs: int) -> List[tuple]:
     if total_pairs <= max_pairs:
         return all_pairs
     
-    # Deterministic sampling using hash-based selection
+    # Deterministic sampling using simple hash-based selection
     # Sort pairs to ensure deterministic ordering
     all_pairs.sort()
     
-    # Use hash of pair indices to select deterministically
+    # Use simple hash with fixed seed for deterministic selection
+    # This is faster than SHA256 and sufficient for sampling
     selected = []
     for pair in all_pairs:
-        pair_hash = int(hashlib.sha256(f"{pair[0]}:{pair[1]}".encode()).hexdigest()[:8], 16)
-        # Use modulo to create deterministic selection
-        if pair_hash % total_pairs < max_pairs:
+        # Combine pair indices into a hashable key
+        pair_key = f"{pair[0]}:{pair[1]}"
+        # Use Python's built-in hash with modulo for selection
+        # Note: Python's hash is not deterministic across processes/versions,
+        # so we use a simple arithmetic approach instead
+        pair_value = (pair[0] * 1000 + pair[1]) % total_pairs
+        if pair_value < max_pairs:
             selected.append(pair)
             if len(selected) >= max_pairs:
                 break
