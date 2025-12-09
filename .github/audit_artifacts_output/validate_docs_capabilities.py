@@ -5,8 +5,8 @@ Validate docs/capabilities files for required structure.
 import json
 from pathlib import Path
 import re
-
-ROOT = Path("/home/runner/work/_codex_/_codex_")
+import os
+ROOT = Path(os.environ.get("CODEX_ROOT", Path(__file__).resolve().parents[3]))
 CAPS_DIR = ROOT / "docs" / "capabilities"
 
 # Required elements for a capability doc
