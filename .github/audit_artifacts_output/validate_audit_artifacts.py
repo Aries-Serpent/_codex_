@@ -119,7 +119,7 @@ for filename in OPTIONAL_FILES:
             try:
                 json.loads(file_path.read_text(encoding='utf-8'))
                 result["checks"]["valid_json"] = True
-            except:
+            except json.JSONDecodeError:
                 result["warnings"].append("Invalid JSON")
     else:
         result["warnings"].append("Optional file not found (recommended for v1.4.0)")
