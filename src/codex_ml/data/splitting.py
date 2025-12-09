@@ -6,6 +6,7 @@ guaranteed determinism and reproducibility.
 """
 
 import logging
+from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ def split_indices(
     train_ratio: float = 0.8,
     val_ratio: float = 0.1,
     seed: int = 42,
-) -> tuple[list[int], list[int], list[int]]:
+) -> Tuple[List[int], List[int], List[int]]:
     """Split indices deterministically into train/val/test sets.
 
     ⚠️ CROSS-PLATFORM REPRODUCIBILITY WARNING ⚠️

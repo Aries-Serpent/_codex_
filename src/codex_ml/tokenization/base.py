@@ -42,7 +42,7 @@ class ByteLevelTokenizer:
         pad_token_id: int = 0,
         eos_token_id: int = 1,
         unk_token_id: int = 2,
-        max_length: int | None = None,
+        max_length: Optional[int] = None,
         padding: str = "max_length",
         truncation: bool = True,
     ) -> None:
