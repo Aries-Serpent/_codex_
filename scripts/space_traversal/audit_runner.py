@@ -600,7 +600,7 @@ def render_template(cfg, context):
     json_out.write_text(json.dumps(comp, indent=2, sort_keys=True), encoding="utf-8")
     return md_out, json_out
 
-def _write_daily_status_issue(cfg, context, report_path: Path):
+def write_daily_status_issue(cfg, context, report_path: Path):
     """
     Produce a daily status issue body alongside the matrix report.
 
@@ -613,9 +613,14 @@ def _write_daily_status_issue(cfg, context, report_path: Path):
     date_str = time.strftime("%Y-%m-%d")
     issue_path = reports_dir / f"codex_status_update_{date_str}.md"
 
+    # Sort ascending to surface the lowest-maturity items first.
     gaps = sorted(context.get("gaps", []), key=lambda g: g.get("score", 0.0))
     low_threshold = context.get("scoring", {}).get("thresholds", {}).get("low")
     total_caps = len(context.get("capabilities", []))
+    try:
+        report_ref = report_path.relative_to(ROOT) if report_path.exists() else report_path
+    except ValueError:
+        report_ref = report_path
 
     lines = [
         f"# [Daily Audit Status] {date_str}",
@@ -623,7 +628,7 @@ def _write_daily_status_issue(cfg, context, report_path: Path):
         f"- Generated: {context.get('timestamp')}",
         f"- Capabilities scored: {total_caps}",
         f"- Low maturity (< {low_threshold}): {len(gaps)}",
-        f"- Matrix report: {report_path.relative_to(ROOT) if report_path.exists() else report_path}",
+        f"- Matrix report: {report_ref}",
         "- Manifest: audit_run_manifest.json (generated in S7)",
         "",
         "## Low Maturity Focus",
@@ -654,7 +659,7 @@ def stage_s6_render(cfg, scored_caps, gaps):
         "scoring": cfg.get("scoring", {}),
     }
     md_out, json_out = render_template(cfg, context)
-    _write_daily_status_issue(cfg, context, md_out)
+    write_daily_status_issue(cfg, context, md_out)
     return md_out, json_out
 
 def stage_s7_manifest(cfg):
