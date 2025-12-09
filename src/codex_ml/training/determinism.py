@@ -73,7 +73,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
                 torch.use_deterministic_algorithms(False)
 
             if warn:
-                logger.info("Deterministic mode disabled - " "performance optimizations enabled")
+                logger.info("Deterministic mode disabled - performance optimizations enabled")
 
         return True
 
