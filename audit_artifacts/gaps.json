@@ -1,5 +1,5 @@
 {
-  "generated": 1765294386.9156196,
+  "generated": 1765294641.780075,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -117,12 +117,12 @@
       "id": "documentation-system",
       "components": {
         "functionality": 0.75,
-        "consistency": 0.933628,
-        "tests": 0.004425,
+        "consistency": 0.933824,
+        "tests": 0.004412,
         "safeguards": 1.0,
         "documentation": 1.0
       },
-      "score": 0.675332,
+      "score": 0.675368,
       "evidence_files": [
         "README.md",
         "docs/API_REFERENCE.md",
@@ -209,6 +209,7 @@
         "docs/bridge/overview.md",
         "docs/bridge/ubuntu_cli.md",
         "docs/capabilities/archival_bundling.md",
+        "docs/capabilities/ci_cd_pipeline.md",
         "docs/capabilities/deployment_infrastructure.md",
         "docs/capabilities/documentation_system.md",
         "docs/capabilities/duplication_detection.md",
@@ -219,6 +220,7 @@
         "docs/capabilities/mcp_tools_integration.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
+        "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
@@ -809,14 +811,14 @@
         "mkdocs"
       ],
       "meta": {
-        "markdown_count": 676,
+        "markdown_count": 678,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 678
+        "total_docs": 680
       },
       "explain": {
         "id": "documentation-system",
-        "score": 0.675332,
+        "score": 0.675368,
         "partials": {}
       }
     },
@@ -871,90 +873,15 @@
       }
     },
     {
-      "id": "mcp-lifecycle-management",
-      "components": {
-        "functionality": 0.0,
-        "consistency": 0.883721,
-        "tests": 0.511628,
-        "safeguards": 0.833333,
-        "documentation": 1.0
-      },
-      "score": 0.579651,
-      "evidence_files": [
-        "docs/mcp/lifecycle_management.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
-        "src/mcp/__init__.py",
-        "src/mcp/auth.py",
-        "src/mcp/config.py",
-        "src/mcp/errors.py",
-        "src/mcp/rate_limit.py",
-        "src/mcp/registry.py",
-        "src/mcp/server/README.md",
-        "src/mcp/server/__init__.py",
-        "src/mcp/versioning.py",
-        "src/services/mcp/__init__.py",
-        "src/services/mcp/lifecycle.py",
-        "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
-        "temp/bridge_codex_copilot_bridge/mcp/mcp.json",
-        "temp/bridge_codex_copilot_bridge/mcp/server/README.md",
-        "temp/bridge_codex_copilot_bridge/mcp/server/main.py",
-        "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
-        "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-        "test_mcp_server.py",
-        "tests/mcp/__init__.py",
-        "tests/mcp/test_auth.py",
-        "tests/mcp/test_authz_authn_extended.py",
-        "tests/mcp/test_config.py",
-        "tests/mcp/test_error_handling_extended.py",
-        "tests/mcp/test_integration.py",
-        "tests/mcp/test_lifecycle_management.py",
-        "tests/mcp/test_mcp_core_smoke.py",
-        "tests/mcp/test_multi_tenant_extended.py",
-        "tests/mcp/test_observability.py",
-        "tests/mcp/test_protocol.py",
-        "tests/mcp/test_registry.py",
-        "tests/mcp/test_schema_validation.py",
-        "tests/mcp/test_server.py",
-        "tests/mcp/test_tools_integration.py",
-        "tests/mcp/test_tools_integration_advanced.py",
-        "tests/mcp/test_utilities.py",
-        "tests/space_traversal/test_mcp_configuration.py",
-        "tests/space_traversal/test_mcp_schema_validation.py",
-        "tests/space_traversal/test_mcp_security_safeguards.py",
-        "tests/space_traversal/test_mcp_tooling_registry.py",
-        "tests/space_traversal/test_mcp_tools_integration.py"
-      ],
-      "found_patterns": [],
-      "meta": {
-        "category": "mcp",
-        "priority": "high",
-        "framework": "FastAPI",
-        "detector_version": "1.2",
-        "implementation": "src/services/mcp/lifecycle.py",
-        "tests": "tests/mcp/test_lifecycle_management.py",
-        "missing_detectors": [
-          "healthz",
-          "shutdown",
-          "startup"
-        ]
-      },
-      "explain": {
-        "id": "mcp-lifecycle-management",
-        "score": 0.579651,
-        "partials": {}
-      }
-    },
-    {
       "id": "mcp-tools-integration",
       "components": {
         "functionality": 1.0,
         "consistency": 0.931034,
         "tests": 0.151724,
         "safeguards": 1.0,
-        "documentation": 0.236337
+        "documentation": 0.250368
       },
-      "score": 0.659588,
+      "score": 0.661693,
       "evidence_files": [
         ".github/docs/_Copilot_MCP-MCPReviewFrom2286.md",
         ".github/prompts/CODEX_MCP_COMPLETE_PATCHSETs.md",
@@ -1401,7 +1328,7 @@
       },
       "explain": {
         "id": "mcp-tools-integration",
-        "score": 0.659588,
+        "score": 0.661693,
         "partials": {}
       }
     }

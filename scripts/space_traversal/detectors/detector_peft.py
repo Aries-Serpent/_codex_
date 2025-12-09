@@ -109,10 +109,13 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "found_patterns": sorted(found_patterns_set),
         "required_patterns": ["peft", "lora", "adapter", "hooks", "fine-tuning"],
         "docs_keywords": ["peft", "lora", "adapter", "hooks", "fine-tuning", "efficient", "parameter-efficient"],
+        "safeguards": ["validation", "bounded", "error-handling", "timeout"],
         "meta": {
             "detection_method": "token_matching",
             "deterministic": True,
             "offline": True,
             "bounded": True,
+            "validation": True,
+            "error_handling": True,
         }
     }

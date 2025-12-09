@@ -1,6 +1,6 @@
 {
-  "generated": 1765294382.2880204,
-  "count": 4720,
+  "generated": 1765294637.1240144,
+  "count": 4722,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -4559,8 +4559,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 1899,
-      "sha": "58c7eacb449fcba1cc88cd9aa57e06c8e8554639fb51b747d85276b45e06cb75"
+      "size": 1902,
+      "sha": "ae8de56ea510fbe2e2c2bec7c86d77643e308cfac2d016f1a3743fbc864b8c5f"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -7293,6 +7293,12 @@
       "sha": "971726152d7f80a3ee3145fbd19b9417341c71450b6c76e68d9a77def0144402"
     },
     {
+      "path": "docs/capabilities/ci_cd_pipeline.md",
+      "ext": ".md",
+      "size": 10687,
+      "sha": "228bac051424b0ea91033a9043677f2ede1751dd9b28ea2f83471aa0fa59922c"
+    },
+    {
       "path": "docs/capabilities/deployment_infrastructure.md",
       "ext": ".md",
       "size": 378,
@@ -7351,6 +7357,12 @@
       "ext": ".md",
       "size": 366,
       "sha": "cb955b2616c0ca2f053ae5a6e06b6ab9e651ba75f4dd3ab751e1a86226aed1ec"
+    },
+    {
+      "path": "docs/capabilities/status_reporting.md",
+      "ext": ".md",
+      "size": 16451,
+      "sha": "3fb487f63cf9194a0726cc9665f3718dc720d47f79edd4e083371884749b71ed"
     },
     {
       "path": "docs/capabilities/structural_integrity.md",
@@ -13277,8 +13289,8 @@
     {
       "path": "scripts/space_traversal/detectors/detector_peft.py",
       "ext": ".py",
-      "size": 3586,
-      "sha": "2c989eaf3f78d254195fb9c1760664320230833828fd112f311a01a7ac989cd7"
+      "size": 3732,
+      "sha": "b4233adabbeea5ef0a4826e1993d2418f8d04ca063b6e661be7fe138e1ae2d89"
     },
     {
       "path": "scripts/space_traversal/detectors/detector_safeguards.py",
@@ -13337,8 +13349,8 @@
     {
       "path": "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
       "ext": ".py",
-      "size": 2427,
-      "sha": "d72b7c0c527a3dfd84c38d2547349d9742e380f9e782fbc21ff9bce63f774d11"
+      "size": 4204,
+      "sha": "64817860016e180071c0ede3d805c26d794822b51f8c2b3f202d28915a23e3e6"
     },
     {
       "path": "scripts/space_traversal/detectors/mcp_multi_tenant.py",
@@ -13439,8 +13451,8 @@
     {
       "path": "scripts/space_traversal/detectors/vector_store_detector.py",
       "ext": ".py",
-      "size": 4202,
-      "sha": "dbba8b37db27343b9a1b59ef041e55778a71065583755f271985aceb98751481"
+      "size": 4692,
+      "sha": "673783327dac5016d8f2caea293d80f2a91781937b71b52de8a1037737965f11"
     },
     {
       "path": "scripts/space_traversal/dup_similarity.py",
