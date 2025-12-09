@@ -8,32 +8,32 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
-def find_repo_root(start_path: Path = None) -> Path:
+def find_repo_root(start_path: Optional[Path] = None) -> Path:
     """Find repository root by searching for .git directory.
-    
+
     Uses CODEX_REPO_ROOT env var if set, otherwise walks up parents.
     Raises RuntimeError if not found.
-    
+
     Args:
         start_path: Starting path for search (default: this file's location)
-        
+
     Returns:
         Path to repository root
-        
+
     Raises:
         RuntimeError: If repository root cannot be determined
     """
     env_root = os.getenv("CODEX_REPO_ROOT")
     if env_root:
         return Path(env_root).resolve()
-    
+
     if start_path is None:
         start_path = Path(__file__).resolve()
-    
+
     for parent in [start_path] + list(start_path.parents):
         if (parent / ".git").is_dir():
             return parent
-    
+
     raise RuntimeError(
         "Could not determine repository root. Set CODEX_REPO_ROOT environment variable."
     )

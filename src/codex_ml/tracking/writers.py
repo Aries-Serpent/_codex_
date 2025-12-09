@@ -907,15 +907,15 @@ class MLflowParamWriter:
 
     def _escape_key(self, key: Any, sep: str = ".") -> str:
         """Escape separator characters in keys (one-way operation).
-        
+
         NOTE: This is a one-way operation. There is no unescape method because
         MLflow keys are stored escaped. Users should use descriptive key names
         that avoid dots/separators when possible.
-        
+
         Args:
             key: Key to escape (any type)
             sep: Separator character to escape
-            
+
         Returns:
             Escaped string key
         """
@@ -995,15 +995,15 @@ class MLflowArtifactWriter:
         artifact_path: str = "model",
     ) -> bool:
         """Log model with robust type detection.
-        
+
         NOTE: Fallback detection may produce false positives for non-sklearn
         models that happen to have fit/predict methods. When sklearn is
         unavailable, use isinstance() checks with your specific model types.
-        
+
         Args:
             model: Model object to log
             artifact_path: Path within artifact storage (default: "model")
-            
+
         Returns:
             True if model logged successfully, False otherwise
         """
@@ -1047,7 +1047,7 @@ class MLflowArtifactWriter:
                     has_fit = callable(getattr(model, "fit", None))
                     has_predict = callable(getattr(model, "predict", None))
                     is_sklearn = "sklearn" in model_module and has_fit and has_predict
-                
+
                 if is_sklearn:
                     # scikit-learn model
                     try:

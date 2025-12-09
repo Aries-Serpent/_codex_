@@ -16,7 +16,7 @@ import os
 import random
 import sys
 from dataclasses import asdict, dataclass
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ class SeedManager:
     Usage:
         seed_mgr = SeedManager(seed=42, deterministic=True)
         state = seed_mgr.set_all_seeds()
-        
+
         # Use the NumPy RNG for reproducible operations (recommended)
         rng = seed_mgr.get_rng()
         if rng is not None:
@@ -92,10 +92,10 @@ class SeedManager:
 
     def set_all_seeds(self) -> SeedState:
         """Set seeds for all supported frameworks.
-        
+
         NOTE: PYTHONHASHSEED must be set BEFORE interpreter startup to be
         effective. Setting it via os.environ after startup has no effect.
-        
+
         Returns:
             SeedState object containing all seed values and flags
         """
@@ -169,7 +169,7 @@ class SeedManager:
 
     def get_rng(self) -> Any:
         """Get a reproducible NumPy Generator instance.
-        
+
         Returns:
             np.random.Generator if NumPy available, else None
         """

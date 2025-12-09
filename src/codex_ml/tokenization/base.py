@@ -47,7 +47,7 @@ class ByteLevelTokenizer:
         truncation: bool = True,
     ) -> None:
         """Initialize ByteLevelTokenizer.
-        
+
         Args:
             pad_token_id: ID for padding token (default: 0)
             eos_token_id: ID for end-of-sequence token (default: 1)
@@ -56,7 +56,7 @@ class ByteLevelTokenizer:
                 When add_special_tokens=True, one position is reserved for EOS.
             padding: Padding strategy - "max_length" or "longest"
             truncation: Whether to truncate sequences exceeding max_length
-        
+
         Raises:
             ValueError: If max_length is set but <= 0
         """
@@ -65,7 +65,7 @@ class ByteLevelTokenizer:
                 f"max_length must be >= 1 when set, got {max_length}. "
                 f"Use max_length=None to disable truncation."
             )
-        
+
         self.pad_token_id = pad_token_id
         self.eos_token_id = eos_token_id
         self.unk_token_id = unk_token_id
@@ -112,13 +112,13 @@ class ByteLevelTokenizer:
 
     def decode(self, ids: List[int], skip_special_tokens: bool = True) -> str:
         """Decode token IDs back to text.
-        
+
         Token ID layout (offset arithmetic):
         - 0: PAD token
-        - 1: UNK token  
+        - 1: UNK token
         - 2: EOS token
         - 3-258: Byte values 0-255 (offset by 3 to avoid collision with specials)
-        
+
         The offset ensures special tokens (0-2) don't conflict with byte values.
 
         Args:

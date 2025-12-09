@@ -26,26 +26,26 @@ def split_indices(
     seed: int = 42,
 ) -> Tuple[List[int], List[int], List[int]]:
     """Split indices into train/val/test sets.
-    
+
     WARNING: Cross-Platform Reproducibility Limitation
     =================================================
     Results differ between NumPy and Python random backends.
     The same seed produces DIFFERENT splits depending on NumPy availability.
-    
+
     For cross-environment reproducibility, choose ONE of:
     1. Ensure NumPy is consistently installed across all environments
     2. Accept different splits on different platforms (not recommended for production)
     3. Implement a custom deterministic shuffle using a fixed algorithm
-    
+
     Args:
         n: Number of indices
         train_ratio: Fraction for training (default: 0.8)
         val_ratio: Fraction for validation (default: 0.1)
         seed: Random seed for reproducibility
-    
+
     Returns:
         Tuple of (train_indices, val_indices, test_indices)
-        
+
     Example:
         >>> train, val, test = split_indices(1000, 0.8, 0.1, seed=42)
         >>> len(train), len(val), len(test)
