@@ -1,5 +1,5 @@
 {
-  "generated": 1765294782.0483956,
+  "generated": 1765295273.9968436,
   "low_maturity": [
     {
       "id": "deployment-infrastructure",
@@ -104,8 +104,12 @@
         "docker_configs": 12,
         "k8s_manifests": 12,
         "helm_charts": 2,
+        "terraform_configs": 0,
         "service_definitions": 49,
-        "deploy_scripts": 5
+        "deploy_scripts": 5,
+        "deterministic": true,
+        "offline": true,
+        "bounded": true
       },
       "explain": {
         "id": "deployment-infrastructure",
@@ -814,61 +818,14 @@
         "markdown_count": 678,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 680
+        "total_docs": 680,
+        "deterministic": true,
+        "offline": true,
+        "validation": true
       },
       "explain": {
         "id": "documentation-system",
         "score": 0.675368,
-        "partials": {}
-      }
-    },
-    {
-      "id": "inference-serving",
-      "components": {
-        "functionality": 0.333333,
-        "consistency": 0.8,
-        "tests": 0.6,
-        "safeguards": 0.833333,
-        "documentation": 1.0
-      },
-      "score": 0.668333,
-      "evidence_files": [
-        ".codex/copilot_bridge/bridge/server.js",
-        "configs/deployment/hhg_logistics/serve/local.yaml",
-        "copilot/extension/server/index.js",
-        "docs/guides/inference_server_guide.md",
-        "scripts/local/serve_local.sh",
-        "src/codex_ml/serving/inference_server.py",
-        "src/codex_ml/telemetry/server.py",
-        "src/hhg_logistics/monitor/serve_report.py",
-        "src/hhg_logistics/serve/__init__.py",
-        "src/hhg_logistics/serve/app.py",
-        "src/hhg_logistics/serve/smoke.py",
-        "src/mcp/server/README.md",
-        "src/mcp/server/__init__.py",
-        "temp/bridge_codex_copilot_bridge/copilot/extension/server/index.js",
-        "temp/bridge_codex_copilot_bridge/mcp/server/README.md",
-        "temp/bridge_codex_copilot_bridge/mcp/server/main.py",
-        "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
-        "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
-        "test_mcp_server.py",
-        "tests/codex_ml/test_inference_server.py",
-        "tests/hhg_logistics/serve/test_app.py",
-        "tests/mcp/test_server.py",
-        "tests/telemetry/test_metrics_server.py",
-        "tests/test_actions_server_smoke.py",
-        "tools/actions_server.py"
-      ],
-      "found_patterns": [
-        "serve"
-      ],
-      "meta": {
-        "layer": "serving",
-        "interface": "http"
-      },
-      "explain": {
-        "id": "inference-serving",
-        "score": 0.668333,
         "partials": {}
       }
     },
