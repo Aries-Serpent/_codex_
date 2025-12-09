@@ -64,11 +64,11 @@ class ByteLevelTokenizer:
                 f"max_length must be >= 1 when set, got {max_length}. "
                 f"Use max_length=None to disable truncation."
             )
-        self.max_length = max_length
 
         self.pad_token_id = pad_token_id
         self.eos_token_id = eos_token_id
         self.unk_token_id = unk_token_id
+        self.max_length = max_length
         self.padding = padding
         self.truncation = truncation
 
