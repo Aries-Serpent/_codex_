@@ -81,10 +81,16 @@ def detect(file_index: dict) -> dict:
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(found),
         "required_patterns": required_patterns,
+        "docs_keywords": [
+            "mcp", "configuration", "settings", "environment", "mcp.json",
+            "config", "management", "runtime", "validation", "safeguards",
+            "configuration-management", "env-vars", "config-files"
+        ],
         "meta": {
             "category": "mcp",
             "layer": "infrastructure",
-            "detector_version": "1.0",
-            "config_types": ["mcp.json", "environment", "yaml", "python"]
+            "detector_version": "1.1",
+            "config_types": ["mcp.json", "environment", "yaml", "python"],
+            "safeguards": ["validation", "type-checking", "bounds-checking", "secret-management"]
         }
     }

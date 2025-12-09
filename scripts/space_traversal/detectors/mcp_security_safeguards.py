@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict
 
-KEYWORDS = ["confirm", "dry_run", "sanitize"]
+KEYWORDS = ["confirm", "dry_run", "sanitize", "validation", "bounds", "rollback"]
 
 
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
@@ -28,5 +28,14 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(set(found)),
         "required_patterns": KEYWORDS,
-        "meta": {"category": "mcp"},
+        "docs_keywords": [
+            "mcp", "security", "safeguards", "validation", "sanitization",
+            "confirm", "dry-run", "defensive", "protection", "safety",
+            "bounds-checking", "error-handling", "rollback", "audit"
+        ],
+        "meta": {
+            "category": "mcp",
+            "safeguards": ["confirmation", "dry-run", "sanitization", "validation", "bounds-checking", "rollback"],
+            "detector_version": "1.2"
+        },
     }

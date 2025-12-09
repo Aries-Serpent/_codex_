@@ -25,7 +25,7 @@ space-diff:
 
 .PHONY: space-clean
 space-clean:
-	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md
+	rm -rf audit_artifacts audit_run_manifest.json reports/capability_matrix_*.md reports/codex_status_update_*.md
 
 .PHONY: space-remediation
 space-remediation:

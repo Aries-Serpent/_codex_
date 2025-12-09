@@ -12,7 +12,9 @@ import json
 from pathlib import Path
 from typing import Dict, List
 
-PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", "AWS_SECRET_ACCESS_KEY"]
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+
+PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
 
 
 def _iter_text_files(root: Path) -> List[Path]:

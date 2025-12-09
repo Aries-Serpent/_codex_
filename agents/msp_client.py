@@ -4,6 +4,7 @@ Thin HTTP client for interacting with the MSP Gateway
 """
 
 import logging
+import os
 from typing import Any, Dict, List, Optional
 
 import httpx
@@ -250,7 +251,8 @@ class MSPClient:
 # Example usage
 if __name__ == "__main__":
     # Create client
-    client = MSPClient(api_key="test-api-key")
+    demo_api_key = os.getenv("MSP_API_KEY") or "your-api-key-here"
+    client = MSPClient(api_key=demo_api_key)
 
     try:
         # Check health

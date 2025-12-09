@@ -16250,13 +16250,7 @@
         "codex_addons/vector_stores/pgvector_stub.py",
         "codex_addons/vector_stores/weaviate_stub.py"
       ],
-      "found_patterns": [],
-      "required_patterns": [],
-      "docs_keywords": [],
-      "meta": {
-        "mode": "stub-or-mock"
-      }
+      "discovery_method": "code_scan"
     }
-  ],
-  "version": "1.2.0"
+  ]
 }

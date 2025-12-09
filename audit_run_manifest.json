@@ -1,15 +1,51 @@
 {
-  "timestamp": "2025-12-06T04:45:00Z",
-  "version": "1.1.0",
-  "repo_root_sha": "sha256-of-sorted-file-list",
+  "timestamp": 1765295666.928695,
+  "version": "1.2.0",
+  "repo_root_sha": "8570c728964238a8b79411b1cffa95e6867da942bce9644f2031b547052d846f",
   "artifacts": [
-    {"name": "context_index.json", "sha": "sha256-context-index"},
-    {"name": "facets.json", "sha": "sha256-facets"},
-    {"name": "capabilities_raw.json", "sha": "sha256-capabilities-raw"},
-    {"name": "capabilities_scored.json", "sha": "sha256-capabilities-scored"},
-    {"name": "gaps.json", "sha": "sha256-gaps"}
+    {
+      "name": "facets.json",
+      "sha": "4ffcf03e1be2a1a1d6bb66d7255e6ca4b57172c20c1b22a4f2d449e04790df6e",
+      "size": 70255,
+      "format": "json",
+      "generated_at": 1765295661.4149108
+    },
+    {
+      "name": "capabilities_raw.json",
+      "sha": "985c9260a172764403eff0b8081fa13c617c367ce1ac2fa4dbb52e857564d512",
+      "size": 897250,
+      "format": "json",
+      "generated_at": 1765295664.6509
+    },
+    {
+      "name": "capabilities_scored.json",
+      "sha": "1bf8fd44179bd1462d9d9bf6bcd25c9c7fe02315b6444cbb62754c3168d8efb5",
+      "size": 901355,
+      "format": "json",
+      "generated_at": 1765295666.4388938
+    },
+    {
+      "name": "context_index.json",
+      "sha": "d359295ee8421c3a97175b79176dde2d6b4956da593f18b4d53a6729fbdd5cdc",
+      "size": 882593,
+      "format": "json",
+      "generated_at": 1765295661.393911
+    },
+    {
+      "name": "capabilities_scored_run1.json",
+      "sha": "283c4273b6f4955a339e624aaba16183bd685192695d9784e364a434fd193236",
+      "size": 451992,
+      "format": "json",
+      "generated_at": 1765294228.006619
+    },
+    {
+      "name": "gaps.json",
+      "sha": "5254db1c0c1bd62f900207eb5b79d6d51ca0914e22a24e46c61643848e8a9fac",
+      "size": 37426,
+      "format": "json",
+      "generated_at": 1765295666.440894
+    }
   ],
-  "template_hash": "sha256-template-concat",
   "weights": {
     "functionality": 0.25,
     "consistency": 0.2,
@@ -17,5 +53,14 @@
     "safeguards": 0.15,
     "documentation": 0.15
   },
-  "warnings": []
+  "normalized_weights": {
+    "functionality": 0.25,
+    "consistency": 0.2,
+    "tests": 0.25,
+    "safeguards": 0.15,
+    "documentation": 0.15
+  },
+  "warnings": [],
+  "metrics_schema_version": "2.0.0",
+  "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43"
 }
