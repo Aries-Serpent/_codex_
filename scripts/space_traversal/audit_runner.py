@@ -359,7 +359,71 @@ def stage_s3_capabilities(cfg, facets):
     out_file.write_text(json.dumps({"generated": time.time(), "capabilities": capabilities, "version": VERSION}, indent=2), encoding="utf-8")
     return capabilities
 
-def duplication_ratio(evidence_files: List[str]) -> float:
+def duplication_ratio(evidence_files: List[str], file_cache: Dict[str, str] = None, cfg: dict = None) -> float:
+    """
+    Compute duplication ratio using configured heuristic.
+    
+    Supports two modes:
+    - simple: Original stem-based duplication (default, backward compatible)
+    - token_similarity: Enhanced token-based similarity using dup_similarity module
+    
+    Args:
+        evidence_files: List of evidence file paths
+        file_cache: Optional file content cache (for token_similarity mode)
+        cfg: Optional config dict (to determine heuristic mode)
+    
+    Returns:
+        Duplication ratio in [0, 1]
+    """
+    # Determine heuristic mode
+    heuristic = "simple"  # Default for backward compatibility
+    if cfg:
+        dup_cfg = cfg.get("scoring", {}).get("dup", {})
+        heuristic = dup_cfg.get("heuristic", "simple")
+    
+    # Simple mode (original behavior)
+    if heuristic == "simple" or file_cache is None:
+        stems = [Path(f).stem for f in evidence_files]
+        if not stems:
+            return 0.0
+        counts = {}
+        for s in stems:
+            counts[s] = counts.get(s, 0) + 1
+        dup = sum(c - 1 for c in counts.values() if c > 1)
+        return min(1.0, dup / max(1, len(stems)))
+    
+    # Token similarity mode
+    if heuristic == "token_similarity":
+        try:
+            from scripts.space_traversal import dup_similarity
+            
+            # Get parameters from config
+            dup_cfg = cfg.get("scoring", {}).get("dup", {})
+            threshold = dup_cfg.get("threshold", 0.7)
+            max_pairwise = dup_cfg.get("max_pairwise", 1000)
+            max_tokens = dup_cfg.get("max_tokens_per_file", 1000)
+            
+            return dup_similarity.duplication_ratio_token_similarity(
+                evidence_files,
+                file_cache,
+                threshold=threshold,
+                max_pairwise=max_pairwise,
+                max_tokens_per_file=max_tokens
+            )
+        except Exception as e:
+            warn(f"Failed to use token_similarity heuristic: {e}, falling back to simple")
+            # Fallback to simple mode
+            stems = [Path(f).stem for f in evidence_files]
+            if not stems:
+                return 0.0
+            counts = {}
+            for s in stems:
+                counts[s] = counts.get(s, 0) + 1
+            dup = sum(c - 1 for c in counts.values() if c > 1)
+            return min(1.0, dup / max(1, len(stems)))
+    
+    # Unknown heuristic, use simple
+    warn(f"Unknown duplication heuristic '{heuristic}', using simple")
     stems = [Path(f).stem for f in evidence_files]
     if not stems:
         return 0.0
@@ -494,18 +558,26 @@ def stage_s4_scoring(cfg, raw_caps):
         if rel not in file_cache:
             file_cache[rel] = read_file_text_safe(p)
 
-    scored = []
+    # Discover and parse coverage if enabled
     cov_map = {}
-    cov_path = artifacts_dir / "coverage_map.json"
-    if cov_path.exists():
-        try:
-            cov_map = json.loads(cov_path.read_text())
-        except Exception:
-            warn("Failed to read coverage_map.json; ignoring coverage augmentation.")
+    try:
+        from scripts.space_traversal import coverage_ingest
+        discovered_cov = coverage_ingest.discover_and_parse_coverage(cfg, artifacts_dir)
+        if discovered_cov:
+            cov_map = discovered_cov
+    except Exception as e:
+        # Silent fallback - check for existing coverage_map.json
+        cov_path = artifacts_dir / "coverage_map.json"
+        if cov_path.exists():
+            try:
+                cov_map = json.loads(cov_path.read_text())
+            except Exception:
+                warn("Failed to read coverage_map.json; ignoring coverage augmentation.")
 
+    scored = []
     for cap in raw_caps:
         functionality = len(cap.get("found_patterns", [])) / max(1, len(cap.get("required_patterns", [])))
-        consistency = 1.0 - duplication_ratio(cap.get("evidence_files", []))
+        consistency = 1.0 - duplication_ratio(cap.get("evidence_files", []), file_cache, cfg)
         tests = estimate_test_depth(cap.get("id"), cap.get("evidence_files", []))
         if cov_map:
             vals = []
@@ -753,6 +825,29 @@ def run_full(cfg):
     gaps = stage_s5_gaps(cfg, scored)
     stage_s6_render(cfg, scored, gaps)
     stage_s7_manifest(cfg)
+    
+    # Optional: Run trend aggregation if enabled in config
+    trends_cfg = cfg.get("trends", {})
+    if trends_cfg.get("enabled", False):
+        try:
+            from scripts.space_traversal import trend_aggregator
+            artifacts_dir = Path(_get_artifacts_dir(cfg))
+            reports_dir = Path(_get_reports_dir(cfg))
+            lookback_days = trends_cfg.get("lookback_days", None)
+            
+            info("Running trend aggregation...")
+            trend_data = trend_aggregator.aggregate_trends(
+                artifacts_dir, reports_dir, lookback_days, None
+            )
+            
+            # Generate report
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            output_path = artifacts_dir / "trends" / f"trend_report_{timestamp}.md"
+            trend_aggregator.generate_trend_report(trend_data, output_path)
+            info(f"Trend report generated: {output_path}")
+        except Exception as e:
+            warn(f"Trend aggregation failed: {e}")
+    
     info("Audit complete.")
 
 def run_stage(cfg, stage_id: str):
@@ -781,6 +876,25 @@ def run_stage(cfg, stage_id: str):
         stage_s6_render(cfg, scored, gaps)
     elif stage_id == "S7":
         stage_s7_manifest(cfg)
+    elif stage_id == "TRENDS":
+        # Optional trend aggregation stage
+        try:
+            from scripts.space_traversal import trend_aggregator
+            reports_dir = Path(_get_reports_dir(cfg))
+            trends_cfg = cfg.get("trends", {})
+            lookback_days = trends_cfg.get("lookback_days", None)
+            
+            trend_data = trend_aggregator.aggregate_trends(
+                artifacts_dir, reports_dir, lookback_days, None
+            )
+            
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            output_path = artifacts_dir / "trends" / f"trend_report_{timestamp}.md"
+            trend_aggregator.generate_trend_report(trend_data, output_path)
+            info(f"Trend report generated: {output_path}")
+        except Exception as e:
+            warn(f"Trend aggregation failed: {e}")
+            sys.exit(2)
     else:
         print("Unknown stage ID", file=sys.stderr)
         sys.exit(2)
