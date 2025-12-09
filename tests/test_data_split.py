@@ -214,7 +214,7 @@ class TestWithNumPy:
         assert len(train) == 80
         assert len(val) == 10
         assert len(test) == 10
-        
+
         # Verify all indices are present
         all_indices = set(train + val + test)
         assert all_indices == set(range(n))

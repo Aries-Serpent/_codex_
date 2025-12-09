@@ -905,6 +905,21 @@ class MLflowParamWriter:
         flat_params = self._flatten_dict(config, prefix)
         return self.write_params(flat_params)
 
+    def _escape_key(self, key: Any, sep: str = ".") -> str:
+        """Convert and escape a key for safe use in flattened dict.
+        
+        Args:
+            key: Key to escape (any type)
+            sep: Separator character to escape
+            
+        Returns:
+            Escaped string key
+        """
+        # Convert non-string keys to string
+        key_str = str(key) if not isinstance(key, str) else key
+        # Escape separator characters in keys to prevent collisions
+        return key_str.replace(sep, f"\\{sep}")
+
     def _flatten_dict(
         self,
         d: dict[str, Any],
@@ -914,10 +929,7 @@ class MLflowParamWriter:
         """Flatten nested dictionary with key validation and separator escaping."""
         items = {}
         for k, v in d.items():
-            # Convert non-string keys to string
-            key_str = str(k) if not isinstance(k, str) else k
-            # Escape separator characters in keys to prevent collisions
-            escaped_key = key_str.replace(sep, f"\\{sep}")
+            escaped_key = self._escape_key(k, sep)
             key = f"{prefix}{sep}{escaped_key}" if prefix else escaped_key
             if isinstance(v, dict):
                 items.update(self._flatten_dict(v, key, sep))
