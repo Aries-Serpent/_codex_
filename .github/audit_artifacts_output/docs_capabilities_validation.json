@@ -1,0 +1,89 @@
+{
+  "validation_date": "2025-12-09",
+  "total_files": 5,
+  "files_with_issues": 5,
+  "completeness_percent": 0.0,
+  "results": [
+    {
+      "filename": "archival_bundling.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "deployment_infrastructure.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "documentation_system.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "mcp_tools_integration.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "safeguards_keywords.md",
+      "exists": true,
+      "checks": {
+        "capability": true,
+        "scope": false,
+        "evidence": false,
+        "tests": true
+      },
+      "missing_items": [
+        "scope",
+        "evidence"
+      ],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "complete": 0,
+    "incomplete": 5,
+    "meets_threshold": false
+  }
+}

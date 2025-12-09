@@ -1,0 +1,103 @@
+{
+  "validation_date": "2025-12-09",
+  "artifacts_directory": "/home/runner/work/_codex_/_codex_/audit_artifacts",
+  "required_files": 4,
+  "required_passed": 3,
+  "completeness_percent": 75.0,
+  "has_coverage_map": false,
+  "results": [
+    {
+      "filename": "FOLLOW_UP_PROMPTS.md",
+      "exists": true,
+      "checks": {
+        "size": 12041,
+        "has_content": true,
+        "has_keyword_prompt": true,
+        "has_keyword_follow": true,
+        "has_keyword_achievement": true
+      },
+      "issues": [],
+      "warnings": [
+        "Missing recommended keyword: remediation"
+      ]
+    },
+    {
+      "filename": "capabilities_raw.json",
+      "exists": true,
+      "checks": {
+        "size": 4509,
+        "valid_json": true,
+        "has_generated": true
+      },
+      "issues": [
+        "Missing required key: capabilities"
+      ],
+      "warnings": []
+    },
+    {
+      "filename": "capabilities_scored.json",
+      "exists": true,
+      "checks": {
+        "size": 901355,
+        "valid_json": true,
+        "has_capabilities": true,
+        "has_generated": true
+      },
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "filename": "context_index.json",
+      "exists": true,
+      "checks": {
+        "size": 882593,
+        "valid_json": true,
+        "has_files": true
+      },
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "filename": "coverage_map.json",
+      "exists": false,
+      "optional": true,
+      "checks": {},
+      "issues": [],
+      "warnings": [
+        "Optional file not found (recommended for v1.4.0)"
+      ]
+    },
+    {
+      "filename": "gaps.json",
+      "exists": true,
+      "optional": true,
+      "checks": {
+        "size": 37426,
+        "valid_json": true
+      },
+      "issues": [],
+      "warnings": []
+    },
+    {
+      "filename": "facets.json",
+      "exists": true,
+      "optional": true,
+      "checks": {
+        "size": 70255,
+        "valid_json": true
+      },
+      "issues": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_required": 4,
+    "passed": 3,
+    "failed": 1,
+    "meets_threshold": false,
+    "v1_4_0_features": {
+      "coverage_map": false,
+      "token_similarity": "Check dup_similarity.py module"
+    }
+  }
+}

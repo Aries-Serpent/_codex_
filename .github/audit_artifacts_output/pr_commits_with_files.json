@@ -1,0 +1,443 @@
+{
+  "pr_number": 2449,
+  "total_commits_analyzed": 29,
+  "commits": [
+    {
+      "sha": "a3cde8b7",
+      "message": "Merge pull request #2451 from Aries-Serpent/copilot/verify-capability-audit-scores",
+      "body": "Harden secret scan patterns and emit capability matrix markdown",
+      "author": "Statix",
+      "date": "Tue Dec 9 12:09:11 2025 -0600"
+    },
+    {
+      "sha": "c13cc8c4",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 17:30:56 2025 +0000"
+    },
+    {
+      "sha": "19fae70c",
+      "message": "Merge pull request #2450 from Aries-Serpent/copilot/elevate-highest-roi-capabilities",
+      "body": "Phase 2: Elevate all 18 capabilities to 100% with comprehensive tests and cross-reference matrix",
+      "author": "Statix",
+      "date": "Tue Dec 9 11:25:48 2025 -0600"
+    },
+    {
+      "sha": "16db063f",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 16:27:09 2025 +0000"
+    },
+    {
+      "sha": "ca359e27",
+      "message": "Merge pull request #2446 from Aries-Serpent/copilot/implement-audit-status-components",
+      "body": "Add daily audit status artifact, logging, and sync traversal docs to v1.4",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:22:31 2025 -0600"
+    },
+    {
+      "sha": "7bcdb7df",
+      "message": "Merge pull request #2447 from Aries-Serpent/copilot/add-roadmap-features-audit-pipeline",
+      "body": "Implement audit pipeline roadmap features with Phase 1 at 94.9% complete (37/39 above 0.70) - 390 comprehensive tests, 161KB documentation, 22 enhanced detectors",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:22:04 2025 -0600"
+    },
+    {
+      "sha": "a086abeb",
+      "message": "Merge branch 'copilot/implement-audit-status-components' into copilot/add-roadmap-features-audit-pipeline",
+      "body": "",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:17:58 2025 -0600"
+    },
+    {
+      "sha": "fa13ad41",
+      "message": "Merge branch '0D_base_' into copilot/implement-audit-status-components",
+      "body": "",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:17:40 2025 -0600"
+    },
+    {
+      "sha": "4f036508",
+      "message": "Merge pull request #2448 from Aries-Serpent/dependabot/docker/python-3.14-slim",
+      "body": "docker: bump python from 3.11-slim to 3.14-slim",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:17:17 2025 -0600"
+    },
+    {
+      "sha": "dff3586e",
+      "message": "Merge branch 'copilot/implement-audit-status-components' into copilot/add-roadmap-features-audit-pipeline",
+      "body": "",
+      "author": "Statix",
+      "date": "Tue Dec 9 10:16:29 2025 -0600"
+    },
+    {
+      "sha": "77ddebfc",
+      "message": "Add comprehensive SESSION_STATUS_REPORT for autonomous continuation tracking",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 07:01:48 2025 +0000"
+    },
+    {
+      "sha": "88462c64",
+      "message": "Add follow-up prompts and improvement plans",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 06:05:38 2025 +0000"
+    },
+    {
+      "sha": "ca058081",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 05:34:06 2025 +0000"
+    },
+    {
+      "sha": "1371bfe2",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 03:39:41 2025 +0000"
+    },
+    {
+      "sha": "a9ca397e",
+      "message": "Merge pull request #2441 from Aries-Serpent/0D_base_",
+      "body": "0 d base ",
+      "author": "Statix",
+      "date": "Mon Dec 8 21:05:36 2025 -0600"
+    },
+    {
+      "sha": "8e05574f",
+      "message": "Merge pull request #2445 from Aries-Serpent/copilot/sub-pr-2441",
+      "body": "Address PR #2441 review comments - improve reproducibility, validation, and test patterns",
+      "author": "Statix",
+      "date": "Mon Dec 8 21:02:24 2025 -0600"
+    },
+    {
+      "sha": "6c926c6b",
+      "message": "fix: Remove duplicate assertion in test",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 02:40:10 2025 +0000"
+    },
+    {
+      "sha": "979850cf",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 02:05:14 2025 +0000"
+    },
+    {
+      "sha": "b248b0a5",
+      "message": "Merge pull request #2444 from Aries-Serpent/copilot/sub-pr-2441",
+      "body": "Address PR #2443 review comments: hardening, consistency, and documentation",
+      "author": "Statix",
+      "date": "Mon Dec 8 19:48:14 2025 -0600"
+    },
+    {
+      "sha": "95e6672c",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 01:09:06 2025 +0000"
+    },
+    {
+      "sha": "47832325",
+      "message": "Merge pull request #2443 from Aries-Serpent/copilot/sub-pr-2441",
+      "body": "Harden PR #2441: Fix key validation, sklearn detection, error handling, and add test coverage",
+      "author": "Statix",
+      "date": "Mon Dec 8 18:32:42 2025 -0600"
+    },
+    {
+      "sha": "99cecc7b",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Tue Dec 9 00:08:10 2025 +0000"
+    },
+    {
+      "sha": "54c897b8",
+      "message": "Merge pull request #2440 from Aries-Serpent/copilot/implement-status-audit-enhancements",
+      "body": "feat: Comprehensive Status Audit Enhancements - Tokenization, Tracking, and Reproducibility",
+      "author": "Statix",
+      "date": "Mon Dec 8 17:04:44 2025 -0600"
+    },
+    {
+      "sha": "2c400c6d",
+      "message": "Update tests/tracking/test_enhanced_writers.py",
+      "body": "Co-authored-by: Copilot <175728472+Copilot@users.noreply.github.com>",
+      "author": "Statix",
+      "date": "Mon Dec 8 17:00:08 2025 -0600"
+    },
+    {
+      "sha": "f735d7c9",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Mon Dec 8 21:24:29 2025 +0000"
+    },
+    {
+      "sha": "0cb74bab",
+      "message": "Merge pull request #2438 from Aries-Serpent/0D_base_",
+      "body": "0 d base ",
+      "author": "Statix",
+      "date": "Mon Dec 8 14:48:53 2025 -0600"
+    },
+    {
+      "sha": "0c934662",
+      "message": "Merge pull request #2439 from Aries-Serpent/copilot/sub-pr-2438",
+      "body": "Document subprocess.run() timeout false positive from automated review",
+      "author": "Statix",
+      "date": "Mon Dec 8 14:43:08 2025 -0600"
+    },
+    {
+      "sha": "5b9305d6",
+      "message": "Initial plan",
+      "body": "",
+      "author": "copilot-swe-agent[bot]",
+      "date": "Mon Dec 8 20:27:34 2025 +0000"
+    },
+    {
+      "sha": "7743c4ac",
+      "message": "Merge pull request #2437 from Aries-Serpent/copilot/fix-strict-conflicts-detected",
+      "body": "Fix whitelist parsing in nightly audit + Add comprehensive duplicate detection framework",
+      "author": "Statix",
+      "date": "Mon Dec 8 14:14:04 2025 -0600"
+    }
+  ],
+  "objectives_summary": [
+    {
+      "commit_sha": "a3cde8b7",
+      "objective_summary": "docs, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "docs keyword found; audit keyword found;",
+      "message": "Merge pull request #2451 from Aries-Serpent/copilot/verify-capability-audit-scor"
+    },
+    {
+      "commit_sha": "c13cc8c4",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "19fae70c",
+      "objective_summary": "test",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "test keyword found;",
+      "message": "Merge pull request #2450 from Aries-Serpent/copilot/elevate-highest-roi-capabili"
+    },
+    {
+      "commit_sha": "16db063f",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "ca359e27",
+      "objective_summary": "docs, feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "docs keyword found; feature keyword found; audit keyword found;",
+      "message": "Merge pull request #2446 from Aries-Serpent/copilot/implement-audit-status-compo"
+    },
+    {
+      "commit_sha": "7bcdb7df",
+      "objective_summary": "docs, test, feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "docs keyword found; test keyword found; feature keyword found; audit keyword found;",
+      "message": "Merge pull request #2447 from Aries-Serpent/copilot/add-roadmap-features-audit-p"
+    },
+    {
+      "commit_sha": "a086abeb",
+      "objective_summary": "feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "feature keyword found; audit keyword found;",
+      "message": "Merge branch 'copilot/implement-audit-status-components' into copilot/add-roadma"
+    },
+    {
+      "commit_sha": "fa13ad41",
+      "objective_summary": "feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "feature keyword found; audit keyword found;",
+      "message": "Merge branch '0D_base_' into copilot/implement-audit-status-components"
+    },
+    {
+      "commit_sha": "4f036508",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Merge pull request #2448 from Aries-Serpent/dependabot/docker/python-3.14-slim"
+    },
+    {
+      "commit_sha": "dff3586e",
+      "objective_summary": "feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "feature keyword found; audit keyword found;",
+      "message": "Merge branch 'copilot/implement-audit-status-components' into copilot/add-roadma"
+    },
+    {
+      "commit_sha": "77ddebfc",
+      "objective_summary": "feature",
+      "files_changed": 1,
+      "evidence_found": "partial",
+      "evidence_notes": "feature keyword found;",
+      "message": "Add comprehensive SESSION_STATUS_REPORT for autonomous continuation tracking"
+    },
+    {
+      "commit_sha": "88462c64",
+      "objective_summary": "feature",
+      "files_changed": 3,
+      "evidence_found": "partial",
+      "evidence_notes": "feature keyword found;",
+      "message": "Add follow-up prompts and improvement plans"
+    },
+    {
+      "commit_sha": "ca058081",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "1371bfe2",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "a9ca397e",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Merge pull request #2441 from Aries-Serpent/0D_base_"
+    },
+    {
+      "commit_sha": "8e05574f",
+      "objective_summary": "test, feature",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "test keyword found; feature keyword found;",
+      "message": "Merge pull request #2445 from Aries-Serpent/copilot/sub-pr-2441"
+    },
+    {
+      "commit_sha": "6c926c6b",
+      "objective_summary": "test, bugfix",
+      "files_changed": 1,
+      "evidence_found": "yes",
+      "evidence_notes": "test keyword found; bugfix keyword found;",
+      "message": "fix: Remove duplicate assertion in test"
+    },
+    {
+      "commit_sha": "979850cf",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "b248b0a5",
+      "objective_summary": "docs, feature",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "docs keyword found; feature keyword found;",
+      "message": "Merge pull request #2444 from Aries-Serpent/copilot/sub-pr-2441"
+    },
+    {
+      "commit_sha": "95e6672c",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "47832325",
+      "objective_summary": "test, feature, bugfix",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "test keyword found; feature keyword found; bugfix keyword found;",
+      "message": "Merge pull request #2443 from Aries-Serpent/copilot/sub-pr-2441"
+    },
+    {
+      "commit_sha": "99cecc7b",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "54c897b8",
+      "objective_summary": "feature, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "feature keyword found; audit keyword found;",
+      "message": "Merge pull request #2440 from Aries-Serpent/copilot/implement-status-audit-enhan"
+    },
+    {
+      "commit_sha": "2c400c6d",
+      "objective_summary": "test, feature",
+      "files_changed": 1,
+      "evidence_found": "yes",
+      "evidence_notes": "test keyword found; feature keyword found;",
+      "message": "Update tests/tracking/test_enhanced_writers.py"
+    },
+    {
+      "commit_sha": "f735d7c9",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "0cb74bab",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Merge pull request #2438 from Aries-Serpent/0D_base_"
+    },
+    {
+      "commit_sha": "0c934662",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Merge pull request #2439 from Aries-Serpent/copilot/sub-pr-2438"
+    },
+    {
+      "commit_sha": "5b9305d6",
+      "objective_summary": "maintenance",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "",
+      "message": "Initial plan"
+    },
+    {
+      "commit_sha": "7743c4ac",
+      "objective_summary": "feature, bugfix, audit",
+      "files_changed": 0,
+      "evidence_found": "no",
+      "evidence_notes": "feature keyword found; bugfix keyword found; audit keyword found;",
+      "message": "Merge pull request #2437 from Aries-Serpent/copilot/fix-strict-conflicts-detecte"
+    }
+  ]
+}
