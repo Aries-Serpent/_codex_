@@ -90,6 +90,13 @@ class SeedManager:
 
         # Python hash seed (must be set before interpreter starts ideally)
         python_hash = os.environ.get("PYTHONHASHSEED", str(self.seed))
+        if "PYTHONHASHSEED" not in os.environ:
+            logger.warning(
+                "PYTHONHASHSEED was not set before interpreter startup. "
+                "Setting it now has no effect on the current process. "
+                "Set PYTHONHASHSEED as an environment variable before running your script "
+                "for reproducible Python hash randomization."
+            )
         os.environ["PYTHONHASHSEED"] = python_hash
 
         state = SeedState(
@@ -99,9 +106,8 @@ class SeedManager:
 
         # NumPy
         if NUMPY_AVAILABLE:
-            # Use modern API for better behavior in multi-threaded contexts
-            _ = np.random.default_rng(self.seed)  # Creates RNG instance
-            # Also set global seed for legacy code compatibility
+            # Set global seed for legacy NumPy code compatibility.
+            # If you need a reproducible np.random.Generator, create one with np.random.default_rng(self.seed).
             np.random.seed(self.seed)
             state.numpy_seed = self.seed
         elif self.warn_on_missing:

@@ -797,7 +797,7 @@ class MLflowMetricWriter:
             tracking_uri: MLflow tracking URI (default: file:///mlruns)
             experiment_name: Experiment name for grouping runs
         """
-        self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "file:///mlruns")
+        self.tracking_uri = tracking_uri or os.getenv("MLFLOW_TRACKING_URI", "mlruns")
         self.experiment_name = experiment_name or "codex_default"
         self._client: Optional[MlflowClient] = None
         self._initialized = False
@@ -911,10 +911,14 @@ class MLflowParamWriter:
         prefix: str = "",
         sep: str = ".",
     ) -> dict[str, Any]:
-        """Flatten nested dictionary."""
+        """Flatten nested dictionary with key validation and separator escaping."""
         items = {}
         for k, v in d.items():
-            key = f"{prefix}{sep}{k}" if prefix else k
+            # Convert non-string keys to string
+            key_str = str(k) if not isinstance(k, str) else k
+            # Escape separator characters in keys to prevent collisions
+            escaped_key = key_str.replace(sep, f"\\{sep}")
+            key = f"{prefix}{sep}{escaped_key}" if prefix else escaped_key
             if isinstance(v, dict):
                 items.update(self._flatten_dict(v, key, sep))
             else:
@@ -1005,16 +1009,30 @@ class MLflowArtifactWriter:
                 except ImportError:
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
-            elif "sklearn" in type(model).__module__:
-                # scikit-learn model
+            else:
+                # Try robust sklearn detection using isinstance
+                is_sklearn = False
                 try:
-                    import mlflow.sklearn
+                    from sklearn.base import BaseEstimator
 
-                    mlflow.sklearn.log_model(model, artifact_path)
+                    is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError:
-                    logger.warning(
-                        "mlflow.sklearn is not available; cannot log scikit-learn model."
-                    )
+                    # Fallback to module name check if sklearn not available
+                    is_sklearn = "sklearn" in type(model).__module__
+                
+                if is_sklearn:
+                    # scikit-learn model
+                    try:
+                        import mlflow.sklearn
+
+                        mlflow.sklearn.log_model(model, artifact_path)
+                    except ImportError:
+                        logger.warning(
+                            "mlflow.sklearn is not available; cannot log scikit-learn model."
+                        )
+                        return False
+                else:
+                    logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
                     return False
             else:
                 logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")

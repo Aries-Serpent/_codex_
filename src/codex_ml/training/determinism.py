@@ -61,7 +61,7 @@ def set_deterministic_mode(enabled: bool = True, warn: bool = True) -> bool:
 
             if warn:
                 logger.warning(
-                    "Deterministic mode enabled - this may reduce performance. "
+                    "Deterministic mode enabled - this may reduce performance significantly. "
                     "CuDNN benchmark disabled, deterministic algorithms enforced."
                 )
         else:
