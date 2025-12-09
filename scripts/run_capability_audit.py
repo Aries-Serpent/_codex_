@@ -70,6 +70,38 @@ def print_table(result: dict, threshold: float = 0.99) -> None:
         print("✅ All capabilities meet the threshold!")
 
 
+def write_markdown_matrix(result: dict, threshold: float, path: Path) -> None:
+    """Write a markdown capability matrix for quick inspection."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    lines = [
+        "# Capability Audit Matrix",
+        "",
+        f"- Overall Score: {result['total_score'] * 100:.2f}%",
+        f"- Threshold: {threshold * 100:.0f}%",
+        "",
+        "| Capability | Score | Status | Checks Passed |",
+        "|---|---|---|---|",
+    ]
+
+    for detail in result["details"]:
+        checks = detail.get("details", {}).get("checks", {})
+        passed = sum(1 for v in checks.values() if v and v != 0)
+        total = len(checks)
+        status = (
+            "PASS"
+            if detail["score"] >= threshold
+            else "WARN"
+            if detail["score"] >= 0.85
+            else "FAIL"
+        )
+        lines.append(
+            f"| {detail['name']} | {detail['score'] * 100:.2f}% | {status} | {passed}/{total} |"
+        )
+
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     """Run the capability audit."""
     parser = argparse.ArgumentParser(description="Run capability audit")
@@ -96,6 +128,12 @@ def main() -> int:
         type=str,
         help="Save results to file",
     )
+    parser.add_argument(
+        "--matrix-out",
+        type=str,
+        default="audit_artifacts/capability_matrix.md",
+        help="Path to write markdown capability matrix (default: audit_artifacts/capability_matrix.md)",
+    )
     args = parser.parse_args()
     
     # Run audit
@@ -113,6 +151,10 @@ def main() -> int:
         with open(args.save, "w") as f:
             json.dump(result, f, indent=2)
         print(f"Results saved to {args.save}")
+
+    # Write markdown matrix for easy viewing
+    write_markdown_matrix(result, args.threshold, Path(args.matrix_out))
+    print(f"Matrix report written to {args.matrix_out}")
     
     # Check fail-under threshold
     if result["total_score"] < args.fail_under:
