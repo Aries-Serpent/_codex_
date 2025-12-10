@@ -795,7 +795,6 @@ def generate_docs_hub(
     html = DOCS_HUB_TEMPLATE.format(
         repo_name=repo_name,
         version=version,
-        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M"),
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
