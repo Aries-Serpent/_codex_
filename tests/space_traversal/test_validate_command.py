@@ -1,10 +1,8 @@
 """Tests for the validate command in audit_runner.py (v1.4.0)."""
 
 import json
-import sys
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -181,7 +179,7 @@ def test_stage_s5_creates_component_gaps():
             },
         ]
         
-        result = audit_runner.stage_s5_gaps(cfg, scored_caps)
+        audit_runner.stage_s5_gaps(cfg, scored_caps)
         
         # Check gaps.json
         assert (artifacts_dir / "gaps.json").exists()
