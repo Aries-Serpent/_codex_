@@ -38,6 +38,52 @@ For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.
 
 **For AI Agents:** Use the Agent Control Interface for intuitive navigation and action triggers.
 
+### Tokenized Workflow Navigation
+
+🔄 **NEW: Tokenized Logical Workflows** at [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md)
+
+AI Agents can now use deterministic, token-based workflows for common operations:
+
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+navigator = WorkflowNavigator()
+
+# Execute workflow by token
+navigator.execute('AUDIT_EXEC')
+
+# Or by natural language
+navigator.execute("Run audit pipeline")
+
+# Chain multiple workflows
+navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE', 'PRE_RELEASE'])
+```
+
+**Available Workflow Tokens:**
+- `AUDIT_EXEC` - Full audit pipeline execution (HIGH frequency)
+- `PHYS_DECIDE` - Physics-inspired decision-making (HIGH frequency)
+- `DOC_GEN` - Documentation and wiki generation (MEDIUM frequency)
+- `REPO_ORG` - Repository organization and archival (LOW frequency)
+- `MENTAL_REVIEW` - Review decisions and learn from outcomes (MEDIUM frequency)
+- `SELF_HEAL` - Automated feedback loop and gap detection (HIGH frequency, automated)
+
+Quick access aliases: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
+
+### Pre-Defined Prompts Library
+
+📝 **Access comprehensive pre-defined prompts** at [agents/prompts/](agents/prompts/)
+
+The prompt library includes ready-to-use templates for:
+- **Audit Operations**: [agents/prompts/audit/](agents/prompts/audit/) - Full audits, regression checks, trend analysis
+- **Repository Organization**: [agents/prompts/organization/](agents/prompts/organization/) - Cleanup, archival, structure analysis
+- **Documentation Generation**: [agents/prompts/documentation/](agents/prompts/documentation/) - Wiki, API docs, hub generation
+- **Deployment**: [agents/prompts/deployment/](agents/prompts/deployment/) - Pre-release preparation, validation, testing
+- **Self-Healing**: [agents/prompts/self-healing/](agents/prompts/self-healing/) - Feedback loops, gap detection, auto-correction
+
+📐 **Architecture Diagrams**: See [agents/prompts/ARCHITECTURE.md](agents/prompts/ARCHITECTURE.md) for Mermaid diagrams covering current architecture and future roadmap.
+
+🎯 **Physics-Inspired Orchestration**: See [agents/ORCHESTRATION.md](agents/ORCHESTRATION.md) for decision-making framework with energy optimization.
+
 ```bash
 # Generate Agent Control Interface
 python -m scripts.space_traversal.audit_runner agent-interface --output agent_interface.html

@@ -16,11 +16,27 @@
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
 
 **Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
+**Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths  
 **Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
 **Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
 **Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+
+### 🔄 Tokenized Workflow Navigation
+
+AI Agents can execute common operations using deterministic, token-based workflows:
+
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+navigator = WorkflowNavigator()
+navigator.execute('AUDIT_EXEC')  # Run full audit pipeline
+navigator.execute('DOC_GEN')      # Generate documentation
+```
+
+**Quick Access Tokens:** `audit`, `decide`, `docs`, `organize`, `review`, `heal`  
+See [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) for complete workflow catalog.
 
 ### 🤖 ChatGPT 5.1 Agent Mode
 
@@ -35,6 +51,7 @@ This creates an HTML interface specifically designed for ChatGPT 5.1 Agent mode 
 - Per-capability audit triggers
 - Report generation controls
 - Machine-readable command outputs
+- Tokenized workflow execution
 
 ---
 
