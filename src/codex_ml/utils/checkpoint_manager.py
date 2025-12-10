@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-import pickle  # nosec B403 - Required for ML checkpoint serialization
+import pickle
 from pathlib import Path
 from typing import Any
 
@@ -45,24 +45,23 @@ def save_checkpoint(
 
 
 def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
-    """Load a checkpoint previously written by :func:`save_checkpoint`.
-    
-    Security note: Checkpoint files should only be loaded from trusted sources.
-    Both torch.load and pickle.load can execute arbitrary code during deserialization.
-    """
+    """Load a checkpoint previously written by :func:`save_checkpoint`."""
 
     target = Path(path)
     if not target.exists():
         raise FileNotFoundError(path)
     if torch is not None and hasattr(torch, "load"):
         try:
-            data = torch.load(target, map_location="cpu")  # nosec B614        except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
+            data = torch.load(target, map_location="cpu")  # nosec B614
+        except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
             with target.open("rb") as handle:
                 try:
-                    data = pickle.load(handle)  # nosec B301                except Exception:
+                    data = pickle.load(handle)  # nosec B301
+                except Exception:
                     raise torch_error
     else:  # pragma: no cover - exercised when torch is unavailable
         with target.open("rb") as handle:
-            data = pickle.load(handle)  # nosec B301    if not isinstance(data, dict):
+            data = pickle.load(handle)  # nosec B301
+    if not isinstance(data, dict):
         raise TypeError("checkpoint payload must be a mapping")
     return data

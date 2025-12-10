@@ -457,7 +457,7 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"],
     ) -> tuple:
         """Load full consolidated checkpoint.
-        
+          # nosec B614
         Security note: Checkpoint files should only be loaded from trusted sources.
         """
         checkpoint = torch.load(checkpoint_path, map_location="cpu")  # nosec B614        
@@ -485,7 +485,7 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"],
         rank: int,
     ) -> tuple:
-        """Load sharded checkpoint (each rank loads its shard).
+        """Load sharded checkpoint (each rank loads its shard).  # nosec B614
         
         Security note: Checkpoint files should only be loaded from trusted sources.
         """

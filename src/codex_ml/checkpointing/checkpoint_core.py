@@ -91,10 +91,12 @@ def load_checkpoint(
     if _torch_supports_weights_only():
         kwargs["weights_only"] = False
     try:
-        payload = torch.load(weights, **kwargs)  # nosec B614    except TypeError as exc:
+        payload = torch.load(weights, **kwargs)  # nosec B614
+    except TypeError as exc:
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
-            payload = torch.load(weights, **kwargs)  # nosec B614        else:
+            payload = torch.load(weights, **kwargs)  # nosec B614
+        else:
             raise
     meta: dict[str, Any] = {}
     if os.path.exists(metadata):

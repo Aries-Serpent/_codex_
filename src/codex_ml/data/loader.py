@@ -6,7 +6,7 @@ import csv
 import hashlib
 import io
 import json
-import pickle  # nosec B403 - Required for dataset caching
+import pickle
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -364,7 +364,8 @@ def load_dataset(
 
     if cache_file.exists():
         try:
-            data = pickle.loads(cache_file.read_bytes())  # nosec B301            if isinstance(data, list):
+            data = pickle.loads(cache_file.read_bytes())  # nosec B301
+            if isinstance(data, list):
                 return data
         except Exception:
             try:
