@@ -3,6 +3,7 @@
 Repository Organization and Archival Script
 Organizes root directory markdown files and creates AI-queryable archive
 """
+import argparse
 import json
 import os
 import shutil
@@ -11,7 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Set
 
 # Files to preserve in root (core documentation)
-PRESERVE_FILES = {
+DEFAULT_PRESERVE_FILES = {
     'README.md',
     'AGENTS.md',
     'CONTRIBUTING.md',
@@ -25,21 +26,21 @@ PRESERVE_FILES = {
 }
 
 # Patterns for files to archive
-ARCHIVE_PATTERNS = [
+DEFAULT_ARCHIVE_PATTERNS = [
     'STATUS', 'REPORT', 'SUMMARY', 'COMPLETE', 'ACHIEVEMENT',
     'PHASE', 'WAVE', 'PROGRESS', 'AUDIT', 'VALIDATION',
     'VERIFICATION', 'IMPLEMENTATION', 'FINAL', 'NEXT',
     'PROMPT', 'PLAN', 'GAP', 'REMEDIATION', 'CAPABILITY',
 ]
 
-def should_archive(filename: str) -> bool:
+def should_archive(filename: str, preserve_files: Set[str], archive_patterns: List[str]) -> bool:
     """Determine if a file should be archived"""
-    if filename in PRESERVE_FILES:
+    if filename in preserve_files:
         return False
     
     # Check if filename contains archive patterns
     upper_name = filename.upper()
-    for pattern in ARCHIVE_PATTERNS:
+    for pattern in archive_patterns:
         if pattern in upper_name:
             return True
     
@@ -121,8 +122,17 @@ def create_archive_index(archive_dir: Path, archived_files: List[Path]) -> None:
     
     print(f"Created markdown index: {md_index_path}")
 
-def organize_repository(dry_run: bool = False) -> None:
+def organize_repository(
+    dry_run: bool = False,
+    preserve_files: Set[str] = None,
+    archive_patterns: List[str] = None
+) -> None:
     """Organize repository by archiving old status/report files"""
+    if preserve_files is None:
+        preserve_files = DEFAULT_PRESERVE_FILES
+    if archive_patterns is None:
+        archive_patterns = DEFAULT_ARCHIVE_PATTERNS
+    
     root = Path('.')
     archive_date = datetime.now().strftime('%Y%m%d')
     archive_dir = root / f'archive/historical_docs_{archive_date}'
@@ -139,7 +149,7 @@ def organize_repository(dry_run: bool = False) -> None:
     to_archive: List[Path] = []
     
     for md_file in md_files:
-        if should_archive(md_file.name):
+        if should_archive(md_file.name, preserve_files, archive_patterns):
             to_archive.append(md_file)
         else:
             to_preserve.append(md_file)
@@ -166,8 +176,14 @@ def organize_repository(dry_run: bool = False) -> None:
             shutil.move(str(md_file), str(dest))
             archived_files.append(dest)
             print(f"Archived: {md_file.name}")
+        except FileNotFoundError:
+            print(f"Error: File not found - {md_file.name}")
+        except PermissionError:
+            print(f"Error: Permission denied - {md_file.name}")
+        except OSError as e:
+            print(f"Error: OS error archiving {md_file.name}: {e}")
         except Exception as e:
-            print(f"Error archiving {md_file.name}: {e}")
+            print(f"Error: Unexpected error archiving {md_file.name}: {e}")
     
     # Create archive index
     if archived_files:
@@ -219,14 +235,58 @@ def organize_repository(dry_run: bool = False) -> None:
     print(f"Created summary: {summary_path}")
 
 if __name__ == '__main__':
-    import sys
+    parser = argparse.ArgumentParser(
+        description='Organize repository by archiving old status/report files'
+    )
+    parser.add_argument(
+        '--dry-run', '-n',
+        action='store_true',
+        help='Show what would be done without actually moving files'
+    )
+    parser.add_argument(
+        '--preserve',
+        nargs='+',
+        help='Additional files to preserve (beyond defaults)'
+    )
+    parser.add_argument(
+        '--pattern',
+        nargs='+',
+        help='Additional patterns to match for archiving (e.g., STATUS REPORT)'
+    )
+    parser.add_argument(
+        '--config',
+        type=Path,
+        help='Path to JSON config file with preserve_files and archive_patterns'
+    )
     
-    dry_run = '--dry-run' in sys.argv or '-n' in sys.argv
+    args = parser.parse_args()
     
-    if dry_run:
+    # Load configuration
+    preserve_files = DEFAULT_PRESERVE_FILES.copy()
+    archive_patterns = DEFAULT_ARCHIVE_PATTERNS.copy()
+    
+    if args.config and args.config.exists():
+        with open(args.config) as f:
+            config = json.load(f)
+            if 'preserve_files' in config:
+                preserve_files.update(config['preserve_files'])
+            if 'archive_patterns' in config:
+                archive_patterns.extend(config['archive_patterns'])
+    
+    if args.preserve:
+        preserve_files.update(args.preserve)
+    
+    if args.pattern:
+        archive_patterns.extend(args.pattern)
+    
+    if args.dry_run:
         print("=" * 60)
         print("DRY RUN MODE - No files will be moved")
         print("=" * 60)
         print()
     
-    organize_repository(dry_run=dry_run)
+    organize_repository(
+        dry_run=args.dry_run,
+        preserve_files=preserve_files,
+        archive_patterns=archive_patterns
+    )
