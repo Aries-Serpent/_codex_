@@ -5,8 +5,6 @@ import json
 import time
 from pathlib import Path
 
-import pytest
-
 
 def test_timed_decorator():
     """Test function timing decorator."""

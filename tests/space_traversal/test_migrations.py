@@ -4,8 +4,6 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-import pytest
-
 
 def test_migration_decorator():
     """Test migration registration decorator."""

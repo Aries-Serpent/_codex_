@@ -5,8 +5,6 @@ import os
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 
 def test_detect_ci_environment_github():
     """Test GitHub Actions detection."""

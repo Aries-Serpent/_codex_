@@ -1,10 +1,7 @@
 """Tests for HTML visualization (v1.5.2)."""
 from __future__ import annotations
 
-import json
 from pathlib import Path
-
-import pytest
 
 
 def test_generate_dashboard_basic(tmp_path: Path):

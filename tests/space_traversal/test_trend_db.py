@@ -5,8 +5,6 @@ import json
 import time
 from pathlib import Path
 
-import pytest
-
 
 def test_trend_database_init(tmp_path: Path):
     """Test trend database initialization."""

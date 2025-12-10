@@ -66,7 +66,6 @@ except ImportError:
 
 # v1.5.x trend database imports
 try:
-    from scripts.space_traversal import trend_db
     from scripts.space_traversal.trend_db import TrendDatabase, create_snapshot_from_artifacts
     HAS_TREND_DB = True
 except ImportError:
@@ -89,6 +88,24 @@ try:
     HAS_VIZ_HTML = True
 except ImportError:
     HAS_VIZ_HTML = False
+
+try:
+    from scripts.space_traversal import viz_cli_builder
+    HAS_VIZ_CLI_BUILDER = True
+except ImportError:
+    HAS_VIZ_CLI_BUILDER = False
+
+try:
+    from scripts.space_traversal import viz_api_collection
+    HAS_VIZ_API_COLLECTION = True
+except ImportError:
+    HAS_VIZ_API_COLLECTION = False
+
+try:
+    from scripts.space_traversal import viz_swagger
+    HAS_VIZ_SWAGGER = True
+except ImportError:
+    HAS_VIZ_SWAGGER = False
 
 def import_yaml_from_sitepackages():
     """Import yaml from site-packages, avoiding local directory shadowing."""
@@ -1187,6 +1204,7 @@ def cmd_store_trend(args, cfg):
             ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
         ).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
+        # Git information is optional; proceed if unavailable (e.g., not a git repo or git not installed)
         pass
     
     # Get database path from config
@@ -1398,6 +1416,61 @@ def cmd_dashboard(args, cfg):
     print(f"Dashboard generated: {output_path}")
 
 
+def cmd_cli_builder(args, cfg):
+    """Generate CLI builder HTML interface."""
+    if not HAS_VIZ_CLI_BUILDER:
+        print("CLI builder module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    output_path = Path(args.output) if args.output else artifacts_dir / "cli_builder.html"
+    repo_name = cfg.get("repo_name", "Repository")
+    
+    viz_cli_builder.generate_cli_builder(
+        output_path=output_path,
+        repo_name=repo_name,
+        version=VERSION,
+    )
+    
+    print(f"CLI builder generated: {output_path}")
+
+
+def cmd_api_collection(args, cfg):
+    """Generate API collection HTML interface with adjusters."""
+    if not HAS_VIZ_API_COLLECTION:
+        print("API collection module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    output_path = Path(args.output) if args.output else artifacts_dir / "api_collection.html"
+    repo_name = cfg.get("repo_name", "Repository")
+    
+    viz_api_collection.generate_api_collection(
+        output_path=output_path,
+        repo_name=repo_name,
+        version=VERSION,
+    )
+    
+    print(f"API collection generated: {output_path}")
+def cmd_swagger_docs(args, cfg):
+    """Generate Swagger/OpenAPI-style documentation HTML."""
+    if not HAS_VIZ_SWAGGER:
+        print("Swagger docs module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    output_path = Path(args.output) if args.output else artifacts_dir / "api_docs.html"
+    repo_name = cfg.get("repo_name", "Repository")
+    
+    viz_swagger.generate_swagger_docs(
+        output_path=output_path,
+        repo_name=repo_name,
+        version=VERSION,
+    )
+    
+    print(f"Swagger API docs generated: {output_path}")
+
+
 # orchestrator
 def run_full(cfg):
     ctx = stage_s1_index(cfg)
@@ -1449,6 +1522,7 @@ def run_full(cfg):
                     ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
                 ).strip()
             except (subprocess.CalledProcessError, FileNotFoundError):
+                # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
                 pass
             
             db = TrendDatabase(db_path)
@@ -1548,6 +1622,18 @@ def main():
     dashboard_p = sub.add_parser("dashboard", help="Generate HTML dashboard (v1.5.2)")
     dashboard_p.add_argument("--output", help="Output path for dashboard HTML")
     
+    # v1.5.3 CLI builder command
+    cli_builder_p = sub.add_parser("cli-builder", help="Generate interactive CLI builder HTML (v1.5.3)")
+    cli_builder_p.add_argument("--output", help="Output path for CLI builder HTML")
+    
+    # v1.5.4 API collection command
+    api_collection_p = sub.add_parser("api-collection", help="Generate API collection HTML with adjusters (v1.5.4)")
+    api_collection_p.add_argument("--output", help="Output path for API collection HTML")
+    
+    # v1.5.4 Swagger docs command
+    swagger_p = sub.add_parser("api-docs", help="Generate Swagger/OpenAPI-style API documentation (v1.5.4)")
+    swagger_p.add_argument("--output", help="Output path for API docs HTML")
+    
     args = parser.parse_args()
     if args.command is None:
         parser.print_help()
@@ -1576,6 +1662,12 @@ def main():
         sys.exit(exit_code)
     elif args.command == "dashboard":
         cmd_dashboard(args, cfg)
+    elif args.command == "cli-builder":
+        cmd_cli_builder(args, cfg)
+    elif args.command == "api-collection":
+        cmd_api_collection(args, cfg)
+    elif args.command == "api-docs":
+        cmd_swagger_docs(args, cfg)
     else:
         parser.print_help()
 

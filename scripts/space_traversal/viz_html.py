@@ -26,7 +26,6 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any
 
 __all__ = ["generate_dashboard", "generate_capability_detail", "HTML_TEMPLATE"]
 

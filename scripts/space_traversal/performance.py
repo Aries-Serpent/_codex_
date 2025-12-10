@@ -105,6 +105,7 @@ class FileCache:
                     # Expired - remove file
                     path.unlink(missing_ok=True)
             except (json.JSONDecodeError, IOError):
+                # Intentionally ignore corrupt or unreadable cache files; treat as cache miss.
                 pass
         return None
 
@@ -176,6 +177,7 @@ class FileCache:
                         path.unlink()
                         count += 1
             except (json.JSONDecodeError, IOError):
+                # Intentionally ignore corrupt or unreadable cache files during cleanup.
                 pass
         return count
 
@@ -202,6 +204,7 @@ def batch_file_read(
             if path.exists() and path.stat().st_size <= max_size:
                 results[str(path)] = path.read_text(encoding=encoding, errors="ignore")
         except (OSError, IOError):
+            # Intentionally ignore file read errors; skip unreadable files.
             pass
     return results
 
