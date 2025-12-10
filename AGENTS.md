@@ -38,6 +38,19 @@ For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.
 
 **For AI Agents:** Use the Agent Control Interface for intuitive navigation and action triggers.
 
+### Pre-Defined Prompts Library
+
+📝 **Access comprehensive pre-defined prompts** at [agents/prompts/](agents/prompts/)
+
+The prompt library includes ready-to-use templates for:
+- **Audit Operations**: [agents/prompts/audit/](agents/prompts/audit/) - Full audits, regression checks, trend analysis
+- **Repository Organization**: [agents/prompts/organization/](agents/prompts/organization/) - Cleanup, archival, structure analysis
+- **Documentation Generation**: [agents/prompts/documentation/](agents/prompts/documentation/) - Wiki, API docs, hub generation
+- **Deployment**: [agents/prompts/deployment/](agents/prompts/deployment/) - Pre-release preparation, validation, testing
+- **Self-Healing**: [agents/prompts/self-healing/](agents/prompts/self-healing/) - Feedback loops, gap detection, auto-correction
+
+📐 **Architecture Diagrams**: See [agents/prompts/ARCHITECTURE.md](agents/prompts/ARCHITECTURE.md) for Mermaid diagrams covering current architecture and future roadmap.
+
 ```bash
 # Generate Agent Control Interface
 python -m scripts.space_traversal.audit_runner agent-interface --output agent_interface.html
