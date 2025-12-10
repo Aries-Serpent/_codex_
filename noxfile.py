@@ -279,6 +279,10 @@ def list_sessions(session: nox.Session) -> None:
         "dependency_plan",
         "rollback_smoke",
         "regression",
+        "space_audit",
+        "space_audit_fast",
+        "security",
+        "feature_health",
     ]
     session.log("Available sessions:")
     for s in sessions:
@@ -361,6 +365,69 @@ def regression(session: nox.Session) -> None:
         "CODEX_NET_MODE": "offline",
     }
     session.run("python", "-m", "codex_regression.runner", external=True, env=env)
+
+
+@nox.session(name="space_audit", python=PY_VERSIONS)
+def space_audit(session: nox.Session) -> None:
+    """
+    Run the full Space Traversal capability audit pipeline (S1-S7).
+    
+    This session:
+    1. Runs the full audit pipeline (index → facets → capabilities → score → gaps → render → manifest)
+    2. Validates quality gates if configured
+    3. Produces artifacts in audit_artifacts/ and reports/
+    
+    Usage:
+        nox -s space_audit
+        nox -s space_audit -- --validate  # Also run validate command
+    """
+    _choose_python(session)
+    _install_requirements(session, REQ_DEV)
+    
+    # Run full audit pipeline
+    session.log("[space_audit] Running full audit pipeline...")
+    session.run(
+        "python",
+        "scripts/space_traversal/audit_runner.py",
+        "run",
+        external=True
+    )
+    
+    # Optionally run validate if --validate passed
+    if "--validate" in session.posargs:
+        session.log("[space_audit] Running validation...")
+        session.run(
+            "python",
+            "scripts/space_traversal/audit_runner.py",
+            "validate",
+            external=True,
+            success_codes=[0, 4]  # 4 = low maturity (may be acceptable)
+        )
+    
+    session.log("[space_audit] Audit complete. Check audit_artifacts/ and reports/")
+
+
+@nox.session(name="space_audit_fast", python=PY_VERSIONS)
+def space_audit_fast(session: nox.Session) -> None:
+    """
+    Run a fast Space Traversal audit (S1, S3, S4, S6 only).
+    
+    Skips S2 (facets), S5 (gaps), and S7 (manifest) for faster iteration.
+    """
+    _choose_python(session)
+    _install_requirements(session, REQ_DEV)
+    
+    session.log("[space_audit_fast] Running fast audit...")
+    for stage in ["S1", "S3", "S4", "S6"]:
+        session.run(
+            "python",
+            "scripts/space_traversal/audit_runner.py",
+            "stage",
+            stage,
+            external=True
+        )
+    
+    session.log("[space_audit_fast] Fast audit complete.")
 
 
 @nox.session(name="notebook_env", python=PY_VERSIONS)

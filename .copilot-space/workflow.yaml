@@ -69,24 +69,11 @@ scoring:
 
 capability_map:
   overrides:
-    training-engine: ["train_loop", "functional_training"]
-    # v1.4.0 additions
-    ml-serving: ["serve", "predict", "api"]
-    status-reporting: ["status", "audit", "report"]
-    archival-bundling: ["archive", "bundle", "manifest"]
-    # v1.5.0 additions (MCP capabilities)
-    mcp-protocol-surface: ["FastAPI", "jsonrpc", "endpoint"]
-    mcp-schema-validation: ["BaseModel", "OpenAPI", "schema"]
-    mcp-tooling-registry: ["registry", "tools"]
-    mcp-authz-authn: ["API-Key", "authenticate", "authorize"]
-    mcp-observability: ["logging", "metrics", "tracing"]
-    mcp-rate-limiting: ["RateLimiter", "throttle"]
-    mcp-error-handling: ["MCPError", "HTTPException", "error"]
-    mcp-configuration: ["config", "environment", "mcp.json"]
-    mcp-security-safeguards: ["confirm", "dry_run", "sanitize"]
-    mcp-lifecycle-management: ["startup", "shutdown", "healthz"]
-    mcp-versioning-compat: ["MCP_VERSIONS", "negotiate_version"]
-    mcp-multi-tenant: ["tenant", "isolation"]
+    # Training capabilities - merge related detectors
+    training-engine: ["train-loop", "functional-training"]
+    # ML Serving - ml-serving and inference-serving detectors produce the same evidence
+    ml-serving: ["inference-serving"]
+    # MCP capabilities - no overrides needed as detectors produce unique IDs
   dynamic: true
 
 output:

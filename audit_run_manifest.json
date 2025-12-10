@@ -1,66 +1,73 @@
 {
-  "timestamp": 1765295666.928695,
-  "version": "1.2.0",
-  "repo_root_sha": "8570c728964238a8b79411b1cffa95e6867da942bce9644f2031b547052d846f",
   "artifacts": [
     {
-      "name": "facets.json",
-      "sha": "4ffcf03e1be2a1a1d6bb66d7255e6ca4b57172c20c1b22a4f2d449e04790df6e",
-      "size": 70255,
       "format": "json",
-      "generated_at": 1765295661.4149108
-    },
-    {
+      "generated_at": 1765334701.972107,
       "name": "capabilities_raw.json",
-      "sha": "985c9260a172764403eff0b8081fa13c617c367ce1ac2fa4dbb52e857564d512",
-      "size": 897250,
-      "format": "json",
-      "generated_at": 1765295664.6509
+      "sha": "09461e9906ee29073a26433c988dc2a31311923387b44fbf3b6de3cb72da8c72",
+      "size": 916344
     },
     {
+      "format": "json",
+      "generated_at": 1765334703.767105,
       "name": "capabilities_scored.json",
-      "sha": "1bf8fd44179bd1462d9d9bf6bcd25c9c7fe02315b6444cbb62754c3168d8efb5",
-      "size": 901355,
-      "format": "json",
-      "generated_at": 1765295666.4388938
+      "sha": "321e8e555f68362f7aee0f10958b5ac306e4dc5190cb0ef59e5d3bc5a214aa51",
+      "size": 920750
     },
     {
-      "name": "context_index.json",
-      "sha": "d359295ee8421c3a97175b79176dde2d6b4956da593f18b4d53a6729fbdd5cdc",
-      "size": 882593,
       "format": "json",
-      "generated_at": 1765295661.393911
-    },
-    {
+      "generated_at": 1765334280.9772918,
       "name": "capabilities_scored_run1.json",
       "sha": "283c4273b6f4955a339e624aaba16183bd685192695d9784e364a434fd193236",
-      "size": 451992,
-      "format": "json",
-      "generated_at": 1765294228.006619
+      "size": 451992
     },
     {
-      "name": "gaps.json",
-      "sha": "5254db1c0c1bd62f900207eb5b79d6d51ca0914e22a24e46c61643848e8a9fac",
-      "size": 37426,
       "format": "json",
-      "generated_at": 1765295666.440894
+      "generated_at": 1765334703.769105,
+      "name": "component_gaps.json",
+      "sha": "6b8566ebaed0ae52ddf91106be7915f1d2701f39640ede87f87187d69c9254da",
+      "size": 7343
+    },
+    {
+      "format": "json",
+      "generated_at": 1765334698.6191099,
+      "name": "context_index.json",
+      "sha": "782327c84f84c52a2ca8bd1789622cc1b1fcb66ebc45f13ac4ef038427d8c7ca",
+      "size": 907185
+    },
+    {
+      "format": "json",
+      "generated_at": 1765334698.64111,
+      "name": "facets.json",
+      "sha": "43ccf66bdc465fc3443c9df2330d053f8f1cbdb3be59a1c4786fdc7739879aac",
+      "size": 71479
+    },
+    {
+      "format": "json",
+      "generated_at": 1765334703.768105,
+      "name": "gaps.json",
+      "sha": "a5618904799a4d5300dd2132a5199c1553a564a2693137441f0f7117fa0290ee",
+      "size": 39054
     }
   ],
-  "weights": {
-    "functionality": 0.25,
-    "consistency": 0.2,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15
-  },
-  "normalized_weights": {
-    "functionality": 0.25,
-    "consistency": 0.2,
-    "tests": 0.25,
-    "safeguards": 0.15,
-    "documentation": 0.15
-  },
-  "warnings": [],
   "metrics_schema_version": "2.0.0",
-  "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43"
+  "normalized_weights": {
+    "consistency": 0.2,
+    "documentation": 0.15,
+    "functionality": 0.25,
+    "safeguards": 0.15,
+    "tests": 0.25
+  },
+  "repo_root_sha": "9be7643145369037e9dd1e1b41d63a6f08edf701c36418aeacbe062f16f52f29",
+  "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43",
+  "timestamp": 1765334704.2647965,
+  "version": "1.2.0",
+  "warnings": [],
+  "weights": {
+    "consistency": 0.2,
+    "documentation": 0.15,
+    "functionality": 0.25,
+    "safeguards": 0.15,
+    "tests": 0.25
+  }
 }

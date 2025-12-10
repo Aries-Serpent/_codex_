@@ -666,14 +666,77 @@ def stage_s4_scoring(cfg, raw_caps):
     return scored
 
 def stage_s5_gaps(cfg, scored_caps):
+    """
+    Stage S5: Gap Analysis
+    
+    Produces:
+    - gaps.json: Low maturity capabilities (score < threshold)
+    - component_gaps.json: Detailed component-level gaps analysis
+    """
     thresholds = cfg["scoring"]["thresholds"]
+    low_threshold = thresholds.get("low", 0.70)
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    
     low = []
+    component_gaps = []
+    
     for c in scored_caps:
-        if c["score"] < thresholds["low"]:
+        # Check for low maturity
+        if c["score"] < low_threshold:
             low.append(c)
-    payload = {"generated": time.time(), "low_maturity": low, "version": VERSION}
-    out = Path(_get_artifacts_dir(cfg)) / "gaps.json"
-    out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        
+        # Analyze component-level gaps
+        components = c.get("components", {})
+        cap_id = c.get("id", "unknown")
+        
+        # Identify zero or low components
+        zero_components = [k for k, v in components.items() if v == 0.0]
+        low_components = [k for k, v in components.items() if 0.0 < v < 0.5]
+        
+        # Check for missing patterns
+        found_patterns = set(c.get("found_patterns", []))
+        required_patterns = set(c.get("required_patterns", []))
+        missing_patterns = list(required_patterns - found_patterns)
+        
+        # Check for missing detectors in meta
+        meta = c.get("meta", {})
+        missing_detectors = meta.get("missing_detectors", [])
+        
+        if zero_components or low_components or missing_patterns or missing_detectors:
+            component_gaps.append({
+                "id": cap_id,
+                "score": c["score"],
+                "zero_components": sorted(zero_components),
+                "low_components": sorted(low_components),
+                "missing_patterns": sorted(missing_patterns),
+                "missing_detectors": sorted(missing_detectors),
+            })
+    
+    # Sort for determinism
+    low = sorted(low, key=lambda x: (x["score"], x["id"]))
+    component_gaps = sorted(component_gaps, key=lambda x: (x["score"], x["id"]))
+    
+    # Write gaps.json
+    payload = {
+        "generated": time.time(),
+        "low_maturity": low,
+        "low_threshold": low_threshold,
+        "version": VERSION
+    }
+    out = artifacts_dir / "gaps.json"
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    
+    # Write component_gaps.json (v1.4.0 enhancement)
+    component_payload = {
+        "generated": time.time(),
+        "component_gaps": component_gaps,
+        "total_capabilities": len(scored_caps),
+        "total_with_gaps": len(component_gaps),
+        "version": VERSION
+    }
+    component_out = artifacts_dir / "component_gaps.json"
+    component_out.write_text(json.dumps(component_payload, indent=2, sort_keys=True), encoding="utf-8")
+    
     return payload
 
 def render_template(cfg, context):
@@ -807,6 +870,10 @@ def stage_s7_manifest(cfg):
             "format": "json",
             "generated_at": p.stat().st_mtime
         })
+    
+    # Sort artifacts for determinism
+    manifest["artifacts"] = sorted(manifest["artifacts"], key=lambda x: x["name"])
+    
     tpl_dir = Path(_get_matrix_template(cfg)).parent
     concat = b""
     for t in sorted(tpl_dir.glob("*.j2")):
@@ -815,8 +882,26 @@ def stage_s7_manifest(cfg):
     warn_file = artifacts_dir / "_scoring_warnings.json"
     if warn_file.exists():
         manifest["warnings"].extend(json.loads(warn_file.read_text()))
+    
+    # Add coverage_stats if coverage_map.json exists (v1.4.0)
+    cov_map_path = artifacts_dir / "coverage_map.json"
+    if cov_map_path.exists():
+        try:
+            cov_data = json.loads(cov_map_path.read_text())
+            if cov_data:
+                total_files = len(cov_data)
+                avg_coverage = sum(v.get("percent", 0) for v in cov_data.values()) / max(1, total_files)
+                manifest["coverage_stats"] = {
+                    "files_covered": total_files,
+                    "average_coverage": round(avg_coverage, 4),
+                    "source": "coverage_map.json"
+                }
+        except Exception as e:
+            manifest["warnings"].append(f"coverage_stats_parse_error:{e}")
+    
+    # Sort manifest keys for determinism
     out = ROOT / "audit_run_manifest.json"
-    out.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    out.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
     return manifest
 
 # diff & explain functions
@@ -905,6 +990,85 @@ def command_explain(args, cfg):
         if explain_file.exists():
             print(f"Explain JSON: {explain_file}")
     print(f"  Total score: {target['score']:.4f}")
+
+
+def command_validate(cfg):
+    """
+    Validate policy gates per v1.4.0 spec.
+    
+    Checks:
+    - fail_on_low_maturity: Non-zero exit if any capability score < thresholds.low
+    - fail_on_missing_detector: Non-zero exit if detector in overrides is missing
+    
+    Exit Codes:
+    - 0: All validations pass
+    - 4: Low maturity capability detected (when fail_on_low_maturity=true)
+    - 5: Missing detector detected (when fail_on_missing_detector=true)
+    """
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    scored_file = artifacts_dir / "capabilities_scored.json"
+    gaps_file = artifacts_dir / "gaps.json"
+    
+    if not scored_file.exists():
+        print("capabilities_scored.json missing. Run audit pipeline first.", file=sys.stderr)
+        sys.exit(2)
+    
+    scored_data = json.loads(scored_file.read_text())
+    capabilities = scored_data.get("capabilities", [])
+    
+    options = cfg.get("options", {})
+    thresholds = cfg.get("scoring", {}).get("thresholds", {})
+    low_threshold = thresholds.get("low", 0.70)
+    
+    violations = []
+    
+    # Check for low maturity
+    if options.get("fail_on_low_maturity", False):
+        low_maturity = [c for c in capabilities if c.get("score", 0) < low_threshold]
+        if low_maturity:
+            for cap in low_maturity:
+                violations.append(f"LOW_MATURITY: {cap['id']} score={cap['score']:.4f} < {low_threshold}")
+    
+    # Check for missing detectors
+    if options.get("fail_on_missing_detector", False):
+        overrides = cfg.get("capability_map", {}).get("overrides", {})
+        capability_ids = {c["id"] for c in capabilities}
+        for canonical, aliases in overrides.items():
+            if canonical not in capability_ids:
+                # Check if any alias contributed
+                aliases_found = [a for a in aliases if a in capability_ids]
+                if not aliases_found:
+                    # Check if capability has missing_detectors in meta
+                    cap = next((c for c in capabilities if c["id"] == canonical), None)
+                    if cap and cap.get("meta", {}).get("missing_detectors"):
+                        violations.append(f"MISSING_DETECTOR: {canonical} has missing alias detectors: {cap['meta']['missing_detectors']}")
+    
+    # Report results
+    if violations:
+        print("Validation FAILED:", file=sys.stderr)
+        for v in violations:
+            print(f"  - {v}", file=sys.stderr)
+        
+        # Determine exit code
+        has_low = any("LOW_MATURITY" in v for v in violations)
+        has_missing = any("MISSING_DETECTOR" in v for v in violations)
+        
+        if has_low:
+            sys.exit(4)
+        elif has_missing:
+            sys.exit(5)
+        else:
+            sys.exit(1)
+    else:
+        print("Validation PASSED: All quality gates satisfied.")
+        # Also print summary
+        print(f"  - Capabilities scored: {len(capabilities)}")
+        if gaps_file.exists():
+            gaps_data = json.loads(gaps_file.read_text())
+            low_count = len(gaps_data.get("low_maturity", []))
+            print(f"  - Low maturity (< {low_threshold}): {low_count}")
+        print(f"  - fail_on_low_maturity: {options.get('fail_on_low_maturity', False)}")
+        print(f"  - fail_on_missing_detector: {options.get('fail_on_missing_detector', False)}")
 
 # orchestrator
 def run_full(cfg):
@@ -1004,6 +1168,7 @@ def main():
     diff_p.add_argument("--new", required=True, help="New report/JSON path")
     exp_p = sub.add_parser("explain", help="Explain a capability's score")
     exp_p.add_argument("capability", help="Capability ID to explain")
+    sub.add_parser("validate", help="Validate policy gates (low maturity, missing detectors)")
     args = parser.parse_args()
     if args.command is None:
         parser.print_help()
@@ -1018,6 +1183,8 @@ def main():
         command_diff(args, cfg)
     elif args.command == "explain":
         command_explain(args, cfg)
+    elif args.command == "validate":
+        command_validate(cfg)
     else:
         parser.print_help()
 
