@@ -85,9 +85,18 @@ jobs:
       - name: Analyze Results
         id: analyze
         run: |
-          # Count gaps
+          # Count gaps (handle missing file gracefully)
           if [ -f audit_artifacts/gaps.json ]; then
-            GAP_COUNT=$(python -c "import json; data=json.load(open('audit_artifacts/gaps.json')); print(len(data.get('gaps', [])))")
+            GAP_COUNT=$(python3 -c "
+          import json
+          import sys
+          try:
+              with open('audit_artifacts/gaps.json') as f:
+                  data = json.load(f)
+              print(len(data.get('gaps', [])))
+          except (FileNotFoundError, json.JSONDecodeError):
+              print(0)
+          ")
           else
             GAP_COUNT=0
           fi

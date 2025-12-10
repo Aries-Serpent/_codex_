@@ -235,20 +235,37 @@ jobs:
           
           mkdir -p archive/$DATE
           
+          # Define critical files that should never be archived
+          # Can be overridden by creating .archive-protect in repo root
+          CRITICAL_FILES="README.md LICENSE pyproject.toml setup.py setup.cfg AGENTS.md SECURITY.md CHANGELOG.md requirements.txt requirements-dev.txt Makefile Dockerfile .gitignore conftest.py noxfile.py"
+          
+          # Read additional protected files from config if exists
+          if [ -f .archive-protect ]; then
+            CRITICAL_FILES="$CRITICAL_FILES $(cat .archive-protect | tr '\n' ' ')"
+          fi
+          
           # Move archive candidates (only if file exists and is safe to move)
           while IFS= read -r file; do
             if [ -f "$file" ] && [ ! -z "$file" ]; then
-              # Skip critical files
-              case "$file" in
-                ./README.md|./LICENSE|./pyproject.toml|./setup.py)
-                  echo "Skipping critical file: $file"
-                  ;;
-                *)
-                  mkdir -p "archive/$DATE/$(dirname $file)"
-                  mv "$file" "archive/$DATE/$file" 2>/dev/null || true
-                  echo "Archived: $file"
-                  ;;
-              esac
+              # Extract filename
+              BASENAME=$(basename "$file")
+              
+              # Check if file is in critical list
+              IS_CRITICAL=false
+              for CRITICAL in $CRITICAL_FILES; do
+                if [ "$BASENAME" = "$CRITICAL" ]; then
+                  IS_CRITICAL=true
+                  break
+                fi
+              done
+              
+              if [ "$IS_CRITICAL" = "true" ]; then
+                echo "Skipping critical file: $file"
+              else
+                mkdir -p "archive/$DATE/$(dirname $file)"
+                mv "$file" "archive/$DATE/$file" 2>/dev/null || true
+                echo "Archived: $file"
+              fi
             fi
           done < archive_candidates.txt || true
           
@@ -277,7 +294,8 @@ jobs:
           
           MINUTES=5  # Estimated run time
           COST_PER_MIN=0.008
-          ESTIMATED_COST=$(echo "$MINUTES * $COST_PER_MIN" | bc)
+          # Use Python for floating-point calculation (bc not available on all runners)
+          ESTIMATED_COST=$(python3 -c "print(round($MINUTES * $COST_PER_MIN, 4))")
           
           cat > cost_tracking.json << EOF
           {
