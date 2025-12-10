@@ -225,3 +225,21 @@ audit_run_manifest.json
 .stubs/
 _codex_reports/
 index.html
+
+# Generated test/coverage artifacts (added 2025-12-10 for size reduction)
+pytest_validation*.txt
+artifacts/coverage/*.xml
+htmlcov/
+
+# Generated inventory files
+workbench/codebase_inventory.json
+*_inventory.json
+
+# Generated dashboard
+index.html
+
+# Large generated security reports
+artifacts/security/detect-secrets.txt
+
+# Validation logs
+.codex/validation/*/pre-commit.log
