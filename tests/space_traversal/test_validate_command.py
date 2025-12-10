@@ -20,6 +20,12 @@ def load_audit_runner():
     return audit_runner
 
 
+# Reference constants from audit_runner
+EXIT_LOW_MATURITY = 4
+EXIT_MISSING_DETECTOR = 5
+EXIT_MISSING_ARTIFACTS = 2
+
+
 def test_validate_command_passes_when_all_above_threshold():
     """Test validate passes when all capabilities are above threshold."""
     audit_runner = load_audit_runner()
@@ -85,7 +91,7 @@ def test_validate_command_fails_on_low_maturity():
         with pytest.raises(SystemExit) as exc_info:
             audit_runner.command_validate(cfg)
         
-        assert exc_info.value.code == 4  # LOW_MATURITY exit code
+        assert exc_info.value.code == EXIT_LOW_MATURITY
 
 
 def test_validate_command_respects_fail_on_low_maturity_false():
@@ -140,7 +146,7 @@ def test_validate_command_fails_when_missing_artifacts():
         with pytest.raises(SystemExit) as exc_info:
             audit_runner.command_validate(cfg)
         
-        assert exc_info.value.code == 2
+        assert exc_info.value.code == EXIT_MISSING_ARTIFACTS
 
 
 def test_stage_s5_creates_component_gaps():

@@ -1,18 +1,28 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator — authoritative v1.2.0 (patch: matrix_template lookup robustness)
+Audit Runner Orchestrator — v1.4.0 (Space Traversal Workflow)
 
-This variant fixes a config-shape mismatch reported in PR feedback:
- - Accepts `matrix_template` either under cfg["output"]["matrix_template"] OR top-level cfg["matrix_template"].
- - Likewise, resolves reports_dir from cfg["output"]["reports_dir"] or top-level cfg["reports_dir"].
- - Ensures all internal references use the same helpers so tests and callers that pass a
-   manually-constructed cfg dict (like unit tests) won't KeyError.
+Capability audit pipeline for the _codex_ ML platform implementing the
+Space Traversal Workflow v1.4.0 specification.
 
-Other features retained:
- - detect_v2/detect support, normalization
- - S1..S7 stages, deterministic ordering and hashing
- - JSON companion for S6 (render_template returns (md_out, json_out))
- - Enhanced features: token-similarity, coverage discovery, trend aggregation
+Features:
+ - S1-S7 pipeline stages with deterministic ordering and hashing
+ - Dynamic detector loading from scripts/space_traversal/detectors/*.py
+ - 5-component weighted scoring (functionality, consistency, tests, safeguards, documentation)
+ - Coverage augmentation via coverage_map.json
+ - Token-similarity duplication heuristic (configurable)
+ - Policy validation via `validate` command
+ - Trend aggregation (when enabled)
+ - Manifest integrity chain with SHA256 hashes
+
+Commands:
+ - run: Execute full pipeline (S1→S7)
+ - stage <S1-S7>: Execute single stage
+ - explain <cap-id>: Break down capability score
+ - diff --old <a> --new <b>: Compare two audit runs
+ - validate: Check quality gates (low maturity, missing detectors)
+
+Config: .copilot-space/workflow.yaml
 """
 from __future__ import annotations
 import argparse
@@ -79,7 +89,19 @@ CFG_PATHS = [
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
 SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
-VERSION = "1.2.0"
+VERSION = "1.4.0"
+
+# Quality gate option keys (v1.4.0)
+OPT_FAIL_ON_LOW_MATURITY = "fail_on_low_maturity"
+OPT_FAIL_ON_MISSING_DETECTOR = "fail_on_missing_detector"
+OPT_FAIL_ON_SCORE_REGRESSION = "fail_on_score_regression"
+OPT_REGRESSION_DELTA_THRESHOLD = "regression_delta_threshold"
+
+# Exit codes for quality gates
+EXIT_LOW_MATURITY = 4
+EXIT_MISSING_DETECTOR = 5
+EXIT_REGRESSION = 3
+EXIT_MISSING_ARTIFACTS = 2
 
 # ---------------------------------------------------------------------------
 # Utilities
@@ -940,7 +962,7 @@ def command_diff(args, cfg):
     new_path = Path(args.new)
     if not old_path.exists() or not new_path.exists():
         print("One of the diff paths does not exist.", file=sys.stderr)
-        sys.exit(2)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
     old_map = load_capabilities_from_any(old_path)
     new_map = load_capabilities_from_any(new_path)
     all_ids = sorted(set(old_map) | set(new_map))
@@ -954,14 +976,14 @@ def command_diff(args, cfg):
         else:
             delta_val = n - o
             delta = f"{delta_val:+.4f}"
-            if cfg.get("options", {}).get("fail_on_score_regression", False):
-                threshold = cfg["options"].get("regression_delta_threshold", 0.0)
+            if cfg.get("options", {}).get(OPT_FAIL_ON_SCORE_REGRESSION, False):
+                threshold = cfg["options"].get(OPT_REGRESSION_DELTA_THRESHOLD, 0.0)
                 if delta_val < -abs(threshold):
                     regressions.append((cid, delta_val))
         print(f"{cid},{o},{n},{delta}")
     if regressions:
         warn(f"Score regressions detected: {regressions}")
-        sys.exit(3)
+        sys.exit(EXIT_REGRESSION)
 
 def command_explain(args, cfg):
     scored_file = Path(_get_artifacts_dir(cfg)) / "capabilities_scored.json"
@@ -1002,8 +1024,8 @@ def command_validate(cfg):
     
     Exit Codes:
     - 0: All validations pass
-    - 4: Low maturity capability detected (when fail_on_low_maturity=true)
-    - 5: Missing detector detected (when fail_on_missing_detector=true)
+    - EXIT_LOW_MATURITY (4): Low maturity capability detected
+    - EXIT_MISSING_DETECTOR (5): Missing detector detected
     """
     artifacts_dir = Path(_get_artifacts_dir(cfg))
     scored_file = artifacts_dir / "capabilities_scored.json"
@@ -1011,7 +1033,7 @@ def command_validate(cfg):
     
     if not scored_file.exists():
         print("capabilities_scored.json missing. Run audit pipeline first.", file=sys.stderr)
-        sys.exit(2)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
     
     scored_data = json.loads(scored_file.read_text())
     capabilities = scored_data.get("capabilities", [])
@@ -1023,14 +1045,14 @@ def command_validate(cfg):
     violations = []
     
     # Check for low maturity
-    if options.get("fail_on_low_maturity", False):
+    if options.get(OPT_FAIL_ON_LOW_MATURITY, False):
         low_maturity = [c for c in capabilities if c.get("score", 0) < low_threshold]
         if low_maturity:
             for cap in low_maturity:
                 violations.append(f"LOW_MATURITY: {cap['id']} score={cap['score']:.4f} < {low_threshold}")
     
     # Check for missing detectors
-    if options.get("fail_on_missing_detector", False):
+    if options.get(OPT_FAIL_ON_MISSING_DETECTOR, False):
         overrides = cfg.get("capability_map", {}).get("overrides", {})
         capability_ids = {c["id"] for c in capabilities}
         for canonical, aliases in overrides.items():
@@ -1049,14 +1071,14 @@ def command_validate(cfg):
         for v in violations:
             print(f"  - {v}", file=sys.stderr)
         
-        # Determine exit code
+        # Determine exit code using constants
         has_low = any("LOW_MATURITY" in v for v in violations)
         has_missing = any("MISSING_DETECTOR" in v for v in violations)
         
         if has_low:
-            sys.exit(4)
+            sys.exit(EXIT_LOW_MATURITY)
         elif has_missing:
-            sys.exit(5)
+            sys.exit(EXIT_MISSING_DETECTOR)
         else:
             sys.exit(1)
     else:

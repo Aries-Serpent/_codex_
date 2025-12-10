@@ -1,5 +1,5 @@
 {
-  "generated": 1765334701.9651346,
+  "generated": 1765335018.742499,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -205,6 +205,7 @@
         "tests/knowledge/test_archive_manifest_side_effects.py",
         "tests/manifest/test_warning_aggregation.py",
         "tests/ops/test_archive_pr_checklist.py",
+        "tests/space_traversal/__pycache__/test_archival_bundling_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
         "tests/space_traversal/test_stable_manifest_cli.py",
@@ -620,6 +621,7 @@
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_manifest.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_resume.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
+        "tests/space_traversal/test_validate_command.py",
         "tests/specs/test_audit_diff_cli.py",
         "tests/specs/test_audit_explain_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
@@ -749,7 +751,7 @@
         "github_actions": 46,
         "pre_commit_hooks": 3,
         "ci_configs": 2,
-        "validation_scripts": 277,
+        "validation_scripts": 278,
         "note": "GitHub Actions present but not activated per AGENTS.md",
         "safeguards": [
           "validation",
@@ -963,6 +965,7 @@
         "tests/serving/test_inference_security.py",
         "tests/smoke/test_config_validate_cli.py",
         "tests/space_traversal/test_mcp_security_safeguards.py",
+        "tests/space_traversal/test_validate_command.py",
         "tests/test_label_policy_lint.py",
         "tests/test_safety.py",
         "tests/test_safety_filters_integration.py",
@@ -1037,7 +1040,7 @@
         "linters": 5,
         "type_checkers": 9,
         "security_scanners": 172,
-        "quality_scripts": 71
+        "quality_scripts": 72
       }
     },
     {
@@ -2978,6 +2981,10 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
+        ".pytest_cache/.gitignore",
+        ".pytest_cache/CACHEDIR.TAG",
+        ".pytest_cache/README.md",
+        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -3160,6 +3167,7 @@
         "WAVE2_IMPLEMENTATION.md",
         "WAVE4_IMPLEMENTATION.md",
         "WORK_SUMMARY.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -4508,6 +4516,7 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
+        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/adoption/track_metrics.py",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
@@ -4692,6 +4701,12 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/__init__.py",
+        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/coverage_ingest.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/dup_similarity.cpython-312.pyc",
+        "scripts/space_traversal/__pycache__/trend_aggregator.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
         "scripts/space_traversal/coverage_ingest.py",
@@ -5648,6 +5663,8 @@
         "test_mcp_server.py",
         "test_results_stage1.txt",
         "tests/__init__.py",
+        "tests/__pycache__/__init__.cpython-312.pyc",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/__init__.py",
@@ -6339,6 +6356,11 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__pycache__/test_archival_bundling_detector.cpython-312-pytest-9.0.2.pyc",
+        "tests/space_traversal/__pycache__/test_audit_runner_integration.cpython-312-pytest-9.0.2.pyc",
+        "tests/space_traversal/__pycache__/test_ml_serving_detector.cpython-312-pytest-9.0.2.pyc",
+        "tests/space_traversal/__pycache__/test_status_reporting_detector.cpython-312-pytest-9.0.2.pyc",
+        "tests/space_traversal/__pycache__/test_validate_command.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -6417,6 +6439,7 @@
         "tests/space_traversal/test_synonym_loader.py",
         "tests/space_traversal/test_token_similarity.py",
         "tests/space_traversal/test_trend_aggregator.py",
+        "tests/space_traversal/test_validate_command.py",
         "tests/space_traversal/test_validators.py",
         "tests/specs/_workflow_config_utils.py",
         "tests/specs/test_audit_diff_cli.py",
@@ -7249,7 +7272,9 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -10259,6 +10284,7 @@
         "docs/offline_testing.md",
         "docs/operations/monitoring_guide.md",
         "docs/ops/RUNBOOK.md",
+        "docs/ops/audit_runbook.md",
         "docs/ops/deployment_architecture.md",
         "docs/ops/local_gates.md",
         "docs/ops/monitoring.md",
@@ -11514,6 +11540,7 @@
         "docs/operations/runbooks/README.md",
         "docs/ops/DEPLOYMENT_RUNBOOK.md",
         "docs/ops/GitHub_App_Integration.md",
+        "docs/ops/audit_runbook.md",
         "docs/ops/badges.md",
         "docs/ops/branching_release_strategy.md",
         "docs/ops/dependency_segmentation_rollback.md",
@@ -12925,6 +12952,7 @@
         "tests/serving/test_model_loader.py",
         "tests/serving_tests/test_inference_serving.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__pycache__/test_ml_serving_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_audit_overrides.py",
         "tests/space_traversal/test_deployment_infrastructure.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
@@ -14990,7 +15018,7 @@
           "docs/ops/Deterministic_Installs.md": 2,
           "docs/ops/GitHub_App_Integration.md": 1,
           "docs/ops/RUNBOOK.md": 2,
-          "docs/ops/audit_runbook.md": 1,
+          "docs/ops/audit_runbook.md": 6,
           "docs/ops/badges.md": 1,
           "docs/ops/baseline_rotation_policy.md": 1,
           "docs/ops/branching_release_strategy.md": 1,
@@ -16774,6 +16802,7 @@
           "tests/space_traversal/test_synonym_loader.py": 1,
           "tests/space_traversal/test_token_similarity.py": 2,
           "tests/space_traversal/test_trend_aggregator.py": 1,
+          "tests/space_traversal/test_validate_command.py": 3,
           "tests/space_traversal/test_validators.py": 2,
           "tests/specs/_workflow_config_utils.py": 1,
           "tests/specs/test_audit_diff_cli.py": 2,
@@ -18058,6 +18087,7 @@
         "scripts/run_capability_audit.py",
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
+        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
@@ -18130,6 +18160,8 @@
         "tests/repo_audit/test_prompt_and_errors.py",
         "tests/security/test_audit_logging.py",
         "tests/selection/test_selection_report_smoke.py",
+        "tests/space_traversal/__pycache__/test_audit_runner_integration.cpython-312-pytest-9.0.2.pyc",
+        "tests/space_traversal/__pycache__/test_status_reporting_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_audit_overrides.py",
         "tests/space_traversal/test_audit_runner_integration.py",
         "tests/space_traversal/test_status_reporting_detector.py",
@@ -18286,6 +18318,7 @@
       "id": "testing-infrastructure",
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -18298,6 +18331,7 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/analysis/__init__.py",
@@ -19059,6 +19093,7 @@
         "tests/space_traversal/test_synonym_loader.py",
         "tests/space_traversal/test_token_similarity.py",
         "tests/space_traversal/test_trend_aggregator.py",
+        "tests/space_traversal/test_validate_command.py",
         "tests/space_traversal/test_validators.py",
         "tests/specs/_workflow_config_utils.py",
         "tests/specs/test_audit_diff_cli.py",
@@ -19618,9 +19653,9 @@
       ],
       "docs_keywords": [],
       "meta": {
-        "test_count": 1297,
+        "test_count": 1298,
         "config_count": 27,
-        "fixture_count": 33
+        "fixture_count": 35
       }
     },
     {
@@ -20137,5 +20172,5 @@
       }
     }
   ],
-  "version": "1.2.0"
+  "version": "1.4.0"
 }

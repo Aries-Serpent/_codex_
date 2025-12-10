@@ -1,5 +1,5 @@
 {
-  "generated": 1765334703.769021,
+  "generated": 1765335020.592143,
   "low_maturity": [
     {
       "components": {
@@ -873,5 +873,5 @@
     }
   ],
   "low_threshold": 0.7,
-  "version": "1.2.0"
+  "version": "1.4.0"
 }
