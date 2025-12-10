@@ -359,7 +359,7 @@ class PhysicsInspiredOrchestrator:
         print(f"{'#'*60}")
         
         # Phase 1: ASSESS
-        assessment = self.assess_situation(state)
+        self.assess_situation(state)
         
         # Phase 2: DELIBERATE
         ranked_paths = self.deliberate_paths(state, possible_actions)

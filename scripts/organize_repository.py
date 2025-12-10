@@ -5,7 +5,6 @@ Organizes root directory markdown files and creates AI-queryable archive
 """
 import argparse
 import json
-import os
 import shutil
 from datetime import datetime
 from pathlib import Path
