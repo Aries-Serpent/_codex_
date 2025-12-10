@@ -1,4 +1,4 @@
-# Copilot Space Audit Workflow Makefile (v1.1.0) - corrected
+# Copilot Space Audit Workflow Makefile (v1.4.0) - corrected
 SPACE_PY ?= python
 RUNNER ?= scripts/space_traversal/audit_runner.py
 
@@ -12,6 +12,10 @@ space-audit-fast:
 	$(SPACE_PY) $(RUNNER) stage S3
 	$(SPACE_PY) $(RUNNER) stage S4
 	$(SPACE_PY) $(RUNNER) stage S6
+
+.PHONY: space-validate
+space-validate:
+	$(SPACE_PY) $(RUNNER) validate
 
 .PHONY: space-explain
 space-explain:

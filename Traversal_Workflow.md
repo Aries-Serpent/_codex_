@@ -300,27 +300,28 @@ consistency_component = 1 - 0.25 = 0.75
 
 ## 6. Safeguard Keywords
 
-### Default Set
+### Default Set (v1.4.0)
 ```yaml
 safeguards:
   keywords:
-    - sha256
+    - baseline
     - checksum
-    - rng
-    - seed
+    - deterministic
+    - manifest
     - offline
+    - reproduce
+    - rng
+    - sanitize
+    - seed
+    - secret
+    - sha256
     - WANDB_MODE
-    - confirm       # MCP-specific
-    - dry_run       # MCP-specific
-    - RateLimitExceeded    # MCP-specific
-    - Unauthorized         # MCP-specific
-    - ValidationError      # MCP-specific
 ```
 
 ### Purpose
-- **Security:** Cryptographic and validation keywords
-- **Reproducibility:** Random seed and offline mode indicators
-- **MCP Safety:** Confirmation prompts and error handling
+- **Security:** Cryptographic keywords (sha256, checksum, secret, sanitize)
+- **Reproducibility:** Determinism keywords (seed, rng, deterministic, reproduce, offline, WANDB_MODE)
+- **Documentation/Archival:** Baseline and manifest tracking
 
 ### Customization
 Edit the `safeguards.keywords` list in `.copilot-space/workflow.yaml` to override defaults.
@@ -373,10 +374,21 @@ python scripts/space_traversal/audit_runner.py diff \
 ```
 Outputs CSV with columns: ID, OLD, NEW, DELTA. Non-zero exit if regressions detected (based on workflow.yaml options).
 
+### Validate Quality Gates (v1.4.0)
+```bash
+python scripts/space_traversal/audit_runner.py validate
+```
+Validates policy gates configured in workflow.yaml. Exit codes:
+- 0: All gates pass
+- 2: Missing artifacts (run audit first)
+- 4: Low maturity capability detected (when `fail_on_low_maturity: true`)
+- 5: Missing detector detected (when `fail_on_missing_detector: true`)
+
 ### Makefile Shortcuts
 ```bash
 make space-audit          # Full run
 make space-audit-fast     # Fast path (S1, S3, S4, S6)
+make space-validate       # Validate quality gates (v1.4.0)
 make space-explain cap=logging-tracking
 make space-diff old=<path> new=<path>
 make space-clean          # Remove all audit artifacts
