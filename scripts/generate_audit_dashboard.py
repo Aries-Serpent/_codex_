@@ -13,6 +13,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+# Supported file extensions for badge styling
+SUPPORTED_EXTENSIONS = {"json", "md", "txt", "html"}
+
 
 def format_size(size_bytes: int) -> str:
     """Format file size in human-readable format."""
@@ -377,7 +380,7 @@ def generate_html_dashboard(
 """
         for artifact in audit_artifacts:
             ext = artifact["type"].lstrip(".")
-            badge_class = ext if ext in ["json", "md", "txt", "html"] else "badge"
+            badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
             html_content += f"""                    <tr>
                         <td><a href="{artifact['path']}">{artifact['name']}</a></td>
                         <td><span class="badge {badge_class}">{ext.upper()}</span></td>
@@ -418,7 +421,7 @@ def generate_html_dashboard(
 """
         for report in reports:
             ext = report["type"].lstrip(".")
-            badge_class = ext if ext in ["json", "md", "txt", "html"] else "badge"
+            badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
             html_content += f"""                    <tr>
                         <td><a href="{report['path']}">{report['name']}</a></td>
                         <td><span class="badge {badge_class}">{ext.upper()}</span></td>
@@ -456,12 +459,20 @@ def generate_html_dashboard(
                 <tbody>
 """
         for artifact in manifest_artifacts:
+            artifact_format = artifact.get('format', 'file')
+            artifact_name = artifact.get('name', 'Unknown')
+            artifact_size = artifact.get('size', 0)
+            artifact_sha = artifact.get('sha', 'N/A')
+            # Safe SHA truncation - only truncate if we have a valid SHA
+            sha_display = f"{artifact_sha[:16]}..." if len(artifact_sha) > 16 else artifact_sha
+            artifact_timestamp = artifact.get('generated_at', 0)
+            
             html_content += f"""                    <tr>
-                        <td>{artifact.get('name', 'Unknown')}</td>
-                        <td><span class="badge {artifact.get('format', 'file')}">{artifact.get('format', 'N/A').upper()}</span></td>
-                        <td>{format_size(artifact.get('size', 0))}</td>
-                        <td><code style="font-size: 11px;">{artifact.get('sha', 'N/A')[:16]}...</code></td>
-                        <td>{format_timestamp(artifact.get('generated_at', 0))}</td>
+                        <td>{artifact_name}</td>
+                        <td><span class="badge {artifact_format}">{artifact_format.upper()}</span></td>
+                        <td>{format_size(artifact_size)}</td>
+                        <td><code style="font-size: 11px;">{sha_display}</code></td>
+                        <td>{format_timestamp(artifact_timestamp)}</td>
                     </tr>
 """
         html_content += """                </tbody>
