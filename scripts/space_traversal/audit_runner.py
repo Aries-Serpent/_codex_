@@ -1205,6 +1205,7 @@ def cmd_store_trend(args, cfg):
         ).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         # Git information is optional; proceed if unavailable (e.g., not a git repo or git not installed)
+        # Git information is optional; proceed if unavailable (e.g., not a git repo or git not installed)
         pass
     
     # Get database path from config
