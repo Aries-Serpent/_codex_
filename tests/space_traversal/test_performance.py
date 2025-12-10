@@ -43,11 +43,15 @@ def test_file_cache_expiry(tmp_path: Path):
 
     cache = FileCache(tmp_path / "cache")
 
-    # Set with very short TTL
-    cache.set("key1", "value", ttl_seconds=0)
-
-    # Should be expired immediately
-    time.sleep(0.01)
+    # Set with very short TTL (1 second)
+    cache.set("key1", "value", ttl_seconds=1)
+    
+    # Should still be valid
+    result = cache.get("key1")
+    assert result == "value"
+    
+    # Wait for expiry
+    time.sleep(1.1)
     result = cache.get("key1")
     assert result is None
 
@@ -88,11 +92,12 @@ def test_file_cache_cleanup_expired(tmp_path: Path):
 
     cache = FileCache(tmp_path / "cache")
 
-    # Set one with TTL 0 (expires immediately) and one with long TTL
-    cache.set("expired", "old", ttl_seconds=0)
+    # Set one with short TTL (1 second) and one with long TTL
+    cache.set("expired", "old", ttl_seconds=1)
     cache.set("valid", "new", ttl_seconds=3600)
 
-    time.sleep(0.01)
+    # Wait for expiry
+    time.sleep(1.1)
 
     count = cache.cleanup_expired()
     assert count == 1

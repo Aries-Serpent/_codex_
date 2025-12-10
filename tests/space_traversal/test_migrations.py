@@ -26,10 +26,7 @@ def test_run_migrations_fresh_db(tmp_path: Path):
 
     db_path = tmp_path / "test.db"
 
-    # Create fresh database
-    with sqlite3.connect(db_path) as conn:
-        conn.execute("CREATE TABLE test (id INTEGER)")
-
+    # Don't create any tables - migrations should create them
     applied = run_migrations(db_path)
 
     # All migrations should be applied

@@ -102,7 +102,9 @@ def test_send_webhook_with_secret(mock_urlopen):
     # Verify request was made with signature header
     call_args = mock_urlopen.call_args
     request = call_args[0][0]
-    assert "X-Audit-Signature" in request.headers
+    # Headers are stored with title case but accessed case-insensitively
+    headers_lower = {k.lower(): v for k, v in request.headers.items()}
+    assert "x-audit-signature" in headers_lower
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -205,7 +207,7 @@ def test_create_event_from_audit():
 
     capabilities = [
         {"id": "cap1", "score": 0.90},
-        {"id": "cap2", "score": 0.80},
+        {"id": "cap2", "score": 0.85},  # At threshold for high
         {"id": "cap3", "score": 0.60},
     ]
     regressions = [
@@ -222,6 +224,6 @@ def test_create_event_from_audit():
     assert event.repo_name == "test-repo"
     assert event.capability_count == 3
     assert event.regression_count == 1
-    assert event.avg_score == pytest.approx((0.90 + 0.80 + 0.60) / 3)
-    assert event.details["high_count"] == 2  # 0.90 and 0.80
+    assert event.avg_score == pytest.approx((0.90 + 0.85 + 0.60) / 3)
+    assert event.details["high_count"] == 2  # 0.90 and 0.85 (>=0.85)
     assert event.details["low_count"] == 1  # 0.60

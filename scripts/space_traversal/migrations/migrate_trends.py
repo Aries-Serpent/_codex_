@@ -46,8 +46,55 @@ def migration(version: str):
 
 @migration("1.5.0")
 def migrate_1_5_0(conn: sqlite3.Connection) -> None:
-    """Initial schema - no migration needed."""
-    pass
+    """Initial schema - create base tables."""
+    conn.executescript(
+        """
+        -- Schema metadata
+        CREATE TABLE IF NOT EXISTS schema_info (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+
+        -- Audit run snapshots
+        CREATE TABLE IF NOT EXISTS audit_runs (
+            run_id TEXT PRIMARY KEY,
+            timestamp REAL NOT NULL,
+            repo_root_sha TEXT NOT NULL,
+            git_commit TEXT,
+            git_branch TEXT,
+            version TEXT NOT NULL,
+            weights_json TEXT NOT NULL,
+            coverage_stats_json TEXT,
+            manifest_sha TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+
+        -- Capability scores per run
+        CREATE TABLE IF NOT EXISTS capability_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            run_id TEXT NOT NULL,
+            capability_id TEXT NOT NULL,
+            score REAL NOT NULL,
+            functionality REAL,
+            consistency REAL,
+            tests REAL,
+            safeguards REAL,
+            documentation REAL,
+            FOREIGN KEY (run_id) REFERENCES audit_runs(run_id),
+            UNIQUE(run_id, capability_id)
+        );
+
+        -- Indexes for common queries
+        CREATE INDEX IF NOT EXISTS idx_runs_timestamp
+            ON audit_runs(timestamp);
+        CREATE INDEX IF NOT EXISTS idx_runs_branch
+            ON audit_runs(git_branch);
+        CREATE INDEX IF NOT EXISTS idx_scores_capability
+            ON capability_scores(capability_id);
+        CREATE INDEX IF NOT EXISTS idx_scores_run
+            ON capability_scores(run_id);
+    """
+    )
 
 
 @migration("1.5.1")

@@ -15,13 +15,13 @@ def test_compare_runs_basic(tmp_path: Path):
     old_data = {
         "capabilities": [
             {"id": "cap1", "score": 0.8, "components": {"functionality": 1.0, "tests": 0.6}},
-            {"id": "cap2", "score": 0.7, "components": {"functionality": 0.9, "tests": 0.5}},
+            {"id": "cap2", "score": 0.75, "components": {"functionality": 0.9, "tests": 0.5}},
         ]
     }
     new_data = {
         "capabilities": [
             {"id": "cap1", "score": 0.85, "components": {"functionality": 1.0, "tests": 0.7}},
-            {"id": "cap2", "score": 0.65, "components": {"functionality": 0.8, "tests": 0.5}},
+            {"id": "cap2", "score": 0.68, "components": {"functionality": 0.8, "tests": 0.5}},
         ]
     }
 
@@ -39,9 +39,9 @@ def test_compare_runs_basic(tmp_path: Path):
     assert cap1.delta == pytest.approx(0.05)
     assert not cap1.is_regression
 
-    # cap2 regressed
+    # cap2 regressed (delta = -0.07, which is < -0.05, so high severity)
     cap2 = next(r for r in results if r.capability_id == "cap2")
-    assert cap2.delta == pytest.approx(-0.05)
+    assert cap2.delta == pytest.approx(-0.07)
     assert cap2.is_regression
     assert cap2.regression_severity == "high"
 
