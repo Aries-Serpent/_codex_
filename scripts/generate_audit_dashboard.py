@@ -16,7 +16,6 @@ from typing import Any
 # Import planning components
 try:
     from planning_components import (
-        generate_planning_css,
         generate_planning_html,
         generate_planning_javascript,
     )
@@ -94,6 +93,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
             with open(gaps_file, encoding="utf-8") as f:
                 gaps_data = json.load(f)
         except (json.JSONDecodeError, OSError):
+            # gaps.json is optional; if missing or unreadable, continue with empty gaps data.
             pass
     
     # Load improvement plan MD file
@@ -109,6 +109,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
                     phases.append(line.strip("# ").strip())
             plans_data["phases"] = phases
         except OSError:
+            # The plan file is optional; skip if it cannot be read.
             pass
     
     return {"gaps": gaps_data, "plans": plans_data}
@@ -342,6 +343,17 @@ def generate_html_dashboard(
             color: #586069;
             font-size: 12px;
         }}
+"""
+    
+    # Add planning CSS if available
+    if PLANNING_AVAILABLE and gaps_and_plans:
+        try:
+            from planning_components import generate_planning_css
+            html_content += generate_planning_css()
+        except ImportError:
+            pass
+    
+    html_content += """
     </style>
 </head>
 <body>
@@ -354,7 +366,7 @@ def generate_html_dashboard(
         <div class="metadata">
             <div class="metadata-item">
                 <span class="metadata-label">Audit Version</span>
-                <span class="metadata-value">{manifest_version}</span>
+                <span class="metadata-value">{html.escape(manifest_version)}</span>
             </div>
             <div class="metadata-item">
                 <span class="metadata-label">Generated At</span>

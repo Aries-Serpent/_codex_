@@ -11,12 +11,9 @@ Tests cover core functionality including:
 """
 
 import json
-import tempfile
 from datetime import datetime
 from pathlib import Path
 import sys
-
-import pytest
 
 # Add scripts directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
@@ -261,6 +258,7 @@ class TestGenerateHtmlDashboard:
         
         content = output_path.read_text()
         # Verify HTML entities are escaped
+        # Both conditions must be true: raw malicious content absent AND escaped version present
         assert "&lt;script&gt;" in content or "&#x3C;script&#x3E;" in content
         assert "<script>alert('xss')</script>" not in content
         assert "<img src=x onerror=alert(1)>" not in content
@@ -293,9 +291,12 @@ class TestGenerateHtmlDashboard:
         
         content = output_path.read_text()
         # Verify all malicious content is escaped
-        assert "<script>" not in content or "&lt;script&gt;" in content
+        # Both conditions must be true: raw malicious content absent AND escaped version present
+        assert "<script>" not in content
+        assert "&lt;script&gt;" in content or "&#x3C;script&#x3E;" in content
         assert "<img src=x onerror=" not in content
-        assert "<b>malicious</b>" not in content or "&lt;b&gt;" in content
+        assert "<b>malicious</b>" not in content
+        assert "&lt;b&gt;" in content or "&#x3C;b&#x3E;" in content
 
     def test_supported_extensions_constant(self):
         """Test that SUPPORTED_EXTENSIONS constant is defined."""
