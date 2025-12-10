@@ -1,0 +1,1140 @@
+{
+  "created_at": "2025-12-10T18:29:40.003572",
+  "total_files": 126,
+  "files": [
+    {
+      "filename": "STATUS_UPDATE_AUDIT_REPORT.md",
+      "path": "archive/historical_docs_20251210/STATUS_UPDATE_AUDIT_REPORT.md",
+      "size": 16965,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "\ud83d\udccd `_codex_` : Status Update Audit Report",
+      "line_count": 519,
+      "word_count": 2253
+    },
+    {
+      "filename": "codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+      "path": "archive/historical_docs_20251210/codex_implement_status_update_PLAN_(2025\u201111\u201109).md",
+      "size": 44107,
+      "modified": "2025-12-10T18:15:33.699321",
+      "title": "codex_implement_status_update_PLAN_(2025\u201111\u201109)",
+      "line_count": 1182,
+      "word_count": 4784
+    },
+    {
+      "filename": "IMPLEMENTATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_COMPLETE.md",
+      "size": 10514,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Complete: Advanced Modernization & CI Optimization",
+      "line_count": 409,
+      "word_count": 1434
+    },
+    {
+      "filename": "IMPLEMENTATION_VALIDATION.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_VALIDATION.md",
+      "size": 8232,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Validation Report",
+      "line_count": 269,
+      "word_count": 964
+    },
+    {
+      "filename": "QUANTUM_ORCHESTRATOR_PHASE2_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/QUANTUM_ORCHESTRATOR_PHASE2_COMPLETE.md",
+      "size": 12587,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "Quantum Orchestrator Phase 2 - Final Summary",
+      "line_count": 461,
+      "word_count": 1352
+    },
+    {
+      "filename": "PHASE_7_2_TEAM_ENABLEMENT_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE_7_2_TEAM_ENABLEMENT_COMPLETE.md",
+      "size": 7543,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 7.2 Team Enablement - COMPLETE \u2705",
+      "line_count": 252,
+      "word_count": 1046
+    },
+    {
+      "filename": "FINAL_COMPLETE_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FINAL_COMPLETE_SUMMARY.md",
+      "size": 13406,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Final Summary: Complete Gap Remediation & Baseline Establishment",
+      "line_count": 462,
+      "word_count": 1711
+    },
+    {
+      "filename": "PHASE_6_INTEGRATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE_6_INTEGRATION_COMPLETE.md",
+      "size": 13618,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 6 Integration Complete: Production MLOps Features",
+      "line_count": 444,
+      "word_count": 1671
+    },
+    {
+      "filename": "VERIFICATION_ARTIFACTS_MANIFEST.md",
+      "path": "archive/historical_docs_20251210/VERIFICATION_ARTIFACTS_MANIFEST.md",
+      "size": 6521,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Verification Artifacts Manifest",
+      "line_count": 284,
+      "word_count": 836
+    },
+    {
+      "filename": "TEST_EXECUTION_REPORT.md",
+      "path": "archive/historical_docs_20251210/TEST_EXECUTION_REPORT.md",
+      "size": 8539,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Test Execution Report & Dependency Investigation",
+      "line_count": 329,
+      "word_count": 1141
+    },
+    {
+      "filename": "MCP_SCORE_REMEDIATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/MCP_SCORE_REMEDIATION_COMPLETE.md",
+      "size": 7436,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MCP Score Remediation - Complete Report",
+      "line_count": 245,
+      "word_count": 1006
+    },
+    {
+      "filename": "GAP_REMEDIATION_STATUS.md",
+      "path": "archive/historical_docs_20251210/GAP_REMEDIATION_STATUS.md",
+      "size": 10417,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Gap Remediation Implementation Status",
+      "line_count": 219,
+      "word_count": 1455
+    },
+    {
+      "filename": "ACHIEVEMENT_99_PERCENT.md",
+      "path": "archive/historical_docs_20251210/ACHIEVEMENT_99_PERCENT.md",
+      "size": 5385,
+      "modified": "2025-12-10T18:15:33.641321",
+      "title": "99% Quality Achievement - NEARLY PERFECT",
+      "line_count": 225,
+      "word_count": 738
+    },
+    {
+      "filename": "STATUS_SCHEMA_IMPLEMENTATION.md",
+      "path": "archive/historical_docs_20251210/STATUS_SCHEMA_IMPLEMENTATION.md",
+      "size": 8909,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Status Schema v1.1 and Offline Tooling - Implementation Status",
+      "line_count": 310,
+      "word_count": 1025
+    },
+    {
+      "filename": "REMAINING_CAPABILITIES_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/REMAINING_CAPABILITIES_COMPLETE.md",
+      "size": 8723,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "Remaining Capabilities Implementation - Complete",
+      "line_count": 296,
+      "word_count": 1127
+    },
+    {
+      "filename": "SESSION_SUMMARY_2025-12-04.md",
+      "path": "archive/historical_docs_20251210/SESSION_SUMMARY_2025-12-04.md",
+      "size": 5613,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Work Completed Summary - 2025-12-04",
+      "line_count": 151,
+      "word_count": 758
+    },
+    {
+      "filename": "NEXT_COPILOT_PROMPT.md",
+      "path": "archive/historical_docs_20251210/NEXT_COPILOT_PROMPT.md",
+      "size": 13686,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Next Copilot Implementation Prompt",
+      "line_count": 459,
+      "word_count": 2006
+    },
+    {
+      "filename": "AUDIT_COMPLETION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/AUDIT_COMPLETION_SUMMARY.md",
+      "size": 3646,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Audit Completion Summary",
+      "line_count": 127,
+      "word_count": 525
+    },
+    {
+      "filename": "UPDATED_AUDIT_REPORT_2025-12-04.md",
+      "path": "archive/historical_docs_20251210/UPDATED_AUDIT_REPORT_2025-12-04.md",
+      "size": 17115,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "\ud83d\udccd_codex_: Updated Status Report (2025-12-04)",
+      "line_count": 472,
+      "word_count": 2072
+    },
+    {
+      "filename": "MSP_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/MSP_IMPLEMENTATION_SUMMARY.md",
+      "size": 9486,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MSP Implementation Summary",
+      "line_count": 300,
+      "word_count": 1229
+    },
+    {
+      "filename": "PHASE1_FINAL_PUSH_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/PHASE1_FINAL_PUSH_SUMMARY.md",
+      "size": 6124,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 1 Final Push - Implementation Summary",
+      "line_count": 229,
+      "word_count": 809
+    },
+    {
+      "filename": "FINAL_STATUS_100_PERCENT.md",
+      "path": "archive/historical_docs_20251210/FINAL_STATUS_100_PERCENT.md",
+      "size": 13374,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "\ud83c\udfc6 FINAL STATUS: 100/100 MERGE READINESS ACHIEVED",
+      "line_count": 501,
+      "word_count": 1805
+    },
+    {
+      "filename": "COMPLETE_GAP_REMEDIATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/COMPLETE_GAP_REMEDIATION_SUMMARY.md",
+      "size": 8584,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Complete Gap Remediation - Final Summary",
+      "line_count": 285,
+      "word_count": 1074
+    },
+    {
+      "filename": "PHASE_C_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/PHASE_C_SUMMARY.md",
+      "size": 9998,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "Phase C: Quantum Field Theory Extensions - Implementation Summary",
+      "line_count": 383,
+      "word_count": 1204
+    },
+    {
+      "filename": "MLOPS_GAP_ANALYSIS_AND_ROADMAP.md",
+      "path": "archive/historical_docs_20251210/MLOPS_GAP_ANALYSIS_AND_ROADMAP.md",
+      "size": 10993,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "[Plan]: Complete MLOps Gap Analysis & Implementation Roadmap",
+      "line_count": 416,
+      "word_count": 1454
+    },
+    {
+      "filename": "WORK_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/WORK_SUMMARY.md",
+      "size": 7953,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "Summary: PR#2094 Code Review Fixes and Offline Hardening Assessment",
+      "line_count": 220,
+      "word_count": 966
+    },
+    {
+      "filename": "codex_yaml_gap_report.md",
+      "path": "archive/historical_docs_20251210/codex_yaml_gap_report.md",
+      "size": 1410,
+      "modified": "2025-12-10T18:15:33.703321",
+      "title": "codex_yaml_gap_report",
+      "line_count": 28,
+      "word_count": 203
+    },
+    {
+      "filename": "GAP_REMEDIATION_PLAN.md",
+      "path": "archive/historical_docs_20251210/GAP_REMEDIATION_PLAN.md",
+      "size": 9369,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Gap Remediation Plan - Audit v1.1.0 Implementation",
+      "line_count": 300,
+      "word_count": 1415
+    },
+    {
+      "filename": "ARTIFACTS_AND_COVERAGE_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/ARTIFACTS_AND_COVERAGE_SUMMARY.md",
+      "size": 5782,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Artifacts & Coverage Summary",
+      "line_count": 138,
+      "word_count": 614
+    },
+    {
+      "filename": "FINAL_MLOPS_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FINAL_MLOPS_SUMMARY.md",
+      "size": 11060,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "MLOps Capability Completion - Final Summary",
+      "line_count": 377,
+      "word_count": 1290
+    },
+    {
+      "filename": "DEEP_RESEARCH_PROGRESS_UPDATE.md",
+      "path": "archive/historical_docs_20251210/DEEP_RESEARCH_PROGRESS_UPDATE.md",
+      "size": 9071,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Deep Research Status Update: Evaluation Loop & Archival Bundling Completed",
+      "line_count": 330,
+      "word_count": 1258
+    },
+    {
+      "filename": "CHANGELOG_MLOPS_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/CHANGELOG_MLOPS_COMPLETE.md",
+      "size": 12212,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "CHANGELOG - MLOps Gap Analysis Complete Implementation",
+      "line_count": 409,
+      "word_count": 1540
+    },
+    {
+      "filename": "DEEP_RESEARCH_STATUS_UPDATE.md",
+      "path": "archive/historical_docs_20251210/DEEP_RESEARCH_STATUS_UPDATE.md",
+      "size": 7563,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Deep Research Status Update: Evaluation Loop Components Completed",
+      "line_count": 238,
+      "word_count": 1049
+    },
+    {
+      "filename": "VALIDATION_REPORT_v1.2.4.md",
+      "path": "archive/historical_docs_20251210/VALIDATION_REPORT_v1.2.4.md",
+      "size": 11547,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Audit Remediation Validation Report (v1.2.4)",
+      "line_count": 376,
+      "word_count": 1246
+    },
+    {
+      "filename": "codex_task_report.md",
+      "path": "archive/historical_docs_20251210/codex_task_report.md",
+      "size": 1026,
+      "modified": "2025-12-10T18:15:33.702321",
+      "title": "Codex Task Report",
+      "line_count": 16,
+      "word_count": 116
+    },
+    {
+      "filename": "BRANCH_VERIFICATION_REPORT.md",
+      "path": "archive/historical_docs_20251210/BRANCH_VERIFICATION_REPORT.md",
+      "size": 13735,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "0D_base_ Branch Verification Report",
+      "line_count": 433,
+      "word_count": 1977
+    },
+    {
+      "filename": "PRODUCTION_READY_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/PRODUCTION_READY_SUMMARY.md",
+      "size": 3613,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "PRODUCTION READY - FINAL IMPLEMENTATION SUMMARY",
+      "line_count": 136,
+      "word_count": 527
+    },
+    {
+      "filename": "CI_VALIDATION.md",
+      "path": "archive/historical_docs_20251210/CI_VALIDATION.md",
+      "size": 8718,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "\u2705 CI Validation Success - Transformation Complete",
+      "line_count": 328,
+      "word_count": 1194
+    },
+    {
+      "filename": "DEEP_RESEARCH_UNRESOLVED_ISSUES_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/DEEP_RESEARCH_UNRESOLVED_ISSUES_COMPLETE.md",
+      "size": 22384,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Deep Research: Unresolved Issues, Gaps, Risks & Path to 100% Maturity",
+      "line_count": 660,
+      "word_count": 2978
+    },
+    {
+      "filename": "codex_gap_trends.md",
+      "path": "archive/historical_docs_20251210/codex_gap_trends.md",
+      "size": 215,
+      "modified": "2025-12-10T18:15:33.699321",
+      "title": "codex_gap_trends snapshot",
+      "line_count": 17,
+      "word_count": 39
+    },
+    {
+      "filename": "PR_2207_AUDIT_REPORT.md",
+      "path": "archive/historical_docs_20251210/PR_2207_AUDIT_REPORT.md",
+      "size": 16591,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "PR #2207 Comprehensive Pre-Merge Verification Audit Report",
+      "line_count": 432,
+      "word_count": 2148
+    },
+    {
+      "filename": "WAVE4_IMPLEMENTATION.md",
+      "path": "archive/historical_docs_20251210/WAVE4_IMPLEMENTATION.md",
+      "size": 8519,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "Wave 4 Implementation Summary",
+      "line_count": 371,
+      "word_count": 1032
+    },
+    {
+      "filename": "VERIFICATION_REPORT.md",
+      "path": "archive/historical_docs_20251210/VERIFICATION_REPORT.md",
+      "size": 9745,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "MLOps Capability Verification Report",
+      "line_count": 351,
+      "word_count": 1256
+    },
+    {
+      "filename": "IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_SUMMARY.md",
+      "size": 7245,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Summary - Review Response",
+      "line_count": 265,
+      "word_count": 973
+    },
+    {
+      "filename": "CODEBASE_REVIEW_FINAL_REPORT.md",
+      "path": "archive/historical_docs_20251210/CODEBASE_REVIEW_FINAL_REPORT.md",
+      "size": 9431,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Final Codebase Review Report - 0D_base_ Branch",
+      "line_count": 326,
+      "word_count": 1283
+    },
+    {
+      "filename": "BASELINE_COMPARISON_REPORT.md",
+      "path": "archive/historical_docs_20251210/BASELINE_COMPARISON_REPORT.md",
+      "size": 13826,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Baseline Comparison Report - Gap Remediation Impact",
+      "line_count": 483,
+      "word_count": 1802
+    },
+    {
+      "filename": "codex_status_update.md",
+      "path": "archive/historical_docs_20251210/codex_status_update.md",
+      "size": 4498,
+      "modified": "2025-12-10T18:15:33.702321",
+      "title": "Codex Status Update (2025-11-28)",
+      "line_count": 38,
+      "word_count": 605
+    },
+    {
+      "filename": "_codex_status_update-2025-11-27.md",
+      "path": "archive/historical_docs_20251210/_codex_status_update-2025-11-27.md",
+      "size": 176,
+      "modified": "2025-12-10T18:15:33.659321",
+      "title": "_codex_: Status Update (2025-11-27)",
+      "line_count": 7,
+      "word_count": 24
+    },
+    {
+      "filename": "FINAL_IMPLEMENTATION_REPORT.md",
+      "path": "archive/historical_docs_20251210/FINAL_IMPLEMENTATION_REPORT.md",
+      "size": 11955,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "\ud83c\udf89 FINAL IMPLEMENTATION REPORT: Evaluation Loop & Deep Research Audit",
+      "line_count": 405,
+      "word_count": 1669
+    },
+    {
+      "filename": "status_update_2025-12-09.md",
+      "path": "archive/historical_docs_20251210/status_update_2025-12-09.md",
+      "size": 12687,
+      "modified": "2025-12-10T18:15:33.838321",
+      "title": "Codex ML Ops Iteration \u2014 2025-12-09",
+      "line_count": 266,
+      "word_count": 1571
+    },
+    {
+      "filename": "PERFECT_100_ACHIEVEMENT.md",
+      "path": "archive/historical_docs_20251210/PERFECT_100_ACHIEVEMENT.md",
+      "size": 15474,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "\ud83c\udfc6 PERFECT ACHIEVEMENT: 100/100 Level 4+ MLOps Certification",
+      "line_count": 481,
+      "word_count": 1998
+    },
+    {
+      "filename": "QUANTUM_ORCHESTRATOR_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/QUANTUM_ORCHESTRATOR_SUMMARY.md",
+      "size": 10123,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "Quantum-Relativistic-Dirac Orchestrator - Implementation Summary",
+      "line_count": 372,
+      "word_count": 1101
+    },
+    {
+      "filename": "ARCHIVAL_BUNDLING_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/ARCHIVAL_BUNDLING_COMPLETE.md",
+      "size": 10813,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "\ud83c\udf89 COMPLETE: Deep Research Audit & Quick Wins Implementation",
+      "line_count": 379,
+      "word_count": 1558
+    },
+    {
+      "filename": "WAVE2_IMPLEMENTATION.md",
+      "path": "archive/historical_docs_20251210/WAVE2_IMPLEMENTATION.md",
+      "size": 8838,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "Wave 2 Implementation Summary",
+      "line_count": 317,
+      "word_count": 1085
+    },
+    {
+      "filename": "DETERMINISTIC_AUDIT_REPORT_v1.1.0.md",
+      "path": "archive/historical_docs_20251210/DETERMINISTIC_AUDIT_REPORT_v1.1.0.md",
+      "size": 12805,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "[Report]: Deterministic Audit Outputs Capture & Summary (v1.1.0)",
+      "line_count": 306,
+      "word_count": 1358
+    },
+    {
+      "filename": "FINAL_ACHIEVEMENT_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FINAL_ACHIEVEMENT_SUMMARY.md",
+      "size": 5987,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Final Achievement Summary - 97% Quality",
+      "line_count": 234,
+      "word_count": 907
+    },
+    {
+      "filename": "FINAL_COMPLETION_REPORT.md",
+      "path": "archive/historical_docs_20251210/FINAL_COMPLETION_REPORT.md",
+      "size": 14179,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Maturity Improvement Plan - Final Completion Report",
+      "line_count": 386,
+      "word_count": 1770
+    },
+    {
+      "filename": "FINAL_VERIFICATION_CHECKLIST.md",
+      "path": "archive/historical_docs_20251210/FINAL_VERIFICATION_CHECKLIST.md",
+      "size": 427,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Final Verification Checklist - Gap Remediation Implementation",
+      "line_count": 20,
+      "word_count": 64
+    },
+    {
+      "filename": "SELECTION_REPORT.md",
+      "path": "archive/historical_docs_20251210/SELECTION_REPORT.md",
+      "size": 669,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Deployment Dry-Run \u2014 codex-reasoning-pod",
+      "line_count": 25,
+      "word_count": 81
+    },
+    {
+      "filename": "MCP_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/MCP_IMPLEMENTATION_SUMMARY.md",
+      "size": 13203,
+      "modified": "2025-12-10T18:15:33.647321",
+      "title": "[Report]: MCP Capabilities Implementation Summary",
+      "line_count": 169,
+      "word_count": 1734
+    },
+    {
+      "filename": "IMPLEMENTATION_AUDIT_V1.4.0.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_AUDIT_V1.4.0.md",
+      "size": 10291,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Capability Audit System v1.4.0 - Implementation Summary",
+      "line_count": 364,
+      "word_count": 1202
+    },
+    {
+      "filename": "COMPLETE_IMPLEMENTATION_VERIFICATION.md",
+      "path": "archive/historical_docs_20251210/COMPLETE_IMPLEMENTATION_VERIFICATION.md",
+      "size": 9695,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Complete Implementation Verification Report",
+      "line_count": 332,
+      "word_count": 1330
+    },
+    {
+      "filename": "FOLLOWUP_TASKS_F1_F4_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FOLLOWUP_TASKS_F1_F4_SUMMARY.md",
+      "size": 8721,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Follow-Up Tasks F1-F4 - Implementation Complete",
+      "line_count": 314,
+      "word_count": 1068
+    },
+    {
+      "filename": "NEXT_ITERATION_PROMPT.md",
+      "path": "archive/historical_docs_20251210/NEXT_ITERATION_PROMPT.md",
+      "size": 21794,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Next Iteration: Post-Hydra Remediation Validation & Production Hardening",
+      "line_count": 658,
+      "word_count": 2736
+    },
+    {
+      "filename": "ACHIEVEMENT_STATUS_98_8_PERCENT.md",
+      "path": "archive/historical_docs_20251210/ACHIEVEMENT_STATUS_98_8_PERCENT.md",
+      "size": 5401,
+      "modified": "2025-12-10T18:15:33.641321",
+      "title": "Achievement Status - 98.8% Quality",
+      "line_count": 251,
+      "word_count": 843
+    },
+    {
+      "filename": "STAGE1_EXECUTION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/STAGE1_EXECUTION_SUMMARY.md",
+      "size": 4512,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Stage 1 Test Execution Summary",
+      "line_count": 167,
+      "word_count": 630
+    },
+    {
+      "filename": "PHASE_6_QUICKSTART.md",
+      "path": "archive/historical_docs_20251210/PHASE_6_QUICKSTART.md",
+      "size": 7732,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 6 Integration: Quick Start Guide",
+      "line_count": 343,
+      "word_count": 813
+    },
+    {
+      "filename": "PHASE2_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE2_COMPLETE.md",
+      "size": 14118,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 2: Reproducibility - Implementation Complete",
+      "line_count": 465,
+      "word_count": 1502
+    },
+    {
+      "filename": "MATURITY_IMPROVEMENT_PLAN.md",
+      "path": "archive/historical_docs_20251210/MATURITY_IMPROVEMENT_PLAN.md",
+      "size": 26594,
+      "modified": "2025-12-10T18:15:33.647321",
+      "title": "Codex Repository Maturity Improvement Plan",
+      "line_count": 844,
+      "word_count": 3640
+    },
+    {
+      "filename": "AUDIT_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/AUDIT_COMPLETE.md",
+      "size": 7799,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Comprehensive Codebase Audit - COMPLETE \u2705",
+      "line_count": 259,
+      "word_count": 930
+    },
+    {
+      "filename": "FINAL_VERIFICATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FINAL_VERIFICATION_SUMMARY.md",
+      "size": 10297,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "FINAL VERIFICATION SUMMARY - 0D_base_ Branch Merge Readiness",
+      "line_count": 370,
+      "word_count": 1392
+    },
+    {
+      "filename": "IMPLEMENTATION_SUMMARY_OLD.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_SUMMARY_OLD.md",
+      "size": 6076,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Summary: Address Gaps and Resolve High-Signal Findings",
+      "line_count": 166,
+      "word_count": 738
+    },
+    {
+      "filename": "PR_2389_CHECKLIST_VALIDATION.md",
+      "path": "archive/historical_docs_20251210/PR_2389_CHECKLIST_VALIDATION.md",
+      "size": 11207,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "PR #2389 Checklist Validation",
+      "line_count": 390,
+      "word_count": 1324
+    },
+    {
+      "filename": "SPACE_TRAVERSAL_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/SPACE_TRAVERSAL_COMPLETE.md",
+      "size": 2042,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Space Traversal Audit System - Implementation Complete",
+      "line_count": 64,
+      "word_count": 250
+    },
+    {
+      "filename": "COPILOT_PROMPT_100_PERCENT.md",
+      "path": "archive/historical_docs_20251210/COPILOT_PROMPT_100_PERCENT.md",
+      "size": 10847,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Copilot Prompt: Achieve 100% Merge Readiness",
+      "line_count": 399,
+      "word_count": 1591
+    },
+    {
+      "filename": "WAVE2_FINAL_VALIDATION.md",
+      "path": "archive/historical_docs_20251210/WAVE2_FINAL_VALIDATION.md",
+      "size": 9088,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "Wave 2: Final Validation Report",
+      "line_count": 292,
+      "word_count": 1063
+    },
+    {
+      "filename": "codex_dependency_report.md",
+      "path": "archive/historical_docs_20251210/codex_dependency_report.md",
+      "size": 1786,
+      "modified": "2025-12-10T18:15:33.698321",
+      "title": "_codex_ Dependency Audit",
+      "line_count": 66,
+      "word_count": 365
+    },
+    {
+      "filename": "SPRINT_EXECUTION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/SPRINT_EXECUTION_COMPLETE.md",
+      "size": 12824,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "\ud83c\udfaf SPRINT EXECUTION FRAMEWORK - COMPLETE",
+      "line_count": 408,
+      "word_count": 1729
+    },
+    {
+      "filename": "MLOPS_GAP_ANALYSIS_AND_ROADMAP_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/MLOPS_GAP_ANALYSIS_AND_ROADMAP_COMPLETE.md",
+      "size": 0,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MLOPS_GAP_ANALYSIS_AND_ROADMAP_COMPLETE",
+      "line_count": 1,
+      "word_count": 0
+    },
+    {
+      "filename": "GAP_REMEDIATION_FINAL_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/GAP_REMEDIATION_FINAL_SUMMARY.md",
+      "size": 9628,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Gap Remediation - Final Implementation Summary",
+      "line_count": 359,
+      "word_count": 1346
+    },
+    {
+      "filename": "PHASE_7_1_STAGING_DEPLOYMENT_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE_7_1_STAGING_DEPLOYMENT_COMPLETE.md",
+      "size": 5894,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 7.1 Staging Deployment - COMPLETE \u2705",
+      "line_count": 206,
+      "word_count": 816
+    },
+    {
+      "filename": "FINAL_STATUS_98_PERCENT.md",
+      "path": "archive/historical_docs_20251210/FINAL_STATUS_98_PERCENT.md",
+      "size": 10345,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "\ud83c\udfaf Final Merge Readiness Status: 98/100",
+      "line_count": 376,
+      "word_count": 1440
+    },
+    {
+      "filename": "ACCEPTANCE_CRITERIA_VERIFICATION.md",
+      "path": "archive/historical_docs_20251210/ACCEPTANCE_CRITERIA_VERIFICATION.md",
+      "size": 30135,
+      "modified": "2025-12-10T18:15:33.641321",
+      "title": "Acceptance Criteria Verification Report",
+      "line_count": 1013,
+      "word_count": 3807
+    },
+    {
+      "filename": "STUB_CLEANUP_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/STUB_CLEANUP_COMPLETE.md",
+      "size": 7794,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "P0 Stub Cleanup: Complete \u2705",
+      "line_count": 294,
+      "word_count": 1038
+    },
+    {
+      "filename": "IMPLEMENTATION_COMPLETE_EVALUATION_LOOP.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_COMPLETE_EVALUATION_LOOP.md",
+      "size": 9014,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Complete: Deep Research Audit Report & Evaluation Loop Components",
+      "line_count": 248,
+      "word_count": 1213
+    },
+    {
+      "filename": "AGENTS_IMPLEMENTATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/AGENTS_IMPLEMENTATION_COMPLETE.md",
+      "size": 1870,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "AGENTS.md Implementation Summary",
+      "line_count": 51,
+      "word_count": 265
+    },
+    {
+      "filename": "STAGGERED_TEST_EXECUTION_PLAN.md",
+      "path": "archive/historical_docs_20251210/STAGGERED_TEST_EXECUTION_PLAN.md",
+      "size": 10238,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Staggered Test Execution Plan",
+      "line_count": 480,
+      "word_count": 1477
+    },
+    {
+      "filename": "PHASE_C_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE_C_COMPLETE.md",
+      "size": 7275,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "Phase C: Quantum Field Theory Extensions - COMPLETE \u2705",
+      "line_count": 299,
+      "word_count": 1005
+    },
+    {
+      "filename": "PRODUCTION_READINESS_AUDIT_REPORT.md",
+      "path": "archive/historical_docs_20251210/PRODUCTION_READINESS_AUDIT_REPORT.md",
+      "size": 18217,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "Production Readiness Audit Report - PR #2403",
+      "line_count": 608,
+      "word_count": 2434
+    },
+    {
+      "filename": "COVERAGE_REMEDIATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/COVERAGE_REMEDIATION_SUMMARY.md",
+      "size": 5918,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Coverage Remediation Implementation Summary",
+      "line_count": 172,
+      "word_count": 762
+    },
+    {
+      "filename": "PHASE_7_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE_7_COMPLETE.md",
+      "size": 12687,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "Phase 7: Agent-Driven Autonomous Implementation - COMPLETE \u2705",
+      "line_count": 419,
+      "word_count": 1566
+    },
+    {
+      "filename": "PHASE1_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PHASE1_COMPLETE.md",
+      "size": 12042,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 1 Foundation - Implementation Complete",
+      "line_count": 388,
+      "word_count": 1490
+    },
+    {
+      "filename": "MCP_USER_PROMPTS_FINAL.md",
+      "path": "archive/historical_docs_20251210/MCP_USER_PROMPTS_FINAL.md",
+      "size": 15451,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "USER PROMPTS: Push Remaining 6 MCP Capabilities to Medium (0.70+)",
+      "line_count": 521,
+      "word_count": 2048
+    },
+    {
+      "filename": "MATURITY_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/MATURITY_IMPLEMENTATION_SUMMARY.md",
+      "size": 7498,
+      "modified": "2025-12-10T18:15:33.647321",
+      "title": "Maturity Improvement Plan - Implementation Summary",
+      "line_count": 287,
+      "word_count": 1014
+    },
+    {
+      "filename": "TYPE_COVERAGE_REPORT.md",
+      "path": "archive/historical_docs_20251210/TYPE_COVERAGE_REPORT.md",
+      "size": 7911,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Type Coverage Report",
+      "line_count": 205,
+      "word_count": 967
+    },
+    {
+      "filename": "PHASE_C4_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/PHASE_C4_IMPLEMENTATION_SUMMARY.md",
+      "size": 8353,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "Phase C.4 Implementation Summary",
+      "line_count": 285,
+      "word_count": 1150
+    },
+    {
+      "filename": "QUALITY_97_PERCENT_ACHIEVEMENT.md",
+      "path": "archive/historical_docs_20251210/QUALITY_97_PERCENT_ACHIEVEMENT.md",
+      "size": 5292,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "97% Quality Achievement - Path to 99-100%",
+      "line_count": 225,
+      "word_count": 835
+    },
+    {
+      "filename": "IMPLEMENTATION_SUMMARY_PR2163.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_SUMMARY_PR2163.md",
+      "size": 12045,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Summary - Comprehensive Feature Completion",
+      "line_count": 408,
+      "word_count": 1502
+    },
+    {
+      "filename": "CHANGELOG_CodexAudit_batch5_addition.md",
+      "path": "archive/historical_docs_20251210/CHANGELOG_CodexAudit_batch5_addition.md",
+      "size": 2872,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "CHANGELOG_CodexAudit_batch5_addition",
+      "line_count": 124,
+      "word_count": 287
+    },
+    {
+      "filename": "validation.md",
+      "path": "archive/historical_docs_20251210/validation.md",
+      "size": 7333,
+      "modified": "2025-12-10T18:15:33.920321",
+      "title": "Validation Report",
+      "line_count": 217,
+      "word_count": 1105
+    },
+    {
+      "filename": "PR_SUMMARY_FINAL.md",
+      "path": "archive/historical_docs_20251210/PR_SUMMARY_FINAL.md",
+      "size": 2443,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "PR Summary: Deep Research Audit & Archival Bundling Implementation",
+      "line_count": 80,
+      "word_count": 309
+    },
+    {
+      "filename": "EXISTING_AST_AUDIT.md",
+      "path": "archive/historical_docs_20251210/EXISTING_AST_AUDIT.md",
+      "size": 10047,
+      "modified": "2025-12-10T18:15:33.644321",
+      "title": "Existing AST Usage Audit",
+      "line_count": 359,
+      "word_count": 1285
+    },
+    {
+      "filename": "PR_CHECKLIST_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/PR_CHECKLIST_COMPLETE.md",
+      "size": 9150,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "\u2705 PR Checklist: Complete Implementation - All Tasks Finished",
+      "line_count": 354,
+      "word_count": 1296
+    },
+    {
+      "filename": "FINAL_TRANSFORMATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/FINAL_TRANSFORMATION_SUMMARY.md",
+      "size": 18424,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "\ud83c\udf89 Complete Transformation Summary: Phases 1-4",
+      "line_count": 500,
+      "word_count": 2063
+    },
+    {
+      "filename": "ALL_PHASES_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/ALL_PHASES_COMPLETE.md",
+      "size": 15548,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "\ud83c\udf89 ALL PHASES COMPLETE - Final Achievement Report",
+      "line_count": 486,
+      "word_count": 1750
+    },
+    {
+      "filename": "IMDS_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/IMDS_IMPLEMENTATION_SUMMARY.md",
+      "size": 6804,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "IMDS Diagnostic Implementation - Final Summary",
+      "line_count": 214,
+      "word_count": 861
+    },
+    {
+      "filename": "VERIFICATION_REPORT_EVALUATION_LOOP.md",
+      "path": "archive/historical_docs_20251210/VERIFICATION_REPORT_EVALUATION_LOOP.md",
+      "size": 6987,
+      "modified": "2025-12-10T18:15:33.654321",
+      "title": "Final Verification Report: Evaluation Loop Implementation",
+      "line_count": 271,
+      "word_count": 1053
+    },
+    {
+      "filename": "CODEX_STATUS_IMPLEMENTATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/CODEX_STATUS_IMPLEMENTATION_SUMMARY.md",
+      "size": 4178,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Implementation Summary: Codex Status Audit Improvements",
+      "line_count": 114,
+      "word_count": 459
+    },
+    {
+      "filename": "codex_secret_scan_report.md",
+      "path": "archive/historical_docs_20251210/codex_secret_scan_report.md",
+      "size": 8746,
+      "modified": "2025-12-10T18:15:33.702321",
+      "title": "_codex_ Secret Scan Stub Report",
+      "line_count": 61,
+      "word_count": 737
+    },
+    {
+      "filename": "PHASE2_PROGRESS.md",
+      "path": "archive/historical_docs_20251210/PHASE2_PROGRESS.md",
+      "size": 10227,
+      "modified": "2025-12-10T18:15:33.649321",
+      "title": "Phase 2: Reproducibility - Implementation Progress",
+      "line_count": 342,
+      "word_count": 1235
+    },
+    {
+      "filename": "PR_FINAL_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/PR_FINAL_SUMMARY.md",
+      "size": 6739,
+      "modified": "2025-12-10T18:15:33.651321",
+      "title": "PR #2205 Final Summary",
+      "line_count": 243,
+      "word_count": 1048
+    },
+    {
+      "filename": "TYPE_COVERAGE_PLAN.md",
+      "path": "archive/historical_docs_20251210/TYPE_COVERAGE_PLAN.md",
+      "size": 1957,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Type Coverage Plan - Path to 100%",
+      "line_count": 76,
+      "word_count": 311
+    },
+    {
+      "filename": "AUDIT_REMEDIATION_STATUS.md",
+      "path": "archive/historical_docs_20251210/AUDIT_REMEDIATION_STATUS.md",
+      "size": 16656,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Audit Remediation Implementation Status Report",
+      "line_count": 572,
+      "word_count": 2064
+    },
+    {
+      "filename": "SELF_VALIDATION_REPORT.md",
+      "path": "archive/historical_docs_20251210/SELF_VALIDATION_REPORT.md",
+      "size": 16666,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "Self-Validation Report: Complete Audit Remediation & Verification",
+      "line_count": 513,
+      "word_count": 1934
+    },
+    {
+      "filename": "FINAL_VERIFICATION_REPORT.md",
+      "path": "archive/historical_docs_20251210/FINAL_VERIFICATION_REPORT.md",
+      "size": 14739,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Final Verification Report - Gap Remediation Implementation",
+      "line_count": 529,
+      "word_count": 1879
+    },
+    {
+      "filename": "MCP_INTEGRATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/MCP_INTEGRATION_COMPLETE.md",
+      "size": 7975,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MCP Integration - Complete Implementation Report",
+      "line_count": 219,
+      "word_count": 839
+    },
+    {
+      "filename": "PROGRESS_REPORT_100_PERCENT.md",
+      "path": "archive/historical_docs_20251210/PROGRESS_REPORT_100_PERCENT.md",
+      "size": 6936,
+      "modified": "2025-12-10T18:15:33.650321",
+      "title": "100% Merge Readiness - Progress Report",
+      "line_count": 299,
+      "word_count": 998
+    },
+    {
+      "filename": "MCP_INTEGRATION_PR2297_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/MCP_INTEGRATION_PR2297_SUMMARY.md",
+      "size": 12326,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MCP + ITA Integration - PR #2297 Summary",
+      "line_count": 413,
+      "word_count": 1574
+    },
+    {
+      "filename": "CHANGELOG_CodexAudit.md",
+      "path": "archive/historical_docs_20251210/CHANGELOG_CodexAudit.md",
+      "size": 15701,
+      "modified": "2025-12-10T18:15:33.643321",
+      "title": "Changelog: Codex Audit Implementation \u2014 Batches 1\u20134",
+      "line_count": 565,
+      "word_count": 1776
+    },
+    {
+      "filename": "UPDATED_AUDIT_REPORT_POST_REMEDIATION.md",
+      "path": "archive/historical_docs_20251210/UPDATED_AUDIT_REPORT_POST_REMEDIATION.md",
+      "size": 10051,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "[Report]: Updated Audit Results Post-Remediation (v1.1.0)",
+      "line_count": 310,
+      "word_count": 1414
+    },
+    {
+      "filename": "TRANSFORMATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/TRANSFORMATION_COMPLETE.md",
+      "size": 12246,
+      "modified": "2025-12-10T18:15:33.653321",
+      "title": "Autonomous Transformation: Phases 1-3 Complete",
+      "line_count": 390,
+      "word_count": 1381
+    },
+    {
+      "filename": "MLOPS_CAPABILITY_COMPLETION.md",
+      "path": "archive/historical_docs_20251210/MLOPS_CAPABILITY_COMPLETION.md",
+      "size": 10407,
+      "modified": "2025-12-10T18:15:33.648321",
+      "title": "MLOps Capability Completion Report",
+      "line_count": 332,
+      "word_count": 1215
+    },
+    {
+      "filename": "IMPLEMENTATION_STATUS.md",
+      "path": "archive/historical_docs_20251210/IMPLEMENTATION_STATUS.md",
+      "size": 6186,
+      "modified": "2025-12-10T18:15:33.646321",
+      "title": "Implementation Status Report",
+      "line_count": 180,
+      "word_count": 694
+    },
+    {
+      "filename": "REVIEW_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/REVIEW_SUMMARY.md",
+      "size": 933,
+      "modified": "2025-12-10T18:15:33.652321",
+      "title": "REVIEW_SUMMARY",
+      "line_count": 31,
+      "word_count": 140
+    },
+    {
+      "filename": "ARTIFACTS_VERIFICATION_SUMMARY.md",
+      "path": "archive/historical_docs_20251210/ARTIFACTS_VERIFICATION_SUMMARY.md",
+      "size": 8330,
+      "modified": "2025-12-10T18:15:33.642321",
+      "title": "Artifacts & Verification Summary",
+      "line_count": 244,
+      "word_count": 1176
+    },
+    {
+      "filename": "FINAL_VERIFICATION_COMPLETE.md",
+      "path": "archive/historical_docs_20251210/FINAL_VERIFICATION_COMPLETE.md",
+      "size": 14230,
+      "modified": "2025-12-10T18:15:33.645321",
+      "title": "Final Verification Checklist - ALL Items Complete \u2705",
+      "line_count": 399,
+      "word_count": 1753
+    }
+  ]
+}
