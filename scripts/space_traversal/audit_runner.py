@@ -1525,6 +1525,7 @@ def run_full(cfg):
                 ).strip()
             except (subprocess.CalledProcessError, FileNotFoundError):
                 # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
+                # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
                 pass
             
             db = TrendDatabase(db_path)
