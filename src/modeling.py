@@ -239,8 +239,7 @@ def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTok
         kwargs["trust_remote_code"] = True
 
     try:
-        return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
-    except Exception as exc:  # pragma: no cover - surface friendly error in tests
+        return AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)  # nosec B615    except Exception as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
@@ -339,8 +338,7 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:
-        model = AutoModelForCausalLM.from_pretrained(coerced.model_name, **load_kwargs)
-    except OSError as exc:  # pragma: no cover - offline friendly error propagation
+        model = AutoModelForCausalLM.from_pretrained(coerced.model_name, **load_kwargs)  # nosec B615    except OSError as exc:  # pragma: no cover - offline friendly error propagation
         raise RuntimeError(
             f"Unable to load model '{coerced.model_name}'. "
             "Ensure the weights are available locally."

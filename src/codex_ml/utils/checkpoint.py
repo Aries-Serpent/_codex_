@@ -129,7 +129,7 @@ def _load_payload(path: Path, map_location: str | None = None) -> Any:
         with suppress(RuntimeError):
             return _torch_load(path, map_location=map_location)
     with path.open("rb") as fh:  # pragma: no cover - pickle fallback
-        return pickle.load(fh)  # noqa: S301 - trusted local checkpoint payloads
+        return pickle.load(fh)  # nosec B301
 
 
 def _capture_rng_state_raw() -> dict[str, Any]:

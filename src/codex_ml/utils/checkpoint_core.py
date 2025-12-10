@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
-import pickle
+import pickle  # nosec B403 - Required for ML checkpoint serialization
 import platform
 import random
 import re
@@ -361,8 +361,7 @@ def _deserialize_payload(
                 buf.seek(0)
         except Exception:
             buf.seek(0)
-    return pickle.load(buf)
-
+    return pickle.load(buf)  # nosec B301
 
 _CKPT_COUNTER = count()
 

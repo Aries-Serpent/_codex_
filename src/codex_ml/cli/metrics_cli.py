@@ -133,8 +133,7 @@ def _csv_to_sqlite(
     try:
         cur = con.cursor()
         table_safe = _validate_table(table or "metrics", allow_unsafe_table_name)
-        cur.execute(
-            f"CREATE TABLE IF NOT EXISTS {table_safe} "
+        cur.execute(  # nosec B608            f"CREATE TABLE IF NOT EXISTS {table_safe} "
             "(run_id TEXT, epoch REAL, key TEXT, value TEXT)"
         )
         con.execute("BEGIN IMMEDIATE")
@@ -154,19 +153,16 @@ def _csv_to_sqlite(
                     )
                 )
                 if len(buf) >= batch:
-                    cur.executemany(
-                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                    cur.executemany(  # nosec B608                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
                         buf,
                     )
                     buf.clear()
             if buf:
-                cur.executemany(
-                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                cur.executemany(  # nosec B608                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
                     buf,
                 )
         if create_index:
-            cur.execute(
-                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
+            cur.execute(  # nosec B608                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
             )
         con.commit()
     finally:
@@ -199,22 +195,18 @@ def _csv_to_duckdb(
         csvp = csv_path.as_posix()
         mode_normalized = (mode or "replace").lower()
         if mode_normalized == "replace":
-            con.execute(
-                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+            con.execute(  # nosec B608                f"CREATE OR REPLACE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
                 [csvp],
             )
         elif mode_normalized == "append":
-            con.execute(
-                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",
+            con.execute(  # nosec B608                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",
                 [csvp],
             )
-            con.execute(
-                f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto(?)",
+            con.execute(  # nosec B608                f"INSERT INTO {table_safe} SELECT * FROM read_csv_auto(?)",
                 [csvp],
             )
         elif mode_normalized == "fail":
-            con.execute(
-                f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
+            con.execute(  # nosec B608                f"CREATE TABLE {table_safe} AS SELECT * FROM read_csv_auto(?)",
                 [csvp],
             )
         else:

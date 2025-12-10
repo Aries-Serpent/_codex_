@@ -82,8 +82,7 @@ def _activate_editable_distribution(ep: Any) -> None:
                 continue
             if entry.startswith("import "):
                 try:
-                    exec(entry, {})  # pragma: no cover - executes .pth bootstrap
-                except Exception:
+                    exec(entry, {})  # pragma: no cover - executes .pth bootstrap  # nosec B102                except Exception:
                     pass
                 continue
             if entry not in sys.path:

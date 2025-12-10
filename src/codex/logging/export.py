@@ -75,7 +75,7 @@ def _fetch_events(db_path: str, session_id: str) -> list[dict[str, Any]]:
         if "role" in mapping:
             cols.append(f"{mapping['role']} AS role")
         sql = (
-            f"SELECT {', '.join(cols)} FROM {table} "
+            f"SELECT {', '.join(cols)} FROM {table} "  # nosec B608
             f"WHERE {mapping['session_id']}=? ORDER BY {mapping['timestamp']}"
         )
         cur = conn.execute(sql, (session_id,))

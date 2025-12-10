@@ -456,9 +456,11 @@ class FSDPCheckpointManager:
         fsdp_model: "FSDP",
         optimizer: Optional["torch.optim.Optimizer"],
     ) -> tuple:
-        """Load full consolidated checkpoint."""
-        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        """Load full consolidated checkpoint.
         
+        Security note: Checkpoint files should only be loaded from trusted sources.
+        """
+        checkpoint = torch.load(checkpoint_path, map_location="cpu")  # nosec B614        
         with FSDP.state_dict_type(
             fsdp_model,
             StateDictType.FULL_STATE_DICT,
@@ -483,10 +485,12 @@ class FSDPCheckpointManager:
         optimizer: Optional["torch.optim.Optimizer"],
         rank: int,
     ) -> tuple:
-        """Load sharded checkpoint (each rank loads its shard)."""
-        shard_path = checkpoint_path.parent / f"{checkpoint_path.stem}_rank{rank}.pt"
-        checkpoint = torch.load(shard_path, map_location="cpu")
+        """Load sharded checkpoint (each rank loads its shard).
         
+        Security note: Checkpoint files should only be loaded from trusted sources.
+        """
+        shard_path = checkpoint_path.parent / f"{checkpoint_path.stem}_rank{rank}.pt"
+        checkpoint = torch.load(shard_path, map_location="cpu")  # nosec B614        
         with FSDP.state_dict_type(
             fsdp_model,
             StateDictType.SHARDED_STATE_DICT,

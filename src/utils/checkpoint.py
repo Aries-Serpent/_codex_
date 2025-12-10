@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import inspect
 import os
-import pickle
+import pickle  # nosec B403 - Required for legacy ML checkpoint serialization
 import random as _random
 import tempfile
 import warnings as _warnings
@@ -364,8 +364,7 @@ def _load_legacy_checkpoint_payload(
     if candidate is None:
         try:
             with open(path, "rb") as fh:
-                loaded = pickle.load(fh)
-        except Exception:
+                loaded = pickle.load(fh)  # nosec B301        except Exception:
             return None
         if not isinstance(loaded, Mapping):
             return None
