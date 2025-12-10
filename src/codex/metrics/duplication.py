@@ -217,7 +217,8 @@ class DuplicationDetector:
                     if occurrences:
                         # Create hash from first occurrence
                         hash_str = f"{occurrences[0]['file']}:{occurrences[0]['start']}"
-                        block_hash = hashlib.md5(hash_str.encode()).hexdigest()
+                        # nosec B324 - MD5 used for deduplication hashing, not security
+                        block_hash = hashlib.md5(hash_str.encode(), usedforsecurity=False).hexdigest()
 
                         block = DuplicateBlock(
                             hash=block_hash,

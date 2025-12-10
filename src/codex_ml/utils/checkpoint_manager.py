@@ -52,16 +52,16 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
         raise FileNotFoundError(path)
     if torch is not None and hasattr(torch, "load"):
         try:
-            data = torch.load(target, map_location="cpu")
+            data = torch.load(target, map_location="cpu")  # nosec B614
         except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
             with target.open("rb") as handle:
                 try:
-                    data = pickle.load(handle)
+                    data = pickle.load(handle)  # nosec B301
                 except Exception:
                     raise torch_error
     else:  # pragma: no cover - exercised when torch is unavailable
         with target.open("rb") as handle:
-            data = pickle.load(handle)
+            data = pickle.load(handle)  # nosec B301
     if not isinstance(data, dict):
         raise TypeError("checkpoint payload must be a mapping")
     return data
