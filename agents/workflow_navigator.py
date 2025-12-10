@@ -53,7 +53,6 @@ class WorkflowStep:
                 cmd_list = shlex.split(self.command)
                 result = subprocess.run(
                     cmd_list,
-                    shell=False,
                     capture_output=True,
                     text=True,
                     cwd=context.get('working_dir', '.')
