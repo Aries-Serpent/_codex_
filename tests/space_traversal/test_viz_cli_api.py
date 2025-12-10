@@ -460,3 +460,85 @@ def test_create_wiki_bundle(tmp_path: Path):
         names = zf.namelist()
         assert "Home.md" in names
         assert "manifest.json" in names
+
+
+# ============================================================================
+# Actions Usage Tracker Tests (v1.5.5)
+# ============================================================================
+
+
+def test_usage_tracker_init(tmp_path: Path):
+    """Test usage tracker initialization."""
+    from scripts.space_traversal.actions_usage_tracker import UsageTracker
+
+    tracker = UsageTracker(tmp_path / "usage.json")
+    assert tracker.data_path.parent.exists()
+
+
+def test_usage_tracker_record_run(tmp_path: Path):
+    """Test recording a workflow run."""
+    from scripts.space_traversal.actions_usage_tracker import UsageTracker
+
+    tracker = UsageTracker(tmp_path / "usage.json")
+    run = tracker.record_run(
+        workflow_name="test-workflow",
+        run_id="12345",
+        run_number=1,
+        trigger="push",
+        status="success",
+        started_at="2024-01-01T00:00:00Z",
+        duration_minutes=5.0,
+        runner_type="ubuntu-latest",
+    )
+
+    assert run.workflow_name == "test-workflow"
+    assert run.estimated_cost_usd == 5.0 * 0.008
+
+
+def test_usage_tracker_get_summary(tmp_path: Path):
+    """Test getting usage summary."""
+    from scripts.space_traversal.actions_usage_tracker import UsageTracker
+    from datetime import datetime
+
+    tracker = UsageTracker(tmp_path / "usage.json")
+    tracker.record_run(
+        workflow_name="test-workflow",
+        run_id="12345",
+        run_number=1,
+        trigger="push",
+        status="success",
+        started_at=datetime.now().isoformat(),
+        duration_minutes=5.0,
+    )
+
+    summary = tracker.get_summary(days=30)
+    assert summary.total_runs == 1
+    assert summary.total_minutes == 5.0
+
+
+def test_usage_tracker_cost_report(tmp_path: Path):
+    """Test generating cost report."""
+    from scripts.space_traversal.actions_usage_tracker import UsageTracker
+
+    tracker = UsageTracker(tmp_path / "usage.json")
+    report = tracker.get_cost_report()
+
+    assert "GitHub Actions Usage Report" in report
+    assert "Estimated Cost" in report
+
+
+def test_usage_dashboard_html(tmp_path: Path):
+    """Test generating usage dashboard HTML."""
+    from scripts.space_traversal.actions_usage_tracker import (
+        UsageTracker,
+        generate_usage_dashboard_html,
+    )
+
+    tracker = UsageTracker(tmp_path / "usage.json")
+    output_path = tmp_path / "dashboard.html"
+    generate_usage_dashboard_html(tracker, output_path)
+
+    assert output_path.exists()
+    content = output_path.read_text()
+    assert "GitHub Actions Usage" in content
+    assert "Total Runs" in content

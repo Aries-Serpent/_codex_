@@ -1,0 +1,249 @@
+name: Audit & Improvement Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      audit_type:
+        description: 'Type of audit to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - gap-analysis
+          - code-quality
+          - capability-validation
+      create_improvement_pr:
+        description: 'Create PR with @copilot improvements'
+        required: false
+        default: 'false'
+        type: boolean
+      target_capabilities:
+        description: 'Specific capabilities to audit (comma-separated, or "all")'
+        required: false
+        default: 'all'
+        type: string
+      regression_threshold:
+        description: 'Regression detection threshold (0.01-0.10)'
+        required: false
+        default: '0.02'
+        type: string
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  audit-gap-analysis:
+    name: Run Audit Gap Analysis
+    runs-on: ubuntu-latest
+    outputs:
+      gap_count: ${{ steps.analyze.outputs.gap_count }}
+      improvement_areas: ${{ steps.analyze.outputs.improvement_areas }}
+      has_regressions: ${{ steps.analyze.outputs.has_regressions }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2 pyyaml pytest || true
+          pip install -e . || true
+
+      - name: Run Full Audit
+        if: inputs.audit_type == 'full' || inputs.audit_type == ''
+        run: |
+          python scripts/space_traversal/audit_runner.py run
+
+      - name: Run Gap Analysis
+        if: inputs.audit_type == 'gap-analysis'
+        run: |
+          python scripts/space_traversal/audit_runner.py run --stages S1,S2,S3
+
+      - name: Run Code Quality Audit
+        if: inputs.audit_type == 'code-quality'
+        run: |
+          python scripts/space_traversal/audit_runner.py run --stages S4,S5,S6
+
+      - name: Run Capability Validation
+        if: inputs.audit_type == 'capability-validation'
+        run: |
+          python scripts/space_traversal/audit_runner.py validate
+
+      - name: Analyze Results
+        id: analyze
+        run: |
+          # Count gaps
+          if [ -f audit_artifacts/gaps.json ]; then
+            GAP_COUNT=$(python -c "import json; data=json.load(open('audit_artifacts/gaps.json')); print(len(data.get('gaps', [])))")
+          else
+            GAP_COUNT=0
+          fi
+          echo "gap_count=$GAP_COUNT" >> $GITHUB_OUTPUT
+          
+          # Check for regressions
+          if [ -f audit_artifacts/regression_diff.txt ]; then
+            if grep -q "REGRESSION" audit_artifacts/regression_diff.txt; then
+              echo "has_regressions=true" >> $GITHUB_OUTPUT
+            else
+              echo "has_regressions=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "has_regressions=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Extract improvement areas
+          if [ -f audit_artifacts/capabilities_scored.json ]; then
+            python -c "
+          import json
+          data = json.load(open('audit_artifacts/capabilities_scored.json'))
+          low_score = [c['id'] for c in data.get('capabilities', []) if c.get('score', 1) < 0.7]
+          print(','.join(low_score[:5]) if low_score else 'none')
+          " > improvement_areas.txt
+            echo "improvement_areas=$(cat improvement_areas.txt)" >> $GITHUB_OUTPUT
+          else
+            echo "improvement_areas=none" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Store Trend Data
+        run: |
+          python scripts/space_traversal/audit_runner.py store-trend --artifacts-dir audit_artifacts || true
+
+      - name: Check Regressions
+        run: |
+          python scripts/space_traversal/audit_runner.py check-regressions \
+            --artifacts-dir audit_artifacts \
+            --threshold ${{ inputs.regression_threshold || '0.02' }} || true
+
+      - name: Upload Audit Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-results
+          path: |
+            audit_artifacts/
+            audit_run_manifest.json
+            reports/
+          retention-days: 90
+
+  create-improvement-issue:
+    name: Create Improvement Issue/PR
+    runs-on: ubuntu-latest
+    needs: audit-gap-analysis
+    if: inputs.create_improvement_pr == 'true' && needs.audit-gap-analysis.outputs.gap_count > '0'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Audit Results
+        uses: actions/download-artifact@v4
+        with:
+          name: audit-results
+
+      - name: Generate Copilot Improvement Prompt
+        id: prompt
+        run: |
+          IMPROVEMENTS="${{ needs.audit-gap-analysis.outputs.improvement_areas }}"
+          GAP_COUNT="${{ needs.audit-gap-analysis.outputs.gap_count }}"
+          HAS_REGRESSIONS="${{ needs.audit-gap-analysis.outputs.has_regressions }}"
+          
+          cat > improvement_prompt.md << EOF
+          ## @copilot Improvement Request
+          
+          Based on the latest audit results, please implement the following improvements:
+          
+          ### Audit Summary
+          - **Gaps Detected:** ${GAP_COUNT}
+          - **Regressions Detected:** ${HAS_REGRESSIONS}
+          - **Priority Capabilities:** ${IMPROVEMENTS}
+          
+          ### Requested Actions
+          
+          1. **Address capability gaps** in the following areas: ${IMPROVEMENTS}
+          2. **Fix any regressions** detected in the audit
+          3. **Update tests** to cover new functionality
+          4. **Update documentation** for any changes made
+          
+          ### Acceptance Criteria
+          
+          - [ ] All identified gaps are addressed
+          - [ ] No new regressions introduced
+          - [ ] Tests pass with >70% coverage
+          - [ ] Documentation updated
+          - [ ] PR template 2.0 checklist completed
+          
+          ---
+          
+          *This issue was auto-generated by the Audit & Improvement Pipeline.*
+          *Audit Type:* ${{ inputs.audit_type || 'full' }}
+          *Run ID:* ${{ github.run_id }}
+          EOF
+          
+          echo "prompt_file=improvement_prompt.md" >> $GITHUB_OUTPUT
+
+      - name: Create Improvement Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const promptContent = fs.readFileSync('improvement_prompt.md', 'utf8');
+            
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔧 Audit Improvement Request - ' + new Date().toISOString().split('T')[0],
+              body: promptContent,
+              labels: ['audit', 'improvement', 'copilot']
+            });
+            
+            console.log(`Created issue #${issue.data.number}`);
+
+  track-usage:
+    name: Track GitHub Actions Usage
+    runs-on: ubuntu-latest
+    needs: audit-gap-analysis
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Calculate Usage Metrics
+        id: usage
+        run: |
+          # Get workflow run duration
+          START_TIME="${{ github.event.workflow_run.created_at || github.event.head_commit.timestamp }}"
+          
+          cat > usage_metrics.json << EOF
+          {
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "trigger": "${{ github.event_name }}",
+            "audit_type": "${{ inputs.audit_type || 'full' }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "status": "${{ needs.audit-gap-analysis.result }}",
+            "gap_count": "${{ needs.audit-gap-analysis.outputs.gap_count }}",
+            "has_regressions": "${{ needs.audit-gap-analysis.outputs.has_regressions }}"
+          }
+          EOF
+          
+          echo "📊 Usage metrics recorded"
+          cat usage_metrics.json
+
+      - name: Upload Usage Metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: usage-metrics
+          path: usage_metrics.json
+          retention-days: 365

@@ -1,0 +1,103 @@
+name: Wiki Assembly & Documentation
+
+on:
+  workflow_dispatch:
+    inputs:
+      include_api_docs:
+        description: 'Include API documentation'
+        required: false
+        default: 'true'
+        type: boolean
+      include_mermaid:
+        description: 'Include Mermaid diagrams'
+        required: false
+        default: 'true'
+        type: boolean
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'AGENTS.md'
+      - 'README.md'
+      - 'scripts/space_traversal/wiki_generator.py'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  assemble-wiki:
+    name: Generate Wiki Bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2 pyyaml || true
+
+      - name: Generate Wiki Pages
+        run: |
+          mkdir -p wiki_output
+          python -c "
+          import sys
+          sys.path.insert(0, '.')
+          from scripts.space_traversal.wiki_generator import generate_wiki, create_wiki_bundle
+          from pathlib import Path
+          
+          output_dir = Path('wiki_output')
+          generate_wiki(output_dir, 'Aries-Serpent/_codex_', '1.5.5')
+          create_wiki_bundle(output_dir, Path('wiki.zip'))
+          print('✅ Wiki generated successfully')
+          "
+
+      - name: Generate Documentation Hub
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, '.')
+          from scripts.space_traversal.viz_docs_hub import generate_docs_hub
+          from pathlib import Path
+          
+          generate_docs_hub(Path('wiki_output/docs_hub.html'), 'Aries-Serpent/_codex_', '1.5.5')
+          print('✅ Documentation hub generated')
+          "
+
+      - name: Generate Agent Interface
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, '.')
+          from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+          from pathlib import Path
+          
+          generate_agent_interface(Path('wiki_output/agent_interface.html'), 'Aries-Serpent/_codex_', '1.5.5')
+          print('✅ Agent interface generated')
+          "
+
+      - name: Upload Wiki Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiki-bundle
+          path: |
+            wiki.zip
+            wiki_output/
+          retention-days: 90
+
+      - name: Create Release Asset (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: wiki.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

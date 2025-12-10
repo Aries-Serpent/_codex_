@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 __all__ = ["generate_docs_hub", "DOCS_HUB_TEMPLATE"]
 

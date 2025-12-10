@@ -11,7 +11,6 @@ import json
 import zipfile
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 __all__ = ["generate_wiki", "create_wiki_bundle", "WIKI_PAGES"]
 

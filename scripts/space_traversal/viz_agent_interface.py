@@ -15,9 +15,7 @@ Features:
 
 from __future__ import annotations
 
-from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 __all__ = ["generate_agent_interface", "AGENT_INTERFACE_TEMPLATE"]
 
@@ -1304,7 +1302,6 @@ def generate_agent_interface(
     html = AGENT_INTERFACE_TEMPLATE.format(
         repo_name=repo_name,
         version=version,
-        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M"),
     )
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
