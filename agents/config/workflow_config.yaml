@@ -1,0 +1,170 @@
+# Workflow Configuration for AI Agents
+
+# Default settings for workflow navigation and execution
+defaults:
+  deliberation_time: 5.0  # seconds for physics-inspired decision making
+  dry_run_first: false    # always dry-run before executing
+  save_state: true        # save workflow execution state
+  mental_mapping: true    # record decisions in mental map
+
+# Workflow frequency settings
+frequency:
+  high:    # Execute daily or multiple times per day
+    - AUDIT_EXEC
+    - PHYS_DECIDE
+    - SELF_HEAL
+  medium:  # Execute weekly
+    - PRE_RELEASE
+    - DOC_GEN
+    - MENTAL_REVIEW
+  low:     # Execute monthly
+    - REPO_ORG
+
+# Category mappings
+categories:
+  quality_assurance:
+    - AUDIT_EXEC
+    - SELF_HEAL
+  decision_making:
+    - PHYS_DECIDE
+    - MENTAL_REVIEW
+  deployment:
+    - PRE_RELEASE
+    - DOC_GEN
+  maintenance:
+    - REPO_ORG
+
+# Workflow suggestions based on repository state
+suggestions:
+  recent_commits:
+    workflows:
+      - AUDIT_EXEC
+    reason: "Recent code changes should be audited"
+  
+  low_test_coverage:
+    workflows:
+      - AUDIT_EXEC
+    reason: "Low coverage indicates need for quality check"
+  
+  many_open_issues:
+    workflows:
+      - SELF_HEAL
+    reason: "High issue count suggests capability gaps"
+  
+  pre_release_ready:
+    workflows:
+      - AUDIT_EXEC
+      - PRE_RELEASE
+    reason: "Ready for pre-release deployment"
+  
+  documentation_stale:
+    workflows:
+      - DOC_GEN
+    reason: "Documentation needs updating"
+
+# Physics-inspired decision thresholds
+physics_orchestrator:
+  confidence_threshold: 0.6
+  energy_budget: 100.0
+  risk_tolerance: 0.5
+  momentum_weight: 0.3
+  friction_weight: 0.2
+
+# Mental mapping settings
+mental_mapping:
+  review_threshold: 0.6
+  auto_review: true
+  save_interval: 10  # Save every 10 decisions
+  max_history_size: 1000
+
+# Workflow chaining templates
+chains:
+  full_audit_and_deploy:
+    workflows:
+      - AUDIT_EXEC
+      - PHYS_DECIDE
+      - PRE_RELEASE
+    description: "Complete audit, decision, and deployment pipeline"
+  
+  self_improvement_cycle:
+    workflows:
+      - SELF_HEAL
+      - MENTAL_REVIEW
+      - PHYS_DECIDE
+    description: "Detect gaps, review decisions, plan improvements"
+  
+  documentation_refresh:
+    workflows:
+      - DOC_GEN
+      - REPO_ORG
+    description: "Generate docs and organize repository"
+
+# Quick access aliases
+aliases:
+  audit: AUDIT_EXEC
+  check: AUDIT_EXEC
+  validate: AUDIT_EXEC
+  quality: AUDIT_EXEC
+  decide: PHYS_DECIDE
+  choose: PHYS_DECIDE
+  evaluate: PHYS_DECIDE
+  optimize: PHYS_DECIDE
+  release: PRE_RELEASE
+  deploy: PRE_RELEASE
+  publish: PRE_RELEASE
+  docs: DOC_GEN
+  wiki: DOC_GEN
+  documentation: DOC_GEN
+  organize: REPO_ORG
+  cleanup: REPO_ORG
+  archive: REPO_ORG
+  heal: SELF_HEAL
+  feedback: SELF_HEAL
+  improve: SELF_HEAL
+  review: MENTAL_REVIEW
+  learn: MENTAL_REVIEW
+  reflect: MENTAL_REVIEW
+
+# Output directories
+outputs:
+  workflows: .codex/workflows/state
+  decisions: .codex/decisions
+  mental_maps: .codex/mental_maps
+  audit_reports: audit_artifacts
+  documentation: docs
+
+# GitHub workflow integration
+github_workflows:
+  wiki_bundle_build:
+    enabled: true
+    trigger: "on_doc_gen_complete"
+    workflow_file: ".github/workflows/wiki-assemble.yml"
+    inputs:
+      bundle_format: "zip"
+      include_diagrams: true
+      deploy_to_wiki: false  # Manual deployment
+
+# Webhook notifications (optional)
+notifications:
+  enabled: false
+  webhooks:
+    slack:
+      enabled: false
+      url: "${SLACK_WEBHOOK_URL}"
+    teams:
+      enabled: false
+      url: "${TEAMS_WEBHOOK_URL}"
+
+# Audit configuration
+audit:
+  depth: 4  # Full evidence capture
+  store_trends: true
+  generate_dashboard: true
+  check_regressions: true
+
+# Archive configuration
+archive:
+  auto_archive: true
+  threshold_mb: 1
+  format: "tar.gz"
+  pointer_style: "both"  # JSON + SHA256
