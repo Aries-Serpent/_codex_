@@ -6,8 +6,8 @@ This script scans audit_artifacts/, reports/, and audit_run_manifest.json
 to create an interactive web-based dashboard for reviewing audit results.
 """
 
+import html
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -350,8 +350,10 @@ def generate_html_dashboard(
             <div class="weights">
 """
         for key, value in manifest_weights.items():
+            escaped_key = html.escape(str(key))
+            escaped_value = html.escape(str(value))
             html_content += f"""                <div class="weight-item">
-                    <span class="weight-label">{key.title()}:</span> {value}
+                    <span class="weight-label">{escaped_key.title()}:</span> {escaped_value}
                 </div>
 """
         html_content += """            </div>
@@ -381,12 +383,18 @@ def generate_html_dashboard(
         for artifact in audit_artifacts:
             ext = artifact["type"].lstrip(".")
             badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
+            # Escape all user-controlled data to prevent XSS
+            escaped_path = html.escape(artifact['path'])
+            escaped_name = html.escape(artifact['name'])
+            escaped_badge_class = html.escape(badge_class)
+            escaped_ext = html.escape(ext.upper())
+            
             html_content += f"""                    <tr>
-                        <td><a href="{artifact['path']}">{artifact['name']}</a></td>
-                        <td><span class="badge {badge_class}">{ext.upper()}</span></td>
+                        <td><a href="{escaped_path}">{escaped_name}</a></td>
+                        <td><span class="badge {escaped_badge_class}">{escaped_ext}</span></td>
                         <td>{format_size(artifact['size'])}</td>
                         <td>{format_timestamp(artifact['modified'])}</td>
-                        <td><code>{artifact['path']}</code></td>
+                        <td><code>{escaped_path}</code></td>
                     </tr>
 """
         html_content += """                </tbody>
@@ -422,12 +430,18 @@ def generate_html_dashboard(
         for report in reports:
             ext = report["type"].lstrip(".")
             badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
+            # Escape all user-controlled data to prevent XSS
+            escaped_path = html.escape(report['path'])
+            escaped_name = html.escape(report['name'])
+            escaped_badge_class = html.escape(badge_class)
+            escaped_ext = html.escape(ext.upper())
+            
             html_content += f"""                    <tr>
-                        <td><a href="{report['path']}">{report['name']}</a></td>
-                        <td><span class="badge {badge_class}">{ext.upper()}</span></td>
+                        <td><a href="{escaped_path}">{escaped_name}</a></td>
+                        <td><span class="badge {escaped_badge_class}">{escaped_ext}</span></td>
                         <td>{format_size(report['size'])}</td>
                         <td>{format_timestamp(report['modified'])}</td>
-                        <td><code>{report['path']}</code></td>
+                        <td><code>{escaped_path}</code></td>
                     </tr>
 """
         html_content += """                </tbody>
@@ -467,11 +481,17 @@ def generate_html_dashboard(
             sha_display = f"{artifact_sha[:16]}..." if len(artifact_sha) > 16 else artifact_sha
             artifact_timestamp = artifact.get('generated_at', 0)
             
+            # Escape all manifest data to prevent XSS from malicious JSON
+            escaped_name = html.escape(artifact_name)
+            escaped_format = html.escape(artifact_format)
+            escaped_format_upper = html.escape(artifact_format.upper())
+            escaped_sha = html.escape(sha_display)
+            
             html_content += f"""                    <tr>
-                        <td>{artifact_name}</td>
-                        <td><span class="badge {artifact_format}">{artifact_format.upper()}</span></td>
+                        <td>{escaped_name}</td>
+                        <td><span class="badge {escaped_format}">{escaped_format_upper}</span></td>
                         <td>{format_size(artifact_size)}</td>
-                        <td><code style="font-size: 11px;">{sha_display}</code></td>
+                        <td><code style="font-size: 11px;">{escaped_sha}</code></td>
                         <td>{format_timestamp(artifact_timestamp)}</td>
                     </tr>
 """
