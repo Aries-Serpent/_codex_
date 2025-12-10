@@ -1452,6 +1452,8 @@ def cmd_api_collection(args, cfg):
     )
     
     print(f"API collection generated: {output_path}")
+
+
 def cmd_swagger_docs(args, cfg):
     """Generate Swagger/OpenAPI-style documentation HTML."""
     if not HAS_VIZ_SWAGGER:
