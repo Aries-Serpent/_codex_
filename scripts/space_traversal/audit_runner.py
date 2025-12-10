@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """
-Audit Runner Orchestrator — v1.4.0 (Space Traversal Workflow)
+Audit Runner Orchestrator — v1.5.0 (Space Traversal Workflow)
 
 Capability audit pipeline for the _codex_ ML platform implementing the
-Space Traversal Workflow v1.4.0 specification.
+Space Traversal Workflow v1.5.x specification.
 
 Features:
  - S1-S7 pipeline stages with deterministic ordering and hashing
@@ -14,6 +14,9 @@ Features:
  - Policy validation via `validate` command
  - Trend aggregation (when enabled)
  - Manifest integrity chain with SHA256 hashes
+ - v1.5.x: Trend database storage and queries
+ - v1.5.x: Historical comparison with regression detection
+ - v1.5.x: ASCII and HTML visualization dashboards
 
 Commands:
  - run: Execute full pipeline (S1→S7)
@@ -21,6 +24,11 @@ Commands:
  - explain <cap-id>: Break down capability score
  - diff --old <a> --new <b>: Compare two audit runs
  - validate: Check quality gates (low maturity, missing detectors)
+ - store-trend: Store current audit in trend database (v1.5.0)
+ - show-trend <cap-id>: Show trend for a capability (v1.5.0)
+ - check-regressions: Check for score regressions (v1.5.0)
+ - compare-runs: Compare two audit runs with detailed analysis (v1.5.1)
+ - dashboard: Generate HTML dashboard (v1.5.2)
 
 Config: .copilot-space/workflow.yaml
 """
@@ -55,6 +63,32 @@ try:
     HAS_TREND_AGGREGATOR = True
 except ImportError:
     HAS_TREND_AGGREGATOR = False
+
+# v1.5.x trend database imports
+try:
+    from scripts.space_traversal import trend_db
+    from scripts.space_traversal.trend_db import TrendDatabase, create_snapshot_from_artifacts
+    HAS_TREND_DB = True
+except ImportError:
+    HAS_TREND_DB = False
+
+try:
+    from scripts.space_traversal import trend_compare
+    HAS_TREND_COMPARE = True
+except ImportError:
+    HAS_TREND_COMPARE = False
+
+try:
+    from scripts.space_traversal import viz_ascii
+    HAS_VIZ_ASCII = True
+except ImportError:
+    HAS_VIZ_ASCII = False
+
+try:
+    from scripts.space_traversal import viz_html
+    HAS_VIZ_HTML = True
+except ImportError:
+    HAS_VIZ_HTML = False
 
 def import_yaml_from_sitepackages():
     """Import yaml from site-packages, avoiding local directory shadowing."""
@@ -103,7 +137,7 @@ SAFEGUARD_KEYWORDS = [
     "sha256",
     "WANDB_MODE",
 ]
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 
 # Quality gate option keys (v1.4.0)
 OPT_FAIL_ON_LOW_MATURITY = "fail_on_low_maturity"
@@ -1122,6 +1156,248 @@ def command_validate(cfg):
         print(f"  - fail_on_low_maturity: {options.get('fail_on_low_maturity', False)}")
         print(f"  - fail_on_missing_detector: {options.get('fail_on_missing_detector', False)}")
 
+
+# ---------------------------------------------------------------------------
+# v1.5.x Trend Commands
+# ---------------------------------------------------------------------------
+def cmd_store_trend(args, cfg):
+    """Store current audit results in trend database."""
+    import subprocess
+    
+    if not HAS_TREND_DB:
+        print("Trend database module not available. Install dependencies.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    
+    # Check if scored capabilities exist
+    scored_path = artifacts_dir / "capabilities_scored.json"
+    if not scored_path.exists():
+        print(f"No capabilities_scored.json found at {scored_path}. Run audit first.", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    
+    # Get git info
+    git_commit = None
+    git_branch = None
+    try:
+        git_commit = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
+        ).strip()
+        git_branch = subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass
+    
+    # Get database path from config
+    trends_cfg = cfg.get("trends", {})
+    db_path = trends_cfg.get("database_path", str(artifacts_dir / "trends.db"))
+    
+    # Create and store snapshot
+    db = TrendDatabase(db_path)
+    snapshot = create_snapshot_from_artifacts(
+        artifacts_dir, git_commit, git_branch
+    )
+    run_id = db.store_snapshot(snapshot)
+    
+    print(f"Stored audit snapshot: {run_id}")
+    print(f"  Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(snapshot.timestamp))}")
+    print(f"  Capabilities: {len(snapshot.capabilities)}")
+    print(f"  Git: {git_branch}@{git_commit[:8] if git_commit else 'N/A'}")
+    print(f"  Database: {db_path}")
+
+
+def cmd_show_trend(args, cfg):
+    """Show trend for a capability."""
+    if not HAS_TREND_DB:
+        print("Trend database module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    trends_cfg = cfg.get("trends", {})
+    db_path = trends_cfg.get("database_path", str(artifacts_dir / "trends.db"))
+    
+    if not Path(db_path).exists():
+        print(f"No trend database found at {db_path}. Run 'store-trend' first.", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    
+    db = TrendDatabase(db_path)
+    trend = db.get_trend(args.capability, limit=args.limit, branch=args.branch)
+    
+    if not trend:
+        print(f"No trend data for {args.capability}")
+        return
+    
+    from datetime import datetime
+    
+    print(f"\nTrend for: {args.capability}")
+    print("-" * 60)
+    print(f"{'Timestamp':<20} {'Score':>8} {'Δ':>8} {'Branch':<15}")
+    print("-" * 60)
+    
+    prev_score = None
+    for entry in reversed(trend):
+        score = entry["score"]
+        delta = f"{score - prev_score:+.3f}" if prev_score is not None else "—"
+        ts = datetime.fromtimestamp(entry["timestamp"]).strftime("%Y-%m-%d %H:%M")
+        branch = entry["git_branch"] or "—"
+        print(f"{ts:<20} {score:>8.3f} {delta:>8} {branch:<15}")
+        prev_score = score
+    
+    # Show sparkline if viz_ascii available
+    if HAS_VIZ_ASCII and len(trend) > 1:
+        scores = [t["score"] for t in reversed(trend)]
+        spark = viz_ascii.sparkline(scores, width=40)
+        print(f"\nSparkline: {spark}")
+
+
+def cmd_check_regressions(args, cfg):
+    """Check for score regressions."""
+    if not HAS_TREND_DB:
+        print("Trend database module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    trends_cfg = cfg.get("trends", {})
+    db_path = trends_cfg.get("database_path", str(artifacts_dir / "trends.db"))
+    
+    if not Path(db_path).exists():
+        print(f"No trend database found at {db_path}. Run 'store-trend' first.", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    
+    db = TrendDatabase(db_path)
+    regressions = db.get_regressions(
+        threshold=args.threshold,
+        lookback_runs=args.lookback,
+    )
+    
+    if not regressions:
+        print("✅ No regressions detected")
+        return 0
+    
+    print(f"⚠️  {len(regressions)} regression(s) detected:\n")
+    for reg in regressions:
+        severity_icon = "🔴" if reg["severity"] == "high" else "🟡"
+        print(f"{severity_icon} {reg['capability_id']}")
+        print(f"   Current: {reg['current_score']:.3f}")
+        print(f"   Previous avg: {reg['previous_avg']:.3f}")
+        print(f"   Delta: {reg['delta']:+.3f}")
+        print()
+    
+    # Return non-zero exit code if high severity regressions
+    if any(r["severity"] == "high" for r in regressions):
+        return 1
+    return 0
+
+
+def cmd_compare_runs(args, cfg):
+    """Compare two audit runs with detailed analysis."""
+    if not HAS_TREND_COMPARE:
+        print("Trend compare module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    old_path = Path(args.old)
+    new_path = Path(args.new)
+    
+    if not old_path.exists():
+        print(f"Old file not found: {old_path}", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    if not new_path.exists():
+        print(f"New file not found: {new_path}", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    
+    results = trend_compare.compare_runs(old_path, new_path, threshold=args.threshold)
+    
+    # Generate report if output specified
+    if args.output:
+        output_path = Path(args.output)
+        trend_compare.generate_comparison_report(results, output_path)
+        print(f"Comparison report written to: {output_path}")
+    
+    # Print summary
+    regressions = [r for r in results if r.is_regression]
+    improvements = [r for r in results if r.delta > 0.02]
+    
+    print(f"\nComparison: {old_path.name} → {new_path.name}")
+    print("-" * 50)
+    print(f"Total capabilities: {len(results)}")
+    print(f"Regressions: {len(regressions)}")
+    print(f"Improvements: {len(improvements)}")
+    
+    if regressions:
+        print("\n⚠️  Regressions:")
+        for r in sorted(regressions, key=lambda x: x.delta)[:5]:
+            print(f"  {r.capability_id}: {r.old_score:.3f} → {r.new_score:.3f} ({r.delta:+.3f})")
+    
+    if improvements:
+        print("\n✅ Improvements:")
+        for r in sorted(improvements, key=lambda x: -x.delta)[:5]:
+            print(f"  {r.capability_id}: {r.old_score:.3f} → {r.new_score:.3f} ({r.delta:+.3f})")
+    
+    return 1 if any(r.regression_severity == "high" for r in regressions) else 0
+
+
+def cmd_dashboard(args, cfg):
+    """Generate HTML dashboard."""
+    if not HAS_VIZ_HTML:
+        print("Visualization HTML module not available.", file=sys.stderr)
+        sys.exit(2)
+    
+    artifacts_dir = Path(_get_artifacts_dir(cfg))
+    scored_path = artifacts_dir / "capabilities_scored.json"
+    
+    if not scored_path.exists():
+        print(f"No capabilities_scored.json found. Run audit first.", file=sys.stderr)
+        sys.exit(EXIT_MISSING_ARTIFACTS)
+    
+    # Load capabilities
+    with open(scored_path, encoding="utf-8") as f:
+        scored_data = json.load(f)
+    capabilities = scored_data.get("capabilities", [])
+    
+    # Load trend data if available
+    trend_data = []
+    if HAS_TREND_DB:
+        trends_cfg = cfg.get("trends", {})
+        db_path = trends_cfg.get("database_path", str(artifacts_dir / "trends.db"))
+        if Path(db_path).exists():
+            db = TrendDatabase(db_path)
+            # Get average scores per run
+            with __import__('sqlite3').connect(db_path) as conn:
+                cursor = conn.execute("""
+                    SELECT r.timestamp, AVG(cs.score) as avg_score
+                    FROM capability_scores cs
+                    JOIN audit_runs r ON cs.run_id = r.run_id
+                    GROUP BY r.run_id
+                    ORDER BY r.timestamp DESC
+                    LIMIT 30
+                """)
+                for row in cursor.fetchall():
+                    trend_data.append({"timestamp": row[0], "avg_score": row[1]})
+    
+    # Get regressions if available
+    regressions = []
+    if HAS_TREND_DB and Path(db_path).exists():
+        db = TrendDatabase(db_path)
+        regressions = db.get_regressions()
+    
+    # Determine output path
+    output_path = Path(args.output) if args.output else artifacts_dir / "dashboard.html"
+    
+    # Generate dashboard
+    repo_name = cfg.get("repo_name", "Repository")
+    viz_html.generate_dashboard(
+        capabilities=capabilities,
+        trend_data=trend_data,
+        output_path=output_path,
+        repo_name=repo_name,
+        version=VERSION,
+        regressions=regressions,
+    )
+    
+    print(f"Dashboard generated: {output_path}")
+
+
 # orchestrator
 def run_full(cfg):
     ctx = stage_s1_index(cfg)
@@ -1154,6 +1430,33 @@ def run_full(cfg):
             warn(f"Trend aggregation failed: {e}")
     elif trends_cfg.get("enabled", False) and not HAS_TREND_AGGREGATOR:
         warn("Trends enabled but trend_aggregator module not available")
+    
+    # v1.5.0: Auto-store in trend database if enabled
+    if trends_cfg.get("auto_store", False) and HAS_TREND_DB:
+        try:
+            import subprocess
+            artifacts_dir = Path(_get_artifacts_dir(cfg))
+            db_path = trends_cfg.get("database_path", str(artifacts_dir / "trends.db"))
+            
+            # Get git info
+            git_commit = None
+            git_branch = None
+            try:
+                git_commit = subprocess.check_output(
+                    ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
+                ).strip()
+                git_branch = subprocess.check_output(
+                    ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
+                ).strip()
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                pass
+            
+            db = TrendDatabase(db_path)
+            snapshot = create_snapshot_from_artifacts(artifacts_dir, git_commit, git_branch)
+            run_id = db.store_snapshot(snapshot)
+            info(f"Stored audit snapshot in trend database: {run_id[:8]}...")
+        except Exception as e:
+            warn(f"Auto-store trend failed: {e}")
     
     info("Audit complete.")
 
@@ -1210,17 +1513,41 @@ def run_stage(cfg, stage_id: str):
         sys.exit(2)
 
 def main():
-    parser = argparse.ArgumentParser(description="Capability Audit Runner")
+    parser = argparse.ArgumentParser(description="Capability Audit Runner v1.5.x")
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("run", help="Run full pipeline")
     stage_p = sub.add_parser("stage", help="Run a single stage")
-    stage_p.add_argument("stage_id", help="Stage code (S1..S7)")
+    stage_p.add_argument("stage_id", help="Stage code (S1..S7, TRENDS)")
     diff_p = sub.add_parser("diff", help="Diff two report or score files")
     diff_p.add_argument("--old", required=True, help="Old report/JSON path")
     diff_p.add_argument("--new", required=True, help="New report/JSON path")
     exp_p = sub.add_parser("explain", help="Explain a capability's score")
     exp_p.add_argument("capability", help="Capability ID to explain")
     sub.add_parser("validate", help="Validate policy gates (low maturity, missing detectors)")
+    
+    # v1.5.0 trend commands
+    sub.add_parser("store-trend", help="Store current audit in trend database (v1.5.0)")
+    
+    show_trend_p = sub.add_parser("show-trend", help="Show trend for a capability (v1.5.0)")
+    show_trend_p.add_argument("capability", help="Capability ID to show trend for")
+    show_trend_p.add_argument("--limit", type=int, default=30, help="Number of entries to show")
+    show_trend_p.add_argument("--branch", help="Filter by git branch")
+    
+    check_reg_p = sub.add_parser("check-regressions", help="Check for score regressions (v1.5.0)")
+    check_reg_p.add_argument("--threshold", type=float, default=0.02, help="Regression threshold")
+    check_reg_p.add_argument("--lookback", type=int, default=5, help="Number of runs to compare")
+    
+    # v1.5.1 comparison commands
+    compare_p = sub.add_parser("compare-runs", help="Compare two audit runs with detailed analysis (v1.5.1)")
+    compare_p.add_argument("--old", required=True, help="Old capabilities_scored.json path")
+    compare_p.add_argument("--new", required=True, help="New capabilities_scored.json path")
+    compare_p.add_argument("--output", help="Output path for comparison report")
+    compare_p.add_argument("--threshold", type=float, default=0.02, help="Regression threshold")
+    
+    # v1.5.2 dashboard command
+    dashboard_p = sub.add_parser("dashboard", help="Generate HTML dashboard (v1.5.2)")
+    dashboard_p.add_argument("--output", help="Output path for dashboard HTML")
+    
     args = parser.parse_args()
     if args.command is None:
         parser.print_help()
@@ -1237,6 +1564,18 @@ def main():
         command_explain(args, cfg)
     elif args.command == "validate":
         command_validate(cfg)
+    elif args.command == "store-trend":
+        cmd_store_trend(args, cfg)
+    elif args.command == "show-trend":
+        cmd_show_trend(args, cfg)
+    elif args.command == "check-regressions":
+        exit_code = cmd_check_regressions(args, cfg)
+        sys.exit(exit_code)
+    elif args.command == "compare-runs":
+        exit_code = cmd_compare_runs(args, cfg)
+        sys.exit(exit_code)
+    elif args.command == "dashboard":
+        cmd_dashboard(args, cfg)
     else:
         parser.print_help()
 

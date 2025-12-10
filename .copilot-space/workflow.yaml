@@ -1,4 +1,4 @@
-# Copilot Space Workflow Spec (v1.4.0)
+# Copilot Space Workflow Spec (v1.5.0)
 # Codex-Specific Enhancements:
 # - Extended domain patterns for ML serving, security, status, archival
 # - P5 features: token similarity, coverage stats, security severity
@@ -7,8 +7,10 @@
 # - Dynamic detector loading for new capabilities
 # - Enforce low maturity and missing-detector gates during `validate`.
 # - Score regression guard remains; thresholds unchanged.
+# - v1.5.0: Trend database for historical analysis
+# - v1.5.x: Visualization dashboards and webhook notifications
 
-version: 1.4.0
+version: 1.5.0
 metrics_schema_version: "2.0.0"
 
 stages:
@@ -113,3 +115,32 @@ inference:
   deterministic: true
   max_input_length: 512
   preprocessor_override: null
+
+# v1.5.0 Trend Configuration
+trends:
+  enabled: true
+  database_path: "audit_artifacts/trends.db"
+  auto_store: true  # Store snapshot after each audit run
+
+  retention:
+    max_runs: 1000
+    max_age_days: 365
+
+  regression_detection:
+    enabled: true
+    threshold: 0.02
+    lookback_runs: 5
+    fail_on_high_severity: true
+
+# v1.5.4 Webhook Configuration (optional)
+webhooks:
+  enabled: false
+  endpoints: []
+  # Example:
+  # - url: "https://hooks.slack.com/services/..."
+  #   type: slack
+  #   events: ["audit_complete", "regression_detected"]
+  # - url: "https://example.com/webhook"
+  #   type: generic
+  #   secret: "${WEBHOOK_SECRET}"
+  #   events: ["audit_complete"]
