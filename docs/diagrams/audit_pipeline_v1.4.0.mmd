@@ -1,0 +1,67 @@
+graph TB
+    subgraph "Stage 1: Context Index"
+        A[Repository Files] -->|enumerate & hash| B[context_index.json]
+        B -->|sorted file list| C[SHA256 hashes]
+    end
+    
+    subgraph "Stage 2: Facet Grouping"
+        B -->|regex patterns| D[facets.json]
+        D -->|domain clustering| E[checkpoint, token, train, eval, data, safety, logging, config, serve, secret, status, archive]
+    end
+    
+    subgraph "Stage 3: Capability Extraction"
+        D -->|static baseline| F[8 core capabilities]
+        D -->|dynamic detectors| G[31 extended capabilities]
+        F --> H[capabilities_raw.json]
+        G --> H
+        H -->|39 total capabilities| I[evidence files + patterns]
+    end
+    
+    subgraph "Stage 4: Scoring"
+        H -->|component scoring| J[capabilities_scored.json]
+        J -->|functionality| K[found/required patterns]
+        J -->|consistency| L[1 - duplication_ratio]
+        J -->|tests| M[test_files / evidence]
+        J -->|safeguards| N[keywords_found / total]
+        J -->|documentation| O[docs_mentioning / corpus]
+        K --> P[weighted aggregate]
+        L --> P
+        M --> P
+        N --> P
+        O --> P
+        P -->|score ∈ [0,1]| J
+    end
+    
+    subgraph "Stage 5: Gap Analysis"
+        J -->|filter score < 0.70| Q[gaps.json]
+        Q -->|low-maturity capabilities| R[remediation targets]
+    end
+    
+    subgraph "Stage 6: Report Rendering"
+        J -->|Jinja2 template| S[capability_matrix_timestamp.md]
+        Q --> S
+        S -->|human-readable| T[markdown report]
+        S -->|machine-readable| U[capability_matrix_timestamp.json]
+        S -->|daily automation| V[codex_status_update_date.md]
+    end
+    
+    subgraph "Stage 7: Manifest Generation"
+        B -->|repo_root_sha| W[audit_run_manifest.json]
+        H --> W
+        J --> W
+        S -->|template_hash| W
+        W -->|integrity chain| X[cryptographic audit trail]
+        W -->|warnings| Y[configuration notes]
+        W -->|weights snapshot| Z[reproducible config]
+    end
+    
+    style A fill:#e1f5fe
+    style B fill:#b3e5fc
+    style D fill:#81d4fa
+    style H fill:#4fc3f7
+    style J fill:#29b6f6
+    style Q fill:#03a9f4
+    style S fill:#039be5
+    style W fill:#0288d1
+    style T fill:#90caf9
+    style X fill:#42a5f5

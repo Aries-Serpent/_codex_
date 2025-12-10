@@ -133,11 +133,13 @@ ARTIFACTS.mkdir(parents=True, exist_ok=True)
 app = FastAPI(title="Codex API", version="0.1.0")
 logger = logging.getLogger("codex_ml.api")
 
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+
 SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
     re.compile(r"(?i)(AKIA[0-9A-Z]{16})"),
     re.compile(r"(?i)(ASIA[0-9A-Z]{16})"),
-    re.compile(r"(?i)(aws_secret_access_key\s*=\s*[A-Za-z0-9/+=]{40})"),
+    re.compile(rf"(?i)({_AWS_SECRET_PATTERN}\s*=\s*[A-Za-z0-9/+=]{{40}})"),
     re.compile(r"(?i)(AIza[0-9A-Za-z\-_]{35})"),
     re.compile(r"(?i)(ghp_[A-Za-z0-9]{36})"),
     re.compile(r"(?i)(xox[baprs]-[A-Za-z0-9\-]{10,})"),

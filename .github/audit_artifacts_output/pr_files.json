@@ -1,0 +1,511 @@
+Analyzing PR #2449 (0D_base_ branch)...
+Found 6865 commits
+Found 216 changed files
+docs/capabilities: 11 files
+audit_artifacts: 9 files
+{
+  "pr_number": 2449,
+  "head_branch": "0D_base_",
+  "base_branch": "main",
+  "head_sha": "a3cde8b78bbfb8c2d9531fde9bed358a50fc1c33",
+  "total_commits": 6865,
+  "total_files": 216,
+  "files_by_directory": {
+    ".hypothesis": 47,
+    "root": 7,
+    "agents": 1,
+    "audit_artifacts": 9,
+    "docs": 12,
+    "scripts": 25,
+    "services": 1,
+    "src": 8,
+    "tests": 105,
+    "tools": 1
+  },
+  "docs_capabilities_files": [
+    {
+      "filename": "docs/capabilities/archival_bundling.md",
+      "status": "M"
+    },
+    {
+      "filename": "docs/capabilities/ci_cd_pipeline.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/duplication_detection.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_configuration.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_schema_validation.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_security_safeguards.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_tooling_registry.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_tools_integration.md",
+      "status": "M"
+    },
+    {
+      "filename": "docs/capabilities/safeguards_detection.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/status_reporting.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/structural_integrity.md",
+      "status": "A"
+    }
+  ],
+  "audit_artifacts_files": [
+    {
+      "filename": "audit_artifacts/AUDIT_REVIEW_AND_IMPROVEMENT_PLAN.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/FOLLOW_UP_PROMPTS.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/HIGH_MATURITY_ACHIEVEMENT_PLAN.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/SESSION_STATUS_REPORT.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/capabilities_raw.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/capabilities_scored.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/context_index.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/facets.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/gaps.json",
+      "status": "M"
+    }
+  ],
+  "all_files": [
+    {
+      "filename": ".hypothesis/constants/0570a7c52cd987f9",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/0736e2d4acddd01a",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/0d65a410db824952",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/127eb4ebfcc25f15",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/15f998fddd6c37c7",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/1cce0c53a0aa1633",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/2d7ca5a0f7d31ecb",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/2f49888d399714a6",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/2fda912527187aee",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/375e996620efe363",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/3e82ec3f36e42836",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/44971ea411745967",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/491b9127715c5b2b",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/495022fa95338713",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/49dbff769e7e1ccb",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/4a4a8a85179b27a7",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/5dd98a164720f0a9",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/65f154da2c2631aa",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/67b0a8ccf18bf5d2",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/6bbac69d213e2ae7",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/70c2241423f14e15",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/7a386f445fb492a0",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/7f633e553e24d82f",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/8299b467f5199d63",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/8630c1c81f6d8b64",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/877502b92eac8b55",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/87fedeaf657dd9dc",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/8cedf131d0b8e622",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/903f37f572599211",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/9b10065e9a5ea3b0",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/a338c89124fd60eb",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/a45a10093298c9c3",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/aad1f427b8981530",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/af30ab1e2c46ca3b",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/afd1e78407c8c9a8",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/b45a3aa7eb8e3428",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/b51812b76ece7fcd",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/b829c330a2517282",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/bae8d3fc1cdd891f",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/c1972d215d132a73",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/c443a1cd4ca27b28",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/c782af2d3d8a2b84",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/d82940e8897931e8",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/ebe013b987dc384c",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/constants/ef461993e796a44a",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/unicode_data/15.0.0/charmap.json.gz",
+      "status": "A"
+    },
+    {
+      "filename": ".hypothesis/unicode_data/15.0.0/codec-utf-8.json.gz",
+      "status": "A"
+    },
+    {
+      "filename": "=",
+      "status": "A"
+    },
+    {
+      "filename": "Dockerfile",
+      "status": "M"
+    },
+    {
+      "filename": "Dockerfile.local-codex-env",
+      "status": "M"
+    },
+    {
+      "filename": "Traversal_Workflow.md",
+      "status": "M"
+    },
+    {
+      "filename": "Usage_Guide.md",
+      "status": "M"
+    },
+    {
+      "filename": "agents/msp_client.py",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/AUDIT_REVIEW_AND_IMPROVEMENT_PLAN.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/FOLLOW_UP_PROMPTS.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/HIGH_MATURITY_ACHIEVEMENT_PLAN.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/SESSION_STATUS_REPORT.md",
+      "status": "A"
+    },
+    {
+      "filename": "audit_artifacts/capabilities_raw.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/capabilities_scored.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/context_index.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/facets.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_artifacts/gaps.json",
+      "status": "M"
+    },
+    {
+      "filename": "audit_run_manifest.json",
+      "status": "M"
+    },
+    {
+      "filename": "docs/capabilities/archival_bundling.md",
+      "status": "M"
+    },
+    {
+      "filename": "docs/capabilities/ci_cd_pipeline.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/duplication_detection.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_configuration.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_schema_validation.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_security_safeguards.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_tooling_registry.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/mcp_tools_integration.md",
+      "status": "M"
+    },
+    {
+      "filename": "docs/capabilities/safeguards_detection.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/status_reporting.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/capabilities/structural_integrity.md",
+      "status": "A"
+    },
+    {
+      "filename": "docs/mcp/lifecycle_management.md",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/capabilities_scored.json",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/capabilities_scored_backup.json",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/run_capability_audit.py",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/space_traversal/README.md",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/space_traversal/audit_runner.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/coverage_ingest.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/archival_bundling.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/ci_cd_pipeline.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/deployment_infrastructure.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/detector_duplication.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/detector_peft.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/detector_safeguards.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/documentation_system.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/inference_serving.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_configuration.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_schema_validation.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_security_safeguards.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_tooling_registry.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/mcp_tools_integration.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/structure_integrity.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/detectors/vector_store_detector.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/dup_similarity.py",
+      "status": "M"
+    },
+    {
+      "filename": "scripts/space_traversal/trend_aggregator.py",
+      "status": "A"
+    },
+    {
+      "filename": "scripts/track_progress.py",
+      "status": "A"
+    }
+  ]
+}

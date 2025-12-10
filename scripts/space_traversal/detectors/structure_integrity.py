@@ -55,11 +55,17 @@ def detect(file_index: dict, evidence_limit: int = 10) -> dict:
         "evidence_files": evidence_files,
         "found_patterns": sorted(list(set(found_patterns))),
         "required_patterns": ["split-brain", "lib-shadowing"],
+        "docs_keywords": [
+            "structural-integrity", "architecture", "split-brain", "shadowing",
+            "namespace", "validation", "detection", "consistency", "safeguards",
+            "integrity", "architectural", "organization"
+        ],
         "meta": {
             "risk_level": "high" if found_patterns else "low",
             "description": "Detects architectural split-brain and namespace shadowing.",
             "split_dirs": sorted(list(intersection)),
             "shadow_dirs": sorted([d for d in root_dirs if d.lower() in KNOWN_SHADOW_RISKS]),
-            "evidence_limit": evidence_limit
+            "evidence_limit": evidence_limit,
+            "safeguards": ["bounded", "validation", "deterministic", "error-handling"]
         }
     }

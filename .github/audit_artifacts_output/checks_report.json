@@ -1,0 +1,15 @@
+{
+  "head_sha": "a3cde8b78bbfb8c2d9531fde9bed358a50fc1c33",
+  "total_count": 0,
+  "check_runs": [],
+  "status": "unknown",
+  "conclusion": "unknown",
+  "note": "GitHub API access required to fetch actual check runs. Use GitHub MCP server tools or gh CLI with authentication.",
+  "recommendations": [
+    "Run tests locally: pytest tests/ -v",
+    "Run linting: ruff check . && black --check .",
+    "Run type checking: mypy src/ --config-file pyproject.toml",
+    "Check Docker builds: docker build -f Dockerfile .",
+    "Verify audit pipeline: make space-audit"
+  ]
+}

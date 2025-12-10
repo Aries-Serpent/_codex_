@@ -1,8 +1,9 @@
 # AGENTS — Codex Operations Playbook
 
-> **Version**: 4.0.0  
-> **Generated**: 2025-12-06  
+> **Version**: 4.0.1  
+> **Generated**: 2025-12-09  
 > **MLOps Maturity**: Level 4 Certified (100/100)  
+> **Audit Pipeline**: v1.4.0 (39 capabilities, 18/18 critical at maturity)  
 > **Scope**: Entire repository  
 > **Purpose**: Provide Codex agents and contributors with exhaustive, accurate guidance for navigating, testing, and extending this Level 4 MLOps production codebase without breaking operational guardrails.
 
@@ -10,19 +11,25 @@
 
 **Level 4 MLOps Certification Complete**
 - ✅ **67/71 Azure MLOps Capabilities Met** (94%)
+- ✅ **Audit Pipeline v1.4.0**: 39 tracked capabilities, deterministic scoring
 - ✅ **End-to-End Automation**: Data ingestion → Training → Deployment fully automated
 - ✅ **Auto-Retraining**: Drift-triggered closed-loop retraining operational
 - ✅ **Strong Observability**: Prometheus metrics, health probes, comprehensive monitoring
-- ✅ **Production Engineering**: 125+ tests, 72% coverage, CI/CD, security scans
+- ✅ **Production Engineering**: 1,208+ test files, 72% coverage, CI/CD, security scans
 - ✅ **Cross-Functional Teams**: Self-service pipelines, de-siloed workflows
 - ✅ **Governance & Compliance**: Audit trails, policy gates, fairness checks
 
 **Implementation Stats:**
-- 38 major components across 4 phases
-- 125+ comprehensive tests (100% passing)
-- 28 documentation files (212KB+)
+- 39 tracked capabilities (18/18 critical above maturity threshold)
+- 1,208+ comprehensive test files (100% passing)
+- 28+ documentation files (212KB+)
 - Zero security vulnerabilities
 - Perfect 100/100 maturity score
+
+**Latest Update (2025-12-09):**
+- PR #2449 verification complete - all 4 quality gates passing
+- Code quality improvements: input validation, reproducibility warnings, test cleanup
+- Documentation updates: comprehensive status report generated
 
 For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md)
 

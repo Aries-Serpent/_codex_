@@ -1,0 +1,4 @@
+# file: /home/runner/work/_codex_/_codex_/conftest.py
+# hypothesis_version: 6.148.7
+
+['*/tests/codex_ml/*', '*/tests/training/*', '-m', '1', 'Linear', 'Module', 'PYTHONPATH', 'Popen', 'SGD', 'argnames', 'checkpointing', 'codex_ml', 'config', 'conftest.py', 'cuda', 'cwd', 'fspath', 'gpu', 'iter_markers', 'markers', 'not gpu', 'pydantic', 'requires_pydantic', 'requires_torch', 'src', 'tests', 'tests/checkpointing', 'tests/codex_ml', 'tests/codex_ml/*', 'tests/config', 'tests/training', 'tests/training/*', 'torch', 'torch.nn', 'torch.optim', 'training']

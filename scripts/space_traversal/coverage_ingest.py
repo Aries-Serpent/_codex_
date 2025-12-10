@@ -1,23 +1,66 @@
 #!/usr/bin/env python3
 """
 Coverage ingestion (Cobertura / coverage.py XML -> audit_artifacts/coverage_map.json)
+
+Enhanced features:
+- Auto-discovery of coverage XML files based on config patterns
+- Robust parsing with multiple XML format support
+- discover_and_parse_coverage(cfg, artifacts_dir) - main entry point
+- parse_coverage_xml_to_map(xml_path, root) - XML parser
 """
-from pathlib import Path
-import xml.etree.ElementTree as ET
 import json
 import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[2]
 
-def parse_coverage_xml(xml_path: Path):
+# Shared constant from audit_runner.py for consistency
+# Max bytes to read from files to avoid memory issues
+MAX_READ_BYTES = 200_000
+
+
+def parse_coverage_xml_to_map(
+    xml_path: Path, root: Optional[Path] = None
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Parse coverage XML file to map format.
+
+    Supports Cobertura and coverage.py XML formats.
+    Returns dict mapping file paths to coverage data:
+    {
+        "path/to/file.py": {
+            "percent": 0.85,
+            "covered_lines": [1, 2, 3, ...],
+            "total_lines": 100
+        }
+    }
+
+    Args:
+        xml_path: Path to coverage XML file
+        root: Repository root path (defaults to ROOT)
+
+    Returns:
+        Coverage map dictionary
+    """
+    if root is None:
+        root = ROOT
+
+    if not xml_path.exists():
+        return {}
+
     try:
         tree = ET.parse(xml_path)
     except ET.ParseError as e:
         print(f"Failed parsing coverage xml: {e}", file=sys.stderr)
-        sys.exit(2)
-    root = tree.getroot()
+        return {}
+
+    xml_root = tree.getroot()
     cov = {}
-    for cls in root.findall(".//class"):
+
+    # Try Cobertura format first (class elements)
+    for cls in xml_root.findall(".//class"):
         filename = cls.get("filename")
         lines = []
         for ln in cls.findall(".//line"):
@@ -27,18 +70,119 @@ def parse_coverage_xml(xml_path: Path):
                 lines.append(int(num))
         if filename:
             cov[filename] = {"covered_lines": sorted(set(lines))}
+
+    # Try coverage.py format (package/classes structure)
+    if not cov:
+        for pkg in xml_root.findall(".//package"):
+            for cls in pkg.findall("classes/class"):
+                filename = cls.get("filename")
+                if not filename:
+                    # Sometimes the name attribute contains the path
+                    filename = cls.get("name", "").replace(".", "/") + ".py"
+                lines = []
+                for ln in cls.findall("lines/line"):
+                    num = ln.get("number")
+                    hits = ln.get("hits")
+                    if num is not None and hits is not None and int(hits) > 0:
+                        lines.append(int(num))
+                if filename:
+                    cov[filename] = {"covered_lines": sorted(set(lines))}
+
+    # Calculate percentages and total lines
     for f, data in cov.items():
         try:
-            full_path = ROOT / f
-            total_lines = sum(1 for _ in open(full_path, "r", encoding="utf-8", errors="ignore"))
-            data["percent"] = len(data["covered_lines"]) / max(1, total_lines)
+            full_path = root / f
+            if full_path.exists() and full_path.stat().st_size < MAX_READ_BYTES:
+                with open(full_path, "r", encoding="utf-8", errors="ignore") as file:
+                    total_lines = sum(1 for _ in file)
+                data["total_lines"] = total_lines  # type: ignore[assignment]
+                covered_count = len(data["covered_lines"])
+                data["percent"] = round(covered_count / max(1, total_lines), 6)  # type: ignore[assignment,arg-type]
+            else:
+                # File too large or missing, estimate from covered lines
+                covered_count = len(data["covered_lines"])
+                max_line = max(data["covered_lines"]) if data["covered_lines"] else 1
+                data["total_lines"] = max_line  # type: ignore[assignment]
+                data["percent"] = round(covered_count / max(1, max_line), 6)  # type: ignore[assignment,arg-type]
         except Exception:
-            data["percent"] = 0.0
+            data["total_lines"] = len(data.get("covered_lines", []))  # type: ignore[assignment]
+            data["percent"] = 0.0  # type: ignore[assignment]
+
     return cov
+
+
+def discover_and_parse_coverage(
+    cfg: Dict[str, Any], artifacts_dir: Path
+) -> Optional[Dict[str, Dict[str, Any]]]:
+    """
+    Discover and parse coverage XML files based on configuration.
+
+    Auto-discovers coverage.xml or uses patterns from cfg["scoring"]["coverage"]["xml_patterns"].
+    Only runs when coverage is enabled in config.
+
+    Args:
+        cfg: Workflow configuration dictionary
+        artifacts_dir: Directory to write coverage_map.json
+
+    Returns:
+        Coverage map dictionary, or None if coverage is disabled/not found
+    """
+    # Check if coverage is enabled
+    scoring = cfg.get("scoring", {})
+    coverage_cfg = scoring.get("coverage", {})
+
+    if not coverage_cfg or not coverage_cfg.get("enabled", False):
+        return None
+
+    # Get patterns from config, default to common locations
+    xml_patterns = coverage_cfg.get(
+        "xml_patterns", ["coverage.xml", ".coverage.xml", "**/coverage.xml", "htmlcov/coverage.xml"]
+    )
+
+    # Find coverage XML files
+    xml_files: List[Path] = []
+    for pattern in xml_patterns:
+        pattern_path = Path(pattern)
+        if pattern_path.is_absolute():
+            if pattern_path.exists():
+                xml_files.append(pattern_path)
+        else:
+            # Search from ROOT
+            if "**" in pattern:
+                xml_files.extend(ROOT.glob(pattern))
+            else:
+                candidate = ROOT / pattern
+                if candidate.exists():
+                    xml_files.append(candidate)
+
+    if not xml_files:
+        print("No coverage XML files found", file=sys.stderr)
+        return None
+
+    # Use the first (most recent) coverage file found
+    xml_path = sorted(xml_files, key=lambda p: p.stat().st_mtime, reverse=True)[0]
+    print(f"Parsing coverage from: {xml_path}")
+
+    # Parse and save
+    cov_map = parse_coverage_xml_to_map(xml_path, ROOT)
+
+    if cov_map:
+        out_path = artifacts_dir / "coverage_map.json"
+        write_coverage_map(out_path, cov_map)
+        print(f"Wrote coverage map to {out_path}")
+
+    return cov_map
+
+
+def parse_coverage_xml(xml_path: Path):
+    """Legacy function for backward compatibility."""
+    return parse_coverage_xml_to_map(xml_path, ROOT)
+
 
 def write_coverage_map(out_path: Path, cov_map: dict):
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(cov_map, indent=2), encoding="utf-8")
+
 
 def main():
     if len(sys.argv) < 2:
@@ -52,6 +196,7 @@ def main():
     out = Path.cwd() / "audit_artifacts" / "coverage_map.json"
     write_coverage_map(out, cov_map)
     print(f"Wrote coverage map to {out}")
+
 
 if __name__ == "__main__":
     main()
