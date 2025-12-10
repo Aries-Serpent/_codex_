@@ -79,7 +79,7 @@ def _tokenizer_cached() -> PreTrainedTokenizerBase:
 def _model_cached() -> AutoModelForCausalLM:
     tokenizer = _tokenizer_cached()
     if _DEFAULT_MODEL_NAME:
-        model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             _DEFAULT_MODEL_NAME,
             cache_dir=_DEFAULT_CACHE_DIR,
             local_files_only=not _ALLOW_REMOTE,

@@ -1,17 +1,37 @@
 # Bandit configuration — tuned for this repository
 # Docs: https://bandit.readthedocs.io/en/latest/config.html
+#
+# Security policy: Individual nosec suppressions in code require documented rationale.
+# See docs/security/SUPPRESSIONS.md for the suppressions registry.
+
 exclude_dirs:
   - tests
   - docs
   - .venv
+  - venv
   - artifacts
   - .git
   - notebooks
+  - .hypothesis
+  - .mypy_cache
+  - .ruff_cache
+  - .codex
+  - audit_artifacts
+  - reports
+  - __pycache__
+
 skips:
-  - B101  # assert_used (OK in tests; tests excluded anyway)
-  - B404  # import_subprocess (allowed in tooling)
-  - B603  # subprocess_without_shell_equals_true (we use explicit lists)
+  # B101: assert_used - Safe in test code; test directories excluded anyway
+  - B101
+  # B404: import_subprocess - Subprocess imports are required for git/build tooling
+  - B404
+  # B603: subprocess_without_shell_equals_true - We use explicit command lists (shell=False)
+  - B603
+
+# Scan all severities to catch issues, filtering happens via nosec comments
 severity: "LOW"
-confidence: "HIGH"
+confidence: "MEDIUM"
+
 targets:
   - src
+  - cli

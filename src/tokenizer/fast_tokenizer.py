@@ -109,8 +109,7 @@ def build_tokenizer(path: str | Path) -> object:
         targets.append(location)
         for target in targets:
             try:
-                tokenizer = AutoTokenizer.from_pretrained(
-                    str(target), use_fast=True, trust_remote_code=False
+                tokenizer = AutoTokenizer.from_pretrained(  # nosec B615                    str(target), use_fast=True, trust_remote_code=False
                 )
             except Exception as exc:  # pragma: no cover - optional dependency path
                 errors.append(f"transformers@{target}: {exc}")

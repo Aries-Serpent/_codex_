@@ -23,7 +23,8 @@ def stable_fold(example_id: str) -> int:
 
     if not isinstance(example_id, str):
         raise TypeError("example_id must be a string")
-    digest = hashlib.sha1(example_id.encode("utf-8")).hexdigest()
+    # nosec B324 - SHA1 used for deterministic data splitting, not security
+    digest = hashlib.sha1(example_id.encode("utf-8"), usedforsecurity=False).hexdigest()
     return int(digest, 16) % 100
 
 

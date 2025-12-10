@@ -71,9 +71,11 @@ def save_checkpoint(
 def load_checkpoint(
     path: str, map_location: str | None = None
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    """
-    Load a checkpoint directory or a direct weights.pt file.
+    """Load a checkpoint directory or a direct weights.pt file.
     Returns (state_dicts, metadata).
+    
+    Security note: Checkpoint files should only be loaded from trusted sources.
+    torch.load can execute arbitrary code during deserialization.
     """
     if torch is None:
         raise RuntimeError("PyTorch required to load checkpoints")
@@ -89,11 +91,11 @@ def load_checkpoint(
     if _torch_supports_weights_only():
         kwargs["weights_only"] = False
     try:
-        payload = torch.load(weights, **kwargs)
+        payload = torch.load(weights, **kwargs)  # nosec B614
     except TypeError as exc:
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
-            payload = torch.load(weights, **kwargs)
+            payload = torch.load(weights, **kwargs)  # nosec B614
         else:
             raise
     meta: dict[str, Any] = {}

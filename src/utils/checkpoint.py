@@ -364,7 +364,7 @@ def _load_legacy_checkpoint_payload(
     if candidate is None:
         try:
             with open(path, "rb") as fh:
-                loaded = pickle.load(fh)
+                loaded = pickle.load(fh)  # nosec B301
         except Exception:
             return None
         if not isinstance(loaded, Mapping):

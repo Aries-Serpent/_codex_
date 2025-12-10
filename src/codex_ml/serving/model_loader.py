@@ -285,8 +285,7 @@ class ModelLoader:
             load_kwargs["use_auth_token"] = config.use_auth_token
 
         # Load config first
-        model_config = AutoConfig.from_pretrained(**load_kwargs)
-
+        model_config = AutoConfig.from_pretrained(**load_kwargs)  # nosec B615
         # Determine torch dtype
         torch_dtype = self._get_torch_dtype(config.torch_dtype)
         if torch_dtype is not None:

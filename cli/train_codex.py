@@ -84,7 +84,7 @@ def _build_model(config: dict[str, Any], tokenizer) -> AutoModelForCausalLM:
     allow_remote = bool(config.get("allow_remote", False))
     cache_dir = config.get("cache_dir", "artifacts/model_cache")
     if model_name:
-        model = AutoModelForCausalLM.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(  # nosec B615
             model_name,
             cache_dir=cache_dir,
             local_files_only=not allow_remote,

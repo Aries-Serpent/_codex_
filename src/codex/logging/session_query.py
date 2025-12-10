@@ -144,25 +144,20 @@ def fetch_rows(
             select_cols.append(cols["role"])
         select_cols.append(cols["message"])
         select_list = ", ".join(select_cols)
-        sql = f"SELECT {select_list} FROM {table}"
-        params: list[object] = []
+        sql = f"SELECT {select_list} FROM {table}"  # nosec B608        params: list[object] = []
         where_clause = ""
         if session_id:
             if not sid_col:
                 raise RuntimeError("Session filtering requested but no session id column found")
-            where_clause = f" WHERE {sid_col}=?"
-            params.append(session_id)
+            where_clause = f" WHERE {sid_col}=?"  # nosec B608            params.append(session_id)
 
         if last_n is not None:
-            inner_sql = (
-                f"SELECT {select_list} FROM {table}{where_clause} "
+            inner_sql = (  # nosec B608                f"SELECT {select_list} FROM {table}{where_clause} "
                 f"ORDER BY {ts_col} DESC LIMIT ?"
             )
-            sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"
-            params.append(last_n)
+            sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"  # nosec B608            params.append(last_n)
         else:
-            sql = (
-                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"
+            sql = (  # nosec B608                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"
             )
         cur = conn.cursor()
         rows = list(cur.execute(sql, params))

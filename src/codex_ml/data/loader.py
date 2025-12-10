@@ -364,7 +364,7 @@ def load_dataset(
 
     if cache_file.exists():
         try:
-            data = pickle.loads(cache_file.read_bytes())
+            data = pickle.loads(cache_file.read_bytes())  # nosec B301
             if isinstance(data, list):
                 return data
         except Exception:

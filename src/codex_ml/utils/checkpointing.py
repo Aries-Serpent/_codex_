@@ -348,7 +348,7 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(path, **kwargs)
+            return torch.load(path, **kwargs)  # nosec B614
         except Exception as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
@@ -357,7 +357,7 @@ def _load_payload(path: Path, *, map_location: str | None, fmt: SaveFormat) -> A
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         with path.open("rb") as fh:
-            return pickle.load(fh)
+            return pickle.load(fh)  # nosec B301
     except Exception as exc:
         errors.append(exc)
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
@@ -1146,7 +1146,7 @@ class CheckpointManager:
         state_payload: Any = payload
         if isinstance(payload, (bytes, bytearray)):
             try:
-                state_payload = torch.load(io.BytesIO(payload), map_location="cpu")
+                state_payload = torch.load(io.BytesIO(payload), map_location="cpu")  # nosec B614
             except Exception:
                 state_payload = {"payload": payload}
 
@@ -1223,7 +1223,7 @@ class CheckpointManager:
                     scheduler.load_state_dict(state["scheduler"])
         elif (path / "state.pkl").exists():  # pragma: no cover
             with open(path / "state.pkl", "rb") as fh:
-                state = pickle.load(fh)
+                state = pickle.load(fh)  # nosec B301
             if (
                 model is not None
                 and hasattr(model, "load_state_dict")

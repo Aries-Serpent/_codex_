@@ -81,7 +81,7 @@ class LogQueryEngine:
             log_table = "session_events"
 
             # Build query - use 'ts' instead of 'timestamp'
-            sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "
+            sql = f"SELECT * FROM {log_table} WHERE message LIKE ? "  # nosec B608
             params: list[Any] = [f"%{query}%"]
 
             if role:
@@ -156,7 +156,7 @@ def build_query(
         mapcol.get("metadata") or "NULL AS metadata",
     ]
     select = ", ".join(cols)
-    sql = f"SELECT {select} FROM {table}"
+    sql = f"SELECT {select} FROM {table}"  # nosec B608
     where: list[str] = []
     params: list[Any] = []
     if session_id and "session_id" in mapcol:

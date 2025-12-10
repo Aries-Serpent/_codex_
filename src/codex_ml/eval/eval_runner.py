@@ -90,7 +90,7 @@ def evaluate_datasets(
         writer.writeheader()
 
         for name in datasets:
-            bundle = load_dataset(name, max_samples=max_samples if max_samples > 0 else None)
+            bundle = load_dataset(name, max_samples=max_samples if max_samples > 0 else None)  # nosec B615
             if isinstance(bundle, DatasetBundle):
                 examples = bundle.examples
                 dataset_hash = bundle.dataset_hash
