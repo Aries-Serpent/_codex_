@@ -2,16 +2,16 @@
   "artifacts": [
     {
       "format": "json",
-      "generated_at": 1765335772.4768484,
+      "generated_at": 1765335993.813851,
       "name": "capabilities_raw.json",
-      "sha": "cdb1bfba14f2622de5ec54f416c685fb1308ed26d59b7a714c8308d8d06c03d9",
+      "sha": "69faef2d35e83b941f2f8d839607461b93cb5a5a8a7d0cbc9f1d39ea00d24b89",
       "size": 951146
     },
     {
       "format": "json",
-      "generated_at": 1765335774.381848,
+      "generated_at": 1765335995.7118514,
       "name": "capabilities_scored.json",
-      "sha": "6d60841b8345cea51967ce3704e2144772136a24e21c556add1ed6b8ef3ea50b",
+      "sha": "730a73c1b81e64fe9bf3e3073e2bb53bbe43af004c89554326733fa34e487904",
       "size": 955015
     },
     {
@@ -23,30 +23,30 @@
     },
     {
       "format": "json",
-      "generated_at": 1765335774.3868482,
+      "generated_at": 1765335995.7168515,
       "name": "component_gaps.json",
-      "sha": "f6d37b42a324aad9cfa35a34dabe9e1dcde7014bd1800f8af7c2dbd7cfe352bb",
-      "size": 7339
+      "sha": "282675510f4b7f688c21c2cca7c60a06fa9849731d5b1e64af882cc7b1b3afa4",
+      "size": 7338
     },
     {
       "format": "json",
-      "generated_at": 1765335769.0558484,
+      "generated_at": 1765335990.380851,
       "name": "context_index.json",
-      "sha": "d9706913243707531a6cccbea69c924fb2d0d19a05743d78f4c62ff2b996b740",
+      "sha": "8b92834a62410196fc6254a7b03b3f9415356ca2d59d74245c39ae4694db66eb",
       "size": 951250
     },
     {
       "format": "json",
-      "generated_at": 1765335769.1038485,
+      "generated_at": 1765335990.431851,
       "name": "facets.json",
-      "sha": "2e38afb9ed16927ebeae34531305978a597c3c28cfff6748ac70f657c2373b19",
+      "sha": "cfa8bf8f2a9fd73744b1fd8e8edc85badf5d30355ca503744675d4c4a2fcdba2",
       "size": 122063
     },
     {
       "format": "json",
-      "generated_at": 1765335774.3858483,
+      "generated_at": 1765335995.7158513,
       "name": "gaps.json",
-      "sha": "7991fd0eccaa6829841a7e79049fe664178405ed48cbf407892918efecf38269",
+      "sha": "1e8bf8bcbb35955e2b15756bd1fd9b970cf5cc2cb2d1ec81112edc44390222c2",
       "size": 235315
     }
   ],
@@ -60,7 +60,7 @@
   },
   "repo_root_sha": "90cc56a8b412a75dd8c41405fda4c164ad372e692957fbc061e7be05404e0e03",
   "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43",
-  "timestamp": 1765335774.9227514,
+  "timestamp": 1765335996.2451568,
   "version": "1.4.0",
   "warnings": [],
   "weights": {
