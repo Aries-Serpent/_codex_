@@ -32,7 +32,7 @@ API_COLLECTION_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audit API Collection - {repo_name}</title>
+    <title>Audit API Collection - {repo_name} v{version}</title>
     <style>
         :root {{
             --bg-primary: #0d1117;

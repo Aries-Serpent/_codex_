@@ -280,3 +280,183 @@ def test_swagger_creates_parent_dirs(tmp_path: Path):
     generate_swagger_docs(output_path)
 
     assert output_path.exists()
+
+
+# ============================================================================
+# Docs Hub Tests (v1.5.5)
+# ============================================================================
+
+
+def test_generate_docs_hub(tmp_path: Path):
+    """Test documentation hub HTML generation."""
+    from scripts.space_traversal.viz_docs_hub import generate_docs_hub
+
+    output_path = tmp_path / "docs_hub.html"
+    generate_docs_hub(output_path, repo_name="Test Repo", version="1.5.5")
+
+    assert output_path.exists()
+    content = output_path.read_text()
+
+    # Check essential elements
+    assert "<!DOCTYPE html>" in content
+    assert "Documentation Hub" in content
+    assert "Test Repo" in content
+    assert "1.5.5" in content
+
+
+def test_docs_hub_has_mermaid_diagrams(tmp_path: Path):
+    """Test docs hub includes Mermaid diagrams."""
+    from scripts.space_traversal.viz_docs_hub import generate_docs_hub
+
+    output_path = tmp_path / "docs_hub.html"
+    generate_docs_hub(output_path)
+
+    content = output_path.read_text()
+
+    # Check for Mermaid
+    assert "mermaid" in content.lower()
+    assert "flowchart" in content or "sequenceDiagram" in content
+
+
+def test_docs_hub_has_categories(tmp_path: Path):
+    """Test docs hub has documentation categories."""
+    from scripts.space_traversal.viz_docs_hub import generate_docs_hub
+
+    output_path = tmp_path / "docs_hub.html"
+    generate_docs_hub(output_path)
+
+    content = output_path.read_text()
+
+    # Check categories
+    assert "Getting Started" in content
+    assert "Audit Pipeline" in content
+    assert "API Reference" in content
+
+
+# ============================================================================
+# Agent Interface Tests (v1.5.5)
+# ============================================================================
+
+
+def test_generate_agent_interface(tmp_path: Path):
+    """Test agent interface HTML generation."""
+    from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+
+    output_path = tmp_path / "agent_interface.html"
+    generate_agent_interface(output_path, repo_name="Test Repo", version="1.5.5")
+
+    assert output_path.exists()
+    content = output_path.read_text()
+
+    # Check essential elements
+    assert "<!DOCTYPE html>" in content
+    assert "Agent" in content
+    assert "Test Repo" in content
+    assert "1.5.5" in content
+
+
+def test_agent_interface_has_action_buttons(tmp_path: Path):
+    """Test agent interface has action buttons."""
+    from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+
+    output_path = tmp_path / "agent_interface.html"
+    generate_agent_interface(output_path)
+
+    content = output_path.read_text()
+
+    # Check action buttons
+    assert "Run Full Audit" in content
+    assert "Check Regressions" in content
+    assert "Generate Dashboard" in content
+
+
+def test_agent_interface_has_capability_list(tmp_path: Path):
+    """Test agent interface has capability selection list."""
+    from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+
+    output_path = tmp_path / "agent_interface.html"
+    generate_agent_interface(output_path)
+
+    content = output_path.read_text()
+
+    # Check capability list
+    assert "capability" in content.lower()
+    assert "checkbox" in content.lower()
+    assert "checkpointing" in content
+
+
+def test_agent_interface_has_machine_readable_data(tmp_path: Path):
+    """Test agent interface has machine-readable metadata."""
+    from scripts.space_traversal.viz_agent_interface import generate_agent_interface
+
+    output_path = tmp_path / "agent_interface.html"
+    generate_agent_interface(output_path)
+
+    content = output_path.read_text()
+
+    # Check machine-readable attributes
+    assert "data-action" in content
+    assert "application/json" in content
+    assert "agent-commands" in content
+
+
+# ============================================================================
+# Wiki Generator Tests (v1.5.5)
+# ============================================================================
+
+
+def test_generate_wiki(tmp_path: Path):
+    """Test wiki markdown generation."""
+    from scripts.space_traversal.wiki_generator import generate_wiki
+
+    wiki_dir = tmp_path / "wiki"
+    files = generate_wiki(wiki_dir, repo_name="Test Repo", version="1.5.5")
+
+    assert len(files) >= 8
+    assert (wiki_dir / "Home.md").exists()
+    assert (wiki_dir / "Getting-Started.md").exists()
+    assert (wiki_dir / "Architecture.md").exists()
+
+
+def test_wiki_has_mermaid_diagrams(tmp_path: Path):
+    """Test wiki pages include Mermaid diagrams."""
+    from scripts.space_traversal.wiki_generator import generate_wiki
+
+    wiki_dir = tmp_path / "wiki"
+    generate_wiki(wiki_dir)
+
+    architecture = (wiki_dir / "Architecture.md").read_text()
+    assert "mermaid" in architecture.lower()
+    assert "flowchart" in architecture or "graph" in architecture
+
+
+def test_wiki_has_sidebar(tmp_path: Path):
+    """Test wiki has sidebar for navigation."""
+    from scripts.space_traversal.wiki_generator import generate_wiki
+
+    wiki_dir = tmp_path / "wiki"
+    generate_wiki(wiki_dir)
+
+    assert (wiki_dir / "_Sidebar.md").exists()
+    sidebar = (wiki_dir / "_Sidebar.md").read_text()
+    assert "Home" in sidebar
+
+
+def test_create_wiki_bundle(tmp_path: Path):
+    """Test wiki bundle creation."""
+    from scripts.space_traversal.wiki_generator import create_wiki_bundle
+    import zipfile
+
+    wiki_dir = tmp_path / "wiki"
+    bundle_path = tmp_path / "wiki_bundle.zip"
+
+    result = create_wiki_bundle(wiki_dir, bundle_path, "Test Repo", "1.5.5")
+
+    assert result.exists()
+    assert zipfile.is_zipfile(result)
+
+    # Check bundle contents
+    with zipfile.ZipFile(result, "r") as zf:
+        names = zf.namelist()
+        assert "Home.md" in names
+        assert "manifest.json" in names

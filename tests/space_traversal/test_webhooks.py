@@ -161,7 +161,7 @@ def test_send_slack_notification_with_regressions(mock_urlopen):
         details={},
     )
 
-    send_slack_notification("https://hooks.slack.com/test", event)
+    result = send_slack_notification("https://hooks.slack.com/test", event)
 
     assert result.success is True
     call_args = mock_urlopen.call_args

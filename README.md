@@ -1,5 +1,5 @@
 # `_codex_`
-> 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.4.0)
+> 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
 
 ## 🎯 Achievement Status
 
@@ -7,9 +7,9 @@
 ✅ End-to-End Automation | ✅ Auto-Retraining | ✅ Observability  
 ✅ Production Engineering | ✅ Cross-Functional | ✅ Governance
 
-**Latest Milestone:** Audit Pipeline v1.4.0 Complete (39 capabilities tracked, 18/18 critical at maturity)  
-**Latest Update:** 2025-12-09 - PR #2449 verification complete, all quality gates passing  
-📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [Status Update](status_update_2025-12-09.md)
+**Latest Milestone:** Audit Pipeline v1.5.5 Complete (Trend Aggregation & Visualization)  
+**Latest Update:** 2025-12-10 - Agent Control Interface, Wiki Generator, Full Documentation  
+📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [v1.5.x Changelog](docs/audit/v1.5.x_CHANGELOG.md)
 
 ## 🤖 Codex Quick-Index (For AI Agents)
 
@@ -17,9 +17,24 @@
 
 **Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
 **Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
-**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks
+**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
+**Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+
+### 🤖 ChatGPT 5.1 Agent Mode
+
+Generate an intuitive control interface for AI agents:
+
+```bash
+python -m scripts.space_traversal.audit_runner agent-interface --output agent_interface.html
+```
+
+This creates an HTML interface specifically designed for ChatGPT 5.1 Agent mode with:
+- Clear action buttons and navigation
+- Per-capability audit triggers
+- Report generation controls
+- Machine-readable command outputs
 
 ---
 
@@ -35,6 +50,60 @@
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
 ### 🆕 Latest Updates (December 2025)
+
+#### Audit Pipeline v1.5.5 (2025-12-10)
+
+**Complete Trend Aggregation & Visualization Release:**
+
+```mermaid
+flowchart LR
+    subgraph v1.5.x["Audit Pipeline v1.5.x"]
+        DB[(Trend Database)]
+        Compare[Comparison]
+        Viz[Visualization]
+        CI[CI Integration]
+    end
+    
+    subgraph Outputs
+        Dashboard[Dashboard]
+        Reports[Reports]
+        Wiki[Wiki]
+        Agent[Agent UI]
+    end
+    
+    DB --> Compare
+    Compare --> Reports
+    Viz --> Dashboard
+    Viz --> Agent
+    Viz --> Wiki
+```
+
+| Version | Features |
+|---------|----------|
+| v1.5.0 | SQLite trend database, schema migrations |
+| v1.5.1 | Historical comparison, regression detection |
+| v1.5.2 | ASCII sparklines, HTML dashboards |
+| v1.5.3 | Jinja2 report templates |
+| v1.5.4 | Webhooks (Slack/Teams), CI integration |
+| v1.5.5 | Performance tools, agent interface, wiki generator |
+
+**New Commands:**
+```bash
+# Trend operations
+python -m scripts.space_traversal.audit_runner store-trend
+python -m scripts.space_traversal.audit_runner show-trend <capability>
+python -m scripts.space_traversal.audit_runner check-regressions
+
+# Visualization
+python -m scripts.space_traversal.audit_runner dashboard
+python -m scripts.space_traversal.audit_runner cli-builder
+python -m scripts.space_traversal.audit_runner api-collection
+python -m scripts.space_traversal.audit_runner api-docs
+python -m scripts.space_traversal.audit_runner agent-interface
+
+# Documentation
+python -m scripts.space_traversal.wiki_generator
+```
 
 #### PR #2449 Verification Complete (2025-12-09)
 - **Final Convergence Check**: All 4 verification items confirmed correct
