@@ -6,12 +6,13 @@ of common repository operations.
 """
 
 import json
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Any
 
 
 class WorkflowFrequency(Enum):
@@ -47,10 +48,12 @@ class WorkflowStep:
         
         try:
             if self.command:
-                # Execute shell command
+                # Execute shell command with safety: split command into list
+                import shlex
+                cmd_list = shlex.split(self.command)
                 result = subprocess.run(
-                    self.command,
-                    shell=True,
+                    cmd_list,
+                    shell=False,
                     capture_output=True,
                     text=True,
                     cwd=context.get('working_dir', '.')
@@ -325,10 +328,9 @@ class WorkflowNavigator:
         
         # Check entry points
         for workflow in self.workflows.values():
-            if hasattr(workflow, 'entry_points'):
-                for entry_point in workflow.entry_points:
-                    if entry_point.lower() in description_lower:
-                        return workflow
+            for entry_point in workflow.entry_points:
+                if entry_point.lower() in description_lower:
+                    return workflow
         
         # Check descriptions
         for workflow in self.workflows.values():
@@ -527,7 +529,6 @@ class WorkflowNavigator:
             current_path.symlink_to(filename)
         except OSError:
             # On Windows, symlinks may fail, so just copy
-            import shutil
             shutil.copy(filepath, current_path)
     
     def get_workflow_suggestions(
