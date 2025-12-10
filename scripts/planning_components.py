@@ -304,13 +304,19 @@ def generate_planning_javascript() -> str:
             let html = '';
             suggestions.forEach(component => {
                 const paths = COMPONENT_DEPENDENCIES[component] || [];
-                const checked = document.getElementById(`comp_${component}`)?.checked ? 'checked' : '';
+                // Escape component value to prevent XSS
+                const escapedComponent = sanitizeHTML(component);
+                const checked = document.getElementById(`comp_${escapedComponent}`)?.checked ? 'checked' : '';
+                // Escape paths for display
+                const escapedPaths = paths.slice(0, 2).map(p => sanitizeHTML(p)).join(', ');
+                const moreText = paths.length > 2 ? '...' : '';
+                
                 html += `
                     <div class="checkbox-item">
-                        <input type="checkbox" id="comp_${component}" value="${component}" ${checked} onchange="updateDependencies()">
-                        <label for="comp_${component}">
-                            <strong>${component}</strong>
-                            <div class="score">Affects: ${paths.slice(0, 2).join(', ')}${paths.length > 2 ? '...' : ''}</div>
+                        <input type="checkbox" id="comp_${escapedComponent}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
+                        <label for="comp_${escapedComponent}">
+                            <strong>${escapedComponent}</strong>
+                            <div class="score">Affects: ${escapedPaths}${moreText}</div>
                         </label>
                     </div>
                 `;
@@ -318,16 +324,24 @@ def generate_planning_javascript() -> str:
             container.innerHTML = html;
         }
         
+        // Sanitize HTML to prevent XSS
+        function sanitizeHTML(str) {
+            if (typeof str !== 'string') return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
         function generateNextSteps() {
-            // Gather selections
+            // Gather and sanitize selections
             const phases = Array.from(document.querySelectorAll('#phaseSelection input:checked'))
-                .map(cb => cb.value);
+                .map(cb => sanitizeHTML(cb.value));
             const capabilities = Array.from(document.querySelectorAll('#capabilitySelection input:checked'))
-                .map(cb => cb.value);
+                .map(cb => sanitizeHTML(cb.value));
             const aspects = Array.from(document.querySelectorAll('#aspectSelection input:checked'))
-                .map(cb => cb.value);
+                .map(cb => sanitizeHTML(cb.value));
             const components = Array.from(document.querySelectorAll('#componentSelection input:checked'))
-                .map(cb => cb.value);
+                .map(cb => sanitizeHTML(cb.value));
             
             if (phases.length === 0 && capabilities.length === 0) {
                 alert('Please select at least one phase or capability');
