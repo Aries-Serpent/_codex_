@@ -13,6 +13,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+# Import planning components
+try:
+    from planning_components import (
+        generate_planning_css,
+        generate_planning_html,
+        generate_planning_javascript,
+    )
+    PLANNING_AVAILABLE = True
+except ImportError:
+    PLANNING_AVAILABLE = False
+
 # Supported file extensions for badge styling
 SUPPORTED_EXTENSIONS = {"json", "md", "txt", "html"}
 
@@ -71,11 +82,44 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
         return {}
 
 
+def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
+    """Load gaps and improvement plans from audit artifacts."""
+    gaps_data = {}
+    plans_data = {}
+    
+    # Load gaps.json
+    gaps_file = base_path / "audit_artifacts" / "gaps.json"
+    if gaps_file.exists():
+        try:
+            with open(gaps_file, encoding="utf-8") as f:
+                gaps_data = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            pass
+    
+    # Load improvement plan MD file
+    plan_file = base_path / "audit_artifacts" / "HIGH_MATURITY_ACHIEVEMENT_PLAN.md"
+    if plan_file.exists():
+        try:
+            plans_data["plan_content"] = plan_file.read_text(encoding="utf-8")
+            # Extract phases from the plan
+            phases = []
+            lines = plans_data["plan_content"].split("\n")
+            for line in lines:
+                if line.startswith("## Phase "):
+                    phases.append(line.strip("# ").strip())
+            plans_data["phases"] = phases
+        except OSError:
+            pass
+    
+    return {"gaps": gaps_data, "plans": plans_data}
+
+
 def generate_html_dashboard(
     audit_artifacts: list[dict[str, Any]],
     reports: list[dict[str, Any]],
     manifest: dict[str, Any],
-    output_path: Path
+    output_path: Path,
+    gaps_and_plans: dict[str, Any] | None = None
 ) -> None:
     """Generate HTML dashboard for audit artifacts."""
     
@@ -342,6 +386,10 @@ def generate_html_dashboard(
         </div>
 """
 
+    # Add interactive planning section if available
+    if PLANNING_AVAILABLE and gaps_and_plans:
+        html_content += generate_planning_html(gaps_and_plans)
+    
     # Scoring weights section
     if manifest_weights:
         html_content += """
@@ -529,6 +577,13 @@ def generate_html_dashboard(
             el.title = el.textContent;
         }});
     </script>
+"""
+    
+    # Add planning JavaScript if available
+    if PLANNING_AVAILABLE and gaps_and_plans:
+        html_content += generate_planning_javascript()
+    
+    html_content += """
 </body>
 </html>
 """
@@ -561,8 +616,14 @@ def main() -> int:
     manifest_count = len(manifest.get("artifacts", []))
     print(f"   Found {manifest_count} manifest entries")
     
+    print("🎯 Loading gaps and plans...")
+    gaps_and_plans = load_gaps_and_plans(repo_root)
+    gap_count = len(gaps_and_plans.get("gaps", {}).get("low_maturity", []))
+    plan_count = len(gaps_and_plans.get("plans", {}).get("phases", []))
+    print(f"   Found {gap_count} low maturity capabilities, {plan_count} phases")
+    
     print("🎨 Generating HTML dashboard...")
-    generate_html_dashboard(audit_artifacts, reports, manifest, output_path)
+    generate_html_dashboard(audit_artifacts, reports, manifest, output_path, gaps_and_plans)
     print(f"✅ Dashboard generated: {output_path}")
     print(f"   Total artifacts indexed: {len(audit_artifacts) + len(reports)}")
     
