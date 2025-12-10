@@ -1,7 +1,4 @@
-"""
-Comprehensive tests for Safeguards Keywords Detection
-Tests the safeguards keyword detector and validation
-"""
+"""Comprehensive tests for safeguards keyword detection and validation."""
 
 import pytest
 
@@ -31,12 +28,21 @@ class TestSafeguardsKeywordDetector:
 
     def test_safeguard_keywords_defined(self):
         """Test that safeguard keywords are properly defined"""
-        assert "sha256" in SAFEGUARD_KEYWORDS
-        assert "checksum" in SAFEGUARD_KEYWORDS
-        assert "rng" in SAFEGUARD_KEYWORDS
-        assert "seed" in SAFEGUARD_KEYWORDS
-        assert "offline" in SAFEGUARD_KEYWORDS
-        assert "WANDB_MODE" in SAFEGUARD_KEYWORDS
+        expected = {
+            "baseline",
+            "checksum",
+            "deterministic",
+            "manifest",
+            "offline",
+            "reproduce",
+            "rng",
+            "sanitize",
+            "seed",
+            "secret",
+            "sha256",
+            "WANDB_MODE",
+        }
+        assert expected.issubset(SAFEGUARD_KEYWORDS)
 
     def test_read_text_truncation(self, tmp_path):
         """Test that read_text truncates large files"""
@@ -137,6 +143,14 @@ class TestSafeguardsKeywordExpansion:
         # Offline/isolation safeguards
         assert "offline" in SAFEGUARD_KEYWORDS
         assert "WANDB_MODE" in SAFEGUARD_KEYWORDS
+
+        # Determinism safeguards
+        assert "deterministic" in SAFEGUARD_KEYWORDS
+        assert "reproduce" in SAFEGUARD_KEYWORDS
+
+        # Documentation/archival safeguards
+        assert "manifest" in SAFEGUARD_KEYWORDS
+        assert "baseline" in SAFEGUARD_KEYWORDS
 
     def test_keywords_are_strings(self):
         """Test that all keywords are strings"""

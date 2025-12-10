@@ -2,17 +2,17 @@
   "artifacts": [
     {
       "format": "json",
-      "generated_at": 1765335350.8869276,
+      "generated_at": 1765335772.4768484,
       "name": "capabilities_raw.json",
-      "sha": "7a16023bb073c5600e828103877b0a2ce17f38321758197153e5d04c967c95ac",
-      "size": 944429
+      "sha": "cdb1bfba14f2622de5ec54f416c685fb1308ed26d59b7a714c8308d8d06c03d9",
+      "size": 951146
     },
     {
       "format": "json",
-      "generated_at": 1765335352.7409277,
+      "generated_at": 1765335774.381848,
       "name": "capabilities_scored.json",
-      "sha": "93b59df9a9176445dd09f47985e80726594114c67ede5b3139138b4e48f93cdb",
-      "size": 948877
+      "sha": "6d60841b8345cea51967ce3704e2144772136a24e21c556add1ed6b8ef3ea50b",
+      "size": 955015
     },
     {
       "format": "json",
@@ -23,31 +23,31 @@
     },
     {
       "format": "json",
-      "generated_at": 1765335352.7439277,
+      "generated_at": 1765335774.3868482,
       "name": "component_gaps.json",
-      "sha": "d8f0f47ebcb77dd92197c3cb7c05d4f06b4a75d2ca4fbee78530ab1dfe1fb3f8",
-      "size": 7123
+      "sha": "f6d37b42a324aad9cfa35a34dabe9e1dcde7014bd1800f8af7c2dbd7cfe352bb",
+      "size": 7339
     },
     {
       "format": "json",
-      "generated_at": 1765335347.5299273,
+      "generated_at": 1765335769.0558484,
       "name": "context_index.json",
-      "sha": "51a0ffd875064883935580fd48e71a8a9faf9083fb90c3b57767edd08f441d21",
-      "size": 950808
+      "sha": "d9706913243707531a6cccbea69c924fb2d0d19a05743d78f4c62ff2b996b740",
+      "size": 951250
     },
     {
       "format": "json",
-      "generated_at": 1765335347.5539272,
+      "generated_at": 1765335769.1038485,
       "name": "facets.json",
-      "sha": "3c8bb0184492ddc99ae6149a2f3a3863ebe05f24ef292f83b6b0dd1ed0a24629",
-      "size": 77451
+      "sha": "2e38afb9ed16927ebeae34531305978a597c3c28cfff6748ac70f657c2373b19",
+      "size": 122063
     },
     {
       "format": "json",
-      "generated_at": 1765335352.7429278,
+      "generated_at": 1765335774.3858483,
       "name": "gaps.json",
-      "sha": "86a66268fd2acc5da714c1d15530ee42eaa8f1cee24e484b9ffaf71527482033",
-      "size": 37829
+      "sha": "7991fd0eccaa6829841a7e79049fe664178405ed48cbf407892918efecf38269",
+      "size": 235315
     }
   ],
   "metrics_schema_version": "2.0.0",
@@ -58,9 +58,9 @@
     "safeguards": 0.15,
     "tests": 0.25
   },
-  "repo_root_sha": "d07dcbbdab5131e8d21efad3464a0da13ae7ece3e6e84743dd8084515792fca9",
+  "repo_root_sha": "90cc56a8b412a75dd8c41405fda4c164ad372e692957fbc061e7be05404e0e03",
   "template_hash": "e43cf2130efeaae1af314254ccc51bfbc219feaef3e5635a682da251a9710d43",
-  "timestamp": 1765335353.2668405,
+  "timestamp": 1765335774.9227514,
   "version": "1.4.0",
   "warnings": [],
   "weights": {

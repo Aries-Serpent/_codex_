@@ -91,13 +91,20 @@ options:
   fail_on_missing_detector: false
 
 # Optional safeguards override (P3). If present, the runner will use this list instead of its defaults.
+# Sorted alphabetically for determinism per v1.4.0 spec.
 safeguards:
   keywords:
-    - sha256
+    - baseline
     - checksum
-    - rng
-    - seed
+    - deterministic
+    - manifest
     - offline
+    - reproduce
+    - rng
+    - sanitize
+    - seed
+    - secret
+    - sha256
     - WANDB_MODE
 
 inference:

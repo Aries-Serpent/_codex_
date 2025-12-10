@@ -88,7 +88,21 @@ CFG_PATHS = [
 ]
 SAFE_TEXT_EXT = {".py", ".md", ".rst", ".toml", ".yaml", ".yml", ".json", ".txt"}
 MAX_READ_BYTES = 200_000
-SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MODE"]
+# Expanded safeguard keywords per v1.4.0 spec - sorted for determinism
+SAFEGUARD_KEYWORDS = [
+    "baseline",
+    "checksum",
+    "deterministic",
+    "manifest",
+    "offline",
+    "reproduce",
+    "rng",
+    "sanitize",
+    "seed",
+    "secret",
+    "sha256",
+    "WANDB_MODE",
+]
 VERSION = "1.4.0"
 
 # Quality gate option keys (v1.4.0)
@@ -253,6 +267,11 @@ DOMAIN_PATTERNS = {
     "safety": re.compile(r"safety|saniti", re.I),
     "logging": re.compile(r"log|tracking", re.I),
     "config": re.compile(r"config|hydra", re.I),
+    # v1.4.0 additions
+    "serve": re.compile(r"serve|inference|api", re.I),
+    "secret": re.compile(r"secret|baseline|redact", re.I),
+    "status": re.compile(r"status|audit|report", re.I),
+    "archive": re.compile(r"archive|bundle|manifest", re.I),
 }
 
 BASE_CAPABILITY_RULES = [
@@ -882,7 +901,9 @@ def stage_s7_manifest(cfg):
         "warnings": [],
         "metrics_schema_version": cfg.get("metrics_schema_version", "2.0.0"),
     }
-    for p in artifacts_dir.glob("*.json"):
+    # Sort artifacts by name for determinism
+    json_artifacts = sorted(artifacts_dir.glob("*.json"), key=lambda path: path.name)
+    for p in json_artifacts:
         if p.name.startswith("_"):
             continue
         manifest["artifacts"].append({
@@ -893,8 +914,33 @@ def stage_s7_manifest(cfg):
             "generated_at": p.stat().st_mtime
         })
     
-    # Sort artifacts for determinism
-    manifest["artifacts"] = sorted(manifest["artifacts"], key=lambda x: x["name"])
+    # Add coverage_stats if coverage_map.json exists (v1.4.0 enhanced)
+    cov_map_path = artifacts_dir / "coverage_map.json"
+    if cov_map_path.exists():
+        try:
+            cov_data = json.loads(cov_map_path.read_text())
+            percents = []
+            for entry in cov_data.values():
+                pct = entry.get("percent")
+                if isinstance(pct, (int, float)):
+                    percents.append(float(pct))
+            percents = sorted(percents)
+            if percents:
+                manifest["coverage_stats"] = {
+                    "total_files": len(percents),
+                    "min_percent": round(percents[0], 6),
+                    "max_percent": round(percents[-1], 6),
+                    "avg_percent": round(sum(percents) / len(percents), 6),
+                }
+            else:
+                manifest["coverage_stats"] = {
+                    "total_files": 0,
+                    "min_percent": 0.0,
+                    "max_percent": 0.0,
+                    "avg_percent": 0.0,
+                }
+        except Exception as e:
+            manifest.setdefault("warnings", []).append(f"coverage_stats_error: {e}")
     
     tpl_dir = Path(_get_matrix_template(cfg)).parent
     concat = b""
@@ -905,23 +951,7 @@ def stage_s7_manifest(cfg):
     if warn_file.exists():
         manifest["warnings"].extend(json.loads(warn_file.read_text()))
     
-    # Add coverage_stats if coverage_map.json exists (v1.4.0)
-    cov_map_path = artifacts_dir / "coverage_map.json"
-    if cov_map_path.exists():
-        try:
-            cov_data = json.loads(cov_map_path.read_text())
-            if cov_data:
-                total_files = len(cov_data)
-                avg_coverage = sum(v.get("percent", 0) for v in cov_data.values()) / max(1, total_files)
-                manifest["coverage_stats"] = {
-                    "files_covered": total_files,
-                    "average_coverage": round(avg_coverage, 4),
-                    "source": "coverage_map.json"
-                }
-        except Exception as e:
-            manifest["warnings"].append(f"coverage_stats_parse_error:{e}")
-    
-    # Sort manifest keys for determinism
+    # Write manifest with sorted keys for determinism
     out = ROOT / "audit_run_manifest.json"
     out.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
     return manifest

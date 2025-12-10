@@ -108,7 +108,8 @@ def parse_coverage_xml_to_map(
             data["total_lines"] = len(data.get("covered_lines", []))  # type: ignore[assignment]
             data["percent"] = 0.0  # type: ignore[assignment]
 
-    return cov
+    # Return a deterministically ordered mapping for stable downstream manifests
+    return {path: cov[path] for path in sorted(cov)}
 
 
 def discover_and_parse_coverage(
@@ -159,8 +160,9 @@ def discover_and_parse_coverage(
         print("No coverage XML files found", file=sys.stderr)
         return None
 
-    # Use the first (most recent) coverage file found
-    xml_path = sorted(xml_files, key=lambda p: p.stat().st_mtime, reverse=True)[0]
+    # Use the first (most recent) coverage file found, breaking ties deterministically
+    xml_files = sorted(xml_files, key=lambda p: (p.stat().st_mtime, p.as_posix()), reverse=True)
+    xml_path = xml_files[0]
     print(f"Parsing coverage from: {xml_path}")
 
     # Parse and save
@@ -181,7 +183,7 @@ def parse_coverage_xml(xml_path: Path):
 
 def write_coverage_map(out_path: Path, cov_map: dict):
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(cov_map, indent=2), encoding="utf-8")
+    out_path.write_text(json.dumps(cov_map, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def main():

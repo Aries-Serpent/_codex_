@@ -12,42 +12,51 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
-# Expanded safeguard keyword list covering security, validation, and defensive programming
-SAFEGUARD_KEYWORDS = {
-    # Cryptographic & Security
-    "sha256",
-    "checksum",
-    "validate",
-    "validation",
-    "sanitize",
-    "sanitization",
-    "authenticate",
-    "authorization",
-    # Determinism & Reproducibility
-    "rng",
-    "seed",
-    "deterministic",
-    "reproducible",
-    "offline",
-    # Rate Limiting & Bounds
-    "rate_limit",
-    "ratelimit",
-    "bounds_check",
-    "bounded",
-    "timeout",
-    "max_retries",
-    # Error Handling & Safety
-    "try_except",
-    "error_handling",
-    "rollback",
-    "cleanup",
-    "safeguard",
-    "defensive",
-    "robust",
-    # Configuration
-    "WANDB_MODE",
-    "MAX_READ_BYTES",
-}
+# Expanded safeguard keyword list covering security, validation, and defensive programming.
+# Sorted deterministically for reproducibility.
+SAFEGUARD_KEYWORDS = frozenset(
+    sorted(
+        {
+            # Cryptographic & Security
+            "sha256",
+            "checksum",
+            "validate",
+            "validation",
+            "sanitize",
+            "sanitization",
+            "authenticate",
+            "authorization",
+            "secret",
+            # Determinism & Reproducibility
+            "rng",
+            "seed",
+            "deterministic",
+            "reproducible",
+            "reproduce",
+            "baseline",
+            "manifest",
+            "offline",
+            # Rate Limiting & Bounds
+            "rate_limit",
+            "ratelimit",
+            "bounds_check",
+            "bounded",
+            "timeout",
+            "max_retries",
+            # Error Handling & Safety
+            "try_except",
+            "error_handling",
+            "rollback",
+            "cleanup",
+            "safeguard",
+            "defensive",
+            "robust",
+            # Configuration
+            "WANDB_MODE",
+            "MAX_READ_BYTES",
+        }
+    )
+)
 
 # Defensive programming patterns (regex-based detection)
 DEFENSIVE_PATTERNS = [
@@ -201,7 +210,8 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     
     # Combine for comprehensive pattern list
     all_found_patterns = sorted(found_keywords | found_patterns)
-    
+    required_patterns = sorted(SAFEGUARD_KEYWORDS)
+
     return {
         "id": "safeguards_keywords",
         "evidence": dict(sorted(evidence.items())),
@@ -218,7 +228,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         # Detector contract fields
         "evidence_files": sorted(evidence.keys()),
         "found_patterns": all_found_patterns,
-        "required_patterns": ["validation", "security", "defensive", "robust"],
+        "required_patterns": required_patterns,
         "docs_keywords": ["safeguard", "validation", "security", "defensive", "robust", "sanitize"],
         "meta": {
             "detection_method": "keyword_and_pattern",
