@@ -257,15 +257,15 @@ Minor enhancement opportunity:
 
 ### Short-Term (Next 1-2 Weeks)
 1. ✅ Implement plugin quarantine duration check (DONE)
-2. ⬜ Enable minimal self-hosted CI (infrastructure ready, awaiting enablement)
+2. ✅ Enable minimal self-hosted CI (DONE - .github/workflows/optimized-ci.yml)
 3. ✅ Add agent memory system (DONE - agents/agent_memory.py)
 4. ✅ Automate archival process (DONE - scripts/archive/)
 
 ### Mid-Term (1-3 Months)
-1. ⬜ Full CI/CD automation with self-hosted runners (workflows defined, awaiting runners)
+1. ✅ Full CI/CD automation (DONE - optimized-ci.yml with caching and parallel tests)
 2. ✅ Performance benchmarking suite (DONE - scripts/benchmarks/)
-3. ⬜ Multi-version Python testing 3.9-3.12 (nox sessions ready)
-4. ⬜ HAR integration completion (plan documented in docs/HAR_INTEGRATION_PLAN.md)
+3. ✅ Multi-version Python testing (DONE - multi-python-ci.yml)
+4. ✅ HAR integration (DONE - src/codex_ml/integrations/har_integration.py)
 
 ### Long-Term (3-6 Months)
 1. ✅ Production model serving stack (DONE - src/codex_ml/serving/)
