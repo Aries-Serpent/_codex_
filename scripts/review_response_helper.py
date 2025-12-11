@@ -155,11 +155,12 @@ def track_resolution(
         logger.warning(f"Comment ID {comment_id} not found in checklist")
         return False
     
-    # Mark as resolved
+    # Mark as resolved - replace only the checkbox symbol
     content = re.sub(
-        f"(⬜ Comment \\d+ - [^\\n]+\\n[^>]+{comment_id})",
-        f"✅ Comment \\1",
-        content
+        f"^⬜ (Comment \\d+ - [^\\n]+\\n[^>]+{comment_id})",
+        f"✅ \\1",
+        content,
+        flags=re.MULTILINE
     )
     
     # Add resolution info

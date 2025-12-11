@@ -246,7 +246,7 @@ def main():
     
     args = parser.parse_args()
     
-    dry_run = args.dry_run and not (args.fix and not args.dry_run)
+    dry_run = args.dry_run if not args.fix else False
     
     if dry_run and args.fix:
         logger.info("=" * 60)

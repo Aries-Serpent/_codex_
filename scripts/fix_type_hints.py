@@ -21,7 +21,7 @@ import ast
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, List, Set
+from typing import Any, Dict, Set
 
 # Configure logging
 logging.basicConfig(
@@ -105,7 +105,7 @@ class TypeHintVisitor(ast.NodeVisitor):
                 self._extract_types_from_annotation(annotation.slice)
 
 
-def analyze_file(file_path: Path) -> Dict[str, any]:
+def analyze_file(file_path: Path) -> Dict[str, Any]:
     """
     Analyze a Python file for typing import issues.
     

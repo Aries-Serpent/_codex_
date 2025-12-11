@@ -54,11 +54,6 @@ class DependencyAnalyzer(ast.NodeVisitor):
                 self.from_imports[node.module].add(alias.name)
         self.generic_visit(node)
     
-    def visit_Str(self, node: ast.Str) -> None:
-        """Visit string literals (for file/module references). Deprecated in Python 3.8+."""
-        self.string_references.add(node.s)
-        self.generic_visit(node)
-    
     def visit_Constant(self, node: ast.Constant) -> None:
         """Visit constant nodes (Python 3.8+). Primary method for string handling."""
         if isinstance(node.value, str):

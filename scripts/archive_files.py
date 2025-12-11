@@ -99,27 +99,26 @@ def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
     # Check if file is imported by any Python code
     if file_path.suffix in ['.py', '.json']:
         root = Path.cwd()
-        # Simple grep check - look for imports or references
+        # Python-based reference check (safer than grep)
         try:
-            import subprocess
-            result = subprocess.run(
-                ['grep', '-r', '--include=*.py', file_path.name, '.'],
-                cwd=root,
-                capture_output=True,
-                text=True
-            )
-            if result.returncode == 0 and result.stdout.strip():
-                # Found references - might not be safe
-                refs = result.stdout.strip().split('\n')
-                # Filter out the file itself
-                refs = [r for r in refs if file_path.name not in r.split(':')[0]]
-                if refs:
-                    return False, f"File referenced in: {refs[0]}"
-        except FileNotFoundError:
-            # grep not available - be conservative and inform the user
-            logger.warning(f"Could not verify references for {file_path.name}: 'grep' not found. Please install 'grep' or use an alternative verification method.")
-        except subprocess.SubprocessError as e:
-            # Other subprocess error - be conservative
+            refs = []
+            for py_file in root.rglob("*.py"):
+                # Skip the file itself
+                if py_file.resolve() == file_path.resolve():
+                    continue
+                try:
+                    with py_file.open("r", encoding="utf-8", errors="ignore") as f:
+                        for lineno, line in enumerate(f, 1):
+                            if file_path.name in line:
+                                refs.append(f"{py_file}:{lineno}:{line.strip()[:80]}")
+                                # Only need first reference to determine safety
+                                break
+                except (UnicodeDecodeError, OSError):
+                    continue
+            if refs:
+                return False, f"File referenced in: {refs[0]}"
+        except Exception as e:
+            # If analysis fails, be conservative
             logger.warning(f"Could not verify references for {file_path.name}: {e}")
     
     # Check if it's a required config file
