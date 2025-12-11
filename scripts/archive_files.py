@@ -133,10 +133,10 @@ def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
 
 def archive_file(
     file_path: Path,
-    archive_info: Dict,
+    archive_info: Dict[str, Any],
     base_archive_dir: Path,
     dry_run: bool = False
-) -> Optional[Dict]:
+) -> Optional[Dict[str, Any]]:
     """
     Archive a single file to misc/repo-owner-review.
     
@@ -195,7 +195,7 @@ def archive_file(
     return metadata
 
 
-def update_metadata(base_archive_dir: Path, new_files: List[Dict]) -> None:
+def update_metadata(base_archive_dir: Path, new_files: List[Dict[str, Any]]) -> None:
     """Update the metadata.json file with newly archived files."""
     metadata_path = base_archive_dir / "metadata.json"
     
