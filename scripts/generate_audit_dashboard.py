@@ -92,9 +92,12 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
         try:
             with open(gaps_file, encoding="utf-8") as f:
                 gaps_data = json.load(f)
-        except (json.JSONDecodeError, OSError):
-            # gaps.json is optional; if missing or unreadable, continue with empty gaps data.
-            pass
+        except json.JSONDecodeError as e:
+            # gaps.json is optional; if corrupt, log warning and continue with empty gaps data.
+            print(f"Warning: Could not parse gaps.json (corrupt JSON): {e}")
+        except OSError as e:
+            # gaps.json is optional; if unreadable, log warning and continue with empty gaps data.
+            print(f"Warning: Could not read gaps.json (I/O error): {e}")
     
     # Load improvement plan MD file
     plan_file = base_path / "audit_artifacts" / "HIGH_MATURITY_ACHIEVEMENT_PLAN.md"

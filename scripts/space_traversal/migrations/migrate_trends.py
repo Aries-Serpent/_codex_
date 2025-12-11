@@ -3,6 +3,7 @@
 Database migration system for trend storage.
 
 Provides versioned schema migrations for the audit trend database.
+Requires Python 3.7+ for annotations support.
 
 Features:
 - Decorator-based migration registration
