@@ -385,9 +385,9 @@ Updated `codex_gap_registry.yaml` to reflect:
 5. ✅ Update gap registry (DONE - marked as resolved)
 
 ### Short Term (Next 1-2 PRs)
-1. ⬜ Enhance stub_cleanup.py to use AST for abstract method detection
-2. ⬜ Add AI Agent prompts for debugging scenarios
-3. ⬜ Create contributor onboarding guide
+1. ✅ Enhance stub_cleanup.py to use AST for abstract method detection (DONE - commit 629ee2b)
+2. ✅ Add AI Agent prompts for debugging scenarios (DONE - 4 guides in agents/prompts/debugging/)
+3. ✅ Create contributor onboarding guide (DONE - docs/CONTRIBUTOR_ONBOARDING.md)
 4. ⬜ Automate archival process in CI/CD
 5. ⬜ Consolidate documentation (693 markdown files)
 

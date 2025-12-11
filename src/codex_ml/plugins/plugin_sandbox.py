@@ -279,6 +279,8 @@ class PluginSandbox:
                         elapsed = int((datetime.utcnow() - quarantined_time).total_seconds())
                     except (ValueError, TypeError):
                         # If quarantine timestamp is invalid or missing, default to zero elapsed time.
+                        # Security note: This keeps the plugin quarantined for the full duration,
+                        # which is the safe default behavior when timestamp parsing fails.
                         pass
                 remaining = self.quarantine_duration - elapsed
                 logger.warning(

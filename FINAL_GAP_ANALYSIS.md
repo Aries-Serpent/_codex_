@@ -41,7 +41,7 @@ After comprehensive analysis of the codebase, **the repository is production-rea
 
 **Location**: `src/codex_ml/plugins/plugin_sandbox.py`  
 **Original Issue**: `TODO: Check quarantine duration`  
-**Status**: ✅ **FULLY IMPLEMENTED** in commits b9611df and 7f95fe1
+**Status**: ✅ **FULLY IMPLEMENTED** (see plugin_sandbox.py lines 80-103, 267-287)
 
 **Implementation Details**:
 - Added `quarantined_at` timestamp tracking in `PluginHealth`

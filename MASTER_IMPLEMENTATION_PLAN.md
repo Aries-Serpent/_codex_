@@ -19,7 +19,7 @@ This document consolidates ALL unimplemented plans harvested from:
 
 ### Current Status
 - **Critical Gaps**: 0 (all verified as resolved or correct patterns)
-- **Pending Implementations**: 18 items across 4 priority tiers
+- **Pending Implementations**: 39 items across 4 priority tiers
 - **Documentation**: 120KB+ added, 693+ files indexed
 - **Test Coverage**: 72%, 1,310 test files, 100% pass rate
 
@@ -130,6 +130,9 @@ This document consolidates ALL unimplemented plans harvested from:
 | Add detect-secrets to CI pipeline | MEDIUM | 0.5 days | ⬜ Planned |
 | Document incident response procedures | MEDIUM | 1 day | ⬜ Planned |
 | Publish API documentation to GitHub Pages | LOW | 1 day | ⬜ Planned |
+| Migrate Sigstore to production SDK | LOW | 2 days | ⬜ Planned |
+
+**Note**: Sigstore client (src/codex/archive/sigstore_client.py) currently uses mock signing for development. Production deployment for SLSA L3 compliance requires migration to sigstore-python SDK.
 
 ---
 

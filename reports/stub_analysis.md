@@ -41,7 +41,7 @@ This analysis uses enhanced AST-based detection to:
 ### ~~src/codex_ml/plugins/plugin_sandbox.py:226~~ [TODO] ✅ **RESOLVED**
 
 **Original Issue**: TODO: Check quarantine duration  
-**Resolution**: Fully implemented in commits b9611df and 7f95fe1  
+**Resolution**: Fully implemented (see plugin_sandbox.py lines 80-103, 267-287)  
 **Implementation Details**:
 - `quarantined_at` timestamp tracking added to `PluginHealth`
 - `is_quarantine_expired()` method for automatic expiration

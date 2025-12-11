@@ -70,7 +70,12 @@ I need help remediating a security vulnerability in the Codex repository.
    real_path = os.path.realpath(file_path)
    
    # Use commonpath for robust containment - prevents /safe/dir_evil bypassing /safe/dir
-   if os.path.commonpath([real_base, real_path]) != real_base:
+   try:
+       if os.path.commonpath([real_base, real_path]) != real_base:
+           raise ValueError("Invalid path - path traversal attempt detected")
+   except ValueError:
+       # commonpath raises ValueError if paths are on different drives (Windows)
+       # or have no common prefix - treat as invalid path
        raise ValueError("Invalid path - path traversal attempt detected")
    
    with open(real_path) as f:
