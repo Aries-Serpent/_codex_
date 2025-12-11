@@ -179,8 +179,6 @@ def organize_repository(
             print(f"Error: File not found - {md_file.name}")
         except PermissionError:
             print(f"Error: Permission denied - {md_file.name}")
-        except OSError as e:
-            print(f"Error: OS error archiving {md_file.name}: {e}")
         except Exception as e:
             print(f"Error: Unexpected error archiving {md_file.name}: {e}")
     

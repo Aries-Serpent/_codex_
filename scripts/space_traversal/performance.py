@@ -205,7 +205,6 @@ def batch_file_read(
                 results[str(path)] = path.read_text(encoding=encoding, errors="ignore")
         except (OSError, IOError):
             # Intentionally ignore file read errors; skip unreadable files.
-            # Intentionally ignore file read errors; skip unreadable files.
             pass
     return results
 

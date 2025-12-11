@@ -1,0 +1,52 @@
+{
+  "metadata_version": "1.0",
+  "created_date": "2025-12-10T23:51:00Z",
+  "purpose": "Track files moved to misc/repo-owner-review for potential deletion",
+  "repository_size_before": "11.2MB",
+  "repository_size_target": "<10MB (CodeQL requirement)",
+  "files_archived": [
+    {
+      "original_path": "artifacts/security/detect-secrets.txt",
+      "archived_path": "misc/repo-owner-review/archived-artifacts/security-reports/detect-secrets.txt",
+      "size": "4.2MB",
+      "date_moved": "2025-12-10",
+      "reason": "Large generated security scan report - can be regenerated",
+      "safe_to_delete": true,
+      "verification": "Not imported by any code, not required for builds/tests"
+    },
+    {
+      "original_path": ".codex/change_log-large.md",
+      "archived_path": "misc/repo-owner-review/archived-artifacts/changelogs/change_log-large.md",
+      "size": "3.3MB",
+      "date_moved": "2025-12-10",
+      "reason": "Historical changelog - information preserved in git history",
+      "safe_to_delete": true,
+      "verification": "Historical document, not referenced by active code"
+    },
+    {
+      "original_path": "scripts/capabilities_scored_backup.json",
+      "archived_path": "misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored_backup.json",
+      "size": "816KB",
+      "date_moved": "2025-12-10",
+      "reason": "Backup file - duplicate of audit_artifacts version",
+      "safe_to_delete": true,
+      "verification": "Backup/duplicate file, current version in audit_artifacts/"
+    },
+    {
+      "original_path": "scripts/capabilities_scored.json",
+      "archived_path": "misc/repo-owner-review/archived-artifacts/deprecated-scripts/capabilities_scored.json",
+      "size": "816KB",
+      "date_moved": "2025-12-10",
+      "reason": "Duplicate file - duplicate of audit_artifacts version",
+      "safe_to_delete": true,
+      "verification": "Duplicate file, current version in audit_artifacts/"
+    }
+  ],
+  "total_space_freed": "~9.1MB",
+  "notes": [
+    "All files are backed up in git history",
+    "Files can be restored by moving back from misc/ folder",
+    "Tests passing after archival confirms no broken dependencies",
+    "Repository owner may delete this entire folder when comfortable"
+  ]
+}

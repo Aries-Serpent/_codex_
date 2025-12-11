@@ -1205,7 +1205,6 @@ def cmd_store_trend(args, cfg):
         ).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         # Git information is optional; proceed if unavailable (e.g., not a git repo or git not installed)
-        # Git information is optional; proceed if unavailable (e.g., not a git repo or git not installed)
         pass
     
     # Get database path from config
@@ -1525,7 +1524,6 @@ def run_full(cfg):
                     ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
                 ).strip()
             except (subprocess.CalledProcessError, FileNotFoundError):
-                # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
                 # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
                 pass
             
