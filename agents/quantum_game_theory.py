@@ -89,12 +89,31 @@ class StrategyState:
         """Get probabilities from wavefunction (Born rule)"""
         return np.abs(self.wavefunction) ** 2
     
-    def collapse_to_strategy(self, rng: Optional[np.random.Generator] = None) -> int:
-        """Measure the wavefunction, returning a strategy index"""
+    def collapse_to_strategy_index(self, rng: Optional[np.random.Generator] = None) -> int:
+        """Measure the wavefunction, returning a strategy index.
+        
+        Args:
+            rng: Random number generator for reproducibility
+            
+        Returns:
+            Index of the selected strategy (use strategies[index] for name)
+        """
         if rng is None:
             rng = np.random.default_rng()
         probs = self.get_measurement_probabilities()
         return rng.choice(len(probs), p=probs)
+    
+    def collapse_to_strategy(self, rng: Optional[np.random.Generator] = None) -> str:
+        """Measure the wavefunction, returning the strategy name.
+        
+        Args:
+            rng: Random number generator for reproducibility
+            
+        Returns:
+            Name of the selected strategy
+        """
+        idx = self.collapse_to_strategy_index(rng)
+        return self.strategies[idx]
 
 
 @dataclass 
@@ -885,10 +904,22 @@ def create_prisoners_dilemma() -> Tuple[List[str], List[str], np.ndarray, np.nda
     return strategies, strategies, payoff_blue, payoff_red
 
 
-def create_zero_sum_game(size: int = 3) -> Tuple[List[str], List[str], np.ndarray, np.ndarray]:
-    """Create a random zero-sum game."""
+def create_zero_sum_game(
+    size: int = 3,
+    seed: Optional[int] = None
+) -> Tuple[List[str], List[str], np.ndarray, np.ndarray]:
+    """Create a random zero-sum game.
+    
+    Args:
+        size: Number of strategies per team
+        seed: Random seed for reproducibility (None for non-deterministic)
+        
+    Returns:
+        Tuple of (blue_strategies, red_strategies, payoff_blue, payoff_red)
+    """
+    rng = np.random.default_rng(seed)
     strategies = [f"S{i}" for i in range(size)]
-    payoff_blue = np.random.randn(size, size)
+    payoff_blue = rng.standard_normal((size, size))
     payoff_red = -payoff_blue  # Zero-sum
     return strategies, strategies, payoff_blue, payoff_red
 
