@@ -789,6 +789,187 @@ class AgentMemorySystem:
             'patterns_count': len(self.pattern_library.patterns),
             'current_task': self.current_frame.task_description if self.current_frame else None,
         }
+    
+    # =========================================================================
+    # Required API methods (per gap analysis Phase A.2)
+    # =========================================================================
+    
+    def store_decision(
+        self,
+        task_id: str,
+        decision: str,
+        rationale: str,
+        context: Dict[str, Any] = None,
+    ) -> str:
+        """Store a decision with its rationale and context.
+        
+        This is the canonical API method for recording decisions.
+        
+        Args:
+            task_id: Unique identifier for the task
+            decision: The decision made
+            rationale: Explanation of why this decision was made
+            context: Additional context dictionary
+            
+        Returns:
+            Memory ID of the stored decision
+        """
+        memory_id = hashlib.sha256(
+            f"{task_id}:{decision}:{datetime.now().isoformat()}".encode()
+        ).hexdigest()[:16]
+        
+        entry = MemoryEntry(
+            memory_id=memory_id,
+            category="decision",
+            content=decision,
+            context={
+                'task_id': task_id,
+                'rationale': rationale,
+                **(context or {}),
+            },
+            confidence=0.8,
+            tags=[task_id, 'decision'] + decision.lower().split()[:3],
+        )
+        
+        self.memory.store_memory(entry)
+        logger.info(f"Stored decision for task {task_id}: {decision[:50]}...")
+        return memory_id
+    
+    def retrieve_similar_context(
+        self,
+        task_description: str,
+        limit: int = 5,
+    ) -> List[Dict[str, Any]]:
+        """Retrieve similar contexts based on task description.
+        
+        Uses keyword matching and confidence scoring to find
+        relevant past contexts and decisions.
+        
+        Args:
+            task_description: Description of the current task
+            limit: Maximum number of results to return
+            
+        Returns:
+            List of context dictionaries with relevance scores
+        """
+        # Extract keywords from task description
+        keywords = [
+            word.lower() for word in task_description.split()
+            if len(word) > 3  # Skip short words
+        ][:10]
+        
+        # Search memories by keywords
+        all_relevant = []
+        for keyword in keywords:
+            memories = self.memory.search_memories(
+                tags=[keyword],
+                min_confidence=0.5,
+                limit=limit * 2,
+            )
+            all_relevant.extend(memories)
+        
+        # Deduplicate and score
+        seen_ids = set()
+        scored_results = []
+        
+        for memory in all_relevant:
+            if memory.memory_id in seen_ids:
+                continue
+            seen_ids.add(memory.memory_id)
+            
+            # Calculate relevance score
+            matching_keywords = sum(
+                1 for kw in keywords
+                if kw in memory.content.lower() or kw in memory.tags
+            )
+            relevance = (matching_keywords / len(keywords)) * memory.confidence
+            
+            scored_results.append({
+                'memory_id': memory.memory_id,
+                'content': memory.content,
+                'context': memory.context,
+                'category': memory.category,
+                'confidence': memory.confidence,
+                'relevance_score': relevance,
+                'created_at': memory.created_at,
+            })
+        
+        # Sort by relevance and return top results
+        scored_results.sort(key=lambda x: x['relevance_score'], reverse=True)
+        return scored_results[:limit]
+    
+    def get_pattern_library(self) -> List[Dict[str, Any]]:
+        """Get all patterns from the pattern library.
+        
+        Returns:
+            List of pattern dictionaries with metadata
+        """
+        return [
+            {
+                'pattern_id': pattern_id,
+                'name': pattern['name'],
+                'description': pattern['description'],
+                'triggers': pattern['triggers'],
+                'recommended_actions': pattern['recommended_actions'],
+                'success_rate': pattern['success_rate'],
+                'usage_count': pattern.get('usage_count', 0),
+                'tags': pattern['tags'],
+            }
+            for pattern_id, pattern in self.pattern_library.patterns.items()
+        ]
+    
+    def invalidate_stale_contexts(self, age_days: int = 30) -> int:
+        """Invalidate and clean up stale contexts older than specified days.
+        
+        Reduces confidence of old, rarely-accessed memories and
+        removes very low confidence entries.
+        
+        Args:
+            age_days: Age threshold in days for considering context stale
+            
+        Returns:
+            Number of memories invalidated or removed
+        """
+        from datetime import timedelta
+        
+        cutoff_date = (datetime.now() - timedelta(days=age_days)).isoformat()
+        
+        invalidated = 0
+        
+        with sqlite3.connect(self.memory.db_path) as conn:
+            # Get old memories with low access counts
+            cursor = conn.execute("""
+                SELECT memory_id, confidence, access_count
+                FROM memories
+                WHERE created_at < ? AND access_count < 5
+            """, (cutoff_date,))
+            rows = cursor.fetchall()
+            
+            for memory_id, confidence, access_count in rows:
+                # Calculate decay factor based on age and access
+                decay = 0.8 if access_count > 2 else 0.6
+                new_confidence = confidence * decay
+                
+                if new_confidence < 0.2:
+                    # Remove very low confidence old memories
+                    conn.execute(
+                        "DELETE FROM memories WHERE memory_id = ?",
+                        (memory_id,)
+                    )
+                    logger.debug(f"Removed stale memory: {memory_id}")
+                else:
+                    # Reduce confidence
+                    conn.execute("""
+                        UPDATE memories SET confidence = ?
+                        WHERE memory_id = ?
+                    """, (new_confidence, memory_id))
+                
+                invalidated += 1
+            
+            conn.commit()
+        
+        logger.info(f"Invalidated {invalidated} stale contexts older than {age_days} days")
+        return invalidated
 
 
 # Example usage
