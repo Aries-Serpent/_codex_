@@ -20,6 +20,7 @@ import hashlib
 import json
 import logging
 import shutil
+from collections import namedtuple
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -30,6 +31,9 @@ logging.basicConfig(
     format='%(levelname)s: %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Named tuple for archive verification result
+ArchiveVerificationResult = namedtuple('ArchiveVerificationResult', ['is_safe', 'reason'])
 
 # Files that are candidates for archival
 ARCHIVE_CANDIDATES = {
@@ -89,12 +93,12 @@ def compress_file(file_path: Path, output_path: Path) -> None:
     logger.info(f"Compressed {file_path.name}: {file_path.stat().st_size} -> {output_path.stat().st_size} bytes")
 
 
-def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
+def verify_safe_to_archive(file_path: Path) -> ArchiveVerificationResult:
     """
     Verify that a file is safe to archive (won't break functionality).
     
     Returns:
-        (is_safe, reason)
+        ArchiveVerificationResult with is_safe (bool) and reason (str) fields
     """
     # Check if file is imported by any Python code
     if file_path.suffix in ['.py', '.json']:
@@ -116,20 +120,20 @@ def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
                 except (UnicodeDecodeError, OSError):
                     continue
             if refs:
-                return False, f"File referenced in: {refs[0]}"
+                return ArchiveVerificationResult(False, f"File referenced in: {refs[0]}")
         except Exception as e:
             # If analysis fails, be conservative
             logger.warning(f"Could not verify references for {file_path.name}: {e}")
     
     # Check if it's a required config file
     if file_path.name in ['pyproject.toml', 'setup.py', 'requirements.txt', '.gitignore']:
-        return False, "Required configuration file"
+        return ArchiveVerificationResult(False, "Required configuration file")
     
     # Default to safe for markdown documentation files
     if file_path.suffix == '.md':
-        return True, "Documentation file - safe to archive"
+        return ArchiveVerificationResult(True, "Documentation file - safe to archive")
     
-    return True, "No critical dependencies found"
+    return ArchiveVerificationResult(True, "No critical dependencies found")
 
 
 def archive_file(

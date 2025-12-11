@@ -304,17 +304,22 @@ def generate_planning_javascript() -> str:
             let html = '';
             suggestions.forEach(component => {
                 const paths = COMPONENT_DEPENDENCIES[component] || [];
-                // Escape component value to prevent XSS
+                // Create safe ID using hash of component name to avoid XSS and selector issues
+                const componentId = 'comp_' + Array.from(component).reduce((hash, char) => {
+                    return ((hash << 5) - hash) + char.charCodeAt(0) | 0;
+                }, 0).toString(36).replace('-', 'n');
+                // Check if already selected using data attribute
+                const existingCheckbox = document.querySelector(`input[data-component="${CSS.escape(component)}"]`);
+                const checked = existingCheckbox?.checked ? 'checked' : '';
+                // Escape component and paths for display
                 const escapedComponent = sanitizeHTML(component);
-                const checked = document.getElementById(`comp_${escapedComponent}`)?.checked ? 'checked' : '';
-                // Escape paths for display
                 const escapedPaths = paths.slice(0, 2).map(p => sanitizeHTML(p)).join(', ');
                 const moreText = paths.length > 2 ? '...' : '';
                 
                 html += `
                     <div class="checkbox-item">
-                        <input type="checkbox" id="comp_${escapedComponent}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
-                        <label for="comp_${escapedComponent}">
+                        <input type="checkbox" id="${componentId}" data-component="${sanitizeHTML(component)}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
+                        <label for="${componentId}">
                             <strong>${escapedComponent}</strong>
                             <div class="score">Affects: ${escapedPaths}${moreText}</div>
                         </label>

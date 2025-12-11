@@ -55,9 +55,21 @@ class DependencyAnalyzer(ast.NodeVisitor):
         self.generic_visit(node)
     
     def visit_Constant(self, node: ast.Constant) -> None:
-        """Visit constant nodes (Python 3.8+). Primary method for string handling."""
+        """
+        Visit constant nodes (Python 3.8+). Filter strings by context and pattern.
+        Only collect strings that are likely to be dependencies (imports, module names, etc.).
+        """
         if isinstance(node.value, str):
-            self.string_references.add(node.value)
+            # Filter by context and pattern to reduce false positives
+            # Only keep strings that look like module/package names or paths
+            value = node.value
+            # Skip very short strings (less than 3 chars) and very long strings (more than 100 chars)
+            if 3 <= len(value) <= 100:
+                # Check if it looks like a module name, package name, or file path
+                if ('.' in value or '/' in value or '_' in value) and not value.startswith((' ', '\n', '\t')):
+                    # Additional filtering: exclude common non-dependency strings
+                    if not any(pattern in value.lower() for pattern in ['error', 'warning', 'info', 'debug', 'http://', 'https://']):
+                        self.string_references.add(value)
         self.generic_visit(node)
 
 

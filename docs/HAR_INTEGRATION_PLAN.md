@@ -166,11 +166,28 @@ class HARRecorder:
         self.pages = []
         
     def record_request(self, request, response, timing):
-        """Record a single HTTP transaction."""
+        """
+        Record a single HTTP transaction.
+        
+        TODO: Implementation needed
+        - Parse request object (method, URL, headers, body)
+        - Parse response object (status, headers, body, size)
+        - Record timing information (send, wait, receive)
+        - Format as HAR entry and append to self.entries
+        - Link to appropriate page in self.pages
+        """
         pass
     
     def save(self):
-        """Save HAR file to disk."""
+        """
+        Save HAR file to disk.
+        
+        TODO: Implementation needed
+        - Construct HAR JSON structure with version, creator, pages, entries
+        - Write to self.output_path with proper formatting
+        - Consider compression for large HAR files
+        - Validate HAR format before saving
+        """
         pass
 
 class HARCache:
@@ -181,15 +198,39 @@ class HARCache:
         self.index = {}
         
     def get(self, url: str, method: str = "GET") -> Optional[dict]:
-        """Retrieve cached response."""
+        """
+        Retrieve cached response.
+        
+        TODO: Implementation needed
+        - Generate cache key from URL and method
+        - Check self.index for entry existence
+        - Verify cache entry hasn't expired
+        - Load and return cached response data
+        """
         pass
         
     def set(self, url: str, method: str, response: dict, ttl: int = 3600):
-        """Store response in cache."""
+        """
+        Store response in cache.
+        
+        TODO: Implementation needed
+        - Generate cache key from URL and method
+        - Store response data with expiration timestamp
+        - Update self.index with cache entry metadata
+        - Consider size limits and eviction policies
+        """
         pass
         
     def clear(self, pattern: str = "*"):
-        """Clear cache entries matching pattern."""
+        """
+        Clear cache entries matching pattern.
+        
+        TODO: Implementation needed
+        - Support glob patterns for URL matching
+        - Remove matching entries from cache directory
+        - Update self.index to reflect deletions
+        - Log cleared entries for debugging
+        """
         pass
 
 class HARPlayer:
