@@ -278,6 +278,7 @@ class PluginSandbox:
                         quarantined_time = datetime.fromisoformat(health.quarantined_at)
                         elapsed = int((datetime.utcnow() - quarantined_time).total_seconds())
                     except (ValueError, TypeError):
+                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.
                         pass
                 remaining = self.quarantine_duration - elapsed
                 logger.warning(
