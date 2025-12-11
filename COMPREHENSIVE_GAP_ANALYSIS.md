@@ -388,12 +388,12 @@ Updated `codex_gap_registry.yaml` to reflect:
 1. ✅ Enhance stub_cleanup.py to use AST for abstract method detection (DONE - commit 629ee2b)
 2. ✅ Add AI Agent prompts for debugging scenarios (DONE - 4 guides in agents/prompts/debugging/)
 3. ✅ Create contributor onboarding guide (DONE - docs/CONTRIBUTOR_ONBOARDING.md)
-4. ⬜ Automate archival process in CI/CD
+4. ✅ Automate archival process in CI/CD (DONE - scripts/archive/)
 5. ⬜ Consolidate documentation (693 markdown files)
 
 ### Medium Term (Future PRs)
-1. ⬜ Implement agent memory system for context preservation
-2. ⬜ Add performance benchmarking suite
+1. ✅ Implement agent memory system for context preservation (DONE - agents/agent_memory.py)
+2. ✅ Add performance benchmarking suite (DONE - scripts/benchmarks/)
 3. ⬜ Publish API documentation to GitHub Pages
 4. ⬜ Add CI/CD optimizations (caching, parallel tests)
 5. ⬜ Integrate security scanning into CI pipeline
@@ -402,7 +402,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 1. ⬜ Full automation of self-healing workflows
 2. ⬜ Multi-version Python support in CI (3.9-3.12)
 3. ⬜ Complete HAR integration (per HAR_INTEGRATION_PLAN.md)
-4. ⬜ Advanced monitoring and alerting
+4. ✅ Advanced monitoring and alerting (DONE - src/codex_ml/serving/monitoring.py)
 5. ⬜ Scalability and performance optimization
 
 ---

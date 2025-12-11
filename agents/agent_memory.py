@@ -257,10 +257,36 @@ class AgentMemory:
         """Initialize agent memory with SQLite storage.
         
         Args:
-            db_path: Path to SQLite database file
+            db_path: Path to SQLite database file. If None, uses CODEX_LOG_DB_PATH
+                     environment variable or defaults to '.codex/agent_memory.db'.
+                     Path is validated to prevent traversal attacks.
         """
         if db_path is None:
-            db_path = Path(os.getenv('CODEX_LOG_DB_PATH', '.codex/agent_memory.db'))
+            env_path = os.getenv('CODEX_LOG_DB_PATH', '.codex/agent_memory.db')
+            db_path = Path(env_path)
+        
+        # Validate path to prevent traversal attacks
+        # Resolve to absolute path and ensure it's within expected directories
+        db_path = Path(db_path).resolve()
+        
+        # Allow paths within current directory, home directory, or /tmp
+        allowed_roots = [
+            Path.cwd().resolve(),
+            Path.home().resolve(),
+            Path('/tmp').resolve(),
+        ]
+        
+        is_allowed = any(
+            str(db_path).startswith(str(root))
+            for root in allowed_roots
+            if root.exists()
+        )
+        
+        if not is_allowed:
+            raise ValueError(
+                f"Database path {db_path} is outside allowed directories. "
+                f"Must be within current directory, home directory, or /tmp."
+            )
         
         self.db_path = db_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)

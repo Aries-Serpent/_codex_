@@ -912,7 +912,8 @@ def create_zero_sum_game(
     
     Args:
         size: Number of strategies per team
-        seed: Random seed for reproducibility (None for non-deterministic)
+        seed: Random seed for reproducibility. If None, uses system entropy
+              for the random generator which varies between runs.
         
     Returns:
         Tuple of (blue_strategies, red_strategies, payoff_blue, payoff_red)

@@ -125,7 +125,7 @@ This document consolidates ALL unimplemented plans harvested from:
 
 | Task | Priority | Effort | Status |
 |------|----------|--------|--------|
-| Performance benchmarking suite | MEDIUM | 3 days | ⬜ Planned |
+| Performance benchmarking suite | MEDIUM | 3 days | ✅ EXISTS (scripts/benchmarks/) |
 | Integration tests for audit_runner v1.5.5 | MEDIUM | 2 days | ⬜ Planned |
 | Add edge case tests for 80%+ coverage | MEDIUM | 3 days | ⬜ Planned |
 | Golden baseline tests for regression prevention | MEDIUM | 2 days | ⬜ Planned |
