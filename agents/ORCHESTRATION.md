@@ -441,10 +441,91 @@ if iteration % 10 == 0:
 
 ### Research Directions
 
-- **Quantum-Inspired Superposition**: Consider multiple paths simultaneously until measurement
+- **Quantum-Inspired Game Theory**: Blue Team vs Red Team scenarios with wavefunctions and entanglement
 - **Thermodynamic Optimization**: Use entropy and free energy for decision optimization
 - **Relativity Effects**: Time dilation for urgent vs. non-urgent decisions
 - **Field Theory**: Model problem spaces as field potentials
+
+## Quantum-Inspired Game Theory Module
+
+### Overview
+
+The `quantum_game_theory.py` module extends physics-inspired orchestration with:
+
+1. **Classical Energy-Based Game Logic** - Statistical physics approach to Nash equilibria
+2. **Quantum-Inspired Extension** - Wavefunctions, operators, superposition, entanglement
+
+### Key Concepts
+
+```python
+from agents.quantum_game_theory import (
+    BlueRedTeamSimulator,
+    create_security_game,
+    ClassicalGameEngine,
+    QuantumInspiredGameEngine,
+    TeamType
+)
+
+# Classical: Payoffs → Hamiltonian, Strategies → Microstates
+# H(i,j) = -P(i,j)  # Energy minimization = payoff maximization
+
+# Quantum: Strategies → Hilbert space, Mixed strategies → Wavefunctions
+# |ψ⟩ = Σ ψ_ij |a_i⟩ ⊗ |b_j⟩  # Joint strategy state
+```
+
+### Usage Example: Security Game
+
+```python
+# Create a Blue (Defense) vs Red (Attack) game
+blue_strats, red_strats, payoff_blue, payoff_red = create_security_game()
+
+# Quantum simulator with entanglement and noise
+simulator = BlueRedTeamSimulator(
+    blue_strats, red_strats, payoff_blue, payoff_red,
+    mode='quantum',
+    entanglement=0.5,      # Correlated strategies
+    noise_level=0.1,       # Decoherence for uncertainty
+    risk_aversion=0.3      # Risk-adjusted utilities
+)
+
+# Evaluate a hypothesis
+result = simulator.evaluate_hypothesis("Defense-heavy strategy is optimal")
+print(f"Blue expected payoff: {result['blue_expected_payoff']:.3f}")
+print(f"Blue risk-adjusted: {result['blue_risk_adjusted_utility']:.3f}")
+
+# Run multi-round learning simulation
+sim_result = simulator.run_simulation(num_rounds=10, learning_rate=0.1)
+```
+
+### Key Features
+
+| Feature | Classical | Quantum-Inspired |
+|---------|-----------|------------------|
+| Strategy Representation | Probability distributions | Wavefunctions |
+| Correlation | Independent | Entanglement |
+| Equilibrium | Nash (replicator dynamics) | Quantum (unitary learning) |
+| Risk Analysis | Expected value only | Variance + risk-adjusted |
+| Noise Model | None | Decoherence channels |
+
+### Physics Equations
+
+**Gibbs Distribution** (Classical equilibrium):
+```
+p(i,j) ∝ exp(-β H(i,j))
+β = inverse temperature (higher = more deterministic)
+```
+
+**Expected Payoff** (Quantum):
+```
+E[U] = ⟨ψ|Û|ψ⟩
+Var(U) = ⟨ψ|Û²|ψ⟩ - E[U]²
+```
+
+**Risk-Adjusted Utility**:
+```
+J = E[U] - λ·Var(U)
+λ = risk aversion parameter
+```
 
 ## References
 

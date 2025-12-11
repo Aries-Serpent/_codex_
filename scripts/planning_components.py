@@ -242,7 +242,7 @@ def generate_planning_css() -> str:
 
 def generate_planning_javascript() -> str:
     """Generate JavaScript for interactive planning functionality."""
-    return """
+    return r"""
     <script>
         // Component dependency mapping
         const COMPONENT_DEPENDENCIES = {
@@ -292,6 +292,15 @@ def generate_planning_javascript() -> str:
             updateDependencySuggestions(Array.from(dependencies));
         }
         
+        // Helper function to generate safe IDs from component names
+        function generateSafeId(component) {
+            // Create hash-based ID to avoid XSS and selector issues
+            const hash = Array.from(component).reduce((hash, char) => {
+                return ((hash << 5) - hash) + char.charCodeAt(0) | 0;
+            }, 0);
+            return 'comp_' + Math.abs(hash).toString(36);
+        }
+        
         function updateDependencySuggestions(suggestions) {
             const container = document.getElementById('dependencySuggestions');
             if (!container) return;
@@ -303,18 +312,27 @@ def generate_planning_javascript() -> str:
             
             let html = '';
             suggestions.forEach(component => {
+                // Validate component is a string
+                if (typeof component !== 'string') {
+                    console.warn('Invalid component type:', typeof component);
+                    return;
+                }
+                
                 const paths = COMPONENT_DEPENDENCIES[component] || [];
-                // Escape component value to prevent XSS
+                const componentId = generateSafeId(component);
+                
+                // Check if already selected using data attribute
+                const existingCheckbox = document.querySelector(`input[data-component="${CSS.escape(component)}"]`);
+                const checked = existingCheckbox?.checked ? 'checked' : '';
+                // Escape component and paths for display
                 const escapedComponent = sanitizeHTML(component);
-                const checked = document.getElementById(`comp_${escapedComponent}`)?.checked ? 'checked' : '';
-                // Escape paths for display
                 const escapedPaths = paths.slice(0, 2).map(p => sanitizeHTML(p)).join(', ');
                 const moreText = paths.length > 2 ? '...' : '';
                 
                 html += `
                     <div class="checkbox-item">
-                        <input type="checkbox" id="comp_${escapedComponent}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
-                        <label for="comp_${escapedComponent}">
+                        <input type="checkbox" id="${componentId}" data-component="${sanitizeHTML(component)}" value="${escapedComponent}" ${checked} onchange="updateDependencies()">
+                        <label for="${componentId}">
                             <strong>${escapedComponent}</strong>
                             <div class="score">Affects: ${escapedPaths}${moreText}</div>
                         </label>

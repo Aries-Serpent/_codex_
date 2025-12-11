@@ -232,25 +232,28 @@ def main():
         type=Path,
         help='Directory to scan recursively'
     )
-    parser.add_argument(
+    # Use mutually exclusive group for clarity
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
         '--fix',
         action='store_true',
-        help='Attempt to fix redundant pass statements'
+        help='Apply fixes to redundant pass statements (modifies files)'
     )
-    parser.add_argument(
+    mode_group.add_argument(
         '--dry-run',
         action='store_true',
-        default=True,
-        help='Show what would be changed without modifying files (default: True)'
+        help='Show what would be changed without modifying files (explicit dry-run mode)'
     )
     
     args = parser.parse_args()
     
-    dry_run = args.dry_run if not args.fix else False
+    # Default to dry-run if neither --fix nor --dry-run is specified
+    dry_run = not args.fix
     
-    if dry_run and args.fix:
+    if dry_run:
         logger.info("=" * 60)
         logger.info("DRY RUN MODE - No files will be modified")
+        logger.info("Use --fix to apply changes")
         logger.info("=" * 60)
         logger.info("")
     

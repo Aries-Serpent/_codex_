@@ -1,0 +1,91 @@
+name: CI — Multi-Python Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      python_versions:
+        description: 'Python versions to test (comma-separated)'
+        required: false
+        default: '3.10,3.11,3.12'
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday
+
+permissions:
+  contents: read
+
+concurrency:
+  group: multi-python-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CODEX_FORCE_CPU: "1"
+  CODEX_VENDOR_PURGE: "1"
+
+jobs:
+  multi-python-tests:
+    name: "Python ${{ matrix.python-version }} - ${{ matrix.session }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+        session: ['tests', 'ml_tests']
+        exclude:
+          # Exclude heavy ML tests for older Python to save resources
+          - python-version: '3.10'
+            session: 'ml_tests'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/uv
+          key: ${{ runner.os }}-pip-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-py${{ matrix.python-version }}-
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv pip install --system nox
+          uv pip install --system -e ".[dev,test]"
+
+      - name: Run tests
+        run: |
+          nox -s ${{ matrix.session }} -- --tb=short -q
+        env:
+          CODEX_CPU_MINIMAL: "1"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-py${{ matrix.python-version }}-${{ matrix.session }}
+          path: |
+            .pytest_cache/
+            test-results/
+          retention-days: 7
+
+  compatibility-summary:
+    name: Compatibility Summary
+    runs-on: ubuntu-latest
+    needs: multi-python-tests
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo "Multi-Python compatibility test completed"
+          echo "Check individual job results for details"
