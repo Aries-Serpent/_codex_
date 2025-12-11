@@ -1,21 +1,33 @@
 gaps:
 - id: training.training.loop.does.not.expose.gradient.accumulation.settings
   capability: training
-  location: []
-  description: Training loop does not expose gradient accumulation settings
-  status: missing
+  location: [training/config.py:123]
+  description: Training loop exposes gradient accumulation settings via gradient_accumulation_steps parameter
+  status: resolved
   risk_level: null
   yaml_phase_step: null
   ml_test_categories: null
   last_seen_in_audit: '2025-11-27'
-  notes: Extracted from High-Signal Findings in audit.
+  resolved_date: '2025-12-11'
+  resolution: Parameter gradient_accumulation_steps exposed in TrainingConfig with validation (>= 1)
+  notes: |
+    Originally reported as missing but implementation was already complete.
+    - Config parameter: training/config.py:123
+    - Validation: training/config.py:149-150
+    - Tests: tests/test_gradient_accumulation_tail_flush.py, tests/test_grad_accumulation_path.py
 - id: tokenization.tokenization.fast.backend.missing.parity.tests
   capability: tokenization
-  location: []
-  description: Tokenization fast backend missing parity tests
-  status: missing
+  location: [tests/tokenization/test_tokenizer_parity.py]
+  description: Tokenization fast backend has parity tests comparing fast vs slow implementations
+  status: resolved
   risk_level: null
   yaml_phase_step: null
   ml_test_categories: null
   last_seen_in_audit: '2025-11-27'
-  notes: Extracted from High-Signal Findings in audit.
+  resolved_date: '2025-12-11'
+  resolution: Parity tests exist in tests/tokenization/test_tokenizer_parity.py
+  notes: |
+    Originally reported as missing but tests were already implemented.
+    - Parity test: tests/tokenization/test_tokenizer_parity.py
+    - Additional tests: tests/tokenization/test_load_tokenizer_use_fast.py
+    - Comprehensive tests: tests/capabilities/tokenization/test_tokenization_comprehensive.py

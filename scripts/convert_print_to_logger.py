@@ -31,6 +31,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Cache AST unparse availability (Python 3.9+)
+HAS_AST_UNPARSE = hasattr(ast, 'unparse')
+
 
 class PrintDetector(ast.NodeVisitor):
     """AST visitor to detect print() calls."""
@@ -61,7 +64,7 @@ class PrintDetector(ast.NodeVisitor):
             
             # Get the print statement
             try:
-                context = ast.unparse(node) if hasattr(ast, 'unparse') else "print(...)"
+                context = ast.unparse(node) if HAS_AST_UNPARSE else "print(...)"
             except:
                 context = "print(...)"
             
@@ -75,7 +78,7 @@ class PrintDetector(ast.NodeVisitor):
         args_str = ""
         for arg in node.args:
             try:
-                if hasattr(ast, 'unparse'):
+                if HAS_AST_UNPARSE:
                     args_str += ast.unparse(arg).lower()
                 else:
                     args_str += str(arg).lower()
@@ -171,9 +174,53 @@ def convert_print_statement(line: str, level: str) -> str:
     """
     Convert a single print() statement to logger call.
     
+    Uses AST parsing to robustly handle quoted strings, f-strings, and multiple arguments.
+    Falls back to regex patterns if AST parsing fails.
+    
     Preserves indentation and comments.
+    
+    Limitations: 
+    - May not handle all edge cases with complex nested expressions
+    - Comments within the print statement may not be preserved correctly
     """
-    # Match print(...) with various patterns
+    # Preserve indentation
+    indent = ""
+    stripped = line.lstrip()
+    if stripped != line:
+        indent = line[:len(line) - len(stripped)]
+    
+    # Try to parse the line as Python code using AST
+    try:
+        # Extract comment if present
+        comment = ""
+        if "#" in line:
+            code_part = line[:line.index("#")]
+            comment = " " + line[line.index("#"):]
+        else:
+            code_part = line
+        
+        tree = ast.parse(code_part.strip())
+        
+        # Find print calls
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
+                call = node.value
+                if isinstance(call.func, ast.Name) and call.func.id == "print":
+                    # Use ast.unparse if available (Python 3.9+), else fallback to regex
+                    if HAS_AST_UNPARSE:
+                        # Reconstruct arguments
+                        args_src = [ast.unparse(arg) for arg in call.args]
+                        logger_call = f"{indent}logger.{level}({', '.join(args_src)}){comment}"
+                        return logger_call
+                    else:
+                        # Fallback to regex for older Python versions
+                        break
+    except Exception:
+        # If AST parsing fails, fallback to regex patterns
+        pass
+    
+    # Fallback: Use regex patterns (with documented limitations)
+    # These patterns may not correctly handle nested quotes or escaped quotes
     patterns = [
         # print(f"...")
         (r'print\((f["\'].*?["\'])\)', rf'logger.{level}(\1)'),

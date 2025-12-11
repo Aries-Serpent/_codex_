@@ -1,0 +1,173 @@
+# Scheduled Archival Workflow
+#
+# This workflow runs on a schedule to identify and process
+# archival candidates with owner approval.
+#
+# Implements: R7, R8, R9 - Automated archival with approval gate
+
+name: Scheduled Archival
+
+on:
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (no actual archival)'
+        required: false
+        default: 'true'
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  identify-candidates:
+    name: Identify Archival Candidates
+    runs-on: ubuntu-latest
+    outputs:
+      candidates: ${{ steps.find.outputs.candidates }}
+      count: ${{ steps.find.outputs.count }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for age analysis
+          
+      - name: Find Archival Candidates
+        id: find
+        run: |
+          echo "## Archival Candidate Analysis"
+          echo ""
+          
+          # Find markdown files older than 90 days with no recent modifications
+          CANDIDATES=$(find . -name "*.md" -type f \
+            -not -path "./.git/*" \
+            -not -path "./misc/repo-owner-review/*" \
+            -not -path "./archive/*" \
+            -not -name "README.md" \
+            -not -name "AGENTS.md" \
+            -not -name "CONTRIBUTING.md" \
+            -not -name "CHANGELOG.md" \
+            -mtime +90 2>/dev/null | head -20 || echo "")
+          
+          COUNT=$(echo "$CANDIDATES" | grep -c "." || echo "0")
+          
+          echo "Found $COUNT potential archival candidates"
+          echo ""
+          
+          if [ -n "$CANDIDATES" ]; then
+            echo "### Candidates (older than 90 days):"
+            echo "$CANDIDATES" | while read -r file; do
+              if [ -n "$file" ]; then
+                LAST_MOD=$(git log -1 --format="%ar" -- "$file" 2>/dev/null || echo "unknown")
+                echo "- \`$file\` (last modified: $LAST_MOD)"
+              fi
+            done
+          fi
+          
+          # Output for GitHub Actions
+          echo "candidates<<EOF" >> $GITHUB_OUTPUT
+          echo "$CANDIDATES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+  create-proposal:
+    name: Create Archival Proposal
+    runs-on: ubuntu-latest
+    needs: identify-candidates
+    if: ${{ needs.identify-candidates.outputs.count > 0 }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Create Archival Issue
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const candidates = `${{ needs.identify-candidates.outputs.candidates }}`;
+            const count = '${{ needs.identify-candidates.outputs.count }}';
+            
+            const body = `## Archival Proposal
+            
+            **Generated**: ${new Date().toISOString().split('T')[0]}
+            **Candidates**: ${count} files
+            
+            ### Files Proposed for Archival
+            
+            The following files have not been modified in over 90 days and may be candidates for archival:
+            
+            \`\`\`
+            ${candidates}
+            \`\`\`
+            
+            ### Approval Required
+            
+            - [ ] Review each candidate file
+            - [ ] Confirm no active references exist
+            - [ ] Approve archival by commenting \`/approve-archival\`
+            
+            ### Archival Process
+            
+            1. Files will be moved to \`misc/repo-owner-review/archived/\`
+            2. A redirect/reference will be added to original location
+            3. Documentation index will be updated
+            
+            ---
+            
+            This issue was automatically created by the Scheduled Archival workflow.
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Archival] ${count} files proposed for archival`,
+              body: body,
+              labels: ['archival', 'needs-review']
+            });
+            
+      - name: Dry Run Summary
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        run: |
+          echo "## Dry Run Summary"
+          echo ""
+          echo "Would create archival proposal for ${{ needs.identify-candidates.outputs.count }} files"
+          echo ""
+          echo "Files:"
+          echo "${{ needs.identify-candidates.outputs.candidates }}"
+
+  compress-large-files:
+    name: Compress Large Historical Files
+    runs-on: ubuntu-latest
+    needs: identify-candidates
+    if: ${{ github.event.inputs.dry_run != 'true' }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Find and Compress Large Files
+        run: |
+          echo "## Large File Compression"
+          echo ""
+          
+          # Find files larger than 100KB in archive directories
+          LARGE_FILES=$(find ./misc/repo-owner-review -type f -size +100k 2>/dev/null || echo "")
+          
+          if [ -n "$LARGE_FILES" ]; then
+            echo "Found large files for potential compression:"
+            echo "$LARGE_FILES" | while read -r file; do
+              if [ -n "$file" ] && [ -f "$file" ]; then
+                SIZE=$(du -h "$file" | cut -f1)
+                echo "- $file ($SIZE)"
+              fi
+            done
+          else
+            echo "No large files found for compression"
+          fi
