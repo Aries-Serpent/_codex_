@@ -21,7 +21,7 @@ import subprocess
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -211,7 +211,7 @@ def get_recent_commits(count: int = 10) -> List[Dict[str, str]]:
 def auto_match_commits_to_comments(
     comments: List[ReviewComment],
     commits: List[Dict[str, str]]
-) -> List[tuple[ReviewComment, str]]:
+) -> List[Tuple[ReviewComment, str]]:
     """
     Automatically match commits to comments based on file paths and keywords.
     

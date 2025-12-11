@@ -55,12 +55,12 @@ class DependencyAnalyzer(ast.NodeVisitor):
         self.generic_visit(node)
     
     def visit_Str(self, node: ast.Str) -> None:
-        """Visit string literals (for file/module references)."""
+        """Visit string literals (for file/module references). Deprecated in Python 3.8+."""
         self.string_references.add(node.s)
         self.generic_visit(node)
     
     def visit_Constant(self, node: ast.Constant) -> None:
-        """Visit constant nodes (Python 3.8+)."""
+        """Visit constant nodes (Python 3.8+). Primary method for string handling."""
         if isinstance(node.value, str):
             self.string_references.add(node.value)
         self.generic_visit(node)
@@ -231,7 +231,7 @@ def assess_safe_removal(
         "python_imports": [],
         "text_references": {},
         "config_references": [],
-        "assessment_date": str(Path.cwd())
+        "assessment_date": datetime.now().isoformat()
     }
     
     # Check Python imports
