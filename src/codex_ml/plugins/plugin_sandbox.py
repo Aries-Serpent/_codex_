@@ -193,6 +193,12 @@ class PluginSandbox:
             enable_auto_disable: Enable automatic plugin disabling
             enable_quarantine: Enable quarantine feature
         """
+        if quarantine_threshold >= max_failures:
+            raise ValueError(
+                f"quarantine_threshold ({quarantine_threshold}) must be less than "
+                f"max_failures ({max_failures})"
+            )
+        
         self.max_failures = max_failures
         self.quarantine_threshold = quarantine_threshold
         self.quarantine_duration = quarantine_duration
