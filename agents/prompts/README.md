@@ -11,6 +11,7 @@ agents/prompts/
 ├── organization/                # Repository organization prompts
 ├── documentation/               # Documentation generation prompts
 ├── deployment/                  # Pre-release and deployment prompts
+├── debugging/                   # Debugging and troubleshooting prompts
 └── self-healing/               # Self-correction and feedback prompts
 ```
 
@@ -50,7 +51,13 @@ agents/prompts/
 - Generate release assets
 - Deploy to GitHub
 
-#### 5. Self-Healing (`self-healing/`)
+#### 5. Debugging (`debugging/`)
+- Debug test failures systematically
+- Resolve merge conflicts
+- Optimize performance bottlenecks
+- Remediate security vulnerabilities
+
+#### 6. Self-Healing (`self-healing/`)
 - Detect capability gaps
 - Implement feedback loops
 - Self-correct issues
@@ -100,4 +107,9 @@ Common issues and solutions.
 
 ## Version History
 
+- **v1.1.0** (2025-12-11): Added debugging prompts for AI Agents
+  - Test failure debugging
+  - Merge conflict resolution
+  - Performance optimization
+  - Security vulnerability remediation
 - **v1.0.0** (2025-12-10): Initial prompt structure for ChatGPT 5.1 Agent Mode
