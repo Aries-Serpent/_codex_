@@ -19,8 +19,8 @@ import argparse
 import ast
 import json
 import logging
-import re
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple
 
