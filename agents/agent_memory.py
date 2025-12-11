@@ -814,9 +814,13 @@ class AgentMemorySystem:
         Returns:
             Memory ID of the stored decision
         """
-        memory_id = hashlib.sha256(
-            f"{task_id}:{decision}:{datetime.now().isoformat()}".encode()
+        # Use task_id + decision content for deterministic ID generation
+        # This ensures the same decision for the same task produces the same ID
+        # while still being unique across different decisions
+        content_hash = hashlib.sha256(
+            f"{task_id}:{decision}:{rationale}".encode()
         ).hexdigest()[:16]
+        memory_id = f"{task_id[:8]}_{content_hash[:8]}" if len(task_id) > 8 else f"{task_id}_{content_hash[:8]}"
         
         entry = MemoryEntry(
             memory_id=memory_id,

@@ -1,4 +1,4 @@
-"""Integration tests for audit_runner v1.5.5 features.
+"""Integration tests for audit_runner features.
 
 Tests for:
 - Trend aggregation accuracy
@@ -6,6 +6,9 @@ Tests for:
 - CI integration workflow
 - Webhook notification delivery
 - Maturity score calculation
+
+Note: These tests validate the audit_runner capabilities
+independent of specific version numbers.
 """
 
 import json
