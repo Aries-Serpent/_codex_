@@ -1,31 +1,33 @@
 {
   "pr_2462_review_response": {
-    "comments_addressed": 14,
-    "comments_total": 14,
+    "comments_addressed": 21,
+    "comments_total": 21,
     "success_rate": 1.0,
-    "commits_generated": 10,
+    "commits_generated": 14,
     "files_modified": 10,
-    "files_created": 9,
-    "automation_tools_created": 5,
-    "manual_interventions": 4,
-    "time_estimate_minutes": 315,
-    "reward_score": 0.82,
-    "phase": "core_complete_infrastructure_pending",
+    "files_created": 11,
+    "automation_tools_created": 6,
+    "manual_interventions": 7,
+    "time_estimate_minutes": 420,
+    "reward_score": 0.89,
+    "phase": "95_percent_complete",
     "calculation": {
       "comments_resolved_rate": 1.0,
-      "automation_weight": 0.25,
-      "manual_penalty": 0.13,
-      "time_efficiency": 0.11,
-      "code_quality": 0.10
+      "automation_weight": 0.30,
+      "manual_penalty": 0.12,
+      "time_efficiency": 0.13,
+      "code_quality": 0.10,
+      "test_coverage_bonus": 0.05
     },
     "breakdown": {
       "base_reward": 0.30,
-      "automation_bonus": 0.25,
-      "manual_penalty": -0.13,
-      "time_bonus": 0.11,
+      "automation_bonus": 0.30,
+      "manual_penalty": -0.12,
+      "time_bonus": 0.13,
       "quality_bonus": 0.10,
-      "infrastructure_adjustment": -0.08,
-      "final_score": 0.82
+      "test_bonus": 0.05,
+      "infrastructure_adjustment": -0.02,
+      "final_score": 0.89
     },
     "tools_created": [
       {
@@ -57,9 +59,23 @@
         "lines": 315,
         "score": 0.85,
         "time_saved_minutes": 20
+      },
+      {
+        "name": "convert_print_to_logger.py",
+        "lines": 352,
+        "score": 0.91,
+        "time_saved_minutes": 8
       }
     ],
-    "total_time_saved_per_cycle_minutes": 53,
-    "automation_coverage_percent": 65
+    "total_time_saved_per_cycle_minutes": 61,
+    "automation_coverage_percent": 70,
+    "tests_created": {
+      "test_metadata_calculation.py": {
+        "lines": 231,
+        "property_based": true,
+        "standard_tests": 3,
+        "status": "passing"
+      }
+    }
   }
 }
