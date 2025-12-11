@@ -61,14 +61,23 @@ I need help remediating a security vulnerability in the Codex repository.
    with open(file_path) as f:
        data = f.read()
    
-   # ✅ Fixed: Validate and sanitize path
-   import os.path
+   # ✅ Fixed: Validate and sanitize path using robust containment check
+   import os
+   from pathlib import Path
+   
    file_path = os.path.join(base_dir, user_input)
-   # Ensure path is within base_dir
-   real_path = os.path.realpath(file_path)
    real_base = os.path.realpath(base_dir)
-   if not real_path.startswith(real_base):
-       raise ValueError("Invalid path")
+   real_path = os.path.realpath(file_path)
+   
+   # Use commonpath for robust containment - prevents /safe/dir_evil bypassing /safe/dir
+   try:
+       if os.path.commonpath([real_base, real_path]) != real_base:
+           raise ValueError("Invalid path - path traversal attempt detected")
+   except ValueError:
+       # commonpath raises ValueError if paths are on different drives (Windows)
+       # or have no common prefix - treat as invalid path
+       raise ValueError("Invalid path - path traversal attempt detected")
+   
    with open(real_path) as f:
        data = f.read()
    ```
