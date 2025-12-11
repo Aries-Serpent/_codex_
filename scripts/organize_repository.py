@@ -288,7 +288,6 @@ if __name__ == '__main__':
         logger.info("=" * 60)
         logger.info("DRY RUN MODE - No files will be moved")
         logger.info("=" * 60)
-        logger.info("")
     
     organize_repository(
         dry_run=args.dry_run,

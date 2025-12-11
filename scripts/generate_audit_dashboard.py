@@ -8,10 +8,18 @@ to create an interactive web-based dashboard for reviewing audit results.
 
 import html
 import json
+import logging
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Import planning components
 try:
@@ -94,10 +102,10 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
                 gaps_data = json.load(f)
         except json.JSONDecodeError as e:
             # gaps.json is optional; if corrupt, log warning and continue with empty gaps data.
-            print(f"Warning: Could not parse gaps.json (corrupt JSON): {e}")
+            logger.warning(f"Could not parse gaps.json (corrupt JSON): {e}")
         except OSError as e:
             # gaps.json is optional; if unreadable, log warning and continue with empty gaps data.
-            print(f"Warning: Could not read gaps.json (I/O error): {e}")
+            logger.warning(f"Could not read gaps.json (I/O error): {e}")
     
     # Load improvement plan MD file
     plan_file = base_path / "audit_artifacts" / "HIGH_MATURITY_ACHIEVEMENT_PLAN.md"

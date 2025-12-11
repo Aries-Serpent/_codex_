@@ -22,7 +22,7 @@ import logging
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -106,8 +106,7 @@ def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
                 ['grep', '-r', '--include=*.py', file_path.name, '.'],
                 cwd=root,
                 capture_output=True,
-                text=True,
-                timeout=10
+                text=True
             )
             if result.returncode == 0 and result.stdout.strip():
                 # Found references - might not be safe
@@ -116,9 +115,12 @@ def verify_safe_to_archive(file_path: Path) -> tuple[bool, str]:
                 refs = [r for r in refs if file_path.name not in r.split(':')[0]]
                 if refs:
                     return False, f"File referenced in: {refs[0]}"
-        except (subprocess.SubprocessError, FileNotFoundError):
-            # grep not available or error - be conservative
-            logger.warning(f"Could not verify references for {file_path.name}")
+        except FileNotFoundError:
+            # grep not available - be conservative and inform the user
+            logger.warning(f"Could not verify references for {file_path.name}: 'grep' not found. Please install 'grep' or use an alternative verification method.")
+        except subprocess.SubprocessError as e:
+            # Other subprocess error - be conservative
+            logger.warning(f"Could not verify references for {file_path.name}: {e}")
     
     # Check if it's a required config file
     if file_path.name in ['pyproject.toml', 'setup.py', 'requirements.txt', '.gitignore']:
@@ -162,9 +164,14 @@ def archive_file(
     file_size = file_path.stat().st_size
     file_hash = calculate_file_hash(file_path)
     
+    # Use relative paths from repository root
+    root = Path.cwd()
+    relative_original = file_path.relative_to(root) if file_path.is_absolute() else file_path
+    relative_archived = archive_path.relative_to(root) if archive_path.is_absolute() else archive_path
+    
     metadata = {
-        "original_path": str(file_path),
-        "archived_path": str(archive_path),
+        "original_path": str(relative_original),
+        "archived_path": str(relative_archived),
         "size": f"{file_size / 1024:.1f}KB" if file_size < 1024 * 1024 else f"{file_size / (1024 * 1024):.1f}MB",
         "size_bytes": file_size,
         "sha256": file_hash,

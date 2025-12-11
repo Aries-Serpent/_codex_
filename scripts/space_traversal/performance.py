@@ -110,7 +110,6 @@ class FileCache:
             except (json.JSONDecodeError, IOError) as e:
                 # Corrupt or unreadable cache file; log and treat as cache miss.
                 logger.debug(f"Cache read error for key '{key}': {e}")
-                pass
         return None
 
     def set(self, key: str, value: Any, ttl_seconds: int = 3600) -> None:
@@ -183,7 +182,6 @@ class FileCache:
             except (json.JSONDecodeError, IOError) as e:
                 # Corrupt or unreadable cache file during cleanup; log for manual intervention.
                 logger.warning(f"Unable to clean cache file '{path}': {e}")
-                pass
         return count
 
 
