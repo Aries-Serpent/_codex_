@@ -100,8 +100,7 @@ jobs:
             --group ${{ matrix.shard }} \
             -x --tb=short -q \
             --ignore=tests/integration \
-            --ignore=tests/e2e \
-            || true
+            --ignore=tests/e2e
         env:
           CODEX_CPU_MINIMAL: "1"
 

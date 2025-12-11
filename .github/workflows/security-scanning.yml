@@ -35,8 +35,8 @@ jobs:
       
       - name: Run bandit scan
         run: |
-          bandit -r src/ -c bandit.yaml -f json -o bandit-results.json || true
-          bandit -r src/ -c bandit.yaml -f txt || true
+          bandit -r src/ -c bandit.yaml -f json -o bandit-results.json
+          bandit -r src/ -c bandit.yaml -f txt
       
       - name: Upload SAST results
         uses: actions/upload-artifact@v4
@@ -62,12 +62,11 @@ jobs:
       
       - name: Run pip-audit
         run: |
-          pip-audit --desc --format json --output pip-audit.json || true
-          pip-audit --desc || true
+          pip-audit --desc --format json --output pip-audit.json
+          pip-audit --desc
       
       - name: Run safety check
-        run: safety check --output json > safety-results.json || true
-        continue-on-error: true
+        run: safety check --output json > safety-results.json
       
       - name: Upload dependency scan results
         uses: actions/upload-artifact@v4
@@ -92,13 +91,12 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          fail_on_error: false
+          fail_on_error: true
       
       - name: Run gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
   # License compliance
   license-check:
@@ -117,9 +115,9 @@ jobs:
       
       - name: Check licenses
         run: |
-          pip install -e . || true
-          pip-licenses --format=json --output-file=licenses.json || true
-          pip-licenses --format=markdown || true
+          pip install -e .
+          pip-licenses --format=json --output-file=licenses.json
+          pip-licenses --format=markdown
       
       - name: Upload license report
         uses: actions/upload-artifact@v4
