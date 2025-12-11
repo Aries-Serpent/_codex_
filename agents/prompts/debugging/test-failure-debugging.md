@@ -160,7 +160,7 @@ Fix: Add missing fixture or import fixture module
 
 ## Related Prompts
 
-- [Resolving Merge Conflicts](../organization/resolve-merge-conflicts.md)
+- [Resolving Merge Conflicts](./resolve-merge-conflicts.md)
 - [Performance Optimization](./performance-optimization.md)
 - [Security Vulnerability Remediation](./security-remediation.md)
 
