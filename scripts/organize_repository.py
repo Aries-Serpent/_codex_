@@ -5,10 +5,18 @@ Organizes root directory markdown files and creates AI-queryable archive
 """
 import argparse
 import json
+import logging
 import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Files to preserve in root (core documentation)
 DEFAULT_PRESERVE_FILES = {
@@ -92,7 +100,7 @@ def create_archive_index(archive_dir: Path, archived_files: List[Path]) -> None:
     with open(index_path, 'w') as f:
         json.dump(index, f, indent=2)
     
-    print(f"Created archive index: {index_path}")
+    logger.info(f"Created archive index: {index_path}")
     
     # Create markdown index for human readability
     md_index_path = archive_dir / 'INDEX.md'
@@ -119,7 +127,7 @@ def create_archive_index(archive_dir: Path, archived_files: List[Path]) -> None:
                 f.write(f"- **Words**: {file_meta.get('word_count', 0):,}\n")
                 f.write(f"\n")
     
-    print(f"Created markdown index: {md_index_path}")
+    logger.info(f"Created markdown index: {md_index_path}")
 
 def organize_repository(
     dry_run: bool = False,
@@ -141,7 +149,7 @@ def organize_repository(
     
     # Find all markdown files in root
     md_files = list(root.glob('*.md'))
-    print(f"Found {len(md_files)} markdown files in root")
+    logger.info(f"Found {len(md_files)} markdown files in root")
     
     # Categorize files
     to_preserve: List[Path] = []
@@ -153,18 +161,18 @@ def organize_repository(
         else:
             to_preserve.append(md_file)
     
-    print(f"\nFiles to preserve: {len(to_preserve)}")
+    logger.info(f"\nFiles to preserve: {len(to_preserve)}")
     for f in sorted(to_preserve):
-        print(f"  ✓ {f.name}")
+        logger.info(f"  ✓ {f.name}")
     
-    print(f"\nFiles to archive: {len(to_archive)}")
+    logger.info(f"\nFiles to archive: {len(to_archive)}")
     for f in sorted(to_archive)[:20]:  # Show first 20
-        print(f"  → {f.name}")
+        logger.info(f"  → {f.name}")
     if len(to_archive) > 20:
-        print(f"  ... and {len(to_archive) - 20} more")
+        logger.info(f"  ... and {len(to_archive) - 20} more")
     
     if dry_run:
-        print("\n[DRY RUN] No files were moved")
+        logger.info("\n[DRY RUN] No files were moved")
         return
     
     # Archive files
@@ -174,21 +182,21 @@ def organize_repository(
             dest = archive_dir / md_file.name
             shutil.move(str(md_file), str(dest))
             archived_files.append(dest)
-            print(f"Archived: {md_file.name}")
+            logger.info(f"Archived: {md_file.name}")
         except FileNotFoundError:
-            print(f"Error: File not found - {md_file.name}")
+            logger.error(f"File not found - {md_file.name}")
         except PermissionError:
-            print(f"Error: Permission denied - {md_file.name}")
+            logger.error(f"Permission denied - {md_file.name}")
         except Exception as e:
-            print(f"Error: Unexpected error archiving {md_file.name}: {e}")
+            logger.error(f"Unexpected error archiving {md_file.name}: {e}")
     
     # Create archive index
     if archived_files:
         create_archive_index(archive_dir, archived_files)
     
-    print(f"\n✅ Organization complete!")
-    print(f"Preserved {len(to_preserve)} core files")
-    print(f"Archived {len(archived_files)} files to {archive_dir}")
+    logger.info(f"\n✅ Organization complete!")
+    logger.info(f"Preserved {len(to_preserve)} core files")
+    logger.info(f"Archived {len(archived_files)} files to {archive_dir}")
     
     # Create summary
     summary = {
@@ -229,7 +237,7 @@ def organize_repository(
         f.write(f"grep -r 'search term' {archive_dir}/\n")
         f.write(f"```\n")
     
-    print(f"Created summary: {summary_path}")
+    logger.info(f"Created summary: {summary_path}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -277,10 +285,9 @@ if __name__ == '__main__':
         archive_patterns.extend(args.pattern)
     
     if args.dry_run:
-        print("=" * 60)
-        print("DRY RUN MODE - No files will be moved")
-        print("=" * 60)
-        print()
+        logger.info("=" * 60)
+        logger.info("DRY RUN MODE - No files will be moved")
+        logger.info("=" * 60)
     
     organize_repository(
         dry_run=args.dry_run,

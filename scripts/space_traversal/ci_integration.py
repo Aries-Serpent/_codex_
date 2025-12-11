@@ -33,6 +33,9 @@ __all__ = [
     "CIEnvironment",
 ]
 
+# Maximum number of regressions to display in summary tables
+MAX_REGRESSIONS_DISPLAY = 10
+
 
 class CIEnvironment:
     """CI environment information."""
@@ -212,8 +215,8 @@ def write_github_step_summary(
                 delta = r.get("delta", 0)
                 f.write(f"| {r.get('capability_id', 'unknown')} | {prev:.3f} | ")
                 f.write(f"{curr:.3f} | {delta:+.3f} |\n")
-            if len(regressions) > 10:
-                f.write(f"\n*... and {len(regressions) - 10} more regressions*\n")
+            if len(regressions) > MAX_REGRESSIONS_DISPLAY:
+                f.write(f"\n*... and {len(regressions) - MAX_REGRESSIONS_DISPLAY} more regressions*\n")
 
     return True
 

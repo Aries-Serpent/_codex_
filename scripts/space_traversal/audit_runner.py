@@ -1523,9 +1523,9 @@ def run_full(cfg):
                 git_branch = subprocess.check_output(
                     ["git", "rev-parse", "--abbrev-ref", "HEAD"], text=True, stderr=subprocess.DEVNULL
                 ).strip()
-            except (subprocess.CalledProcessError, FileNotFoundError):
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 # It's OK if git info is unavailable (e.g., not a git repo); leave commit/branch as None.
-                pass
+                warn(f"Could not retrieve git info: {e}")
             
             db = TrendDatabase(db_path)
             snapshot = create_snapshot_from_artifacts(artifacts_dir, git_commit, git_branch)

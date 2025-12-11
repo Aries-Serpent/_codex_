@@ -27,9 +27,12 @@ from __future__ import annotations
 import functools
 import hashlib
 import json
+import logging
 import time
 from pathlib import Path
 from typing import Any, Callable, Optional, TypeVar
+
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "timed",
@@ -104,9 +107,9 @@ class FileCache:
                         return data.get("value")
                     # Expired - remove file
                     path.unlink(missing_ok=True)
-            except (json.JSONDecodeError, IOError):
-                # Intentionally ignore corrupt or unreadable cache files; treat as cache miss.
-                pass
+            except (json.JSONDecodeError, IOError) as e:
+                # Corrupt or unreadable cache file; log and treat as cache miss.
+                logger.debug(f"Cache read error for key '{key}': {e}")
         return None
 
     def set(self, key: str, value: Any, ttl_seconds: int = 3600) -> None:
@@ -176,9 +179,9 @@ class FileCache:
                     if expires_at is not None and expires_at <= now:
                         path.unlink()
                         count += 1
-            except (json.JSONDecodeError, IOError):
-                # Intentionally ignore corrupt or unreadable cache files during cleanup.
-                pass
+            except (json.JSONDecodeError, IOError) as e:
+                # Corrupt or unreadable cache file during cleanup; log for manual intervention.
+                logger.warning(f"Unable to clean cache file '{path}': {e}")
         return count
 
 
