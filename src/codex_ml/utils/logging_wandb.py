@@ -58,8 +58,8 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
         if run is not None:
             try:  # pragma: no cover - defensive cleanup
                 run.finish()
-            except Exception:
-                pass
+            except Exception as exc:
+                LOGGER.debug("W&B run cleanup raised but was suppressed: %s", exc)
 
 
 __all__ = ["maybe_wandb"]

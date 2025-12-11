@@ -300,9 +300,10 @@ class LoadBalancer:
         return min(endpoints, key=lambda e: e.current_connections)
     
     def _weighted(self, endpoints: List[Endpoint]) -> Endpoint:
-        import random
+        from secrets import SystemRandom
+
         total_weight = sum(e.weight for e in endpoints)
-        r = random.uniform(0, total_weight)
+        r = SystemRandom().uniform(0, total_weight)
         
         cumulative = 0
         for endpoint in endpoints:

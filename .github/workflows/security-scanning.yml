@@ -34,9 +34,11 @@ jobs:
         run: pip install bandit[toml]
       
       - name: Run bandit scan
+        env:
+          BANDIT_CONFIG: bandit.yaml
         run: |
-          bandit -r src/ -c bandit.yaml -f json -o bandit-results.json
-          bandit -r src/ -c bandit.yaml -f txt
+          bandit -r src/ -c "$BANDIT_CONFIG" -f json -o bandit-results.json
+          bandit -r src/ -c "$BANDIT_CONFIG" -f txt
       
       - name: Upload SAST results
         uses: actions/upload-artifact@v4

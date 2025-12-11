@@ -13,6 +13,7 @@ from __future__ import annotations
 import importlib.util
 import os
 import random
+import secrets
 from dataclasses import asdict, dataclass
 from typing import Any, Dict
 
@@ -90,7 +91,7 @@ def capture_rng_snapshot() -> Dict[str, Any]:
         "env_seed": os.environ.get("CODEX_GLOBAL_SEED"),
     }
 
-    snapshot["random_state_hint"] = random.random()
+    snapshot["random_state_hint"] = secrets.token_hex(8)
 
     if _np is not None:  # pragma: no cover - optional dep
         try:

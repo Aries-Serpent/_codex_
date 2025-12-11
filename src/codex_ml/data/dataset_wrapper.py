@@ -52,7 +52,7 @@ def train_val_test_split(
 
     train_frac, val_frac, test_frac = _validate_splits(splits)
     indices = list(range(n_items))
-    rng = random.Random(int(seed))
+    rng = random.Random(int(seed))  # nosec B311 - deterministic dataset partitioning
     rng.shuffle(indices)
 
     train_end = int(n_items * train_frac)

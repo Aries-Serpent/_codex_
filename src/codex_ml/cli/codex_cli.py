@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import subprocess
 import sys
 from collections.abc import Sequence
 from contextlib import nullcontext
@@ -309,7 +310,12 @@ def config_sweep(
         "dataset_hash": dataset_hash,
         "seeds": seeds_list,
     }
-    git_sha = os.popen("git rev-parse --short HEAD 2>/dev/null").read().strip()
+    try:
+        git_sha = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL, text=True
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        git_sha = ""
     if git_sha:
         metadata["git_sha"] = git_sha
 

@@ -51,7 +51,8 @@ def _apply_rope(x: torch.Tensor, sin: torch.Tensor, cos: torch.Tensor) -> torch.
 class MultiHeadAttention(nn.Module):
     def __init__(self, cfg: ModelConfig) -> None:
         super().__init__()
-        assert cfg.d_model % cfg.n_heads == 0, "d_model must be divisible by n_heads"
+        if cfg.d_model % cfg.n_heads != 0:
+            raise ValueError("d_model must be divisible by n_heads")
         self.cfg = cfg
         self.qkv = nn.Linear(cfg.d_model, 3 * cfg.d_model, bias=cfg.bias)
         self.proj = nn.Linear(cfg.d_model, cfg.d_model, bias=cfg.bias)

@@ -61,7 +61,7 @@ def _split_smoke_impl(seed: int) -> None:
         except Exception:
             echo(f"torch unavailable: {exc}")
             raise Exit(code=1)
-        rng = random.Random(int(seed))
+        rng = random.Random(int(seed))  # nosec B311 - deterministic CLI shuffle
         order = list(range(total))
         rng.shuffle(order)
     mid = total // 2

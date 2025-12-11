@@ -57,7 +57,8 @@ class MetricLogger:
             metrics={k: float(v) for k, v in scalars.items()},
             system=self._collect_system_metrics(),
         )
-        assert self._fh is not None
+        if self._fh is None:
+            raise RuntimeError("MetricLogger file handle not initialized")
         self._fh.write(json.dumps(asdict(rec)) + os.linesep)
         self._fh.flush()
 

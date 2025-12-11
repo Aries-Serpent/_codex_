@@ -98,8 +98,9 @@ class BanditRLAgent(RLAgent):
             ):
                 selected = candidate_str
                 best_value = value
-        assert selected is not None  # defensive
-        return selected
+            if selected is None:
+                raise RuntimeError("action selection failed to identify a candidate")
+            return selected
 
     def update(self, trajectory: Mapping[str, Any]) -> dict[str, float]:
         if not isinstance(trajectory, Mapping):

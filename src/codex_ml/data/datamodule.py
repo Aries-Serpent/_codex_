@@ -92,7 +92,7 @@ class StreamingDataModule:
         if source is None:
             return iter(())
         offset = {"train": 0, "val": 1, "validation": 1, "test": 2}.get(split, 0)
-        rng = random.Random(self.seed + offset)
+        rng = random.Random(self.seed + offset)  # nosec B311 - deterministic data stream shuffle
         iterable = self._coerce_iterable(source)
         return self._shuffle_stream(iterable, rng)
 

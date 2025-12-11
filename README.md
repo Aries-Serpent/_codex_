@@ -398,6 +398,8 @@ Quick access to key repository areas via GitHub search. Click any link or use th
 | **Fixtures** | [`"@pytest.fixture" OR "conftest.py"`](https://github.com/Aries-Serpent/_codex_/search?q=%22%40pytest.fixture%22+OR+%22conftest.py%22) | Test fixtures and configuration |
 | **Linter Configs** | [`filename:.ruff.toml OR filename:.bandit.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3A.ruff.toml+OR+filename%3A.bandit.yml) | Code quality configuration |
 
+Security scanning runs with `bandit -r src/ -c bandit.yaml -f txt` using the curated ruleset in `bandit.yaml` (medium severity/confidence, explicit skips documented inline).
+
 ### Deployment & Docker
 
 | Resource | Search Query | Description |

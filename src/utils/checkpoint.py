@@ -9,8 +9,9 @@ This module remains for backward-compatibility only. Prefer:
 from __future__ import annotations
 
 import inspect
+import logging
 import os
-import pickle
+import pickle  # nosec B403 - legacy checkpoint compatibility requires pickle
 import random as _random
 import tempfile
 import warnings as _warnings
@@ -35,6 +36,8 @@ _warnings.warn(
     DeprecationWarning,
     stacklevel=2,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 _canonical_load_checkpoint: Callable[..., Any] | None = None
 _canonical_save_checkpoint: Callable[..., Any] | None = None
@@ -75,8 +78,8 @@ try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (
         save_checkpoint as _canonical_save_checkpoint,
     )
-except Exception:  # pragma: no cover - canonical helpers unavailable
-    pass
+except Exception as exc:  # pragma: no cover - canonical helpers unavailable
+    LOGGER.debug("Canonical checkpoint helpers unavailable: %s", exc)
 
 
 def _ensure_torch_available() -> None:
@@ -214,8 +217,8 @@ def _restore_rng(state: Mapping[str, Any]) -> None:
         try:
             _restore_rng_state(state)
             return
-        except Exception:  # pragma: no cover - fall back to legacy behaviour
-            pass
+        except Exception as exc:  # pragma: no cover - fall back to legacy behaviour
+            LOGGER.debug("Canonical RNG restore failed; falling back to legacy: %s", exc)
     _legacy_restore_rng_state(state)
 
 
@@ -287,14 +290,14 @@ def save_checkpoint(
         if tmp_path is not None:
             try:
                 tmp_path.unlink()
-            except Exception:
-                pass
+            except Exception as exc:
+                LOGGER.warning("Temporary checkpoint cleanup failed for %s: %s", tmp_path, exc)
 
     if archive_latest and target.is_symlink():
         try:
             target.unlink()
-        except Exception:
-            pass
+        except Exception as exc:
+            LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
     return None
 
 
