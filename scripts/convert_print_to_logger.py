@@ -31,6 +31,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Cache AST unparse availability (Python 3.9+)
+HAS_AST_UNPARSE = hasattr(ast, 'unparse')
+
 
 class PrintDetector(ast.NodeVisitor):
     """AST visitor to detect print() calls."""
@@ -61,7 +64,7 @@ class PrintDetector(ast.NodeVisitor):
             
             # Get the print statement
             try:
-                context = ast.unparse(node) if hasattr(ast, 'unparse') else "print(...)"
+                context = ast.unparse(node) if HAS_AST_UNPARSE else "print(...)"
             except:
                 context = "print(...)"
             
@@ -75,7 +78,7 @@ class PrintDetector(ast.NodeVisitor):
         args_str = ""
         for arg in node.args:
             try:
-                if hasattr(ast, 'unparse'):
+                if HAS_AST_UNPARSE:
                     args_str += ast.unparse(arg).lower()
                 else:
                     args_str += str(arg).lower()
@@ -204,7 +207,7 @@ def convert_print_statement(line: str, level: str) -> str:
                 call = node.value
                 if isinstance(call.func, ast.Name) and call.func.id == "print":
                     # Use ast.unparse if available (Python 3.9+), else fallback to regex
-                    if hasattr(ast, 'unparse'):
+                    if HAS_AST_UNPARSE:
                         # Reconstruct arguments
                         args_src = [ast.unparse(arg) for arg in call.args]
                         logger_call = f"{indent}logger.{level}({', '.join(args_src)}){comment}"

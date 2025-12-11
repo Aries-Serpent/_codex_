@@ -309,7 +309,7 @@ Fix:
 
 ## Related Prompts
 
-- [Code Review Best Practices](../organization/code-review.md)
+
 - [Test Failure Debugging](./test-failure-debugging.md)
 
 ## Automation

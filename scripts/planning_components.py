@@ -292,6 +292,15 @@ def generate_planning_javascript() -> str:
             updateDependencySuggestions(Array.from(dependencies));
         }
         
+        // Helper function to generate safe IDs from component names
+        function generateSafeId(component) {
+            // Create hash-based ID to avoid XSS and selector issues
+            const hash = Array.from(component).reduce((hash, char) => {
+                return ((hash << 5) - hash) + char.charCodeAt(0) | 0;
+            }, 0);
+            return 'comp_' + Math.abs(hash).toString(36);
+        }
+        
         function updateDependencySuggestions(suggestions) {
             const container = document.getElementById('dependencySuggestions');
             if (!container) return;
@@ -303,11 +312,15 @@ def generate_planning_javascript() -> str:
             
             let html = '';
             suggestions.forEach(component => {
+                // Validate component is a string
+                if (typeof component !== 'string') {
+                    console.warn('Invalid component type:', typeof component);
+                    return;
+                }
+                
                 const paths = COMPONENT_DEPENDENCIES[component] || [];
-                // Create safe ID using hash of component name to avoid XSS and selector issues
-                const componentId = 'comp_' + Array.from(component).reduce((hash, char) => {
-                    return ((hash << 5) - hash) + char.charCodeAt(0) | 0;
-                }, 0).toString(36).replace('-', 'n');
+                const componentId = generateSafeId(component);
+                
                 // Check if already selected using data attribute
                 const existingCheckbox = document.querySelector(`input[data-component="${CSS.escape(component)}"]`);
                 const checked = existingCheckbox?.checked ? 'checked' : '';

@@ -259,7 +259,7 @@ Resolution:
 ## Related Prompts
 
 - [Test Failure Debugging](./test-failure-debugging.md)
-- [Code Review Best Practices](../organization/code-review.md)
+
 
 ## Automation
 

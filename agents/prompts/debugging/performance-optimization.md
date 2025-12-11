@@ -274,7 +274,7 @@ Result: Reduced to 3 minutes (3.3x improvement)
 ## Related Prompts
 
 - [Test Failure Debugging](./test-failure-debugging.md)
-- [Code Review Best Practices](../organization/code-review.md)
+
 
 ## References
 

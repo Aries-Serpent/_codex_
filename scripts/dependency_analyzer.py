@@ -31,6 +31,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Dependency detection patterns (constants for better maintainability)
+DEPENDENCY_INDICATORS = ['.', '/', '_']  # Indicators that a string might be a dependency
+EXCLUDED_PATTERNS = ['error', 'warning', 'info', 'debug', 'http://', 'https://']  # Common non-dependency strings
+MIN_STRING_LENGTH = 3  # Minimum length for potential dependency strings
+MAX_STRING_LENGTH = 100  # Maximum length for potential dependency strings
+
 
 class DependencyAnalyzer(ast.NodeVisitor):
     """AST visitor to extract import dependencies."""
@@ -63,12 +69,12 @@ class DependencyAnalyzer(ast.NodeVisitor):
             # Filter by context and pattern to reduce false positives
             # Only keep strings that look like module/package names or paths
             value = node.value
-            # Skip very short strings (less than 3 chars) and very long strings (more than 100 chars)
-            if 3 <= len(value) <= 100:
+            # Skip very short/long strings using module constants
+            if MIN_STRING_LENGTH <= len(value) <= MAX_STRING_LENGTH:
                 # Check if it looks like a module name, package name, or file path
-                if ('.' in value or '/' in value or '_' in value) and not value.startswith((' ', '\n', '\t')):
+                if any(indicator in value for indicator in DEPENDENCY_INDICATORS) and not value.startswith((' ', '\n', '\t')):
                     # Additional filtering: exclude common non-dependency strings
-                    if not any(pattern in value.lower() for pattern in ['error', 'warning', 'info', 'debug', 'http://', 'https://']):
+                    if not any(pattern in value.lower() for pattern in EXCLUDED_PATTERNS):
                         self.string_references.add(value)
         self.generic_visit(node)
 
