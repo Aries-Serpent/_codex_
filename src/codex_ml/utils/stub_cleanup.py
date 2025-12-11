@@ -97,37 +97,50 @@ class StubAnalyzer:
             content = file_path.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(file_path))
             
-            # Walk the AST to find the node at the given line
+            # Build a mapping from function nodes to their parent class nodes (O(n) complexity)
+            func_to_class = {}
+            for class_node in ast.walk(tree):
+                if isinstance(class_node, ast.ClassDef):
+                    for node in class_node.body:
+                        if isinstance(node, ast.FunctionDef):
+                            func_to_class[node] = class_node
+            
+            # Find the function node at the given line
+            for func_node in func_to_class.keys():
+                if hasattr(func_node, 'lineno') and hasattr(func_node, 'end_lineno'):
+                    if func_node.lineno <= line_number <= (func_node.end_lineno or func_node.lineno):
+                        # Check for @abstractmethod decorator
+                        for decorator in func_node.decorator_list:
+                            if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
+                                return True
+                            elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
+                                return True
+                        
+                        # Check if method is in an ABC class
+                        parent_class = func_to_class.get(func_node)
+                        if parent_class:
+                            for base in parent_class.bases:
+                                if isinstance(base, ast.Name) and base.id == 'ABC':
+                                    return True
+                                elif isinstance(base, ast.Attribute) and base.attr == 'ABC':
+                                    return True
+            
+            # Also check for top-level functions (not in classes)
             for node in ast.walk(tree):
-                if isinstance(node, ast.FunctionDef):
-                    # Check if function contains the line
+                if isinstance(node, ast.FunctionDef) and node not in func_to_class:
                     if hasattr(node, 'lineno') and hasattr(node, 'end_lineno'):
                         if node.lineno <= line_number <= (node.end_lineno or node.lineno):
-                            # Check for @abstractmethod decorator
+                            # Check for @abstractmethod decorator on standalone functions
                             for decorator in node.decorator_list:
                                 if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
                                     return True
                                 elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
                                     return True
-                            
-                            # Check if method is in an ABC class
-                            for parent_node in ast.walk(tree):
-                                if isinstance(parent_node, ast.ClassDef):
-                                    # Check if this function is in this class
-                                    if node in ast.walk(parent_node):
-                                        # Check if class inherits from ABC
-                                        for base in parent_node.bases:
-                                            if isinstance(base, ast.Name) and base.id == 'ABC':
-                                                return True
-                                            elif isinstance(base, ast.Attribute) and base.attr == 'ABC':
-                                                return True
             
         except Exception as e:
             logger.debug(f"Failed to parse {file_path} for abstract method detection: {e}")
             
         return False
-
-        return self.stubs
 
     def _analyze_file(self, file_path: Path):
         """Analyze a single file for stubs.
