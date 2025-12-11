@@ -242,7 +242,7 @@ def generate_planning_css() -> str:
 
 def generate_planning_javascript() -> str:
     """Generate JavaScript for interactive planning functionality."""
-    return """
+    return r"""
     <script>
         // Component dependency mapping
         const COMPONENT_DEPENDENCIES = {
