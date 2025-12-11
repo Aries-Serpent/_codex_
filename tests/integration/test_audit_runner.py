@@ -12,8 +12,6 @@ independent of specific version numbers.
 """
 
 import os
-import tempfile
-
 import pytest
 
 
