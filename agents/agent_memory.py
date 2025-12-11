@@ -819,8 +819,9 @@ class AgentMemorySystem:
         # while still being unique across different decisions
         content_hash = hashlib.sha256(
             f"{task_id}:{decision}:{rationale}".encode()
-        ).hexdigest()[:16]
-        memory_id = f"{task_id[:8]}_{content_hash[:8]}" if len(task_id) > 8 else f"{task_id}_{content_hash[:8]}"
+        ).hexdigest()
+        # Enforce strict 16-character IDs for downstream integrations
+        memory_id = f"{task_id}_{content_hash}"[:16]
         
         entry = MemoryEntry(
             memory_id=memory_id,
@@ -861,6 +862,25 @@ class AgentMemorySystem:
             word.lower() for word in task_description.split()
             if len(word) > 3  # Skip short words
         ][:10]
+
+        if not keywords:
+            fallback_memories = self.memory.search_memories(
+                min_confidence=0.5,
+                limit=limit,
+            )
+
+            return [
+                {
+                    'memory_id': memory.memory_id,
+                    'content': memory.content,
+                    'context': memory.context,
+                    'category': memory.category,
+                    'confidence': memory.confidence,
+                    'relevance_score': memory.confidence,
+                    'created_at': memory.created_at,
+                }
+                for memory in fallback_memories
+            ]
         
         # Search memories by keywords
         all_relevant = []
