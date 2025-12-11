@@ -14,13 +14,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
-import subprocess
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 
 @dataclass
@@ -158,10 +156,10 @@ class MarkdownAnalyzer:
                             self.reference_map[str(rel_path)] = set()
                         self.reference_map[str(rel_path)].add(str(md_file.relative_to(self.repo_path)))
                     except (ValueError, OSError):
-                        pass
+                        pass  # Skip invalid paths during reference building
                         
             except Exception:
-                pass
+                pass  # Skip files that cannot be processed
     
     def _analyze_file(self, path: Path) -> MarkdownFile:
         """Analyze a single markdown file."""

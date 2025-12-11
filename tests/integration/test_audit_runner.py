@@ -11,12 +11,8 @@ Note: These tests validate the audit_runner capabilities
 independent of specific version numbers.
 """
 
-import json
 import os
 import tempfile
-from pathlib import Path
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, patch
 
 import pytest
 

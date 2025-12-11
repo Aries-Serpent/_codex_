@@ -16,7 +16,6 @@ import gzip
 import hashlib
 import json
 import logging
-import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -378,7 +377,7 @@ class HARCache:
             try:
                 cache_file.unlink()
             except Exception:
-                pass
+                pass  # Ignore file deletion errors during cleanup
         self._index.clear()
         return count
 

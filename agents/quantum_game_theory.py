@@ -25,9 +25,9 @@ from __future__ import annotations
 
 import logging
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -143,7 +143,6 @@ class PayoffOperator:
         
         For joint state |i,j⟩, the operator is diagonal with entries P[i,j].
         """
-        m, n = self.shape
         diag_entries = self.payoff_matrix.flatten()
         return np.diag(diag_entries)
     
@@ -173,9 +172,6 @@ class QuantumGameState:
     entanglement_strength: float = 0.0
     
     def __post_init__(self):
-        m = self.blue_state.num_strategies
-        n = self.red_state.num_strategies
-        
         if self.joint_wavefunction is None:
             # Initialize as product state
             self.joint_wavefunction = np.outer(
@@ -220,12 +216,11 @@ class QuantumGameState:
             rng = np.random.default_rng()
         
         probs = np.abs(self.joint_wavefunction) ** 2
-        m = self.blue_state.num_strategies
-        n = self.red_state.num_strategies
+        num_red = self.red_state.num_strategies
         
         flat_idx = rng.choice(len(probs), p=probs)
-        i = flat_idx // n
-        j = flat_idx % n
+        i = flat_idx // num_red
+        j = flat_idx % num_red
         return i, j
 
 
@@ -386,14 +381,13 @@ class ClassicalGameEngine:
         p_joint = self.gibbs_distribution()
         flat_probs = p_joint.flatten()
         
-        m = len(self.blue_strategies)
-        n = len(self.red_strategies)
+        num_red = len(self.red_strategies)
         
         samples = []
         for _ in range(num_samples):
             flat_idx = rng.choice(len(flat_probs), p=flat_probs)
-            i = flat_idx // n
-            j = flat_idx % n
+            i = flat_idx // num_red
+            j = flat_idx % num_red
             samples.append((i, j))
         
         return samples

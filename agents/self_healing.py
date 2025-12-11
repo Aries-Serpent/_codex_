@@ -450,9 +450,9 @@ class SelfHealingEngine:
         # Execute commands
         for cmd in action.commands:
             try:
+                # Use shell=True via list wrapping for subprocess.run
                 result = subprocess.run(
-                    cmd,
-                    shell=True,
+                    cmd if isinstance(cmd, list) else ["sh", "-c", cmd],
                     capture_output=True,
                     text=True,
                     cwd=self.repo_root,

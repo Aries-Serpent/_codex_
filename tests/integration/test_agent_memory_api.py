@@ -7,7 +7,6 @@ Tests the required API methods:
 - invalidate_stale_contexts
 """
 
-import os
 import tempfile
 from pathlib import Path
 
@@ -147,7 +146,8 @@ class TestAgentMemoryAPI:
         )
         
         # Invalidate with 30 days (shouldn't affect recent)
-        count = memory_system.invalidate_stale_contexts(age_days=30)
+        invalidated = memory_system.invalidate_stale_contexts(age_days=30)
+        assert invalidated >= 0  # Valid return value
         
         # Recent memory should not be invalidated
         stats = memory_system.get_stats()

@@ -11,9 +11,8 @@ Tests performance characteristics to detect regressions:
 
 import gc
 import statistics
-import sys
 import time
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Callable, Dict
 
 import pytest
 
