@@ -7,7 +7,12 @@ optimal decisions.
 
 Modules:
     physics_orchestrator: Physics-inspired decision making with ASSESS → DELIBERATE → OPTIMIZE → ACT workflow
-        - Includes advanced patterns: DiffusionFlowModel, EnergyLandscape, SwarmIntelligence, TaskDecomposer, ReflectionLoop
+        - Core: PhysicsInspiredOrchestrator, ActionPath, ForceVector, DecisionState
+        - Advanced patterns: DiffusionFlowModel, EnergyLandscape, SwarmIntelligence, TaskDecomposer, ReflectionLoop
+        - Quantum-Physics Integration: QuantumState, QuantumWalkExplorer, SuperpositionExplorer, 
+          PINNValidator, QuantumPhysicsOrchestrator, EntangledDependency
+        - Advanced Calculators: QuantumOperator, ConservationLawChecker, PathIntegralCalculator,
+          HamiltonianEvolver, PhysicsCalculatorSuite
     quantum_game_theory: Quantum-inspired game theory for Blue Team vs Red Team scenarios
     self_healing: Automated detection, diagnosis, and remediation of CI/CD issues
     mental_mapping: Cognitive framework for storing reasoning chains and decision paths
@@ -23,6 +28,14 @@ Usage:
     # Advanced physics patterns
     from agents import DiffusionFlowModel, EnergyLandscape, SwarmIntelligence
     from agents import TaskDecomposer, ReflectionLoop
+    
+    # Quantum-Physics integration
+    from agents import QuantumPhysicsOrchestrator, QuantumState, QuantumWalkExplorer
+    from agents import SuperpositionExplorer, PINNValidator, EntangledDependency
+    
+    # Advanced physics calculators
+    from agents import QuantumOperator, ConservationLawChecker, PathIntegralCalculator
+    from agents import HamiltonianEvolver, PhysicsCalculatorSuite
     
     # Game theory simulation
     from agents import BlueRedTeamSimulator, QuantumInspiredGameEngine
@@ -56,6 +69,19 @@ from .physics_orchestrator import (
     SwarmIntelligence,
     SwarmParticle,
     TaskDecomposer,
+    # Quantum-Physics Integration
+    EntangledDependency,
+    PINNValidator,
+    QuantumPhysicsOrchestrator,
+    QuantumState,
+    QuantumWalkExplorer,
+    SuperpositionExplorer,
+    # Advanced Physics Calculators
+    ConservationLawChecker,
+    HamiltonianEvolver,
+    PathIntegralCalculator,
+    PhysicsCalculatorSuite,
+    QuantumOperator,
 )
 
 # Quantum-inspired game theory
@@ -117,6 +143,19 @@ __all__ = [
     "SwarmIntelligence",
     "SwarmParticle",
     "TaskDecomposer",
+    # Physics orchestrator - Quantum-Physics Integration
+    "EntangledDependency",
+    "PINNValidator",
+    "QuantumPhysicsOrchestrator",
+    "QuantumState",
+    "QuantumWalkExplorer",
+    "SuperpositionExplorer",
+    # Physics orchestrator - Advanced Calculators
+    "ConservationLawChecker",
+    "HamiltonianEvolver",
+    "PathIntegralCalculator",
+    "PhysicsCalculatorSuite",
+    "QuantumOperator",
     # Quantum game theory
     "BlueRedTeamSimulator",
     "ClassicalGameEngine",

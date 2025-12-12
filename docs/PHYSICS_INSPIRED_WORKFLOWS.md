@@ -62,6 +62,14 @@ from agents import (
     SubTask,
     ReflectionLoop,
     
+    # Quantum-Physics Integration (NEW)
+    QuantumPhysicsOrchestrator,
+    QuantumState,
+    QuantumWalkExplorer,
+    SuperpositionExplorer,
+    PINNValidator,
+    EntangledDependency,
+    
     # Game Theory
     BlueRedTeamSimulator,
     QuantumInspiredGameEngine,
@@ -885,12 +893,419 @@ This document covers all physics-inspired patterns available in the Aries-Serpen
 | SwarmIntelligence | ~200 | Multi-agent coordination |
 | TaskDecomposer | ~180 | Parallel task execution |
 | ReflectionLoop | ~150 | PID feedback control |
+| **QuantumPhysicsOrchestrator** | ~200 | Unified quantum-physics integration |
+| **QuantumWalkExplorer** | ~150 | Quantum walk decision exploration |
+| **SuperpositionExplorer** | ~180 | Multi-path Grover amplification |
+| **PINNValidator** | ~150 | Physics-informed constraint validation |
+| **QuantumOperator** | ~120 | Creation/annihilation operators |
+| **ConservationLawChecker** | ~180 | Energy/momentum/probability conservation |
+| **PathIntegralCalculator** | ~200 | Feynman path integral analysis |
+| **HamiltonianEvolver** | ~180 | Phase space dynamics |
+| **PhysicsCalculatorSuite** | ~100 | Unified calculator interface |
 
-**Total New Functionality:** ~1,500+ lines of physics-inspired AI orchestration code.
+**Total Functionality:** ~3,000+ lines of physics-inspired AI orchestration code.
 
 ---
 
-**Version**: 1.0.0  
+## Advanced Physics Calculators (NEW)
+
+This section documents the advanced physics calculators that implement quantitative computations.
+
+### Overview
+
+| Calculator | Description | Key Equation |
+|------------|-------------|--------------|
+| **QuantumOperator** | Creation/annihilation operators | a†\|n⟩ = √(n+1)\|n+1⟩ |
+| **ConservationLawChecker** | Conservation law validation | ΔE = 0, Δp = 0 |
+| **PathIntegralCalculator** | Feynman path integrals | K = Σ e^(iS/ℏ) |
+| **HamiltonianEvolver** | Phase space dynamics | dq/dt = ∂H/∂p |
+| **PhysicsCalculatorSuite** | All calculators unified | Full analysis |
+
+### QuantumOperator
+
+Implements quantum creation and annihilation operators for state manipulation.
+
+```python
+from agents import QuantumOperator
+
+# Create operator for 5-dimensional Fock space
+qop = QuantumOperator(dimension=5)
+
+# Apply creation operator (spawn task/allocate resource)
+state = [0.0, 1.0, 0.0, 0.0, 0.0]  # |1⟩ state
+created = qop.apply_creation(state)  # → √2|2⟩
+
+# Get occupation number (average resources)
+n = qop.get_occupation_number(state)
+
+# Generate coherent state (smooth classical-like state)
+coherent = qop.coherent_state(alpha=complex(1.0, 0.5))
+
+# Time evolution under harmonic Hamiltonian
+evolved = qop.evolve_state(state, time=1.0)
+```
+
+### ConservationLawChecker
+
+Validates that decisions respect fundamental conservation principles.
+
+```python
+from agents import ConservationLawChecker
+
+clc = ConservationLawChecker(tolerance=1e-6)
+
+# Check energy conservation
+result = clc.check_energy_conservation(
+    initial_state={'kinetic': 50, 'potential': 50},
+    final_state={'kinetic': 60, 'potential': 40}
+)
+print(f"Conserved: {result['conserved']}")  # True
+
+# Check momentum conservation
+result = clc.check_momentum_conservation(
+    momenta=[(1.0, 0.0), (-1.0, 0.0)]  # Equal and opposite
+)
+print(f"Total momentum: {result['total_magnitude']}")  # ~0
+
+# Check probability conservation
+result = clc.check_probability_conservation([0.3, 0.3, 0.4])
+print(f"Probabilities sum to 1: {result['conserved']}")  # True
+
+# Check resource budget
+result = clc.check_resource_budget(
+    allocated={'cpu': 80, 'memory': 60},
+    consumed={'cpu': 50, 'memory': 40},
+    budget={'cpu': 100, 'memory': 100}
+)
+print(f"Within budget: {result['conserved']}")  # True
+```
+
+### PathIntegralCalculator
+
+Evaluates all possible decision paths using Feynman path integral formalism.
+
+```python
+from agents import PathIntegralCalculator, ActionPath, ActionType
+
+pic = PathIntegralCalculator(hbar=1.0)
+
+# Analyze multiple paths
+paths = [
+    [{'potential': 10, 'kinetic': 5}, {'potential': 5, 'kinetic': 10}],  # Direct
+    [{'potential': 8, 'kinetic': 7}, {'potential': 4, 'kinetic': 11}],   # Scenic
+]
+
+result = pic.analyze_paths(paths, ['direct', 'scenic'])
+print(f"Transition probability: {result['transition_probability']}")
+print(f"Classical path: {result['classical_path']}")
+print(f"Quantum advantage: {result['quantum_advantage']}")
+
+# Analyze ActionPath objects
+action_paths = [
+    ActionPath(ActionType.AUDIT, "Security", potential_energy=30),
+    ActionPath(ActionType.TEST, "Coverage", potential_energy=20),
+]
+result = pic.evaluate_decision_paths(action_paths)
+```
+
+### HamiltonianEvolver
+
+Evolves decision states through phase space using Hamiltonian mechanics.
+
+```python
+from agents import HamiltonianEvolver, ActionPath, ActionType
+
+he = HamiltonianEvolver()
+
+# Evolve using harmonic oscillator dynamics
+trajectory = he.evolve(q0=1.0, p0=0.0, steps=100)
+print(f"Energy conserved: {he.hamiltonian_history[0] == he.hamiltonian_history[-1]}")
+
+# Find stable equilibrium points
+fixed_points = he.find_fixed_points()
+for fp in fixed_points:
+    print(f"  Position: {fp['q']}, Stable: {fp['stable']}")
+
+# Analyze ActionPath dynamics
+path = ActionPath(ActionType.DEPLOY, "Production", potential_energy=50, momentum=5)
+result = he.analyze_decision_dynamics(path, time_horizon=50)
+print(f"Stable trajectory: {result['stable']}")
+```
+
+### PhysicsCalculatorSuite
+
+Unified interface to all physics calculators for comprehensive analysis.
+
+```python
+from agents import PhysicsCalculatorSuite, ActionPath, ActionType
+
+suite = PhysicsCalculatorSuite()
+
+# Check all calculators are active
+status = suite.get_calculator_status()
+print(f"Active: {sum(1 for v in status.values() if v == 'active')}")
+
+# Run full physics analysis
+paths = [
+    ActionPath(ActionType.AUDIT, "Security", potential_energy=30, kinetic_energy=10,
+               impact=0.9, confidence=0.8, friction=2, momentum=6),
+    ActionPath(ActionType.TEST, "Coverage", potential_energy=20, kinetic_energy=15,
+               impact=0.7, confidence=0.9, friction=1, momentum=7),
+]
+
+result = suite.full_analysis(paths)
+print(f"Valid paths: {result['summary']['valid_paths']}")
+print(f"Recommended: {result['summary']['recommended_path']}")
+print(f"Quantum advantage: {result['summary']['quantum_advantage']}")
+```
+
+---
+
+## Quantum-Physics Integration
+
+This section documents the advanced quantum-physics integration patterns that bridge quantum mechanics with physics-inspired decision making.
+
+### Overview
+
+| Pattern | Description | Key Equation |
+|---------|-------------|--------------|
+| **QuantumState** | Decision state in superposition | P = \|α\|² (Born rule) |
+| **EntangledDependency** | Correlated decision dependencies | P(both) = 0.25 × (1 ± ρ) |
+| **QuantumWalkExplorer** | Quantum walk exploration | \|ψ(t+1)⟩ = S(C ⊗ I)\|ψ(t)⟩ |
+| **SuperpositionExplorer** | Grover-like amplification | Optimal iterations ≈ π/4 × √N |
+| **PINNValidator** | Physics-informed validation | Residual minimization |
+| **QuantumPhysicsOrchestrator** | Unified integration | Full workflow |
+
+### QuantumWalkExplorer
+
+Uses discrete-time quantum walks for exploring decision spaces with quadratic speedup over classical random walks.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    QUANTUM WALK EXPLORATION                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌───────┐     ┌──────────┐     ┌───────────┐             │
+│   │ COIN  │────▶│  SHIFT   │────▶│ INTERFERE │             │
+│   │  (H)  │     │  (S)     │     │           │             │
+│   └───────┘     └──────────┘     └───────────┘             │
+│       │                               │                     │
+│       │         O(√t) spread          │                     │
+│       └───────────────────────────────┘                     │
+│                                                              │
+│   Classical: O(t) spread                                     │
+│   Quantum:   O(√t) spread → Quadratic speedup               │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Usage
+
+```python
+from agents import QuantumWalkExplorer
+
+# Initialize quantum walk
+walker = QuantumWalkExplorer(num_positions=10)
+
+# Run exploration
+result = walker.run_walk(steps=20)
+print(f"Spread: {result['spread']}")
+print(f"Quantum advantage: {result['quantum_advantage']}")
+
+# Explore decision tree
+decisions = ["Fix bug", "Add test", "Refactor", "Document"]
+result = walker.explore_decision_tree(decisions, target_decision="Add test")
+print(f"Target probability: {result['target_probability']}")
+```
+
+### SuperpositionExplorer
+
+Explores multiple decision paths simultaneously using Grover-like amplitude amplification.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  SUPERPOSITION EXPLORATION                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Path A: ──|α₁|──┐                                         │
+│   Path B: ──|α₂|──├──▶ ORACLE ──▶ DIFFUSION ──▶ MEASURE    │
+│   Path C: ──|α₃|──┘      ↓           ↓            ↓         │
+│                      Amplify      Interfere     Collapse    │
+│                       good         cancel       to best     │
+│                       paths        bad paths                │
+│                                                              │
+│   Iterations: π/4 × √N for optimal amplification            │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Usage
+
+```python
+from agents import SuperpositionExplorer, ActionPath, ActionType
+
+# Create paths
+paths = [
+    ActionPath(ActionType.AUDIT, "Run security audit", 
+               potential_energy=30, impact=0.9, confidence=0.8),
+    ActionPath(ActionType.TEST, "Add unit tests",
+               potential_energy=20, impact=0.7, confidence=0.9),
+    ActionPath(ActionType.REFACTOR, "Improve structure",
+               potential_energy=50, impact=0.6, confidence=0.7),
+]
+
+# Explore in superposition
+explorer = SuperpositionExplorer()
+result = explorer.explore_all_paths(paths, grover_iterations=3)
+
+print(f"Optimal path: {result['optimal_path']['description']}")
+print(f"Selection probability: {result['selection_probability']:.2%}")
+print(f"Quantum speedup: {result['quantum_speedup']}")
+```
+
+### PINNValidator
+
+Validates decisions against physics-informed constraints, ensuring physically plausible outcomes.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    PINN VALIDATION                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   Decision ──▶ ┌─────────────────────────────────┐          │
+│                │ CONSTRAINT RESIDUALS             │          │
+│                │                                  │          │
+│                │ • Energy conservation: R₁       │          │
+│                │ • Momentum alignment:  R₂       │          │
+│                │ • Friction bounds:     R₃       │          │
+│                └─────────────────────────────────┘          │
+│                            │                                 │
+│                            ▼                                 │
+│                   Physics Score = 1 - Σ(wᵢRᵢ)/Σwᵢ           │
+│                            │                                 │
+│                            ▼                                 │
+│                 ┌──────────┴──────────┐                     │
+│                 │                     │                     │
+│              Valid ≥0.6         Invalid <0.6                │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Usage
+
+```python
+from agents import PINNValidator, ActionPath, ActionType
+
+# Create paths to validate
+paths = [
+    ActionPath(ActionType.DEPLOY, "Deploy to production",
+               potential_energy=80, friction=8, momentum=2),
+    ActionPath(ActionType.TEST, "Run integration tests",
+               potential_energy=20, friction=2, momentum=7),
+]
+
+# Validate against physics constraints
+validator = PINNValidator()
+results = validator.validate_batch(paths)
+
+for result in results['results']:
+    print(f"{result['path_description']}: {result['physics_score']:.2f}")
+    print(f"  Valid: {result['valid']}")
+    print(f"  Recommendation: {result['recommendation']}")
+```
+
+### QuantumPhysicsOrchestrator
+
+Unified orchestrator integrating all quantum and physics patterns.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              QUANTUM-PHYSICS ORCHESTRATION                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│   1. ASSESS         ──▶ Quantum walk exploration            │
+│         ↓                                                    │
+│   2. SUPERPOSE      ──▶ Put paths in superposition          │
+│         ↓                                                    │
+│   3. ENTANGLE       ──▶ Model decision dependencies         │
+│         ↓                                                    │
+│   4. VALIDATE       ──▶ PINN constraint checking            │
+│         ↓                                                    │
+│   5. OPTIMIZE       ──▶ Energy landscape + Grover           │
+│         ↓                                                    │
+│   6. MEASURE        ──▶ Collapse to optimal decision        │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Usage
+
+```python
+from agents import QuantumPhysicsOrchestrator, ActionPath, ActionType
+
+# Initialize unified orchestrator
+orchestrator = QuantumPhysicsOrchestrator()
+
+# Create decision paths
+paths = [
+    ActionPath(ActionType.AUDIT, "Security audit",
+               potential_energy=30, impact=0.9, confidence=0.85,
+               friction=3, momentum=6),
+    ActionPath(ActionType.REFACTOR, "Code cleanup",
+               potential_energy=40, impact=0.7, confidence=0.8,
+               friction=4, momentum=5),
+    ActionPath(ActionType.TEST, "Add coverage",
+               potential_energy=25, impact=0.8, confidence=0.9,
+               friction=2, momentum=7),
+]
+
+# Run full quantum-physics orchestration
+result = orchestrator.run_full_orchestration(paths, target_action="Security audit")
+
+print(f"Selection method: {result['selection_method']}")
+print(f"Final decision: {result['final_decision']}")
+print(f"Physics validation: {result['physics_validation']['valid_paths']}/{result['physics_validation']['total_paths']} valid")
+```
+
+### EntangledDependency
+
+Models correlations between decisions where measuring one affects the other.
+
+```python
+from agents import EntangledDependency
+
+# Create entanglement between two decisions
+entanglement = EntangledDependency(
+    decision_a="Deploy backend",
+    decision_b="Deploy frontend",
+    correlation=0.8,  # High positive correlation
+    strength=0.9
+)
+
+# Calculate joint probability
+p_both_succeed = entanglement.joint_probability(True, True)
+print(f"P(both succeed): {p_both_succeed:.2%}")
+
+# Conditional probability
+p_b_given_a = entanglement.collapse_b_given_a(outcome_a=True)
+print(f"P(frontend succeeds | backend succeeds): {p_b_given_a:.2%}")
+```
+
+### Quantum-Physics Equations Reference
+
+| Pattern | Equation | Description |
+|---------|----------|-------------|
+| Born Rule | P = \|α\|² | Probability from amplitude |
+| Quantum Walk | \|ψ(t+1)⟩ = S(C ⊗ I)\|ψ(t)⟩ | Walk evolution |
+| Hadamard Coin | H = (1/√2)[[1,1],[1,-1]] | Equal superposition |
+| Grover Iterations | O(π/4 × √N) | Optimal amplification |
+| Entanglement | P(same) = 0.25 × (1 + ρ×s) | Correlated outcomes |
+| PINN Residual | R = Σ(wᵢ × constraint_violation_i) | Constraint penalty |
+| Physics Score | Score = 1 - R/Σwᵢ | Validity measure |
+
+---
+
+**Version**: 2.0.0  
 **Last Updated**: 2025-12-12  
 **CodeQL Scan**: Clear ✅  
 **Maintained by**: Aries-Serpent/_codex_ team
