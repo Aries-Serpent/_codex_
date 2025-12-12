@@ -1,3 +1,8 @@
+# ============================================================================
+# DEPRECATED: Use configs/training/model/base.yaml instead
+# See misc/repo-owner-review/MIGRATION_GUIDE.md for migration instructions
+# Removal scheduled: v2.0.0 (Q2 2026)
+# ============================================================================
 base_model_path: null
 dtype: float32
 device: cpu
