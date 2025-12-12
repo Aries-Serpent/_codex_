@@ -1,0 +1,16 @@
+error:
+  summary: "<concise error summary>"
+  severity: "low|medium|high"
+  context:
+    task: "<task identifier>"
+    route: "<selected route>"
+    tool_calls:
+      - name: "<tool name>"
+        status: failed
+        message: "<error message>"
+  remediation:
+    - "<action to unblock>"
+    - "<data needed>"
+next_steps:
+  - "retry_tool:search_docs" # example directive
+  - "request_human_review"   # escalation path

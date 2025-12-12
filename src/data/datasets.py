@@ -80,6 +80,32 @@ class DataConfig:
     num_workers: int = 0
 
 
+@dataclass(slots=True)
+class DataLoaderConfig:
+    """User-facing config for text classification helpers."""
+
+    file_path: str
+    batch_size: int = 8
+    max_length: int = 128
+    validation_split: float = 0.2
+    seed: int = 42
+
+    def to_data_config(self) -> DataConfig:
+        if not 0 <= float(self.validation_split) < 1:
+            raise ValueError("validation_split must be in [0, 1)")
+        split_ratio = (1 - float(self.validation_split), float(self.validation_split))
+        return DataConfig(
+            dataset_path=self.file_path,
+            validation_path=None,
+            batch_size=int(self.batch_size),
+            split_ratio=split_ratio,
+            shuffle=True,
+            max_length=int(self.max_length),
+            seed=int(self.seed),
+            num_workers=0,
+        )
+
+
 class TextClassificationDataset(BaseDataset):
     """Simple TSV loader producing ``(text, label)`` tuples."""
 
@@ -214,6 +240,20 @@ def build_dataloaders(
             collate_fn=collate,
         )
     return train_loader, val_loader
+
+
+def build_text_classification_dataloaders(
+    tokenizer: Any, config: DataLoaderConfig
+) -> tuple[TorchDataLoaderType, TorchDataLoaderType | None]:
+    """Compat shim that accepts :class:`DataLoaderConfig` inputs."""
+
+    return build_dataloaders(tokenizer, config.to_data_config())
+
+
+def load_text_classification_dataset(path: str | Path) -> TextClassificationDataset:
+    """Load a TSV text classification dataset."""
+
+    return TextClassificationDataset(str(path))
 
 
 def _compute_lengths(n: int, lengths_or_fracs: Sequence[int | float]) -> list[int]:

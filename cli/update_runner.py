@@ -423,7 +423,7 @@ def task_update_run_functional_training() -> None:
 
                 from codex_ml.models.registry import get_model as _get_model
                 from codex_ml.utils.checkpointing import load_training_checkpoint as _load_ckpt
-                from training.functional_training import TrainCfg as _TrainCfg, run_custom_trainer as _run_custom_trainer
+                from src.training.functional_training import TrainCfg as _TrainCfg, run_custom_trainer as _run_custom_trainer
 
                 if isinstance(config, _DictConfig):
                     container = _OmegaConf.to_container(config, resolve=True)  # type: ignore[arg-type]

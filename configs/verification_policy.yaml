@@ -1,0 +1,39 @@
+states:
+  - UNKNOWN
+  - INFERRED
+  - VERIFIED
+
+default_state: INFERRED
+
+domains:
+  general:
+    trusted_sources: []
+    require_trusted_for:
+      - VERIFIED
+    required_verifiers: []
+  packages:
+    trusted_sources:
+      - npm_registry
+      - pypi
+    require_trusted_for:
+      - VERIFIED
+    required_verifiers:
+      - package_registry_verifier
+  infra_changes:
+    trusted_sources:
+      - git
+      - terraform_plan
+    require_trusted_for:
+      - VERIFIED
+    required_verifiers:
+      - infra_plan_verifier
+
+rules:
+  no_verified_without_evidence: true
+  allow_inferred_without_evidence: false
+  allow_unknown_when_no_retrieval: true
+  escalate_on_verifier_failure: true
+  evidence_link_keys:
+    - doc
+    - tool
+    - url
