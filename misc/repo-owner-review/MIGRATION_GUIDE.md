@@ -48,14 +48,15 @@ The repository is consolidating configuration files from the legacy `conf/` dire
 Use these commands to locate all references to the `conf/` directory:
 
 ```bash
-# Find all Python files referencing conf/
-grep -rn "conf/" --include="*.py" . | grep -v "configs/"
+# Find all Python files referencing conf/ (matches quoted path references)
+grep -rn '"conf/' --include="*.py" . | grep -v "configs/"
+grep -rn "'conf/" --include="*.py" . | grep -v "configs/"
 
 # Find all YAML files referencing conf/
-grep -rn "conf/" --include="*.yaml" --include="*.yml" .
+grep -rn "conf/" --include="*.yaml" --include="*.yml" . | grep -v "configs/"
 
-# Count total references
-grep -r "conf/" --include="*.py" . | grep -v "configs/" | wc -l
+# Count total references (quoted paths only to avoid false positives)
+grep -rE '["'"'"']conf/' --include="*.py" . | grep -v "configs/" | wc -l
 ```
 
 ### Step 2: Update Python Imports

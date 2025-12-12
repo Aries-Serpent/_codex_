@@ -218,8 +218,8 @@ If automated reminders are desired, create `.github/workflows/audit-reminder.yml
 name: Quarterly Audit Reminder
 on:
   schedule:
-    # 1st of March, June, September, December at 9 AM UTC
-    - cron: '0 9 1 3,6,9,12 *'
+    # 15th of March, June, September, December at 9 AM UTC (matches audit due dates)
+    - cron: '0 9 15 3,6,9,12 *'
 jobs:
   reminder:
     runs-on: ubuntu-latest
