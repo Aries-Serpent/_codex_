@@ -1,0 +1,40 @@
+# Task-type routing to models and pipelines
+routes:
+  default:
+    model: planner
+    pipeline: standard
+  high_risk:
+    model: reasoner
+    pipeline: verification
+  verification_only:
+    model: verifier
+    pipeline: verification
+  fast_path:
+    model: fast
+    pipeline: lightweight
+
+pipelines:
+  standard:
+    use_rag: true
+    use_tools: true
+    verification: optional
+    token_budget: 6000
+  verification:
+    use_rag: true
+    use_tools: true
+    verification: required
+    token_budget: 8000
+  lightweight:
+    use_rag: true
+    use_tools: false
+    verification: optional
+    token_budget: 3000
+
+overrides:
+  task_type:
+    repo_risk:
+      route: high_risk
+    infra_change:
+      route: high_risk
+    claim_verification:
+      route: verification_only

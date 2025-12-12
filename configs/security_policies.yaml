@@ -1,0 +1,48 @@
+# Tool-level permissions and environment rules
+version: 1
+
+environments:
+  dev:
+    allow_write_tools: true
+    allowed_tools:
+      - search_docs
+      - search_code
+      - get_repo_branches
+      - get_recent_commits
+    denied_tools: []
+    max_tool_timeout_seconds: 60
+  prod:
+    allow_write_tools: false
+    allowed_tools:
+      - search_docs
+      - search_code
+      - get_repo_branches
+    denied_tools:
+      - apply_patch
+      - arbitrary_shell
+    max_tool_timeout_seconds: 30
+
+rbac:
+  roles:
+    reader:
+      tools:
+        - search_docs
+        - search_code
+    contributor:
+      tools:
+        - search_docs
+        - search_code
+        - get_repo_branches
+        - get_recent_commits
+    maintainer:
+      tools:
+        - "*"
+  default_role: reader
+  escalation_required_for:
+    - apply_patch
+
+secrets:
+  redact_patterns:
+    - "(?i)api[_-]?key"
+    - "(?i)token"
+  allow_env_passthrough: []

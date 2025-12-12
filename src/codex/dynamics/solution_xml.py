@@ -4,11 +4,16 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from defusedxml.ElementTree import Element, SubElement, tostring
+from xml.etree import ElementTree as _xml_et
 
+from defusedxml import ElementTree as _defused_et
 from pydantic import AliasChoices, BaseModel, Field
 
 from codex.evidence import utc_now
+
+Element = getattr(_defused_et, "Element", _xml_et.Element)
+SubElement = getattr(_defused_et, "SubElement", _xml_et.SubElement)
+tostring = getattr(_defused_et, "tostring", _xml_et.tostring)
 
 __all__ = [
     "LocalizedName",

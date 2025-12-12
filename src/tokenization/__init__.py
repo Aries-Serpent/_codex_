@@ -2,6 +2,12 @@
 
 __all__: list[str] = []
 
+from .loader import load_tokenizer
+from .adapter import TokenizerAdapter
+
+__all__.append("load_tokenizer")
+__all__.append("TokenizerAdapter")
+
 try:
     from . import sentencepiece_adapter
 except ModuleNotFoundError:

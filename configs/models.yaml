@@ -1,0 +1,35 @@
+# Model routing configuration for agent roles
+models:
+  planner:
+    id: gpt-4.1
+    max_output_tokens: 2048
+    temperature: 0.2
+  reasoner:
+    id: o4-mini-high
+    effort: high
+    max_output_tokens: 4096
+  fast:
+    id: gpt-4.1-mini
+    max_output_tokens: 1024
+    temperature: 0.4
+  verifier:
+    id: o4-mini
+    effort: medium
+    max_output_tokens: 2048
+
+routing:
+  heavy_reasoning_tasks:
+    - repo_risk
+    - infra_change
+    - security
+  low_latency_tasks:
+    - summarization
+    - code_navigation
+  verification_tasks:
+    - claim_verification
+    - policy_enforcement
+
+safety:
+  max_retries: 2
+  max_total_tokens: 16384
+  abort_on_tool_error: true
