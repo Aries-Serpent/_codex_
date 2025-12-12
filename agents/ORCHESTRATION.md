@@ -527,6 +527,154 @@ J = E[U] - λ·Var(U)
 λ = risk aversion parameter
 ```
 
+## Import Migration Orchestrator
+
+### Overview
+
+The `ImportMigrationOrchestrator` extends `PhysicsInspiredOrchestrator` to automate the migration of deprecated imports to canonical paths using physics-inspired optimization.
+
+### Key Classes
+
+```python
+from agents import ImportMigration, ImportMigrationOrchestrator
+
+# ImportMigration dataclass with auto-calculated physics properties
+@dataclass
+class ImportMigration:
+    file_path: str
+    old_import: str
+    new_import: str
+    line_number: int
+    
+    # Auto-calculated properties
+    potential_energy: float  # Effort required
+    momentum: float          # Alignment with patterns
+    friction: float          # Resistance/risk
+    impact: float            # File importance
+    confidence: float        # Straightforwardness
+    risk: float              # Could break things
+    urgency: float           # Actively causing issues
+    optimization_score: float  # Calculated score
+```
+
+### Physics Properties Calculation
+
+```python
+# Impact based on file type
+if '/cli/' in file_path:
+    impact = 0.9  # CLI files are high impact
+elif '/tests/' in file_path:
+    impact = 0.7  # Tests are medium-high impact
+elif '/agents/' in file_path:
+    impact = 0.85  # Agent files are high impact
+
+# Friction based on location
+if '/tests/training/' in file_path or '/cli/' in file_path:
+    friction = 0.1  # Training-related files have low friction
+
+# Risk based on module criticality
+if 'functional_training' in old_import:
+    risk = 0.3  # Critical module
+elif 'checkpoint' in old_import:
+    risk = 0.25
+```
+
+### Usage Example: Automated Migration
+
+```python
+from agents import ImportMigrationOrchestrator
+from pathlib import Path
+
+# Initialize orchestrator
+orchestrator = ImportMigrationOrchestrator()
+
+# Run complete migration cycle
+result = orchestrator.run_migration_cycle(
+    repo_root=Path("/path/to/repo"),
+    energy_budget=500.0,  # Maximum energy to expend
+    dry_run=True  # Set to False to execute
+)
+
+# Result contains:
+# - status: 'completed' or 'clean'
+# - assessment: files scanned, deprecated found, etc.
+# - migrations_executed: attempted, successful, failed
+# - energy_spent: total energy consumed
+# - momentum_gained: progress made
+```
+
+### ASSESS → DELIBERATE → OPTIMIZE → ACT Workflow
+
+```python
+# Phase 1: ASSESS - Identify deprecated imports
+assessment = orchestrator.assess_imports(repo_root)
+# Returns: files_scanned, deprecated_found, unique_files, total_energy_required
+
+# Phase 2: DELIBERATE - Calculate optimization scores
+ranked_migrations = orchestrator.deliberate_migrations()
+# Returns: migrations sorted by optimization_score (highest first)
+
+# Phase 3: OPTIMIZE - Select within energy budget
+selected = orchestrator.optimize_migration_plan(ranked_migrations, energy_budget=500.0)
+# Returns: migrations that fit within budget
+
+# Phase 4: ACT - Execute migrations
+results = orchestrator.execute_migrations(selected, dry_run=False)
+# Returns: attempted, successful, failed, files_modified
+```
+
+### Migration Map
+
+The orchestrator uses a predefined migration map:
+
+```python
+migration_map = {
+    'from training.': 'from src.training.',
+    'from models.': 'from src.models.',
+    'import training.': 'import src.training.',
+    'import models.': 'import src.models.',
+}
+```
+
+### Example Output
+
+```
+============================================================
+IMPORT MIGRATION - ASSESSMENT PHASE
+============================================================
+
+Assessment Results:
+  Files scanned: 245
+  Deprecated imports found: 12
+  Unique files affected: 6
+  Total energy required: 120.0
+  Average risk: 0.183
+
+============================================================
+IMPORT MIGRATION - DELIBERATION PHASE
+============================================================
+
+Top migrations by optimization score:
+  1. Score: 0.0878 | Impact: 0.90 | Risk: 0.10
+      File: train_schema_demo.py:10
+      from training.offline_wandb import force_offline...
+
+============================================================
+IMPORT MIGRATION - ACTION PHASE
+============================================================
+Mode: EXECUTE
+
+  ✓ train_schema_demo.py:10
+    - from training.offline_wandb import force_offline
+    + from src.training.offline_wandb import force_offline
+
+Migration Results:
+  Attempted: 12
+  Successful: 12
+  Failed: 0
+  Files modified: 6
+```
+
 ## References
 
 - Physics-based Planning: Potential Field Methods
@@ -536,6 +684,6 @@ J = E[U] - λ·Var(U)
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-10  
+**Version**: 1.1.0  
+**Last Updated**: 2025-12-12  
 **Maintained by**: Aries-Serpent/_codex_ team
