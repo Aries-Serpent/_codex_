@@ -15,3 +15,10 @@ To restore this file:
 
 ## Reason for Archival
 Temporary/backup file identified during codebase audit.
+
+## Retention Policy
+**Large file notice**: This file is 118KB (1,200+ lines). 
+- **Purpose**: Backup of Python dependency lock file
+- **Retention**: Can be safely removed after 30 days if no issues reported
+- **Alternative**: Available in git history at commit 36462ee8
+- **Removal date**: Recommended 2025-01-12 or later

@@ -93,24 +93,61 @@ If you need to restore all archived files:
 
 ```bash
 #!/bin/bash
-# restore_all.sh - Restore all archived backups
+# restore_all.sh - Restore all archived backups with error handling
+
+set -e  # Exit on error
 
 cd misc/repo-owner-review/archived-backups
 
+# Verify manifest exists
+if [ ! -f "manifest.txt" ]; then
+    echo "ERROR: manifest.txt not found"
+    exit 1
+fi
+
 # Read manifest and restore each file
 while IFS=$'\t' read -r original archived commit; do
-    if [ -f "$archived" ]; then
-        # Extract original path from metadata
-        orig_path=$(grep "Original Path:" "${archived}.meta.md" | cut -d'`' -f2)
-        
-        # Create directory if needed
-        mkdir -p "$(dirname "../../../$orig_path")"
-        
-        # Copy file
-        cp "$archived" "../../../$orig_path"
-        echo "Restored: $orig_path"
+    if [ ! -f "$archived" ]; then
+        echo "WARNING: Archived file not found: $archived"
+        continue
+    fi
+    
+    # Extract original path from metadata
+    if [ ! -f "${archived}.meta.md" ]; then
+        echo "WARNING: Metadata missing for $archived"
+        continue
+    fi
+    
+    orig_path=$(grep "Original Path:" "${archived}.meta.md" | cut -d'`' -f2)
+    
+    if [ -z "$orig_path" ]; then
+        echo "WARNING: Could not extract original path for $archived"
+        continue
+    fi
+    
+    # Check if target already exists
+    if [ -f "../../../$orig_path" ]; then
+        echo "WARNING: Target already exists, skipping: $orig_path"
+        continue
+    fi
+    
+    # Create directory if needed
+    target_dir=$(dirname "../../../$orig_path")
+    if ! mkdir -p "$target_dir" 2>/dev/null; then
+        echo "ERROR: Cannot create directory: $target_dir"
+        continue
+    fi
+    
+    # Copy file
+    if cp "$archived" "../../../$orig_path"; then
+        echo "✓ Restored: $orig_path"
+    else
+        echo "ERROR: Failed to restore: $orig_path"
     fi
 done < manifest.txt
+
+echo ""
+echo "Restore complete. Run 'git status' to review changes."
 ```
 
 ---
