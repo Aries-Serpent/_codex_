@@ -684,6 +684,266 @@ Migration Results:
 
 ---
 
-**Version**: 1.1.0  
+## Advanced Physics-Inspired Patterns
+
+### Overview
+
+Building on the core orchestration system, these additional patterns enhance decision-making, mental mapping, and self-appraisal through advanced physics analogies.
+
+| Pattern | Description | Key Application |
+|---------|-------------|-----------------|
+| **DiffusionFlowModel** | Flow-based navigation inspired by PFGM and fluid dynamics | Mental mapping navigation |
+| **EnergyLandscape** | Thermodynamic optimization with Gibbs distributions | Self-appraisal and equilibrium |
+| **SwarmIntelligence** | Particle swarm optimization for multi-agent coordination | Distributed orchestration |
+| **TaskDecomposer** | Parallel task decomposition with dependency management | Scalable execution |
+| **ReflectionLoop** | PID-controlled feedback for continuous learning | Threshold calibration |
+
+### Diffusion and Flow Model
+
+Inspired by Poisson Flow Generative Models (PFGM) from electromagnetism and fluid dynamics.
+
+```python
+from agents import DiffusionFlowModel
+
+# Create decision space with potential field
+flow_model = DiffusionFlowModel(dimensions=2, resolution=20)
+
+# Add goal (attractor) and obstacles (repulsors)
+flow_model.add_attractor((0.8, 0.8), strength=2.0)
+flow_model.add_repulsor((0.3, 0.5), strength=1.0)
+
+# Simulate agent flow toward goal
+trajectory = flow_model.simulate_flow(
+    start_position=(0.1, 0.1),
+    steps=100,
+    dt=0.1
+)
+
+# Integration with mental mapping
+result = flow_model.integrate_with_mental_mapping(
+    problem_position=(0.1, 0.1),
+    goal_position=(0.8, 0.8)
+)
+print(f"Steps to goal: {result['steps_to_goal']}")
+```
+
+**Key Equations:**
+- Potential field: φ(r) = Σ q_i / |r - r_i|
+- Flow update: dx = velocity × dt + gradient × dt
+
+### Energy-Based Model
+
+Thermodynamic optimization using Gibbs distributions and free energy minimization.
+
+```python
+from agents import EnergyLandscape, EnergyState
+
+# Create energy landscape
+landscape = EnergyLandscape(temperature=1.0)
+
+# Add decision states with energy/entropy
+landscape.add_state(EnergyState(
+    configuration={'action': 'deploy'},
+    energy=0.3,  # Low energy = favorable
+    entropy=0.1   # Low entropy = certain
+))
+landscape.add_state(EnergyState(
+    configuration={'action': 'wait'},
+    energy=0.5,
+    entropy=0.3
+))
+
+# Select state using Gibbs distribution
+best_state = landscape.select_state()
+print(f"Selected: {best_state.configuration}")
+print(f"Probability: {landscape.gibbs_probability(best_state):.3f}")
+
+# Minimize free energy (F = E - T*S)
+optimal = landscape.minimize_free_energy()
+
+# Integration with self-appraisal
+result = landscape.integrate_with_self_appraisal(
+    decision_quality=0.8,
+    expected_confidence=0.7
+)
+```
+
+**Key Equations:**
+- Free energy: F = E - T×S
+- Gibbs probability: P_i = exp(-E_i/kT) / Z
+- Partition function: Z = Σ exp(-E_i/kT)
+
+### Swarm Intelligence
+
+Multi-agent coordination inspired by particle swarm optimization.
+
+```python
+from agents import SwarmIntelligence
+
+# Create swarm for multi-agent optimization
+swarm = SwarmIntelligence(
+    num_particles=10,
+    dimensions=2,
+    inertia=0.7,      # w: continue current direction
+    cognitive=1.5,     # c1: personal best attraction
+    social=1.5         # c2: global best attraction
+)
+
+# Define fitness function
+def fitness(position):
+    return -sum((x - 0.5)**2 for x in position)  # Optimal at center
+
+# Run optimization
+result = swarm.run_optimization(
+    fitness_function=fitness,
+    bounds=[(0, 1), (0, 1)],
+    max_iterations=50
+)
+print(f"Best position: {result['best_position']}")
+print(f"Converged: {result['converged']}")
+
+# Coordinate multiple agents toward target
+new_positions = swarm.coordinate_agents(
+    agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)],
+    target_position=(0.8, 0.8)
+)
+```
+
+**Key Equations:**
+- Velocity update: v = w×v + c1×r1×(pbest-x) + c2×r2×(gbest-x)
+- Position update: x = x + v
+
+### Task Decomposition
+
+Parallel task execution with dependency management.
+
+```python
+from agents import TaskDecomposer, ActionPath, ActionType
+
+# Create task decomposer
+decomposer = TaskDecomposer(max_workers=4)
+
+# Define complex task
+task = ActionPath(
+    action_type=ActionType.DEPLOY,
+    description="Deploy new feature",
+    potential_energy=80.0,
+    impact=0.9,
+    urgency=0.7
+)
+
+# Decompose into sub-tasks
+sub_tasks = decomposer.decompose_task(task, strategy="dependency_chain")
+# Creates: analyze → plan → execute → verify
+
+# Build execution plan (respects dependencies)
+plan = decomposer.build_execution_plan()
+# Returns: [[analyze], [plan], [execute], [verify]]
+
+# Run orchestration
+result = decomposer.run_orchestration()
+print(f"Batches: {result['total_batches']}")
+print(f"Energy spent: {result['total_energy_spent']}")
+
+# Integration with ActionPath
+integration = decomposer.integrate_with_action_path(task)
+```
+
+**Strategies:**
+- `energy_balanced`: Split energy evenly across workers
+- `impact_focused`: Sub-tasks for assessment, implementation, verification, documentation
+- `dependency_chain`: Sequential analyze → plan → execute → verify
+
+### Reflection and Feedback Loop
+
+PID-controlled self-appraisal for continuous calibration.
+
+```python
+from agents import ReflectionLoop
+
+# Create feedback controller
+feedback = ReflectionLoop(
+    k_proportional=0.5,  # Immediate error response
+    k_integral=0.1,       # Accumulated error correction
+    k_derivative=0.05     # Rate of change response
+)
+
+# Record decisions and outcomes
+result = feedback.record_decision(
+    decision={'action': 'deploy', 'confidence': 0.8},
+    predicted_outcome=0.8,
+    actual_outcome=0.7  # Slightly worse than expected
+)
+print(f"Error: {result['error']:.3f}")
+print(f"Correction: {result['correction']:.3f}")
+print(f"New confidence threshold: {result['new_confidence_threshold']:.3f}")
+
+# Get performance metrics
+metrics = feedback.get_performance_metrics()
+print(f"Average error: {metrics['average_error']:.3f}")
+print(f"Trend: {metrics['trend']}")
+
+# Integration with orchestrator
+from agents import PhysicsInspiredOrchestrator
+orchestrator = PhysicsInspiredOrchestrator()
+feedback.integrate_with_orchestrator(orchestrator)
+# Updates orchestrator's confidence_threshold and risk_tolerance
+```
+
+**Key Equations (PID Control):**
+- u(t) = K_p × e(t) + K_i × ∫e(τ)dτ + K_d × de/dt
+- Threshold adjustment based on error statistics
+
+### Integration Examples
+
+#### Combined Flow + Energy Optimization
+
+```python
+from agents import DiffusionFlowModel, EnergyLandscape, EnergyState
+
+# Use flow model for navigation
+flow = DiffusionFlowModel()
+flow.add_attractor((0.9, 0.9), strength=2.0)
+trajectory = flow.simulate_flow((0.1, 0.1))
+
+# Use energy landscape for final decision
+landscape = EnergyLandscape(temperature=0.5)
+for i, pos in enumerate(trajectory[-5:]):  # Last 5 positions
+    landscape.add_state(EnergyState(
+        configuration={'position': pos, 'step': len(trajectory) - 5 + i},
+        energy=1.0 - (pos[0] + pos[1]) / 2,  # Energy decreases near goal
+        entropy=0.1 * i
+    ))
+
+optimal_state = landscape.minimize_free_energy()
+```
+
+#### Swarm + Task Decomposition
+
+```python
+from agents import SwarmIntelligence, TaskDecomposer, ActionPath
+
+# Use swarm to find optimal configuration
+swarm = SwarmIntelligence(num_particles=5, dimensions=3)
+result = swarm.run_optimization(
+    fitness_function=lambda x: -sum(xi**2 for xi in x),
+    bounds=[(-1, 1)] * 3,
+    max_iterations=30
+)
+
+# Decompose optimal task
+decomposer = TaskDecomposer()
+task = ActionPath(
+    action_type=ActionType.OPTIMIZE,
+    description=f"Optimize at {result['best_position']}",
+    potential_energy=50.0,
+    impact=result['best_score']
+)
+decomposer.integrate_with_action_path(task)
+```
+
+---
+
+**Version**: 1.2.0  
 **Last Updated**: 2025-12-12  
 **Maintained by**: Aries-Serpent/_codex_ team

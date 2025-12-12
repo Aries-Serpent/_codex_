@@ -7,6 +7,7 @@ optimal decisions.
 
 Modules:
     physics_orchestrator: Physics-inspired decision making with ASSESS → DELIBERATE → OPTIMIZE → ACT workflow
+        - Includes advanced patterns: DiffusionFlowModel, EnergyLandscape, SwarmIntelligence, TaskDecomposer, ReflectionLoop
     quantum_game_theory: Quantum-inspired game theory for Blue Team vs Red Team scenarios
     self_healing: Automated detection, diagnosis, and remediation of CI/CD issues
     mental_mapping: Cognitive framework for storing reasoning chains and decision paths
@@ -18,6 +19,10 @@ Usage:
     
     # Import migration automation
     from agents import ImportMigrationOrchestrator, ImportMigration
+    
+    # Advanced physics patterns
+    from agents import DiffusionFlowModel, EnergyLandscape, SwarmIntelligence
+    from agents import TaskDecomposer, ReflectionLoop
     
     # Game theory simulation
     from agents import BlueRedTeamSimulator, QuantumInspiredGameEngine
@@ -41,6 +46,16 @@ from .physics_orchestrator import (
     ImportMigration,
     ImportMigrationOrchestrator,
     PhysicsInspiredOrchestrator,
+    # Advanced physics patterns
+    DiffusionFlowModel,
+    EnergyLandscape,
+    EnergyState,
+    FlowVector,
+    ReflectionLoop,
+    SubTask,
+    SwarmIntelligence,
+    SwarmParticle,
+    TaskDecomposer,
 )
 
 # Quantum-inspired game theory
@@ -84,7 +99,7 @@ from .workflow_navigator import (
 )
 
 __all__ = [
-    # Physics orchestrator
+    # Physics orchestrator - Core
     "ActionPath",
     "ActionType",
     "DecisionState",
@@ -92,6 +107,16 @@ __all__ = [
     "ImportMigration",
     "ImportMigrationOrchestrator",
     "PhysicsInspiredOrchestrator",
+    # Physics orchestrator - Advanced Patterns
+    "DiffusionFlowModel",
+    "EnergyLandscape",
+    "EnergyState",
+    "FlowVector",
+    "ReflectionLoop",
+    "SubTask",
+    "SwarmIntelligence",
+    "SwarmParticle",
+    "TaskDecomposer",
     # Quantum game theory
     "BlueRedTeamSimulator",
     "ClassicalGameEngine",
