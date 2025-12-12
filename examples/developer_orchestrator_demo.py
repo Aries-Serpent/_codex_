@@ -189,10 +189,10 @@ def demo_api_development():
     # Show first part of code
     lines = main_code.split('\n')
     for line in lines[:25]:
-        print(line)
+        print(f"{line}")
     if len(lines) > 25:
-        print("  ...")
-    print("-" * 70)
+        print(f"  ...")
+    print(f"{'-' * 70}")
 
 
 def demo_interactive_workflow():
@@ -268,7 +268,7 @@ def demo_interactive_workflow():
     architecture = orchestrator.suggest_architecture(complete_requirements)
     print(f"\n✓ Architecture ready with {len(architecture['components'])} components")
     
-    code = orchestrator.generate_code('main', complete_requirements)
+    orchestrator.generate_code('main', complete_requirements)
     print("\n✓ Code generated successfully")
     
     print("\n--- Final Status ---")
@@ -286,10 +286,8 @@ def demo_physics_integration():
     try:
         from agents.developer_orchestrator import create_developer_orchestrator
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
-        PHYSICS_AVAILABLE = True
     except ImportError:
-        PHYSICS_AVAILABLE = False
-        print("⚠ Physics modules not available")
+        print("⚠ Physics modules not available. Install with: pip install numpy")
         return
     
     orchestrator = create_developer_orchestrator()

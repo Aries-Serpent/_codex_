@@ -16,9 +16,16 @@ Version: 1.0.0
 import math
 import random
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-import numpy as np
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    NUMPY_AVAILABLE = False
+    # Minimal numpy stubs for type hints
+    class np:  # type: ignore
+        ndarray = Any
 
 
 # =============================================================================
@@ -317,9 +324,6 @@ class FractalAnalyzer:
             min_coords = np.min(points, axis=0)
             max_coords = np.max(points, axis=0)
             
-            # Grid dimensions
-            grid_shape = np.ceil((max_coords - min_coords) / box_size).astype(int)
-            
             # Hash points to grid cells
             grid_indices = ((points - min_coords) / box_size).astype(int)
             unique_cells = set(map(tuple, grid_indices))
@@ -591,6 +595,8 @@ class FluidFlowScheduler:
         
         Redistributes flow to equalize pressure, similar to how
         fluid flows from high to low pressure regions.
+        
+        Optimized to O(n) by balancing highest and lowest pressure channels.
         """
         # Calculate average pressure
         pressures = [ch.pressure for ch in self.channels.values()]
@@ -598,34 +604,40 @@ class FluidFlowScheduler:
         
         redistributions = []
         
-        # Iterate through channel pairs
+        # Get channel list
         channel_list = list(self.channels.values())
-        for i in range(len(channel_list)):
-            for j in range(i + 1, len(channel_list)):
-                ch1, ch2 = channel_list[i], channel_list[j]
-                
-                # Pressure difference drives flow
-                pressure_diff = ch1.pressure - ch2.pressure
-                
-                if abs(pressure_diff) > 0.1:
-                    # Flow from high to low pressure
-                    # Flow rate proportional to pressure gradient
-                    transfer_rate = 0.1 * pressure_diff
+        if len(channel_list) < 2:
+            return {
+                'redistributions': [],
+                'initial_avg_pressure': avg_pressure,
+                'final_avg_pressure': avg_pressure,
+                'pressure_variance': 0.0
+            }
+        
+        # Find max and min pressure channels for efficient O(n) balancing
+        max_ch = max(channel_list, key=lambda ch: ch.pressure)
+        min_ch = min(channel_list, key=lambda ch: ch.pressure)
+        pressure_diff = max_ch.pressure - min_ch.pressure
+        
+        if abs(pressure_diff) > 0.1:
+            # Flow from high to low pressure
+            # Flow rate proportional to pressure gradient
+            transfer_rate = 0.1 * pressure_diff
+            
+            # Transfer flow
+            if transfer_rate > 0 and max_ch.current_flow > 0:
+                amount = min(abs(transfer_rate), max_ch.current_flow * 0.1)
+                if min_ch.current_flow + amount <= min_ch.capacity:
+                    max_ch.current_flow -= amount
+                    min_ch.current_flow += amount
+                    max_ch.pressure -= amount * 0.05
+                    min_ch.pressure += amount * 0.05
                     
-                    # Transfer flow
-                    if transfer_rate > 0 and ch1.current_flow > 0:
-                        amount = min(abs(transfer_rate), ch1.current_flow * 0.1)
-                        if ch2.current_flow + amount <= ch2.capacity:
-                            ch1.current_flow -= amount
-                            ch2.current_flow += amount
-                            ch1.pressure -= amount * 0.05
-                            ch2.pressure += amount * 0.05
-                            
-                            redistributions.append({
-                                'from': ch1.channel_id,
-                                'to': ch2.channel_id,
-                                'amount': amount
-                            })
+                    redistributions.append({
+                        'from': max_ch.channel_id,
+                        'to': min_ch.channel_id,
+                        'amount': amount
+                    })
         
         return {
             'redistributions': redistributions,
@@ -849,7 +861,7 @@ class EMFieldRouter:
         
         Returns regions sorted by field magnitude (highest priority first).
         """
-        if self.potential_field is None:
+        if self.potential_field is None or not NUMPY_AVAILABLE:
             return []
         
         # Calculate field magnitude at each point
@@ -862,7 +874,11 @@ class EMFieldRouter:
         for i in range(1, field_magnitude.shape[0] - 1):
             for j in range(1, field_magnitude.shape[1] - 1):
                 val = field_magnitude[i, j]
-                if (val > field_magnitude[i-1:i+2, j-1:j+2]).all():
+                # Get 3x3 neighborhood and flatten
+                neighborhood = field_magnitude[i-1:i+2, j-1:j+2].flatten()
+                # Exclude the center value (index 4 in the flattened 3x3 array)
+                neighbors = np.delete(neighborhood, 4)
+                if (val > neighbors).all():
                     local_max[i, j] = True
         
         # Get positions and magnitudes of peaks
@@ -1017,8 +1033,8 @@ class WavePropagator:
         individual_powers = [s['amplitude']**2 for s in self.sources]
         expected_power = np.sum(individual_powers) if individual_powers else 1.0
         
-        # Interference factor
-        interference_factor = power / expected_power if expected_power > 0 else 0
+        # Interference factor (add epsilon to prevent division by zero)
+        interference_factor = power / (expected_power + 1e-10)
         
         if interference_factor > 1.0:
             return {

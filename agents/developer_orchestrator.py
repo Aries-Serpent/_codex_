@@ -18,10 +18,9 @@ The orchestrator assists in developing Python and console applications by:
 5. Optimizing development workflow
 """
 
-import json
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional
 
 try:
     import numpy as np
@@ -33,11 +32,20 @@ try:
     from agents.advanced_physics_calculators import (
         AdvancedPhysicsOrchestrator,
         ChaoticNeuralNetwork,
-        FractalAnalyzer,
     )
     ADVANCED_PHYSICS = True
 except ImportError:
     ADVANCED_PHYSICS = False
+
+# Import logging utilities
+try:
+    from codex.logging.session_logger import log_message
+    LOGGING_AVAILABLE = True
+except ImportError:
+    LOGGING_AVAILABLE = False
+    # Fallback to print if logging not available
+    def log_message(session_id, role, message, **kwargs):  # type: ignore
+        print(f"[{role}] {message}")
 
 
 class AppType(Enum):
@@ -139,11 +147,12 @@ class PhysicsGuidedDeveloperOrchestrator:
     - Quantum: Evaluate multiple implementation approaches in parallel
     """
     
-    def __init__(self):
+    def __init__(self, session_id: Optional[str] = None):
         self.app_type: Optional[AppType] = None
         self.required_variables: Dict[str, RequirementVariable] = {}
         self.components: Dict[str, CodeComponent] = {}
         self.current_phase: DevelopmentPhase = DevelopmentPhase.REQUIREMENTS
+        self.session_id = session_id or "dev_orchestrator"
         
         # Physics engines
         self.physics_orchestrator = None
@@ -152,6 +161,10 @@ class PhysicsGuidedDeveloperOrchestrator:
         
         self.development_history: List[Dict[str, Any]] = []
         self.suggestions_cache: Dict[str, List[Any]] = {}
+    
+    def _log(self, role: str, message: str) -> None:
+        """Log a message using session logger."""
+        log_message(self.session_id, role, message)
     
     def analyze_user_requirements(
         self,
@@ -166,7 +179,7 @@ class PhysicsGuidedDeveloperOrchestrator:
         Returns:
             Analysis with missing variables and suggestions
         """
-        print("\n=== ANALYZING USER REQUIREMENTS ===")
+        self._log("system", "=== ANALYZING USER REQUIREMENTS ===")
         
         # Extract app type
         if 'app_type' in requirements:
@@ -177,7 +190,7 @@ class PhysicsGuidedDeveloperOrchestrator:
         else:
             self.app_type = AppType.PYTHON_CONSOLE
         
-        print(f"Application Type: {self.app_type.value}")
+        self._log("system", f"Application Type: {self.app_type.value}")
         
         # Define required variables based on app type
         self._define_required_variables()
@@ -229,9 +242,9 @@ class PhysicsGuidedDeveloperOrchestrator:
             analysis['missing_variables'].append(var_info)
             analysis['suggestions'][var_name] = suggestions[:5] if suggestions else []
         
-        print(f"\nCompleteness: {analysis['completeness']*100:.1f}%")
-        print(f"Provided: {len(provided_vars)} variables")
-        print(f"Missing: {len(missing_vars)} variables")
+        self._log("system", f"Completeness: {analysis['completeness']*100:.1f}%")
+        self._log("system", f"Provided: {len(provided_vars)} variables")
+        self._log("system", f"Missing: {len(missing_vars)} variables")
         
         return analysis
     
@@ -353,7 +366,7 @@ class PhysicsGuidedDeveloperOrchestrator:
         - EM fields for component prioritization
         - Quantum superposition for parallel evaluation
         """
-        print("\n=== SUGGESTING ARCHITECTURE ===")
+        self._log("system", "=== SUGGESTING ARCHITECTURE ===")
         
         self.current_phase = DevelopmentPhase.ARCHITECTURE
         
@@ -388,9 +401,9 @@ class PhysicsGuidedDeveloperOrchestrator:
             'dependencies': self._extract_dependencies(components),
         }
         
-        print(f"\nGenerated {len(components)} components")
+        self._log("system", f"Generated {len(components)} components")
         if structure_analysis:
-            print(f"Fractal dimension: {structure_analysis.get('fractal_dimension', 0):.2f}")
+            self._log("system", f"Fractal dimension: {structure_analysis.get('fractal_dimension', 0):.2f}")
         
         return architecture
     
@@ -466,7 +479,21 @@ class PhysicsGuidedDeveloperOrchestrator:
         self,
         components: List[CodeComponent]
     ) -> Dict[str, Any]:
-        """Build hierarchical tree from components."""
+        """
+        Build hierarchical tree from components for fractal analysis.
+        
+        Args:
+            components: List of CodeComponent objects
+        
+        Returns:
+            Nested dictionary where keys are component names and values are
+            dictionaries of their dependencies. Example:
+            {
+                'main.py': {'config.py': {}, 'utils.py': {}},
+                'config.py': {},
+                'utils.py': {}
+            }
+        """
         tree = {}
         
         for comp in components:
@@ -529,7 +556,7 @@ class PhysicsGuidedDeveloperOrchestrator:
         
         component = self.components[component_id]
         
-        print(f"\n=== GENERATING CODE: {component.name} ===")
+        self._log("system", f"=== GENERATING CODE: {component.name} ===")
         
         # Use template based on component type
         if component.component_type == 'module' and component_id == 'main':
@@ -710,23 +737,52 @@ def test_main_imports():
             },
         }
     
-    def export_project(self, output_dir: str = '.') -> Dict[str, str]:
+    def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict[str, str]:
         """
         Export generated code to files.
         
+        Args:
+            output_dir: Directory to export files to
+            overwrite: If False, do not overwrite existing files (default: False)
+        
         Returns:
-            Dictionary mapping filenames to file paths
+            Dictionary mapping filenames to file paths (or error messages if failed)
         """
         import os
         
         exported_files = {}
         
+        # Ensure output_dir exists and is a directory
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+        except Exception as e:
+            raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
+        
+        if not os.path.isdir(output_dir):
+            raise ValueError(f"Output path '{output_dir}' is not a directory.")
+        
+        if not os.access(output_dir, os.W_OK):
+            raise PermissionError(f"Output directory '{output_dir}' is not writable.")
+        
         for comp in self.components.values():
             if comp.code:
                 filepath = os.path.join(output_dir, comp.name)
-                with open(filepath, 'w') as f:
-                    f.write(comp.code)
-                exported_files[comp.name] = filepath
+                
+                # Check if file exists and overwrite is False
+                if not overwrite and os.path.exists(filepath):
+                    exported_files[comp.name] = f"Skipped (file exists): {filepath}"
+                    self._log("system", f"Skipped {comp.name} (file exists)")
+                    continue
+                
+                try:
+                    with open(filepath, 'w') as f:
+                        f.write(comp.code)
+                    exported_files[comp.name] = filepath
+                    self._log("system", f"Exported {comp.name} to {filepath}")
+                except OSError as e:
+                    error_msg = f"Failed to write {filepath}: {e}"
+                    exported_files[comp.name] = error_msg
+                    self._log("system", error_msg)
         
         return exported_files
 

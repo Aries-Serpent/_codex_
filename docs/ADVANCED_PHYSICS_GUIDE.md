@@ -356,10 +356,23 @@ requirements['python_version'] = '3.10'
 # 6. Generate architecture (uses fractal analysis)
 architecture = orchestrator.suggest_architecture(requirements)
 
-# Physics-guided insights:
-# - Fractal dimension indicates structure complexity
-# - EM fields prioritize critical components
-# - Dependency analysis determines build order
+# Physics-guided insights: Accessing analysis results
+fractal_dim = architecture.get('structure_analysis', {}).get('fractal_dimension', 0)
+print(f"Fractal dimension: {fractal_dim:.3f}")
+
+# EM fields prioritize critical components
+sorted_components = sorted(
+    architecture['components'],
+    key=lambda c: c['priority'],
+    reverse=True
+)
+print("Top priority components:")
+for comp in sorted_components[:3]:
+    print(f"  Component: {comp['name']}, Priority: {comp['priority']:.2f}")
+
+# Dependency analysis determines build order
+build_order = architecture.get('recommended_order', [])
+print("Recommended build order:", build_order)
 
 # 7. Generate code
 main_code = orchestrator.generate_code('main', requirements)

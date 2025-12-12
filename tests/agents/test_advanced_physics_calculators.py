@@ -12,7 +12,6 @@ Tests all emerging physics paradigms:
 
 import pytest
 import numpy as np
-import math
 from agents.advanced_physics_calculators import (
     ChaoticAttractor,
     ChaoticNeuralNetwork,
@@ -82,7 +81,7 @@ class TestChaoticNeuralNetwork:
         assert len(cnn.neurons) == 10
         assert cnn.coupling_strength == 0.1
     
-    def test_test_parameter_generation(self):
+    def test_parameter_generation(self):
         """Test chaotic test parameter generation."""
         cnn = ChaoticNeuralNetwork(num_neurons=3)
         
@@ -97,6 +96,16 @@ class TestChaoticNeuralNetwork:
             assert 0.0 <= params[0] <= 10.0
             assert 0.0 <= params[1] <= 1.0
             assert -5.0 <= params[2] <= 5.0
+    
+    def test_parameter_generation_zero_tests(self):
+        """Test generating zero test cases returns empty list."""
+        cnn = ChaoticNeuralNetwork(num_neurons=3)
+        
+        param_ranges = [(0.0, 10.0)]
+        test_cases = cnn.generate_test_parameters(param_ranges, num_tests=0)
+        
+        assert len(test_cases) == 0
+        assert isinstance(test_cases, list)
 
 
 # =============================================================================
@@ -202,6 +211,29 @@ class TestFluidFlowScheduler:
         
         assert success, "Should successfully inject flow"
         assert scheduler.channels[channel_id].current_flow == 50.0
+    
+    def test_flow_injection_nonexistent_channel(self):
+        """Test flow injection into non-existent channel."""
+        scheduler = FluidFlowScheduler(num_channels=3)
+        
+        success = scheduler.inject_flow('nonexistent_channel', 50.0)
+        
+        assert not success, "Should fail for non-existent channel"
+    
+    def test_flow_injection_exceeds_capacity(self):
+        """Test flow injection that exceeds capacity."""
+        scheduler = FluidFlowScheduler(num_channels=1)
+        
+        channel_id = list(scheduler.channels.keys())[0]
+        scheduler.channels[channel_id].capacity = 100.0
+        
+        # Fill to near capacity
+        success1 = scheduler.inject_flow(channel_id, 90.0)
+        assert success1
+        
+        # Try to exceed capacity
+        success2 = scheduler.inject_flow(channel_id, 20.0)
+        assert not success2, "Should not exceed capacity"
 
 
 # =============================================================================

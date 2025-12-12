@@ -28,7 +28,7 @@ def demo_chaos_theory():
     try:
         from agents.advanced_physics_calculators import ChaoticNeuralNetwork
     except ImportError:
-        print("⚠ Chaos theory module not available (requires numpy)")
+        print("⚠ Chaos theory module not available. Install with: pip install numpy")
         return
     
     # Create chaotic neural network
@@ -74,7 +74,7 @@ def demo_fractal_geometry():
     try:
         from agents.advanced_physics_calculators import FractalAnalyzer
     except ImportError:
-        print("⚠ Fractal geometry module not available (requires numpy)")
+        print("⚠ Fractal geometry module not available. Install with: pip install numpy")
         return
     
     # Create fractal analyzer
@@ -150,7 +150,7 @@ def demo_fluid_dynamics():
     try:
         from agents.advanced_physics_calculators import FluidFlowScheduler
     except ImportError:
-        print("⚠ Fluid dynamics module not available (requires numpy)")
+        print("⚠ Fluid dynamics module not available. Install with: pip install numpy")
         return
     
     # Create scheduler with multiple channels
@@ -201,7 +201,7 @@ def demo_electromagnetic_fields():
     try:
         from agents.advanced_physics_calculators import EMFieldRouter
     except ImportError:
-        print("⚠ EM field module not available (requires numpy)")
+        print("⚠ EM field module not available. Install with: pip install numpy")
         return
     
     # Create EM field router
@@ -251,7 +251,7 @@ def demo_wave_propagation():
     try:
         from agents.advanced_physics_calculators import WavePropagator
     except ImportError:
-        print("⚠ Wave propagation module not available (requires numpy)")
+        print("⚠ Wave propagation module not available. Install with: pip install numpy")
         return
     
     # Create wave propagator
@@ -304,7 +304,7 @@ def demo_relativistic_effects():
     try:
         from agents.advanced_physics_calculators import RelativityScheduler
     except ImportError:
-        print("⚠ Relativity module not available (requires numpy)")
+        print("⚠ Relativity module not available. Install with: pip install numpy")
         return
     
     # Create scheduler with communication speed limit
@@ -385,7 +385,7 @@ def demo_unified_orchestration():
     try:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
     except ImportError:
-        print("⚠ Advanced physics not available (requires numpy)")
+        print("⚠ Advanced physics not available. Install with: pip install numpy")
         return
     
     # Create unified orchestrator

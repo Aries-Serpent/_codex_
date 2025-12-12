@@ -11,29 +11,29 @@ This module provides integration points between:
 from typing import Any, Dict, List, Optional
 
 try:
-    from agents.advanced_physics_calculators import (
-        AdvancedPhysicsOrchestrator,
-        ChaoticNeuralNetwork,
-        EMFieldRouter,
-        FluidFlowScheduler,
-        FractalAnalyzer,
-        RelativityScheduler,
-        WavePropagator,
-    )
+    from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
     ADVANCED_PHYSICS_AVAILABLE = True
 except ImportError:
     ADVANCED_PHYSICS_AVAILABLE = False
 
 try:
     from agents.physics_orchestrator import (
-        ActionPath,
-        ActionType,
         DecisionState,
         PhysicsInspiredOrchestrator,
     )
     PHYSICS_ORCHESTRATOR_AVAILABLE = True
 except ImportError:
     PHYSICS_ORCHESTRATOR_AVAILABLE = False
+
+# Import logging utilities
+try:
+    from codex.logging.session_logger import log_message
+    LOGGING_AVAILABLE = True
+except ImportError:
+    LOGGING_AVAILABLE = False
+    # Fallback to print if logging not available
+    def log_message(session_id, role, message, **kwargs):  # type: ignore
+        print(f"[{role}] {message}")
 
 
 class HybridPhysicsOrchestrator:
@@ -51,9 +51,10 @@ class HybridPhysicsOrchestrator:
     - Relativistic effects (latency awareness)
     """
     
-    def __init__(self):
+    def __init__(self, session_id: Optional[str] = None):
         self.classical = None
         self.advanced = None
+        self.session_id = session_id or "hybrid_physics"
         
         if PHYSICS_ORCHESTRATOR_AVAILABLE:
             self.classical = PhysicsInspiredOrchestrator()
@@ -62,6 +63,10 @@ class HybridPhysicsOrchestrator:
             self.advanced = AdvancedPhysicsOrchestrator()
         
         self.decision_history: List[Dict[str, Any]] = []
+    
+    def _log(self, role: str, message: str) -> None:
+        """Log a message using session logger."""
+        log_message(self.session_id, role, message)
     
     def orchestrate_with_all_paradigms(
         self,
@@ -200,9 +205,9 @@ class HybridPhysicsOrchestrator:
     
     def route_agent_with_em_field(
         self,
-        start_position: 'np.ndarray',
+        start_position: Any,  # np.ndarray when numpy available
         hotspots: List[tuple]
-    ) -> List['np.ndarray']:
+    ) -> List[Any]:  # List[np.ndarray] when numpy available
         """
         Route agent using electromagnetic field.
         
@@ -293,22 +298,25 @@ class HybridPhysicsOrchestrator:
         return capabilities
 
 
-def create_hybrid_orchestrator() -> HybridPhysicsOrchestrator:
+def create_hybrid_orchestrator(session_id: Optional[str] = None) -> HybridPhysicsOrchestrator:
     """
     Factory function to create hybrid orchestrator.
+    
+    Args:
+        session_id: Optional session ID for logging
     
     Returns:
         Configured HybridPhysicsOrchestrator instance
     """
-    orchestrator = HybridPhysicsOrchestrator()
+    orchestrator = HybridPhysicsOrchestrator(session_id=session_id)
     
     # Log capabilities
     capabilities = orchestrator.get_capabilities()
     active_paradigms = [k for k, v in capabilities.items() if v]
     
-    print(f"Hybrid Physics Orchestrator initialized with {len(active_paradigms)} paradigms:")
+    orchestrator._log("system", f"Hybrid Physics Orchestrator initialized with {len(active_paradigms)} paradigms")
     for paradigm in active_paradigms:
-        print(f"  ✓ {paradigm}")
+        orchestrator._log("system", f"  ✓ {paradigm}")
     
     return orchestrator
 
