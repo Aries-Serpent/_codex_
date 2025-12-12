@@ -487,3 +487,346 @@ if __name__ == '__main__':
     
     # Save decision history
     orchestrator.save_decision_history(Path('decision_history.json'))
+
+
+# =============================================================================
+# IMPORT MIGRATION ORCHESTRATOR
+# =============================================================================
+
+@dataclass
+class ImportMigration:
+    """Represents an import migration task with physics properties."""
+    
+    file_path: str
+    old_import: str
+    new_import: str
+    line_number: int
+    
+    # Auto-calculated physics properties
+    potential_energy: float = field(default=0.0, init=False)  # Effort required
+    momentum: float = field(default=0.0, init=False)          # Alignment with patterns
+    friction: float = field(default=0.0, init=False)          # Resistance/risk
+    impact: float = field(default=0.0, init=False)            # Importance of file
+    confidence: float = field(default=0.0, init=False)        # Straightforwardness
+    risk: float = field(default=0.0, init=False)              # Could break things
+    urgency: float = field(default=0.0, init=False)           # Actively causing issues
+    optimization_score: float = field(default=0.0, init=False)
+    
+    def calculate_properties(self) -> None:
+        """Calculate physics properties based on migration characteristics."""
+        # Determine file importance (impact)
+        if '/cli/' in self.file_path:
+            self.impact = 0.9  # CLI files are high impact
+        elif '/tests/' in self.file_path:
+            self.impact = 0.7  # Tests are medium-high impact
+        elif '/agents/' in self.file_path:
+            self.impact = 0.85  # Agent files are high impact
+        else:
+            self.impact = 0.6
+        
+        # Determine effort (potential energy)
+        # Simple imports need less energy
+        self.potential_energy = 10.0 if 'import' in self.old_import else 20.0
+        
+        # Determine momentum (alignment with codebase patterns)
+        # Migrating to src.* aligns with canonical pattern
+        self.momentum = 0.9
+        
+        # Determine friction (obstacles)
+        # Files in tests/training/ are related to training module - lower friction
+        if '/tests/training/' in self.file_path or '/cli/' in self.file_path:
+            self.friction = 0.1  # Training-related files have low friction
+        else:
+            self.friction = 0.3
+        
+        # Determine confidence
+        self.confidence = 0.95  # Import changes are straightforward
+        
+        # Determine risk
+        if 'functional_training' in self.old_import:
+            self.risk = 0.3  # Critical module
+        elif 'checkpoint' in self.old_import:
+            self.risk = 0.25
+        else:
+            self.risk = 0.1
+        
+        # Determine urgency (deprecation warnings active)
+        self.urgency = 0.8  # All deprecated imports are urgent
+        
+        # Calculate optimization score
+        # Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Friction))
+        numerator = self.impact * self.confidence * self.momentum * (1 + self.urgency * 0.5)
+        denominator = max(self.potential_energy * (1 + self.risk) * (1 + self.friction), 0.01)
+        self.optimization_score = numerator / denominator
+
+
+class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
+    """
+    Specialized orchestrator for migrating deprecated imports to canonical paths.
+    
+    Uses physics-inspired logic to:
+    1. ASSESS: Identify all deprecated imports
+    2. DELIBERATE: Calculate physics properties for each migration
+    3. OPTIMIZE: Rank migrations by optimization score
+    4. ACT: Execute migrations in optimal order
+    """
+    
+    def __init__(self, config_path: Optional[Path] = None):
+        super().__init__(config_path)
+        self.migrations: List[ImportMigration] = []
+        self.completed_migrations: List[ImportMigration] = []
+        self.migration_map = {
+            # Training module migrations
+            'from training.': 'from src.training.',
+            'from models.': 'from src.models.',
+            'import training.': 'import src.training.',
+            'import models.': 'import src.models.',
+        }
+    
+    def assess_imports(self, repo_root: Path) -> Dict[str, any]:
+        """
+        ASSESS PHASE: Identify all deprecated imports in the codebase.
+        
+        Returns assessment metrics and populates self.migrations.
+        """
+        print(f"\n{'='*60}")
+        print(f"IMPORT MIGRATION - ASSESSMENT PHASE")
+        print(f"{'='*60}")
+        
+        self.migrations = []
+        files_scanned = 0
+        deprecated_found = 0
+        
+        # Scan Python files for deprecated imports
+        for py_file in repo_root.rglob("*.py"):
+            # Skip __pycache__ and other non-source directories
+            if '__pycache__' in str(py_file):
+                continue
+            if '.git' in str(py_file):
+                continue
+                
+            files_scanned += 1
+            
+            try:
+                content = py_file.read_text(encoding='utf-8')
+                lines = content.split('\n')
+                
+                for line_num, line in enumerate(lines, 1):
+                    for old_pattern, new_pattern in self.migration_map.items():
+                        if old_pattern in line and new_pattern not in line:
+                            # Don't migrate files in the training/ or models/ compat layers
+                            rel_path = str(py_file.relative_to(repo_root))
+                            if rel_path.startswith('training/') or rel_path.startswith('models/'):
+                                continue
+                            if 'src/training/' in rel_path or 'src/models/' in rel_path:
+                                continue
+                                
+                            migration = ImportMigration(
+                                file_path=str(py_file),
+                                old_import=line.strip(),
+                                new_import=line.replace(old_pattern, new_pattern).strip(),
+                                line_number=line_num,
+                            )
+                            migration.calculate_properties()
+                            self.migrations.append(migration)
+                            deprecated_found += 1
+            except Exception as e:
+                print(f"  Warning: Could not read {py_file}: {e}")
+        
+        assessment = {
+            'files_scanned': files_scanned,
+            'deprecated_found': deprecated_found,
+            'unique_files': len(set(m.file_path for m in self.migrations)),
+            'total_energy_required': sum(m.potential_energy for m in self.migrations),
+            'average_risk': sum(m.risk for m in self.migrations) / max(len(self.migrations), 1),
+        }
+        
+        print(f"\nAssessment Results:")
+        print(f"  Files scanned: {assessment['files_scanned']}")
+        print(f"  Deprecated imports found: {assessment['deprecated_found']}")
+        print(f"  Unique files affected: {assessment['unique_files']}")
+        print(f"  Total energy required: {assessment['total_energy_required']:.1f}")
+        print(f"  Average risk: {assessment['average_risk']:.3f}")
+        
+        return assessment
+    
+    def deliberate_migrations(self) -> List[ImportMigration]:
+        """
+        DELIBERATE PHASE: Rank migrations by optimization score.
+        """
+        print(f"\n{'='*60}")
+        print(f"IMPORT MIGRATION - DELIBERATION PHASE")
+        print(f"{'='*60}")
+        
+        # Sort by optimization score (highest first)
+        ranked = sorted(
+            self.migrations,
+            key=lambda m: m.optimization_score,
+            reverse=True
+        )
+        
+        print(f"\nTop migrations by optimization score:")
+        for i, m in enumerate(ranked[:10]):
+            print(f"  {i+1}. Score: {m.optimization_score:.4f} | "
+                  f"Impact: {m.impact:.2f} | "
+                  f"Risk: {m.risk:.2f}")
+            print(f"      File: {Path(m.file_path).name}:{m.line_number}")
+            print(f"      {m.old_import[:60]}...")
+        
+        return ranked
+    
+    def optimize_migration_plan(
+        self,
+        ranked_migrations: List[ImportMigration],
+        energy_budget: float = 500.0
+    ) -> List[ImportMigration]:
+        """
+        OPTIMIZE PHASE: Select migrations within energy budget.
+        """
+        print(f"\n{'='*60}")
+        print(f"IMPORT MIGRATION - OPTIMIZATION PHASE")
+        print(f"{'='*60}")
+        print(f"Energy budget: {energy_budget:.1f}")
+        
+        selected = []
+        total_energy = 0.0
+        
+        for migration in ranked_migrations:
+            if total_energy + migration.potential_energy <= energy_budget:
+                selected.append(migration)
+                total_energy += migration.potential_energy
+            else:
+                break
+        
+        print(f"\nSelected {len(selected)} migrations within budget")
+        print(f"Total energy: {total_energy:.1f}")
+        print(f"Budget remaining: {energy_budget - total_energy:.1f}")
+        
+        return selected
+    
+    def execute_migrations(
+        self,
+        migrations: List[ImportMigration],
+        dry_run: bool = True
+    ) -> Dict[str, any]:
+        """
+        ACTION PHASE: Execute the selected migrations.
+        """
+        print(f"\n{'='*60}")
+        print(f"IMPORT MIGRATION - ACTION PHASE")
+        print(f"{'='*60}")
+        print(f"Mode: {'DRY RUN' if dry_run else 'EXECUTE'}")
+        
+        results = {
+            'migrations_attempted': 0,
+            'migrations_successful': 0,
+            'migrations_failed': 0,
+            'files_modified': set(),
+            'errors': [],
+        }
+        
+        # Group migrations by file for efficiency
+        by_file: Dict[str, List[ImportMigration]] = {}
+        for m in migrations:
+            by_file.setdefault(m.file_path, []).append(m)
+        
+        for file_path, file_migrations in by_file.items():
+            try:
+                content = Path(file_path).read_text(encoding='utf-8')
+                original_content = content
+                
+                # Apply migrations (in reverse line order to preserve line numbers)
+                for m in sorted(file_migrations, key=lambda x: x.line_number, reverse=True):
+                    results['migrations_attempted'] += 1
+                    
+                    # Find and replace the import
+                    lines = content.split('\n')
+                    if m.line_number - 1 < len(lines):
+                        old_line = lines[m.line_number - 1]
+                        for old_pattern, new_pattern in self.migration_map.items():
+                            if old_pattern in old_line:
+                                new_line = old_line.replace(old_pattern, new_pattern)
+                                lines[m.line_number - 1] = new_line
+                                results['migrations_successful'] += 1
+                                self.completed_migrations.append(m)
+                                
+                                if not dry_run:
+                                    print(f"  ✓ {Path(file_path).name}:{m.line_number}")
+                                    print(f"    - {old_line.strip()}")
+                                    print(f"    + {new_line.strip()}")
+                                break
+                    
+                    content = '\n'.join(lines)
+                
+                # Write back if changed and not dry run
+                if content != original_content:
+                    results['files_modified'].add(file_path)
+                    if not dry_run:
+                        Path(file_path).write_text(content, encoding='utf-8')
+                        
+            except Exception as e:
+                results['migrations_failed'] += len(file_migrations)
+                results['errors'].append(f"{file_path}: {str(e)}")
+        
+        results['files_modified'] = len(results['files_modified'])
+        
+        print(f"\nMigration Results:")
+        print(f"  Attempted: {results['migrations_attempted']}")
+        print(f"  Successful: {results['migrations_successful']}")
+        print(f"  Failed: {results['migrations_failed']}")
+        print(f"  Files modified: {results['files_modified']}")
+        
+        if results['errors']:
+            print(f"\nErrors:")
+            for error in results['errors']:
+                print(f"  - {error}")
+        
+        return results
+    
+    def run_migration_cycle(
+        self,
+        repo_root: Path,
+        energy_budget: float = 500.0,
+        dry_run: bool = True
+    ) -> Dict[str, any]:
+        """
+        Complete migration cycle using physics-inspired orchestration.
+        
+        Process:
+        1. ASSESS: Identify deprecated imports
+        2. DELIBERATE: Calculate optimization scores
+        3. OPTIMIZE: Select migrations within budget
+        4. ACT: Execute migrations
+        """
+        print(f"\n{'#'*60}")
+        print(f"# IMPORT MIGRATION ORCHESTRATION CYCLE")
+        print(f"{'#'*60}")
+        
+        # Phase 1: ASSESS
+        assessment = self.assess_imports(repo_root)
+        
+        if not self.migrations:
+            print("\n✅ No deprecated imports found. Codebase is clean!")
+            return {'status': 'clean', 'assessment': assessment}
+        
+        # Phase 2: DELIBERATE
+        ranked = self.deliberate_migrations()
+        
+        # Phase 3: OPTIMIZE
+        selected = self.optimize_migration_plan(ranked, energy_budget)
+        
+        # Phase 4: ACT
+        results = self.execute_migrations(selected, dry_run=dry_run)
+        
+        # Final summary
+        print(f"\n{'#'*60}")
+        print(f"# MIGRATION CYCLE COMPLETE")
+        print(f"{'#'*60}")
+        
+        return {
+            'status': 'completed',
+            'assessment': assessment,
+            'migrations_executed': results,
+            'energy_spent': sum(m.potential_energy for m in self.completed_migrations),
+            'momentum_gained': len(self.completed_migrations) * 0.1,
+        }
