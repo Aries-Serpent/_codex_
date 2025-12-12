@@ -2,7 +2,6 @@ import importlib
 import os
 import sys
 import types
-from pathlib import Path
 
 import pytest
 
@@ -38,9 +37,19 @@ def stub_optional_dependencies(monkeypatch, tmp_path):
     # MLflow stub with a spec so util.find_spec succeeds
     mlflow = types.ModuleType("mlflow")
     mlflow.__spec__ = importlib.machinery.ModuleSpec("mlflow", loader=None)  # type: ignore[attr-defined]
-    mlflow.set_tracking_uri = lambda uri: os.environ.setdefault("MLFLOW_TRACKING_URI", uri)
-    mlflow.set_experiment = lambda name: os.environ.setdefault("MLFLOW_EXPERIMENT", name)
-    mlflow.start_run = lambda **kwargs: types.SimpleNamespace(**kwargs)
+
+    def _set_tracking_uri(uri):
+        os.environ.setdefault("MLFLOW_TRACKING_URI", uri)
+
+    def _set_experiment(name):
+        os.environ.setdefault("MLFLOW_EXPERIMENT", name)
+
+    def _start_run(**kwargs):
+        return types.SimpleNamespace(**kwargs)
+
+    mlflow.set_tracking_uri = _set_tracking_uri
+    mlflow.set_experiment = _set_experiment
+    mlflow.start_run = _start_run
     mlflow.end_run = lambda: None
     mlflow.log_params = lambda params: None
     mlflow.log_param = lambda k, v: None

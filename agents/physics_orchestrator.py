@@ -1409,7 +1409,7 @@ class SwarmIntelligence:
         self.initialize_swarm(bounds)
         
         for iteration in range(max_iterations):
-            result = self.update_swarm(fitness_function, bounds)
+            self.update_swarm(fitness_function, bounds)
             
             # Check for convergence (all particles near global best)
             if self.global_best_position:
