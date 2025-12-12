@@ -8,7 +8,7 @@ from typing import Any, Dict
 
 try:
     import numpy as np  # type: ignore
-except Exception:  # pragma: no cover - numpy is optional
+except ImportError:  # pragma: no cover - numpy is optional
     np = None  # type: ignore
 
 
@@ -17,7 +17,7 @@ def _set_numpy_seed(seed: int) -> None:
         return
     try:
         np.random.seed(seed)
-    except Exception:
+    except (AttributeError, RuntimeError):
         # numpy can raise when compiled without RNG support
         pass
 
@@ -30,7 +30,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
         torch.manual_seed(seed)
         try:
             torch.cuda.manual_seed_all(seed)
-        except Exception:
+        except (RuntimeError, AttributeError):
             # CUDA might be unavailable; ignore in that case
             pass
 
@@ -56,9 +56,9 @@ def _set_torch_seed(seed: int, deterministic: bool) -> Dict[str, Any]:
                 cudnn.benchmark = False
                 cudnn.deterministic = True
                 torch_info["cudnn"] = {"benchmark": False, "deterministic": True}
-            except Exception:
+            except (ImportError, AttributeError):
                 torch_info["cudnn"] = "unavailable"
-    except Exception:
+    except ImportError:
         torch_info = {"available": False}
 
     return torch_info

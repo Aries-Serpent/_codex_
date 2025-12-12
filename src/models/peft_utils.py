@@ -15,12 +15,12 @@ def summarize_peft(model: Any) -> Dict[str, Any]:
 
     try:
         from peft.utils import get_model_status  # type: ignore
-    except Exception:
+    except (ImportError, ModuleNotFoundError):
         return {"peft": "unavailable"}
 
     try:
         status = get_model_status(model)  # type: ignore
-    except Exception:
+    except (ValueError, AttributeError, TypeError):
         return {"peft": "not_wrapped"}
 
     return {

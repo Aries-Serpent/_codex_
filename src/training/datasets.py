@@ -13,7 +13,7 @@ import torch
 
 try:  # optional dependency
     from datasets import Dataset  # type: ignore
-except Exception:  # pragma: no cover - optional dep missing
+except ImportError:  # pragma: no cover - optional dep missing
     Dataset = None  # type: ignore[assignment]
 
 
