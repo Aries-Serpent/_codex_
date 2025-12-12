@@ -1,0 +1,331 @@
+"""
+Unit tests for Advanced Physics Calculators.
+
+Tests all emerging physics paradigms:
+1. Chaos Theory
+2. Fractal Geometry
+3. Fluid Dynamics
+4. Electromagnetic Fields
+5. Wave Propagation
+6. Relativistic Effects
+"""
+
+import pytest
+import numpy as np
+import math
+from agents.advanced_physics_calculators import (
+    ChaoticAttractor,
+    ChaoticNeuralNetwork,
+    FractalAnalyzer,
+    FluidChannel,
+    FluidFlowScheduler,
+    EMFieldRouter,
+    WavePropagator,
+    RelativityScheduler,
+    AdvancedPhysicsOrchestrator,
+)
+
+
+# =============================================================================
+# CHAOS THEORY TESTS
+# =============================================================================
+
+
+class TestChaoticAttractor:
+    """Test chaotic attractor implementations."""
+    
+    def test_logistic_map_iteration(self):
+        """Test logistic map produces values in [0,1]."""
+        attractor = ChaoticAttractor(attractor_type="logistic")
+        
+        for _ in range(100):
+            state = attractor.iterate(1)
+            assert 0.0 <= state[0] <= 1.0, "Logistic map should stay in [0,1]"
+    
+    def test_logistic_map_chaos(self):
+        """Test logistic map exhibits chaos for r=3.9."""
+        attractor = ChaoticAttractor(
+            attractor_type="logistic",
+            parameters={"r": 3.9}
+        )
+        
+        # Iterate and collect states
+        states = []
+        for _ in range(1000):
+            state = attractor.iterate(1)
+            states.append(state[0])
+        
+        # Chaos: no fixed point, should have high variance
+        variance = np.var(states[100:])  # Skip transient
+        assert variance > 0.01, "Chaotic system should have high variance"
+    
+    def test_lyapunov_exponent_positive(self):
+        """Test Lyapunov exponent is positive for chaotic regime."""
+        attractor = ChaoticAttractor(
+            attractor_type="logistic",
+            parameters={"r": 3.9}
+        )
+        
+        lyapunov = attractor.lyapunov_exponent(iterations=500)
+        
+        # For r=3.9, Lyapunov exponent should be positive (chaotic)
+        assert lyapunov > 0, "Lyapunov exponent should be positive for chaos"
+
+
+class TestChaoticNeuralNetwork:
+    """Test chaotic neural network functionality."""
+    
+    def test_network_initialization(self):
+        """Test network initializes correctly."""
+        cnn = ChaoticNeuralNetwork(num_neurons=10)
+        
+        assert len(cnn.neurons) == 10
+        assert cnn.coupling_strength == 0.1
+    
+    def test_test_parameter_generation(self):
+        """Test chaotic test parameter generation."""
+        cnn = ChaoticNeuralNetwork(num_neurons=3)
+        
+        param_ranges = [(0.0, 10.0), (0.0, 1.0), (-5.0, 5.0)]
+        test_cases = cnn.generate_test_parameters(param_ranges, num_tests=50)
+        
+        assert len(test_cases) == 50
+        
+        # Check parameters are within ranges
+        for params in test_cases:
+            assert len(params) == 3
+            assert 0.0 <= params[0] <= 10.0
+            assert 0.0 <= params[1] <= 1.0
+            assert -5.0 <= params[2] <= 5.0
+
+
+# =============================================================================
+# FRACTAL GEOMETRY TESTS
+# =============================================================================
+
+
+class TestFractalAnalyzer:
+    """Test fractal analysis functionality."""
+    
+    def test_box_counting_dimension_line(self):
+        """Test box counting for a line (dimension ≈ 1)."""
+        analyzer = FractalAnalyzer()
+        
+        # Create a line
+        points = np.array([[i/100, i/100] for i in range(100)])
+        
+        dimension = analyzer.box_counting_dimension(points)
+        
+        # Line should have dimension close to 1
+        assert 0.8 <= dimension <= 1.3, f"Line dimension should be ~1, got {dimension}"
+    
+    def test_code_tree_analysis(self):
+        """Test code tree fractal analysis."""
+        analyzer = FractalAnalyzer()
+        
+        # Create a simple tree structure
+        tree = {
+            'module': {
+                'class1': {
+                    'method1': {},
+                    'method2': {}
+                },
+                'class2': {
+                    'method3': {},
+                    'method4': {}
+                }
+            }
+        }
+        
+        analysis = analyzer.analyze_code_tree(tree)
+        
+        assert 'depth' in analysis
+        assert 'nodes' in analysis
+        assert 'fractal_dimension' in analysis
+        assert analysis['nodes'] > 1
+
+
+# =============================================================================
+# FLUID DYNAMICS TESTS
+# =============================================================================
+
+
+class TestFluidChannel:
+    """Test fluid channel physics."""
+    
+    def test_reynolds_number_laminar(self):
+        """Test Reynolds number calculation for laminar flow."""
+        channel = FluidChannel(
+            channel_id="test",
+            current_flow=10.0,
+            viscosity=0.5
+        )
+        
+        re = channel.reynolds_number()
+        
+        # Low flow / high viscosity = low Re (laminar)
+        assert re < 2300, "Should be laminar flow"
+        assert not channel.is_turbulent()
+    
+    def test_reynolds_number_turbulent(self):
+        """Test Reynolds number calculation for turbulent flow."""
+        channel = FluidChannel(
+            channel_id="test",
+            current_flow=100.0,
+            viscosity=0.01
+        )
+        
+        re = channel.reynolds_number()
+        
+        # High flow / low viscosity = high Re (turbulent)
+        assert re > 2300, "Should be turbulent flow"
+        assert channel.is_turbulent()
+
+
+class TestFluidFlowScheduler:
+    """Test fluid flow scheduler."""
+    
+    def test_scheduler_initialization(self):
+        """Test scheduler initializes with channels."""
+        scheduler = FluidFlowScheduler(num_channels=5)
+        
+        assert len(scheduler.channels) == 5
+        assert all(isinstance(ch, FluidChannel) for ch in scheduler.channels.values())
+    
+    def test_flow_injection(self):
+        """Test flow injection into channels."""
+        scheduler = FluidFlowScheduler(num_channels=3)
+        
+        channel_id = list(scheduler.channels.keys())[0]
+        
+        success = scheduler.inject_flow(channel_id, 50.0)
+        
+        assert success, "Should successfully inject flow"
+        assert scheduler.channels[channel_id].current_flow == 50.0
+
+
+# =============================================================================
+# ELECTROMAGNETIC FIELD TESTS
+# =============================================================================
+
+
+class TestEMFieldRouter:
+    """Test electromagnetic field router."""
+    
+    def test_field_initialization(self):
+        """Test EM field router initializes."""
+        router = EMFieldRouter(grid_resolution=10)
+        
+        assert router.grid_resolution == 10
+        assert len(router.charges) == 0
+    
+    def test_charge_addition(self):
+        """Test adding charges updates field."""
+        router = EMFieldRouter(grid_resolution=10)
+        
+        router.add_charge(np.array([0.5, 0.5]), charge=1.0)
+        
+        assert len(router.charges) == 1
+        assert router.potential_field is not None
+
+
+# =============================================================================
+# WAVE PROPAGATION TESTS
+# =============================================================================
+
+
+class TestWavePropagator:
+    """Test wave propagation system."""
+    
+    def test_wave_initialization(self):
+        """Test wave propagator initializes."""
+        wave = WavePropagator(grid_size=30)
+        
+        assert wave.grid_size == 30
+        assert wave.field.shape == (30, 30)
+    
+    def test_source_addition(self):
+        """Test adding wave sources."""
+        wave = WavePropagator(grid_size=30)
+        
+        wave.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
+        
+        assert len(wave.sources) == 1
+
+
+# =============================================================================
+# RELATIVISTIC EFFECTS TESTS
+# =============================================================================
+
+
+class TestRelativityScheduler:
+    """Test relativistic scheduler."""
+    
+    def test_scheduler_initialization(self):
+        """Test scheduler initializes."""
+        scheduler = RelativityScheduler(speed_of_light=100.0)
+        
+        assert scheduler.c == 100.0
+        assert len(scheduler.agents) == 0
+    
+    def test_agent_addition(self):
+        """Test adding agents."""
+        scheduler = RelativityScheduler()
+        
+        scheduler.add_agent(
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0])
+        )
+        
+        assert "agent1" in scheduler.agents
+        assert scheduler.agents["agent1"]['clock_offset'] == 0.0
+    
+    def test_lorentz_factor(self):
+        """Test Lorentz factor calculation."""
+        scheduler = RelativityScheduler(speed_of_light=100.0)
+        
+        # Low velocity: γ ≈ 1
+        gamma_low = scheduler.lorentz_factor(np.array([10.0, 0.0]))
+        assert 1.0 <= gamma_low <= 1.1, "Low velocity should give γ ≈ 1"
+        
+        # High velocity: γ > 1
+        gamma_high = scheduler.lorentz_factor(np.array([90.0, 0.0]))
+        assert gamma_high > 2.0, "High velocity should give γ >> 1"
+
+
+# =============================================================================
+# INTEGRATION TESTS
+# =============================================================================
+
+
+class TestAdvancedPhysicsOrchestrator:
+    """Test unified orchestrator."""
+    
+    def test_orchestrator_initialization(self):
+        """Test orchestrator initializes all components."""
+        orchestrator = AdvancedPhysicsOrchestrator()
+        
+        assert orchestrator.chaos is not None
+        assert orchestrator.fractal is not None
+        assert orchestrator.fluid is not None
+        assert orchestrator.em_field is not None
+        assert orchestrator.wave is not None
+        assert orchestrator.relativity is not None
+    
+    def test_status_reporting(self):
+        """Test status reporting."""
+        orchestrator = AdvancedPhysicsOrchestrator()
+        
+        status = orchestrator.get_status()
+        
+        assert status['chaos'] == 'active'
+        assert status['fractal'] == 'active'
+        assert status['fluid'] == 'active'
+        assert status['em_field'] == 'active'
+        assert status['wave'] == 'active'
+        assert status['relativity'] == 'active'
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
