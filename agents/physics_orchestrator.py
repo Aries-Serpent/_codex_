@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class ActionType(Enum):
@@ -583,7 +583,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
             'import models.': 'import src.models.',
         }
     
-    def assess_imports(self, repo_root: Path) -> Dict[str, any]:
+    def assess_imports(self, repo_root: Path) -> Dict[str, Any]:
         """
         ASSESS PHASE: Identify all deprecated imports in the codebase.
         
@@ -630,7 +630,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                             migration.calculate_properties()
                             self.migrations.append(migration)
                             deprecated_found += 1
-            except Exception as e:
+            except (OSError, UnicodeDecodeError) as e:
                 print(f"  Warning: Could not read {py_file}: {e}")
         
         assessment = {
@@ -708,7 +708,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         self,
         migrations: List[ImportMigration],
         dry_run: bool = True
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         ACTION PHASE: Execute the selected migrations.
         """
@@ -717,7 +717,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         print(f"{'='*60}")
         print(f"Mode: {'DRY RUN' if dry_run else 'EXECUTE'}")
         
-        results = {
+        results: Dict[str, Any] = {
             'migrations_attempted': 0,
             'migrations_successful': 0,
             'migrations_failed': 0,
@@ -735,12 +735,14 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                 content = Path(file_path).read_text(encoding='utf-8')
                 original_content = content
                 
+                # Split lines once at the start for efficiency
+                lines = content.split('\n')
+                
                 # Apply migrations (in reverse line order to preserve line numbers)
                 for m in sorted(file_migrations, key=lambda x: x.line_number, reverse=True):
                     results['migrations_attempted'] += 1
                     
-                    # Find and replace the import
-                    lines = content.split('\n')
+                    # Find and replace the import in the lines list
                     if m.line_number - 1 < len(lines):
                         old_line = lines[m.line_number - 1]
                         for old_pattern, new_pattern in self.migration_map.items():
@@ -755,8 +757,9 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                                     print(f"    - {old_line.strip()}")
                                     print(f"    + {new_line.strip()}")
                                 break
-                    
-                    content = '\n'.join(lines)
+                
+                # Join lines once after all modifications
+                content = '\n'.join(lines)
                 
                 # Write back if changed and not dry run
                 if content != original_content:
@@ -764,7 +767,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
                     if not dry_run:
                         Path(file_path).write_text(content, encoding='utf-8')
                         
-            except Exception as e:
+            except (OSError, UnicodeDecodeError) as e:
                 results['migrations_failed'] += len(file_migrations)
                 results['errors'].append(f"{file_path}: {str(e)}")
         
@@ -788,7 +791,7 @@ class ImportMigrationOrchestrator(PhysicsInspiredOrchestrator):
         repo_root: Path,
         energy_budget: float = 500.0,
         dry_run: bool = True
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Complete migration cycle using physics-inspired orchestration.
         
