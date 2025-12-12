@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from defusedxml.ElementTree import Element, SubElement, tostring
+try:
+    from defusedxml.ElementTree import Element, SubElement, tostring
+except ImportError:
+    from xml.etree.ElementTree import Element, SubElement, tostring
 
 from pydantic import AliasChoices, BaseModel, Field
 
