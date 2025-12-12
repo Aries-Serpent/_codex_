@@ -55,7 +55,7 @@ except Exception:  # pragma: no cover - fallback
 
     def deterministic_shuffle(seq: Iterable[Any], seed: int) -> list[Any]:
         items = list(seq)
-        rnd = random.Random(seed)
+        rnd = random.Random(seed)  # nosec B311 - deterministic shuffle fallback
         rnd.shuffle(items)
         return items
 

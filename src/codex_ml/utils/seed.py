@@ -25,7 +25,7 @@ def deterministic_shuffle(seq: Sequence[T], seed: int) -> list[T]:
     """
 
     items: MutableSequence[T] = list(seq)
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 - deterministic utility shuffle
     rng.shuffle(items)
     return list(items)
 

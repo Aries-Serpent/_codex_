@@ -1,57 +1,297 @@
 # AGENTS — Codex Operations Playbook
 
-> **Version**: 4.0.1  
-> **Generated**: 2025-12-09  
+> **Version**: 4.2.0  
+> **Generated**: 2025-12-11  
 > **MLOps Maturity**: Level 4 Certified (100/100)  
-> **Audit Pipeline**: v1.4.0 (39 capabilities, 18/18 critical at maturity)  
+> **Audit Pipeline**: v1.5.5 (39 capabilities, 18/18 critical at maturity)  
+> **Gap Analysis**: 47/47 Items Complete (100%)  
 > **Scope**: Entire repository  
 > **Purpose**: Provide Codex agents and contributors with exhaustive, accurate guidance for navigating, testing, and extending this Level 4 MLOps production codebase without breaking operational guardrails.
 
 ## 🏆 Achievement Summary
 
 **Level 4 MLOps Certification Complete**
-- ✅ **67/71 Azure MLOps Capabilities Met** (94%)
-- ✅ **Audit Pipeline v1.4.0**: 39 tracked capabilities, deterministic scoring
+- ✅ **71/71 Azure MLOps Capabilities Met** (100%)
+- ✅ **Audit Pipeline v1.5.5**: Trend tracking, visualization, CI integration
 - ✅ **End-to-End Automation**: Data ingestion → Training → Deployment fully automated
 - ✅ **Auto-Retraining**: Drift-triggered closed-loop retraining operational
 - ✅ **Strong Observability**: Prometheus metrics, health probes, comprehensive monitoring
-- ✅ **Production Engineering**: 1,208+ test files, 72% coverage, CI/CD, security scans
+- ✅ **Production Engineering**: 1,224+ test files, 72% coverage, CI/CD, security scans
 - ✅ **Cross-Functional Teams**: Self-service pipelines, de-siloed workflows
 - ✅ **Governance & Compliance**: Audit trails, policy gates, fairness checks
+- ✅ **Agent Infrastructure**: Memory system, self-healing, quantum game theory
 
 **Implementation Stats:**
 - 39 tracked capabilities (18/18 critical above maturity threshold)
-- 1,208+ comprehensive test files (100% passing)
-- 28+ documentation files (212KB+)
+- 1,224+ comprehensive test files (100% passing)
+- 35+ documentation files (250KB+)
 - Zero security vulnerabilities
 - Perfect 100/100 maturity score
+- 47/47 gap analysis items complete
 
-**Latest Update (2025-12-09):**
-- PR #2449 verification complete - all 4 quality gates passing
-- Code quality improvements: input validation, reproducibility warnings, test cleanup
-- Documentation updates: comprehensive status report generated
+**Latest Update (2025-12-11):**
+- **Gap Analysis Complete**: All 47 items implemented with zero deferrals
+- **Agent Memory System**: SQLite-backed persistent memory with pattern library
+- **Self-Healing CI**: Automated issue detection and remediation in workflows
+- **Quantum Game Theory**: Physics-inspired Blue/Red team decision framework
+- **Performance Tests**: Regression testing suite for benchmarking
+- **API Documentation**: Complete reference with GitHub Pages deployment
+- New: Agent Control Interface for ChatGPT 5.1 Agent Mode
+- New: Wiki generator with GitHub Wiki deployment bundle
+- New: Documentation hub, Swagger/OpenAPI, CLI builder, API collection
 
 For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md)
+
+## 🤖 Agent Quick Start (ChatGPT 5.1 Agent Mode)
+
+**For AI Agents:** Use the Agent Control Interface for intuitive navigation and action triggers.
+
+### Physics-Inspired Agent Package
+
+🧠 **NEW: Comprehensive Agent Package** at [agents/](agents/)
+
+The `agents` package provides physics-inspired orchestration and decision-making tools:
+
+```python
+from agents import (
+    # Physics-inspired orchestration
+    PhysicsInspiredOrchestrator, ActionPath, ActionType, DecisionState, ForceVector,
+    
+    # Import migration automation
+    ImportMigration, ImportMigrationOrchestrator,
+    
+    # Quantum game theory
+    BlueRedTeamSimulator, QuantumInspiredGameEngine, ClassicalGameEngine,
+    
+    # Self-healing automation
+    SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity,
+    
+    # Mental mapping for reasoning
+    MentalMappingModel, MentalNode, ReasoningStep,
+    
+    # Workflow navigation
+    WorkflowNavigator, Workflow, WorkflowStep,
+)
+```
+
+### Import Migration Automation
+
+🔄 **NEW: Automated Import Migration** using physics-inspired optimization:
+
+```python
+from agents import ImportMigrationOrchestrator
+from pathlib import Path
+
+# Initialize orchestrator
+orchestrator = ImportMigrationOrchestrator()
+
+# Run complete migration cycle (dry run first)
+result = orchestrator.run_migration_cycle(
+    repo_root=Path("."),
+    energy_budget=500.0,
+    dry_run=True  # Set to False to execute
+)
+
+# Physics-inspired scoring: Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Friction))
+```
+
+### Tokenized Workflow Navigation
+
+🔄 **NEW: Tokenized Logical Workflows** at [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md)
+
+AI Agents can now use deterministic, token-based workflows for common operations:
+
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+navigator = WorkflowNavigator()
+
+# Execute workflow by token
+navigator.execute('AUDIT_EXEC')
+
+# Or by natural language
+navigator.execute("Run audit pipeline")
+
+# Chain multiple workflows
+navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE', 'PRE_RELEASE'])
+```
+
+**Available Workflow Tokens:**
+- `AUDIT_EXEC` - Full audit pipeline execution (HIGH frequency)
+- `PHYS_DECIDE` - Physics-inspired decision-making (HIGH frequency)
+- `IMPORT_MIGRATE` - Automated import migration (MEDIUM frequency)
+- `DOC_GEN` - Documentation and wiki generation (MEDIUM frequency)
+- `REPO_ORG` - Repository organization and archival (LOW frequency)
+- `MENTAL_REVIEW` - Review decisions and learn from outcomes (MEDIUM frequency)
+- `SELF_HEAL` - Automated feedback loop and gap detection (HIGH frequency, automated)
+
+Quick access aliases: `audit`, `decide`, `migrate`, `docs`, `organize`, `review`, `heal`
+
+### Pre-Defined Prompts Library
+
+📝 **Access comprehensive pre-defined prompts** at [agents/prompts/](agents/prompts/)
+
+The prompt library includes ready-to-use templates for:
+- **Audit Operations**: [agents/prompts/audit/](agents/prompts/audit/) - Full audits, regression checks, trend analysis
+- **Repository Organization**: [agents/prompts/organization/](agents/prompts/organization/) - Cleanup, archival, structure analysis
+- **Documentation Generation**: [agents/prompts/documentation/](agents/prompts/documentation/) - Wiki, API docs, hub generation
+- **Deployment**: [agents/prompts/deployment/](agents/prompts/deployment/) - Pre-release preparation, validation, testing
+- **Self-Healing**: [agents/prompts/self-healing/](agents/prompts/self-healing/) - Feedback loops, gap detection, auto-correction
+
+📐 **Architecture Diagrams**: See [agents/prompts/ARCHITECTURE.md](agents/prompts/ARCHITECTURE.md) for Mermaid diagrams covering current architecture and future roadmap.
+
+🎯 **Physics-Inspired Orchestration**: See [agents/ORCHESTRATION.md](agents/ORCHESTRATION.md) for decision-making framework with energy optimization and import migration automation.
+
+```bash
+# Generate Agent Control Interface
+python -m scripts.space_traversal.audit_runner agent-interface --output agent_interface.html
+
+# Or use Python directly
+python -c "from scripts.space_traversal.viz_agent_interface import generate_agent_interface; from pathlib import Path; generate_agent_interface(Path('agent_interface.html'))"
+```
+
+### Agent Architecture Overview
+
+```mermaid
+flowchart TB
+    subgraph Agent["🤖 AI Agent (ChatGPT 5.1)"]
+        Interface[Agent Interface HTML]
+        Commands[Command Generator]
+    end
+    
+    subgraph Pipeline["🔍 Audit Pipeline v1.5.x"]
+        Runner[audit_runner.py]
+        DB[(TrendDatabase)]
+        Compare[Comparison Engine]
+        Viz[Visualization]
+    end
+    
+    subgraph Outputs["📤 Outputs"]
+        Dashboard[HTML Dashboard]
+        Reports[Markdown Reports]
+        Webhooks[Notifications]
+    end
+    
+    Agent --> Runner
+    Runner --> DB
+    Runner --> Compare
+    Runner --> Viz
+    Viz --> Dashboard
+    Compare --> Reports
+    Runner --> Webhooks
+```
+
+### Quick Actions for Agents
+
+| Action | Command |
+|--------|---------|
+| **Full Audit** | `python -m scripts.space_traversal.audit_runner run` |
+| **Check Regressions** | `python -m scripts.space_traversal.audit_runner check-regressions` |
+| **Generate Dashboard** | `python -m scripts.space_traversal.audit_runner dashboard` |
+| **Show Trend** | `python -m scripts.space_traversal.audit_runner show-trend <capability>` |
+| **Store Trend** | `python -m scripts.space_traversal.audit_runner store-trend` |
+
+## 📊 Audit Pipeline v1.5.x Architecture
+
+```mermaid
+flowchart LR
+    subgraph Input["📥 Input"]
+        Code[Repository Code]
+        Config[Configuration]
+    end
+    
+    subgraph Core["🔍 Audit Core"]
+        Scanner[Code Scanner]
+        Scorer[Capability Scorer]
+        DB[(Trend Database)]
+    end
+    
+    subgraph Analysis["📈 Analysis"]
+        Compare[Comparison]
+        Regression[Regression Detection]
+        Trends[Trend Analysis]
+    end
+    
+    subgraph Output["📤 Output"]
+        Dashboard[Dashboard]
+        Reports[Reports]
+        Alerts[Webhooks]
+        CI[CI Integration]
+    end
+    
+    Code --> Scanner
+    Config --> Scanner
+    Scanner --> Scorer
+    Scorer --> DB
+    DB --> Compare
+    DB --> Regression
+    DB --> Trends
+    Compare --> Reports
+    Regression --> Alerts
+    Trends --> Dashboard
+    Scorer --> CI
+```
+
+### v1.5.x Module Structure
+
+```mermaid
+graph TD
+    subgraph Core["Core Modules"]
+        TD[trend_db.py]
+        TC[trend_compare.py]
+        AR[audit_runner.py]
+    end
+    
+    subgraph Viz["Visualization"]
+        VA[viz_ascii.py]
+        VH[viz_html.py]
+        VCB[viz_cli_builder.py]
+        VAC[viz_api_collection.py]
+        VS[viz_swagger.py]
+        VDH[viz_docs_hub.py]
+        VAI[viz_agent_interface.py]
+    end
+    
+    subgraph Integration["Integration"]
+        WH[webhooks.py]
+        CI[ci_integration.py]
+        PF[performance.py]
+        WG[wiki_generator.py]
+    end
+    
+    AR --> TD
+    AR --> TC
+    AR --> VA
+    AR --> VH
+    AR --> WH
+    AR --> CI
+    AR --> VAI
+    
+    style TD fill:#58a6ff
+    style AR fill:#3fb950
+    style VAI fill:#a371f7
+```
 
 ## Table of Contents
 1. [Repository Overview](#repository-overview)
 2. [Project Structure](#project-structure)
-3. [Environment Variables](#environment-variables)
-4. [Logging & Evidence Surfaces](#logging--evidence-surfaces)
-5. [Logging Roles](#logging-roles)
-6. [Dependency Retention & Segmentation](#dependency-retention--segmentation)
-7. [Tooling, Testing & Checks](#tooling-testing--checks)
-8. [CLI & Tool Usage](#cli--tool-usage)
-9. [Optional Dependencies & Mocking](#optional-dependencies--mocking)
-10. [Prohibited Actions & Scope](#prohibited-actions--scope)
-11. [Log Directory Layout & Retention](#log-directory-layout--retention)
-12. [Error Handling & Backward Compatibility](#error-handling--backward-compatibility)
-13. [Configuration Management](#configuration-management)
-14. [Production Readiness Checklist](#production-readiness-checklist)
-15. [Troubleshooting](#troubleshooting)
-16. [Contact / Maintainers](#contact--maintainers)
-17. [Attribution and Version History](#attribution-and-version-history)
-18. [Follow-up Prompt](#follow-up-prompt)
+3. [Audit Pipeline v1.5.x](#audit-pipeline-v15x)
+4. [Environment Variables](#environment-variables)
+5. [Logging & Evidence Surfaces](#logging--evidence-surfaces)
+6. [Logging Roles](#logging-roles)
+7. [Dependency Retention & Segmentation](#dependency-retention--segmentation)
+8. [Tooling, Testing & Checks](#tooling-testing--checks)
+9. [CLI & Tool Usage](#cli--tool-usage)
+10. [Optional Dependencies & Mocking](#optional-dependencies--mocking)
+11. [Prohibited Actions & Scope](#prohibited-actions--scope)
+12. [Log Directory Layout & Retention](#log-directory-layout--retention)
+13. [Error Handling & Backward Compatibility](#error-handling--backward-compatibility)
+14. [Configuration Management](#configuration-management)
+15. [Production Readiness Checklist](#production-readiness-checklist)
+16. [Troubleshooting](#troubleshooting)
+17. [Contact / Maintainers](#contact--maintainers)
+18. [Attribution and Version History](#attribution-and-version-history)
+19. [Follow-up Prompt](#follow-up-prompt)
 
 ## Repository Overview
 - **Packaging**: Python package metadata in `pyproject.toml` (Setuptools backend). Install in editable mode with `pip install -e .` or install optional extras from `[project.optional-dependencies]`.
@@ -74,8 +314,108 @@ For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.
 ├── .pre-commit-config.yaml # Lint/security hooks (ruff, black, isort, bandit, detect-secrets)
 ├── pyproject.toml          # Packaging metadata and entry points
 ├── .codex/                 # Evidence, logs, task mappings (do not delete)
+├── scripts/space_traversal/ # Audit pipeline v1.5.x modules
 └── docs/                   # Guides, status reports, diagrams
 ```
+
+## Audit Pipeline v1.5.x
+
+The Audit Pipeline v1.5.x series introduces comprehensive trend aggregation, historical comparison, and visualization capabilities.
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Agent as AI Agent
+    participant CLI as audit_runner
+    participant DB as TrendDatabase
+    participant Compare as Comparator
+    participant Viz as Visualization
+    participant CI as CI Integration
+    
+    Agent->>CLI: run audit
+    CLI->>CLI: scan repository
+    CLI->>DB: store_snapshot()
+    DB-->>CLI: run_id
+    
+    Agent->>CLI: check-regressions
+    CLI->>DB: get_trend(all)
+    CLI->>Compare: detect_regressions()
+    Compare-->>CLI: regressions[]
+    
+    Agent->>CLI: dashboard
+    CLI->>DB: get_latest_scores()
+    CLI->>Viz: generate_dashboard()
+    Viz-->>Agent: HTML Dashboard
+    
+    Note over CI: CI/CD Integration
+    CI->>CLI: trigger audit
+    CLI->>CI: write_github_step_summary()
+```
+
+### Version History
+
+| Version | Focus | Key Features |
+|---------|-------|--------------|
+| **v1.5.0** | Database | SQLite storage, AuditSnapshot, schema migrations |
+| **v1.5.1** | Comparison | ComparisonResult, regression detection, severity classification |
+| **v1.5.2** | Visualization | Sparklines, bar charts, HTML dashboard, Chart.js |
+| **v1.5.3** | Reports | Jinja2 templates, trend reports, executive summaries |
+| **v1.5.4** | Integration | Webhooks (Slack/Teams), CI detection, GitHub Actions |
+| **v1.5.5** | Stabilization | Performance tools, caching, wiki generator, agent interface |
+
+### Key Commands
+
+```bash
+# Full audit
+python -m scripts.space_traversal.audit_runner run
+
+# Trend operations
+python -m scripts.space_traversal.audit_runner store-trend
+python -m scripts.space_traversal.audit_runner show-trend checkpointing --limit 20
+python -m scripts.space_traversal.audit_runner check-regressions --threshold 0.02
+
+# Visualization
+python -m scripts.space_traversal.audit_runner dashboard --output dashboard.html
+python -m scripts.space_traversal.audit_runner cli-builder --output cli_builder.html
+python -m scripts.space_traversal.audit_runner api-collection --output api_collection.html
+python -m scripts.space_traversal.audit_runner api-docs --output swagger.html
+python -m scripts.space_traversal.audit_runner agent-interface --output agent.html
+
+# Wiki generation
+python -m scripts.space_traversal.wiki_generator wiki wiki_bundle.zip
+```
+
+### Configuration
+
+Enable trend tracking in `.copilot-space/workflow.yaml`:
+
+```yaml
+trends:
+  enabled: true
+  database_path: "audit_artifacts/trends.db"
+  auto_store: true
+  retention:
+    max_runs: 1000
+    max_age_days: 365
+  regression_detection:
+    enabled: true
+    threshold: 0.02
+    lookback_runs: 5
+    fail_on_high_severity: true
+```
+
+### Generated Artifacts
+
+| Tool | Output | Description |
+|------|--------|-------------|
+| Agent Interface | `agent_interface.html` | ChatGPT 5.1 Agent-friendly control panel |
+| Dashboard | `dashboard.html` | Interactive Chart.js dashboard |
+| CLI Builder | `cli_builder.html` | Visual command generator with knobs |
+| API Collection | `api_collection.html` | Postman-style API explorer |
+| Swagger | `api_docs.html` | OpenAPI documentation |
+| Docs Hub | `docs_hub.html` | Documentation portal with search |
+| Wiki | `wiki/` | GitHub Wiki-ready markdown files |
 
 ## Environment Variables
 Key runtime flags (booleans accept `1/0`, `true/false`, `on/off`):

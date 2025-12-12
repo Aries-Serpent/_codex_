@@ -241,6 +241,7 @@ codex-status-audit = "cli.status_audit:main"
 codex_addons = "codex_addons"
 codex_digest = "codex_digest"
 codex_utils = "codex_utils"
+codex_regression = "codex_regression"
 configs = "configs"
 interfaces = "interfaces"
 tokenization = "src/tokenization"
@@ -248,6 +249,7 @@ tools = "tools"
 training = "src/training"
 examples = "examples"
 cli = "cli"
+
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
@@ -264,9 +266,27 @@ include = [
   "examples*",
   "security*",
   "tools*",
-  "configs*",
+  "tools.*",
 ]
-exclude = ["tests*", "torch_stub*", ".stubs*"]
+exclude = [
+  "tests*",
+  "torch_stub*",
+  ".stubs*",
+  "*__pycache__*",
+  "configs*",
+  "build*",
+  "dist*",
+  "*.tests",
+  "*.tests.*",
+  "tests.*",
+  "tests",
+  "*.__pycache__",
+  "*.pycache",
+  "*.__pycache__.*",
+  "__pycache__",
+]
+namespaces = true
+
 [tool.setuptools.package-data]
 # Ensure runtime resources remain available in installed wheels
 codex_ml = [

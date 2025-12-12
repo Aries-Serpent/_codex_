@@ -928,9 +928,8 @@ def run_hf_trainer(
         and dtype in {"fp32", "fp16", "bf16"}
         and getattr(torch.backends, "cudnn", None) is not None
     ):
-        assert (
-            torch.backends.cudnn.deterministic
-        ), "cuDNN must be deterministic; call set_reproducible()"
+        if not torch.backends.cudnn.deterministic:
+            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
     except Exception as exc:  # pragma: no cover - logging best effort

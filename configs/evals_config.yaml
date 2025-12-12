@@ -1,0 +1,16 @@
+suites:
+  regression:
+    path: evals/suites/regression_suite.json
+    required: true
+  infra:
+    path: evals/suites/domain_specific/infra_evals.json
+    required: false
+  code:
+    path: evals/suites/domain_specific/code_evals.json
+    required: false
+
+runner:
+  max_concurrency: 4
+  fail_fast: true
+  default_timeout_seconds: 120
+  store_results_dir: artifacts/evals

@@ -59,7 +59,7 @@ def _resolve_device(value: Any) -> Any:
         return value
     if isinstance(value, str):
         token = value.strip().lower()
-        if token == "auto":
+        if token == "auto":  # nosec B105 - device keyword, not a credential
             token = "cuda" if torch.cuda.is_available() else "cpu"
         return torch.device(token)
     return value

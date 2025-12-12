@@ -217,8 +217,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         tok.save(str(tokenizer_path))
     else:
         tokenizer = Tokenizer(
-            models.BPE(unk_token="[UNK]")
-        )  # nosec B106 - conventional token string
+            models.BPE(unk_token="[UNK]")  # nosec B106 - conventional token string
+        )
         tokenizer.normalizer = normalizers.NFKC()
         tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel()
         trainer = trainers.BpeTrainer(

@@ -1,0 +1,13 @@
+answer: |
+  <draft_or_revised_answer>
+claims:
+  - id: C1
+    text: "<claim text>"
+    state: UNKNOWN # or INFERRED or VERIFIED
+    evidence:
+      - doc://path#L1-L10
+      - tool:get_repo_branches
+verification_questions:
+  - "<question to test a claim>"
+notes: |
+  Summarize conflicts, residual unknowns, and next actions.

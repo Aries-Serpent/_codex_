@@ -22,7 +22,11 @@ def _missing_modules(modules: Iterable[str]) -> list[str]:
 
     missing: list[str] = []
     for name in modules:
-        if importlib.util.find_spec(name) is None:
+        try:
+            available = importlib.util.find_spec(name) is not None
+        except (ImportError, ValueError):
+            available = False
+        if not available:
             missing.append(name)
     return missing
 

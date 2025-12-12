@@ -70,7 +70,7 @@ if _deterministic_shuffle is None:
     def deterministic_shuffle(seq: Sequence[T], seed: int) -> list[T]:
         """Deterministic shuffle fallback (seeded RNG)."""
         items = list(seq)
-        rng = random.Random(seed)
+        rng = random.Random(seed)  # nosec B311 - deterministic fallback shuffle
         rng.shuffle(items)
         return items
 

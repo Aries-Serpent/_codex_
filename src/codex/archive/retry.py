@@ -31,7 +31,7 @@ class RetryConfig:
     )
 
     def create_rng(self) -> random.Random:
-        return random.Random(self.seed)  # noqa: S311 - deterministic non-crypto RNG
+        return random.Random(self.seed)  # nosec B311 - deterministic non-crypto RNG
 
 
 def calculate_backoff(

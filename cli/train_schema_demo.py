@@ -7,8 +7,8 @@ from hydra.core.global_hydra import GlobalHydra
 
 from configs.schemas import AppCfg, register_schema
 from omegaconf import OmegaConf
-from training.offline_wandb import force_offline
-from training.seed_utils import set_all_seeds
+from src.training.offline_wandb import force_offline
+from src.training.seed_utils import set_all_seeds
 
 # Register the schema once at import time so ``hydra.main`` can resolve it.
 register_schema(name="app_schema")

@@ -26,7 +26,7 @@ def _split_rows(
     if seed is not None:
         import random
 
-        rng = random.Random(seed)
+        rng = random.Random(seed)  # nosec B311 - deterministic data split
         rows = rows.copy()
         rng.shuffle(rows)
 

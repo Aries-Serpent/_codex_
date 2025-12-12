@@ -26,7 +26,8 @@ def _load_loader_attr(module: str, attr: str) -> Any:
         raise ImportError(f"Unable to load dataset loader module '{module}' from {base_path}")
     module_obj = importlib.util.module_from_spec(spec)
     loader = spec.loader
-    assert loader is not None  # for type-checkers
+    if loader is None:
+        raise ImportError(f"Dataset loader module '{module}' could not be initialized")
     loader.exec_module(module_obj)
     sys.modules[module_name] = module_obj
     return getattr(module_obj, attr)

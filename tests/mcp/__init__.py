@@ -1,1 +1,1 @@
-"""MCP tests package."""
+"""MCP smoke tests."""

@@ -11,7 +11,14 @@ from typing import Any, Dict
 import pytest
 
 
-@pytest.mark.skipif(importlib.util.find_spec("hydra") is None, reason="hydra-core not installed")
+def _has_hydra() -> bool:
+    try:
+        return importlib.util.find_spec("hydra") is not None
+    except ValueError:
+        return False
+
+
+@pytest.mark.skipif(not _has_hydra(), reason="hydra-core not installed")
 def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
     """Ensure the Hydra CLI composes configs and passes overrides to training."""
 

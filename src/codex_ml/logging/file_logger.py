@@ -71,12 +71,14 @@ class FileLogger:
             self._append_csv(payload)
 
     def _append_ndjson(self, row: Mapping[str, object]) -> None:
-        assert self._ndjson_path is not None
+        if self._ndjson_path is None:
+            raise RuntimeError("NDJSON path not configured for FileLogger")
         with self._ndjson_path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     def _append_csv(self, row: Mapping[str, object]) -> None:
-        assert self._csv_path is not None
+        if self._csv_path is None:
+            raise RuntimeError("CSV path not configured for FileLogger")
         if self._csv_fieldnames is None:
             self._csv_fieldnames = list(_iter_fieldnames(row))
         else:

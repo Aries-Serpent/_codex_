@@ -47,11 +47,19 @@ jobs:
             --mode strict \
             --output audit_artifacts/conflicts.json
       
+      - name: Generate audit dashboard
+        id: dashboard
+        continue-on-error: true
+        run: |
+          python scripts/generate_audit_dashboard.py
+          echo "Dashboard generated successfully"
+      
       - name: Upload determinism artifacts
         uses: actions/upload-artifact@v4
         with:
           name: determinism-audit-${{ github.run_number }}
           path: |
+            index.html
             audit_artifacts/**
             audit_run_manifest.json
             reports/capability_matrix_*.md
@@ -74,6 +82,7 @@ jobs:
             **Audit**: ${{ steps.audit.outcome }}
             **Determinism**: ${{ steps.determinism.outcome }}
             **Conflicts**: ${{ steps.conflicts.outcome }}
+            **Dashboard**: ${{ steps.dashboard.outcome }}
             
             ### Conflict Detection (Strict Mode)
             - Duplicates found: ${conflicts.duplicates ? conflicts.duplicates.length : 0}
@@ -86,6 +95,7 @@ jobs:
             
             ### Artifacts
             - [Download audit artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - 📊 **View the interactive dashboard** by downloading the artifacts and opening \`index.html\`
             `;
             
             github.rest.issues.createComment({

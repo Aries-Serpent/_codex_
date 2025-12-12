@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import platform
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -22,13 +24,22 @@ DEFAULT_ENV_JSON = "environment.json"
 DEFAULT_ENV_NDJSON = "environment.ndjson"
 DEFAULT_PIP_FREEZE = "pip-freeze.txt"
 
+LOGGER = logging.getLogger(__name__)
+
 
 def _capture_command(args: Sequence[str]) -> str | None:
+    executable = args[0]
+    resolved = shutil.which(executable)
+    if resolved is None:
+        LOGGER.debug("Command %s not available on PATH", executable)
+        return None
+
     try:
         return subprocess.check_output(
-            list(args), text=True, stderr=subprocess.STDOUT, timeout=5
+            [resolved, *args[1:]], text=True, stderr=subprocess.STDOUT, timeout=5
         ).strip()
-    except Exception:
+    except Exception as exc:
+        LOGGER.debug("Failed to capture command %s: %s", args, exc)
         return None
 
 
@@ -58,20 +69,27 @@ def _yaml_dumps(data: Any) -> str:
 
     try:  # pragma: no cover - optional dependency
         import yaml
-    except Exception:
+    except Exception as exc:
+        LOGGER.debug("PyYAML unavailable; falling back to JSON: %s", exc)
         return json.dumps(data, indent=2, sort_keys=True)
     return yaml.safe_dump(data, sort_keys=False)
 
 
 def _git_commit() -> str | None:
+    git_bin = shutil.which("git")
+    if git_bin is None:
+        LOGGER.debug("git executable missing; skipping commit capture")
+        return None
+
     try:  # pragma: no cover - git may be unavailable
         root = Path(__file__).resolve()
         for parent in root.parents:
             if (parent / ".git").exists():
                 root = parent
                 break
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    except Exception:
+        return subprocess.check_output([git_bin, "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    except Exception as exc:
+        LOGGER.debug("Unable to capture git commit for provenance: %s", exc)
         return None
 
 
@@ -82,8 +100,8 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
         logical = os.cpu_count()
         if logical is not None:
             details["logical_cores"] = int(logical)
-    except Exception:
-        pass
+    except Exception as exc:
+        LOGGER.debug("Failed to read logical cpu count: %s", exc)
 
     try:
         import psutil
@@ -97,8 +115,8 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
                 details["max_frequency_mhz"] = round(float(freq.max), 3)
             if getattr(freq, "min", None):
                 details["min_frequency_mhz"] = round(float(freq.min), 3)
-    except Exception:
-        pass
+    except Exception as exc:
+        LOGGER.debug("Failed to collect psutil CPU metadata: %s", exc)
 
     brand = platform.processor()
     if brand:

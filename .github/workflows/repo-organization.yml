@@ -1,0 +1,322 @@
+name: Repository Organization & Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'analyze'
+        type: choice
+        options:
+          - analyze
+          - organize
+          - archive
+          - full-cleanup
+      dry_run:
+        description: 'Dry run (no changes)'
+        required: false
+        default: 'true'
+        type: boolean
+      archive_older_than_days:
+        description: 'Archive files older than N days'
+        required: false
+        default: '90'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  analyze-structure:
+    name: Analyze Repository Structure
+    runs-on: ubuntu-latest
+    outputs:
+      root_files: ${{ steps.analyze.outputs.root_files }}
+      orphan_files: ${{ steps.analyze.outputs.orphan_files }}
+      archive_candidates: ${{ steps.analyze.outputs.archive_candidates }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Analyze Repository Structure
+        id: analyze
+        run: |
+          # Count files in root
+          ROOT_FILES=$(find . -maxdepth 1 -type f ! -name '.*' | wc -l)
+          echo "root_files=$ROOT_FILES" >> $GITHUB_OUTPUT
+          
+          # Find orphan files (not referenced in code)
+          python << 'EOF'
+          import os
+          import re
+          from pathlib import Path
+          
+          # Files that should be in root
+          ALLOWED_ROOT = {
+              'README.md', 'LICENSE', 'AGENTS.md', 'CONTRIBUTING.md',
+              'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt',
+              'requirements-dev.txt', 'Makefile', 'Dockerfile', '.gitignore',
+              '.pre-commit-config.yaml', 'noxfile.py', 'conftest.py',
+              'CHANGELOG.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'
+          }
+          
+          # Find files in root that might need organization
+          root_files = [f for f in os.listdir('.') if os.path.isfile(f) and not f.startswith('.')]
+          misplaced = [f for f in root_files if f not in ALLOWED_ROOT]
+          
+          print(f"Root files: {len(root_files)}")
+          print(f"Potentially misplaced: {len(misplaced)}")
+          
+          # Write analysis
+          with open('organization_analysis.md', 'w') as f:
+              f.write("# Repository Organization Analysis\n\n")
+              f.write(f"## Root Directory Files ({len(root_files)} total)\n\n")
+              f.write("### Allowed Files\n")
+              for rf in sorted(root_files):
+                  status = "✅" if rf in ALLOWED_ROOT else "⚠️"
+                  f.write(f"- {status} `{rf}`\n")
+              
+              if misplaced:
+                  f.write("\n### Potentially Misplaced\n")
+                  for mf in sorted(misplaced):
+                      f.write(f"- `{mf}` → Consider moving to appropriate directory\n")
+              
+              f.write("\n## Suggested Directory Structure\n\n")
+              f.write("```\n")
+              f.write(".\n")
+              f.write("├── .github/          # GitHub configs, workflows, templates\n")
+              f.write("├── docs/             # Documentation\n")
+              f.write("├── scripts/          # Utility scripts\n")
+              f.write("├── src/              # Source code\n")
+              f.write("├── tests/            # Test files\n")
+              f.write("├── configs/          # Configuration files\n")
+              f.write("├── templates/        # Template files\n")
+              f.write("├── archive/          # Archived/deprecated files\n")
+              f.write("└── tools/            # Development tools\n")
+              f.write("```\n")
+          
+          with open('orphan_count.txt', 'w') as f:
+              f.write(str(len(misplaced)))
+          EOF
+          
+          echo "orphan_files=$(cat orphan_count.txt)" >> $GITHUB_OUTPUT
+
+      - name: Find Archive Candidates
+        id: archive
+        run: |
+          # Find files not modified in N days
+          DAYS="${{ inputs.archive_older_than_days || '90' }}"
+          find . -type f -mtime +$DAYS ! -path './.git/*' ! -path './node_modules/*' ! -path './__pycache__/*' > archive_candidates.txt 2>/dev/null || true
+          ARCHIVE_COUNT=$(wc -l < archive_candidates.txt)
+          echo "archive_candidates=$ARCHIVE_COUNT" >> $GITHUB_OUTPUT
+          
+          echo "### Archive Candidates (files older than $DAYS days)" >> organization_analysis.md
+          echo "" >> organization_analysis.md
+          head -50 archive_candidates.txt >> organization_analysis.md || echo "No candidates found" >> organization_analysis.md
+
+      - name: Upload Analysis Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: organization-analysis
+          path: |
+            organization_analysis.md
+            archive_candidates.txt
+          retention-days: 30
+
+      - name: Comment Analysis Summary
+        if: inputs.action == 'analyze'
+        run: |
+          echo "## 📁 Repository Organization Analysis"
+          echo ""
+          echo "- **Root files:** ${{ steps.analyze.outputs.root_files }}"
+          echo "- **Potentially misplaced:** ${{ steps.analyze.outputs.orphan_files }}"
+          echo "- **Archive candidates:** ${{ steps.archive.outputs.archive_candidates }}"
+          echo ""
+          echo "View full analysis in artifacts."
+
+  organize-repository:
+    name: Organize Repository Structure
+    runs-on: ubuntu-latest
+    needs: analyze-structure
+    if: inputs.action == 'organize' || inputs.action == 'full-cleanup'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Organization PR
+        if: inputs.dry_run != 'true'
+        run: |
+          git checkout -b repo-organization-$(date +%Y%m%d)
+          
+          # Create recommended directories if they don't exist
+          mkdir -p archive configs tools
+          
+          # Create .gitkeep files to preserve empty directories
+          touch archive/.gitkeep
+          touch configs/.gitkeep
+          touch tools/.gitkeep
+          
+          git add .
+          git commit -m "chore: Add recommended directory structure" || echo "No changes to commit"
+
+      - name: Generate Organization Guide
+        run: |
+          cat > ORGANIZATION_GUIDE.md << 'EOF'
+          # Repository Organization Guide
+          
+          ## Directory Structure
+          
+          | Directory | Purpose | Move Files Like |
+          |-----------|---------|-----------------|
+          | `archive/` | Deprecated files | Old configs, unused scripts |
+          | `configs/` | Configuration files | YAML, TOML, JSON configs |
+          | `tools/` | Development tools | Helper scripts, dev utilities |
+          | `docs/` | Documentation | Markdown guides, API docs |
+          | `scripts/` | Utility scripts | Build, deploy, audit scripts |
+          
+          ## Archival Process
+          
+          1. Identify files not modified in 90+ days
+          2. Review if still needed
+          3. Move to `archive/` with date prefix
+          4. Update any references
+          5. Create migration note in archive
+          
+          ## @copilot Organization Request
+          
+          To organize this repository, use:
+          
+          ```
+          @copilot Please organize this repository by:
+          1. Moving config files to configs/
+          2. Moving deprecated files to archive/
+          3. Updating import paths as needed
+          4. Creating index files for each directory
+          ```
+          EOF
+          
+          echo "✅ Organization guide created"
+
+      - name: Upload Guide
+        uses: actions/upload-artifact@v4
+        with:
+          name: organization-guide
+          path: ORGANIZATION_GUIDE.md
+
+  archive-old-files:
+    name: Archive Old Files
+    runs-on: ubuntu-latest
+    needs: analyze-structure
+    if: inputs.action == 'archive' || inputs.action == 'full-cleanup'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Analysis
+        uses: actions/download-artifact@v4
+        with:
+          name: organization-analysis
+
+      - name: Create Archive Branch
+        if: inputs.dry_run != 'true'
+        run: |
+          DATE=$(date +%Y%m%d)
+          BRANCH="archive/cleanup-$DATE"
+          git checkout -b $BRANCH
+          
+          mkdir -p archive/$DATE
+          
+          # Define critical files that should never be archived
+          # Can be overridden by creating .archive-protect in repo root
+          CRITICAL_FILES="README.md LICENSE pyproject.toml setup.py setup.cfg AGENTS.md SECURITY.md CHANGELOG.md requirements.txt requirements-dev.txt Makefile Dockerfile .gitignore conftest.py noxfile.py"
+          
+          # Read additional protected files from config if exists
+          if [ -f .archive-protect ]; then
+            CRITICAL_FILES="$CRITICAL_FILES $(cat .archive-protect | tr '\n' ' ')"
+          fi
+          
+          # Move archive candidates (only if file exists and is safe to move)
+          while IFS= read -r file; do
+            if [ -f "$file" ] && [ ! -z "$file" ]; then
+              # Extract filename
+              BASENAME=$(basename "$file")
+              
+              # Check if file is in critical list
+              IS_CRITICAL=false
+              for CRITICAL in $CRITICAL_FILES; do
+                if [ "$BASENAME" = "$CRITICAL" ]; then
+                  IS_CRITICAL=true
+                  break
+                fi
+              done
+              
+              if [ "$IS_CRITICAL" = "true" ]; then
+                echo "Skipping critical file: $file"
+              else
+                mkdir -p "archive/$DATE/$(dirname $file)"
+                mv "$file" "archive/$DATE/$file" 2>/dev/null || true
+                echo "Archived: $file"
+              fi
+            fi
+          done < archive_candidates.txt || true
+          
+          git add .
+          git commit -m "chore: Archive old files ($DATE)" || echo "No files to archive"
+
+      - name: Create Archive Summary
+        run: |
+          echo "## 📦 Archive Summary"
+          echo ""
+          echo "- **Candidates reviewed:** ${{ needs.analyze-structure.outputs.archive_candidates }}"
+          echo "- **Dry run:** ${{ inputs.dry_run }}"
+          echo "- **Archive age threshold:** ${{ inputs.archive_older_than_days }} days"
+
+  track-costs:
+    name: Track GitHub Actions Costs
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Calculate Estimated Cost
+        run: |
+          # GitHub Actions pricing:
+          # - Linux: $0.008/minute
+          # - macOS: $0.08/minute
+          # - Windows: $0.016/minute
+          
+          MINUTES=5  # Estimated run time
+          COST_PER_MIN=0.008
+          # Use Python for floating-point calculation (bc not available on all runners)
+          ESTIMATED_COST=$(python3 -c "print(round($MINUTES * $COST_PER_MIN, 4))")
+          
+          cat > cost_tracking.json << EOF
+          {
+            "workflow": "${{ github.workflow }}",
+            "run_id": "${{ github.run_id }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "runner": "ubuntu-latest",
+            "estimated_minutes": $MINUTES,
+            "cost_per_minute": $COST_PER_MIN,
+            "estimated_cost_usd": $ESTIMATED_COST,
+            "trigger": "${{ github.event_name }}",
+            "action": "${{ inputs.action || 'analyze' }}"
+          }
+          EOF
+          
+          echo "📊 Cost Tracking"
+          cat cost_tracking.json
+
+      - name: Upload Cost Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: cost-tracking
+          path: cost_tracking.json
+          retention-days: 365
