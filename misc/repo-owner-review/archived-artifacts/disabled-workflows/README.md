@@ -6,6 +6,8 @@
 
 ## Purpose
 
+This folder contains archived disabled workflows for external storage offloading. Archives are tracked in git and can be offloaded to external storage systems.
+
 This archive contains the contents of `.codex/disabled_workflows/` which was a duplicate location for disabled workflow files.
 
 ## Consolidation
@@ -15,6 +17,10 @@ As part of Phase 2 cleanup, disabled workflows have been consolidated to a singl
 **Canonical Location**: `.github/_workflows_disabled/`
 
 The `.codex/disabled_workflows/` directory has been removed.
+
+## Archive File
+
+- `codex_disabled_workflows_a0c1dfb.tar.gz` - Archived disabled workflows with commit SHA
 
 ## Archive Contents
 
@@ -27,6 +33,13 @@ The `.codex/disabled_workflows/` directory has been removed.
 | `nightly.yml.disabled` | Nightly build workflow |
 | `release-upload.yml` | Release upload workflow |
 | `vuln_scan.yml.disabled` | Vulnerability scanning workflow |
+
+## External Storage Offloading
+
+These archives can be offloaded to external storage:
+1. Archives are tracked in git (not ignored)
+2. External storage systems can pull from this location
+3. After offloading, archives may be removed from git with proper tracking
 
 ## Recovery
 

@@ -191,6 +191,12 @@ cypress/screenshots/
 *.tar.gz
 *.7z
 
+# Exception: Allow archives in repo-owner-review for external storage offloading
+!misc/repo-owner-review/archived-artifacts/**/*.tar.gz
+!misc/repo-owner-review/archived-artifacts/**/*.tar
+!misc/repo-owner-review/archived-artifacts/**/*.zip
+!misc/repo-owner-review/archived-backups/**/*.tar.gz
+
 # Data and runtime noise
 *.db
 *.log

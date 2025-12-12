@@ -4,6 +4,10 @@
 **Commit SHA**: a0c1dfb  
 **Archiver**: Copilot AI Assistant
 
+## Purpose
+
+This folder contains archived validation logs for external storage offloading. Archives are tracked in git and can be offloaded to external storage systems.
+
 ## Contents
 
 This archive contains old validation run logs that were archived as part of the Phase 2 codebase cleanup.
@@ -16,11 +20,16 @@ This archive contains old validation run logs that were archived as part of the 
 | `20250910T071257Z` | 2025-09-10 07:12:57 UTC | Old validation run |
 | `20250910T080054Z` | 2025-09-10 08:00:54 UTC | Old validation run |
 
+### Archive File
+
+- `validation_logs_20250910_old_a0c1dfb.tar.gz` - Archived validation logs with commit SHA
+
 ### Retention Policy
 
 - Last 5 validation runs are kept in `.codex/validation/`
 - Older runs are archived to `misc/repo-owner-review/archived-artifacts/validation-logs/`
 - Archives use `.tar.gz` format with commit SHA in filename
+- Archives are tracked in git for external storage offloading
 
 ### Recovery
 
@@ -33,6 +42,13 @@ tar -xzf validation_logs_20250910_old_a0c1dfb.tar.gz -C .codex/validation/
 # Verify extraction
 ls .codex/validation/
 ```
+
+### External Storage Offloading
+
+These archives can be offloaded to external storage:
+1. Archives are tracked in git (not ignored)
+2. External storage systems can pull from this location
+3. After offloading, archives may be removed from git with proper tracking
 
 ### Current Retention
 
