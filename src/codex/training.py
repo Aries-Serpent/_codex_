@@ -50,7 +50,6 @@ from codex_ml.utils.error_log import log_error
 from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.repro import record_dataset_checksums
 from codex_utils.repro import log_env_info
-from src.training.functional_training import TrainCfg, run_custom_trainer
 
 # Artifact hashing helpers (sidecar)
 try:

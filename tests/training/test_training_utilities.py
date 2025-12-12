@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
-import os
-import types
 import sys
 from types import SimpleNamespace
 
@@ -114,8 +111,6 @@ def test_legacy_api_text_helpers(tmp_path):
 
 def test_multi_node_orchestration_health(monkeypatch, stub_torch_module):
     """Coordinator health/aggregation works with stubbed distributed runtime."""
-
-    import sys
 
     sys.modules["torch"] = stub_torch_module
     sys.modules["torch.distributed"] = stub_torch_module.distributed

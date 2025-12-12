@@ -322,7 +322,6 @@ class FractalAnalyzer:
                 points = points.reshape(-1, 1)
             
             min_coords = np.min(points, axis=0)
-            max_coords = np.max(points, axis=0)
             
             # Hash points to grid cells
             grid_indices = ((points - min_coords) / box_size).astype(int)
