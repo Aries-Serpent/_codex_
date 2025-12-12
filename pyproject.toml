@@ -249,6 +249,7 @@ tools = "tools"
 training = "src/training"
 examples = "examples"
 cli = "cli"
+
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
@@ -283,8 +284,17 @@ exclude = [
   "tools.*.__pycache__",
   "build*",
   "dist*",
+  "*.tests",
+  "*.tests.*",
+  "tests.*",
+  "tests",
+  "*.__pycache__",
+  "*.pycache",
+  "*.__pycache__.*",
+  "__pycache__",
 ]
 namespaces = true
+
 [tool.setuptools.package-data]
 # Ensure runtime resources remain available in installed wheels
 codex_ml = [
