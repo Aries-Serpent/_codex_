@@ -45,6 +45,7 @@ class IssueType(Enum):
     PERFORMANCE_REGRESSION = "performance_regression"
     LINT_ERROR = "lint_error"
     TYPE_ERROR = "type_error"
+    SYNTAX_ERROR = "syntax_error"
     IMPORT_ERROR = "import_error"
     CONFIGURATION_ERROR = "configuration_error"
     RESOURCE_EXHAUSTION = "resource_exhaustion"

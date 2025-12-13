@@ -70,7 +70,6 @@ class TestPhase2_TimeEvolution:
         U_dagger_U = U.conj().T @ U
         assert np.allclose(U_dagger_U, np.eye(2))
 
-    @pytest.mark.skip(reason="IssueType enum value doesn't exist")
     def test_time_reversal_symmetry(self):
         """Test time reversal symmetry"""
         # For time-reversal invariant systems
@@ -86,7 +85,6 @@ class TestPhase2_SelfHealing:
     Tunnel into healing-dimension for diagnostics and remediation
     """
 
-    @pytest.mark.skip(reason="IssueType enum value doesn't exist")
     def test_self_healing_engine_initialization(self):
         """Test SelfHealingEngine initialization"""
         from agents.self_healing import SelfHealingEngine
@@ -94,7 +92,6 @@ class TestPhase2_SelfHealing:
         engine = SelfHealingEngine()
         assert engine is not None
 
-    @pytest.mark.skip(reason="IssueType enum value doesn't exist")
     def test_diagnose_no_issues(self):
         """Test diagnostics with no issues"""
         from agents.self_healing import SelfHealingEngine
@@ -104,7 +101,6 @@ class TestPhase2_SelfHealing:
         assert result is not None
         assert hasattr(result, 'issues')
 
-    @pytest.mark.skip(reason="IssueType enum value doesn't exist")
     def test_detect_issue_types(self):
         """Test different issue type detection"""
         from agents.self_healing import IssueType

@@ -216,7 +216,6 @@ class TestPhase2_MentalMapping_GraphDimension:
         )
         assert True  # Connection successful
 
-    @pytest.mark.skip(reason="Enum value doesn't exist")
     def test_enum_validations_node_type(self):
         """Test NodeType enum values (Eq #2)"""
         from agents.mental_mapping import NodeType
@@ -406,7 +405,6 @@ class TestPhase2_Properties_Getters:
     Property/getter coverage for evolution states
     """
 
-    @pytest.mark.skip(reason="Enum value doesn't exist")
     def test_force_vector_properties(self):
         """Test ForceVector property access"""
         from agents.physics_orchestrator import ForceVector

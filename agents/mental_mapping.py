@@ -33,6 +33,8 @@ class NodeType(Enum):
     OUTCOME = "outcome"
     REFLECTION = "reflection"
     LEARNING = "learning"
+    CONCEPT = "concept"
+    ENTITY = "entity"
 
 
 class EdgeType(Enum):
@@ -45,6 +47,7 @@ class EdgeType(Enum):
     DEPENDS_ON = "depends_on"
     REFINES = "refines"
     VALIDATES = "validates"
+    RELATED = "related"
 
 
 @dataclass

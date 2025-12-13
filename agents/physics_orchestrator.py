@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 class ActionType(Enum):
@@ -39,11 +39,14 @@ class ForceVector:
     """Represents a force influencing a decision"""
     name: str
     magnitude: float  # 0.0 to 1.0
-    direction: float  # angle in radians
+    direction: Union[float, List[float]]  # angle in radians or 3D vector
     priority: float = 1.0  # weight factor
     
     def get_components(self) -> Tuple[float, float]:
         """Get x, y components of force vector"""
+        if isinstance(self.direction, (list, tuple)):
+            # 3D vector - project to 2D
+            return self.magnitude * self.priority, 0.0
         x = self.magnitude * math.cos(self.direction) * self.priority
         y = self.magnitude * math.sin(self.direction) * self.priority
         return x, y
