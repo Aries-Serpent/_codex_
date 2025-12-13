@@ -49,7 +49,7 @@ class TestPhase2_AgentMemory:
             value = {"data": "test_value"}
             memory.store(key, value)
             retrieved = memory.retrieve(key)
-            assert retrieved is not None or retrieved is None
+            assert retrieved == value
 
     def test_memory_search(self):
         """Test searching memory"""
@@ -93,7 +93,9 @@ class TestPhase2_AgentMemory:
         if hasattr(memory, 'encode'):
             data = {"content": "important information"}
             encoded = memory.encode(data)
-            assert encoded is not None or encoded is None
+            # Assert that encoded data is not None and is of a valid type (e.g., str or bytes)
+            assert encoded is not None
+            assert isinstance(encoded, (str, bytes, dict))
 
     def test_memory_decay(self):
         """Test memory decay over time"""
@@ -145,7 +147,7 @@ class TestPhase2_MentalMapping:
         mental_map = MentalMap()
         if hasattr(mental_map, 'find_path'):
             path = mental_map.find_path("start", "goal")
-            assert path is not None or path is None
+            assert path is None or isinstance(path, (list, tuple))
 
     def test_shortest_path_algorithm(self):
         """Test shortest path finding"""
@@ -154,7 +156,7 @@ class TestPhase2_MentalMapping:
         mental_map = MentalMap()
         if hasattr(mental_map, 'shortest_path'):
             path = mental_map.shortest_path("a", "b")
-            assert path is not None or path is None
+            assert path is None or isinstance(path, list)
 
     def test_concept_activation(self):
         """Test concept activation spreading"""
@@ -172,7 +174,7 @@ class TestPhase2_MentalMapping:
         mental_map = MentalMap()
         if hasattr(mental_map, 'build_model'):
             model = mental_map.build_model({"domain": "test"})
-            assert model is not None or model is None
+            assert model is not None
 
     def test_spatial_reasoning(self):
         """Test spatial reasoning capabilities"""
@@ -181,7 +183,7 @@ class TestPhase2_MentalMapping:
         mental_map = MentalMap()
         if hasattr(mental_map, 'spatial_reason'):
             result = mental_map.spatial_reason({"position": [0, 0]})
-            assert result is not None or result is None
+            assert result is not None, "spatial_reason should not return None"
 
 
 class TestPhase2_GraphAlgorithms:

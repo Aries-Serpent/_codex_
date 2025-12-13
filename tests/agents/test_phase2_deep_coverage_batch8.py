@@ -36,7 +36,7 @@ class TestPhase2_DeveloperOrchestrator:
         orchestrator = DeveloperOrchestrator()
         if hasattr(orchestrator, 'create_workflow'):
             workflow = orchestrator.create_workflow(name="test_workflow")
-            assert workflow is not None or workflow is None
+            assert workflow is not None
 
     def test_add_task_to_workflow(self):
         """Test adding task to workflow"""
@@ -55,7 +55,7 @@ class TestPhase2_DeveloperOrchestrator:
         orchestrator = DeveloperOrchestrator()
         if hasattr(orchestrator, 'execute'):
             result = orchestrator.execute(workflow_id="test")
-            assert result is not None or result is None
+            assert result is not None
 
     def test_pause_resume_workflow(self):
         """Test pausing and resuming workflow"""
@@ -85,7 +85,7 @@ class TestPhase2_DeveloperOrchestrator:
         orchestrator = DeveloperOrchestrator()
         if hasattr(orchestrator, 'get_status'):
             status = orchestrator.get_status(workflow_id="test")
-            assert status is not None or status is None
+            assert status is not None
 
 
 class TestPhase2_WorkflowNavigator:
@@ -117,7 +117,7 @@ class TestPhase2_WorkflowNavigator:
         navigator = WorkflowNavigator()
         if hasattr(navigator, 'current_step'):
             step = navigator.current_step()
-            assert step is not None or step is None
+            assert isinstance(step, (dict, type(None)))
 
     def test_get_next_step(self):
         """Test getting next step"""
@@ -126,7 +126,7 @@ class TestPhase2_WorkflowNavigator:
         navigator = WorkflowNavigator()
         if hasattr(navigator, 'next_step'):
             step = navigator.next_step()
-            assert step is not None or step is None
+            assert isinstance(step, (dict, str, type(None)))
 
     def test_get_previous_step(self):
         """Test getting previous step"""
@@ -135,7 +135,7 @@ class TestPhase2_WorkflowNavigator:
         navigator = WorkflowNavigator()
         if hasattr(navigator, 'previous_step'):
             step = navigator.previous_step()
-            assert step is not None or step is None
+            assert isinstance(step, (dict, type(None)))
 
     def test_list_workflows(self):
         """Test listing available workflows"""
@@ -153,7 +153,7 @@ class TestPhase2_WorkflowNavigator:
         navigator = WorkflowNavigator()
         if hasattr(navigator, 'get_workflow_suggestions'):
             suggestions = navigator.get_workflow_suggestions(context={})
-            assert suggestions is not None or suggestions is None
+            assert isinstance(suggestions, (list, type(None)))
 
 
 class TestPhase2_TaskScheduling:

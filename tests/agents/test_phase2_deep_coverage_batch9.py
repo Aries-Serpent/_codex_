@@ -36,7 +36,7 @@ class TestPhase2_PhysicsIntegration:
         integration = PhysicsIntegration()
         if hasattr(integration, 'couple_orchestrators'):
             result = integration.couple_orchestrators(["orch1", "orch2"])
-            assert result is not None or result is None
+            assert result is not None
 
     def test_classical_orchestrator_access(self):
         """Test accessing classical orchestrator"""
@@ -45,7 +45,7 @@ class TestPhase2_PhysicsIntegration:
         integration = PhysicsIntegration()
         if hasattr(integration, 'classical'):
             classical = integration.classical
-            assert classical is not None or classical is None
+            assert classical is not None
 
     def test_advanced_orchestrator_access(self):
         """Test accessing advanced orchestrator"""
@@ -54,7 +54,7 @@ class TestPhase2_PhysicsIntegration:
         integration = PhysicsIntegration()
         if hasattr(integration, 'advanced'):
             advanced = integration.advanced
-            assert advanced is not None or advanced is None
+            assert advanced is not None
 
     def test_sync_orchestrators(self):
         """Test synchronizing orchestrator states (Eq #3)"""
@@ -73,7 +73,7 @@ class TestPhase2_PhysicsIntegration:
         if hasattr(integration, 'transfer_data'):
             data = {"key": "value"}
             result = integration.transfer_data(data, source="A", target="B")
-            assert result is not None or result is None
+            assert result is not None
 
     def test_coordinate_transformation(self):
         """Test coordinate system transformation (Eq #11)"""
