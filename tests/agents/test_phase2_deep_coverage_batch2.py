@@ -53,7 +53,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         assert swarm is not None
         assert swarm.num_agents == 10
 
-    @pytest.mark.skip(reason="Parameter name mismatch - needs signature update")
     def test_swarm_intelligence_optimize(self):
         """Test swarm optimization"""
         from agents.physics_orchestrator import SwarmIntelligence
@@ -212,7 +211,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         clusters = model.cluster_nodes()
         assert clusters is not None
 
-    @pytest.mark.skip(reason="Parameter name mismatch - nodes vs node_ids")
     def test_subgraph_extraction(self):
         """Test extracting subgraphs"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -572,7 +570,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         force = ForceVector("test", 10.0, [0.0, 0.0, 0.0], 5)
         assert force is not None  # Should handle gracefully
 
-    @pytest.mark.skip(reason="ActionPath energy parameter - needs signature update")
     def test_negative_energy(self):
         """Test handling negative energy (Eq #2)"""
         from agents.physics_orchestrator import ActionPath, ActionType

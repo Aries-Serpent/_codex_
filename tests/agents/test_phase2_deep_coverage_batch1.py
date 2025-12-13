@@ -181,7 +181,6 @@ class TestPhase2_MentalMapping_GraphDimension:
     Tunnel into graph-dimension for mental mapping APIs
     """
 
-    @pytest.mark.skip(reason="MentalMappingModel.create_node API changed")
     def test_mental_mapping_model_init(self):
         """Test MentalMappingModel initialization"""
         from agents.mental_mapping import MentalMappingModel
@@ -189,7 +188,6 @@ class TestPhase2_MentalMapping_GraphDimension:
         model = MentalMappingModel()
         assert model is not None
 
-    @pytest.mark.skip(reason="MentalMappingModel.create_node API changed")
     def test_create_node_operation(self):
         """Test node creation with proper node_type"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -198,7 +196,6 @@ class TestPhase2_MentalMapping_GraphDimension:
         node_id = model.create_node(node_type=NodeType.PROBLEM, properties={})
         assert node_id is not None
 
-    @pytest.mark.skip(reason="MentalMappingModel.create_node API changed")
     def test_connect_nodes_operation(self):
         """Test connecting nodes with edge_type"""
         from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType

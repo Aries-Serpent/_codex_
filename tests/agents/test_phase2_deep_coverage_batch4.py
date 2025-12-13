@@ -514,7 +514,6 @@ class TestPhase2_OptimizationMethods:
     Tunnel into optimization-dimension (Eq #43)
     """
 
-    @pytest.mark.skip(reason="optimize_path parameter mismatch - needs signature update")
     def test_path_integral_optimization(self):
         """Test path integral optimization"""
         from agents.physics_orchestrator import PhysicsOrchestrator

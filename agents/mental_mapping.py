@@ -224,13 +224,41 @@ class MentalMappingModel:
     def create_node(
         self,
         node_type: NodeType,
-        content: str,
+        content: str = "",
+        properties: Dict = None,
         confidence: float = 0.5,
         importance: float = 0.5,
         tags: List[str] = None,
         context: Dict = None
-    ) -> MentalNode:
-        """Create a new node in the mental map"""
+    ) -> Union[MentalNode, str]:
+        """
+        Create a new node in the mental map.
+        
+        Args:
+            node_type: Type of node
+            content: Node content (optional)
+            properties: Alternative to explicit parameters (backward compat)
+            confidence: Confidence level
+            importance: Importance level
+            tags: Tags list
+            context: Context dict
+            
+        Returns:
+            MentalNode object, or node_id string if using properties parameter
+        """
+        # Handle properties parameter for backward compatibility
+        if properties is not None:
+            content = properties.get('content', content or f"{node_type.value}_node")
+            confidence = properties.get('confidence', confidence)
+            importance = properties.get('importance', importance)
+            tags = properties.get('tags', tags)
+            context = properties.get('context', context)
+            return_id_only = True
+        else:
+            return_id_only = False
+            if not content:
+                content = f"{node_type.value}_node"
+        
         node = MentalNode(
             node_id=str(uuid.uuid4()),
             node_type=node_type,
@@ -250,18 +278,47 @@ class MentalMappingModel:
             node.mark_for_review("low_confidence")
             self.nodes_needing_review.add(node.node_id)
         
-        return node
+        # Return node_id if using properties (old API), otherwise return node object
+        return node.node_id if return_id_only else node
     
     def connect_nodes(
         self,
-        source_id: str,
-        target_id: str,
-        edge_type: EdgeType,
+        source_id: str = None,
+        target_id: str = None,
+        source: str = None,  # Alias for source_id
+        target: str = None,  # Alias for target_id
+        edge_type: EdgeType = None,
+        properties: Dict = None,
         weight: float = 1.0,
         justification: str = "",
         evidence: List[str] = None
     ) -> MentalEdge:
-        """Create a connection between two nodes"""
+        """
+        Create a connection between two nodes.
+        
+        Args:
+            source_id: Source node ID
+            target_id: Target node ID
+            source: Alias for source_id
+            target: Alias for target_id
+            edge_type: Type of edge
+            properties: Alternative parameter dict (backward compat)
+            weight: Edge weight
+            justification: Reasoning for connection
+            evidence: Supporting evidence
+        """
+        # Handle parameter aliases
+        if source and not source_id:
+            source_id = source
+        if target and not target_id:
+            target_id = target
+        
+        # Handle properties parameter
+        if properties is not None:
+            weight = properties.get('weight', weight)
+            justification = properties.get('justification', justification)
+            evidence = properties.get('evidence', evidence)
+        
         if source_id not in self.nodes or target_id not in self.nodes:
             raise ValueError("Both nodes must exist in the map")
         
@@ -806,16 +863,24 @@ class MentalMappingModel:
         
         return clusters
     
-    def get_subgraph(self, node_ids: List[str]) -> Dict[str, Any]:
+    def get_subgraph(self, node_ids: List[str] = None, nodes: List[str] = None) -> Dict[str, Any]:
         """
         Extract a subgraph containing only specified nodes.
         
         Args:
             node_ids: List of node IDs to include in subgraph
+            nodes: Alias for node_ids (backward compatibility)
         
         Returns:
             Dictionary with 'nodes' and 'edges' for the subgraph
         """
+        # Handle parameter alias
+        if nodes is not None and node_ids is None:
+            node_ids = nodes
+        
+        if node_ids is None:
+            node_ids = []
+            
         node_id_set = set(node_ids)
         subgraph = {
             'nodes': {},

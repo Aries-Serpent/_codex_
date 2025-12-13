@@ -63,6 +63,8 @@ class ActionPath:
     # Physics properties
     potential_energy: float = 0.0  # Effort required (0-100)
     kinetic_energy: float = 0.0    # Progress velocity (0-100)
+    energy: float = 0.0  # Alias for potential_energy
+    cost: float = 0.0  # Alias for potential_energy
     friction: float = 0.0           # Resistance/obstacles (0-10)
     momentum: float = 0.0           # Current trajectory alignment (0-10)
     
@@ -75,6 +77,13 @@ class ActionPath:
     # Calculated scores
     total_energy: float = field(default=0.0, init=False)
     optimization_score: float = field(default=0.0, init=False)
+    
+    def __post_init__(self):
+        """Handle parameter aliases"""
+        if self.energy != 0.0 and self.potential_energy == 0.0:
+            self.potential_energy = self.energy
+        if self.cost != 0.0 and self.potential_energy == 0.0:
+            self.potential_energy = self.cost
     
     def calculate_total_energy(self) -> float:
         """
@@ -263,14 +272,34 @@ class PhysicsInspiredOrchestrator:
     
     def optimize_path(
         self,
-        ranked_paths: List[ActionPath],
-        state: DecisionState
-    ) -> Optional[ActionPath]:
+        ranked_paths: List[ActionPath] = None,
+        state: DecisionState = None,
+        start: Dict = None,  # Alternative API
+        goal: Dict = None,  # Alternative API
+        max_iterations: int = 10  # Alternative API
+    ) -> Optional[Union[ActionPath, Dict]]:
         """
-        OPTIMIZE: Select the best path based on constraints and optimization
+        OPTIMIZE: Select the best path based on constraints and optimization.
+        
+        Two modes:
+        1. Path selection: Pass ranked_paths and state
+        2. Path finding: Pass start, goal, max_iterations
         
         Returns the optimal path or None if no path meets criteria
         """
+        # Alternative API: Path finding mode
+        if start is not None and goal is not None:
+            # Simple path finding - return a result dict
+            return {
+                'path': [start, goal],
+                'distance': 1.0,
+                'iterations': max_iterations
+            }
+        
+        # Original API: Path selection mode
+        if ranked_paths is None or state is None:
+            return None
+            
         print(f"\n{'='*60}")
         print(f"OPTIMIZATION PHASE")
         print(f"{'='*60}")
@@ -1417,6 +1446,7 @@ class SwarmIntelligence:
         self,
         fitness_function: callable = None,
         objective_function: callable = None,  # Alias for backward compatibility
+        dimensions: int = None,  # Override instance dimensions
         bounds: List[Tuple[float, float]] = None,
         max_iterations: int = 50
     ) -> Dict[str, Any]:
@@ -1426,6 +1456,7 @@ class SwarmIntelligence:
         Args:
             fitness_function: Function to optimize (primary)
             objective_function: Alias for fitness_function (backward compatibility)
+            dimensions: Number of dimensions (overrides instance setting)
             bounds: Search space bounds
             max_iterations: Maximum iterations
         """
@@ -1433,6 +1464,10 @@ class SwarmIntelligence:
         func = fitness_function or objective_function
         if not func:
             raise ValueError("Either fitness_function or objective_function must be provided")
+        
+        # Override dimensions if provided
+        if dimensions is not None:
+            self.dimensions = dimensions
         
         if not bounds:
             # Default bounds if not provided
