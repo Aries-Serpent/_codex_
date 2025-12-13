@@ -260,7 +260,7 @@ class CoveragePhysicsAnalyzer:
     
     def analyze_module(self, module_path: str) -> ModuleAnalysis:
         """Analyze a module and recommend strategies."""
-        file_path = self.project_root / module_path.replace('.', '/').replace('/', '/') 
+        file_path = self.project_root / module_path.replace('.', '/')
         if not str(file_path).endswith('.py'):
             file_path = Path(str(file_path) + '.py')
         
@@ -279,9 +279,11 @@ class CoveragePhysicsAnalyzer:
             tree = ast.parse(f.read())
         
         # Extract classes, functions, enums, properties
+        class_names = set()
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 analysis.classes.append(node.name)
+                class_names.add(node.name)
                 # Check for enums
                 for base in node.bases:
                     if isinstance(base, ast.Name) and 'Enum' in base.id:
@@ -292,10 +294,16 @@ class CoveragePhysicsAnalyzer:
                         for decorator in item.decorator_list:
                             if isinstance(decorator, ast.Name) and decorator.id == 'property':
                                 analysis.properties.append(item.name)
-            elif isinstance(node, ast.FunctionDef):
-                if not any(isinstance(parent, ast.ClassDef) for parent in ast.walk(tree)):
-                    analysis.functions.append(node.name)
-            elif isinstance(node, ast.Import):
+        
+        # Extract module-level functions (not in any class)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                # Only add if not already found as a class method
+                analysis.functions.append(node.name)
+                
+        # Extract imports
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
                 for alias in node.names:
                     analysis.imports.append(alias.name)
             elif isinstance(node, ast.ImportFrom):
@@ -370,13 +378,13 @@ import pytest
         
         return test_code
     
-    def calculate_coverage_velocity(self, strategies: List[CoverageStrategy]) -> Dict[str, float]:
+    def calculate_coverage_velocity(self, strategies: List[CoverageStrategy], current_coverage: float = 27.57) -> Dict[str, float]:
         """Calculate expected coverage velocity using Eq #49 (J = Coverage/Runtime)."""
         total_gain = sum(s.expected_coverage_gain for s in strategies)
         total_time = sum(s.implementation_time_minutes for s in strategies)
         
         if total_time == 0:
-            return {"total_gain": 0, "total_time": 0, "velocity": 0}
+            return {"total_gain": 0, "total_time": 0, "velocity": 0, "current_coverage": current_coverage}
         
         velocity = (total_gain / total_time) * 60  # Coverage % per hour
         
@@ -384,9 +392,10 @@ import pytest
             "total_gain": total_gain,
             "total_time_minutes": total_time,
             "velocity_pct_per_hour": velocity,
-            "estimated_to_30pct": (30 - 27.57) / velocity if velocity > 0 else 0,
-            "estimated_to_50pct": (50 - 27.57) / velocity if velocity > 0 else 0,
-            "estimated_to_70pct": (70 - 27.57) / velocity if velocity > 0 else 0,
+            "current_coverage": current_coverage,
+            "estimated_to_30pct": (30 - current_coverage) / velocity if velocity > 0 else 0,
+            "estimated_to_50pct": (50 - current_coverage) / velocity if velocity > 0 else 0,
+            "estimated_to_70pct": (70 - current_coverage) / velocity if velocity > 0 else 0,
         }
     
     def validate_tables_implementation(self) -> Dict[str, bool]:
