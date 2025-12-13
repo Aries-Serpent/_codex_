@@ -899,17 +899,34 @@ class MentalMappingModel:
         
         return subgraph
     
-    def shortest_path(self, start_id: str, end_id: str) -> Optional[List[str]]:
+    def shortest_path(
+        self, 
+        start_id: str = None, 
+        end_id: str = None,
+        source: str = None,  # Alias for start_id
+        target: str = None   # Alias for end_id
+    ) -> Optional[List[str]]:
         """
         Find shortest path between two nodes using BFS.
         
         Args:
             start_id: Starting node ID
             end_id: Ending node ID
+            source: Alias for start_id
+            target: Alias for end_id
         
         Returns:
             List of node IDs forming the path, or None if no path exists
         """
+        # Handle parameter aliases
+        if source and not start_id:
+            start_id = source
+        if target and not end_id:
+            end_id = target
+            
+        if not start_id or not end_id:
+            return None
+            
         if start_id not in self.nodes or end_id not in self.nodes:
             return None
         
@@ -935,6 +952,76 @@ class MentalMappingModel:
                     queue.append((neighbor_id, path + [neighbor_id]))
         
         return None  # No path found
+    
+    def bfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+        """
+        Breadth-first search traversal from a starting node.
+        
+        Args:
+            start_node: Starting node ID (primary parameter name)
+            start_id: Alias for start_node
+            
+        Returns:
+            List of node IDs in BFS order
+        """
+        # Handle parameter alias
+        if start_id and not start_node:
+            start_node = start_id
+            
+        if not start_node or start_node not in self.nodes:
+            return []
+        
+        from collections import deque
+        
+        queue = deque([start_node])
+        visited = {start_node}
+        result = []
+        
+        while queue:
+            current_id = queue.popleft()
+            result.append(current_id)
+            current_node = self.nodes[current_id]
+            
+            for neighbor_id in current_node.connected_nodes:
+                if neighbor_id not in visited:
+                    visited.add(neighbor_id)
+                    queue.append(neighbor_id)
+        
+        return result
+    
+    def dfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+        """
+        Depth-first search traversal from a starting node.
+        
+        Args:
+            start_node: Starting node ID (primary parameter name)
+            start_id: Alias for start_node
+            
+        Returns:
+            List of node IDs in DFS order
+        """
+        # Handle parameter alias
+        if start_id and not start_node:
+            start_node = start_id
+            
+        if not start_node or start_node not in self.nodes:
+            return []
+        
+        visited = set()
+        result = []
+        
+        def dfs_recursive(node_id: str):
+            if node_id in visited:
+                return
+            visited.add(node_id)
+            result.append(node_id)
+            
+            current_node = self.nodes[node_id]
+            for neighbor_id in current_node.connected_nodes:
+                dfs_recursive(neighbor_id)
+        
+        dfs_recursive(start_node)
+        return result
     
     def save_mental_map(self, output_path: Path) -> None:
         """Save the complete mental map to JSON"""
