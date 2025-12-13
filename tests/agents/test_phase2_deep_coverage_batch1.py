@@ -34,7 +34,6 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
     Tunnel into time-dimension anomalies for dt handling APIs
     """
 
-    @pytest.mark.skip(reason="DecisionState API changed")
     def test_force_vector_energy_calculation(self):
         """Test energy calculations (Eq #2: E² = p² c² + m² c⁴)"""
         from agents.physics_orchestrator import ForceVector
@@ -46,7 +45,6 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
         assert force.magnitude == 10.0
         assert force.priority == 5
 
-    @pytest.mark.skip(reason="DecisionState API changed")
     def test_decision_state_time_evolution(self):
         """Test decision state evolution with time steps"""
         from agents.physics_orchestrator import DecisionState
@@ -409,7 +407,6 @@ class TestPhase2_Properties_Getters:
         assert force.magnitude == 10.0
         assert force.priority == 5
 
-    @pytest.mark.skip(reason="DecisionState API changed")
     def test_action_type_enum_access(self):
         """Test ActionType enum is accessible"""
         from agents.physics_orchestrator import ActionType
@@ -424,7 +421,6 @@ class TestPhase2_EdgeCases_Invariants:
     Edge cases and invariants validation
     """
 
-    @pytest.mark.skip(reason="DecisionState API changed")
     def test_empty_force_list(self):
         """Test handling empty force list"""
         from agents.physics_orchestrator import DecisionState

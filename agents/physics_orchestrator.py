@@ -32,6 +32,8 @@ class ActionType(Enum):
     OPTIMIZE = "optimize"
     DEBUG = "debug"
     RESEARCH = "research"
+    ANALYZE = "analyze"
+    EXECUTE = "execute"
 
 
 @dataclass
@@ -112,15 +114,18 @@ class ActionPath:
         return self.optimization_score
 
 
+
 @dataclass
 class DecisionState:
     """Current state of the system for decision making"""
-    current_position: str  # Where we are now
-    goal_position: str     # Where we want to be
+    current_position: Union[str, Any] = ""  # Where we are now (string or array)
+    goal_position: Union[str, Any] = ""     # Where we want to be (string or array)
     available_resources: float = 1.0  # 0-1 scale
     time_available: float = 1.0       # 0-1 scale
     current_velocity: float = 0.5     # Progress rate 0-1
-    context: Dict[str, any] = field(default_factory=dict)
+    context: Dict[str, Any] = field(default_factory=dict)
+    active_forces: List[Any] = field(default_factory=list)  # Optional force vectors
+    constraints: List[Any] = field(default_factory=list)    # Optional constraints
 
 
 class PhysicsInspiredOrchestrator:
@@ -1046,6 +1051,7 @@ class DiffusionFlowModel:
 
 
 @dataclass
+@dataclass
 class EnergyState:
     """
     Represents a state in an energy landscape.
@@ -1056,6 +1062,13 @@ class EnergyState:
     energy: float = 0.0
     entropy: float = 0.0
     temperature: float = 1.0
+    state_id: str = ""
+    internal_energy: float = None  # Alias for energy
+    
+    def __post_init__(self):
+        """Handle internal_energy alias"""
+        if self.internal_energy is not None:
+            self.energy = self.internal_energy
     
     def free_energy(self) -> float:
         """

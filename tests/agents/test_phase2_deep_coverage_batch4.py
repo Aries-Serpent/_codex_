@@ -115,7 +115,6 @@ class TestPhase2_EnergyOperators:
             assert H.shape[0] == H.shape[1]
 
     @pytest.mark.skip(reason="HamiltonianEvolver API changed")
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_double_well_hamiltonian(self):
         """Test double-well potential Hamiltonian"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -125,7 +124,6 @@ class TestPhase2_EnergyOperators:
         assert H is not None
 
     @pytest.mark.skip(reason="HamiltonianEvolver API changed")
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_time_evolution_operator(self):
         """Test time evolution operator e^{-iĤt/ħ} (Eq #20)"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -138,7 +136,6 @@ class TestPhase2_EnergyOperators:
             assert evolved is not None
 
     @pytest.mark.skip(reason="HamiltonianEvolver API changed")
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_energy_eigenvalues(self):
         """Test computing energy eigenvalues"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -152,7 +149,6 @@ class TestPhase2_EnergyOperators:
             # Ground state energy should be positive for harmonic oscillator
             assert eigenvalues[0] > 0
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_energy_state_initialization(self):
         """Test EnergyState initialization"""
         from agents.physics_orchestrator import EnergyState
@@ -166,7 +162,6 @@ class TestPhase2_EnergyOperators:
         assert state is not None
         assert state.state_id == "test_state"
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_free_energy_calculation(self):
         """Test free energy F = U - TS calculation"""
         from agents.physics_orchestrator import EnergyState
@@ -182,7 +177,6 @@ class TestPhase2_EnergyOperators:
         # F = U - TS, at T=1.0 (default): F = 100 - 10 = 90
         assert abs(free_energy - 90.0) < 1.0
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_boltzmann_probability(self):
         """Test Boltzmann probability e^{-ΔE/kT}"""
         from agents.physics_orchestrator import EnergyState
@@ -197,7 +191,6 @@ class TestPhase2_EnergyOperators:
         assert isinstance(prob, (int, float))
         assert 0.0 <= prob <= 1.0
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization"""
         from agents.physics_orchestrator import EnergyLandscape
@@ -206,7 +199,6 @@ class TestPhase2_EnergyOperators:
         assert landscape is not None
         assert landscape.temperature == 2.0
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_energy_landscape_add_state(self):
         """Test adding states to energy landscape"""
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -221,7 +213,6 @@ class TestPhase2_EnergyOperators:
         landscape.add_state(state)
         assert len(landscape.states) == 1
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_gibbs_probability(self):
         """Test Gibbs probability calculation"""
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -238,7 +229,6 @@ class TestPhase2_EnergyOperators:
         assert isinstance(prob, (int, float))
         assert prob > 0.0
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_state_selection(self):
         """Test selecting state from Gibbs distribution"""
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -256,7 +246,6 @@ class TestPhase2_EnergyOperators:
         selected = landscape.select_state()
         assert selected is not None
 
-    @pytest.mark.skip(reason="EnergyState API changed")
     def test_minimize_free_energy(self):
         """Test free energy minimization"""
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
