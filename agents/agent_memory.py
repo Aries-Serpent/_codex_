@@ -24,7 +24,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -413,8 +413,27 @@ class AgentMemory:
             ))
             conn.commit()
     
-    def retrieve_memory(self, memory_id: str) -> Optional[MemoryEntry]:
-        """Retrieve a memory by ID."""
+    def retrieve_memory(self, memory_id: str = None, key: str = None) -> Optional[Union[MemoryEntry, str]]:
+        """
+        Retrieve a memory by ID or key.
+        
+        Args:
+            memory_id: The memory ID to retrieve
+            key: Alternative parameter name for backward compatibility
+            
+        Returns:
+            MemoryEntry object, or the content string if using key parameter
+        """
+        # Handle backward compatibility with 'key' parameter
+        if key is not None and memory_id is None:
+            memory_id = key
+            return_content_only = True
+        else:
+            return_content_only = False
+            
+        if memory_id is None:
+            return None
+            
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT * FROM memories WHERE memory_id = ?",
@@ -432,9 +451,19 @@ class AgentMemory:
                 """, (datetime.now().isoformat(), memory_id))
                 conn.commit()
                 
-                return self._row_to_memory(row)
+                memory_entry = self._row_to_memory(row)
+                # Return just content if using key parameter (backward compat)
+                if return_content_only:
+                    return memory_entry.content
+                return memory_entry
         
         return None
+    
+    def clear(self) -> None:
+        """Clear all memories from the database."""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("DELETE FROM memories")
+            conn.commit()
     
     def search_memories(
         self,

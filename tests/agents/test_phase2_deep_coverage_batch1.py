@@ -223,7 +223,6 @@ class TestPhase2_MentalMapping_GraphDimension:
         assert hasattr(NodeType, "CONCEPT")
         assert hasattr(NodeType, "ENTITY")
 
-    @pytest.mark.skip(reason="AgentMemory.store_memory API changed")
     def test_enum_validations_edge_type(self):
         """Test EdgeType enum values (Eq #2)"""
         from agents.mental_mapping import EdgeType
@@ -238,7 +237,6 @@ class TestPhase2_AgentMemory_StorageDimension:
     Tunnel into storage-dimension for memory operations
     """
 
-    @pytest.mark.skip(reason="AgentMemory.store_memory API changed")
     def test_agent_memory_initialization(self):
         """Test AgentMemory initialization"""
         from agents.agent_memory import AgentMemory
@@ -246,7 +244,6 @@ class TestPhase2_AgentMemory_StorageDimension:
         memory = AgentMemory()
         assert memory is not None
 
-    @pytest.mark.skip(reason="AgentMemory.store_memory API changed")
     def test_memory_store_operation(self):
         """Test storing data in memory"""
         from agents.agent_memory import AgentMemory
@@ -255,7 +252,6 @@ class TestPhase2_AgentMemory_StorageDimension:
         memory.store_memory(key="test_key", value="test_value")
         assert True
 
-    @pytest.mark.skip(reason="AgentMemory.store_memory API changed")
     def test_memory_retrieve_operation(self):
         """Test retrieving data from memory"""
         from agents.agent_memory import AgentMemory
@@ -265,7 +261,6 @@ class TestPhase2_AgentMemory_StorageDimension:
         result = memory.retrieve_memory(key="test_key")
         assert result == "test_value"
 
-    @pytest.mark.skip(reason="AgentMemory.store_memory API changed")
     def test_memory_clear_operation(self):
         """Test clearing memory"""
         from agents.agent_memory import AgentMemory
