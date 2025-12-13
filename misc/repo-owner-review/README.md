@@ -29,14 +29,9 @@ misc/repo-owner-review/
 ├── metadata.json (tracks moved files)
 ├── drop-for-restore/ (file recovery inbox - see Recovery Process below)
 ├── archived-backups/ (backup files with commit SHA naming)
-│   ├── manifest.txt (list of archived backups)
-│   └── *.meta.md (recovery metadata for each file)
+│   └── README.md
 └── archived-artifacts/
-    ├── security-reports/ (large generated security scan reports)
-    ├── changelogs/ (historical changelogs)
-    ├── old-audit-runs/ (previous audit run artifacts)
-    ├── validation-logs/ (old validation logs)
-    └── deprecated-scripts/ (duplicate/backup scripts)
+    └── README.md
 ```
 
 ---
