@@ -5,6 +5,30 @@ codebase, and what behaviour developers should expect when they are absent. A fu
 grep across `tests/` identified **370 guarded imports** via `pytest.importorskip`,
 confirming that every optional integration has an explicit offline fallback.
 
+## Exception Handling for Optional Dependencies (Updated 2025-12-13)
+
+The repository uses a **broad exception handling pattern** for optional imports to ensure graceful degradation:
+
+```python
+try:
+    from .loader import load_tokenizer
+except (ModuleNotFoundError, ImportError, AttributeError):
+    # AttributeError: torch stub (torch/__init__.py) raises this when PyTorch not installed
+    # ImportError/ModuleNotFoundError: tokenizers/transformers missing
+    load_tokenizer = None  # type: ignore[assignment]
+```
+
+**Why catch AttributeError?**
+- The torch stub (`torch/__init__.py`) raises `AttributeError` instead of `ImportError` when PyTorch is not installed
+- This is intentional behavior to provide clear error messages
+- Modules in dependency chains (e.g., `codex_ml.utils`) may trigger this during import
+
+**Best Practices:**
+1. Always catch `(ModuleNotFoundError, ImportError, AttributeError)` for optional imports
+2. Set to `None` when import fails: `module_name = None  # type: ignore[assignment]`
+3. Add inline comments explaining each exception type
+4. Exclude from `__all__` when unavailable (append only in `else` block)
+
 ## Dependency overview
 
 | Dependency | Purpose | Import Path(s) | Primary Tests / Features | Fallback Behaviour |
