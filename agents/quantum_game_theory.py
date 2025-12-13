@@ -139,7 +139,7 @@ class StrategyState:
                 if self.probabilities is None:
                     self.probabilities = [1.0/n] * n
                 if self.wavefunction is None:
-                self.wavefunction = [1.0/math.sqrt(n)] * n
+                    self.wavefunction = [1.0/math.sqrt(n)] * n
             return
         
         n = len(self.strategies)
