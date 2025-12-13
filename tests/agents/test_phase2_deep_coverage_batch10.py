@@ -120,7 +120,6 @@ class TestPhase2_EdgeCases_Coherence:
         # After one τ, coherence is 1/e
         assert abs(final_coherence - 1/np.e) < 0.01
 
-    @pytest.mark.skip(reason="Assertion logic issue - band count mismatch")
     def test_coherence_banding(self):
         """Test coherence bands (Eq #14)"""
         coherences = [0.9, 0.7, 0.5, 0.3, 0.1]
@@ -129,9 +128,9 @@ class TestPhase2_EdgeCases_Coherence:
             "medium": [c for c in coherences if 0.3 <= c <= 0.7],
             "low": [c for c in coherences if c < 0.3]
         }
-        assert len(bands["high"]) == 1
-        assert len(bands["medium"]) == 2
-        assert len(bands["low"]) == 2
+        assert len(bands["high"]) == 1  # [0.9]
+        assert len(bands["medium"]) == 3  # [0.7, 0.5, 0.3]
+        assert len(bands["low"]) == 1  # [0.1]
 
     def test_pure_state_coherence(self):
         """Test pure state has maximum coherence"""
@@ -470,11 +469,13 @@ class TestPhase2_EdgeCases_ComparativeOperations:
         assert "apple" < "banana"
         assert "10" < "2"  # Lexicographic
 
-    @pytest.mark.skip(reason="Assertion logic issue - None comparison not supported")
     def test_none_comparison(self):
         """Test None comparisons"""
         assert None == None
-        assert not (None < None)
+        assert None is None
+        # Note: None < None raises TypeError in Python 3
+        # Just verify None comparisons work correctly
+        assert (None == None) is True
 
 
 if __name__ == "__main__":

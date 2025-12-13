@@ -169,7 +169,6 @@ class TestPhase2_EndToEndWorkflows:
     Tunnel into workflow-dimension
     """
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_complete_task_workflow(self):
         """Test complete task from start to finish"""
         workflow = {
@@ -190,7 +189,6 @@ class TestPhase2_EndToEndWorkflows:
         assert workflow["status"] == "completed"
         assert workflow["steps_completed"] == 2
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_decision_tree_traversal(self):
         """Test traversing decision tree end-to-end"""
         path = []
@@ -209,7 +207,6 @@ class TestPhase2_EndToEndWorkflows:
         
         assert path == ["branch_a", "leaf_2"]
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_pipeline_execution(self):
         """Test executing complete data pipeline"""
         data = [1, 2, 3, 4, 5]
@@ -337,7 +334,6 @@ class TestPhase2_DistributedIntegration:
         release_lock("p1")
         assert acquire_lock("p2") == True
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_partition_tolerance(self):
         """Test handling network partitions"""
         partitions = [
@@ -349,7 +345,6 @@ class TestPhase2_DistributedIntegration:
         active_partition = [p for p in partitions if p["connected"]]
         assert len(active_partition) == 1
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_data_replication(self):
         """Test data replication across nodes"""
         primary = {"data": 42}
@@ -369,7 +364,6 @@ class TestPhase2_ComplexInteractions:
     Tunnel into complexity-dimension
     """
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_feedback_loop(self):
         """Test feedback loop between components"""
         state = 10.0
