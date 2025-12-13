@@ -18,21 +18,21 @@ else:  # pragma: no cover - import succeeded
 
 try:
     from . import sentencepiece_adapter
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ImportError, AttributeError):
     sentencepiece_adapter = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("sentencepiece_adapter")
 
 try:
     from . import train_tokenizer
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ImportError, AttributeError):
     train_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("train_tokenizer")
 
 try:
     from . import cli
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ImportError, AttributeError):
     cli = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("cli")
