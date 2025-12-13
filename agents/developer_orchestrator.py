@@ -753,16 +753,21 @@ def test_main_imports():
         exported_files = {}
         
         # Ensure output_dir exists and is a directory
-        try:
-            os.makedirs(output_dir, exist_ok=True)
-        except Exception as e:
-            raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
-        
-        if not os.path.isdir(output_dir):
-            raise ValueError(f"Output path '{output_dir}' is not a directory.")
-        
-        if not os.access(output_dir, os.W_OK):
-            raise PermissionError(f"Output directory '{output_dir}' is not writable.")
+        if os.path.exists(output_dir):
+            if not os.path.isdir(output_dir):
+                raise ValueError(f"Output path '{output_dir}' is not a directory.")
+            if not os.access(output_dir, os.W_OK):
+                raise PermissionError(f"Output directory '{output_dir}' is not writable.")
+        else:
+            try:
+                os.makedirs(output_dir, exist_ok=True)
+            except Exception as e:
+                raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
+            # After creation, check again
+            if not os.path.isdir(output_dir):
+                raise ValueError(f"Output path '{output_dir}' is not a directory after creation.")
+            if not os.access(output_dir, os.W_OK):
+                raise PermissionError(f"Output directory '{output_dir}' is not writable after creation.")
         
         for comp in self.components.values():
             if comp.code:

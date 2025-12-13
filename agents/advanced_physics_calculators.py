@@ -595,7 +595,9 @@ class FluidFlowScheduler:
         Redistributes flow to equalize pressure, similar to how
         fluid flows from high to low pressure regions.
         
-        Optimized to O(n) by balancing highest and lowest pressure channels.
+        Optimized to O(n) by balancing highest and lowest pressure channels
+        in a single pass. This is more efficient than iterative balancing
+        approaches which would require multiple O(n) passes.
         """
         # Calculate average pressure
         pressures = [ch.pressure for ch in self.channels.values()]
@@ -867,18 +869,28 @@ class EMFieldRouter:
         Ex, Ey = self.electric_field
         field_magnitude = np.sqrt(Ex**2 + Ey**2)
         
-        # Simple peak finding without scipy
-        # Find local maxima by checking if each point is larger than neighbors
-        local_max = np.zeros_like(field_magnitude, dtype=bool)
-        for i in range(1, field_magnitude.shape[0] - 1):
-            for j in range(1, field_magnitude.shape[1] - 1):
-                val = field_magnitude[i, j]
-                # Get 3x3 neighborhood and flatten
-                neighborhood = field_magnitude[i-1:i+2, j-1:j+2].flatten()
-                # Exclude the center value (index 4 in the flattened 3x3 array)
-                neighbors = np.delete(neighborhood, 4)
-                if (val > neighbors).all():
-                    local_max[i, j] = True
+        # Efficient peak finding using scipy.ndimage.maximum_filter when available
+        try:
+            from scipy.ndimage import maximum_filter
+            # Find local maxima: points that are equal to the local maximum in a 3x3 neighborhood
+            neighborhood_size = 3
+            max_filtered = maximum_filter(field_magnitude, size=neighborhood_size, mode='constant')
+            local_max = (field_magnitude == max_filtered)
+            # Exclude border pixels to match original behavior
+            local_max[[0, -1], :] = False
+            local_max[:, [0, -1]] = False
+        except ImportError:
+            # Fallback: original method if scipy is not available
+            local_max = np.zeros_like(field_magnitude, dtype=bool)
+            for i in range(1, field_magnitude.shape[0] - 1):
+                for j in range(1, field_magnitude.shape[1] - 1):
+                    val = field_magnitude[i, j]
+                    # Get 3x3 neighborhood and flatten
+                    neighborhood = field_magnitude[i-1:i+2, j-1:j+2].flatten()
+                    # Exclude the center value (index 4 in the flattened 3x3 array)
+                    neighbors = np.delete(neighborhood, 4)
+                    if (val > neighbors).all():
+                        local_max[i, j] = True
         
         # Get positions and magnitudes of peaks
         peak_positions = np.argwhere(local_max)
