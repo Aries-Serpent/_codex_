@@ -21,7 +21,6 @@ class TestPhase3_Entanglement_BellStates:
     Tunnel into measurement-dimension for entangled pairs
     """
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_bell_state_creation(self):
         """Test creating Bell states"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -32,7 +31,6 @@ class TestPhase3_Entanglement_BellStates:
         bell_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
         assert bell_state.entangled == True
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_phi_plus_state(self):
         """Test |Φ+⟩ = (|00⟩ + |11⟩)/√2 state"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -44,7 +42,6 @@ class TestPhase3_Entanglement_BellStates:
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
         assert state.entangled
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_phi_minus_state(self):
         """Test |Φ-⟩ = (|00⟩ - |11⟩)/√2 state"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -55,7 +52,6 @@ class TestPhase3_Entanglement_BellStates:
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
         assert state.entangled
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_measurement_correlation(self):
         """Test measurement correlations in entangled states"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -78,7 +74,6 @@ class TestPhase3_Entanglement_CHSH:
     Tunnel into angle-dimension for correlation measurements
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_chsh_correlation(self):
         """Test CHSH correlation measure"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -93,7 +88,6 @@ class TestPhase3_Entanglement_CHSH:
         # CHSH inequality: |E| ≤ 2 for classical, can be √2*2 for quantum
         assert abs(correlation) <= 3.0  # Upper bound
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_correlation_angles(self):
         """Test correlation at different measurement angles"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -109,7 +103,6 @@ class TestPhase3_Entanglement_CHSH:
             corr = state.calculate_correlation()
             assert corr is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_bell_inequality_violation(self):
         """Test Bell inequality violation detection"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -437,7 +430,6 @@ class TestPhase3_EdgeCases_Distributed:
         # System should gracefully handle node failures
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_entanglement_breaking(self):
         """Test detection when entanglement breaks"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState

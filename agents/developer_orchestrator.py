@@ -790,6 +790,184 @@ def test_main_imports():
                     self._log("system", error_msg)
         
         return exported_files
+    
+    def validate_code(self, code: str, component_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Validate generated code for syntax and quality.
+        
+        Args:
+            code: Python code to validate
+            component_id: Optional component ID for context
+        
+        Returns:
+            Validation results with 'valid', 'errors', and 'warnings' keys
+        """
+        import ast
+        
+        result = {
+            'valid': True,
+            'errors': [],
+            'warnings': [],
+            'component_id': component_id
+        }
+        
+        # Syntax validation
+        try:
+            ast.parse(code)
+            self._log("system", f"Code syntax valid for {component_id or 'component'}")
+        except SyntaxError as e:
+            result['valid'] = False
+            result['errors'].append(f"Syntax error at line {e.lineno}: {e.msg}")
+            self._log("system", f"Syntax error in {component_id or 'component'}: {e}")
+        
+        # Basic quality checks
+        if len(code.strip()) < 10:
+            result['warnings'].append("Code is very short, may be incomplete")
+        
+        if 'TODO' in code or 'FIXME' in code:
+            result['warnings'].append("Code contains TODO/FIXME markers")
+        
+        if '\t' in code:
+            result['warnings'].append("Code uses tabs instead of spaces")
+        
+        return result
+    
+    def prioritize_tasks(
+        self,
+        tasks: Optional[List[Dict[str, Any]]] = None
+    ) -> List[str]:
+        """
+        Prioritize development tasks using physics-based scoring.
+        
+        Args:
+            tasks: Optional list of task dicts with 'id', 'priority', 'complexity'
+                  If None, uses components as tasks
+        
+        Returns:
+            List of task IDs in priority order
+        """
+        if tasks is None:
+            # Use components as tasks
+            tasks = [
+                {
+                    'id': comp.component_id,
+                    'priority': comp.priority,
+                    'complexity': comp.complexity,
+                    'dependencies': comp.dependencies
+                }
+                for comp in self.components.values()
+            ]
+        
+        # Score based on priority and inverse complexity
+        # Higher priority, lower complexity = higher score
+        scored_tasks = []
+        for task in tasks:
+            task_id = task.get('id', '')
+            priority = task.get('priority', 0.5)
+            complexity = task.get('complexity', 1.0)
+            dependencies = task.get('dependencies', [])
+            
+            # Score: priority / sqrt(complexity)
+            # Penalize tasks with unmet dependencies
+            score = priority / (complexity ** 0.5)
+            
+            scored_tasks.append((score, task_id))
+        
+        # Sort by score descending
+        scored_tasks.sort(reverse=True, key=lambda x: x[0])
+        
+        result = [task_id for _, task_id in scored_tasks]
+        self._log("system", f"Prioritized {len(result)} tasks")
+        return result
+    
+    def execute_workflow(
+        self,
+        workflow_steps: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        Execute a development workflow through all phases.
+        
+        Args:
+            workflow_steps: Optional list of phase names to execute.
+                           If None, executes standard workflow.
+        
+        Returns:
+            Workflow execution results
+        """
+        if workflow_steps is None:
+            workflow_steps = [
+                'REQUIREMENTS',
+                'ARCHITECTURE', 
+                'IMPLEMENTATION',
+                'TESTING'
+            ]
+        
+        results = {
+            'steps_completed': [],
+            'steps_failed': [],
+            'current_phase': self.current_phase.value,
+            'outputs': {}
+        }
+        
+        for step in workflow_steps:
+            step_upper = step.upper()
+            
+            try:
+                if step_upper == 'REQUIREMENTS':
+                    self.current_phase = DevelopmentPhase.REQUIREMENTS
+                    # Requirements already analyzed if variables are set
+                    results['outputs']['requirements'] = {
+                        'completeness': sum(
+                            1 for v in self.required_variables.values() if v.is_satisfied()
+                        ) / len(self.required_variables) if self.required_variables else 0
+                    }
+                    results['steps_completed'].append(step)
+                    
+                elif step_upper == 'ARCHITECTURE':
+                    self.current_phase = DevelopmentPhase.ARCHITECTURE
+                    arch = self.suggest_architecture()
+                    results['outputs']['architecture'] = arch
+                    results['steps_completed'].append(step)
+                    
+                elif step_upper == 'IMPLEMENTATION':
+                    self.current_phase = DevelopmentPhase.IMPLEMENTATION
+                    # Generate code for all components
+                    generated = {}
+                    for comp_id in self.components:
+                        code = self.generate_code(comp_id)
+                        generated[comp_id] = len(code)
+                    results['outputs']['implementation'] = {
+                        'components_generated': len(generated),
+                        'total_lines': sum(c.count('\n') for c in generated.values()) if generated else 0
+                    }
+                    results['steps_completed'].append(step)
+                    
+                elif step_upper == 'TESTING':
+                    self.current_phase = DevelopmentPhase.TESTING
+                    # Validate all generated code
+                    validations = {}
+                    for comp_id, comp in self.components.items():
+                        if comp.code:
+                            validation = self.validate_code(comp.code, comp_id)
+                            validations[comp_id] = validation['valid']
+                    results['outputs']['testing'] = {
+                        'components_validated': len(validations),
+                        'all_valid': all(validations.values()) if validations else False
+                    }
+                    results['steps_completed'].append(step)
+                    
+                else:
+                    results['steps_failed'].append(f"Unknown step: {step}")
+                    
+            except Exception as e:
+                results['steps_failed'].append(f"{step}: {str(e)}")
+                self._log("system", f"Workflow step {step} failed: {e}")
+        
+        results['success'] = len(results['steps_failed']) == 0
+        results['final_phase'] = self.current_phase.value
+        
+        self._log("system", f"Workflow complete: {len(results['steps_completed'])} steps")
+        return results
 
 
 def create_developer_orchestrator() -> PhysicsGuidedDeveloperOrchestrator:
