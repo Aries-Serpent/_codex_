@@ -2,11 +2,19 @@
 
 __all__: list[str] = []
 
-from .loader import load_tokenizer
-from .adapter import TokenizerAdapter
+try:
+    from .loader import load_tokenizer
+except (ModuleNotFoundError, ImportError, AttributeError):
+    load_tokenizer = None  # type: ignore[assignment]
+else:  # pragma: no cover - import succeeded
+    __all__.append("load_tokenizer")
 
-__all__.append("load_tokenizer")
-__all__.append("TokenizerAdapter")
+try:
+    from .adapter import TokenizerAdapter
+except (ModuleNotFoundError, ImportError, AttributeError):
+    TokenizerAdapter = None  # type: ignore[assignment]
+else:  # pragma: no cover - import succeeded
+    __all__.append("TokenizerAdapter")
 
 try:
     from . import sentencepiece_adapter
