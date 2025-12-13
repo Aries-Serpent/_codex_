@@ -5,7 +5,7 @@ __all__: list[str] = []
 try:
     from .loader import load_tokenizer
 except (ModuleNotFoundError, ImportError, AttributeError):
-    # AttributeError: torch stub raises this when PyTorch not installed
+    # AttributeError: torch stub (torch/__init__.py) raises this when PyTorch not installed
     # ImportError/ModuleNotFoundError: tokenizers/transformers missing
     load_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
@@ -14,8 +14,8 @@ else:  # pragma: no cover - import succeeded
 try:
     from .adapter import TokenizerAdapter
 except (ModuleNotFoundError, ImportError, AttributeError):
-    # AttributeError: torch stub raises this when PyTorch not installed
-    # ImportError/ModuleNotFoundError: codex_ml dependencies missing
+    # AttributeError: torch stub (torch/__init__.py) raises this when PyTorch not installed
+    # ImportError/ModuleNotFoundError: tokenizers/transformers missing
     TokenizerAdapter = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("TokenizerAdapter")
@@ -23,7 +23,8 @@ else:  # pragma: no cover - import succeeded
 try:
     from . import sentencepiece_adapter
 except (ModuleNotFoundError, ImportError, AttributeError):
-    # Catch broad exceptions for robustness with optional dependencies
+    # ImportError/ModuleNotFoundError: sentencepiece missing
+    # AttributeError: potential stub-related issues in dependency chain
     sentencepiece_adapter = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("sentencepiece_adapter")
@@ -31,7 +32,8 @@ else:  # pragma: no cover - import succeeded
 try:
     from . import train_tokenizer
 except (ModuleNotFoundError, ImportError, AttributeError):
-    # Catch broad exceptions for robustness with optional dependencies
+    # ImportError/ModuleNotFoundError: tokenizers/hydra missing
+    # AttributeError: potential stub-related issues in dependency chain
     train_tokenizer = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("train_tokenizer")
@@ -39,7 +41,8 @@ else:  # pragma: no cover - import succeeded
 try:
     from . import cli
 except (ModuleNotFoundError, ImportError, AttributeError):
-    # Catch broad exceptions for robustness with optional dependencies
+    # ImportError/ModuleNotFoundError: optional CLI dependencies missing
+    # AttributeError: potential stub-related issues in dependency chain
     cli = None  # type: ignore[assignment]
 else:  # pragma: no cover - import succeeded
     __all__.append("cli")
