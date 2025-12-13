@@ -22,11 +22,11 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test PhysicsGuidedDeveloperOrchestrator initializes correctly."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         assert orchestrator.app_name == "test_app"
-        assert orchestrator.app_type == AppType.CLI
+        assert orchestrator.app_type == AppType.PYTHON_CLI
         assert isinstance(orchestrator.components, dict)
         assert len(orchestrator.physics_log) == 0
     
@@ -34,7 +34,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test adding a component."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.WEB
+            app_type=AppType.PYTHON_WEB
         )
         
         orchestrator.add_component(
@@ -52,7 +52,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test adding a component with dependencies."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -69,7 +69,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test removing a component."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -88,7 +88,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test removing a component that doesn't exist."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         removed = orchestrator.remove_component("does_not_exist.py")
@@ -99,7 +99,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test retrieving a component."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -116,7 +116,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test retrieving a component that doesn't exist."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         component = orchestrator.get_component("missing.py")
@@ -127,7 +127,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test listing all components."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component("file1.py", "pass")
@@ -143,7 +143,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test exporting app to a directory."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -162,7 +162,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test export respects no-overwrite flag."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -184,7 +184,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test export with overwrite flag."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(
@@ -205,7 +205,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test export with invalid output directory."""
         orchestrator = PhysicsGuidedDeveloperOrchestrator(
             app_name="test_app",
-            app_type=AppType.CLI
+            app_type=AppType.PYTHON_CLI
         )
         
         orchestrator.add_component(

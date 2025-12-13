@@ -29,7 +29,54 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
-import numpy as np
+# Optional numpy import with graceful fallback
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    # Provide minimal numpy-like interface for type hints
+    NUMPY_AVAILABLE = False
+    
+    class _NumpyStub:
+        """Minimal numpy stub for when numpy is not available."""
+        ndarray = List  # Type hint fallback
+        
+        @staticmethod
+        def ones(n, dtype=None):
+            """Stub for np.ones"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def sqrt(x):
+            """Stub for np.sqrt"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def zeros(shape, dtype=None):
+            """Stub for np.zeros"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def exp(x):
+            """Stub for np.exp"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def dot(a, b):
+            """Stub for np.dot"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def conj(x):
+            """Stub for np.conj"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+        
+        @staticmethod
+        def real(x):
+            """Stub for np.real"""
+            raise ImportError("numpy is required for quantum game theory. Install with: pip install numpy")
+    
+    np = _NumpyStub()
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +88,7 @@ __all__ = [
     "ClassicalGameEngine",
     "QuantumInspiredGameEngine",
     "BlueRedTeamSimulator",
+    "NUMPY_AVAILABLE",
 ]
 
 
@@ -63,10 +111,19 @@ class StrategyState:
     """
     team: TeamType
     strategies: List[str]
-    probabilities: Optional[np.ndarray] = None
-    wavefunction: Optional[np.ndarray] = None
+    probabilities: Optional[Any] = None  # np.ndarray when numpy available
+    wavefunction: Optional[Any] = None   # np.ndarray when numpy available
     
     def __post_init__(self):
+        if not NUMPY_AVAILABLE:
+            # Lightweight fallback without numpy
+            n = len(self.strategies)
+            if self.probabilities is None:
+                self.probabilities = [1.0/n] * n
+            if self.wavefunction is None:
+                self.wavefunction = [1.0/math.sqrt(n)] * n
+            return
+        
         n = len(self.strategies)
         if self.probabilities is None:
             # Uniform classical distribution
@@ -81,23 +138,37 @@ class StrategyState:
     
     def normalize_wavefunction(self) -> None:
         """Ensure wavefunction is normalized"""
+        if not NUMPY_AVAILABLE:
+            # Simple normalization for list-based fallback
+            norm = math.sqrt(sum(abs(x)**2 for x in self.wavefunction))
+            if norm > 1e-10:
+                self.wavefunction = [x/norm for x in self.wavefunction]
+            return
+        
         norm = np.sqrt(np.vdot(self.wavefunction, self.wavefunction).real)
         if norm > 1e-10:
             self.wavefunction = self.wavefunction / norm
     
-    def get_measurement_probabilities(self) -> np.ndarray:
+    def get_measurement_probabilities(self) -> Any:
         """Get probabilities from wavefunction (Born rule)"""
+        if not NUMPY_AVAILABLE:
+            return [abs(x)**2 for x in self.wavefunction]
         return np.abs(self.wavefunction) ** 2
     
-    def collapse_to_strategy_index(self, rng: Optional[np.random.Generator] = None) -> int:
+    def collapse_to_strategy_index(self, rng: Optional[Any] = None) -> int:
         """Measure the wavefunction, returning a strategy index.
         
         Args:
-            rng: Random number generator for reproducibility
+            rng: Random number generator for reproducibility (numpy.random.Generator if available)
             
         Returns:
             Index of the selected strategy (use strategies[index] for name)
         """
+        if not NUMPY_AVAILABLE:
+            import random
+            probs = self.get_measurement_probabilities()
+            return random.choices(range(len(probs)), weights=probs)[0]
+        
         if rng is None:
             rng = np.random.default_rng()
         probs = self.get_measurement_probabilities()
