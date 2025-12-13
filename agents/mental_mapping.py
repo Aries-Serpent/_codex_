@@ -20,7 +20,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 class NodeType(Enum):
@@ -145,6 +145,16 @@ class MentalNode:
         d['node_type'] = self.node_type.value
         d['connected_nodes'] = list(self.connected_nodes)
         return d
+    
+    def __hash__(self) -> int:
+        """Make MentalNode hashable for use in sets and as dict keys."""
+        return hash(self.node_id)
+    
+    def __eq__(self, other) -> bool:
+        """Equality based on node_id."""
+        if not isinstance(other, MentalNode):
+            return False
+        return self.node_id == other.node_id
 
 
 @dataclass
@@ -753,6 +763,110 @@ class MentalMappingModel:
                         lines.extend(traverse(connected_id, depth + 1))
         
         return "\n".join(traverse(start_node_id))
+    
+    def cluster_nodes(self, similarity_threshold: float = 0.7) -> Dict[str, List[str]]:
+        """
+        Cluster nodes based on similarity of content and connections.
+        
+        Args:
+            similarity_threshold: Minimum similarity to be in same cluster (0-1)
+        
+        Returns:
+            Dictionary mapping cluster_id to list of node_ids
+        """
+        clusters = {}
+        clustered_nodes = set()
+        cluster_id = 0
+        
+        for node_id, node in self.nodes.items():
+            if node_id in clustered_nodes:
+                continue
+            
+            # Start new cluster
+            cluster_key = f"cluster_{cluster_id}"
+            clusters[cluster_key] = [node_id]
+            clustered_nodes.add(node_id)
+            
+            # Find similar nodes
+            for other_id, other_node in self.nodes.items():
+                if other_id in clustered_nodes:
+                    continue
+                
+                # Simple similarity: same type and connected
+                if (node.node_type == other_node.node_type and
+                    (other_id in node.connected_nodes or 
+                     node_id in other_node.connected_nodes)):
+                    clusters[cluster_key].append(other_id)
+                    clustered_nodes.add(other_id)
+            
+            cluster_id += 1
+        
+        return clusters
+    
+    def get_subgraph(self, node_ids: List[str]) -> Dict[str, Any]:
+        """
+        Extract a subgraph containing only specified nodes.
+        
+        Args:
+            node_ids: List of node IDs to include in subgraph
+        
+        Returns:
+            Dictionary with 'nodes' and 'edges' for the subgraph
+        """
+        node_id_set = set(node_ids)
+        subgraph = {
+            'nodes': {},
+            'edges': {}
+        }
+        
+        # Add nodes
+        for node_id in node_ids:
+            if node_id in self.nodes:
+                subgraph['nodes'][node_id] = self.nodes[node_id].to_dict()
+        
+        # Add edges that connect nodes within the subgraph
+        for edge_id, edge in self.edges.items():
+            if edge.source_id in node_id_set and edge.target_id in node_id_set:
+                subgraph['edges'][edge_id] = edge.to_dict()
+        
+        return subgraph
+    
+    def shortest_path(self, start_id: str, end_id: str) -> Optional[List[str]]:
+        """
+        Find shortest path between two nodes using BFS.
+        
+        Args:
+            start_id: Starting node ID
+            end_id: Ending node ID
+        
+        Returns:
+            List of node IDs forming the path, or None if no path exists
+        """
+        if start_id not in self.nodes or end_id not in self.nodes:
+            return None
+        
+        if start_id == end_id:
+            return [start_id]
+        
+        # BFS to find shortest path
+        from collections import deque
+        
+        queue = deque([(start_id, [start_id])])
+        visited = {start_id}
+        
+        while queue:
+            current_id, path = queue.popleft()
+            current_node = self.nodes[current_id]
+            
+            for neighbor_id in current_node.connected_nodes:
+                if neighbor_id == end_id:
+                    return path + [neighbor_id]
+                
+                if neighbor_id not in visited:
+                    visited.add(neighbor_id)
+                    queue.append((neighbor_id, path + [neighbor_id]))
+        
+        return None  # No path found
     
     def save_mental_map(self, output_path: Path) -> None:
         """Save the complete mental map to JSON"""

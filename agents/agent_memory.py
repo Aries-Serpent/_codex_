@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import sqlite3
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -338,8 +339,60 @@ class AgentMemory:
             
             conn.commit()
     
-    def store_memory(self, entry: MemoryEntry) -> None:
-        """Store a memory entry."""
+    def store_memory(self, entry=None, **kwargs) -> None:
+        """
+        Store a memory entry.
+        
+        Args:
+            entry: MemoryEntry object, or None if using kwargs
+            **kwargs: Alternative way to provide memory data (backward compatibility)
+                     Accepts: key, value, category, content, context, etc.
+        """
+        # Handle backward compatibility: dict or kwargs
+        if entry is None:
+            # Create MemoryEntry from kwargs
+            # Support both old style (key, value) and new style (explicit fields)
+            if 'key' in kwargs and 'value' in kwargs:
+                # Old style: key-value pair
+                entry = MemoryEntry(
+                    memory_id=kwargs.get('key', str(uuid.uuid4())),
+                    category=kwargs.get('category', 'fact'),
+                    content=str(kwargs.get('value', '')),
+                    context=kwargs.get('context', {}),
+                    confidence=kwargs.get('confidence', 0.8),
+                    tags=kwargs.get('tags', []),
+                    related_memories=kwargs.get('related_memories', [])
+                )
+            else:
+                # New style: explicit MemoryEntry fields
+                entry = MemoryEntry(
+                    memory_id=kwargs.get('memory_id', str(uuid.uuid4())),
+                    category=kwargs.get('category', 'fact'),
+                    content=kwargs.get('content', ''),
+                    context=kwargs.get('context', {}),
+                    confidence=kwargs.get('confidence', 0.8),
+                    access_count=kwargs.get('access_count', 0),
+                    last_accessed=kwargs.get('last_accessed'),
+                    created_at=kwargs.get('created_at', datetime.now().isoformat()),
+                    tags=kwargs.get('tags', []),
+                    related_memories=kwargs.get('related_memories', [])
+                )
+        elif isinstance(entry, dict):
+            # Handle dict input
+            entry = MemoryEntry(
+                memory_id=entry.get('memory_id', entry.get('key', str(uuid.uuid4()))),
+                category=entry.get('category', 'fact'),
+                content=entry.get('content', str(entry.get('value', ''))),
+                context=entry.get('context', {}),
+                confidence=entry.get('confidence', 0.8),
+                access_count=entry.get('access_count', 0),
+                last_accessed=entry.get('last_accessed'),
+                created_at=entry.get('created_at', datetime.now().isoformat()),
+                tags=entry.get('tags', []),
+                related_memories=entry.get('related_memories', [])
+            )
+        
+        # Store the entry
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO memories 
