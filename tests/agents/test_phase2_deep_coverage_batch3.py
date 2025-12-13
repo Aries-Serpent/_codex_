@@ -139,7 +139,6 @@ class TestPhase3_Distributed_CurrentBounds:
         # Different nodes may have different c_eff based on latency
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_network_latency_derived_c_eff(self):
         """Test c_eff derived from network latency measurements"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -148,7 +147,6 @@ class TestPhase3_Distributed_CurrentBounds:
         # c_eff = distance / latency
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_distributed_flow_conservation(self):
         """Test flow conservation across distributed nodes"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -165,7 +163,6 @@ class TestPhase3_Transactional_Semantics:
     Tunnel into commit-dimension for transactional operations
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_transactional_state_change(self):
         """Test all-or-nothing state changes"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -181,8 +178,6 @@ class TestPhase3_Transactional_Semantics:
         )
         assert success is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_rollback_on_failure(self):
         """Test rollback when transaction fails"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -202,7 +197,6 @@ class TestPhase3_Transactional_Semantics:
             # Expected rollback
             assert True
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_coordinated_commit(self):
         """Test coordinated commit across entangled components"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -216,7 +210,6 @@ class TestPhase3_Transactional_Semantics:
         committed = state.commit_entangled_update()
         assert committed is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_feature_flag_propagation(self):
         """Test feature flag propagation (Eq #62)"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -406,7 +399,6 @@ class TestPhase3_InvariantValidation:
         # All currents must respect effective light speed
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_conservation_across_boundaries(self):
         """Test conservation laws across module boundaries"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -421,7 +413,6 @@ class TestPhase3_EdgeCases_Distributed:
     Edge cases for distributed and entangled systems
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_partial_network_failure(self):
         """Test handling partial network failures"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -456,7 +447,6 @@ class TestPhase3_EdgeCases_Distributed:
         # Should work but without correlations
         assert result is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_shard_isolation_on_failure(self):
         """Test shard isolation when consistency fails"""
         from agents.agent_memory import AgentMemory
@@ -471,7 +461,6 @@ class TestPhase3_Performance_Distributed:
     Performance tests for distributed operations
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_parallel_entangled_measurements(self):
         """Test parallel measurements on entangled states"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -486,7 +475,6 @@ class TestPhase3_Performance_Distributed:
         results = [s.measure() for s in states]
         assert len(results) == 10
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_distributed_aggregation_performance(self):
         """Test performance of distributed aggregation"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -496,7 +484,6 @@ class TestPhase3_Performance_Distributed:
         # Should handle multiple orchestrators efficiently
         assert len(orchestrators) == 5
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_bulk_transactional_updates(self):
         """Test bulk transactional updates"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState

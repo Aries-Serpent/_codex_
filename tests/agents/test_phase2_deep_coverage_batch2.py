@@ -286,7 +286,6 @@ class TestPhase2_AgentMemory_Advanced:
         results = memory.batch_retrieve(["key1", "key2", "key3"])
         assert len(results) == 3
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_memory_statistics(self):
         """Test memory usage statistics"""
         from agents.agent_memory import AgentMemory
@@ -306,7 +305,6 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
     Tunnel into generation-dimension for advanced orchestration
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_code_generation(self):
         """Test code generation from specification"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -315,7 +313,6 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         code = orchestrator.generate_code(spec="Simple calculator class")
         assert code is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_code_validation(self):
         """Test code validation functionality"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -324,7 +321,6 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         valid = orchestrator.validate_code(code="def hello(): return 'world'")
         assert valid is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_task_prioritization(self):
         """Test task prioritization using energy landscape (Eq #8)"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -339,7 +335,6 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         prioritized = orchestrator.prioritize_tasks(tasks)
         assert prioritized is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_workflow_execution(self):
         """Test executing development workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -348,7 +343,6 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         result = orchestrator.execute_workflow(workflow_name="simple_build")
         assert result is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_dependency_resolution(self):
         """Test dependency resolution for tasks"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator

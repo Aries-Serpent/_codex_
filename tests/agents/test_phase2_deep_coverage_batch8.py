@@ -22,7 +22,6 @@ class TestPhase2_DeveloperOrchestrator:
     Tunnel into orchestration-dimension
     """
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_developer_orchestrator_initialization(self):
         """Test DeveloperOrchestrator initialization"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -30,7 +29,6 @@ class TestPhase2_DeveloperOrchestrator:
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_create_workflow(self):
         """Test creating a workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -40,7 +38,6 @@ class TestPhase2_DeveloperOrchestrator:
             workflow = orchestrator.create_workflow(name="test_workflow")
             assert workflow is not None
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_add_task_to_workflow(self):
         """Test adding task to workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -51,7 +48,6 @@ class TestPhase2_DeveloperOrchestrator:
             orchestrator.add_task(task)
             assert True
 
-    @pytest.mark.skip(reason="Method doesn't exist")
     def test_execute_workflow(self):
         """Test executing a workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator

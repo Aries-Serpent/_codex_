@@ -609,6 +609,10 @@ class AgentMemory:
             'total_accesses': total_accesses,
         }
     
+    def statistics(self) -> Dict[str, Any]:
+        """Alias for get_memory_stats (backward compatibility)."""
+        return self.get_memory_stats()
+    
     def search(self, query: str = None, **kwargs) -> List[MemoryEntry]:
         """
         Search memories with text query (alias for search_memories).
