@@ -62,7 +62,6 @@ class TestPhase2_MomentumOperators:
         conserved = orchestrator.check_energy_conservation(path)
         assert isinstance(conserved, bool)
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_momentum_operator_eigenvalues(self):
         """Test momentum operator eigenvalue calculation"""
         from agents.physics_orchestrator import QuantumOperator
@@ -72,7 +71,6 @@ class TestPhase2_MomentumOperators:
         # Verify operator properties
         assert hasattr(op, 'grid_size')
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_gradient_computation(self):
         """Test gradient computation for momentum (∇ψ)"""
         from agents.physics_orchestrator import QuantumOperator
@@ -114,7 +112,6 @@ class TestPhase2_EnergyOperators:
         if hasattr(H, 'shape'):
             assert H.shape[0] == H.shape[1]
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_double_well_hamiltonian(self):
         """Test double-well potential Hamiltonian"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -123,7 +120,6 @@ class TestPhase2_EnergyOperators:
         H = evolver.double_well_hamiltonian(barrier_height=5.0, separation=2.0)
         assert H is not None
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_time_evolution_operator(self):
         """Test time evolution operator e^{-iĤt/ħ} (Eq #20)"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -135,7 +131,6 @@ class TestPhase2_EnergyOperators:
             evolved = evolver.evolve(initial_state, time=0.1)
             assert evolved is not None
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_energy_eigenvalues(self):
         """Test computing energy eigenvalues"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -371,7 +366,6 @@ class TestPhase2_QuantumOperatorAlgebra:
         # Eigenvalues should be ±1
         assert set(np.round(eigenvalues).astype(int)) == {-1, 1}
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_unitary_operator(self):
         """Test unitary operator Û†Û = I"""
         # Rotation operator
@@ -381,14 +375,12 @@ class TestPhase2_QuantumOperatorAlgebra:
         identity = U.conj().T @ U
         assert np.allclose(identity, np.eye(2))
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_operator_trace(self):
         """Test operator trace Tr(Â)"""
         A = np.array([[1, 2], [3, 4]])
         trace = np.trace(A)
         assert trace == 5  # 1 + 4 = 5
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_density_matrix(self):
         """Test density matrix ρ = |ψ⟩⟨ψ|"""
         psi = np.array([1/np.sqrt(2), 1/np.sqrt(2)])
@@ -404,7 +396,6 @@ class TestPhase2_AdvancedHamiltonians:
     Tunnel into Hamiltonian-dimension
     """
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_harmonic_oscillator_energy_levels(self):
         """Test E_n = ħω(n + 1/2)"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -419,7 +410,6 @@ class TestPhase2_AdvancedHamiltonians:
             # Should be approximately ħω (ħ=1 in natural units)
             assert abs(spacing - omega) < 0.5
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_hamiltonian_time_independence(self):
         """Test time-independent Hamiltonian"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -431,7 +421,6 @@ class TestPhase2_AdvancedHamiltonians:
         if hasattr(H1, 'shape') and hasattr(H2, 'shape'):
             assert np.allclose(H1, H2)
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_potential_energy_operator(self):
         """Test potential energy operator V̂"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -441,7 +430,6 @@ class TestPhase2_AdvancedHamiltonians:
             V = evolver.potential_operator(potential_function=lambda x: x**2)
             assert V is not None
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_kinetic_energy_operator(self):
         """Test kinetic energy operator T̂ = -ħ²∇²/2m"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -451,7 +439,6 @@ class TestPhase2_AdvancedHamiltonians:
             T = evolver.kinetic_operator()
             assert T is not None
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_hamiltonian_hermiticity(self):
         """Test Ĥ† = Ĥ (Hamiltonian is Hermitian)"""
         from agents.physics_orchestrator import HamiltonianEvolver

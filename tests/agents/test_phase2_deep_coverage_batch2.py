@@ -22,7 +22,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
     Tunnel into spinor-dimension for component alignment
     """
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_diffusion_flow_model_advanced(self):
         """Test DiffusionFlowModel with advanced parameters"""
         from agents.physics_orchestrator import DiffusionFlowModel
@@ -31,7 +30,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         assert model is not None
         assert hasattr(model, "diffusion_coefficient")
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization"""
         from agents.physics_orchestrator import EnergyLandscape
@@ -39,7 +37,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         landscape = EnergyLandscape()
         assert landscape is not None
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_energy_landscape_add_potential(self):
         """Test adding potential wells to landscape"""
         from agents.physics_orchestrator import EnergyLandscape
@@ -48,7 +45,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         landscape.add_state("state", energy=10.0)
         assert True  # Potential added successfully
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_swarm_intelligence_initialization(self):
         """Test SwarmIntelligence initialization"""
         from agents.physics_orchestrator import SwarmIntelligence

@@ -52,7 +52,6 @@ class TestPhase2_APIMismatches:
         assert isinstance(complex_value, complex)
         assert isinstance(float_value, (float, np.floating))
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_return_type_normalization(self):
         """Test normalizing return types"""
         # Some functions may return None, [], or False
@@ -68,7 +67,6 @@ class TestPhase2_PropertyAccess:
     """
 
     @pytest.mark.skip(reason="HamiltonianEvolver API changed")
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_diffusion_flow_model_properties(self):
         """Test DiffusionFlowModel property access"""
         from agents.physics_orchestrator import DiffusionFlowModel
@@ -78,7 +76,6 @@ class TestPhase2_PropertyAccess:
         assert model.diffusion_coefficient == 0.5
 
     @pytest.mark.skip(reason="HamiltonianEvolver API changed")
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_energy_landscape_properties(self):
         """Test EnergyLandscape property access"""
         from agents.physics_orchestrator import EnergyLandscape
@@ -87,7 +84,6 @@ class TestPhase2_PropertyAccess:
         assert hasattr(landscape, 'temperature')
         assert landscape.temperature == 1.5
 
-    @pytest.mark.skip(reason="Attribute name changed")
     def test_swarm_intelligence_properties(self):
         """Test SwarmIntelligence property access"""
         from agents.physics_orchestrator import SwarmIntelligence
