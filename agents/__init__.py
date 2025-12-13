@@ -5,6 +5,9 @@ This package contains physics-inspired orchestrators and specialized agents
 that use game theory, quantum mechanics, and physical principles to make
 optimal decisions.
 
+Version: 0.0.0
+Changelog: See CHANGELOG_AGENTS.md for API changes and version history.
+
 Modules:
     physics_orchestrator: Physics-inspired decision making with ASSESS → DELIBERATE → OPTIMIZE → ACT workflow
         - Core: PhysicsInspiredOrchestrator, ActionPath, ForceVector, DecisionState
@@ -49,6 +52,8 @@ Usage:
     # Workflow navigation
     from agents import WorkflowNavigator, Workflow
 """
+
+__version__ = "0.0.0"
 
 # Physics-inspired orchestration
 from .physics_orchestrator import (
@@ -125,6 +130,8 @@ from .workflow_navigator import (
 )
 
 __all__ = [
+    # Version
+    "__version__",
     # Physics orchestrator - Core
     "ActionPath",
     "ActionType",
