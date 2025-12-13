@@ -98,7 +98,6 @@ class TestPhase2_PropertyAccess:
         assert hasattr(evolver, 'grid_size')
         assert evolver.grid_size == 32
 
-    @pytest.mark.skip(reason="API changed")
     def test_chaotic_attractor_properties(self):
         """Test ChaoticAttractor property access"""
         from agents.advanced_physics_calculators import ChaoticAttractor
@@ -115,7 +114,6 @@ class TestPhase2_InitializationVariants:
     Tunnel into initialization-dimension
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_physics_orchestrator_default_init(self):
         """Test PhysicsOrchestrator with defaults"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -123,7 +121,6 @@ class TestPhase2_InitializationVariants:
         orch = PhysicsOrchestrator()
         assert orch is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_physics_orchestrator_custom_init(self):
         """Test PhysicsOrchestrator with custom params"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -132,7 +129,6 @@ class TestPhase2_InitializationVariants:
         orch = PhysicsOrchestrator()
         assert orch is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_quantum_operator_grid_sizes(self):
         """Test QuantumOperator with different grid sizes"""
         from agents.physics_orchestrator import QuantumOperator

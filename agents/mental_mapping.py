@@ -1076,6 +1076,46 @@ class MentalMappingModel:
         
         print(f"\n📂 Mental map loaded from: {input_path}")
         print(f"   Nodes: {len(self.nodes)}, Edges: {len(self.edges)}")
+    
+    def calculate_metrics(self) -> Dict[str, Any]:
+        """
+        Calculate graph metrics for the mental map.
+        
+        Returns:
+            Dictionary with graph metrics
+        """
+        return {
+            'num_nodes': len(self.nodes),
+            'num_edges': len(self.edges),
+            'density': len(self.edges) / max(len(self.nodes) * (len(self.nodes) - 1) / 2, 1),
+            'avg_degree': sum(len(n.connected_nodes) for n in self.nodes.values()) / max(len(self.nodes), 1),
+            'nodes_by_type': {
+                node_type: len(ids) 
+                for node_type, ids in self.nodes_by_type.items()
+            }
+        }
+    
+    def get_node_centrality(self, node_id: str) -> float:
+        """
+        Calculate centrality score for a node (degree centrality).
+        
+        Args:
+            node_id: Node ID to calculate centrality for
+            
+        Returns:
+            Centrality score (0.0 to 1.0)
+        """
+        if node_id not in self.nodes:
+            return 0.0
+        
+        node = self.nodes[node_id]
+        num_nodes = len(self.nodes)
+        
+        if num_nodes <= 1:
+            return 0.0
+        
+        # Degree centrality: connections / max possible connections
+        return len(node.connected_nodes) / (num_nodes - 1)
 
 
 # Example usage

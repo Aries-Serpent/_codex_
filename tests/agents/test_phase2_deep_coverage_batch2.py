@@ -68,7 +68,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
     Tunnel into population-dimension for game engines
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_game_engine_play_round(self):
         """Test playing a single game round"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -82,7 +81,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         result = engine.expected_payoff()
         assert result is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_game_engine_get_payoffs(self):
         """Test getting payoffs from current strategies"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -215,7 +213,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         subgraph = model.get_subgraph(nodes=[node1, node2])
         assert subgraph is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_graph_metrics(self):
         """Test graph metric calculations"""
         from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
@@ -228,7 +225,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         metrics = model.calculate_metrics()
         assert metrics is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_centrality_measures(self):
         """Test centrality calculation for nodes"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -246,7 +242,6 @@ class TestPhase2_AgentMemory_Advanced:
     Tunnel into retrieval-dimension for search and query
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_search(self):
         """Test searching memory with query"""
         from agents.agent_memory import AgentMemory
@@ -258,7 +253,6 @@ class TestPhase2_AgentMemory_Advanced:
         results = memory.search(query="keyword")
         assert results is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_filter(self):
         """Test filtering memory by criteria"""
         from agents.agent_memory import AgentMemory
@@ -270,7 +264,6 @@ class TestPhase2_AgentMemory_Advanced:
         filtered = memory.filter(criteria={"type": "concept"})
         assert filtered is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_update(self):
         """Test updating existing memory entries"""
         from agents.agent_memory import AgentMemory
@@ -282,7 +275,6 @@ class TestPhase2_AgentMemory_Advanced:
         result = memory.retrieve_memory("key1")
         assert result == "updated_value"
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_batch_operations(self):
         """Test batch store and retrieve"""
         from agents.agent_memory import AgentMemory
@@ -610,7 +602,6 @@ class TestPhase2_Performance_Optimization:
     Performance-related tests using optimization equations
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_batch_force_evaluation(self):
         """Test batch evaluation of forces"""
         from agents.physics_orchestrator import ForceVector
@@ -620,7 +611,6 @@ class TestPhase2_Performance_Optimization:
         ]
         assert len(forces) == 10
 
-    @pytest.mark.skip(reason="API changed")
     def test_large_game_matrix(self):
         """Test game with larger strategy space"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -634,7 +624,6 @@ class TestPhase2_Performance_Optimization:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
         assert engine is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_large_graph_operations(self):
         """Test operations on larger graphs"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -643,7 +632,6 @@ class TestPhase2_Performance_Optimization:
         nodes = [model.create_node(NodeType.PROBLEM, {}) for _ in range(50)]
         assert len(nodes) == 50
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_bulk_operations(self):
         """Test bulk memory operations"""
         from agents.agent_memory import AgentMemory

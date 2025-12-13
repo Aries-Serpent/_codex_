@@ -608,6 +608,68 @@ class AgentMemory:
             'average_confidence': avg_confidence,
             'total_accesses': total_accesses,
         }
+    
+    def search(self, query: str = None, **kwargs) -> List[MemoryEntry]:
+        """
+        Search memories with text query (alias for search_memories).
+        
+        Args:
+            query: Search query string
+            **kwargs: Additional search parameters
+            
+        Returns:
+            List of matching MemoryEntry objects
+        """
+        # Simple text search in content
+        if query:
+            memories = self.search_memories(**kwargs)
+            query_lower = query.lower()
+            return [m for m in memories if query_lower in m.content.lower()]
+        return self.search_memories(**kwargs)
+    
+    def filter(self, criteria: Dict[str, Any] = None, **kwargs) -> List[MemoryEntry]:
+        """
+        Filter memories by criteria dictionary.
+        
+        Args:
+            criteria: Filter criteria as dict (e.g., {"type": "concept"})
+            **kwargs: Additional filter parameters
+            
+        Returns:
+            List of matching MemoryEntry objects
+        """
+        if not criteria:
+            return self.search_memories(**kwargs)
+        
+        # Convert criteria to search parameters
+        category = criteria.get('type') or criteria.get('category')
+        return self.search_memories(category=category, **kwargs)
+    
+    def update(self, memory_id: str, new_content: str) -> bool:
+        """
+        Update an existing memory entry.
+        
+        Args:
+            memory_id: ID of memory to update
+            new_content: New content to store
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(
+                "SELECT * FROM memories WHERE memory_id = ?",
+                (memory_id,)
+            )
+            if not cursor.fetchone():
+                return False
+            
+            conn.execute(
+                "UPDATE memories SET content = ? WHERE memory_id = ?",
+                (new_content, memory_id)
+            )
+            conn.commit()
+            return True
 
 
 class AgentMemorySystem:
