@@ -141,7 +141,6 @@ class TestPhase2_FractalGeometry:
         # 1D line should have dimension close to 1
         assert 0.5 < dimension < 1.5
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_fractal_dimension_2d(self):
         """Test fractal dimension for 2D points"""
         from agents.advanced_physics_calculators import FractalAnalyzer

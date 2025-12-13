@@ -241,7 +241,6 @@ class TestPhase2_ErrorPropagation:
         sigma_f = abs(df_dx) * sigma_x
         assert sigma_f == 0.2
 
-    @pytest.mark.skip(reason="Assertion logic issue")
     def test_quadratic_error_propagation(self):
         """Test error propagation for f = x²"""
         x = 3.0

@@ -130,7 +130,6 @@ class TestPhase3_Distributed_CurrentBounds:
         # c_eff should be enforced in distributed settings
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_node_specific_c_eff(self):
         """Test node-specific effective speed of light"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -316,7 +315,6 @@ class TestPhase3_CrossModule_EntangledGroups:
         assert orchestrator is not None
         assert engine is not None
 
-    @pytest.mark.skip(reason="Integration test - complex setup needed")
     def test_entangled_memory_mental(self):
         """Test entangled memory + mental mapping"""
         from agents.agent_memory import AgentMemory
@@ -381,7 +379,6 @@ class TestPhase3_InvariantValidation:
     Invariant validation across distributed entangled systems
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_global_normalization(self):
         """Test Σρ = 1 globally (Eq #35)"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -390,7 +387,6 @@ class TestPhase3_InvariantValidation:
         # Total probability must be 1 globally
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_global_current_bound(self):
         """Test |j| ≤ c_eff globally (Eq #36)"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator

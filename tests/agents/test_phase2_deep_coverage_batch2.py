@@ -519,7 +519,6 @@ class TestPhase2_Integration_AdvancedPatterns:
         assert engine is not None
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="Integration test - complex setup needed")
     def test_memory_mental_integration(self):
         """Test agent memory + mental mapping integration"""
         from agents.agent_memory import AgentMemory

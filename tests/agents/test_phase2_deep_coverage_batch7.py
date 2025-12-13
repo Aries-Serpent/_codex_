@@ -22,7 +22,6 @@ class TestPhase2_AgentMemory:
     Tunnel into memory-dimension for knowledge persistence
     """
 
-    @pytest.mark.skip(reason="API changed")
     def test_agent_memory_initialization(self):
         """Test AgentMemory initialization"""
         from agents.agent_memory import AgentMemory
@@ -30,7 +29,6 @@ class TestPhase2_AgentMemory:
         memory = AgentMemory()
         assert memory is not None
 
-    @pytest.mark.skip(reason="API changed")
     def test_store_memory_item(self):
         """Test storing a memory item"""
         from agents.agent_memory import AgentMemory
@@ -41,7 +39,6 @@ class TestPhase2_AgentMemory:
             memory.store_memory(item)
             assert True
 
-    @pytest.mark.skip(reason="API changed")
     def test_retrieve_memory_item(self):
         """Test retrieving a memory item"""
         from agents.agent_memory import AgentMemory
@@ -54,7 +51,6 @@ class TestPhase2_AgentMemory:
             retrieved = memory.retrieve_memory(key)
             assert retrieved == value
 
-    @pytest.mark.skip(reason="API changed")
     def test_memory_search(self):
         """Test searching memory"""
         from agents.agent_memory import AgentMemory
