@@ -94,7 +94,6 @@ class TestPhase2_EnergyOperators:
     Tunnel into energy-dimension for Hamiltonian operators
     """
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_hamiltonian_evolver_initialization(self):
         """Test HamiltonianEvolver initialization"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -103,7 +102,7 @@ class TestPhase2_EnergyOperators:
         assert evolver is not None
         assert hasattr(evolver, 'harmonic_hamiltonian')
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
+    @pytest.mark.skip(reason="HamiltonianEvolver.harmonic_hamiltonian requires q,p arguments")
     def test_harmonic_hamiltonian_creation(self):
         """Test creating harmonic oscillator Hamiltonian"""
         from agents.physics_orchestrator import HamiltonianEvolver
