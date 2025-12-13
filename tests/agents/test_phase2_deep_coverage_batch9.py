@@ -22,7 +22,6 @@ class TestPhase2_PhysicsIntegration:
     Tunnel into integration-dimension
     """
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_physics_integration_initialization(self):
         """Test PhysicsIntegration initialization"""
         from agents.physics_integration import PhysicsIntegration
@@ -30,7 +29,6 @@ class TestPhase2_PhysicsIntegration:
         integration = PhysicsIntegration()
         assert integration is not None
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_orchestrator_coupling(self):
         """Test coupling between orchestrators (Eq #16)"""
         from agents.physics_integration import PhysicsIntegration
@@ -40,7 +38,6 @@ class TestPhase2_PhysicsIntegration:
             result = integration.couple_orchestrators(["orch1", "orch2"])
             assert result is not None
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_classical_orchestrator_access(self):
         """Test accessing classical orchestrator"""
         from agents.physics_integration import PhysicsIntegration
@@ -50,7 +47,6 @@ class TestPhase2_PhysicsIntegration:
             classical = integration.classical
             assert classical is not None
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_advanced_orchestrator_access(self):
         """Test accessing advanced orchestrator"""
         from agents.physics_integration import PhysicsIntegration
@@ -60,7 +56,6 @@ class TestPhase2_PhysicsIntegration:
             advanced = integration.advanced
             assert advanced is not None
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_sync_orchestrators(self):
         """Test synchronizing orchestrator states (Eq #3)"""
         from agents.physics_integration import PhysicsIntegration
@@ -70,7 +65,6 @@ class TestPhase2_PhysicsIntegration:
             integration.sync()
             assert True
 
-    @pytest.mark.skip(reason="PhysicsIntegration doesn't exist")
     def test_data_flow_between_modules(self):
         """Test data flow integration (Eq #5)"""
         from agents.physics_integration import PhysicsIntegration

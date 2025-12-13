@@ -69,7 +69,6 @@ class TestPhase2_DeveloperOrchestrator:
             orchestrator.resume(workflow_id="test")
             assert True
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_cancel_workflow(self):
         """Test canceling a workflow"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -79,7 +78,6 @@ class TestPhase2_DeveloperOrchestrator:
             orchestrator.cancel(workflow_id="test")
             assert True
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_get_workflow_status(self):
         """Test getting workflow status"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -96,7 +94,6 @@ class TestPhase2_WorkflowNavigator:
     Tunnel into workflow-dimension
     """
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_workflow_navigator_initialization(self):
         """Test WorkflowNavigator initialization"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -104,7 +101,6 @@ class TestPhase2_WorkflowNavigator:
         navigator = WorkflowNavigator()
         assert navigator is not None
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_navigate_to_step(self):
         """Test navigating to specific step"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -114,7 +110,6 @@ class TestPhase2_WorkflowNavigator:
             navigator.navigate_to(step_id="step1")
             assert True
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_get_current_step(self):
         """Test getting current step"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -124,7 +119,6 @@ class TestPhase2_WorkflowNavigator:
             step = navigator.current_step()
             assert isinstance(step, (dict, type(None)))
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_get_next_step(self):
         """Test getting next step"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -134,7 +128,6 @@ class TestPhase2_WorkflowNavigator:
             step = navigator.next_step()
             assert isinstance(step, (dict, str, type(None)))
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_get_previous_step(self):
         """Test getting previous step"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -144,7 +137,6 @@ class TestPhase2_WorkflowNavigator:
             step = navigator.previous_step()
             assert isinstance(step, (dict, type(None)))
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_list_workflows(self):
         """Test listing available workflows"""
         from agents.workflow_navigator import WorkflowNavigator
@@ -154,7 +146,6 @@ class TestPhase2_WorkflowNavigator:
             workflows = navigator.list_workflows()
             assert isinstance(workflows, (list, type(None)))
 
-    @pytest.mark.skip(reason="WorkflowNavigator doesn't exist")
     def test_get_workflow_suggestions(self):
         """Test getting workflow suggestions"""
         from agents.workflow_navigator import WorkflowNavigator
