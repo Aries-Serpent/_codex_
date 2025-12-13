@@ -473,4 +473,128 @@
   - “Add import probe for entanglement test harness; CI ‘minimal-import+entanglement-test’: ensure harness imports; unify exceptions in test runner (EntanglementTestImportError).”
   - “Update OTHER imports in testing modules to share the same exception taxonomy.”
 - Future evolution:
+
   - Distributed entanglement monitors; CI rollback rehearsals; cross-node correlation validation.
+
+ ---
+
+ ```yml
+name: Fast Invariants CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - copilot/sub-pr-2470
+      - main
+
+jobs:
+  fast-invariants:
+    name: Import/Init + Conservation/Bounds (Fast)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          # Minimal deps if full requirements aren't available
+          pip install numpy pytest
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH" >> $GITHUB_ENV
+
+      - name: Sanity: Import core orchestrator
+        run: |
+          python - <<'PY'
+          try:
+              from codex.quantum_orchestrator import create_orchestrator
+              print("✓ import codex.quantum_orchestrator")
+          except Exception as e:
+              print("✗ import failed:", e)
+              raise
+          PY
+
+      - name: Sanity: Import optional QFT (if available)
+        run: |
+          python - <<'PY'
+          try:
+              from codex.quantum_orchestrator import QFT_AVAILABLE
+              print("QFT_AVAILABLE:", QFT_AVAILABLE)
+              if QFT_AVAILABLE:
+                  from codex.quantum_orchestrator.qft import path_integral, entanglement, second_quantization
+                  print("✓ QFT submodules import")
+          except Exception as e:
+              # Non-fatal; QFT is optional. Fail only if partial imports break core.
+              print("⚠ QFT import issue (non-fatal):", e)
+          PY
+
+      - name: Fast invariants: continuity + normalization + bounds
+        run: |
+          python - <<'PY'
+          import math
+          try:
+              # Minimal orchestration to build a tiny system
+              from codex.quantum_orchestrator import create_orchestrator
+              orch = create_orchestrator(max_throughput=10.0, work_granularity=1.0, time_step=0.05)
+              # Add a small representative set of tasks
+              for i in range(5):
+                  orch.add_task(task_id=f"task_{i}", name=f"Task {i}", priority=0.5, complexity=1.0, rest_mass=1.0, deadline=5.0)
+
+              # Run 2–3 Euler steps only (fast)
+              results = orch.run(max_iterations=3)
+
+              status = orch.get_task_status()
+
+              # Invariants snapshot
+              total_prob = sum(info.get('probability', 0.0) for info in status.values())
+              max_speed = max(info.get('speed', 0.0) for info in status.values())
+              max_current = max(info.get('current_magnitude', 0.0) for info in status.values())
+
+              # Checks
+              tol = 1e-6
+              assert abs(total_prob - 1.0) < 1e-3, f"Normalization failed: Σρ={total_prob}"
+              assert max_speed < 1.0, f"Subluminal bound violated: v_max={max_speed}"
+              assert max_current <= 1.0 + tol, f"Dirac current bound violated: j_max={max_current}"
+
+              print("✓ Fast invariants passed:",
+                    f"Σρ≈{total_prob:.6f}, v_max={max_speed:.6f}, j_max={max_current:.6f}")
+
+          except AssertionError as ae:
+              print("✗ Invariant assertion failed:", ae)
+              raise
+          except Exception as e:
+              print("✗ Fast invariants step failed:", e)
+              raise
+          PY
+
+      - name: Optional metrics snapshot (non-blocking)
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          try:
+              from codex.quantum_orchestrator import create_observable_orchestrator
+              orch = create_observable_orchestrator(enable_logging=False)
+              for i in range(3):
+                  orch.orchestrator.add_task(task_id=f"m{i}", name=f"M {i}")
+              orch.run(max_iterations=2)
+              health = orch.get_health_status()
+              print("Health snapshot:", health)
+              print("✓ Metrics snapshot acquired (non-blocking)")
+          except Exception as e:
+              print("⚠ Metrics snapshot skipped:", e)
+          PY
+
+      - name: Summary
+        run: echo "✓ Fast Invariants CI complete (import/init + continuity/normalization/bounds)"
+ ```
