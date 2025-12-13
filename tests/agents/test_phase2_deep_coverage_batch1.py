@@ -130,7 +130,6 @@ class TestPhase2_QuantumGame_StateDimension:
         assert state.team == "blue"
         assert state.strategies is not None
 
-    @pytest.mark.skip(reason="PayoffOperator API changed")
     @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_quantum_game_state_basic(self):
         """Test QuantumGameState initialization"""
@@ -147,7 +146,6 @@ class TestPhase2_QuantumGame_StateDimension:
         assert game_state.red_state is not None
         assert game_state.entangled == False
 
-    @pytest.mark.skip(reason="PayoffOperator API changed")
     def test_payoff_operator_creation(self):
         """Test PayoffOperator with matrix and players"""
         from agents.quantum_game_theory import PayoffOperator

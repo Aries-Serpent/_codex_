@@ -63,17 +63,28 @@ class IssueSeverity(Enum):
 @dataclass
 class DetectedIssue:
     """A detected issue in the codebase or CI/CD pipeline."""
-    issue_id: str
     issue_type: IssueType
     severity: IssueSeverity
-    title: str
     description: str
+    issue_id: str = ""
+    title: str = ""
     location: Optional[str] = None
     file_path: Optional[Path] = None
     line_number: Optional[int] = None
     stack_trace: Optional[str] = None
     context: Dict[str, Any] = field(default_factory=dict)
+    details: Dict[str, Any] = field(default_factory=dict)  # Alias for context
     detected_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        if not self.issue_id:
+            self.issue_id = f"issue_{id(self)}"
+        if not self.title:
+            self.title = self.description[:50]
+        # Merge details into context if provided
+        if self.details:
+            self.context.update(self.details)
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -94,17 +105,32 @@ class DetectedIssue:
 @dataclass
 class RemediationAction:
     """An action to remediate a detected issue."""
-    action_id: str
-    issue_id: str
     action_type: str
     description: str
+    action_id: str = ""
+    issue_id: str = ""
     commands: List[str] = field(default_factory=list)
+    command: str = ""  # Alias for single command
     file_changes: Dict[str, str] = field(default_factory=dict)
     confidence: float = 0.8
     risk_level: float = 0.2
     requires_approval: bool = False
+    auto_apply: bool = True  # Inverse of requires_approval
     executed: bool = False
     success: Optional[bool] = None
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        if not self.action_id:
+            self.action_id = f"action_{id(self)}"
+        if not self.issue_id:
+            self.issue_id = "unknown"
+        # Handle command/commands aliasing
+        if self.command and not self.commands:
+            self.commands = [self.command]
+        # Handle auto_apply/requires_approval inverse relationship
+        if not self.auto_apply:
+            self.requires_approval = True
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -127,9 +153,18 @@ class DiagnosticResult:
     """Result of running diagnostics."""
     issues: List[DetectedIssue] = field(default_factory=list)
     suggested_actions: List[RemediationAction] = field(default_factory=list)
+    remediation_actions: List[RemediationAction] = field(default_factory=list)  # Alias
     health_score: float = 1.0
     diagnostics_run: List[str] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        # Use remediation_actions if provided, otherwise use suggested_actions
+        if self.remediation_actions and not self.suggested_actions:
+            self.suggested_actions = self.remediation_actions
+        elif self.suggested_actions and not self.remediation_actions:
+            self.remediation_actions = self.suggested_actions
     
     def to_dict(self) -> Dict[str, Any]:
         return {

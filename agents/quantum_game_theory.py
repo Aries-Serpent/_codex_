@@ -25,9 +25,9 @@ from __future__ import annotations
 
 import logging
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Optional numpy import with graceful fallback
 try:
@@ -196,10 +196,22 @@ class PayoffOperator:
     
     Attributes:
         payoff_matrix: Classical payoff matrix P[i,j]
-        team: Team this operator belongs to
+        team: Team this operator belongs to (or players list)
     """
     payoff_matrix: np.ndarray
-    team: TeamType
+    team: Union[TeamType, List[str]] = TeamType.BLUE
+    players: List[str] = field(default_factory=list)  # Alias for team
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        # If players list provided, convert to team
+        if self.players and not isinstance(self.team, TeamType):
+            self.team = self.players  # Store players list
+    
+    @property
+    def matrix(self) -> np.ndarray:
+        """Alias for payoff_matrix"""
+        return self.payoff_matrix
     
     @property
     def shape(self) -> Tuple[int, int]:

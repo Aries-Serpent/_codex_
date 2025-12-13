@@ -497,12 +497,20 @@ class FluidChannel:
     - Pressure (urgency)
     - Viscosity (resistance)
     """
-    channel_id: str
+    channel_id: str = ""
+    name: str = ""  # Alias for channel_id
     capacity: float = 100.0  # Maximum flow rate
     current_flow: float = 0.0
     pressure: float = 1.0
     viscosity: float = 0.1  # Resistance to flow
     cross_section: float = 1.0
+    
+    def __post_init__(self):
+        """Handle name/channel_id aliasing"""
+        if self.name and not self.channel_id:
+            self.channel_id = self.name
+        elif self.channel_id and not self.name:
+            self.name = self.channel_id
     
     def reynolds_number(self) -> float:
         """

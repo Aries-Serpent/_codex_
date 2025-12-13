@@ -109,7 +109,6 @@ class TestPhase2_SelfHealing:
         assert hasattr(IssueType, 'IMPORT_ERROR')
         assert hasattr(IssueType, 'DEPENDENCY_CONFLICT')
 
-    @pytest.mark.skip(reason="DetectedIssue API changed")
     def test_issue_severity_levels(self):
         """Test issue severity classification"""
         from agents.self_healing import IssueSeverity
@@ -119,7 +118,6 @@ class TestPhase2_SelfHealing:
         assert hasattr(IssueSeverity, 'MEDIUM')
         assert hasattr(IssueSeverity, 'LOW')
 
-    @pytest.mark.skip(reason="DetectedIssue API changed")
     def test_detected_issue_creation(self):
         """Test creating DetectedIssue"""
         from agents.self_healing import DetectedIssue, IssueType, IssueSeverity
@@ -134,7 +132,6 @@ class TestPhase2_SelfHealing:
         assert issue is not None
         assert issue.issue_type == IssueType.IMPORT_ERROR
 
-    @pytest.mark.skip(reason="RemediationAction API changed")
     def test_remediation_action_creation(self):
         """Test creating RemediationAction"""
         from agents.self_healing import RemediationAction
@@ -148,7 +145,6 @@ class TestPhase2_SelfHealing:
         assert action is not None
         assert action.action_type == "install_package"
 
-    @pytest.mark.skip(reason="DetectedIssue API changed")
     def test_diagnostic_result_structure(self):
         """Test DiagnosticResult structure"""
         from agents.self_healing import DiagnosticResult
@@ -161,7 +157,6 @@ class TestPhase2_SelfHealing:
         assert result is not None
         assert result.health_score == 1.0
 
-    @pytest.mark.skip(reason="DetectedIssue API changed")
     def test_calculate_health_score(self):
         """Test health score calculation"""
         from agents.self_healing import SelfHealingEngine
@@ -172,7 +167,6 @@ class TestPhase2_SelfHealing:
             score = engine._calculate_health_score([])
             assert score >= 0.9
 
-    @pytest.mark.skip(reason="DetectedIssue API changed")
     def test_suggest_remediation(self):
         """Test remediation suggestion"""
         from agents.self_healing import SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity

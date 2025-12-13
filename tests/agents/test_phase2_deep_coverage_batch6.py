@@ -172,7 +172,6 @@ class TestPhase2_FractalGeometry:
             result = analyzer.analyze_code_tree(tree)
             assert result is not None
 
-    @pytest.mark.skip(reason="FluidChannel API changed")
     def test_self_similar_patterns(self):
         """Test detection of self-similar patterns"""
         from agents.advanced_physics_calculators import FractalAnalyzer
@@ -191,7 +190,6 @@ class TestPhase2_FluidDynamics:
     Tunnel into flow-dimension for workflow modeling
     """
 
-    @pytest.mark.skip(reason="FluidChannel API changed")
     def test_fluid_channel_initialization(self):
         """Test FluidChannel initialization"""
         from agents.advanced_physics_calculators import FluidChannel
@@ -200,7 +198,6 @@ class TestPhase2_FluidDynamics:
         assert channel is not None
         assert channel.name == "test_channel"
 
-    @pytest.mark.skip(reason="FluidChannel API changed")
     def test_fluid_flow_scheduler_initialization(self):
         """Test FluidFlowScheduler initialization"""
         from agents.advanced_physics_calculators import FluidFlowScheduler
@@ -208,7 +205,6 @@ class TestPhase2_FluidDynamics:
         scheduler = FluidFlowScheduler()
         assert scheduler is not None
 
-    @pytest.mark.skip(reason="FluidChannel API changed")
     def test_add_channel(self):
         """Test adding channel to flow scheduler"""
         from agents.advanced_physics_calculators import FluidFlowScheduler, FluidChannel
