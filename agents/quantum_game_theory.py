@@ -104,23 +104,41 @@ class StrategyState:
     """Represents a strategy configuration for a team.
     
     Attributes:
-        team: Team identifier
-        strategies: List of strategy names
+        team: Team identifier (string or TeamType)
+        strategies: List of strategy names or np.array of probabilities
         probabilities: Classical probability distribution (optional)
         wavefunction: Quantum amplitude vector (optional)
     """
-    team: TeamType
-    strategies: List[str]
+    team: Union[TeamType, str]
+    strategies: Union[List[str], Any]  # Can be list of names or np.array
     probabilities: Optional[Any] = None  # np.ndarray when numpy available
     wavefunction: Optional[Any] = None   # np.ndarray when numpy available
     
     def __post_init__(self):
+        # Handle string team names
+        if isinstance(self.team, str):
+            # Keep as string for flexibility, but could convert to TeamType
+            pass
+        
+        # Handle strategies as np.array (probability distribution)
+        if NUMPY_AVAILABLE and hasattr(self.strategies, 'shape'):
+            # strategies is actually a probability/amplitude array
+            if self.probabilities is None:
+                self.probabilities = self.strategies
+            if self.wavefunction is None:
+                self.wavefunction = self.strategies
+            # Generate strategy names if needed
+            if isinstance(self.strategies, np.ndarray):
+                n = len(self.strategies)
+                self.strategies = [f"strategy_{i}" for i in range(n)]
+        
         if not NUMPY_AVAILABLE:
             # Lightweight fallback without numpy
-            n = len(self.strategies)
-            if self.probabilities is None:
-                self.probabilities = [1.0/n] * n
-            if self.wavefunction is None:
+            if isinstance(self.strategies, list):
+                n = len(self.strategies)
+                if self.probabilities is None:
+                    self.probabilities = [1.0/n] * n
+                if self.wavefunction is None:
                 self.wavefunction = [1.0/math.sqrt(n)] * n
             return
         

@@ -104,7 +104,6 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
         result = orchestrator.assess_situation(state)
         assert result is not None
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_diffusion_flow_model_init(self):
         """Test DiffusionFlowModel initialization"""
         from agents.physics_orchestrator import DiffusionFlowModel
@@ -119,7 +118,6 @@ class TestPhase2_QuantumGame_StateDimension:
     Tunnel into state-dimension for quantum game state APIs
     """
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_strategy_state_initialization(self):
         """Test StrategyState with correct parameters"""
         from agents.quantum_game_theory import StrategyState
@@ -130,7 +128,6 @@ class TestPhase2_QuantumGame_StateDimension:
         assert state.team == "blue"
         assert state.strategies is not None
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_quantum_game_state_basic(self):
         """Test QuantumGameState initialization"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState

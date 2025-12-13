@@ -3285,15 +3285,47 @@ class HamiltonianEvolver:
     
     def harmonic_hamiltonian(
         self,
-        q: float,
-        p: float,
+        q: float = None,
+        p: float = None,
         omega: float = 1.0,
         mass: float = 1.0
-    ) -> float:
+    ) -> Union[float, Any]:
         """
         Harmonic oscillator Hamiltonian.
         
-        H = p²/2m + mω²q²/2
+        If q and p provided: Returns scalar H = p²/2m + mω²q²/2
+        If q and p not provided: Returns Hamiltonian matrix for quantum system
+        
+        Args:
+            q: Position (optional)
+            p: Momentum (optional)
+            omega: Angular frequency
+            mass: Mass
+            
+        Returns:
+            float if q,p provided, np.ndarray if q,p not provided
+        """
+        # If q and p not provided, return matrix Hamiltonian for grid
+        if q is None and p is None:
+            if NUMPY_AVAILABLE:
+                # Build harmonic oscillator Hamiltonian matrix
+                n = self.grid_size
+                H = np.zeros((n, n))
+                # Diagonal: potential energy term
+                for i in range(n):
+                    x = (i - n//2) * (2.0 / n)  # Position on grid
+                    H[i, i] = 0.5 * mass * omega**2 * x**2
+                # Off-diagonal: kinetic energy term (finite difference)
+                for i in range(n-1):
+                    H[i, i+1] = -0.5 / mass
+                    H[i+1, i] = -0.5 / mass
+                return H
+            else:
+                # Fallback without numpy
+                return 0.5 * omega**2
+        
+        # Original scalar version
+        H = p**2 / (2.0 * mass) + 0.5 * mass * omega**2 * q**2
         
         Models oscillatory decision dynamics around equilibrium.
         """

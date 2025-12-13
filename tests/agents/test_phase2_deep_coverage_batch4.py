@@ -39,25 +39,21 @@ class TestPhase2_MomentumOperators:
         op._build_operators()
         assert True  # Operators built successfully
 
-    @pytest.mark.skip(reason="ActionType import issue in test - needs test file fix")
     def test_momentum_conservation_check(self):
         """Test momentum conservation checker (Eq #7)"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsOrchestrator, ActionPath, ActionType
 
         orchestrator = PhysicsOrchestrator()
         # Create minimal path for conservation check
-        from agents.physics_orchestrator import ActionPath
         path = ActionPath(action_type=ActionType.RESEARCH, description="test_momentum")
         conserved = orchestrator.check_momentum_conservation(path)
         assert isinstance(conserved, bool)
 
-    @pytest.mark.skip(reason="ActionType import issue in test - needs test file fix")
     def test_energy_conservation_check(self):
         """Test energy conservation checker (Eq #17)"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsOrchestrator, ActionPath, ActionType
 
         orchestrator = PhysicsOrchestrator()
-        from agents.physics_orchestrator import ActionPath
         path = ActionPath(action_type=ActionType.RESEARCH, description="test_energy")
         conserved = orchestrator.check_energy_conservation(path)
         assert isinstance(conserved, bool)
@@ -100,7 +96,6 @@ class TestPhase2_EnergyOperators:
         assert evolver is not None
         assert hasattr(evolver, 'harmonic_hamiltonian')
 
-    @pytest.mark.skip(reason="HamiltonianEvolver.harmonic_hamiltonian requires q,p arguments")
     def test_harmonic_hamiltonian_creation(self):
         """Test creating harmonic oscillator Hamiltonian"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -456,7 +451,6 @@ class TestPhase2_ConservationLaws:
     Tunnel into conservation-dimension
     """
 
-    @pytest.mark.skip(reason="HamiltonianEvolver usage - needs test update")
     def test_energy_conservation_in_time_evolution(self):
         """Test energy conservation during time evolution"""
         from agents.physics_orchestrator import HamiltonianEvolver

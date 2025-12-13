@@ -66,7 +66,6 @@ class TestPhase2_PropertyAccess:
     Tunnel into property-dimension
     """
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_diffusion_flow_model_properties(self):
         """Test DiffusionFlowModel property access"""
         from agents.physics_orchestrator import DiffusionFlowModel
@@ -75,7 +74,6 @@ class TestPhase2_PropertyAccess:
         assert hasattr(model, 'diffusion_coefficient')
         assert model.diffusion_coefficient == 0.5
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_energy_landscape_properties(self):
         """Test EnergyLandscape property access"""
         from agents.physics_orchestrator import EnergyLandscape

@@ -97,7 +97,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         assert payoffs is not None
         assert "blue" in payoffs or isinstance(payoffs, tuple)
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_strategy_optimization(self):
         """Test strategy optimization using annealin (Eq #12)"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -111,7 +110,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         optimized = engine.quantum_policy_gradient_step(team="blue", iterations=10)
         assert optimized is not None
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_nash_equilibrium_search(self):
         """Test Nash equilibrium finding"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -125,7 +123,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         nash = engine.expected_payoff()
         assert nash is not None
 
-    @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_entanglement_creation(self):
         """Test creating entangled game states (Eq #9)"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState

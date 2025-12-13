@@ -32,7 +32,6 @@ class TestPhase2_TimeEvolution:
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
 
-    @pytest.mark.skip(reason="HamiltonianEvolver API changed")
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution"""
         from agents.physics_orchestrator import HamiltonianEvolver
