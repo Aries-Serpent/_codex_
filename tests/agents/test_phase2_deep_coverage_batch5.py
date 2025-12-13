@@ -22,7 +22,6 @@ class TestPhase2_TimeEvolution:
     Tunnel into time-dimension for evolution operators
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_evolve_state_basic(self):
         """Test basic state evolution"""
         from agents.physics_orchestrator import PhysicsOrchestrator

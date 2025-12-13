@@ -23,7 +23,6 @@ class TestPhase2_MomentumOperators:
     Tunnel into momentum-dimension for gradient and conservation checks
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_quantum_operator_initialization(self):
         """Test QuantumOperator initialization"""
         from agents.physics_orchestrator import QuantumOperator
@@ -32,7 +31,6 @@ class TestPhase2_MomentumOperators:
         assert op is not None
         assert hasattr(op, '_build_operators')
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_quantum_operator_build(self):
         """Test building quantum operators"""
         from agents.physics_orchestrator import QuantumOperator
@@ -41,7 +39,6 @@ class TestPhase2_MomentumOperators:
         op._build_operators()
         assert True  # Operators built successfully
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_momentum_conservation_check(self):
         """Test momentum conservation checker (Eq #7)"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -53,7 +50,6 @@ class TestPhase2_MomentumOperators:
         conserved = orchestrator.check_momentum_conservation(path)
         assert isinstance(conserved, bool)
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_energy_conservation_check(self):
         """Test energy conservation checker (Eq #17)"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -259,7 +255,6 @@ class TestPhase2_EnergyOperators:
         selected = landscape.select_state()
         assert selected is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     @pytest.mark.skip(reason="EnergyState API changed")
     def test_minimize_free_energy(self):
         """Test free energy minimization"""
@@ -286,7 +281,6 @@ class TestPhase2_PerformanceOptimization:
     Tunnel into performance-dimension for optimization
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_optimize_with_energy(self):
         """Test energy-based optimization"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -300,7 +294,6 @@ class TestPhase2_PerformanceOptimization:
             )
             assert result is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_speed_of_light_constraint(self):
         """Test v < c constraint (Eq #26)"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -486,7 +479,6 @@ class TestPhase2_ConservationLaws:
     Tunnel into conservation-dimension
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_energy_conservation_in_time_evolution(self):
         """Test energy conservation during time evolution"""
         from agents.physics_orchestrator import HamiltonianEvolver
@@ -502,7 +494,6 @@ class TestPhase2_ConservationLaws:
         E0 = np.dot(psi0.conj(), np.dot(H, psi0))
         assert isinstance(E0, (complex, float))
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_probability_conservation(self):
         """Test ∫|ψ|²dx = 1 conservation"""
         # Create normalized state
@@ -513,7 +504,6 @@ class TestPhase2_ConservationLaws:
         prob = np.sum(np.abs(psi)**2)
         assert abs(prob - 1.0) < 1e-10
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_current_conservation(self):
         """Test current conservation ∇·j + ∂ρ/∂t = 0 (Eq #7)"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -524,7 +514,6 @@ class TestPhase2_ConservationLaws:
             conserved = orchestrator.check_current_conservation()
             assert isinstance(conserved, bool)
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_angular_momentum_conservation(self):
         """Test angular momentum conservation"""
         # For a central force, L is conserved
@@ -533,7 +522,6 @@ class TestPhase2_ConservationLaws:
         L = np.cross(r, p)
         assert np.linalg.norm(L) > 0
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_charge_conservation(self):
         """Test charge conservation"""
         # Total charge should be conserved
@@ -548,7 +536,6 @@ class TestPhase2_OptimizationMethods:
     Tunnel into optimization-dimension (Eq #43)
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_path_integral_optimization(self):
         """Test path integral optimization"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -562,7 +549,6 @@ class TestPhase2_OptimizationMethods:
             )
             assert result is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_simulated_annealing(self):
         """Test simulated annealing optimization"""
         from agents.physics_orchestrator import PhysicsOrchestrator

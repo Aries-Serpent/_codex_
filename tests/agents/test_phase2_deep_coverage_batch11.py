@@ -22,7 +22,6 @@ class TestPhase2_MultiModuleIntegration:
     Tunnel into multi-module-dimension
     """
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_physics_orchestrator_with_quantum_game(self):
         """Test integration between PhysicsOrchestrator and QuantumGame"""
         from agents.physics_orchestrator import PhysicsOrchestrator
@@ -39,7 +38,6 @@ class TestPhase2_MultiModuleIntegration:
         assert orchestrator is not None
         assert game is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_mental_mapping_with_agent_memory(self):
         """Test integration between MentalMapping and AgentMemory"""
         from agents.mental_mapping import MentalMappingModel
@@ -51,7 +49,6 @@ class TestPhase2_MultiModuleIntegration:
         assert mental_map is not None
         assert memory is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_developer_orchestrator_with_workflow(self):
         """Test integration between DeveloperOrchestrator and WorkflowNavigator"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
@@ -63,7 +60,6 @@ class TestPhase2_MultiModuleIntegration:
         assert dev_orch is not None
         assert workflow_nav is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_self_healing_with_physics_integration(self):
         """Test integration between SelfHealing and PhysicsIntegration"""
         from agents.self_healing import SelfHealingEngine
@@ -75,7 +71,6 @@ class TestPhase2_MultiModuleIntegration:
         assert healing is not None
         assert integration is not None
 
-    @pytest.mark.skip(reason="PhysicsOrchestrator doesn't exist")
     def test_advanced_physics_with_orchestrator(self):
         """Test AdvancedPhysics with PhysicsOrchestrator"""
         from agents.advanced_physics_calculators import ChaoticNeuralNetwork

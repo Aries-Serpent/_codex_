@@ -324,7 +324,13 @@ def create_hybrid_orchestrator(session_id: Optional[str] = None) -> HybridPhysic
 # Export main classes
 __all__ = [
     'HybridPhysicsOrchestrator',
+    'PhysicsIntegration',
     'create_hybrid_orchestrator',
     'ADVANCED_PHYSICS_AVAILABLE',
     'PHYSICS_ORCHESTRATOR_AVAILABLE',
 ]
+
+
+# Create PhysicsIntegration as an alias for backward compatibility
+# Many tests expect PhysicsIntegration class name
+PhysicsIntegration = HybridPhysicsOrchestrator

@@ -1399,17 +1399,33 @@ class SwarmIntelligence:
     
     def run_optimization(
         self,
-        fitness_function: callable,
-        bounds: List[Tuple[float, float]],
+        fitness_function: callable = None,
+        objective_function: callable = None,  # Alias for backward compatibility
+        bounds: List[Tuple[float, float]] = None,
         max_iterations: int = 50
     ) -> Dict[str, Any]:
         """
         Run full swarm optimization.
+        
+        Args:
+            fitness_function: Function to optimize (primary)
+            objective_function: Alias for fitness_function (backward compatibility)
+            bounds: Search space bounds
+            max_iterations: Maximum iterations
         """
+        # Use objective_function if fitness_function not provided
+        func = fitness_function or objective_function
+        if not func:
+            raise ValueError("Either fitness_function or objective_function must be provided")
+        
+        if not bounds:
+            # Default bounds if not provided
+            bounds = [(-10.0, 10.0) for _ in range(self.dimensions)]
+        
         self.initialize_swarm(bounds)
         
         for iteration in range(max_iterations):
-            self.update_swarm(fitness_function, bounds)
+            self.update_swarm(func, bounds)
             
             # Check for convergence (all particles near global best)
             if self.global_best_position:
@@ -1466,6 +1482,15 @@ class SwarmIntelligence:
             particle.position = tuple(new_position)
             
         return [p.position for p in self.particles]
+    
+    @property
+    def num_agents(self) -> int:
+        """Alias for num_particles (backward compatibility)."""
+        return self.num_particles
+    
+    def optimize(self, *args, **kwargs) -> Dict[str, Any]:
+        """Alias for run_optimization (backward compatibility)."""
+        return self.run_optimization(*args, **kwargs)
 
 
 @dataclass
@@ -2703,8 +2728,12 @@ class QuantumOperator:
     - State evolution in decision spaces
     """
     dimension: int = 10  # Fock space dimension (max occupation number)
+    grid_size: Optional[int] = None  # Alias for dimension (backward compatibility)
     
     def __post_init__(self):
+        # Use grid_size if provided, otherwise use dimension
+        if self.grid_size is not None:
+            self.dimension = self.grid_size
         self._build_operators()
     
     def _build_operators(self) -> None:
@@ -3192,7 +3221,14 @@ class HamiltonianEvolver:
     - Analyze phase space structure
     """
     
-    def __init__(self):
+    def __init__(self, grid_size: int = 100):
+        """
+        Initialize Hamiltonian evolver.
+        
+        Args:
+            grid_size: Size of spatial grid for discretization (optional)
+        """
+        self.grid_size = grid_size
         self.trajectory: List[Tuple[float, float]] = []
         self.hamiltonian_history: List[float] = []
     
@@ -3453,3 +3489,8 @@ class PhysicsCalculatorSuite:
             'pinn': 'active',
             'reflection': 'active'
         }
+
+
+# Create PhysicsOrchestrator as an alias for backward compatibility
+# Many tests expect PhysicsOrchestrator class name  
+PhysicsOrchestrator = PhysicsInspiredOrchestrator

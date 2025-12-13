@@ -299,7 +299,6 @@ class TestPhase3_ShardedAggregation:
         # Metrics should aggregate correctly across nodes
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_label_key_consistency(self):
         """Test label key consistency in aggregation"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -314,7 +313,6 @@ class TestPhase3_CrossModule_EntangledGroups:
     Entangled test groups using multi-module coordination
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_entangled_physics_quantum(self):
         """Test entangled physics + quantum coordination"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -332,7 +330,6 @@ class TestPhase3_CrossModule_EntangledGroups:
         assert orchestrator is not None
         assert engine is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_entangled_memory_mental(self):
         """Test entangled memory + mental mapping"""
         from agents.agent_memory import AgentMemory

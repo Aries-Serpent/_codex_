@@ -874,3 +874,8 @@ if __name__ == '__main__':
     print(f"\n{'#'*60}")
     print(f"# DEMONSTRATION COMPLETE")
     print(f"{'#'*60}")
+
+
+# Create MentalMap as an alias for backward compatibility
+# Many tests expect MentalMap class name
+MentalMap = MentalMappingModel

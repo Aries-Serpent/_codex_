@@ -57,7 +57,6 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         assert swarm is not None
         assert swarm.num_agents == 10
 
-    @pytest.mark.skip(reason="Method name changed")
     def test_swarm_intelligence_optimize(self):
         """Test swarm optimization"""
         from agents.physics_orchestrator import SwarmIntelligence
@@ -116,7 +115,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         optimized = engine.quantum_policy_gradient_step(team="blue", iterations=10)
         assert optimized is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_nash_equilibrium_search(self):
         """Test Nash equilibrium finding"""
@@ -131,7 +129,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         nash = engine.expected_payoff()
         assert nash is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="Attribute doesn't exist")
     def test_entanglement_creation(self):
         """Test creating entangled game states (Eq #9)"""
@@ -143,7 +140,6 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         entangled_state = QuantumGameState(blue_state, red_state, entangled=True)
         assert entangled_state.entangled == True
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_measurement_collapse(self):
         """Test quantum measurement and state collapse"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
@@ -162,7 +158,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
     Tunnel into algorithm-dimension for traversal and optimization
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_bfs_traversal(self):
         """Test breadth-first search traversal"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -180,7 +175,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         result = model.bfs(start_node=node1)
         assert result is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_dfs_traversal(self):
         """Test depth-first search traversal"""
         from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
@@ -193,7 +187,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         result = model.dfs(start_node=node1)
         assert result is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_shortest_path(self):
         """Test shortest path finding (Eq #39: ΔS optimization)"""
         from agents.mental_mapping import MentalMappingModel, NodeType, EdgeType
@@ -208,7 +201,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         path = model.shortest_path(source=node1, target=node3)
         assert path is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_node_clustering(self):
         """Test node clustering algorithm"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -219,7 +211,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         clusters = model.cluster_nodes()
         assert clusters is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_subgraph_extraction(self):
         """Test extracting subgraphs"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -231,7 +222,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         subgraph = model.get_subgraph(nodes=[node1, node2])
         assert subgraph is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="API changed")
     def test_graph_metrics(self):
         """Test graph metric calculations"""
@@ -245,7 +235,6 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         metrics = model.calculate_metrics()
         assert metrics is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="API changed")
     def test_centrality_measures(self):
         """Test centrality calculation for nodes"""
@@ -492,7 +481,6 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
     Tunnel into rate-dimension for boundary enforcement
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_current_magnitude_check(self):
         """Test current magnitude boundary (Eq #22)"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -501,7 +489,6 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
         # Current bounds are enforced internally
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_subluminal_guard(self):
         """Test subluminal speed guard (Eq #23, #34: v < c)"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -510,7 +497,6 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
         # Speed guards are internal
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_lorentz_factor_calculation(self):
         """Test Lorentz factor (Eq #3: γ = 1/√(1−v²/c²))"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -525,7 +511,6 @@ class TestPhase2_Integration_AdvancedPatterns:
     Advanced cross-module integration patterns
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_physics_mental_integration(self):
         """Test physics orchestrator + mental mapping integration"""
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
@@ -539,7 +524,6 @@ class TestPhase2_Integration_AdvancedPatterns:
         assert node is not None
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_quantum_developer_integration(self):
         """Test quantum game theory + developer orchestrator integration"""
         from agents.quantum_game_theory import QuantumInspiredGameEngine
@@ -556,7 +540,6 @@ class TestPhase2_Integration_AdvancedPatterns:
         assert engine is not None
         assert orchestrator is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_memory_mental_integration(self):
         """Test agent memory + mental mapping integration"""
         from agents.agent_memory import AgentMemory
@@ -578,7 +561,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
     Advanced error paths and edge cases
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_invalid_force_direction(self):
         """Test handling invalid force direction"""
         from agents.physics_orchestrator import ForceVector
@@ -587,7 +569,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         force = ForceVector("test", 10.0, [0.0, 0.0, 0.0], 5)
         assert force is not None  # Should handle gracefully
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_negative_energy(self):
         """Test handling negative energy (Eq #2)"""
         from agents.physics_orchestrator import ActionPath, ActionType
@@ -596,7 +577,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         path = ActionPath(ActionType.RESEARCH, "test", energy=-10.0, cost=5.0)
         assert path is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_empty_strategy_array(self):
         """Test handling empty strategy arrays"""
         from agents.quantum_game_theory import StrategyState
@@ -609,7 +589,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
             # Expected error for empty array
             assert True
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_disconnected_graph(self):
         """Test operations on disconnected graph"""
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -623,7 +602,6 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         # Should return None or empty path for disconnected nodes
         assert path is None or path == []
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     def test_memory_nonexistent_key(self):
         """Test retrieving nonexistent memory key"""
         from agents.agent_memory import AgentMemory
@@ -638,7 +616,6 @@ class TestPhase2_Performance_Optimization:
     Performance-related tests using optimization equations
     """
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="API changed")
     def test_batch_force_evaluation(self):
         """Test batch evaluation of forces"""
@@ -649,7 +626,6 @@ class TestPhase2_Performance_Optimization:
         ]
         assert len(forces) == 10
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="API changed")
     def test_large_game_matrix(self):
         """Test game with larger strategy space"""
@@ -664,7 +640,6 @@ class TestPhase2_Performance_Optimization:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
         assert engine is not None
 
-    @pytest.mark.skip(reason="MentalMap doesn't exist")
     @pytest.mark.skip(reason="API changed")
     def test_large_graph_operations(self):
         """Test operations on larger graphs"""
