@@ -527,6 +527,154 @@ J = E[U] - λ·Var(U)
 λ = risk aversion parameter
 ```
 
+## Import Migration Orchestrator
+
+### Overview
+
+The `ImportMigrationOrchestrator` extends `PhysicsInspiredOrchestrator` to automate the migration of deprecated imports to canonical paths using physics-inspired optimization.
+
+### Key Classes
+
+```python
+from agents import ImportMigration, ImportMigrationOrchestrator
+
+# ImportMigration dataclass with auto-calculated physics properties
+@dataclass
+class ImportMigration:
+    file_path: str
+    old_import: str
+    new_import: str
+    line_number: int
+    
+    # Auto-calculated properties
+    potential_energy: float  # Effort required
+    momentum: float          # Alignment with patterns
+    friction: float          # Resistance/risk
+    impact: float            # File importance
+    confidence: float        # Straightforwardness
+    risk: float              # Could break things
+    urgency: float           # Actively causing issues
+    optimization_score: float  # Calculated score
+```
+
+### Physics Properties Calculation
+
+```python
+# Impact based on file type
+if '/cli/' in file_path:
+    impact = 0.9  # CLI files are high impact
+elif '/tests/' in file_path:
+    impact = 0.7  # Tests are medium-high impact
+elif '/agents/' in file_path:
+    impact = 0.85  # Agent files are high impact
+
+# Friction based on location
+if '/tests/training/' in file_path or '/cli/' in file_path:
+    friction = 0.1  # Training-related files have low friction
+
+# Risk based on module criticality
+if 'functional_training' in old_import:
+    risk = 0.3  # Critical module
+elif 'checkpoint' in old_import:
+    risk = 0.25
+```
+
+### Usage Example: Automated Migration
+
+```python
+from agents import ImportMigrationOrchestrator
+from pathlib import Path
+
+# Initialize orchestrator
+orchestrator = ImportMigrationOrchestrator()
+
+# Run complete migration cycle
+result = orchestrator.run_migration_cycle(
+    repo_root=Path("/path/to/repo"),
+    energy_budget=500.0,  # Maximum energy to expend
+    dry_run=True  # Set to False to execute
+)
+
+# Result contains:
+# - status: 'completed' or 'clean'
+# - assessment: files scanned, deprecated found, etc.
+# - migrations_executed: attempted, successful, failed
+# - energy_spent: total energy consumed
+# - momentum_gained: progress made
+```
+
+### ASSESS → DELIBERATE → OPTIMIZE → ACT Workflow
+
+```python
+# Phase 1: ASSESS - Identify deprecated imports
+assessment = orchestrator.assess_imports(repo_root)
+# Returns: files_scanned, deprecated_found, unique_files, total_energy_required
+
+# Phase 2: DELIBERATE - Calculate optimization scores
+ranked_migrations = orchestrator.deliberate_migrations()
+# Returns: migrations sorted by optimization_score (highest first)
+
+# Phase 3: OPTIMIZE - Select within energy budget
+selected = orchestrator.optimize_migration_plan(ranked_migrations, energy_budget=500.0)
+# Returns: migrations that fit within budget
+
+# Phase 4: ACT - Execute migrations
+results = orchestrator.execute_migrations(selected, dry_run=False)
+# Returns: attempted, successful, failed, files_modified
+```
+
+### Migration Map
+
+The orchestrator uses a predefined migration map:
+
+```python
+migration_map = {
+    'from training.': 'from src.training.',
+    'from models.': 'from src.models.',
+    'import training.': 'import src.training.',
+    'import models.': 'import src.models.',
+}
+```
+
+### Example Output
+
+```
+============================================================
+IMPORT MIGRATION - ASSESSMENT PHASE
+============================================================
+
+Assessment Results:
+  Files scanned: 245
+  Deprecated imports found: 12
+  Unique files affected: 6
+  Total energy required: 120.0
+  Average risk: 0.183
+
+============================================================
+IMPORT MIGRATION - DELIBERATION PHASE
+============================================================
+
+Top migrations by optimization score:
+  1. Score: 0.0878 | Impact: 0.90 | Risk: 0.10
+      File: train_schema_demo.py:10
+      from training.offline_wandb import force_offline...
+
+============================================================
+IMPORT MIGRATION - ACTION PHASE
+============================================================
+Mode: EXECUTE
+
+  ✓ train_schema_demo.py:10
+    - from training.offline_wandb import force_offline
+    + from src.training.offline_wandb import force_offline
+
+Migration Results:
+  Attempted: 12
+  Successful: 12
+  Failed: 0
+  Files modified: 6
+```
+
 ## References
 
 - Physics-based Planning: Potential Field Methods
@@ -536,6 +684,266 @@ J = E[U] - λ·Var(U)
 
 ---
 
-**Version**: 1.0.0  
-**Last Updated**: 2025-12-10  
+## Advanced Physics-Inspired Patterns
+
+### Overview
+
+Building on the core orchestration system, these additional patterns enhance decision-making, mental mapping, and self-appraisal through advanced physics analogies.
+
+| Pattern | Description | Key Application |
+|---------|-------------|-----------------|
+| **DiffusionFlowModel** | Flow-based navigation inspired by PFGM and fluid dynamics | Mental mapping navigation |
+| **EnergyLandscape** | Thermodynamic optimization with Gibbs distributions | Self-appraisal and equilibrium |
+| **SwarmIntelligence** | Particle swarm optimization for multi-agent coordination | Distributed orchestration |
+| **TaskDecomposer** | Parallel task decomposition with dependency management | Scalable execution |
+| **ReflectionLoop** | PID-controlled feedback for continuous learning | Threshold calibration |
+
+### Diffusion and Flow Model
+
+Inspired by Poisson Flow Generative Models (PFGM) from electromagnetism and fluid dynamics.
+
+```python
+from agents import DiffusionFlowModel
+
+# Create decision space with potential field
+flow_model = DiffusionFlowModel(dimensions=2, resolution=20)
+
+# Add goal (attractor) and obstacles (repulsors)
+flow_model.add_attractor((0.8, 0.8), strength=2.0)
+flow_model.add_repulsor((0.3, 0.5), strength=1.0)
+
+# Simulate agent flow toward goal
+trajectory = flow_model.simulate_flow(
+    start_position=(0.1, 0.1),
+    steps=100,
+    dt=0.1
+)
+
+# Integration with mental mapping
+result = flow_model.integrate_with_mental_mapping(
+    problem_position=(0.1, 0.1),
+    goal_position=(0.8, 0.8)
+)
+print(f"Steps to goal: {result['steps_to_goal']}")
+```
+
+**Key Equations:**
+- Potential field: φ(r) = Σ q_i / |r - r_i|
+- Flow update: dx = velocity × dt + gradient × dt
+
+### Energy-Based Model
+
+Thermodynamic optimization using Gibbs distributions and free energy minimization.
+
+```python
+from agents import EnergyLandscape, EnergyState
+
+# Create energy landscape
+landscape = EnergyLandscape(temperature=1.0)
+
+# Add decision states with energy/entropy
+landscape.add_state(EnergyState(
+    configuration={'action': 'deploy'},
+    energy=0.3,  # Low energy = favorable
+    entropy=0.1   # Low entropy = certain
+))
+landscape.add_state(EnergyState(
+    configuration={'action': 'wait'},
+    energy=0.5,
+    entropy=0.3
+))
+
+# Select state using Gibbs distribution
+best_state = landscape.select_state()
+print(f"Selected: {best_state.configuration}")
+print(f"Probability: {landscape.gibbs_probability(best_state):.3f}")
+
+# Minimize free energy (F = E - T*S)
+optimal = landscape.minimize_free_energy()
+
+# Integration with self-appraisal
+result = landscape.integrate_with_self_appraisal(
+    decision_quality=0.8,
+    expected_confidence=0.7
+)
+```
+
+**Key Equations:**
+- Free energy: F = E - T×S
+- Gibbs probability: P_i = exp(-E_i/kT) / Z
+- Partition function: Z = Σ exp(-E_i/kT)
+
+### Swarm Intelligence
+
+Multi-agent coordination inspired by particle swarm optimization.
+
+```python
+from agents import SwarmIntelligence
+
+# Create swarm for multi-agent optimization
+swarm = SwarmIntelligence(
+    num_particles=10,
+    dimensions=2,
+    inertia=0.7,      # w: continue current direction
+    cognitive=1.5,     # c1: personal best attraction
+    social=1.5         # c2: global best attraction
+)
+
+# Define fitness function
+def fitness(position):
+    return -sum((x - 0.5)**2 for x in position)  # Optimal at center
+
+# Run optimization
+result = swarm.run_optimization(
+    fitness_function=fitness,
+    bounds=[(0, 1), (0, 1)],
+    max_iterations=50
+)
+print(f"Best position: {result['best_position']}")
+print(f"Converged: {result['converged']}")
+
+# Coordinate multiple agents toward target
+new_positions = swarm.coordinate_agents(
+    agent_positions=[(0.1, 0.2), (0.3, 0.4), (0.5, 0.6)],
+    target_position=(0.8, 0.8)
+)
+```
+
+**Key Equations:**
+- Velocity update: v = w×v + c1×r1×(pbest-x) + c2×r2×(gbest-x)
+- Position update: x = x + v
+
+### Task Decomposition
+
+Parallel task execution with dependency management.
+
+```python
+from agents import TaskDecomposer, ActionPath, ActionType
+
+# Create task decomposer
+decomposer = TaskDecomposer(max_workers=4)
+
+# Define complex task
+task = ActionPath(
+    action_type=ActionType.DEPLOY,
+    description="Deploy new feature",
+    potential_energy=80.0,
+    impact=0.9,
+    urgency=0.7
+)
+
+# Decompose into sub-tasks
+sub_tasks = decomposer.decompose_task(task, strategy="dependency_chain")
+# Creates: analyze → plan → execute → verify
+
+# Build execution plan (respects dependencies)
+plan = decomposer.build_execution_plan()
+# Returns: [[analyze], [plan], [execute], [verify]]
+
+# Run orchestration
+result = decomposer.run_orchestration()
+print(f"Batches: {result['total_batches']}")
+print(f"Energy spent: {result['total_energy_spent']}")
+
+# Integration with ActionPath
+integration = decomposer.integrate_with_action_path(task)
+```
+
+**Strategies:**
+- `energy_balanced`: Split energy evenly across workers
+- `impact_focused`: Sub-tasks for assessment, implementation, verification, documentation
+- `dependency_chain`: Sequential analyze → plan → execute → verify
+
+### Reflection and Feedback Loop
+
+PID-controlled self-appraisal for continuous calibration.
+
+```python
+from agents import ReflectionLoop
+
+# Create feedback controller
+feedback = ReflectionLoop(
+    k_proportional=0.5,  # Immediate error response
+    k_integral=0.1,       # Accumulated error correction
+    k_derivative=0.05     # Rate of change response
+)
+
+# Record decisions and outcomes
+result = feedback.record_decision(
+    decision={'action': 'deploy', 'confidence': 0.8},
+    predicted_outcome=0.8,
+    actual_outcome=0.7  # Slightly worse than expected
+)
+print(f"Error: {result['error']:.3f}")
+print(f"Correction: {result['correction']:.3f}")
+print(f"New confidence threshold: {result['new_confidence_threshold']:.3f}")
+
+# Get performance metrics
+metrics = feedback.get_performance_metrics()
+print(f"Average error: {metrics['average_error']:.3f}")
+print(f"Trend: {metrics['trend']}")
+
+# Integration with orchestrator
+from agents import PhysicsInspiredOrchestrator
+orchestrator = PhysicsInspiredOrchestrator()
+feedback.integrate_with_orchestrator(orchestrator)
+# Updates orchestrator's confidence_threshold and risk_tolerance
+```
+
+**Key Equations (PID Control):**
+- u(t) = K_p × e(t) + K_i × ∫e(τ)dτ + K_d × de/dt
+- Threshold adjustment based on error statistics
+
+### Integration Examples
+
+#### Combined Flow + Energy Optimization
+
+```python
+from agents import DiffusionFlowModel, EnergyLandscape, EnergyState
+
+# Use flow model for navigation
+flow = DiffusionFlowModel()
+flow.add_attractor((0.9, 0.9), strength=2.0)
+trajectory = flow.simulate_flow((0.1, 0.1))
+
+# Use energy landscape for final decision
+landscape = EnergyLandscape(temperature=0.5)
+for i, pos in enumerate(trajectory[-5:]):  # Last 5 positions
+    landscape.add_state(EnergyState(
+        configuration={'position': pos, 'step': len(trajectory) - 5 + i},
+        energy=1.0 - (pos[0] + pos[1]) / 2,  # Energy decreases near goal
+        entropy=0.1 * i
+    ))
+
+optimal_state = landscape.minimize_free_energy()
+```
+
+#### Swarm + Task Decomposition
+
+```python
+from agents import SwarmIntelligence, TaskDecomposer, ActionPath
+
+# Use swarm to find optimal configuration
+swarm = SwarmIntelligence(num_particles=5, dimensions=3)
+result = swarm.run_optimization(
+    fitness_function=lambda x: -sum(xi**2 for xi in x),
+    bounds=[(-1, 1)] * 3,
+    max_iterations=30
+)
+
+# Decompose optimal task
+decomposer = TaskDecomposer()
+task = ActionPath(
+    action_type=ActionType.OPTIMIZE,
+    description=f"Optimize at {result['best_position']}",
+    potential_energy=50.0,
+    impact=result['best_score']
+)
+decomposer.integrate_with_action_path(task)
+```
+
+---
+
+**Version**: 1.2.0  
+**Last Updated**: 2025-12-12  
 **Maintained by**: Aries-Serpent/_codex_ team

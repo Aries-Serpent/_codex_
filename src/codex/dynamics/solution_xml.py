@@ -9,9 +9,14 @@ try:
 except ImportError:
     from xml.etree.ElementTree import Element, SubElement, tostring
 
+from defusedxml import ElementTree as _defused_et
 from pydantic import AliasChoices, BaseModel, Field
 
 from codex.evidence import utc_now
+
+Element = getattr(_defused_et, "Element", _xml_et.Element)
+SubElement = getattr(_defused_et, "SubElement", _xml_et.SubElement)
+tostring = getattr(_defused_et, "tostring", _xml_et.tostring)
 
 __all__ = [
     "LocalizedName",

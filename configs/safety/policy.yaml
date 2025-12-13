@@ -1,8 +1,35 @@
-# Default Safety Policy for _codex_
-# This policy is loaded automatically if CODEX_SAFETY_POLICY_PATH is not set
-# To bypass safety checks during development/testing, set CODEX_SAFETY_BYPASS=1
-# The allow_bypass setting below enables the bypass mechanism (set to false in production)
+# ============================================================================
+# Safety Policy Reference File
+# ============================================================================
+#
+# IMPORTANT: This is a reference file only.
+#
+# The canonical safety policy is maintained at:
+#   src/codex_ml/safety/default_policy.yaml
+#
+# This file is kept for backward compatibility during the migration period.
+# Applications should load the canonical policy from src/codex_ml/safety/.
+#
+# To use the canonical policy programmatically:
+#
+#   from pathlib import Path
+#   import yaml
+#
+#   canonical_path = Path(__file__).parents[2] / "src" / "codex_ml" / "safety" / "default_policy.yaml"
+#   # Or use pkg_resources for installed packages
+#
+# For more information, see:
+#   - src/codex_ml/safety/README.md
+#   - misc/repo-owner-review/MIGRATION_GUIDE.md
+#
+# ============================================================================
 
+# This file imports from the canonical policy location
+# Use _reference to src/codex_ml/safety/default_policy.yaml
+_canonical_source: "src/codex_ml/safety/default_policy.yaml"
+_notice: "This file is synchronized with the canonical policy. Do not edit directly."
+
+# Include the original content for backward compatibility
 version: "1.0"
 description: "Default safety policy with essential security patterns"
 

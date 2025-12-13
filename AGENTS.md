@@ -46,6 +46,55 @@ For complete capability assessment, see [AZURE_MLOPS_CAPABILITY_ASSESSMENT.md](.
 
 **For AI Agents:** Use the Agent Control Interface for intuitive navigation and action triggers.
 
+### Physics-Inspired Agent Package
+
+🧠 **NEW: Comprehensive Agent Package** at [agents/](agents/)
+
+The `agents` package provides physics-inspired orchestration and decision-making tools:
+
+```python
+from agents import (
+    # Physics-inspired orchestration
+    PhysicsInspiredOrchestrator, ActionPath, ActionType, DecisionState, ForceVector,
+    
+    # Import migration automation
+    ImportMigration, ImportMigrationOrchestrator,
+    
+    # Quantum game theory
+    BlueRedTeamSimulator, QuantumInspiredGameEngine, ClassicalGameEngine,
+    
+    # Self-healing automation
+    SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity,
+    
+    # Mental mapping for reasoning
+    MentalMappingModel, MentalNode, ReasoningStep,
+    
+    # Workflow navigation
+    WorkflowNavigator, Workflow, WorkflowStep,
+)
+```
+
+### Import Migration Automation
+
+🔄 **NEW: Automated Import Migration** using physics-inspired optimization:
+
+```python
+from agents import ImportMigrationOrchestrator
+from pathlib import Path
+
+# Initialize orchestrator
+orchestrator = ImportMigrationOrchestrator()
+
+# Run complete migration cycle (dry run first)
+result = orchestrator.run_migration_cycle(
+    repo_root=Path("."),
+    energy_budget=500.0,
+    dry_run=True  # Set to False to execute
+)
+
+# Physics-inspired scoring: Score = (Impact × Confidence × Momentum) / (Energy × (1 + Risk) × (1 + Friction))
+```
+
 ### Tokenized Workflow Navigation
 
 🔄 **NEW: Tokenized Logical Workflows** at [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md)
@@ -70,12 +119,13 @@ navigator.execute_chain(['AUDIT_EXEC', 'PHYS_DECIDE', 'PRE_RELEASE'])
 **Available Workflow Tokens:**
 - `AUDIT_EXEC` - Full audit pipeline execution (HIGH frequency)
 - `PHYS_DECIDE` - Physics-inspired decision-making (HIGH frequency)
+- `IMPORT_MIGRATE` - Automated import migration (MEDIUM frequency)
 - `DOC_GEN` - Documentation and wiki generation (MEDIUM frequency)
 - `REPO_ORG` - Repository organization and archival (LOW frequency)
 - `MENTAL_REVIEW` - Review decisions and learn from outcomes (MEDIUM frequency)
 - `SELF_HEAL` - Automated feedback loop and gap detection (HIGH frequency, automated)
 
-Quick access aliases: `audit`, `decide`, `docs`, `organize`, `review`, `heal`
+Quick access aliases: `audit`, `decide`, `migrate`, `docs`, `organize`, `review`, `heal`
 
 ### Pre-Defined Prompts Library
 
@@ -90,7 +140,7 @@ The prompt library includes ready-to-use templates for:
 
 📐 **Architecture Diagrams**: See [agents/prompts/ARCHITECTURE.md](agents/prompts/ARCHITECTURE.md) for Mermaid diagrams covering current architecture and future roadmap.
 
-🎯 **Physics-Inspired Orchestration**: See [agents/ORCHESTRATION.md](agents/ORCHESTRATION.md) for decision-making framework with energy optimization.
+🎯 **Physics-Inspired Orchestration**: See [agents/ORCHESTRATION.md](agents/ORCHESTRATION.md) for decision-making framework with energy optimization and import migration automation.
 
 ```bash
 # Generate Agent Control Interface

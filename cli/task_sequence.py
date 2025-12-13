@@ -444,7 +444,7 @@ def _ensure_best_effort_tests(ctx: TaskContext) -> bool:
 
         @pytest.mark.skipif(torch is None or DataLoader is None, reason="PyTorch not available")
         def test_evaluate_batches_runs() -> None:
-            from training.functional_training import evaluate_batches
+            from src.training.functional_training import evaluate_batches
 
             class _ToyDataset(torch.utils.data.Dataset):
                 def __len__(self) -> int:
@@ -864,7 +864,7 @@ def _quality_test_stub_mapping(ctx: TaskContext) -> tuple[str, str]:
 def _quality_test_evaluation_loop(ctx: TaskContext) -> tuple[str, str]:
     if torch is None or DataLoader is None:
         return ("evaluation_loop", "SKIP")
-    from training.functional_training import evaluate_batches  # local import
+    from src.training.functional_training import evaluate_batches  # local import
 
     class _ToyDataset(torch.utils.data.Dataset):
         def __len__(self) -> int:
