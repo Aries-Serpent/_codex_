@@ -1,6 +1,41 @@
 {
-  "generated": 1765672694.6486192,
+  "generated": 1765673024.1884606,
   "low_maturity": [
+    {
+      "components": {
+        "consistency": 0.727273,
+        "documentation": 0.269906,
+        "functionality": 1.0,
+        "safeguards": 0.583333,
+        "tests": 0.454545
+      },
+      "evidence_files": [
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/functional_training.py",
+        "src/codex_ml/training/functional_training.py",
+        "src/training/functional_training.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
+        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
+        "tests/test_run_functional_training_tokenizer.py",
+        "tests/training/test_functional_training.py",
+        "tools/package_functional_training.py",
+        "training/functional_training.py"
+      ],
+      "explain": {
+        "id": "functional_training",
+        "partials": {},
+        "score": 0.637077
+      },
+      "found_patterns": [
+        "functional_training"
+      ],
+      "id": "functional_training",
+      "meta": {
+        "detector": "functional_training"
+      },
+      "score": 0.637077
+    },
     {
       "components": {
         "consistency": 1.0,
@@ -3840,40 +3875,6 @@
         "offline": true
       },
       "score": 0.639062
-    },
-    {
-      "components": {
-        "consistency": 0.7,
-        "documentation": 0.269906,
-        "functionality": 1.0,
-        "safeguards": 0.583333,
-        "tests": 0.5
-      },
-      "evidence_files": [
-        "scripts/space_traversal/detectors/functional_training.py",
-        "src/codex_ml/training/functional_training.py",
-        "src/training/functional_training.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/test_run_functional_training_tokenizer.py",
-        "tests/training/test_functional_training.py",
-        "tools/package_functional_training.py",
-        "training/functional_training.py"
-      ],
-      "explain": {
-        "id": "functional_training",
-        "partials": {},
-        "score": 0.642986
-      },
-      "found_patterns": [
-        "functional_training"
-      ],
-      "id": "functional_training",
-      "meta": {
-        "detector": "functional_training"
-      },
-      "score": 0.642986
     },
     {
       "components": {
