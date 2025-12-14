@@ -1,5 +1,5 @@
 {
-  "generated": 1765673360.4573555,
+  "generated": 1765673930.3298836,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1902,6 +1902,7 @@
       ".reports/modernization_after.md",
       ".reports/modernization_summary.md",
       ".statusrc.json",
+      "FINAL_STATUS_REPORT.md",
       "Makefile.status",
       "_codex/status/_codex_status_update-2025-09-21.md",
       "_codex/status/_codex_status_update-2025-09-22.md",
@@ -1964,6 +1965,7 @@
       "docs/ops/triage_status_failures.md",
       "docs/ops/vendor_audit_conclusive_findings.md",
       "docs/ops/vendor_audit_stress_validation.md",
+      "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
       "docs/plans/Autonomous_Session_Completion_Report.md",
       "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
       "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
@@ -1973,6 +1975,7 @@
       "docs/plans/PHASE2_CYCLE3_ITERATION1_STATUS.md",
       "docs/plans/PHASE2_CYCLE3_ITERATION2_STATUS.md",
       "docs/plans/PHASE2_EXCEPTIONAL_PROGRESS_REPORT.md",
+      "docs/plans/PHASE2_EXPANSION_BATCHES_STATUS.md",
       "docs/plans/PHASE2_FINAL_COMPREHENSIVE_REPORT.md",
       "docs/plans/PHASE2_FINAL_STATUS_AND_ROADMAP.md",
       "docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md",

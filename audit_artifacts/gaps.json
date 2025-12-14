@@ -1,10 +1,10 @@
 {
-  "generated": 1765673366.0864713,
+  "generated": 1765673935.999779,
   "low_maturity": [
     {
       "components": {
         "consistency": 0.666667,
-        "documentation": 0.283019,
+        "documentation": 0.295699,
         "functionality": 1.0,
         "safeguards": 0.583333,
         "tests": 0.416667
@@ -26,7 +26,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 0.617453
+        "score": 0.619355
       },
       "found_patterns": [
         "functional_training"
@@ -35,7 +35,7 @@
       "meta": {
         "detector": "functional_training"
       },
-      "score": 0.617453
+      "score": 0.619355
     },
     {
       "components": {
@@ -419,6 +419,7 @@
           "DEEP_RESEARCH_UNRESOLVED_ISSUES.md": 4,
           "FINALIZATION_ROADMAP.md": 6,
           "FINAL_GAP_ANALYSIS.md": 8,
+          "FINAL_STATUS_REPORT.md": 10,
           "LARGE_DOWNLOAD_PREVENTION.md": 2,
           "LEVEL_4_MLOPS_ASSESSMENT.md": 11,
           "MASTER_IMPLEMENTATION_PLAN.md": 4,
@@ -1029,6 +1030,7 @@
           "docs/plans/AST_Standardization_InstructionEnhancement.md": 4,
           "docs/plans/AST_Standardization_Requirements.md": 7,
           "docs/plans/AST_TEST_STRATEGY.md": 1,
+          "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md": 23,
           "docs/plans/Autonomous_Session_Completion_Report.md": 1,
           "docs/plans/Coverage_Physics_Toolkit_UserGuide.md": 3,
           "docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md": 3,
@@ -1049,6 +1051,7 @@
           "docs/plans/PHASE2_CYCLE3_ITERATION2_STATUS.md": 3,
           "docs/plans/PHASE2_DEEP_COVERAGE_PLAYBOOK.md": 5,
           "docs/plans/PHASE2_EXCEPTIONAL_PROGRESS_REPORT.md": 2,
+          "docs/plans/PHASE2_EXPANSION_BATCHES_STATUS.md": 1,
           "docs/plans/PHASE2_FINAL_COMPREHENSIVE_REPORT.md": 4,
           "docs/plans/PHASE2_FINAL_STATUS_AND_ROADMAP.md": 4,
           "docs/plans/PHASE2_FINAL_WORK_SUMMARY.md": 3,
@@ -2643,7 +2646,7 @@
           "tests/distributed/test_multigpu.py": 2,
           "tests/docs/test_api_docs_build.py": 4,
           "tests/docs/test_code_example_syntax.py": 4,
-          "tests/docs/test_documentation_system.py": 3,
+          "tests/docs/test_documentation_system.py": 4,
           "tests/docs/test_link_audit.py": 1,
           "tests/docs/test_markdown_links_valid.py": 2,
           "tests/docs/test_status_update_template.py": 3,
@@ -2768,7 +2771,7 @@
           "tests/mcp/test_error_handling_extended.py": 5,
           "tests/mcp/test_errors.py": 3,
           "tests/mcp/test_integration.py": 2,
-          "tests/mcp/test_lifecycle_management.py": 6,
+          "tests/mcp/test_lifecycle_management.py": 7,
           "tests/mcp/test_mcp_core_smoke.py": 3,
           "tests/mcp/test_multi_tenant_extended.py": 4,
           "tests/mcp/test_observability.py": 3,
@@ -3937,11 +3940,11 @@
     },
     {
       "components": {
-        "consistency": 0.939435,
+        "consistency": 0.939597,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006729
+        "tests": 0.006711
       },
       "evidence_files": [
         "README.md",
@@ -4354,6 +4357,7 @@
         "docs/plans/AST_Standardization_InstructionEnhancement.md",
         "docs/plans/AST_Standardization_Requirements.md",
         "docs/plans/AST_TEST_STRATEGY.md",
+        "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
         "docs/plans/Autonomous_Session_Completion_Report.md",
         "docs/plans/Coverage_Physics_Toolkit_UserGuide.md",
         "docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md",
@@ -4375,6 +4379,7 @@
         "docs/plans/PHASE2_CYCLE3_ITERATION2_STATUS.md",
         "docs/plans/PHASE2_DEEP_COVERAGE_PLAYBOOK.md",
         "docs/plans/PHASE2_EXCEPTIONAL_PROGRESS_REPORT.md",
+        "docs/plans/PHASE2_EXPANSION_BATCHES_STATUS.md",
         "docs/plans/PHASE2_FINAL_COMPREHENSIVE_REPORT.md",
         "docs/plans/PHASE2_FINAL_STATUS_AND_ROADMAP.md",
         "docs/plans/PHASE2_FINAL_WORK_SUMMARY.md",
@@ -4691,7 +4696,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.677069
+        "score": 0.677097
       },
       "found_patterns": [
         "docs",
@@ -4702,13 +4707,13 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 741,
+        "markdown_count": 743,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 743,
+        "total_docs": 745,
         "validation": true
       },
-      "score": 0.677069
+      "score": 0.677097
     },
     {
       "components": {

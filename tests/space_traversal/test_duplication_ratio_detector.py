@@ -12,6 +12,10 @@ from typing import Any, Dict, Iterable
 import pytest
 
 
+# Constants for consistent test configuration
+DETECTOR_PATH = Path("scripts/space_traversal/detectors/detector_duplication.py")
+
+
 def _load_module(path: Path, name: str) -> types.ModuleType:
     """Load detector module dynamically."""
     if not path.is_absolute():
@@ -47,7 +51,7 @@ class TestStemBasedDetection:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -69,7 +73,7 @@ class TestStemBasedDetection:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -91,7 +95,7 @@ class TestStemBasedDetection:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -113,7 +117,7 @@ class TestStemBasedDetection:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -132,7 +136,7 @@ class TestStemBasedDetection:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -146,7 +150,7 @@ class TestEdgeCases:
     
     def test_empty_file_list(self):
         """Test with empty file list."""
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = {"files": []}
         result = module.detect(context_index)
@@ -160,7 +164,7 @@ class TestEdgeCases:
         files = [tmp_path / "single.py"]
         files[0].write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -180,7 +184,7 @@ class TestEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -199,7 +203,7 @@ class TestEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -222,7 +226,7 @@ class TestDeterminism:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         
@@ -244,7 +248,7 @@ class TestDeterminism:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -264,7 +268,7 @@ class TestDeterminism:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         
@@ -283,7 +287,7 @@ class TestPatternDetection:
         files = [tmp_path / "test.py"]
         files[0].write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -298,7 +302,7 @@ class TestPatternDetection:
         files = [tmp_path / "test.py"]
         files[0].write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -313,7 +317,7 @@ class TestPatternDetection:
         files = [tmp_path / "test.py"]
         files[0].write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -334,7 +338,7 @@ class TestMetadata:
         files = [tmp_path / "test.py"]
         files[0].write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -354,7 +358,7 @@ class TestMetadata:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -379,7 +383,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -399,7 +403,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -417,7 +421,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -444,7 +448,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -464,7 +468,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -483,7 +487,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         result = module.detect(context_index)
@@ -503,7 +507,7 @@ class TestAdditionalEdgeCases:
         for f in files:
             f.write_text("content\n", encoding="utf-8")
         
-        detector_path = Path("scripts/space_traversal/detectors/detector_duplication.py")
+        detector_path = DETECTOR_PATH
         module = _load_module(detector_path, "detector_duplication")
         context_index = _context_index_for(files)
         

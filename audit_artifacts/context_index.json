@@ -1,6 +1,6 @@
 {
-  "generated": 1765673360.393138,
-  "count": 5048,
+  "generated": 1765673930.2668357,
+  "count": 5052,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -3303,6 +3303,12 @@
       "sha": "42b2d71946624ff761349461ebe355605a0360c4bd3559e29e85b37a1d43ab07"
     },
     {
+      "path": "FINAL_STATUS_REPORT.md",
+      "ext": ".md",
+      "size": 11138,
+      "sha": "ec9cd07c013820838dd05de0528e21d01215ecbfffc0ecd73eec0ce622b54c76"
+    },
+    {
       "path": "GOVERNANCE.md",
       "ext": ".md",
       "size": 5361,
@@ -4295,8 +4301,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2117,
-      "sha": "0f6849d93a90cad20835566be9a97113786c4df6b0de88b3be88388b9adb8c5a"
+      "size": 2122,
+      "sha": "6776b9f47c1e50b17911ccbe90d7ad0c03c12b026df513561c43a134544b1d4a"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -8865,6 +8871,12 @@
       "sha": "fd2f6b045c4b79e602118a86b07c408ff5eea00eefbcedde0d01b3281d137b5e"
     },
     {
+      "path": "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
+      "ext": ".md",
+      "size": 12415,
+      "sha": "3c4a643b7d4e2cd9849c0c876f468584cc1437fa8da3bbec27deb1704d5c31aa"
+    },
+    {
       "path": "docs/plans/Autonomous_Session_Completion_Report.md",
       "ext": ".md",
       "size": 11011,
@@ -8989,6 +9001,12 @@
       "ext": ".md",
       "size": 9718,
       "sha": "38d424ceb3aeefebba9b7c32d0085307a3e8f6308098e0011ce15729976668bf"
+    },
+    {
+      "path": "docs/plans/PHASE2_EXPANSION_BATCHES_STATUS.md",
+      "ext": ".md",
+      "size": 6976,
+      "sha": "fe203b4ad06c563308789c3f0a9206ec5f1b7052aa6aa1c6738cc7d4a805746d"
     },
     {
       "path": "docs/plans/PHASE2_FINAL_COMPREHENSIVE_REPORT.md",
@@ -19395,6 +19413,12 @@
       "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch13_branch_expansion.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 15454,
+      "sha": "2dd6c1d9e714350b443c767ac573d30bbd7096a1a4179740b966f081c2ff831d"
+    },
+    {
       "path": "tests/agents/test_30pct_final.py",
       "ext": ".py",
       "size": 8008,
@@ -22115,8 +22139,8 @@
     {
       "path": "tests/docs/test_documentation_system.py",
       "ext": ".py",
-      "size": 8040,
-      "sha": "ca32b09307d9fa740154df39d53f2882869e5f7ef686d24c60f3769bc6238d06"
+      "size": 13747,
+      "sha": "fa8dfd9a3bd2b58ae3e30e14dcb87e9c4f812897874455b8e3119e5bb219e621"
     },
     {
       "path": "tests/docs/test_link_audit.py",
@@ -22997,8 +23021,8 @@
     {
       "path": "tests/mcp/test_lifecycle_management.py",
       "ext": ".py",
-      "size": 16634,
-      "sha": "20140c0d925b5b5160939ec396e9648e9da5ec24caff7ad0e45f5607c4ccb811"
+      "size": 16853,
+      "sha": "2aa598a697f45a97284b7ffc11347f2c2b70e9c89b324937d9f4b6b0e3a56826"
     },
     {
       "path": "tests/mcp/test_mcp_core_smoke.py",
@@ -24413,8 +24437,8 @@
     {
       "path": "tests/space_traversal/test_duplication_ratio_detector.py",
       "ext": ".py",
-      "size": 20747,
-      "sha": "8667d4d80d0f4c28c9d24a4def13bf2c1606a04a950291899f64b37bc8ed0c33"
+      "size": 19629,
+      "sha": "b19015eee9432bd18ec9a2fb71a1d349834ba5eb5dcd8114976454b6dec947d8"
     },
     {
       "path": "tests/space_traversal/test_explain_enhanced.py",
@@ -24809,8 +24833,8 @@
     {
       "path": "tests/space_traversal/test_structural_integrity.py",
       "ext": ".py",
-      "size": 9529,
-      "sha": "89b6a4a46fa39f6a2a72c72165d2b3b861ef4c6275be0c814b50a5612620d9f8"
+      "size": 14274,
+      "sha": "d492f1d7cb3736d737da7f4cb9fa039a4ba92d43a2504b2769053cf4425f37a7"
     },
     {
       "path": "tests/space_traversal/test_synonym_loader.py",
