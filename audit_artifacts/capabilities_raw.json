@@ -1,5 +1,5 @@
 {
-  "generated": 1765690593.580873,
+  "generated": 1765691603.238431,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -1919,6 +1919,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -2567,10 +2568,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 748,
+        "markdown_count": 749,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 750,
+        "total_docs": 751,
         "deterministic": true,
         "offline": true,
         "validation": true
@@ -3778,6 +3779,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -5886,6 +5888,10 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/__pycache__/test_structural_advanced.cpython-312-pytest-9.0.2.pyc",
+        "tests/architecture/__pycache__/test_structural_validation.cpython-312-pytest-9.0.2.pyc",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -6283,9 +6289,11 @@
         "tests/deployment/test_service_health_probes.py",
         "tests/deployment/test_volume_mounts.py",
         "tests/deployment_infra/test_deployment_comprehensive.py",
+        "tests/detectors/__pycache__/test_structural_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -6785,6 +6793,10 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/__pycache__/test_structural_edge_cases.cpython-312-pytest-9.0.2.pyc",
+        "tests/structure/__pycache__/test_structural_patterns.cpython-312-pytest-9.0.2.pyc",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/hydra/__init__.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/omegaconf/__init__.py",
@@ -7178,6 +7190,8 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
@@ -7269,6 +7283,8 @@
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/__init__.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
@@ -9747,6 +9763,7 @@
         "configs/training/tracking/offline.yaml",
         "data/offline/trainer_functional.json",
         "docs/capabilities/functional_training.md",
+        "docs/capabilities/unified_training.md",
         "docs/cli/minimal_train_eval_workflow.md",
         "docs/dev/training.md",
         "docs/dev/unified_training.md",
@@ -10078,6 +10095,8 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
         "tools/bench_unified_training.py",
@@ -10728,7 +10747,9 @@
         "tests/space_traversal/test_mcp_schema_validation.py",
         "tests/space_traversal/test_mcp_security_safeguards.py",
         "tests/space_traversal/test_mcp_tooling_registry.py",
-        "tests/space_traversal/test_mcp_tools_integration.py"
+        "tests/space_traversal/test_mcp_tools_integration.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py"
       ],
       "found_patterns": [
         "healthz",
@@ -10775,9 +10796,26 @@
       "required_patterns": [
         "tenant"
       ],
-      "docs_keywords": [],
+      "docs_keywords": [
+        "bounded",
+        "configuration",
+        "deterministic",
+        "isolation",
+        "mcp",
+        "multi-tenant",
+        "safeguards",
+        "tenant",
+        "validation"
+      ],
       "meta": {
-        "category": "mcp"
+        "category": "mcp",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "offline"
+        ],
+        "detector_version": "1.1"
       }
     },
     {
@@ -11819,9 +11857,28 @@
         "FastAPI",
         "jsonrpc"
       ],
-      "docs_keywords": [],
+      "docs_keywords": [
+        "api",
+        "bounded",
+        "deterministic",
+        "endpoint",
+        "mcp",
+        "offline",
+        "protocol",
+        "rpc",
+        "safeguards",
+        "surface",
+        "validation"
+      ],
       "meta": {
-        "category": "mcp"
+        "category": "mcp",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "error-handling"
+        ],
+        "detector_version": "1.1"
       }
     },
     {
@@ -12292,6 +12349,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -12632,12 +12690,16 @@
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
+        "scripts/space_traversal/detectors/mcp_multi_tenant.py",
+        "scripts/space_traversal/detectors/mcp_protocol_surface.py",
         "scripts/space_traversal/detectors/mcp_schema_validation.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "scripts/space_traversal/detectors/mcp_tools_integration.py",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
+        "scripts/space_traversal/detectors/train_loop.py",
+        "scripts/space_traversal/detectors/unified_training.py",
         "scripts/space_traversal/detectors/vector_store_detector.py",
         "scripts/space_traversal/migrations/migrate_trends.py",
         "scripts/space_traversal/validate_snapshot_schema.py",
@@ -12808,6 +12870,8 @@
         "tests/agents/test_phase2_mental_mapping.py",
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
         "tests/archival/test_corruption_recovery.py",
@@ -12922,6 +12986,8 @@
         "tests/space_traversal/test_safeguards_keywords.py",
         "tests/space_traversal/test_structural_integrity.py",
         "tests/specs/test_regex_props.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/templates/__init__.py",
         "tests/templates/test_status_template.py",
         "tests/test_agents_infrastructure.py",
@@ -12959,6 +13025,7 @@
         "tests/test_training_integration_flags.py",
         "tests/test_vendor_audit_scripts.py",
         "tests/tokenization/test_tokenizer_basic.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
         "tests/tools/test_codex_config_validate.py",
         "tests/tools/test_codex_task_sequence_runner.py",
@@ -12966,6 +13033,7 @@
         "tests/tools/test_validate_experiments.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_training_config.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_cli_prompt_sanitisation.py",
         "tests/unit/test_datasets_module.py",
         "tests/unit/test_deploy_cli.py",
@@ -13124,12 +13192,15 @@
         "mcp.json"
       ],
       "docs_keywords": [
+        "bounded",
         "capabilities",
+        "deterministic",
         "discovery",
         "extensions",
         "invocation",
         "management",
         "mcp",
+        "offline",
         "plugins",
         "registry",
         "safeguards",
@@ -13145,9 +13216,12 @@
           "timeout",
           "error-isolation",
           "resource-limits",
-          "audit-trail"
+          "audit-trail",
+          "bounded",
+          "deterministic",
+          "offline"
         ],
-        "detector_version": "1.1"
+        "detector_version": "1.2"
       }
     },
     {
@@ -13270,6 +13344,8 @@
         "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
@@ -15127,6 +15203,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -16613,6 +16690,8 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -16969,6 +17048,7 @@
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -17412,6 +17492,8 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/torch/__init__.py",
         "tests/telemetry/test_instrumentation.py",
@@ -17794,6 +17876,7 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/test_cli_ndjson_summary.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
         "tests/tools/test_codeowners_validate.py",
@@ -17879,6 +17962,7 @@
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
         "tests/unit/test_attach_artifacts.py",
@@ -18918,7 +19002,80 @@
         "codex_utils/cli/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py"
+        "codex_utils/logging_setup.py",
+        "data/.gitkeep",
+        "data/models/.gitkeep",
+        "data/offline/length_reward.json",
+        "data/offline/tiny_corpus.txt",
+        "data/offline/trainer_functional.json",
+        "docs/capabilities/structural_integrity.md",
+        "experiments/2025-01-15_smoke.md",
+        "models/__init__.py",
+        "models/chat_model.py",
+        "models/deterministic_dummy/README.md",
+        "models/lora/__init__.py",
+        "models/lora/_test_utils.py",
+        "scripts/space_traversal/detectors/structure_integrity.py",
+        "services/__init__.py",
+        "services/api/__init__.py",
+        "services/api/main.py",
+        "services/api/requirements.txt",
+        "services/ita/.gitignore",
+        "src/codex_ml/__init__.py",
+        "src/codex_ml/__main__.py",
+        "src/codex_ml/_package_main.py",
+        "src/codex_ml/analysis/__init__.py",
+        "src/codex_ml/analysis/extractors.py",
+        "src/codex_utils/__init__.py",
+        "src/codex_utils/regex_patterns.py",
+        "src/codex_utils/tracking/__init__.py",
+        "src/codex_utils/tracking/guards.py",
+        "src/data/.gitkeep",
+        "src/data/__init__.py",
+        "src/data/datasets.py",
+        "src/data/loaders.py",
+        "src/data/manifest.py",
+        "src/experiments/__init__.py",
+        "src/experiments/manager.py",
+        "src/models/__init__.py",
+        "src/models/chat_model.py",
+        "src/models/peft_utils.py",
+        "src/services/__init__.py",
+        "src/services/mcp/__init__.py",
+        "src/services/mcp/lifecycle.py",
+        "src/tokenization/.gitkeep",
+        "src/tokenization/__init__.py",
+        "src/tokenization/adapter.py",
+        "src/tokenization/api.py",
+        "src/tokenization/cli.py",
+        "src/tools/__init__.py",
+        "src/tools/archive_pr_checklist.py",
+        "src/tools/codeowners_validate.py",
+        "src/training/__init__.py",
+        "src/training/accelerate_init_guard.py",
+        "src/training/cache.py",
+        "src/training/checkpoint_manager.py",
+        "src/training/checkpointing.py",
+        "tests/space_traversal/test_structural_integrity.py",
+        "tokenization/__init__.py",
+        "tokenization/api.py",
+        "tokenization/cli.py",
+        "tokenization/loader.py",
+        "tokenization/sentencepiece_adapter.py",
+        "tools/README.md",
+        "tools/README_status_update.md",
+        "tools/__init__.py",
+        "tools/actions_cli.py",
+        "tools/actions_server.py",
+        "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
+        "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
+        "training/__init__.py",
+        "training/accelerate_init_guard.py",
+        "training/cache.py",
+        "training/checkpoint_manager.py",
+        "training/config.py"
       ],
       "found_patterns": [
         "lib-shadowing",
@@ -18931,11 +19088,15 @@
       "docs_keywords": [
         "architectural",
         "architecture",
+        "bounded",
         "consistency",
         "detection",
+        "deterministic",
         "integrity",
         "namespace",
+        "offline",
         "organization",
+        "reproducible",
         "safeguards",
         "shadowing",
         "split-brain",
@@ -18964,8 +19125,11 @@
           "bounded",
           "validation",
           "deterministic",
-          "error-handling"
-        ]
+          "error-handling",
+          "offline",
+          "reproducible"
+        ],
+        "detector_version": "1.1"
       }
     },
     {
@@ -19034,6 +19198,8 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -19431,6 +19597,7 @@
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -19918,6 +20085,8 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/hydra/__init__.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/omegaconf/__init__.py",
@@ -20311,6 +20480,7 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
@@ -20401,6 +20571,7 @@
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/__init__.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
@@ -20482,7 +20653,7 @@
       ],
       "docs_keywords": [],
       "meta": {
-        "test_count": 1473,
+        "test_count": 1480,
         "config_count": 26,
         "fixture_count": 34
       }
@@ -20649,9 +20820,27 @@
       "required_patterns": [
         "train_loop"
       ],
-      "docs_keywords": [],
+      "docs_keywords": [
+        "bounded",
+        "deterministic",
+        "epoch",
+        "iteration",
+        "loop",
+        "offline",
+        "safeguards",
+        "train-loop",
+        "training",
+        "validation"
+      ],
       "meta": {
-        "detector": "train_loop"
+        "detector": "train_loop",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "offline"
+        ],
+        "detector_version": "1.1"
       }
     },
     {
@@ -20712,6 +20901,7 @@
         "configs/training/tracking/offline.yaml",
         "data/offline/trainer_functional.json",
         "docs/capabilities/functional_training.md",
+        "docs/capabilities/unified_training.md",
         "docs/cli/minimal_train_eval_workflow.md",
         "docs/dev/training.md",
         "docs/dev/unified_training.md",
@@ -20897,6 +21087,8 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
         "tools/bench_unified_training.py",
@@ -20938,10 +21130,12 @@
     {
       "id": "unified-training",
       "evidence_files": [
+        "docs/capabilities/unified_training.md",
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
         "src/codex_ml/training/unified_training.py",
         "tests/detectors/test_unified_training.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tools/bench_unified_training.py"
       ],
       "found_patterns": [
@@ -20952,9 +21146,26 @@
         "UnifiedTrainingConfig",
         "run_unified_training"
       ],
-      "docs_keywords": [],
+      "docs_keywords": [
+        "bounded",
+        "configuration",
+        "deterministic",
+        "execution",
+        "offline",
+        "safeguards",
+        "training",
+        "unified-training",
+        "validation"
+      ],
       "meta": {
-        "category": "training"
+        "category": "training",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "error-handling"
+        ],
+        "detector_version": "1.1"
       }
     },
     {

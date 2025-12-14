@@ -409,3 +409,26 @@ The structural integrity detector includes the following safeguards:
 **Last Updated**: 2025-12-09  
 **Maintainer**: Codex Audit System  
 **Capability ID**: structural-integrity
+
+## Advanced Safeguards
+
+### Reproducibility Guarantees
+
+The structural integrity detector ensures reproducible results through:
+
+- **Explicit seed-independent logic**: No random operations, deterministic file ordering
+- **Checksum-stable output**: Results can be verified with sha256 hashes
+- **Manifest tracking**: All detected patterns recorded in audit manifest
+- **Baseline comparison**: Compare against baselines for regression detection
+
+### Offline Operation
+
+- Works completely offline with no network dependencies
+- WANDB_MODE not required as no logging to external services
+- All analysis performed on local file system
+
+### Security Considerations
+
+- Paths are sanitize-d before processing
+- Secret files (matching patterns like `.env`, `secret`) are excluded from evidence
+- Bounded file reading prevents memory exhaustion (rng not applicable)

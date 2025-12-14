@@ -1800,7 +1800,7 @@
     },
     {
       "components": {
-        "consistency": 0.934667,
+        "consistency": 0.933422,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
@@ -1931,6 +1931,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -2561,7 +2562,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.886933
+        "score": 0.886684
       },
       "found_patterns": [
         "docs",
@@ -2572,17 +2573,17 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 748,
+        "markdown_count": 749,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 750,
+        "total_docs": 751,
         "validation": true
       },
-      "score": 0.886933
+      "score": 0.886684
     },
     {
       "components": {
-        "consistency": 0.785153,
+        "consistency": 0.785588,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -3788,6 +3789,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -5896,6 +5898,10 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/__pycache__/test_structural_advanced.cpython-312-pytest-9.0.2.pyc",
+        "tests/architecture/__pycache__/test_structural_validation.cpython-312-pytest-9.0.2.pyc",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -6293,9 +6299,11 @@
         "tests/deployment/test_service_health_probes.py",
         "tests/deployment/test_volume_mounts.py",
         "tests/deployment_infra/test_deployment_comprehensive.py",
+        "tests/detectors/__pycache__/test_structural_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -6795,6 +6803,10 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/__pycache__/test_structural_edge_cases.cpython-312-pytest-9.0.2.pyc",
+        "tests/structure/__pycache__/test_structural_patterns.cpython-312-pytest-9.0.2.pyc",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/hydra/__init__.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/omegaconf/__init__.py",
@@ -7188,6 +7200,8 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
@@ -7279,6 +7293,8 @@
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/__init__.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
@@ -7685,7 +7701,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.957031
+        "score": 0.957118
       },
       "found_patterns": [
         "analysis",
@@ -7698,7 +7714,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.957031
+      "score": 0.957118
     },
     {
       "components": {
@@ -9704,10 +9720,10 @@
     },
     {
       "components": {
-        "consistency": 0.795567,
+        "consistency": 0.794621,
         "documentation": 1.0,
         "functionality": 1.333333,
-        "safeguards": 0.916667,
+        "safeguards": 1.0,
         "tests": 1.0
       },
       "evidence_files": [
@@ -9767,6 +9783,7 @@
         "configs/training/tracking/offline.yaml",
         "data/offline/trainer_functional.json",
         "docs/capabilities/functional_training.md",
+        "docs/capabilities/unified_training.md",
         "docs/cli/minimal_train_eval_workflow.md",
         "docs/dev/training.md",
         "docs/dev/unified_training.md",
@@ -10098,6 +10115,8 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
         "tools/bench_unified_training.py",
@@ -10121,7 +10140,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 1.029947
+        "score": 1.042257
       },
       "found_patterns": [
         "backward",
@@ -10142,7 +10161,7 @@
         "offline": true,
         "patterns_found": 8
       },
-      "score": 1.029947
+      "score": 1.042257
     },
     {
       "components": {
@@ -10506,7 +10525,7 @@
     {
       "components": {
         "consistency": 0.965517,
-        "documentation": 0.293725,
+        "documentation": 0.293333,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 1.0
@@ -10545,7 +10564,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 1.012162
+        "score": 1.012103
       },
       "found_patterns": [
         "API-Key",
@@ -10556,7 +10575,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.012162
+      "score": 1.012103
     },
     {
       "components": {
@@ -10669,7 +10688,7 @@
     {
       "components": {
         "consistency": 0.923077,
-        "documentation": 0.293725,
+        "documentation": 0.293333,
         "functionality": 2.0,
         "safeguards": 0.5,
         "tests": 1.0
@@ -10692,7 +10711,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 1.053674
+        "score": 1.053615
       },
       "found_patterns": [
         "MCPError",
@@ -10702,11 +10721,11 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.053674
+      "score": 1.053615
     },
     {
       "components": {
-        "consistency": 0.891304,
+        "consistency": 0.895833,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.666667,
@@ -10758,12 +10777,14 @@
         "tests/space_traversal/test_mcp_schema_validation.py",
         "tests/space_traversal/test_mcp_security_safeguards.py",
         "tests/space_traversal/test_mcp_tooling_registry.py",
-        "tests/space_traversal/test_mcp_tools_integration.py"
+        "tests/space_traversal/test_mcp_tools_integration.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py"
       ],
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.928261
+        "score": 0.929167
       },
       "found_patterns": [
         "healthz",
@@ -10782,15 +10803,15 @@
         "priority": "high",
         "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.928261
+      "score": 0.929167
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.293725,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.166667,
-        "tests": 0.91
+        "safeguards": 0.416667,
+        "tests": 0.94
       },
       "evidence_files": [
         "policies/tenant_policy.schema.json",
@@ -10802,21 +10823,28 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.746559
+        "score": 0.8975
       },
       "found_patterns": [
         "tenant"
       ],
       "id": "mcp-multi-tenant",
       "meta": {
-        "category": "mcp"
+        "category": "mcp",
+        "detector_version": "1.1",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "offline"
+        ]
       },
-      "score": 0.746559
+      "score": 0.8975
     },
     {
       "components": {
         "consistency": 0.878147,
-        "documentation": 0.293725,
+        "documentation": 0.293333,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11819,7 +11847,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 1.119688
+        "score": 1.119629
       },
       "found_patterns": [
         "X-Request-Id",
@@ -11831,12 +11859,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.119688
+      "score": 1.119629
     },
     {
       "components": {
         "consistency": 0.866667,
-        "documentation": 0.293725,
+        "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.583333,
         "tests": 1.0
@@ -11861,7 +11889,7 @@
       "explain": {
         "id": "mcp-protocol-surface",
         "partials": {},
-        "score": 0.804892
+        "score": 0.910833
       },
       "found_patterns": [
         "FastAPI",
@@ -11869,14 +11897,21 @@
       ],
       "id": "mcp-protocol-surface",
       "meta": {
-        "category": "mcp"
+        "category": "mcp",
+        "detector_version": "1.1",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "error-handling"
+        ]
       },
-      "score": 0.804892
+      "score": 0.910833
     },
     {
       "components": {
         "consistency": 0.85,
-        "documentation": 0.293725,
+        "documentation": 0.293333,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11926,7 +11961,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 1.114059
+        "score": 1.114
       },
       "found_patterns": [
         "RateLimiter",
@@ -11936,7 +11971,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.114059
+      "score": 1.114
     },
     {
       "components": {
@@ -12033,7 +12068,7 @@
     },
     {
       "components": {
-        "consistency": 0.905028,
+        "consistency": 0.904147,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -12351,6 +12386,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -12691,12 +12727,16 @@
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
+        "scripts/space_traversal/detectors/mcp_multi_tenant.py",
+        "scripts/space_traversal/detectors/mcp_protocol_surface.py",
         "scripts/space_traversal/detectors/mcp_schema_validation.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "scripts/space_traversal/detectors/mcp_tools_integration.py",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
+        "scripts/space_traversal/detectors/train_loop.py",
+        "scripts/space_traversal/detectors/unified_training.py",
         "scripts/space_traversal/detectors/vector_store_detector.py",
         "scripts/space_traversal/migrations/migrate_trends.py",
         "scripts/space_traversal/validate_snapshot_schema.py",
@@ -12867,6 +12907,8 @@
         "tests/agents/test_phase2_mental_mapping.py",
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
         "tests/archival/test_corruption_recovery.py",
@@ -12981,6 +13023,8 @@
         "tests/space_traversal/test_safeguards_keywords.py",
         "tests/space_traversal/test_structural_integrity.py",
         "tests/specs/test_regex_props.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/templates/__init__.py",
         "tests/templates/test_status_template.py",
         "tests/test_agents_infrastructure.py",
@@ -13018,6 +13062,7 @@
         "tests/test_training_integration_flags.py",
         "tests/test_vendor_audit_scripts.py",
         "tests/tokenization/test_tokenizer_basic.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
         "tests/tools/test_codex_config_validate.py",
         "tests/tools/test_codex_task_sequence_runner.py",
@@ -13025,6 +13070,7 @@
         "tests/tools/test_validate_experiments.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_training_config.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_cli_prompt_sanitisation.py",
         "tests/unit/test_datasets_module.py",
         "tests/unit/test_deploy_cli.py",
@@ -13118,7 +13164,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.981006
+        "score": 0.980829
       },
       "found_patterns": [
         "bounds",
@@ -13141,15 +13187,15 @@
           "rollback"
         ]
       },
-      "score": 0.981006
+      "score": 0.980829
     },
     {
       "components": {
         "consistency": 0.8,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.25,
-        "tests": 0.94
+        "safeguards": 0.333333,
+        "tests": 0.97
       },
       "evidence_files": [
         "docs/capabilities/mcp_tooling_registry.md",
@@ -13166,7 +13212,7 @@
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.8325
+        "score": 0.8525
       },
       "found_patterns": [
         "mcp.json",
@@ -13175,20 +13221,23 @@
       "id": "mcp-tooling-registry",
       "meta": {
         "category": "mcp",
-        "detector_version": "1.1",
+        "detector_version": "1.2",
         "safeguards": [
           "validation",
           "timeout",
           "error-isolation",
           "resource-limits",
-          "audit-trail"
+          "audit-trail",
+          "bounded",
+          "deterministic",
+          "offline"
         ]
       },
-      "score": 0.8325
+      "score": 0.8525
     },
     {
       "components": {
-        "consistency": 0.926174,
+        "consistency": 0.926503,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -13312,6 +13361,8 @@
         "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
+        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
@@ -13646,7 +13697,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.985235
+        "score": 0.985301
       },
       "found_patterns": [
         "integration",
@@ -13661,15 +13712,15 @@
         "layer": "integration",
         "offline": true
       },
-      "score": 0.985235
+      "score": 0.985301
     },
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.293725,
+        "documentation": 0.293333,
         "functionality": 2.0,
         "safeguards": 0.083333,
-        "tests": 0.97
+        "tests": 1.0
       },
       "evidence_files": [
         "scripts/space_traversal/detectors/mcp_versioning_compat.py",
@@ -13684,7 +13735,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 0.999059
+        "score": 1.0065
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -13694,7 +13745,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.999059
+      "score": 1.0065
     },
     {
       "components": {
@@ -14295,7 +14346,7 @@
         "consistency": 0.851852,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.916667,
+        "safeguards": 1.0,
         "tests": 1.0
       },
       "evidence_files": [
@@ -14411,7 +14462,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.95787
+        "score": 0.97037
       },
       "found_patterns": [
         "deterministic",
@@ -14431,11 +14482,11 @@
         "repro_utils": 39,
         "seed_management": 34
       },
-      "score": 0.95787
+      "score": 0.97037
     },
     {
       "components": {
-        "consistency": 0.848947,
+        "consistency": 0.849002,
         "documentation": 1.0,
         "functionality": 1.15625,
         "safeguards": 1.0,
@@ -15163,6 +15214,7 @@
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
         "docs/capabilities/structural_integrity.md",
+        "docs/capabilities/unified_training.md",
         "docs/capability_contracts.md",
         "docs/changes/MSP_Capability_Audit_Changeplan_Tree.md",
         "docs/changes/MSP_Capability_Audit_File_Map.md",
@@ -16649,6 +16701,8 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -17005,6 +17059,7 @@
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -17448,6 +17503,8 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/torch/__init__.py",
         "tests/telemetry/test_instrumentation.py",
@@ -17830,6 +17887,7 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/test_cli_ndjson_summary.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
         "tests/tools/test_codeowners_validate.py",
@@ -17915,6 +17973,7 @@
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
         "tests/unit/test_attach_artifacts.py",
@@ -18246,7 +18305,7 @@
       "explain": {
         "id": "safeguards_keywords",
         "partials": {},
-        "score": 1.008852
+        "score": 1.008863
       },
       "found_patterns": [
         "MAX_READ_BYTES",
@@ -18294,7 +18353,7 @@
         "deterministic": true,
         "offline": true
       },
-      "score": 1.008852
+      "score": 1.008863
     },
     {
       "components": {
@@ -18922,11 +18981,11 @@
     },
     {
       "components": {
-        "consistency": 0.8,
+        "consistency": 0.566265,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.5,
-        "tests": 0.4
+        "safeguards": 0.916667,
+        "tests": 0.88
       },
       "evidence_files": [
         "codex_ml/__init__.py",
@@ -18938,12 +18997,85 @@
         "codex_utils/cli/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
-        "codex_utils/logging_setup.py"
+        "codex_utils/logging_setup.py",
+        "data/.gitkeep",
+        "data/models/.gitkeep",
+        "data/offline/length_reward.json",
+        "data/offline/tiny_corpus.txt",
+        "data/offline/trainer_functional.json",
+        "docs/capabilities/structural_integrity.md",
+        "experiments/2025-01-15_smoke.md",
+        "models/__init__.py",
+        "models/chat_model.py",
+        "models/deterministic_dummy/README.md",
+        "models/lora/__init__.py",
+        "models/lora/_test_utils.py",
+        "scripts/space_traversal/detectors/structure_integrity.py",
+        "services/__init__.py",
+        "services/api/__init__.py",
+        "services/api/main.py",
+        "services/api/requirements.txt",
+        "services/ita/.gitignore",
+        "src/codex_ml/__init__.py",
+        "src/codex_ml/__main__.py",
+        "src/codex_ml/_package_main.py",
+        "src/codex_ml/analysis/__init__.py",
+        "src/codex_ml/analysis/extractors.py",
+        "src/codex_utils/__init__.py",
+        "src/codex_utils/regex_patterns.py",
+        "src/codex_utils/tracking/__init__.py",
+        "src/codex_utils/tracking/guards.py",
+        "src/data/.gitkeep",
+        "src/data/__init__.py",
+        "src/data/datasets.py",
+        "src/data/loaders.py",
+        "src/data/manifest.py",
+        "src/experiments/__init__.py",
+        "src/experiments/manager.py",
+        "src/models/__init__.py",
+        "src/models/chat_model.py",
+        "src/models/peft_utils.py",
+        "src/services/__init__.py",
+        "src/services/mcp/__init__.py",
+        "src/services/mcp/lifecycle.py",
+        "src/tokenization/.gitkeep",
+        "src/tokenization/__init__.py",
+        "src/tokenization/adapter.py",
+        "src/tokenization/api.py",
+        "src/tokenization/cli.py",
+        "src/tools/__init__.py",
+        "src/tools/archive_pr_checklist.py",
+        "src/tools/codeowners_validate.py",
+        "src/training/__init__.py",
+        "src/training/accelerate_init_guard.py",
+        "src/training/cache.py",
+        "src/training/checkpoint_manager.py",
+        "src/training/checkpointing.py",
+        "tests/space_traversal/test_structural_integrity.py",
+        "tokenization/__init__.py",
+        "tokenization/api.py",
+        "tokenization/cli.py",
+        "tokenization/loader.py",
+        "tokenization/sentencepiece_adapter.py",
+        "tools/README.md",
+        "tools/README_status_update.md",
+        "tools/__init__.py",
+        "tools/actions_cli.py",
+        "tools/actions_server.py",
+        "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
+        "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
+        "training/__init__.py",
+        "training/accelerate_init_guard.py",
+        "training/cache.py",
+        "training/checkpoint_manager.py",
+        "training/config.py"
       ],
       "explain": {
         "id": "structural-integrity",
         "partials": {},
-        "score": 0.735
+        "score": 0.870753
       },
       "found_patterns": [
         "lib-shadowing",
@@ -18952,13 +19084,16 @@
       "id": "structural-integrity",
       "meta": {
         "description": "Detects architectural split-brain and namespace shadowing.",
+        "detector_version": "1.1",
         "evidence_limit": 10,
         "risk_level": "high",
         "safeguards": [
           "bounded",
           "validation",
           "deterministic",
-          "error-handling"
+          "error-handling",
+          "offline",
+          "reproducible"
         ],
         "shadow_dirs": [
           "torch"
@@ -18975,11 +19110,11 @@
           "training"
         ]
       },
-      "score": 0.735
+      "score": 0.870753
     },
     {
       "components": {
-        "consistency": 0.878424,
+        "consistency": 0.878989,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
@@ -19049,6 +19184,8 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
+        "tests/architecture/test_structural_advanced.py",
+        "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
         "tests/archival/test_archive_integration.py",
         "tests/archival/test_bundling.py",
@@ -19446,6 +19583,7 @@
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
+        "tests/detectors/test_structural_detector.py",
         "tests/detectors/test_unified_training.py",
         "tests/diagram/test_flow_to_mermaid_smoke.py",
         "tests/distributed/test_ddp_env_optin_smoke.py",
@@ -19933,6 +20071,8 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
+        "tests/structure/test_structural_edge_cases.py",
+        "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/hydra/__init__.py",
         "tests/stub_packages/numpy/__init__.py",
         "tests/stub_packages/omegaconf/__init__.py",
@@ -20326,6 +20466,7 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/__init__.py",
         "tests/tools/test_cli_ndjson_summary.py",
         "tests/tools/test_cli_ndjson_summary_prop.py",
@@ -20416,6 +20557,7 @@
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/__init__.py",
         "tests/unit/test_adapters.py",
         "tests/unit/test_apply_ops_normalization.py",
@@ -20487,7 +20629,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.913185
+        "score": 0.913298
       },
       "found_patterns": [
         "fixture",
@@ -20498,9 +20640,9 @@
       "meta": {
         "config_count": 26,
         "fixture_count": 34,
-        "test_count": 1473
+        "test_count": 1480
       },
-      "score": 0.913185
+      "score": 0.913298
     },
     {
       "components": {
@@ -20651,7 +20793,7 @@
     {
       "components": {
         "consistency": 0.916667,
-        "documentation": 0.293725,
+        "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.5,
         "tests": 1.0
@@ -20673,23 +20815,30 @@
       "explain": {
         "id": "train_loop",
         "partials": {},
-        "score": 0.802392
+        "score": 0.908333
       },
       "found_patterns": [
         "train_loop"
       ],
       "id": "train_loop",
       "meta": {
-        "detector": "train_loop"
+        "detector": "train_loop",
+        "detector_version": "1.1",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "offline"
+        ]
       },
-      "score": 0.802392
+      "score": 0.908333
     },
     {
       "components": {
-        "consistency": 0.799228,
+        "consistency": 0.79771,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.916667,
+        "safeguards": 1.0,
         "tests": 1.0
       },
       "evidence_files": [
@@ -20748,6 +20897,7 @@
         "configs/training/tracking/offline.yaml",
         "data/offline/trainer_functional.json",
         "docs/capabilities/functional_training.md",
+        "docs/capabilities/unified_training.md",
         "docs/cli/minimal_train_eval_workflow.md",
         "docs/dev/training.md",
         "docs/dev/unified_training.md",
@@ -20933,6 +21083,8 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
+        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
         "tools/bench_unified_training.py",
@@ -20956,7 +21108,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.947346
+        "score": 0.959542
       },
       "found_patterns": [
         "epoch",
@@ -20969,27 +21121,29 @@
           "train-loop"
         ]
       },
-      "score": 0.947346
+      "score": 0.959542
     },
     {
       "components": {
-        "consistency": 0.6,
-        "documentation": 0.974633,
+        "consistency": 0.571429,
+        "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.333333,
-        "tests": 0.91
+        "safeguards": 0.916667,
+        "tests": 0.94
       },
       "evidence_files": [
+        "docs/capabilities/unified_training.md",
         "scripts/space_traversal/detectors/unified_training.py",
         "src/codex_ml/detectors/unified_training.py",
         "src/codex_ml/training/unified_training.py",
         "tests/detectors/test_unified_training.py",
+        "tests/unified/test_unified_training_comprehensive.py",
         "tools/bench_unified_training.py"
       ],
       "explain": {
         "id": "unified-training",
         "partials": {},
-        "score": 0.793695
+        "score": 0.886786
       },
       "found_patterns": [
         "UnifiedTrainingConfig",
@@ -20997,9 +21151,16 @@
       ],
       "id": "unified-training",
       "meta": {
-        "category": "training"
+        "category": "training",
+        "detector_version": "1.1",
+        "safeguards": [
+          "bounded",
+          "validation",
+          "deterministic",
+          "error-handling"
+        ]
       },
-      "score": 0.793695
+      "score": 0.886786
     },
     {
       "components": {
@@ -21074,6 +21235,6 @@
       "score": 1.230379
     }
   ],
-  "generated": 1765690595.7995653,
+  "generated": 1765691605.615233,
   "version": "1.5.0"
 }

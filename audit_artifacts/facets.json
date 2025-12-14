@@ -1,5 +1,5 @@
 {
-  "generated": 1765690590.0522492,
+  "generated": 1765691599.676023,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -298,6 +298,7 @@
       "configs/training/tracking/offline.yaml",
       "data/offline/trainer_functional.json",
       "docs/capabilities/functional_training.md",
+      "docs/capabilities/unified_training.md",
       "docs/cli/minimal_train_eval_workflow.md",
       "docs/dev/training.md",
       "docs/dev/unified_training.md",
@@ -483,6 +484,8 @@
       "tests/training/test_training_checkpoint.py",
       "tests/training/test_training_config.py",
       "tests/training/test_training_utilities.py",
+      "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+      "tests/unified/test_unified_training_comprehensive.py",
       "tests/unit/test_train_entrypoint.py",
       "tests/unit/test_trainer_module.py",
       "tools/bench_unified_training.py",
