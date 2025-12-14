@@ -34,11 +34,11 @@ class TestPhysicsOrchestratorAdditional:
             available_resources=100.0,
             time_available=60.0,
             current_velocity=5.0,
-            current_momentum={"direction": "forward"}
+            context={"momentum": {"direction": "forward"}}
         )
         
         assert state.current_velocity == 5.0
-        assert state.current_momentum == {"direction": "forward"}
+        assert state.context["momentum"] == {"direction": "forward"}
     
     def test_action_path_with_all_scores(self):
         """Test ActionPath with all score parameters."""
