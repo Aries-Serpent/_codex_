@@ -1,8 +1,19 @@
 import os
 from pathlib import Path
 
-from hydra import compose, initialize_config_dir
+import pytest
+
 from omegaconf import OmegaConf
+
+
+# Use pytest.importorskip for collection-safe conditional imports
+hydra = pytest.importorskip("hydra", reason="hydra-core not installed")
+
+# Validate that required hydra functions are available
+compose = getattr(hydra, "compose", None)
+initialize_config_dir = getattr(hydra, "initialize_config_dir", None)
+if compose is None or initialize_config_dir is None:
+    pytest.skip("hydra compose helpers unavailable", allow_module_level=True)
 
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 

@@ -27,12 +27,11 @@ To reduce repository size from 11.2MB to under 10MB (CodeQL requirement), we've 
 misc/repo-owner-review/
 ├── README.md (this file)
 ├── metadata.json (tracks moved files)
+├── drop-for-restore/ (file recovery inbox - see Recovery Process below)
+├── archived-backups/ (backup files with commit SHA naming)
+│   └── README.md
 └── archived-artifacts/
-    ├── security-reports/ (large generated security scan reports)
-    ├── changelogs/ (historical changelogs)
-    ├── old-audit-runs/ (previous audit run artifacts)
-    ├── validation-logs/ (old validation logs)
-    └── deprecated-scripts/ (duplicate/backup scripts)
+    └── README.md
 ```
 
 ---
@@ -45,6 +44,67 @@ See `metadata.json` for a complete manifest of moved files including:
 - Date moved
 - Reason for archival
 - Verification that removal won't break functionality
+
+---
+
+## Recovery Process
+
+**New Feature**: File recovery system for archived files.
+
+### Drop Folder: `drop-for-restore/`
+
+If you need to restore archived files:
+
+1. **Request restoration** via AI prompt or manual process
+2. **Files are extracted** from archives if compressed
+3. **Moved to drop-for-restore/** with original naming preserved
+4. **User notification** when files are ready for retrieval
+
+### Manual Recovery Instructions
+
+For files in `archived-backups/`:
+```bash
+# Each archived file has format: originalname_dirname_commitsha.ext
+# Example: README.md_.codex_36462ee8.bak
+
+# View metadata
+cat misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak.meta.md
+
+# Restore to original location (from metadata)
+cp misc/repo-owner-review/archived-backups/README.md_.codex_36462ee8.bak .codex/README.md.bak
+```
+
+For compressed archives:
+```bash
+# Extract archive
+tar -xzf misc/repo-owner-review/archived-artifacts/<category>/<file>.tar.gz
+
+# Move to drop folder or original location
+mv extracted-file drop-for-restore/
+```
+
+---
+
+## Archived Files Registry
+
+### Backup Files (2025-12-12 Audit)
+
+| Original Path | Archived Name | Commit SHA | Size | Reason |
+|---------------|---------------|------------|------|--------|
+| `.codex/README.md.bak` | `README.md_.codex_36462ee8.bak` | 36462ee8 | 22KB | Backup file from codebase audit |
+| `uv.lock.bak` | `uv.lock_._36462ee8.bak` | 36462ee8 | 118KB | Lock file backup |
+| `.github/copilot_agent_task_prompt.next.md.backup` | `copilot_agent_task_prompt.next.md_.github_36462ee8.backup` | 36462ee8 | 11KB | Agent prompt backup |
+| `AGENTS.md.backup_20251114_035816` | `AGENTS.md_._36462ee8.backup_20251114_035816` | 36462ee8 | 11KB | Timestamped backup |
+| `tests/tracking/test_mlflow_utils_py.old` | `test_mlflow_utils_py_tests_tracking_36462ee8.old` | 36462ee8 | 5.9KB | Old test file version |
+
+### Duplicate Files Removed (2025-12-12 Audit)
+
+| Removed File | Canonical Version | Reason |
+|--------------|-------------------|--------|
+| `tests/monitoring/test_mlflow_monitoring_utils.py` | `tests/monitoring/test_monitoring_mlflow_utils.py` | Exact duplicate, inconsistent naming |
+| `tests/modeling/conftest.py` | `tests/models/conftest.py` | Exact duplicate, models is standard dir |
+
+See `archived-backups/manifest.txt` for complete list with commit SHAs.
 
 ---
 
@@ -90,5 +150,6 @@ If you're unsure about deleting any file, consult:
 
 ---
 
-**Last Updated**: 2025-12-10  
-**Automation**: Copilot AI Code Assistant
+**Last Updated**: 2025-12-12 (Comprehensive Audit)  
+**Automation**: Copilot AI Code Assistant  
+**Audit Report**: See `/tmp/audit/audit_summary.md` for full findings

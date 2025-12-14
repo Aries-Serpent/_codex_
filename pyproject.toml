@@ -249,6 +249,7 @@ tools = "tools"
 training = "src/training"
 examples = "examples"
 cli = "cli"
+
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
@@ -275,8 +276,17 @@ exclude = [
   "configs*",
   "build*",
   "dist*",
+  "*.tests",
+  "*.tests.*",
+  "tests.*",
+  "tests",
+  "*.__pycache__",
+  "*.pycache",
+  "*.__pycache__.*",
+  "__pycache__",
 ]
 namespaces = true
+
 [tool.setuptools.package-data]
 # Ensure runtime resources remain available in installed wheels
 codex_ml = [
@@ -360,11 +370,29 @@ markers = [
 
 [tool.coverage.run]
 branch = true
-source = ["src/codex_ml"]
+source = ["src", "agents", "training"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
 
 [tool.coverage.report]
 show_missing = true
-skip_covered = true
+skip_covered = false
+precision = 2
+fail_under = 70
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
 
 [tool.mypy]
 python_version = "3.11"

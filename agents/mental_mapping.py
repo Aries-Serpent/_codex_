@@ -20,7 +20,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 
 class NodeType(Enum):
@@ -33,6 +33,8 @@ class NodeType(Enum):
     OUTCOME = "outcome"
     REFLECTION = "reflection"
     LEARNING = "learning"
+    CONCEPT = "concept"
+    ENTITY = "entity"
 
 
 class EdgeType(Enum):
@@ -45,6 +47,7 @@ class EdgeType(Enum):
     DEPENDS_ON = "depends_on"
     REFINES = "refines"
     VALIDATES = "validates"
+    RELATED = "related"
 
 
 @dataclass
@@ -145,6 +148,16 @@ class MentalNode:
         d['node_type'] = self.node_type.value
         d['connected_nodes'] = list(self.connected_nodes)
         return d
+    
+    def __hash__(self) -> int:
+        """Make MentalNode hashable for use in sets and as dict keys."""
+        return hash(self.node_id)
+    
+    def __eq__(self, other) -> bool:
+        """Equality based on node_id."""
+        if not isinstance(other, MentalNode):
+            return False
+        return self.node_id == other.node_id
 
 
 @dataclass
@@ -211,13 +224,41 @@ class MentalMappingModel:
     def create_node(
         self,
         node_type: NodeType,
-        content: str,
+        content: str = "",
+        properties: Dict = None,
         confidence: float = 0.5,
         importance: float = 0.5,
         tags: List[str] = None,
         context: Dict = None
-    ) -> MentalNode:
-        """Create a new node in the mental map"""
+    ) -> Union[MentalNode, str]:
+        """
+        Create a new node in the mental map.
+        
+        Args:
+            node_type: Type of node
+            content: Node content (optional)
+            properties: Alternative to explicit parameters (backward compat)
+            confidence: Confidence level
+            importance: Importance level
+            tags: Tags list
+            context: Context dict
+            
+        Returns:
+            MentalNode object, or node_id string if using properties parameter
+        """
+        # Handle properties parameter for backward compatibility
+        if properties is not None:
+            content = properties.get('content', content or f"{node_type.value}_node")
+            confidence = properties.get('confidence', confidence)
+            importance = properties.get('importance', importance)
+            tags = properties.get('tags', tags)
+            context = properties.get('context', context)
+            return_id_only = True
+        else:
+            return_id_only = False
+            if not content:
+                content = f"{node_type.value}_node"
+        
         node = MentalNode(
             node_id=str(uuid.uuid4()),
             node_type=node_type,
@@ -237,18 +278,47 @@ class MentalMappingModel:
             node.mark_for_review("low_confidence")
             self.nodes_needing_review.add(node.node_id)
         
-        return node
+        # Return node_id if using properties (old API), otherwise return node object
+        return node.node_id if return_id_only else node
     
     def connect_nodes(
         self,
-        source_id: str,
-        target_id: str,
-        edge_type: EdgeType,
+        source_id: str = None,
+        target_id: str = None,
+        source: str = None,  # Alias for source_id
+        target: str = None,  # Alias for target_id
+        edge_type: EdgeType = None,
+        properties: Dict = None,
         weight: float = 1.0,
         justification: str = "",
         evidence: List[str] = None
     ) -> MentalEdge:
-        """Create a connection between two nodes"""
+        """
+        Create a connection between two nodes.
+        
+        Args:
+            source_id: Source node ID
+            target_id: Target node ID
+            source: Alias for source_id
+            target: Alias for target_id
+            edge_type: Type of edge
+            properties: Alternative parameter dict (backward compat)
+            weight: Edge weight
+            justification: Reasoning for connection
+            evidence: Supporting evidence
+        """
+        # Handle parameter aliases
+        if source and not source_id:
+            source_id = source
+        if target and not target_id:
+            target_id = target
+        
+        # Handle properties parameter
+        if properties is not None:
+            weight = properties.get('weight', weight)
+            justification = properties.get('justification', justification)
+            evidence = properties.get('evidence', evidence)
+        
         if source_id not in self.nodes or target_id not in self.nodes:
             raise ValueError("Both nodes must exist in the map")
         
@@ -754,6 +824,205 @@ class MentalMappingModel:
         
         return "\n".join(traverse(start_node_id))
     
+    def cluster_nodes(self, similarity_threshold: float = 0.7) -> Dict[str, List[str]]:
+        """
+        Cluster nodes based on similarity of content and connections.
+        
+        Args:
+            similarity_threshold: Minimum similarity to be in same cluster (0-1)
+        
+        Returns:
+            Dictionary mapping cluster_id to list of node_ids
+        """
+        clusters = {}
+        clustered_nodes = set()
+        cluster_id = 0
+        
+        for node_id, node in self.nodes.items():
+            if node_id in clustered_nodes:
+                continue
+            
+            # Start new cluster
+            cluster_key = f"cluster_{cluster_id}"
+            clusters[cluster_key] = [node_id]
+            clustered_nodes.add(node_id)
+            
+            # Find similar nodes
+            for other_id, other_node in self.nodes.items():
+                if other_id in clustered_nodes:
+                    continue
+                
+                # Simple similarity: same type and connected
+                if (node.node_type == other_node.node_type and
+                    (other_id in node.connected_nodes or 
+                     node_id in other_node.connected_nodes)):
+                    clusters[cluster_key].append(other_id)
+                    clustered_nodes.add(other_id)
+            
+            cluster_id += 1
+        
+        return clusters
+    
+    def get_subgraph(self, node_ids: List[str] = None, nodes: List[str] = None) -> Dict[str, Any]:
+        """
+        Extract a subgraph containing only specified nodes.
+        
+        Args:
+            node_ids: List of node IDs to include in subgraph
+            nodes: Alias for node_ids (backward compatibility)
+        
+        Returns:
+            Dictionary with 'nodes' and 'edges' for the subgraph
+        """
+        # Handle parameter alias
+        if nodes is not None and node_ids is None:
+            node_ids = nodes
+        
+        if node_ids is None:
+            node_ids = []
+            
+        node_id_set = set(node_ids)
+        subgraph = {
+            'nodes': {},
+            'edges': {}
+        }
+        
+        # Add nodes
+        for node_id in node_ids:
+            if node_id in self.nodes:
+                subgraph['nodes'][node_id] = self.nodes[node_id].to_dict()
+        
+        # Add edges that connect nodes within the subgraph
+        for edge_id, edge in self.edges.items():
+            if edge.source_id in node_id_set and edge.target_id in node_id_set:
+                subgraph['edges'][edge_id] = edge.to_dict()
+        
+        return subgraph
+    
+    def shortest_path(
+        self, 
+        start_id: str = None, 
+        end_id: str = None,
+        source: str = None,  # Alias for start_id
+        target: str = None   # Alias for end_id
+    ) -> Optional[List[str]]:
+        """
+        Find shortest path between two nodes using BFS.
+        
+        Args:
+            start_id: Starting node ID
+            end_id: Ending node ID
+            source: Alias for start_id
+            target: Alias for end_id
+        
+        Returns:
+            List of node IDs forming the path, or None if no path exists
+        """
+        # Handle parameter aliases
+        if source and not start_id:
+            start_id = source
+        if target and not end_id:
+            end_id = target
+            
+        if not start_id or not end_id:
+            return None
+            
+        if start_id not in self.nodes or end_id not in self.nodes:
+            return None
+        
+        if start_id == end_id:
+            return [start_id]
+        
+        # BFS to find shortest path
+        from collections import deque
+        
+        queue = deque([(start_id, [start_id])])
+        visited = {start_id}
+        
+        while queue:
+            current_id, path = queue.popleft()
+            current_node = self.nodes[current_id]
+            
+            for neighbor_id in current_node.connected_nodes:
+                if neighbor_id == end_id:
+                    return path + [neighbor_id]
+                
+                if neighbor_id not in visited:
+                    visited.add(neighbor_id)
+                    queue.append((neighbor_id, path + [neighbor_id]))
+        
+        return None  # No path found
+    
+    def bfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+        """
+        Breadth-first search traversal from a starting node.
+        
+        Args:
+            start_node: Starting node ID (primary parameter name)
+            start_id: Alias for start_node
+            
+        Returns:
+            List of node IDs in BFS order
+        """
+        # Handle parameter alias
+        if start_id and not start_node:
+            start_node = start_id
+            
+        if not start_node or start_node not in self.nodes:
+            return []
+        
+        from collections import deque
+        
+        queue = deque([start_node])
+        visited = {start_node}
+        result = []
+        
+        while queue:
+            current_id = queue.popleft()
+            result.append(current_id)
+            current_node = self.nodes[current_id]
+            
+            for neighbor_id in current_node.connected_nodes:
+                if neighbor_id not in visited:
+                    visited.add(neighbor_id)
+                    queue.append(neighbor_id)
+        
+        return result
+    
+    def dfs(self, start_node: str = None, start_id: str = None) -> List[str]:
+        """
+        Depth-first search traversal from a starting node.
+        
+        Args:
+            start_node: Starting node ID (primary parameter name)
+            start_id: Alias for start_node
+            
+        Returns:
+            List of node IDs in DFS order
+        """
+        # Handle parameter alias
+        if start_id and not start_node:
+            start_node = start_id
+            
+        if not start_node or start_node not in self.nodes:
+            return []
+        
+        visited = set()
+        result = []
+        
+        def dfs_recursive(node_id: str):
+            if node_id in visited:
+                return
+            visited.add(node_id)
+            result.append(node_id)
+            
+            current_node = self.nodes[node_id]
+            for neighbor_id in current_node.connected_nodes:
+                dfs_recursive(neighbor_id)
+        
+        dfs_recursive(start_node)
+        return result
+    
     def save_mental_map(self, output_path: Path) -> None:
         """Save the complete mental map to JSON"""
         data = {
@@ -807,6 +1076,46 @@ class MentalMappingModel:
         
         print(f"\n📂 Mental map loaded from: {input_path}")
         print(f"   Nodes: {len(self.nodes)}, Edges: {len(self.edges)}")
+    
+    def calculate_metrics(self) -> Dict[str, Any]:
+        """
+        Calculate graph metrics for the mental map.
+        
+        Returns:
+            Dictionary with graph metrics
+        """
+        return {
+            'num_nodes': len(self.nodes),
+            'num_edges': len(self.edges),
+            'density': len(self.edges) / max(len(self.nodes) * (len(self.nodes) - 1) / 2, 1),
+            'avg_degree': sum(len(n.connected_nodes) for n in self.nodes.values()) / max(len(self.nodes), 1),
+            'nodes_by_type': {
+                node_type: len(ids) 
+                for node_type, ids in self.nodes_by_type.items()
+            }
+        }
+    
+    def get_node_centrality(self, node_id: str) -> float:
+        """
+        Calculate centrality score for a node (degree centrality).
+        
+        Args:
+            node_id: Node ID to calculate centrality for
+            
+        Returns:
+            Centrality score (0.0 to 1.0)
+        """
+        if node_id not in self.nodes:
+            return 0.0
+        
+        node = self.nodes[node_id]
+        num_nodes = len(self.nodes)
+        
+        if num_nodes <= 1:
+            return 0.0
+        
+        # Degree centrality: connections / max possible connections
+        return len(node.connected_nodes) / (num_nodes - 1)
 
 
 # Example usage
@@ -874,3 +1183,8 @@ if __name__ == '__main__':
     print(f"\n{'#'*60}")
     print(f"# DEMONSTRATION COMPLETE")
     print(f"{'#'*60}")
+
+
+# Create MentalMap as an alias for backward compatibility
+# Many tests expect MentalMap class name
+MentalMap = MentalMappingModel

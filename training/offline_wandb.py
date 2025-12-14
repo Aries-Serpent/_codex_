@@ -1,14 +1,20 @@
-"""Utilities to ensure WandB stays offline in audit environments."""
+"""
+Legacy compatibility layer for offline_wandb module.
+
+DEPRECATED: Use src.training.offline_wandb instead.
+"""
 
 from __future__ import annotations
 
-import os
+import warnings as _warnings
 
+_warnings.warn(
+    "Importing from 'training.offline_wandb' is deprecated. "
+    "Use 'src.training.offline_wandb' instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
-def force_offline() -> None:
-    """Default WandB to offline mode without clobbering existing settings."""
-
-    os.environ.setdefault("WANDB_MODE", "offline")
-
+from src.training.offline_wandb import force_offline
 
 __all__ = ["force_offline"]

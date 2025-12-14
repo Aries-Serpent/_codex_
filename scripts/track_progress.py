@@ -11,8 +11,20 @@ from typing import Dict, List
 
 def load_capabilities() -> List[Dict]:
     """Load capability scores from audit artifacts."""
-    artifacts_path = Path(__file__).parent / 'capabilities_scored.json'
-    if not artifacts_path.exists():
+    # Check multiple possible locations for capabilities_scored.json
+    possible_paths = [
+        Path(__file__).parent / 'capabilities_scored.json',
+        Path(__file__).parent.parent / 'audit_artifacts' / 'capabilities_scored.json',
+        Path(__file__).parent.parent / 'capabilities_scored.json',
+    ]
+    
+    artifacts_path = None
+    for path in possible_paths:
+        if path.exists():
+            artifacts_path = path
+            break
+    
+    if artifacts_path is None:
         print("❌ Run audit first: python scripts/space_traversal/audit_runner.py run")
         return []
     

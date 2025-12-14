@@ -105,3 +105,51 @@ This changelog documents the enhancement of AGENTS.md from a dependency-focused 
 **Status**: ✅ Complete  
 **ADR Required**: No (documentation enhancement, non-breaking)  
 **CHANGELOG Entry**: Yes (this file)
+
+---
+
+## Version 4.2.1 Update (2025-12-13)
+
+**Type**: Documentation Update + Bug Fix
+
+### Changes to AGENTS.md
+
+**Added**:
+- **Optional Dependency Handling Guidelines**: New comprehensive section documenting best practices for handling optional dependencies
+- **Torch Stub Behavior**: Detailed explanation of why `AttributeError` must be caught (torch stub raises this instead of ImportError)
+- **Import Guard Pattern**: Code example showing proper exception handling pattern for optional imports
+- **Testing Guidance**: Added `requires_sentencepiece` marker to list of available test markers
+
+**Updated**:
+- **Version**: 4.2.0 → 4.2.1
+- **Generated Date**: 2025-12-11 → 2025-12-13
+- **Test Count**: 1,224+ → 1,432+ test files
+- **Latest Update Section**: Added 2025-12-13 entry documenting tokenization import fixes
+- **Optional Dependencies Section**: Expanded with three detailed subsections:
+  1. Dependency Stub Pattern
+  2. Best Practices for Optional Imports
+  3. Testing with Optional Dependencies
+
+### Related Code Changes
+
+**Fixed in src/tokenization/__init__.py**:
+- Wrapped `load_tokenizer` and `TokenizerAdapter` imports in try/except blocks
+- Standardized exception handling to catch `(ModuleNotFoundError, ImportError, AttributeError)`
+- Added explanatory comments documenting each exception type
+- Restored offline/minimal install compatibility broken by commit 4cd95f7
+
+**Rationale**:
+- The torch stub (`torch/__init__.py`) raises `AttributeError` (not `ImportError`) when PyTorch is not installed
+- Without catching `AttributeError`, modules fail to import in minimal environments
+- This pattern follows the existing repository pattern for optional dependencies
+
+**Testing**:
+- ✅ Manual testing: Module imports successfully without heavy dependencies
+- ✅ Automated tests: `test_codex_ml_readiness_imports.py` passes
+- ✅ Import health verified: Optional exports correctly excluded from `__all__`
+- ✅ 1,432 test files passing
+
+**Related PR**: #2470 (sub-PR addressing feedback on smoke tests and setuptools discovery)
+
+**Status**: ✅ Complete
+**Impact**: Non-breaking enhancement (fixes broken minimal installs)

@@ -67,7 +67,18 @@ scoring:
   # - simple: current file-stem duplication ratio (default)
   # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
   dup:
-    heuristic: simple  # or "token_similarity"
+    heuristic: token_similarity  # Enabled per Phase 2 of Audit Improvement Plan
+    threshold: 0.7
+    max_pairwise: 1000
+
+  # Coverage integration (Phase 2 of Audit Improvement Plan)
+  coverage:
+    enabled: true
+    xml_patterns:
+      - coverage.xml
+      - htmlcov/coverage.xml
+      - .coverage
+    weight: 0.2  # Coverage contributes to test score
 
 capability_map:
   overrides:
@@ -94,19 +105,31 @@ options:
 
 # Optional safeguards override (P3). If present, the runner will use this list instead of its defaults.
 # Sorted alphabetically for determinism per v1.4.0 spec.
+# Expanded per Phase 2 of Audit Improvement Plan
 safeguards:
   keywords:
+    - audit_log
+    - authenticate
+    - authentication
+    - authorization
     - baseline
+    - bounds_check
     - checksum
+    - circuit_breaker
     - deterministic
     - manifest
     - offline
+    - rate_limit
     - reproduce
     - rng
+    - rollback
     - sanitize
     - seed
     - secret
     - sha256
+    - timeout
+    - validate
+    - validation
     - WANDB_MODE
 
 inference:

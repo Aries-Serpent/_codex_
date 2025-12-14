@@ -145,6 +145,61 @@ class WorkflowNavigator:
         # Initialize default workflows
         self._register_default_workflows()
     
+    def _create_dynamic_workflow(self, workflow_type: str, **kwargs) -> Workflow:
+        """
+        Factory method for creating common workflow templates.
+        
+        Centralizes dynamic workflow creation logic to reduce duplication.
+        
+        Args:
+            workflow_type: Type of workflow to create ('test_coverage' or 'self_heal')
+            **kwargs: Additional parameters for workflow customization
+            
+        Returns:
+            Workflow instance based on the specified type
+        """
+        if workflow_type == 'test_coverage':
+            return Workflow(
+                workflow_id='TEST_COVERAGE_DYNAMIC',
+                name='Improve Test Coverage',
+                description='Dynamically generated workflow to identify and fill test coverage gaps',
+                frequency=WorkflowFrequency.HIGH,
+                steps=[
+                    WorkflowStep(
+                        id='identify_gaps',
+                        action='Identify uncovered code paths',
+                        command='pytest --cov-report=term-missing'
+                    ),
+                    WorkflowStep(
+                        id='add_tests',
+                        action='Add tests for uncovered code',
+                    ),
+                ]
+            )
+        elif workflow_type == 'self_heal':
+            return Workflow(
+                workflow_id='SELF_HEAL_DYNAMIC',
+                name='Self-Healing Issue Resolution',
+                description='Dynamically generated workflow to categorize, prioritize, and resolve open issues',
+                frequency=WorkflowFrequency.MEDIUM,
+                steps=[
+                    WorkflowStep(
+                        id='categorize_issues',
+                        action='Categorize open issues by type and severity',
+                    ),
+                    WorkflowStep(
+                        id='prioritize',
+                        action='Prioritize using physics-inspired scoring',
+                    ),
+                    WorkflowStep(
+                        id='resolve',
+                        action='Apply automated fixes where possible',
+                    ),
+                ]
+            )
+        else:
+            raise ValueError(f"Unknown workflow type: {workflow_type}")
+    
     def _register_default_workflows(self):
         """Register the default tokenized workflows"""
         
@@ -549,13 +604,23 @@ class WorkflowNavigator:
         
         # If low test coverage, suggest testing workflows
         if current_state.get('test_coverage', 100) < 70:
-            # Would suggest test-related workflows
-            pass
+            test_workflow = self.get_workflow('TEST_COVERAGE')
+            if test_workflow:
+                suggestions.append(test_workflow)
+            else:
+                # Create a dynamic test improvement workflow using factory
+                test_workflow = self._create_dynamic_workflow('test_coverage')
+                suggestions.append(test_workflow)
         
         # If many unresolved issues, suggest self-healing
         if current_state.get('open_issues', 0) > 10:
-            # Would suggest SELF_HEAL workflow
-            pass
+            heal_workflow = self.get_workflow('SELF_HEAL')
+            if heal_workflow:
+                suggestions.append(heal_workflow)
+            else:
+                # Create a dynamic self-healing workflow using factory
+                heal_workflow = self._create_dynamic_workflow('self_heal')
+                suggestions.append(heal_workflow)
         
         return suggestions
 

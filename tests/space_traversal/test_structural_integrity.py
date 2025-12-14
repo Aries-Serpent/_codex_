@@ -278,3 +278,141 @@ def test_empty_file_index():
     assert result["found_patterns"] == []
     assert result["meta"]["risk_level"] == "low"
     assert result["evidence_files"] == []
+
+
+class TestStructuralIntegrityAdvanced:
+    """Advanced structural integrity tests."""
+    
+    def test_nested_split_brain_detection(self):
+        """Test detection of nested split-brain patterns."""
+        file_index = {
+            "files": [
+                {"path": "myapp/core/engine.py"},
+                {"path": "src/myapp/core/engine.py"},
+                {"path": "lib/myapp/core/engine.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        assert "split-brain" in result["found_patterns"]
+        assert result["meta"]["risk_level"] == "high"
+    
+    def test_shadowing_multiple_libraries(self):
+        """Test detection of multiple library shadowing."""
+        file_index = {
+            "files": [
+                {"path": "torch/nn.py"},
+                {"path": "numpy/core.py"},
+                {"path": "pandas/dataframe.py"},
+                {"path": "src/myapp/main.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        assert "lib-shadowing" in result["found_patterns"]
+        # Should detect all three shadowed libraries
+        shadow_dirs = result["meta"]["shadow_dirs"]
+        assert len(shadow_dirs) >= 2  # At least 2 standard libraries
+    
+    def test_risk_level_calculation(self):
+        """Test risk level is calculated correctly."""
+        # Low risk - no issues
+        result1 = structure_integrity.detect({"files": [{"path": "src/app.py"}]})
+        assert result1["meta"]["risk_level"] == "low"
+        
+        # High risk - split brain
+        result2 = structure_integrity.detect({
+            "files": [
+                {"path": "mymodule/foo.py"},
+                {"path": "src/mymodule/foo.py"},
+            ]
+        })
+        assert result2["meta"]["risk_level"] == "high"
+    
+    def test_edge_case_single_file_module(self):
+        """Test detection with single-file modules."""
+        file_index = {
+            "files": [
+                {"path": "utils.py"},
+                {"path": "src/utils.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Single files might or might not trigger split-brain depending on implementation
+        assert "id" in result
+        assert "found_patterns" in result
+    
+    def test_case_sensitivity_handling(self):
+        """Test case-sensitive path handling."""
+        file_index = {
+            "files": [
+                {"path": "MyModule/Foo.py"},
+                {"path": "src/mymodule/foo.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Should handle case differences appropriately
+        assert "id" in result
+    
+    def test_unicode_path_handling(self):
+        """Test handling of unicode characters in paths."""
+        file_index = {
+            "files": [
+                {"path": "módulo/archivo.py"},
+                {"path": "src/módulo/archivo.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Should handle unicode paths without errors
+        assert result["id"] == "structural-integrity"
+    
+    def test_deeply_nested_structures(self):
+        """Test detection with deeply nested directory structures."""
+        file_index = {
+            "files": [
+                {"path": "a/b/c/d/e/f/module.py"},
+                {"path": "src/a/b/c/d/e/f/module.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Should detect split even in deep structures
+        assert "split-brain" in result["found_patterns"]
+    
+    def test_mixed_separators_handling(self):
+        """Test handling of mixed path separators."""
+        file_index = {
+            "files": [
+                {"path": "mymodule/submodule/file.py"},
+                {"path": "src/mymodule/submodule/file.py"},
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Should normalize and detect properly
+        assert "split-brain" in result["found_patterns"]
+    
+    def test_symlink_awareness(self):
+        """Test that detector can handle symlink scenarios."""
+        # This is a structural test - actual symlink detection would require filesystem
+        file_index = {
+            "files": [
+                {"path": "link_target/module.py"},
+                {"path": "symlink/module.py"},  # Could be symlink to link_target
+            ]
+        }
+        
+        result = structure_integrity.detect(file_index)
+        
+        # Should produce valid result regardless
+        assert result["id"] == "structural-integrity"

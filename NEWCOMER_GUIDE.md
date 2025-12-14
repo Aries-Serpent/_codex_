@@ -343,15 +343,38 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 
 ### Running the Test Suite
 
+**Primary test runner: pytest**
 ```bash
-# Full test suite with nox
-nox -s tests
+# Quick test run
+pytest                           # Run all tests
+pytest -q                        # Quiet mode
+pytest -v                        # Verbose mode
+
+# With coverage
+pytest --cov=src --cov-report=html --cov-report=term
+open htmlcov/index.html          # View coverage report
 
 # Specific test markers
-pytest -m smoke          # Quick smoke tests
-pytest -m integration    # Integration tests
-pytest -m slow           # Resource-intensive tests
-```text
+pytest -m smoke                  # Quick smoke tests
+pytest -m integration            # Integration tests
+pytest -m "not slow"             # Skip slow tests
+pytest -m ml                     # ML/tensor dependent tests
+```
+
+**Alternative: nox sessions**
+```bash
+nox -s tests                     # Full test suite with coverage
+nox -s tests_min                 # Fast minimal tests
+```
+
+**CI/CD Testing:**
+All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
+- Python 3.11+ on ubuntu-latest
+- 90% coverage threshold enforced
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results
+
+See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 
 ### Code Quality Tools
 
@@ -362,6 +385,7 @@ pytest -m slow           # Resource-intensive tests
 | **isort** | Import sorting | `isort src/` |
 | **mypy** | Type checking | `mypy src/` |
 | **pytest** | Testing | `pytest tests/` |
+| **pytest-cov** | Coverage | `pytest --cov=src --cov-fail-under=90` |
 
 ### Quality Gates
 
@@ -370,8 +394,14 @@ Before committing:
 1. **Format code**: `black src/ tests/`
 2. **Lint**: `ruff check src/ tests/`
 3. **Type check**: `mypy src/`
-4. **Run tests**: `nox -s tests`
+4. **Run tests with coverage**: `pytest --cov=src --cov-fail-under=90`
 5. **Pre-commit**: `pre-commit run --files <changed_files>`
+
+**CI enforces:**
+- All tests must pass
+- Coverage must meet 90% threshold
+- Code must be properly formatted
+- No linting errors
 
 ## Getting Help
 
