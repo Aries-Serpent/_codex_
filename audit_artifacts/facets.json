@@ -1,5 +1,5 @@
 {
-  "generated": 1765673018.5103238,
+  "generated": 1765673266.9863374,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -312,6 +312,7 @@
       "docs/training/Evaluation_CLI.md",
       "docs/training/Evaluation_CLI_Addendum.md",
       "docs/training/distributed_troubleshooting.md",
+      "docs/training/functional_training.md",
       "docs/training/reproducibility.md",
       "docs/training/symbolic_training.md",
       "docs/tutorials/train_model.md",

@@ -1,5 +1,5 @@
 {
-  "generated": 1765673022.0120392,
+  "generated": 1765673270.4776053,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -2445,6 +2445,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
@@ -2556,10 +2557,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 740,
+        "markdown_count": 741,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 742,
+        "total_docs": 743,
         "deterministic": true,
         "offline": true,
         "validation": true
@@ -4307,6 +4308,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
@@ -9619,6 +9621,7 @@
     {
       "id": "functional_training",
       "evidence_files": [
+        "docs/training/functional_training.md",
         "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "src/codex_ml/training/functional_training.py",
@@ -10697,6 +10700,7 @@
         "docs/tracking/TensorBoard.md",
         "docs/training/Checkpointing_Surfaces.md",
         "docs/training/Evaluation_CLI_Addendum.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting/inference_serving.md",
@@ -11990,6 +11994,7 @@
         "docs/templates/status/status_json_minimal_examples_v1.2.md",
         "docs/templates/status/status_quality_rubric_v1.2.md",
         "docs/tracking/Offline_MLflow.md",
+        "docs/training/functional_training.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
         "docs/troubleshooting/API_Docs_Troubleshooting.md",
@@ -15734,6 +15739,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
+          "docs/training/functional_training.md": 6,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,
@@ -20787,6 +20793,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/tutorials/train_model.md",

@@ -1797,11 +1797,11 @@
     },
     {
       "components": {
-        "consistency": 0.939353,
+        "consistency": 0.939435,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006739
+        "tests": 0.006729
       },
       "evidence_files": [
         "README.md",
@@ -2457,6 +2457,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
@@ -2550,7 +2551,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.677055
+        "score": 0.677069
       },
       "found_patterns": [
         "docs",
@@ -2561,21 +2562,21 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 740,
+        "markdown_count": 741,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 742,
+        "total_docs": 743,
         "validation": true
       },
-      "score": 0.677055
+      "score": 0.677069
     },
     {
       "components": {
-        "consistency": 0.787002,
+        "consistency": 0.786846,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.294432
+        "tests": 0.294374
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -4317,6 +4318,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
@@ -7629,7 +7631,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.781008
+        "score": 0.780963
       },
       "found_patterns": [
         "analysis",
@@ -7642,7 +7644,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.781008
+      "score": 0.780963
     },
     {
       "components": {
@@ -9643,13 +9645,14 @@
     },
     {
       "components": {
-        "consistency": 0.727273,
-        "documentation": 0.269906,
+        "consistency": 0.666667,
+        "documentation": 0.283019,
         "functionality": 1.0,
         "safeguards": 0.583333,
-        "tests": 0.454545
+        "tests": 0.416667
       },
       "evidence_files": [
+        "docs/training/functional_training.md",
         "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "src/codex_ml/training/functional_training.py",
@@ -9665,7 +9668,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 0.637077
+        "score": 0.617453
       },
       "found_patterns": [
         "functional_training"
@@ -9674,7 +9677,7 @@
       "meta": {
         "detector": "functional_training"
       },
-      "score": 0.637077
+      "score": 0.617453
     },
     {
       "components": {
@@ -10038,7 +10041,7 @@
     {
       "components": {
         "consistency": 0.964286,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 0.607143
@@ -10076,7 +10079,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 0.90608
+        "score": 0.906031
       },
       "found_patterns": [
         "API-Key",
@@ -10087,7 +10090,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.90608
+      "score": 0.906031
     },
     {
       "components": {
@@ -10200,7 +10203,7 @@
     {
       "components": {
         "consistency": 0.923077,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 2.0,
         "safeguards": 0.5,
         "tests": 0.846154
@@ -10223,7 +10226,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 1.007591
+        "score": 1.007542
       },
       "found_patterns": [
         "MCPError",
@@ -10233,7 +10236,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.007591
+      "score": 1.007542
     },
     {
       "components": {
@@ -10318,7 +10321,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 1.0,
         "safeguards": 0.166667,
         "tests": 1.0
@@ -10333,7 +10336,7 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.761437
+        "score": 0.761388
       },
       "found_patterns": [
         "tenant"
@@ -10342,15 +10345,15 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.761437
+      "score": 0.761388
     },
     {
       "components": {
-        "consistency": 0.880612,
-        "documentation": 0.242915,
+        "consistency": 0.879715,
+        "documentation": 0.242588,
         "functionality": 2.0,
         "safeguards": 1.0,
-        "tests": 0.287755
+        "tests": 0.287462
       },
       "evidence_files": [
         ".codex/README.md",
@@ -10762,6 +10765,7 @@
         "docs/tracking/TensorBoard.md",
         "docs/training/Checkpointing_Surfaces.md",
         "docs/training/Evaluation_CLI_Addendum.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting/inference_serving.md",
@@ -11337,7 +11341,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 0.934498
+        "score": 0.934197
       },
       "found_patterns": [
         "X-Request-Id",
@@ -11349,12 +11353,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.934498
+      "score": 0.934197
     },
     {
       "components": {
         "consistency": 0.866667,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 1.0,
         "safeguards": 0.583333,
         "tests": 0.666667
@@ -11379,7 +11383,7 @@
       "explain": {
         "id": "mcp-protocol-surface",
         "partials": {},
-        "score": 0.713937
+        "score": 0.713888
       },
       "found_patterns": [
         "FastAPI",
@@ -11389,12 +11393,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.713937
+      "score": 0.713888
     },
     {
       "components": {
         "consistency": 0.846154,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 0.641026
@@ -11443,7 +11447,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 1.015925
+        "score": 1.015875
       },
       "found_patterns": [
         "RateLimiter",
@@ -11453,7 +11457,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.015925
+      "score": 1.015875
     },
     {
       "components": {
@@ -11550,11 +11554,11 @@
     },
     {
       "components": {
-        "consistency": 0.909867,
+        "consistency": 0.909005,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.179317
+        "tests": 0.179147
       },
       "evidence_files": [
         ".codex/README.md",
@@ -12075,6 +12079,7 @@
         "docs/templates/status/status_json_minimal_examples_v1.2.md",
         "docs/templates/status/status_quality_rubric_v1.2.md",
         "docs/tracking/Offline_MLflow.md",
+        "docs/training/functional_training.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
         "docs/troubleshooting/API_Docs_Troubleshooting.md",
@@ -12615,7 +12620,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.776803
+        "score": 0.776588
       },
       "found_patterns": [
         "bounds",
@@ -12638,7 +12643,7 @@
           "rollback"
         ]
       },
-      "score": 0.776803
+      "score": 0.776588
     },
     {
       "components": {
@@ -13163,7 +13168,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.242915,
+        "documentation": 0.242588,
         "functionality": 2.0,
         "safeguards": 0.083333,
         "tests": 1.0
@@ -13181,7 +13186,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 0.998937
+        "score": 0.998888
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -13191,7 +13196,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.998937
+      "score": 0.998888
     },
     {
       "components": {
@@ -15766,6 +15771,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
+          "docs/training/functional_training.md": 6,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,
@@ -20748,7 +20754,7 @@
     {
       "components": {
         "consistency": 0.916667,
-        "documentation": 0.269906,
+        "documentation": 0.269542,
         "functionality": 1.0,
         "safeguards": 0.5,
         "tests": 0.75
@@ -20770,7 +20776,7 @@
       "explain": {
         "id": "train_loop",
         "partials": {},
-        "score": 0.736319
+        "score": 0.736265
       },
       "found_patterns": [
         "train_loop"
@@ -20779,15 +20785,15 @@
       "meta": {
         "detector": "train_loop"
       },
-      "score": 0.736319
+      "score": 0.736265
     },
     {
       "components": {
-        "consistency": 0.807843,
+        "consistency": 0.804688,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.916667,
-        "tests": 0.352941
+        "tests": 0.351562
       },
       "evidence_files": [
         ".github/prompts/capability_excellence_plan/E3_DISTRIBUTED_TRAINING_EXCELLENCE.md",
@@ -20859,6 +20865,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/tutorials/train_model.md",
@@ -21049,7 +21056,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.787304
+        "score": 0.786328
       },
       "found_patterns": [
         "epoch",
@@ -21062,12 +21069,12 @@
           "train-loop"
         ]
       },
-      "score": 0.787304
+      "score": 0.786328
     },
     {
       "components": {
         "consistency": 0.6,
-        "documentation": 0.97166,
+        "documentation": 0.983827,
         "functionality": 1.0,
         "safeguards": 0.333333,
         "tests": 1.0
@@ -21082,7 +21089,7 @@
       "explain": {
         "id": "unified-training",
         "partials": {},
-        "score": 0.815749
+        "score": 0.817574
       },
       "found_patterns": [
         "UnifiedTrainingConfig",
@@ -21092,7 +21099,7 @@
       "meta": {
         "category": "training"
       },
-      "score": 0.815749
+      "score": 0.817574
     },
     {
       "components": {
@@ -21167,6 +21174,6 @@
       "score": 1.056061
     }
   ],
-  "generated": 1765673024.1761622,
+  "generated": 1765673272.6461406,
   "version": "1.5.0"
 }

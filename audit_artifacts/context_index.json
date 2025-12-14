@@ -1,6 +1,6 @@
 {
-  "generated": 1765673018.4465616,
-  "count": 5047,
+  "generated": 1765673266.9216824,
+  "count": 5048,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -4295,8 +4295,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2120,
-      "sha": "59a3f1cd31400db89c7ace7dda1f1883e80a3c6fc94c1ed27acb9be192f9562e"
+      "size": 2118,
+      "sha": "ace00dab69e2a4140a0aee03f31248f502aec8dc1810671057bc46288cb26a35"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -10437,6 +10437,12 @@
       "sha": "8725ed9bbcc66c067334982d4a76078d86b442595393d00114db55430e9800c5"
     },
     {
+      "path": "docs/training/functional_training.md",
+      "ext": ".md",
+      "size": 9353,
+      "sha": "7ba11007a606f50008068984e89328a30a4f89ca8b204da2d00edaf54f67d9c1"
+    },
+    {
       "path": "docs/training/reproducibility.md",
       "ext": ".md",
       "size": 676,
@@ -13247,8 +13253,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 7205,
-      "sha": "a78ee1de8337f0ed996e2bc98a02c29248d0977ec845a542715945f19c020b42"
+      "size": 8072,
+      "sha": "60d71b8d4628c76fb300e65ee56e3b95856ef6f9d357b089a75f002e84b10392"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
@@ -22991,8 +22997,8 @@
     {
       "path": "tests/mcp/test_lifecycle_management.py",
       "ext": ".py",
-      "size": 12299,
-      "sha": "ad213c379ed2e267a1e17e9cdb12c7d2bb35d3c167d52d980609991c7b106d07"
+      "size": 16634,
+      "sha": "20140c0d925b5b5160939ec396e9648e9da5ec24caff7ad0e45f5607c4ccb811"
     },
     {
       "path": "tests/mcp/test_mcp_core_smoke.py",
@@ -24407,8 +24413,8 @@
     {
       "path": "tests/space_traversal/test_duplication_ratio_detector.py",
       "ext": ".py",
-      "size": 14384,
-      "sha": "82841d2413c2375978cdabb2eb7d6be9cf5dabcf635a22c13c18d189ab2b815d"
+      "size": 20747,
+      "sha": "8667d4d80d0f4c28c9d24a4def13bf2c1606a04a950291899f64b37bc8ed0c33"
     },
     {
       "path": "tests/space_traversal/test_explain_enhanced.py",

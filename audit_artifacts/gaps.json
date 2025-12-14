@@ -1,15 +1,16 @@
 {
-  "generated": 1765673024.1884606,
+  "generated": 1765673272.6584377,
   "low_maturity": [
     {
       "components": {
-        "consistency": 0.727273,
-        "documentation": 0.269906,
+        "consistency": 0.666667,
+        "documentation": 0.283019,
         "functionality": 1.0,
         "safeguards": 0.583333,
-        "tests": 0.454545
+        "tests": 0.416667
       },
       "evidence_files": [
+        "docs/training/functional_training.md",
         "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "src/codex_ml/training/functional_training.py",
@@ -25,7 +26,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 0.637077
+        "score": 0.617453
       },
       "found_patterns": [
         "functional_training"
@@ -34,7 +35,7 @@
       "meta": {
         "detector": "functional_training"
       },
-      "score": 0.637077
+      "score": 0.617453
     },
     {
       "components": {
@@ -1235,6 +1236,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
+          "docs/training/functional_training.md": 6,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,
@@ -3935,11 +3937,11 @@
     },
     {
       "components": {
-        "consistency": 0.939353,
+        "consistency": 0.939435,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006739
+        "tests": 0.006729
       },
       "evidence_files": [
         "README.md",
@@ -4595,6 +4597,7 @@
         "docs/training/Evaluation_CLI.md",
         "docs/training/Evaluation_CLI_Addendum.md",
         "docs/training/distributed_troubleshooting.md",
+        "docs/training/functional_training.md",
         "docs/training/reproducibility.md",
         "docs/training/symbolic_training.md",
         "docs/troubleshooting.md",
@@ -4688,7 +4691,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.677055
+        "score": 0.677069
       },
       "found_patterns": [
         "docs",
@@ -4699,13 +4702,13 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 740,
+        "markdown_count": 741,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 742,
+        "total_docs": 743,
         "validation": true
       },
-      "score": 0.677055
+      "score": 0.677069
     },
     {
       "components": {
