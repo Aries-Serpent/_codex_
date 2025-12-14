@@ -1,5 +1,5 @@
 {
-  "generated": 1765675923.9587355,
+  "generated": 1765676073.854744,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -322,6 +322,9 @@
       "examples/production_training_with_mlflow.py",
       "examples/train_toy.py",
       "notebooks/gpu_training_example.ipynb",
+      "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+      "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
+      "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
       "scripts/space_traversal/detectors/functional_training.py",
       "scripts/space_traversal/detectors/train_loop.py",
       "scripts/space_traversal/detectors/unified_training.py",
@@ -1496,6 +1499,7 @@
       "scripts/migrate_configs.py",
       "scripts/remediation/consolidate_configs.py",
       "scripts/runner/configure_repo_vars.sh",
+      "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
       "scripts/space_traversal/detectors/mcp_configuration.py",
       "scripts/status/visual_compare_with_config.sh",
       "services/msp_gateway/config.py",
@@ -1641,6 +1645,7 @@
       "scripts/config/sample_inference_input.json",
       "scripts/inference_pipeline.py",
       "scripts/local/serve_local.sh",
+      "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
       "scripts/space_traversal/detectors/inference_serving.py",
       "scripts/space_traversal/viz_api_collection.py",
       "services/api/__init__.py",
@@ -2112,6 +2117,7 @@
       "scripts/run_space_audit_fast.sh",
       "scripts/runner/runner_status.sh",
       "scripts/space_traversal/audit_runner.py",
+      "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
       "scripts/space_traversal/detectors/status_reporting.py",
       "scripts/space_traversal/schemas/validate_report_schema.json",
       "scripts/space_traversal/status_update_report.py",

@@ -1,5 +1,5 @@
 {
-  "generated": 1765675929.652042,
+  "generated": 1765676079.4680781,
   "low_maturity": [
     {
       "components": {
@@ -3014,6 +3014,7 @@
           "tests/space_traversal/test_peft_comprehensive/test_unified_training_resume.py": 1,
           "tests/space_traversal/test_peft_comprehensive/test_unified_training_warnings.py": 2,
           "tests/space_traversal/test_performance.py": 4,
+          "tests/space_traversal/test_safeguards_keyword_detection.py": 21,
           "tests/space_traversal/test_safeguards_keywords.py": 16,
           "tests/space_traversal/test_stable_manifest_cli.py": 2,
           "tests/space_traversal/test_status_reporting_detector.py": 1,
@@ -3909,14 +3910,15 @@
     },
     {
       "components": {
-        "consistency": 0.666667,
+        "consistency": 0.692308,
         "documentation": 0.295302,
         "functionality": 1.0,
         "safeguards": 0.75,
-        "tests": 0.5
+        "tests": 0.461538
       },
       "evidence_files": [
         "docs/training/functional_training.md",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "src/codex_ml/training/functional_training.py",
         "src/training/functional_training.py",
@@ -3932,7 +3934,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 0.665129
+        "score": 0.660641
       },
       "found_patterns": [
         "functional_training"
@@ -3941,7 +3943,7 @@
       "meta": {
         "detector": "functional_training"
       },
-      "score": 0.665129
+      "score": 0.660641
     },
     {
       "components": {
