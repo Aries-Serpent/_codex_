@@ -1,6 +1,6 @@
 {
-  "generated": 1765692879.757525,
-  "count": 5081,
+  "generated": 1765693458.19914,
+  "count": 5094,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -3111,6 +3111,30 @@
       "sha": "5dcd904b3b40aff9d5af542ebfe6347b77c6866b3560ed9bd02fced022d3e468"
     },
     {
+      "path": ".pytest_cache/.gitignore",
+      "ext": "",
+      "size": 37,
+      "sha": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd"
+    },
+    {
+      "path": ".pytest_cache/CACHEDIR.TAG",
+      "ext": ".tag",
+      "size": 191,
+      "sha": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4"
+    },
+    {
+      "path": ".pytest_cache/README.md",
+      "ext": ".md",
+      "size": 302,
+      "sha": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+    },
+    {
+      "path": ".pytest_cache/v/cache/nodeids",
+      "ext": "",
+      "size": 2145,
+      "sha": "6b451eaaa63802f58bdcb7a34ea336f8cb848e74f7b76766c0b2cd52ba854840"
+    },
+    {
       "path": ".reports/fencefix_run.json",
       "ext": ".json",
       "size": 2,
@@ -3589,6 +3613,12 @@
       "ext": ".md",
       "size": 42189,
       "sha": "e5a8c2dcec4b4d91838dd0ba8c3bbf69172e939a63922b3f6c919f1c9aca2be8"
+    },
+    {
+      "path": "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 13025,
+      "sha": "da04e2b87dbbb192c81e27a445e67ba45ce6e7d47de0d378e11fa9a03d671065"
     },
     {
       "path": "_codex/status/_codex_status_update-2025-09-21.md",
@@ -4355,8 +4385,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2116,
-      "sha": "80344fdccd2c884303f4709d8505bffbe2d17f09f8a7d9fabdb838d13b1d0582"
+      "size": 2117,
+      "sha": "1e6e3ae71b96ab215cff032ccc2e24e230870c88cb11a38e52183bf16ad06931"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -12123,6 +12153,12 @@
       "sha": "b9e48784ea944ee5d315f3f7ff7115167cfd4c65c85380ba104839b58b7d1959"
     },
     {
+      "path": "scripts/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 486,
+      "sha": "a8ce50d30c770ca8fd0150f4155d3b20086930053085ff5f8c8c581d51e6546d"
+    },
+    {
       "path": "scripts/adoption/track_metrics.py",
       "ext": ".py",
       "size": 12235,
@@ -13281,6 +13317,12 @@
       "sha": "886aaa30832098a482a8ae0ada1fedeba3681594b820cadaaa0d183abf9c9eb7"
     },
     {
+      "path": "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 564,
+      "sha": "a51e3d283e0a40a4ea7999de2971b603ea593d5bca9b596115d4d169f6cda578"
+    },
+    {
       "path": "scripts/space_traversal/actions_usage_tracker.py",
       "ext": ".py",
       "size": 12493,
@@ -13289,8 +13331,8 @@
     {
       "path": "scripts/space_traversal/audit_runner.py",
       "ext": ".py",
-      "size": 68617,
-      "sha": "40da4e39fb47e0f07384d87b696cd16bff6b8ae1924d1ef366d9a2893af8906f"
+      "size": 71156,
+      "sha": "0d317a091960a6f60e555380bbd1dfd93335b3358d747ccd649139f54c041995"
     },
     {
       "path": "scripts/space_traversal/capability_scoring.py",
@@ -13379,8 +13421,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 4153,
-      "sha": "a473df9c935d1036acf46a96b4b041a9d23a9957b677e1bc79e865e607744451"
+      "size": 4148,
+      "sha": "cc309e2be8c69e18b440247e9ee133caf37a5e6d64b484b9659f378e36286e68"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
@@ -13469,8 +13511,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 2651,
-      "sha": "e1f287aabfc045014c88b9f76f02de00fe7fb7d365bd73de7beec1df60eab8b7"
+      "size": 4149,
+      "sha": "75efda62736ecec812fd92c8366ea8895e534ce2bce0ffb15b362321ca7163b2"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
@@ -13511,8 +13553,8 @@
     {
       "path": "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 2552,
-      "sha": "e7f0dbe36c9652cd9ba74e0f9608090431ef64c57f2cd15f13b29ce032c04786"
+      "size": 2818,
+      "sha": "76e2f2d6bb5f3499d62e0304a55d97621ae92e084109fba3d54b98e0328f8c3f"
     },
     {
       "path": "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
@@ -13577,8 +13619,8 @@
     {
       "path": "scripts/space_traversal/detectors/documentation_system.py",
       "ext": ".py",
-      "size": 2974,
-      "sha": "388212d60757269d04389685b1bd32e516e691260e5f35e1013e2af0eaf50d37"
+      "size": 3078,
+      "sha": "0d14718ff704bd365baecfc30dec401be8a589d56a9528eaa2fb064c7c93b134"
     },
     {
       "path": "scripts/space_traversal/detectors/example_v2.py",
@@ -13709,8 +13751,8 @@
     {
       "path": "scripts/space_traversal/detectors/testing_infrastructure.py",
       "ext": ".py",
-      "size": 1908,
-      "sha": "9bcdd1f54fa0a978f24002b343797cc9ca061a9395bc61a468cae1f3e9b48cdd"
+      "size": 2307,
+      "sha": "576236359d6ab4926c3b9c5de178f5113c3c27b8ec7a1a22992eec543d851653"
     },
     {
       "path": "scripts/space_traversal/detectors/train_loop.py",
@@ -19501,6 +19543,18 @@
       "ext": ".py",
       "size": 31,
       "sha": "9969f014c1eff35fdd278c7282adc4d62cb1a00c4c0c00077bcfc3176e2ebcb4"
+    },
+    {
+      "path": "tests/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 148,
+      "sha": "3231268e7931cae471b860548e9ada03743c43fb08d65dcebf8af87acdb80e72"
+    },
+    {
+      "path": "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 15143,
+      "sha": "e2e4378ec1f129555a05d8f600a5f843265931c6ec7746f5e2bd16979ee7a47b"
     },
     {
       "path": "tests/_codex_introspect.py",
@@ -27531,6 +27585,12 @@
       "sha": "5578b9f771b7da0f39fb5c34d31370661bc2b368a29ec3544134e872ac393e45"
     },
     {
+      "path": "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 13783,
+      "sha": "d3f08a5ea98e3759c8459934b7ce98d6767a93aaef77539dd8dbb9760fea8769"
+    },
+    {
       "path": "tests/tooling/test_mcp_tooling_comprehensive.py",
       "ext": ".py",
       "size": 3650,
@@ -28081,6 +28141,12 @@
       "ext": ".py",
       "size": 446,
       "sha": "0a5a28a9ffe1873dc989b8ac6871d63f5880b1c4fedc9e9a5b75f3c7b70c3fb7"
+    },
+    {
+      "path": "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 14105,
+      "sha": "e7324e61727f721f31fd7a3cbd4877c532639dab635845a417498a2c7bad3e6b"
     },
     {
       "path": "tests/unified/test_unified_training_comprehensive.py",
@@ -30255,10 +30321,22 @@
       "sha": "ebbd6fed3a6eda566206cd8b68d1125e8db3ec114461cfa45787946c919071ae"
     },
     {
+      "path": "torch/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 2961,
+      "sha": "ba49d53f6da23d362f049abefba7ced8afdec47cf57c19d0a6a4260a3f8b5186"
+    },
+    {
       "path": "torch/nn/__init__.py",
       "ext": ".py",
       "size": 393,
       "sha": "c9f447b7a266e62c62df4dedcf279ae7ca15a7c81f2c3ce305619cfa693da526"
+    },
+    {
+      "path": "torch/nn/__pycache__/__init__.cpython-312.pyc",
+      "ext": ".pyc",
+      "size": 963,
+      "sha": "d22dd0a601cb6953bbd0d4b33ecfd8e753bc5dc780428dcb051c82ded70a776a"
     },
     {
       "path": "training/__init__.py",
