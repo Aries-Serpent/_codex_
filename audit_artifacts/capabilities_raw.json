@@ -1,5 +1,5 @@
 {
-  "generated": 1765693461.8280556,
+  "generated": 1765693603.675832,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -20654,12 +20654,6 @@
         "test_count": 1480,
         "config_count": 26,
         "fixture_count": 34,
-        "safeguards": [
-          "validation",
-          "bounded",
-          "deterministic",
-          "offline"
-        ],
         "detector_version": "1.1"
       }
     },

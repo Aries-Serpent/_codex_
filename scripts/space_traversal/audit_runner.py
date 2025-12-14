@@ -593,7 +593,7 @@ def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     elif test_count == 3:
         return 0.85
     else:
-        # 4 or more tests = 1.0 (100%)
+        # test_count >= 4: Full coverage achieved
         return 1.0
 
 def safeguard_score(evidence_files: List[str], file_cache: Dict[str, str], 
