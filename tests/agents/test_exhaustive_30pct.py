@@ -181,7 +181,7 @@ class TestDeveloperOrchestratorExhaustive:
         
         # Test all app type values
         for app_type in AppType:
-            assert app_type.value in ["python_console", "python_cli", "python_api", "python_web"]
+            assert app_type.value in ["python_console", "python_cli", "python_api", "python_web", "python_library", "python_script"]
 
 
 class TestMentalMappingExhaustive:
