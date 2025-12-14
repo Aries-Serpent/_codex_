@@ -1,0 +1,73 @@
+# Multi-stage production/test image for optimized build and smaller runtime
+# Maintainer note: This Dockerfile produces a smaller image by using multi-stage builds.
+# Stage 1 builds and tests, Stage 2 copies only necessary files for runtime.
+
+# =============================================================================
+# Stage 1: Builder - Install dependencies and build the package
+# =============================================================================
+FROM python:3.11-slim AS builder
+
+# Metadata
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL stage="builder"
+
+WORKDIR /workspace
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    git \
+  && rm -rf /var/lib/apt/lists/*
+
+# Copy dependency manifests for layer caching
+COPY requirements-test.txt requirements-test.txt
+COPY requirements.txt requirements.txt
+COPY pyproject.toml pyproject.toml
+
+# Install pip and dependencies
+RUN python -m pip install --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir -r requirements-test.txt
+
+# Copy source code
+COPY . /workspace
+
+# Install the package (same command as CI uses for parity)
+RUN pip install --no-cache-dir .
+
+# =============================================================================
+# Stage 2: Runtime - Minimal image with only installed packages
+# =============================================================================
+FROM python:3.11-slim AS runtime
+
+# Metadata
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.description="Codex ML production test environment"
+LABEL org.opencontainers.image.version="1.0.0"
+
+# Environment configuration
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV COVERAGE_DIR=/app/artifacts
+ENV COVERAGE_THRESHOLD=90
+
+WORKDIR /app
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Copy installed Python packages from builder stage
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy source code (for coverage reporting and tests)
+COPY --from=builder --chown=appuser:appuser /workspace /app
+
+# Create artifacts directory
+RUN mkdir -p ${COVERAGE_DIR} && chown -R appuser:appuser ${COVERAGE_DIR}
+
+# Switch to non-root user
+USER appuser
+
+# Default command: run pytest with coverage
+CMD ["bash", "-lc", "pytest --maxfail=1 --disable-warnings --cov=src --cov-report=xml:${COVERAGE_DIR}/coverage.xml --cov-report=html:${COVERAGE_DIR}/htmlcov -q"]

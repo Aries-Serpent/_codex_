@@ -151,3 +151,136 @@ If coverage is lower than expected:
 - [pytest documentation](https://docs.pytest.org/)
 - [pytest-cov documentation](https://pytest-cov.readthedocs.io/)
 - Project-specific test guidelines: See `CONTRIBUTING.md`
+
+---
+
+## Docker-Based Test Environment
+
+The project provides a production-ready Docker-based test environment for deterministic pytest execution with coverage reporting.
+
+### Quick Start
+
+```bash
+# Build and run tests in Docker
+make docker-test
+
+# Or use the CI script directly
+./docker/ci_run.sh
+```
+
+### Files Overview
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Primary reproducible test image with pinned dependencies |
+| `Dockerfile.prod` | Multi-stage production variant with smaller runtime image |
+| `docker/ci_run.sh` | CI-friendly script to build and run tests |
+| `requirements-test.txt` | Pinned pytest/pytest-cov versions for reproducibility |
+| `artifacts/` | Runtime output directory for coverage reports (htmlcov, coverage.xml) |
+
+### Makefile Targets
+
+```bash
+make docker-build      # Build the test Docker image
+make docker-test       # Build image and run pytest in container
+make docker-test-prod  # Use multi-stage production Dockerfile
+make docker-clean      # Remove artifacts and Docker images
+```
+
+### CI Integration
+
+**Using the CI Script (Recommended)**
+
+CI should call `docker/ci_run.sh` to ensure pip install path parity with local development:
+
+```yaml
+# Example GitHub Actions step (do NOT create workflow files)
+- name: Run tests in Docker
+  run: ./docker/ci_run.sh
+
+- name: Upload coverage artifacts
+  uses: actions/upload-artifact@v4
+  with:
+    name: coverage-reports
+    path: |
+      artifacts/coverage.xml
+      artifacts/htmlcov/
+```
+
+**Environment Variables**
+
+The CI script supports these environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `IMAGE_NAME` | `codex-test:latest` | Docker image name/tag |
+| `ARTIFACTS_DIR` | `./artifacts` | Directory for coverage reports |
+| `DOCKERFILE_PATH` | `Dockerfile` | Path to Dockerfile |
+| `PYTEST_ARGS` | (empty) | Additional pytest arguments |
+
+Example with custom settings:
+
+```bash
+IMAGE_NAME=my-test:v2 \
+ARTIFACTS_DIR=/tmp/coverage \
+DOCKERFILE_PATH=Dockerfile.prod \
+./docker/ci_run.sh
+```
+
+### Pip Install Path Parity
+
+To ensure CI and local environments use identical package installations:
+
+**Inside Docker (automatic):**
+The Dockerfile installs the package using:
+```bash
+pip install --no-cache-dir .
+```
+
+**Outside Docker (manual CI without containers):**
+If CI runs tests without Docker, use the exact same commands:
+```bash
+python -m pip install --upgrade pip setuptools wheel
+pip install --no-cache-dir -r requirements-test.txt
+pip install --no-cache-dir .
+pytest --maxfail=1 --disable-warnings --cov=src \
+    --cov-report=xml:coverage.xml \
+    --cov-report=html:htmlcov -q
+```
+
+This ensures the code and dependency install path is identical to the Docker image installation.
+
+### Coverage Output
+
+After running tests, coverage reports are available at:
+- **HTML Report:** `artifacts/htmlcov/index.html`
+- **XML Report:** `artifacts/coverage.xml` (for CI upload/parsing)
+
+### Security Notes
+
+- The Docker image runs tests as a non-root user (`appuser`) for security
+- Dependencies are pinned in `requirements-test.txt` for reproducibility
+- Build layers are optimized for caching to speed up CI rebuilds
+
+### Troubleshooting Docker Tests
+
+**Container exits immediately:**
+Check if pytest is finding tests. Run with verbose output:
+```bash
+PYTEST_ARGS="-v" ./docker/ci_run.sh
+```
+
+**Permission errors on artifacts:**
+Ensure the artifacts directory is writable:
+```bash
+mkdir -p artifacts && chmod 777 artifacts
+```
+
+**Image build fails:**
+Check Docker daemon is running and you have sufficient disk space.
+
+**Tests pass locally but fail in Docker:**
+This usually indicates environment differences. The Docker environment uses:
+- Python 3.11
+- Clean installation (no cached packages)
+- Non-root user execution

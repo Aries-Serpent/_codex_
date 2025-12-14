@@ -22,6 +22,59 @@ config:
 
 .PHONY: status quick test lint env perf scan deps actions-serve actions-health actions-branches actions-search actions-cli-branches actions-cli-search actions-cli-cite
 
+# =============================================================================
+# Docker Test Environment Targets
+# =============================================================================
+# These targets provide a production-ready Docker-based test environment.
+# Use docker-test to run pytest inside a container with coverage reporting.
+#
+# Configuration variables:
+#   IMAGE       - Docker image name/tag (default: codex-test:latest)
+#   DOCKERFILE  - Path to Dockerfile (default: Dockerfile)
+#   ARTIFACTS_DIR - Directory for coverage reports (default: ./artifacts)
+#
+# Examples:
+#   make docker-build              # Build the test image
+#   make docker-test               # Build and run tests
+#   make docker-clean              # Remove artifacts and image
+#   IMAGE=my-test:v1 make docker-test  # Use custom image name
+# =============================================================================
+
+.PHONY: docker-build docker-test docker-clean docker-test-prod
+
+# Docker configuration with defaults
+IMAGE ?= codex-test:latest
+DOCKERFILE ?= Dockerfile
+ARTIFACTS_DIR ?= ./artifacts
+
+docker-build:
+	@echo "Building Docker test image: $(IMAGE)"
+	docker build -f $(DOCKERFILE) -t $(IMAGE) .
+
+docker-test: docker-build
+	@echo "Running tests in Docker container..."
+	@mkdir -p $(ARTIFACTS_DIR)
+	docker run --rm \
+		-v $(PWD)/$(ARTIFACTS_DIR):/workspace/artifacts \
+		-e COVERAGE_DIR=/workspace/artifacts \
+		$(IMAGE)
+	@echo "Coverage reports written to $(ARTIFACTS_DIR)/"
+
+docker-test-prod:
+	@echo "Running tests with production Dockerfile..."
+	$(MAKE) docker-test DOCKERFILE=Dockerfile.prod IMAGE=codex-test-prod:latest
+
+docker-clean:
+	@echo "Cleaning Docker test artifacts..."
+	-@rm -rf $(ARTIFACTS_DIR)/htmlcov $(ARTIFACTS_DIR)/coverage.xml 2>/dev/null || true
+	-@docker image rm -f $(IMAGE) 2>/dev/null || true
+	-@docker image rm -f codex-test-prod:latest 2>/dev/null || true
+	@echo "Docker cleanup complete"
+
+# =============================================================================
+# End Docker Targets
+# =============================================================================
+
 status:
 	python tools/status/codex_status_cli.py
 
