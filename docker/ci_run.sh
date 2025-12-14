@@ -64,11 +64,12 @@ echo ""
 set +e
 if [ -n "${PYTEST_ARGS}" ]; then
     # Custom pytest arguments provided
+    # Note: --tb=short --no-header reduces output to prevent CI token limit issues
     docker run --rm \
         -v "${ARTIFACTS_DIR}":/workspace/artifacts \
         -e COVERAGE_DIR=/workspace/artifacts \
         "${IMAGE_NAME}" \
-        bash -c "pytest ${PYTEST_ARGS} --cov=src --cov-report=xml:/workspace/artifacts/coverage.xml --cov-report=html:/workspace/artifacts/htmlcov"
+        bash -c "pytest ${PYTEST_ARGS} --tb=short --no-header --cov=src --cov-report=xml:/workspace/artifacts/coverage.xml --cov-report=html:/workspace/artifacts/htmlcov"
     CODE=$?
 else
     # Use default CMD from Dockerfile
