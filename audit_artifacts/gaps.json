@@ -1,5 +1,5 @@
 {
-  "generated": 1765676161.949559,
+  "generated": 1765686674.7750275,
   "low_maturity": [
     {
       "components": {
@@ -326,6 +326,7 @@
           ".github/workflows/audit_chain.yml": 1,
           ".github/workflows/automation_ingest.yml": 1,
           ".github/workflows/capability-audit.yml": 3,
+          ".github/workflows/ci-pytest.yml": 1,
           ".github/workflows/ci.yml": 4,
           ".github/workflows/container-build.yml": 1,
           ".github/workflows/daily_status_enrich.yml": 1,
@@ -370,11 +371,14 @@
           ".reports/modernization_after.json": 3,
           ".reports/modernization_after.md": 1,
           ".reports/modernization_summary.md": 1,
+          "ACTIVATION_CHECKLIST_STATUS.md": 4,
           "AGENTS.md": 10,
+          "BATCH_ACTIVATION_READINESS_REPORT.md": 3,
           "CHANGELOG_AGENTS.md": 3,
           "CHANGELOG_PR2310.md": 3,
           "CHANGES.md": 6,
           "CHATGPT_CONTINUATION.md": 1,
+          "CI_PYTEST_IMPLEMENTATION.md": 1,
           "CODEOWNER-NOTES.md": 2,
           "COMPLETION_SUMMARY.md": 1,
           "COMPREHENSIVE_GAP_ANALYSIS.md": 5,
@@ -411,6 +415,7 @@
           "REMAINING_WORK.md": 5,
           "REPOSITORY_MAPPING.md": 5,
           "SECURITY.md": 4,
+          "SESSION_COMPLETE_STATUS_REPORT.md": 4,
           "T1_SOLUTION.md": 7,
           "TEAM_ANNOUNCEMENT.md": 3,
           "Traversal_Workflow.md": 18,
@@ -666,6 +671,7 @@
           "diagnostic_results.txt": 4,
           "docker-compose.override.yml": 1,
           "docker-compose.yml": 1,
+          "docker/ci_run.sh": 1,
           "docker/healthcheck.sh": 1,
           "docs/ADVANCED_PHYSICS_GUIDE.md": 2,
           "docs/AI_TURN_ANALYSIS_PR2462.md": 3,
@@ -756,14 +762,20 @@
           "docs/bridge/ubuntu_cli.md": 2,
           "docs/capabilities/archival_bundling.md": 8,
           "docs/capabilities/ci_cd_pipeline.md": 5,
+          "docs/capabilities/deployment_infrastructure.md": 5,
+          "docs/capabilities/documentation_system.md": 3,
           "docs/capabilities/duplication_detection.md": 4,
+          "docs/capabilities/experiment_management.md": 8,
+          "docs/capabilities/functional_training.md": 4,
+          "docs/capabilities/inference_serving.md": 8,
           "docs/capabilities/mcp_configuration.md": 9,
           "docs/capabilities/mcp_schema_validation.md": 7,
           "docs/capabilities/mcp_security_safeguards.md": 13,
           "docs/capabilities/mcp_tooling_registry.md": 5,
           "docs/capabilities/mcp_tools_integration.md": 4,
+          "docs/capabilities/reproducibility.md": 12,
           "docs/capabilities/safeguards_detection.md": 33,
-          "docs/capabilities/safeguards_keywords.md": 1,
+          "docs/capabilities/safeguards_keywords.md": 15,
           "docs/capabilities/status_reporting.md": 5,
           "docs/capabilities/structural_integrity.md": 5,
           "docs/capability_contracts.md": 5,
@@ -815,7 +827,7 @@
           "docs/dev-notes.md": 1,
           "docs/dev/CODE_STYLE_GUIDE.md": 1,
           "docs/dev/CONTRIBUTING.md": 1,
-          "docs/dev/testing.md": 5,
+          "docs/dev/testing.md": 6,
           "docs/dev/training.md": 2,
           "docs/dev/unified_training.md": 3,
           "docs/developer/Patch_Debris_Guard.md": 1,
@@ -1323,6 +1335,7 @@
           "prompts/system/agent_core.md": 3,
           "prompts/system/tool_usage_guidelines.md": 1,
           "requirements-minimal.txt": 1,
+          "requirements-test.txt": 2,
           "requirements/dev.txt": 1,
           "requirements/lock.txt": 1,
           "samples/README.md": 2,
@@ -1470,8 +1483,8 @@
           "scripts/space_traversal/detectors/detector_safeguards.py": 34,
           "scripts/space_traversal/detectors/documentation_system.py": 5,
           "scripts/space_traversal/detectors/example_v2.py": 1,
-          "scripts/space_traversal/detectors/experiment_management.py": 2,
-          "scripts/space_traversal/detectors/functional_training.py": 1,
+          "scripts/space_traversal/detectors/experiment_management.py": 7,
+          "scripts/space_traversal/detectors/functional_training.py": 8,
           "scripts/space_traversal/detectors/inference_serving.py": 9,
           "scripts/space_traversal/detectors/mcp_authz_authn.py": 3,
           "scripts/space_traversal/detectors/mcp_configuration.py": 4,
@@ -1487,7 +1500,7 @@
           "scripts/space_traversal/detectors/mcp_tools_integration.py": 6,
           "scripts/space_traversal/detectors/mcp_versioning_compat.py": 1,
           "scripts/space_traversal/detectors/ml_serving.py": 1,
-          "scripts/space_traversal/detectors/reproducibility.py": 7,
+          "scripts/space_traversal/detectors/reproducibility.py": 10,
           "scripts/space_traversal/detectors/status_reporting.py": 1,
           "scripts/space_traversal/detectors/structure_integrity.py": 5,
           "scripts/space_traversal/detectors/testing_infrastructure.py": 1,
@@ -1532,7 +1545,7 @@
           "scripts/survey.sh": 1,
           "scripts/torch_policy_check.py": 3,
           "scripts/torch_repair_cpu.sh": 1,
-          "scripts/track_progress.py": 1,
+          "scripts/track_progress.py": 2,
           "scripts/tracking/mlflow_ui.sh": 1,
           "scripts/train.py": 8,
           "scripts/validate_all_capabilities.sh": 7,
@@ -2204,6 +2217,7 @@
           "templates/github_repo_baseline/ISSUE_TEMPLATE/bug_report.md": 1,
           "test_mcp_server.py": 3,
           "test_results_stage1.txt": 1,
+          "tests/README.md": 3,
           "tests/_codex_introspect.py": 1,
           "tests/addons/test_metrics_collector_mlflow.py": 1,
           "tests/agents/test_30pct_final.py": 2,
@@ -3910,48 +3924,11 @@
     },
     {
       "components": {
-        "consistency": 0.692308,
-        "documentation": 0.295302,
-        "functionality": 1.0,
-        "safeguards": 0.75,
-        "tests": 0.461538
-      },
-      "evidence_files": [
-        "docs/training/functional_training.md",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/functional_training.py",
-        "src/codex_ml/training/functional_training.py",
-        "src/training/functional_training.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/test_run_functional_training_tokenizer.py",
-        "tests/training/test_functional_training.py",
-        "tests/training/test_functional_training_comprehensive.py",
-        "tools/package_functional_training.py",
-        "training/functional_training.py"
-      ],
-      "explain": {
-        "id": "functional_training",
-        "partials": {},
-        "score": 0.660641
-      },
-      "found_patterns": [
-        "functional_training"
-      ],
-      "id": "functional_training",
-      "meta": {
-        "detector": "functional_training"
-      },
-      "score": 0.660641
-    },
-    {
-      "components": {
-        "consistency": 0.938338,
+        "consistency": 0.934667,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006702
+        "tests": 0.006667
       },
       "evidence_files": [
         "README.md",
@@ -4065,11 +4042,15 @@
         "docs/capabilities/deployment_infrastructure.md",
         "docs/capabilities/documentation_system.md",
         "docs/capabilities/duplication_detection.md",
+        "docs/capabilities/experiment_management.md",
+        "docs/capabilities/functional_training.md",
+        "docs/capabilities/inference_serving.md",
         "docs/capabilities/mcp_configuration.md",
         "docs/capabilities/mcp_schema_validation.md",
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/reproducibility.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
@@ -4704,7 +4685,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.676843
+        "score": 0.6761
       },
       "found_patterns": [
         "docs",
@@ -4715,21 +4696,21 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 744,
+        "markdown_count": 748,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 746,
+        "total_docs": 750,
         "validation": true
       },
-      "score": 0.676843
+      "score": 0.6761
     },
     {
       "components": {
-        "consistency": 0.691358,
+        "consistency": 0.686747,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.833333,
-        "tests": 0.135802
+        "tests": 0.13253
       },
       "evidence_files": [
         ".dockerignore",
@@ -4738,6 +4719,7 @@
         "Dockerfile.local",
         "Dockerfile.local-codex-env",
         "Dockerfile.optimized",
+        "Dockerfile.prod",
         "deploy/helm/Chart.yaml",
         "deploy/helm/values.yaml",
         "deploy/interactive_entrypoint.sh",
@@ -4745,6 +4727,7 @@
         "docker-compose.yml",
         "docker/Dockerfile.cpu",
         "docker/Dockerfile.optimized",
+        "docker/ci_run.sh",
         "docker/entrypoint.sh",
         "docker/healthcheck.sh",
         "docker/msp-gateway.Dockerfile",
@@ -4817,7 +4800,7 @@
       "explain": {
         "id": "deployment-infrastructure",
         "partials": {},
-        "score": 0.697222
+        "score": 0.695482
       },
       "found_patterns": [
         "deploy",
@@ -4831,14 +4814,14 @@
         "bounded": true,
         "deploy_scripts": 5,
         "deterministic": true,
-        "docker_configs": 12,
+        "docker_configs": 14,
         "helm_charts": 2,
         "k8s_manifests": 12,
         "offline": true,
         "service_definitions": 50,
         "terraform_configs": 0
       },
-      "score": 0.697222
+      "score": 0.695482
     }
   ],
   "low_threshold": 0.7,

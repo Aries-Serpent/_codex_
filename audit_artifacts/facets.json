@@ -1,5 +1,5 @@
 {
-  "generated": 1765676156.3217568,
+  "generated": 1765686668.9953015,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -297,6 +297,7 @@
       "configs/training/tracking/base.yaml",
       "configs/training/tracking/offline.yaml",
       "data/offline/trainer_functional.json",
+      "docs/capabilities/functional_training.md",
       "docs/cli/minimal_train_eval_workflow.md",
       "docs/dev/training.md",
       "docs/dev/unified_training.md",
@@ -1631,6 +1632,7 @@
       "docs/api_catalog.md",
       "docs/architecture/inference_serving.md",
       "docs/audit/API_Reference_v1.4.0.md",
+      "docs/capabilities/inference_serving.md",
       "docs/guides/inference_server_guide.md",
       "docs/plugins/Plugin_API_Broader.md",
       "docs/safety_api.md",
@@ -1904,8 +1906,11 @@
       ".reports/modernization_after.md",
       ".reports/modernization_summary.md",
       ".statusrc.json",
+      "ACTIVATION_CHECKLIST_STATUS.md",
+      "BATCH_ACTIVATION_READINESS_REPORT.md",
       "FINAL_STATUS_REPORT.md",
       "Makefile.status",
+      "SESSION_COMPLETE_STATUS_REPORT.md",
       "_codex/status/_codex_status_update-2025-09-21.md",
       "_codex/status/_codex_status_update-2025-09-22.md",
       "_codex/status/manifest-20250922T013307Z.json",
