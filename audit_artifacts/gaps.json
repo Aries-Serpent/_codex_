@@ -1,42 +1,6 @@
 {
-  "generated": 1765673935.999779,
+  "generated": 1765674257.3532183,
   "low_maturity": [
-    {
-      "components": {
-        "consistency": 0.666667,
-        "documentation": 0.295699,
-        "functionality": 1.0,
-        "safeguards": 0.583333,
-        "tests": 0.416667
-      },
-      "evidence_files": [
-        "docs/training/functional_training.md",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/functional_training.py",
-        "src/codex_ml/training/functional_training.py",
-        "src/training/functional_training.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/test_run_functional_training_tokenizer.py",
-        "tests/training/test_functional_training.py",
-        "tools/package_functional_training.py",
-        "training/functional_training.py"
-      ],
-      "explain": {
-        "id": "functional_training",
-        "partials": {},
-        "score": 0.619355
-      },
-      "found_patterns": [
-        "functional_training"
-      ],
-      "id": "functional_training",
-      "meta": {
-        "detector": "functional_training"
-      },
-      "score": 0.619355
-    },
     {
       "components": {
         "consistency": 1.0,
@@ -935,6 +899,7 @@
           "docs/howto/run_audits.md": 1,
           "docs/hydra_defaults_and_sweeps.md": 1,
           "docs/index.md": 3,
+          "docs/infrastructure/deployment.md": 3,
           "docs/integrations/bridge_pattern_integration.md": 2,
           "docs/integrations/customgpt_actions.md": 1,
           "docs/integrations/github_copilot_cli.md": 1,
@@ -1239,7 +1204,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
-          "docs/training/functional_training.md": 6,
+          "docs/training/functional_training.md": 12,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,
@@ -3883,6 +3848,42 @@
     },
     {
       "components": {
+        "consistency": 0.666667,
+        "documentation": 0.295302,
+        "functionality": 1.0,
+        "safeguards": 0.75,
+        "tests": 0.416667
+      },
+      "evidence_files": [
+        "docs/training/functional_training.md",
+        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
+        "scripts/space_traversal/detectors/functional_training.py",
+        "src/codex_ml/training/functional_training.py",
+        "src/training/functional_training.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
+        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
+        "tests/test_run_functional_training_tokenizer.py",
+        "tests/training/test_functional_training.py",
+        "tools/package_functional_training.py",
+        "training/functional_training.py"
+      ],
+      "explain": {
+        "id": "functional_training",
+        "partials": {},
+        "score": 0.644295
+      },
+      "found_patterns": [
+        "functional_training"
+      ],
+      "id": "functional_training",
+      "meta": {
+        "detector": "functional_training"
+      },
+      "score": 0.644295
+    },
+    {
+      "components": {
         "consistency": 0.8,
         "documentation": 1.0,
         "functionality": 1.0,
@@ -3940,11 +3941,11 @@
     },
     {
       "components": {
-        "consistency": 0.939597,
+        "consistency": 0.938338,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006711
+        "tests": 0.006702
       },
       "evidence_files": [
         "README.md",
@@ -4242,6 +4243,7 @@
         "docs/hydra_quickstart.md",
         "docs/incident_runbook.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/customgpt_actions.md",
         "docs/integrations/github_copilot_cli.md",
@@ -4696,7 +4698,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.677097
+        "score": 0.676843
       },
       "found_patterns": [
         "docs",
@@ -4707,13 +4709,13 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 743,
+        "markdown_count": 744,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 745,
+        "total_docs": 746,
         "validation": true
       },
-      "score": 0.677097
+      "score": 0.676843
     },
     {
       "components": {

@@ -1,6 +1,6 @@
 {
-  "generated": 1765673930.2668357,
-  "count": 5052,
+  "generated": 1765674251.6128712,
+  "count": 5053,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -4302,7 +4302,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 2122,
-      "sha": "6776b9f47c1e50b17911ccbe90d7ad0c03c12b026df513561c43a134544b1d4a"
+      "sha": "d39a8d93bbe3454cd9868f1c45b49ad38624dc832d6dde3d907d3e8b5ff5766a"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -8163,6 +8163,12 @@
       "sha": "ba8f908f8139ec1563e024c773d47a3572c1796b355392028739d48658967c49"
     },
     {
+      "path": "docs/infrastructure/deployment.md",
+      "ext": ".md",
+      "size": 625,
+      "sha": "e4f8ef2369a4c356511382cd12bd8c503af46d59b2ca70a5ce00d599935fa074"
+    },
+    {
       "path": "docs/integrations/bridge_pattern_integration.md",
       "ext": ".md",
       "size": 7263,
@@ -10457,8 +10463,8 @@
     {
       "path": "docs/training/functional_training.md",
       "ext": ".md",
-      "size": 9353,
-      "sha": "7ba11007a606f50008068984e89328a30a4f89ca8b204da2d00edaf54f67d9c1"
+      "size": 10542,
+      "sha": "0e85e6db23b7f7bf0cfef4265b872215c7142ce16e3d38b8fa2f1c0645e70593"
     },
     {
       "path": "docs/training/reproducibility.md",

@@ -1,5 +1,5 @@
 {
-  "generated": 1765673933.8021975,
+  "generated": 1765674255.1614463,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -2087,6 +2087,7 @@
         "docs/hydra_quickstart.md",
         "docs/incident_runbook.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/customgpt_actions.md",
         "docs/integrations/github_copilot_cli.md",
@@ -2559,10 +2560,10 @@
         "sphinx"
       ],
       "meta": {
-        "markdown_count": 743,
+        "markdown_count": 744,
         "rst_count": 0,
         "config_count": 1,
-        "total_docs": 745,
+        "total_docs": 746,
         "deterministic": true,
         "offline": true,
         "validation": true
@@ -3931,6 +3932,7 @@
         "docs/hydra_quickstart.md",
         "docs/incident_runbook.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/customgpt_actions.md",
         "docs/integrations/github_copilot_cli.md",
@@ -11842,6 +11844,7 @@
         "docs/how-to/metrics_validate_tail_badge.md",
         "docs/how-to/repo_admin_bootstrap.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/github_copilot_cli.md",
         "docs/integrations/github_copilot_cli2.md",
@@ -15447,6 +15450,7 @@
           "docs/howto/run_audits.md": 1,
           "docs/hydra_defaults_and_sweeps.md": 1,
           "docs/index.md": 3,
+          "docs/infrastructure/deployment.md": 3,
           "docs/integrations/bridge_pattern_integration.md": 2,
           "docs/integrations/customgpt_actions.md": 1,
           "docs/integrations/github_copilot_cli.md": 1,
@@ -15751,7 +15755,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
-          "docs/training/functional_training.md": 6,
+          "docs/training/functional_training.md": 12,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,

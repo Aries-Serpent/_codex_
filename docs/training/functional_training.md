@@ -2,27 +2,29 @@
 
 ## Overview
 
-The functional training system provides a flexible, composable approach to machine learning model training using pure functional programming principles. It enables deterministic, reproducible training workflows with comprehensive experiment tracking, checkpointing, and monitoring capabilities.
+The **functional training** system provides a flexible, composable approach to machine learning model **training** using pure **functional programming** principles. It enables **deterministic**, **reproducible training** workflows with comprehensive **experiment tracking**, **checkpointing**, and **monitoring** capabilities.
+
+This **functional training** framework emphasizes **reproducibility**, **validation**, and **robust** error handling throughout the **training** pipeline, making it ideal for **production** deployments requiring **deterministic** behavior and **offline** execution capabilities.
 
 ## Key Features
 
 ### Functional Programming Principles
-- **Pure Functions**: Training functions are pure and side-effect free
-- **Composability**: Training components can be easily composed and reused  
-- **Reproducibility**: Deterministic execution with seed management
-- **Immutability**: State is immutable and explicitly passed between training steps
+- **Pure Functions**: **Training** functions are pure and side-effect free with **validation**
+- **Composability**: **Training** components can be easily composed and reused with **safeguards**
+- **Reproducibility**: **Deterministic** execution with **seed** management and **rng** control
+- **Immutability**: State is immutable and explicitly passed between **training** steps
 
 ### Training Capabilities
-- **Flexible Training Loops**: Customizable training iterations with validation
-- **Experiment Tracking**: Integration with MLflow and file-based logging
-- **Checkpointing**: Automatic checkpoint saving and loading for training resumption
-- **Gradient Clipping**: Configurable gradient norm clipping for stability
-- **Monitoring**: Real-time system metrics and telemetry tracking
+- **Flexible Training Loops**: Customizable **training** iterations with **validation** and **monitoring**
+- **Experiment Tracking**: Integration with MLflow and file-based **logging** for **reproducible** experiments
+- **Checkpointing**: Automatic **checkpoint** saving with **sha256** checksums for **validation**
+- **Gradient Clipping**: Configurable **gradient-clipping** for **robust** **training** stability
+- **Monitoring**: Real-time system **metrics** and **telemetry** **tracking** with **safeguards**
 
 ### Data Handling
-- **DataLoader Integration**: PyTorch DataLoader support with batching
-- **Deterministic Data Loading**: Reproducible data iteration with seed control
-- **Manifest Generation**: Data checksums for validation and reproducibility
+- **DataLoader Integration**: PyTorch **data-loading** support with **deterministic** batching
+- **Deterministic Data Loading**: **Reproducible** data iteration with **seed** control and **validation**
+- **Manifest Generation**: Data **checksums** using **sha256** for **validation** and **reproducibility**
 
 ## Architecture
 
@@ -203,30 +205,34 @@ train_functional(
 
 ## Reproducibility
 
-The functional training system ensures reproducibility through:
+The **functional training** system ensures **reproducibility** through **deterministic** execution and comprehensive **validation**:
 
-1. **Seed Management**: All random number generators are seeded
-2. **Deterministic Operations**: PyTorch deterministic mode enabled
-3. **RNG State Checkpointing**: Complete RNG state saved in checkpoints
-4. **Data Manifests**: Input data checksums for validation
-5. **Configuration Versioning**: Training configuration saved with checkpoints
+1. **Seed Management**: All random number generators (**rng**) are seeded for **reproducible** results
+2. **Deterministic Operations**: PyTorch **deterministic** mode enabled with **validation** checks
+3. **RNG State Checkpointing**: Complete **rng** state saved in **checkpoints** with **sha256** **checksums**
+4. **Data Manifests**: Input data **checksums** using **sha256** for **validation** and **reproducibility**
+5. **Configuration Versioning**: **Training** configuration saved with **checkpoints** for **reproducible** execution
+6. **Offline Execution**: Supports **offline** **training** with local **manifest** files and **baseline** tracking
 
 ### Reproducibility Example
 
 ```python
 from codex_ml.utils.checkpointing import set_seed
 
-# Set seed for reproducibility
+# Set seed for reproducibility with validation
 set_seed(42)
 
-# Enable deterministic mode
+# Enable deterministic mode with safeguards
 torch.use_deterministic_algorithms(True)
 
-# Configure reproducible training
+# Configure reproducible training with validation
 config = {
     "seed": 42,
     "deterministic": True,
     "save_rng_state": True,
+    "offline": True,  # Offline execution support
+    "manifest": True,  # Generate data manifest with checksums
+    "baseline": "v1.0",  # Baseline tracking
 }
 
 train_functional(model=model, train_dataloader=train_loader, config=config)

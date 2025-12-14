@@ -1797,11 +1797,11 @@
     },
     {
       "components": {
-        "consistency": 0.939597,
+        "consistency": 0.938338,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.006711
+        "tests": 0.006702
       },
       "evidence_files": [
         "README.md",
@@ -2099,6 +2099,7 @@
         "docs/hydra_quickstart.md",
         "docs/incident_runbook.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/customgpt_actions.md",
         "docs/integrations/github_copilot_cli.md",
@@ -2553,7 +2554,7 @@
       "explain": {
         "id": "documentation-system",
         "partials": {},
-        "score": 0.677097
+        "score": 0.676843
       },
       "found_patterns": [
         "docs",
@@ -2564,21 +2565,21 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 743,
+        "markdown_count": 744,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 745,
+        "total_docs": 746,
         "validation": true
       },
-      "score": 0.677097
+      "score": 0.676843
     },
     {
       "components": {
-        "consistency": 0.787015,
+        "consistency": 0.786859,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.294339
+        "tests": 0.294281
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -3941,6 +3942,7 @@
         "docs/hydra_quickstart.md",
         "docs/incident_runbook.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/customgpt_actions.md",
         "docs/integrations/github_copilot_cli.md",
@@ -7637,7 +7639,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.780988
+        "score": 0.780942
       },
       "found_patterns": [
         "analysis",
@@ -7650,7 +7652,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.780988
+      "score": 0.780942
     },
     {
       "components": {
@@ -9652,9 +9654,9 @@
     {
       "components": {
         "consistency": 0.666667,
-        "documentation": 0.295699,
+        "documentation": 0.295302,
         "functionality": 1.0,
-        "safeguards": 0.583333,
+        "safeguards": 0.75,
         "tests": 0.416667
       },
       "evidence_files": [
@@ -9674,7 +9676,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 0.619355
+        "score": 0.644295
       },
       "found_patterns": [
         "functional_training"
@@ -9683,7 +9685,7 @@
       "meta": {
         "detector": "functional_training"
       },
-      "score": 0.619355
+      "score": 0.644295
     },
     {
       "components": {
@@ -10047,7 +10049,7 @@
     {
       "components": {
         "consistency": 0.964286,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 0.607143
@@ -10085,7 +10087,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 0.907949
+        "score": 0.907898
       },
       "found_patterns": [
         "API-Key",
@@ -10096,7 +10098,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.907949
+      "score": 0.907898
     },
     {
       "components": {
@@ -10209,7 +10211,7 @@
     {
       "components": {
         "consistency": 0.923077,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 2.0,
         "safeguards": 0.5,
         "tests": 0.846154
@@ -10232,7 +10234,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 1.00946
+        "score": 1.009409
       },
       "found_patterns": [
         "MCPError",
@@ -10242,7 +10244,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.00946
+      "score": 1.009409
     },
     {
       "components": {
@@ -10327,7 +10329,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 1.0,
         "safeguards": 0.166667,
         "tests": 1.0
@@ -10342,7 +10344,7 @@
       "explain": {
         "id": "mcp-multi-tenant",
         "partials": {},
-        "score": 0.763306
+        "score": 0.763255
       },
       "found_patterns": [
         "tenant"
@@ -10351,12 +10353,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.763306
+      "score": 0.763255
     },
     {
       "components": {
         "consistency": 0.879837,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 0.287169
@@ -11348,7 +11350,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 0.936066
+        "score": 0.936015
       },
       "found_patterns": [
         "X-Request-Id",
@@ -11360,12 +11362,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.936066
+      "score": 0.936015
     },
     {
       "components": {
         "consistency": 0.866667,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 1.0,
         "safeguards": 0.583333,
         "tests": 0.666667
@@ -11390,7 +11392,7 @@
       "explain": {
         "id": "mcp-protocol-surface",
         "partials": {},
-        "score": 0.715807
+        "score": 0.715755
       },
       "found_patterns": [
         "FastAPI",
@@ -11400,12 +11402,12 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.715807
+      "score": 0.715755
     },
     {
       "components": {
         "consistency": 0.846154,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 0.641026
@@ -11454,7 +11456,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 1.017794
+        "score": 1.017742
       },
       "found_patterns": [
         "RateLimiter",
@@ -11464,7 +11466,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.017794
+      "score": 1.017742
     },
     {
       "components": {
@@ -11561,11 +11563,11 @@
     },
     {
       "components": {
-        "consistency": 0.909177,
+        "consistency": 0.908318,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.178808
+        "tests": 0.178639
       },
       "evidence_files": [
         ".codex/README.md",
@@ -11927,6 +11929,7 @@
         "docs/how-to/metrics_validate_tail_badge.md",
         "docs/how-to/repo_admin_bootstrap.md",
         "docs/index.md",
+        "docs/infrastructure/deployment.md",
         "docs/integrations/bridge_pattern_integration.md",
         "docs/integrations/github_copilot_cli.md",
         "docs/integrations/github_copilot_cli2.md",
@@ -12629,7 +12632,7 @@
       "explain": {
         "id": "mcp-security-safeguards",
         "partials": {},
-        "score": 0.776537
+        "score": 0.776323
       },
       "found_patterns": [
         "bounds",
@@ -12652,7 +12655,7 @@
           "rollback"
         ]
       },
-      "score": 0.776537
+      "score": 0.776323
     },
     {
       "components": {
@@ -13177,7 +13180,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.255376,
+        "documentation": 0.255034,
         "functionality": 2.0,
         "safeguards": 0.083333,
         "tests": 1.0
@@ -13195,7 +13198,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 1.000806
+        "score": 1.000755
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -13205,7 +13208,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.000806
+      "score": 1.000755
     },
     {
       "components": {
@@ -15479,6 +15482,7 @@
           "docs/howto/run_audits.md": 1,
           "docs/hydra_defaults_and_sweeps.md": 1,
           "docs/index.md": 3,
+          "docs/infrastructure/deployment.md": 3,
           "docs/integrations/bridge_pattern_integration.md": 2,
           "docs/integrations/customgpt_actions.md": 1,
           "docs/integrations/github_copilot_cli.md": 1,
@@ -15783,7 +15787,7 @@
           "docs/training/Evaluation_CLI.md": 1,
           "docs/training/Evaluation_CLI_Addendum.md": 1,
           "docs/training/distributed_troubleshooting.md": 2,
-          "docs/training/functional_training.md": 6,
+          "docs/training/functional_training.md": 12,
           "docs/training/reproducibility.md": 5,
           "docs/training/symbolic_training.md": 5,
           "docs/troubleshooting.md": 1,
@@ -20769,7 +20773,7 @@
     {
       "components": {
         "consistency": 0.916667,
-        "documentation": 0.282258,
+        "documentation": 0.281879,
         "functionality": 1.0,
         "safeguards": 0.5,
         "tests": 0.75
@@ -20791,7 +20795,7 @@
       "explain": {
         "id": "train_loop",
         "partials": {},
-        "score": 0.738172
+        "score": 0.738115
       },
       "found_patterns": [
         "train_loop"
@@ -20800,7 +20804,7 @@
       "meta": {
         "detector": "train_loop"
       },
-      "score": 0.738172
+      "score": 0.738115
     },
     {
       "components": {
@@ -21089,7 +21093,7 @@
     {
       "components": {
         "consistency": 0.6,
-        "documentation": 0.981183,
+        "documentation": 0.979866,
         "functionality": 1.0,
         "safeguards": 0.333333,
         "tests": 1.0
@@ -21104,7 +21108,7 @@
       "explain": {
         "id": "unified-training",
         "partials": {},
-        "score": 0.817177
+        "score": 0.81698
       },
       "found_patterns": [
         "UnifiedTrainingConfig",
@@ -21114,7 +21118,7 @@
       "meta": {
         "category": "training"
       },
-      "score": 0.817177
+      "score": 0.81698
     },
     {
       "components": {
@@ -21189,6 +21193,6 @@
       "score": 1.056061
     }
   ],
-  "generated": 1765673935.9876025,
+  "generated": 1765674257.3404076,
   "version": "1.5.0"
 }
