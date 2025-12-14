@@ -55,7 +55,7 @@ docker-test: docker-build
 	@echo "Running tests in Docker container..."
 	@mkdir -p $(ARTIFACTS_DIR)
 	docker run --rm \
-		-v $(PWD)/$(ARTIFACTS_DIR):/workspace/artifacts \
+		-v $(abspath $(ARTIFACTS_DIR)):/workspace/artifacts \
 		-e COVERAGE_DIR=/workspace/artifacts \
 		$(IMAGE)
 	@echo "Coverage reports written to $(ARTIFACTS_DIR)/"

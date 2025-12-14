@@ -53,4 +53,5 @@ USER appuser
 
 # Default command: run pytest and write coverage to mounted artifacts directory
 # The CI script will mount ./artifacts -> /workspace/artifacts so reports are accessible outside container
-CMD ["bash", "-lc", "pytest --maxfail=1 --disable-warnings --cov=src --cov-report=xml:${COVERAGE_DIR}/coverage.xml --cov-report=html:${COVERAGE_DIR}/htmlcov -q"]
+# Note: Using bash -c (not -lc) to avoid login shell initialization for deterministic behavior
+CMD ["bash", "-c", "pytest --maxfail=1 --disable-warnings --cov=src --cov-report=xml:${COVERAGE_DIR}/coverage.xml --cov-report=html:${COVERAGE_DIR}/htmlcov -q"]

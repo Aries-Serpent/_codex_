@@ -209,9 +209,24 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
-          path: |
-            artifacts/coverage.xml
-            artifacts/htmlcov/
+          path:
+            - artifacts/coverage.xml
+            - artifacts/htmlcov/
+```
+
+**Running Specific Tests**
+
+Use `PYTEST_ARGS` to run specific tests or test patterns:
+
+```bash
+# Run only smoke tests
+PYTEST_ARGS="-m smoke" ./docker/ci_run.sh
+
+# Run a specific test file
+PYTEST_ARGS="tests/test_ci_smoke.py" ./docker/ci_run.sh
+
+# Run with verbose output
+PYTEST_ARGS="-v" ./docker/ci_run.sh
 ```
 
 **Environment Variables**

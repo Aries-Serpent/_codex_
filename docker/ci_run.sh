@@ -60,13 +60,15 @@ echo ""
 # Run container with artifacts directory mounted
 # The container runs pytest and writes coverage to /workspace/artifacts
 # which is bind-mounted to the host's artifacts directory
+# Disable exit on error temporarily to capture the exit code
+set +e
 if [ -n "${PYTEST_ARGS}" ]; then
     # Custom pytest arguments provided
     docker run --rm \
         -v "${ARTIFACTS_DIR}":/workspace/artifacts \
         -e COVERAGE_DIR=/workspace/artifacts \
         "${IMAGE_NAME}" \
-        bash -lc "pytest ${PYTEST_ARGS} --cov=src --cov-report=xml:/workspace/artifacts/coverage.xml --cov-report=html:/workspace/artifacts/htmlcov"
+        bash -c "pytest ${PYTEST_ARGS} --cov=src --cov-report=xml:/workspace/artifacts/coverage.xml --cov-report=html:/workspace/artifacts/htmlcov"
     CODE=$?
 else
     # Use default CMD from Dockerfile
@@ -76,6 +78,7 @@ else
         "${IMAGE_NAME}"
     CODE=$?
 fi
+set -e
 
 echo ""
 echo "=============================================="
