@@ -44,10 +44,7 @@ def detect(file_index: dict) -> dict:
     - Reproducible detection with checksum-stable logic
     - Manifest-based evidence tracking
     - Baseline comparison support
-    - Input sanitize operations for path validation
-    - Deterministic output ordering
-    - Offline operation
-    - Reproducible pattern matching
+    - Input sanitization for path validation
     """
     files = file_index.get("files", [])
     paths = [f["path"] for f in files]

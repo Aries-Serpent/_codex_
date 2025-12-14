@@ -76,7 +76,7 @@ config.checksum_validation = True
 
 ## Best Practices
 
-1. Always set explicit seeds for reproduce-ability
+1. Always set explicit seeds for reproducibility
 2. Enable deterministic mode for consistent results
 3. Use offline mode in production environments
 4. Validate checksums before training

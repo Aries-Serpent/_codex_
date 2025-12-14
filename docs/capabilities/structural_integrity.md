@@ -429,6 +429,6 @@ The structural integrity detector ensures reproducible results through:
 
 ### Security Considerations
 
-- Paths are sanitize-d before processing
+- Paths are sanitized before processing
 - Secret files (matching patterns like `.env`, `secret`) are excluded from evidence
 - Bounded file reading prevents memory exhaustion (rng not applicable)
