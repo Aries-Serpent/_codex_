@@ -1,5 +1,5 @@
 {
-  "generated": 1765674257.3532183,
+  "generated": 1765675929.652042,
   "low_maturity": [
     {
       "components": {
@@ -378,12 +378,14 @@
           "CODEOWNER-NOTES.md": 2,
           "COMPLETION_SUMMARY.md": 1,
           "COMPREHENSIVE_GAP_ANALYSIS.md": 5,
+          "COMPREHENSIVE_SESSION_SUMMARY.md": 12,
           "CONTRIBUTING.md": 4,
           "COPILOT_PR_TEMPLATE_USAGE_GUIDE.md": 7,
           "DEEP_RESEARCH_UNRESOLVED_ISSUES.md": 4,
           "FINALIZATION_ROADMAP.md": 6,
           "FINAL_GAP_ANALYSIS.md": 8,
           "FINAL_STATUS_REPORT.md": 10,
+          "IMMEDIATE_EXECUTION_PLAN.md": 9,
           "LARGE_DOWNLOAD_PREVENTION.md": 2,
           "LEVEL_4_MLOPS_ASSESSMENT.md": 11,
           "MASTER_IMPLEMENTATION_PLAN.md": 4,
@@ -395,6 +397,7 @@
           "MCP_SECURITY_GUIDE.md": 17,
           "MERGE_READINESS_CONFIRMATION.md": 5,
           "NEWCOMER_GUIDE.md": 6,
+          "NEXT_SESSION_EXECUTION_PLAN.md": 3,
           "PATH_TO_99_PERCENT.md": 2,
           "PR-2151_Comprehensive_Error_Log.md": 11,
           "PRODUCTION_READINESS_CERTIFICATION.md": 6,
@@ -899,7 +902,7 @@
           "docs/howto/run_audits.md": 1,
           "docs/hydra_defaults_and_sweeps.md": 1,
           "docs/index.md": 3,
-          "docs/infrastructure/deployment.md": 3,
+          "docs/infrastructure/deployment.md": 5,
           "docs/integrations/bridge_pattern_integration.md": 2,
           "docs/integrations/customgpt_actions.md": 1,
           "docs/integrations/github_copilot_cli.md": 1,
@@ -3505,6 +3508,7 @@
           "tests/train_loop/test_resolve_dtype_and_device.py": 2,
           "tests/train_loop/test_telemetry_rollover.py": 1,
           "tests/training/test_functional_training.py": 1,
+          "tests/training/test_functional_training_comprehensive.py": 14,
           "tests/training/test_simple_trainer.py": 3,
           "tests/training/test_trainer.py": 3,
           "tests/training/test_training_checkpoint.py": 1,
@@ -3848,42 +3852,6 @@
     },
     {
       "components": {
-        "consistency": 0.666667,
-        "documentation": 0.295302,
-        "functionality": 1.0,
-        "safeguards": 0.75,
-        "tests": 0.416667
-      },
-      "evidence_files": [
-        "docs/training/functional_training.md",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/functional_training.py",
-        "src/codex_ml/training/functional_training.py",
-        "src/training/functional_training.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
-        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
-        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
-        "tests/test_run_functional_training_tokenizer.py",
-        "tests/training/test_functional_training.py",
-        "tools/package_functional_training.py",
-        "training/functional_training.py"
-      ],
-      "explain": {
-        "id": "functional_training",
-        "partials": {},
-        "score": 0.644295
-      },
-      "found_patterns": [
-        "functional_training"
-      ],
-      "id": "functional_training",
-      "meta": {
-        "detector": "functional_training"
-      },
-      "score": 0.644295
-    },
-    {
-      "components": {
         "consistency": 0.8,
         "documentation": 1.0,
         "functionality": 1.0,
@@ -3938,6 +3906,42 @@
         ]
       },
       "score": 0.66
+    },
+    {
+      "components": {
+        "consistency": 0.666667,
+        "documentation": 0.295302,
+        "functionality": 1.0,
+        "safeguards": 0.75,
+        "tests": 0.5
+      },
+      "evidence_files": [
+        "docs/training/functional_training.md",
+        "scripts/space_traversal/detectors/functional_training.py",
+        "src/codex_ml/training/functional_training.py",
+        "src/training/functional_training.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_evaluation.py",
+        "tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py",
+        "tests/space_traversal/test_peft_comprehensive/test_run_functional_training_resume.py",
+        "tests/test_run_functional_training_tokenizer.py",
+        "tests/training/test_functional_training.py",
+        "tests/training/test_functional_training_comprehensive.py",
+        "tools/package_functional_training.py",
+        "training/functional_training.py"
+      ],
+      "explain": {
+        "id": "functional_training",
+        "partials": {},
+        "score": 0.665129
+      },
+      "found_patterns": [
+        "functional_training"
+      ],
+      "id": "functional_training",
+      "meta": {
+        "detector": "functional_training"
+      },
+      "score": 0.665129
     },
     {
       "components": {
