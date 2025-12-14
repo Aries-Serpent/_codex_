@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 class ActionType(Enum):
@@ -32,6 +32,8 @@ class ActionType(Enum):
     OPTIMIZE = "optimize"
     DEBUG = "debug"
     RESEARCH = "research"
+    ANALYZE = "analyze"
+    EXECUTE = "execute"
 
 
 @dataclass
@@ -39,11 +41,14 @@ class ForceVector:
     """Represents a force influencing a decision"""
     name: str
     magnitude: float  # 0.0 to 1.0
-    direction: float  # angle in radians
+    direction: Union[float, List[float]]  # angle in radians or 3D vector
     priority: float = 1.0  # weight factor
     
     def get_components(self) -> Tuple[float, float]:
         """Get x, y components of force vector"""
+        if isinstance(self.direction, (list, tuple)):
+            # 3D vector - project to 2D
+            return self.magnitude * self.priority, 0.0
         x = self.magnitude * math.cos(self.direction) * self.priority
         y = self.magnitude * math.sin(self.direction) * self.priority
         return x, y
@@ -109,15 +114,18 @@ class ActionPath:
         return self.optimization_score
 
 
+
 @dataclass
 class DecisionState:
     """Current state of the system for decision making"""
-    current_position: str  # Where we are now
-    goal_position: str     # Where we want to be
+    current_position: Union[str, Any] = ""  # Where we are now (string or array)
+    goal_position: Union[str, Any] = ""     # Where we want to be (string or array)
     available_resources: float = 1.0  # 0-1 scale
     time_available: float = 1.0       # 0-1 scale
     current_velocity: float = 0.5     # Progress rate 0-1
-    context: Dict[str, any] = field(default_factory=dict)
+    context: Dict[str, Any] = field(default_factory=dict)
+    active_forces: List[Any] = field(default_factory=list)  # Optional force vectors
+    constraints: List[Any] = field(default_factory=list)    # Optional constraints
 
 
 class PhysicsInspiredOrchestrator:
@@ -1043,6 +1051,7 @@ class DiffusionFlowModel:
 
 
 @dataclass
+@dataclass
 class EnergyState:
     """
     Represents a state in an energy landscape.
@@ -1053,6 +1062,13 @@ class EnergyState:
     energy: float = 0.0
     entropy: float = 0.0
     temperature: float = 1.0
+    state_id: str = ""
+    internal_energy: float = None  # Alias for energy
+    
+    def __post_init__(self):
+        """Handle internal_energy alias"""
+        if self.internal_energy is not None:
+            self.energy = self.internal_energy
     
     def free_energy(self) -> float:
         """
@@ -1399,17 +1415,33 @@ class SwarmIntelligence:
     
     def run_optimization(
         self,
-        fitness_function: callable,
-        bounds: List[Tuple[float, float]],
+        fitness_function: callable = None,
+        objective_function: callable = None,  # Alias for backward compatibility
+        bounds: List[Tuple[float, float]] = None,
         max_iterations: int = 50
     ) -> Dict[str, Any]:
         """
         Run full swarm optimization.
+        
+        Args:
+            fitness_function: Function to optimize (primary)
+            objective_function: Alias for fitness_function (backward compatibility)
+            bounds: Search space bounds
+            max_iterations: Maximum iterations
         """
+        # Use objective_function if fitness_function not provided
+        func = fitness_function or objective_function
+        if not func:
+            raise ValueError("Either fitness_function or objective_function must be provided")
+        
+        if not bounds:
+            # Default bounds if not provided
+            bounds = [(-10.0, 10.0) for _ in range(self.dimensions)]
+        
         self.initialize_swarm(bounds)
         
         for iteration in range(max_iterations):
-            self.update_swarm(fitness_function, bounds)
+            self.update_swarm(func, bounds)
             
             # Check for convergence (all particles near global best)
             if self.global_best_position:
@@ -1466,6 +1498,15 @@ class SwarmIntelligence:
             particle.position = tuple(new_position)
             
         return [p.position for p in self.particles]
+    
+    @property
+    def num_agents(self) -> int:
+        """Alias for num_particles (backward compatibility)."""
+        return self.num_particles
+    
+    def optimize(self, *args, **kwargs) -> Dict[str, Any]:
+        """Alias for run_optimization (backward compatibility)."""
+        return self.run_optimization(*args, **kwargs)
 
 
 @dataclass
@@ -2703,8 +2744,12 @@ class QuantumOperator:
     - State evolution in decision spaces
     """
     dimension: int = 10  # Fock space dimension (max occupation number)
+    grid_size: Optional[int] = None  # Alias for dimension (backward compatibility)
     
     def __post_init__(self):
+        # Use grid_size if provided, otherwise use dimension
+        if self.grid_size is not None:
+            self.dimension = self.grid_size
         self._build_operators()
     
     def _build_operators(self) -> None:
@@ -3192,7 +3237,14 @@ class HamiltonianEvolver:
     - Analyze phase space structure
     """
     
-    def __init__(self):
+    def __init__(self, grid_size: int = 100):
+        """
+        Initialize Hamiltonian evolver.
+        
+        Args:
+            grid_size: Size of spatial grid for discretization (optional)
+        """
+        self.grid_size = grid_size
         self.trajectory: List[Tuple[float, float]] = []
         self.hamiltonian_history: List[float] = []
     
@@ -3453,3 +3505,8 @@ class PhysicsCalculatorSuite:
             'pinn': 'active',
             'reflection': 'active'
         }
+
+
+# Create PhysicsOrchestrator as an alias for backward compatibility
+# Many tests expect PhysicsOrchestrator class name  
+PhysicsOrchestrator = PhysicsInspiredOrchestrator

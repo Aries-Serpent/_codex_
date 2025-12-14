@@ -28,7 +28,7 @@ class TestPhase3_Entanglement_BellStates:
         blue_state = StrategyState("blue", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
         red_state = StrategyState("red", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
 
-        bell_state = QuantumGameState(blue_state, red_state, entangled=True)
+        bell_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
         assert bell_state.entangled == True
 
     def test_phi_plus_state(self):
@@ -39,7 +39,7 @@ class TestPhase3_Entanglement_BellStates:
         blue = StrategyState("blue", np.array([1.0, 0.0]))
         red = StrategyState("red", np.array([1.0, 0.0]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
         assert state.entangled
 
     def test_phi_minus_state(self):
@@ -49,7 +49,7 @@ class TestPhase3_Entanglement_BellStates:
         blue = StrategyState("blue", np.array([1.0, 0.0]))
         red = StrategyState("red", np.array([0.0, -1.0]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
         assert state.entangled
 
     def test_measurement_correlation(self):
@@ -59,7 +59,7 @@ class TestPhase3_Entanglement_BellStates:
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
         result1 = state.measure()
         result2 = state.measure()
 
@@ -81,7 +81,7 @@ class TestPhase3_Entanglement_CHSH:
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
         correlation = state.calculate_correlation()
 
         assert correlation is not None
@@ -99,7 +99,7 @@ class TestPhase3_Entanglement_CHSH:
             blue = StrategyState("blue", np.array([np.cos(angle), np.sin(angle)]))
             red = StrategyState("red", np.array([np.cos(angle), np.sin(angle)]))
 
-            state = QuantumGameState(blue, red, entangled=True)
+            state = QuantumGameState(blue, red, entanglement_strength=0.5)
             corr = state.calculate_correlation()
             assert corr is not None
 
@@ -110,7 +110,7 @@ class TestPhase3_Entanglement_CHSH:
         blue = StrategyState("blue", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
         red = StrategyState("red", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
         violates = state.violates_bell_inequality()
 
         assert violates is not None  # Should detect violation
@@ -169,7 +169,7 @@ class TestPhase3_Transactional_Semantics:
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Transaction: both states change together or not at all
         success = state.transactional_update(
@@ -184,7 +184,7 @@ class TestPhase3_Transactional_Semantics:
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Should rollback on invalid update
         try:
@@ -203,7 +203,7 @@ class TestPhase3_Transactional_Semantics:
         blue = StrategyState("blue", np.array([0.6, 0.4]))
         red = StrategyState("red", np.array([0.6, 0.4]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Both must commit or both must rollback
         committed = state.commit_entangled_update()
@@ -211,9 +211,9 @@ class TestPhase3_Transactional_Semantics:
 
     def test_feature_flag_propagation(self):
         """Test feature flag propagation (Eq #62)"""
-        from agents.developer_orchestrator import DeveloperOrchestrator
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
-        orchestrator = DeveloperOrchestrator()
+        orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
         # Feature flags should propagate atomically
         result = orchestrator.propagate_feature_flag(
@@ -324,19 +324,19 @@ class TestPhase3_CrossModule_EntangledGroups:
         model = MentalMappingModel()
 
         # Create entangled node-memory pair
-        node = model.create_node(NodeType.CONCEPT, {"entangled": True})
-        memory.store(f"node_{node}", {"entangled": True, "node_id": node})
+        node = model.create_node(NodeType.PROBLEM, {"entangled": True})
+        memory.store_memory(f"node_{node}", {"entangled": True, "node_id": node})
 
         # Both should update together
-        retrieved = memory.retrieve(f"node_{node}")
+        retrieved = memory.retrieve_memory(f"node_{node}")
         assert retrieved["node_id"] == node
 
     def test_entangled_developer_workflow(self):
         """Test entangled developer + workflow coordination"""
-        from agents.developer_orchestrator import DeveloperOrchestrator
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
         from agents.workflow_navigator import WorkflowNavigator
 
-        dev_orch = DeveloperOrchestrator()
+        dev_orch = PhysicsGuidedDeveloperOrchestrator()
         workflow_nav = WorkflowNavigator()
 
         # Workflow and development should be coordinated
@@ -424,7 +424,7 @@ class TestPhase3_EdgeCases_Distributed:
         blue = StrategyState("blue", np.array([0.7, 0.3]))
         red = StrategyState("red", np.array([0.7, 0.3]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Break entanglement
         broken = state.break_entanglement()
@@ -437,7 +437,7 @@ class TestPhase3_EdgeCases_Distributed:
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
 
-        state = QuantumGameState(blue, red, entangled=False)
+        state = QuantumGameState(blue, red, entanglement_strength=0.0)
         result = state.measure()
 
         # Should work but without correlations
@@ -465,7 +465,7 @@ class TestPhase3_Performance_Distributed:
         for i in range(10):
             blue = StrategyState("blue", np.array([0.6, 0.4]))
             red = StrategyState("red", np.array([0.6, 0.4]))
-            states.append(QuantumGameState(blue, red, entangled=True))
+            states.append(QuantumGameState(blue, red, entanglement_strength=0.5))
 
         # All should be measurable in parallel
         results = [s.measure() for s in states]
@@ -487,7 +487,7 @@ class TestPhase3_Performance_Distributed:
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
 
-        state = QuantumGameState(blue, red, entangled=True)
+        state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Multiple updates in transaction
         updates = [

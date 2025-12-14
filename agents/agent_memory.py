@@ -20,10 +20,11 @@ import json
 import logging
 import os
 import sqlite3
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -338,8 +339,60 @@ class AgentMemory:
             
             conn.commit()
     
-    def store_memory(self, entry: MemoryEntry) -> None:
-        """Store a memory entry."""
+    def store_memory(self, entry=None, **kwargs) -> None:
+        """
+        Store a memory entry.
+        
+        Args:
+            entry: MemoryEntry object, or None if using kwargs
+            **kwargs: Alternative way to provide memory data (backward compatibility)
+                     Accepts: key, value, category, content, context, etc.
+        """
+        # Handle backward compatibility: dict or kwargs
+        if entry is None:
+            # Create MemoryEntry from kwargs
+            # Support both old style (key, value) and new style (explicit fields)
+            if 'key' in kwargs and 'value' in kwargs:
+                # Old style: key-value pair
+                entry = MemoryEntry(
+                    memory_id=kwargs.get('key', str(uuid.uuid4())),
+                    category=kwargs.get('category', 'fact'),
+                    content=str(kwargs.get('value', '')),
+                    context=kwargs.get('context', {}),
+                    confidence=kwargs.get('confidence', 0.8),
+                    tags=kwargs.get('tags', []),
+                    related_memories=kwargs.get('related_memories', [])
+                )
+            else:
+                # New style: explicit MemoryEntry fields
+                entry = MemoryEntry(
+                    memory_id=kwargs.get('memory_id', str(uuid.uuid4())),
+                    category=kwargs.get('category', 'fact'),
+                    content=kwargs.get('content', ''),
+                    context=kwargs.get('context', {}),
+                    confidence=kwargs.get('confidence', 0.8),
+                    access_count=kwargs.get('access_count', 0),
+                    last_accessed=kwargs.get('last_accessed'),
+                    created_at=kwargs.get('created_at', datetime.now().isoformat()),
+                    tags=kwargs.get('tags', []),
+                    related_memories=kwargs.get('related_memories', [])
+                )
+        elif isinstance(entry, dict):
+            # Handle dict input
+            entry = MemoryEntry(
+                memory_id=entry.get('memory_id', entry.get('key', str(uuid.uuid4()))),
+                category=entry.get('category', 'fact'),
+                content=entry.get('content', str(entry.get('value', ''))),
+                context=entry.get('context', {}),
+                confidence=entry.get('confidence', 0.8),
+                access_count=entry.get('access_count', 0),
+                last_accessed=entry.get('last_accessed'),
+                created_at=entry.get('created_at', datetime.now().isoformat()),
+                tags=entry.get('tags', []),
+                related_memories=entry.get('related_memories', [])
+            )
+        
+        # Store the entry
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("""
                 INSERT OR REPLACE INTO memories 
@@ -360,8 +413,27 @@ class AgentMemory:
             ))
             conn.commit()
     
-    def retrieve_memory(self, memory_id: str) -> Optional[MemoryEntry]:
-        """Retrieve a memory by ID."""
+    def retrieve_memory(self, memory_id: str = None, key: str = None) -> Optional[Union[MemoryEntry, str]]:
+        """
+        Retrieve a memory by ID or key.
+        
+        Args:
+            memory_id: The memory ID to retrieve
+            key: Alternative parameter name for backward compatibility
+            
+        Returns:
+            MemoryEntry object, or the content string if using key parameter
+        """
+        # Handle backward compatibility with 'key' parameter
+        if key is not None and memory_id is None:
+            memory_id = key
+            return_content_only = True
+        else:
+            return_content_only = False
+            
+        if memory_id is None:
+            return None
+            
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 "SELECT * FROM memories WHERE memory_id = ?",
@@ -379,9 +451,19 @@ class AgentMemory:
                 """, (datetime.now().isoformat(), memory_id))
                 conn.commit()
                 
-                return self._row_to_memory(row)
+                memory_entry = self._row_to_memory(row)
+                # Return just content if using key parameter (backward compat)
+                if return_content_only:
+                    return memory_entry.content
+                return memory_entry
         
         return None
+    
+    def clear(self) -> None:
+        """Clear all memories from the database."""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("DELETE FROM memories")
+            conn.commit()
     
     def search_memories(
         self,
@@ -526,6 +608,72 @@ class AgentMemory:
             'average_confidence': avg_confidence,
             'total_accesses': total_accesses,
         }
+    
+    def statistics(self) -> Dict[str, Any]:
+        """Alias for get_memory_stats (backward compatibility)."""
+        return self.get_memory_stats()
+    
+    def search(self, query: str = None, **kwargs) -> List[MemoryEntry]:
+        """
+        Search memories with text query (alias for search_memories).
+        
+        Args:
+            query: Search query string
+            **kwargs: Additional search parameters
+            
+        Returns:
+            List of matching MemoryEntry objects
+        """
+        # Simple text search in content
+        if query:
+            memories = self.search_memories(**kwargs)
+            query_lower = query.lower()
+            return [m for m in memories if query_lower in m.content.lower()]
+        return self.search_memories(**kwargs)
+    
+    def filter(self, criteria: Dict[str, Any] = None, **kwargs) -> List[MemoryEntry]:
+        """
+        Filter memories by criteria dictionary.
+        
+        Args:
+            criteria: Filter criteria as dict (e.g., {"type": "concept"})
+            **kwargs: Additional filter parameters
+            
+        Returns:
+            List of matching MemoryEntry objects
+        """
+        if not criteria:
+            return self.search_memories(**kwargs)
+        
+        # Convert criteria to search parameters
+        category = criteria.get('type') or criteria.get('category')
+        return self.search_memories(category=category, **kwargs)
+    
+    def update(self, memory_id: str, new_content: str) -> bool:
+        """
+        Update an existing memory entry.
+        
+        Args:
+            memory_id: ID of memory to update
+            new_content: New content to store
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(
+                "SELECT * FROM memories WHERE memory_id = ?",
+                (memory_id,)
+            )
+            if not cursor.fetchone():
+                return False
+            
+            conn.execute(
+                "UPDATE memories SET content = ? WHERE memory_id = ?",
+                (new_content, memory_id)
+            )
+            conn.commit()
+            return True
 
 
 class AgentMemorySystem:

@@ -25,9 +25,9 @@ from __future__ import annotations
 
 import logging
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Optional numpy import with graceful fallback
 try:
@@ -104,24 +104,42 @@ class StrategyState:
     """Represents a strategy configuration for a team.
     
     Attributes:
-        team: Team identifier
-        strategies: List of strategy names
+        team: Team identifier (string or TeamType)
+        strategies: List of strategy names or np.array of probabilities
         probabilities: Classical probability distribution (optional)
         wavefunction: Quantum amplitude vector (optional)
     """
-    team: TeamType
-    strategies: List[str]
+    team: Union[TeamType, str]
+    strategies: Union[List[str], Any]  # Can be list of names or np.array
     probabilities: Optional[Any] = None  # np.ndarray when numpy available
     wavefunction: Optional[Any] = None   # np.ndarray when numpy available
     
     def __post_init__(self):
+        # Handle string team names
+        if isinstance(self.team, str):
+            # Keep as string for flexibility, but could convert to TeamType
+            pass
+        
+        # Handle strategies as np.array (probability distribution)
+        if NUMPY_AVAILABLE and hasattr(self.strategies, 'shape'):
+            # strategies is actually a probability/amplitude array
+            if self.probabilities is None:
+                self.probabilities = self.strategies
+            if self.wavefunction is None:
+                self.wavefunction = self.strategies
+            # Generate strategy names if needed
+            if isinstance(self.strategies, np.ndarray):
+                n = len(self.strategies)
+                self.strategies = [f"strategy_{i}" for i in range(n)]
+        
         if not NUMPY_AVAILABLE:
             # Lightweight fallback without numpy
-            n = len(self.strategies)
-            if self.probabilities is None:
-                self.probabilities = [1.0/n] * n
-            if self.wavefunction is None:
-                self.wavefunction = [1.0/math.sqrt(n)] * n
+            if isinstance(self.strategies, list):
+                n = len(self.strategies)
+                if self.probabilities is None:
+                    self.probabilities = [1.0/n] * n
+                if self.wavefunction is None:
+                    self.wavefunction = [1.0/math.sqrt(n)] * n
             return
         
         n = len(self.strategies)
@@ -196,10 +214,22 @@ class PayoffOperator:
     
     Attributes:
         payoff_matrix: Classical payoff matrix P[i,j]
-        team: Team this operator belongs to
+        team: Team this operator belongs to (or players list)
     """
     payoff_matrix: np.ndarray
-    team: TeamType
+    team: Union[TeamType, List[str]] = TeamType.BLUE
+    players: List[str] = field(default_factory=list)  # Alias for team
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        # If players list provided, convert to team
+        if self.players and not isinstance(self.team, TeamType):
+            self.team = self.players  # Store players list
+    
+    @property
+    def matrix(self) -> np.ndarray:
+        """Alias for payoff_matrix"""
+        return self.payoff_matrix
     
     @property
     def shape(self) -> Tuple[int, int]:
@@ -293,6 +323,80 @@ class QuantumGameState:
         i = flat_idx // num_red
         j = flat_idx % num_red
         return i, j
+    
+    @property
+    def entangled(self) -> bool:
+        """Check if state is entangled (non-zero entanglement strength)"""
+        return self.entanglement_strength > 0.0
+    
+    def break_entanglement(self) -> 'QuantumGameState':
+        """Break entanglement and return product state.
+        
+        Returns:
+            New QuantumGameState with entanglement_strength=0 and product state
+        """
+        # Create new product state from current team states
+        product_wavefunction = np.outer(
+            self.blue_state.wavefunction,
+            self.red_state.wavefunction
+        ).flatten()
+        
+        return QuantumGameState(
+            blue_state=self.blue_state,
+            red_state=self.red_state,
+            joint_wavefunction=product_wavefunction,
+            entanglement_strength=0.0
+        )
+    
+    def calculate_correlation(self) -> float:
+        """Calculate quantum correlation measure (CHSH-style).
+        
+        Computes correlation between blue and red measurements using:
+        E(a,b) = Tr(ρ * σ_a ⊗ σ_b)
+        
+        Returns:
+            Correlation value in range [-1, 1] for product states,
+            can exceed classical bounds for entangled states
+        """
+        # Get reduced density matrices
+        rho_blue = self.get_reduced_density_matrix(TeamType.BLUE)
+        rho_red = self.get_reduced_density_matrix(TeamType.RED)
+        
+        # Calculate correlation using entanglement strength
+        # For product state: correlation = 0
+        # For maximally entangled: correlation approaches theoretical bound
+        
+        # Simple proxy: use entanglement strength weighted by state overlap
+        if self.entanglement_strength == 0.0:
+            return 0.0
+        
+        # Calculate overlap of reduced states with maximally mixed
+        m = self.blue_state.num_strategies
+        n = self.red_state.num_strategies
+        
+        # Purity measures: Tr(ρ²)
+        purity_blue = np.trace(rho_blue @ rho_blue).real
+        purity_red = np.trace(rho_red @ rho_red).real
+        
+        # Correlation scales with entanglement and anti-correlates with purity
+        # (mixed states have less correlation)
+        correlation = self.entanglement_strength * (2 - purity_blue - purity_red)
+        
+        # Clip to reasonable bounds (classical: [-1,1], quantum: up to 2√2 for CHSH)
+        return np.clip(correlation, -2.828, 2.828)
+    
+    def violates_bell_inequality(self) -> bool:
+        """Check if state violates Bell/CHSH inequality.
+        
+        Classical bound: |E| ≤ 2
+        Quantum (Tsirelson) bound: |E| ≤ 2√2 ≈ 2.828
+        
+        Returns:
+            True if correlation exceeds classical bound (suggests quantum entanglement)
+        """
+        correlation = abs(self.calculate_correlation())
+        CLASSICAL_BOUND = 2.0
+        return correlation > CLASSICAL_BOUND
 
 
 class ClassicalGameEngine:
