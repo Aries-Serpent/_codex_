@@ -291,12 +291,21 @@ def _normalize_detector_output(det: dict) -> dict:
     meta = det.get("meta", {}) or {}
     docs_keywords = det.get("docs_keywords") or []
     normalized_docs_keywords = sorted({kw.lower() for kw in docs_keywords}) if docs_keywords else []
-    if "evidence" in det:
-        evidence_list = det.get("evidence", [])
-        evidence_files = [e.get("path") for e in evidence_list if isinstance(e, dict) and e.get("path")]
-        meta["_evidence_v2"] = evidence_list
-    else:
-        evidence_files = det.get("evidence_files") or []
+    
+    # Prefer evidence_files list if present (standard format)
+    evidence_files = det.get("evidence_files") or []
+    
+    # Fallback to extracting from evidence dict/list if evidence_files empty
+    if not evidence_files and "evidence" in det:
+        evidence_raw = det.get("evidence", [])
+        if isinstance(evidence_raw, list):
+            # Legacy format: list of dicts with 'path' key
+            evidence_files = [e.get("path") for e in evidence_raw if isinstance(e, dict) and e.get("path")]
+        elif isinstance(evidence_raw, dict):
+            # Dict format: keys are file paths
+            evidence_files = list(evidence_raw.keys())
+        meta["_evidence_v2"] = evidence_raw
+    
     return {
         "id": det["id"],
         "evidence_files": sorted(set(evidence_files)),
@@ -557,11 +566,17 @@ def duplication_ratio(evidence_files: List[str], file_cache: Dict[str, str] = No
 
 def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
     test_files = [f for f in evidence_files if f.startswith("tests/")]
-    token = cap_id.split("-")[0]
+    # Extract tokens by splitting on both - and _ to improve matching
+    # e.g., "safeguards_keywords" -> ["safeguards", "keywords"]
+    # e.g., "structural-integrity" -> ["structural", "integrity"]
+    tokens = re.split(r"[-_]", cap_id.lower())
+    primary_token = tokens[0] if tokens else cap_id.lower()
     tests_dir = ROOT / "tests"
     if tests_dir.exists():
         for candidate in sorted(tests_dir.rglob("*.py")):
-            if token in candidate.name.lower():
+            candidate_name = candidate.name.lower()
+            # Match if primary token is in filename
+            if primary_token in candidate_name:
                 test_files.append(candidate.relative_to(ROOT).as_posix())
     uniq = {f for f in test_files}
     if not evidence_files:

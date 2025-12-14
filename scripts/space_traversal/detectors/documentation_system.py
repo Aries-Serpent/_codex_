@@ -58,9 +58,12 @@ def detect(file_index: dict) -> dict:
         found_patterns.append("markdown")
     if doc_configs or any("docs/" in f for f in evidence_files):
         found_patterns.append("docs")
-    if any("mkdocs" in f for f in evidence_files):
+    if any("mkdocs" in f.lower() for f in evidence_files):
         found_patterns.append("mkdocs")
-    if any("sphinx" in f for f in evidence_files):
+    # Sphinx detection: conf.py in docs directory or sphinx in path/filename
+    if any("sphinx" in f.lower() for f in evidence_files) or any(
+        f.endswith("conf.py") and "docs" in f for f in evidence_files
+    ):
         found_patterns.append("sphinx")
 
     # Calculate functionality score
