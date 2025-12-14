@@ -34,17 +34,41 @@ pip install -e '.[test,tracking,ml]'
 
 ### Offline-first testing
 
-Use the offline matrix to validate the environment without network access:
+Use pytest to validate the environment without network access:
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=src --cov-report=html --cov-report=term
+
+# Run specific test categories
+pytest -m smoke                  # Quick smoke tests
+pytest -m "not slow"             # Skip slow tests
+pytest -m offline                # Offline-safe tests
+```
+
+Alternative: Use nox for automated test sessions:
 
 ```bash
 nox --noxfile configs/development/noxfile.py -s tests
 nox --noxfile configs/development/noxfile.py -s coverage
 nox --noxfile configs/development/noxfile.py -s offline_check
-```text
+```
 
 If pytest reports skips such as `Skipped: could not import 'transformers'`,
 install the optional extras documented in
 [`docs/optional_dependencies.md`](optional_dependencies.md).
+
+**CI/CD Testing:**
+All pull requests automatically run tests via `.github/workflows/ci-pytest.yml`:
+- Python 3.11+ on ubuntu-latest
+- 90% coverage threshold enforced
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results
+
+See [`tests/README.md`](../tests/README.md) and [`docs/guides/TESTING_GUIDE.md`](guides/TESTING_GUIDE.md) for detailed testing instructions.
 
 ### Guarded experiment tracking
 

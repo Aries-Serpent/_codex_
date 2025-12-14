@@ -230,9 +230,36 @@ python -m http.server -d artifacts/docs/api 8000
 - **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 - **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
-- **Contribution Guidelines**: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- **Contribution Guidelines**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- **Testing Guide**: [`docs/guides/TESTING_GUIDE.md`](docs/guides/TESTING_GUIDE.md) | [`tests/README.md`](tests/README.md)
 - **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 - **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
+
+## Testing
+
+### Running Tests
+
+**Quick test run:**
+```bash
+pytest                           # Run all tests
+pytest -q                        # Quiet mode
+pytest -m smoke                  # Smoke tests only
+pytest -m "not slow"             # Skip slow tests
+```
+
+**With coverage:**
+```bash
+pytest --cov=src --cov-report=html --cov-report=xml --cov-report=term
+open htmlcov/index.html          # View coverage report
+```
+
+**CI/CD:** All PRs run automated tests via `.github/workflows/ci-pytest.yml`
+- Python 3.11+ (ubuntu-latest)
+- 90% coverage threshold (configurable)
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results
+
+See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 
 ### Local DoD (short)
 
@@ -240,12 +267,15 @@ python -m http.server -d artifacts/docs/api 8000
 # Run all quality gates
 nox -s lint typecheck tests gates
 
+# Run tests with coverage
+pytest --cov=src --cov-fail-under=90
+
 # Validate status schema
 pytest -q tests/status/test_example_report_schema.py
 
 # Validate configs
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
-```text
+```
 
 ## Local Gates & Status Reports
 
