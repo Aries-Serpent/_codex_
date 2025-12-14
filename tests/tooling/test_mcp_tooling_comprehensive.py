@@ -4,7 +4,6 @@ MCP Tooling Registry comprehensive tests.
 Tests for MCP tool registry detection, validation, and configuration.
 Implements deterministic, reproducible test patterns with bounded operations.
 """
-import pytest
 
 
 class TestMCPToolingRegistry:

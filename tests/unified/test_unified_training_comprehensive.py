@@ -4,7 +4,6 @@ Unified training comprehensive tests.
 Tests for unified training configuration, execution, and validation.
 Implements deterministic, reproducible test patterns with bounded operations.
 """
-import pytest
 
 
 class TestUnifiedTrainingConfig:

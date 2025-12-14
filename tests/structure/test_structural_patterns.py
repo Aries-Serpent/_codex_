@@ -3,7 +3,6 @@ Structural patterns test suite.
 
 Comprehensive tests for structural integrity patterns and validation.
 """
-import pytest
 from scripts.space_traversal.detectors import structure_integrity
 
 

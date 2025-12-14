@@ -4,7 +4,6 @@ Structural integrity edge case tests.
 Tests edge cases and boundary conditions for structural detection.
 Ensures offline, deterministic, reproducible behavior with proper sanitization.
 """
-import pytest
 from scripts.space_traversal.detectors import structure_integrity
 
 

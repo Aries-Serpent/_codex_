@@ -5,7 +5,6 @@ Comprehensive tests for split-brain and shadowing detection.
 Implements deterministic, reproducible, offline test patterns.
 Uses checksum and manifest validation approaches.
 """
-import pytest
 from scripts.space_traversal.detectors import structure_integrity
 
 
