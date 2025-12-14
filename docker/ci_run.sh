@@ -64,7 +64,8 @@ echo ""
 set +e
 if [ -n "${PYTEST_ARGS}" ]; then
     # Custom pytest arguments provided
-    # Note: --tb=short --no-header reduces output to prevent CI token limit issues
+    # Note: --tb=short limits traceback output, --no-header removes header
+    # This reduces output to prevent GitHub Actions token limit issues (128k tokens)
     docker run --rm \
         -v "${ARTIFACTS_DIR}":/workspace/artifacts \
         -e COVERAGE_DIR=/workspace/artifacts \
