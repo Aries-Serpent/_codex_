@@ -1,17 +1,13 @@
 # [Daily Audit Status] 2025-12-14
 
-- Generated: 2025-12-14 01:36:01 UTC
+- Generated: 2025-12-14 06:26:45 UTC
 - Capabilities scored: 40
-- Low maturity (< 0.7): 5
-- Matrix report: reports/capability_matrix_20251214_013601.md
+- Low maturity (< 0.7): 0
+- Matrix report: reports/capability_matrix_20251214_062645.md
 - Manifest (after S7): audit_run_manifest.json
 
 ## Low Maturity Focus
-- safeguards_keywords — score 0.64
-- structural-integrity — score 0.66
-- functional_training — score 0.66
-- documentation-system — score 0.68
-- deployment-infrastructure — score 0.70
+No low-maturity capabilities detected.
 
 ## Next Steps
 - Review gaps above and plan remediation.
