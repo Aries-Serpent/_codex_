@@ -2583,7 +2583,7 @@
     },
     {
       "components": {
-        "consistency": 0.785588,
+        "consistency": 0.786066,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -3108,11 +3108,6 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
-        ".pytest_cache/.gitignore",
-        ".pytest_cache/CACHEDIR.TAG",
-        ".pytest_cache/README.md",
-        ".pytest_cache/v/cache/lastfailed",
-        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -3193,7 +3188,6 @@
         "TEAM_ANNOUNCEMENT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -4616,7 +4610,6 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
-        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/adoption/track_metrics.py",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
@@ -4810,7 +4803,6 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/__init__.py",
-        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
         "scripts/space_traversal/actions_usage_tracker.py",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
@@ -5848,8 +5840,6 @@
         "test_results_stage1.txt",
         "tests/README.md",
         "tests/__init__.py",
-        "tests/__pycache__/__init__.cpython-312.pyc",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
@@ -5898,8 +5888,6 @@
         "tests/analysis/test_external_search.py",
         "tests/analysis/test_external_web_search.py",
         "tests/analysis/test_providers.py",
-        "tests/architecture/__pycache__/test_structural_advanced.cpython-312-pytest-9.0.2.pyc",
-        "tests/architecture/__pycache__/test_structural_validation.cpython-312-pytest-9.0.2.pyc",
         "tests/architecture/test_structural_advanced.py",
         "tests/architecture/test_structural_validation.py",
         "tests/archival/test_archival_tombstone_required.py",
@@ -6299,7 +6287,6 @@
         "tests/deployment/test_service_health_probes.py",
         "tests/deployment/test_volume_mounts.py",
         "tests/deployment_infra/test_deployment_comprehensive.py",
-        "tests/detectors/__pycache__/test_structural_detector.cpython-312-pytest-9.0.2.pyc",
         "tests/detectors/test_aggregate.py",
         "tests/detectors/test_core.py",
         "tests/detectors/test_integration_card.py",
@@ -6610,7 +6597,6 @@
         "tests/reward_models/test_length_reward_model.py",
         "tests/safeguards/__init__.py",
         "tests/safeguards/test_keyword_detection.py",
-        "tests/safeguards_tests/__pycache__/test_safeguards_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/safeguards_tests/test_safeguards_comprehensive.py",
         "tests/safety/test_filters.py",
         "tests/safety/test_filters_regressions.py",
@@ -6686,12 +6672,6 @@
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
         "tests/space_traversal/__init__.py",
-        "tests/space_traversal/__pycache__/__init__.cpython-312.pyc",
-        "tests/space_traversal/__pycache__/test_deployment_infrastructure_detector.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/__pycache__/test_documentation_system_traversal.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/__pycache__/test_safeguards_keyword_detection.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/__pycache__/test_safeguards_keywords.cpython-312-pytest-9.0.2.pyc",
-        "tests/space_traversal/__pycache__/test_structural_integrity.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -6803,8 +6783,6 @@
         "tests/status/test_status_report_smoke.py",
         "tests/status/test_status_report_verbose.py",
         "tests/status_tests/test_status_comprehensive.py",
-        "tests/structure/__pycache__/test_structural_edge_cases.cpython-312-pytest-9.0.2.pyc",
-        "tests/structure/__pycache__/test_structural_patterns.cpython-312-pytest-9.0.2.pyc",
         "tests/structure/test_structural_edge_cases.py",
         "tests/structure/test_structural_patterns.py",
         "tests/stub_packages/hydra/__init__.py",
@@ -7200,7 +7178,6 @@
         "tests/tokenization/test_train_tokenizer_streaming.py",
         "tests/tokenization_tests/test_tokenization_comprehensive.py",
         "tests/tokenizer/test_fast_tokenizer.py",
-        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
@@ -7293,7 +7270,6 @@
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
-        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/__init__.py",
         "tests/unit/test_adapters.py",
@@ -7656,9 +7632,7 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -7701,7 +7675,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.957118
+        "score": 0.957213
       },
       "found_patterns": [
         "analysis",
@@ -7714,7 +7688,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.957118
+      "score": 0.957213
     },
     {
       "components": {
@@ -9720,10 +9694,10 @@
     },
     {
       "components": {
-        "consistency": 0.794621,
+        "consistency": 0.794118,
         "documentation": 1.0,
         "functionality": 1.333333,
-        "safeguards": 1.0,
+        "safeguards": 0.916667,
         "tests": 1.0
       },
       "evidence_files": [
@@ -10115,7 +10089,6 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
-        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
@@ -10140,7 +10113,7 @@
       "explain": {
         "id": "functional_training",
         "partials": {},
-        "score": 1.042257
+        "score": 1.029657
       },
       "found_patterns": [
         "backward",
@@ -10161,7 +10134,7 @@
         "offline": true,
         "patterns_found": 8
       },
-      "score": 1.042257
+      "score": 1.029657
     },
     {
       "components": {
@@ -10725,7 +10698,7 @@
     },
     {
       "components": {
-        "consistency": 0.895833,
+        "consistency": 0.893617,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.666667,
@@ -10778,13 +10751,12 @@
         "tests/space_traversal/test_mcp_security_safeguards.py",
         "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
-        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/tooling/test_mcp_tooling_comprehensive.py"
       ],
       "explain": {
         "id": "mcp-lifecycle-management",
         "partials": {},
-        "score": 0.929167
+        "score": 0.928723
       },
       "found_patterns": [
         "healthz",
@@ -10803,7 +10775,7 @@
         "priority": "high",
         "tests": "tests/mcp/test_lifecycle_management.py"
       },
-      "score": 0.929167
+      "score": 0.928723
     },
     {
       "components": {
@@ -13191,10 +13163,10 @@
     },
     {
       "components": {
-        "consistency": 0.8,
+        "consistency": 0.818182,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.333333,
+        "safeguards": 0.416667,
         "tests": 0.97
       },
       "evidence_files": [
@@ -13206,13 +13178,14 @@
         "temp/bridge_codex_copilot_bridge/mcp/mcp.json",
         "tests/mcp/test_registry.py",
         "tests/space_traversal/test_mcp_tooling_registry.py",
+        "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/test_codex_gap_registry.py",
         "tools/codex_gap_registry.py"
       ],
       "explain": {
         "id": "mcp-tooling-registry",
         "partials": {},
-        "score": 0.8525
+        "score": 0.868636
       },
       "found_patterns": [
         "mcp.json",
@@ -13221,7 +13194,7 @@
       "id": "mcp-tooling-registry",
       "meta": {
         "category": "mcp",
-        "detector_version": "1.2",
+        "detector_version": "1.3",
         "safeguards": [
           "validation",
           "timeout",
@@ -13230,14 +13203,17 @@
           "audit-trail",
           "bounded",
           "deterministic",
-          "offline"
+          "offline",
+          "sanitize",
+          "cleanup",
+          "error-handling"
         ]
       },
-      "score": 0.8525
+      "score": 0.868636
     },
     {
       "components": {
-        "consistency": 0.926503,
+        "consistency": 0.926339,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -13361,7 +13337,6 @@
         "tests/space_traversal/test_mcp_tooling_registry.py",
         "tests/space_traversal/test_mcp_tools_integration.py",
         "tests/test_fences_tool.py",
-        "tests/tooling/__pycache__/test_mcp_tooling_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/tooling/test_mcp_tooling_comprehensive.py",
         "tests/tools/.gitkeep",
         "tests/tools/__init__.py",
@@ -13697,7 +13672,7 @@
       "explain": {
         "id": "mcp-tools-integration",
         "partials": {},
-        "score": 0.985301
+        "score": 0.985268
       },
       "found_patterns": [
         "integration",
@@ -13712,7 +13687,7 @@
         "layer": "integration",
         "offline": true
       },
-      "score": 0.985301
+      "score": 0.985268
     },
     {
       "components": {
@@ -14343,7 +14318,7 @@
     },
     {
       "components": {
-        "consistency": 0.851852,
+        "consistency": 0.850467,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
@@ -14421,7 +14396,6 @@
         "tests/reproducibility/test_seed_manager.py",
         "tests/smoke/test_artifacts_hash.py",
         "tests/smoke/test_checkpoint_hashing.py",
-        "tests/space_traversal/__pycache__/test_structural_integrity.cpython-312-pytest-9.0.2.pyc",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_integrity.py",
         "tests/space_traversal/test_peft_comprehensive/test_checkpoint_rng_restore.py",
         "tests/space_traversal/test_peft_comprehensive/test_rng_reproducibility.py",
@@ -14462,7 +14436,7 @@
       "explain": {
         "id": "reproducibility",
         "partials": {},
-        "score": 0.97037
+        "score": 0.970093
       },
       "found_patterns": [
         "deterministic",
@@ -14477,12 +14451,12 @@
         "detector_version": "2.0",
         "determinism_configs": 8,
         "deterministic": true,
-        "integrity_validation": 41,
+        "integrity_validation": 40,
         "offline": true,
         "repro_utils": 39,
         "seed_management": 34
       },
-      "score": 0.97037
+      "score": 0.970093
     },
     {
       "components": {
@@ -18981,7 +18955,7 @@
     },
     {
       "components": {
-        "consistency": 0.566265,
+        "consistency": 0.567901,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.916667,
@@ -19063,9 +19037,7 @@
         "tools/actions_cli.py",
         "tools/actions_server.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -19075,7 +19047,7 @@
       "explain": {
         "id": "structural-integrity",
         "partials": {},
-        "score": 0.870753
+        "score": 0.87108
       },
       "found_patterns": [
         "lib-shadowing",
@@ -19110,11 +19082,11 @@
           "training"
         ]
       },
-      "score": 0.870753
+      "score": 0.87108
     },
     {
       "components": {
-        "consistency": 0.878989,
+        "consistency": 0.879494,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
@@ -19122,7 +19094,6 @@
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -19135,7 +19106,6 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
@@ -20629,7 +20599,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.913298
+        "score": 0.913399
       },
       "found_patterns": [
         "fixture",
@@ -20639,10 +20609,10 @@
       "id": "testing-infrastructure",
       "meta": {
         "config_count": 26,
-        "fixture_count": 34,
+        "fixture_count": 32,
         "test_count": 1480
       },
-      "score": 0.913298
+      "score": 0.913399
     },
     {
       "components": {
@@ -20835,10 +20805,10 @@
     },
     {
       "components": {
-        "consistency": 0.79771,
+        "consistency": 0.796935,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 1.0,
+        "safeguards": 0.916667,
         "tests": 1.0
       },
       "evidence_files": [
@@ -21083,7 +21053,6 @@
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
         "tests/training/test_training_utilities.py",
-        "tests/unified/__pycache__/test_unified_training_comprehensive.cpython-312-pytest-9.0.2.pyc",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
         "tests/unit/test_trainer_module.py",
@@ -21108,7 +21077,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.959542
+        "score": 0.946887
       },
       "found_patterns": [
         "epoch",
@@ -21121,14 +21090,14 @@
           "train-loop"
         ]
       },
-      "score": 0.959542
+      "score": 0.946887
     },
     {
       "components": {
         "consistency": 0.571429,
         "documentation": 1.0,
         "functionality": 1.0,
-        "safeguards": 0.916667,
+        "safeguards": 0.833333,
         "tests": 0.94
       },
       "evidence_files": [
@@ -21143,7 +21112,7 @@
       "explain": {
         "id": "unified-training",
         "partials": {},
-        "score": 0.886786
+        "score": 0.874286
       },
       "found_patterns": [
         "UnifiedTrainingConfig",
@@ -21160,7 +21129,7 @@
           "error-handling"
         ]
       },
-      "score": 0.886786
+      "score": 0.874286
     },
     {
       "components": {
@@ -21235,6 +21204,6 @@
       "score": 1.230379
     }
   ],
-  "generated": 1765691605.615233,
+  "generated": 1765692885.844246,
   "version": "1.5.0"
 }
