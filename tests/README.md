@@ -194,17 +194,24 @@ make docker-clean      # Remove artifacts and Docker images
 CI should call `docker/ci_run.sh` to ensure pip install path parity with local development:
 
 ```yaml
-# Example GitHub Actions step (do NOT create workflow files)
-- name: Run tests in Docker
-  run: ./docker/ci_run.sh
+# Example GitHub Actions workflow step (do NOT create workflow files)
+# This snippet shows only the relevant steps to add to your existing workflow.
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run tests in Docker
+        run: ./docker/ci_run.sh
 
-- name: Upload coverage artifacts
-  uses: actions/upload-artifact@v4
-  with:
-    name: coverage-reports
-    path: |
-      artifacts/coverage.xml
-      artifacts/htmlcov/
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            artifacts/coverage.xml
+            artifacts/htmlcov/
 ```
 
 **Environment Variables**

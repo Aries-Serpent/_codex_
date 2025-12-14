@@ -93,4 +93,4 @@ else
     echo "✗ Tests failed"
 fi
 
-exit ${CODE}
+exit "$CODE"
