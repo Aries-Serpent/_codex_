@@ -1,5 +1,5 @@
 {
-  "generated": 1765673270.4776053,
+  "generated": 1765673363.9244103,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -14684,7 +14684,7 @@
           ".codex/validation/pre_manifest.json": 16,
           ".codex/validation/tests_docs_links_audit.json": 1,
           ".codex/validation/tests_docs_links_audit.md": 1,
-          ".copilot-space/workflow.yaml": 15,
+          ".copilot-space/workflow.yaml": 21,
           ".fencefixer.yml": 2,
           ".github/AGENTS_FILE_STRUCTURE.md": 4,
           ".github/CODE_REVIEW_EXCEPTIONS.md": 1,
