@@ -51,6 +51,17 @@ from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.repro import record_dataset_checksums
 from codex_utils.repro import log_env_info
 
+# Import TrainCfg and run_custom_trainer from training module
+try:
+    from training.functional_training import TrainCfg, run_custom_trainer
+except ImportError:
+    try:
+        from src.training.functional_training import TrainCfg, run_custom_trainer
+    except ImportError:
+        # Provide stubs if not available
+        TrainCfg = None  # type: ignore[assignment,misc]
+        run_custom_trainer = None  # type: ignore[assignment]
+
 # Artifact hashing helpers (sidecar)
 try:
     from codex_ml.utils.artifacts import write_hash_sidecar, write_metadata
@@ -734,6 +745,8 @@ __all__ = [
     "build_parser",
     "main",
     "emit_validation_metric_record",
+    "TrainCfg",
+    "run_custom_trainer",
 ]
 
 
