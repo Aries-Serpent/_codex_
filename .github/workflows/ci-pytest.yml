@@ -1,0 +1,259 @@
+name: CI - Pytest with Coverage
+
+on:
+  push:
+    branches:
+      - main
+      - 0D_base_
+      - 0C_base_
+  pull_request:
+    branches:
+      - main
+      - 0D_base_
+      - 0C_base_
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  # Coverage threshold - configurable via environment variable
+  COVERAGE_THRESHOLD: 90
+  # Python version to use
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  pytest-coverage:
+    name: Run pytest with coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Display Python version
+        run: |
+          python --version
+          pip --version
+      
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -e . || echo "::warning::Package install failed, continuing with requirements only"
+      
+      - name: Verify pytest installation
+        run: |
+          pytest --version
+          pytest-cov --version || pip show pytest-cov
+      
+      - name: Run pytest with coverage
+        id: pytest
+        continue-on-error: true
+        run: |
+          set +e
+          pytest \
+            --cov=src \
+            --cov=codex_ml \
+            --cov=codex_utils \
+            --cov=agents \
+            --cov-report=html \
+            --cov-report=xml \
+            --cov-report=term \
+            --cov-report=json \
+            -v \
+            --tb=short \
+            --maxfail=5
+          TEST_EXIT_CODE=$?
+          echo "exit_code=$TEST_EXIT_CODE" >> $GITHUB_OUTPUT
+          
+          if [ $TEST_EXIT_CODE -ne 0 ]; then
+            echo "::error::Pytest failed with exit code $TEST_EXIT_CODE"
+          fi
+          
+          exit $TEST_EXIT_CODE
+      
+      - name: Extract coverage percentage
+        id: coverage
+        if: always()
+        run: |
+          if [ -f coverage.json ]; then
+            COVERAGE=$(python -c "import json; print(json.load(open('coverage.json'))['totals']['percent_covered'])")
+            echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
+            echo "Coverage: $COVERAGE%"
+          else
+            echo "percentage=0" >> $GITHUB_OUTPUT
+            echo "::warning::No coverage.json found"
+          fi
+      
+      - name: Check coverage threshold
+        id: threshold
+        if: always()
+        run: |
+          COVERAGE=${{ steps.coverage.outputs.percentage }}
+          THRESHOLD=${{ env.COVERAGE_THRESHOLD }}
+          
+          echo "Coverage: $COVERAGE%"
+          echo "Threshold: $THRESHOLD%"
+          
+          if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
+            echo "::error::Coverage $COVERAGE% is below threshold $THRESHOLD%"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ Coverage $COVERAGE% meets threshold $THRESHOLD%"
+            echo "status=passed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-report
+          path: htmlcov/
+          if-no-files-found: warn
+          retention-days: 30
+      
+      - name: Upload coverage XML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml-report
+          path: coverage.xml
+          if-no-files-found: warn
+          retention-days: 30
+      
+      - name: Upload coverage JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-json-report
+          path: coverage.json
+          if-no-files-found: warn
+          retention-days: 30
+      
+      - name: Generate coverage summary
+        id: summary
+        if: always()
+        run: |
+          echo "## 📊 Test & Coverage Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f coverage.json ]; then
+            COVERAGE=${{ steps.coverage.outputs.percentage }}
+            THRESHOLD=${{ env.COVERAGE_THRESHOLD }}
+            
+            echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| **Coverage** | $COVERAGE% |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Threshold** | $THRESHOLD% |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Status** | ${{ steps.threshold.outputs.status == 'passed' && '✅ PASSED' || '❌ FAILED' }} |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Extract detailed coverage from JSON
+            python -c "
+          import json
+          with open('coverage.json') as f:
+              data = json.load(f)
+              totals = data['totals']
+              print('### Coverage Details')
+              print('')
+              print('| Metric | Count |')
+              print('|--------|-------|')
+              print(f'| Statements | {totals[\"num_statements\"]} |')
+              print(f'| Missing | {totals[\"missing_lines\"]} |')
+              print(f'| Excluded | {totals[\"excluded_lines\"]} |')
+              print(f'| Branches | {totals.get(\"num_branches\", 0)} |')
+              print(f'| Partial | {totals.get(\"num_partial_branches\", 0)} |')
+              print(f'| Coverage % | {totals[\"percent_covered\"]:.2f}% |')
+          " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No coverage data available" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports have been uploaded as workflow artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "- HTML report: \`coverage-html-report\`" >> $GITHUB_STEP_SUMMARY
+          echo "- XML report: \`coverage-xml-report\`" >> $GITHUB_STEP_SUMMARY
+          echo "- JSON report: \`coverage-json-report\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download artifacts from the workflow run summary page." >> $GITHUB_STEP_SUMMARY
+      
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let coverage = '${{ steps.coverage.outputs.percentage }}';
+            let threshold = '${{ env.COVERAGE_THRESHOLD }}';
+            let testStatus = '${{ steps.pytest.outputs.exit_code }}' === '0' ? '✅ PASSED' : '❌ FAILED';
+            let coverageStatus = '${{ steps.threshold.outputs.status }}' === 'passed' ? '✅ PASSED' : '❌ FAILED';
+            
+            let comment = `## 🧪 Pytest CI Results\n\n`;
+            comment += `**Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n`;
+            comment += `| Check | Status |\n`;
+            comment += `|-------|--------|\n`;
+            comment += `| Tests | ${testStatus} |\n`;
+            comment += `| Coverage (${coverage}% / ${threshold}%) | ${coverageStatus} |\n\n`;
+            
+            if (fs.existsSync('coverage.json')) {
+              const coverageData = JSON.parse(fs.readFileSync('coverage.json', 'utf8'));
+              const totals = coverageData.totals;
+              
+              comment += `### 📊 Coverage Details\n\n`;
+              comment += `| Metric | Count |\n`;
+              comment += `|--------|-------|\n`;
+              comment += `| Statements | ${totals.num_statements} |\n`;
+              comment += `| Missing | ${totals.missing_lines} |\n`;
+              comment += `| Coverage | ${totals.percent_covered.toFixed(2)}% |\n\n`;
+            }
+            
+            comment += `### 📦 Coverage Artifacts\n\n`;
+            comment += `Download detailed coverage reports from the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}):\n`;
+            comment += `- \`coverage-html-report\` - Interactive HTML report\n`;
+            comment += `- \`coverage-xml-report\` - XML format (for tools)\n`;
+            comment += `- \`coverage-json-report\` - JSON format (for parsing)\n\n`;
+            comment += `---\n`;
+            comment += `*This comment was automatically generated by the CI-Pytest workflow*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+      
+      - name: Fail if tests or coverage failed
+        if: always()
+        run: |
+          TEST_EXIT=${{ steps.pytest.outputs.exit_code }}
+          THRESHOLD_STATUS="${{ steps.threshold.outputs.status }}"
+          
+          if [ "$TEST_EXIT" != "0" ]; then
+            echo "::error::Tests failed with exit code $TEST_EXIT"
+            exit 1
+          fi
+          
+          if [ "$THRESHOLD_STATUS" = "failed" ]; then
+            echo "::error::Coverage below threshold"
+            exit 1
+          fi
+          
+          echo "✅ All checks passed"

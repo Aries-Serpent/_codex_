@@ -473,10 +473,39 @@ Use roles to categorize log events (mirrors status tooling):
 - **Mocking strategy**: When heavy deps are absent, many modules provide fallbacks (e.g., Dataset stub in `training/engine_hf_trainer.py`); prefer injecting stubs over modifying code.
 
 ## Tooling, Testing & Checks
+
+### Pytest (Primary Test Runner)
+- **Configuration**: `pytest.ini` defines test paths, markers, and default options
+- **Quick run**: `pytest` or `pytest -q` for quiet mode
+- **With coverage**: `pytest --cov=src --cov-report=html --cov-report=xml --cov-report=term`
+- **Markers**: Use markers to control test execution (see `pytest.ini` for full list):
+  - `pytest -m smoke` - Run only smoke tests
+  - `pytest -m "not slow"` - Skip slow tests
+  - `pytest -m ml` - ML/tensor dependent tests
+  - `pytest -m integration` - Integration tests
+- **Coverage enforcement**: Default threshold is 90% in CI (configurable via `COVERAGE_THRESHOLD` env var)
+- **Test discovery**: Tests are auto-discovered in `tests/` directory
+- **Detailed guide**: See `tests/README.md` for comprehensive testing instructions
+
+### CI/CD Testing
+- **Primary CI workflow**: `.github/workflows/ci-pytest.yml` runs pytest with coverage on every push/PR
+- **Coverage threshold**: 90% minimum (configurable, fails build if not met)
+- **Coverage artifacts**: HTML, XML, and JSON reports uploaded as workflow artifacts
+- **PR comments**: Automatic coverage summary posted to PRs with artifact download links
+- **Workflow features**:
+  - Fast fail on test failures
+  - Coverage threshold validation
+  - Multiple coverage report formats
+  - Artifact retention (30 days)
+  - Detailed job summaries
+
+### Nox (Alternative Test Automation)
+- **Nox sessions**: `nox -s tests` (baseline), `nox -s ml_tests`, `nox -s eval_tests`, `nox -s verify_hygiene`, `nox -s dependency_plan`
+- **Environment flags**: Sessions honor environment flags (see Environment Variables section)
+- **Coverage collection**: Enable with `CODEX_COLLECT_COVERAGE=1` and review outputs under `artifacts/`
+
+### Additional Tools
 - **Pre-commit**: `.pre-commit-config.yaml` includes ruff, black, isort, bandit, detect-secrets, pip-compile. Run `pre-commit run --all-files` before commits.
-- **Pytest**: Markers in `pytest.ini`. Quick run: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q`. Use markers to skip heavy suites: `pytest -m "not slow and not integration"`. Coverage is enforced by default on `tests.test_cli_config_sweep` via `--cov=tests.test_cli_config_sweep --cov-fail-under=80` in `pytest.ini`.
-- **Nox**: `nox -s tests` (baseline), `nox -s ml_tests`, `nox -s eval_tests`, `nox -s verify_hygiene`, `nox -s dependency_plan`. Sessions honor environment flags listed above.
-- **Coverage**: Enable with `CODEX_COLLECT_COVERAGE=1` and review outputs under `artifacts/` if generated.
 - **Static analysis**: `ruff`, `black`, `isort`, `bandit`, `detect-secrets`. Bandit config in `bandit.yaml`.
 - **Git hygiene**: Keep branch clean; avoid large files unless justified.
 
