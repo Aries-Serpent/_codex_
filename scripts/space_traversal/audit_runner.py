@@ -579,10 +579,23 @@ def estimate_test_depth(cap_id: str, evidence_files: List[str]) -> float:
             if primary_token in candidate_name:
                 test_files.append(candidate.relative_to(ROOT).as_posix())
     uniq = {f for f in test_files}
-    if not evidence_files:
+    
+    # Improved scoring: Use test file count with diminishing returns
+    # 0 tests = 0.0, 1 test = 0.4, 2 tests = 0.6, 3 tests = 0.75, 5+ tests = 0.9+
+    test_count = len(uniq)
+    if test_count == 0:
         return 0.0
-    ratio = len(uniq) / len(set(evidence_files))
-    return min(1.0, ratio)
+    elif test_count == 1:
+        return 0.4
+    elif test_count == 2:
+        return 0.6
+    elif test_count == 3:
+        return 0.75
+    elif test_count <= 5:
+        return 0.85
+    else:
+        # Additional tests provide diminishing returns up to 1.0
+        return min(1.0, 0.85 + (test_count - 5) * 0.03)
 
 def safeguard_score(evidence_files: List[str], file_cache: Dict[str, str]) -> float:
     hits = 0
