@@ -1,5 +1,5 @@
 {
-  "generated": 1765676073.854744,
+  "generated": 1765676156.3217568,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -474,6 +474,7 @@
       "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
       "tests/train_loop/test_resolve_dtype_and_device.py",
       "tests/train_loop/test_telemetry_rollover.py",
+      "tests/training/__init__.py",
       "tests/training/test_functional_training.py",
       "tests/training/test_functional_training_comprehensive.py",
       "tests/training/test_simple_trainer.py",

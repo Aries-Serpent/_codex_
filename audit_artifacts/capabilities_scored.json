@@ -2575,11 +2575,11 @@
     },
     {
       "components": {
-        "consistency": 0.787028,
+        "consistency": 0.786561,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 1.0,
-        "tests": 0.294246
+        "tests": 0.294664
       },
       "evidence_files": [
         ".bandit.yaml",
@@ -6272,6 +6272,7 @@
         "tests/distributed/test_distributed_enhanced.py",
         "tests/distributed/test_minimal_distributed.py",
         "tests/distributed/test_multigpu.py",
+        "tests/docs/__init__.py",
         "tests/docs/test_api_docs_build.py",
         "tests/docs/test_code_example_syntax.py",
         "tests/docs/test_documentation_system.py",
@@ -6645,6 +6646,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -7230,6 +7232,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
@@ -7643,7 +7646,7 @@
       "explain": {
         "id": "duplication_ratio",
         "partials": {},
-        "score": 0.780967
+        "score": 0.780978
       },
       "found_patterns": [
         "analysis",
@@ -7656,7 +7659,7 @@
         "method": "stem_based",
         "offline": true
       },
-      "score": 0.780967
+      "score": 0.780978
     },
     {
       "components": {
@@ -19130,11 +19133,11 @@
     },
     {
       "components": {
-        "consistency": 0.880697,
+        "consistency": 0.87893,
         "documentation": 1.0,
         "functionality": 0.75,
         "safeguards": 1.0,
-        "tests": 0.991287
+        "tests": 0.991304
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
@@ -19601,6 +19604,7 @@
         "tests/distributed/test_distributed_enhanced.py",
         "tests/distributed/test_minimal_distributed.py",
         "tests/distributed/test_multigpu.py",
+        "tests/docs/__init__.py",
         "tests/docs/test_api_docs_build.py",
         "tests/docs/test_code_example_syntax.py",
         "tests/docs/test_documentation_system.py",
@@ -19969,6 +19973,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -20553,6 +20558,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
@@ -20633,7 +20639,7 @@
       "explain": {
         "id": "testing-infrastructure",
         "partials": {},
-        "score": 0.911461
+        "score": 0.911112
       },
       "found_patterns": [
         "fixture",
@@ -20644,9 +20650,9 @@
       "meta": {
         "config_count": 26,
         "fixture_count": 32,
-        "test_count": 1470
+        "test_count": 1473
       },
-      "score": 0.911461
+      "score": 0.911112
     },
     {
       "components": {
@@ -20832,11 +20838,11 @@
     },
     {
       "components": {
-        "consistency": 0.805447,
+        "consistency": 0.802326,
         "documentation": 1.0,
         "functionality": 1.0,
         "safeguards": 0.916667,
-        "tests": 0.354086
+        "tests": 0.356589
       },
       "evidence_files": [
         ".github/prompts/capability_excellence_plan/E3_DISTRIBUTED_TRAINING_EXCELLENCE.md",
@@ -21070,6 +21076,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
@@ -21100,7 +21107,7 @@
       "explain": {
         "id": "training-engine",
         "partials": {},
-        "score": 0.787111
+        "score": 0.787112
       },
       "found_patterns": [
         "epoch",
@@ -21113,7 +21120,7 @@
           "train-loop"
         ]
       },
-      "score": 0.787111
+      "score": 0.787112
     },
     {
       "components": {
@@ -21218,6 +21225,6 @@
       "score": 1.056061
     }
   ],
-  "generated": 1765676079.4558425,
+  "generated": 1765676161.9369874,
   "version": "1.5.0"
 }

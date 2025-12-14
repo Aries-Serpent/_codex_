@@ -1,5 +1,5 @@
 {
-  "generated": 1765676077.2986052,
+  "generated": 1765676159.7878754,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -6262,6 +6262,7 @@
         "tests/distributed/test_distributed_enhanced.py",
         "tests/distributed/test_minimal_distributed.py",
         "tests/distributed/test_multigpu.py",
+        "tests/docs/__init__.py",
         "tests/docs/test_api_docs_build.py",
         "tests/docs/test_code_example_syntax.py",
         "tests/docs/test_documentation_system.py",
@@ -6635,6 +6636,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -7220,6 +7222,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
@@ -19550,6 +19553,7 @@
         "tests/distributed/test_distributed_enhanced.py",
         "tests/distributed/test_minimal_distributed.py",
         "tests/distributed/test_multigpu.py",
+        "tests/docs/__init__.py",
         "tests/docs/test_api_docs_build.py",
         "tests/docs/test_code_example_syntax.py",
         "tests/docs/test_documentation_system.py",
@@ -19918,6 +19922,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -20502,6 +20507,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
@@ -20592,7 +20598,7 @@
       ],
       "docs_keywords": [],
       "meta": {
-        "test_count": 1470,
+        "test_count": 1473,
         "config_count": 26,
         "fixture_count": 32
       }
@@ -20998,6 +21004,7 @@
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
         "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/__init__.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
