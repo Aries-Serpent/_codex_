@@ -55,12 +55,28 @@ from codex_utils.repro import log_env_info
 try:
     from training.functional_training import TrainCfg, run_custom_trainer
 except ImportError:
-    try:
-        from src.training.functional_training import TrainCfg, run_custom_trainer
-    except ImportError:
-        # Provide stubs if not available
-        TrainCfg = None  # type: ignore[assignment,misc]
-        run_custom_trainer = None  # type: ignore[assignment]
+    # Provide stubs if training module not available
+    from dataclasses import dataclass
+    from typing import Any, Dict
+    
+    @dataclass
+    class TrainCfg:  # type: ignore[no-redef]
+        """Stub for TrainCfg when training module is not available."""
+        epochs: int = 1
+        batch_size: int = 1
+        log_every: int = 1
+        save_every: int = 0
+        max_steps: int = 2
+        checkpoint_dir: str = ""
+        resume_from: str = ""
+        use_lora: bool = False
+
+    def run_custom_trainer(model, tok, train_ds, val_ds, cfg) -> Dict[str, Any]:  # type: ignore[no-redef]
+        """Stub for run_custom_trainer when training module is not available."""
+        raise NotImplementedError(
+            "run_custom_trainer requires the training.functional_training module, "
+            "which is not available in this environment."
+        )
 
 # Artifact hashing helpers (sidecar)
 try:
