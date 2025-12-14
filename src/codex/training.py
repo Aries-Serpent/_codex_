@@ -52,12 +52,13 @@ from codex_ml.utils.repro import record_dataset_checksums
 from codex_utils.repro import log_env_info
 
 # Import TrainCfg and run_custom_trainer from training module
+# These are used by tests in tests/space_traversal/test_peft_comprehensive/
 try:
     from training.functional_training import TrainCfg, run_custom_trainer
 except ImportError:
-    # Provide stubs if training module not available
+    # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
-    from typing import Any, Dict
+    from typing import Any, Dict, Optional
     
     @dataclass
     class TrainCfg:  # type: ignore[no-redef]
@@ -71,7 +72,13 @@ except ImportError:
         resume_from: str = ""
         use_lora: bool = False
 
-    def run_custom_trainer(model, tok, train_ds, val_ds, cfg) -> Dict[str, Any]:  # type: ignore[no-redef]
+    def run_custom_trainer(  # type: ignore[no-redef]
+        model: Any,
+        tok: Any,
+        train_ds: Any,
+        val_ds: Any,
+        cfg: Any,
+    ) -> Dict[str, Any]:
         """Stub for run_custom_trainer when training module is not available."""
         raise NotImplementedError(
             "run_custom_trainer requires the training.functional_training module, "
