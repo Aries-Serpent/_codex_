@@ -28,11 +28,13 @@ class TestMentalMappingExpanded:
     def test_mental_node_creation(self):
         """Test MentalNode can be created."""
         from agents.mental_mapping import MentalNode, NodeType
+        from datetime import datetime
         
         node = MentalNode(
             node_id="test-1",
             node_type=NodeType.OBSERVATION,
-            content="Test observation"
+            content="Test observation",
+            timestamp=datetime.now().isoformat()
         )
         
         assert node.node_id == "test-1"
@@ -44,16 +46,17 @@ class TestMentalMappingExpanded:
         from agents.mental_mapping import MentalEdge, EdgeType
         
         edge = MentalEdge(
-            from_node="node1",
-            to_node="node2",
+            edge_id="edge1",
+            source_id="node1",
+            target_id="node2",
             edge_type=EdgeType.CAUSES,
-            strength=0.8
+            weight=0.8
         )
         
-        assert edge.from_node == "node1"
-        assert edge.to_node == "node2"
+        assert edge.source_id == "node1"
+        assert edge.target_id == "node2"
         assert edge.edge_type == EdgeType.CAUSES
-        assert edge.strength == 0.8
+        assert edge.weight == 0.8
     
     def test_mental_mapping_model_init(self):
         """Test MentalMappingModel initialization."""
@@ -68,12 +71,14 @@ class TestMentalMappingExpanded:
     def test_add_node(self):
         """Test adding a node to the model."""
         from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
+        from datetime import datetime
         
         model = MentalMappingModel()
         node = MentalNode(
             node_id="test-node",
             node_type=NodeType.REASONING,
-            content="Test reasoning"
+            content="Test reasoning",
+            timestamp=datetime.now().isoformat()
         )
         
         model.add_node(node)

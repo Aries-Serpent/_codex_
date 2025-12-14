@@ -35,6 +35,8 @@ class NodeType(Enum):
     LEARNING = "learning"
     CONCEPT = "concept"
     ENTITY = "entity"
+    OBSERVATION = "observation"
+    REASONING = "reasoning"
 
 
 class EdgeType(Enum):
@@ -280,6 +282,21 @@ class MentalMappingModel:
         
         # Return node_id if using properties (old API), otherwise return node object
         return node.node_id if return_id_only else node
+    
+    def add_node(self, node: MentalNode) -> None:
+        """
+        Add a pre-created node to the mental map.
+        
+        Args:
+            node: MentalNode instance to add
+        """
+        self.nodes[node.node_id] = node
+        self.nodes_by_type[node.node_type].add(node.node_id)
+        
+        # Auto-mark for review if confidence is low
+        if node.confidence < 0.5:
+            node.mark_for_review("low_confidence")
+            self.nodes_needing_review.add(node.node_id)
     
     def connect_nodes(
         self,
