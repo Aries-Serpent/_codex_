@@ -747,43 +747,53 @@ def test_main_imports():
         
         Returns:
             Dictionary mapping filenames to file paths (or error messages if failed)
+            
+        Raises:
+            ValueError: If output_dir is not a valid directory path
+            PermissionError: If output_dir is not writable
+            RuntimeError: If output_dir cannot be created
         """
         import os
         
         exported_files = {}
         
-        # Ensure output_dir exists and is a directory
-        if os.path.exists(output_dir):
-            if not os.path.isdir(output_dir):
-                raise ValueError(f"Output path '{output_dir}' is not a directory.")
-            if not os.access(output_dir, os.W_OK):
-                raise PermissionError(f"Output directory '{output_dir}' is not writable.")
-        else:
-            try:
-                os.makedirs(output_dir, exist_ok=True)
-            except Exception as e:
-                raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
-            # After creation, check again
-            if not os.path.isdir(output_dir):
-                raise ValueError(f"Output path '{output_dir}' is not a directory after creation.")
-            if not os.access(output_dir, os.W_OK):
-                raise PermissionError(f"Output directory '{output_dir}' is not writable after creation.")
+        # Ensure output_dir exists and is a directory - use atomic creation
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+        except OSError as e:
+            raise RuntimeError(f"Failed to create output directory '{output_dir}': {e}")
+        
+        # Verify directory is valid and writable after creation/access
+        if not os.path.isdir(output_dir):
+            raise ValueError(f"Output path '{output_dir}' is not a directory.")
+        if not os.access(output_dir, os.W_OK):
+            raise PermissionError(f"Output directory '{output_dir}' is not writable.")
         
         for comp in self.components.values():
             if comp.code:
                 filepath = os.path.join(output_dir, comp.name)
                 
-                # Check if file exists and overwrite is False
-                if not overwrite and os.path.exists(filepath):
-                    exported_files[comp.name] = f"Skipped (file exists): {filepath}"
-                    self._log("system", f"Skipped {comp.name} (file exists)")
-                    continue
-                
                 try:
-                    with open(filepath, 'w') as f:
-                        f.write(comp.code)
-                    exported_files[comp.name] = filepath
-                    self._log("system", f"Exported {comp.name} to {filepath}")
+                    if overwrite:
+                        # Overwrite mode: use standard open
+                        with open(filepath, 'w') as f:
+                            f.write(comp.code)
+                        exported_files[comp.name] = filepath
+                        self._log("system", f"Exported {comp.name} to {filepath}")
+                    else:
+                        # Non-overwrite mode: use exclusive creation to prevent TOCTOU
+                        # os.open with O_CREAT | O_EXCL atomically checks and creates
+                        try:
+                            fd = os.open(filepath, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+                            try:
+                                os.write(fd, comp.code.encode('utf-8'))
+                            finally:
+                                os.close(fd)
+                            exported_files[comp.name] = filepath
+                            self._log("system", f"Exported {comp.name} to {filepath}")
+                        except FileExistsError:
+                            exported_files[comp.name] = f"Skipped (file exists): {filepath}"
+                            self._log("system", f"Skipped {comp.name} (file exists)")
                 except OSError as e:
                     error_msg = f"Failed to write {filepath}: {e}"
                     exported_files[comp.name] = error_msg
@@ -925,7 +935,13 @@ def test_main_imports():
                     
                 elif step_upper == 'ARCHITECTURE':
                     self.current_phase = DevelopmentPhase.ARCHITECTURE
-                    arch = self.suggest_architecture()
+                    # Build requirements from current state
+                    requirements = {
+                        var_name: var.current_value
+                        for var_name, var in self.required_variables.items()
+                        if var.current_value is not None
+                    }
+                    arch = self.suggest_architecture(requirements)
                     results['outputs']['architecture'] = arch
                     results['steps_completed'].append(step)
                     

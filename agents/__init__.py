@@ -118,6 +118,9 @@ from .mental_mapping import (
     MentalNode,
     NodeType,
     ReasoningStep,
+    get_timestamp,
+    reset_clock,
+    set_clock,
 )
 
 # Workflow navigation
@@ -185,6 +188,9 @@ __all__ = [
     "MentalNode",
     "NodeType",
     "ReasoningStep",
+    "get_timestamp",
+    "reset_clock",
+    "set_clock",
     # Workflow navigator
     "StepStatus",
     "Workflow",

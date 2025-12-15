@@ -48,11 +48,13 @@ RUN pip install --no-cache-dir .
 # Ensure artifacts directory exists and is owned by non-root user
 RUN mkdir -p ${COVERAGE_DIR} && chown -R appuser:appuser ${COVERAGE_DIR}
 
+# Make test runner script executable
+RUN chmod +x /workspace/scripts/ci/docker_pytest.sh
+
 # Switch to non-root user for security
 USER appuser
 
-# Default command: run pytest and write coverage to mounted artifacts directory
+# Default command: run pytest via the shell script
 # The CI script will mount ./artifacts -> /workspace/artifacts so reports are accessible outside container
-# Note: Using bash -c (not -lc) to avoid login shell initialization for deterministic behavior
-# Output is minimized with --tb=short --no-header -q to prevent token limit issues in CI
-CMD ["bash", "-c", "pytest --maxfail=1 --disable-warnings --tb=short --no-header --cov=src --cov-report=xml:${COVERAGE_DIR}/coverage.xml --cov-report=html:${COVERAGE_DIR}/htmlcov -q"]
+# Note: Using the dedicated shell script for maintainability and consistency
+CMD ["/workspace/scripts/ci/docker_pytest.sh"]

@@ -44,18 +44,24 @@ stages:
     args: ["S7"]
 
 weights:
-  functionality: 0.25
-  consistency: 0.20
-  tests: 0.25
-  safeguards: 0.15
-  documentation: 0.15
+  # Weight factors for each capability category in overall score calculation.
+  # All weights must sum to 1.0 (100%).
+  functionality: 0.25  # Core feature implementation completeness
+  consistency: 0.20    # Code style and API consistency
+  tests: 0.25          # Test coverage and quality
+  safeguards: 0.15     # Security and validation checks
+  documentation: 0.15  # Code and API documentation
 
 scoring:
   thresholds:
-    low: 0.70
-    medium: 0.85
+    # Maturity level thresholds for capability scores (0.0 to 1.0 scale)
+    # low: Minimum acceptable score - below this requires immediate attention
+    # medium: Target score for production-ready capabilities
+    low: 0.70     # 70% - Minimum acceptable maturity level
+    medium: 0.85  # 85% - Target for production-ready code
 
   # Optional component caps. Any missing key defaults to 1.0.
+  # Caps limit the maximum contribution of each category to prevent over-weighting.
   component_caps:
     functionality: 1.0
     consistency: 1.0
@@ -68,7 +74,9 @@ scoring:
   # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
   dup:
     heuristic: token_similarity  # Enabled per Phase 2 of Audit Improvement Plan
-    threshold: 0.7
+    # threshold: Similarity threshold above which code is considered duplicated
+    threshold: 0.7  # 70% - Files with >70% token similarity flagged as duplicates
+    # max_pairwise: Maximum number of file pairs to compare (performance limit)
     max_pairwise: 1000
 
   # Coverage integration (Phase 2 of Audit Improvement Plan)

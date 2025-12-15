@@ -232,7 +232,7 @@ class TestFluidFlowScheduler:
         scheduler = FluidFlowScheduler(num_channels=3)
         
         assert scheduler is not None
-        assert hasattr(scheduler, 'num_channels')
+        assert len(scheduler.channels) == 3
     
     def test_schedule_flow(self):
         """Test scheduling flow across channels."""
@@ -240,11 +240,10 @@ class TestFluidFlowScheduler:
         
         scheduler = FluidFlowScheduler(num_channels=2)
         
-        try:
-            schedule = scheduler.schedule(total_flow=10.0, priorities=[1.0, 2.0])
-            assert isinstance(schedule, (list, dict))
-        except (AttributeError, NotImplementedError):
-            pytest.skip("schedule not implemented")
+        # Test inject_flow instead of schedule
+        channel_id = list(scheduler.channels.keys())[0]
+        success = scheduler.inject_flow(channel_id, 10.0)
+        assert success
     
     def test_optimize_distribution(self):
         """Test optimizing flow distribution."""
@@ -252,14 +251,11 @@ class TestFluidFlowScheduler:
         
         scheduler = FluidFlowScheduler(num_channels=3)
         
-        try:
-            distribution = scheduler.optimize_distribution(
-                total_flow=15.0,
-                constraints={'max_velocity': 2.0}
-            )
-            assert distribution is not None
-        except (AttributeError, NotImplementedError, TypeError):
-            pytest.skip("optimize_distribution not implemented")
+        # Test optimize_flow instead of optimize_distribution
+        result = scheduler.optimize_flow(iterations=5)
+        assert result is not None
+        assert 'initial' in result
+        assert 'final' in result
 
 
 # ============================================================================
@@ -314,50 +310,46 @@ class TestWavePropagator:
         """Test WavePropagator initialization."""
         from agents.advanced_physics_calculators import WavePropagator
         
-        propagator = WavePropagator(frequency=1.0, wavelength=1.0)
+        # Use actual constructor parameters
+        propagator = WavePropagator(grid_size=30, wave_speed=1.0)
         
         assert propagator is not None
-        assert propagator.frequency == 1.0
+        assert propagator.grid_size == 30
+    
+    def test_add_source(self):
+        """Test adding wave sources."""
+        from agents.advanced_physics_calculators import WavePropagator
+        
+        propagator = WavePropagator(grid_size=30)
+        
+        propagator.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
+        
+        assert len(propagator.sources) == 1
     
     def test_propagate_wave(self):
         """Test wave propagation."""
         from agents.advanced_physics_calculators import WavePropagator
         
-        propagator = WavePropagator(frequency=2.0, wavelength=0.5)
+        propagator = WavePropagator(grid_size=30, wave_speed=1.0)
+        propagator.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
         
-        amplitude = propagator.propagate(x=1.0, t=0.5)
+        history = propagator.propagate(dt=0.1, steps=10)
         
-        assert isinstance(amplitude, (int, float, complex))
+        assert len(history) == 10
     
     def test_interference_pattern(self):
         """Test wave interference calculation."""
         from agents.advanced_physics_calculators import WavePropagator
         
-        propagator = WavePropagator(frequency=1.0, wavelength=1.0)
+        propagator = WavePropagator(grid_size=30)
+        propagator.add_source(position=(10, 15), amplitude=1.0, frequency=1.0)
+        propagator.add_source(position=(20, 15), amplitude=1.0, frequency=1.0)
         
-        try:
-            pattern = propagator.interference(
-                wave2_frequency=1.0,
-                wave2_amplitude=1.0,
-                x=0.5,
-                t=0.0
-            )
-            assert isinstance(pattern, (int, float, complex))
-        except (AttributeError, NotImplementedError, TypeError):
-            pytest.skip("interference not implemented")
-    
-    def test_doppler_shift(self):
-        """Test Doppler shift calculation."""
-        from agents.advanced_physics_calculators import WavePropagator
+        propagator.propagate(steps=50)
         
-        propagator = WavePropagator(frequency=100.0, wavelength=1.0)
-        
-        try:
-            shifted_freq = propagator.doppler_shift(velocity=10.0, speed_of_wave=340.0)
-            assert isinstance(shifted_freq, (int, float))
-            assert shifted_freq > 0
-        except (AttributeError, NotImplementedError, TypeError):
-            pytest.skip("doppler_shift not implemented")
+        result = propagator.measure_interference(position=(15, 15))
+        assert 'constructive' in result
+        assert 'destructive' in result
 
 
 # ============================================================================
@@ -374,52 +366,67 @@ class TestRelativityScheduler:
         scheduler = RelativityScheduler()
         
         assert scheduler is not None
+        assert hasattr(scheduler, 'c')
+    
+    def test_add_agent(self):
+        """Test adding an agent to the scheduler."""
+        from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
+        
+        scheduler = RelativityScheduler(speed_of_light=100.0)
+        
+        scheduler.add_agent(
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0])
+        )
+        
+        assert "agent1" in scheduler.agents
     
     def test_time_dilation(self):
         """Test time dilation calculation."""
         from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
         
-        scheduler = RelativityScheduler()
+        scheduler = RelativityScheduler(speed_of_light=100.0)
         
-        dilated_time = scheduler.time_dilation(proper_time=1.0, velocity=0.5)
+        scheduler.add_agent(
+            agent_id="agent1",
+            position=np.array([0.0, 0.0]),
+            velocity=np.array([10.0, 0.0])
+        )
+        
+        # Use the actual method signature
+        dilated_time = scheduler.time_dilation(agent_id="agent1", coordinate_time=1.0)
         
         assert isinstance(dilated_time, (int, float))
-        assert dilated_time >= 1.0  # Time dilation factor >= 1
-    
-    def test_length_contraction(self):
-        """Test length contraction calculation."""
-        from agents.advanced_physics_calculators import RelativityScheduler
-        
-        scheduler = RelativityScheduler()
-        
-        contracted_length = scheduler.length_contraction(proper_length=10.0, velocity=0.6)
-        
-        assert isinstance(contracted_length, (int, float))
-        assert contracted_length <= 10.0  # Length contracts
     
     def test_lorentz_factor(self):
         """Test Lorentz factor calculation."""
         from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
         
-        scheduler = RelativityScheduler()
+        scheduler = RelativityScheduler(speed_of_light=100.0)
         
-        gamma = scheduler.lorentz_factor(velocity=0.8)
+        # Use actual signature with numpy array
+        gamma = scheduler.lorentz_factor(velocity=np.array([80.0, 0.0]))
         
         assert isinstance(gamma, (int, float))
         assert gamma >= 1.0
     
-    def test_relativistic_momentum(self):
-        """Test relativistic momentum calculation."""
+    def test_communication_delay(self):
+        """Test communication delay between agents."""
         from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
         
-        scheduler = RelativityScheduler()
+        scheduler = RelativityScheduler(speed_of_light=100.0)
         
-        try:
-            momentum = scheduler.relativistic_momentum(mass=1.0, velocity=0.7)
-            assert isinstance(momentum, (int, float))
-            assert momentum > 0
-        except (AttributeError, NotImplementedError):
-            pytest.skip("relativistic_momentum not implemented")
+        scheduler.add_agent(agent_id="agent1", position=np.array([0.0, 0.0]))
+        scheduler.add_agent(agent_id="agent2", position=np.array([100.0, 0.0]))
+        
+        delay = scheduler.communication_delay("agent1", "agent2")
+        
+        assert delay == 1.0  # 100 / 100 = 1.0
 
 
 # ============================================================================
