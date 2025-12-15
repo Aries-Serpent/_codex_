@@ -147,7 +147,7 @@ class PhysicsInspiredOrchestrator:
         self.force_vectors: List[ForceVector] = []
     
     def _load_config(self, config_path: Optional[Path]) -> Dict:
-        """Load orchestrator configuration"""
+        """Load orchestrator configuration (internal)"""
         default_config = {
             'deliberation_time': 5.0,  # seconds to think before acting
             'confidence_threshold': 0.6,  # minimum confidence to act
@@ -163,6 +163,15 @@ class PhysicsInspiredOrchestrator:
                 default_config.update(user_config)
         
         return default_config
+    
+    def load_config(self) -> Dict:
+        """
+        Public method to load and return current configuration.
+        
+        Returns:
+            Dict: Current orchestrator configuration
+        """
+        return self.config.copy()
     
     def assess_situation(self, state: DecisionState) -> Dict[str, float]:
         """
@@ -352,6 +361,39 @@ class PhysicsInspiredOrchestrator:
         self.decision_history.append(result)
         
         return result
+    
+    def optimize(self, paths: List[ActionPath]) -> Optional[ActionPath]:
+        """
+        Optimize a list of action paths and return the best one.
+        
+        This is a convenience method that ranks paths by their optimization score
+        and returns the highest-scoring path that meets basic criteria.
+        
+        Args:
+            paths: List of ActionPath objects to optimize
+            
+        Returns:
+            The optimal ActionPath, or None if no paths are viable
+        """
+        if not paths:
+            return None
+            
+        # Ensure all paths have calculated scores
+        for path in paths:
+            if not hasattr(path, 'optimization_score') or path.optimization_score == 0.0:
+                path.calculate_optimization_score()
+            if not hasattr(path, 'total_energy') or path.total_energy == 0.0:
+                path.calculate_total_energy()
+        
+        # Sort by optimization score (highest first)
+        ranked_paths = sorted(
+            paths,
+            key=lambda p: p.optimization_score,
+            reverse=True
+        )
+        
+        # Return the best path (could add constraint checking here if needed)
+        return ranked_paths[0] if ranked_paths else None
     
     def orchestrate(
         self,
