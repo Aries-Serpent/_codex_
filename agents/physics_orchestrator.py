@@ -39,26 +39,38 @@ class ActionType(Enum):
 @dataclass
 class ForceVector:
     """Represents a force influencing a decision"""
-    name: str
-    magnitude: float  # 0.0 to 1.0
-    direction: Union[float, List[float]]  # angle in radians or 3D vector
+    name: str = ""
+    magnitude: float = 0.0  # 0.0 to 1.0
+    direction: Union[float, List[float]] = 0.0  # angle in radians or 3D vector
     priority: float = 1.0  # weight factor
+    x: float = 0.0  # x component for 3D vector representation
+    y: float = 0.0  # y component for 3D vector representation
+    z: float = 0.0  # z component for 3D vector representation
+    
+    def __post_init__(self):
+        """Calculate magnitude from x, y, z if provided"""
+        # If x, y, z are provided (non-zero) and magnitude is 0, calculate magnitude
+        if (self.x != 0.0 or self.y != 0.0 or self.z != 0.0) and self.magnitude == 0.0:
+            self.magnitude = math.sqrt(self.x**2 + self.y**2 + self.z**2)
+            # Set direction as 3D vector
+            if self.magnitude > 0:
+                self.direction = [self.x / self.magnitude, self.y / self.magnitude, self.z / self.magnitude]
     
     def get_components(self) -> Tuple[float, float]:
         """Get x, y components of force vector"""
         if isinstance(self.direction, (list, tuple)):
             # 3D vector - project to 2D
             return self.magnitude * self.priority, 0.0
-        x = self.magnitude * math.cos(self.direction) * self.priority
-        y = self.magnitude * math.sin(self.direction) * self.priority
-        return x, y
+        x_comp = self.magnitude * math.cos(self.direction) * self.priority
+        y_comp = self.magnitude * math.sin(self.direction) * self.priority
+        return x_comp, y_comp
 
 
 @dataclass
 class ActionPath:
     """Represents a potential action path with physics properties"""
-    action_type: ActionType
-    description: str
+    action_type: ActionType = ActionType.ANALYZE
+    description: str = ""
     
     # Physics properties
     potential_energy: float = 0.0  # Effort required (0-100)
@@ -72,9 +84,19 @@ class ActionPath:
     impact: float = 0.0             # Expected impact (0-1)
     urgency: float = 0.0            # Time sensitivity (0-1)
     
+    # Alternative interface support
+    energy: float = 0.0             # Alias for total_energy
+    trajectory: List[Any] = field(default_factory=list)  # Path trajectory
+    
     # Calculated scores
     total_energy: float = field(default=0.0, init=False)
     optimization_score: float = field(default=0.0, init=False)
+    
+    def __post_init__(self):
+        """Initialize calculated fields and handle energy alias"""
+        if self.energy > 0.0 and self.potential_energy == 0.0:
+            # If energy is provided but potential_energy is not, use energy
+            self.potential_energy = self.energy
     
     def calculate_total_energy(self) -> float:
         """
@@ -126,6 +148,11 @@ class DecisionState:
     context: Dict[str, Any] = field(default_factory=dict)
     active_forces: List[Any] = field(default_factory=list)  # Optional force vectors
     constraints: List[Any] = field(default_factory=list)    # Optional constraints
+    
+    # Alternative interface support
+    state_vector: List[float] = field(default_factory=list)  # Quantum-like state representation
+    energy: float = 0.0           # System energy level
+    coherence: float = 1.0        # State coherence (0-1)
 
 
 class PhysicsInspiredOrchestrator:
