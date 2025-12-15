@@ -1296,3 +1296,6 @@ if __name__ == '__main__':
 # Create MentalMap as an alias for backward compatibility
 # Many tests expect MentalMap class name
 MentalMap = MentalMappingModel
+
+# Additional alias for tests expecting 'MentalMapping' name
+MentalMapping = MentalMappingModel
