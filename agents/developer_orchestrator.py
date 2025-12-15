@@ -61,11 +61,13 @@ class AppType(Enum):
 class DevelopmentPhase(Enum):
     """Phases in the development lifecycle."""
     REQUIREMENTS = "requirements"
+    DESIGN = "design"
     ARCHITECTURE = "architecture"
     IMPLEMENTATION = "implementation"
     TESTING = "testing"
     OPTIMIZATION = "optimization"
     DEPLOYMENT = "deployment"
+    MAINTENANCE = "maintenance"
 
 
 @dataclass

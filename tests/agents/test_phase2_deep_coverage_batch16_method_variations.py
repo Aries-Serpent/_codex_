@@ -20,7 +20,7 @@ class TestMethodVariations_PhysicsOrchestrator:
         from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
         
         orch = PhysicsOrchestrator()
-        state = EnergyState(energy=100.0, entropy=0.5)
+        state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
         
         for dt in [0.001, 0.01, 0.1, 0.5, 1.0, 5.0]:
             result = orch.evolve_state(state, dt=dt)
@@ -33,7 +33,7 @@ class TestMethodVariations_PhysicsOrchestrator:
         evolver = HamiltonianEvolver(grid_size=8)
         
         for omega in [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]:
-            H = evolver.harmonic_hamiltonian(omega=omega)
+            H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=omega)
             assert H is not None
     
     def test_swarm_all_particle_counts(self):
@@ -131,7 +131,7 @@ class TestMethodVariations_MentalMapping:
         # Create linear graph
         nodes = [model.create_node(NodeType.CONCEPT, {}) for _ in range(5)]
         for i in range(len(nodes)-1):
-            model.connect_nodes(nodes[i], nodes[i+1], EdgeType.LEADS_TO, {})
+            model.connect_nodes(source_id=nodes[i].node_id, target_id=nodes[i+1].node_id, edge_type=EdgeType.LEADS_TO)
         
         # Test BFS from each node
         for node in nodes:
@@ -150,7 +150,7 @@ class TestMethodVariations_AgentMemory:
         
         # Store test data
         for i in range(10):
-            memory.store_memory(f"key{i}", f"value with keyword{i}")
+            memory.store_memory(key=f"key{i}", value=f"value with keyword{i}")
         
         # Test various queries
         queries = ["keyword", "value", "key", "", "nonexistent"]
@@ -188,7 +188,7 @@ class TestMethodVariations_WorkflowNavigator:
         
         for count in [0, 1, 2, 5, 10, 50]:
             steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(count)]
-            workflow_id = navigator.create_workflow(f"wf_{count}", steps)
+            workflow_id = # navigator.get_workflow(f"wf_{count}", steps)
             assert len(navigator.workflows[workflow_id]) == count
     
     def test_navigate_all_indices(self):
@@ -198,7 +198,7 @@ class TestMethodVariations_WorkflowNavigator:
         navigator = WorkflowNavigator()
         steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(10)]
         
-        workflow_id = navigator.create_workflow("test", steps)
+        workflow_id = # navigator.get_workflow("test", steps)
         navigator.current_workflow_id = workflow_id
         
         for i in range(10):
@@ -316,7 +316,7 @@ class TestCombinatorial_ParameterCombinations:
         
         for energy in energies:
             for entropy in entropies:
-                state = EnergyState(energy=energy, entropy=entropy)
+                state = EnergyState(configuration={}, energy=energy, entropy=entropy)
                 assert state.energy == energy
                 assert state.entropy == entropy
     

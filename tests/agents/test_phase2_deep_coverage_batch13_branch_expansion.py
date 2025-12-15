@@ -63,7 +63,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
         from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
         
         orch = PhysicsOrchestrator()
-        state = EnergyState(energy=100.0, entropy=0.5)
+        state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
         
         # Evolve multiple steps
         for _ in range(5):
@@ -106,7 +106,7 @@ class TestBranchCoverage_AgentMemory:
         from agents.agent_memory import AgentMemory
         
         memory = AgentMemory()
-        memory.store_memory("test_key", "test_value")
+        memory.store_memory(key="test_key", value="test_value")
         
         # Test with key parameter
         result = memory.retrieve_memory(key="test_key")
@@ -198,7 +198,7 @@ class TestIntegrationDepth_MultiModule:
         
         # Store decision state in memory
         state = DecisionState("start", "goal")
-        memory.store_memory("current_state", str(state))
+        memory.store_memory(key="current_state", value=str(state))
         
         # Retrieve and use
         stored = memory.retrieve_memory("current_state")
@@ -215,7 +215,7 @@ class TestIntegrationDepth_MultiModule:
         node1 = model.create_node(NodeType.CONCEPT, {"name": "strategy_blue"})
         node2 = model.create_node(NodeType.CONCEPT, {"name": "strategy_red"})
         
-        model.connect_nodes(node1, node2, EdgeType.SIMILAR_TO, {})
+        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
         
         # Calculate metrics
         metrics = model.calculate_metrics()
@@ -270,7 +270,7 @@ class TestMethodDepth_ParameterVariations:
         ]
         
         for config in configs:
-            state = EnergyState(**config)
+            state = EnergyState(configuration=config.get('configuration', {}), energy=config.get('energy', 0), entropy=config.get('entropy', 0))
             assert state is not None
 
 
@@ -296,7 +296,7 @@ class TestEdgeCases_BoundaryConditions:
         from agents.workflow_navigator import WorkflowNavigator
         
         navigator = WorkflowNavigator()
-        workflow_id = navigator.create_workflow("empty_workflow", [])
+        workflow_id = # navigator.get_workflow("empty_workflow", [])
         navigator.current_workflow_id = workflow_id
         
         current = navigator.current_step()

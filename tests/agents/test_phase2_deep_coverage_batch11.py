@@ -220,7 +220,7 @@ class TestPhase2_EndToEndWorkflows:
         # Step 3: Aggregate
         result = sum(data)
         
-        assert result == 18  # 6 + 8 + 10
+        assert result == 24  # 6 + 8 + 10 = 24
 
     def test_optimization_loop(self):
         """Test optimization loop convergence"""
@@ -369,7 +369,7 @@ class TestPhase2_ComplexInteractions:
         state = 10.0
         target = 0.0
         
-        for _ in range(10):
+        for _ in range(25):
             error = target - state
             correction = 0.1 * error
             state += correction

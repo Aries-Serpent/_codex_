@@ -137,7 +137,7 @@ class TestPhase2_QuantumGame_StateDimension:
         red_state = StrategyState("red", np.array([0.6, 0.4]))
 
         game_state = QuantumGameState(
-            blue_state=blue_state, red_state=red_state, entangled=False
+            blue_state=blue_state, red_state=red_state, entanglement_strength=0.0
         )
         assert game_state.blue_state is not None
         assert game_state.red_state is not None
@@ -202,7 +202,7 @@ class TestPhase2_MentalMapping_GraphDimension:
         node2 = model.create_node(NodeType.PROBLEM, {})
 
         model.connect_nodes(
-            source=node1, target=node2, edge_type=EdgeType.SIMILAR_TO, properties={}
+            source=node1.node_id, target=node2.node_id, edge_type=EdgeType.SIMILAR_TO, properties={}
         )
         assert True  # Connection successful
 

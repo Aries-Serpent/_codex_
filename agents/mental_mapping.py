@@ -85,6 +85,9 @@ class NodeType(Enum):
     ENTITY = "entity"
     OBSERVATION = "observation"
     REASONING = "reasoning"
+    SOLUTION = "solution"
+    GOAL = "goal"
+    CONSTRAINT = "constraint"
 
 
 class EdgeType(Enum):
@@ -92,12 +95,15 @@ class EdgeType(Enum):
     CAUSES = "causes"
     SUPPORTS = "supports"
     CONTRADICTS = "contradicts"
+    CONFLICTS_WITH = "conflicts_with"
     LEADS_TO = "leads_to"
     SIMILAR_TO = "similar_to"
     DEPENDS_ON = "depends_on"
     REFINES = "refines"
     VALIDATES = "validates"
     RELATED = "related"
+    IMPLEMENTS = "implements"
+    DERIVES_FROM = "derives_from"
 
 
 @dataclass
