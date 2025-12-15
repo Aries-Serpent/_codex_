@@ -32,7 +32,10 @@ def _default_clock() -> str:
     return datetime.now().isoformat()
 
 
-# Module-level clock function that can be overridden for testing
+# Module-level clock function that can be overridden for testing.
+# Note: This is not thread-safe by design - it's intended for use in tests
+# where a single test process controls the clock. For production multi-threaded
+# environments, consider using dependency injection or a context manager.
 _clock: Callable[[], str] = _default_clock
 
 
@@ -42,6 +45,9 @@ def set_clock(clock_fn: Callable[[], str]) -> None:
     
     Useful for testing to provide deterministic timestamps.
     
+    Note: This function is not thread-safe. It should only be used in
+    single-threaded test environments or with proper synchronization.
+    
     Args:
         clock_fn: A callable that returns an ISO format timestamp string.
     """
@@ -50,7 +56,12 @@ def set_clock(clock_fn: Callable[[], str]) -> None:
 
 
 def reset_clock() -> None:
-    """Reset the clock to the default implementation."""
+    """
+    Reset the clock to the default implementation.
+    
+    Note: This function is not thread-safe. It should only be used in
+    single-threaded test environments or with proper synchronization.
+    """
     global _clock
     _clock = _default_clock
 
