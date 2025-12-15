@@ -60,7 +60,7 @@ async-lru==2.0.5
     # via jupyterlab
 asyncssh==2.21.1
     # via scmrepo
-atpublic==6.0.2
+atpublic==7.0.0
     # via flufl-lock
 attrs==25.4.0
     # via
