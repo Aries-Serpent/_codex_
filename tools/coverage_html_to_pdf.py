@@ -17,6 +17,7 @@ Install:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -35,6 +36,10 @@ DEFAULT_COVERAGE_DIRS = [
 
 # Target DPI for PDF output
 TARGET_DPI = 72
+
+# Fallback PDF text rendering constants
+FALLBACK_LINE_LENGTH = 100
+FALLBACK_MAX_LINES = 50
 
 
 def find_function_index_files(search_dirs: Optional[List[Path]] = None) -> List[Path]:
@@ -153,7 +158,6 @@ def create_combined_html(html_files: List[Path], output_path: Path) -> None:
             content = html_file.read_text(encoding="utf-8")
             
             # Extract body content if present
-            import re
             body_match = re.search(r"<body[^>]*>(.*)</body>", content, re.DOTALL | re.IGNORECASE)
             if body_match:
                 body_content = body_match.group(1)
@@ -236,7 +240,6 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         from reportlab.lib.units import inch
         
         # Read HTML and extract text content
-        import re
         html_content = html_path.read_text(encoding="utf-8")
         
         # Strip HTML tags for simple text extraction
@@ -248,11 +251,11 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         
         c.setFont("Helvetica", 10)
         
-        # Simple text wrapping
+        # Simple text wrapping using configurable constants
         y = height - inch
-        lines = [text_content[i:i+100] for i in range(0, len(text_content), 100)]
+        lines = [text_content[i:i+FALLBACK_LINE_LENGTH] for i in range(0, len(text_content), FALLBACK_LINE_LENGTH)]
         
-        for line in lines[:50]:  # Limit to first 50 lines
+        for line in lines[:FALLBACK_MAX_LINES]:
             if y < inch:
                 c.showPage()
                 y = height - inch
@@ -302,10 +305,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         help=f"PDF resolution in DPI (default: {TARGET_DPI})"
     )
     parser.add_argument(
-        "--ephemeral",
+        "--persistent",
         action="store_true",
-        default=True,
-        help="Create ephemeral (temporary) PDF that can be cleaned up"
+        help="Mark PDF as persistent (default: ephemeral/temporary)"
     )
     
     args = parser.parse_args(argv)
@@ -336,7 +338,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         
         if html_to_pdf(combined_html, output_path, dpi=args.dpi):
             print(f"[OK] PDF generated: {output_path}")
-            if args.ephemeral:
+            if not args.persistent:
                 print("     (ephemeral - can be cleaned up after use)")
             return 0
         else:
