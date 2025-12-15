@@ -455,6 +455,47 @@ class SelfHealingEngine:
         
         return max(0.0, 1.0 - min(total_penalty, 1.0))
     
+    def detect_issues(self, log_output: str = None, run_checks: bool = True) -> List[DetectedIssue]:
+        """
+        Detect issues in the codebase.
+        
+        Alias for diagnose() that returns only the issues list.
+        
+        Args:
+            log_output: Optional log output to analyze
+            run_checks: Whether to run active checks
+            
+        Returns:
+            List of detected issues
+        """
+        result = self.diagnose(log_output=log_output, run_checks=run_checks)
+        return result.issues
+    
+    def detect(self, log_output: str = None) -> List[DetectedIssue]:
+        """
+        Detect issues (short alias for detect_issues).
+        
+        Args:
+            log_output: Optional log output to analyze
+            
+        Returns:
+            List of detected issues
+        """
+        return self.detect_issues(log_output=log_output, run_checks=False)
+    
+    def analyze(self, log_output: str = None, run_checks: bool = True) -> DiagnosticResult:
+        """
+        Analyze the codebase for issues (alias for diagnose).
+        
+        Args:
+            log_output: Optional log output to analyze
+            run_checks: Whether to run active checks
+            
+        Returns:
+            Diagnostic result with issues and suggested actions
+        """
+        return self.diagnose(log_output=log_output, run_checks=run_checks)
+    
     def apply_remediation(
         self,
         action: RemediationAction,

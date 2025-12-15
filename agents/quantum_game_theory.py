@@ -566,6 +566,28 @@ class ClassicalGameEngine:
             samples.append((i, j))
         
         return samples
+    
+    def compute_nash_equilibrium(self) -> Dict[str, Any]:
+        """
+        Compute Nash equilibrium using replicator dynamics.
+        
+        This method finds a Nash equilibrium by iterating the game dynamics
+        until convergence. The equilibrium is a stable state where neither
+        player can improve their payoff by unilaterally changing strategy.
+        
+        Returns:
+            Dictionary with equilibrium strategies and metrics
+        """
+        return self.simulate_to_equilibrium()
+    
+    def calculate(self) -> Dict[str, Any]:
+        """
+        Calculate equilibrium (alias for compute_nash_equilibrium).
+        
+        Returns:
+            Dictionary with equilibrium strategies and metrics
+        """
+        return self.compute_nash_equilibrium()
 
 
 class QuantumInspiredGameEngine:

@@ -56,12 +56,24 @@ class EdgeType(Enum):
 class ReasoningStep:
     """A single step in a reasoning chain"""
     step_id: str
-    timestamp: str
-    thought: str
-    reasoning_type: str  # deductive, inductive, abductive, analogical
-    confidence: float  # 0-1
+    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    thought: str = ""
+    description: str = ""  # Alias for thought
+    reasoning_type: str = "deductive"  # deductive, inductive, abductive, analogical
+    confidence: float = 0.5  # 0-1
+    inputs: List[str] = field(default_factory=list)  # Alternative to alternatives_considered
+    outputs: List[str] = field(default_factory=list)  # Alternative to evidence_used
     alternatives_considered: List[str] = field(default_factory=list)
     evidence_used: List[str] = field(default_factory=list)
+    
+    def __post_init__(self):
+        """Handle parameter aliases and defaults"""
+        # Use description if provided and thought is empty
+        if self.description and not self.thought:
+            self.thought = self.description
+        # Use thought if description is empty
+        elif self.thought and not self.description:
+            self.description = self.thought
     
     def to_dict(self) -> Dict:
         return asdict(self)
@@ -1133,6 +1145,31 @@ class MentalMappingModel:
         
         # Degree centrality: connections / max possible connections
         return len(node.connected_nodes) / (num_nodes - 1)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Export mental mapping model to dictionary.
+        
+        Returns:
+            Dictionary representation suitable for JSON serialization
+        """
+        return {
+            'map_id': self.map_id,
+            'agent_id': self.agent_id,
+            'created_at': self.created_at,
+            'nodes': {
+                node_id: node.to_dict() 
+                for node_id, node in self.nodes.items()
+            },
+            'edges': {
+                edge_id: edge.to_dict() 
+                for edge_id, edge in self.edges.items()
+            },
+            'learning_history': self.learning_history,
+            'appraisal_metrics': self.appraisal_metrics,
+            'pattern_library': self.pattern_library,
+            'nodes_needing_review': list(self.nodes_needing_review),
+        }
 
 
 # Example usage

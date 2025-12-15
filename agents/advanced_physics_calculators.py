@@ -756,8 +756,14 @@ class EMFieldRouter:
     - Attention focusing
     """
     
-    def __init__(self, grid_resolution: int = 20):
-        self.grid_resolution = grid_resolution
+    def __init__(self, grid_resolution: int = 20, grid_size: int = None):
+        # Support both grid_resolution and grid_size parameters
+        if grid_size is not None:
+            self.grid_resolution = grid_size
+            self.grid_size = grid_size
+        else:
+            self.grid_resolution = grid_resolution
+            self.grid_size = grid_resolution
         self.charges: List[Tuple[np.ndarray, float]] = []  # (position, charge)
         self.potential_field: Optional[np.ndarray] = None
         self.electric_field: Optional[Tuple[np.ndarray, np.ndarray]] = None
