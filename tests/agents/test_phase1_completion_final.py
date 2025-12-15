@@ -28,28 +28,28 @@ class TestPhase1Completion_Table1_Eq1:
         from agents.physics_orchestrator import DecisionState
         
         state = DecisionState(
-            context="test",
-            options=["a", "b"],
-            constraints={}
+            current_position="start",
+            goal_position="end",
+            context={"test": "value"}
         )
         assert state is not None
-        assert state.context == "test"
+        assert state.context == {"test": "value"}
         
     def test_force_vector_initialization(self):
         """Test ForceVector component initialization."""
         from agents.physics_orchestrator import ForceVector
         
-        force = ForceVector(magnitude=1.0, direction="forward")
+        force = ForceVector(name="test_force", magnitude=1.0, direction=0.0)
         assert force is not None
         assert force.magnitude == 1.0
         
     def test_action_path_initialization(self):
         """Test ActionPath initialization."""
-        from agents.physics_orchestrator import ActionPath
+        from agents.physics_orchestrator import ActionPath, ActionType
         
-        path = ActionPath(steps=["step1", "step2"])
+        path = ActionPath(action_type=ActionType.TEST, description="Test path")
         assert path is not None
-        assert len(path.steps) == 2
+        assert path.description == "Test path"
 
 
 class TestPhase1Completion_Table4_Eq2:
@@ -57,7 +57,7 @@ class TestPhase1Completion_Table4_Eq2:
     
     def test_action_type_enum_all_values(self):
         """Test all ActionType enum values."""
-        from agents.quantum_game_theory import ActionType
+        from agents.physics_orchestrator import ActionType
         
         # Test all enum values exist
         action_types = list(ActionType)
@@ -104,15 +104,15 @@ class TestPhase1Completion_Table4_Eq3:
         from agents.physics_orchestrator import DecisionState
         
         state = DecisionState(
-            context="test",
-            options=["a", "b"],
-            constraints={}
+            current_position="start",
+            goal_position="end",
+            context={"test": "value"}
         )
         
         # Test properties
         assert state.context is not None
-        assert state.options is not None
-        assert state.constraints is not None
+        assert state.current_position is not None
+        assert state.goal_position is not None
     
     def test_quantum_game_engine_properties(self):
         """Test QuantumInspiredGameEngine properties."""
@@ -160,9 +160,9 @@ class TestPhase1Completion_Table1_Eq49:
     
     def test_self_healing_basic_operations(self):
         """Test SelfHealingSystem basic operations."""
-        from agents.self_healing import SelfHealingSystem
+        from agents.self_healing import SelfHealingEngine
         
-        system = SelfHealingSystem()
+        system = SelfHealingEngine()
         assert system is not None
 
 
