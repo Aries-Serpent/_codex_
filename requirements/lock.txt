@@ -894,7 +894,7 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
     #   typepy
-python-dotenv==1.1.1
+python-dotenv==1.2.1
     # via
     #   pydantic-settings
     #   uvicorn
