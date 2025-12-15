@@ -423,32 +423,40 @@ class WorkflowNavigator:
         for alias in workflow.aliases:
             self.workflows[alias.upper()] = workflow
     
-    def get_workflow(self, identifier: str, steps: List[WorkflowStep] = None) -> Optional[str]:
+    def get_workflow(self, identifier: str) -> Optional[Workflow]:
         """
-        Get workflow by ID or alias, or create a new one if steps are provided.
+        Get workflow by ID or alias.
         
         Args:
             identifier: Workflow ID or alias
-            steps: Optional list of steps to create a new workflow
             
         Returns:
-            Workflow object if found/created, or workflow_id if steps provided
+            Workflow object if found, None otherwise
         """
-        if steps is not None:
-            # Create and register a new workflow with the given steps
-            workflow = Workflow(
-                workflow_id=identifier.upper(),
-                name=identifier.replace("_", " ").title(),
-                description=f"Dynamically created workflow: {identifier}",
-                frequency=WorkflowFrequency.MEDIUM,
-                steps=steps
-            )
-            self.register_workflow(workflow)
-            return workflow.workflow_id
-        else:
-            # Just retrieve existing workflow
-            workflow = self.workflows.get(identifier.upper())
-            return workflow.workflow_id if workflow else None
+        return self.workflows.get(identifier.upper())
+    
+    def create_workflow(self, identifier: str, steps: List[WorkflowStep], **kwargs) -> str:
+        """
+        Create and register a new workflow with the given steps.
+        
+        Args:
+            identifier: Workflow ID
+            steps: List of workflow steps
+            **kwargs: Additional workflow parameters (name, description, frequency, etc.)
+            
+        Returns:
+            The workflow_id of the created workflow
+        """
+        workflow = Workflow(
+            workflow_id=identifier.upper(),
+            name=kwargs.get('name', identifier.replace("_", " ").title()),
+            description=kwargs.get('description', f"Dynamically created workflow: {identifier}"),
+            frequency=kwargs.get('frequency', WorkflowFrequency.MEDIUM),
+            steps=steps,
+            category=kwargs.get('category', 'general')
+        )
+        self.register_workflow(workflow)
+        return workflow.workflow_id
     
     def current_step(self) -> Optional[WorkflowStep]:
         """Get the current step in the active workflow."""

@@ -275,7 +275,7 @@ class TestExceptionHandling_WorkflowNavigator:
         # Use existing workflow or skip if create_workflow doesn't exist
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.get_workflow("test", steps)
+            workflow_id = navigator.create_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             
             # Navigate to invalid index
@@ -299,7 +299,7 @@ class TestExceptionHandling_WorkflowNavigator:
         
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.get_workflow("test", steps)
+            workflow_id = navigator.create_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             navigator.current_step_index = 0
             
@@ -317,7 +317,7 @@ class TestExceptionHandling_WorkflowNavigator:
         
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.get_workflow("test", steps)
+            workflow_id = navigator.create_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             navigator.current_step_index = 0
             
