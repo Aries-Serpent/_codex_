@@ -42,22 +42,48 @@ class ChaoticAttractor:
     deterministic but unpredictable behavior, useful for escaping
     local optima in decision spaces.
     """
-    attractor_type: str = "logistic"  # logistic, lorenz, henon
+    attractor_type: str = "lorenz"  # logistic, lorenz, henon
     parameters: Dict[str, float] = field(default_factory=dict)
-    state: np.ndarray = field(default_factory=lambda: np.array([0.5]))
+    state: np.ndarray = field(default_factory=lambda: np.array([1.0, 1.0, 1.0]))
     history: List[np.ndarray] = field(default_factory=list)
+    initial_state: Optional[Tuple[float, ...]] = None
+    sigma: Optional[float] = None
+    rho: Optional[float] = None
+    beta: Optional[float] = None
     
     def __post_init__(self):
         """Initialize default parameters based on attractor type."""
+        # Handle initial_state if provided
+        if self.initial_state is not None:
+            self.state = np.array(self.initial_state)
+            # Infer attractor type from initial_state dimensions
+            if len(self.initial_state) == 3:
+                self.attractor_type = "lorenz"
+            elif len(self.initial_state) == 2:
+                self.attractor_type = "henon"
+            else:
+                self.attractor_type = "logistic"
+        
+        # Handle explicit parameters (sigma, rho, beta for Lorenz)
+        if self.sigma is not None or self.rho is not None or self.beta is not None:
+            if "sigma" not in self.parameters and self.sigma is not None:
+                self.parameters["sigma"] = self.sigma
+            if "rho" not in self.parameters and self.rho is not None:
+                self.parameters["rho"] = self.rho
+            if "beta" not in self.parameters and self.beta is not None:
+                self.parameters["beta"] = self.beta
+        
         if not self.parameters:
             if self.attractor_type == "logistic":
                 self.parameters = {"r": 3.9}  # Chaotic regime
             elif self.attractor_type == "lorenz":
                 self.parameters = {"sigma": 10.0, "rho": 28.0, "beta": 8.0/3.0}
-                self.state = np.array([1.0, 1.0, 1.0])
+                if self.initial_state is None:
+                    self.state = np.array([1.0, 1.0, 1.0])
             elif self.attractor_type == "henon":
                 self.parameters = {"a": 1.4, "b": 0.3}
-                self.state = np.array([0.0, 0.0])
+                if self.initial_state is None:
+                    self.state = np.array([0.0, 0.0])
     
     def iterate(self, steps: int = 1) -> np.ndarray:
         """
@@ -118,12 +144,63 @@ class ChaoticAttractor:
         x, y = self.state
         self.state = np.array([1 - a * x**2 + y, b * x])
     
-    def lyapunov_exponent(self, iterations: int = 1000) -> float:
+    def evolve(self, dt: float = 0.01, steps: int = 1) -> np.ndarray:
+        """
+        Evolve the attractor for a number of steps.
+        
+        Args:
+            dt: Time step for continuous systems (Lorenz)
+            steps: Number of steps to evolve
+        
+        Returns:
+            Final state after evolution
+        """
+        for _ in range(steps):
+            if self.attractor_type == "lorenz":
+                self._lorenz_system(dt=dt)
+            else:
+                self.iterate(1)
+        
+        return self.state
+    
+    def get_trajectory(self, steps: int = 100, dt: float = 0.01) -> List[np.ndarray]:
+        """
+        Generate trajectory of attractor evolution.
+        
+        Args:
+            steps: Number of evolution steps
+            dt: Time step for continuous systems
+        
+        Returns:
+            List of state vectors forming the trajectory
+        """
+        trajectory = [self.state.copy()]
+        
+        for _ in range(steps):
+            if self.attractor_type == "lorenz":
+                self._lorenz_system(dt=dt)
+            else:
+                self.iterate(1)
+            trajectory.append(self.state.copy())
+        
+        return trajectory
+    
+    def lyapunov_exponent(self, iterations: int = 1000, steps: Optional[int] = None) -> float:
         """
         Estimate largest Lyapunov exponent (measure of chaos).
         
         Positive exponent indicates chaotic behavior (exponential divergence).
+        
+        Args:
+            iterations: Number of iterations (legacy parameter)
+            steps: Number of steps (preferred parameter, overrides iterations)
+        
+        Returns:
+            Lyapunov exponent estimate
         """
+        # Allow both 'steps' and 'iterations' for backward compatibility
+        num_iterations = steps if steps is not None else iterations
+        
         if self.attractor_type != "logistic":
             return 0.0  # Only implemented for logistic map for now
         
@@ -131,13 +208,13 @@ class ChaoticAttractor:
         x = 0.5
         sum_log = 0.0
         
-        for _ in range(iterations):
+        for _ in range(num_iterations):
             x = r * x * (1 - x)
             derivative = abs(r - 2 * r * x)
             if derivative > 0:
                 sum_log += math.log(derivative)
         
-        return sum_log / iterations
+        return sum_log / num_iterations
 
 
 class ChaoticNeuralNetwork:
@@ -158,12 +235,27 @@ class ChaoticNeuralNetwork:
         self,
         num_neurons: int = 10,
         attractor_type: str = "logistic",
-        coupling_strength: float = 0.1
+        coupling_strength: float = 0.1,
+        input_size: Optional[int] = None,
+        hidden_size: Optional[int] = None,
+        output_size: Optional[int] = None
     ):
-        self.num_neurons = num_neurons
+        # Support both neural network style parameters and chaotic network parameters
+        if input_size is not None:
+            # Use input_size as num_neurons if provided
+            self.input_size = input_size
+            self.hidden_size = hidden_size or input_size
+            self.output_size = output_size or 1
+            self.num_neurons = max(input_size, hidden_size or 0, output_size or 0)
+        else:
+            self.num_neurons = num_neurons
+            self.input_size = num_neurons
+            self.hidden_size = num_neurons
+            self.output_size = num_neurons
+        
         self.neurons = [
             ChaoticAttractor(attractor_type=attractor_type)
-            for _ in range(num_neurons)
+            for _ in range(self.num_neurons)
         ]
         self.coupling_strength = coupling_strength
         self.exploration_history: List[Dict[str, Any]] = []
@@ -184,6 +276,45 @@ class ChaoticNeuralNetwork:
             neuron.state[0] += perturbation
             # Keep in valid range
             neuron.state[0] = max(0.001, min(0.999, neuron.state[0]))
+    
+    def chaotic_activation(self, x: float) -> float:
+        """
+        Apply chaotic activation function.
+        
+        Args:
+            x: Input value
+        
+        Returns:
+            Activated value using chaotic dynamics
+        """
+        # Use logistic map as activation function
+        r = 3.9  # Chaotic regime
+        return r * x * (1 - x)
+    
+    def forward(self, input_data: List[float]) -> List[float]:
+        """
+        Forward pass through the chaotic neural network.
+        
+        Args:
+            input_data: Input values
+        
+        Returns:
+            Output values after processing through network
+        """
+        # Initialize neurons with input
+        for i, value in enumerate(input_data):
+            if i < len(self.neurons):
+                # Normalize input to [0, 1] range for chaotic dynamics
+                normalized_value = (value % 1.0) if value != 0 else 0.5
+                self.neurons[i].state[0] = max(0.001, min(0.999, normalized_value))
+        
+        # Evolve the network
+        evolved_state = self.evolve(steps=5)
+        
+        # Extract output from last output_size neurons
+        output = evolved_state[-self.output_size:].tolist()
+        
+        return output
     
     def evolve(self, steps: int = 10) -> np.ndarray:
         """
