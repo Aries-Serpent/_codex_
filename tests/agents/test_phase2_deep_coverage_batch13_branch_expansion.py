@@ -296,7 +296,7 @@ class TestEdgeCases_BoundaryConditions:
         from agents.workflow_navigator import WorkflowNavigator
         
         navigator = WorkflowNavigator()
-        workflow_id = # navigator.get_workflow("empty_workflow", [])
+        workflow_id = navigator.get_workflow("empty_workflow", [])
         navigator.current_workflow_id = workflow_id
         
         current = navigator.current_step()
