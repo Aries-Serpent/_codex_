@@ -152,7 +152,7 @@ class WorkflowNavigator:
         Centralizes dynamic workflow creation logic to reduce duplication.
         
         Args:
-            workflow_type: Type of workflow to create ('test_coverage' or 'self_heal')
+            workflow_type: Type of workflow to create ('test_coverage', 'self_heal', 'audit_coverage', 'test_run')
             **kwargs: Additional parameters for workflow customization
             
         Returns:
@@ -194,6 +194,50 @@ class WorkflowNavigator:
                     WorkflowStep(
                         id='resolve',
                         action='Apply automated fixes where possible',
+                    ),
+                ]
+            )
+        elif workflow_type == 'audit_coverage':
+            return Workflow(
+                workflow_id='AUDIT_COVERAGE_DYNAMIC',
+                name='Audit Coverage Analysis',
+                description='Dynamically generated workflow to audit code coverage and identify gaps',
+                frequency=WorkflowFrequency.HIGH,
+                steps=[
+                    WorkflowStep(
+                        id='run_coverage',
+                        action='Run coverage analysis',
+                        command='pytest --cov=. --cov-report=json'
+                    ),
+                    WorkflowStep(
+                        id='analyze_gaps',
+                        action='Analyze coverage gaps and prioritize',
+                    ),
+                    WorkflowStep(
+                        id='report',
+                        action='Generate audit report',
+                    ),
+                ]
+            )
+        elif workflow_type == 'test_run':
+            return Workflow(
+                workflow_id='TEST_RUN_DYNAMIC',
+                name='Test Execution',
+                description='Dynamically generated workflow to execute tests',
+                frequency=WorkflowFrequency.HIGH,
+                steps=[
+                    WorkflowStep(
+                        id='setup',
+                        action='Setup test environment',
+                    ),
+                    WorkflowStep(
+                        id='run_tests',
+                        action='Execute test suite',
+                        command='pytest -v'
+                    ),
+                    WorkflowStep(
+                        id='report_results',
+                        action='Report test results',
                     ),
                 ]
             )

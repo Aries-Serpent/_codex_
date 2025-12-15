@@ -190,6 +190,9 @@ class SelfHealingEngine:
         self.repo_root = repo_root or Path.cwd()
         self.issue_patterns: Dict[IssueType, List[Tuple[str, str]]] = {}
         self.remediation_handlers: Dict[IssueType, Callable] = {}
+        # Initialize detection and diagnostic components
+        self.issue_detector = self  # Self-reference for detection capability
+        self.diagnostic_engine = self  # Self-reference for diagnostic capability
         self._register_default_patterns()
         self._register_default_handlers()
     

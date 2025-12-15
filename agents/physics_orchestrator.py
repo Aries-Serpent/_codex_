@@ -147,7 +147,7 @@ class PhysicsInspiredOrchestrator:
         self.force_vectors: List[ForceVector] = []
     
     def _load_config(self, config_path: Optional[Path]) -> Dict:
-        """Load orchestrator configuration"""
+        """Load orchestrator configuration (internal)"""
         default_config = {
             'deliberation_time': 5.0,  # seconds to think before acting
             'confidence_threshold': 0.6,  # minimum confidence to act
@@ -163,6 +163,15 @@ class PhysicsInspiredOrchestrator:
                 default_config.update(user_config)
         
         return default_config
+    
+    def load_config(self) -> Dict:
+        """
+        Public method to load and return current configuration.
+        
+        Returns:
+            Dict: Current orchestrator configuration
+        """
+        return self.config.copy()
     
     def assess_situation(self, state: DecisionState) -> Dict[str, float]:
         """
