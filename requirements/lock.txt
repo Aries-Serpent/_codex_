@@ -986,7 +986,7 @@ rich-toolkit==0.15.0
     # via fastapi-cli
 rouge-score==0.1.2
     # via lm-eval
-rpds-py==0.28.0
+rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
