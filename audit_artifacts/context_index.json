@@ -1,6 +1,6 @@
 {
-  "generated": 1765773198.3708706,
-  "count": 5593,
+  "generated": 1765773374.961671,
+  "count": 5600,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -1149,6 +1149,12 @@
       "sha": "ac92fc7727e2e01093d1f04ac16b7b72bc666800fd6d5f7efe6fc76be6a00a65"
     },
     {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T04-33-40.266603.json",
+      "ext": ".json",
+      "size": 5878,
+      "sha": "b727f85e7ffa8eb3c37a7482613f35fd521765ad060f4ddcd0a50e4d588c85f9"
+    },
+    {
       "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T04-32-15.994949.json",
       "ext": ".json",
       "size": 337,
@@ -1161,10 +1167,22 @@
       "sha": "ca817a5df1b13fff64d0f9e009fda054b14cec69aadc682de98a6760273fc418"
     },
     {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T04-36-13.666458.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "7e1511962eccef21c1f5abd71354df234ef8c415da8a9f9ab68308dd7598f2a0"
+    },
+    {
       "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T04-32-39.819235.json",
       "ext": ".json",
       "size": 358,
       "sha": "8b53eed6e06904b4a0e3fc9bf830833f69ce543401530ea3cf0d104cf929186d"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T04-33-40.293474.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "891baeab82938aa24a354dd098573395ef4af9f516e8e1338fa4d3c1b0e29a3a"
     },
     {
       "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T04-32-39.795110.json",
@@ -1173,10 +1191,16 @@
       "sha": "9660ed450b948aa0db5c96df1c045a4b88c20f384f125069b98ea7c0ac7010f2"
     },
     {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T04-33-40.267630.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "d32b18ec377457a98a986a2bf2fddeaf65863552404340049bc1ccb917960bc2"
+    },
+    {
       "path": ".codex/workflows/state/current.json",
       "ext": ".json",
       "size": 337,
-      "sha": "ca817a5df1b13fff64d0f9e009fda054b14cec69aadc682de98a6760273fc418"
+      "sha": "7e1511962eccef21c1f5abd71354df234ef8c415da8a9f9ab68308dd7598f2a0"
     },
     {
       "path": ".copilot-space/workflow.yaml",
@@ -3191,14 +3215,14 @@
     {
       "path": ".pytest_cache/v/cache/lastfailed",
       "ext": "",
-      "size": 21559,
-      "sha": "87d4e392c04da73f4f26480cde9ff368f9fe44f3f94dedca5f966c62ae20195c"
+      "size": 23625,
+      "sha": "0de378e43d45b2865d9096d34ec5852035c7588d5190ebf3f6c3dba197933ae3"
     },
     {
       "path": ".pytest_cache/v/cache/nodeids",
       "ext": "",
-      "size": 138452,
-      "sha": "fb4a68b2774d4a5610abae440232db9346ea8f21acc3019aeeb59eb195cd8e2f"
+      "size": 142219,
+      "sha": "8af87373073ef575a17375b6030ca69092d255c893c66f80e1706332181b2cd7"
     },
     {
       "path": ".reports/fencefix_run.json",
@@ -4547,8 +4571,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2121,
-      "sha": "4d128e16052224fd79a06ea17d54741ea57efafc3bf1371abbd3a99db4ddaf58"
+      "size": 2122,
+      "sha": "23fb98a091e1303f5018fef3064024373b305fbe1759b04b9fbdce5f122a4b82"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -12055,6 +12079,12 @@
       "ext": ".json",
       "size": 426369,
       "sha": "e2e8f41254af9e40053ca616e794f774d3df211beb80689b13a14c470efc2478"
+    },
+    {
+      "path": "phase1_iteration2.json",
+      "ext": ".json",
+      "size": 426531,
+      "sha": "c713919fe5eaaa543f3b8d4a124dddfdd229578d99b0047d693a4ac03b822bb1"
     },
     {
       "path": "policies/denylist.yaml",
@@ -21675,6 +21705,12 @@
       "sha": "8375d07d200e79e50f6b6034241c6dc243b1c2210ec3693f3bd1f558bde2d8ca"
     },
     {
+      "path": "tests/agents/__pycache__/test_advanced_physics_iteration2.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 53833,
+      "sha": "c1975fa67bb4839de1e389358ef9918c9a491d4bd1befe6b0f91dbc0619b2b0e"
+    },
+    {
       "path": "tests/agents/__pycache__/test_exhaustive_30pct.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 31504,
@@ -21913,6 +21949,12 @@
       "ext": ".py",
       "size": 11991,
       "sha": "b1eb33fc6473b3c830262edd803f9a3aa7d6fd5ece3a5259af89d039c805d6c0"
+    },
+    {
+      "path": "tests/agents/test_advanced_physics_iteration2.py",
+      "ext": ".py",
+      "size": 18827,
+      "sha": "990020f4b35e2201ddbd61e9f8c4249bf23fe3a07b9954d4c980285e7f1705ae"
     },
     {
       "path": "tests/agents/test_exhaustive_30pct.py",
