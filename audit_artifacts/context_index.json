@@ -1,6 +1,6 @@
 {
-  "generated": 1765779101.3396947,
-  "count": 5224,
+  "generated": 1765823982.3336287,
+  "count": 5089,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -43,12 +43,6 @@
       "ext": ".ndjson",
       "size": 128,
       "sha": "495747cafa8f74f6f4446e766d1edcf26341c3469db3b44d509b166298e2d658"
-    },
-    {
-      "path": ".codex/agent_memory.db",
-      "ext": ".db",
-      "size": 40960,
-      "sha": "e43fa11f4c98b2af8e1676a2410b223d1a352c21a69c59f6457acc062e1556ab"
     },
     {
       "path": ".codex/analysis_metrics.jsonl",
@@ -687,12 +681,6 @@
       "sha": "85f214bc010fc80be713ae53b60d39bea760fb39738cda45f44e25294bcedac3"
     },
     {
-      "path": ".codex/session_logs.db",
-      "ext": ".db",
-      "size": 24576,
-      "sha": "4ff911dc9e903c4890b510c417f54921a32cc273dcc8eb99619a263acb9f2a9e"
-    },
-    {
       "path": ".codex/sessions/archive/historical_docs_20251210_4d9198c.tar.gz",
       "ext": ".gz",
       "size": 402688,
@@ -1129,18 +1117,6 @@
       "ext": ".md",
       "size": 3542,
       "sha": "a055f6f9969f546620c2e048c30a0605075359afe7f1a19f4461732b6721af89"
-    },
-    {
-      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T06-11-40.111244.json",
-      "ext": ".json",
-      "size": 337,
-      "sha": "f3feb08e558798620173a1e772842a0a6aa74311314b3ddb8d0ae64814ea59b1"
-    },
-    {
-      "path": ".codex/workflows/state/current.json",
-      "ext": ".json",
-      "size": 337,
-      "sha": "f3feb08e558798620173a1e772842a0a6aa74311314b3ddb8d0ae64814ea59b1"
     },
     {
       "path": ".copilot-space/workflow.yaml",
@@ -3155,14 +3131,14 @@
     {
       "path": ".pytest_cache/v/cache/lastfailed",
       "ext": "",
-      "size": 212,
-      "sha": "24784cab8b635690ac57404e59f9f1c855dac1f223d9eb9ab2e0804b987ce3ac"
+      "size": 253,
+      "sha": "7bed75b2efe3409dc0984c668100e8ba3353e54594c9ce5b8def174180694787"
     },
     {
       "path": ".pytest_cache/v/cache/nodeids",
       "ext": "",
-      "size": 6613,
-      "sha": "eecb23bee25a9458557da475fc5c6dc81df9ca49a876c12cfbae3ec871a6fb99"
+      "size": 2794,
+      "sha": "59edb6ee84b13e6aa6684293296a2e36141f84f94d1da28a9822c8ea66b338bd"
     },
     {
       "path": ".reports/fencefix_run.json",
@@ -3648,13 +3624,7 @@
       "path": "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 13025,
-      "sha": "6e6cedd0a3d4b245a206369a214145fa4635c5d262e644a7af6f6b3c41a9b45d"
-    },
-    {
-      "path": "__pycache__/sitecustomize.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4523,
-      "sha": "774dc9dd9e97a6fedc58a9aff56b2369611c89a537c1db0062ceef40f5edcf65"
+      "sha": "1c3978da43d7706c86e03b7020bb39bf7e60e33f26a2016109c38d9ba744d956"
     },
     {
       "path": "_codex/status/_codex_status_update-2025-09-21.md",
@@ -3768,79 +3738,43 @@
       "path": "agents/__pycache__/__init__.cpython-312.pyc",
       "ext": ".pyc",
       "size": 4632,
-      "sha": "8185e6e5dc4b42a52a0f449b0a5c23d5fe883b2f755ccf46fdde3f70e6f57eb6"
-    },
-    {
-      "path": "agents/__pycache__/advanced_physics_calculators.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 65046,
-      "sha": "836eb8de3c87a9bfe8277dac6d92fa51c6d8fb10071dfd75ed973aaa3dfd7330"
-    },
-    {
-      "path": "agents/__pycache__/agent_memory.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 48379,
-      "sha": "4e23d715407a56c9f344132d9a31d16b46191e80e1b9fb8d9aafa74b7abda859"
-    },
-    {
-      "path": "agents/__pycache__/developer_orchestrator.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 38547,
-      "sha": "2191b49b2c0263c9a72d6c39781f4c12061cb422bf1668c5c2041eaf851fdbf3"
-    },
-    {
-      "path": "agents/__pycache__/exceptions.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4647,
-      "sha": "fe9495a67123c558ec5dae81a774a3d6cb9738e3bed06aca2e0838012a300696"
+      "sha": "8e613cb4131666e8063ea02c6082702bab42691dba875d088693557179b64826"
     },
     {
       "path": "agents/__pycache__/mental_mapping.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 48677,
-      "sha": "ca799e59e60c3590532677455604486953f936204426475fb1089411e196546c"
-    },
-    {
-      "path": "agents/__pycache__/msp_client.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 9156,
-      "sha": "7e21c3aeaceb87ffceba811a6ba493597473b29a73f032b904e40a7e7baec586"
-    },
-    {
-      "path": "agents/__pycache__/physics_integration.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 13102,
-      "sha": "a46c323838db99fcc3eaabc0a17c982e698ca6f7a20c4df00c3336186359cf78"
+      "size": 48990,
+      "sha": "2d2a562a62b7f057b4c9a97d26ef5f3f74400b5a23fe3797f41b73bf7e42a554"
     },
     {
       "path": "agents/__pycache__/physics_orchestrator.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 150199,
-      "sha": "e96700d3aef15f5894738bc1920de64100766c873e96f306e9171da48009e0c1"
+      "size": 151863,
+      "sha": "eb2e654cba7f0ae87df86985df404cc98fbe2d831f931866377b9559b3a0d6bb"
     },
     {
       "path": "agents/__pycache__/quantum_game_theory.cpython-312.pyc",
       "ext": ".pyc",
       "size": 50955,
-      "sha": "f67d736076c3e9fb2c1086822593133f2d8886186d1f5360aeba7a0c496953d9"
+      "sha": "e8722273570ff04142c6a79ccc0394fbc16ee3fa6a2c613cbb0f139aadbd5b86"
     },
     {
       "path": "agents/__pycache__/self_healing.cpython-312.pyc",
       "ext": ".pyc",
       "size": 26252,
-      "sha": "52cd9f3dc8319b13c5a956ddcd1810a9e26fdfcee1d00cf636f18b50b5ed56e5"
+      "sha": "065cb96cb68db6611e30faa13f35d874ef4579d46fd51eec1f6ed457e140b147"
     },
     {
       "path": "agents/__pycache__/workflow_navigator.cpython-312.pyc",
       "ext": ".pyc",
       "size": 24078,
-      "sha": "e9c085144786c2939c4dce3e13905dc4df900b418de08ff544dc7f8b1bc23a09"
+      "sha": "e4c67a3af498709a42b39f978c63ddcea4b5cefedbd7989df9ed2508d17973ce"
     },
     {
       "path": "agents/advanced_physics_calculators.py",
       "ext": ".py",
-      "size": 58832,
-      "sha": "25a6e704123e6d73de69ae29ca68550092e7398c49eec7c21a003586884c7e03"
+      "size": 59626,
+      "sha": "f51b9e2b2b69b3beab0617a78f833bb0307210d71f2a84e3d059e1485d3797bc"
     },
     {
       "path": "agents/agent_memory.py",
@@ -3861,28 +3795,10 @@
       "sha": "9f3c752ac8986a52ff62e5ca13a69c5bc0e3e5f966320d3e8b883260ed20579e"
     },
     {
-      "path": "agents/codex_client/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 192,
-      "sha": "69c63b6f8db216e129c5d7d21cec73fc8687708efcd02817a0ffb6f181afbe0f"
-    },
-    {
       "path": "agents/codex_client/codex_client/__init__.py",
       "ext": ".py",
       "size": 121,
       "sha": "3dffb8f48b8c0b316f6f7b9205e793fd4b52feb0f0ae9b942c582c26ffe083d7"
-    },
-    {
-      "path": "agents/codex_client/codex_client/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 314,
-      "sha": "68e1ae5cbeade49f8c86d36062c671dbb332302da08c4ad2629313be018a4be7"
-    },
-    {
-      "path": "agents/codex_client/codex_client/__pycache__/bridge.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6291,
-      "sha": "9566a560c7815f961271c1f6b77e18eb61e696c7113b47a078a8b99b5eda5a06"
     },
     {
       "path": "agents/codex_client/codex_client/bridge.py",
@@ -3953,8 +3869,8 @@
     {
       "path": "agents/mental_mapping.py",
       "ext": ".py",
-      "size": 44247,
-      "sha": "9472c59b3751582ab304a1337e1fa098ba648e957b72b400577a245469cd9b46"
+      "size": 44866,
+      "sha": "8a5e26d52358e93e8d1b3541a7108e92601e4b21061d2c47cae3bce1366b3b04"
     },
     {
       "path": "agents/msp_client.py",
@@ -3971,8 +3887,8 @@
     {
       "path": "agents/physics_orchestrator.py",
       "ext": ".py",
-      "size": 127748,
-      "sha": "2e01b0fd01421904b7f8aceb263685b78e6c527d6443cc33f9b87e277fc10cc4"
+      "size": 129242,
+      "sha": "2786d7707d7e76ba202a9a0e9c45c32f7da1827066469b9fcc9b653fbc7fe766"
     },
     {
       "path": "agents/prompts/API_MODEL.md",
@@ -4511,8 +4427,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2119,
-      "sha": "bd0d7e768774f23e0a5287796ebebc173a688843d8b2e6594460c30ddbbbae73"
+      "size": 2116,
+      "sha": "ffe118c47adb40b4ac251c1e67bd539b2b6d3d8ca194e51cc62c00efbcfbbc40"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -4749,18 +4665,6 @@
       "sha": "57034a1aba243ae3d9af80dbbab90253b4528b5685b3636961d76e36b837745f"
     },
     {
-      "path": "codex_digest/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 341,
-      "sha": "6a85a62ee139f45164b3fe13ea1e55d54cec90de64850a912a0d051771fcdf23"
-    },
-    {
-      "path": "codex_digest/__pycache__/error_capture.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2983,
-      "sha": "03a7623c4e732eb71778935266089a8ea45a2a681ef38e3cdf0b5c333256fa6b"
-    },
-    {
       "path": "codex_digest/cli.py",
       "ext": ".py",
       "size": 1513,
@@ -4855,12 +4759,6 @@
       "ext": ".py",
       "size": 583,
       "sha": "0a7dd69ecdf5840f4144a0809763a68151d4b94f5288b189b34e280db345fe07"
-    },
-    {
-      "path": "codex_ml/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1695,
-      "sha": "9eedbb3a93dbbe43b6b3cc6091ae5ed660a5045e0a3f5bf89a21549bfb546343"
     },
     {
       "path": "codex_ml/cli/main.py",
@@ -5161,12 +5059,6 @@
       "ext": ".py",
       "size": 8870,
       "sha": "86f477387b93600249f4b983b2cf6f6a7fd06249d791082b0d27166bdcd97d8d"
-    },
-    {
-      "path": "config_legacy/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 12025,
-      "sha": "d215bba22c2fa4922fdc2285dc1b167b06a05d0d244a893f7d0432e7ef977e32"
     },
     {
       "path": "config_legacy/errors.py",
@@ -11871,12 +11763,6 @@
       "sha": "c3b52c450a3ba96f2f2b4065ce0d9c8bc99a20bb57c3131ff24146805b0988d6"
     },
     {
-      "path": "omegaconf/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 12321,
-      "sha": "6cd7c6545d0d698b8e81106ed659ea164c3aaa3a23f7b9612bd9f08da2fb0da7"
-    },
-    {
       "path": "ops/threat_model/STRIDE.md",
       "ext": ".md",
       "size": 602,
@@ -12363,12 +12249,6 @@
       "sha": "b9e48784ea944ee5d315f3f7ff7115167cfd4c65c85380ba104839b58b7d1959"
     },
     {
-      "path": "scripts/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 486,
-      "sha": "8f041220df07a9ecddd89ba52c516065d7dc558275c7ea9cfa251364f5d4830c"
-    },
-    {
       "path": "scripts/adoption/track_metrics.py",
       "ext": ".py",
       "size": 12235,
@@ -12563,8 +12443,8 @@
     {
       "path": "scripts/ci/docker_pytest.sh",
       "ext": ".sh",
-      "size": 1481,
-      "sha": "3000df1b7bdfb1f89ebaec335e4fc191fccd7c03fe577447fdddbbedb84a3e04"
+      "size": 1618,
+      "sha": "47ebf804054d34790eca6b5c407002ba49c9238a2d028640cba46d4bccb56dce"
     },
     {
       "path": "scripts/ci/establish_baseline.sh",
@@ -13533,78 +13413,6 @@
       "sha": "886aaa30832098a482a8ae0ada1fedeba3681594b820cadaaa0d183abf9c9eb7"
     },
     {
-      "path": "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 564,
-      "sha": "c16df3faafaa1bee85711f1007415159fdbc12bcaa6f782eadb4b3b000856943"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 90544,
-      "sha": "a2d4b55b96b5191bc27060576afe8e25df71ff7d82928bafd1beea261063c0a1"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/coverage_ingest.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 9123,
-      "sha": "c277c800ef90a1807d58b415f1fb7a363206deb71438b928540aacf947681cb8"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/dup_similarity.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 8214,
-      "sha": "8717f60df2edd78e6c84d5a9c42749746960c13a437d834c4cc3221f3cd6a059"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/trend_aggregator.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 14068,
-      "sha": "a59f8ae9b5a9772440de3d53929d6f3995691c476cdc82d324b64995cf6e7da1"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/trend_compare.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 13585,
-      "sha": "a9eed6b6cb11a0ee8f20e98f3fd3ed6de87adf3d74fabf1a0a952499f3239fbc"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/trend_db.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 19899,
-      "sha": "973e78b8cd2b7660abf9eda8c75b8e879add1b210775766a2d1a244535036105"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/viz_api_collection.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 68070,
-      "sha": "e756c0bae3bc6a8be83175cab75426d2d63824563d65fa2091a364867c3baf4b"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/viz_ascii.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 12965,
-      "sha": "530ff5ee53cc9545ccd999ec6a7fc2d1347c7345042d392a5abcadb797d64e51"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/viz_cli_builder.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 38861,
-      "sha": "30fe6dfa59c8550ae74cacb4d9d73cb2499d2866ce986889286ada5ac2ace234"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/viz_html.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 20327,
-      "sha": "f8ccf186acc6d49cafeed6d2fbb79e90ebd813be2c33b60e1510f41ac24377b1"
-    },
-    {
-      "path": "scripts/space_traversal/__pycache__/viz_swagger.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 47251,
-      "sha": "c9c85dc3c50af3c4ec80d49fcfab00b002df6471ad4da6beb4034cbb46033ba5"
-    },
-    {
       "path": "scripts/space_traversal/actions_usage_tracker.py",
       "ext": ".py",
       "size": 12493,
@@ -14337,12 +14145,6 @@
       "sha": "be7e35462d292c14ac952af75d95aec8d3afe0ae0559711d496599448265a749"
     },
     {
-      "path": "sentencepiece/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2719,
-      "sha": "36a4b5ff865608c6b34625ac740906be20641b0a1a4bc8a6dab5ae9d6fb67c1d"
-    },
-    {
       "path": "services/__init__.py",
       "ext": ".py",
       "size": 28,
@@ -14607,12 +14409,6 @@
       "sha": "436ad104e0319decba195c6f7810a35e4412016e76fad09785831a51149f1f2b"
     },
     {
-      "path": "src/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 293,
-      "sha": "b220be2f99113fbfa899923f4f15500f909a868fa4c2c8da4603856b623c3522"
-    },
-    {
       "path": "src/cli.py",
       "ext": ".py",
       "size": 9619,
@@ -14623,18 +14419,6 @@
       "ext": ".py",
       "size": 187,
       "sha": "9cfb329b5b21eb564665fdd521d81d2125137e8cd51682de0103560572731774"
-    },
-    {
-      "path": "src/codex/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 298,
-      "sha": "90e6a1383c007ba96eafdb0282337d1f41b03a06b6510db17365d236960e3356"
-    },
-    {
-      "path": "src/codex/__pycache__/_version.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 273,
-      "sha": "934811d535d4c118e6b057c3afaa895f45a099157633158e1930ce6b9c3e76eb"
     },
     {
       "path": "src/codex/_version.py",
@@ -14907,18 +14691,6 @@
       "sha": "4024d2b9b8de1f0d154437a3fa7cb16370871007df0d6bb02723422db91006eb"
     },
     {
-      "path": "src/codex/db/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 318,
-      "sha": "656a881141aebcaaf277a006a0d643cd043fe97e779a0ca09a79067ed0e0ec5d"
-    },
-    {
-      "path": "src/codex/db/__pycache__/sqlite_patch.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 8237,
-      "sha": "e135aa4d03b751c90d52305035f030a994328657a9e633e6b73f8f320ab7206a"
-    },
-    {
       "path": "src/codex/db/sqlite_patch.py",
       "ext": ".py",
       "size": 5942,
@@ -15051,30 +14823,6 @@
       "sha": "b0331f7580c77769ee9540462989aa29bafe1c03e49b069857661a021615e186"
     },
     {
-      "path": "src/codex/logging/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 812,
-      "sha": "a003d39b6e11ed8ac5da0028f207bf9058398b00d9affefcf473731d90915bf9"
-    },
-    {
-      "path": "src/codex/logging/__pycache__/config.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 521,
-      "sha": "bee1e589a30f424152e331ba642a89a31824a72b7ac9b29d3bd58a6345036327"
-    },
-    {
-      "path": "src/codex/logging/__pycache__/fetch_messages.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6090,
-      "sha": "d5040ff4bd2b0a26884028433038ce5986d3f1fc59313037850412801156637f"
-    },
-    {
-      "path": "src/codex/logging/__pycache__/session_logger.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 17717,
-      "sha": "29d5f95e197e2485b31cd438c04c9de821790c17abc7431d68acc0cf8c07b328"
-    },
-    {
       "path": "src/codex/logging/config.py",
       "ext": ".py",
       "size": 360,
@@ -15201,18 +14949,6 @@
       "sha": "9d6d53e45737a66e6d668dbfc20734b47815c126285dbda91d6c7b56d2f0cc40"
     },
     {
-      "path": "src/codex/monkeypatch/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 328,
-      "sha": "78916d001991c84beb9c7d3ef600ccdccb8dfa32fa81c79c8dc3046fc9c68370"
-    },
-    {
-      "path": "src/codex/monkeypatch/__pycache__/log_adapters.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3110,
-      "sha": "797ef1e8539ac25e31aefb34f744ff7db62ab14f3049725a48fe0b60d602466c"
-    },
-    {
       "path": "src/codex/monkeypatch/log_adapters.py",
       "ext": ".py",
       "size": 1877,
@@ -15235,36 +14971,6 @@
       "ext": ".py",
       "size": 3775,
       "sha": "48d798b0fe9c49cba709d23761af94f1134ad9ce02fefe3148b5c1388e5e5d59"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2617,
-      "sha": "d61fd2f22bcec141138ee148ec3bf2dfa0b687519f83f08760573d69dc667de8"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/__pycache__/constants.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4161,
-      "sha": "cc29daf92ff100bfc99d0861120acc6c569f5dbe3e7c16b9717540dd9bb641aa"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/__pycache__/mlops_bridge.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 23871,
-      "sha": "19fb0412a2f8061387dc06e9b0284830e698513eb0844deb21d7cdeeb2a85d01"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/__pycache__/optimized.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 17454,
-      "sha": "93dbb458169c4d034c64c96727547acbaaa2b67160b023170f3a2c46829f5cb7"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/__pycache__/orchestrator.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 44407,
-      "sha": "04bd2033eb24ffb0b0a323a65ca29607c94d8d3728d2921114f73c41b123efa3"
     },
     {
       "path": "src/codex/quantum_orchestrator/cli.py",
@@ -15313,36 +15019,6 @@
       "ext": ".py",
       "size": 1874,
       "sha": "73d563b85f4ee850ce777356277a52de342a698323388c9f2788917404091de4"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/qft/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1590,
-      "sha": "2b80d181b90ec842a489208037d5c2bd354b43ac8e058ad4b7b786980d5d392c"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/qft/__pycache__/entanglement.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 19990,
-      "sha": "068b4180fed0c9c5f0295973615dccedf8a39761d31e984b5ee54a2036898d8c"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/qft/__pycache__/gauge.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 23245,
-      "sha": "852e8ea24d4842db81693f65537d30a5eedd56c655d1667121536e32bec2da16"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/qft/__pycache__/path_integral.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 23053,
-      "sha": "bcc1dfd29f258181a5275dc49aeb2e3c6a5905223b7a155ad81bd88a09ac70bb"
-    },
-    {
-      "path": "src/codex/quantum_orchestrator/qft/__pycache__/second_quantization.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 20810,
-      "sha": "e8e9d0555fd667ef21395804f8015da7ad123ef60f2950e94f92b415f536291c"
     },
     {
       "path": "src/codex/quantum_orchestrator/qft/entanglement.py",
@@ -15921,30 +15597,6 @@
       "sha": "4fa4599621dfb62ad14481478e22efdb1368622ad5f03e5eb2de168c348406a0"
     },
     {
-      "path": "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6087,
-      "sha": "dc7d9b99607f3ba2abd12cbe95438d503f5d96df11b264c6f1a884ce288f20d2"
-    },
-    {
-      "path": "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3428,
-      "sha": "77859b61bb0c6505429c71aff7e4826f3f73e61b69feb7255c9d9dbc3bd60a6c"
-    },
-    {
-      "path": "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 32103,
-      "sha": "b3e801112ea589270e4402b5ac329efbb240ee03c1361fc953e8e89390941e17"
-    },
-    {
-      "path": "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 24665,
-      "sha": "c365c50ec36b98ac7fa49c90d512fc7041307729355550864524de275e5c3401"
-    },
-    {
       "path": "src/codex_ml/_package_main.py",
       "ext": ".py",
       "size": 882,
@@ -16335,18 +15987,6 @@
       "sha": "71bf5aceeb5c189151ddd4d6630aae6f969fc2cd97e310f8fcc07b8dcfd1b329"
     },
     {
-      "path": "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 43198,
-      "sha": "a68637a29070d49a8bf3a99251c5c48064b6bf206a2d05bb841955cd664462db"
-    },
-    {
-      "path": "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3638,
-      "sha": "f8068d274a762509a93ac89d79db9ae1870932887148ee70f789b534395a3f8c"
-    },
-    {
       "path": "src/codex_ml/config/deprecation.py",
       "ext": ".py",
       "size": 2198,
@@ -16429,24 +16069,6 @@
       "ext": ".py",
       "size": 1708,
       "sha": "05d00784b747fa80fa8b45c5786dac4ff2794001afd491dc9379411052e6d941"
-    },
-    {
-      "path": "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1974,
-      "sha": "bffb7765119b4a9aa086bcc79ba52650421ce8c672ddb7296858b7db7845edfa"
-    },
-    {
-      "path": "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 7438,
-      "sha": "1681ccefb177c229ef78e1aaf22e68d9b9085818fc5f943455c85c8e63796062"
-    },
-    {
-      "path": "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1399,
-      "sha": "75bc6bca560eefa3e7c21d92b52c2d05617763cb97b18393fc62f49dc004a34a"
     },
     {
       "path": "src/codex_ml/data/cache.py",
@@ -16953,18 +16575,6 @@
       "sha": "8c4579c21cc28a0afb70466c25e9a7441d1db94919c318987fce30780d55cdb5"
     },
     {
-      "path": "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1833,
-      "sha": "ca3f7e055b36f688ad1f1676e8d402160ae554402d3029a900a9da223a2f8a93"
-    },
-    {
-      "path": "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6954,
-      "sha": "6d8881b6e7f65ac0fe446942534afcebf67e4aeebb4be5ddf31852fc1d443be8"
-    },
-    {
       "path": "src/codex_ml/interfaces/contracts.py",
       "ext": ".py",
       "size": 5956,
@@ -17101,54 +16711,6 @@
       "ext": ".py",
       "size": 976,
       "sha": "4dce1bda7670616edce65630a7b3032bfd559bfa70b6109793cec61a22bd19f9"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1029,
-      "sha": "67f407f28e4590565a78eca696fbc73bdbb435c0e0831d8cc149b1552b9e0baf"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 12136,
-      "sha": "87ffc6703c339e1b723f4ac66aeee39f8e29129c90d34fa61d18082b6c96b3ce"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6618,
-      "sha": "2be3d0378af9025565792d353d7ae640bc6480409983f1cbde869399d8249d01"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6959,
-      "sha": "e6da70c3fc9bf95fa87c4f6d0b27f8e3293dc53206fd17cf5fdc7a2df716bff0"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 23944,
-      "sha": "0265bd0688c31e7e98e6ab4ac6e26f7b15de9f54d54c774d9e64b2975439272a"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 25089,
-      "sha": "18116a7bc9e0bee314ac518b18805c8130d257c07aa9ed824938089a9023f2ec"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2589,
-      "sha": "c7d0229feb8a293424e5d5d12d46af94eafce493aab96cb0094431255f277a63"
-    },
-    {
-      "path": "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1555,
-      "sha": "946e221e4704ebdb73a9d9963c94d87c8bc1401b98a5972fd1d7253a9132d897"
     },
     {
       "path": "src/codex_ml/metrics/_optional_bleu_rouge.py",
@@ -17595,18 +17157,6 @@
       "sha": "fcfd5c0042941df06be0d1e125bce81dd71e5247d59fbf90c6b9911b08cf3dc4"
     },
     {
-      "path": "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4485,
-      "sha": "8d86e2aeadb223adac095571b515c1bc78d210a9f4905017e13e0c18e8f02447"
-    },
-    {
-      "path": "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 9801,
-      "sha": "d91116176fd63d887f3dcda0dd5c7dbb010d61e3d4b3436bf419e12955a3bbbe"
-    },
-    {
       "path": "src/codex_ml/registry/base.py",
       "ext": ".py",
       "size": 7778,
@@ -17875,18 +17425,6 @@
       "ext": ".py",
       "size": 536,
       "sha": "d2606f448d14701f88958051b8e9eff20cf124a6f49d62b8865b76e4f04992cd"
-    },
-    {
-      "path": "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 760,
-      "sha": "886624ec8f9a70e81e082dabd1904dd1afa47922aa398f753ea540d57ebf56f9"
-    },
-    {
-      "path": "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 28442,
-      "sha": "98c9c74efc7c8c08160d23e81aaac1976e0c584242871e314e7bb25ddf6f13e4"
     },
     {
       "path": "src/codex_ml/tokenization/adapter.py",
@@ -18235,72 +17773,6 @@
       "ext": ".py",
       "size": 1408,
       "sha": "781b030a8034da57922ec8d9cf38c2e522ec19b67241c0f05284bb5f75c2000c"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1149,
-      "sha": "05c100db8a2f3750f3f60f3499e321196f8e83a6252a1c88eb5d1eb714e3b3a4"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2746,
-      "sha": "784a1db6a573c48b243320c89f29d2039817d8f52c9f52521d5cf51656febf56"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 30534,
-      "sha": "40511a79b04a02de09c7040953da71ac20112f0ccedf37756924a6e1fac449e9"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3255,
-      "sha": "02c4ca8c5ebb8aebb3ade4b438723aa44f10b1cf66c0577884884bf0f6a5f6d6"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 10010,
-      "sha": "e504e2e317abf63cc81821fb541a9e7a2d1c161bf7e0c3650938e0309c680e74"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 62966,
-      "sha": "c3fcce66d45dfd0b0d0f219ff485b34953f7e11d1d45b474b0884db5e4081d1b"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 16074,
-      "sha": "87e39a10a9024dcf55404fbbf914fa4b79d392c423c43eaf81e4ad6f7af91435"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3349,
-      "sha": "d5ba90addbc5de6b42d096d04684f12aede3001ccc825228c66eccbc3a452e2e"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4180,
-      "sha": "cb03dce904ecd2cbc70e5fb0b04695cd0b6c2af2a71440342274d98d921857fc"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3252,
-      "sha": "04817c3477a8a93c9bc2ecde00fb08b859dfc7d74025a0a09b6f8174826f29f6"
-    },
-    {
-      "path": "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 7329,
-      "sha": "d2bd680470b60369c129241989ad7867baa69936ae7bd3f8282e7d8baa389310"
     },
     {
       "path": "src/codex_ml/utils/artifacts.py",
@@ -18661,6 +18133,42 @@
       "ext": ".py",
       "size": 9984,
       "sha": "689e532d77ba56caa24601d6bb5a44e9d461bb3cddddecce125fc52f181ca961"
+    },
+    {
+      "path": "src/codex_ml.egg-info/PKG-INFO",
+      "ext": "",
+      "size": 34501,
+      "sha": "4866a3ee395b3f3ccea85193f009c995da4f342f30444ff31986fd32724390ff"
+    },
+    {
+      "path": "src/codex_ml.egg-info/SOURCES.txt",
+      "ext": ".txt",
+      "size": 45053,
+      "sha": "1705eb3b9bde34d0061cd48969cc93152947e9d5d91dc879d26dec02c565ae1d"
+    },
+    {
+      "path": "src/codex_ml.egg-info/dependency_links.txt",
+      "ext": ".txt",
+      "size": 1,
+      "sha": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "src/codex_ml.egg-info/entry_points.txt",
+      "ext": ".txt",
+      "size": 2479,
+      "sha": "4717396f301413f116064a19d1ac1cfb5882b1ec503864f54030bea1e3877231"
+    },
+    {
+      "path": "src/codex_ml.egg-info/requires.txt",
+      "ext": ".txt",
+      "size": 2907,
+      "sha": "fb63830e177244a003c6cf095f5a4155ec8a4023dbdca68278560254d09bbd71"
+    },
+    {
+      "path": "src/codex_ml.egg-info/top_level.txt",
+      "ext": ".txt",
+      "size": 235,
+      "sha": "923b67de9dcdb937cba3586763971d7476d7ba0d08af8709741181237574d17a"
     },
     {
       "path": "src/codex_plans/Tasks_PR_2459.md",
@@ -19179,30 +18687,6 @@
       "sha": "3b2a9d6dbadd0ccc8bce7fc8c1b9b39e0ad5aa7cc3a4645be54cdb40f4acb67f"
     },
     {
-      "path": "src/ingestion/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 10918,
-      "sha": "9d8ddd34d7a0688bf526e8272f4e501b0e9faf16a52bf9993677fc72e628b7c0"
-    },
-    {
-      "path": "src/ingestion/__pycache__/encoding_detect.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 4826,
-      "sha": "3865eb669a9c0bbb23b9c2d78ac074c629fbe8a187512333d581f9fc34e0ec51"
-    },
-    {
-      "path": "src/ingestion/__pycache__/io_text.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 5742,
-      "sha": "2d15d8d5003a76451a8f404499d7a8a39d39008801a86278965509e39770e4f0"
-    },
-    {
-      "path": "src/ingestion/__pycache__/utils.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 12957,
-      "sha": "fc2c6068bd992b3bff724c878d65100dbf82821ac092492b8e4eef012d4ea889"
-    },
-    {
       "path": "src/ingestion/csv_ingestor.py",
       "ext": ".py",
       "size": 790,
@@ -19431,42 +18915,6 @@
       "sha": "1a9880ced1313de44aa57aa0f14828a632aa0553eb0c0a49c7298cdb94bce352"
     },
     {
-      "path": "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 1251,
-      "sha": "dd0c2541f0c7131a9a428d621332fc43c1b6b9d1a60e69fc845cd4941f2637f6"
-    },
-    {
-      "path": "src/tokenization/__pycache__/adapter.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 306,
-      "sha": "5743b9540558301a3a1b958ad5c1c2d87b364e55bbdb44baba5eee1726daaa35"
-    },
-    {
-      "path": "src/tokenization/__pycache__/cli.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 24700,
-      "sha": "969bc10f845394c5a2679b0ed77fae7b125d50546d482aa8a81ef05a8ceca371"
-    },
-    {
-      "path": "src/tokenization/__pycache__/loader.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3719,
-      "sha": "c74a4dd8f72c2eeca02c6212a62ee61d9ef1f526f24011cb0e00fea229cafad0"
-    },
-    {
-      "path": "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 2084,
-      "sha": "a9552e31416f516b1fc462385f4b9a1a75881e204bd43ccb82db0ee3e4e5029b"
-    },
-    {
-      "path": "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 11639,
-      "sha": "15e224e41f706a98d5bca9c8fbe6c68ec1c270464307406182f33dfea6c656d2"
-    },
-    {
       "path": "src/tokenization/adapter.py",
       "ext": ".py",
       "size": 127,
@@ -19507,18 +18955,6 @@
       "ext": ".py",
       "size": 99,
       "sha": "81ee69b8e79aa73b42e0a389e9a23b7df85d50e0747bacdb9ccb55e00370c698"
-    },
-    {
-      "path": "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 316,
-      "sha": "74e6137c30bb7019af312bc36eb1c6a298265a636187e4008978d500ee66b368"
-    },
-    {
-      "path": "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 6329,
-      "sha": "8745593ed9bcf0b493c0109a3245b6e222746b023e957acd09d64855e1b4ff90"
     },
     {
       "path": "src/tokenizer/fast_tokenizer.py",
@@ -20040,13 +19476,13 @@
       "path": "tests/__pycache__/__init__.cpython-312.pyc",
       "ext": ".pyc",
       "size": 148,
-      "sha": "7475db38471f126f559123931907c644f9166be8ccffdc114b463a476b684533"
+      "sha": "bcf35c675f9cc85e419d48bbb7d2b0c146c44f744b30baa4642b8eee01d55b06"
     },
     {
       "path": "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 15143,
-      "sha": "6d6ad769208fbd1981a52bc32ac82e9a24b7d5a9f046e5c6a94b4a677654831f"
+      "sha": "0c3ec287499ff5191895fee6524e5311412586c81556dd560e9ca6c39bcb3ce3"
     },
     {
       "path": "tests/_codex_introspect.py",
@@ -20070,259 +19506,13 @@
       "path": "tests/agents/__pycache__/__init__.cpython-312.pyc",
       "ext": ".pyc",
       "size": 155,
-      "sha": "e720d06f071a75dfbfd8bfc5f160d9bea813ad1b9e8d41575913d9027e953814"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_30pct_final.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 25187,
-      "sha": "60617a5a757504d57b84f9316db4e446d7064f672295b316c4f4ac0983a1b173"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_advanced_physics_calculators.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 46343,
-      "sha": "81691e8da1c3914f0dc9ebbfa6c01271c96909b3c5640fbc8a50fe758c78cfbc"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_advanced_physics_iteration2.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 53781,
-      "sha": "1f8c96a339c716196c2b0a4a8d1963427ad5a040a195ab9dd253a2e81af5907f"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_exhaustive_30pct.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 31504,
-      "sha": "e4632de4b15b3a3697fb1604fb915bb678e492e492c1cb44d3702e2d62d8cad0"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_expanded_coverage.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 35866,
-      "sha": "41381bf9f8b29012caca5749e8792fc3777823214d1cf09d674fca42454a13d0"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_final_30pct.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 14483,
-      "sha": "c9c1779477c4dd65a5b0bd67067246b441e031a0352ce0eff9234c516be146ae"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_final_30pct_push.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 43219,
-      "sha": "9a915e58ef322962418168276c300e3937ccc73edb8557d83dbdd7249949508d"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_final_push_30pct.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 30554,
-      "sha": "a415d96a4a21bfb95c0cdb958b0b3ca0fe5c23e71e8e63bc044b34faca2ab9db"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_invariants_minimal.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 31135,
-      "sha": "6094c40b1a5bcd842188e5875e3087ab16c34ed4d96feacdb405eb8c7da4804f"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase1_completion.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 31689,
-      "sha": "fb59c3fe81f1d7ba9bbfe1c09c540b6157a787bbac80431484eacfe49a5c43c7"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase1_completion_final.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 27706,
-      "sha": "60fa3eab34a6296c117eb734a6c976d86c06b443a2c5c44689467748cd6a0855"
+      "sha": "e0989dd768c7cb685c08d4a4c9e32e1ec4f54bf42273974a022b816bed676bce"
     },
     {
       "path": "tests/agents/__pycache__/test_phase1_final_completion.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 40043,
-      "sha": "20510851e91def7a139c44fade1095ec2ceeb84bffa1a61b3495f8b9c606825b"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase1_to_30pct.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 28843,
-      "sha": "1ba6e8dfaaddd2b7780d5ea94a8eef9c9511687869c1d78dfb371a7a2776154c"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_corrected_apis.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 71233,
-      "sha": "3fe3e72f2812ab57af51fa62b39e4e8e141d3a782870c6ae2e363068ea1b3544"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch1.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 48547,
-      "sha": "2dcda900211cd0485ce1d2ec62a7813b2e7844d0ffde51b21acf7e27ab2702e6"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch10.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 66611,
-      "sha": "dc797d2b18b07bc206d8aa0b6f310ae5265c91e77bed26614bcba6f06b8d3e18"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch11.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 55455,
-      "sha": "f119cf7d9f6c40cdf8f65010dacd08f766c63c2549f2a4c38716f9550ecca0d2"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch12.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 83452,
-      "sha": "a6c01eac034a7f19f6f4ad457794c2f3d833afa6592273d70c003023e583a421"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch13_branch_expansion.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 31460,
-      "sha": "14094f15dd3c365f108ada4638bb7a8c7bb094fe0ee230f82275778a1444f4c2"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch14_exception_handling.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 42206,
-      "sha": "7efe8a4dcd7d318d9900224c208e01ef0583e0abaefe856d49d6507837502028"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch15_integration_depth.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 33461,
-      "sha": "80ed06f1cbb5c1d2251699cab1bf25e36ad6e36b78f83726c81537d5ab13cb7e"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch16_method_variations.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 40339,
-      "sha": "55f1e5e1cee2170949e2dc61c89bc71de008a6984f0b145cac9afd6f09571f58"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch17_final_gaps.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 31672,
-      "sha": "c942bee9e7ffe47a4841148ca96575dea727515f2f6a5cfb7becb1d4ce13fd55"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch2.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 64804,
-      "sha": "13a99ca6a0badd4581fea3f7ea7f57d814c6ca037bba2ae58a86de8dd8108365"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch3.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 41723,
-      "sha": "f6e58bd6cb18efa6f4714644f83f13a4cff351628605addff5333b0e33a75c98"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch4.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 68940,
-      "sha": "adf4ae17955aad252fbd4fc40d05c1cf6394824a1e302d77aafcc362af3b3376"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch5.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 70796,
-      "sha": "e6076f91d103eaeca53034811bb6c94a48a4817307e3370ae1583c6a667c9b11"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch6.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 76918,
-      "sha": "33850c75ccb4462defe67e84bf5e1fae149ba87c7590b07a7f1566c8a187035e"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch7.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 54646,
-      "sha": "3a6dd778fc2c0d12458467aa61b9f21d97dd949ddef5712e27042997bdfc7f48"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch8.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 60690,
-      "sha": "7caf0273ba477f66a76c11e2002ee6b6501169748c5e8fe6fca58df2caa8d210"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch9.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 55169,
-      "sha": "b93eab75164433b8284fa7c6f0b43d79c9005cf5af242daef5b40a1fbd98850b"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_mental_mapping.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 38257,
-      "sha": "1092350b26d162e56f8369d0c36612371106ca6cac8d23fb9c69422df4d4b433"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_physics_orchestrator.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 34199,
-      "sha": "0682df049fc0125c32d051fa39102888a5d38946e9b1cde235e9c1cfd5467b84"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_phase2_quantum_game_theory.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 45177,
-      "sha": "115512dabdb53a2b1868c1a26f962f63dd42c3d2813021898d7974f3a9b9c68f"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_physics_orchestrator_comprehensive.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 46070,
-      "sha": "ffb2719d09c51bd8cd322ae0f70c48ab86911b9deb6fd7042a915a85c2bbc609"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_physics_orchestrator_core.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 23649,
-      "sha": "68f2dffba6a368cacb6fa0350d7b154a7a9eabf3b202cd4b89c72d9cdbe3f2c8"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_physics_orchestrator_deep.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 47725,
-      "sha": "14b7fc543f8a416b1629c17d299d93919b1538d17969844a7a23279ccf8a5211"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_properties_30pct.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 47616,
-      "sha": "323560f28aedf2f2bb7d8eaf5f69028ed8351364edc2b0cf1504d533199425a7"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_self_healing_comprehensive.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 50960,
-      "sha": "86bfa7c8aaceb7e13a5422d0466e3e22be3334d7826579093d01380a1ccda141"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_smoke_coverage.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 30091,
-      "sha": "06ac2aceaaa165d919a02c57521f8b7a661c2775928e452be82e9cab7c86fb3b"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_workflow_navigator_comprehensive.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 62515,
-      "sha": "da4e145c720780e8ac5f492b599072d9abd0bbe0049be0799c68475e2d9492ba"
-    },
-    {
-      "path": "tests/agents/__pycache__/test_zero_coverage_boost.cpython-312-pytest-9.0.2.pyc",
-      "ext": ".pyc",
-      "size": 25920,
-      "sha": "286d2b0ef477b8e66abd508cb23b89807a1fc842d7c14b0c1d361af9760101dd"
+      "sha": "322a3dde5cb10cd8985ff406c13d5d77c7ec3fceb7b4bb924f4329004ad213bc"
     },
     {
       "path": "tests/agents/test_30pct_final.py",
@@ -20387,8 +19577,8 @@
     {
       "path": "tests/agents/test_phase1_completion_final.py",
       "ext": ".py",
-      "size": 8164,
-      "sha": "be24690e2996dd0f70c628e90f6a7713430df2b246b0ee4017b7e2bfc6adf696"
+      "size": 8295,
+      "sha": "10695828fd67b1344ca6ad19c3a5d23cf80c9f0b14bdd7ca0077bea06fb3d9ae"
     },
     {
       "path": "tests/agents/test_phase1_final_completion.py",
@@ -20545,6 +19735,12 @@
       "ext": ".py",
       "size": 17051,
       "sha": "f636f409487ccc28c409ffc0f3dd938967b4eb4ba051529537ea5a87aa1d9737"
+    },
+    {
+      "path": "tests/agents/test_physics_orchestrator_smoke.py",
+      "ext": ".py",
+      "size": 12548,
+      "sha": "9a33d1baf77f7401882643252be81fe7304b3dccc5a16dbdecffcb4e641d2224"
     },
     {
       "path": "tests/agents/test_properties_30pct.py",
@@ -31098,7 +30294,7 @@
       "path": "torch/__pycache__/__init__.cpython-312.pyc",
       "ext": ".pyc",
       "size": 2961,
-      "sha": "68c2c5d3da34c97508193371428f297be7ae5f084b3a9c4528a43dd0c95698a1"
+      "sha": "09afd3dcd8e54147356e8c74e969fc722305454f1237e7e9543a00a872eb9240"
     },
     {
       "path": "torch/nn/__init__.py",
@@ -31110,7 +30306,7 @@
       "path": "torch/nn/__pycache__/__init__.cpython-312.pyc",
       "ext": ".pyc",
       "size": 963,
-      "sha": "a2fbabda3e2ffd54f6cc43103bc5a6bc709fc53e7f414bdab991bdbe6e0de3e9"
+      "sha": "29d63dafc7342cb88b51bcf1cfdb0e149e381a6fdf380e46f613bff3b70c12d1"
     },
     {
       "path": "training/__init__.py",
@@ -31207,12 +30403,6 @@
       "ext": ".py",
       "size": 2495,
       "sha": "38bd763ea05a6d43a0d91381836fb06103b0a15d94ca170d0ea22569a1ee1858"
-    },
-    {
-      "path": "transformers/__pycache__/__init__.cpython-312.pyc",
-      "ext": ".pyc",
-      "size": 3719,
-      "sha": "110734579174d945284b00ef2416d63f19e0e2ba1d4fb53ff135fe8155c61d65"
     },
     {
       "path": "typer/testing.py",
