@@ -1,6 +1,6 @@
 {
-  "generated": 1765773374.961671,
-  "count": 5600,
+  "generated": 1765773637.6202085,
+  "count": 5608,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -729,6 +729,12 @@
       "sha": "04248b07023d4e8455a17361bfd3b78aa3ed194a90a598a641aef31b274aa13a"
     },
     {
+      "path": ".codex/status/COVERAGE_STATUS.md",
+      "ext": ".md",
+      "size": 4962,
+      "sha": "89367e2fb9b05f152f55915efcac61fb92583ccb1ffd4e9f68ff69a8d8255b42"
+    },
+    {
       "path": ".codex/status/P0_fixes_PR2459.md",
       "ext": ".md",
       "size": 597,
@@ -1155,6 +1161,12 @@
       "sha": "b727f85e7ffa8eb3c37a7482613f35fd521765ad060f4ddcd0a50e4d588c85f9"
     },
     {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T04-36-37.214023.json",
+      "ext": ".json",
+      "size": 5878,
+      "sha": "b9e8dba71b8008a7514fa5ea5247cfda6de62a3477dec93e9d1cbbc61077433b"
+    },
+    {
       "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T04-32-15.994949.json",
       "ext": ".json",
       "size": 337,
@@ -1173,6 +1185,12 @@
       "sha": "7e1511962eccef21c1f5abd71354df234ef8c415da8a9f9ab68308dd7598f2a0"
     },
     {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T04-40-36.360671.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "132ff2ed3502be1d75e7235af89c73afa08252376d9f594cd57d2e9e4692a37c"
+    },
+    {
       "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T04-32-39.819235.json",
       "ext": ".json",
       "size": 358,
@@ -1183,6 +1201,12 @@
       "ext": ".json",
       "size": 358,
       "sha": "891baeab82938aa24a354dd098573395ef4af9f516e8e1338fa4d3c1b0e29a3a"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T04-36-37.239814.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "6bbf831a3cecf2b23856ef712a69cbb294664671fe8ccdf92dc1c36ecb3b0192"
     },
     {
       "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T04-32-39.795110.json",
@@ -1197,10 +1221,16 @@
       "sha": "d32b18ec377457a98a986a2bf2fddeaf65863552404340049bc1ccb917960bc2"
     },
     {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T04-36-37.215261.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "94159d1b2eb68a052e1086a368ae2956bed0fc80dd2f95d8fd4a9927b6f27fef"
+    },
+    {
       "path": ".codex/workflows/state/current.json",
       "ext": ".json",
       "size": 337,
-      "sha": "7e1511962eccef21c1f5abd71354df234ef8c415da8a9f9ab68308dd7598f2a0"
+      "sha": "132ff2ed3502be1d75e7235af89c73afa08252376d9f594cd57d2e9e4692a37c"
     },
     {
       "path": ".copilot-space/workflow.yaml",
@@ -3215,14 +3245,14 @@
     {
       "path": ".pytest_cache/v/cache/lastfailed",
       "ext": "",
-      "size": 23625,
-      "sha": "0de378e43d45b2865d9096d34ec5852035c7588d5190ebf3f6c3dba197933ae3"
+      "size": 24398,
+      "sha": "ea6fcc6af3766ed08cee135b414b2e9ace6c662e70f682675ed9850c43efcd53"
     },
     {
       "path": ".pytest_cache/v/cache/nodeids",
       "ext": "",
-      "size": 142219,
-      "sha": "8af87373073ef575a17375b6030ca69092d255c893c66f80e1706332181b2cd7"
+      "size": 145109,
+      "sha": "1d1fd6cfcee7748efaa9710477106053bb9e2d96392bf8f389872406286b1661"
     },
     {
       "path": ".reports/fencefix_run.json",
@@ -4572,7 +4602,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 2122,
-      "sha": "23fb98a091e1303f5018fef3064024373b305fbe1759b04b9fbdce5f122a4b82"
+      "sha": "4d0b20bc95d5a5ba47177001e7ed19a92bee9056b3bc34bb5933c8b07c484417"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -6373,6 +6403,12 @@
       "ext": ".json",
       "size": 426104,
       "sha": "eef1f627e50c91d1b5ad8f3e3d08f68fafcd5da71a2eec80e056ad3b48ca5dd6"
+    },
+    {
+      "path": "current_coverage.json",
+      "ext": ".json",
+      "size": 426531,
+      "sha": "fc8af409a11a9bc2086ba18ff3811de06aa72a5e03dd82b0512d66d5f43f54f8"
     },
     {
       "path": "data/.gitkeep",
@@ -21909,6 +21945,12 @@
       "sha": "f4a1386224b85a2b47178e16f0e759a6c3cb64515774d5444c4bea21ba4782f1"
     },
     {
+      "path": "tests/agents/__pycache__/test_physics_orchestrator_deep.cpython-312-pytest-9.0.2.pyc",
+      "ext": ".pyc",
+      "size": 47725,
+      "sha": "c69649178034e6ffa6f6809308a2819e12de729a4787f3e506152697795632a5"
+    },
+    {
       "path": "tests/agents/__pycache__/test_properties_30pct.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 47616,
@@ -22153,6 +22195,12 @@
       "ext": ".py",
       "size": 6616,
       "sha": "310ba9bbea1da7b324a33b121ddb12a0bc9dcaccf819abe026632a885d752aa4"
+    },
+    {
+      "path": "tests/agents/test_physics_orchestrator_deep.py",
+      "ext": ".py",
+      "size": 17051,
+      "sha": "f636f409487ccc28c409ffc0f3dd938967b4eb4ba051529537ea5a87aa1d9737"
     },
     {
       "path": "tests/agents/test_properties_30pct.py",

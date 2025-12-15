@@ -1,5 +1,5 @@
 {
-  "generated": 1765773375.0356708,
+  "generated": 1765773637.6936345,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -1989,6 +1989,7 @@
       ".codex/reports/merge_summary_archive_policy_20251024.txt",
       ".codex/status/AGENT_HANDOFF.md",
       ".codex/status/COVERAGE_ROADMAP.md",
+      ".codex/status/COVERAGE_STATUS.md",
       ".codex/status/P0_fixes_PR2459.md",
       ".codex/status/_codex_status_update-2025-08-28.md",
       ".codex/status/_codex_status_update-2025-08-29.md",
@@ -2037,6 +2038,7 @@
       ".codex/validation/tests_docs_links_audit.md",
       ".codex/workflows/state/AUDIT_EXEC_2025-12-15T04-32-39.793966.json",
       ".codex/workflows/state/AUDIT_EXEC_2025-12-15T04-33-40.266603.json",
+      ".codex/workflows/state/AUDIT_EXEC_2025-12-15T04-36-37.214023.json",
       ".github/ISSUE_TEMPLATE/bug_report.yml",
       ".github/ISSUE_TEMPLATE/status_report.md",
       ".github/audit_artifacts_output/COMPLETION_CERTIFICATE.md",
