@@ -27,11 +27,27 @@ except ImportError:
     class np:  # type: ignore
         ndarray = Any
 
+# Optional scipy dependency for optimized algorithms
+try:
+    from scipy.ndimage import maximum_filter
+    SCIPY_AVAILABLE = True
+except ImportError:
+    maximum_filter = None  # type: ignore
+    SCIPY_AVAILABLE = False
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+# Maximum fraction of speed of light allowed for velocity calculations
+# Used to prevent singularities in Lorentz factor calculations
+MAX_VELOCITY_FRACTION = 0.9999
+
 
 # =============================================================================
 # CHAOS THEORY
 # =============================================================================
-
 
 @dataclass
 class ChaoticAttractor:
@@ -76,6 +92,9 @@ class ChaoticAttractor:
         if not self.parameters:
             if self.attractor_type == "logistic":
                 self.parameters = {"r": 3.9}  # Chaotic regime
+                # Initialize state to valid range (0, 1) for logistic map
+                if self.initial_state is None:
+                    self.state = np.array([0.5])  # Start in middle of valid range
             elif self.attractor_type == "lorenz":
                 self.parameters = {"sigma": 10.0, "rho": 28.0, "beta": 8.0/3.0}
                 if self.initial_state is None:
@@ -84,6 +103,12 @@ class ChaoticAttractor:
                 self.parameters = {"a": 1.4, "b": 0.3}
                 if self.initial_state is None:
                     self.state = np.array([0.0, 0.0])
+        else:
+            # Parameters provided, but still need proper initial state for logistic
+            if self.attractor_type == "logistic" and self.initial_state is None:
+                # Ensure initial state is in valid range (0, 1) for logistic map
+                if self.state[0] <= 0.0 or self.state[0] >= 1.0:
+                    self.state = np.array([0.5])
     
     def iterate(self, steps: int = 1) -> np.ndarray:
         """
@@ -627,6 +652,10 @@ class FluidChannel:
     - Flow rate (tasks/time)
     - Pressure (urgency)
     - Viscosity (resistance)
+    
+    Supports two usage patterns:
+    1. Workflow mode: channel_id, name, capacity, current_flow, pressure, viscosity, cross_section
+    2. Physics mode: length, width, height for physical channel dimensions
     """
     channel_id: str = ""
     name: str = ""  # Alias for channel_id
@@ -635,39 +664,100 @@ class FluidChannel:
     pressure: float = 1.0
     viscosity: float = 0.1  # Resistance to flow
     cross_section: float = 1.0
+    # Physical dimensions (for physics mode)
+    length: float = 1.0
+    width: float = 1.0
+    height: float = 1.0
     
     def __post_init__(self):
-        """Handle name/channel_id aliasing"""
+        """Handle name/channel_id aliasing and compute cross_section from dimensions"""
         if self.name and not self.channel_id:
             self.channel_id = self.name
         elif self.channel_id and not self.name:
             self.name = self.channel_id
+        # If width and height are provided, compute cross_section
+        if self.width != 1.0 or self.height != 1.0:
+            self.cross_section = self.width * self.height
     
-    def reynolds_number(self) -> float:
+    def reynolds_number(self, velocity: Optional[float] = None, viscosity: Optional[float] = None) -> float:
         """
         Calculate Reynolds number: Re = ρvL/μ
         
         Re < 2300: Laminar flow (smooth, predictable)
         Re > 4000: Turbulent flow (chaotic, mixing)
+        
+        Args:
+            velocity: Optional velocity. If not provided, uses current_flow / cross_section.
+            viscosity: Optional viscosity. If not provided, uses self.viscosity.
+            
+        Returns:
+            Reynolds number
         """
-        # Simplified: Re ∝ flow / viscosity
-        return self.current_flow / (self.viscosity + 0.01)
+        # Use provided values or defaults
+        mu = viscosity if viscosity is not None else self.viscosity
+        if velocity is not None:
+            v = velocity
+        else:
+            # Derive velocity from flow rate and cross section
+            v = self.current_flow / max(self.cross_section, 0.001)
+        
+        # Re = ρvL/μ, assuming ρ = 1 for simplicity
+        # Use hydraulic diameter: D_h = 4 * Area / Perimeter
+        # For rectangular: D_h = 2 * width * height / (width + height)
+        if self.width > 0 and self.height > 0:
+            d_h = 2 * self.width * self.height / (self.width + self.height)
+        else:
+            d_h = 1.0
+        
+        return v * d_h / (mu + 0.001)
     
     def is_turbulent(self) -> bool:
         """Check if flow is turbulent."""
         return self.reynolds_number() > 2300
     
-    def pressure_drop(self, length: float = 1.0) -> float:
+    def flow_regime(self, velocity: Optional[float] = None, viscosity: Optional[float] = None) -> str:
+        """
+        Determine the flow regime based on Reynolds number.
+        
+        Args:
+            velocity: Optional velocity for calculation.
+            viscosity: Optional viscosity for calculation.
+            
+        Returns:
+            'laminar', 'transitional', or 'turbulent'
+        """
+        re = self.reynolds_number(velocity=velocity, viscosity=viscosity)
+        if re < 2300:
+            return 'laminar'
+        elif re < 4000:
+            return 'transitional'
+        else:
+            return 'turbulent'
+    
+    def pressure_drop(self, length: Optional[float] = None, flow_rate: Optional[float] = None, 
+                      viscosity: Optional[float] = None) -> float:
         """
         Calculate pressure drop using Hagen-Poiseuille equation.
         
         ΔP = 8μLQ/(πr⁴) for laminar flow
+        
+        Args:
+            length: Channel length. If not provided, uses self.length.
+            flow_rate: Flow rate. If not provided, uses self.current_flow.
+            viscosity: Viscosity. If not provided, uses self.viscosity.
+            
+        Returns:
+            Pressure drop value
         """
+        L = length if length is not None else self.length
+        Q = flow_rate if flow_rate is not None else self.current_flow
+        mu = viscosity if viscosity is not None else self.viscosity
+        
         if self.cross_section == 0:
             return 0.0
         
         # Simplified pressure drop
-        return 8 * self.viscosity * length * self.current_flow / (self.cross_section**2)
+        return 8 * mu * L * Q / (self.cross_section**2)
 
 
 class FluidFlowScheduler:
@@ -1015,8 +1105,7 @@ class EMFieldRouter:
         field_magnitude = np.sqrt(Ex**2 + Ey**2)
         
         # Efficient peak finding using scipy.ndimage.maximum_filter when available
-        try:
-            from scipy.ndimage import maximum_filter
+        if SCIPY_AVAILABLE and maximum_filter is not None:
             # Find local maxima: points that are equal to the local maximum in a 3x3 neighborhood
             neighborhood_size = 3
             max_filtered = maximum_filter(field_magnitude, size=neighborhood_size, mode='constant')
@@ -1024,7 +1113,7 @@ class EMFieldRouter:
             # Exclude border pixels to match original behavior
             local_max[[0, -1], :] = False
             local_max[:, [0, -1]] = False
-        except ImportError:
+        else:
             # Fallback: original method if scipy is not available
             local_max = np.zeros_like(field_magnitude, dtype=bool)
             for i in range(1, field_magnitude.shape[0] - 1):
@@ -1337,9 +1426,9 @@ class RelativityScheduler:
         """
         v_magnitude = np.linalg.norm(velocity)
         
-        # Prevent superluminal speeds
+        # Prevent superluminal speeds using the defined constant
         if v_magnitude >= self.c:
-            v_magnitude = 0.9999 * self.c
+            v_magnitude = MAX_VELOCITY_FRACTION * self.c
         
         beta = v_magnitude / self.c
         gamma = 1.0 / math.sqrt(1.0 - beta**2)

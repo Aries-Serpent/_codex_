@@ -167,7 +167,9 @@ class TestFluidChannel:
         channel = FluidChannel(
             channel_id="test",
             current_flow=10.0,
-            viscosity=0.5
+            viscosity=0.5,
+            width=1.0,
+            height=1.0
         )
         
         re = channel.reynolds_number()
@@ -180,8 +182,10 @@ class TestFluidChannel:
         """Test Reynolds number calculation for turbulent flow."""
         channel = FluidChannel(
             channel_id="test",
-            current_flow=100.0,
-            viscosity=0.01
+            current_flow=100000.0,  # Very high flow
+            viscosity=0.001,  # Very low viscosity
+            width=1.0,
+            height=1.0
         )
         
         re = channel.reynolds_number()
@@ -189,6 +193,22 @@ class TestFluidChannel:
         # High flow / low viscosity = high Re (turbulent)
         assert re > 2300, "Should be turbulent flow"
         assert channel.is_turbulent()
+    
+    def test_flow_regime(self):
+        """Test flow regime determination."""
+        channel = FluidChannel(
+            channel_id="test",
+            width=2.0,
+            height=1.0
+        )
+        
+        # Test laminar
+        regime = channel.flow_regime(velocity=0.1, viscosity=1.0)
+        assert regime == 'laminar'
+        
+        # Test turbulent
+        regime = channel.flow_regime(velocity=100.0, viscosity=0.0001)
+        assert regime == 'turbulent'
 
 
 class TestFluidFlowScheduler:

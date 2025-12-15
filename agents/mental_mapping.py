@@ -20,7 +20,44 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+
+
+# =============================================================================
+# CLOCK ABSTRACTION
+# =============================================================================
+
+def _default_clock() -> str:
+    """Default clock implementation using system time."""
+    return datetime.now().isoformat()
+
+
+# Module-level clock function that can be overridden for testing
+_clock: Callable[[], str] = _default_clock
+
+
+def set_clock(clock_fn: Callable[[], str]) -> None:
+    """
+    Set a custom clock function for timestamp generation.
+    
+    Useful for testing to provide deterministic timestamps.
+    
+    Args:
+        clock_fn: A callable that returns an ISO format timestamp string.
+    """
+    global _clock
+    _clock = clock_fn
+
+
+def reset_clock() -> None:
+    """Reset the clock to the default implementation."""
+    global _clock
+    _clock = _default_clock
+
+
+def get_timestamp() -> str:
+    """Get current timestamp using the configured clock."""
+    return _clock()
 
 
 class NodeType(Enum):
@@ -56,7 +93,7 @@ class EdgeType(Enum):
 class ReasoningStep:
     """A single step in a reasoning chain"""
     step_id: str
-    timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    timestamp: str = field(default_factory=get_timestamp)
     thought: str = ""
     description: str = ""  # Alias for thought
     reasoning_type: str = "deductive"  # deductive, inductive, abductive, analogical
@@ -120,7 +157,7 @@ class MentalNode:
         """Add a reasoning step to this node's chain"""
         step = ReasoningStep(
             step_id=str(uuid.uuid4()),
-            timestamp=datetime.now().isoformat(),
+            timestamp=get_timestamp(),
             thought=thought,
             reasoning_type=reasoning_type,
             confidence=confidence,
@@ -140,7 +177,7 @@ class MentalNode:
         self.quality_score = new_quality_score
         self.needs_review = False
         self.review_count += 1
-        self.last_reviewed = datetime.now().isoformat()
+        self.last_reviewed = get_timestamp()
         
         if notes:
             self.context['review_notes'] = self.context.get('review_notes', [])
@@ -152,7 +189,7 @@ class MentalNode:
     def add_lesson(self, lesson: str) -> None:
         """Record a lesson learned from this node"""
         self.lessons_learned.append({
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': get_timestamp(),
             'lesson': lesson
         })
     
@@ -212,7 +249,7 @@ class MentalMappingModel:
     def __init__(self, agent_id: str = "default_agent"):
         self.agent_id = agent_id
         self.map_id = str(uuid.uuid4())
-        self.created_at = datetime.now().isoformat()
+        self.created_at = get_timestamp()
         
         # Mental map structure
         self.nodes: Dict[str, MentalNode] = {}
@@ -239,12 +276,12 @@ class MentalMappingModel:
         self,
         node_type: NodeType,
         content: str = "",
-        properties: Dict = None,
+        properties: Optional[Dict] = None,
         confidence: float = 0.5,
         importance: float = 0.5,
-        tags: List[str] = None,
-        context: Dict = None
-    ) -> Union[MentalNode, str]:
+        tags: Optional[List[str]] = None,
+        context: Optional[Dict] = None
+    ) -> MentalNode:
         """
         Create a new node in the mental map.
         
@@ -258,7 +295,7 @@ class MentalMappingModel:
             context: Context dict
             
         Returns:
-            MentalNode object, or node_id string if using properties parameter
+            MentalNode object
         """
         # Handle properties parameter for backward compatibility
         if properties is not None:
@@ -267,9 +304,7 @@ class MentalMappingModel:
             importance = properties.get('importance', importance)
             tags = properties.get('tags', tags)
             context = properties.get('context', context)
-            return_id_only = True
         else:
-            return_id_only = False
             if not content:
                 content = f"{node_type.value}_node"
         
@@ -277,7 +312,7 @@ class MentalMappingModel:
             node_id=str(uuid.uuid4()),
             node_type=node_type,
             content=content,
-            timestamp=datetime.now().isoformat(),
+            timestamp=get_timestamp(),
             confidence=confidence,
             importance=importance,
             tags=tags or [],
@@ -292,8 +327,27 @@ class MentalMappingModel:
             node.mark_for_review("low_confidence")
             self.nodes_needing_review.add(node.node_id)
         
-        # Return node_id if using properties (old API), otherwise return node object
-        return node.node_id if return_id_only else node
+        return node
+    
+    def create_node_id(
+        self,
+        node_type: NodeType,
+        properties: Optional[Dict] = None,
+        **kwargs
+    ) -> str:
+        """
+        Create a new node and return its ID (backward compatibility method).
+        
+        Args:
+            node_type: Type of node
+            properties: Properties dictionary with content, confidence, etc.
+            **kwargs: Additional arguments passed to create_node
+            
+        Returns:
+            Node ID string
+        """
+        node = self.create_node(node_type, properties=properties, **kwargs)
+        return node.node_id
     
     def add_node(self, node: MentalNode) -> None:
         """
@@ -673,7 +727,7 @@ class MentalMappingModel:
         
         # Store in learning history
         self.learning_history.append({
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': get_timestamp(),
             'decision_id': decision_node_id,
             'outcome_id': outcome_node_id,
             'reflection_id': reflection_node.node_id,

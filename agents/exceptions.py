@@ -5,6 +5,12 @@ Provides consistent exception handling across all agent modules,
 especially for optional dependency imports (numpy, scipy, etc.).
 """
 
+from typing import Optional
+
+
+# Package name constant - single source of truth for pip install instructions
+PACKAGE_NAME = "codex-ml"
+
 
 class AgentError(Exception):
     """Base exception for all agent-related errors."""
@@ -18,7 +24,12 @@ class AgentImportError(AgentError, ImportError):
     Provides actionable remediation hints for users.
     """
     
-    def __init__(self, module_name: str, package_name: str = None, extra: str = None):
+    def __init__(
+        self, 
+        module_name: str, 
+        package_name: Optional[str] = None, 
+        extra: Optional[str] = None
+    ) -> None:
         """
         Initialize import error with helpful message.
         
@@ -34,7 +45,7 @@ class AgentImportError(AgentError, ImportError):
         msg = f"Optional dependency '{self.module_name}' is not installed."
         
         if extra:
-            msg += f"\nInstall with: pip install codex-ml[{extra}]"
+            msg += f"\nInstall with: pip install {PACKAGE_NAME}[{extra}]"
         else:
             msg += f"\nInstall with: pip install {self.package_name}"
         
