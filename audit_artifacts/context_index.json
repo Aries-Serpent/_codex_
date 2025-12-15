@@ -1,6 +1,6 @@
 {
-  "generated": 1765830531.163023,
-  "count": 5270,
+  "generated": 1765831118.3860328,
+  "count": 5283,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -48,7 +48,7 @@
       "path": ".codex/agent_memory.db",
       "ext": ".db",
       "size": 40960,
-      "sha": "f37fc392ba7f04ba246f02013552cb269365b652c1a4a3dd4e1d25cc3b1fe8bf"
+      "sha": "e9638960f5a700aeb559eae3db11400371f4f6b2248fa00657663b7bd29db407"
     },
     {
       "path": ".codex/analysis_metrics.jsonl",
@@ -690,7 +690,7 @@
       "path": ".codex/session_logs.db",
       "ext": ".db",
       "size": 24576,
-      "sha": "551990c40335c7f8531a48f3b32c7ce3011b0ed4b2587e73be6e69761ad4e04d"
+      "sha": "d69732f07f4326fcc518aee2040eb852c616840c96c6be66920da5e4f6f25c6f"
     },
     {
       "path": ".codex/sessions/archive/historical_docs_20251210_4d9198c.tar.gz",
@@ -1143,6 +1143,24 @@
       "sha": "3fa6f041ca9c55318e6d0d3e8fa8333b8480336b4a4722a9fc38825bd94e47ae"
     },
     {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-29-12.452533.json",
+      "ext": ".json",
+      "size": 5879,
+      "sha": "38427e6892ce8b2c8d710aba387fc07a18b863013ed48df8f6101d8d4fdf48f8"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-36-12.858067.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "05260bc245de8cdb5449c2da10a429cabcfa3bdc86415243cd86c5f5bdba559d"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-37-57.503912.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "14caa9bc0a338f76904fa9e3e1775c4049eb32407ce5b5e583aa9325294bc9b6"
+    },
+    {
       "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T20-26-02.021294.json",
       "ext": ".json",
       "size": 337,
@@ -1161,6 +1179,24 @@
       "sha": "7ddf24b18c4b489198d1298a40893172008ddfcf57f9f7a5b750c94a123124d9"
     },
     {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T20-35-50.531933.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "8d971d5f3f4f9ec491ce2a3a63605d99bd13ea84e0e01be052b61ac0539ebbe0"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T20-37-35.339449.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "b18c01fed55103d8476eb3f15662f64bdc59e6c9285c711d87bd209b4b2300b5"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T20-38-37.194768.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "6868ce573a2cda30383cd01795794bc013a24b0a154c87dcf10f3a6be700bd19"
+    },
+    {
       "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-26-24.442436.json",
       "ext": ".json",
       "size": 358,
@@ -1171,6 +1207,24 @@
       "ext": ".json",
       "size": 358,
       "sha": "791451bbdc6e5731eae114b93dd5eccdd8b1a786626d881c653fae6a3b907aec"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-29-12.469252.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "ebff04c241d171c42bf93f8d9d90335f148d8cb2164219ee8f4da136b86b76ac"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-36-12.871356.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "877c94e459e3db8ec1ff475c90926667db1adf5d29dca32bcbedfc4517e2f354"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-37-57.513004.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "6d914b25dc4950cfb2fd7d7e902c67c7af11c145953b8f8ddc031cf014e236d9"
     },
     {
       "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-26-24.433768.json",
@@ -1185,16 +1239,40 @@
       "sha": "e30f4368537a3b5366b2a0b66a9b8a8a9f38d2395aeb3b8e9c86c4e7f101c55a"
     },
     {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-29-12.453568.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "bbc5e43f4ad397fada5efd9711046a219f6bafcd18f86ed8707664a61a3ce35b"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-36-12.858478.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "08d5b0501d6046d4f35a98e1f401f37258fc20da096335bed25bd39ab0e1e09d"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-37-57.504381.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "854ea76b924ae5f243b553b54e4864e39dcde5259e1611a00499329274bb60e1"
+    },
+    {
       "path": ".codex/workflows/state/current.json",
       "ext": ".json",
       "size": 337,
-      "sha": "7ddf24b18c4b489198d1298a40893172008ddfcf57f9f7a5b750c94a123124d9"
+      "sha": "6868ce573a2cda30383cd01795794bc013a24b0a154c87dcf10f3a6be700bd19"
     },
     {
       "path": ".copilot-space/workflow.yaml",
       "ext": ".yaml",
       "size": 5515,
       "sha": "5ea75b1c194d4f16129d45bcd8a283db151a532e1c53b5fe8e77c556d79d9f6c"
+    },
+    {
+      "path": ".coverage",
+      "ext": "",
+      "size": 192512,
+      "sha": "dabe8ce4bf4a3b19bded5418e7895d6b096eda7b828d5c072800902cfea508cf"
     },
     {
       "path": ".coveragerc",
@@ -3203,8 +3281,8 @@
     {
       "path": ".pytest_cache/v/cache/lastfailed",
       "ext": "",
-      "size": 15630,
-      "sha": "9ddc5c52aaec8d716548830fea7f6b86559f7e661f74365c7f51b0d0d5eb17c1"
+      "size": 13410,
+      "sha": "ab5ae1ba20c6efaaf832900977913585448758a2feb930e36a1b57b471ae67a7"
     },
     {
       "path": ".pytest_cache/v/cache/nodeids",
@@ -3833,8 +3911,8 @@
     {
       "path": "agents/__pycache__/developer_orchestrator.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 38547,
-      "sha": "e6c269d9306552619eab6ed4316222b4bf778e90404c9b5faaae419319870624"
+      "size": 38607,
+      "sha": "e875c5f79c8f316d47f34c9d162f3871b4cf04463c54e5e472eff768b3903d6d"
     },
     {
       "path": "agents/__pycache__/exceptions.cpython-312.pyc",
@@ -3845,8 +3923,8 @@
     {
       "path": "agents/__pycache__/mental_mapping.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 48990,
-      "sha": "ad9b5dac18b8d8bea478229e273693a19eaeaead28e0835293aa2ae109011476"
+      "size": 49184,
+      "sha": "cc0ebfcb12204214d74ef398cd394a4a5c3732aac3fa531759b4ae08ef0363f6"
     },
     {
       "path": "agents/__pycache__/msp_client.cpython-312.pyc",
@@ -3881,8 +3959,8 @@
     {
       "path": "agents/__pycache__/workflow_navigator.cpython-312.pyc",
       "ext": ".pyc",
-      "size": 24078,
-      "sha": "56f9488cd5eca3d9d875de5bd33efed0d365c45e90b5432b4c48f7be80dcfab2"
+      "size": 24171,
+      "sha": "6c692ad5edc692de21bc70f2b318413d5921e7b4760cff465f5ee95a63614532"
     },
     {
       "path": "agents/advanced_physics_calculators.py",
@@ -3989,8 +4067,8 @@
     {
       "path": "agents/developer_orchestrator.py",
       "ext": ".py",
-      "size": 36088,
-      "sha": "05a1cd7decb9f37093a08953b171ca96383de0bffe4ea59d5e66bebe3026edbd"
+      "size": 36142,
+      "sha": "07dde788ed418f6c40e5f05198e9b09aadff9f16cbe49a7b1fe17fe6216c088e"
     },
     {
       "path": "agents/exceptions.py",
@@ -4001,8 +4079,8 @@
     {
       "path": "agents/mental_mapping.py",
       "ext": ".py",
-      "size": 44866,
-      "sha": "8a5e26d52358e93e8d1b3541a7108e92601e4b21061d2c47cae3bce1366b3b04"
+      "size": 45042,
+      "sha": "a89cc037415511e503a116a41e8b23eca00879c2829790a5630f02372c44c2df"
     },
     {
       "path": "agents/msp_client.py",
@@ -4157,8 +4235,8 @@
     {
       "path": "agents/workflow_navigator.py",
       "ext": ".py",
-      "size": 25118,
-      "sha": "015e18a942bad8a321de0886edc9017151fcccd3d31ae06cfe40071ee3fa874c"
+      "size": 25202,
+      "sha": "7fac172630c2eee1b7dde618b7473b9da3cd0ca9575e44643154fbff4cb9d53f"
     },
     {
       "path": "analysis/__init__.py",
@@ -4559,8 +4637,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2118,
-      "sha": "92d608b5f34d2416e9a7cabe9b49ef79cad58d657c73cbd78bc7c327e04b38cd"
+      "size": 2117,
+      "sha": "13150d592d97d7e569b3e6cee7a1e4f10c96a1a33296226853b00b0996b6c008"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -20495,8 +20573,8 @@
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch6.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 76918,
-      "sha": "aed58cb334b1a45f9e3e89fb3c0cc15c6e6339149e64b30585f9ba43e4f6bd3f"
+      "size": 76955,
+      "sha": "b29e28a4132605eacf37f2eed1ad6e8d052c3120bd2658269e67324581d995f4"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch7.cpython-312-pytest-9.0.2.pyc",
@@ -20507,20 +20585,20 @@
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch8.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 60690,
-      "sha": "7b3920347a6d39b8bef844e06f0f25efc09444b30e778caa78a9251b7577ba82"
+      "size": 60765,
+      "sha": "429da5b45ed60ff1937e27c41bef6a32b9c05b13d4ec945c90c859a8dceed271"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch9.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 55169,
-      "sha": "14fe0976d60b90a333e9cb6860d4ca5cad3bddf59a69ea702a0eb074872006b5"
+      "size": 55740,
+      "sha": "78eb814c409712642b92b7926b16d7fa4d0868924ca527a6ab4bd2bbc2cd7bbf"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_mental_mapping.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 38257,
-      "sha": "18bdf634716f97e20e0d396222ddd703144585a1374f4cd8fce080542b2c6a64"
+      "size": 38711,
+      "sha": "e52a3ae89e5bc10f42a36b406ce26dd219434a77a5b0369587712ab6a51e4810"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_physics_orchestrator.cpython-312-pytest-9.0.2.pyc",
@@ -20531,8 +20609,8 @@
     {
       "path": "tests/agents/__pycache__/test_phase2_quantum_game_theory.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 45177,
-      "sha": "ec860bb8140a3df3eb1ea5f52a6ebc33de623cfbba7c6de8f84a7ce64f4d3da8"
+      "size": 45986,
+      "sha": "7bf2c1d3cb77ad062df7c3f1ceca78f7efa179143c6efcc8d49f42b7546635bf"
     },
     {
       "path": "tests/agents/__pycache__/test_physics_orchestrator_comprehensive.cpython-312-pytest-9.0.2.pyc",
@@ -20549,8 +20627,8 @@
     {
       "path": "tests/agents/__pycache__/test_physics_orchestrator_deep.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 47725,
-      "sha": "5780ad4158454fe8cf5c1a8dcb3cd21826e6da006a5add4b04d6d5c5ced94733"
+      "size": 51050,
+      "sha": "59d3fea3fed5591cd28d0851ef6c7bd7074c62bb2b21b9ce2088199fdcf7e3ed"
     },
     {
       "path": "tests/agents/__pycache__/test_physics_orchestrator_smoke.cpython-312-pytest-9.0.2.pyc",
@@ -20561,8 +20639,8 @@
     {
       "path": "tests/agents/__pycache__/test_properties_30pct.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 47616,
-      "sha": "9b0af431233a4c600e1f6a9a9d8a9c70ec922bbb4238f27e8783b318ec3bd41b"
+      "size": 47607,
+      "sha": "0e6f72ec3181e64e45f3714a0aef68919bcf9c7961fd78a50fd731980e8dce98"
     },
     {
       "path": "tests/agents/__pycache__/test_self_healing_comprehensive.cpython-312-pytest-9.0.2.pyc",
@@ -20579,8 +20657,8 @@
     {
       "path": "tests/agents/__pycache__/test_workflow_navigator_comprehensive.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 62515,
-      "sha": "5e6792ae6601f2b98d5d4b6292c04996f20735b2007e31b9397d432e7746e75a"
+      "size": 62265,
+      "sha": "b17e72efaa4716289d6145490ad876858f8d200b7fb5183c56d498e174599aa5"
     },
     {
       "path": "tests/agents/__pycache__/test_zero_coverage_boost.cpython-312-pytest-9.0.2.pyc",
@@ -20753,8 +20831,8 @@
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch6.py",
       "ext": ".py",
-      "size": 20254,
-      "sha": "279d551fa98fe2b4d60f5fc97714b9ce12fbc452efe2a08454cbf8f9ebbb5be0"
+      "size": 20272,
+      "sha": "ac9f02b23a268f966bf5413303cb4752bd9e3bd4a4f8b0d939abab922a3bb739"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch7.py",
@@ -20765,20 +20843,20 @@
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch8.py",
       "ext": ".py",
-      "size": 20355,
-      "sha": "b6b64414db0e7e6605fece7ba6dd57ff44781debdc6313177924a6bed69eace6"
+      "size": 20570,
+      "sha": "416bf3ac1e042347a54d6f5f463650e59ceb38ced1e52883b7ce90f4abb76e86"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch9.py",
       "ext": ".py",
-      "size": 16615,
-      "sha": "7f09a0fe8b9d256c121a164bc7f4d1bb43ae34b801b1de817d673bc764672a9c"
+      "size": 16630,
+      "sha": "0d3ea51e0c4313c47661f466abbb79888918ac06d6ce0679a20698054400e502"
     },
     {
       "path": "tests/agents/test_phase2_mental_mapping.py",
       "ext": ".py",
-      "size": 17610,
-      "sha": "6000f4a8f6c005a10a594785c875a5a876fe138cb57e20c95e55c5aafb3561e9"
+      "size": 17716,
+      "sha": "ebf9f1e13e8dad1b2b9bc937c9e0786c2682420d1b4a2371c40572a32a6f25c8"
     },
     {
       "path": "tests/agents/test_phase2_physics_orchestrator.py",
@@ -20789,8 +20867,8 @@
     {
       "path": "tests/agents/test_phase2_quantum_game_theory.py",
       "ext": ".py",
-      "size": 16003,
-      "sha": "3c4b2921d668a78a534fc4b856f5862c0ac1dc659d0a0f43b93266936cd1c042"
+      "size": 16285,
+      "sha": "29690b32d8a9e1d757817214cbe3cfaf900ec81fb8bf63a4b025df4d81a20323"
     },
     {
       "path": "tests/agents/test_physics_orchestrator_comprehensive.py",
@@ -20807,8 +20885,8 @@
     {
       "path": "tests/agents/test_physics_orchestrator_deep.py",
       "ext": ".py",
-      "size": 17051,
-      "sha": "f636f409487ccc28c409ffc0f3dd938967b4eb4ba051529537ea5a87aa1d9737"
+      "size": 17916,
+      "sha": "f04d6386dfd789eeed9f04e7f5fd9f613a904a753d67286597c4ee14a7793df3"
     },
     {
       "path": "tests/agents/test_physics_orchestrator_smoke.py",
@@ -20819,8 +20897,8 @@
     {
       "path": "tests/agents/test_properties_30pct.py",
       "ext": ".py",
-      "size": 9067,
-      "sha": "c25ce2d940d3f6ddff2137784a1566729a40bbd4e0f2ba7f005c685ccd33863f"
+      "size": 9064,
+      "sha": "bd7baedb3f642b65b43ca88923ff07114623011235f8dbd3c4677e861fb8d713"
     },
     {
       "path": "tests/agents/test_self_healing_comprehensive.py",
@@ -20837,8 +20915,8 @@
     {
       "path": "tests/agents/test_workflow_navigator_comprehensive.py",
       "ext": ".py",
-      "size": 16728,
-      "sha": "6fe2b479d7f782eef00737d7619f75ca9a4c788214be33bca017a20d5cb0161c"
+      "size": 16758,
+      "sha": "0edad1c5c6af3ed46b0ba343b74f127642e483020311e5037a60dd5df3e16f72"
     },
     {
       "path": "tests/agents/test_zero_coverage_boost.py",

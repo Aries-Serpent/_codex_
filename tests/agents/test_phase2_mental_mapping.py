@@ -125,21 +125,22 @@ class TestPhase2_MentalMapping_GraphOperations:
     
     def test_add_node_operation(self):
         """Test adding a node to the graph."""
-        from agents.mental_mapping import MentalMapping
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
         
         mapping = MentalMapping()
         
         if hasattr(mapping, 'add_node'):
             try:
-                mapping.add_node("test_node")
-                assert True
-            except (TypeError, ValueError):
-                # Needs different parameters
-                try:
-                    mapping.add_node("test_node", data={"value": 1})
-                    assert True
-                except:
-                    pytest.skip("add_node signature unknown")
+                # Create a proper MentalNode first
+                node = MentalNode(
+                    node_id="test_node",
+                    node_type=NodeType.CONCEPT,
+                    content="test content"
+                )
+                mapping.add_node(node)
+                assert "test_node" in mapping.nodes
+            except (TypeError, ValueError, ImportError) as e:
+                pytest.skip(f"add_node requires MentalNode: {e}")
     
     def test_add_edge_operation(self):
         """Test adding an edge to the graph."""

@@ -242,7 +242,7 @@ class TestPhase2_ErrorPropagation:
         # f(x) = x², df/dx = 2x
         df_dx = 2 * x
         sigma_f = abs(df_dx) * sigma_x
-        assert sigma_f == 0.6
+        assert sigma_f == pytest.approx(0.6)
 
     def test_sum_error_propagation(self):
         """Test error propagation for sum"""
