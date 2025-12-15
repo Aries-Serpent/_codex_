@@ -485,13 +485,32 @@ class FractalAnalyzer:
             
             counts.append(len(unique_cells))
         
-        # Linear regression on log-log plot
-        log_sizes = np.log(box_sizes)
-        log_counts = np.log(counts)
+        # Convert to numpy arrays for linear regression
+        valid_counts = []
+        valid_sizes = []
+        for s, c in zip(box_sizes, counts):
+            if c > 0 and s > 0:
+                valid_counts.append(math.log(c))
+                valid_sizes.append(math.log(s))
         
-        # Fit line
-        coeffs = np.polyfit(log_sizes, log_counts, 1)
-        dimension = -coeffs[0]  # Negative slope is the dimension
+        if len(valid_sizes) < 2:
+            return 1.0  # Default dimension if not enough valid points
+        
+        # Simple linear regression: y = mx + b
+        # dimension = -m (negative slope)
+        n = len(valid_sizes)
+        sum_x = sum(valid_sizes)
+        sum_y = sum(valid_counts)
+        sum_xy = sum(x * y for x, y in zip(valid_sizes, valid_counts))
+        sum_x2 = sum(x * x for x in valid_sizes)
+        
+        # Calculate slope: m = (n*sum_xy - sum_x*sum_y) / (n*sum_x2 - sum_x^2)
+        denominator = n * sum_x2 - sum_x * sum_x
+        if abs(denominator) < 1e-10:
+            return 1.0  # Avoid division by zero
+        
+        slope = (n * sum_xy - sum_x * sum_y) / denominator
+        dimension = -slope  # Negative slope is the dimension
         
         return dimension
     
