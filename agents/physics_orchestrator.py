@@ -34,6 +34,8 @@ class ActionType(Enum):
     RESEARCH = "research"
     ANALYZE = "analyze"
     EXECUTE = "execute"
+    PLAN = "plan"
+    REFLECT = "reflect"
 
 
 @dataclass
