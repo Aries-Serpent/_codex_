@@ -445,12 +445,13 @@ class WorkflowNavigator:
             **kwargs: Additional workflow parameters (name, description, frequency, etc.)
             
         Returns:
-            The workflow_id of the created workflow
+            The workflow_id of the created workflow (uppercase)
         """
+        workflow_id_upper = identifier.upper()
         workflow = Workflow(
-            workflow_id=identifier.upper(),
+            workflow_id=workflow_id_upper,
             name=kwargs.get('name', identifier.replace("_", " ").title()),
-            description=kwargs.get('description', f"Dynamically created workflow: {identifier}"),
+            description=kwargs.get('description', f"Dynamically created workflow: {workflow_id_upper}"),
             frequency=kwargs.get('frequency', WorkflowFrequency.MEDIUM),
             steps=steps,
             category=kwargs.get('category', 'general')
