@@ -106,7 +106,7 @@ class TestBranchCoverage_AgentMemory:
         from agents.agent_memory import AgentMemory
         
         memory = AgentMemory()
-        memory.store_memory("test_key", "test_value")
+        memory.store_memory(key="test_key", value="test_value")
         
         # Test with key parameter
         result = memory.retrieve_memory(key="test_key")
@@ -198,7 +198,7 @@ class TestIntegrationDepth_MultiModule:
         
         # Store decision state in memory
         state = DecisionState("start", "goal")
-        memory.store_memory("current_state", str(state))
+        memory.store_memory(key="current_state", value=str(state))
         
         # Retrieve and use
         stored = memory.retrieve_memory("current_state")
@@ -215,7 +215,7 @@ class TestIntegrationDepth_MultiModule:
         node1 = model.create_node(NodeType.CONCEPT, {"name": "strategy_blue"})
         node2 = model.create_node(NodeType.CONCEPT, {"name": "strategy_red"})
         
-        model.connect_nodes(node1, node2, EdgeType.SIMILAR_TO, {})
+        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
         
         # Calculate metrics
         metrics = model.calculate_metrics()

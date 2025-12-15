@@ -143,7 +143,7 @@ class TestUncoveredPaths_MentalMapping:
             
             # Connect as chain
             for i in range(size - 1):
-                model.connect_nodes(nodes[i], nodes[i+1], EdgeType.LEADS_TO, {})
+                model.connect_nodes(source_id=nodes[i].node_id, target_id=nodes[i+1].node_id, edge_type=EdgeType.LEADS_TO)
             
             metrics = model.calculate_metrics()
             assert metrics['num_nodes'] == size
@@ -311,7 +311,7 @@ class TestCompleteCodePaths_Integration:
         assessment = orchestrator.assess_situation(state)
         
         # Store in memory
-        memory.store_memory("decision", str(assessment))
+        memory.store_memory(key="decision", value=str(assessment))
         
         # Create mental map entry
         node = mental_map.create_node(NodeType.PROBLEM, {"decision": "stored"})

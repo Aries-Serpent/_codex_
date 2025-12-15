@@ -1,6 +1,6 @@
 {
-  "generated": 1765832445.3863406,
-  "count": 5319,
+  "generated": 1765832945.9799414,
+  "count": 5339,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -47,8 +47,8 @@
     {
       "path": ".codex/agent_memory.db",
       "ext": ".db",
-      "size": 40960,
-      "sha": "0ea78fae4a332338fddc2ff9b8e2f009edcbf5ccc367ca545f1a2d4241859f47"
+      "size": 10543104,
+      "sha": null
     },
     {
       "path": ".codex/analysis_metrics.jsonl",
@@ -689,8 +689,8 @@
     {
       "path": ".codex/session_logs.db",
       "ext": ".db",
-      "size": 45056,
-      "sha": "ff04d88273c3e293c5f0a93a545b342e6e6bfff0ba53038faa7d5c1ab7068a42"
+      "size": 57344,
+      "sha": "66f6e505d785d87afa305fb904d00e833c367c45338a0b0822c2a74709753ee7"
     },
     {
       "path": ".codex/sessions/archive/historical_docs_20251210_4d9198c.tar.gz",
@@ -1215,6 +1215,36 @@
       "sha": "50e8fa415dca3684764bf76d84aa5a6377cf2f8cd6f97591a3c9e7a698f53b0a"
     },
     {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-01-06.624214.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "02161e7c4a7a99f88906787e0035c48e9a4f7ed979b03948ddff8d9e2aabe1f7"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-02-31.246110.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "27675da6ea0ae5139386e770b302513bb14d5f017923dac101c752a05e316757"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-03-36.113742.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "b57c71794f8c69a644844800d369391897e302b8259d4bd1d14687ef78091b8b"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-06-02.811006.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "10f7e1378fa1514a57e02fe7977967791b4d2329b2ce5a5acc19fd09964bd412"
+    },
+    {
+      "path": ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-07-07.379245.json",
+      "ext": ".json",
+      "size": 5979,
+      "sha": "e8e20264122516ebbb92ceec205fdd8fdd17141d78f0eea790e43fe8249def60"
+    },
+    {
       "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T20-26-02.021294.json",
       "ext": ".json",
       "size": 337,
@@ -1305,6 +1335,36 @@
       "sha": "74ee9048788749f9d365b483a2e63872efb29742ff51b8d326d4c5432bf94303"
     },
     {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T21-02-08.791148.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "adf146b8ab6dd0972f3b5a51fae36fbd5fdd00a61a51d7b8536e71d7c0058d67"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T21-03-13.356467.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "01c1dddcf72435bca1882085f0dc4221d6ecf9366d005c6048b549a1dcdd3da3"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T21-05-40.271703.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "241d7b139e8a755a1a689980bb4c76cdbe77968eca0391660350097adaed7a54"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T21-06-44.819642.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "067de23e902dad9782977418bb2157ac5b84b3ae946454a579a5b8786cd597c4"
+    },
+    {
+      "path": ".codex/workflows/state/EXEC_TEST_2025-12-15T21-09-04.775166.json",
+      "ext": ".json",
+      "size": 337,
+      "sha": "165089424e17c379ecb69150a110f8fa923d59515465ec836695d3856f0b51c2"
+    },
+    {
       "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-26-24.442436.json",
       "ext": ".json",
       "size": 358,
@@ -1387,6 +1447,36 @@
       "ext": ".json",
       "size": 358,
       "sha": "91f1ef4c88e9863766509381c2ec1775e56d43cd00093315cb2def1460bb240f"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-01-06.633299.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "de8b835e3712459f6abf9b78c4cabf5968dcaeba9351fd1e9f11d94ebdfac039"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-02-31.255350.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "8cfb0ebb3727b1858e58ef3c7dad5df5be431566bd7f6e988c1dedd7df6b835a"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-03-36.122942.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "116842012cc300936f429300f976f9abd054902447bfa0a1ae2e7e016048e2f3"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-06-02.819971.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "d8d483c2cf2897d048255ba8dc2006b75fa038497b5949dd3a1597c6b8d9c804"
+    },
+    {
+      "path": ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-07-07.392527.json",
+      "ext": ".json",
+      "size": 358,
+      "sha": "584424b23405e8c938e1075b3896648eace32fb44263aff8615c281a802b8895"
     },
     {
       "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-26-24.433768.json",
@@ -1473,10 +1563,40 @@
       "sha": "d705d7e567a97f70f8e7e3e3005b19c891cc9afceda7b65049057fd7dc6c511c"
     },
     {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-01-06.624714.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "f3310e4b65d467a0b9f38186a51ea78e2c30746bff488f02bdc05e809e45c981"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-02-31.246626.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "1d5306beaa517984dad666c5315959751ac6ec1930ab326563a4d29ba1c70a72"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-03-36.114240.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "e5d0ee93df159c16e5272b53e0bd29069e4a363e36922263d31d6aeab4ffab40"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-06-02.811511.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "96f7497da8ae701fe4731f408bcf7879048d81103839ffe8972a2c7dd818033c"
+    },
+    {
+      "path": ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-07-07.379799.json",
+      "ext": ".json",
+      "size": 1278,
+      "sha": "4233b7dec3d1fb7b5ce981a436800ddfe1353fead59522fa7cc7000af69dd611"
+    },
+    {
       "path": ".codex/workflows/state/current.json",
       "ext": ".json",
       "size": 337,
-      "sha": "74ee9048788749f9d365b483a2e63872efb29742ff51b8d326d4c5432bf94303"
+      "sha": "165089424e17c379ecb69150a110f8fa923d59515465ec836695d3856f0b51c2"
     },
     {
       "path": ".copilot-space/workflow.yaml",
@@ -3497,8 +3617,8 @@
     {
       "path": ".pytest_cache/v/cache/lastfailed",
       "ext": "",
-      "size": 7872,
-      "sha": "87b9f71595e1a97f568a17c616c92eda3e9a9a7f1d79e74081b85a9f877a368a"
+      "size": 6085,
+      "sha": "768d27a6555a2e66d7f716f3d81dc2e4adf6a3f6c755f68fe895d9f0e7492026"
     },
     {
       "path": ".pytest_cache/v/cache/nodeids",
@@ -4854,7 +4974,7 @@
       "path": "audit_run_manifest.json",
       "ext": ".json",
       "size": 2121,
-      "sha": "32a03c45b8a9249d8474e130e3e49637bc77f9e2373b4023957c6ff7c1a291fc"
+      "sha": "53c4752fb0c70c0f072c060d93eae29466587d4927ec8a232c1ae3c6b943bafc"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -20730,37 +20850,37 @@
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch12.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
       "size": 83452,
-      "sha": "e744ede3cdaccced9f573069ebccb23627c29decb58b2ad42f0d7101a829602a"
+      "sha": "0c7444498392105cc75f3dddf6301e41e82a790ec9295ff88e42a04eb0707c7e"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch13_branch_expansion.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 31460,
-      "sha": "78a3a5cbb766c3e05022ee75626c7e1bdf3344de297ffc439adbd7a1edef6446"
+      "size": 31583,
+      "sha": "f33ba4d43cdb97a6560b34cd8c1460b05400e1a069f554e8531f0ae90db37d2b"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch14_exception_handling.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 42206,
-      "sha": "479c5298715841fc79772d9312e3f5c45324e40f1a8e470e051b75355761de83"
+      "size": 43956,
+      "sha": "4a70b212d7afb1c2c80f6e1e300406ae1564b0ad1fc44ea40ef7b7a0b97497ff"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch15_integration_depth.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 33461,
-      "sha": "d97d9a148a906338c7645c159f29690a4a36d91220b3d7b0cae190b5c6b0ed1a"
+      "size": 34115,
+      "sha": "12328b238f26f42f211c057770f62d59b481d636b80423867d7cd9e98a3f390e"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch16_method_variations.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 40339,
-      "sha": "7747f45b56dc81c6160c58122223491cace82b4d4f7eb78b628d16006c93110c"
+      "size": 40455,
+      "sha": "afd5388c9e0432be837491335266a73d7506e052633287b43b30a97a4ea09190"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch17_final_gaps.cpython-312-pytest-9.0.2.pyc",
       "ext": ".pyc",
-      "size": 31672,
-      "sha": "77b8a5b85504a2bd1349c3a56eb6ee2a2f28ed735df8c47fb4627246cc9affca"
+      "size": 31784,
+      "sha": "57684a57b6d0937d4e432177b08238d23a7cf2f4b8115ae83de338ddcc6960dd"
     },
     {
       "path": "tests/agents/__pycache__/test_phase2_deep_coverage_batch2.cpython-312-pytest-9.0.2.pyc",
@@ -20993,32 +21113,32 @@
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch13_branch_expansion.py",
       "ext": ".py",
-      "size": 11437,
-      "sha": "e2c50df6c8ace073edc3465078ec77d844fb6d2fb5142513f923abfaaa9cae87"
+      "size": 11499,
+      "sha": "b079ec5919bb3d87d4803927b27634ff7c1e47c081c9b0e2dd25fa63d310248f"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch14_exception_handling.py",
       "ext": ".py",
-      "size": 13731,
-      "sha": "a87d3fa7ada28ca2711126de1470640ef28d3ee70cd83349cdb1a968050bf1f0"
+      "size": 14504,
+      "sha": "f4fe4a63652a1557955f0d270599a9fbd9cf36aa5edbcb001d8ba0cd99fd7089"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch15_integration_depth.py",
       "ext": ".py",
-      "size": 16845,
-      "sha": "e64711bb8bfb05cbb7c7b3412680311425d86f5a68430edb567785f85423e2f4"
+      "size": 17468,
+      "sha": "f3143fa58e1cfe9cecbc170a313c0ba462d93736487c97a0006e55c5246ff84e"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch16_method_variations.py",
       "ext": ".py",
-      "size": 13817,
-      "sha": "f8c597e8a0cc57ce6162e888debc974deb87092f9bab50b62771eb3d7d23e2b9"
+      "size": 13873,
+      "sha": "421646f1c25a4837fce2d3773d270347d20bdad70a9effaeb1abeddf03fc8d59"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py",
       "ext": ".py",
-      "size": 12406,
-      "sha": "5e4a5e2ea316d0e2e427a1915be186b167523acbe2453bf9af262eafc0d76937"
+      "size": 12458,
+      "sha": "431d557ed63167f0db084d41146034a6f646c9829a2778e9cef79ae1227f0f24"
     },
     {
       "path": "tests/agents/test_phase2_deep_coverage_batch2.py",

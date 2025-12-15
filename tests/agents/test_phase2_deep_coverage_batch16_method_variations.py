@@ -33,7 +33,7 @@ class TestMethodVariations_PhysicsOrchestrator:
         evolver = HamiltonianEvolver(grid_size=8)
         
         for omega in [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]:
-            H = evolver.harmonic_hamiltonian(omega=omega)
+            H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=omega)
             assert H is not None
     
     def test_swarm_all_particle_counts(self):
@@ -131,7 +131,7 @@ class TestMethodVariations_MentalMapping:
         # Create linear graph
         nodes = [model.create_node(NodeType.CONCEPT, {}) for _ in range(5)]
         for i in range(len(nodes)-1):
-            model.connect_nodes(nodes[i], nodes[i+1], EdgeType.LEADS_TO, {})
+            model.connect_nodes(source_id=nodes[i].node_id, target_id=nodes[i+1].node_id, edge_type=EdgeType.LEADS_TO)
         
         # Test BFS from each node
         for node in nodes:
