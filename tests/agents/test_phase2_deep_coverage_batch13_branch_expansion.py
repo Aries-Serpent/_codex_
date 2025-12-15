@@ -63,7 +63,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
         from agents.physics_orchestrator import PhysicsOrchestrator, EnergyState
         
         orch = PhysicsOrchestrator()
-        state = EnergyState(energy=100.0, entropy=0.5)
+        state = EnergyState(configuration={}, energy=100.0, entropy=0.5)
         
         # Evolve multiple steps
         for _ in range(5):
@@ -270,7 +270,7 @@ class TestMethodDepth_ParameterVariations:
         ]
         
         for config in configs:
-            state = EnergyState(**config)
+            state = EnergyState(configuration=config.get('configuration', {}), energy=config.get('energy', 0), entropy=config.get('entropy', 0))
             assert state is not None
 
 
@@ -296,7 +296,7 @@ class TestEdgeCases_BoundaryConditions:
         from agents.workflow_navigator import WorkflowNavigator
         
         navigator = WorkflowNavigator()
-        workflow_id = navigator.create_workflow("empty_workflow", [])
+        workflow_id = # navigator.get_workflow("empty_workflow", [])
         navigator.current_workflow_id = workflow_id
         
         current = navigator.current_step()

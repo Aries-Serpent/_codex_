@@ -44,11 +44,11 @@ class TestExceptionHandling_PhysicsOrchestrator:
         from agents.physics_orchestrator import EnergyState
         
         # Negative energy (allowed in some physics contexts)
-        state = EnergyState(energy=-10.0, entropy=0.5)
+        state = EnergyState(configuration={}, energy=-10.0, entropy=0.5)
         assert state.energy == -10.0
         
         # Negative entropy (thermodynamically invalid but test handling)
-        state = EnergyState(energy=10.0, entropy=-0.1)
+        state = EnergyState(configuration={}, energy=10.0, entropy=-0.1)
         assert state.entropy == -0.1
     
     def test_decision_state_none_positions(self):
@@ -76,7 +76,7 @@ class TestExceptionHandling_AgentMemory:
         # Special characters in key
         special_keys = ["key@#$", "key\nwith\nnewlines", "key\twith\ttabs"]
         for key in special_keys:
-            memory.store_memory(key, "value")
+            memory.store_memory(key=key, value="value")
             result = memory.retrieve_memory(key=key)
             # Should handle gracefully
             assert result is not None or result is None
@@ -275,7 +275,7 @@ class TestExceptionHandling_WorkflowNavigator:
         # Use existing workflow or skip if create_workflow doesn't exist
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.create_workflow("test", steps)
+            workflow_id = # navigator.get_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             
             # Navigate to invalid index
@@ -299,7 +299,7 @@ class TestExceptionHandling_WorkflowNavigator:
         
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.create_workflow("test", steps)
+            workflow_id = # navigator.get_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             navigator.current_step_index = 0
             
@@ -317,7 +317,7 @@ class TestExceptionHandling_WorkflowNavigator:
         
         if hasattr(navigator, 'create_workflow'):
             steps = [WorkflowStep("s1", "Step 1")]
-            workflow_id = navigator.create_workflow("test", steps)
+            workflow_id = # navigator.get_workflow("test", steps)
             navigator.current_workflow_id = workflow_id
             navigator.current_step_index = 0
             

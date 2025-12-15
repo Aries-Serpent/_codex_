@@ -212,17 +212,17 @@ class TestUncoveredPaths_WorkflowNavigator:
         navigator = WorkflowNavigator()
         
         # Empty workflow
-        wf1 = navigator.create_workflow("empty", [])
+        wf1 = # navigator.get_workflow("empty", [])
         status1 = navigator.get_workflow_status(wf1)
         assert status1['total_steps'] == 0
         
         # Single step
-        wf2 = navigator.create_workflow("single", [WorkflowStep("s1", "Step 1")])
+        wf2 = # navigator.get_workflow("single", [WorkflowStep("s1", "Step 1")])
         status2 = navigator.get_workflow_status(wf2)
         assert status2['total_steps'] == 1
         
         # Multiple steps
-        wf3 = navigator.create_workflow("multi", [
+        wf3 = # navigator.get_workflow("multi", [
             WorkflowStep("s1", "Step 1"),
             WorkflowStep("s2", "Step 2"),
             WorkflowStep("s3", "Step 3"),
@@ -242,7 +242,7 @@ class TestUncoveredPaths_WorkflowNavigator:
         
         # With workflow
         steps = [WorkflowStep("s1", "Step 1")]
-        wf_id = navigator.create_workflow("test", steps)
+        wf_id = # navigator.get_workflow("test", steps)
         navigator.current_workflow_id = wf_id
         
         suggestion = navigator.suggest_next_action()
@@ -272,7 +272,7 @@ class TestRarelyUsed_AllModules:
         
         # Store some data
         for i in range(5):
-            memory.store_memory(f"key{i}", f"value{i}")
+            memory.store_memory(key=f"key{i}", value=f"value{i}")
         
         # Get statistics
         stats = memory.statistics()

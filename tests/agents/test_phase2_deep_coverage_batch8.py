@@ -35,7 +35,7 @@ class TestPhase2_DeveloperOrchestrator:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         if hasattr(orchestrator, 'create_workflow'):
-            workflow = orchestrator.create_workflow(name="test_workflow")
+            workflow = orchestrator.get_workflow(name="test_workflow")
             assert workflow is not None
 
     def test_add_task_to_workflow(self):
