@@ -188,7 +188,7 @@ class TestMethodVariations_WorkflowNavigator:
         
         for count in [0, 1, 2, 5, 10, 50]:
             steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(count)]
-            workflow_id = # navigator.get_workflow(f"wf_{count}", steps)
+            workflow_id = navigator.create_workflow(f"wf_{count}", steps)
             assert len(navigator.workflows[workflow_id]) == count
     
     def test_navigate_all_indices(self):
@@ -198,7 +198,7 @@ class TestMethodVariations_WorkflowNavigator:
         navigator = WorkflowNavigator()
         steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(10)]
         
-        workflow_id = # navigator.get_workflow("test", steps)
+        workflow_id = navigator.create_workflow("test", steps)
         navigator.current_workflow_id = workflow_id
         
         for i in range(10):

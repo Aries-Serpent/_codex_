@@ -137,7 +137,7 @@ class TestIntegration_CompleteWorkflows:
             WorkflowStep("step3", "Finalize"),
         ]
         
-        workflow_id = # navigator.get_workflow("data_pipeline", steps)
+        workflow_id = navigator.create_workflow("data_pipeline", steps)
         navigator.current_workflow_id = workflow_id
         
         # Navigate and log
@@ -211,7 +211,7 @@ class TestIntegration_DataFlow:
         
         # Create workflow based on stored data
         steps = [WorkflowStep(f"step{i}", f"Step {i}") for i in range(int(step_count))]
-        workflow_id = # navigator.get_workflow("stored_workflow", steps)
+        workflow_id = navigator.create_workflow("stored_workflow", steps)
         
         assert len(navigator.workflows[workflow_id]) == 3
 
@@ -245,7 +245,7 @@ class TestIntegration_StateManagement:
         
         # Create and progress workflow
         steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(3)]
-        wf_id = navigator1.get_workflow("persistent", steps)
+        wf_id = navigator1.create_workflow("persistent", steps)
         navigator1.current_workflow_id = wf_id
         navigator1.navigate_to(step_index=1)
         
@@ -292,7 +292,7 @@ class TestIntegration_MultiModuleChains:
         # Module 5: Workflow
         navigator = WorkflowNavigator()
         steps = [WorkflowStep("analyze", "Analyze")]
-        workflow_id = # navigator.get_workflow("analysis", steps)
+        workflow_id = navigator.create_workflow("analysis", steps)
         
         # All modules participated
         assert all([orchestrator, memory, model, strategy, navigator])
@@ -441,7 +441,7 @@ class TestIntegration_PerformanceScaling:
         
         # Create workflow with many steps
         steps = [WorkflowStep(f"step{i}", f"Step {i}") for i in range(100)]
-        workflow_id = # navigator.get_workflow("large_workflow", steps)
+        workflow_id = navigator.create_workflow("large_workflow", steps)
         navigator.current_workflow_id = workflow_id
         
         # Navigate through multiple steps

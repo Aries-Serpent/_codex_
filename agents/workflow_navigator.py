@@ -145,6 +145,10 @@ class WorkflowNavigator:
         self.workflow_state_dir = self.workspace_dir / '.codex' / 'workflows' / 'state'
         self.workflow_state_dir.mkdir(parents=True, exist_ok=True)
         
+        # Stateful navigation attributes
+        self.current_workflow_id: Optional[str] = None
+        self.current_step_index: int = 0
+        
         # Initialize default workflows
         self._register_default_workflows()
     
@@ -420,8 +424,175 @@ class WorkflowNavigator:
             self.workflows[alias.upper()] = workflow
     
     def get_workflow(self, identifier: str) -> Optional[Workflow]:
-        """Get workflow by ID or alias"""
+        """
+        Get workflow by ID or alias.
+        
+        Args:
+            identifier: Workflow ID or alias
+            
+        Returns:
+            Workflow object if found, None otherwise
+        """
         return self.workflows.get(identifier.upper())
+    
+    def create_workflow(self, identifier: str, steps: List[WorkflowStep], **kwargs) -> str:
+        """
+        Create and register a new workflow with the given steps.
+        
+        Args:
+            identifier: Workflow ID
+            steps: List of workflow steps
+            **kwargs: Additional workflow parameters (name, description, frequency, etc.)
+            
+        Returns:
+            The workflow_id of the created workflow (uppercase)
+        """
+        workflow_id_upper = identifier.upper()
+        workflow = Workflow(
+            workflow_id=workflow_id_upper,
+            name=kwargs.get('name', identifier.replace("_", " ").title()),
+            description=kwargs.get('description', f"Dynamically created workflow: {workflow_id_upper}"),
+            frequency=kwargs.get('frequency', WorkflowFrequency.MEDIUM),
+            steps=steps,
+            category=kwargs.get('category', 'general')
+        )
+        self.register_workflow(workflow)
+        return workflow.workflow_id
+    
+    def current_step(self) -> Optional[WorkflowStep]:
+        """Get the current step in the active workflow."""
+        if not self.current_workflow_id:
+            return None
+        
+        workflow = self.workflows.get(self.current_workflow_id)
+        if not workflow or not workflow.steps:
+            return None
+        
+        if 0 <= self.current_step_index < len(workflow.steps):
+            return workflow.steps[self.current_step_index]
+        
+        return None
+    
+    def next_step(self) -> Optional[WorkflowStep]:
+        """Advance to and return the next step in the workflow."""
+        if not self.current_workflow_id:
+            return None
+        
+        workflow = self.workflows.get(self.current_workflow_id)
+        if not workflow or not workflow.steps:
+            return None
+        
+        next_index = self.current_step_index + 1
+        if next_index < len(workflow.steps):
+            self.current_step_index = next_index
+            return workflow.steps[self.current_step_index]
+        
+        return None
+    
+    def previous_step(self) -> Optional[WorkflowStep]:
+        """Go back to and return the previous step in the workflow."""
+        if not self.current_workflow_id:
+            return None
+        
+        workflow = self.workflows.get(self.current_workflow_id)
+        if not workflow or not workflow.steps:
+            return None
+        
+        prev_index = self.current_step_index - 1
+        if prev_index >= 0:
+            self.current_step_index = prev_index
+            return workflow.steps[self.current_step_index]
+        
+        return None
+    
+    def navigate_to(self, step_index: int = None, step_id: str = None) -> bool:
+        """
+        Navigate to a specific step by index or ID.
+        
+        Args:
+            step_index: The index of the step to navigate to
+            step_id: The ID of the step to navigate to
+            
+        Returns:
+            True if navigation successful, False otherwise
+        """
+        if not self.current_workflow_id:
+            return False
+        
+        workflow = self.workflows.get(self.current_workflow_id)
+        if not workflow or not workflow.steps:
+            return False
+        
+        if step_index is not None:
+            if 0 <= step_index < len(workflow.steps):
+                self.current_step_index = step_index
+                return True
+            return False
+        
+        if step_id is not None:
+            for i, step in enumerate(workflow.steps):
+                if step.id == step_id:
+                    self.current_step_index = i
+                    return True
+            return False
+        
+        return False
+    
+    def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
+        """
+        Get the status of a workflow.
+        
+        Args:
+            workflow_id: The ID of the workflow
+            
+        Returns:
+            Dictionary with workflow status information
+        """
+        workflow = self.workflows.get(workflow_id.upper())
+        if not workflow:
+            return {
+                'exists': False,
+                'error': 'Workflow not found'
+            }
+        
+        completed_steps = sum(1 for step in workflow.steps if step.status == StepStatus.COMPLETED)
+        failed_steps = sum(1 for step in workflow.steps if step.status == StepStatus.FAILED)
+        pending_steps = sum(1 for step in workflow.steps if step.status == StepStatus.PENDING)
+        
+        return {
+            'exists': True,
+            'workflow_id': workflow.workflow_id,
+            'name': workflow.name,
+            'total_steps': len(workflow.steps),
+            'completed_steps': completed_steps,
+            'failed_steps': failed_steps,
+            'pending_steps': pending_steps,
+            'current_index': self.current_step_index if self.current_workflow_id == workflow_id.upper() else None
+        }
+    
+    def suggest_next_action(self) -> Optional[str]:
+        """
+        Suggest the next action based on current workflow state.
+        
+        Returns:
+            String suggestion or None if no workflow active
+        """
+        if not self.current_workflow_id:
+            return None
+        
+        current = self.current_step()
+        if current:
+            return f"Execute: {current.action}"
+        
+        workflow = self.workflows.get(self.current_workflow_id)
+        if workflow and workflow.steps:
+            if self.current_step_index >= len(workflow.steps):
+                return "Workflow completed"
+            else:
+                return f"Start workflow: {workflow.name}"
+        
+        return None
+    
     
     def find_workflow(self, description: str) -> Optional[Workflow]:
         """Find workflow by natural language description"""
