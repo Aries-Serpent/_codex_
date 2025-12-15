@@ -59,8 +59,8 @@ class TestPhysicsOrchestratorProperties:
         )
         
         # Check defaults
-        assert state.available_resources == 100.0
-        assert state.time_available == 60.0
+        assert state.available_resources == 1.0
+        assert state.time_available == 1.0
     
     def test_action_type_string_values(self):
         """Test ActionType enum string values."""

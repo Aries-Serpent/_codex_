@@ -26,9 +26,12 @@ class StepStatus(Enum):
     """Status of a workflow step"""
     PENDING = "pending"
     RUNNING = "running"
+    IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     FAILED = "failed"
     SKIPPED = "skipped"
+    BLOCKED = "blocked"
+    CANCELLED = "cancelled"
 
 
 @dataclass
