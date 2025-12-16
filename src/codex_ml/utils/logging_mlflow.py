@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import logging
 from contextlib import ExitStack, contextmanager
 from typing import Any, Iterator, Mapping, Optional
+
+LOGGER = logging.getLogger(__name__)
 
 
 @contextmanager
@@ -37,12 +40,13 @@ def mlflow_run(
     stack: Optional[ExitStack] = ExitStack()
     try:
         stack.enter_context(run())
-    except Exception:  # pragma: no cover - runtime failures fall back to no-op
+    except Exception as exc:  # pragma: no cover - runtime failures fall back to no-op
+        LOGGER.warning("MLflow run initialization failed; continuing without tracking: %s", exc)
         if stack is not None:
             try:
                 stack.close()
-            except Exception:  # pragma: no cover - suppress close errors
-                pass
+            except Exception as close_exc:  # pragma: no cover - suppress close errors
+                LOGGER.debug("Failed to close MLflow context after init failure: %s", close_exc)
         stack = None
         yield
         return
@@ -52,16 +56,16 @@ def mlflow_run(
             for key, value in params.items():
                 try:
                     log_param(key, value)
-                except Exception:  # pragma: no cover - logging best effort
-                    continue
+                except Exception as exc:  # pragma: no cover - logging best effort
+                    LOGGER.debug("Failed to log MLflow param %s=%s: %s", key, value, exc)
 
         yield
     finally:
         if stack is not None:
             try:
                 stack.close()
-            except Exception:  # pragma: no cover - suppress close errors
-                pass
+            except Exception as exc:  # pragma: no cover - suppress close errors
+                LOGGER.debug("MLflow run cleanup raised but was suppressed: %s", exc)
 
 
 __all__ = ["mlflow_run"]

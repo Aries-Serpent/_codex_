@@ -1,10 +1,30 @@
 from __future__ import annotations
 
+import logging
 import os
 import platform
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Optional
+
+LOGGER = logging.getLogger(__name__)
+
+
+def _git_binary() -> Optional[Path]:
+    """Return an absolute path to the git executable if available."""
+
+    located = shutil.which("git")
+    if located is None:
+        LOGGER.debug("git executable not found on PATH")
+        return None
+
+    candidate = Path(located).resolve()
+    if not candidate.exists():
+        LOGGER.warning("Resolved git path %s does not exist", candidate)
+        return None
+
+    return candidate
 
 try:  # pragma: no cover - optional torch dependency
     import torch
@@ -15,9 +35,13 @@ except Exception:  # pragma: no cover
 def _git_commit(root: Optional[Path] = None) -> Optional[str]:
     """Return current Git commit hash if available."""
     root = root or Path(__file__).resolve().parent.parent.parent.parent
+    git_bin = _git_binary()
+    if git_bin is None:
+        return None
     try:
-        return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    except Exception:
+        return subprocess.check_output([str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    except Exception as exc:
+        LOGGER.debug("Unable to read git commit from %s: %s", root, exc)
         return None
 
 

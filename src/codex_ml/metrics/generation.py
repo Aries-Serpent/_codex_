@@ -107,7 +107,8 @@ def bleu(
     else:
         norm_refs = references  # type: ignore[assignment]
 
-    assert len(hypotheses) == len(norm_refs), "hypotheses and references length must match"
+    if len(hypotheses) != len(norm_refs):
+        raise ValueError("hypotheses and references length must match")
 
     precisions: list[float] = []
     for n in range(1, max_n + 1):

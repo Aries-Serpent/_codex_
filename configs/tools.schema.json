@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent tool registry",
+  "type": "object",
+  "properties": {
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "parameters"],
+        "properties": {
+          "name": {"type": "string"},
+          "description": {"type": "string"},
+          "timeout_seconds": {"type": "integer", "minimum": 1},
+          "rate_limit_per_minute": {"type": "integer", "minimum": 1},
+          "parameters": {
+            "type": "object",
+            "required": ["type", "properties", "required"],
+            "properties": {
+              "type": {"type": "string", "enum": ["object"]},
+              "properties": {"type": "object"},
+              "required": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["tools"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "tools": [
+        {
+          "name": "search_docs",
+          "description": "Keyword and semantic search over ingested docs",
+          "timeout_seconds": 30,
+          "rate_limit_per_minute": 30,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "query": {"type": "string"},
+              "k": {"type": "integer", "minimum": 1, "maximum": 20},
+              "filters": {"type": "object"}
+            },
+            "required": ["query"]
+          }
+        },
+        {
+          "name": "get_repo_branches",
+          "description": "List branches for a repository",
+          "timeout_seconds": 20,
+          "rate_limit_per_minute": 20,
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "repo": {"type": "string"}
+            },
+            "required": ["repo"]
+          }
+        }
+      ]
+    }
+  ]
+}

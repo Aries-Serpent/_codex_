@@ -911,8 +911,8 @@ def run_functional_training(
             ]
             return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
-        pad_token = "<pad>"
-        unk_token = "<unk>"
+            pad_token = "<pad>"  # nosec B105 - tokenizer placeholder token
+            unk_token = "<unk>"  # nosec B105 - tokenizer placeholder token
 
         def _encode_texts(
             texts: list[str], vocab: dict[str, int], *, update: bool

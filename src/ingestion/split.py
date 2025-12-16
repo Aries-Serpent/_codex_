@@ -35,7 +35,7 @@ def split_files(
         return [], [], []
 
     indices = list(range(total))
-    rng = random.Random(cfg.seed)
+    rng = random.Random(cfg.seed)  # nosec B311 - deterministic file split
     rng.shuffle(indices)
 
     train_end = int(total * cfg.train_ratio)

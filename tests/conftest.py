@@ -17,6 +17,25 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Relax coverage enforcement during collection-only runs.
+
+    The repository defaults enforce a coverage threshold via ``pytest.ini``. When
+    running in ``--collect-only`` mode (as used by smoke checks for import
+    validation), no tests execute and coverage would be reported as zero, causing
+    an unnecessary failure. This hook disables coverage enforcement and raises
+    the fail-under floor to zero for collection-only invocations while keeping
+    the existing defaults for actual test runs.
+    """
+
+    if getattr(config.option, "collectonly", False):
+        if hasattr(config.option, "cov_fail_under"):
+            config.option.cov_fail_under = 0
+        cov_plugin = config.pluginmanager.get_plugin("_cov")
+        if cov_plugin:
+            config.pluginmanager.unregister(cov_plugin)
+
 # Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
 # site-packages modules when they are installed. We still keep the repository
 # root on sys.path for project imports but move it to the end of the search
@@ -65,7 +84,10 @@ def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = Non
 def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | None:
     """Resolve ``modname`` while preferring non-stub site-packages specs."""
 
-    primary_spec = importlib.util.find_spec(modname)
+    try:
+        primary_spec = importlib.util.find_spec(modname)
+    except ValueError:
+        primary_spec = None
     if primary_spec and not _is_stub_module(modname, primary_spec):
         return primary_spec
 
@@ -74,7 +96,10 @@ def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | Non
         for p in sys.path
         if not Path(p).resolve().is_relative_to(REPO_ROOT)
     ]
-    alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
+    try:
+        alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
+    except ValueError:
+        alternate = None
     if alternate and not _is_stub_module(modname, alternate):
         return alternate
 

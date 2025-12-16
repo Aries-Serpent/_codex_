@@ -98,7 +98,8 @@ class DeviceConfig:
             DeviceConfig with auto-detected settings
         """
         _torch_required()
-        assert torch is not None  # for type checkers
+        if torch is None:
+            raise RuntimeError("torch is required for device strategy operations")
 
         if _device_available("cuda"):
             device = "cuda"
@@ -143,7 +144,8 @@ class DeviceConfig:
             ValueError: If device specification is invalid
         """
         _torch_required()
-        assert torch is not None  # for type checkers
+        if torch is None:
+            raise RuntimeError("torch is required for device strategy operations")
 
         try:
             target_device = torch.device(self.device)
@@ -176,7 +178,8 @@ class DeviceConfig:
             Tensor on target device/dtype
         """
         _torch_required()
-        assert torch is not None  # for type checkers
+        if torch is None:
+            raise RuntimeError("torch is required for device strategy operations")
 
         try:
             return tensor.to(device=torch.device(self.device), dtype=self.dtype)

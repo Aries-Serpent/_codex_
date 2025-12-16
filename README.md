@@ -1,6 +1,11 @@
 # `_codex_`
 > 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
 
+![Tests](https://img.shields.io/badge/tests-107%20total%20%7C%2073%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-68%25-yellow)
+![Security](https://img.shields.io/badge/security-0%20vulnerabilities-brightgreen)
+![Production](https://img.shields.io/badge/production-ready-brightgreen)
+
 ## 🎯 Achievement Status
 
 **🏆 100/100 Azure MLOps Maturity (Level 4)**  
@@ -230,9 +235,36 @@ python -m http.server -d artifacts/docs/api 8000
 - **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 - **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
-- **Contribution Guidelines**: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- **Contribution Guidelines**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- **Testing Guide**: [`docs/guides/TESTING_GUIDE.md`](docs/guides/TESTING_GUIDE.md) | [`tests/README.md`](tests/README.md)
 - **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 - **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
+
+## Testing
+
+### Running Tests
+
+**Quick test run:**
+```bash
+pytest                           # Run all tests
+pytest -q                        # Quiet mode
+pytest -m smoke                  # Smoke tests only
+pytest -m "not slow"             # Skip slow tests
+```
+
+**With coverage:**
+```bash
+pytest --cov=src --cov-report=html --cov-report=xml --cov-report=term
+open htmlcov/index.html          # View coverage report
+```
+
+**CI/CD:** All PRs run automated tests via `.github/workflows/ci-pytest.yml`
+- Python 3.11+ (ubuntu-latest)
+- 90% coverage threshold (configurable)
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results
+
+See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 
 ### Local DoD (short)
 
@@ -240,12 +272,15 @@ python -m http.server -d artifacts/docs/api 8000
 # Run all quality gates
 nox -s lint typecheck tests gates
 
+# Run tests with coverage
+pytest --cov=src --cov-fail-under=90
+
 # Validate status schema
 pytest -q tests/status/test_example_report_schema.py
 
 # Validate configs
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
-```text
+```
 
 ## Local Gates & Status Reports
 
@@ -397,6 +432,8 @@ Quick access to key repository areas via GitHub search. Click any link or use th
 | **Test Functions** | [`"def test_" language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=%22def+test_%22+language%3APython) | Individual test functions |
 | **Fixtures** | [`"@pytest.fixture" OR "conftest.py"`](https://github.com/Aries-Serpent/_codex_/search?q=%22%40pytest.fixture%22+OR+%22conftest.py%22) | Test fixtures and configuration |
 | **Linter Configs** | [`filename:.ruff.toml OR filename:.bandit.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3A.ruff.toml+OR+filename%3A.bandit.yml) | Code quality configuration |
+
+Security scanning runs with `bandit -r src/ -c bandit.yaml -f txt` using the curated ruleset in `bandit.yaml` (medium severity/confidence, explicit skips documented inline).
 
 ### Deployment & Docker
 

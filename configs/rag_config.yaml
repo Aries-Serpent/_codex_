@@ -1,0 +1,49 @@
+# Retrieval configuration for code and documentation ingestion
+sources:
+  - name: code_git
+    type: git
+    url: git@github.com:org/repo.git
+    include_paths:
+      - src/
+      - docs/
+      - prompts/
+    branch: main
+    default_ref: HEAD
+    polling_interval_minutes: 60
+  - name: knowledge_blobs
+    type: blob
+    bucket_env: KNOWLEDGE_BUCKET
+    prefix: ai-facing/
+    include_patterns:
+      - "*.md"
+      - "*.yaml"
+
+chunking:
+  size: 1024
+  overlap: 128
+  splitter: semantic
+  trim_whitespace: true
+  preserve_markdown_headings: true
+
+embedding:
+  model: text-embedding-3-large
+  batch_size: 32
+  request_timeout_seconds: 30
+  max_retries: 3
+
+index:
+  provider: openai_file_search
+  store_id: ${CODE_STORE_ID}
+  namespace: agent-stack
+  metadata_keys:
+    - source
+    - path
+    - commit
+    - timestamp
+    - content_type
+
+refresh:
+  mode: incremental
+  backfill_on_schema_change: true
+  verify_lineage: true
+  max_parallel_jobs: 4

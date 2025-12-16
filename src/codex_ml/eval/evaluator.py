@@ -20,6 +20,7 @@ torch, _HAS_TORCH = optional_import("torch")
 datasets, _HAS_DATASETS = optional_import("datasets")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
+_HAS_DATASETS = bool(_HAS_DATASETS and datasets is not None and hasattr(datasets, "Dataset"))
 Dataset = datasets.Dataset if _HAS_DATASETS else None  # type: ignore[attr-defined,assignment]
 AutoModelForCausalLM = (
     transformers.AutoModelForCausalLM if _HAS_TRANSFORMERS else None  # type: ignore[attr-defined,assignment]

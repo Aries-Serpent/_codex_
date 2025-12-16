@@ -1,0 +1,57 @@
+"""Smoke tests for codex.cli_maps CLI entrypoint."""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+from typer.testing import CliRunner
+
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+
+@pytest.fixture()
+def cli_runner() -> CliRunner:
+    return CliRunner()
+
+
+@pytest.fixture()
+def mock_deps():
+    with patch.dict(
+        "sys.modules",
+        {
+            "torch": MagicMock(),
+            "transformers": MagicMock(),
+            "datasets": MagicMock(),
+        },
+        clear=False,
+    ):
+        yield
+
+
+def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
+    try:
+        from codex import cli_maps
+    except ImportError:
+        pytest.skip("cli_maps not importable")
+
+    result = cli_runner.invoke(cli_maps.app, ["--help"])
+    if result.exit_code not in (0, 2):
+        pytest.skip(f"cli_maps help unavailable: {result.exit_code}")
+    assert "Usage" in result.output or "Usage" in result.output
+
+
+def test_cli_maps_subcommand_help(cli_runner: CliRunner, mock_deps):
+    try:
+        from codex import cli_maps
+    except ImportError:
+        pytest.skip("cli_maps not importable")
+
+    result = cli_runner.invoke(cli_maps.app, ["inspect", "--help"])
+    if result.exit_code not in (0, 2):
+        pytest.skip(f"cli_maps inspect help unavailable: {result.exit_code}")

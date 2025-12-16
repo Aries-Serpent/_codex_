@@ -33,6 +33,8 @@ _MAX_NEW_TOKENS = int(os.environ.get("CODEX_MAX_NEW_TOKENS", "32"))
 _RUNTIME_MODEL: AutoModelForCausalLM | None = None
 _RUNTIME_TOKENIZER: PreTrainedTokenizerBase | None = None
 _RUNTIME_DENYLIST: DenylistEnforcer | None = None
+PAD_TOKEN = "[PAD]"  # nosec B105 - conventional tokenizer pad token
+UNK_TOKEN = "[UNK]"  # nosec B105,B106 - conventional unknown token marker
 
 
 class PredictRequest(BaseModel):
@@ -53,12 +55,12 @@ def _denylist_cached() -> DenylistEnforcer:
 
 
 def _fallback_tokenizer() -> PreTrainedTokenizerFast:
-    tokenizer_obj = Tokenizer(WordLevel({"[PAD]": 0, "[UNK]": 1, "hello": 2, "world": 3}))
+    tokenizer_obj = Tokenizer(WordLevel({PAD_TOKEN: 0, UNK_TOKEN: 1, "hello": 2, "world": 3}))
     tokenizer_obj.pre_tokenizer = Whitespace()
     tokenizer = PreTrainedTokenizerFast(
-        tokenizer_object=tokenizer_obj, pad_token="[PAD]", unk_token="[UNK]"
+        tokenizer_object=tokenizer_obj, pad_token=PAD_TOKEN, unk_token=UNK_TOKEN
     )
-    tokenizer.pad_token = "[PAD]"
+    tokenizer.pad_token = PAD_TOKEN
     tokenizer.eos_token = tokenizer.eos_token or tokenizer.pad_token
     return tokenizer
 

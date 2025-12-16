@@ -45,6 +45,7 @@ class IssueType(Enum):
     PERFORMANCE_REGRESSION = "performance_regression"
     LINT_ERROR = "lint_error"
     TYPE_ERROR = "type_error"
+    SYNTAX_ERROR = "syntax_error"
     IMPORT_ERROR = "import_error"
     CONFIGURATION_ERROR = "configuration_error"
     RESOURCE_EXHAUSTION = "resource_exhaustion"
@@ -62,17 +63,28 @@ class IssueSeverity(Enum):
 @dataclass
 class DetectedIssue:
     """A detected issue in the codebase or CI/CD pipeline."""
-    issue_id: str
     issue_type: IssueType
     severity: IssueSeverity
-    title: str
     description: str
+    issue_id: str = ""
+    title: str = ""
     location: Optional[str] = None
     file_path: Optional[Path] = None
     line_number: Optional[int] = None
     stack_trace: Optional[str] = None
     context: Dict[str, Any] = field(default_factory=dict)
+    details: Dict[str, Any] = field(default_factory=dict)  # Alias for context
     detected_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        if not self.issue_id:
+            self.issue_id = f"issue_{id(self)}"
+        if not self.title:
+            self.title = self.description[:50]
+        # Merge details into context if provided
+        if self.details:
+            self.context.update(self.details)
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -93,17 +105,32 @@ class DetectedIssue:
 @dataclass
 class RemediationAction:
     """An action to remediate a detected issue."""
-    action_id: str
-    issue_id: str
     action_type: str
     description: str
+    action_id: str = ""
+    issue_id: str = ""
     commands: List[str] = field(default_factory=list)
+    command: str = ""  # Alias for single command
     file_changes: Dict[str, str] = field(default_factory=dict)
     confidence: float = 0.8
     risk_level: float = 0.2
     requires_approval: bool = False
+    auto_apply: bool = True  # Inverse of requires_approval
     executed: bool = False
     success: Optional[bool] = None
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        if not self.action_id:
+            self.action_id = f"action_{id(self)}"
+        if not self.issue_id:
+            self.issue_id = "unknown"
+        # Handle command/commands aliasing
+        if self.command and not self.commands:
+            self.commands = [self.command]
+        # Handle auto_apply/requires_approval inverse relationship
+        if not self.auto_apply:
+            self.requires_approval = True
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -126,9 +153,18 @@ class DiagnosticResult:
     """Result of running diagnostics."""
     issues: List[DetectedIssue] = field(default_factory=list)
     suggested_actions: List[RemediationAction] = field(default_factory=list)
+    remediation_actions: List[RemediationAction] = field(default_factory=list)  # Alias
     health_score: float = 1.0
     diagnostics_run: List[str] = field(default_factory=list)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def __post_init__(self):
+        """Handle backwards compatibility"""
+        # Use remediation_actions if provided, otherwise use suggested_actions
+        if self.remediation_actions and not self.suggested_actions:
+            self.suggested_actions = self.remediation_actions
+        elif self.suggested_actions and not self.remediation_actions:
+            self.remediation_actions = self.suggested_actions
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -154,6 +190,9 @@ class SelfHealingEngine:
         self.repo_root = repo_root or Path.cwd()
         self.issue_patterns: Dict[IssueType, List[Tuple[str, str]]] = {}
         self.remediation_handlers: Dict[IssueType, Callable] = {}
+        # Initialize detection and diagnostic components
+        self.issue_detector = self  # Self-reference for detection capability
+        self.diagnostic_engine = self  # Self-reference for diagnostic capability
         self._register_default_patterns()
         self._register_default_handlers()
     
@@ -418,6 +457,47 @@ class SelfHealingEngine:
         )
         
         return max(0.0, 1.0 - min(total_penalty, 1.0))
+    
+    def detect_issues(self, log_output: str = None, run_checks: bool = True) -> List[DetectedIssue]:
+        """
+        Detect issues in the codebase.
+        
+        Alias for diagnose() that returns only the issues list.
+        
+        Args:
+            log_output: Optional log output to analyze
+            run_checks: Whether to run active checks
+            
+        Returns:
+            List of detected issues
+        """
+        result = self.diagnose(log_output=log_output, run_checks=run_checks)
+        return result.issues
+    
+    def detect(self, log_output: str = None) -> List[DetectedIssue]:
+        """
+        Detect issues (short alias for detect_issues).
+        
+        Args:
+            log_output: Optional log output to analyze
+            
+        Returns:
+            List of detected issues
+        """
+        return self.detect_issues(log_output=log_output, run_checks=False)
+    
+    def analyze(self, log_output: str = None, run_checks: bool = True) -> DiagnosticResult:
+        """
+        Analyze the codebase for issues (alias for diagnose).
+        
+        Args:
+            log_output: Optional log output to analyze
+            run_checks: Whether to run active checks
+            
+        Returns:
+            Diagnostic result with issues and suggested actions
+        """
+        return self.diagnose(log_output=log_output, run_checks=run_checks)
     
     def apply_remediation(
         self,

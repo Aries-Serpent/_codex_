@@ -48,19 +48,23 @@ def detect(file_index: dict) -> dict:
     }
     root_docs = [f["path"] for f in files if f["path"] in root_doc_candidates]
 
-    # Pattern detection
+    # Pattern detection - require common patterns, optional advanced
     found_patterns = []
-    required_patterns = ["markdown", "docs", "mkdocs", "sphinx"]
+    # Core required: markdown and docs directory
+    required_patterns = ["markdown", "docs"]
 
     evidence_files = sorted(set(markdown_docs + rst_docs + doc_configs + root_docs))
 
-    if markdown_docs:
+    if markdown_docs or root_docs:
         found_patterns.append("markdown")
-    if doc_configs or any("docs/" in f for f in evidence_files):
+    if doc_configs or any("docs/" in f for f in evidence_files) or markdown_docs:
         found_patterns.append("docs")
-    if any("mkdocs" in f for f in evidence_files):
+    if any("mkdocs" in f.lower() for f in evidence_files):
         found_patterns.append("mkdocs")
-    if any("sphinx" in f for f in evidence_files):
+    # Sphinx detection: conf.py in docs directory or sphinx in path/filename
+    if any("sphinx" in f.lower() for f in evidence_files) or any(
+        f.endswith("conf.py") and "docs" in f for f in evidence_files
+    ):
         found_patterns.append("sphinx")
 
     # Calculate functionality score

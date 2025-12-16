@@ -107,7 +107,7 @@ def load_dataset(cfg: DataConfig) -> DatasetSplits:
     if cache_path.exists():
         return _read_cache(cache_path)
 
-    rng = random.Random(cfg.seed)
+    rng = random.Random(cfg.seed)  # nosec B311 - deterministic dataset split shuffling
     shuffled = list(raw_data)
     rng.shuffle(shuffled)
 
