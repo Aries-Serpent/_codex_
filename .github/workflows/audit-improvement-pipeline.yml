@@ -128,12 +128,12 @@ jobs:
 
       - name: Sanitize Artifact Filenames
         run: |
-          # Remove invalid characters from filenames (: < > | * ?)
+          # Remove invalid NTFS filename characters (: < > | * ? ")
           find reports/ audit_artifacts/ -type f 2>/dev/null | while read -r file; do
             dir=$(dirname "$file")
             base=$(basename "$file")
             # Replace colons with hyphens, other invalid chars with underscore
-            newbase=$(echo "$base" | tr ':' '-' | tr '<>|*?' '_')
+            newbase=$(echo "$base" | tr ':' '-' | tr '<>|*?"' '_')
             if [ "$base" != "$newbase" ]; then
               mv "$file" "$dir/$newbase"
               echo "Renamed: $base → $newbase"

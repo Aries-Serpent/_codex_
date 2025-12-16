@@ -238,6 +238,7 @@ codex-status-audit = "cli.status_audit:main"
 
 [tool.setuptools.package-dir]
 "" = "src"
+agents = "agents"
 codex_addons = "codex_addons"
 codex_digest = "codex_digest"
 codex_utils = "codex_utils"
