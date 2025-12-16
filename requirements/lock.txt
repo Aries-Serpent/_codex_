@@ -60,7 +60,7 @@ async-lru==2.0.5
     # via jupyterlab
 asyncssh==2.21.1
     # via scmrepo
-atpublic==6.0.2
+atpublic==7.0.0
     # via flufl-lock
 attrs==25.4.0
     # via
@@ -75,7 +75,7 @@ babel==2.17.0
     # via jupyterlab-server
 beautifulsoup4==4.14.2
     # via nbconvert
-billiard==4.2.2
+billiard==4.2.4
     # via celery
 black==25.9.0
     # via codex-ml (pyproject.toml)
@@ -215,7 +215,7 @@ dulwich==0.24.6
     # via
     #   dvc-studio-client
     #   scmrepo
-dvc==3.0.0
+dvc==3.64.2
     # via codex-ml (pyproject.toml)
 dvc-data==1.11.0
     # via dvc
@@ -237,7 +237,7 @@ entrypoints==0.4
     # via altair
 evaluate==0.4.6
     # via lm-eval
-evidently==0.7.15
+evidently==0.7.17
     # via codex-ml (pyproject.toml)
 executing==2.2.1
     # via stack-data
@@ -894,7 +894,7 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
     #   typepy
-python-dotenv==1.1.1
+python-dotenv==1.2.1
     # via
     #   pydantic-settings
     #   uvicorn
@@ -986,7 +986,7 @@ rich-toolkit==0.15.0
     # via fastapi-cli
 rouge-score==0.1.2
     # via lm-eval
-rpds-py==0.28.0
+rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
@@ -1026,7 +1026,7 @@ sentencepiece==0.2.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-sentry-sdk==2.42.0
+sentry-sdk==2.47.0
     # via wandb
 setuptools==80.9.0
     # via
@@ -1081,7 +1081,7 @@ starlette==0.49.1
     #   codex-ml (pyproject.toml)
     #   fastapi
     #   ray
-statsmodels==0.14.5
+statsmodels==0.14.6
     # via evidently
 sympy==1.14.0
     # via torch
