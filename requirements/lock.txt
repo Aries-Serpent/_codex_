@@ -60,7 +60,7 @@ async-lru==2.0.5
     # via jupyterlab
 asyncssh==2.21.1
     # via scmrepo
-atpublic==6.0.2
+atpublic==7.0.0
     # via flufl-lock
 attrs==25.4.0
     # via
@@ -75,7 +75,7 @@ babel==2.17.0
     # via jupyterlab-server
 beautifulsoup4==4.14.2
     # via nbconvert
-billiard==4.2.2
+billiard==4.2.4
     # via celery
 black==25.9.0
     # via codex-ml (pyproject.toml)
@@ -986,7 +986,7 @@ rich-toolkit==0.15.0
     # via fastapi-cli
 rouge-score==0.1.2
     # via lm-eval
-rpds-py==0.28.0
+rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
@@ -1026,7 +1026,7 @@ sentencepiece==0.2.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-sentry-sdk==2.42.0
+sentry-sdk==2.47.0
     # via wandb
 setuptools==80.9.0
     # via
