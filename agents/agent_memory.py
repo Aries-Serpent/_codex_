@@ -468,15 +468,15 @@ class AgentMemory:
         
         return None
     
-    def retrieve_content(self, key: str) -> Optional[str]:
+    def retrieve_content(self, key: Optional[str]) -> Optional[str]:
         """
         Retrieve memory content by key.
         
         Args:
-            key: The memory key to retrieve
+            key: The memory key to retrieve (optional)
             
         Returns:
-            Memory content string, or None if not found
+            Memory content string, or None if not found or key is None
         """
         if key is None:
             return None
