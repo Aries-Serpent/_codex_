@@ -240,16 +240,38 @@ jobs:
             const fs = require('fs');
             const report = fs.readFileSync('workflow_validation_report.md', 'utf8');
             
-            const comment = `## 🔍 Workflow Validation Results
+            const commentMarker = '<!-- workflow-validator-comment -->';
+            const comment = `${commentMarker}
+            ## 🔍 Workflow Validation Results
             
             ${report}
             
             ---
             *Automated workflow validation by AI Assistant*`;
             
-            github.rest.issues.createComment({
+            // Find existing comment from this workflow
+            const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
             });
+            
+            const existingComment = comments.find(c => c.body.includes(commentMarker));
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
