@@ -62,13 +62,7 @@ jobs:
         id: shim_check
         run: |
           if [ -f .codex/duplicate_analysis_weekly/supplemental_duplicates.json ]; then
-            NOT_IN_SHIM=$(python3 -c "
-import json
-with open('.codex/duplicate_analysis_weekly/supplemental_duplicates.json', 'r') as f:
-    data = json.load(f)
-count = sum(1 for g in data['duplicate_groups'] if not g['in_shim_inventory'])
-print(count)
-" || echo "0")
+            NOT_IN_SHIM=$(python3 -c "import json; f=open('.codex/duplicate_analysis_weekly/supplemental_duplicates.json'); data=json.load(f); print(sum(1 for g in data['duplicate_groups'] if not g['in_shim_inventory']))" || echo "0")
             echo "not_in_shim=$NOT_IN_SHIM" >> $GITHUB_OUTPUT
           else
             echo "not_in_shim=0" >> $GITHUB_OUTPUT
