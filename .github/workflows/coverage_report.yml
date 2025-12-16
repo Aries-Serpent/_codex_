@@ -16,7 +16,7 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install pytest coverage jsonschema pyyaml weasyprint
+          pip install pytest==8.3.* coverage==7.6.* jsonschema==4.23.* pyyaml==6.0.* weasyprint==62.*
       - name: Run tests with coverage
         run: |
           coverage run -m pytest -q || true

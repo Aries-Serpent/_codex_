@@ -47,6 +47,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
       - name: Analyze Repository Structure
         id: analyze
         run: |
@@ -56,48 +60,56 @@ jobs:
           
           # Find orphan files (not referenced in code)
           python << 'EOF'
-          import os
-          import re
-          from pathlib import Path
-          
-          # Files that should be in root
-          ALLOWED_ROOT = {
-              'README.md', 'LICENSE', 'AGENTS.md', 'CONTRIBUTING.md',
-              'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt',
-              'requirements-dev.txt', 'Makefile', 'Dockerfile', '.gitignore',
-              '.pre-commit-config.yaml', 'noxfile.py', 'conftest.py',
-              'CHANGELOG.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'
-          }
-          
-          # Find files in root that might need organization
-          root_files = [f for f in os.listdir('.') if os.path.isfile(f) and not f.startswith('.')]
-          misplaced = [f for f in root_files if f not in ALLOWED_ROOT]
-          
-          print(f"Root files: {len(root_files)}")
-          print(f"Potentially misplaced: {len(misplaced)}")
-          
-          # Write analysis
-          with open('organization_analysis.md', 'w') as f:
-              f.write("# Repository Organization Analysis\n\n")
-              f.write(f"## Root Directory Files ({len(root_files)} total)\n\n")
-              f.write("### Allowed Files\n")
-              for rf in sorted(root_files):
-                  status = "✅" if rf in ALLOWED_ROOT else "⚠️"
-                  f.write(f"- {status} `{rf}`\n")
-              
-              if misplaced:
-                  f.write("\n### Potentially Misplaced\n")
-                  for mf in sorted(misplaced):
-                      f.write(f"- `{mf}` → Consider moving to appropriate directory\n")
-              
-              f.write("\n## Suggested Directory Structure\n\n")
-              f.write("```\n")
-              f.write(".\n")
-              f.write("├── .github/          # GitHub configs, workflows, templates\n")
-              f.write("├── docs/             # Documentation\n")
-              f.write("├── scripts/          # Utility scripts\n")
-              f.write("├── src/              # Source code\n")
-              f.write("├── tests/            # Test files\n")
+import os
+import re
+import yaml
+from pathlib import Path
+
+# Load allowed files from config
+config_path = Path('.github/config/allowed_root_files.yaml')
+if config_path.exists():
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+        ALLOWED_ROOT = set(config.get('allowed_root_files', []))
+else:
+    # Fallback to default if config doesn't exist
+    ALLOWED_ROOT = {
+        'README.md', 'LICENSE', 'AGENTS.md', 'CONTRIBUTING.md',
+        'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt',
+        'requirements-dev.txt', 'Makefile', 'Dockerfile', '.gitignore',
+        '.pre-commit-config.yaml', 'noxfile.py', 'conftest.py',
+        'CHANGELOG.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'
+    }
+
+# Find files in root that might need organization
+root_files = [f for f in os.listdir('.') if os.path.isfile(f) and not f.startswith('.')]
+misplaced = [f for f in root_files if f not in ALLOWED_ROOT]
+
+print(f"Root files: {len(root_files)}")
+print(f"Potentially misplaced: {len(misplaced)}")
+
+# Write analysis
+with open('organization_analysis.md', 'w') as f:
+    f.write("# Repository Organization Analysis\n\n")
+    f.write(f"## Root Directory Files ({len(root_files)} total)\n\n")
+    f.write("### Allowed Files\n")
+    for rf in sorted(root_files):
+        status = "✅" if rf in ALLOWED_ROOT else "⚠️"
+        f.write(f"- {status} `{rf}`\n")
+    
+    if misplaced:
+        f.write("\n### Potentially Misplaced\n")
+        for mf in sorted(misplaced):
+            f.write(f"- `{mf}` → Consider moving to appropriate directory\n")
+    
+    f.write("\n## Suggested Directory Structure\n\n")
+    f.write("```\n")
+    f.write(".\n")
+    f.write("├── .github/          # GitHub configs, workflows, templates\n")
+    f.write("├── docs/             # Documentation\n")
+    f.write("├── scripts/          # Utility scripts\n")
+    f.write("├── src/              # Source code\n")
+    f.write("├── tests/            # Test files\n")
               f.write("├── configs/          # Configuration files\n")
               f.write("├── templates/        # Template files\n")
               f.write("├── archive/          # Archived/deprecated files\n")

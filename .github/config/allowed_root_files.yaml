@@ -1,0 +1,22 @@
+# Configuration for repository organization checks
+# Defines files that are allowed in the root directory
+
+allowed_root_files:
+  - README.md
+  - LICENSE
+  - AGENTS.md
+  - CONTRIBUTING.md
+  - pyproject.toml
+  - setup.py
+  - setup.cfg
+  - requirements.txt
+  - requirements-dev.txt
+  - Makefile
+  - Dockerfile
+  - .gitignore
+  - .pre-commit-config.yaml
+  - noxfile.py
+  - conftest.py
+  - CHANGELOG.md
+  - SECURITY.md
+  - CODE_OF_CONDUCT.md

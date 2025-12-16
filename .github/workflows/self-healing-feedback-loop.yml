@@ -54,33 +54,10 @@ jobs:
               workflow = yaml.safe_load(f)
               current_caps = set(c['name'] for c in workflow.get('capabilities', []))
           
-          # Define expected capabilities (Azure MLOps Level 4)
-          expected_caps = {
-              'Automated Testing', 'Model Monitoring', 'CI/CD Pipeline',
-              'Feature Store', 'Data Versioning', 'Model Registry',
-              'A/B Testing', 'Shadow Deployment', 'Canary Release',
-              'Model Serving', 'Batch Inference', 'Online Inference',
-              'Experiment Tracking', 'Hyperparameter Tuning', 'AutoML',
-              'Model Validation', 'Data Quality', 'Feature Engineering',
-              'Model Explainability', 'Bias Detection', 'Fairness Metrics',
-              'Drift Detection', 'Performance Monitoring', 'Alerting',
-              'Logging', 'Metrics Collection', 'Distributed Training',
-              'Model Packaging', 'Model Deployment', 'Rollback Strategy',
-              'Blue-Green Deployment', 'Multi-Model Serving', 'Model Caching',
-              'Request Batching', 'Auto-Scaling', 'Resource Management',
-              'Cost Tracking', 'Compliance', 'Governance',
-              'Access Control', 'Audit Trails', 'Documentation',
-              'Team Collaboration', 'Knowledge Sharing', 'Training',
-              'Support', 'Incident Response', 'Disaster Recovery',
-              'Backup Strategy', 'Data Privacy', 'Security Scanning',
-              'Vulnerability Management', 'Secrets Management', 'Network Security',
-              'Container Security', 'Code Review', 'Peer Review',
-              'Pull Request Automation', 'Release Management', 'Version Control',
-              'Branch Strategy', 'Merge Strategy', 'Conflict Resolution',
-              'Code Coverage', 'Test Automation', 'Integration Testing',
-              'End-to-End Testing', 'Performance Testing', 'Load Testing',
-              'Stress Testing', 'Chaos Engineering', 'Observability'
-          }
+          # Load expected capabilities from config
+          expected_caps = set(workflow.get('expected_capabilities', []))
+          if not expected_caps:
+              raise ValueError('No expected_capabilities found in .copilot-space/workflow.yaml. Please define an expected_capabilities list.')
           
           # Find gaps
           gaps = expected_caps - current_caps
