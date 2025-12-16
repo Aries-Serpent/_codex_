@@ -49,6 +49,9 @@ audit_artifacts/
 !audit_artifacts/baselines/
 !audit_artifacts/baselines/**
 
+# Disabled workflows (consolidation in progress)
+.github/workflows/*.disabled
+
 # Reports (optional commit)
 reports/
 
