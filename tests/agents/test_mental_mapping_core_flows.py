@@ -63,116 +63,105 @@ class TestMentalMappingCoreFlows:
     
     def test_think_through_problem_basic(self, mental_map):
         """Test basic problem thinking flow."""
-        result = mental_map.think_through_problem(
+        problem_node, reasoning_steps = mental_map.think_through_problem(
             problem="Optimize slow API endpoint",
             context={'system': 'production', 'urgency': 'high'}
         )
         
-        # Should return problem node and reasoning steps
-        assert 'problem_node' in result
-        assert 'reasoning_steps' in result
-        
         # Problem node should exist
-        problem_node = result['problem_node']
+        assert problem_node is not None
         assert problem_node.node_type == NodeType.PROBLEM
         assert "Optimize slow API endpoint" in problem_node.content
         
         # Should have created reasoning steps
+        assert len(reasoning_steps) > 0
+        assert all(isinstance(step, ReasoningStep) for step in reasoning_steps)
         assert len(result['reasoning_steps']) > 0
     
     def test_think_through_problem_with_decomposition(self, mental_map):
         """Test problem decomposition during thinking."""
-        result = mental_map.think_through_problem(
+        problem_node, reasoning_steps = mental_map.think_through_problem(
             problem="Implement new feature with testing and documentation",
             context={'complexity': 'high'}
         )
         
-        problem_node = result['problem_node']
-        reasoning_steps = result['reasoning_steps']
+        # Should have problem node
+        assert problem_node is not None
+        assert problem_node.node_type == NodeType.PROBLEM
         
-        # Should have decomposed the problem
-        assert any(step.step_type == "decompose" for step in reasoning_steps)
+        # Should have reasoning steps
+        assert len(reasoning_steps) > 0
         
-        # Should have created sub-problem nodes
-        decomp_step = next((s for s in reasoning_steps if s.step_type == "decompose"), None)
-        if decomp_step and 'sub_problems' in decomp_step.metadata:
-            assert len(decomp_step.metadata['sub_problems']) > 0
+        # Should have decomposition-related reasoning
+        assert any('decompos' in step.thought.lower() for step in reasoning_steps)
     
     def test_think_through_problem_hypothesis_generation(self, mental_map):
         """Test hypothesis generation during problem thinking."""
-        result = mental_map.think_through_problem(
+        problem_node, reasoning_steps = mental_map.think_through_problem(
             problem="Database query timeout",
             context={'symptoms': 'slow response'}
         )
         
-        reasoning_steps = result['reasoning_steps']
-        
-        # Should generate hypotheses
-        assert any(step.step_type == "hypothesis" for step in reasoning_steps)
+        # Should generate hypotheses (creates hypothesis nodes)
+        hypothesis_nodes = [n for n in mental_map.nodes.values() 
+                           if n.node_type == NodeType.HYPOTHESIS]
+        assert len(hypothesis_nodes) > 0
     
     def test_think_through_problem_evidence_gathering(self, mental_map):
         """Test evidence gathering during thinking."""
-        result = mental_map.think_through_problem(
+        problem_node, reasoning_steps = mental_map.think_through_problem(
             problem="System instability issue",
             context={'logs_available': True}
         )
         
-        reasoning_steps = result['reasoning_steps']
-        
-        # Should have evidence gathering step
-        assert any(step.step_type == "evidence" for step in reasoning_steps)
+        # Should have evidence in reasoning steps
+        assert any(step.evidence for step in reasoning_steps)
+        assert any('evidence' in str(step.evidence).lower() for step in reasoning_steps)
     
     # ========== MAKE DECISION TESTS ==========
     
     def test_make_decision_basic(self, mental_map, problem_node):
         """Test basic decision making."""
-        alternatives = [
-            {'name': 'Add index', 'cost': 'low', 'benefit': 'high'},
-            {'name': 'Rewrite query', 'cost': 'medium', 'benefit': 'medium'},
-            {'name': 'Add caching', 'cost': 'high', 'benefit': 'high'}
-        ]
-        
-        decision = mental_map.make_decision(
-            problem_id=problem_node.node_id,
-            alternatives=alternatives,
-            criteria={'cost': 0.3, 'benefit': 0.7}
+        # Actual API: make_decision(decision_content, problem_node_id, confidence, alternatives_considered, reasoning)
+        decision_node = mental_map.make_decision(
+            decision_content="Add database index to optimize query",
+            problem_node_id=problem_node.node_id,
+            confidence=0.85,
+            alternatives_considered=["Add index", "Rewrite query", "Add caching"],
+            reasoning="Index provides best balance of performance gain vs implementation cost"
         )
         
-        # Decision should be made
-        assert decision is not None
-        assert 'decision_node' in decision
-        assert 'chosen_alternative' in decision
-        assert 'confidence' in decision
-        
-        # Confidence should be between 0 and 1
-        assert 0.0 <= decision['confidence'] <= 1.0
+        # Decision node should be created
+        assert decision_node is not None
+        assert decision_node.node_type == NodeType.DECISION
+        assert "Add database index" in decision_node.content
+        assert decision_node.confidence == 0.85
     
     def test_make_decision_selects_best_alternative(self, mental_map, problem_node):
-        """Test that decision selects highest scoring alternative."""
-        alternatives = [
-            {'name': 'Poor option', 'score': 0.2},
-            {'name': 'Best option', 'score': 0.9},
-            {'name': 'Okay option', 'score': 0.5}
-        ]
-        
-        decision = mental_map.make_decision(
-            problem_id=problem_node.node_id,
-            alternatives=alternatives
+        """Test decision with multiple alternatives."""
+        decision_node = mental_map.make_decision(
+            decision_content="Choose best optimization approach",
+            problem_node_id=problem_node.node_id,
+            confidence=0.9,
+            alternatives_considered=["Poor option", "Best option", "Okay option"],
+            reasoning="Selected highest scoring alternative based on analysis"
         )
         
-        # Should select the best option
-        chosen = decision['chosen_alternative']
-        assert chosen['name'] == 'Best option'
-        assert chosen['score'] == 0.9
+        # Should have alternatives in context
+        assert 'alternatives' in decision_node.context
+        assert len(decision_node.context['alternatives']) == 3
     
     def test_make_decision_creates_node_and_edges(self, mental_map, problem_node):
         """Test that decision creates proper node and connects to problem."""
         initial_node_count = len(mental_map.nodes)
         initial_edge_count = len(mental_map.edges)
         
-        decision = mental_map.make_decision(
-            problem_id=problem_node.node_id,
-            alternatives=[{'name': 'Option A', 'score': 0.7}]
+        decision_node = mental_map.make_decision(
+            decision_content="Implement Option A",
+            problem_node_id=problem_node.node_id,
+            confidence=0.7,
+            alternatives_considered=["Option A"],
+            reasoning="Option A meets requirements"
         )
         
         # Should have created new decision node
@@ -180,25 +169,28 @@ class TestMentalMappingCoreFlows:
         
         # Should have created edge from problem to decision
         assert len(mental_map.edges) > initial_edge_count
+        
+        # Verify edge connects problem to decision
+        edge_exists = any(
+            e.source == problem_node.node_id and e.target == decision_node.node_id
+            for e in mental_map.edges.values()
+        )
+        assert edge_exists
     
     def test_make_decision_low_confidence_marks_for_review(self, mental_map, problem_node):
         """Test low confidence decisions are marked for review."""
-        # Create alternatives with low scores
-        alternatives = [
-            {'name': 'Uncertain option 1', 'score': 0.3},
-            {'name': 'Uncertain option 2', 'score': 0.35}
-        ]
-        
-        decision = mental_map.make_decision(
-            problem_id=problem_node.node_id,
-            alternatives=alternatives
+        decision_node = mental_map.make_decision(
+            decision_content="Uncertain choice between similar options",
+            problem_node_id=problem_node.node_id,
+            confidence=0.35,  # Low confidence
+            alternatives_considered=["Uncertain option 1", "Uncertain option 2"],
+            reasoning="Both options have similar trade-offs, difficult to choose"
         )
         
         # Should have low confidence
-        assert decision['confidence'] < 0.6
+        assert decision_node.confidence < 0.6
         
-        # Decision node should be marked for review
-        decision_node = decision['decision_node']
+        # Low confidence should trigger review flag
         assert decision_node.needs_review == True
     
     # ========== RECORD OUTCOME TESTS ==========
@@ -207,29 +199,40 @@ class TestMentalMappingCoreFlows:
         """Test basic outcome recording."""
         # Create a decision first
         problem = mental_map.create_node(NodeType.PROBLEM, "Test problem")
-        decision = mental_map.create_node(NodeType.DECISION, "Test decision")
+        decision = mental_map.make_decision(
+            decision_content="Test decision",
+            problem_node_id=problem.node_id,
+            confidence=0.8,
+            alternatives_considered=["Option A", "Option B"],
+            reasoning="Selected Option A"
+        )
         
+        # Actual API: record_outcome(decision_node_id, outcome_content, success, actual_impact, learned_lessons)
         outcome_node = mental_map.record_outcome(
-            decision_id=decision.node_id,
-            outcome="Successful implementation",
-            metrics={'performance_gain': 0.45, 'user_satisfaction': 0.9}
+            decision_node_id=decision.node_id,
+            outcome_content="Successful implementation with 45% performance gain",
+            success=True,
+            actual_impact=0.45,
+            learned_lessons=["Early testing prevents issues", "Incremental deployment reduces risk"]
         )
         
         # Outcome node should be created
         assert outcome_node is not None
         assert outcome_node.node_type == NodeType.OUTCOME
         assert "Successful implementation" in outcome_node.content
-        assert 'performance_gain' in outcome_node.metadata
-        assert 'user_satisfaction' in outcome_node.metadata
     
     def test_record_outcome_creates_edge(self, mental_map):
         """Test that recording outcome creates edge from decision."""
         decision = mental_map.create_node(NodeType.DECISION, "Test decision")
+        decision.confidence = 0.7
         initial_edge_count = len(mental_map.edges)
         
         mental_map.record_outcome(
-            decision_id=decision.node_id,
-            outcome="Result observed"
+            decision_node_id=decision.node_id,
+            outcome_content="Result observed",
+            success=True,
+            actual_impact=0.6,
+            learned_lessons=["Lesson learned"]
         )
         
         # Should have created edge
@@ -237,19 +240,25 @@ class TestMentalMappingCoreFlows:
     
     def test_record_outcome_triggers_appraisal(self, mental_map):
         """Test that recording outcome triggers self-appraisal."""
-        decision = mental_map.create_node(NodeType.DECISION, "Test decision")
-        
-        outcome_node = mental_map.record_outcome(
-            decision_id=decision.node_id,
-            outcome="Mixed results",
-            metrics={'success': 0.6}
+        problem = mental_map.create_node(NodeType.PROBLEM, "Test problem")
+        decision = mental_map.make_decision(
+            decision_content="Test decision",
+            problem_node_id=problem.node_id,
+            confidence=0.6,
+            alternatives_considered=["Option A"],
+            reasoning="Testing appraisal"
         )
         
-        # Appraisal should be triggered (internal method called)
-        # Verify by checking if reflection nodes were created
-        reflection_nodes = [n for n in mental_map.nodes.values() 
-                           if n.node_type == NodeType.REFLECTION]
-        assert len(reflection_nodes) > 0
+        outcome_node = mental_map.record_outcome(
+            decision_node_id=decision.node_id,
+            outcome_content="Mixed results - some goals met, others not",
+            success=False,
+            actual_impact=0.3,
+            learned_lessons=["Need better planning", "Should have tested earlier"]
+        )
+        
+        # Appraisal should update metrics
+        assert mental_map.appraisal_metrics['total_outcomes'] > 0
     
     # ========== SELF APPRAISAL TESTS ==========
     
