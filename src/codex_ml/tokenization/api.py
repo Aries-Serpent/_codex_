@@ -11,10 +11,10 @@ from codex_ml.interfaces.tokenizer import HFTokenizer
 
 from .adapter import WhitespaceTokenizer
 
-BOS_TOKEN = "<BOS>"
-EOS_TOKEN = "<EOS>"
-PAD_TOKEN = "<PAD>"
-UNK_TOKEN = "<UNK>"
+BOS_TOKEN = "<BOS>"  # nosec B105 - conventional special token
+EOS_TOKEN = "<EOS>"  # nosec B105 - conventional special token
+PAD_TOKEN = "<PAD>"  # nosec B105 - conventional special token
+UNK_TOKEN = "<UNK>"  # nosec B105 - conventional special token
 
 
 class TokenizerAdapter(Protocol):

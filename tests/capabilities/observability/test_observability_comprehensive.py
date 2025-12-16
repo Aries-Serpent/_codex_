@@ -101,7 +101,9 @@ class MetricsEndpoint:
             if hasattr(metric, "value"):
                 labels_str = ""
                 if metric.labels:
-                    labels_str = "{" + ",".join(f'{k}="{v}"' for k, v in metric.labels.items()) + "}"
+                    labels_str = (
+                        "{" + ",".join(f'{k}="{v}"' for k, v in metric.labels.items()) + "}"
+                    )
                 lines.append(f"{metric.name}{labels_str} {metric.value}")
         return "\n".join(lines)
 
@@ -158,11 +160,13 @@ class SLO:
 
     def record(self, success: bool, latency_ms: float | None = None) -> None:
         """Record measurement."""
-        self.measurements.append({
-            "timestamp": time.time(),
-            "success": success,
-            "latency_ms": latency_ms,
-        })
+        self.measurements.append(
+            {
+                "timestamp": time.time(),
+                "success": success,
+                "latency_ms": latency_ms,
+            }
+        )
 
     def current_value(self) -> float:
         """Calculate current SLO value."""
@@ -382,7 +386,7 @@ class AnomalyDetector:
 
         mean = sum(self.baseline) / len(self.baseline)
         variance = sum((x - mean) ** 2 for x in self.baseline) / len(self.baseline)
-        std = variance ** 0.5
+        std = variance**0.5
 
         if std == 0:
             is_anomaly = value != mean
@@ -454,7 +458,9 @@ class Tracer:
         self.spans: dict[str, Span] = {}
         self._span_counter = 0
 
-    def start_span(self, name: str, trace_id: str | None = None, parent_id: str | None = None) -> Span:
+    def start_span(
+        self, name: str, trace_id: str | None = None, parent_id: str | None = None
+    ) -> Span:
         """Start new span."""
         self._span_counter += 1
         span_id = f"span-{self._span_counter}"

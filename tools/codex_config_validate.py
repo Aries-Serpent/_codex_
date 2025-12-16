@@ -40,7 +40,7 @@ def _iter_yaml_files(root: Path) -> List[Path]:
     if not root.exists():
         return []
     files: List[Path] = []
-    for p in root.rglob('*.yaml'):
+    for p in root.rglob("*.yaml"):
         if p.is_file():
             files.append(p)
     return sorted(files)
@@ -48,28 +48,28 @@ def _iter_yaml_files(root: Path) -> List[Path]:
 
 def _validate_file(path: Path) -> FileResult:
     try:
-        raw = yaml.safe_load(path.read_text(encoding='utf-8')) or {}
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except Exception as e:
-        return FileResult(path=str(path), ok=False, error=f'YAML parse error: {e}')
+        return FileResult(path=str(path), ok=False, error=f"YAML parse error: {e}")
 
     try:
         cfg_schema.from_dict(raw)
     except cfg_schema.ConfigValidationError as e:
-        return FileResult(path=str(path), ok=False, error=f'Config validation error: {e}')
+        return FileResult(path=str(path), ok=False, error=f"Config validation error: {e}")
     except Exception as e:  # pragma: no cover
-        return FileResult(path=str(path), ok=False, error=f'Unexpected error: {e}')
+        return FileResult(path=str(path), ok=False, error=f"Unexpected error: {e}")
 
     return FileResult(path=str(path), ok=True, error=None)
 
 
 def _write_json(path: Path, results: List[FileResult]) -> None:
     data = {
-        'total_files': len(results),
-        'num_ok': sum(1 for r in results if r.ok),
-        'num_failed': sum(1 for r in results if not r.ok),
-        'files': [asdict(r) for r in results],
+        "total_files": len(results),
+        "num_ok": sum(1 for r in results if r.ok),
+        "num_failed": sum(1 for r in results if not r.ok),
+        "files": [asdict(r) for r in results],
     }
-    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding='utf-8')
+    path.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def _write_markdown(path: Path, results: List[FileResult]) -> None:
@@ -78,49 +78,49 @@ def _write_markdown(path: Path, results: List[FileResult]) -> None:
     num_failed = sum(1 for r in results if not r.ok)
 
     lines: List[str] = []
-    lines.append('# _codex_ Config Validation Report\n')
-    lines.append(f'- Total files: **{total}**')
-    lines.append(f'- OK : **{num_ok}**')
-    lines.append(f'- Failed : **{num_failed}**\n')
+    lines.append("# _codex_ Config Validation Report\n")
+    lines.append(f"- Total files: **{total}**")
+    lines.append(f"- OK : **{num_ok}**")
+    lines.append(f"- Failed : **{num_failed}**\n")
 
     if not results:
-        lines.append('No YAML configuration files were found.\n')
-        path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+        lines.append("No YAML configuration files were found.\n")
+        path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return
 
-    lines.append('## File Results\n')
-    lines.append('| File | Status | Error |')
-    lines.append('| ---- | ------ | ----- |')
+    lines.append("## File Results\n")
+    lines.append("| File | Status | Error |")
+    lines.append("| ---- | ------ | ----- |")
 
     for r in results:
-        status = 'OK' if r.ok else 'FAILED'
-        err = r.error or ''
-        lines.append(f'| `{r.path}` | {status} | {err} |')
+        status = "OK" if r.ok else "FAILED"
+        err = r.error or ""
+        lines.append(f"| `{r.path}` | {status} | {err} |")
 
-    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main(argv: Optional[list[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description='Validate `_codex_` YAML configs against the config schema.'
+        description="Validate `_codex_` YAML configs against the config schema."
     )
     parser.add_argument(
-        '--conf-dir',
+        "--conf-dir",
         type=str,
-        default='conf',
-        help='Config directory to scan (default: conf).',
+        default="conf",
+        help="Config directory to scan (default: conf).",
     )
     parser.add_argument(
-        '--json-out',
+        "--json-out",
         type=str,
-        default='codex_config_validation_report.json',
-        help='JSON report path (default: codex_config_validation_report.json).',
+        default="codex_config_validation_report.json",
+        help="JSON report path (default: codex_config_validation_report.json).",
     )
     parser.add_argument(
-        '--md-out',
+        "--md-out",
         type=str,
-        default='codex_config_validation_report.md',
-        help='Markdown report path (default: codex_config_validation_report.md).',
+        default="codex_config_validation_report.md",
+        help="Markdown report path (default: codex_config_validation_report.md).",
     )
     args = parser.parse_args(argv)
 
@@ -139,12 +139,12 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     num_failed = sum(1 for r in results if not r.ok)
     if num_failed > 0:
-        print(f'{num_failed} config files failed validation.')
+        print(f"{num_failed} config files failed validation.")
         return 1
 
-    print(f'Validated {len(results)} config files successfully.')
+    print(f"Validated {len(results)} config files successfully.")
     return 0
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())

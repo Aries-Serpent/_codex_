@@ -59,7 +59,14 @@ def _write_json(index: Dict[str, List[DatasetFile]], path: Path) -> None:
 
 
 def _write_markdown(index: Dict[str, List[DatasetFile]], path: Path) -> None:
-    lines = ["# Dataset Index", "", f"Root: `{index['root']}`", "", "| Path | Type | Size (bytes) |", "| --- | --- | --- |"]
+    lines = [
+        "# Dataset Index",
+        "",
+        f"Root: `{index['root']}`",
+        "",
+        "| Path | Type | Size (bytes) |",
+        "| --- | --- | --- |",
+    ]
     for file in index["files"]:
         lines.append(f"| {file.path} | {file.kind} | {file.size_bytes} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -67,9 +74,18 @@ def _write_markdown(index: Dict[str, List[DatasetFile]], path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate dataset index for a data root.")
-    parser.add_argument("--data-root", type=Path, default=Path("data"), help="Data directory to index (default: data).")
-    parser.add_argument("--json-out", type=Path, default=Path("codex_dataset_index.json"), help="JSON output path.")
-    parser.add_argument("--md-out", type=Path, default=Path("codex_dataset_index.md"), help="Markdown output path.")
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=Path("data"),
+        help="Data directory to index (default: data).",
+    )
+    parser.add_argument(
+        "--json-out", type=Path, default=Path("codex_dataset_index.json"), help="JSON output path."
+    )
+    parser.add_argument(
+        "--md-out", type=Path, default=Path("codex_dataset_index.md"), help="Markdown output path."
+    )
     args = parser.parse_args(argv)
 
     data_root = args.data_root.expanduser().resolve()

@@ -239,7 +239,9 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     p.add_argument("--errors", type=str, default=None, help="Path to codex_error_questions.md.")
     p.add_argument("--hardship", type=str, default=None, help="Optional hardship metadata YAML.")
     p.add_argument("--cap-map", type=str, default=None, help="Optional capability map YAML.")
-    p.add_argument("--out", type=str, required=True, help="Output path for codex_gap_registry.yaml.")
+    p.add_argument(
+        "--out", type=str, required=True, help="Output path for codex_gap_registry.yaml."
+    )
     return p.parse_args(argv)
 
 

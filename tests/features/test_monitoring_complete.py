@@ -16,14 +16,14 @@ class TestFeatureHealthMonitor:
     def test_record_feature_update(self, monitor):
         """Test recording feature updates."""
         monitor.record_feature_update("test_feature")
-        
+
         assert "test_feature" in monitor.feature_updates
         assert monitor.feature_updates["test_feature"] is not None
 
     def test_check_healthy_feature(self, monitor):
         """Test checking a healthy feature."""
         monitor.record_feature_update("healthy_feature")
-        
+
         status = monitor.check_feature_health("healthy_feature")
         assert status.is_healthy
         assert status.feature_name == "healthy_feature"
@@ -33,7 +33,7 @@ class TestFeatureHealthMonitor:
         """Test checking a stale feature."""
         # Manually set old update time
         monitor.feature_updates["stale_feature"] = datetime.now() - timedelta(hours=2)
-        
+
         status = monitor.check_feature_health("stale_feature")
         assert not status.is_healthy
         assert status.freshness_minutes > 60
@@ -42,7 +42,7 @@ class TestFeatureHealthMonitor:
     def test_check_never_updated_feature(self, monitor):
         """Test checking a feature that was never updated."""
         status = monitor.check_feature_health("never_updated")
-        
+
         assert not status.is_healthy
         assert status.last_updated == "never"
         assert status.freshness_level == "UNKNOWN"
@@ -53,17 +53,17 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_error("error_feature")
         monitor.record_feature_error("error_feature")
         monitor.record_feature_error("error_feature")
-        
+
         assert monitor.error_counts["error_feature"] == 3
 
     def test_check_feature_with_errors(self, monitor):
         """Test checking feature with errors."""
         monitor.record_feature_update("error_feature")
-        
+
         # Record multiple errors
         for _ in range(7):
             monitor.record_feature_error("error_feature")
-        
+
         status = monitor.check_feature_health("error_feature")
         assert not status.is_healthy
         assert status.error_count == 7
@@ -73,13 +73,13 @@ class TestFeatureHealthMonitor:
         """Test freshness level classification."""
         # Fresh (< 1 hour)
         assert monitor.get_freshness_level(30) == "FRESH"
-        
+
         # Acceptable (1-6 hours)
         assert monitor.get_freshness_level(120) == "ACCEPTABLE"
-        
+
         # Stale (6-24 hours)
         assert monitor.get_freshness_level(600) == "STALE"
-        
+
         # Very stale (> 24 hours)
         assert monitor.get_freshness_level(1500) == "VERY_STALE"
 
@@ -88,9 +88,9 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_update("feat1")
         monitor.record_feature_update("feat2")
         monitor.record_feature_update("feat3")
-        
+
         results = monitor.check_all_features(["feat1", "feat2", "feat3"])
-        
+
         assert len(results) == 3
         assert all(isinstance(status, FeatureHealthStatus) for status in results.values())
 
@@ -99,9 +99,9 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_update("fresh1")
         monitor.record_feature_update("fresh2")
         monitor.feature_updates["stale1"] = datetime.now() - timedelta(hours=12)
-        
+
         report = monitor.get_freshness_report()
-        
+
         assert "FRESH" in report
         assert "STALE" in report
         assert report["FRESH"] >= 2
@@ -110,9 +110,9 @@ class TestFeatureHealthMonitor:
         """Test alerting for stale features."""
         monitor.record_feature_update("fresh")
         monitor.feature_updates["stale"] = datetime.now() - timedelta(hours=25)
-        
+
         stale_features = monitor.alert_stale_features(threshold_hours=24)
-        
+
         assert "stale" in stale_features
         assert "fresh" not in stale_features
 
@@ -120,19 +120,19 @@ class TestFeatureHealthMonitor:
         """Test resetting error counts."""
         monitor.record_feature_error("feat1")
         monitor.record_feature_error("feat2")
-        
+
         assert len(monitor.error_counts) == 2
-        
+
         monitor.reset_error_counts()
-        
+
         assert len(monitor.error_counts) == 0
 
     def test_time_until_stale(self, monitor):
         """Test calculating time until feature becomes stale."""
         monitor.record_feature_update("recent")
-        
+
         time_left = monitor.get_time_until_stale("recent", threshold_hours=24)
-        
+
         # Should be close to 24 hours
         assert time_left > 23
         assert time_left <= 24
@@ -142,9 +142,9 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_update("f1")
         monitor.record_feature_update("f2")
         monitor.feature_updates["f3"] = datetime.now() - timedelta(hours=12)
-        
+
         distribution = monitor.get_freshness_distribution()
-        
+
         assert "FRESH" in distribution
         assert "STALE" in distribution
         assert sum(distribution.values()) == pytest.approx(100.0)
@@ -168,9 +168,9 @@ class TestHealthAlerts:
                 freshness_level="UNKNOWN",
             ),
         }
-        
+
         alerts = monitor.generate_alerts(health_statuses)
-        
+
         assert len(alerts) > 0
         assert any(alert.severity == "CRITICAL" for alert in alerts)
 
@@ -185,9 +185,9 @@ class TestHealthAlerts:
                 freshness_level="ACCEPTABLE",
             ),
         }
-        
+
         alerts = monitor.generate_alerts(health_statuses, sla_minutes=120)
-        
+
         assert len(alerts) > 0
         assert any(alert.severity == "WARNING" for alert in alerts)
 
@@ -203,9 +203,9 @@ class TestHealthAlerts:
                 freshness_level="FRESH",
             ),
         }
-        
+
         alerts = monitor.generate_alerts(health_statuses)
-        
+
         assert len(alerts) > 0
         assert any("error" in alert.message.lower() for alert in alerts)
 
@@ -218,9 +218,9 @@ class TestHealthAlerts:
             timestamp=datetime.now().isoformat(),
             metric_value=50.0,
         )
-        
+
         alert_dict = alert.to_dict()
-        
+
         assert alert_dict["feature_name"] == "test"
         assert alert_dict["severity"] == "WARNING"
         assert alert_dict["metric_value"] == 50.0
@@ -255,15 +255,15 @@ class TestHealthReports:
     def test_generate_json_report(self, monitor, sample_statuses):
         """Test generating JSON health report."""
         import json
-        
+
         report_str = monitor.generate_health_report(
             sample_statuses,
             format="json",
             include_recommendations=True,
         )
-        
+
         report = json.loads(report_str)
-        
+
         assert "timestamp" in report
         assert "summary" in report
         assert "features" in report
@@ -278,7 +278,7 @@ class TestHealthReports:
             format="markdown",
             include_recommendations=True,
         )
-        
+
         assert "# Feature Health Report" in report_str
         assert "## Summary" in report_str
         assert "healthy1" in report_str
@@ -287,7 +287,7 @@ class TestHealthReports:
     def test_generate_recommendations(self, monitor, sample_statuses):
         """Test generating recommendations."""
         recommendations = monitor._generate_recommendations(sample_statuses)
-        
+
         assert len(recommendations) > 0
         assert any("stale" in rec.lower() for rec in recommendations)
 
@@ -298,41 +298,41 @@ class TestFeatureHealthIntegration:
     def test_complete_monitoring_workflow(self):
         """Test complete monitoring workflow."""
         monitor = FeatureHealthMonitor(freshness_threshold_minutes=60)
-        
+
         # Record some feature updates
         features = ["user_age", "user_score", "transaction_amount"]
         for feature in features:
             monitor.record_feature_update(feature)
-        
+
         # Simulate some errors
         monitor.record_feature_error("user_score")
         monitor.record_feature_error("user_score")
-        
+
         # Make one feature stale
         monitor.feature_updates["transaction_amount"] = datetime.now() - timedelta(hours=2)
-        
+
         # Check all features
         statuses = monitor.check_all_features(features)
-        
+
         # Generate report
         report = monitor.generate_health_report(statuses, format="json")
-        
+
         assert report is not None
         assert len(statuses) == 3
 
     def test_sla_compliance_monitoring(self):
         """Test SLA compliance monitoring."""
         monitor = FeatureHealthMonitor()
-        
+
         # Record updates at different times
         monitor.record_feature_update("sla_compliant")
         monitor.feature_updates["sla_warning"] = datetime.now() - timedelta(hours=23)
         monitor.feature_updates["sla_violation"] = datetime.now() - timedelta(hours=26)
-        
+
         features = ["sla_compliant", "sla_warning", "sla_violation"]
         statuses = monitor.check_all_features(features)
         alerts = monitor.generate_alerts(statuses, sla_minutes=1440)  # 24 hours
-        
+
         # Should have alerts for warning and violation
         assert len(alerts) > 0
 

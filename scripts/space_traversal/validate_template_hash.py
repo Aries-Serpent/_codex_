@@ -10,11 +10,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
+
 def compute_template_hash(tpl_dir: Path) -> str:
     concat = b""
     for t in sorted(tpl_dir.glob("*.j2")):
         concat += t.read_bytes()
     return hashlib.sha256(concat).hexdigest()
+
 
 def main():
     manifest_path = ROOT / "audit_run_manifest.json"
@@ -29,6 +31,7 @@ def main():
         print(f"[WARN] Template hash mismatch!\n  live={live_hash}\n  manifest={manifest_hash}")
     else:
         print("[PASS] Template hash matches manifest.")
+
 
 if __name__ == "__main__":
     main()

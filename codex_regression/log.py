@@ -83,7 +83,12 @@ def summarize_by_category(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[s
 
 def write_coverage_report(entries: Iterable[Dict[str, Any]]) -> pathlib.Path:
     summary = summarize_by_category(entries)
-    lines = ["# Model Regression Coverage", "", "| Category | Description | Pass | Fail | Skip |", "| --- | --- | --- | --- | --- |"]
+    lines = [
+        "# Model Regression Coverage",
+        "",
+        "| Category | Description | Pass | Fail | Skip |",
+        "| --- | --- | --- | --- | --- |",
+    ]
     for cat, desc in REGRESSION_CATEGORIES.items():
         bucket = summary.get(cat, {})
         lines.append(

@@ -19,7 +19,7 @@ TARGET_DIR = Path("configs")
 def find_legacy_configs() -> list:
     """Find all legacy config directories and files."""
     legacy = []
-    
+
     for dir_name in LEGACY_DIRS:
         legacy_dir = Path(dir_name)
         if legacy_dir.exists() and legacy_dir.is_dir():
@@ -27,7 +27,7 @@ def find_legacy_configs() -> list:
                 legacy.append(yaml_file)
             for yml_file in legacy_dir.rglob("*.yml"):
                 legacy.append(yml_file)
-    
+
     return legacy
 
 
@@ -35,27 +35,27 @@ def determine_target_path(source: Path) -> Path:
     """Determine target path for a config file."""
     # Map legacy paths to new structure
     name = source.stem
-    
+
     # Check if it's a base config
     if "base" in str(source) or name in ["training", "model", "data"]:
         return TARGET_DIR / "base" / source.name
-    
+
     # Check if it's production
     if "prod" in str(source):
         return TARGET_DIR / "production" / source.name
-    
+
     # Check if it's development/minimal
     if "minimal" in str(source) or "dev" in str(source):
         return TARGET_DIR / "development" / source.name
-    
+
     # Check if it's experiment
     if "experiment" in str(source) or "sweep" in str(source):
         return TARGET_DIR / "experiments" / source.name
-    
+
     # Check if it's evaluation
     if "eval" in str(source):
         return TARGET_DIR / "evaluation" / source.name
-    
+
     # Default to base
     return TARGET_DIR / "base" / source.name
 
@@ -76,11 +76,11 @@ def migrate_file(source: Path, target: Path, dry_run: bool = True) -> None:
 def create_hydra_config(dry_run: bool = True) -> None:
     """Create main Hydra config if not exists."""
     hydra_config = TARGET_DIR / "hydra" / "config.yaml"
-    
+
     if hydra_config.exists():
         print(f"  [SKIP] {hydra_config} already exists")
         return
-    
+
     config_content = {
         "defaults": [
             "base/training",
@@ -100,7 +100,7 @@ def create_hydra_config(dry_run: bool = True) -> None:
         },
         "env": "development",
     }
-    
+
     if dry_run:
         print(f"  [DRY RUN] Would create {hydra_config}")
     else:
@@ -113,11 +113,11 @@ def create_hydra_config(dry_run: bool = True) -> None:
 def create_init_file(dry_run: bool = True) -> None:
     """Create __init__.py to make configs a package."""
     init_file = TARGET_DIR / "__init__.py"
-    
+
     if init_file.exists():
         print(f"  [SKIP] {init_file} already exists")
         return
-    
+
     content = '''"""
 Unified configuration package for Codex ML.
 
@@ -129,7 +129,7 @@ This package contains all configuration files organized by purpose:
 - hydra/: Hydra-specific configurations
 """
 '''
-    
+
     if dry_run:
         print(f"  [DRY RUN] Would create {init_file}")
     else:
@@ -143,21 +143,21 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Show what would be done")
     parser.add_argument("--execute", action="store_true", help="Execute migration")
     args = parser.parse_args()
-    
+
     if not args.dry_run and not args.execute:
         print("Specify --dry-run or --execute")
         return
-    
+
     dry_run = args.dry_run
-    
+
     print("=" * 70)
     print("CONFIG CONSOLIDATION MIGRATION")
     print("=" * 70)
-    
+
     print("\n1. Finding legacy configs...")
     legacy_files = find_legacy_configs()
     print(f"   Found {len(legacy_files)} config files in legacy directories")
-    
+
     if legacy_files:
         print("\n2. Migrating files...")
         for source in legacy_files:
@@ -165,17 +165,17 @@ def main():
             migrate_file(source, target, dry_run)
     else:
         print("\n2. No legacy files to migrate")
-    
+
     print("\n3. Creating __init__.py...")
     create_init_file(dry_run)
-    
+
     print("\n4. Creating Hydra config...")
     create_hydra_config(dry_run)
-    
+
     print("\n" + "=" * 70)
     print("MIGRATION COMPLETE!")
     print("=" * 70)
-    
+
     if dry_run:
         print("\nRun with --execute to apply changes")
     else:

@@ -41,8 +41,14 @@ DEFAULT_GROUPS: Dict[str, Tuple[Tuple[Path, Path], ...]] = {
         (Path("configs/tracking/offline.yaml"), Path("configs/schemas/tracking.schema.yaml")),
     ),
     "deployment": (
-        (Path("configs/deployment/interfaces.yaml"), Path("configs/schemas/deployment_interfaces.schema.yaml")),
-        (Path("configs/deploy/reasoning_pod.yaml"), Path("configs/schemas/deployment_reasoning_pod.schema.yaml")),
+        (
+            Path("configs/deployment/interfaces.yaml"),
+            Path("configs/schemas/deployment_interfaces.schema.yaml"),
+        ),
+        (
+            Path("configs/deploy/reasoning_pod.yaml"),
+            Path("configs/schemas/deployment_reasoning_pod.schema.yaml"),
+        ),
     ),
     "monitoring": (
         (
@@ -167,7 +173,9 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate Codex configuration files")
     parser.add_argument("--config", help="Path to config file", default=None)
     parser.add_argument("--schema", help="Path to schema file", default=None)
-    parser.add_argument("--root", help="Validate all YAML configs under this directory", default=None)
+    parser.add_argument(
+        "--root", help="Validate all YAML configs under this directory", default=None
+    )
     parser.add_argument(
         "--group",
         action="append",

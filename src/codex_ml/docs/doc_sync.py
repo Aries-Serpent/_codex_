@@ -15,7 +15,7 @@ from typing import Any
 @dataclass
 class DocSyncIssue:
     """Documentation sync issue."""
-    
+
     file_path: str
     issue_type: str
     location: str
@@ -25,10 +25,10 @@ class DocSyncIssue:
 
 class DocumentationValidator:
     """Validate documentation against implementation."""
-    
+
     def __init__(self):
         self.issues: list[DocSyncIssue] = []
-    
+
     def validate_file(self, file_path: Path) -> list[DocSyncIssue]:
         """Validate documentation in a file."""
         issues = []
@@ -37,19 +37,21 @@ class DocumentationValidator:
             tree = ast.parse(content)
         except (SyntaxError, FileNotFoundError):
             return issues
-        
+
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 docstring = ast.get_docstring(node)
                 if docstring is None and not node.name.startswith("_"):
-                    issues.append(DocSyncIssue(
-                        file_path=str(file_path),
-                        issue_type="missing_docstring",
-                        location=node.name,
-                        message=f"Missing docstring for '{node.name}'",
-                    ))
+                    issues.append(
+                        DocSyncIssue(
+                            file_path=str(file_path),
+                            issue_type="missing_docstring",
+                            location=node.name,
+                            message=f"Missing docstring for '{node.name}'",
+                        )
+                    )
         return issues
-    
+
     def validate_directory(self, directory: Path) -> list[DocSyncIssue]:
         """Validate all Python files in directory."""
         all_issues = []

@@ -25,4 +25,3 @@ def validate_structure(data: Dict[str, Any]) -> None:
         tests = entry.get("tests")
         if not isinstance(tests, list):
             raise ValueError(f"Category {name} must contain a list of tests")
-

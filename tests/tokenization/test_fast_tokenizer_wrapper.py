@@ -39,9 +39,7 @@ def test_round_trip(trained_tokenizer_json):
 
 def test_padding_and_truncation(trained_tokenizer_json):
     wrapper = FastTokenizerWrapper(str(trained_tokenizer_json))
-    padded = wrapper.encode(
-        "foo bar baz", padding="max_length", truncation=True, max_length=6
-    )
+    padded = wrapper.encode("foo bar baz", padding="max_length", truncation=True, max_length=6)
     assert len(padded) == 6
     assert padded[-1] == 0
     truncated = wrapper.encode("foo bar baz", truncation=True, max_length=2)

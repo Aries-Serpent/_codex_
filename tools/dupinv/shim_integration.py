@@ -153,9 +153,7 @@ class CrossReference:
         """
         return (module, path) in self.whitelisted_paths
 
-    def check_paths(
-        self, paths: List[str], derive_module: bool = True
-    ) -> CrossReferenceResult:
+    def check_paths(self, paths: List[str], derive_module: bool = True) -> CrossReferenceResult:
         """Check if paths are in SHIM inventory.
 
         Args:
@@ -176,17 +174,18 @@ class CrossReference:
                 # Derive module name from path with proper package handling
                 # e.g., "src/training/engine.py" -> "training.engine"
                 from pathlib import Path
+
                 p = Path(path)
-                
+
                 # Remove src/ prefix if present
                 parts = list(p.parts)
-                if parts and parts[0] == 'src':
+                if parts and parts[0] == "src":
                     parts = parts[1:]
-                
+
                 # Remove file extension and convert to module notation
                 if parts:
                     parts[-1] = p.stem  # Get filename without extension
-                    module = '.'.join(parts)
+                    module = ".".join(parts)
                 else:
                     module = None
             else:
@@ -204,12 +203,8 @@ class CrossReference:
 
         # Generate recommendations
         if not in_inventory:
-            recommendations.append(
-                "Add to .github/SHIM_INVENTORY.yaml with appropriate status"
-            )
-            recommendations.append(
-                "Or consolidate immediately if not actively used"
-            )
+            recommendations.append("Add to .github/SHIM_INVENTORY.yaml with appropriate status")
+            recommendations.append("Or consolidate immediately if not actively used")
         elif not is_whitelisted:
             recommendations.append(
                 "Path not whitelisted - add to whitelist_duplicates or consolidate"
@@ -217,9 +212,7 @@ class CrossReference:
         else:
             recommendations.append("Already tracked in SHIM_INVENTORY.yaml")
             if shim_status == "shim":
-                recommendations.append(
-                    "Consider consolidating after legacy usage declines"
-                )
+                recommendations.append("Consider consolidating after legacy usage declines")
 
         return CrossReferenceResult(
             in_shim_inventory=in_inventory,

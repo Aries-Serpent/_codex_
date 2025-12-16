@@ -1,4 +1,5 @@
 """Test equivalence of src.* shims to legacy module imports."""
+
 import importlib
 import types
 

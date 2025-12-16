@@ -1,0 +1,18 @@
+name: code_change_review
+objective: "Review proposed code changes for correctness, safety, and verification coverage."
+steps:
+  - identify_scope: "Summarize files and components impacted."
+  - retrieve_context: "Use search_docs/search_code to pull relevant implementation and policy references."
+  - run_tools: "Call git tools for branch/diff context; invoke verifiers when available."
+  - assess_claims: "List claims about behavior; classify as VERIFIED/INFERRED/UNKNOWN with evidence."
+  - report: "Provide concise decision, blockers, and next actions."
+acceptance_criteria:
+  - "All VERIFIED claims cite retrieved docs or tool outputs."
+  - "Risky areas are flagged with UNKNOWN when evidence is missing."
+  - "Security and policy concerns are explicitly noted."
+outputs:
+  summary: "One-paragraph decision and risk level."
+  claims: "Structured list with states and evidence links."
+  follow_ups:
+    - "Tests to add or rerun"
+    - "Data or approvals required"

@@ -126,7 +126,11 @@ def build_workspace_index(root: Path, artifacts: Path) -> Dict[str, List[str]]:
             continue
         suffix = path.suffix
         if suffix == ".py":
-            (buckets["tests"] if "tests/" in rel else buckets["scripts"] if "scripts/" in rel or "tools/" in rel else buckets["code"]).append(rel)
+            (
+                buckets["tests"]
+                if "tests/" in rel
+                else buckets["scripts"] if "scripts/" in rel or "tools/" in rel else buckets["code"]
+            ).append(rel)
         elif suffix in {".yaml", ".yml", ".json", ".ini", ".toml"}:
             buckets["configs"].append(rel)
         elif suffix in {".md", ".rst"}:
@@ -259,14 +263,18 @@ def verify_commands(root: Path, artifacts: Path) -> List[CommandResult]:
         else:
             env = None
             cmd = raw
-        completed = subprocess.run(cmd, cwd=root, capture_output=True, text=True, env=env, check=False)
+        completed = subprocess.run(
+            cmd, cwd=root, capture_output=True, text=True, env=env, check=False
+        )
         results.append(CommandResult(cmd, completed.returncode, completed.stdout, completed.stderr))
     payload = [asdict(r) for r in results]
     write_json(artifacts / "verification_results.json", payload)
     return results
 
 
-def emit_error_question(artifacts: Path, step_number: str, step_description: str, error_message: str, context: str) -> None:
+def emit_error_question(
+    artifacts: Path, step_number: str, step_description: str, error_message: str, context: str
+) -> None:
     block = (
         f"> Question from ChatGPT @codex {now_iso()}:\n"
         f"> While performing [{step_number}:{step_description}], encountered the following error: {error_message} Context: {context}. "
@@ -277,7 +285,9 @@ def emit_error_question(artifacts: Path, step_number: str, step_description: str
     write_text(path, existing + block)
 
 
-def status_report(artifacts: Path, findings: List[Finding], verification: List[CommandResult]) -> None:
+def status_report(
+    artifacts: Path, findings: List[Finding], verification: List[CommandResult]
+) -> None:
     lines = ["# Codex-ready Status", f"Generated: {now_iso()}", ""]
     lines.append("## Findings")
     if not findings:
@@ -290,7 +300,9 @@ def status_report(artifacts: Path, findings: List[Finding], verification: List[C
     lines.append("\n## Verification")
     for result in verification:
         status = "pass" if result.returncode == 0 else "fail"
-        lines.append(f"- {'✅' if status == 'pass' else '❌'} {' '.join(result.command)} (rc={result.returncode})")
+        lines.append(
+            f"- {'✅' if status == 'pass' else '❌'} {' '.join(result.command)} (rc={result.returncode})"
+        )
     lines.append("\n## Residual Risks")
     residuals = [f.residual_risk for f in findings if f.residual_risk]
     if residuals:
@@ -301,14 +313,18 @@ def status_report(artifacts: Path, findings: List[Finding], verification: List[C
     write_text(artifacts / "status_report.md", "\n".join(lines))
 
 
-def run_sequence(root: Path, artifacts: Path, apply_readme: bool, max_errors: int, dry_run: bool) -> int:
+def run_sequence(
+    root: Path, artifacts: Path, apply_readme: bool, max_errors: int, dry_run: bool
+) -> int:
     ensure_dir(artifacts)
     errors = 0
     try:
         snapshot_environment(root, artifacts)
     except Exception as exc:  # noqa: BLE001
         errors += 1
-        emit_error_question(artifacts, "1.1", "Environment snapshot", str(exc), "Preparing environment")
+        emit_error_question(
+            artifacts, "1.1", "Environment snapshot", str(exc), "Preparing environment"
+        )
         if errors >= max_errors:
             return 1
     try:
@@ -344,7 +360,9 @@ def run_sequence(root: Path, artifacts: Path, apply_readme: bool, max_errors: in
             verification = verify_commands(root, artifacts)
     except Exception as exc:  # noqa: BLE001
         errors += 1
-        emit_error_question(artifacts, "3.2", "Verification", str(exc), "Running verification commands")
+        emit_error_question(
+            artifacts, "3.2", "Verification", str(exc), "Running verification commands"
+        )
     try:
         status_report(artifacts, findings, verification)
     except Exception as exc:  # noqa: BLE001
@@ -357,9 +375,17 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Codex-ready sequential workflow.")
     parser.add_argument("--root", default=str(ROOT_DEFAULT), help="Repository root")
     parser.add_argument("--artifacts", default="artifacts/codex_ready", help="Artifact directory")
-    parser.add_argument("--apply-readme", action="store_true", help="Apply sanitized README edits in place (backs up first)")
-    parser.add_argument("--max-errors", type=int, default=25, help="Maximum tolerated errors before abort")
-    parser.add_argument("--dry-run", action="store_true", help="Record actions without mutating tracked files")
+    parser.add_argument(
+        "--apply-readme",
+        action="store_true",
+        help="Apply sanitized README edits in place (backs up first)",
+    )
+    parser.add_argument(
+        "--max-errors", type=int, default=25, help="Maximum tolerated errors before abort"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Record actions without mutating tracked files"
+    )
     return parser.parse_args(argv)
 
 

@@ -1,5 +1,10 @@
 # `_codex_`
-> 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.4.0)
+> 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
+
+![Tests](https://img.shields.io/badge/tests-107%20total%20%7C%2073%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-68%25-yellow)
+![Security](https://img.shields.io/badge/security-0%20vulnerabilities-brightgreen)
+![Production](https://img.shields.io/badge/production-ready-brightgreen)
 
 ## 🎯 Achievement Status
 
@@ -7,19 +12,65 @@
 ✅ End-to-End Automation | ✅ Auto-Retraining | ✅ Observability  
 ✅ Production Engineering | ✅ Cross-Functional | ✅ Governance
 
-**Latest Milestone:** Audit Pipeline v1.4.0 Complete (39 capabilities tracked, 18/18 critical at maturity)  
-**Latest Update:** 2025-12-09 - PR #2449 verification complete, all quality gates passing  
-📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [Status Update](status_update_2025-12-09.md)
+**Gap Analysis Status:** 47/47 Items Complete (100%) ✅
+
+**Latest Milestone:** Comprehensive Gap Resolution Complete (2025-12-11)  
+**Latest Update:** Agent Memory System, Self-Healing CI, Quantum Game Theory, Performance Tests  
+📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [v1.5.x Changelog](docs/audit/v1.5.x_CHANGELOG.md)
+
+## 🆕 Recent Additions (2025-12-11)
+
+| Component | Description | Location |
+|-----------|-------------|----------|
+| **Agent Memory System** | SQLite-backed persistent memory with pattern library | `agents/agent_memory.py` |
+| **Self-Healing CI** | Automated issue detection and remediation | `.github/workflows/self-healing-ci.yml` |
+| **Quantum Game Theory** | Physics-inspired Blue/Red team decision framework | `agents/quantum_game_theory.py` |
+| **Performance Tests** | Regression testing suite | `tests/performance/` |
+| **API Documentation** | Complete API reference with GitHub Pages | `docs/api/` |
+| **Scalability Utils** | LRUCache, RateLimiter, CircuitBreaker, LoadBalancer | `src/codex_ml/utils/scalability.py` |
+| **HAR Integration** | HTTP Archive recording/replay | `src/codex_ml/integrations/har_integration.py` |
 
 ## 🤖 Codex Quick-Index (For AI Agents)
 
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
 
 **Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features  
+**Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths  
 **Machine index:** [_codex_/codex_index.yaml](_codex_/codex_index.yaml) → Primary files, priorities, orchestration map  
-**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks
+**Continuation:** [AGENT_CONTINUATION_PROMPT.md](AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks  
+**Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+
+### 🔄 Tokenized Workflow Navigation
+
+AI Agents can execute common operations using deterministic, token-based workflows:
+
+```python
+from agents.workflow_navigator import WorkflowNavigator
+
+navigator = WorkflowNavigator()
+navigator.execute('AUDIT_EXEC')  # Run full audit pipeline
+navigator.execute('DOC_GEN')      # Generate documentation
+```
+
+**Quick Access Tokens:** `audit`, `decide`, `docs`, `organize`, `review`, `heal`  
+See [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) for complete workflow catalog.
+
+### 🤖 ChatGPT 5.1 Agent Mode
+
+Generate an intuitive control interface for AI agents:
+
+```bash
+python -m scripts.space_traversal.audit_runner agent-interface --output agent_interface.html
+```
+
+This creates an HTML interface specifically designed for ChatGPT 5.1 Agent mode with:
+- Clear action buttons and navigation
+- Per-capability audit triggers
+- Report generation controls
+- Machine-readable command outputs
+- Tokenized workflow execution
 
 ---
 
@@ -35,6 +86,60 @@
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
 ### 🆕 Latest Updates (December 2025)
+
+#### Audit Pipeline v1.5.5 (2025-12-10)
+
+**Complete Trend Aggregation & Visualization Release:**
+
+```mermaid
+flowchart LR
+    subgraph v1.5.x["Audit Pipeline v1.5.x"]
+        DB[(Trend Database)]
+        Compare[Comparison]
+        Viz[Visualization]
+        CI[CI Integration]
+    end
+    
+    subgraph Outputs
+        Dashboard[Dashboard]
+        Reports[Reports]
+        Wiki[Wiki]
+        Agent[Agent UI]
+    end
+    
+    DB --> Compare
+    Compare --> Reports
+    Viz --> Dashboard
+    Viz --> Agent
+    Viz --> Wiki
+```
+
+| Version | Features |
+|---------|----------|
+| v1.5.0 | SQLite trend database, schema migrations |
+| v1.5.1 | Historical comparison, regression detection |
+| v1.5.2 | ASCII sparklines, HTML dashboards |
+| v1.5.3 | Jinja2 report templates |
+| v1.5.4 | Webhooks (Slack/Teams), CI integration |
+| v1.5.5 | Performance tools, agent interface, wiki generator |
+
+**New Commands:**
+```bash
+# Trend operations
+python -m scripts.space_traversal.audit_runner store-trend
+python -m scripts.space_traversal.audit_runner show-trend <capability>
+python -m scripts.space_traversal.audit_runner check-regressions
+
+# Visualization
+python -m scripts.space_traversal.audit_runner dashboard
+python -m scripts.space_traversal.audit_runner cli-builder
+python -m scripts.space_traversal.audit_runner api-collection
+python -m scripts.space_traversal.audit_runner api-docs
+python -m scripts.space_traversal.audit_runner agent-interface
+
+# Documentation
+python -m scripts.space_traversal.wiki_generator
+```
 
 #### PR #2449 Verification Complete (2025-12-09)
 - **Final Convergence Check**: All 4 verification items confirmed correct
@@ -130,9 +235,36 @@ python -m http.server -d artifacts/docs/api 8000
 - **General Onboarding**: [`NEWCOMER_GUIDE.md`](NEWCOMER_GUIDE.md)
 - **Zendesk Administration**: [`docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md`](docs/zendesk/ZENDESK_NEWCOMER_GUIDE.md)
 - **Project Overview**: [`docs/README_ROOT.md`](docs/README_ROOT.md)
-- **Contribution Guidelines**: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md)
+- **Contribution Guidelines**: [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- **Testing Guide**: [`docs/guides/TESTING_GUIDE.md`](docs/guides/TESTING_GUIDE.md) | [`tests/README.md`](tests/README.md)
 - **Changelog**: [`docs/CHANGELOG.md`](docs/CHANGELOG.md)
 - **Operational Templates**: [`docs/templates/README.md`](docs/templates/README.md)
+
+## Testing
+
+### Running Tests
+
+**Quick test run:**
+```bash
+pytest                           # Run all tests
+pytest -q                        # Quiet mode
+pytest -m smoke                  # Smoke tests only
+pytest -m "not slow"             # Skip slow tests
+```
+
+**With coverage:**
+```bash
+pytest --cov=src --cov-report=html --cov-report=xml --cov-report=term
+open htmlcov/index.html          # View coverage report
+```
+
+**CI/CD:** All PRs run automated tests via `.github/workflows/ci-pytest.yml`
+- Python 3.11+ (ubuntu-latest)
+- 90% coverage threshold (configurable)
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results
+
+See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 
 ### Local DoD (short)
 
@@ -140,12 +272,15 @@ python -m http.server -d artifacts/docs/api 8000
 # Run all quality gates
 nox -s lint typecheck tests gates
 
+# Run tests with coverage
+pytest --cov=src --cov-fail-under=90
+
 # Validate status schema
 pytest -q tests/status/test_example_report_schema.py
 
 # Validate configs
 python tools/validate_configs.py --root configs/training --schema configs/schemas/training.schema.yaml
-```text
+```
 
 ## Local Gates & Status Reports
 
@@ -297,6 +432,8 @@ Quick access to key repository areas via GitHub search. Click any link or use th
 | **Test Functions** | [`"def test_" language:Python`](https://github.com/Aries-Serpent/_codex_/search?q=%22def+test_%22+language%3APython) | Individual test functions |
 | **Fixtures** | [`"@pytest.fixture" OR "conftest.py"`](https://github.com/Aries-Serpent/_codex_/search?q=%22%40pytest.fixture%22+OR+%22conftest.py%22) | Test fixtures and configuration |
 | **Linter Configs** | [`filename:.ruff.toml OR filename:.bandit.yml`](https://github.com/Aries-Serpent/_codex_/search?q=filename%3A.ruff.toml+OR+filename%3A.bandit.yml) | Code quality configuration |
+
+Security scanning runs with `bandit -r src/ -c bandit.yaml -f txt` using the curated ruleset in `bandit.yaml` (medium severity/confidence, explicit skips documented inline).
 
 ### Deployment & Docker
 

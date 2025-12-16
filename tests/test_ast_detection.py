@@ -185,9 +185,7 @@ def helper(data):
         for group in groups:
             if len(group.member_files) >= 2:
                 paths = [m.path for m in group.member_files]
-                if any("file1.py" in p for p in paths) and any(
-                    "file2.py" in p for p in paths
-                ):
+                if any("file1.py" in p for p in paths) and any("file2.py" in p for p in paths):
                     found = True
                     break
         assert found

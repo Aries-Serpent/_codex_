@@ -40,6 +40,7 @@ try:
         CheckpointImpl,
         apply_activation_checkpointing,
     )
+
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -50,6 +51,7 @@ except ImportError:
 
 class FSDPShardingStrategy(Enum):
     """FSDP sharding strategies."""
+
     FULL_SHARD = "FULL_SHARD"  # Shard parameters, gradients, and optimizer states
     SHARD_GRAD_OP = "SHARD_GRAD_OP"  # Shard gradients and optimizer states only
     NO_SHARD = "NO_SHARD"  # No sharding (DDP equivalent)
@@ -58,7 +60,7 @@ class FSDPShardingStrategy(Enum):
 
 class FSDPConfig:
     """Configuration for FSDP training."""
-    
+
     def __init__(
         self,
         sharding_strategy: str = "FULL_SHARD",
@@ -76,7 +78,7 @@ class FSDPConfig:
     ):
         """
         Initialize FSDP configuration.
-        
+
         Args:
             sharding_strategy: Sharding strategy (FULL_SHARD, SHARD_GRAD_OP, NO_SHARD, HYBRID_SHARD)
             min_num_params: Minimum number of parameters for auto-wrapping
@@ -103,7 +105,7 @@ class FSDPConfig:
         self.backward_prefetch = backward_prefetch
         self.limit_all_gathers = limit_all_gathers
         self.use_orig_params = use_orig_params
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert config to dictionary."""
         return {
@@ -125,21 +127,21 @@ class FSDPConfig:
 class FSDPTrainer:
     """
     Production-ready FSDP trainer with comprehensive features.
-    
+
     Features:
     - Auto-wrap policies for efficient sharding
     - Mixed precision training
     - CPU offloading for memory efficiency
     - Activation checkpointing
     - Efficient checkpoint management
-    
+
     Example:
         >>> config = FSDPConfig(sharding_strategy="FULL_SHARD", mixed_precision="bf16")
         >>> trainer = FSDPTrainer(model, config)
         >>> fsdp_model = trainer.wrap_model()
         >>> # Train model with FSDP
     """
-    
+
     def __init__(
         self,
         model: Optional["nn.Module"] = None,
@@ -147,20 +149,18 @@ class FSDPTrainer:
     ):
         """
         Initialize FSDP trainer.
-        
+
         Args:
             model: PyTorch model to wrap with FSDP
             config: FSDP configuration
         """
         if not TORCH_AVAILABLE:
-            raise RuntimeError(
-                "PyTorch is not available. Install with: pip install torch>=2.0.0"
-            )
-        
+            raise RuntimeError("PyTorch is not available. Install with: pip install torch>=2.0.0")
+
         self.model = model
         self.config = config or FSDPConfig()
         self.fsdp_model = None
-    
+
     def _get_sharding_strategy(self) -> "ShardingStrategy":
         """Get PyTorch FSDP sharding strategy from config."""
         strategy_map = {
@@ -170,12 +170,12 @@ class FSDPTrainer:
             "HYBRID_SHARD": ShardingStrategy.HYBRID_SHARD,
         }
         return strategy_map.get(self.config.sharding_strategy, ShardingStrategy.FULL_SHARD)
-    
+
     def _get_mixed_precision_policy(self) -> Optional["MixedPrecision"]:
         """Get mixed precision policy from config."""
         if not self.config.mixed_precision:
             return None
-        
+
         if self.config.mixed_precision == "fp16":
             return MixedPrecision(
                 param_dtype=torch.float16,
@@ -189,24 +189,24 @@ class FSDPTrainer:
                 buffer_dtype=torch.bfloat16,
             )
         return None
-    
+
     def _get_cpu_offload(self) -> Optional["CPUOffload"]:
         """Get CPU offload configuration."""
         if not self.config.use_cpu_offload:
             return None
-        
+
         return CPUOffload(offload_params=self.config.offload_params)
-    
+
     def _get_auto_wrap_policy(
         self,
         transformer_layer_cls: Optional[List[type]] = None,
     ) -> Optional[Callable]:
         """
         Get auto-wrap policy for FSDP.
-        
+
         Args:
             transformer_layer_cls: List of transformer layer classes to wrap
-        
+
         Returns:
             Auto-wrap policy function
         """
@@ -222,7 +222,7 @@ class FSDPTrainer:
                 size_based_auto_wrap_policy,
                 min_num_params=self.config.min_num_params,
             )
-    
+
     def wrap_model(
         self,
         model: Optional["nn.Module"] = None,
@@ -230,22 +230,22 @@ class FSDPTrainer:
     ) -> "FSDP":
         """
         Wrap model with FSDP.
-        
+
         Args:
             model: Model to wrap (uses self.model if not provided)
             transformer_layer_cls: List of transformer layer classes for auto-wrapping
-        
+
         Returns:
             FSDP-wrapped model
         """
         model = model or self.model
         if model is None:
             raise ValueError("Model must be provided either in __init__ or wrap_model")
-        
+
         # Apply activation checkpointing if requested
         if self.config.activation_checkpointing:
             self._apply_activation_checkpointing(model, transformer_layer_cls)
-        
+
         # Wrap model with FSDP
         fsdp_model = FSDP(
             model,
@@ -262,10 +262,10 @@ class FSDPTrainer:
             limit_all_gathers=self.config.limit_all_gathers,
             use_orig_params=self.config.use_orig_params,
         )
-        
+
         self.fsdp_model = fsdp_model
         return fsdp_model
-    
+
     def _apply_activation_checkpointing(
         self,
         model: "nn.Module",
@@ -273,16 +273,16 @@ class FSDPTrainer:
     ):
         """
         Apply activation checkpointing to model.
-        
+
         Args:
             model: Model to apply checkpointing to
             transformer_layer_cls: List of transformer layer classes to checkpoint
         """
         if not transformer_layer_cls:
             return
-        
+
         check_fn = lambda submodule: isinstance(submodule, tuple(transformer_layer_cls))
-        
+
         apply_activation_checkpointing(
             model,
             checkpoint_wrapper_fn=functools.partial(
@@ -296,31 +296,31 @@ class FSDPTrainer:
 class FSDPCheckpointManager:
     """
     Efficient checkpoint management for FSDP models.
-    
+
     Features:
     - Full state dict consolidation
     - Sharded checkpoint save/load
     - Optimizer state management
     - Streaming checkpoint loading
-    
+
     Example:
         >>> manager = FSDPCheckpointManager()
         >>> manager.save_checkpoint(fsdp_model, optimizer, "checkpoint.pt")
         >>> fsdp_model, optimizer = manager.load_checkpoint("checkpoint.pt", model, optimizer)
     """
-    
+
     def __init__(self, use_sharded_checkpoint: bool = False):
         """
         Initialize checkpoint manager.
-        
+
         Args:
             use_sharded_checkpoint: Use sharded checkpoints (more memory efficient)
         """
         if not TORCH_AVAILABLE:
             raise RuntimeError("PyTorch is not available.")
-        
+
         self.use_sharded_checkpoint = use_sharded_checkpoint
-    
+
     def save_checkpoint(
         self,
         fsdp_model: "FSDP",
@@ -332,7 +332,7 @@ class FSDPCheckpointManager:
     ):
         """
         Save FSDP model checkpoint.
-        
+
         Args:
             fsdp_model: FSDP-wrapped model
             optimizer: Optimizer (optional)
@@ -343,19 +343,15 @@ class FSDPCheckpointManager:
         """
         checkpoint_path = Path(checkpoint_path)
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         if self.use_sharded_checkpoint:
             # Save sharded checkpoint (each rank saves its shard)
-            self._save_sharded_checkpoint(
-                fsdp_model, optimizer, checkpoint_path, epoch, metadata
-            )
+            self._save_sharded_checkpoint(fsdp_model, optimizer, checkpoint_path, epoch, metadata)
         else:
             # Save full state dict (only rank 0)
             if rank == 0:
-                self._save_full_checkpoint(
-                    fsdp_model, optimizer, checkpoint_path, epoch, metadata
-                )
-    
+                self._save_full_checkpoint(fsdp_model, optimizer, checkpoint_path, epoch, metadata)
+
     def _save_full_checkpoint(
         self,
         fsdp_model: "FSDP",
@@ -371,13 +367,13 @@ class FSDPCheckpointManager:
             FullStateDictConfig(offload_to_cpu=True, rank0_only=True),
         ):
             state_dict = fsdp_model.state_dict()
-        
+
         checkpoint = {
             "model": state_dict,
             "epoch": epoch,
             "metadata": metadata or {},
         }
-        
+
         if optimizer is not None:
             with FSDP.state_dict_type(
                 fsdp_model,
@@ -385,9 +381,9 @@ class FSDPCheckpointManager:
                 FullStateDictConfig(offload_to_cpu=True, rank0_only=True),
             ):
                 checkpoint["optimizer"] = optimizer.state_dict()
-        
+
         torch.save(checkpoint, checkpoint_path)
-    
+
     def _save_sharded_checkpoint(
         self,
         fsdp_model: "FSDP",
@@ -403,23 +399,23 @@ class FSDPCheckpointManager:
             ShardedStateDictConfig(),
         ):
             state_dict = fsdp_model.state_dict()
-        
+
         # Each rank saves its shard
         rank = torch.distributed.get_rank()
         shard_path = checkpoint_path.parent / f"{checkpoint_path.stem}_rank{rank}.pt"
-        
+
         checkpoint = {
             "model": state_dict,
             "epoch": epoch,
             "rank": rank,
             "metadata": metadata or {},
         }
-        
+
         if optimizer is not None:
             checkpoint["optimizer"] = optimizer.state_dict()
-        
+
         torch.save(checkpoint, shard_path)
-    
+
     def load_checkpoint(
         self,
         checkpoint_path: Union[str, Path],
@@ -429,27 +425,23 @@ class FSDPCheckpointManager:
     ) -> tuple:
         """
         Load FSDP model checkpoint.
-        
+
         Args:
             checkpoint_path: Path to checkpoint
             fsdp_model: FSDP-wrapped model
             optimizer: Optimizer (optional)
             rank: Process rank
-        
+
         Returns:
             Tuple of (fsdp_model, optimizer, epoch, metadata)
         """
         checkpoint_path = Path(checkpoint_path)
-        
+
         if self.use_sharded_checkpoint:
-            return self._load_sharded_checkpoint(
-                checkpoint_path, fsdp_model, optimizer, rank
-            )
+            return self._load_sharded_checkpoint(checkpoint_path, fsdp_model, optimizer, rank)
         else:
-            return self._load_full_checkpoint(
-                checkpoint_path, fsdp_model, optimizer
-            )
-    
+            return self._load_full_checkpoint(checkpoint_path, fsdp_model, optimizer)
+
     def _load_full_checkpoint(
         self,
         checkpoint_path: Path,
@@ -461,24 +453,24 @@ class FSDPCheckpointManager:
         Security note: Checkpoint files should only be loaded from trusted sources.
         """
         checkpoint = torch.load(checkpoint_path, map_location="cpu")  # nosec B614
-        
+
         with FSDP.state_dict_type(
             fsdp_model,
             StateDictType.FULL_STATE_DICT,
             FullStateDictConfig(offload_to_cpu=True, rank0_only=True),
         ):
             fsdp_model.load_state_dict(checkpoint["model"])
-        
+
         if optimizer is not None and "optimizer" in checkpoint:
             optimizer.load_state_dict(checkpoint["optimizer"])
-        
+
         return (
             fsdp_model,
             optimizer,
             checkpoint.get("epoch"),
             checkpoint.get("metadata", {}),
         )
-    
+
     def _load_sharded_checkpoint(
         self,
         checkpoint_path: Path,
@@ -487,22 +479,22 @@ class FSDPCheckpointManager:
         rank: int,
     ) -> tuple:
         """Load sharded checkpoint (each rank loads its shard).
-        
+
         Security note: Checkpoint files should only be loaded from trusted sources.
         """
         shard_path = checkpoint_path.parent / f"{checkpoint_path.stem}_rank{rank}.pt"
         checkpoint = torch.load(shard_path, map_location="cpu")  # nosec B614
-        
+
         with FSDP.state_dict_type(
             fsdp_model,
             StateDictType.SHARDED_STATE_DICT,
             ShardedStateDictConfig(),
         ):
             fsdp_model.load_state_dict(checkpoint["model"])
-        
+
         if optimizer is not None and "optimizer" in checkpoint:
             optimizer.load_state_dict(checkpoint["optimizer"])
-        
+
         return (
             fsdp_model,
             optimizer,
@@ -522,7 +514,7 @@ def wrap_model_with_fsdp(
 ) -> "FSDP":
     """
     Convenience function to wrap model with FSDP.
-    
+
     Args:
         model: PyTorch model
         sharding_strategy: Sharding strategy
@@ -530,10 +522,10 @@ def wrap_model_with_fsdp(
         use_cpu_offload: Enable CPU offloading
         activation_checkpointing: Enable activation checkpointing
         transformer_layer_cls: Transformer layer classes for auto-wrapping
-    
+
     Returns:
         FSDP-wrapped model
-    
+
     Example:
         >>> from transformers import AutoModelForCausalLM
         >>> model = AutoModelForCausalLM.from_pretrained("gpt2")
@@ -550,6 +542,6 @@ def wrap_model_with_fsdp(
         use_cpu_offload=use_cpu_offload,
         activation_checkpointing=activation_checkpointing,
     )
-    
+
     trainer = FSDPTrainer(model, config)
     return trainer.wrap_model(transformer_layer_cls=transformer_layer_cls)

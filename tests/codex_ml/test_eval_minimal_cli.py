@@ -8,9 +8,7 @@ class DummyLoop:
         self.calls = []
 
     def run_minimal_evaluation(self, config, checkpoint, run_dir):
-        self.calls.append(
-            {"config": config, "checkpoint": checkpoint, "run_dir": run_dir}
-        )
+        self.calls.append({"config": config, "checkpoint": checkpoint, "run_dir": run_dir})
 
 
 def test_eval_minimal_invokes_eval_loop(tmp_path, monkeypatch):

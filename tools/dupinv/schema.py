@@ -154,7 +154,5 @@ class SupplementalInventory:
         return {
             "metadata": self.metadata.to_dict(),
             "duplicate_groups": [group.to_dict() for group in self.duplicate_groups],
-            "intentional_duplicates": [
-                group.to_dict() for group in self.intentional_duplicates
-            ],
+            "intentional_duplicates": [group.to_dict() for group in self.intentional_duplicates],
         }

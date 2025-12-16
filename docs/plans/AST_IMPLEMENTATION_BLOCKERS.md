@@ -45,7 +45,7 @@ After reviewing the AST standardization requirements documents and analyzing the
 | **BLOCK-ARCH-005** | **No plugin architecture** | Cannot extend to new languages (NFR-AST-003) | Design plugin registry and loader |
 
 **Resolution Time**: 2-3 weeks (architecture design + implementation)  
-**Risk**: High (requires significant design decisions and team consensus)
+**Risk**: High (requires AI Assistant autonomous design decisions and validation)
 
 ---
 

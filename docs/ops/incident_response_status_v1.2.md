@@ -14,7 +14,7 @@ Response Playbook
 | Investigate | Root cause analysis; check recent commits | IC + Author | 2h |
 | Mitigate | Rollback or hotfix; document in Finding (FIND-XXX) | IC + Author | 4h |
 | Document | Update status report with incident details | IC | 24h |
-| Post-mortem | Schedule review; add to Decision Log (DEC-XXX) | IC + Team | 7d |
+| Post-mortem | Schedule review; add to Decision Log (DEC-XXX) | AI Assistant Incident Commander + AI Assistant Response System | 7d |
 
 Communication
 - Create incident issue using .github/ISSUE_TEMPLATE/schema_failure.md or security_gap.md

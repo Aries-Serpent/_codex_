@@ -82,9 +82,7 @@ class ModelRegistry:
             tracking_uri: MLflow tracking URI (defaults to MLFLOW_TRACKING_URI env var)
         """
         if not _HAS_MLFLOW:
-            raise RuntimeError(
-                "MLflow not installed. Install with: pip install mlflow"
-            )
+            raise RuntimeError("MLflow not installed. Install with: pip install mlflow")
 
         if tracking_uri:
             mlflow.set_tracking_uri(tracking_uri)
@@ -135,9 +133,7 @@ class ModelRegistry:
             logger.error(f"Failed to register model {name}: {e}")
             raise
 
-    def get_model_version(
-        self, name: str, version: str
-    ) -> ModelVersion:
+    def get_model_version(self, name: str, version: str) -> ModelVersion:
         """Get specific model version
 
         Args:
@@ -279,9 +275,7 @@ class ModelRegistry:
         versions.sort(key=lambda v: int(v.version), reverse=True)
         return versions[0]
 
-    def compare_models(
-        self, name: str, version1: str, version2: str
-    ) -> Dict[str, Any]:
+    def compare_models(self, name: str, version1: str, version2: str) -> Dict[str, Any]:
         """Compare two model versions
 
         Args:
@@ -334,7 +328,9 @@ class ModelRegistry:
                 "run_id": run.info.run_id,
                 "experiment_id": run.info.experiment_id,
                 "start_time": datetime.fromtimestamp(run.info.start_time / 1000),
-                "end_time": datetime.fromtimestamp(run.info.end_time / 1000) if run.info.end_time else None,
+                "end_time": (
+                    datetime.fromtimestamp(run.info.end_time / 1000) if run.info.end_time else None
+                ),
                 "status": run.info.status,
                 "parameters": run.data.params,
                 "metrics": run.data.metrics,
@@ -359,9 +355,7 @@ class ModelRegistry:
             logger.error(f"Failed to list models: {e}")
             raise
 
-    def export_model(
-        self, name: str, version: str, output_dir: str
-    ) -> Path:
+    def export_model(self, name: str, version: str, output_dir: str) -> Path:
         """Export model version to local directory
 
         Args:

@@ -66,7 +66,12 @@ def test_run_metrics_evaluation_logs_tags(tmp_path):
 
     summary = run_metrics_evaluation(
         [(1, 1), (0, 1)],
-        {"simple_accuracy": lambda preds, targets: sum(int(p == t) for p, t in zip(preds, targets)) / len(preds)},
+        {
+            "simple_accuracy": lambda preds, targets: sum(
+                int(p == t) for p, t in zip(preds, targets)
+            )
+            / len(preds)
+        },
         metric_writers=writers,
         run_id="eval-123",
         log_system_metrics=False,
@@ -106,4 +111,3 @@ def test_security_helpers_and_packaging(tmp_path, monkeypatch):
         assert "manifest.json" in names
         manifest = json.loads(tar.extractfile("manifest.json").read())
         assert manifest["run_id"] == "pkg-1"
-

@@ -16,9 +16,7 @@ def test_train_cli_invokes_unified_training(monkeypatch, tmp_path: pathlib.Path)
         captured["cfg"] = cfg
         return {"status": "ok", "output_dir": cfg.output_dir}
 
-    monkeypatch.setattr(
-        "codex_ml.training.unified_training.run_unified_training", _fake_run
-    )
+    monkeypatch.setattr("codex_ml.training.unified_training.run_unified_training", _fake_run)
 
     result = runner.invoke(
         cli_main_module.app,

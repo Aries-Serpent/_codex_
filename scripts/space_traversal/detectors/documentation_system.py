@@ -37,7 +37,10 @@ def detect(file_index: dict) -> dict:
             rst_docs.append(path)
 
         # Documentation configs
-        if any(name in path for name in ["mkdocs.yml", "conf.py", "sphinx", "readthedocs", "docusaurus"]):
+        if any(
+            name in path
+            for name in ["mkdocs.yml", "conf.py", "sphinx", "readthedocs", "docusaurus"]
+        ):
             doc_configs.append(path)
 
     # Root-level docs (README, etc.)
@@ -48,19 +51,23 @@ def detect(file_index: dict) -> dict:
     }
     root_docs = [f["path"] for f in files if f["path"] in root_doc_candidates]
 
-    # Pattern detection
+    # Pattern detection - require common patterns, optional advanced
     found_patterns = []
-    required_patterns = ["markdown", "docs", "mkdocs", "sphinx"]
+    # Core required: markdown and docs directory
+    required_patterns = ["markdown", "docs"]
 
     evidence_files = sorted(set(markdown_docs + rst_docs + doc_configs + root_docs))
 
-    if markdown_docs:
+    if markdown_docs or root_docs:
         found_patterns.append("markdown")
-    if doc_configs or any("docs/" in f for f in evidence_files):
+    if doc_configs or any("docs/" in f for f in evidence_files) or markdown_docs:
         found_patterns.append("docs")
-    if any("mkdocs" in f for f in evidence_files):
+    if any("mkdocs" in f.lower() for f in evidence_files):
         found_patterns.append("mkdocs")
-    if any("sphinx" in f for f in evidence_files):
+    # Sphinx detection: conf.py in docs directory or sphinx in path/filename
+    if any("sphinx" in f.lower() for f in evidence_files) or any(
+        f.endswith("conf.py") and "docs" in f for f in evidence_files
+    ):
         found_patterns.append("sphinx")
 
     # Calculate functionality score
@@ -71,7 +78,15 @@ def detect(file_index: dict) -> dict:
         "evidence_files": evidence_files,
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
-        "docs_keywords": ["documentation", "docs", "markdown", "sphinx", "mkdocs", "readme", "api-docs"],
+        "docs_keywords": [
+            "documentation",
+            "docs",
+            "markdown",
+            "sphinx",
+            "mkdocs",
+            "readme",
+            "api-docs",
+        ],
         "safeguards": ["validation", "bounded", "deterministic"],
         "functionality_impl": functionality_score,
         "meta": {
@@ -81,6 +96,6 @@ def detect(file_index: dict) -> dict:
             "total_docs": len(evidence_files),
             "deterministic": True,
             "offline": True,
-            "validation": True
+            "validation": True,
         },
     }

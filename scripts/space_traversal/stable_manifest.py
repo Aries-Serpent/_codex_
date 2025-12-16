@@ -25,11 +25,13 @@ __all__ = [
     "write_stable_json",
 ]
 
+
 def normalize_name(name: str) -> str:
     """
     Normalize filename by replacing timestamp patterns (used for stable manifests).
     """
     return TIMESTAMP_RE.sub("_TIMESTAMP", name)
+
 
 def manifest_for_dir(dirpath: str | Path) -> list[str]:
     """
@@ -42,6 +44,7 @@ def manifest_for_dir(dirpath: str | Path) -> list[str]:
             rel = os.path.relpath(os.path.join(root, f), dirpath)
             entries.append(normalize_name(rel))
     return entries
+
 
 def _stable_list(values: list[Any]) -> list[Any]:
     normalized: list[Any] = []
@@ -57,6 +60,7 @@ def _stable_list(values: list[Any]) -> list[Any]:
     except TypeError:
         return normalized
 
+
 def _stable_dict(value: dict[str, Any]) -> dict[str, Any]:
     stable: dict[str, Any] = {}
     for key in sorted(value):
@@ -69,6 +73,7 @@ def _stable_dict(value: dict[str, Any]) -> dict[str, Any]:
             stable[key] = entry
     return stable
 
+
 def normalize_payload(payload: Any) -> Any:
     """
     Recursively sort and normalize dictionaries/lists for deterministic output.
@@ -79,12 +84,14 @@ def normalize_payload(payload: Any) -> Any:
         return _stable_list(payload)
     return payload
 
+
 def stable_dumps(payload: Any) -> str:
     """
     Dump normalized payload to deterministic JSON string.
     """
     normalized = normalize_payload(payload)
     return json.dumps(normalized, indent=2, sort_keys=True, ensure_ascii=False)
+
 
 def write_stable_json(payload: Any, destination: Path | str) -> Path:
     """
@@ -94,6 +101,7 @@ def write_stable_json(payload: Any, destination: Path | str) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(stable_dumps(payload), encoding="utf-8")
     return destination
+
 
 def main(argv=None):
     """
@@ -109,6 +117,7 @@ def main(argv=None):
     with open(args.out, "w", encoding="utf-8") as fh:
         json.dump(entries, fh, indent=2)
     print(f"Wrote manifest to {args.out}")
+
 
 if __name__ == "__main__":
     main()

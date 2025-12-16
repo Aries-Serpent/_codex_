@@ -3,7 +3,13 @@ from __future__ import annotations
 from typing import Dict, Iterable, List, Tuple
 
 VALID_POLICY_LABELS = {"verified", "inferred", "planned"}
-STATUS_MAP = {"pass": "pass", "passed": "pass", "fail": "fail", "failed": "fail", "approved": "pass"}
+STATUS_MAP = {
+    "pass": "pass",
+    "passed": "pass",
+    "fail": "fail",
+    "failed": "fail",
+    "approved": "pass",
+}
 
 
 def validate_honesty_metadata(entries: Iterable[Dict[str, str]]) -> List[str]:

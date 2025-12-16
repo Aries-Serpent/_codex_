@@ -54,6 +54,7 @@ class PluginHealth:
     last_success: Optional[str] = None
     last_failure: Optional[str] = None
     last_error: Optional[str] = None
+    quarantined_at: Optional[str] = None  # ISO8601 timestamp when quarantined
 
     def record_success(self):
         """Record successful execution."""
@@ -61,6 +62,10 @@ class PluginHealth:
         self.last_success = datetime.utcnow().isoformat()
         if self.status == PluginStatus.FAILED:
             self.status = PluginStatus.ENABLED
+        # Clear quarantine on success
+        if self.status == PluginStatus.QUARANTINED:
+            self.status = PluginStatus.ENABLED
+            self.quarantined_at = None
 
     def record_failure(self, error: str):
         """Record failure.
@@ -71,6 +76,31 @@ class PluginHealth:
         self.failure_count += 1
         self.last_failure = datetime.utcnow().isoformat()
         self.last_error = error
+
+    def set_quarantined(self):
+        """Set plugin to quarantined status."""
+        self.status = PluginStatus.QUARANTINED
+        self.quarantined_at = datetime.utcnow().isoformat()
+
+    def is_quarantine_expired(self, quarantine_duration: int) -> bool:
+        """Check if quarantine period has expired.
+
+        Args:
+            quarantine_duration: Quarantine duration in seconds
+
+        Returns:
+            True if quarantine has expired and plugin should be re-enabled
+        """
+        if self.status != PluginStatus.QUARANTINED or not self.quarantined_at:
+            return False
+
+        try:
+            quarantined_time = datetime.fromisoformat(self.quarantined_at)
+            elapsed = (datetime.utcnow() - quarantined_time).total_seconds()
+            return elapsed >= quarantine_duration
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Failed to parse quarantine timestamp: {e}")
+            return False
 
 
 @dataclass
@@ -149,19 +179,31 @@ class PluginSandbox:
     def __init__(
         self,
         max_failures: int = 3,
+        quarantine_threshold: int = 2,  # Quarantine after 2 failures
         quarantine_duration: int = 300,  # 5 minutes
         enable_auto_disable: bool = True,
+        enable_quarantine: bool = True,
     ):
         """Initialize plugin sandbox.
 
         Args:
             max_failures: Maximum failures before auto-disable
+            quarantine_threshold: Failures before quarantine (should be < max_failures)
             quarantine_duration: Quarantine duration in seconds
             enable_auto_disable: Enable automatic plugin disabling
+            enable_quarantine: Enable quarantine feature
         """
+        if quarantine_threshold >= max_failures:
+            raise ValueError(
+                f"quarantine_threshold ({quarantine_threshold}) must be less than "
+                f"max_failures ({max_failures})"
+            )
+
         self.max_failures = max_failures
+        self.quarantine_threshold = quarantine_threshold
         self.quarantine_duration = quarantine_duration
         self.enable_auto_disable = enable_auto_disable
+        self.enable_quarantine = enable_quarantine
         self.health: Dict[str, PluginHealth] = {}
 
     def validate_contract(self, plugin: Plugin, contract: PluginContract) -> bool:
@@ -223,9 +265,30 @@ class PluginSandbox:
 
         # Check if plugin is quarantined
         if health.status == PluginStatus.QUARANTINED:
-            # TODO: Check quarantine duration
-            logger.warning(f"Plugin {plugin_name} is quarantined, skipping execution")
-            return None
+            # Check if quarantine duration has expired
+            if health.is_quarantine_expired(self.quarantine_duration):
+                logger.info(f"Plugin {plugin_name} quarantine expired, re-enabling")
+                health.status = PluginStatus.ENABLED
+                health.quarantined_at = None
+                health.failure_count = 0
+            else:
+                elapsed = 0
+                if health.quarantined_at:
+                    try:
+                        quarantined_time = datetime.fromisoformat(health.quarantined_at)
+                        elapsed = int((datetime.utcnow() - quarantined_time).total_seconds())
+                    except (ValueError, TypeError):
+                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.
+                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.
+                        # Security note: This keeps the plugin quarantined for the full duration,
+                        # which is the safe default behavior when timestamp parsing fails.
+                        pass
+                remaining = self.quarantine_duration - elapsed
+                logger.warning(
+                    f"Plugin {plugin_name} is quarantined, "
+                    f"skipping execution ({remaining}s remaining)"
+                )
+                return None
 
         try:
             # Get method
@@ -255,8 +318,21 @@ class PluginSandbox:
             )
             logger.debug(traceback.format_exc())
 
+            # Quarantine if threshold reached (before auto-disable)
+            if (
+                self.enable_quarantine
+                and health.status != PluginStatus.QUARANTINED
+                and health.failure_count >= self.quarantine_threshold
+                and health.failure_count < self.max_failures
+            ):
+                health.set_quarantined()
+                logger.warning(
+                    f"Plugin {plugin_name} quarantined for {self.quarantine_duration}s "
+                    f"after {health.failure_count} consecutive failures"
+                )
+
             # Auto-disable if too many failures
-            if self.enable_auto_disable and health.failure_count >= self.max_failures:
+            elif self.enable_auto_disable and health.failure_count >= self.max_failures:
                 health.status = PluginStatus.DISABLED
                 logger.error(
                     f"Plugin {plugin_name} auto-disabled after "

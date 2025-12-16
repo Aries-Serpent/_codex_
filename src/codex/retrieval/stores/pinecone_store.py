@@ -56,15 +56,21 @@ class PineconeStore(VectorStore):
         ids: Optional[List[str]] = None,
     ) -> List[str]:
         """Add vectors (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def delete(self, ids: Union[str, List[str]]) -> int:
         """Delete vectors (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def get(self, ids: Union[str, List[str]]) -> List[Dict[str, Any]]:
         """Get vectors (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def search(
         self,
@@ -73,7 +79,9 @@ class PineconeStore(VectorStore):
         filters: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
         """Search (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def count(self) -> int:
         """Count vectors (stub)"""
@@ -81,12 +89,18 @@ class PineconeStore(VectorStore):
 
     def clear(self) -> None:
         """Clear vectors (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def save(self, path: Optional[str] = None) -> None:
         """Save index (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )
 
     def load(self, path: Optional[str] = None) -> None:
         """Load index (stub)"""
-        raise RuntimeError("PineconeStore is not available in offline mode. Use FAISSStore instead.")
+        raise RuntimeError(
+            "PineconeStore is not available in offline mode. Use FAISSStore instead."
+        )

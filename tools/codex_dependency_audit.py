@@ -50,7 +50,9 @@ def _write_markdown(path: Path, report: Dict[str, Any]) -> None:
     deps = report.get("dependencies", []) or []
     lines: List[str] = []
     lines.append("# `_codex_` Dependency Audit\n")
-    lines.append(f"- Total dependencies: **{report.get('summary', {}).get('total_dependencies', 0)}**\n")
+    lines.append(
+        f"- Total dependencies: **{report.get('summary', {}).get('total_dependencies', 0)}**\n"
+    )
     if not deps:
         lines.append("No dependencies found.\n")
         path.write_text("\n".join(lines), encoding="utf-8")

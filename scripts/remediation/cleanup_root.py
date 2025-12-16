@@ -20,6 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE_DIR = ROOT / "reports" / "archive"
 
+
 def find_root_matches(patterns):
     matches = []
     for pat in patterns:
@@ -28,10 +29,15 @@ def find_root_matches(patterns):
                 matches.append(src_file)
     return matches
 
+
 def main():
     parser = argparse.ArgumentParser(description="Sanitize root by archiving report/summary files.")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be moved, do not change files.")
-    parser.add_argument("--yes", action="store_true", help="Confirm execution (required unless --dry-run).")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be moved, do not change files."
+    )
+    parser.add_argument(
+        "--yes", action="store_true", help="Confirm execution (required unless --dry-run)."
+    )
     args = parser.parse_args()
 
     print(f"[*] Remediation: Root Sanitation")
@@ -80,6 +86,7 @@ def main():
     if errors > 0:
         print(f"[!] Warnings: {errors} files could not be processed.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

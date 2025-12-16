@@ -40,13 +40,19 @@ def summarize(log_dir: Path = LOG_DIR) -> dict:
         total += 1
         etype = event.get("event_type", "unknown")
         if etype == "error":
-            err_type = event.get("data", {}).get("error_type") or event.get("error_type") or "unknown"
+            err_type = (
+                event.get("data", {}).get("error_type") or event.get("error_type") or "unknown"
+            )
             errors[err_type] += 1
             ctx = event.get("data", {}).get("context") or event.get("context") or {}
             if isinstance(ctx, dict):
                 for key, value in ctx.items():
                     contexts[key][str(value)] += 1
-    return {"total_events": total, "error_types": errors, "contexts": {k: dict(v) for k, v in contexts.items()}}
+    return {
+        "total_events": total,
+        "error_types": errors,
+        "contexts": {k: dict(v) for k, v in contexts.items()},
+    }
 
 
 def main() -> int:

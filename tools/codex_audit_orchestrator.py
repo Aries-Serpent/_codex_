@@ -50,11 +50,13 @@ ERROR_CAPTURE_TEMPLATE = (
     "What are the possible causes, and how can this be resolved while preserving intended functionality?\n\n"
 )
 
+
 @dataclasses.dataclass
 class StepContext:
     phase_id: int
     step_id: str
     description: str
+
 
 # Logging helpers
 def log(msg: str) -> None:
@@ -70,6 +72,7 @@ def log(msg: str) -> None:
         # Last-resort: do not allow logging failure to crash orchestration.
         print(f"[ERROR] Failed to write to log file: {LOGS_DIR}", file=sys.stderr)
 
+
 def find_repo_root(start: Path | None = None) -> Path:
     if start is None:
         start = Path.cwd().resolve()
@@ -80,6 +83,7 @@ def find_repo_root(start: Path | None = None) -> Path:
         if current.parent == current:
             raise RuntimeError("Could not locate repo root (.git not found)")
         current = current.parent
+
 
 def run_cmd(cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
     proc = subprocess.Popen(
@@ -92,10 +96,12 @@ def run_cmd(cmd: List[str], cwd: Optional[Path] = None) -> Tuple[int, str, str]:
     out, err = proc.communicate()
     return proc.returncode, out, err
 
+
 def serialize_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, sort_keys=True)
+
 
 def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> None:
     """
@@ -123,17 +129,23 @@ def error_capture(exc: BaseException, ctx: StepContext, brief_context: str) -> N
         )
         with ERROR_RECORDS_MD.open("a", encoding="utf-8") as f:
             f.write(block)
-        log(f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id} with RA refs {record.ra_references}")
+        log(
+            f"Recorded error capture for step {ctx.phase_id}.{ctx.step_id} with RA refs {record.ra_references}"
+        )
     except Exception as write_exc:
         # If error capture itself fails, log to file and stderr for triage.
-        log(f"CRITICAL: Failed to write error capture for {ctx.phase_id}.{ctx.step_id}: {write_exc}")
+        log(
+            f"CRITICAL: Failed to write error capture for {ctx.phase_id}.{ctx.step_id}: {write_exc}"
+        )
         print(f"[CRITICAL] Error capture write failed: {write_exc}", file=sys.stderr)
+
 
 def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[List[str]] = None):
     """
     Decorator for phase steps. On exception: log, record capture, and return None.
     On success: return the function's result if truthy, else True to indicate success.
     """
+
     def decorator(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
@@ -146,18 +158,24 @@ def phase_step(phase_id: int, step_id: str, description: str, ra_refs: Optional[
             except Exception as exc:  # noqa: BLE001
                 log(f"ERROR {ctx.phase_id}.{ctx.step_id} - {exc}")
                 refs = ra_refs or ["RA-1", "RA-3"]
-                error_capture(exc, ctx, brief_context=f"args={args}, kwargs={kwargs} | RA={','.join(refs)}")
+                error_capture(
+                    exc, ctx, brief_context=f"args={args}, kwargs={kwargs} | RA={','.join(refs)}"
+                )
                 return None  # Failure indicator
+
         wrapper.phase_id = phase_id
         wrapper.step_label = step_id
         wrapper.step_description = description
         wrapper.ra_refs = ra_refs or ["RA-1", "RA-3"]
         return wrapper
+
     return decorator
+
 
 # --------------------------
 # Phase implementations (updated to return success where appropriate)
 # --------------------------
+
 
 @phase_step(1, "1.1", "Resolve repo root and detect branches")
 def step_1_1_resolve_repo_root_and_branches(ctx: StepContext) -> Dict[str, Any]:
@@ -168,15 +186,21 @@ def step_1_1_resolve_repo_root_and_branches(ctx: StepContext) -> Dict[str, Any]:
         branch = out.strip() if code == 0 else "UNKNOWN"
     except Exception:
         branch = "UNKNOWN"
-    data = {"repo_root": str(repo_root), "current_branch": branch, "target_branches": TARGET_BRANCHES}
+    data = {
+        "repo_root": str(repo_root),
+        "current_branch": branch,
+        "target_branches": TARGET_BRANCHES,
+    }
     serialize_json(CONTEXT_DIR / "repo_context.json", data)
     return data  # Already returns data, so this is fine
+
 
 @phase_step(1, "1.2", "Create local audit_artifacts directories")
 def step_1_2_create_output_dirs(ctx: StepContext) -> bool:
     for d in (AUDIT_ROOT, CONTEXT_DIR, GAP_PLANS_DIR, ERROR_CAPTURES_DIR, LOGS_DIR, REPORTS_DIR):
         d.mkdir(parents=True, exist_ok=True)
     return True  # Explicit success
+
 
 @phase_step(2, "2.1", "Enumerate top-level directories and classify archived vs active")
 def step_2_1_list_top_level(ctx: StepContext) -> Dict[str, Any]:
@@ -191,17 +215,20 @@ def step_2_1_list_top_level(ctx: StepContext) -> Dict[str, Any]:
     serialize_json(CONTEXT_DIR / "repo_tree_overview.json", {"top_level": top_entries})
     return {"top_level": top_entries}
 
+
 @phase_step(2, "2.2", "Scan code for stubs and TODOs")
 def step_2_2_stub_scan(ctx: StepContext) -> bool:
     repo_root = find_repo_root()
     patterns = ("TODO", "FIXME", "NotImplementedError", "pass  # stub", "pass  # TODO")
     stub_records = []
+
     def should_scan(path: Path) -> bool:
         if any(part.startswith(".git") for part in path.parts):
             return False
         if "audit_artifacts" in path.parts:
             return False
         return path.suffix in {".py", ".md", ".sh", ".ipynb", ".yml", ".yaml"}
+
     for root, _, files in os.walk(repo_root):
         root_path = Path(root)
         for fname in files:
@@ -215,22 +242,27 @@ def step_2_2_stub_scan(ctx: StepContext) -> bool:
             for lineno, line in enumerate(text.splitlines(), start=1):
                 for pat in patterns:
                     if pat in line:
-                        stub_records.append({
-                            "file": str(path.relative_to(repo_root)),
-                            "line": lineno,
-                            "pattern": pat,
-                            "snippet": line.strip(),
-                        })
+                        stub_records.append(
+                            {
+                                "file": str(path.relative_to(repo_root)),
+                                "line": lineno,
+                                "pattern": pat,
+                                "snippet": line.strip(),
+                            }
+                        )
     serialize_json(CONTEXT_DIR / "stub_index.json", {"stubs": stub_records})
     return True  # Explicit success
+
 
 @phase_step(2, "2.3", "Map artifacts to capabilities (high-level)")
 def step_2_3_capability_mapping(ctx: StepContext) -> bool:
     repo_root = find_repo_root()
     capability_map: Dict[str, Dict[str, Any]] = {}
+
     def record(cap: str, artifact: str) -> None:
         capability_map.setdefault(cap, {"artifacts": [], "inferred_gaps": [], "status": "Unknown"})
         capability_map[cap]["artifacts"].append(artifact)
+
     dir_to_caps = {
         "tokenization": ["Tokenization"],
         "codex_ml": ["ChatGPT Codex Modeling", "Training Engine"],
@@ -272,7 +304,9 @@ def step_2_3_capability_mapping(ctx: StepContext) -> bool:
     return True  # Explicit success
 
 
-@phase_step(2, "2.4", "Normalize repo_audit_policy_codex into RA map", ra_refs=["RA-1", "RA-2", "RA-3"])
+@phase_step(
+    2, "2.4", "Normalize repo_audit_policy_codex into RA map", ra_refs=["RA-1", "RA-2", "RA-3"]
+)
 def step_2_4_policy_mapping(ctx: StepContext) -> bool:  # noqa: ARG001
     ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
     target = ARTIFACTS_DIR / "ra_policy_map.json"
@@ -289,9 +323,12 @@ def step_2_5_run_gates_and_scorecard(ctx: StepContext) -> bool:  # noqa: ARG001
     scorecard_path = ARTIFACTS_DIR / "repo_audit_scorecard.md"
     policy_map = write_policy_mapping(policy_path)
     gate_results = run_gates(repo_root=find_repo_root(), output_path=gate_results_path)
-    render_scorecard(gate_results_path=gate_results_path, policy_map=policy_map, output_path=scorecard_path)
+    render_scorecard(
+        gate_results_path=gate_results_path, policy_map=policy_map, output_path=scorecard_path
+    )
     log(f"Captured {len(gate_results)} gate results and rendered scorecard")
     return True
+
 
 @phase_step(3, "3.1", "Propose atomic diffs for high-signal gaps")
 def step_3_1_propose_atomic_diffs(ctx: StepContext) -> bool:
@@ -315,6 +352,7 @@ def step_3_1_propose_atomic_diffs(ctx: StepContext) -> bool:
     )
     return True  # Explicit success
 
+
 @phase_step(3, "3.2", "Suggest local test/gate definitions")
 def step_3_2_test_gate_suggestions(ctx: StepContext) -> bool:
     patch_path = GAP_PLANS_DIR / "test_gate_suggestions.diff"
@@ -326,6 +364,7 @@ def step_3_2_test_gate_suggestions(ctx: StepContext) -> bool:
         encoding="utf-8",
     )
     return True  # Explicit success
+
 
 @phase_step(3, "3.3", "Draft reproducibility checklist proposal")
 def step_3_3_repro_checklist(ctx: StepContext) -> bool:
@@ -344,10 +383,12 @@ def step_3_3_repro_checklist(ctx: StepContext) -> bool:
     )
     return True  # Explicit success
 
+
 @phase_step(4, "4.1", "Record deferred items")
 def step_4_1_deferred_items(ctx: StepContext) -> bool:
     serialize_json(REPORTS_DIR / "deferred_items.json", {"items": []})
     return True  # Explicit success
+
 
 @phase_step(4, "4.2", "Record archive-only pruning notes")
 def step_4_2_archived_pruning_notes(ctx: StepContext) -> bool:
@@ -361,12 +402,14 @@ def step_4_2_archived_pruning_notes(ctx: StepContext) -> bool:
     )
     return True  # Explicit success
 
+
 @phase_step(5, "5.1", "Ensure error capture file exists")
 def step_5_1_error_capture_file(ctx: StepContext) -> bool:
     path = ERROR_CAPTURES_DIR / "error_captures_codex_questions.md"
     if not path.exists():
         path.write_text("", encoding="utf-8")
     return True  # Explicit success
+
 
 @phase_step(6, "6.1", "Write status update skeleton")
 def step_6_1_status_update(ctx: StepContext) -> bool:
@@ -383,6 +426,7 @@ def step_6_1_status_update(ctx: StepContext) -> bool:
         encoding="utf-8",
     )
     return True  # Explicit success
+
 
 @phase_step(6, "6.2", "Emit follow-up Codex prompts skeleton")
 def step_6_2_followup_prompts(ctx: StepContext) -> bool:
@@ -418,6 +462,7 @@ def step_6_3_status_prompt(ctx: StepContext) -> bool:  # noqa: ARG001
     log("Prepared repo status prompt for Codex consumption")
     return True
 
+
 # Minimal set of PHASE_FUNCTIONS to exercise orchestration and tests
 PHASE_FUNCTIONS = [
     step_1_2_create_output_dirs,
@@ -438,15 +483,25 @@ PHASE_FUNCTIONS = [
     step_6_3_status_prompt,
 ]
 
+
 # --------------------------
 # Main orchestration
 # --------------------------
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Offline audit orchestrator for Aries-Serpent/_codex_.")
+    parser = argparse.ArgumentParser(
+        description="Offline audit orchestrator for Aries-Serpent/_codex_."
+    )
     parser.add_argument("--list-steps", action="store_true", help="List available steps and exit.")
-    parser.add_argument("--steps", nargs="*", metavar="PHASE.STEP", help="Optional subset of steps to run.")
-    parser.add_argument("--continue-on-error", action="store_true", help="Continue executing steps even if some fail (for diagnostics).")
+    parser.add_argument(
+        "--steps", nargs="*", metavar="PHASE.STEP", help="Optional subset of steps to run."
+    )
+    parser.add_argument(
+        "--continue-on-error",
+        action="store_true",
+        help="Continue executing steps even if some fail (for diagnostics).",
+    )
     return parser.parse_args(argv)
+
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
@@ -495,6 +550,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     else:
         log("Finished codex_audit_orchestrator run")
         return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

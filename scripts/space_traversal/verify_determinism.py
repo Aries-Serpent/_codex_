@@ -12,10 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACTS = ["audit_artifacts/capabilities_scored.json", "audit_run_manifest.json"]
 
+
 def normalized_json(path: Path) -> dict:
     """Normalize JSON for deterministic comparison."""
     data = json.loads(path.read_text(encoding="utf-8"))
-    
+
     def round_floats(obj, decimals=6):
         """Round all float values to specified decimals."""
         if isinstance(obj, float):
@@ -25,39 +26,46 @@ def normalized_json(path: Path) -> dict:
         elif isinstance(obj, list):
             return [round_floats(item, decimals) for item in obj]
         return obj
-    
+
     def remove_volatile(obj):
         """Remove volatile fields and normalize structure."""
         if isinstance(obj, dict):
             # Remove volatile timestamp fields
-            result = {k: remove_volatile(v) for k, v in obj.items() 
-                     if k not in ['generated', 'timestamp', 'generated_at', 'sha', 'size']}
+            result = {
+                k: remove_volatile(v)
+                for k, v in obj.items()
+                if k not in ["generated", "timestamp", "generated_at", "sha", "size"]
+            }
             # Sort capabilities by id if present
-            if 'capabilities' in result and isinstance(result['capabilities'], list):
-                result['capabilities'] = sorted(result['capabilities'], key=lambda x: x.get('id', ''))
+            if "capabilities" in result and isinstance(result["capabilities"], list):
+                result["capabilities"] = sorted(
+                    result["capabilities"], key=lambda x: x.get("id", "")
+                )
                 # Normalize each capability
-                for cap in result['capabilities']:
-                    if 'evidence_files' in cap:
-                        cap['evidence_files'] = sorted(cap['evidence_files'])
-                    if 'found_patterns' in cap:
-                        cap['found_patterns'] = sorted(cap['found_patterns'])
+                for cap in result["capabilities"]:
+                    if "evidence_files" in cap:
+                        cap["evidence_files"] = sorted(cap["evidence_files"])
+                    if "found_patterns" in cap:
+                        cap["found_patterns"] = sorted(cap["found_patterns"])
             return result
         elif isinstance(obj, list):
             return [remove_volatile(item) for item in obj]
         return obj
-    
+
     # First remove volatile fields, then round floats
     normalized = remove_volatile(data)
     normalized = round_floats(normalized)
     return normalized
 
+
 def run_pipeline():
     import sys
+
     result = subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "space_traversal" / "audit_runner.py"), "run"],
         capture_output=True,
         text=True,
-        cwd=ROOT
+        cwd=ROOT,
     )
     if result.returncode != 0:
         print(f"[ERROR] Pipeline failed with return code {result.returncode}")
@@ -66,11 +74,12 @@ def run_pipeline():
         raise RuntimeError(f"Pipeline execution failed: {result.stderr[:500]}")
     return result
 
+
 def deep_diff(obj1, obj2, path=""):
     """Find deep differences between two objects."""
     if type(obj1) != type(obj2):
         return f"Type mismatch at {path}: {type(obj1).__name__} vs {type(obj2).__name__}"
-    
+
     if isinstance(obj1, dict):
         keys1, keys2 = set(obj1.keys()), set(obj2.keys())
         if keys1 != keys2:
@@ -88,8 +97,9 @@ def deep_diff(obj1, obj2, path=""):
                 return diff
     elif obj1 != obj2:
         return f"Value mismatch at {path}: {obj1} vs {obj2}"
-    
+
     return None
+
 
 def main():
     parser = argparse.ArgumentParser(description="Verify determinism of audit pipeline")
@@ -120,6 +130,7 @@ def main():
                 raise SystemExit(1)
 
     print("\n[PASS] Determinism verified across runs.")
+
 
 if __name__ == "__main__":
     main()

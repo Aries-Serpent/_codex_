@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # Note: 'hydra' removed - it refers to PyPI package, not local module
 LEGACY_MODULES = {"training", "tokenization", "models"}
 
+
 class ImportVisitor(ast.NodeVisitor):
     def __init__(self, filepath, include_relative=False):
         self.filepath = filepath
@@ -56,16 +57,19 @@ class ImportVisitor(ast.NodeVisitor):
     def _check(self, module_name, lineno, is_relative=False, level=0):
         if not module_name:
             return
-        base = module_name.split('.')[0]
+        base = module_name.split(".")[0]
         if base in LEGACY_MODULES:
-            self.found.append({
-                "file": str(self.filepath),
-                "line": lineno,
-                "module": base,
-                "full_import": module_name,
-                "relative": bool(is_relative),
-                "level": int(level),
-            })
+            self.found.append(
+                {
+                    "file": str(self.filepath),
+                    "line": lineno,
+                    "module": base,
+                    "full_import": module_name,
+                    "relative": bool(is_relative),
+                    "level": int(level),
+                }
+            )
+
 
 def scan_dirs(dirs, include_relative=False):
     results = []
@@ -76,14 +80,19 @@ def scan_dirs(dirs, include_relative=False):
         for py_file in sorted(d.rglob("*.py")):
             try:
                 tree = ast.parse(py_file.read_text(encoding="utf-8"))
-                visitor = ImportVisitor(py_file.relative_to(ROOT), include_relative=include_relative)
+                visitor = ImportVisitor(
+                    py_file.relative_to(ROOT), include_relative=include_relative
+                )
                 visitor.visit(tree)
                 results.extend(visitor.found)
                 count += 1
             except Exception as e:
                 print(f"[ERR] parsing {py_file}: {e}", file=sys.stderr)
-    print(f"[*] Scanned {count} files. Found {len(results)} legacy import occurrences (include_relative={include_relative}).")
+    print(
+        f"[*] Scanned {count} files. Found {len(results)} legacy import occurrences (include_relative={include_relative})."
+    )
     return results
+
 
 def write_report(results):
     out_path = ROOT / "reports" / "legacy_import_usage.csv"
@@ -106,11 +115,22 @@ def write_report(results):
         rel = rel_summary.get(mod, 0)
         print(f"  {mod}: {c} references (relative: {rel})")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Legacy import usage analyzer")
-    parser.add_argument("--root-only", action="store_true", help="Scan only repository root (exclude src/tests/scripts/deploy)")
-    parser.add_argument("--include-tests", action="store_true", help="Include tests/ in scan (default: included)")
-    parser.add_argument("--include-relative", action="store_true", help="Include relative ImportFrom entries (level >= 1) in the output")
+    parser.add_argument(
+        "--root-only",
+        action="store_true",
+        help="Scan only repository root (exclude src/tests/scripts/deploy)",
+    )
+    parser.add_argument(
+        "--include-tests", action="store_true", help="Include tests/ in scan (default: included)"
+    )
+    parser.add_argument(
+        "--include-relative",
+        action="store_true",
+        help="Include relative ImportFrom entries (level >= 1) in the output",
+    )
     args = parser.parse_args()
 
     print(f"[*] Scanning codebase at {ROOT} for legacy imports: {LEGACY_MODULES}")
@@ -119,14 +139,17 @@ def main():
     else:
         dirs_to_scan = [ROOT / "src", ROOT / "scripts", ROOT / "deploy"]
         # Include tests by default unless explicitly excluded
-        if args.include_tests or not hasattr(args, 'exclude_tests'):
+        if args.include_tests or not hasattr(args, "exclude_tests"):
             dirs_to_scan.append(ROOT / "tests")
 
     results = scan_dirs(dirs_to_scan, include_relative=args.include_relative)
     write_report(results)
 
     if any(d["module"] == "hydra" for d in results):
-        print("\n[!] CRITICAL: Found 'hydra' imports which may shadow the PyPI package. Review and remediate.")
+        print(
+            "\n[!] CRITICAL: Found 'hydra' imports which may shadow the PyPI package. Review and remediate."
+        )
+
 
 if __name__ == "__main__":
     main()

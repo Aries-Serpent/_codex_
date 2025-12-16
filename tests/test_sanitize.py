@@ -19,7 +19,7 @@ def test_sanitize_none_returns_empty_string():
 
 def test_sanitize_escapes_quotes():
     """Test that both single and double quotes are escaped."""
-    prompt = '''<a href="javascript:alert('xss')">click</a>'''
+    prompt = """<a href="javascript:alert('xss')">click</a>"""
     escaped = sanitize_prompt(prompt)
     assert '"' not in escaped
     assert "'" not in escaped

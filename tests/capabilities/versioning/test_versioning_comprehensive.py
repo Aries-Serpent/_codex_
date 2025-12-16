@@ -29,9 +29,18 @@ from hypothesis import strategies as st
 class SemanticVersion:
     """Semantic version representation."""
 
-    VERSION_PATTERN = re.compile(r"^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9.-]+))?(?:\+([a-zA-Z0-9.-]+))?$")
+    VERSION_PATTERN = re.compile(
+        r"^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9.-]+))?(?:\+([a-zA-Z0-9.-]+))?$"
+    )
 
-    def __init__(self, major: int, minor: int, patch: int, prerelease: str | None = None, build: str | None = None):
+    def __init__(
+        self,
+        major: int,
+        minor: int,
+        patch: int,
+        prerelease: str | None = None,
+        build: str | None = None,
+    ):
         self.major = major
         self.minor = minor
         self.patch = patch
@@ -131,7 +140,11 @@ class TestSemanticVersion:
         assert v2 < v3
         assert not v3 < v1
 
-    @given(st.integers(min_value=0, max_value=100), st.integers(min_value=0, max_value=100), st.integers(min_value=0, max_value=100))
+    @given(
+        st.integers(min_value=0, max_value=100),
+        st.integers(min_value=0, max_value=100),
+        st.integers(min_value=0, max_value=100),
+    )
     @settings(max_examples=20)
     def test_version_roundtrip(self, major: int, minor: int, patch: int):
         """Property: version roundtrips through string."""
@@ -164,7 +177,14 @@ class ChangelogEntry:
 class Changelog:
     """Changelog manager."""
 
-    TYPES = {"feat": "Features", "fix": "Bug Fixes", "docs": "Documentation", "refactor": "Refactoring", "test": "Tests", "chore": "Chores"}
+    TYPES = {
+        "feat": "Features",
+        "fix": "Bug Fixes",
+        "docs": "Documentation",
+        "refactor": "Refactoring",
+        "test": "Tests",
+        "chore": "Chores",
+    }
 
     def __init__(self):
         self.entries: dict[str, list[ChangelogEntry]] = {t: [] for t in self.TYPES}

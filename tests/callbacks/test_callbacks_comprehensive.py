@@ -3,13 +3,14 @@ Comprehensive tests for training callbacks system
 
 Tests cover:
 - EarlyStopping callback
-- ModelCheckpoint callback  
+- ModelCheckpoint callback
 - LearningRateScheduler callback
 - MetricsLogger callback
 - Custom callback integration
 - Callback ordering and execution
 - State persistence across epochs
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, Mock
@@ -43,50 +44,42 @@ def temp_checkpoint_dir():
 
 class TestEarlyStoppingCallback:
     """Test early stopping callback"""
-    
+
     def test_early_stopping_initialization(self):
         """Test early stopping callback initialization"""
         # Mock early stopping configuration
-        config = {
-            "patience": 3,
-            "metric": "eval_loss",
-            "mode": "min"
-        }
-        
+        config = {"patience": 3, "metric": "eval_loss", "mode": "min"}
+
         assert config["patience"] == 3
         assert config["metric"] == "eval_loss"
         assert config["mode"] == "min"
-    
+
     def test_early_stopping_improvement(self, mock_trainer):
         """Test early stopping with improving metric"""
         # Simulate improving metric
-        metrics = [
-            {"eval_loss": 1.0},
-            {"eval_loss": 0.8},
-            {"eval_loss": 0.6}
-        ]
-        
-        best_score = float('inf')
+        metrics = [{"eval_loss": 1.0}, {"eval_loss": 0.8}, {"eval_loss": 0.6}]
+
+        best_score = float("inf")
         for metric in metrics:
             loss = metric["eval_loss"]
             if loss < best_score:
                 best_score = loss
-        
+
         assert best_score == 0.6
 
 
 class TestModelCheckpointCallback:
     """Test model checkpoint callback"""
-    
+
     def test_checkpoint_initialization(self, temp_checkpoint_dir):
         """Test checkpoint callback initialization"""
         config = {
             "checkpoint_dir": temp_checkpoint_dir,
             "save_best_only": True,
             "metric": "eval_loss",
-            "mode": "min"
+            "mode": "min",
         }
-        
+
         assert config["checkpoint_dir"] == temp_checkpoint_dir
         assert config["save_best_only"] is True
 

@@ -63,7 +63,7 @@ def load_jsonl(
         return [], []
 
     val_fraction = max(0.0, min(float(val_fraction or 0.0), 0.5))
-    rng = random.Random(int(seed))
+    rng = random.Random(int(seed))  # nosec B311 - deterministic validation split
     rng.shuffle(texts)
 
     n_val = int(len(texts) * val_fraction)

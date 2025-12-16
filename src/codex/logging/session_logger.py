@@ -127,7 +127,8 @@ def init_db(db_path: Optional[Path] = None):
                 leader_event = pending
                 break
         pending.wait()
-    assert leader_event is not None
+    if leader_event is None:
+        raise RuntimeError("leader_event not initialized; init_db synchronization failed")
     p.parent.mkdir(parents=True, exist_ok=True)
     conn: Optional[sqlite3.Connection] = None
     try:

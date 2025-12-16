@@ -1,4 +1,5 @@
 """Detector for MCP security safeguards such as confirmation prompts or dry-run toggles."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -29,13 +30,31 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "found_patterns": sorted(set(found)),
         "required_patterns": KEYWORDS,
         "docs_keywords": [
-            "mcp", "security", "safeguards", "validation", "sanitization",
-            "confirm", "dry-run", "defensive", "protection", "safety",
-            "bounds-checking", "error-handling", "rollback", "audit"
+            "mcp",
+            "security",
+            "safeguards",
+            "validation",
+            "sanitization",
+            "confirm",
+            "dry-run",
+            "defensive",
+            "protection",
+            "safety",
+            "bounds-checking",
+            "error-handling",
+            "rollback",
+            "audit",
         ],
         "meta": {
             "category": "mcp",
-            "safeguards": ["confirmation", "dry-run", "sanitization", "validation", "bounds-checking", "rollback"],
-            "detector_version": "1.2"
+            "safeguards": [
+                "confirmation",
+                "dry-run",
+                "sanitization",
+                "validation",
+                "bounds-checking",
+                "rollback",
+            ],
+            "detector_version": "1.2",
         },
     }

@@ -96,26 +96,31 @@ def test_multiple_error_types():
         ToolNotFound("tool1"),
         ValidationError("validation"),
         RateLimitExceeded("rate"),
-        Unauthorized("auth")
+        Unauthorized("auth"),
     ]
-    
+
     for err in errors:
         assert isinstance(err, MCPError)
-        assert err.code in ["TOOL_NOT_FOUND", "VALIDATION_ERROR", 
-                            "RATE_LIMIT_EXCEEDED", "UNAUTHORIZED"]
+        assert err.code in [
+            "TOOL_NOT_FOUND",
+            "VALIDATION_ERROR",
+            "RATE_LIMIT_EXCEEDED",
+            "UNAUTHORIZED",
+        ]
 
 
 def test_error_propagation():
     """Test error propagation through call stack."""
+
     def level3():
         raise Unauthorized("no access")
-    
+
     def level2():
         level3()
-    
+
     def level1():
         level2()
-    
+
     with pytest.raises(Unauthorized):
         level1()
 
@@ -134,8 +139,8 @@ def test_error_http_status_mapping():
         ValidationError: 400,
         RateLimitExceeded: 429,
         Unauthorized: 401,
-        MCPError: 500
+        MCPError: 500,
     }
-    
+
     for error_class, expected_status in mapping.items():
         assert error_class.http_status == expected_status

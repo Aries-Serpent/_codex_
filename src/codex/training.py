@@ -51,6 +51,42 @@ from codex_ml.utils.provenance import export_environment
 from codex_ml.utils.repro import record_dataset_checksums
 from codex_utils.repro import log_env_info
 
+# Import TrainCfg and run_custom_trainer from training module
+# These are used by tests in tests/space_traversal/test_peft_comprehensive/
+try:
+    from training.functional_training import TrainCfg, run_custom_trainer
+except ImportError:
+    # Provide compatibility stubs when training module is not available
+    from dataclasses import dataclass
+    from typing import Any, Dict, Optional
+
+    @dataclass
+    class TrainCfg:  # type: ignore[no-redef]
+        """Stub for TrainCfg when training module is not available."""
+
+        epochs: int = 1
+        batch_size: int = 1
+        log_every: int = 1
+        save_every: int = 0
+        max_steps: int = 2
+        checkpoint_dir: str = ""
+        resume_from: str = ""
+        use_lora: bool = False
+
+    def run_custom_trainer(  # type: ignore[no-redef]
+        model: Any,
+        tok: Any,
+        train_ds: Any,
+        val_ds: Any,
+        cfg: Any,
+    ) -> Dict[str, Any]:
+        """Stub for run_custom_trainer when training module is not available."""
+        raise NotImplementedError(
+            "run_custom_trainer requires the training.functional_training module, "
+            "which is not available in this environment."
+        )
+
+
 # Artifact hashing helpers (sidecar)
 try:
     from codex_ml.utils.artifacts import write_hash_sidecar, write_metadata
@@ -734,6 +770,8 @@ __all__ = [
     "build_parser",
     "main",
     "emit_validation_metric_record",
+    "TrainCfg",
+    "run_custom_trainer",
 ]
 
 

@@ -228,10 +228,14 @@ def auto_detect_store() -> str:
         logger.warning(f"No preferred backend detected, falling back to: {fallback}")
         return fallback
 
-    raise RuntimeError("No vector store backends available. Install faiss-cpu or configure a cloud provider.")
+    raise RuntimeError(
+        "No vector store backends available. Install faiss-cpu or configure a cloud provider."
+    )
 
 
-def create_auto_store(index_name: str = "default", dimension: Optional[int] = None, **kwargs) -> Any:
+def create_auto_store(
+    index_name: str = "default", dimension: Optional[int] = None, **kwargs
+) -> Any:
     """
     Create a vector store with auto-detected backend.
 

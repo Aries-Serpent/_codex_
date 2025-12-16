@@ -25,7 +25,7 @@ class TestDeepSpeedZeROStages:
                 "stage": 0,
             }
         }
-        
+
         assert config["zero_optimization"]["stage"] == 0
         # Stage 0 = no optimization, baseline
 
@@ -38,7 +38,7 @@ class TestDeepSpeedZeROStages:
                 "allgather_bucket_size": 5e8,
             }
         }
-        
+
         assert config["zero_optimization"]["stage"] == 1
         assert "reduce_bucket_size" in config["zero_optimization"]
         assert "allgather_bucket_size" in config["zero_optimization"]
@@ -55,7 +55,7 @@ class TestDeepSpeedZeROStages:
                 "allgather_bucket_size": 5e8,
             }
         }
-        
+
         assert config["zero_optimization"]["stage"] == 2
         assert config["zero_optimization"]["contiguous_gradients"] is True
         assert config["zero_optimization"]["overlap_comm"] is True
@@ -73,7 +73,7 @@ class TestDeepSpeedZeROStages:
                 "overlap_comm": True,
             }
         }
-        
+
         assert config["zero_optimization"]["stage"] == 3
         assert "stage3_prefetch_bucket_size" in config["zero_optimization"]
         assert "stage3_param_persistence_threshold" in config["zero_optimization"]
@@ -85,7 +85,7 @@ class TestDeepSpeedZeROStages:
                 "stage": 4,  # Invalid stage
             }
         }
-        
+
         # Validation should fail for stage > 3
         stage = config["zero_optimization"]["stage"]
         assert stage not in [0, 1, 2, 3], "Stage 4 is invalid"
@@ -105,7 +105,7 @@ class TestOptimizerStatePartitioning:
                 },
             }
         }
-        
+
         assert config["zero_optimization"]["offload_optimizer"]["device"] == "cpu"
         assert config["zero_optimization"]["offload_optimizer"]["pin_memory"] is True
 
@@ -121,7 +121,7 @@ class TestOptimizerStatePartitioning:
                 },
             }
         }
-        
+
         assert config["zero_optimization"]["offload_optimizer"]["device"] == "nvme"
         assert "nvme_path" in config["zero_optimization"]["offload_optimizer"]
 
@@ -136,7 +136,7 @@ class TestOptimizerStatePartitioning:
                 },
             }
         }
-        
+
         assert config["zero_optimization"]["offload_param"]["device"] == "cpu"
 
     def test_optimizer_states_config(self):
@@ -148,7 +148,7 @@ class TestOptimizerStatePartitioning:
                 "allgather_bucket_size": 5e8,
             }
         }
-        
+
         # Validate bucket sizes for communication optimization
         assert config["zero_optimization"]["reduce_bucket_size"] > 0
         assert config["zero_optimization"]["allgather_bucket_size"] > 0
@@ -167,7 +167,7 @@ class TestGradientCheckpointing:
                 "number_checkpoints": 4,
             }
         }
-        
+
         assert config["activation_checkpointing"]["partition_activations"] is True
         assert config["activation_checkpointing"]["contiguous_memory_optimization"] is True
         assert config["activation_checkpointing"]["number_checkpoints"] == 4
@@ -181,7 +181,7 @@ class TestGradientCheckpointing:
                 "synchronize_checkpoint_boundary": True,
             }
         }
-        
+
         assert config["activation_checkpointing"]["cpu_checkpointing"] is True
 
     def test_gradient_checkpointing_config(self):
@@ -190,7 +190,7 @@ class TestGradientCheckpointing:
             "gradient_accumulation_steps": 8,
             "gradient_clipping": 1.0,
         }
-        
+
         assert config["gradient_accumulation_steps"] > 0
         assert config["gradient_clipping"] > 0
 
@@ -203,7 +203,7 @@ class TestGradientCheckpointing:
                 "synchronize_checkpoint_boundary": False,
             }
         }
-        
+
         # Validate memory optimization settings
         assert config["activation_checkpointing"]["partition_activations"] is True
 
@@ -223,7 +223,7 @@ class TestMixedPrecisionConfigs:
                 "min_loss_scale": 1,
             }
         }
-        
+
         assert config["fp16"]["enabled"] is True
         assert config["fp16"]["loss_scale"] == 0  # Dynamic loss scaling
         assert config["fp16"]["initial_scale_power"] == 16
@@ -235,7 +235,7 @@ class TestMixedPrecisionConfigs:
                 "enabled": True,
             }
         }
-        
+
         assert config["bf16"]["enabled"] is True
 
     def test_amp_config(self):
@@ -246,7 +246,7 @@ class TestMixedPrecisionConfigs:
                 "opt_level": "O1",
             }
         }
-        
+
         assert config["amp"]["enabled"] is True
         assert config["amp"]["opt_level"] in ["O0", "O1", "O2", "O3"]
 
@@ -259,9 +259,9 @@ class TestMixedPrecisionConfigs:
             },
             "amp": {
                 "enabled": False,  # Cannot enable both FP16 and AMP
-            }
+            },
         }
-        
+
         # Validate mutual exclusivity
         assert not (config["fp16"]["enabled"] and config["amp"]["enabled"])
 
@@ -305,18 +305,18 @@ class TestDeepSpeedIntegration:
                 },
             },
         }
-        
+
         # Validate complete config structure
         assert "train_batch_size" in config
         assert "optimizer" in config
         assert "scheduler" in config
         assert "zero_optimization" in config
-        
+
         # Validate batch size calculations
         batch_size = config["train_batch_size"]
         micro_batch = config["train_micro_batch_size_per_gpu"]
         grad_accum = config["gradient_accumulation_steps"]
-        
+
         # Should satisfy: train_batch_size = micro_batch * grad_accum * world_size
         # For single GPU: batch_size = micro_batch * grad_accum
         assert batch_size == micro_batch * grad_accum
@@ -328,30 +328,29 @@ class TestDeepSpeedIntegration:
             "train_micro_batch_size_per_gpu": 4,
             "gradient_accumulation_steps": 16,
         }
-        
+
         # Validate relationship
         assert config["train_batch_size"] == (
-            config["train_micro_batch_size_per_gpu"] 
-            * config["gradient_accumulation_steps"]
+            config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
         )
 
     def test_config_with_all_stages(self):
         """Test configurations for all ZeRO stages"""
         stages = [0, 1, 2, 3]
-        
+
         for stage in stages:
             config = {
                 "zero_optimization": {
                     "stage": stage,
                 }
             }
-            
+
             assert config["zero_optimization"]["stage"] in stages
 
     def test_optimizer_config_validation(self):
         """Test optimizer configuration validation"""
         valid_optimizers = ["Adam", "AdamW", "SGD", "Lamb"]
-        
+
         for opt_type in valid_optimizers:
             config = {
                 "optimizer": {
@@ -361,7 +360,7 @@ class TestDeepSpeedIntegration:
                     },
                 }
             }
-            
+
             assert config["optimizer"]["type"] in valid_optimizers
             assert "lr" in config["optimizer"]["params"]
 
@@ -376,12 +375,12 @@ class TestDeepSpeedIntegration:
                 },
             }
         }
-        
+
         assert config["scheduler"]["type"] == "WarmupDecayLR"
         assert config["scheduler"]["params"]["warmup_num_steps"] > 0
         assert config["scheduler"]["params"]["total_num_steps"] > 0
         assert (
-            config["scheduler"]["params"]["warmup_num_steps"] 
+            config["scheduler"]["params"]["warmup_num_steps"]
             < config["scheduler"]["params"]["total_num_steps"]
         )
 
@@ -396,15 +395,15 @@ class TestDeepSpeedConfigFiles:
             "fp16": {"enabled": True},
             "zero_optimization": {"stage": 2},
         }
-        
+
         config_file = tmp_path / "ds_config.json"
         with open(config_file, "w") as f:
             json.dump(config, f)
-        
+
         # Load and validate
         with open(config_file, "r") as f:
             loaded_config = json.load(f)
-        
+
         assert loaded_config == config
 
     def test_config_minimal_valid(self):
@@ -412,7 +411,7 @@ class TestDeepSpeedConfigFiles:
         config = {
             "train_batch_size": 16,
         }
-        
+
         # Minimal config should have at least train_batch_size
         assert "train_batch_size" in config
         assert config["train_batch_size"] > 0
@@ -440,7 +439,7 @@ class TestDeepSpeedConfigFiles:
             "steps_per_print": 100,
             "wall_clock_breakdown": False,
         }
-        
+
         # Validate all major sections present
         assert "optimizer" in config
         assert "scheduler" in config
@@ -462,7 +461,7 @@ class TestConfigValidation:
                 "stage3_param_persistence_threshold": 1e6,
             }
         }
-        
+
         if config["zero_optimization"]["stage"] == 3:
             assert "stage3_prefetch_bucket_size" in config["zero_optimization"]
 
@@ -477,7 +476,7 @@ class TestConfigValidation:
                 },
             }
         }
-        
+
         # Validate offload config structure
         if "offload_optimizer" in config["zero_optimization"]:
             assert "device" in config["zero_optimization"]["offload_optimizer"]
@@ -488,13 +487,15 @@ class TestConfigValidation:
             "fp16": {"enabled": True},
             "bf16": {"enabled": False},
         }
-        
+
         # Only one precision mode should be enabled
-        enabled_count = sum([
-            config.get("fp16", {}).get("enabled", False),
-            config.get("bf16", {}).get("enabled", False),
-        ])
-        
+        enabled_count = sum(
+            [
+                config.get("fp16", {}).get("enabled", False),
+                config.get("bf16", {}).get("enabled", False),
+            ]
+        )
+
         assert enabled_count <= 1, "Only one precision mode should be enabled"
 
     def test_validate_memory_config(self):
@@ -506,7 +507,7 @@ class TestConfigValidation:
                 "stage3_max_reuse_distance": 1e9,
             }
         }
-        
+
         # Memory parameters should be positive
         if "stage3_max_live_parameters" in config["zero_optimization"]:
             assert config["zero_optimization"]["stage3_max_live_parameters"] > 0

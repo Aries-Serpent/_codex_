@@ -1,0 +1,45 @@
+# Mutation Testing Configuration for mutmut
+
+# Mutation testing validates test quality by introducing bugs (mutations)
+# and checking if tests catch them. High-quality tests should catch most mutations.
+
+[mutmut]
+# Paths to mutate
+paths_to_mutate = agents/
+
+# Test command to run after each mutation
+runner = pytest -x --tb=short --no-cov
+
+# Timeout for each test run (seconds)
+test_time_multiplier = 2.0
+test_time_base = 0.0
+
+# Paths to exclude from mutation
+exclude_patterns =
+    __pycache__
+    *.pyc
+    *_test.py
+    */tests/*
+    */codex_client/*
+    */prompts/*
+
+# Mutation types to apply
+mutations =
+    string
+    number
+    operator
+    keyword
+    
+# Cache directory
+cache_only = False
+
+# Parallelization
+use_coverage = True
+coverage_data = .coverage
+
+# Output
+show_times = True
+
+# Advanced options
+swallow_output = True
+rerun_all = False

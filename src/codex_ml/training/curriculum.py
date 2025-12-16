@@ -161,8 +161,7 @@ class CurriculumScheduler:
         self.state = self._load_or_create_state()
 
         logger.info(
-            f"Initialized CurriculumScheduler: {curriculum_name} "
-            f"with {len(phases)} phases"
+            f"Initialized CurriculumScheduler: {curriculum_name} " f"with {len(phases)} phases"
         )
 
     def _load_or_create_state(self) -> CurriculumState:
@@ -220,11 +219,7 @@ class CurriculumScheduler:
             return False, "No active phase"
 
         # Check step count
-        current_result = (
-            self.state.phase_results[-1]
-            if self.state.phase_results
-            else None
-        )
+        current_result = self.state.phase_results[-1] if self.state.phase_results else None
         if current_result and current_result.steps_completed < phase.steps:
             remaining = phase.steps - current_result.steps_completed
             return False, f"Need {remaining} more steps"
@@ -235,7 +230,10 @@ class CurriculumScheduler:
                 if metric not in current_metrics:
                     return False, f"Missing metric: {metric}"
                 if current_metrics[metric] < threshold:
-                    return False, f"{metric} below threshold ({current_metrics[metric]:.4f} < {threshold})"
+                    return (
+                        False,
+                        f"{metric} below threshold ({current_metrics[metric]:.4f} < {threshold})",
+                    )
 
         # Check maximum metric thresholds (e.g., loss should be below)
         if phase.max_metric_threshold:
@@ -243,7 +241,10 @@ class CurriculumScheduler:
                 if metric not in current_metrics:
                     return False, f"Missing metric: {metric}"
                 if current_metrics[metric] > threshold:
-                    return False, f"{metric} above threshold ({current_metrics[metric]:.4f} > {threshold})"
+                    return (
+                        False,
+                        f"{metric} above threshold ({current_metrics[metric]:.4f} > {threshold})",
+                    )
 
         return True, "All criteria met"
 
@@ -388,9 +389,7 @@ class CurriculumScheduler:
             "completed_phases": completed,
             "failed_phases": failed,
             "current_phase_index": self.state.current_phase_index,
-            "current_phase": (
-                self.get_current_phase().id if self.get_current_phase() else None
-            ),
+            "current_phase": (self.get_current_phase().id if self.get_current_phase() else None),
             "global_step": self.state.global_step,
             "is_complete": self.state.is_complete,
             "phase_results": [r.to_dict() for r in self.state.phase_results],

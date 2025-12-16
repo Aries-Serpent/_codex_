@@ -9,7 +9,7 @@ Tests cover:
 - Early stopping
 - Checkpoint integration
 """
- 
+
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
@@ -47,11 +47,13 @@ def mock_dataset():
     """Create mock dataset"""
     dataset = MagicMock()
     dataset.__len__ = Mock(return_value=100)
-    dataset.__getitem__ = Mock(return_value={
-        "input_ids": torch.tensor([1, 2, 3]),
-        "attention_mask": torch.tensor([1, 1, 1]),
-        "labels": torch.tensor([1, 2, 3])
-    })
+    dataset.__getitem__ = Mock(
+        return_value={
+            "input_ids": torch.tensor([1, 2, 3]),
+            "attention_mask": torch.tensor([1, 1, 1]),
+            "labels": torch.tensor([1, 2, 3]),
+        }
+    )
     return dataset
 
 
@@ -84,20 +86,20 @@ class TestDeterministicSeeding:
         """Test that seed is properly set"""
         seed = 42
         torch.manual_seed(seed)
-        
+
         # Verify torch seed
         assert torch.initial_seed() != 0
 
     def test_reproducible_initialization(self):
         """Test reproducible model initialization"""
         seed = 42
-        
+
         torch.manual_seed(seed)
         rand1 = torch.rand(5)
-        
+
         torch.manual_seed(seed)
         rand2 = torch.rand(5)
-        
+
         # Should generate same random numbers
         assert torch.allclose(rand1, rand2)
 

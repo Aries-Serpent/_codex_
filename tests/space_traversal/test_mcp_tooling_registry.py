@@ -3,6 +3,7 @@ Tests for MCP tooling registry detector.
 
 Tests detection of tool registry, mcp.json, and plugin management.
 """
+
 from scripts.space_traversal.detectors import mcp_tooling_registry
 
 
@@ -14,9 +15,9 @@ def test_detect_no_registry():
             {"path": "src/app/utils.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert result["id"] == "mcp-tooling-registry"
     assert result["found_patterns"] == []
     assert "registry" in result["required_patterns"]
@@ -31,9 +32,9 @@ def test_detect_registry_file():
             {"path": "src/app/main.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "registry" in result["found_patterns"]
     assert "mcp/registry.py" in result["evidence_files"]
 
@@ -46,9 +47,9 @@ def test_detect_mcp_json():
             {"path": "src/app/main.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "mcp.json" in result["found_patterns"]
     assert "mcp.json" in result["evidence_files"]
 
@@ -61,9 +62,9 @@ def test_detect_both_patterns():
             {"path": "mcp.json"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "registry" in result["found_patterns"]
     assert "mcp.json" in result["found_patterns"]
     assert len(result["evidence_files"]) == 2
@@ -77,9 +78,9 @@ def test_detect_tool_directory():
             {"path": "tools/loader.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "registry" in result["found_patterns"]
     assert "tools/registry.py" in result["evidence_files"]
 
@@ -92,9 +93,9 @@ def test_detect_mcp_directory_registry():
             {"path": "mcp/services/api.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "registry" in result["found_patterns"]
     assert "mcp/tools/registry.py" in result["evidence_files"]
 
@@ -107,9 +108,9 @@ def test_detect_nested_mcp_json():
             {"path": "src/app/main.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "mcp.json" in result["found_patterns"]
     assert "config/mcp.json" in result["evidence_files"]
 
@@ -122,9 +123,9 @@ def test_case_insensitive_matching():
             {"path": "MCP.json"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     # Should detect patterns regardless of case
     assert "registry" in result["found_patterns"]
     assert "mcp.json" in result["found_patterns"]
@@ -139,9 +140,9 @@ def test_tool_registry_variants():
             {"path": "mcp/capability_registry.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "registry" in result["found_patterns"]
     # All should be detected as they contain "registry"
     assert len(result["evidence_files"]) == 3
@@ -155,9 +156,9 @@ def test_evidence_deduplication():
             {"path": "tools/registry.py"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     # Check no duplicates
     assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
 
@@ -171,9 +172,9 @@ def test_sorted_output():
             {"path": "mcp.json"},
         ]
     }
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     # found_patterns should be sorted
     assert result["found_patterns"] == sorted(result["found_patterns"])
     # evidence_files should be sorted
@@ -183,13 +184,21 @@ def test_sorted_output():
 def test_docs_keywords_present():
     """Test that required docs_keywords are present."""
     file_index = {"files": []}
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "docs_keywords" in result
     expected_keywords = [
-        "mcp", "tools", "registry", "tooling", "discovery", "invocation",
-        "capabilities", "plugins", "extensions", "management"
+        "mcp",
+        "tools",
+        "registry",
+        "tooling",
+        "discovery",
+        "invocation",
+        "capabilities",
+        "plugins",
+        "extensions",
+        "management",
     ]
     for keyword in expected_keywords:
         assert keyword in result["docs_keywords"]
@@ -198,12 +207,18 @@ def test_docs_keywords_present():
 def test_safeguards_metadata():
     """Test that safeguards metadata is present."""
     file_index = {"files": []}
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "meta" in result
     assert "safeguards" in result["meta"]
-    expected_safeguards = ["validation", "timeout", "error-isolation", "resource-limits", "audit-trail"]
+    expected_safeguards = [
+        "validation",
+        "timeout",
+        "error-isolation",
+        "resource-limits",
+        "audit-trail",
+    ]
     for safeguard in expected_safeguards:
         assert safeguard in result["meta"]["safeguards"]
 
@@ -211,9 +226,9 @@ def test_safeguards_metadata():
 def test_detector_version():
     """Test that detector version is present."""
     file_index = {"files": []}
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert "detector_version" in result["meta"]
     assert result["meta"]["detector_version"] == "1.1"
 
@@ -221,18 +236,18 @@ def test_detector_version():
 def test_category_mcp():
     """Test that category is set to MCP."""
     file_index = {"files": []}
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert result["meta"]["category"] == "mcp"
 
 
 def test_empty_file_index():
     """Test detection with empty file index."""
     file_index = {"files": []}
-    
+
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert result["id"] == "mcp-tooling-registry"
     assert result["found_patterns"] == []
     assert result["evidence_files"] == []
@@ -246,10 +261,10 @@ def test_missing_path_key():
             {"path": "mcp.json"},
         ]
     }
-    
+
     # Should handle gracefully
     result = mcp_tooling_registry.detect(file_index)
-    
+
     assert result["id"] == "mcp-tooling-registry"
     # Should still find mcp.json
     assert "mcp.json" in result["found_patterns"]
@@ -264,10 +279,10 @@ def test_deterministic_output():
             {"path": "mcp.json"},
         ]
     }
-    
+
     # Run detection multiple times
     results = [mcp_tooling_registry.detect(file_index) for _ in range(3)]
-    
+
     # All results should be identical
     for i in range(1, len(results)):
         assert results[i]["found_patterns"] == results[0]["found_patterns"]
@@ -276,17 +291,13 @@ def test_deterministic_output():
 
 def test_mcp_and_tool_keywords():
     """Test that both mcp/ and tool keywords trigger detection."""
-    file_index_mcp = {
-        "files": [{"path": "mcp/service/registry.py"}]
-    }
-    
-    file_index_tool = {
-        "files": [{"path": "tools/registry.py"}]
-    }
-    
+    file_index_mcp = {"files": [{"path": "mcp/service/registry.py"}]}
+
+    file_index_tool = {"files": [{"path": "tools/registry.py"}]}
+
     result_mcp = mcp_tooling_registry.detect(file_index_mcp)
     result_tool = mcp_tooling_registry.detect(file_index_tool)
-    
+
     # Both should detect registry
     assert "registry" in result_mcp["found_patterns"]
     assert "registry" in result_tool["found_patterns"]

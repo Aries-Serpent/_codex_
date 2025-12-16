@@ -52,7 +52,7 @@ def detect(file_index: dict) -> dict:
         # Helm
         if "helm/" in path or "Chart.yaml" in path or "values.yaml" in path:
             helm_files.append(path)
-        
+
         # Terraform
         if path.endswith(".tf") or "terraform/" in path:
             terraform_files.append(path)
@@ -70,7 +70,9 @@ def detect(file_index: dict) -> dict:
     required_patterns = ["docker", "kubernetes", "helm", "deploy", "service"]
 
     evidence_files = sorted(
-        set(docker_files + k8s_files + helm_files + terraform_files + service_files + deploy_scripts)
+        set(
+            docker_files + k8s_files + helm_files + terraform_files + service_files + deploy_scripts
+        )
     )
 
     if docker_files:
@@ -94,7 +96,15 @@ def detect(file_index: dict) -> dict:
         "evidence_files": evidence_files,
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
-        "docs_keywords": ["deployment", "infrastructure", "docker", "kubernetes", "helm", "terraform", "ci-cd"],
+        "docs_keywords": [
+            "deployment",
+            "infrastructure",
+            "docker",
+            "kubernetes",
+            "helm",
+            "terraform",
+            "ci-cd",
+        ],
         "safeguards": ["validation", "bounded", "deterministic", "error-handling"],
         "functionality_impl": functionality_score,
         "meta": {
@@ -106,6 +116,6 @@ def detect(file_index: dict) -> dict:
             "deploy_scripts": len(deploy_scripts),
             "deterministic": True,
             "offline": True,
-            "bounded": True
+            "bounded": True,
         },
     }

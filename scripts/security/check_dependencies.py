@@ -27,6 +27,7 @@ def load_allowlist(p: Path) -> Dict[str, str]:
         return {}
     try:
         import yaml
+
         data = yaml.safe_load(p.read_text())
     except Exception:
         data = None
@@ -37,7 +38,9 @@ def load_allowlist(p: Path) -> Dict[str, str]:
 
 def main():
     ap = argparse.ArgumentParser(description="Dependency allowlist check (offline)")
-    ap.add_argument("--req", action="append", default=["requirements.txt"], help="requirements files")
+    ap.add_argument(
+        "--req", action="append", default=["requirements.txt"], help="requirements files"
+    )
     ap.add_argument("--allowlist", default="configs/security/dependency_allowlist.yaml")
     ap.add_argument("--out", default="artifacts/security/deps_report.json")
     args = ap.parse_args()

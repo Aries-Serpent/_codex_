@@ -102,7 +102,7 @@ class CircuitBreaker:
         self.last_failure_time: Optional[float] = None
         self.half_open_calls = 0
         self.lock = Lock()
-        
+
         # Enhanced features
         self.current_backoff = self.config.initial_backoff
         self.consecutive_failures = 0
@@ -140,7 +140,7 @@ class CircuitBreaker:
         """
         with self.lock:
             self.metrics["total_calls"] += 1
-            
+
             # Check if we should allow the call
             if not self._should_allow_request():
                 self.metrics["rejected_calls"] += 1
@@ -184,12 +184,9 @@ class CircuitBreaker:
             timeout = self.config.timeout
             if self.config.use_exponential_backoff:
                 timeout = min(self.current_backoff, self.config.max_backoff)
-            
+
             # Check if timeout expired
-            if (
-                self.last_failure_time
-                and (time.time() - self.last_failure_time) >= timeout
-            ):
+            if self.last_failure_time and (time.time() - self.last_failure_time) >= timeout:
                 logger.info(
                     f"Circuit breaker timeout expired ({timeout:.1f}s), entering half-open state"
                 )
@@ -209,7 +206,7 @@ class CircuitBreaker:
         """Handle successful call"""
         with self.lock:
             self.metrics["successful_calls"] += 1
-            
+
             if self.state == CircuitState.HALF_OPEN:
                 self.success_count += 1
                 logger.debug(
@@ -225,7 +222,7 @@ class CircuitBreaker:
                     self.consecutive_failures = 0
                     self.current_backoff = self.config.initial_backoff
                     self._record_state_change()
-                    
+
                     # Persist state if enabled
                     if self.config.persist_state:
                         self._save_state()
@@ -247,7 +244,7 @@ class CircuitBreaker:
                 self.state = CircuitState.OPEN
                 self.success_count = 0
                 self.half_open_calls = 0
-                
+
                 # Increase backoff on failure in half-open
                 if self.config.use_exponential_backoff:
                     self.current_backoff = min(
@@ -255,13 +252,13 @@ class CircuitBreaker:
                         self.config.max_backoff,
                     )
                     logger.info(f"Backoff increased to {self.current_backoff:.1f}s")
-                
+
                 self._record_state_change()
-                
+
                 # Persist state if enabled
                 if self.config.persist_state:
                     self._save_state()
-                    
+
             elif self.state == CircuitState.CLOSED:
                 logger.debug(
                     f"Circuit breaker failure: {self.failure_count}/{self.config.failure_threshold}"
@@ -270,13 +267,13 @@ class CircuitBreaker:
                 if self.failure_count >= self.config.failure_threshold:
                     logger.warning(f"Circuit breaker opening after {self.failure_count} failures")
                     self.state = CircuitState.OPEN
-                    
+
                     # Initialize backoff
                     if self.config.use_exponential_backoff:
                         self.current_backoff = self.config.initial_backoff
-                    
+
                     self._record_state_change()
-                    
+
                     # Persist state if enabled
                     if self.config.persist_state:
                         self._save_state()
@@ -293,7 +290,7 @@ class CircuitBreaker:
             self.consecutive_failures = 0
             self.current_backoff = self.config.initial_backoff
             self._record_state_change()
-            
+
             # Persist state if enabled
             if self.config.persist_state:
                 self._save_state()
@@ -309,7 +306,7 @@ class CircuitBreaker:
             "consecutive_failures": self.consecutive_failures,
             "metrics": self.metrics.copy(),
         }
-    
+
     def get_metrics(self) -> dict:
         """Get detailed metrics"""
         with self.lock:
@@ -319,29 +316,29 @@ class CircuitBreaker:
                 "current_backoff": self.current_backoff,
                 "uptime_ratio": self._calculate_uptime_ratio(),
             }
-    
+
     def _record_state_change(self) -> None:
         """Record state transition"""
         self.metrics["state_transitions"] += 1
         self.metrics["last_state_change"] = time.time()
         logger.info(f"Circuit breaker state changed to {self.state.value}")
-    
+
     def _calculate_uptime_ratio(self) -> float:
         """Calculate uptime ratio (successful / total calls)"""
         total = self.metrics["total_calls"]
         if total == 0:
             return 1.0
         return self.metrics["successful_calls"] / total
-    
+
     def _save_state(self) -> None:
         """Persist circuit breaker state to file"""
         if not self.config.state_file:
             return
-        
+
         try:
             import json
             from pathlib import Path
-            
+
             state_data = {
                 "state": self.state.value,
                 "failure_count": self.failure_count,
@@ -352,34 +349,34 @@ class CircuitBreaker:
                 "metrics": self.metrics,
                 "saved_at": time.time(),
             }
-            
+
             state_file = Path(self.config.state_file)
             state_file.parent.mkdir(parents=True, exist_ok=True)
-            
+
             with open(state_file, "w") as f:
                 json.dump(state_data, f, indent=2)
-            
+
             logger.debug(f"Circuit breaker state saved to {state_file}")
         except Exception as e:
             logger.warning(f"Failed to save circuit breaker state: {e}")
-    
+
     def _load_state(self) -> None:
         """Load persisted circuit breaker state from file"""
         if not self.config.state_file:
             return
-        
+
         try:
             import json
             from pathlib import Path
-            
+
             state_file = Path(self.config.state_file)
             if not state_file.exists():
                 logger.debug("No persisted state found, starting fresh")
                 return
-            
+
             with open(state_file, "r") as f:
                 state_data = json.load(f)
-            
+
             # Restore state
             self.state = CircuitState(state_data["state"])
             self.failure_count = state_data["failure_count"]
@@ -388,7 +385,7 @@ class CircuitBreaker:
             self.consecutive_failures = state_data.get("consecutive_failures", 0)
             self.current_backoff = state_data.get("current_backoff", self.config.initial_backoff)
             self.metrics = state_data.get("metrics", self.metrics)
-            
+
             logger.info(
                 f"Circuit breaker state loaded: {self.state.value}, "
                 f"failures={self.failure_count}"
@@ -520,34 +517,34 @@ class FallbackHandler:
 
 class PerModelCircuitBreaker:
     """Manage circuit breakers per model
-    
+
     Provides isolated circuit breakers for each model to prevent
     failures in one model from affecting others.
-    
+
     Attributes:
         default_config: Default configuration for new circuit breakers
         breakers: Dictionary of model_name -> CircuitBreaker
         lock: Thread lock for breaker management
     """
-    
+
     def __init__(self, default_config: Optional[CircuitBreakerConfig] = None):
         """Initialize per-model circuit breaker manager
-        
+
         Args:
             default_config: Default config for new breakers
         """
         self.default_config = default_config or CircuitBreakerConfig()
         self.breakers: Dict[str, CircuitBreaker] = {}
         self.lock = Lock()
-        
+
         logger.info("PerModelCircuitBreaker manager initialized")
-    
+
     def get_breaker(self, model_name: str) -> CircuitBreaker:
         """Get or create circuit breaker for model
-        
+
         Args:
             model_name: Model identifier
-            
+
         Returns:
             Circuit breaker for the model
         """
@@ -566,64 +563,52 @@ class PerModelCircuitBreaker:
                 )
                 self.breakers[model_name] = CircuitBreaker(config)
                 logger.info(f"Created circuit breaker for model: {model_name}")
-            
+
             return self.breakers[model_name]
-    
-    def call(
-        self, 
-        model_name: str,
-        func: Callable[..., Any],
-        *args,
-        **kwargs
-    ) -> Any:
+
+    def call(self, model_name: str, func: Callable[..., Any], *args, **kwargs) -> Any:
         """Execute function with model-specific circuit breaker
-        
+
         Args:
             model_name: Model identifier
             func: Function to call
             *args: Positional arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Function result
         """
         breaker = self.get_breaker(model_name)
         return breaker.call(func, *args, **kwargs)
-    
+
     def get_all_states(self) -> Dict[str, dict]:
         """Get states of all circuit breakers
-        
+
         Returns:
             Dictionary of model_name -> state
         """
         with self.lock:
-            return {
-                name: breaker.get_state()
-                for name, breaker in self.breakers.items()
-            }
-    
+            return {name: breaker.get_state() for name, breaker in self.breakers.items()}
+
     def get_all_metrics(self) -> Dict[str, dict]:
         """Get metrics from all circuit breakers
-        
+
         Returns:
             Dictionary of model_name -> metrics
         """
         with self.lock:
-            return {
-                name: breaker.get_metrics()
-                for name, breaker in self.breakers.items()
-            }
-    
+            return {name: breaker.get_metrics() for name, breaker in self.breakers.items()}
+
     def reset_all(self) -> None:
         """Reset all circuit breakers"""
         with self.lock:
             for breaker in self.breakers.values():
                 breaker.reset()
             logger.info("All circuit breakers reset")
-    
+
     def reset_model(self, model_name: str) -> None:
         """Reset circuit breaker for specific model
-        
+
         Args:
             model_name: Model identifier
         """

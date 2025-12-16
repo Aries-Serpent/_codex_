@@ -27,7 +27,9 @@ def test_dependency_report_writes_packages(tmp_path: Path):
 def test_mltest_runner_executes_categories(tmp_path: Path):
     tests_dir = tmp_path / "tests" / "unit"
     tests_dir.mkdir(parents=True, exist_ok=True)
-    (tests_dir / "test_sample.py").write_text("def test_sample():\n    assert True\n", encoding="utf-8")
+    (tests_dir / "test_sample.py").write_text(
+        "def test_sample():\n    assert True\n", encoding="utf-8"
+    )
 
     map_path = tmp_path / "codex_ml_test_map.yaml"
     map_path.write_text(

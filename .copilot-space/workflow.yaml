@@ -1,4 +1,4 @@
-# Copilot Space Workflow Spec (v1.4.0)
+# Copilot Space Workflow Spec (v1.5.0)
 # Codex-Specific Enhancements:
 # - Extended domain patterns for ML serving, security, status, archival
 # - P5 features: token similarity, coverage stats, security severity
@@ -7,8 +7,10 @@
 # - Dynamic detector loading for new capabilities
 # - Enforce low maturity and missing-detector gates during `validate`.
 # - Score regression guard remains; thresholds unchanged.
+# - v1.5.0: Trend database for historical analysis
+# - v1.5.x: Visualization dashboards and webhook notifications
 
-version: 1.4.0
+version: 1.5.0
 metrics_schema_version: "2.0.0"
 
 stages:
@@ -42,18 +44,24 @@ stages:
     args: ["S7"]
 
 weights:
-  functionality: 0.25
-  consistency: 0.20
-  tests: 0.25
-  safeguards: 0.15
-  documentation: 0.15
+  # Weight factors for each capability category in overall score calculation.
+  # All weights must sum to 1.0 (100%).
+  functionality: 0.25  # Core feature implementation completeness
+  consistency: 0.20    # Code style and API consistency
+  tests: 0.25          # Test coverage and quality
+  safeguards: 0.15     # Security and validation checks
+  documentation: 0.15  # Code and API documentation
 
 scoring:
   thresholds:
-    low: 0.70
-    medium: 0.85
+    # Maturity level thresholds for capability scores (0.0 to 1.0 scale)
+    # low: Minimum acceptable score - below this requires immediate attention
+    # medium: Target score for production-ready capabilities
+    low: 0.70     # 70% - Minimum acceptable maturity level
+    medium: 0.85  # 85% - Target for production-ready code
 
   # Optional component caps. Any missing key defaults to 1.0.
+  # Caps limit the maximum contribution of each category to prevent over-weighting.
   component_caps:
     functionality: 1.0
     consistency: 1.0
@@ -65,7 +73,20 @@ scoring:
   # - simple: current file-stem duplication ratio (default)
   # - token_similarity: use scripts/space_traversal/dup_similarity.py if present, else fallback
   dup:
-    heuristic: simple  # or "token_similarity"
+    heuristic: token_similarity  # Enabled per Phase 2 of Audit Improvement Plan
+    # threshold: Similarity threshold above which code is considered duplicated
+    threshold: 0.7  # 70% - Files with >70% token similarity flagged as duplicates
+    # max_pairwise: Maximum number of file pairs to compare (performance limit)
+    max_pairwise: 1000
+
+  # Coverage integration (Phase 2 of Audit Improvement Plan)
+  coverage:
+    enabled: true
+    xml_patterns:
+      - coverage.xml
+      - htmlcov/coverage.xml
+      - .coverage
+    weight: 0.2  # Coverage contributes to test score
 
 capability_map:
   overrides:
@@ -92,19 +113,31 @@ options:
 
 # Optional safeguards override (P3). If present, the runner will use this list instead of its defaults.
 # Sorted alphabetically for determinism per v1.4.0 spec.
+# Expanded per Phase 2 of Audit Improvement Plan
 safeguards:
   keywords:
+    - audit_log
+    - authenticate
+    - authentication
+    - authorization
     - baseline
+    - bounds_check
     - checksum
+    - circuit_breaker
     - deterministic
     - manifest
     - offline
+    - rate_limit
     - reproduce
     - rng
+    - rollback
     - sanitize
     - seed
     - secret
     - sha256
+    - timeout
+    - validate
+    - validation
     - WANDB_MODE
 
 inference:
@@ -113,3 +146,108 @@ inference:
   deterministic: true
   max_input_length: 512
   preprocessor_override: null
+
+# v1.5.0 Trend Configuration
+trends:
+  enabled: true
+  database_path: "audit_artifacts/trends.db"
+  auto_store: true  # Store snapshot after each audit run
+
+  retention:
+    max_runs: 1000
+    max_age_days: 365
+
+  regression_detection:
+    enabled: true
+    threshold: 0.02
+    lookback_runs: 5
+    fail_on_high_severity: true
+
+# v1.5.4 Webhook Configuration (optional)
+webhooks:
+  enabled: false
+  endpoints: []
+  # Example:
+  # - url: "https://hooks.slack.com/services/..."
+  #   type: slack
+  #   events: ["audit_complete", "regression_detected"]
+  # - url: "https://example.com/webhook"
+  #   type: generic
+  #   secret: "${WEBHOOK_SECRET}"
+  #   events: ["audit_complete"]
+
+# Expected capabilities for Azure MLOps Level 4 maturity
+# Used by self-healing-feedback-loop.yml for gap detection
+expected_capabilities:
+  - Automated Testing
+  - Model Monitoring
+  - CI/CD Pipeline
+  - Feature Store
+  - Data Versioning
+  - Model Registry
+  - A/B Testing
+  - Shadow Deployment
+  - Canary Release
+  - Model Serving
+  - Batch Inference
+  - Online Inference
+  - Experiment Tracking
+  - Hyperparameter Tuning
+  - AutoML
+  - Model Validation
+  - Data Quality
+  - Feature Engineering
+  - Model Explainability
+  - Bias Detection
+  - Fairness Metrics
+  - Drift Detection
+  - Performance Monitoring
+  - Alerting
+  - Logging
+  - Metrics Collection
+  - Distributed Training
+  - Model Packaging
+  - Model Deployment
+  - Rollback Strategy
+  - Blue-Green Deployment
+  - Multi-Model Serving
+  - Model Caching
+  - Request Batching
+  - Auto-Scaling
+  - Resource Management
+  - Cost Tracking
+  - Compliance
+  - Governance
+  - Access Control
+  - Audit Trails
+  - Documentation
+  - Team Collaboration
+  - Knowledge Sharing
+  - Training
+  - Support
+  - Incident Response
+  - Disaster Recovery
+  - Backup Strategy
+  - Data Privacy
+  - Security Scanning
+  - Vulnerability Management
+  - Secrets Management
+  - Network Security
+  - Container Security
+  - Code Review
+  - Peer Review
+  - Pull Request Automation
+  - Release Management
+  - Version Control
+  - Branch Strategy
+  - Merge Strategy
+  - Conflict Resolution
+  - Code Coverage
+  - Test Automation
+  - Integration Testing
+  - End-to-End Testing
+  - Performance Testing
+  - Load Testing
+  - Stress Testing
+  - Chaos Engineering
+  - Observability

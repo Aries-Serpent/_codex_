@@ -78,17 +78,13 @@ def _write_markdown(path: Path, report: Dict[str, object]) -> None:
     lines.append("| ---- | --------- | ----------- |")
 
     for s in roots:
-        lines.append(
-            f"| `{s['root']}` | {s['num_files']} | {s['total_bytes']} |"
-        )
+        lines.append(f"| `{s['root']}` | {s['num_files']} | {s['total_bytes']} |")
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main(argv: List[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Data audit tool for `_codex_`."
-    )
+    parser = argparse.ArgumentParser(description="Data audit tool for `_codex_`.")
     parser.add_argument(
         "--root",
         action="append",
@@ -128,4 +124,3 @@ def main(argv: List[str] | None = None) -> int:
 
 if __name__ == "__main__":  # pragma: no cover
     raise SystemExit(main())
-

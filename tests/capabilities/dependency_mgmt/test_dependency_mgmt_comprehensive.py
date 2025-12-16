@@ -231,7 +231,9 @@ class UpgradePolicy:
         self.max_minor_versions_behind: int = 3
         self.security_update_days: int = 7
 
-    def should_upgrade(self, current: DependencyVersion, latest: DependencyVersion) -> dict[str, Any]:
+    def should_upgrade(
+        self, current: DependencyVersion, latest: DependencyVersion
+    ) -> dict[str, Any]:
         """Check if upgrade is recommended."""
         major_diff = latest.major - current.major
         minor_diff = latest.minor - current.minor if major_diff == 0 else 0

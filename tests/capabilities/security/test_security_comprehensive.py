@@ -45,12 +45,16 @@ def scan_for_secrets(content: str) -> list[dict[str, Any]]:
     for pattern, secret_type in SECRET_PATTERNS:
         matches = re.finditer(pattern, content)
         for match in matches:
-            findings.append({
-                "type": secret_type,
-                "pattern": pattern,
-                "match": match.group()[:50] + "..." if len(match.group()) > 50 else match.group(),
-                "position": match.start(),
-            })
+            findings.append(
+                {
+                    "type": secret_type,
+                    "pattern": pattern,
+                    "match": (
+                        match.group()[:50] + "..." if len(match.group()) > 50 else match.group()
+                    ),
+                    "position": match.start(),
+                }
+            )
     return findings
 
 
@@ -172,12 +176,14 @@ class DependencyScanner:
             if package in self.cve_db:
                 for cve in self.cve_db[package]:
                     if self._version_affected(version, cve):
-                        vulnerabilities.append({
-                            "package": package,
-                            "version": version,
-                            "cve": cve["id"],
-                            "severity": cve["severity"],
-                        })
+                        vulnerabilities.append(
+                            {
+                                "package": package,
+                                "version": version,
+                                "cve": cve["id"],
+                                "severity": cve["severity"],
+                            }
+                        )
         return vulnerabilities
 
     def _version_affected(self, version: str, cve: dict[str, Any]) -> bool:
@@ -193,7 +199,9 @@ class TestDependencyScanning:
     def test_detect_vulnerable_dependency(self):
         """Detect vulnerable dependency."""
         scanner = DependencyScanner()
-        scanner.add_cve("requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]})
+        scanner.add_cve(
+            "requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]}
+        )
         vulns = scanner.scan({"requests": "2.28.0"})
         assert len(vulns) == 1
         assert vulns[0]["cve"] == "CVE-2023-1234"
@@ -201,15 +209,21 @@ class TestDependencyScanning:
     def test_clean_dependencies(self):
         """Clean dependencies should have no vulnerabilities."""
         scanner = DependencyScanner()
-        scanner.add_cve("requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]})
+        scanner.add_cve(
+            "requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]}
+        )
         vulns = scanner.scan({"requests": "2.31.0"})  # Different version
         assert len(vulns) == 0
 
     def test_multiple_vulnerabilities(self):
         """Detect multiple vulnerabilities."""
         scanner = DependencyScanner()
-        scanner.add_cve("pkg1", {"id": "CVE-2023-0001", "severity": "high", "affected_versions": ["*"]})
-        scanner.add_cve("pkg2", {"id": "CVE-2023-0002", "severity": "medium", "affected_versions": ["*"]})
+        scanner.add_cve(
+            "pkg1", {"id": "CVE-2023-0001", "severity": "high", "affected_versions": ["*"]}
+        )
+        scanner.add_cve(
+            "pkg2", {"id": "CVE-2023-0002", "severity": "medium", "affected_versions": ["*"]}
+        )
         vulns = scanner.scan({"pkg1": "1.0.0", "pkg2": "2.0.0"})
         assert len(vulns) == 2
 
@@ -283,7 +297,13 @@ class TestPromptSanitization:
         assert "{{" not in sanitized
         assert len(warnings) > 0
 
-    @given(st.text(min_size=1, max_size=100, alphabet=st.characters(whitelist_categories=("L", "N", "P", "Z"))))
+    @given(
+        st.text(
+            min_size=1,
+            max_size=100,
+            alphabet=st.characters(whitelist_categories=("L", "N", "P", "Z")),
+        )
+    )
     @settings(max_examples=30)
     def test_sanitization_idempotent(self, prompt: str):
         """Property: sanitization is idempotent."""
@@ -303,12 +323,14 @@ class SBOMGenerator:
 
     def add_component(self, name: str, version: str, license: str, purl: str | None = None) -> None:
         """Add component to SBOM."""
-        self.components.append({
-            "name": name,
-            "version": version,
-            "license": license,
-            "purl": purl or f"pkg:pypi/{name}@{version}",
-        })
+        self.components.append(
+            {
+                "name": name,
+                "version": version,
+                "license": license,
+                "purl": purl or f"pkg:pypi/{name}@{version}",
+            }
+        )
 
     def generate(self, format: str = "cyclonedx") -> dict[str, Any]:
         """Generate SBOM in specified format."""
@@ -322,7 +344,11 @@ class SBOMGenerator:
             return {
                 "spdxVersion": "SPDX-2.3",
                 "packages": [
-                    {"name": c["name"], "versionInfo": c["version"], "licenseDeclared": c["license"]}
+                    {
+                        "name": c["name"],
+                        "versionInfo": c["version"],
+                        "licenseDeclared": c["license"],
+                    }
                     for c in self.components
                 ],
             }

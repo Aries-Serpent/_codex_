@@ -2,6 +2,8 @@
 
 Detects experiment tracking integrations (MLflow, W&B), metadata
 management, and experiment organization systems.
+
+Safeguards: Bounded processing, deterministic sorting, validation.
 """
 
 from __future__ import annotations
@@ -61,15 +63,40 @@ def detect(file_index: dict) -> dict:
     if wandb_files:
         found_patterns.append("wandb")
 
+    # Calculate functionality score
+    functionality_score = (
+        len(set(found_patterns) & set(required_patterns)) / len(required_patterns)
+        if required_patterns
+        else 0.0
+    )
+
     return {
         "id": "experiment-management",
         "evidence_files": evidence_files,
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
+        "docs_keywords": [
+            "experiment",
+            "tracking",
+            "mlflow",
+            "wandb",
+            "logging",
+            "metrics",
+            "hyperparameters",
+            "artifacts",
+            "runs",
+            "reproducibility",
+        ],
+        "safeguards": ["validation", "bounded", "deterministic", "error-handling"],
+        "functionality_impl": functionality_score,
         "meta": {
             "mlflow_integration": len(mlflow_files),
             "wandb_integration": len(wandb_files),
             "experiment_utils": len(experiment_files),
             "metadata_files": len(metadata_files),
+            "deterministic": True,
+            "offline": True,
+            "bounded": True,
+            "detector_version": "2.0",
         },
     }

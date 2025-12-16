@@ -53,7 +53,14 @@ class TestVocabChecksumValidation:
         vocab2 = {"c": 2, "a": 0, "b": 1}
         assert compute_vocab_checksum(vocab1) == compute_vocab_checksum(vocab2)
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(min_value=0, max_value=10000), min_size=1, max_size=20))
+    @given(
+        st.dictionaries(
+            st.text(min_size=1, max_size=10),
+            st.integers(min_value=0, max_value=10000),
+            min_size=1,
+            max_size=20,
+        )
+    )
     @settings(max_examples=30)
     def test_checksum_deterministic_property(self, vocab: dict[str, int]):
         """Property: checksum is deterministic for any vocab."""
@@ -378,7 +385,11 @@ class TestEncodeDecodeRoundtrip:
         decoded = self.decode(encoded)
         assert decoded == text
 
-    @given(st.text(min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)))
+    @given(
+        st.text(
+            min_size=1, max_size=50, alphabet=st.characters(min_codepoint=32, max_codepoint=126)
+        )
+    )
     @settings(max_examples=50)
     def test_printable_ascii_roundtrip_property(self, text: str):
         """Property: printable ASCII should roundtrip."""

@@ -18,4 +18,3 @@ def test_init_mlflow_local_returns_value_or_none():
     result = init_mlflow_local()
     # Result can be None (if mlflow not available) or True
     assert result is None or result is not None
-
