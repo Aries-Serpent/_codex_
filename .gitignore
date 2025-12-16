@@ -253,3 +253,4 @@ artifacts/security/detect-secrets.txt
 
 # Validation logs
 .codex/validation/*/pre-commit.log
+.hypothesis/
