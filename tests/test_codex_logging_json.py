@@ -19,5 +19,6 @@ def test_nvml_disabled(monkeypatch):
     monkeypatch.setenv("CODEX_DISABLE_NVML", "1")
     # Re-import module to trigger guard
     import importlib
+
     mod = importlib.reload(importlib.import_module("codex_ml.monitoring.codex_logging"))
     assert getattr(mod, "pynvml") is None

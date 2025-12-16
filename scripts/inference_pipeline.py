@@ -37,6 +37,7 @@ SAFEGUARD_KEYWORDS = ["sha256", "checksum", "rng", "seed", "offline", "WANDB_MOD
 MODEL_CACHE: Dict[str, Tuple[torch.nn.Module, Any, str]] = {}
 TOKEN_CACHE: Dict[str, Dict[str, torch.Tensor]] = {}
 
+
 @dataclass
 class InferenceConfig:
     model_path: Path
@@ -45,12 +46,15 @@ class InferenceConfig:
     max_input_length: int = MAX_INPUT_LENGTH
     preprocessor_override: Optional[str] = None
 
+
 class DeterminismError(RuntimeError):
     pass
+
 
 # ---- Utilities ----
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
 
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
@@ -58,6 +62,7 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: fh.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
+
 
 def sha256_path(path: Path) -> str:
     if path.is_file():
@@ -74,11 +79,13 @@ def sha256_path(path: Path) -> str:
         return digest.hexdigest()
     raise FileNotFoundError(f"Cannot hash missing path: {path}")
 
+
 def enforce_offline_mode(allow_online: bool = False) -> None:
     if allow_online:
         return
     if os.environ.get("WANDB_MODE") != "offline":
         raise DeterminismError("Offline mode required: set WANDB_MODE=offline for inference")
+
 
 def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True) -> None:
     random.seed(seed)
@@ -95,6 +102,7 @@ def set_deterministic_seeds(seed: int = DEFAULT_SEED, deterministic: bool = True
         torch.backends.cudnn.deterministic = True  # type: ignore[attr-defined]
         torch.backends.cudnn.benchmark = False  # type: ignore[attr-defined]
 
+
 def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.Tensor]]:
     """
     Load a callable given a module.path:callable_name string.
@@ -103,12 +111,16 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
     try:
         module_path, func_name = path_str.split(":", maxsplit=1)
     except Exception as e:
-        raise TypeError(f"preprocessor_override must be 'module_path:callable'; got: {path_str}") from e
+        raise TypeError(
+            f"preprocessor_override must be 'module_path:callable'; got: {path_str}"
+        ) from e
 
     try:
         module = importlib.import_module(module_path)
     except Exception as e:
-        raise ImportError(f"Failed to import module '{module_path}' for override '{path_str}': {e}") from e
+        raise ImportError(
+            f"Failed to import module '{module_path}' for override '{path_str}': {e}"
+        ) from e
 
     fn = getattr(module, func_name, None)
     if not callable(fn):
@@ -123,6 +135,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], Dict[str, torch.T
         ) from e
     return fn
 
+
 def load_inference_config(config_path: Path) -> InferenceConfig:
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
@@ -135,7 +148,14 @@ def load_inference_config(config_path: Path) -> InferenceConfig:
     deterministic = bool(inference_cfg.get("deterministic", True))
     max_input_length = int(inference_cfg.get("max_input_length", MAX_INPUT_LENGTH))
     preprocessor_override = inference_cfg.get("preprocessor_override")
-    return InferenceConfig(model_path=model_path, seed=seed, deterministic=deterministic, max_input_length=max_input_length, preprocessor_override=preprocessor_override)
+    return InferenceConfig(
+        model_path=model_path,
+        seed=seed,
+        deterministic=deterministic,
+        max_input_length=max_input_length,
+        preprocessor_override=preprocessor_override,
+    )
+
 
 # ---- Load model ----
 def _load_model_from_directory(model_dir: Path) -> Tuple[torch.nn.Module, Any]:
@@ -143,6 +163,7 @@ def _load_model_from_directory(model_dir: Path) -> Tuple[torch.nn.Module, Any]:
     model = AutoModelForCausalLM.from_pretrained(str(model_dir), local_files_only=True)
     model.eval()
     return model, tokenizer
+
 
 def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
     loaded = torch.load(model_path, map_location="cpu")
@@ -153,6 +174,7 @@ def _load_model_from_file(model_path: Path) -> Tuple[torch.nn.Module, Any]:
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(str(model_path.parent), local_files_only=True)
     return model, tokenizer
+
 
 def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
     model_path = cfg.model_path
@@ -171,10 +193,13 @@ def stage_i1_load_model(cfg: InferenceConfig) -> Dict[str, Any]:
     MODEL_CACHE[cache_key] = (model, tokenizer, model_hash)
     return {"model": model, "tokenizer": tokenizer, "model_hash": model_hash}
 
+
 # ---- Preprocess with scoped token cache ----
 def _tokenizer_identity(tokenizer: Any) -> str:
     # Prefer name_or_path or pretrained_model_name_or_path; fallback to class name + repr fragment for uniqueness
-    name = getattr(tokenizer, "name_or_path", None) or getattr(tokenizer, "pretrained_model_name_or_path", None)
+    name = getattr(tokenizer, "name_or_path", None) or getattr(
+        tokenizer, "pretrained_model_name_or_path", None
+    )
     if name:
         return str(name)
     cls = tokenizer.__class__.__name__
@@ -184,8 +209,13 @@ def _tokenizer_identity(tokenizer: Any) -> str:
         rep = cls
     return f"{cls}:{rep}"
 
-def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig,
-                        override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None) -> Dict[str, Any]:
+
+def stage_i2_preprocess(
+    inputs: Dict[str, Any],
+    context: Dict[str, Any],
+    cfg: InferenceConfig,
+    override: Optional[Callable[[str, Any, int], Dict[str, torch.Tensor]]] = None,
+) -> Dict[str, Any]:
     tokenizer = context["tokenizer"]
     text = inputs.get("text")
     if not isinstance(text, str) or not text.strip():
@@ -197,13 +227,22 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
     cache_key = f"{input_hash}|{model_hash}|{tokenizer_id}|{cfg.max_input_length}|{override_id}"
     if cache_key in TOKEN_CACHE:
         cached_tokens = TOKEN_CACHE[cache_key]
-        return {"tokens": {k: v.clone() for k, v in cached_tokens.items()}, "input_hash": input_hash}
-    tokenizer.model_max_length = min(getattr(tokenizer, "model_max_length", cfg.max_input_length), cfg.max_input_length)
+        return {
+            "tokens": {k: v.clone() for k, v in cached_tokens.items()},
+            "input_hash": input_hash,
+        }
+    tokenizer.model_max_length = min(
+        getattr(tokenizer, "model_max_length", cfg.max_input_length), cfg.max_input_length
+    )
     if override:
         tokens = override(text, tokenizer, cfg.max_input_length)
     else:
         tokens = tokenizer(
-            text, return_tensors="pt", truncation=True, max_length=cfg.max_input_length, padding=False
+            text,
+            return_tensors="pt",
+            truncation=True,
+            max_length=cfg.max_input_length,
+            padding=False,
         )
     if tokens.get("input_ids") is None:
         raise ValueError("Tokenizer must return 'input_ids' for inference")
@@ -212,8 +251,11 @@ def stage_i2_preprocess(inputs: Dict[str, Any], context: Dict[str, Any], cfg: In
     TOKEN_CACHE[cache_key] = {k: v.clone() for k, v in tokens.items()}
     return {"tokens": tokens, "input_hash": input_hash}
 
+
 # ---- Inference ----
-def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig) -> Dict[str, Any]:
+def stage_i3_run_inference(
+    processed: Dict[str, Any], context: Dict[str, Any], cfg: InferenceConfig
+) -> Dict[str, Any]:
     model = context["model"]
     tokenizer = context["tokenizer"]
     tokens = processed["tokens"]
@@ -239,9 +281,15 @@ def stage_i3_run_inference(processed: Dict[str, Any], context: Dict[str, Any], c
             decoded = tokenizer.decode(top_ids[0], skip_special_tokens=True)
     return {"predictions": decoded}
 
+
 # ---- Postprocess ----
-def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], context: Dict[str, Any],
-                         cfg: InferenceConfig, timings: Dict[str, float]) -> Dict[str, Any]:
+def stage_i4_postprocess(
+    results: Dict[str, Any],
+    processed: Dict[str, Any],
+    context: Dict[str, Any],
+    cfg: InferenceConfig,
+    timings: Dict[str, float],
+) -> Dict[str, Any]:
     payload = {
         "predictions": results["predictions"],
         "input_hash": processed["input_hash"],
@@ -259,8 +307,16 @@ def stage_i4_postprocess(results: Dict[str, Any], processed: Dict[str, Any], con
     }
     return manifest
 
+
 # ---- Runner ----
-def run_pipeline(config_path: Path, input_path: Path, output_path: Path, manifest_path: Optional[Path] = None, explain: bool = False, allow_online: bool = False) -> Dict[str, Any]:
+def run_pipeline(
+    config_path: Path,
+    input_path: Path,
+    output_path: Path,
+    manifest_path: Optional[Path] = None,
+    explain: bool = False,
+    allow_online: bool = False,
+) -> Dict[str, Any]:
     enforce_offline_mode(allow_online=allow_online)
     cfg = load_inference_config(config_path)
     override = _load_callable(cfg.preprocessor_override) if cfg.preprocessor_override else None
@@ -281,12 +337,17 @@ def run_pipeline(config_path: Path, input_path: Path, output_path: Path, manifes
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(output, indent=2))
     if manifest_path:
-        manifest = {"pipeline_version": PIPELINE_VERSION, "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "output_hash": output["output_hash"]}
+        manifest = {
+            "pipeline_version": PIPELINE_VERSION,
+            "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "output_hash": output["output_hash"],
+        }
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         manifest_path.write_text(json.dumps(manifest, indent=2))
     if explain:
         print(json.dumps({"output_hash": output["output_hash"], "timings": timings}, indent=2))
     return output
+
 
 # ---- CLI ----
 def parse_args() -> argparse.Namespace:
@@ -299,9 +360,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--allow-online", action="store_true", help=argparse.SUPPRESS)
     return parser.parse_args()
 
+
 def main():
     args = parse_args()
-    run_pipeline(args.config, args.input, args.output, manifest_path=args.manifest, explain=args.explain, allow_online=args.allow_online)
+    run_pipeline(
+        args.config,
+        args.input,
+        args.output,
+        manifest_path=args.manifest,
+        explain=args.explain,
+        allow_online=args.allow_online,
+    )
+
 
 if __name__ == "__main__":
     main()

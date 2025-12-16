@@ -49,9 +49,7 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_no_accelerate(self):
         """Test behavior when accelerate not available"""
-        with patch(
-            "accelerate_init_guard.is_accelerate_available", return_value=False
-        ):
+        with patch("accelerate_init_guard.is_accelerate_available", return_value=False):
             result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init()
 
             assert not result.success
@@ -63,7 +61,9 @@ class TestAccelerateInitGuard:
     def test_safe_init_cpu_only(self):
         """Test initialization on CPU-only system"""
         with patch("accelerate_init_guard.is_gpu_available", return_value=False):
-            result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
+            result = accelerate_init_guard.accelerate_init_guard.safe_accelerate_init(
+                cpu_fallback=True
+            )
 
             if accelerate_init_guard.accelerate_init_guard.is_accelerate_available():
                 assert not result.success

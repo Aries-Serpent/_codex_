@@ -85,9 +85,19 @@ def detect(file_index: dict) -> dict:
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
         "docs_keywords": [
-            "ci", "cd", "pipeline", "automation", "testing", "deployment",
-            "github-actions", "pre-commit", "validation", "quality-gates",
-            "continuous-integration", "continuous-deployment", "workflow"
+            "ci",
+            "cd",
+            "pipeline",
+            "automation",
+            "testing",
+            "deployment",
+            "github-actions",
+            "pre-commit",
+            "validation",
+            "quality-gates",
+            "continuous-integration",
+            "continuous-deployment",
+            "workflow",
         ],
         "meta": {
             "github_actions": len(github_actions),
@@ -96,6 +106,6 @@ def detect(file_index: dict) -> dict:
             "validation_scripts": len(test_scripts),
             "note": "GitHub Actions present but not activated per AGENTS.md",
             "safeguards": ["validation", "quality-gates", "automated-testing"],
-            "detector_version": "1.1"
+            "detector_version": "1.1",
         },
     }

@@ -59,10 +59,11 @@ except ImportError:
     # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
     from typing import Any, Dict, Optional
-    
+
     @dataclass
     class TrainCfg:  # type: ignore[no-redef]
         """Stub for TrainCfg when training module is not available."""
+
         epochs: int = 1
         batch_size: int = 1
         log_every: int = 1
@@ -84,6 +85,7 @@ except ImportError:
             "run_custom_trainer requires the training.functional_training module, "
             "which is not available in this environment."
         )
+
 
 # Artifact hashing helpers (sidecar)
 try:

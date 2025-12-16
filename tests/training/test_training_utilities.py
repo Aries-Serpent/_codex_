@@ -172,4 +172,3 @@ def test_strategy_safe_callbacks_and_result(monkeypatch):
         status="ok", backend="functional", final_epoch=0, output_dir="/tmp", extra={}
     )
     assert result.status == "ok"
-

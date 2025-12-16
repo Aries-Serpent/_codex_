@@ -28,14 +28,16 @@ def main():
     parser.add_argument("--master-addr", default="localhost", help="Master address")
     parser.add_argument("--master-port", default="29500", help="Master port")
     parser.add_argument("script_args", nargs="*", help="Arguments for training script")
-    
+
     args = parser.parse_args()
-    
+
     world_size = args.num_gpus * args.num_nodes
-    
+
     # Use torchrun for distributed launch
     cmd = [
-        sys.executable, "-m", "torch.distributed.run",
+        sys.executable,
+        "-m",
+        "torch.distributed.run",
         f"--nproc_per_node={args.num_gpus}",
         f"--nnodes={args.num_nodes}",
         f"--node_rank={args.node_rank}",
@@ -43,7 +45,7 @@ def main():
         f"--master_port={args.master_port}",
         args.script,
     ] + args.script_args
-    
+
     print("=" * 70)
     print("DISTRIBUTED TRAINING LAUNCHER")
     print("=" * 70)
@@ -57,7 +59,7 @@ def main():
     print("=" * 70)
     print(f"\nCommand: {' '.join(cmd)}\n")
     print("=" * 70)
-    
+
     try:
         subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:

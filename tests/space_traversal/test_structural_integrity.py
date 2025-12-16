@@ -3,6 +3,7 @@ Tests for structural integrity detector.
 
 Tests split-brain detection, library shadowing detection, and architectural validation.
 """
+
 import pytest
 from scripts.space_traversal.detectors import structure_integrity
 
@@ -17,9 +18,9 @@ def test_detect_no_issues():
             {"path": "docs/README.md"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert result["id"] == "structural-integrity"
     assert result["found_patterns"] == []
     assert result["required_patterns"] == ["split-brain", "lib-shadowing"]
@@ -39,9 +40,9 @@ def test_detect_split_brain():
             {"path": "tests/test_foo.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert result["id"] == "structural-integrity"
     assert "split-brain" in result["found_patterns"]
     assert result["meta"]["risk_level"] == "high"
@@ -62,9 +63,9 @@ def test_detect_library_shadowing():
             {"path": "src/myapp/main.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert result["id"] == "structural-integrity"
     assert "lib-shadowing" in result["found_patterns"]
     assert result["meta"]["risk_level"] == "high"
@@ -83,9 +84,9 @@ def test_detect_both_issues():
             {"path": "tests/test_foo.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert result["id"] == "structural-integrity"
     assert "split-brain" in result["found_patterns"]
     assert "lib-shadowing" in result["found_patterns"]
@@ -101,12 +102,12 @@ def test_evidence_limit_respected():
     for i in range(50):
         files.append({"path": f"mymodule/file{i}.py"})
         files.append({"path": f"src/mymodule/file{i}.py"})
-    
+
     file_index = {"files": files}
     evidence_limit = 5
-    
+
     result = structure_integrity.detect(file_index, evidence_limit=evidence_limit)
-    
+
     assert len(result["evidence_files"]) <= evidence_limit
     assert result["meta"]["evidence_limit"] == evidence_limit
 
@@ -127,9 +128,9 @@ def test_excluded_directories_ignored():
             {"path": ".copilot-space/workflow.yaml"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     # None of these should be flagged
     assert result["found_patterns"] == []
     assert result["meta"]["risk_level"] == "low"
@@ -146,9 +147,9 @@ def test_case_insensitive_shadowing():
             {"path": "MlFlOw/tracking.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert "lib-shadowing" in result["found_patterns"]
     # shadow_dirs should contain the actual case from filesystem
     assert "Torch" in result["meta"]["shadow_dirs"] or "torch" in result["meta"]["shadow_dirs"]
@@ -166,9 +167,9 @@ def test_multiple_split_brain_modules():
             {"path": "src/module_c/baz.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert "split-brain" in result["found_patterns"]
     assert len(result["meta"]["split_dirs"]) == 3
     assert "module_a" in result["meta"]["split_dirs"]
@@ -179,13 +180,20 @@ def test_multiple_split_brain_modules():
 def test_docs_keywords_present():
     """Test that required docs_keywords are present."""
     file_index = {"files": [{"path": "src/app/main.py"}]}
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert "docs_keywords" in result
     expected_keywords = [
-        "structural-integrity", "architecture", "split-brain", "shadowing",
-        "namespace", "validation", "detection", "consistency", "safeguards"
+        "structural-integrity",
+        "architecture",
+        "split-brain",
+        "shadowing",
+        "namespace",
+        "validation",
+        "detection",
+        "consistency",
+        "safeguards",
     ]
     for keyword in expected_keywords:
         assert keyword in result["docs_keywords"]
@@ -194,9 +202,9 @@ def test_docs_keywords_present():
 def test_safeguards_metadata():
     """Test that safeguards metadata is present."""
     file_index = {"files": [{"path": "src/app/main.py"}]}
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert "safeguards" in result["meta"]
     expected_safeguards = ["bounded", "validation", "deterministic", "error-handling"]
     for safeguard in expected_safeguards:
@@ -213,10 +221,10 @@ def test_deterministic_output():
             {"path": "numpy/array.py"},
         ]
     }
-    
+
     # Run detection multiple times
     results = [structure_integrity.detect(file_index) for _ in range(3)]
-    
+
     # All results should be identical
     for i in range(1, len(results)):
         assert results[i]["found_patterns"] == results[0]["found_patterns"]
@@ -237,9 +245,9 @@ def test_sorted_output():
             {"path": "numpy/array.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     # found_patterns should be sorted
     assert result["found_patterns"] == sorted(result["found_patterns"])
     # split_dirs should be sorted
@@ -261,9 +269,9 @@ def test_evidence_deduplication():
             {"path": "src/mymodule/bar.py"},
         ]
     }
-    
+
     result = structure_integrity.detect(file_index, evidence_limit=20)
-    
+
     # Check no duplicates in evidence_files
     assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
 
@@ -271,9 +279,9 @@ def test_evidence_deduplication():
 def test_empty_file_index():
     """Test detection with empty file index."""
     file_index = {"files": []}
-    
+
     result = structure_integrity.detect(file_index)
-    
+
     assert result["id"] == "structural-integrity"
     assert result["found_patterns"] == []
     assert result["meta"]["risk_level"] == "low"
@@ -282,7 +290,7 @@ def test_empty_file_index():
 
 class TestStructuralIntegrityAdvanced:
     """Advanced structural integrity tests."""
-    
+
     def test_nested_split_brain_detection(self):
         """Test detection of nested split-brain patterns."""
         file_index = {
@@ -292,12 +300,12 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "lib/myapp/core/engine.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         assert "split-brain" in result["found_patterns"]
         assert result["meta"]["risk_level"] == "high"
-    
+
     def test_shadowing_multiple_libraries(self):
         """Test detection of multiple library shadowing."""
         file_index = {
@@ -308,29 +316,31 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/myapp/main.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         assert "lib-shadowing" in result["found_patterns"]
         # Should detect all three shadowed libraries
         shadow_dirs = result["meta"]["shadow_dirs"]
         assert len(shadow_dirs) >= 2  # At least 2 standard libraries
-    
+
     def test_risk_level_calculation(self):
         """Test risk level is calculated correctly."""
         # Low risk - no issues
         result1 = structure_integrity.detect({"files": [{"path": "src/app.py"}]})
         assert result1["meta"]["risk_level"] == "low"
-        
+
         # High risk - split brain
-        result2 = structure_integrity.detect({
-            "files": [
-                {"path": "mymodule/foo.py"},
-                {"path": "src/mymodule/foo.py"},
-            ]
-        })
+        result2 = structure_integrity.detect(
+            {
+                "files": [
+                    {"path": "mymodule/foo.py"},
+                    {"path": "src/mymodule/foo.py"},
+                ]
+            }
+        )
         assert result2["meta"]["risk_level"] == "high"
-    
+
     def test_edge_case_single_file_module(self):
         """Test detection with single-file modules."""
         file_index = {
@@ -339,13 +349,13 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/utils.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Single files might or might not trigger split-brain depending on implementation
         assert "id" in result
         assert "found_patterns" in result
-    
+
     def test_case_sensitivity_handling(self):
         """Test case-sensitive path handling."""
         file_index = {
@@ -354,12 +364,12 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/mymodule/foo.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Should handle case differences appropriately
         assert "id" in result
-    
+
     def test_unicode_path_handling(self):
         """Test handling of unicode characters in paths."""
         file_index = {
@@ -368,12 +378,12 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/módulo/archivo.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Should handle unicode paths without errors
         assert result["id"] == "structural-integrity"
-    
+
     def test_deeply_nested_structures(self):
         """Test detection with deeply nested directory structures."""
         file_index = {
@@ -382,12 +392,12 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/a/b/c/d/e/f/module.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Should detect split even in deep structures
         assert "split-brain" in result["found_patterns"]
-    
+
     def test_mixed_separators_handling(self):
         """Test handling of mixed path separators."""
         file_index = {
@@ -396,12 +406,12 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "src/mymodule/submodule/file.py"},
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Should normalize and detect properly
         assert "split-brain" in result["found_patterns"]
-    
+
     def test_symlink_awareness(self):
         """Test that detector can handle symlink scenarios."""
         # This is a structural test - actual symlink detection would require filesystem
@@ -411,8 +421,8 @@ class TestStructuralIntegrityAdvanced:
                 {"path": "symlink/module.py"},  # Could be symlink to link_target
             ]
         }
-        
+
         result = structure_integrity.detect(file_index)
-        
+
         # Should produce valid result regardless
         assert result["id"] == "structural-integrity"

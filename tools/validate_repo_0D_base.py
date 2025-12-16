@@ -43,18 +43,23 @@ RIPGREP_PATTERNS = [
     "render_template\\(",
 ]
 
+
 def run(cmd, check=False, capture=True):
     if capture:
-        res = subprocess.run(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        res = subprocess.run(
+            cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
         return res
     else:
         return subprocess.run(cmd, shell=False)
+
 
 def git_head_sha():
     r = run(["git", "rev-parse", "HEAD"])
     if r.returncode != 0:
         return None
     return r.stdout.strip()
+
 
 def checkout_branch(branch="0D_base_"):
     """Checkout the target branch unless explicitly skipped.
@@ -82,12 +87,14 @@ def checkout_branch(branch="0D_base_"):
     r3 = run(["git", "rev-parse", "--abbrev-ref", "HEAD"])
     return r3.stdout.strip() if r3.returncode == 0 else None
 
+
 def file_sha256(path: Path):
     h = hashlib.sha256()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
 
 def rg_search(pattern):
     rg = shutil.which("rg")
@@ -121,6 +128,7 @@ def rg_search(pattern):
                     hits.append({"file": parts[0], "line_no": int(parts[1]), "line": line_txt})
         return hits
 
+
 def list_dir(path):
     p = Path(path)
     if not p.exists() or not p.is_dir():
@@ -135,6 +143,7 @@ def list_dir(path):
             rel = x
         items.append(str(rel))
     return items
+
 
 def main():
     report = {}
@@ -190,17 +199,14 @@ def main():
 
     failures = []
     if missing:
-        failures.append(
-            "missing required files or directories: " + ", ".join(sorted(missing))
-        )
+        failures.append("missing required files or directories: " + ", ".join(sorted(missing)))
     if zero_hit_patterns:
-        failures.append(
-            "ripgrep patterns with zero hits: " + ", ".join(zero_hit_patterns)
-        )
+        failures.append("ripgrep patterns with zero hits: " + ", ".join(zero_hit_patterns))
 
     if failures:
         sys.stderr.write("Validation failed: " + "; ".join(failures) + "\n")
         raise SystemExit(1)
+
 
 if __name__ == "__main__":
     main()

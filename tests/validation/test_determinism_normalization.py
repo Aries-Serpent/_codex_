@@ -3,6 +3,7 @@ from pathlib import Path
 
 ART = Path("audit_artifacts") / "capabilities_scored.json"
 
+
 def normalize(data: dict) -> dict:
     # remove generated fields if present
     data.pop("generated", None)
@@ -26,6 +27,7 @@ def normalize(data: dict) -> dict:
     data["capabilities"] = sorted(norm, key=lambda x: x.get("id", ""))
     return data
 
+
 def test_capabilities_scored_normalized():
     assert ART.exists(), "capabilities_scored.json must exist; run S4 first"
     data = json.loads(ART.read_text(encoding="utf-8"))
@@ -34,4 +36,6 @@ def test_capabilities_scored_normalized():
     assert isinstance(norm.get("capabilities"), list)
     # ensure sorted by id
     ids = [c.get("id") for c in norm["capabilities"]]
-    assert ids == sorted(ids), f"Capabilities not sorted by id: {ids[:5]}... vs {sorted(ids)[:5]}..."
+    assert ids == sorted(
+        ids
+    ), f"Capabilities not sorted by id: {ids[:5]}... vs {sorted(ids)[:5]}..."

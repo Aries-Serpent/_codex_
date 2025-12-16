@@ -14,6 +14,7 @@ from typing import Any
 
 __all__ = ["parse_cobertura", "parse_simple_coverage", "write_stub_report", "main"]
 
+
 def parse_cobertura(xml_path: str) -> dict[str, Any]:
     """
     Parse Cobertura XML and return line-level coverage details per file.
@@ -31,6 +32,7 @@ def parse_cobertura(xml_path: str) -> dict[str, Any]:
         coverage[filename] = {"lines": lines}
     return coverage
 
+
 def parse_simple_coverage(xml_path: Path) -> dict[str, Any]:
     """
     Parse Cobertura XML and return summary coverage stats (covered/total) per file.
@@ -45,6 +47,7 @@ def parse_simple_coverage(xml_path: Path) -> dict[str, Any]:
         data[filename] = {"covered": covered, "total": total}
     return data
 
+
 def write_stub_report(xml_path: Path, destination: Path) -> Path:
     """
     Write a stub coverage report from cobertura to destination JSON file.
@@ -53,6 +56,7 @@ def write_stub_report(xml_path: Path, destination: Path) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps({"coverage": coverage}, indent=2), encoding="utf-8")
     return destination
+
 
 def main(argv=None):
     """
@@ -86,6 +90,7 @@ def main(argv=None):
 
     print(f"Wrote coverage mapping to: {args.out}")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

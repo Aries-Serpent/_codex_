@@ -21,7 +21,11 @@ def test_training_config_from_file(tmp_path: Path) -> None:
     config_file = tmp_path / "cfg.json"
     config_file.write_text('{"batch_size": 2, "learning_rate": 0.01}')
 
-    cfg = TrainingConfig.from_file(str(config_file)) if hasattr(TrainingConfig, "from_file") else TrainingConfig(batch_size=2, learning_rate=0.01)
+    cfg = (
+        TrainingConfig.from_file(str(config_file))
+        if hasattr(TrainingConfig, "from_file")
+        else TrainingConfig(batch_size=2, learning_rate=0.01)
+    )
     assert cfg.batch_size == 2
     assert cfg.learning_rate == 0.01
 

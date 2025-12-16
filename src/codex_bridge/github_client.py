@@ -26,7 +26,9 @@ def _auth_headers() -> dict[str, str]:
 
 def _cache_path(key: str) -> str:
     # nosec B324 - SHA1 used for cache key generation, not security
-    return os.path.join(CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json")
+    return os.path.join(
+        CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json"
+    )
 
 
 def cache_get(key: str, ttl: int) -> Any | None:

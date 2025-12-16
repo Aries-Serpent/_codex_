@@ -50,17 +50,17 @@ class MinHashDetector:
             List of tokens
         """
         # Remove comments (simple approach)
-        code = re.sub(r'#.*$', '', code, flags=re.MULTILINE)
-        code = re.sub(r'//.*$', '', code, flags=re.MULTILINE)
-        code = re.sub(r'/\*.*?\*/', '', code, flags=re.DOTALL)
-        
+        code = re.sub(r"#.*$", "", code, flags=re.MULTILINE)
+        code = re.sub(r"//.*$", "", code, flags=re.MULTILINE)
+        code = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
+
         # Remove strings (replace with placeholder)
-        code = re.sub(r'"[^"]*"', 'STRING', code)
-        code = re.sub(r"'[^']*'", 'STRING', code)
-        
+        code = re.sub(r'"[^"]*"', "STRING", code)
+        code = re.sub(r"'[^']*'", "STRING", code)
+
         # Tokenize by splitting on non-alphanumeric
-        tokens = re.findall(r'\w+', code.lower())
-        
+        tokens = re.findall(r"\w+", code.lower())
+
         return tokens
 
     def create_shingles(self, tokens: List[str]) -> Set[str]:
@@ -75,7 +75,7 @@ class MinHashDetector:
         """
         shingles = set()
         for i in range(len(tokens) - self.shingle_size + 1):
-            shingle = ' '.join(tokens[i:i + self.shingle_size])
+            shingle = " ".join(tokens[i : i + self.shingle_size])
             shingles.add(shingle)
         return shingles
 
@@ -96,14 +96,14 @@ class MinHashDetector:
 
         signature = []
         for i in range(self.num_perm):
-            min_hash = float('inf')
+            min_hash = float("inf")
             for shingle in shingles:
                 # Use deterministic hash (SHA256) for consistent results
-                hash_input = f"{shingle}:{i}".encode('utf-8')
+                hash_input = f"{shingle}:{i}".encode("utf-8")
                 h = int(hashlib.sha256(hash_input).hexdigest()[:8], 16)
                 min_hash = min(min_hash, h)
             signature.append(min_hash)
-        
+
         return signature
 
     def jaccard_similarity(self, sig1: List[int], sig2: List[int]) -> float:
@@ -119,7 +119,7 @@ class MinHashDetector:
         """
         if len(sig1) != len(sig2):
             return 0.0
-        
+
         matches = sum(1 for a, b in zip(sig1, sig2) if a == b)
         return matches / len(sig1)
 
@@ -132,60 +132,58 @@ class MinHashDetector:
         """
         # Find all source files
         files = self._find_source_files()
-        
+
         # Compute MinHash signatures for all files
         signatures: Dict[str, List[int]] = {}
         file_content: Dict[str, str] = {}
-        
+
         for file_path in files:
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
-                
+
                 tokens = self.tokenize(content)
                 if len(tokens) < self.shingle_size:
                     continue
-                
+
                 shingles = self.create_shingles(tokens)
                 signature = self.compute_minhash(shingles)
-                
+
                 rel_path = str(self._make_relative(file_path))
                 signatures[rel_path] = signature
                 file_content[rel_path] = content
-                
+
             except Exception:
                 continue
-        
+
         # Find similar pairs
         similar_pairs = self._find_similar_pairs(signatures)
-        
+
         # Cluster similar files
         clusters = self._cluster_similar(similar_pairs)
-        
+
         # Create duplicate groups
         duplicate_groups = []
         for cluster_id, (paths, avg_similarity) in enumerate(clusters, 1):
             if len(paths) < 2:
                 continue
-            
+
             # Create member files
             member_files = []
             for path in paths:
                 member = MemberFile(
                     path=path,
-                    file_hash=hashlib.sha256(
-                        file_content[path].encode()
-                    ).hexdigest()[:16],
+                    file_hash=hashlib.sha256(file_content[path].encode()).hexdigest()[:16],
                     similarity_score=avg_similarity,
                 )
                 member_files.append(member)
-            
+
             # Get representative (shortest path)
             representative = min(paths, key=len)
-            
+
             # Create summary
             summary = file_content[representative][:200]
-            
+
             group = DuplicateGroup(
                 id=f"dup-semantic-{cluster_id:03d}",
                 type="semantic-cluster",
@@ -203,28 +201,24 @@ class MinHashDetector:
                 },
                 summary=summary,
             )
-            
+
             duplicate_groups.append(group)
-        
+
         return duplicate_groups
 
-    def _find_similar_pairs(
-        self, signatures: Dict[str, List[int]]
-    ) -> List[Tuple[str, str, float]]:
+    def _find_similar_pairs(self, signatures: Dict[str, List[int]]) -> List[Tuple[str, str, float]]:
         """Find pairs of files with similarity above threshold."""
         similar_pairs = []
         paths = list(signatures.keys())
-        
+
         for i in range(len(paths)):
             for j in range(i + 1, len(paths)):
                 path1, path2 = paths[i], paths[j]
-                similarity = self.jaccard_similarity(
-                    signatures[path1], signatures[path2]
-                )
-                
+                similarity = self.jaccard_similarity(signatures[path1], signatures[path2])
+
                 if similarity >= self.threshold:
                     similar_pairs.append((path1, path2, similarity))
-        
+
         return similar_pairs
 
     def _cluster_similar(
@@ -238,39 +232,39 @@ class MinHashDetector:
         """
         if not pairs:
             return []
-        
+
         # Build adjacency list
         graph: Dict[str, Set[str]] = defaultdict(set)
         similarities: Dict[Tuple[str, str], float] = {}
-        
+
         for path1, path2, sim in pairs:
             graph[path1].add(path2)
             graph[path2].add(path1)
             similarities[(path1, path2)] = sim
             similarities[(path2, path1)] = sim
-        
+
         # Find connected components
         visited = set()
         clusters = []
-        
+
         for node in graph:
             if node in visited:
                 continue
-            
+
             # BFS to find cluster
             cluster = []
             queue = [node]
             visited.add(node)
-            
+
             while queue:
                 current = queue.pop(0)
                 cluster.append(current)
-                
+
                 for neighbor in graph[current]:
                     if neighbor not in visited:
                         visited.add(neighbor)
                         queue.append(neighbor)
-            
+
             # Calculate average similarity for cluster
             if len(cluster) >= 2:
                 sims = []
@@ -279,31 +273,38 @@ class MinHashDetector:
                         key = (cluster[i], cluster[j])
                         if key in similarities:
                             sims.append(similarities[key])
-                
+
                 avg_sim = sum(sims) / len(sims) if sims else 0.0
                 clusters.append((cluster, avg_sim))
-        
+
         return clusters
 
     def _find_source_files(self) -> List[Path]:
         """Find all source files in repository."""
         source_files = []
-        
+
         # Common source extensions
-        extensions = {'.py', '.js', '.ts', '.java', '.go', '.rb', '.php', '.cpp', '.c', '.h'}
-        
+        extensions = {".py", ".js", ".ts", ".java", ".go", ".rb", ".php", ".cpp", ".c", ".h"}
+
         # Exclusion patterns
         exclude_dirs = {
-            '.git', 'node_modules', 'vendor', 'third_party',
-            '__pycache__', 'build', 'dist', '.venv', 'venv'
+            ".git",
+            "node_modules",
+            "vendor",
+            "third_party",
+            "__pycache__",
+            "build",
+            "dist",
+            ".venv",
+            "venv",
         }
-        
+
         for ext in extensions:
-            for path in self.root_path.rglob(f'*{ext}'):
+            for path in self.root_path.rglob(f"*{ext}"):
                 if any(part in exclude_dirs for part in path.parts):
                     continue
                 source_files.append(path)
-        
+
         return source_files
 
     def _make_relative(self, file_path: Path) -> Path:

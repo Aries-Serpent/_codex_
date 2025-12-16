@@ -17,9 +17,9 @@ def test_deployment_infrastructure_no_files():
             {"path": "tests/test_main.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert result["evidence_files"] == []
     assert "found_patterns" in result
@@ -33,9 +33,9 @@ def test_deployment_infrastructure_dockerfile():
             {"path": "src/main.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "Dockerfile" in result["evidence_files"]
     assert "docker" in result["found_patterns"]
@@ -50,9 +50,9 @@ def test_deployment_infrastructure_docker_compose():
             {"path": "docker-compose.dev.yml", "ext": ".yml"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "docker" in result["found_patterns"]
     assert result["meta"]["docker_configs"] >= 1
@@ -67,9 +67,9 @@ def test_deployment_infrastructure_kubernetes():
             {"path": "kubernetes/ingress.yaml", "ext": ".yaml"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "kubernetes" in result["found_patterns"]
     assert result["meta"]["k8s_manifests"] == 3
@@ -84,9 +84,9 @@ def test_deployment_infrastructure_helm():
             {"path": "helm/templates/deployment.yaml", "ext": ".yaml"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "helm" in result["found_patterns"]
     assert result["meta"]["helm_charts"] >= 2
@@ -101,9 +101,9 @@ def test_deployment_infrastructure_terraform():
             {"path": "infrastructure/aws.tf", "ext": ".tf"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "terraform" in result["found_patterns"]
     assert result["meta"]["terraform_configs"] == 3
@@ -117,9 +117,9 @@ def test_deployment_infrastructure_deploy_scripts():
             {"path": "scripts/deploy.sh", "ext": ".sh"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "deploy" in result["found_patterns"]
     assert result["meta"]["deploy_scripts"] >= 1
@@ -134,9 +134,9 @@ def test_deployment_infrastructure_service_files():
             {"path": "api/server.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "service" in result["found_patterns"]
     assert result["meta"]["service_definitions"] == 3
@@ -155,9 +155,9 @@ def test_deployment_infrastructure_comprehensive():
             {"path": "services/api/main.py", "ext": ".py"},
         ]
     }
-    
+
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert len(result["evidence_files"]) >= 7
     assert "docker" in result["found_patterns"]
@@ -172,7 +172,7 @@ def test_deployment_infrastructure_required_patterns():
     """Test that required patterns are properly defined."""
     file_index = {"files": []}
     result = detect(file_index)
-    
+
     assert "required_patterns" in result
     assert "docker" in result["required_patterns"]
     assert "kubernetes" in result["required_patterns"]
@@ -183,7 +183,7 @@ def test_deployment_infrastructure_docs_keywords():
     """Test that docs_keywords metadata is present."""
     file_index = {"files": []}
     result = detect(file_index)
-    
+
     assert "docs_keywords" in result
     assert "deployment" in result["docs_keywords"]
     assert "docker" in result["docs_keywords"]
@@ -194,7 +194,7 @@ def test_deployment_infrastructure_safeguards():
     """Test that safeguards metadata is present."""
     file_index = {"files": []}
     result = detect(file_index)
-    
+
     assert "safeguards" in result
     assert "validation" in result["safeguards"]
     assert "bounded" in result["safeguards"]
@@ -210,7 +210,7 @@ def test_deployment_infrastructure_functionality():
         ]
     }
     result = detect(file_index)
-    
+
     assert "functionality_impl" in result
     assert isinstance(result["functionality_impl"], float)
     assert 0.0 <= result["functionality_impl"] <= 1.0
@@ -225,7 +225,7 @@ def test_deployment_infrastructure_meta_fields():
         ]
     }
     result = detect(file_index)
-    
+
     assert "meta" in result
     assert "docker_configs" in result["meta"]
     assert "k8s_manifests" in result["meta"]
@@ -246,7 +246,7 @@ def test_deployment_infrastructure_sorted_evidence():
         ]
     }
     result = detect(file_index)
-    
+
     evidence = result["evidence_files"]
     assert evidence == sorted(evidence)
 
@@ -260,7 +260,7 @@ def test_deployment_infrastructure_docker_directory():
         ]
     }
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "docker" in result["found_patterns"]
 
@@ -274,7 +274,7 @@ def test_deployment_infrastructure_dockerignore():
         ]
     }
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert ".dockerignore" in result["evidence_files"]
 
@@ -289,7 +289,7 @@ def test_deployment_infrastructure_k8s_patterns():
         ]
     }
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "kubernetes" in result["found_patterns"]
 
@@ -298,7 +298,7 @@ def test_deployment_infrastructure_empty_file_index():
     """Test handling of empty file index."""
     file_index = {}
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert result["evidence_files"] == []
     assert result["meta"]["docker_configs"] == 0
@@ -313,7 +313,7 @@ def test_deployment_infrastructure_case_sensitivity():
         ]
     }
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     # Should detect kubernetes (case-insensitive)
     assert "kubernetes" in result["found_patterns"]
@@ -328,7 +328,7 @@ def test_deployment_infrastructure_terraform_directory():
         ]
     }
     result = detect(file_index)
-    
+
     assert result["id"] == "deployment-infrastructure"
     assert "terraform" in result["found_patterns"]
 
@@ -343,7 +343,7 @@ def test_deployment_infrastructure_mixed_deployment():
         ]
     }
     result = detect(file_index)
-    
+
     assert len(result["found_patterns"]) >= 3
     assert "docker" in result["found_patterns"]
     assert "kubernetes" in result["found_patterns"]

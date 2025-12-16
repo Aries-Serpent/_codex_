@@ -3,6 +3,7 @@ Tests for MCP configuration management detector.
 
 Tests detection of configuration files, environment handling, and mcp.json schema.
 """
+
 from scripts.space_traversal.detectors import mcp_configuration
 
 
@@ -14,9 +15,9 @@ def test_detect_no_config():
             {"path": "src/app/utils.py", "ext": "py", "size": 50, "sha": "def456"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert result["id"] == "mcp-configuration"
     assert result["found_patterns"] == []
     assert "config" in result["required_patterns"]
@@ -32,9 +33,9 @@ def test_detect_mcp_json():
             {"path": "src/app/main.py", "ext": "py", "size": 100, "sha": "abc"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "mcp.json" in result["found_patterns"]
     assert "mcp.json" in result["evidence_files"]
 
@@ -47,9 +48,9 @@ def test_detect_env_file():
             {"path": ".env.example", "ext": "example", "size": 100, "sha": "env456"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "environment" in result["found_patterns"]
     assert ".env" in result["evidence_files"]
     assert ".env.example" in result["evidence_files"]
@@ -63,9 +64,9 @@ def test_detect_config_yaml():
             {"path": "config/app.yml", "ext": "yml", "size": 200, "sha": "yaml2"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "config" in result["found_patterns"]
     assert "config.yaml" in result["evidence_files"]
 
@@ -78,9 +79,9 @@ def test_detect_settings_py():
             {"path": "configuration.py", "ext": "py", "size": 350, "sha": "set2"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "config" in result["found_patterns"]
     assert "settings.py" in result["evidence_files"]
     assert "configuration.py" in result["evidence_files"]
@@ -96,9 +97,9 @@ def test_detect_all_patterns():
             {"path": "settings.py", "ext": "py", "size": 400, "sha": "d"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "mcp.json" in result["found_patterns"]
     assert "environment" in result["found_patterns"]
     assert "config" in result["found_patterns"]
@@ -113,9 +114,9 @@ def test_detect_mcp_directory():
             {"path": "mcp/mcp_config.json", "ext": "json", "size": 150, "sha": "y"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "config" in result["found_patterns"]
     assert "mcp.json" in result["found_patterns"]
     assert len(result["evidence_files"]) > 0
@@ -129,9 +130,9 @@ def test_detect_services_directory():
             {"path": "services/api/env_vars.py", "ext": "py", "size": 100, "sha": "s2"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert len(result["found_patterns"]) > 0
     assert len(result["evidence_files"]) > 0
 
@@ -144,9 +145,9 @@ def test_evidence_deduplication():
             {"path": "config/settings.py", "ext": "py", "size": 150, "sha": "b"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     # Check no duplicates
     assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
 
@@ -160,9 +161,9 @@ def test_sorted_output():
             {"path": ".env", "ext": "", "size": 100, "sha": "e"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     # found_patterns should be sorted
     assert result["found_patterns"] == sorted(result["found_patterns"])
     # evidence_files should be sorted
@@ -172,13 +173,20 @@ def test_sorted_output():
 def test_docs_keywords_present():
     """Test that required docs_keywords are present."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "docs_keywords" in result
     expected_keywords = [
-        "mcp", "configuration", "settings", "environment", "mcp.json",
-        "config", "management", "runtime", "validation"
+        "mcp",
+        "configuration",
+        "settings",
+        "environment",
+        "mcp.json",
+        "config",
+        "management",
+        "runtime",
+        "validation",
     ]
     for keyword in expected_keywords:
         assert keyword in result["docs_keywords"]
@@ -187,9 +195,9 @@ def test_docs_keywords_present():
 def test_safeguards_metadata():
     """Test that safeguards metadata is present."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "meta" in result
     assert "safeguards" in result["meta"]
     expected_safeguards = ["validation", "type-checking", "bounds-checking", "secret-management"]
@@ -200,9 +208,9 @@ def test_safeguards_metadata():
 def test_detector_version():
     """Test that detector version is present."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "detector_version" in result["meta"]
     assert result["meta"]["detector_version"] == "1.1"
 
@@ -210,9 +218,9 @@ def test_detector_version():
 def test_category_and_layer():
     """Test that category and layer are set correctly."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert result["meta"]["category"] == "mcp"
     assert result["meta"]["layer"] == "infrastructure"
 
@@ -220,9 +228,9 @@ def test_category_and_layer():
 def test_config_types_metadata():
     """Test that config types are documented."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert "config_types" in result["meta"]
     expected_types = ["mcp.json", "environment", "yaml", "python"]
     for cfg_type in expected_types:
@@ -237,9 +245,9 @@ def test_case_insensitive_matching():
             {"path": "SETTINGS.PY", "ext": "py", "size": 150, "sha": "b"},
         ]
     }
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     # Should still detect config patterns
     assert "config" in result["found_patterns"]
     assert len(result["evidence_files"]) > 0
@@ -248,9 +256,9 @@ def test_case_insensitive_matching():
 def test_empty_file_index():
     """Test detection with empty file index."""
     file_index = {"files": []}
-    
+
     result = mcp_configuration.detect(file_index)
-    
+
     assert result["id"] == "mcp-configuration"
     assert result["found_patterns"] == []
     assert result["evidence_files"] == []
@@ -265,10 +273,10 @@ def test_deterministic_output():
             {"path": "config.yaml", "ext": "yaml", "size": 300, "sha": "c"},
         ]
     }
-    
+
     # Run detection multiple times
     results = [mcp_configuration.detect(file_index) for _ in range(3)]
-    
+
     # All results should be identical
     for i in range(1, len(results)):
         assert results[i]["found_patterns"] == results[0]["found_patterns"]

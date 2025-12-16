@@ -1,4 +1,5 @@
 """Ensure codex version module exposes __version__."""
+
 from __future__ import annotations
 
 from codex import _version

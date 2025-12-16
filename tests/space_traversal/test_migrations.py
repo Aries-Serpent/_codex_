@@ -1,4 +1,5 @@
 """Tests for database migrations (v1.5.x)."""
+
 from __future__ import annotations
 
 import sqlite3

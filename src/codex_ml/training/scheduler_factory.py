@@ -6,14 +6,14 @@ schedulers with configuration support.
 Example usage:
     ```python
     from codex_ml.training.scheduler_factory import create_scheduler
-    
+
     scheduler = create_scheduler(
         optimizer=optimizer,
         scheduler_type='cosine',
         num_training_steps=1000,
         num_warmup_steps=100
     )
-    
+
     for batch in dataloader:
         loss = train_step(batch)
         optimizer.step()
@@ -52,11 +52,11 @@ def create_scheduler(
     **kwargs: Any,
 ) -> Any:
     """Create a learning rate scheduler.
-    
+
     This function creates various types of learning rate schedulers commonly
     used in deep learning training. It supports PyTorch native schedulers and
     HuggingFace Transformers schedulers.
-    
+
     Args:
         optimizer: PyTorch optimizer to schedule
         scheduler_type: Type of scheduler to create. Options:
@@ -73,14 +73,14 @@ def create_scheduler(
         lr_end: Final learning rate for linear/polynomial (default: 0.0)
         power: Power for polynomial decay (default: 1.0)
         **kwargs: Additional arguments passed to scheduler constructor
-        
+
     Returns:
         Learning rate scheduler instance
-        
+
     Raises:
         ValueError: If scheduler_type is not recognized
         ImportError: If required library is not available
-        
+
     Example:
         ```python
         # Linear warmup with cosine decay
@@ -90,7 +90,7 @@ def create_scheduler(
             num_training_steps=10000,
             num_warmup_steps=500
         )
-        
+
         # Constant learning rate
         scheduler = create_scheduler(
             optimizer,
@@ -101,7 +101,7 @@ def create_scheduler(
     # Try HuggingFace transformers schedulers first (more comprehensive)
     try:
         from transformers import get_scheduler as get_transformers_scheduler
-        
+
         # Map our scheduler types to transformers names
         scheduler_name_map = {
             "constant": "constant",
@@ -112,20 +112,20 @@ def create_scheduler(
             "polynomial": "polynomial",
             "inverse_sqrt": "inverse_sqrt",
         }
-        
+
         if scheduler_type not in scheduler_name_map:
             raise ValueError(
                 f"Unknown scheduler type: {scheduler_type}. "
                 f"Available types: {list(scheduler_name_map.keys())}"
             )
-        
+
         transformers_name = scheduler_name_map[scheduler_type]
-        
+
         # Build scheduler kwargs
         scheduler_kwargs = {
             "num_warmup_steps": num_warmup_steps,
         }
-        
+
         # Add num_training_steps for schedulers that need it
         if scheduler_type != "constant":
             if num_training_steps is None:
@@ -133,33 +133,31 @@ def create_scheduler(
                     f"num_training_steps is required for scheduler type '{scheduler_type}'"
                 )
             scheduler_kwargs["num_training_steps"] = num_training_steps
-        
+
         # Add scheduler-specific arguments
         if scheduler_type == "cosine_with_restarts":
             scheduler_kwargs["num_cycles"] = num_cycles
         elif scheduler_type == "polynomial":
             scheduler_kwargs["lr_end"] = lr_end
             scheduler_kwargs["power"] = power
-        
+
         # Merge with any additional kwargs
         scheduler_kwargs.update(kwargs)
-        
+
         LOGGER.info(
             f"Creating transformers scheduler: type={transformers_name}, "
             f"warmup_steps={num_warmup_steps}, "
             f"training_steps={num_training_steps}"
         )
-        
+
         return get_transformers_scheduler(
             name=transformers_name,
             optimizer=optimizer,
             **scheduler_kwargs,
         )
-        
+
     except ImportError:
-        LOGGER.warning(
-            "transformers not available, falling back to PyTorch schedulers"
-        )
+        LOGGER.warning("transformers not available, falling back to PyTorch schedulers")
         # Fall back to PyTorch native schedulers
         return _create_pytorch_scheduler(
             optimizer=optimizer,
@@ -184,7 +182,7 @@ def _create_pytorch_scheduler(
     **kwargs: Any,
 ) -> Any:
     """Create scheduler using PyTorch native schedulers.
-    
+
     This is a fallback when transformers is not available.
     """
     try:
@@ -192,78 +190,82 @@ def _create_pytorch_scheduler(
         from torch.optim import lr_scheduler
     except ImportError:
         raise ImportError(
-            "PyTorch is required for scheduler creation. "
-            "Install with: pip install torch"
+            "PyTorch is required for scheduler creation. " "Install with: pip install torch"
         )
-    
+
     if scheduler_type == "constant":
         # Constant LR (identity scheduler)
         return lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda step: 1.0)
-    
+
     elif scheduler_type == "constant_with_warmup":
+
         def lr_lambda(step):
             if step < num_warmup_steps:
                 return float(step) / float(max(1, num_warmup_steps))
             return 1.0
-        
+
         return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
-    
+
     elif scheduler_type == "linear":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for linear scheduler")
-        
+
         def lr_lambda(step):
             if step < num_warmup_steps:
                 return float(step) / float(max(1, num_warmup_steps))
             return max(
                 0.0,
-                float(num_training_steps - step) / float(max(1, num_training_steps - num_warmup_steps))
+                float(num_training_steps - step)
+                / float(max(1, num_training_steps - num_warmup_steps)),
             )
-        
+
         return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
-    
+
     elif scheduler_type == "cosine":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for cosine scheduler")
-        
+
         def lr_lambda(step):
             if step < num_warmup_steps:
                 return float(step) / float(max(1, num_warmup_steps))
-            progress = float(step - num_warmup_steps) / float(max(1, num_training_steps - num_warmup_steps))
+            progress = float(step - num_warmup_steps) / float(
+                max(1, num_training_steps - num_warmup_steps)
+            )
             return max(0.0, 0.5 * (1.0 + math.cos(math.pi * progress)))
-        
+
         return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
-    
+
     elif scheduler_type == "cosine_with_restarts":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for cosine_with_restarts")
-        
+
         return lr_scheduler.CosineAnnealingWarmRestarts(
             optimizer,
             T_0=num_training_steps // int(num_cycles),
             T_mult=1,
             **kwargs,
         )
-    
+
     elif scheduler_type == "polynomial":
         if num_training_steps is None:
             raise ValueError("num_training_steps required for polynomial scheduler")
-        
+
         return lr_scheduler.PolynomialLR(
             optimizer,
             total_iters=num_training_steps,
             power=power,
             **kwargs,
         )
-    
+
     elif scheduler_type == "inverse_sqrt":
+
         def lr_lambda(step):
             if step < num_warmup_steps:
                 return float(step) / float(max(1, num_warmup_steps))
             return math.sqrt(num_warmup_steps / max(step, 1))
-        
+
         return lr_scheduler.LambdaLR(optimizer, lr_lambda=lr_lambda)
-    
+
     else:
         raise ValueError(
             f"Unknown scheduler type: {scheduler_type}. "
@@ -274,7 +276,7 @@ def _create_pytorch_scheduler(
 
 def get_available_schedulers() -> list[str]:
     """Get list of available scheduler types.
-    
+
     Returns:
         List of scheduler type names
     """
@@ -296,16 +298,16 @@ def calculate_num_training_steps(
     gradient_accumulation_steps: int = 1,
 ) -> int:
     """Calculate total number of training steps.
-    
+
     Args:
         num_epochs: Number of training epochs
         dataset_size: Size of training dataset
         batch_size: Batch size
         gradient_accumulation_steps: Gradient accumulation steps
-        
+
     Returns:
         Total number of optimization steps
-        
+
     Example:
         ```python
         steps = calculate_num_training_steps(
@@ -320,11 +322,11 @@ def calculate_num_training_steps(
     effective_batch_size = batch_size * gradient_accumulation_steps
     steps_per_epoch = math.ceil(dataset_size / effective_batch_size)
     total_steps = num_epochs * steps_per_epoch
-    
+
     LOGGER.debug(
         f"Calculated training steps: {total_steps} "
         f"(epochs={num_epochs}, dataset={dataset_size}, "
         f"batch={batch_size}, grad_accum={gradient_accumulation_steps})"
     )
-    
+
     return total_steps

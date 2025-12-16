@@ -8,6 +8,7 @@ Tests cover:
 - Offline mode integration
 - Configuration integration
 """
+
 import tempfile
 from pathlib import Path
 
@@ -38,19 +39,19 @@ class TestEndToEndTraining:
         # Create simple model
         model = torch.nn.Linear(10, 5)
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-        
+
         # Simple training loop
         for step in range(5):
             input_data = torch.randn(2, 10)
             target = torch.randn(2, 5)
-            
+
             output = model(input_data)
             loss = torch.nn.functional.mse_loss(output, target)
-            
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        
+
         # Should complete without errors
         assert loss.item() is not None
 
@@ -63,33 +64,33 @@ class TestCheckpointResumeWorkflow:
         # Create model
         model = torch.nn.Linear(10, 5)
         optimizer = torch.optim.Adam(model.parameters())
-        
+
         # Train for a few steps
         for step in range(5):
-            loss = torch.nn.functional.mse_loss(
-                model(torch.randn(2, 10)),
-                torch.randn(2, 5)
-            )
+            loss = torch.nn.functional.mse_loss(model(torch.randn(2, 10)), torch.randn(2, 5))
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        
+
         # Save checkpoint
         checkpoint_path = temp_workspace / "checkpoints" / "step_5.pt"
-        torch.save({
-            "model_state_dict": model.state_dict(),
-            "optimizer_state_dict": optimizer.state_dict(),
-            "step": 5
-        }, checkpoint_path)
-        
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "step": 5,
+            },
+            checkpoint_path,
+        )
+
         # Create new model and resume
         new_model = torch.nn.Linear(10, 5)
         new_optimizer = torch.optim.Adam(new_model.parameters())
-        
+
         checkpoint = torch.load(checkpoint_path)
         new_model.load_state_dict(checkpoint["model_state_dict"])
         new_optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-        
+
         assert checkpoint["step"] == 5
 
 
@@ -102,10 +103,10 @@ class TestOfflineModeIntegration:
 
         # Set offline mode
         os.environ["CODEX_OFFLINE_MODE"] = "1"
-        
+
         # Verify setting
         assert os.getenv("CODEX_OFFLINE_MODE") == "1"
-        
+
         # Cleanup
         del os.environ["CODEX_OFFLINE_MODE"]
 

@@ -12,13 +12,15 @@ class TestUnifiedTrainingConfig:
     def test_detector_import(self):
         """Test unified training detector can be imported."""
         from scripts.space_traversal.detectors import unified_training
-        assert hasattr(unified_training, 'detect')
+
+        assert hasattr(unified_training, "detect")
 
     def test_detector_output_contract(self):
         """Test detector output follows contract."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         result = detect({"files": []})
-        
+
         assert "id" in result
         assert result["id"] == "unified-training"
         assert "evidence_files" in result
@@ -27,14 +29,16 @@ class TestUnifiedTrainingConfig:
     def test_required_patterns_defined(self):
         """Test required patterns are defined."""
         from scripts.space_traversal.detectors.unified_training import REQUIRED
+
         assert "UnifiedTrainingConfig" in REQUIRED
         assert "run_unified_training" in REQUIRED
 
     def test_safeguards_metadata(self):
         """Test safeguards metadata is present."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         result = detect({"files": []})
-        
+
         assert "safeguards" in result
         assert "bounded" in result["safeguards"]
         assert "deterministic" in result["safeguards"]
@@ -42,8 +46,9 @@ class TestUnifiedTrainingConfig:
     def test_docs_keywords(self):
         """Test docs_keywords are present."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         result = detect({"files": []})
-        
+
         assert "docs_keywords" in result
         assert "unified-training" in result["docs_keywords"]
 
@@ -54,14 +59,16 @@ class TestUnifiedTrainingExecution:
     def test_empty_file_index(self):
         """Test detection with empty file index."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         result = detect({"files": []})
         assert result["evidence_files"] == [] or len(result["evidence_files"]) >= 0
 
     def test_deterministic_output(self):
         """Test deterministic detection output."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         file_index = {"files": [{"path": "training/unified_training.py"}]}
-        
+
         results = [detect(file_index) for _ in range(3)]
         for i in range(1, len(results)):
             assert results[i]["found_patterns"] == results[0]["found_patterns"]
@@ -69,16 +76,19 @@ class TestUnifiedTrainingExecution:
     def test_bounded_read_constant(self):
         """Test MAX_READ_BYTES is defined and reasonable."""
         from scripts.space_traversal.detectors.unified_training import MAX_READ_BYTES
+
         assert MAX_READ_BYTES > 0
         assert MAX_READ_BYTES <= 1_000_000
 
     def test_related_files_defined(self):
         """Test related files are defined."""
         from scripts.space_traversal.detectors.unified_training import RELATED_FILES
+
         assert len(RELATED_FILES) > 0
 
     def test_meta_category(self):
         """Test meta category is training."""
         from scripts.space_traversal.detectors.unified_training import detect
+
         result = detect({"files": []})
         assert result["meta"]["category"] == "training"

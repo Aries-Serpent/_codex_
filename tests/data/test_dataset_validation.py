@@ -14,14 +14,14 @@ from codex_ml.data.validation import (
 
 class TestValidationRules:
     """Test individual validation rules."""
-    
+
     def test_required_columns_pass(self):
         """Test required columns validation passes."""
         rule = RequiredColumnsRule(["col1", "col2"])
         data = {"col1": [1], "col2": [2], "col3": [3]}
         result = rule.validate(data)
         assert result.is_valid
-    
+
     def test_required_columns_fail(self):
         """Test required columns validation fails."""
         rule = RequiredColumnsRule(["col1", "col2"])
@@ -29,7 +29,7 @@ class TestValidationRules:
         result = rule.validate(data)
         assert not result.is_valid
         assert "col2" in result.message
-    
+
     def test_data_type_validation(self):
         """Test data type validation."""
         rule = DataTypeRule({"col1": "int64"})
@@ -40,19 +40,19 @@ class TestValidationRules:
 
 class TestDataValidator:
     """Test DataValidator orchestration."""
-    
+
     def test_validator_initialization(self):
         """Test validator initializes."""
         validator = DataValidator()
         assert validator.rules == []
-    
+
     def test_add_rule(self):
         """Test adding rules."""
         validator = DataValidator()
         rule = RequiredColumnsRule(["col1"])
         validator.add_rule(rule)
         assert len(validator.rules) == 1
-    
+
     def test_validate_all_pass(self):
         """Test validation when all rules pass."""
         validator = DataValidator()
@@ -63,7 +63,7 @@ class TestDataValidator:
 
 class TestValidationResult:
     """Test ValidationResult."""
-    
+
     def test_result_creation(self):
         """Test creating validation result."""
         result = ValidationResult(
@@ -73,7 +73,7 @@ class TestValidationResult:
         )
         assert result.is_valid
         assert result.rule_name == "test"
-    
+
     def test_result_to_dict(self):
         """Test converting result to dict."""
         result = ValidationResult(

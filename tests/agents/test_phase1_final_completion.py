@@ -35,19 +35,19 @@ from agents.mental_mapping import (
 
 class TestPhysicsOrchestratorGettersProperties:
     """Property and getter coverage for physics_orchestrator (Eq #3, #6)"""
-    
+
     def test_force_vector_magnitude_getter(self):
         """Test magnitude property calculation."""
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
         assert abs(fv.magnitude - 5.0) < 0.001
-    
+
     def test_force_vector_components(self):
         """Test component getters."""
         fv = ForceVector(x=1.0, y=2.0, z=3.0)
         assert fv.x == 1.0
         assert fv.y == 2.0
         assert fv.z == 3.0
-    
+
     def test_action_path_energy_property(self):
         """Test energy property."""
         path = ActionPath(
@@ -57,7 +57,7 @@ class TestPhysicsOrchestratorGettersProperties:
             trajectory=[],
         )
         assert path.energy == 10.0
-    
+
     def test_action_path_momentum_property(self):
         """Test momentum property."""
         path = ActionPath(
@@ -67,7 +67,7 @@ class TestPhysicsOrchestratorGettersProperties:
             trajectory=[],
         )
         assert path.momentum == 5.0
-    
+
     def test_decision_state_properties(self):
         """Test decision state property access."""
         state = DecisionState(
@@ -82,19 +82,19 @@ class TestPhysicsOrchestratorGettersProperties:
 
 class TestPhysicsOrchestratorEnumValidations:
     """Enum validation coverage (Eq #2)"""
-    
+
     def test_action_type_all_values(self):
         """Validate all ActionType enum values."""
         assert ActionType.ANALYZE.value == "analyze"
         assert ActionType.PLAN.value == "plan"
         assert ActionType.EXECUTE.value == "execute"
         assert ActionType.REFLECT.value == "reflect"
-    
+
     def test_action_type_from_string(self):
         """Test enum construction from string."""
         assert ActionType("analyze") == ActionType.ANALYZE
         assert ActionType("plan") == ActionType.PLAN
-    
+
     def test_action_path_with_all_action_types(self):
         """Test ActionPath initialization with each enum value."""
         for action_type in ActionType:
@@ -109,26 +109,28 @@ class TestPhysicsOrchestratorEnumValidations:
 
 class TestQuantumGameTheoryGettersProperties:
     """Property coverage for quantum_game_theory (Eq #9, #10)"""
-    
+
     def test_strategy_state_properties(self):
         """Test strategy state properties."""
         if not NUMPY_AVAILABLE:
             pytest.skip("NumPy not available")
-        
+
         try:
             import numpy as np
+
             state = StrategyState(state_vector=np.array([1.0, 0.0]))
             assert len(state.state_vector) == 2
         except (TypeError, AttributeError):
             pytest.skip("StrategyState interface differs")
-    
+
     def test_payoff_operator_properties(self):
         """Test payoff operator properties."""
         if not NUMPY_AVAILABLE:
             pytest.skip("NumPy not available")
-        
+
         try:
             import numpy as np
+
             payoff = PayoffOperator(matrix=np.array([[1, 0], [0, 1]]))
             assert payoff.matrix.shape == (2, 2)
         except (TypeError, AttributeError):
@@ -137,7 +139,7 @@ class TestQuantumGameTheoryGettersProperties:
 
 class TestMentalMappingGettersProperties:
     """Property coverage for mental_mapping (Eq #37)"""
-    
+
     def test_mental_node_properties(self):
         """Test MentalNode property access."""
         try:
@@ -152,7 +154,7 @@ class TestMentalMappingGettersProperties:
             assert node.node_type == NodeType.PROBLEM
         except (TypeError, AttributeError):
             pytest.skip("MentalNode interface differs")
-    
+
     def test_reasoning_step_properties(self):
         """Test ReasoningStep property access."""
         try:
@@ -168,12 +170,12 @@ class TestMentalMappingGettersProperties:
             assert step.confidence == 0.8
         except (TypeError, AttributeError):
             pytest.skip("ReasoningStep interface differs")
-    
+
     def test_mental_map_node_count(self):
         """Test node count property."""
         map_obj = MentalMappingModel()
         try:
-            initial_count = len(map_obj.nodes) if hasattr(map_obj, 'nodes') else 0
+            initial_count = len(map_obj.nodes) if hasattr(map_obj, "nodes") else 0
             assert initial_count >= 0
         except (TypeError, AttributeError):
             pytest.skip("MentalMappingModel nodes interface differs")
@@ -181,13 +183,13 @@ class TestMentalMappingGettersProperties:
 
 class TestPhysicsOrchestratorInitialization:
     """Initialization tests for physics_orchestrator (Eq #1, #6)"""
-    
+
     def test_orchestrator_default_initialization(self):
         """Test default orchestrator initialization."""
         orch = PhysicsInspiredOrchestrator()
         # Just verify it initializes without error
         assert orch is not None
-    
+
     def test_orchestrator_with_config(self):
         """Test orchestrator initialization with config."""
         try:
@@ -197,17 +199,17 @@ class TestPhysicsOrchestratorInitialization:
             # Config might not be supported
             orch = PhysicsInspiredOrchestrator()
             assert orch is not None
-    
+
     def test_force_vector_initialization_variants(self):
         """Test various ForceVector initialization patterns."""
         # Zero vector
         fv1 = ForceVector(x=0.0, y=0.0, z=0.0)
         assert fv1.magnitude == 0.0
-        
+
         # Unit vectors
         fv2 = ForceVector(x=1.0, y=0.0, z=0.0)
         assert abs(fv2.magnitude - 1.0) < 0.001
-        
+
         # Negative components
         fv3 = ForceVector(x=-1.0, y=-1.0, z=-1.0)
         assert fv3.magnitude > 0.0
@@ -215,7 +217,7 @@ class TestPhysicsOrchestratorInitialization:
 
 class TestQuantumGameTheoryInitialization:
     """Initialization tests for quantum_game_theory (Eq #9)"""
-    
+
     def test_game_engine_initialization(self):
         """Test QuantumInspiredGameEngine initialization."""
         try:
@@ -224,7 +226,7 @@ class TestQuantumGameTheoryInitialization:
         except TypeError as e:
             # May require parameters
             pytest.skip(f"QuantumInspiredGameEngine initialization differs: {e}")
-    
+
     def test_game_engine_with_players(self):
         """Test game engine with player count."""
         try:
@@ -236,17 +238,17 @@ class TestQuantumGameTheoryInitialization:
 
 class TestMentalMappingInitialization:
     """Initialization tests for mental_mapping (Eq #37)"""
-    
+
     def test_mental_map_empty_initialization(self):
         """Test empty MentalMap initialization."""
         map_obj = MentalMappingModel()
         assert map_obj is not None
-    
+
     def test_mental_map_add_node(self):
         """Test adding a node to mental map."""
         map_obj = MentalMappingModel()
         try:
-            if hasattr(map_obj, 'add_node'):
+            if hasattr(map_obj, "add_node"):
                 node = MentalNode(
                     node_id="test-node",
                     node_type=NodeType.PROBLEM,
@@ -262,24 +264,24 @@ class TestMentalMappingInitialization:
 
 class TestCoverageUpliftQuickWins:
     """Quick wins for coverage uplift - simple method calls"""
-    
+
     def test_physics_orchestrator_simple_methods(self):
         """Call simple accessor methods."""
         orch = PhysicsInspiredOrchestrator()
-        
+
         # Try various simple method calls that might exist
-        if hasattr(orch, 'get_state'):
+        if hasattr(orch, "get_state"):
             try:
                 orch.get_state()
             except Exception:
                 pass
-        
-        if hasattr(orch, 'get_config'):
+
+        if hasattr(orch, "get_config"):
             try:
                 orch.get_config()
             except Exception:
                 pass
-    
+
     def test_decision_state_default_values(self):
         """Test DecisionState with minimal parameters."""
         # This should hit default value initialization paths
@@ -294,7 +296,7 @@ class TestCoverageUpliftQuickWins:
                 coherence=1.0,
             )
             assert state is not None
-    
+
     def test_action_path_default_trajectory(self):
         """Test ActionPath with empty trajectory."""
         path = ActionPath(

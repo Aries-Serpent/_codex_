@@ -63,7 +63,9 @@ def _render_markdown(runs: list[dict[str, Any]], aggregates: dict[str, Any]) -> 
     return "\n".join(lines)
 
 
-def analyze(base_dir: str | Path = "artifacts/experiments", output_dir: str | Path | None = None) -> dict[str, Any]:
+def analyze(
+    base_dir: str | Path = "artifacts/experiments", output_dir: str | Path | None = None
+) -> dict[str, Any]:
     base_path = Path(base_dir)
     if output_dir is None:
         output_dir = base_path.parent if base_path.parent != base_path else Path("artifacts")
@@ -84,7 +86,12 @@ def analyze(base_dir: str | Path = "artifacts/experiments", output_dir: str | Pa
     json_path = out_dir / "experiment_summary.json"
     json_path.write_text(json.dumps(json_payload, indent=2), encoding="utf-8")
 
-    return {"runs": runs, "aggregates": aggregates, "markdown_path": md_path, "json_path": json_path}
+    return {
+        "runs": runs,
+        "aggregates": aggregates,
+        "markdown_path": md_path,
+        "json_path": json_path,
+    }
 
 
 def main(argv: list[str] | None = None) -> int:

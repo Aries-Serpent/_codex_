@@ -56,7 +56,7 @@ def audit(session: nox.Session) -> None:
             env={
                 "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
                 "CODEX_ALLOW_REMOTE": "0",
-            }
+            },
         )
         session.log(atomic_diffs_invocation.stdout)
 
@@ -65,7 +65,9 @@ def audit(session: nox.Session) -> None:
         session.log(pytest_invocation.stdout)
 
         # Run fast audit shell target
-        space_invocation = tracer.run_tool("make", ["-f", "space.mk", "space-audit-fast"], check=True)
+        space_invocation = tracer.run_tool(
+            "make", ["-f", "space.mk", "space-audit-fast"], check=True
+        )
         if space_invocation.stdout:
             session.log(space_invocation.stdout)
 

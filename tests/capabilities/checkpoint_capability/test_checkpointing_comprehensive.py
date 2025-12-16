@@ -385,7 +385,9 @@ class CorruptionDetector:
         """Check magic bytes at start of checkpoint."""
         return data[:4] == self.valid_magic
 
-    def detect_corruption(self, checkpoint: dict[str, Any], checksum: str | None = None) -> list[str]:
+    def detect_corruption(
+        self, checkpoint: dict[str, Any], checksum: str | None = None
+    ) -> list[str]:
         """Detect corruption in checkpoint."""
         issues = []
 

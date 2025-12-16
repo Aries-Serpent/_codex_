@@ -49,7 +49,10 @@ def main():
     findings = scan_data(root, args.limit)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"root": str(root), "findings": findings}, indent=2, sort_keys=True), encoding="utf-8")
+    out.write_text(
+        json.dumps({"root": str(root), "findings": findings}, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
     print(f"Dataset scan complete. Findings: {len(findings)} -> {out}")
 
 

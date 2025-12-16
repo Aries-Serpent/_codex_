@@ -159,9 +159,7 @@ class TrendDatabase:
                     snapshot.git_branch,
                     snapshot.version,
                     json.dumps(snapshot.weights),
-                    json.dumps(snapshot.coverage_stats)
-                    if snapshot.coverage_stats
-                    else None,
+                    json.dumps(snapshot.coverage_stats) if snapshot.coverage_stats else None,
                     snapshot.manifest_sha,
                 ),
             )
@@ -274,9 +272,7 @@ class TrendDatabase:
 
         with sqlite3.connect(self.db_path) as conn:
             # Get all capabilities
-            caps = conn.execute(
-                "SELECT DISTINCT capability_id FROM capability_scores"
-            ).fetchall()
+            caps = conn.execute("SELECT DISTINCT capability_id FROM capability_scores").fetchall()
 
             for (cap_id,) in caps:
                 trend = self.get_trend(cap_id, limit=lookback_runs + 1)
@@ -318,15 +314,11 @@ class TrendDatabase:
     def get_schema_version(self) -> str:
         """Get current schema version."""
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute(
-                "SELECT value FROM schema_info WHERE key = 'schema_version'"
-            )
+            cursor = conn.execute("SELECT value FROM schema_info WHERE key = 'schema_version'")
             row = cursor.fetchone()
             return row[0] if row else "unknown"
 
-    def export_csv(
-        self, output_path: Path, capability_id: Optional[str] = None
-    ) -> None:
+    def export_csv(self, output_path: Path, capability_id: Optional[str] = None) -> None:
         """
         Export trend data to CSV.
 

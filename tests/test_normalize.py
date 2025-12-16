@@ -13,17 +13,21 @@ def test_normalized_detector_ignores_comments():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        file1.write_text("""# This is file 1
+        file1.write_text(
+            """# This is file 1
 def hello():
     # Print hello
     print('hello')
-""")
+"""
+        )
 
-        file2.write_text("""# This is file 2
+        file2.write_text(
+            """# This is file 2
 def hello():
     # Say hello to the world
     print('hello')
-""")
+"""
+        )
 
         # Run normalized detector
         from tools.dupinv.normalize import NormalizedDetector
@@ -47,15 +51,19 @@ def test_normalized_detector_ignores_whitespace():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        file1.write_text("""def hello():
+        file1.write_text(
+            """def hello():
     print('hello')
     print('world')
-""")
+"""
+        )
 
-        file2.write_text("""def hello():
+        file2.write_text(
+            """def hello():
   print('hello')
   print('world')
-""")
+"""
+        )
 
         # Run normalized detector
         from tools.dupinv.normalize import NormalizedDetector
@@ -77,19 +85,23 @@ def test_normalized_detector_javascript_comments():
         file1 = root / "file1.js"
         file2 = root / "file2.js"
 
-        file1.write_text("""// This is file 1
+        file1.write_text(
+            """// This is file 1
 function hello() {
     // Print hello
     console.log('hello');
 }
-""")
+"""
+        )
 
-        file2.write_text("""/* This is file 2 */
+        file2.write_text(
+            """/* This is file 2 */
 function hello() {
     /* Say hello */
     console.log('hello');
 }
-""")
+"""
+        )
 
         # Run normalized detector
         from tools.dupinv.normalize import NormalizedDetector
@@ -112,13 +124,17 @@ def test_normalized_detector_different_logic_not_matched():
         file1 = root / "file1.py"
         file2 = root / "file2.py"
 
-        file1.write_text("""def hello():
+        file1.write_text(
+            """def hello():
     print('hello')
-""")
+"""
+        )
 
-        file2.write_text("""def goodbye():
+        file2.write_text(
+            """def goodbye():
     print('goodbye')
-""")
+"""
+        )
 
         # Run normalized detector
         from tools.dupinv.normalize import NormalizedDetector
@@ -164,9 +180,9 @@ def test_python_normalizer_removes_docstrings():
     print('hello')
 '''
 
-    code_without_docstring = '''def hello():
+    code_without_docstring = """def hello():
     print('hello')
-'''
+"""
 
     normalized1 = normalizer.normalize(code_with_docstring)
     normalized2 = normalizer.normalize(code_without_docstring)
@@ -181,17 +197,17 @@ def test_javascript_normalizer_removes_multiline_comments():
 
     normalizer = JavaScriptNormalizer()
 
-    code_with_comment = '''function hello() {
+    code_with_comment = """function hello() {
     /* This is a 
        multi-line comment */
     console.log('hello');
 }
-'''
+"""
 
-    code_without_comment = '''function hello() {
+    code_without_comment = """function hello() {
     console.log('hello');
 }
-'''
+"""
 
     normalized1 = normalizer.normalize(code_with_comment)
     normalized2 = normalizer.normalize(code_without_comment)

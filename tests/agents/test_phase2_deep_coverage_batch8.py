@@ -34,7 +34,7 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'create_workflow'):
+        if hasattr(orchestrator, "create_workflow"):
             workflow = orchestrator.get_workflow(name="test_workflow")
             assert workflow is not None
 
@@ -43,7 +43,7 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'add_task'):
+        if hasattr(orchestrator, "add_task"):
             task = {"name": "test_task", "action": "compile"}
             orchestrator.add_task(task)
             assert True
@@ -53,7 +53,7 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'execute'):
+        if hasattr(orchestrator, "execute"):
             result = orchestrator.execute(workflow_id="test")
             assert result is not None
 
@@ -62,10 +62,10 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'pause'):
+        if hasattr(orchestrator, "pause"):
             orchestrator.pause(workflow_id="test")
             assert True
-        if hasattr(orchestrator, 'resume'):
+        if hasattr(orchestrator, "resume"):
             orchestrator.resume(workflow_id="test")
             assert True
 
@@ -74,7 +74,7 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'cancel'):
+        if hasattr(orchestrator, "cancel"):
             orchestrator.cancel(workflow_id="test")
             assert True
 
@@ -83,7 +83,7 @@ class TestPhase2_DeveloperOrchestrator:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        if hasattr(orchestrator, 'get_status'):
+        if hasattr(orchestrator, "get_status"):
             status = orchestrator.get_status(workflow_id="test")
             assert status is not None
 
@@ -106,7 +106,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'navigate_to'):
+        if hasattr(navigator, "navigate_to"):
             navigator.navigate_to(step_id="step1")
             assert True
 
@@ -115,7 +115,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'current_step'):
+        if hasattr(navigator, "current_step"):
             step = navigator.current_step()
             assert isinstance(step, (dict, type(None)))
 
@@ -124,7 +124,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'next_step'):
+        if hasattr(navigator, "next_step"):
             step = navigator.next_step()
             assert isinstance(step, (dict, str, type(None)))
 
@@ -133,7 +133,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'previous_step'):
+        if hasattr(navigator, "previous_step"):
             step = navigator.previous_step()
             assert isinstance(step, (dict, type(None)))
 
@@ -142,7 +142,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'list_workflows'):
+        if hasattr(navigator, "list_workflows"):
             workflows = navigator.list_workflows()
             assert isinstance(workflows, (list, type(None)))
 
@@ -151,7 +151,7 @@ class TestPhase2_WorkflowNavigator:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        if hasattr(navigator, 'get_workflow_suggestions'):
+        if hasattr(navigator, "get_workflow_suggestions"):
             # Call without context parameter as it may not be supported
             try:
                 suggestions = navigator.get_workflow_suggestions()
@@ -169,17 +169,14 @@ class TestPhase2_TaskScheduling:
 
     def test_priority_queue_scheduling(self):
         """Test priority-based scheduling"""
-        tasks = [
-            {"id": 1, "priority": 2},
-            {"id": 2, "priority": 5},
-            {"id": 3, "priority": 1}
-        ]
+        tasks = [{"id": 1, "priority": 2}, {"id": 2, "priority": 5}, {"id": 3, "priority": 1}]
         sorted_tasks = sorted(tasks, key=lambda x: -x["priority"])
         assert sorted_tasks[0]["id"] == 2  # Highest priority first
 
     def test_fifo_scheduling(self):
         """Test FIFO (First-In-First-Out) scheduling"""
         from collections import deque
+
         queue = deque([1, 2, 3])
         first = queue.popleft()
         assert first == 1
@@ -196,21 +193,13 @@ class TestPhase2_TaskScheduling:
 
     def test_earliest_deadline_first(self):
         """Test EDF scheduling"""
-        tasks = [
-            {"id": 1, "deadline": 10},
-            {"id": 2, "deadline": 5},
-            {"id": 3, "deadline": 15}
-        ]
+        tasks = [{"id": 1, "deadline": 10}, {"id": 2, "deadline": 5}, {"id": 3, "deadline": 15}]
         sorted_tasks = sorted(tasks, key=lambda x: x["deadline"])
         assert sorted_tasks[0]["id"] == 2  # Earliest deadline
 
     def test_shortest_job_first(self):
         """Test SJF scheduling"""
-        tasks = [
-            {"id": 1, "duration": 10},
-            {"id": 2, "duration": 3},
-            {"id": 3, "duration": 7}
-        ]
+        tasks = [{"id": 1, "duration": 10}, {"id": 2, "duration": 3}, {"id": 3, "duration": 7}]
         sorted_tasks = sorted(tasks, key=lambda x: x["duration"])
         assert sorted_tasks[0]["id"] == 2  # Shortest job
 
@@ -223,10 +212,7 @@ class TestPhase2_ResourceAllocation:
 
     def test_resource_pool(self):
         """Test resource pool management"""
-        pool = {
-            "cpu": {"total": 8, "available": 5},
-            "memory": {"total": 16, "available": 10}
-        }
+        pool = {"cpu": {"total": 8, "available": 5}, "memory": {"total": 16, "available": 10}}
         assert pool["cpu"]["available"] <= pool["cpu"]["total"]
 
     def test_allocate_resources(self):
@@ -290,7 +276,7 @@ class TestPhase2_WorkflowStates:
         steps = [
             {"id": "step1", "status": "completed"},
             {"id": "step2", "status": "running"},
-            {"id": "step3", "status": "pending"}
+            {"id": "step3", "status": "pending"},
         ]
         completed = [s for s in steps if s["status"] == "completed"]
         assert len(completed) == 1
@@ -307,7 +293,7 @@ class TestPhase2_WorkflowStates:
         checkpoint = {
             "step_id": "step5",
             "state": {"var1": 10, "var2": 20},
-            "timestamp": 1234567890
+            "timestamp": 1234567890,
         }
         assert checkpoint["step_id"] == "step5"
 
@@ -328,22 +314,13 @@ class TestPhase2_DependencyManagement:
 
     def test_task_dependencies(self):
         """Test task dependency graph"""
-        dependencies = {
-            "task1": [],
-            "task2": ["task1"],
-            "task3": ["task1", "task2"]
-        }
+        dependencies = {"task1": [], "task2": ["task1"], "task3": ["task1", "task2"]}
         # task3 depends on task1 and task2
         assert "task1" in dependencies["task3"]
 
     def test_topological_ordering(self):
         """Test topological ordering of tasks"""
-        dependencies = {
-            "A": [],
-            "B": ["A"],
-            "C": ["A"],
-            "D": ["B", "C"]
-        }
+        dependencies = {"A": [], "B": ["A"], "C": ["A"], "D": ["B", "C"]}
         # Valid order: A, B, C, D or A, C, B, D
         # A must be first, D must be last
         assert len(dependencies["A"]) == 0
@@ -351,22 +328,14 @@ class TestPhase2_DependencyManagement:
 
     def test_circular_dependency_detection(self):
         """Test detecting circular dependencies"""
-        dependencies = {
-            "A": ["B"],
-            "B": ["C"],
-            "C": ["A"]
-        }
+        dependencies = {"A": ["B"], "B": ["C"], "C": ["A"]}
         # Has circular dependency: A -> B -> C -> A
         has_cycle = True
         assert has_cycle
 
     def test_parallel_task_execution(self):
         """Test identifying parallel tasks"""
-        dependencies = {
-            "A": [],
-            "B": [],
-            "C": ["A", "B"]
-        }
+        dependencies = {"A": [], "B": [], "C": ["A", "B"]}
         # A and B can run in parallel
         parallel_tasks = ["A", "B"]
         assert len(parallel_tasks) == 2
@@ -395,7 +364,7 @@ class TestPhase2_ErrorHandling:
         """Test exponential backoff"""
         base_delay = 1.0
         max_retries = 4
-        delays = [base_delay * (2 ** i) for i in range(max_retries)]
+        delays = [base_delay * (2**i) for i in range(max_retries)]
         assert delays == [1.0, 2.0, 4.0, 8.0]
 
     def test_circuit_breaker(self):
@@ -403,27 +372,27 @@ class TestPhase2_ErrorHandling:
         failure_threshold = 3
         failures = 0
         circuit_open = False
-        
+
         # Simulate failures
         for _ in range(4):
             failures += 1
             if failures >= failure_threshold:
                 circuit_open = True
-        
+
         assert circuit_open
 
     def test_fallback_strategy(self):
         """Test fallback strategy"""
         primary_available = False
         fallback_available = True
-        
+
         if primary_available:
             result = "primary"
         elif fallback_available:
             result = "fallback"
         else:
             result = "error"
-        
+
         assert result == "fallback"
 
     def test_timeout_handling(self):
@@ -446,7 +415,7 @@ class TestPhase2_WorkflowOptimization:
             "A": {"duration": 3, "dependencies": []},
             "B": {"duration": 2, "dependencies": ["A"]},
             "C": {"duration": 4, "dependencies": ["A"]},
-            "D": {"duration": 1, "dependencies": ["B", "C"]}
+            "D": {"duration": 1, "dependencies": ["B", "C"]},
         }
         # Critical path: A -> C -> D (duration 8)
         critical_duration = 3 + 4 + 1
@@ -456,7 +425,7 @@ class TestPhase2_WorkflowOptimization:
         """Test batching small tasks"""
         small_tasks = [{"id": i, "size": 1} for i in range(10)]
         batch_size = 5
-        batches = [small_tasks[i:i+batch_size] for i in range(0, len(small_tasks), batch_size)]
+        batches = [small_tasks[i : i + batch_size] for i in range(0, len(small_tasks), batch_size)]
         assert len(batches) == 2
 
     def test_load_balancing(self):
@@ -501,12 +470,10 @@ class TestPhase2_MonitoringAndLogging:
 
     def test_metrics_collection(self):
         """Test collecting workflow metrics"""
-        metrics = {
-            "total_duration": 120.0,
-            "steps_completed": 10,
-            "steps_failed": 1
-        }
-        success_rate = (metrics["steps_completed"] - metrics["steps_failed"]) / metrics["steps_completed"]
+        metrics = {"total_duration": 120.0, "steps_completed": 10, "steps_failed": 1}
+        success_rate = (metrics["steps_completed"] - metrics["steps_failed"]) / metrics[
+            "steps_completed"
+        ]
         assert success_rate == 0.9
 
     def test_performance_tracking(self):
@@ -590,10 +557,7 @@ class TestPhase2_WorkflowValidation:
         """Test validating workflow structure"""
         workflow = {
             "name": "test",
-            "steps": [
-                {"id": "step1", "action": "compile"},
-                {"id": "step2", "action": "test"}
-            ]
+            "steps": [{"id": "step1", "action": "compile"}, {"id": "step2", "action": "test"}],
         }
         assert "name" in workflow
         assert "steps" in workflow

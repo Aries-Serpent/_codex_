@@ -20,17 +20,21 @@ from typing import Any
 
 DEFAULT_SCHEMA = Path("scripts/space_traversal/schemas/validate_report_schema.json")
 
+
 class ValidationError(Exception):
     """Raised when the snapshot does not conform to the schema."""
 
+
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
 
 def _load_jsonschema():
     spec = importlib.util.find_spec("jsonschema")
     if spec is None:
         return None
     return importlib.import_module("jsonschema")
+
 
 def validate_snapshot(payload: dict[str, Any], schema_path: Path | None = None) -> None:
     schema_source = schema_path or DEFAULT_SCHEMA
@@ -43,7 +47,9 @@ def validate_snapshot(payload: dict[str, Any], schema_path: Path | None = None) 
             raise ValidationError("Decoded payload must be a JSON object")
         expected_keys = {"validators", "gaps", "missing_files", "capabilities_scored", "report"}
         if not (expected_keys & set(payload.keys())):
-            raise ValidationError(f"Decoded payload missing required keys. Got: {list(payload.keys())}")
+            raise ValidationError(
+                f"Decoded payload missing required keys. Got: {list(payload.keys())}"
+            )
         return
 
     validator = jsonschema.Draft7Validator(schema)
@@ -52,11 +58,15 @@ def validate_snapshot(payload: dict[str, Any], schema_path: Path | None = None) 
         message = "; ".join(error.message for error in errors)
         raise ValidationError(message)
 
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate decoded Phase-A snapshot against a schema")
+    parser = argparse.ArgumentParser(
+        description="Validate decoded Phase-A snapshot against a schema"
+    )
     parser.add_argument("--json", type=Path, required=True, help="Path to decoded JSON file")
     parser.add_argument("--schema", type=Path, help="Optional JSON schema path")
     return parser.parse_args()
+
 
 def main(argv=None) -> int:
     args = parse_args() if argv is None else parse_args(argv)
@@ -76,6 +86,7 @@ def main(argv=None) -> int:
         return 1
     print("Snapshot validated successfully")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

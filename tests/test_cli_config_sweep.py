@@ -71,7 +71,9 @@ def test_train_mlflow_flags(monkeypatch):
 
     monkeypatch.setattr("codex_ml.training.run_functional_training", fake_run_functional_training)
     monkeypatch.setattr("codex_ml.cli.codex_cli._emit_provenance_summary", lambda _: None)
-    monkeypatch.setattr("codex_ml.cli.codex_cli.load_app_config", lambda *_, **__: (dummy_cfg, dummy_raw))
+    monkeypatch.setattr(
+        "codex_ml.cli.codex_cli.load_app_config", lambda *_, **__: (dummy_cfg, dummy_raw)
+    )
 
     result = runner.invoke(
         codex,

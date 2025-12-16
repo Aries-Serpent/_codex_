@@ -69,7 +69,12 @@ def _scan_env_yml(path: Path) -> List[DepIssue]:
             for pip_idx, pip_dep in enumerate(dep["pip"], start=1):
                 if not _is_pinned(pip_dep):
                     issues.append(
-                        DepIssue(str(path), pip_idx, pip_dep, "unpinned pip dependency in environment.yml")
+                        DepIssue(
+                            str(path),
+                            pip_idx,
+                            pip_dep,
+                            "unpinned pip dependency in environment.yml",
+                        )
                     )
     return issues
 
@@ -104,7 +109,12 @@ def _write_json(payload: Dict[str, object], out_path: Path) -> None:
 
 
 def _write_markdown(payload: Dict[str, object], out_path: Path) -> None:
-    lines = ["# Codex Dependency Pinning Report", "", f"Scanned root: `{payload['scanned_root']}`", ""]
+    lines = [
+        "# Codex Dependency Pinning Report",
+        "",
+        f"Scanned root: `{payload['scanned_root']}`",
+        "",
+    ]
     lines.append(f"Issues found: {payload['issue_count']}")
     lines.append("")
     for issue in payload.get("issues", []):
@@ -116,7 +126,12 @@ def _write_markdown(payload: Dict[str, object], out_path: Path) -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check dependency manifests for pinned versions.")
-    parser.add_argument("--repo-root", type=str, default=".", help="Repository root to scan (default: current directory)")
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Repository root to scan (default: current directory)",
+    )
     parser.add_argument(
         "--json-out",
         type=str,

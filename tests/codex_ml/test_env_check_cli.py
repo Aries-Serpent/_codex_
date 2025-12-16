@@ -8,8 +8,10 @@ def test_env_check_invokes_subtools(monkeypatch, tmp_path: Path):
 
     def fake_run(cmd, cwd):  # type: ignore[override]
         called.append((cmd, cwd))
+
         class R:
             returncode = 0
+
         return R().returncode
 
     monkeypatch.setattr(env_check, "_run", fake_run)

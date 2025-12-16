@@ -100,4 +100,3 @@ def test_eval_minimal_integration_with_experiment_tracker(tmp_path: Path):
     data = json.loads(meta)
     assert data["experiment_name"] == "exp-eval"
     assert data["labels"]["checkpoint"].endswith("train")
-

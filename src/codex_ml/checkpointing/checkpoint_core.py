@@ -73,7 +73,7 @@ def load_checkpoint(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Load a checkpoint directory or a direct weights.pt file.
     Returns (state_dicts, metadata).
-    
+
     Security note: Checkpoint files should only be loaded from trusted sources.
     torch.load can execute arbitrary code during deserialization.
     """

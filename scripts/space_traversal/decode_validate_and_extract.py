@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 # ---- [BEGIN: Testable Entrypoint for direct import by test suite] ----
 def decode_and_validate(
     artifact_path=None,
@@ -42,6 +43,7 @@ def decode_and_validate(
 
     if schema_path:
         import jsonschema
+
         schema = Path(schema_path)
         if not schema.exists():
             raise FileNotFoundError(f"Schema not found: {schema}")
@@ -54,16 +56,25 @@ def decode_and_validate(
     findings_payload = {"count": gap_count, "findings": findings}
 
     if output_path:
-        Path(output_path).write_text(json.dumps(decoded, indent=2, ensure_ascii=False), encoding="utf-8")
+        Path(output_path).write_text(
+            json.dumps(decoded, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
     if extract_path:
-        Path(extract_path).write_text(json.dumps(findings_payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        Path(extract_path).write_text(
+            json.dumps(findings_payload, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
 
     if generate_baseline:
         baseline_path = output_path or "baseline_capabilities_scored.json"
         if isinstance(decoded, dict) and "capabilities_scored" in decoded:
-            Path(baseline_path).write_text(json.dumps(decoded["capabilities_scored"], indent=2, ensure_ascii=False), encoding="utf-8")
+            Path(baseline_path).write_text(
+                json.dumps(decoded["capabilities_scored"], indent=2, ensure_ascii=False),
+                encoding="utf-8",
+            )
 
     return {"decoded": decoded, "findings": findings, "count": gap_count}
+
+
 # ---- [END: Testable Entrypoint] ----
 
 """
@@ -91,8 +102,10 @@ DEFAULT_DECODED = Path("audit_artifacts/decoded_snapshot.json")
 DEFAULT_EXTRACT = Path("audit_artifacts/gaps_extracted.json")
 DEFAULT_SCHEMA = Path("scripts/space_traversal/schemas/validate_report_schema.json")
 
+
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
+
 
 def decode_b64_gz_bytes(b64_bytes: bytes) -> bytes:
     try:
@@ -104,11 +117,13 @@ def decode_b64_gz_bytes(b64_bytes: bytes) -> bytes:
     except Exception as exc:
         raise RuntimeError(f"gunzip decompress error: {exc}")
 
+
 def decode_base64_gzip(input_path: Path) -> dict[str, Any]:
     payload = input_path.read_text(encoding="utf-8").strip()
     data = base64.b64decode(payload)
     decompressed = gzip.decompress(data)
     return json.loads(decompressed.decode("utf-8"))
+
 
 def load_from_local(path: str, max_bytes: int) -> Any:
     with open(path, "rb") as fh:
@@ -118,6 +133,7 @@ def load_from_local(path: str, max_bytes: int) -> Any:
         raise RuntimeError("input exceeds max_bytes")
     decoded_bytes = decode_b64_gz_bytes(b64)
     return json.loads(decoded_bytes)
+
 
 def load_from_url(url: str, max_bytes: int) -> Any:
     req = Request(url, headers={"User-Agent": "artifact-decoder/1.0"})
@@ -129,8 +145,10 @@ def load_from_url(url: str, max_bytes: int) -> Any:
     decoded_bytes = decode_b64_gz_bytes(b64)
     return json.loads(decoded_bytes)
 
+
 def _path_str(p: Tuple[str, ...]) -> str:
     return "/" + "/".join(p) if p else "/"
+
 
 def summarize_gap_value(key: str, value: Any) -> str:
     if key == "missing_files":
@@ -150,6 +168,7 @@ def summarize_gap_value(key: str, value: Any) -> str:
             return "evidence object"
     return (repr(value)[:200] + "...") if not isinstance(value, (str, int, float)) else repr(value)
 
+
 def walk_for_gaps(obj: Any, path: Tuple[str, ...] = ()) -> List[Dict[str, Any]]:
     findings: List[Dict[str, Any]] = []
     if isinstance(obj, dict):
@@ -157,22 +176,46 @@ def walk_for_gaps(obj: Any, path: Tuple[str, ...] = ()) -> List[Dict[str, Any]]:
             p = path + (str(k),)
             if k in GAP_KEYS:
                 findings.append(
-                    {"locator": _path_str(p), "key": k, "value": v, "summary": summarize_gap_value(k, v)}
+                    {
+                        "locator": _path_str(p),
+                        "key": k,
+                        "value": v,
+                        "summary": summarize_gap_value(k, v),
+                    }
                 )
             if isinstance(v, (dict, list)):
                 findings.extend(walk_for_gaps(v, p))
             else:
-                if isinstance(v, str) and ("missing" in v.lower() or "error" in v.lower() or "gap" in v.lower()):
-                    findings.append({"locator": _path_str(p), "key": k, "value": v, "summary": f"Suspicious message: {v}"})
+                if isinstance(v, str) and (
+                    "missing" in v.lower() or "error" in v.lower() or "gap" in v.lower()
+                ):
+                    findings.append(
+                        {
+                            "locator": _path_str(p),
+                            "key": k,
+                            "value": v,
+                            "summary": f"Suspicious message: {v}",
+                        }
+                    )
     elif isinstance(obj, list):
         for idx, item in enumerate(obj):
             p = path + (f"[{idx}]",)
             if isinstance(item, (dict, list)):
                 findings.extend(walk_for_gaps(item, p))
             else:
-                if isinstance(item, str) and ("missing" in item.lower() or item.endswith(".py") or item.endswith(".md")):
-                    findings.append({"locator": _path_str(p), "key": "list-item", "value": item, "summary": f"List item: {item}"})
+                if isinstance(item, str) and (
+                    "missing" in item.lower() or item.endswith(".py") or item.endswith(".md")
+                ):
+                    findings.append(
+                        {
+                            "locator": _path_str(p),
+                            "key": "list-item",
+                            "value": item,
+                            "summary": f"List item: {item}",
+                        }
+                    )
     return findings
+
 
 def normalize_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     out = []
@@ -180,19 +223,24 @@ def normalize_findings(findings: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         value = f.get("value")
         try:
             if isinstance(value, (dict, list)):
-                value_preview = json.dumps(value, sort_keys=True)[:1000] + ("..." if len(json.dumps(value)) > 1000 else "")
+                value_preview = json.dumps(value, sort_keys=True)[:1000] + (
+                    "..." if len(json.dumps(value)) > 1000 else ""
+                )
             else:
                 value_preview = repr(value)
         except Exception:
             value_preview = repr(value)
-        out.append({
-            "locator": f.get("locator"),
-            "key": f.get("key"),
-            "summary": f.get("summary"),
-            "value_preview": value_preview,
-        })
+        out.append(
+            {
+                "locator": f.get("locator"),
+                "key": f.get("key"),
+                "summary": f.get("summary"),
+                "value_preview": value_preview,
+            }
+        )
     out.sort(key=lambda x: x.get("locator") or "")
     return out
+
 
 def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]]) -> None:
     os.makedirs(out_dir, exist_ok=True)
@@ -205,7 +253,9 @@ def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]
         json.dump(findings, fh, indent=2, ensure_ascii=False)
     with open(md_path, "w", encoding="utf-8") as fh:
         fh.write("# Validator GAPs Summary\n\n")
-        fh.write("This file enumerates GAP-like findings discovered in the decoded Phase A validator snapshot.\n\n")
+        fh.write(
+            "This file enumerates GAP-like findings discovered in the decoded Phase A validator snapshot.\n\n"
+        )
         fh.write("| Locator | Key | Summary | Value preview |\n")
         fh.write("|---|---|---|---|\n")
         for f in findings:
@@ -219,22 +269,49 @@ def write_outputs(out_dir: str, decoded_json: Any, findings: List[Dict[str, Any]
         fh.write("\n\n---\n\n")
         fh.write("Run instructions:\n\n")
         fh.write("```bash\n")
-        fh.write("python3 scripts/space_traversal/decode_validate_and_extract.py --input artifacts/validate_report_20251119.json.gz.b64 --out-dir ./artifacts/extracted_validate\n")
+        fh.write(
+            "python3 scripts/space_traversal/decode_validate_and_extract.py --input artifacts/validate_report_20251119.json.gz.b64 --out-dir ./artifacts/extracted_validate\n"
+        )
         fh.write("```\n")
+
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Decode artifact and validate schema")
-    parser.add_argument("--input", type=str, default=str(DEFAULT_INPUT), help="Base64+gzip input file")
+    parser.add_argument(
+        "--input", type=str, default=str(DEFAULT_INPUT), help="Base64+gzip input file"
+    )
     parser.add_argument("--url", type=str, help="raw URL to fetch the b64+gz file")
-    parser.add_argument("--out-dir", type=str, help="output directory (default: artifacts/extracted_validate_<timestamp>)")
-    parser.add_argument("--schema", type=str, default=str(DEFAULT_SCHEMA), help="Path to validator schema JSON")
-    parser.add_argument("--stable-output", action="store_true", help="use deterministic output dir (omit timestamp)")
-    parser.add_argument("--generate-baseline", action="store_true", help="generate baseline from decoded JSON (writing capabilities_scored if present)")
-    parser.add_argument("--baseline-path", type=str, help="path to write baseline JSON if --generate-baseline is set (overrides default)")
-    parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="max input size in bytes")
-    parser.add_argument("--fail-on-missing-keys", help="comma separated top-level keys that must exist in decoded JSON")
+    parser.add_argument(
+        "--out-dir",
+        type=str,
+        help="output directory (default: artifacts/extracted_validate_<timestamp>)",
+    )
+    parser.add_argument(
+        "--schema", type=str, default=str(DEFAULT_SCHEMA), help="Path to validator schema JSON"
+    )
+    parser.add_argument(
+        "--stable-output", action="store_true", help="use deterministic output dir (omit timestamp)"
+    )
+    parser.add_argument(
+        "--generate-baseline",
+        action="store_true",
+        help="generate baseline from decoded JSON (writing capabilities_scored if present)",
+    )
+    parser.add_argument(
+        "--baseline-path",
+        type=str,
+        help="path to write baseline JSON if --generate-baseline is set (overrides default)",
+    )
+    parser.add_argument(
+        "--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="max input size in bytes"
+    )
+    parser.add_argument(
+        "--fail-on-missing-keys",
+        help="comma separated top-level keys that must exist in decoded JSON",
+    )
     parser.add_argument("--quiet", action="store_true")
     return parser.parse_args(argv) if argv is not None else parser.parse_args()
+
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
@@ -272,7 +349,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         if missing:
             eprint(f"Missing required keys in decoded JSON: {missing}")
             out_base = args.out_dir or ("artifacts/extracted_validate")
-            out_dir = out_base if args.stable_output else f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
+            out_dir = (
+                out_base if args.stable_output else f"{out_base}_{time.strftime('%Y%m%d_%H%M%S')}"
+            )
             write_outputs(out_dir, decoded_json, [])
             return 5
 
@@ -283,6 +362,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if schema_path_obj.exists():
         try:
             import scripts.space_traversal.validate_snapshot_schema as validate
+
             validate.validate_snapshot(decoded_json, schema_path_obj)
             schema_validated = True
         except Exception as exc:
@@ -315,16 +395,32 @@ def main(argv: Optional[List[str]] = None) -> int:
                 baseline_path = os.path.join(baseline_dir, "capabilities_scored.json")
             gen_script = os.path.join(os.path.dirname(__file__), "generate_baseline.py")
             if os.path.exists(gen_script):
-                ret = subprocess.run([sys.executable, gen_script, "--input", args.input if args.input else "", "--baseline-path", baseline_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                ret = subprocess.run(
+                    [
+                        sys.executable,
+                        gen_script,
+                        "--input",
+                        args.input if args.input else "",
+                        "--baseline-path",
+                        baseline_path,
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                )
                 if ret.returncode != 0:
-                    eprint(f"generate_baseline.py failed: stdout:\n{ret.stdout}\nstderr:\n{ret.stderr}")
+                    eprint(
+                        f"generate_baseline.py failed: stdout:\n{ret.stdout}\nstderr:\n{ret.stderr}"
+                    )
                 else:
                     if not args.quiet:
                         print(f"Wrote baseline to: {baseline_path}")
             else:
                 if isinstance(decoded_json, dict) and "capabilities_scored" in decoded_json:
                     with open(baseline_path, "w", encoding="utf-8") as fh:
-                        json.dump(decoded_json["capabilities_scored"], fh, indent=2, ensure_ascii=False)
+                        json.dump(
+                            decoded_json["capabilities_scored"], fh, indent=2, ensure_ascii=False
+                        )
                 else:
                     with open(baseline_path, "w", encoding="utf-8") as fh:
                         json.dump(decoded_json, fh, indent=2, ensure_ascii=False)
@@ -338,6 +434,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         try:
             try:
                 from scripts.space_traversal.stable_manifest import manifest_for_dir
+
                 manifest = manifest_for_dir(out_dir)
                 manifest_path = os.path.join(out_dir, "stable_manifest.json")
                 with open(manifest_path, "w", encoding="utf-8") as fh:
@@ -355,6 +452,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Found {len(findings)} GAP-like findings.")
 
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -9,8 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'models.chat_model' is deprecated. "
-    "Use 'src.models.chat_model' instead.",
+    "Importing from 'models.chat_model' is deprecated. " "Use 'src.models.chat_model' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

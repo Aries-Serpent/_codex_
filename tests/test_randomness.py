@@ -34,6 +34,7 @@ def test_set_seed_sets_numpy_seed_when_available():
     """Test that numpy seed is set when numpy is available."""
     try:
         import numpy as np
+
         set_seed(42)
         val1 = np.random.random()
         set_seed(42)
@@ -66,7 +67,7 @@ def test_set_seed_sets_torch_seed_when_available():
     mock_torch.cuda.is_available = Mock(return_value=False)
     mock_torch.backends = Mock()
     mock_torch.backends.cudnn = Mock()
-    
+
     with patch("src.common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42
@@ -77,7 +78,7 @@ def test_set_seed_handles_torch_manual_seed_exception():
     """Test that exceptions in torch.manual_seed are handled gracefully."""
     mock_torch = Mock()
     mock_torch.manual_seed = Mock(side_effect=RuntimeError("test error"))
-    
+
     with patch("src.common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42  # Should still return the seed even if torch fails
@@ -92,7 +93,7 @@ def test_set_seed_sets_cuda_seeds_when_available():
     mock_torch.cuda.manual_seed_all = Mock()
     mock_torch.backends = Mock()
     mock_torch.backends.cudnn = Mock()
-    
+
     with patch("src.common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42
@@ -109,7 +110,7 @@ def test_set_seed_sets_cudnn_deterministic_flags():
     mock_cudnn = Mock()
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends
-    
+
     with patch("src.common.randomness.torch", mock_torch):
         set_seed(42)
         assert mock_cudnn.deterministic == True
@@ -127,11 +128,11 @@ def test_set_seed_handles_cudnn_exception_gracefully():
     # Make setting deterministic raise an exception
     type(mock_cudnn).deterministic = property(
         fget=lambda self: False,
-        fset=lambda self, value: (_ for _ in ()).throw(RuntimeError("test"))
+        fset=lambda self, value: (_ for _ in ()).throw(RuntimeError("test")),
     )
     mock_backends.cudnn = mock_cudnn
     mock_torch.backends = mock_backends
-    
+
     with patch("src.common.randomness.torch", mock_torch):
         result = set_seed(42)
         assert result == 42  # Should still complete
@@ -141,6 +142,6 @@ def test_set_seed_returns_used_seed():
     """Test that set_seed returns the seed that was actually used."""
     result = set_seed(12345)
     assert result == 12345
-    
+
     result = set_seed(None)
     assert result == 1337 or result == int(os.environ.get("SEED", "1337"))

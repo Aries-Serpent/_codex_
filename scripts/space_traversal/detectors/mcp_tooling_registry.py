@@ -6,6 +6,7 @@ Detects MCP tool registry usage. Looks for mcp.json or registry classes.
 Safeguards: Bounded search, deterministic ordering, validation, sanitization
 Implements: validation, timeout, cleanup, error-handling, offline, reproducible
 """
+
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -35,7 +36,7 @@ def _validate_path(path: str) -> bool:
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
     Detects MCP tool registry usage with comprehensive safeguards.
-    
+
     Safeguards implemented:
     - Bounded file search with deterministic iteration
     - Input validation for file paths with sanitization
@@ -49,22 +50,22 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     # Safeguard: Validate input structure
     if not isinstance(file_index, dict):
         return _empty_result()
-    
+
     files_list = file_index.get("files", [])
     if not isinstance(files_list, list):
         return _empty_result()
-    
+
     # Safeguard: Bounded iteration with validation
     files = [f.get("path", "") for f in files_list if isinstance(f, dict)]
     evidence: List[str] = []
     found: List[str] = []
-    
+
     # Bounded, deterministic file scanning with validation
     for path in sorted(files):
         # Safeguard: Skip invalid paths
         if not _validate_path(path):
             continue
-            
+
         lower = path.lower()
         if "mcp/" in lower or "tool" in lower:
             # Identify evidence of registry with validation
@@ -74,15 +75,15 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
                 found.append("registry")
             if path.endswith("mcp.json"):
                 found.append("mcp.json")
-    
+
     # Add related files for comprehensive evidence (deterministic, bounded)
     for rf in RELATED_FILES:
         # Safeguard: Validate before checking
         if _validate_path(rf) and (rf in files or Path(rf).exists()):
             evidence.append(rf)
-    
+
     required = ["registry", "mcp.json"]
-    
+
     # Safeguard: Cleanup - deduplicate and sort for determinism
     return {
         "id": "mcp-tooling-registry",
@@ -90,24 +91,56 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "found_patterns": sorted(set(found)),
         "required_patterns": required,
         "docs_keywords": [
-            "mcp", "tools", "registry", "tooling", "discovery", "invocation",
-            "capabilities", "plugins", "extensions", "management", "tool-registry",
-            "validation", "safeguards", "deterministic", "bounded", "offline",
-            "sanitize", "sanitization", "cleanup", "error-handling"
+            "mcp",
+            "tools",
+            "registry",
+            "tooling",
+            "discovery",
+            "invocation",
+            "capabilities",
+            "plugins",
+            "extensions",
+            "management",
+            "tool-registry",
+            "validation",
+            "safeguards",
+            "deterministic",
+            "bounded",
+            "offline",
+            "sanitize",
+            "sanitization",
+            "cleanup",
+            "error-handling",
         ],
         "safeguards": [
-            "bounded", "validation", "deterministic", "offline", "reproducible",
-            "sanitize", "sanitization", "cleanup", "timeout", "error-handling"
+            "bounded",
+            "validation",
+            "deterministic",
+            "offline",
+            "reproducible",
+            "sanitize",
+            "sanitization",
+            "cleanup",
+            "timeout",
+            "error-handling",
         ],
         "meta": {
             "category": "mcp",
             "safeguards": [
-                "validation", "timeout", "error-isolation", "resource-limits",
-                "audit-trail", "bounded", "deterministic", "offline",
-                "sanitize", "cleanup", "error-handling"
+                "validation",
+                "timeout",
+                "error-isolation",
+                "resource-limits",
+                "audit-trail",
+                "bounded",
+                "deterministic",
+                "offline",
+                "sanitize",
+                "cleanup",
+                "error-handling",
             ],
-            "detector_version": "1.3"
-        }
+            "detector_version": "1.3",
+        },
     }
 
 
@@ -123,6 +156,6 @@ def _empty_result() -> Dict[str, Any]:
         "meta": {
             "category": "mcp",
             "safeguards": ["validation", "error-handling"],
-            "detector_version": "1.3"
-        }
+            "detector_version": "1.3",
+        },
     }

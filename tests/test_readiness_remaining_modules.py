@@ -390,4 +390,3 @@ def test_imports_succeed(module_path, monkeypatch):
         module = SimpleNamespace()
         sys.modules[module_path] = module
     assert module is not None
-

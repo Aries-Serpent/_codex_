@@ -30,6 +30,10 @@ def test_run_health_check(monkeypatch, tmp_path):
 def test_main_aggregates_return_codes(monkeypatch, tmp_path):
     from codex_ml.cli import env_check
 
-    monkeypatch.setattr(env_check, "run_health_check", lambda root: {"env_snapshot_rc": 0, "dependency_audit_rc": 1, "secret_scan_rc": 0})
+    monkeypatch.setattr(
+        env_check,
+        "run_health_check",
+        lambda root: {"env_snapshot_rc": 0, "dependency_audit_rc": 1, "secret_scan_rc": 0},
+    )
     rc = env_check.main(["--repo-root", str(tmp_path)])
     assert rc == 1

@@ -102,8 +102,16 @@ class TestMetricDeterminism:
         assert result1 == result2
 
     @given(
-        st.lists(st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False), min_size=1, max_size=50),
-        st.lists(st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False), min_size=1, max_size=50),
+        st.lists(
+            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
+            min_size=1,
+            max_size=50,
+        ),
+        st.lists(
+            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
+            min_size=1,
+            max_size=50,
+        ),
     )
     @settings(max_examples=30)
     def test_mse_deterministic_property(self, preds: list[float], targets: list[float]):
@@ -155,7 +163,9 @@ def validate_ndjson_record(record: dict[str, Any]) -> list[str]:
         if field in NDJSON_SCHEMA["field_types"]:
             expected_type = NDJSON_SCHEMA["field_types"][field]
             if not isinstance(value, expected_type):
-                errors.append(f"Invalid type for {field}: expected {expected_type}, got {type(value)}")
+                errors.append(
+                    f"Invalid type for {field}: expected {expected_type}, got {type(value)}"
+                )
 
     return errors
 
@@ -270,9 +280,23 @@ class RegressionSuite:
             if metric in baseline:
                 diff = value - baseline[metric]
                 if diff < -tolerance:
-                    regressions.append({"metric": metric, "baseline": baseline[metric], "current": value, "diff": diff})
+                    regressions.append(
+                        {
+                            "metric": metric,
+                            "baseline": baseline[metric],
+                            "current": value,
+                            "diff": diff,
+                        }
+                    )
                 elif diff > tolerance:
-                    improvements.append({"metric": metric, "baseline": baseline[metric], "current": value, "diff": diff})
+                    improvements.append(
+                        {
+                            "metric": metric,
+                            "baseline": baseline[metric],
+                            "current": value,
+                            "diff": diff,
+                        }
+                    )
 
         return {
             "status": "regression" if regressions else "ok",
@@ -364,12 +388,21 @@ class TestEvalDataVersioning:
 
     def test_data_checksum_deterministic(self):
         """Data checksum should be deterministic."""
-        data = [{"input": "test1", "expected": "output1"}, {"input": "test2", "expected": "output2"}]
+        data = [
+            {"input": "test1", "expected": "output1"},
+            {"input": "test2", "expected": "output2"},
+        ]
         h1 = compute_data_checksum(data)
         h2 = compute_data_checksum(data)
         assert h1 == h2
 
-    @given(st.lists(st.dictionaries(st.text(min_size=1, max_size=10), st.text(min_size=1, max_size=20)), min_size=1, max_size=10))
+    @given(
+        st.lists(
+            st.dictionaries(st.text(min_size=1, max_size=10), st.text(min_size=1, max_size=20)),
+            min_size=1,
+            max_size=10,
+        )
+    )
     @settings(max_examples=30)
     def test_checksum_deterministic_property(self, data: list[dict]):
         """Property: data checksum is deterministic."""

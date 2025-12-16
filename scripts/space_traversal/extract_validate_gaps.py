@@ -5,6 +5,7 @@ Canonical extraction implementation for gaps from decoded artifacts.
 
 from typing import Any, List
 
+
 def extract_gaps(decoded_json: dict[str, Any]) -> List[Any]:
     """
     Extracts the 'gaps' from the decoded validator artifact.

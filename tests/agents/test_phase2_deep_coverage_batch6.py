@@ -162,12 +162,10 @@ class TestPhase2_FractalGeometry:
             "name": "root",
             "children": [
                 {"name": "child1", "children": []},
-                {"name": "child2", "children": [
-                    {"name": "grandchild1", "children": []}
-                ]}
-            ]
+                {"name": "child2", "children": [{"name": "grandchild1", "children": []}]},
+            ],
         }
-        if hasattr(analyzer, 'analyze_code_tree'):
+        if hasattr(analyzer, "analyze_code_tree"):
             result = analyzer.analyze_code_tree(tree)
             assert result is not None
 
@@ -177,7 +175,7 @@ class TestPhase2_FractalGeometry:
 
         analyzer = FractalAnalyzer()
         # Test self-similarity detection
-        if hasattr(analyzer, 'detect_self_similarity'):
+        if hasattr(analyzer, "detect_self_similarity"):
             pattern = [1, 2, 1, 2, 1, 2]
             is_similar = analyzer.detect_self_similarity(pattern)
             assert isinstance(is_similar, bool)
@@ -210,7 +208,7 @@ class TestPhase2_FluidDynamics:
 
         scheduler = FluidFlowScheduler()
         channel = FluidChannel(name="ch1", capacity=10.0)
-        if hasattr(scheduler, 'add_channel'):
+        if hasattr(scheduler, "add_channel"):
             scheduler.add_channel(channel)
             assert True
 
@@ -218,16 +216,16 @@ class TestPhase2_FluidDynamics:
         """Test flow velocity calculation v = Q/A"""
         # Q = volumetric flow rate, A = cross-sectional area
         Q = 10.0  # m³/s
-        A = 2.0   # m²
+        A = 2.0  # m²
         v = Q / A
         assert v == 5.0  # m/s
 
     def test_reynolds_number(self):
         """Test Reynolds number Re = ρvL/μ"""
         rho = 1000.0  # density (kg/m³)
-        v = 1.0       # velocity (m/s)
-        L = 0.1       # characteristic length (m)
-        mu = 0.001    # dynamic viscosity (Pa·s)
+        v = 1.0  # velocity (m/s)
+        L = 0.1  # characteristic length (m)
+        mu = 0.001  # dynamic viscosity (Pa·s)
         Re = rho * v * L / mu
         assert Re == 100000.0
 
@@ -268,7 +266,7 @@ class TestPhase2_ElectromagneticFields:
         """Test electric field E = kQ/r²"""
         k = 8.99e9  # Coulomb's constant
         Q = 1.0e-6  # charge (C)
-        r = 1.0     # distance (m)
+        r = 1.0  # distance (m)
         E = k * Q / r**2
         assert E > 0
         assert abs(E - 8990.0) < 1.0
@@ -276,8 +274,8 @@ class TestPhase2_ElectromagneticFields:
     def test_magnetic_field_calculation(self):
         """Test magnetic field B = μ₀I/(2πr)"""
         mu0 = 4 * np.pi * 1e-7  # Permeability
-        I = 1.0                  # current (A)
-        r = 0.1                  # distance (m)
+        I = 1.0  # current (A)
+        r = 0.1  # distance (m)
         B = mu0 * I / (2 * np.pi * r)
         assert B > 0
 
@@ -401,7 +399,7 @@ class TestPhase2_RelativisticEffects:
         from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler()
-        if hasattr(scheduler, 'time_dilation_factor'):
+        if hasattr(scheduler, "time_dilation_factor"):
             v = 0.6  # 0.6c
             gamma = scheduler.time_dilation_factor(v)
             expected = 1.0 / np.sqrt(1.0 - 0.6**2)
@@ -420,7 +418,7 @@ class TestPhase2_RelativisticEffects:
         t = 10.0  # coordinate time
         v = 0.8
         c = 1.0
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         tau = t / gamma
         assert tau < t  # Proper time is less
 
@@ -429,7 +427,7 @@ class TestPhase2_RelativisticEffects:
         L0 = 10.0  # rest length
         v = 0.6
         c = 1.0
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         L = L0 / gamma
         assert L < L0  # Moving length is contracted
 
@@ -461,11 +459,8 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
-        if hasattr(orchestrator, 'explore_with_chaos'):
-            result = orchestrator.explore_with_chaos(
-                search_space=[(0.0, 1.0)],
-                num_samples=10
-            )
+        if hasattr(orchestrator, "explore_with_chaos"):
+            result = orchestrator.explore_with_chaos(search_space=[(0.0, 1.0)], num_samples=10)
             assert result is not None
 
     def test_fractal_decomposition(self):
@@ -473,7 +468,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
-        if hasattr(orchestrator, 'fractal_decompose'):
+        if hasattr(orchestrator, "fractal_decompose"):
             structure = {"root": {"child1": {}, "child2": {}}}
             result = orchestrator.fractal_decompose(structure)
             assert result is not None
@@ -483,7 +478,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
-        if hasattr(orchestrator, 'route_with_fluid'):
+        if hasattr(orchestrator, "route_with_fluid"):
             tasks = [{"id": 1, "load": 10}, {"id": 2, "load": 20}]
             channels = [{"name": "ch1", "capacity": 50}]
             result = orchestrator.route_with_fluid(tasks, channels)
@@ -494,7 +489,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
-        if hasattr(orchestrator, 'propagate_influence'):
+        if hasattr(orchestrator, "propagate_influence"):
             source = {"position": [0, 0], "strength": 1.0}
             target = {"position": [1, 0]}
             influence = orchestrator.propagate_influence(source, target)
@@ -505,7 +500,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
         from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
-        if hasattr(orchestrator, 'wave_consensus'):
+        if hasattr(orchestrator, "wave_consensus"):
             agents = [{"state": 0.5}, {"state": 0.7}, {"state": 0.6}]
             consensus = orchestrator.wave_consensus(agents)
             assert consensus is not None or consensus == None
@@ -519,9 +514,11 @@ class TestPhase2_NumericalMethods:
 
     def test_finite_difference_derivative(self):
         """Test finite difference approximation"""
+
         # f'(x) ≈ (f(x+h) - f(x-h))/(2h)
         def f(x):
             return x**2
+
         x = 2.0
         h = 0.001
         df_numeric = (f(x + h) - f(x - h)) / (2 * h)
@@ -530,9 +527,11 @@ class TestPhase2_NumericalMethods:
 
     def test_trapezoidal_integration(self):
         """Test trapezoidal rule integration"""
+
         # ∫f(x)dx ≈ (b-a)/2 * (f(a) + f(b))
         def f(x):
             return x
+
         a = 0.0
         b = 1.0
         integral_numeric = (b - a) / 2.0 * (f(a) + f(b))
@@ -541,8 +540,10 @@ class TestPhase2_NumericalMethods:
 
     def test_bisection_root_finding(self):
         """Test bisection method for root finding"""
+
         def f(x):
             return x**2 - 2
+
         a = 0.0
         b = 2.0
         tol = 1e-6

@@ -1,4 +1,5 @@
 """Tests for trend comparison (v1.5.1)."""
+
 from __future__ import annotations
 
 import json
@@ -60,8 +61,8 @@ def test_compare_runs_regression_severity(tmp_path: Path):
     new_data = {
         "capabilities": [
             {"id": "high_reg", "score": 0.84, "components": {}},  # -0.06
-            {"id": "med_reg", "score": 0.87, "components": {}},   # -0.03
-            {"id": "low_reg", "score": 0.89, "components": {}},   # -0.01 (below threshold)
+            {"id": "med_reg", "score": 0.87, "components": {}},  # -0.03
+            {"id": "low_reg", "score": 0.89, "components": {}},  # -0.01 (below threshold)
         ]
     }
 

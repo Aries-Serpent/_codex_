@@ -15,6 +15,7 @@ from pydantic import ValidationError as PydanticValidationError
 # Sample Pydantic models for MCP tool requests/responses
 class MCPToolRequest(BaseModel):
     """MCP tool invocation request schema."""
+
     tool_name: str
     params: Dict[str, Any]
     principal_id: Optional[str] = None
@@ -23,6 +24,7 @@ class MCPToolRequest(BaseModel):
 
 class MCPToolResponse(BaseModel):
     """MCP tool invocation response schema."""
+
     success: bool
     result: Optional[Any] = None
     error: Optional[str] = None
@@ -31,6 +33,7 @@ class MCPToolResponse(BaseModel):
 
 class MCPToolMetadata(BaseModel):
     """MCP tool metadata schema."""
+
     name: str
     description: str
     schema: Dict[str, Any]
@@ -41,9 +44,7 @@ class MCPToolMetadata(BaseModel):
 def test_tool_request_valid():
     """Test valid tool request schema validation."""
     request = MCPToolRequest(
-        tool_name="kb.search",
-        params={"query": "test"},
-        principal_id="user123"
+        tool_name="kb.search", params={"query": "test"}, principal_id="user123"
     )
     assert request.tool_name == "kb.search"
     assert request.params == {"query": "test"}
@@ -63,22 +64,14 @@ def test_tool_request_invalid_type():
 
 def test_tool_response_valid_success():
     """Test valid success response schema."""
-    response = MCPToolResponse(
-        success=True,
-        result={"data": "result"},
-        request_id="req-123"
-    )
+    response = MCPToolResponse(success=True, result={"data": "result"}, request_id="req-123")
     assert response.success is True
     assert response.result == {"data": "result"}
 
 
 def test_tool_response_valid_error():
     """Test valid error response schema."""
-    response = MCPToolResponse(
-        success=False,
-        error="Tool not found",
-        request_id="req-123"
-    )
+    response = MCPToolResponse(success=False, error="Tool not found", request_id="req-123")
     assert response.success is False
     assert response.error == "Tool not found"
 
@@ -88,7 +81,7 @@ def test_tool_metadata_valid():
     metadata = MCPToolMetadata(
         name="kb.search",
         description="Search knowledge base",
-        schema={"type": "object", "properties": {"query": {"type": "string"}}}
+        schema={"type": "object", "properties": {"query": {"type": "string"}}},
     )
     assert metadata.name == "kb.search"
     assert "query" in metadata.schema["properties"]
@@ -96,11 +89,7 @@ def test_tool_metadata_valid():
 
 def test_tool_metadata_default_version():
     """Test tool metadata uses default version."""
-    metadata = MCPToolMetadata(
-        name="tool",
-        description="desc",
-        schema={}
-    )
+    metadata = MCPToolMetadata(name="tool", description="desc", schema={})
     assert metadata.version == "1.0"
 
 
@@ -108,11 +97,8 @@ def test_json_schema_object_validation():
     """Test JSON Schema object validation pattern."""
     schema = {
         "type": "object",
-        "properties": {
-            "name": {"type": "string"},
-            "age": {"type": "integer"}
-        },
-        "required": ["name"]
+        "properties": {"name": {"type": "string"}, "age": {"type": "integer"}},
+        "required": ["name"],
     }
     # In production, use jsonschema library for validation
     assert schema["type"] == "object"
@@ -121,28 +107,24 @@ def test_json_schema_object_validation():
 
 def test_json_schema_array_validation():
     """Test JSON Schema array validation pattern."""
-    schema = {
-        "type": "array",
-        "items": {"type": "string"},
-        "minItems": 1
-    }
+    schema = {"type": "array", "items": {"type": "string"}, "minItems": 1}
     assert schema["type"] == "array"
     assert schema["minItems"] == 1
 
 
 def test_nested_model_validation():
     """Test nested Pydantic model validation."""
+
     class NestedParams(BaseModel):
         query: str
         filters: Dict[str, Any] = {}
-    
+
     class RequestWithNested(BaseModel):
         tool_name: str
         params: NestedParams
-    
+
     request = RequestWithNested(
-        tool_name="search",
-        params=NestedParams(query="test", filters={"status": "active"})
+        tool_name="search", params=NestedParams(query="test", filters={"status": "active"})
     )
     assert request.params.query == "test"
     assert request.params.filters == {"status": "active"}
@@ -152,7 +134,7 @@ def test_optional_field_validation():
     """Test optional field handling in schema validation."""
     request = MCPToolRequest(
         tool_name="tool",
-        params={}
+        params={},
         # principal_id and request_id are optional
     )
     assert request.principal_id is None
@@ -161,11 +143,7 @@ def test_optional_field_validation():
 
 def test_schema_serialization():
     """Test schema model serialization to dict."""
-    request = MCPToolRequest(
-        tool_name="tool",
-        params={"key": "value"},
-        principal_id="user"
-    )
+    request = MCPToolRequest(tool_name="tool", params={"key": "value"}, principal_id="user")
     data = request.model_dump()
     assert data["tool_name"] == "tool"
     assert data["params"] == {"key": "value"}
@@ -193,25 +171,21 @@ def test_schema_coercion():
     """Test schema type coercion where applicable."""
     # Pydantic may coerce compatible types
     request = MCPToolRequest(
-        tool_name="tool",
-        params={"count": "10"}  # String that could be coerced
+        tool_name="tool", params={"count": "10"}  # String that could be coerced
     )
     assert request.params["count"] == "10"
 
 
 def test_complex_schema_validation():
     """Test complex nested schema validation."""
+
     class ComplexSchema(BaseModel):
         id: str
         metadata: Dict[str, Any]
         tags: list[str] = []
         config: Optional[Dict[str, Any]] = None
-    
-    obj = ComplexSchema(
-        id="obj-123",
-        metadata={"key": "value"},
-        tags=["tag1", "tag2"]
-    )
+
+    obj = ComplexSchema(id="obj-123", metadata={"key": "value"}, tags=["tag1", "tag2"])
     assert obj.id == "obj-123"
     assert len(obj.tags) == 2
     assert obj.config is None
@@ -219,17 +193,18 @@ def test_complex_schema_validation():
 
 def test_schema_validation_with_custom_validator():
     """Test custom validation logic in schema."""
+
     class ValidatedRequest(BaseModel):
         tool_name: str
-        
+
         @property
         def is_valid_tool(self) -> bool:
             """Custom validation property."""
             return len(self.tool_name) > 0 and not self.tool_name.startswith("_")
-    
+
     request = ValidatedRequest(tool_name="kb.search")
     assert request.is_valid_tool is True
-    
+
     request_invalid = ValidatedRequest(tool_name="_private")
     assert request_invalid.is_valid_tool is False
 
@@ -245,34 +220,35 @@ def test_openapi_schema_generation():
 def test_schema_with_enums():
     """Test schema validation with enum fields."""
     from enum import Enum
-    
+
     class ToolStatus(str, Enum):
         ACTIVE = "active"
         INACTIVE = "inactive"
-    
+
     class ToolWithStatus(BaseModel):
         name: str
         status: ToolStatus
-    
+
     tool = ToolWithStatus(name="tool", status=ToolStatus.ACTIVE)
     assert tool.status == ToolStatus.ACTIVE
-    
+
     with pytest.raises(PydanticValidationError):
         ToolWithStatus(name="tool", status="invalid")
 
 
 def test_schema_extra_forbid():
     """Test schema validation with extra fields forbidden."""
+
     class StrictModel(BaseModel):
         class Config:
             extra = "forbid"
-        
+
         name: str
-    
+
     # Valid
     obj = StrictModel(name="test")
     assert obj.name == "test"
-    
+
     # Invalid - extra field
     with pytest.raises(PydanticValidationError):
         StrictModel(name="test", extra_field="not_allowed")
@@ -281,22 +257,14 @@ def test_schema_extra_forbid():
 def test_schema_validation_integration():
     """Test schema validation in MCP request/response flow."""
     # Request
-    request = MCPToolRequest(
-        tool_name="kb.search",
-        params={"query": "mcp"},
-        request_id="req-789"
-    )
-    
+    request = MCPToolRequest(tool_name="kb.search", params={"query": "mcp"}, request_id="req-789")
+
     # Process (mock)
     result = {"matches": ["doc1", "doc2"]}
-    
+
     # Response
-    response = MCPToolResponse(
-        success=True,
-        result=result,
-        request_id=request.request_id
-    )
-    
+    response = MCPToolResponse(success=True, result=result, request_id=request.request_id)
+
     assert response.success is True
     assert response.request_id == "req-789"
     assert len(response.result["matches"]) == 2

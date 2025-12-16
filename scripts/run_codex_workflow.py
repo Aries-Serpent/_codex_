@@ -78,7 +78,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     contexts: List[WorkflowContext] = []
     for capability in args.capabilities:
-        contexts.append(run_capability(capability, offline_mode=offline_mode, router=DEFAULT_ROUTER))
+        contexts.append(
+            run_capability(capability, offline_mode=offline_mode, router=DEFAULT_ROUTER)
+        )
 
     summaries = _summarize_contexts(contexts)
     for summary in summaries:

@@ -53,7 +53,11 @@ def infer_schema(value: Any) -> Dict[str, Any]:
         for key, item in value.items():
             properties[key] = infer_schema(item)
             required.append(key)
-        schema: Dict[str, Any] = {"type": "object", "properties": properties, "additionalProperties": True}
+        schema: Dict[str, Any] = {
+            "type": "object",
+            "properties": properties,
+            "additionalProperties": True,
+        }
         if required:
             schema["required"] = required
         return schema
@@ -73,7 +77,9 @@ def build_schema(instance: Any, *, title: str) -> Dict[str, Any]:
 def main(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate a JSON Schema from a sample config")
     parser.add_argument("config", type=Path, help="Path to YAML/JSON config file to inspect")
-    parser.add_argument("--output", type=Path, help="Optional path to write the generated schema", default=None)
+    parser.add_argument(
+        "--output", type=Path, help="Optional path to write the generated schema", default=None
+    )
     parser.add_argument("--title", type=str, help="Schema title", default="GeneratedConfigSchema")
     args = parser.parse_args(list(argv) if argv is not None else None)
 

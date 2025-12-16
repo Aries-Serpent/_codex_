@@ -118,7 +118,7 @@ class TestPhase2_EdgeCases_Coherence:
         t = tau
         final_coherence = initial_coherence * np.exp(-t / tau)
         # After one τ, coherence is 1/e
-        assert abs(final_coherence - 1/np.e) < 0.01
+        assert abs(final_coherence - 1 / np.e) < 0.01
 
     def test_coherence_banding(self):
         """Test coherence bands (Eq #14)"""
@@ -126,7 +126,7 @@ class TestPhase2_EdgeCases_Coherence:
         bands = {
             "high": [c for c in coherences if c > 0.7],
             "medium": [c for c in coherences if 0.3 <= c <= 0.7],
-            "low": [c for c in coherences if c < 0.3]
+            "low": [c for c in coherences if c < 0.3],
         }
         assert len(bands["high"]) == 1  # [0.9]
         assert len(bands["medium"]) == 3  # [0.7, 0.5, 0.3]
@@ -136,7 +136,7 @@ class TestPhase2_EdgeCases_Coherence:
         """Test pure state has maximum coherence"""
         # Pure state: |ψ⟩ = [1, 0]
         psi = np.array([1.0, 0.0])
-        purity = np.sum(np.abs(psi)**4)
+        purity = np.sum(np.abs(psi) ** 4)
         # For pure state, Tr(ρ²) = 1
         assert abs(purity - 1.0) < 0.1
 
@@ -175,7 +175,7 @@ class TestPhase2_EdgeCases_CurrentBounds:
     def test_effective_speed_of_light(self):
         """Test c_eff from network latency"""
         distance = 1000.0  # km
-        latency = 0.01     # seconds
+        latency = 0.01  # seconds
         c_eff = distance / latency
         assert c_eff > 0
 
@@ -193,7 +193,7 @@ class TestPhase2_EdgeCases_BoundaryValues:
 
     def test_minimum_integer(self):
         """Test minimum integer handling"""
-        min_int = -2**31
+        min_int = -(2**31)
         assert min_int == -2147483648
 
     def test_maximum_float(self):
@@ -249,7 +249,7 @@ class TestPhase2_EdgeCases_ArrayOperations:
     def test_array_broadcasting(self):
         """Test broadcasting with mismatched shapes"""
         a = np.array([[1], [2], [3]])  # 3x1
-        b = np.array([10, 20, 30])      # 3
+        b = np.array([10, 20, 30])  # 3
         c = a + b
         assert c.shape == (3, 3)
 
@@ -388,9 +388,10 @@ class TestPhase2_EdgeCases_Conditionals:
 
     def test_short_circuit_evaluation(self):
         """Test short-circuit AND"""
+
         def raises_error():
             raise ValueError("Should not be called")
-        
+
         result = False and raises_error()
         assert result == False
 
@@ -454,13 +455,13 @@ class TestPhase2_EdgeCases_ComparativeOperations:
 
     def test_nan_comparison(self):
         """Test NaN comparisons"""
-        nan = float('nan')
+        nan = float("nan")
         assert not (nan == nan)
         assert nan != nan
 
     def test_infinity_comparison(self):
         """Test infinity comparisons"""
-        inf = float('inf')
+        inf = float("inf")
         assert inf > 1000000
         assert -inf < -1000000
 

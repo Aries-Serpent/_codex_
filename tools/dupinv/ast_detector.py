@@ -57,9 +57,7 @@ class ASTDetector:
 
         return duplicate_groups
 
-    def find_identical_functions(
-        self, signatures: List[FunctionSignature]
-    ) -> List[DuplicateGroup]:
+    def find_identical_functions(self, signatures: List[FunctionSignature]) -> List[DuplicateGroup]:
         """
         Find functions with identical AST.
 
@@ -138,9 +136,7 @@ class ASTDetector:
 
         return duplicate_groups
 
-    def find_similar_functions(
-        self, signatures: List[FunctionSignature]
-    ) -> List[DuplicateGroup]:
+    def find_similar_functions(self, signatures: List[FunctionSignature]) -> List[DuplicateGroup]:
         """
         Find functions with similar AST (above threshold).
 
@@ -207,9 +203,7 @@ class ASTDetector:
                     id=f"dup-ast-{group_id:03d}",
                     type="function-ast",
                     language="python",
-                    representative_path=str(
-                        self._make_relative(representative.file_path)
-                    ),
+                    representative_path=str(self._make_relative(representative.file_path)),
                     member_files=member_files,
                     reason=f"Similar function: {representative.name} (same name and parameter count)",
                     suggested_action="refactor",

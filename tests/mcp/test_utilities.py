@@ -33,31 +33,29 @@ def _make_registry_handler(tool_name: str) -> Callable[[Dict[str, Any]], Dict[st
 def create_test_registry(tools: Optional[List[str]] = None) -> MCPToolRegistry:
     """
     Create a test registry with optional pre-registered tools.
-    
+
     Args:
         tools: List of tool names to pre-register
-    
+
     Returns:
         MCPToolRegistry instance
     """
     registry = MCPToolRegistry()
-    
+
     if tools:
         for tool_name in tools:
             registry.register_tool(
                 tool_name,
                 handler=_make_registry_handler(tool_name),
                 schema={"type": "object"},
-                metadata={"description": f"Test tool: {tool_name}"}
+                metadata={"description": f"Test tool: {tool_name}"},
             )
-    
+
     return registry
 
 
 def create_test_rate_limiter(
-    rate: float = 10.0,
-    capacity: int = 20,
-    seed: int = 42
+    rate: float = 10.0, capacity: int = 20, seed: int = 42
 ) -> MCPRateLimiter:
     """Create a test rate limiter with deterministic seed."""
     return MCPRateLimiter(rate=rate, capacity=capacity, seed=seed)
@@ -102,55 +100,48 @@ def assert_checksum_valid(data: str, expected: str) -> None:
 
 def assert_error_type(error: Exception, expected_type: type) -> None:
     """Assert that error is of expected type."""
-    assert isinstance(error, expected_type), \
-        f"Expected {expected_type.__name__}, got {type(error).__name__}"
+    assert isinstance(
+        error, expected_type
+    ), f"Expected {expected_type.__name__}, got {type(error).__name__}"
 
 
 def assert_error_code(error: MCPError, expected_code: str) -> None:
     """Assert that MCP error has expected code."""
-    assert error.code == expected_code, \
-        f"Expected code '{expected_code}', got '{error.code}'"
+    assert error.code == expected_code, f"Expected code '{expected_code}', got '{error.code}'"
 
 
 def assert_rate_limit_allows(
-    limiter: MCPRateLimiter,
-    principal_id: str,
-    tool_name: str,
-    count: int
+    limiter: MCPRateLimiter, principal_id: str, tool_name: str, count: int
 ) -> None:
     """Assert that rate limiter allows exactly 'count' requests."""
-    allowed = sum(
-        limiter.allow(principal_id, tool_name)
-        for _ in range(count)
-    )
-    assert allowed == count, \
-        f"Expected {count} allowed requests, got {allowed}"
+    allowed = sum(limiter.allow(principal_id, tool_name) for _ in range(count))
+    assert allowed == count, f"Expected {count} allowed requests, got {allowed}"
 
 
 # Test Fixtures
 class TestRequest:
     """Mock request object for testing authentication."""
-    
+
     def __init__(self, headers: Optional[Dict[str, str]] = None):
         self.headers = headers or {}
-    
+
     def get_header(self, name: str) -> Optional[str]:
         return self.headers.get(name)
 
 
 class TestToolHandler:
     """Test tool handler with call tracking."""
-    
+
     def __init__(self, return_value: Any = None):
         self.return_value = return_value or {"status": "ok"}
         self.call_count = 0
         self.call_history: List[Dict[str, Any]] = []
-    
+
     def __call__(self, params: Dict[str, Any]) -> Any:
         self.call_count += 1
         self.call_history.append(params)
         return self.return_value
-    
+
     def reset(self):
         """Reset call tracking."""
         self.call_count = 0
@@ -164,21 +155,14 @@ def get_deterministic_rng(seed: int = 42) -> random.Random:
     return rng
 
 
-def generate_test_data(
-    count: int = 10,
-    seed: int = 42
-) -> List[Dict[str, Any]]:
+def generate_test_data(count: int = 10, seed: int = 42) -> List[Dict[str, Any]]:
     """Generate deterministic test data."""
     rng = get_deterministic_rng(seed)
     data = []
-    
+
     for i in range(count):
-        data.append({
-            "id": f"item-{i}",
-            "value": rng.randint(1, 100),
-            "name": f"test-{i}"
-        })
-    
+        data.append({"id": f"item-{i}", "value": rng.randint(1, 100), "name": f"test-{i}"})
+
     return data
 
 
@@ -199,7 +183,7 @@ def verify_test_checksum(data: Any, expected: str) -> bool:
 def setup_test_environment() -> Dict[str, Any]:
     """
     Setup complete test environment with all MCP components.
-    
+
     Returns:
         Dictionary with registry, authenticator, authorizer, limiter
     """
@@ -217,7 +201,7 @@ def teardown_test_environment(env: Dict[str, Any]) -> None:
     # Reset rate limiter
     if "limiter" in env:
         env["limiter"].reset()
-    
+
     # Clear registry (if we add a clear method)
     # Currently registry doesn't need explicit cleanup
 
@@ -225,21 +209,23 @@ def teardown_test_environment(env: Dict[str, Any]) -> None:
 # Performance Testing Utilities
 class PerformanceTimer:
     """Simple timer for performance testing."""
-    
+
     def __init__(self):
         self.start_time = None
         self.end_time = None
-    
+
     def start(self):
         """Start timing."""
         import time
+
         self.start_time = time.time()
-    
+
     def stop(self):
         """Stop timing."""
         import time
+
         self.end_time = time.time()
-    
+
     def elapsed(self) -> float:
         """Get elapsed time in seconds."""
         if self.start_time and self.end_time:
@@ -248,31 +234,28 @@ class PerformanceTimer:
 
 
 def benchmark_operation(
-    operation: Callable,
-    iterations: int = 100,
-    *args,
-    **kwargs
+    operation: Callable, iterations: int = 100, *args, **kwargs
 ) -> Dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
-    
+
     Returns:
         Dictionary with min, max, average execution times
     """
     import time
-    
+
     times = []
     for _ in range(iterations):
         start = time.time()
         operation(*args, **kwargs)
         end = time.time()
         times.append(end - start)
-    
+
     return {
         "min": min(times),
         "max": max(times),
         "average": sum(times) / len(times),
-        "total": sum(times)
+        "total": sum(times),
     }
 
 
@@ -297,28 +280,27 @@ def validate_principal(principal: Principal) -> bool:
 def is_offline_mode() -> bool:
     """Check if running in offline mode (for deterministic tests)."""
     import os
-    return os.environ.get("OFFLINE_MODE", "").lower() in ("true", "1", "yes") or \
-           os.environ.get("MCP_OFFLINE", "").lower() in ("true", "1", "yes")
+
+    return os.environ.get("OFFLINE_MODE", "").lower() in ("true", "1", "yes") or os.environ.get(
+        "MCP_OFFLINE", ""
+    ).lower() in ("true", "1", "yes")
 
 
 def ensure_offline_mode() -> None:
     """Ensure tests run in offline mode."""
     import os
+
     os.environ["OFFLINE_MODE"] = "true"
     os.environ["MCP_OFFLINE"] = "true"
 
 
 # Error Testing Utilities
 def assert_raises_mcp_error(
-    func: Callable,
-    error_type: type,
-    error_code: Optional[str] = None,
-    *args,
-    **kwargs
+    func: Callable, error_type: type, error_code: Optional[str] = None, *args, **kwargs
 ):
     """
     Assert that function raises specific MCP error type.
-    
+
     Args:
         func: Function to call
         error_type: Expected error type
@@ -334,9 +316,7 @@ def assert_raises_mcp_error(
             assert_error_code(e, error_code)
         return e
     except Exception as e:
-        raise AssertionError(
-            f"Expected {error_type.__name__}, got {type(e).__name__}: {e}"
-        )
+        raise AssertionError(f"Expected {error_type.__name__}, got {type(e).__name__}: {e}")
 
 
 # Test Cleanup Utilities
@@ -344,10 +324,10 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     """Clean up temporary test files."""
     import glob
     import os
-    
+
     if not os.path.exists(directory):
         return
-    
+
     files = glob.glob(os.path.join(directory, pattern))
     for file in files:
         try:
@@ -360,18 +340,18 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
 def capture_log_output(func: Callable, *args, **kwargs) -> tuple:
     """
     Capture log output from function execution.
-    
+
     Returns:
         Tuple of (result, log_records)
     """
     import logging
     from io import StringIO
-    
+
     log_stream = StringIO()
     handler = logging.StreamHandler(log_stream)
     logger = logging.getLogger()
     logger.addHandler(handler)
-    
+
     try:
         result = func(*args, **kwargs)
         log_output = log_stream.getvalue()

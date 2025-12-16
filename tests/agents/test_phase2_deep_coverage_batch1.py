@@ -97,10 +97,7 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Create a proper DecisionState object
-        state = DecisionState(
-            current_position="initial",
-            goal_position="target"
-        )
+        state = DecisionState(current_position="initial", goal_position="target")
         result = orchestrator.assess_situation(state)
         assert result is not None
 
@@ -281,7 +278,7 @@ class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         # Check if method exists and call it if available
-        if hasattr(orchestrator, 'decompose_task'):
+        if hasattr(orchestrator, "decompose_task"):
             result = orchestrator.decompose_task("Build a simple feature")
             assert result is not None
         else:

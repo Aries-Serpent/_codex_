@@ -1,6 +1,8 @@
 """Test that yaml module resolves to site-packages, not local directory."""
+
 try:
     import pytest
+
     HAS_PYTEST = True
 except ImportError:
     HAS_PYTEST = False
@@ -14,10 +16,11 @@ def test_yaml_is_library_or_skip():
         if HAS_PYTEST:
             pytest.skip("yaml (PyYAML) not installed; skipping shadowing test.")
         return
-    
+
     yaml_file = getattr(yaml, "__file__", "")
-    assert ("site-packages" in yaml_file or "dist-packages" in yaml_file), \
-        f"CRITICAL: Local 'yaml/' or 'yaml_legacy/' dir may be shadowing PyYAML! Found at: {yaml_file}"
+    assert (
+        "site-packages" in yaml_file or "dist-packages" in yaml_file
+    ), f"CRITICAL: Local 'yaml/' or 'yaml_legacy/' dir may be shadowing PyYAML! Found at: {yaml_file}"
 
 
 if __name__ == "__main__":

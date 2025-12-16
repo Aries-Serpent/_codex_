@@ -4,6 +4,7 @@ Comprehensive test suite for functional training capability.
 Tests reproducibility, determinism, checkpointing, validation, and safeguards.
 Following High Maturity Achievement Plan patterns (target: 15-20 tests).
 """
+
 import pytest
 from pathlib import Path
 
@@ -14,12 +15,13 @@ class TestFunctionalTrainingDetector:
     def test_detector_import(self):
         """Verify functional training detector can be imported."""
         from scripts.space_traversal.detectors import functional_training
-        assert hasattr(functional_training, 'detect')
+
+        assert hasattr(functional_training, "detect")
 
     def test_detector_contract(self):
         """Test detector follows required contract."""
         from scripts.space_traversal.detectors.functional_training import detect
-        
+
         result = detect({"files": []})
         assert "id" in result
         assert result["id"] == "functional_training"
@@ -61,7 +63,7 @@ class TestCheckpointingSystem:
             "model_state_dict": {"layer1": []},
             "optimizer_state_dict": {"lr": 1e-4},
             "rng_state": {"random": 42},
-            "config": {"seed": 42}
+            "config": {"seed": 42},
         }
         assert "epoch" in checkpoint
         assert "model_state_dict" in checkpoint
@@ -126,12 +128,12 @@ class TestTrainingConfiguration:
         epochs = 10
         learning_rate = 1e-4
         batch_size = 32
-        
+
         # Validation: positive values
         assert epochs > 0
         assert learning_rate > 0
         assert batch_size > 0
-        
+
         # Validation: reasonable ranges
         assert 1 <= epochs <= 1000
         assert 1e-6 <= learning_rate <= 1.0
@@ -157,11 +159,11 @@ class TestSafeguardsValidation:
         # Validation: epochs must be positive
         epochs = 10
         assert epochs > 0, "Epochs must be positive"
-        
+
         # Validation: learning rate bounds
         lr = 1e-4
         assert 0 < lr < 1.0, "Learning rate must be in (0, 1)"
-        
+
         # Validation: batch size reasonable
         batch_size = 32
         assert batch_size > 0, "Batch size must be positive"

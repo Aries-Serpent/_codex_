@@ -22,7 +22,14 @@ from hypothesis import strategies as st
 class TestConfigurationProperties:
     """Property-based tests for configuration capability."""
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=20), st.text(min_size=0, max_size=100), min_size=0, max_size=20))
+    @given(
+        st.dictionaries(
+            st.text(min_size=1, max_size=20),
+            st.text(min_size=0, max_size=100),
+            min_size=0,
+            max_size=20,
+        )
+    )
     @settings(max_examples=50)
     def test_config_serialization_roundtrip(self, config: dict[str, str]):
         """Config should survive JSON roundtrip."""
@@ -30,7 +37,9 @@ class TestConfigurationProperties:
         deserialized = json.loads(serialized)
         assert deserialized == config
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10))
+    @given(
+        st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10)
+    )
     @settings(max_examples=50)
     def test_config_hash_deterministic(self, config: dict[str, int]):
         """Config hash should be deterministic."""
@@ -38,7 +47,9 @@ class TestConfigurationProperties:
         h2 = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
         assert h1 == h2
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10))
+    @given(
+        st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10)
+    )
     @settings(max_examples=30)
     def test_config_merge_preserves_keys(self, base: dict[str, int]):
         """Merging configs should preserve all keys."""
@@ -61,15 +72,18 @@ class TestDataHandlingProperties:
     def test_shuffle_preserves_elements(self, data: list[int]):
         """Shuffling should preserve all elements."""
         import random
+
         shuffled = data.copy()
         random.Random(42).shuffle(shuffled)
         assert sorted(shuffled) == sorted(data)
 
-    @given(st.lists(st.integers(), min_size=10, max_size=100), st.integers(min_value=1, max_value=20))
+    @given(
+        st.lists(st.integers(), min_size=10, max_size=100), st.integers(min_value=1, max_value=20)
+    )
     @settings(max_examples=30)
     def test_batching_covers_all_data(self, data: list[int], batch_size: int):
         """Batching should cover all data."""
-        batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
+        batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
         flattened = [item for batch in batches for item in batch]
         assert flattened == data
 
@@ -101,6 +115,7 @@ class TestSecurityProperties:
     def test_sanitization_idempotent(self, text: str):
         """Sanitization should be idempotent."""
         import html
+
         sanitized1 = html.escape(text)
         sanitized2 = html.escape(sanitized1)
         # After first escape, no more escaping needed for same chars
@@ -123,7 +138,11 @@ class TestSecurityProperties:
 class TestVersioningProperties:
     """Property-based tests for versioning capability."""
 
-    @given(st.integers(min_value=0, max_value=100), st.integers(min_value=0, max_value=100), st.integers(min_value=0, max_value=100))
+    @given(
+        st.integers(min_value=0, max_value=100),
+        st.integers(min_value=0, max_value=100),
+        st.integers(min_value=0, max_value=100),
+    )
     @settings(max_examples=50)
     def test_semver_ordering(self, major: int, minor: int, patch: int):
         """SemVer ordering should be consistent."""
@@ -133,7 +152,11 @@ class TestVersioningProperties:
         v4 = (major + 1, 0, 0)
         assert v1 < v2 < v3 < v4
 
-    @given(st.integers(min_value=0, max_value=99), st.integers(min_value=0, max_value=99), st.integers(min_value=0, max_value=99))
+    @given(
+        st.integers(min_value=0, max_value=99),
+        st.integers(min_value=0, max_value=99),
+        st.integers(min_value=0, max_value=99),
+    )
     @settings(max_examples=30)
     def test_version_string_parseable(self, major: int, minor: int, patch: int):
         """Version string should be parseable."""
@@ -155,9 +178,9 @@ class TestErrorHandlingProperties:
     @settings(max_examples=30)
     def test_exponential_backoff_increases(self, retries: int, base: float):
         """Exponential backoff should increase with retries."""
-        delays = [base ** i for i in range(retries)]
+        delays = [base**i for i in range(retries)]
         for i in range(1, len(delays)):
-            assert delays[i] > delays[i-1]
+            assert delays[i] > delays[i - 1]
 
     @given(st.lists(st.booleans(), min_size=1, max_size=20))
     @settings(max_examples=30)
@@ -188,7 +211,9 @@ class TestErrorHandlingProperties:
 class TestCheckpointingProperties:
     """Property-based tests for checkpointing capability."""
 
-    @given(st.lists(st.floats(min_value=0.0, max_value=1.0, allow_nan=False), min_size=1, max_size=20))
+    @given(
+        st.lists(st.floats(min_value=0.0, max_value=1.0, allow_nan=False), min_size=1, max_size=20)
+    )
     @settings(max_examples=30)
     def test_best_k_selection(self, losses: list[float]):
         """Best-K should select K smallest losses."""
@@ -219,7 +244,9 @@ class TestCheckpointingProperties:
 class TestEvaluationProperties:
     """Property-based tests for evaluation capability."""
 
-    @given(st.lists(st.floats(min_value=0.0, max_value=1.0, allow_nan=False), min_size=1, max_size=100))
+    @given(
+        st.lists(st.floats(min_value=0.0, max_value=1.0, allow_nan=False), min_size=1, max_size=100)
+    )
     @settings(max_examples=30)
     def test_metric_aggregation(self, values: list[float]):
         """Metric aggregation should be consistent."""

@@ -51,7 +51,7 @@ def test_metrics_collector_record_error_no_error():
 def test_metrics_collector_active_requests():
     """Test that active requests methods don't raise errors."""
     collector = MetricsCollector()
-    
+
     collector.inc_active_requests()
     collector.dec_active_requests()
 
@@ -60,7 +60,7 @@ def test_get_metrics_collector_singleton():
     """Test that get_metrics_collector returns same instance."""
     collector1 = get_metrics_collector()
     collector2 = get_metrics_collector()
-    
+
     assert collector1 is collector2
 
 
@@ -77,7 +77,7 @@ def test_record_latency_convenience_function():
 def test_metrics_collector_defaults():
     """Test that methods work with default parameters."""
     collector = MetricsCollector()
-    
+
     collector.record_request()
     collector.record_latency(0.1)
 
@@ -86,12 +86,12 @@ def test_metrics_graceful_without_prometheus():
     """Test that metrics work gracefully without prometheus_client installed."""
     # Even if prometheus_client is not installed, these should not raise
     collector = MetricsCollector()
-    
+
     collector.record_request("GET", "/health", 200)
     collector.record_latency(0.05, "GET", "/health")
     collector.record_error("TestError", "/test")
     collector.inc_active_requests()
     collector.dec_active_requests()
-    
+
     # Should complete without exceptions
     assert True

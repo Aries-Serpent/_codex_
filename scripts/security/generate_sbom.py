@@ -12,11 +12,13 @@ from pathlib import Path
 def list_distributions():
     try:
         from importlib.metadata import distributions  # py3.8+
+
         for dist in distributions():
             yield dist
     except Exception:
         # Fallback: pip freeze
         import pkgutil
+
         # Not reliable; advise using importlib.metadata
         pass
 
@@ -25,15 +27,18 @@ def sbom() -> dict:
     comps = []
     try:
         from importlib.metadata import distributions, PackageNotFoundError
+
         for d in distributions():
             name = d.metadata.get("Name") or d.metadata.get("Summary") or str(d)
             version = d.version
-            comps.append({
-                "type": "library",
-                "name": name,
-                "version": version,
-                "purl": f"pkg:pypi/{name}@{version}".lower(),
-            })
+            comps.append(
+                {
+                    "type": "library",
+                    "name": name,
+                    "version": version,
+                    "purl": f"pkg:pypi/{name}@{version}".lower(),
+                }
+            )
     except Exception:
         pass
     return {
@@ -42,9 +47,7 @@ def sbom() -> dict:
         "serialNumber": "urn:uuid:offline-local",
         "version": 1,
         "components": sorted(comps, key=lambda c: (c["name"] or "").lower()),
-        "metadata": {
-            "tools": [{"vendor": "codex", "name": "sbom-generator", "version": "1.0.0"}]
-        },
+        "metadata": {"tools": [{"vendor": "codex", "name": "sbom-generator", "version": "1.0.0"}]},
     }
 
 

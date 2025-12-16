@@ -99,7 +99,9 @@ import os
 if "WANDB_MODE" not in os.environ:
     os.environ["WANDB_MODE"] = "offline"
     if not os.environ.get("CODEX_SILENT_SITECUSTOMIZE"):
-        print("ℹ️  W&B defaulted to offline mode (set WANDB_MODE=online to override)", file=sys.stderr)
+        print(
+            "ℹ️  W&B defaulted to offline mode (set WANDB_MODE=online to override)", file=sys.stderr
+        )
 
 # Set other offline-first defaults for HuggingFace
 if "HF_HUB_OFFLINE" not in os.environ:

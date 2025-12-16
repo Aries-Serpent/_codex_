@@ -36,9 +36,7 @@ except Exception:  # pragma: no cover - defensive placeholders
 
 else:
     SentencePieceAdapter = _CanonicalSentencePieceAdapter
-    SentencePieceAdapter.__doc__ = getattr(
-        _CanonicalSentencePieceAdapter, "__doc__", None
-    )
+    SentencePieceAdapter.__doc__ = getattr(_CanonicalSentencePieceAdapter, "__doc__", None)
 
     def load_sentencepiece_model(model_path: str | Path) -> _CanonicalSentencePieceAdapter:
         adapter = _CanonicalSentencePieceAdapter(Path(model_path))

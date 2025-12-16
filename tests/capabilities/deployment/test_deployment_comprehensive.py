@@ -210,7 +210,11 @@ class DeploymentManifest(K8sManifest):
                 "metadata": {"labels": self.labels},
                 "spec": {
                     "containers": [
-                        {"name": self.name, "image": self.image, "ports": [{"containerPort": self.port}]}
+                        {
+                            "name": self.name,
+                            "image": self.image,
+                            "ports": [{"containerPort": self.port}],
+                        }
                     ]
                 },
             },
@@ -316,11 +320,13 @@ class Rollout:
     def deploy(self, image: str) -> int:
         """Deploy new version."""
         self.current_revision += 1
-        self.history.append({
-            "revision": self.current_revision,
-            "image": image,
-            "timestamp": time.time(),
-        })
+        self.history.append(
+            {
+                "revision": self.current_revision,
+                "image": image,
+                "timestamp": time.time(),
+            }
+        )
         self.status = "deployed"
         return self.current_revision
 

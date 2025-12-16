@@ -10,6 +10,7 @@ Provides:
 This module consolidates and enhances existing distributed training capabilities
 from distributed_setup.py and multi_node_orchestration.py with a unified interface.
 """
+
 from __future__ import annotations
 
 import logging
@@ -35,38 +36,38 @@ __all__ = [
 @dataclass
 class DistributedConfig:
     """Configuration for distributed training."""
-    
+
     # Basic settings
     enabled: bool = False
     backend: str = "nccl"  # nccl for GPU, gloo for CPU
-    
+
     # Node settings
     world_size: int = 1
     rank: int = 0
     local_rank: int = 0
-    
+
     # Multi-node settings
     master_addr: str = "localhost"
     master_port: str = "29500"
-    
+
     # Advanced settings
     find_unused_parameters: bool = False
     broadcast_buffers: bool = True
     gradient_as_bucket_view: bool = True
-    
+
     @classmethod
     def from_env(cls) -> "DistributedConfig":
         """Create config from environment variables."""
         # Check if distributed is explicitly enabled
         enabled = os.environ.get("DISTRIBUTED_ENABLED", "false").lower() == "true"
-        
+
         # Auto-detect from RANK/WORLD_SIZE if present
         world_size = int(os.environ.get("WORLD_SIZE", 1))
         rank = int(os.environ.get("RANK", 0))
-        
+
         if world_size > 1:
             enabled = True
-        
+
         return cls(
             enabled=enabled,
             backend=os.environ.get("DISTRIBUTED_BACKEND", "nccl"),
@@ -76,7 +77,7 @@ class DistributedConfig:
             master_addr=os.environ.get("MASTER_ADDR", "localhost"),
             master_port=os.environ.get("MASTER_PORT", "29500"),
         )
-    
+
     def to_env(self) -> Dict[str, str]:
         """Export config to environment variables."""
         return {
@@ -92,22 +93,22 @@ class DistributedConfig:
 
 class DistributedManager:
     """Manager for distributed training setup and teardown."""
-    
+
     def __init__(self, config: Optional[DistributedConfig] = None):
         self.config = config or DistributedConfig.from_env()
         self._initialized = False
         self._device = None
-    
+
     @property
     def is_main_process(self) -> bool:
         """Check if this is the main process (rank 0)."""
         return self.config.rank == 0
-    
+
     @property
     def is_distributed(self) -> bool:
         """Check if distributed training is active."""
         return self._initialized and self.config.world_size > 1
-    
+
     @property
     def device(self) -> torch.device:
         """Get the device for this process."""
@@ -117,37 +118,37 @@ class DistributedManager:
             else:
                 self._device = torch.device("cpu")
         return self._device
-    
+
     def setup(self) -> bool:
         """Initialize distributed training.
-        
+
         Returns:
             True if distributed setup succeeded, False otherwise
         """
         if not self.config.enabled:
             logger.info("Distributed training disabled, using single process")
             return False
-        
+
         if self.config.world_size <= 1:
             logger.info("World size <= 1, using single process")
             return False
-        
+
         try:
             # Set environment variables
             os.environ["MASTER_ADDR"] = self.config.master_addr
             os.environ["MASTER_PORT"] = self.config.master_port
-            
+
             # Initialize process group
             dist.init_process_group(
                 backend=self.config.backend,
                 rank=self.config.rank,
                 world_size=self.config.world_size,
             )
-            
+
             # Set CUDA device
             if torch.cuda.is_available():
                 torch.cuda.set_device(self.config.local_rank)
-            
+
             self._initialized = True
             logger.info(
                 f"Distributed training initialized: "
@@ -155,31 +156,31 @@ class DistributedManager:
                 f"device={self.device}"
             )
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to initialize distributed training: {e}")
             self._initialized = False
             return False
-    
+
     def cleanup(self) -> None:
         """Clean up distributed training resources."""
         if self._initialized:
             dist.destroy_process_group()
             self._initialized = False
             logger.info("Distributed training cleaned up")
-    
+
     def wrap_model(self, model: torch.nn.Module) -> Union[torch.nn.Module, DDP]:
         """Wrap model for distributed training.
-        
+
         Args:
             model: PyTorch model
-            
+
         Returns:
             DDP-wrapped model if distributed, original model otherwise
         """
         if not self.is_distributed:
             return model.to(self.device)
-        
+
         model = model.to(self.device)
         return DDP(
             model,
@@ -188,7 +189,7 @@ class DistributedManager:
             broadcast_buffers=self.config.broadcast_buffers,
             gradient_as_bucket_view=self.config.gradient_as_bucket_view,
         )
-    
+
     def wrap_dataloader(
         self,
         dataset: torch.utils.data.Dataset,
@@ -196,12 +197,12 @@ class DistributedManager:
         **kwargs,
     ) -> torch.utils.data.DataLoader:
         """Create distributed-aware DataLoader.
-        
+
         Args:
             dataset: PyTorch dataset
             batch_size: Batch size per process
             **kwargs: Additional DataLoader arguments
-            
+
         Returns:
             DataLoader with DistributedSampler if distributed
         """
@@ -214,51 +215,51 @@ class DistributedManager:
             )
             kwargs["sampler"] = sampler
             kwargs["shuffle"] = False  # Sampler handles shuffling
-        
+
         return torch.utils.data.DataLoader(
             dataset,
             batch_size=batch_size,
             **kwargs,
         )
-    
+
     def barrier(self) -> None:
         """Synchronize all processes."""
         if self.is_distributed:
             dist.barrier()
-    
+
     def all_reduce(
         self,
         tensor: torch.Tensor,
         op: dist.ReduceOp = dist.ReduceOp.SUM,
     ) -> torch.Tensor:
         """All-reduce tensor across processes.
-        
+
         Args:
             tensor: Tensor to reduce
             op: Reduction operation
-            
+
         Returns:
             Reduced tensor
         """
         if not self.is_distributed:
             return tensor
-        
+
         dist.all_reduce(tensor, op=op)
         return tensor
-    
+
     def broadcast(self, tensor: torch.Tensor, src: int = 0) -> torch.Tensor:
         """Broadcast tensor from source rank.
-        
+
         Args:
             tensor: Tensor to broadcast
             src: Source rank
-            
+
         Returns:
             Broadcasted tensor
         """
         if not self.is_distributed:
             return tensor
-        
+
         dist.broadcast(tensor, src=src)
         return tensor
 
@@ -266,7 +267,7 @@ class DistributedManager:
 @contextmanager
 def distributed_context(config: Optional[DistributedConfig] = None):
     """Context manager for distributed training.
-    
+
     Usage:
         with distributed_context() as manager:
             model = manager.wrap_model(model)
@@ -288,7 +289,7 @@ def launch_distributed(
     backend: str = "nccl",
 ) -> None:
     """Launch distributed training across multiple processes.
-    
+
     Args:
         fn: Training function to run
         world_size: Number of processes
@@ -297,9 +298,9 @@ def launch_distributed(
         backend: Distributed backend
     """
     import torch.multiprocessing as mp
-    
+
     kwargs = kwargs or {}
-    
+
     def _worker(rank: int):
         config = DistributedConfig(
             enabled=True,
@@ -308,8 +309,8 @@ def launch_distributed(
             rank=rank,
             local_rank=rank,
         )
-        
+
         with distributed_context(config) as manager:
             fn(*args, manager=manager, **kwargs)
-    
+
     mp.spawn(_worker, nprocs=world_size, join=True)

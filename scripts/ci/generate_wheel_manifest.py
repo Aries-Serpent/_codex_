@@ -32,79 +32,56 @@ def compute_sha256(filepath: Path) -> str:
 def generate_manifest(wheelhouse_dir: Path, platform: str, python_version: str) -> Dict:
     """Generate wheel manifest with hashes."""
     wheels = []
-    
+
     if not wheelhouse_dir.exists():
         print(f"Warning: Wheelhouse directory {wheelhouse_dir} does not exist", file=sys.stderr)
-        return {
-            "platform": platform,
-            "python_version": python_version,
-            "wheels": [],
-            "count": 0
-        }
-    
+        return {"platform": platform, "python_version": python_version, "wheels": [], "count": 0}
+
     for wheel_file in sorted(wheelhouse_dir.glob("*.whl")):
         wheel_info = {
             "name": wheel_file.name,
             "sha256": compute_sha256(wheel_file),
-            "size": wheel_file.stat().st_size
+            "size": wheel_file.stat().st_size,
         }
         wheels.append(wheel_info)
-    
+
     manifest = {
         "platform": platform,
         "python_version": python_version,
         "wheels": wheels,
-        "count": len(wheels)
+        "count": len(wheels),
     }
-    
+
     return manifest
 
 
 def main():
     parser = argparse.ArgumentParser(description="Generate wheel manifest with hashes")
     parser.add_argument(
-        "--wheelhouse",
-        type=Path,
-        required=True,
-        help="Path to wheelhouse directory"
+        "--wheelhouse", type=Path, required=True, help="Path to wheelhouse directory"
     )
+    parser.add_argument("--output", type=Path, required=True, help="Output manifest file path")
     parser.add_argument(
-        "--output",
-        type=Path,
-        required=True,
-        help="Output manifest file path"
+        "--platform", default="linux/amd64", help="Platform identifier (default: linux/amd64)"
     )
-    parser.add_argument(
-        "--platform",
-        default="linux/amd64",
-        help="Platform identifier (default: linux/amd64)"
-    )
-    parser.add_argument(
-        "--python-version",
-        default="3.11",
-        help="Python version (default: 3.11)"
-    )
-    
+    parser.add_argument("--python-version", default="3.11", help="Python version (default: 3.11)")
+
     args = parser.parse_args()
-    
-    manifest = generate_manifest(
-        args.wheelhouse,
-        args.platform,
-        args.python_version
-    )
-    
+
+    manifest = generate_manifest(args.wheelhouse, args.platform, args.python_version)
+
     # Ensure output directory exists
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Write manifest
     with open(args.output, "w") as f:
         json.dump(manifest, f, indent=2, sort_keys=True)
-    
+
     print(f"Generated manifest: {args.output}")
     print(f"  Platform: {manifest['platform']}")
     print(f"  Python: {manifest['python_version']}")
     print(f"  Wheels: {manifest['count']}")
-    
+
     return 0
 
 

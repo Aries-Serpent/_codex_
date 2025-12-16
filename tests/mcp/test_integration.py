@@ -14,7 +14,7 @@ async def _call_server(server: MCPServer, request: Dict[str, Any]) -> Optional[D
 
 def test_end_to_end_tool_call() -> None:
     """Test end-to-end tool call through the MCP server with authentication.
-    
+
     This test validates:
     1. Auth components (authenticator/authorizer) are properly instantiated.
     2. MCP server can handle JSON-RPC requests for tool listing.
@@ -34,7 +34,7 @@ def test_end_to_end_tool_call() -> None:
     token = authenticator.generate_session_token(principal)
     # Token should be a 64-char hex hash (SHA-256)
     assert len(token) == 64
-    assert all(c in '0123456789abcdef' for c in token)
+    assert all(c in "0123456789abcdef" for c in token)
 
     # For now, we just assert authorize() returns True for a valid principal
     assert authorizer.authorize(principal, tool_name="echo")

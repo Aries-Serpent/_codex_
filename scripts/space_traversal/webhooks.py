@@ -12,7 +12,7 @@ Features:
 
 Example:
     from scripts.space_traversal.webhooks import send_webhook, AuditEvent
-    
+
     event = AuditEvent(
         event_type="audit_complete",
         repo_name="my-repo",

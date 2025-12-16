@@ -75,7 +75,14 @@ def main(argv: list[str] | None = None) -> int:
 
     result = _run_pytest(targets, args.repo_root)
 
-    summary_results = [CategoryResult(category=cat, tests=categories.get(cat, {}).get("tests", []), returncode=result.returncode) for cat in selected]
+    summary_results = [
+        CategoryResult(
+            category=cat,
+            tests=categories.get(cat, {}).get("tests", []),
+            returncode=result.returncode,
+        )
+        for cat in selected
+    ]
     summary = {
         "overall_returncode": result.returncode,
         "results": [

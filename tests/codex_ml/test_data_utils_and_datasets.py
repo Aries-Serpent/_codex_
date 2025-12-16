@@ -29,9 +29,7 @@ def test_dataset_registry_default_datasets(tmp_path: Path, monkeypatch):
     # Redirect data root into tmp_path/data for isolation
     data_root = tmp_path / "data"
     (data_root / "dummy").mkdir(parents=True, exist_ok=True)
-    (data_root / "dummy" / "sample.txt").write_text(
-        "line1\n\nline2\n", encoding="utf-8"
-    )
+    (data_root / "dummy" / "sample.txt").write_text("line1\n\nline2\n", encoding="utf-8")
 
     monkeypatch.chdir(tmp_path)
     datasets.ensure_default_datasets(data_root=data_root)
@@ -41,4 +39,3 @@ def test_dataset_registry_default_datasets(tmp_path: Path, monkeypatch):
     spec = datasets.get_dataset_spec("dummy")
     lines = list(spec.loader(spec.root))
     assert lines == ["line1", "line2"]
-

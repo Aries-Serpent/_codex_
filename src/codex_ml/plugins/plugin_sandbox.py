@@ -76,24 +76,24 @@ class PluginHealth:
         self.failure_count += 1
         self.last_failure = datetime.utcnow().isoformat()
         self.last_error = error
-    
+
     def set_quarantined(self):
         """Set plugin to quarantined status."""
         self.status = PluginStatus.QUARANTINED
         self.quarantined_at = datetime.utcnow().isoformat()
-    
+
     def is_quarantine_expired(self, quarantine_duration: int) -> bool:
         """Check if quarantine period has expired.
-        
+
         Args:
             quarantine_duration: Quarantine duration in seconds
-            
+
         Returns:
             True if quarantine has expired and plugin should be re-enabled
         """
         if self.status != PluginStatus.QUARANTINED or not self.quarantined_at:
             return False
-        
+
         try:
             quarantined_time = datetime.fromisoformat(self.quarantined_at)
             elapsed = (datetime.utcnow() - quarantined_time).total_seconds()
@@ -198,7 +198,7 @@ class PluginSandbox:
                 f"quarantine_threshold ({quarantine_threshold}) must be less than "
                 f"max_failures ({max_failures})"
             )
-        
+
         self.max_failures = max_failures
         self.quarantine_threshold = quarantine_threshold
         self.quarantine_duration = quarantine_duration

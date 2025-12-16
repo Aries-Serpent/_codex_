@@ -15,7 +15,7 @@ Example:
         detect_ci_environment,
         write_github_step_summary,
     )
-    
+
     env = detect_ci_environment()
     if env["ci"] == "github_actions":
         write_github_step_summary(avg_score, capabilities, regressions)
@@ -216,7 +216,9 @@ def write_github_step_summary(
                 f.write(f"| {r.get('capability_id', 'unknown')} | {prev:.3f} | ")
                 f.write(f"{curr:.3f} | {delta:+.3f} |\n")
             if len(regressions) > MAX_REGRESSIONS_DISPLAY:
-                f.write(f"\n*... and {len(regressions) - MAX_REGRESSIONS_DISPLAY} more regressions*\n")
+                f.write(
+                    f"\n*... and {len(regressions) - MAX_REGRESSIONS_DISPLAY} more regressions*\n"
+                )
 
     return True
 
@@ -396,9 +398,7 @@ def export_for_ci(
         "capability_count": len(capabilities),
         "regression_count": len(regressions),
         "high_count": sum(1 for c in capabilities if c.get("score", 0) >= 0.85),
-        "medium_count": sum(
-            1 for c in capabilities if 0.70 <= c.get("score", 0) < 0.85
-        ),
+        "medium_count": sum(1 for c in capabilities if 0.70 <= c.get("score", 0) < 0.85),
         "low_count": sum(1 for c in capabilities if c.get("score", 0) < 0.70),
         "has_regressions": len(regressions) > 0,
         "has_high_severity": any(r.get("severity") == "high" for r in regressions),

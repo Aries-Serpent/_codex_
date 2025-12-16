@@ -97,4 +97,3 @@ def test_evaluator_batch_metrics_text_and_loss():
     record = evaluator.batch_metrics(outputs, batch)
     assert "perplexity" in record and record["perplexity"] >= 0
     assert record.get("exact_match") is not None
-

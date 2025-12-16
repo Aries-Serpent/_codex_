@@ -94,7 +94,7 @@ class TestScanDirectory:
         (subdir / "file3.txt").write_text("content")
 
         files = scan_directory(tmp_path)
-        
+
         assert len(files) == 3
         assert any(f["name"] == "file1.json" for f in files)
         assert any(f["name"] == "file2.md" for f in files)
@@ -106,7 +106,7 @@ class TestScanDirectory:
         test_file.write_text('{"key": "value"}')
 
         files = scan_directory(tmp_path)
-        
+
         assert len(files) == 1
         file_info = files[0]
         assert file_info["name"] == "test.json"
@@ -124,15 +124,13 @@ class TestLoadManifest:
         manifest_path = tmp_path / "manifest.json"
         manifest_data = {
             "version": "1.0.0",
-            "artifacts": [
-                {"name": "test.json", "size": 100}
-            ],
-            "weights": {"test": 0.5}
+            "artifacts": [{"name": "test.json", "size": 100}],
+            "weights": {"test": 0.5},
         }
         manifest_path.write_text(json.dumps(manifest_data))
 
         result = load_manifest(manifest_path)
-        
+
         assert result == manifest_data
         assert result["version"] == "1.0.0"
         assert len(result["artifacts"]) == 1
@@ -166,14 +164,11 @@ class TestGenerateHtmlDashboard:
     def test_generate_html_basic(self, tmp_path):
         """Test basic HTML generation."""
         output_path = tmp_path / "index.html"
-        
+
         generate_html_dashboard(
-            audit_artifacts=[],
-            reports=[],
-            manifest={},
-            output_path=output_path
+            audit_artifacts=[], reports=[], manifest={}, output_path=output_path
         )
-        
+
         assert output_path.exists()
         content = output_path.read_text()
         assert "<!DOCTYPE html>" in content
@@ -188,17 +183,14 @@ class TestGenerateHtmlDashboard:
                 "name": "test.json",
                 "size": 1024,
                 "modified": datetime.now().timestamp(),
-                "type": ".json"
+                "type": ".json",
             }
         ]
-        
+
         generate_html_dashboard(
-            audit_artifacts=artifacts,
-            reports=[],
-            manifest={},
-            output_path=output_path
+            audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
         )
-        
+
         content = output_path.read_text()
         assert "test.json" in content
         assert "1.00 KB" in content
@@ -209,28 +201,22 @@ class TestGenerateHtmlDashboard:
         manifest = {
             "version": "1.5.0",
             "timestamp": datetime.now().timestamp(),
-            "weights": {
-                "functionality": 0.25,
-                "tests": 0.25
-            },
+            "weights": {"functionality": 0.25, "tests": 0.25},
             "artifacts": [
                 {
                     "name": "capabilities.json",
                     "format": "json",
                     "size": 5000,
                     "sha": "abc123" * 10,
-                    "generated_at": datetime.now().timestamp()
+                    "generated_at": datetime.now().timestamp(),
                 }
-            ]
+            ],
         }
-        
+
         generate_html_dashboard(
-            audit_artifacts=[],
-            reports=[],
-            manifest=manifest,
-            output_path=output_path
+            audit_artifacts=[], reports=[], manifest=manifest, output_path=output_path
         )
-        
+
         content = output_path.read_text()
         assert "1.5.0" in content
         assert "functionality" in content.lower()
@@ -245,17 +231,14 @@ class TestGenerateHtmlDashboard:
                 "name": "<img src=x onerror=alert(1)>",
                 "size": 100,
                 "modified": datetime.now().timestamp(),
-                "type": ".json"
+                "type": ".json",
             }
         ]
-        
+
         generate_html_dashboard(
-            audit_artifacts=malicious_artifacts,
-            reports=[],
-            manifest={},
-            output_path=output_path
+            audit_artifacts=malicious_artifacts, reports=[], manifest={}, output_path=output_path
         )
-        
+
         content = output_path.read_text()
         # Verify HTML entities are escaped
         # Both conditions must be true: raw malicious content absent AND escaped version present
@@ -268,27 +251,22 @@ class TestGenerateHtmlDashboard:
         output_path = tmp_path / "index.html"
         malicious_manifest = {
             "version": "<script>alert('version')</script>",
-            "weights": {
-                "<script>alert('key')</script>": "<script>alert('value')</script>"
-            },
+            "weights": {"<script>alert('key')</script>": "<script>alert('value')</script>"},
             "artifacts": [
                 {
                     "name": "<img src=x onerror=alert(2)>",
                     "format": "<b>malicious</b>",
                     "size": 100,
                     "sha": "abc123",
-                    "generated_at": datetime.now().timestamp()
+                    "generated_at": datetime.now().timestamp(),
                 }
-            ]
+            ],
         }
-        
+
         generate_html_dashboard(
-            audit_artifacts=[],
-            reports=[],
-            manifest=malicious_manifest,
-            output_path=output_path
+            audit_artifacts=[], reports=[], manifest=malicious_manifest, output_path=output_path
         )
-        
+
         content = output_path.read_text()
         # Verify all malicious content is escaped
         # Both conditions must be true: raw malicious content absent AND escaped version present
@@ -332,17 +310,14 @@ class TestEdgeCases:
                 "name": "测试文件.json",
                 "size": 100,
                 "modified": datetime.now().timestamp(),
-                "type": ".json"
+                "type": ".json",
             }
         ]
-        
+
         generate_html_dashboard(
-            audit_artifacts=artifacts,
-            reports=[],
-            manifest={},
-            output_path=output_path
+            audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
         )
-        
+
         content = output_path.read_text(encoding="utf-8")
         assert "测试文件" in content or "&#x" in content  # Either raw or escaped
 
@@ -350,14 +325,11 @@ class TestEdgeCases:
         """Test with empty artifacts list in manifest."""
         output_path = tmp_path / "index.html"
         manifest = {"artifacts": []}
-        
+
         generate_html_dashboard(
-            audit_artifacts=[],
-            reports=[],
-            manifest=manifest,
-            output_path=output_path
+            audit_artifacts=[], reports=[], manifest=manifest, output_path=output_path
         )
-        
+
         assert output_path.exists()
 
     def test_missing_artifact_fields(self, tmp_path):
@@ -370,14 +342,11 @@ class TestEdgeCases:
                 # Missing size and modified
             }
         ]
-        
+
         # Should handle gracefully without crashing
         try:
             generate_html_dashboard(
-                audit_artifacts=artifacts,
-                reports=[],
-                manifest={},
-                output_path=output_path
+                audit_artifacts=artifacts, reports=[], manifest={}, output_path=output_path
             )
         except KeyError:
             # Expected if fields are required

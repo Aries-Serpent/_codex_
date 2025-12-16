@@ -134,7 +134,9 @@ def detector_configuration() -> DetectorResult:
                     break
 
     # Check for environment override support
-    if _check_file_content(config_schema_path, ["Field", "default", "description"]).get("Field", False):
+    if _check_file_content(config_schema_path, ["Field", "default", "description"]).get(
+        "Field", False
+    ):
         score += 0.1
         details["checks"]["field_documentation"] = True
 
@@ -221,9 +223,7 @@ def detector_tokenization() -> DetectorResult:
 
     # Check for tokenization tests
     tokenization_tests = _count_test_files("tests/capabilities/tokenization")
-    tokenization_tests += sum(
-        1 for f in Path("tests/").rglob("test_token*.py") if f.exists()
-    )
+    tokenization_tests += sum(1 for f in Path("tests/").rglob("test_token*.py") if f.exists())
     if tokenization_tests > 0:
         score += 0.2
         details["checks"]["tokenization_tests"] = tokenization_tests

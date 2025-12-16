@@ -11,7 +11,9 @@ def test_runner_treats_exit_code_five_as_skipped(tmp_path: Path, monkeypatch: py
     # Redirect artifacts to temporary location
     monkeypatch.setattr(log_module, "ARTIFACTS", tmp_path)
     monkeypatch.setattr(log_module, "REGRESSION_LOG", tmp_path / "model_regression_log.ndjson")
-    monkeypatch.setattr(runner, "write_coverage_report", lambda entries: tmp_path / "model_regression_coverage.md")
+    monkeypatch.setattr(
+        runner, "write_coverage_report", lambda entries: tmp_path / "model_regression_coverage.md"
+    )
 
     calls = []
 
@@ -38,6 +40,10 @@ def test_runner_treats_exit_code_five_as_skipped(tmp_path: Path, monkeypatch: py
 
     log_path = log_module.REGRESSION_LOG
     assert log_path.exists()
-    entries = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    entries = [
+        json.loads(line)
+        for line in log_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     assert entries and entries[0]["status"] == "skipped"
     assert entries[0]["metadata"].get("note") == "no tests collected"

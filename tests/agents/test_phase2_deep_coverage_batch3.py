@@ -25,8 +25,8 @@ class TestPhase3_Entanglement_BellStates:
         """Test creating Bell states"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
 
-        blue_state = StrategyState("blue", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
-        red_state = StrategyState("red", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
+        blue_state = StrategyState("blue", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
+        red_state = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
 
         bell_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
         assert bell_state.entangled == True
@@ -93,7 +93,7 @@ class TestPhase3_Entanglement_CHSH:
         from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         # Test at different angles
-        angles = [0, np.pi/4, np.pi/2, np.pi]
+        angles = [0, np.pi / 4, np.pi / 2, np.pi]
 
         for angle in angles:
             blue = StrategyState("blue", np.array([np.cos(angle), np.sin(angle)]))
@@ -107,8 +107,8 @@ class TestPhase3_Entanglement_CHSH:
         """Test Bell inequality violation detection"""
         from agents.quantum_game_theory import QuantumGameState, StrategyState
 
-        blue = StrategyState("blue", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
-        red = StrategyState("red", np.array([1/np.sqrt(2), 1/np.sqrt(2)]))
+        blue = StrategyState("blue", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
+        red = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
 
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
         violates = state.violates_bell_inequality()
@@ -172,7 +172,7 @@ class TestPhase3_Transactional_Semantics:
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
         # Check if transactional_update exists
-        if hasattr(state, 'transactional_update'):
+        if hasattr(state, "transactional_update"):
             success = state.transactional_update(
                 blue_new=np.array([0.7, 0.3]), red_new=np.array([0.7, 0.3])
             )
@@ -190,7 +190,7 @@ class TestPhase3_Transactional_Semantics:
 
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
-        if hasattr(state, 'transactional_update'):
+        if hasattr(state, "transactional_update"):
             try:
                 state.transactional_update(
                     blue_new=np.array([2.0, -1.0]),
@@ -210,7 +210,7 @@ class TestPhase3_Transactional_Semantics:
 
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
 
-        if hasattr(state, 'commit_entangled_update'):
+        if hasattr(state, "commit_entangled_update"):
             committed = state.commit_entangled_update()
             assert committed is not None
         else:
@@ -222,10 +222,8 @@ class TestPhase3_Transactional_Semantics:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
-        if hasattr(orchestrator, 'propagate_feature_flag'):
-            result = orchestrator.propagate_feature_flag(
-                flag_name="new_feature", enabled=True
-            )
+        if hasattr(orchestrator, "propagate_feature_flag"):
+            result = orchestrator.propagate_feature_flag(flag_name="new_feature", enabled=True)
             assert result is not None
         else:
             assert orchestrator is not None
@@ -334,7 +332,9 @@ class TestPhase3_CrossModule_EntangledGroups:
 
         # Create entangled node-memory pair
         node = model.create_node(NodeType.PROBLEM, {"entangled": True})
-        memory.store_memory(key=f"node_{node.node_id}", value={"entangled": True, "node_id": str(node.node_id)})
+        memory.store_memory(
+            key=f"node_{node.node_id}", value={"entangled": True, "node_id": str(node.node_id)}
+        )
 
         # Both should update together - may not retrieve if not persisted
         retrieved = memory.retrieve_memory(f"node_{node.node_id}")
@@ -504,8 +504,8 @@ class TestPhase3_Performance_Distributed:
             (np.array([0.7, 0.3]), np.array([0.7, 0.3])),
         ]
 
-        if hasattr(state, 'transactional_update'):
+        if hasattr(state, "transactional_update"):
             for blue_new, red_new in updates:
                 state.transactional_update(blue_new, red_new)
-        
+
         assert True  # All updates completed or method not available

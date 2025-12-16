@@ -6,6 +6,7 @@ Detects validation, sanitization, bounds checking, and other security/robustness
 
 Patterns detected: validation, security, defensive, robust
 """
+
 from __future__ import annotations
 
 import re
@@ -60,12 +61,12 @@ SAFEGUARD_KEYWORDS = frozenset(
 
 # Defensive programming patterns (regex-based detection)
 DEFENSIVE_PATTERNS = [
-    (r'\btry\s*:', "try_except"),
-    (r'\bif\s+.*\s+is\s+None\s*:', "null_check"),
-    (r'\bassert\s+', "assertion"),
-    (r'\braise\s+\w+Error', "explicit_error"),
-    (r'\.strip\(\)', "input_sanitization"),
-    (r'\.lower\(\)', "case_normalization"),
+    (r"\btry\s*:", "try_except"),
+    (r"\bif\s+.*\s+is\s+None\s*:", "null_check"),
+    (r"\bassert\s+", "assertion"),
+    (r"\braise\s+\w+Error", "explicit_error"),
+    (r"\.strip\(\)", "input_sanitization"),
+    (r"\.lower\(\)", "case_normalization"),
 ]
 
 MAX_READ_BYTES = 200_000
@@ -75,17 +76,17 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 def _read_text(path: Path) -> str:
     """
     Read text from file with bounded read and error handling.
-    
+
     Safeguards implemented:
     - Bounded read (MAX_READ_BYTES) to prevent memory exhaustion
     - Input validation of path existence
     - Defensive exception handling for file I/O errors
     - Timeout protection via bounded read
     - Sanitization of encoding errors with ignore policy
-    
+
     Args:
         path: Path to file (absolute or relative to REPO_ROOT)
-        
+
     Returns:
         File content (up to MAX_READ_BYTES) or empty string on error
     """
@@ -93,7 +94,7 @@ def _read_text(path: Path) -> str:
         # Handle both absolute and relative paths
         if not path.is_absolute():
             path = REPO_ROOT / path
-        
+
         # Validation: Check path exists and is readable
         if not path.exists():
             return ""
@@ -107,36 +108,36 @@ def _read_text(path: Path) -> str:
 def _detect_context_aware_patterns(text: str) -> Set[str]:
     """
     Detect defensive programming patterns beyond simple keyword matching.
-    
+
     Args:
         text: Source code text
-        
+
     Returns:
         Set of detected pattern names
     """
     detected = set()
-    
+
     for pattern, name in DEFENSIVE_PATTERNS:
         if re.search(pattern, text, re.MULTILINE):
             detected.add(name)
-    
+
     return detected
 
 
 def _calculate_safeguard_density(evidence: Dict[str, int], total_files: int) -> float:
     """
     Calculate safeguard density as ratio of files with safeguards.
-    
+
     Safeguards implemented:
     - Validation: Division by zero check
     - Bounds check: Result clamped to [0.0, 1.0] range
     - Defensive: max() ensures denominator is at least 1
     - Robust calculation with edge case handling
-    
+
     Args:
         evidence: Dict of file paths to hit counts
         total_files: Total number of analyzed files
-        
+
     Returns:
         Density ratio [0.0, 1.0]
     """
@@ -150,23 +151,23 @@ def _calculate_safeguard_density(evidence: Dict[str, int], total_files: int) -> 
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
     Scan files for safeguard keywords and defensive programming patterns.
-    
+
     This detector performs comprehensive validation, security analysis, and robustness
     checking across the codebase. It uses both keyword matching and pattern detection
     to identify validation, sanitization, error handling, authentication, authorization,
     rate limiting, timeout protection, bounds checking, and other defensive programming
     practices that provide safeguards against failures and security vulnerabilities.
-    
+
     Safeguards implemented in this detector:
     - Input validation of file paths and types
     - Bounded read operations to prevent memory exhaustion
     - Deterministic processing order for reproducibility
     - Defensive error handling throughout
     - Sanitization of file content encoding
-    
+
     Args:
         file_index: Context index from S1 with files list
-        
+
     Returns:
         Detection result with evidence, metrics, and patterns
     """
@@ -175,39 +176,39 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     evidence: Dict[str, int] = {}
     text_cache: Dict[str, str] = {}
     pattern_detections: Dict[str, List[str]] = {}
-    
+
     # Validation: Allowed file types for safeguard scanning (security filtering)
     allowed_suffixes = {".py", ".md", ".sh", ".txt", ".yml", ".yaml", ".json"}
-    
+
     for entry in files:
         rel_path = entry.get("path")
-        
+
         # Validation: Check path is valid and sanitized
         if not rel_path:
             continue
-        
+
         path_obj = Path(rel_path)
-        
+
         # Skip non-text files
         if path_obj.suffix.lower() not in allowed_suffixes:
             continue
-        
+
         # Read and analyze file (bounded read for safety)
         # Support both absolute paths (for tests) and relative paths (for repo files)
         if path_obj.is_absolute():
             text = _read_text(path_obj)
         else:
             text = _read_text(REPO_ROOT / rel_path)
-        
+
         if not text:
             continue
-        
+
         # Count keyword hits
         hits = sum(1 for w in SAFEGUARD_KEYWORDS if w in text)
-        
+
         # Detect context-aware patterns
         context_patterns = _detect_context_aware_patterns(text)
-        
+
         if hits or context_patterns:
             evidence[rel_path] = hits + len(context_patterns)
             text_cache[rel_path] = text
@@ -217,17 +218,14 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     total_hits = int(sum(evidence.values()))
     total_files = len(files)
     density = _calculate_safeguard_density(evidence, total_files)
-    
+
     # Find which keywords and patterns were actually detected
-    found_keywords = {
-        w for w in SAFEGUARD_KEYWORDS 
-        if any(w in text_cache[p] for p in evidence)
-    }
-    
+    found_keywords = {w for w in SAFEGUARD_KEYWORDS if any(w in text_cache[p] for p in evidence)}
+
     found_patterns = set()
     for patterns in pattern_detections.values():
         found_patterns.update(patterns)
-    
+
     # Combine for comprehensive pattern list
     all_found_patterns = sorted(found_keywords | found_patterns)
     required_patterns = sorted(SAFEGUARD_KEYWORDS)
@@ -255,5 +253,5 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
             "context_aware": True,
             "deterministic": True,
             "offline": True,
-        }
+        },
     }

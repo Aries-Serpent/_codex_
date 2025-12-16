@@ -80,23 +80,23 @@ class StubAnalyzer:
     def _is_abstract_method(self, file_path: Path, line_number: int) -> bool:
         """
         Check if a NotImplementedError at given line is part of an abstract method.
-        
+
         Uses AST to detect:
         - Methods decorated with @abstractmethod
         - Classes inheriting from ABC
         - Methods with NotImplementedError in abstract classes
-        
+
         Args:
             file_path: Path to Python file
             line_number: Line number of NotImplementedError
-            
+
         Returns:
             True if this is an intentional abstract method pattern
         """
         try:
             content = file_path.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(file_path))
-            
+
             # Build a mapping from function nodes to their parent class nodes (O(n) complexity)
             func_to_class = {}
             for class_node in ast.walk(tree):
@@ -104,42 +104,55 @@ class StubAnalyzer:
                     for node in class_node.body:
                         if isinstance(node, ast.FunctionDef):
                             func_to_class[node] = class_node
-            
+
             # Find the function node at the given line
             for func_node in func_to_class.keys():
-                if hasattr(func_node, 'lineno') and hasattr(func_node, 'end_lineno'):
-                    if func_node.lineno <= line_number <= (func_node.end_lineno or func_node.lineno):
+                if hasattr(func_node, "lineno") and hasattr(func_node, "end_lineno"):
+                    if (
+                        func_node.lineno
+                        <= line_number
+                        <= (func_node.end_lineno or func_node.lineno)
+                    ):
                         # Check for @abstractmethod decorator
                         for decorator in func_node.decorator_list:
-                            if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
+                            if isinstance(decorator, ast.Name) and decorator.id == "abstractmethod":
                                 return True
-                            elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
+                            elif (
+                                isinstance(decorator, ast.Attribute)
+                                and decorator.attr == "abstractmethod"
+                            ):
                                 return True
-                        
+
                         # Check if method is in an ABC class
                         parent_class = func_to_class.get(func_node)
                         if parent_class:
                             for base in parent_class.bases:
-                                if isinstance(base, ast.Name) and base.id == 'ABC':
+                                if isinstance(base, ast.Name) and base.id == "ABC":
                                     return True
-                                elif isinstance(base, ast.Attribute) and base.attr == 'ABC':
+                                elif isinstance(base, ast.Attribute) and base.attr == "ABC":
                                     return True
-            
+
             # Also check for top-level functions (not in classes)
             for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef) and node not in func_to_class:
-                    if hasattr(node, 'lineno') and hasattr(node, 'end_lineno'):
+                    if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
                         if node.lineno <= line_number <= (node.end_lineno or node.lineno):
                             # Check for @abstractmethod decorator on standalone functions
                             for decorator in node.decorator_list:
-                                if isinstance(decorator, ast.Name) and decorator.id == 'abstractmethod':
+                                if (
+                                    isinstance(decorator, ast.Name)
+                                    and decorator.id == "abstractmethod"
+                                ):
                                     return True
-                                elif isinstance(decorator, ast.Attribute) and decorator.attr == 'abstractmethod':
+                                elif (
+                                    isinstance(decorator, ast.Attribute)
+                                    and decorator.attr == "abstractmethod"
+                                ):
                                     return True
-            
+
         except Exception as e:
             logger.debug(f"Failed to parse {file_path} for abstract method detection: {e}")
-            
+
         return False
 
     def _analyze_file(self, file_path: Path):
@@ -163,12 +176,12 @@ class StubAnalyzer:
                     if stripped.startswith("raise ") and "NotImplementedError" in line:
                         # Use AST to check if this is an abstract method
                         is_abstract = self._is_abstract_method(file_path, i)
-                        
+
                         if is_abstract:
                             # Skip abstract methods - they're intentional design patterns
                             logger.debug(f"Skipping abstract method at {file_path}:{i}")
                             continue
-                        
+
                         priority = "P0"  # Actual raise statements are P0
 
                         # Try to extract message

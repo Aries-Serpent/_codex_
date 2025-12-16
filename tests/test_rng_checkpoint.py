@@ -18,7 +18,7 @@ def test_rng_state_capture():
     """Test that RNG state can be captured."""
     rng_state = RNGState()
     rng_state.capture()
-    
+
     assert rng_state.state is not None
     assert isinstance(rng_state.state, dict)
     assert len(rng_state.state) > 0
@@ -28,27 +28,28 @@ def test_rng_state_restore_determinism():
     """Test that restoring RNG state produces deterministic results."""
     # Set a specific seed
     set_seed(42)
-    
+
     # Capture state
     rng_state = RNGState()
     rng_state.capture()
-    
+
     # Generate some random numbers
     val1 = random.random()
-    
+
     try:
         import numpy as np
+
         np_val1 = np.random.rand()
     except ImportError:
         np_val1 = None
-    
+
     # Restore state
     rng_state.restore()
-    
+
     # Generate again - should be same
     val2 = random.random()
     assert val1 == val2, "Python random should be deterministic after restore"
-    
+
     if np_val1 is not None:
         np_val2 = np.random.rand()
         assert np_val1 == np_val2, "NumPy random should be deterministic after restore"
@@ -60,14 +61,14 @@ def test_rng_state_save_and_load(tmp_path):
     set_seed(123)
     rng_state = RNGState()
     rng_state.capture()
-    
+
     # Save to file
     save_path = tmp_path / "test_rng.json"
     rng_state.save_to_file(save_path)
-    
+
     assert save_path.exists()
     assert save_path.stat().st_size > 0
-    
+
     # Verify JSON is valid
     with open(save_path) as f:
         data = json.load(f)
@@ -80,17 +81,17 @@ def test_rng_state_load_from_file(tmp_path):
     set_seed(456)
     rng_state1 = RNGState()
     rng_state1.capture()
-    
+
     save_path = tmp_path / "test_rng.json"
     rng_state1.save_to_file(save_path)
-    
+
     # Generate random number
     val1 = random.random()
-    
+
     # Load state from file
     rng_state2 = RNGState.load_from_file(save_path)
     rng_state2.restore()
-    
+
     # Generate again - should match
     val2 = random.random()
     assert val1 == val2
@@ -100,7 +101,7 @@ def test_rng_state_path_for_checkpoint():
     """Test that checkpoint path generation works correctly."""
     checkpoint_path = Path("/path/to/checkpoint.pt")
     rng_path = RNGState.path_for_checkpoint(checkpoint_path)
-    
+
     assert rng_path == Path("/path/to/checkpoint.pt.rng.json")
     assert rng_path.suffix == ".json"
     assert ".rng.json" in str(rng_path)
@@ -110,10 +111,10 @@ def test_set_seed_sets_python_random():
     """Test that set_seed sets Python random."""
     set_seed(789)
     val1 = random.random()
-    
+
     set_seed(789)
     val2 = random.random()
-    
+
     assert val1 == val2
 
 
@@ -121,13 +122,13 @@ def test_set_seed_sets_numpy_random():
     """Test that set_seed sets NumPy random if available."""
     try:
         import numpy as np
-        
+
         set_seed(101112)
         val1 = np.random.rand()
-        
+
         set_seed(101112)
         val2 = np.random.rand()
-        
+
         assert val1 == val2
     except ImportError:
         # Skip if NumPy not available
@@ -143,11 +144,11 @@ def test_rng_state_handles_missing_file():
 def test_rng_state_save_creates_parent_dirs(tmp_path):
     """Test that save creates parent directories if needed."""
     nested_path = tmp_path / "nested" / "dir" / "rng.json"
-    
+
     rng_state = RNGState()
     rng_state.capture()
     rng_state.save_to_file(nested_path)
-    
+
     assert nested_path.exists()
     assert nested_path.parent.exists()
 
@@ -155,16 +156,16 @@ def test_rng_state_save_creates_parent_dirs(tmp_path):
 def test_rng_state_round_trip_preserves_state(tmp_path):
     """Test that save/load round trip preserves exact state."""
     set_seed(131415)
-    
+
     # Capture initial state
     rng_state1 = RNGState()
     rng_state1.capture()
-    
+
     # Save and load
     save_path = tmp_path / "roundtrip_rng.json"
     rng_state1.save_to_file(save_path)
     rng_state2 = RNGState.load_from_file(save_path)
-    
+
     # States should be equal
     assert rng_state1.state == rng_state2.state
 
@@ -173,10 +174,10 @@ def test_rng_state_different_seeds_produce_different_values():
     """Test that different seeds produce different random values."""
     set_seed(111)
     val1 = random.random()
-    
+
     set_seed(222)
     val2 = random.random()
-    
+
     assert val1 != val2
 
 

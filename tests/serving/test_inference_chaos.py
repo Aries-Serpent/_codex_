@@ -16,6 +16,7 @@ from fastapi.testclient import TestClient
 def chaos_client():
     """Create test client for chaos testing."""
     from src.codex_ml.serving.inference_server import create_app
+
     app = create_app(enable_auth=False)
     return TestClient(app)
 
@@ -28,23 +29,20 @@ class TestModelFailures:
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
             # Simulate intermittent failures (50% failure rate)
             call_count = [0]
+
             def side_effect(*args, **kwargs):
                 call_count[0] += 1
                 if call_count[0] % 2 == 0:
                     raise RuntimeError("Simulated model failure")
                 return MagicMock()
-            
+
             mock_load.side_effect = side_effect
-            
+
             # Should handle failures gracefully
             for _ in range(10):
                 response = chaos_client.post(
                     "/infer",
-                    json={
-                        "model_name": "test-model",
-                        "inputs": ["test input"],
-                        "max_length": 50
-                    }
+                    json={"model_name": "test-model", "inputs": ["test input"], "max_length": 50},
                 )
                 # Either succeeds or returns 500 with error
                 assert response.status_code in [200, 500]
@@ -53,16 +51,11 @@ class TestModelFailures:
         """Test handling of out-of-memory errors during model loading."""
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
             mock_load.side_effect = MemoryError("CUDA out of memory")
-            
+
             response = chaos_client.post(
-                "/infer",
-                json={
-                    "model_name": "large-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                }
+                "/infer", json={"model_name": "large-model", "inputs": ["test"], "max_length": 50}
             )
-            
+
             assert response.status_code == 500
             assert "memory" in response.json()["detail"].lower()
 
@@ -70,16 +63,12 @@ class TestModelFailures:
         """Test detection of corrupted model weights."""
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
             mock_load.side_effect = ValueError("Invalid checkpoint format")
-            
+
             response = chaos_client.post(
                 "/infer",
-                json={
-                    "model_name": "corrupted-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                }
+                json={"model_name": "corrupted-model", "inputs": ["test"], "max_length": 50},
             )
-            
+
             assert response.status_code == 500
             assert "checkpoint" in response.json()["detail"].lower()
 
@@ -87,16 +76,12 @@ class TestModelFailures:
         """Test circuit breaker opens after consecutive failures."""
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
             mock_load.side_effect = RuntimeError("Model inference failed")
-            
+
             # Trigger circuit breaker with consecutive failures
             for i in range(6):
                 response = chaos_client.post(
                     "/infer",
-                    json={
-                        "model_name": "failing-model",
-                        "inputs": ["test"],
-                        "max_length": 50
-                    }
+                    json={"model_name": "failing-model", "inputs": ["test"], "max_length": 50},
                 )
                 # First 5 should fail normally, 6th should hit circuit breaker
                 assert response.status_code in [500, 503]
@@ -108,21 +93,18 @@ class TestNetworkFailures:
     def test_request_timeout_handling(self, chaos_client):
         """Test handling of request timeouts."""
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
+
             def slow_load(*args, **kwargs):
                 time.sleep(5)  # Simulate slow loading
                 return MagicMock()
-            
+
             mock_load.side_effect = slow_load
-            
+
             # Should timeout gracefully
             response = chaos_client.post(
                 "/infer",
-                json={
-                    "model_name": "slow-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                },
-                timeout=2.0
+                json={"model_name": "slow-model", "inputs": ["test"], "max_length": 50},
+                timeout=2.0,
             )
             # Client should timeout
             assert response.status_code in [500, 504]
@@ -132,15 +114,11 @@ class TestNetworkFailures:
         # Simulate abrupt connection close
         with patch("fastapi.responses.JSONResponse") as mock_response:
             mock_response.side_effect = ConnectionResetError("Connection reset by peer")
-            
+
             try:
                 response = chaos_client.post(
                     "/infer",
-                    json={
-                        "model_name": "test-model",
-                        "inputs": ["test"],
-                        "max_length": 50
-                    }
+                    json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )
             except Exception:
                 # Should handle connection errors gracefully
@@ -154,13 +132,8 @@ class TestResourcePressure:
         """Test graceful degradation under memory pressure."""
         with patch("src.codex_ml.serving.model_loader.ModelLoader.get_cache_stats") as mock_stats:
             # Simulate high memory usage
-            mock_stats.return_value = {
-                "size": 3,
-                "maxsize": 3,
-                "hits": 100,
-                "misses": 10
-            }
-            
+            mock_stats.return_value = {"size": 3, "maxsize": 3, "hits": 100, "misses": 10}
+
             response = chaos_client.get("/health")
             assert response.status_code == 200
 
@@ -176,7 +149,7 @@ class TestResourcePressure:
         start = time.time()
         response = chaos_client.get("/health")
         baseline_latency = time.time() - start
-        
+
         assert response.status_code == 200
         assert baseline_latency < 1.0  # Should be fast
 
@@ -188,15 +161,15 @@ class TestConcurrentLoad:
         """Test handling of 100+ concurrent requests."""
         num_requests = 100
         responses = []
-        
+
         def make_request():
             return chaos_client.get("/health")
-        
+
         # Simulate concurrent requests
         for _ in range(num_requests):
             response = make_request()
             responses.append(response)
-        
+
         # All requests should succeed
         assert all(r.status_code == 200 for r in responses)
 
@@ -206,19 +179,12 @@ class TestConcurrentLoad:
         responses = []
         for _ in range(50):
             response = chaos_client.post(
-                "/infer",
-                json={
-                    "model_name": "test-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                }
+                "/infer", json={"model_name": "test-model", "inputs": ["test"], "max_length": 50}
             )
             responses.append(response)
-        
+
         # Most should succeed or hit rate limit
-        success_or_rate_limited = sum(
-            1 for r in responses if r.status_code in [200, 429, 503]
-        )
+        success_or_rate_limited = sum(1 for r in responses if r.status_code in [200, 429, 503])
         assert success_or_rate_limited >= 45  # 90%+ should be handled
 
     def test_sustained_load_stability(self, chaos_client):
@@ -226,12 +192,12 @@ class TestConcurrentLoad:
         duration = 5  # seconds
         start_time = time.time()
         request_count = 0
-        
+
         while time.time() - start_time < duration:
             response = chaos_client.get("/health")
             if response.status_code == 200:
                 request_count += 1
-        
+
         # Should maintain high throughput
         requests_per_second = request_count / duration
         assert requests_per_second > 50  # At least 50 req/s
@@ -245,36 +211,28 @@ class TestCircuitBreakerRecovery:
         with patch("src.codex_ml.serving.model_loader.ModelLoader.load_model") as mock_load:
             # First 5 requests fail (open circuit)
             fail_count = [0]
+
             def controlled_failure(*args, **kwargs):
                 fail_count[0] += 1
                 if fail_count[0] <= 5:
                     raise RuntimeError("Simulated failure")
                 return MagicMock()  # Recover after 5 failures
-            
+
             mock_load.side_effect = controlled_failure
-            
+
             # Trigger failures
             for _ in range(5):
                 chaos_client.post(
                     "/infer",
-                    json={
-                        "model_name": "test-model",
-                        "inputs": ["test"],
-                        "max_length": 50
-                    }
+                    json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )
-            
+
             # Wait for potential half-open
             time.sleep(2)
-            
+
             # Next request should potentially succeed
             response = chaos_client.post(
-                "/infer",
-                json={
-                    "model_name": "test-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                }
+                "/infer", json={"model_name": "test-model", "inputs": ["test"], "max_length": 50}
             )
             # Should either succeed or still be blocked
             assert response.status_code in [200, 500, 503]
@@ -295,12 +253,7 @@ class TestFailoverScenarios:
         """Test fallback to previous model version on failure."""
         # If latest model fails, should try previous version
         response = chaos_client.post(
-            "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            }
+            "/infer", json={"model_name": "test-model", "inputs": ["test"], "max_length": 50}
         )
         # Should handle gracefully
         assert response.status_code in [200, 500, 503]
@@ -309,12 +262,7 @@ class TestFailoverScenarios:
         """Test handling of cache misses under load."""
         # Clear cache and test cold start performance
         response = chaos_client.post(
-            "/infer",
-            json={
-                "model_name": "uncached-model",
-                "inputs": ["test"],
-                "max_length": 50
-            }
+            "/infer", json={"model_name": "uncached-model", "inputs": ["test"], "max_length": 50}
         )
         # Should handle cache miss
         assert response.status_code in [200, 500]

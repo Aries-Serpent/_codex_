@@ -2,6 +2,7 @@ import csv
 import subprocess
 from pathlib import Path
 
+
 def test_legacy_import_report_header_exists():
     repo_root = Path(__file__).resolve().parents[2]
     reports_dir = repo_root / "reports"

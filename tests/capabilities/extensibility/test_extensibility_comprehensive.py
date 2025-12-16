@@ -140,7 +140,9 @@ class PluginRegistry:
         """Get plugin class by name."""
         return self._plugins.get(name)
 
-    def instantiate(self, name: str, config: dict[str, Any] | None = None) -> PluginInterface | None:
+    def instantiate(
+        self, name: str, config: dict[str, Any] | None = None
+    ) -> PluginInterface | None:
         """Instantiate and initialize a plugin."""
         plugin_cls = self._plugins.get(name)
         if plugin_cls is None:

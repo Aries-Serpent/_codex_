@@ -1,4 +1,5 @@
 """Tests for performance module (v1.5.5)."""
+
 from __future__ import annotations
 
 import json
@@ -43,11 +44,11 @@ def test_file_cache_expiry(tmp_path: Path):
 
     # Set with very short TTL (1 second)
     cache.set("key1", "value", ttl_seconds=1)
-    
+
     # Should still be valid
     result = cache.get("key1")
     assert result == "value"
-    
+
     # Wait for expiry
     time.sleep(1.1)
     result = cache.get("key1")

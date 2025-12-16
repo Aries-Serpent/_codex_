@@ -1,4 +1,5 @@
 """Regression tests for tamper-evident audit logger."""
+
 from __future__ import annotations
 
 from pathlib import Path

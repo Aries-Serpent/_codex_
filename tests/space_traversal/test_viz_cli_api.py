@@ -1,4 +1,5 @@
 """Tests for CLI builder and API collection HTML generators (v1.5.3-1.5.4)."""
+
 from __future__ import annotations
 
 from pathlib import Path

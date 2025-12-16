@@ -162,8 +162,7 @@ def _csv_to_sqlite(
                     buf,
                 )
         if create_index:
-            cur.execute(  # nosec B608                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
-            )
+            cur.execute()  # nosec B608                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
         con.commit()
     finally:
         con.close()

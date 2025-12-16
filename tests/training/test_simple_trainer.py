@@ -1,4 +1,5 @@
 """Smoke tests for training.simple_trainer module."""
+
 from __future__ import annotations
 
 import sys

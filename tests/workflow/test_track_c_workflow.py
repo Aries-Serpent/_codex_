@@ -30,8 +30,12 @@ def test_capability_routing_alias() -> None:
 
 
 def test_error_capture_and_rollbacks(tmp_path: Path) -> None:
-    def failing_construction(ctx: WorkflowContext, plan: CapabilityPlan) -> None:  # pragma: no cover - executed in test
-        ctx.register_rollback("failing_construction", lambda context: context.notes.append("rolled-back"))
+    def failing_construction(
+        ctx: WorkflowContext, plan: CapabilityPlan
+    ) -> None:  # pragma: no cover - executed in test
+        ctx.register_rollback(
+            "failing_construction", lambda context: context.notes.append("rolled-back")
+        )
         raise RuntimeError("synthetic failure")
 
     plan = CapabilityPlan(

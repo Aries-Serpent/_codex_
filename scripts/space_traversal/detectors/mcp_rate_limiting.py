@@ -27,5 +27,5 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(set(found)),
         "required_patterns": required,
-        "meta": {"category": "mcp"}
+        "meta": {"category": "mcp"},
     }

@@ -31,7 +31,7 @@ def print_table(result: dict, threshold: float = 0.99) -> None:
     print("CAPABILITY AUDIT REPORT")
     print("=" * 80)
     print()
-    
+
     # Summary
     total_score = result["total_score"]
     status = "✅ PASS" if total_score >= threshold else "❌ FAIL"
@@ -39,12 +39,12 @@ def print_table(result: dict, threshold: float = 0.99) -> None:
     print(f"Target Threshold: {threshold * 100:.0f}%")
     print(f"Capabilities: {len(result['by_capability'])}")
     print()
-    
+
     # Capability table
     print("-" * 80)
     print(f"{'Capability':<25} {'Score':<12} {'Status':<10} {'Checks':<20}")
     print("-" * 80)
-    
+
     for detail in result["details"]:
         name = detail["name"]
         score = detail["score"] * 100
@@ -54,10 +54,10 @@ def print_table(result: dict, threshold: float = 0.99) -> None:
         passed = sum(1 for v in checks.values() if v and v != 0)
         total = len(checks)
         print(f"{name:<25} {score:>6.1f}%     {status:<10} {passed}/{total}")
-    
+
     print("-" * 80)
     print()
-    
+
     # Recommendations
     failing = [d["name"] for d in result["details"] if d["score"] < threshold]
     if failing:
@@ -94,9 +94,7 @@ def write_markdown_matrix(result: dict, threshold: float, path: Path) -> None:
         status = (
             "PASS"
             if detail["score"] >= threshold
-            else "WARN"
-            if detail["score"] >= WARN_THRESHOLD
-            else "FAIL"
+            else "WARN" if detail["score"] >= WARN_THRESHOLD else "FAIL"
         )
         lines.append(
             f"| {detail['name']} | {detail['score'] * 100:.2f}% | {status} | {passed}/{total} |"
@@ -138,17 +136,17 @@ def main() -> int:
         help="Path to write markdown capability matrix (default: audit_artifacts/capability_matrix.md)",
     )
     args = parser.parse_args()
-    
+
     # Run audit
     result = run_capability_audit()
-    
+
     # Output results
     if args.output == "json":
         output = json.dumps(result, indent=2)
         print(output)
     else:
         print_table(result, args.threshold)
-    
+
     # Save if requested
     if args.save:
         with open(args.save, "w") as f:
@@ -158,12 +156,14 @@ def main() -> int:
     # Write markdown matrix for easy viewing
     write_markdown_matrix(result, args.threshold, Path(args.matrix_out))
     print(f"Matrix report written to {args.matrix_out}")
-    
+
     # Check fail-under threshold
     if result["total_score"] < args.fail_under:
-        print(f"\n❌ FAILED: Score {result['total_score'] * 100:.2f}% is below {args.fail_under * 100:.0f}%")
+        print(
+            f"\n❌ FAILED: Score {result['total_score'] * 100:.2f}% is below {args.fail_under * 100:.0f}%"
+        )
         return 1
-    
+
     return 0
 
 

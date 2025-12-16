@@ -113,8 +113,10 @@ class InventoryWriter:
         # SHIM Inventory Status (Phase 7)
         shim_in_inventory = sum(1 for g in inventory.duplicate_groups if g.in_shim_inventory)
         shim_whitelisted = sum(1 for g in inventory.duplicate_groups if g.is_whitelisted)
-        shim_not_in_inventory = sum(1 for g in inventory.duplicate_groups if not g.in_shim_inventory)
-        
+        shim_not_in_inventory = sum(
+            1 for g in inventory.duplicate_groups if not g.in_shim_inventory
+        )
+
         if shim_in_inventory > 0 or shim_not_in_inventory > 0:
             lines.append("## SHIM Inventory Status")
             lines.append("")
@@ -137,9 +139,7 @@ class InventoryWriter:
 
             for dtype, count in sorted(type_counts.items()):
                 files = sum(
-                    len(g.member_files)
-                    for g in inventory.duplicate_groups
-                    if g.type == dtype
+                    len(g.member_files) for g in inventory.duplicate_groups if g.type == dtype
                 )
                 lines.append(f"| {dtype} | {count} | {files} |")
 
@@ -150,7 +150,9 @@ class InventoryWriter:
         if not_in_shim:
             lines.append("## ⚠️ High Priority: Duplicates Not in SHIM Inventory")
             lines.append("")
-            lines.append("These duplicates are NOT tracked in `.github/SHIM_INVENTORY.yaml` and should be reviewed:")
+            lines.append(
+                "These duplicates are NOT tracked in `.github/SHIM_INVENTORY.yaml` and should be reviewed:"
+            )
             lines.append("")
 
             for i, group in enumerate(not_in_shim[:10], 1):  # Top 10
@@ -170,7 +172,9 @@ class InventoryWriter:
                 lines.append("")
 
             if len(not_in_shim) > 10:
-                lines.append(f"*...and {len(not_in_shim) - 10} more duplicates not in SHIM inventory*")
+                lines.append(
+                    f"*...and {len(not_in_shim) - 10} more duplicates not in SHIM inventory*"
+                )
                 lines.append("")
 
         # Duplicate groups
@@ -187,16 +191,18 @@ class InventoryWriter:
                 lines.append(f"- **Suggested Action:** {group.suggested_action}")
                 lines.append(f"- **Reason:** {group.reason}")
                 lines.append(f"- **Files:** {len(group.member_files)}")
-                
+
                 # SHIM status
                 if group.in_shim_inventory:
                     status_emoji = "✅" if group.is_whitelisted else "⚠️"
-                    lines.append(f"- **SHIM Status:** {status_emoji} In SHIM inventory ({group.shim_status})")
+                    lines.append(
+                        f"- **SHIM Status:** {status_emoji} In SHIM inventory ({group.shim_status})"
+                    )
                     if group.is_whitelisted:
                         lines.append(f"- **Whitelisted:** Yes")
                 else:
                     lines.append(f"- **SHIM Status:** ⚠️ NOT in SHIM inventory")
-                
+
                 lines.append("")
 
                 lines.append("**Member Files:**")
@@ -204,7 +210,7 @@ class InventoryWriter:
                     lines.append(f"- `{member.path}` (similarity: {member.similarity_score:.2f})")
 
                 lines.append("")
-                
+
                 # SHIM recommendations
                 if group.shim_recommendations:
                     lines.append("**SHIM Recommendations:**")

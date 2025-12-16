@@ -10,7 +10,7 @@ Generates interactive API documentation with:
 
 Example:
     from scripts.space_traversal.viz_swagger import generate_swagger_docs
-    
+
     generate_swagger_docs(
         output_path=Path("audit_artifacts/api_docs.html"),
         repo_name="my-repo"

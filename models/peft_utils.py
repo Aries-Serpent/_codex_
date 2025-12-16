@@ -9,8 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'models.peft_utils' is deprecated. "
-    "Use 'src.models.peft_utils' instead.",
+    "Importing from 'models.peft_utils' is deprecated. " "Use 'src.models.peft_utils' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

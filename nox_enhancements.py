@@ -10,6 +10,7 @@ These sessions provide optional enhancements beyond core functionality:
 Add to your noxfile.py or run directly:
   nox -f nox_enhancements.py -s <session_name>
 """
+
 import subprocess
 
 import nox
@@ -83,7 +84,7 @@ def docker_build(session):
 @nox.session(name="docker_test")
 def docker_test(session):
     """Test Docker image functionality.
-    
+
     Note: This will build the image if it doesn't exist. To force a rebuild,
     run 'docker_build' session first.
     """
@@ -100,16 +101,16 @@ def docker_test(session):
         print(f"\nWarning: Failed to check for existing Docker image: {e}")
         print("Proceeding with build...")
         image_exists = False
-    
+
     # Build only if image doesn't exist
     if not image_exists:
         print("\nDocker image not found, building...")
         docker_build(session)
     else:
         print("\nDocker image found, skipping build...")
-    
+
     print("\nTesting Docker image...")
-    
+
     # Test health check
     session.run(
         "docker",
@@ -121,7 +122,7 @@ def docker_test(session):
         "from codex_ml.serving.health import health_check; health_check()",
         external=True,
     )
-    
+
     # Test CLI help
     session.run(
         "docker",
@@ -134,7 +135,7 @@ def docker_test(session):
         "--help",
         external=True,
     )
-    
+
     print("\n✅ Docker image tests passed")
 
 
@@ -147,14 +148,14 @@ def all_enhancements(session):
         print("✅ MLflow tests passed")
     except Exception as e:
         print(f"⚠️  MLflow tests skipped: {e}")
-    
+
     # Run performance benchmarks
     try:
         performance_benchmarks(session)
         print("✅ Performance benchmarks passed")
     except Exception as e:
         print(f"⚠️  Performance benchmarks failed: {e}")
-    
+
     # Run distributed tests
     try:
         distributed_tests(session)
@@ -168,14 +169,14 @@ def maintenance_check(session):
     """Run maintenance checks: dependencies, security, coverage."""
     session.install("-e", ".[test]")
     session.install("pip-audit", "safety")
-    
+
     print("\n🔍 Checking for dependency vulnerabilities...")
     try:
         session.run("pip-audit", "--skip-editable")
         print("✅ No dependency vulnerabilities found")
     except Exception as e:
         print(f"⚠️  Dependency check: {e}")
-    
+
     print("\n🔍 Checking test coverage...")
     session.run(
         "pytest",
@@ -192,7 +193,8 @@ def maintenance_check(session):
 @nox.session(name="enhancement_docs")
 def enhancement_docs(session):
     """Generate documentation for enhancements."""
-    print("""
+    print(
+        """
     ╔══════════════════════════════════════════════════════════════════╗
     ║              Enhancement Sessions Available                       ║
     ╠══════════════════════════════════════════════════════════════════╣
@@ -237,4 +239,5 @@ def enhancement_docs(session):
     For more information, see:
     - docs/guides/enhancements_guide.md
     - docs/API_REFERENCE.md (MLflow, Performance, Distributed sections)
-    """)
+    """
+    )

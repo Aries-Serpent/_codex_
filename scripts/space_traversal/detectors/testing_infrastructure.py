@@ -67,6 +67,6 @@ def detect(file_index: dict) -> dict:
             "test_count": len(test_files),
             "config_count": len(pytest_configs),
             "fixture_count": len(fixtures),
-            "detector_version": "1.1"
+            "detector_version": "1.1",
         },
     }

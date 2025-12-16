@@ -22,7 +22,9 @@ def test_stage_s7_manifest_sorts_artifacts_and_reports_coverage(monkeypatch, tmp
     coverage_path = artifacts_dir / "coverage_map.json"
     coverage_path.write_text(json.dumps(coverage_map), encoding="utf-8")
 
-    template_path = Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    template_path = (
+        Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    )
     cfg = {
         "weights": {
             "functionality": 0.2,
@@ -73,7 +75,9 @@ def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
     coverage_path = artifacts_dir / "coverage_map.json"
     coverage_path.write_text(json.dumps(coverage_map), encoding="utf-8")
 
-    template_path = Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    template_path = (
+        Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    )
     cfg = {
         "weights": {
             "functionality": 0.2,
@@ -111,7 +115,9 @@ def test_stage_s7_manifest_no_coverage_file(monkeypatch, tmp_path):
     # Create only a simple artifact
     (artifacts_dir / "test.json").write_text("{}", encoding="utf-8")
 
-    template_path = Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    template_path = (
+        Path(__file__).resolve().parents[2] / "templates" / "audit" / "capability_matrix.md.j2"
+    )
     cfg = {
         "weights": {
             "functionality": 0.2,

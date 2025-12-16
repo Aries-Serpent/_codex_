@@ -42,7 +42,9 @@ def test_summary_cli_json_output(tmp_path, capsys):
 
     run_dir = tmp_path / "run"
     run_dir.mkdir()
-    (run_dir / "metrics.ndjson").write_text(json.dumps({"metric": "acc", "value": 0.9, "step": 1}) + "\n", encoding="utf-8")
+    (run_dir / "metrics.ndjson").write_text(
+        json.dumps({"metric": "acc", "value": 0.9, "step": 1}) + "\n", encoding="utf-8"
+    )
 
     rc = ndjson_summary.main(["summarize", "--input", str(run_dir), "--output", "csv"])
     assert rc == 0
@@ -53,6 +55,8 @@ def test_summary_cli_json_output(tmp_path, capsys):
     if len(parts) >= 2:
         output_path = Path(parts[1])
         assert output_path.exists()
+
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
 if str(SRC_DIR) not in sys.path:

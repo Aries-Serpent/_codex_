@@ -58,7 +58,9 @@ def _load_gate_config(path: Path) -> List[GateCommand]:
             cmd_list = list(cmd)
         commands.append(GateCommand(name=name, cmd=cmd_list))
     if not commands:
-        commands.append(GateCommand(name="echo-smoke", cmd=["python", "-c", "print('local gate ok')"]))
+        commands.append(
+            GateCommand(name="echo-smoke", cmd=["python", "-c", "print('local gate ok')"])
+        )
     return commands
 
 
@@ -66,7 +68,9 @@ def _run_command(command: Sequence[str], repo_root: Path) -> subprocess.Complete
     env = dict(os.environ)
     env.setdefault("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
     try:
-        return subprocess.run(command, cwd=str(repo_root), check=False, capture_output=True, text=True, env=env)
+        return subprocess.run(
+            command, cwd=str(repo_root), check=False, capture_output=True, text=True, env=env
+        )
     except TypeError:
         return subprocess.run(command, check=False)  # type: ignore[arg-type]
 
@@ -104,10 +108,27 @@ def _write_markdown(summary: Dict[str, object], path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run local gate commands and capture a report.")
-    parser.add_argument("--repo-root", type=Path, default=Path("."), help="Repository root for running commands.")
-    parser.add_argument("--config", type=Path, default=Path("codex_local_gate.yaml"), help="YAML file defining gates.")
-    parser.add_argument("--json-out", type=Path, default=Path("codex_local_gate_report.json"), help="JSON summary output path.")
-    parser.add_argument("--md-out", type=Path, default=Path("codex_local_gate_report.md"), help="Markdown summary output path.")
+    parser.add_argument(
+        "--repo-root", type=Path, default=Path("."), help="Repository root for running commands."
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("codex_local_gate.yaml"),
+        help="YAML file defining gates.",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=Path,
+        default=Path("codex_local_gate_report.json"),
+        help="JSON summary output path.",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=Path,
+        default=Path("codex_local_gate_report.md"),
+        help="Markdown summary output path.",
+    )
     args = parser.parse_args(argv)
 
     repo_root = args.repo_root.expanduser().resolve()

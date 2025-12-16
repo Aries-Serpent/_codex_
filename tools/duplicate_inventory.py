@@ -128,7 +128,7 @@ def main():
     if args.config:
         try:
             import yaml
-            
+
             with open(args.config, "r") as f:
                 config = yaml.safe_load(f) or {}
         except Exception as e:
@@ -183,6 +183,7 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
 

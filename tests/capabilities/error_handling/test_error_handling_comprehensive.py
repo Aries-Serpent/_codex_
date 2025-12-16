@@ -71,7 +71,9 @@ class TimeoutError(CodexError):
     """Timeout errors."""
 
     def __init__(self, operation: str, timeout_seconds: float):
-        super().__init__(f"Operation {operation} timed out after {timeout_seconds}s", code="TIMEOUT")
+        super().__init__(
+            f"Operation {operation} timed out after {timeout_seconds}s", code="TIMEOUT"
+        )
         self.operation = operation
         self.timeout_seconds = timeout_seconds
 
@@ -134,7 +136,7 @@ class RetryConfig:
 
     def get_delay(self, attempt: int) -> float:
         """Calculate delay for attempt using exponential backoff."""
-        delay = self.base_delay * (self.exponential_base ** attempt)
+        delay = self.base_delay * (self.exponential_base**attempt)
         return min(delay, self.max_delay)
 
 
@@ -274,7 +276,10 @@ class CircuitBreaker:
         if self.state == CircuitState.CLOSED:
             return True
         if self.state == CircuitState.OPEN:
-            if self.last_failure_time and time.time() - self.last_failure_time >= self.recovery_timeout:
+            if (
+                self.last_failure_time
+                and time.time() - self.last_failure_time >= self.recovery_timeout
+            ):
                 self._half_open()
                 return True
             return False

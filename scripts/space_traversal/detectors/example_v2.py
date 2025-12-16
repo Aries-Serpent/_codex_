@@ -7,17 +7,19 @@ def detect_v2(file_index: dict) -> dict:
     evidence = []
     for p in files:
         if "serve" in p.lower() or "checkpoint" in p.lower():
-            evidence.append({
-                "path": p,
-                "sha": None,
-                "ranges": [{"start_line": 1, "end_line": 40}],
-                "confidence": 0.9,
-                "excerpt": None
-            })
+            evidence.append(
+                {
+                    "path": p,
+                    "sha": None,
+                    "ranges": [{"start_line": 1, "end_line": 40}],
+                    "confidence": 0.9,
+                    "excerpt": None,
+                }
+            )
     return {
         "id": "example-evidence-v2",
         "evidence": evidence,
         "found_patterns": ["serve", "checkpoint"],
         "required_patterns": ["serve"],
-        "meta": {"detector_version": "v2", "source": "example_v2"}
+        "meta": {"detector_version": "v2", "source": "example_v2"},
     }

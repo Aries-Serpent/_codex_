@@ -84,4 +84,3 @@ def test_tracking_decide_cli_help():
     if app is None:
         pytest.skip("Typer not installed")
     assert hasattr(app, "info")
-

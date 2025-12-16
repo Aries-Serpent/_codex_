@@ -62,6 +62,7 @@ def test_mltest_runner_invokes_pytest(monkeypatch, tmp_path: Path):
 
     def fake_run(cmd, check=False):  # type: ignore[override]
         called["cmd"] = cmd
+
         class R:
             returncode = 0
 

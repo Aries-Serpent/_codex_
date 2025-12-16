@@ -1,4 +1,5 @@
 """Smoke coverage for security.secrets."""
+
 from __future__ import annotations
 
 import time
@@ -21,6 +22,7 @@ def test_rotate_secret_respects_age(monkeypatch) -> None:
 
 def test_rotate_secret_generates(monkeypatch) -> None:
     state = secrets.SecretRotationState("id", last_rotated=0)
+
     # set deterministic generator
     class FakeRandom:
         def choice(self, alphabet):

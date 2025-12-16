@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 def secure_client():
     """Create test client with authentication enabled."""
     from src.codex_ml.serving.inference_server import create_app
+
     with patch.dict("os.environ", {"CODEX_API_KEYS": "test-key-1,test-key-2"}):
         app = create_app(enable_auth=True)
         return TestClient(app)
@@ -24,6 +25,7 @@ def secure_client():
 def jwt_client():
     """Create test client with JWT authentication."""
     from src.codex_ml.serving.inference_server import create_app
+
     with patch.dict("os.environ", {"CODEX_JWT_SECRET": "test-secret-key"}):
         app = create_app(enable_auth=True)
         return TestClient(app)
@@ -36,17 +38,13 @@ class TestJWTManipulation:
         """Test rejection of JWT with invalid signature."""
         # Create fake JWT with invalid signature
         fake_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0In0.invalid_signature"
-        
+
         response = jwt_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"Authorization": f"Bearer {fake_jwt}"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"Authorization": f"Bearer {fake_jwt}"},
         )
-        
+
         # Should reject invalid signature
         assert response.status_code == 401
 
@@ -54,17 +52,13 @@ class TestJWTManipulation:
         """Test rejection of expired JWT tokens."""
         # Create expired JWT (would need proper JWT lib in real test)
         expired_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjF9.invalid"
-        
+
         response = jwt_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"Authorization": f"Bearer {expired_jwt}"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"Authorization": f"Bearer {expired_jwt}"},
         )
-        
+
         # Should reject expired token
         assert response.status_code == 401
 
@@ -74,17 +68,13 @@ class TestJWTManipulation:
         header = base64.b64encode(b'{"alg":"none","typ":"JWT"}').decode()
         payload = base64.b64encode(b'{"sub":"test"}').decode()
         malicious_jwt = f"{header}.{payload}."
-        
+
         response = jwt_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"Authorization": f"Bearer {malicious_jwt}"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"Authorization": f"Bearer {malicious_jwt}"},
         )
-        
+
         # Should reject "none" algorithm
         assert response.status_code == 401
 
@@ -93,14 +83,10 @@ class TestJWTManipulation:
         # Attempt to modify claims after signing
         response = jwt_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"Authorization": "Bearer modified.token.here"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"Authorization": "Bearer modified.token.here"},
         )
-        
+
         # Should reject modified token
         assert response.status_code == 401
 
@@ -111,14 +97,9 @@ class TestAPIKeyAttacks:
     def test_missing_api_key(self, secure_client):
         """Test rejection of requests without API key."""
         response = secure_client.post(
-            "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            }
+            "/infer", json={"model_name": "test-model", "inputs": ["test"], "max_length": 50}
         )
-        
+
         # Should require authentication
         assert response.status_code == 401
 
@@ -126,14 +107,10 @@ class TestAPIKeyAttacks:
         """Test rejection of invalid API keys."""
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "invalid-key"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"X-API-Key": "invalid-key"},
         )
-        
+
         # Should reject invalid key
         assert response.status_code == 401
 
@@ -145,15 +122,11 @@ class TestAPIKeyAttacks:
             start = time.time()
             secure_client.post(
                 "/infer",
-                json={
-                    "model_name": "test-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                },
-                headers={"X-API-Key": "wrong-key"}
+                json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+                headers={"X-API-Key": "wrong-key"},
             )
             times.append(time.time() - start)
-        
+
         # Should use constant-time comparison
         # Variance should be low (not dependent on key correctness position)
         variance = max(times) - min(times)
@@ -163,13 +136,9 @@ class TestAPIKeyAttacks:
         """Test that API keys in query params are rejected (security best practice)."""
         response = secure_client.post(
             "/infer?api_key=test-key-1",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            }
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
         )
-        
+
         # Should not accept API key in query param (logged in URLs)
         assert response.status_code == 401
 
@@ -184,23 +153,21 @@ class TestRateLimitBypass:
         for _ in range(100):
             response = secure_client.get("/health")
             responses.append(response.status_code)
-        
+
         # Some requests should be rate limited
         rate_limited = sum(1 for status in responses if status == 429)
-        assert rate_limited > 0 or all(s == 200 for s in responses), \
-            "Rate limiting should trigger or all succeed"
+        assert rate_limited > 0 or all(
+            s == 200 for s in responses
+        ), "Rate limiting should trigger or all succeed"
 
     def test_rate_limit_bypass_different_headers(self, secure_client):
         """Test rate limit can't be bypassed by changing headers."""
         # Try to bypass by changing User-Agent
         responses = []
         for i in range(50):
-            response = secure_client.get(
-                "/health",
-                headers={"User-Agent": f"test-{i}"}
-            )
+            response = secure_client.get("/health", headers={"User-Agent": f"test-{i}"})
             responses.append(response.status_code)
-        
+
         # Should still hit rate limit
         rate_limited = sum(1 for status in responses if status == 429)
         # May or may not trigger depending on rate limit config
@@ -211,14 +178,10 @@ class TestRateLimitBypass:
         # Use valid API key
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should either succeed or hit rate limit
         assert response.status_code in [200, 429, 500]
 
@@ -230,17 +193,13 @@ class TestPayloadAttacks:
         """Test rejection of oversized payloads."""
         # Try to send very large payload
         large_inputs = ["test" * 1000] * 200  # Very large payload
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": large_inputs,
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": "test-model", "inputs": large_inputs, "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should reject or handle gracefully
         assert response.status_code in [400, 413, 422, 500]
 
@@ -249,80 +208,61 @@ class TestPayloadAttacks:
         response = secure_client.post(
             "/infer",
             data="{invalid json}",
-            headers={
-                "Content-Type": "application/json",
-                "X-API-Key": "test-key-1"
-            }
+            headers={"Content-Type": "application/json", "X-API-Key": "test-key-1"},
         )
-        
+
         # Should return 422 Unprocessable Entity
         assert response.status_code == 422
 
     def test_sql_injection_in_model_name(self, secure_client):
         """Test SQL injection protection in model name."""
         malicious_name = "'; DROP TABLE models; --"
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": malicious_name,
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": malicious_name, "inputs": ["test"], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should handle safely (not crash)
         assert response.status_code in [400, 422, 500]
 
     def test_command_injection_in_inputs(self, secure_client):
         """Test command injection protection."""
         malicious_input = "; rm -rf / ;"
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": [malicious_input],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": "test-model", "inputs": [malicious_input], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should handle safely
         assert response.status_code in [200, 400, 500]
 
     def test_path_traversal_in_model_name(self, secure_client):
         """Test path traversal protection."""
         malicious_name = "../../etc/passwd"
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": malicious_name,
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": malicious_name, "inputs": ["test"], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should reject path traversal
         assert response.status_code in [400, 422, 500]
 
     def test_null_byte_injection(self, secure_client):
         """Test null byte injection protection."""
         malicious_name = "test\x00model"
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": malicious_name,
-                "inputs": ["test"],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": malicious_name, "inputs": ["test"], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should handle safely
         assert response.status_code in [200, 400, 422, 500]
 
@@ -336,39 +276,28 @@ class TestAuthenticationExhaustion:
         for _ in range(50):
             secure_client.post(
                 "/infer",
-                json={
-                    "model_name": "test-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                },
-                headers={"X-API-Key": "wrong-key"}
+                json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+                headers={"X-API-Key": "wrong-key"},
             )
-        
+
         # Server should still respond (not crash)
         response = secure_client.get("/health")
         assert response.status_code == 200
 
     def test_dictionary_attack_resistance(self, secure_client):
         """Test resistance to dictionary attacks."""
-        common_keys = [
-            "admin", "password", "secret", "key",
-            "test", "demo", "api-key", "access"
-        ]
-        
+        common_keys = ["admin", "password", "secret", "key", "test", "demo", "api-key", "access"]
+
         failed_attempts = 0
         for key in common_keys:
             response = secure_client.post(
                 "/infer",
-                json={
-                    "model_name": "test-model",
-                    "inputs": ["test"],
-                    "max_length": 50
-                },
-                headers={"X-API-Key": key}
+                json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
+                headers={"X-API-Key": key},
             )
             if response.status_code == 401:
                 failed_attempts += 1
-        
+
         # All should fail
         assert failed_attempts == len(common_keys)
 
@@ -379,22 +308,16 @@ class TestHeaderInjection:
     def test_crlf_injection_in_headers(self, secure_client):
         """Test CRLF injection protection in headers."""
         malicious_header = "test\r\nX-Evil: true"
-        
-        response = secure_client.get(
-            "/health",
-            headers={"User-Agent": malicious_header}
-        )
-        
+
+        response = secure_client.get("/health", headers={"User-Agent": malicious_header})
+
         # Should handle safely
         assert response.status_code == 200
 
     def test_host_header_injection(self, secure_client):
         """Test host header injection protection."""
-        response = secure_client.get(
-            "/health",
-            headers={"Host": "evil.com"}
-        )
-        
+        response = secure_client.get("/health", headers={"Host": "evil.com"})
+
         # Should handle safely
         assert response.status_code == 200
 
@@ -412,17 +335,13 @@ class TestDenialOfService:
         """Test protection against ReDoS attacks."""
         # Try regex DoS in input
         malicious_input = "a" * 10000 + "!"
-        
+
         response = secure_client.post(
             "/infer",
-            json={
-                "model_name": "test-model",
-                "inputs": [malicious_input],
-                "max_length": 50
-            },
-            headers={"X-API-Key": "test-key-1"}
+            json={"model_name": "test-model", "inputs": [malicious_input], "max_length": 50},
+            headers={"X-API-Key": "test-key-1"},
         )
-        
+
         # Should handle without hanging
         assert response.status_code in [200, 400, 422, 500]
 
@@ -439,9 +358,7 @@ pytestmark = pytest.mark.security
 
 def pytest_configure(config):
     """Add security marker."""
-    config.addinivalue_line(
-        "markers", "security: mark test as security penetration test"
-    )
+    config.addinivalue_line("markers", "security: mark test as security penetration test")
 
 
 if __name__ == "__main__":

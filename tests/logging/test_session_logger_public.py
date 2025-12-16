@@ -1,4 +1,5 @@
 """Smoke tests for codex.logging.session_logger."""
+
 from __future__ import annotations
 
 from pathlib import Path

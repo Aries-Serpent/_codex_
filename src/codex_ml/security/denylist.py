@@ -30,14 +30,21 @@ def load_denylist(path: str | Path) -> DenylistRules:
     payload: Mapping[str, Any] = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
 
     sensitive_terms_raw = payload.get("sensitive_terms", [])
-    sensitive_terms = [str(term).lower() for term in (sensitive_terms_raw if isinstance(sensitive_terms_raw, list) else [])]
-    
+    sensitive_terms = [
+        str(term).lower()
+        for term in (sensitive_terms_raw if isinstance(sensitive_terms_raw, list) else [])
+    ]
+
     blocked_actions_raw = payload.get("blocked_actions", [])
-    blocked_actions = [str(action) for action in (blocked_actions_raw if isinstance(blocked_actions_raw, list) else [])]
-    
+    blocked_actions = [
+        str(action)
+        for action in (blocked_actions_raw if isinstance(blocked_actions_raw, list) else [])
+    ]
+
     blocked_patterns_raw = payload.get("blocked_prompt_patterns", [])
     blocked_prompt_patterns = [
-        str(pattern).lower() for pattern in (blocked_patterns_raw if isinstance(blocked_patterns_raw, list) else [])
+        str(pattern).lower()
+        for pattern in (blocked_patterns_raw if isinstance(blocked_patterns_raw, list) else [])
     ]
 
     compiled_patterns: list[tuple[Pattern[str], str]] = []
@@ -47,7 +54,9 @@ def load_denylist(path: str | Path) -> DenylistRules:
             if isinstance(item, dict):
                 pattern_text = str(item.get("pattern", ""))
                 replacement = str(item.get("replacement", "[REDACTED]"))
-                compiled_patterns.append((re.compile(pattern_text, flags=re.IGNORECASE), replacement))
+                compiled_patterns.append(
+                    (re.compile(pattern_text, flags=re.IGNORECASE), replacement)
+                )
 
     return DenylistRules(
         sensitive_terms=sensitive_terms,

@@ -9,6 +9,7 @@ Tests cover:
 - Caching behavior
 - Manifest generation
 """
+
 import csv
 import json
 import tempfile
@@ -24,7 +25,7 @@ pytestmark = pytest.mark.ml_comprehensive
 @pytest.fixture
 def sample_jsonl_file():
     """Create sample JSONL file"""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
         data = [
             {"text": "Sample 1", "label": 0},
             {"text": "Sample 2", "label": 1},
@@ -33,15 +34,15 @@ def sample_jsonl_file():
             {"text": "Sample 5", "label": 0},
         ]
         for item in data:
-            f.write(json.dumps(item) + '\n')
+            f.write(json.dumps(item) + "\n")
         return Path(f.name)
 
 
 @pytest.fixture
 def sample_csv_file():
     """Create sample CSV file"""
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
-        writer = csv.DictWriter(f, fieldnames=['text', 'label'])
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+        writer = csv.DictWriter(f, fieldnames=["text", "label"])
         writer.writeheader()
         data = [
             {"text": "Sample 1", "label": "0"},
@@ -62,7 +63,7 @@ class TestJSONLLoader:
         with open(sample_jsonl_file) as f:
             for line in f:
                 data.append(json.loads(line))
-        
+
         assert len(data) == 5
         assert "text" in data[0]
         assert "label" in data[0]
@@ -83,7 +84,7 @@ class TestCSVLoader:
         with open(sample_csv_file) as f:
             reader = csv.DictReader(f)
             data = list(reader)
-        
+
         assert len(data) == 3
         assert "text" in data[0]
         assert "label" in data[0]
@@ -95,17 +96,17 @@ class TestDeterministicSplitting:
     def test_split_dataset_reproducible(self):
         """Test that splitting is reproducible with same seed"""
         import random
-        
+
         dataset = list(range(100))
-        
+
         # Split 1
         random.seed(42)
         split1 = random.sample(dataset, 80)
-        
+
         # Split 2 with same seed
         random.seed(42)
         split2 = random.sample(dataset, 80)
-        
+
         # Should produce identical splits
         assert split1 == split2
 

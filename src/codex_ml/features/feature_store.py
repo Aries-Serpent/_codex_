@@ -59,7 +59,7 @@ class FeatureMetadata:
 @dataclass
 class FeatureVersion:
     """Version information for a feature.
-    
+
     Attributes:
         version: Semantic version string (e.g., "1.0.0")
         timestamp: Creation timestamp
@@ -67,13 +67,13 @@ class FeatureVersion:
         storage_path: Path to materialized feature data
         metadata: Additional version metadata
     """
-    
+
     version: str
     timestamp: str
     feature_name: str
     storage_path: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> dict:
         """Convert to dictionary."""
         return asdict(self)
@@ -142,7 +142,7 @@ class FeatureStore:
     """Centralized feature store.
 
     Manages feature definitions, versioning, materialization, and point-in-time retrieval.
-    
+
     Features:
     - Feature registration and versioning
     - Point-in-time feature retrieval
@@ -311,19 +311,19 @@ class FeatureStore:
         """Clear feature cache."""
         self.feature_cache.clear()
         logger.info("Feature cache cleared")
-    
+
     def list_versions(self, feature_name: str) -> List[str]:
         """List all versions of a feature.
-        
+
         Args:
             feature_name: Feature name
-            
+
         Returns:
             List of version strings
         """
         versions = self.feature_versions.get(feature_name, [])
         return [v.version for v in versions]
-    
+
     def get_features_at_time(
         self,
         feature_names: List[str],
@@ -331,14 +331,14 @@ class FeatureStore:
         lookback_days: int = 30,
     ) -> Dict[str, Any]:
         """Get point-in-time features.
-        
+
         Retrieves feature values as they were at a specific timestamp.
-        
+
         Args:
             feature_names: List of feature names
             timestamp: Target timestamp (ISO string or datetime)
             lookback_days: Maximum lookback window in days
-            
+
         Returns:
             Dictionary of feature values at the given time
         """
@@ -346,22 +346,21 @@ class FeatureStore:
             target_time = datetime.fromisoformat(timestamp)
         else:
             target_time = timestamp
-        
+
         results = {}
-        
+
         for feature_name in feature_names:
             # Find the latest version before target time
             versions = self.feature_versions.get(feature_name, [])
             valid_versions = [
-                v for v in versions
-                if datetime.fromisoformat(v.timestamp) <= target_time
+                v for v in versions if datetime.fromisoformat(v.timestamp) <= target_time
             ]
-            
+
             if valid_versions:
                 # Sort by timestamp and get the most recent
                 valid_versions.sort(key=lambda v: v.timestamp, reverse=True)
                 latest_version = valid_versions[0]
-                
+
                 # Load feature value from storage if available
                 if latest_version.storage_path:
                     storage_path = Path(latest_version.storage_path)
@@ -376,12 +375,10 @@ class FeatureStore:
                 else:
                     logger.warning(f"No storage path for feature: {feature_name}")
             else:
-                logger.warning(
-                    f"No feature version found for {feature_name} at {timestamp}"
-                )
-        
+                logger.warning(f"No feature version found for {feature_name} at {timestamp}")
+
         return results
-    
+
     def materialize_to_parquet(
         self,
         feature_group_name: str,
@@ -390,13 +387,13 @@ class FeatureStore:
         partition_by_date: bool = True,
     ) -> Path:
         """Materialize feature group to parquet file.
-        
+
         Args:
             feature_group_name: Feature group name
             data: Feature data to materialize
             version: Version string (auto-generated if None)
             partition_by_date: Partition by date for efficient retrieval
-            
+
         Returns:
             Path to materialized parquet file
         """
@@ -410,7 +407,7 @@ class FeatureStore:
                 "Install with: pip install pandas pyarrow"
             )
             raise
-        
+
         # Generate version if not provided
         if version is None:
             existing_versions = self.list_versions(feature_group_name)
@@ -422,7 +419,7 @@ class FeatureStore:
                 version = ".".join(parts)
             else:
                 version = "1.0.0"
-        
+
         # Create storage path
         timestamp = datetime.now()
         if partition_by_date:
@@ -430,14 +427,14 @@ class FeatureStore:
             storage_dir = self.store_path / feature_group_name / date_str
         else:
             storage_dir = self.store_path / feature_group_name
-        
+
         storage_dir.mkdir(parents=True, exist_ok=True)
         storage_path = storage_dir / f"v{version}_{timestamp.strftime('%H%M%S')}.parquet"
-        
+
         # Convert to DataFrame and write
         df = pd.DataFrame([data]) if isinstance(data, dict) else pd.DataFrame(data)
         df.to_parquet(storage_path, compression="snappy", index=False)
-        
+
         # Record version
         feature_version = FeatureVersion(
             version=version,
@@ -446,14 +443,13 @@ class FeatureStore:
             storage_path=str(storage_path),
             metadata={"row_count": len(df), "column_count": len(df.columns)},
         )
-        
+
         if feature_group_name not in self.feature_versions:
             self.feature_versions[feature_group_name] = []
         self.feature_versions[feature_group_name].append(feature_version)
-        
+
         logger.info(
-            f"Materialized {feature_group_name} v{version} to {storage_path} "
-            f"({len(df)} rows)"
+            f"Materialized {feature_group_name} v{version} to {storage_path} " f"({len(df)} rows)"
         )
-        
+
         return storage_path

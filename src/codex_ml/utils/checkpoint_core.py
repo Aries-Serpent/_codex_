@@ -363,6 +363,7 @@ def _deserialize_payload(
             buf.seek(0)
     return pickle.load(buf)  # nosec B301
 
+
 _CKPT_COUNTER = count()
 
 

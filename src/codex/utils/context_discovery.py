@@ -29,10 +29,10 @@ logger = logging.getLogger(__name__)
 
 def run_git_command(cmd: str) -> Optional[str]:
     """Execute git command and return output. Returns None on error.
-    
+
     Args:
         cmd: Git command string (e.g., "git rev-parse --abbrev-ref HEAD")
-        
+
     Returns:
         Command stdout stripped, or None on error/non-zero exit.
     """
