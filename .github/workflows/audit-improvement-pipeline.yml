@@ -128,12 +128,12 @@ jobs:
 
       - name: Sanitize Artifact Filenames
         run: |
-          # Remove invalid characters from filenames (: < > | * ? " \r \n)
+          # Remove invalid characters from filenames (: < > | * ?)
           find reports/ audit_artifacts/ -type f 2>/dev/null | while read -r file; do
             dir=$(dirname "$file")
             base=$(basename "$file")
             # Replace colons with hyphens, other invalid chars with underscore
-            newbase=$(echo "$base" | tr ':' '-' | tr '<>|*?"' '_')
+            newbase=$(echo "$base" | tr ':' '-' | tr '<>|*?' '_')
             if [ "$base" != "$newbase" ]; then
               mv "$file" "$dir/$newbase"
               echo "Renamed: $base → $newbase"
@@ -142,12 +142,10 @@ jobs:
 
       - name: Store Trend Data
         run: |
-          cd audit_artifacts 2>/dev/null || true
           python scripts/space_traversal/audit_runner.py store-trend || true
 
       - name: Check Regressions
         run: |
-          cd audit_artifacts 2>/dev/null || true
           python scripts/space_traversal/audit_runner.py check-regressions || true
 
       - name: Upload Audit Artifacts
