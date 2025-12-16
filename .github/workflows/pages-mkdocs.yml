@@ -99,4 +99,3 @@ jobs:
       - name: Output deployment URL
         run: |
           echo "📚 Documentation deployed to: ${{ steps.deployment.outputs.page_url }}"
-          echo "🔗 Direct link: https://aries-serpent.github.io/_codex_/"
