@@ -20,7 +20,7 @@ The orchestrator assists in developing Python and console applications by:
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 try:
     import numpy as np
@@ -545,14 +545,32 @@ class PhysicsGuidedDeveloperOrchestrator:
     
     def generate_code(
         self,
-        component_id: str,
+        component_id: Union[str, Dict[str, Any]],
         specifications: Optional[Dict[str, Any]] = None
     ) -> str:
         """
-        Generate code for a specific component.
+        Generate code for a specific component or from specifications directly.
+        
+        Args:
+            component_id: Either a component ID string or a specifications dictionary.
+                         If a dict is provided, it's treated as specifications.
+            specifications: Optional specifications (used when component_id is a string)
         
         Uses chaos theory to explore different implementation approaches.
         """
+        # Handle case where specifications are passed as first argument
+        if isinstance(component_id, dict):
+            specifications = component_id
+            # Check if this is a new application request
+            if 'app_name' in specifications or 'app_type' in specifications:
+                # Generate a simple application based on specs
+                return self._generate_app_from_specs(specifications)
+            # Otherwise treat as specifications for the first component
+            if self.components:
+                component_id = list(self.components.keys())[0]
+            else:
+                return self._generate_generic_code(specifications)
+        
         if component_id not in self.components:
             return f"# Error: Component {component_id} not found"
         
@@ -574,6 +592,37 @@ class PhysicsGuidedDeveloperOrchestrator:
         component.implementation_status = 'complete'
         
         return code
+    
+    def _generate_app_from_specs(self, specs: Dict[str, Any]) -> str:
+        """Generate a simple application from specifications."""
+        app_name = specs.get('app_name', 'my_app')
+        app_type = specs.get('app_type', 'cli')
+        
+        code = f'''#!/usr/bin/env python3
+"""
+{app_name} - Generated application
+Type: {app_type}
+"""
+
+def main():
+    """Main entry point."""
+    print("Hello from {app_name}!")
+    print("Application type: {app_type}")
+
+if __name__ == "__main__":
+    main()
+'''
+        return code
+    
+    def _generate_generic_code(self, specs: Dict[str, Any]) -> str:
+        """Generate generic code from specifications."""
+        return f"""# Generated code from specifications
+# Specs: {specs}
+
+def placeholder():
+    \"\"\"Generated placeholder function.\"\"\"
+    pass
+"""
     
     def _generate_main_module(self, specs: Dict[str, Any]) -> str:
         """Generate main module code."""
