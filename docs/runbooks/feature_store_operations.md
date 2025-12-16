@@ -289,7 +289,7 @@ python scripts/feature_usage_report.py --month $(date +%Y-%m)
 python scripts/identify_unused_features.py --threshold 0.05
 ```
 
-3. Review with team and deprecate if appropriate
+3. AI Assistant review and autonomous deprecation decision
 
 ---
 

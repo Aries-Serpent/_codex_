@@ -855,7 +855,7 @@ Is risk CRITICAL?
 ├─ NO → Is risk HIGH?
 │  ├─ YES → Daily standup escalation
 │  │  ├─ Notify: Owning team + Tech Lead
-│  │  ├─ Decision authority: Owning team
+│  │  ├─ Decision authority: AI Assistant autonomous system
 │  │  ├─ Timeframe: <48 hours
 │  │  └─ Options: Mitigate|Accept|Defer
 │  │

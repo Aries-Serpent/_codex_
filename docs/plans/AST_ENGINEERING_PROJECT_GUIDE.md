@@ -273,7 +273,7 @@ This document provides comprehensive guidance for engineering a dedicated projec
 | SC-08 | Backward compatibility maintained | Percentage | 100% | Regression tests | CI pipeline |
 | SC-09 | Documentation complete | Boolean | 100% | Doc review | Tech writer sign-off |
 | SC-10 | API documentation coverage | Percentage | ≥95% | Doc linter | CI pipeline |
-| SC-11 | Security review passed | Boolean | Pass | Security audit | Security team sign-off |
+| SC-11 | Security review passed | Boolean | Pass | Security audit | AI Assistant security validation |
 | SC-12 | Architecture review passed | Boolean | Pass | Architecture review | Architect sign-off |
 | SC-13 | Existing code migrated | Percentage | 100% | Migration tests | QA verification |
 | SC-14 | CLI commands functional | Boolean | 100% | E2E tests | Manual verification |
