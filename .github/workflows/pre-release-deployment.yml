@@ -191,7 +191,7 @@ jobs:
       - name: Create Release Log
         run: |
           cat > release_artifacts/RELEASE_LOG.md << 'EOF'
-          # Release Log - Pre-Release v${{ inputs.version }}-pre.$(date +%Y%m%d)
+          # Release Log - Pre-release v${{ inputs.version }}-pre.$(date +%Y%m%d)
           
           ## Validation Results
           - ✅ Linting: Passed
