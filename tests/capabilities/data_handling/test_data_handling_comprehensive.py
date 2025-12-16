@@ -34,7 +34,9 @@ class DataSchema:
         self.fields: dict[str, dict[str, Any]] = {}
         self.required: set[str] = set()
 
-    def add_field(self, name: str, dtype: str, required: bool = False, nullable: bool = True) -> None:
+    def add_field(
+        self, name: str, dtype: str, required: bool = False, nullable: bool = True
+    ) -> None:
         """Add field to schema."""
         self.fields[name] = {"dtype": dtype, "nullable": nullable}
         if required:
@@ -147,7 +149,9 @@ class LeakageDetector:
     def __init__(self):
         self.id_field = "id"
 
-    def detect_overlap(self, train: list[dict], val: list[dict], test: list[dict]) -> dict[str, Any]:
+    def detect_overlap(
+        self, train: list[dict], val: list[dict], test: list[dict]
+    ) -> dict[str, Any]:
         """Detect ID overlap between splits."""
         train_ids = {r[self.id_field] for r in train if self.id_field in r}
         val_ids = {r[self.id_field] for r in val if self.id_field in r}
@@ -166,7 +170,9 @@ class LeakageDetector:
         target_parts = target.lower().split("_")
         for f in features:
             f_lower = f.lower()
-            if target.lower() in f_lower or any(part in f_lower for part in target_parts if len(part) > 3):
+            if target.lower() in f_lower or any(
+                part in f_lower for part in target_parts if len(part) > 3
+            ):
                 suspicious.append(f)
         return suspicious
 

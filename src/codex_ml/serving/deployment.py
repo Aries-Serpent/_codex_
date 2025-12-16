@@ -14,6 +14,7 @@ import random
 
 class DeploymentStrategy(Enum):
     """Deployment strategy types."""
+
     BLUE_GREEN = "blue_green"
     CANARY = "canary"
     ROLLING = "rolling"
@@ -22,7 +23,7 @@ class DeploymentStrategy(Enum):
 @dataclass
 class DeploymentConfig:
     """Configuration for deployment strategy."""
-    
+
     strategy: DeploymentStrategy = DeploymentStrategy.BLUE_GREEN
     health_check_interval_s: int = 10
     health_check_timeout_s: int = 5
@@ -34,19 +35,19 @@ class DeploymentConfig:
 class TrafficSplitter:
     """
     Manages traffic splitting between blue and green deployments.
-    
+
     Features:
     - Gradual rollout (0% → 100%)
     - Health-based automatic failover
     - Rollback on error spike
     - Weighted routing
-    
+
     Example:
         >>> splitter = TrafficSplitter()
         >>> splitter.set_weights(blue=80, green=20)  # 80% to blue, 20% to green
         >>> target = splitter.route_request(request_id)
     """
-    
+
     def __init__(self):
         self.blue_weight = 100
         self.green_weight = 0
@@ -56,11 +57,11 @@ class TrafficSplitter:
         self.green_errors = 0
         self.blue_requests = 0
         self.green_requests = 0
-    
+
     def set_weights(self, blue: int, green: int):
         """
         Set traffic weights for blue and green.
-        
+
         Args:
             blue: Percentage of traffic to blue (0-100)
             green: Percentage of traffic to green (0-100)
@@ -68,17 +69,17 @@ class TrafficSplitter:
         total = blue + green
         if total == 0:
             raise ValueError("At least one deployment must have non-zero weight")
-        
+
         self.blue_weight = (blue / total) * 100
         self.green_weight = (green / total) * 100
-    
+
     def route_request(self, request_id: str) -> str:
         """
         Route request to blue or green deployment.
-        
+
         Args:
             request_id: Unique request identifier
-            
+
         Returns:
             "blue" or "green" indicating target deployment
         """
@@ -90,7 +91,7 @@ class TrafficSplitter:
         if not self.blue_healthy and not self.green_healthy:
             # Both unhealthy, failover to blue
             return "blue"
-        
+
         # Weighted routing
         rand = random.random() * 100
         if rand < self.blue_weight:
@@ -99,14 +100,14 @@ class TrafficSplitter:
         else:
             self.green_requests += 1
             return "green"
-    
+
     def record_error(self, deployment: str):
         """Record error for deployment."""
         if deployment == "blue":
             self.blue_errors += 1
         else:
             self.green_errors += 1
-    
+
     def get_error_rate(self, deployment: str) -> float:
         """Get error rate for deployment."""
         if deployment == "blue":
@@ -117,14 +118,14 @@ class TrafficSplitter:
             if self.green_requests == 0:
                 return 0.0
             return (self.green_errors / self.green_requests) * 100
-    
+
     def update_health(self, deployment: str, healthy: bool):
         """Update health status for deployment."""
         if deployment == "blue":
             self.blue_healthy = healthy
         else:
             self.green_healthy = healthy
-    
+
     def reset_stats(self):
         """Reset error and request counters."""
         self.blue_errors = 0
@@ -136,24 +137,24 @@ class TrafficSplitter:
 class BlueGreenDeployment:
     """
     Blue-green deployment manager with automatic rollout and rollback.
-    
+
     Features:
     - Gradual traffic shift (0% → 100%)
     - Continuous health monitoring
     - Automatic rollback on failures
     - Configurable rollout duration
-    
+
     Example:
         >>> deployment = BlueGreenDeployment(config)
         >>> deployment.start_rollout(new_model_version="v2")
         >>> # Monitors health and gradually shifts traffic
         >>> status = deployment.get_status()
     """
-    
+
     def __init__(
-        self, 
+        self,
         config: Optional[DeploymentConfig] = None,
-        health_check_fn: Optional[Callable[[str], bool]] = None
+        health_check_fn: Optional[Callable[[str], bool]] = None,
     ):
         self.config = config or DeploymentConfig()
         self.health_check_fn = health_check_fn
@@ -163,11 +164,11 @@ class BlueGreenDeployment:
         self.rollback_triggered = False
         self.current_blue_version = "v1"
         self.current_green_version: Optional[str] = None
-    
+
     def start_rollout(self, new_model_version: str):
         """
         Start gradual rollout of new model version.
-        
+
         Args:
             new_model_version: Version identifier for new model
         """
@@ -176,37 +177,37 @@ class BlueGreenDeployment:
         self.rollout_active = True
         self.rollback_triggered = False
         self.splitter.reset_stats()
-        
+
         print(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
-    
+
     def update_rollout(self) -> Dict[str, Any]:
         """
         Update rollout progress and health checks.
-        
+
         Returns:
             Status dictionary with progress and health info
         """
         if not self.rollout_active:
             return {"status": "idle", "progress": 0}
-        
+
         elapsed = time.time() - self.rollout_start_time
         progress = min(elapsed / self.config.rollout_duration_s, 1.0)
-        
+
         # Update traffic weights
         green_weight = int(progress * 100)
         blue_weight = 100 - green_weight
         self.splitter.set_weights(blue=blue_weight, green=green_weight)
-        
+
         # Health checks
         blue_healthy = self._check_health("blue")
         green_healthy = self._check_health("green")
         self.splitter.update_health("blue", blue_healthy)
         self.splitter.update_health("green", green_healthy)
-        
+
         # Check error rates
         blue_error_rate = self.splitter.get_error_rate("blue")
         green_error_rate = self.splitter.get_error_rate("green")
-        
+
         # Rollback logic
         if green_error_rate > self.config.error_threshold_percent:
             self.trigger_rollback("High error rate in green deployment")
@@ -214,26 +215,22 @@ class BlueGreenDeployment:
                 "status": "rolled_back",
                 "progress": progress,
                 "reason": "High error rate",
-                "green_error_rate": green_error_rate
+                "green_error_rate": green_error_rate,
             }
-        
+
         if not green_healthy and self.splitter.green_requests > 10:
             self.trigger_rollback("Green deployment unhealthy")
-            return {
-                "status": "rolled_back",
-                "progress": progress,
-                "reason": "Health check failed"
-            }
-        
+            return {"status": "rolled_back", "progress": progress, "reason": "Health check failed"}
+
         # Complete rollout
         if progress >= 1.0 and elapsed > self.config.min_healthy_duration_s:
             self.complete_rollout()
             return {
                 "status": "completed",
                 "progress": 1.0,
-                "new_version": self.current_green_version
+                "new_version": self.current_green_version,
             }
-        
+
         return {
             "status": "in_progress",
             "progress": progress,
@@ -242,13 +239,13 @@ class BlueGreenDeployment:
             "blue_healthy": blue_healthy,
             "green_healthy": green_healthy,
             "blue_error_rate": blue_error_rate,
-            "green_error_rate": green_error_rate
+            "green_error_rate": green_error_rate,
         }
-    
+
     def trigger_rollback(self, reason: str):
         """
         Trigger rollback to blue deployment.
-        
+
         Args:
             reason: Reason for rollback
         """
@@ -257,7 +254,7 @@ class BlueGreenDeployment:
         self.rollout_active = False
         self.rollback_triggered = True
         self.current_green_version = None
-    
+
     def complete_rollout(self):
         """Complete rollout and promote green to blue."""
         print(f"Rollout complete: {self.current_green_version} promoted to blue")
@@ -265,7 +262,7 @@ class BlueGreenDeployment:
         self.current_green_version = None
         self.rollout_active = False
         self.splitter.set_weights(blue=100, green=0)
-    
+
     def _check_health(self, deployment: str) -> bool:
         """Check health of deployment."""
         if self.health_check_fn:
@@ -274,7 +271,7 @@ class BlueGreenDeployment:
             except Exception:
                 return False
         return True
-    
+
     def get_status(self) -> Dict[str, Any]:
         """Get current deployment status."""
         return {
@@ -284,10 +281,7 @@ class BlueGreenDeployment:
             "rollback_triggered": self.rollback_triggered,
             "traffic_weights": {
                 "blue": self.splitter.blue_weight,
-                "green": self.splitter.green_weight
+                "green": self.splitter.green_weight,
             },
-            "health": {
-                "blue": self.splitter.blue_healthy,
-                "green": self.splitter.green_healthy
-            }
+            "health": {"blue": self.splitter.blue_healthy, "green": self.splitter.green_healthy},
         }

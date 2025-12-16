@@ -339,12 +339,16 @@ def summarize_ndjson_to_sqlite(
     conn = sqlite3.connect(str(db_path_obj))
     try:
         # Create table with TEXT columns (flexible schema)
-        columns_def = ", ".join(f'"{col}" TEXT' for col in columns)  # nosec B608        conn.execute(f'CREATE TABLE IF NOT EXISTS "{table_name}" ({columns_def})')
+        columns_def = ", ".join(
+            f'"{col}" TEXT' for col in columns
+        )  # nosec B608        conn.execute(f'CREATE TABLE IF NOT EXISTS "{table_name}" ({columns_def})')
 
         # Insert rows
         placeholders = ", ".join("?" * len(columns))
         column_names = ", ".join(f'"{c}"' for c in columns)
-        insert_sql = f'INSERT INTO "{table_name}" ({column_names}) VALUES ({placeholders})'  # nosec B608
+        insert_sql = (
+            f'INSERT INTO "{table_name}" ({column_names}) VALUES ({placeholders})'  # nosec B608
+        )
         for log in logs:
             # Convert values to strings for TEXT columns
             values = [

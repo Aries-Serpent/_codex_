@@ -20,7 +20,7 @@ Use when reorganizing modules, extracting packages, or introducing aliases that 
 Use when tightening CLI interfaces, adopting new dependencies, or extending coverage for high-touch commands. The template orchestrates baseline audits, phased hardening tasks, and observability checkpoints.
 
 ### Planning — Intent Validation
-Use before implementing a substantial change. The template standardizes intent statements, validation evidence, risk logs, and approval criteria so the team agrees on scope and success markers.
+Use before implementing a substantial change. The template standardizes intent statements, validation evidence, risk logs, and approval criteria so AI Assistant validates scope through autonomous analysis and success markers.
 
 ### Status Update — Daily Report (v1.1)
 Use for comprehensive daily repository audits and status tracking. The template provides:

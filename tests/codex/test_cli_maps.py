@@ -1,4 +1,5 @@
 """Smoke tests for codex.cli_maps CLI entrypoint."""
+
 from __future__ import annotations
 
 import sys

@@ -41,47 +41,76 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
+      - name: Extract version from pyproject.toml
+        id: get_version
+        run: |
+          VERSION=$(python -c "
+          try:
+              import tomllib
+          except ImportError:
+              import tomli as tomllib
+          with open('pyproject.toml', 'rb') as f:
+              data = tomllib.load(f)
+              print(data['project']['version'])
+          ")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jinja2 pyyaml || true
+          pip install jinja2 pyyaml toml tomli || true
 
       - name: Generate Wiki Pages
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
         run: |
           mkdir -p wiki_output
           python -c "
-          import sys
+          import sys, os
           sys.path.insert(0, '.')
           from scripts.space_traversal.wiki_generator import generate_wiki, create_wiki_bundle
           from pathlib import Path
           
           output_dir = Path('wiki_output')
-          generate_wiki(output_dir, 'Aries-Serpent/_codex_', '1.5.5')
+          repo = os.environ['REPO_NAME']
+          version = os.environ['VERSION']
+          generate_wiki(output_dir, repo, version)
           create_wiki_bundle(output_dir, Path('wiki.zip'))
           print('✅ Wiki generated successfully')
           "
 
       - name: Generate Documentation Hub
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
         run: |
           python -c "
-          import sys
+          import sys, os
           sys.path.insert(0, '.')
           from scripts.space_traversal.viz_docs_hub import generate_docs_hub
           from pathlib import Path
           
-          generate_docs_hub(Path('wiki_output/docs_hub.html'), 'Aries-Serpent/_codex_', '1.5.5')
+          repo = os.environ['REPO_NAME']
+          version = os.environ['VERSION']
+          generate_docs_hub(Path('wiki_output/docs_hub.html'), repo, version)
           print('✅ Documentation hub generated')
           "
 
       - name: Generate Agent Interface
+        env:
+          REPO_NAME: ${{ github.repository }}
+          VERSION: ${{ steps.get_version.outputs.version }}
         run: |
           python -c "
-          import sys
+          import sys, os
           sys.path.insert(0, '.')
           from scripts.space_traversal.viz_agent_interface import generate_agent_interface
           from pathlib import Path
           
-          generate_agent_interface(Path('wiki_output/agent_interface.html'), 'Aries-Serpent/_codex_', '1.5.5')
+          repo = os.environ['REPO_NAME']
+          version = os.environ['VERSION']
+          generate_agent_interface(Path('wiki_output/agent_interface.html'), repo, version)
           print('✅ Agent interface generated')
           "
 

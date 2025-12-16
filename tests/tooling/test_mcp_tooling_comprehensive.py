@@ -12,13 +12,15 @@ class TestMCPToolingRegistry:
     def test_detector_import(self):
         """Test mcp tooling registry detector can be imported."""
         from scripts.space_traversal.detectors import mcp_tooling_registry
-        assert hasattr(mcp_tooling_registry, 'detect')
+
+        assert hasattr(mcp_tooling_registry, "detect")
 
     def test_detector_output_contract(self):
         """Test detector output follows contract."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
-        
+
         assert "id" in result
         assert result["id"] == "mcp-tooling-registry"
         assert "evidence_files" in result
@@ -28,16 +30,18 @@ class TestMCPToolingRegistry:
     def test_required_patterns(self):
         """Test required patterns are defined."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
-        
+
         assert "registry" in result["required_patterns"]
         assert "mcp.json" in result["required_patterns"]
 
     def test_safeguards_metadata(self):
         """Test safeguards metadata is present."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
-        
+
         assert "safeguards" in result
         assert "bounded" in result["safeguards"]
         assert "deterministic" in result["safeguards"]
@@ -45,8 +49,9 @@ class TestMCPToolingRegistry:
     def test_docs_keywords(self):
         """Test docs_keywords are present."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
-        
+
         assert "docs_keywords" in result
         assert "mcp" in result["docs_keywords"]
         assert "registry" in result["docs_keywords"]
@@ -58,12 +63,14 @@ class TestMCPToolingDetection:
     def test_empty_file_index(self):
         """Test detection with empty file index."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
         assert isinstance(result["evidence_files"], list)
 
     def test_registry_detection(self):
         """Test registry file detection."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         file_index = {
             "files": [
                 {"path": "mcp/registry.py"},
@@ -76,8 +83,9 @@ class TestMCPToolingDetection:
     def test_deterministic_output(self):
         """Test deterministic detection output."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         file_index = {"files": [{"path": "mcp/registry.py"}]}
-        
+
         results = [detect(file_index) for _ in range(3)]
         for i in range(1, len(results)):
             assert results[i]["found_patterns"] == results[0]["found_patterns"]
@@ -85,10 +93,12 @@ class TestMCPToolingDetection:
     def test_related_files_defined(self):
         """Test related files are defined."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import RELATED_FILES
+
         assert len(RELATED_FILES) > 0
 
     def test_meta_category(self):
         """Test meta category is mcp."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
+
         result = detect({"files": []})
         assert result["meta"]["category"] == "mcp"

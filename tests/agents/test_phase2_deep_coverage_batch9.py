@@ -34,7 +34,7 @@ class TestPhase2_PhysicsIntegration:
         from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
-        if hasattr(integration, 'couple_orchestrators'):
+        if hasattr(integration, "couple_orchestrators"):
             result = integration.couple_orchestrators(["orch1", "orch2"])
             assert result is not None
 
@@ -43,7 +43,7 @@ class TestPhase2_PhysicsIntegration:
         from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
-        if hasattr(integration, 'classical'):
+        if hasattr(integration, "classical"):
             classical = integration.classical
             assert classical is not None
 
@@ -52,7 +52,7 @@ class TestPhase2_PhysicsIntegration:
         from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
-        if hasattr(integration, 'advanced'):
+        if hasattr(integration, "advanced"):
             advanced = integration.advanced
             assert advanced is not None
 
@@ -61,7 +61,7 @@ class TestPhase2_PhysicsIntegration:
         from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
-        if hasattr(integration, 'sync'):
+        if hasattr(integration, "sync"):
             integration.sync()
             assert True
 
@@ -70,7 +70,7 @@ class TestPhase2_PhysicsIntegration:
         from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
-        if hasattr(integration, 'transfer_data'):
+        if hasattr(integration, "transfer_data"):
             data = {"key": "value"}
             result = integration.transfer_data(data, source="A", target="B")
             assert result is not None
@@ -151,7 +151,7 @@ class TestPhase2_ExceptionHandling:
         attempts = 0
         max_attempts = 3
         success = False
-        
+
         while attempts < max_attempts and not success:
             attempts += 1
             try:
@@ -161,7 +161,7 @@ class TestPhase2_ExceptionHandling:
                     raise ValueError("Failure")
             except ValueError:
                 continue
-        
+
         assert success
 
 
@@ -257,7 +257,7 @@ class TestPhase2_ErrorPropagation:
         # σ_{xy}/xy = √((σ_x/x)² + (σ_y/y)²)
         x, sigma_x = 10.0, 0.1
         y, sigma_y = 5.0, 0.05
-        rel_error = np.sqrt((sigma_x/x)**2 + (sigma_y/y)**2)
+        rel_error = np.sqrt((sigma_x / x) ** 2 + (sigma_y / y) ** 2)
         assert rel_error > 0
 
 
@@ -297,15 +297,14 @@ class TestPhase2_InvariantValidation:
     def test_unitarity(self):
         """Test unitary matrix U†U = I"""
         theta = np.pi / 4
-        U = np.array([[np.cos(theta), -np.sin(theta)],
-                      [np.sin(theta), np.cos(theta)]])
+        U = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
         identity = U.T @ U
         is_unitary = np.allclose(identity, np.eye(2))
         assert is_unitary
 
     def test_hermiticity(self):
         """Test Hermitian matrix H† = H"""
-        H = np.array([[1, 1+1j], [1-1j, 2]])
+        H = np.array([[1, 1 + 1j], [1 - 1j, 2]])
         is_hermitian = np.allclose(H, H.conj().T)
         assert is_hermitian
 
@@ -370,16 +369,18 @@ class TestPhase2_IntegrationPatterns:
 
     def test_adapter_pattern(self):
         """Test adapter for interface compatibility"""
+
         class OldInterface:
             def old_method(self):
                 return "old"
-        
+
         class Adapter:
             def __init__(self, old):
                 self.old = old
+
             def new_method(self):
                 return self.old.old_method()
-        
+
         old = OldInterface()
         adapter = Adapter(old)
         assert adapter.new_method() == "old"
@@ -394,27 +395,31 @@ class TestPhase2_IntegrationPatterns:
 
     def test_facade_pattern(self):
         """Test facade for simplified interface"""
+
         class ComplexSystem:
             def method1(self):
                 return "m1"
+
             def method2(self):
                 return "m2"
-        
+
         class Facade:
             def __init__(self):
                 self.system = ComplexSystem()
+
             def simple_operation(self):
                 return self.system.method1() + self.system.method2()
-        
+
         facade = Facade()
         assert facade.simple_operation() == "m1m2"
 
     def test_mediator_pattern(self):
         """Test mediator for coordinated communication"""
         mediator = {"agents": []}
+
         def register(agent):
             mediator["agents"].append(agent)
-        
+
         register("agent1")
         register("agent2")
         assert len(mediator["agents"]) == 2
@@ -422,12 +427,14 @@ class TestPhase2_IntegrationPatterns:
     def test_observer_pattern(self):
         """Test observer for event notification"""
         observers = []
+
         def attach(observer):
             observers.append(observer)
+
         def notify(event):
             for obs in observers:
                 obs(event)
-        
+
         notifications = []
         attach(lambda e: notifications.append(e))
         notify("event1")
@@ -446,7 +453,7 @@ class TestPhase2_ModuleInterfaces:
 
         orch = PhysicsOrchestrator()
         # Should have key methods
-        assert hasattr(orch, '__init__')
+        assert hasattr(orch, "__init__")
 
     def test_quantum_game_theory_interface(self):
         """Test quantum game theory interface"""
@@ -491,11 +498,13 @@ class TestPhase2_CrossModuleCommunication:
     def test_message_passing(self):
         """Test message passing between modules"""
         message_queue = []
+
         def send(msg):
             message_queue.append(msg)
+
         def receive():
             return message_queue.pop(0) if message_queue else None
-        
+
         send({"type": "data", "value": 42})
         received = receive()
         assert received["value"] == 42
@@ -503,16 +512,17 @@ class TestPhase2_CrossModuleCommunication:
     def test_event_bus(self):
         """Test event bus communication"""
         event_handlers = {}
+
         def subscribe(event_type, handler):
             if event_type not in event_handlers:
                 event_handlers[event_type] = []
             event_handlers[event_type].append(handler)
-        
+
         def publish(event_type, data):
             if event_type in event_handlers:
                 for handler in event_handlers[event_type]:
                     handler(data)
-        
+
         results = []
         subscribe("test", lambda d: results.append(d))
         publish("test", "data")
@@ -521,19 +531,21 @@ class TestPhase2_CrossModuleCommunication:
     def test_shared_state(self):
         """Test shared state synchronization"""
         shared = {"counter": 0}
+
         def increment():
             shared["counter"] += 1
-        
+
         increment()
         increment()
         assert shared["counter"] == 2
 
     def test_callback_mechanism(self):
         """Test callback for async operations"""
+
         def async_operation(callback):
             result = 42
             callback(result)
-        
+
         results = []
         async_operation(lambda r: results.append(r))
         assert results[0] == 42

@@ -1,4 +1,5 @@
 """Tests for deterministic inference pipeline stages (v1.0.0)."""
+
 from __future__ import annotations
 
 import json
@@ -19,8 +20,14 @@ class DummyTokenizer:
         self.pad_token_id = 0
         self.model_max_length = 256
 
-    def __call__(self, text: str, return_tensors: str = "pt", truncation: bool = True,
-                 max_length: int = 128, padding: bool = False):
+    def __call__(
+        self,
+        text: str,
+        return_tensors: str = "pt",
+        truncation: bool = True,
+        max_length: int = 128,
+        padding: bool = False,
+    ):
         tokens = [len(text.split())]
         input_ids = torch.tensor([tokens], dtype=torch.long)
         attention_mask = torch.ones_like(input_ids)
@@ -120,7 +127,9 @@ def test_invalid_input_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path)
         pipeline.stage_i2_preprocess({}, context, cfg)
 
 
-def test_token_cache_keys_include_tokenizer_and_model(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
+def test_token_cache_keys_include_tokenizer_and_model(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
     os.environ["WANDB_MODE"] = "offline"
     pipeline.TOKEN_CACHE.clear()
     cfg = pipeline.InferenceConfig(model_path=tmp_path / "model", max_input_length=16)

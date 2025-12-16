@@ -37,7 +37,10 @@ def detect(file_index: dict) -> dict:
             rst_docs.append(path)
 
         # Documentation configs
-        if any(name in path for name in ["mkdocs.yml", "conf.py", "sphinx", "readthedocs", "docusaurus"]):
+        if any(
+            name in path
+            for name in ["mkdocs.yml", "conf.py", "sphinx", "readthedocs", "docusaurus"]
+        ):
             doc_configs.append(path)
 
     # Root-level docs (README, etc.)
@@ -75,7 +78,15 @@ def detect(file_index: dict) -> dict:
         "evidence_files": evidence_files,
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
-        "docs_keywords": ["documentation", "docs", "markdown", "sphinx", "mkdocs", "readme", "api-docs"],
+        "docs_keywords": [
+            "documentation",
+            "docs",
+            "markdown",
+            "sphinx",
+            "mkdocs",
+            "readme",
+            "api-docs",
+        ],
         "safeguards": ["validation", "bounded", "deterministic"],
         "functionality_impl": functionality_score,
         "meta": {
@@ -85,6 +96,6 @@ def detect(file_index: dict) -> dict:
             "total_docs": len(evidence_files),
             "deterministic": True,
             "offline": True,
-            "validation": True
+            "validation": True,
         },
     }

@@ -29,7 +29,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         model = DiffusionFlowModel(dimensions=2, resolution=10)
         assert model is not None
         # Just verify model was created - attribute may have different name
-        assert hasattr(model, 'dimensions') or model is not None
+        assert hasattr(model, "dimensions") or model is not None
 
     def test_energy_landscape_initialization(self):
         """Test EnergyLandscape initialization"""
@@ -176,8 +176,12 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         from agents.mental_mapping import EdgeType
 
         # Use node_id strings, not node objects
-        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
-        model.connect_nodes(source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO)
+        model.connect_nodes(
+            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
+        model.connect_nodes(
+            source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
 
         result = model.bfs(start_node=node1)
         assert result is not None
@@ -190,7 +194,9 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
-        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
+        model.connect_nodes(
+            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
 
         result = model.dfs(start_node=node1)
         assert result is not None
@@ -204,8 +210,12 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node2 = model.create_node(NodeType.PROBLEM, {})
         node3 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
-        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
-        model.connect_nodes(source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO)
+        model.connect_nodes(
+            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
+        model.connect_nodes(
+            source_id=node2.node_id, target_id=node3.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
 
         path = model.shortest_path(source=node1, target=node3)
         # Path may be None for disconnected or same node - just verify method works
@@ -240,7 +250,9 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node1 = model.create_node(NodeType.PROBLEM, {})
         node2 = model.create_node(NodeType.PROBLEM, {})
         # Use node_id strings
-        model.connect_nodes(source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO)
+        model.connect_nodes(
+            source_id=node1.node_id, target_id=node2.node_id, edge_type=EdgeType.SIMILAR_TO
+        )
 
         metrics = model.calculate_metrics()
         assert metrics is not None
@@ -270,7 +282,7 @@ class TestPhase2_AgentMemory_Advanced:
         memory.store_memory(key="key1", value="value with keyword")
         memory.store_memory(key="key2", value="another value")
 
-        if hasattr(memory, 'search'):
+        if hasattr(memory, "search"):
             results = memory.search(query="keyword")
             assert results is not None
         else:
@@ -284,7 +296,7 @@ class TestPhase2_AgentMemory_Advanced:
         memory.store_memory(key="key1", value={"type": "concept", "value": 1})
         memory.store_memory(key="key2", value={"type": "entity", "value": 2})
 
-        if hasattr(memory, 'filter'):
+        if hasattr(memory, "filter"):
             filtered = memory.filter(criteria={"type": "concept"})
             assert filtered is not None
         else:
@@ -296,8 +308,8 @@ class TestPhase2_AgentMemory_Advanced:
 
         memory = AgentMemory()
         memory.store_memory(key="key1", value="initial_value")
-        
-        if hasattr(memory, 'update'):
+
+        if hasattr(memory, "update"):
             memory.update("key1", "updated_value")
             result = memory.retrieve_memory("key1")
             # Result may be the new value or None depending on implementation
@@ -310,13 +322,13 @@ class TestPhase2_AgentMemory_Advanced:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        
+
         # Store using kwargs format
         memory.store_memory(key="key1", value="value1")
         memory.store_memory(key="key2", value="value2")
         memory.store_memory(key="key3", value="value3")
-        
-        if hasattr(memory, 'batch_retrieve'):
+
+        if hasattr(memory, "batch_retrieve"):
             results = memory.batch_retrieve(["key1", "key2", "key3"])
             assert results is not None
         else:
@@ -330,7 +342,7 @@ class TestPhase2_AgentMemory_Advanced:
         memory.store_memory(key="key1", value="value1")
         memory.store_memory(key="key2", value="value2")
 
-        if hasattr(memory, 'get_statistics'):
+        if hasattr(memory, "get_statistics"):
             stats = memory.get_statistics()
             assert stats is not None
         else:
@@ -349,7 +361,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         # generate_code requires component_id, not spec
-        if hasattr(orchestrator, 'generate_code'):
+        if hasattr(orchestrator, "generate_code"):
             try:
                 # Try with valid component_id if components exist
                 if orchestrator.components:
@@ -391,8 +403,8 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        
-        if hasattr(orchestrator, 'execute_workflow'):
+
+        if hasattr(orchestrator, "execute_workflow"):
             try:
                 result = orchestrator.execute_workflow(workflow_name="simple_build")
                 assert result is not None
@@ -407,8 +419,8 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        
-        if hasattr(orchestrator, 'resolve_dependencies'):
+
+        if hasattr(orchestrator, "resolve_dependencies"):
             dependencies = {
                 "task1": [],
                 "task2": ["task1"],
@@ -416,7 +428,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
             }
             order = orchestrator.resolve_dependencies(dependencies)
             assert order is not None
-        elif hasattr(orchestrator, '_extract_dependencies'):
+        elif hasattr(orchestrator, "_extract_dependencies"):
             # Use internal method if public one doesn't exist
             assert True
         else:
@@ -664,9 +676,7 @@ class TestPhase2_Performance_Optimization:
         """Test batch evaluation of forces"""
         from agents.physics_orchestrator import ForceVector
 
-        forces = [
-            ForceVector(f"f{i}", float(i), [1.0, 0.0, 0.0], i) for i in range(10)
-        ]
+        forces = [ForceVector(f"f{i}", float(i), [1.0, 0.0, 0.0], i) for i in range(10)]
         assert len(forces) == 10
 
     def test_large_game_matrix(self):
@@ -695,7 +705,7 @@ class TestPhase2_Performance_Optimization:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        
+
         # Store using kwargs format
         for i in range(10):  # Reduced for speed
             memory.store_memory(key=f"key{i}", value=f"value{i}")

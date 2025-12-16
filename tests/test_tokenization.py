@@ -44,7 +44,9 @@ def test_deterministic(tok, tmp_path):
 
 
 def test_pad_sequences_padding_and_truncation():
-    padded, mask = pad_sequences([[1, 2, 3], [4]], pad_id=0, max_length=4, return_attention_mask=True)
+    padded, mask = pad_sequences(
+        [[1, 2, 3], [4]], pad_id=0, max_length=4, return_attention_mask=True
+    )
     assert padded == [[1, 2, 3, 0], [4, 0, 0, 0]]
     assert mask == [[1, 1, 1, 0], [1, 0, 0, 0]]
 
@@ -60,8 +62,7 @@ def test_tokenizer_train_dry_run_streaming(monkeypatch, tmp_path):
     calls = {}
 
     class DummyPipeline:
-        class TokenizerPipelineError(Exception):
-            ...
+        class TokenizerPipelineError(Exception): ...
 
         def run_train(self, config, streaming=None, stream_chunk_size=None, dry_run=False):
             calls["config"] = config

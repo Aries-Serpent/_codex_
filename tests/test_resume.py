@@ -15,7 +15,9 @@ pytest.importorskip("accelerate")
 pytest.importorskip("yaml")
 
 
-def write_manifest(run_dir: Path, *, config=None, config_path=None, manifest_version: int | None = 1):
+def write_manifest(
+    run_dir: Path, *, config=None, config_path=None, manifest_version: int | None = 1
+):
     manifest = {
         "manifest_version": manifest_version,
         "checkpoint_dir": str(run_dir / "checkpoints"),
@@ -48,7 +50,7 @@ def test_resume_prefers_manifest_snapshot(monkeypatch, tmp_path):
     result = runner.invoke(cli, ["resume", str(run_dir)])
     assert result.exit_code == 0
     assert "config snapshot" in result.output
-    assert "\"lr\": 0.001" in result.output
+    assert '"lr": 0.001' in result.output
 
 
 def test_resume_uses_copied_config_file_when_snapshot_missing(tmp_path):

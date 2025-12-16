@@ -20,6 +20,7 @@ Author: mbaetiong
 Generated: 2025-11-19 00:49:03 UTC
 Roles: [Audit Orchestrator], [Data Visualization Engineer] ⚡ Energy: 5
 """
+
 from __future__ import annotations
 
 import argparse
@@ -34,21 +35,21 @@ from typing import Dict, List, Tuple
 def calculate_trend(scores: List[float]) -> Tuple[str, str, str]:
     """
     Calculate trend direction and classification
-    
+
     Returns:
         (trend_text, trend_class, trend_symbol)
     """
     if len(scores) < 2:
         return ("N/A", "trend-stable", "—")
-    
-    first_half = scores[:len(scores)//2]
-    second_half = scores[len(scores)//2:]
-    
+
+    first_half = scores[: len(scores) // 2]
+    second_half = scores[len(scores) // 2 :]
+
     avg_first = sum(first_half) / len(first_half)
     avg_second = sum(second_half) / len(second_half)
-    
+
     delta = avg_second - avg_first
-    
+
     if abs(delta) < 0.01:
         return ("Stable", "trend-stable", "→")
     elif delta > 0:
@@ -62,7 +63,7 @@ def calculate_trend(scores: List[float]) -> Tuple[str, str, str]:
 def load_audit_runs(history_dir: Path) -> List[Dict]:
     """Load all audit run JSON files from history directory"""
     runs = []
-    
+
     for json_file in sorted(history_dir.glob("capabilities_scored_*.json")):
         try:
             with open(json_file) as f:
@@ -71,7 +72,7 @@ def load_audit_runs(history_dir: Path) -> List[Dict]:
                 runs.append(data)
         except Exception as e:
             print(f"Error loading {json_file}: {e}", file=sys.stderr)
-    
+
     return runs
 
 
@@ -79,20 +80,20 @@ def extract_trends(runs: List[Dict]) -> Dict:
     """Extract capability trends across runs"""
     capability_scores = defaultdict(list)
     timestamps = []
-    
+
     for run in runs:
         timestamp = run.get("generated", 0)
         timestamps.append(timestamp)
-        
+
         for cap in run.get("capabilities", []):
             cap_id = cap["id"]
             score = cap["score"]
             capability_scores[cap_id].append(score)
-    
+
     return {
         "capability_scores": dict(capability_scores),
         "timestamps": timestamps,
-        "run_count": len(runs)
+        "run_count": len(runs),
     }
 
 
@@ -100,7 +101,7 @@ def generate_capability_row(cap_id: str, scores: List[float]) -> str:
     """Generate HTML table row for capability"""
     current_score = scores[-1]
     trend_text, trend_class, trend_symbol = calculate_trend(scores)
-    
+
     # Calculate change from first to last
     if len(scores) >= 2:
         change = scores[-1] - scores[0]
@@ -109,7 +110,7 @@ def generate_capability_row(cap_id: str, scores: List[float]) -> str:
     else:
         change_str = "N/A"
         change_class = "trend-stable"
-    
+
     # Determine status badge
     if current_score >= 0.85:
         status = '<span class="badge badge-high">High</span>'
@@ -117,12 +118,14 @@ def generate_capability_row(cap_id: str, scores: List[float]) -> str:
         status = '<span class="badge badge-medium">Medium</span>'
     else:
         status = '<span class="badge badge-low">Low</span>'
-    
+
     # Generate sparkline canvas
     scores_json = json.dumps([round(s, 4) for s in scores])
-    sparkline = f'<canvas class="sparkline" width="100" height="30" data-scores=\'{scores_json}\'></canvas>'
-    
-    return f'''
+    sparkline = (
+        f'<canvas class="sparkline" width="100" height="30" data-scores=\'{scores_json}\'></canvas>'
+    )
+
+    return f"""
         <tr>
             <td>{cap_id}</td>
             <td>{current_score:.2f}</td>
@@ -130,7 +133,7 @@ def generate_capability_row(cap_id: str, scores: List[float]) -> str:
             <td class="{change_class}">{change_str}</td>
             <td>{status}</td>
         </tr>
-    '''
+    """
 
 
 def generate_component_card(component: str, scores_by_cap: Dict[str, List[float]]) -> str:
@@ -139,7 +142,7 @@ def generate_component_card(component: str, scores_by_cap: Dict[str, List[float]
     all_values = []
     for cap_scores in scores_by_cap.values():
         all_values.extend(cap_scores)
-    
+
     if not all_values:
         avg = 0.0
         trend_text = "N/A"
@@ -147,48 +150,50 @@ def generate_component_card(component: str, scores_by_cap: Dict[str, List[float]
     else:
         avg = sum(all_values) / len(all_values)
         trend_text, trend_class, _ = calculate_trend(all_values)
-    
-    return f'''
+
+    return f"""
         <div class="card">
             <div class="card-title">{component.title()}</div>
             <div class="card-value">{avg:.2f}</div>
             <div class="card-trend {trend_class}">{trend_text}</div>
         </div>
-    '''
+    """
 
 
 def generate_regression_section(runs: List[Dict], threshold: float = 0.02) -> str:
     """Generate regression alerts section"""
     if len(runs) < 2:
         return "<p>Need at least 2 runs to detect regressions.</p>"
-    
+
     old_run = runs[-2]
     new_run = runs[-1]
-    
+
     old_caps = {c["id"]: c["score"] for c in old_run.get("capabilities", [])}
     new_caps = {c["id"]: c["score"] for c in new_run.get("capabilities", [])}
-    
+
     regressions = []
     for cap_id in sorted(set(old_caps.keys()) & set(new_caps.keys())):
         delta = new_caps[cap_id] - old_caps[cap_id]
         if delta < -threshold:
             regressions.append((cap_id, old_caps[cap_id], new_caps[cap_id], delta))
-    
+
     if not regressions:
         return '<p style="color: #3fb950;">✓ No significant regressions detected.</p>'
-    
+
     rows = []
     for cap_id, old_score, new_score, delta in regressions:
-        rows.append(f'''
+        rows.append(
+            f"""
             <tr>
                 <td>{cap_id}</td>
                 <td>{old_score:.4f}</td>
                 <td>{new_score:.4f}</td>
                 <td class="trend-down">{delta:.4f}</td>
             </tr>
-        ''')
-    
-    return f'''
+        """
+        )
+
+    return f"""
         <table>
             <thead>
                 <tr>
@@ -202,7 +207,7 @@ def generate_regression_section(runs: List[Dict], threshold: float = 0.02) -> st
                 {"".join(rows)}
             </tbody>
         </table>
-    '''
+    """
 
 
 def generate_dashboard(runs: List[Dict], output_path: Path):
@@ -210,27 +215,29 @@ def generate_dashboard(runs: List[Dict], output_path: Path):
     if not runs:
         print("No audit runs found.", file=sys.stderr)
         sys.exit(1)
-    
+
     trends = extract_trends(runs)
     capability_scores = trends["capability_scores"]
-    
+
     # Calculate summary stats
     latest_run = runs[-1]
     latest_caps = latest_run.get("capabilities", [])
-    
+
     avg_score = sum(c["score"] for c in latest_caps) / len(latest_caps) if latest_caps else 0
     high_maturity = sum(1 for c in latest_caps if c["score"] >= 0.85)
     low_maturity = sum(1 for c in latest_caps if c["score"] < 0.70)
-    
+
     # Calculate trends for summary
     if len(runs) >= 2:
         prev_caps = runs[-2].get("capabilities", [])
         prev_avg = sum(c["score"] for c in prev_caps) / len(prev_caps) if prev_caps else 0
         prev_high = sum(1 for c in prev_caps if c["score"] >= 0.85)
         prev_low = sum(1 for c in prev_caps if c["score"] < 0.70)
-        
+
         avg_trend_text, avg_trend_class, _ = calculate_trend([prev_avg, avg_score])
-        high_trend_text, high_trend_class, _ = calculate_trend([float(prev_high), float(high_maturity)])
+        high_trend_text, high_trend_class, _ = calculate_trend(
+            [float(prev_high), float(high_maturity)]
+        )
         low_trend_text, low_trend_class, _ = calculate_trend([float(prev_low), float(low_maturity)])
     else:
         avg_trend_text = "N/A"
@@ -239,13 +246,13 @@ def generate_dashboard(runs: List[Dict], output_path: Path):
         high_trend_class = "trend-stable"
         low_trend_text = "N/A"
         low_trend_class = "trend-stable"
-    
+
     # Generate capability rows
     capability_rows = []
     for cap_id in sorted(capability_scores.keys()):
         scores = capability_scores[cap_id]
         capability_rows.append(generate_capability_row(cap_id, scores))
-    
+
     # Generate component cards (if available)
     component_cards = ""
     if latest_caps and latest_caps[0].get("components"):
@@ -257,13 +264,13 @@ def generate_dashboard(runs: List[Dict], output_path: Path):
                     if comp in cap.get("components", {}):
                         comp_scores[cap["id"]].append(cap["components"][comp])
             component_cards += generate_component_card(comp, comp_scores)
-    
+
     # Date range
     if trends["timestamps"]:
         date_range = f"{datetime.fromtimestamp(min(trends['timestamps'])).strftime('%Y-%m-%d')} to {datetime.fromtimestamp(max(trends['timestamps'])).strftime('%Y-%m-%d')}"
     else:
         date_range = "N/A"
-    
+
     # Generate HTML
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -499,35 +506,33 @@ def generate_dashboard(runs: List[Dict], output_path: Path):
 </body>
 </html>
 """
-    
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html_content, encoding="utf-8")
     print(f"✓ Dashboard generated: {output_path}")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Generate capability audit trending dashboard"
-    )
+    parser = argparse.ArgumentParser(description="Generate capability audit trending dashboard")
     parser.add_argument(
         "--history",
         type=Path,
         required=True,
-        help="Directory containing historical audit JSON files"
+        help="Directory containing historical audit JSON files",
     )
     parser.add_argument(
         "--output",
         type=Path,
         default=Path("reports/trend_dashboard.html"),
-        help="Output HTML file path"
+        help="Output HTML file path",
     )
-    
+
     args = parser.parse_args()
-    
+
     if not args.history.exists():
         print(f"History directory not found: {args.history}", file=sys.stderr)
         sys.exit(1)
-    
+
     runs = load_audit_runs(args.history)
     generate_dashboard(runs, args.output)
 

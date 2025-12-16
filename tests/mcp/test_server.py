@@ -13,7 +13,7 @@ def _run(coro: Any) -> Any:
 
 def test_server_listtools_request() -> None:
     """Test that mcp.listTools returns a plain list as the JSON-RPC result.
-    
+
     This validates the requirement that listTools must return a plain list
     of tools, not wrapped in an object like {"tools": [...], "version": "..."}.
     This matches JSON-RPC client expectations and the MCP specification.
@@ -49,7 +49,7 @@ def test_server_listtools_request() -> None:
 
 def test_server_notification_handling() -> None:
     """Test that JSON-RPC notifications (requests without 'id') produce no response.
-    
+
     Per JSON-RPC 2.0 spec, notifications are requests that omit the 'id' field.
     The server must execute any side effects but must NOT send back a response,
     even if the method is unknown or errors occur.
@@ -72,7 +72,7 @@ def test_server_notification_handling() -> None:
 
 def test_server_negotiate_version() -> None:
     """Test that mcp.negotiateVersion returns a plain string as the JSON-RPC result.
-    
+
     This validates the requirement that negotiateVersion must return the negotiated
     version string directly (not wrapped in a dict), matching the expectations from
     PR #2286 discussion_r2538925659.
@@ -103,7 +103,7 @@ def test_server_negotiate_version() -> None:
 
 def test_server_negotiate_version_no_overlap() -> None:
     """Test that mcp.negotiateVersion returns a JSON-RPC error when no version matches.
-    
+
     When the client's supported versions have no overlap with the server's supported
     versions, the server must respond with a JSON-RPC error (code -32602).
     """
@@ -127,4 +127,3 @@ def test_server_negotiate_version_no_overlap() -> None:
     assert "error" in response
     assert response["error"]["code"] == -32602
     assert "No compatible version found" in response["error"]["message"]
-

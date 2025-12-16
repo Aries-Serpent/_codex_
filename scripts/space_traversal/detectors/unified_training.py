@@ -13,6 +13,7 @@ Safeguards implemented:
 - Baseline comparison capabilities for regression detection
 - Sanitize input paths before file operations
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -35,7 +36,7 @@ RELATED_FILES = [
 def detect(file_index: dict) -> dict:
     """
     Detect unified training capability.
-    
+
     Implements comprehensive safeguards for production-ready operation:
     - Bounded file reading (MAX_READ_BYTES limit) for memory safety
     - Error handling for file I/O with graceful fallback
@@ -50,7 +51,7 @@ def detect(file_index: dict) -> dict:
     paths = [f["path"] for f in files]
     evidence: List[str] = [p for p in paths if p.endswith("unified_training.py")]
     found_patterns: List[str] = []
-    
+
     if evidence:
         # Bounded, validated file scanning
         for ev in evidence:
@@ -63,25 +64,32 @@ def detect(file_index: dict) -> dict:
             for pat in REQUIRED:
                 if pat in text:
                     found_patterns.append(pat)
-    
+
     # Add related files for comprehensive evidence (deterministic)
     for rf in RELATED_FILES:
         if rf in paths or Path(rf).exists():
             evidence.append(rf)
-    
+
     return {
         "id": "unified-training",
         "evidence_files": sorted(set(evidence)),
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": REQUIRED,
         "docs_keywords": [
-            "unified-training", "training", "configuration", "execution",
-            "validation", "deterministic", "safeguards", "bounded", "offline"
+            "unified-training",
+            "training",
+            "configuration",
+            "execution",
+            "validation",
+            "deterministic",
+            "safeguards",
+            "bounded",
+            "offline",
         ],
         "safeguards": ["bounded", "validation", "deterministic", "error-handling", "offline"],
         "meta": {
             "category": "training",
             "safeguards": ["bounded", "validation", "deterministic", "error-handling"],
-            "detector_version": "1.1"
+            "detector_version": "1.1",
         },
     }

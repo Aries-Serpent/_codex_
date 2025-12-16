@@ -251,9 +251,7 @@ def test_safety_and_deployment_imports():
     import codex_ml.detectors.capability_detectors as capability_detectors
 
     settings = moderation.ModerationSettings(enabled=False)
-    decision = moderation.ModerationDecision(
-        approved=True, stage="test", provider="offline"
-    )
+    decision = moderation.ModerationDecision(approved=True, stage="test", provider="offline")
     assert decision.to_dict()["approved"]
     adapter = moderation.ModerationAdapter(settings)
     decision_checked = adapter.review("sample", stage="pre")

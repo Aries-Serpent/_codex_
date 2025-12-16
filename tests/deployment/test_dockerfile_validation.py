@@ -3,6 +3,7 @@ Test Dockerfile configurations for security and best practices.
 
 Part of deployment-infrastructure capability maturity improvement.
 """
+
 from pathlib import Path
 
 import pytest
@@ -24,7 +25,7 @@ def test_dockerfile_has_from_statement(dockerfiles):
     for dockerfile in dockerfiles:
         if dockerfile.name.endswith(".md") or dockerfile.name.endswith(".txt"):
             continue  # Skip documentation files
-        
+
         content = dockerfile.read_text(errors="ignore")
         assert "FROM " in content, f"{dockerfile} missing FROM statement"
 
@@ -34,10 +35,10 @@ def test_dockerfile_uses_specific_tags(dockerfiles):
     for dockerfile in dockerfiles:
         if dockerfile.name.endswith(".md") or dockerfile.name.endswith(".txt"):
             continue
-        
+
         content = dockerfile.read_text(errors="ignore")
         lines = [l for l in content.split("\n") if l.strip().startswith("FROM ")]
-        
+
         for line in lines:
             # Allow 'latest' for local/dev images, but flag it
             if ":latest" in line and "local" not in dockerfile.name.lower():
@@ -47,14 +48,11 @@ def test_dockerfile_uses_specific_tags(dockerfiles):
 
 def test_dockerfile_exposes_ports(dockerfiles):
     """Verify service Dockerfiles expose ports."""
-    service_dockerfiles = [
-        d for d in dockerfiles 
-        if "services" in str(d) or "service" in str(d)
-    ]
-    
+    service_dockerfiles = [d for d in dockerfiles if "services" in str(d) or "service" in str(d)]
+
     if not service_dockerfiles:
         pytest.skip("No service Dockerfiles found")
-    
+
     for dockerfile in service_dockerfiles:
         content = dockerfile.read_text(errors="ignore")
         # Service Dockerfiles should typically expose ports
@@ -68,7 +66,7 @@ def test_dockerfile_has_workdir(dockerfiles):
     for dockerfile in dockerfiles:
         if dockerfile.name.endswith(".md") or dockerfile.name.endswith(".txt"):
             continue
-        
+
         content = dockerfile.read_text(errors="ignore")
         # WORKDIR is a best practice but not always required
         if "WORKDIR " not in content:

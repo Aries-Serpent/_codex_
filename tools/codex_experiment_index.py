@@ -23,9 +23,17 @@ def _load_meta(path: Path) -> Dict[str, object]:
 
 def build_index(runs_root: Path) -> Dict[str, object]:
     runs: List[RunRecord] = []
-    for meta_file in sorted(list(runs_root.rglob("meta.json")) + list(runs_root.rglob("experiment_meta.json"))):
+    for meta_file in sorted(
+        list(runs_root.rglob("meta.json")) + list(runs_root.rglob("experiment_meta.json"))
+    ):
         run_id = meta_file.parent.name
-        runs.append(RunRecord(run_id=run_id, meta_path=str(meta_file.relative_to(runs_root)), meta=_load_meta(meta_file)))
+        runs.append(
+            RunRecord(
+                run_id=run_id,
+                meta_path=str(meta_file.relative_to(runs_root)),
+                meta=_load_meta(meta_file),
+            )
+        )
     return {"runs_root": str(runs_root), "runs": runs}
 
 
@@ -38,7 +46,14 @@ def _write_json(index: Dict[str, object], path: Path) -> None:
 
 
 def _write_markdown(index: Dict[str, object], path: Path) -> None:
-    lines = ["# Experiment Index", "", f"Runs root: `{index['runs_root']}`", "", "| Run ID | Meta Path |", "| --- | --- |"]
+    lines = [
+        "# Experiment Index",
+        "",
+        f"Runs root: `{index['runs_root']}`",
+        "",
+        "| Run ID | Meta Path |",
+        "| --- | --- |",
+    ]
     for record in index["runs"]:
         lines.append(f"| {record.run_id} | {record.meta_path} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -46,9 +61,21 @@ def _write_markdown(index: Dict[str, object], path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Index experiment metadata under runs/.")
-    parser.add_argument("--runs-dir", type=Path, default=Path("runs"), help="Root directory containing run outputs.")
-    parser.add_argument("--json-out", type=Path, default=Path("codex_experiment_index.json"), help="JSON output path.")
-    parser.add_argument("--md-out", type=Path, default=Path("codex_experiment_index.md"), help="Markdown output path.")
+    parser.add_argument(
+        "--runs-dir", type=Path, default=Path("runs"), help="Root directory containing run outputs."
+    )
+    parser.add_argument(
+        "--json-out",
+        type=Path,
+        default=Path("codex_experiment_index.json"),
+        help="JSON output path.",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=Path,
+        default=Path("codex_experiment_index.md"),
+        help="Markdown output path.",
+    )
     args = parser.parse_args(argv)
 
     runs_root = args.runs_dir.expanduser().resolve()

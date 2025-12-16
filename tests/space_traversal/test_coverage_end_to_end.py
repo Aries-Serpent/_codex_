@@ -8,6 +8,7 @@ import pytest
 SCRIPT = "scripts/space_traversal/coverage_ingest_stub.py"
 FIXTURE = "tests/fixtures/sample_coverage.xml"
 
+
 @pytest.mark.skipif(not Path(FIXTURE).exists(), reason="coverage fixture missing")
 def test_coverage_ingest_end_to_end(tmp_path: Path):
     out_json = tmp_path / "audit_artifacts" / "coverage_mapped.json"

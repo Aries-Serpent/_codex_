@@ -7,4 +7,4 @@ Codex documentation is being reorganized iteratively around the four complementa
 - **Reference** — information-oriented pages that describe commands and APIs.
 - **Explanation** — understanding-oriented context, rationale, and design notes.
 
-We add pages opportunistically as they become ready and cross-link them from the index to help contributors discover coverage gaps.
+We add pages opportunistically as they become ready and cross-link them from the index to help AI Assistants discover coverage gaps.

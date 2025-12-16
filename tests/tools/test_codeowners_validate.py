@@ -1,6 +1,7 @@
 import importlib
 import pytest
 
+
 def test_import_module():
     module = "tools.codeowners_validate"
     try:

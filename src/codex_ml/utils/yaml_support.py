@@ -35,6 +35,7 @@ else:  # pragma: no cover - avoids attribute errors when PyYAML missing
 
         pass
 
+
 # Alias for backward compatibility
 YAMLError = YAMLErrorType
 

@@ -5,7 +5,7 @@
 
 > [PLACEHOLDER: INTENT_STATEMENT]
 
-Use this planning template before committing to a significant implementation effort. It surfaces assumptions, validation work, and decision gates so the team shares a single source of truth prior to execution.
+Use this planning template before committing to a significant implementation effort. It surfaces assumptions, validation work, and decision gates so AI Assistant maintains a single source of truth through autonomous validation prior to execution.
 
 ## Template Overview
 - Initiative name: [PLACEHOLDER: INITIATIVE_NAME]

@@ -1,5 +1,7 @@
 # Contributing — Hooks, Line Endings, and Fast Commits
 
+**AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All processes are automated and autonomous. The guidelines below support AI Assistant operations.
+
 ## One-time Setup
 ```bash
 pip install pre-commit
@@ -33,10 +35,10 @@ Operational templates live in [`docs/templates/`](./templates/README.md) and fol
 | CLI interface changes or coverage boosts | [Migration — CLI Hardening](./templates/Migration_CLIHardening.md) | Target ≥85% coverage and document rollout guards. |
 | Discovery and alignment prior to execution | [Planning — Intent Validation](./templates/Planning_IntentValidation.md) | Capture assumptions, risks, and decision gates. |
 
-### Role-Based Workflow
-1. **Developers** duplicate the template, replace all `[PLACEHOLDER: …]` entries, and attach supporting assets (tests, dashboards, notebooks). Capture outcomes in the "Execution Notes" section during rollout.
-2. **Maintainers** review the draft, confirm placeholders are resolved, and validate the plan meets the 85% coverage baseline. They also ensure cross-references (dashboards, runbooks) are accessible to the responding team.
-3. **Release/Operations** stakeholders monitor execution, cross-referencing the template instance for rollback and communication details, and update incident response or deployment schedules as needed.
+### AI Assistant Autonomous Workflow
+1. **AI Assistant** duplicates the template, replaces all `[PLACEHOLDER: …]` entries autonomously, and attaches supporting assets (tests, dashboards, notebooks). Captures outcomes in the "Execution Notes" section during rollout.
+2. **AI Assistant Review System** validates the draft, confirms placeholders are resolved, and validates the plan meets the 85% coverage baseline. Also ensures cross-references (dashboards, runbooks) are accessible to the AI Assistant response system.
+3. **AI Assistant Operations** monitors execution, cross-references the template instance for rollback and communication details, and updates incident response or deployment schedules as needed.
 
 ### Customization Example
 ```markdown

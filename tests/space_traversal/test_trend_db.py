@@ -1,4 +1,5 @@
 """Tests for trend database (v1.5.0)."""
+
 from __future__ import annotations
 
 import json
@@ -99,9 +100,7 @@ def test_get_trend_with_branch_filter(tmp_path: Path):
     db = TrendDatabase(db_path)
 
     # Store snapshots on different branches
-    for i, (branch, score) in enumerate(
-        [("main", 0.8), ("feature", 0.7), ("main", 0.85)]
-    ):
+    for i, (branch, score) in enumerate([("main", 0.8), ("feature", 0.7), ("main", 0.85)]):
         snapshot = AuditSnapshot(
             run_id=f"run-{i:03d}",
             timestamp=time.time() - (2 - i) * 86400,
@@ -324,9 +323,7 @@ def test_create_snapshot_from_artifacts(tmp_path: Path):
     }
     (tmp_path / "audit_run_manifest.json").write_text(json.dumps(manifest_data))
 
-    snapshot = create_snapshot_from_artifacts(
-        artifacts_dir, git_commit="def456", git_branch="main"
-    )
+    snapshot = create_snapshot_from_artifacts(artifacts_dir, git_commit="def456", git_branch="main")
 
     assert snapshot.git_commit == "def456"
     assert snapshot.git_branch == "main"

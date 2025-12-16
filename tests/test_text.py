@@ -23,6 +23,8 @@ def test_token_accuracy_requires_torch(monkeypatch):
     monkeypatch.setattr(text_mod, "_torch", None)
     with pytest.raises(ImportError):
         text_mod.token_accuracy(None, None)
+
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
 if str(SRC_DIR) not in sys.path:

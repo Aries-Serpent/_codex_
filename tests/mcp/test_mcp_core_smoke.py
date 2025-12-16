@@ -25,12 +25,12 @@ def test_registry_basic():
         "echo",
         handler=lambda x: x,
         schema={"type": "object"},
-        metadata={"description": "Echo tool"}
+        metadata={"description": "Echo tool"},
     )
-    
+
     tools = registry.list_tools()
     assert any(t["name"] == "echo" for t in tools)
-    
+
     handler = registry.get_tool("echo")
     assert handler is not None
     assert handler("ping") == "ping"
@@ -41,7 +41,7 @@ def test_registry_list_tools():
     registry = MCPToolRegistry()
     registry.register_tool("tool1", lambda: "result1", metadata={"desc": "Tool 1"})
     registry.register_tool("tool2", lambda: "result2", metadata={"desc": "Tool 2"})
-    
+
     tools = registry.list_tools()
     assert len(tools) == 2
     assert all("name" in t for t in tools)
@@ -58,11 +58,11 @@ def test_registry_get_nonexistent_tool():
 def test_rate_limiter_basic():
     """Test MCPRateLimiter basic token bucket behavior."""
     limiter = MCPRateLimiter(rate=10.0, capacity=2)
-    
+
     # First two calls should succeed (burst capacity)
     assert limiter.allow("principal", "tool")
     assert limiter.allow("principal", "tool")
-    
+
     # Third call should be rejected until refill occurs
     assert not limiter.allow("principal", "tool")
 
@@ -70,11 +70,11 @@ def test_rate_limiter_basic():
 def test_rate_limiter_multiple_principals():
     """Test that rate limiter tracks principals independently."""
     limiter = MCPRateLimiter(rate=5.0, capacity=1)
-    
+
     # Different principals should have separate limits
     assert limiter.allow("principal1", "tool")
     assert limiter.allow("principal2", "tool")
-    
+
     # Same principal should be rate limited
     assert not limiter.allow("principal1", "tool")
 
@@ -82,11 +82,11 @@ def test_rate_limiter_multiple_principals():
 def test_rate_limiter_reset():
     """Test rate limiter reset functionality."""
     limiter = MCPRateLimiter(rate=1.0, capacity=1, seed=42)
-    
+
     # Exhaust limit
     assert limiter.allow("principal", "tool")
     assert not limiter.allow("principal", "tool")
-    
+
     # Reset and try again
     limiter.reset("principal", "tool")
     assert limiter.allow("principal", "tool")
@@ -101,7 +101,7 @@ def test_errors_codes_and_statuses():
         (RateLimitExceeded, "RATE_LIMIT_EXCEEDED", 429),
         (Unauthorized, "UNAUTHORIZED", 401),
     ]
-    
+
     for cls, expected_code, expected_status in test_cases:
         exc = cls("test message")
         data = exc.to_dict()
@@ -114,7 +114,7 @@ def test_errors_to_dict():
     """Test MCPError to_dict serialization."""
     error = ToolNotFound("Tool 'xyz' not found")
     data = error.to_dict()
-    
+
     assert isinstance(data, dict)
     assert "code" in data
     assert "message" in data

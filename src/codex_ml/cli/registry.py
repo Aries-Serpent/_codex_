@@ -188,15 +188,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # list-models command
-    list_parser = subparsers.add_parser(
-        "list-models", help="List all registered models"
-    )
+    list_parser = subparsers.add_parser("list-models", help="List all registered models")
     list_parser.set_defaults(func=list_models_command)
 
     # list-versions command
-    versions_parser = subparsers.add_parser(
-        "list-versions", help="List versions of a model"
-    )
+    versions_parser = subparsers.add_parser("list-versions", help="List versions of a model")
     versions_parser.add_argument("name", help="Model name")
     versions_parser.add_argument(
         "--stage",
@@ -224,9 +220,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     promote_parser.set_defaults(func=promote_model_command)
 
     # compare-models command
-    compare_parser = subparsers.add_parser(
-        "compare-models", help="Compare two model versions"
-    )
+    compare_parser = subparsers.add_parser("compare-models", help="Compare two model versions")
     compare_parser.add_argument("name", help="Model name")
     compare_parser.add_argument("version1", help="First version")
     compare_parser.add_argument("version2", help="Second version")
@@ -242,9 +236,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     export_parser.set_defaults(func=export_model_command)
 
     # get-lineage command
-    lineage_parser = subparsers.add_parser(
-        "get-lineage", help="Get model lineage information"
-    )
+    lineage_parser = subparsers.add_parser("get-lineage", help="Get model lineage information")
     lineage_parser.add_argument("name", help="Model name")
     lineage_parser.add_argument("version", help="Model version")
     lineage_parser.set_defaults(func=get_lineage_command)

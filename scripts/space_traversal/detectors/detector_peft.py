@@ -6,6 +6,7 @@ adapters, and hook systems for efficient model fine-tuning.
 
 Patterns detected: peft, lora, adapter, hooks, fine-tuning
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -31,13 +32,13 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 def _read_text(path_input) -> str:
     """
     Read text from file with bounded read.
-    
+
     Safeguard: Bounded read to prevent memory issues.
     Validation: Handles both string and Path inputs.
-    
+
     Args:
         path_input: Path to file (string or Path object, absolute or relative to REPO_ROOT)
-        
+
     Returns:
         File content (up to MAX_READ_BYTES) or empty string on error
     """
@@ -47,14 +48,14 @@ def _read_text(path_input) -> str:
             path = Path(path_input)
         else:
             path = path_input
-        
+
         # Handle both absolute and relative paths
         if not path.is_absolute():
             path = REPO_ROOT / path
-        
+
         if not path.exists():
             return ""
-        
+
         # Bounded read safeguard
         return path.read_text(encoding="utf-8", errors="ignore")[:MAX_READ_BYTES]
     except (OSError, IOError, UnicodeDecodeError):
@@ -65,33 +66,33 @@ def _read_text(path_input) -> str:
 def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
     """
     Find evidence of PEFT/LoRA implementations using the S1 context index.
-    
+
     This detector identifies parameter-efficient fine-tuning code including
     LoRA (Low-Rank Adaptation), adapters, and PEFT hook systems for efficient
     model fine-tuning with reduced memory and computational requirements.
-    
+
     Args:
         file_index: Context index from S1 with files list
-        
+
     Returns:
         Detection result with evidence, patterns, and metadata
     """
 
     files = file_index.get("files", [])
     evidence: Dict[str, List[str]] = {}
-    
+
     for entry in files:
         rel_path = entry.get("path")
-        
+
         # Validation: Check path is valid
         if not rel_path or not rel_path.endswith(".py"):
             continue
-        
+
         # Read file with safeguards (bounded, error handling)
         text = _read_text(REPO_ROOT / rel_path)
         if not text:
             continue
-        
+
         # Detect PEFT tokens
         tokens = sorted([t for t in PEFT_TOKENS if t in text])
         if tokens:
@@ -115,7 +116,15 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "evidence_files": sorted(evidence.keys()),
         "found_patterns": sorted(found_patterns_set),
         "required_patterns": ["peft", "lora", "adapter", "hooks", "fine-tuning"],
-        "docs_keywords": ["peft", "lora", "adapter", "hooks", "fine-tuning", "efficient", "parameter-efficient"],
+        "docs_keywords": [
+            "peft",
+            "lora",
+            "adapter",
+            "hooks",
+            "fine-tuning",
+            "efficient",
+            "parameter-efficient",
+        ],
         "safeguards": ["validation", "bounded", "error-handling", "timeout"],
         "meta": {
             "detection_method": "token_matching",
@@ -124,5 +133,5 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
             "bounded": True,
             "validation": True,
             "error_handling": True,
-        }
+        },
     }

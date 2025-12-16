@@ -13,19 +13,21 @@ import pytest
 
 class TestAccelerateInitGuardSmoke:
     """Smoke tests for accelerate_init_guard module."""
-    
+
     def test_import_src(self):
         """Test src.training.accelerate_init_guard can be imported."""
         try:
             from src.training import accelerate_init_guard
+
             assert accelerate_init_guard is not None
         except ImportError as e:
             pytest.skip(f"accelerate_init_guard requires optional dependencies: {e}")
-    
+
     def test_import_top_level(self):
         """Test training.accelerate_init_guard can be imported."""
         try:
             from training import accelerate_init_guard
+
             assert accelerate_init_guard is not None
         except ImportError as e:
             pytest.skip(f"accelerate_init_guard requires optional dependencies: {e}")
@@ -33,19 +35,21 @@ class TestAccelerateInitGuardSmoke:
 
 class TestStreamingSmoke:
     """Smoke tests for streaming module."""
-    
+
     def test_import_src(self):
         """Test src.training.streaming can be imported."""
         try:
             from src.training import streaming
+
             assert streaming is not None
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"streaming module requires optional dependencies: {e}")
-    
+
     def test_import_top_level(self):
         """Test training.streaming can be imported."""
         try:
             from training import streaming
+
             assert streaming is not None
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"streaming module requires optional dependencies: {e}")
@@ -53,11 +57,12 @@ class TestStreamingSmoke:
 
 class TestTokenizationLoaderSmoke:
     """Smoke tests for tokenization loader module."""
-    
+
     def test_import(self):
         """Test src.tokenization.loader can be imported."""
         try:
             from src.tokenization import loader
+
             assert loader is not None
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"tokenization.loader requires optional dependencies: {e}")

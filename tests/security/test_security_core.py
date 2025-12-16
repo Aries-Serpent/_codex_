@@ -1,4 +1,5 @@
 """Smoke coverage for security.core."""
+
 from __future__ import annotations
 
 from pathlib import Path

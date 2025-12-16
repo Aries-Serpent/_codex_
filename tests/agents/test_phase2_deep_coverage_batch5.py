@@ -27,7 +27,7 @@ class TestPhase2_TimeEvolution:
         from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
-        if hasattr(orchestrator, 'evolve_state'):
+        if hasattr(orchestrator, "evolve_state"):
             initial_state = {"position": [0.0, 0.0], "velocity": [1.0, 0.0]}
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
             assert evolved is not None
@@ -37,7 +37,7 @@ class TestPhase2_TimeEvolution:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
-        if hasattr(evolver, 'evolve'):
+        if hasattr(evolver, "evolve"):
             # evolve requires (q0, p0, hamiltonian, dt, steps) not (state, time)
             try:
                 trajectory = evolver.evolve(q0=0.0, p0=1.0, dt=0.1, steps=10)
@@ -61,8 +61,7 @@ class TestPhase2_TimeEvolution:
         """Test evolution is unitary"""
         # U†U = I
         theta = np.pi / 6
-        U = np.array([[np.exp(-1j * theta), 0],
-                      [0, np.exp(1j * theta)]])
+        U = np.array([[np.exp(-1j * theta), 0], [0, np.exp(1j * theta)]])
         U_dagger_U = U.conj().T @ U
         assert np.allclose(U_dagger_U, np.eye(2))
 
@@ -95,24 +94,24 @@ class TestPhase2_SelfHealing:
         engine = SelfHealingEngine()
         result = engine.diagnose(run_checks=False)
         assert result is not None
-        assert hasattr(result, 'issues')
+        assert hasattr(result, "issues")
 
     def test_detect_issue_types(self):
         """Test different issue type detection"""
         from agents.self_healing import IssueType
 
-        assert hasattr(IssueType, 'SYNTAX_ERROR')
-        assert hasattr(IssueType, 'IMPORT_ERROR')
-        assert hasattr(IssueType, 'DEPENDENCY_CONFLICT')
+        assert hasattr(IssueType, "SYNTAX_ERROR")
+        assert hasattr(IssueType, "IMPORT_ERROR")
+        assert hasattr(IssueType, "DEPENDENCY_CONFLICT")
 
     def test_issue_severity_levels(self):
         """Test issue severity classification"""
         from agents.self_healing import IssueSeverity
 
-        assert hasattr(IssueSeverity, 'CRITICAL')
-        assert hasattr(IssueSeverity, 'HIGH')
-        assert hasattr(IssueSeverity, 'MEDIUM')
-        assert hasattr(IssueSeverity, 'LOW')
+        assert hasattr(IssueSeverity, "CRITICAL")
+        assert hasattr(IssueSeverity, "HIGH")
+        assert hasattr(IssueSeverity, "MEDIUM")
+        assert hasattr(IssueSeverity, "LOW")
 
     def test_detected_issue_creation(self):
         """Test creating DetectedIssue"""
@@ -123,7 +122,7 @@ class TestPhase2_SelfHealing:
             severity=IssueSeverity.HIGH,
             description="Test import error",
             location="test.py:10",
-            details={}
+            details={},
         )
         assert issue is not None
         assert issue.issue_type == IssueType.IMPORT_ERROR
@@ -136,7 +135,7 @@ class TestPhase2_SelfHealing:
             action_type="install_package",
             description="Install missing package",
             command="pip install numpy",
-            auto_apply=False
+            auto_apply=False,
         )
         assert action is not None
         assert action.action_type == "install_package"
@@ -145,11 +144,7 @@ class TestPhase2_SelfHealing:
         """Test DiagnosticResult structure"""
         from agents.self_healing import DiagnosticResult
 
-        result = DiagnosticResult(
-            issues=[],
-            health_score=1.0,
-            remediation_actions=[]
-        )
+        result = DiagnosticResult(issues=[], health_score=1.0, remediation_actions=[])
         assert result is not None
         assert result.health_score == 1.0
 
@@ -159,7 +154,7 @@ class TestPhase2_SelfHealing:
 
         engine = SelfHealingEngine()
         # Health score with no issues should be high
-        if hasattr(engine, '_calculate_health_score'):
+        if hasattr(engine, "_calculate_health_score"):
             score = engine._calculate_health_score([])
             assert score >= 0.9
 
@@ -173,9 +168,9 @@ class TestPhase2_SelfHealing:
             severity=IssueSeverity.HIGH,
             description="Missing module",
             location="test.py:1",
-            details={"module": "numpy"}
+            details={"module": "numpy"},
         )
-        if hasattr(engine, '_suggest_remediation'):
+        if hasattr(engine, "_suggest_remediation"):
             actions = engine._suggest_remediation(issue)
             assert isinstance(actions, list)
 
@@ -239,7 +234,7 @@ class TestPhase2_ErrorBounds:
         """Test convergence order verification"""
         # If method is 2nd order: error ~ dt²
         errors = [0.01, 0.0025, 0.000625]  # dt halved each time
-        ratios = [errors[i] / errors[i+1] for i in range(len(errors)-1)]
+        ratios = [errors[i] / errors[i + 1] for i in range(len(errors) - 1)]
         # Should be approximately 4 for 2nd order
         assert all(3.5 < r < 4.5 for r in ratios)
 
@@ -255,7 +250,7 @@ class TestPhase2_Telemetry:
         try:
             from codex.quantum_orchestrator.mlops_bridge import MetricsCollector
             from codex.quantum_orchestrator.orchestrator import QuantumRelativisticDiracOrchestrator
-            
+
             orchestrator = QuantumRelativisticDiracOrchestrator()
             collector = MetricsCollector(orchestrator)
             assert collector is not None
@@ -266,10 +261,10 @@ class TestPhase2_Telemetry:
         """Test MetricType enumeration"""
         try:
             from codex.quantum_orchestrator.mlops_bridge import MetricType
-            
-            assert hasattr(MetricType, 'COUNTER')
-            assert hasattr(MetricType, 'GAUGE')
-            assert hasattr(MetricType, 'HISTOGRAM')
+
+            assert hasattr(MetricType, "COUNTER")
+            assert hasattr(MetricType, "GAUGE")
+            assert hasattr(MetricType, "HISTOGRAM")
         except ImportError:
             pytest.skip("MLOps bridge not available")
 
@@ -277,12 +272,9 @@ class TestPhase2_Telemetry:
         """Test creating Metric"""
         try:
             from codex.quantum_orchestrator.mlops_bridge import Metric, MetricType
-            
+
             metric = Metric(
-                name="test_metric",
-                value=42.0,
-                metric_type=MetricType.GAUGE,
-                labels={"env": "test"}
+                name="test_metric", value=42.0, metric_type=MetricType.GAUGE, labels={"env": "test"}
             )
             assert metric is not None
             assert metric.name == "test_metric"
@@ -294,12 +286,12 @@ class TestPhase2_Telemetry:
         """Test Prometheus metric format export"""
         try:
             from codex.quantum_orchestrator.mlops_bridge import Metric, MetricType
-            
+
             metric = Metric(
                 name="test_counter",
                 value=100.0,
                 metric_type=MetricType.COUNTER,
-                labels={"job": "test"}
+                labels={"job": "test"},
             )
             prom_str = metric.to_prometheus()
             assert "test_counter" in prom_str
@@ -312,7 +304,7 @@ class TestPhase2_Telemetry:
         try:
             from codex.quantum_orchestrator.mlops_bridge import MetricsCollector
             from codex.quantum_orchestrator.orchestrator import QuantumRelativisticDiracOrchestrator
-            
+
             orchestrator = QuantumRelativisticDiracOrchestrator()
             collector = MetricsCollector(orchestrator)
             metrics = collector.collect_orchestrator_metrics()
@@ -323,10 +315,10 @@ class TestPhase2_Telemetry:
     def test_health_monitoring(self):
         """Test health score monitoring (Eq #47)"""
         from agents.self_healing import SelfHealingEngine
-        
+
         engine = SelfHealingEngine()
         result = engine.diagnose(run_checks=False)
-        assert hasattr(result, 'health_score')
+        assert hasattr(result, "health_score")
         assert 0.0 <= result.health_score <= 1.0
 
     def test_coherence_metric(self):
@@ -385,7 +377,7 @@ class TestPhase2_AdaptiveDynamics:
         """Test learning rate decay"""
         initial_lr = 0.1
         decay_rate = 0.9
-        lr_after_10_steps = initial_lr * (decay_rate ** 10)
+        lr_after_10_steps = initial_lr * (decay_rate**10)
         assert lr_after_10_steps < initial_lr
         assert abs(lr_after_10_steps - 0.0349) < 0.001
 
@@ -439,7 +431,7 @@ class TestPhase2_StabilityAnalysis:
         period = 2 * np.pi / omega
         # After one period, should return
         theta_final = theta + omega * period
-        assert abs(theta_final - 2*np.pi) < 1e-10
+        assert abs(theta_final - 2 * np.pi) < 1e-10
 
     def test_bifurcation_parameter(self):
         """Test system behavior near bifurcation"""
@@ -472,21 +464,22 @@ class TestPhase2_EvolutionStrategies:
 
     def test_rk4_integration(self):
         """Test Runge-Kutta 4th order"""
+
         def f(t, y):
             return y
-        
+
         # RK4 implementation
         y = 1.0
         t = 0.0
         dt = 0.1
-        
+
         k1 = f(t, y)
-        k2 = f(t + dt/2, y + dt*k1/2)
-        k3 = f(t + dt/2, y + dt*k2/2)
-        k4 = f(t + dt, y + dt*k3)
-        
-        y_new = y + dt * (k1 + 2*k2 + 2*k3 + k4) / 6
-        
+        k2 = f(t + dt / 2, y + dt * k1 / 2)
+        k3 = f(t + dt / 2, y + dt * k2 / 2)
+        k4 = f(t + dt, y + dt * k3)
+
+        y_new = y + dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6
+
         # Should be more accurate than Euler
         assert abs(y_new - np.exp(dt)) < 1e-6
 
@@ -496,14 +489,14 @@ class TestPhase2_EvolutionStrategies:
         x = 0.0
         v = 1.0
         dt = 0.1
-        
+
         # Half-step velocity
         v_half = v - 0.5 * dt * x  # Assuming F = -x (harmonic)
         # Full-step position
         x_new = x + dt * v_half
         # Half-step velocity
         v_new = v_half - 0.5 * dt * x_new
-        
+
         assert abs(x_new - 0.1) < 0.01
 
     def test_symplectic_integrator(self):
@@ -512,13 +505,13 @@ class TestPhase2_EvolutionStrategies:
         q = 1.0
         p = 0.0
         H_0 = 0.5 * q**2  # Simple harmonic
-        
+
         # After one step
         dt = 0.01
         p_new = p - dt * q
         q_new = q + dt * p_new
         H_1 = 0.5 * q_new**2 + 0.5 * p_new**2
-        
+
         # Energy should be approximately conserved
         assert abs(H_1 - H_0) < 0.01
 

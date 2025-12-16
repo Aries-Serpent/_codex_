@@ -2,8 +2,10 @@
 Capability Scoring Utilities (v1.2.0)
 Placed under scripts.space_traversal package for canonical imports.
 """
+
 from __future__ import annotations
 from typing import Dict, List
+
 
 def normalize_weights(weights: Dict[str, float]) -> Dict[str, float]:
     total = float(sum(weights.values()))
@@ -11,9 +13,11 @@ def normalize_weights(weights: Dict[str, float]) -> Dict[str, float]:
         raise ValueError("Weights must sum > 0")
     return {k: v / total for k, v in weights.items()}
 
+
 def score_capability(components: Dict[str, float], weights: Dict[str, float]) -> float:
     w = normalize_weights(weights)
     return sum(max(0.0, min(1.0, components.get(k, 0.0))) * w[k] for k in w)
+
 
 def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
     components = capability.get("components", {})
@@ -32,6 +36,7 @@ def explain_score(capability: dict, weights: Dict[str, float]) -> dict:
         "score": score,
         "partials": partials,
     }
+
 
 def aggregate_scores(capabilities: List[dict], weights: Dict[str, float]) -> List[dict]:
     # returns list of explanations for each capability

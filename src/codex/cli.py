@@ -1477,7 +1477,7 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
 
 try:
     from codex.quantum_orchestrator.cli import cli as quantum_cli
-    
+
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
 except Exception:  # pragma: no cover - optional module

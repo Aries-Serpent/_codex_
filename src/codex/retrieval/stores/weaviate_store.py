@@ -19,7 +19,7 @@ class WeaviateStore:
         index_name: str = "default",
         url: Optional[str] = None,
         api_key: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         self.index_name = index_name
         self.url = url

@@ -9,8 +9,7 @@ from __future__ import annotations
 import warnings as _warnings
 
 _warnings.warn(
-    "Importing from 'training.evaluate' is deprecated. "
-    "Use 'src.training.evaluate' instead.",
+    "Importing from 'training.evaluate' is deprecated. " "Use 'src.training.evaluate' instead.",
     DeprecationWarning,
     stacklevel=2,
 )

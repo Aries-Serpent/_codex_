@@ -12,6 +12,6 @@ def test_experiment_tracker_writes_metadata(tmp_path: Path):
 
     out_file = run_dir / "experiment_meta.json"
     content = out_file.read_text(encoding="utf-8")
-    assert "\"experiment_name\": " in content
+    assert '"experiment_name": ' in content
     assert "demo" in content
-    assert "\"stage\": " in content
+    assert '"stage": ' in content

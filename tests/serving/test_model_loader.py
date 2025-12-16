@@ -132,9 +132,7 @@ class TestModelLoader:
         loader = ModelLoader(cache_size=2)
 
         # Load 3 models - third should evict first
-        configs = [
-            ModelConfig(model_name_or_path=f"model-{i}") for i in range(3)
-        ]
+        configs = [ModelConfig(model_name_or_path=f"model-{i}") for i in range(3)]
 
         for i, config in enumerate(configs):
             with patch.object(loader, "_load_from_source") as mock_load:

@@ -12,10 +12,10 @@ Features:
 
 Example:
     from scripts.space_traversal.viz_ascii import sparkline, bar_chart
-    
+
     values = [0.75, 0.78, 0.82, 0.80, 0.85]
     print(sparkline(values))  # ▃▅▇▆█
-    
+
     data = {"checkpointing": 0.85, "tokenization": 0.78}
     print(bar_chart(data))
 """
@@ -106,9 +106,7 @@ def bar_chart(
     return "\n".join(lines)
 
 
-def trend_indicator(
-    current: float, previous: float, threshold: float = 0.02
-) -> str:
+def trend_indicator(current: float, previous: float, threshold: float = 0.02) -> str:
     """
     Get trend indicator emoji.
 
@@ -274,9 +272,7 @@ def summary_table(
 
     # Header
     if show_trend:
-        lines.append(
-            f"{'Capability':<25} │ {'Score':>8} │ {'Trend':>5} │ {'Sparkline':<20}"
-        )
+        lines.append(f"{'Capability':<25} │ {'Score':>8} │ {'Trend':>5} │ {'Sparkline':<20}")
         lines.append("─" * 25 + "─┼─" + "─" * 8 + "─┼─" + "─" * 5 + "─┼─" + "─" * 20)
     else:
         lines.append(f"{'Capability':<25} │ {'Score':>8}")

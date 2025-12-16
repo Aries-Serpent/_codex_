@@ -7,7 +7,9 @@ from codex_ml.cli.codex_cli import codex
 
 def test_train_starts_system_metrics(monkeypatch, tmp_path: Path):
     output_dir = tmp_path / "run"
-    cfg_obj = type("Cfg", (), {"training": type("T", (), {"output_dir": str(output_dir), "seed": 0})()})()
+    cfg_obj = type(
+        "Cfg", (), {"training": type("T", (), {"output_dir": str(output_dir), "seed": 0})()}
+    )()
     raw_cfg = type("RCfg", (), {"training": type("T", (), {"output_dir": str(output_dir)})()})()
 
     calls = {}

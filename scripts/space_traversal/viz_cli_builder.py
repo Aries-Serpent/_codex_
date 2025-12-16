@@ -14,7 +14,7 @@ Features:
 
 Example:
     from scripts.space_traversal.viz_cli_builder import generate_cli_builder
-    
+
     generate_cli_builder(
         output_path=Path("audit_artifacts/cli_builder.html"),
         repo_name="my-repo"

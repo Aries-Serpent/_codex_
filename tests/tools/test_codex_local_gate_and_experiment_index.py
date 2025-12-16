@@ -10,16 +10,18 @@ from tools import codex_local_gate_runner
 
 def test_local_gate_runner_uses_default_gate_when_config_missing(tmp_path: Path) -> None:
     json_out = tmp_path / "report.json"
-    rc = codex_local_gate_runner.main([
-        "--repo-root",
-        str(tmp_path),
-        "--config",
-        str(tmp_path / "missing.yaml"),
-        "--json-out",
-        str(json_out),
-        "--md-out",
-        str(tmp_path / "report.md"),
-    ])
+    rc = codex_local_gate_runner.main(
+        [
+            "--repo-root",
+            str(tmp_path),
+            "--config",
+            str(tmp_path / "missing.yaml"),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(tmp_path / "report.md"),
+        ]
+    )
     assert rc == 0
     summary = json.loads(json_out.read_text(encoding="utf-8"))
     assert summary["results"]
@@ -60,14 +62,16 @@ def test_experiment_index_handles_empty_runs_dir(tmp_path: Path) -> None:
     runs_dir = tmp_path / "runs"
     runs_dir.mkdir()
     json_out = tmp_path / "index.json"
-    rc = codex_experiment_index.main([
-        "--runs-dir",
-        str(runs_dir),
-        "--json-out",
-        str(json_out),
-        "--md-out",
-        str(tmp_path / "index.md"),
-    ])
+    rc = codex_experiment_index.main(
+        [
+            "--runs-dir",
+            str(runs_dir),
+            "--json-out",
+            str(json_out),
+            "--md-out",
+            str(tmp_path / "index.md"),
+        ]
+    )
     assert rc == 0
     data = json.loads(json_out.read_text(encoding="utf-8"))
     assert data["runs"] == []
@@ -116,4 +120,3 @@ def test_dataset_index_builds_outputs(tmp_path: Path) -> None:
     index = json.loads(json_out.read_text(encoding="utf-8"))
     assert index["files"]
     assert md_out.exists()
-

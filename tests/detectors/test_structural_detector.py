@@ -3,6 +3,7 @@ Structural detector comprehensive tests.
 
 Full coverage tests for structural integrity detection.
 """
+
 from scripts.space_traversal.detectors import structure_integrity
 
 

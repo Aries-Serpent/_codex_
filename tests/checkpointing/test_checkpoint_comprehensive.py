@@ -12,6 +12,7 @@ Tests cover:
 - Metadata validation
 - Distributed checkpointing
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock
@@ -48,42 +49,35 @@ def temp_checkpoint_dir():
 
 class TestCheckpointSaveLoad:
     """Test basic checkpoint save and load"""
-    
+
     def test_save_checkpoint_basic(self, mock_model, temp_checkpoint_dir):
         """Test basic checkpoint saving"""
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
-        
+
         # Save checkpoint
-        checkpoint = {
-            "model_state_dict": mock_model.state_dict(),
-            "epoch": 5,
-            "step": 1000
-        }
+        checkpoint = {"model_state_dict": mock_model.state_dict(), "epoch": 5, "step": 1000}
         torch.save(checkpoint, checkpoint_path)
-        
+
         assert checkpoint_path.exists()
-        
+
         # Verify contents
         loaded = torch.load(checkpoint_path)
         assert "model_state_dict" in loaded
         assert loaded["epoch"] == 5
         assert loaded["step"] == 1000
-    
+
     def test_load_checkpoint_basic(self, mock_model, temp_checkpoint_dir):
         """Test basic checkpoint loading"""
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
-        
+
         # Save first
-        torch.save({
-            "model_state_dict": mock_model.state_dict(),
-            "epoch": 5
-        }, checkpoint_path)
-        
+        torch.save({"model_state_dict": mock_model.state_dict(), "epoch": 5}, checkpoint_path)
+
         # Load
         checkpoint = torch.load(checkpoint_path)
         new_model = torch.nn.Linear(10, 5)
         new_model.load_state_dict(checkpoint["model_state_dict"])
-        
+
         # Verify model weights loaded
         for p1, p2 in zip(mock_model.parameters(), new_model.parameters()):
             assert torch.allclose(p1, p2)
@@ -91,39 +85,39 @@ class TestCheckpointSaveLoad:
 
 class TestRNGState:
     """Test RNG state preservation"""
-    
+
     def test_save_rng_state(self, temp_checkpoint_dir):
         """Test saving RNG state"""
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
-        
+
         # Set specific seed
         torch.manual_seed(42)
         rng_state = torch.get_rng_state()
-        
+
         torch.save({"rng_state": rng_state}, checkpoint_path)
-        
+
         checkpoint = torch.load(checkpoint_path)
         assert "rng_state" in checkpoint
-    
+
     def test_restore_rng_state(self, temp_checkpoint_dir):
         """Test restoring RNG state"""
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
-        
+
         # Set seed and save state
         torch.manual_seed(42)
         expected = torch.rand(5)
-        
+
         torch.manual_seed(42)
         rng_state = torch.get_rng_state()
         torch.save({"rng_state": rng_state}, checkpoint_path)
-        
+
         # Change seed
         torch.manual_seed(123)
-        
+
         # Restore RNG state
         checkpoint = torch.load(checkpoint_path)
         torch.set_rng_state(checkpoint["rng_state"])
-        
+
         # Should generate same numbers
         actual = torch.rand(5)
         assert torch.allclose(expected, actual)

@@ -31,13 +31,23 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "found_patterns": sorted(set(found)),
         "required_patterns": required,
         "docs_keywords": [
-            "mcp", "schema", "validation", "pydantic", "openapi",
-            "basemodel", "type-safety", "api", "specification", "contracts",
-            "validation", "safeguards", "security"
+            "mcp",
+            "schema",
+            "validation",
+            "pydantic",
+            "openapi",
+            "basemodel",
+            "type-safety",
+            "api",
+            "specification",
+            "contracts",
+            "validation",
+            "safeguards",
+            "security",
         ],
         "meta": {
             "category": "mcp",
             "safeguards": ["validation", "type-safety", "error-handling", "input-sanitization"],
-            "detector_version": "1.2"
-        }
+            "detector_version": "1.2",
+        },
     }

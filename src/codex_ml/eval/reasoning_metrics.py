@@ -136,15 +136,11 @@ def calculate_critique_density(
             "second",
             "finally",
         ]
-        density += sum(
-            0.05 for marker in reasoning_markers if marker in response_lower
-        )
+        density += sum(0.05 for marker in reasoning_markers if marker in response_lower)
 
         # Check for examples
         example_markers = ["example", "for instance", "such as", "e.g.", "i.e."]
-        density += sum(
-            0.10 for marker in example_markers if marker in response_lower
-        )
+        density += sum(0.10 for marker in example_markers if marker in response_lower)
 
         # Check for edge cases / qualifications
         qualification_markers = [
@@ -156,16 +152,14 @@ def calculate_critique_density(
             "important",
             "caveat",
         ]
-        density += sum(
-            0.08 for marker in qualification_markers if marker in response_lower
-        )
+        density += sum(0.08 for marker in qualification_markers if marker in response_lower)
 
         # Check for mathematical notation
-        if re.search(r'[=+\-*/^<>≤≥]|\d+\s*[+\-*/]\s*\d+', response):
+        if re.search(r"[=+\-*/^<>≤≥]|\d+\s*[+\-*/]\s*\d+", response):
             density += 0.15
 
         # Check for structured formatting (numbered lists, bullets)
-        if re.search(r'^\s*[\d•\-*]\s+', response, re.MULTILINE):
+        if re.search(r"^\s*[\d•\-*]\s+", response, re.MULTILINE):
             density += 0.10
 
         # Length factor (longer explanations often more detailed)
@@ -202,7 +196,7 @@ def calculate_latency_delta(
 
     try:
         import numpy as np
-        
+
         latencies_array = np.array(latencies)
         p_latency = np.percentile(latencies_array, percentile)
 
@@ -219,14 +213,14 @@ def calculate_latency_delta(
         idx = int(len(sorted_latencies) * percentile / 100.0)
         idx = min(idx, len(sorted_latencies) - 1)
         p_latency = sorted_latencies[idx]
-        
+
         if baseline_latencies:
             sorted_baseline = sorted(baseline_latencies)
             b_idx = int(len(sorted_baseline) * percentile / 100.0)
             b_idx = min(b_idx, len(sorted_baseline) - 1)
             baseline_p = sorted_baseline[b_idx]
             return float(p_latency - baseline_p)
-        
+
         return float(p_latency)
 
 
@@ -250,7 +244,7 @@ def calculate_judge_disagreement(
 
     try:
         import numpy as np
-        
+
         disagreements = []
 
         for ratings in judge_ratings:
@@ -272,20 +266,20 @@ def calculate_judge_disagreement(
     except ImportError:
         # Fallback without numpy
         disagreements = []
-        
+
         for ratings in judge_ratings:
             if len(ratings) < 2:
                 continue
-            
+
             mean = sum(ratings) / len(ratings)
             if mean == 0:
                 disagreements.append(0.0)
             else:
                 variance = sum((x - mean) ** 2 for x in ratings) / len(ratings)
-                std = variance ** 0.5
+                std = variance**0.5
                 cv = std / mean
                 disagreements.append(min(cv, 1.0))
-        
+
         return sum(disagreements) / len(disagreements) if disagreements else 0.0
 
 
@@ -317,9 +311,7 @@ def calculate_trace_coverage(
 
         if required_steps and i < len(required_steps):
             # Check for specific required steps
-            steps_found = sum(
-                1 for step in required_steps[i] if step.lower() in response_lower
-            )
+            steps_found = sum(1 for step in required_steps[i] if step.lower() in response_lower)
             coverage = steps_found / len(required_steps[i]) if required_steps[i] else 0.0
         else:
             # Generic step detection
@@ -334,9 +326,7 @@ def calculate_trace_coverage(
                 "then",
                 "next",
             ]
-            steps_found = sum(
-                1 for indicator in step_indicators if indicator in response_lower
-            )
+            steps_found = sum(1 for indicator in step_indicators if indicator in response_lower)
             coverage = min(steps_found / 5.0, 1.0)  # Normalize to max 5 steps
 
         total_coverage += coverage
@@ -365,17 +355,17 @@ def calculate_explanation_depth(
         depth = 0.0
 
         # Multi-level reasoning (nested explanations)
-        indent_pattern = r'^\s{2,}[\-*•\d]'
+        indent_pattern = r"^\s{2,}[\-*•\d]"
         nested_levels = len(re.findall(indent_pattern, response, re.MULTILINE))
         depth += min(nested_levels * 0.15, 0.45)
 
         # Causal chains (because X, therefore Y)
-        causal_pattern = r'(because|since|thus|therefore|hence)'
+        causal_pattern = r"(because|since|thus|therefore|hence)"
         causal_count = len(re.findall(causal_pattern, response, re.IGNORECASE))
         depth += min(causal_count * 0.10, 0.30)
 
         # Mathematical derivations
-        if re.search(r'derive|proof|qed|∴|∵', response, re.IGNORECASE):
+        if re.search(r"derive|proof|qed|∴|∵", response, re.IGNORECASE):
             depth += 0.25
 
         total_depth += min(depth, 1.0)
@@ -410,10 +400,10 @@ def calculate_consistency(
 
         # Check for explicit contradictions
         contradiction_patterns = [
-            (r'is true.*is false', 0.5),
-            (r'always.*never', 0.3),
-            (r'all.*none', 0.3),
-            (r'must.*cannot', 0.3),
+            (r"is true.*is false", 0.5),
+            (r"always.*never", 0.3),
+            (r"all.*none", 0.3),
+            (r"must.*cannot", 0.3),
         ]
 
         for pattern, penalty in contradiction_patterns:
@@ -436,7 +426,7 @@ def _score_response_quality(response: str) -> float:
     score += min(words / 100.0, 1.0) * 0.3
 
     # Structure (paragraphs, lists)
-    paragraphs = len(response.split('\n\n'))
+    paragraphs = len(response.split("\n\n"))
     score += min(paragraphs / 3.0, 1.0) * 0.2
 
     # Reasoning markers

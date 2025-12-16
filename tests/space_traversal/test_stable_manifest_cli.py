@@ -6,6 +6,7 @@ from pathlib import Path
 
 SCRIPT = "scripts/space_traversal/stable_manifest.py"
 
+
 def test_stable_manifest_cli_normalizes(tmp_path: Path):
     a = tmp_path / "out_a"
     b = tmp_path / "out_b"

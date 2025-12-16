@@ -62,9 +62,7 @@ def _summarize_env(snapshot: Any) -> Dict[str, Any]:
     env_vars = snapshot.get("env", {})
 
     # Only small, non-sensitive summary.
-    codex_vars = {
-        k: v for k, v in env_vars.items() if str(k).upper().startswith("CODEX_")
-    }
+    codex_vars = {k: v for k, v in env_vars.items() if str(k).upper().startswith("CODEX_")}
 
     return {
         "available": True,
@@ -203,9 +201,7 @@ def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
         lines.append("- Environment snapshot: **not available**\n")
     else:
         lines.append(f"- Python version: `{env.get('python_version')}`")
-        lines.append(
-            f"- OS: `{env.get('os_platform')}` / `{env.get('os_release')}`"
-        )
+        lines.append(f"- OS: `{env.get('os_platform')}` / `{env.get('os_release')}`")
         keys = env.get("codex_env_var_keys") or []
         if keys:
             lines.append(f"- CODEX_* env vars: {', '.join(keys)}")
@@ -259,9 +255,7 @@ def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
     if not gate.get("available"):
         lines.append("- Local gate report: **not available**\n")
     else:
-        lines.append(
-            f"- Overall return code: **{gate.get('overall_returncode', 0)}**"
-        )
+        lines.append(f"- Overall return code: **{gate.get('overall_returncode', 0)}**")
         lines.append(f"- Total commands     : {gate.get('total_commands', 0)}")
         failed = gate.get("failed_commands") or []
         if failed:
@@ -275,9 +269,7 @@ def _write_markdown(path: Path, manifest: Dict[str, Any]) -> None:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Generate `_codex_` reproducibility manifest."
-    )
+    parser = argparse.ArgumentParser(description="Generate `_codex_` reproducibility manifest.")
     parser.add_argument(
         "--repo-root",
         type=str,

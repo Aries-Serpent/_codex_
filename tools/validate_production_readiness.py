@@ -71,7 +71,9 @@ def validate_tests(repo_root: Path) -> ValidationResult:
 
 def validate_gaps(repo_root: Path) -> ValidationResult:
     gaps = detect_gaps.discover_gaps(repo_root)
-    return ValidationResult("gaps", "fail" if gaps else "pass", {"gaps": [asdict(gap) for gap in gaps]})
+    return ValidationResult(
+        "gaps", "fail" if gaps else "pass", {"gaps": [asdict(gap) for gap in gaps]}
+    )
 
 
 def main() -> None:

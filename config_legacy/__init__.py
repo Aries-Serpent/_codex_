@@ -5,10 +5,10 @@ Hydra shim that prefers the real package when available.
     This module has been renamed from 'hydra' to 'config_legacy' to avoid
     shadowing the installed hydra-core package. Direct imports from this
     module are deprecated and will be removed in a future version.
-    
+
     Use 'import hydra' to access the official hydra-core package from
     site-packages instead of this local shim.
-    
+
     Risk: Having a local 'hydra' directory can shadow the installed
     hydra-core package, causing import ambiguity and "split-brain" issues.
 """

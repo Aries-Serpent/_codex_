@@ -20,15 +20,15 @@ from tests.specs.flow_specifications import (
     physics_orchestration_spec,
     diffusion_flow_spec,
     quantum_game_spec,
-    mental_mapping_spec
+    mental_mapping_spec,
 )
 
 
 SPEC_MAP = {
-    'physics_orchestration': physics_orchestration_spec,
-    'diffusion_flow': diffusion_flow_spec,
-    'quantum_game': quantum_game_spec,
-    'mental_mapping': mental_mapping_spec
+    "physics_orchestration": physics_orchestration_spec,
+    "diffusion_flow": diffusion_flow_spec,
+    "quantum_game": quantum_game_spec,
+    "mental_mapping": mental_mapping_spec,
 }
 
 
@@ -38,41 +38,41 @@ def generate_for_spec(spec_name: str, output_dir: Path):
         print(f"Error: Unknown spec '{spec_name}'")
         print(f"Available specs: {', '.join(SPEC_MAP.keys())}")
         return False
-    
+
     spec = SPEC_MAP[spec_name]
     generator = UnitTestGenerator(spec)
-    
+
     # Generate test code
     test_code = generator.generate_complete_test_suite()
-    
+
     # Write to file
     output_file = output_dir / f"test_{spec.class_name.lower()}_{spec.method_name}.py"
     output_file.write_text(test_code)
-    
+
     print(f"✓ Generated: {output_file}")
     print(f"  Target coverage: Lines {spec.line_range[0]}-{spec.line_range[1]}")
     print(f"  Test categories: {len(spec.edge_cases) + 3}")
-    
+
     # Print summary
     summary = generator.generate_test_summary()
     print(summary)
-    
+
     return True
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate unit tests for orchestration flows')
-    parser.add_argument('--spec', help='Specification name (or "all")')
-    parser.add_argument('--output-dir', default='tests/generated', help='Output directory')
-    parser.add_argument('--analyze', action='store_true', help='Analyze module for flows')
-    parser.add_argument('--module', help='Module to analyze')
-    
+    parser = argparse.ArgumentParser(description="Generate unit tests for orchestration flows")
+    parser.add_argument("--spec", help='Specification name (or "all")')
+    parser.add_argument("--output-dir", default="tests/generated", help="Output directory")
+    parser.add_argument("--analyze", action="store_true", help="Analyze module for flows")
+    parser.add_argument("--module", help="Module to analyze")
+
     args = parser.parse_args()
-    
+
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
-    if args.spec == 'all':
+
+    if args.spec == "all":
         for spec_name in SPEC_MAP.keys():
             print(f"\n{'='*80}")
             generate_for_spec(spec_name, output_dir)
@@ -84,5 +84,5 @@ def main():
         parser.print_help()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

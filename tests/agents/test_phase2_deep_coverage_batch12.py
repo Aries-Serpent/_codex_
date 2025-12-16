@@ -71,7 +71,7 @@ class TestPhase2_PropertyAccess:
         from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10)
-        assert hasattr(model, 'diffusion_coefficient')
+        assert hasattr(model, "diffusion_coefficient")
         assert model.diffusion_coefficient == 0.5
 
     def test_energy_landscape_properties(self):
@@ -79,7 +79,7 @@ class TestPhase2_PropertyAccess:
         from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.5)
-        assert hasattr(landscape, 'temperature')
+        assert hasattr(landscape, "temperature")
         assert landscape.temperature == 1.5
 
     def test_swarm_intelligence_properties(self):
@@ -87,7 +87,7 @@ class TestPhase2_PropertyAccess:
         from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=15)
-        assert hasattr(swarm, 'num_agents')
+        assert hasattr(swarm, "num_agents")
         assert swarm.num_agents == 15
 
     def test_hamiltonian_evolver_properties(self):
@@ -95,7 +95,7 @@ class TestPhase2_PropertyAccess:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=32)
-        assert hasattr(evolver, 'grid_size')
+        assert hasattr(evolver, "grid_size")
         assert evolver.grid_size == 32
 
     def test_chaotic_attractor_properties(self):
@@ -103,9 +103,9 @@ class TestPhase2_PropertyAccess:
         from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
-        assert hasattr(attractor, 'attractor_type')
-        assert hasattr(attractor, 'parameters')
-        assert hasattr(attractor, 'state')
+        assert hasattr(attractor, "attractor_type")
+        assert hasattr(attractor, "parameters")
+        assert hasattr(attractor, "state")
 
 
 class TestPhase2_InitializationVariants:
@@ -222,7 +222,7 @@ class TestPhase2_ExceptionPaths:
             error_occurred = False
         except ZeroDivisionError:
             error_occurred = True
-        
+
         assert not error_occurred
         assert result == 5
 
@@ -234,7 +234,7 @@ class TestPhase2_ExceptionPaths:
         except ZeroDivisionError:
             error_occurred = True
             result = 0
-        
+
         assert error_occurred
 
     def test_try_except_finally(self):
@@ -244,7 +244,7 @@ class TestPhase2_ExceptionPaths:
             value = 42
         finally:
             finally_executed = True
-        
+
         assert finally_executed
 
     def test_multiple_except_blocks(self):
@@ -256,7 +256,7 @@ class TestPhase2_ExceptionPaths:
             error_type = "ValueError"
         except TypeError:
             error_type = "TypeError"
-        
+
         assert error_type == "ValueError"
 
     def test_exception_context_manager(self):
@@ -267,7 +267,7 @@ class TestPhase2_ExceptionPaths:
                 pass
         except FileNotFoundError:
             executed = True
-        
+
         assert executed
 
 
@@ -343,7 +343,7 @@ class TestPhase2_CollectionOperations:
         union = a | b
         intersection = a & b
         difference = a - b
-        
+
         assert union == {1, 2, 3, 4, 5, 6}
         assert intersection == {3, 4}
         assert difference == {1, 2}
@@ -356,9 +356,9 @@ class TestPhase2_CollectionOperations:
 
     def test_enumerate_usage(self):
         """Test enumerate"""
-        items = ['a', 'b', 'c']
+        items = ["a", "b", "c"]
         indexed = [(i, item) for i, item in enumerate(items)]
-        assert indexed == [(0, 'a'), (1, 'b'), (2, 'c')]
+        assert indexed == [(0, "a"), (1, "b"), (2, "c")]
 
 
 class TestPhase2_FunctionVariants:
@@ -369,37 +369,42 @@ class TestPhase2_FunctionVariants:
 
     def test_optional_parameters_default(self):
         """Test function with default parameters"""
+
         def func(a, b=10):
             return a + b
-        
+
         assert func(5) == 15
 
     def test_optional_parameters_provided(self):
         """Test function with provided optional params"""
+
         def func(a, b=10):
             return a + b
-        
+
         assert func(5, 20) == 25
 
     def test_variable_arguments(self):
         """Test *args"""
+
         def func(*args):
             return sum(args)
-        
+
         assert func(1, 2, 3, 4) == 10
 
     def test_keyword_arguments(self):
         """Test **kwargs"""
+
         def func(**kwargs):
             return len(kwargs)
-        
+
         assert func(a=1, b=2, c=3) == 3
 
     def test_mixed_arguments(self):
         """Test positional, default, *args, **kwargs"""
+
         def func(pos, default=10, *args, **kwargs):
             return pos + default + sum(args) + sum(kwargs.values())
-        
+
         result = func(1, 2, 3, 4, x=5, y=6)
         assert result == 21
 
@@ -412,47 +417,51 @@ class TestPhase2_ClassMethods:
 
     def test_instance_method(self):
         """Test regular instance method"""
+
         class MyClass:
             def __init__(self, value):
                 self.value = value
-            
+
             def get_value(self):
                 return self.value
-        
+
         obj = MyClass(42)
         assert obj.get_value() == 42
 
     def test_class_method(self):
         """Test @classmethod"""
+
         class MyClass:
             counter = 0
-            
+
             @classmethod
             def increment(cls):
                 cls.counter += 1
-        
+
         MyClass.increment()
         assert MyClass.counter == 1
 
     def test_static_method(self):
         """Test @staticmethod"""
+
         class MyClass:
             @staticmethod
             def add(a, b):
                 return a + b
-        
+
         assert MyClass.add(3, 4) == 7
 
     def test_property_decorator(self):
         """Test @property"""
+
         class MyClass:
             def __init__(self, value):
                 self._value = value
-            
+
             @property
             def value(self):
                 return self._value
-        
+
         obj = MyClass(42)
         assert obj.value == 42
 
@@ -465,63 +474,68 @@ class TestPhase2_SpecialMethods:
 
     def test_str_representation(self):
         """Test __str__ method"""
+
         class MyClass:
             def __str__(self):
                 return "MyClass instance"
-        
+
         obj = MyClass()
         assert str(obj) == "MyClass instance"
 
     def test_repr_representation(self):
         """Test __repr__ method"""
+
         class MyClass:
             def __repr__(self):
                 return "MyClass()"
-        
+
         obj = MyClass()
         assert repr(obj) == "MyClass()"
 
     def test_equality_comparison(self):
         """Test __eq__ method"""
+
         class MyClass:
             def __init__(self, value):
                 self.value = value
-            
+
             def __eq__(self, other):
                 return self.value == other.value
-        
+
         obj1 = MyClass(10)
         obj2 = MyClass(10)
         assert obj1 == obj2
 
     def test_length_method(self):
         """Test __len__ method"""
+
         class MyCollection:
             def __init__(self, items):
                 self.items = items
-            
+
             def __len__(self):
                 return len(self.items)
-        
+
         coll = MyCollection([1, 2, 3])
         assert len(coll) == 3
 
     def test_iteration_protocol(self):
         """Test __iter__ and __next__"""
+
         class Counter:
             def __init__(self, max_val):
                 self.max_val = max_val
                 self.current = 0
-            
+
             def __iter__(self):
                 return self
-            
+
             def __next__(self):
                 if self.current >= self.max_val:
                     raise StopIteration
                 self.current += 1
                 return self.current
-        
+
         counter = Counter(3)
         values = list(counter)
         assert values == [1, 2, 3]
@@ -539,7 +553,7 @@ class TestPhase2_ComprehensiveAPISurface:
 
         orch = PhysicsOrchestrator()
         # Test various method existence
-        assert hasattr(orch, '__init__')
+        assert hasattr(orch, "__init__")
         # Add more method checks as needed
 
     def test_all_quantum_game_methods(self):
@@ -551,31 +565,31 @@ class TestPhase2_ComprehensiveAPISurface:
         payoff_b = np.array([[3, 0], [5, 1]])
         payoff_r = np.array([[3, 5], [0, 1]])
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
-        
+
         # Test methods
-        assert hasattr(engine, 'play_round')
-        assert hasattr(engine, 'get_payoffs')
+        assert hasattr(engine, "play_round")
+        assert hasattr(engine, "get_payoffs")
 
     def test_all_mental_mapping_methods(self):
         """Test MentalMapping API surface"""
         from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
-        assert hasattr(model, '__init__')
+        assert hasattr(model, "__init__")
 
     def test_all_agent_memory_methods(self):
         """Test AgentMemory API surface"""
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        assert hasattr(memory, '__init__')
+        assert hasattr(memory, "__init__")
 
     def test_all_developer_orchestrator_methods(self):
         """Test DeveloperOrchestrator API surface"""
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         dev_orch = PhysicsGuidedDeveloperOrchestrator()
-        assert hasattr(dev_orch, '__init__')
+        assert hasattr(dev_orch, "__init__")
 
 
 class TestPhase2_FinalGapClosing:
@@ -591,37 +605,37 @@ class TestPhase2_FinalGapClosing:
         a3 = np.arange(5)
         a4 = np.linspace(0, 1, 5)
         a5 = np.random.rand(5)
-        
+
         assert len(a1) == len(a2) == len(a3) == len(a4) == len(a5) == 5
 
     def test_mathematical_operations(self):
         """Test comprehensive math operations"""
         x = np.array([1.0, 2.0, 3.0])
-        
+
         # Trigonometric
         sin_x = np.sin(x)
         cos_x = np.cos(x)
         tan_x = np.tan(x)
-        
+
         # Exponential and logarithmic
         exp_x = np.exp(x)
         log_x = np.log(x)
-        
+
         # Power and root
         sqrt_x = np.sqrt(x)
-        square_x = x ** 2
-        
+        square_x = x**2
+
         assert len(sin_x) == len(x)
 
     def test_statistical_operations(self):
         """Test statistical operations"""
         data = np.array([1, 2, 3, 4, 5])
-        
+
         mean = np.mean(data)
         median = np.median(data)
         std = np.std(data)
         var = np.var(data)
-        
+
         assert mean == 3.0
         assert median == 3.0
 
@@ -629,16 +643,16 @@ class TestPhase2_FinalGapClosing:
         """Test linear algebra"""
         A = np.array([[1, 2], [3, 4]])
         b = np.array([5, 6])
-        
+
         # Matrix-vector multiplication
         c = A @ b
-        
+
         # Determinant
         det = np.linalg.det(A)
-        
+
         # Eigenvalues
         eigenvalues = np.linalg.eigvals(A)
-        
+
         assert len(c) == 2
         assert det != 0
 

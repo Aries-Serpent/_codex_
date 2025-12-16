@@ -26,6 +26,7 @@ def _git_binary() -> Optional[Path]:
 
     return candidate
 
+
 try:  # pragma: no cover - optional torch dependency
     import torch
 except Exception:  # pragma: no cover
@@ -39,7 +40,9 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
     if git_bin is None:
         return None
     try:
-        return subprocess.check_output([str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        return subprocess.check_output(
+            [str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True
+        ).strip()
     except Exception as exc:
         LOGGER.debug("Unable to read git commit from %s: %s", root, exc)
         return None

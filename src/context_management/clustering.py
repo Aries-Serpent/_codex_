@@ -15,6 +15,7 @@ from datetime import datetime
 @dataclass
 class ClusterMember:
     """A member of a semantic cluster."""
+
     text: str
     embedding: Optional[List[float]] = None
     similarity_to_centroid: float = 1.0
@@ -25,18 +26,19 @@ class ClusterMember:
 @dataclass
 class SemanticCluster:
     """A cluster of semantically similar statements."""
+
     cluster_id: str
     centroid_text: str
     centroid_embedding: Optional[List[float]] = None
     members: List[ClusterMember] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
     confidence_score: float = 1.0
-    
+
     @property
     def size(self) -> int:
         """Number of members in cluster."""
         return len(self.members)
-    
+
     @property
     def average_similarity(self) -> float:
         """Average similarity of members to centroid."""
@@ -48,23 +50,23 @@ class SemanticCluster:
 class SemanticClusterer:
     """
     Cluster statements based on semantic similarity.
-    
+
     Uses embeddings when available, falls back to token-based
     similarity for lightweight operation.
     """
-    
+
     DEFAULT_THRESHOLD = 0.85
-    
+
     def __init__(
         self,
         similarity_threshold: float = DEFAULT_THRESHOLD,
         min_cluster_size: int = 2,
         max_clusters: int = 1000,
-        use_embeddings: bool = False
+        use_embeddings: bool = False,
     ):
         """
         Initialize clusterer.
-        
+
         Args:
             similarity_threshold: Minimum cosine similarity (0.0-1.0) to cluster together
             min_cluster_size: Minimum members for a valid cluster
@@ -75,43 +77,42 @@ class SemanticClusterer:
         self.min_cluster_size = min_cluster_size
         self.max_clusters = max_clusters
         self.use_embeddings = use_embeddings
-        
+
         self._clusters: Dict[str, SemanticCluster] = {}
         self._text_to_cluster: Dict[str, str] = {}  # text_hash -> cluster_id
-    
+
     def add_statement(
-        self,
-        text: str,
-        embedding: Optional[List[float]] = None,
-        source: str = ""
+        self, text: str, embedding: Optional[List[float]] = None, source: str = ""
     ) -> Tuple[str, bool]:
         """
         Add statement to appropriate cluster or create new cluster.
-        
+
         Args:
             text: Statement text
             embedding: Pre-computed embedding vector (optional)
             source: Source identifier
-            
+
         Returns:
             Tuple of (cluster_id, is_new_cluster)
         """
         text_hash = self._hash_text(text)
-        
+
         # Check if already clustered
         if text_hash in self._text_to_cluster:
             return self._text_to_cluster[text_hash], False
-        
+
         # Find best matching cluster
         best_cluster_id = None
         best_similarity = 0.0
-        
+
         for cluster_id, cluster in self._clusters.items():
-            similarity = self._compute_similarity(text, cluster.centroid_text, embedding, cluster.centroid_embedding)
+            similarity = self._compute_similarity(
+                text, cluster.centroid_text, embedding, cluster.centroid_embedding
+            )
             if similarity >= self.similarity_threshold and similarity > best_similarity:
                 best_similarity = similarity
                 best_cluster_id = cluster_id
-        
+
         if best_cluster_id:
             # Add to existing cluster
             cluster = self._clusters[best_cluster_id]
@@ -119,7 +120,7 @@ class SemanticClusterer:
                 text=text,
                 embedding=embedding,
                 similarity_to_centroid=best_similarity,
-                source=source
+                source=source,
             )
             cluster.members.append(member)
             cluster.confidence_score = cluster.average_similarity
@@ -133,21 +134,21 @@ class SemanticClusterer:
                 cluster_id=cluster_id,
                 centroid_text=text,
                 centroid_embedding=embedding,
-                members=[member]
+                members=[member],
             )
             self._clusters[cluster_id] = cluster
             self._text_to_cluster[text_hash] = cluster_id
-            
+
             # Cleanup if over limit
             if len(self._clusters) > self.max_clusters:
                 self._prune_smallest_clusters()
-            
+
             return cluster_id, True
-    
+
     def get_cluster(self, cluster_id: str) -> Optional[SemanticCluster]:
         """Get cluster by ID."""
         return self._clusters.get(cluster_id)
-    
+
     def get_cluster_for_text(self, text: str) -> Optional[SemanticCluster]:
         """Get the cluster containing given text."""
         text_hash = self._hash_text(text)
@@ -155,14 +156,14 @@ class SemanticClusterer:
         if cluster_id:
             return self._clusters.get(cluster_id)
         return None
-    
+
     def get_representative_statements(self, max_per_cluster: int = 1) -> List[str]:
         """
         Get representative statements from each cluster.
-        
+
         Args:
             max_per_cluster: Maximum representatives per cluster
-            
+
         Returns:
             List of representative statement texts
         """
@@ -172,126 +173,125 @@ class SemanticClusterer:
                 continue
             # Get highest similarity members as representatives
             sorted_members = sorted(
-                cluster.members,
-                key=lambda m: m.similarity_to_centroid,
-                reverse=True
+                cluster.members, key=lambda m: m.similarity_to_centroid, reverse=True
             )
             for member in sorted_members[:max_per_cluster]:
                 representatives.append(member.text)
         return representatives
-    
+
     def cluster_statements(self, statements: List[str]) -> Dict[str, List[str]]:
         """
         Cluster a list of statements.
-        
+
         Args:
             statements: List of statement texts
-            
+
         Returns:
             Dict mapping cluster_id to list of statement texts
         """
         for stmt in statements:
             self.add_statement(stmt)
-        
+
         result = {}
         for cluster_id, cluster in self._clusters.items():
             result[cluster_id] = [m.text for m in cluster.members]
         return result
-    
+
     def get_cluster_summary(self) -> Dict:
         """Get summary statistics of all clusters."""
         return {
-            'total_clusters': len(self._clusters),
-            'total_statements': sum(c.size for c in self._clusters.values()),
-            'average_cluster_size': (
+            "total_clusters": len(self._clusters),
+            "total_statements": sum(c.size for c in self._clusters.values()),
+            "average_cluster_size": (
                 sum(c.size for c in self._clusters.values()) / len(self._clusters)
-                if self._clusters else 0
+                if self._clusters
+                else 0
             ),
-            'average_confidence': (
+            "average_confidence": (
                 sum(c.confidence_score for c in self._clusters.values()) / len(self._clusters)
-                if self._clusters else 0
+                if self._clusters
+                else 0
             ),
-            'clusters': [
+            "clusters": [
                 {
-                    'id': c.cluster_id,
-                    'size': c.size,
-                    'confidence': c.confidence_score,
-                    'centroid_preview': c.centroid_text[:100]
+                    "id": c.cluster_id,
+                    "size": c.size,
+                    "confidence": c.confidence_score,
+                    "centroid_preview": c.centroid_text[:100],
                 }
                 for c in self._clusters.values()
-            ]
+            ],
         }
-    
+
     def clear(self):
         """Clear all clusters."""
         self._clusters.clear()
         self._text_to_cluster.clear()
-    
+
     def _compute_similarity(
         self,
         text1: str,
         text2: str,
         embedding1: Optional[List[float]] = None,
-        embedding2: Optional[List[float]] = None
+        embedding2: Optional[List[float]] = None,
     ) -> float:
         """
         Compute similarity between two texts.
-        
+
         Uses embeddings if available, otherwise falls back to token overlap.
         """
         if embedding1 and embedding2:
             return self._cosine_similarity(embedding1, embedding2)
         else:
             return self._token_similarity(text1, text2)
-    
+
     def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
         """Compute cosine similarity between two vectors."""
         if len(vec1) != len(vec2):
             return 0.0
-        
+
         dot_product = sum(a * b for a, b in zip(vec1, vec2))
         norm1 = math.sqrt(sum(a * a for a in vec1))
         norm2 = math.sqrt(sum(b * b for b in vec2))
-        
+
         if norm1 == 0 or norm2 == 0:
             return 0.0
-        
+
         return dot_product / (norm1 * norm2)
-    
+
     def _token_similarity(self, text1: str, text2: str) -> float:
         """Compute token-based Jaccard similarity."""
         tokens1 = set(text1.lower().split())
         tokens2 = set(text2.lower().split())
-        
+
         if not tokens1 or not tokens2:
             return 0.0
-        
+
         intersection = len(tokens1 & tokens2)
         union = len(tokens1 | tokens2)
-        
+
         return intersection / union if union > 0 else 0.0
-    
+
     def _hash_text(self, text: str) -> str:
         """Generate hash for text."""
         return hashlib.sha256(text.encode()).hexdigest()[:16]
-    
+
     def _generate_cluster_id(self, text: str) -> str:
         """Generate unique cluster ID."""
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
         text_hash = self._hash_text(text)[:8]
         return f"cluster_{timestamp}_{text_hash}"
-    
+
     def _prune_smallest_clusters(self):
         """Remove smallest clusters when over limit."""
         if len(self._clusters) <= self.max_clusters:
             return
-        
+
         # Sort by size (ascending) then confidence (ascending)
         sorted_clusters = sorted(
-            self._clusters.items(),
-            key=lambda x: (x[1].size, x[1].confidence_score)
+            self._clusters.items(), key=lambda x: (x[1].size, x[1].confidence_score)
         )
-        
+
         # Remove bottom 10%
         remove_count = max(1, len(sorted_clusters) // 10)
         for cluster_id, cluster in sorted_clusters[:remove_count]:

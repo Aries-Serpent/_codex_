@@ -25,7 +25,7 @@ def test_tool_trace_ra_gate_mismatch(tmp_path):
     tracer = ToolTraceLogger(output_path=tmp_path / "trace.ndjson")
     tracer.load_ra_gate_results(gate_results)
 
-    record = tracer.run_tool("python", ["-c", "import sys; sys.exit(1)"] , check=False)
+    record = tracer.run_tool("python", ["-c", "import sys; sys.exit(1)"], check=False)
 
     assert record.ra_gate_expected is True
     assert record.ra_gate_match is False

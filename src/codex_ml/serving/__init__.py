@@ -23,4 +23,3 @@ __all__ = [
     "RateLimiter",
     "create_app",
 ]
-

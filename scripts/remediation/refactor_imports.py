@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC_DIRS = [ROOT / "src", ROOT]
 PY_FILES = list(ROOT.rglob("*.py"))
 
+
 def load_mappings(mapping_arg: str) -> Dict[str, str]:
     # mapping_arg can be a JSON string or path to a JSON file
     p = Path(mapping_arg)
@@ -38,6 +39,7 @@ def load_mappings(mapping_arg: str) -> Dict[str, str]:
     except Exception as e:
         raise RuntimeError(f"Invalid mapping: {e}")
 
+
 def find_candidate_files() -> List[Path]:
     files = []
     for p in ROOT.rglob("*.py"):
@@ -46,6 +48,7 @@ def find_candidate_files() -> List[Path]:
             continue
         files.append(p)
     return files
+
 
 def process_file(path: Path, mappings: Dict[str, str]) -> Tuple[bool, str]:
     """
@@ -93,6 +96,7 @@ def process_file(path: Path, mappings: Dict[str, str]) -> Tuple[bool, str]:
             new_src = new_src.replace(f"from {old}", f"from {new}")
     return True, new_src
 
+
 def run_dry_run(mappings: Dict[str, str], limit: int = 100) -> List[Tuple[Path, str]]:
     candidates = find_candidate_files()
     changes = []
@@ -107,18 +111,23 @@ def run_dry_run(mappings: Dict[str, str], limit: int = 100) -> List[Tuple[Path, 
             print(f"Warning: skipping {p}: {e}")
     return changes
 
+
 def apply_changes(changes: List[Tuple[Path, str]], commit_per_batch: int = 20):
     idx = 0
     total = len(changes)
     while idx < total:
-        batch = changes[idx: idx + commit_per_batch]
+        batch = changes[idx : idx + commit_per_batch]
         for path, new_src in batch:
             backup = path.with_suffix(path.suffix + ".bak")
             shutil.copy2(path, backup)
             path.write_text(new_src, encoding="utf-8")
         # Run tests for safety
         print(f"Applied batch {idx // commit_per_batch + 1}, running tests...")
-        res = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests/validation/"], capture_output=True, text=True)
+        res = subprocess.run(
+            [sys.executable, "-m", "pytest", "-q", "tests/validation/"],
+            capture_output=True,
+            text=True,
+        )
         print(res.stdout)
         if res.returncode != 0:
             print("Tests failed after applying batch; reverting batch.")
@@ -133,12 +142,21 @@ def apply_changes(changes: List[Tuple[Path, str]], commit_per_batch: int = 20):
         idx += commit_per_batch
     print("All batches applied successfully.")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Refactor imports from legacy roots to src.*")
-    parser.add_argument("--mapping", required=True, help="JSON string or path to JSON mapping file for old->new prefixes")
-    parser.add_argument("--dry-run", action="store_true", help="Do not write files; show proposed changes")
+    parser.add_argument(
+        "--mapping",
+        required=True,
+        help="JSON string or path to JSON mapping file for old->new prefixes",
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Do not write files; show proposed changes"
+    )
     parser.add_argument("--apply", action="store_true", help="Apply changes (use with care)")
-    parser.add_argument("--batch-size", type=int, default=20, help="Commit per N files when applying")
+    parser.add_argument(
+        "--batch-size", type=int, default=20, help="Commit per N files when applying"
+    )
     parser.add_argument("--limit", type=int, default=500, help="Max files to inspect")
     args = parser.parse_args()
 
@@ -162,6 +180,7 @@ def main():
         apply_changes(changes, commit_per_batch=args.batch_size)
     else:
         print("Run with --apply to apply changes (commits per batch).")
+
 
 if __name__ == "__main__":
     main()

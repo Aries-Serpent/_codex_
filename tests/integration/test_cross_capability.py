@@ -269,11 +269,13 @@ class EvaluationTracker:
 
     def log_run(self, run_id: str, metrics: dict[str, float]) -> None:
         """Log evaluation run."""
-        self.runs.append({
-            "run_id": run_id,
-            "experiment": self.experiment_name,
-            "metrics": metrics,
-        })
+        self.runs.append(
+            {
+                "run_id": run_id,
+                "experiment": self.experiment_name,
+                "metrics": metrics,
+            }
+        )
 
     def compare_runs(self, metric: str) -> list[dict[str, Any]]:
         """Compare runs by metric."""
@@ -453,19 +455,23 @@ class TestErrorObservabilityIntegration:
 class TestPropertyBasedIntegration:
     """Property-based tests for cross-capability integration."""
 
-    @given(st.lists(st.dictionaries(st.text(min_size=1, max_size=5), st.integers()), min_size=1, max_size=50))
+    @given(
+        st.lists(
+            st.dictionaries(st.text(min_size=1, max_size=5), st.integers()), min_size=1, max_size=50
+        )
+    )
     @settings(max_examples=20)
     def test_data_batching_preserves_count(self, data: list[dict]):
         """All data should be processed in batches."""
         assume(len(data) > 0)
         batch_size = max(1, len(data) // 3)
         integration = DataTrainingIntegration(data, batch_size)
-        
+
         all_items = []
         for step in range(integration.steps_per_epoch):
             batch = integration.get_batch(step)
             all_items.extend(batch)
-        
+
         assert len(all_items) == len(data)
 
     @given(st.integers(min_value=1, max_value=10), st.floats(min_value=0.0, max_value=1.0))
@@ -476,7 +482,7 @@ class TestPropertyBasedIntegration:
         for epoch in range(num_epochs):
             loss = base_loss * (1.0 - epoch / (num_epochs + 1))
             checkpointer.save(epoch, epoch * 100, {"loss": loss})
-        
+
         latest = checkpointer.load_latest()
         assert latest["epoch"] == num_epochs - 1
 

@@ -443,7 +443,10 @@ class TestDocumentationQualityAssurance:
             "warnings": ["Link timeout: https://example.com"],
         }
 
-        assert validation_result["valid_links"] + validation_result["broken_links"] <= validation_result["total_links"]
+        assert (
+            validation_result["valid_links"] + validation_result["broken_links"]
+            <= validation_result["total_links"]
+        )
 
     def test_documentation_metrics_collection(self):
         """Test documentation metrics can be collected"""

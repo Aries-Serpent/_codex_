@@ -263,9 +263,7 @@ if _HAS_HYDRA:
             if isinstance(cfg_map, dict):
                 _sanitize_eval_config(cfg_map)
             checkpoint_dir = (
-                cfg_map.get("checkpoint", {}).get("dir")
-                if isinstance(cfg_map, dict)
-                else None
+                cfg_map.get("checkpoint", {}).get("dir") if isinstance(cfg_map, dict) else None
             )
             if isinstance(cfg_map, dict) and "checkpoint_dir" in cfg_map and not checkpoint_dir:
                 checkpoint_dir = cfg_map.get("checkpoint_dir")

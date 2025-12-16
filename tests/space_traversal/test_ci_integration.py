@@ -1,4 +1,5 @@
 """Tests for CI integration (v1.5.4)."""
+
 from __future__ import annotations
 
 import os

@@ -8,7 +8,9 @@ from codex_ml.logging.session_logger import SessionLogger
 
 def test_log_error_includes_context_and_type(tmp_path):
     logger = SessionLogger(log_dir=tmp_path, session_id="test-session")
-    logger.log_error(ValueError("boom"), context={"step": "train", "secret": "token"}, role="system")
+    logger.log_error(
+        ValueError("boom"), context={"step": "train", "secret": "token"}, role="system"
+    )
     lines = logger.session_file.read_text(encoding="utf-8").splitlines()
     assert len(lines) == 1
     record = json.loads(lines[0])
@@ -27,7 +29,9 @@ def test_prune_old_logs(tmp_path, monkeypatch):
     old_mtime = datetime.now() - timedelta(days=40)
     os.utime(old_log, (old_mtime.timestamp(), old_mtime.timestamp()))
 
-    logger = SessionLogger(log_dir=tmp_path, session_id="new", retention_days=30, max_history_files=1)
+    logger = SessionLogger(
+        log_dir=tmp_path, session_id="new", retention_days=30, max_history_files=1
+    )
     logger._prune_old_logs()
     assert not old_log.exists()
     assert new_log.exists()

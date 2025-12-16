@@ -15,13 +15,17 @@ class _StubValidator:
         self.expectations: list[str] = []
         self.expectation_suite = SimpleNamespace(expectations=self.expectations)
 
-    def expect_column_values_to_not_be_null(self, column: str) -> None:  # pragma: no cover - simple stub
+    def expect_column_values_to_not_be_null(
+        self, column: str
+    ) -> None:  # pragma: no cover - simple stub
         self.expectations.append(f"not_null:{column}")
 
     def expect_column_values_to_be_unique(self, column: str) -> None:
         self.expectations.append(f"unique:{column}")
 
-    def expect_column_values_to_be_between(self, column: str, min_value: Any, max_value: Any) -> None:
+    def expect_column_values_to_be_between(
+        self, column: str, min_value: Any, max_value: Any
+    ) -> None:
         self.expectations.append(f"between:{column}:{min_value}:{max_value}")
 
     def save_expectation_suite(self, discard_failed_expectations: bool = False) -> None:

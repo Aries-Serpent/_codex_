@@ -274,32 +274,32 @@ if __name__ == "__main__":
 # Enhanced MSPClient with additional methods
 class EnhancedMSPClient(MSPClient):
     """Enhanced MSP Client with advanced features."""
-    
+
     def request_with_retry(
         self,
         method: str,
         endpoint: str,
         max_retries: int = 3,
         backoff_factor: float = 1.0,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, Any]:
         """Make HTTP request with retry logic.
-        
+
         Args:
             method: HTTP method (GET, POST, etc.)
             endpoint: API endpoint
             max_retries: Maximum number of retry attempts
             backoff_factor: Backoff multiplier for retries
             **kwargs: Additional arguments for the request
-            
+
         Returns:
             Response data
-            
+
         Raises:
             httpx.HTTPStatusError: If all retries fail
         """
         import time
-        
+
         last_exception = None
         for attempt in range(max_retries):
             try:
@@ -309,7 +309,7 @@ class EnhancedMSPClient(MSPClient):
             except (httpx.HTTPStatusError, httpx.ConnectError, httpx.TimeoutException) as e:
                 last_exception = e
                 if attempt < max_retries - 1:
-                    wait_time = backoff_factor * (2 ** attempt)
+                    wait_time = backoff_factor * (2**attempt)
                     logger.warning(
                         f"Request failed (attempt {attempt + 1}/{max_retries}), "
                         f"retrying in {wait_time}s: {e}"
@@ -317,26 +317,26 @@ class EnhancedMSPClient(MSPClient):
                     time.sleep(wait_time)
                 else:
                     logger.error(f"Request failed after {max_retries} attempts: {e}")
-        
+
         raise last_exception
-    
+
     def batch_infer(
         self,
         tenant_id: str,
         prompts: List[str],
         max_tokens: int = 512,
         temperature: float = 0.7,
-        top_p: float = 0.9
+        top_p: float = 0.9,
     ) -> List[Dict[str, Any]]:
         """Generate inferences for multiple prompts.
-        
+
         Args:
             tenant_id: Tenant identifier
             prompts: List of input prompts
             max_tokens: Maximum tokens to generate
             temperature: Sampling temperature
             top_p: Nucleus sampling parameter
-            
+
         Returns:
             List of inference responses
         """
@@ -347,28 +347,28 @@ class EnhancedMSPClient(MSPClient):
                 prompt=prompt,
                 max_tokens=max_tokens,
                 temperature=temperature,
-                top_p=top_p
+                top_p=top_p,
             )
             results.append(result)
         return results
-    
+
     def stream_infer(
         self,
         tenant_id: str,
         prompt: str,
         max_tokens: int = 512,
         temperature: float = 0.7,
-        top_p: float = 0.9
+        top_p: float = 0.9,
     ):
         """Stream inference response.
-        
+
         Args:
             tenant_id: Tenant identifier
             prompt: Input prompt
             max_tokens: Maximum tokens to generate
             temperature: Sampling temperature
             top_p: Nucleus sampling parameter
-            
+
         Yields:
             Streamed response chunks
         """
@@ -378,28 +378,25 @@ class EnhancedMSPClient(MSPClient):
             "max_tokens": max_tokens,
             "temperature": temperature,
             "top_p": top_p,
-            "stream": True
+            "stream": True,
         }
-        
+
         with self.client.stream("POST", "/v1/infer", json=data) as response:
             response.raise_for_status()
             for chunk in response.iter_text():
                 if chunk:
                     yield chunk
-    
+
     def get_usage_stats(
-        self,
-        tenant_id: str,
-        start_time: Optional[str] = None,
-        end_time: Optional[str] = None
+        self, tenant_id: str, start_time: Optional[str] = None, end_time: Optional[str] = None
     ) -> Dict[str, Any]:
         """Get usage statistics for a tenant.
-        
+
         Args:
             tenant_id: Tenant identifier
             start_time: Start time (ISO format)
             end_time: End time (ISO format)
-            
+
         Returns:
             Usage statistics
         """
@@ -408,44 +405,41 @@ class EnhancedMSPClient(MSPClient):
             params["start_time"] = start_time
         if end_time:
             params["end_time"] = end_time
-        
+
         response = self.client.get("/admin/usage", params=params)
         response.raise_for_status()
         return response.json()
-    
+
     def set_rate_limit(
-        self,
-        tenant_id: str,
-        requests_per_minute: int,
-        tokens_per_minute: int
+        self, tenant_id: str, requests_per_minute: int, tokens_per_minute: int
     ) -> Dict[str, Any]:
         """Set rate limits for a tenant.
-        
+
         Args:
             tenant_id: Tenant identifier
             requests_per_minute: Request rate limit
             tokens_per_minute: Token rate limit
-            
+
         Returns:
             Updated tenant configuration
         """
         data = {
             "quota": {
                 "requests_per_minute": requests_per_minute,
-                "tokens_per_minute": tokens_per_minute
+                "tokens_per_minute": tokens_per_minute,
             }
         }
-        
+
         response = self.client.patch(f"/admin/tenants/{tenant_id}", json=data)
         response.raise_for_status()
         return response.json()
-    
+
     def get_model_info(self, model_id: Optional[str] = None) -> Dict[str, Any]:
         """Get information about available models.
-        
+
         Args:
             model_id: Optional specific model ID
-            
+
         Returns:
             Model information
         """
@@ -453,16 +447,16 @@ class EnhancedMSPClient(MSPClient):
             response = self.client.get(f"/v1/models/{model_id}")
         else:
             response = self.client.get("/v1/models")
-        
+
         response.raise_for_status()
         return response.json()
-    
+
     def validate_api_key(self, api_key: str) -> bool:
         """Validate an API key.
-        
+
         Args:
             api_key: API key to validate
-            
+
         Returns:
             True if valid, False otherwise
         """
@@ -472,10 +466,10 @@ class EnhancedMSPClient(MSPClient):
             return response.status_code == 200
         except httpx.HTTPStatusError:
             return False
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """Get system metrics.
-        
+
         Returns:
             System metrics
         """

@@ -11,7 +11,7 @@ Generates interactive HTML interface for:
 
 Example:
     from scripts.space_traversal.viz_api_collection import generate_api_collection
-    
+
     generate_api_collection(
         output_path=Path("audit_artifacts/api_collection.html"),
         repo_name="my-repo"

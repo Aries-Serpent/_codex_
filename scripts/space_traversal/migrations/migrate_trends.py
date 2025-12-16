@@ -254,9 +254,7 @@ def run_migrations(db_path: Path) -> list[str]:
 
         # Get current version
         try:
-            cursor = conn.execute(
-                "SELECT value FROM schema_info WHERE key = 'schema_version'"
-            )
+            cursor = conn.execute("SELECT value FROM schema_info WHERE key = 'schema_version'")
             current = cursor.fetchone()
             current_version = current[0] if current else "0.0.0"
         except sqlite3.OperationalError:
@@ -288,9 +286,7 @@ def get_current_version(db_path: Path) -> str:
     """
     try:
         with sqlite3.connect(db_path) as conn:
-            cursor = conn.execute(
-                "SELECT value FROM schema_info WHERE key = 'schema_version'"
-            )
+            cursor = conn.execute("SELECT value FROM schema_info WHERE key = 'schema_version'")
             row = cursor.fetchone()
             return row[0] if row else "0.0.0"
     except (sqlite3.OperationalError, sqlite3.DatabaseError):

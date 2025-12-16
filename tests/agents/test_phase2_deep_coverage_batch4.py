@@ -29,7 +29,7 @@ class TestPhase2_MomentumOperators:
 
         op = QuantumOperator()
         assert op is not None
-        assert hasattr(op, '_build_operators')
+        assert hasattr(op, "_build_operators")
 
     def test_quantum_operator_build(self):
         """Test building quantum operators"""
@@ -46,8 +46,8 @@ class TestPhase2_MomentumOperators:
         orchestrator = PhysicsInspiredOrchestrator()
         # Create minimal path for conservation check
         path = ActionPath(action_type=ActionType.RESEARCH, description="test_momentum")
-        
-        if hasattr(orchestrator, 'check_momentum_conservation'):
+
+        if hasattr(orchestrator, "check_momentum_conservation"):
             conserved = orchestrator.check_momentum_conservation(path)
             assert isinstance(conserved, bool)
         else:
@@ -60,8 +60,8 @@ class TestPhase2_MomentumOperators:
 
         orchestrator = PhysicsInspiredOrchestrator()
         path = ActionPath(action_type=ActionType.RESEARCH, description="test_energy")
-        
-        if hasattr(orchestrator, 'check_energy_conservation'):
+
+        if hasattr(orchestrator, "check_energy_conservation"):
             conserved = orchestrator.check_energy_conservation(path)
             assert isinstance(conserved, bool)
         else:
@@ -74,7 +74,7 @@ class TestPhase2_MomentumOperators:
         op = QuantumOperator(grid_size=8)
         op._build_operators()
         # Verify operator properties
-        assert hasattr(op, 'grid_size')
+        assert hasattr(op, "grid_size")
 
     def test_gradient_computation(self):
         """Test gradient computation for momentum (∇ψ)"""
@@ -82,7 +82,7 @@ class TestPhase2_MomentumOperators:
 
         op = QuantumOperator(grid_size=10)
         # Test gradient methods if available
-        if hasattr(op, 'compute_gradient'):
+        if hasattr(op, "compute_gradient"):
             state = np.random.rand(10)
             gradient = op.compute_gradient(state)
             assert gradient is not None
@@ -103,7 +103,7 @@ class TestPhase2_EnergyOperators:
 
         evolver = HamiltonianEvolver()
         assert evolver is not None
-        assert hasattr(evolver, 'harmonic_hamiltonian')
+        assert hasattr(evolver, "harmonic_hamiltonian")
 
     def test_harmonic_hamiltonian_creation(self):
         """Test creating harmonic oscillator Hamiltonian"""
@@ -129,7 +129,7 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
-        if hasattr(evolver, 'evolve'):
+        if hasattr(evolver, "evolve"):
             # evolve requires q0, p0, not initial_state and time
             trajectory = evolver.evolve(q0=0.0, p0=1.0, dt=0.1, steps=10)
             assert trajectory is not None
@@ -153,7 +153,7 @@ class TestPhase2_EnergyOperators:
             state_id="test_state",
             configuration={"x": 1.0, "y": 2.0},
             internal_energy=10.0,
-            entropy=2.5
+            entropy=2.5,
         )
         assert state is not None
         assert state.state_id == "test_state"
@@ -162,12 +162,7 @@ class TestPhase2_EnergyOperators:
         """Test free energy F = U - TS calculation"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(
-            state_id="test",
-            configuration={},
-            internal_energy=100.0,
-            entropy=10.0
-        )
+        state = EnergyState(state_id="test", configuration={}, internal_energy=100.0, entropy=10.0)
         free_energy = state.free_energy()
         assert isinstance(free_energy, (int, float))
         # F = U - TS, at T=1.0 (default): F = 100 - 10 = 90
@@ -177,12 +172,7 @@ class TestPhase2_EnergyOperators:
         """Test Boltzmann probability e^{-ΔE/kT}"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(
-            state_id="test",
-            configuration={},
-            internal_energy=10.0,
-            entropy=1.0
-        )
+        state = EnergyState(state_id="test", configuration={}, internal_energy=10.0, entropy=1.0)
         prob = state.boltzmann_probability(reference_energy=5.0)
         assert isinstance(prob, (int, float))
         assert 0.0 <= prob <= 1.0
@@ -200,12 +190,7 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
-        state = EnergyState(
-            state_id="s1",
-            configuration={},
-            internal_energy=5.0,
-            entropy=1.0
-        )
+        state = EnergyState(state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0)
         landscape.add_state(state)
         assert len(landscape.states) == 1
 
@@ -214,12 +199,7 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
-        state = EnergyState(
-            state_id="s1",
-            configuration={},
-            internal_energy=10.0,
-            entropy=2.0
-        )
+        state = EnergyState(state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0)
         landscape.add_state(state)
         prob = landscape.gibbs_probability(state)
         assert isinstance(prob, (int, float))
@@ -232,13 +212,10 @@ class TestPhase2_EnergyOperators:
         landscape = EnergyLandscape()
         for i in range(3):
             state = EnergyState(
-                state_id=f"s{i}",
-                configuration={},
-                internal_energy=float(i * 5),
-                entropy=1.0
+                state_id=f"s{i}", configuration={}, internal_energy=float(i * 5), entropy=1.0
             )
             landscape.add_state(state)
-        
+
         selected = landscape.select_state()
         assert selected is not None
 
@@ -252,10 +229,10 @@ class TestPhase2_EnergyOperators:
                 state_id=f"s{i}",
                 configuration={"x": float(i)},
                 internal_energy=float(i**2),
-                entropy=0.5
+                entropy=0.5,
             )
             landscape.add_state(state)
-        
+
         minimum = landscape.minimize_free_energy(max_iterations=10)
         assert minimum is not None
 
@@ -272,11 +249,9 @@ class TestPhase2_PerformanceOptimization:
         from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
-        if hasattr(orchestrator, 'optimize_with_energy'):
+        if hasattr(orchestrator, "optimize_with_energy"):
             result = orchestrator.optimize_with_energy(
-                objective=lambda x: x**2,
-                initial_state={"x": 1.0},
-                max_iterations=5
+                objective=lambda x: x**2, initial_state={"x": 1.0}, max_iterations=5
             )
             assert result is not None
 
@@ -286,7 +261,7 @@ class TestPhase2_PerformanceOptimization:
 
         orchestrator = PhysicsOrchestrator()
         # Test that velocity is bounded
-        if hasattr(orchestrator, 'check_causality'):
+        if hasattr(orchestrator, "check_causality"):
             velocity = 0.9  # 0.9c
             causal = orchestrator.check_causality(velocity)
             assert isinstance(causal, bool)
@@ -296,7 +271,7 @@ class TestPhase2_PerformanceOptimization:
         # Manually test Lorentz factor
         v = 0.5  # Half speed of light
         c = 1.0  # c = 1 in natural units
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         assert gamma > 1.0
         assert abs(gamma - 1.1547) < 0.01
 
@@ -304,7 +279,7 @@ class TestPhase2_PerformanceOptimization:
         """Test time dilation Δt' = γΔt"""
         v = 0.6  # 0.6c
         c = 1.0
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         delta_t = 1.0
         delta_t_prime = gamma * delta_t
         assert delta_t_prime > delta_t  # Moving clocks run slower
@@ -314,7 +289,7 @@ class TestPhase2_PerformanceOptimization:
         m = 1.0
         c = 1.0
         v = 0.8  # 0.8c
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         E = gamma * m * c**2
         rest_energy = m * c**2
         assert E > rest_energy  # Relativistic energy > rest energy
@@ -324,7 +299,7 @@ class TestPhase2_PerformanceOptimization:
         m = 1.0
         c = 1.0
         v = 0.5
-        gamma = 1.0 / np.sqrt(1.0 - (v/c)**2)
+        gamma = 1.0 / np.sqrt(1.0 - (v / c) ** 2)
         K = gamma * m * c**2 - m * c**2
         assert K > 0  # Kinetic energy is positive
 
@@ -352,7 +327,7 @@ class TestPhase2_QuantumOperatorAlgebra:
     def test_operator_expectation_value(self):
         """Test <ψ|Â|ψ>"""
         # State
-        psi = np.array([1/np.sqrt(2), 1/np.sqrt(2)])
+        psi = np.array([1 / np.sqrt(2), 1 / np.sqrt(2)])
         # Operator (Pauli X)
         sigma_x = np.array([[0, 1], [1, 0]])
         expectation = np.dot(psi.conj(), np.dot(sigma_x, psi))
@@ -371,8 +346,7 @@ class TestPhase2_QuantumOperatorAlgebra:
         """Test unitary operator Û†Û = I"""
         # Rotation operator
         theta = np.pi / 4
-        U = np.array([[np.cos(theta), -np.sin(theta)],
-                      [np.sin(theta), np.cos(theta)]])
+        U = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
         identity = U.conj().T @ U
         assert np.allclose(identity, np.eye(2))
 
@@ -384,7 +358,7 @@ class TestPhase2_QuantumOperatorAlgebra:
 
     def test_density_matrix(self):
         """Test density matrix ρ = |ψ⟩⟨ψ|"""
-        psi = np.array([1/np.sqrt(2), 1/np.sqrt(2)])
+        psi = np.array([1 / np.sqrt(2), 1 / np.sqrt(2)])
         rho = np.outer(psi, psi.conj())
         # Density matrix properties
         assert np.allclose(rho, rho.conj().T)  # Hermitian
@@ -424,7 +398,7 @@ class TestPhase2_AdvancedHamiltonians:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
-        if hasattr(evolver, 'potential_operator'):
+        if hasattr(evolver, "potential_operator"):
             V = evolver.potential_operator(potential_function=lambda x: x**2)
             assert V is not None
         else:
@@ -436,7 +410,7 @@ class TestPhase2_AdvancedHamiltonians:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
-        if hasattr(evolver, 'kinetic_operator'):
+        if hasattr(evolver, "kinetic_operator"):
             T = evolver.kinetic_operator()
             assert T is not None
         else:
@@ -463,10 +437,10 @@ class TestPhase2_ConservationLaws:
         from agents.physics_orchestrator import HamiltonianEvolver
 
         evolver = HamiltonianEvolver(grid_size=8)
-        
+
         # Evolve and check energy conservation
         trajectory = evolver.evolve(q0=1.0, p0=0.0, dt=0.1, steps=10)
-        
+
         if trajectory:
             # Energy should be approximately conserved
             initial_E = evolver.harmonic_hamiltonian(q=1.0, p=0.0, omega=1.0)
@@ -480,9 +454,9 @@ class TestPhase2_ConservationLaws:
         # Create normalized state
         psi = np.random.rand(10)
         psi = psi / np.linalg.norm(psi)
-        
+
         # Probability should sum to 1
-        prob = np.sum(np.abs(psi)**2)
+        prob = np.sum(np.abs(psi) ** 2)
         assert abs(prob - 1.0) < 1e-10
 
     def test_current_conservation(self):
@@ -491,7 +465,7 @@ class TestPhase2_ConservationLaws:
 
         orchestrator = PhysicsOrchestrator()
         # Test current conservation if method exists
-        if hasattr(orchestrator, 'check_current_conservation'):
+        if hasattr(orchestrator, "check_current_conservation"):
             conserved = orchestrator.check_current_conservation()
             assert isinstance(conserved, bool)
 
@@ -522,12 +496,10 @@ class TestPhase2_OptimizationMethods:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
-        if hasattr(orchestrator, 'optimize_path'):
+        if hasattr(orchestrator, "optimize_path"):
             try:
                 result = orchestrator.optimize_path(
-                    start={"x": 0.0},
-                    goal={"x": 1.0},
-                    max_iterations=5
+                    start={"x": 0.0}, goal={"x": 1.0}, max_iterations=5
                 )
                 assert result is not None
             except TypeError:
@@ -541,11 +513,9 @@ class TestPhase2_OptimizationMethods:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
-        if hasattr(orchestrator, 'simulated_annealing'):
+        if hasattr(orchestrator, "simulated_annealing"):
             result = orchestrator.simulated_annealing(
-                objective=lambda x: x**2,
-                initial_state={"x": 5.0},
-                temperature=10.0
+                objective=lambda x: x**2, initial_state={"x": 5.0}, temperature=10.0
             )
             assert result is not None
         else:

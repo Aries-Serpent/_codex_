@@ -34,7 +34,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, 'store'):
+        if hasattr(memory, "store"):
             item = {"key": "test", "value": "data"}
             memory.store_memory(key="test", value=str(item))
             assert True
@@ -44,7 +44,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, 'store') and hasattr(memory, 'retrieve'):
+        if hasattr(memory, "store") and hasattr(memory, "retrieve"):
             key = "test_key"
             value = {"data": "test_value"}
             memory.store_memory(key=key, value=str(value))
@@ -57,7 +57,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, 'search'):
+        if hasattr(memory, "search"):
             query = "test query"
             results = memory.search(query)
             assert isinstance(results, (list, type(None)))
@@ -67,7 +67,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, 'consolidate'):
+        if hasattr(memory, "consolidate"):
             memory.consolidate()
             assert True
 
@@ -91,7 +91,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, 'encode'):
+        if hasattr(memory, "encode"):
             data = {"content": "important information"}
             encoded = memory.encode(data)
             # Assert that encoded data is not None and is of a valid type (e.g., str or bytes)
@@ -127,7 +127,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'add_concept'):
+        if hasattr(mental_map, "add_concept"):
             concept = {"name": "test_concept", "properties": {}}
             mental_map.add_concept(concept)
             assert True
@@ -137,7 +137,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'add_relationship'):
+        if hasattr(mental_map, "add_relationship"):
             mental_map.add_relationship("concept1", "concept2", "relates_to")
             assert True
 
@@ -146,7 +146,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'find_path'):
+        if hasattr(mental_map, "find_path"):
             path = mental_map.find_path("start", "goal")
             assert path is None or isinstance(path, (list, tuple))
 
@@ -155,7 +155,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'shortest_path'):
+        if hasattr(mental_map, "shortest_path"):
             path = mental_map.shortest_path("a", "b")
             assert path is None or isinstance(path, list)
 
@@ -164,7 +164,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'activate'):
+        if hasattr(mental_map, "activate"):
             mental_map.activate("concept1", strength=1.0)
             assert True
 
@@ -173,7 +173,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'build_model'):
+        if hasattr(mental_map, "build_model"):
             model = mental_map.build_model({"domain": "test"})
             assert model is not None
 
@@ -182,7 +182,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        if hasattr(mental_map, 'spatial_reason'):
+        if hasattr(mental_map, "spatial_reason"):
             result = mental_map.spatial_reason({"position": [0, 0]})
             assert result is not None, "spatial_reason should not return None"
 
@@ -196,44 +196,39 @@ class TestPhase2_GraphAlgorithms:
     def test_graph_initialization(self):
         """Test graph data structure"""
         # Simple adjacency list
-        graph = {
-            "A": ["B", "C"],
-            "B": ["D"],
-            "C": ["D"],
-            "D": []
-        }
+        graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
         assert "A" in graph
         assert len(graph["A"]) == 2
 
     def test_breadth_first_search(self):
         """Test BFS traversal"""
         from collections import deque
-        
+
         graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
         start = "A"
         visited = set()
         queue = deque([start])
         visited.add(start)
-        
+
         while queue:
             node = queue.popleft()
             for neighbor in graph[node]:
                 if neighbor not in visited:
                     visited.add(neighbor)
                     queue.append(neighbor)
-        
+
         assert "D" in visited
 
     def test_depth_first_search(self):
         """Test DFS traversal"""
         graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
-        
+
         def dfs(node, visited):
             visited.add(node)
             for neighbor in graph[node]:
                 if neighbor not in visited:
                     dfs(neighbor, visited)
-        
+
         visited = set()
         dfs("A", visited)
         assert len(visited) == 4
@@ -241,13 +236,8 @@ class TestPhase2_GraphAlgorithms:
     def test_dijkstra_shortest_path(self):
         """Test Dijkstra's algorithm"""
         # Simple implementation
-        graph = {
-            "A": {"B": 1, "C": 4},
-            "B": {"D": 2},
-            "C": {"D": 1},
-            "D": {}
-        }
-        
+        graph = {"A": {"B": 1, "C": 4}, "B": {"D": 2}, "C": {"D": 1}, "D": {}}
+
         # Find shortest path from A to D
         # Expected: A -> B -> D (cost 3)
         assert "A" in graph
@@ -255,25 +245,15 @@ class TestPhase2_GraphAlgorithms:
     def test_topological_sort(self):
         """Test topological sorting"""
         # DAG
-        graph = {
-            "A": ["B", "C"],
-            "B": ["D"],
-            "C": ["D"],
-            "D": []
-        }
-        
+        graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
+
         # A topological order: [A, B, C, D] or [A, C, B, D]
         # Both are valid
         assert True
 
     def test_connected_components(self):
         """Test finding connected components"""
-        graph = {
-            "A": ["B"],
-            "B": ["A"],
-            "C": ["D"],
-            "D": ["C"]
-        }
+        graph = {"A": ["B"], "B": ["A"], "C": ["D"], "D": ["C"]}
         # Two components: {A, B} and {C, D}
         components = 2
         assert components == 2
@@ -281,11 +261,7 @@ class TestPhase2_GraphAlgorithms:
     def test_cycle_detection(self):
         """Test cycle detection in graph"""
         # Graph with cycle
-        graph = {
-            "A": ["B"],
-            "B": ["C"],
-            "C": ["A"]
-        }
+        graph = {"A": ["B"], "B": ["C"], "C": ["A"]}
         # Has cycle: A -> B -> C -> A
         has_cycle = True
         assert has_cycle
@@ -302,7 +278,7 @@ class TestPhase2_KnowledgeRepresentation:
         semantic_net = {
             "dog": {"is_a": "animal", "has": "fur"},
             "animal": {"is_a": "living_thing"},
-            "living_thing": {}
+            "living_thing": {},
         }
         assert "dog" in semantic_net
         assert semantic_net["dog"]["is_a"] == "animal"
@@ -313,7 +289,7 @@ class TestPhase2_KnowledgeRepresentation:
             "type": "person",
             "name": "John",
             "age": 30,
-            "relationships": {"knows": ["Mary", "Bob"]}
+            "relationships": {"knows": ["Mary", "Bob"]},
         }
         assert frame["type"] == "person"
         assert "Mary" in frame["relationships"]["knows"]
@@ -322,14 +298,8 @@ class TestPhase2_KnowledgeRepresentation:
         """Test ontological hierarchy"""
         ontology = {
             "Thing": {
-                "Physical": {
-                    "Object": {},
-                    "Process": {}
-                },
-                "Abstract": {
-                    "Concept": {},
-                    "Relation": {}
-                }
+                "Physical": {"Object": {}, "Process": {}},
+                "Abstract": {"Concept": {}, "Relation": {}},
             }
         }
         assert "Physical" in ontology["Thing"]
@@ -347,7 +317,7 @@ class TestPhase2_KnowledgeRepresentation:
         hierarchy = {
             "animal": {"breathes": True},
             "mammal": {"parent": "animal", "warm_blooded": True},
-            "dog": {"parent": "mammal", "loyal": True}
+            "dog": {"parent": "mammal", "loyal": True},
         }
         # Dog inherits breathes from animal
         assert hierarchy["animal"]["breathes"] == True
@@ -378,7 +348,7 @@ class TestPhase2_CognitiveArchitecture:
         options = [
             {"action": "A", "utility": 0.8},
             {"action": "B", "utility": 0.6},
-            {"action": "C", "utility": 0.9}
+            {"action": "C", "utility": 0.9},
         ]
         best = max(options, key=lambda x: x["utility"])
         assert best["action"] == "C"
@@ -421,7 +391,7 @@ class TestPhase2_ConceptFormation:
         instances = [
             {"size": "large", "color": "red"},
             {"size": "small", "color": "red"},
-            {"size": "medium", "color": "red"}
+            {"size": "medium", "color": "red"},
         ]
         common = "red"  # All are red
         assert all(inst["color"] == common for inst in instances)
@@ -438,7 +408,7 @@ class TestPhase2_ConceptFormation:
         schema = {
             "type": "restaurant",
             "roles": ["customer", "waiter", "chef"],
-            "props": ["menu", "table", "food"]
+            "props": ["menu", "table", "food"],
         }
         assert "waiter" in schema["roles"]
 
@@ -480,7 +450,7 @@ class TestPhase2_ReasoningPatterns:
         observation = "grass is wet"
         explanations = [
             {"theory": "it rained", "likelihood": 0.8},
-            {"theory": "sprinkler was on", "likelihood": 0.6}
+            {"theory": "sprinkler was on", "likelihood": 0.6},
         ]
         best = max(explanations, key=lambda x: x["likelihood"])
         assert best["theory"] == "it rained"
@@ -520,9 +490,9 @@ class TestPhase2_ProblemSolving:
         x = 5.0
         step = 0.1
         for _ in range(10):
-            left = -(x - step)**2
-            right = -(x + step)**2
-            current = -x**2
+            left = -((x - step) ** 2)
+            right = -((x + step) ** 2)
+            current = -(x**2)
             if left > current:
                 x = x - step
             elif right > current:

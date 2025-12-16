@@ -68,7 +68,9 @@ def _scan_file(path: Path, patterns: Dict[str, re.Pattern[str]]) -> List[SecretH
     return hits
 
 
-def run_scan(repo_root: Path, patterns: Dict[str, re.Pattern[str]] | None = None) -> Dict[str, object]:
+def run_scan(
+    repo_root: Path, patterns: Dict[str, re.Pattern[str]] | None = None
+) -> Dict[str, object]:
     active_patterns = patterns or SECRET_PATTERNS
     all_hits: List[SecretHit] = []
     for file_path in _iter_files(repo_root):
@@ -100,7 +102,12 @@ def _write_markdown(payload: Dict[str, object], out_path: Path) -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Scan repository for common secret patterns.")
-    parser.add_argument("--repo-root", type=str, default=".", help="Root directory to scan (default: current directory)")
+    parser.add_argument(
+        "--repo-root",
+        type=str,
+        default=".",
+        help="Root directory to scan (default: current directory)",
+    )
     parser.add_argument(
         "--json-out",
         type=str,

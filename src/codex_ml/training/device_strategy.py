@@ -54,10 +54,7 @@ def _device_available(name: str) -> bool:
         if name == "cuda":
             return torch.cuda.is_available()
         if name == "mps":
-            return (
-                hasattr(torch.backends, "mps")
-                and torch.backends.mps.is_available()
-            )
+            return hasattr(torch.backends, "mps") and torch.backends.mps.is_available()
     except Exception:  # pragma: no cover - safety net
         return False
     return name == "cpu"

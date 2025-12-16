@@ -326,7 +326,7 @@ def get_regression_summary(results: list[ComparisonResult]) -> dict[str, Any]:
         "low_severity_count": len(low_severity),
         "high_severity_ids": [r.capability_id for r in high_severity],
         "most_affected_component": most_affected,
-        "worst_regression": min(regressions, key=lambda r: r.delta).capability_id
-        if regressions
-        else None,
+        "worst_regression": (
+            min(regressions, key=lambda r: r.delta).capability_id if regressions else None
+        ),
     }

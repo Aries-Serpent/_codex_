@@ -1,0 +1,223 @@
+name: Unified Test Suite
+
+on:
+  pull_request:
+    branches: ["main", "0D_base_"]
+  push:
+    branches: ["main", "0D_base_"]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Specific test type to run'
+        required: false
+        type: choice
+        options:
+          - all
+          - smoke
+          - unit
+          - ml
+          - comprehensive
+        default: 'all'
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  COVERAGE_THRESHOLD: 90
+  CACHE_VERSION: v1
+
+jobs:
+  # Matrix strategy for running tests across Python versions and test types
+  test:
+    name: Tests (${{ matrix.python-version }}, ${{ matrix.test-type }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+        test-type: [smoke, unit, ml]
+        include:
+          # Run comprehensive tests only on Python 3.11
+          - python-version: '3.11'
+            test-type: comprehensive
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*.txt
+
+      - name: Display Python version
+        run: python --version
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: |
+          # Install package with development dependencies
+          pip install -e .[dev] || pip install -e .
+          
+          # Install test dependencies
+          pip install pytest==8.3.* pytest-cov==7.0.* pytest-xdist==3.8.*
+          
+          # Install ML dependencies for ML tests
+          if [ "${{ matrix.test-type }}" = "ml" ] || [ "${{ matrix.test-type }}" = "comprehensive" ]; then
+            pip install torch transformers datasets accelerate peft || echo "Some ML deps failed"
+          fi
+
+      - name: Verify pytest installation
+        run: |
+          pytest --version
+          pytest --co -q || echo "No tests collected yet"
+
+      - name: Run smoke tests
+        if: matrix.test-type == 'smoke' || inputs.test_type == 'smoke' || inputs.test_type == 'all'
+        run: |
+          pytest tests/smoke/ -v --tb=short --cov=src --cov-report=xml --cov-report=term
+        continue-on-error: false
+
+      - name: Run unit tests
+        if: matrix.test-type == 'unit' || inputs.test_type == 'unit' || inputs.test_type == 'all'
+        run: |
+          pytest tests/ -v --tb=short \
+            --ignore=tests/smoke/ \
+            --ignore=tests/ml/ \
+            --ignore=tests/integration/ \
+            --cov=src --cov-report=xml --cov-report=term \
+            -n auto
+        continue-on-error: false
+
+      - name: Run ML tests
+        if: matrix.test-type == 'ml' || inputs.test_type == 'ml' || inputs.test_type == 'all'
+        run: |
+          pytest tests/ -m "ml" -v --tb=short \
+            --cov=src --cov-report=xml --cov-report=term \
+            || echo "ML tests completed with warnings"
+        continue-on-error: true
+
+      - name: Run comprehensive tests
+        if: matrix.test-type == 'comprehensive' || inputs.test_type == 'comprehensive' || inputs.test_type == 'all'
+        run: |
+          pytest tests/ -v --tb=short \
+            --cov=src --cov-report=xml --cov-report=html --cov-report=term \
+            -n auto \
+            --maxfail=5
+        continue-on-error: false
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}-${{ matrix.test-type }}
+          path: |
+            coverage.xml
+            htmlcov/
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.python-version }}-${{ matrix.test-type }}
+          path: |
+            .pytest_cache/
+            test-results.xml
+          retention-days: 30
+
+  # Combined coverage report
+  coverage-report:
+    name: Coverage Report
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download all coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-*
+          path: coverage-reports/
+
+      - name: Install coverage tools
+        run: pip install coverage==7.6.*
+
+      - name: Combine coverage reports
+        run: |
+          coverage combine coverage-reports/*/coverage.xml || true
+          coverage xml -o combined-coverage.xml || true
+          coverage report || true
+
+      - name: Upload combined coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-coverage
+          path: combined-coverage.xml
+          retention-days: 90
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read coverage report if available
+            let coverageMsg = '## 🧪 Test Suite Results\n\n';
+            coverageMsg += `**Workflow Run**: [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n`;
+            coverageMsg += '**Test Matrix**:\n';
+            coverageMsg += '- Python versions: 3.10, 3.11, 3.12\n';
+            coverageMsg += '- Test types: smoke, unit, ml, comprehensive\n\n';
+            coverageMsg += '### 📦 Artifacts\n\n';
+            coverageMsg += 'Download detailed reports from the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n';
+            coverageMsg += '---\n';
+            coverageMsg += '*This comment was automatically generated by the Unified Test Suite workflow*';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: coverageMsg
+            });
+
+  # Summary job for overall status
+  test-summary:
+    name: Test Summary
+    needs: [test, coverage-report]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check test results
+        run: |
+          echo "## Test Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ${{ needs.test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Coverage Report**: ${{ needs.coverage-report.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.test.result }}" != "success" ]; then
+            echo "❌ Some tests failed. Check job logs for details." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -93,7 +93,9 @@ def test_golden_status_detects_missing_expected_tool(tmp_path):
     )
 
     assert status["overall_status"] == "yellow"
-    assert any(sig["name"] == "tool_trace" and sig["status"] == "yellow" for sig in status["signals"])
+    assert any(
+        sig["name"] == "tool_trace" and sig["status"] == "yellow" for sig in status["signals"]
+    )
 
 
 def test_golden_status_red_on_policy_failure(tmp_path):

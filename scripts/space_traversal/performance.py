@@ -12,11 +12,11 @@ Features:
 
 Example:
     from scripts.space_traversal.performance import timed, FileCache
-    
+
     @timed
     def expensive_operation():
         pass
-    
+
     cache = FileCache(Path(".cache"))
     if (result := cache.get("key")) is None:
         result = compute()
@@ -289,9 +289,7 @@ class PerformanceMetrics:
             "total_seconds": round(total, 3),
             "stages": {k: round(v, 3) for k, v in sorted(stages.items())},
             "count": len(self.metrics),
-            "slowest_stage": max(stages.items(), key=lambda x: x[1])[0]
-            if stages
-            else None,
+            "slowest_stage": max(stages.items(), key=lambda x: x[1])[0] if stages else None,
         }
 
     def to_json(self, output_path: Path) -> None:

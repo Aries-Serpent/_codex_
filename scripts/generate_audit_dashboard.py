@@ -15,10 +15,7 @@ from pathlib import Path
 from typing import Any
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(levelname)s: %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 # Import planning components
@@ -27,6 +24,7 @@ try:
         generate_planning_html,
         generate_planning_javascript,
     )
+
     PLANNING_AVAILABLE = True
 except ImportError:
     PLANNING_AVAILABLE = False
@@ -57,23 +55,25 @@ def scan_directory(base_path: Path) -> list[dict[str, Any]]:
     files = []
     if not base_path.exists():
         return files
-    
+
     for item in sorted(base_path.rglob("*")):
         if item.is_file():
             rel_path = item.relative_to(base_path.parent)
             try:
                 stat = item.stat()
-                files.append({
-                    "path": str(rel_path),
-                    "name": item.name,
-                    "size": stat.st_size,
-                    "modified": stat.st_mtime,
-                    "type": item.suffix or "file"
-                })
+                files.append(
+                    {
+                        "path": str(rel_path),
+                        "name": item.name,
+                        "size": stat.st_size,
+                        "modified": stat.st_mtime,
+                        "type": item.suffix or "file",
+                    }
+                )
             except OSError:
                 # Skip files that can't be accessed
                 pass
-    
+
     return files
 
 
@@ -81,7 +81,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     """Load audit run manifest if it exists."""
     if not manifest_path.exists():
         return {}
-    
+
     try:
         with open(manifest_path, encoding="utf-8") as f:
             return json.load(f)
@@ -93,7 +93,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
     """Load gaps and improvement plans from audit artifacts."""
     gaps_data = {}
     plans_data = {}
-    
+
     # Load gaps.json
     gaps_file = base_path / "audit_artifacts" / "gaps.json"
     if gaps_file.exists():
@@ -106,7 +106,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
         except OSError as e:
             # gaps.json is optional; if unreadable, log warning and continue with empty gaps data.
             logger.warning(f"Could not read gaps.json (I/O error): {e}")
-    
+
     # Load improvement plan MD file
     plan_file = base_path / "audit_artifacts" / "HIGH_MATURITY_ACHIEVEMENT_PLAN.md"
     if plan_file.exists():
@@ -122,7 +122,7 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
         except OSError:
             # The plan file is optional; skip if it cannot be read.
             pass
-    
+
     return {"gaps": gaps_data, "plans": plans_data}
 
 
@@ -131,16 +131,16 @@ def generate_html_dashboard(
     reports: list[dict[str, Any]],
     manifest: dict[str, Any],
     output_path: Path,
-    gaps_and_plans: dict[str, Any] | None = None
+    gaps_and_plans: dict[str, Any] | None = None,
 ) -> None:
     """Generate HTML dashboard for audit artifacts."""
-    
+
     # Extract manifest data
     manifest_artifacts = manifest.get("artifacts", [])
     manifest_version = manifest.get("version", "Unknown")
     manifest_timestamp = manifest.get("timestamp", 0)
     manifest_weights = manifest.get("weights", {})
-    
+
     html_content = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -355,15 +355,16 @@ def generate_html_dashboard(
             font-size: 12px;
         }}
 """
-    
+
     # Add planning CSS if available
     if PLANNING_AVAILABLE and gaps_and_plans:
         try:
             from planning_components import generate_planning_css
+
             html_content += generate_planning_css()
         except ImportError:
             pass
-    
+
     html_content += """
     </style>
 </head>
@@ -412,7 +413,7 @@ def generate_html_dashboard(
     # Add interactive planning section if available
     if PLANNING_AVAILABLE and gaps_and_plans:
         html_content += generate_planning_html(gaps_and_plans)
-    
+
     # Scoring weights section
     if manifest_weights:
         html_content += """
@@ -437,7 +438,7 @@ def generate_html_dashboard(
             <h2>📦 Audit Artifacts</h2>
             <input type="text" class="search-box" id="artifactsSearch" placeholder="Search audit artifacts..." onkeyup="filterTable('artifactsTable', 'artifactsSearch')">
 """
-    
+
     if audit_artifacts:
         html_content += """            <table id="artifactsTable">
                 <thead>
@@ -455,11 +456,11 @@ def generate_html_dashboard(
             ext = artifact["type"].lstrip(".")
             badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
             # Escape all user-controlled data to prevent XSS
-            escaped_path = html.escape(artifact['path'])
-            escaped_name = html.escape(artifact['name'])
+            escaped_path = html.escape(artifact["path"])
+            escaped_name = html.escape(artifact["name"])
             escaped_badge_class = html.escape(badge_class)
             escaped_ext = html.escape(ext.upper())
-            
+
             html_content += f"""                    <tr>
                         <td><a href="{escaped_path}">{escaped_name}</a></td>
                         <td><span class="badge {escaped_badge_class}">{escaped_ext}</span></td>
@@ -474,7 +475,7 @@ def generate_html_dashboard(
     else:
         html_content += """            <div class="empty-state">No audit artifacts found</div>
 """
-    
+
     html_content += """        </div>
 """
 
@@ -484,7 +485,7 @@ def generate_html_dashboard(
             <h2>📄 Reports</h2>
             <input type="text" class="search-box" id="reportsSearch" placeholder="Search reports..." onkeyup="filterTable('reportsTable', 'reportsSearch')">
 """
-    
+
     if reports:
         html_content += """            <table id="reportsTable">
                 <thead>
@@ -502,11 +503,11 @@ def generate_html_dashboard(
             ext = report["type"].lstrip(".")
             badge_class = ext if ext in SUPPORTED_EXTENSIONS else "badge"
             # Escape all user-controlled data to prevent XSS
-            escaped_path = html.escape(report['path'])
-            escaped_name = html.escape(report['name'])
+            escaped_path = html.escape(report["path"])
+            escaped_name = html.escape(report["name"])
             escaped_badge_class = html.escape(badge_class)
             escaped_ext = html.escape(ext.upper())
-            
+
             html_content += f"""                    <tr>
                         <td><a href="{escaped_path}">{escaped_name}</a></td>
                         <td><span class="badge {escaped_badge_class}">{escaped_ext}</span></td>
@@ -521,7 +522,7 @@ def generate_html_dashboard(
     else:
         html_content += """            <div class="empty-state">No reports found</div>
 """
-    
+
     html_content += """        </div>
 """
 
@@ -544,20 +545,20 @@ def generate_html_dashboard(
                 <tbody>
 """
         for artifact in manifest_artifacts:
-            artifact_format = artifact.get('format', 'file')
-            artifact_name = artifact.get('name', 'Unknown')
-            artifact_size = artifact.get('size', 0)
-            artifact_sha = artifact.get('sha', 'N/A')
+            artifact_format = artifact.get("format", "file")
+            artifact_name = artifact.get("name", "Unknown")
+            artifact_size = artifact.get("size", 0)
+            artifact_sha = artifact.get("sha", "N/A")
             # Safe SHA truncation - only truncate if we have a valid SHA
             sha_display = f"{artifact_sha[:16]}..." if len(artifact_sha) > 16 else artifact_sha
-            artifact_timestamp = artifact.get('generated_at', 0)
-            
+            artifact_timestamp = artifact.get("generated_at", 0)
+
             # Escape all manifest data to prevent XSS from malicious JSON
             escaped_name = html.escape(artifact_name)
             escaped_format = html.escape(artifact_format)
             escaped_format_upper = html.escape(artifact_format.upper())
             escaped_sha = html.escape(sha_display)
-            
+
             html_content += f"""                    <tr>
                         <td>{escaped_name}</td>
                         <td><span class="badge {escaped_format}">{escaped_format_upper}</span></td>
@@ -601,16 +602,16 @@ def generate_html_dashboard(
         }});
     </script>
 """
-    
+
     # Add planning JavaScript if available
     if PLANNING_AVAILABLE and gaps_and_plans:
         html_content += generate_planning_javascript()
-    
+
     html_content += """
 </body>
 </html>
 """
-    
+
     # Write HTML to file
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html_content, encoding="utf-8")
@@ -619,37 +620,37 @@ def generate_html_dashboard(
 def main() -> int:
     """Main entry point."""
     repo_root = Path(__file__).parent.parent
-    
+
     # Scan directories
     audit_artifacts_path = repo_root / "audit_artifacts"
     reports_path = repo_root / "reports"
     manifest_path = repo_root / "audit_run_manifest.json"
     output_path = repo_root / "index.html"
-    
+
     print("🔍 Scanning audit artifacts...")
     audit_artifacts = scan_directory(audit_artifacts_path)
     print(f"   Found {len(audit_artifacts)} audit artifacts")
-    
+
     print("📄 Scanning reports...")
     reports = scan_directory(reports_path)
     print(f"   Found {len(reports)} reports")
-    
+
     print("📋 Loading manifest...")
     manifest = load_manifest(manifest_path)
     manifest_count = len(manifest.get("artifacts", []))
     print(f"   Found {manifest_count} manifest entries")
-    
+
     print("🎯 Loading gaps and plans...")
     gaps_and_plans = load_gaps_and_plans(repo_root)
     gap_count = len(gaps_and_plans.get("gaps", {}).get("low_maturity", []))
     plan_count = len(gaps_and_plans.get("plans", {}).get("phases", []))
     print(f"   Found {gap_count} low maturity capabilities, {plan_count} phases")
-    
+
     print("🎨 Generating HTML dashboard...")
     generate_html_dashboard(audit_artifacts, reports, manifest, output_path, gaps_and_plans)
     print(f"✅ Dashboard generated: {output_path}")
     print(f"   Total artifacts indexed: {len(audit_artifacts) + len(reports)}")
-    
+
     return 0
 
 

@@ -1,4 +1,5 @@
 """Smoke tests for tokenizer.fast_tokenizer utilities."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -52,9 +53,11 @@ def test_fast_tokenizer_wrapper(tmp_path: Path):
 
     dummy_module = SimpleNamespace(Tokenizer=_DummyTokenizer)
 
-    with patch.dict("sys.modules", {"tokenizers": dummy_module}, clear=False), patch.object(
-        fast_tokenizer, "AutoTokenizer", None
-    ), patch.object(fast_tokenizer, "Tokenizer", _DummyTokenizer):
+    with (
+        patch.dict("sys.modules", {"tokenizers": dummy_module}, clear=False),
+        patch.object(fast_tokenizer, "AutoTokenizer", None),
+        patch.object(fast_tokenizer, "Tokenizer", _DummyTokenizer),
+    ):
         wrapper = fast_tokenizer.build_tokenizer(tokenizer_file)
 
     assert hasattr(wrapper, "encode")

@@ -1,4 +1,5 @@
 """Tests for ASCII visualization (v1.5.2)."""
+
 from __future__ import annotations
 
 

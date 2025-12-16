@@ -1,4 +1,5 @@
 """Smoke tests for training.checkpoint_manager."""
+
 from __future__ import annotations
 
 from pathlib import Path

@@ -30,14 +30,14 @@ class PythonNormalizer:
             Normalized code
         """
         # Remove single-line comments
-        code = re.sub(r'#.*$', '', code, flags=re.MULTILINE)
+        code = re.sub(r"#.*$", "", code, flags=re.MULTILINE)
 
         # Remove docstrings (simple approach - handles most cases)
-        code = re.sub(r'""".*?"""', '', code, flags=re.DOTALL)
-        code = re.sub(r"'''.*?'''", '', code, flags=re.DOTALL)
+        code = re.sub(r'""".*?"""', "", code, flags=re.DOTALL)
+        code = re.sub(r"'''.*?'''", "", code, flags=re.DOTALL)
 
         # Remove blank lines
-        lines = [line for line in code.split('\n') if line.strip()]
+        lines = [line for line in code.split("\n") if line.strip()]
 
         # Normalize whitespace (consistent indentation)
         normalized_lines = []
@@ -47,10 +47,10 @@ class PythonNormalizer:
             if stripped:
                 indent_level = len(line) - len(stripped)
                 # Normalize to 4-space indents
-                normalized_indent = (indent_level // 4) * '    '
-                normalized_lines.append(normalized_indent + ' '.join(stripped.split()))
+                normalized_indent = (indent_level // 4) * "    "
+                normalized_lines.append(normalized_indent + " ".join(stripped.split()))
 
-        return '\n'.join(normalized_lines)
+        return "\n".join(normalized_lines)
 
 
 class JavaScriptNormalizer:
@@ -67,13 +67,13 @@ class JavaScriptNormalizer:
             Normalized code
         """
         # Remove single-line comments
-        code = re.sub(r'//.*$', '', code, flags=re.MULTILINE)
+        code = re.sub(r"//.*$", "", code, flags=re.MULTILINE)
 
         # Remove multi-line comments
-        code = re.sub(r'/\*.*?\*/', '', code, flags=re.DOTALL)
+        code = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
 
         # Remove blank lines
-        lines = [line for line in code.split('\n') if line.strip()]
+        lines = [line for line in code.split("\n") if line.strip()]
 
         # Normalize whitespace
         normalized_lines = []
@@ -82,10 +82,10 @@ class JavaScriptNormalizer:
             if stripped:
                 indent_level = len(line) - len(stripped)
                 # Normalize to 2-space indents (JS convention)
-                normalized_indent = (indent_level // 2) * '  '
-                normalized_lines.append(normalized_indent + ' '.join(stripped.split()))
+                normalized_indent = (indent_level // 2) * "  "
+                normalized_lines.append(normalized_indent + " ".join(stripped.split()))
 
-        return '\n'.join(normalized_lines)
+        return "\n".join(normalized_lines)
 
 
 class GenericNormalizer:
@@ -102,15 +102,15 @@ class GenericNormalizer:
             Normalized code
         """
         # Remove blank lines
-        lines = [line for line in code.split('\n') if line.strip()]
+        lines = [line for line in code.split("\n") if line.strip()]
 
         # Normalize whitespace
         normalized_lines = []
         for line in lines:
             # Just normalize internal whitespace
-            normalized_lines.append(' '.join(line.split()))
+            normalized_lines.append(" ".join(line.split()))
 
-        return '\n'.join(normalized_lines)
+        return "\n".join(normalized_lines)
 
 
 class NormalizedDetector:
@@ -138,15 +138,13 @@ class NormalizedDetector:
         self.normalize_identifiers = normalize_identifiers
 
         # Use ExactDetector for file walking
-        self.exact_detector = ExactDetector(
-            root_path, exclude_patterns, respect_gitignore
-        )
+        self.exact_detector = ExactDetector(root_path, exclude_patterns, respect_gitignore)
 
         # Language-specific normalizers
         self.normalizers = {
-            'python': PythonNormalizer(),
-            'javascript': JavaScriptNormalizer(),
-            'typescript': JavaScriptNormalizer(),  # Same as JS
+            "python": PythonNormalizer(),
+            "javascript": JavaScriptNormalizer(),
+            "typescript": JavaScriptNormalizer(),  # Same as JS
         }
         self.generic_normalizer = GenericNormalizer()
 
@@ -174,7 +172,7 @@ class NormalizedDetector:
         Returns:
             SHA256 hash
         """
-        return hashlib.sha256(normalized_content.encode('utf-8')).hexdigest()
+        return hashlib.sha256(normalized_content.encode("utf-8")).hexdigest()
 
     def scan(self) -> List[DuplicateGroup]:
         """
@@ -199,7 +197,7 @@ class NormalizedDetector:
 
             # Read and normalize content
             try:
-                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     content = f.read()
 
                 normalized_content = self.normalize_content(content, language)
@@ -211,9 +209,7 @@ class NormalizedDetector:
                 if normalized_hash not in hash_to_files:
                     hash_to_files[normalized_hash] = []
 
-                hash_to_files[normalized_hash].append(
-                    (file_path, original_hash, language)
-                )
+                hash_to_files[normalized_hash].append((file_path, original_hash, language))
 
             except Exception:
                 # Skip files that can't be read as text

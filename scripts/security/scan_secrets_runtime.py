@@ -30,6 +30,7 @@ def load_patterns(config_file: Path | None) -> List[re.Pattern]:
             # YAML-like: read lines of regex under a 'patterns' key or simple list
             try:
                 import yaml  # optional
+
                 data = yaml.safe_load(config_file.read_text())
             except Exception:
                 data = None
@@ -60,7 +61,9 @@ def shannon_entropy(s: str) -> float:
     return ent
 
 
-def scan_path(root: Path, patterns: List[re.Pattern], entropy_thresh: float = 4.0) -> Tuple[List[Dict], int]:
+def scan_path(
+    root: Path, patterns: List[re.Pattern], entropy_thresh: float = 4.0
+) -> Tuple[List[Dict], int]:
     findings: List[Dict] = []
     files_scanned = 0
     for p in sorted(root.rglob("*")):
@@ -79,24 +82,28 @@ def scan_path(root: Path, patterns: List[re.Pattern], entropy_thresh: float = 4.
         for rx in patterns:
             for m in rx.finditer(text):
                 snippet = text[max(0, m.start() - 16) : m.end() + 16]
-                findings.append({
-                    "type": "pattern",
-                    "pattern": rx.pattern,
-                    "path": p.as_posix(),
-                    "offset": m.start(),
-                    "snippet": snippet[:120],
-                })
+                findings.append(
+                    {
+                        "type": "pattern",
+                        "pattern": rx.pattern,
+                        "path": p.as_posix(),
+                        "offset": m.start(),
+                        "snippet": snippet[:120],
+                    }
+                )
         # high entropy tokens (base64-ish, hex-ish)
         tokens = re.findall(r"[A-Za-z0-9+/=]{16,}", text)
         for tok in tokens:
             if shannon_entropy(tok) >= entropy_thresh:
-                findings.append({
-                    "type": "entropy",
-                    "path": p.as_posix(),
-                    "token_preview": tok[:32],
-                    "len": len(tok),
-                    "entropy": shannon_entropy(tok),
-                })
+                findings.append(
+                    {
+                        "type": "entropy",
+                        "path": p.as_posix(),
+                        "token_preview": tok[:32],
+                        "len": len(tok),
+                        "entropy": shannon_entropy(tok),
+                    }
+                )
     return findings, files_scanned
 
 
@@ -104,7 +111,9 @@ def main():
     ap = argparse.ArgumentParser(description="Runtime secrets scanner (offline, repo-scoped)")
     ap.add_argument("--root", default=".", help="Root directory to scan")
     ap.add_argument("--config", default="", help="Optional patterns config (yaml/json)")
-    ap.add_argument("--out", default="artifacts/security/secrets_report.json", help="Output report path")
+    ap.add_argument(
+        "--out", default="artifacts/security/secrets_report.json", help="Output report path"
+    )
     ap.add_argument("--entropy", type=float, default=4.0, help="Entropy threshold")
     args = ap.parse_args()
 

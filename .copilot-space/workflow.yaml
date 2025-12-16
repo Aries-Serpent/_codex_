@@ -175,3 +175,79 @@ webhooks:
   #   type: generic
   #   secret: "${WEBHOOK_SECRET}"
   #   events: ["audit_complete"]
+
+# Expected capabilities for Azure MLOps Level 4 maturity
+# Used by self-healing-feedback-loop.yml for gap detection
+expected_capabilities:
+  - Automated Testing
+  - Model Monitoring
+  - CI/CD Pipeline
+  - Feature Store
+  - Data Versioning
+  - Model Registry
+  - A/B Testing
+  - Shadow Deployment
+  - Canary Release
+  - Model Serving
+  - Batch Inference
+  - Online Inference
+  - Experiment Tracking
+  - Hyperparameter Tuning
+  - AutoML
+  - Model Validation
+  - Data Quality
+  - Feature Engineering
+  - Model Explainability
+  - Bias Detection
+  - Fairness Metrics
+  - Drift Detection
+  - Performance Monitoring
+  - Alerting
+  - Logging
+  - Metrics Collection
+  - Distributed Training
+  - Model Packaging
+  - Model Deployment
+  - Rollback Strategy
+  - Blue-Green Deployment
+  - Multi-Model Serving
+  - Model Caching
+  - Request Batching
+  - Auto-Scaling
+  - Resource Management
+  - Cost Tracking
+  - Compliance
+  - Governance
+  - Access Control
+  - Audit Trails
+  - Documentation
+  - Team Collaboration
+  - Knowledge Sharing
+  - Training
+  - Support
+  - Incident Response
+  - Disaster Recovery
+  - Backup Strategy
+  - Data Privacy
+  - Security Scanning
+  - Vulnerability Management
+  - Secrets Management
+  - Network Security
+  - Container Security
+  - Code Review
+  - Peer Review
+  - Pull Request Automation
+  - Release Management
+  - Version Control
+  - Branch Strategy
+  - Merge Strategy
+  - Conflict Resolution
+  - Code Coverage
+  - Test Automation
+  - Integration Testing
+  - End-to-End Testing
+  - Performance Testing
+  - Load Testing
+  - Stress Testing
+  - Chaos Engineering
+  - Observability

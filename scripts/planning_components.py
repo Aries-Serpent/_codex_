@@ -512,12 +512,12 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
     """Generate interactive planning HTML section."""
     if not gaps_and_plans or not (gaps_and_plans.get("gaps") or gaps_and_plans.get("plans")):
         return ""
-    
+
     gaps = gaps_and_plans.get("gaps", {})
     plans = gaps_and_plans.get("plans", {})
     phases = plans.get("phases", [])
     low_maturity = gaps.get("low_maturity", [])
-    
+
     html = """
         <div class="planning-section">
             <div class="planning-header">
@@ -534,13 +534,13 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                     <h3>📅 Select Phases</h3>
                     <div class="checkbox-group" id="phaseSelection">
 """
-    
+
     # Add phase checkboxes
     if phases:
         for i, phase in enumerate(phases[:5], 1):
             escaped_phase = html_module.escape(phase)
             phase_id = f"phase{i}"
-            checked = ' checked' if i == 1 else ''
+            checked = " checked" if i == 1 else ""
             html += f"""                        <div class="checkbox-item">
                             <input type="checkbox" id="{phase_id}" value="{escaped_phase}"{checked}>
                             <label for="{phase_id}">{escaped_phase}</label>
@@ -556,7 +556,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                             <label for="phase2">Phase 2: Medium to High Maturity</label>
                         </div>
 """
-    
+
     html += """                    </div>
                 </div>
                 
@@ -565,25 +565,25 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                     <h3>🎯 Low Maturity Capabilities</h3>
                     <div class="checkbox-group" id="capabilitySelection">
 """
-    
+
     # Add capability checkboxes
     if low_maturity:
         for i, cap in enumerate(low_maturity[:12], 1):
             cap_id = cap.get("explain", {}).get("id", f"cap{i}")
             cap_score = cap.get("explain", {}).get("score", 0)
             components_info = cap.get("components", {})
-            
+
             # Create tooltip showing component scores
             tooltip_parts = []
             for comp_name, score in components_info.items():
                 if score < 0.85:
                     tooltip_parts.append(f"{comp_name}: {score:.2f}")
             tooltip = " | ".join(tooltip_parts[:3])
-            
+
             escaped_id = html_module.escape(str(cap_id))
             escaped_display = html_module.escape(cap_id)
             escaped_tooltip = html_module.escape(tooltip) if tooltip else ""
-            
+
             html += f"""                        <div class="checkbox-item">
                             <input type="checkbox" id="cap_{i}" value="{escaped_id}" onchange="updateDependencies()">
                             <label for="cap_{i}">
@@ -597,7 +597,7 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
                             No low maturity capabilities found. All capabilities are performing well!
                         </p>
 """
-    
+
     html += """                    </div>
                 </div>
                 
@@ -661,5 +661,5 @@ def generate_planning_html(gaps_and_plans: dict[str, Any]) -> str:
             </div>
         </div>
 """
-    
+
     return html

@@ -4,6 +4,7 @@ Structural integrity edge case tests.
 Tests edge cases and boundary conditions for structural detection.
 Ensures offline, deterministic, reproducible behavior with proper sanitization.
 """
+
 from scripts.space_traversal.detectors import structure_integrity
 
 
@@ -60,7 +61,7 @@ class TestStructuralSafeguards:
         # Create many files
         files = [{"path": f"mymod/file{i}.py"} for i in range(1000)]
         files.extend([{"path": f"src/mymod/file{i}.py"} for i in range(1000)])
-        
+
         result = structure_integrity.detect({"files": files}, evidence_limit=5)
         # Should be bounded
         assert len(result["evidence_files"]) < 100

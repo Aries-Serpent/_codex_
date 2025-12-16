@@ -21,10 +21,12 @@ def test_resume_cli_calls_training(monkeypatch, tmp_path: Path):
     cfg_path.write_text("seed: 1", encoding="utf-8")
     ckpt = tmp_path / "ckpt.pt"
     manifest.write_text(
-        json.dumps({
-            "config_path": str(cfg_path),
-            "best_checkpoint": str(ckpt),
-        }),
+        json.dumps(
+            {
+                "config_path": str(cfg_path),
+                "best_checkpoint": str(ckpt),
+            }
+        ),
         encoding="utf-8",
     )
 
@@ -35,7 +37,9 @@ def test_resume_cli_calls_training(monkeypatch, tmp_path: Path):
     dummy_cfg = type("Cfg", (), {"training": DummyTraining()})()
     dummy_raw = type("Raw", (), {"training": DummyTraining()})()
 
-    monkeypatch.setattr("codex_ml.cli.codex_cli.load_app_config", lambda path, overrides: (dummy_cfg, dummy_raw))
+    monkeypatch.setattr(
+        "codex_ml.cli.codex_cli.load_app_config", lambda path, overrides: (dummy_cfg, dummy_raw)
+    )
     called = {}
 
     def fake_run(config, resume=False):

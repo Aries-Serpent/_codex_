@@ -13,7 +13,7 @@ Available Metrics:
 
 Usage:
     from codex_ml.evaluation.metrics import AccuracyMetric, RougeMetric
-    
+
     metrics = [
         AccuracyMetric(),
         RougeMetric(['rouge1', 'rouge2', 'rougeL']),
@@ -27,9 +27,9 @@ from codex_ml.evaluation.metrics.perplexity import PerplexityMetric
 from codex_ml.evaluation.metrics.latency import LatencyMetric
 
 __all__ = [
-    'AccuracyMetric',
-    'BleuMetric',
-    'RougeMetric',
-    'PerplexityMetric',
-    'LatencyMetric',
+    "AccuracyMetric",
+    "BleuMetric",
+    "RougeMetric",
+    "PerplexityMetric",
+    "LatencyMetric",
 ]

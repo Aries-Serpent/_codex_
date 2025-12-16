@@ -13,7 +13,7 @@ Features:
 
 Example:
     from scripts.space_traversal.viz_html import generate_dashboard
-    
+
     generate_dashboard(
         capabilities=capabilities_list,
         trend_data=trend_list,
@@ -332,9 +332,7 @@ def generate_dashboard(
 
     # Determine trend indicator
     if len(trend_data) >= 2:
-        recent_scores = [
-            t.get("avg_score", 0) for t in trend_data[: min(6, len(trend_data))]
-        ]
+        recent_scores = [t.get("avg_score", 0) for t in trend_data[: min(6, len(trend_data))]]
         if len(recent_scores) >= 2:
             prev_avg = sum(recent_scores[1:]) / len(recent_scores[1:])
             if avg_score > prev_avg + 0.02:
@@ -355,9 +353,7 @@ def generate_dashboard(
     rows = []
     for cap in sorted(capabilities, key=lambda x: -x.get("score", 0)):
         score = cap.get("score", 0)
-        badge_class = (
-            "success" if score >= 0.85 else "warning" if score >= 0.70 else "danger"
-        )
+        badge_class = "success" if score >= 0.85 else "warning" if score >= 0.70 else "danger"
         comp = cap.get("components", {})
 
         # Get trend indicator for this capability

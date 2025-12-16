@@ -36,6 +36,7 @@ def pytest_configure(config: pytest.Config) -> None:
         if cov_plugin:
             config.pluginmanager.unregister(cov_plugin)
 
+
 # Ensure local stub packages (e.g., ./yaml, ./omegaconf) do not shadow real
 # site-packages modules when they are installed. We still keep the repository
 # root on sys.path for project imports but move it to the end of the search
@@ -61,6 +62,7 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
     "requires_numpy": ["numpy"],
     "requires_sentencepiece": ["sentencepiece"],
 }
+
 
 def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = None) -> bool:
     """Return True when ``name`` resolves to an in-repo stub instead of the real package."""
@@ -91,11 +93,7 @@ def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | Non
     if primary_spec and not _is_stub_module(modname, primary_spec):
         return primary_spec
 
-    clean_paths = [
-        p
-        for p in sys.path
-        if not Path(p).resolve().is_relative_to(REPO_ROOT)
-    ]
+    clean_paths = [p for p in sys.path if not Path(p).resolve().is_relative_to(REPO_ROOT)]
     try:
         alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
     except ValueError:
@@ -143,16 +141,19 @@ def _importorskip_optional_dep(
 
 pytest.importorskip = _importorskip_optional_dep
 
+
 def pytest_collection_modifyitems(session, config, items):
     for item in items:
         for marker, modules in OPTIONAL_DEP_MARKERS.items():
             if marker in item.keywords:
                 missing = _missing_modules(modules)
                 if missing:
-                    reason = f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
+                    reason = (
+                        f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
+                    )
                     item.add_marker(pytest.mark.skip(reason=reason))
 
-        if 'heavy_dep' in item.keywords:
+        if "heavy_dep" in item.keywords:
             missing = _missing_modules(HEAVY_MODULES)
             if missing:
                 reason = f"skipped: heavy optional deps missing: {', '.join(missing)}"
@@ -173,15 +174,13 @@ def pool_state_tracker():
 
     def assert_pool_grew():
         current = _pool_size()
-        assert current > baseline, (
-            f"Expected pool to grow beyond {baseline}, current size {current}"
-        )
+        assert (
+            current > baseline
+        ), f"Expected pool to grow beyond {baseline}, current size {current}"
 
     def assert_pool_size(expected: int):
         current = _pool_size()
-        assert current == expected, (
-            f"Expected pool size {expected}, got {current}"
-        )
+        assert current == expected, f"Expected pool size {expected}, got {current}"
 
     def assert_pool_empty():
         current = _pool_size()
@@ -273,17 +272,19 @@ def set_deterministic_seed():
     """
     seed = int(os.environ.get("CODEX_TEST_SEED", "42"))
     random.seed(seed)
-    
+
     # Guard optional numpy usage without adding a hard dependency
     try:
         import numpy as np
+
         np.random.seed(seed)
     except Exception:  # pragma: no cover - numpy not required for all environments
         pass
-    
+
     # Guard optional torch usage without adding a hard dependency
     try:
         import torch
+
         torch.manual_seed(seed)
         # If using CUDA in CI, prefer CPU determinism by default.
         if torch.cuda.is_available():
@@ -294,6 +295,6 @@ def set_deterministic_seed():
     except Exception:
         # Torch not installed or not desired in CI; ignore.
         pass
-    
+
     yield
     # nothing to cleanup; leave RNG state as-is for test isolation

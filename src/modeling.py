@@ -339,7 +339,9 @@ def load_model(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedModel:
 
     LOGGER.debug("Loading model '%s' with kwargs=%s", coerced.model_name, load_kwargs)
     try:
-        model = AutoModelForCausalLM.from_pretrained(coerced.model_name, **load_kwargs)  # nosec B615
+        model = AutoModelForCausalLM.from_pretrained(
+            coerced.model_name, **load_kwargs
+        )  # nosec B615
     except OSError as exc:  # pragma: no cover - offline friendly error propagation
         raise RuntimeError(
             f"Unable to load model '{coerced.model_name}'. "

@@ -64,7 +64,11 @@ def detect(file_index: dict) -> dict:
         found_patterns.append("wandb")
 
     # Calculate functionality score
-    functionality_score = len(set(found_patterns) & set(required_patterns)) / len(required_patterns) if required_patterns else 0.0
+    functionality_score = (
+        len(set(found_patterns) & set(required_patterns)) / len(required_patterns)
+        if required_patterns
+        else 0.0
+    )
 
     return {
         "id": "experiment-management",
@@ -72,8 +76,16 @@ def detect(file_index: dict) -> dict:
         "found_patterns": sorted(set(found_patterns)),
         "required_patterns": required_patterns,
         "docs_keywords": [
-            "experiment", "tracking", "mlflow", "wandb", "logging",
-            "metrics", "hyperparameters", "artifacts", "runs", "reproducibility"
+            "experiment",
+            "tracking",
+            "mlflow",
+            "wandb",
+            "logging",
+            "metrics",
+            "hyperparameters",
+            "artifacts",
+            "runs",
+            "reproducibility",
         ],
         "safeguards": ["validation", "bounded", "deterministic", "error-handling"],
         "functionality_impl": functionality_score,
@@ -85,6 +97,6 @@ def detect(file_index: dict) -> dict:
             "deterministic": True,
             "offline": True,
             "bounded": True,
-            "detector_version": "2.0"
+            "detector_version": "2.0",
         },
     }

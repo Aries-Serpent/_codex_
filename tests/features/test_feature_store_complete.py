@@ -22,9 +22,10 @@ class TestFeatureStoreComplete:
 
     def test_register_feature_group(self, store):
         """Test feature group registration."""
+
         def dummy_transform(inputs):
             return inputs.get("value", 0) * 2
-        
+
         group = FeatureGroup(
             name="user_features",
             version="1.0.0",
@@ -34,9 +35,9 @@ class TestFeatureStoreComplete:
             ],
             description="User demographic features",
         )
-        
+
         store.register_feature_group(group)
-        
+
         # Verify registration
         retrieved = store.get_feature_group("user_features")
         assert retrieved is not None
@@ -48,24 +49,24 @@ class TestFeatureStoreComplete:
         """Test materialization to parquet."""
         pytest.importorskip("pandas")
         pytest.importorskip("pyarrow")
-        
+
         def dummy_transform(inputs):
             return inputs.get("value", 0)
-        
+
         group = FeatureGroup(
             name="numeric_features",
             version="1.0.0",
             features=[Feature(name="value", transform_fn=dummy_transform)],
         )
         store.register_feature_group(group)
-        
+
         # Materialize data
         data = {"value": [1.0, 2.0, 3.0]}
         storage_path = store.materialize_to_parquet("numeric_features", data, version="1.0.0")
-        
+
         assert storage_path.exists()
         assert storage_path.suffix == ".parquet"
-        
+
         # Verify version was recorded
         versions = store.list_versions("numeric_features")
         assert "1.0.0" in versions
@@ -74,10 +75,10 @@ class TestFeatureStoreComplete:
         """Test point-in-time feature retrieval."""
         pytest.importorskip("pandas")
         pytest.importorskip("pyarrow")
-        
+
         def dummy_transform(inputs):
             return inputs.get("value", 0)
-        
+
         # Create v1
         group_v1 = FeatureGroup(
             name="temporal",
@@ -86,14 +87,15 @@ class TestFeatureStoreComplete:
         )
         store.register_feature_group(group_v1)
         store.materialize_to_parquet("temporal", {"val": [1.0]}, version="1.0.0")
-        
+
         # Wait a moment
         import time
+
         time.sleep(0.1)
-        
+
         timestamp_between = datetime.now()
         time.sleep(0.1)
-        
+
         # Create v2
         group_v2 = FeatureGroup(
             name="temporal",
@@ -102,7 +104,7 @@ class TestFeatureStoreComplete:
         )
         store.register_feature_group(group_v2)
         store.materialize_to_parquet("temporal", {"val": [2.0]}, version="2.0.0")
-        
+
         # Point-in-time retrieval should get v1
         result = store.get_features_at_time(["temporal"], timestamp_between)
         assert "temporal" in result
@@ -110,9 +112,10 @@ class TestFeatureStoreComplete:
 
     def test_version_listing(self, store):
         """Test version listing functionality."""
+
         def dummy_transform(inputs):
             return 0
-        
+
         for v in ["1.0.0", "1.1.0", "2.0.0"]:
             group = FeatureGroup(
                 name="versioned",
@@ -120,23 +123,24 @@ class TestFeatureStoreComplete:
                 features=[Feature(name="test", transform_fn=dummy_transform)],
             )
             store.register_feature_group(group)
-        
+
         versions = store.list_versions("versioned")
         # Should have at least one (may be empty list in basic impl)
         assert isinstance(versions, list)
 
     def test_feature_materialization(self, store):
         """Test feature materialization."""
+
         def multiply_transform(inputs):
             return inputs.get("x", 0) * 2
-        
+
         group = FeatureGroup(
             name="computed",
             version="1.0.0",
             features=[Feature(name="doubled", transform_fn=multiply_transform)],
         )
         store.register_feature_group(group)
-        
+
         # Materialize features
         inputs = {"x": 5}
         results = store.materialize_features(["doubled"], inputs)
@@ -146,29 +150,29 @@ class TestFeatureStoreComplete:
     def test_cache_functionality(self, store):
         """Test feature caching."""
         call_count = [0]
-        
+
         def counting_transform(inputs):
             call_count[0] += 1
             return inputs.get("value", 0)
-        
+
         group = FeatureGroup(
             name="cached",
             version="1.0.0",
             features=[Feature(name="val", transform_fn=counting_transform)],
         )
         store.register_feature_group(group)
-        
+
         inputs = {"value": 42}
-        
+
         # First call - should compute
         result1 = store.materialize_features(["val"], inputs, cache=True)
         assert call_count[0] == 1
-        
+
         # Second call - should use cache
         result2 = store.materialize_features(["val"], inputs, cache=True)
         assert call_count[0] == 1  # No additional call
         assert result1 == result2
-        
+
         # Clear cache and try again
         store.clear_cache()
         result3 = store.materialize_features(["val"], inputs, cache=True)
@@ -176,20 +180,21 @@ class TestFeatureStoreComplete:
 
     def test_registry_persistence(self, store, tmp_path):
         """Test that registry persists to disk."""
+
         def dummy_transform(inputs):
             return 0
-        
+
         group = FeatureGroup(
             name="persistent",
             version="1.0.0",
             features=[Feature(name="test", transform_fn=dummy_transform)],
         )
         store.register_feature_group(group)
-        
+
         # Check registry file exists
         registry_path = Path(tmp_path) / "features" / "registry.json"
         assert registry_path.exists()
-        
+
         # Verify content
         with open(registry_path) as f:
             data = json.load(f)
@@ -197,9 +202,10 @@ class TestFeatureStoreComplete:
 
     def test_list_features(self, store):
         """Test listing all features."""
+
         def dummy_transform(inputs):
             return 0
-        
+
         group = FeatureGroup(
             name="listable",
             version="1.0.0",
@@ -209,7 +215,7 @@ class TestFeatureStoreComplete:
             ],
         )
         store.register_feature_group(group)
-        
+
         features = store.list_features()
         assert "feat1" in features
         assert "feat2" in features
@@ -226,10 +232,10 @@ class TestFeatureVersioning:
         """Test semantic version handling."""
         pytest.importorskip("pandas")
         pytest.importorskip("pyarrow")
-        
+
         def dummy_transform(inputs):
             return 0
-        
+
         # Create multiple versions
         for v in ["1.0.0", "1.0.1", "1.1.0", "2.0.0"]:
             group = FeatureGroup(
@@ -239,7 +245,7 @@ class TestFeatureVersioning:
             )
             store.register_feature_group(group)
             store.materialize_to_parquet("semver", {"test": [1]}, version=v)
-        
+
         versions = store.list_versions("semver")
         assert len(versions) >= 1
 
@@ -247,23 +253,23 @@ class TestFeatureVersioning:
         """Test automatic version incrementing."""
         pytest.importorskip("pandas")
         pytest.importorskip("pyarrow")
-        
+
         def dummy_transform(inputs):
             return 0
-        
+
         group = FeatureGroup(
             name="auto_version",
             version="1.0.0",
             features=[Feature(name="test", transform_fn=dummy_transform)],
         )
         store.register_feature_group(group)
-        
+
         # First materialization with version
         store.materialize_to_parquet("auto_version", {"test": [1]}, version="1.0.0")
-        
+
         # Second materialization without version (should auto-increment)
         store.materialize_to_parquet("auto_version", {"test": [2]})
-        
+
         versions = store.list_versions("auto_version")
         assert len(versions) >= 1
 

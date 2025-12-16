@@ -10,7 +10,9 @@ def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):
     # Fake repo with a single trivial test file
     tests_dir = tmp_path / "tests" / "tools"
     tests_dir.mkdir(parents=True, exist_ok=True)
-    (tests_dir / "test_dummy.py").write_text("def test_dummy():\n    assert True\n", encoding="utf-8")
+    (tests_dir / "test_dummy.py").write_text(
+        "def test_dummy():\n    assert True\n", encoding="utf-8"
+    )
 
     # Map that points to that test
     mlmap = {
@@ -23,9 +25,7 @@ def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):
             }
         ]
     }
-    (tmp_path / "codex_ml_test_map.yaml").write_text(
-        yaml.safe_dump(mlmap), encoding="utf-8"
-    )
+    (tmp_path / "codex_ml_test_map.yaml").write_text(yaml.safe_dump(mlmap), encoding="utf-8")
 
     rc = runner.main(
         [

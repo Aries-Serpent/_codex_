@@ -1,4 +1,5 @@
 """Tests for webhooks (v1.5.4)."""
+
 from __future__ import annotations
 
 import json
