@@ -20,7 +20,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 
 # =============================================================================
@@ -1003,26 +1003,37 @@ class MentalMappingModel:
         self, 
         start_id: str = None, 
         end_id: str = None,
-        source: str = None,  # Alias for start_id
-        target: str = None   # Alias for end_id
-    ) -> Optional[List[str]]:
+        source: Union[str, 'MentalNode'] = None,  # Alias for start_id, can be node or ID
+        target: Union[str, 'MentalNode'] = None   # Alias for end_id, can be node or ID
+    ) -> Optional[List[Union[str, 'MentalNode']]]:
         """
         Find shortest path between two nodes using BFS.
         
         Args:
-            start_id: Starting node ID
-            end_id: Ending node ID
-            source: Alias for start_id
-            target: Alias for end_id
+            start_id: Starting node ID (string)
+            end_id: Ending node ID (string)
+            source: Alias for start_id (can be MentalNode object or string ID)
+            target: Alias for end_id (can be MentalNode object or string ID)
         
         Returns:
-            List of node IDs forming the path, or None if no path exists
+            List of node IDs or MentalNode objects forming the path, or None if no path exists
         """
-        # Handle parameter aliases
-        if source and not start_id:
-            start_id = source
-        if target and not end_id:
-            end_id = target
+        # Handle parameter aliases and extract IDs from MentalNode objects
+        return_nodes = False  # Track if we should return nodes or IDs
+        
+        if source is not None:
+            if isinstance(source, MentalNode):
+                start_id = source.node_id
+                return_nodes = True
+            else:
+                start_id = source
+                
+        if target is not None:
+            if isinstance(target, MentalNode):
+                end_id = target.node_id
+                return_nodes = True
+            else:
+                end_id = target
             
         if not start_id or not end_id:
             return None
@@ -1030,7 +1041,10 @@ class MentalMappingModel:
         if start_id not in self.nodes or end_id not in self.nodes:
             return None
         
+        # Special case: same node
         if start_id == end_id:
+            if return_nodes:
+                return [self.nodes[start_id]]
             return [start_id]
         
         # BFS to find shortest path
@@ -1045,7 +1059,10 @@ class MentalMappingModel:
             
             for neighbor_id in current_node.connected_nodes:
                 if neighbor_id == end_id:
-                    return path + [neighbor_id]
+                    final_path = path + [neighbor_id]
+                    if return_nodes:
+                        return [self.nodes[nid] for nid in final_path]
+                    return final_path
                 
                 if neighbor_id not in visited:
                     visited.add(neighbor_id)

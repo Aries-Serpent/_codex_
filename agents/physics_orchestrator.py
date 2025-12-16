@@ -459,6 +459,33 @@ class PhysicsInspiredOrchestrator:
         
         return result
     
+    def evolve_state(
+        self,
+        state: 'EnergyState',
+        dt: float = 0.1
+    ) -> Optional['EnergyState']:
+        """
+        Evolve an energy state over time using thermodynamics.
+        
+        Args:
+            state: Current energy state
+            dt: Time step for evolution
+            
+        Returns:
+            New evolved energy state, or None if evolution fails
+        """
+        # Simple energy evolution with dissipation
+        new_energy = state.energy * (1.0 - 0.05 * dt)  # Energy dissipation
+        new_entropy = state.entropy + 0.01 * dt  # Entropy increases (2nd law)
+        
+        # Create new state
+        from agents.physics_orchestrator import EnergyState
+        return EnergyState(
+            configuration=state.configuration.copy() if hasattr(state.configuration, 'copy') else dict(state.configuration),
+            energy=new_energy,
+            entropy=min(new_entropy, 1.0)  # Cap entropy at 1.0
+        )
+    
     def _calculate_distance(self, state: DecisionState) -> float:
         """Calculate conceptual distance to goal"""
         # Simplified: use velocity and resources as proxy
@@ -978,9 +1005,10 @@ class DiffusionFlowModel:
     - Iterative review with flow convergence
     """
     
-    def __init__(self, dimensions: int = 2, resolution: int = 10):
+    def __init__(self, dimensions: int = 2, resolution: int = 10, diffusion_coefficient: float = 0.5):
         self.dimensions = dimensions
         self.resolution = resolution
+        self.diffusion_coefficient = diffusion_coefficient  # Controls exploration/randomness
         self.potential_field: Dict[Tuple[int, ...], float] = {}
         self.flow_vectors: List[FlowVector] = []
         self.attractors: List[Tuple[float, ...]] = []  # Goal positions

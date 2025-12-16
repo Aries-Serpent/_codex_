@@ -848,6 +848,51 @@ class QuantumInspiredGameEngine:
         theta_red_new = theta_red + learning_rate * grad_red
         
         return theta_blue_new, theta_red_new
+    
+    def play_round(
+        self,
+        theta_blue: float = 0.1,
+        theta_red: float = 0.1,
+        apply_noise: bool = False,
+        decoherence_gamma: float = 0.0
+    ) -> Dict[str, float]:
+        """Play a single round of the quantum game.
+        
+        Args:
+            theta_blue: Blue team's strategy rotation angle
+            theta_red: Red team's strategy rotation angle
+            apply_noise: Whether to apply decoherence (noise)
+            decoherence_gamma: Strength of decoherence (0-1)
+            
+        Returns:
+            Dictionary with payoffs for both teams
+        """
+        # Apply strategy updates
+        self.apply_strategy_update(theta_blue, theta_red)
+        
+        # Optionally apply noise
+        if apply_noise and decoherence_gamma > 0:
+            self.apply_decoherence(decoherence_gamma)
+        
+        # Calculate payoffs
+        blue_payoff = self.expected_payoff(TeamType.BLUE)
+        red_payoff = self.expected_payoff(TeamType.RED)
+        
+        return {
+            "blue_payoff": blue_payoff,
+            "red_payoff": red_payoff,
+            "entanglement": self.game_state.entanglement_strength
+        }
+    
+    def get_payoffs(self) -> Tuple[float, float]:
+        """Get current expected payoffs for both teams.
+        
+        Returns:
+            Tuple of (blue_payoff, red_payoff)
+        """
+        blue_payoff = self.expected_payoff(TeamType.BLUE)
+        red_payoff = self.expected_payoff(TeamType.RED)
+        return (blue_payoff, red_payoff)
 
 
 class BlueRedTeamSimulator:
