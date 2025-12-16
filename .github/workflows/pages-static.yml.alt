@@ -1,0 +1,124 @@
+# GitHub Pages Deployment Workflow (Static HTML)
+#
+# Alternative deployment method - deploys static HTML directly from docs/
+# Use this if MkDocs build fails or for simpler deployments
+#
+# To use this workflow instead of pages-mkdocs.yml:
+# 1. Rename pages-mkdocs.yml to pages-mkdocs.yml.disabled
+# 2. Rename this file to pages-static.yml (remove .alt extension)
+
+name: Deploy Pages (Static HTML)
+
+on:
+ workflow_dispatch:
+   inputs:
+     source_dir:
+       description: 'Source directory to deploy'
+       required: true
+       default: 'docs'
+       type: choice
+       options:
+         - docs
+         - _site
+         - site
+         - public
+
+permissions:
+ contents: read
+ pages: write
+ id-token: write
+
+concurrency:
+ group: "pages-static"
+ cancel-in-progress: false
+
+jobs:
+ build:
+   name: Build Static Site
+   runs-on: ubuntu-latest
+   
+   steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+         
+     - name: Prepare static site
+       run: |
+         SOURCE_DIR="${{ inputs.source_dir }}"
+         
+         # Create output directory
+         mkdir -p _static_site
+         
+         # Copy source files
+         if [ -d "$SOURCE_DIR" ]; then
+           cp -r "$SOURCE_DIR"/* _static_site/
+           echo "✅ Copied files from $SOURCE_DIR"
+         else
+           echo "❌ Source directory $SOURCE_DIR not found"
+           exit 1
+         fi
+         
+         # Create index.html if only markdown exists
+         if [ ! -f _static_site/index.html ] && [ -f _static_site/index.md ]; then
+           echo "Converting index.md to index.html..."
+           cat > _static_site/index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Codex Documentation</title>
+ <style>
+   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+          max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+   h1 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+   a { color: #4CAF50; }
+   pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+   code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+ </style>
+</head>
+<body>
+ <h1>📚 Codex Documentation</h1>
+ <p>Welcome to the Codex project documentation.</p>
+ <h2>Quick Links</h2>
+ <ul>
+   <li><a href="ARCHITECTURE.md">Architecture</a></li>
+   <li><a href="API_REFERENCE.md">API Reference</a></li>
+   <li><a href="CONTRIBUTING.md">Contributing</a></li>
+   <li><a href="CHANGELOG.md">Changelog</a></li>
+ </ul>
+ <h2>Getting Started</h2>
+ <p>See the <a href="https://github.com/Aries-Serpent/_codex_">GitHub repository</a> for installation instructions.</p>
+</body>
+</html>
+HTMLEOF
+         fi
+         
+         # List what we're deploying
+         echo "📁 Files to deploy:"
+         find _static_site -type f | head -20
+         
+     - name: Setup Pages
+       uses: actions/configure-pages@v4
+       
+     - name: Upload artifact
+       uses: actions/upload-pages-artifact@v3
+       with:
+         path: '_static_site'
+
+ deploy:
+   name: Deploy to GitHub Pages
+   environment:
+     name: github-pages
+     url: ${{ steps.deployment.outputs.page_url }}
+   runs-on: ubuntu-latest
+   needs: build
+   
+   steps:
+     - name: Deploy to GitHub Pages
+       id: deployment
+       uses: actions/deploy-pages@v4
+       
+     - name: Output deployment URL
+       run: |
+         echo "📚 Static site deployed to: ${{ steps.deployment.outputs.page_url }}"
+         echo "🔗 Direct link: https://aries-serpent.github.io/_codex_/"
