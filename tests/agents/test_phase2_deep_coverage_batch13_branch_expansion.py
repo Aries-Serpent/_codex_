@@ -245,9 +245,12 @@ class TestMethodDepth_ParameterVariations:
         evolver = HamiltonianEvolver(grid_size=8)
         
         # Test with different omega values
+        # harmonic_hamiltonian requires q and p positional arguments
         for omega in [0.5, 1.0, 2.0, 5.0]:
-            H = evolver.harmonic_hamiltonian(omega=omega)
+            H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=omega)
             assert H is not None
+            assert isinstance(H, float)
+            assert H >= 0  # Energy should be non-negative
     
     def test_swarm_intelligence_various_dimensions(self):
         """Test SwarmIntelligence with different dimensions"""

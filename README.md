@@ -1,6 +1,11 @@
 # `_codex_`
 > 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
 
+![Tests](https://img.shields.io/badge/tests-107%20total%20%7C%2073%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-68%25-yellow)
+![Security](https://img.shields.io/badge/security-0%20vulnerabilities-brightgreen)
+![Production](https://img.shields.io/badge/production-ready-brightgreen)
+
 ## 🎯 Achievement Status
 
 **🏆 100/100 Azure MLOps Maturity (Level 4)**  

@@ -1008,11 +1008,24 @@ class DiffusionFlowModel:
     def __init__(self, dimensions: int = 2, resolution: int = 10, diffusion_coefficient: float = 0.5):
         self.dimensions = dimensions
         self.resolution = resolution
-        self.diffusion_coefficient = diffusion_coefficient  # Controls exploration/randomness
+        self._diffusion_coefficient = diffusion_coefficient  # Controls exploration/randomness
         self.potential_field: Dict[Tuple[int, ...], float] = {}
         self.flow_vectors: List[FlowVector] = []
         self.attractors: List[Tuple[float, ...]] = []  # Goal positions
         self.repulsors: List[Tuple[float, ...]] = []   # Obstacles
+    
+    @property
+    def diffusion_coefficient(self) -> float:
+        """
+        Get the default diffusion coefficient used in flow simulations.
+        
+        The diffusion coefficient controls the amount of randomness/exploration
+        in the flow simulation, analogous to temperature in thermodynamics.
+        
+        Returns:
+            float: Default diffusion coefficient (0.1 or value set at init)
+        """
+        return self._diffusion_coefficient
         
     def add_attractor(self, position: Tuple[float, ...], strength: float = 1.0) -> None:
         """Add an attractor (goal) to the field"""

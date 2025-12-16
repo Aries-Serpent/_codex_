@@ -53,13 +53,14 @@ class TestIntegration_CompleteWorkflows:
         memory = AgentMemory()
         
         # Create problem-solving mental map
-        problem = model.create_node(NodeType.PROBLEM, {"name": "bug_fix"})
-        solution1 = model.create_node(NodeType.CONCEPT, {"name": "approach_1"})
-        solution2 = model.create_node(NodeType.CONCEPT, {"name": "approach_2"})
+        # create_node returns MentalNode object with .node_id attribute
+        problem = model.create_node(NodeType.PROBLEM, content="bug_fix")
+        solution1 = model.create_node(NodeType.CONCEPT, content="approach_1")
+        solution2 = model.create_node(NodeType.CONCEPT, content="approach_2")
         
-        # Connect nodes
-        model.connect_nodes(problem, solution1, EdgeType.LEADS_TO, {})
-        model.connect_nodes(problem, solution2, EdgeType.LEADS_TO, {})
+        # Connect nodes using node IDs
+        model.connect_nodes(source_id=problem.node_id, target_id=solution1.node_id, edge_type=EdgeType.LEADS_TO)
+        model.connect_nodes(source_id=problem.node_id, target_id=solution2.node_id, edge_type=EdgeType.LEADS_TO)
         
         # Calculate and store metrics
         metrics = model.calculate_metrics()
@@ -131,10 +132,11 @@ class TestIntegration_CompleteWorkflows:
         memory = AgentMemory()
         
         # Create workflow
+        # WorkflowStep uses 'id' and 'action', not 'name'
         steps = [
-            WorkflowStep("step1", "Initialize"),
-            WorkflowStep("step2", "Process"),
-            WorkflowStep("step3", "Finalize"),
+            WorkflowStep(id="step1", action="Initialize"),
+            WorkflowStep(id="step2", action="Process"),
+            WorkflowStep(id="step3", action="Finalize"),
         ]
         
         workflow_id = navigator.create_workflow("data_pipeline", steps)
@@ -142,13 +144,13 @@ class TestIntegration_CompleteWorkflows:
         
         # Navigate and log
         current = navigator.current_step()
-        memory.store_memory(key="current_step", value=current.name)
+        memory.store_memory(key="current_step", value=current.action)
         
         next_s = navigator.next_step()
-        memory.store_memory(key="next_step", value=next_s.name)
+        memory.store_memory(key="next_step", value=next_s.action)
         
-        # Verify
-        retrieved = memory.retrieve_memory("current_step")
+        # Verify - retrieve_memory with key returns the value directly
+        retrieved = memory.retrieve_memory(key="current_step")
         assert retrieved == "Initialize"
 
 
@@ -206,14 +208,17 @@ class TestIntegration_DataFlow:
         memory.store_memory(key="workflow_steps", value="3")
         memory.store_memory(key="current_step_index", value="0")
         
-        # Retrieve and use
-        step_count = memory.retrieve_memory("workflow_steps")
+        # Retrieve and use - when using key parameter, get value directly
+        step_count = memory.retrieve_memory(key="workflow_steps")
         
         # Create workflow based on stored data
-        steps = [WorkflowStep(f"step{i}", f"Step {i}") for i in range(int(step_count))]
+        # WorkflowStep uses id and action parameters
+        steps = [WorkflowStep(id=f"step{i}", action=f"Step {i}") for i in range(int(step_count))]
         workflow_id = navigator.create_workflow("stored_workflow", steps)
         
-        assert len(navigator.workflows[workflow_id]) == 3
+        # Workflow has a steps attribute
+        assert len(navigator.workflows[workflow_id].steps) == 3
+
 
 
 class TestIntegration_StateManagement:
@@ -244,7 +249,8 @@ class TestIntegration_StateManagement:
         navigator1 = WorkflowNavigator()
         
         # Create and progress workflow
-        steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(3)]
+        # WorkflowStep uses id and action parameters
+        steps = [WorkflowStep(id=f"s{i}", action=f"Step {i}") for i in range(3)]
         wf_id = navigator1.create_workflow("persistent", steps)
         navigator1.current_workflow_id = wf_id
         navigator1.navigate_to(step_index=1)
@@ -253,10 +259,10 @@ class TestIntegration_StateManagement:
         memory.store_memory(key="workflow_id", value=wf_id)
         memory.store_memory(key="step_index", value=str(navigator1.current_step_index))
         
-        # Restore in new navigator
+        # Restore in new navigator - retrieve_memory with key returns value directly
         navigator2 = WorkflowNavigator()
-        stored_id = memory.retrieve_memory("workflow_id")
-        stored_index = int(memory.retrieve_memory("step_index"))
+        stored_id = memory.retrieve_memory(key="workflow_id")
+        stored_index = int(memory.retrieve_memory(key="step_index"))
         
         # State should be restorable
         assert stored_index == 1
