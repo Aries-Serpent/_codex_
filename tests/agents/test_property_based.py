@@ -299,7 +299,7 @@ class TestMathematicalProperties:
         assert higher_energy_prob <= prob
 
 
-class TestStateM achineProperties:
+class TestStateMachineProperties:
     """Property-based tests for state machine invariants."""
     
     @given(
