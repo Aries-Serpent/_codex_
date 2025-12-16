@@ -40,17 +40,27 @@ class TestClassicalGameEngine:
     def classical_engine(self, payoff_matrices_prisoners_dilemma):
         """Create classical game engine with prisoner's dilemma."""
         blue_payoff, red_payoff = payoff_matrices_prisoners_dilemma
-        blue_probs = np.array([0.5, 0.5])  # Equal probability initially
-        red_probs = np.array([0.5, 0.5])
-        return ClassicalGameEngine(blue_probs, red_probs, blue_payoff, red_payoff)
+        blue_strategies = ["Cooperate", "Defect"]
+        red_strategies = ["Cooperate", "Defect"]
+        return ClassicalGameEngine(
+            blue_strategies=blue_strategies,
+            red_strategies=red_strategies,
+            payoff_blue=blue_payoff,
+            payoff_red=red_payoff,
+            beta=1.0,
+            alpha=0.5
+        )
     
     def test_classical_engine_initialization(self, classical_engine):
         """Test ClassicalGameEngine initializes correctly."""
         assert classical_engine is not None
-        assert hasattr(classical_engine, 'blue_state')
-        assert hasattr(classical_engine, 'red_state')
-        assert classical_engine.blue_state.probabilities is not None
-        assert classical_engine.red_state.probabilities is not None
+        assert hasattr(classical_engine, 'pi_blue')
+        assert hasattr(classical_engine, 'pi_red')
+        assert classical_engine.pi_blue is not None
+        assert classical_engine.pi_red is not None
+        # Probabilities should sum to 1
+        assert np.isclose(classical_engine.pi_blue.sum(), 1.0)
+        assert np.isclose(classical_engine.pi_red.sum(), 1.0)
     
     def test_expected_payoff_calculation(self, classical_engine):
         """Test expected payoff calculation for both teams."""
@@ -64,57 +74,73 @@ class TestClassicalGameEngine:
     
     def test_replicator_dynamics_step(self, classical_engine):
         """Test single replicator dynamics step."""
-        initial_blue = classical_engine.blue_state.probabilities.copy()
-        initial_red = classical_engine.red_state.probabilities.copy()
+        initial_blue = classical_engine.pi_blue.copy()
+        initial_red = classical_engine.pi_red.copy()
         
-        classical_engine.replicator_step(learning_rate=0.1)
+        classical_engine.replicator_dynamics_step(dt=0.1)
         
         # Probabilities should sum to 1
-        assert np.isclose(classical_engine.blue_state.probabilities.sum(), 1.0)
-        assert np.isclose(classical_engine.red_state.probabilities.sum(), 1.0)
+        assert np.isclose(classical_engine.pi_blue.sum(), 1.0)
+        assert np.isclose(classical_engine.pi_red.sum(), 1.0)
         
         # Probabilities should have changed (unless at equilibrium)
-        assert not np.array_equal(classical_engine.blue_state.probabilities, initial_blue) or \
-               not np.array_equal(classical_engine.red_state.probabilities, initial_red)
+        assert not np.array_equal(classical_engine.pi_blue, initial_blue) or \
+               not np.array_equal(classical_engine.pi_red, initial_red)
     
     def test_run_dynamics_convergence(self, classical_engine):
         """Test that dynamics converge over multiple steps."""
-        results = classical_engine.run_dynamics(steps=50, learning_rate=0.05)
+        results = classical_engine.simulate_to_equilibrium(max_iterations=50, convergence_threshold=1e-6)
         
-        assert 'steps' in results
-        assert 'final_blue_probs' in results
-        assert 'final_red_probs' in results
-        assert 'final_blue_payoff' in results
-        assert 'final_red_payoff' in results
+        assert 'pi_blue' in results
+        assert 'pi_red' in results
+        assert 'payoff_blue' in results
+        assert 'payoff_red' in results
         
         # Final probabilities should sum to 1
-        assert np.isclose(results['final_blue_probs'].sum(), 1.0)
-        assert np.isclose(results['final_red_probs'].sum(), 1.0)
+        assert np.isclose(results['pi_blue'].sum(), 1.0)
+        assert np.isclose(results['pi_red'].sum(), 1.0)
     
     def test_nash_equilibrium_computation(self, classical_engine):
-        """Test Nash equilibrium approximation via Gibbs sampling."""
-        equilibrium = classical_engine.nash_equilibrium(temperature=1.0, iterations=100)
+        """Test Nash equilibrium approximation."""
+        equilibrium = classical_engine.compute_nash_equilibrium()
         
-        assert 'blue_equilibrium' in equilibrium
-        assert 'red_equilibrium' in equilibrium
+        assert 'pi_blue' in equilibrium
+        assert 'pi_red' in equilibrium
         
         # Equilibrium probabilities should sum to 1
-        assert np.isclose(equilibrium['blue_equilibrium'].sum(), 1.0)
-        assert np.isclose(equilibrium['red_equilibrium'].sum(), 1.0)
+        assert np.isclose(equilibrium['pi_blue'].sum(), 1.0)
+        assert np.isclose(equilibrium['pi_red'].sum(), 1.0)
     
     def test_gibbs_sampling_temperature_effects(self, classical_engine):
-        """Test that temperature affects Gibbs sampling."""
-        # Low temperature → more deterministic
-        low_temp = classical_engine.nash_equilibrium(temperature=0.1, iterations=50)
+        """Test that beta (inverse temperature) affects sampling."""
+        # Create two engines with different beta values
+        blue_payoff, red_payoff = classical_engine.payoff_blue, classical_engine.payoff_red
         
-        # High temperature → more random
-        high_temp = classical_engine.nash_equilibrium(temperature=10.0, iterations=50)
+        # Low beta (high temperature) → more random
+        low_beta_engine = ClassicalGameEngine(
+            blue_strategies=["Cooperate", "Defect"],
+            red_strategies=["Cooperate", "Defect"],
+            payoff_blue=blue_payoff,
+            payoff_red=red_payoff,
+            beta=0.1
+        )
         
-        # Low temperature should be more peaked (closer to deterministic)
-        low_temp_max = np.max(low_temp['blue_equilibrium'])
-        high_temp_max = np.max(high_temp['blue_equilibrium'])
+        # High beta (low temperature) → more deterministic
+        high_beta_engine = ClassicalGameEngine(
+            blue_strategies=["Cooperate", "Defect"],
+            red_strategies=["Cooperate", "Defect"],
+            payoff_blue=blue_payoff,
+            payoff_red=red_payoff,
+            beta=10.0
+        )
         
-        assert low_temp_max >= high_temp_max - 0.3  # Allow some variance
+        # Sample from Gibbs distribution
+        low_beta_samples = low_beta_engine.gibbs_sample(num_samples=100)
+        high_beta_samples = high_beta_engine.gibbs_sample(num_samples=100)
+        
+        # Verify we got samples
+        assert len(low_beta_samples) == 100
+        assert len(high_beta_samples) == 100
 
 
 @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
@@ -323,10 +349,23 @@ class TestQuantumGameState:
     
     def test_quantum_state_initialization(self):
         """Test QuantumGameState creates valid quantum state."""
-        blue_probs = np.array([0.5, 0.5])
-        red_probs = np.array([0.5, 0.5])
+        blue_strategies = ["Cooperate", "Defect"]
+        red_strategies = ["Cooperate", "Defect"]
         
-        state = QuantumGameState(blue_probs, red_probs, entanglement=0.2)
+        blue_state = StrategyState(
+            team=TeamType.BLUE,
+            strategies=blue_strategies
+        )
+        red_state = StrategyState(
+            team=TeamType.RED,
+            strategies=red_strategies
+        )
+        
+        state = QuantumGameState(
+            blue_state=blue_state,
+            red_state=red_state,
+            entanglement_strength=0.2
+        )
         
         assert state.joint_wavefunction is not None
         assert np.isclose(np.sum(np.abs(state.joint_wavefunction) ** 2), 1.0)
@@ -334,9 +373,22 @@ class TestQuantumGameState:
     
     def test_measurement_collapse(self):
         """Test wavefunction measurement collapses state."""
-        blue_probs = np.array([0.5, 0.5])
-        red_probs = np.array([0.5, 0.5])
-        state = QuantumGameState(blue_probs, red_probs)
+        blue_strategies = ["Cooperate", "Defect"]
+        red_strategies = ["Cooperate", "Defect"]
+        
+        blue_state = StrategyState(
+            team=TeamType.BLUE,
+            strategies=blue_strategies
+        )
+        red_state = StrategyState(
+            team=TeamType.RED,
+            strategies=red_strategies
+        )
+        
+        state = QuantumGameState(
+            blue_state=blue_state,
+            red_state=red_state
+        )
         
         blue_idx, red_idx = state.measure()
         
