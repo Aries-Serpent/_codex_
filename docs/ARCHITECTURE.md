@@ -1,8 +1,10 @@
 # Codex ML Architecture
 
-> **Last Updated**: 2025-11-02  
+> **Last Updated**: 2025-12-16  
 > **Status**: Living Document  
-> **Maintainers**: @Aries-Serpent/arch-team
+> **Managed By**: AI Assistant Autonomous System
+
+**AI-Managed Repository Notice**: This repository is designed for and managed by AI Assistants and Agents. All architectural decisions, reviews, and updates are performed autonomously by AI systems.
 
 This document provides a comprehensive architectural overview of the `_codex_` ML training, evaluation, and plugin framework using C4-lite modeling.
 
@@ -499,7 +501,7 @@ When proposing architectural changes:
 
 1. **Create an ADR**: Document the decision in `docs/decision_records/`
 2. **Update diagrams**: Keep Mermaid diagrams current
-3. **Review with arch-team**: Get feedback from @Aries-Serpent/arch-team
+3. **AI Assistant autonomous review**: Automated architectural validation and feedback
 4. **Update this document**: Reflect changes in this ARCHITECTURE.md
 5. **Update related docs**: Keep API docs, guides, and README in sync
 
@@ -515,4 +517,4 @@ When proposing architectural changes:
 
 ---
 
-**Questions or suggestions?** Open a discussion or contact @Aries-Serpent/arch-team
+**Questions or suggestions?** Open a discussion or submit for AI Assistant autonomous review
