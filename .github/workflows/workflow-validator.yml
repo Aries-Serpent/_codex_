@@ -83,14 +83,15 @@ jobs:
                   continue
               
               # Check required top-level keys
-              # Note: 'on' is a YAML keyword, check using keys() or True (YAML converts 'on' to True sometimes)
+              # Note: 'on' is a YAML keyword - PyYAML parses 'on:' as boolean True
               workflow_keys = list(workflow.keys()) if isinstance(workflow, dict) else []
               
               if 'name' not in workflow:
                   errors.append(f"{workflow_file.name}: Missing 'name' field")
               
               # Check for 'on' key - YAML may parse 'on' as True boolean, so check both
-              has_triggers = 'on' in workflow or True in workflow_keys
+              # Use any() to check for boolean True in keys list
+              has_triggers = 'on' in workflow or any(key is True for key in workflow_keys)
               if not has_triggers:
                   errors.append(f"{workflow_file.name}: Missing 'on' (triggers) field")
               
