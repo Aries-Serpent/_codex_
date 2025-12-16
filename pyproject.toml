@@ -89,7 +89,7 @@ dev = [
   "black>=24.8",
   "isort>=5.13",
   "mypy>=1.10",
-  "dvc==3.0.0",
+  "dvc==3.64.2",
   "pre-commit>=3.7",
   "nox>=2024.4.15",
   "nbstripout>=0.6",
