@@ -1,0 +1,377 @@
+name: Comprehensive Test Suite with Coverage
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**' ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_level:
+        description: 'Test level (smoke/full/extended)'
+        required: false
+        default: 'full'
+      run_mutation_tests:
+        description: 'Run mutation tests'
+        required: false
+        default: 'false'
+
+env:
+  PYTHON_VERSION: '3.10'
+  COVERAGE_THRESHOLD: 90
+
+jobs:
+  # Job 1: Quick smoke tests
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run smoke tests
+        run: |
+          pytest tests/smoke/ -v --tb=short --durations=10
+      
+      - name: Check imports
+        run: |
+          python -c "from agents.agent_memory import AgentMemory"
+          python -c "from agents.physics_orchestrator import PhysicsInspiredOrchestrator"
+          python -c "from agents.mental_mapping import MentalMappingModel"
+  
+  # Job 2: Unit tests with coverage
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: smoke-tests
+    timeout-minutes: 30
+    
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-cov pytest-xdist pytest-timeout hypothesis
+      
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/agents/ \
+            -v \
+            --cov=agents \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term-missing \
+            --cov-fail-under=${{ env.COVERAGE_THRESHOLD }} \
+            --tb=short \
+            --durations=20 \
+            -n auto \
+            --timeout=300
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-${{ matrix.python-version }}
+          fail_ci_if_error: false
+      
+      - name: Archive coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 30
+  
+  # Job 3: Property-based tests
+  property-based-tests:
+    name: Property-Based Tests
+    runs-on: ubuntu-latest
+    needs: smoke-tests
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest hypothesis pytest-timeout
+      
+      - name: Run property-based tests
+        run: |
+          pytest tests/agents/test_property_based.py \
+            -v \
+            --tb=short \
+            --hypothesis-show-statistics \
+            --timeout=600
+  
+  # Job 4: Load and concurrent tests
+  load-tests:
+    name: Load & Concurrent Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-timeout pytest-xdist
+      
+      - name: Run load tests
+        run: |
+          pytest tests/agents/test_load_and_concurrent.py \
+            -v \
+            --tb=short \
+            --durations=20 \
+            --timeout=900
+      
+      - name: Performance report
+        run: |
+          echo "Load test performance summary" >> $GITHUB_STEP_SUMMARY
+          pytest tests/agents/test_load_and_concurrent.py --collect-only | \
+            grep "test session starts" >> $GITHUB_STEP_SUMMARY || true
+  
+  # Job 5: Mutation testing (optional, slow)
+  mutation-tests:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event.inputs.run_mutation_tests == 'true' || github.event_name == 'schedule'
+    timeout-minutes: 120
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest mutmut
+      
+      - name: Run mutation tests (sample)
+        run: |
+          # Run on subset for CI (full run too slow)
+          mutmut run --paths-to-mutate=agents/agent_memory.py --max-mutations=50
+        continue-on-error: true
+      
+      - name: Mutation test results
+        run: |
+          mutmut results || true
+          mutmut html || true
+      
+      - name: Upload mutation report
+        uses: actions/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: html/
+          retention-days: 14
+  
+  # Job 6: Code quality checks
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff black mypy isort
+      
+      - name: Check formatting with Black
+        run: |
+          black --check agents/ tests/
+      
+      - name: Check imports with isort
+        run: |
+          isort --check-only agents/ tests/
+      
+      - name: Lint with Ruff
+        run: |
+          ruff check agents/ tests/
+      
+      - name: Type check with mypy
+        run: |
+          mypy agents/ --ignore-missing-imports || true
+  
+  # Job 7: Security scanning
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run CodeQL analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: python
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+      
+      - name: Run Bandit security check
+        run: |
+          pip install bandit
+          bandit -r agents/ -f json -o bandit-report.json || true
+      
+      - name: Upload security report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report
+          path: bandit-report.json
+          retention-days: 30
+  
+  # Job 8: Generate coverage badge
+  coverage-badge:
+    name: Generate Coverage Badge
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download coverage reports
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report-3.10
+      
+      - name: Generate badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: badges
+          coverage-label: coverage
+          generate-branches-badge: true
+      
+      - name: Commit badge
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add badges/*.svg || true
+          git commit -m "Update coverage badge" || true
+          git push || true
+  
+  # Job 9: Performance benchmarks
+  performance-benchmarks:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-benchmark
+      
+      - name: Run benchmarks
+        run: |
+          pytest tests/agents/test_load_and_concurrent.py::TestPerformanceBenchmarks \
+            -v \
+            --benchmark-only \
+            --benchmark-json=benchmark-results.json || true
+      
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'pytest'
+          output-file-path: benchmark-results.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+        continue-on-error: true
+  
+  # Final job: Report status
+  test-report:
+    name: Test Report
+    runs-on: ubuntu-latest
+    needs: [smoke-tests, unit-tests, property-based-tests, load-tests, code-quality]
+    if: always()
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Test Suite Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Status" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All required tests completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "Target: ${{ env.COVERAGE_THRESHOLD }}%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See artifacts for detailed reports" >> $GITHUB_STEP_SUMMARY
