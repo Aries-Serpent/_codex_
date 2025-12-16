@@ -147,7 +147,7 @@ pytest tests/ -v
 pre-commit run --all-files
 
 # 5. Commit
-git add -A
+git add .
 git commit -m "Apply patch: <description>"
 ```
 
