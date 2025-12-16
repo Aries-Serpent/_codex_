@@ -1026,7 +1026,7 @@ sentencepiece==0.2.1
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
-sentry-sdk==2.42.0
+sentry-sdk==2.47.0
     # via wandb
 setuptools==80.9.0
     # via
