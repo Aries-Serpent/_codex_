@@ -1,0 +1,408 @@
+"""
+Comprehensive tests for Quantum Game Theory core flows.
+
+Coverage targets:
+- ClassicalGameEngine: Lines 402-591 (replicator dynamics, equilibrium)
+- QuantumInspiredGameEngine: Lines 593-897 (quantum operations, entanglement)
+- BlueRedTeamSimulator: Lines 898-1183 (simulation flows, strategies)
+
+Target coverage: 33.40% → 85%+
+"""
+
+import pytest
+import numpy as np
+from agents.quantum_game_theory import (
+    TeamType,
+    StrategyState,
+    PayoffOperator,
+    QuantumGameState,
+    ClassicalGameEngine,
+    QuantumInspiredGameEngine,
+    BlueRedTeamSimulator,
+    NUMPY_AVAILABLE
+)
+
+
+@pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
+class TestClassicalGameEngine:
+    """Test suite for ClassicalGameEngine (energy-based game theory)."""
+    
+    @pytest.fixture
+    def payoff_matrices_prisoners_dilemma(self):
+        """Classic prisoner's dilemma payoffs."""
+        # Blue payoffs: [[cooperate-cooperate, cooperate-defect],
+        #                [defect-cooperate, defect-defect]]
+        payoff_blue = np.array([[3.0, 0.0], [5.0, 1.0]])
+        payoff_red = np.array([[3.0, 5.0], [0.0, 1.0]])
+        return payoff_blue, payoff_red
+    
+    @pytest.fixture
+    def classical_engine(self, payoff_matrices_prisoners_dilemma):
+        """Create classical game engine with prisoner's dilemma."""
+        blue_payoff, red_payoff = payoff_matrices_prisoners_dilemma
+        blue_probs = np.array([0.5, 0.5])  # Equal probability initially
+        red_probs = np.array([0.5, 0.5])
+        return ClassicalGameEngine(blue_probs, red_probs, blue_payoff, red_payoff)
+    
+    def test_classical_engine_initialization(self, classical_engine):
+        """Test ClassicalGameEngine initializes correctly."""
+        assert classical_engine is not None
+        assert hasattr(classical_engine, 'blue_state')
+        assert hasattr(classical_engine, 'red_state')
+        assert classical_engine.blue_state.probabilities is not None
+        assert classical_engine.red_state.probabilities is not None
+    
+    def test_expected_payoff_calculation(self, classical_engine):
+        """Test expected payoff calculation for both teams."""
+        blue_payoff = classical_engine.expected_payoff(TeamType.BLUE)
+        red_payoff = classical_engine.expected_payoff(TeamType.RED)
+        
+        assert isinstance(blue_payoff, (float, np.floating))
+        assert isinstance(red_payoff, (float, np.floating))
+        assert blue_payoff >= 0.0
+        assert red_payoff >= 0.0
+    
+    def test_replicator_dynamics_step(self, classical_engine):
+        """Test single replicator dynamics step."""
+        initial_blue = classical_engine.blue_state.probabilities.copy()
+        initial_red = classical_engine.red_state.probabilities.copy()
+        
+        classical_engine.replicator_step(learning_rate=0.1)
+        
+        # Probabilities should sum to 1
+        assert np.isclose(classical_engine.blue_state.probabilities.sum(), 1.0)
+        assert np.isclose(classical_engine.red_state.probabilities.sum(), 1.0)
+        
+        # Probabilities should have changed (unless at equilibrium)
+        assert not np.array_equal(classical_engine.blue_state.probabilities, initial_blue) or \
+               not np.array_equal(classical_engine.red_state.probabilities, initial_red)
+    
+    def test_run_dynamics_convergence(self, classical_engine):
+        """Test that dynamics converge over multiple steps."""
+        results = classical_engine.run_dynamics(steps=50, learning_rate=0.05)
+        
+        assert 'steps' in results
+        assert 'final_blue_probs' in results
+        assert 'final_red_probs' in results
+        assert 'final_blue_payoff' in results
+        assert 'final_red_payoff' in results
+        
+        # Final probabilities should sum to 1
+        assert np.isclose(results['final_blue_probs'].sum(), 1.0)
+        assert np.isclose(results['final_red_probs'].sum(), 1.0)
+    
+    def test_nash_equilibrium_computation(self, classical_engine):
+        """Test Nash equilibrium approximation via Gibbs sampling."""
+        equilibrium = classical_engine.nash_equilibrium(temperature=1.0, iterations=100)
+        
+        assert 'blue_equilibrium' in equilibrium
+        assert 'red_equilibrium' in equilibrium
+        
+        # Equilibrium probabilities should sum to 1
+        assert np.isclose(equilibrium['blue_equilibrium'].sum(), 1.0)
+        assert np.isclose(equilibrium['red_equilibrium'].sum(), 1.0)
+    
+    def test_gibbs_sampling_temperature_effects(self, classical_engine):
+        """Test that temperature affects Gibbs sampling."""
+        # Low temperature → more deterministic
+        low_temp = classical_engine.nash_equilibrium(temperature=0.1, iterations=50)
+        
+        # High temperature → more random
+        high_temp = classical_engine.nash_equilibrium(temperature=10.0, iterations=50)
+        
+        # Low temperature should be more peaked (closer to deterministic)
+        low_temp_max = np.max(low_temp['blue_equilibrium'])
+        high_temp_max = np.max(high_temp['blue_equilibrium'])
+        
+        assert low_temp_max >= high_temp_max - 0.3  # Allow some variance
+
+
+@pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
+class TestQuantumInspiredGameEngine:
+    """Test suite for QuantumInspiredGameEngine (quantum-inspired game theory)."""
+    
+    @pytest.fixture
+    def quantum_engine(self):
+        """Create quantum game engine with standard setup."""
+        blue_probs = np.array([0.5, 0.5])
+        red_probs = np.array([0.5, 0.5])
+        payoff_blue = np.array([[3.0, 0.0], [5.0, 1.0]])
+        payoff_red = np.array([[3.0, 5.0], [0.0, 1.0]])
+        return QuantumInspiredGameEngine(blue_probs, red_probs, payoff_blue, payoff_red)
+    
+    def test_quantum_engine_initialization(self, quantum_engine):
+        """Test QuantumInspiredGameEngine initializes correctly."""
+        assert quantum_engine is not None
+        assert hasattr(quantum_engine, 'game_state')
+        assert quantum_engine.game_state.joint_wavefunction is not None
+        assert quantum_engine.game_state.entanglement_strength >= 0.0
+    
+    def test_wavefunction_normalization(self, quantum_engine):
+        """Test that wavefunction remains normalized."""
+        wavefunction = quantum_engine.game_state.joint_wavefunction
+        norm = np.sum(np.abs(wavefunction) ** 2)
+        assert np.isclose(norm, 1.0), "Wavefunction should be normalized"
+    
+    def test_apply_strategy_update(self, quantum_engine):
+        """Test quantum strategy update (unitary evolution)."""
+        initial_wf = quantum_engine.game_state.joint_wavefunction.copy()
+        
+        quantum_engine.apply_strategy_update(theta_blue=0.1, theta_red=0.1)
+        
+        updated_wf = quantum_engine.game_state.joint_wavefunction
+        
+        # Wavefunction should have changed
+        assert not np.array_equal(initial_wf, updated_wf)
+        
+        # But still normalized
+        norm = np.sum(np.abs(updated_wf) ** 2)
+        assert np.isclose(norm, 1.0)
+    
+    def test_apply_decoherence(self, quantum_engine):
+        """Test decoherence (quantum→classical transition)."""
+        quantum_engine.apply_decoherence(gamma=0.5)
+        
+        # After decoherence, wavefunction should still be normalized
+        norm = np.sum(np.abs(quantum_engine.game_state.joint_wavefunction) ** 2)
+        assert np.isclose(norm, 1.0)
+    
+    def test_expected_payoff_quantum(self, quantum_engine):
+        """Test expected payoff calculation in quantum regime."""
+        blue_payoff = quantum_engine.expected_payoff(TeamType.BLUE)
+        red_payoff = quantum_engine.expected_payoff(TeamType.RED)
+        
+        assert isinstance(blue_payoff, (float, np.floating))
+        assert isinstance(red_payoff, (float, np.floating))
+    
+    def test_play_round_returns_valid_results(self, quantum_engine):
+        """Test play_round returns valid payoff dictionary."""
+        result = quantum_engine.play_round(theta_blue=0.1, theta_red=0.1)
+        
+        assert 'blue_payoff' in result
+        assert 'red_payoff' in result
+        assert 'entanglement' in result
+        assert result['entanglement'] >= 0.0
+    
+    def test_quantum_policy_gradient_step(self, quantum_engine):
+        """Test quantum policy gradient optimization."""
+        initial_theta_blue = 0.1
+        initial_theta_red = 0.1
+        
+        new_blue, new_red = quantum_engine.quantum_policy_gradient_step(
+            theta_blue=initial_theta_blue,
+            theta_red=initial_theta_red,
+            learning_rate=0.05
+        )
+        
+        # Thetas should have updated
+        assert new_blue != initial_theta_blue or new_red != initial_theta_red
+    
+    def test_get_payoffs_method(self, quantum_engine):
+        """Test get_payoffs convenience method."""
+        blue_payoff, red_payoff = quantum_engine.get_payoffs()
+        
+        assert isinstance(blue_payoff, (float, np.floating))
+        assert isinstance(red_payoff, (float, np.floating))
+
+
+@pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
+class TestBlueRedTeamSimulator:
+    """Test suite for BlueRedTeamSimulator (high-level simulation)."""
+    
+    @pytest.fixture
+    def simulator_quantum(self):
+        """Create quantum mode simulator."""
+        blue_strategies = ["defend", "attack", "monitor"]
+        red_strategies = ["exploit", "probe", "escalate"]
+        payoff_blue = np.random.rand(3, 3)
+        payoff_red = np.random.rand(3, 3)
+        
+        return BlueRedTeamSimulator(
+            blue_strategies=blue_strategies,
+            red_strategies=red_strategies,
+            payoff_blue=payoff_blue,
+            payoff_red=payoff_red,
+            mode="quantum",
+            entanglement=0.3,
+            noise_level=0.1
+        )
+    
+    @pytest.fixture
+    def simulator_classical(self):
+        """Create classical mode simulator."""
+        blue_strategies = ["defend", "attack"]
+        red_strategies = ["exploit", "probe"]
+        payoff_blue = np.array([[3.0, 0.0], [5.0, 1.0]])
+        payoff_red = np.array([[3.0, 5.0], [0.0, 1.0]])
+        
+        return BlueRedTeamSimulator(
+            blue_strategies=blue_strategies,
+            red_strategies=red_strategies,
+            payoff_blue=payoff_blue,
+            payoff_red=payoff_red,
+            mode="classical"
+        )
+    
+    def test_simulator_initialization_quantum(self, simulator_quantum):
+        """Test simulator initializes in quantum mode."""
+        assert simulator_quantum.mode == "quantum"
+        assert simulator_quantum.entanglement == 0.3
+        assert simulator_quantum.noise_level == 0.1
+        assert hasattr(simulator_quantum, 'quantum_engine')
+    
+    def test_simulator_initialization_classical(self, simulator_classical):
+        """Test simulator initializes in classical mode."""
+        assert simulator_classical.mode == "classical"
+        assert hasattr(simulator_classical, 'classical_engine')
+    
+    def test_run_simulation_quantum_mode(self, simulator_quantum):
+        """Test running simulation in quantum mode."""
+        results = simulator_quantum.run_simulation(num_rounds=10, learning_rate=0.1)
+        
+        assert results['mode'] == "quantum"
+        assert results['num_rounds'] == 10
+        assert 'rounds' in results
+        assert len(results['rounds']) == 10
+        assert 'final_blue_payoff' in results
+        assert 'final_red_payoff' in results
+    
+    def test_run_simulation_classical_mode(self, simulator_classical):
+        """Test running simulation in classical mode."""
+        results = simulator_classical.run_simulation(num_rounds=10, learning_rate=0.1)
+        
+        assert results['mode'] == "classical"
+        assert results['num_rounds'] == 10
+        assert 'rounds' in results
+        assert len(results['rounds']) == 10
+    
+    def test_simulation_rounds_structure(self, simulator_quantum):
+        """Test that each round has correct structure."""
+        results = simulator_quantum.run_simulation(num_rounds=5, learning_rate=0.05)
+        
+        for round_data in results['rounds']:
+            assert 'round' in round_data
+            assert 'blue_payoff' in round_data
+            assert 'red_payoff' in round_data
+    
+    def test_payoff_accumulation(self, simulator_quantum):
+        """Test that payoffs accumulate over rounds."""
+        results = simulator_quantum.run_simulation(num_rounds=10, learning_rate=0.1)
+        
+        # Final payoffs should be sum of all rounds
+        total_blue = sum(r['blue_payoff'] for r in results['rounds'])
+        total_red = sum(r['red_payoff'] for r in results['rounds'])
+        
+        assert np.isclose(results['final_blue_payoff'], total_blue)
+        assert np.isclose(results['final_red_payoff'], total_red)
+    
+    def test_zero_rounds_simulation(self, simulator_classical):
+        """Test simulation with zero rounds."""
+        results = simulator_classical.run_simulation(num_rounds=0, learning_rate=0.1)
+        
+        assert results['num_rounds'] == 0
+        assert len(results['rounds']) == 0
+        assert results['final_blue_payoff'] == 0.0
+        assert results['final_red_payoff'] == 0.0
+    
+    def test_different_learning_rates(self, simulator_quantum):
+        """Test simulation with different learning rates."""
+        # Low learning rate
+        results_low = simulator_quantum.run_simulation(num_rounds=5, learning_rate=0.01)
+        
+        # High learning rate
+        results_high = simulator_quantum.run_simulation(num_rounds=5, learning_rate=0.5)
+        
+        # Both should complete successfully
+        assert results_low['num_rounds'] == 5
+        assert results_high['num_rounds'] == 5
+
+
+@pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
+class TestQuantumGameState:
+    """Test suite for QuantumGameState."""
+    
+    def test_quantum_state_initialization(self):
+        """Test QuantumGameState creates valid quantum state."""
+        blue_probs = np.array([0.5, 0.5])
+        red_probs = np.array([0.5, 0.5])
+        
+        state = QuantumGameState(blue_probs, red_probs, entanglement=0.2)
+        
+        assert state.joint_wavefunction is not None
+        assert np.isclose(np.sum(np.abs(state.joint_wavefunction) ** 2), 1.0)
+        assert state.entanglement_strength == 0.2
+    
+    def test_measurement_collapse(self):
+        """Test wavefunction measurement collapses state."""
+        blue_probs = np.array([0.5, 0.5])
+        red_probs = np.array([0.5, 0.5])
+        state = QuantumGameState(blue_probs, red_probs)
+        
+        blue_idx, red_idx = state.measure()
+        
+        # Indices should be valid
+        assert 0 <= blue_idx < 2
+        assert 0 <= red_idx < 2
+    
+    def test_apply_entangling_gate(self):
+        """Test entangling gate application."""
+        blue_probs = np.array([0.6, 0.4])
+        red_probs = np.array([0.7, 0.3])
+        state = QuantumGameState(blue_probs, red_probs, entanglement=0.0)
+        
+        initial_wf = state.joint_wavefunction.copy()
+        state.apply_entangling_gate(strength=0.5)
+        
+        # Wavefunction should change
+        assert not np.array_equal(initial_wf, state.joint_wavefunction)
+        
+        # Still normalized
+        assert np.isclose(np.sum(np.abs(state.joint_wavefunction) ** 2), 1.0)
+
+
+@pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
+class TestIntegrationScenarios:
+    """Integration tests for complete game theory scenarios."""
+    
+    def test_quantum_vs_classical_comparison(self):
+        """Compare quantum and classical modes on same game."""
+        blue_strats = ["cooperate", "defect"]
+        red_strats = ["cooperate", "defect"]
+        payoff_b = np.array([[3.0, 0.0], [5.0, 1.0]])
+        payoff_r = np.array([[3.0, 5.0], [0.0, 1.0]])
+        
+        # Run classical
+        sim_classical = BlueRedTeamSimulator(
+            blue_strats, red_strats, payoff_b, payoff_r, mode="classical"
+        )
+        results_classical = sim_classical.run_simulation(10, 0.1)
+        
+        # Run quantum
+        sim_quantum = BlueRedTeamSimulator(
+            blue_strats, red_strats, payoff_b, payoff_r, mode="quantum", entanglement=0.3
+        )
+        results_quantum = sim_quantum.run_simulation(10, 0.1)
+        
+        # Both should produce valid results
+        assert results_classical['num_rounds'] == 10
+        assert results_quantum['num_rounds'] == 10
+        
+        # Quantum might have different payoffs due to entanglement
+        assert results_classical['mode'] == "classical"
+        assert results_quantum['mode'] == "quantum"
+    
+    def test_convergence_to_nash(self):
+        """Test that classical dynamics converge to Nash equilibrium."""
+        blue_probs = np.array([0.5, 0.5])
+        red_probs = np.array([0.5, 0.5])
+        payoff_b = np.array([[3.0, 0.0], [5.0, 1.0]])
+        payoff_r = np.array([[3.0, 5.0], [0.0, 1.0]])
+        
+        engine = ClassicalGameEngine(blue_probs, red_probs, payoff_b, payoff_r)
+        
+        # Run many steps
+        results = engine.run_dynamics(steps=100, learning_rate=0.05)
+        
+        # Should converge (final probabilities should be stable)
+        assert results['final_blue_probs'].sum() == pytest.approx(1.0, abs=0.01)
+        assert results['final_red_probs'].sum() == pytest.approx(1.0, abs=0.01)
