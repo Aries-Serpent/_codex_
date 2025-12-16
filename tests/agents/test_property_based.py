@@ -196,7 +196,7 @@ class TestQuantumGameProperties:
         assert all(0.0 <= p <= 1.0 for p in normalized)
     
     @given(
-        strategy_names=st.lists(
+        strategies=st.lists(
             st.text(min_size=1, max_size=10, alphabet=st.characters(whitelist_categories=('Lu', 'Ll'))),
             min_size=1,
             max_size=5,
@@ -208,11 +208,11 @@ class TestQuantumGameProperties:
             max_size=5
         )
     )
-    def test_strategy_state_construction(self, strategy_names, probabilities):
+    def test_strategy_state_construction(self, strategies, probabilities):
         """Property: StrategyState construction preserves data."""
         # Make lists same length
-        min_len = min(len(strategy_names), len(probabilities))
-        strategy_names = strategy_names[:min_len]
+        min_len = min(len(strategies), len(probabilities))
+        strategies = strategies[:min_len]
         probabilities = probabilities[:min_len]
         
         # Skip if sum is zero
@@ -224,11 +224,12 @@ class TestQuantumGameProperties:
         probabilities = [p / total for p in probabilities]
         
         state = StrategyState(
-            strategy_names=strategy_names,
+            team="A",
+            strategies=strategies,
             probabilities=probabilities
         )
         
-        assert len(state.strategy_names) == len(state.probabilities)
+        assert len(state.strategies) == len(state.probabilities)
         assert abs(sum(state.probabilities) - 1.0) < 1e-6
 
 
@@ -320,18 +321,18 @@ class TestStateMachineProperties:
             assert from_state != to_state
     
     @given(
-        confidence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False)
+        coherence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False)
     )
-    def test_decision_state_confidence_preserved(self, confidence):
-        """Property: Decision state preserves confidence value."""
+    def test_decision_state_coherence_preserved(self, coherence):
+        """Property: Decision state preserves coherence value."""
         state = DecisionState(
             current_position="A",
             goal_position="B",
-            confidence=confidence
+            coherence=coherence
         )
         
-        assert state.confidence == confidence
-        assert 0.0 <= state.confidence <= 1.0
+        assert state.coherence == coherence
+        assert 0.0 <= state.coherence <= 1.0
 
 
 class TestDataStructureInvariants:

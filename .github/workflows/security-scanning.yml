@@ -38,6 +38,7 @@ jobs:
           BANDIT_CONFIG: bandit.yaml
         run: |
           bandit -r src/ -c "$BANDIT_CONFIG" -f json -o bandit-results.json
+          cat bandit-results.json
           bandit -r src/ -c "$BANDIT_CONFIG" -f txt
       
       - name: Upload SAST results

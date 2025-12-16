@@ -339,14 +339,19 @@ class AgentMemory:
             
             conn.commit()
     
-    def store_memory(self, entry=None, **kwargs) -> None:
+    def store_memory(
+        self,
+        entry: Union["MemoryEntry", dict, None] = None,
+        **kwargs: Any
+    ) -> None:
         """
         Store a memory entry.
-        
+
         Args:
-            entry: MemoryEntry object, or None if using kwargs
-            **kwargs: Alternative way to provide memory data (backward compatibility)
-                     Accepts: key, value, category, content, context, etc.
+            entry (Union[MemoryEntry, dict, None]): The memory entry to store. If None, kwargs are used.
+            **kwargs: Alternative way to provide memory data (backward compatibility).
+                Accepts keys: memory_id/key, category, content/value, context, confidence, access_count,
+                last_accessed, created_at, tags, related_memories.
         """
         # Handle backward compatibility: dict or kwargs
         if entry is None:
@@ -419,10 +424,14 @@ class AgentMemory:
         
         Args:
             memory_id: The memory ID to retrieve
-            key: Alternative parameter name for backward compatibility
+            key: Alternative parameter name for backward compatibility (deprecated, use retrieve_content instead)
             
         Returns:
-            MemoryEntry object, or the content string if using key parameter
+            MemoryEntry object, or the content string if using key parameter (for backward compatibility)
+            
+        Note:
+            When using key parameter, returns content string only.
+            For new code, use retrieve_content(key) to get content or retrieve_memory(memory_id) to get MemoryEntry.
         """
         # Handle backward compatibility with 'key' parameter
         if key is not None and memory_id is None:
@@ -456,6 +465,41 @@ class AgentMemory:
                 if return_content_only:
                     return memory_entry.content
                 return memory_entry
+        
+        return None
+    
+    def retrieve_content(self, key: Optional[str]) -> Optional[str]:
+        """
+        Retrieve memory content by key.
+        
+        Args:
+            key: The memory key to retrieve (optional)
+            
+        Returns:
+            Memory content string, or None if not found or key is None
+        """
+        if key is None:
+            return None
+            
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(
+                "SELECT * FROM memories WHERE memory_id = ?",
+                (key,)
+            )
+            row = cursor.fetchone()
+            
+            if row:
+                # Update access count
+                conn.execute("""
+                    UPDATE memories 
+                    SET access_count = access_count + 1,
+                        last_accessed = ?
+                    WHERE memory_id = ?
+                """, (datetime.now().isoformat(), key))
+                conn.commit()
+                
+                memory_entry = self._row_to_memory(row)
+                return memory_entry.content
         
         return None
     

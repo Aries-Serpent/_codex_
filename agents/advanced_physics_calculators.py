@@ -24,8 +24,9 @@ try:
 except ImportError:
     NUMPY_AVAILABLE = False
     # Minimal numpy stubs for type hints
-    class np:  # type: ignore
+    class NumpyStub:  # type: ignore
         ndarray = Any
+    np = NumpyStub
 
 # Optional scipy dependency for optimized algorithms
 try:
@@ -42,7 +43,7 @@ except ImportError:
 
 # Maximum fraction of speed of light allowed for velocity calculations
 # Used to prevent singularities in Lorentz factor calculations
-MAX_VELOCITY_FRACTION = 0.9999
+MAX_VELOCITY_FRACTION = 0.9999  # (fraction of speed of light c)
 
 
 # =============================================================================
@@ -675,6 +676,9 @@ class FluidChannel:
     Supports two usage patterns:
     1. Workflow mode: channel_id, name, capacity, current_flow, pressure, viscosity, cross_section
     2. Physics mode: length, width, height for physical channel dimensions
+    
+    Note: If width and height are provided (non-default values), 
+    cross_section is automatically calculated as width * height in __post_init__.
     """
     channel_id: str = ""
     name: str = ""  # Alias for channel_id
