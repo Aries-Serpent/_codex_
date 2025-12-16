@@ -253,6 +253,7 @@ cli = "cli"
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
+  "agents*",
   "codex_ml*",
   "codex*",
   "cli*",
