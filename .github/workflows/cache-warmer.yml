@@ -10,6 +10,8 @@ jobs:
   warm-caches:
     name: Warm Cache (${{ matrix.python-version }}, ${{ matrix.profile }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
@@ -37,6 +39,9 @@ jobs:
   warm-container-cache:
     name: Warm Container Cache
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v4
 

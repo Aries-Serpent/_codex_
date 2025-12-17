@@ -70,6 +70,12 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         "permission",
     ]
 
+    # Pre-compile regex patterns for performance (safeguard: avoid recompilation in loop)
+    keyword_patterns = [
+        (kw, re.compile(r'\b' + re.escape(kw.lower()) + r'\b'))
+        for kw in keywords
+    ]
+
     for f in files:
         # Validate file entry structure (safeguard)
         if not isinstance(f, dict):
@@ -109,10 +115,9 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         # Use word boundary matching for more precise detection
         # to avoid false positives from substring matches
         text_lower = text.lower()
-        for kw in keywords:
-            # Use word boundary regex for precise matching
-            pattern = r'\b' + re.escape(kw.lower()) + r'\b'
-            if re.search(pattern, text_lower):
+        for kw, pattern in keyword_patterns:
+            # Use pre-compiled regex for precise matching
+            if pattern.search(text_lower):
                 evidence.append(path)
                 found.append(kw)
                 break
