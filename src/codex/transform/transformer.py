@@ -311,17 +311,26 @@ def transform(
             
             # === Tier B: Apply with Tests ===
             if tier is None or tier == Tier.B:
-                # Type hints suggestion (placeholder)
-                if "def " in original and ": " not in original.split("def ")[1].split(")")[0]:
-                    result.tier_b_patches.append(Patch(
-                        file_path=rel_path,
-                        original="",
-                        modified="",
-                        diff="",
-                        rule_id="add-type-hints",
-                        tier=Tier.B,
-                        description="Add type annotations (requires validation)",
-                    ))
+                # Type hints suggestion - use AST for robust detection
+                try:
+                    import ast
+                    tree = ast.parse(original)
+                    for node in ast.walk(tree):
+                        if isinstance(node, ast.FunctionDef):
+                            # Check if function lacks return annotation
+                            if node.returns is None:
+                                result.tier_b_patches.append(Patch(
+                                    file_path=rel_path,
+                                    original="",
+                                    modified="",
+                                    diff="",
+                                    rule_id="add-type-hints",
+                                    tier=Tier.B,
+                                    description=f"Add type annotations to function '{node.name}' (requires validation)",
+                                ))
+                                break  # Only suggest once per file
+                except SyntaxError:
+                    pass  # Skip files with syntax errors
             
             # === Tier C: Suggest Only ===
             if tier is None or tier == Tier.C:
