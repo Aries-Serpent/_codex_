@@ -5,6 +5,7 @@ Extracts workflow metadata including triggers, inputs, jobs, and dependencies.
 """
 
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -114,9 +115,9 @@ class WorkflowParser:
             # Get file modification time
             last_modified = None
             if file_path.exists():
-                last_modified = file_path.stat().st_mtime
-                from datetime import datetime, timezone
-                last_modified = datetime.fromtimestamp(last_modified, tz=timezone.utc)
+                last_modified = datetime.fromtimestamp(
+                    file_path.stat().st_mtime, tz=timezone.utc
+                )
             
             return WorkflowMetadata(
                 name=name,
@@ -191,9 +192,12 @@ class WorkflowParser:
                     if isinstance(types, str):
                         types = [types]
                     
-                    # Schedule trigger
-                    if trigger_name == "schedule" and isinstance(config, list):
-                        schedule_cron = [item.get("cron") for item in config if "cron" in item]
+                    # Schedule trigger - handle list of cron schedules
+                    if trigger_name == "schedule":
+                        if isinstance(config, list):
+                            schedule_cron = [item.get("cron") for item in config if isinstance(item, dict) and "cron" in item]
+                        elif isinstance(config, dict) and "cron" in config:
+                            schedule_cron = [config["cron"]]
                     
                     # Workflow dependencies
                     if trigger_name in ("workflow_run", "workflow_call"):
