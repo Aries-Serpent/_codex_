@@ -81,7 +81,7 @@ class WorkflowJob(BaseModel):
     steps: int = Field(0, description="Number of steps")
     timeout_minutes: Optional[int] = Field(None, description="Job timeout")
     uses: Optional[str] = Field(None, description="Reusable workflow reference")
-    
+
     class Config:
         frozen = True
         populate_by_name = True
@@ -104,17 +104,23 @@ class WorkflowMetadata(BaseModel):
 
     name: str = Field(..., description="Workflow name")
     file_path: Path = Field(..., description="Path to workflow file")
-    triggers: List[WorkflowTrigger] = Field(default_factory=list, description="Trigger configurations")
+    triggers: List[WorkflowTrigger] = Field(
+        default_factory=list, description="Trigger configurations"
+    )
     inputs: Dict[str, WorkflowInput] = Field(default_factory=dict, description="Workflow inputs")
     jobs: Dict[str, WorkflowJob] = Field(default_factory=dict, description="Job definitions")
-    dependencies: List[WorkflowDependency] = Field(default_factory=list, description="Workflow dependencies")
+    dependencies: List[WorkflowDependency] = Field(
+        default_factory=list, description="Workflow dependencies"
+    )
     permissions: Dict[str, str] = Field(default_factory=dict, description="Permission settings")
-    env: Dict[str, Union[str, int, bool]] = Field(default_factory=dict, description="Environment variables")
+    env: Dict[str, Union[str, int, bool]] = Field(
+        default_factory=dict, description="Environment variables"
+    )
     concurrency: Optional[Dict[str, Any]] = Field(None, description="Concurrency settings")
     is_reusable: bool = Field(False, description="Whether workflow is reusable")
     is_triggerable: bool = Field(False, description="Whether workflow can be manually triggered")
     last_modified: Optional[datetime] = Field(None, description="Last modification time")
-    
+
     @field_validator("file_path", mode="before")
     @classmethod
     def convert_path(cls, v: Any) -> Path:
@@ -156,8 +162,10 @@ class InventoryStats(BaseModel):
     reusable_workflows: int = Field(0, description="Reusable workflows")
     total_jobs: int = Field(0, description="Total number of jobs")
     total_triggers: int = Field(0, description="Total number of triggers")
-    trigger_type_counts: Dict[str, int] = Field(default_factory=dict, description="Count by trigger type")
+    trigger_type_counts: Dict[str, int] = Field(
+        default_factory=dict, description="Count by trigger type"
+    )
     dependency_count: int = Field(0, description="Number of workflow dependencies")
-    
+
     class Config:
         frozen = True

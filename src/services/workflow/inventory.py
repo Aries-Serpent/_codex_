@@ -6,7 +6,7 @@ a dependency graph. Supports caching and incremental updates.
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional
 
 from .parser import WorkflowParser
 from .types import (
@@ -33,10 +33,10 @@ class WorkflowInventory:
         ```python
         inventory = WorkflowInventory(".github/workflows")
         inventory.scan()
-        
+
         print(f"Found {len(inventory.workflows)} workflows")
         print(f"Triggerable: {len(inventory.get_triggerable())}")
-        
+
         # Get specific workflow
         workflow = inventory.get_workflow("test-suite.yml")
         if workflow:
@@ -150,9 +150,7 @@ class WorkflowInventory:
         Returns:
             List of workflows with the specified trigger.
         """
-        return [
-            w for w in self._workflows.values() if trigger_type in w.trigger_types
-        ]
+        return [w for w in self._workflows.values() if trigger_type in w.trigger_types]
 
     def get_workflow_dependencies(self, filename: str) -> List[str]:
         """Get workflows that this workflow depends on.
@@ -163,11 +161,7 @@ class WorkflowInventory:
         Returns:
             List of dependency workflow filenames.
         """
-        return [
-            dep.target
-            for dep in self._dependencies
-            if dep.source == filename
-        ]
+        return [dep.target for dep in self._dependencies if dep.source == filename]
 
     def get_workflow_dependents(self, filename: str) -> List[str]:
         """Get workflows that depend on this workflow.
@@ -178,11 +172,7 @@ class WorkflowInventory:
         Returns:
             List of dependent workflow filenames.
         """
-        return [
-            dep.source
-            for dep in self._dependencies
-            if dep.target == filename
-        ]
+        return [dep.source for dep in self._dependencies if dep.target == filename]
 
     def get_stats(self) -> InventoryStats:
         """Get inventory statistics.
@@ -197,7 +187,7 @@ class WorkflowInventory:
         for workflow in self._workflows.values():
             total_jobs += len(workflow.jobs)
             total_triggers += len(workflow.triggers)
-            
+
             for trigger in workflow.triggers:
                 trigger_type = trigger.type.value
                 trigger_counts[trigger_type] = trigger_counts.get(trigger_type, 0) + 1
@@ -242,7 +232,7 @@ class WorkflowInventory:
                         parts = job.uses.split("@")[0]  # Remove @ref if present
                         workflow_path = Path(parts.lstrip("./"))
                         dep_filename = workflow_path.name
-                        
+
                         if dep_filename in self._workflows:
                             self._dependencies.append(
                                 WorkflowDependency(
@@ -298,5 +288,5 @@ class WorkflowInventory:
                 return True
         except Exception as e:
             logger.error(f"Error refreshing {filename}: {e}")
-        
+
         return False
