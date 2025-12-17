@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import List, Optional
+from typing import List
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)
@@ -30,9 +30,10 @@ MAX_VERSION_LENGTH = 20
 MAX_VERSIONS_COUNT = 100
 
 # Semantic version regex pattern for validation (safeguard)
-# Matches: MAJOR.MINOR or MAJOR.MINOR.PATCH with optional pre-release and build metadata
-# Examples: "1.0", "2.1.3", "1.0.0-alpha", "1.0.0+build.123"
-VERSION_PATTERN = r'^(\d+)\.(\d+)(?:\.(\d+))?(?:-[a-zA-Z0-9.]+)?(?:\+[a-zA-Z0-9.]+)?$'
+# Matches simple semantic versions: MAJOR.MINOR or MAJOR.MINOR.PATCH
+# Restricted to formats matching MCP_VERSIONS (no pre-release/build metadata)
+# Examples: "1.0", "2.1.3"
+VERSION_PATTERN = r'^(\d+)\.(\d+)(?:\.(\d+))?$'
 
 
 def _validate_version_string(version: str) -> bool:

@@ -64,11 +64,19 @@ class TestSanitization:
 
     def test_negotiate_handles_bounds_check(self):
         """Test bounds checking on oversized version lists."""
-        # Create large list with valid version at end
-        # Use half the MAX_VERSIONS_COUNT to stay within bounds
-        large_list = ["0.9"] * (MAX_VERSIONS_COUNT // 2) + ["1.0"]
+        # Create oversized list that exceeds MAX_VERSIONS_COUNT
+        # The list should be truncated and still find 1.0 if present early
+        large_list = ["1.0"] + ["0.9"] * (MAX_VERSIONS_COUNT + 10)
         result = negotiate_version(large_list)
         assert result == "1.0"
+
+    def test_negotiate_truncates_oversized_list(self):
+        """Test that version lists exceeding MAX_VERSIONS_COUNT are truncated."""
+        # Create oversized list with valid version AFTER the truncation point
+        # This should fail to find 1.0 because it gets truncated
+        large_list = ["0.9"] * (MAX_VERSIONS_COUNT + 10) + ["1.0"]
+        with pytest.raises(ValueError, match="No compatible MCP version found"):
+            negotiate_version(large_list)
 
 
 class TestFeatureSupport:
@@ -79,10 +87,15 @@ class TestFeatureSupport:
         assert supports_feature("basic_tools", "1.0") is True
 
     def test_supports_feature_invalid_input(self):
-        """Test defensive handling of invalid inputs."""
+        """Test defensive handling of invalid inputs.
+        
+        Note: The function defensively handles invalid types even though
+        they're not in the signature. This tests runtime robustness.
+        """
         # Test input validation safeguards
         assert supports_feature("", "1.0") is False
         assert supports_feature("basic_tools", "") is False
+        # Test defensive handling of invalid type (not in signature but handled)
         assert supports_feature(None, "1.0") is False  # type: ignore[arg-type]
 
     def test_supports_feature_unknown(self):

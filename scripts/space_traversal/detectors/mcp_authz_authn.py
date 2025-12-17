@@ -14,6 +14,7 @@ Safeguards:
 from pathlib import Path
 from typing import Any, Dict
 import logging
+import re
 
 # Configure logging for safeguard tracing
 logger = logging.getLogger(__name__)
@@ -105,8 +106,13 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
             logger.debug(f"Error reading {path}: {e}")
             continue
 
+        # Use word boundary matching for more precise detection
+        # to avoid false positives from substring matches
+        text_lower = text.lower()
         for kw in keywords:
-            if kw.lower() in text.lower():
+            # Use word boundary regex for precise matching
+            pattern = r'\b' + re.escape(kw.lower()) + r'\b'
+            if re.search(pattern, text_lower):
                 evidence.append(path)
                 found.append(kw)
                 break

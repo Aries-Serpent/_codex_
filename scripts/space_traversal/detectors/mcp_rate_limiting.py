@@ -52,22 +52,22 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         files = files[:MAX_FILES]
 
     evidence = []
-    found = []
+    found = set()  # Use set from the start for efficiency
 
     # Rate limiting patterns to detect
-    patterns = {
-        "RateLimiter": "rate_limiter_class",
-        "rate_limit": "rate_limit_usage",
-        "throttle": "throttling",
-        "token_bucket": "token_bucket_algo",
-        "sliding_window": "sliding_window_algo",
-        "quota": "quota_management",
-        "requests_per_second": "rps_limit",
-        "requests_per_minute": "rpm_limit",
-        "429": "too_many_requests",
-        "Retry-After": "retry_header",
-        "X-RateLimit": "rate_limit_header",
-    }
+    patterns = [
+        "RateLimiter",
+        "rate_limit",
+        "throttle",
+        "token_bucket",
+        "sliding_window",
+        "quota",
+        "requests_per_second",
+        "requests_per_minute",
+        "429",
+        "Retry-After",
+        "X-RateLimit",
+    ]
 
     for f in files:
         # Validate file entry structure (safeguard)
@@ -105,11 +105,11 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
             logger.debug(f"Error reading {path}: {e}")
             continue
 
-        # Pattern detection
+        # Pattern detection - break early once file is marked as evidence
         file_has_evidence = False
-        for pattern, pattern_type in patterns.items():
+        for pattern in patterns:
             if pattern in text:
-                found.append(pattern)
+                found.add(pattern)
                 file_has_evidence = True
 
         if file_has_evidence:
@@ -119,7 +119,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
 
     # Deterministic sorting (safeguard - reproducibility)
     evidence = sorted(set(evidence))
-    found = sorted(set(found))
+    found = sorted(found)  # found is already a set
 
     return {
         "id": "mcp-rate-limiting",
