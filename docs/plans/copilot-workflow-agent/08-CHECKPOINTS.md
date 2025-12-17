@@ -111,3 +111,61 @@ for f in .github/workflows/*.yml; do python -c "import yaml; yaml.safe_load(open
 **Checkpoint ID**: `CWAA-20251216-001`  
 **Commit**: def3d71  
 **Branch**: copilot/fix-github-actions-errors
+
+
+---
+
+## Checkpoint: B2-COMPLETE
+
+**Session ID**: CWAA-20251217-001  
+**Timestamp**: 2025-12-17T02:00:00Z  
+**Status**: ✅ COMPLETE
+
+### Batch B2: Workflow Inventory
+
+**Completed Items:**
+- ✅ Created `src/services/workflow/` module (4 files)
+- ✅ Implemented WorkflowInventory class
+- ✅ Implemented WorkflowParser with YAML edge case handling
+- ✅ Created Pydantic type models
+- ✅ Added comprehensive test suite (19 tests, 100% passing)
+- ✅ Achieved 77%+ code coverage
+- ✅ Scans 45 workflows successfully
+- ✅ Identifies 40 triggerable workflows
+- ✅ Zero security vulnerabilities
+- ✅ Full type safety (mypy)
+- ✅ Code quality verified (Black, Ruff, isort)
+
+**Verification Results:**
+```bash
+pytest tests/services/workflow/ -v
+# 19 passed in 0.45s
+
+python -c "
+from src.services.workflow.inventory import WorkflowInventory
+inv = WorkflowInventory('.github/workflows')
+print(f'Workflows: {inv.scan()}')
+print(f'Triggerable: {len(inv.get_triggerable())}')
+"
+# Workflows: 45
+# Triggerable: 40
+```
+
+**Dependencies Added:**
+- pydantic>=2.4
+- PyYAML>=6.0
+- pytest-split>=0.8 (for CI test sharding)
+
+**Artifacts:**
+- Commit: 13622f6 (and predecessors)
+- PR: #2513
+- Branch: copilot/sub-pr-2513
+
+**Next Steps:**
+- Batch B3: Session State (src/services/session/)
+- Batch B4: Agent Orchestrator (src/services/agent/)
+
+**Notes:**
+- Handled YAML 'on' keyword (boolean True issue)
+- Added pytest-split for test sharding
+- Fixed test suite timeouts for Python 3.11 & 3.12

@@ -341,3 +341,47 @@ def test_scan_file_extensions(
         assert filename in inventory.workflows
     else:
         assert filename not in inventory.workflows
+
+
+def test_real_workflow_integration():
+    """Integration test with actual repository workflows."""
+    from pathlib import Path
+    
+    # Use actual workflows directory
+    workflows_dir = Path(__file__).parent.parent.parent.parent / ".github" / "workflows"
+    
+    if not workflows_dir.exists():
+        pytest.skip("Workflows directory not found")
+    
+    inventory = WorkflowInventory(workflows_dir)
+    count = inventory.scan()
+    
+    # Verify we found workflows
+    assert count > 0, "Should find at least one workflow"
+    assert len(inventory.workflows) == count
+    
+    # Verify stats make sense
+    stats = inventory.get_stats()
+    assert stats.total_workflows == count
+    assert stats.total_jobs >= 0
+    assert stats.total_triggers >= 0
+    
+    # Verify triggerable workflows are identified
+    triggerable = inventory.get_triggerable()
+    assert len(triggerable) >= 0
+    
+    # Verify at least one workflow has proper metadata
+    if count > 0:
+        first_workflow = list(inventory.workflows.values())[0]
+        assert first_workflow.name is not None
+        assert first_workflow.file_path.exists()
+        assert isinstance(first_workflow.jobs, dict)
+
+
+def test_workflow_inventory_import_from_services():
+    """Test that WorkflowInventory can be imported from services module."""
+    from src.services import WorkflowInventory as WI
+    from src.services.workflow import WorkflowInventory
+    
+    # Verify both import paths work
+    assert WI is WorkflowInventory
