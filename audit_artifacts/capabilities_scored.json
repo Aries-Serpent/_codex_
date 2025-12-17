@@ -268,6 +268,7 @@
         "docs/guides/checkpointing.md",
         "docs/how-to/checkpoint_metadata.md",
         "docs/modules/checkpoint_manager.md",
+        "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
         "docs/training/Checkpointing_Surfaces.md",
         "great_expectations/checkpoints/clean_checkpoint.yml",
         "scripts/list_checkpoints.py",
@@ -428,6 +429,8 @@
         ".github/workflows/multi-python-ci.yml.disabled",
         ".github/workflows/nox_gates.yml",
         ".github/workflows/optimized-ci.yml",
+        ".github/workflows/pages-mkdocs.yml",
+        ".github/workflows/pages-static.yml.alt",
         ".github/workflows/pages_publish_tiles.yml.tombstone",
         ".github/workflows/post-merge-validation-optimized.yml",
         ".github/workflows/post-merge-validation.yml",
@@ -774,7 +777,7 @@
       "meta": {
         "ci_configs": 2,
         "detector_version": "1.1",
-        "github_actions": 59,
+        "github_actions": 61,
         "note": "GitHub Actions present but not activated per AGENTS.md",
         "pre_commit_hooks": 3,
         "safeguards": [
@@ -1809,6 +1812,7 @@
         "tests": 1.0
       },
       "evidence_files": [
+        ".github/workflows/pages-mkdocs.yml",
         "README.md",
         "docs/ADVANCED_PHYSICS_GUIDE.md",
         "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
@@ -2280,6 +2284,11 @@
         "docs/plans/_codex__IntentValidation_and_ActionPlan_ApprovalGate.md",
         "docs/plans/batchset.md",
         "docs/plans/capability_code_score_improvement-2025_12_11.md",
+        "docs/plans/copilot-workflow-agent/00-PLANSET.md",
+        "docs/plans/copilot-workflow-agent/01-BATCHSET.md",
+        "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
+        "docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md",
+        "docs/plans/copilot-workflow-agent/README.md",
         "docs/plans/patchset.md",
         "docs/plugin_registry_guide.md",
         "docs/plugins.md",
@@ -2590,12 +2599,12 @@
       ],
       "id": "documentation-system",
       "meta": {
-        "config_count": 1,
+        "config_count": 2,
         "deterministic": true,
-        "markdown_count": 766,
+        "markdown_count": 771,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 768,
+        "total_docs": 774,
         "validation": true
       },
       "score": 1.125
@@ -2893,9 +2902,12 @@
         ".github/docs/CI_PytestCov_Plugin_Fix.md",
         ".github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
         ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md",
+        ".github/docs/CTEP_Quick_Reference.md",
+        ".github/docs/CTEP_Usage_Examples.md",
         ".github/docs/Copilot.md",
         ".github/docs/Copilot_Audit_InstructionEnhancement.md",
         ".github/docs/Copilot_Status_CheatSheet.md",
+        ".github/docs/Copilot_Task_Execution_Protocol.md",
         ".github/docs/Coverage_Gating_Restoration_Enhanced_Copilot.md",
         ".github/docs/CrossRepoPatterns_Analysis.md",
         ".github/docs/DEPLOYMENT_ORCHESTRATION_IMPLEMENTATION_SUMMARY.md",
@@ -3042,6 +3054,8 @@
         ".github/workflows/multi-python-ci.yml.disabled",
         ".github/workflows/nox_gates.yml",
         ".github/workflows/optimized-ci.yml",
+        ".github/workflows/pages-mkdocs.yml",
+        ".github/workflows/pages-static.yml.alt",
         ".github/workflows/pages_publish_tiles.yml.tombstone",
         ".github/workflows/post-merge-validation-optimized.yml",
         ".github/workflows/post-merge-validation.yml",
@@ -4170,6 +4184,11 @@
         "docs/plans/_codex__IntentValidation_and_ActionPlan_ApprovalGate.md",
         "docs/plans/batchset.md",
         "docs/plans/capability_code_score_improvement-2025_12_11.md",
+        "docs/plans/copilot-workflow-agent/00-PLANSET.md",
+        "docs/plans/copilot-workflow-agent/01-BATCHSET.md",
+        "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
+        "docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md",
+        "docs/plans/copilot-workflow-agent/README.md",
         "docs/plans/implement_dependency.zip",
         "docs/plans/patchset.md",
         "docs/plugin_registry_guide.md",
@@ -5220,12 +5239,6 @@
         "src/codex_harness/golden_harness_status.py",
         "src/codex_harness/honesty.py",
         "src/codex_harness/tool_trace.py",
-        "src/codex_ml.egg-info/PKG-INFO",
-        "src/codex_ml.egg-info/SOURCES.txt",
-        "src/codex_ml.egg-info/dependency_links.txt",
-        "src/codex_ml.egg-info/entry_points.txt",
-        "src/codex_ml.egg-info/requires.txt",
-        "src/codex_ml.egg-info/top_level.txt",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
         "src/codex_ml/_package_main.py",
@@ -5786,8 +5799,16 @@
         "src/security/encryption.py",
         "src/security/secrets.py",
         "src/services/__init__.py",
+        "src/services/github/__init__.py",
+        "src/services/github/client.py",
+        "src/services/github/exceptions.py",
+        "src/services/github/types.py",
         "src/services/mcp/__init__.py",
         "src/services/mcp/lifecycle.py",
+        "src/services/workflow/__init__.py",
+        "src/services/workflow/inventory.py",
+        "src/services/workflow/parser.py",
+        "src/services/workflow/types.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
         "src/tokenization/adapter.py",
@@ -6716,11 +6737,16 @@
         "tests/selection/test_selection_report_smoke.py",
         "tests/self_mgmt/test_noxfile_parse.py",
         "tests/self_mgmt/test_requirements_dev.py",
+        "tests/services/__init__.py",
         "tests/services/api/__init__.py",
         "tests/services/api/test_infer_limits.py",
         "tests/services/api/test_main_utils.py",
         "tests/services/api/test_middleware_security.py",
         "tests/services/api/test_rate_limit_middleware.py",
+        "tests/services/github/__init__.py",
+        "tests/services/github/test_client.py",
+        "tests/services/workflow/__init__.py",
+        "tests/services/workflow/test_inventory.py",
         "tests/serving/test_inference_chaos.py",
         "tests/serving/test_inference_enhanced.py",
         "tests/serving/test_inference_integration.py",
@@ -10574,7 +10600,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.365059,
+        "documentation": 0.362694,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 1.0
@@ -10613,7 +10639,7 @@
       "explain": {
         "id": "mcp-authz-authn",
         "partials": {},
-        "score": 1.029759
+        "score": 1.029404
       },
       "found_patterns": [
         "API-Key",
@@ -10624,7 +10650,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.029759
+      "score": 1.029404
     },
     {
       "components": {
@@ -10737,7 +10763,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.365059,
+        "documentation": 0.362694,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -10760,7 +10786,7 @@
       "explain": {
         "id": "mcp-error-handling",
         "partials": {},
-        "score": 1.154759
+        "score": 1.154404
       },
       "found_patterns": [
         "MCPError",
@@ -10770,7 +10796,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.154759
+      "score": 1.154404
     },
     {
       "components": {
@@ -10890,7 +10916,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.365059,
+        "documentation": 0.362694,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11910,7 +11936,7 @@
       "explain": {
         "id": "mcp-observability",
         "partials": {},
-        "score": 1.154759
+        "score": 1.154404
       },
       "found_patterns": [
         "X-Request-Id",
@@ -11922,7 +11948,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.154759
+      "score": 1.154404
     },
     {
       "components": {
@@ -11974,7 +12000,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.365059,
+        "documentation": 0.362694,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11999,6 +12025,7 @@
         "src/mcp/rate_limit.py",
         "src/security/__init__.py",
         "src/security/core.py",
+        "src/services/github/client.py",
         "test_mcp_server.py",
         "tests/codex_ml/test_inference_integration.py",
         "tests/codex_ml/test_inference_server.py",
@@ -12015,6 +12042,7 @@
         "tests/security/test_security_core.py",
         "tests/services/api/test_middleware_security.py",
         "tests/services/api/test_rate_limit_middleware.py",
+        "tests/services/github/test_client.py",
         "tests/serving/test_inference_chaos.py",
         "tests/serving/test_inference_enhanced.py",
         "tests/serving/test_inference_security.py",
@@ -12025,7 +12053,7 @@
       "explain": {
         "id": "mcp-rate-limiting",
         "partials": {},
-        "score": 1.154759
+        "score": 1.154404
       },
       "found_patterns": [
         "RateLimiter",
@@ -12035,7 +12063,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 1.154759
+      "score": 1.154404
     },
     {
       "components": {
@@ -12089,6 +12117,8 @@
         "src/codex_ml/detectors/capability_detectors.py",
         "src/codex_ml/monitoring/health.py",
         "src/codex_ml/serving/inference_server.py",
+        "src/services/github/types.py",
+        "src/services/workflow/types.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/main.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/routers/gitops.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/routers/kb.py",
@@ -12208,7 +12238,9 @@
         ".github/docs/CI_Coverage_Implementation_Copilot.md",
         ".github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
         ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md",
+        ".github/docs/CTEP_Usage_Examples.md",
         ".github/docs/Copilot_Audit_InstructionEnhancement.md",
+        ".github/docs/Copilot_Task_Execution_Protocol.md",
         ".github/docs/Coverage_Gating_Restoration_Enhanced_Copilot.md",
         ".github/docs/DEPLOYMENT_ORCHESTRATION_IMPLEMENTATION_SUMMARY.md",
         ".github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md",
@@ -12420,6 +12452,7 @@
         "docs/Usage_Guide.md",
         "docs/VECTOR_STORE_INTEGRATION_GUIDE.md",
         "docs/WORKFLOW_EFFECTIVENESS_PR2461.md",
+        "docs/agents.md",
         "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
         "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/analysis/dependency_space_triage.md",
@@ -12603,6 +12636,9 @@
         "docs/plans/_codex__IntentValidation_and_ActionPlan_ApprovalGate.md",
         "docs/plans/batchset.md",
         "docs/plans/capability_code_score_improvement-2025_12_11.md",
+        "docs/plans/copilot-workflow-agent/01-BATCHSET.md",
+        "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
+        "docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md",
         "docs/plans/patchset.md",
         "docs/plugin_registry_guide.md",
         "docs/prompts/codex_run_prompt_0A_base_.md",
@@ -12956,6 +12992,7 @@
         "src/security/__init__.py",
         "src/security/content_filters.py",
         "src/security/core.py",
+        "src/services/github/exceptions.py",
         "src/services/mcp/lifecycle.py",
         "src/tokenization/cli.py",
         "src/tokenization/train_tokenizer.py",
@@ -13802,7 +13839,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.365059,
+        "documentation": 0.362694,
         "functionality": 4.0,
         "safeguards": 0.166667,
         "tests": 1.0
@@ -13820,7 +13857,7 @@
       "explain": {
         "id": "mcp-versioning-compat",
         "partials": {},
-        "score": 1.529759
+        "score": 1.529404
       },
       "found_patterns": [
         "MCP_VERSIONS",
@@ -13832,9 +13869,9 @@
       "meta": {
         "category": "mcp",
         "evidence_count": 8,
-        "files_processed": 5137
+        "files_processed": 5154
       },
-      "score": 1.529759
+      "score": 1.529404
     },
     {
       "components": {
@@ -14731,9 +14768,11 @@
         ".github/docs/CI_Coverage_Implementation_Copilot.md",
         ".github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md",
         ".github/docs/CRITICAL_ISSUE_ANALYSIS_Copilot_Agents_Autonomous_Deployment.md",
+        ".github/docs/CTEP_Usage_Examples.md",
         ".github/docs/Copilot.md",
         ".github/docs/Copilot_Audit_InstructionEnhancement.md",
         ".github/docs/Copilot_Status_CheatSheet.md",
+        ".github/docs/Copilot_Task_Execution_Protocol.md",
         ".github/docs/Coverage_Gating_Restoration_Enhanced_Copilot.md",
         ".github/docs/CrossRepoPatterns_Analysis.md",
         ".github/docs/DEPLOYMENT_ORCHESTRATION_IMPLEMENTATION_SUMMARY.md",
@@ -14870,6 +14909,7 @@
         ".github/workflows/security-suite.yml",
         ".github/workflows/self-healing-ci.yml",
         ".github/workflows/self-healing-feedback-loop.yml",
+        ".github/workflows/test-suite.yml",
         ".github/workflows/validate-docs-enhanced.yml",
         ".github/workflows/validate-docs.yml",
         ".github/workflows/wiki-assemble.yml",
@@ -15587,6 +15627,10 @@
         "docs/plans/_codex__IntentValidation_and_ActionPlan_ApprovalGate.md",
         "docs/plans/batchset.md",
         "docs/plans/capability_code_score_improvement-2025_12_11.md",
+        "docs/plans/copilot-workflow-agent/00-PLANSET.md",
+        "docs/plans/copilot-workflow-agent/01-BATCHSET.md",
+        "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
+        "docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md",
         "docs/plans/patchset.md",
         "docs/plugin_registry_guide.md",
         "docs/plugins.md",
@@ -16255,8 +16299,6 @@
         "src/codex_harness/golden_harness_status.py",
         "src/codex_harness/honesty.py",
         "src/codex_harness/tool_trace.py",
-        "src/codex_ml.egg-info/SOURCES.txt",
-        "src/codex_ml.egg-info/entry_points.txt",
         "src/codex_ml/__init__.py",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/extractors.py",
@@ -16730,7 +16772,13 @@
         "src/security/core.py",
         "src/security/encryption.py",
         "src/security/secrets.py",
+        "src/services/__init__.py",
+        "src/services/github/client.py",
+        "src/services/github/exceptions.py",
         "src/services/mcp/lifecycle.py",
+        "src/services/workflow/inventory.py",
+        "src/services/workflow/parser.py",
+        "src/services/workflow/types.py",
         "src/tokenization/__init__.py",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
@@ -17525,6 +17573,8 @@
         "tests/services/api/test_main_utils.py",
         "tests/services/api/test_middleware_security.py",
         "tests/services/api/test_rate_limit_middleware.py",
+        "tests/services/github/test_client.py",
+        "tests/services/workflow/test_inventory.py",
         "tests/serving/test_inference_chaos.py",
         "tests/serving/test_inference_enhanced.py",
         "tests/serving/test_inference_integration.py",
@@ -19191,8 +19241,10 @@
         "src/models/chat_model.py",
         "src/models/peft_utils.py",
         "src/services/__init__.py",
-        "src/services/mcp/__init__.py",
-        "src/services/mcp/lifecycle.py",
+        "src/services/github/__init__.py",
+        "src/services/github/client.py",
+        "src/services/github/exceptions.py",
+        "src/services/github/types.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
         "src/tokenization/adapter.py",
@@ -20112,11 +20164,16 @@
         "tests/selection/test_selection_report_smoke.py",
         "tests/self_mgmt/test_noxfile_parse.py",
         "tests/self_mgmt/test_requirements_dev.py",
+        "tests/services/__init__.py",
         "tests/services/api/__init__.py",
         "tests/services/api/test_infer_limits.py",
         "tests/services/api/test_main_utils.py",
         "tests/services/api/test_middleware_security.py",
         "tests/services/api/test_rate_limit_middleware.py",
+        "tests/services/github/__init__.py",
+        "tests/services/github/test_client.py",
+        "tests/services/workflow/__init__.py",
+        "tests/services/workflow/test_inventory.py",
         "tests/serving/test_inference_chaos.py",
         "tests/serving/test_inference_enhanced.py",
         "tests/serving/test_inference_integration.py",
@@ -20823,7 +20880,7 @@
         "config_count": 26,
         "detector_version": "1.1",
         "fixture_count": 32,
-        "test_count": 1510
+        "test_count": 1515
       },
       "score": 1.125
     },
@@ -21419,6 +21476,6 @@
       "score": 1.3
     }
   ],
-  "generated": 1765903510.5748084,
+  "generated": 1765944351.787193,
   "version": "1.5.0"
 }

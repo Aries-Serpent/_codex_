@@ -1,5 +1,5 @@
 {
-  "generated": 1765903504.227454,
+  "generated": 1765944345.2674086,
   "facets": {
     "checkpoint": [
       "codex_ml/utils/checkpointing.py",
@@ -11,6 +11,7 @@
       "docs/guides/checkpointing.md",
       "docs/how-to/checkpoint_metadata.md",
       "docs/modules/checkpoint_manager.md",
+      "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
       "docs/training/Checkpointing_Surfaces.md",
       "great_expectations/checkpoints/clean_checkpoint.yml",
       "scripts/list_checkpoints.py",

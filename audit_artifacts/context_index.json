@@ -1,6 +1,6 @@
 {
-  "generated": 1765903504.1632965,
-  "count": 5137,
+  "generated": 1765944345.203543,
+  "count": 5154,
   "files": [
     {
       "path": ".bandit.yaml",
@@ -1547,8 +1547,8 @@
     {
       "path": ".github/copilot-instructions.md",
       "ext": ".md",
-      "size": 10373,
-      "sha": "44c965ab77f1ceeaa2a3ee3fd71ff99e85e73e4eaf21a5dba0a3c457d4c41148"
+      "size": 11725,
+      "sha": "5e7e1db4db67323c85834533d5fa58d2d39ff94005ba543f60c32c3e830107b9"
     },
     {
       "path": ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
@@ -1707,6 +1707,18 @@
       "sha": "690bce46aa3e00bc5d258e3029b0d962b4a6aa8208d7d8083b06ab6092f1bcf1"
     },
     {
+      "path": ".github/docs/CTEP_Quick_Reference.md",
+      "ext": ".md",
+      "size": 3460,
+      "sha": "4129d104131650033de9c76b07517d08e0665773d80dc39bd90320c3195b3207"
+    },
+    {
+      "path": ".github/docs/CTEP_Usage_Examples.md",
+      "ext": ".md",
+      "size": 6940,
+      "sha": "683a52fce83a4d5c206eb69d77b1b8cc01a8c4d14668531983b6084bc4caec6d"
+    },
+    {
       "path": ".github/docs/Copilot.md",
       "ext": ".md",
       "size": 1785,
@@ -1723,6 +1735,12 @@
       "ext": ".md",
       "size": 813,
       "sha": "91779ff73a66455aca03231175b966fb9c06fe11aeaf77b06b6de8d361fc80a1"
+    },
+    {
+      "path": ".github/docs/Copilot_Task_Execution_Protocol.md",
+      "ext": ".md",
+      "size": 6207,
+      "sha": "405eea3ba5f7749a613d5367a9903ee00216aa7dcf57154ef180d93df928761f"
     },
     {
       "path": ".github/docs/Coverage_Gating_Restoration_Enhanced_Copilot.md",
@@ -2513,8 +2531,8 @@
     {
       "path": ".github/workflows/decode-validate-artifact.yml",
       "ext": ".yml",
-      "size": 818,
-      "sha": "dbeb11ae59eed214b4517a9edf373d550d8a609adc662a00138f8da090912e61"
+      "size": 820,
+      "sha": "bb73a279a108342c0088e9cc3dffc77a28ff20ea431a43dc183f112fc70d3e30"
     },
     {
       "path": ".github/workflows/detect-duplicates.yml",
@@ -2549,8 +2567,8 @@
     {
       "path": ".github/workflows/duplicate-detection-weekly.yml",
       "ext": ".yml",
-      "size": 6307,
-      "sha": "b4107d104196790185d210c921bdc85de50d2d53bfe0f6aa558e3b857fa516d3"
+      "size": 6269,
+      "sha": "cdc54fd5b21bb8a5a4563a70782ede6cd17d7793328874bd840bcf87e949e3e3"
     },
     {
       "path": ".github/workflows/github_connector_check.yml",
@@ -2601,6 +2619,18 @@
       "sha": "110394d3a82abf6855093a8a8f3865dd56704be1ab29f6296bac59ca97382024"
     },
     {
+      "path": ".github/workflows/pages-mkdocs.yml",
+      "ext": ".yml",
+      "size": 2895,
+      "sha": "7e3e8780a26a597b896db0f788e7e2d80b5522dda765a5f7b3261791ceff0616"
+    },
+    {
+      "path": ".github/workflows/pages-static.yml.alt",
+      "ext": ".alt",
+      "size": 3628,
+      "sha": "32221b8906d28bef3a8fbf0d1b877bef5138a65f5c2462f1fae89cea75405c29"
+    },
+    {
       "path": ".github/workflows/pages_publish_tiles.yml.tombstone",
       "ext": ".tombstone",
       "size": 713,
@@ -2645,8 +2675,8 @@
     {
       "path": ".github/workflows/repo-organization.yml",
       "ext": ".yml",
-      "size": 11941,
-      "sha": "aefc3c2d21712cad26ff37c14210f8d23070b0a78d69fe793c42fd9b4710fe87"
+      "size": 10925,
+      "sha": "e0aad117419da151b7ed526d5a4ef212135d642bd7ec2b79dcb8bc152ba21887"
     },
     {
       "path": ".github/workflows/report_publish.yml",
@@ -2663,8 +2693,8 @@
     {
       "path": ".github/workflows/sbom.yml",
       "ext": ".yml",
-      "size": 2464,
-      "sha": "0454adce48065fce74f058408767db608631b9c450dfb554026b9545d7b6f81c"
+      "size": 2655,
+      "sha": "e1f4840b47a46ff0203e73be9862b17da5244ab231a8c14c495e20176335aaf6"
     },
     {
       "path": ".github/workflows/scheduled-archival.yml",
@@ -2747,8 +2777,8 @@
     {
       "path": ".github/workflows/test-suite.yml",
       "ext": ".yml",
-      "size": 7288,
-      "sha": "2aa08bce68d935ed1333b3ed9b92e07c9d760962c2d5734d739d4d41890141fb"
+      "size": 11703,
+      "sha": "04608dead0eb77b37def75f5fcddc860ee0fb325025f0859b9e8d3175f850298"
     },
     {
       "path": ".github/workflows/tests.yml.disabled",
@@ -2789,8 +2819,8 @@
     {
       "path": ".github/workflows/workflow-validator.yml",
       "ext": ".yml",
-      "size": 9118,
-      "sha": "90ab39d76fe5779c8062b91cdeca4d04450dd489deef3b33d66e8280d2803a66"
+      "size": 10609,
+      "sha": "d69b5015b16b9b046bb33d574c14eae4218d7506c82ee2fde2fc8133279ce819"
     },
     {
       "path": ".gitignore",
@@ -3215,8 +3245,8 @@
     {
       "path": "AGENTS.md",
       "ext": ".md",
-      "size": 31127,
-      "sha": "76257a16de08da6e08df8dc9f96f3e8a5144289deb93be181b49c5f821839f66"
+      "size": 32330,
+      "sha": "d09921dcf2a8f0585fcf5ecbe16a5a2b8965b5a8a0295f9e4271bec7423c36ab"
     },
     {
       "path": "BATCH_ACTIVATION_READINESS_REPORT.md",
@@ -3653,8 +3683,8 @@
     {
       "path": "_codex_/AGENTS.md",
       "ext": ".md",
-      "size": 18162,
-      "sha": "a328b04750fa48f862041e77135ee319a927b29628a3b5ad5a3519d0c9174866"
+      "size": 18309,
+      "sha": "ac8d5e1c0a48cf0ccd1e47215d35e29fd92ddbe7df255d336ffc79fe244f394d"
     },
     {
       "path": "_codex_/codex_index.yaml",
@@ -4391,8 +4421,8 @@
     {
       "path": "audit_run_manifest.json",
       "ext": ".json",
-      "size": 2121,
-      "sha": "6185686766636a1b970f31bc80935223dcb6dd4c0a7cc5f79fd7f39f98ebe270"
+      "size": 2117,
+      "sha": "6b1013417b53765c3c34a44cbff1efd3f25bfcf453aaf02b01f3f037cfbe7ad2"
     },
     {
       "path": "audit_run_manifest_run1.json",
@@ -6557,8 +6587,8 @@
     {
       "path": "docs/CHANGELOG.md",
       "ext": ".md",
-      "size": 8330,
-      "sha": "0221def24e91ac572f1efd4f4eb181b4ede106ea55b7cecbf1d0243842357907"
+      "size": 10772,
+      "sha": "a765cd464697c2da126f41a8ef477eae341d62ac1d97e4a5140d8ec234aa738a"
     },
     {
       "path": "docs/CHATGPT_ASSISTANT_GUIDE.md",
@@ -6875,8 +6905,8 @@
     {
       "path": "docs/agents.md",
       "ext": ".md",
-      "size": 2709,
-      "sha": "1f9d310b3dbc05eed2dfd5fc7ceab45c552ea14841dede36de2097525b70ec69"
+      "size": 3587,
+      "sha": "2f72c7baebfe0a35ed85ab8c1f1c85e601589ef7c3f2a289ec584fcb2ae900e0"
     },
     {
       "path": "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
@@ -7949,8 +7979,8 @@
     {
       "path": "docs/guides/AGENTS.md",
       "ext": ".md",
-      "size": 8008,
-      "sha": "b5ae0eebcebf638fdffadcf23943cd7202e49b401af91625a4113f71e4ca0b1c"
+      "size": 5566,
+      "sha": "486ea062748b0e97eaa89d471b56c6f03c0fd61d63edd8bb9271f9c203f6f4df"
     },
     {
       "path": "docs/guides/BASH_HEREDOC_REFERENCE.md",
@@ -9367,6 +9397,36 @@
       "ext": ".md",
       "size": 146804,
       "sha": "17fcc157a3968a571ce80d81c3b6b98767d07d182183840fe1b7c865897d44bf"
+    },
+    {
+      "path": "docs/plans/copilot-workflow-agent/00-PLANSET.md",
+      "ext": ".md",
+      "size": 9387,
+      "sha": "47ddb768cfa805a572226fd0b9ad89ac1e0ad48e1e7a16a08b2de0db88a2e2e2"
+    },
+    {
+      "path": "docs/plans/copilot-workflow-agent/01-BATCHSET.md",
+      "ext": ".md",
+      "size": 14148,
+      "sha": "0649cafe30d4e4d45b1010b2709cf2654c4d47f8c44c5759d50049807fd136d8"
+    },
+    {
+      "path": "docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md",
+      "ext": ".md",
+      "size": 4520,
+      "sha": "41f2ca58d56b4013f949c115a9085c4c3a90d8376e6e6a3e389ea905f70cc5f6"
+    },
+    {
+      "path": "docs/plans/copilot-workflow-agent/09-CONTINUATION-PROMPTS.md",
+      "ext": ".md",
+      "size": 4561,
+      "sha": "85580bfd04aed5aa4f66fb817b35c48cd3cfd488eaa8b679f67de64f5bcec07f"
+    },
+    {
+      "path": "docs/plans/copilot-workflow-agent/README.md",
+      "ext": ".md",
+      "size": 3034,
+      "sha": "9ca1b335d9173f3a0b4ee35c82392a562da62d2c9bdb4cba4311e2b8193255f1"
     },
     {
       "path": "docs/plans/implement_dependency.zip",
@@ -11711,8 +11771,8 @@
     {
       "path": "mkdocs.yml",
       "ext": ".yml",
-      "size": 2837,
-      "sha": "8977b515e8449f451cec2045af00b89fa8087e31b2118dc9aacb2eea7bc74384"
+      "size": 2881,
+      "sha": "2c7f036eb413d11df2dbdc805bec4ec93494178374a46f80096502fa09f0952f"
     },
     {
       "path": "models/__init__.py",
@@ -12011,8 +12071,8 @@
     {
       "path": "prompts/AGENTS.md",
       "ext": ".md",
-      "size": 792,
-      "sha": "651c02e3edbc296f971ec5eaef8c2b0a2aff43f88887c15dc5331a1a4355be67"
+      "size": 1310,
+      "sha": "ff2063d5fc4afa202327b1d4f64aac1d1a89f1eb8cbbadc88e08891e4816957d"
     },
     {
       "path": "prompts/domains/code_review_policy.md",
@@ -12095,8 +12155,8 @@
     {
       "path": "pyproject.toml",
       "ext": ".toml",
-      "size": 9930,
-      "sha": "e6f23370aa8becf9225a1218f87ad6c703d39638eb9657e4835c084af84c6857"
+      "size": 10005,
+      "sha": "d7815ca47a00d5300204344b9d07402921c2636efc8d47f6a383c56347bbbdf7"
     },
     {
       "path": "pytest.ini",
@@ -12138,7 +12198,7 @@
       "path": "requirements/lock.txt",
       "ext": ".txt",
       "size": 25029,
-      "sha": "d7a5ead7c074e7731f4fb8b4939da05b82baebbc0843a6fdb04c4fb2c14cf301"
+      "sha": "fa3379587e3bc59010155ea27636a76c3fa362d38f24dda0a42d1e2cd4ff473c"
     },
     {
       "path": "requirements-dev.txt",
@@ -14711,8 +14771,8 @@
     {
       "path": "src/codex/cli.py",
       "ext": ".py",
-      "size": 49788,
-      "sha": "833b81fb52c26f64f00be8f5b953b7fb4807f2e403f3b0cc45baa123dbb8b1bb"
+      "size": 52075,
+      "sha": "3bbd5a127b237213d6b169f1eec4cf8fa17c3813ea5aeba662ef9a420e11f41b"
     },
     {
       "path": "src/codex/cli_archive.py",
@@ -18225,42 +18285,6 @@
       "sha": "689e532d77ba56caa24601d6bb5a44e9d461bb3cddddecce125fc52f181ca961"
     },
     {
-      "path": "src/codex_ml.egg-info/PKG-INFO",
-      "ext": "",
-      "size": 34813,
-      "sha": "13a7280690187e0f54a086ec2379bba4d1111b99cdd747e809d6be14a5d61496"
-    },
-    {
-      "path": "src/codex_ml.egg-info/SOURCES.txt",
-      "ext": ".txt",
-      "size": 46510,
-      "sha": "5eddf9d34bb702b48ca127f5e193189858efdd8d59c3d2ef02eb24a2ccf15d5d"
-    },
-    {
-      "path": "src/codex_ml.egg-info/dependency_links.txt",
-      "ext": ".txt",
-      "size": 1,
-      "sha": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
-    },
-    {
-      "path": "src/codex_ml.egg-info/entry_points.txt",
-      "ext": ".txt",
-      "size": 2479,
-      "sha": "4717396f301413f116064a19d1ac1cfb5882b1ec503864f54030bea1e3877231"
-    },
-    {
-      "path": "src/codex_ml.egg-info/requires.txt",
-      "ext": ".txt",
-      "size": 2908,
-      "sha": "e02c90f6d79f687625a8060ee40d58506493ac219d6ed8532a279659df8d01d4"
-    },
-    {
-      "path": "src/codex_ml.egg-info/top_level.txt",
-      "ext": ".txt",
-      "size": 242,
-      "sha": "d78bfe32b524b63cd70cb24909fbea55bc4462851d71a384642211fad16cc181"
-    },
-    {
       "path": "src/codex_plans/Tasks_PR_2459.md",
       "ext": ".md",
       "size": 101685,
@@ -19061,8 +19085,32 @@
     {
       "path": "src/services/__init__.py",
       "ext": ".py",
-      "size": 287,
-      "sha": "e21c6d960d8ae5e2da45d9fe36059ea358563ced689021c0cfcf4a1d58421bde"
+      "size": 826,
+      "sha": "7b362c2d6645f7513db8e2b6037f3681f27a2a05c96591c5a218f1811b39d671"
+    },
+    {
+      "path": "src/services/github/__init__.py",
+      "ext": ".py",
+      "size": 786,
+      "sha": "0f3e5314a13b42b2469da6650376a81049d7f95d88e6e29966654aa29f334234"
+    },
+    {
+      "path": "src/services/github/client.py",
+      "ext": ".py",
+      "size": 20789,
+      "sha": "ae1b593fc18f0e60c51710c2efbd3d79cd5ba3ae7c9b636381d2cbab806e5e28"
+    },
+    {
+      "path": "src/services/github/exceptions.py",
+      "ext": ".py",
+      "size": 2171,
+      "sha": "af3f177fc8995c172b89d0e58165b1a4b4ca1e3de46c9307749ff381a886240d"
+    },
+    {
+      "path": "src/services/github/types.py",
+      "ext": ".py",
+      "size": 4715,
+      "sha": "6953a7bc19158bb46acf9b2201f5672b03c9ed6043170a98c1e50b5b14e4e441"
     },
     {
       "path": "src/services/mcp/__init__.py",
@@ -19075,6 +19123,30 @@
       "ext": ".py",
       "size": 4254,
       "sha": "00760547e3a2afffba7a0bef6f358e86ab216d4f20a31e3c9d7f5867254ceac4"
+    },
+    {
+      "path": "src/services/workflow/__init__.py",
+      "ext": ".py",
+      "size": 507,
+      "sha": "0849332ee7d012cb00996cca15ce0b9eda67d393bd5d6c7e167a1e33b4e939eb"
+    },
+    {
+      "path": "src/services/workflow/inventory.py",
+      "ext": ".py",
+      "size": 10129,
+      "sha": "c81714bab084de12583a35e6307a961af5c7db417b97fe3dd57c9eb593d5970c"
+    },
+    {
+      "path": "src/services/workflow/parser.py",
+      "ext": ".py",
+      "size": 13648,
+      "sha": "b1fa1969eca2001076c4433904d6850ea725599ce4223cda400275859d317d89"
+    },
+    {
+      "path": "src/services/workflow/types.py",
+      "ext": ".py",
+      "size": 6282,
+      "sha": "d037b96c7a025d42708ee1d60c27d3e52e1a27a583533a8791166a7389d39f03"
     },
     {
       "path": "src/tokenization/.gitkeep",
@@ -24569,8 +24641,8 @@
     {
       "path": "tests/security/test_secret_entropy_scan.py",
       "ext": ".py",
-      "size": 765,
-      "sha": "3440a2e106b65ab77bb8d836cb7e590ca171a614d37e3a5160c67b9571a71439"
+      "size": 1214,
+      "sha": "cb04d04dbc3c6093f0fbfa08bf7429a9a4c14bb3d53cfa845d84f2c0ebb23dc7"
     },
     {
       "path": "tests/security/test_secret_rotation.py",
@@ -24645,6 +24717,12 @@
       "sha": "55322ec9b3cfec54e80869790228956deeeae1d0cce58cdfac7c89ea862f6889"
     },
     {
+      "path": "tests/services/__init__.py",
+      "ext": ".py",
+      "size": 0,
+      "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
       "path": "tests/services/api/__init__.py",
       "ext": ".py",
       "size": 173,
@@ -24673,6 +24751,30 @@
       "ext": ".py",
       "size": 2236,
       "sha": "c62da7833aaca1a1ea958518c3102ec40bdbdf67357536fe05cb59e376f5e148"
+    },
+    {
+      "path": "tests/services/github/__init__.py",
+      "ext": ".py",
+      "size": 33,
+      "sha": "c0b9ddd5f706474f662acac8a53841495ea4b87e406990b0e9d39d8579bad0d9"
+    },
+    {
+      "path": "tests/services/github/test_client.py",
+      "ext": ".py",
+      "size": 19328,
+      "sha": "ead47059e3b9fc9fc2cb1bdbb8780ce64d5ff4f6abfdfcdb96a1c50f817ca7f0"
+    },
+    {
+      "path": "tests/services/workflow/__init__.py",
+      "ext": ".py",
+      "size": 0,
+      "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/services/workflow/test_inventory.py",
+      "ext": ".py",
+      "size": 27577,
+      "sha": "9368a65fc2f20d5c926dde66db90bd262db373d1f0d94b4d89e93c9ff2fdf40a"
     },
     {
       "path": "tests/serving/test_inference_chaos.py",
@@ -25733,8 +25835,8 @@
     {
       "path": "tests/test_checkpoint_commit_meta.py",
       "ext": ".py",
-      "size": 776,
-      "sha": "815f9e78b7dc131b7e5915a421d524f587d1bf78c3afad661a5e15c1e8143eb9"
+      "size": 792,
+      "sha": "fdf4c4753b5a12b9180b492acde436d40f3820528113b9a9480340ed3e1a4bff"
     },
     {
       "path": "tests/test_checkpoint_corrupt_load.py",
