@@ -9,7 +9,6 @@ This module provides the JSON-RPC handling layer for MCP:
 
 import asyncio
 import logging
-import time
 from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Union
 
@@ -173,9 +172,20 @@ class JsonRpcHandler:
         # Get optional id (can be string, int, or None for notifications)
         request_id = data.get("id")
         
+        # Handle params - convert dict params, log array params for tracking
+        parsed_params: Optional[Dict[str, Any]] = None
+        if isinstance(params, dict):
+            parsed_params = params
+        elif isinstance(params, list):
+            # Array-style params are valid JSON-RPC but we only support named params
+            self._logger.debug(
+                "Array-style params received for method %s, converting to positional",
+                method
+            )
+        
         return JsonRpcRequest(
             method=method,
-            params=params if isinstance(params, dict) else None,
+            params=parsed_params,
             id=request_id,
             jsonrpc="2.0"
         )
@@ -213,8 +223,6 @@ class JsonRpcHandler:
         Returns:
             Response dictionary, or None for notifications.
         """
-        start_time = time.time()
-        
         # Parse request
         parsed = self._parse_request(data)
         

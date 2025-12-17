@@ -7,6 +7,7 @@ This module provides observability features including:
 - Performance monitoring
 """
 
+import asyncio
 import logging
 import time
 from dataclasses import dataclass, field
@@ -133,6 +134,17 @@ class MetricsRegistry:
         label_str = ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
         return f"{name}{{{label_str}}}"
     
+    def _extract_metric_name(self, key: str) -> str:
+        """Extract metric name from a key with labels.
+        
+        Args:
+            key: Metric key that may contain labels in braces.
+            
+        Returns:
+            The metric name without labels.
+        """
+        return key.split("{")[0]
+    
     def get_all_metrics(self) -> List[MetricValue]:
         """Get all collected metrics.
         
@@ -143,7 +155,7 @@ class MetricsRegistry:
         
         with self._lock:
             for key, value in self._counters.items():
-                name = key.split("{")[0]
+                name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
                 metrics.append(MetricValue(
                     name=name,
@@ -153,7 +165,7 @@ class MetricsRegistry:
                 ))
             
             for key, value in self._gauges.items():
-                name = key.split("{")[0]
+                name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
                 metrics.append(MetricValue(
                     name=name,
@@ -163,7 +175,7 @@ class MetricsRegistry:
                 ))
             
             for key, values in self._histograms.items():
-                name = key.split("{")[0]
+                name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
                 # Export histogram as multiple metrics
                 if values:
@@ -418,7 +430,6 @@ def traced(operation_name: Optional[str] = None):
             with get_tracer().trace(op_name):
                 return await func(*args, **kwargs)
         
-        import asyncio
         if asyncio.iscoroutinefunction(func):
             return async_wrapper
         return wrapper

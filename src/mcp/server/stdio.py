@@ -140,6 +140,7 @@ class StdioTransport:
             )
         
         # Decode and parse
+        text: Optional[str] = None
         try:
             text = line.decode(self._config.encoding).strip()
             if not text:
@@ -153,7 +154,7 @@ class StdioTransport:
         except json.JSONDecodeError as e:
             raise InvalidMessageError(
                 f"Invalid JSON: {e}",
-                text[:100] if 'text' in dir() else None
+                text[:100] if text else None
             )
     
     async def write_message(self, message: Dict[str, Any]) -> None:
@@ -222,7 +223,7 @@ class MockStdioTransport(StdioTransport):
             messages: List of messages to return from read_message.
         """
         super().__init__()
-        self._mock_messages = list(messages) if messages else []
+        self._mock_messages = messages or []
         self._written_messages: list = []
         self._message_index = 0
     

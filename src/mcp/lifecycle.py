@@ -286,9 +286,10 @@ class LifecycleManager:
         loop = asyncio.get_event_loop()
         
         for sig in (signal.SIGTERM, signal.SIGINT):
+            # Capture sig in lambda to avoid closure issue
             loop.add_signal_handler(
                 sig,
-                lambda: asyncio.create_task(self.shutdown(graceful=True))
+                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True))
             )
         
         self._logger.info("Signal handlers configured")
