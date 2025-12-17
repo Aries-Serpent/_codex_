@@ -360,6 +360,7 @@ DO NOT EDIT - regenerate with `codex verify --regen-tests`
 import pytest
 from pathlib import Path
 import subprocess
+import os
 
 class TestBehaviorSnapshots:
     @pytest.fixture
@@ -373,24 +374,28 @@ class TestBehaviorSnapshots:
     
     # Add test cases for each input/output pair
     for i, (input_path, output_path) in enumerate(zip(sample_inputs, golden_outputs)):
-        test_content += f'''
+        # Use string concatenation to avoid format issues with nested braces
+        test_method = f'''
     def test_snapshot_{i+1}(self, source_dir, golden_dir):
         """Test against golden output {i+1}."""
         input_file = Path("{input_path}")
         expected_file = Path("{output_path}")
         
         # Run and compare
+        env = os.environ.copy()
+        env["PYTHONHASHSEED"] = "42"
         result = subprocess.run(
             ["python", str(source_dir / "main.py")],
             input=input_file.read_text() if input_file.exists() else None,
             capture_output=True,
             text=True,
-            env={{"PYTHONHASHSEED": "42"}},
+            env=env,
         )
         
         expected = expected_file.read_text() if expected_file.exists() else ""
         assert result.stdout.strip() == expected.strip()
 '''
+        test_content += test_method
     
     test_file = output_dir / "test_behavior_snapshot.py"
     test_file.write_text(
