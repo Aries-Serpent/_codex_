@@ -1,0 +1,108 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://github.com/Aries-Serpent/_codex_/schemas/ingest-manifest.schema.yaml"
+title: Ingestion Manifest
+type: object
+required: [version, source]
+
+properties:
+  version:
+    type: string
+    pattern: "^\\d+\\.\\d+$"
+    description: Manifest schema version (e.g., "1.0")
+
+  source:
+    type: object
+    required: [type, path]
+    properties:
+      type:
+        enum: [file, zip, git-url]
+        description: Source type
+      path:
+        type: string
+        description: Path to source (file, ZIP, or Git URL)
+      ref:
+        type: string
+        description: Git reference (branch, tag, commit)
+
+  entry_point:
+    type: string
+    nullable: true
+    description: Entry point specification (module:function or CLI command)
+
+  sample_inputs:
+    type: array
+    description: Sample input files for testing
+    items:
+      type: object
+      required: [path]
+      properties:
+        path:
+          type: string
+          description: Path to input file
+        description:
+          type: string
+          description: Human-readable description
+
+  golden_outputs:
+    type: array
+    description: Expected outputs for verification
+    items:
+      type: object
+      required: [input_ref, expected_output]
+      properties:
+        input_ref:
+          type: string
+          description: Reference to sample_inputs.path
+        expected_output:
+          type: string
+          description: Path to expected output file
+        comparison_mode:
+          enum: [exact, fuzzy, regex, semantic]
+          default: exact
+          description: How to compare outputs
+
+  constraints:
+    type: object
+    description: Execution constraints
+    properties:
+      max_runtime_seconds:
+        type: integer
+        default: 60
+        minimum: 1
+        maximum: 3600
+      max_memory_mb:
+        type: integer
+        default: 512
+        minimum: 1
+        maximum: 8192
+      allowed_network:
+        type: boolean
+        default: false
+      allowed_file_write:
+        type: boolean
+        default: false
+      forbidden_patterns:
+        type: array
+        items:
+          type: string
+        description: Patterns that should not appear in code
+
+  metadata:
+    type: object
+    description: Additional metadata
+    properties:
+      owner:
+        type: string
+        description: Owner username (e.g., "@username")
+      privacy:
+        enum: [public, private]
+        default: private
+      allow_external_llm:
+        type: boolean
+        default: false
+        description: Whether to allow external LLM API calls
+      tags:
+        type: array
+        items:
+          type: string
+        description: Classification tags
