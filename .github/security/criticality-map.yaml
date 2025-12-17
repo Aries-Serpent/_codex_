@@ -1,0 +1,51 @@
+# File criticality mapping for Aries-Serpent/_codex_
+# Used for risk scoring of security alerts
+
+critical_paths:  # weight: 3
+  - src/agents/core/**
+  - src/agents/autonomous/**
+  - src/api/auth/**
+  - src/config/openai*.py
+  - src/security/**
+
+high_paths:      # weight: 2
+  - src/agents/**
+  - src/api/**
+  - src/middleware/**
+  - src/utils/crypto*.py
+  - src/utils/auth*.py
+
+medium_paths:    # weight: 1.5
+  - src/utils/**
+  - src/models/**
+  - src/services/**
+
+low_paths:       # weight: 1
+  - tests/**
+  - docs/**
+  - examples/**
+  - scripts/**
+
+# Rule category weights for exploitability
+rule_categories:
+  critical:  # weight: 3
+    - injection
+    - secrets
+    - deserialization
+    - authentication
+    
+  high:      # weight: 2
+    - cryptography
+    - authorization
+    - path-traversal
+    - ssrf
+    
+  medium:    # weight: 1.5
+    - xss
+    - logging
+    - configuration
+    
+  low:       # weight: 1
+    - code-quality
+    - best-practice
+    - performance

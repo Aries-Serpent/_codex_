@@ -1,9 +1,9 @@
 # [Daily Audit Status] 2025-12-17
 
-- Generated: 2025-12-17 14:16:07 UTC
+- Generated: 2025-12-17 14:27:39 UTC
 - Capabilities scored: 40
 - Low maturity (< 0.7): 0
-- Matrix report: reports/capability_matrix_20251217_141607.md
+- Matrix report: reports/capability_matrix_20251217_142739.md
 - Manifest (after S7): audit_run_manifest.json
 
 ## Low Maturity Focus
