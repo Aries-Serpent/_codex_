@@ -131,8 +131,17 @@ def _generate_pr_body(
     Returns:
         Markdown PR body
     """
-    verification_icon = "✅" if verification_result == "pass" else "❌" if verification_result == "fail" else "⚠️"
-    security_icon = "✅" if security_issues == 0 else "⚠️" if security_issues < 3 else "❌"
+    # Icon mapping for verification result
+    verification_icons = {"pass": "✅", "fail": "❌"}
+    verification_icon = verification_icons.get(verification_result, "⚠️")
+    
+    # Icon mapping for security issues
+    if security_issues == 0:
+        security_icon = "✅"
+    elif security_issues < 3:
+        security_icon = "⚠️"
+    else:
+        security_icon = "❌"
     
     body = f"""## Codex Automated Refactor
 

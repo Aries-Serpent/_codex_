@@ -12,9 +12,8 @@ import pytest
 try:
     from codex.training import _safe_perplexity, _safe_token_accuracy, _codex_config_hash, _build_safe_ckpt_payload
     TRAINING_AVAILABLE = True
-except (ImportError, AttributeError) as e:
+except (ImportError, AttributeError):
     TRAINING_AVAILABLE = False
-    TRAINING_SKIP_REASON = str(e)
 
 
 @pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")

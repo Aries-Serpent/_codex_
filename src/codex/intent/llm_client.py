@@ -28,6 +28,9 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Constants
+CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -215,9 +218,8 @@ Return ONLY valid JSON, no explanation or markdown."""
         prompt = self._build_intent_prompt(context)
         prompt_hash = _hash_prompt(prompt)
         
-        # Check token budget (using approximate character-to-token ratio)
-        char_to_token_ratio = 4  # Approximate: ~4 chars per token for English text
-        if len(prompt) > MAX_TOKENS * char_to_token_ratio:
+        # Check token budget using module-level constant
+        if len(prompt) > MAX_TOKENS * CHARS_PER_TOKEN:
             logger.warning("Prompt exceeds token budget, truncating")
             prompt = _truncate_context(prompt, MAX_TOKENS * 3)
         

@@ -18,6 +18,7 @@ Safeguards:
 
 from __future__ import annotations
 
+import ast
 import difflib
 import json
 import logging
@@ -313,7 +314,6 @@ def transform(
             if tier is None or tier == Tier.B:
                 # Type hints suggestion - use AST for robust detection
                 try:
-                    import ast
                     tree = ast.parse(original)
                     for node in ast.walk(tree):
                         if isinstance(node, ast.FunctionDef):
