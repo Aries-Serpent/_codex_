@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Aries-Serpent/_codex_/schemas/static-report.schema.json",
+  "title": "Static Analysis Report",
+  "type": "object",
+  "required": ["snapshot_id", "timestamp", "files", "summary"],
+  "properties": {
+    "snapshot_id": {
+      "type": "string",
+      "description": "Unique identifier for the snapshot"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the analysis was performed"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "loc", "complexity"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to the file"
+          },
+          "loc": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total lines of code"
+          },
+          "sloc": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Source lines of code (excluding comments/blanks)"
+          },
+          "complexity": {
+            "type": "object",
+            "properties": {
+              "cyclomatic": {
+                "type": "number",
+                "description": "Cyclomatic complexity"
+              },
+              "cognitive": {
+                "type": "number",
+                "description": "Cognitive complexity"
+              },
+              "halstead_difficulty": {
+                "type": "number",
+                "description": "Halstead difficulty metric"
+              }
+            }
+          },
+          "imports": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of imported modules"
+          },
+          "exports": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of exported symbols"
+          },
+          "lint_issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "rule": {"type": "string"},
+                "severity": {"enum": ["error", "warning", "info"]},
+                "line": {"type": "integer"},
+                "message": {"type": "string"}
+              }
+            }
+          },
+          "security_issues": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tool": {"enum": ["bandit", "semgrep", "gitleaks"]},
+                "rule_id": {"type": "string"},
+                "severity": {"enum": ["critical", "high", "medium", "low"]},
+                "line": {"type": "integer"},
+                "message": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total_files": {"type": "integer"},
+        "total_loc": {"type": "integer"},
+        "avg_complexity": {"type": "number"},
+        "lint_error_count": {"type": "integer"},
+        "security_issue_count": {"type": "integer"}
+      }
+    }
+  }
+}

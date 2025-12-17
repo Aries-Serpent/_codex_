@@ -1,0 +1,163 @@
+# Reusable Workflow: Behavior Comparison
+# Compares baseline vs patched code behavior in CI
+#
+# Usage:
+#   jobs:
+#     compare:
+#       uses: ./.github/workflows/ci-templates/behavior-compare.yaml
+#       with:
+#         snapshot_id: ${{ github.sha }}
+#         baseline_ref: ${{ github.base_ref }}
+#         patched_ref: ${{ github.head_ref }}
+
+name: Behavior Compare
+
+on:
+  workflow_call:
+    inputs:
+      snapshot_id:
+        required: true
+        type: string
+        description: Snapshot identifier
+      baseline_ref:
+        required: true
+        type: string
+        description: Git ref for baseline code
+      patched_ref:
+        required: true
+        type: string
+        description: Git ref for patched code
+      tolerance:
+        required: false
+        type: string
+        default: "strict"
+        description: Comparison tolerance (strict, fuzzy, semantic)
+    outputs:
+      comparison_result:
+        description: "Result: pass | fail | warn"
+        value: ${{ jobs.compare.outputs.result }}
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.compare.outputs.result }}
+
+    steps:
+      - name: Checkout baseline
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.baseline_ref }}
+          path: baseline
+
+      - name: Checkout patched
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.patched_ref }}
+          path: patched
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -e ./baseline[test] || pip install -e ./baseline
+          pip install -e ./patched[test] || pip install -e ./patched
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+
+      - name: Run baseline harness
+        run: |
+          cd baseline
+          PYTHONHASHSEED=42 python -c "
+          import sys
+          import json
+          from pathlib import Path
+          
+          # Find and run main script
+          main_files = list(Path('.').glob('**/main.py'))[:1]
+          if main_files:
+              exec(main_files[0].read_text())
+          else:
+              print('No main.py found')
+          " > ../artifacts/baseline-output.txt 2>&1 || true
+
+      - name: Run patched harness
+        run: |
+          cd patched
+          PYTHONHASHSEED=42 python -c "
+          import sys
+          import json
+          from pathlib import Path
+          
+          # Find and run main script
+          main_files = list(Path('.').glob('**/main.py'))[:1]
+          if main_files:
+              exec(main_files[0].read_text())
+          else:
+              print('No main.py found')
+          " > ../artifacts/patched-output.txt 2>&1 || true
+
+      - name: Compare outputs
+        id: compare
+        run: |
+          python3 << 'EOF'
+          import json
+          import difflib
+          from pathlib import Path
+          
+          baseline = Path("artifacts/baseline-output.txt").read_text()
+          patched = Path("artifacts/patched-output.txt").read_text()
+          
+          tolerance = "${{ inputs.tolerance }}"
+          
+          # Normalize based on tolerance
+          if tolerance == "fuzzy":
+              baseline = "\n".join(sorted(baseline.strip().split("\n")))
+              patched = "\n".join(sorted(patched.strip().split("\n")))
+          elif tolerance == "semantic":
+              import re
+              baseline = re.sub(r'\d{4}-\d{2}-\d{2}', '<DATE>', baseline)
+              patched = re.sub(r'\d{4}-\d{2}-\d{2}', '<DATE>', patched)
+          
+          match = baseline.strip() == patched.strip()
+          
+          result = {
+              "result": "pass" if match else "fail",
+              "baseline_len": len(baseline),
+              "patched_len": len(patched),
+              "tolerance": tolerance,
+          }
+          
+          if not match:
+              diff = list(difflib.unified_diff(
+                  baseline.splitlines(),
+                  patched.splitlines(),
+                  fromfile="baseline",
+                  tofile="patched",
+              ))
+              result["diff"] = "\n".join(diff[:50])  # Truncate
+          
+          Path("artifacts/behavior-diff.json").write_text(json.dumps(result, indent=2))
+          
+          print(f"result={result['result']}")
+          with open("$GITHUB_OUTPUT", "a") as f:
+              f.write(f"result={result['result']}\n")
+          EOF
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: behavior-comparison-${{ inputs.snapshot_id }}
+          path: artifacts/
+          retention-days: 30
+
+      - name: Fail on divergence
+        if: steps.compare.outputs.result == 'fail'
+        run: |
+          echo "::error::Behavioral divergence detected"
+          cat artifacts/behavior-diff.json
+          exit 1

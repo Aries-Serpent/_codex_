@@ -1,0 +1,82 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://github.com/Aries-Serpent/_codex_/schemas/intent.schema.yaml"
+title: Intent Specification
+type: object
+required: [snapshot_id, timestamp, goal, confidence]
+
+properties:
+  snapshot_id:
+    type: string
+    description: Reference to the analyzed snapshot
+
+  timestamp:
+    type: string
+    format: date-time
+    description: When intent was inferred
+
+  goal:
+    type: string
+    description: High-level purpose of the code (one sentence)
+
+  actors:
+    type: array
+    items:
+      type: string
+    description: Who/what interacts with this code
+
+  inputs:
+    type: array
+    description: Input specifications
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          enum: [cli_arg, stdin, file, env_var, network]
+        required:
+          type: boolean
+
+  outputs:
+    type: array
+    description: Output specifications
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          enum: [stdout, stderr, file, network, return_value]
+
+  constraints:
+    type: array
+    items:
+      type: string
+    description: Behavioral constraints
+
+  side_effects:
+    type: array
+    items:
+      type: string
+    description: Potential side effects
+
+  confidence:
+    type: number
+    minimum: 0.0
+    maximum: 1.0
+    description: Confidence score of the inference
+
+  inference_method:
+    type: string
+    enum: [heuristic, llm, hybrid]
+    description: How intent was inferred
+
+  llm_provenance_ref:
+    type: string
+    description: Path to LLM provenance file (if applicable)
+
+  assumptions:
+    type: array
+    items:
+      type: string
+    description: Assumptions made during inference
