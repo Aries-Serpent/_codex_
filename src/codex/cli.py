@@ -1487,10 +1487,6 @@ except Exception:  # pragma: no cover - optional module
 _register_external_cli()
 
 
-if __name__ == "__main__":
-    cli()
-
-
 @cli.command("workflow-scan")
 @click.option(
     "--workflows-dir",
@@ -1515,7 +1511,7 @@ if __name__ == "__main__":
 def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> None:
     """Scan and display GitHub Actions workflows."""
     try:
-        from services.workflow import WorkflowInventory
+        from src.services.workflow import WorkflowInventory
     except ImportError:
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
@@ -1530,7 +1526,6 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
     workflows = inventory.get_triggerable() if triggerable_only else list(inventory.workflows.values())
     
     if format == "json":
-        import json
         data = [
             {
                 "name": w.name,
@@ -1557,3 +1552,7 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         click.echo("-" * 90)
         for w in workflows:
             click.echo(f"{w.name[:39]:<40} {w.filename[:29]:<30} {len(w.jobs):<6} {len(w.triggers):<10}")
+
+
+if __name__ == "__main__":
+    cli()

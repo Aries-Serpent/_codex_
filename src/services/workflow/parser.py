@@ -211,7 +211,18 @@ class WorkflowParser:
                 schedule_cron = None
                 workflows = None
 
-                if isinstance(config, dict):
+                # Schedule trigger - handle list of cron schedules
+                if trigger_name == "schedule":
+                    if isinstance(config, list):
+                        schedule_cron = [
+                            item.get("cron")
+                            for item in config
+                            if isinstance(item, dict) and "cron" in item
+                        ]
+                    elif isinstance(config, dict) and "cron" in config:
+                        schedule_cron = [config["cron"]]
+                elif isinstance(config, dict):
+                    # Parse other trigger configurations
                     branches = config.get("branches", [])
                     if isinstance(branches, str):
                         branches = [branches]
@@ -223,17 +234,6 @@ class WorkflowParser:
                     types = config.get("types", [])
                     if isinstance(types, str):
                         types = [types]
-
-                    # Schedule trigger - handle list of cron schedules
-                    if trigger_name == "schedule":
-                        if isinstance(config, list):
-                            schedule_cron = [
-                                item.get("cron")
-                                for item in config
-                                if isinstance(item, dict) and "cron" in item
-                            ]
-                        elif isinstance(config, dict) and "cron" in config:
-                            schedule_cron = [config["cron"]]
 
                     # Workflow dependencies
                     if trigger_name in ("workflow_run", "workflow_call"):
