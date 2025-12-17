@@ -9,6 +9,7 @@ from __future__ import annotations
 import pytest
 
 from mcp.versioning import (
+    MAX_VERSIONS_COUNT,
     MCP_VERSIONS,
     negotiate_version,
     supports_feature,
@@ -64,7 +65,8 @@ class TestSanitization:
     def test_negotiate_handles_bounds_check(self):
         """Test bounds checking on oversized version lists."""
         # Create large list with valid version at end
-        large_list = ["0.9"] * 50 + ["1.0"]
+        # Use half the MAX_VERSIONS_COUNT to stay within bounds
+        large_list = ["0.9"] * (MAX_VERSIONS_COUNT // 2) + ["1.0"]
         result = negotiate_version(large_list)
         assert result == "1.0"
 

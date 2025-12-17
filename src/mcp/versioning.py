@@ -29,6 +29,11 @@ MCP_VERSIONS: List[str] = ["1.0"]
 MAX_VERSION_LENGTH = 20
 MAX_VERSIONS_COUNT = 100
 
+# Semantic version regex pattern for validation (safeguard)
+# Matches: MAJOR.MINOR or MAJOR.MINOR.PATCH with optional pre-release and build metadata
+# Examples: "1.0", "2.1.3", "1.0.0-alpha", "1.0.0+build.123"
+VERSION_PATTERN = r'^(\d+)\.(\d+)(?:\.(\d+))?(?:-[a-zA-Z0-9.]+)?(?:\+[a-zA-Z0-9.]+)?$'
+
 
 def _validate_version_string(version: str) -> bool:
     """Validate version string format.
@@ -47,8 +52,7 @@ def _validate_version_string(version: str) -> bool:
         return False
 
     # Sanitize: Only allow semantic version format (safeguard)
-    pattern = r'^(\d+)\.(\d+)(?:\.(\d+))?(?:-[a-zA-Z0-9.]+)?(?:\+[a-zA-Z0-9.]+)?$'
-    return bool(re.match(pattern, version))
+    return bool(re.match(VERSION_PATTERN, version))
 
 
 def _sanitize_version_list(versions: List[str]) -> List[str]:
@@ -152,9 +156,12 @@ def supports_feature(feature: str, version: str) -> bool:
         return False
 
     # Feature availability matrix (bounded lookup - safeguard)
+    # Maps feature names to list of versions that support them.
+    # To add a new feature, add an entry with the feature name as key
+    # and a list of version strings where it's available.
     feature_matrix = {
-        "basic_tools": ["1.0"],
-        "streaming": ["1.0"],
+        "basic_tools": ["1.0"],  # Core MCP tool support
+        "streaming": ["1.0"],     # Streaming response support
     }
 
     supported_versions = feature_matrix.get(feature, [])
@@ -179,6 +186,7 @@ def validate_version(version: str) -> bool:
 
 
 __all__ = [
+    "MAX_VERSIONS_COUNT",
     "MCP_VERSIONS",
     "negotiate_version",
     "supports_feature",
