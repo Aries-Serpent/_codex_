@@ -34,7 +34,7 @@ The following URLs/hosts must be added to the custom allowlist in this repositor
 
 ## Alternative: Actions Setup Steps
 
-Instead of adding URLs to the allowlist, you can configure [Actions setup steps](https://gh.io/copilot/actions-setup-steps) to set up the environment before the firewall is enabled.
+Instead of adding URLs to the allowlist, you can configure [Actions setup steps](https://docs.github.com/en/copilot/customizing-copilot/customizing-the-development-environment-for-copilot-coding-agent) to set up the environment before the firewall is enabled.
 
 ### Example Setup Step
 
@@ -80,4 +80,4 @@ I tried to connect to the following addresses, but was blocked by firewall rules
 ## References
 
 - [GitHub Copilot coding agent documentation](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-for-pull-requests)
-- [Actions setup steps guide](https://gh.io/copilot/actions-setup-steps)
+- [Customizing the development environment](https://docs.github.com/en/copilot/customizing-copilot/customizing-the-development-environment-for-copilot-coding-agent)
