@@ -453,3 +453,589 @@ on: push
     assert result is not None
     assert result.name == "Test"
     assert len(result.jobs) == 0
+
+
+def test_workflow_dependencies_caller_uses_workflow(temp_workflows_dir):
+    """Test workflow_call dependency detection with uses: syntax."""
+    caller = temp_workflows_dir / "caller.yml"
+    caller.write_text("""
+name: Caller
+on: push
+jobs:
+  use-reusable:
+    uses: ./.github/workflows/reusable.yml@main
+    with:
+      param: value
+""")
+    
+    reusable = temp_workflows_dir / "reusable.yml"
+    reusable.write_text("""
+name: Reusable
+on:
+  workflow_call:
+    inputs:
+      param:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    # Check dependencies are detected
+    deps = inventory.get_workflow_dependencies("caller.yml")
+    assert "reusable.yml" in deps
+
+
+def test_schedule_trigger_parsing(temp_workflows_dir):
+    """Test parsing of schedule triggers with cron."""
+    workflow = temp_workflows_dir / "scheduled.yml"
+    workflow.write_text("""
+name: Scheduled
+on:
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 12 * * *'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("scheduled.yml")
+    assert wf is not None
+    assert len(wf.triggers) > 0
+    
+    # Find schedule trigger
+    schedule_triggers = [t for t in wf.triggers if t.type.value == "schedule"]
+    assert len(schedule_triggers) > 0
+
+
+def test_workflow_with_if_condition(temp_workflows_dir):
+    """Test parsing workflow jobs with if conditions."""
+    workflow = temp_workflows_dir / "conditional.yml"
+    workflow.write_text("""
+name: Conditional
+on: push
+jobs:
+  conditional-job:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("conditional.yml")
+    assert wf is not None
+    assert "conditional-job" in wf.jobs
+    # if_condition should be captured (uses 'if' alias)
+
+
+def test_inventory_nonexistent_directory():
+    """Test inventory with nonexistent directory."""
+    inventory = WorkflowInventory("/nonexistent/path/to/workflows")
+    count = inventory.scan()
+    assert count == 0
+
+
+def test_refresh_nonexistent_workflow(temp_workflows_dir):
+    """Test refreshing a workflow that doesn't exist."""
+    inventory = WorkflowInventory(temp_workflows_dir)
+    success = inventory.refresh_workflow("nonexistent.yml")
+    assert success is False
+
+
+def test_parser_with_list_trigger_format(temp_workflows_dir):
+    """Test parsing workflows with list format triggers."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    content = """
+name: Multi Trigger
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+"""
+    
+    parser = WorkflowParser()
+    workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
+    
+    assert workflow is not None
+    assert len(workflow.triggers) == 2
+
+
+def test_parser_with_string_trigger_format(temp_workflows_dir):
+    """Test parsing workflows with string format triggers."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    content = """
+name: Simple
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+"""
+    
+    parser = WorkflowParser()
+    workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
+    
+    assert workflow is not None
+    assert len(workflow.triggers) == 1
+    assert workflow.triggers[0].type.value == "push"
+
+
+def test_job_with_needs_string(temp_workflows_dir):
+    """Test parsing job with needs as string (single dependency)."""
+    workflow = temp_workflows_dir / "needs.yml"
+    workflow.write_text("""
+name: Needs Test
+on: push
+jobs:
+  first:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "first"
+  second:
+    runs-on: ubuntu-latest
+    needs: first
+    steps:
+      - run: echo "second"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("needs.yml")
+    assert wf is not None
+    assert "second" in wf.jobs
+    assert wf.jobs["second"].needs == ["first"]
+
+
+def test_job_with_timeout(temp_workflows_dir):
+    """Test parsing job with timeout-minutes."""
+    workflow = temp_workflows_dir / "timeout.yml"
+    workflow.write_text("""
+name: Timeout Test
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("timeout.yml")
+    assert wf is not None
+    assert wf.jobs["test"].timeout_minutes == 60
+
+
+def test_clear_parser_cache():
+    """Test clearing parser cache."""
+    from src.services.workflow.parser import WorkflowParser
+    from pathlib import Path
+    
+    parser = WorkflowParser()
+    
+    # Parse something to populate cache
+    content = "name: Test\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo test"
+    parser.parse_content(content, Path("test.yml"))
+    
+    # Clear cache
+    parser.clear_cache()
+    
+    # Cache should be empty
+    assert len(parser._cache) == 0
+
+
+def test_workflow_run_trigger_with_workflows(temp_workflows_dir):
+    """Test workflow_run trigger type with workflow dependencies."""
+    workflow = temp_workflows_dir / "depends.yml"
+    workflow.write_text("""
+name: Dependent
+on:
+  workflow_run:
+    workflows: ["CI Tests"]
+    types: [completed]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "deploy"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("depends.yml")
+    assert wf is not None
+
+
+def test_job_with_invalid_needs_type(temp_workflows_dir):
+    """Test job with needs that's not a string or list."""
+    workflow = temp_workflows_dir / "bad_needs.yml"
+    workflow.write_text("""
+name: Bad Needs
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    needs: 123
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("bad_needs.yml")
+    assert wf is not None
+    # needs should be None for invalid type
+    assert wf.jobs["test"].needs is None
+
+
+def test_workflow_with_string_permissions(temp_workflows_dir):
+    """Test workflow with permissions as string."""
+    workflow = temp_workflows_dir / "perms.yml"
+    workflow.write_text("""
+name: Permissions Test
+on: push
+permissions: read-all
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("perms.yml")
+    assert wf is not None
+    assert "default" in wf.permissions
+
+
+def test_workflow_with_non_dict_env(temp_workflows_dir):
+    """Test workflow with invalid env type."""
+    workflow = temp_workflows_dir / "bad_env.yml"
+    workflow.write_text("""
+name: Bad Env
+on: push
+env: "not a dict"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("bad_env.yml")
+    assert wf is not None
+    # env should be empty dict for invalid type
+    assert wf.env == {}
+
+
+def test_input_with_default_value(temp_workflows_dir):
+    """Test workflow_dispatch input with default value."""
+    workflow = temp_workflows_dir / "inputs.yml"
+    workflow.write_text("""
+name: Inputs
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: false
+        default: 'staging'
+        type: string
+      debug:
+        description: 'Debug mode'
+        type: boolean
+        default: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("inputs.yml")
+    assert wf is not None
+    assert "environment" in wf.inputs
+    assert wf.inputs["environment"].default == "staging"
+    assert "debug" in wf.inputs
+    assert wf.inputs["debug"].default is False
+
+
+def test_input_with_invalid_type(temp_workflows_dir):
+    """Test input with invalid type falls back to string."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    content = """
+name: Invalid Input
+on:
+  workflow_dispatch:
+    inputs:
+      test:
+        type: invalid_type
+        description: 'Test'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo test
+"""
+    
+    parser = WorkflowParser()
+    wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
+    
+    assert wf is not None
+    assert "test" in wf.inputs
+    # Should fall back to STRING for invalid type
+    from src.services.workflow.types import InputType
+    assert wf.inputs["test"].type == InputType.STRING
+
+
+def test_job_steps_count(temp_workflows_dir):
+    """Test that job step count is correct."""
+    workflow = temp_workflows_dir / "steps.yml"
+    workflow.write_text("""
+name: Steps
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "step 1"
+      - run: echo "step 2"
+      - name: Step 3
+        run: echo "step 3"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("steps.yml")
+    assert wf is not None
+    assert wf.jobs["test"].steps == 4
+
+
+def test_job_with_non_list_steps(temp_workflows_dir):
+    """Test job with steps that's not a list."""
+    workflow = temp_workflows_dir / "bad_steps.yml"
+    workflow.write_text("""
+name: Bad Steps
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps: "not a list"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("bad_steps.yml")
+    assert wf is not None
+    # steps should be 0 for invalid type
+    assert wf.jobs["test"].steps == 0
+
+
+def test_trigger_with_branches_filter(temp_workflows_dir):
+    """Test trigger with branches filter."""
+    workflow = temp_workflows_dir / "branches.yml"
+    workflow.write_text("""
+name: Branches
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("branches.yml")
+    assert wf is not None
+    
+    # Check branches are parsed
+    push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
+    assert push_trigger.branches is not None
+    assert "main" in push_trigger.branches
+
+
+def test_trigger_with_paths_filter(temp_workflows_dir):
+    """Test trigger with paths filter."""
+    workflow = temp_workflows_dir / "paths.yml"
+    workflow.write_text("""
+name: Paths
+on:
+  push:
+    paths:
+      - 'src/**'
+      - '**.py'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("paths.yml")
+    assert wf is not None
+    
+    push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
+    assert push_trigger.paths is not None
+    assert 'src/**' in push_trigger.paths
+
+
+def test_trigger_with_types_filter(temp_workflows_dir):
+    """Test trigger with types filter."""
+    workflow = temp_workflows_dir / "types.yml"
+    workflow.write_text("""
+name: Types
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("types.yml")
+    assert wf is not None
+    
+    pr_trigger = [t for t in wf.triggers if t.type.value == "pull_request"][0]
+    assert pr_trigger.types is not None
+    assert "opened" in pr_trigger.types
+
+
+def test_trigger_with_string_branches(temp_workflows_dir):
+    """Test trigger with branches as string (single branch)."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    content = """
+name: Single Branch
+on:
+  push:
+    branches: main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo test
+"""
+    
+    parser = WorkflowParser()
+    wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
+    
+    assert wf is not None
+    push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
+    assert push_trigger.branches == ["main"]
+
+
+def test_input_with_options(temp_workflows_dir):
+    """Test input with options (choice type)."""
+    workflow = temp_workflows_dir / "choice.yml"
+    workflow.write_text("""
+name: Choice
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("choice.yml")
+    assert wf is not None
+    assert "environment" in wf.inputs
+    assert wf.inputs["environment"].options is not None
+    assert "dev" in wf.inputs["environment"].options
+
+
+def test_workflow_metadata_properties(temp_workflows_dir):
+    """Test WorkflowMetadata computed properties."""
+    workflow = temp_workflows_dir / "props.yml"
+    workflow.write_text("""
+name: Properties Test
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "build"
+""")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    inventory.scan()
+    
+    wf = inventory.get_workflow("props.yml")
+    assert wf is not None
+    
+    # Test properties
+    assert wf.filename == "props.yml"
+    assert wf.has_workflow_dispatch is True
+    assert len(wf.trigger_types) == 2
+    assert len(wf.job_ids) == 2
+    assert "test" in wf.job_ids
+    assert "build" in wf.job_ids
