@@ -199,8 +199,6 @@ class AutonomousAgent:
 
 async def main() -> None:
     """Main entry point for the autonomous agent."""
-    import asyncio
-
     task = os.getenv("AGENT_TASK", "Analyze _codex_ repository structure")
     model_preference = os.getenv("MODEL_PREFERENCE", "auto")
 
