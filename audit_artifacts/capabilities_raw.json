@@ -1,5 +1,5 @@
 {
-  "generated": 1765944990.2887099,
+  "generated": 1765945224.9717622,
   "capabilities": [
     {
       "id": "archival-bundling",
@@ -3139,6 +3139,10 @@
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
+        ".pytest_cache/.gitignore",
+        ".pytest_cache/CACHEDIR.TAG",
+        ".pytest_cache/README.md",
+        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -3222,6 +3226,7 @@
         "TEAM_ANNOUNCEMENT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -5809,6 +5814,11 @@
         "src/logging_config.py",
         "src/logging_utils.py",
         "src/mcp/__init__.py",
+        "src/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/mcp/__pycache__/auth.cpython-312.pyc",
+        "src/mcp/__pycache__/errors.cpython-312.pyc",
+        "src/mcp/__pycache__/rate_limit.cpython-312.pyc",
+        "src/mcp/__pycache__/versioning.cpython-312.pyc",
         "src/mcp/auth.py",
         "src/mcp/config.py",
         "src/mcp/errors.py",
@@ -5936,6 +5946,8 @@
         "test_results_stage1.txt",
         "tests/README.md",
         "tests/__init__.py",
+        "tests/__pycache__/__init__.cpython-312.pyc",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
@@ -6562,6 +6574,8 @@
         "tests/logging/test_structured_logging.py",
         "tests/manifest/test_warning_aggregation.py",
         "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_versioning.cpython-312-pytest-9.0.2.pyc",
         "tests/mcp/test_auth.py",
         "tests/mcp/test_authz_authn_extended.py",
         "tests/mcp/test_config.py",
@@ -7765,7 +7779,9 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -10918,7 +10934,7 @@
           "token-validation",
           "rate-limiting"
         ],
-        "files_processed": 5191,
+        "files_processed": 5207,
         "evidence_count": 239
       }
     },
@@ -12964,7 +12980,7 @@
           "graceful-degradation",
           "logging"
         ],
-        "files_processed": 5191,
+        "files_processed": 5207,
         "evidence_count": 1876
       }
     },
@@ -12975,6 +12991,11 @@
         "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
+        "src/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/mcp/__pycache__/auth.cpython-312.pyc",
+        "src/mcp/__pycache__/errors.cpython-312.pyc",
+        "src/mcp/__pycache__/rate_limit.cpython-312.pyc",
+        "src/mcp/__pycache__/versioning.cpython-312.pyc",
         "src/mcp/auth.py",
         "src/mcp/config.py",
         "src/mcp/errors.py",
@@ -12993,6 +13014,8 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/server.py",
         "test_mcp_server.py",
         "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_versioning.cpython-312-pytest-9.0.2.pyc",
         "tests/mcp/test_auth.py",
         "tests/mcp/test_authz_authn_extended.py",
         "tests/mcp/test_config.py",
@@ -14207,6 +14230,7 @@
         "src/logging_config.py",
         "src/logging_utils.py",
         "src/mcp/server/__init__.py",
+        "src/mcp/versioning.py",
         "src/metrics.py",
         "src/modeling.py",
         "src/security/core.py",
@@ -14767,8 +14791,8 @@
           "log-sanitization",
           "rate-limiting"
         ],
-        "files_processed": 5191,
-        "evidence_count": 1627
+        "files_processed": 5207,
+        "evidence_count": 1628
       }
     },
     {
@@ -14998,7 +15022,7 @@
           "request-throttling",
           "quota-enforcement"
         ],
-        "files_processed": 5191,
+        "files_processed": 5207,
         "evidence_count": 127
       }
     },
@@ -15933,6 +15957,7 @@
         "src/mcp/auth.py",
         "src/mcp/registry.py",
         "src/mcp/server/__init__.py",
+        "src/mcp/versioning.py",
         "src/security/__init__.py",
         "src/security/content_filters.py",
         "src/security/core.py",
@@ -16052,6 +16077,7 @@
         "tests/mcp/test_schema_validation.py",
         "tests/mcp/test_tools_integration.py",
         "tests/mcp/test_tools_integration_advanced.py",
+        "tests/mcp/test_versioning.py",
         "tests/metrics/test_validation.py",
         "tests/modeling/test_lora_minimal.py",
         "tests/models/test_registry_validation.py",
@@ -16413,6 +16439,11 @@
         "src/codex_harness/tool_trace.py",
         "src/common/ndjson_tools.py",
         "src/mcp/__init__.py",
+        "src/mcp/__pycache__/__init__.cpython-312.pyc",
+        "src/mcp/__pycache__/auth.cpython-312.pyc",
+        "src/mcp/__pycache__/errors.cpython-312.pyc",
+        "src/mcp/__pycache__/rate_limit.cpython-312.pyc",
+        "src/mcp/__pycache__/versioning.cpython-312.pyc",
         "src/mcp/auth.py",
         "src/mcp/config.py",
         "src/mcp/errors.py",
@@ -16445,6 +16476,8 @@
         "tests/codex_ml/test_metrics_core_and_eval_tool.py",
         "tests/harness/test_tool_trace.py",
         "tests/mcp/__init__.py",
+        "tests/mcp/__pycache__/__init__.cpython-312.pyc",
+        "tests/mcp/__pycache__/test_versioning.cpython-312-pytest-9.0.2.pyc",
         "tests/mcp/test_auth.py",
         "tests/mcp/test_authz_authn_extended.py",
         "tests/mcp/test_config.py",
@@ -16881,7 +16914,7 @@
           "path-traversal-protection",
           "deterministic-sorting"
         ],
-        "files_processed": 5191,
+        "files_processed": 5207,
         "evidence_count": 8
       }
     },
@@ -22315,7 +22348,9 @@
         "tools/actions_cli.py",
         "tools/actions_server.py",
         "torch/__init__.py",
+        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
+        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -22381,6 +22416,7 @@
       "id": "testing-infrastructure",
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
+        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -22393,6 +22429,7 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
+        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
@@ -23939,7 +23976,7 @@
       "meta": {
         "test_count": 1515,
         "config_count": 26,
-        "fixture_count": 32,
+        "fixture_count": 34,
         "detector_version": "1.1"
       }
     },
