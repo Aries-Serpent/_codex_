@@ -28,8 +28,13 @@ from typing import Optional
 # Try to use typer, fall back to argparse
 try:
     import typer
-    from typing import Annotated
-    TYPER_AVAILABLE = True
+    # Verify typer is actually the real package
+    if hasattr(typer, 'Typer'):
+        from typing import Annotated
+        TYPER_AVAILABLE = True
+    else:
+        TYPER_AVAILABLE = False
+        import argparse
 except ImportError:
     TYPER_AVAILABLE = False
     import argparse
