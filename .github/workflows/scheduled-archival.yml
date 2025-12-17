@@ -71,10 +71,12 @@ jobs:
           fi
           
           # Output for GitHub Actions
-          echo "candidates<<EOF" >> $GITHUB_OUTPUT
-          echo "$CANDIDATES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          {
+            echo "count=$COUNT"
+            echo "candidates<<EOF"
+            echo "$CANDIDATES"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
   create-proposal:
     name: Create Archival Proposal
