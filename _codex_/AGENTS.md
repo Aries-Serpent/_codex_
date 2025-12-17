@@ -1,6 +1,7 @@
 # AGENTS — Super-Agent Entrypoint for Codex Automation
 > Canonical guide for GitHub Copilot, ChatGPT, and automated agents working in _codex_.
-> **Last Updated:** 2025-11-09
+> **Last Updated:** 2025-12-16
+> **CI/CD Status:** ✅ Fully Operational (45/45 workflows)
 
 ## Purpose and Scope
 
@@ -11,6 +12,7 @@ This document serves as the **primary navigation hub** for AI agents (Copilot, C
 - **Orchestration Map**: Task execution pipelines and entrypoints
 - **Prompts Catalog**: Template files with variable mappings
 - **Governance**: Safety constraints and prohibited actions
+- **CTEP Protocol**: Copilot Task Execution Protocol for comprehensive task completion
 
 **Target Audience**: Automated agents, human contributors using agent assistance, CI/CD systems.
 

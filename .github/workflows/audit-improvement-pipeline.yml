@@ -126,15 +126,27 @@ jobs:
             echo "improvement_areas=none" >> $GITHUB_OUTPUT
           fi
 
+      - name: Sanitize Artifact Filenames
+        run: |
+          # Remove invalid NTFS filename characters (: < > | * ? ")
+          find reports/ audit_artifacts/ -type f 2>/dev/null | while read -r file; do
+            dir=$(dirname "$file")
+            base=$(basename "$file")
+            # Replace colons with hyphens, other invalid chars with underscore
+            newbase=$(echo "$base" | tr ':' '-' | tr '<>|*?"' '_')
+            if [ "$base" != "$newbase" ]; then
+              mv "$file" "$dir/$newbase"
+              echo "Renamed: $base → $newbase"
+            fi
+          done || true
+
       - name: Store Trend Data
         run: |
-          python scripts/space_traversal/audit_runner.py store-trend --artifacts-dir audit_artifacts || true
+          python scripts/space_traversal/audit_runner.py store-trend || true
 
       - name: Check Regressions
         run: |
-          python scripts/space_traversal/audit_runner.py check-regressions \
-            --artifacts-dir audit_artifacts \
-            --threshold ${{ inputs.regression_threshold || '0.02' }} || true
+          python scripts/space_traversal/audit_runner.py check-regressions || true
 
       - name: Upload Audit Artifacts
         uses: actions/upload-artifact@v4

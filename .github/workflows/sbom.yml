@@ -55,12 +55,12 @@ jobs:
           else
             echo "::warning::No 'config' target in Makefile; creating minimal config/"
             mkdir -p config
-            [ -f config/sample-sbom-config.yaml ] || cat > config/sample-sbom-config.yaml <<'YAML'
-apiVersion: v1
-sbom:
-  output: sbom.json
-  format: cyclonedx
-YAML
+            if [ ! -f config/sample-sbom-config.yaml ]; then
+              echo "apiVersion: v1" > config/sample-sbom-config.yaml
+              echo "sbom:" >> config/sample-sbom-config.yaml
+              echo "  output: sbom.json" >> config/sample-sbom-config.yaml
+              echo "  format: cyclonedx" >> config/sample-sbom-config.yaml
+            fi
           fi
 
       - name: Generate SBOM
