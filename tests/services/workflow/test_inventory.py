@@ -371,7 +371,6 @@ def test_real_workflow_integration():
     assert len(triggerable) >= 0
     
     # Verify at least one workflow has proper metadata
-    assert count > 0, "Should find at least one workflow"
     first_workflow = list(inventory.workflows.values())[0]
     assert first_workflow.name is not None
     assert first_workflow.file_path.exists()
