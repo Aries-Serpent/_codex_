@@ -63,8 +63,17 @@ class WorkflowParser:
             if metadata and use_cache:
                 self._cache[file_path] = metadata
             return metadata
+        except FileNotFoundError:
+            logger.error(f"Workflow file not found: {file_path}")
+            return None
+        except PermissionError:
+            logger.error(f"Permission denied reading workflow: {file_path}")
+            return None
+        except UnicodeDecodeError as e:
+            logger.error(f"Invalid UTF-8 encoding in {file_path}: {e}")
+            return None
         except Exception as e:
-            logger.error(f"Failed to parse workflow {file_path}: {e}")
+            logger.error(f"Failed to parse workflow {file_path}: {e}", exc_info=True)
             return None
 
     def parse_content(self, content: str, file_path: Path) -> Optional[WorkflowMetadata]:
@@ -133,9 +142,16 @@ class WorkflowParser:
             )
         except yaml.YAMLError as e:
             logger.error(f"YAML parsing error in {file_path}: {e}")
+            logger.debug(f"Problematic content near error: {content[:200]}...")
+            return None
+        except KeyError as e:
+            logger.error(f"Missing required field in {file_path}: {e}")
+            return None
+        except ValueError as e:
+            logger.error(f"Invalid value in {file_path}: {e}")
             return None
         except Exception as e:
-            logger.error(f"Unexpected error parsing {file_path}: {e}")
+            logger.error(f"Unexpected error parsing {file_path}: {e}", exc_info=True)
             return None
 
     def _parse_triggers(self, on_config: Any) -> List[WorkflowTrigger]:

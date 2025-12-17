@@ -385,3 +385,71 @@ def test_workflow_inventory_import_from_services():
     
     # Verify both import paths work
     assert WI is WorkflowInventory
+
+
+def test_parser_handles_invalid_yaml(temp_workflows_dir):
+    """Test that parser handles invalid YAML gracefully."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    # Create file with invalid YAML
+    invalid_file = temp_workflows_dir / "invalid.yml"
+    invalid_file.write_text("name: test\non:\n  push: [\n  # Missing closing bracket")
+    
+    parser = WorkflowParser()
+    result = parser.parse_file(invalid_file)
+    
+    # Should return None for invalid YAML
+    assert result is None
+
+
+def test_parser_handles_invalid_utf8(temp_workflows_dir):
+    """Test that parser handles invalid UTF-8 gracefully."""
+    from src.services.workflow.parser import WorkflowParser
+    
+    # Create file with invalid UTF-8
+    invalid_file = temp_workflows_dir / "invalid_utf8.yml"
+    invalid_file.write_bytes(b"name: test\xc3\x28")  # Invalid UTF-8
+    
+    parser = WorkflowParser()
+    result = parser.parse_file(invalid_file)
+    
+    # Should return None for invalid encoding
+    assert result is None
+
+
+def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_content):
+    """Test that inventory continues scanning after encountering corrupted files."""
+    # Create one valid and one invalid workflow
+    valid_file = temp_workflows_dir / "valid.yml"
+    valid_file.write_text(sample_workflow_content)
+    
+    invalid_file = temp_workflows_dir / "invalid.yml"
+    invalid_file.write_text("invalid: yaml: content: [[[")
+    
+    inventory = WorkflowInventory(temp_workflows_dir)
+    count = inventory.scan()
+    
+    # Should successfully parse the valid one
+    assert count == 1
+    assert "valid.yml" in inventory.workflows
+    assert "invalid.yml" not in inventory.workflows
+
+
+def test_parser_handles_missing_required_fields():
+    """Test parser handles workflows missing required fields."""
+    from src.services.workflow.parser import WorkflowParser
+    from pathlib import Path
+    
+    # Workflow with no jobs
+    content = """
+name: Test
+on: push
+"""
+    
+    parser = WorkflowParser()
+    result = parser.parse_content(content, Path("test.yml"))
+    
+    # Should still parse (jobs can be empty)
+    assert result is not None
+    assert result.name == "Test"
+    assert len(result.jobs) == 0

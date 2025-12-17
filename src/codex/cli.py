@@ -1489,3 +1489,71 @@ _register_external_cli()
 
 if __name__ == "__main__":
     cli()
+
+
+@cli.command("workflow-scan")
+@click.option(
+    "--workflows-dir",
+    "-d",
+    default=".github/workflows",
+    help="Path to workflows directory",
+    type=click.Path(exists=True),
+)
+@click.option(
+    "--format",
+    "-f",
+    default="table",
+    type=click.Choice(["table", "json", "summary"]),
+    help="Output format",
+)
+@click.option(
+    "--triggerable-only",
+    "-t",
+    is_flag=True,
+    help="Show only triggerable workflows",
+)
+def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> None:
+    """Scan and display GitHub Actions workflows."""
+    try:
+        from services.workflow import WorkflowInventory
+    except ImportError:
+        click.echo("Error: workflow services not available", err=True)
+        sys.exit(1)
+    
+    inventory = WorkflowInventory(workflows_dir)
+    count = inventory.scan()
+    
+    if count == 0:
+        click.echo(f"No workflows found in {workflows_dir}")
+        return
+    
+    workflows = inventory.get_triggerable() if triggerable_only else list(inventory.workflows.values())
+    
+    if format == "json":
+        import json
+        data = [
+            {
+                "name": w.name,
+                "file": w.filename,
+                "triggerable": w.is_triggerable,
+                "jobs": len(w.jobs),
+                "triggers": len(w.triggers),
+            }
+            for w in workflows
+        ]
+        click.echo(json.dumps(data, indent=2))
+    elif format == "summary":
+        stats = inventory.get_stats()
+        click.echo(f"\n📊 Workflow Inventory Summary\n")
+        click.echo(f"Total workflows: {stats.total_workflows}")
+        click.echo(f"Triggerable: {stats.triggerable_workflows}")
+        click.echo(f"Reusable: {stats.reusable_workflows}")
+        click.echo(f"Total jobs: {stats.total_jobs}")
+        click.echo(f"Total triggers: {stats.total_triggers}")
+        click.echo(f"Dependencies: {stats.dependency_count}")
+    else:  # table
+        click.echo(f"\n📋 Workflows ({len(workflows)} {'triggerable' if triggerable_only else 'total'})\n")
+        click.echo(f"{'Name':<40} {'File':<30} {'Jobs':<6} {'Triggers':<10}")
+        click.echo("-" * 90)
+        for w in workflows:
+            click.echo(f"{w.name[:39]:<40} {w.filename[:29]:<30} {len(w.jobs):<6} {len(w.triggers):<10}")
