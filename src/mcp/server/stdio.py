@@ -210,7 +210,9 @@ class StdioTransport:
             try:
                 await self._writer.wait_closed()
             except Exception:
-                pass  # Ignore close errors
+                # Ignore errors during writer closure - the stream may already be closed
+                # or in an invalid state. This is a cleanup operation and errors are non-critical.
+                pass
 
 
 class MockStdioTransport(StdioTransport):

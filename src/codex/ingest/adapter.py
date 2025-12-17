@@ -218,6 +218,9 @@ def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
         cmd.extend(["--branch", ref])
     cmd.extend([url, str(dest_dir)])
     
+    # Security: Using 'git' from PATH - assumes it's a trusted version control tool.
+    # The url and ref parameters should be validated by the caller. Arguments are passed
+    # as a list to prevent shell injection. The dest_dir is a controlled Path object.
     result = subprocess.run(
         cmd,
         capture_output=True,

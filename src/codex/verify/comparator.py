@@ -153,6 +153,9 @@ def _run_script(
         stdin_content = input_file.read_text(encoding="utf-8")
     
     try:
+        # Security: Using Python interpreter from PATH to execute script_path which is
+        # validated to be a Path object. The input_file content and arguments should be
+        # validated by the caller. Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             cmd,
             input=stdin_content,

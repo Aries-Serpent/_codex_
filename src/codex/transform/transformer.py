@@ -161,6 +161,9 @@ def _create_diff(original: str, modified: str, file_path: str) -> str:
 def _run_black(file_path: Path) -> Optional[str]:
     """Run black formatter and return modified content."""
     try:
+        # Security: Using 'black' from PATH - assumes it's a trusted code formatter
+        # installed in the development environment. The file_path is validated as a Path.
+        # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             ["black", "--quiet", str(file_path)],
             capture_output=True,
@@ -177,6 +180,9 @@ def _run_black(file_path: Path) -> Optional[str]:
 def _run_isort(file_path: Path) -> Optional[str]:
     """Run isort and return modified content."""
     try:
+        # Security: Using 'isort' from PATH - assumes it's a trusted import sorting tool
+        # installed in the development environment. The file_path is validated as a Path.
+        # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             ["isort", "--quiet", str(file_path)],
             capture_output=True,
