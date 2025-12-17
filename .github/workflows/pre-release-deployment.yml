@@ -73,7 +73,7 @@ jobs:
       
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: test_results.txt
@@ -132,7 +132,7 @@ jobs:
             --output audit_dashboard.html
       
       - name: Upload Audit Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: audit-results
           path: |
@@ -165,7 +165,7 @@ jobs:
         run: mkdir -p release_artifacts
       
       - name: Download Audit Results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: audit-results
           path: release_artifacts/
@@ -229,7 +229,7 @@ jobs:
           ls -lh release_artifacts/
       
       - name: Upload Release Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: release_artifacts/
@@ -247,7 +247,7 @@ jobs:
           python-version: '3.9'
       
       - name: Download Release Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-artifacts
           path: release_artifacts/
@@ -303,7 +303,7 @@ jobs:
           fetch-depth: 0
       
       - name: Download Release Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: release-artifacts
           path: release_artifacts/

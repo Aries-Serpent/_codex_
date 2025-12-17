@@ -8,6 +8,7 @@ torch = pytest.importorskip("torch")
 from codex_ml.utils.checkpointing import save_checkpoint
 
 
+@pytest.mark.ml
 def test_checkpoint_records_git_commit(tmp_path):
     class Toy(torch.nn.Module):
         def __init__(self):

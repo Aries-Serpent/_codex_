@@ -78,11 +78,21 @@ jobs:
                       errors.append(f"{workflow_file.name}: YAML parse error: {e}")
                       continue
               
+              if workflow is None:
+                  errors.append(f"{workflow_file.name}: Empty or invalid workflow file")
+                  continue
+              
               # Check required top-level keys
+              # Note: 'on' is a YAML keyword - PyYAML parses 'on:' as boolean True
+              workflow_keys = list(workflow.keys()) if isinstance(workflow, dict) else []
+              
               if 'name' not in workflow:
                   errors.append(f"{workflow_file.name}: Missing 'name' field")
               
-              if 'on' not in workflow:
+              # Check for 'on' key - YAML may parse 'on' as True boolean, so check both
+              # Use any() to check for boolean True in keys list
+              has_triggers = 'on' in workflow or any(key is True for key in workflow_keys)
+              if not has_triggers:
                   errors.append(f"{workflow_file.name}: Missing 'on' (triggers) field")
               
               if 'jobs' not in workflow:
@@ -240,16 +250,38 @@ jobs:
             const fs = require('fs');
             const report = fs.readFileSync('workflow_validation_report.md', 'utf8');
             
-            const comment = `## 🔍 Workflow Validation Results
+            const commentMarker = '<!-- workflow-validator-comment -->';
+            const comment = `${commentMarker}
+            ## 🔍 Workflow Validation Results
             
             ${report}
             
             ---
             *Automated workflow validation by AI Assistant*`;
             
-            github.rest.issues.createComment({
+            // Find existing comment from this workflow
+            const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
             });
+            
+            const existingComment = comments.find(c => c.body.includes(commentMarker));
+            
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: existingComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }

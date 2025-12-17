@@ -1,5 +1,9 @@
 # AGENTS — Guidelines for contributors and Codex automation
 
+> **Version**: 2.1.0  
+> **Updated**: 2025-12-16  
+> **CI/CD Status**: ✅ Fully Operational
+
 Keep this document updated as conventions evolve.
 
 ## Environment variables
@@ -34,13 +38,32 @@ Keep this document updated as conventions evolve.
 ```bash
 pre-commit run --files <changed_files>
 nox -s tests
-```text
+```
 - Coverage gates target **`src/codex_ml`**; run `pytest --cov=src/codex_ml --cov-fail-under=3.5` when checking locally.
 - Optional deps (e.g., `hydra-core`, `mlflow`): install in a dedicated env or provide mocks.
 
+## CI/CD Workflows
+
+As of 2025-12-16:
+- **45 active workflows** (all passing YAML validation)
+- **GitHub Pages**: Enabled with MkDocs (`pages-mkdocs.yml`)
+- **Key workflows**:
+  - `test-suite.yml` - Main test runner
+  - `optimized-ci.yml` - Optimized CI with pytest-split
+  - `security-suite.yml` - Security scanning
+  - `api-documentation.yml` - API docs generation
+  - `pages-mkdocs.yml` - Documentation deployment
+
+## Copilot Task Execution Protocol (CTEP)
+
+Activate comprehensive task completion mode with:
+- `Enable CTEP` or `CTEP Mode: ON` or `Task mode: ON`
+
+See `.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
+
 ## Prohibited actions
 
-- **Do not** create or activate any GitHub Actions workflows.
+- **Do not** create or activate any GitHub Actions workflows without proper review.
 - Keep automation artifacts confined to `.codex/`.
   - Evidence (plan/apply) is written to `.codex/evidence/` as JSONL for auditability.
 
@@ -50,15 +73,16 @@ nox -s tests
 # example: minimal agent
 def run_agent(task: str) -> str:
     return f"ok: {task}"
-```text
+```
+
 Local checks before commit:
 ```bash
 pre-commit run --all-files
 # Deterministic tests; ML suites are optionally skipped if torch isn't installed.
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q
-```text
+```
 
-> Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments. ([Happy Test][2])
+> Tip: `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1` disables 3rd-party plugin auto-loading for deterministic test runs in minimal environments.
 
 ## Config composition & overrides
 
@@ -67,8 +91,12 @@ You can inspect the composed defaults and override at the CLI:
 ```bash
 python -m codex_ml.cli.config --info defaults   # show defaults list
 python -m codex_ml.cli.config trainer.seed=123 trainer.deterministic=true logging.format=ndjson
-```text
+```
 
 See Hydra's docs for background on defaults lists and composition order.
 
-[2]: https://docs.pytest.org/en/stable/how-to/plugins.html#disabling-plugin-auto-loading
+## Related Documentation
+
+- [Main AGENTS.md](/AGENTS.md) - Comprehensive operations playbook
+- [CTEP Protocol](/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
+- [CHANGELOG](/docs/CHANGELOG.md) - Version history

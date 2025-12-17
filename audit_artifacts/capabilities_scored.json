@@ -131,7 +131,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/status/bundle_status_artifacts.sh",
@@ -229,33 +228,7 @@
       ],
       "explain": {
         "id": "archival-bundling",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -308,10 +281,6 @@
         "src/codex_ml/checkpointing/utils.py",
         "src/codex_ml/cli/checkpoint_validate.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint.py",
         "src/codex_ml/utils/checkpoint_core.py",
         "src/codex_ml/utils/checkpoint_event.py",
@@ -407,33 +376,7 @@
       ],
       "explain": {
         "id": "checkpointing",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -461,11 +404,10 @@
         ".github/workflows/api-documentation.yml",
         ".github/workflows/archive-gates.yml.disabled",
         ".github/workflows/audit-improvement-pipeline.yml",
-        ".github/workflows/audit_chain.yml",
         ".github/workflows/automation_ingest.yml",
-        ".github/workflows/capability-audit.yml",
-        ".github/workflows/ci-pytest.yml",
-        ".github/workflows/ci.yml",
+        ".github/workflows/ci-pytest.yml.disabled",
+        ".github/workflows/ci.yml.disabled",
+        ".github/workflows/comprehensive_tests.yml.disabled",
         ".github/workflows/container-build.yml",
         ".github/workflows/coverage_report.yml",
         ".github/workflows/daily_status_cron.yml",
@@ -482,9 +424,8 @@
         ".github/workflows/html_visual_baseline.yml",
         ".github/workflows/html_visual_regression.yml",
         ".github/workflows/labeler.yml",
-        ".github/workflows/ml-tests.yml",
-        ".github/workflows/multi-python-ci.yml",
-        ".github/workflows/nightly-audit.yml",
+        ".github/workflows/ml-tests.yml.disabled",
+        ".github/workflows/multi-python-ci.yml.disabled",
         ".github/workflows/nox_gates.yml",
         ".github/workflows/optimized-ci.yml",
         ".github/workflows/pages_publish_tiles.yml.tombstone",
@@ -500,23 +441,25 @@
         ".github/workflows/sbom.yml",
         ".github/workflows/scheduled-archival.yml",
         ".github/workflows/scheduled-dependency-audit.yml",
-        ".github/workflows/secrets_baseline_check.yml",
-        ".github/workflows/security-scanning.yml",
-        ".github/workflows/security.yml",
-        ".github/workflows/security_gates.yml",
-        ".github/workflows/security_policy_gate.yml",
+        ".github/workflows/secrets_baseline_check.yml.disabled",
+        ".github/workflows/security-scanning.yml.disabled",
+        ".github/workflows/security-suite.yml",
+        ".github/workflows/security.yml.disabled",
+        ".github/workflows/security_gates.yml.disabled",
+        ".github/workflows/security_policy_gate.yml.disabled",
         ".github/workflows/self-healing-ci.yml",
         ".github/workflows/self-healing-feedback-loop.yml",
-        ".github/workflows/semgrep_sarif.yml",
-        ".github/workflows/space-audit.yml",
+        ".github/workflows/semgrep_sarif.yml.disabled",
         ".github/workflows/status_gate.yml",
         ".github/workflows/template_lint.yml",
-        ".github/workflows/tests.yml",
+        ".github/workflows/test-suite.yml",
+        ".github/workflows/tests.yml.disabled",
         ".github/workflows/validate-docs-enhanced.yml",
         ".github/workflows/validate-docs.yml",
         ".github/workflows/validate.yml.disabled",
         ".github/workflows/wiki-assemble.yml",
         ".github/workflows/workflow-expiry-enforcer.yml",
+        ".github/workflows/workflow-validator.yml",
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
@@ -817,33 +760,7 @@
       ],
       "explain": {
         "id": "ci-cd-pipeline",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -891,13 +808,15 @@
         ".github/docs/Security_Gates_Copilot.md",
         ".github/docs/Security_Session_Copilot.md",
         ".github/scripts/validate_agents_infrastructure.sh",
-        ".github/workflows/security-scanning.yml",
-        ".github/workflows/security.yml",
-        ".github/workflows/security_gates.yml",
-        ".github/workflows/security_policy_gate.yml",
-        ".github/workflows/semgrep_sarif.yml",
+        ".github/workflows/security-scanning.yml.disabled",
+        ".github/workflows/security-suite.yml",
+        ".github/workflows/security.yml.disabled",
+        ".github/workflows/security_gates.yml.disabled",
+        ".github/workflows/security_policy_gate.yml.disabled",
+        ".github/workflows/semgrep_sarif.yml.disabled",
         ".pre-commit-ruff.yaml",
         ".ruff.toml",
+        ".security-exceptions.md",
         "MCP_SECURITY_GUIDE.md",
         "SECURITY.md",
         "agents/codex_client/pyproject.toml",
@@ -971,7 +890,6 @@
         "scripts/security/secret_context_correlate.py",
         "scripts/security/secret_entropy_scan.py",
         "scripts/space_traversal/decode_validate_and_extract.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/extract_validate_gaps.py",
@@ -1147,33 +1065,7 @@
       ],
       "explain": {
         "id": "code-quality-tooling",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -1188,7 +1080,7 @@
         "formatters": 2,
         "linters": 5,
         "quality_scripts": 76,
-        "security_scanners": 179,
+        "security_scanners": 180,
         "type_checkers": 9
       },
       "score": 1.0
@@ -1207,8 +1099,10 @@
         ".codex/hydra_last/config.yaml",
         ".editorconfig",
         ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/config/allowed_root_files.yaml",
         ".github/docs/ARCHIVE_CONFIG_ADR.md",
         ".github/docs/SBOM_Config_InstructionEnhancement.md",
+        ".mutmut-config.txt",
         ".pre-commit-config.yaml",
         "agents/codex_client/codex_client/config.py",
         "agents/codex_client/tests/test_config.py",
@@ -1223,7 +1117,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -1432,7 +1325,6 @@
         "scripts/migrate_configs.py",
         "scripts/remediation/consolidate_configs.py",
         "scripts/runner/configure_repo_vars.sh",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "scripts/status/visual_compare_with_config.sh",
         "services/msp_gateway/config.py",
@@ -1440,15 +1332,12 @@
         "src/codex/archive/logging_config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
-        "src/codex/logging/__pycache__/config.cpython-312.pyc",
         "src/codex/logging/config.py",
         "src/codex_ml/cli/config.py",
         "src/codex_ml/cli/hydra_audit.py",
         "src/codex_ml/cli/hydra_entry.py",
         "src/codex_ml/cli/hydra_main.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -1534,6 +1423,7 @@
         "tests/train/test_hydra_degrade.py",
         "tests/train/test_hydra_main_exit_path.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/unit/test_config_compose.py",
         "tests/visual/test_visual_compare_config.py",
         "tools/apply_hydra_scaffold.py",
@@ -1548,33 +1438,7 @@
       ],
       "explain": {
         "id": "configuration",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -1658,9 +1522,6 @@
         "src/codex_ml/cli/migrate_data.py",
         "src/codex_ml/codex_data.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -1700,7 +1561,6 @@
         "src/codex_ml/logging/run_metadata.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/training/dataloader_utils.py",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/run_metadata.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
@@ -1810,33 +1670,7 @@
       ],
       "explain": {
         "id": "data-pipeline",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -1942,33 +1776,7 @@
       ],
       "explain": {
         "id": "deployment-infrastructure",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -2003,6 +1811,7 @@
       "evidence_files": [
         "README.md",
         "docs/ADVANCED_PHYSICS_GUIDE.md",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/AI_TURN_ANALYSIS_PR2462.md",
         "docs/API_REFERENCE.md",
         "docs/ARCHITECTURE.md",
@@ -2065,6 +1874,8 @@
         "docs/VECTOR_STORE_INTEGRATION_GUIDE.md",
         "docs/WORKFLOW_EFFECTIVENESS_PR2461.md",
         "docs/agents.md",
+        "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
+        "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/analysis/dependency_space_triage.md",
         "docs/analysis/implementation_plan_archival_memory_saving.md",
         "docs/api.md",
@@ -2121,6 +1932,7 @@
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/mcp_versioning_compat.md",
         "docs/capabilities/reproducibility.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
@@ -2420,7 +2232,10 @@
         "docs/plans/AST_TEST_STRATEGY.md",
         "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
         "docs/plans/Autonomous_Session_Completion_Report.md",
+        "docs/plans/COMPREHENSIVE_PLAN_VERIFICATION.md",
+        "docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md",
         "docs/plans/Coverage_Physics_Toolkit_UserGuide.md",
+        "docs/plans/FINAL_COMPREHENSIVE_STATUS.md",
         "docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md",
         "docs/plans/MISSION_COMPLETE.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
@@ -2450,6 +2265,7 @@
         "docs/plans/PHASE2_SESSION_NOTES_COMPLETE.md",
         "docs/plans/PHASE2_VERIFICATION_GAP_ANALYSIS.md",
         "docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md",
+        "docs/plans/PLAN_STATUS_DASHBOARD.md",
         "docs/plans/PR_2205_fix_gap-and-comments.md",
         "docs/plans/Phase0_ExecutiveDashboard.md",
         "docs/plans/Phase0_Gap_Resolution_Guide.md",
@@ -2473,6 +2289,7 @@
         "docs/policies/branch-protection-checklist.md",
         "docs/process/Agent_Session_Closing_Notes.md",
         "docs/profiling/benchmarking.md",
+        "docs/prompts/COVERAGE_CONTINUATION_PROMPT.md",
         "docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md",
         "docs/prompts/chatgpt5_connectivity_recipes.md",
         "docs/prompts/codex_run_prompt_0A_base_.md",
@@ -2512,6 +2329,7 @@
         "docs/releasing.md",
         "docs/remediation/LEGACY_IMPORT_REDUCTION_SUMMARY.md",
         "docs/remediation/README.md",
+        "docs/remediation/SMOKE_TEST_REMEDIATION.md",
         "docs/remediation/components.md",
         "docs/remediation/detectors.md",
         "docs/remediation/policy.md",
@@ -2646,6 +2464,8 @@
         "docs/templates/status/visual_baseline_guide_v1.2.md",
         "docs/templates/status/visual_regression_guide_v1.2.md",
         "docs/templates/status_update.md",
+        "docs/testing/ai_test_generation_guide.md",
+        "docs/testing/coverage_report.md",
         "docs/testing/ml_test_suite_guide.md",
         "docs/testing/test_taxonomy.md",
         "docs/tests/ml_test_score_mapping.md",
@@ -2745,6 +2565,9 @@
         "docs/validation/v1.2.9_Validation_Log.md",
         "docs/validation/v1.3.0_Consolidation_Report.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/workflows/CONSOLIDATION_PLAN.md",
+        "docs/workflows/MONITORING_LOG.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk/AI_AGENT_APP_BUILDER.md",
         "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
         "docs/zendesk/README.md",
@@ -2757,34 +2580,8 @@
       ],
       "explain": {
         "id": "documentation-system",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.125
       },
       "found_patterns": [
         "docs",
@@ -2795,13 +2592,13 @@
       "meta": {
         "config_count": 1,
         "deterministic": true,
-        "markdown_count": 751,
+        "markdown_count": 766,
         "offline": true,
         "rst_count": 0,
-        "total_docs": 753,
+        "total_docs": 768,
         "validation": true
       },
-      "score": 1.0
+      "score": 1.125
     },
     {
       "components": {
@@ -2819,7 +2616,6 @@
         ".codex/GATES_REPORT.txt",
         ".codex/README.md",
         ".codex/action_log.ndjson",
-        ".codex/agent_memory.db",
         ".codex/analysis_metrics.jsonl",
         ".codex/archive/README_UPDATED.md",
         ".codex/automation_out/change_log.md",
@@ -2926,7 +2722,6 @@
         ".codex/scripts/publish_dashboard_tiles.sh",
         ".codex/scripts/setup.sh",
         ".codex/search_hits.json",
-        ".codex/session_logs.db",
         ".codex/sessions/archive/historical_docs_20251210_4d9198c.tar.gz",
         ".codex/sessions/archive/readme.md",
         ".codex/smoke/import_check.py",
@@ -3000,94 +2795,8 @@
         ".codex/validation/structure_audit.md",
         ".codex/validation/tests_docs_links_audit.json",
         ".codex/validation/tests_docs_links_audit.md",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-26-24.433287.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-27-55.247408.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-29-12.452533.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-36-12.858067.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-37-57.503912.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-38-59.570902.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-43-32.280390.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-44-34.714090.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-45-37.998669.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-46-40.827665.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-52-50.812439.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-53-54.159573.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-59-04.207750.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-00-05.450748.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-01-06.624214.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-02-31.246110.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-03-36.113742.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-06-02.811006.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-07-07.379245.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-09-27.227831.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-10-51.190015.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-26-02.021294.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-27-33.049074.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-28-49.956521.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-35-50.531933.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-37-35.339449.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-38-37.194768.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-43-09.999612.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-44-11.248172.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-45-15.844085.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-46-18.367483.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-52-28.033281.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-53-31.987716.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-58-41.825297.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T20-59-43.053234.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-00-44.191314.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-02-08.791148.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-03-13.356467.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-05-40.271703.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-06-44.819642.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-09-04.775166.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-10-28.322938.json",
-        ".codex/workflows/state/EXEC_TEST_2025-12-15T21-13-11.148084.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-26-24.442436.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-27-55.263551.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-29-12.469252.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-36-12.871356.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-37-57.513004.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-38-59.580115.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-43-32.289319.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-44-34.722940.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-45-38.007782.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-46-40.836502.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-52-50.821387.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-53-54.168655.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-59-04.217073.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-00-05.459741.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-01-06.633299.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-02-31.255350.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-03-36.122942.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-06-02.819971.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-07-07.392527.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-09-27.237299.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-10-51.199087.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-26-24.433768.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-27-55.248391.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-29-12.453568.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-36-12.858478.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-37-57.504381.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-38-59.571378.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-43-32.280842.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-44-34.714553.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-45-37.999138.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-46-40.828138.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-52-50.812885.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-53-54.160079.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T20-59-04.208184.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-00-05.451215.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-01-06.624714.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-02-31.246626.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-03-36.114240.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-06-02.811511.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-07-07.379799.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-09-27.228330.json",
-        ".codex/workflows/state/PHYS_DECIDE_2025-12-15T21-10-51.190450.json",
-        ".codex/workflows/state/current.json",
+        ".copilot-review-exclusions.md",
         ".copilot-space/workflow.yaml",
-        ".coverage",
         ".coveragerc",
         ".dockerignore",
         ".dvcignore",
@@ -3156,6 +2865,7 @@
         ".github/audit_artifacts_output/validate_audit_artifacts.py",
         ".github/audit_artifacts_output/validate_docs_capabilities.py",
         ".github/chatmodes/template.chatmode.md",
+        ".github/config/allowed_root_files.yaml",
         ".github/copilot-instructions.md",
         ".github/copilot-prompts/dependency_segmentation_prompt_bundle.md",
         ".github/copilot_agent_task_prompt.next_v1.2.1.md",
@@ -3308,11 +3018,10 @@
         ".github/workflows/api-documentation.yml",
         ".github/workflows/archive-gates.yml.disabled",
         ".github/workflows/audit-improvement-pipeline.yml",
-        ".github/workflows/audit_chain.yml",
         ".github/workflows/automation_ingest.yml",
-        ".github/workflows/capability-audit.yml",
-        ".github/workflows/ci-pytest.yml",
-        ".github/workflows/ci.yml",
+        ".github/workflows/ci-pytest.yml.disabled",
+        ".github/workflows/ci.yml.disabled",
+        ".github/workflows/comprehensive_tests.yml.disabled",
         ".github/workflows/container-build.yml",
         ".github/workflows/coverage_report.yml",
         ".github/workflows/daily_status_cron.yml",
@@ -3329,9 +3038,8 @@
         ".github/workflows/html_visual_baseline.yml",
         ".github/workflows/html_visual_regression.yml",
         ".github/workflows/labeler.yml",
-        ".github/workflows/ml-tests.yml",
-        ".github/workflows/multi-python-ci.yml",
-        ".github/workflows/nightly-audit.yml",
+        ".github/workflows/ml-tests.yml.disabled",
+        ".github/workflows/multi-python-ci.yml.disabled",
         ".github/workflows/nox_gates.yml",
         ".github/workflows/optimized-ci.yml",
         ".github/workflows/pages_publish_tiles.yml.tombstone",
@@ -3347,23 +3055,25 @@
         ".github/workflows/sbom.yml",
         ".github/workflows/scheduled-archival.yml",
         ".github/workflows/scheduled-dependency-audit.yml",
-        ".github/workflows/secrets_baseline_check.yml",
-        ".github/workflows/security-scanning.yml",
-        ".github/workflows/security.yml",
-        ".github/workflows/security_gates.yml",
-        ".github/workflows/security_policy_gate.yml",
+        ".github/workflows/secrets_baseline_check.yml.disabled",
+        ".github/workflows/security-scanning.yml.disabled",
+        ".github/workflows/security-suite.yml",
+        ".github/workflows/security.yml.disabled",
+        ".github/workflows/security_gates.yml.disabled",
+        ".github/workflows/security_policy_gate.yml.disabled",
         ".github/workflows/self-healing-ci.yml",
         ".github/workflows/self-healing-feedback-loop.yml",
-        ".github/workflows/semgrep_sarif.yml",
-        ".github/workflows/space-audit.yml",
+        ".github/workflows/semgrep_sarif.yml.disabled",
         ".github/workflows/status_gate.yml",
         ".github/workflows/template_lint.yml",
-        ".github/workflows/tests.yml",
+        ".github/workflows/test-suite.yml",
+        ".github/workflows/tests.yml.disabled",
         ".github/workflows/validate-docs-enhanced.yml",
         ".github/workflows/validate-docs.yml",
         ".github/workflows/validate.yml.disabled",
         ".github/workflows/wiki-assemble.yml",
         ".github/workflows/workflow-expiry-enforcer.yml",
+        ".github/workflows/workflow-validator.yml",
         ".gitignore",
         ".gitleaks.toml",
         ".hypothesis/constants/0570a7c52cd987f9",
@@ -3415,15 +3125,11 @@
         ".hypothesis/unicode_data/15.0.0/charmap.json.gz",
         ".hypothesis/unicode_data/15.0.0/codec-utf-8.json.gz",
         ".importlinter",
+        ".mutmut-config.txt",
         ".mypy-baseline.txt",
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
-        ".pytest_cache/.gitignore",
-        ".pytest_cache/CACHEDIR.TAG",
-        ".pytest_cache/README.md",
-        ".pytest_cache/v/cache/lastfailed",
-        ".pytest_cache/v/cache/nodeids",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
         ".reports/modernization.json",
@@ -3432,6 +3138,7 @@
         ".reports/modernization_summary.md",
         ".ruff.toml",
         ".secrets.baseline",
+        ".security-exceptions.md",
         ".statusrc.json",
         ".vscode/settings.json",
         ".yamllint.yml",
@@ -3463,6 +3170,8 @@
         "FINALIZATION_ROADMAP.md",
         "FINAL_GAP_ANALYSIS.md",
         "FINAL_STATUS_REPORT.md",
+        "FINAL_STATUS_REPORT_OLD.md",
+        "GAP_ANALYSIS.md",
         "GOVERNANCE.md",
         "IMMEDIATE_EXECUTION_PLAN.md",
         "LARGE_DOWNLOAD_PREVENTION.md",
@@ -3504,8 +3213,6 @@
         "TEAM_ANNOUNCEMENT.md",
         "Traversal_Workflow.md",
         "Usage_Guide.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
-        "__pycache__/sitecustomize.cpython-312.pyc",
         "_codex/status/_codex_status_update-2025-09-21.md",
         "_codex/status/_codex_status_update-2025-09-22.md",
         "_codex/status/manifest-20250922T013307Z.json",
@@ -3524,26 +3231,11 @@
         "agents/ORCHESTRATION.md",
         "agents/TOKENIZED_WORKFLOWS.md",
         "agents/__init__.py",
-        "agents/__pycache__/__init__.cpython-312.pyc",
-        "agents/__pycache__/advanced_physics_calculators.cpython-312.pyc",
-        "agents/__pycache__/agent_memory.cpython-312.pyc",
-        "agents/__pycache__/developer_orchestrator.cpython-312.pyc",
-        "agents/__pycache__/exceptions.cpython-312.pyc",
-        "agents/__pycache__/mental_mapping.cpython-312.pyc",
-        "agents/__pycache__/msp_client.cpython-312.pyc",
-        "agents/__pycache__/physics_integration.cpython-312.pyc",
-        "agents/__pycache__/physics_orchestrator.cpython-312.pyc",
-        "agents/__pycache__/quantum_game_theory.cpython-312.pyc",
-        "agents/__pycache__/self_healing.cpython-312.pyc",
-        "agents/__pycache__/workflow_navigator.cpython-312.pyc",
         "agents/advanced_physics_calculators.py",
         "agents/agent_memory.py",
         "agents/codex_client/README.md",
         "agents/codex_client/__init__.py",
-        "agents/codex_client/__pycache__/__init__.cpython-312.pyc",
         "agents/codex_client/codex_client/__init__.py",
-        "agents/codex_client/codex_client/__pycache__/__init__.cpython-312.pyc",
-        "agents/codex_client/codex_client/__pycache__/bridge.cpython-312.pyc",
         "agents/codex_client/codex_client/bridge.py",
         "agents/codex_client/codex_client/config.py",
         "agents/codex_client/codex_client/demo_plan_and_call.py",
@@ -3688,8 +3380,6 @@
         "codex_digest/EXECUTION.md",
         "codex_digest/README.md",
         "codex_digest/__init__.py",
-        "codex_digest/__pycache__/__init__.cpython-312.pyc",
-        "codex_digest/__pycache__/error_capture.cpython-312.pyc",
         "codex_digest/cli.py",
         "codex_digest/error_capture.py",
         "codex_digest/mapper.py",
@@ -3706,7 +3396,6 @@
         "codex_hardship.yaml",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
-        "codex_ml/__pycache__/__init__.cpython-312.pyc",
         "codex_ml/cli/main.py",
         "codex_ml/data/checksums.py",
         "codex_ml/pipeline.py",
@@ -3757,7 +3446,6 @@
         "config/sample-sbom-config.yaml",
         "config_legacy/README.md",
         "config_legacy/__init__.py",
-        "config_legacy/__pycache__/__init__.cpython-312.pyc",
         "config_legacy/errors.py",
         "configs/CONFIGURATION_STRUCTURE.md",
         "configs/README.md",
@@ -3948,6 +3636,7 @@
         "coverage_agents.json",
         "coverage_agents_full.json",
         "coverage_iteration2.json",
+        "coverage_reports/coverage_analysis_static.md",
         "coverage_working_tests.json",
         "current_coverage.json",
         "data/.gitkeep",
@@ -4003,6 +3692,7 @@
         "docker/healthcheck.sh",
         "docker/msp-gateway.Dockerfile",
         "docs/ADVANCED_PHYSICS_GUIDE.md",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/AI_TURN_ANALYSIS_PR2462.md",
         "docs/API_REFERENCE.md",
         "docs/ARCHITECTURE.md",
@@ -4065,6 +3755,8 @@
         "docs/VECTOR_STORE_INTEGRATION_GUIDE.md",
         "docs/WORKFLOW_EFFECTIVENESS_PR2461.md",
         "docs/agents.md",
+        "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
+        "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/analysis/dependency_space_triage.md",
         "docs/analysis/implementation_plan_archival_memory_saving.md",
         "docs/api.md",
@@ -4121,6 +3813,7 @@
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/mcp_versioning_compat.md",
         "docs/capabilities/reproducibility.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
@@ -4429,7 +4122,10 @@
         "docs/plans/AST_TEST_STRATEGY.md",
         "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
         "docs/plans/Autonomous_Session_Completion_Report.md",
+        "docs/plans/COMPREHENSIVE_PLAN_VERIFICATION.md",
+        "docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md",
         "docs/plans/Coverage_Physics_Toolkit_UserGuide.md",
+        "docs/plans/FINAL_COMPREHENSIVE_STATUS.md",
         "docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md",
         "docs/plans/MISSION_COMPLETE.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
@@ -4459,6 +4155,7 @@
         "docs/plans/PHASE2_SESSION_NOTES_COMPLETE.md",
         "docs/plans/PHASE2_VERIFICATION_GAP_ANALYSIS.md",
         "docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md",
+        "docs/plans/PLAN_STATUS_DASHBOARD.md",
         "docs/plans/PR_2205_fix_gap-and-comments.md",
         "docs/plans/Phase0_ExecutiveDashboard.md",
         "docs/plans/Phase0_Gap_Resolution_Guide.md",
@@ -4483,6 +4180,7 @@
         "docs/policies/branch-protection-checklist.md",
         "docs/process/Agent_Session_Closing_Notes.md",
         "docs/profiling/benchmarking.md",
+        "docs/prompts/COVERAGE_CONTINUATION_PROMPT.md",
         "docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md",
         "docs/prompts/chatgpt5_connectivity_recipes.md",
         "docs/prompts/codex_run_prompt_0A_base_.md",
@@ -4523,6 +4221,7 @@
         "docs/releasing.md",
         "docs/remediation/LEGACY_IMPORT_REDUCTION_SUMMARY.md",
         "docs/remediation/README.md",
+        "docs/remediation/SMOKE_TEST_REMEDIATION.md",
         "docs/remediation/components.md",
         "docs/remediation/detectors.md",
         "docs/remediation/policy.md",
@@ -4674,6 +4373,8 @@
         "docs/templates/status/visual_baseline_guide_v1.2.md",
         "docs/templates/status/visual_regression_guide_v1.2.md",
         "docs/templates/status_update.md",
+        "docs/testing/ai_test_generation_guide.md",
+        "docs/testing/coverage_report.md",
         "docs/testing/ml_test_suite_guide.md",
         "docs/testing/test_taxonomy.md",
         "docs/tests/ml_test_score_mapping.md",
@@ -4773,6 +4474,9 @@
         "docs/validation/v1.2.9_Validation_Log.md",
         "docs/validation/v1.3.0_Consolidation_Report.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/workflows/CONSOLIDATION_PLAN.md",
+        "docs/workflows/MONITORING_LOG.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk/AI_AGENT_APP_BUILDER.md",
         "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
         "docs/zendesk/README.md",
@@ -4876,7 +4580,6 @@
         "noxfile.py",
         "noxfile.security_additions.py",
         "omegaconf/__init__.py",
-        "omegaconf/__pycache__/__init__.cpython-312.pyc",
         "ops/threat_model/STRIDE.md",
         "patches/I2_Data_Spine_P2.1-P2.3.md",
         "patches/analysis.patch",
@@ -4958,7 +4661,6 @@
         "schemas/selection_guard_rules.schema.json",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md",
         "scripts/__init__.py",
-        "scripts/__pycache__/__init__.cpython-312.pyc",
         "scripts/adoption/track_metrics.py",
         "scripts/agent/README.md",
         "scripts/agent/probe_env.py",
@@ -5064,6 +4766,7 @@
         "scripts/generate_docs_manifest.py",
         "scripts/generate_preflight.py",
         "scripts/generate_sbom.py",
+        "scripts/generate_tests.py",
         "scripts/gpu/check_gpu.sh",
         "scripts/inference_pipeline.py",
         "scripts/init_sample_db.py",
@@ -5113,10 +4816,12 @@
         "scripts/review_response_helper.py",
         "scripts/review_root_markdown.py",
         "scripts/rollback_ml_tests.sh",
+        "scripts/rollback_workflow_consolidation.sh",
         "scripts/run_capability_audit.py",
         "scripts/run_codex_digest.sh",
         "scripts/run_codex_tasks.py",
         "scripts/run_codex_workflow.py",
+        "scripts/run_coverage_analysis.py",
         "scripts/run_local_gates.sh",
         "scripts/run_space_audit_fast.sh",
         "scripts/run_supplied_task.sh",
@@ -5153,19 +4858,6 @@
         "scripts/smoke_query_logs.sh",
         "scripts/space_traversal/README.md",
         "scripts/space_traversal/__init__.py",
-        "scripts/space_traversal/__pycache__/__init__.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/capability_scoring.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/coverage_ingest.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/dup_similarity.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/trend_aggregator.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/trend_compare.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/trend_db.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/viz_api_collection.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/viz_ascii.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/viz_cli_builder.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/viz_html.cpython-312.pyc",
-        "scripts/space_traversal/__pycache__/viz_swagger.cpython-312.pyc",
         "scripts/space_traversal/actions_usage_tracker.py",
         "scripts/space_traversal/audit_runner.py",
         "scripts/space_traversal/capability_scoring.py",
@@ -5175,39 +4867,6 @@
         "scripts/space_traversal/decode_validate_and_extract.py",
         "scripts/space_traversal/detectors/.gitkeep",
         "scripts/space_traversal/detectors/README.md",
-        "scripts/space_traversal/detectors/__pycache__/archival_bundling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ci_cd_pipeline.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/deployment_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_duplication.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_peft.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/detector_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/documentation_system.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/example_v2.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/testing_infrastructure.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/vector_store_detector.cpython-312.pyc",
         "scripts/space_traversal/detectors/archival_bundling.py",
         "scripts/space_traversal/detectors/ci_cd_pipeline.py",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
@@ -5321,7 +4980,6 @@
         "semgrep_rules/python/subprocess_shell.yml",
         "semgrep_rules/python/yaml_unsafe_load.yml",
         "sentencepiece/__init__.py",
-        "sentencepiece/__pycache__/__init__.cpython-312.pyc",
         "services/__init__.py",
         "services/api/__init__.py",
         "services/api/main.py",
@@ -5366,11 +5024,8 @@
         "sitecustomize.py",
         "space.mk",
         "src/__init__.py",
-        "src/__pycache__/__init__.cpython-312.pyc",
         "src/cli.py",
         "src/codex/__init__.py",
-        "src/codex/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/__pycache__/_version.cpython-312.pyc",
         "src/codex/_version.py",
         "src/codex/analysis/__init__.py",
         "src/codex/analysis/duplication.py",
@@ -5416,8 +5071,6 @@
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex/db/__init__.py",
-        "src/codex/db/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/db/__pycache__/sqlite_patch.cpython-312.pyc",
         "src/codex/db/sqlite_patch.py",
         "src/codex/diagram/__init__.py",
         "src/codex/diagram/flows.py",
@@ -5440,10 +5093,6 @@
         "src/codex/knowledge/pii.py",
         "src/codex/knowledge/schema.py",
         "src/codex/logging/__init__.py",
-        "src/codex/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/logging/__pycache__/config.cpython-312.pyc",
-        "src/codex/logging/__pycache__/fetch_messages.cpython-312.pyc",
-        "src/codex/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex/logging/config.py",
         "src/codex/logging/conversation_logger.py",
         "src/codex/logging/db_manager.py",
@@ -5465,17 +5114,10 @@
         "src/codex/metrics/storage.py",
         "src/codex/monitoring/__init__.py",
         "src/codex/monkeypatch/__init__.py",
-        "src/codex/monkeypatch/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/monkeypatch/__pycache__/log_adapters.cpython-312.pyc",
         "src/codex/monkeypatch/log_adapters.py",
         "src/codex/qa/__init__.py",
         "src/codex/qa/rubric.py",
         "src/codex/quantum_orchestrator/__init__.py",
-        "src/codex/quantum_orchestrator/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/__pycache__/constants.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/__pycache__/mlops_bridge.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/__pycache__/optimized.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/__pycache__/orchestrator.cpython-312.pyc",
         "src/codex/quantum_orchestrator/cli.py",
         "src/codex/quantum_orchestrator/constants.py",
         "src/codex/quantum_orchestrator/dynamics/__init__.py",
@@ -5484,11 +5126,6 @@
         "src/codex/quantum_orchestrator/optimized.py",
         "src/codex/quantum_orchestrator/orchestrator.py",
         "src/codex/quantum_orchestrator/qft/__init__.py",
-        "src/codex/quantum_orchestrator/qft/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/qft/__pycache__/entanglement.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/qft/__pycache__/gauge.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/qft/__pycache__/path_integral.cpython-312.pyc",
-        "src/codex/quantum_orchestrator/qft/__pycache__/second_quantization.cpython-312.pyc",
         "src/codex/quantum_orchestrator/qft/entanglement.py",
         "src/codex/quantum_orchestrator/qft/gauge.py",
         "src/codex/quantum_orchestrator/qft/path_integral.py",
@@ -5583,12 +5220,14 @@
         "src/codex_harness/golden_harness_status.py",
         "src/codex_harness/honesty.py",
         "src/codex_harness/tool_trace.py",
+        "src/codex_ml.egg-info/PKG-INFO",
+        "src/codex_ml.egg-info/SOURCES.txt",
+        "src/codex_ml.egg-info/dependency_links.txt",
+        "src/codex_ml.egg-info/entry_points.txt",
+        "src/codex_ml.egg-info/requires.txt",
+        "src/codex_ml.egg-info/top_level.txt",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
-        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
-        "src/codex_ml/__pycache__/symbolic_pipeline.cpython-312.pyc",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/__init__.py",
         "src/codex_ml/analysis/extractors.py",
@@ -5652,10 +5291,9 @@
         "src/codex_ml/cli/validate.py",
         "src/codex_ml/codex_data.py",
         "src/codex_ml/codex_model.py",
+        "src/codex_ml/codex_script.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -5670,9 +5308,6 @@
         "src/codex_ml/connectors/registry.py",
         "src/codex_ml/connectors/remote.py",
         "src/codex_ml/data/__init__.py",
-        "src/codex_ml/data/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/cache.cpython-312.pyc",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/cache.py",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/cli.py",
@@ -5757,8 +5392,6 @@
         "src/codex_ml/integrations/__init__.py",
         "src/codex_ml/integrations/har_integration.py",
         "src/codex_ml/interfaces/__init__.py",
-        "src/codex_ml/interfaces/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/interfaces/__pycache__/registry.cpython-312.pyc",
         "src/codex_ml/interfaces/contracts.py",
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/registry.py",
@@ -5783,14 +5416,6 @@
         "src/codex_ml/main.py",
         "src/codex_ml/metrics.py",
         "src/codex_ml/metrics/__init__.py",
-        "src/codex_ml/metrics/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/generative.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/metric_implementations.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/registry.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/reward.cpython-312.pyc",
-        "src/codex_ml/metrics/__pycache__/text.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/base.py",
@@ -5865,8 +5490,6 @@
         "src/codex_ml/plugins/registry.py",
         "src/codex_ml/registry.py",
         "src/codex_ml/registry/__init__.py",
-        "src/codex_ml/registry/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/registry/__pycache__/base.cpython-312.pyc",
         "src/codex_ml/registry/base.py",
         "src/codex_ml/registry/data_loaders.py",
         "src/codex_ml/registry/metrics.py",
@@ -5911,8 +5534,6 @@
         "src/codex_ml/telemetry/metrics.py",
         "src/codex_ml/telemetry/server.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -5971,17 +5592,6 @@
         "src/codex_ml/training/tracking_integration.py",
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/__init__.py",
-        "src/codex_ml/utils/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/atomic_io.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_core.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_event.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/checkpointing.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/runmeta.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/storage.cpython-312.pyc",
         "src/codex_ml/utils/artifacts.py",
         "src/codex_ml/utils/atomic_io.py",
         "src/codex_ml/utils/checkpoint.py",
@@ -6088,6 +5698,20 @@
         "src/common/randomness.py",
         "src/common/registry.py",
         "src/common/validate.py",
+        "src/context_management/__init__.py",
+        "src/context_management/budget.py",
+        "src/context_management/clustering.py",
+        "src/context_management/context_cache.py",
+        "src/context_management/deduplicator.py",
+        "src/context_management/fingerprint.py",
+        "src/context_management/guardrails.py",
+        "src/context_management/hierarchical_memory.py",
+        "src/context_management/memory.py",
+        "src/context_management/normalizer.py",
+        "src/context_management/observability.py",
+        "src/context_management/priority_queue.py",
+        "src/context_management/pruning.py",
+        "src/context_management/sliding_window.py",
         "src/data/.gitkeep",
         "src/data/__init__.py",
         "src/data/datasets.py",
@@ -6128,10 +5752,6 @@
         "src/hydra_extra/__init__.py",
         "src/ingestion/README.md",
         "src/ingestion/__init__.py",
-        "src/ingestion/__pycache__/__init__.cpython-312.pyc",
-        "src/ingestion/__pycache__/encoding_detect.cpython-312.pyc",
-        "src/ingestion/__pycache__/io_text.cpython-312.pyc",
-        "src/ingestion/__pycache__/utils.cpython-312.pyc",
         "src/ingestion/csv_ingestor.py",
         "src/ingestion/encoding_detect.py",
         "src/ingestion/file_ingestor.py",
@@ -6170,12 +5790,6 @@
         "src/services/mcp/lifecycle.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/loader.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/adapter.py",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
@@ -6183,8 +5797,6 @@
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "src/tools/__init__.py",
         "src/tools/archive_pr_checklist.py",
@@ -6271,64 +5883,25 @@
         "test_results_stage1.txt",
         "tests/README.md",
         "tests/__init__.py",
-        "tests/__pycache__/__init__.cpython-312.pyc",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
-        "tests/agents/__pycache__/__init__.cpython-312.pyc",
-        "tests/agents/__pycache__/test_30pct_final.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_advanced_physics_calculators.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_advanced_physics_iteration2.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_exhaustive_30pct.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_expanded_coverage.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_final_30pct.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_final_30pct_push.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_final_push_30pct.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_invariants_minimal.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase1_completion.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase1_completion_final.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase1_final_completion.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase1_to_30pct.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_corrected_apis.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch1.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch10.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch11.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch12.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch13_branch_expansion.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch14_exception_handling.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch15_integration_depth.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch16_method_variations.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch17_final_gaps.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch2.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch3.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch4.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch5.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch6.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch7.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch8.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_deep_coverage_batch9.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_mental_mapping.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_physics_orchestrator.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_phase2_quantum_game_theory.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_physics_orchestrator_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_physics_orchestrator_core.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_physics_orchestrator_deep.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_physics_orchestrator_smoke.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_properties_30pct.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_self_healing_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_smoke_coverage.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_workflow_navigator_comprehensive.cpython-312-pytest-9.0.2.pyc",
-        "tests/agents/__pycache__/test_zero_coverage_boost.cpython-312-pytest-9.0.2.pyc",
         "tests/agents/test_30pct_final.py",
         "tests/agents/test_advanced_physics_calculators.py",
         "tests/agents/test_advanced_physics_iteration2.py",
+        "tests/agents/test_agent_memory_comprehensive.py",
+        "tests/agents/test_developer_orchestrator_comprehensive.py",
+        "tests/agents/test_energy_landscape.py",
         "tests/agents/test_exhaustive_30pct.py",
         "tests/agents/test_expanded_coverage.py",
         "tests/agents/test_final_30pct.py",
         "tests/agents/test_final_30pct_push.py",
         "tests/agents/test_final_push_30pct.py",
+        "tests/agents/test_import_migration_orchestrator.py",
         "tests/agents/test_invariants_minimal.py",
+        "tests/agents/test_load_and_concurrent.py",
+        "tests/agents/test_mental_mapping_core_flows.py",
+        "tests/agents/test_msp_client_comprehensive.py",
         "tests/agents/test_phase1_completion.py",
         "tests/agents/test_phase1_completion_final.py",
         "tests/agents/test_phase1_final_completion.py",
@@ -6354,13 +5927,18 @@
         "tests/agents/test_phase2_mental_mapping.py",
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
+        "tests/agents/test_physics_integration_comprehensive.py",
         "tests/agents/test_physics_orchestrator_comprehensive.py",
         "tests/agents/test_physics_orchestrator_core.py",
+        "tests/agents/test_physics_orchestrator_core_flows.py",
         "tests/agents/test_physics_orchestrator_deep.py",
         "tests/agents/test_physics_orchestrator_smoke.py",
         "tests/agents/test_properties_30pct.py",
+        "tests/agents/test_property_based.py",
+        "tests/agents/test_quantum_game_core_flows.py",
         "tests/agents/test_self_healing_comprehensive.py",
         "tests/agents/test_smoke_coverage.py",
+        "tests/agents/test_swarm_intelligence.py",
         "tests/agents/test_workflow_navigator_comprehensive.py",
         "tests/agents/test_zero_coverage_boost.py",
         "tests/analysis/__init__.py",
@@ -6695,6 +6273,9 @@
         "tests/connectors/test_local_connector.py",
         "tests/connectors/test_registry.py",
         "tests/connectors/test_remote.py",
+        "tests/context_management/__init__.py",
+        "tests/context_management/test_context_management.py",
+        "tests/context_management/test_enhanced_modules.py",
         "tests/crm/__init__.py",
         "tests/crm/test_cdm_loader.py",
         "tests/crm/test_cli.py",
@@ -6836,8 +6417,11 @@
         "tests/fixtures/pasted.txt",
         "tests/fixtures/sample_coverage.xml",
         "tests/fixtures/zaf_legacy.py",
+        "tests/framework/__init__.py",
+        "tests/framework/test_generator.py",
         "tests/gates/conftest.py",
         "tests/gates/test_quality_gates.py",
+        "tests/generated/test_physicsinspiredorchestrator_orchestrate.py",
         "tests/github/test_app_token.py",
         "tests/github/test_app_token_cli.py",
         "tests/github/test_gh_api_pagination_cache.py",
@@ -7145,7 +6729,8 @@
         "tests/serving/test_inference_stub.py",
         "tests/serving/test_model_loader.py",
         "tests/serving_tests/test_inference_serving.py",
-        "tests/smoke/conftest.py",
+        "tests/smoke/__init__.py",
+        "tests/smoke/conftest.py.orig",
         "tests/smoke/test_artifacts_hash.py",
         "tests/smoke/test_checkpoint_hashing.py",
         "tests/smoke/test_cli_determinism_wiring.py",
@@ -7155,6 +6740,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/smoke/test_readiness_smoke.py",
         "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
@@ -7247,7 +6833,9 @@
         "tests/space_traversal/test_viz_cli_api.py",
         "tests/space_traversal/test_viz_html.py",
         "tests/space_traversal/test_webhooks.py",
+        "tests/specs/__init__.py",
         "tests/specs/_workflow_config_utils.py",
+        "tests/specs/flow_specifications.py",
         "tests/specs/test_audit_diff_cli.py",
         "tests/specs/test_audit_explain_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
@@ -7748,9 +7336,11 @@
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
+        "tests/training/test_train_loop_coverage.py",
         "tests/training/test_trainer.py",
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
@@ -8117,9 +7707,7 @@
         "tools/workflow_merge.py",
         "tools/worm_ship.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -8136,7 +7724,6 @@
         "training/streaming.py",
         "transformed_pr_overview.md",
         "transformers/__init__.py",
-        "transformers/__pycache__/__init__.cpython-312.pyc",
         "typer/testing.py",
         "uv.lock",
         "validate-codex-index.yml.template",
@@ -8162,33 +7749,7 @@
       ],
       "explain": {
         "id": "duplication_ratio",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -8289,7 +7850,6 @@
         "src/codex_ml/evaluation/metrics/perplexity.py",
         "src/codex_ml/evaluation/metrics/rouge.py",
         "src/codex_ml/evaluation/runner.py",
-        "src/codex_ml/metrics/__pycache__/evaluator.cpython-312.pyc",
         "src/codex_ml/metrics/evaluator.py",
         "src/codex_ml/training/eval.py",
         "src/evaluation/__init__.py",
@@ -8375,33 +7935,7 @@
       ],
       "explain": {
         "id": "evaluation-metrics",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -8545,34 +8079,8 @@
       ],
       "explain": {
         "id": "example-evidence-v2",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.25
       },
       "found_patterns": [
         "checkpoint",
@@ -10037,7 +9545,7 @@
         "detector_version": "v2",
         "source": "example_v2"
       },
-      "score": 1.0
+      "score": 1.25
     },
     {
       "components": {
@@ -10135,7 +9643,6 @@
         "scripts/ci/generate_wheel_manifest.py",
         "scripts/deepresearch/generate_context_manifest.py",
         "scripts/generate_docs_manifest.py",
-        "scripts/space_traversal/detectors/__pycache__/experiment_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/experiment_management.py",
         "scripts/space_traversal/stable_manifest.py",
         "scripts/tracking/mlflow_ui.sh",
@@ -10155,8 +9662,6 @@
         "src/codex_ml/tracking/mlflow_utils.py",
         "src/codex_ml/tracking/mlflow_wrapper.py",
         "src/codex_ml/training/mlflow_integration.py",
-        "src/codex_ml/utils/__pycache__/provenance.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/run_metadata.cpython-312.pyc",
         "src/codex_ml/utils/experiment_tracking_mlflow.py",
         "src/codex_ml/utils/logging_mlflow.py",
         "src/codex_ml/utils/logging_wandb.py",
@@ -10238,33 +9743,7 @@
       ],
       "explain": {
         "id": "experiment-management",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -10279,8 +9758,8 @@
         "bounded": true,
         "detector_version": "2.0",
         "deterministic": true,
-        "experiment_utils": 35,
-        "metadata_files": 103,
+        "experiment_utils": 34,
+        "metadata_files": 101,
         "mlflow_integration": 44,
         "offline": true,
         "wandb_integration": 7
@@ -10378,9 +9857,6 @@
         "examples/production_training_with_mlflow.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
@@ -10560,7 +10036,6 @@
         "src/codex_ml/utils/yaml_support.py",
         "src/codex_ml/workflow/track_c_workflow.py",
         "src/hhg_logistics/train.py",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/train_tokenizer.py",
         "src/training/__init__.py",
         "src/training/accelerate_init_guard.py",
@@ -10681,9 +10156,11 @@
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
+        "tests/training/test_train_loop_coverage.py",
         "tests/training/test_trainer.py",
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
@@ -10708,34 +10185,8 @@
       ],
       "explain": {
         "id": "functional_training",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.083333
       },
       "found_patterns": [
         "backward",
@@ -10756,7 +10207,7 @@
         "offline": true,
         "patterns_found": 8
       },
-      "score": 1.0
+      "score": 1.083333
     },
     {
       "components": {
@@ -10778,7 +10229,6 @@
         ".codex/evidence/phase5_structured_logging.jsonl",
         ".codex/pre-commit.log",
         ".codex/pytest.log",
-        ".codex/session_logs.db",
         ".codex/status/apply_log.txt",
         ".codex/status/log-S0_to_S1.txt",
         ".codex/status/status_update_change_log.md",
@@ -10832,6 +10282,7 @@
         "configs/training/tracking/base.yaml",
         "configs/training/tracking/offline.yaml",
         "data/sample/reasoning/proof_logs.jsonl",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/CHANGELOG.md",
         "docs/CHANGELOG/change_log.md",
         "docs/CHANGELOG/changelog_codex.md",
@@ -10864,6 +10315,8 @@
         "docs/validation/Batchset_Execution_Log.md",
         "docs/validation/Remediation_Execution_Log.md",
         "docs/validation/v1.2.9_Validation_Log.md",
+        "docs/workflows/MONITORING_LOG.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk_api_catalog_generated.md",
         "logs/error_captures.log",
         "patches/changelog.patch",
@@ -10877,10 +10330,6 @@
         "src/codex/archive/logging_config.py",
         "src/codex/dynamics/apply_logging.py",
         "src/codex/logging/__init__.py",
-        "src/codex/logging/__pycache__/__init__.cpython-312.pyc",
-        "src/codex/logging/__pycache__/config.cpython-312.pyc",
-        "src/codex/logging/__pycache__/fetch_messages.cpython-312.pyc",
-        "src/codex/logging/__pycache__/session_logger.cpython-312.pyc",
         "src/codex/logging/config.py",
         "src/codex/logging/conversation_logger.py",
         "src/codex/logging/db_manager.py",
@@ -10894,7 +10343,6 @@
         "src/codex/logging/session_logger.py",
         "src/codex/logging/session_query.py",
         "src/codex/logging/viewer.py",
-        "src/codex/monkeypatch/__pycache__/log_adapters.cpython-312.pyc",
         "src/codex/monkeypatch/log_adapters.py",
         "src/codex_ml/callbacks/ndjson_logger.py",
         "src/codex_ml/cli/tracking_cli.py",
@@ -11112,33 +10560,7 @@
       ],
       "explain": {
         "id": "logging-tracking",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -11152,7 +10574,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.305851,
+        "documentation": 0.365059,
         "functionality": 1.5,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11190,34 +10612,8 @@
       ],
       "explain": {
         "id": "mcp-authz-authn",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 0.305851,
-            "contribution": 0.04587765,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 0.8959
+        "partials": {},
+        "score": 1.029759
       },
       "found_patterns": [
         "API-Key",
@@ -11228,7 +10624,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.895878
+      "score": 1.029759
     },
     {
       "components": {
@@ -11247,6 +10643,7 @@
         ".env.docker.example",
         ".env.example",
         ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/config/allowed_root_files.yaml",
         ".pre-commit-config.yaml",
         "agents/config/__init__.py",
         "agents/config/workflow_config.yaml",
@@ -11270,14 +10667,11 @@
         "scripts/config/parse_knobs.py",
         "scripts/config/sample_inference_input.json",
         "scripts/config/schema_validate.py",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_configuration.py",
         "services/msp_gateway/config.py",
         "src/codex/config/__init__.py",
         "src/codex/config/env_vars.py",
         "src/codex_ml/config/__init__.py",
-        "src/codex_ml/config/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/config/__pycache__/settings.cpython-312.pyc",
         "src/codex_ml/config/deprecation.py",
         "src/codex_ml/config/load.py",
         "src/codex_ml/config/schema.py",
@@ -11312,33 +10706,7 @@
       ],
       "explain": {
         "id": "mcp-configuration",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -11369,7 +10737,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.305851,
+        "documentation": 0.365059,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11391,34 +10759,8 @@
       ],
       "explain": {
         "id": "mcp-error-handling",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 0.305851,
-            "contribution": 0.04587765,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 0.8959
+        "partials": {},
+        "score": 1.154759
       },
       "found_patterns": [
         "MCPError",
@@ -11428,7 +10770,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.895878
+      "score": 1.154759
     },
     {
       "components": {
@@ -11439,29 +10781,7 @@
         "tests": 1.0
       },
       "evidence_files": [
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-26-24.442436.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-27-55.263551.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-29-12.469252.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-36-12.871356.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-37-57.513004.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-38-59.580115.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-43-32.289319.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-44-34.722940.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-45-38.007782.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-46-40.836502.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-52-50.821387.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-53-54.168655.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T20-59-04.217073.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-00-05.459741.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-01-06.633299.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-02-31.255350.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-03-36.122942.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-06-02.819971.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-07-07.392527.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-09-27.237299.json",
-        ".codex/workflows/state/LIFECYCLE_TEST_2025-12-15T21-10-51.199087.json",
         "docs/mcp/lifecycle_management.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "src/mcp/__init__.py",
         "src/mcp/auth.py",
@@ -11510,33 +10830,7 @@
       ],
       "explain": {
         "id": "mcp-lifecycle-management",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -11568,40 +10862,13 @@
       },
       "evidence_files": [
         "policies/tenant_policy.schema.json",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_multi_tenant.py",
         "services/msp_gateway/middleware/tenant_context.py",
         "tests/mcp/test_multi_tenant_extended.py"
       ],
       "explain": {
         "id": "mcp-multi-tenant",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -11623,7 +10890,7 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.305851,
+        "documentation": 0.365059,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
@@ -11732,7 +10999,8 @@
         "DOCUMENTATION_COVERAGE.md",
         "FINALIZATION_ROADMAP.md",
         "FINAL_GAP_ANALYSIS.md",
-        "FINAL_STATUS_REPORT.md",
+        "FINAL_STATUS_REPORT_OLD.md",
+        "GAP_ANALYSIS.md",
         "LEVEL_4_MLOPS_ASSESSMENT.md",
         "MASTER_IMPLEMENTATION_PLAN.md",
         "MATURITY_REMAINING_WORK.md",
@@ -11761,6 +11029,7 @@
         "agents/agent_memory.py",
         "agents/codex_client/codex_client/bridge.py",
         "agents/mental_mapping.py",
+        "agents/msp_client.py",
         "agents/physics_orchestrator.py",
         "agents/prompts/API_MODEL.md",
         "agents/prompts/debugging/performance-optimization.md",
@@ -11828,6 +11097,7 @@
         "docs/SPACE_TRAVERSAL_GUIDE.md",
         "docs/SPRINT_8_PLAN.md",
         "docs/Usage_Guide.md",
+        "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
         "docs/analysis/dependency_space_triage.md",
         "docs/analysis/implementation_plan_archival_memory_saving.md",
         "docs/api.md",
@@ -11958,6 +11228,7 @@
         "docs/plans/AST_Standardization_InstructionEnhancement.md",
         "docs/plans/AST_Standardization_Requirements.md",
         "docs/plans/AST_TEST_STRATEGY.md",
+        "docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md",
         "docs/plans/PHASE1_COMPLETION_REPORT.md",
         "docs/plans/PHASE2_BATCHES_4-12_COMPLETION_SUMMARY.md",
         "docs/plans/PHASE2_CICD_ANALYSIS_REMEDIATION.md",
@@ -11976,6 +11247,7 @@
         "docs/plans/PHASE2_SESSION_LESSONS_LEARNED.md",
         "docs/plans/PHASE2_SESSION_NOTES_COMPLETE.md",
         "docs/plans/PHASE2_VERIFICATION_GAP_ANALYSIS.md",
+        "docs/plans/PLAN_STATUS_DASHBOARD.md",
         "docs/plans/PR_2205_fix_gap-and-comments.md",
         "docs/plans/Phase0_ExecutiveDashboard.md",
         "docs/plans/Phase0_Gap_Resolution_Guide.md",
@@ -12042,6 +11314,7 @@
         "docs/templates/status/authoring_guide_v1.2.md",
         "docs/templates/status/diff_style_guide_v1.1.md",
         "docs/templates/status/diff_style_guide_v1.2.md",
+        "docs/testing/ai_test_generation_guide.md",
         "docs/testing/ml_test_suite_guide.md",
         "docs/tracking.md",
         "docs/tracking/Offline_MLflow.md",
@@ -12065,6 +11338,7 @@
         "docs/validation/Wave3_SplitBrain_Convergence.md",
         "docs/validation/v1.2.7_Status_Report.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk/AI_AGENT_APP_BUILDER.md",
         "docs/zendesk/README.md",
         "docs/zendesk/VALIDATION_REPORT.md",
@@ -12280,6 +11554,11 @@
         "src/codex_plans/track_G.md",
         "src/common/ndjson_tools.py",
         "src/common/registry.py",
+        "src/context_management/__init__.py",
+        "src/context_management/deduplicator.py",
+        "src/context_management/guardrails.py",
+        "src/context_management/observability.py",
+        "src/context_management/pruning.py",
         "src/evaluation/__init__.py",
         "src/evaluation/metrics.py",
         "src/hhg_logistics/monitor/data_report.py",
@@ -12296,6 +11575,8 @@
         "src/training/trainer.py",
         "temp/bridge_codex_copilot_bridge/agents/codex_client/codex_client/demo_plan_and_call.py",
         "tests/addons/test_metrics_collector_mlflow.py",
+        "tests/agents/test_import_migration_orchestrator.py",
+        "tests/agents/test_mental_mapping_core_flows.py",
         "tests/agents/test_phase2_deep_coverage_batch10.py",
         "tests/agents/test_phase2_deep_coverage_batch13_branch_expansion.py",
         "tests/agents/test_phase2_deep_coverage_batch15_integration_depth.py",
@@ -12303,6 +11584,7 @@
         "tests/agents/test_phase2_deep_coverage_batch2.py",
         "tests/agents/test_phase2_deep_coverage_batch5.py",
         "tests/agents/test_phase2_deep_coverage_batch8.py",
+        "tests/agents/test_physics_orchestrator_core_flows.py",
         "tests/analysis/test_audit_pipeline.py",
         "tests/archive/test_logging_config.py",
         "tests/archive/test_perf_metrics.py",
@@ -12360,6 +11642,7 @@
         "tests/configs/test_validate_configs_cli.py",
         "tests/configuration/test_hydra_override_propagation.py",
         "tests/configuration/test_hydra_validation.py",
+        "tests/context_management/test_context_management.py",
         "tests/docs/test_documentation_system.py",
         "tests/eval/test_bleu_rouge_fallbacks.py",
         "tests/eval/test_eval_provenance_capture.py",
@@ -12563,6 +11846,7 @@
         "tests/train_loop/test_dataset_cast_policy_event.py",
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/unit/test_evaluate_cli_flags.py",
         "tests/unit/test_evaluate_cli_metrics_log.py",
@@ -12625,34 +11909,8 @@
       ],
       "explain": {
         "id": "mcp-observability",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 0.305851,
-            "contribution": 0.04587765,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 0.8959
+        "partials": {},
+        "score": 1.154759
       },
       "found_patterns": [
         "X-Request-Id",
@@ -12664,7 +11922,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.895878
+      "score": 1.154759
     },
     {
       "components": {
@@ -12693,33 +11951,7 @@
       ],
       "explain": {
         "id": "mcp-protocol-surface",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -12742,12 +11974,13 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.305851,
+        "documentation": 0.365059,
         "functionality": 2.0,
         "safeguards": 1.0,
         "tests": 1.0
       },
       "evidence_files": [
+        "agents/msp_client.py",
         "scripts/ops/codex_mint_tokens_per_run.py",
         "scripts/space_traversal/detectors/detector_safeguards.py",
         "scripts/space_traversal/detectors/mcp_rate_limiting.py",
@@ -12791,34 +12024,8 @@
       ],
       "explain": {
         "id": "mcp-rate-limiting",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 0.305851,
-            "contribution": 0.04587765,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 0.8959
+        "partials": {},
+        "score": 1.154759
       },
       "found_patterns": [
         "RateLimiter",
@@ -12828,7 +12035,7 @@
       "meta": {
         "category": "mcp"
       },
-      "score": 0.895878
+      "score": 1.154759
     },
     {
       "components": {
@@ -12903,33 +12110,7 @@
       ],
       "explain": {
         "id": "mcp-schema-validation",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -12984,6 +12165,7 @@
         ".codex/status/_codex_status_update-2025-09-21.md",
         ".codex/status/_codex_status_update-2025-09-22.md",
         ".codex/status/_codex_status_update-2025-09-23.md",
+        ".copilot-review-exclusions.md",
         ".github/AGENTS_FILE_STRUCTURE.md",
         ".github/CONSOLIDATION_PLAYBOOK.md",
         ".github/COPILOT_INTEGRATION_GUIDE.md",
@@ -13117,6 +12299,8 @@
         "FINALIZATION_ROADMAP.md",
         "FINAL_GAP_ANALYSIS.md",
         "FINAL_STATUS_REPORT.md",
+        "FINAL_STATUS_REPORT_OLD.md",
+        "GAP_ANALYSIS.md",
         "IMMEDIATE_EXECUTION_PLAN.md",
         "LARGE_DOWNLOAD_PREVENTION.md",
         "LEVEL_4_MLOPS_ASSESSMENT.md",
@@ -13193,7 +12377,9 @@
         "configs/development/noxfile.py",
         "configs/production/README.md",
         "configs/schemas/README.md",
+        "coverage_reports/coverage_analysis_static.md",
         "docs/ADVANCED_PHYSICS_GUIDE.md",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/AI_TURN_ANALYSIS_PR2462.md",
         "docs/API_REFERENCE.md",
         "docs/ARCHITECTURE.md",
@@ -13234,6 +12420,8 @@
         "docs/Usage_Guide.md",
         "docs/VECTOR_STORE_INTEGRATION_GUIDE.md",
         "docs/WORKFLOW_EFFECTIVENESS_PR2461.md",
+        "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
+        "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/analysis/dependency_space_triage.md",
         "docs/analysis/implementation_plan_archival_memory_saving.md",
         "docs/api/API_DOCUMENTATION.md",
@@ -13266,6 +12454,7 @@
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/mcp_versioning_compat.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
         "docs/capabilities/status_reporting.md",
@@ -13381,6 +12570,7 @@
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
         "docs/plans/PHASE0_IMPLEMENTATION_ASSESSMENT.md",
+        "docs/plans/PHASE0_READINESS_REPORT.md",
         "docs/plans/PHASE2_BATCHES_4-12_COMPLETION_SUMMARY.md",
         "docs/plans/PHASE2_CICD_ANALYSIS_REMEDIATION.md",
         "docs/plans/PHASE2_COMPLETE_ACHIEVEMENT_REPORT.md",
@@ -13425,6 +12615,7 @@
         "docs/reference/tools.md",
         "docs/release/post_merge_review.md",
         "docs/remediation/LEGACY_IMPORT_REDUCTION_SUMMARY.md",
+        "docs/remediation/SMOKE_TEST_REMEDIATION.md",
         "docs/repro_offline_hardening_status.md",
         "docs/reproducibility/env_and_dependency_snapshot.md",
         "docs/review/diff_intake_confirmation.md",
@@ -13492,6 +12683,8 @@
         "docs/templates/status/serving_readiness_checklist_v1.2.md",
         "docs/templates/status/status_json_minimal_examples_v1.2.md",
         "docs/templates/status/status_quality_rubric_v1.2.md",
+        "docs/testing/ai_test_generation_guide.md",
+        "docs/testing/coverage_report.md",
         "docs/tracking/Offline_MLflow.md",
         "docs/training/functional_training.md",
         "docs/training/symbolic_training.md",
@@ -13539,6 +12732,9 @@
         "docs/validation/v1.2.9_Validation_Log.md",
         "docs/validation/v1.3.0_Consolidation_Report.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/workflows/CONSOLIDATION_PLAN.md",
+        "docs/workflows/MONITORING_LOG.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk/AI_AGENT_APP_BUILDER.md",
         "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
         "docs/zendesk/README.md",
@@ -13617,6 +12813,7 @@
         "scripts/space_traversal/detectors/mcp_security_safeguards.py",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "scripts/space_traversal/detectors/mcp_tools_integration.py",
+        "scripts/space_traversal/detectors/mcp_versioning_compat.py",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/detectors/testing_infrastructure.py",
@@ -13772,8 +12969,12 @@
         "temp/bridge_codex_copilot_bridge/services/ita/app/main.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/routers/gitops.py",
         "temp/bridge_codex_copilot_bridge/services/ita/app/utils/security.py",
+        "tests/agents/test_agent_memory_comprehensive.py",
+        "tests/agents/test_developer_orchestrator_comprehensive.py",
         "tests/agents/test_final_30pct_push.py",
+        "tests/agents/test_import_migration_orchestrator.py",
         "tests/agents/test_invariants_minimal.py",
+        "tests/agents/test_load_and_concurrent.py",
         "tests/agents/test_phase1_completion_final.py",
         "tests/agents/test_phase1_final_completion.py",
         "tests/agents/test_phase1_to_30pct.py",
@@ -13793,7 +12994,9 @@
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
         "tests/agents/test_physics_orchestrator_deep.py",
+        "tests/agents/test_property_based.py",
         "tests/agents/test_self_healing_comprehensive.py",
+        "tests/agents/test_swarm_intelligence.py",
         "tests/agents/test_zero_coverage_boost.py",
         "tests/architecture/test_structural_advanced.py",
         "tests/architecture/test_structural_validation.py",
@@ -13835,6 +13038,7 @@
         "tests/configuration/test_config_basics.py",
         "tests/configuration/test_hydra_validation.py",
         "tests/conftest.py",
+        "tests/context_management/test_enhanced_modules.py",
         "tests/crm/test_conversion_fidelity.py",
         "tests/crm/test_conversion_truths.py",
         "tests/d365/test_apply_stubs.py",
@@ -13853,6 +13057,7 @@
         "tests/docs_tests/test_documentation_comprehensive.py",
         "tests/eval/test_datasets_hf_disk.py",
         "tests/eval/test_eval_cli.py",
+        "tests/framework/test_generator.py",
         "tests/guards/test_selection_guard.py",
         "tests/integration/test_agent_memory_api.py",
         "tests/integration/test_audit_runner.py",
@@ -13896,6 +13101,7 @@
         "tests/self_mgmt/test_noxfile_parse.py",
         "tests/serving/test_inference_security.py",
         "tests/serving/test_model_loader.py",
+        "tests/smoke/test_config_validate_cli.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_audit_overrides.py",
         "tests/space_traversal/test_deployment_infrastructure_detector.py",
@@ -13958,6 +13164,7 @@
         "tests/tools/test_validate_experiments.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_cli_prompt_sanitisation.py",
         "tests/unit/test_datasets_module.py",
@@ -14051,33 +13258,7 @@
       ],
       "explain": {
         "id": "mcp-security-safeguards",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -14113,7 +13294,6 @@
       },
       "evidence_files": [
         "docs/capabilities/mcp_tooling_registry.md",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
         "scripts/space_traversal/detectors/mcp_tooling_registry.py",
         "src/mcp/registry.py",
         "temp/bridge_codex_copilot_bridge/mcp/examples/mcp.json",
@@ -14126,33 +13306,7 @@
       ],
       "explain": {
         "id": "mcp-tooling-registry",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -14210,6 +13364,7 @@
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/mcp_versioning_compat.md",
         "docs/guides/CODEX_TOOL_SELECTION.md",
         "docs/mcp/lifecycle_management.md",
         "docs/ops/Local_Tooling_Prereqs.md",
@@ -14217,20 +13372,6 @@
         "docs/reference/tools.md",
         "docs/validation/Schema_Validation_Tooling.md",
         "prompts/system/tool_usage_guidelines.md",
-        "scripts/space_traversal/detectors/__pycache__/code_quality_tooling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_authz_authn.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_configuration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_error_handling.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_lifecycle_management.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_multi_tenant.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_observability.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_protocol_surface.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_rate_limiting.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_schema_validation.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_security_safeguards.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tooling_registry.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_tools_integration.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/mcp_versioning_compat.cpython-312.pyc",
         "scripts/space_traversal/detectors/code_quality_tooling.py",
         "scripts/space_traversal/detectors/mcp_authz_authn.py",
         "scripts/space_traversal/detectors/mcp_configuration.py",
@@ -14640,33 +13781,7 @@
       ],
       "explain": {
         "id": "mcp-tools-integration",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -14687,8 +13802,8 @@
     {
       "components": {
         "consistency": 1.0,
-        "documentation": 0.305851,
-        "functionality": 2.0,
+        "documentation": 0.365059,
+        "functionality": 4.0,
         "safeguards": 0.166667,
         "tests": 1.0
       },
@@ -14704,44 +13819,22 @@
       ],
       "explain": {
         "id": "mcp-versioning-compat",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 0.305851,
-            "contribution": 0.04587765,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 0.166667,
-            "contribution": 0.02500005,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 0.7709
+        "partials": {},
+        "score": 1.529759
       },
       "found_patterns": [
         "MCP_VERSIONS",
-        "negotiate_version"
+        "negotiate_version",
+        "supports_feature",
+        "validate_version"
       ],
       "id": "mcp-versioning-compat",
       "meta": {
-        "category": "mcp"
+        "category": "mcp",
+        "evidence_count": 8,
+        "files_processed": 5137
       },
-      "score": 0.770878
+      "score": 1.529759
     },
     {
       "components": {
@@ -14802,10 +13895,7 @@
         "scripts/config/sample_inference_input.json",
         "scripts/inference_pipeline.py",
         "scripts/local/serve_local.sh",
-        "scripts/space_traversal/__pycache__/viz_api_collection.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
-        "scripts/space_traversal/detectors/__pycache__/inference_serving.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/ml_serving.cpython-312.pyc",
         "scripts/space_traversal/detectors/inference_serving.py",
         "scripts/space_traversal/detectors/mcp_lifecycle_management.py",
         "scripts/space_traversal/detectors/mcp_protocol_surface.py",
@@ -14869,7 +13959,6 @@
         "src/codex_ml/interfaces/peft_hooks.py",
         "src/codex_ml/interfaces/tokenizer.py",
         "src/codex_ml/metrics.py",
-        "src/codex_ml/metrics/__pycache__/api.cpython-312.pyc",
         "src/codex_ml/metrics/_optional_bleu_rouge.py",
         "src/codex_ml/metrics/api.py",
         "src/codex_ml/metrics/core.py",
@@ -14908,6 +13997,7 @@
         "src/codex_ml/utils/checksum.py",
         "src/codex_ml/utils/performance_benchmark.py",
         "src/codex_ml/workflow/track_c_workflow.py",
+        "src/context_management/guardrails.py",
         "src/evaluation/metrics.py",
         "src/hhg_logistics/monitor/serve_report.py",
         "src/hhg_logistics/monitor/snapshot.py",
@@ -14937,7 +14027,6 @@
         "temp/bridge_codex_copilot_bridge/services/ita/scripts/issue_api_key.py",
         "temp/bridge_codex_copilot_bridge/services/ita/tests/test_endpoints.py",
         "test_mcp_server.py",
-        "tests/agents/__pycache__/test_phase2_corrected_apis.cpython-312-pytest-9.0.2.pyc",
         "tests/agents/test_phase2_corrected_apis.py",
         "tests/agents/test_phase2_deep_coverage_batch12.py",
         "tests/agents/test_phase2_deep_coverage_batch6.py",
@@ -15057,34 +14146,8 @@
       ],
       "explain": {
         "id": "ml-serving",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.041667
       },
       "found_patterns": [
         "api",
@@ -15104,7 +14167,7 @@
         "layer": "inference",
         "priority": "high"
       },
-      "score": 1.0
+      "score": 1.041667
     },
     {
       "components": {
@@ -15341,34 +14404,8 @@
       ],
       "explain": {
         "id": "peft_hooks",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.2
       },
       "found_patterns": [
         "LoraConfig",
@@ -15390,7 +14427,7 @@
         "offline": true,
         "validation": true
       },
-      "score": 1.0
+      "score": 1.2
     },
     {
       "components": {
@@ -15429,19 +14466,14 @@
         "scripts/audit/build_integrity_chain.py",
         "scripts/audit/verify_integrity_chain.sh",
         "scripts/data/hash_dataset_files.py",
-        "scripts/space_traversal/detectors/__pycache__/reproducibility.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/structure_integrity.cpython-312.pyc",
         "scripts/space_traversal/detectors/reproducibility.py",
         "scripts/space_traversal/detectors/structure_integrity.py",
         "scripts/space_traversal/validate_template_hash.py",
-        "src/codex_ml/data/__pycache__/integrity.cpython-312.pyc",
         "src/codex_ml/data/checksums.py",
         "src/codex_ml/data/integrity.py",
         "src/codex_ml/reproducibility/__init__.py",
         "src/codex_ml/reproducibility/seed_manager.py",
         "src/codex_ml/training/rng_checkpoint.py",
-        "src/codex_ml/utils/__pycache__/checkpoint_integrity.cpython-312.pyc",
-        "src/codex_ml/utils/__pycache__/seeding.cpython-312.pyc",
         "src/codex_ml/utils/checkpoint_integrity.py",
         "src/codex_ml/utils/checkpoint_integrity_validation.py",
         "src/codex_ml/utils/checksum.py",
@@ -15514,33 +14546,7 @@
       ],
       "explain": {
         "id": "reproducibility",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -15556,10 +14562,10 @@
         "detector_version": "2.0",
         "determinism_configs": 8,
         "deterministic": true,
-        "integrity_validation": 42,
+        "integrity_validation": 39,
         "offline": true,
-        "repro_utils": 39,
-        "seed_management": 35
+        "repro_utils": 38,
+        "seed_management": 34
       },
       "score": 1.0
     },
@@ -15660,27 +14666,7 @@
         ".codex/validation/pre_manifest.json",
         ".codex/validation/tests_docs_links_audit.json",
         ".codex/validation/tests_docs_links_audit.md",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-26-24.433287.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-27-55.247408.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-29-12.452533.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-36-12.858067.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-37-57.503912.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-38-59.570902.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-43-32.280390.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-44-34.714090.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-45-37.998669.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-46-40.827665.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-52-50.812439.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-53-54.159573.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-59-04.207750.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-00-05.450748.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-01-06.624214.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-02-31.246110.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-03-36.113742.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-06-02.811006.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-07-07.379245.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-09-27.227831.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-10-51.190015.json",
+        ".copilot-review-exclusions.md",
         ".copilot-space/workflow.yaml",
         ".fencefixer.yml",
         ".github/AGENTS_FILE_STRUCTURE.md",
@@ -15859,11 +14845,7 @@
         ".github/templates/DEPLOYMENT_ORCHESTRATION_TASK.md",
         ".github/templates/_codex_status_update_template.md",
         ".github/workflows/audit-improvement-pipeline.yml",
-        ".github/workflows/audit_chain.yml",
         ".github/workflows/automation_ingest.yml",
-        ".github/workflows/capability-audit.yml",
-        ".github/workflows/ci-pytest.yml",
-        ".github/workflows/ci.yml",
         ".github/workflows/container-build.yml",
         ".github/workflows/daily_status_enrich.yml",
         ".github/workflows/data_validation.yml",
@@ -15874,9 +14856,6 @@
         ".github/workflows/draft-audit-pr.yml",
         ".github/workflows/github_connector_check.yml",
         ".github/workflows/html_visual_baseline.yml",
-        ".github/workflows/ml-tests.yml",
-        ".github/workflows/multi-python-ci.yml",
-        ".github/workflows/nightly-audit.yml",
         ".github/workflows/optimized-ci.yml",
         ".github/workflows/post-merge-validation-optimized.yml",
         ".github/workflows/post-merge-validation.yml",
@@ -15888,18 +14867,15 @@
         ".github/workflows/runner-diagnostics.yml",
         ".github/workflows/sbom.yml",
         ".github/workflows/scheduled-dependency-audit.yml",
-        ".github/workflows/secrets_baseline_check.yml",
-        ".github/workflows/security-scanning.yml",
-        ".github/workflows/security.yml",
-        ".github/workflows/security_gates.yml",
-        ".github/workflows/security_policy_gate.yml",
+        ".github/workflows/security-suite.yml",
         ".github/workflows/self-healing-ci.yml",
         ".github/workflows/self-healing-feedback-loop.yml",
-        ".github/workflows/space-audit.yml",
         ".github/workflows/validate-docs-enhanced.yml",
         ".github/workflows/validate-docs.yml",
         ".github/workflows/wiki-assemble.yml",
         ".github/workflows/workflow-expiry-enforcer.yml",
+        ".github/workflows/workflow-validator.yml",
+        ".mutmut-config.txt",
         ".pre-commit-config.yaml",
         ".pre-commit-hybrid.yaml",
         ".pre-commit-ruff.yaml",
@@ -15907,6 +14883,7 @@
         ".reports/modernization_after.json",
         ".reports/modernization_after.md",
         ".reports/modernization_summary.md",
+        ".security-exceptions.md",
         "ACTIVATION_CHECKLIST_STATUS.md",
         "AGENTS.md",
         "BATCH_ACTIVATION_READINESS_REPORT.md",
@@ -15925,6 +14902,8 @@
         "FINALIZATION_ROADMAP.md",
         "FINAL_GAP_ANALYSIS.md",
         "FINAL_STATUS_REPORT.md",
+        "FINAL_STATUS_REPORT_OLD.md",
+        "GAP_ANALYSIS.md",
         "IMMEDIATE_EXECUTION_PLAN.md",
         "LARGE_DOWNLOAD_PREVENTION.md",
         "LEVEL_4_MLOPS_ASSESSMENT.md",
@@ -16202,6 +15181,7 @@
         "coverage_agents.json",
         "coverage_agents_full.json",
         "coverage_iteration2.json",
+        "coverage_reports/coverage_analysis_static.md",
         "coverage_working_tests.json",
         "current_coverage.json",
         "data/offline/length_reward.json",
@@ -16215,6 +15195,7 @@
         "docker/ci_run.sh",
         "docker/healthcheck.sh",
         "docs/ADVANCED_PHYSICS_GUIDE.md",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/AI_TURN_ANALYSIS_PR2462.md",
         "docs/API_REFERENCE.md",
         "docs/ARCHITECTURE.md",
@@ -16225,6 +15206,7 @@
         "docs/CHATGPT_ASSISTANT_GUIDE.md",
         "docs/CHECKPOINTS.md",
         "docs/CLI.md",
+        "docs/CODEX_STRUCTURE_CONSOLIDATION_PROMPT.md",
         "docs/CONTRIBUTING.addendum.md",
         "docs/CONTRIBUTING.md",
         "docs/CONTRIBUTOR_ONBOARDING.md",
@@ -16270,6 +15252,8 @@
         "docs/VECTOR_STORE_INTEGRATION_GUIDE.md",
         "docs/WORKFLOW_EFFECTIVENESS_PR2461.md",
         "docs/agents.md",
+        "docs/analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md",
+        "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/analysis/dependency_space_triage.md",
         "docs/analysis/implementation_plan_archival_memory_saving.md",
         "docs/api/API_DOCUMENTATION.md",
@@ -16315,6 +15299,7 @@
         "docs/capabilities/mcp_security_safeguards.md",
         "docs/capabilities/mcp_tooling_registry.md",
         "docs/capabilities/mcp_tools_integration.md",
+        "docs/capabilities/mcp_versioning_compat.md",
         "docs/capabilities/reproducibility.md",
         "docs/capabilities/safeguards_detection.md",
         "docs/capabilities/safeguards_keywords.md",
@@ -16555,12 +15540,16 @@
         "docs/plans/AST_TEST_STRATEGY.md",
         "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
         "docs/plans/Autonomous_Session_Completion_Report.md",
+        "docs/plans/COMPREHENSIVE_PLAN_VERIFICATION.md",
+        "docs/plans/COVERAGE_IMPROVEMENT_ROADMAP.md",
         "docs/plans/Coverage_Physics_Toolkit_UserGuide.md",
+        "docs/plans/FINAL_COMPREHENSIVE_STATUS.md",
         "docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md",
         "docs/plans/MISSION_COMPLETE.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
         "docs/plans/PHASE0_IMPLEMENTATION_ASSESSMENT.md",
+        "docs/plans/PHASE0_READINESS_REPORT.md",
         "docs/plans/PHASE1_COMPLETION_REPORT.md",
         "docs/plans/PHASE2_BATCHES_4-12_COMPLETION_SUMMARY.md",
         "docs/plans/PHASE2_CICD_ANALYSIS_REMEDIATION.md",
@@ -16584,6 +15573,7 @@
         "docs/plans/PHASE2_SESSION_NOTES_COMPLETE.md",
         "docs/plans/PHASE2_VERIFICATION_GAP_ANALYSIS.md",
         "docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md",
+        "docs/plans/PLAN_STATUS_DASHBOARD.md",
         "docs/plans/PR_2205_fix_gap-and-comments.md",
         "docs/plans/Phase0_ExecutiveDashboard.md",
         "docs/plans/Phase0_Gap_Resolution_Guide.md",
@@ -16602,6 +15592,7 @@
         "docs/plugins.md",
         "docs/plugins/Plugin_API_Broader.md",
         "docs/policies/branch-protection-checklist.md",
+        "docs/prompts/COVERAGE_CONTINUATION_PROMPT.md",
         "docs/prompts/COVERAGE_ENHANCEMENT_PROMPT.md",
         "docs/prompts/codex_run_prompt_0A_base_.md",
         "docs/prompts/codex_run_prompt_0D_base_.md",
@@ -16631,6 +15622,7 @@
         "docs/release/post_merge_review.md",
         "docs/remediation/LEGACY_IMPORT_REDUCTION_SUMMARY.md",
         "docs/remediation/README.md",
+        "docs/remediation/SMOKE_TEST_REMEDIATION.md",
         "docs/remediation/components.md",
         "docs/remediation/policy.md",
         "docs/repo_audit_policy.md",
@@ -16749,6 +15741,8 @@
         "docs/templates/status/status_quality_rubric_v1.2.md",
         "docs/templates/status/validation_matrix_v1.2.md",
         "docs/templates/status/visual_baseline_guide_v1.2.md",
+        "docs/testing/ai_test_generation_guide.md",
+        "docs/testing/coverage_report.md",
         "docs/testing/ml_test_suite_guide.md",
         "docs/testing/test_taxonomy.md",
         "docs/tests/ml_test_score_mapping.md",
@@ -16827,6 +15821,9 @@
         "docs/validation/v1.2.9_Validation_Log.md",
         "docs/validation/v1.3.0_Consolidation_Report.md",
         "docs/validation/zendesk_ai_builder_readiness_validation.md",
+        "docs/workflows/CONSOLIDATION_PLAN.md",
+        "docs/workflows/MONITORING_LOG.md",
+        "docs/workflows/PHASE1_TRACKING.md",
         "docs/zendesk/AI_AGENT_APP_BUILDER.md",
         "docs/zendesk/CANONICAL_CAPABILITY_MAP.md",
         "docs/zendesk/README.md",
@@ -16959,6 +15956,7 @@
         "scripts/generate_docs_manifest.py",
         "scripts/generate_preflight.py",
         "scripts/generate_sbom.py",
+        "scripts/generate_tests.py",
         "scripts/inference_pipeline.py",
         "scripts/init_sample_db.py",
         "scripts/initialize_feature_store.py",
@@ -16995,8 +15993,10 @@
         "scripts/repo_audit.py",
         "scripts/review_response_helper.py",
         "scripts/review_root_markdown.py",
+        "scripts/rollback_workflow_consolidation.sh",
         "scripts/run_codex_tasks.py",
         "scripts/run_codex_workflow.py",
+        "scripts/run_coverage_analysis.py",
         "scripts/run_local_gates.sh",
         "scripts/run_sweep.py",
         "scripts/run_validation.sh",
@@ -17255,6 +16255,8 @@
         "src/codex_harness/golden_harness_status.py",
         "src/codex_harness/honesty.py",
         "src/codex_harness/tool_trace.py",
+        "src/codex_ml.egg-info/SOURCES.txt",
+        "src/codex_ml.egg-info/entry_points.txt",
         "src/codex_ml/__init__.py",
         "src/codex_ml/_package_main.py",
         "src/codex_ml/analysis/extractors.py",
@@ -17311,6 +16313,7 @@
         "src/codex_ml/cli/validate.py",
         "src/codex_ml/codex_data.py",
         "src/codex_ml/codex_model.py",
+        "src/codex_ml/codex_script.py",
         "src/codex_ml/codex_structured_logging.py",
         "src/codex_ml/config/__init__.py",
         "src/codex_ml/config/deprecation.py",
@@ -17662,6 +16665,18 @@
         "src/common/randomness.py",
         "src/common/registry.py",
         "src/common/validate.py",
+        "src/context_management/budget.py",
+        "src/context_management/clustering.py",
+        "src/context_management/context_cache.py",
+        "src/context_management/deduplicator.py",
+        "src/context_management/fingerprint.py",
+        "src/context_management/guardrails.py",
+        "src/context_management/hierarchical_memory.py",
+        "src/context_management/memory.py",
+        "src/context_management/normalizer.py",
+        "src/context_management/observability.py",
+        "src/context_management/pruning.py",
+        "src/context_management/sliding_window.py",
         "src/data/__init__.py",
         "src/data/datasets.py",
         "src/data/loaders.py",
@@ -17771,12 +16786,19 @@
         "tests/agents/test_30pct_final.py",
         "tests/agents/test_advanced_physics_calculators.py",
         "tests/agents/test_advanced_physics_iteration2.py",
+        "tests/agents/test_agent_memory_comprehensive.py",
+        "tests/agents/test_developer_orchestrator_comprehensive.py",
+        "tests/agents/test_energy_landscape.py",
         "tests/agents/test_exhaustive_30pct.py",
         "tests/agents/test_expanded_coverage.py",
         "tests/agents/test_final_30pct.py",
         "tests/agents/test_final_30pct_push.py",
         "tests/agents/test_final_push_30pct.py",
+        "tests/agents/test_import_migration_orchestrator.py",
         "tests/agents/test_invariants_minimal.py",
+        "tests/agents/test_load_and_concurrent.py",
+        "tests/agents/test_mental_mapping_core_flows.py",
+        "tests/agents/test_msp_client_comprehensive.py",
         "tests/agents/test_phase1_completion.py",
         "tests/agents/test_phase1_completion_final.py",
         "tests/agents/test_phase1_final_completion.py",
@@ -17802,13 +16824,18 @@
         "tests/agents/test_phase2_mental_mapping.py",
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
+        "tests/agents/test_physics_integration_comprehensive.py",
         "tests/agents/test_physics_orchestrator_comprehensive.py",
         "tests/agents/test_physics_orchestrator_core.py",
+        "tests/agents/test_physics_orchestrator_core_flows.py",
         "tests/agents/test_physics_orchestrator_deep.py",
         "tests/agents/test_physics_orchestrator_smoke.py",
         "tests/agents/test_properties_30pct.py",
+        "tests/agents/test_property_based.py",
+        "tests/agents/test_quantum_game_core_flows.py",
         "tests/agents/test_self_healing_comprehensive.py",
         "tests/agents/test_smoke_coverage.py",
+        "tests/agents/test_swarm_intelligence.py",
         "tests/agents/test_workflow_navigator_comprehensive.py",
         "tests/agents/test_zero_coverage_boost.py",
         "tests/analysis/test_ast_consistency.py",
@@ -18101,6 +17128,8 @@
         "tests/connectors/test_local_connector.py",
         "tests/connectors/test_registry.py",
         "tests/connectors/test_remote.py",
+        "tests/context_management/test_context_management.py",
+        "tests/context_management/test_enhanced_modules.py",
         "tests/crm/test_cdm_loader.py",
         "tests/crm/test_cli.py",
         "tests/crm/test_cli_smoke.py",
@@ -18225,7 +17254,9 @@
         "tests/features/test_feature_store.py",
         "tests/features/test_feature_store_complete.py",
         "tests/features/test_monitoring_complete.py",
+        "tests/framework/test_generator.py",
         "tests/gates/test_quality_gates.py",
+        "tests/generated/test_physicsinspiredorchestrator_orchestrate.py",
         "tests/github/test_app_token.py",
         "tests/github/test_app_token_cli.py",
         "tests/github/test_gh_api_pagination_cache.py",
@@ -18511,6 +17542,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/smoke/test_readiness_smoke.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
         "tests/space_traversal/test_audit_overrides.py",
@@ -19086,9 +18118,11 @@
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
+        "tests/training/test_train_loop_coverage.py",
         "tests/training/test_trainer.py",
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/test_detectors_cli.py",
         "tests/unified/test_unified_training_comprehensive.py",
@@ -19423,34 +18457,8 @@
       ],
       "explain": {
         "id": "safeguards_keywords",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.039062
       },
       "found_patterns": [
         "MAX_READ_BYTES",
@@ -19498,7 +18506,7 @@
         "deterministic": true,
         "offline": true
       },
-      "score": 1.0
+      "score": 1.039062
     },
     {
       "components": {
@@ -19569,33 +18577,7 @@
       ],
       "explain": {
         "id": "safety-security",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -19677,27 +18659,6 @@
         ".codex/validation/structure_audit.md",
         ".codex/validation/tests_docs_links_audit.json",
         ".codex/validation/tests_docs_links_audit.md",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-26-24.433287.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-27-55.247408.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-29-12.452533.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-36-12.858067.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-37-57.503912.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-38-59.570902.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-43-32.280390.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-44-34.714090.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-45-37.998669.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-46-40.827665.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-52-50.812439.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-53-54.159573.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T20-59-04.207750.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-00-05.450748.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-01-06.624214.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-02-31.246110.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-03-36.113742.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-06-02.811006.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-07-07.379245.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-09-27.227831.json",
-        ".codex/workflows/state/AUDIT_EXEC_2025-12-15T21-10-51.190015.json",
         ".github/ISSUE_TEMPLATE/bug_report.yml",
         ".github/ISSUE_TEMPLATE/status_report.md",
         ".github/audit_artifacts_output/COMPLETION_CERTIFICATE.md",
@@ -19738,16 +18699,12 @@
         ".github/prs/0001-consolidate-audit-pipeline.md",
         ".github/templates/_codex_status_update_template.md",
         ".github/workflows/audit-improvement-pipeline.yml",
-        ".github/workflows/audit_chain.yml",
-        ".github/workflows/capability-audit.yml",
         ".github/workflows/coverage_report.yml",
         ".github/workflows/daily_status_cron.yml",
         ".github/workflows/daily_status_enrich.yml",
         ".github/workflows/draft-audit-pr.yml",
-        ".github/workflows/nightly-audit.yml",
         ".github/workflows/report_publish.yml",
         ".github/workflows/scheduled-dependency-audit.yml",
-        ".github/workflows/space-audit.yml",
         ".github/workflows/status_gate.yml",
         ".reports/fencefix_run.json",
         ".reports/fencefix_summary.md",
@@ -19761,6 +18718,7 @@
         "COMPLETION_SUMMARY.md",
         "COMPREHENSIVE_SESSION_SUMMARY.md",
         "FINAL_STATUS_REPORT.md",
+        "FINAL_STATUS_REPORT_OLD.md",
         "Makefile.status",
         "PR_2461_COMPLETION_SUMMARY.md",
         "PR_FINAL_SUMMARY.md",
@@ -19799,10 +18757,13 @@
         "codex_utils/cli/ndjson_summary.py",
         "codex_utils/json_report.py",
         "compare_report.json",
+        "coverage_reports/coverage_analysis_static.md",
+        "docs/AI_ASSISTANT_TERMINOLOGY_AUDIT.md",
         "docs/PR2462_FINAL_SUMMARY.md",
         "docs/PR2462_IMPLEMENTATION_STATUS.md",
         "docs/PR_AUDIT_CHECKLISTS.md",
         "docs/PR_AUDIT_CHECKLIST_v1.3.0.md",
+        "docs/analysis/WEEK1_COVERAGE_STATUS.md",
         "docs/arch/_archive-policy/_deprecated/v2-archiving-summary.md",
         "docs/arch/_archive-policy/_deprecated/v3-archiving-summary.md",
         "docs/arch/_archive-policy/_deprecated/v4-archiving-summary.md",
@@ -19838,6 +18799,7 @@
         "docs/ops/vendor_audit_stress_validation.md",
         "docs/plans/AUDIT_IMPROVEMENT_IMPLEMENTATION_SUMMARY.md",
         "docs/plans/Autonomous_Session_Completion_Report.md",
+        "docs/plans/FINAL_COMPREHENSIVE_STATUS.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Execution_Blueprint.md",
         "docs/plans/MSP_Audit_Gap_Remediation_Plan_of_Action.md",
         "docs/plans/PHASE0_READINESS_REPORT.md",
@@ -19855,6 +18817,7 @@
         "docs/plans/PHASE2_FINAL_WORK_SUMMARY.md",
         "docs/plans/PHASE2_SESSION_COMPLETE_FINAL_SUMMARY.md",
         "docs/plans/PHASE2_VERIFICATION_STATUS_CYCLE1.md",
+        "docs/plans/PLAN_STATUS_DASHBOARD.md",
         "docs/plans/Session_Completion_Summary_2025-12-13.md",
         "docs/plans/Test_Suite_Validation_Report.md",
         "docs/reference/audit_prompt.md",
@@ -19958,6 +18921,7 @@
         "docs/templates/status/visual_baseline_guide_v1.2.md",
         "docs/templates/status/visual_regression_guide_v1.2.md",
         "docs/templates/status_update.md",
+        "docs/testing/coverage_report.md",
         "docs/validation/CODEBASE_Status_Audit_2025-10-14.md",
         "docs/validation/Offline_Audit_Validation.md",
         "docs/validation/PartB_Completion_Report.md",
@@ -19997,9 +18961,7 @@
         "scripts/run_capability_audit.py",
         "scripts/run_space_audit_fast.sh",
         "scripts/runner/runner_status.sh",
-        "scripts/space_traversal/__pycache__/audit_runner.cpython-312.pyc",
         "scripts/space_traversal/audit_runner.py",
-        "scripts/space_traversal/detectors/__pycache__/status_reporting.cpython-312.pyc",
         "scripts/space_traversal/detectors/status_reporting.py",
         "scripts/space_traversal/schemas/validate_report_schema.json",
         "scripts/space_traversal/status_update_report.py",
@@ -20156,33 +19118,7 @@
       ],
       "explain": {
         "id": "status-reporting",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -20207,13 +19143,11 @@
         "tests": 1.0
       },
       "evidence_files": [
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
-        "__pycache__/sitecustomize.cpython-312.pyc",
         "codex_ml/__init__.py",
         "codex_ml/__main__.py",
-        "codex_ml/__pycache__/__init__.cpython-312.pyc",
         "codex_ml/cli/main.py",
         "codex_ml/data/checksums.py",
+        "codex_ml/pipeline.py",
         "codex_utils/__init__.py",
         "codex_utils/cli/__init__.py",
         "codex_utils/cli/ndjson_summary.py",
@@ -20237,12 +19171,11 @@
         "services/api/main.py",
         "services/api/requirements.txt",
         "services/ita/.gitignore",
-        "src/__pycache__/__init__.cpython-312.pyc",
         "src/codex_ml/__init__.py",
         "src/codex_ml/__main__.py",
-        "src/codex_ml/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/__pycache__/metrics_base.cpython-312.pyc",
-        "src/codex_ml/__pycache__/pipeline.cpython-312.pyc",
+        "src/codex_ml/_package_main.py",
+        "src/codex_ml/analysis/__init__.py",
+        "src/codex_ml/analysis/extractors.py",
         "src/codex_utils/__init__.py",
         "src/codex_utils/regex_patterns.py",
         "src/codex_utils/tracking/__init__.py",
@@ -20262,9 +19195,9 @@
         "src/services/mcp/lifecycle.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
+        "src/tokenization/adapter.py",
+        "src/tokenization/api.py",
+        "src/tokenization/cli.py",
         "src/tools/__init__.py",
         "src/tools/archive_pr_checklist.py",
         "src/tools/codeowners_validate.py",
@@ -20285,9 +19218,7 @@
         "tools/actions_cli.py",
         "tools/actions_server.py",
         "torch/__init__.py",
-        "torch/__pycache__/__init__.cpython-312.pyc",
         "torch/nn/__init__.py",
-        "torch/nn/__pycache__/__init__.cpython-312.pyc",
         "training/__init__.py",
         "training/accelerate_init_guard.py",
         "training/cache.py",
@@ -20296,33 +19227,7 @@
       ],
       "explain": {
         "id": "structural-integrity",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -20347,7 +19252,6 @@
           "torch"
         ],
         "split_dirs": [
-          "__pycache__",
           "codex_ml",
           "codex_utils",
           "data",
@@ -20371,7 +19275,6 @@
       },
       "evidence_files": [
         ".github/docs/AGENTS_Integration_Test_Fixture_Refactor_Copilot.md",
-        "__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "agents/codex_client/pyproject.toml",
         "configs/base/offline/tiny_fixtures.yaml",
         "configs/development/pytest.ini",
@@ -20384,19 +19287,25 @@
         "temp/bridge_codex_copilot_bridge/mcp/server/pyproject.toml",
         "temp/bridge_codex_copilot_bridge/services/ita/pyproject.toml",
         "tests/__init__.py",
-        "tests/__pycache__/conftest.cpython-312-pytest-9.0.2.pyc",
         "tests/_codex_introspect.py",
         "tests/addons/test_metrics_collector_mlflow.py",
         "tests/agents/__init__.py",
         "tests/agents/test_30pct_final.py",
         "tests/agents/test_advanced_physics_calculators.py",
         "tests/agents/test_advanced_physics_iteration2.py",
+        "tests/agents/test_agent_memory_comprehensive.py",
+        "tests/agents/test_developer_orchestrator_comprehensive.py",
+        "tests/agents/test_energy_landscape.py",
         "tests/agents/test_exhaustive_30pct.py",
         "tests/agents/test_expanded_coverage.py",
         "tests/agents/test_final_30pct.py",
         "tests/agents/test_final_30pct_push.py",
         "tests/agents/test_final_push_30pct.py",
+        "tests/agents/test_import_migration_orchestrator.py",
         "tests/agents/test_invariants_minimal.py",
+        "tests/agents/test_load_and_concurrent.py",
+        "tests/agents/test_mental_mapping_core_flows.py",
+        "tests/agents/test_msp_client_comprehensive.py",
         "tests/agents/test_phase1_completion.py",
         "tests/agents/test_phase1_completion_final.py",
         "tests/agents/test_phase1_final_completion.py",
@@ -20422,13 +19331,18 @@
         "tests/agents/test_phase2_mental_mapping.py",
         "tests/agents/test_phase2_physics_orchestrator.py",
         "tests/agents/test_phase2_quantum_game_theory.py",
+        "tests/agents/test_physics_integration_comprehensive.py",
         "tests/agents/test_physics_orchestrator_comprehensive.py",
         "tests/agents/test_physics_orchestrator_core.py",
+        "tests/agents/test_physics_orchestrator_core_flows.py",
         "tests/agents/test_physics_orchestrator_deep.py",
         "tests/agents/test_physics_orchestrator_smoke.py",
         "tests/agents/test_properties_30pct.py",
+        "tests/agents/test_property_based.py",
+        "tests/agents/test_quantum_game_core_flows.py",
         "tests/agents/test_self_healing_comprehensive.py",
         "tests/agents/test_smoke_coverage.py",
+        "tests/agents/test_swarm_intelligence.py",
         "tests/agents/test_workflow_navigator_comprehensive.py",
         "tests/agents/test_zero_coverage_boost.py",
         "tests/analysis/__init__.py",
@@ -20761,6 +19675,9 @@
         "tests/connectors/test_local_connector.py",
         "tests/connectors/test_registry.py",
         "tests/connectors/test_remote.py",
+        "tests/context_management/__init__.py",
+        "tests/context_management/test_context_management.py",
+        "tests/context_management/test_enhanced_modules.py",
         "tests/crm/__init__.py",
         "tests/crm/test_cdm_loader.py",
         "tests/crm/test_cli.py",
@@ -20901,8 +19818,11 @@
         "tests/fixtures/pasted.txt",
         "tests/fixtures/sample_coverage.xml",
         "tests/fixtures/zaf_legacy.py",
+        "tests/framework/__init__.py",
+        "tests/framework/test_generator.py",
         "tests/gates/conftest.py",
         "tests/gates/test_quality_gates.py",
+        "tests/generated/test_physicsinspiredorchestrator_orchestrate.py",
         "tests/github/test_app_token.py",
         "tests/github/test_app_token_cli.py",
         "tests/github/test_gh_api_pagination_cache.py",
@@ -21205,7 +20125,8 @@
         "tests/serving/test_inference_stub.py",
         "tests/serving/test_model_loader.py",
         "tests/serving_tests/test_inference_serving.py",
-        "tests/smoke/conftest.py",
+        "tests/smoke/__init__.py",
+        "tests/smoke/conftest.py.orig",
         "tests/smoke/test_artifacts_hash.py",
         "tests/smoke/test_checkpoint_hashing.py",
         "tests/smoke/test_cli_determinism_wiring.py",
@@ -21215,6 +20136,7 @@
         "tests/smoke/test_logging_flags_end_to_end.py",
         "tests/smoke/test_mlflow_utils_noop.py",
         "tests/smoke/test_plugin_registry.py",
+        "tests/smoke/test_readiness_smoke.py",
         "tests/space_traversal/__init__.py",
         "tests/space_traversal/test_archival_bundling_detector.py",
         "tests/space_traversal/test_artifact_pipeline.py",
@@ -21307,7 +20229,9 @@
         "tests/space_traversal/test_viz_cli_api.py",
         "tests/space_traversal/test_viz_html.py",
         "tests/space_traversal/test_webhooks.py",
+        "tests/specs/__init__.py",
         "tests/specs/_workflow_config_utils.py",
+        "tests/specs/flow_specifications.py",
         "tests/specs/test_audit_diff_cli.py",
         "tests/specs/test_audit_explain_cli.py",
         "tests/specs/test_audit_manifest_fields.py",
@@ -21807,9 +20731,11 @@
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
+        "tests/training/test_train_loop_coverage.py",
         "tests/training/test_trainer.py",
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/typer_cli/__init__.py",
         "tests/typer_cli/test_detectors_cli.py",
@@ -21884,34 +20810,8 @@
       ],
       "explain": {
         "id": "testing-infrastructure",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.125
       },
       "found_patterns": [
         "fixture",
@@ -21922,10 +20822,10 @@
       "meta": {
         "config_count": 26,
         "detector_version": "1.1",
-        "fixture_count": 34,
-        "test_count": 1487
+        "fixture_count": 32,
+        "test_count": 1510
       },
-      "score": 1.0
+      "score": 1.125
     },
     {
       "components": {
@@ -21964,8 +20864,6 @@
         "src/codex_ml/interfaces/tokenizer_hf.py",
         "src/codex_ml/registry/tokenizers.py",
         "src/codex_ml/tokenization/__init__.py",
-        "src/codex_ml/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/codex_ml/tokenization/__pycache__/adapter.cpython-312.pyc",
         "src/codex_ml/tokenization/adapter.py",
         "src/codex_ml/tokenization/api.py",
         "src/codex_ml/tokenization/base.py",
@@ -21981,12 +20879,6 @@
         "src/codex_ml/tokenization/train_tokenizer.py",
         "src/tokenization/.gitkeep",
         "src/tokenization/__init__.py",
-        "src/tokenization/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenization/__pycache__/adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/cli.cpython-312.pyc",
-        "src/tokenization/__pycache__/loader.cpython-312.pyc",
-        "src/tokenization/__pycache__/sentencepiece_adapter.cpython-312.pyc",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/adapter.py",
         "src/tokenization/api.py",
         "src/tokenization/cli.py",
@@ -21994,8 +20886,6 @@
         "src/tokenization/sentencepiece_adapter.py",
         "src/tokenization/train_tokenizer.py",
         "src/tokenizer/__init__.py",
-        "src/tokenizer/__pycache__/__init__.cpython-312.pyc",
-        "src/tokenizer/__pycache__/fast_tokenizer.cpython-312.pyc",
         "src/tokenizer/fast_tokenizer.py",
         "tests/capabilities/tokenization/__init__.py",
         "tests/capabilities/tokenization/test_tokenization_comprehensive.py",
@@ -22072,33 +20962,7 @@
       ],
       "explain": {
         "id": "tokenization",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -22118,7 +20982,6 @@
         "tests": 1.0
       },
       "evidence_files": [
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
         "scripts/space_traversal/detectors/train_loop.py",
         "src/codex_ml/train_loop.py",
         "tests/test_train_loop.py",
@@ -22129,37 +20992,12 @@
         "tests/train_loop/test_dataset_cast_policy_event.py",
         "tests/train_loop/test_dtype_logging_and_dataset_gate.py",
         "tests/train_loop/test_resolve_dtype_and_device.py",
-        "tests/train_loop/test_telemetry_rollover.py"
+        "tests/train_loop/test_telemetry_rollover.py",
+        "tests/training/test_train_loop_coverage.py"
       ],
       "explain": {
         "id": "train_loop",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -22268,9 +21106,6 @@
         "examples/production_training_with_mlflow.py",
         "examples/train_toy.py",
         "notebooks/gpu_training_example.ipynb",
-        "scripts/space_traversal/detectors/__pycache__/functional_training.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/train_loop.cpython-312.pyc",
-        "scripts/space_traversal/detectors/__pycache__/unified_training.cpython-312.pyc",
         "scripts/space_traversal/detectors/functional_training.py",
         "scripts/space_traversal/detectors/train_loop.py",
         "scripts/space_traversal/detectors/unified_training.py",
@@ -22319,7 +21154,6 @@
         "src/codex_ml/training/unified_training.py",
         "src/codex_ml/utils/train_helpers.py",
         "src/hhg_logistics/train.py",
-        "src/tokenization/__pycache__/train_tokenizer.cpython-312.pyc",
         "src/tokenization/train_tokenizer.py",
         "src/training/__init__.py",
         "src/training/accelerate_init_guard.py",
@@ -22425,9 +21259,11 @@
         "tests/training/test_functional_training.py",
         "tests/training/test_functional_training_comprehensive.py",
         "tests/training/test_simple_trainer.py",
+        "tests/training/test_train_loop_coverage.py",
         "tests/training/test_trainer.py",
         "tests/training/test_training_checkpoint.py",
         "tests/training/test_training_config.py",
+        "tests/training/test_training_config_coverage.py",
         "tests/training/test_training_utilities.py",
         "tests/unified/test_unified_training_comprehensive.py",
         "tests/unit/test_train_entrypoint.py",
@@ -22452,33 +21288,7 @@
       ],
       "explain": {
         "id": "training-engine",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -22513,33 +21323,7 @@
       ],
       "explain": {
         "id": "unified-training",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
+        "partials": {},
         "score": 1.0
       },
       "found_patterns": [
@@ -22593,6 +21377,9 @@
         "src/codex/retrieval/stores/weaviate_store.py",
         "src/codex_ml/data/loaders/hdf5_loader.py",
         "src/codex_ml/models/reasoning.py",
+        "src/context_management/clustering.py",
+        "src/context_management/memory.py",
+        "tests/agents/test_agent_memory_comprehensive.py",
         "tests/agents/test_phase2_deep_coverage_batch6.py",
         "tests/retrieval/test_factory.py",
         "tests/retrieval/test_faiss_filtering_integration.py",
@@ -22604,34 +21391,8 @@
       ],
       "explain": {
         "id": "vector-stores",
-        "partials": {
-          "consistency": {
-            "component_value": 1.0,
-            "contribution": 0.2,
-            "weight": 0.2
-          },
-          "documentation": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "functionality": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          },
-          "safeguards": {
-            "component_value": 1.0,
-            "contribution": 0.15,
-            "weight": 0.15
-          },
-          "tests": {
-            "component_value": 1.0,
-            "contribution": 0.25,
-            "weight": 0.25
-          }
-        },
-        "score": 1.0
+        "partials": {},
+        "score": 1.3
       },
       "found_patterns": [
         "chroma",
@@ -22655,9 +21416,9 @@
         "offline": true,
         "validation": true
       },
-      "score": 1.0
+      "score": 1.3
     }
   ],
-  "generated": 1765833212.4948905,
+  "generated": 1765903510.5748084,
   "version": "1.5.0"
 }
