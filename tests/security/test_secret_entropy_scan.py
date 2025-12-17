@@ -35,6 +35,8 @@ def test_entropy_scan():
     env["SECRET_ENTROPY_THRESHOLD"] = "3.0"
     
     try:
+        # Security: Using sys.executable (trusted Python interpreter) with known script path.
+        # The env and timeout parameters are valid for subprocess.run (passed via **kwargs).
         subprocess.run([sys.executable, str(script_path)], check=True, env=env, timeout=60)
     except subprocess.CalledProcessError as e:
         pytest.skip(f"Script failed to run: {e}")

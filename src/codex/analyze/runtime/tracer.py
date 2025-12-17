@@ -165,6 +165,8 @@ class RuntimeTracer:
             if result.exit_code == 0 and result.stdout:
                 return result.stdout
         except Exception:
+            # Ignore errors from --help execution - it's optional metadata collection.
+            # Failures here don't prevent the main analysis.
             pass
         
         return None
@@ -319,6 +321,8 @@ class RuntimeTracer:
                 probe_result["detected_type"] = "cli"
                 
         except Exception:
+            # Ignore errors during source code inspection - this is best-effort detection.
+            # Missing type information doesn't prevent the rest of the analysis.
             pass
         
         return probe_result

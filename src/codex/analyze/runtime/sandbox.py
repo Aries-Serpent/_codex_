@@ -216,6 +216,10 @@ class SandboxManager:
         timed_out = False
         
         try:
+            # Security: The script path is validated to exist and is within the controlled
+            # sandbox workspace. The command uses 'python' (from PATH) which should be the
+            # trusted system Python. Arguments are passed as a list (not shell) to prevent
+            # injection. Environment and working directory are controlled by sandbox config.
             result = subprocess.run(
                 cmd,
                 input=stdin_input,

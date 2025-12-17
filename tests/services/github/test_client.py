@@ -3,7 +3,6 @@
 import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
-import httpx
 
 from src.services.github.client import GitHubClient
 from src.services.github.types import (

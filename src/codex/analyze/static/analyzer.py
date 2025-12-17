@@ -239,6 +239,9 @@ def _run_ruff(source_dir: Path) -> List[LintIssue]:
     issues = []
     
     try:
+        # Security: Using 'ruff' from PATH - assumes it's a trusted tool installed in the
+        # development environment. The source_dir is validated to be a Path object.
+        # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             ["ruff", "check", "--output-format=json", str(source_dir)],
             capture_output=True,
@@ -272,6 +275,9 @@ def _run_bandit(source_dir: Path) -> List[SecurityIssue]:
     issues = []
     
     try:
+        # Security: Using 'bandit' from PATH - assumes it's a trusted security scanning tool
+        # installed in the development environment. The source_dir is validated as a Path.
+        # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             ["bandit", "-r", "-f", "json", str(source_dir)],
             capture_output=True,
