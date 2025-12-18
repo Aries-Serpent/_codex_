@@ -7,13 +7,7 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-# Use SPDX expression; suppress Setuptools license table deprecation warnings
-license = "MIT"
-# Prefer declaring license files explicitly to avoid warnings
-license-files = [
-  "LICENSE",
-  "LICENSES/*",
-]
+license = {text = "MIT"}
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -280,6 +274,18 @@ exclude = [
   ".stubs*",
   "*__pycache__*",
   "configs*",
+  "config_legacy*",
+  "cli",
+  "cli.*",
+  "codex_addons*",
+  "codex_digest*",
+  "codex_regression*",
+  "examples",
+  "examples.*",
+  "interfaces",
+  "interfaces.*",
+  "services",
+  "services.*",
   "build*",
   "dist*",
   "*.tests",
