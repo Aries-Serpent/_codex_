@@ -40,6 +40,7 @@ jobs:
           UV_CACHE_DIR: /tmp/uv-cache
         run: |
           export PATH="$HOME/.cargo/bin:$PATH"
+          uv pip install --system -e .
           uv pip install --system -r requirements-test.txt
 
       - name: Run tests
