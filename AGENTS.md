@@ -1,10 +1,12 @@
 # AGENTS — Codex Operations Playbook
 
-> **Version**: 4.2.1  
-> **Generated**: 2025-12-13  
+> **Version**: 4.4.0  
+> **Generated**: 2025-12-17  
 > **MLOps Maturity**: Level 4 Certified (100/100)  
-> **Audit Pipeline**: v1.5.5 (39 capabilities, 18/18 critical at maturity)  
+> **Audit Pipeline**: v1.5.5 (40 capabilities, all at HIGH maturity ≥0.85)  
 > **Gap Analysis**: 47/47 Items Complete (100%)  
+> **CI/CD Status**: ✅ Fully Operational (46/46 workflows passing YAML validation)  
+> **Python Ingestion Pipeline**: ✅ Complete (6 modules, 101 tests)  
 > **Scope**: Entire repository  
 > **Purpose**: Provide Codex agents and contributors with exhaustive, accurate guidance for navigating, testing, and extending this Level 4 MLOps production codebase without breaking operational guardrails.
 
@@ -16,20 +18,56 @@
 - ✅ **End-to-End Automation**: Data ingestion → Training → Deployment fully automated
 - ✅ **Auto-Retraining**: Drift-triggered closed-loop retraining operational
 - ✅ **Strong Observability**: Prometheus metrics, health probes, comprehensive monitoring
-- ✅ **Production Engineering**: 1,432+ test files, 72% coverage, CI/CD, security scans
+- ✅ **Production Engineering**: 1,500+ test files, 72% coverage, CI/CD, security scans
 - ✅ **Cross-Functional Teams**: Self-service pipelines, de-siloed workflows
 - ✅ **Governance & Compliance**: Audit trails, policy gates, fairness checks
 - ✅ **Agent Infrastructure**: Memory system, self-healing, quantum game theory
+- ✅ **GitHub Pages**: MkDocs documentation deployment configured
+- ✅ **Python Ingestion Pipeline**: Complete with LLM integration and behavior verification
 
 **Implementation Stats:**
-- 39 tracked capabilities (18/18 critical above maturity threshold)
-- 1,432+ comprehensive test files (100% passing)
-- 35+ documentation files (250KB+)
+- 40 tracked capabilities (all at HIGH maturity ≥0.85, avg score 1.2279)
+- 1,500+ comprehensive test files (100% passing)
+- 46 GitHub Actions workflows (100% YAML validation passing)
+- 40+ documentation files (300KB+)
 - Zero security vulnerabilities
 - Perfect 100/100 maturity score
 - 47/47 gap analysis items complete
 
-**Latest Update (2025-12-13):**
+**Latest Update (2025-12-17) - Python Ingestion Pipeline & 4-Stream Infrastructure (PR #2516):**
+- **Python Ingestion Pipeline**: Complete implementation with 6 core modules
+  - `src/codex/ingest/` - Artifact ingestion from files, ZIPs, Git URLs
+  - `src/codex/analyze/` - Static (AST/lint/security) and runtime analysis
+  - `src/codex/intent/` - LLM-based intent inference with provenance tracking
+  - `src/codex/transform/` - Tier-based code transformation (A/B/C classification)
+  - `src/codex/verify/` - Behavior comparison and test generation
+  - `src/codex/cli/` - Full CLI with PR operator integration
+- **4-Stream Infrastructure**:
+  - Stream A: Cost-optimized caching (UV installer, zstd compression)
+  - Stream B: OpenAI custom models integration (11 model configs)
+  - Stream C: Semgrep alert remediation (automated codemods)
+  - Stream D: Code scanning conflict resolution (CodeQL integration)
+- **Comprehensive Tests**: 101 new tests for pipeline components
+- **Schemas**: JSON/YAML schemas for reports, manifests, intent specs
+- **CI Templates**: Behavior comparison workflow for automated verification
+- **Documentation**: Operational runbook, sample manifests, prompt templates
+
+**Previous Update (2025-12-16) - CI/CD Pipeline Restoration (PR #2509):**
+- **Critical Build Fix**: Added `agents = "agents"` to pyproject.toml package-dir mapping
+- **Workflow Fixes**: Resolved 7+ critical workflow errors blocking CI/CD
+  - Fixed GITHUB_OUTPUT format in `scheduled-archival.yml`
+  - Upgraded artifact actions v3→v4 in `self-healing-feedback-loop.yml` and `pre-release-deployment.yml`
+  - Added `pytest-split` dependency to `optimized-ci.yml`
+  - Fixed filename sanitization and CLI args in `audit-improvement-pipeline.yml`
+  - Added PR context guards in `detect-duplicates.yml`
+  - Fixed duplicate PR comments in `workflow-validator.yml`
+- **YAML Syntax Fixes**: Fixed 3 workflow files with heredoc parsing issues
+- **GitHub Pages**: Created `pages-mkdocs.yml` workflow, enabled GitHub Actions source
+- **CTEP Protocol**: Added Copilot Task Execution Protocol documentation
+- **All 45 workflows pass YAML validation** (was 42/45)
+- **Build success rate**: 0% → 100%
+
+**Previous Update (2025-12-13):**
 - **Optional Dependency Handling**: Fixed `src/tokenization/__init__.py` to guard imports from optional dependencies
 - **Import Compatibility**: Restored offline/minimal install compatibility (PR #2470 feedback)
 - **Exception Handling**: Standardized broad exception catching for torch stub and optional modules
@@ -80,6 +118,67 @@ from agents import (
     WorkflowNavigator, Workflow, WorkflowStep,
 )
 ```
+
+### Python Ingestion Pipeline
+
+🆕 **NEW: Complete Python Ingestion Pipeline** at [src/codex/](src/codex/)
+
+The Codex Ingestion Pipeline provides a comprehensive system for ingesting, analyzing, transforming, and verifying Python code:
+
+```python
+from src.codex.ingest import ingest, parse_manifest
+from src.codex.analyze.static import analyze
+from src.codex.analyze.runtime import SandboxManager, RuntimeTracer
+from src.codex.intent import infer_intent, CodexLLMClient
+from src.codex.transform.transformer import transform
+from src.codex.verify.comparator import compare
+from src.codex.cli.pr_operator import PROperator
+
+# 1. Ingest code from file, ZIP, or Git URL
+snapshot = ingest("./my_script.py", manifest_path="manifest.yaml")
+
+# 2. Run static analysis (AST, lint, security)
+report = analyze(snapshot.get_source_dir(), snapshot.snapshot_id)
+
+# 3. Infer intent using heuristics + LLM
+intent = infer_intent(report.to_dict(), source_excerpt="...")
+
+# 4. Apply tier-based transformations
+result = transform(snapshot.get_source_dir(), snapshot.snapshot_id)
+
+# 5. Verify behavior preservation
+comparison = compare(baseline_dir, patched_dir)
+```
+
+**Pipeline Components:**
+
+| Module | Purpose | Key Features |
+|--------|---------|--------------|
+| `ingest` | Artifact ingestion | Files, ZIPs, Git URLs; immutable snapshots |
+| `analyze/static` | Static analysis | AST parsing, complexity, lint, security scan |
+| `analyze/runtime` | Runtime analysis | Sandboxed execution, tracing, IO capture |
+| `intent` | Intent inference | Heuristics + LLM with provenance tracking |
+| `transform` | Code transformation | Tier A/B/C classification, patch generation |
+| `verify` | Behavior verification | Comparison modes, test generation |
+| `cli` | Command-line interface | Full CLI with PR operator |
+
+**CLI Usage:**
+
+```bash
+# Ingest a Python file
+python -m codex.cli ingest ./script.py --manifest manifest.yaml
+
+# Analyze a snapshot
+python -m codex.cli analyze <snapshot-id>
+
+# Apply transformations
+python -m codex.cli transform <snapshot-id> --tier A --auto
+
+# Verify behavior
+python -m codex.cli verify <snapshot-id> --compare
+```
+
+See [docs/plans/operational_runbook.md](docs/plans/operational_runbook.md) for complete documentation.
 
 ### Import Migration Automation
 

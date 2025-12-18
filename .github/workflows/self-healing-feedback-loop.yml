@@ -98,7 +98,7 @@ jobs:
           fi
       
       - name: Upload Gap Analysis
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gap-analysis
           path: capability_gaps.json
@@ -139,7 +139,7 @@ jobs:
       
       - name: Upload Regression Report
         if: steps.regression.outputs.regressions_found == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: regression-report
           path: regression_report.md
@@ -156,7 +156,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Download Gap Analysis
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: gap-analysis
       
@@ -236,7 +236,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Download Gap Analysis
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: gap-analysis
         continue-on-error: true

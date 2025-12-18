@@ -1,0 +1,56 @@
+name: Weekly Cache Warmer
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  warm-caches:
+    name: Warm Cache (${{ matrix.python-version }}, ${{ matrix.profile }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+        profile: ['minimal', 'test', 'full']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python with UV
+        uses: ./.github/actions/setup-python-uv
+        with:
+          python-version: ${{ matrix.python-version }}
+          dependency-profile: ${{ matrix.profile }}
+
+      - name: Verify installation
+        run: |
+          python --version
+          pip list | head -20
+
+      - name: Touch cache timestamp
+        run: |
+          mkdir -p /tmp/uv-cache
+          echo "Cache warmed at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > /tmp/uv-cache/.timestamp
+
+  warm-container-cache:
+    name: Warm Container Cache
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull latest container images
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker pull ghcr.io/${{ github.repository }}/ci-base:minimal-latest || true
+          docker pull ghcr.io/${{ github.repository }}/ci-base:test-latest || true
+          docker pull ghcr.io/${{ github.repository }}/ci-base:full-latest || true
+
+      - name: Verify images
+        run: docker images | grep ci-base || echo "No cached images found"

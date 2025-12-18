@@ -56,7 +56,7 @@ jobs:
       - name: Pre-cache dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          uv pip install --system nox pytest pytest-xdist
+          uv pip install --system nox pytest pytest-xdist pytest-split
           uv pip install --system -e ".[dev,test]" || true
 
   # Parallel test execution
@@ -89,7 +89,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install uv
-          uv pip install --system nox pytest pytest-xdist
+          uv pip install --system nox pytest pytest-xdist pytest-split
           uv pip install --system -e ".[dev,test]" || pip install -e ".[dev,test]"
       
       - name: Run parallel tests (shard ${{ matrix.shard }})

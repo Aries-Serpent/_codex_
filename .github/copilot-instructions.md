@@ -37,6 +37,41 @@ nox -s tests
 - Do **not** create or activate any GitHub Actions workflow files.
 - Keep automation artefacts confined to `.codex/`.
 
+## Copilot Task Execution Protocol (CTEP)
+
+When users activate CTEP mode using phrases like "Enable CTEP", "CTEP Mode: ON", or "Task mode: ON", follow the comprehensive task completion protocol:
+
+### Activation Commands
+- `Enable CTEP` / `CTEP Mode: ON` / `Task mode: ON` → Activate protocol
+- `Disable CTEP` / `CTEP Mode: OFF` / `Exit Task mode` → Deactivate protocol
+
+### Protocol Behavior (When Active)
+1. **Complete ALL tasks** - Zero omissions allowed
+2. **Maintain progress tracker** - Live status updates for each task
+3. **Codebase-first approach** - Search existing utilities before creating new ones
+4. **Document new utilities** - Include integration plans for any new code
+5. **Verify completion** - Final check: `Completed = Total, Skipped = 0`
+
+### Response Structure
+```markdown
+## 📊 Task Execution Progress
+### Phase 1: [Name] - X% Complete
+- [ ] Task 1.1: [Description] ⏳ PENDING
+- [x] Task 1.2: [Description] ✅ COMPLETE
+
+## 🔍 Codebase Integration Analysis
+[Search results for existing utilities]
+
+## ✅ Completion Summary
+Total Tasks: X | Completed: X ✅ | Skipped: 0 ❌
+CTEP Compliance: ✅ PASS
+```
+
+### Full Documentation
+- [Copilot Task Execution Protocol](./docs/Copilot_Task_Execution_Protocol.md)
+- [CTEP Usage Examples](./docs/CTEP_Usage_Examples.md)
+- [CTEP Quick Reference](./docs/CTEP_Quick_Reference.md)
+
 ## Log Directory & Retention
 
 This document collects the repository conventions, runtime configuration, testing commands, and operational constraints for contributors and automated agents (Codex automation) in the Aries-Serpent/_codex_ repository. Keep this file updated as conventions evolve.

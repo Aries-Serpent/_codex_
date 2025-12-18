@@ -1,0 +1,70 @@
+name: 'Setup Python with UV'
+description: 'Install Python and dependencies using UV (10-100x faster than pip)'
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.11'
+  dependency-profile:
+    description: 'Dependency profile: minimal|test|dev|full'
+    required: false
+    default: 'test'
+  cache-key-prefix:
+    description: 'Cache key prefix for UV cache'
+    required: false
+    default: 'uv'
+
+outputs:
+  cache-hit:
+    description: 'Whether cache was hit'
+    value: ${{ steps.cache.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install UV
+      shell: bash
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Restore UV cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: /tmp/uv-cache
+        key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-${{ inputs.dependency-profile }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+        restore-keys: |
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-${{ inputs.dependency-profile }}-
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-
+
+    - name: Install dependencies with UV
+      shell: bash
+      env:
+        UV_CACHE_DIR: /tmp/uv-cache
+      run: |
+        case "${{ inputs.dependency-profile }}" in
+          minimal)
+            uv pip install --system -r requirements-minimal.txt
+            ;;
+          test)
+            uv pip install --system -r requirements-test.txt
+            ;;
+          dev)
+            uv pip install --system -r requirements-dev.txt
+            ;;
+          full)
+            uv pip install --system -r requirements.txt
+            ;;
+          *)
+            echo "Unknown profile: ${{ inputs.dependency-profile }}"
+            exit 1
+            ;;
+        esac

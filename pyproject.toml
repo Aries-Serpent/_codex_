@@ -7,13 +7,7 @@ name = "codex-ml"
 description = "Codex ML training, evaluation, and plugin framework"
 readme = "README.md"
 requires-python = ">=3.10"
-# Use SPDX expression; suppress Setuptools license table deprecation warnings
-license = "MIT"
-# Prefer declaring license files explicitly to avoid warnings
-license-files = [
-  "LICENSE",
-  "LICENSES/*",
-]
+license = {text = "MIT"}
 authors = [
   { name = "Aries Serpent" }
 ]
@@ -83,6 +77,8 @@ dev = [
   "pytest>=7.4",
   "pytest-cov>=4.1",
   "pytest-randomly>=3.15",
+  "pytest-timeout>=2.1",
+  "pytest-split>=0.8",  # For test sharding in CI
   "hypothesis>=6.100",
   "ruff>=0.4",
   "jsonschema>=4.0",
@@ -238,6 +234,7 @@ codex-status-audit = "cli.status_audit:main"
 
 [tool.setuptools.package-dir]
 "" = "src"
+agents = "agents"
 codex_addons = "codex_addons"
 codex_digest = "codex_digest"
 codex_utils = "codex_utils"
@@ -253,10 +250,13 @@ cli = "cli"
 [tool.setuptools.packages.find]
 where = [".", "src"]
 include = [
+  "agents*",
   "codex_ml*",
   "codex*",
+  "config*",
   "cli*",
   "common*",
+  "services*",
   "tokenization*",
   "training*",
   "codex_utils*",
@@ -274,6 +274,18 @@ exclude = [
   ".stubs*",
   "*__pycache__*",
   "configs*",
+  "config_legacy*",
+  "cli",
+  "cli.*",
+  "codex_addons*",
+  "codex_digest*",
+  "codex_regression*",
+  "examples",
+  "examples.*",
+  "interfaces",
+  "interfaces.*",
+  "services",
+  "services.*",
   "build*",
   "dist*",
   "*.tests",
