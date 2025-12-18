@@ -54,7 +54,7 @@ jobs:
           echo "# Duplicate Python Files Report" > $REPORT_FILE
           echo "" >> $REPORT_FILE
           echo "**Date**: $(date -u +"%Y-%m-%d %H:%M UTC")" >> $REPORT_FILE
-          echo "**PR**: #${{ github.event.pull_request.number }}" >> $REPORT_FILE
+          echo "**PR**: #${{ github.event.pull_request.number || 'N/A (Manual Run)' }}" >> $REPORT_FILE
           echo "" >> $REPORT_FILE
           
           if [ "$DUP_COUNT" -gt 0 ]; then
@@ -95,7 +95,7 @@ jobs:
           retention-days: 7
       
       - name: Add PR comment
-        if: steps.detect.outputs.duplicate_count > 0
+        if: steps.detect.outputs.duplicate_count > 0 && github.event.pull_request.number
         uses: actions/github-script@v7
         with:
           script: |
@@ -105,7 +105,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: context.payload.pull_request.number,
               body: `## 🔍 Duplicate Detection Results\n\n${report}\n\n---\n*This is an automated check. Duplicates do not block the merge.*`
             });
       

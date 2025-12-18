@@ -1,0 +1,51 @@
+name: PR Checks (Isolated Cache)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-test:
+    name: PR Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # SECURITY: Read-only cache from main branch
+      - name: Restore cache from main (read-only)
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/uv-cache
+          key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            uv-${{ runner.os }}-py3.11-test-
+            uv-${{ runner.os }}-py3.11-
+        # NOTE: No cache/save for PRs - prevents cache poisoning
+
+      - name: Install UV
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Install dependencies
+        env:
+          UV_CACHE_DIR: /tmp/uv-cache
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          uv pip install --system -r requirements-test.txt
+
+      - name: Run tests
+        run: pytest tests/ -x --tb=short
+
+      - name: Run linting
+        run: |
+          pip install ruff
+          ruff check . --output-format=github
