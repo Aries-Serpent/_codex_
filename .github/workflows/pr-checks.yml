@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: /tmp/uv-cache
-          key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt') }}
+          key: uv-${{ runner.os }}-py3.11-test-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
           restore-keys: |
             uv-${{ runner.os }}-py3.11-test-
             uv-${{ runner.os }}-py3.11-
@@ -40,7 +40,8 @@ jobs:
           UV_CACHE_DIR: /tmp/uv-cache
         run: |
           export PATH="$HOME/.cargo/bin:$PATH"
-          uv pip install --system -r requirements-test.txt
+          # Install package with dev dependencies (includes all test requirements)
+          uv pip install --system -e .[dev]
 
       - name: Run tests
         run: pytest tests/ -x --tb=short
