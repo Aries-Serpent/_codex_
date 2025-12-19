@@ -34,10 +34,14 @@ jobs:
           if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
           pip install -e .
 
-      - name: Run MCP tests (mock backend)
+      - name: Run MCP & embeddings tests (mock backend)
         env:
           # ensure no provider secrets are used for default runs
           PINECONE_API_KEY: ''
+          OPENAI_API_KEY: ''
           SUPABASE_KEY: ''
+          ENABLE_LIVE_TESTS: ''
         run: |
-          pytest -q tests/mcp tests/embeddings -k "not live" --maxfail=1
+          pytest -q tests/mcp -k "not live" --maxfail=1
+          pytest -q tests/embeddings -k "not live" --maxfail=1
+          pytest -q tests/test_retries.py tests/test_metrics.py tests/test_server_smoke.py --maxfail=1
