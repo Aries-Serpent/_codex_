@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "codex-main-staging": {
+      "command": "python",
+      "args": [
+        "-m",
+        "src.mcp.server.http",
+        "--config",
+        "codex_capability_map.yaml"
+      ],
+      "env": {
+        "PYTHONPATH": ".",
+        "ITA_URL": "http://staging.ita.internal:8080",
+        "ITA_API_KEY": "${env:CODEX_ITA_API_KEY}",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_OFFLINE": "false",
+        "AUDIT_DEPTH": "4",
+        "ACTIVATION_CHECKLIST": "ACTIVATION_CHECKLIST_STATUS.md"
+      },
+      "cwd": "${workspaceFolder}",
+      "metadata": {
+        "description": "Main-branch MCP server (staging)",
+        "branch": "main",
+        "maturity_level": 4,
+        "deployment_targets": ["cloudflare-workers", "fly.io"],
+        "prototype": "fastapi"
+      }
+    }
+  }
+}

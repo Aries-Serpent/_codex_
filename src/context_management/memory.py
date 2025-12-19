@@ -5,13 +5,16 @@ External memory management for long-context handling with chunking,
 RAG integration, map-reduce summarization, and streaming support.
 """
 
-from typing import List, Dict, Optional, Callable, Iterator, Tuple
+import hashlib
+import json
+import logging
+import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-import hashlib
-import json
-import os
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -132,8 +135,8 @@ class ContextMemory:
             if generate_summary and self._summarizer:
                 try:
                     summary = self._summarizer(chunk_content)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning("Failed to summarize chunk; storing without summary", exc_info=exc)
 
             # Create chunk
             chunk = MemoryChunk(
@@ -153,8 +156,8 @@ class ContextMemory:
             if self._embedder:
                 try:
                     self._embeddings[chunk_id] = self._embedder(chunk_content)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning("Failed to embed chunk %s; proceeding without embedding", chunk_id, exc_info=exc)
 
         # Persist if storage configured
         if self.storage_path:
@@ -248,7 +251,8 @@ class ContextMemory:
                     summary = self._summarizer(chunk.content)
                     chunk.summary = summary
                     summaries.append(summary)
-                except Exception:
+                except Exception as exc:
+                    logger.warning("Chunk summarization failed; using fallback content", exc_info=exc)
                     summaries.append(chunk.content[:200] + "...")
 
         # Reduce phase: combine summaries
@@ -258,7 +262,8 @@ class ContextMemory:
         combined = "\n\n".join(summaries)
         try:
             return self._summarizer(combined)
-        except Exception:
+        except Exception as exc:
+            logger.warning("Failed to summarize combined content; returning raw aggregation", exc_info=exc)
             return combined
 
     def stream_retrieve(
@@ -382,7 +387,7 @@ class ContextMemory:
         """Generate unique ID for chunk."""
         timestamp = datetime.now().isoformat()
         hash_input = f"{content[:100]}:{timestamp}"
-        return hashlib.md5(hash_input.encode()).hexdigest()[:16]
+        return hashlib.sha256(hash_input.encode()).hexdigest()[:16]
 
     def _evict_lowest_priority(self) -> bool:
         """Evict lowest priority chunk to make room."""
@@ -403,7 +408,8 @@ class ContextMemory:
 
         try:
             query_embedding = self._embedder(query)
-        except Exception:
+        except Exception as exc:
+            logger.warning("Query embedding failed; falling back to existing order", exc_info=exc)
             return chunks
 
         # Calculate similarities
@@ -482,5 +488,5 @@ class ContextMemory:
                 )
                 self._chunks[cid] = chunk
                 self._total_tokens += chunk.token_count
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.error("Failed to load memory from %s", path, exc_info=exc)

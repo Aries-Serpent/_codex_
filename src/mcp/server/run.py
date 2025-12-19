@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+import argparse
+import logging
+import os
+import socket
+import sys
+from typing import Optional, Tuple
+
+import importlib
+import time
+
+import uvicorn
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run MCP FastAPI server")
+    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--log-level", default="info")
+    parser.add_argument("--port-fallbacks", type=int, default=3, help="Number of fallback ports to try")
+    parser.add_argument("--diagnostics", action="store_true", help="Enable startup diagnostics")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
+    logger = logging.getLogger("mcp.server.run")
+
+    diagnostics = args.diagnostics or os.environ.get("MCP_STARTUP_DIAGNOSTICS") == "1"
+    if diagnostics:
+        info_lines = [
+            f"Python: {sys.version}",
+            f"Executable: {sys.executable}",
+            f"PID: {os.getpid()}",
+            f"Host/Port: {args.host}:{args.port}",
+            f"PYTHONPATH: {os.environ.get('PYTHONPATH', '')}",
+            f"Uvicorn: {uvicorn.__version__}",
+        ]
+        for line in info_lines:
+            logger.info(line)
+            print(line, flush=True)
+
+    host, port = _select_port(args.host, args.port, args.port_fallbacks, logger, diagnostics)
+    start = time.time()
+    app = importlib.import_module("src.mcp.server.facade_fastapi").APP
+    elapsed = time.time() - start
+    logger.info("Loaded APP in %.3fs", elapsed)
+    if diagnostics:
+        print(f"Loaded APP in {elapsed:.3f}s", flush=True)
+    logger.info("Starting MCP server on %s:%s", host, port)
+
+    uvicorn.run(app, host=host, port=port, log_level=args.log_level)
+
+
+def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, diagnostics: bool) -> Tuple[str, int]:
+    attempts = max(0, fallbacks)
+    for offset in range(attempts + 1):
+        candidate = port + offset
+        ok, reason = _check_bind(host, candidate)
+        if ok:
+            if offset:
+                logger.warning("Port %s unavailable (%s). Falling back to %s.", port, reason, candidate)
+                if diagnostics:
+                    print(f"Port {port} unavailable ({reason}). Falling back to {candidate}.", flush=True)
+            return host, candidate
+        logger.warning("Port %s unavailable on host %s (%s).", candidate, host, reason)
+        if diagnostics:
+            print(f"Port {candidate} unavailable on host {host} ({reason}).", flush=True)
+    return host, port
+
+
+def _check_bind(host: str, port: int) -> Tuple[bool, Optional[str]]:
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind((host, port))
+        sock.close()
+        return True, None
+    except OSError as exc:
+        return False, str(exc)
+
+
+if __name__ == "__main__":
+    main()

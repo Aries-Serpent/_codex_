@@ -198,11 +198,11 @@ class LoopGuardrail:
         if parameters:
             # Sort keys for consistent hashing
             content += ":" + json.dumps(parameters, sort_keys=True, default=str)
-        return hashlib.md5(content.encode()).hexdigest()[:12]
+        return hashlib.sha256(content.encode()).hexdigest()[:12]
 
     def _hash_dict(self, d: Dict) -> str:
         """Hash a dictionary."""
-        return hashlib.md5(json.dumps(d, sort_keys=True, default=str).encode()).hexdigest()[:12]
+        return hashlib.sha256(json.dumps(d, sort_keys=True, default=str).encode()).hexdigest()[:12]
 
     def _hash_result(self, result: Any) -> str:
         """Hash a result value."""
@@ -210,7 +210,7 @@ class LoopGuardrail:
             content = json.dumps(result, sort_keys=True, default=str)
         else:
             content = str(result)
-        return hashlib.md5(content.encode()).hexdigest()[:12]
+        return hashlib.sha256(content.encode()).hexdigest()[:12]
 
     def _check_pattern_loop(self) -> Optional[GuardrailViolation]:
         """Detect cyclic patterns in action history."""

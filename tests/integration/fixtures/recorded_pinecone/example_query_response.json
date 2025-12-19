@@ -1,0 +1,6 @@
+{
+  "matches": [
+    {"id":"r1","score":0.95,"metadata":{"content":"example result 1"}},
+    {"id":"r2","score":0.7,"metadata":{"content":"example result 2"}}
+  ]
+}

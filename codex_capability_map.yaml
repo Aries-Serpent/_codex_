@@ -60,3 +60,56 @@ capabilities:
       - "src/codex_ml/registry.py"
     tests:
       - "tests/codex_ml/test_registry_basic.py"
+
+  mcp-protocol-surface:
+    code:
+      - "src/mcp/server/"
+    tests:
+      - "tests/mcp/test_server.py"
+      - "tests/mcp/test_http_server.py"
+    docs:
+      - "docs/mcp/server_deployment.md"
+      - "docs/mcp/api_schema.md"
+
+  mcp-tooling-registry:
+    code:
+      - "src/mcp/registry.py"
+    tests:
+      - "tests/mcp/test_tools_integration.py"
+    docs:
+      - "docs/mcp/tool_registration.md"
+
+  mcp-authentication:
+    code:
+      - "src/mcp/auth.py"
+      - "src/mcp/server/http.py"
+    tests:
+      - "tests/mcp/test_http_server.py"
+    docs:
+      - "docs/mcp/authentication.md"
+
+  mcp-rate-limiting:
+    code:
+      - "src/mcp/rate_limit.py"
+      - "src/mcp/server/http.py"
+    tests:
+      - "tests/mcp/test_http_server.py"
+    docs:
+      - "docs/mcp/rate_limiting.md"
+
+  mcp-observability:
+    code:
+      - "src/mcp/observability.py"
+      - "src/mcp/server/http.py"
+    tests:
+      - "tests/mcp/test_http_server.py"
+    docs:
+      - "docs/mcp/observability.md"
+
+  mcp-versioning:
+    code:
+      - "src/mcp/versioning.py"
+    tests:
+      - "tests/mcp/test_server.py"
+    docs:
+      - "docs/mcp/version_negotiation.md"

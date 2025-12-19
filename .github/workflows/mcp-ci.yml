@@ -1,0 +1,47 @@
+name: MCP - Mock Backend Tests
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - main
+      - '0D_base_'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.10, 3.11]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
+          pip install -e .
+
+      - name: Run MCP & embeddings tests (mock backend)
+        env:
+          # ensure no provider secrets are used for default runs
+          PINECONE_API_KEY: ''
+          OPENAI_API_KEY: ''
+          SUPABASE_KEY: ''
+          ENABLE_LIVE_TESTS: ''
+        run: |
+          pytest -q tests/mcp -k "not live" --maxfail=1
+          pytest -q tests/embeddings -k "not live" --maxfail=1
+          pytest -q tests/test_retries.py tests/test_metrics.py tests/test_server_smoke.py --maxfail=1
