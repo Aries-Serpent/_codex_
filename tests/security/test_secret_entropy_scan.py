@@ -34,14 +34,21 @@ def test_entropy_scan():
     env = os.environ.copy()
     env["SECRET_ENTROPY_THRESHOLD"] = "3.0"
     
+    process = subprocess.Popen(
+        [sys.executable, str(script_path)],
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
     try:
-        # Security: Using sys.executable (trusted Python interpreter) with known script path.
-        # The env and timeout parameters are valid for subprocess.run (passed via **kwargs).
-        subprocess.run([sys.executable, str(script_path)], check=True, env=env, timeout=60)
-    except subprocess.CalledProcessError as e:
-        pytest.skip(f"Script failed to run: {e}")
+        stdout, stderr = process.communicate(timeout=60)
     except subprocess.TimeoutExpired:
+        process.kill()
+        stdout, stderr = process.communicate()
         pytest.skip("Script timed out")
+    if process.returncode != 0:
+        pytest.skip(f"Script failed to run: {stderr or stdout}")
     
     rep = ART / "secret_entropy_report.json"
     if not rep.exists():

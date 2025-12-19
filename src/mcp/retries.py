@@ -4,6 +4,7 @@ import random
 import time
 from typing import Callable, Tuple
 
+_secure_random = random.SystemRandom()
 
 def retry_on_exception(
     exceptions: Tuple[type, ...] = (Exception,),
@@ -24,7 +25,7 @@ def retry_on_exception(
                     if attempt >= tries:
                         raise
                     delay = min(max_delay, base_delay * (2 ** (attempt - 1)))
-                    delay = delay * (1 + (random.random() * jitter))
+                    delay = delay * (1 + (_secure_random.random() * jitter))
                     time.sleep(delay)
 
         return wrapper

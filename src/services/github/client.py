@@ -124,7 +124,8 @@ class GitHubClient:
         except (ValueError, TypeError):
             # Ignore malformed rate limit headers - rate limiting will be unavailable
             # but the API request can still proceed. This is not a critical error.
-            pass
+            self._rate_limit = None
+            return
 
     async def _request(
         self,

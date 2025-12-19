@@ -368,7 +368,7 @@ def test_real_workflow_integration():
     
     # Verify triggerable workflows are identified
     triggerable = inventory.get_triggerable()
-    assert len(triggerable) >= 0
+    assert len(triggerable) <= count
     
     # Verify at least one workflow has proper metadata
     first_workflow = list(inventory.workflows.values())[0]

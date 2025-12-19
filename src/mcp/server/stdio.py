@@ -209,10 +209,10 @@ class StdioTransport:
             self._writer.close()
             try:
                 await self._writer.wait_closed()
-            except Exception:
+            except Exception as exc:
                 # Ignore errors during writer closure - the stream may already be closed
                 # or in an invalid state. This is a cleanup operation and errors are non-critical.
-                pass
+                self._logger.debug("Writer close failed: %s", exc)
 
 
 class MockStdioTransport(StdioTransport):

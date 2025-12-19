@@ -284,8 +284,6 @@ exclude = [
   "examples.*",
   "interfaces",
   "interfaces.*",
-  "services",
-  "services.*",
   "build*",
   "dist*",
   "*.tests",

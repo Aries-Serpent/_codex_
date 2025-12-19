@@ -15,7 +15,11 @@ import uvicorn
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run MCP FastAPI server")
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument(
+        "--host",
+        default=os.environ.get("MCP_SERVER_HOST", "127.0.0.1"),
+        help="Host interface to bind (default: 127.0.0.1 or MCP_SERVER_HOST).",
+    )
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--log-level", default="info")
     parser.add_argument("--port-fallbacks", type=int, default=3, help="Number of fallback ports to try")
