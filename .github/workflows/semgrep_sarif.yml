@@ -2,7 +2,7 @@ name: Semgrep SAST (SARIF Upload)
 
 on:
   pull_request:
-    branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
+    branches: [ "0D_base_", "main", "master" ]
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
