@@ -7,6 +7,7 @@ Provides startup, shutdown, and health check functionality for MCP servers.
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import logging
 from typing import Callable, Dict, List, Optional, Any
 
@@ -19,9 +20,11 @@ class LifecycleManager:
     def __init__(self):
         self._startup_hooks: List[Callable] = []
         self._shutdown_hooks: List[Callable] = []
+        self._health_checks: List[Callable] = []
         self._resources: Dict[str, Any] = {}
         self._is_healthy = False
         self._is_ready = False
+        self._health_check_timeout = 2.0
 
     def register_startup_hook(self, hook: Callable) -> None:
         """Register startup hook. Safeguard: validates callable."""
@@ -40,6 +43,12 @@ class LifecycleManager:
         if not name or not isinstance(name, str):
             raise ValueError("Resource name must be non-empty string")
         self._resources[name] = resource
+
+    def register_health_check(self, check: Callable) -> None:
+        """Register a health check. Safeguard: validates callable."""
+        if not callable(check):
+            raise ValueError(f"Health check must be callable, got {type(check)}")
+        self._health_checks.append(check)
 
     async def startup(self) -> None:
         """Execute startup hooks. Safeguard: timeout and rollback."""
@@ -86,13 +95,24 @@ class LifecycleManager:
 
     async def _cleanup_resources(self) -> None:
         """Cleanup resources. Safeguard: prevents leaks."""
-        for name, resource in self._resources.items():
+        for name, resource in reversed(list(self._resources.items())):
             try:
-                if hasattr(resource, "close"):
-                    if asyncio.iscoroutinefunction(resource.close):
-                        await resource.close()
+                cleanup = getattr(resource, "cleanup", None)
+                close = getattr(resource, "close", None)
+                has_cleanup = (
+                    "cleanup" in getattr(resource, "__dict__", {})
+                    or "cleanup" in getattr(resource.__class__, "__dict__", {})
+                )
+                if has_cleanup and callable(cleanup):
+                    if asyncio.iscoroutinefunction(cleanup):
+                        await cleanup()
                     else:
-                        resource.close()
+                        cleanup()
+                elif callable(close):
+                    if asyncio.iscoroutinefunction(close):
+                        await close()
+                    else:
+                        close()
                 logger.debug(f"Cleaned: {name}")
             except Exception as e:
                 logger.warning(f"Cleanup failed for {name}: {e}")
@@ -108,8 +128,36 @@ class LifecycleManager:
 
     def healthz(self) -> Dict[str, Any]:
         """Generate health check response."""
+        checks_ok = True
+        for check in self._health_checks:
+            try:
+                if asyncio.iscoroutinefunction(check):
+                    async def _run_check():
+                        return await asyncio.wait_for(check(), timeout=self._health_check_timeout)
+
+                    try:
+                        loop = asyncio.get_event_loop()
+                        running = loop.is_running()
+                    except RuntimeError:
+                        running = False
+
+                    if running:
+                        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                            future = executor.submit(asyncio.run, _run_check())
+                            result = future.result(timeout=self._health_check_timeout + 0.5)
+                    else:
+                        result = asyncio.run(_run_check())
+                else:
+                    result = check()
+                if not bool(result):
+                    checks_ok = False
+            except Exception as e:
+                logger.warning(f"Health check failed: {e}")
+                checks_ok = False
+
+        is_healthy = self._is_healthy and checks_ok
         return {
-            "status": "healthy" if self._is_healthy else "unhealthy",
+            "status": "healthy" if is_healthy else "unhealthy",
             "ready": self._is_ready,
             "resources": len(self._resources),
         }

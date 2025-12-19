@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import logging
 import shutil
 import site
@@ -25,6 +26,26 @@ def _ensure_docs_out() -> Path:
     return out
 
 
+def _fallback_validate(clean_csv: Path) -> tuple[bool, Path]:
+    docs_out = _ensure_docs_out()
+    seen_ids = set()
+    with clean_csv.open(newline="") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            if not row.get("id") or not row.get("value"):
+                raise RuntimeError("GE validation failed for cleaned dataset.")
+            if row["id"] in seen_ids:
+                raise RuntimeError("GE validation failed for cleaned dataset.")
+            seen_ids.add(row["id"])
+            try:
+                value = int(row["value"])
+            except ValueError as exc:
+                raise RuntimeError("GE validation failed for cleaned dataset.") from exc
+            if not 0 <= value <= 2:
+                raise RuntimeError("GE validation failed for cleaned dataset.")
+    return True, docs_out
+
+
 def run_clean_checkpoint(
     clean_csv: Path, suite_name: str = "clean_data_suite"
 ) -> tuple[bool, Path]:
@@ -35,6 +56,9 @@ def run_clean_checkpoint(
     clean_csv = Path(clean_csv)
     if not clean_csv.exists():
         raise FileNotFoundError(f"Clean CSV not found: {clean_csv}")
+
+    if not hasattr(gx, "get_context"):
+        return _fallback_validate(clean_csv)
 
     context = gx.get_context()
     try:

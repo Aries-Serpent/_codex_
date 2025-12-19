@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
+import os
 import sys
 from dataclasses import dataclass
 from typing import Optional
@@ -96,12 +97,29 @@ def safe_accelerate_init(
         ... else:
         ...     print(f"Error: {result.error}")
     """
+    cpu_only_env = os.environ.get("CUDA_VISIBLE_DEVICES") == ""
+    # Check GPU availability
+    gpu_available = is_gpu_available()
+
     # Check accelerate availability
     if not is_accelerate_available():
+        if cpu_fallback and cpu_only_env:
+            result = AccelerateInitResult(
+                success=False,
+                accelerate_available=False,
+                gpu_available=gpu_available,
+                backend=None,
+                world_size=1,
+                rank=0,
+                error=None,
+                skip_reason="cpu_only",
+            )
+            logger.info("CPU-only environment detected, skipping distributed init")
+            return result
         result = AccelerateInitResult(
             success=False,
             accelerate_available=False,
-            gpu_available=is_gpu_available(),
+            gpu_available=gpu_available,
             backend=None,
             world_size=1,
             rank=0,
@@ -111,8 +129,6 @@ def safe_accelerate_init(
         logger.info("Accelerate package not available, skipping distributed init")
         return result
 
-    # Check GPU availability
-    gpu_available = is_gpu_available()
     if not gpu_available and cpu_fallback:
         result = AccelerateInitResult(
             success=False,
@@ -130,8 +146,6 @@ def safe_accelerate_init(
     # Try to initialize accelerate
     try:
         # Check for distributed environment variables
-        import os
-
         from accelerate import Accelerator
 
         world_size = int(os.getenv("WORLD_SIZE", "1"))
