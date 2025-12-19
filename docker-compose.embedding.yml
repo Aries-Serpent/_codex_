@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  embedding-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.embedding
+    environment:
+      - EMBEDDER_CLASS=src.mcp.embeddings.mock_embedder.MockEmbedder
+      - ADAPTER_CLASS=src.mcp.backends.mock_backend.InMemoryMockBackend
+      - EMBEDDING_BATCH_SIZE=8
+    volumes:
+      - ./samples:/samples
+    command: ["--input", "/samples/small_docs.json", "--batch-size", "8"]

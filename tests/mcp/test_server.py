@@ -4,6 +4,7 @@ import asyncio
 from typing import Any, Dict, Optional
 
 from mcp.server import MCPServer, Tool, ToolRegistry
+from mcp.server.stdio import StdioTransport, TransportConfig
 
 
 def _run(coro: Any) -> Any:
@@ -127,3 +128,39 @@ def test_server_negotiate_version_no_overlap() -> None:
     assert "error" in response
     assert response["error"]["code"] == -32602
     assert "No compatible version found" in response["error"]["message"]
+
+
+async def _stdio_round_trip() -> bytes:
+    reader = asyncio.StreamReader()
+
+    class _MemoryWriter:
+        def __init__(self) -> None:
+            self.buffer = b""
+
+        def write(self, data: bytes) -> None:
+            self.buffer += data
+
+        async def drain(self) -> None:  # pragma: no cover - noop
+            return None
+
+    writer = _MemoryWriter()
+    transport = StdioTransport(
+        config=TransportConfig(max_message_size=1024, read_timeout_seconds=1.0),
+        reader=reader,
+        writer=writer,  # type: ignore[arg-type]
+    )
+
+    reader.feed_data(b'{"jsonrpc":"2.0","id":1,"method":"ping"}\n')
+    reader.feed_eof()
+
+    message = await transport.read_message()
+    assert message["id"] == 1
+
+    await transport.write_message({"ok": True})
+    return writer.buffer
+
+
+def test_stdio_transport_round_trip() -> None:
+    output = _run(_stdio_round_trip())
+    assert output.endswith(b"\n")
+    assert b'"ok":true' in output

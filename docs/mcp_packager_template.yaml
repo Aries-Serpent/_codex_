@@ -1,0 +1,25 @@
+name: "Example MCP Package"
+description: "Sample MCP package scaffold."
+
+template: base  # base | zendesk | web_crawler
+output_dir: "./mcp_package"
+python_package: "mcp_package"
+entrypoint: "app.py"
+
+include_cli: true
+include_tests: true
+include_docs: true
+include_serverless: false
+serverless_target: aws_lambda  # aws_lambda | gcp_cloud_function | azure_function
+
+dependencies:
+  - fastapi
+  - uvicorn
+
+env:
+  MCP_ENV: "dev"
+  ENABLE_LIVE_TESTS: "false"
+
+features:
+  - health_endpoint
+  - jsonrpc

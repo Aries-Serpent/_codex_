@@ -1,0 +1,15 @@
+# Minimal container image for embedding worker
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY pyproject.toml pyproject.toml
+# Install minimal runtime deps (user may extend)
+RUN pip install --upgrade pip
+RUN pip install fastapi pytest
+
+# Copy source
+COPY src/ src/
+
+ENV PYTHONPATH=/app
+
+ENTRYPOINT ["python", "-m", "src.workers.embedding_worker"]

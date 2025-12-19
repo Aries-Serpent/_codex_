@@ -1,101 +1,38 @@
-# Copilot Guidance: MCP Integration
+# Copilot MCP Integration Guide
 
-> Generated: 2025-12-17 | Target Branch: main | Implementation Branch: copilot/continue-high-maturity-achievement
+This guide documents how to run, validate, and preview the Codex MCP server from Copilot Spaces and how to target low-cost hosting (Cloudflare Workers for edge previews, Fly.io for persistent workers). The reference branch for production readiness is **main**, with active development on `copilot/continue-high-maturity-achievement` (branched from `0D_base_`).
 
-## Repository Context
+## Quick start (Copilot Spaces)
+1. Copy `.copilot-space/mcp.example.json` into your Space configuration.
+2. Set environment variables:
+   - `CODEX_ITA_API_KEY` for ITA integration
+   - `CODEX_MCP_API_KEY` (defaults to `dev-key` for local usage)
+   - Optional: `MCP_OFFLINE=true` to bypass auth during offline dev
+3. Launch the server using the bundled command: `python -m src.mcp.server.http --config codex_capability_map.yaml`.
+4. Validate with `python scripts/validate_mcp.py --run-http-smoke`.
 
-High-maturity MLOps platform (75.2% Python) with MCP integration targeting **main** branch.
+## Branch mapping
+- **Production target**: `main`
+- **Development snapshot**: `0D_base_`
+- **Feature branch for MCP integration**: `copilot/continue-high-maturity-achievement`
+- Keep PRs focused; rebase against `0D_base_` before opening against `main`.
 
-### MCP Capabilities (10 Total)
+## Hosting recommendations
+- **Cloudflare Workers**: Use for stateless preview endpoints. Bridge `/mcp/*` routes to the FastAPI prototype or author a lightweight Worker (Node 18 runtime) using the `fetch` handler to mirror the FastAPI schema.
+- **Fly.io**: Use for persistent containers and background embedding workers. Deploy using `fly launch` + `fly deploy`, keeping secrets in Fly Secrets. Run the FastAPI server and optional embedding worker in separate apps for isolation.
+- **Vercel/Netlify**: Optional for PR previews; avoid long-running workers.
 
-1. **mcp-protocol-surface** — JSON-RPC server (`src/mcp/server/`)
-2. **mcp-schema-validation** — Config management (`src/mcp/config.py`)
-3. **mcp-tooling-registry** — Tool discovery (`src/mcp/registry.py`)
-4. **mcp-authz-authn** — Authentication/authorization (`src/mcp/auth.py`)
-5. **mcp-rate-limiting** — Token bucket rate limiter (`src/mcp/rate_limit.py`)
-6. **mcp-error-handling** — Error hierarchy (`src/mcp/errors.py`)
-7. **mcp-lifecycle-management** — Server lifecycle (`src/mcp/lifecycle.py`)
-8. **mcp-observability** — Metrics and tracing (`src/mcp/observability.py`)
-9. **mcp-configuration** — Configuration validation (`src/mcp/config.py`)
-10. **mcp-versioning-compat** — Protocol versioning (`src/mcp/versioning.py`)
+## Runtime options
+- **Python/FastAPI prototype**: `src/mcp/server/http.py` provides `/mcp/v1/health`, `/mcp/v1/query`, `/mcp/v1/context` plus API-key auth and in-memory vector store. Use this for local previews and Fly.io deploys.
+- **Node/TypeScript prototype (edge)**: Use a Workers-compatible handler with `fetch` and return JSON matching `docs/mcp/api_schema.md`. Recommended runtime: Node 18+ with the standard `Request`/`Response` APIs.
 
-## Integration Points
+## Validation checklist
+- `python scripts/validate_mcp.py --run-http-smoke` passes
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/mcp/test_http_server.py -q`
+- Capability map includes MCP entries (`codex_capability_map.yaml`)
+- Copilot Space config present (`.copilot-space/mcp.example.json`)
+- No GitHub Actions workflows modified
 
-### Entry Points
-
-```python
-# Main MCP server entry
-from src.mcp.server import MCPServer, Tool, ToolRegistry
-
-# Configuration
-from src.mcp.config import MCPConfig, load_config
-
-# Authentication
-from src.mcp.auth import MCPAuthenticator, APIKeyAuth, JWTAuth
-
-# Rate limiting
-from src.mcp.rate_limit import TokenBucketRateLimiter
-```
-
-### Transport Layer
-
-The MCP server supports stdio transport for Copilot integration:
-
-```python
-from src.mcp.server.stdio import StdioTransport
-from src.mcp.server.json_rpc import JsonRpcHandler
-```
-
-### Configuration
-
-```yaml
-# mcp-config.yaml
-mcp:
-  version: "1.0"
-  server:
-    name: "codex-mcp"
-    transport: "stdio"
-  auth:
-    type: "api_key"
-    header: "X-API-Key"
-  rate_limit:
-    requests_per_minute: 60
-    burst_size: 10
-```
-
-## Testing
-
-All MCP capabilities have comprehensive test coverage:
-
-```bash
-# Run MCP tests
-pytest tests/mcp/ -v
-
-# Run specific capability tests
-pytest tests/mcp/test_server.py -v
-pytest tests/mcp/test_auth.py -v
-pytest tests/mcp/test_lifecycle.py -v
-```
-
-## Maturity Status
-
-All 10 MCP capabilities are at HIGH maturity (≥0.85 score):
-
-| Capability | Score | Status |
-|------------|-------|--------|
-| mcp-protocol-surface | 1.0+ | ✅ HIGH |
-| mcp-schema-validation | 1.0+ | ✅ HIGH |
-| mcp-tooling-registry | 1.0+ | ✅ HIGH |
-| mcp-authz-authn | 1.0+ | ✅ HIGH |
-| mcp-rate-limiting | 1.0+ | ✅ HIGH |
-| mcp-error-handling | 1.0+ | ✅ HIGH |
-| mcp-lifecycle-management | 1.0+ | ✅ HIGH |
-| mcp-observability | 1.0+ | ✅ HIGH |
-| mcp-configuration | 1.0+ | ✅ HIGH |
-| mcp-versioning-compat | 1.0+ | ✅ HIGH |
-
-## Related Documentation
-
-- [MCP Server README](../src/mcp/server/README.md)
-- [Operational Runbook](../docs/plans/operational_runbook.md)
-- [Plan Status Dashboard](../docs/plans/PLAN_STATUS_DASHBOARD.md)
+## Security & secrets
+- Never commit API keys. Use provider secret stores (Fly Secrets, Cloudflare Vars) or Copilot Space secrets.
+- Enforce TLS on external endpoints and enable per-principal audit logging when moving beyond local previews.
