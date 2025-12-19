@@ -608,3 +608,7 @@ gh workflow run scheduled-dependency-audit.yml \
 - ✅ Weekly dependency drift detection
 - ✅ Automated Python version compatibility testing
 - ✅ GitHub Security integration for SARIF alerts
+
+## MCP Packager
+
+Generate MCP package scaffolds using the built-in packager. See [docs/mcp_packager.md](docs/mcp_packager.md) and the sample config at [docs/mcp_packager_template.yaml](docs/mcp_packager_template.yaml).

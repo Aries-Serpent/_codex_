@@ -1026,12 +1026,11 @@ class AgentMemorySystem:
         Returns:
             Memory ID of the stored decision
         """
-        # Use task_id + decision content for deterministic ID generation
-        # This ensures the same decision for the same task produces the same ID
-        # while still being unique across different decisions
+        # Use task_id + decision content for deterministic ID generation.
+        # Ensure different decisions receive different IDs while keeping 16-char length.
         content_hash = hashlib.sha256(f"{task_id}:{decision}:{rationale}".encode()).hexdigest()
         # Enforce strict 16-character IDs for downstream integrations
-        memory_id = f"{task_id}_{content_hash}"[:16]
+        memory_id = content_hash[:16]
 
         entry = MemoryEntry(
             memory_id=memory_id,
