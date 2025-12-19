@@ -223,7 +223,15 @@ jobs:
             p/security-audit
             p/python
             p/owasp-top-ten
+          generateSarif: "1"
         continue-on-error: true
+
+      - name: Upload Semgrep SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
 
   # Policy and compliance check job
   policy-check:
