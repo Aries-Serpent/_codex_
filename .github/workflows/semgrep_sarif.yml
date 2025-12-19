@@ -15,13 +15,27 @@ jobs:
   semgrep-sarif:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: returntocorp/semgrep-action@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          config: p/ci
-          generateSarif: "1"
-          # sarif output path is semgrep.sarif by default
+          python-version: '3.11'
+
+      - name: Install CPU-only PyTorch (required by Semgrep rules)
+        run: |
+          python -m pip install --upgrade pip
+          # Use PyTorch CPU wheel; this is faster and avoids GPU deps.
+          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Run Semgrep SAST
+        # upgrade to v2 if you choose; v1 also works but v2 is recommended
+        uses: returntocorp/semgrep-action@v2
+        with:
+          # keep your existing inputs, for example:
+          output: semgrep.sarif.json
       - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: semgrep.sarif
+          sarif_file: semgrep.sarif.json
