@@ -1,10 +1,18 @@
 from __future__ import annotations
+
+import asyncio
 import importlib
 import importlib.util
 import os
 from typing import Optional, Tuple
 
-DEFAULT_ADAPTER = "src.mcp.backends.mock_backend.InMemoryMockBackend"
+from src.mcp.server.adapters.mock_adapter import MockAdapter
+
+DEFAULT_ADAPTER = "src.mcp.server.adapters.mock_adapter.MockAdapter"
+FALLBACK_ADAPTERS = [
+    DEFAULT_ADAPTER,
+    "src.mcp.backends.mock_backend.InMemoryMockBackend",
+]
 
 
 def _import_class(path: str):
@@ -17,23 +25,38 @@ def _import_class(path: str):
 
 def load_adapter(adapter_path: Optional[str] = None) -> Tuple[object, str]:
     """
-    Loads adapter based on ADAPTER_CLASS environment variable or explicit param.
+    Load adapter based on ADAPTER_CLASS environment variable or explicit param.
     Returns (adapter_instance, adapter_class_path).
-    If ADAPTER_CLASS not set or loading fails, fall back to DEFAULT_ADAPTER.
-
-    adapter_path: optional explicit adapter import path (useful for tests)
+    This function is import-safe and does not connect.
     """
     cls_path = adapter_path or os.environ.get("ADAPTER_CLASS", DEFAULT_ADAPTER)
     cls = _import_class(cls_path)
     if cls is None:
-        cls_path = DEFAULT_ADAPTER
-        cls = _import_class(cls_path)
+        for fallback in FALLBACK_ADAPTERS:
+            cls_path = fallback
+            cls = _import_class(cls_path)
+            if cls is not None:
+                break
     if cls is None:
-        raise RuntimeError("Unable to load adapter class")
-    instance = cls()
+        return MockAdapter(), DEFAULT_ADAPTER
+    return cls(), cls_path
+
+
+async def lazy_connect_all(timeout: float = 1.0) -> bool:
+    """
+    Attempt to connect to the configured adapter with a timeout.
+    Returns True if connect succeeds, False otherwise.
+    """
+    adapter, _ = load_adapter()
+    connect_fn = getattr(adapter, "connect", None)
+    if connect_fn is None:
+        return True
+
+    async def _connect():
+        await asyncio.to_thread(connect_fn)
+
     try:
-        instance.connect()
+        await asyncio.wait_for(_connect(), timeout=timeout)
+        return True
     except Exception:
-        # ignore connect failures for import-safety
-        pass
-    return instance, cls_path
+        return False

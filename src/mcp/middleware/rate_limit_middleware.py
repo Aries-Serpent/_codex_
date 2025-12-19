@@ -16,6 +16,10 @@ def _get_bucket(principal: str, burst: int):
     return b
 
 
+def clear_buckets() -> None:
+    _BUCKETS.clear()
+
+
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """
     Very small in-memory rate limiter. Suitable for dev/testing only.
