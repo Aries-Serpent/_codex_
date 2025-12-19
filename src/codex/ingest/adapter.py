@@ -176,12 +176,17 @@ def _extract_zip(zip_path: Path, dest_dir: Path) -> None:
         dest_dir: Destination directory
     """
     with zipfile.ZipFile(zip_path, "r") as zf:
-        for member in zf.namelist():
-            # Validate each member path
-            member_path = dest_dir / member
+        for member in zf.infolist():
+            member_path = dest_dir / member.filename
             _validate_path(member_path, dest_dir)
-        
-        zf.extractall(dest_dir)
+
+            if member.is_dir():
+                member_path.mkdir(parents=True, exist_ok=True)
+                continue
+
+            member_path.parent.mkdir(parents=True, exist_ok=True)
+            with zf.open(member, "r") as src, open(member_path, "wb") as dst:
+                shutil.copyfileobj(src, dst)
 
 
 def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
@@ -198,8 +203,20 @@ def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
             # Validate each member path
             member_path = dest_dir / member.name
             _validate_path(member_path, dest_dir)
-        
-        tf.extractall(dest_dir)
+
+            if member.isdir():
+                member_path.mkdir(parents=True, exist_ok=True)
+                continue
+
+            if member.issym() or member.islnk():
+                raise ValueError(f"Refusing to extract symlinked member: {member.name}")
+
+            member_path.parent.mkdir(parents=True, exist_ok=True)
+            extracted = tf.extractfile(member)
+            if extracted is None:
+                continue
+            with extracted as src, open(member_path, "wb") as dst:
+                shutil.copyfileobj(src, dst)
 
 
 def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
@@ -210,26 +227,34 @@ def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
         ref: Optional Git reference (branch, tag, commit)
         dest_dir: Destination directory
     """
-    import subprocess
-    
+    import subprocess  # nosec B404: subprocess is required for git invocation
+    from urllib.parse import urlparse
+
+    parsed_url = urlparse(url)
+    if parsed_url.scheme not in {"", "http", "https", "ssh", "git"}:
+        raise ValueError(f"Unsupported git URL scheme: {parsed_url.scheme}")
+    if parsed_url.scheme and not parsed_url.netloc:
+        raise ValueError(f"Invalid git URL: {url}")
+
     # Clone repository
     cmd = ["git", "clone", "--depth", "1"]
     if ref:
         cmd.extend(["--branch", ref])
     cmd.extend([url, str(dest_dir)])
-    
+
     # Security: Using 'git' from PATH - assumes it's a trusted version control tool.
     # The url and ref parameters should be validated by the caller. Arguments are passed
     # as a list to prevent shell injection. The dest_dir is a controlled Path object.
-    result = subprocess.run(
-        cmd,
-        capture_output=True,
-        text=True,
-        timeout=300,  # 5 minute timeout
-    )
-    
-    if result.returncode != 0:
-        raise RuntimeError(f"Git clone failed: {result.stderr}")
+    try:
+        subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=300,  # 5 minute timeout
+            check=True,
+        )  # nosec B603: command arguments are controlled and validated above
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(f"Git clone failed: {exc.stderr}") from exc
 
 
 def ingest(

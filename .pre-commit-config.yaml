@@ -11,6 +11,7 @@ repos:
     hooks:
       - id: bandit
         args: ["-c", "bandit.yaml", "-r", "src", "training"]
+        pass_filenames: false
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:
@@ -25,17 +26,17 @@ repos:
         args: ["--desc", "--skip-editable"]
         # Note: May require requirements files to be present
         # Run manually with: pre-commit run pip-audit --all-files
-  
+
   # Security scanning: gitleaks for secrets detection
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.1
     hooks:
       - id: gitleaks
         name: gitleaks (secrets detection)
-        args: ["detect", "--source=.", "--no-git", "--config=.gitleaks.toml", "--verbose"]
+        args: ["detect", "--source=.", "--config=.gitleaks.toml", "--verbose"]
         # Note: Requires .gitleaks.toml config file
         # To generate baseline: gitleaks detect --source=. --report-path=.gitleaks-baseline.json
-  
+
   - repo: local
     hooks:
       - id: pip-compile

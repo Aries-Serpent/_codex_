@@ -7,8 +7,10 @@ from pathlib import Path
 
 try:
     from defusedxml.ElementTree import Element, SubElement, tostring
-except ImportError:
-    from xml.etree.ElementTree import Element, SubElement, tostring
+except ImportError as exc:
+    raise ImportError(
+        "defusedxml is required for safe XML handling in solution_xml; install it via pip"
+    ) from exc
 
 from pydantic import AliasChoices, BaseModel, Field
 

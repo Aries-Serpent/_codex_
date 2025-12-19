@@ -228,7 +228,7 @@ class StatementFingerprinter:
         hashes = []
         for i in range(len(tokens) - self.ngram_size + 1):
             ngram = " ".join(tokens[i : i + self.ngram_size])
-            h = hashlib.md5(ngram.encode("utf-8")).hexdigest()[:8]
+            h = hashlib.sha256(ngram.encode("utf-8")).hexdigest()[:8]
             hashes.append(h)
 
         return hashes
