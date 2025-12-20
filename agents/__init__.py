@@ -5,6 +5,12 @@ This package contains physics-inspired orchestrators and specialized agents
 that use game theory, quantum mechanics, and physical principles to make
 optimal decisions.
 
+🧭 NAVIGATION HINT: New to agents? Start with:
+   1. .codex/ai_agent_manifest.json - Complete agent catalog with capabilities
+   2. agents/workflow_navigator.py - Simple workflow management
+   3. agents/developer_orchestrator.py - Task planning and orchestration
+   4. AGENTS.md - Comprehensive usage guide
+
 Version: 0.0.0
 Changelog: See CHANGELOG_AGENTS.md for API changes and version history.
 
