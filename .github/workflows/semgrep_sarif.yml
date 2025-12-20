@@ -71,7 +71,7 @@ jobs:
             pip install -r .github/semgrep-requirements.txt
           else
             # Fallback: Install manually if requirements file not found
-            pip install --no-cache-dir semgrep==1.146.0
+            pip install --no-cache-dir semgrep
             pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
           fi
           # Verify installations
