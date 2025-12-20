@@ -252,7 +252,7 @@ def validate_build(results: ValidationResult):
             stdout, stderr = proc.communicate(timeout=60)
         except subprocess.TimeoutExpired:
             proc.kill()
-            _, _ = proc.communicate()
+            proc.communicate()  # Ensure cleanup, output not needed
             results.add_warning("Package build", "Build timed out after 60s")
             return
 
