@@ -9,8 +9,6 @@ Goal:
 
 from __future__ import annotations
 
-import sys
-
 
 def main() -> int:
     """Validate CLI exports."""
