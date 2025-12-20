@@ -661,6 +661,25 @@ Representative commands (confirm availability in `pyproject.toml`):
 - Use stub fixtures (see `tests/test_codex_ml_readiness_imports.py`) to test import-time behavior without heavy dependencies
 - Use `requirements-*-*.txt` files to install just the needed extras for specific test suites
 
+### Dependency Installation Patterns
+
+**requirements-test.txt Installation:**
+The `requirements-test.txt` file uses `-r requirements.txt` to include base dependencies. This means:
+- Installing `requirements-test.txt` automatically installs base dependencies from `requirements.txt`
+- Single command installation: `pip install -r requirements-test.txt`
+- Transitive dependency handling: Base deps are installed first, then test-specific deps
+- Note: Some CI workflows may install both files separately for explicit dependency tracking
+
+**Recommended Installation Order (if installing separately):**
+```bash
+# Option 1: Single command (recommended)
+pip install -r requirements-test.txt
+
+# Option 2: Explicit two-step (for workflows requiring separate tracking)
+pip install -r requirements.txt
+pip install -r requirements-test.txt
+```
+
 ## Prohibited Actions & Scope
 - Do **not** create or activate GitHub Actions workflows or external integrations.
 - Keep automation artifacts under `.codex/` and `artifacts/`; avoid networked calls unless explicitly required and allowed by `CODEX_NET_MODE`.
