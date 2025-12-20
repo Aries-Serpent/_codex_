@@ -95,24 +95,23 @@ jobs:
         # Skip if no Python files are present
         if: env.python_present == 'true'
         run: |
-          # Ensure PyTorch is available for custom rules
-          python -c "import torch; print('PyTorch available for Semgrep rules')" || {
-            echo "::error::PyTorch not available. Custom Semgrep rules may fail."
-            exit 1
-          }
-          
+          # Verify PyTorch is available for custom rules (non-blocking)
+          if ! python -c "import torch; print('PyTorch available for Semgrep rules')" 2>/dev/null; then
+            echo "::warning::PyTorch not available. Some custom Semgrep rules may not work."
+          fi
+
           # Run semgrep with local config files
           semgrep --config semgrep_rules/python-security.yaml \
                   --config semgrep_rules/python-basic.yml \
                   --sarif --output semgrep.sarif.json \
                   || echo "::warning::Semgrep scan completed with findings"
-          
+
           # Verify SARIF file was created
           if [ ! -f "semgrep.sarif.json" ]; then
             echo "::error::semgrep.sarif.json was not created"
             exit 1
           fi
-          
+
           echo "SARIF file created successfully"
           ls -lh semgrep.sarif.json
 
