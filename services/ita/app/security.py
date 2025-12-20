@@ -69,6 +69,16 @@ class ApiKeyStore:
 
 
 def hash_key(value: str) -> str:
+    """Hash API key for storage and lookup.
+    
+    Security Note: SHA-256 is appropriate here for API key hashing because:
+    1. API keys are high-entropy random tokens (not user passwords)
+    2. Speed is beneficial for authentication lookups
+    3. Keys are already unique (no salt needed)
+    4. Not vulnerable to brute-force (unlike password hashing)
+    
+    For password hashing, use bcrypt, argon2, or scrypt instead.
+    """
     return sha256(value.encode("utf-8")).hexdigest()
 
 

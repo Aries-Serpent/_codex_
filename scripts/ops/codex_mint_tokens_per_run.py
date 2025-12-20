@@ -391,9 +391,10 @@ def action_runner_registration_token(
     data = resp.json()
     token = data.get("token", "")
     masked = _mask(token)
+    # Security: Never log full tokens, only masked version
     print(
         json.dumps(
-            {"token": token, "masked": masked, "expires_at": data.get("expires_at")}, indent=2
+            {"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2
         )
     )
 

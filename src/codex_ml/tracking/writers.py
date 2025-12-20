@@ -157,6 +157,8 @@ class _SummaryRotator:
         with self._lock:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._rotate_if_needed(len(data))
+            # Security: Use 0o644 permissions (owner read/write, others read-only)
+            # This is appropriate for log files that need to be readable by monitoring tools
             fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
             try:
                 os.write(fd, data)

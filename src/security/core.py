@@ -36,6 +36,27 @@ XSS_PATTERNS = [
 _JSON_INJECTION_PATTERN = re.compile(r"__proto__|constructor|prototype", re.IGNORECASE)
 
 
+def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
+    """Sanitize user input for safe logging (prevents log injection).
+    
+    Removes newlines, control characters, and truncates to prevent log poisoning.
+    
+    Args:
+        value: Input value to sanitize
+        max_length: Maximum length of output (default: 200)
+    
+    Returns:
+        Sanitized string safe for logging
+    """
+    text = _ensure_str(value)
+    # Remove newlines and control characters that could be used for log injection
+    sanitized = re.sub(r'[\r\n\t\x00-\x1f\x7f]', ' ', text)
+    # Truncate to reasonable length
+    if len(sanitized) > max_length:
+        sanitized = sanitized[:max_length] + "...[truncated]"
+    return sanitized
+
+
 def _ensure_str(value: Any) -> str:
     if isinstance(value, bytes):
         return value.decode("utf-8", errors="ignore")
@@ -45,15 +66,19 @@ def _ensure_str(value: Any) -> str:
 
 
 def sanitize_user_content(value: Any, content_type: Literal["html", "markdown"] = "html") -> str:
-    """Sanitize user generated content for safe rendering."""
-
+    """Sanitize user generated content for safe rendering.
+    
+    Security: Uses proper HTML parsing instead of regex to prevent XSS and ReDoS attacks.
+    """
     text = _ensure_str(value)
 
     if content_type == "html":
+        # Use html.escape for HTML content (safe and efficient)
         sanitized = html.escape(text)
     elif content_type == "markdown":
-        sanitized = re.sub(r"<script[^>]*>.*?</script>", "", text, flags=re.IGNORECASE | re.DOTALL)
-        sanitized = html.escape(sanitized)
+        # For markdown, escape HTML entities (markdown parsers handle the rest)
+        # DO NOT use regex for HTML filtering - it's inherently flawed
+        sanitized = html.escape(text)
     else:
         sanitized = text
 
