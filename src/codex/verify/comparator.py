@@ -21,6 +21,7 @@ import json
 import logging
 import os
 import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -146,7 +147,14 @@ def _run_script(
     if env_overrides:
         env.update(env_overrides)
     
-    cmd = ["python", str(script_path)]
+    script_path = script_path.resolve()
+    if not script_path.exists():
+        return "", f"Script not found: {script_path}", -1
+    if not script_path.is_file():
+        return "", f"Script is not a file: {script_path}", -1
+
+    python_exe = Path(sys.executable).resolve()
+    cmd = [str(python_exe), str(script_path)]
     
     stdin_content = None
     if input_file and input_file.exists():

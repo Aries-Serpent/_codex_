@@ -23,6 +23,7 @@ from __future__ import annotations
 import ast
 import json
 import logging
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -234,16 +235,31 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
     )
 
 
+def _resolve_tool(tool: str) -> Optional[str]:
+    """Resolve a tool path from PATH for safer subprocess execution."""
+    tool_path = shutil.which(tool)
+    if not tool_path:
+        logger.warning("%s not found, skipping", tool)
+        return None
+    return str(Path(tool_path).resolve())
+
+
 def _run_ruff(source_dir: Path) -> List[LintIssue]:
     """Run ruff linter and collect issues."""
     issues = []
     
     try:
+        if not source_dir.exists():
+            logger.warning("Source directory %s does not exist; skipping ruff", source_dir)
+            return issues
+        tool_path = _resolve_tool("ruff")
+        if not tool_path:
+            return issues
         # Security: Using 'ruff' from PATH - assumes it's a trusted tool installed in the
         # development environment. The source_dir is validated to be a Path object.
         # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
-            ["ruff", "check", "--output-format=json", str(source_dir)],
+            [tool_path, "check", "--output-format=json", str(source_dir)],
             capture_output=True,
             text=True,
             timeout=60,
@@ -275,11 +291,17 @@ def _run_bandit(source_dir: Path) -> List[SecurityIssue]:
     issues = []
     
     try:
+        if not source_dir.exists():
+            logger.warning("Source directory %s does not exist; skipping bandit", source_dir)
+            return issues
+        tool_path = _resolve_tool("bandit")
+        if not tool_path:
+            return issues
         # Security: Using 'bandit' from PATH - assumes it's a trusted security scanning tool
         # installed in the development environment. The source_dir is validated as a Path.
         # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
-            ["bandit", "-r", "-f", "json", str(source_dir)],
+            [tool_path, "-r", "-f", "json", str(source_dir)],
             capture_output=True,
             text=True,
             timeout=120,

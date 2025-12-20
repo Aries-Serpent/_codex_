@@ -22,6 +22,7 @@ import ast
 import difflib
 import json
 import logging
+import shutil
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -158,41 +159,56 @@ def _create_diff(original: str, modified: str, file_path: str) -> str:
     return "".join(diff)
 
 
+def _resolve_tool(tool: str) -> Optional[str]:
+    """Resolve a tool path from PATH for safer subprocess execution."""
+    tool_path = shutil.which(tool)
+    if not tool_path:
+        logger.debug("%s not found, skipping", tool)
+        return None
+    return str(Path(tool_path).resolve())
+
+
 def _run_black(file_path: Path) -> Optional[str]:
     """Run black formatter and return modified content."""
     try:
+        tool_path = _resolve_tool("black")
+        if not tool_path:
+            return None
         # Security: Using 'black' from PATH - assumes it's a trusted code formatter
         # installed in the development environment. The file_path is validated as a Path.
         # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
-            ["black", "--quiet", str(file_path)],
+            [tool_path, "--quiet", str(file_path)],
             capture_output=True,
             text=True,
             timeout=30,
         )
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pass
+    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+        logger.debug("Black formatting skipped for %s: %s", file_path, exc)
     return None
 
 
 def _run_isort(file_path: Path) -> Optional[str]:
     """Run isort and return modified content."""
     try:
+        tool_path = _resolve_tool("isort")
+        if not tool_path:
+            return None
         # Security: Using 'isort' from PATH - assumes it's a trusted import sorting tool
         # installed in the development environment. The file_path is validated as a Path.
         # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
-            ["isort", "--quiet", str(file_path)],
+            [tool_path, "--quiet", str(file_path)],
             capture_output=True,
             text=True,
             timeout=30,
         )
         if result.returncode == 0:
             return file_path.read_text(encoding="utf-8")
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pass
+    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+        logger.debug("Isort formatting skipped for %s: %s", file_path, exc)
     return None
 
 

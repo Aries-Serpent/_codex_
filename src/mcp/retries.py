@@ -1,10 +1,10 @@
 # Minimal retry / backoff helper (exponential backoff with jitter)
 import functools
-import random
+import secrets
 import time
 from typing import Callable, Tuple
 
-_secure_random = random.SystemRandom()
+_secure_random = secrets.SystemRandom()
 
 def retry_on_exception(
     exceptions: Tuple[type, ...] = (Exception,),

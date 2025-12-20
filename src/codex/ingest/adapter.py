@@ -198,9 +198,19 @@ def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
         tar_path: Path to TAR file
         dest_dir: Destination directory
     """
+    def is_safe_member(member_name: str) -> bool:
+        member_path = Path(member_name)
+        if member_path.is_absolute():
+            return False
+        if ".." in member_path.parts:
+            return False
+        return True
+
     with tarfile.open(tar_path, "r:*") as tf:
         for member in tf.getmembers():
             # Validate each member path
+            if not is_safe_member(member.name):
+                raise ValueError(f"Unsafe tar member path: {member.name}")
             member_path = dest_dir / member.name
             _validate_path(member_path, dest_dir)
 
@@ -236,8 +246,16 @@ def _clone_git_repo(url: str, ref: Optional[str], dest_dir: Path) -> None:
     if parsed_url.scheme and not parsed_url.netloc:
         raise ValueError(f"Invalid git URL: {url}")
 
+    git_path = shutil.which("git")
+    if not git_path:
+        raise RuntimeError("git not found in PATH")
+    git_path = str(Path(git_path).resolve())
+
+    if ref and any(ch.isspace() for ch in ref):
+        raise ValueError("Invalid git ref: whitespace is not allowed")
+
     # Clone repository
-    cmd = ["git", "clone", "--depth", "1"]
+    cmd = [git_path, "clone", "--depth", "1"]
     if ref:
         cmd.extend(["--branch", ref])
     cmd.extend([url, str(dest_dir)])

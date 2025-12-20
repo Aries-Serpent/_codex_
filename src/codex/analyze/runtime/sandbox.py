@@ -23,6 +23,7 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -198,11 +199,15 @@ class SandboxManager:
         """
         import time
         
+        script = script.resolve()
         if not script.exists():
             raise FileNotFoundError(f"Script not found: {script}")
+        if not script.is_file():
+            raise FileNotFoundError(f"Script is not a file: {script}")
         
         # Build command
-        cmd = ["python", str(script)]
+        python_exe = Path(sys.executable).resolve()
+        cmd = [str(python_exe), str(script)]
         if args:
             cmd.extend(args)
         
@@ -210,7 +215,7 @@ class SandboxManager:
         env = self._build_environment()
         
         # Determine working directory
-        cwd = self.config.working_dir or script.parent
+        cwd = (self.config.working_dir or script.parent).resolve()
         
         start_time = time.time()
         timed_out = False

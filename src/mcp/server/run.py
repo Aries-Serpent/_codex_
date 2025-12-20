@@ -24,6 +24,11 @@ def main() -> None:
     parser.add_argument("--log-level", default="info")
     parser.add_argument("--port-fallbacks", type=int, default=3, help="Number of fallback ports to try")
     parser.add_argument("--diagnostics", action="store_true", help="Enable startup diagnostics")
+    parser.add_argument(
+        "--allow-public-bind",
+        action="store_true",
+        help="Allow binding to 0.0.0.0 or :: (requires explicit opt-in).",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
@@ -42,6 +47,15 @@ def main() -> None:
         for line in info_lines:
             logger.info(line)
             print(line, flush=True)
+
+    allow_public = args.allow_public_bind or os.environ.get("MCP_ALLOW_PUBLIC_BIND") == "1"
+    if _is_public_bind(args.host) and not allow_public:
+        logger.error(
+            "Refusing to bind to public interface %s without explicit opt-in. "
+            "Use --allow-public-bind or set MCP_ALLOW_PUBLIC_BIND=1.",
+            args.host,
+        )
+        raise SystemExit(2)
 
     host, port = _select_port(args.host, args.port, args.port_fallbacks, logger, diagnostics)
     start = time.time()
@@ -70,6 +84,10 @@ def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, d
         if diagnostics:
             print(f"Port {candidate} unavailable on host {host} ({reason}).", flush=True)
     return host, port
+
+
+def _is_public_bind(host: str) -> bool:
+    return host in {"0.0.0.0", "::"}
 
 
 def _check_bind(host: str, port: int) -> Tuple[bool, Optional[str]]:

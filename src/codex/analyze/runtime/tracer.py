@@ -164,10 +164,10 @@ class RuntimeTracer:
             )
             if result.exit_code == 0 and result.stdout:
                 return result.stdout
-        except Exception:
+        except Exception as exc:
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
-            pass
+            logger.debug("Help detection failed for %s: %s", entry_point, exc)
         
         return None
     
@@ -320,9 +320,9 @@ class RuntimeTracer:
             elif "argparse" in source or "click" in source:
                 probe_result["detected_type"] = "cli"
                 
-        except Exception:
+        except Exception as exc:
             # Ignore errors during source code inspection - this is best-effort detection.
             # Missing type information doesn't prevent the rest of the analysis.
-            pass
+            logger.debug("Entry point probe failed for %s: %s", entry_point, exc)
         
         return probe_result
