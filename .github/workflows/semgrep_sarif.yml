@@ -50,6 +50,7 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
+            ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-
             ${{ runner.os }}-pip-
 
       - name: Install Python deps required by Semgrep rules (only if Python present)
@@ -61,13 +62,44 @@ jobs:
           # Install CPU-only PyTorch (pinned version, required by some Semgrep rules)
           pip install --no-cache-dir torch==2.1.2+cpu --index-url https://download.pytorch.org/whl/cpu
 
+      - name: Validate Semgrep configuration
+        if: env.python_present == 'true'
+        run: |
+          echo "Validating Semgrep configuration..."
+          if [ -f ".semgrep/semgrep.yml" ]; then
+            semgrep --config .semgrep/semgrep.yml --validate || echo "::warning::Config validation returned warnings"
+          else
+            echo "No custom config found, using defaults"
+          fi
+
       - name: Run Semgrep SAST
+        id: semgrep_scan
         uses: returntocorp/semgrep-action@v2
         with:
           output: semgrep.sarif.json
           # If you use a custom config or path, add inputs here, e.g.:
           # config: .semgrep.yml
           # config: auto
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## 🔍 Semgrep SAST Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "semgrep.sarif.json" ]; then
+            # Count findings by severity from SARIF
+            TOTAL=$(jq '.runs[0].results | length' semgrep.sarif.json 2>/dev/null || echo "0")
+            echo "- **Total Findings:** $TOTAL" >> $GITHUB_STEP_SUMMARY
+            echo "- **SARIF File:** \`semgrep.sarif.json\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **Artifact:** \`semgrep-sarif-results\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ No SARIF file generated" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Versions:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Semgrep: 1.95.0" >> $GITHUB_STEP_SUMMARY
+          echo "- PyTorch: 2.1.2+cpu" >> $GITHUB_STEP_SUMMARY
+          echo "- Python: 3.11" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload SARIF artifact
         if: always()
