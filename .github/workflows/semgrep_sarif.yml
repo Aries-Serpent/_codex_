@@ -1,19 +1,20 @@
-name: Semgrep SAST (SARIF Upload)
+# [Workflow]: Semgrep SAST CI job
+# Generated: 2025-12-20T12:00:00Z | Author: mbaetiong
+name: Semgrep SAST
 
 on:
-  pull_request:
-    branches: [ "0D_base_", "main", "master" ]
   push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  security-events: write
+    paths:
+      - '**/*'
+  pull_request:
 
 jobs:
-  semgrep-sarif:
+  semgrep:
+    name: Semgrep SAST
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,18 +24,44 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install CPU-only PyTorch (required by Semgrep rules)
+      - name: Detect Python files
+        id: detect_python
+        run: |
+          echo "Checking for Python files in the repo..."
+          if git ls-files '*.py' | grep -q .; then
+            echo "python_present=true" >> $GITHUB_ENV
+            echo "Python files detected"
+          else
+            echo "python_present=false" >> $GITHUB_ENV
+            echo "No Python files detected"
+          fi
+
+      - name: Cache pip (only if Python present)
+        if: env.python_present == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python deps required by Semgrep rules (only if Python present)
+        if: env.python_present == 'true'
         run: |
           python -m pip install --upgrade pip
-          # Use PyTorch CPU wheel; this is faster and avoids GPU deps.
+          # Install semgrep CLI to ensure compatibility and allow running CLI if needed
+          pip install --no-cache-dir semgrep
+          # Install CPU-only PyTorch (required by some Semgrep rules). Uses PyTorch CPU wheels to avoid GPU artifacts.
           pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
       - name: Run Semgrep SAST
-        # upgrade to v2 if you choose; v1 also works but v2 is recommended
         uses: returntocorp/semgrep-action@v2
         with:
-          # keep your existing inputs, for example:
           output: semgrep.sarif.json
+          # If you use a custom config or path, add inputs here, e.g.:
+          # config: .semgrep.yml
+          # config: auto
+
       - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v4
         with:
