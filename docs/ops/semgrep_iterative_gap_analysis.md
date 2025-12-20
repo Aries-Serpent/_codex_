@@ -373,9 +373,9 @@ The Semgrep SAST workflow is now production-ready with all critical, high, and m
 pip install --no-cache-dir semgrep
 pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
-# After:
-pip install --no-cache-dir semgrep==1.52.0
-pip install --no-cache-dir torch==2.1.2+cpu --index-url https://download.pytorch.org/whl/cpu
+# After (updated to current stable):
+pip install --no-cache-dir semgrep==1.146.0
+pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
 ```
 
 **2. SARIF Artifact Upload (GAP-003)**

@@ -91,6 +91,7 @@ jobs:
       - name: Generate job summary
         if: always()
         run: |
+          # Note: jq is pre-installed in ubuntu-latest runner
           echo "## 🔍 Semgrep SAST Scan Results" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ -f "semgrep.sarif.json" ]; then
@@ -121,3 +122,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: semgrep.sarif.json
+          category: semgrep-custom-rules
