@@ -318,6 +318,9 @@ class EnhancedMSPClient(MSPClient):
                 else:
                     logger.error(f"Request failed after {max_retries} attempts: {e}")
 
+        # Security: Ensure we always have a valid exception to raise
+        if last_exception is None:
+            raise RuntimeError(f"Request to {endpoint} failed with no retries attempted")
         raise last_exception
 
     def batch_infer(

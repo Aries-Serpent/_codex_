@@ -133,9 +133,11 @@ async def inject_request_context(request: Request, call_next):
                 content=exc.to_dict(),
                 headers=headers,
             )
+        # Security: Don't expose internal exception details to clients
+        logger.error("Unhandled exception: %s", exc, exc_info=True)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"detail": str(exc)},
+            content={"detail": "Internal server error"},
             headers=headers,
         )
 
