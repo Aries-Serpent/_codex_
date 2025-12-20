@@ -1,13 +1,7 @@
-# [Workflow]: Semgrep SAST CI job
-# Generated: 2025-12-20T12:00:00Z | Author: mbaetiong
-# Updated: 2025-12-20 - Added version pinning, artifact upload, timeout, workflow_dispatch
-#
-# This workflow runs Semgrep with repository-specific rules from semgrep_rules/
-# Note: security-suite.yml also runs Semgrep but with different rulesets:
-#   - security-suite.yml: Uses p/security-audit, p/python, p/owasp-top-ten
-#   - This workflow: Uses custom rules from semgrep_rules/ directory
-# Both workflows are intentional and complement each other.
-name: Semgrep SAST
+# [Workflow]: Semgrep SAST (SARIF Upload)
+> Generated: 2025-12-20T00:00:00Z | Author: mbaetiong
+
+name: Semgrep SAST (SARIF Upload)
 
 on:
   push:
@@ -79,43 +73,13 @@ jobs:
           fi
 
       - name: Run Semgrep SAST
-        id: semgrep_scan
-        continue-on-error: true
-        uses: returntocorp/semgrep-action@v2
+        # v2 was not resolvable in the runner; use an available published version.
+        uses: returntocorp/semgrep-action@v1
         with:
           config: >-
             semgrep_rules/python-security.yaml
             semgrep_rules/python-basic.yml
           output: semgrep.sarif.json
-
-      - name: Generate job summary
-        if: always()
-        run: |
-          # Note: jq is pre-installed in ubuntu-latest runner
-          echo "## 🔍 Semgrep SAST Scan Results" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f "semgrep.sarif.json" ]; then
-            # Count findings by severity from SARIF
-            TOTAL=$(jq '.runs[0].results | length' semgrep.sarif.json 2>/dev/null || echo "0")
-            echo "- **Total Findings:** $TOTAL" >> "$GITHUB_STEP_SUMMARY"
-            echo "- **SARIF File:** \`semgrep.sarif.json\`" >> "$GITHUB_STEP_SUMMARY"
-            echo "- **Artifact:** \`semgrep-sarif-results\`" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "⚠️ No SARIF file generated" >> "$GITHUB_STEP_SUMMARY"
-          fi
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Versions:**" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Semgrep: 1.146.0" >> "$GITHUB_STEP_SUMMARY"
-          echo "- PyTorch: 2.5.1+cpu" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Python: 3.11" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload SARIF artifact
-        if: always() && hashFiles('semgrep.sarif.json') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: semgrep-sarif-results
-          path: semgrep.sarif.json
-          retention-days: 30
 
       - name: Upload SARIF to Code Scanning
         if: always() && hashFiles('semgrep.sarif.json') != ''
