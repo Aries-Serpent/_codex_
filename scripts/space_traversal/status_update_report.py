@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 try:
-    from jinja2 import Environment, FileSystemLoader  # type: ignore
+    from jinja2 import Environment, FileSystemLoader, select_autoescape  # type: ignore
 
     import yaml  # type: ignore
 except Exception as exc:
@@ -167,9 +167,11 @@ def main() -> None:
 
     # Render template
     tpl_dir = STATUS_TEMPLATE.parent
+    # Security: Enable autoescape for HTML/XML templates to prevent XSS
+    # If template contains user-generated content, autoescape should be True
     env = Environment(
         loader=FileSystemLoader(str(tpl_dir)),
-        autoescape=False,
+        autoescape=select_autoescape(['html', 'xml', 'jinja2']),
         trim_blocks=True,
         lstrip_blocks=True,
     )

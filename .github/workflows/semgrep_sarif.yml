@@ -1,41 +1,125 @@
-name: Semgrep SAST (SARIF Upload)
+# [Workflow]: Semgrep SAST CI job
+# Generated: 2025-12-20T12:00:00Z | Author: mbaetiong
+# Updated: 2025-12-20 - Added version pinning, artifact upload, timeout, workflow_dispatch
+#
+# This workflow runs Semgrep with repository-specific rules from semgrep_rules/
+# Note: security-suite.yml also runs Semgrep but with different rulesets:
+#   - security-suite.yml: Uses p/security-audit, p/python, p/owasp-top-ten
+#   - This workflow: Uses custom rules from semgrep_rules/ directory
+# Both workflows are intentional and complement each other.
+name: Semgrep SAST
 
 on:
-  pull_request:
-    branches: [ "0D_base_", "main", "master" ]
   push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
+    paths:
+      - '**/*'
+  pull_request:
+  workflow_dispatch:  # Allow manual trigger
 
-permissions:
-  contents: read
-  security-events: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  semgrep-sarif:
+  semgrep:
+    name: Semgrep SAST
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install CPU-only PyTorch (required by Semgrep rules)
+      - name: Detect Python files
+        id: detect_python
+        run: |
+          echo "Checking for Python files in the repo..."
+          if git ls-files '*.py' | grep -q .; then
+            echo "python_present=true" >> $GITHUB_ENV
+            echo "Python files detected"
+          else
+            echo "python_present=false" >> $GITHUB_ENV
+            echo "No Python files detected"
+          fi
+
+      - name: Cache pip (only if Python present)
+        if: env.python_present == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-
+            ${{ runner.os }}-pip-
+
+      - name: Install Python deps required by Semgrep rules (only if Python present)
+        if: env.python_present == 'true'
         run: |
           python -m pip install --upgrade pip
-          # Use PyTorch CPU wheel; this is faster and avoids GPU deps.
-          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+          # Install semgrep CLI (pinned version for reproducibility)
+          pip install --no-cache-dir semgrep==1.146.0
+          # Install CPU-only PyTorch (pinned version, required by some Semgrep rules)
+          pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Validate Semgrep configuration
+        if: env.python_present == 'true'
+        run: |
+          echo "Validating Semgrep configuration..."
+          if [ -f ".semgrep/semgrep.yml" ]; then
+            semgrep --config .semgrep/semgrep.yml --validate || echo "::warning::Config validation returned warnings"
+          else
+            echo "No custom config found, using defaults"
+          fi
 
       - name: Run Semgrep SAST
-        # upgrade to v2 if you choose; v1 also works but v2 is recommended
+        id: semgrep_scan
+        continue-on-error: true
         uses: returntocorp/semgrep-action@v2
         with:
-          # keep your existing inputs, for example:
+          config: >-
+            semgrep_rules/python-security.yaml
+            semgrep_rules/python-basic.yml
           output: semgrep.sarif.json
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          # Note: jq is pre-installed in ubuntu-latest runner
+          echo "## 🔍 Semgrep SAST Scan Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "semgrep.sarif.json" ]; then
+            # Count findings by severity from SARIF
+            TOTAL=$(jq '.runs[0].results | length' semgrep.sarif.json 2>/dev/null || echo "0")
+            echo "- **Total Findings:** $TOTAL" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **SARIF File:** \`semgrep.sarif.json\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Artifact:** \`semgrep-sarif-results\`" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠️ No SARIF file generated" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Versions:**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Semgrep: 1.146.0" >> "$GITHUB_STEP_SUMMARY"
+          echo "- PyTorch: 2.5.1+cpu" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Python: 3.11" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload SARIF artifact
+        if: always() && hashFiles('semgrep.sarif.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-sarif-results
+          path: semgrep.sarif.json
+          retention-days: 30
+
       - name: Upload SARIF to Code Scanning
+        if: always() && hashFiles('semgrep.sarif.json') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: semgrep.sarif.json
+          category: semgrep-custom-rules

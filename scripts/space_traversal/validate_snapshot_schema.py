@@ -59,17 +59,33 @@ def validate_snapshot(payload: dict[str, Any], schema_path: Path | None = None) 
         raise ValidationError(message)
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv=None) -> argparse.Namespace:
+    """Parse command line arguments.
+    
+    Args:
+        argv: Optional argument list (for testing)
+    
+    Returns:
+        Parsed arguments namespace
+    """
     parser = argparse.ArgumentParser(
         description="Validate decoded Phase-A snapshot against a schema"
     )
     parser.add_argument("--json", type=Path, required=True, help="Path to decoded JSON file")
     parser.add_argument("--schema", type=Path, help="Optional JSON schema path")
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main(argv=None) -> int:
-    args = parse_args() if argv is None else parse_args(argv)
+    """Main entry point for snapshot schema validation.
+    
+    Args:
+        argv: Optional argument list (for testing)
+    
+    Returns:
+        Exit code (0 = success, non-zero = error)
+    """
+    args = parse_args(argv)
     if not args.json.exists():
         print(f"Decoded JSON not found: {args.json}", file=sys.stderr)
         return 2

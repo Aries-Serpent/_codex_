@@ -47,8 +47,8 @@ class TestTarGzCompression:
         # Extract
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        # Security: Use safe extraction to prevent path traversal
+        safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "test.txt"
         assert extracted_file.exists()

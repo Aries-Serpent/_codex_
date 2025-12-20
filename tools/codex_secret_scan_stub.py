@@ -9,12 +9,27 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Dict, List
 
 _AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
 PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
+
+
+def _redact_snippet(snippet: str) -> str:
+    """Redact potential secrets from snippet for safe logging.
+    
+    Security: Prevents clear-text storage of secrets in scan reports.
+    """
+    # Redact long base64-like strings, hex strings, and key-like patterns
+    redacted = re.sub(r'[A-Za-z0-9+/]{20,}', '[REDACTED]', snippet)
+    redacted = re.sub(r'[0-9a-fA-F]{32,}', '[REDACTED]', redacted)
+    redacted = re.sub(r'(?:secret|key|password|token)["\s:=]+[^\s"]{8,}', 
+                      lambda m: m.group()[:20] + '[REDACTED]', 
+                      redacted, flags=re.IGNORECASE)
+    return redacted
 
 
 def _iter_text_files(root: Path) -> List[Path]:
@@ -38,7 +53,8 @@ def scan(root: Path) -> Dict[str, List[Dict[str, str]]]:
         for patt in PATTERNS:
             if patt in text:
                 snippet = text.strip().splitlines()[0] if text.strip().splitlines() else ""
-                findings.append({"file": str(f), "pattern": patt, "snippet": snippet[:200]})
+                # Security: Redact potential secrets before storing
+                findings.append({"file": str(f), "pattern": patt, "snippet": _redact_snippet(snippet[:200])})
     return {"findings": findings, "total_findings": len(findings)}
 
 
