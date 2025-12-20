@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from xml.etree.ElementTree import Element, SubElement
 
 try:
-    from defusedxml.ElementTree import Element, SubElement, tostring
+    from defusedxml.ElementTree import tostring
 except ImportError as exc:
     raise ImportError(
         "defusedxml is required for safe XML handling in solution_xml; install it via pip"

@@ -8,11 +8,10 @@ Usage:
 """
 
 import argparse
-import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 # Repository root
 REPO_ROOT = Path(__file__).parent.parent.parent
@@ -90,10 +89,17 @@ def validate_imports(results: ValidationResult):
         bad_imports = []
         for py_file in src_dir.rglob("*.py"):
             with open(py_file) as f:
-                for line_no, line in enumerate(f, 1):
+                content = f.read()
+                for line_no, line in enumerate(content.split('\n'), 1):
+                    # Skip comments and strings (basic heuristic)
+                    stripped = line.strip()
+                    if stripped.startswith('#'):
+                        continue
                     # Look for "from services." (not "from src.services.")
                     if "from services." in line and "from src.services." not in line:
-                        bad_imports.append(f"{py_file.relative_to(REPO_ROOT)}:{line_no}")
+                        # Additional check: not in a string literal
+                        if not ('"from services."' in line or "'from services.'" in line):
+                            bad_imports.append(f"{py_file.relative_to(REPO_ROOT)}:{line_no}")
         
         if bad_imports:
             results.add_fail("src/ imports", f"Found incorrect 'from services.' imports in src/: {bad_imports[:3]}")
@@ -133,7 +139,13 @@ def validate_tests(results: ValidationResult, quick: bool = True):
             if result.returncode == 0:
                 results.add_pass("Service workflow tests passed")
             else:
-                results.add_fail("Service workflow tests", f"Tests failed:\n{result.stdout[-500:]}")
+                output = result.stdout or ""
+                if len(output) > 500:
+                    half = 250
+                    truncated_output = f"{output[:half]}\n...\n{output[-half:]}"
+                else:
+                    truncated_output = output
+                results.add_fail("Service workflow tests", f"Tests failed:\n{truncated_output}")
         except Exception as e:
             results.add_warning("Service workflow tests", f"Could not run tests: {e}")
 
@@ -222,20 +234,36 @@ def validate_build(results: ValidationResult):
     try:
         import build
         results.add_pass("build module is available")
-    except ImportError:
-        results.add_warning("build module", "Not installed (pip install build)")
+    except Exception as e:
+        results.add_warning("build module", f"Unavailable or broken (e.g., not installed). Details: {e}")
         return
     
     # Try to build the package
     print("  Building package (this may take a moment)...")
     try:
-        result = subprocess.run(
+        proc = subprocess.Popen(
             ["python", "-m", "build", "--wheel"],
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             cwd=REPO_ROOT,
-            timeout=60
         )
+        try:
+            stdout, stderr = proc.communicate(timeout=60)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            stdout, stderr = proc.communicate()
+            results.add_warning("Package build", "Build timed out after 60s")
+            return
+
+        class _Result:
+            def __init__(self, returncode: int, stdout: str, stderr: str):
+                self.returncode = returncode
+                self.stdout = stdout
+                self.stderr = stderr
+
+        result = _Result(proc.returncode, stdout, stderr)
+        
         if result.returncode == 0:
             results.add_pass("Package builds successfully")
             
@@ -254,9 +282,13 @@ def validate_build(results: ValidationResult):
                     else:
                         results.add_fail("wheel contents", f"services/ found in wheel: {services_files[:3]}")
         else:
-            results.add_fail("Package build", f"Build failed:\n{result.stderr[-500:]}")
-    except subprocess.TimeoutExpired:
-        results.add_warning("Package build", "Build timed out after 60s")
+            output = stderr or ""
+            if len(output) > 500:
+                half = 250
+                truncated_output = f"{output[:half]}\n...\n{output[-half:]}"
+            else:
+                truncated_output = output
+            results.add_fail("Package build", f"Build failed:\n{truncated_output}")
     except Exception as e:
         results.add_warning("Package build", f"Could not build: {e}")
 

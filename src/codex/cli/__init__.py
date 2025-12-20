@@ -27,12 +27,21 @@ _click_cli_path = _codex_root / "cli.py"
 
 def _load_click_cli() -> Any:
     """Load the Click CLI group from src/codex/cli.py using importlib."""
+    # Check if already loaded to ensure idempotency
+    if "codex._cli_click" in sys.modules:
+        existing_module = sys.modules["codex._cli_click"]
+        return getattr(existing_module, "cli", None)
+    
+    # Validate that the file exists before attempting to load
+    if not _click_cli_path.exists() or not _click_cli_path.is_file():
+        return None
+    
     spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
     if spec is None or spec.loader is None:
         return None
     module = importlib.util.module_from_spec(spec)
     sys.modules["codex._cli_click"] = module
-    spec.loader.exec_module(module)  # type: ignore[call-arg]
+    spec.loader.exec_module(module)  # type: ignore[union-attr]
     return getattr(module, "cli", None)
 
 
@@ -45,7 +54,7 @@ if cli is None:
     import warnings
 
     warnings.warn(
-        "Click CLI group 'cli' could not be loaded from src/codex/cli.py. "
+        f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
         "Legacy Click-based CLI contract may be broken.",
         ImportWarning,
         stacklevel=2,
