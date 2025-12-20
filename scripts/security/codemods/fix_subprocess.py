@@ -12,6 +12,12 @@ Safeguards:
 - Input validation on file paths
 - Backup creation before modification
 - Defensive error handling
+
+Implementation Note:
+  This codemod uses regex-based transformations for simplicity. For production use
+  or complex code transformations, consider migrating to libcst for AST-based
+  transformations that preserve formatting and handle edge cases correctly.
+  See: https://libcst.readthedocs.io/
 """
 
 from __future__ import annotations

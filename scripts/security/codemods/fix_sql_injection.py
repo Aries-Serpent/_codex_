@@ -52,9 +52,14 @@ def fix_fstring_sql(content: str) -> Tuple[str, List[str]]:
         new_sql = re.sub(vars_pattern, '?', sql)
         
         # Create parameters tuple
+        # Note: Simple identifiers only - complex expressions need manual review
         params = ', '.join(variables)
         if len(variables) == 1:
-            params += ','  # Single element tuple needs trailing comma
+            # Check if variable looks like a simple identifier (not already a tuple/list)
+            var = variables[0]
+            if var.isidentifier():
+                params += ','  # Single element tuple needs trailing comma
+            # If not a simple identifier, leave as-is and let user review
         
         changes.append(f"Parameterized SQL with variables: {variables}")
         

@@ -235,13 +235,38 @@ def _calculate_complexity(tree: ast.AST) -> ComplexityMetrics:
     )
 
 
-def _resolve_tool(tool: str) -> Optional[str]:
-    """Resolve a tool path from PATH for safer subprocess execution."""
+def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[str]:
+    """
+    Resolve tool path from PATH with optional trusted directory validation.
+    
+    Args:
+        tool: Name of the tool to resolve
+        trusted_dirs: Optional list of trusted directory prefixes (e.g., ['/usr/bin', '/usr/local/bin'])
+    
+    Returns:
+        Resolved tool path if found and trusted, None otherwise
+    """
     tool_path = shutil.which(tool)
     if not tool_path:
         logger.warning("%s not found, skipping", tool)
         return None
-    return str(Path(tool_path).resolve())
+    
+    resolved_path = Path(tool_path).resolve()
+    
+    # If trusted directories specified, validate the tool path
+    if trusted_dirs:
+        is_trusted = any(
+            str(resolved_path).startswith(trusted_dir) 
+            for trusted_dir in trusted_dirs
+        )
+        if not is_trusted:
+            logger.warning(
+                "%s resolved to %s which is not in trusted directories %s, skipping",
+                tool, resolved_path, trusted_dirs
+            )
+            return None
+    
+    return str(resolved_path)
 
 
 def _run_ruff(source_dir: Path) -> List[LintIssue]:
@@ -255,9 +280,9 @@ def _run_ruff(source_dir: Path) -> List[LintIssue]:
         tool_path = _resolve_tool("ruff")
         if not tool_path:
             return issues
-        # Security: Using 'ruff' from PATH - assumes it's a trusted tool installed in the
-        # development environment. The source_dir is validated to be a Path object.
+        # Security: Using 'ruff' from PATH. The source_dir is validated to be a Path object.
         # Arguments are passed as a list to prevent shell injection.
+        # Optional: Configure trusted_dirs parameter in _resolve_tool() to restrict tool paths.
         result = subprocess.run(
             [tool_path, "check", "--output-format=json", str(source_dir)],
             capture_output=True,

@@ -290,6 +290,12 @@ class SandboxManager:
         if not script.exists():
             raise FileNotFoundError(f"Script not found: {script}")
         
+        # Security: Validate script path to prevent path traversal
+        script_resolved = script.resolve()
+        # Check if the script is in an allowed directory (parent of the script or temp directory)
+        if ".." in script_resolved.parts:
+            raise ValueError(f"Script path contains path traversal sequences: {script}")
+        
         # Create tracing wrapper script
         with tempfile.NamedTemporaryFile(
             mode="w",

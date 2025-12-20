@@ -229,34 +229,46 @@ class AgentOrchestrator:
             )
 
     async def _enforce_rate_limits(self, prompt: str) -> None:
-        """Enforce rate limits before making a request."""
+        """Enforce rate limits before making a request (thread-safe with async lock)."""
         # Estimate tokens (rough approximation)
         estimated_tokens = int(len(prompt.split()) * 1.3)
 
+        # Acquire lock for atomic rate limit check and update
         async with self._lock:
             current_time = time.time()
 
-            # Reset counters if minute has passed
+            # Reset counters if minute has passed (atomic under lock)
             if current_time - self.rate_limiter.window_start > 60:
                 self.rate_limiter.current_requests = 0
                 self.rate_limiter.current_tokens = 0
                 self.rate_limiter.window_start = current_time
 
-            # Check if we need to wait
-            if (
+            # Check if we need to wait (computed before releasing lock)
+            needs_wait = (
                 self.rate_limiter.current_requests >= self.rate_limiter.requests_per_minute
                 or self.rate_limiter.current_tokens + estimated_tokens > self.rate_limiter.tokens_per_minute
-            ):
+            )
+            
+            if needs_wait:
                 wait_time = 60 - (current_time - self.rate_limiter.window_start)
-                if wait_time > 0:
-                    logger.info(f"⏳ Rate limit approaching, waiting {wait_time:.1f}s...")
-                    await asyncio.sleep(wait_time)
-                    self.rate_limiter.current_requests = 0
-                    self.rate_limiter.current_tokens = 0
-                    self.rate_limiter.window_start = time.time()
+            else:
+                wait_time = 0
 
-            self.rate_limiter.current_requests += 1
-            self.rate_limiter.current_tokens += estimated_tokens
+            # Increment counters before releasing lock
+            if not needs_wait:
+                self.rate_limiter.current_requests += 1
+                self.rate_limiter.current_tokens += estimated_tokens
+
+        # Sleep outside the lock to allow other tasks to proceed
+        if needs_wait and wait_time > 0:
+            logger.info(f"⏳ Rate limit approaching, waiting {wait_time:.1f}s...")
+            await asyncio.sleep(wait_time)
+            
+            # After wait, reset counters atomically and increment
+            async with self._lock:
+                self.rate_limiter.current_requests = 1
+                self.rate_limiter.current_tokens = estimated_tokens
+                self.rate_limiter.window_start = time.time()
 
     def get_orchestrator_status(self) -> dict[str, Any]:
         """Get the current status of the orchestrator."""

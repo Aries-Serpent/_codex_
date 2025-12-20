@@ -411,6 +411,10 @@ graph TD
 ```
 ./
 ├── src/codex_ml/           # Core library (tokenization, models, CLI, registries)
+├── src/codex/              # Python ingestion pipeline (ingest, analyze, intent, transform, verify, cli)
+├── src/services/           # Service layer imports (imported as src.services.*)
+├── services/               # Application entry points (not library code; excluded from package)
+├── agents/                 # Physics-inspired orchestration, memory, decision-making
 ├── training/               # Trainer wrappers, datasets, checkpoint manager, evaluation
 ├── tokenization/           # Legacy tokenizer wrappers and CLI
 ├── configs/ & hydra/       # YAML configs, Hydra defaults/overrides
@@ -423,6 +427,11 @@ graph TD
 ├── scripts/space_traversal/ # Audit pipeline v1.5.x modules
 └── docs/                   # Guides, status reports, diagrams
 ```
+
+**Note on services/ directories:**
+- `services/` (root) contains application entry points and is NOT included in package distributions
+- `src/services/` contains library code imported as `src.services.*` and IS packaged
+- See `pyproject.toml` `[tool.setuptools.packages.find].include` for the complete package list
 
 ## Audit Pipeline v1.5.x
 

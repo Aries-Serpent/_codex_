@@ -60,10 +60,6 @@ def is_safe_value(value: str) -> bool:
         if re.match(pattern, value_lower):
             return True
     
-    # Very short values are likely placeholders
-    if len(value) < 4:
-        return True
-    
     return False
 
 
