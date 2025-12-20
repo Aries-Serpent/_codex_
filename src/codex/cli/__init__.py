@@ -1,11 +1,52 @@
 """
-Codex CLI Module
+Codex CLI Module — Unified Command-Line Interface
 
-Command-line interface for the Python Ingestion Pipeline.
+AI_AGENT_HINTS:
+- Canonical import (Click legacy/test): `from codex.cli import cli`
+- Canonical import (Typer modern): `from codex.cli import app`
+- Entry point: `from codex.cli import main`
+- Implementation locations:
+  - Click:  src/codex/cli.py  (exports click.Group named `cli`)
+  - Typer:  src/codex/cli/main.py (exports Typer `app` and `main`)
+- Design: Facade export surface to keep imports deterministic (no shadowing surprises).
 """
 
 from __future__ import annotations
 
+import importlib.util
+import sys
+from pathlib import Path
+from typing import Any
+
 from .main import app, main
 
-__all__ = ["app", "main"]
+# Deterministically load Click CLI group from src/codex/cli.py without shadowing/circular imports.
+_codex_root = Path(__file__).resolve().parent.parent  # src/codex
+_click_cli_path = _codex_root / "cli.py"
+
+
+def _load_click_cli() -> Any:
+    """Load the Click CLI group from src/codex/cli.py using importlib."""
+    spec = importlib.util.spec_from_file_location("codex._cli_click", _click_cli_path)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["codex._cli_click"] = module
+    spec.loader.exec_module(module)  # type: ignore[call-arg]
+    return getattr(module, "cli", None)
+
+
+cli = _load_click_cli()
+
+__all__ = ["app", "main", "cli"]
+
+if cli is None:
+    # Non-fatal import warning, but tests will fail if Click CLI is required.
+    import warnings
+
+    warnings.warn(
+        "Click CLI group 'cli' could not be loaded from src/codex/cli.py. "
+        "Legacy Click-based CLI contract may be broken.",
+        ImportWarning,
+        stacklevel=2,
+    )
