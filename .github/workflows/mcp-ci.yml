@@ -4,10 +4,22 @@ on:
   pull_request:
     branches:
       - '**'
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/mcp-ci.yml'
   push:
     branches:
       - main
       - '0D_base_'
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/mcp-ci.yml'
   workflow_dispatch:
 
 permissions:

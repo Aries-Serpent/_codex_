@@ -50,21 +50,44 @@ runs:
       env:
         UV_CACHE_DIR: /tmp/uv-cache
       run: |
+        # First ensure UV is in PATH
+        export PATH="$HOME/.cargo/bin:$PATH"
+        
         case "${{ inputs.dependency-profile }}" in
           minimal)
-            uv pip install --system -r requirements-minimal.txt
+            if [ -f requirements-minimal.txt ]; then
+              uv pip install --system -r requirements-minimal.txt
+            else
+              echo "⚠️ requirements-minimal.txt not found, falling back to package install"
+              uv pip install --system -e .
+            fi
             ;;
           test)
-            uv pip install --system -r requirements-test.txt
+            if [ -f requirements-test.txt ]; then
+              uv pip install --system -r requirements-test.txt
+            else
+              echo "⚠️ requirements-test.txt not found, installing with [test] extras"
+              uv pip install --system -e .[test]
+            fi
             ;;
           dev)
-            uv pip install --system -r requirements-dev.txt
+            if [ -f requirements-dev.txt ]; then
+              uv pip install --system -r requirements-dev.txt
+            else
+              echo "⚠️ requirements-dev.txt not found, installing with [dev] extras"
+              uv pip install --system -e .[dev]
+            fi
             ;;
           full)
-            uv pip install --system -r requirements.txt
+            if [ -f requirements.txt ]; then
+              uv pip install --system -r requirements.txt
+            else
+              echo "⚠️ requirements.txt not found, installing with [all] extras"
+              uv pip install --system -e .[all]
+            fi
             ;;
           *)
-            echo "Unknown profile: ${{ inputs.dependency-profile }}"
+            echo "❌ Unknown profile: ${{ inputs.dependency-profile }}"
             exit 1
             ;;
         esac
