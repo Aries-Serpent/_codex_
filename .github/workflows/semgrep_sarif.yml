@@ -1,5 +1,6 @@
 # [Workflow]: Semgrep SAST CI job
 # Generated: 2025-12-20T12:00:00Z | Author: mbaetiong
+# Updated: 2025-12-20 - Added version pinning, artifact upload, timeout, workflow_dispatch
 name: Semgrep SAST
 
 on:
@@ -7,11 +8,17 @@ on:
     paths:
       - '**/*'
   pull_request:
+  workflow_dispatch:  # Allow manual trigger
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   semgrep:
     name: Semgrep SAST
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       security-events: write
@@ -49,10 +56,10 @@ jobs:
         if: env.python_present == 'true'
         run: |
           python -m pip install --upgrade pip
-          # Install semgrep CLI to ensure compatibility and allow running CLI if needed
-          pip install --no-cache-dir semgrep
-          # Install CPU-only PyTorch (required by some Semgrep rules). Uses PyTorch CPU wheels to avoid GPU artifacts.
-          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+          # Install semgrep CLI (pinned version for reproducibility)
+          pip install --no-cache-dir semgrep==1.95.0
+          # Install CPU-only PyTorch (pinned version, required by some Semgrep rules)
+          pip install --no-cache-dir torch==2.1.2+cpu --index-url https://download.pytorch.org/whl/cpu
 
       - name: Run Semgrep SAST
         uses: returntocorp/semgrep-action@v2
@@ -62,7 +69,16 @@ jobs:
           # config: .semgrep.yml
           # config: auto
 
+      - name: Upload SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-sarif-results
+          path: semgrep.sarif.json
+          retention-days: 30
+
       - name: Upload SARIF to Code Scanning
+        if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: semgrep.sarif.json

@@ -254,6 +254,12 @@ index.html
 # Large generated security reports
 artifacts/security/detect-secrets.txt
 
+# Semgrep artifacts (SARIF outputs, logs, cache)
+*.sarif
+*.sarif.json
+.semgrep_logs/
+.semgrep_cache/
+
 # Validation logs
 .codex/validation/*/pre-commit.log
 .hypothesis/
