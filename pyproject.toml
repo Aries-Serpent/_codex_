@@ -256,8 +256,8 @@ include = [
   "config*",
   "cli*",
   "common*",
-  # NOTE: services* intentionally excluded - root services/ contains application
-  # entry points (not library code), and src/services/ is imported as src.services.*
+  # NOTE: services* intentionally excluded - see AGENTS.md "Project Structure" for services/ layout and import patterns.
+  # Root services/ contains application entry points (not library code), src/services/ is imported as src.services.*
   "tokenization*",
   "training*",
   "codex_utils*",

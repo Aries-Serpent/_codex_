@@ -55,7 +55,7 @@ if cli is None:
 
     warnings.warn(
         f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
-        "Legacy Click-based CLI contract may be broken.",
+        "Click CLI commands will be unavailable. Ensure src/codex/cli.py exists and exports a 'cli' group.",
         ImportWarning,
         stacklevel=2,
     )

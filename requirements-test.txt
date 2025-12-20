@@ -3,6 +3,9 @@
 # Update with care and test thoroughly before merging changes.
 
 # Include base project dependencies first
+# Installation order: Install requirements.txt first, then requirements-test.txt
+#   pip install -r requirements.txt
+#   pip install -r requirements-test.txt
 -r requirements.txt
 
 # Test tooling (pinned versions for reproducibility)

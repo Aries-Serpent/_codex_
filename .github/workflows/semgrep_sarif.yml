@@ -66,10 +66,19 @@ jobs:
         if: env.python_present == 'true'
         run: |
           python -m pip install --upgrade pip
-          # Install semgrep CLI (pinned version for reproducibility)
-          pip install --no-cache-dir semgrep==1.146.0
-          # Install CPU-only PyTorch (pinned version, required by some Semgrep rules)
-          pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
+          # Install Semgrep and its dependencies from requirements file
+          if [ -f ".github/semgrep-requirements.txt" ]; then
+            pip install -r .github/semgrep-requirements.txt
+          else
+            # Fallback: Install manually if requirements file not found
+            pip install --no-cache-dir semgrep==1.146.0
+            pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
+          fi
+          # Verify installations
+          echo "Semgrep version:"
+          semgrep --version
+          echo "PyTorch version:"
+          python -c "import torch; print(f'PyTorch {torch.__version__}')" || echo "::warning::PyTorch import failed"
 
       - name: Validate Semgrep configuration
         if: env.python_present == 'true'
@@ -86,11 +95,25 @@ jobs:
         # Skip if no Python files are present
         if: env.python_present == 'true'
         run: |
+          # Verify PyTorch is available for custom rules (non-blocking)
+          if ! python -c "import torch; print('PyTorch available for Semgrep rules')" 2>/dev/null; then
+            echo "::warning::PyTorch not available. Some custom Semgrep rules may not work."
+          fi
+
           # Run semgrep with local config files
           semgrep --config semgrep_rules/python-security.yaml \
                   --config semgrep_rules/python-basic.yml \
                   --sarif --output semgrep.sarif.json \
                   || echo "::warning::Semgrep scan completed with findings"
+
+          # Verify SARIF file was created
+          if [ ! -f "semgrep.sarif.json" ]; then
+            echo "::error::semgrep.sarif.json was not created"
+            exit 1
+          fi
+
+          echo "SARIF file created successfully"
+          ls -lh semgrep.sarif.json
 
       - name: Upload SARIF to Code Scanning
         if: always() && hashFiles('semgrep.sarif.json') != ''

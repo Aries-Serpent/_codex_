@@ -26,7 +26,6 @@ import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -41,7 +40,7 @@ DEFAULT_MAX_OUTPUT_SIZE = 1024 * 1024  # 1MB
 @dataclass
 class SandboxConfig:
     """Configuration for sandboxed execution.
-    
+
     Attributes:
         timeout_seconds: Maximum execution time
         memory_limit_mb: Maximum memory usage
@@ -61,7 +60,7 @@ class SandboxConfig:
 @dataclass
 class ExecutionResult:
     """Result of sandboxed execution.
-    
+
     Attributes:
         exit_code: Process exit code
         stdout: Standard output content
@@ -80,7 +79,7 @@ class ExecutionResult:
     timed_out: bool = False
     file_operations: List[Dict[str, Any]] = field(default_factory=list)
     network_attempts: List[Dict[str, Any]] = field(default_factory=list)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -97,87 +96,87 @@ class ExecutionResult:
 
 class SandboxManager:
     """Manage sandboxed execution of untrusted code.
-    
+
     Provides an isolated environment for running Python scripts with:
     - Resource limits (CPU, memory, timeout)
     - Deterministic execution (fixed seeds, hashes)
     - Output capture (stdout, stderr)
     - Optional network isolation
-    
+
     Example:
         >>> manager = SandboxManager(SandboxConfig(timeout_seconds=30))
         >>> result = manager.execute(Path("script.py"))
         >>> print(f"Exit code: {result.exit_code}")
-    
+
     Safeguards:
     - All executions run with strict timeout
     - Deterministic environment variables set
     - Output size is bounded
     - Temporary workspace used
     """
-    
+
     def __init__(self, config: Optional[SandboxConfig] = None):
         """Initialize sandbox manager.
-        
+
         Args:
             config: Sandbox configuration (uses defaults if None)
         """
         self.config = config or SandboxConfig()
         self._validate_config()
-    
+
     def _validate_config(self) -> None:
         """Validate configuration.
-        
+
         Safeguard: Bounds checking on configuration values.
         """
         if self.config.timeout_seconds <= 0:
             raise ValueError("timeout_seconds must be positive")
         if self.config.timeout_seconds > 3600:
             logger.warning("Timeout exceeds 1 hour, may be excessive")
-        
+
         if self.config.memory_limit_mb <= 0:
             raise ValueError("memory_limit_mb must be positive")
-    
+
     def _build_environment(self) -> Dict[str, str]:
         """Build deterministic execution environment.
-        
+
         Safeguard: Deterministic execution environment.
-        
+
         Returns:
             Environment dictionary
         """
         env = os.environ.copy()
-        
+
         # Set deterministic values
         env["PYTHONHASHSEED"] = "42"
         env["PYTHONDONTWRITEBYTECODE"] = "1"
         env["PYTHONUNBUFFERED"] = "1"
-        
+
         # Disable network if configured
         if not self.config.network_enabled:
             # Note: This doesn't truly disable network, but signals intent
             env["CODEX_NETWORK_DISABLED"] = "1"
-        
+
         # Apply custom overrides
         env.update(self.config.env_overrides)
-        
+
         return env
-    
+
     def _truncate_output(self, output: str) -> str:
         """Truncate output to prevent memory issues.
-        
+
         Safeguard: Output size bounds.
-        
+
         Args:
             output: Output string
-            
+
         Returns:
             Truncated output
         """
         if len(output) > DEFAULT_MAX_OUTPUT_SIZE:
             return output[:DEFAULT_MAX_OUTPUT_SIZE] + "\n[... truncated ...]"
         return output
-    
+
     def execute(
         self,
         script: Path,
@@ -185,41 +184,40 @@ class SandboxManager:
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute a Python script in sandboxed environment.
-        
+
         Args:
             script: Path to Python script
             args: Optional command-line arguments
             stdin_input: Optional stdin input
-            
+
         Returns:
             ExecutionResult with execution details
-            
+
         Raises:
             FileNotFoundError: If script doesn't exist
         """
         import time
-        
+
         script = script.resolve()
         if not script.exists():
             raise FileNotFoundError(f"Script not found: {script}")
         if not script.is_file():
             raise FileNotFoundError(f"Script is not a file: {script}")
-        
+
         # Build command
         python_exe = Path(sys.executable).resolve()
         cmd = [str(python_exe), str(script)]
         if args:
             cmd.extend(args)
-        
+
         # Build environment
         env = self._build_environment()
-        
+
         # Determine working directory
         cwd = (self.config.working_dir or script.parent).resolve()
-        
+
         start_time = time.time()
-        timed_out = False
-        
+
         try:
             # Security: The script path is validated to exist and is within the controlled
             # sandbox workspace. The command uses 'python' (from PATH) which should be the
@@ -234,9 +232,9 @@ class SandboxManager:
                 env=env,
                 cwd=str(cwd),
             )
-            
+
             duration_ms = (time.time() - start_time) * 1000
-            
+
             return ExecutionResult(
                 exit_code=result.returncode,
                 stdout=self._truncate_output(result.stdout or ""),
@@ -244,10 +242,10 @@ class SandboxManager:
                 duration_ms=duration_ms,
                 timed_out=False,
             )
-            
+
         except subprocess.TimeoutExpired as e:
             duration_ms = (time.time() - start_time) * 1000
-            
+
             return ExecutionResult(
                 exit_code=-1,
                 stdout=self._truncate_output(e.stdout or "") if e.stdout else "",
@@ -255,10 +253,10 @@ class SandboxManager:
                 duration_ms=duration_ms,
                 timed_out=True,
             )
-            
+
         except Exception as e:
             duration_ms = (time.time() - start_time) * 1000
-            
+
             return ExecutionResult(
                 exit_code=-1,
                 stdout="",
@@ -266,7 +264,7 @@ class SandboxManager:
                 duration_ms=duration_ms,
                 timed_out=False,
             )
-    
+
     def execute_with_tracing(
         self,
         script: Path,
@@ -274,22 +272,41 @@ class SandboxManager:
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute script with call tracing enabled.
-        
+
         Uses Python's trace module to capture function calls.
-        
+
         Args:
             script: Path to Python script
             args: Optional command-line arguments
             stdin_input: Optional stdin input
-            
+
         Returns:
             ExecutionResult with tracing information
         """
-        import time
-        
+
         if not script.exists():
             raise FileNotFoundError(f"Script not found: {script}")
-        
+
+        # Security: Validate script path to prevent path traversal
+        script_resolved = script.resolve()
+
+        # Get the working directory as trusted base
+        try:
+            cwd = Path.cwd().resolve()
+            # Check if script is within current working directory or temp directory
+            temp_dir = Path(tempfile.gettempdir()).resolve()
+
+            is_in_cwd = script_resolved.is_relative_to(cwd)
+            is_in_temp = script_resolved.is_relative_to(temp_dir)
+
+            if not (is_in_cwd or is_in_temp):
+                raise ValueError(
+                    f"Script path {script_resolved} is outside allowed directories. "
+                    f"Must be within {cwd} or {temp_dir}"
+                )
+        except (ValueError, OSError) as e:
+            raise ValueError(f"Path validation failed: {e}")
+
         # Create tracing wrapper script
         with tempfile.NamedTemporaryFile(
             mode="w",
@@ -317,13 +334,13 @@ except SystemExit:
 """
             f.write(wrapper)
             wrapper_path = f.name
-        
+
         try:
             result = self.execute(Path(wrapper_path), stdin_input=stdin_input)
             return result
         finally:
             os.unlink(wrapper_path)
-    
+
     def execute_in_tempdir(
         self,
         source_dir: Path,
@@ -332,23 +349,23 @@ except SystemExit:
         stdin_input: Optional[str] = None,
     ) -> ExecutionResult:
         """Execute in isolated temporary directory.
-        
+
         Copies source to temp directory and executes there,
         preventing modification of original files.
-        
+
         Args:
             source_dir: Directory containing source files
             entry_point: Script to execute
             args: Optional command-line arguments
             stdin_input: Optional stdin input
-            
+
         Returns:
             ExecutionResult
         """
         with tempfile.TemporaryDirectory() as tmpdir:
             work_dir = Path(tmpdir) / "work"
             shutil.copytree(source_dir, work_dir)
-            
+
             script = work_dir / entry_point
             if not script.exists():
                 return ExecutionResult(
@@ -357,11 +374,11 @@ except SystemExit:
                     stderr=f"Entry point not found: {entry_point}",
                     duration_ms=0,
                 )
-            
+
             # Update config with working directory
             original_cwd = self.config.working_dir
             self.config.working_dir = work_dir
-            
+
             try:
                 return self.execute(script, args=args, stdin_input=stdin_input)
             finally:
