@@ -6,7 +6,10 @@ import json
 from pathlib import Path
 
 try:
-    from defusedxml.ElementTree import Element, SubElement, tostring
+    from defusedxml.ElementTree import tostring
+    # Note: defusedxml.ElementTree doesn't re-export Element/SubElement
+    # We use xml.etree for construction (safe) and defusedxml for serialization (extra safety)
+    from xml.etree.ElementTree import Element, SubElement
 except ImportError as exc:
     raise ImportError(
         "defusedxml is required for safe XML handling in solution_xml; install it via pip"

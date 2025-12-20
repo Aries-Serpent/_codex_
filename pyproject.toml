@@ -256,7 +256,8 @@ include = [
   "config*",
   "cli*",
   "common*",
-  "services*",
+  # NOTE: services* intentionally excluded - root services/ contains application
+  # entry points (not library code), and src/services/ is imported as src.services.*
   "tokenization*",
   "training*",
   "codex_utils*",
