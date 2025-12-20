@@ -1,3 +1,6 @@
+# [Workflow]: Semgrep SAST (SARIF Upload)
+> Generated: 2025-12-20T00:00:00Z | Author: mbaetiong
+
 name: Semgrep SAST (SARIF Upload)
 
 on:
@@ -30,11 +33,12 @@ jobs:
           pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 
       - name: Run Semgrep SAST
-        # upgrade to v2 if you choose; v1 also works but v2 is recommended
-        uses: returntocorp/semgrep-action@v2
+        # v2 was not resolvable in the runner; use an available published version.
+        uses: returntocorp/semgrep-action@v1
         with:
           # keep your existing inputs, for example:
           output: semgrep.sarif.json
+
       - name: Upload SARIF to Code Scanning
         uses: github/codeql-action/upload-sarif@v4
         with:
