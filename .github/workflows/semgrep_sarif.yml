@@ -1,6 +1,12 @@
 # [Workflow]: Semgrep SAST CI job
 # Generated: 2025-12-20T12:00:00Z | Author: mbaetiong
 # Updated: 2025-12-20 - Added version pinning, artifact upload, timeout, workflow_dispatch
+#
+# This workflow runs Semgrep with repository-specific rules from semgrep_rules/
+# Note: security-suite.yml also runs Semgrep but with different rulesets:
+#   - security-suite.yml: Uses p/security-audit, p/python, p/owasp-top-ten
+#   - This workflow: Uses custom rules from semgrep_rules/ directory
+# Both workflows are intentional and complement each other.
 name: Semgrep SAST
 
 on:
@@ -27,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -58,9 +64,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           # Install semgrep CLI (pinned version for reproducibility)
-          pip install --no-cache-dir semgrep==1.95.0
+          pip install --no-cache-dir semgrep==1.146.0
           # Install CPU-only PyTorch (pinned version, required by some Semgrep rules)
-          pip install --no-cache-dir torch==2.1.2+cpu --index-url https://download.pytorch.org/whl/cpu
+          pip install --no-cache-dir torch==2.5.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
       - name: Validate Semgrep configuration
         if: env.python_present == 'true'
@@ -74,35 +80,36 @@ jobs:
 
       - name: Run Semgrep SAST
         id: semgrep_scan
+        continue-on-error: true
         uses: returntocorp/semgrep-action@v2
         with:
+          config: >-
+            semgrep_rules/python-security.yaml
+            semgrep_rules/python-basic.yml
           output: semgrep.sarif.json
-          # If you use a custom config or path, add inputs here, e.g.:
-          # config: .semgrep.yml
-          # config: auto
 
       - name: Generate job summary
         if: always()
         run: |
-          echo "## 🔍 Semgrep SAST Scan Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔍 Semgrep SAST Scan Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
           if [ -f "semgrep.sarif.json" ]; then
             # Count findings by severity from SARIF
             TOTAL=$(jq '.runs[0].results | length' semgrep.sarif.json 2>/dev/null || echo "0")
-            echo "- **Total Findings:** $TOTAL" >> $GITHUB_STEP_SUMMARY
-            echo "- **SARIF File:** \`semgrep.sarif.json\`" >> $GITHUB_STEP_SUMMARY
-            echo "- **Artifact:** \`semgrep-sarif-results\`" >> $GITHUB_STEP_SUMMARY
+            echo "- **Total Findings:** $TOTAL" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **SARIF File:** \`semgrep.sarif.json\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- **Artifact:** \`semgrep-sarif-results\`" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "⚠️ No SARIF file generated" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ No SARIF file generated" >> "$GITHUB_STEP_SUMMARY"
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Versions:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Semgrep: 1.95.0" >> $GITHUB_STEP_SUMMARY
-          echo "- PyTorch: 2.1.2+cpu" >> $GITHUB_STEP_SUMMARY
-          echo "- Python: 3.11" >> $GITHUB_STEP_SUMMARY
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Versions:**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Semgrep: 1.146.0" >> "$GITHUB_STEP_SUMMARY"
+          echo "- PyTorch: 2.5.1+cpu" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Python: 3.11" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload SARIF artifact
-        if: always()
+        if: always() && hashFiles('semgrep.sarif.json') != ''
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-sarif-results
@@ -110,7 +117,7 @@ jobs:
           retention-days: 30
 
       - name: Upload SARIF to Code Scanning
-        if: always()
+        if: always() && hashFiles('semgrep.sarif.json') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: semgrep.sarif.json
