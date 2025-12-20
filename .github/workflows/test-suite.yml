@@ -3,8 +3,20 @@ name: Unified Test Suite
 on:
   pull_request:
     branches: ["main", "0D_base_"]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/test-suite.yml'
   push:
     branches: ["main", "0D_base_"]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'requirements*.txt'
+      - '.github/workflows/test-suite.yml'
   workflow_dispatch:
     inputs:
       test_type:
