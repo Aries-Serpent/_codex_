@@ -31,7 +31,7 @@ from pathlib import Path
 
 # Constants
 CHARS_PER_TOKEN = 4  # Approximate character-to-token ratio for English text
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
