@@ -643,17 +643,35 @@ class CodexQuantumReviewer:
         suggestions: List[Dict[str, Any]]
     ):
         """
-        Post review via GitHub API.
+        Post review via GitHub API client.
         
-        This is a placeholder that will be implemented in the github_app module.
+        Uses the integrated GitHubAPIClient to post reviews with proper
+        authentication, retry logic, and error handling.
         
         Args:
             repo: Repository full name (owner/repo)
             pr_number: PR number
-            body: Review comment body
+            body: Review comment body (markdown)
             action: Review action (APPROVE, REQUEST_CHANGES, COMMENT)
-            suggestions: List of inline suggestions
+            suggestions: List of inline suggestions (future: inline comments)
         """
-        # TODO: Implement actual GitHub API integration
-        logger.info(f"Would post {action} review to {repo}#{pr_number}")
-        logger.debug(f"Review body:\n{body}")
+        try:
+            result = await self.github_client.post_review(
+                repo=repo,
+                pr_number=pr_number,
+                body=body,
+                event=action,
+            )
+            
+            logger.info(
+                f"Successfully posted {action} review to {repo}#{pr_number}, "
+                f"review_id={result.get('id')}"
+            )
+            
+        except Exception as e:
+            logger.error(
+                f"Failed to post review to {repo}#{pr_number}: {e}",
+                exc_info=True
+            )
+            # Log but don't re-raise to avoid crashing the agent
+            # Production: Add alerting, retry queue, or fallback mechanism
