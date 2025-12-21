@@ -1511,7 +1511,7 @@ _register_external_cli()
 def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> None:
     """Scan and display GitHub Actions workflows."""
     try:
-        from src.services.workflow import WorkflowInventory
+        from services.workflow.inventory import WorkflowInventory
     except ImportError:
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
