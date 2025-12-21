@@ -26,9 +26,40 @@ class SecurityValidator:
     """
     
     def __init__(self):
-        """Initialize security validator with configurable patterns."""
+        """Initialize security validator with configurable patterns and compiled regexes."""
         self.secret_patterns = SecretPatterns.get_compiled_patterns()
         self.placeholder_patterns = SecretPatterns.get_compiled_placeholder_patterns()
+        
+        # Pre-compile SQL injection patterns for performance
+        self._sql_patterns = [
+            re.compile(r'execute\s*\(["\'].*%s.*["\']\s*%', re.IGNORECASE),
+            re.compile(r'\.format\s*\(.*\).*(?:SELECT|INSERT|UPDATE|DELETE)', re.IGNORECASE),
+            re.compile(r'f["\'].*(?:SELECT|INSERT|UPDATE|DELETE).*\{.*\}', re.IGNORECASE),
+        ]
+        
+        # Pre-compile XSS patterns
+        self._xss_patterns = [
+            re.compile(r'innerHTML\s*='),
+            re.compile(r'dangerouslySetInnerHTML'),
+            re.compile(r'\.html\s*\([^)]*\+'),
+        ]
+        
+        # Pre-compile command injection patterns
+        self._cmd_patterns = [
+            (re.compile(r'os\.system\s*\('), "os.system() with user input"),
+            (re.compile(r'subprocess\.call\s*\([^,]*\+'), "subprocess.call with string concatenation"),
+            (re.compile(r'subprocess\.run\s*\([^,]*\+'), "subprocess.run with string concatenation"),
+            (re.compile(r'shell=True'), "subprocess with shell=True"),
+            (re.compile(r'eval\s*\('), "eval() with potential user input"),
+            (re.compile(r'exec\s*\('), "exec() with potential user input"),
+        ]
+        
+        # Pre-compile path traversal patterns
+        self._path_patterns = [
+            (re.compile(r'open\s*\([^,]*\+'), "File open with string concatenation"),
+            (re.compile(r'os\.path\.join\s*\([^,]*\+'), "Path join with concatenation"),
+            (re.compile(r'Path\s*\([^,]*\+'), "Path construction with concatenation"),
+        ]
     
     async def scan(self, context) -> List[Dict[str, Any]]:
         """
@@ -122,18 +153,11 @@ class SecurityValidator:
         return secrets
     
     async def _check_sql_injection(self, files: List[str], diff: str) -> List[Dict[str, Any]]:
-        """Check for SQL injection vulnerabilities."""
+        """Check for SQL injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
         
-        # Look for string formatting in SQL queries
-        sql_patterns = [
-            r'execute\(["\'].*%s.*["\']\s*%',
-            r'\.format\(.*\).*SELECT|INSERT|UPDATE|DELETE',
-            r'f["\'].*SELECT.*\{.*\}',
-        ]
-        
-        for pattern in sql_patterns:
-            if re.search(pattern, diff, re.IGNORECASE):
+        for pattern in self._sql_patterns:
+            if pattern.search(diff):
                 vulnerabilities.append({
                     "type": "sql_injection",
                     "severity": "high",
@@ -141,22 +165,16 @@ class SecurityValidator:
                     "description": "Potential SQL injection vulnerability detected",
                     "suggestion": "Use parameterized queries or ORM methods instead of string formatting"
                 })
+                break  # Only report once per diff
         
         return vulnerabilities
     
     async def _check_xss(self, files: List[str], diff: str) -> List[Dict[str, Any]]:
-        """Check for XSS vulnerabilities."""
+        """Check for XSS vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
         
-        # Look for unsafe HTML rendering
-        xss_patterns = [
-            r'innerHTML\s*=',
-            r'dangerouslySetInnerHTML',
-            r'\.html\([^)]*\+',
-        ]
-        
-        for pattern in xss_patterns:
-            if re.search(pattern, diff):
+        for pattern in self._xss_patterns:
+            if pattern.search(diff):
                 vulnerabilities.append({
                     "type": "xss",
                     "severity": "high",
@@ -164,6 +182,7 @@ class SecurityValidator:
                     "description": "Potential XSS vulnerability detected",
                     "suggestion": "Sanitize user input before rendering as HTML"
                 })
+                break  # Only report once per diff
         
         return vulnerabilities
     
@@ -204,21 +223,11 @@ class SecurityValidator:
         return vulnerabilities
     
     async def _check_command_injection(self, diff: str) -> List[Dict[str, Any]]:
-        """Check for potential command injection vulnerabilities."""
+        """Check for potential command injection vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
         
-        # Patterns that might indicate command injection risks
-        dangerous_patterns = [
-            (r'os\.system\s*\(', "os.system() with user input"),
-            (r'subprocess\.call\s*\([^,]*\+', "subprocess.call with string concatenation"),
-            (r'subprocess\.run\s*\([^,]*\+', "subprocess.run with string concatenation"),
-            (r'shell=True', "subprocess with shell=True"),
-            (r'eval\s*\(', "eval() with potential user input"),
-            (r'exec\s*\(', "exec() with potential user input"),
-        ]
-        
-        for pattern, description in dangerous_patterns:
-            if re.search(pattern, diff):
+        for pattern, description in self._cmd_patterns:
+            if pattern.search(diff):
                 vulnerabilities.append({
                     "type": "command_injection_risk",
                     "severity": "high",
@@ -230,18 +239,11 @@ class SecurityValidator:
         return vulnerabilities
     
     async def _check_path_traversal(self, diff: str) -> List[Dict[str, Any]]:
-        """Check for potential path traversal vulnerabilities."""
+        """Check for potential path traversal vulnerabilities using pre-compiled patterns."""
         vulnerabilities = []
         
-        # Patterns indicating path operations that might be vulnerable
-        path_patterns = [
-            (r'open\s*\([^,]*\+', "File open with string concatenation"),
-            (r'os\.path\.join\s*\([^,]*\+', "Path join with concatenation"),
-            (r'Path\s*\([^,]*\+', "Path construction with concatenation"),
-        ]
-        
-        for pattern, description in path_patterns:
-            if re.search(pattern, diff):
+        for pattern, description in self._path_patterns:
+            if pattern.search(diff):
                 vulnerabilities.append({
                     "type": "path_traversal_risk",
                     "severity": "medium",

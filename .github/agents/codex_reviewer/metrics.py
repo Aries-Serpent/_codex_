@@ -61,14 +61,17 @@ class MetricsCollector:
     
     Provides methods for recording review metrics, calculating aggregates,
     and generating reports for monitoring dashboards.
+    
+    Implements buffering for better I/O performance.
     """
     
-    def __init__(self, storage_path: Optional[Path] = None):
+    def __init__(self, storage_path: Optional[Path] = None, buffer_size: int = 10):
         """
         Initialize metrics collector.
         
         Args:
             storage_path: Path to store metrics data (default: .codex/agent-metrics/)
+            buffer_size: Number of records to buffer before writing (default: 10)
         """
         self.storage_path = storage_path or Path(".codex/agent-metrics")
         self.storage_path.mkdir(parents=True, exist_ok=True)
@@ -76,12 +79,42 @@ class MetricsCollector:
         self.metrics_file = self.storage_path / "reviews.jsonl"
         self.feedback_file = self.storage_path / "feedback.jsonl"
         
-    def record_review(self, metrics: ReviewMetrics):
+        # Buffering for performance
+        self.buffer_size = buffer_size
+        self._metrics_buffer: List[Dict] = []
+        self._feedback_buffer: List[Dict] = []
+    
+    def _flush_metrics(self):
+        """Flush metrics buffer to disk."""
+        if not self._metrics_buffer:
+            return
+        
+        with open(self.metrics_file, 'a', encoding='utf-8') as f:
+            for record in self._metrics_buffer:
+                f.write(json.dumps(record) + '\n')
+        
+        logger.info(f"Flushed {len(self._metrics_buffer)} metrics records")
+        self._metrics_buffer.clear()
+    
+    def _flush_feedback(self):
+        """Flush feedback buffer to disk."""
+        if not self._feedback_buffer:
+            return
+        
+        with open(self.feedback_file, 'a', encoding='utf-8') as f:
+            for record in self._feedback_buffer:
+                f.write(json.dumps(record) + '\n')
+        
+        logger.info(f"Flushed {len(self._feedback_buffer)} feedback records")
+        self._feedback_buffer.clear()
+    
+    def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = False):
         """
         Record metrics for a completed review.
         
         Args:
             metrics: Review metrics to record
+            flush_immediately: If True, bypass buffering and write immediately
         """
         record = {
             "pr_number": metrics.pr_number,
@@ -95,18 +128,21 @@ class MetricsCollector:
             "files_changed": metrics.files_changed,
         }
         
-        with open(self.metrics_file, 'a', encoding='utf-8') as f:
-            f.write(json.dumps(record) + '\n')
+        self._metrics_buffer.append(record)
+        
+        if flush_immediately or len(self._metrics_buffer) >= self.buffer_size:
+            self._flush_metrics()
         
         logger.info(f"Recorded metrics for PR #{metrics.pr_number}")
     
-    def record_feedback(self, pr_number: int, feedback: Dict):
+    def record_feedback(self, pr_number: int, feedback: Dict, flush_immediately: bool = False):
         """
         Record feedback for a review.
         
         Args:
             pr_number: PR number
             feedback: Feedback data (accepted/rejected suggestions, etc.)
+            flush_immediately: If True, bypass buffering and write immediately
         """
         record = {
             "pr_number": pr_number,
@@ -114,10 +150,24 @@ class MetricsCollector:
             "feedback": feedback,
         }
         
-        with open(self.feedback_file, 'a', encoding='utf-8') as f:
-            f.write(json.dumps(record) + '\n')
+        self._feedback_buffer.append(record)
+        
+        if flush_immediately or len(self._feedback_buffer) >= self.buffer_size:
+            self._flush_feedback()
         
         logger.info(f"Recorded feedback for PR #{pr_number}")
+    
+    def flush_all(self):
+        """Flush all buffers to disk."""
+        self._flush_metrics()
+        self._flush_feedback()
+    
+    def __del__(self):
+        """Ensure buffers are flushed on cleanup."""
+        try:
+            self.flush_all()
+        except Exception:
+            pass  # Ignore errors during cleanup
     
     def get_recent_metrics(self, days: int = 30) -> List[ReviewMetrics]:
         """

@@ -27,18 +27,18 @@ class SecretPatterns:
     with configurable exclusion patterns for common false positives.
     """
     
-    # Core secret patterns
+    # Core secret patterns with more flexible matching
     PATTERNS: Dict[str, str] = {
-        "api_key": r'(?i)api[_-]?key["\']?\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
-        "password": r'(?i)password["\']?\s*[:=]\s*["\']([^"\']{8,})["\']',
-        "token": r'(?i)token["\']?\s*[:=]\s*["\']([a-zA-Z0-9]{20,})["\']',
-        "secret": r'(?i)secret["\']?\s*[:=]\s*["\']([a-zA-Z0-9]{16,})["\']',
-        "aws_access_key": r'(?i)aws[_-]?access[_-]?key[_-]?id["\']?\s*[:=]\s*["\']([A-Z0-9]{20})["\']',
-        "aws_secret_key": r'(?i)aws[_-]?secret[_-]?access[_-]?key["\']?\s*[:=]\s*["\']([A-Za-z0-9/+=]{40})["\']',
-        "github_token": r'(?i)github[_-]?token["\']?\s*[:=]\s*["\']?(ghp_[a-zA-Z0-9]{36})["\']?',
+        "api_key": r'(?i)(?:api[_-]?key|apikey)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-]{16,})["\']?',
+        "password": r'(?i)(?:password|passwd|pwd)["\']?\s*[:=]\s*["\']([^"\']{8,})["\']',
+        "token": r'(?i)(?:token|access[_-]?token)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-\.]{20,})["\']?',
+        "secret": r'(?i)(?:secret|secret[_-]?key)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-]{16,})["\']?',
+        "aws_access_key": r'(?i)(?:aws[_-]?access[_-]?key[_-]?id|AWS_ACCESS_KEY_ID)["\']?\s*[:=]\s*["\']?([A-Z0-9]{20})["\']?',
+        "aws_secret_key": r'(?i)(?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)["\']?\s*[:=]\s*["\']?([A-Za-z0-9/+=]{40})["\']?',
+        "github_token": r'(?:ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36,}',
         "private_key": r'-----BEGIN (?:RSA |EC )?PRIVATE KEY-----',
         "slack_token": r'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24,}',
-        "stripe_key": r'(?i)(?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24,}',
+        "stripe_key": r'(?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24,}',
         "jwt": r'eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*',
         "bearer_token": r'(?i)bearer\s+[a-zA-Z0-9\-_\.]{20,}',
     }

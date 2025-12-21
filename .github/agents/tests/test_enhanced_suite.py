@@ -207,12 +207,14 @@ class TestMetricsCollection:
     
     def test_metrics_recording(self, tmp_path):
         """Test recording review metrics."""
+        from datetime import datetime
+        
         collector = MetricsCollector(storage_path=tmp_path)
         
         metrics = ReviewMetrics(
             pr_number=123,
             repo="test/repo",
-            timestamp=pytest.approx.__self__.datetime.utcnow(),
+            timestamp=datetime.utcnow(),
             review_time_seconds=45.5,
             confidence=0.92,
             status="approved",

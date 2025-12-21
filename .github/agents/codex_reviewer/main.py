@@ -37,7 +37,7 @@ class ReviewContext:
     description: str
     labels: List[str] = field(default_factory=list)
     reviewers: List[str] = field(default_factory=list)
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.utcnow())
 
 
 @dataclass
@@ -67,20 +67,32 @@ class CodexQuantumReviewer:
     and learning from feedback.
     """
     
-    def __init__(self):
-        """Initialize the reviewer with all analysis components."""
+    def __init__(self, github_config: Optional[Dict[str, str]] = None):
+        """
+        Initialize the reviewer with all analysis components.
+        
+        Args:
+            github_config: Optional GitHub API configuration dict
+        """
         # Import components here to avoid circular dependencies
         from .analyzers import QuantumPatternAnalyzer
         from .security import SecurityValidator
         from .orchestration import WorkflowOrchestrator
         from .knowledge import KnowledgeGapDetector
         from .learning import SelfEvolutionSystem
+        from .github_client import GitHubAPIClient, GitHubConfig
         
         self.pattern_analyzer = QuantumPatternAnalyzer()
         self.security_scanner = SecurityValidator()
         self.orchestrator = WorkflowOrchestrator()
         self.knowledge_engine = KnowledgeGapDetector()
         self.learning_system = SelfEvolutionSystem()
+        
+        # Initialize GitHub client with config
+        if github_config:
+            self.github_client = GitHubAPIClient(GitHubConfig(**github_config))
+        else:
+            self.github_client = GitHubAPIClient()
         
         logger.info("CodexQuantumReviewer initialized successfully")
         
