@@ -119,7 +119,7 @@ For comprehensive development capabilities, use this full configuration:
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_TOKEN": "ghp_your_token_here"
+        "GITHUB_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
       }
     },
     "playwright": {
