@@ -1,0 +1,104 @@
+---
+# Security Fix Patterns for Copilot Security Agent
+# Author: mbaetiong
+# Generated: 2025-12-21
+
+fix_patterns:
+  sql_injection:
+    description: "Use parameterized queries to prevent SQL injection"
+    priority: 1
+    severity: critical
+    python:
+      vulnerable: |
+        query = "SELECT * FROM users WHERE id = " + user_id
+        cursor.execute(query)
+      fixed: |
+        query = "SELECT * FROM users WHERE id = ?"
+        cursor.execute(query, (user_id,))
+      
+    javascript:
+      vulnerable: |
+        db.query(`SELECT * FROM users WHERE id = ${userId}`)
+      fixed: |
+        db.query('SELECT * FROM users WHERE id = ?', [userId])
+  
+  xss:
+    description: "Escape user input to prevent cross-site scripting"
+    priority: 1
+    severity: critical
+    python:
+      vulnerable: |
+        return f"<div>{user_input}</div>"
+      fixed: |
+        from markupsafe import escape
+        return f"<div>{escape(user_input)}</div>"
+    
+    javascript:
+      vulnerable: |
+        element.innerHTML = userInput
+      fixed: |
+        element.textContent = userInput
+  
+  path_traversal:
+    description: "Validate and sanitize file paths"
+    priority: 1
+    severity: high
+    python:
+      vulnerable: |
+        file_path = os.path.join(base_dir, user_input)
+        open(file_path)
+      fixed: |
+        import os
+        file_path = os.path.join(base_dir, os.path.basename(user_input))
+        if os.path.commonpath([base_dir, file_path]) != base_dir:
+            raise ValueError("Invalid path")
+        open(file_path)
+  
+  hardcoded_secret:
+    description: "Use environment variables for secrets"
+    priority: 1
+    severity: critical
+    python:
+      vulnerable: |
+        API_KEY = "sk-1234567890abcdef"
+      fixed: |
+        import os
+        API_KEY = os.environ.get("API_KEY")
+        if not API_KEY:
+            raise ValueError("API_KEY environment variable not set")
+  
+  command_injection:
+    description: "Sanitize command inputs and use subprocess safely"
+    priority: 1
+    severity: critical
+    python:
+      vulnerable: |
+        os.system(f"ping {host}")
+      fixed: |
+        import subprocess
+        import shlex
+        subprocess.run(["ping", shlex.quote(host)], check=True)
+  
+  weak_crypto:
+    description: "Use strong cryptographic algorithms"
+    priority: 2
+    severity: high
+    python:
+      vulnerable: |
+        import md5
+        hash = md5.new(data).hexdigest()
+      fixed: |
+        import hashlib
+        hash = hashlib.sha256(data).hexdigest()
+  
+  insecure_deserialization:
+    description: "Avoid pickle for untrusted data"
+    priority: 1
+    severity: high
+    python:
+      vulnerable: |
+        import pickle
+        data = pickle.loads(untrusted_input)
+      fixed: |
+        import json
+        data = json.loads(untrusted_input)

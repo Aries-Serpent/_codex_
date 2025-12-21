@@ -52,16 +52,30 @@ def fix_fstring_sql(content: str) -> Tuple[str, List[str]]:
         new_sql = re.sub(vars_pattern, '?', sql)
 
         # Create parameters tuple
-        # Note: Simple identifiers only - complex expressions need manual review
+        # Note: Only parameterize simple identifiers - complex expressions need manual review
         params = ', '.join(variables)
+        
+        # Handle single variable case - need trailing comma for single-element tuple
         if len(variables) == 1:
-            # Check if variable looks like a simple identifier (not already a tuple/list)
             var = variables[0]
-            if var.isidentifier():
+            # Only add comma if it's a simple identifier (not already a tuple/list reference)
+            # Check for common patterns that indicate the variable might be iterable:
+            # - ends with 's' (plural, might be a list)
+            # - contains 'list', 'tuple', 'array', 'items'
+            # These need manual review to avoid (iterable,) which would be incorrect
+            likely_iterable_patterns = ['list', 'tuple', 'array', 'items', 'values', 'params']
+            is_likely_iterable = (
+                any(pattern in var.lower() for pattern in likely_iterable_patterns)
+            )
+            
+            if var.isidentifier() and not is_likely_iterable:
                 params += ','  # Single element tuple needs trailing comma
-            # If not a simple identifier, leave as-is and let user review
-
-        changes.append(f"Parameterized SQL with variables: {variables}")
+                changes.append(f"Parameterized SQL with variable: {var} (added trailing comma for single-element tuple)")
+            else:
+                # Variable might be iterable - add warning comment
+                changes.append(f"Parameterized SQL with variable: {var} (WARNING: verify {var} is not already iterable)")
+        else:
+            changes.append(f"Parameterized SQL with variables: {variables}")
 
         return f'{prefix}{quote}{new_sql}{quote}, ({params}){suffix}'
 
