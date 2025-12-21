@@ -27,20 +27,22 @@ class SecretPatterns:
     with configurable exclusion patterns for common false positives.
     """
     
-    # Core secret patterns with more flexible matching
+    # Core secret patterns with flexible matching and placeholder filtering
     PATTERNS: Dict[str, str] = {
-        "api_key": r'(?i)(?:api[_-]?key|apikey)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-]{16,})["\']?',
-        "password": r'(?i)(?:password|passwd|pwd)["\']?\s*[:=]\s*["\']([^"\']{8,})["\']',
-        "token": r'(?i)(?:token|access[_-]?token)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-\.]{20,})["\']?',
-        "secret": r'(?i)(?:secret|secret[_-]?key)["\']?\s*[:=]\s*["\']?([a-zA-Z0-9_\-]{16,})["\']?',
-        "aws_access_key": r'(?i)(?:aws[_-]?access[_-]?key[_-]?id|AWS_ACCESS_KEY_ID)["\']?\s*[:=]\s*["\']?([A-Z0-9]{20})["\']?',
-        "aws_secret_key": r'(?i)(?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)["\']?\s*[:=]\s*["\']?([A-Za-z0-9/+=]{40})["\']?',
-        "github_token": r'(?:ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36,}',
+        # API key with negative lookahead for placeholders
+        "api_key": r'(?i)(?:api[_-]?key|apikey)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test|REPLACE|dummy|placeholder))([a-zA-Z0-9_\-]{16,})["\']?',
+        "password": r'(?i)(?:password|passwd|pwd)["\']?\s*[:=]\s*["\'](?!(?:YOUR_|your_|example|test|password))([^"\']{8,})["\']',
+        "token": r'(?i)(?:token|access[_-]?token)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test))([a-zA-Z0-9_\-\.]{20,})["\']?',
+        "secret": r'(?i)(?:secret|secret[_-]?key)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|example|test))([a-zA-Z0-9_\-]{16,})["\']?',
+        "aws_access_key": r'(?i)(?:aws[_-]?access[_-]?key[_-]?id|AWS_ACCESS_KEY_ID)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|AKIAIOSFODNN7EXAMPLE))([A-Z0-9]{20})["\']?',
+        "aws_secret_key": r'(?i)(?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)["\']?\s*[:=]\s*["\']?(?!(?:YOUR_|your_|wJalrXUtnFEMI))([A-Za-z0-9/+=]{40})["\']?',
+        # Fixed: GitHub token with word boundaries for standalone detection
+        "github_token": r'\b((?:ghp|gho|ghu|ghs|ghr)_[a-zA-Z0-9]{36,})\b',
         "private_key": r'-----BEGIN (?:RSA |EC )?PRIVATE KEY-----',
-        "slack_token": r'xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24,}',
-        "stripe_key": r'(?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24,}',
-        "jwt": r'eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*',
-        "bearer_token": r'(?i)bearer\s+[a-zA-Z0-9\-_\.]{20,}',
+        "slack_token": r'\b(xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[a-zA-Z0-9]{24,})\b',
+        "stripe_key": r'\b((?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24,})\b',
+        "jwt": r'\b(eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*)\b',
+        "bearer_token": r'(?i)bearer\s+([a-zA-Z0-9\-_\.]{20,})',
     }
     
     # Placeholder patterns that should NOT be flagged as secrets
