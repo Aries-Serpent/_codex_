@@ -69,6 +69,14 @@ _codex_/
 │   └── space_traversal/        # Audit pipeline v1.5.5
 ├── tests/                       # Test suite (1,208+ files)
 ├── docs/                        # Documentation (693+ files)
+│   ├── mcp/                    # MCP (Model Context Protocol) docs
+│   ├── archive/                # Historical planning docs & session reports
+│   ├── api/                    # API reference documentation
+│   └── ADMIN_*.md              # Administrator guides
+├── reports/                     # Generated reports & diagnostics
+│   ├── codex/                  # Codex-specific reports
+│   └── diagnostics/            # Diagnostic outputs
+├── coverage_reports/            # Test coverage JSON reports
 ├── training/                    # Training configurations
 ├── services/                    # Microservices (ITA, etc.)
 ├── cli/                         # CLI entrypoints
@@ -78,7 +86,7 @@ _codex_/
 ├── audit_artifacts/            # Audit results & trends
 ├── misc/                        # Archival & review
 │   └── repo-owner-review/      # Deprecated files for owner review
-└── [documentation files]        # 60+ root-level MD files
+└── [core config files]          # pyproject.toml, requirements*.txt, etc.
 ```
 
 ### Key Directories Deep Dive

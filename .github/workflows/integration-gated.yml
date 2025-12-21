@@ -11,6 +11,9 @@ on:
         default: 'false'
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   gate-checks:
     name: Gate Checks
@@ -20,6 +23,8 @@ jobs:
     steps:
       - name: Check integration gates
         id: gate
+        env:
+          ENABLE_LIVE_TESTS: ${{ secrets.ENABLE_LIVE_TESTS }}
         run: |
           PROCEED="false"
           # Gate 1: Check if explicitly enabled via input
@@ -27,10 +32,10 @@ jobs:
             PROCEED="true"
             echo "Integration tests enabled via workflow input"
           fi
-          # Gate 2: Check if enabled via environment variable
-          if [[ "${{ env.ENABLE_LIVE_TESTS }}" == "true" ]]; then
+          # Gate 2: Check if enabled via secret (ENABLE_LIVE_TESTS)
+          if [[ "${ENABLE_LIVE_TESTS}" == "true" ]]; then
             PROCEED="true"
-            echo "Integration tests enabled via ENABLE_LIVE_TESTS env"
+            echo "Integration tests enabled via ENABLE_LIVE_TESTS secret"
           fi
           echo "proceed=$PROCEED" >> $GITHUB_OUTPUT
           echo "Integration gate check complete: proceed=$PROCEED"
@@ -54,7 +59,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
-          pip install -e . || echo "Package install failed, continuing..."
+          pip install -e .
+          if [ $? -ne 0 ]; then
+            echo "⚠️ Package install with editable mode failed, trying regular install..."
+            pip install .
+          fi
           
       - name: Run integration tests (live)
         env:
