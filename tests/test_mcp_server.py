@@ -7,8 +7,8 @@ Verifies complete functionality of the server.
 import sys
 from pathlib import Path
 
-# Add repo root to path
-repo_root = Path(__file__).parent
+# Add repo root to path (tests/ is one level below repo root)
+repo_root = Path(__file__).parent.parent
 sys.path.insert(0, str(repo_root))
 
 from mcp.server import MCPJSONRPCServer
