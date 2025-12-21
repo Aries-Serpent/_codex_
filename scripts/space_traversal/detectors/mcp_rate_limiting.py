@@ -52,7 +52,7 @@ def detect(file_index: Dict[str, Any]) -> Dict[str, Any]:
         files = files[:MAX_FILES]
 
     evidence = []
-    found = set()  # Use set for deduplication during collection
+    found = set()  # Use set for deduplication during collection, converted to sorted list at end (line 122)
 
     # Rate limiting patterns to detect
     patterns = [

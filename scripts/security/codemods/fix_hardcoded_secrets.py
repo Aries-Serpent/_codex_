@@ -53,7 +53,8 @@ def is_safe_value(value: str) -> bool:
     """
     Check if a value is clearly a placeholder, not a real secret.
 
-    Uses pattern matching and entropy check to reduce false positives.
+    Uses pattern matching to reduce false positives. Err on the side of
+    caution - prefer false positives over false negatives for security.
     """
     if not value:
         return True
@@ -65,11 +66,9 @@ def is_safe_value(value: str) -> bool:
         if re.match(pattern, value_lower):
             return True
 
-    # Allow simple configuration values (low entropy)
-    # Real secrets typically have higher entropy
-    if len(value) <= 8 and value.replace('_', '').replace('-', '').isalnum():
-        # Simple alphanumeric strings like "debug", "localhost" are likely config
-        return True
+    # Removed: Dangerous short-value heuristic that could miss short but sensitive values
+    # like API keys 'KEY', passwords 'abc', etc.
+    # If we're unsure, treat it as potentially sensitive and flag for review.
 
     return False
 
