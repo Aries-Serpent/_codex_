@@ -68,13 +68,15 @@ def safe_extract_tarfile(
         tar.extractall(extract_to, members=to_extract)
 
 
-def safe_create_file(path: Path, mode: int = 0o644, *, exist_ok: bool = False) -> None:
+def safe_create_file(path: Path, mode: int = 0o600, *, exist_ok: bool = False) -> None:
     """Create file with secure permissions.
     
     Args:
         path: Path to file to create
-        mode: Permission mode (default: 0o644)
+        mode: Permission mode (default: 0o600 for secure files)
         exist_ok: If True, don't raise error if file exists
+        
+    Security Note: Default changed from 0o644 to 0o600 to prevent world-readable files.
     """
     if path.exists() and not exist_ok:
         raise FileExistsError(f"File already exists: {path}")
