@@ -26,14 +26,7 @@ jobs:
 
       - name: Validate agent manifest
         run: |
-          python - <<'PY'
-          import yaml
-          with open('.github/agents/codex-reviewer.agent.yml', encoding='utf-8') as f:
-              manifest = yaml.safe_load(f)
-          print(f"Agent: {manifest['name']} v{manifest['version']}")
-          print(f"Triggers: {len(manifest['triggers'])} events")
-          print(f"Capabilities: {manifest['capabilities']}")
-          PY
+          python .github/agents/scripts/validate_manifest.py
 
       - name: Run tests
         run: |
