@@ -19,24 +19,39 @@ cd _codex_
 pip install -e .
 
 # Verify MCP modules
-python3 -c "import mcp; print('MCP modules loaded successfully')"
+python3 -c "
+try:
+    import mcp
+    print('✅ MCP modules loaded successfully')
+except ImportError as e:
+    print(f'❌ MCP modules not available: {e}')
+    print('   Run: pip install -e . to install')
+"
 ```
 
 ### Quick Start
 
 ```python
-from mcp.config import MCPConfig
-from mcp.registry import MCPToolRegistry
-from mcp.server.server import MCPJSONRPCServer
+# Safe import pattern with error handling
+try:
+    from mcp.config import MCPConfig
+    from mcp.registry import MCPToolRegistry
+    from mcp.server.server import MCPJSONRPCServer
+    MCP_AVAILABLE = True
+except ImportError as e:
+    MCP_AVAILABLE = False
+    print(f"MCP modules not available: {e}")
+    print("Install with: pip install -e .")
 
-# Load MCP configuration
-config = MCPConfig.load()
+if MCP_AVAILABLE:
+    # Load MCP configuration
+    config = MCPConfig.load()
 
-# Initialize tool registry
-registry = MCPToolRegistry()
+    # Initialize tool registry
+    registry = MCPToolRegistry()
 
-# Create JSON-RPC server
-server = MCPJSONRPCServer(config, registry=registry)
+    # Create JSON-RPC server
+    server = MCPJSONRPCServer(config, registry=registry)
 
 print(f"MCP server ready with {len(registry.list_tools())} tools")
 ```

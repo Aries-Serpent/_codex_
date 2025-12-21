@@ -28,22 +28,41 @@ The `mcp-authz-authn` capability provides API key authentication and role-based 
 
 ### Authentication Implementation
 
-**SHA-256 Credential Hashing**:
+**Secure Credential Hashing**:
+
+> ⚠️ **Important**: For password storage, use a proper password hashing function like bcrypt, scrypt, or Argon2 with salt and appropriate iterations. SHA-256 alone is NOT suitable for password hashing as it's too fast and vulnerable to brute-force attacks.
+
 ```python
-from mcp.auth import MCPAuthenticator, hash_credential
+from mcp.auth import MCPAuthenticator
 import hashlib
+import secrets
 
-# Credentials are hashed with SHA-256
-def hash_credential(credential: str) -> str:
-    return hashlib.sha256(credential.encode('utf-8')).hexdigest()
+# For API keys/tokens (not passwords): SHA-256 is acceptable
+def hash_api_key(api_key: str) -> str:
+    """Hash API key for storage comparison. NOT for passwords."""
+    return hashlib.sha256(api_key.encode('utf-8')).hexdigest()
 
-# Authenticator uses SHA-256 internally
+# For passwords: Use bcrypt or argon2 (recommended)
+# pip install bcrypt
+import bcrypt
+
+def hash_password(password: str) -> bytes:
+    """Securely hash a password using bcrypt."""
+    salt = bcrypt.gensalt(rounds=12)
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
+
+def verify_password(password: str, hashed: bytes) -> bool:
+    """Verify a password against its hash."""
+    return bcrypt.checkpw(password.encode('utf-8'), hashed)
+
+# Authenticator usage
 authenticator = MCPAuthenticator()
 principal = authenticator.authenticate(api_key)
 ```
 
 **Security Best Practices**:
-- ✅ Always hash credentials with SHA-256 before storage
+- ✅ Use bcrypt/argon2 for password hashing (NOT SHA-256)
+- ✅ SHA-256 is acceptable for API key/token comparison only
 - ✅ Use secure RNG with seed for token generation
 - ✅ Implement token expiration
 - ✅ Use HTTPS for credential transmission
