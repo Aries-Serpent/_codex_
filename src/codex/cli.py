@@ -1554,5 +1554,12 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
             click.echo(f"{w.name[:39]:<40} {w.filename[:29]:<30} {len(w.jobs):<6} {len(w.triggers):<10}")
 
 
+# Expose CLI groups as module attributes for testing and dynamic imports
+# This allows `import codex.cli; codex.cli.logs` to work correctly
+logs = logs
+tokenizer_group = tokenizer_group
+repro_group = repro_group
+
+
 if __name__ == "__main__":
     cli()
