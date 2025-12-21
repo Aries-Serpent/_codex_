@@ -62,6 +62,7 @@ jobs:
           pip install jinja2 pyyaml toml tomli || true
 
       - name: Generate Wiki Pages
+        continue-on-error: true  # Wiki is non-critical; step failure is visible but won't block workflow
         env:
           REPO_NAME: ${{ github.repository }}
           VERSION: ${{ steps.get_version.outputs.version }}
@@ -82,6 +83,7 @@ jobs:
               print('✅ Wiki generated successfully')
           except Exception as e:
               import traceback
+              from pathlib import Path
               print('=' * 60)
               print('❌ WIKI GENERATION FAILED')
               print('=' * 60)
@@ -92,11 +94,12 @@ jobs:
               print('=' * 60)
               # Create minimal wiki output to prevent downstream failures
               Path('wiki_output/Home.md').write_text('# Wiki\\n\\nGeneration failed. Check workflow logs for details.')
-              # Exit 0 to not fail workflow (wiki is non-critical), but error is now prominently logged
-              sys.exit(0)
+              # Exit 1 to mark step as failed (visible in UI); continue-on-error allows workflow to proceed
+              sys.exit(1)
           "
 
       - name: Generate Documentation Hub
+        continue-on-error: true  # Non-critical; step failure visible but won't block workflow
         env:
           REPO_NAME: ${{ github.repository }}
           VERSION: ${{ steps.get_version.outputs.version }}
@@ -113,11 +116,18 @@ jobs:
               generate_docs_hub(Path('wiki_output/docs_hub.html'), repo, version)
               print('✅ Documentation hub generated')
           except Exception as e:
-              print(f'⚠️ Documentation hub generation failed: {e}')
-              sys.exit(0)  # Don't fail the workflow
+              import traceback
+              print('=' * 60)
+              print('❌ DOCUMENTATION HUB GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              traceback.print_exc()
+              print('=' * 60)
+              sys.exit(1)
           "
 
       - name: Generate Agent Interface
+        continue-on-error: true  # Non-critical; step failure visible but won't block workflow
         env:
           REPO_NAME: ${{ github.repository }}
           VERSION: ${{ steps.get_version.outputs.version }}
@@ -134,8 +144,14 @@ jobs:
               generate_agent_interface(Path('wiki_output/agent_interface.html'), repo, version)
               print('✅ Agent interface generated')
           except Exception as e:
-              print(f'⚠️ Agent interface generation failed: {e}')
-              sys.exit(0)  # Don't fail the workflow
+              import traceback
+              print('=' * 60)
+              print('❌ AGENT INTERFACE GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              traceback.print_exc()
+              print('=' * 60)
+              sys.exit(1)
           "
 
       - name: Upload Wiki Bundle
