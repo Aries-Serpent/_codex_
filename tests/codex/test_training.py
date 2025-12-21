@@ -8,7 +8,15 @@ from pathlib import Path
 
 import pytest
 
+# Skip if PyTorch-dependent modules cannot be imported
+try:
+    from codex.training import _safe_perplexity, _safe_token_accuracy, _codex_config_hash, _build_safe_ckpt_payload
+    TRAINING_AVAILABLE = True
+except (ImportError, AttributeError):
+    TRAINING_AVAILABLE = False
 
+
+@pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
     # Stub tokenization dependency pulled in by codex_ml.symbolic_pipeline
     stub_tokenization = types.SimpleNamespace(TokenizerAdapter=type("TokenizerAdapter", (), {}))
@@ -21,6 +29,7 @@ def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
     assert _safe_perplexity([0.0, 0.0]) >= 1.0
 
 
+@pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 def test_config_hash_stable() -> None:
     from codex.training import _codex_config_hash
 
@@ -38,6 +47,7 @@ class _Dummy:
         return self._state
 
 
+@pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 @pytest.mark.parametrize("extra", [None, {"note": "ok"}])
 def test_build_safe_ckpt_payload(extra):
     from codex.training import _build_safe_ckpt_payload

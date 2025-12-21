@@ -1,0 +1,91 @@
+# Copilot Agent Manifest for PR Review
+name: "codex-quantum-reviewer"
+version: "1.0.0"
+description: "Quantum-inspired PR reviewer with self-evolution capabilities"
+
+# Agent metadata
+metadata:
+  author: "mbaetiong"
+  repository: "Aries-Serpent/_codex_"
+  tags: 
+    - "pr-review"
+    - "quantum-analysis"
+    - "security-validation"
+    - "auto-orchestration"
+  visibility: "organization"  # Options: organization, public, private
+
+# Triggering events
+triggers:
+  - event: "pull_request.opened"
+    action: "initial_review"
+  - event: "pull_request.synchronize"
+    action: "incremental_review"
+  - event: "pull_request_review.submitted"
+    action: "analyze_human_feedback"
+  - event: "issue_comment.created"
+    condition: "contains(comment.body, '@codex-reviewer')"
+    action: "respond_to_mention"
+
+# Required permissions
+permissions:
+  contents: "read"
+  pull_requests: "write"
+  issues: "write"
+  checks: "write"
+  statuses: "write"
+  actions: "read"
+
+# Capabilities
+capabilities:
+  review_types:
+    - "code_quality"
+    - "security_analysis"
+    - "performance_review"
+    - "documentation_check"
+    - "quantum_pattern_analysis"
+    - "knowledge_gap_detection"
+  
+  orchestration:
+    - "workflow_suggestions"
+    - "task_prioritization"
+    - "dependency_analysis"
+    - "next_steps_generation"
+  
+  learning:
+    - "pattern_extraction"
+    - "feedback_integration"
+    - "self_improvement"
+
+# Configuration
+configuration:
+  review_depth: "comprehensive"  # Options: minimal, standard, comprehensive
+  auto_approve_threshold: 0.95  # Confidence level for auto-approval (0.0-1.0)
+  suggestion_mode: "proactive"  # Options: reactive, proactive, aggressive
+  orchestration_level: "full"  # Options: basic, standard, full
+  learning_enabled: true
+  
+  # Review criteria weights (must sum to 1.0)
+  criteria_weights:
+    code_quality: 0.25
+    security: 0.30
+    performance: 0.20
+    documentation: 0.15
+    patterns: 0.10
+
+# Runtime specification
+runtime:
+  type: "copilot-agent-v2"
+  language: "python"
+  entry_point: ".github/agents/codex_reviewer/main.py"
+  timeout_seconds: 300
+  memory_mb: 512
+
+# Integration points
+integrations:
+  - type: "github_app"
+    app_id: "${CODEX_REVIEWER_APP_ID}"
+    fallback: true
+  - type: "webhooks"
+    endpoint: "${WEBHOOK_ENDPOINT}"
+  - type: "knowledge_base"
+    source: "_codex_patterns"

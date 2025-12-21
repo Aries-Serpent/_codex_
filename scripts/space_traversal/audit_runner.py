@@ -142,7 +142,7 @@ def import_yaml_from_sitepackages():
 
 try:
     yaml = import_yaml_from_sitepackages()
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
 except Exception:
     print("Missing dependencies. Install via: pip install pyyaml jinja2", file=sys.stderr)
     raise
@@ -1078,9 +1078,10 @@ def render_template(cfg, context):
     # Resolve matrix template path robustly (top-level or nested under output)
     tpl_path = _get_matrix_template(cfg)
     tpl_dir = Path(tpl_path).parent
+    # Security: Enable autoescape for HTML/XML templates to prevent XSS
     env = Environment(
         loader=FileSystemLoader(str(tpl_dir)),
-        autoescape=False,
+        autoescape=select_autoescape(['html', 'xml', 'jinja2']),
         trim_blocks=True,
         lstrip_blocks=True,
     )

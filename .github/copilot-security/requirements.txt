@@ -1,0 +1,27 @@
+"""
+GitHub Copilot Security Agent - Requirements
+
+Core dependencies for the Copilot Security Framework.
+Install with: pip install -r requirements.txt
+
+Author: mbaetiong
+Generated: 2025-12-21
+"""
+
+# Core async and HTTP libraries
+aiohttp>=3.9.0
+asyncio-throttle>=1.0.0
+
+# GitHub API client
+PyGithub>=2.1.0
+
+# Code analysis and transformation
+libcst>=1.0.0
+bandit>=1.7.0
+
+# Database for learning system
+aiosqlite>=0.19.0
+
+# Utilities
+python-dateutil>=2.8.0
+pyyaml>=6.0

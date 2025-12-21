@@ -1,0 +1,11 @@
+# Dependencies required by Semgrep custom rules
+# Install these before running Semgrep scans
+
+# Semgrep CLI (pinned for reproducibility)
+semgrep==1.146.0
+
+# PyTorch CPU-only version (required by some custom rules or rule processors)
+# Using CPU-only to minimize CI runtime and resource usage
+# Note: Using --extra-index-url instead of --index-url to preserve PyPI access for other packages
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu

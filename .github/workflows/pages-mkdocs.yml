@@ -1,3 +1,13 @@
+# GitHub Pages Deployment Workflow (MkDocs)
+#
+# Builds and deploys documentation to GitHub Pages using MkDocs.
+# Requires GitHub Pages to be enabled in repository settings with source: "GitHub Actions"
+#
+# Detection Report:
+# - Found: mkdocs.yml (MkDocs configuration)
+# - Found: docs/ directory with markdown files
+# - Build type: MkDocs with Material theme
+
 name: Deploy Pages (MkDocs)
 
 on:
@@ -89,4 +99,3 @@ jobs:
       - name: Output deployment URL
         run: |
           echo "📚 Documentation deployed to: ${{ steps.deployment.outputs.page_url }}"
-          echo "🔗 Direct link: https://aries-serpent.github.io/_codex_/"

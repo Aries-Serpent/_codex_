@@ -48,3 +48,30 @@ services:
       - ./data:/app/data
       - ./models:/app/models
       - ./artifacts:/app/artifacts
+
+  mcp-http:
+    profiles: ["mcp"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["uvicorn", "src.mcp.server.http:app", "--host", "0.0.0.0", "--port", "8001"]
+    environment:
+      MCP_API_KEY: ${MCP_API_KEY:-dev-key}
+      MCP_OFFLINE: ${MCP_OFFLINE:-false}
+      MCP_RATE_LIMIT_RPM_READ: ${MCP_RATE_LIMIT_RPM_READ:-60}
+      MCP_RATE_LIMIT_RPM_WRITE: ${MCP_RATE_LIMIT_RPM_WRITE:-30}
+    ports:
+      - "8001:8001"
+    depends_on:
+      - mcp-vector-db
+    volumes:
+      - ./:/app
+
+  mcp-vector-db:
+    profiles: ["mcp"]
+    image: chromadb/chroma:0.5.3
+    restart: unless-stopped
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./artifacts/chroma:/chroma/.chroma/index

@@ -1,0 +1,82 @@
+# Configuration for AI-Driven Autonomous Agent
+#
+# This file defines the behavior and permissions for the autonomous
+# codebase management agent.
+
+# Core Settings
+autonomous_actions_enabled: true
+learning_enabled: true
+rollback_enabled: true
+
+# Monitoring Configuration
+monitoring:
+  interval_minutes: 30
+  health_checks:
+    - code_complexity
+    - code_duplication
+    - test_coverage
+    - security_scan
+    - dependency_status
+  
+  thresholds:
+    complexity_max: 15
+    duplication_max: 0.10
+    test_coverage_min: 0.80
+    security_issues_max: 0
+
+# Action Authorization
+authorization:
+  # Maximum autonomous actions per cycle
+  max_actions_per_cycle: 3
+  
+  # Decision levels for different action types
+  action_levels:
+    maintenance: autonomous
+    testing: autonomous
+    documentation: autonomous
+    optimization: approval_required
+    refactoring: approval_required
+    security: escalate
+    dependency: approval_required
+  
+  # Risk thresholds
+  risk_thresholds:
+    low: autonomous
+    medium: approval_required
+    high: escalate
+
+# Learning Configuration
+learning:
+  enabled: true
+  feedback_required: false
+  pattern_recognition: true
+  success_threshold: 0.85
+
+# Rollback Configuration
+rollback:
+  enabled: true
+  automatic_on_failure: true
+  retention_days: 30
+  branch_prefix: "agent-rollback-"
+
+# Notification Configuration
+notifications:
+  enabled: true
+  channels:
+    - type: log
+      level: info
+    - type: state_file
+      path: ".codex/agent_state/notifications.json"
+  
+  triggers:
+    - health_status_change
+    - action_executed
+    - action_failed
+    - approval_required
+
+# Continuous Improvement
+continuous_improvement:
+  enabled: true
+  metrics_tracking: true
+  benchmark_comparison: true
+  optimization_suggestions: true

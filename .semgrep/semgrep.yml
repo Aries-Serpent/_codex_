@@ -1,0 +1,28 @@
+# Semgrep configuration for Aries-Serpent/_codex_
+# Manages rule exclusions and suppressions
+
+rules: []
+
+# Path exclusions for all rules
+paths:
+  exclude:
+    # Test files with intentional patterns
+    - "tests/**"
+    - "**/test_*.py"
+    - "**/*_test.py"
+    
+    # Example and documentation code
+    - "examples/**"
+    - "docs/code-samples/**"
+    - "**/README*.md"
+    
+    # Generated and vendored code
+    - "**/generated/**"
+    - "**/vendor/**"
+    - "**/.venv/**"
+    - "**/node_modules/**"
+    
+    # Build artifacts
+    - "build/**"
+    - "dist/**"
+    - "*.egg-info/**"

@@ -69,6 +69,21 @@ class ApiKeyStore:
 
 
 def hash_key(value: str) -> str:
+    """Hash API key for storage and lookup.
+    
+    Security Note: SHA-256 is appropriate here for API key hashing because:
+    1. API keys are high-entropy random tokens (not user passwords)
+    2. Speed is beneficial for authentication lookups
+    3. Keys are already unique (no salt needed)
+    4. Not vulnerable to brute-force (unlike password hashing)
+    
+    For password hashing, use bcrypt, argon2, or scrypt instead.
+    
+    CodeQL Suppression: This is NOT password hashing - it's for high-entropy API tokens.
+    The 'value' parameter contains cryptographically random API keys (24+ bytes of entropy),
+    not user-chosen passwords. SHA-256 is appropriate for this use case.
+    """
+    # lgtm[py/weak-cryptographic-algorithm] - High-entropy API tokens, not passwords
     return sha256(value.encode("utf-8")).hexdigest()
 
 

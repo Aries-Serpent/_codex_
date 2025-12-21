@@ -79,7 +79,9 @@ class NDJSONLogger:
         data = (payload + "\n").encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(data))
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+            # Security: 0o640 permissions for log files (owner: rw, group: r, world: none)
+            # Changed from 0o644 to prevent world-readable logs which may contain sensitive data
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
             try:
                 os.write(fd, data)
             finally:
@@ -99,7 +101,9 @@ class NDJSONLogger:
         blob = payload.encode("utf-8")
         with self._lock:
             self._rotate_if_needed(len(blob))
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+            # Security: 0o640 permissions for log files (owner: rw, group: r, world: none)
+            # Changed from 0o644 to prevent world-readable logs which may contain sensitive data
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
             try:
                 os.write(fd, blob)
             finally:

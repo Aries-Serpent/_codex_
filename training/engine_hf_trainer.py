@@ -113,6 +113,7 @@ import csv
 import importlib
 import importlib.util
 import json
+import logging
 import math
 import os
 import random
@@ -125,6 +126,8 @@ from functools import lru_cache
 from os import PathLike
 from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping, Optional, cast
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
@@ -647,8 +650,8 @@ class NDJSONMetricsWriter:
     def __del__(self) -> None:  # pragma: no cover - best effort
         try:
             self.close()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("NDJSONMetricsWriter cleanup failed", exc_info=exc)
 
 
 class CSVMetricsWriter:
@@ -929,9 +932,8 @@ def run_hf_trainer(
         and dtype in {"fp32", "fp16", "bf16"}
         and getattr(torch.backends, "cudnn", None) is not None
     ):
-        assert (
-            torch.backends.cudnn.deterministic
-        ), "cuDNN must be deterministic; call set_reproducible()"
+        if not torch.backends.cudnn.deterministic:
+            raise RuntimeError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
     except Exception as exc:  # pragma: no cover - logging best effort
@@ -1213,8 +1215,8 @@ def run_hf_trainer(
                 **sysd,
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("System metrics logging failed", exc_info=exc)
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1225,8 +1227,8 @@ def run_hf_trainer(
                     writer.add_scalar(k, v, trainer.state.global_step)
             writer.flush()
             writer.close()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("TensorBoard logging failed", exc_info=exc)
 
     # Persist metrics to JSON and NDJSON for downstream analytics
     metrics_json = output_dir / "metrics.json"

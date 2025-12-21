@@ -1,0 +1,4 @@
+# Requirements for Knowledge Hunger system (same as evolution)
+# See ../copilot-evolution/requirements.txt for details
+
+numpy>=1.24.0

@@ -1,8 +1,8 @@
 # `_codex_`
 > 🏆 **Level 4 MLOps Certified** - Production-ready ML platform with end-to-end automation, drift-triggered retraining, and comprehensive observability (v1.5.5)
 
-![Tests](https://img.shields.io/badge/tests-107%20total%20%7C%2073%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-68%25-yellow)
+![Tests](https://img.shields.io/badge/tests-1500%2B%20total%20%7C%20100%25%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-72%25-yellow)
 ![Security](https://img.shields.io/badge/security-0%20vulnerabilities-brightgreen)
 ![Production](https://img.shields.io/badge/production-ready-brightgreen)
 
@@ -14,11 +14,23 @@
 
 **Gap Analysis Status:** 47/47 Items Complete (100%) ✅
 
-**Latest Milestone:** Comprehensive Gap Resolution Complete (2025-12-11)  
-**Latest Update:** Agent Memory System, Self-Healing CI, Quantum Game Theory, Performance Tests  
+**Latest Milestone:** Python Ingestion Pipeline Complete (2025-12-17)  
+**Latest Update:** 4-Stream Infrastructure, LLM Integration, 101 New Tests  
 📊 [View Full Assessment](.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md) | 📈 [v1.5.x Changelog](docs/audit/v1.5.x_CHANGELOG.md)
 
-## 🆕 Recent Additions (2025-12-11)
+## 🆕 Recent Additions (2025-12-17)
+
+| Component | Description | Location |
+|-----------|-------------|----------|
+| **Python Ingestion Pipeline** | Complete code ingestion, analysis, transform, verify | `src/codex/` |
+| **LLM Intent Inference** | OpenAI integration with provenance tracking | `src/codex/intent/` |
+| **Runtime Sandbox** | Sandboxed execution with resource limits | `src/codex/analyze/runtime/` |
+| **Tier-Based Transform** | A/B/C transformation classification | `src/codex/transform/` |
+| **Behavior Verification** | Comparison modes and test generation | `src/codex/verify/` |
+| **PR Operator** | Automated GitHub PR creation | `src/codex/cli/pr_operator.py` |
+| **4-Stream Infrastructure** | Caching, OpenAI, Security, CodeQL | Multiple locations |
+
+## 🆕 Previous Additions (2025-12-11)
 
 | Component | Description | Location |
 |-----------|-------------|----------|
@@ -41,6 +53,26 @@
 **Agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
 **Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+
+### 🔄 Python Ingestion Pipeline
+
+The Codex Ingestion Pipeline provides a complete system for processing Python code:
+
+```bash
+# Ingest code from file, ZIP, or Git URL
+python -m codex.cli ingest ./script.py --manifest manifest.yaml
+
+# Run static + runtime analysis
+python -m codex.cli analyze <snapshot-id>
+
+# Apply tier-based transformations
+python -m codex.cli transform <snapshot-id> --tier A --auto
+
+# Verify behavior preservation
+python -m codex.cli verify <snapshot-id> --compare
+```
+
+See [docs/plans/operational_runbook.md](docs/plans/operational_runbook.md) for complete documentation.
 
 ### 🔄 Tokenized Workflow Navigation
 
@@ -576,3 +608,7 @@ gh workflow run scheduled-dependency-audit.yml \
 - ✅ Weekly dependency drift detection
 - ✅ Automated Python version compatibility testing
 - ✅ GitHub Security integration for SARIF alerts
+
+## MCP Packager
+
+Generate MCP package scaffolds using the built-in packager. See [docs/mcp_packager.md](docs/mcp_packager.md) and the sample config at [docs/mcp_packager_template.yaml](docs/mcp_packager_template.yaml).

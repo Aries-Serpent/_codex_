@@ -1,15 +1,17 @@
 # Pinned test dependencies for reproducible CI and Docker builds
 # Maintainer note: These versions are pinned for deterministic builds.
 # Update with care and test thoroughly before merging changes.
-#
-# Note: requirements.txt also includes pytest>=8.0.0 and pytest-cov>=4.1.0.
-# These pinned versions are compatible and will be used when this file is
-# installed first (pip resolves to exact versions when specified).
 
+# Include base project dependencies first
+# Installation order: Install requirements.txt first, then requirements-test.txt
+#   pip install --no-cache-dir -r requirements.txt
+#   pip install --no-cache-dir -r requirements-test.txt
+# This dependency chain ensures test deps have access to base project dependencies.
+# If you modify requirements.txt independently, re-test with requirements-test.txt.
+
+# Test tooling (pinned versions for reproducibility)
 pytest==8.0.0
 pytest-cov==4.1.0
 pytest-randomly==3.15.0
 coverage[toml]==7.3.0
-
-# Note: Project dependencies (numpy, torch, etc.) are installed from
-# pyproject.toml or requirements.txt. This file contains only test tooling.
+hypothesis>=6.100

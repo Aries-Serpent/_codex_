@@ -15,17 +15,17 @@ logger = logging.getLogger(__name__)
 
 
 def start_metrics_server(
-    port: int = 8000, addr: str = "0.0.0.0"
+    port: int = 8000, addr: str = "127.0.0.1"
 ) -> Optional[
     bool
-]:  # nosec B104 - Telemetry server intentionally binds to all interfaces for container/cluster deployments
+]:
     """Start a Prometheus metrics server if ``prometheus_client`` is available.
 
     Returns ``True`` if the server started, ``False`` if the dependency is missing.
 
-    Note: The default address binds to all interfaces (0.0.0.0) for container and
-    cluster deployment scenarios where the metrics endpoint needs to be accessible
-    from outside the container. For local-only access, pass addr="127.0.0.1".
+    Note: The default address binds to localhost for safer defaults. For container
+    or cluster deployments that require external scraping, explicitly pass
+    addr="0.0.0.0".
     """
     if not _HAS_PROM:
         logger.error("prometheus_client is not installed; metrics server unavailable")

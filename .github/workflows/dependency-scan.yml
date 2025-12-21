@@ -1,0 +1,21 @@
+name: Dependency Scan (template)
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # daily at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  depscan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install safety (example scanner)
+        run: pip install safety
+      - name: Run safety check
+        run: |
+          if [ -f requirements.txt ]; then safety check -r requirements.txt || true; fi

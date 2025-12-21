@@ -1,0 +1,14 @@
+# Requirements for Quantum-Inspired Evolution and Knowledge Hunger Frameworks
+
+# Core numerical computing
+numpy>=1.24.0
+
+# Async support (usually built-in but specify for clarity)
+# asyncio is built-in to Python 3.7+
+
+# JSON and data handling (built-in)
+# json, dataclasses are built-in
+
+# Optional: For advanced features
+# scikit-learn>=1.3.0  # For ML-based pattern recognition
+# networkx>=3.0  # For knowledge graph management

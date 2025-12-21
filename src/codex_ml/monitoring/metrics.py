@@ -178,9 +178,10 @@ def get_metrics_router():
             metrics_output = generate_latest()
             return Response(content=metrics_output, media_type=CONTENT_TYPE_LATEST)
         except Exception as e:
-            logger.error("Failed to generate metrics: %s", e)
+            # Security: Don't expose internal error details to clients
+            logger.error("Failed to generate metrics: %s", e, exc_info=True)
             return Response(
-                content=f"# Error generating metrics: {e}\n",
+                content="# Error generating metrics\n",
                 media_type="text/plain",
                 status_code=500,
             )

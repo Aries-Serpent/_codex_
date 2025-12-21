@@ -1,0 +1,74 @@
+name: 'Compressed Cache'
+description: 'Cache with zstd compression (3-5x size reduction)'
+
+inputs:
+  key:
+    description: 'Cache key'
+    required: true
+  path:
+    description: 'Path to cache'
+    required: true
+  compression-level:
+    description: 'zstd compression level (1-22, higher = smaller but slower)'
+    required: false
+    default: '19'
+  restore-only:
+    description: 'Only restore, do not save'
+    required: false
+    default: 'false'
+
+outputs:
+  cache-hit:
+    description: 'Whether cache was restored'
+    value: ${{ steps.cache-restore.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install zstd
+      shell: bash
+      run: |
+        if ! command -v zstd &> /dev/null; then
+          sudo apt-get update && sudo apt-get install -y zstd
+        fi
+
+    - name: Restore compressed cache
+      id: cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ inputs.path }}.tar.zst
+        key: ${{ inputs.key }}-zstd
+        restore-keys: |
+          ${{ inputs.key }}-
+
+    - name: Decompress cache
+      if: steps.cache-restore.outputs.cache-hit == 'true'
+      shell: bash
+      run: |
+        echo "📦 Decompressing cache from ${{ inputs.path }}.tar.zst"
+        zstd -d "${{ inputs.path }}.tar.zst" -o "${{ inputs.path }}.tar" --force
+        mkdir -p "$(dirname "${{ inputs.path }}")"
+        tar -xf "${{ inputs.path }}.tar" -C "$(dirname "${{ inputs.path }}")"
+        rm -f "${{ inputs.path }}.tar" "${{ inputs.path }}.tar.zst"
+        echo "✅ Cache decompressed successfully"
+
+    - name: Compress and save cache
+      if: steps.cache-restore.outputs.cache-hit != 'true' && inputs.restore-only != 'true'
+      shell: bash
+      run: |
+        if [ -e "${{ inputs.path }}" ]; then
+          echo "📦 Compressing ${{ inputs.path }} with zstd level ${{ inputs.compression-level }}"
+          tar -cf "${{ inputs.path }}.tar" -C "$(dirname "${{ inputs.path }}")" "$(basename "${{ inputs.path }}")"
+          zstd -${{ inputs.compression-level }} "${{ inputs.path }}.tar" -o "${{ inputs.path }}.tar.zst" --force
+          rm -f "${{ inputs.path }}.tar"
+          echo "✅ Compressed size: $(du -h "${{ inputs.path }}.tar.zst" | cut -f1)"
+        else
+          echo "⚠️ Path ${{ inputs.path }} does not exist, skipping compression"
+        fi
+
+    - name: Save compressed cache
+      if: steps.cache-restore.outputs.cache-hit != 'true' && inputs.restore-only != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ inputs.path }}.tar.zst
+        key: ${{ inputs.key }}-zstd

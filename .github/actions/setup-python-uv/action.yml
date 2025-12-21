@@ -1,0 +1,93 @@
+name: 'Setup Python with UV'
+description: 'Install Python and dependencies using UV (10-100x faster than pip)'
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.11'
+  dependency-profile:
+    description: 'Dependency profile: minimal|test|dev|full'
+    required: false
+    default: 'test'
+  cache-key-prefix:
+    description: 'Cache key prefix for UV cache'
+    required: false
+    default: 'uv'
+
+outputs:
+  cache-hit:
+    description: 'Whether cache was hit'
+    value: ${{ steps.cache.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install UV
+      shell: bash
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Restore UV cache
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: /tmp/uv-cache
+        key: ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-${{ inputs.dependency-profile }}-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml', '**/uv.lock') }}
+        restore-keys: |
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-${{ inputs.dependency-profile }}-
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-py${{ inputs.python-version }}-
+          ${{ inputs.cache-key-prefix }}-${{ runner.os }}-
+
+    - name: Install dependencies with UV
+      shell: bash
+      env:
+        UV_CACHE_DIR: /tmp/uv-cache
+      run: |
+        # First ensure UV is in PATH
+        export PATH="$HOME/.cargo/bin:$PATH"
+        
+        case "${{ inputs.dependency-profile }}" in
+          minimal)
+            if [ -f requirements-minimal.txt ]; then
+              uv pip install --system -r requirements-minimal.txt
+            else
+              echo "⚠️ requirements-minimal.txt not found, falling back to package install"
+              uv pip install --system -e .
+            fi
+            ;;
+          test)
+            if [ -f requirements-test.txt ]; then
+              uv pip install --system -r requirements-test.txt
+            else
+              echo "⚠️ requirements-test.txt not found, installing with [test] extras"
+              uv pip install --system -e .[test]
+            fi
+            ;;
+          dev)
+            if [ -f requirements-dev.txt ]; then
+              uv pip install --system -r requirements-dev.txt
+            else
+              echo "⚠️ requirements-dev.txt not found, installing with [dev] extras"
+              uv pip install --system -e .[dev]
+            fi
+            ;;
+          full)
+            if [ -f requirements.txt ]; then
+              uv pip install --system -r requirements.txt
+            else
+              echo "⚠️ requirements.txt not found, installing with [all] extras"
+              uv pip install --system -e .[all]
+            fi
+            ;;
+          *)
+            echo "❌ Unknown profile: ${{ inputs.dependency-profile }}"
+            exit 1
+            ;;
+        esac

@@ -157,7 +157,9 @@ class _SummaryRotator:
         with self._lock:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._rotate_if_needed(len(data))
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o644)
+            # Security: Use 0o640 permissions (owner read/write, group read, world none)
+            # Changed from 0o644 to prevent world-readable tracking data which may contain sensitive info
+            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o640)
             try:
                 os.write(fd, data)
             finally:
