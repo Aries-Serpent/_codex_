@@ -12,6 +12,8 @@ import zipfile
 
 import pytest
 
+from .security_utils import safe_extract_tarfile
+
 
 class TestTarGzCompression:
     """Test tar.gz compression format for archival bundles"""
@@ -104,8 +106,8 @@ class TestTarGzCompression:
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:gz") as tar:
-            tar.extractall(extract_dir)
+        # Security: Use safe extraction to prevent path traversal
+        safe_extract_tarfile(archive_path, extract_dir)
 
         assert (extract_dir / "empty_dir").exists()
         assert (extract_dir / "empty_dir").is_dir()
@@ -260,8 +262,8 @@ class TestTarXzCompression:
         # Extract and verify
         extract_dir = tmp_path / "extracted"
         extract_dir.mkdir()
-        with tarfile.open(archive_path, "r:xz") as tar:
-            tar.extractall(extract_dir)
+        # Security: Use safe extraction to prevent path traversal
+        safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "level1" / "level2" / "level3" / "deep_file.txt"
         assert extracted_file.exists()
