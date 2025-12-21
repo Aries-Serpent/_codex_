@@ -424,6 +424,33 @@ class AgentMemory:
             )
             conn.commit()
 
+    def add_memory(
+        self, entry: Union["MemoryEntry", dict, None] = None, **kwargs: Any
+    ) -> None:
+        """
+        Add a memory entry (alias for store_memory for API consistency).
+
+        This method provides compatibility with tests and external callers
+        that expect add_memory() as the primary API.
+
+        Args:
+            entry: MemoryEntry object, dict, or None
+            **kwargs: Alternative memory data (memory_id, category, content, etc.)
+                - memory_id: Unique identifier for the memory
+                - category: Category of memory (decision, observation, learning)
+                - content: The actual memory content
+                - confidence: Float 0-1 indicating confidence
+                - context: Additional context dict
+
+        Returns:
+            None
+
+        Examples:
+            >>> memory.add_memory({"category": "decision", "content": "test"})
+            >>> memory.add_memory(memory_id="123", category="observation", content="data")
+        """
+        return self.store_memory(entry=entry, **kwargs)
+
     def retrieve_memory(
         self, memory_id: str = None, key: str = None
     ) -> Optional[Union[MemoryEntry, str]]:

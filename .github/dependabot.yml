@@ -35,6 +35,12 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
+    # Ignore problematic package versions to prevent dependency conflicts
+    ignore:
+      - dependency-name: "nbconvert"
+        versions: [">=7.0.0"]  # v7 has breaking changes causing conflicts
+      - dependency-name: "torch"
+        versions: [">=2.3.0"]  # Avoid bleeding edge torch versions
     # Group non-security updates to reduce PR noise
     groups:
       development-dependencies:
