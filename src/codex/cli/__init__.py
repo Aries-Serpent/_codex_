@@ -55,7 +55,9 @@ if cli is None:
 
     warnings.warn(
         f"Click CLI group 'cli' could not be loaded from {_click_cli_path}. "
-        "Click CLI commands will be unavailable. Ensure src/codex/cli.py exists and exports a 'cli' group.",
+        "IMPACT: All CLI commands (e.g., 'codex run', 'codex analyze') will be unavailable. "
+        "RESOLUTION: Ensure src/codex/cli.py exists and exports a Click 'cli' group. "
+        "Check for import errors with: python -c 'from src.codex.cli import cli; print(cli)'",
         ImportWarning,
         stacklevel=2,
     )

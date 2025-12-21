@@ -237,38 +237,40 @@ class AgentOrchestrator:
         async with self._lock:
             current_time = time.time()
 
-            # Reset counters if minute has passed (atomic under lock)
+            # Reset counters if minute has passed (fully atomic under lock)
             if current_time - self.rate_limiter.window_start > 60:
                 self.rate_limiter.current_requests = 0
                 self.rate_limiter.current_tokens = 0
                 self.rate_limiter.window_start = current_time
 
-            # Check if we need to wait (computed before releasing lock)
+            # Check if we need to wait
             needs_wait = (
                 self.rate_limiter.current_requests >= self.rate_limiter.requests_per_minute
                 or self.rate_limiter.current_tokens + estimated_tokens > self.rate_limiter.tokens_per_minute
             )
             
             if needs_wait:
+                # Calculate wait time while still holding lock
                 wait_time = 60 - (current_time - self.rate_limiter.window_start)
+                # Clamp to positive value
+                wait_time = max(0, wait_time)
             else:
-                wait_time = 0
-
-            # Increment counters before releasing lock
-            if not needs_wait:
+                # Increment counters atomically before releasing lock
                 self.rate_limiter.current_requests += 1
                 self.rate_limiter.current_tokens += estimated_tokens
+                wait_time = 0
 
         # Sleep outside the lock to allow other tasks to proceed
-        if needs_wait and wait_time > 0:
+        if wait_time > 0:
             logger.info(f"⏳ Rate limit approaching, waiting {wait_time:.1f}s...")
             await asyncio.sleep(wait_time)
             
-            # After wait, reset counters atomically and increment
+            # After wait, atomically reset and increment counters for this request
             async with self._lock:
+                current_time = time.time()
                 self.rate_limiter.current_requests = 1
                 self.rate_limiter.current_tokens = estimated_tokens
-                self.rate_limiter.window_start = time.time()
+                self.rate_limiter.window_start = current_time
 
     def get_orchestrator_status(self) -> dict[str, Any]:
         """Get the current status of the orchestrator."""

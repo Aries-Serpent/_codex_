@@ -23,6 +23,7 @@ from __future__ import annotations
 import ast
 import json
 import logging
+import os
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -31,6 +32,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
+
+# Security: Default trusted directories for external tools
+# Can be overridden via CODEX_TRUSTED_TOOL_DIRS environment variable
+DEFAULT_TRUSTED_DIRS = ["/usr/bin", "/usr/local/bin", "/opt/homebrew/bin"]
+TRUSTED_TOOL_DIRS = os.environ.get("CODEX_TRUSTED_TOOL_DIRS", "").split(":") if os.environ.get("CODEX_TRUSTED_TOOL_DIRS") else DEFAULT_TRUSTED_DIRS
 
 # Safeguards: Configuration bounds
 MAX_FILE_SIZE_KB = 1024
@@ -277,12 +283,11 @@ def _run_ruff(source_dir: Path) -> List[LintIssue]:
         if not source_dir.exists():
             logger.warning("Source directory %s does not exist; skipping ruff", source_dir)
             return issues
-        tool_path = _resolve_tool("ruff")
+        tool_path = _resolve_tool("ruff", trusted_dirs=TRUSTED_TOOL_DIRS)
         if not tool_path:
             return issues
-        # Security: Using 'ruff' from PATH. The source_dir is validated to be a Path object.
+        # Security: Tool path validated against trusted directories (TRUSTED_TOOL_DIRS).
         # Arguments are passed as a list to prevent shell injection.
-        # Optional: Configure trusted_dirs parameter in _resolve_tool() to restrict tool paths.
         result = subprocess.run(
             [tool_path, "check", "--output-format=json", str(source_dir)],
             capture_output=True,
@@ -319,11 +324,10 @@ def _run_bandit(source_dir: Path) -> List[SecurityIssue]:
         if not source_dir.exists():
             logger.warning("Source directory %s does not exist; skipping bandit", source_dir)
             return issues
-        tool_path = _resolve_tool("bandit")
+        tool_path = _resolve_tool("bandit", trusted_dirs=TRUSTED_TOOL_DIRS)
         if not tool_path:
             return issues
-        # Security: Using 'bandit' from PATH - assumes it's a trusted security scanning tool
-        # installed in the development environment. The source_dir is validated as a Path.
+        # Security: Tool path validated against trusted directories (TRUSTED_TOOL_DIRS).
         # Arguments are passed as a list to prevent shell injection.
         result = subprocess.run(
             [tool_path, "-r", "-f", "json", str(source_dir)],

@@ -304,6 +304,12 @@ class SandboxManager:
                     f"Script path {script_resolved} is outside allowed directories. "
                     f"Must be within {cwd} or {temp_dir}"
                 )
+            
+            # Additional check: Ensure no path traversal sequences in the normalized path
+            path_str = str(script_resolved)
+            if ".." in Path(path_str).parts:
+                raise ValueError(f"Path traversal detected in script path: {path_str}")
+                
         except (ValueError, OSError) as e:
             raise ValueError(f"Path validation failed: {e}")
 
