@@ -44,3 +44,22 @@ repos:
         entry: bash -c 'if [ -f requirements.in ]; then pip-compile requirements.in -o requirements.txt; fi'
         language: system
         stages: [manual]
+
+      # Auto-update codex package __init__.py files
+      - id: generate-codex-init
+        name: Generate codex __init__.py files
+        entry: python3 scripts/generate_codex_init.py
+        language: system
+        pass_filenames: false
+        files: 'src/codex/.*\.py$'
+        stages: [manual]
+
+      # Auto-update pytest.ini with discovered markers
+      - id: generate-pytest-config
+        name: Update pytest.ini with markers
+        entry: python3 scripts/generate_pytest_config.py
+        language: system
+        pass_filenames: false
+        files: '(tests/.*_test\.py$|tests/test_.*\.py$)'
+        stages: [manual]
+
