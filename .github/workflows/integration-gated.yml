@@ -8,8 +8,8 @@ on:
       enable:
         description: 'Enable live integration tests'
         required: false
-        default: 'false'
-        type: string
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -27,7 +27,7 @@ jobs:
           ENABLE_LIVE_TESTS: ${{ secrets.ENABLE_LIVE_TESTS }}
         run: |
           PROCEED="false"
-          # Gate 1: Check if explicitly enabled via input
+          # Gate 1: Check if explicitly enabled via input (boolean type)
           if [[ "${{ github.event.inputs.enable }}" == "true" ]]; then
             PROCEED="true"
             echo "Integration tests enabled via workflow input"
