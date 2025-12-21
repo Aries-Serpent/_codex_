@@ -47,7 +47,20 @@ def _load_click_cli() -> Any:
 
 cli = _load_click_cli()
 
-__all__ = ["app", "main", "cli"]
+# Also expose CLI groups for testing
+logs = None
+tokenizer_group = None
+repro_group = None
+
+if cli is not None:
+    # Import the groups from the loaded module
+    _cli_module = sys.modules.get("codex._cli_click")
+    if _cli_module:
+        logs = getattr(_cli_module, "logs", None)
+        tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
+        repro_group = getattr(_cli_module, "repro_group", None)
+
+__all__ = ["app", "main", "cli", "logs", "tokenizer_group", "repro_group"]
 
 if cli is None:
     # Non-fatal import warning, but tests will fail if Click CLI is required.
