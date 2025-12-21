@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Sequence, Tuple, Union
+from typing import List, Tuple, Union
 
 import libcst as cst
 from libcst import matchers as m
@@ -96,7 +96,7 @@ class SubprocessSecurityTransformer(cst.CSTTransformer):
                     new_args.append(
                         arg.with_changes(value=cst.Name("False"))
                     )
-                    shell_handled = True
+                    # Note: shell parameter handled here
                 elif arg.keyword.value == "check":
                     check_present = True
                     new_args.append(arg)

@@ -18,7 +18,6 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -113,7 +112,6 @@ class CopilotSecurityAgent:
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True,
-                timeout=5,
             )
             if result.returncode == 0:
                 url = result.stdout.strip()
@@ -303,7 +301,6 @@ class CopilotSecurityAgent:
                 ["bandit", "-r", "-f", "json", str(self.repo_path / "src")],
                 capture_output=True,
                 text=True,
-                timeout=60,
             )
             if result.returncode == 0 or result.stdout:
                 bandit_results = json.loads(result.stdout)
@@ -423,7 +420,6 @@ class CopilotSecurityAgent:
                 ["python", str(codemod_file), str(self.repo_path / vuln.file_path)],
                 capture_output=True,
                 text=True,
-                timeout=30,
             )
             
             if result.returncode == 0:
