@@ -1,0 +1,71 @@
+name: Deploy Reviewer Agent
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/agents/**'
+      - '.github/workflows/deploy-reviewer-agent.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r .github/agents/requirements.txt
+
+      - name: Validate agent manifest
+        run: |
+          python - <<'PY'
+          import yaml
+          with open('.github/agents/codex-reviewer.agent.yml', encoding='utf-8') as f:
+              manifest = yaml.safe_load(f)
+          print(f"Agent: {manifest['name']} v{manifest['version']}")
+          print(f"Triggers: {len(manifest['triggers'])} events")
+          print(f"Capabilities: {manifest['capabilities']}")
+          PY
+
+      - name: Run tests
+        run: |
+          pip install pytest pytest-asyncio
+          pytest .github/agents/tests/ -v
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Deploy GitHub App
+        env:
+          CODEX_APP_ID: ${{ secrets.CODEX_APP_ID }}
+          CODEX_PRIVATE_KEY: ${{ secrets.CODEX_PRIVATE_KEY }}
+        run: |
+          echo "Deploying GitHub App webhook handler..."
+          # Add deployment commands for your infrastructure
+
+      - name: Register agent with Copilot
+        run: |
+          echo "Registering agent with Copilot platform..."
+          # Platform-specific registration commands
+
+      - name: Test agent availability
+        run: |
+          echo "Agent deployment validation complete"
