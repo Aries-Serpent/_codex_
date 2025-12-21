@@ -81,10 +81,19 @@ jobs:
               create_wiki_bundle(output_dir, Path('wiki.zip'))
               print('✅ Wiki generated successfully')
           except Exception as e:
-              print(f'⚠️ Wiki generation failed: {e}')
+              import traceback
+              print('=' * 60)
+              print('❌ WIKI GENERATION FAILED')
+              print('=' * 60)
+              print(f'Error: {e}')
+              print()
+              print('Full traceback:')
+              traceback.print_exc()
+              print('=' * 60)
               # Create minimal wiki output to prevent downstream failures
               Path('wiki_output/Home.md').write_text('# Wiki\\n\\nGeneration failed. Check workflow logs for details.')
-              sys.exit(0)  # Don't fail the workflow
+              # Exit 0 to not fail workflow (wiki is non-critical), but error is now prominently logged
+              sys.exit(0)
           "
 
       - name: Generate Documentation Hub
