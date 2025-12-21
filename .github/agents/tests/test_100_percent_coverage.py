@@ -5,9 +5,8 @@ Tests all modules, edge cases, and integration scenarios.
 """
 
 import pytest
-import asyncio
 from datetime import datetime
-from unittest.mock import Mock, AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, patch
 from pathlib import Path
 import sys
 

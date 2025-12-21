@@ -5,7 +5,6 @@ Validates secret detection patterns against known test cases
 and suggests improvements for failing patterns.
 """
 
-import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple

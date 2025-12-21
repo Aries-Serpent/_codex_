@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import pytest
 import asyncio
-from datetime import datetime, timedelta
-from unittest.mock import Mock, AsyncMock, patch, MagicMock
+from datetime import datetime
+from unittest.mock import AsyncMock
 import json
 from pathlib import Path
 import sys
@@ -22,7 +22,7 @@ if str(AGENTS_DIR) not in sys.path:
 
 from codex_reviewer.main import CodexQuantumReviewer, ReviewContext, ReviewResult
 from codex_reviewer.security import SecurityValidator
-from codex_reviewer.secret_patterns import SecretPatterns, calculate_entropy
+from codex_reviewer.secret_patterns import calculate_entropy
 from codex_reviewer.metrics import MetricsCollector, ReviewMetrics
 from codex_reviewer.github_client import GitHubAPIClient
 

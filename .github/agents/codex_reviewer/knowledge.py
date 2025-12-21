@@ -5,7 +5,7 @@ This module contains logic for detecting areas where additional knowledge
 would improve review quality.
 """
 
-from typing import Dict, List, Any
+from typing import List
 import logging
 
 logger = logging.getLogger(__name__)

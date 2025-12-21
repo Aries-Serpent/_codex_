@@ -4,7 +4,7 @@ Workflow Orchestration Components
 This module contains workflow orchestration and planning logic.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

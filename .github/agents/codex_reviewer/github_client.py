@@ -20,7 +20,7 @@ except ImportError:
     HTTPX_AVAILABLE = False
     import urllib.request
     import urllib.parse
-    import json as stdlib_json
+    import json
 
 logger = logging.getLogger(__name__)
 
