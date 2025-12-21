@@ -10,8 +10,10 @@ Python evidence files:
 - ast_uniqueness = 1 - avg_pairwise_similarity (higher is more unique)
 - Output ast_similarity.json for scoring stage to consume
 
-Environment Knobs:
-  AST_SIMILARITY_ENABLE=1  -> perform computation (required)
+Environment Knobs (parsed via scripts/config/parse_knobs.py schema):
+  AST_SIMILARITY_ENABLE=1       -> perform computation (required)
+  AST_SIMILARITY_MAX_FILES=30   -> cap evidence set to reduce cost
+  AST_SIMILARITY_MIN_NODES=10   -> skip files with fewer AST nodes
 """
 from __future__ import annotations
 
@@ -76,18 +78,22 @@ def signature_similarity(sig1: Dict, sig2: Dict) -> float:
     return 0.7 * node_sim + 0.3 * hash_sim
 
 
-def compute_uniqueness(paths: List[Path]) -> float:
+def compute_uniqueness(paths: List[Path], min_nodes: int = 10) -> float:
     """
     Compute AST uniqueness score for a set of Python files.
 
     Returns 1.0 for single/no files, otherwise 1 - avg_pairwise_similarity.
+
+    Args:
+        paths: List of Python file paths to analyze
+        min_nodes: Minimum AST nodes required to include a file
     """
     signatures = []
     for p in paths:
         try:
             code = p.read_text(encoding="utf-8", errors="ignore")
             sig = extract_ast_signature(code)
-            if sig:
+            if sig and sum(sig["nodes"].values()) >= min_nodes:
                 signatures.append(sig)
         except Exception:
             continue
@@ -114,6 +120,10 @@ def main():
         print("[INFO] AST similarity disabled (AST_SIMILARITY_ENABLE).")
         return 0
 
+    # Read additional configuration knobs
+    max_files = int(os.getenv("AST_SIMILARITY_MAX_FILES", "30"))
+    min_nodes = int(os.getenv("AST_SIMILARITY_MIN_NODES", "10"))
+
     if not RAW.exists():
         print(f"[WARN] {RAW} missing; run earlier stages.", file=sys.stderr)
         return 2
@@ -121,12 +131,17 @@ def main():
     data = json.loads(RAW.read_text(encoding="utf-8"))
     results = []
 
-    for cap in data.get("capabilities", []):
-        evidence_files = cap.get("evidence_files", [])
-        # Filter to Python files only
-        py_paths = [Path(f) for f in evidence_files if f.endswith(".py") and Path(f).exists()]
+    for cap in data["capabilities"]:
+        evidence_files = cap.get("evidence_files", [])[:max_files]
+        # Filter to Python files only, avoiding redundant Path construction
+        py_paths = []
+        for f in evidence_files:
+            if f.endswith(".py"):
+                p = Path(f)
+                if p.exists():
+                    py_paths.append(p)
 
-        uniqueness = compute_uniqueness(py_paths)
+        uniqueness = compute_uniqueness(py_paths, min_nodes)
         results.append({
             "id": cap["id"],
             "ast_uniqueness": round(uniqueness, 4),
