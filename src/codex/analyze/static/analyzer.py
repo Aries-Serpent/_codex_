@@ -261,8 +261,8 @@ def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[st
         )
         if not is_trusted:
             logger.warning(
-                "%s resolved to %s which is not in trusted directories %s, skipping",
-                tool, resolved_path, trusted_dirs
+                "%s resolved to %s which is not in any configured trusted directory, skipping",
+                tool, resolved_path
             )
             return None
 
