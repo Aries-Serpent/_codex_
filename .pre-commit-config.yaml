@@ -63,3 +63,12 @@ repos:
         files: '(tests/.*_test\.py$|tests/test_.*\.py$)'
         stages: [manual]
 
+      # Generate AI-optimized repository indices
+      - id: generate-ai-index
+        name: Generate AI repository search indices
+        entry: python3 scripts/generate_ai_index.py
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+
