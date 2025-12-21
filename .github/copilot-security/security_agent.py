@@ -115,18 +115,22 @@ class CopilotSecurityAgent:
             )
             if result.returncode == 0:
                 url = result.stdout.strip()
-                # Parse GitHub URL
-                if "github.com" in url:
-                    # Handle both SSH and HTTPS URLs
-                    if url.startswith("git@github.com:"):
-                        parts = url.replace("git@github.com:", "").replace(".git", "").split("/")
-                    elif "github.com/" in url:
-                        parts = url.split("github.com/")[1].replace(".git", "").split("/")
-                    else:
-                        parts = []
-                    
+                # Parse GitHub URL - validate URL scheme and domain to prevent injection
+                # Security: Check for proper URL format, not just substring presence
+                if url.startswith("git@github.com:"):
+                    # SSH URL format: git@github.com:owner/repo.git
+                    parts = url.replace("git@github.com:", "").replace(".git", "").split("/")
                     if len(parts) >= 2:
                         return parts[0], parts[1]
+                elif url.startswith("https://github.com/") or url.startswith("http://github.com/"):
+                    # HTTPS URL format: https://github.com/owner/repo.git
+                    # Use proper URL parsing instead of string splitting
+                    import urllib.parse
+                    parsed = urllib.parse.urlparse(url)
+                    if parsed.netloc == "github.com" and parsed.path:
+                        parts = parsed.path.strip("/").replace(".git", "").split("/")
+                        if len(parts) >= 2:
+                            return parts[0], parts[1]
         except Exception as e:
             logger.warning(f"Could not extract repo info from git: {e}")
         

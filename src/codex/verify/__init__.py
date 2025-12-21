@@ -11,4 +11,6 @@ Components:
 
 from __future__ import annotations
 
+from .comparator import ComparisonResult, compare, generate_tests
+
 __all__ = ["compare", "ComparisonResult", "generate_tests"]
