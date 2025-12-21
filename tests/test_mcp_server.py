@@ -7,8 +7,24 @@ Verifies complete functionality of the server.
 import sys
 from pathlib import Path
 
-# Add repo root to path (tests/ is one level below repo root)
-repo_root = Path(__file__).parent.parent
+
+def find_repo_root() -> Path:
+    """Find repository root by searching for marker files."""
+    current = Path(__file__).resolve().parent
+    markers = ['pyproject.toml', '.git', 'setup.py']
+    
+    while current != current.parent:
+        for marker in markers:
+            if (current / marker).exists():
+                return current
+        current = current.parent
+    
+    # Fallback to parent of tests directory
+    return Path(__file__).resolve().parent.parent
+
+
+# Add repo root to path
+repo_root = find_repo_root()
 sys.path.insert(0, str(repo_root))
 
 from mcp.server import MCPJSONRPCServer
