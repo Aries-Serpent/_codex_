@@ -3,16 +3,14 @@ import pytest
 from pathlib import Path
 import json
 import sys
-import tempfile
-import gzip
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from dataset_pipeline import (
-    FileProcessor, ProcessedFile, DatasetManager, DatasetManifest
+    FileProcessor, DatasetManager
 )
-from dataset_dedup import ContentDeduplicator, DeduplicationReport
+from dataset_dedup import ContentDeduplicator
 
 
 @pytest.fixture

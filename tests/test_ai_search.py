@@ -1,16 +1,13 @@
 """Tests for AI-optimized repository search system."""
 import pytest
 from pathlib import Path
-import json
 import sys
-import tempfile
-import shutil
 
 # Add scripts to path for importing
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
-from generate_ai_index import RepositoryIndexer, CodeEntity, FileIndex
-from ai_search import AIRepositorySearch, SearchResult
+from generate_ai_index import RepositoryIndexer, CodeEntity
+from ai_search import AIRepositorySearch
 
 
 @pytest.fixture

@@ -10,12 +10,14 @@ from __future__ import annotations
 from pathlib import Path
 import subprocess
 import sys
-from typing import List, Set, Optional, Dict, Tuple
+from typing import List, Optional, Tuple
 import ast
 import re
 
 from ai_self_review_protocol import (
-    SelfReviewProtocol, Issue, IssueType, Priority, ReviewStatus
+    SelfReviewProtocol,
+    IssueType,
+    Priority,
 )
 
 
@@ -174,7 +176,7 @@ class CodeChangeReviewer:
         
         # Cycle 1: Initial analysis
         print("=== Cycle 1: Initial Analysis ===")
-        cycle1 = self.protocol.start_cycle()
+        self.protocol.start_cycle()
         
         for filepath in changed_files:
             print(f"Analyzing: {filepath.relative_to(self.repo_path)}")
@@ -217,7 +219,7 @@ class CodeChangeReviewer:
         
         # Cycle 2: Convergence check
         print("=== Cycle 2: Convergence Check ===")
-        cycle2 = self.protocol.start_cycle()
+        self.protocol.start_cycle()
         
         converged, reason = self.protocol.check_convergence()
         print(f"Convergence status: {reason}\n")

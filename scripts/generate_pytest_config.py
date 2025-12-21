@@ -6,7 +6,6 @@ to ensure all markers are registered, preventing test collection failures.
 """
 from pathlib import Path
 import re
-import ast
 import sys
 from typing import Set, Dict
 import configparser

@@ -7,7 +7,7 @@ for all codex packages to ensure consistency and prevent manual maintenance drif
 from pathlib import Path
 import ast
 import sys
-from typing import List, Dict
+from typing import List
 
 CODEX_PACKAGES = [
     "src/codex",

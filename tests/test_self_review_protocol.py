@@ -1,9 +1,7 @@
 """Tests for autonomous self-review protocol."""
-import pytest
 from pathlib import Path
 import json
 import sys
-import tempfile
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
@@ -190,7 +188,7 @@ def test_check_convergence_critical_issues():
     
     # Cycle 1
     protocol.start_cycle()
-    issue = protocol.identify_issue(
+    protocol.identify_issue(
         IssueType.RISK, Priority.CRITICAL, "Critical bug", "app.py"
     )
     protocol.complete_cycle(["Identified issues"])

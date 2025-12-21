@@ -11,7 +11,7 @@ from pathlib import Path
 import ast
 import json
 import hashlib
-from typing import Dict, List, Any, Optional, Set
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict, field
 import re
 from datetime import datetime
@@ -260,6 +260,8 @@ class RepositoryIndexer:
                 file_index.keywords = self.extract_keywords(content)
                 
             except (UnicodeDecodeError, ValueError):
+                # If the file cannot be decoded or parsed for __all__/keywords,
+                # skip these optional enrichments but still index the file itself.
                 pass
 
         # Add semantic tags based on path

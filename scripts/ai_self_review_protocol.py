@@ -10,7 +10,7 @@ completion through autonomous self-healing cycles.
 from __future__ import annotations
 
 from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Set, Optional, Tuple, Any
+from typing import List, Dict, Optional, Tuple, Any
 from enum import Enum
 from datetime import datetime
 import json
@@ -304,11 +304,6 @@ class SelfReviewProtocol:
 
     def _to_dict(self) -> Dict[str, Any]:
         """Convert report to dictionary for serialization."""
-        def convert_enum(obj):
-            if isinstance(obj, Enum):
-                return obj.value
-            return obj
-        
         report_dict = asdict(self.report)
         
         # Convert enums in issues
@@ -371,7 +366,7 @@ def main():
     if args.demo:
         # Demo cycle 1
         print("Starting Cycle 1: Initial Review")
-        cycle1 = protocol.start_cycle()
+        protocol.start_cycle()
         
         # Identify some issues
         protocol.identify_issue(
@@ -394,7 +389,7 @@ def main():
         
         # Demo cycle 2
         print("\nStarting Cycle 2: Fix and Validate")
-        cycle2 = protocol.start_cycle()
+        protocol.start_cycle()
         
         # Fix the high-priority issue
         issues = list(protocol.all_issues.keys())

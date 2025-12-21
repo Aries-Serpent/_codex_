@@ -1,9 +1,7 @@
 """Tests for AI-Driven Autonomous Codebase Management System."""
 import pytest
 from pathlib import Path
-import json
 import sys
-import tempfile
 
 # Add scripts to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
