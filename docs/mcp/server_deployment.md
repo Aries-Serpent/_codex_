@@ -18,6 +18,9 @@ This guide covers low/no-cost hosting for the MCP HTTP prototype and how to alig
 <!-- pragma: allowlist secret -->
 1. `fly launch --name codex-mcp --no-deploy`
 2. `fly secrets set MCP_API_KEY=<prod-key> CODEX_ITA_API_KEY=<ita-key>`
+   
+   **⚠️ WARNING**: `<prod-key>` and `<ita-key>` are placeholders only. Replace them with your actual secret values. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
+
 3. `fly deploy`
 4. Smoke test: `curl -H "X-MCP-API-Key: <prod-key>" https://codex-mcp.fly.dev/mcp/v1/health`
 
