@@ -4,7 +4,22 @@ import os
 import random
 from pathlib import Path
 
+import pytest
+
 from src.training.seed_utils import set_all_seeds
+
+
+@pytest.fixture(autouse=True)
+def isolate_env_vars(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Ensure PYTHONHASHSEED doesn't persist between tests."""
+    # Save and restore PYTHONHASHSEED to prevent cross-test pollution
+    original_hashseed = os.environ.get("PYTHONHASHSEED")
+    yield
+    # Restore original value after test
+    if original_hashseed is not None:
+        os.environ["PYTHONHASHSEED"] = original_hashseed
+    elif "PYTHONHASHSEED" in os.environ:
+        del os.environ["PYTHONHASHSEED"]
 
 
 def test_set_all_seeds_reproducible_python(tmp_path: Path) -> None:
