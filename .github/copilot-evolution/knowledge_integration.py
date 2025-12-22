@@ -211,7 +211,14 @@ class ExternalKnowledgeIntegrator:
         )
 
     def _generate_quantum_results(self, query: str) -> List[Dict[str, Any]]:
-        """Generate quantum computing related results."""
+        """
+        Generate quantum computing related results.
+
+        Note: This is a template method for future use when search_knowledge
+        is implemented with real API credentials. These helper methods provide
+        domain-specific result formatting that can be used by a concrete
+        implementation of search_knowledge.
+        """
         return [
             {
                 "title": "Quantum Computing: An Applied Approach",
@@ -240,7 +247,11 @@ class ExternalKnowledgeIntegrator:
         ]
 
     def _generate_security_results(self, query: str) -> List[Dict[str, Any]]:
-        """Generate security related results."""
+        """
+        Generate security related results.
+
+        Note: Template method for future use with real API implementation.
+        """
         return [
             {
                 "title": "Modern Application Security Patterns",
@@ -261,7 +272,11 @@ class ExternalKnowledgeIntegrator:
         ]
 
     def _generate_ml_results(self, query: str) -> List[Dict[str, Any]]:
-        """Generate machine learning related results."""
+        """
+        Generate machine learning related results.
+
+        Note: Template method for future use with real API implementation.
+        """
         return [
             {
                 "title": "Attention Is All You Need",
@@ -282,7 +297,11 @@ class ExternalKnowledgeIntegrator:
         ]
 
     def _generate_python_results(self, query: str) -> List[Dict[str, Any]]:
-        """Generate Python related results."""
+        """
+        Generate Python related results.
+
+        Note: Template method for future use with real API implementation.
+        """
         return [
             {
                 "title": "Python 3.12 What's New",
@@ -302,7 +321,11 @@ class ExternalKnowledgeIntegrator:
         ]
 
     def _generate_general_results(self, query: str) -> List[Dict[str, Any]]:
-        """Generate general results for any query."""
+        """
+        Generate general results for any query.
+
+        Note: Template method for future use with real API implementation.
+        """
         return [
             {
                 "title": f"Understanding {query}",
@@ -788,10 +811,11 @@ class AutomatedResearcher:
         except NotImplementedError:
             logger.warning(
                 "Knowledge integrator search_knowledge is not implemented; "
-                "skipping external research for task %s",
+                "marking research task %s as incomplete and skipping external research",
                 task_id,
             )
-            results = []
+            task.status = "incomplete"
+            return task
 
         # Process results into findings
         for result in results:
@@ -940,7 +964,13 @@ class TestGenerator:
         expected_behavior: str,
     ) -> GeneratedTest:
         """
-        Generate a unit test for a concept.
+        Generate a unit test template for a concept.
+
+        **Note**: The generated tests are templates with TODO placeholders and
+        pass statements. They require manual completion before they can
+        actually validate behavior. This is intentional - the generator
+        provides structure and boilerplate, but human expertise is needed
+        to fill in the actual test logic and assertions.
 
         Args:
             concept: Concept being tested
@@ -948,7 +978,7 @@ class TestGenerator:
             expected_behavior: Expected behavior description
 
         Returns:
-            Generated test
+            Generated test template (requires manual completion)
         """
         test_id = hashlib.md5(
             f"{concept}:{function_signature}".encode()

@@ -179,14 +179,25 @@ class FixCodeGenerator:
     def _docker_tag_fix_template(
         self, content: str, context: Dict[str, Any]
     ) -> Tuple[Optional[str], float, str]:
-        """Generate fix for Docker tag errors."""
+        """
+        Generate fix for Docker tag errors in GitHub Actions workflow YAML.
+
+        This generates a shell command that will execute within the GitHub
+        Actions runner context. The $(echo ...) syntax is valid shell
+        substitution that will be interpreted by bash when the workflow runs.
+
+        Note: The replacement string inserts literal shell command syntax
+        into workflow YAML files where commands are executed by the runner's
+        shell. This is intentional - the sanitization happens at workflow
+        runtime, not at fix generation time.
+        """
         # Find the problematic tag reference
         pattern = r"(ghcr\.io/[^:]+:)(\$\{[^}]+\})"
 
         def sanitize_replacement(match: re.Match) -> str:
             prefix = match.group(1)
             variable = match.group(2)
-            # Wrap with sanitization
+            # Wrap with sanitization - this shell command executes at workflow runtime
             return f'{prefix}$(echo {variable} | tr "/:A-Z" ".-a-z" | sed "s/[^a-z0-9._-]/-/g")'
 
         fixed = re.sub(pattern, sanitize_replacement, content)
@@ -569,17 +580,42 @@ class AutomatedPRGenerator:
             if fix:
                 fixes.append(fix)
 
+        # Handle no-fixes case early with appropriate placeholder PR
         if not fixes:
             logger.warning("No fixes generated for issues")
-            fixes = []
+            timestamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+            branch_name = f"self-healing/no-fix-{timestamp}"
+
+            pr = GeneratedPR(
+                pr_id=hashlib.md5(branch_name.encode()).hexdigest()[:12],
+                title="[No Fixes] Unable to generate automatic fixes",
+                description=(
+                    "## No Automatic Fixes Available\n\n"
+                    "The self-healing system analyzed the issues but could not "
+                    "generate automatic fixes. Manual investigation is required.\n\n"
+                    f"**Issues analyzed**: {len(issues)}\n"
+                    "**Reason**: No matching fix templates found for the issue types."
+                ),
+                branch_name=branch_name,
+                fixes=[],
+                confidence=0.0,
+                auto_merge_eligible=False,
+                created_at=datetime.utcnow().isoformat(),
+                status="failed",
+            )
+
+            self.generated_prs[pr.pr_id] = pr
+            self._save_prs()
+
+            logger.info(f"📝 Generated placeholder PR for unfixable issues: {pr.pr_id}")
+
+            return pr
 
         # Generate PR title and description
         title, description = self.description_generator.generate_description(fixes)
 
         # Calculate overall confidence
-        avg_confidence = (
-            sum(f.confidence for f in fixes) / len(fixes) if fixes else 0.0
-        )
+        avg_confidence = sum(f.confidence for f in fixes) / len(fixes)
 
         # Determine auto-merge eligibility
         auto_merge_eligible = avg_confidence >= self.auto_merge_threshold
