@@ -504,7 +504,7 @@ marshmallow==3.26.1
     # via great-expectations
 matplotlib==3.10.6
     # via mlflow
-matplotlib-inline==0.1.7
+matplotlib-inline==0.2.1
     # via
     #   ipykernel
     #   ipython
