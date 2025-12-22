@@ -237,7 +237,7 @@ entrypoints==0.4
     # via altair
 evaluate==0.4.6
     # via lm-eval
-evidently==0.7.17
+evidently==0.7.18
     # via codex-ml (pyproject.toml)
 executing==2.2.1
     # via stack-data
