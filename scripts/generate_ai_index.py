@@ -36,7 +36,7 @@ class CodeEntity:
     def __post_init__(self):
         if not self.hash:
             content = f"{self.type}:{self.name}:{self.path}:{self.line_start}"
-            self.hash = hashlib.md5(content.encode()).hexdigest()[:16]
+            self.hash = hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:16]
 
 
 @dataclass

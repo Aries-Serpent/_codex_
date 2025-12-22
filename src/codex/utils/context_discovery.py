@@ -37,7 +37,7 @@ def run_git_command(cmd: str) -> Optional[str]:
         Command stdout stripped, or None on error/non-zero exit.
     """
     try:
-        # Parse the command string into a list to avoid shell=True
+        # Parse the command string into a list to avoid shell=False
         cmd_list = shlex.split(cmd)
         result = subprocess.run(
             cmd_list,

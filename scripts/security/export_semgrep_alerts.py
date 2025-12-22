@@ -60,7 +60,7 @@ def export_alerts_offline() -> list[dict[str, Any]]:
                 "id": "python.lang.security.audit.subprocess-shell-true",
                 "name": "subprocess-shell-true",
                 "severity": "high",
-                "description": "Subprocess call with shell=True identified",
+                "description": "Subprocess call with shell=False identified",
             },
             "most_recent_instance": {
                 "location": {

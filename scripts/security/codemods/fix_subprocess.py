@@ -2,7 +2,7 @@
 Codemod: Fix unsafe subprocess usage
 
 Transforms:
-  subprocess.call(..., shell=True) → subprocess.run(..., shell=False, check=True)
+  subprocess.call(..., shell=False) → subprocess.run(..., shell=False, check=True)
   os.system(...) → subprocess.run([...], check=True)
 
 Author: mbaetiong

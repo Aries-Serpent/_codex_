@@ -45,7 +45,7 @@ def extract_ast_signature(code: str) -> Optional[Dict]:
             counts[type(node).__name__] += 1
         # Create a normalized AST dump for structural hashing
         dump = ast.dump(tree, annotate_fields=False)
-        struct_hash = hashlib.md5(dump.encode()).hexdigest()
+        struct_hash = hashlib.md5(dump.encode(, usedforsecurity=False)).hexdigest()
         return {"nodes": dict(counts), "hash": struct_hash}
     except SyntaxError:
         return None

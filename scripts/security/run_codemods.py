@@ -49,7 +49,7 @@ FIX_GROUPS = [
         group_id="FG-001",
         rule_pattern="subprocess",
         fix_function=fix_subprocess,
-        description="Fix unsafe subprocess usage (shell=True, os.system)",
+        description="Fix unsafe subprocess usage (shell=False, os.system)",
         priority="P0",
     ),
     FixGroup(

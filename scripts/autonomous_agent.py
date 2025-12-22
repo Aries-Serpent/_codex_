@@ -156,7 +156,7 @@ class CodeHealthSensor:
                 lines = content.split('\n')
                 for i in range(0, len(lines) - 10, 5):
                     chunk = '\n'.join(lines[i:i+10])
-                    chunk_hash = hashlib.md5(chunk.encode()).hexdigest()
+                    chunk_hash = hashlib.md5(chunk.encode(, usedforsecurity=False)).hexdigest()
                     if chunk_hash not in code_hashes:
                         code_hashes[chunk_hash] = []
                     code_hashes[chunk_hash].append(str(py_file))
@@ -321,7 +321,7 @@ class ActionProposer:
         """Generate unique action ID."""
         timestamp = datetime.now().isoformat()
         content = f"{prefix}:{timestamp}"
-        return hashlib.md5(content.encode()).hexdigest()[:12]
+        return hashlib.md5(content.encode(, usedforsecurity=False)).hexdigest()[:12]
 
 
 class AutonomousAgent:
