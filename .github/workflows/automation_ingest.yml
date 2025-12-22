@@ -30,7 +30,7 @@ jobs:
             echo "No daily report found; skipping merge"
           fi
       - name: Upload results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: schema-validation-results
           path: schema_validation_results.json

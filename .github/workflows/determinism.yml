@@ -55,7 +55,7 @@ jobs:
           echo "Dashboard generated successfully"
       
       - name: Upload determinism artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: determinism-audit-${{ github.run_number }}
           path: |
