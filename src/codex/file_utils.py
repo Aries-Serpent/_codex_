@@ -115,8 +115,6 @@ def read_text_safe_fallback(
     if encodings is None:
         encodings = ["utf-8", "latin-1", "cp1252", "utf-16"]
     
-    last_error = None
-    
     for encoding in encodings:
         try:
             content = read_text_safe(
@@ -128,8 +126,7 @@ def read_text_safe_fallback(
             logger.info(f"Successfully decoded {path} with encoding {encoding}")
             return content, encoding
         
-        except UnicodeDecodeError as e:
-            last_error = e
+        except UnicodeDecodeError:
             continue
     
     # All strict encodings failed, try utf-8 with replace

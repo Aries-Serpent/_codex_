@@ -21,7 +21,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from .graph import DependencyGraph
-from .metrics import CodeMetrics, MetricsAggregator
+from .metrics import MetricsAggregator
 from .node import StandardizedASTNode
 
 
