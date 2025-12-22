@@ -1258,7 +1258,7 @@ voluptuous==0.15.2
     # via
     #   dvc
     #   dvc-studio-client
-wandb==0.22.2
+wandb==0.23.1
     # via codex-ml (pyproject.toml)
 watchdog==6.0.0
     # via evidently
