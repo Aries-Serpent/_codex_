@@ -436,3 +436,326 @@ class TestIntegration:
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v', '--tb=short'])
+
+
+# ============================================================================
+# Enhanced Module Tests
+# ============================================================================
+
+class TestMCPIntegration:
+    """Tests for MCP server integration."""
+    
+    def test_mock_mode_initialization(self):
+        """Test MCP integration in mock mode."""
+        from mcp_server import MCPIntegration, MCPConnectionMode
+        
+        mcp = MCPIntegration(mode=MCPConnectionMode.MOCK)
+        assert mcp.mode == MCPConnectionMode.MOCK
+        assert len(mcp.servers) >= 2  # At least github and codex_physics
+    
+    @pytest.mark.asyncio
+    async def test_mock_connection(self):
+        """Test mock MCP connection."""
+        from mcp_server import MCPIntegration, MCPConnectionMode
+        
+        mcp = MCPIntegration(mode=MCPConnectionMode.MOCK)
+        connected = await mcp.connect('github')
+        assert connected is True
+        assert 'github' in mcp.active_connections
+    
+    @pytest.mark.asyncio
+    async def test_mock_execution(self):
+        """Test mock MCP execution."""
+        from mcp_server import MCPIntegration, MCPRequest, MCPConnectionMode
+        
+        mcp = MCPIntegration(mode=MCPConnectionMode.MOCK)
+        
+        request = MCPRequest(
+            server_name='github',
+            capability='repository_access',
+            payload={'repo': 'test/repo'}
+        )
+        
+        response = await mcp.execute(request)
+        assert response.status == 'success'
+        assert response.data is not None
+        assert 'repository' in response.data
+    
+    def test_capability_listing(self):
+        """Test getting available capabilities."""
+        from mcp_server import MCPIntegration, MCPConnectionMode
+        
+        mcp = MCPIntegration(mode=MCPConnectionMode.MOCK)
+        capabilities = mcp.get_available_capabilities()
+        
+        assert 'github' in capabilities
+        assert 'repository_access' in capabilities['github']
+    
+    def test_statistics(self):
+        """Test MCP statistics."""
+        from mcp_server import MCPIntegration, MCPConnectionMode
+        
+        mcp = MCPIntegration(mode=MCPConnectionMode.MOCK)
+        stats = mcp.get_statistics()
+        
+        assert 'mode' in stats
+        assert 'registered_servers' in stats
+        assert stats['mode'] == 'mock'
+
+
+class TestQuantumOptimizer:
+    """Tests for quantum-inspired optimization."""
+    
+    def test_superposition_creation(self):
+        """Test creating task superposition."""
+        from quantum_optimizer import QuantumOptimizer, get_quantum_optimizer
+        
+        optimizer = get_quantum_optimizer()
+        
+        # Create mock tasks
+        tasks = [
+            type('Task', (), {'task_id': 't1', 'task_type': 'documentation', 'context': {'code': 'x' * 100}})(),
+            type('Task', (), {'task_id': 't2', 'task_type': 'security_scan', 'context': {'code': 'y' * 500}})(),
+            type('Task', (), {'task_id': 't3', 'task_type': 'test', 'context': {'code': 'z' * 50}})(),
+        ]
+        
+        superposition = optimizer.create_superposition(tasks)
+        
+        assert len(superposition) == 3
+        assert all(isinstance(item, tuple) for item in superposition)
+        assert all(len(item) == 2 for item in superposition)
+        
+        # Check probabilities sum to ~1.0
+        total_prob = sum(prob for _, prob in superposition)
+        assert abs(total_prob - 1.0) < 0.01
+    
+    def test_entanglement_detection(self):
+        """Test detecting task entanglement."""
+        from quantum_optimizer import QuantumOptimizer
+        
+        optimizer = QuantumOptimizer()
+        
+        # Create entangled tasks (shared context)
+        task1 = type('Task', (), {
+            'task_id': 't1',
+            'context': {'file': 'main.py', 'function': 'process', 'language': 'python'}
+        })()
+        
+        task2 = type('Task', (), {
+            'task_id': 't2',
+            'context': {'file': 'main.py', 'function': 'handle', 'language': 'python'}
+        })()
+        
+        entanglement = optimizer.detect_entanglement(task1, task2)
+        
+        # Should detect strong entanglement (3 shared keys)
+        assert entanglement > 0.5
+    
+    def test_quantum_tunneling(self):
+        """Test quantum tunneling through barriers."""
+        from quantum_optimizer import QuantumOptimizer
+        
+        optimizer = QuantumOptimizer()
+        
+        # Create blocked task with low barrier
+        blocked_task = type('Task', (), {
+            'task_id': 'blocked',
+            'task_type': 'test',
+            'context': {'code': 'test'},
+            'priority': 1
+        })()
+        
+        # Try tunneling (may or may not succeed due to probability)
+        tunneled = optimizer.quantum_tunnel(blocked_task)
+        
+        # If it succeeded, check properties
+        if tunneled is not None:
+            assert hasattr(tunneled, 'tunneled')
+            assert tunneled.tunneled is True
+    
+    def test_chaos_exploration(self):
+        """Test chaotic exploration."""
+        from quantum_optimizer import QuantumOptimizer
+        
+        optimizer = QuantumOptimizer()
+        
+        state = {'param': 1.0, 'value': 0.5}
+        perturbed = optimizer.apply_chaos_exploration(state)
+        
+        assert 'exploration_factor' in perturbed
+        assert perturbed['param'] == 1.0  # Original preserved
+    
+    def test_statistics(self):
+        """Test quantum optimizer statistics."""
+        from quantum_optimizer import QuantumOptimizer
+        
+        optimizer = QuantumOptimizer()
+        stats = optimizer.get_statistics()
+        
+        assert 'superposition_threshold' in stats
+        assert 'entangled_pairs' in stats
+        assert 'physics_integration' in stats
+
+
+class TestCascadeMonitoring:
+    """Tests for cascade performance monitoring."""
+    
+    def test_monitor_initialization(self):
+        """Test monitor initialization."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            assert monitor.metrics.total_cascades == 0
+    
+    def test_record_cascade(self):
+        """Test recording cascade results."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            
+            results = {
+                'task_id': 'test_123',
+                'total_tokens': 1500,
+                'total_time': 2.5,
+                'subtasks': [
+                    {'model': 'gpt-4o-mini', 'status': 'success'},
+                    {'model': 'claude-3-5-sonnet-20241022', 'status': 'success'}
+                ],
+                'verification': {
+                    'status': 'verified',
+                    'confidence': 0.92
+                }
+            }
+            
+            monitor.record_cascade(results)
+            
+            assert monitor.metrics.total_cascades == 1
+            assert monitor.metrics.successful_cascades == 1
+            assert monitor.metrics.total_tokens == 1500
+    
+    def test_dashboard_data(self):
+        """Test getting dashboard data."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            
+            # Record some cascades
+            for i in range(5):
+                results = {
+                    'task_id': f'test_{i}',
+                    'total_tokens': 1000 + i * 100,
+                    'total_time': 1.0 + i * 0.5,
+                    'subtasks': [{'model': 'gpt-4o-mini', 'status': 'success'}],
+                    'verification': {'status': 'verified', 'confidence': 0.9}
+                }
+                monitor.record_cascade(results)
+            
+            dashboard = monitor.get_dashboard_data()
+            
+            assert 'summary' in dashboard
+            assert dashboard['summary']['total_cascades'] == 5
+            assert dashboard['summary']['success_rate'] == 100.0
+    
+    def test_error_classification(self):
+        """Test error type classification."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            
+            assert monitor._classify_error("Connection timeout") == 'timeout'
+            assert monitor._classify_error("Auth failed") == 'authentication'
+            assert monitor._classify_error("File not found") == 'not_found'
+            assert monitor._classify_error("Rate limit exceeded") == 'rate_limit'
+    
+    def test_statistics_export(self):
+        """Test exporting detailed statistics."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            
+            # Add some data
+            for i in range(10):
+                results = {
+                    'task_id': f'test_{i}',
+                    'total_tokens': 1000,
+                    'total_time': 1.5,
+                    'subtasks': [],
+                    'verification': {'status': 'verified'}
+                }
+                monitor.record_cascade(results)
+            
+            stats = monitor.get_detailed_statistics()
+            
+            assert stats['total_samples'] == 10
+            assert 'tokens' in stats
+            assert 'time' in stats
+
+
+class TestIntegration:
+    """Integration tests for complete cascade system."""
+    
+    @pytest.mark.asyncio
+    async def test_full_cascade_with_monitoring(self):
+        """Test complete cascade with monitoring."""
+        from monitoring import CascadeMonitor
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            monitor = CascadeMonitor(log_dir=tmpdir)
+            
+            task = {
+                'id': 'integration_test',
+                'type': 'code_review',
+                'files': [
+                    {
+                        'path': 'test.py',
+                        'content': 'def test(): pass',
+                        'language': 'python'
+                    }
+                ]
+            }
+            
+            # Run cascade
+            results = await cascade_task(task)
+            
+            # Record in monitor
+            monitor.record_cascade(results)
+            
+            # Verify monitoring
+            assert monitor.metrics.total_cascades == 1
+            dashboard = monitor.get_dashboard_data()
+            assert dashboard['summary']['total_cascades'] == 1
+    
+    def test_quantum_with_cascade(self):
+        """Test quantum optimizer with cascade tasks."""
+        from quantum_optimizer import get_quantum_optimizer
+        
+        optimizer = get_quantum_optimizer()
+        orchestrator = get_orchestrator()
+        
+        # Create sample tasks
+        task_dict = {
+            'id': 'quantum_test',
+            'type': 'code_review',
+            'files': [
+                {'path': 'a.py', 'content': 'code1', 'language': 'python'},
+                {'path': 'b.py', 'content': 'code2', 'language': 'python'}
+            ]
+        }
+        
+        # Decompose
+        subtasks = orchestrator._decompose(task_dict)
+        
+        # Apply quantum optimization
+        if subtasks:
+            superposition = optimizer.create_superposition(subtasks)
+            assert len(superposition) > 0
+
+
+# Run all tests
+if __name__ == '__main__':
+    pytest.main([__file__, '-v', '--tb=short'])

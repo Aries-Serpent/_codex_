@@ -1,0 +1,223 @@
+# Cascade Delegation System Configuration
+# This file centralizes all configuration for the cascade system
+
+cascade:
+  # System mode
+  enabled: true
+  mode: production  # development | staging | production
+  
+  # Primary Agent Configuration
+  primary_agent:
+    model: default
+    max_tokens: 8000
+    timeout_seconds: 300
+    fallback_enabled: true
+  
+  # CLI Partner Configuration
+  cli_partner:
+    enabled: true
+    fallback_mode: true  # Continue without CLI if unavailable
+    cli_path: "copilot"  # Path to copilot CLI executable
+    
+    models:
+      - name: gpt-4o-mini
+        enabled: true
+        max_tokens: 4000
+        timeout_seconds: 120
+        cost_per_1k_tokens: 0.00015
+        priority_tasks:
+          - documentation
+          - test_generation
+          - simple_review
+      
+      - name: claude-3-5-sonnet-20241022
+        enabled: true
+        max_tokens: 6000
+        timeout_seconds: 180
+        cost_per_1k_tokens: 0.003
+        priority_tasks:
+          - security_scan
+          - refactor
+          - complex_analysis
+          - code_review
+      
+      - name: gpt-5
+        enabled: false  # Not yet available
+        max_tokens: 8000
+        timeout_seconds: 240
+        cost_per_1k_tokens: 0.005
+        priority_tasks:
+          - architecture
+          - advanced_debugging
+  
+  # Optimization Settings
+  optimization:
+    # Context Compression
+    compression:
+      enabled: true
+      aggressive: true
+      max_code_lines: 100
+      max_text_length: 500
+      preserve_structure: true
+    
+    # Smart Routing
+    routing:
+      enabled: true
+      complexity_threshold: 7  # 1-10 scale
+      auto_fallback: true
+      prefer_cheaper_models: true
+    
+    # Quantum Optimization
+    quantum:
+      enabled: true
+      superposition_threshold: 0.7
+      tunneling_enabled: true
+      entanglement_detection: true
+      chaos_exploration: true
+    
+    # Token Budget Management
+    budget:
+      monthly_tokens: 50000
+      daily_limit: 2000
+      high_priority_allocation: 0.4  # 40% for high priority
+      medium_priority_allocation: 0.3  # 30% for medium
+      low_priority_allocation: 0.3  # 30% for low
+      alert_threshold: 0.8  # Alert at 80% usage
+  
+  # Performance Monitoring
+  monitoring:
+    enabled: true
+    log_level: info  # debug | info | warning | error
+    metrics_retention_days: 30
+    dashboard_refresh_seconds: 60
+    export_reports: true
+    alert_on_failures: true
+    failure_threshold: 0.3  # Alert if >30% fail rate
+  
+  # MCP (Model Context Protocol) Servers
+  mcp_servers:
+    - name: github
+      url: mcp://github.com/servers/default
+      enabled: true
+      mode: mock  # mock | real (set MCP_REAL_MODE=true for real)
+      timeout_seconds: 30
+      capabilities:
+        - repository_access
+        - issue_management
+        - pr_operations
+        - code_search
+    
+    - name: codex_physics
+      url: mcp://localhost:8080/codex/physics
+      enabled: false  # Enable when local MCP server is running
+      mode: mock
+      timeout_seconds: 30
+      capabilities:
+        - quantum_analysis
+        - entanglement_detection
+        - superposition_reasoning
+        - chaos_theory
+    
+    - name: local_tools
+      url: mcp://localhost:9090/tools
+      enabled: false
+      mode: mock
+      timeout_seconds: 30
+      capabilities:
+        - file_operations
+        - process_management
+        - network_tools
+  
+  # Security Settings
+  security:
+    validate_inputs: true
+    sanitize_outputs: true
+    max_file_size_bytes: 10485760  # 10MB
+    allowed_file_extensions:
+      - .py
+      - .js
+      - .ts
+      - .tsx
+      - .jsx
+      - .yml
+      - .yaml
+      - .json
+      - .md
+      - .txt
+      - .sh
+      - .bash
+    
+    # Rate limiting
+    rate_limiting:
+      enabled: true
+      max_requests_per_minute: 60
+      max_requests_per_hour: 500
+    
+    # Content filtering
+    content_filtering:
+      enabled: true
+      block_sensitive_data: true
+      redact_secrets: true
+  
+  # Workflow Integration
+  workflows:
+    # GitHub Actions integration
+    github_actions:
+      enabled: true
+      workflow_file: .github/workflows/copilot-cascade-review.yml
+      trigger_on_pr: true
+      trigger_on_comment: true
+      comment_trigger: "@cascade-review"
+      post_results: true
+    
+    # PR review settings
+    pr_review:
+      auto_review: true
+      confidence_threshold: 0.7
+      max_files_per_review: 20
+      review_timeout_minutes: 15
+  
+  # Logging Configuration
+  logging:
+    directory: .github/copilot-cascade/logs
+    rotation: daily  # daily | weekly | monthly
+    max_files: 30
+    format: json  # json | text
+    include_timestamps: true
+    include_task_ids: true
+  
+  # Cache Configuration
+  cache:
+    enabled: true
+    directory: .github/copilot-cascade/cache
+    ttl_seconds: 3600  # 1 hour
+    max_size_mb: 100
+    cache_responses: true
+    cache_contexts: true
+  
+  # Testing & Development
+  development:
+    debug_mode: false
+    verbose_logging: false
+    dry_run: false
+    mock_cli: false
+    save_debug_artifacts: false
+  
+  # Feature Flags
+  features:
+    dual_verification: true
+    parallel_execution: true
+    adaptive_routing: true
+    cost_optimization: true
+    performance_tracking: true
+    error_recovery: true
+
+# Environment-specific overrides
+# These can be set via environment variables
+environment_variables:
+  # MCP_REAL_MODE: Set to "true" to enable real MCP connections
+  # COPILOT_CLI_PATH: Custom path to copilot CLI
+  # CASCADE_DEBUG: Set to "true" for debug mode
+  # CASCADE_LOG_LEVEL: Override log level (debug|info|warning|error)
+  # CASCADE_TOKEN_BUDGET: Override monthly token budget
+  # CASCADE_DISABLE_QUANTUM: Set to "true" to disable quantum optimization
