@@ -56,7 +56,7 @@ jobs:
             --python-version "3.11"
       - name: Upload wheelhouse artifact (${{ matrix.platform }})
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: wheelhouse-${{ replace(matrix.platform, '/', '-') }}
           path: ./wheelhouse
@@ -177,7 +177,7 @@ jobs:
             --file grype-${{ matrix.variant }}.sarif
         continue-on-error: true
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sbom-${{ matrix.variant }}
           path: |
@@ -185,7 +185,7 @@ jobs:
             grype-${{ matrix.variant }}.sarif
       - name: Upload Grype SARIF to GitHub Security
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: grype-${{ matrix.variant }}.sarif
           category: grype-${{ matrix.variant }}

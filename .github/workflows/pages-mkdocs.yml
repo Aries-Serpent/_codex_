@@ -76,10 +76,10 @@ jobs:
           mkdocs build --strict || mkdocs build  # Try strict first, fall back to lenient
           
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'site'
 

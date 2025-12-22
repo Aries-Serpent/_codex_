@@ -35,7 +35,7 @@ jobs:
             echo "::warning title=Baseline missing::${BASE} not found. Commit a baseline or update CI."
           fi
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: status-html-visual
           path: |
