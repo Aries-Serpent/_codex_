@@ -185,10 +185,10 @@ class CopilotCLIExecutor:
                 stderr=subprocess.PIPE,
             )
             try:
-                stdout, stderr = proc.communicate(timeout=5)
+                proc.communicate(timeout=5)
             except subprocess.TimeoutExpired:
                 proc.kill()
-                stdout, stderr = proc.communicate()
+                proc.communicate()
                 logger.warning("⚠️ Copilot CLI version check timed out - using fallback mode")
                 return False
 
