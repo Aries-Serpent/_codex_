@@ -20,13 +20,7 @@
   ],
   "author": "Aries-Serpent",
   "license": "MIT",
-  "dependencies": {
-    "@github/copilot": "^0.0.369"
-  },
-  "devDependencies": {
-    "yaml": "^2.3.4"
-  },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=20.0.0"
   }
 }
