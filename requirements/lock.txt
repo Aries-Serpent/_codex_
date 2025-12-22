@@ -217,7 +217,7 @@ dulwich==0.24.6
     #   scmrepo
 dvc==3.64.2
     # via codex-ml (pyproject.toml)
-dvc-data==1.11.0
+dvc-data==3.17.0
     # via dvc
 dvc-http==2.32.0
     # via dvc
@@ -1107,7 +1107,7 @@ threadpoolctl==3.6.0
     # via scikit-learn
 tinycss2==1.4.0
     # via bleach
-tokenizers==0.21.4
+tokenizers==0.22.1
     # via
     #   codex-ml (pyproject.toml)
     #   transformers
