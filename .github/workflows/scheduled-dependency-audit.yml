@@ -119,7 +119,7 @@ jobs:
             -o syft-json=sbom-${{ matrix.variant }}.syft.json
 
       - name: Install Grype
-        uses: anchore/scan-action/download-grype@v3
+        uses: anchore/scan-action/download-grype@v7
 
       - name: Scan with Grype
         run: |
